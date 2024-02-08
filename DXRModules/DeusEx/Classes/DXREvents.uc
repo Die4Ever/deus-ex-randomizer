@@ -20,6 +20,7 @@ function WatchActors()
     local #var(prefix)BarrelVirus virus;
     local #var(prefix)Mailbox mail;
     local #var(prefix)CigaretteMachine cigVending;
+    local #var(prefix)Lightbulb bulb;
 
     foreach AllActors(class'#var(prefix)Lamp',lamp){
         AddWatchedActor(lamp,"LightVandalism");
@@ -38,6 +39,9 @@ function WatchActors()
     }
     foreach AllActors(class'#var(prefix)Chandelier',chandelier){
         AddWatchedActor(chandelier,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)Lightbulb',bulb){
+        AddWatchedActor(bulb,"LightVandalism");
     }
     foreach AllActors(class'#var(prefix)Trophy',trophy){
         AddWatchedActor(trophy,"TrophyHunter");
@@ -66,36 +70,148 @@ function WatchActors()
 function AddPhoneTriggers(bool isRevision)
 {
     local #var(prefix)Phone p;
-    local BingoTrigger bt;
+    local #var(prefix)WHPhone wp;
+#ifdef revision
+    local RevPhone rp;
+#endif
     local int i;
 
     //Spawn invisible phones for the payphones
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-3999.9, 9039,-222)); //South Dock
+            p = Spawn(class'PayPhone',,,vectm(-3839.9, 9039, -222)); //South Dock
+        }
+        break;
     case "02_NYC_STREET":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1219.22, 776.7, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(-1216.45, 1014.59, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(3523, -3280.4, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3523, -3424.59, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3651, -1583.93, -435.40)); //Near bus stop
+            p = Spawn(class'PayPhone',,,vectm(3651, -1763.33, -430.23)); //Near bus stop (Tipped over)
+            p = Spawn(class'PayPhone',,,vectm(1952.04, 2508.99, -432.5)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(1599.67, 2508.99, -432.5)); //Near Osgoode and Son's
+            //break;
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
+        }
+        break;
     case "04_NYC_STREET":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1219.22, 776.7, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(-1216.45, 1014.59, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(3523, -3280.4, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3523, -3424.59, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3676.9, -1577.22, -490.4)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(3650, -1764.06, -430)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(1949.62, 2509, -431)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(1597.67, 2509, -431)); //Near Osgoode and Son's
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
+        }
+        break;
     case "08_NYC_STREET":
-        if (!isRevision){
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1219.22, 776.7, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(-1216.45, 1014.59, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(3522, -3280, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3522, -3424.4, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3676.9, -1577.22, -490.4)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(3650, -1764.06, -430)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(1899.19, 2513.20, -486.25)); //Near Osgoode and Son's (Tipped over)
+            p = Spawn(class'PayPhone',,,vectm(1592.46, 2495.74, -433.14)); //Near Osgoode and Son's (Tipped over)
+        } else {
             p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
             p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
         }
         break;
     case "02_NYC_BAR":
-    case "04_NYC_BAR":
-    case "08_NYC_BAR":
-        if (!isRevision){
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.8, 75)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.4, 75)); //Near the bathroom
+        } else{
             p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
         }
         break;
+    case "04_NYC_BAR":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.8, 75)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.4, 75)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -40.4, 75)); //Near the bathroom
+        } else{
+            p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
+        }
+        break;
+    case "08_NYC_BAR":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.1, 74)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -40.83, 74)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.66, 74)); //Near the bathroom
+        } else{
+            p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
+        }
+        break;
+
     case "02_NYC_FREECLINIC":
     case "08_NYC_FREECLINIC":
         if (!isRevision){
             p = Spawn(class'PayPhone',,,vectm(-215,752,-254));  //In the front lobby
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(-203.12, 752.87,-251.78));  //In the front lobby
+        }
+        break;
+
+    case "02_NYC_BATTERYPARK":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2707.23, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3108.31, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3584.65, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(883, 639, 417.47)); //In Castle Clinton
+            p = Spawn(class'PayPhone',,,vectm(882.97, 520, 415.65)); //In Castle Clinton
+        }
+        break;
+    case "03_NYC_BATTERYPARK":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2708.68, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3108.13, -171, 400)); //Near Shanty town
+        }
+        break;
+    case "04_NYC_BATTERYPARK":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2709.1, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3108.44, -171, 400)); //Near Shanty town
         }
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         if (!isRevision){
             p = Spawn(class'PayPhone',,,vectm(-660,-1854,435));  //Upper floor, near El Rey
             p = Spawn(class'PayPhone',,,vectm(-660,-1806,435));
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(-669, -1855.67, 433.5));  //Upper floor, near El Rey
+            p = Spawn(class'PayPhone',,,vectm(-669, -1807.72, 433.5));
+        }
+        break;
+    case "04_NYC_NSFHQ":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1641.06, -4912.54, 80));  //Near Checkpoint
+            p = Spawn(class'PayPhone',,,vectm(-1641.06, -5041.04, 80));
+        }
+        break;
+
+    case "06_HONGKONG_WANCHAI_COMPOUND":
+        if (isRevision){ //This map only exists in revision, but might as well check
+            p = Spawn(class'PayPhone',,,vectm(-671.12, 2528.5, 84));  //Near Entrance
+            p = Spawn(class'PayPhone',,,vectm(561.36, 2421, 84));  //Near Entrance
+            p = Spawn(class'PayPhone',,,vectm(656.89, 2421, 84));  //Near Entrance
+            p = Spawn(class'PayPhone',,,vectm(-465.27, 5266.2, 66.5));  //Covered Area
+            p = Spawn(class'PayPhone',,,vectm(-465.27, 5218.72, 66.5));  //Covered Area
+            p = Spawn(class'PayPhone',,,vectm(-1147, 4295.44, 66));  //Between Buildings
+            p = Spawn(class'PayPhone',,,vectm(-1147, 4215.07, 66));  //Between Buildings
         }
         break;
     case "09_NYC_DOCKYARD":
@@ -103,6 +219,18 @@ function AddPhoneTriggers(bool isRevision)
             p=Spawn(class'#var(prefix)Phone',,,vectm(2333,2153,53),rotm(0,5688,0));
         }
         break;
+
+    case "10_PARIS_CATACOMBS_METRO":
+        if (isRevision){ //Another Revision-only map
+            p = Spawn(class'PayPhone',,,vectm(974.99, -2581.45, -555));  //In the ATM+ area
+            p = Spawn(class'PayPhone',,,vectm(974.99, -2504.94, -553));
+            //There might be two missing here, but I couldn't find them
+        }
+    case "11_PARIS_UNDERGROUND":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(620.99, 304.67, 15.75));
+            p = Spawn(class'PayPhone',,,vectm(617, 464.96, 15.75));
+        }
     }
     i=0;
 
@@ -111,15 +239,43 @@ function AddPhoneTriggers(bool isRevision)
             case "AI_phonecall_paris01":
                 break; //Covered by the Icarus call flag - IcarusCalls_Played
             default:
-                bt = class'BingoTrigger'.static.Create(self,'PhoneCall',vectm(0,0,0));
-                bt.bDestroyOthers=False;
-                bt.tag=StringToName("PhoneCall"$i);
-                p.event=StringToName("PhoneCall"$i);
+                CreatePhoneTrigger(p,i);
                 i++;
                 break;
         }
     }
+    foreach AllActors(class'#var(prefix)WHPhone',wp){
+        switch(wp.BindName){
+            case "AI_phonecall_paris01":
+                break; //Covered by the Icarus call flag - IcarusCalls_Played
+            default:
+                CreatePhoneTrigger(wp,i);
+                i++;
+                break;
+        }
+    }
+#ifdef revision
+    foreach AllActors(class'RevPhone',rp){
+        switch(rp.BindName){
+            case "AI_phonecall_paris01":
+                break; //Covered by the Icarus call flag - IcarusCalls_Played
+            default:
+                CreatePhoneTrigger(rp,i);
+                i++;
+                break;
+        }
+    }
+#endif
+}
 
+function CreatePhoneTrigger(Actor phone, int num)
+{
+    local BingoTrigger bt;
+
+    bt = class'BingoTrigger'.static.Create(self,'PhoneCall',phone.Location);
+    bt.bDestroyOthers=False;
+    bt.tag=StringToName("PhoneCall"$num);
+    phone.event=StringToName("PhoneCall"$num);
 }
 
 function SetWatchFlags() {
@@ -158,6 +314,9 @@ function SetWatchFlags() {
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
+    //For debugging purposes - can probably remove later
+    l("SetWatchFlags: Setting flag watches and bingo locations based on Revision maps? "$RevisionMaps);
+
     //General checks
     WatchActors();
     AddPhoneTriggers(RevisionMaps);
@@ -194,14 +353,15 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
             bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
             bt.MakePeepable();
         }
-        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
@@ -308,14 +468,15 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
             bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
             bt.MakePeepable();
         }
-        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
@@ -501,14 +662,15 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
             bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
             bt.MakePeepable();
         }
-        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
@@ -729,6 +891,9 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
         bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
         break;
+    case "08_NYC_FREECLINIC":
+        WatchFlag('GreenKnowsAboutDowd');
+        break;
     case "09_NYC_DOCKYARD":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
 
@@ -842,7 +1007,7 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'WarehouseEntered',vectm(-580.607361,-2248.497803,-551.895874),200,160);
-
+        bt = class'BingoTrigger'.static.Create(self,'roof_elevator',vect(0,0,0));
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'#var(prefix)WIB',wib){
@@ -855,6 +1020,7 @@ function SetWatchFlags() {
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
+        WatchFlag('MeetRenault_Played');
         RewatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'#var(prefix)Mutt', starr) {
@@ -2122,7 +2288,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "TongTargets":
             return "Shoot at the targets in the shooting range in Tracer Tong's hideout.";
         case "WanChaiStores":
-            return "Visit enough of the stores in the Wan Chai market by walking up to them.";
+            return "Visit all of the stores in the Wan Chai market by walking up to them.";
         case "HongKongBBall":
             return "Throw the basketball into the net on the rooftop of the MJ12 helibase in Hong Kong.";
         case "CanalDrugDeal":
@@ -2356,6 +2522,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             } else if (mission<=12){
                 msg=msg$"The bum living at the Vandenberg gas station deserves it.";
             }
+            msg = msg$"|n|n(It's a Simpsons reference)";
             return msg;
         case "Canal_Cop_Dead":
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.";
@@ -2596,6 +2763,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Watch cats through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "Binoculars_peeptime":
             return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+        case "roof_elevator":
+            return "Use the roof elevator in Denfert-Rochereau right at the start.  There will be a book nearby with the code for the keypad.";
+        case "MeetRenault_Played":
+            return "Talk to Renault, in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2785,7 +2956,7 @@ defaultproperties
     bingo_options(147)=(event="OceanLabCrewChamber",desc="Visit %s crew chambers in the Ocean Lab",max=4,missions=16384)
     bingo_options(148)=(event="HeliosControlArms",desc="Jump down the control arms in Helios' chamber",max=1,missions=32768)
     bingo_options(149)=(event="TongTargets",desc="Use the shooting range in Tong's base",max=1,missions=64)
-    bingo_options(150)=(event="WanChaiStores",desc="Visit %s stores in the Wan Chai market",max=4,missions=64)
+    bingo_options(150)=(event="WanChaiStores",desc="Visit all of the stores in the Wan Chai market",max=5,missions=64)
     bingo_options(151)=(event="HongKongBBall",desc="Shoot some hoops in Hong Kong",max=1,missions=64)
     bingo_options(152)=(event="CanalDrugDeal",desc="Walk in on a drug deal in progress",max=1,missions=64)
     bingo_options(153)=(event="HongKongGrays",desc="Enter the Hong Kong Gray enclosure",max=1,missions=64)
@@ -2957,6 +3128,8 @@ defaultproperties
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
+    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
+    bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
 
 
 

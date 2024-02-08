@@ -14,17 +14,21 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
         AddActorLocation(loc, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',33,289,"P","Paul", loc,"Paul can be located on the second floor of the armory.  If Paul is in this location, your equipment will be located in the surgery ward.");
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
         AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
         AddActorLocation(loc, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
         AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',379,96,"P","Paul", loc,"Paul can be located in the surgery ward.  This is the vanilla location.  If Paul is in this location, your equipment will be located in the armory.");
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
         AddActorLocation(loc, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',325,226,"P","Paul", loc,"Paul can be located in the greasel pit accessed through the vent on the back wall of the nanotech lab.  If Paul is in this location, your equipment will be located in the armory.");
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
         AddActorLocation(loc, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P","Paul", loc,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
 
         return 51;
 
@@ -123,6 +127,9 @@ function AfterShuffleGoals(int goalsToLocations[32])
     local int g;
     local string dctext;
     local PaulDentonCarcass paulbody;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     //Only do this on mission 5 UNATCO HQ
     if (dxr.localURL == "05_NYC_UNATCOHQ"){
@@ -144,13 +151,13 @@ function AfterShuffleGoals(int goalsToLocations[32])
 
         dctext = dctext $ "|n|nBoth using the DEMIURGE username. JC will never find them!";
 
-        if (#defined(revision)){
+        if (RevisionMaps){
             SpawnDatacubePlaintext(vectm(1130.502441,195.451401,321.369446), rotm(0,0,0), dctext, true);
         } else {
             SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
         }
 
-    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){
+    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){ 
         //For some reason shuffling Paul's body stops it from being destroyed by the mission script
         if (!player().flagbase.GetBool('PaulDenton_Dead')){
             foreach AllActors(class'PaulDentonCarcass',paulbody){
@@ -166,17 +173,20 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)DataLinkTrigger  dlt;
     local int i;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
         // jail computer
-        if (!#defined(revision)){
+        if (!RevisionMaps){
             cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(-1491.076782, -1207.629028, -2.499634), rotm(0, 25000, 0));
             cp.UserList[0].userName = "KLloyd";
             cp.UserList[0].Password = "squishy";
         }
 
         // conference room computer
-        if (#defined(revision)){
+        if (RevisionMaps){
             cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(32.709930,878.123413,291.501068), rotm(0,0,0));
         } else {
             cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(79.009933, 863.868042, 296.502075), rotm(0,0,0));

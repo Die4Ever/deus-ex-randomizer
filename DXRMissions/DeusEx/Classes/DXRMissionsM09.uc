@@ -58,45 +58,59 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
         AddActorLocation(loc, 2, vect(-378, 978, -272), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',320,343,"W","Weld Point", loc,"A weld point can be located at the North end of the Engine Room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
         AddActorLocation(loc, 2, vect(-3300, -1619, -112), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',166,204,"W","Weld Point", loc,"A weld point can be located on the balcony of the Bilge Pump room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
         AddActorLocation(loc, 2, vect(-2522, -464, -144), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',212,269,"W","Weld Point", loc,"A weld point can be located in the upper hallway next to the Bilge Pump room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3950, 740, -352), rot(0, 0, 0));
         AddActorLocation(loc, 2, vect(-3908, 766, -416), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',135,135,"W","Weld Point", loc,"A weld point can be located on the South East side of the Electrical Room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664, -926, -418), rot(0, 16384, 0));
         AddActorLocation(loc, 2, vect(-5664, -889, -432), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',47,50,"W","Weld Point", loc,"A weld point can be located on the South side of the Helipad.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4082, -816, -128), rot(0, 32768, 0));
         AddActorLocation(loc, 2, vect(-4120, -816, -128), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',130,247,"W","Weld Point", loc,"A weld point can be located in the Helipad Storage Room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4752, 1536, -144), rot(0, -16384, 0));
         AddActorLocation(loc, 2, vect(-4717, 1501, -144), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',97,368,"W","Weld Point", loc,"A weld point can be located in the Air Control room of the Helipad.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Fan Room", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
         AddActorLocation(loc, 2, vect(-3157, -48, -96), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',175,286,"W","Weld Point", loc,"A weld point can be located inside the main ventilation Fan shaft.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
         AddActorLocation(loc, 2, vect(-288, -426, 62), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',318,263,"W","Weld Point", loc,"A weld point can be located in the control tower in the Engine Room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832, 1022, -430), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(833.449036, 993.195618, -490.899567), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',381,148,"W","Weld Point", loc,"A weld point can be located on the North West side of the Engine Room.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680, 1647, -402), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(-3680.022217, 1616.057861, -490.899567), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',152,180,"W","Weld Point", loc,"A weld point can be located on the North East side of the Electical Room.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6526, 200, -418), rot(0,65536,0));
         AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',5,109,"W","Weld Point", loc,"A weld point can be located on the East side of the Helipad.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1662.000000,-416.000000), rot(0,81920,0));
         AddActorLocation(loc, 2, vect(-3296.133789, -1632.118652, -490.899567), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',171,11,"W","Weld Point", loc,"A weld point can be located next to the Bilge Pumps.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832, -1024, -400), rot(0,16384,0));
         AddActorLocation(loc, 2, vect(831.944641, -996.442627, -490.899567), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',385,44,"W","Weld Point", loc,"A weld point can be located on the South West side of the Engine Room, behind a wall.  This is a vanilla location.");
 
         return 92;
 
@@ -211,11 +225,13 @@ function PreFirstEntryMapFixes()
     local DeusExMover dxm;
     local Actor a;
     local name barrelName;
+    local bool RevisionMaps;
 
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
         // //barrel next to the transmitter thing, it explodes when I move it
-        if(#defined(revision)){
+        if(RevisionMaps){
             barrelName='EMOff';
         } else {
             barrelName='BarrelOFun';
@@ -227,7 +243,7 @@ function PreFirstEntryMapFixes()
 
         SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
     } else if (dxr.localURL=="09_NYC_SHIPBELOW"){
-        if(#defined(revision)){
+        if(RevisionMaps){
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover64' ||
                     dxm.Name=='DeusExMover16' ||

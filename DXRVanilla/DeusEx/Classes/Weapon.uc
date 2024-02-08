@@ -27,12 +27,19 @@ function BringUp()
         bCanTrack = False;
     else
         bCanTrack = default.bCanTrack;
+
+    if (bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+        //LaserOn already checks to see if it has a laser, so just call it
+        LaserOn();
+    }
 }
 
 simulated function Tick(float deltaTime)
 {
     local float r, e;
+
     Super.Tick(deltaTime);
+
     if(!IsAnimating()) {
         return;
     }
@@ -87,6 +94,23 @@ simulated function bool NearWallCheck()
         placeLocation = HitLocation;
         placeNormal = HitNormal;
         placeMover = Mover(HitActor);
+
+        if (!bNearWall && IsAnimating() && (GetStateName() == 'NormalFire'))
+        {
+            //The throw animation is about to be canceled by a place animation.
+            //Ammo gets consumed at the start of the animation, but the projectile is only spawned
+            //when the animation completely finishes.  If it is interrupted, the projectile won't
+            //be spawned.  The animation can be easily canceled if you get near a wall and the
+            //grenade PlaceBegin and PlaceEnd animations play.  We need to catch that to fix
+            //issue #519
+
+            AmmoType.AddAmmo(1); //Give the ammo back
+            bDestroyOnFinish=False; //Make sure it isn't destroyed afterwards
+            if (DeusExPlayer(Owner)!=None){
+                DeusExPlayer(Owner).UpdateBeltText(Self);
+            }
+        }
+
         return True;
     }
 

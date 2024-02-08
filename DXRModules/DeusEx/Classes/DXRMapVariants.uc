@@ -100,28 +100,44 @@ static function string GetDirtyMapName(string map, vector v)
 }
 
 
-static function bool IsRevisionMaps(#var(PlayerPawn) player)
+static function bool IsRevisionMaps(#var(PlayerPawn) player, optional Bool init)
 {
 #ifndef revision
     return False;
 #else
     local RevMenuChoice_Maps mapMenu;
     local Bool rc;
+    local DXRando dxr;
 
-    mapMenu = new(None) class'RevMenuChoice_Maps';
-    mapMenu.player = player;
-    mapMenu.LoadSetting();
+    foreach player.AllActors(class'DXRando',dxr){break;}
 
-    //Check to see if Revision is using Revision or Vanilla maps...
-    if (mapMenu.GetValue()==0){
-        //0 = Vanilla
-        rc = False;
+    if (init){
+        mapMenu = new(None) class'RevMenuChoice_Maps';
+        mapMenu.player = player;
+        mapMenu.LoadSetting();
+
+        //Check to see if Revision is using Revision or Vanilla maps...
+        if (mapMenu.GetValue()==0){
+            //0 = Vanilla
+            rc = False;
+        } else {
+            rc = True;
+        }
+        CriticalDelete(mapMenu);
+        //player.ClientMessage("RevisionMapsInit: "$rc);
     } else {
-        rc = True;
+        rc = dxr.RevisionMaps;
+        //player.ClientMessage("RevisionMapsCache: "$rc);
     }
-    CriticalDelete(mapMenu);
     return rc;
 #endif
+}
+
+static function bool IsVanillaMaps(#var(PlayerPawn) player)
+{
+    if(#defined(vanillamaps)) return true;
+    if(#defined(revision)) return !IsRevisionMaps(player);
+    return false;
 }
 
 function int GetMirrorMapsSetting()

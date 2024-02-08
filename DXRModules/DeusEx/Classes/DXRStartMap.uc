@@ -329,6 +329,7 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
         case "09_NYC_Dockyard":
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
             flagbase.SetBool('DL_BadNews_Played',true,,-1);
+            flagbase.SetBool('HelpSailor',true,,-1);
             break;
         case "10_Paris_Chateau":
             //Make sure Sandra spawns at the gas station
@@ -397,6 +398,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "SilhouetteHostagesAllRescued":
         case "LouisBerates":
         case "IcarusCalls_Played":
+        case "roof_elevator":
+        case "MeetRenault_Played":
             return start_map>100; //All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
         case "ManWhoWasThursday":// in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
             return start_map > 100 && end_mission <= 11;

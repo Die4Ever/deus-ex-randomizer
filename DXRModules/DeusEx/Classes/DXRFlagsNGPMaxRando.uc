@@ -160,9 +160,10 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win,bingo_freespaces;
+    local int i, bingo_win, bingo_freespaces;
     local float exp;
     local int randomStart;
+    local int oldseed;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -181,38 +182,48 @@ function NewGamePlus()
     p.saveCount=0;
     exp = 1;
     randomStart = settings.starting_map;
-    bingo_win = settings.bingo_win;
-    bingo_freespaces = settings.bingo_freespaces;
 
     // always enable maxrando when doing NG+?
     maxrando = 1;
     if(maxrando > 0) {
         // rollback settings to the default for the current difficulty
         // we only want to do this on maxrando because we want to retain the user's custom choices
+        bingo_win = settings.bingo_win;
+        bingo_freespaces = settings.bingo_freespaces;
         SetDifficulty(difficulty);
         ExecMaxRando();
+        settings.bingo_win = bingo_win;
+        settings.bingo_freespaces = bingo_freespaces;
+
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
     }
 
+    dxr.SetSeed(dxr.Crc("NG+ curve tweak " $ (seed - newgameplus_loops)));
+#ifdef hx
+    p.CombatDifficulty = 3;// I don't think NG+ works in HX anyways?
+#else
+    p.CombatDifficulty = DXRFlags(self).GetDifficulty(difficulty).CombatDifficulty;
+#endif
+
+
+    p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15, False); // Anything over 15 is kind of unreasonably impossible
+    settings.minskill = NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400, True);
+    settings.maxskill = NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700, True);
+    settings.enemiesrandomized = NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000, True);
+    settings.enemystats = NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100, True);
+    settings.hiddenenemiesrandomized = NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000, True);
+    settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100, True);
+    settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100, True);
+    settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100, True);
+    settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
+    settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
+    settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
+    settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 6, 100, True);
+    settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
+    settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
+
     SetGlobalSeed("NewGamePlus");
-    p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400);
-    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700);
-    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
-    NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
-    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
-    NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100);
-    NewGamePlusVal(settings.repairbots, 0.9, exp, 3, 100);
-    NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000);
-    NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100);
-    settings.bingo_win = bingo_win;
-    settings.bingo_freespaces = bingo_freespaces;
     if (randomStart!=0){
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
@@ -234,7 +245,7 @@ function NewGamePlus()
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
-        for(i=0; i<3; i++)
+        for(i = 0; i < newgameplus_num_skill_downgrades; i++)
             skills.DowngradeRandomSkill(p);
         p.SkillPointsAvail = p.SkillPointsAvail * 0.75;
     }
@@ -243,12 +254,15 @@ function NewGamePlus()
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
-    if( augs != None )
-        augs.RemoveRandomAug(p);
+    for (i = 0; i < newgameplus_num_removed_augs; i++)
+        if( augs != None )
+            augs.RemoveRandomAug(p);
+
+    MaxMultipleItems(p, newgameplus_max_item_carryover);
 
     ClearInHand(p);
-    RemoveRandomWeapon(p);
-    MaxMultipleItems(p, 5);
+    for (i = 0; i < newgameplus_num_removed_weapons; i++)
+        RemoveRandomWeapon(p);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
@@ -340,50 +354,74 @@ simulated function MaxRandoValPair(out int min, out int max)
     }
 }
 
-function NewGamePlusVal(out int val, float curve, float exp, int min, int max)
+function float NewGamePlusVal(float val, float curve, float exp, float min, float max, bool doTweak)
 {
-    val = val * (curve ** exp);// int *= float doesn't give as good accuracy as int = int*float
-    val = Self.Min(val, max);
-    val = Self.Max(val, min);
+    local bool increases;
+    local float tweak;
+
+    increases = curve > 1.0;
+
+    curve = (curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0; // chop off 1 and scale the rest based on the scalar setting
+    if (doTweak) {
+        tweak = rngfn() * curve * 0.3; // generate a tweak with a range based on the scaled curve
+        curve += tweak;
+    }
+    curve += 1.0; // restore the 1
+
+    if (increases) {
+        curve = FMax(curve, 1.02);
+    } else {
+        curve = FMin(curve, 0.98);
+    }
+    val = val * curve ** exp;
+
+    return FClamp(val, min, max);
 }
 
 function ExtendedTests()
 {
     local int val, i, oldSeed;
+    local float fval;
     local string s;
 
     Super.ExtendedTests();
 
-    val = 5;
-    NewGamePlusVal(val, 1.2, 3, 1, 100);
-    testint(val, 8, "NewGamePlusVal 1.2 goes up");
-
-    val = 5;
-    NewGamePlusVal(val, 0.8, 3, 1, 100);
-    testint(val, 2, "NewGamePlusVal 1.2 goes down");
-
-    val = 5;
-    NewGamePlusVal(val, 0.8, 3, 5, 100);
-    testint(val, 5, "NewGamePlusVal with minimum stays the same"); // can't explain that!
-
-    val = 5;
-    NewGamePlusVal(val, 1.2, 3, 1, 5);
-    testint(val, 5, "NewGamePlusVal 1.2 with maximum");
-
-    val = 0;
-    NewGamePlusVal(val, 1.2, 3, -10, 100);
-    testint(val, 0, "NewGamePlusVal 1.2 val==0");
-
-    val = -5;
-    NewGamePlusVal(val, 1.2, 3, -6, 100);
-    testint(val, -6, "NewGamePlusVal 1.2 negative value");
-
     oldSeed = dxr.seed;
     dxr.seed = 123456;
+    SetGlobalSeed("NG+ tests");
+
+    val = NewGamePlusVal(5, 1.2, 3, 1, 100, False);
+    test(val > 5, "NewGamePlusVal 1.2 goes up");
+
+    val = NewGamePlusVal(5, 0.8, 3, 1, 100, False);
+    test(val < 5, "NewGamePlusVal 1.2 goes down");
+
+    val = NewGamePlusVal(5, 0.8, 3, 5, 100, False);
+    testint(val, 5, "NewGamePlusVal with minimum stays the same"); // can't explain that!
+
+    val = NewGamePlusVal(5, 1.2, 3, 1, 5, False);
+    testint(val, 5, "NewGamePlusVal 1.2 with maximum");
+
+    val = NewGamePlusVal(0, 1.2, 3, -10, 100, False);
+    testint(val, 0, "NewGamePlusVal 1.2 val==0");
+
+    val = NewGamePlusVal(-5, 1.2, 3, -6, 100, False);
+    testint(val, -6, "NewGamePlusVal 1.2 negative value");
+
     for(i=0; i<100; i++) {
         dxr.seed = 123456 + i;
         s = s @ class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
     }
     test(true, "DXRStartMap " $ s);
     dxr.seed = oldSeed;
+
+    oldSeed = dxr.SetSeed(9876); // first two rngfn values are: 0.759380, -0.177720
+
+    fval = NewGamePlusVal(50.0, 0.99, 3, 0, 100, True);
+    test(fval < 50.0, "NewGamePlusVal doesn't switch from decreasing to increasing");
+
+    fval = NewGamePlusVal(50.0, 1.01, 3, 0, 100, True);
+    test(fval > 50.0, "NewGamePlusVal doesn't switch from increasing to decreasing");
+
+    dxr.SetSeed(oldSeed);
 }

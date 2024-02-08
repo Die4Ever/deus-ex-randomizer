@@ -299,6 +299,11 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
 
     foreach AllActors(class'#var(prefix)Containers', d)
     {
+
+        if (#var(PlayerPawn)(d.base)!=None){
+            continue; //Skip boxes the player might have carried across levels
+        }
+
         if(d.Content3 == None && d.Content2 == None && d.Contents == None)
             continue;
 
@@ -328,6 +333,7 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
 simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
 {
     local #var(prefix)DeusExPickup p;
+    local #var(PlayerPawn) owner;
     local int maxCopies;
     local float f;
 
@@ -340,8 +346,11 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
         f *= _GetItemMult(_item_reductions, p.class);
         p.maxCopies = float(p.default.maxCopies) * f / 100.0 * 0.8;
         p.maxCopies = Clamp(p.maxCopies, 1, p.default.maxCopies*10);
-        if( #defined(balance) && DeusExPlayer(p.Owner) != None && #var(prefix)FireExtinguisher(p) != None )
-            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
+        owner = #var(PlayerPawn)(p.Owner);
+        if(owner == None)
+            owner = player();
+        if( #defined(balance) && owner != None && #var(prefix)FireExtinguisher(p) != None )
+            p.maxCopies += owner.SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
 
 #ifdef vmd
         maxCopies = p.VMDConfigureMaxCopies();
@@ -355,6 +364,7 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
 
 simulated function SetMaxAmmo(class<Ammo> type, int percent)
 {
+    local #var(PlayerPawn) owner;
     local Ammo a;
     local int maxAmmo;
     local float f;
@@ -369,10 +379,13 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         a.MaxAmmo = float(a.default.MaxAmmo) * f / 100.0 * 0.8;
         a.MaxAmmo = Clamp(a.MaxAmmo, 1, a.default.MaxAmmo*10);
 
-        if( #defined(balance) && DeusExPlayer(a.Owner) != None
+        owner = #var(PlayerPawn)(a.Owner);
+        if(owner == None)
+            owner = player();
+        if( #defined(balance) && owner != None
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
         ) {
-            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var(prefix)SkillDemolition');
+            a.MaxAmmo += owner.SkillSystem.GetSkillLevel(class'#var(prefix)SkillDemolition');
         }
 
 #ifdef vmd

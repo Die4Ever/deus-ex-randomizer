@@ -39,12 +39,21 @@ local DXRando dxr;
     // After the Intro conversation is over, tell the player to go on
     // to the next map (which will either be the main menu map or
     // the first game mission if we're starting a new game.
-
     if (player!=None && flags.GetBool('Intro_Played'))
     {
         flags.SetBool('Intro_Played', False,, 1);
         if( flags.GetInt('Rando_newgameplus_loops') > 0 ) {
             player.bStartNewGameAfterIntro = true;
+#ifdef revision
+            if (DXRandoGameInfo(Level.Game)!=None){
+                //Revision takes your inventory away in DeusExPlayer StartNewGame,
+                //so steal it and give it to the DXRandoGameInfo for safe keeping
+                DXRandoGameInfo(Level.Game).stolenInventory=player.Inventory;
+                DXRandoGameInfo(Level.Game).stolenAugs=player.AugmentationSystem;
+                player.Inventory=None;
+                player.AugmentationSystem=None;
+            }
+#endif
         }
         player.PostIntro();
     }

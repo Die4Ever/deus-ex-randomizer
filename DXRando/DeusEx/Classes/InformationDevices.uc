@@ -196,7 +196,7 @@ function CreateInfoWindow()
         winText.SetText(vaultString);
         if (bAddToVault)
         {
-            mapname = GetMapNameStripped();
+            mapname = class'DXRMapVariants'.static.CleanupMapName(GetMapNameStripped());
             plaintextTag = rootWindow.StringToName(mapname$"-"$ Crc());
             log(Self$": plaintextTag: "$plaintextTag);
             MarkTextRead(plaintextTag);

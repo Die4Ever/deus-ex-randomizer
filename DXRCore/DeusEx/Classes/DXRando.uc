@@ -22,6 +22,10 @@ var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
 var transient bool bLoginReady;
 
+#ifdef revision
+var transient bool RevisionMaps;
+#endif
+
 replication
 {
     reliable if( Role==ROLE_Authority )
@@ -89,6 +93,10 @@ function DXRInit()
             break;
     if(Player == None)
         return;
+
+#ifdef revision
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(Player,true);
+#endif
 
     flagbase = Player.FlagBase;
 #ifdef hx

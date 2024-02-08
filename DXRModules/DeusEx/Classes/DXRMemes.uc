@@ -120,6 +120,115 @@ function RandomBobPage()
     }
 }
 
+//These need a bit more manual fiddling than the others since you are so much closer to them, including underneath
+function RandomMJ12Globe()
+{
+    local Earth earth;
+    local int i;
+    local float scaleMult;
+    local Rotator startRot;
+
+    foreach AllActors(class'Earth',earth){
+        SetGlobalSeed("RandomGlobe");
+
+        earth.bIsSecretGoal=True;
+        
+        startRot = earth.Rotation;
+        scaleMult=1.0;
+
+        if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random globe
+
+        switch(rng(16)){
+        case 0: 
+            PlayDressUp(earth,class'Basketball',0);
+            startRot = rotm(8000,0,7000); //Give it a bit of tilt for more drama
+            scaleMult = 2;
+            break;
+        case 1: 
+            PlayDressUp(earth,class'BoneSkull',0);
+            startRot = rotm(0,32765,-5000); //Slightly tilted down
+            scaleMult = 1.0;
+            break;
+        case 2: 
+            PlayDressUp(earth,class'Liquor40oz',0);
+            startRot = rotm(0,16000,12000);
+            scaleMult = 2;
+            break;
+        case 3: 
+            PlayDressUp(earth,class'#var(prefix)DXLogo',0);
+            startRot = earth.Rotation;
+            scaleMult = 3;
+            break;
+        case 4: 
+            PlayDressUp(earth,class'SodaCan',0);
+            startRot = rotm(6000,16000,12000);
+            scaleMult = 1.0;
+            break;
+        case 5: //Does this one even look good?
+            PlayDressUp(earth,class'BoneFemur',0); 
+            startRot = rotm(0,16000,12000);
+            scaleMult = 0.25;
+            break;
+        case 6: 
+            PlayDressUp(earth,class'ChildMale2',24000); 
+            startRot = earth.Rotation;
+            scaleMult = 1.5;
+            break;
+        case 7: 
+            PlayDressUp(earth,class'Trophy',0);
+            startRot = earth.Rotation;
+            scaleMult = 1.0;
+            break;
+        case 8: 
+            PlayDressUp(earth,class'GrayCarcass',0); 
+            startRot = rotm(-16385,20000,0);
+            scaleMult = 0.25;
+            break;
+        case 9: 
+            PlayDressUp(earth,class'Mutt',24000); 
+            startRot = earth.Rotation;
+            scaleMult = 1.5;
+            break;
+        case 10:
+            PlayDressUp(earth,class'IonStormLogo',-20000);
+            startRot = earth.Rotation;
+            scaleMult = 8;
+            break;
+        case 11:
+            PlayDressUp(earth,class'EidosLogo',-20000);
+            startRot = earth.Rotation;
+            scaleMult = 0.4;
+            break;
+        case 12:
+            PlayDressUp(earth,class'HKTukTuk',-20000);
+            startRot = earth.Rotation;
+            scaleMult = 0.6;
+            break;
+        case 13:
+            PlayDressUp(earth,class'CarWrecked',-20000);
+            startRot = earth.Rotation;
+            scaleMult = 1.0;
+            break;
+        case 14:
+            PlayDressUp(earth,class'MiniSub',-20000);
+            startRot = earth.Rotation;
+            scaleMult = 1.0;
+            break;
+        case 15:
+            PlayDressUp(earth,class'JCDouble',24000);
+            startRot = earth.Rotation;
+            scaleMult = 1.5;
+            break;
+        }
+
+        earth.RotationRate = rot(0,-750,0);
+        earth.DrawScale = earth.DrawScale * scaleMult;
+        earth.SetRotation(startRot);
+
+        return;
+    }
+}
+
 function PreFirstEntry()
 {
     local bool memes_enabled;
@@ -143,6 +252,9 @@ function PreFirstEntry()
         case "04_NYC_HOTEL":
             if(IsAprilFools())
                 PaulToilet();
+            break;
+        case "06_HONGKONG_MJ12LAB":
+            RandomMJ12Globe();
             break;
     }
 }
@@ -271,6 +383,7 @@ function AnyEntry()
         case "ENDGAME2":
         case "ENDGAME3":
         case "ENDGAME4":
+        case "ENDGAME4REV":
         //case "00_TRAINING":
             // extra randomization in the intro for the lolz
             l("Memeing up "$ dxr.localURL);
@@ -284,6 +397,9 @@ function FixEndgameEndCamera()
 {
     local CameraPoint cp;
     local int endCameraSeq;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL)
     {
@@ -291,13 +407,13 @@ function FixEndgameEndCamera()
             endCameraSeq=29; //Same in Vanilla and Revision
             break;
         case "ENDGAME2":
-            if(#defined(revision))
+            if(RevisionMaps)
                 endCameraSeq=32;
             else
                 endCameraSeq=31;
             break;
         case "ENDGAME3":
-            if(#defined(revision))
+            if(RevisionMaps)
                 endCameraSeq=28;
             else
                 endCameraSeq=27;
@@ -360,6 +476,7 @@ function PostFirstEntry()
         case "ENDGAME2":
         case "ENDGAME3":
         case "ENDGAME4":
+        case "ENDGAME4REV":
             AddLeo();
             break;
     }
@@ -417,6 +534,7 @@ function AddLeo()
             loc.Z = -48;
             break;
         case "ENDGAME4":
+        case "ENDGAME4REV":
             l("Endgame 4");
             loc.X = -736;
             loc.Y = -22;
@@ -509,6 +627,7 @@ function RandomizeCutscene()
     i=0;
     _skipactor_types[i++] = class'DeusExPlayer';
     _skipactor_types[i++] = class'Mover';
+    _skipactor_types[i++] = class'Earth';
 #ifdef revision
     _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
 #endif
@@ -526,6 +645,7 @@ function RandomizeCutscene()
     foreach AllActors(class'Actor', a)
     {
         if( Mover(a) != None ) continue;
+        if( Earth(a) != None ) continue;
         if( #var(prefix)BreakableGlass(a) != None ) continue;
         if( a.IsA('Rev_SphereLight') ) continue;
         if( a.bHidden || DeusExPlayer(a) != None ) continue;
@@ -553,6 +673,7 @@ function RandomizeCutscene()
 
     RandomBobPage();
     RandomLiberty();
+    RandomMJ12Globe();
 
     RandomizeDialog();
 }

@@ -3,11 +3,13 @@ class DXRFrobDisplayWindow injects FrobDisplayWindow;
 var localized string msgDamageThreshold;
 var localized string msgShot;
 var localized string msgShots;
+var localized string msgHitPoints;
 
 var transient bool inited;
 var transient bool auto_codes;
 var transient bool known_codes;
 var transient bool show_keys;
+var transient bool auto_weapon_mods;
 
 function DrawWindow(GC gc)
 {
@@ -26,10 +28,11 @@ function DrawWindow(GC gc)
     if( frobTarget != None ) DrawWindowBase(gc, frobTarget);
 }
 
-function CheckAutofillSettings()
+function CheckSettings()
 {
     local int codes_mode;
-    local DXRFlags flags;
+    local DXRando dxr;
+
     if( player == None || player.FlagBase == None ) return;
     inited = true;
 
@@ -46,19 +49,24 @@ function CheckAutofillSettings()
     }
 
     show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys enabled"));
+
+    foreach player.AllActors(class'DXRando',dxr){break;}
+    if (dxr==None) return;
+
+    auto_weapon_mods = !dxr.flags.IsZeroRando() && bool(player.ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"));
 }
 
 function InitFlags()
 {
     if( inited ) return;
-    CheckAutofillSettings();
+    CheckSettings();
 }
 
 //MenuChoice_PasswordAutofill sends out a ChangeStyle message when adjusted
 event StyleChanged()
 {
     Super.StyleChanged();
-    CheckAutofillSettings();
+    CheckSettings();
 }
 
 static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)
@@ -209,8 +217,8 @@ function DrawWindowBase(GC gc, actor frobTarget)
     if( ActorHasBars(frobTarget) )
         infoW += barLength + 2;
     infoH += 8;
-    infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
-    infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
+    infoX = width / 2;
+    infoY = height / 2;
 
     // draw a dark background
     gc.SetStyle(DSTY_Modulated);
@@ -259,6 +267,73 @@ function bool KeyAcquired(Mover m)
     }
 
     return False;
+}
+
+function int CalcDecoDamage(int iDamage, name damageType, #var(DeusExPrefix)Decoration deco)
+{
+    if (iDamage < deco.minDamageThreshold) return 0;
+
+    if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
+        return 0;
+
+    if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
+        return 0;
+
+    if (DamageType == 'HalonGas')
+        return 0;
+
+    if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
+    {
+        if (deco.bExplosive)	// blow up if we are hit by fire
+            return 99999;
+    }
+
+    return iDamage;
+}
+
+function string DXDecoStrInfo(#var(DeusExPrefix)Decoration deco, out int numLines)
+{
+    local string strInfo;
+    local float damage;
+    local int  numShots;
+#ifdef vanilla
+    local DXRWeapon w;
+#endif
+
+    if (deco.bInvincible || deco.bStatic){
+        //Mostly just annoying showing infinite on everything
+        //strInfo = strInfo $ CR() $ msgHitPoints @ msgInf;
+        //numLines++;
+        return strInfo;
+    } else {
+        strInfo = strInfo $ CR() $ msgDamageThreshold @ deco.minDamageThreshold;
+        numLines++;
+        strInfo = strInfo $ CR() $ msgHitPoints @ deco.HitPoints;
+        numLines++;
+
+#ifdef vanilla
+        w = DXRWeapon(player.inHand);
+        if( w != None ) {
+            damage = CalcDecoDamage(w.GetDamage(), w.WeaponDamageType() ,deco)* float(w.GetNumHits());
+            if( damage > 0 ) {
+                numshots = deco.HitPoints/damage;
+                if (deco.HitPoints % damage != 0){
+                    numshots++;
+                }
+
+                if( numshots == 1 )
+                    strInfo = strInfo $ " (" $ numshots @ msgShot $ ")";
+                else
+                    strInfo = strInfo $ " (" $ numshots @ msgShots $ ")";
+            } else {
+                strInfo = strInfo $ " (" $ msgInf @ msgShots $ ")";
+            }
+        }
+#endif
+    }
+
+    return strInfo;
+
 }
 
 function string MoverStrInfo(Mover m, out int numLines)
@@ -377,6 +452,10 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
         strInfo = strInfo $ CR() $ "Unknown Code";
     }
 
+#ifndef hx
+    strInfo = strInfo $ DXDecoStrInfo(device,numLines);
+#endif
+
     return strInfo;
 }
 
@@ -413,6 +492,19 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
     return strInfo;
 }
 
+function bool WeaponModAutoApply(WeaponMod wm)
+{
+    if (wm==None) return False;
+    if (player.InHand==None) return False;
+    if (player.InHand.IsA('DeusExWeapon')==False) return False;
+    if (wm.CanUpgradeWeapon(DeusExWeapon(player.InHand))==False) return False;
+    if (auto_weapon_mods==False) return False;
+
+    return True;
+
+}
+
+
 function string OtherStrInfo(Actor frobTarget, out int numLines)
 {
     local string strInfo;
@@ -430,9 +522,17 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
         else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).AmmoName != Class'DeusEx.AmmoNone' )
             strInfo = Inventory(frobTarget).itemName $ " (" $ Weapon(frobTarget).PickupAmmoCount $ ")";
+#ifdef injections
+        else if (frobTarget.IsA('ChargedPickup') && Human(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
+            strInfo = Inventory(frobTarget).itemName $ " (Left Click to Activate)";
+        else if (Human(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
+            strInfo = Inventory(frobTarget).itemName $ " (Left Click to Consume)";
+        else if (WeaponModAutoApply(WeaponMod(frobTarget)))
+            strInfo = Inventory(frobTarget).itemName $ CR() $ "Auto applies to current weapon";
+#endif
     }
     else if (frobTarget.IsA('DeusExDecoration'))
-        strInfo = player.GetDisplayName(frobTarget);
+        strInfo = player.GetDisplayName(frobTarget) $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExProjectile'))
         strInfo = DeusExProjectile(frobTarget).itemName;
     else
@@ -631,4 +731,5 @@ defaultproperties
     msgDamageThreshold="Min Dmg:"
     msgShot="shot"
     msgShots="shots"
+    msgHitPoints="Hit Points:"
 }

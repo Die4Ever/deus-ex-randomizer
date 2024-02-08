@@ -318,8 +318,11 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
+    local bool RevisionMaps;
 
-    if (#defined(revision) && dxr.localURL=="12_VANDENBERG_CMD"){
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps && dxr.localURL=="12_VANDENBERG_CMD"){
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
             //Jock starts in the Wandering state for some reason
             sp.SetOrders('Standing');

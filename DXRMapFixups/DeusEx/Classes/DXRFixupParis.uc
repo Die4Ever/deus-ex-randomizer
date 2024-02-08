@@ -10,9 +10,11 @@ function PreFirstEntryMapFixes()
     local Conversation c;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
-    local ZoneInfo zi;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     // shut up, Tong! (reduced rando is not as focused on replays compared to normal rando)
     if(!dxr.flags.IsReducedRando()) {
@@ -41,73 +43,71 @@ function PreFirstEntryMapFixes()
     {
     case "10_PARIS_CATACOMBS":
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
-        foreach AllActors(class'ZoneInfo',zi){
-            if (zi.DamageType=='Radiation'){
-                zi.DamagePerSec=Clamp(7/player().CombatDifficulty, 1, 7);
-            }
-        }
         break;
 
-#ifdef vanillamaps
     case "10_PARIS_CATACOMBS_TUNNELS":
-        foreach AllActors(class'Trigger', t)
-            if( t.Event == 'MJ12CommandoSpecial' )
-                t.Touch(player());// make this guy patrol instead of t-pose
+        if (VanillaMaps){
+            foreach AllActors(class'Trigger', t)
+                if( t.Event == 'MJ12CommandoSpecial' )
+                    t.Touch(player());// make this guy patrol instead of t-pose
 
-        AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
-        AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+            AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+            AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
-        class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
-        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
-
+            class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
+            class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
+        }
         break;
 
     case "10_PARIS_CHATEAU":
-        foreach AllActors(class'DeusExMover', m, 'everettsignal')
-            m.Tag = 'everettsignaldoor';
-        d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
-        d.OutEvents[0] = 'everettsignaldoor';
-        AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
+        if (VanillaMaps){
+            foreach AllActors(class'DeusExMover', m, 'everettsignal')
+                m.Tag = 'everettsignaldoor';
+            d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
+            d.OutEvents[0] = 'everettsignaldoor';
+            AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
 
-        //speed up the secret door...
-        foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
-            d.OutDelays[1] = 0;
-            d.OutDelays[2] = 0;
-            d.OutDelays[3] = 0;
-            d.OutEvents[2] = '';
-            d.OutEvents[3] = '';
-        }
-        foreach AllActors(class'DeusExMover', m, 'secret_candle') {
-            m.MoveTime = 0.5;
-        }
-        foreach AllActors(class'DeusExMover', m, 'cellar_door') {
-            m.MoveTime = 1;
+            //speed up the secret door...
+            foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
+                d.OutDelays[1] = 0;
+                d.OutDelays[2] = 0;
+                d.OutDelays[3] = 0;
+                d.OutEvents[2] = '';
+                d.OutEvents[3] = '';
+            }
+            foreach AllActors(class'DeusExMover', m, 'secret_candle') {
+                m.MoveTime = 0.5;
+            }
+            foreach AllActors(class'DeusExMover', m, 'cellar_door') {
+                m.MoveTime = 1;
+            }
         }
         break;
     case "10_PARIS_METRO":
-        //If neither flag is set, JC never talked to Jaime, so he just didn't bother
-        if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
-            //Need to pretend he *was* recruited, so that he doesn't spawn
-            dxr.flagbase.SetBool('JaimeRecruited',True);
-        }
-        // fix the night manager sometimes trying to talk to you while you're flying away https://www.youtube.com/watch?v=PeLbKPSHSOU&t=6332s
-        c = GetConversation('MeetNightManager');
-        if(c!=None) {
-            c.bInvokeBump = false;
-            c.bInvokeSight = false;
-            c.bInvokeRadius = false;
-        }
-        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-            RemoveFears(j);
-        }
+        if (VanillaMaps){
+            //If neither flag is set, JC never talked to Jaime, so he just didn't bother
+            if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
+                //Need to pretend he *was* recruited, so that he doesn't spawn
+                dxr.flagbase.SetBool('JaimeRecruited',True);
+            }
+            // fix the night manager sometimes trying to talk to you while you're flying away https://www.youtube.com/watch?v=PeLbKPSHSOU&t=6332s
+            c = GetConversation('MeetNightManager');
+            if(c!=None) {
+                c.bInvokeBump = false;
+                c.bInvokeSight = false;
+                c.bInvokeRadius = false;
+            }
+            foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+                RemoveFears(j);
+            }
 
-        // make the apartment stairs less hidden, not safe to have stairs without a light!
-        CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
-        CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+            // make the apartment stairs less hidden, not safe to have stairs without a light!
+            CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
+            CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+        }
         break;
-#endif
 
     case "10_PARIS_CLUB":
         foreach AllActors(class'ScriptedPawn',sp){
@@ -167,6 +167,12 @@ function AnyEntryMapFixes()
     local ScriptedPawn sp;
     local Merchant m;
     local TobyAtanwe toby;
+    local Conversation c;
+    local ConEvent ce, cePrev;
+    local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
+    local ConEventAddSkillPoints ceasp;
+    local ConEventTransferObject ceto;
 
     switch(dxr.localURL)
     {
@@ -204,6 +210,67 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
+        break;
+    case "10_PARIS_METRO":
+        //Tong gives you a map of the streets when you enter via the subway
+        c = GetConversation('DL_military');
+        ce = c.eventList;
+        cePrev=ce;
+        while(ce!=None){
+            if (ce.eventType==ET_Speech && ce.nextEvent.eventType==ET_End){
+                ceto = new(c) class'ConEventTransferObject';
+                ceto.eventType=ET_TransferObject;
+                ceto.label="TransferMetroMap";
+                ceto.objectName="Image10_Paris_Metro";
+                ceto.giveObject=class'Image10_Paris_Metro';
+                ceto.toName="JCDenton";
+                ceto.fromName="TracerTong";
+                ceto.transferCount=1;
+                ceto.nextEvent=ce.nextEvent;
+                ce.nextEvent=ceto;
+            }
+            ce=ce.nextEvent;
+        }
+        break;
+    case "11_PARIS_UNDERGROUND":
+        //Add a flag change to Toby's conversation so it sets MS_PlayerTeleported to false if you choose the "take me with you" option
+        //This will let you choose to stay or go.
+        c = GetConversation('MeetTobyAtanwe');
+        ce = c.eventList;
+        cePrev=ce;
+        while(ce!=None){
+            if (ce.eventType==ET_Speech){
+                ces = ConEventSpeech(ce);
+                if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
+                    //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
+                    cesf = new(c) class'ConEventSetFlag';
+                    cesf.eventType=ET_SetFlag;
+                    cesf.label="LetTobyTakeYou";
+                    cesf.flagRef = new(c) class'ConFlagRef';
+                    cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
+                    cesf.flagRef.value=True;
+                    cesf.flagRef.expiration=12;
+                    cesf.nextEvent = ces.nextEvent;
+                    ces.nextEvent = cesf;
+                }
+            } else if (ce.eventType==ET_AddSkillPoints){
+                ceasp = ConEventAddSkillPoints(ce);
+                cePrev.nextEvent = ce.nextEvent; //Remove the event from its current position
+                ce.nextEvent=None;
+                ce=cePrev;
+            }
+
+            cePrev=ce;
+            ce=ce.nextEvent;
+        }
+
+        //Assuming we found both the "correct" conversation ending and the skill point trigger,
+        //insert the skill point trigger after setting the "actually take me" flag
+        if (cesf!=None && ceasp!=None){
+            ceasp.nextEvent = cesf.nextEvent;
+            cesf.nextEvent = ceasp;
+        }
+
         break;
     case "11_PARIS_EVERETT":
         foreach AllActors(class'TobyAtanwe', toby) {
