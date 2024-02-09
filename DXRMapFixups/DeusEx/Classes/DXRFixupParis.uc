@@ -12,6 +12,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)JaimeReyes j;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
+    local #var(prefix)AutoTurret at;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -142,6 +143,11 @@ function PreFirstEntryMapFixes()
             if(dt.DamageType=='Burned'){
                 dt.DamageType='Flamed';
             }
+        }
+        //Restore default damage to this one turret.  The only one in the whole
+        //game with non-standard damage (10 instead of 5).  It doesn't need it.
+        foreach AllActors(class'#var(prefix)AutoTurret',at,'vault_turret'){
+            at.gunDamage=class'#var(prefix)AutoTurret'.Default.gunDamage;
         }
         break;
     case "11_PARIS_EVERETT":
