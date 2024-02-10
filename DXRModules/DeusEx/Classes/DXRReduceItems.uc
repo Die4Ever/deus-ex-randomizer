@@ -163,11 +163,11 @@ simulated function SetAllMaxCopies(int scale)
     if( dxr == None ) return;
     SetMaxAmmo( class'Ammo', dxr.flags.settings.ammo*scale/100 );
 
-    SetMaxCopies(class'#var(prefix)FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
-    SetMaxCopies(class'#var(prefix)Multitool', dxr.flags.settings.multitools*scale/100 );
-    SetMaxCopies(class'#var(prefix)Lockpick', dxr.flags.settings.lockpicks*scale/100 );
-    SetMaxCopies(class'#var(prefix)BioelectricCell', dxr.flags.settings.biocells*scale/100 );
-    SetMaxCopies(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100 );
+    SetMaxCopies(class'#var(prefix)FireExtinguisher', 125, 2, 100);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
+    SetMaxCopies(class'#var(prefix)Multitool', dxr.flags.settings.multitools*scale/100, 3, 100 );
+    SetMaxCopies(class'#var(prefix)Lockpick', dxr.flags.settings.lockpicks*scale/100, 3, 100 );
+    SetMaxCopies(class'#var(prefix)BioelectricCell', dxr.flags.settings.biocells*scale/100, 2, 100 );
+    SetMaxCopies(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100, 2, 100 );
 }
 
 function float _GetItemMult(_ItemReduction reductions[16], class<Actor> item)
@@ -330,7 +330,7 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
     }
 }
 
-simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
+simulated function SetMaxCopies(class<DeusExPickup> type, int percent, int min, int max)
 {
     local #var(prefix)DeusExPickup p;
     local #var(PlayerPawn) owner;
@@ -351,6 +351,7 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
             owner = player();
         if( #defined(balance) && owner != None && #var(prefix)FireExtinguisher(p) != None )
             p.maxCopies += owner.SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
+        p.maxCopies = Clamp(p.maxCopies, min, max);
 
 #ifdef vmd
         maxCopies = p.VMDConfigureMaxCopies();
