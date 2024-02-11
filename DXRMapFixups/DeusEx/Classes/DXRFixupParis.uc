@@ -13,6 +13,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)AutoTurret at;
+    local #var(prefix)WIB wib;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -52,6 +53,9 @@ function PreFirstEntryMapFixes()
                 if( t.Event == 'MJ12CommandoSpecial' )
                     t.Touch(player());// make this guy patrol instead of t-pose
 
+            foreach AllActors(class'#var(prefix)WIB',wib){
+                wib.UnfamiliarName="Agent Hela";
+            }
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
@@ -288,9 +292,18 @@ function AnyEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
+    local #var(prefix)WIB wib;
+
     switch(dxr.localURL) {
     case "11_PARIS_CATHEDRAL":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-3570.950684, 2238.034668, -783.901367));// right at the start
+
+        //We don't need her to be unshuffled or special, but we want her name to be set
+        foreach AllActors(class'#var(prefix)WIB',wib){
+            wib.UnfamiliarName="Adept 34501";
+            wib.FamiliarName="Adept 34501";
+        }
+
         break;
     }
 }
