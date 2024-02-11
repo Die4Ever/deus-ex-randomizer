@@ -1,4 +1,4 @@
-class TrashCanCommon extends DXRBase abstract;
+class TrashContainerCommon extends DXRBase abstract;
 
 static function DestroyTrashCan(#var(prefix)Containers trashcan, class<#var(prefix)Containers> trashBagType)
 {
@@ -55,36 +55,50 @@ static function DestroyTrashCan(#var(prefix)Containers trashcan, class<#var(pref
     }
 }
 
-static function GenerateTrashPaper(#var(prefix)Containers trashcan, float probability)
+static function GenerateTrashPaper(#var(prefix)Containers trashContainer, float probability, optional bool onFire)
 {
 	local Vector loc;
     local int i;
 	local #var(prefix)TrashPaper trashPaper;
+    local int numPaperChances;
+	local Fire fire;
+
+    onFire = onFire || trashContainer.IsInState('Burning');
+
+    if (onFire) {
+        numPaperChances = 3;
+    }
+    else {
+        numPaperChances = 4;
+    }
 
     // trace down to see if we are sitting on the ground
 	loc = vect(0,0,0);
-	loc.Z -= trashcan.CollisionHeight + 8.0;
-	loc += trashcan.Location;
+	loc.Z -= trashContainer.CollisionHeight + 8.0;
+	loc += trashContainer.Location;
 
 	// only generate trashpaper if we're on the ground
-	if (!trashcan.FastTrace(loc))
-	{
-		for (i=0; i<4; i++)
-		{
-			if (FRand() < probability)
-			{
-				loc = trashcan.Location;
-				loc.X += (trashcan.CollisionRadius / 2) - FRand() * trashcan.CollisionRadius;
-				loc.Y += (trashcan.CollisionRadius / 2) - FRand() * trashcan.CollisionRadius;
-				loc.Z += (trashcan.CollisionHeight / 2) - FRand() * trashcan.CollisionHeight;
-				trashPaper = trashcan.Spawn(class'#var(prefix)TrashPaper',,, loc);
-				if (trashPaper != None)
-				{
+	if (!trashContainer.FastTrace(loc)) {
+		for (i=0; i < numPaperChances; i++) {
+			if (FRand() < probability) {
+				loc = trashContainer.Location;
+				loc.X += (trashContainer.CollisionRadius / 2) - FRand() * trashContainer.CollisionRadius;
+				loc.Y += (trashContainer.CollisionRadius / 2) - FRand() * trashContainer.CollisionRadius;
+				loc.Z += (trashContainer.CollisionHeight / 2) - FRand() * trashContainer.CollisionHeight;
+				trashPaper = trashContainer.Spawn(class'#var(prefix)TrashPaper',,, loc);
+				if (trashPaper != None) {
 					trashPaper.SetPhysics(PHYS_Rolling);
 					trashPaper.rot = RotRand(True);
 					trashPaper.rot.Yaw = 0;
 					trashPaper.dir = VRand() * 20 + vect(20,20,0);
 					trashPaper.dir.Z = 0;
+
+                    if (onFire && FRand() < 0.5) {
+                        fire = trashPaper.Spawn(class'SmokelessFire', trashPaper,, loc);
+                        if (fire != None) {
+                            fire.DrawScale = 0.25*FRand() + 0.5;
+                        }
+                    }
 				}
 			}
 		}

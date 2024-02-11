@@ -9,5 +9,8 @@ function Destroyed()
             class'DXREvents'.static.MarkBingo(dxr,"BurnTrash");
         }
     }
+
+    class'TrashContainerCommon'.static.GenerateTrashPaper(self, 0.5);
+
     Super.Destroyed();
 }
