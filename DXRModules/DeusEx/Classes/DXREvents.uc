@@ -1003,6 +1003,15 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
         break;
+    case "10_PARIS_ENTRANCE": //A Revision-only map that covers where you start in Paris and ends after the radioactive room (and the underground section right after it)
+        foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
+            if(jf.BindName == "aimee")
+                jf.bImportant = true;
+        }
+
+        bt = class'BingoTrigger'.static.Create(self,'roof_elevator',vect(0,0,0));
+
+        break;
     case "10_PARIS_CATACOMBS":
         WatchFlag('IcarusCalls_Played');
         foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
