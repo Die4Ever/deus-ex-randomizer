@@ -364,7 +364,11 @@ function BingoWinScreen()
     p = player();
     if ( Level.Netmode == NM_Standalone ) {
         //Make it harder to get murdered during the countdown
-        Level.Game.SetGameSpeed(0.1);
+        //For whatever reason, you can set the game speed in Revision,
+        //but it doesn't stick.  Just don't bother.
+        if (!#defined(revision)){
+            Level.Game.SetGameSpeed(0.1);
+        }
         SetTimer(Level.Game.GameSpeed, true);
     }
     p.ReducedDamageType = 'All';// god mode
@@ -397,6 +401,9 @@ function HandleBingoWinCountdown()
 {
     //Blocked in HX for now (Blocked at the check, but here for safety as well)
     if(#defined(hx)) return;
+
+    //Only do the countdown while outside of menus
+    if (!InGame() && (DXRBigMessage(DeusExRootWindow(player().rootWindow).GetTopWindow()) == None)) return;
 
     if (bingo_win_countdown > 0) {
         BingoWinScreen();
