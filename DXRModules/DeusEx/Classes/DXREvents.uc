@@ -529,8 +529,8 @@ function SetWatchFlags() {
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
-        WatchFlag('PlayPool');
         if(RevisionMaps){
+            WatchFlag('PlayPool');
             InitPoolBalls();
         }
         break;
