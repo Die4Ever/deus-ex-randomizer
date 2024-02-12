@@ -529,6 +529,10 @@ function SetWatchFlags() {
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
+        WatchFlag('PlayPool');
+        if(RevisionMaps){
+            InitPoolBalls();
+        }
         break;
     case "03_NYC_HANGAR":
         WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
