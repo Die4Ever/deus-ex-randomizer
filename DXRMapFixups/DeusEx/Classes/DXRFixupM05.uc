@@ -35,6 +35,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)RatGenerator rg;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)NanoKey k;
+    local #var(prefix)AnnaNavarre anna;
     local DXREnemies dxre;
     local int i;
     local bool VanillaMaps;
@@ -71,6 +72,13 @@ function PreFirstEntryMapFixes()
             mj12.UnfamiliarName = "Rick";
             mj12.FamiliarName = "Rick";
             mj12.BindName = "MJ12CellguardRick";
+        }
+
+        //Anna hates weapons (why?) in Revision, but can't hurt to set it for all mods
+        //If she sees you pull out a weapon with this set, she goes hostile and starts
+        //running around
+        foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
+            anna.bHateWeapon=False;
         }
 
         if (VanillaMaps){
