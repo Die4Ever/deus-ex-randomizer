@@ -138,8 +138,8 @@ exec function QuickSave()
         info = GetLevelInfo();
 
         //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
-        if (((info != None) && (info.MissionNumber < 0)) || 
-            ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) || 
+        if (((info != None) && (info.MissionNumber < 0)) ||
+            ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
             (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
         {
             ClientMessage("Cannot quick save during infolink!",, true);
@@ -951,6 +951,9 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     }
 
     //Track and handle shake rotation as though we are always right-ways up
+    //Carry the Yaw over, since the shake doesn't adjust that, so it resets you
+    //to Yaw 0 when a roll starts otherwise (Issue #608)
+    ShakeRotator.Yaw = ViewRotation.Yaw;
     ViewRotation = ShakeRotator;
     Super.UpdateRotation(DeltaTime,maxPitch);
     ShakeRotator = ViewRotation;
