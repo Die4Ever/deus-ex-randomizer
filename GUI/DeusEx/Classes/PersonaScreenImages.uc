@@ -151,7 +151,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 
     if (bHandled){
         root.PopWindow();
-        return true;        
+        return true;
     }
 
     return Super.BoxOptionSelected(msgBoxWindow,buttonNumber);
@@ -194,7 +194,7 @@ function EnableButtons()
     if (player!=None){
         foreach player.AllActors(class'DXRMissions',dxrMissions) break;
     }
-    
+
     btnShowSpoilers.Show(False);
     btnGoalLocations.Show(False);
 
@@ -207,7 +207,7 @@ function EnableButtons()
             btnGoalLocations.Show(True);
         }
     }
-    
+
     Super.EnableButtons();
 }
 
@@ -229,7 +229,6 @@ function ClearViewedImageFlags()
     }
 }
 
-
 function MarkViewed(DataVaultImage newImage)
 {
     local string bingoName;
@@ -250,6 +249,14 @@ function MarkViewed(DataVaultImage newImage)
         newImage.bPlayerViewedImage = True;
     }
 }
+
+function SetImage(DataVaultImage newImage)
+{
+    class'#var(injectsprefix)DataVaultImage'.static.UpdateDataVaultImageTextures(newImage);
+    Super.SetImage(newImage);
+}
+
+
 defaultproperties
 {
      GoalSpoilersText="Goal |&Spoilers"
