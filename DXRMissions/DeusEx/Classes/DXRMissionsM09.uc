@@ -315,7 +315,12 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 
 function MissionTimer()
 {
-    if(dxr.flags.settings.goals > 0) {
+    switch(dxr.localURL)
+    {
+    case "09_NYC_GRAVEYARD":
+        UpdateGoalWithRandoInfo('EliminateField', "The EM generator could be anywhere in the graveyard.");
+        break;
+    default:
         UpdateGoalWithRandoInfo('Escape', "Jock could be anywhere at the dockyard.");
         UpdateGoalWithRandoInfo('ScuttleShip', "Check the map in your Images section to see where the weld points can be.");
     }

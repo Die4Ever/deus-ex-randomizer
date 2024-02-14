@@ -181,10 +181,11 @@ function MissionTimer()
 
     switch(dxr.localURL) {
     case "06_HONGKONG_WANCHAI_MARKET":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
+        UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
         break;
     case "06_HONGKONG_TONGBASE":
+        UpdateGoalWithRandoInfo('GetROM', "The computer with the ROM-encoding could be anywhere in the lab.");
+
         //Immediately start M08Briefing after M07Briefing, if possible
         ready_for_m08 = !M08Briefing && dxr.flagbase.GetBool('M07Briefing_played') && !dxr.flagbase.GetBool('M08Briefing_played');
         ready_for_m08 = ready_for_m08 && dxr.flagbase.GetBool('TriadCeremony_Played') && dxr.flagbase.GetBool('VL_UC_Destroyed') && dxr.flagbase.GetBool('VL_Got_Schematic');
@@ -205,6 +206,10 @@ function MissionTimer()
         }
         break;
     }
+
+    //Rando can give you this goal in a bunch of maps (Tonnochi Road, Canal, Market, Lucky Money)
+    //just update it whenever
+    UpdateGoalWithRandoInfo('ConvinceRedArrow', "Max Chen could be anywhere in the Lucky Money.");
 }
 
 function DeleteGoal(Goal g, GoalLocation Loc)

@@ -157,7 +157,7 @@ function AfterShuffleGoals(int goalsToLocations[32])
             SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
         }
 
-    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){ 
+    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){
         //For some reason shuffling Paul's body stops it from being destroyed by the mission script
         if (!player().flagbase.GetBool('PaulDenton_Dead')){
             foreach AllActors(class'PaulDentonCarcass',paulbody){
@@ -291,5 +291,15 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         if(passwords != None) {// 05_Datacube03.txt
             passwords.ReplacePassword("the patient has been moved to the Surgery Ward", "the patient has been moved to the "$Loc.name);
         }
+    }
+}
+
+function MissionTimer()
+{
+    switch(dxr.localURL) {
+    case "05_NYC_UNATCOMJ12LAB":
+        UpdateGoalWithRandoInfo('FindPaul', "Paul could be located anywhere in the lab.");
+        UpdateGoalWithRandoInfo('FindEquipment', "Your equipment could be in either the armory or the surgery bay.");
+        break;
     }
 }

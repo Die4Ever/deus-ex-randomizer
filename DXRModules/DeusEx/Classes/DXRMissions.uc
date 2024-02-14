@@ -523,13 +523,14 @@ function Timer()
     }
 }
 
-function UpdateGoalWithRandoInfo(name goalName, string text)
+function UpdateGoalWithRandoInfo(name goalName, string text, optional bool always)
 {
     local string goalText;
     local DeusExGoal goal;
     local int randoPos;
 
     if(player(true)==None) return;// don't spam HX logs
+    if(!always && dxr.flags.settings.goals == 0) return; //Don't add rando notes if goal randomization is turned off
 
     goal = player().FindGoal(goalName);
     if(goal == None) return;

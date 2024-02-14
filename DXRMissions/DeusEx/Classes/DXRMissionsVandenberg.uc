@@ -209,8 +209,8 @@ function MissionTimer()
 
     switch(dxr.localURL) {
     case "12_VANDENBERG_CMD":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('FindJock', "Jock could be anywhere around the Command Center.");
+        UpdateGoalWithRandoInfo('FindJock', "Jock could be anywhere around the Command Center.");
+        UpdateGoalWithRandoInfo('ActivatePower', "The keypads can be anywhere around the Command Center.");
         break;
 
     case "14_VANDENBERG_SUB":
@@ -226,8 +226,7 @@ function MissionTimer()
         break;
 
     case "14_OCEANLAB_SILO":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('MeetJock', "Jock could be anywhere around the silo.");
+        UpdateGoalWithRandoInfo('MeetJock', "Jock could be anywhere around the silo.");
         break;
     }
 }

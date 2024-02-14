@@ -94,11 +94,9 @@ function MissionTimer()
     switch(dxr.localURL)
     {
     case "08_NYC_STREET":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('FindHarleyFilben', "Harley could be anywhere in Hell's Kitchen");
+        UpdateGoalWithRandoInfo('FindHarleyFilben', "Harley could be anywhere in Hell's Kitchen");
         break;
     }
 
-    if(dxr.flags.settings.goals > 0)
-        UpdateGoalWithRandoInfo('KillGreene', "Joe Greene could be anywhere.");
+    UpdateGoalWithRandoInfo('KillGreene', "Joe Greene could be anywhere.");
 }
