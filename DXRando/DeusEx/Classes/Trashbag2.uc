@@ -14,3 +14,8 @@ function Destroyed()
 
     Super.Destroyed();
 }
+
+defaultproperties
+{
+     bGenerateTrash=False
+}
