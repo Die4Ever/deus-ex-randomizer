@@ -95,8 +95,6 @@ static function GenerateTrashPaper(#var(prefix)Containers trashContainer, float 
 
                     if (onFire && FRand() < 0.5) {
                         fire = trashPaper.Spawn(class'SmokelessFire', trashPaper,, loc);
-                        fire.AmbientSound = Sound'Ambient.Ambient.FireSmall1';
-                        fire.SoundVolume = 48;
                         if (fire != None) {
                             fire.DrawScale = 0.25*FRand() + 0.5;
                             fire.AmbientSound = Sound'Ambient.Ambient.FireSmall1';
