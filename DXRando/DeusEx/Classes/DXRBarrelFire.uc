@@ -63,4 +63,6 @@ defaultproperties
     Buoyancy=90
     bInvincible=False
     AmbientSound=Sound'Ambient.Ambient.FireSmall1'
+    SoundRadius=32
+    SoundVolume=255
 }

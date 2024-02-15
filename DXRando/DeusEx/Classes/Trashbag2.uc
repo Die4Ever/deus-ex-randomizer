@@ -4,6 +4,7 @@ function Tick(float deltaTime)
 {
     if (IsInState('Burning')) {
         AmbientSound = Sound'Ambient.Ambient.FireSmall1';
+        SoundRadius = 32;
     }
     Super.Tick(deltaTime);
 }
