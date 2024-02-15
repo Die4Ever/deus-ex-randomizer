@@ -55,10 +55,12 @@ function Destroyed()
     Super.Destroyed();
 }
 
-// same as Barrel1
+// same Mass and Buoyancy as Barrel1
+// for some reason the identical AmbientSound line in FireBarrel does nothing
 defaultproperties
 {
     Mass=80
     Buoyancy=90
     bInvincible=False
+    AmbientSound=Sound'Ambient.Ambient.FireSmall1'
 }
