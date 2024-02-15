@@ -14,6 +14,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TAD tad;
     local #var(prefix)FishGenerator fg;
     local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)Trigger trig;
     local bool RevisionMaps;
     local bool VanillaMaps;
 
@@ -82,6 +83,16 @@ function PreFirstEntryMapFixes()
             kp.validCode="2577";
             kp.bToggleLock=False;
             kp.Event='DoorToWarehouse';
+
+            //Detach the trigger that opens the basement door when you get near it from inside
+            //Add a button instead
+            foreach AllActors(class'#var(prefix)Trigger',trig){
+                if (trig.Event=='SecurityDoor'){
+                    trig.Event='DontDoAnything';
+                    break;
+                }
+            }
+            AddSwitch( vect(915.534,-1046.767,-117.347), rot(0, 16368, 0), 'SecurityDoor');
 
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));

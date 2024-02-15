@@ -38,6 +38,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BeamTrigger beam;
     local OnceOnlyTrigger oot;
     local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)Trigger trig;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -63,6 +64,13 @@ function PreFirstEntryMapFixes()
 
             //A button *behind* the elevator that sends it up, since it's possible to fall back there and live...
             AddSwitch( vect(2905.517578,-1641.676270,-430.253693), rot(0,0,0), 'Elevator01_top', "Ramisme's Escape Button");
+
+            //Detach the triggers that opens the op room doors when you get near them from inside
+            foreach AllActors(class'#var(prefix)Trigger',trig){
+                if (trig.Event=='SecDoor1' || trig.Event=='SecDoor2'){
+                    trig.Event='DontDoAnything';
+                }
+            }
 
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-738,-1412,-474));//Near sewer grate
             rg.MaxCount=1;
