@@ -1,5 +1,13 @@
 class DXRTrashbag injects #var(prefix)Trashbag;
 
+function Tick(float deltaTime)
+{
+    if (IsInState('Burning')) {
+        AmbientSound = Sound'Ambient.Ambient.FireSmall1';
+    }
+    Super.Tick(deltaTime);
+}
+
 function Destroyed()
 {
     local DXRando dxr;
