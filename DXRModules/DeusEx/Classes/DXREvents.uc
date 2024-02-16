@@ -1716,6 +1716,7 @@ function string RemapBingoEvent(string eventname)
         case "DXRRepairBot_ClassDead":
             return "RepairBot_ClassDead";
         case "FrenchGray_ClassDead":
+        case "GrayBaby_ClassDead":
             return "Gray_ClassDead";
         case "LiquorBottle_Activated":
         case "Liquor40oz_Activated":
