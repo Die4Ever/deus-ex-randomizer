@@ -1,9 +1,16 @@
 class TrashContainerCommon extends DXRBase abstract;
 
+static function DestroyTrashbag(#var(prefix)Containers trashbag)
+{
+    // maybe spawn a rat, but not if underwater or on fire
+    if (!trashbag.Region.Zone.bWaterZone && !trashbag.IsInState('Burning') && FRand() < 0.5)
+        SummonRat(trashbag);
+    GenerateTrashPaper(trashbag, 0.5);
+}
+
 static function DestroyTrashCan(#var(prefix)Containers trashcan, class<#var(prefix)Containers> trashBagType)
 {
 	local Vector loc;
-	local #var(prefix)Rat vermin;
     local #var(prefix)Containers trashbag;
     local float scale, scaleCorrection;
 
@@ -45,14 +52,20 @@ static function DestroyTrashCan(#var(prefix)Containers trashcan, class<#var(pref
 
         // maybe spawn a rat, but not if underwater
         if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.17) // creates a final 50% chance of getting a rat
-        {
-            loc = trashcan.Location;
-            loc.Z -= trashcan.CollisionHeight;
-            vermin = trashcan.Spawn(class'#var(prefix)Rat',,, loc);
-            if (vermin != None)
-                vermin.bTransient = true;
-        }
+            SummonRat(trashcan);
     }
+}
+
+static function SummonRat(#var(prefix)Containers container)
+{
+	local Vector loc;
+	local #var(prefix)Rat vermin;
+
+    loc = container.Location;
+    loc.Z -= container.CollisionHeight;
+    vermin = container.Spawn(class'#var(prefix)Rat',,, loc);
+    if (vermin != None)
+        vermin.bTransient = true;
 }
 
 static function GenerateTrashPaper(#var(prefix)Containers trashContainer, float probability, optional bool onFire)
@@ -65,12 +78,10 @@ static function GenerateTrashPaper(#var(prefix)Containers trashContainer, float 
 
     onFire = onFire || trashContainer.IsInState('Burning');
 
-    if (onFire) {
+    if (onFire)
         numPaperChances = 3;
-    }
-    else {
+    else
         numPaperChances = 4;
-    }
 
     // trace down to see if we are sitting on the ground
 	loc = vect(0,0,0);
@@ -98,7 +109,7 @@ static function GenerateTrashPaper(#var(prefix)Containers trashContainer, float 
                         if (fire != None) {
                             fire.DrawScale = 0.25*FRand() + 0.5;
                             fire.AmbientSound = Sound'Ambient.Ambient.FireSmall1';
-                            fire.SoundVolume = 48;
+                            fire.SoundVolume = 200;
                         }
                     }
 				}

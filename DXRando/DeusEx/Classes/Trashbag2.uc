@@ -10,7 +10,7 @@ function Destroyed()
         }
     }
 
-    class'TrashContainerCommon'.static.GenerateTrashPaper(self, 0.5);
+    class'TrashContainerCommon'.static.DestroyTrashbag(self);
 
     Super.Destroyed();
 }

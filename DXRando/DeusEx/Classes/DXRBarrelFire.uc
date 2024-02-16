@@ -46,10 +46,6 @@ function Tick(float delta)
         DamageOtherReal(Base, False);
     }
 
-    log("barrelfire SoundRadius:  " $ SoundRadius);
-    log("barrelfire SoundVolume:  " $ SoundVolume);
-    log("barrelfire AmbientSound: " $ AmbientSound);
-
     Super.Tick(delta);
 }
 
