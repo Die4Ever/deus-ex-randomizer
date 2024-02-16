@@ -46,6 +46,10 @@ function Tick(float delta)
         DamageOtherReal(Base, False);
     }
 
+    log("barrelfire SoundRadius:  " $ SoundRadius);
+    log("barrelfire SoundVolume:  " $ SoundVolume);
+    log("barrelfire AmbientSound: " $ AmbientSound);
+
     Super.Tick(delta);
 }
 
@@ -56,12 +60,13 @@ function Destroyed()
 }
 
 // same Mass and Buoyancy as Barrel1
-// for some reason the identical AmbientSound line in FireBarrel does nothing
+// vanilla uses FireSmall2, which is almost inaudible
 defaultproperties
 {
     Mass=80
     Buoyancy=90
     bInvincible=False
-    AmbientSound=Sound'Ambient.Ambient.FireSmall1'
     SoundRadius=32
+    SoundVolume=200
+    AmbientSound=Sound'Ambient.Ambient.FireSmall1'
 }
