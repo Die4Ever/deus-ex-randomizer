@@ -94,7 +94,7 @@ function MissionTimer()
 {
     switch(dxr.localURL) {
     case "04_NYC_NSFHQ":
-        UpdateGoalWithRandoInfo('SendSignal', "The computer to open the door on the roof could be anywhere in NSF HQ.");
+        UpdateGoalWithRandoInfo('SendSignal', "The computers to align the dishes and send the signal could be anywhere in NSF HQ.");
         break;
     }
 }
