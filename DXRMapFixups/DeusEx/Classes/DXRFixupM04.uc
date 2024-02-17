@@ -25,7 +25,8 @@ function PreTravelMapFixes()
 
 function PreFirstEntryMapFixes()
 {
-    local FlagTrigger ft;
+    local #var(prefix)FlagTrigger ft;
+    local #var(prefix)DatalinkTrigger dt;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
     local #var(prefix)BoxSmall b;
@@ -53,7 +54,7 @@ function PreFirstEntryMapFixes()
             if( ot.Orders == 'Leaving' )
                 ot.Orders = 'Seeking';
         }
-        foreach AllActors(class'FlagTrigger', ft) {
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
             if( ft.Event == 'PaulOutaHere' )
                 ft.Destroy();
         }
@@ -136,13 +137,36 @@ function PreFirstEntryMapFixes()
 
         if (VanillaMaps){
             //One window on the roof doesn't have a FlagTrigger to make UNATCO hate you.  Add it back.
-            ft = Spawn(class'FlagTrigger',,,vectm(233.9,693.64,1016.1));
+            ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal3',vectm(233.9,693.64,1016.1));
             ft.SetCollisionSize(128,40);
             ft.bSetFlag=False;
             ft.bTrigger=True;
             ft.FlagName='NSFSignalSent';
             ft.flagValue=True;
             ft.Event='UNATCOHatesPlayer';
+        }
+
+        if(VanillaMaps && dxr.flags.settings.goals > 0) {
+            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
+                if(dt.datalinkTag != 'DL_SimonsPissed') continue;
+                dt.Tag = 'SendingSignal3';
+                break;
+            }
+
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
+                ft.Tag = 'SendingSignal2';
+                ft.Event = 'SendingSignal3';
+                ft.bTrigger = true;
+                // spawn intermediate trigger to check flag
+                ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vect(10,10,10));
+                ft.SetCollision(false,false,false);
+                ft.bSetFlag=False;
+                ft.bTrigger=True;
+                ft.FlagName='CanSendSignal';
+                ft.flagValue=True;
+                ft.Event='SendingSignal2';
+                break;
+            }
         }
 
         break;
@@ -207,19 +231,7 @@ function PreFirstEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
-    local DeusExMover m;
-
     FixUNATCORetinalScanner();
-
-    switch(dxr.localURL) {
-    case "04_NYC_NSFHQ":
-        // no cheating!
-        foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
-            m.bBreakable = false;
-            m.bPickable = false;
-        }
-        break;
-    }
 }
 
 function AnyEntryMapFixes()
