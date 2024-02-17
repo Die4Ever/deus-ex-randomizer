@@ -31,6 +31,7 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
 
 defaultproperties
 {
+    CarcassType=Class'MerchantCarcass'
     bImportant=True
     bDetectable=false
     bIgnore=true
