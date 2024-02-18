@@ -63,7 +63,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     min_weapon_shottime = float(dxr.flags.settings.min_weapon_shottime) / 100;
     max_weapon_shottime = float(dxr.flags.settings.max_weapon_shottime) / 100;
     w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
-    l(w $ " w.HitDamage: "$ w.HitDamage $ ", ShotTime: " $ w.ShotTime);
+    l(w $ " w.HitDamage="$ w.HitDamage $ ", ShotTime=" $ w.ShotTime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;
     f = float(w.default.MaxRange) * (rngf()+0.5);
@@ -72,7 +72,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     w.AccurateRange = int(f);
     f = w.default.BaseAccuracy * (rngf()+0.5);
     w.BaseAccuracy = f;*/
-    dxr.SetSeed(oldseed);
+    ReapplySeed(oldseed);
 }
 
 simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)

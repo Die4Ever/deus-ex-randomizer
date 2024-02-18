@@ -449,7 +449,6 @@ static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
     startMap=-1;
     attempts=0;
     m.SetGlobalSeed("randomstartmap");
-    m.rng(1);// HACK: dummy roll to shuffle the CRC to improve rng, we should do this automatically next compatibility break
 
     //Don't try forever.  If we manage to grab the avoided map 5 times, it was meant to be.
     while ((startMap==-1 || startMap==avoidStart) && attempts<5){

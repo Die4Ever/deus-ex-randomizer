@@ -455,10 +455,10 @@ function RandoEnter()
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ map @ GetURLMap());
 
+    SetSeed( Crc(seed $ localURL) );
     if ( firstTime == true )
     {
         //if( !IsTravel ) warning(localURL$": loaded save but FirstEntry? firstTime: "$firstTime$", IsTravel: "$IsTravel);
-        SetSeed( Crc(seed $ localURL) );
 
         info("randomizing "$localURL$" using seed " $ seed);
 
@@ -480,10 +480,12 @@ function RandoEnter()
         }
     }
 
+    SetSeed( Crc(seed $ localURL) );
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
 
+    SetSeed( Crc(seed $ localURL) );
     foreach AllActors(class'#var(PlayerPawn)', pawn) {
         PlayerLogin(pawn);
     }

@@ -1048,6 +1048,24 @@ function RunTests()
     testbool( chance_single(50), false, "chance_single(50) 2");
     testbool( chance_single(50), true, "chance_single(50) 3");
     testbool( chance_single(50), false, "chance_single(50) 4");
+    testbool( chance_single(50), true, "chance_single(50) 5");
+
+    dxr.SetSeed(111);
+    t=0;
+    for(i=0; i<100; i++) {
+        if(chance_single(1)) t++;
+    }
+    testint(t, 1, "chance_single(1) about 1%");
+    t=0;
+    for(i=0; i<100; i++) {
+        if(chance_single(50)) t++;
+    }
+    testint(t, 51, "chance_single(50) about 50%");
+    t=0;
+    for(i=0; i<100; i++) {
+        if(chance_single(99)) t++;
+    }
+    testint(t, 99, "chance_single(99) about 99%");
 
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
@@ -1077,6 +1095,11 @@ function ExtendedTests()
     testfloatrange( (5.7**3), 5.7*5.7*5.7, 0.001, "pow");
 
     TestRngExp(0, 1, 0.5, 1.5);
+
+    for(i=0;i<100;i++) {
+        test(rng(3) <3, "rng(3) <3");
+        test(rng(3) >= 0, "rng(3) >= 0");
+    }
 
     for(i=1;i<=4;i++)
         TestRngExp(25, 300, 100, i);

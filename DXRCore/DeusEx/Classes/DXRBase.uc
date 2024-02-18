@@ -99,17 +99,26 @@ simulated event Destroyed()
 
 simulated function int SetSeed(coerce string name)
 {
-    return dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
+    dxr.rng(9);// advance the rng
+    return oldseed;
 }
 
 simulated function int SetGlobalSeed(coerce string name)
 {
-    return dxr.SetSeed( dxr.seed + dxr.Crc(name) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(name) );
+    dxr.rng(9);// advance the rng
+    return oldseed;
 }
 
 simulated function int BranchSeed(coerce string name)
 {
-    return dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
+    dxr.rng(9);// advance the rng
+    return oldseed;
 }
 
 simulated function int ReapplySeed(int oldSeed)
@@ -119,7 +128,7 @@ simulated function int ReapplySeed(int oldSeed)
 
 simulated function int rng(int max)
 {
-    return dxr.rng(max);
+    return rngf() * float(max);
 }
 
 simulated function bool rngb()

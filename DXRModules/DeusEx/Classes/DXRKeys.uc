@@ -883,7 +883,7 @@ function RandoKey(#var(prefix)NanoKey k)
     if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) {
         oldseed = SetSeed( "RandoKey " $ k.Name );
         _RandoKey(k, dxr.flags.settings.keys_containers > 0);
-        dxr.SetSeed(oldseed);
+        ReapplySeed(oldseed);
     }
 }
 
