@@ -1,9 +1,11 @@
 // Businessman3Carcass but with dropsAmmo=true
-class MerchantCarcass extends DeusExCarcass;
+class MerchantCarcass extends #var(DeusExPrefix)Carcass;
 
 defaultproperties
 {
+#ifdef injections
     dropsAmmo=true
+#endif
     Mesh2=LodMesh'DeusExCharacters.GM_Suit_CarcassB'
     Mesh3=LodMesh'DeusExCharacters.GM_Suit_CarcassC'
     Mesh=LodMesh'DeusExCharacters.GM_Suit_Carcass'
