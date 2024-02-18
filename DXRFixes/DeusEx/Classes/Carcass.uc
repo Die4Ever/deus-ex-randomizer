@@ -1,5 +1,7 @@
 class Carcass injects DeusExCarcass;
 
+var bool dropsAmmo;
+
 function InitFor(Actor Other)
 {
     local int i;
@@ -203,7 +205,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     local DeusExPickup invItem;
     local int itemCount;
 
-    if (item.IsA('Ammo'))
+    if (!dropsAmmo && item.IsA('Ammo'))
     {
         // Only let the player pick up ammo that's already in a weapon
         DeleteInventory(item);
