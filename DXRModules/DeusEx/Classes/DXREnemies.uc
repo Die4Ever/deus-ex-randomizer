@@ -68,7 +68,8 @@ function CheckConfig()
     Super.CheckConfig();
 
     AddRandomEnemyType(class'#var(prefix)Greasel', 4, FactionAny);
-    AddRandomEnemyType(class'#var(prefix)Karkian', 2, FactionAny);
+    AddRandomEnemyType(class'#var(prefix)KarkianBaby', 1, FactionAny);
+    AddRandomEnemyType(class'#var(prefix)Karkian', 1, FactionAny);
     AddRandomEnemyType(class'#var(prefix)SecurityBot2', 2, FactionAny);//walker
     AddRandomEnemyType(class'#var(prefix)SecurityBot3', 2, FactionAny);//little guy from liberty island
     AddRandomEnemyType(class'#var(prefix)SecurityBot4', 2, FactionAny);//unused little guy
@@ -94,6 +95,7 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, MJ12);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 2, MJ12);//little spider
     AddRandomEnemyType(class'#var(prefix)SpiderBot', 2, MJ12);//big spider
+    AddRandomEnemyType(class'GrayBaby', 1, MJ12);
     if(dxr.dxInfo.missionNumber == 10 || dxr.dxInfo.missionNumber == 11) {
         AddRandomEnemyType(class'#var(prefix)Gray', 1, MJ12);
         AddRandomEnemyType(class'FrenchGray', 1, MJ12);
@@ -117,7 +119,8 @@ function CheckConfig()
     AddRandomEnemyType(class'NSFCloneAugTough1', 1.5, NSF);
     AddRandomEnemyType(class'NSFCloneAugStealth1', 1.5, NSF);
 
-    AddRandomEnemyType(class'#var(prefix)Gray', 2, FactionOther);
+    AddRandomEnemyType(class'#var(prefix)Gray', 1, FactionOther);
+    AddRandomEnemyType(class'GrayBaby', 1, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, FactionOther);
@@ -138,9 +141,10 @@ function FirstEntry()
 
     Super.FirstEntry();
 
-    if(dxr.localURL == "10_PARIS_METRO" && dxr.flags.moresettings.remove_paris_mj12 > 0) {
+    SetSeed("DXREnemies FirstEntry");
+    if(dxr.localURL == "10_PARIS_METRO" && chance_single(dxr.flags.moresettings.remove_paris_mj12)) {
         foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
-            if(sp.Alliance=='mj12' && chance_single(dxr.flags.moresettings.remove_paris_mj12)) {
+            if(sp.Alliance=='mj12') {
                 sp.Event='';
                 sp.bHidden=true;
                 sp.Destroy();

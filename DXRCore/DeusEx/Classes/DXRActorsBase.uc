@@ -245,7 +245,14 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
             if( pickup.bCanHaveMultipleCopies && pickup.NumCopies < pickup.MaxCopies ) {
                 pickup.NumCopies++;
                 item.Destroy();
+                if( player != None )
+                    player.UpdateBeltText(pickup);
                 return pickup;
+            } else if (pickup.bCanHaveMultipleCopies && pickup.NumCopies >= pickup.MaxCopies) {
+                //Player has some, but can't get more.  Don't try to pick it up or set them as the base.
+                //Disown the player entirely, otherwise if they try to pick it up again, it will follow them
+                item.SetOwner(None);
+                return item;
             }
         }
     }
@@ -262,6 +269,7 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
 
     if( player != None ) {
         player.FrobTarget = item;
+        item.SetOwner(None);// just in case the right click fails
         player.ParseRightClick();
     } else {
         item.GiveTo(p);
@@ -926,9 +934,10 @@ static function SetActorScale(Actor a, float scale)
 {
     local Vector newloc;
 
+    scale *= a.DrawScale;
     newloc = a.Location + ( (a.CollisionHeight*scale - a.CollisionHeight*a.DrawScale) * vect(0,0,1) );
+    a.SetCollisionSize(a.CollisionRadius / a.DrawScale * scale, a.CollisionHeight / a.DrawScale * scale);
     a.SetLocation(newloc);
-    a.SetCollisionSize(a.CollisionRadius, a.CollisionHeight / a.DrawScale * scale);
     a.DrawScale = scale;
 }
 

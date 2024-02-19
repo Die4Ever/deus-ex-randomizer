@@ -364,6 +364,26 @@ static function AddGibbedKill(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_gibbedkills');
 }
 
+static function AddKill(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_kills');
+}
+
+static function AddKnockOut(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_knockouts');
+}
+
+static function AddKillByOther(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_kills_by_other');
+}
+
+static function AddKnockOutByOther(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_knockouts_by_other');
+}
+
 static function AddCheatOffense(DeusExPlayer p, optional int add)
 {
     IncStatFlag(p,'DXRStats_cheats', add);
@@ -520,7 +540,7 @@ static function CheckLeaderboard(DXRando dxr, Json j)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther;
     local CreditsLeaderboardWindow leaderboard;
 
     cw.PrintLn();
@@ -541,6 +561,10 @@ function AddDXRCredits(CreditsWindow cw)
     jumps = dxr.flagbase.GetInt('DXRStats_jumps');
     burnkills = dxr.flagbase.GetInt('DXRStats_burnkills');
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
+    kills = dxr.flagbase.GetInt('DXRStats_kills');
+    kos = dxr.flagbase.GetInt('DXRStats_knockouts');
+    killsByOther = dxr.flagbase.GetInt('DXRStats_kills_by_other');
+    kosByOther = dxr.flagbase.GetInt('DXRStats_knockouts_by_other');
     deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
     saves = player().saveCount;
     autosaves = GetDataStorageStat(dxr, "DXRStats_autosaves");
@@ -557,8 +581,12 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Nano Keys: "$player().KeyRing.GetKeyCount());
     cw.PrintText("Skill Points Earned: "$player().SkillPointsTotal);
 
-    cw.PrintText("Enemies Burned to Death: "$burnkills);
-    cw.PrintText("Enemies Gibbed: "$gibbedkills);
+    cw.PrintText("NPCs Killed by JC: "$kills);
+    cw.PrintText("NPCs Knocked Out by JC: "$kos);
+    cw.PrintText("Total NPC Deaths: "$(kills + killsByOther));
+    cw.PrintText("Total NPCs Knocked Out: "$(kos + kosByOther));
+    cw.PrintText("Total NPCs Burned to Death: "$burnkills);
+    cw.PrintText("Total NPCs Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
     cw.PrintText("Saves: "$saves$" ("$autosaves$" Autosaves)");
     cw.PrintText("Loads: "$loads);
@@ -636,16 +664,16 @@ function TestScoring()
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
 
     dxr.flags.SetDifficulty(1);
-    testint(dxr.flags.ScoreFlags(), 4870, "score bonus for Normal");
+    testint(dxr.flags.ScoreFlags(), 4835, "score bonus for Normal");
 
     dxr.flags.SetDifficulty(2);
-    testint(dxr.flags.ScoreFlags(), 10580, "score bonus for Hard");
+    testint(dxr.flags.ScoreFlags(), 10545, "score bonus for Hard");
 
     dxr.flags.SetDifficulty(3);
-    testint(dxr.flags.ScoreFlags(), 12680, "score bonus for Extreme");
+    testint(dxr.flags.ScoreFlags(), 12645, "score bonus for Extreme");
 
     dxr.flags.SetDifficulty(4);
-    testint(dxr.flags.ScoreFlags(), 14645, "score bonus for Impossible");
+    testint(dxr.flags.ScoreFlags(), 14610, "score bonus for Impossible");
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;

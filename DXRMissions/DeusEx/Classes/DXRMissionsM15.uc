@@ -85,6 +85,9 @@ function PreFirstEntryMapFixes()
 {
     local Trigger t;
     local FlagTrigger ft;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if ( dxr.localURL == "15_AREA51_BUNKER" ) {
         foreach AllActors(class'Trigger',t){
@@ -92,7 +95,7 @@ function PreFirstEntryMapFixes()
                 t.Destroy(); //Just rely on one trigger for Walton
             }
         }
-    } else if (dxr.localURL=="15_AREA51_FINAL" && #defined(revision)){
+    } else if (dxr.localURL=="15_AREA51_FINAL" && RevisionMaps){
         //Revision has a trigger in Final that makes Walton chase you down from the elevator.
         //This moves him again, so he ends up unrandomized
         foreach AllActors(class'FlagTrigger',ft){
@@ -191,9 +194,12 @@ function AfterShuffleGoals(int goalsToLocations[32])
 {
     local int g;
     local WaltonSimons walt;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     //Revision can put Walt in the elevator down to Sector 3.  We need to despawn him if we don't pick that location
-    if (#defined(revision) && dxr.localURL == "15_AREA51_ENTRANCE"){
+    if (RevisionMaps && dxr.localURL == "15_AREA51_ENTRANCE"){
         for(g=0; g<num_goals; g++) {
             if(goals[g].name == "Walton Simons" && locations[goalsToLocations[g]].name!="Sector 3 Elevator") {
                 foreach AllActors(class'WaltonSimons',walt){

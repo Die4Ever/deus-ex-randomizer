@@ -10,11 +10,10 @@ function CheckConfig()
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
     }
-#ifdef revision
-    revision_datacubes_rules();
-#else
-    vanilla_datacubes_rules();
-#endif
+    if(class'DXRMapVariants'.static.IsRevisionMaps(player()))
+        revision_datacubes_rules();
+    else
+        vanilla_datacubes_rules();
 
     for(i=0;i<ArrayCount(datacubes_rules);i++) {
         datacubes_rules[i] = FixSafeRule(datacubes_rules[i]);

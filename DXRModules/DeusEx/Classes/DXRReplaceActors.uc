@@ -46,9 +46,17 @@ function ReplaceActors()
         else if( #var(prefix)WHPiano(a) != None ) {
             ReplacePiano(#var(prefix)WHPiano(a));
         }
-        else if( #var(prefix)MissionEndgame(a) != None && !#defined(revision) && !#defined(hx) ) {
+        else if( #var(prefix)MissionEndgame(a) != None && !#defined(hx) ) {
             ReplaceMissionEndgame(#var(prefix)MissionEndgame(a));
         }
+#ifdef revision
+        else if( RevisionMissionEndgame(a) != None) {
+            ReplaceRevMissionEndgame(RevisionMissionEndgame(a));
+        }
+        else if( RevisionMissionIntro(a) != None) {
+            ReplaceRevMissionIntro(RevisionMissionIntro(a));
+        }
+#endif
         else if( #var(prefix)MissionIntro(a) != None ) {
             ReplaceMissionIntro(#var(prefix)MissionIntro(a));
         }
@@ -553,6 +561,50 @@ function ReplaceMissionEndgame(#var(prefix)MissionEndgame a)
 
     a.Destroy();
 }
+
+#ifdef revision
+function ReplaceRevMissionEndgame(RevisionMissionEndgame a)
+{
+    //Theoretically, we'd want to replace with a DXRRevMissionEndgame,
+    //except that RevJCDentonMale doesn't let you skip to the ending
+    //when it's on a RevisionMissionEndgame, so let's not do this for now
+
+    local DXRRevMissionEndgame n;
+    local DXRMissionEndgame n2;
+
+    if (dxr.localURL!="ENDGAME4" && dxr.localURL!="ENDGAME4REV"){
+        if(DXRRevMissionEndgame(a) != None) return;
+
+        n = DXRRevMissionEndgame(SpawnReplacement(a, class'DXRRevMissionEndgame'));
+        if(n == None)
+            return;
+
+        a.Destroy();
+    } else {
+        //if(DXRRevMissionEndgame(a) != None) return;
+
+        n2 = DXRMissionEndgame(SpawnReplacement(a, class'DXRMissionEndgame'));
+        if(n2 == None)
+            return;
+
+        a.Destroy();
+    }
+}
+
+function ReplaceRevMissionIntro(RevisionMissionIntro a)
+{
+    local DXRRevMissionIntro n;
+
+    if(DXRRevMissionIntro(a) != None) return;
+
+    n = DXRRevMissionIntro(SpawnReplacement(a, class'DXRRevMissionIntro'));
+    if(n == None)
+        return;
+
+    a.Destroy();
+}
+
+#endif
 
 function ReplaceMissionIntro(#var(prefix)MissionIntro a)
 {

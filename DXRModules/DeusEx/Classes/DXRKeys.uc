@@ -6,11 +6,10 @@ function CheckConfig()
 {
     local int i;
 
-#ifdef revision
-    revision_keys_rules();
-#else
-    vanilla_keys_rules();
-#endif
+    if(class'DXRMapVariants'.static.IsRevisionMaps(player()))
+        revision_keys_rules();
+    else
+        vanilla_keys_rules();
 
     for(i=0;i<ArrayCount(keys_rules);i++) {
         keys_rules[i] = FixSafeRule(keys_rules[i]);

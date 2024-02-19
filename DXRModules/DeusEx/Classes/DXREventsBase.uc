@@ -147,6 +147,7 @@ function Ending_FirstEntry()
             ending = 3;
             break;
         case "ENDGAME4": //Dance party
+        case "ENDGAME4REV": //Dance party
             ending = 4;
             break;
         default:
@@ -364,7 +365,7 @@ function BingoWinScreen()
     if ( Level.Netmode == NM_Standalone ) {
         //Make it harder to get murdered during the countdown
         Level.Game.SetGameSpeed(0.1);
-        SetTimer(0.1, true);
+        SetTimer(Level.Game.GameSpeed, true);
     }
     p.ReducedDamageType = 'All';// god mode
     p.DesiredFlashScale = 0;
@@ -653,9 +654,11 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (!dead){
             _MarkBingo(classname$"_ClassUnconscious");
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            class'DXRStats'.static.AddKnockOut(player());
         } else {
             _MarkBingo(classname$"_ClassDead");
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
             if (!isInitialPlayerEnemy(victim) && !IsCritter(victim) &&  //Must have not been an enemy initially
@@ -667,6 +670,12 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         }
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
+        }
+    } else {
+        if (!dead) {
+            class'DXRStats'.static.AddKnockOutByOther(player());
+        } else {
+            class'DXRStats'.static.AddKillByOther(player());
         }
     }
 
@@ -1077,7 +1086,7 @@ function bool CheckBingoWin(DXRando dxr, int numBingos)
     if(#defined(hx)) return false;
 
     if (dxr.flags.settings.bingo_win > 0){
-        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"){
+        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
             BingoWinScreen();

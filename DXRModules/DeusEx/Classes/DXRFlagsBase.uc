@@ -31,6 +31,11 @@ var #var(flagvarprefix) int difficulty;// save which difficulty setting the game
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
 var #var(flagvarprefix) int bingoBoardRoll;
 
+var #var(flagvarprefix) int newgameplus_max_item_carryover;
+var #var(flagvarprefix) int newgameplus_num_skill_downgrades;
+var #var(flagvarprefix) int newgameplus_num_removed_augs;
+var #var(flagvarprefix) int newgameplus_num_removed_weapons;
+
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
 // CheckConfig in subclass, maybe ExecMaxRando if it should be included in that, ScoreFlags, and SetDifficulty for different game modes
@@ -68,6 +73,8 @@ struct FlagsSettings {
 
 struct MoreFlagsSettings{
     var int grenadeswap;
+    var int newgameplus_curve_scalar;
+    var int empty_medbots;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -226,7 +233,7 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
     if(bSetSeed > 0)
         str = str $ " (Set Seed)";
 
-    str2= "Difficulty: " $ TrimTrailingZeros(CombatDifficulty)
+    str2= "Difficulty: " $ FloatToString(CombatDifficulty, 3)
 #ifdef injections
             $ ", New Game+ Loops: "$newgameplus_loops
 #endif
@@ -355,6 +362,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_equipment', settings.equipment, mode, str);
 
     FlagInt('Rando_medbots', settings.medbots, mode, str);
+    FlagInt('Rando_empty_medbots', moresettings.empty_medbots, mode, str);
     FlagInt('Rando_repairbots', settings.repairbots, mode, str);
     FlagInt('Rando_medbotuses', settings.medbotuses, mode, str);
     FlagInt('Rando_repairbotuses', settings.repairbotuses, mode, str);
@@ -395,6 +403,12 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_starting_map', settings.starting_map, mode, str);
     FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
+
+    FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
+    FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
+    FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
+    FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);
+    FlagInt('Rando_num_removed_weapons', newgameplus_num_removed_weapons, mode, str);
 
     return str;
 }
@@ -483,6 +497,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Starting Equipment Amount";
         case 'Rando_medbots':
             return "Medbots";
+        case 'Rando_empty_medbots':
+            return "Augmentation Bots";
         case 'Rando_repairbots':
             return "Repairbots";
         case 'Rando_medbotuses':
@@ -557,6 +573,16 @@ simulated function string flagNameToHumanName(name flagname){
             return "Bingo Board Re-rolls";
         case 'Rando_grenadeswap':
             return "Grenades";
+        case 'Rando_newgameplus_curve_scalar':
+            return "New Game+ Curve Scalar";
+        case 'Rando_newgameplus_max_item_carryover':
+            return "New Game+ Max Item Carryover";
+        case 'Rando_num_skill_downgrades':
+            return "New Game+ Downgraded Skill Levels Per Loop";
+        case 'Rando_num_removed_augs':
+            return "New Game+ Removed Augmentations Per Loop";
+        case 'Rando_num_removed_weapons':
+            return "New Game+ Removed Weapons Per Loop";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -583,6 +609,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_health':
         case 'Rando_energy':
         case 'Rando_bingoboardroll':
+        case 'Rando_newgameplus_max_item_carryover':
+        case 'Rando_num_skill_downgrades':
+        case 'Rando_num_removed_augs':
+        case 'Rando_num_removed_weapons':
             return string(val);
 
         //Return the number as hex
@@ -599,6 +629,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_biocells':
         case 'Rando_deviceshackable':
         case 'Rando_medbots':
+        case 'Rando_empty_medbots':
         case 'Rando_repairbots':
         case 'Rando_medkits':
         case 'Rando_dancingpercent':
@@ -625,6 +656,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_removeparismj12':
         case 'Rando_bingo_scale':
         case 'Rando_grenadeswap':
+        case 'Rando_newgameplus_curve_scalar':
             return val$"%";
 
         case 'Rando_enemyrespawn':
@@ -835,7 +867,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
     return val $ " (Mishandled!)";
 }
 
-// returns true is read was successful
+// returns true if read was successful
 simulated function bool FlagInt(name flagname, out int val, int mode, out string str)
 {
     if( mode == 0 ) {

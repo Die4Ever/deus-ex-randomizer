@@ -166,6 +166,19 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
+    i++;
+    DecorationsOverwrites[i].type = "HKMarketLight";
+    DecorationsOverwrites[i].bInvincible = false;
+    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    DecorationsOverwrites[i].HitPoints = c.default.HitPoints;
+    DecorationsOverwrites[i].minDamageThreshold = c.default.minDamageThreshold;
+    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+    DecorationsOverwrites[i].Flammability = c.default.Flammability;
+    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+    DecorationsOverwrites[i].bPushable = c.default.bPushable;
+
     Super.CheckConfig();
 
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
@@ -217,6 +230,8 @@ function AnyEntry()
     FixCleanerBot();
     FixRevisionJock();
     FixRevisionDecorativeInventory();
+    FixInvalidBindNames();
+    ScaleZoneDamage();
     SetSeed( "DXRFixup AnyEntry missions" );
     if(#defined(mapfixes))
         AnyEntryMapFixes();
@@ -518,6 +533,37 @@ simulated function bool FixInventory(#var(PlayerPawn) p)
     }
 
     return good;
+}
+
+
+//Remove characters that shouldn't be allowed in bindnames (since they are often converted into a name)
+function FixInvalidBindNames()
+{
+    local #var(prefix)ScriptedPawn sp;
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+        if (InStr(sp.BindName," ")!=-1){
+            sp.BindName=ReplaceText(sp.BindName," ","");
+            sp.ConBindEvents();
+            warning("FixInvalidBindNames: Fixed "$sp.Name$" bindname, removing a space.  BindName is now '"$sp.BindName$"'");
+        }
+    }
+}
+
+//Scale the damage done by zones to counteract the damage scaling from CombatDifficulty
+function ScaleZoneDamage()
+{
+    local ZoneInfo z;
+
+    if(!#defined(vanilla)){
+        return;
+    }
+
+    foreach AllActors(class'ZoneInfo',z){
+        if (z.bPainZone){
+            z.DamagePerSec=Clamp((z.DamagePerSec+1)/player().CombatDifficulty,1,(z.DamagePerSec+1));
+        }
+    }
 }
 
 function OverwriteDecorations()

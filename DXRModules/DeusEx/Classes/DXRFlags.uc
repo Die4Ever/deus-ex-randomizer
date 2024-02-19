@@ -83,6 +83,12 @@ function InitDefaults()
     newgameplus_loops = 0;
     bingoBoardRoll = 0;
 
+    newgameplus_max_item_carryover = 5;
+    newgameplus_num_skill_downgrades = 3;
+    newgameplus_num_removed_augs = 1;
+    newgameplus_num_removed_weapons = 1;
+
+
 #ifdef hx
     difficulty = 1;
     maxrando = 1;
@@ -149,6 +155,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 5;
     difficulty_settings[i].medbots = 100;
+    more_difficulty_settings[i].empty_medbots = 100;
     difficulty_settings[i].repairbots = 100;
     difficulty_settings[i].medbotuses = 20;
     difficulty_settings[i].repairbotuses = 20;
@@ -176,6 +183,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     i++;
 #endif
 
@@ -219,6 +227,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 4;
     difficulty_settings[i].medbots = 35;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 35;
     difficulty_settings[i].medbotuses = 10;
     difficulty_settings[i].repairbotuses = 10;
@@ -246,6 +255,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     i++;
 
 #ifdef hx
@@ -288,6 +298,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 2;
     difficulty_settings[i].medbots = 27;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 27;
     difficulty_settings[i].medbotuses = 5;
     difficulty_settings[i].repairbotuses = 5;
@@ -315,6 +326,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     i++;
 
 #ifdef hx
@@ -357,6 +369,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 1;
     difficulty_settings[i].medbots = 25;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 25;
     difficulty_settings[i].medbotuses = 2;
     difficulty_settings[i].repairbotuses = 2;
@@ -384,6 +397,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     i++;
 
 #ifdef hx
@@ -426,6 +440,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 1;
     difficulty_settings[i].medbots = 20;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 20;
     difficulty_settings[i].medbotuses = 1;
     difficulty_settings[i].repairbotuses = 1;
@@ -453,6 +468,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 80;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -512,6 +528,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.equipment = 0;
         settings.medbots = -1;
         settings.repairbots = -1;
+        moresettings.empty_medbots = 0;
         settings.turrets_move = 0;
         settings.turrets_add = 0;
         settings.dancingpercent = 0;
@@ -611,6 +628,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.prison_pocket = 100; //Keep your items in mission 5
         bingo_duration = 1;
         bingo_scale = 0;
+        moresettings.newgameplus_curve_scalar = 50;
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
@@ -836,6 +854,7 @@ function int ScoreFlags()
     score += settings.goals;
     score -= settings.equipment * 10;
     score -= ClampFlagValue(settings.medbots,0,100);
+    score -= ClampFlagValue(moresettings.empty_medbots,0,100) / 2;
     score -= ClampFlagValue(settings.repairbots,0,100);
     if(settings.medbotuses <= 0)
         score -= 100;

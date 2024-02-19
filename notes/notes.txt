@@ -245,6 +245,7 @@ EditPackages=DXOgg
 EditPackages=RevisionPawn
 EditPackages=RevisionUI
 EditPackages=Revision
+EditPackages=RevisionMission
 EditPackages=RevRandomizer
 
 

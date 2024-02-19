@@ -6,6 +6,8 @@ class DXRMedicalBot extends #var(prefix)MedicalBot;
 
 var travel int numUses;
 var transient DXRando dxr;
+var bool augsOnly;
+var string baseName;
 
 replication
 {
@@ -27,6 +29,12 @@ function StandStill()
 }
 #endif
 
+function updateName()
+{
+    familiarName = baseName $ GetRemainingUsesStr();
+    unfamiliarName = familiarName;
+}
+
 function int HealPlayer(DeusExPlayer player)
 {
     local int healAmount;
@@ -38,6 +46,8 @@ function int HealPlayer(DeusExPlayer player)
 #endif
 
     numUses++;
+
+    updateName();
 
     return healAmount;
 }
@@ -58,7 +68,10 @@ simulated function int GetMaxUses()
 
 simulated function int GetRemainingUses()
 {
-    return (GetMaxUses() - numUses);
+    if (augsOnly)
+        return 0;
+    else
+        return (GetMaxUses() - numUses);
 }
 
 simulated function string GetRemainingUsesStr()
@@ -68,7 +81,9 @@ simulated function string GetRemainingUsesStr()
 
     uses = GetRemainingUses();
 
-    if (uses == 1) {
+    if (uses == 0) {
+        return " (No Heals Left)";
+    } else if (uses == 1) {
         msg = " (1 Heal Left)";
     } else {
         msg = " ("$uses$" Heals Left)";
@@ -80,12 +95,12 @@ simulated function string GetRemainingUsesStr()
 
 simulated function bool HasLimitedUses()
 {
-     return (GetMaxUses() != 0);
+     return (GetMaxUses() != 0 || augsOnly);
 }
 
 simulated function bool HealsRemaining()
 {
-    return GetRemainingUses()!=0;
+    return GetRemainingUses() > 0;
 }
 
 simulated function bool CanHeal()
@@ -136,14 +151,32 @@ function Explode(vector HitLocation)
     Instigator = oldInstigator;
 }
 
+function MakeAugsOnly()
+{
+    augsOnly = true;
+    MultiSkins[0] = Texture'AugBotTex1';
+}
+
 function Tick(float delta)
 {
     Super.Tick(delta);
 
-    if(CanHeal())
+    if (!augsOnly && baseName == "" && familiarName != "") {
+        baseName = familiarName;
+        updateName();
+    }
+
+    if(CanHeal()){
         LightHue=89;
-    else
+        LightType=LT_Steady;
+    } else {
         LightHue=255;
+        if (HasLimitedUses() && HealsRemaining()){
+            LightType=LT_Pulse;
+        } else {
+            LightType=LT_Steady;
+        }
+    }
 }
 
 defaultproperties
@@ -155,4 +188,5 @@ defaultproperties
     LightBrightness=160
     LightRadius=6
     LightHue=89
+    LightPeriod=25
 }

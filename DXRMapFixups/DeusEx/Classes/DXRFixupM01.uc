@@ -122,9 +122,12 @@ function AnyEntryMapFixes()
     local name conName;
     local string afterTextLine;
 
+    // if you can talk to gunther then obviously he's been rescued
     DeleteConversationFlag(GetConversation('GuntherRescued'), 'GuntherFreed', true);
 
     //Cut out the dialog for Paul giving you equipment
+    if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
+
     c = GetConversation('MeetPaul');
     ce = c.eventList;
 

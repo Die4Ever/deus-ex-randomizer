@@ -8,7 +8,7 @@ const GOAL_TYPE4 = 16;
 const SITTING_GOAL = 268435456;
 const VANILLA_GOAL = 536870912;
 const START_LOCATION = 1073741824;
-const VANILLA_START = 2147483648;
+const VANILLA_START = -2147483648;
 const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
 var bool RandoMissionGoals;// only set on first entry
@@ -31,11 +31,22 @@ struct GoalActorLocation {
     var rotator rot;
 };
 
+struct MapImageGoalMarkers {
+    var class<DataVaultImage> image;
+    var string    goalName;
+    var int    locNum;
+    var String markerLetter;
+    var String helpText;
+    var int    posX;
+    var int    posY;
+};
+
 struct GoalLocation {
     var string mapName;
     var string name;
     var int bitMask;
     var GoalActorLocation positions[8]; // keep in sync with PLAYER_LOCATION
+    var MapImageGoalMarkers mapMarker;
 };
 
 struct MutualExclusion {
@@ -46,7 +57,9 @@ struct Spoiler {
     var string goalName;
     var string goalLocation;
     var string locationMapName;
+    var int locationId;
 };
+
 
 var Goal goals[32];
 var Spoiler spoilers[32];
@@ -178,6 +191,68 @@ function String generateGoalLocationList()
     return goalList;
 }
 
+function AddMapMarker(class<DataVaultImage> image, int posX, int posY, String markerLetter, string goalName, int locNum, String helpText)
+{
+    locations[locNum].mapMarker.image=image;
+    locations[locNum].mapMarker.goalName=goalName;
+    locations[locNum].mapMarker.locNum=locNum;
+    locations[locNum].mapMarker.markerLetter=markerLetter;
+    locations[locNum].mapMarker.helpText=helpText;
+    locations[locNum].mapMarker.posX=posX;
+    locations[locNum].mapMarker.posY=posY;
+}
+
+function bool MapHasGoalMarkers(class<DataVaultImage> image)
+{
+    local int i;
+    for (i=0;i<num_locations;i++){
+        if (locations[i].mapMarker.image==image){
+            return True;
+        }
+    }
+    return False;
+}
+
+function int PopulateMapMarkerNotes(class<DataVaultImage> image, out DXRDataVaultMapImageNote notes[32])
+{
+    local int i,numNotes;
+    for (i=0;i<num_locations;i++){
+        if (locations[i].mapMarker.image==image){
+            notes[numNotes].noteText=locations[i].mapMarker.markerLetter;
+            notes[numNotes].posX=locations[i].mapMarker.posX;
+            notes[numNotes].posY=locations[i].mapMarker.posY;
+            notes[numNotes].HelpTitle=locations[i].mapMarker.goalName;
+            notes[numNotes].HelpText=locations[i].mapMarker.helpText;
+            notes[numNotes].bExpanded=True;
+            numNotes++;
+        }
+    }
+    return numNotes;
+}
+
+function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataVaultMapImageNote notes[32])
+{
+    local int i,goalLoc,numNotes;
+    local string goalName;
+
+    for (i=0;i<num_goals;i++){
+        goalLoc = GetSpoiler(i).locationId;
+        goalName = GetSpoiler(i).goalName;
+
+        if (locations[goalLoc].mapMarker.image==image){
+            notes[numNotes].noteText=locations[goalLoc].mapMarker.markerLetter;
+            notes[numNotes].posX=locations[goalLoc].mapMarker.posX;
+            notes[numNotes].posY=locations[goalLoc].mapMarker.posY;
+            notes[numNotes].HelpTitle=goalName;
+            notes[numNotes].HelpText=locations[goalLoc].mapMarker.helpText;
+            notes[numNotes].bExpanded=True;
+            numNotes++;
+        }
+    }
+    return numNotes;
+}
+
+
 function AddMutualExclusion(int L1, int L2)
 {
     mutually_exclusive[num_mututally_exclusives].L1 = L1;
@@ -187,7 +262,12 @@ function AddMutualExclusion(int L1, int L2)
 
 function int InitGoalsByMod(int mission, string map)
 {
-    if (#defined(revision)){
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    l("InitGoalsByMod: Using Revision Maps? "$RevisionMaps);
+
+    if (RevisionMaps){
         return InitGoalsRev(dxr.dxInfo.missionNumber, dxr.localURL);
     } else {
         return InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
@@ -361,6 +441,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         spoilers[i].goalName=goals[i].name;
         spoilers[i].goalLocation=locations[availLocs[r]].name;
         spoilers[i].locationMapName=locations[availLocs[r]].mapName;
+        spoilers[i].locationId=availLocs[r];
 
         _num_locs--;
         availLocs[r] = availLocs[_num_locs];
@@ -679,4 +760,8 @@ function RunTests()
 {
     local int i, total;
     Super.RunTests();
+
+    i = NORMAL_GOAL | VANILLA_START;
+    testint(i, -2147483647, "NORMAL_GOAL | VANILLA_START");
+    testint(i & SITTING_GOAL, 0, "Leo dock not sitting goal");
 }

@@ -86,8 +86,10 @@ function SetGameSpeed(float s)
     Level.Game.GameSpeed = s;
     Level.TimeDilation = s;
     Level.Game.SetTimer(s, true);
-    Level.Game.SaveConfig();
-    Level.Game.GameReplicationInfo.SaveConfig();
+    if(s == 1) {
+        Level.Game.SaveConfig();
+        Level.Game.GameReplicationInfo.SaveConfig();
+    }
 
     // we need the mission script to clear PlayerTraveling
     if(s <= 0.1) s /= 2;// might as well run the timer faster?

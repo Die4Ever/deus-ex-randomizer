@@ -37,6 +37,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey k;
     local DXREnemies dxre;
     local int i;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch (dxr.localURL)
     {
@@ -50,7 +53,7 @@ function PreFirstEntryMapFixes()
             PartialHeal(p.HealthArmLeft, p.default.HealthArmLeft);
             PartialHeal(p.HealthArmRight, p.default.HealthArmRight);
             p.GenerateTotalHealth();
-            if(dxr.flags.settings.prison_pocket > 0 || #defined(vanillamaps))
+            if(dxr.flags.settings.prison_pocket > 0 || VanillaMaps)
                 dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
             // we have to move the items in PostFirstEntry, otherwise they get swapped around with other things
         }
@@ -70,73 +73,73 @@ function PreFirstEntryMapFixes()
             mj12.BindName = "MJ12CellguardRick";
         }
 
-#ifdef vanillamaps
-        foreach AllActors(class'DeusExMover',dxm){
-            if (dxm.Name=='DeusExMover34'){
-                //I think this filing cabinet door was supposed to
-                //be unlockable with Agent Sherman's key as well
-                dxm.KeyIDNeeded='Cabinet';
+        if (VanillaMaps){
+            foreach AllActors(class'DeusExMover',dxm){
+                if (dxm.Name=='DeusExMover34'){
+                    //I think this filing cabinet door was supposed to
+                    //be unlockable with Agent Sherman's key as well
+                    dxm.KeyIDNeeded='Cabinet';
+                }
             }
         }
-#endif
 
         break;
 
-#ifdef vanillamaps
     case "05_NYC_UNATCOHQ":
-        FixAlexsEmail();
+        if (VanillaMaps){
+            FixAlexsEmail();
 
-        // Anna's dialog depends on this flag
-        dxr.flagbase.SetBool('DL_Choice_Played', true,, 6);
+            // Anna's dialog depends on this flag
+            dxr.flagbase.SetBool('DL_Choice_Played', true,, 6);
 
-        foreach AllActors(class'ComputerPersonal', c) {
-            if( c.Name != 'ComputerPersonal3' ) continue;
-            // gunther and anna's computer across from Carter
-            for(i=0; i < ArrayCount(c.UserList); i++) {
-                if( c.UserList[i].userName != "JCD" ) continue;
-                // it's silly that you can use JC's account to get part of Anna's killphrase, and also weird that Anna's account isn't on here
-                c.UserList[i].userName = "anavarre";
-                c.UserList[i].password = "scryspc";
+            foreach AllActors(class'ComputerPersonal', c) {
+                if( c.Name != 'ComputerPersonal3' ) continue;
+                // gunther and anna's computer across from Carter
+                for(i=0; i < ArrayCount(c.UserList); i++) {
+                    if( c.UserList[i].userName != "JCD" ) continue;
+                    // it's silly that you can use JC's account to get part of Anna's killphrase, and also weird that Anna's account isn't on here
+                    c.UserList[i].userName = "anavarre";
+                    c.UserList[i].password = "scryspc";
+                }
             }
-        }
-        foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
-            RemoveFears(alex);
-        }
-        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-            RemoveFears(j);
-        }
+            foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
+                RemoveFears(alex);
+            }
+            foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+                RemoveFears(j);
+            }
 
-        k = Spawn(class'#var(prefix)NanoKey',,, vectm(420,195,333));
-        k.KeyID = 'UNOfficeDoorKey';
-        k.Description = "UNATCO Office Door Key";
-        if(dxr.flags.settings.keysrando > 0)
-            GlowUp(k);
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(420,195,333));
+            k.KeyID = 'UNOfficeDoorKey';
+            k.Description = "UNATCO Office Door Key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
 
-        k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
-        k.KeyID = 'JaimeClosetKey';
-        k.Description = "MedLab Closet Key Code";
-        if(dxr.flags.settings.keysrando > 0)
-            GlowUp(k);
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
+            k.KeyID = 'JaimeClosetKey';
+            k.Description = "MedLab Closet Key Code";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
 
-        //Spawn some placeholders for new item locations
-        Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
-        Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
-        Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
-        Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
-        Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
-        Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
-        Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
-        Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
-        Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
-        Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
-        Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
-        Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+            //Spawn some placeholders for new item locations
+            Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
+            Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
+            Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
+            Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+            Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
+            Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
+            Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
+            Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
+            Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+        }
 
         break;
-#endif
 
     case "05_NYC_UNATCOISLAND":
         foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
@@ -232,7 +235,31 @@ function BalanceJailbreak()
         l("BalanceJailbreak PaulLocation == " $ PaulLocation);
         if(PaulLocation == "Surgery Ward" || PaulLocation == "Greasel Pit")
             foreach AllActors(class'SpawnPoint', SP, 'player_inv')
-                itemLocations[num++] = SP.Location;
+                //Adjust item spawnpoints in armoury - specifically, move things off the top shelf
+                switch(sp.Name){
+                    case 'SpawnPoint24':
+                        itemLocations[num++] = vectm(-8551,1061,-197);
+                        break;
+                    case 'SpawnPoint12':
+                        itemLocations[num++] = vectm(-8542,1410,-148);
+                        break;
+                    case 'SpawnPoint10':
+                        itemLocations[num++] = vectm(-8642,1410,-148);
+                        break;
+                    case 'SpawnPoint11':
+                        itemLocations[num++] = vectm(-8636,1410,-197);
+                        break;
+                    case 'SpawnPoint22':
+                        itemLocations[num++] = vectm(-8554,1057,-148);
+                        break;
+                    case 'SpawnPoint23':
+                        itemLocations[num++] = vectm(-8655,1056,-148);
+                        break;
+                    default:
+                        itemLocations[num++] = SP.Location;
+                        break;
+                }
+
         else {
             // put the items in the surgery ward
             itemLocations[num++] = vectm(2174.416504,-569.534729,-213.660309);// paul's bed

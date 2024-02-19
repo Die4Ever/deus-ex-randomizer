@@ -194,6 +194,9 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)InterpolateTrigger it;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
@@ -206,7 +209,7 @@ function PreFirstEntryMapFixes()
         ReplaceBatteryParkSubwayTNT();
     }
 
-    if (#defined(revision) && dxr.localURL=="02_NYC_WAREHOUSE"){
+    if (RevisionMaps && dxr.localURL=="02_NYC_WAREHOUSE"){
         foreach AllActors(class'#var(prefix)InterpolateTrigger',it,'FlyInTrigger'){
             it.Destroy();
         }

@@ -132,8 +132,24 @@ function ShowIntro(optional bool bStartNewGame)
 
 exec function QuickSave()
 {
-    if( class'DXRAutosave'.static.AllowManualSaves(self) ) Super.QuickSave();
-    else ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
+    local DeusExLevelInfo info;
+
+    if( class'DXRAutosave'.static.AllowManualSaves(self) ){
+        info = GetLevelInfo();
+
+        //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
+        if (((info != None) && (info.MissionNumber < 0)) || 
+            ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) || 
+            (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
+        {
+            ClientMessage("Cannot quick save during infolink!",, true);
+        } else {
+            Super.QuickSave();
+            ClientMessage("Quick Saved",, true);
+        }
+    } else {
+        ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
+    }
 }
 
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
@@ -162,6 +178,9 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
+                if (mod.IsA('WeaponModLaser') && bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+                    weap.LaserOn();
+                }
                 mod.DestroyMod();
                 return true;
             }
