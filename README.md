@@ -65,7 +65,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
-    * WaltonWare mode - a game mode where you start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can do them or how many you can complete!
+    * WaltonWare mode - a game mode where you start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
     * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties. And a built in splits viewer!
     * WaltonWare Entrance Rando - both modes combined!
 * Challenge mode loadouts! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts)
