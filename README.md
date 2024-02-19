@@ -98,7 +98,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 * Optional hardcore Autosave-Only mode, no save-scumming allowed!
 * Option to keep the game running while menus are open, making hacking or inventory management more difficult
 * Assistance options like autofill for passwords and keypad codes
-* The ability to show where Nanokeys/Datacubes/goals are located
+* The ability to reveal where Nanokeys/Datacubes/goals are located
 * Option to start the game at certain points like Hong Kong or Paris
 
 ## New Game Menus
