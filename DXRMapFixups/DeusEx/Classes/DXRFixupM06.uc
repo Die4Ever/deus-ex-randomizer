@@ -366,6 +366,17 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-836.9,850.3,-9.7)); //Reception desk back
         break;
     case "06_HONGKONG_STORAGE":
+        //Make sure Maggie always has her MaggieChowShowdown conversation with you if she's here.
+        //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing)
+        //Remove the requirement for M07Briefing_Played for the conversation (Done in AnyEntry)
+        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(-2.5,-3,-848));
+        ft.SetCollisionSize(1000,5);
+        ft.FlagName='MaggieFled';
+        ft.bTrigger=False;
+        ft.bSetFlag=True;
+        ft.flagValue=True;
+        ft.flagExpiration=8;
+
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers
         Spawn(class'PlaceholderItem',,, vectm(1169,-1490,459)); //Water pool
@@ -619,6 +630,12 @@ function AnyEntryMapFixes()
             ce = ce.nextEvent;
         }
 
+        break;
+    case "06_HONGKONG_STORAGE":
+        //Make sure Maggie always has her MaggieChowShowdown conversation with you if she's here.
+        //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing) - Done in PreFirstEntry
+        //Remove the requirement for M07Briefing_Played for the conversation (This allows the conversation to trigger if you went out of order - maybe normally, maybe entrance rando)
+        DeleteConversationFlag(GetConversation('MaggieChowShowdown'), 'M07Briefing_Played', true);
         break;
     default:
         break;
