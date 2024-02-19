@@ -86,7 +86,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
   * In-game [Leaderboard](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Leaderboard) to see everyone's high scores in the end credits
 * Max Rando - randomize the randomizer's settings!
 * An integrated Bingo board: on the Goals screen there's a Bingo button in the middle bar
-  * Also an external BingoDisplay program you can download from [the Releases page](https://github.com/Die4Ever/deus-ex-randomizer/releases). Great for streamers who want to show their bingo progress live to viewers.
+  * Also an external BingoDisplay program you can download from the Github [Releases page](https://github.com/Die4Ever/deus-ex-randomizer/releases). Great for streamers who want to show their bingo progress live to viewers.
 * Co-op when combined with the HX mod (Alpha)
 * Making all or some of the doors that normally require a key also lockpickable and/or destructible
 * Making all or some keypads hackable
