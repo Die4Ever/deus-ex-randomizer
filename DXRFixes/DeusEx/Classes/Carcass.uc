@@ -201,9 +201,11 @@ function Frob(Actor Frobber, Inventory frobWith)
 function bool TryLootItem(DeusExPlayer player, Inventory item)
 {
     local ammo AmmoType;
+    local DeusExAmmo playerAmmo, newAmmo;
     local DeusExWeapon W;
     local DeusExPickup invItem;
     local int itemCount;
+    local int ammountDiff;
 
     if (!dropsAmmo && item.IsA('Ammo'))
     {
@@ -262,7 +264,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
         if (W != None || (W == None && !player.FindInventorySlot(item, True)))
         {
-            // Don't bother with this is there's no ammo
+            // Don't bother with this if there's no ammo
             if (Weapon(item).AmmoType != None && Weapon(item).PickupAmmoCount > 0)
             {
                 AmmoType = Ammo(player.FindInventoryType(Weapon(item).AmmoName));
@@ -322,6 +324,15 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     {
         if (DeusExAmmo(item).AmmoAmount == 0)
             return false;
+
+        // If not all ammo can be picked up, spawn a clip with the difference
+        playerAmmo = DeusExAmmo(player.FindInventoryType(item.class));
+        ammountDiff = DeusExAmmo(item).AmmoAmount - (playerAmmo.MaxAmmo - playerAmmo.AmmoAmount);
+        if (ammountDiff > 0) {
+            newAmmo = Spawn(playerAmmo.class,,, Location);
+            newAmmo.AmmoAmount = ammountDiff;
+            newAmmo.Velocity = Velocity + VRand() * 280; // same as other corpse drops
+        }
     }
 
     // Special case if this is a DeusExPickup(), it can have multiple copies
