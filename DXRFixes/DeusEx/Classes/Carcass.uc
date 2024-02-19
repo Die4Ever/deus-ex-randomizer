@@ -205,7 +205,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     local DeusExWeapon W;
     local DeusExPickup invItem;
     local int itemCount;
-    local int ammountDiff;
+    local int ammoAdded, leftoverAmmo;
 
     if (!dropsAmmo && item.IsA('Ammo'))
     {
@@ -325,12 +325,21 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         if (DeusExAmmo(item).AmmoAmount == 0)
             return false;
 
-        // If not all ammo can be picked up, spawn a clip with the difference
         playerAmmo = DeusExAmmo(player.FindInventoryType(item.class));
-        ammountDiff = DeusExAmmo(item).AmmoAmount - (playerAmmo.MaxAmmo - playerAmmo.AmmoAmount);
-        if (ammountDiff > 0) {
+        ammoAdded = Min(DeusExAmmo(item).AmmoAmount, playerAmmo.MaxAmmo - playerAmmo.AmmoAmount);
+        leftoverAmmo = DeusExAmmo(item).AmmoAmount - ammoAdded;
+        DeusExAmmo(item).AmmoAmount = 0; // needed?
+
+        if (ammoAdded > 0) {
+            DeusExAmmo(item).AddAmmo(ammoAdded);
+            AddReceivedItem(player, DeusExAmmo(item), ammoAdded);
+            player.UpdateAmmoBeltText(AmmoType);
+            player.ClientMessage(DeusExAmmo(item).PickupMessage @ DeusExAmmo(item).itemArticle @ DeusExAmmo(item).itemName, 'Pickup');
+        }
+
+        if (leftoverAmmo > 0) {
             newAmmo = Spawn(playerAmmo.class,,, Location);
-            newAmmo.AmmoAmount = ammountDiff;
+            newAmmo.AmmoAmount = ammoAdded;
             newAmmo.Velocity = Velocity + VRand() * 280; // same as other corpse drops
         }
     }
