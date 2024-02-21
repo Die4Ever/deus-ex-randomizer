@@ -200,22 +200,14 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function bool TryLootItem(DeusExPlayer player, Inventory item)
 {
-    local ammo AmmoType;
-    local DeusExAmmo playerAmmo, newAmmo;
+    local ammo AmmoType, playerAmmo, newAmmo;
     local DeusExWeapon W;
     local DeusExPickup invItem;
     local int itemCount;
-    local int ammoAdded, leftoverAmmo;
+    local int ammoAdded, ammoLeftover;
     local bool success;
 
-    if (!dropsAmmo && item.IsA('Ammo'))
-    {
-        // Only let the player pick up ammo that's already in a weapon
-        DeleteInventory(item);
-        item.Destroy();
-        return false;
-    }
-    else if (item.IsA('DeusExWeapon'))
+    if (item.IsA('DeusExWeapon'))
     {
         // Any weapons have their ammo set to a random number of rounds (1-4)
         // unless it's a grenade, in which case we only want to dole out one.
@@ -321,23 +313,31 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         }
     }
 
-    if (item.IsA('DeusExAmmo'))
+    if (item.IsA('Ammo'))
     {
-        if (DeusExAmmo(item).AmmoAmount == 0) {
+        if (!dropsAmmo || Ammo(item).AmmoAmount == 0) {
+            DeleteInventory(item);
+            item.Destroy();
             return false;
         }
 
-        playerAmmo = DeusExAmmo(player.FindInventoryType(item.class));
+        playerAmmo = Ammo(player.FindInventoryType(item.class));
 
-        ammoAdded = Min(DeusExAmmo(item).AmmoAmount, DeusExAmmo(item).MaxAmmo - playerAmmo.AmmoAmount);
-        leftoverAmmo = DeusExAmmo(item).AmmoAmount - ammoAdded;
+        ammoAdded = Min(Ammo(item).AmmoAmount, Ammo(item).MaxAmmo - playerAmmo.AmmoAmount);
+        ammoLeftover = Ammo(item).AmmoAmount - ammoAdded;
+
+        if (ammoLeftover > 0) {
+            newAmmo = Spawn(Ammo(item).class,,, Location);
+            newAmmo.AmmoAmount = ammoLeftover;
+            newAmmo.Velocity = Velocity + VRand() * 280; // same as vanilla corpse drops
+        }
 
         if (playerAmmo == None) {
             TryLootRegularItem(player, item);
         } else {
             playerAmmo.AmmoAmount += ammoAdded;
 
-            AddReceivedItem(player, DeusExAmmo(item), ammoAdded);
+            AddReceivedItem(player, Ammo(item), ammoAdded);
             player.UpdateAmmoBeltText(playerAmmo);
             if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
                 player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
@@ -347,12 +347,6 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
             DeleteInventory(item);
             item.Destroy();
-        }
-
-        if (leftoverAmmo > 0) {
-            newAmmo = Spawn(playerAmmo.class,,, Location);
-            newAmmo.AmmoAmount = leftoverAmmo;
-            newAmmo.Velocity = Velocity + VRand() * 280; // same as vanilla corpse drops
         }
 
         return true;
