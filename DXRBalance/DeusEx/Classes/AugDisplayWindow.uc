@@ -220,28 +220,7 @@ function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitL
 	local Actor target;
 	local Vector HitLoc, HitNormal, StartTrace, EndTrace;
 
-	target = None;
-
-	// figure out how far ahead we should trace
-	StartTrace = Player.Location;
-	EndTrace = Player.Location + (Vector(Player.ViewRotation) * checkDist);
-
-	// adjust for the eye height
-	StartTrace.Z += Player.BaseEyeHeight;
-	EndTrace.Z += Player.BaseEyeHeight;
-
-	// find the object that we are looking at
-	foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace){
-        if (target == Player.CarriedDecoration){
-           continue;
-        } else if (Player.IsFrobbable(target)){
-            return None;
-        } else if (target.bHidden){
-            continue;
-        } else {
-            break;
-        }
-    }
+	target = TraceActorType(class'#var(prefix)Teleporter',checkDist);
 
     if (#var(prefix)Teleporter(target)!=None)
     {
@@ -250,6 +229,70 @@ function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitL
     }
 
 	return None;
+}
+
+function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
+{
+    local Actor target;
+    local Vector HitLoc;
+    local bool destroyed;
+    local DXRHoverHint hoverHint;
+
+    target = TraceActorType(class'DXRHoverHint',checkDist);
+
+    hoverHint = DXRHoverHint(target);
+    if (hoverHint!=None)
+    {
+        //Check if the attached target has been destroyed
+        destroyed=False;
+        if (hoverHint.attached){
+            if (#var(DeusExPrefix)Mover(hoverHint.target)!=None){
+                destroyed = #var(DeusExPrefix)Mover(hoverHint.target).bDestroyed;
+            } else {
+                destroyed = (hoverHint.target==None);
+            }
+        }
+        if (destroyed==True){
+            target.Destroy();
+            return None;
+        }
+
+        HitLocation = HitLoc;
+        return hoverHint;
+    }
+
+    return None;
+}
+
+function Actor TraceActorType(class<Actor> actType,float checkDist)
+{
+    local Actor target;
+    local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+
+    target = None;
+
+    // figure out how far ahead we should trace
+    StartTrace = Player.Location;
+    EndTrace = Player.Location + (Vector(Player.ViewRotation) * checkDist);
+
+    // adjust for the eye height
+    StartTrace.Z += Player.BaseEyeHeight;
+    EndTrace.Z += Player.BaseEyeHeight;
+
+    // find the object that we are looking at
+    foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace){
+        if (target == Player.CarriedDecoration){
+           continue;
+        } else if (Player.IsFrobbable(target)){
+            return None;
+        } else if (target.bHidden && !target.IsA(actType.name)){
+            continue;
+        } else {
+            break;
+        }
+    }
+
+    return target;
 }
 
 function string formatMapName(string mapName)
@@ -283,6 +326,7 @@ function DrawTargetAugmentation(GC gc)
 {
     local Weapon oldWeapon;
     local #var(prefix)Teleporter tgtTeleporter;
+    local DXRHoverHint hoverHint;
     local vector AimLocation;
     local string str,teleDest;
     local float x,y,h,w, boxCX,boxCY;
@@ -326,6 +370,20 @@ function DrawTargetAugmentation(GC gc)
 
         gc.DrawText(x, y, w, h, str);
 	}
+
+    //Look for any hover hints
+    hoverHint = TraceHoverHint(8000,AimLocation);
+    if (hoverHint!=None){
+        ConvertVectorToCoordinates(hoverHint.Location, boxCX, boxCY);
+
+        str = hoverHint.HintText;
+        gc.SetTextColor(colWhite);
+        gc.GetTextExtent(0, w, h, str);
+        x = boxCX - w/2;
+        y=boxCY;
+
+        gc.DrawText(x, y, w, h, str);
+    }
 
     //Font is immediately changed after DrawTargetAugmentation gets called,
     //So not necessary to "change it back" to the old font

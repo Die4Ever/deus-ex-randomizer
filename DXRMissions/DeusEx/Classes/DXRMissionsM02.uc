@@ -235,11 +235,16 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
 
+    if (g.name=="Generator"){
+        class'DXRHoverHint'.static.Create(self, "NSF Generator", Loc.positions[0].pos, 175, 125,g.actors[0].actorName);
+    }
+
     if(g.name == "Generator" && Loc.name != "Warehouse") {
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(505.710449, -605, 162.091278), rotm(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
         a.DrawScale = 4;
+        class'DXRHoverHint'.static.Create(self, "This is not the generator", a.Location, a.CollisionRadius, a.CollisionHeight);
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0));
         a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
         a.bMovable = false;
