@@ -206,6 +206,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     local DeusExPickup invItem;
     local int itemCount;
     local int ammoAdded, leftoverAmmo;
+    local bool success;
 
     if (!dropsAmmo && item.IsA('Ammo'))
     {
@@ -322,26 +323,39 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     if (item.IsA('DeusExAmmo'))
     {
-        if (DeusExAmmo(item).AmmoAmount == 0)
+        if (DeusExAmmo(item).AmmoAmount == 0) {
             return false;
+        }
 
         playerAmmo = DeusExAmmo(player.FindInventoryType(item.class));
-        ammoAdded = Min(DeusExAmmo(item).AmmoAmount, playerAmmo.MaxAmmo - playerAmmo.AmmoAmount);
-        leftoverAmmo = DeusExAmmo(item).AmmoAmount - ammoAdded;
-        DeusExAmmo(item).AmmoAmount = 0; // needed?
 
-        if (ammoAdded > 0) {
-            DeusExAmmo(item).AddAmmo(ammoAdded);
+        ammoAdded = Min(DeusExAmmo(item).AmmoAmount, DeusExAmmo(item).MaxAmmo - playerAmmo.AmmoAmount);
+        leftoverAmmo = DeusExAmmo(item).AmmoAmount - ammoAdded;
+
+        if (playerAmmo == None) {
+            TryLootRegularItem(player, item);
+        } else {
+            playerAmmo.AmmoAmount += ammoAdded;
+
             AddReceivedItem(player, DeusExAmmo(item), ammoAdded);
-            player.UpdateAmmoBeltText(AmmoType);
-            player.ClientMessage(DeusExAmmo(item).PickupMessage @ DeusExAmmo(item).itemArticle @ DeusExAmmo(item).itemName, 'Pickup');
+            player.UpdateAmmoBeltText(playerAmmo);
+            if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
+                player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+            } else {
+                player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+            }
+
+            DeleteInventory(item);
+            item.Destroy();
         }
 
         if (leftoverAmmo > 0) {
             newAmmo = Spawn(playerAmmo.class,,, Location);
-            newAmmo.AmmoAmount = ammoAdded;
-            newAmmo.Velocity = Velocity + VRand() * 280; // same as other corpse drops
+            newAmmo.AmmoAmount = leftoverAmmo;
+            newAmmo.Velocity = Velocity + VRand() * 280; // same as vanilla corpse drops
         }
+
+        return true;
     }
 
     // Special case if this is a DeusExPickup(), it can have multiple copies
