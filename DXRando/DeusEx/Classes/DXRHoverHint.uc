@@ -31,6 +31,25 @@ static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad,
     return hoverHint;
 }
 
+function bool ShouldDisplay()
+{
+    return True;
+}
+
+function bool ShouldSelfDestruct()
+{
+    //Check if the attached target has been destroyed
+    if (attached){
+        if (#var(DeusExPrefix)Mover(target)!=None){
+            return #var(DeusExPrefix)Mover(target).bDestroyed;
+        } else {
+            return (target==None);
+        }
+    }
+
+    return False;
+}
+
 defaultproperties
 {
      bCollideActors=True

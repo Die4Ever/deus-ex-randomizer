@@ -235,7 +235,6 @@ function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
 {
     local Actor target;
     local Vector HitLoc;
-    local bool destroyed;
     local DXRHoverHint hoverHint;
 
     target = TraceActorType(class'DXRHoverHint',checkDist);
@@ -243,17 +242,12 @@ function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
     hoverHint = DXRHoverHint(target);
     if (hoverHint!=None)
     {
-        //Check if the attached target has been destroyed
-        destroyed=False;
-        if (hoverHint.attached){
-            if (#var(DeusExPrefix)Mover(hoverHint.target)!=None){
-                destroyed = #var(DeusExPrefix)Mover(hoverHint.target).bDestroyed;
-            } else {
-                destroyed = (hoverHint.target==None);
-            }
+        if (hoverHint.ShouldSelfDestruct()){
+            hoverHint.Destroy();
+            return None;
         }
-        if (destroyed==True){
-            target.Destroy();
+
+        if (hoverHint.ShouldDisplay()==False){
             return None;
         }
 
