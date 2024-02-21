@@ -205,7 +205,6 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     local DeusExPickup invItem;
     local int itemCount;
     local int ammoAdded, ammoLeftover;
-    local bool success;
 
     if (item.IsA('DeusExWeapon'))
     {
@@ -323,7 +322,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
         playerAmmo = Ammo(player.FindInventoryType(item.class));
 
-        ammoAdded = Min(Ammo(item).AmmoAmount, Ammo(item).MaxAmmo - playerAmmo.AmmoAmount);
+        ammoAdded = Min( Ammo(item).AmmoAmount, Ammo(item).MaxAmmo - playerAmmo.AmmoAmount );
         ammoLeftover = Ammo(item).AmmoAmount - ammoAdded;
 
         if (ammoLeftover > 0) {
