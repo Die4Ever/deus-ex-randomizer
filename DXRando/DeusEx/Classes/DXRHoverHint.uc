@@ -50,6 +50,11 @@ function bool ShouldSelfDestruct()
     return False;
 }
 
+function String GetHintText()
+{
+    return HintText;
+}
+
 defaultproperties
 {
      bCollideActors=True

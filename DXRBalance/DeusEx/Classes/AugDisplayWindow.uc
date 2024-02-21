@@ -370,7 +370,7 @@ function DrawTargetAugmentation(GC gc)
     if (hoverHint!=None){
         ConvertVectorToCoordinates(hoverHint.Location, boxCX, boxCY);
 
-        str = hoverHint.HintText;
+        str = hoverHint.GetHintText();
         gc.SetTextColor(colWhite);
         gc.GetTextExtent(0, w, h, str);
         x = boxCX - w/2;
