@@ -263,6 +263,7 @@ function ParisMetroAnyEntry()
     local NicoletteDuClare nicolette;
     local FlagBase flags;
     local MapExit exit;
+    local Vehicles chopper;
 
     flags = dxr.flagbase;
 
@@ -286,7 +287,10 @@ function ParisMetroAnyEntry()
 
         RemoveChoppers();
 
-        SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vectm(3134.682373, 1101.204956, 304.756897), rotm(0, -24944, 0) );
+        chopper=SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vectm(3134.682373, 1101.204956, 304.756897), rotm(0, -24944, 0) );
+
+        RebindChopperHoverHint('ChopperExit',chopper);
+
     }
 
     /*if( flags.GetBool('ClubComplete') ) {
@@ -671,8 +675,10 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
 
     chopper = SpawnChopper(ChopperTag, PathTag, BindName, loc, rot);
 
-    foreach AllActors(class'MapExit', exit, event)
+    foreach AllActors(class'MapExit', exit, event){
+        RebindChopperHoverHint(event,chopper);
         return chopper;
+    }
 
     exit = Spawn(class'MapExit',, event, loc );
     exit.SetCollision(false,false,false);
@@ -680,10 +686,33 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
     exit.bPlayTransition = true;
     exit.cameraPathTag = CameraPath;
 
-    class'DXRTeleporterHoverHint'.static.Create(self, "", chopper.Location, chopper.CollisionRadius+5, chopper.CollisionHeight+5, exit.Name);
+    RebindChopperHoverHint(event,chopper);
 
     info("BacktrackChopper spawned "$exit);
     return chopper;
+}
+
+function RebindChopperHoverHint(name ExitTag, Vehicles chopper)
+{
+    local #var(prefix)MapExit exit;
+    local DXRTeleporterHoverHint hoverHint;
+    local bool foundHint;
+
+    foreach AllActors(class'#var(prefix)MapExit',exit,ExitTag){
+        break;
+    }
+
+    foundHint=False;
+    foreach AllActors(class'DXRTeleporterHoverHint',hoverHint){
+        if (hoverHint.target==exit){
+            foundHint=True;
+            break;
+        }
+    }
+    if (!foundHint){
+        hoverHint = DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", chopper.Location, chopper.CollisionRadius+5, chopper.CollisionHeight+5, exit.Name));
+    }
+    hoverHint.SetBaseActor(chopper);
 }
 
 function CreateInterpolationPoints(Name PathTag, vector loc)

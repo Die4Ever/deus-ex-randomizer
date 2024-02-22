@@ -48,6 +48,7 @@ function AttachTarget(name targetName)
 function SetBaseActor(Actor base)
 {
     baseActor = base;
+    SetLocation(baseActor.Location);
     SetBase(baseActor);
 
     //The tick logic is primarily for handling EnterWorld/LeaveWorld,
