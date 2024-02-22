@@ -199,6 +199,8 @@ switch(mapname)
                 case "tunnel_drop_nyc":
                 case "unatcoisland":
                     return "Liberty Island UNATCO Entrance";
+                default:
+                    return "UNATCO Helipad";
             }
             break;
         case "02_NYC_BAR":

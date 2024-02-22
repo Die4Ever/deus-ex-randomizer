@@ -15,6 +15,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FishGenerator fg;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)Trigger trig;
+    local #var(prefix)MapExit exit;
     local bool RevisionMaps;
     local bool VanillaMaps;
 
@@ -43,9 +44,11 @@ function PreFirstEntryMapFixes()
                         t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
                 }
             }
+            foreach AllActors(class'#var(prefix)MapExit',exit,'Boat_Exit'){break;}
             foreach AllActors(class'NYPoliceBoat',b) {
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
+                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit.Name);
             }
             foreach AllActors(class'DeusExMover', d) {
                 if( d.Name == 'DeusExMover19' ) {

@@ -61,6 +61,11 @@ function String GetHintText()
         }
     } else if (#var(prefix)MapExit(target)!=None){
         teleDest = #var(prefix)MapExit(target).DestMap;
+#ifdef injections
+        if (#var(prefix)MapExit(target).destName!=''){
+            teleDest = teleDest$#var(prefix)MapExit(target).destName;
+        }
+#endif
     }
     return "To: "$formatMapName(teleDest);
 }
