@@ -1,6 +1,7 @@
 class DXRHoverHint extends Info;
 
 var() string HintText;
+var() int VisibleDistance;
 var Actor target;
 var bool attached;
 
@@ -56,8 +57,12 @@ function SetBaseActor(Actor base)
     }
 }
 
-function bool ShouldDisplay()
+function bool ShouldDisplay(float dist)
 {
+    if (dist > VisibleDistance){
+        return False;
+    }
+
     if (baseActor!=None){
         if (ScriptedPawn(baseActor)!=None){
             if ((ScriptedPawn(baseActor).bInWorld==False)){
@@ -139,4 +144,5 @@ defaultproperties
      attached=False
      target=None
      bInWorld=False
+     VisibleDistance=2000
 }

@@ -70,11 +70,11 @@ function String GetHintText()
     return "To: "$formatMapName(teleDest);
 }
 
-function bool ShouldDisplay()
+function bool ShouldDisplay(float dist)
 {
     local int show_teleporters;
 
-    if (Super.ShouldDisplay()==False){
+    if (Super.ShouldDisplay(dist)==False){
         return False;
     }
 

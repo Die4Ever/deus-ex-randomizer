@@ -236,6 +236,7 @@ function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
     local Actor target;
     local Vector HitLoc;
     local DXRHoverHint hoverHint;
+    local float dist;
 
     target = TraceActorType(class'DXRHoverHint',checkDist);
 
@@ -247,7 +248,8 @@ function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
             return None;
         }
 
-        if (hoverHint.ShouldDisplay()==False){
+        dist = VSize(player.Location-hoverHint.Location);
+        if (hoverHint.ShouldDisplay(dist)==False){
             return None;
         }
 
