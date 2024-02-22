@@ -16,6 +16,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
     local bool RevisionMaps;
     local bool VanillaMaps;
 
@@ -96,6 +98,14 @@ function PreFirstEntryMapFixes()
                 }
             }
             AddSwitch( vect(915.534,-1046.767,-117.347), rot(0, 16368, 0), 'SecurityDoor');
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
+
+
 
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));

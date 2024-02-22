@@ -17,6 +17,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WIB wib;
     local DXRMapVariants mapvariants;
     local DXRHoverHint hoverHint;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -114,6 +116,13 @@ function PreFirstEntryMapFixes()
             // make the apartment stairs less hidden, not safe to have stairs without a light!
             CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
             CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
+
         }
         break;
 
@@ -175,6 +184,13 @@ function PreFirstEntryMapFixes()
                 cs.specialOptions[1].TriggerText="";
             }
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'CalledByDispatcher'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+        hoverHint.SetBaseActor(jock);
+
         break;
     }
 }

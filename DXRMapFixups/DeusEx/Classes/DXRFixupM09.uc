@@ -39,6 +39,10 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)Trigger trig;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -192,6 +196,12 @@ function PreFirstEntryMapFixes()
             oot=Spawn(class'OnceOnlyTrigger');
             oot.Event='BotDrop';
             oot.Tag='BotDropOnce';
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ToGraveyard'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
         }
 
         //They put the key ID in the tag for some reason
@@ -293,6 +303,13 @@ function PreFirstEntryMapFixes()
         foreach RadiusActors(class'BlockPlayer', bp, 150, vectm(255.896591, 976.539551, 291.541748)) {
             bp.bBlockPlayers = false;
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'CopterCam'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+        hoverHint.SetBaseActor(jock);
+
         break;
     }
 }

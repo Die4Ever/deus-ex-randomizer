@@ -42,6 +42,9 @@ function PreFirstEntryMapFixes()
     local #var(DeusExPrefix)Mover door;
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)GuntherHermann gunther;
+    local DXRHoverHint hoverHint;
+    local DXRMapVariants mapvariants;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -218,6 +221,12 @@ function PreFirstEntryMapFixes()
             //Let the player free!  It's already possible to break outside of them, so just get rid of them.
             bp.bBlockPlayers=false;
         }
+        foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
+        foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""), gunther.Location, gunther.CollisionRadius+5, gunther.CollisionHeight+5, '');
+            hoverHint.SetBaseActor(gunther);
+        }
+
         break;
     case "04_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1440,340,48),rotm(0,-16348,0));

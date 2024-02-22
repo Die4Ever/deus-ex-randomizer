@@ -26,6 +26,10 @@ function PreFirstEntryMapFixes()
     local Actor a;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)FishGenerator fg;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -88,6 +92,13 @@ function PreFirstEntryMapFixes()
                 }
             }
             AddSwitch( vect(-278.854828,657.390503,-1977.144531), rot(0, 16384, 0), 'CmdBackDoor');
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Helicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
+
         }
         break;
 
@@ -147,6 +158,12 @@ function PreFirstEntryMapFixes()
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(5657,-1847,-1377));//Near tunnel to sub bay
             fg.ActiveArea=20000; //Long line of sight on this one...  Want it to trigger early
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
         }
         break;
 
@@ -260,6 +277,13 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ExitPath'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
+
+
             class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
             class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327));
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500));
@@ -294,6 +318,13 @@ function PreFirstEntryMapFixes()
             rg.MaxCount=1;
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
             rg.MaxCount=1;
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'UN_BlackHeli'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Heli'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
+
 
             Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
             Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar

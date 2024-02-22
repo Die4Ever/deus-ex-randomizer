@@ -43,6 +43,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)TriadRedArrow bouncer;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+
     local bool VanillaMaps;
 
 #ifdef injections
@@ -143,6 +147,12 @@ function PreFirstEntryMapFixes()
                     break;
             }
         }
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'outro_trigger'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+        hoverHint.SetBaseActor(jock);
+
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":

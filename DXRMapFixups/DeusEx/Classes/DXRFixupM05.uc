@@ -36,6 +36,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)NanoKey k;
     local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+
     local DXREnemies dxre;
     local int i;
     local bool VanillaMaps;
@@ -175,6 +179,12 @@ function PreFirstEntryMapFixes()
 
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-4685,2875,-124));//Outside the front door
         pg.MaxCount=3;
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+        hoverHint.SetBaseActor(jock);
 
         break;
     }

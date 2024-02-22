@@ -61,6 +61,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponModRecoil wmr;
     local #var(prefix)Terrorist terror;
     local #var(prefix)FishGenerator fg;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -179,6 +183,11 @@ function PreFirstEntryMapFixes()
                     tele.SetCollisionSize(tele.CollisionRadius, tele.CollisionHeight + 10);
                 }
             }
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint.SetBaseActor(jock);
         }
         break;
 

@@ -32,6 +32,9 @@ function PreFirstEntryMapFixes()
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)NYPoliceBoat b;
+    local DXRHoverHint hoverHint;
     npClass = class'#var(prefix)Newspaper';
 #else
     local DXRInformationDevices np;
@@ -44,6 +47,12 @@ function PreFirstEntryMapFixes()
         //Move this Joe Greene article from inside HQ to outside on the island
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0),'01_Newspaper06');//Forklift in bunker
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(3163,-1298,-207),rotm(0,0,0),'01_Newspaper06');//Backroom near jail
+
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)NYPoliceBoat',b) {
+            class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit.Name);
+            break;
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
