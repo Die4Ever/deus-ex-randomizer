@@ -8,12 +8,15 @@ function PreFirstEntryMapFixes()
     local Dispatcher d;
     local ScriptedPawn sp;
     local Conversation c;
+    local #var(prefix)TobyAtanwe toby;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)AutoTurret at;
     local #var(prefix)WIB wib;
+    local DXRMapVariants mapvariants;
+    local DXRHoverHint hoverHint;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -130,6 +133,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
         break;
     case "11_PARIS_UNDERGROUND":
+        foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
+        foreach AllActors(class'#var(prefix)TobyAtanwe', toby) {
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), toby.Location, toby.CollisionRadius+5, toby.CollisionHeight+5, '');
+            hoverHint.SetBaseActor(toby);
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(2268.5,-563.7,-101)); //Near ATM
         Spawn(class'PlaceholderItem',,, vectm(408.3,768.7,-37)); //Near Mechanic
         Spawn(class'PlaceholderItem',,, vectm(-729,809.5,-1061)); //Bench at subway

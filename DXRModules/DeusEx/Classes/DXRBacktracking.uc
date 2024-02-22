@@ -63,6 +63,7 @@ function PreFirstEntry()
         case "12_VANDENBERG_GAS":
             foreach AllActors(class'MapExit', exit, 'UN_BlackHeli') {
                 SetDestination(exit, "14_Vandenberg_sub", '', "PlayerStart");
+                class'DXRTeleporterHoverHint'.static.Create(self, "", vectm(2520.256836, -2489.873535, -1402.078857), 465, 90, exit.Name);
             }
             break;
 
@@ -678,6 +679,9 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
     SetDestination(exit, DestMap, DestName, DestTag);
     exit.bPlayTransition = true;
     exit.cameraPathTag = CameraPath;
+
+    class'DXRTeleporterHoverHint'.static.Create(self, "", chopper.Location, chopper.CollisionRadius+5, chopper.CollisionHeight+5, exit.Name);
+
     info("BacktrackChopper spawned "$exit);
     return chopper;
 }

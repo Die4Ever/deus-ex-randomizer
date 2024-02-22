@@ -584,13 +584,13 @@ switch(mapname)
                     return "Cathedral Metro Entrance";
             }
             break;
-        //case "11_PARIS_EVERETT":
-        //    switch(teleportername)
-        //    {
-        //        case "Entrance":
-        //            return "Everett Main Entrance";
-        //    }
-        //    break;
+        case "11_PARIS_EVERETT":
+            switch(teleportername)
+            {
+                case "Entrance":
+                    return "Everett Main Entrance";
+            }
+            break;
         case "11_PARIS_UNDERGROUND":
             switch(teleportername)
             {
