@@ -34,6 +34,7 @@ function PreFirstEntryMapFixes()
     local DeusExMover d;
     local DataLinkTrigger dt;
     local ComputerSecurity cs;
+    local LowerClassMale lcm;
     local #var(prefix)Keypad pad;
     local ProjectileGenerator pg;
     local #var(prefix)WeaponNanoSword dts;
@@ -282,6 +283,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.UserList[0].UserName=="LUCKYMONEY"){
                 cs.Views[2].doorTag='FreezerDoor';
+            }
+        }
+
+        foreach AllActors(class'LowerClassMale', lcm) {
+            if (lcm.UnfamiliarName == "Loser") {
+                lcm.bImportant = true;
+                lcm.FamiliarName = class'DXRNames'.static.RandomName(dxr, lcm);
             }
         }
 
