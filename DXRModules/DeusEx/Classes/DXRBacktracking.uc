@@ -346,6 +346,7 @@ function VandCmdAnyEntry()
     {
         RemoveChoppers('Helicopter');
         chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vectm(7014.185059, 7540.296875, -2884.704102), rotm(0, -19840, 0) );
+        RebindChopperHoverHint('ExitPath',chopper);
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
         if(missions != None) {
             missions.UpdateLocation(chopper);
@@ -390,7 +391,8 @@ function VandGasAnyEntry()
 
     if( flags.GetBool('MS_ChopperGasUnhidden') ) {
         RemoveChoppers('Heli');
-        SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vectm(-3207.999756, 135.342285, -905.545044), rotm(0, -63104, 0) );
+        chopper=BlackHelicopter(SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vectm(-3207.999756, 135.342285, -905.545044), rotm(0, -63104, 0) ));
+        RebindChopperHoverHint('UN_BlackHeli',chopper);
 
         foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
             M.BlowItUp(None);
@@ -416,6 +418,7 @@ function VandSubAnyEntry()
     local Conversation c;
     local ConEvent e, nextEvent;
     local MapExit exit;
+    local Vehicles chopper;
 
     if(dxr.flags.IsReducedRando()) return;
 
@@ -468,6 +471,10 @@ function VandSubAnyEntry()
             break;
         }
     }
+
+    foreach AllActors(class'Vehicles',chopper,'MiniSub'){break;} //Actually finding a minisub, but the variable already exists...
+    RebindChopperHoverHint('reallysubexit',chopper);
+
     // TODO: there are unused InterpolationPoints for the submarine
 
     // repeat flights to silo
@@ -476,7 +483,8 @@ function VandSubAnyEntry()
 
     if( flags.GetBool('DL_downloaded_Played') || dxr.flags.IsWaltonWare() ) {
         RemoveChoppers('BlackHelicopter');
-        SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vectm(2104.722168, 3647.967773, 896.197144), rotm(0, 0, 0) );
+        chopper=SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vectm(2104.722168, 3647.967773, 896.197144), rotm(0, 0, 0) );
+        RebindChopperHoverHint('ChopperExit',chopper);
     }
 
     // don't need to talk to Gary
@@ -575,6 +583,7 @@ function VandOceanLabAnyEntry()
     s.SetRotation(rotm(0, -16408, 0));
     s.DesiredRotation = rotm(0, -16408, 0);
     s.origRot = rotm(0, -16408, 0);
+    RebindChopperHoverHint('reallysubexit2',s);
 
     foreach AllActors(class'DataLinkTrigger', dlt) {
         if( dlt.datalinkTag != 'dl_seconddoors' ) continue;
