@@ -8,6 +8,8 @@ function PreFirstEntry()
     local BlockPlayer bp;
     local MapExit exit;
     local FlagTrigger ft;
+    local DeusExDecoration button;
+    local DXRButtonHoverHint buttonHint;
 
     Super.PreFirstEntry();
 
@@ -32,7 +34,9 @@ function PreFirstEntry()
             SetDestination(dt, "10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
             dt.SetCollisionSize(160,dt.CollisionHeight);
             if(!dxr.flags.IsZeroRando()) {
-                AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+                button=AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+                buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, dt.Name));
+                buttonHint.SetBaseActor(button);
             }
 
             foreach AllActors(class'MapExit', exit, 'ChopperExit') {

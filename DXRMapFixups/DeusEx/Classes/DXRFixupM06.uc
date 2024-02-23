@@ -45,6 +45,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TriadRedArrow bouncer;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)Button1 button;
+    local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
 
     local bool VanillaMaps;
@@ -86,6 +88,15 @@ function PreFirstEntryMapFixes()
                 m.Event='make_a_break';
                 break;
             }
+
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='change_floors'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+            buttonHint.SetBaseActor(button);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
             class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
@@ -152,6 +163,29 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
         hoverHint.SetBaseActor(jock);
+
+        if (VanillaMaps){
+            //Elevator to Versalife
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='change_floors01'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+            buttonHint.SetBaseActor(button);
+
+            //Elevator to Helibase
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='change_floors'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+            buttonHint.SetBaseActor(button);
+        }
+
 
         break;
 
@@ -230,6 +264,27 @@ function PreFirstEntryMapFixes()
         }
 
         SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
+
+        //Elevator to Versalife
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors01'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+        buttonHint.SetBaseActor(button);
+
+        //Elevator to Level 2
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+        buttonHint.SetBaseActor(button);
+
 
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
@@ -366,6 +421,27 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Elevator to Market
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors01'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+        buttonHint.SetBaseActor(button);
+
+        //Elevator to MJ12 Lab
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+        buttonHint.SetBaseActor(button);
+
+
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
         Spawn(class'PlaceholderItem',,, vectm(210.94,2062.23,204.3)); //2nd floor front cube
@@ -386,6 +462,16 @@ function PreFirstEntryMapFixes()
         ft.bSetFlag=True;
         ft.flagValue=True;
         ft.flagExpiration=8;
+
+        //Elevator to MJ12 Lab
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+        buttonHint.SetBaseActor(button);
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers

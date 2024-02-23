@@ -18,6 +18,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
+    local DXRButtonHoverHint buttonHint;
+    local #var(prefix)Button1 button;
     local bool RevisionMaps;
     local bool VanillaMaps;
 
@@ -105,7 +107,14 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
             hoverHint.SetBaseActor(jock);
 
-
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='ToStreet'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+            buttonHint.SetBaseActor(button);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
@@ -147,6 +156,15 @@ function PreFirstEntryMapFixes()
 
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2404,-1318,-487));//Near Smuggler
         pg.MaxCount=3;
+
+        foreach AllActors(class'#var(prefix)MapExit',exit,'ToWarehouse'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='ToWarehouse'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+        buttonHint.SetBaseActor(button);
 
         break;
     case "02_NYC_BAR":
