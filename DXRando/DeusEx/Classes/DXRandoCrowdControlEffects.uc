@@ -1391,6 +1391,34 @@ function int SpawnNastyRat(string viewer)
     return Success;
 }
 
+function int DropPiano(string viewer)
+{
+    local Actor a;
+    local DXRActorsBase tracer;
+    local vector loc;
+    local float height, leading;
+    local #var(PlayerPawn) p;
+
+    p = player();
+    loc = p.Location;
+    leading = FRand() * 0.75 + 0.25; // minimum of 25% leading means keep moving, maximum of 100% leading means you need to stop moving (or just sidestep lol)
+    loc.X += p.Velocity.X * leading;
+    loc.Y += p.Velocity.Y * leading;
+    height = 800;
+    tracer = DXRActorsBase(dxr.FindModule(class'DXRActorsBase'));
+    if(tracer != None) {
+        height = tracer.GetDistanceFromSurface(loc, loc+vect(0,0,800));
+    }
+    loc.Z += height;
+    a = Spawn(class'WHPiano',,, loc);
+    if(a == None) {
+        return TempFail;
+    }
+    a.Velocity.Z -= 200;
+    PlayerMessage(viewer$" dropped a piano on you from "$int(height/16 + 0.5)$" feet with "$int(leading*100 + 0.5)$"% leading!");
+    return Success;
+}
+
 function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, bool friendly, string viewer)
 {
     local int i;
@@ -2051,6 +2079,13 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             return SpawnNastyRat(viewer);
+            break;
+
+        case "drop_piano":
+            if (!InGame()) {
+                return TempFail;
+            }
+            return DropPiano(viewer);
             break;
 
         default:

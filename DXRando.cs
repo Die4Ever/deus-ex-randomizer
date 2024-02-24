@@ -3,7 +3,7 @@ using CrowdControl.Common;
 using JetBrains.Annotations;
 using ConnectorType = CrowdControl.Common.ConnectorType;
 
-namespace CrowdControl.Games.Packs;
+namespace CrowdControl.Games.Packs.DeusEx;
 
 [UsedImplicitly]
 public class DeusEx : SimpleTCPPack
@@ -65,6 +65,7 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Switch to next HUD color scheme", "next_hud_color"){Price = 1,Description = "Maybe the current color scheme doesn't look so good?"}, //New for fourth Crowd Control batch
         new Effect ("Quick Save", "quick_save"){Price = 10,Description = "Stir up some real trouble..."}, //New for fourth Crowd Control batch
         new Effect ("Quick Load", "quick_load"){Price = 20,Description = "Hope that last quick save wasn't too far back, or in too much danger!"}, //New for fourth Crowd Control batch
+        new Effect ("Drop a piano on the player", "drop_piano"){Price = 10,Description = "Spawn a piano above the player to drop it on them, just like in the cartoons!"}, //New for fifth Crowd Control batch, v2.6
 
         //Spawn Enemies/Allies
         //new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch

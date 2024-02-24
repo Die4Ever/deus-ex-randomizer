@@ -24,6 +24,16 @@ function bool ValidSong(int i)
     return True;
 }
 
+function Landed(vector HitNormal)
+{
+    Super.Landed(HitNormal);
+
+    if (Velocity.Z <= -200)
+    {
+        soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 500);
+    }
+}
+
 simulated function Tick(float deltaTime)
 {
     if (bUsing){
