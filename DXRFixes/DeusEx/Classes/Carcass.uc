@@ -314,7 +314,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     if (item.IsA('Ammo'))
     {
-        itemAmmo = itemAmmo;
+        itemAmmo = Ammo(item);
         if (!dropsAmmo || itemAmmo.AmmoAmount == 0) {
             DeleteInventory(item);
             item.Destroy();
