@@ -1410,7 +1410,7 @@ function int DropPiano(string viewer)
         height = tracer.GetDistanceFromSurface(loc, loc+vect(0,0,800));
     }
     loc.Z += height;
-    a = Spawn(class'WHPiano',,, loc);
+    a = Spawn(class'#var(prefix)WHPiano',,, loc);
     if(a == None) {
         return TempFail;
     }

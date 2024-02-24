@@ -29,11 +29,11 @@ function PostFirstEntryMapFixes()
 
 function PreFirstEntryMapFixes()
 {
+    local #var(prefix)MapExit exit;
+    local #var(prefix)NYPoliceBoat b;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
-    local #var(prefix)MapExit exit;
-    local #var(prefix)NYPoliceBoat b;
     local DXRHoverHint hoverHint;
     npClass = class'#var(prefix)Newspaper';
 #else
