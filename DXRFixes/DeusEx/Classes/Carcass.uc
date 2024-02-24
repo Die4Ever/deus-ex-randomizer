@@ -200,7 +200,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function bool TryLootItem(DeusExPlayer player, Inventory item)
 {
-    local ammo AmmoType, playerAmmo, newAmmo;
+    local ammo itemAmmo, playerAmmo, newAmmo;
     local DeusExWeapon W;
     local DeusExPickup invItem;
     local int itemCount;
@@ -259,21 +259,21 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             // Don't bother with this if there's no ammo
             if (Weapon(item).AmmoType != None && Weapon(item).PickupAmmoCount > 0)
             {
-                AmmoType = Ammo(player.FindInventoryType(Weapon(item).AmmoName));
+                playerAmmo = Ammo(player.FindInventoryType(Weapon(item).AmmoName));
 
-                if (AmmoType != None && AmmoType.AmmoAmount < AmmoType.MaxAmmo)
+                if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
                 {
-                    AmmoType.AddAmmo(Weapon(item).PickupAmmoCount);
-                    AddReceivedItem(player, AmmoType, Weapon(item).PickupAmmoCount);
+                    playerAmmo.AddAmmo(Weapon(item).PickupAmmoCount);
+                    AddReceivedItem(player, playerAmmo, Weapon(item).PickupAmmoCount);
 
                     // Update the ammo display on the object belt
-                    player.UpdateAmmoBeltText(AmmoType);
+                    player.UpdateAmmoBeltText(playerAmmo);
 
                     // if this is an illegal ammo type, use the weapon name to print the message
-                    if (AmmoType.PickupViewMesh == Mesh'TestBox')
+                    if (playerAmmo.PickupViewMesh == Mesh'TestBox')
                         player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
                     else
-                        player.ClientMessage(AmmoType.PickupMessage @ AmmoType.itemArticle @ AmmoType.itemName, 'Pickup');
+                        player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
 
                     // Mark it as 0 to prevent it from being added twice
                     Weapon(item).AmmoType.AmmoAmount = 0;
@@ -314,7 +314,8 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     if (item.IsA('Ammo'))
     {
-        if (!dropsAmmo || Ammo(item).AmmoAmount == 0) {
+        itemAmmo = itemAmmo;
+        if (!dropsAmmo || itemAmmo.AmmoAmount == 0) {
             DeleteInventory(item);
             item.Destroy();
             return false;
@@ -327,11 +328,11 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         } else {
             ammoPrevious = playerAmmo.AmmoAmount;
         }
-        ammoAdded = Min( Ammo(item).AmmoAmount, Ammo(item).MaxAmmo - ammoPrevious );
-        ammoLeftover = Ammo(item).AmmoAmount - ammoAdded;
+        ammoAdded = Min(itemAmmo.AmmoAmount, itemAmmo.MaxAmmo - ammoPrevious );
+        ammoLeftover = itemAmmo.AmmoAmount - ammoAdded;
 
         if (ammoLeftover > 0) {
-            newAmmo = Spawn(Ammo(item).class,,, Location);
+            newAmmo = Spawn(itemAmmo.class,,, Location);
             newAmmo.AmmoAmount = ammoLeftover;
             newAmmo.Velocity = Velocity + VRand() * 280; // same as vanilla corpse drops
         }
@@ -341,7 +342,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         } else {
             playerAmmo.AddAmmo(ammoAdded);
 
-            AddReceivedItem(player, Ammo(item), ammoAdded);
+            AddReceivedItem(player, itemAmmo, ammoAdded);
             player.UpdateAmmoBeltText(playerAmmo);
             if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
                 player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
