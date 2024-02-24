@@ -422,7 +422,7 @@ function VandSubAnyEntry()
     local Conversation c;
     local ConEvent e, nextEvent;
     local MapExit exit;
-    local Vehicles chopper;
+    local Vehicles chopper,sub;
 
     if(dxr.flags.IsReducedRando()) return;
 
@@ -476,8 +476,8 @@ function VandSubAnyEntry()
         }
     }
 
-    foreach AllActors(class'Vehicles',chopper,'MiniSub'){break;} //Actually finding a minisub, but the variable already exists...
-    RebindChopperHoverHint('reallysubexit',chopper);
+    foreach AllActors(class'Vehicles',sub,'MiniSub'){break;} //Actually finding a minisub, but the variable already exists...
+    RebindChopperHoverHint('reallysubexit',sub);
 
     // TODO: there are unused InterpolationPoints for the submarine
 
