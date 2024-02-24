@@ -334,7 +334,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         if (playerAmmo == None) {
             TryLootRegularItem(player, item);
         } else {
-            playerAmmo.AmmoAmount += ammoAdded;
+            playerAmmo.AddAmmo(ammoAdded);
 
             AddReceivedItem(player, Ammo(item), ammoAdded);
             player.UpdateAmmoBeltText(playerAmmo);
