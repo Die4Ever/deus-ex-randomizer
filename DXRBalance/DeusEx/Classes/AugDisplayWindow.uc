@@ -220,7 +220,7 @@ function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitL
 	local Actor target;
 	local Vector HitLoc, HitNormal, StartTrace, EndTrace;
 
-	target = TraceActorType(class'#var(prefix)Teleporter',checkDist);
+	target = TraceActorType(class'#var(prefix)Teleporter',checkDist, false);
 
     if (#var(prefix)Teleporter(target)!=None)
     {
@@ -238,7 +238,7 @@ function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
     local DXRHoverHint hoverHint;
     local float dist;
 
-    target = TraceActorType(class'DXRHoverHint',checkDist);
+    target = TraceActorType(class'DXRHoverHint',checkDist, true);
 
     hoverHint = DXRHoverHint(target);
     if (hoverHint!=None)
@@ -260,7 +260,7 @@ function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
     return None;
 }
 
-function Actor TraceActorType(class<Actor> actType,float checkDist)
+function Actor TraceActorType(class<Actor> actType, float checkDist, bool findHidden)
 {
     local Actor target;
     local Vector HitLoc, HitNormal, StartTrace, EndTrace;
@@ -281,8 +281,12 @@ function Actor TraceActorType(class<Actor> actType,float checkDist)
            continue;
         } else if (Player.IsFrobbable(target)){
             return None;
-        } else if (target.bHidden && !target.IsA(actType.name)){
-            continue;
+        } else if (target.bHidden){
+            if (findHidden && target.IsA(actType.name)){
+                break;
+            } else {
+                continue;
+            }
         } else {
             break;
         }
