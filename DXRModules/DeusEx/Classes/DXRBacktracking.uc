@@ -67,7 +67,6 @@ function PreFirstEntry()
         case "12_VANDENBERG_GAS":
             foreach AllActors(class'MapExit', exit, 'UN_BlackHeli') {
                 SetDestination(exit, "14_Vandenberg_sub", '', "PlayerStart");
-                class'DXRTeleporterHoverHint'.static.Create(self, "", vectm(2520.256836, -2489.873535, -1402.078857), 465, 90, exit.Name);
             }
             break;
 
@@ -350,7 +349,7 @@ function VandCmdAnyEntry()
     {
         RemoveChoppers('Helicopter');
         chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vectm(7014.185059, 7540.296875, -2884.704102), rotm(0, -19840, 0) );
-        RebindChopperHoverHint('ExitPath',chopper);
+        RebindChopperHoverHint('mission_done',chopper);
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
         if(missions != None) {
             missions.UpdateLocation(chopper);
