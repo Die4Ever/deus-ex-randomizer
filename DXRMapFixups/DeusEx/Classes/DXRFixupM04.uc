@@ -43,6 +43,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)GuntherHermann gunther;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
     local bool VanillaMaps;
@@ -183,6 +185,13 @@ function PreFirstEntryMapFixes()
                 lloyd.bImportant = true;
             }
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+        hoverHint.SetBaseActor(jock);
+
         break;
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();

@@ -244,7 +244,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
         a.DrawScale = 4;
-        class'DXRHoverHint'.static.Create(self, "This is not the generator", a.Location, a.CollisionRadius, a.CollisionHeight);
+        class'DXRHoverHint'.static.Create(self, "This is not the generator", a.Location, a.CollisionRadius+5, a.CollisionHeight+5);
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0));
         a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
         a.bMovable = false;
