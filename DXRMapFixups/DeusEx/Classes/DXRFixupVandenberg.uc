@@ -29,9 +29,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
-    local SecurityBot2 sb;
-    local MilitaryBot mb;
-    local int botNum;
+    local Robot bot;
+    local string botName;
+    local int securityBotNum, militaryBotNum;
 
     local bool VanillaMaps;
 
@@ -103,15 +103,17 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
         }
 
-        foreach AllActors(class'#var(prefix)SecurityBot2',sb,'enemy_bot') {
-            hoverHint = class'DXRHoverHint'.static.Create(self, "MJ12 Security Bot " $ ++botNum, sb.Location, sb.CollisionRadius*1.11, sb.CollisionHeight*1.11, sb.Name);
-            hoverHint.SetBaseActor(sb);
-            hoverHint.VisibleDistance = 15000;
-        }
-        botNum = 0;
-        foreach AllActors(class'#var(prefix)MilitaryBot',mb,'enemy_bot') {
-            hoverHint = class'DXRHoverHint'.static.Create(self, "MJ12 Military Bot " $ ++botNum, mb.Location, mb.CollisionRadius*1.1, mb.CollisionHeight*1.1, mb.Name);
-            hoverHint.SetBaseActor(mb);
+        foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
+            if (bot.IsA('SecurityBot2')) {
+                botName = "MJ12 Security Bot " $ ++securityBotNum;
+            } else if (bot.IsA('MilitaryBot')) {
+                botName = "MJ12 Military Bot " $ ++militaryBotNum;
+            } else {
+                botName = "MJ12 Bot";
+            }
+
+            hoverHint = class'DXRHoverHint'.static.Create(self, botName, bot.Location, bot.CollisionRadius*1.11, bot.CollisionHeight*1.11, bot.Name);
+            hoverHint.SetBaseActor(bot);
             hoverHint.VisibleDistance = 15000;
         }
 
