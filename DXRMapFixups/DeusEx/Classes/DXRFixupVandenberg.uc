@@ -104,7 +104,7 @@ function PreFirstEntryMapFixes()
         }
 
         foreach AllActors(class'#var(prefix)SecurityBot2',sb,'enemy_bot') {
-            hoverHint = class'DXRHoverHint'.static.Create(self, "MJ12 Security Bot " $ ++botNum, sb.Location, sb.CollisionRadius*1.1, sb.CollisionHeight*1.1, sb.Name);
+            hoverHint = class'DXRHoverHint'.static.Create(self, "MJ12 Security Bot " $ ++botNum, sb.Location, sb.CollisionRadius*1.11, sb.CollisionHeight*1.11, sb.Name);
             hoverHint.SetBaseActor(sb);
             hoverHint.VisibleDistance = 15000;
         }
