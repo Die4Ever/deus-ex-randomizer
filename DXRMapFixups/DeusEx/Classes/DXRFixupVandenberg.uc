@@ -29,6 +29,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
+    local Robot bot;
+    local string botName;
+    local int securityBotNum, militaryBotNum;
 
     local bool VanillaMaps;
 
@@ -98,8 +101,22 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Helicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
             hoverHint.SetBaseActor(jock);
-
         }
+
+        foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
+            if (#var(prefix)SecurityBot2(bot) != None) {
+                botName = "MJ12 Security Bot " $ ++securityBotNum;
+            } else if (#var(prefix)MilitaryBot(bot) != None) {
+                botName = "MJ12 Military Bot " $ ++militaryBotNum;
+            } else {
+                botName = "MJ12 Bot";
+            }
+
+            hoverHint = class'DXRHoverHint'.static.Create(self, botName, bot.Location, bot.CollisionRadius*1.11, bot.CollisionHeight*1.11, bot.Name);
+            hoverHint.SetBaseActor(bot);
+            hoverHint.VisibleDistance = 15000;
+        }
+
         break;
 
     case "12_VANDENBERG_TUNNELS":
