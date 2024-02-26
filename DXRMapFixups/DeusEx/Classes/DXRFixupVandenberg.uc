@@ -104,9 +104,9 @@ function PreFirstEntryMapFixes()
         }
 
         foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
-            if (bot.IsA('SecurityBot2')) {
+            if (#var(prefix)SecurityBot2(bot) != None) {
                 botName = "MJ12 Security Bot " $ ++securityBotNum;
-            } else if (bot.IsA('MilitaryBot')) {
+            } else if (#var(prefix)MilitaryBot(bot) != None) {
                 botName = "MJ12 Military Bot " $ ++militaryBotNum;
             } else {
                 botName = "MJ12 Bot";
