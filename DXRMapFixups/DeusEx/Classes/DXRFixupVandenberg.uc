@@ -29,7 +29,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
-    local Robot bot;
+    local #var(prefix)Robot bot;
     local string botName;
     local int securityBotNum, militaryBotNum;
 

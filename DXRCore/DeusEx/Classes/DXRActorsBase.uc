@@ -964,6 +964,12 @@ function bool CheckFreeSpace(out vector loc, float radius, float height)
     return true;
 }
 
+function ZoneInfo GetZone(vector loc)
+{
+    SetLocation(loc);
+    return Region.Zone;
+}
+
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)
 {
     local PathNode temp[4096];

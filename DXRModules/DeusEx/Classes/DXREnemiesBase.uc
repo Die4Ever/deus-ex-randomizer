@@ -244,6 +244,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     local Inventory inv;
     local NanoKey k1, k2;
     local name newtag, oldAlliance;
+    local ZoneInfo zone;
 
     if( p == None ) {
         l("p == None?");
@@ -283,6 +284,13 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
             l("CloneScriptedPawn "$loc$" is too close to start!");
             continue;
         }
+
+        zone = GetZone(loc);
+        if(zone.bWaterZone || zone.bPainZone) {
+            l("CloneScriptedPawn "$loc$" bad zone " $ zone @ zone.bWaterZone @ zone.bPainZone);
+            continue;
+        }
+
         n = Spawn(newclass,, newtag, loc );
         if( n != None ) {
             if(VSize(n.Location - loc) > 160) {
