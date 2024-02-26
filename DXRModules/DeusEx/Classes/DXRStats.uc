@@ -16,6 +16,16 @@ var RunInfo runs[20];
 var int missions_times[16];
 var int missions_menu_times[16];
 
+function FirstEntry()
+{
+    Super.FirstEntry();
+
+    //Track how many maps the player has visited
+    if (dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98){
+        IncStatFlag(player(),'DXRStats_mapcoverage');
+    }
+}
+
 function AnyEntry()
 {
     local int i;
@@ -540,7 +550,8 @@ static function CheckLeaderboard(DXRando dxr, Json j)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther,mapcoverage,nummaps;
+    local float mappercent;
     local CreditsLeaderboardWindow leaderboard;
 
     cw.PrintLn();
@@ -565,10 +576,19 @@ function AddDXRCredits(CreditsWindow cw)
     kos = dxr.flagbase.GetInt('DXRStats_knockouts');
     killsByOther = dxr.flagbase.GetInt('DXRStats_kills_by_other');
     kosByOther = dxr.flagbase.GetInt('DXRStats_knockouts_by_other');
+    mapcoverage = dxr.flagbase.GetInt('DXRStats_mapcoverage');
     deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
     saves = player().saveCount;
     autosaves = GetDataStorageStat(dxr, "DXRStats_autosaves");
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
+
+    //Calculate percentage of maps visited
+    if(#defined(revision)){
+        nummaps=76;
+    } else {
+        nummaps=72;
+    }
+    mappercent = (float(mapcoverage)/float(nummaps))*100.0;
 
     cw.PrintHeader("Statistics");
 
@@ -587,6 +607,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Total NPCs Knocked Out: "$(kos + kosByOther));
     cw.PrintText("Total NPCs Burned to Death: "$burnkills);
     cw.PrintText("Total NPCs Gibbed: "$gibbedkills);
+    cw.PrintText("Maps Visited: "$mapcoverage$" (" $ class'DXRInfo'.static.TruncateFloat(mappercent,1) $ "%)");
     cw.PrintText("Deaths: "$deaths);
     cw.PrintText("Saves: "$saves$" ("$autosaves$" Autosaves)");
     cw.PrintText("Loads: "$loads);
