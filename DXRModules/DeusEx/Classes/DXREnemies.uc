@@ -165,10 +165,9 @@ function FirstEntry()
 function RandoEnemies(int percent, int hidden_percent)
 {
     // TODO: later when hidden_percent is well tested, we can get rid of it and _perc
-    local int i, _perc;
+    local int i, _perc, num_enemies, e, new_enemies, r;
     local ScriptedPawn p;
-    local ScriptedPawn n;
-    local ScriptedPawn newsp;
+    local ScriptedPawn enemies[128];
 
     l("RandoEnemies "$percent@hidden_percent@dxr.flags.settings.enemystats);
     if(percent <= 0 && hidden_percent <= 0 && dxr.flags.settings.enemystats <= 0)
@@ -178,43 +177,42 @@ function RandoEnemies(int percent, int hidden_percent)
 
     foreach AllActors(class'ScriptedPawn', p)
     {
-        if( p != None && p.bImportant ) continue;
 #ifdef gmdx
         if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) continue;
 #endif
-        RandomizeSize(p);
-    }
+        if(!p.bImportant) {
+            RandomizeSize(p);
+        }
 
-    foreach AllActors(class'ScriptedPawn', p)
-    {
-        if( p == newsp ) break;
         if( IsCritter(p) ) continue;
-        //if( SkipActor(p, 'ScriptedPawn') ) continue;
-        //if( IsInitialEnemy(p) == False ) continue;
-#ifdef gmdx
-        if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) continue;
-#endif
-
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
 
+        enemies[num_enemies++] = p;
+    }
+
+    for(e=0; e<num_enemies; e++)
+    {
+        p = enemies[e];
         if(p.bHasCloak) p.CloakThreshold = p.Health - 10;// make Anna and Walt cloak quickly
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
 
-        if( chance_single(_perc) ) RandomizeSP(p, _perc);
+        if( _perc>=100 || chance_single(_perc) ) RandomizeSP(p, _perc);
         CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
         if(p.bInvincible) continue;
         if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
-        if( chance_single(_perc) == false ) continue;
+        if( _perc < 100 && chance_single(_perc) == false ) continue;
 
-        for(i = rng(enemy_multiplier*100+_perc)/100; i >= 0; i--) {
-            n = RandomEnemy(p, _perc);
-            if( newsp == None ) newsp = n;
+        r = rng(enemy_multiplier*100+_perc);
+        for(i = r/100; i >= 0; i--) {
+            if(RandomEnemy(p, _perc) != None) new_enemies++;
         }
     }
+
+    l("RandoEnemies num_enemies == " $ num_enemies $ ", new_enemies == " $ new_enemies $ ", percent == " $ percent);
 }
 
 function int GetFactionId(ScriptedPawn p)

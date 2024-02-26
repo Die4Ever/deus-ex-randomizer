@@ -252,7 +252,10 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
 
-    loc = p.Location;
+    if(p.bInWorld)
+        loc = p.Location + loc_offset;
+    else
+        loc = p.WorldPosition + loc_offset;
     if(!IsSpawnPointGood(loc, newclass) || (p.bInWorld == true && class'DXRMissions'.static.IsCloseToStart(dxr, loc))) {
         l("CloneScriptedPawn "$p$" is in a bad spot for cloning");
         return None;

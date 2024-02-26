@@ -739,14 +739,22 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
         return IsCloseToRandomStart(dxr, loc);
     }
     else {
-        too_close = 120 * 16;// worst cases are 05 jail and 06 helibase?
+        switch(dxr.localURL) {
+            case "05_NYC_UNATCOMJ12lab":
+            case "06_HongKong_Helibase":
+            case "14_Vandenberg_Sub":
+                too_close = 120 * 16;// worst cases are 05 jail and 06 helibase? for larger maps this doesn't matter much anyways
+                break;
+            default:
+                too_close = 50 * 16;
+        }
         foreach dxr.RadiusActors(class'PlayerStart', ps, too_close, loc) {
             dist = VSize(loc-ps.location);
             if( dist < too_close ) return true;
         }
     }
 
-    too_close = 75 * 16;
+    too_close = 50 * 16;
     foreach dxr.RadiusActors(class'Teleporter', t, too_close, loc) {
         if( t.Tag == '' ) continue;
         dist = VSize(loc-t.location);
