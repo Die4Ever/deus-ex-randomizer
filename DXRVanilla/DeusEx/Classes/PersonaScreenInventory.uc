@@ -85,3 +85,25 @@ function string CalcChargedPickupDurations(ChargedPickup cp)
 
     return chargeVals;
 }
+
+//Dragging an item out of the inventory grid will now drop it
+function FinishButtonDrag()
+{
+    local Inventory draggedItem;
+    local Bool shouldDrop;
+
+    shouldDrop=False;
+    draggedItem=None;
+
+    if (lastDragOverWindow==None){
+        draggedItem=Inventory(dragButton.GetClientObject());
+        shouldDrop = (draggedItem!=None);
+    }
+
+    Super.FinishButtonDrag();
+
+    if (shouldDrop){
+        SelectInventoryItem(draggedItem);
+        DropSelectedItem();
+    }
+}
