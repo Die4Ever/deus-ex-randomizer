@@ -1,12 +1,5 @@
 class DXRTeleporterHoverHint extends DXRHoverHint;
 
-
-static function class<Actor> GetSelfClass()
-{
-    return class'DXRTeleporterHoverHint';
-}
-
-
 function AttachTarget(name targetName)
 {
     Super.AttachTarget(targetName);

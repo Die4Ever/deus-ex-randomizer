@@ -2,11 +2,6 @@ class DXRButtonHoverHint extends DXRTeleporterHoverHint;
 
 var bool nameSet;
 
-static function class<Actor> GetSelfClass()
-{
-    return class'DXRButtonHoverHint';
-}
-
 //Self destruct as soon as the name has been set
 function bool ShouldSelfDestruct()
 {

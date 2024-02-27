@@ -11,8 +11,10 @@ var bool bInWorld;
 static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad, float height,optional Name targetName)
 {
     local DXRHoverHint hoverHint;
+    local Actor act;
 
-    hoverHint = DXRHoverHint(a.Spawn(GetSelfClass(),,,loc));
+    act = a.Spawn(default.class,,,loc);
+    hoverHint = DXRHoverHint(act);
     hoverHint.SetCollisionSize(rad,height);
     hoverHint.HintText = hint;
 
@@ -21,11 +23,6 @@ static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad,
     }
 
     return hoverHint;
-}
-
-static function class<Actor> GetSelfClass()
-{
-    return class'DXRHoverHint';
 }
 
 function AttachTarget(name targetName)
