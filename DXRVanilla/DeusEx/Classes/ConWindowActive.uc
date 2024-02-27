@@ -2,7 +2,6 @@ class DXRConWindowActive injects ConWindowActive;
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-    local bool bHandled;
     local int selectedOption;
 
     selectedOption=0;
