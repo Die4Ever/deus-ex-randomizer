@@ -29,7 +29,6 @@ event PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
 
-    //In case the provided DXRActorsBase is transient (Like DXRFixups)
     if (p==None){
         foreach AllActors(class'#var(PlayerPawn)',p){break;}
     }

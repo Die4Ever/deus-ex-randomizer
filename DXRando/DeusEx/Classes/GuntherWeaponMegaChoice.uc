@@ -17,7 +17,6 @@ function GenerateWeaponChoice()
     local ConEventChoice megaChoiceEv,choiceEv;
     local ConChoice assaultChoice,stealthChoice,pistolChoice,knifeChoice,nothingChoice,noHelpChoice,choiceIter;
     local int numChoices;
-    local #var(prefix)GuntherHermann gunther;
 
     c = GetConversation(GetWeaponConversationName());
     ce = c.eventList;
