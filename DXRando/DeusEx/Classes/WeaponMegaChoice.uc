@@ -2,27 +2,20 @@ class WeaponMegaChoice extends Info;
 
 var DXRActorsBase dxrAB;
 var #var(PlayerPawn) p;
+var Name convoName;
 
 static function WeaponMegaChoice Create(#var(PlayerPawn) p)
 {
     local WeaponMegaChoice megaChoice;
+    local Actor a;
 
-    megaChoice = WeaponMegaChoice(p.Spawn(GetSelfClass(),,GetWeaponConversationName()));
+    a = p.Spawn(default.class,,default.convoName);
+    megaChoice = WeaponMegaChoice(a);
     megaChoice.p = p;
 
     megaChoice.AddWeaponChoiceTrigger();
 
     return megaChoice;
-}
-
-static function class<Actor> GetSelfClass()
-{
-    return class'WeaponMegaChoice';
-}
-
-static function Name GetWeaponConversationName()
-{
-    return 'NoConversationName';
 }
 
 event PostPostBeginPlay()
@@ -55,7 +48,7 @@ function AddWeaponChoiceTrigger()
 
     //The idea is that the conversation starts, triggers this class,
     //which goes and generates the weapon choices for the conversation
-    c = GetConversation(GetWeaponConversationName());
+    c = GetConversation(convoName);
 
     cet = new(c) class'ConEventTrigger';
     cet.eventType=ET_Trigger;
@@ -72,3 +65,7 @@ function Trigger(Actor Other,Pawn Instigator)
 
 function GenerateWeaponChoice();
 
+defaultproperties
+{
+    convoName=InvalidConvoName
+}

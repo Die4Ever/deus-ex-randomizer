@@ -1,15 +1,5 @@
 class GuntherWeaponMegaChoice extends WeaponMegaChoice;
 
-static function class<Actor> GetSelfClass()
-{
-    return class'GuntherWeaponMegaChoice';
-}
-
-static function Name GetWeaponConversationName()
-{
-    return 'GuntherRescued';
-}
-
 function GenerateWeaponChoice()
 {
     local Conversation c;
@@ -18,7 +8,7 @@ function GenerateWeaponChoice()
     local ConChoice assaultChoice,stealthChoice,pistolChoice,knifeChoice,nothingChoice,noHelpChoice,choiceIter;
     local int numChoices;
 
-    c = GetConversation(GetWeaponConversationName());
+    c = GetConversation(convoName);
     ce = c.eventList;
 
     while (ce!=None){
@@ -85,4 +75,9 @@ function GenerateWeaponChoice()
 
     noHelpChoice.nextChoice=megaChoiceEv.ChoiceList;
     megaChoiceEv.ChoiceList = noHelpChoice;
+}
+
+defaultproperties
+{
+    convoName=GuntherRescued
 }

@@ -1,15 +1,5 @@
 class GilbertWeaponMegaChoice extends WeaponMegaChoice;
 
-static function class<Actor> GetSelfClass()
-{
-    return class'GilbertWeaponMegaChoice';
-}
-
-static function Name GetWeaponConversationName()
-{
-    return 'InterruptFamilySquabble';
-}
-
 function bool HasNoWeapons()
 {
     if (p.FindInventoryType(class'WeaponSawedOffShotgun')!=None) return False;
@@ -31,7 +21,7 @@ function GenerateWeaponChoice()
         return; //Just let it fall through as normal, no changes needed
     }
 
-    c = GetConversation(GetWeaponConversationName());
+    c = GetConversation(convoName);
     ce = c.eventList;
 
     while (ce!=None){
@@ -95,4 +85,9 @@ function GenerateWeaponChoice()
 
     noHelpChoice.nextChoice=megaChoiceEv.ChoiceList;
     megaChoiceEv.ChoiceList = noHelpChoice;
+}
+
+defaultproperties
+{
+    convoName=InterruptFamilySquabble
 }
