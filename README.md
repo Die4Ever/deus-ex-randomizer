@@ -60,18 +60,18 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
     * Takes away 1 random augmentation, and 1 of your weapons
     * Takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
 * New game modes! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes)
-    * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission.
-    * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral.
+    * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission
+    * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
-    * WaltonWare mode - a game mode focused on quickly doing bingos and New Game+.
-    * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties. And a built in splits viewers!
+    * WaltonWare mode - a game mode where you start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
+    * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties. And a built in splits viewer!
     * WaltonWare Entrance Rando - both modes combined!
 * Challenge mode loadouts! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts)
     * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
-    * Ninja JC - the only weapons allowed are throwing knives, swords, pepper spray, grenades, knife, and mini-crossbow. You also get a Ninja Augmentation which gives you speed and stealth at the same time
+    * Ninja JC - the only weapons allowed are throwing knives, swords, pepper spray, grenades, knife, and mini-crossbow. You also get a Ninja Augmentation which gives you speed and stealth at the same time.
     * Don't Give Me the GEP Gun - bans the GEP gun
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
@@ -85,10 +85,11 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
   * Get notifications of new updates
   * In-game [Leaderboard](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Leaderboard) to see everyone's high scores in the end credits
 * Max Rando - randomize the randomizer's settings!
-* An integrated Bingo board: on the Goals screen there's a Bingo button in the middle bar, there's also our external BingoDisplay program you can download from [the Releases page](https://github.com/Die4Ever/deus-ex-randomizer/releases)
+* An integrated Bingo board: on the Goals screen there's a Bingo button in the middle bar
+  * Also an external BingoDisplay program you can download from the Github [Releases page](https://github.com/Die4Ever/deus-ex-randomizer/releases). Great for streamers who want to show their bingo progress live to viewers.
 * Co-op when combined with the HX mod (Alpha)
 * Making all or some of the doors that normally require a key also lockpickable and/or destructible
-* Making all or some keypads hackable.
+* Making all or some keypads hackable
 * Reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells
 * Autosave
 * Smooth continuous music, even through loading screens
@@ -96,7 +97,8 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 * Starting the game with the running speed augmentation
 * Optional hardcore Autosave-Only mode, no save-scumming allowed!
 * Option to keep the game running while menus are open, making hacking or inventory management more difficult
-* Assistance options like autofill for passwords passwords, and the ability to show where Nanokeys/Datacubes/goals are located.
+* Assistance options like autofill for passwords and keypad codes
+* The ability to reveal where Nanokeys/Datacubes/goals are located
 * Option to start the game at certain points like Hong Kong or Paris
 
 ## New Game Menus
