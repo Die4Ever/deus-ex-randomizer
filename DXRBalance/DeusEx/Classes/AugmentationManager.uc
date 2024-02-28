@@ -88,8 +88,9 @@ simulated function float GetAugLevelValue(class<Augmentation> AugClass)
 
 simulated function Float CalcEnergyUse(float deltaTime)
 {
-    local float energyUse, energyMult;
-    local Augmentation anAug;
+    local float f, energyUse, energyMult;
+    local Augmentation anAug, augBoost;
+    local bool bBoosting;
 
     energyUse = 0;
     energyMult = 1.0;
@@ -102,9 +103,25 @@ simulated function Float CalcEnergyUse(float deltaTime)
 
         if (anAug.bHasIt && anAug.bIsActive)
         {
-            energyUse += ((anAug.GetEnergyRate()/60) * deltaTime);
+            if (AugHeartLung(anAug) != None) {
+                augBoost = AnAug;
+            }
+            f = ((anAug.GetEnergyRate()/60) * deltaTime);
+            if(f > 0 && anAug.bBoosted) {
+                bBoosting = true;
+            }
+            energyUse += f;
         }
         anAug = anAug.next;
+    }
+
+    if(bBoosting) {
+        f = (augBoost.GetEnergyRate()/60) * deltaTime;// check if it wasn't using energy yet
+        augBoost.TickUse();
+        if(f == 0) { // add in its energy usage if this is the first tick
+            f = (augBoost.GetEnergyRate()/60) * deltaTime;
+            energyUse += f;
+        }
     }
 
     // check for the power augmentation
