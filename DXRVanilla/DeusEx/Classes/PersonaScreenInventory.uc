@@ -102,7 +102,7 @@ function FinishButtonDrag()
 
     Super.FinishButtonDrag();
 
-    if (shouldDrop){
+    if (shouldDrop && draggedItem!=None){
         SelectInventoryItem(draggedItem);
         DropSelectedItem();
     }
