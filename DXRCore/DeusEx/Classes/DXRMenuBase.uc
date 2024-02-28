@@ -570,41 +570,49 @@ function bool ButtonActivatedRight( Window buttonPressed )
 
 function bool CheckClickEnum( Window buttonPressed, optional bool rightClick )
 {
-    local EnumBtn e;
     local int i;
 
     for(i=0; i<ArrayCount(enums); i++) {
-        e=enums[i];
-        if( buttonPressed == e.btn ) {
-            if( rightClick ) enums[i] = RightClickEnum(e);
-            else enums[i] = ClickEnum(e);
+        if( buttonPressed == enums[i].btn ) {
+            ClickEnum(i, rightClick);
             return true;
         }
     }
     return false;
 }
 
-function EnumBtn ClickEnum(EnumBtn e)
+function ClickEnum(int iEnum, bool rightClick)
 {
-    e.value++;
-    e.value = e.value % ArrayCount(e.values);
-    while( e.values[e.value] == "" ) {
+    local EnumBtn e;
+    local int numValues, i;
+    e = enums[iEnum];
+
+    for(i=0; i<ArrayCount(e.values); i++) {
+        if(e.values[i] != "") {
+            numValues++;
+        }
+    }
+
+    if(numValues > 5) {
+        // TODO: open list window
+    }
+
+    if(rightClick) { // cycle backwards
+        e.value--;
+        if( e.value < 0 ) e.value = ArrayCount(e.values)-1;
+        while( e.values[e.value] == "" ) {
+            e.value--;
+        }
+    } else { // cycle forwards
         e.value++;
         e.value = e.value % ArrayCount(e.values);
+        while( e.values[e.value] == "" ) {
+            e.value++;
+            e.value = e.value % ArrayCount(e.values);
+        }
     }
     e.btn.SetButtonText(e.values[e.value]);
-    return e;
-}
-
-function EnumBtn RightClickEnum(EnumBtn e)
-{
-    e.value--;
-    if( e.value < 0 ) e.value = ArrayCount(e.values)-1;
-    while( e.values[e.value] == "" ) {
-        e.value--;
-    }
-    e.btn.SetButtonText(e.values[e.value]);
-    return e;
+    enums[iEnum] = e;
 }
 
 function int GetSliderValue(MenuUIEditWindow w)
