@@ -254,6 +254,10 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     adjustedDamage = Int(newDamage);// adjustedDamage is our out param
 
+    if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso) {
+        adjustedDamage = (HealthTorso - 1)/2; // TearGas can't kill you, torso takes *2 damage
+    }
+
     return bReduced;
 }
 
