@@ -7,12 +7,21 @@ function PostBeginPlay()
     local DXRAugmentations a;
     Super.PostBeginPlay();
 
-    // TODO: read config value for bAutomatic
-    // the button to enable disable can set the config, but also search all Augmentations and set bAutomatic to their default or to false
+    SetAutomatic();
 
     foreach AllActors(class'DXRAugmentations', a) {
         a.RandoAug(self);
         break;
+    }
+}
+
+simulated function SetAutomatic()
+{
+    if(class'MenuChoice_AutoAugs'.default.enabled) {
+        bAutomatic = default.bAutomatic;
+    }
+    else {
+        bAutomatic = false;
     }
 }
 
