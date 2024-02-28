@@ -77,7 +77,7 @@ static simulated function int GetStartingMissionMask(int start_map)
 }
 
 static simulated function int GetMaybeMissionMask(int start_map)
-{
+{// TODO: maybe add some half-missions? like 35 could get some stuff from M04 unatco
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
         case 119:
@@ -473,7 +473,7 @@ static function StartMapSpecificFlags(FlagBase flagbase, int start_flag, string 
 }
 
 static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
-{
+{// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
     switch(bingo_event)
     {
         case "GuntherHermann_Dead":
@@ -596,7 +596,7 @@ static function int _ChooseRandomStartMap(DXRBase m)
         i = m.rng(3);
         switch(i) {
         case 0: return 30;
-        case 1: return 33;
+        case 1: return 35;
         case 2: return 37;
         }
         return 30; // just in case the switch misses
