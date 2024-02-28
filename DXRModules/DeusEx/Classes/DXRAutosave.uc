@@ -22,7 +22,7 @@ function CheckConfig()
         save_delay = 0.1;
     }
     Super.CheckConfig();
-    autosave_combat = int(ConsoleCommand("get #var(package).MenuChoice_AutosaveCombat autosave_combat"));
+    autosave_combat = class'MenuChoice_AutosaveCombat'.default.autosave_combat;
 }
 
 function BeginPlay()

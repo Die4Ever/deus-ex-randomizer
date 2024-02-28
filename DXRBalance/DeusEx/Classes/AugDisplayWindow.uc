@@ -331,7 +331,6 @@ function DrawTargetAugmentation(GC gc)
     local string str,teleDest;
     local float x,y,h,w, boxCX,boxCY;
     local DynamicTeleporter dynTele;
-    local int show_teleporters;
 
     gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
 
@@ -342,8 +341,7 @@ function DrawTargetAugmentation(GC gc)
     Player.Weapon = oldWeapon;
 
     // check 500 feet in front of the player
-    show_teleporters = int(Player.ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
-    if(show_teleporters > 1) {
+    if(class'MenuChoice_ShowTeleporters'.default.show_teleporters > 1) {
 	    tgtTeleporter = TraceTeleporter(8000,AimLocation);
     }
 

@@ -104,14 +104,12 @@ function CloseScreen(String action)
 
 function CreateKnownAccountsWindow()
 {
-    local int codes_mode;
-    codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
-    if( codes_mode < 1 ) return;
+    if( class'MenuChoice_PasswordAutofill'.default.codes_mode < 1 ) return;
 
     winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
     winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
-    if( codes_mode == 2 )
+    if( class'MenuChoice_PasswordAutofill'.default.codes_mode == 2 )
         winKnownAccounts.bShowPasswords = true;
     winKnownAccounts.SetNetworkTerminal(Self);
     winKnownAccounts.SetCompOwner(compOwner);

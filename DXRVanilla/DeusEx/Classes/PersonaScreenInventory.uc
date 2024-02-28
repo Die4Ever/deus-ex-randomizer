@@ -113,12 +113,9 @@ function FinishButtonDrag()
 event DescendantRemoved(Window descendant)
 {
     local Inventory draggedItem;
-    local bool bFixGlitches;
 
     if (descendant==winStatus){ //Only act as the inventory is being dismantled
-        bFixGlitches = bool(player.ConsoleCommand("get #var(package).MenuChoice_FixGlitches enabled"));
-
-        if (bFixGlitches && bDragging && dragButton!=None){
+        if (class'MenuChoice_FixGlitches'.default.enabled && bDragging && dragButton!=None){
             draggedItem=Inventory(dragButton.GetClientObject());
             if (draggedItem!=None){
                 //Return the item to the slot it started in

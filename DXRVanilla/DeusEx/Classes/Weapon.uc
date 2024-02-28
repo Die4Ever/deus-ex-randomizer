@@ -28,7 +28,7 @@ function BringUp()
     else
         bCanTrack = default.bCanTrack;
 
-    if (bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+    if (class'MenuChoice_AutoLaser'.default.enabled){
         //LaserOn already checks to see if it has a laser, so just call it
         LaserOn();
     }

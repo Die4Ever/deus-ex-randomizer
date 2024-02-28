@@ -260,7 +260,7 @@ function ShowTeleporters()
     local #var(prefix)Teleporter t;
     local int show_teleporters;
 
-    show_teleporters = int(ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
+    show_teleporters = class'MenuChoice_ShowTeleporters'.default.show_teleporters;
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
         t.bHidden = !(t.bCollideActors && t.bEnabled && show_teleporters>0);
@@ -659,7 +659,7 @@ function AntiEpilepsy()
 {
     local Light l;
 
-    if (!bool(ConsoleCommand("get #var(package).MenuChoice_Epilepsy enabled"))){
+    if (!class'MenuChoice_Epilepsy'.default.enabled){
         return;
     }
 

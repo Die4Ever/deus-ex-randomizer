@@ -33,13 +33,12 @@ event Destroyed()
 function ThrowInventory(bool gibbed)
 {
     local Inventory item, nextItem;
-    local bool drop, melee, throw_melee;
+    local bool drop, melee;
 
-    throw_melee = bool(ConsoleCommand("get #var(package).MenuChoice_ThrowMelee enabled"));
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        if(throw_melee)
+        if(class'MenuChoice_ThrowMelee'.default.enabled)
             melee = class'DXRActorsBase'.static.IsMeleeWeapon(item);
         drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )

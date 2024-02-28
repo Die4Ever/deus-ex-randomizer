@@ -171,14 +171,14 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 
     //Try to apply the mod being picked up to the currently held weapon
     //Does not happen in Zero Rando
-    if (!dxr.flags.IsZeroRando() && bool(ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"))){
+    if (!dxr.flags.IsZeroRando() && class'MenuChoice_AutoWeaponMods'.default.enabled){
         mod = #var(prefix)WeaponMod(FrobTarget);
         weap = #var(DeusExPrefix)Weapon(inHand);
         if (mod!=None && weap!=None){
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
-                if (mod.IsA('WeaponModLaser') && bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+                if (mod.IsA('WeaponModLaser') && class'MenuChoice_AutoLaser'.default.enabled){
                     weap.LaserOn();
                 }
                 mod.DestroyMod();

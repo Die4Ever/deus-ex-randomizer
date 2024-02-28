@@ -25,10 +25,8 @@ simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
 
 function bool GetInstantSuccess(DeusExPlayer Hacker, bool bHacked)
 {
-   local int codes_mode;
    if( bHacked ) return true;
-   codes_mode = int(Hacker.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
-   if( codes_mode == 2 && bCodeKnown ) return true;
+   if( class'MenuChoice_PasswordAutofill'.default.codes_mode == 2 && bCodeKnown ) return true;
    return false;
 }
 

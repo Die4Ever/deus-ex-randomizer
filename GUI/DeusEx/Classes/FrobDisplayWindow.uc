@@ -36,7 +36,7 @@ function CheckSettings()
     if( player == None || player.FlagBase == None ) return;
     inited = true;
 
-    codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
+    codes_mode = class'MenuChoice_PasswordAutofill'.default.codes_mode;
     if( codes_mode == 2 ) {
         auto_codes = true;
     } else {
@@ -48,12 +48,12 @@ function CheckSettings()
         known_codes = false;
     }
 
-    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys enabled"));
+    show_keys = class'MenuChoice_ShowKeys'.default.enabled;
 
     foreach player.AllActors(class'DXRando',dxr){break;}
     if (dxr==None) return;
 
-    auto_weapon_mods = !dxr.flags.IsZeroRando() && bool(player.ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"));
+    auto_weapon_mods = !dxr.flags.IsZeroRando() && class'MenuChoice_AutoWeaponMods'.default.enabled;
 }
 
 function InitFlags()

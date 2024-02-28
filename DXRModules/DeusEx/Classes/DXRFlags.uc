@@ -35,11 +35,12 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         p.bCheatsEnabled = true;
 
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
+        p.bCheatsEnabled = true;
         p.ReducedDamageType = 'All';// god mode
         p.AllWeapons();
         p.AllAmmo();
         if(dxr.localURL == "01_NYC_UNATCOISLAND") {
-            p.ConsoleCommand("legend");
+            p.Legend();
         }
 
 #ifdef injections
@@ -493,14 +494,11 @@ function MoreFlagsSettings GetMoreDifficulty(int diff)
 
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
-    local bool memes_enabled;
-
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
     moresettings = more_difficulty_settings[difficulty];
 
-    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
-    if(!memes_enabled) settings.dancingpercent = 0;
+    if(!class'MenuChoice_ToggleMemes'.default.enabled) settings.dancingpercent = 0;
 
     if(IsReducedRando()) {
         settings.doorsmode = 0;

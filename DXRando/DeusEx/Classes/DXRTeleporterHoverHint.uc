@@ -65,12 +65,9 @@ function String GetHintText()
 
 function bool ShouldDisplay(float dist)
 {
-    local int show_teleporters;
-
     if (Super.ShouldDisplay(dist)==False){
         return False;
     }
 
-    show_teleporters = int(ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
-    return (show_teleporters > 1);
+    return (class'MenuChoice_ShowTeleporters'.default.show_teleporters > 1);
 }

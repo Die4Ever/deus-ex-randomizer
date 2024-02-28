@@ -23,7 +23,7 @@ function CreateControls()
     //It's free real estate!
     //Instead, use the state from MenuChoice_ConfirmNoteDelete instead
     chkConfirmNoteDeletion.Hide();
-    bConfirmNoteDeletes = bool(player.ConsoleCommand("get MenuChoice_ConfirmNoteDelete enabled"));
+    bConfirmNoteDeletes = class'MenuChoice_ConfirmNoteDelete'.default.enabled;
 
     btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnBingo.SetButtonText("|&Bingo");

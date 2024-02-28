@@ -389,8 +389,7 @@ function bool ban(DeusExPlayer player, Inventory item)
         }
         return true;
     } else if(item.bDeleteMe) {
-        bFixGlitches = bool(ConsoleCommand("get #var(package).MenuChoice_FixGlitches enabled"));
-        if(bFixGlitches) {
+        if(class'MenuChoice_FixGlitches'.default.enabled) {
             return true;
         }
         else {
