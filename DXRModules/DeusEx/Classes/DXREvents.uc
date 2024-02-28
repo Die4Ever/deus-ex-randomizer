@@ -3,68 +3,47 @@ class DXREvents extends DXREventsBase;
 
 function WatchActors()
 {
-    local #var(prefix)Lamp lamp;
-    local #var(prefix)BoneFemur femur;
-    local #var(prefix)BoneSkull skull;
-    local #var(prefix)Trophy trophy;
-    local #var(prefix)PoolTableLight poolLight;
-    local #var(prefix)HKMarketLight hangingLight;
-    local #var(prefix)ShopLight shopLight;
-    local #var(prefix)HangingShopLight hangShopLight;
-    local #var(prefix)SignFloor signFloor;
-    local #var(prefix)WaterCooler cooler;
-    local #var(prefix)WaterFountain fountain;
-    local #var(prefix)Chandelier chandelier;
-    local #var(prefix)HangingChicken chicken;
-    local #var(prefix)HKHangingPig pig;
-    local #var(prefix)BarrelVirus virus;
-    local #var(prefix)Mailbox mail;
-    local #var(prefix)CigaretteMachine cigVending;
-    local #var(prefix)Lightbulb bulb;
+    local #var(DeusExPrefix)Decoration d;
 
-    foreach AllActors(class'#var(prefix)Lamp',lamp){
-        AddWatchedActor(lamp,"LightVandalism");
+    foreach AllActors(class'#var(DeusExPrefix)Decoration', d) {
+        if( #var(prefix)Lamp(d) != None
+            || #var(prefix)PoolTableLight(d) != None
+            || #var(prefix)HKMarketLight(d) != None
+            || #var(prefix)ShopLight(d) != None
+            || #var(prefix)HangingShopLight(d) != None
+            || #var(prefix)Chandelier(d) != None
+            || #var(prefix)Lightbulb(d) != None
+            || #var(prefix)HKHangingLantern(d) != None
+            || #var(prefix)HKHangingLantern2(d) != None)
+        {
+            AddWatchedActor(d,"LightVandalism");
+        }
+        else if(#var(prefix)Trophy(d) != None)
+        {
+            AddWatchedActor(d,"TrophyHunter");
+        }
+        else if(#var(prefix)SignFloor(d) != None)
+        {
+            AddWatchedActor(d,"SlippingHazard");
+        }
+        else if(#var(prefix)HangingChicken(d) != None
+            || #var(prefix)HKHangingPig(d) != None)
+        {
+            AddWatchedActor(d,"BeatTheMeat");
+        }
+        else if(#var(prefix)BarrelVirus(d) != None)
+        {
+            AddWatchedActor(d,"WhyContainIt");
+        }
+        else if(#var(prefix)Mailbox(d) != None)
+        {
+            AddWatchedActor(d,"MailModels");
+        }
+        else if(#var(prefix)CigaretteMachine(d) != None)
+        {
+            AddWatchedActor(d,"SmokingKills");
+        }
     }
-    foreach AllActors(class'#var(prefix)PoolTableLight',poolLight){
-        AddWatchedActor(poolLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)HKMarketLight',hangingLight){
-        AddWatchedActor(hangingLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)ShopLight',shopLight){
-        AddWatchedActor(shopLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)HangingShopLight',hangShopLight){
-        AddWatchedActor(hangShopLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)Chandelier',chandelier){
-        AddWatchedActor(chandelier,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)Lightbulb',bulb){
-        AddWatchedActor(bulb,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)Trophy',trophy){
-        AddWatchedActor(trophy,"TrophyHunter");
-    }
-    foreach AllActors(class'#var(prefix)SignFloor',signFloor){
-        AddWatchedActor(signFloor,"SlippingHazard");
-    }
-    foreach AllActors(class'#var(prefix)HangingChicken',chicken){
-        AddWatchedActor(chicken,"BeatTheMeat");
-    }
-    foreach AllActors(class'#var(prefix)HKHangingPig',pig){
-        AddWatchedActor(pig,"BeatTheMeat");
-    }
-    foreach AllActors(class'#var(prefix)BarrelVirus',virus){
-        AddWatchedActor(virus,"WhyContainIt");
-    }
-    foreach AllActors(class'#var(prefix)Mailbox',mail){
-        AddWatchedActor(mail,"MailModels");
-    }
-    foreach AllActors(class'#var(prefix)CigaretteMachine',cigVending){
-        AddWatchedActor(cigVending,"SmokingKills");
-    }
-
 }
 
 function AddPhoneTriggers(bool isRevision)
