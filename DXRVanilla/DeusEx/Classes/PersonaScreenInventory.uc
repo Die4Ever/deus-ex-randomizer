@@ -107,3 +107,23 @@ function FinishButtonDrag()
         DropSelectedItem();
     }
 }
+
+//Try to prevent item stacking
+//If an item is being "dragged" while the inventory is closing, drop it
+event DescendantRemoved(Window descendant)
+{
+    local Inventory draggedItem;
+    local bool bFixGlitches;
+
+    if (descendant==winItems){ //Only act as the inventory is being dismantled
+        bFixGlitches = bool(player.ConsoleCommand("get #var(package).MenuChoice_FixGlitches enabled"));
+
+        if (bFixGlitches && bDragging && dragButton!=None){
+            draggedItem=Inventory(dragButton.GetClientObject());
+            if (draggedItem!=None){
+                player.DropItem(draggedItem,true);
+            }
+        }
+    }
+    Super.DescendantRemoved(descendant);
+}
