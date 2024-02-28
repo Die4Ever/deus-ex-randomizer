@@ -184,7 +184,7 @@ function RandoCarcasses(int chance)
         item = c.Inventory;
         while( item != None ) {
             nextItem = item.Inventory;
-            if( chance_single(50) && !item.IsA('NanoKey') ) {
+            if( chance_single(50) && #var(prefix)NanoKey(item)==None && #var(prefix)AugmentationCannister(item)==None && #var(prefix)AugmentationUpgradeCannister(item)==None ) {
                 c.DeleteInventory(item);
                 item.Destroy();
             }
