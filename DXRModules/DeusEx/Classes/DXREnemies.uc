@@ -258,7 +258,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
         p.BaseAccuracy = FClamp(p.BaseAccuracy, 0, 2);//ensure BaseAccuracy doesn't go below 0
     }
 
-    if(p.RaiseAlarm==RAISEALARM_BeforeAttacking && chance_single(dxr.flags.settings.enemystats)) {
+    if(p.RaiseAlarm==RAISEALARM_BeforeAttacking && !p.bIsSecretGoal && chance_single(dxr.flags.settings.enemystats)) {
         p.RaiseAlarm = RAISEALARM_BeforeFleeing;
     }
 

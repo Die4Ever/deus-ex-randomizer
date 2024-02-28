@@ -29,6 +29,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
+    local ScriptedPawn pawn;
     local #var(prefix)Robot bot;
     local string botName;
     local int securityBotNum, militaryBotNum;
@@ -348,6 +349,10 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-88,-2087,-1553)); //Collapsed bridge road surface
             Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
             Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
+
+            foreach AllActors(class'ScriptedPawn', pawn, 'guard2') {
+                pawn.bIsSecretGoal = true;
+            }
         }
         break;
     }
