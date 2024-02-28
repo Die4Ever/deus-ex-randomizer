@@ -37,6 +37,11 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1062.942261,-2496.865723,-443.252533), rot(0, 16384, 0));
     AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
 
+    if (dxr.flags.settings.starting_map > 150)
+    {
+        skip_rando_start = True;
+    }
+
     return 151;
 }
 
@@ -77,6 +82,11 @@ function int InitGoalsRev(int mission, string map)
     AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1363.689941,2460.441895,-235.503601), rot(0, 0, 0));
     AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1397.388672,-2498.310059,-441.741699), rot(0, 16384, 0));
     AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1860.243530,2902.310059,-151.812180), rot(0, -16384, 0));
+
+    if (dxr.flags.settings.starting_map > 150)
+    {
+        skip_rando_start = True;
+    }
 
     return 151;
 }

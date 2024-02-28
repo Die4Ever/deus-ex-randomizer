@@ -19,7 +19,7 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(-108.541245, -2709.490479, 111.600838), rot(0,20000,0));
     AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2694.934082, -2792.844971, -448.396637), rot(0,32768,0));
 
-    if (dxr.flags.settings.starting_map == 81) //Mission 8 Smuggler
+    if (dxr.flags.settings.starting_map >= 81) //Mission 8 Smuggler
     {
         skip_rando_start = True;
     }
@@ -45,7 +45,7 @@ function int InitGoalsRev(int mission, string map)
     AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(316,-3439,111), rot(0,0,0));
     AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2683.1,-1977.77,-448), rot(0,-16390,0));
 
-    if (dxr.flags.settings.starting_map == 81) //Mission 8 Smuggler
+    if (dxr.flags.settings.starting_map >= 81) //Mission 8 Smuggler
     {
         skip_rando_start = True;
     }
