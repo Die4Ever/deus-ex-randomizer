@@ -166,8 +166,8 @@ defaultproperties
     bEscapeSavesSettings=False
     num_rows=9
     num_cols=2
-    col_width_odd=160
-    col_width_even=240
+    col_width_odd=140
+    col_width_even=260
     row_height=20
     padding_width=20
     padding_height=10

@@ -859,7 +859,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_starting_map':
-            return class'DXRStartMap'.static.GetStartingMapName(val);
+            return class'DXRStartMap'.static.GetStartingMapNameCredits(val);
             break;
         default:
             return val $ " (Unhandled!)";
