@@ -15,7 +15,7 @@ function PlayerLogin(#var(PlayerPawn) p)
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
 
-    StartMapSpecificFlags(p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
+    StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -40,7 +40,7 @@ function PreFirstEntry()
     startMapName = Caps(startMapName);
 
     if (InStr(startMapName,dxr.localURL)!=-1){
-        StartMapSpecificFlags(p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
+        StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
     }
 
 }
@@ -398,11 +398,18 @@ static function int GetStartMapSkillBonus(int start_map_val)
     return skillBonus * (mission-1);
 }
 
-static function StartMapSpecificFlags(FlagBase flagbase, int start_flag, string start_map)
+static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag, string start_map)
 {
+    local DeusExNote note;
+
     switch(start_flag/10) {
         case 4:
             flagbase.SetBool('DL_SeeManderley_Played',true,,-1);
+            break;
+        case 7:
+            flagbase.SetBool('Have_ROM',true,,-1);
+            flagbase.SetBool('MeetTracerTong_Played',true,,-1);// do we need FemJC versions for these?
+            flagbase.SetBool('TriadCeremony_Played',true,,-1);
             break;
         case 8:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
@@ -444,12 +451,14 @@ static function StartMapSpecificFlags(FlagBase flagbase, int start_flag, string 
 
         case 75:
         case 70:
-            flagbase.SetBool('Have_ROM',true,,-1);
-            flagbase.SetBool('MeetTracerTong_Played',true,,-1);// do we need FemJC versions for these?
-            flagbase.SetBool('TriadCeremony_Played',true,,-1);
+        case 67:
+        case 68:
         case 66://fallthrough
+            if(!flagbase.GetBool('QuickLetPlayerIn')) {// easier than checking if you already have the note
+                player.AddNote("Luminous Path door-code: 1997.", false, false);
+                flagbase.SetBool('QuickLetPlayerIn',true,,-1);
+            }
             flagbase.SetBool('QuickConvinced',true,,-1);
-            flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             break;
 
         case 115:
