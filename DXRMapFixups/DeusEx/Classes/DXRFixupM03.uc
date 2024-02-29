@@ -84,6 +84,10 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if(VanillaMaps) {
+            AddSwitch(vect(-4621.640137, 2902.651123, -650.285461), rot(0,0,0), 'ElevatorPhone');
+        }
+
         fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
         fg.ActiveArea=2000;
 
