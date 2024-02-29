@@ -16,5 +16,5 @@ function Frob(actor Frobber, Inventory frobWith)
 
 function bool CanConverse()
 {
-    return Super.CanConverse() && (lastConTime == 0.0 || Level.TimeSeconds - lastConTime > 30.0);
+    return Super.CanConverse() && (lastConTime == 0.0 || Level.TimeSeconds - lastConTime > 60.0);
 }
