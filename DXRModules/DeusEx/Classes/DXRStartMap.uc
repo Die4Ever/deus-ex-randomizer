@@ -451,8 +451,8 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
 
         case 75:
         case 70:
-        case 67:
         case 68:
+        case 67:
         case 66://fallthrough
             if(!flagbase.GetBool('QuickLetPlayerIn')) {// easier than checking if you already have the note
                 player.AddNote("Luminous Path door-code: 1997.", false, false);

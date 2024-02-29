@@ -23,6 +23,7 @@ var bool writing;
 //var int numwnds;
 var Window wnds[128];
 var String labels[128];
+var int hide_labels[128];
 var String helptexts[128];
 
 var DXRando dxr;
@@ -150,10 +151,12 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
     }
 }
 
-function NewMenuItem(string label, string helptext)
+function NewMenuItem(string label, string helptext, optional bool hide_label)
 {
     id++;
-    labels[id] = label;
+    if(!hide_label) {
+        labels[id] = label;
+    }
     helptexts[id] = helptext;
     log(Self @ label);
 }
@@ -501,6 +504,7 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
     if( label != "" ) CreateLabel(row, label);
 
     btn = MenuUIActionButtonWindow(controlsParent.NewChild(Class'MenuUIActionButtonWindow'));
+    btn.SetWordWrap(false);
     btn.SetButtonText(text);
     if( label == "" ) {
         coords = GetCoords(row, 0);
@@ -585,6 +589,8 @@ function ClickEnum(int iEnum, bool rightClick)
 {
     local EnumBtn e;
     local int numValues, i;
+    local DXREnumList list;
+
     e = enums[iEnum];
 
     for(i=0; i<ArrayCount(e.values); i++) {
@@ -594,7 +600,15 @@ function ClickEnum(int iEnum, bool rightClick)
     }
 
     if(numValues > 5) {
-        // TODO: open list window
+        list = DXREnumList(root.InvokeUIScreen(class'DXREnumList'));
+        list.Init(self, iEnum, labels[iEnum], helptexts[iEnum], e.values[e.value]);
+        for(i=0; i<ArrayCount(e.values); i++) {
+            if(e.values[i] != "") {
+                list.AddButton(e.values[i]);
+            }
+        }
+        list.Finalize();
+        return;
     }
 
     if(rightClick) { // cycle backwards
@@ -623,6 +637,17 @@ function int GetSliderValue(MenuUIEditWindow w)
 function string GetEnumValue(int e)
 {
     return enums[e].values[enums[e].value];
+}
+
+function string SetEnumValue(int e, string text)
+{
+    local int i;
+    for(i=0; i<ArrayCount(enums[e].values); i++) {
+        if(enums[e].values[i] == text) {
+            enums[e].value = i;
+            enums[e].btn.SetButtonText(text);
+        }
+    }
 }
 
 event StyleChanged()

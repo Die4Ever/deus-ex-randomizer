@@ -31,7 +31,7 @@ function BindControls(optional string action)
             EnumOption(ts, temp, f.gamemode);
     }
 
-    NewMenuItem("", "Which items and augs you start with and which are banned.");
+    NewMenuItem("Loadout", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
     if( loadout == None )
         EnumOption("All Items Allowed", 0, f.loadout);

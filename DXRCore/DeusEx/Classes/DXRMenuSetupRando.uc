@@ -145,7 +145,7 @@ function BindControls(optional string action)
 
     NewGroup("Doors and Keys");
 
-    NewMenuItem("", "Which doors to provide additional options to get through.");
+    NewMenuItem("Doors To Change", "Which doors to provide additional options to get through.", true);
 
     doors_type = f.settings.doorsmode  & 0xffffff00;// keep it in the high bytes
     doors_exclusivity = f.settings.doorsmode & 0xff;// just the low byte
@@ -170,7 +170,7 @@ function BindControls(optional string action)
     doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
     doorspickable = f.settings.doorspickable * 100 / doors_probability;
     doors_option = doors_exclusivity $ ";" $ doorsdestructible $ ";" $ doorspickable;
-    NewMenuItem("", "What to do with those doors.");
+    NewMenuItem("Door Adjustments", "What to do with those doors.", true);
     EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive $";50;50", doors_option);
     EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive $";100;100", doors_option);
     EnumOptionString("Breakable and/or Pickable", f.doorindependent $";100;100", doors_option);
