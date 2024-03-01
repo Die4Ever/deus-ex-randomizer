@@ -30,6 +30,40 @@ function bool HaveQueued()
     return dataLinkQueue[0] != None;
 }
 
+function FastForward()
+{
+    bSilent = True;
+
+    // Make sure no sound playing
+    player.StopSound(playingSoundId);
+
+    if ((!bEndTransmission) && (bStartTransmission))
+    {
+        bStartTransmission = False;
+        SetTimer(0.0, False);
+    }
+    else if(GetStateName() == 'WaitForSpeech') {
+        PlayNextEvent();
+    }
+
+    while(currentEvent != None) {
+        SetupEventFunc();
+    }
+
+    rootWindow.hud.DestroyInfoLinkWindow();
+    dataLink = None;
+
+    if ( FireNextDataLink() == False )
+    {
+        player.dataLinkPlay = None;
+        Destroy();
+    }
+    else
+    {
+        FastForward();
+    }
+}
+
 /////
 
 function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvokeActor, optional bool bForcePlay)
@@ -76,7 +110,7 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 
     // Play a sound and wait a few seconds before starting
     datalink.ShowTextCursor(False);
-    if(restarting) {
+    if(restarting || bSilent) {
         bStartTransmission = True;
         restarting = false;
         SetTimer(0.05, True);
@@ -180,6 +214,90 @@ function NotifyDatalinkTrigger()
             dataLinkTriggerQueue[i] = None;
         }
     }
+}
+
+
+// copied from state PlayEvent, because FastForward needs this to happen immediately
+function SetupEventFunc()
+{
+    local EEventAction nextAction;
+    local String nextLabel;
+
+    if ( currentEvent == None ) {
+        TerminateConversation();
+        return;
+    }
+
+    switch( currentEvent.EventType )
+    {
+        // Unsupported events
+        case ET_MoveCamera:
+        case ET_Choice:
+        case ET_Animation:
+        case ET_Trade:
+            break;
+
+        case ET_Speech:
+            nextAction = SetupEventSpeech( ConEventSpeech(currentEvent), nextLabel );
+            break;
+
+        case ET_SetFlag:
+            nextAction = SetupEventSetFlag( ConEventSetFlag(currentEvent), nextLabel );
+            break;
+
+        case ET_CheckFlag:
+            nextAction = SetupEventCheckFlag( ConEventCheckFlag(currentEvent), nextLabel );
+            break;
+
+        case ET_CheckObject:
+            nextAction = SetupEventCheckObject( ConEventCheckObject(currentEvent), nextLabel );
+            break;
+
+        case ET_Jump:
+            nextAction = SetupEventJump( ConEventJump(currentEvent), nextLabel );
+            break;
+
+        case ET_Random:
+            nextAction = SetupEventRandomLabel( ConEventRandomLabel(currentEvent), nextLabel );
+            break;
+
+        case ET_Trigger:
+            nextAction = SetupEventTrigger( ConEventTrigger(currentEvent), nextLabel );
+            break;
+
+        case ET_AddGoal:
+            nextAction = SetupEventAddGoal( ConEventAddGoal(currentEvent), nextLabel );
+            break;
+
+        case ET_AddNote:
+            nextAction = SetupEventAddNote( ConEventAddNote(currentEvent), nextLabel );
+            break;
+
+        case ET_AddSkillPoints:
+            nextAction = SetupEventAddSkillPoints( ConEventAddSkillPoints(currentEvent), nextLabel );
+            break;
+
+        case ET_AddCredits:
+            nextAction = SetupEventAddCredits( ConEventAddCredits(currentEvent), nextLabel );
+            break;
+
+        case ET_CheckPersona:
+            nextAction = SetupEventCheckPersona( ConEventCheckPersona(currentEvent), nextLabel );
+            break;
+
+        case ET_TransferObject:
+            nextAction = SetupEventTransferObject( ConEventTransferObject(currentEvent), nextLabel );
+            break;
+
+        case ET_End:
+            nextAction = SetupEventEnd( ConEventEnd(currentEvent), nextLabel );
+            break;
+    }
+
+    // Based on the result of the setup, we either need to jump to another event
+    // or wait for some input from the user.
+
+    ProcessAction( nextAction, nextLabel );
 }
 
 

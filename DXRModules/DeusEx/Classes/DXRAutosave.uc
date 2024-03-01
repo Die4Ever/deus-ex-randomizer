@@ -145,6 +145,11 @@ static function bool AllowManualSaves(DeusExPlayer player)
     if( f == None ) return true;
     if( f.autosave == Hardcore ) return false;
     if( f.IsHordeMode() ) return false;
+
+    if(player.dataLinkPlay != None) {
+        player.dataLinkPlay.FastForward();
+    }
+
     return true;
 }
 
