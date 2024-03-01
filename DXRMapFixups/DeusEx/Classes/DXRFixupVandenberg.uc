@@ -30,7 +30,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
     local ScriptedPawn pawn;
+    local #var(prefix)ScriptedPawn sp;
     local #var(prefix)Robot bot;
+    local #var(prefix)TiffanySavage tiffany;
     local string botName;
     local int securityBotNum, militaryBotNum;
 
@@ -343,6 +345,18 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
             hoverHint.SetBaseActor(jock);
 
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
+                SetOutsideGuyReactions(sp);
+            }
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'mib_garage'){
+                SetOutsideGuyReactions(sp);
+            }
+
+            //Make Tiffany actually move like a useful human being
+            foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
+                tiffany.GroundSpeed = 180;
+                tiffany.walkAnimMult = 1;
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
             Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar
@@ -350,18 +364,62 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
             Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
 
-            foreach AllActors(class'ScriptedPawn', pawn, 'guard2') {
-                pawn.bIsSecretGoal = true;
-            }
         }
         break;
     }
+}
+
+function SetGarageGuyReactions(#var(prefix)ScriptedPawn sp)
+{
+    sp.RaiseAlarm=RAISEALARM_BeforeAttacking;
+    sp.bReactAlarm=True; //The various reactions on the normal garage guard
+    sp.bReactCarcass=False;
+    sp.bReactDistress=True;
+    sp.bReactFutz=False;
+    sp.bReactLoudNoise=True;
+    sp.bReactPresence=True;
+    sp.bReactProjectiles=True;
+    sp.bReactShot=True;
+    sp.bHateCarcass=False;
+    sp.bHateDistress=True;
+    sp.bHateHacking=False;
+    sp.bHateIndirectInjury=False;
+    sp.bHateInjury=True;
+    sp.bHateShot=True;
+    sp.bHateWeapon=True;
+    sp.MaxProvocations=1;
+    sp.ResetReactions();
+}
+
+function SetOutsideGuyReactions(#var(prefix)ScriptedPawn sp)
+{
+    sp.RaiseAlarm=RAISEALARM_BeforeFleeing;
+    sp.bReactAlarm=True;
+    sp.bReactCarcass=False;
+    sp.bReactDistress=False;
+    sp.bReactFutz=False;
+    sp.bReactLoudNoise=False;
+    sp.bReactPresence=True;
+    sp.bReactProjectiles=True;
+    sp.bReactShot=False;
+    sp.bHateCarcass=False;
+    sp.bHateDistress=False;
+    sp.bHateHacking=False;
+    sp.bHateIndirectInjury=False;
+    sp.bHateInjury=True;
+    sp.bHateShot=True;
+    sp.bHateWeapon=False;
+    sp.MaxProvocations=1;
+    sp.ResetReactions();
 }
 
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)CrateUnbreakableLarge c;
     local Actor a;
+    local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)AlarmUnit alarm;
+    local #var(DeusExPrefix)Mover door;
     local bool RevisionMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
@@ -381,12 +439,39 @@ function PostFirstEntryMapFixes()
         a.SetPhysics(PHYS_None);
         l("PostFirstEntryMapFixes spawned "$ActorToString(a));
         break;
+    case "12_VANDENBERG_GAS":
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
+            SetGarageGuyReactions(sp);
+        }
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'mib_garage'){
+            SetGarageGuyReactions(sp);
+            sp.Tag = 'guard2'; //
+        }
+        foreach AllActors(class'ScriptedPawn',sp,'guard2'){
+            if (Animal(sp)!=None){
+                player().ClientMessage("Spawning doggy alarm for "$sp);
+                alarm=Spawn(class'#var(prefix)AlarmUnit',,, vectm(-7.312059,933.707886,-985),rotm(0,-16408,0)); //Dog Height Alarm
+                alarm.Event='guardattack';
+                alarm.Tag='alarm1'; //Same as the original alarm
+
+                //a dog can't open a door, so trigger it from the alarm panel
+                foreach RadiusActors(class'#var(DeusExPrefix)Mover',door,100,alarm.Location){
+                    if (door.KeyIDNeeded=='pipe'){
+                        door.Tag='guardattack';
+                        break;
+                    }
+                }
+                break;
+            }
+
+        }
+        break;
     }
 }
 
 function AnyEntryMapFixes()
 {
-    local MIB mib;
+    local #var(prefix)ScriptedPawn sp;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
 
@@ -397,15 +482,18 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "12_Vandenberg_gas":
-        foreach AllActors(class'MIB', mib, 'mib_garage') {
-            key = NanoKey(mib.FindInventoryType(class'NanoKey'));
-            l(mib$" has key "$key$", "$key.KeyID$", "$key.Description);
-            if(key == None) continue;
-            if(key.KeyID != '') continue;
-            l("fixing "$key$" to garage_entrance");
-            key.KeyID = 'garage_entrance';
-            key.Description = "Garage Door";
-            key.Timer();// make sure to fix the ItemName in vanilla
+        foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
+            //We switch the tag for mib_garage to guard2 for safety purposes
+            if (sp.Tag== 'mib_garage' || sp.Tag=='guard2'){
+                key = NanoKey(sp.FindInventoryType(class'NanoKey'));
+                if(key == None) continue;
+                l(sp$" has key "$key$", "$key.KeyID$", "$key.Description);
+                if(key.KeyID != '') continue;
+                l("fixing "$key$" to garage_entrance");
+                key.KeyID = 'garage_entrance';
+                key.Description = "Garage Door";
+                key.Timer();// make sure to fix the ItemName in vanilla
+            }
         }
         break;
 
