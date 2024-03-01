@@ -1,20 +1,16 @@
 class DXRJordanShea injects #var(prefix)JordanShea;
 
-var float lastConTime;
+var float realLastConEndTime;
 
-function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
+function EndConversation()
 {
-    Super.EnterConversationState(bFirstPerson, bAvoidState);
-    lastConTime = Level.TimeSeconds;
+    Super.EndConversation();
+    realLastConEndTime = LastConEndTime;
+    LastConEndTime += 59.0;
 }
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-    lastConTime = 0.0;
+    LastConEndTime = realLastConEndTime;
     Super.Frob(Frobber, frobWith);
-}
-
-function bool CanConverse()
-{
-    return Super.CanConverse() && (lastConTime == 0.0 || Level.TimeSeconds - lastConTime > 60.0);
 }
