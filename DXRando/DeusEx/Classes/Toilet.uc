@@ -36,4 +36,6 @@ function Frob(actor Frobber, Inventory frobWith)
 
 defaultproperties
 {
+    bCanBeBase=True
+    CollisionHeight=10.000000
 }
