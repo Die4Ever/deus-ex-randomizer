@@ -15,7 +15,7 @@ function PlayerLogin(#var(PlayerPawn) p)
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
 
-    StartMapSpecificFlags(p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
+    StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -40,7 +40,7 @@ function PreFirstEntry()
     startMapName = Caps(startMapName);
 
     if (InStr(startMapName,dxr.localURL)!=-1){
-        StartMapSpecificFlags(p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
+        StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
     }
 
 }
@@ -125,231 +125,25 @@ static simulated function int GetEndMissionMask(int end_mission)
 
 static function string GetStartingMapName(int val)
 {
-    switch(val){
-        case 0:
-        case 10:
-            return "Liberty Island";
-        case 20:
-            return "NSF Generator";
-        case 30:
-            return "Hunting Lebedev";
-        case 40:
-            return "NSF Defection";
-        case 50:
-            return "MJ12 Jail";
-        case 61:
-            return "Wan Chai Market";
-        case 81:
-            return "Return to NYC";
-        case 90:
-            return "Superfreighter";
-        case 99:
-            return "Graveyard";
-        case 109:
-            return "Chateau DuClare";
-        case 119:
-            return "Everett's House";
-        case 140:
-            return "Ocean Lab";
-        case 150:
-            return "Area 51";
-        default:
-            return "UNKNOWN STARTING MAP "$val$"!";
-    }
+    local string friendlyName;
+    _GetStartMap(val, friendlyName);
+    return friendlyName;
+}
+
+static function string GetStartingMapNameCredits(int val)
+{
+    local string friendlyName, map;
+    map = _GetStartMap(val, friendlyName);
+    if(friendlyName != "") return friendlyName;
+    return "UNKNOWN STARTING MAP "$val$"! " $ map;
 }
 
 static function string GetStartMap(Actor a, int start_map_val)
 {
-    local string startMap;
+    local string startMap, friendlyName;
     local DXRMapVariants mapvariants;
 
-    startMap="01_NYC_UNATCOIsland";
-
-    switch(start_map_val)
-    {
-        case 0:
-        case 10:
-            startMap="01_NYC_UNATCOIsland";
-            break;
-        case 20:
-            startMap="02_NYC_BatteryPark";
-            break;
-        case 21:
-            startMap="02_NYC_Street";
-            break;
-        case 30:
-            startMap="03_NYC_UNATCOIsland";
-            break;
-        case 31:
-            startMap="03_NYC_UNATCOHQ";
-            break;
-        case 32:
-            startMap="03_NYC_BatteryPark";
-            break;
-        case 33:
-            startMap="03_NYC_BrooklynBridgeStation";
-            break;
-        case 34:
-            startMap="03_NYC_MolePeople";
-            break;
-        case 35:
-            startMap="03_NYC_AirfieldHeliBase";
-            break;
-        case 36:
-            startMap="03_NYC_Airfield";
-            break;
-        case 37:
-            startMap="03_NYC_Hangar";
-            break;
-        case 40:
-            startMap="04_NYC_UNATCOHQ";
-            break;
-        case 41:
-            startMap="04_NYC_Street";
-            break;
-        case 42:
-            startMap="04_NYC_Hotel";
-            break;
-        case 45:
-            startMap="04_NYC_NSFHQ";
-            break;
-        case 50:
-            startMap="05_NYC_UNATCOMJ12lab";
-            break;
-        case 55:
-            startMap="05_NYC_UNATCOHQ#UN_med";
-            break;
-        case 60:
-            startMap="06_HongKong_Helibase";
-            break;
-        case 61:
-            startMap="06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
-            break;
-        case 62:
-            startMap="06_HongKong_WanChai_Canal";
-            break;
-        case 63:
-            startMap="06_HongKong_WanChai_Street";
-            break;
-        case 64:
-            startMap="06_HongKong_WanChai_Garage";
-            break;
-        case 65:// start here with Have_Evidence
-            startMap="06_HongKong_WanChai_Underworld";
-            break;
-        case 66:
-            startMap="06_HongKong_TongBase";
-            break;
-        case 67:
-            startMap="06_HongKong_VersaLife";
-            break;
-        case 68:
-            startMap="06_HongKong_MJ12lab";
-            break;
-        case 70:// after versalife 1
-            startMap="06_HongKong_TongBase";
-            break;
-        case 75:
-            startMap="06_HongKong_Storage";
-            break;
-        case 81:
-            startMap="08_NYC_Smug#ToSmugFrontDoor";
-            break;
-        case 82:
-            startMap="08_NYC_Underground";
-            break;
-        case 83:
-            startMap="08_NYC_Bar";
-            break;
-        case 84:
-            startMap="08_NYC_FreeClinic";
-            break;
-        case 85:
-            startMap="08_NYC_Hotel";
-            break;
-        case 90:
-            startMap="09_NYC_Dockyard";
-            break;
-        case 91:
-            startMap="09_NYC_ShipFan";
-            break;
-        case 92:
-            startMap="09_NYC_Ship";
-            break;
-        case 95:
-            startMap="09_NYC_ShipBelow";
-            break;
-        case 99:
-            startMap="09_NYC_Graveyard";
-            break;
-        case 100:
-            startMap="10_Paris_Catacombs";
-            break;
-        case 101:
-            startMap="10_Paris_Catacombs_Tunnels";
-            break;
-        case 105:
-            startMap="10_Paris_Metro";
-            break;
-        case 106:
-            startMap="10_Paris_Club";
-            break;
-        case 109:
-            startMap="10_Paris_Chateau";
-            break;
-        case 110:
-            startMap="11_Paris_Cathedral";
-            break;
-        case 115:// maybe with the cathedral already completed and gunther dead
-            startMap="11_Paris_Underground";
-            break;
-        case 119:
-            startMap="11_Paris_Everett";
-            break;
-        case 120:
-            startMap="12_Vandenberg_Cmd";
-            break;
-        case 121:
-            startMap="12_Vandenberg_Cmd#commstat";
-            break;
-        case 122:
-            startMap="12_Vandenberg_Tunnels";
-            break;
-        case 125:
-            startMap="12_Vandenberg_Computer";
-            break;
-        case 129:
-            startMap="12_Vandenberg_Gas";// give it your best shot
-            break;
-        case 140:
-            startMap="14_Vandenberg_Sub";
-            break;
-        case 141:
-            startMap="14_OceanLab_Lab";
-            break;
-        case 142:
-            startMap="14_OceanLab_UC";
-            break;
-        case 145:
-            startMap="14_Oceanlab_Silo";
-            break;
-        case 150:
-            startMap="15_Area51_Bunker";
-            break;
-        case 151:
-            startMap="15_Area51_Entrance";
-            break;
-        case 152:
-            startMap="15_Area51_Final";
-            break;
-        case 153:
-            startMap="15_Area51_Page";
-            break;
-        default:
-            //There's always a place for you on Liberty Island
-            startMap="01_NYC_UNATCOIsland";
-            break;
-    }
+    startMap = _GetStartMap(start_map_val, friendlyName);
 
     foreach a.AllActors(class'DXRMapVariants', mapvariants) {
         startMap = mapvariants.VaryURL(startMap);
@@ -357,6 +151,195 @@ static function string GetStartMap(Actor a, int start_map_val)
     }
 
     return startMap;
+}
+
+static function string _GetStartMap(int start_map_val, out string friendlyName)
+{
+    switch(start_map_val)
+    {
+        case 0:
+        case 10:
+            friendlyName = "Liberty Island";
+            return "01_NYC_UNATCOIsland";
+        case 20:
+            friendlyName = "NSF Generator";
+            return "02_NYC_BatteryPark";
+        case 21:
+            friendlyName = "";
+            return "02_NYC_Street";
+        case 30:
+            friendlyName = "Hunting Lebedev";
+            return "03_NYC_UNATCOIsland";
+        case 31:
+            friendlyName = "";
+            return "03_NYC_UNATCOHQ";
+        case 32:
+            friendlyName = "";
+            return "03_NYC_BatteryPark";
+        case 33:
+            friendlyName = "";
+            return "03_NYC_BrooklynBridgeStation";
+        case 34:
+            friendlyName = "";
+            return "03_NYC_MolePeople";
+        case 35:
+            friendlyName = "";
+            return "03_NYC_AirfieldHeliBase";
+        case 36:
+            friendlyName = "";
+            return "03_NYC_Airfield";
+        case 37:
+            friendlyName = "";
+            return "03_NYC_Hangar";
+        case 40:
+            friendlyName = "NSF Defection";
+            return "04_NYC_UNATCOHQ";
+        case 41:
+            friendlyName = "";
+            return "04_NYC_Street";
+        case 42:
+            friendlyName = "";
+            return "04_NYC_Hotel";
+        case 45:
+            friendlyName = "";
+            return "04_NYC_NSFHQ";
+        case 50:
+            friendlyName = "MJ12 Jail";
+            return "05_NYC_UNATCOMJ12lab";
+        case 55:
+            friendlyName = "";
+            return "05_NYC_UNATCOHQ#UN_med";
+        case 60:
+            friendlyName = "";
+            return "06_HongKong_Helibase";
+        case 61:
+            friendlyName = "Wan Chai Market";
+            return "06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
+        case 62:
+            friendlyName = "";
+            return "06_HongKong_WanChai_Canal";
+        case 63:
+            friendlyName = "";
+            return "06_HongKong_WanChai_Street";
+        case 64:
+            friendlyName = "";
+            return "06_HongKong_WanChai_Garage";
+        case 65:// start here with Have_Evidence
+            friendlyName = "";
+            return "06_HongKong_WanChai_Underworld";
+        case 66:
+            friendlyName = "";
+            return "06_HongKong_TongBase";
+        case 67:
+            friendlyName = "";
+            return "06_HongKong_VersaLife";
+        case 68:
+            friendlyName = "";
+            return "06_HongKong_MJ12lab";
+        case 70:// after versalife 1
+            friendlyName = "";
+            return "06_HongKong_TongBase";
+        case 75:
+            friendlyName = "";
+            return "06_HongKong_Storage";
+        case 81:
+            friendlyName = "Return to NYC";
+            return "08_NYC_Smug#ToSmugFrontDoor";
+        case 82:
+            friendlyName = "";
+            return "08_NYC_Underground";
+        case 83:
+            friendlyName = "";
+            return "08_NYC_Bar";
+        case 84:
+            friendlyName = "";
+            return "08_NYC_FreeClinic";
+        case 85:
+            friendlyName = "";
+            return "08_NYC_Hotel";
+        case 90:
+            friendlyName = "Superfreighter";
+            return "09_NYC_Dockyard";
+        case 91:
+            friendlyName = "";
+            return "09_NYC_ShipFan";
+        case 92:
+            friendlyName = "";
+            return "09_NYC_Ship";
+        case 95:
+            friendlyName = "";
+            return "09_NYC_ShipBelow";
+        case 99:
+            friendlyName = "Graveyard";
+            return "09_NYC_Graveyard";
+        case 100:
+            friendlyName = "";
+            return "10_Paris_Catacombs";
+        case 101:
+            friendlyName = "";
+            return "10_Paris_Catacombs_Tunnels";
+        case 105:
+            friendlyName = "";
+            return "10_Paris_Metro";
+        case 106:
+            friendlyName = "";
+            return "10_Paris_Club";
+        case 109:
+            friendlyName = "Chateau DuClare";
+            return "10_Paris_Chateau";
+        case 110:
+            friendlyName = "";
+            return "11_Paris_Cathedral";
+        case 115:// maybe with the cathedral already completed and gunther dead
+            friendlyName = "";
+            return "11_Paris_Underground";
+        case 119:
+            friendlyName = "Everett's House";
+            return "11_Paris_Everett";
+        case 120:
+            friendlyName = "";
+            return "12_Vandenberg_Cmd";
+        case 121:
+            friendlyName = "";
+            return "12_Vandenberg_Cmd#commstat";
+        case 122:
+            friendlyName = "";
+            return "12_Vandenberg_Tunnels";
+        case 125:
+            friendlyName = "";
+            return "12_Vandenberg_Computer";
+        case 129:
+            friendlyName = "";
+            return "12_Vandenberg_Gas";// give it your best shot
+        case 140:
+            friendlyName = "Ocean Lab";
+            return "14_Vandenberg_Sub";
+        case 141:
+            friendlyName = "";
+            return "14_OceanLab_Lab";
+        case 142:
+            friendlyName = "";
+            return "14_OceanLab_UC";
+        case 145:
+            friendlyName = "";
+            return "14_Oceanlab_Silo";
+        case 150:
+            friendlyName = "Area 51";
+            return "15_Area51_Bunker";
+        case 151:
+            friendlyName = "";
+            return "15_Area51_Entrance";
+        case 152:
+            friendlyName = "";
+            return "15_Area51_Final";
+        case 153:
+            friendlyName = "";
+            return "15_Area51_Page";
+        default:
+            //There's always a place for you on Liberty Island
+            friendlyName = "Liberty Island";
+            return "01_NYC_UNATCOIsland";
+    }
 }
 
 static function int GetStartMapMission(int start_map_val)
@@ -398,11 +381,18 @@ static function int GetStartMapSkillBonus(int start_map_val)
     return skillBonus * (mission-1);
 }
 
-static function StartMapSpecificFlags(FlagBase flagbase, int start_flag, string start_map)
+static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag, string start_map)
 {
+    local DeusExNote note;
+
     switch(start_flag/10) {
         case 4:
             flagbase.SetBool('DL_SeeManderley_Played',true,,-1);
+            break;
+        case 7:
+            flagbase.SetBool('Have_ROM',true,,-1);
+            flagbase.SetBool('MeetTracerTong_Played',true,,-1);// do we need FemJC versions for these?
+            flagbase.SetBool('TriadCeremony_Played',true,,-1);
             break;
         case 8:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
@@ -444,12 +434,14 @@ static function StartMapSpecificFlags(FlagBase flagbase, int start_flag, string 
 
         case 75:
         case 70:
-            flagbase.SetBool('Have_ROM',true,,-1);
-            flagbase.SetBool('MeetTracerTong_Played',true,,-1);// do we need FemJC versions for these?
-            flagbase.SetBool('TriadCeremony_Played',true,,-1);
+        case 68:
+        case 67:
         case 66://fallthrough
+            if(!flagbase.GetBool('QuickLetPlayerIn')) {// easier than checking if you already have the note
+                player.AddNote("Luminous Path door-code: 1997.", false, false);
+                flagbase.SetBool('QuickLetPlayerIn',true,,-1);
+            }
             flagbase.SetBool('QuickConvinced',true,,-1);
-            flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             break;
 
         case 115:

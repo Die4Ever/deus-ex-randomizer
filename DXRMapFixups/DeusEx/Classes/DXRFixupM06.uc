@@ -125,6 +125,11 @@ function PreFirstEntryMapFixes()
         }
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
+        if (VanillaMaps) {
+            // button to get out of Tong's base
+            AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
+        }
+        // fallthrough
     case "06_HONGKONG_WANCHAI_COMPOUND":
         foreach AllActors(class'Actor', a)
         {

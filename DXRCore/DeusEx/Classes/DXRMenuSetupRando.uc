@@ -11,8 +11,8 @@ event InitWindow()
 function BindControls(optional string action)
 {
     local DXRFlags f;
-    local string doors_option;
-    local int iDifficulty, doors_type, doors_exclusivity, doors_probability, door_type_prob_choice, doorsdestructible, doorspickable;
+    local string doors_option, s;
+    local int iDifficulty, doors_type, doors_exclusivity, doors_probability, door_type_prob_choice, doorsdestructible, doorspickable, i;
     f = InitFlags();
 
     NewGroup("General");
@@ -26,19 +26,13 @@ function BindControls(optional string action)
 
     //Make sure the starting map values match those in DXRStartMap
     NewMenuItem("Starting Map", "What level you will start in.");
-    EnumOption("Liberty Island", 0, f.settings.starting_map);
-    EnumOption("NSF Generator", 20, f.settings.starting_map);
-    EnumOption("Hunting Lebedev", 30, f.settings.starting_map);
-    EnumOption("NSF Defection", 40, f.settings.starting_map);
-    EnumOption("MJ12 Jail", 50, f.settings.starting_map);
-    EnumOption("Wan Chai Market", 61, f.settings.starting_map);
-    EnumOption("Return to NYC", 81, f.settings.starting_map);
-    EnumOption("Superfreighter", 90, f.settings.starting_map);
-    EnumOption("Graveyard", 99, f.settings.starting_map);
-    EnumOption("Chateau DuClare", 109, f.settings.starting_map);
-    EnumOption("Everett's House", 119, f.settings.starting_map);
-    EnumOption("Ocean Lab", 140, f.settings.starting_map);
-    EnumOption("Area 51", 150, f.settings.starting_map);
+    for(i=0; i<160; i++) {
+        if(i == 10) continue;// Liberty Island dupe
+        s = class'DXRStartMap'.static.GetStartingMapName(i);
+        if(s != "") {
+            EnumOption(s, i, f.settings.starting_map);
+        }
+    }
     if(EnumOption("Random", -1)) {
         f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
     }
@@ -145,7 +139,7 @@ function BindControls(optional string action)
 
     NewGroup("Doors and Keys");
 
-    NewMenuItem("", "Which doors to provide additional options to get through.");
+    NewMenuItem("Doors To Change", "Which doors to provide additional options to get through.", true);
 
     doors_type = f.settings.doorsmode  & 0xffffff00;// keep it in the high bytes
     doors_exclusivity = f.settings.doorsmode & 0xff;// just the low byte
@@ -170,7 +164,7 @@ function BindControls(optional string action)
     doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
     doorspickable = f.settings.doorspickable * 100 / doors_probability;
     doors_option = doors_exclusivity $ ";" $ doorsdestructible $ ";" $ doorspickable;
-    NewMenuItem("", "What to do with those doors.");
+    NewMenuItem("Door Adjustments", "What to do with those doors.", true);
     EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive $";50;50", doors_option);
     EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive $";100;100", doors_option);
     EnumOptionString("Breakable and/or Pickable", f.doorindependent $";100;100", doors_option);
@@ -263,6 +257,7 @@ function BindControls(optional string action)
     EnumOption("Reroll Skill Costs Every Mission", 1, f.settings.skills_reroll_missions);
     EnumOption("Reroll Skill Costs Every 2 Missions", 2, f.settings.skills_reroll_missions);
     EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions);
+    EnumOption("Reroll Skill Costs Every 4 Missions", 4, f.settings.skills_reroll_missions);
     EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions);
 
     NewMenuItem("", "Predictability of skill level cost scaling.");

@@ -20,9 +20,10 @@ var bool bHelpAlwaysOn;
 
 var int id;
 var bool writing;
-//var int numwnds;
+
 var Window wnds[128];
 var String labels[128];
+var int hide_labels[128];
 var String helptexts[128];
 
 var DXRando dxr;
@@ -150,10 +151,11 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
     }
 }
 
-function NewMenuItem(string label, string helptext)
+function NewMenuItem(string label, string helptext, optional bool hide_label)
 {
     id++;
     labels[id] = label;
+    hide_labels[id] = int(hide_label);
     helptexts[id] = helptext;
     log(Self @ label);
 }
@@ -193,6 +195,7 @@ function NewGroup(string text)
 function bool EnumOption(string label, int value, optional out int output)
 {
     local int i;
+    local string s;
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
@@ -211,7 +214,8 @@ function bool EnumOption(string label, int value, optional out int output)
             }
         }
         if ( enums[id].btn == None ) {
-            enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
+            if(hide_labels[id]==0) s = labels[id];
+            enums[id].btn = CreateEnum(id, s, helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
          log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
@@ -226,6 +230,7 @@ function bool EnumOption(string label, int value, optional out int output)
 function bool EnumOptionString(string label, string value, optional out string output)
 {
     local int i;
+    local string s;
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
@@ -244,7 +249,8 @@ function bool EnumOptionString(string label, string value, optional out string o
             }
         }
         if ( enums[id].btn == None ) {
-            enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
+            if(hide_labels[id]==0) s = labels[id];
+            enums[id].btn = CreateEnum(id, s, helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
         log(self$"    EnumOptionString: "$label$" == "$value$" compared to default of "$output);
@@ -258,11 +264,14 @@ function bool EnumOptionString(string label, string value, optional out string o
 
 function string EditBox(string value, string pattern)
 {
+    local string s;
+
     if( writing ) {
         return MenuUIEditWindow(wnds[id]).GetText();
     } else {
         if ( wnds[id] == None ) {
-            wnds[id] = CreateEdit(id, labels[id], helptexts[id], pattern, value);
+            if(hide_labels[id]==0) s = labels[id];
+            wnds[id] = CreateEdit(id, s, helptexts[id], pattern, value);
         }
     }
     return value;
@@ -271,6 +280,8 @@ function string EditBox(string value, string pattern)
 function int Slider(out int value, int min, int max)
 {
     local int output;
+    local string s;
+
     if( writing ) {
         output = GetSliderValue(MenuUIEditWindow(wnds[id]));
         output = Clamp(output, min, max);
@@ -279,7 +290,8 @@ function int Slider(out int value, int min, int max)
         return value;
     } else {
         if ( wnds[id] == None ) {
-            wnds[id] = CreateSlider(id, labels[id], helptexts[id], value, min, max);
+            if(hide_labels[id]==0) s = labels[id];
+            wnds[id] = CreateSlider(id, s, helptexts[id], value, min, max);
         } else {
             MenuUIEditWindow(wnds[id]).SetText(string(value));
         }
@@ -501,6 +513,7 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
     if( label != "" ) CreateLabel(row, label);
 
     btn = MenuUIActionButtonWindow(controlsParent.NewChild(Class'MenuUIActionButtonWindow'));
+    btn.SetWordWrap(false);
     btn.SetButtonText(text);
     if( label == "" ) {
         coords = GetCoords(row, 0);
@@ -585,6 +598,8 @@ function ClickEnum(int iEnum, bool rightClick)
 {
     local EnumBtn e;
     local int numValues, i;
+    local DXREnumList list;
+
     e = enums[iEnum];
 
     for(i=0; i<ArrayCount(e.values); i++) {
@@ -594,7 +609,15 @@ function ClickEnum(int iEnum, bool rightClick)
     }
 
     if(numValues > 5) {
-        // TODO: open list window
+        list = DXREnumList(root.InvokeUIScreen(class'DXREnumList'));
+        list.Init(self, iEnum, labels[iEnum], helptexts[iEnum], e.values[e.value]);
+        for(i=0; i<ArrayCount(e.values); i++) {
+            if(e.values[i] != "") {
+                list.AddButton(e.values[i]);
+            }
+        }
+        list.Finalize();
+        return;
     }
 
     if(rightClick) { // cycle backwards
@@ -623,6 +646,17 @@ function int GetSliderValue(MenuUIEditWindow w)
 function string GetEnumValue(int e)
 {
     return enums[e].values[enums[e].value];
+}
+
+function string SetEnumValue(int e, string text)
+{
+    local int i;
+    for(i=0; i<ArrayCount(enums[e].values); i++) {
+        if(enums[e].values[i] == text) {
+            enums[e].value = i;
+            enums[e].btn.SetButtonText(text);
+        }
+    }
 }
 
 event StyleChanged()
