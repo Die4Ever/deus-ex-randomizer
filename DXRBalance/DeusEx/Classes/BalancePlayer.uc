@@ -460,7 +460,7 @@ exec function ActivateAugmentation(int num)
         return;
 
     anAug = AugmentationSystem.GetAugByKey(num);
-    if (Energy == 0 && anAug.GetEnergyRate() > 0)
+    if (Energy == 0 && anAug.energyRate > 0)
     {
         ClientMessage(EnergyDepleted);
         PlaySound(AugmentationSystem.FirstAug.DeactivateSound, SLOT_None);

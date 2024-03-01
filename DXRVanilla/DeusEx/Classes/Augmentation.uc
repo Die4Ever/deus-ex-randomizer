@@ -27,18 +27,17 @@ simulated function SetAutomatic()
 
 simulated function TickUse()
 {
-    LastUsed = 5;
+    LastUsed = Level.TimeSeconds;
 }
 
 simulated function float GetEnergyRate()
 {
-    if(bAutomatic && LastUsed <= 0)
+    if(bAutomatic && LastUsed+5 < Level.TimeSeconds)
         return 0;
     return energyRate;
 }
 
-simulated function Tick(float DeltaTime)
+defaultproperties
 {
-   Super.Tick(DeltaTime);
-   if(LastUsed > 0) LastUsed -= DeltaTime;
+    LastUsed=-100
 }

@@ -1,19 +1,6 @@
 class AugmentationManager merges AugmentationManager;
 // merges because the game validates the superclass
 
-function DeactivateAll()
-{
-    local Augmentation anAug;
-
-    anAug = FirstAug;
-    while(anAug != None)
-    {
-        if (anAug.bIsActive && anAug.GetEnergyRate() > 0)
-            anAug.Deactivate();
-        anAug = anAug.next;
-    }
-}
-
 function Augmentation GetAugByKey(int keyNum)
 {
     local Augmentation anAug;
