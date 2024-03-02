@@ -1,5 +1,8 @@
 class DXRMissionsM08 extends DXRMissions;
 
+    var vector assaultLocations[10];
+    var int numAssaultLocations;
+
 
 function int InitGoals(int mission, string map)
 {
@@ -24,6 +27,15 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("08_NYC_Street", "Bar Entrance", GOAL_TYPE1, vect(-180,-1675,-325), rot(0, 0, 0));
     AddGoalLocation("08_NYC_Street", "Smuggler Back Entrance", GOAL_TYPE1, vect(3010,-4285,-470), rot(0, 23416, 0));
     AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE1, vect(-2222,-770,-390), rot(0, 0, 0));
+
+    //The MJ12 assault squads now get randomized as two squads of 5 (as they were split in non-GOTY)
+    AddGoal("08_NYC_StreetFake", "MJ12 Assault Squad 1", GOAL_TYPE2, 'Van0', PHYS_None); //CreateGoal only runs if the goal map doesn't match
+    AddGoal("08_NYC_StreetFake", "MJ12 Assault Squad 2", GOAL_TYPE2, 'Van1', PHYS_None); //CreateGoal only runs if the goal map doesn't match
+    AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE2 | VANILLA_GOAL, vect(-1893.816406,-614.223816,-445.429260), rot(0, -32616, 0));
+    AddGoalLocation("08_NYC_Street", "Road to NSF HQ", GOAL_TYPE2 | VANILLA_GOAL, vect(-1758.505249,-1704.474976,-445.434998), rot(0, 32832, 0));
+    AddGoalLocation("08_NYC_Street", "Basketball Court", GOAL_TYPE2, vect(2914,-3000,-429), rot(0, 7200, 0));
+    AddGoalLocation("08_NYC_Street", "Smuggler Front Door", GOAL_TYPE2, vect(2292.625977,-1448.627441,-445.429016), rot(0, 0, 0));
+    AddGoalLocation("08_NYC_Street", "Hotel", GOAL_TYPE2, vect(1005.300781,201.109436,-445.432312), rot(0, -16240, 0));
 
     if (dxr.flags.settings.starting_map >= 81) //Mission 8 Smuggler
     {
@@ -62,6 +74,7 @@ function int InitGoalsRev(int mission, string map)
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)Van van;
 
     switch(g.name) {
     case "Harley Filben":
@@ -92,6 +105,14 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.SetOrders('Standing');
         sp.ConBindEvents();
         break;
+
+    case "MJ12 Assault Squad 1":
+    case "MJ12 Assault Squad 2":
+        van = #var(prefix)Van(Spawnm(class'#var(prefix)Van',, 'DXRMissions', Loc.positions[0].pos,Loc.positions[0].rot));
+        g.actors[0].a = van;
+        van.FamiliarName="Flower Delivery Van";
+        van.UnfamiliarName=van.FamiliarName;
+        break;
     }
 }
 
@@ -117,5 +138,77 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             g.actors[0].a.DrawScale = 1;
             g.actors[0].a.SetCollisionSize(320, 87);
         }
+    }
+}
+
+function AfterShuffleGoals(int goalsToLocations[32])
+{
+    local int g;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (dxr.localURL == "08_NYC_STREET" && !RevisionMaps){
+        numAssaultLocations=0;
+        for(g=0; g<num_goals; g++) {
+            if((goals[g].name == "MJ12 Assault Squad 1") || (goals[g].name == "MJ12 Assault Squad 2")) {
+                AddAssaultSquadLocations(locations[goalsToLocations[g]].name);
+            }
+        }
+        MoveAssaultSquads();
+    }
+}
+
+
+function AddAssaultSquadLocations(string locName)
+{
+    switch(locName){
+        case "Alley": //Non-GOTY Squad 1 vanilla location
+            assaultLocations[numAssaultLocations++]=vectm(-2086,-706,-426);
+            assaultLocations[numAssaultLocations++]=vectm(-2041,-761,-426);
+            assaultLocations[numAssaultLocations++]=vectm(-1886,-719,-426);
+            assaultLocations[numAssaultLocations++]=vectm(-1849,-779,-426);
+            assaultLocations[numAssaultLocations++]=vectm(-1692,-695,-426);
+            break;
+        case "Road to NSF HQ": //Non-GOTY Squad 2 vanilla location
+            assaultLocations[numAssaultLocations++]=vectm(-1907,-1534,-434);
+            assaultLocations[numAssaultLocations++]=vectm(-1856,-1584,-434);
+            assaultLocations[numAssaultLocations++]=vectm(-1817,-1497,-441);
+            assaultLocations[numAssaultLocations++]=vectm(-1693,-1494,-452);
+            assaultLocations[numAssaultLocations++]=vectm(-1577,-1585,-438);
+            break;
+        case "Basketball Court":
+            assaultLocations[numAssaultLocations++]=vectm(3008,-2807,-448);
+            assaultLocations[numAssaultLocations++]=vectm(2945,-2773,-448);
+            assaultLocations[numAssaultLocations++]=vectm(3008,-2709,-448);
+            assaultLocations[numAssaultLocations++]=vectm(2958,-2628,-448);
+            assaultLocations[numAssaultLocations++]=vectm(3035,-2560,-448);
+            break;
+        case "Smuggler Front Door":
+            assaultLocations[numAssaultLocations++]=vectm(2552,-1108,-464);
+            assaultLocations[numAssaultLocations++]=vectm(2536,-1038,-464);
+            assaultLocations[numAssaultLocations++]=vectm(2483,-1129,-464);
+            assaultLocations[numAssaultLocations++]=vectm(2491,-1043,-464);
+            assaultLocations[numAssaultLocations++]=vectm(2444,-1094,-464);
+            break;
+        case "Hotel":
+            assaultLocations[numAssaultLocations++]=vectm(1246,453,-464);
+            assaultLocations[numAssaultLocations++]=vectm(1170,398,-464);
+            assaultLocations[numAssaultLocations++]=vectm(1238,340,-464);
+            assaultLocations[numAssaultLocations++]=vectm(1177,289,-464);
+            assaultLocations[numAssaultLocations++]=vectm(1234,229,-464);
+            break;
+    }
+}
+
+function MoveAssaultSquads()
+{
+    local int i;
+    local MJ12Troop t;
+
+    i=0;
+    foreach AllActors(class'MJ12Troop',t,'MJ12AttackForce'){
+        t.WorldPosition = assaultLocations[i];
+        t.SetLocation(assaultLocations[i++]+vectm(0,0,20000));
     }
 }
