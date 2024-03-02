@@ -1,5 +1,6 @@
 class MenuChoice_AutoAugs extends DXRMenuUIChoiceBool;
 
+#ifdef injections
 function SaveSetting()
 {
     local Augmentation aug;
@@ -9,6 +10,7 @@ function SaveSetting()
         aug.SetAutomatic();
     }
 }
+#endif
 
 defaultproperties
 {

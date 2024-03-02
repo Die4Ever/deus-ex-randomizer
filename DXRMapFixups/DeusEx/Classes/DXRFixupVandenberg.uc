@@ -479,8 +479,8 @@ function PostFirstEntryMapFixes()
             SetGarageGuyReactions(sp);
             sp.Tag = 'guard2'; //
         }
-        foreach AllActors(class'ScriptedPawn',sp,'guard2'){
-            if (Animal(sp)!=None){
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
+            if (#var(prefix)Animal(sp)!=None){
                 player().ClientMessage("Spawning doggy alarm for "$sp);
                 alarm=Spawn(class'#var(prefix)AlarmUnit',,, vectm(-7.312059,933.707886,-985),rotm(0,-16408,0)); //Dog Height Alarm
                 alarm.Event='guardattack';
