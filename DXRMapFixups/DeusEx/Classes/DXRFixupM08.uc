@@ -17,6 +17,7 @@ function AnyEntryMapFixes()
         }
         Player().StartDataLinkTransmission("DL_Entry");
         RearrangeMJ12ConvergingInfolink();
+        RearrangeJockExitDialog();
         break;
 
     case "08_NYC_SMUG":
@@ -27,6 +28,43 @@ function AnyEntryMapFixes()
     }
 }
 
+function RearrangeJockExitDialog()
+{
+    local Conversation c;
+    local ConEvent ce,prev;
+    local ConEventSpeech ces;
+    local ConEventAddSkillPoints ceasp;
+    local ConEventAddGoal ceag,goalComplete;
+
+    c = GetConversation('M08JockExit');
+
+    ce = c.eventList;
+    prev=None;
+    while (ce!=None){
+        if (ce.eventType==ET_AddGoal){
+            ceag = ConEventAddGoal(ce);
+            if (ceag.goalName=='GetBackToRoof'){
+                //Pull this goal out of the list
+                goalComplete = ceag;
+                prev.nextEvent = goalComplete.nextEvent;
+            }
+        } else if (ce.eventType==ET_AddSkillPoints){
+            ceasp = ConEventAddSkillPoints(ce);
+        }
+        prev=ce;
+        ce = ce.nextEvent;
+    }
+
+    if (ceasp!=None && goalComplete!=None){
+        //The "GetBackToRoof" goal normally only gets marked as complete if you have a LAM
+        //Move it to get completed when you head out with Jock
+        goalComplete.nextEvent = ceasp.nextEvent;
+        ceasp.nextEvent = goalComplete;
+    }
+
+
+}
+
 function RearrangeMJ12ConvergingInfolink()
 {
     local Conversation c;
@@ -34,28 +72,28 @@ function RearrangeMJ12ConvergingInfolink()
     local ConEventSpeech ces;
     local ConEventSetFlag cesf;
 
-        c = GetConversation('DL_Exit');
+    c = GetConversation('DL_Exit');
 
-        ce = c.eventList;
-        while (ce!=None){
-            if (ce.eventType==ET_Speech){
-                ces = ConEventSpeech(ce);
-            } else if (ce.eventType==ET_SetFlag){
-                cesf = ConEventSetFlag(ce);
-            }
-            ce = ce.nextEvent;
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_Speech){
+            ces = ConEventSpeech(ce);
+        } else if (ce.eventType==ET_SetFlag){
+            cesf = ConEventSetFlag(ce);
         }
+        ce = ce.nextEvent;
+    }
 
-        if (ces!=None && cesf!=None){
-            //The conversation is typically:
-            //Speech -> SetFlag -> End
-            //but I want it to be
-            //SetFlag -> Speech -> End
+    if (ces!=None && cesf!=None){
+        //The conversation is typically:
+        //Speech -> SetFlag -> End
+        //but I want it to be
+        //SetFlag -> Speech -> End
 
-            ces.nextEvent = cesf.nextEvent;
-            cesf.nextEvent = ces;
-            c.eventList = cesf;
-        }
+        ces.nextEvent = cesf.nextEvent;
+        cesf.nextEvent = ces;
+        c.eventList = cesf;
+    }
 
 }
 
@@ -63,6 +101,7 @@ function TimerMapFixes()
 {
     local BlackHelicopter chopper;
     local bool VanillaMaps;
+    local DeusExGoal newGoal;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -75,6 +114,12 @@ function TimerMapFixes()
                 chopper.EnterWorld();
             dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
         }
+
+        if (dxr.flagbase.GetBool('MS_Helicopter_Unhidden') && player().FindGoal('GetBackToRoof')==None){
+            newGoal=player().AddGoal('GetBackToRoof',True);
+            newGoal.SetText("Find Jock and take the helicopter to Brooklyn Naval Shipyard.|nRando: Jock could be anywhere in the streets.");
+        }
+
         break;
     }
 }
