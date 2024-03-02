@@ -122,6 +122,21 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-31,-1485,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1121,-1095,-144));
             class'PlaceholderEnemy'.static.Create(self,vectm(467,-214,-144));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1570,493,1183)); //rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(681,1359,1424)); //rooftop window
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1820,1248,1616)); //rooftop tower
+            class'PlaceholderEnemy'.static.Create(self,vectm(-635,1983,1768)); //rooftop chimneys
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1847,1940,1800)); //rooftop building near elevator
+            class'PlaceholderEnemy'.static.Create(self,vectm(-972,765,1184)); //rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(110,530,784)); //lower rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(423,565,624)); //even lower rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(875,712,464)); //lowest rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(-5,1415,1192)); //apartment
+            class'PlaceholderEnemy'.static.Create(self,vectm(-2080,812,48)); //alley
+            class'PlaceholderEnemy'.static.Create(self,vectm(13,-718,-96)); //Warehouse sewer entrance
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1555,2756,1584)); //Rooftops near elevator
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1717,2177,2008)); //roof of rooftop building near elevator
+            class'PlaceholderEnemy'.static.Create(self,vectm(843,75,480)); //Warehouse garage roof
         }
         break;
     case "02_NYC_HOTEL":
