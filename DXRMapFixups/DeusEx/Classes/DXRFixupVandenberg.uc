@@ -34,6 +34,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Robot bot;
     local #var(prefix)TiffanySavage tiffany;
     local #var(prefix)SecurityCamera sc;
+    local Dispatcher d;
     local string botName;
     local int securityBotNum, militaryBotNum;
 
@@ -136,6 +137,15 @@ function PreFirstEntryMapFixes()
                 e.BumpEvent = 'SC_Door3_opened';
             }
             AddSwitch( vect(-396.634888, 2295, -2542.310547), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
+            //Duplicate the dispatcher for both ends of the radioactive room that sets off the alarms and explosion
+            d = Spawn(class'Dispatcher',, 'SC_Door3_opened' );
+            d.OutEvents[0]='Warning';
+            d.OutDelays[0]=0;
+            d.OutEvents[1]='tnt';
+            d.OutDelays[1]=3;
+            d.OutEvents[2]='Warning';
+            d.OutDelays[2]=2;
+
             foreach AllActors(class'Button1', b) {
                 if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
                     AddDelay(b, 5);
