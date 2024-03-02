@@ -579,6 +579,7 @@ function OverwriteDecorations()
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             if(DecorationsOverwritesClasses[i] == None) continue;
             if( d.IsA(DecorationsOverwritesClasses[i].name) == false ) continue;
+            if( d.bIsSecretGoal == True) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
             d.HitPoints = DecorationsOverwrites[i].HitPoints;
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;

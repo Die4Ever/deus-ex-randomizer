@@ -16,6 +16,7 @@ function AnyEntryMapFixes()
             RemoveReactions(s);
         }
         Player().StartDataLinkTransmission("DL_Entry");
+        RearrangeMJ12ConvergingInfolink();
         break;
 
     case "08_NYC_SMUG":
@@ -24,6 +25,38 @@ function AnyEntryMapFixes()
         }
         break;
     }
+}
+
+function RearrangeMJ12ConvergingInfolink()
+{
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
+
+        c = GetConversation('DL_Exit');
+
+        ce = c.eventList;
+        while (ce!=None){
+            if (ce.eventType==ET_Speech){
+                ces = ConEventSpeech(ce);
+            } else if (ce.eventType==ET_SetFlag){
+                cesf = ConEventSetFlag(ce);
+            }
+            ce = ce.nextEvent;
+        }
+
+        if (ces!=None && cesf!=None){
+            //The conversation is typically:
+            //Speech -> SetFlag -> End
+            //but I want it to be
+            //SetFlag -> Speech -> End
+
+            ces.nextEvent = cesf.nextEvent;
+            cesf.nextEvent = ces;
+            c.eventList = cesf;
+        }
+
 }
 
 function TimerMapFixes()
