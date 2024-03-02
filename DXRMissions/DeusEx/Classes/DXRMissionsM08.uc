@@ -19,6 +19,12 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(-108.541245, -2709.490479, 111.600838), rot(0,20000,0));
     AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2694.934082, -2792.844971, -448.396637), rot(0,32768,0));
 
+    AddGoal("08_NYC_Street", "Jock", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
+    AddGoalLocation("08_NYC_Street", "Hotel Roof", GOAL_TYPE1 | VANILLA_GOAL, vect(75,965,755), rot(0, 22824, 0));
+    AddGoalLocation("08_NYC_Street", "Bar Entrance", GOAL_TYPE1, vect(-180,-1675,-325), rot(0, 0, 0));
+    AddGoalLocation("08_NYC_Street", "Smuggler Back Entrance", GOAL_TYPE1, vect(3010,-4285,-470), rot(0, 23416, 0));
+    AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE1, vect(-2222,-770,-390), rot(0, 0, 0));
+
     if (dxr.flags.settings.starting_map >= 81) //Mission 8 Smuggler
     {
         skip_rando_start = True;
@@ -99,4 +105,17 @@ function MissionTimer()
     }
 
     UpdateGoalWithRandoInfo('KillGreene', "Joe Greene could be anywhere.");
+}
+
+function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
+{
+    if (g.name=="Jock") {
+        if(Loc.name=="Smuggler Back Entrance" || Loc.name=="Alley") {
+            g.actors[0].a.DrawScale = 0.5;
+            g.actors[0].a.SetCollisionSize(200, 50);
+        } else {
+            g.actors[0].a.DrawScale = 1;
+            g.actors[0].a.SetCollisionSize(320, 87);
+        }
+    }
 }
