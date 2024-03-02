@@ -259,8 +259,8 @@ function SetImage(DataVaultImage newImage)
 
 defaultproperties
 {
-     GoalSpoilersText="Goal |&Spoilers"
-     GoalLocationsText="Goal |&Locations"
+     GoalSpoilersText="Goal S|&poilers"
+     GoalLocationsText="Goal Loca|&tions"
      GoalSpoilerWindowHeader="Spoilers?"
      GoalSpoilerWindowText="Do you want to see spoilers for the goal randomization? This will impact your score! Click Goal Locations instead if you don't want to hurt your score."
 }
