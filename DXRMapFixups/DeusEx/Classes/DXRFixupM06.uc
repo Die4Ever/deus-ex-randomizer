@@ -536,6 +536,15 @@ function PostFirstEntryMapFixes()
     }
 }
 
+function FixMaggieMoveSpeed()
+{
+    local #var(prefix)MaggieChow maggie;
+    foreach AllActors(class'#var(prefix)MaggieChow',maggie){
+        maggie.GroundSpeed = 180;
+        maggie.walkAnimMult = 1;
+    }
+}
+
 function AnyEntryMapFixes()
 {
     local Actor a;
@@ -662,6 +671,7 @@ function AnyEntryMapFixes()
             m.bHighlight = true;
         }
         HandleJohnSmithDeath();
+        FixMaggieMoveSpeed();
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -737,6 +747,7 @@ function AnyEntryMapFixes()
         //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing) - Done in PreFirstEntry
         //Remove the requirement for M07Briefing_Played for the conversation (This allows the conversation to trigger if you went out of order - maybe normally, maybe entrance rando)
         DeleteConversationFlag(GetConversation('MaggieChowShowdown'), 'M07Briefing_Played', true);
+        FixMaggieMoveSpeed();
         break;
     default:
         break;
