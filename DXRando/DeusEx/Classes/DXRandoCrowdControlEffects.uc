@@ -1416,6 +1416,8 @@ function int DropPiano(string viewer)
     }
     a.Velocity.Z -= 200;
     a.Instigator = GetCrowdControlPawn(viewer);
+    a.FamiliarName=viewer$"'s Grand Piano";
+    a.UnfamiliarName=a.FamiliarName;
     PlayerMessage(viewer$" dropped a piano on you from "$int(height/16 + 0.5)$" feet with "$int(leading*100 + 0.5)$"% leading!");
     return Success;
 }
