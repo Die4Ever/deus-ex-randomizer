@@ -33,6 +33,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)Robot bot;
     local #var(prefix)TiffanySavage tiffany;
+    local #var(prefix)SecurityCamera sc;
     local string botName;
     local int securityBotNum, militaryBotNum;
 
@@ -118,6 +119,12 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRHoverHint'.static.Create(self, botName, bot.Location, bot.CollisionRadius*1.11, bot.CollisionHeight*1.11, bot.Name);
             hoverHint.SetBaseActor(bot);
             hoverHint.VisibleDistance = 15000;
+        }
+
+        //There are 3 cameras in CMD that have 20 memoryTime instead of the default 5
+        //These are the only ones with non-default in the whole game.  Revert them.
+        foreach AllActors(class'#var(prefix)SecurityCamera',sc){
+            sc.memoryTime = sc.Default.memoryTime;
         }
 
         break;
