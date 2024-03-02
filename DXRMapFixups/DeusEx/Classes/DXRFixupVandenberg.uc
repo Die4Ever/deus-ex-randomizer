@@ -2,6 +2,7 @@ class DXRFixupVandenberg extends DXRFixup;
 
 var bool M14GaryNotDone;
 var bool M12GaryHostageBriefing;
+var int storedBotCount;// MJ12 bots in CMD
 
 function PreFirstEntryMapFixes()
 {
@@ -548,6 +549,10 @@ function AnyEntryMapFixes()
         break;
     case "12_VANDENBERG_CMD":
         Player().StartDataLinkTransmission("DL_no_carla");
+
+        // timer to count the MJ12 Bots
+        SetTimer(1, True);
+
         break;
     }
 }
@@ -601,5 +606,57 @@ function TimerMapFixes()
             }
         }
         break;
+    case "12_VANDENBERG_CMD":
+        CountMJ12Bots();
+        break;
     }
 }
+
+function CountMJ12Bots()
+{
+    local int newCount;
+    local #var(prefix)Robot bot;
+
+    newCount = 0;
+
+    foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
+        if (bot.EMPHitPoints>0){
+            newCount++;
+        }
+    }
+
+    if (newCount!=storedBotCount){
+        // A bot has been destroyed or disabled!
+        if (UpdateBotGoal(newCount)==True){
+            storedBotCount = newCount; //only update the stored count if the goal updated
+            if(newCount==0){
+                SetTimer(0, False);  // Disable the timer now that all bots are destroyed
+            }
+        }
+    }
+}
+
+function bool UpdateBotGoal(int count)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int bracketPos;
+    goal = player().FindGoal('DestroyBots');
+
+    if (goal!=None){
+        goalText = goal.text;
+        bracketPos = InStr(goalText,"[");
+
+        if (bracketPos>0){ //If the extra text is already there, strip it.
+            goalText = Mid(goalText,0,bracketPos-1);
+        }
+
+        goalText = goalText$" ["$count$" remaining]";
+
+        goal.SetText(goalText);
+
+        return True;
+    }
+    return False;
+}
+
