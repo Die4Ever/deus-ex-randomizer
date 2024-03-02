@@ -141,6 +141,21 @@ function PreFirstEntryMapFixes()
                     AddDelay(b, 5);
                 }
             }
+
+            Spawn(class'PlaceholderItem',,, vectm(-2227,4220,-2519)); //on top of generator
+            Spawn(class'PlaceholderItem',,, vectm(-1421,5119,-2534)); //on top of boxes near start
+            Spawn(class'PlaceholderItem',,, vectm(-1205,5271,-2534)); //on top of boxes near start
+            Spawn(class'PlaceholderItem',,, vectm(-2676,3649,-2599)); //stairwell down to flooded area
+            Spawn(class'PlaceholderItem',,, vectm(-3227,3679,-2599)); //floor near stairwell down to flooded area
+            Spawn(class'PlaceholderItem',,, vectm(-1590,2796,-2599)); //airlock after spiderbot trap
+
+            Spawn(class'PlaceholderContainer',,, vectm(-2250,4586,-2577)); //across from generator
+            Spawn(class'PlaceholderContainer',,, vectm(-2414,4329,-2577)); //near generator
+            Spawn(class'PlaceholderContainer',,, vectm(-3175,3194,-2577)); //near stairwell to flooded area
+            Spawn(class'PlaceholderContainer',,, vectm(-1399,4950,-2565)); //near boxes near start
+            Spawn(class'PlaceholderContainer',,, vectm(-3083,2798,-2577)); //near corner near spiderbot trap
+            Spawn(class'PlaceholderContainer',,, vectm(-325,1386,-2577)); //after the pit
+
         }
         break;
 

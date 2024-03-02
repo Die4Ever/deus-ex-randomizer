@@ -304,6 +304,12 @@ function vanilla_keys_rules()
         i++;
 
         keys_rules[i].item_name = 'maintenancekey';
+        keys_rules[i].min_pos = vect(-1631, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 2971, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'maintenancekey';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
