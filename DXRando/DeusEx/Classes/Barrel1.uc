@@ -2,6 +2,9 @@ class DXRBarrel1 injects #var(prefix)Barrel1;
 
 function BeginPlay()
 {
+    bExplosive=Default.bExplosive;
+    explosionDamage=Default.explosionDamage;
+    explosionRadius=Default.explosionRadius;
     Super.BeginPlay();
     bInvincible = false;
 }
