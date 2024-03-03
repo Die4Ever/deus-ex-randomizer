@@ -1681,17 +1681,28 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "drop_selected_item":
-            if (player().InHand == None) {
+            if (player().InHand == None && player().CarriedDecoration==None) {
                 return TempFail;
             }
 
-            if (canDropItem() == False) {
-                return TempFail;
+            if (player().InHand!=None){
+                if (canDropItem() == False) {
+                    return TempFail;
+                }
+
+                if (player().DropItem() == False) {
+                    return TempFail;
+                }
+            } else if (player().CarriedDecoration!=None){
+                player().DropDecoration(); //Doesn't return anything
+
+                //But we can check if your hands are empty afterwards...
+                if (player().CarriedDecoration!=None){
+                    //Didn't drop
+                    return TempFail;
+                }
             }
 
-            if (player().DropItem() == False) {
-                return TempFail;
-            }
             PlayerMessage(viewer@"made you fumble your item");
             break;
 
