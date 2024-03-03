@@ -1035,6 +1035,7 @@ function UpdateAnimRate( float augValue )
 }
 function PlayDying(name damageType, vector hitLoc)
 {
+    SetCollision(false,false,false);
     Super.PlayDying(damageType, hitLoc);
 }
 function TweenToSwimming(float tweentime)
