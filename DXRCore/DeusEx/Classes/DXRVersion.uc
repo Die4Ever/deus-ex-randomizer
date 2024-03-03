@@ -8,6 +8,11 @@ simulated static function CurrentVersion(optional out int major, optional out in
     build=0;//build can't be higher than 99
 }
 
+simulated static function bool VersionIsStable()
+{
+    return false;
+}
+
 simulated static function string VersionString(optional bool full)
 {
     local int major,minor,patch,build;
@@ -22,6 +27,10 @@ simulated static function string VersionString(optional bool full)
     CurrentVersion(major,minor,patch,build);
     return VersionToString(major, minor, patch, build, full) $ status;
 }
+
+//////
+////// you probably don't need to touch the stuff below
+//////
 
 simulated static function int VersionToInt(int major, int minor, int patch, int build)
 {
@@ -54,11 +63,4 @@ simulated static function int VersionNumber()
 simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, int build)
 {
     return config_version < VersionToInt(major, minor, patch, build);
-}
-
-simulated static function bool VersionIsStable()
-{
-    local string v;
-    v = VersionString();
-    return InStr(v, "Alpha")==-1 && InStr(v, "Beta")==-1;
 }

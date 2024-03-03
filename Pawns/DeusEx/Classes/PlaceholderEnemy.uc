@@ -16,9 +16,18 @@ static function PlaceholderEnemy Create(DXRBase a, vector loc, optional int yaw,
     return e;
 }
 
+function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+
+    if(!class'DXRVersion'.static.VersionIsStable()) {
+        Mesh=LodMesh'DeusExItems.TestBox';
+    }
+}
+
 defaultproperties
 {
-    Mesh=LodMesh'DeusExItems.TestBox'
+    Mesh=None
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1.000000)
     orders=DynamicPatrolling
 }

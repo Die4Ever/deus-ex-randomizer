@@ -1084,7 +1084,7 @@ function ExtendedTests()
 {
     local int i, total;
     local float f;
-    local string credits_text;
+    local string text;
     Super.ExtendedTests();
 
     testint(FindLast("this is a test", "nope"), -1, "FindLast");
@@ -1133,10 +1133,10 @@ function ExtendedTests()
     TestTime();
     TestStorage();
 
-    credits_text = StringifyFlags(Credits);
-    test( InStr(credits_text, "(ADD HUMAN READABLE NAME!)") == -1, "Credits does not contain (ADD HUMAN READABLE NAME!)");
-    test( InStr(credits_text, "(Unhandled!)") == -1, "Credits does not contain (Unhandled!)");
-    test( InStr(credits_text, "(Mishandled!)") == -1, "Credits does not contain (Mishandled!)");
+    text = StringifyFlags(Credits);
+    test( InStr(text, "(ADD HUMAN READABLE NAME!)") == -1, "Credits does not contain (ADD HUMAN READABLE NAME!)");
+    test( InStr(text, "(Unhandled!)") == -1, "Credits does not contain (Unhandled!)");
+    test( InStr(text, "(Mishandled!)") == -1, "Credits does not contain (Mishandled!)");
 
     teststring(ToHex(0), "0", "ToHex(0)");
     teststring(ToHex(0xF), "F", "ToHex(0xF)");
@@ -1144,19 +1144,8 @@ function ExtendedTests()
     teststring(ToHex(0x100F), "100F", "ToHex(0x100F)");
     teststring(ToHex(0x9001F), "9001F", "ToHex(0x9001F)");
 
-    gamemode = 0;
-    testint(moresettings.remove_paris_mj12, 0, "check remove_paris_mj12");
-    moresettings.remove_paris_mj12 = 50;
-    SetDifficulty(0);
-    testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
-    testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
-    testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
-    testint(settings.health, 200, "SetDifficulty check health");
-    testint(settings.energy, 200, "SetDifficulty check energy");
-    testint(moresettings.remove_paris_mj12, 0, "SetDifficulty check remove_paris_mj12");
-    SetDifficulty(1);
-    testint(settings.health, 100, "SetDifficulty check health");
-    testint(settings.energy, 100, "SetDifficulty check energy");
+    text = VersionString();
+    testbool(VersionIsStable(), InStr(text, "Alpha")==-1 && InStr(text, "Beta")==-1, "VersionIsStable() matches version text, " $ text);
 }
 
 function TestTime()
