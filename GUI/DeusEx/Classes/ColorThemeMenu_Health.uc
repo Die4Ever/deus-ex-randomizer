@@ -53,8 +53,6 @@ function UpdateColours()
     local int i;
     local Color healthColour;
 
-    player.ClientMessage("tick");
-
     healthColour = GetHealthColor(player);
 
     for (i=0;i<=13;i++){

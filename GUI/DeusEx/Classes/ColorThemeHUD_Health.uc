@@ -30,8 +30,6 @@ function UpdateColours()
     local int i;
     local Color healthColour;
 
-    player.ClientMessage("tock");
-
     healthColour = class'ColorThemeMenu_Health'.static.GetHealthColor(player);
 
     for (i=0;i<=13;i++){
