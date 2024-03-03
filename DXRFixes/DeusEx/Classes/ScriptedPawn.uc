@@ -463,7 +463,7 @@ function UpdateFire()
 
 function Bool HasTwoHandedWeapon()
 {
-    if(bIsFemale || Mesh==LodMesh'DeusExCharacters.GM_DressShirt_S' || Mesh==LodMesh'DeusExCharacters.GM_Trench_F')
+    if(bIsFemale || Mesh==LodMesh'DeusExCharacters.GM_DressShirt_S' || Mesh==LodMesh'DeusExCharacters.GM_Trench_F' || Mesh==LodMesh'DeusExCharacters.GM_Scubasuit')
         return False;
     if ((Weapon != None) && (Weapon.Mass >= 30))
         return True;
