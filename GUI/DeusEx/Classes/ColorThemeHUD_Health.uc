@@ -54,7 +54,8 @@ function SetUIColour()
     local float critHealth;
     if (player!=None){
         critHealth = MIN(player.HealthHead, player.HealthTorso);
-        player.GenerateTotalHealth();
+        if(player.Health > 0)
+            player.GenerateTotalHealth();
 
         FindHealthColour(MIN(player.Health,critHealth));
     } else {
