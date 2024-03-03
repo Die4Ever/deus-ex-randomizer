@@ -1,6 +1,7 @@
 class DXRAugmentation merges Augmentation;
 
 var float LastUsed;
+var float AutoLength;
 
 function PostBeginPlay()
 {
@@ -33,9 +34,15 @@ simulated function SetAutomatic()
     }
 }
 
+simulated function bool IsTicked()
+{
+    return (bAutomatic==false && bIsActive)
+        || (bAutomatic && LastUsed+AutoLength > Level.TimeSeconds && Player.Energy > 0);
+}
+
 simulated function TickUse()
 {
-    if(bAutomatic && LastUsed+5 < Level.TimeSeconds) {
+    if(bAutomatic && !IsTicked()) {
         Player.Energy -= energyRate/60.0;
         if(Player.Energy <= 0) {
             Player.Energy = 0;
@@ -49,8 +56,13 @@ simulated function TickUse()
 
 simulated function float GetEnergyRate()
 {
-    if(bAutomatic && LastUsed+5 < Level.TimeSeconds && Player.Energy > 0)
+    if(bAutomatic && !IsTicked()) {
+        if (Player.AmbientSound == LoopSound && Player.AugmentationSystem.NumAugsActive() == 0) {
+            Player.PlaySound(DeactivateSound, SLOT_None, 0.75);
+            Player.AmbientSound = None;
+        }
         return 0;
+    }
     return energyRate;
 }
 
@@ -70,4 +82,5 @@ function Activate()
 defaultproperties
 {
     LastUsed=-100
+    AutoLength=5
 }

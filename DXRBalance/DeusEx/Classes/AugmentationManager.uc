@@ -14,6 +14,28 @@ function DeactivateAll()
     }
 }
 
+simulated function int NumAugsActive()
+{
+    local Augmentation anAug;
+    local int count;
+
+    if (player == None)
+        return 0;
+
+    count = 0;
+    for(anAug = FirstAug; anAug != None; anAug = anAug.next)
+    {
+        if (anAug.bHasIt && anAug.bIsActive && !anAug.bAlwaysActive) {
+            if(anAug.bAutomatic && !anAug.IsTicked()) {
+                continue;
+            }
+            count++;
+        }
+    }
+
+    return count;
+}
+
 function Augmentation GetAugByKey(int keyNum)
 {
     local Augmentation anAug;
