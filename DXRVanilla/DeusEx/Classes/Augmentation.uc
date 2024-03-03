@@ -79,6 +79,26 @@ function Activate()
         Player.AmbientSound = oldAmbient;
 }
 
+
+// DXRando: don't disable auto augs when upgrading
+function bool IncLevel()
+{
+    if ( !CanBeUpgraded() )
+    {
+        Player.ClientMessage(Sprintf(AugAlreadyHave, AugmentationName));
+        return False;
+    }
+
+    if (bIsActive && !bAutomatic) {
+        Deactivate();
+    }
+
+    CurrentLevel++;
+
+    Player.ClientMessage(Sprintf(AugNowHave, AugmentationName, CurrentLevel + 1));
+}
+
+
 defaultproperties
 {
     LastUsed=-100
