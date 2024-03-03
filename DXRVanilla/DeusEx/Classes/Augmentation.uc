@@ -39,6 +39,9 @@ simulated function TickUse()
         Player.Energy -= energyRate/60.0;
         if(Player.Energy <= 0) {
             Player.Energy = 0;
+        } else {
+            Player.PlaySound(ActivateSound, SLOT_None, 0.75);
+            Player.AmbientSound = LoopSound;
         }
     }
     LastUsed = Level.TimeSeconds;
@@ -49,6 +52,19 @@ simulated function float GetEnergyRate()
     if(bAutomatic && LastUsed+5 < Level.TimeSeconds && Player.Energy > 0)
         return 0;
     return energyRate;
+}
+
+// fix hum sounds for auto augs
+function Activate()
+{
+    local Sound oldAmbient;
+
+    oldAmbient = Player.AmbientSound;
+
+    _Activate();// call the super, but this is merges
+
+    if(bAutomatic && oldAmbient != LoopSound && Player.AmbientSound == LoopSound)
+        Player.AmbientSound = oldAmbient;
 }
 
 defaultproperties
