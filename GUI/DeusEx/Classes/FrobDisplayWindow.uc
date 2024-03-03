@@ -248,6 +248,9 @@ function string GetStrInfo(Actor a, out int numLines)
         return DeviceStrInfo(HackableDevices(a), numLines);
     else if ( #var(prefix)Computers(a) != None || #var(prefix)ATM(a) != None )
         return ComputersStrInfo(#var(prefix)ElectronicDevices(a), numLines);
+    else if ( #var(prefix)Weapon(a)!=None){
+        return WeaponStrInfo(#var(DeusExPrefix)Weapon(a),numLines);
+    }
     else if (!a.bStatic && player.bObjectNames)
         return OtherStrInfo(a, numLines);
 
@@ -490,6 +493,83 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
             strInfo = strInfo $ CR() $ "Unknown PIN";
     }
     return strInfo;
+}
+
+function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
+{
+    local string strInfo;
+    local int dmg,inHandDmg,dmgDiff;
+    local string dmgDiffStr;
+    local float mod;
+    local #var(DeusExPrefix)Weapon ihw;
+
+    numLines=1;
+    strInfo = w.itemName;
+    if (w.AmmoName != Class'DeusEx.AmmoNone' )
+        strInfo = strInfo $ " (" $ w.PickupAmmoCount $ ")";
+
+    numLines++;
+    //Calculate the damage of the weapon you're looking at
+#ifdef injections
+    dmg = DXRWeapon(w).GetDamage(true);
+
+    if( class<DeusExProjectile>(w.ProjectileClass) != None && class<DeusExProjectile>(w.ProjectileClass).default.bExplodes==false )
+        dmg /= float(DXRWeapon(w).GetNumHits());
+#else
+    if (w.AreaOfEffect == AOE_Cone){
+        if (w.bInstantHit)
+        {
+            dmg = w.HitDamage * 5;
+        }else{
+            dmg = w.HitDamage * 3;
+        }
+    }else{
+        dmg = w.HitDamage;
+    }
+    mod = 1.0 - w.GetWeaponSkill();
+    dmg = mod * dmg;
+#endif
+
+    //Calculate the damage of the weapon in your hand
+    if (#var(DeusExPrefix)Weapon(player.InHand)!=None){
+        ihw = #var(DeusExPrefix)Weapon(player.InHand);
+#ifdef injections
+        inHandDmg = DXRWeapon(ihw).GetDamage(true);
+
+        if( class<DeusExProjectile>(ihw.ProjectileClass) != None && class<DeusExProjectile>(ihw.ProjectileClass).default.bExplodes==false )
+            inHandDmg /= float(DXRWeapon(ihw).GetNumHits());
+#else
+        if (ihw.AreaOfEffect == AOE_Cone){
+            if (ihw.bInstantHit){
+                inHandDmg = ihw.HitDamage * 5;
+            }else{
+                inHandDmg = ihw.HitDamage * 3;
+            }
+        }else{
+            inHandDmg = ihw.HitDamage;
+        }
+        mod = 1.0 - ihw.GetWeaponSkill();
+        inHandDmg = mod * inHandDmg;
+#endif
+    }
+
+    strInfo=strInfo $ CR() $"Damage: "$dmg;
+
+    //Show the difference in damage with your current weapon
+    if (inHandDmg!=0){
+        dmgDiff = dmg - inHandDmg;
+        dmgDiffStr = string(dmgDiff);
+        if (dmgDiff>0){
+            dmgDiffStr="+"$dmgDiffStr;
+        }
+
+        if (dmgDiff!=0){
+            strInfo=strInfo$" ("$dmgDiffStr$")";
+        }
+    }
+
+    return strInfo;
+
 }
 
 function bool WeaponModAutoApply(WeaponMod wm)
