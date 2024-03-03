@@ -2,7 +2,7 @@
 // ColorThemeMenu_Health
 //=============================================================================
 
-class ColorThemeMenu_Health extends ColorThemeMenu;
+class ColorThemeMenu_Health extends ColorThemeMenu_Dynamic;
 
 /*
    Colors!
@@ -21,16 +21,21 @@ class ColorThemeMenu_Health extends ColorThemeMenu;
 	colorNames(11)=MenuColor_ListFocus
 */
 
-var DeusExPlayer player;
-var float UpdateTime;
-
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
-function FindHealthColour(float health)
+static function Color GetHealthColor(DeusExPlayer player)
 {
-    local int i;
+    local float health;
     local Color healthColour;
+
+    if(player.Health > 0)
+        player.GenerateTotalHealth();
+
+    health = player.Health;
+    health = MIN(health, player.HealthHead);
+    health = MIN(health, player.HealthTorso);
+    health = MAX(health, 0);
 
     if (health > 0 && player!=None && player.RootWindow!=None){
         healthColour = player.rootWindow.GetColorScaled(health/100.0);
@@ -40,6 +45,18 @@ function FindHealthColour(float health)
         healthColour.b=0;
     }
 
+    return healthColour;
+}
+
+function UpdateColours()
+{
+    local int i;
+    local Color healthColour;
+
+    player.ClientMessage("tick");
+
+    healthColour = GetHealthColor(player);
+
     for (i=0;i<=13;i++){
         Colors[i]=healthColour;
     }
@@ -48,51 +65,8 @@ function FindHealthColour(float health)
     }
 }
 
-function SetUIColour()
-{
-    local float critHealth;
-    if (player!=None){
-        critHealth = MIN(player.HealthHead, player.HealthTorso);
-        if(player.Health > 0)
-            player.GenerateTotalHealth();
-
-        FindHealthColour(MIN(player.Health,critHealth));
-    } else {
-        FindHealthColour(0);
-    }
-}
-
-function Timer()
-{
-    SetUIColour();
-}
-
-function BeginPlay()
-{
-    local DeusExPlayer p;
-    Super.BeginPlay();
-    foreach AllActors(class'DeusExPlayer',p){player = p; }
-    SetUIColour();
-    SetTimer(UpdateTime,true);
-}
-
 defaultproperties
 {
     themeName="Health"
-    bSystemTheme=True
-    bAlwaysTick=True
     UpdateTime=0.1
-    Colors(0)=(R=0,G=0,B=0,A=0),
-    Colors(1)=(R=0,G=0,B=0,A=0),
-    Colors(2)=(R=0,G=0,B=0,A=0),
-    Colors(3)=(R=0,G=0,B=0,A=0),
-    Colors(4)=(R=0,G=0,B=0,A=0),
-    Colors(5)=(R=0,G=0,B=0,A=0),
-    Colors(6)=(R=0,G=0,B=0,A=0),
-    Colors(7)=(R=0,G=0,B=0,A=0),
-    Colors(8)=(R=0,G=0,B=0,A=0),
-    Colors(9)=(R=0,G=0,B=0,A=0),
-    Colors(10)=(R=0,G=0,B=0,A=0),
-    Colors(11)=(R=0,G=0,B=0,A=0),
-    Colors(12)=(R=0,G=0,B=0,A=0),
 }

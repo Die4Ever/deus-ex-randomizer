@@ -2,7 +2,7 @@
 // ColorThemeMenu_Swirl
 //=============================================================================
 
-class ColorThemeMenu_Swirl extends ColorThemeMenu;
+class ColorThemeMenu_Swirl extends ColorThemeMenu_Dynamic;
 
 /*
    Colors!
@@ -21,7 +21,6 @@ class ColorThemeMenu_Swirl extends ColorThemeMenu;
 	colorNames(11)=MenuColor_ListFocus
 */
 
-var DeusExPlayer player;
 var int rgbAngle[15]; //One per theme segment
 
 // ----------------------------------------------------------------------
@@ -69,7 +68,7 @@ function Color GetColorFromAngle(int angle)
     return c;
 }
 
-function UpdateAllColors()
+function UpdateColours()
 {
     local int i;
     for (i=0;i<=13;i++){
@@ -81,35 +80,8 @@ function UpdateAllColors()
     }
 }
 
-function Timer()
-{
-    UpdateAllColors();
-}
-
-function BeginPlay()
-{
-    local DeusExPlayer p;
-    Super.BeginPlay();
-    foreach AllActors(class'DeusExPlayer',p){player = p; }
-    RandomAllAngles();
-    SetTimer(0.1,true);
-}
 defaultproperties
 {
     themeName="Swirl"
-    bSystemTheme=True
-    bAlwaysTick=True
-    Colors(0)=(R=0,G=0,B=0,A=0),
-    Colors(1)=(R=0,G=0,B=0,A=0),
-    Colors(2)=(R=0,G=0,B=0,A=0),
-    Colors(3)=(R=0,G=0,B=0,A=0),
-    Colors(4)=(R=0,G=0,B=0,A=0),
-    Colors(5)=(R=0,G=0,B=0,A=0),
-    Colors(6)=(R=0,G=0,B=0,A=0),
-    Colors(7)=(R=0,G=0,B=0,A=0),
-    Colors(8)=(R=0,G=0,B=0,A=0),
-    Colors(9)=(R=0,G=0,B=0,A=0),
-    Colors(10)=(R=0,G=0,B=0,A=0),
-    Colors(11)=(R=0,G=0,B=0,A=0),
-    Colors(12)=(R=0,G=0,B=0,A=0),
+    UpdateTime=0.1
 }

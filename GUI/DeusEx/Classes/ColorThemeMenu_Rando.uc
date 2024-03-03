@@ -2,7 +2,7 @@
 // ColorThemeMenu_Rando
 //=============================================================================
 
-class ColorThemeMenu_Rando extends ColorThemeMenu;
+class ColorThemeMenu_Rando extends ColorThemeMenu_Dynamic;
 
 /*
    Colors!
@@ -21,9 +21,6 @@ class ColorThemeMenu_Rando extends ColorThemeMenu;
 	colorNames(11)=MenuColor_ListFocus
 */
 
-var DeusExPlayer player;
-var float UpdateTime;
-
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
@@ -38,7 +35,7 @@ function Color RandomColor()
     return newColor;
 }
 
-function RandomAllColors()
+function UpdateColours()
 {
     local int i;
     for (i=0;i<=12;i++){
@@ -49,37 +46,8 @@ function RandomAllColors()
     }
 }
 
-function Timer()
-{
-    RandomAllColors();
-}
-
-function BeginPlay()
-{
-    local DeusExPlayer p;
-    Super.BeginPlay();
-    foreach AllActors(class'DeusExPlayer',p){player = p; }
-    RandomAllColors();
-    SetTimer(UpdateTime,true);
-}
-
 defaultproperties
 {
     themeName="Rando"
-    bSystemTheme=True
-    bAlwaysTick=True
     UpdateTime=0.5
-    Colors(0)=(R=0,G=0,B=0,A=0),
-    Colors(1)=(R=0,G=0,B=0,A=0),
-    Colors(2)=(R=0,G=0,B=0,A=0),
-    Colors(3)=(R=0,G=0,B=0,A=0),
-    Colors(4)=(R=0,G=0,B=0,A=0),
-    Colors(5)=(R=0,G=0,B=0,A=0),
-    Colors(6)=(R=0,G=0,B=0,A=0),
-    Colors(7)=(R=0,G=0,B=0,A=0),
-    Colors(8)=(R=0,G=0,B=0,A=0),
-    Colors(9)=(R=0,G=0,B=0,A=0),
-    Colors(10)=(R=0,G=0,B=0,A=0),
-    Colors(11)=(R=0,G=0,B=0,A=0),
-    Colors(12)=(R=0,G=0,B=0,A=0),
 }
