@@ -1,6 +1,41 @@
 class AugmentationManager merges AugmentationManager;
 // merges because the game validates the superclass
 
+function DeactivateAll()
+{
+    local Augmentation anAug;
+
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.bIsActive && anAug.GetEnergyRate() > 0 && !anAug.bAutomatic && !anAug.bAlwaysActive)
+            anAug.Deactivate();
+        anAug = anAug.next;
+    }
+}
+
+simulated function int NumAugsActive()
+{
+    local Augmentation anAug;
+    local int count;
+
+    if (player == None)
+        return 0;
+
+    count = 0;
+    for(anAug = FirstAug; anAug != None; anAug = anAug.next)
+    {
+        if (anAug.bHasIt && anAug.bIsActive && !anAug.bAlwaysActive) {
+            if(anAug.bAutomatic && !anAug.IsTicked()) {
+                continue;
+            }
+            count++;
+        }
+    }
+
+    return count;
+}
+
 function Augmentation GetAugByKey(int keyNum)
 {
     local Augmentation anAug;
@@ -55,7 +90,11 @@ simulated function float GetAugLevelValue(class<Augmentation> AugClass)
         {
             if (anAug.bHasIt && anAug.bIsActive) {
                 anAug.TickUse();
-                return anAug.LevelValues[anAug.CurrentLevel];
+                if(Player.Energy <= 0 && anAug.bAutomatic) {
+                    return -1.0;
+                } else {
+                    return anAug.LevelValues[anAug.CurrentLevel];
+                }
             }
             else
                 return -1.0;
