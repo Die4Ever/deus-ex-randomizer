@@ -1,4 +1,5 @@
-class DXRConWindowActive injects ConWindowActive;
+class DXRConWindowActive merges ConWindowActive;
+// merges because Kentie's Launcher does this https://github.com/Die4Ever/deus-ex-randomizer/issues/453
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
@@ -45,14 +46,12 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
         }
     }
 
-    return Super.VirtualKeyPressed(key,bRepeat);
+    return _VirtualKeyPressed(key,bRepeat);
 }
 
 function AddButton( ConChoiceWindow newButton )
 {
-    Super.AddButton(newButton);
+    _AddButton(newButton);
 
-    //newButton.SetText("~ ("$numChoices$") "$ newButton.GetText()); // ~ (#) ~ Dialog option
-    //newButton.SetText("("$numChoices$") "$ newButton.GetText());  // (#) ~ Dialog option
     newButton.SetText("("$numChoices$") "$ Mid(newButton.GetText(),2)); // (#) Dialog option
 }
