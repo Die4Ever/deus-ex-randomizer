@@ -652,7 +652,7 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 
 function Conversation GetConversation(Name conName)
 {
-    local Conversation c;
+    local Conversation c, fallback;
     local Name fallbackConName;
 
     fallbackConName='';
@@ -662,13 +662,10 @@ function Conversation GetConversation(Name conName)
     }
     foreach AllObjects(class'Conversation', c) {
         if( c.conName == conName ) return c;
+        if( c.conName == fallbackConName ) fallback = c;
     }
 
-    if (fallbackConName=='') return None;
-
-    foreach AllObjects(class'Conversation', c) {
-        if( c.conName == fallbackConName ) return c;
-    }
+    if (fallbackConName!='') return fallback;
 
     return None;
 }
