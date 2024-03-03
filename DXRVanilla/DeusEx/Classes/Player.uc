@@ -484,6 +484,33 @@ exec function ParseLeftClick()
     }
 }
 
+exec function ParseRightClick()
+{
+    local bool handled;
+    local #var(DeusExPrefix)Mover dxm;
+    handled=False;
+
+    if (RestrictInput())
+        return;
+
+    if (FrobTarget.IsA('#var(DeusExPrefix)Mover')){ //If it's a door...
+        dxm=#var(DeusExPrefix)Mover(FrobTarget);
+        //That is locked and you have the key
+        if (dxm.bLocked && dxm.KeyIDNeeded != '' && KeyRing.HasKey(dxm.KeyIDNeeded)){
+            //And you aren't carrying anything
+            if (CarriedDecoration==None){
+                handled=True;
+                PutInHand(KeyRing);
+                UpdateInHand();
+            }
+        }
+    }
+
+    if (!handled){
+        Super.ParseRightClick();
+    }
+}
+
 //A whole lot of copy paste just to add one "if (bDrop)" check to change the dropVect
 exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 {
