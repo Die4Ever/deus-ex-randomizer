@@ -190,7 +190,17 @@ function PreFirstEntryMapFixes()
             buttonHint.SetBaseActor(button);
         }
 
+        foreach AllActors(class'ScriptedPawn',p){
+            if (p.BindName=="MarketKid"){
+                p.Tag = 'MarketKid';
+            }
+        }
 
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
+            if (ot.Tag=='KidWanders' || ot.Tag=='KidGoesToNewsStand' || ot.Tag=='KidGoesToLumPath'){
+                ot.Event='MarketKid';
+            }
+        }
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
