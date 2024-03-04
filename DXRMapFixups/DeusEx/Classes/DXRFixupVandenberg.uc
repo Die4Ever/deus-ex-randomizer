@@ -12,7 +12,7 @@ function PreFirstEntryMapFixes()
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
-    local HowardStrong hs;
+    local #var(prefix)HowardStrong hs;
     local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
     local #var(prefix)TracerTong tt;
@@ -297,7 +297,7 @@ function PreFirstEntryMapFixes()
     case "14_Oceanlab_silo":
         if (VanillaMaps){
             if(!dxr.flags.IsReducedRando()) {
-                foreach AllActors(class'HowardStrong', hs) {
+                foreach AllActors(class'#var(prefix)HowardStrong', hs) {
                     hs.ChangeAlly('', 1, true);
                     hs.ChangeAlly('mj12', 1, true);
                     hs.ChangeAlly('spider', 1, true);
@@ -317,6 +317,8 @@ function PreFirstEntryMapFixes()
                     if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
                         SetPawnHealth(hs, 200);
                     }
+
+                    hs.LeaveWorld();
                 }
             }
 
@@ -543,6 +545,7 @@ function AnyEntryMapFixes()
             hs.MinHealth = 0;
         }
         Player().StartDataLinkTransmission("DL_FrontGate");
+        SetTimer(1, true);
         break;
     case "12_VANDENBERG_COMPUTER":
         SetTimer(1, true);
@@ -585,6 +588,8 @@ function FixSavageSkillPointsDupe()
 function TimerMapFixes()
 {
     local #var(prefix)GarySavage gary;
+    local #var(prefix)HowardStrong hs;
+
     switch(dxr.localURL)
     {
     case "14_VANDENBERG_SUB":
@@ -608,6 +613,15 @@ function TimerMapFixes()
         break;
     case "12_VANDENBERG_CMD":
         CountMJ12Bots();
+        break;
+
+    case "14_Oceanlab_silo":
+        if(dxr.flagbase.GetBool('missile_launched') && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
+            foreach AllActors(class'#var(prefix)HowardStrong', hs) {
+                hs.EnterWorld();
+            }
+            dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
+        }
         break;
     }
 }
