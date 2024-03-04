@@ -160,6 +160,27 @@ function FirstEntry()
     RandoEnemies(dxr.flags.settings.enemiesrandomized, dxr.flags.settings.hiddenenemiesrandomized);
     RandoCarcasses(dxr.flags.settings.swapitems);
     GivePatrols();
+
+    //DebugAlliances();
+}
+
+function DebugAlliances()
+{
+    local #var(prefix)ScriptedPawn p;
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
+        l("FixAlliances() " $ p @ p.Alliance);
+        if(p.Alliance == 'Bot' || p.Alliance == 'Robot') err(p @ p.Alliance);
+        l(p $ " reactions: "$ p.bLikesNeutral @ p.bHateWeapon @ p.bHateDistress @ p.bHateShot @ p.bHateInjury @ p.bHateIndirectInjury @ p.bHateCarcass);
+#ifdef injections
+        if(#var(prefix)Animal(p) != None) #var(prefix)Animal(p).PrintAlliances();
+        else if(#var(prefix)HumanMilitary(p) != None) #var(prefix)HumanMilitary(p).PrintAlliances();
+        else if(#var(prefix)HumanCivilian(p) != None) #var(prefix)HumanCivilian(p).PrintAlliances();
+        else if(#var(prefix)HumanThug(p) != None) #var(prefix)HumanThug(p).PrintAlliances();
+        else if(#var(prefix)Robot(p) != None) #var(prefix)Robot(p).PrintAlliances();
+        else err("unknown pawn type "$p);
+#endif
+    }
 }
 
 function RandoEnemies(int percent, int hidden_percent)

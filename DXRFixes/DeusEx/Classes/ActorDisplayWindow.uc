@@ -250,6 +250,10 @@ function DrawWindow(GC gc)
             {
                 stateName = trackActor.GetStateName();
                 str = str $ "|p1'" $ stateName $ "'" $ CR();
+                /*trackPawn = ScriptedPawn(trackActor);
+                if(trackPawn != None) {
+                    str = str $ trackPawn.Alliance @ trackPawn.Enemy $ CR();
+                }*/
             }
             if (bShowPhysics || bShowData)
             {

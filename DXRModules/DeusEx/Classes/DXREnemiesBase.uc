@@ -324,11 +324,14 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     if(oldAlliance != '') {
         n.ChangeAlly(oldAlliance, 0, false);
     }
+    n.ChangeAlly(n.Alliance, 1, true);
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
     {
+        // clear default initial alliances
         if(n.InitialAlliances[i].AllianceName != '') {
             n.ChangeAlly(n.InitialAlliances[i].AllianceName, 0, false);
         }
+        // instead copy alliances from parent, below we call n.InitializeAlliances()
         n.InitialAlliances[i] = p.InitialAlliances[i];
     }
 
