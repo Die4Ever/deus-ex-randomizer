@@ -6,6 +6,7 @@ var bool bUserFriendlyNames;
 
 var bool         bShowCustom;
 var string       customAttrib;
+var bool         bShowInventory;
 
 function SetViewClass(Class<Actor> newViewClass)
 {
@@ -38,6 +39,16 @@ function SetCustomAttrib(string newCustomAttrib)
 
 function String GetCustomAttrib(){
     return customAttrib;
+}
+
+function bool IsInventoryVisible()
+{
+    return bShowInventory;
+}
+
+function ShowInventory(bool bShow)
+{
+    bShowInventory = bShow;
 }
 
 function string GetActorName(Actor a)
@@ -101,6 +112,7 @@ function DrawWindow(GC gc)
     local float barWidth;
     local DeusExMover dxMover;
     local vector minpos, maxpos;
+    local Inventory item;
 
     minpos = vect(999999, 999999, 999999);
     maxpos = vect(-999999, -999999, -999999);
@@ -469,6 +481,13 @@ function DrawWindow(GC gc)
 
             if(bShowCustom && customAttrib != "") {
                 str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
+            }
+
+            if(bShowInventory && Pawn(trackActor) != None) {
+                str = str $ "Inventory:" $ CR();
+                for(item = Pawn(trackActor).Inventory; item != None; item = item.Inventory) {
+                    str = str $ GetActorName(item) $ CR();
+                }
             }
 
             if (str != "")

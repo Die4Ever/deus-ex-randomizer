@@ -2,6 +2,7 @@ class DXRShowClassWindow injects ShowClassWindow;
 
 var ToolEditWindow custAttribName;
 var ToolCheckboxWindow	chkCustom;
+var ToolCheckboxWindow	chkInventory;
 
 event InitWindow()
 {
@@ -27,6 +28,8 @@ function CreateDXRandoControls()
     custAttribName.SetInsertionPoint(Len(actorDisplay.GetCustomAttrib()) - 1);
     custAttribName.SetSelectedArea(0, Len(actorDisplay.GetCustomAttrib()));
 
+    // Show inventory
+    chkInventory = CreateToolCheckbox(215, 130,  "Show Inventory", actorDisplay.IsInventoryVisible());
 }
 
 function SaveSettings()
@@ -36,4 +39,5 @@ function SaveSettings()
     actorDisplay.SetCustomAttrib(custAttribName.GetText());
     actorDisplay.ShowCustom(chkCustom.GetToggle());
 
+    actorDisplay.ShowInventory(chkInventory.GetToggle());
 }
