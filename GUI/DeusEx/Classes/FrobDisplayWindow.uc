@@ -5,11 +5,9 @@ var localized string msgShot;
 var localized string msgShots;
 var localized string msgHitPoints;
 
+var DXRando dxr;
+
 var transient bool inited;
-var transient bool auto_codes;
-var transient bool known_codes;
-var transient bool show_keys;
-var transient bool auto_weapon_mods;
 
 function DrawWindow(GC gc)
 {
@@ -30,30 +28,13 @@ function DrawWindow(GC gc)
 
 function CheckSettings()
 {
-    local int codes_mode;
-    local DXRando dxr;
 
     if( player == None || player.FlagBase == None ) return;
-    inited = true;
-
-    codes_mode = class'MenuChoice_PasswordAutofill'.default.codes_mode;
-    if( codes_mode == 2 ) {
-        auto_codes = true;
-    } else {
-        auto_codes = false;
-    }
-    if( codes_mode >= 1 ) {
-        known_codes = true;
-    } else {
-        known_codes = false;
-    }
-
-    show_keys = class'MenuChoice_ShowKeys'.default.enabled;
 
     foreach player.AllActors(class'DXRando',dxr){break;}
     if (dxr==None) return;
 
-    auto_weapon_mods = !dxr.flags.IsZeroRando() && class'MenuChoice_AutoWeaponMods'.default.enabled;
+    inited = true;
 }
 
 function InitFlags()
@@ -67,6 +48,28 @@ event StyleChanged()
 {
     Super.StyleChanged();
     CheckSettings();
+}
+
+function bool GetAutoCodes()
+{
+    return class'MenuChoice_PasswordAutofill'.default.codes_mode == 2;
+
+}
+
+function bool GetKnownCodes()
+{
+    return class'MenuChoice_PasswordAutofill'.default.codes_mode >= 1;
+}
+
+function bool GetShowKeys()
+{
+    return class'MenuChoice_ShowKeys'.default.enabled;
+}
+
+function bool GetAutoWeaponMods()
+{
+    if (dxr==None) return False;
+    return !dxr.flags.IsZeroRando() && class'MenuChoice_AutoWeaponMods'.default.enabled;
 }
 
 static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)
@@ -248,9 +251,8 @@ function string GetStrInfo(Actor a, out int numLines)
         return DeviceStrInfo(HackableDevices(a), numLines);
     else if ( #var(prefix)Computers(a) != None || #var(prefix)ATM(a) != None )
         return ComputersStrInfo(#var(prefix)ElectronicDevices(a), numLines);
-    else if ( #var(prefix)Weapon(a)!=None){
+    else if ( #var(prefix)Weapon(a)!=None )
         return WeaponStrInfo(#var(DeusExPrefix)Weapon(a),numLines);
-    }
     else if (!a.bStatic && player.bObjectNames)
         return OtherStrInfo(a, numLines);
 
@@ -358,7 +360,7 @@ function string MoverStrInfo(Mover m, out int numLines)
             }
         }
         strInfo = msgLocked;
-        if (!(show_keys && keyAcq)) {
+        if (!(GetShowKeys() && keyAcq)) {
             numLines++;
             strInfo = strInfo $ CR() $ msgLockStr;
             if (dxMover.bPickable)
@@ -381,7 +383,7 @@ function string MoverStrInfo(Mover m, out int numLines)
 
         }
 
-        if ( show_keys && dxMover.KeyIDNeeded != ''){
+        if ( GetShowKeys() && dxMover.KeyIDNeeded != ''){
             numLines++;
             if (keyAcq){
                 strInfo = strInfo $ CR() $ "KEY ACQUIRED";
@@ -420,7 +422,7 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 
     strInfo = device.itemName;
 
-    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+    if(!GetAutoCodes() || k==None || (GetAutoCodes() && k!=None && !k.bCodeKnown)){
         numLines++;
         strInfo = strInfo $ CR() $ msgHackStr;
         if (device.bHackable)
@@ -438,18 +440,18 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 
     if( k!=None && (k.bCodeKnown) )
     {
-        if( auto_codes ) {
+        if( GetAutoCodes() ) {
             numLines++;
             strInfo = strInfo $ CR() $ "CODE KNOWN ("$k.validCode$")";
             k.bHackable = False;
             k.msgNotHacked = "It's secure, but you already know the code!";
         }
-        else if( known_codes ) {
+        else if( GetKnownCodes() ) {
             numLines++;
             strInfo = strInfo $ CR() $ "CODE KNOWN";
         }
     }
-    else if( device.IsA('Keypad') && known_codes )
+    else if( device.IsA('Keypad') && GetKnownCodes() )
     {
         numLines++;
         strInfo = strInfo $ CR() $ "Unknown Code";
@@ -473,7 +475,7 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
 
     c = #var(prefix)Computers(d);
     a = #var(injectsprefix)ATM(d);
-    if( known_codes && c != None )
+    if( GetKnownCodes() && c != None )
     {
         if( #var(injectsprefix)ComputerPersonal(c) != None )
             code_known = #var(injectsprefix)ComputerPersonal(c).HasKnownAccounts();
@@ -485,7 +487,7 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
         else
             strInfo = strInfo $ CR() $ "Unknown Password";
     }
-    else if( known_codes && a != None )
+    else if( GetKnownCodes() && a != None )
     {
         if( a.HasKnownAccounts() )
             strInfo = strInfo $ CR() $ "PIN Known";
@@ -578,8 +580,7 @@ function bool WeaponModAutoApply(WeaponMod wm)
     if (player.InHand==None) return False;
     if (player.InHand.IsA('DeusExWeapon')==False) return False;
     if (wm.CanUpgradeWeapon(DeusExWeapon(player.InHand))==False) return False;
-    if (auto_weapon_mods==False) return False;
-
+    if (GetAutoWeaponMods()==False) return False;
     return True;
 
 }
@@ -662,7 +663,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
 
     dxMover = DeusExMover(m);
     // draw colored bars for each value
-    if ((dxMover != None) && dxMover.bLocked && !(show_keys && keyAcq))
+    if ((dxMover != None) && dxMover.bLocked && !(GetShowKeys() && keyAcq))
     {
         gc.SetStyle(DSTY_Translucent);
         col = GetColorScaled(dxMover.lockStrength);
@@ -674,7 +675,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
     // draw the absolute number of lockpicks on top of the colored bar
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable && !(show_keys && keyAcq))
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable && !(GetShowKeys() && keyAcq))
     {
         numTools = GetNumTools(dxMover.lockStrength, player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking'));
         if (numTools == 1)
@@ -684,7 +685,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
 #ifdef vanilla
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable && !(show_keys && keyAcq))
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable && !(GetShowKeys() && keyAcq))
     {
         w = DXRWeapon(player.inHand);
         if( w != None ) {
@@ -704,7 +705,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)*2-2, strInfo);
 
     //Put a green or red bar next to key status if the door is locked and has a key
-    if (show_keys && dxMover.bLocked && dxMover.KeyIDNeeded != ''){
+    if (GetShowKeys() && dxMover.bLocked && dxMover.KeyIDNeeded != ''){
         gc.SetStyle(DSTY_Translucent);
         col.r = 0;
         col.g = 0;
@@ -740,10 +741,10 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
 #endif
 
     // Alignment changes based on the number of lines?
-    if ((auto_codes || known_codes) && k!=None){
+    if ((GetAutoCodes() || GetKnownCodes()) && k!=None){
         infoY += 2;
     }
-    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+    if(!GetAutoCodes() || k==None || (GetAutoCodes() && k!=None && !k.bCodeKnown)){
         // draw a colored bar
         if (device.hackStrength != 0.0)
         {
@@ -765,7 +766,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         }
     }
 
-    if (auto_codes && k!=None){
+    if (GetAutoCodes() && k!=None){
         gc.SetStyle(DSTY_Translucent);
         col.r = 0;
         col.g = 0;
