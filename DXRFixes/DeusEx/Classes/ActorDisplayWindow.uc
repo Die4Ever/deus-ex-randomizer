@@ -4,6 +4,9 @@ var Font textfont;
 var bool bShowHidden;
 var bool bUserFriendlyNames;
 
+var bool         bShowCustom;
+var string       customAttrib;
+
 function SetViewClass(Class<Actor> newViewClass)
 {
     Super.SetViewClass(newViewClass);
@@ -16,6 +19,25 @@ function ShowLOS(bool bShow)
     Super.ShowLOS(bShow);
     bShowHidden = true;
     bUserFriendlyNames = false;
+}
+
+function ShowCustom(bool bShow)
+{
+    bShowCustom = bShow;
+}
+
+function Bool IsCustomVisible()
+{
+	return bShowCustom;
+}
+
+function SetCustomAttrib(string newCustomAttrib)
+{
+    customAttrib = newCustomAttrib;
+}
+
+function String GetCustomAttrib(){
+    return customAttrib;
 }
 
 function string GetActorName(Actor a)
@@ -250,10 +272,10 @@ function DrawWindow(GC gc)
             {
                 stateName = trackActor.GetStateName();
                 str = str $ "|p1'" $ stateName $ "'" $ CR();
-                /*trackPawn = ScriptedPawn(trackActor);
-                if(trackPawn != None) {
-                    str = str $ trackPawn.Alliance @ trackPawn.Enemy $ CR();
-                }*/
+                trackPawn = ScriptedPawn(trackActor);
+                if(trackPawn != None && trackPawn.Enemy != None) {
+                    str = str $ /*trackPawn.Alliance @*/ "Enemy: " $ trackPawn.Enemy.name $ CR();
+                }
             }
             if (bShowPhysics || bShowData)
             {
@@ -445,13 +467,17 @@ function DrawWindow(GC gc)
                 }
             }
 
+            if(bShowCustom && customAttrib != "") {
+                str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
+            }
+
             if (str != "")
             {
                 gc.SetAlignments(HALIGN_Center, VALIGN_Top);
                 gc.SetFont(textfont);
                 //gc.SetTextColorRGB(visibility*255, visibility*255, visibility*255);
                 gc.SetTextColorRGB(0, 255, 0);
-                gc.DrawText(leftX-50, bottomY+barOffset+5, 100+rightX-leftX, 280, str);
+                gc.DrawText(leftX-100, bottomY+barOffset+5, 200+rightX-leftX, 280, str);
             }
 
             gc.SetTextColor(mainColor);
