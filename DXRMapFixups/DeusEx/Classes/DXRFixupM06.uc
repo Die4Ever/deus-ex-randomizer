@@ -190,7 +190,7 @@ function PreFirstEntryMapFixes()
             buttonHint.SetBaseActor(button);
         }
 
-        foreach AllActors(class'ScriptedPawn',p){
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p){
             if (p.BindName=="MarketKid"){
                 p.Tag = 'MarketKid';
             }

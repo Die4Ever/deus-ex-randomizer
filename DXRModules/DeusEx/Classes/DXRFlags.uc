@@ -39,9 +39,6 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         p.ReducedDamageType = 'All';// god mode
         p.AllWeapons();
         p.AllAmmo();
-        if(dxr.localURL == "01_NYC_UNATCOISLAND") {
-            p.Legend();
-        }
 
 #ifdef injections
         autosave = DXRAutosave(dxr.FindModule(class'DXRAutosave'));

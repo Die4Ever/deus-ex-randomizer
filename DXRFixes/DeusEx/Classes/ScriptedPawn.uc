@@ -520,8 +520,10 @@ function PrintAlliances()
 {
     local int i;
     log("PrintAlliances: "$alliance, name);
-    for(i=0; i<ArrayCount(AlliancesEx); i++)
+    for(i=0; i<ArrayCount(AlliancesEx); i++) {
+        if(AlliancesEx[i].AllianceName == '') continue;
         log("PrintAlliances "$i$": " $ AlliancesEx[i].AllianceName @ AlliancesEx[i].AllianceLevel @ AlliancesEx[i].bPermanent, name);
+    }
 }
 
 state Dying

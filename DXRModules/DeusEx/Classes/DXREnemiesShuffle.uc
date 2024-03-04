@@ -32,6 +32,21 @@ function SwapItems(Pawn a, Pawn b)
     }
 }
 
+function MergeAlliances(ScriptedPawn a, ScriptedPawn b)
+{
+    local int i;
+
+    for(i=0; i<ArrayCount(a.InitialAlliances); i++ )
+    {
+        if(a.InitialAlliances[i].AllianceName != '' && a.InitialAlliances[i].AllianceLevel > 0) {
+            b.ChangeAlly(a.InitialAlliances[i].AllianceName, a.InitialAlliances[i].AllianceLevel, a.InitialAlliances[i].bPermanent);
+        }
+        if(b.InitialAlliances[i].AllianceName != '' && b.InitialAlliances[i].AllianceLevel > 0) {
+            a.ChangeAlly(b.InitialAlliances[i].AllianceName, b.InitialAlliances[i].AllianceLevel, b.InitialAlliances[i].bPermanent);
+        }
+    }
+}
+
 
 function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 {
@@ -43,7 +58,7 @@ function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
     // always ok to swap with a placeholder enemy
     if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
     // otherwise check alliance
-    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile && b.GetAllianceType( a.Alliance ) != ALLIANCE_Hostile;
+    return a.GetAllianceType( b.Alliance ) == ALLIANCE_Friendly && b.GetAllianceType( a.Alliance ) == ALLIANCE_Friendly;
 }
 
 function SwapScriptedPawns(int percent, bool enemies)
@@ -128,6 +143,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         SwapProperty(temp[i], temp[slot], "HomeExtent");
         SwapProperty(temp[i], temp[slot], "bUseHome");
         SwapProperty(temp[i], temp[slot], "RaiseAlarm");
+        MergeAlliances(temp[i], temp[slot]);
 
         SwapOrders(temp[i], temp[slot]);
     }
