@@ -417,6 +417,7 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
         case 14:
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
+            flagbase.SetBool('Heliosborn',true,,-1);//Make sure Daedalus and Icarus have merged
             break;
         case 15:
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
@@ -451,6 +452,10 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
 
         case 129:
             flagbase.SetBool('GaryHostageBriefing_Played',true,,-1);
+            flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
+            break;
+        case 145:
+            flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
             break;
     }
 

@@ -616,7 +616,10 @@ function TimerMapFixes()
         break;
 
     case "14_Oceanlab_silo":
-        if(dxr.flagbase.GetBool('missile_launched') && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
+        if(dxr.flagbase.GetBool('Heliosborn') &&  //Finished Vandenberg, mission 12
+           dxr.flagbase.GetBool('schematic_downloaded') && //Finished Ocean Lab, mission 14,
+           dxr.flagbase.GetBool('missile_launched') && //Redirected the missile in Silo, mission 14
+           !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
             foreach AllActors(class'#var(prefix)HowardStrong', hs) {
                 hs.EnterWorld();
             }
