@@ -324,7 +324,6 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     if(oldAlliance != '') {
         n.ChangeAlly(oldAlliance, 0, false);
     }
-    n.ChangeAlly(n.Alliance, 1, true);
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
     {
         // clear default initial alliances
@@ -382,9 +381,9 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     else
         n.Orders = 'Wandering';
     n.HomeTag = 'Start';
-    n.InitializeAlliances();
 
     RandomizeSize(n);
+    n.InitializePawn();
 
     if(!p.bInWorld) {
         n.bHidden = true;
