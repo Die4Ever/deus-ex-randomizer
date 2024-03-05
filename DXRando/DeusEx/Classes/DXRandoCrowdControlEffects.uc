@@ -998,28 +998,34 @@ function SetFloatyPhysics(bool enabled) {
         }
     }
 
-    if (enabled){
-        //Get everything floating immediately
-        ForEach AllActors(class'Actor',A)
-        {
-            apply = False;
-            if (A.isa('ScriptedPawn')){
-                apply = (A.GetStateName() != 'Patrolling' &&
-                         ScriptedPawn(A).Orders != 'Sitting');
-            } else if (A.isa('PlayerPawn')) {
-                apply = True;
-            } else if (A.isa('Decoration')) {
-                apply = ((A.Base!=None &&
-                          A.Physics == PHYS_None &&
-                          A.bStatic == False &&
-                          Decoration(A).bPushable == True) || A.isa('Carcass'));
-            } else if (A.isa('Inventory')) {
-                apply = (Pawn(A.Owner) == None);
-            }
+    //Get everything floating immediately
+    ForEach AllActors(class'Actor',A)
+    {
+        apply = False;
+        if (A.isa('ScriptedPawn')){
+            apply = (A.GetStateName() != 'Patrolling' &&
+                        ScriptedPawn(A).Orders != 'Sitting');
+        } else if (A.isa('PlayerPawn')) {
+            apply = True;
+        } else if (A.isa('Decoration')) {
+            apply = ((A.Base!=None &&
+                        A.Physics == PHYS_None &&
+                        A.bStatic == False &&
+                        Decoration(A).bPushable == True) || A.isa('Carcass'));
+        } else if (A.isa('Inventory')) {
+            apply = (Pawn(A.Owner) == None);
+        }
 
-            if (apply) {
+        if (apply) {
+            if (enabled){
                 A.Velocity.Z+=Rand(10)+1;
                 A.SetPhysics(PHYS_Falling);
+            } else {
+                if (Pawn(A)!=None && A.Region.Zone.bWaterZone){
+                    A.SetPhysics(PHYS_Swimming);
+                } else {
+                    A.SetPhysics(PHYS_Falling);
+                }
             }
         }
     }
@@ -1830,6 +1836,13 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (InConversation()){
                 return TempFail;
             }
+
+            //Don't start floaty physics if you're in the water.  It works,
+            //but it's janky (even if I fixed it ending in the water)
+            if (player().Region.Zone.bWaterZone){
+                return TempFail;
+            }
+
             PlayerMessage(viewer@"made you feel light as a feather");
             SetFloatyPhysics(True);
             startNewTimer('cc_floatyTimer',duration);
