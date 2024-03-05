@@ -164,7 +164,9 @@ function HandleMaxRandoButton(DXRFlags f)
 function DoMaxRandoButtonConfirm()
 {
     tempFlags.ExecMaxRando();
+#ifndef hx
     _InvokeNewGameScreen(tempFlags.settings.CombatDifficulty, InitDxr());
+#endif
 }
 
 function HandleAdvancedButton(DXRFlags f)
@@ -182,7 +184,9 @@ function HandleAdvancedButton(DXRFlags f)
 
 function DoAdvancedButtonConfirm()
 {
+#ifndef hx
     NewGameSetup(tempFlags.settings.CombatDifficulty);
+#endif
 }
 
 event bool BoxOptionSelected(Window button, int buttonNumber)
