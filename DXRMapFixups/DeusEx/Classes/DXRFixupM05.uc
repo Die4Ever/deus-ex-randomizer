@@ -149,6 +149,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
             Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
             Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting');
+
         }
 
         break;

@@ -1,6 +1,13 @@
 class DXRToilet injects #var(prefix)Toilet;
 
 var bool bAlreadyUsed;
+var DXRToiletSeat seat;
+
+function BeginPlay()
+{
+    Super.BeginPlay();
+    seat = class'DXRToiletSeat'.static.Create(self);
+}
 
 function Frob(actor Frobber, Inventory frobWith)
 {

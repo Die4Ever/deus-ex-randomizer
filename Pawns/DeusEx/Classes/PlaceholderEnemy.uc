@@ -4,6 +4,14 @@ static function PlaceholderEnemy Create(DXRBase a, vector loc, optional int yaw,
 {
     local PlaceholderEnemy e;
     local rotator r;
+
+    if (orders=='Shitting'){
+        if (!a.IsAprilFools()){
+            return None;
+        }
+        orders = 'Sitting';
+    }
+
     r = a.rotm(0, yaw, 0, 16384);// Pawns need an offset of 16384
     e = a.Spawn(class'PlaceholderEnemy',,, loc, r);
     e.Alliance = Alliance;

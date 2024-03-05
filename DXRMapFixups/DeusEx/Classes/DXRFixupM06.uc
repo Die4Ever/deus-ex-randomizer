@@ -101,6 +101,8 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
             class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
             class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
+            class'PlaceholderEnemy'.static.Create(self,vectm(755,-364,144),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(877,-360,144),,'Shitting');
         }
         break;
 
@@ -329,6 +331,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-980,2089,-607)); //Barracks empty side lower
         Spawn(class'PlaceholderContainer',,, vectm(-894,1465,-607)); //Barracks empty side lower
         Spawn(class'PlaceholderContainer',,, vectm(-442,-494,-607)); //Near vanilla ROM encoding computer
+
+        //The grays end up getting switched to these spots, which is no good
+        //class'PlaceholderEnemy'.static.Create(self,vectm(903,-1363,432),,'Shitting');
+        //class'PlaceholderEnemy'.static.Create(self,vectm(709,-1378,432),,'Shitting');
+        //class'PlaceholderEnemy'.static.Create(self,vectm(-1101,2364,-592),,'Shitting');
+        //class'PlaceholderEnemy'.static.Create(self,vectm(-1368,2350,-592),,'Shitting');
 
 
         break;

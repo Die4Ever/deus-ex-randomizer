@@ -137,6 +137,8 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-1555,2756,1584)); //Rooftops near elevator
             class'PlaceholderEnemy'.static.Create(self,vectm(-1717,2177,2008)); //roof of rooftop building near elevator
             class'PlaceholderEnemy'.static.Create(self,vectm(843,75,480)); //Warehouse garage roof
+            class'PlaceholderEnemy'.static.Create(self,vectm(1649,-1393,64),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
         }
         break;
     case "02_NYC_HOTEL":
@@ -206,6 +208,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-3593,1620,-961)); //Schick Fume Hood
         Spawn(class'PlaceholderItem',,, vectm(-4264,982,-981)); //Barracks bed
         Spawn(class'PlaceholderItem',,, vectm(-173,850,-322)); //Guard Room Table
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4219,1236,-976),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4059,976,-976),,'Sitting');
+
         break;
     }
 }

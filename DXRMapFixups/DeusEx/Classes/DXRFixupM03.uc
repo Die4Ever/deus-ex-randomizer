@@ -163,6 +163,18 @@ function PreFirstEntryMapFixes()
 
             //Button to extend sewer platform from the other side
             AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(-326,1494,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-422,1393,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(352,1510,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(451,1397,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1154,170,224),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1044,94,224),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
+
         }
         break;
 
@@ -192,6 +204,9 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
             hoverHint.SetBaseActor(jock);
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(2887,3410,256),,'Shitting');
         }
         break;
 
@@ -228,6 +243,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
             Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
             Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(4030,-2958,112),,'Shitting');
+
         }
         break;
 

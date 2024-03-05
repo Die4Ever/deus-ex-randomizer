@@ -564,13 +564,13 @@ function PaulToilet()
 
     chair.Event = '';
     chair.Destroy();
-    toilet.DrawScale = 0.7;
+    //toilet.DrawScale = 0.7;
     // _AddActor does good stuff to ignore collision
-    chair = #var(prefix)Chair1(_AddActor(chair, class'#var(prefix)Chair1', toilet.Location, toilet.Rotation));
-    chair.bHidden = true;
-    chair.sitPoint[0].Y += 4.0;
+    //chair = #var(prefix)Chair1(_AddActor(chair, class'#var(prefix)Chair1', toilet.Location, toilet.Rotation));
+    //chair.bHidden = true;
+    //chair.sitPoint[0].Y += 4.0;
 
-    paul.SetLocation(chair.Location);
+    paul.SetLocation(toilet.Location);
     ft.SetLocation(paul.Location);
 }
 

@@ -105,6 +105,10 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderContainer',,, vectm(-1248,-1248,-460)); //Shipyard dock near sewer entrance
             Spawn(class'PlaceholderContainer',,, vectm(-1185,-1175,-460)); //Shipyard dock near sewer entrance
             Spawn(class'PlaceholderContainer',,, vectm(3172,-1248,-460)); //Shipyard dock near maintenance ladder
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(2639,-1817,-220),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(2805,-1824,-220),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(2005,-68,512),,'Shitting');
         }
         break;
 
@@ -254,6 +258,10 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(3292,4792,48));
         class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408));
         class'PlaceholderEnemy'.static.Create(self,vectm(3209,2333,48));
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(1475,3249,48),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(2435,2271,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1038,3391,48),,'Sitting');
 
         break;
 
