@@ -7,6 +7,37 @@ var bool bUserFriendlyNames;
 var bool         bShowCustom;
 var string       customAttrib;
 var bool         bShowInventory;
+var string       nameFilter;
+var bool         bLimitRadius;
+var int          actorRadius;
+
+function SetActorRadius(string newRadius)
+{
+    actorRadius = int(newRadius);
+}
+
+function int GetActorRadius(){
+    return actorRadius;
+}
+
+function LimitRadius(bool bLimit)
+{
+    bLimitRadius = bLimit;
+}
+
+function Bool IsRadiusLimited()
+{
+	return bLimitRadius;
+}
+
+function SetNameFilter(string newFilter)
+{
+    nameFilter = newFilter;
+}
+
+function String GetNameFilter(){
+    return nameFilter;
+}
 
 function SetViewClass(Class<Actor> newViewClass)
 {
@@ -113,6 +144,8 @@ function DrawWindow(GC gc)
     local DeusExMover dxMover;
     local vector minpos, maxpos;
     local Inventory item;
+    local name filter;
+    local int radius;
 
     minpos = vect(999999, 999999, 999999);
     maxpos = vect(-999999, -999999, -999999);
@@ -127,10 +160,21 @@ function DrawWindow(GC gc)
     if (bShowMesh)
         gc.ClearZ();
 
-    foreach player.AllActors(viewClass, trackActor)
+    if (nameFilter!="")
+        filter = StringToName(nameFilter);
+
+    radius = 999999;
+    if (bLimitRadius){
+        radius = actorRadius;
+    }
+
+    foreach player.RadiusActors(viewClass, trackActor,radius,player.Location)
     {
         if(!bShowHidden && trackActor.bHidden)
             continue;// DXRando: for spoilers buttons
+
+        if (filter!='' && filter!=trackActor.Name)
+            continue;
 
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
@@ -534,4 +578,6 @@ defaultproperties
 {
     textfont=Font'DeusExUI.FontFixedWidthSmall';
     bShowHidden=true
+    bShowLineOfSight=false
+    bShowPos=true
 }

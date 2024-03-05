@@ -159,6 +159,7 @@ function PopulateSpoilers()
     actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
     actorDisplay.SetViewClass(class'DXRGoalMarker');
     actorDisplay.ShowLOS(false);
+    actorDisplay.ShowPos(false);
     if(!#defined(injections))
         actorDisplay.ShowBindName(true);
 }
@@ -213,6 +214,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
             actorDisplay.ShowLOS(false);
+            actorDisplay.ShowPos(false);
 #ifdef injections
             actorDisplay.bUserFriendlyNames = true;
 #endif
@@ -230,6 +232,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
             actorDisplay.ShowLOS(false);
+            actorDisplay.ShowPos(false);
 #ifdef injections
             actorDisplay.bUserFriendlyNames = true;
 #endif
