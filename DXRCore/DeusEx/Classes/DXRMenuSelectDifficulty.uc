@@ -1,24 +1,23 @@
 class DXRMenuSelectDifficulty extends DXRMenuBase;
 
-var DXRFlags tempFlags;
-
-var string MaxRandoBtnTitle;
-var string MaxRandoBtnMessage;
-var string AdvancedBtnTitle;
-var string AdvancedBtnMessage;
+var string MaxRandoBtnTitle, MaxRandoBtnMessage;
+var string AdvancedBtnTitle, AdvancedBtnMessage;
+var string ExtremeBtnTitle, ExtremeBtnMessage;
+var string ImpossibleBtnTitle, ImpossibleBtnMessage;
 
 enum ERandoMessageBoxModes
 {
 	RMB_MaxRando,
 	RMB_Advanced,
+    RMB_Difficulty,// choosing Extreme or Impossible
 };
 var ERandoMessageBoxModes nextScreenNum;
 
 event InitWindow()
 {
     Super.InitWindow();
-    InitDxr();
-    Init(InitDxr());
+    GetDxr();
+    Init(GetDxr());
 }
 
 function BindControls(optional string action)
@@ -35,7 +34,7 @@ function BindControls(optional string action)
     local bool mirrored_maps_files_found;
 #endif
 
-    f = InitFlags();
+    f = GetFlags();
 
     NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<20; i++) {
@@ -123,7 +122,7 @@ function BindControls(optional string action)
     }
 #endif
 
-    NewMenuItem("Seed", "Enter a seed if you want to play the same game again.");
+    NewMenuItem("Seed", "Enter a seed if you want to play the same game again. Leave it blank for a random seed.");
     sseed = EditBox("", "1234567890");
     if( sseed != "" ) {
         f.seed = int(sseed);
@@ -134,26 +133,52 @@ function BindControls(optional string action)
     }
 
     if(writing) {
+        if( action == "ADVANCED" ) {
+            HandleAdvancedButton();
+        }
+        else if( action == "MAXRANDO" ) {
+            HandleMaxRandoButton();
+        }
+        else {
+            HandleNewGameButton();
+        }
+    }
+}
+
+function HandleNewGameButton()
+{
+    local DXRFlags f;
+    f = GetFlags();
+
+    if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Extreme") {
+        nextScreenNum=RMB_Difficulty;
+        root.MessageBox(ExtremeBtnTitle,ExtremeBtnMessage,0,False,Self);
+    }
+    else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Impossible") {
+        nextScreenNum=RMB_Difficulty;
+        root.MessageBox(ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
+    }
+    else {
+        DoNewGameScreen();
+    }
+}
+
+function DoNewGameScreen()
+{
+    local float difficulty;
+    local DXRFlags f;
+    f = GetFlags();
 #ifndef hx
         // we write the difficulty and gamemode after setting the seed, TODO: menus for HX?
         difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
 #endif
-        if( action == "ADVANCED" ) HandleAdvancedButton(f);//NewGameSetup(difficulty);
-        else if( action == "MAXRANDO" ) {
-            HandleMaxRandoButton(f);
-            //f.ExecMaxRando();
-            //_InvokeNewGameScreen(difficulty, InitDxr());
-        }
-        else _InvokeNewGameScreen(difficulty, InitDxr());
-    }
+
+    _InvokeNewGameScreen(difficulty);
 }
 
-function HandleMaxRandoButton(DXRFlags f)
+function HandleMaxRandoButton()
 {
-    local DXRMessageBoxWindow msgBox;
-    tempFlags = f;
-
-    if (class'DXRando'.default.rando_beaten){
+    if (dxr.rando_beaten != 0){
         DoMaxRandoButtonConfirm();
     } else {
         nextScreenNum=RMB_MaxRando;
@@ -163,18 +188,17 @@ function HandleMaxRandoButton(DXRFlags f)
 
 function DoMaxRandoButtonConfirm()
 {
-    tempFlags.ExecMaxRando();
+    local DXRFlags f;
+    f = GetFlags();
+    f.ExecMaxRando();
 #ifndef hx
-    _InvokeNewGameScreen(tempFlags.settings.CombatDifficulty, InitDxr());
+    _InvokeNewGameScreen(f.settings.CombatDifficulty);
 #endif
 }
 
-function HandleAdvancedButton(DXRFlags f)
+function HandleAdvancedButton()
 {
-    local DXRMessageBoxWindow msgBox;
-    tempFlags = f;
-
-    if (class'DXRando'.default.rando_beaten){
+    if (dxr.rando_beaten != 0){
         DoAdvancedButtonConfirm();
     } else {
         nextScreenNum=RMB_Advanced;
@@ -185,7 +209,7 @@ function HandleAdvancedButton(DXRFlags f)
 function DoAdvancedButtonConfirm()
 {
 #ifndef hx
-    NewGameSetup(tempFlags.settings.CombatDifficulty);
+    NewGameSetup(GetFlags().settings.CombatDifficulty);
 #endif
 }
 
@@ -197,27 +221,21 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
         case RMB_MaxRando:
             if (buttonNumber==0){
                 DoMaxRandoButtonConfirm();
-                return true;
-            } else {
-                return true;
             }
-            break;
+            return true;
         case RMB_Advanced:
             if (buttonNumber==0){
                 DoAdvancedButtonConfirm();
-                return true;
-            } else {
-                return true;
             }
-            break;
+            return true;
+        case RMB_Difficulty:
+            if (buttonNumber==0){
+                DoNewGameScreen();
+            }
+            return true;
     }
 
     return Super.BoxOptionSelected(button,buttonNumber);
-}
-
-function InvokeNewGameScreen(float difficulty)
-{
-    _InvokeNewGameScreen(difficulty, InitDxr());
 }
 
 event DestroyWindow()
@@ -254,8 +272,11 @@ defaultproperties
     padding_width=20
     padding_height=10
     MaxRandoBtnTitle="Are you sure?"
-    MaxRandoBtnMessage="It appears you haven't beaten DX Randomizer. Max Rando will randomize all the settings, which will likely result in a bad first time experience.  Are you sure you want to proceed?"
+    MaxRandoBtnMessage="It appears you're new to DX Randomizer.  Max Rando will randomize all the settings, which will likely result in a bad first time experience.  Are you sure you want to proceed?"
     AdvancedBtnTitle="Advanced Settings?"
-    AdvancedBtnMessage="It appears you haven't beaten DX Randomizer.  We recommend playing with default settings for a better first time experience.  Are you sure you want to adjust advanced settings?"
-
+    AdvancedBtnMessage="It appears you're new to DX Randomizer.  We recommend playing with default settings for a better first time experience.  Are you sure you want to adjust advanced settings?"
+    ExtremeBtnTitle="Extreme Difficulty?"
+    ExtremeBtnMessage="It appears you're new to DX Randomizer.  Extreme difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
+    ImpossibleBtnTitle="Impossible Difficulty?"
+    ImpossibleBtnMessage="It appears you're new to DX Randomizer.  Impossible difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
 }

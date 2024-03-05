@@ -756,7 +756,9 @@ static function BeatGame(DXRando dxr, int ending)
     local class<Json> js;
     js = class'Json';
 
-    dxr.rando_beaten=true; //Mark the rando as having been beaten
+    // Mark the rando as having been beaten, affects dialogs on the new game menu.
+    dxr.rando_beaten = Max(1, dxr.rando_beaten + 1);
+    dxr.rando_beaten = Min(2000000000, dxr.rando_beaten);// Make sure you can beat the game over 2 billion times without overflow issues.
     dxr.SaveConfig();
 
     stats = DXRStats(dxr.FindModule(class'DXRStats'));

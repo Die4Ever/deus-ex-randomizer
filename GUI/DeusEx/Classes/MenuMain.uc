@@ -110,3 +110,9 @@ function bool ButtonActivated( Window buttonPressed )
 
     return bHandled;
 }
+
+defaultproperties
+{
+    AskToTrainTitle="Rando Training Mission"
+    AskToTrainMessage="Before starting DX Randomizer for the first time, we suggest running through the Rando Training Mission.  Would you like to do this now?"
+}

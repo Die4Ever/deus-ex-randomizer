@@ -97,26 +97,26 @@ event Init(DXRando d)
     StyleChanged();
 }
 
-function DXRFlags InitFlags()
+function DXRFlags GetFlags()
 {
     if( flags != None ) return flags;
-    log(Self$".InitFlags calling InitDxr");
-    InitDxr();
+    log(Self$".GetFlags calling GetDxr");
+    GetDxr();
     return flags;
 }
 
-function DXRando InitDxr()
+function DXRando GetDxr()
 {
     if( dxr != None ) return dxr;
 
-    log("InitDxr has player "$player);
+    log("GetDxr has player "$player);
 #ifdef vmd
     // vmd loads a separate level for character creation
     foreach player.AllActors(class'DXRando', dxr) { break; }
 #else
     dxr = player.Spawn(class'DXRando', None);
 #endif
-    log("InitDxr got "$dxr);
+    log("GetDxr got "$dxr);
     dxr.CrcInit();
 #ifdef hx
     //player() = HXHuman(player);
@@ -131,7 +131,7 @@ function DXRando InitDxr()
     return dxr;
 }
 
-function _InvokeNewGameScreen(float difficulty, DXRando dxr)
+function _InvokeNewGameScreen(float difficulty)
 {
     local DXRMenuScreenNewGame newGame;
 #ifdef vmd

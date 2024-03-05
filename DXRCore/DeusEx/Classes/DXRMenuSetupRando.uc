@@ -13,7 +13,7 @@ function BindControls(optional string action)
     local DXRFlags f;
     local string doors_option, s;
     local int iDifficulty, doors_type, doors_exclusivity, doors_probability, door_type_prob_choice, doorsdestructible, doorspickable, i;
-    f = InitFlags();
+    f = GetFlags();
 
     NewGroup("General");
 
@@ -353,13 +353,15 @@ function BindControls(optional string action)
     NewMenuItem("Weapons Removed", "Number of weapons removed per loop.");
     Slider(f.newgameplus_num_removed_weapons, 0, 18);
 
-    if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty, InitDxr());
-    if( action == "RANDOMIZE" ) RandomizeOptions(f);
+    if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty);
+    if( action == "RANDOMIZE" ) RandomizeOptions();
 }
 
-function RandomizeOptions(DXRFlags f)
+function RandomizeOptions()
 {
     local int scrollPos;
+    local DXRFlags f;
+    f = GetFlags();
 
     scrollPos = winScroll.vScale.GetTickPosition();
 
