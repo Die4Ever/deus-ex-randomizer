@@ -756,6 +756,9 @@ static function BeatGame(DXRando dxr, int ending)
     local class<Json> js;
     js = class'Json';
 
+    dxr.rando_beaten=true; //Mark the rando as having been beaten
+    dxr.SaveConfig();
+
     stats = DXRStats(dxr.FindModule(class'DXRStats'));
 
     j = js.static.Start("BeatGame");

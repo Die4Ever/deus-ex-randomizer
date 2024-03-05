@@ -17,6 +17,7 @@ var transient int num_modules;
 
 var config string modules_to_load[47];// 1 less than the modules array, because we always load the DXRFlags module
 var config int config_version;
+var config bool rando_beaten;
 
 var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
@@ -118,6 +119,9 @@ function CheckConfig()
 {
     local int i;
 
+    if( VersionOlderThan(config_version, 2,6,0,0) ) {
+        rando_beaten=True;
+    }
     if( VersionOlderThan(config_version, 2,5,4,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";

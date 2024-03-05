@@ -1,5 +1,19 @@
 class DXRMenuSelectDifficulty extends DXRMenuBase;
 
+var DXRFlags tempFlags;
+
+var string MaxRandoBtnTitle;
+var string MaxRandoBtnMessage;
+var string AdvancedBtnTitle;
+var string AdvancedBtnMessage;
+
+enum ERandoMessageBoxModes
+{
+	RMB_MaxRando,
+	RMB_Advanced,
+};
+var ERandoMessageBoxModes nextScreenNum;
+
 event InitWindow()
 {
     Super.InitWindow();
@@ -124,13 +138,77 @@ function BindControls(optional string action)
         // we write the difficulty and gamemode after setting the seed, TODO: menus for HX?
         difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
 #endif
-        if( action == "ADVANCED" ) NewGameSetup(difficulty);
+        if( action == "ADVANCED" ) HandleAdvancedButton(f);//NewGameSetup(difficulty);
         else if( action == "MAXRANDO" ) {
-            f.ExecMaxRando();
-            _InvokeNewGameScreen(difficulty, InitDxr());
+            HandleMaxRandoButton(f);
+            //f.ExecMaxRando();
+            //_InvokeNewGameScreen(difficulty, InitDxr());
         }
         else _InvokeNewGameScreen(difficulty, InitDxr());
     }
+}
+
+function HandleMaxRandoButton(DXRFlags f)
+{
+    local DXRMessageBoxWindow msgBox;
+    tempFlags = f;
+
+    if (class'DXRando'.default.rando_beaten){
+        DoMaxRandoButtonConfirm();
+    } else {
+        nextScreenNum=RMB_MaxRando;
+        root.MessageBox(MaxRandoBtnTitle,MaxRandoBtnMessage,0,False,Self);
+    }
+}
+
+function DoMaxRandoButtonConfirm()
+{
+    tempFlags.ExecMaxRando();
+    _InvokeNewGameScreen(tempFlags.settings.CombatDifficulty, InitDxr());
+}
+
+function HandleAdvancedButton(DXRFlags f)
+{
+    local DXRMessageBoxWindow msgBox;
+    tempFlags = f;
+
+    if (class'DXRando'.default.rando_beaten){
+        DoAdvancedButtonConfirm();
+    } else {
+        nextScreenNum=RMB_Advanced;
+        root.MessageBox(AdvancedBtnTitle,AdvancedBtnMessage,0,False,Self);
+    }
+}
+
+function DoAdvancedButtonConfirm()
+{
+    NewGameSetup(tempFlags.settings.CombatDifficulty);
+}
+
+event bool BoxOptionSelected(Window button, int buttonNumber)
+{
+    root.PopWindow();
+
+    switch (nextScreenNum){
+        case RMB_MaxRando:
+            if (buttonNumber==0){
+                DoMaxRandoButtonConfirm();
+                return true;
+            } else {
+                return true;
+            }
+            break;
+        case RMB_Advanced:
+            if (buttonNumber==0){
+                DoAdvancedButtonConfirm();
+                return true;
+            } else {
+                return true;
+            }
+            break;
+    }
+
+    return Super.BoxOptionSelected(button,buttonNumber);
 }
 
 function InvokeNewGameScreen(float difficulty)
@@ -171,4 +249,9 @@ defaultproperties
     row_height=20
     padding_width=20
     padding_height=10
+    MaxRandoBtnTitle="Are you sure?"
+    MaxRandoBtnMessage="It appears you haven't beaten DX Randomizer. Max Rando will randomize all the settings, which will likely result in a bad first time experience.  Are you sure you want to proceed?"
+    AdvancedBtnTitle="Advanced Settings?"
+    AdvancedBtnMessage="It appears you haven't beaten DX Randomizer.  We recommend playing with default settings for a better first time experience.  Are you sure you want to adjust advanced settings?"
+
 }
