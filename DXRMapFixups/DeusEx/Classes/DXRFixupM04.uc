@@ -248,7 +248,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
             if (ft.event == 'MainGates') {
                 // Increase the radius to extend around the corner for NSFHQ starts
-                ft.SetCollisionSize(6600.0, ft.CollisionHeight);
+                ft.SetCollisionSize(7000.0, ft.CollisionHeight);
             }
         }
 
