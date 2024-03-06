@@ -581,7 +581,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     }
     else if(gamemode == SeriousSam) {
 #ifndef hx
-        settings.CombatDifficulty *= 0.1;
+        settings.CombatDifficulty *= 0.2;
 #endif
         settings.enemiesrandomized = 1000;
         settings.hiddenenemiesrandomized = 1000;
@@ -627,6 +627,11 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
+    }
+    else if(IsHordeMode()) {
+#ifndef hx
+        settings.CombatDifficulty *= 0.75;
+#endif
     }
     return settings;
 }
