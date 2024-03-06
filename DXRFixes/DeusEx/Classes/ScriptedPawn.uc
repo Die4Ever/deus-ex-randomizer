@@ -609,6 +609,61 @@ function SupportActor(Actor standingActor)
     }
 }
 
+
+state Sitting
+{
+    function FollowSeatFallbackOrders()
+    {
+        FindBestSeat();
+        if (IsSeatValid(SeatActor)){
+            GotoState('Sitting', 'Begin');
+        }else{
+            if (SeatDesperation()){
+                GotoState('Wandering');
+            }
+        }
+    }
+
+    function bool SeatDesperation()
+    {
+        local Seat aSeat,closestSeat;
+        local int bestSlot;
+        local float closeSeatDist;
+
+        closestSeat = None;
+        closeSeatDist = 9999;
+
+        foreach self.RadiusActors(class'Seat',aSeat,160){
+            if (VSize(aSeat.Location-Location)<closeSeatDist){
+                closestSeat = aSeat;
+            }
+        }
+
+        if (closestSeat==None){
+            return true;
+        }
+
+        //Find seat slot
+        bestSlot = -1;
+        bestSlot = FindBestSlot(closestSeat,closeSeatDist);
+
+        if (bestSlot<0){
+            return true;
+        }
+
+        SeatActor = closestSeat;
+        SeatActor.sittingActor[bestSlot]=self;
+        SeatLocation = SeatActor.Location;
+        bSeatLocationValid=true;
+        SeatSlot = bestSlot;
+        GotoState('Sitting','CircleToFront');
+
+        return false;
+    }
+
+}
+
+
 defaultproperties
 {
     EmpHealth=50
