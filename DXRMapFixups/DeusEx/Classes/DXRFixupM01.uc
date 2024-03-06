@@ -32,6 +32,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)NYPoliceBoat b;
     local #var(prefix)HarleyFilben harley;
+    local #var(prefix)HumanCivilian hc;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -125,6 +126,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
+            // Chet's name is Chet
+            hc.bImportant = true;
+        }
+
         break;
     }
 }

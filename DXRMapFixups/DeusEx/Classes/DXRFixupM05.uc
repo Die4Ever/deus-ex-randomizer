@@ -39,6 +39,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
+    local #var(prefix)HumanCivilian hc;
 
     local DXREnemies dxre;
     local int i;
@@ -152,6 +153,11 @@ function PreFirstEntryMapFixes()
 
             class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting');
 
+        }
+
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
+            // Chet's name is Chet
+            hc.bImportant = true;
         }
 
         break;
