@@ -88,6 +88,8 @@ tar.close()
 
 spec = base/'installer.spec'
 print("building spec file:", spec)
+(base/'dist').mkdir(exist_ok=True)
+(base/'build').mkdir(exist_ok=True)
 PyInstaller.__main__.run([
     #'--clean',
     '--distpath=' + str(base/'dist'),
