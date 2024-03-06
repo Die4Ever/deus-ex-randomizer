@@ -427,6 +427,8 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
     switch(start_flag) {
         case 45:
             flagbase.SetBool('PaulInjured_Played',true,,-1);
+            flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
+            flagbase.SetBool('GatesOpen',true,,5);
             break;
 
         case 65:

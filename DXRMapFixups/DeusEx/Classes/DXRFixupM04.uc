@@ -244,6 +244,14 @@ function PreFirstEntryMapFixes()
     case "04_NYC_STREET":
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-1849,286,-487));//Near free clinic
         pg.MaxCount=3;
+
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
+            if (ft.event == 'MainGates') {
+                // Increase the radius to extend around the corner for NSFHQ starts
+                ft.SetCollisionSize(7000.0, ft.CollisionHeight);
+            }
+        }
+
         break;
     }
 }
