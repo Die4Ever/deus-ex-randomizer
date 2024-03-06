@@ -35,6 +35,7 @@ function PreFirstEntry()
 {
     Super.PreFirstEntry();
     l("PreFirstEntry() " $ dxr.dxInfo.MissionNumber);
+    if(dxr.flags.IsHordeMode()) return;
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         NeedSave();
     }
@@ -44,6 +45,7 @@ function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
+    if(dxr.flags.IsHordeMode()) return;
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave>=EveryEntry && dxr.flags.autosave != Hardcore && IsTravel ) {
         NeedSave();
     }
