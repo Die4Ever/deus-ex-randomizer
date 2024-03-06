@@ -277,6 +277,11 @@ static function string IntCommas(int i)
     return s;
 }
 
+simulated static function int Round(float f)
+{
+    return Int(2.0*f - Int(f));
+}
+
 simulated static function string FloatToString(float f, int decimal_places)
 {
     local int i;
