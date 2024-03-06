@@ -826,7 +826,7 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
         }
 
         class'DXRAugmentations'.static.UpgradeAug(anAug);
-
+        class'DXRAugmentations'.static.RedrawAugMenu(player());
         PlayerMessage(viewer@"upgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1 $ shouldSave);
         return Success;
     }
@@ -858,6 +858,9 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
 
     if ((!anAug.bAlwaysActive) && (player().bHUDShowAllAugs))
         player().AddAugmentationDisplay(anAug);
+
+    class'DXRAugmentations'.static.RedrawAugMenu(player());
+
     PlayerMessage(viewer@"gave you the "$anAug.AugmentationName$" augmentation" $ shouldSave);
     return Success;
 }
@@ -918,10 +921,12 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
         }
 
         PlayerMessage(viewer@"downgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1);
+        class'DXRAugmentations'.static.RedrawAugMenu(player());
         return Success;
     }
 
     class'DXRAugmentations'.static.RemoveAug(player(),anAug);
+    class'DXRAugmentations'.static.RedrawAugMenu(player());
 
     PlayerMessage(viewer@"removed your "$anAug.AugmentationName$" augmentation");
     return Success;

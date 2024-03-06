@@ -56,3 +56,19 @@ function EnableButtons()
         }
     }
 }
+
+function RedrawAugmentations()
+{
+    local int i;
+
+    selectedAug=None;
+    selectedAugButton=None;
+
+    for (i=0;i<ArrayCount(augItems);i++){
+        if (augItems[i]!=None){
+            augItems[i].Destroy();
+            augItems[i]=None;
+        }
+    }
+    CreateAugmentationButtons();
+}
