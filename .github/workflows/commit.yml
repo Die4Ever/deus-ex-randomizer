@@ -8,27 +8,27 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: ./.github/run-tests
 
       - name: Upload Installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DXRando
-          path: dist/DXRandoInstaller.exe
+          path: installer/dist/DXRandoInstaller.exe
 
       - name: Upload installer warnings
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: installerwarnings.txt
-          path: build/installer/warn-installer.txt
+          path: installer/build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: BingoViewer
-          path: dist/BingoViewer.exe
+          path: installer/dist/BingoViewer.exe
 
   linux:
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
         shell: bash
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - run: sudo apt-get update -y
       - run: sudo apt-get install -y python3-tk idle3 binutils
@@ -45,19 +45,19 @@ jobs:
       - uses: ./.github/run-tests
 
       - name: Upload Installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DXRando-linux
-          path: dist/DXRandoInstaller
+          path: installer/dist/DXRandoInstaller
 
       - name: Upload installer warnings
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: installerwarningslinux.txt
-          path: build/installer/warn-installer.txt
+          path: installer/build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: BingoViewer-linux
-          path: dist/BingoViewer
+          path: installer/dist/BingoViewer

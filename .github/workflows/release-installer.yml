@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: ./.github/run-tests
 
@@ -18,7 +18,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/DXRandoInstaller.exe
+          file: installer/dist/DXRandoInstaller.exe
           asset_name: DXRandoInstaller.exe
           tag: ${{ github.ref }}
 
@@ -27,7 +27,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/BingoViewer.exe
+          file: installer/dist/BingoViewer.exe
           asset_name: BingoViewer.exe
           tag: ${{ github.ref }}
 
@@ -38,7 +38,7 @@ jobs:
         shell: bash
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - run: sudo apt-get update -y
       - run: sudo apt-get install -y python3-tk idle3 binutils
@@ -50,7 +50,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/DXRandoInstaller
+          file: installer/dist/DXRandoInstaller
           asset_name: DXRandoInstaller-Linux
           tag: ${{ github.ref }}
 
@@ -59,6 +59,6 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/BingoViewer
+          file: installer/dist/BingoViewer
           asset_name: BingoViewer-Linux
           tag: ${{ github.ref }}
