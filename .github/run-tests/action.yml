@@ -2,7 +2,7 @@ runs:
   using: composite
   steps:
     # we don't really care what python version we have, but maybe in the future
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.8'
         cache: 'pip' # caching pip dependencies
@@ -19,7 +19,7 @@ runs:
     - name: Build
       run: python3 installer/build.py
       shell: bash
-    - run: du -ha dist
+    - run: du -ha installer/dist
       shell: bash
 
     - run: cat installer/build/installer/warn-installer.txt

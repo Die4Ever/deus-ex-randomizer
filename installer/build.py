@@ -40,14 +40,12 @@ downloads = {
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/unrealpool.fxh": "d3d10drv/unrealpool.fxh",
 }
 
-basedest = ''
 base = Path()
 
 if Path('installer/add_lib_path.py').exists():
     base = Path('installer')
-    basedest = 'installer/3rdParty/'
 elif Path('add_lib_path.py').exists():
-    basedest = '3rdParty/'
+    pass
 else:
     raise RuntimeError("Can't find root folder for installer")
 
