@@ -146,14 +146,20 @@ function DrawWindow(GC gc)
     local Inventory item;
     local name filter;
     local int radius;
+    local class<Actor> classToShow;
 
     minpos = vect(999999, 999999, 999999);
     maxpos = vect(-999999, -999999, -999999);
 
     Super(Window).DrawWindow(gc);
 
-    if (viewClass == None)
+    if (viewClass == None && nameFilter=="")
         return;
+
+    classToShow = viewClass;
+    if (nameFilter!="" && classToShow==None){
+        classToShow=class'Actor';
+    }
 
     player  = GetPlayerPawn();
 
@@ -168,7 +174,7 @@ function DrawWindow(GC gc)
         radius = actorRadius;
     }
 
-    foreach player.RadiusActors(viewClass, trackActor,radius,player.Location)
+    foreach player.RadiusActors(classToShow, trackActor,radius,player.Location)
     {
         if(!bShowHidden && trackActor.bHidden)
             continue;// DXRando: for spoilers buttons
