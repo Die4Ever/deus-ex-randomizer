@@ -15,35 +15,36 @@ function CreateExitButton()
 function bool ButtonActivated(Window buttonPressed)
 {
 	local bool bHandled;
-    local Window parent;
 	local HUDMedBotHealthScreen healthScreen;
-	local HUDMedBotAddAugsScreen augsScreen;
+	local HUDMedBotAddAugsScreen augScreen;
 	local MedicalBot medBot;
 
 	bHandled = True;
 
-    parent = GetParent();
-    healthScreen = HUDMedBotHealthScreen(parent);
-    augsScreen = HUDMedBotAddAugsScreen(parent);
-
 	switch(buttonPressed)
 	{
 		case btnHealth:
-            if (augsScreen != None) {
-                medBot = augsScreen.medBot;
-                augsScreen.SkipAnimation(True);
+            augScreen = HUDMedBotAddAugsScreen(GetParent());
+
+            if (augScreen != None) {
+                medBot = augScreen.medBot;
+                augScreen.SkipAnimation(True);
                 healthScreen = HUDMedBotHealthScreen(root.InvokeUIScreen(Class'HUDMedBotHealthScreen', True));
                 healthScreen.SetMedicalBot(medBot);
             }
+
 			break;
 
 		case btnAugs:
+            healthScreen = HUDMedBotHealthScreen(GetParent());
+
             if (healthScreen != None) {
                 medBot = healthScreen.medBot;
                 healthScreen.SkipAnimation(True);
-                augsScreen = HUDMedBotAddAugsScreen(root.InvokeUIScreen(Class'HUDMedBotAddAugsScreen', True));
-                augsScreen.SetMedicalBot(medBot);
+                augScreen = HUDMedBotAddAugsScreen(root.InvokeUIScreen(Class'HUDMedBotAddAugsScreen', True));
+                augScreen.SetMedicalBot(medBot);
             }
+
 			break;
 
 		default:
@@ -54,5 +55,5 @@ function bool ButtonActivated(Window buttonPressed)
 	if (bHandled)
 		return bHandled;
 	else
-		return Super(PersonaNavBarBaseWindow).ButtonActivated(buttonPressed);
+		return Super(#var(prefix)PersonaNavBarBaseWindow).ButtonActivated(buttonPressed);
 }
