@@ -583,7 +583,7 @@ function AddDXRCredits(CreditsWindow cw)
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
 
     //Calculate percentage of maps visited
-    if(#defined(revision)){
+    if(class'DXRMapVariants'.static.IsRevisionMaps(player())){
         nummaps=76;
     } else {
         nummaps=72;
