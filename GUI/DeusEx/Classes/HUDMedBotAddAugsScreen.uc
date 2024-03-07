@@ -8,6 +8,25 @@ class DXRHUDMedBotAddAugsScreen extends HUDMedBotAddAugsScreen;
 
 var PersonaActionButtonWindow btnRemove;
 
+function CreateControls()
+{
+	CreateNavBarWindow();
+	CreateClientBorderWindow();
+	CreateClientWindow();
+
+	CreateTitleWindow(9, 5, AugmentationsTitleText);
+	CreateInfoWindow();
+	CreateButtons();
+	CreateAugmentationLabels();
+	CreateAugmentationHighlights();
+	CreateAugmentationButtons();
+	CreateOverlaysWindow();
+	CreateBodyWindow();
+	CreateAugsLabel();
+	CreateAugCanList();
+	// CreateMedbotLabel();
+}
+
 function CreateButtons()
 {
     local PersonaButtonBarWindow winActionButtons;
@@ -119,7 +138,9 @@ function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
 
     if (medBot != None && medBot.augsOnly) {
         HUDMedBotNavBarWindow(winNavBar).CreateExitButton();
+        MedbotInterfaceText = "AUGBOT INTERFACE";
     } else {
         HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
     }
+    CreateMedbotLabel();
 }
