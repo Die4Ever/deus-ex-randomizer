@@ -16,44 +16,34 @@ function bool ButtonActivated(Window buttonPressed)
 {
 	local bool bHandled;
     local Window parent;
-	local HUDMedBotHealthScreen parentHealthScreen, newHealthScreen;
-	local HUDMedBotAddAugsScreen parentAugScreen, newAugScreen;
+	local HUDMedBotHealthScreen healthScreen;
+	local HUDMedBotAddAugsScreen augsScreen;
 	local MedicalBot medBot;
 
 	bHandled = True;
 
     parent = GetParent();
-    parentHealthScreen = HUDMedBotHealthScreen(parent);
-    parentAugScreen = HUDMedBotAddAugsScreen(parent);
+    healthScreen = HUDMedBotHealthScreen(parent);
+    augsScreen = HUDMedBotAddAugsScreen(parent);
 
 	switch(buttonPressed)
 	{
 		case btnHealth:
-            if (parentHealthScreen != None) {
-                parentHealthScreen.SkipAnimation(True);
-                medBot = parentHealthScreen.medBot;
-            } else if (parentAugScreen != None) {
-                parentAugScreen.SkipAnimation(True);
-                medBot = parentAugScreen.medBot;
+            if (augsScreen != None) {
+                medBot = augsScreen.medBot;
+                augsScreen.SkipAnimation(True);
+                healthScreen = HUDMedBotHealthScreen(root.InvokeUIScreen(Class'HUDMedBotHealthScreen', True));
+                healthScreen.SetMedicalBot(medBot);
             }
-
-            newHealthScreen = HUDMedBotHealthScreen(root.InvokeUIScreen(Class'HUDMedBotHealthScreen', True));
-            newHealthScreen.SetMedicalBot(medBot);
-
 			break;
 
 		case btnAugs:
-            if (parentHealthScreen != None) {
-                parentHealthScreen.SkipAnimation(True);
-                medBot = parentHealthScreen.medBot;
-            } else if (parentAugScreen != None) {
-                parentAugScreen.SkipAnimation(True);
-                medBot = parentAugScreen.medBot;
+            if (healthScreen != None) {
+                medBot = healthScreen.medBot;
+                healthScreen.SkipAnimation(True);
+                augsScreen = HUDMedBotAddAugsScreen(root.InvokeUIScreen(Class'HUDMedBotAddAugsScreen', True));
+                augsScreen.SetMedicalBot(medBot);
             }
-
-            newAugScreen = HUDMedBotAddAugsScreen(root.InvokeUIScreen(Class'HUDMedBotAddAugsScreen', True));
-            newAugScreen.SetMedicalBot(medBot);
-
 			break;
 
 		default:
