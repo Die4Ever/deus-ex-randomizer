@@ -139,6 +139,7 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(843,75,480)); //Warehouse garage roof
             class'PlaceholderEnemy'.static.Create(self,vectm(1649,-1393,64),,'Shitting');
             class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1334,-1404,64),,'Shitting');
         }
         break;
     case "02_NYC_HOTEL":

@@ -129,6 +129,8 @@ function PreFirstEntryMapFixes_Bunker()
     class'PlaceholderEnemy'.static.Create(self,vectm(-2237,3225,-192));
     class'PlaceholderEnemy'.static.Create(self,vectm(4234,3569,-736));
     class'PlaceholderEnemy'.static.Create(self,vectm(3744,-1030,-7481));
+    class'PlaceholderEnemy'.static.Create(self,vectm(1341,3154,-464),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(1191,3035,-464),,'Sitting');
 
     rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1658,2544,-522));//Behind Command 24
     rg.MaxCount=1;

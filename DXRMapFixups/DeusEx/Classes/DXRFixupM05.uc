@@ -94,6 +94,12 @@ function PreFirstEntryMapFixes()
                     dxm.KeyIDNeeded='Cabinet';
                 }
             }
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-3417,1369,208),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(479,3502,-144),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
         }
 
         break;
@@ -152,6 +158,14 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
             class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(229,1828,288),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1451,654,608),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1662,786,608),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-16,-609,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-182,-859,-16),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1153,1024,-16),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1885,-279,-16),,'Sitting');
 
         }
 
