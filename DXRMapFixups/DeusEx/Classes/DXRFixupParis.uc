@@ -270,33 +270,43 @@ function AnyEntryMapFixes()
     case "11_PARIS_UNDERGROUND":
         //Add a flag change to Toby's conversation so it sets MS_PlayerTeleported to false if you choose the "take me with you" option
         //This will let you choose to stay or go.
+        foreach AllActors(class'TobyAtanwe', toby) {
+            //Rebind his events to make sure his conversation is loaded if
+            //you travelled from mission 10 to 11 Underground directly.
+            //This would really only happen in Entrance Rando.
+            toby.ConBindEvents();
+        }
         c = GetConversation('MeetTobyAtanwe');
-        ce = c.eventList;
-        cePrev=ce;
-        while(ce!=None){
-            if (ce.eventType==ET_Speech){
-                ces = ConEventSpeech(ce);
-                if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
-                    //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
-                    cesf = new(c) class'ConEventSetFlag';
-                    cesf.eventType=ET_SetFlag;
-                    cesf.label="LetTobyTakeYou";
-                    cesf.flagRef = new(c) class'ConFlagRef';
-                    cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
-                    cesf.flagRef.value=True;
-                    cesf.flagRef.expiration=12;
-                    cesf.nextEvent = ces.nextEvent;
-                    ces.nextEvent = cesf;
-                }
-            } else if (ce.eventType==ET_AddSkillPoints){
-                ceasp = ConEventAddSkillPoints(ce);
-                cePrev.nextEvent = ce.nextEvent; //Remove the event from its current position
-                ce.nextEvent=None;
-                ce=cePrev;
-            }
-
+        if (c==None){
+            player().ClientMessage("Failed to find conversation for Toby Atanwe!  Report this to the devs!");
+        } else {
+            ce = c.eventList;
             cePrev=ce;
-            ce=ce.nextEvent;
+            while(ce!=None){
+                if (ce.eventType==ET_Speech){
+                    ces = ConEventSpeech(ce);
+                    if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
+                        //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
+                        cesf = new(c) class'ConEventSetFlag';
+                        cesf.eventType=ET_SetFlag;
+                        cesf.label="LetTobyTakeYou";
+                        cesf.flagRef = new(c) class'ConFlagRef';
+                        cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
+                        cesf.flagRef.value=True;
+                        cesf.flagRef.expiration=12;
+                        cesf.nextEvent = ces.nextEvent;
+                        ces.nextEvent = cesf;
+                    }
+                } else if (ce.eventType==ET_AddSkillPoints){
+                    ceasp = ConEventAddSkillPoints(ce);
+                    cePrev.nextEvent = ce.nextEvent; //Remove the event from its current position
+                    ce.nextEvent=None;
+                    ce=cePrev;
+                }
+
+                cePrev=ce;
+                ce=ce.nextEvent;
+            }
         }
 
         //Assuming we found both the "correct" conversation ending and the skill point trigger,
