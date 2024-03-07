@@ -154,8 +154,9 @@ function MissionTimer()
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
         UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");
-        UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.",True);// not actually depedent on goals rando
-
+        if(dxr.flags.settings.swapitems > 0) {
+            UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.",True);// dependent on swap items, not on goals rando
+        }
         if (f.GetBool('MeetNicolette_Played') &&
             !f.GetBool('NicoletteLeftClub'))
         {
