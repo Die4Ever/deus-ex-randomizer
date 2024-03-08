@@ -36,6 +36,10 @@ function MergeAlliances(ScriptedPawn a, ScriptedPawn b)
 {
     local int i;
 
+    b.ChangeAlly(a.Alliance, 1, true);
+    b.ChangeAlly(b.Alliance, 1, true);
+    a.ChangeAlly(a.Alliance, 1, true);
+    a.ChangeAlly(b.Alliance, 1, true);
     for(i=0; i<ArrayCount(a.InitialAlliances); i++ )
     {
         if(a.InitialAlliances[i].AllianceName != '' && a.InitialAlliances[i].AllianceLevel > 0) {
@@ -47,7 +51,6 @@ function MergeAlliances(ScriptedPawn a, ScriptedPawn b)
     }
 }
 
-
 function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 {
     SwapNames(a.Orders, b.Orders);
@@ -56,7 +59,7 @@ function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 
 function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
     // always ok to swap with a placeholder enemy
-    if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
+    if((PlaceholderEnemy(a) != None && a.Alliance=='') || (PlaceholderEnemy(b) != None && b.Alliance=='')) return true;
     // otherwise check alliance
     return a.GetAllianceType( b.Alliance ) == ALLIANCE_Friendly && b.GetAllianceType( a.Alliance ) == ALLIANCE_Friendly;
 }
@@ -150,7 +153,7 @@ function SwapScriptedPawns(int percent, bool enemies)
 
     for(i=0; i<num; i++) {
         a = temp[i];
-        if((#var(prefix)MJ12Commando(a) != None || #var(prefix)Gray(a) != None) && a.Orders=='Sitting') {
+        if((#var(prefix)MJ12Commando(a) != None) && a.Orders=='Sitting') {
             a.Orders='Standing';
             a.OrderTag='';
         }

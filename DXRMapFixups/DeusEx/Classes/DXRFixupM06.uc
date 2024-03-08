@@ -331,11 +331,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-894,1465,-607)); //Barracks empty side lower
         Spawn(class'PlaceholderContainer',,, vectm(-442,-494,-607)); //Near vanilla ROM encoding computer
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(903,-1363,432),,'Shitting');
-        class'PlaceholderEnemy'.static.Create(self,vectm(709,-1378,432),,'Shitting');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1101,2364,-592),,'Shitting');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1368,2350,-592),,'Shitting');
-
+        class'PlaceholderEnemy'.static.Create(self,vectm(903,-1363,432),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(709,-1378,432),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1101,2364,-592),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1368,2350,-592),,'Shitting',, 'security', 1);
 
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
