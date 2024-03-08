@@ -415,6 +415,7 @@ function DXRTick(float deltaTime)
     }
     else if(runPostFirstEntry)
     {
+        SetSeed( Crc(seed $ localURL $ " PostFirstEntry") );
         for(i=0; i<num_modules; i++) {
             modules[i].PostFirstEntry();
         }
@@ -425,6 +426,7 @@ function DXRTick(float deltaTime)
     {
         RunTests();
 
+        SetSeed( Crc(seed $ localURL $ " PostAnyEntry") );
         for(i=0; i<num_modules; i++) {
             modules[i].PostAnyEntry();
         }
@@ -461,7 +463,7 @@ function RandoEnter()
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ map @ GetURLMap());
 
-    SetSeed( Crc(seed $ localURL) );
+    SetSeed( Crc(seed $ localURL @ firstTime) );
     if ( firstTime == true )
     {
         //if( !IsTravel ) warning(localURL$": loaded save but FirstEntry? firstTime: "$firstTime$", IsTravel: "$IsTravel);
@@ -486,12 +488,12 @@ function RandoEnter()
         }
     }
 
-    SetSeed( Crc(seed $ localURL) );
+    SetSeed( Crc(seed $ localURL $ " AnyEntry") );
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
 
-    SetSeed( Crc(seed $ localURL) );
+    SetSeed( Crc(seed $ localURL $ " PlayerLogin") );
     foreach AllActors(class'#var(PlayerPawn)', pawn) {
         PlayerLogin(pawn);
     }
