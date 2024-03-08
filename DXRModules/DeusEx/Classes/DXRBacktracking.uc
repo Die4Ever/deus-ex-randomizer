@@ -35,7 +35,7 @@ function PreFirstEntry()
             dt.SetCollisionSize(160,dt.CollisionHeight);
             if(!dxr.flags.IsZeroRando()) {
                 button=AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
-                buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, dt.Name));
+                buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, dt));
                 buttonHint.SetBaseActor(button);
             }
 
@@ -722,7 +722,7 @@ function RebindChopperHoverHint(name ExitTag, Vehicles chopper)
         }
     }
     if (!foundHint){
-        hoverHint = DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", chopper.Location, chopper.CollisionRadius+5, chopper.CollisionHeight+5, exit.Name));
+        hoverHint = DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", chopper.Location, chopper.CollisionRadius+5, chopper.CollisionHeight+5, exit));
     }
     hoverHint.SetBaseActor(chopper);
 }

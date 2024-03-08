@@ -8,7 +8,7 @@ var bool attached;
 var Actor baseActor;
 var bool bInWorld;
 
-static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad, float height,optional Name targetName)
+static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad, float height, optional Actor target, optional Name targetName)
 {
     local DXRHoverHint hoverHint;
     local Actor act;
@@ -18,7 +18,11 @@ static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad,
     hoverHint.SetCollisionSize(rad,height);
     hoverHint.HintText = hint;
 
-    if (targetName!=''){
+    if (target != None){
+        hoverHint.target = target;
+        hoverHint.attached = true;
+    }
+    else if (targetName!=''){
         hoverHint.AttachTarget(targetName);
     }
 
@@ -38,7 +42,7 @@ function AttachTarget(name targetName)
     }
 
     if (attached==False){
-        log("Unable to find target '"$targetName$"' to attach to DXRHoverHint");
+        log("ERROR: Unable to find target '"$targetName$"' to attach to DXRHoverHint");
     }
 }
 

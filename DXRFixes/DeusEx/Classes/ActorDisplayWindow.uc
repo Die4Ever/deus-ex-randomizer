@@ -336,7 +336,7 @@ function DrawWindow(GC gc)
                 str = str $ "|p1'" $ stateName $ "'" $ CR();
                 trackPawn = ScriptedPawn(trackActor);
                 if(trackPawn != None && trackPawn.Enemy != None) {
-                    str = str $ /*trackPawn.Alliance @*/ "Enemy: " $ trackPawn.Enemy.name $ CR();
+                    str = str $ "Enemy: " $ trackPawn.Enemy.name $ CR();
                 }
             }
             if (bShowPhysics || bShowData)

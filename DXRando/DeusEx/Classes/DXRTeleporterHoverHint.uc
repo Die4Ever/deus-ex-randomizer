@@ -5,7 +5,7 @@ function AttachTarget(name targetName)
     Super.AttachTarget(targetName);
 
     if (target!=None && Teleporter(target)==None && MapExit(target)==None){
-        log("Attached to target that was not a teleporter or map exit ("$target$","$targetName$")");
+        log("ERROR: Attached to target that was not a teleporter or map exit ("$target$","$targetName$")");
         target=None;
     }
 }

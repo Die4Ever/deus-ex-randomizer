@@ -7,8 +7,8 @@ var string ImpossibleBtnTitle, ImpossibleBtnMessage;
 
 enum ERandoMessageBoxModes
 {
-	RMB_MaxRando,
-	RMB_Advanced,
+    RMB_MaxRando,
+    RMB_Advanced,
     RMB_Difficulty,// choosing Extreme or Impossible
 };
 var ERandoMessageBoxModes nextScreenNum;
@@ -191,9 +191,7 @@ function DoMaxRandoButtonConfirm()
     local DXRFlags f;
     f = GetFlags();
     f.ExecMaxRando();
-#ifndef hx
-    _InvokeNewGameScreen(f.settings.CombatDifficulty);
-#endif
+    DoNewGameScreen();
 }
 
 function HandleAdvancedButton()

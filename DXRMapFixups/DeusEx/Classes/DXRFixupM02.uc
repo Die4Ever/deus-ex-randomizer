@@ -52,7 +52,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'NYPoliceBoat',b) {
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
-                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit.Name);
+                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit);
             }
             foreach AllActors(class'DeusExMover', d) {
                 if( d.Name == 'DeusExMover19' ) {
@@ -104,7 +104,7 @@ function PreFirstEntryMapFixes()
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit.Name);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
             foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
@@ -113,7 +113,7 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
-            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
@@ -181,7 +181,7 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
-        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit.Name));
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
         break;

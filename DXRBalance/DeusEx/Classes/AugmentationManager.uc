@@ -124,7 +124,7 @@ simulated function Float CalcEnergyUse(float deltaTime)
     anAug = FirstAug;
     while(anAug != None)
     {
-        if (anAug.IsA('AugPower') && anAug.bHasIt)// TODO: set AugPower.bAlwaysActive to true
+        if (anAug.IsA('AugPower') && anAug.bHasIt)
             energyMult = anAug.LevelValues[anAug.CurrentLevel];
 
         if (anAug.bHasIt && anAug.bIsActive)

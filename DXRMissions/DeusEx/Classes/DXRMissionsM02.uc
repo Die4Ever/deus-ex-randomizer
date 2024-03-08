@@ -248,7 +248,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local DXRPasswords passwords;
 
     if (g.name=="Generator"){
-        class'DXRHoverHint'.static.Create(self, "NSF Generator", Loc.positions[0].pos, 175, 140,g.actors[0].actorName);
+        class'DXRHoverHint'.static.Create(self, "NSF Generator", Loc.positions[0].pos, 175, 140, g.actors[0].a);
     }
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {
