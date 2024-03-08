@@ -180,9 +180,11 @@ function RollSeed()
 {
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
     dxr.seed = seed;
+    dxr.tseed = seed;
     bSetSeed = 0;
     seed = rng(1000000);
     dxr.seed = seed;
+    dxr.tseed = seed;
 }
 
 #ifdef hx
