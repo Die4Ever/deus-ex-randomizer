@@ -31,7 +31,7 @@ function PreFirstEntryMapFixes()
     local SkillAwardTrigger st;
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
-    local #var(prefix)UNATCOTroop lloyd;
+    local #var(prefix)UNATCOTroop lloyd, troop;
     local #var(prefix)AutoTurret turret;
     local #var(prefix)ControlPanel panel;
     local #var(prefix)LaserTrigger laser;
@@ -144,6 +144,15 @@ function PreFirstEntryMapFixes()
         //Button to open basement hatch from inside
         AddSwitch( vect(-558.536499,-426.806915,-16.069786), rot(0, 0, 0), 'BasementHatch');
 
+        foreach AllActors(class'#var(prefix)UNATCOTroop', troop) {
+            if (troop.BindName=="UNATCOGateGuard" ||
+                troop.BindName=="TrooperTalking1" ||
+                troop.BindName=="TrooperTalking2" )
+            {
+                troop.bIsSecretGoal=True;
+            }
+        }
+
         if (VanillaMaps){
             //One window on the roof doesn't have a FlagTrigger to make UNATCO hate you.  Add it back.
             ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal3',vectm(233.9,693.64,1016.1));
@@ -155,6 +164,12 @@ function PreFirstEntryMapFixes()
             ft.Event='UNATCOHatesPlayer';
 
             Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
+            class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(-435,9,-208),,,,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(1486,1375,-208),,,,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(-438,1120,544),,,,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
         }
 
         if(VanillaMaps && dxr.flags.settings.goals > 0) {

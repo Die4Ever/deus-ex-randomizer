@@ -74,6 +74,11 @@ function SwapScriptedPawns(int percent, bool enemies)
 
     num=0;
     switch(dxr.localURL) {
+    case "04_NYC_NSFHQ":
+        if(enemies)
+            SwapScriptedPawns(percent, false);
+        break;
+
     case "06_HONGKONG_MJ12LAB":
         if(enemies)
             SwapScriptedPawns(percent, false);
