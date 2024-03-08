@@ -117,7 +117,11 @@ function TimerMapFixes()
 
         if (dxr.flagbase.GetBool('MS_Helicopter_Unhidden') && player().FindGoal('GetBackToRoof')==None){
             newGoal=player().AddGoal('GetBackToRoof',True);
-            newGoal.SetText("Find Jock and take the helicopter to Brooklyn Naval Shipyard.|nRando: Jock could be anywhere in the streets.");
+            if(dxr.flags.settings.goals > 0) {
+                newGoal.SetText("Find Jock and take the helicopter to Brooklyn Naval Shipyard.|nRando: Jock could be anywhere in the streets.");
+            } else {
+                newGoal.SetText("Find Jock and take the helicopter to Brooklyn Naval Shipyard.");
+            }
         }
 
         break;
