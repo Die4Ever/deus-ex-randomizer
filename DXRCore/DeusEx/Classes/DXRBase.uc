@@ -101,7 +101,7 @@ simulated function int SetSeed(coerce string name)
 {
     local int oldseed;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
-    dxr.rng(9);// advance the rng
+    dxr.rngraw();// advance the rng
     return oldseed;
 }
 
@@ -109,7 +109,7 @@ simulated function int SetGlobalSeed(coerce string name)
 {
     local int oldseed;
     oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(name) );
-    dxr.rng(9);// advance the rng
+    dxr.rngraw();// advance the rng
     return oldseed;
 }
 
@@ -117,7 +117,7 @@ simulated function int BranchSeed(coerce string name)
 {
     local int oldseed;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
-    dxr.rng(9);// advance the rng
+    dxr.rngraw();// advance the rng
     return oldseed;
 }
 

@@ -215,55 +215,12 @@ function DrawBlinder(GC gc, Actor A)
     }
 }
 
-function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitLocation)
-{
-	local Actor target;
-	local Vector HitLoc, HitNormal, StartTrace, EndTrace;
-
-	target = TraceActorType(class'#var(prefix)Teleporter',checkDist, false);
-
-    if (#var(prefix)Teleporter(target)!=None)
-    {
-        HitLocation = HitLoc;
-        return #var(prefix)Teleporter(target);
-    }
-
-	return None;
-}
-
-function DXRHoverHint TraceHoverHint(float checkDist, out vector HitLocation)
-{
-    local Actor target;
-    local Vector HitLoc;
-    local DXRHoverHint hoverHint;
-    local float dist;
-
-    target = TraceActorType(class'DXRHoverHint',checkDist, true);
-
-    hoverHint = DXRHoverHint(target);
-    if (hoverHint!=None)
-    {
-        if (hoverHint.ShouldSelfDestruct()){
-            hoverHint.Destroy();
-            return None;
-        }
-
-        dist = VSize(player.Location-hoverHint.Location);
-        if (hoverHint.ShouldDisplay(dist)==False){
-            return None;
-        }
-
-        HitLocation = HitLoc;
-        return hoverHint;
-    }
-
-    return None;
-}
-
-function Actor TraceActorType(class<Actor> actType, float checkDist, bool findHidden)
+function Actor TraceHoverHint(float checkDist)
 {
     local Actor target;
     local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+    local DXRHoverHint hoverHint;
+    local float dist;
 
     target = None;
 
@@ -281,12 +238,21 @@ function Actor TraceActorType(class<Actor> actType, float checkDist, bool findHi
            continue;
         } else if (Player.IsFrobbable(target)){
             return None;
-        } else if (target.bHidden){
-            if (findHidden && target.IsA(actType.name)){
-                break;
-            } else {
+        } else if (DXRHoverHint(target) != None){
+            hoverHint = DXRHoverHint(target);
+            if (hoverHint.ShouldSelfDestruct()){
+                hoverHint.Destroy();
                 continue;
             }
+            dist = VSize(player.Location-hoverHint.Location);
+            if (hoverHint.ShouldDisplay(dist)==False){
+                continue;
+            }
+            break;
+        } else if (Teleporter(target) != None && !target.bHidden) {
+            break;
+        } else if (target.bHidden) {
+            continue;
         } else {
             break;
         }
@@ -325,6 +291,7 @@ function string formatMapName(string mapName)
 function DrawTargetAugmentation(GC gc)
 {
     local Weapon oldWeapon;
+    local Actor target;
     local #var(prefix)Teleporter tgtTeleporter;
     local DXRHoverHint hoverHint;
     local vector AimLocation;
@@ -341,8 +308,9 @@ function DrawTargetAugmentation(GC gc)
     Player.Weapon = oldWeapon;
 
     // check 500 feet in front of the player
+    target = TraceHoverHint(8000);
     if(class'MenuChoice_ShowTeleporters'.default.show_teleporters > 1) {
-	    tgtTeleporter = TraceTeleporter(8000,AimLocation);
+	    tgtTeleporter = #var(prefix)Teleporter(target);
     }
 
     // display teleporter destinations
@@ -370,7 +338,7 @@ function DrawTargetAugmentation(GC gc)
 	}
 
     //Look for any hover hints
-    hoverHint = TraceHoverHint(8000,AimLocation);
+    hoverHint = DXRHoverHint(target);
     if (hoverHint!=None){
         ConvertVectorToCoordinates(hoverHint.Location, boxCX, boxCY);
 
