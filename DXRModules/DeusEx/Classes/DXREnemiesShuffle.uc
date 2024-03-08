@@ -150,7 +150,7 @@ function SwapScriptedPawns(int percent, bool enemies)
 
     for(i=0; i<num; i++) {
         a = temp[i];
-        if(#var(prefix)MJ12Commando(a) != None && a.Orders=='Sitting') {
+        if((#var(prefix)MJ12Commando(a) != None || #var(prefix)Gray(a) != None) && a.Orders=='Sitting') {
             a.Orders='Standing';
             a.OrderTag='';
         }

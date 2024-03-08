@@ -39,6 +39,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponNanoSword dts;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)Credits creds;
+    local #var(prefix)Greasel g;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)TriadRedArrow bouncer;
@@ -272,13 +273,11 @@ function PreFirstEntryMapFixes()
                 pad.bHidden = False;
         }
 
-        foreach AllActors(class'#var(prefix)ScriptedPawn',p){
-            if (#var(prefix)Greasel(p)!=None && p.Tag=='Greasel'){
-                p.bImportant = True;
-                p.BindName="JerryTheVentGreasel";
-                p.FamiliarName = "Jerry the Vent Greasel";
-                p.UnfamiliarName = "Jerry the Vent Greasel";
-            }
+        foreach AllActors(class'#var(prefix)Greasel', g, 'Greasel'){
+            g.bImportant = True;
+            g.BindName="JerryTheVentGreasel";
+            g.FamiliarName = "Jerry the Vent Greasel";
+            g.UnfamiliarName = "Jerry the Vent Greasel";
         }
 
         SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
@@ -332,11 +331,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-894,1465,-607)); //Barracks empty side lower
         Spawn(class'PlaceholderContainer',,, vectm(-442,-494,-607)); //Near vanilla ROM encoding computer
 
-        //The grays end up getting switched to these spots, which is no good
-        //class'PlaceholderEnemy'.static.Create(self,vectm(903,-1363,432),,'Shitting');
-        //class'PlaceholderEnemy'.static.Create(self,vectm(709,-1378,432),,'Shitting');
-        //class'PlaceholderEnemy'.static.Create(self,vectm(-1101,2364,-592),,'Shitting');
-        //class'PlaceholderEnemy'.static.Create(self,vectm(-1368,2350,-592),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(903,-1363,432),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(709,-1378,432),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1101,2364,-592),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1368,2350,-592),,'Shitting');
 
 
         break;
