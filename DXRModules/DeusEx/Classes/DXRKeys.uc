@@ -119,6 +119,13 @@ function vanilla_keys_rules()
         break;
 
     case "04_NYC_NSFHQ":
+        // don't allow the basement door key to be in the vanilla transmit signal room or the basement
+        keys_rules[i].item_name = 'BasementDoor';
+        keys_rules[i].min_pos = vect(100, 329, 1010);
+        keys_rules[i].max_pos = vect(116, 345, 1050);
+        keys_rules[i].allow = false;
+        i++;
+
         keys_rules[i].item_name = 'BasementDoor';
         keys_rules[i].min_pos = vect(-99999, -99999, 0);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);

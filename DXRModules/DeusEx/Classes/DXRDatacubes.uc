@@ -217,7 +217,14 @@ function vanilla_datacubes_rules()
         break;
 
     case "04_NYC_NSFHQ":
-        // datacube with the password for sending the signal
+        // don't allow either datacube in the room with the vanilla transmitter computer
+        // datacube with the password for sending the signal, allowed almost anywhere
+        datacubes_rules[i].item_name = '04_Datacube01';
+        datacubes_rules[i].min_pos = vect(100, 329, 1010);
+        datacubes_rules[i].max_pos = vect(116, 345, 1050);
+        datacubes_rules[i].allow = false;
+        i++;
+
         datacubes_rules[i].item_name = '04_Datacube01';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
@@ -225,6 +232,12 @@ function vanilla_datacubes_rules()
         i++;
 
         // datacube with the security password, don't allow it to go in the basement, you might need it to open the weird door things
+        datacubes_rules[i].item_name = '04_Datacube02';
+        datacubes_rules[i].min_pos = vect(100, 329, 1010);
+        datacubes_rules[i].max_pos = vect(116, 345, 1050);
+        datacubes_rules[i].allow = false;
+        i++;
+
         datacubes_rules[i].item_name = '04_Datacube02';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 0);

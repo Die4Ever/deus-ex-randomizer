@@ -103,28 +103,30 @@ function PreFirstEntryMapFixes()
         break;
 
     case "04_NYC_NSFHQ":
-        foreach AllActors(class'#var(prefix)AutoTurret', turret) {
-            turret.Event = '';
-            turret.Destroy();
-        }
-        foreach AllActors(class'#var(prefix)ControlPanel', panel) {
-            panel.Event = '';
-            panel.Destroy();
-        }
-        foreach AllActors(class'#var(prefix)LaserTrigger', laser) {
-            laser.Event = '';
-            laser.Destroy();
-        }
-        foreach AllActors(class'#var(prefix)Containers', c) {
-            if(#var(prefix)BoxLarge(c) != None || #var(prefix)BoxSmall(c) != None
-                || #var(prefix)CrateUnbreakableLarge(c) != None || #var(prefix)CrateUnbreakableMed(c) != None)
-            {
-                c.Event = '';
-                c.Destroy();
+        if(!dxr.flags.IsReducedRando()) {
+            foreach AllActors(class'#var(prefix)AutoTurret', turret) {
+                turret.Event = '';
+                turret.Destroy();
             }
-        }
-        foreach AllActors(class'#var(prefix)HackableDevices', hd) {
-            hd.hackStrength /= 3.0;
+            foreach AllActors(class'#var(prefix)ControlPanel', panel) {
+                panel.Event = '';
+                panel.Destroy();
+            }
+            foreach AllActors(class'#var(prefix)LaserTrigger', laser) {
+                laser.Event = '';
+                laser.Destroy();
+            }
+            foreach AllActors(class'#var(prefix)Containers', c) {
+                if(#var(prefix)BoxLarge(c) != None || #var(prefix)BoxSmall(c) != None
+                    || #var(prefix)CrateUnbreakableLarge(c) != None || #var(prefix)CrateUnbreakableMed(c) != None)
+                {
+                    c.Event = '';
+                    c.Destroy();
+                }
+            }
+            foreach AllActors(class'#var(prefix)HackableDevices', hd) {
+                hd.hackStrength /= 3.0;
+            }
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',door,'ExitDoor'){
@@ -151,6 +153,8 @@ function PreFirstEntryMapFixes()
             ft.FlagName='NSFSignalSent';
             ft.flagValue=True;
             ft.Event='UNATCOHatesPlayer';
+
+            Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
         }
 
         if(VanillaMaps && dxr.flags.settings.goals > 0) {
