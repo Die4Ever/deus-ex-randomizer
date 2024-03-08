@@ -568,14 +568,22 @@ simulated final function int SetSeed(int s)
     return oldseed;
 }
 
+const gen1 = 1073741821;// half of gen2, rounded down
+const gen2 = 2147483643;
 simulated final function int rng(int max)
 {
-    const gen1 = 1073741821;// half of gen2, rounded down
-    const gen2 = 2147483643;
     tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
     // in unrealscript >>> is right shift and filling the left with 0s, >> shifts but keeps the sign
     // this means we don't need abs, which is a float function anyways
     return imod((tseed >>> 8), max);
+}
+
+simulated final function int rngraw()
+{
+    tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
+    // in unrealscript >>> is right shift and filling the left with 0s, >> shifts but keeps the sign
+    // this means we don't need abs, which is a float function anyways
+    return (tseed >>> 8);
 }
 
 

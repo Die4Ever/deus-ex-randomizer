@@ -128,7 +128,11 @@ simulated function int ReapplySeed(int oldSeed)
 
 simulated function int rng(int max)
 {
-    return rngf() * float(max);
+    local float f;
+    // divide by 1 less than 0xFFFFFF, so that it's never the max and we don't have to worry about rounding
+    f = float(dxr.rngraw())/16777214.0;
+    f *= float(max);
+    return int(f);
 }
 
 simulated function bool rngb()
@@ -137,9 +141,9 @@ simulated function bool rngb()
 }
 
 simulated function float rngf()
-{// 0 to 1.0
+{// 0 to 1.0 inclusive
     local float f;
-    f = float(dxr.rng(100001))/100000.0;
+    f = float(dxr.rngraw())/16777215.0;// 0xFFFFFF because rngraw does a right shift by 8 bits
     //l("rngf() "$f);
     return f;
 }
