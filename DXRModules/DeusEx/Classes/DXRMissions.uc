@@ -476,8 +476,8 @@ function ChooseGoalLocations(out int goalsToLocations[32])
     local int attempts;
     for(attempts=0; attempts<1000; attempts++) {
         if(_ChooseGoalLocations(goalsToLocations)) {
-            if(attempts > 2) {
-                err("ChooseGoalLocations took " $ (attempts+1) $ " attempts!");
+            if(attempts > 100) {
+                warning("ChooseGoalLocations took " $ (attempts+1) $ " attempts!");
             }
             return;
         }

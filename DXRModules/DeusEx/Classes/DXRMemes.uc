@@ -339,7 +339,7 @@ function AnyEntry()
             }
 
 
-//Add me back in once we have "Randomizer" name textures!  Just change the textures below
+            //Add me back in once we have "Randomizer" name textures!  Just change the textures below
             foreach AllActors(class'#var(prefix)DXText',text)
             {
                 text.bHidden=True; //Hide all the original text
@@ -564,11 +564,6 @@ function PaulToilet()
 
     chair.Event = '';
     chair.Destroy();
-    //toilet.DrawScale = 0.7;
-    // _AddActor does good stuff to ignore collision
-    //chair = #var(prefix)Chair1(_AddActor(chair, class'#var(prefix)Chair1', toilet.Location, toilet.Rotation));
-    //chair.bHidden = true;
-    //chair.sitPoint[0].Y += 4.0;
 
     paul.SetLocation(toilet.Location);
     ft.SetLocation(paul.Location);

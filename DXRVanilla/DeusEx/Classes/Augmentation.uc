@@ -46,6 +46,7 @@ simulated function TickUse()
         Player.Energy -= energyRate/60.0;
         if(Player.Energy <= 0) {
             Player.Energy = 0;
+            return;// don't update the LastUsed
         } else {
             Player.PlaySound(ActivateSound, SLOT_None, 0.75);
             Player.AmbientSound = LoopSound;
