@@ -3,6 +3,7 @@ class DataLinkPlay injects DataLinkPlay;
 var transient float speechFastEndTime;
 var transient bool restarting;
 var DataLinkTrigger dataLinkTriggerQueue[16];
+var transient float pitchAdjust;
 
 function bool PushDataLink( Conversation queueCon )
 {
@@ -21,8 +22,17 @@ function bool PushDataLink( Conversation queueCon )
 
 function PlaySpeech( int soundID )
 {
+    local Sound speech;
+
+    pitchAdjust=class'DXRMemes'.static.GetVoicePitch(Human(player).dxr);
+    perCharDelay = default.perCharDelay / pitchAdjust;
+
     speechFastEndTime = Level.Timeseconds + lastSpeechTextLength * perCharDelay;
-    Super.PlaySpeech(soundID);
+
+    speech = con.GetSpeechAudio(soundID);
+
+    if (speech != None)
+        playingSoundID = player.PlaySound(speech, SLOT_Talk,,,,pitchAdjust);
 }
 
 function bool HaveQueued()
@@ -152,6 +162,8 @@ Idle:
     Goto('Idle');
 
 Begin:
+    pitchAdjust=class'DXRMemes'.static.GetVoicePitch(Human(player).dxr);
+    perCharDelay = default.perCharDelay / pitchAdjust;
     // Play the sound, set the timer and go to sleep until the sound
     // has finished playing.
 
@@ -169,15 +181,15 @@ Begin:
 
         if(HaveQueued() == false || Human(player).bZeroRando) {
             // Add two seconds to the sound since there seems to be a slight lag
-            SetTimer( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID), False );
+            SetTimer( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID) / pitchAdjust, False );
         } else {
             // if we have queued items, use the fast timer just for showing text
-            SetTimer( lastSpeechTextLength * perCharDelay, False );
+            SetTimer( lastSpeechTextLength * perCharDelay / pitchAdjust, False );
         }
     }
     else
     {
-        SetTimer( lastSpeechTextLength * perCharDelay, False );
+        SetTimer( lastSpeechTextLength * perCharDelay  / pitchAdjust, False );
     }
 
     Goto('Idle');

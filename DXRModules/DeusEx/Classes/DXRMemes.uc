@@ -724,6 +724,17 @@ function RandomizeDialogConversation(Conversation conv)
     }
 }
 
+static function float GetVoicePitch(DXRando dxr){
+    if (!dxr.flags.IsReducedRando() && dxr.IsAprilFools()){
+        if ((dxr.seed)%10>=5){
+            return 1.5;
+        } else {
+            return 0.75;
+        }
+    }
+    return 1.0;
+}
+
 function bool is_valid(string s, class<Object> o)
 {// determines if a class is worthy of replacing the logo in the menu
     local class<Actor> a;
