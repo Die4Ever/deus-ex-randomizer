@@ -101,7 +101,7 @@ static function bool IsCombatAnimal(class<Actor> a)
 }
 
 // Returns true if the class will ever fight, even if some instances won't
-static function bool IsCombatActor(class<Actor> a)
+static function bool IsCombatPawn(class<Actor> a)
 {
     return IsHuman(a) || IsCombatRobot(a) || IsCombatAnimal(a);
 }
@@ -120,7 +120,7 @@ static function bool IsCritter(class<Actor> a)
 
 static function bool IsSwappable(class<Actor> a)
 {
-    return IsCombatActor(a) && !ClassIsChildOf(a, class'Merchant');
+    return IsCombatPawn(a) && !ClassIsChildOf(a, class'Merchant');
 }
 
 function bool IsInitialEnemy(ScriptedPawn p)
