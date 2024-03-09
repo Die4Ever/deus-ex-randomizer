@@ -1545,6 +1545,69 @@ function bool canDropItem() {
 
 }
 
+function bool CanSwapEnemies()
+{
+    local int numEnemies;
+    local ScriptedPawn a;
+
+    numEnemies=0;
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( a.bImportant || a.bIsSecretGoal ) continue;
+        if( ccLink.ccModule.IsCritter(a) ) continue;
+        if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
+        if( #var(prefix)Robot(a) != None && a.Orders == 'Idle' ) continue;
+#ifdef gmdx
+        if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
+#endif
+        numEnemies++;
+    }
+
+    //As long as there are two possible enemies...
+    return numEnemies > 1;
+}
+
+function bool SwapAllEnemies(string viewer)
+{
+    local DXREnemiesShuffle enemies;
+
+    foreach AllActors(class'DXREnemiesShuffle',enemies){break;}
+
+    if (enemies==None) return False; //Failed to find DXREnemiesShuffle
+
+    enemies.SwapScriptedPawns(100,true);
+
+    PlayerMessage(viewer@"swapped the position of all the enemies in the level!");
+
+    return true;
+}
+
+function bool CanSwapItems()
+{
+    local int numItems;
+    local Inventory inv;
+
+    numItems=0;
+    foreach AllActors(class'Inventory',inv){
+        if (!ccLink.ccModule.SkipActor(inv)){
+            numItems++;
+        }
+    }
+
+    return numItems>1;
+}
+
+function bool SwapAllItems(string viewer)
+{
+    ccLink.ccModule.SwapAll("Engine.Inventory",100);
+
+    PlayerMessage(viewer@"swapped the position of all the inventory items in the level!");
+
+    return true;
+}
+
 function SplitString(string src, string divider, out string parts[8])
 {
     local int i, c;
@@ -1827,6 +1890,30 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (swapPlayer(viewer) == false) {
+                return TempFail;
+            }
+            break;
+
+        case "swap_enemies":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!CanSwapEnemies()){
+                return TempFail;
+            }
+            if (SwapAllEnemies(viewer) == false) {
+                return TempFail;
+            }
+            break;
+
+        case "swap_items":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!CanSwapItems()){
+                return TempFail;
+            }
+            if (SwapAllItems(viewer) == false) {
                 return TempFail;
             }
             break;

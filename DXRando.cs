@@ -48,6 +48,8 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Ask a Question","ask_a_question"){Price = 5,Description = "Make a dialog box appear on screen with a question while the game continues in behind!"}, //New for second Crowd Control batch
         new Effect ("Nudge","nudge"){Price = 1,Description = "Just ever so slightly... nudge... the player in a random direction"}, //New for second Crowd Control batch
         new Effect ("Swap Player with another human","swap_player_position"){Price = 40,Description = "Finds another human somewhere in the current level and swaps their position with the player!"}, //New for second Crowd Control batch
+        new Effect ("Swap all enemies positions","swap_enemies"){Price = 20,Description = "Shuffles all the enemies in the level into each others locations!"}, //New for fifth Crowd Control batch
+        new Effect ("Swap all item positions","swap_items"){Price = 5,Description = "Shuffles all the inventory items in the level into each others locations!"}, //New for fifth Crowd Control batch
         new Effect ("Float Away","floaty_physics"){Price = 100,Description = "Suddenly gravity feels very light and everything starts floating up into the sky...",Duration=30}, //New for second Crowd Control batch
         new Effect ("Floor is Lava","floor_is_lava"){Price = 75,Description = "Floor is lava!  If the player doesn't keep jumping or get up on top of something, they're gonna burn!",Duration=60}, //New for second Crowd Control batch
         new Effect ("Invert Mouse Controls","invert_mouse"){Price = 20,Description = "Up is down and down is up!",Duration=60}, //New for second Crowd Control batch
