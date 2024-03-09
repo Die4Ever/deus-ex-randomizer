@@ -118,6 +118,11 @@ static function bool IsCritter(class<Actor> a)
         );
 }
 
+static function bool IsSwappable(class<Actor> a)
+{
+    return IsCombatActor(a) && !ClassIsChildOf(a, class'Merchant');
+}
+
 function bool IsInitialEnemy(ScriptedPawn p)
 {
     local int i;

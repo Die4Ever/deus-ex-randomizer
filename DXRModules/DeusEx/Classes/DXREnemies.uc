@@ -205,7 +205,7 @@ function RandoEnemies(int percent, int hidden_percent)
             RandomizeSize(p);
         }
 
-        if( !IsCombatActor(p.class) || Merchant(p) != None ) continue;
+        if( !IsSwappable(p.class) ) continue;
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
 
         enemies[num_enemies++] = p;

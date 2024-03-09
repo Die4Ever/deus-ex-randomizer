@@ -401,8 +401,7 @@ function NYC_04_CheckPaulRaid()
 
     foreach AllActors(class'ScriptedPawn', p) {
         if( PaulDenton(p) != None ) continue;
-        if( !IsCombatActor(p.class) ) continue;
-        if( Merchant(p) != None) continue;
+        if( !IsSwappable(p.class) ) continue;
         if( p.bHidden ) continue;
         if( p.GetAllianceType('Player') != ALLIANCE_Hostile ) continue;
         p.bStasis = false;

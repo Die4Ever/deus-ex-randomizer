@@ -115,8 +115,7 @@ function SwapScriptedPawns(int percent, bool enemies)
     {
         if( a.bHidden || a.bStatic ) continue;
         if( a.bImportant || a.bIsSecretGoal ) continue;
-        if( !IsCombatActor(a.class) ) continue;
-        if( Merchant(a) != None ) continue;
+        if( !IsSwappable(a.class) ) continue;
         if( IsInitialEnemy(a) != enemies ) continue;
         if( !chance_single(percent) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
