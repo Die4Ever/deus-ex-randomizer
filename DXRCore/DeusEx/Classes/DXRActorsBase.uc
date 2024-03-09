@@ -95,27 +95,26 @@ static function bool IsCombatRobot(class<Actor> a)
         !ClassIsChildOf(a, class'#var(prefix)CleanerBot');
 }
 
+// Returns True if the class is an animal that will never fight
+static function bool IsCritter(class<Actor> a)
+{
+    return
+        ClassIsChildOf(a, class'#var(prefix)Animal') &&
+        !ClassIsChildOf(a, class'#var(prefix)Dog') &&
+        !ClassIsChildOf(a, class'#var(prefix)Gray') &&
+        !ClassIsChildOf(a, class'#var(prefix)Greasel') &&
+        !ClassIsChildOf(a, class'#var(prefix)Karkian');
+}
+
 static function bool IsCombatAnimal(class<Actor> a)
 {
     return ClassIsChildOf(a, class'#var(prefix)Animal') && !IsCritter(a);
 }
 
-// Returns true if the class will ever fight, even if some instances won't
+// Returns True if the class will ever fight, even if some instances won't
 static function bool IsCombatPawn(class<Actor> a)
 {
     return IsHuman(a) || IsCombatRobot(a) || IsCombatAnimal(a);
-}
-
-static function bool IsCritter(class<Actor> a)
-{
-    return
-        ClassIsChildOf(a, class'#var(prefix)Animal') &&
-        (
-            !ClassIsChildOf(a, class'#var(prefix)Doberman') &&
-            !ClassIsChildOf(a, class'#var(prefix)Gray') &&
-            !ClassIsChildOf(a, class'#var(prefix)Greasel') &&
-            !ClassIsChildOf(a, class'#var(prefix)Karkian')
-        );
 }
 
 static function bool IsSwappable(class<Actor> a)
