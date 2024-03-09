@@ -64,6 +64,17 @@ function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
     return a.GetAllianceType( b.Alliance ) == ALLIANCE_Friendly && b.GetAllianceType( a.Alliance ) == ALLIANCE_Friendly;
 }
 
+function bool CanSit(ScriptedPawn sp)
+{
+    if (#var(prefix)MJ12Commando(sp) != None) return False;
+    if (#var(prefix)SpiderBot2(sp) != None) return True; //Small spiderbots are very funny in chairs
+    if (#var(prefix)Robot(sp) != None) return False; //Normal robots are lame in chairs
+    if (#var(prefix)ChildMale(sp) != None) return False; //Kids don't have sitting animations
+    if (#var(prefix)ChildMale2(sp) != None) return False; //(They probably aren't getting shuffled, but might as well note it)
+    //Animals don't have any special sitting animations, but are very funny also
+    return True;
+}
+
 function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
@@ -158,7 +169,7 @@ function SwapScriptedPawns(int percent, bool enemies)
 
     for(i=0; i<num; i++) {
         a = temp[i];
-        if((#var(prefix)MJ12Commando(a) != None) && a.Orders=='Sitting') {
+        if(a.Orders=='Sitting' && !CanSit(a)) {
             a.Orders='Standing';
             a.OrderTag='';
         }
