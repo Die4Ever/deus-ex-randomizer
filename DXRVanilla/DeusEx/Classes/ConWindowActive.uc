@@ -18,12 +18,14 @@ function CreateCreditsWindow()
     creditsText.Show(False);
 }
 
-function UpdateCreditsWindow(bool bShow)
+function UpdateCreditsWindow()
 {
     if (player!=None){
         creditsText.SetText("Credits: "$player.credits);
     }
-    creditsText.Show(True); //Had this showing only on active choices, but better to show all the time
+
+    //bForcePlay is true during the intro and endgames
+    creditsText.Show(!bForcePlay);
 }
 
 //Gets called on every new screen in a conversation.
@@ -31,7 +33,7 @@ function UpdateCreditsWindow(bool bShow)
 function RestrictInput(bool bNewRestrictInput)
 {
     _RestrictInput(bNewRestrictInput);
-    UpdateCreditsWindow(bNewRestrictInput);
+    UpdateCreditsWindow();
 }
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
