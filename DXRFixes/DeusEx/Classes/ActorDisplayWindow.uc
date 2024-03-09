@@ -536,7 +536,11 @@ function DrawWindow(GC gc)
             if(bShowInventory && Pawn(trackActor) != None) {
                 str = str $ "Inventory:" $ CR();
                 for(item = Pawn(trackActor).Inventory; item != None; item = item.Inventory) {
-                    str = str $ GetActorName(item) $ CR();
+                    str = str $ GetActorName(item);
+                    if (Ammo(item)!=None){
+                        str = str $ " ("$Ammo(item).AmmoAmount$")";
+                    }
+                    str = str $ CR();
                 }
             }
 
