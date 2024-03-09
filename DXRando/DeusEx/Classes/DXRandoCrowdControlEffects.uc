@@ -1555,7 +1555,7 @@ function bool CanSwapEnemies()
     {
         if( a.bHidden || a.bStatic ) continue;
         if( a.bImportant || a.bIsSecretGoal ) continue;
-        if( ccLink.ccModule.IsCritter(a) ) continue;
+        if( !ccLink.ccModule.IsSwappable(a.class) ) continue;
         if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         if( #var(prefix)Robot(a) != None && a.Orders == 'Idle' ) continue;
