@@ -266,8 +266,21 @@ function PreFirstEntryMapFixes_Entrance()
     Spawn(class'PlaceholderItem',,, vectm(-1712.9,191.25,26)); //In front of ambush elevator
 
     class'PlaceholderEnemy'.static.Create(self,vectm(4623,210,-176));
-    class'PlaceholderEnemy'.static.Create(self,vectm(3314,2196,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(3314,2276,-176));
     class'PlaceholderEnemy'.static.Create(self,vectm(-190,-694,-180));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-444,-171,-16));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-394,516,-16));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-105,769,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-116,432,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-63,-147,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-578,313,-16));
+
+    class'PlaceholderEnemy'.static.Create(self,vectm(3286,2750,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(3316,2527,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(3297,2079,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(2930,2106,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(2977,2306,-176),,'Sitting');
+
 }
 
 

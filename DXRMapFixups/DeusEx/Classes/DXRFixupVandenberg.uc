@@ -374,6 +374,7 @@ function PreFirstEntryMapFixes()
     case "12_VANDENBERG_GAS":
         if (VanillaMaps){
             class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
+            class'PlaceholderEnemy'.static.Create(self,vectm(1351,582,-930),,'Shitting');
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1000,745,-972));//Gas Station back room
             rg.MaxCount=1;
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
