@@ -1,6 +1,39 @@
 class DXRConWindowActive merges ConWindowActive;
 // merges because Kentie's Launcher does this https://github.com/Die4Ever/deus-ex-randomizer/issues/453
 
+var TextWindow creditsText;
+
+event InitWindow()
+{
+    _InitWindow();
+    CreateCreditsWindow();
+}
+
+function CreateCreditsWindow()
+{
+    creditsText = TextWindow(upperConWindow.NewChild(class'TextWindow'));
+    creditsText.SetTextColor(class'ConWindowSpeech'.Default.colConTextNormal);
+	creditsText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    creditsText.SetFont(class'ConPlay'.Default.ConversationSpeechFonts[0]);
+    creditsText.Show(False);
+}
+
+function UpdateCreditsWindow(bool bShow)
+{
+    if (player!=None){
+        creditsText.SetText("Credits: "$player.credits);
+    }
+    creditsText.Show(True); //Had this showing only on active choices, but better to show all the time
+}
+
+//Gets called on every new screen in a conversation.
+//Parameter indicates whether it will accept input or not
+function RestrictInput(bool bNewRestrictInput)
+{
+    _RestrictInput(bNewRestrictInput);
+    UpdateCreditsWindow(bNewRestrictInput);
+}
+
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
     local int selectedOption;
