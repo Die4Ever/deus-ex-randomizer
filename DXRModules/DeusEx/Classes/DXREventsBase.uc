@@ -669,17 +669,10 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
             if (
-                    !isInitialPlayerEnemy(victim) &&  //Must have not been an enemy initially
+                    !isInitialPlayerEnemy(victim) && //Must have not been an enemy initially
                     IsHuman(victim.class) && //There's no such thing as an innocent Cat
-                    (
-                        //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
-                        dxr.localURL!="04_NYC_NSFHQ" ||
-                        (
-                            dxr.localURL=="04_NYC_NSFHQ" &&
-                            dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False
-                        )
-                    )
-                ) {
+                    ( dxr.localURL!="04_NYC_NSFHQ" || dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False ) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
+            ) {
                 _MarkBingo("AlliesKilled");
             }
         }
