@@ -51,7 +51,7 @@ function PostFirstEntry()
 function SaveRespawn(ScriptedPawn p, out int i)
 {
     local int a;
-    if( IsCritter(p) ) return;
+    if( IsCritter(p.class) ) return;
     if( p.bImportant || p.bInvincible || p.bHidden ) return;
 #ifdef gmdx
     if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) return;

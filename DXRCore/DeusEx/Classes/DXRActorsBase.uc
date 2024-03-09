@@ -86,12 +86,36 @@ static function bool IsRobot(class<Actor> a)
     return ClassIsChildOf(a, class'Robot');
 }
 
-static function bool IsCritter(Actor a)
+static function bool IsCombatRobot(class<Actor> a)
 {
-    if( #var(prefix)CleanerBot(a) != None ) return true;
-    if( #var(prefix)MedicalBot(a) != None || #var(prefix)RepairBot(a) != None || Merchant(a) != None ) return true;
-    if( #var(prefix)Animal(a) == None ) return false;
-    return #var(prefix)Doberman(a) == None && #var(prefix)Gray(a) == None && #var(prefix)Greasel(a) == None && #var(prefix)Karkian(a) == None;
+    return
+        IsRobot(a) &&
+        !ClassIsChildOf(a, class'#var(prefix)MedicalBot') &&
+        !ClassIsChildOf(a, class'#var(prefix)RepairBot') &&
+        !ClassIsChildOf(a, class'#var(prefix)CleanerBot');
+}
+
+static function bool IsCombatAnimal(class<Actor> a)
+{
+    return ClassIsChildOf(a, class'#var(prefix)Animal') && !IsCritter(a);
+}
+
+// Returns true if the class will ever fight, even if some instances won't
+static function bool IsCombatActor(class<Actor> a)
+{
+    return IsHuman(a) || IsCombatRobot(a) || IsCombatAnimal(a);
+}
+
+static function bool IsCritter(class<Actor> a)
+{
+    return
+        ClassIsChildOf(a, class'#var(prefix)Animal') &&
+        (
+            !ClassIsChildOf(a, class'#var(prefix)Doberman') &&
+            !ClassIsChildOf(a, class'#var(prefix)Gray') &&
+            !ClassIsChildOf(a, class'#var(prefix)Greasel') &&
+            !ClassIsChildOf(a, class'#var(prefix)Karkian')
+        );
 }
 
 function bool IsInitialEnemy(ScriptedPawn p)
