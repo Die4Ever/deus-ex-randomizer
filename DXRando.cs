@@ -68,6 +68,8 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Quick Save", "quick_save"){Price = 10,Description = "Stir up some real trouble..."}, //New for fourth Crowd Control batch
         new Effect ("Quick Load", "quick_load"){Price = 20,Description = "Hope that last quick save wasn't too far back, or in too much danger!"}, //New for fourth Crowd Control batch
         new Effect ("Drop a piano on the player", "drop_piano"){Price = 10,Description = "Spawn a piano above the player to drop it on them, just like in the cartoons!"}, //New for fifth Crowd Control batch, v2.6
+        new Effect ("Toggle the Flashlight", "toggle_flashlight"){Price = 1,Description = "Toggle the flashlight!"}, //New for fifth Crowd Control batch, v2.6
+        new Effect ("Heal all Enemies", "heal_all_enemies"){Price = 10,Description = "Fully heal all enemies in the current level!"}, //New for fifth Crowd Control batch, v2.6
 
         //Spawn Enemies/Allies
         //new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch
@@ -176,6 +178,8 @@ public class DeusEx : SimpleTCPPack
         new Effect("Give Gas Grenade", "give_weapongasgrenade") { Category = "Give Weapon",Price = 2,Description = "Give the player a gas grenade" },  //New for second Crowd Control batch
         new Effect("Give Scrambler Grenade", "give_weaponnanovirusgrenade") { Category = "Give Weapon",Price = 5,Description = "Give the player a scrambler grenade" },  //New for second Crowd Control batch
         new Effect("Give PS40","give_weaponhideagun") { Category = "Give Weapon",Price = 10,Description = "Give the player a PS40" },
+        new Effect("Give all enemies a LAW", "giveenemyweapon_weaponlaw") { Category = "Give Weapon",Price = 40,Description = "Give all enemies a LAW" }, //New for fifth Crowd Control batch, v2.6
+        new Effect("Give all enemies a PS40", "giveenemyweapon_weaponhideagun") { Category = "Give Weapon",Price = 30,Description = "Give all enemies a PS40" }, //New for fifth Crowd Control batch, v2.6
 
         //Ammo
         //new Effect("Give Ammo","giveammo",ItemKind.Folder),

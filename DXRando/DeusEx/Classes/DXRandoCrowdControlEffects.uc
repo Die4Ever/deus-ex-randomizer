@@ -798,6 +798,10 @@ function class<ScriptedPawn> getScriptedPawnClass(string type) {
     return class<ScriptedPawn>(ccLink.ccModule.GetClassFromString(type, class'ScriptedPawn'));
 }
 
+function class<#var(DeusExPrefix)Weapon> getWeaponClass(string type) {
+    return class<#var(DeusExPrefix)Weapon>(ccLink.ccModule.GetClassFromString(type, class'#var(DeusExPrefix)Weapon'));
+}
+
 
 //"Why not just use "GivePlayerAugmentation", you ask.
 //While it works well to give the player an aug they don't
@@ -1221,15 +1225,15 @@ function int GiveItem(string viewer, string type, optional int amount) {
 
     outMsg = viewer@"gave you";
     if( amount > 1 && DeusExAmmo(item) != None ) {
-        outMsg = outMsg @amount@"cases of"@item.Default.ItemName;
+        outMsg = outMsg @amount@"cases of"@item.ItemName;
     }
     else if( DeusExAmmo(item) != None ) {
-        outMsg = outMsg @"a case of"@item.Default.ItemName;
+        outMsg = outMsg @"a case of"@item.ItemName;
     }
     else if( amount > 1 ) {
-        outMsg = outMsg @ amount @ item.Default.ItemName $ "s";
+        outMsg = outMsg @ amount @ item.ItemName $ "s";
     } else {
-        outMsg = outMsg @ item.Default.ItemArticle @ item.Default.ItemName;
+        outMsg = outMsg @ item.ItemArticle @ item.ItemName;
     }
 
     PlayerMessage(outMsg $ shouldSave);
@@ -1606,6 +1610,99 @@ function bool SwapAllItems(string viewer)
     PlayerMessage(viewer@"swapped the position of all the inventory items in the level!");
 
     return true;
+}
+
+function bool ToggleFlashlight(string viewer)
+{
+    local Augmentation aug;
+
+    aug = player().AugmentationSystem.FindAugmentation(class'#var(prefix)AugLight');
+
+    if (aug==None) return False;
+
+    if (aug.IsActive()){
+        aug.Deactivate();
+    } else {
+        aug.Activate();
+    }
+
+    PlayerMessage(viewer@"toggled your flashlight!");
+
+    return true;
+
+}
+
+function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewer)
+{
+    local int numEnemies;
+    local inventory inv;
+    local ScriptedPawn a;
+
+    numEnemies=0;
+
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( #var(prefix)Animal(a)!=None ) continue;
+        if( #var(prefix)Robot(a) != None ) continue;
+        if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        numEnemies++;
+        inv = ccLink.ccModule.GiveItem(a,w,1);
+    }
+
+    if (numEnemies==0){
+        return TempFail;
+    }
+
+    PlayerMessage(viewer@"gave "$numEnemies$" enemies a "$inv.ItemName$"!");
+
+    return Success;
+}
+
+function bool HealAllEnemies(string viewer)
+{
+    local int numEnemies;
+    local ScriptedPawn a;
+
+    numEnemies=0;
+
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( #var(prefix)Animal(a)!=None ) continue;
+        if( #var(prefix)Robot(a) != None ) continue;
+        if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        if ( a.IsInState('Dying') ) continue; //It's too late for this guy...
+        if ( a.bInvincible ) continue;
+        if ( a.Health >= a.Default.Health ) continue; //Nothing to heal
+
+        numEnemies++;
+        a.Health         = a.Default.Health;
+        a.HealthArmLeft  = a.Default.HealthArmLeft;
+        a.HealthArmRight = a.Default.HealthArmRight;
+        a.HealthLegLeft  = a.Default.HealthLegLeft;
+        a.HealthLegRight = a.Default.HealthLegRight;
+        a.HealthHead     = a.Default.HealthHead;
+        a.HealthTorso    = a.Default.HealthTorso;
+
+        if (a.bOnFire){
+            a.ExtinguishFire();
+        }
+
+        //Get back in the fight, soldier!
+        if (a.IsInState('Fleeing') || a.IsInState('Burning') || a.IsInState('RubbingEyes')){
+            a.FearLevel=0;
+            a.FollowOrders();
+        }
+    }
+
+    if (numEnemies==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"healed "$numEnemies$" enemies to full health!");
+
+    return True;
 }
 
 function SplitString(string src, string divider, out string parts[8])
@@ -2207,6 +2304,24 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return DropPiano(viewer);
             break;
 
+        case "toggle_flashlight":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!ToggleFlashlight(viewer)){
+                return TempFail;
+            }
+            break;
+
+        case "heal_all_enemies":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!HealAllEnemies(viewer)){
+                return TempFail;
+            }
+            break;
+
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }
@@ -2232,6 +2347,8 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
             return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),True,viewer);
         case "spawnenemy":
             return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),False,viewer);
+        case "giveenemyweapon":
+            return GiveAllEnemiesWeapon(getWeaponClass(words[1]),viewer);
         default:
             err("Unknown effect: "$code);
             return NotAvail;
