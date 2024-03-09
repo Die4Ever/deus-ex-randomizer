@@ -133,6 +133,8 @@ function BindControls(optional string action)
     }
 
     if(writing) {
+        // need to call flags.SetDifficulty to apply the game mode's and difficulty's settings, after setting the seed and before going to the next screen
+        f.SetDifficulty(f.difficulty);
         if( action == "ADVANCED" ) {
             HandleAdvancedButton();
         }
@@ -169,8 +171,8 @@ function DoNewGameScreen()
     local DXRFlags f;
     f = GetFlags();
 #ifndef hx
-        // we write the difficulty and gamemode after setting the seed, TODO: menus for HX?
-        difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
+        // TODO: menus for HX?
+        difficulty = f.settings.CombatDifficulty;
 #endif
 
     _InvokeNewGameScreen(difficulty);
