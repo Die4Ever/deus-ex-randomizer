@@ -6,6 +6,7 @@ function int InitGoals(int mission, string map)
 
     goal = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
     AddGoalActor(goal, 1, 'DataLinkTrigger12', PHYS_None);
+    AddGoalActor(goal, 2, 'SkillAwardTrigger6', PHYS_None);
     goal2 = AddGoal("01_NYC_UNATCOISLAND", "Police Boat", GOAL_TYPE1, 'NYPoliceBoat0', PHYS_None);
 
     loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
@@ -85,6 +86,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)SkillAwardTrigger sat;
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2);
@@ -106,6 +108,16 @@ function PreFirstEntryMapFixes()
             case 'DL_MissedPaul':
                 dlt.Event = '';
                 dlt.Destroy();
+            }
+        }
+
+        //Increase the radius of the 750 points for reaching the top of the statue
+        //This gets moved with Leo and needs to be bigger than his conversation trigger
+        //which has a 140 invocation radius.
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat){
+            if (sat.skillPointsAdded==750){ //Reward for reaching top of statue
+                sat.SetCollisionSize(250,sat.CollisionHeight);
+                break;
             }
         }
     }
