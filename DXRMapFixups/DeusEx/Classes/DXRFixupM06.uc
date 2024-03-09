@@ -46,6 +46,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local #var(prefix)Button1 button;
+    local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
 
@@ -493,6 +495,16 @@ function PreFirstEntryMapFixes()
         }
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
+
+        //Swap BeamTriggers to LaserTrigger, since these lasers set off an alarm
+        foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+            lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
+            lt.TriggerType=bt.TriggerType;
+            lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
+            lt.bDynamicLight = bt.bDynamicLight;
+            lt.bIsOn = bt.bIsOn;
+            bt.Destroy();
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers

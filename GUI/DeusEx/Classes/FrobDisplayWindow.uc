@@ -253,6 +253,8 @@ function string GetStrInfo(Actor a, out int numLines)
         return ComputersStrInfo(#var(prefix)ElectronicDevices(a), numLines);
     else if ( #var(prefix)Weapon(a)!=None )
         return WeaponStrInfo(#var(DeusExPrefix)Weapon(a),numLines);
+    else if ( #var(prefix)BeamTrigger(a)!=None || #var(prefix)LaserTrigger(a)!=None)
+        return LaserStrInfo(a,numLines);
     else if (!a.bStatic && player.bObjectNames)
         return OtherStrInfo(a, numLines);
 
@@ -573,6 +575,72 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
     return strInfo;
 
 }
+
+function string LaserStrInfo(Actor a, out int numLines)
+{
+    local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
+    local int minDmg,hitpoints, numshots,damage;
+    local string strInfo,triggerName, numshotStr;
+#ifdef vanilla
+    local DXRWeapon w;
+#endif
+
+    bt = #var(prefix)BeamTrigger(a);
+    lt = #var(prefix)LaserTrigger(a);
+
+    if (bt!=None){
+        triggerName="Laser Trap";
+        minDmg = bt.minDamageThreshold;
+        hitpoints = bt.HitPoints;
+    } else if (lt!=None){
+        triggerName="Alarm Laser";
+        minDmg = lt.minDamageThreshold;
+        hitpoints = lt.HitPoints;
+    } else {
+        numLines=1;
+        return "SOME OTHER LASER ENDED UP IN HERE!  REPORT AS BUG!";
+    }
+
+    numshotStr="";
+#ifdef vanilla
+    w = DXRWeapon(player.inHand);
+    if( w != None ) {
+        if (w.WeaponDamageType() != 'Exploded' && w.WeaponDamageType() != 'Shot'){
+            damage = 0; //only exploded and shot damage actually hurt lasers
+        } else {
+            damage = w.GetDamage();
+            if (damage<minDmg){
+                damage = 0;
+            }
+            damage = damage * float(w.GetNumHits());
+        }
+
+        if( damage > 0 ) {
+            numshots = hitpoints/damage;
+            if (hitpoints % damage != 0){
+                numshots++;
+            }
+
+            if( numshots == 1 )
+                numshotStr = " (" $ numshots @ msgShot $ ")";
+            else
+                numshotStr = " (" $ numshots @ msgShots $ ")";
+        } else {
+            numshotStr = " (" $ msgInf @ msgShots $ ")";
+        }
+    }
+#endif
+
+
+    numLines = 3;
+    strInfo = triggerName $ CR();
+    strInfo = strInfo $ msgDamageThreshold @ minDmg $ CR();
+    strInfo = strInfo $ msgHitPoints @ hitpoints $ numshotStr;
+
+    return strInfo;
+}
+
 
 function bool WeaponModAutoApply(WeaponMod wm)
 {

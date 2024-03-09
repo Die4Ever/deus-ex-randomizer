@@ -199,6 +199,7 @@ function PreFirstEntry()
 
     OverwriteDecorations();
     FixFlagTriggers();
+    FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
 
@@ -610,6 +611,21 @@ function FixFlagTriggers()
             l(f @ f.FlagName @ f.flagValue $" changed expiration from -1 to 999");
         }
     }
+}
+
+function FixBeamLaserTriggers()
+{
+#ifdef fixes
+    local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
+
+    foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+        bt.TriggerType=TT_AnyProximity;
+    }
+    foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+        lt.TriggerType=TT_AnyProximity;
+    }
+#endif
 }
 
 function SpawnDatacubes()

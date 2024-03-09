@@ -23,6 +23,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
     local OnceOnlyTrigger oot;
     local Actor a;
     local #var(prefix)PigeonGenerator pg;
@@ -155,6 +156,18 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'Button1', b) {
                 if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
                     AddDelay(b, 5);
+                }
+            }
+
+            //Swap the beam triggers that set off this turret to LaserTrigger for clarity
+            foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+                if (bt.Tag=='Turret_beam'){
+                    lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
+                    lt.TriggerType=bt.TriggerType;
+                    lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
+                    lt.bDynamicLight = bt.bDynamicLight;
+                    lt.bIsOn = bt.bIsOn;
+                    bt.Destroy();
                 }
             }
 

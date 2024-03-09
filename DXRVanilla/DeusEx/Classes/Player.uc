@@ -774,8 +774,20 @@ function bool IsHighlighted(actor A)
     wasBehind = bBehindView;
     bBehindView = False;
     highlight = Super.IsHighlighted(A);
+    if (LaserTrigger(A)!=None || BeamTrigger(A)!=None){
+        highlight=True;
+    }
     bBehindView = wasBehind;
     return highlight;
+}
+
+function bool IsFrobbable(actor A)
+{
+    if (!A.bHidden)
+        if (A.IsA('BeamTrigger') || A.IsA('LaserTrigger'))
+            return True;
+
+    return Super.IsFrobbable(A);
 }
 
 exec function CrowdControlAnon()
