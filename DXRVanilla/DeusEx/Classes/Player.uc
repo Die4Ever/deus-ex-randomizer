@@ -47,6 +47,23 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
     }
 }
 
+function CalcBehindView(out vector CameraLocation, out rotator CameraRotation, float Dist)
+{
+    local vector View,HitLocation,HitNormal;
+    local float ViewDist;
+
+    Dist = Dist/1.25; //Bring the camera in a bit closer than normal
+
+    CameraRotation = ViewRotation;
+    CameraLocation.Z+=BaseEyeHeight; //Adjust camera center to eye height
+    View = vect(1,-0.2,0) >> CameraRotation; //Slightly offset the view to the right (so it's over the shoulder)
+    if( Trace( HitLocation, HitNormal, CameraLocation - (Dist + 30) * vector(CameraRotation), CameraLocation ) != None )
+        ViewDist = FMin( (CameraLocation - HitLocation) Dot View, Dist );
+    else
+        ViewDist = Dist;
+    CameraLocation -= (ViewDist - 30) * View;
+}
+
 event ClientTravel( string URL, ETravelType TravelType, bool bItems )
 {
     nextMap = URL;
@@ -817,7 +834,7 @@ function HighlightCenterObject()
     reCam = CCResidentEvilCam(ViewTarget);
 
     //Activate the aim laser any time you aren't seeing through your eyes
-    if (reCam!=None){
+    if (reCam!=None || bBehindView){
         if (aimLaser==None){
             aimLaser = Spawn(class'LaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
             if (aimLaser != None) {
