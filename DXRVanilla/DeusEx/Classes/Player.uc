@@ -851,6 +851,7 @@ function HighlightCenterObject()
         loc = loc + vector(ViewRotation) * (CollisionRadius/2);
         aimLaser.SetLocation(loc);
         aimLaser.SetRotation(ViewRotation);
+        aimLaser.proxy.DistanceFromPlayer=0; //Make sure the laser doesn't get frozen
 
         aimLaser.TurnOn();
 
