@@ -29,7 +29,6 @@ public class DeusEx : SimpleTCPPack
         new Effect("Full Heal", "full_heal"){Price = 30,Description = "Fully heal the player"},
         new Effect("Drunk Mode", "drunk_mode"){Price = 10,Description = "Let the player overindulge with some nice alcohol"},
         new Effect("Drop Selected Item", "drop_selected_item"){Price = 2,Description = "Toss the currently held weapon out in front of the player"},
-        new Effect("Enable Matrix Mode", "matrix"){Price = 5,Description = "Make the player see the code behind the game...",Duration=60},
         new Effect("Give Player EMP Field", "emp_field"){Price = 25,Description = "Make all electronics around the player go haywire for 15 seconds!",Duration=15},
         new Effect("Give Bioelectric Energy (x10)", "give_energy") { Quantity = 100,Price = 1,Description = "Top up the players battery by a bit" },
         new Effect("Give Skill Points (x100)", "give_skillpoints") { Quantity = 1000,Price = 5,Description = "Give the player some skill points" }, //Updated text for second Crowd Control batch
@@ -38,7 +37,6 @@ public class DeusEx : SimpleTCPPack
         new Effect("Gotta Go Fast", "gotta_go_fast"){Price = 5,Description = "Make the player go extremely fast!",Duration=60},
         new Effect("Slow Like Snail", "gotta_go_slow"){Price = 5,Description = "Make the player go very slow...",Duration=60},
         new Effect("Ice Physics!","ice_physics"){Price = 10,Description = "Make the ground freeze up and become as slippery as a skating rink!",Duration=60},
-        new Effect("Go Third-Person","third_person"){Price = 5,Description = "Change the game into a third person shooter for a minute!",Duration=60},
         new Effect("Take Double Damage","dmg_double"){Price = 10,Description = "Make the player weaker so they take double damage!",Duration=60},
         new Effect("Take Half Damage","dmg_half"){Price = 5,Description = "Make the player tougher so they take half damage!",Duration=60},
         new Effect("Give Credits (x100)", "add_credits") { Quantity = 1000,Price = 2,Description = "Make it rain on the player and give them some spare cash!" }, //Updated for text second Crowd Control batch
@@ -57,10 +55,6 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Earthquake","earthquake"){Price = 25,Description = "Set off a massive earthquake in the game!",Duration=30}, //New for fourth Crowd Control batch
         new Effect ("Full Bioelectric Energy","give_full_energy"){Price = 5,Description = "Completely fill the players bioelectric energy"}, //New for fourth Crowd Control batch
         new Effect ("Trigger all alarms","trigger_alarms"){Price = 5,Description = "Set off every alarm panel and security camera in the current level to make sure all the enemies are on high alert!"}, //New for fourth Crowd Control batch
-        new Effect ("Flip camera upside down","flipped"){Price = 20,Description = "Australia mode",Duration=60}, //New for fourth Crowd Control batch
-        new Effect ("Flip camera sideways","limp_neck"){Price = 20,Description = "Just turn the screen to the side!",Duration=60}, //New for fourth Crowd Control batch
-        new Effect ("Do a barrel roll!","barrel_roll"){Price = 25,Description = "The camera does an ever so slow barrel roll over the course of a minute...",Duration=60}, //New for fourth Crowd Control batch
-        new Effect ("Set off a Flashbang", "flashbang"){Price = 5,Description = "Set off a flashbang in the players face"}, //New for fourth Crowd Control batch
         new Effect ("Eat Beans", "eat_beans"){Price = 5,Description = "Force feed the player a bunch of beans and witness the consequences!",Duration=60}, //New for fourth Crowd Control batch
         new Effect ("Fire the current weapon", "fire_weapon"){Price = 5,Description = "Fire whatever weapon the player is holding!"}, //New for fourth Crowd Control batch
         new Effect ("Switch to next item", "next_item"){Price = 2,Description = "Switch to the next item in the players item belt"}, //New for fourth Crowd Control batch
@@ -198,6 +192,15 @@ public class DeusEx : SimpleTCPPack
         new Effect("Give Rockets", "give_ammorocket") {  Quantity = 100, Category = "Give Ammo",Price = 10,Description = "Give the player some rockets" }, //New for second Crowd Control batch
         new Effect("Give WP Rockets", "give_ammorocketwp") {  Quantity = 100, Category = "Give Ammo",Price = 15,Description = "Give the player some WP rockets" }, //New for second Crowd Control batch
         new Effect("Give Sabot Shells", "give_ammosabot") {  Quantity = 100, Category = "Give Ammo",Price = 20,Description = "Give the player some Sabot shells" }, //New for second Crowd Control batch
-        new Effect("Give Shotgun Shells", "give_ammoshell") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some shotgun shells" } //New for second Crowd Control batch
+        new Effect("Give Shotgun Shells", "give_ammoshell") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some shotgun shells" }, //New for second Crowd Control batch
+
+        //Camera Effects
+        new Effect ("Flip camera upside down","flipped"){Category = "Camera Effects",Price = 20,Description = "Australia mode",Duration=60}, //New for fourth Crowd Control batch
+        new Effect ("Flip camera sideways","limp_neck"){Category = "Camera Effects",Price = 20,Description = "Just turn the screen to the side!",Duration=60}, //New for fourth Crowd Control batch
+        new Effect ("Do a barrel roll!","barrel_roll"){Category = "Camera Effects",Price = 25,Description = "The camera does an ever so slow barrel roll over the course of a minute...",Duration=60}, //New for fourth Crowd Control batch
+        new Effect("Go Third-Person","third_person"){Category = "Camera Effects",Price = 5,Description = "Change the game into a third person shooter for a minute!",Duration=60},
+        new Effect("Enable Matrix Mode", "matrix"){Category = "Camera Effects",Price = 5,Description = "Make the player see the code behind the game...",Duration=60},
+        new Effect ("Set off a Flashbang", "flashbang"){Category = "Camera Effects",Price = 5,Description = "Set off a flashbang in the players face"}, //New for fourth Crowd Control batch
+        new Effect ("Resident Evil Mode", "resident_evil"){Category = "Camera Effects",Price = 20,Description = "Switch the game to fixed camera angles!  Very spooky!"} //New for fifth Crowd Control batch
     };
 }

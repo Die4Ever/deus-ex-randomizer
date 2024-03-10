@@ -31,6 +31,21 @@ function PlayerMove( float DeltaTime )
     GotoState('PlayerWalking');
 }
 
+event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation )
+{
+    local CCResidentEvilCam reCam;
+
+    reCam = CCResidentEvilCam(ViewTarget);
+
+    if (reCam!=None){
+        CameraRotation = reCam.Rotation;
+        CameraLocation = reCam.Location;
+        return;
+    } else {
+        Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+    }
+}
+
 event ClientTravel( string URL, ETravelType TravelType, bool bItems )
 {
     nextMap = URL;

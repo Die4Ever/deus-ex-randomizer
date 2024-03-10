@@ -41,6 +41,7 @@ const InvertMovementTimeDefault = 60;
 const EarthquakeTimeDefault = 30;
 const CameraRollTimeDefault = 60;
 const EatBeansTimeDefault = 60;
+const ResidentEvilTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -69,6 +70,8 @@ var DXRandoCrowdControlPawn CrowdControlPawns[3];
 
 var transient AugEffectState AugEffectStates[32]; //Vanilla has a 25 array, but in case mods bump it up?
 var transient bool AugEffectStatesInit;
+
+var transient CCResidentEvilCam reCam;
 
 var transient bool HaveFlamethrower;
 var transient bool FlamethrowerInit;
@@ -206,6 +209,22 @@ function PeriodicUpdates()
         PlayerMessage("Your stomach settles down");
     } else if (isTimerActive('cc_EatBeans') && !InMenu()){
         Fart();
+    }
+
+    if (isTimerActive('cc_ResidentEvil')){
+        if (reCam==None){
+            SpawnRECam();
+        }
+
+        player().bCrosshairVisible=False;
+    }
+    if (decrementTimer('cc_ResidentEvil')) {
+        PlayerMessage("Everything feels less horrifying");
+        player().ViewTarget=None;
+        player().bCrosshairVisible=True;
+        if (reCam!=None){
+            reCam.Destroy();
+        }
     }
 
     if (flashbangDuration>0){
@@ -477,6 +496,10 @@ function CleanupOnExit() {
     if (isTimerActive('cc_invertMovementTimer')) {
         invertMovementControls();
     }
+    if (reCam!=None && player().ViewTarget==reCam){
+        player().ViewTarget=None;
+        reCam.Destroy();
+    }
 
 }
 
@@ -568,6 +591,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return CameraRollTimeDefault;
         case 'cc_EatBeans':
             return EatBeansTimeDefault;
+        case 'cc_ResidentEvil':
+            return ResidentEvilTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -621,6 +646,9 @@ function string getTimerLabelByName(name timerName) {
             return "Camera";
         case 'cc_EatBeans':
             return "Beans";
+        case 'cc_ResidentEvil':
+            return "Fixed Cam";
+
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -1705,6 +1733,12 @@ function bool HealAllEnemies(string viewer)
     return True;
 }
 
+function SpawnRECam()
+{
+    reCam=Spawn(class'CCResidentEvilCam',,,player().Location);
+    reCam.BindPlayer(player());
+}
+
 function SplitString(string src, string divider, out string parts[8])
 {
     local int i, c;
@@ -2321,7 +2355,28 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             break;
+        case "resident_evil":
+            if (!#defined(vanilla)){
+                //Changes in player class
+                PlayerMessage("Resident Evil effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
+            //datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
 
+            PlayerMessage(viewer@"made your view a little bit more horrific");
+            startNewTimer('cc_ResidentEvil',duration);
+            player().bCrosshairVisible = False;
+            SpawnRECam();
+            return Success;
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }

@@ -243,6 +243,31 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     return true;
 }
 
+function bool GetLazyCameraLocation(out vector loc, int max_range)
+{
+    local LocationNormal locnorm, ceiling;
+    local FMinMax distrange;
+    locnorm.loc = loc;
+    distrange.min = 0.1;
+    distrange.max = 16*max_range;
+
+    if( NearestCeiling(locnorm, distrange, 16) ) {
+        ceiling = locnorm;
+    } else {
+        if( ! NearestFloor(locnorm, distrange, 16) ) return false;
+        locnorm.loc.Z += 16*3;
+        ceiling = locnorm;
+        ceiling.loc.Z += 16*6;
+    }
+    distrange.max = 16*75;
+    if( ! NearestWallSearchZ(locnorm, distrange, 16*3, ceiling.loc, 10) ) return false;
+
+    loc = locnorm.loc;
+
+    return true;
+}
+
+
 function bool MoveCamera(#var(prefix)SecurityCamera c, vector loc)
 {
     local rotator rotation;
