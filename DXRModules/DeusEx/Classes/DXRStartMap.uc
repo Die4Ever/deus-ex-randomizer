@@ -431,10 +431,6 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('GatesOpen',true,,5);
             break;
 
-        case 65:
-            flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
-            break;
-
         case 75:
         case 70:
         case 68:
@@ -445,6 +441,9 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
                 flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             }
             flagbase.SetBool('QuickConvinced',true,,-1);
+        case 65://fallthrough
+            flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
+            flagbase.SetBool('PaidForLuckyMoney',true,,-1);
             break;
 
         case 115:
