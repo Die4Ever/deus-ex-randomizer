@@ -5,6 +5,7 @@ var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
 var transient string nextMap;
+var laserEmitter aimLaser;
 
 var Rotator ShakeRotator;
 
@@ -803,6 +804,44 @@ function bool IsFrobbable(actor A)
             return True;
 
     return Super.IsFrobbable(A);
+}
+
+function HighlightCenterObject()
+{
+    local CCResidentEvilCam reCam;
+	local Vector loc;
+
+    Super.HighlightCenterObject();
+
+
+    reCam = CCResidentEvilCam(ViewTarget);
+
+    //Activate the aim laser any time you aren't seeing through your eyes
+    if (reCam!=None){
+        if (aimLaser==None){
+            aimLaser = Spawn(class'LaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
+            if (aimLaser != None) {
+                aimLaser.SetHiddenBeam(False);
+                aimLaser.AmbientSound = None;
+                aimLaser.SetBlueBeam();
+            } else {
+                ClientMessage("Failed to spawn aim laser?");
+            }
+        }
+
+        loc = Location;
+        loc.Z+=BaseEyeHeight;
+        loc = loc + vector(ViewRotation) * (CollisionRadius/2);
+        aimLaser.SetLocation(loc);
+        aimLaser.SetRotation(ViewRotation);
+
+        aimLaser.TurnOn();
+
+    } else {
+        if (aimLaser!=None){
+            aimLaser.TurnOff();
+        }
+    }
 }
 
 exec function CrowdControlAnon()

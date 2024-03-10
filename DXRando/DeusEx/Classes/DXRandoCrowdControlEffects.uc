@@ -157,10 +157,12 @@ function PeriodicUpdates()
     if (isTimerActive('cc_behindTimer')){
         player().bBehindView=True;
         player().bCrosshairVisible=False;
+        player().ViewTarget=None;
     }
     if (decrementTimer('cc_behindTimer')) {
         player().bBehindView=False;
         player().bCrosshairVisible = True;
+        player().ViewTarget=None;
 
         PlayerMessage("You re-enter your body");
     }
@@ -1931,6 +1933,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_behindTimer')) {
                 return TempFail;
             }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
             player().bBehindView=True;
             player().bCrosshairVisible = False;
 
@@ -2188,6 +2193,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_RollTimer')) {
                 return TempFail;
             }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
             datastorage.SetConfig('cc_cameraRoll',32768, 3600*12);
 
             PlayerMessage(viewer@"turned your life upside down");
@@ -2207,6 +2215,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_RollTimer')) {
                 return TempFail;
             }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
             datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
 
             PlayerMessage(viewer@"made your head flop to the side");
@@ -2224,6 +2235,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_ResidentEvil')) {
                 return TempFail;
             }
             datastorage.SetConfig('cc_cameraSpin',1, 3600*12);
@@ -2365,6 +2379,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_behindTimer')) {
                 return TempFail;
             }
             if (isTimerActive('cc_ResidentEvil')) {
