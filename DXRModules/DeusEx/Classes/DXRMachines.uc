@@ -247,6 +247,8 @@ function bool GetLazyCameraLocation(out vector loc, int max_range)
 {
     local LocationNormal locnorm, ceiling;
     local FMinMax distrange;
+    local float mult;
+    local Vector loc2;
     locnorm.loc = loc;
     distrange.min = 0.1;
     distrange.max = 16*max_range;
@@ -261,6 +263,12 @@ function bool GetLazyCameraLocation(out vector loc, int max_range)
     }
     distrange.max = 16*75;
     if( ! NearestWallSearchZ(locnorm, distrange, 16*3, ceiling.loc, 10) ) return false;
+
+    if (VSize(locnorm.loc-loc)>(max_range)){
+        mult = (float(max_range)) / VSize(locnorm.loc-loc);
+        loc2 = (locnorm.loc-loc) * mult;
+        locnorm.loc = loc + loc2;
+    }
 
     loc = locnorm.loc;
 

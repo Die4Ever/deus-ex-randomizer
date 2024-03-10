@@ -23,8 +23,10 @@ function PostBeginPlay()
 function bool FindNewCameraPosition()
 {
     local DXRMachines dxrm;
-    local Vector loc;
+    local Vector loc,loc2;
     local Rotator rot;
+    local Actor hit;
+    local Vector HitLocation, HitNormal;
     local bool success;
 
     foreach AllActors(class'DXRMachines',dxrm){break;}
@@ -39,13 +41,21 @@ function bool FindNewCameraPosition()
     success = dxrm.GetLazyCameraLocation(loc,cameraRange*0.75);
 
     if (success){
-        rot = Rotator(p.Location - loc);
-    } else {
-        //Fall back to player location if it can't find something better
-        loc = p.Location;
-        loc.Z += p.CollisionHeight;
-        rot = p.Rotation;
+        if (!p.FastTrace(loc)){
+            success=False;
+        }
     }
+
+    if (!success){
+        //Try to fall back to a position at a point somewhere behind the player
+        loc2 = p.Location + Vector(p.Rotation) * (-16 * 10);
+        hit = Trace(HitLocation, HitNormal, loc2, p.Location, True);
+        if (hit!=None){
+            loc2 = HitLocation;
+        }
+        loc = loc2;
+    }
+    rot = Rotator(p.Location - loc);
     SetLocation(loc);
     SetRotation(rot);
     DesiredRotation = rot;
