@@ -173,7 +173,7 @@ defaultproperties
     bAlwaysTick=True
     bInvincible=True
     bStasis=False
-    cameraRange=500
+    cameraRange=750
     RotationRate=(Pitch=40000,Yaw=40000)
     AmbientSound=None
 }
