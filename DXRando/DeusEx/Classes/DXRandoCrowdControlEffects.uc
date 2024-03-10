@@ -42,6 +42,7 @@ const EarthquakeTimeDefault = 30;
 const CameraRollTimeDefault = 60;
 const EatBeansTimeDefault = 60;
 const ResidentEvilTimeDefault = 60;
+const RadiationTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -240,6 +241,13 @@ function PeriodicUpdates()
     if (quickLoadTriggered){
         quickLoadTriggered = False;
         player().QuickLoadConfirmed();
+    }
+
+    if (isTimerActive('cc_Radioactive')){
+        PlayerRadiates();
+    }
+    if (decrementTimer('cc_Radioactive')){
+        PlayerMessage("You stop being radioactive");
     }
 }
 
@@ -595,6 +603,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return EatBeansTimeDefault;
         case 'cc_ResidentEvil':
             return ResidentEvilTimeDefault;
+        case 'cc_Radioactive':
+            return RadiationTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -650,6 +660,8 @@ function string getTimerLabelByName(name timerName) {
             return "Beans";
         case 'cc_ResidentEvil':
             return "Fixed Cam";
+        case 'cc_Radioactive':
+            return "Radiation";
 
 
         default:
@@ -1741,6 +1753,17 @@ function SpawnRECam()
     reCam.BindPlayer(player());
 }
 
+function PlayerRadiates()
+{
+    local ScriptedPawn sp;
+
+    //Radiate the same as a default gray - 10 damage per second in a 256 radius
+    foreach player().VisibleActors(class'ScriptedPawn', sp, 256)
+        sp.TakeDamage(10, player(), sp.Location, vect(0,0,0), 'Radiation');
+
+}
+
+
 function SplitString(string src, string divider, out string parts[8])
 {
     local int i, c;
@@ -2394,6 +2417,19 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             player().bCrosshairVisible = False;
             SpawnRECam();
             return Success;
+
+        case "radioactive":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_Radioactive')) {
+                return TempFail;
+            }
+
+            PlayerMessage(viewer@"made you radioactive!");
+
+            startNewTimer('cc_Radioactive',duration);
+            break;
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }

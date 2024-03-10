@@ -64,6 +64,7 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Drop a piano on the player", "drop_piano"){Price = 10,Description = "Spawn a piano above the player to drop it on them, just like in the cartoons!"}, //New for fifth Crowd Control batch, v2.6
         new Effect ("Toggle the Flashlight", "toggle_flashlight"){Price = 1,Description = "Toggle the flashlight!"}, //New for fifth Crowd Control batch, v2.6
         new Effect ("Heal all Enemies", "heal_all_enemies"){Price = 10,Description = "Fully heal all enemies in the current level!"}, //New for fifth Crowd Control batch, v2.6
+        new Effect ("Make Player Radioactive", "radioactive"){Price = 10,Description = "The player becomes radioactive and starts hurting nearby people!",Duration=60}, //New for fifth Crowd Control batch, v2.6
 
         //Spawn Enemies/Allies
         //new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch
@@ -201,6 +202,6 @@ public class DeusEx : SimpleTCPPack
         new Effect("Go Third-Person","third_person"){Category = "Camera Effects",Price = 5,Description = "Change the game into a third person shooter for a minute!",Duration=60},
         new Effect("Enable Matrix Mode", "matrix"){Category = "Camera Effects",Price = 5,Description = "Make the player see the code behind the game...",Duration=60},
         new Effect ("Set off a Flashbang", "flashbang"){Category = "Camera Effects",Price = 5,Description = "Set off a flashbang in the players face"}, //New for fourth Crowd Control batch
-        new Effect ("Resident Evil Mode", "resident_evil"){Category = "Camera Effects",Price = 20,Description = "Switch the game to fixed camera angles!  Very spooky!"} //New for fifth Crowd Control batch
+        new Effect ("Resident Evil Mode", "resident_evil"){Category = "Camera Effects",Price = 20,Description = "Switch the game to fixed camera angles!  Very spooky!",Duration=60} //New for fifth Crowd Control batch
     };
 }
