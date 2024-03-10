@@ -2,6 +2,7 @@ class CCResidentEvilCam extends SecurityCamera;
 
 var DeusExPlayer p;
 var bool Reposition;
+var float cameraMoveTimer;
 
 struct LocationNormal {
     var vector loc;
@@ -33,18 +34,23 @@ function bool FindNewCameraPosition()
     }
 
     success = False;
+    loc = p.Location;
 
-        loc = p.Location;
-
-        success = dxrm.GetLazyCameraLocation(loc,cameraRange*0.75);
+    success = dxrm.GetLazyCameraLocation(loc,cameraRange*0.75);
 
     if (success){
-        SetLocation(loc);
         rot = Rotator(p.Location - loc);
-        SetRotation(rot);
-        DesiredRotation = rot;
-        Reposition=False;
+    } else {
+        //Fall back to player location if it can't find something better
+        loc = p.Location;
+        loc.Z += p.CollisionHeight;
+        rot = p.Rotation;
     }
+    SetLocation(loc);
+    SetRotation(rot);
+    DesiredRotation = rot;
+    Reposition=False;
+    cameraMoveTimer=0;
 
     return success;
 }
@@ -68,6 +74,8 @@ function Tick(float deltaTime)
         return;
     }
 
+    cameraMoveTimer+=deltaTime;
+
     curTarget = None;
 
     //Prevent it from going into stasis
@@ -82,7 +90,7 @@ function Tick(float deltaTime)
         CheckPlayerVisibility(p);
     }
 
-    if (Reposition){
+    if (Reposition && cameraMoveTimer>1.0){ //Don't allow moves more than once a second
         //If not, find new location
         FindNewCameraPosition();
     }
