@@ -43,6 +43,7 @@ const CameraRollTimeDefault = 60;
 const EatBeansTimeDefault = 60;
 const ResidentEvilTimeDefault = 60;
 const RadiationTimeDefault = 60;
+const DoomModeTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -248,6 +249,17 @@ function PeriodicUpdates()
     }
     if (decrementTimer('cc_Radioactive')){
         PlayerMessage("You stop being radioactive");
+    }
+
+#ifdef vanilla
+    if (isTimerActive('cc_DoomMode')){
+        Player().bDoomMode=True;
+    } else {
+        Player().bDoomMode=False;
+    }
+#endif
+    if (decrementTimer('cc_DoomMode')){
+        PlayerMessage("You return to the normal world");
     }
 }
 
@@ -626,6 +638,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return ResidentEvilTimeDefault;
         case 'cc_Radioactive':
             return RadiationTimeDefault;
+        case 'cc_DoomMode':
+            return DoomModeTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -683,6 +697,8 @@ function string getTimerLabelByName(name timerName) {
             return "Fixed Cam";
         case 'cc_Radioactive':
             return "Radiation";
+        case 'cc_DoomMode':
+            return "Doom";
 
 
         default:
@@ -2556,6 +2572,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_behindTimer')) {
                 return TempFail;
             }
+            if (isTimerActive('cc_DoomMode')) {
+                return TempFail;
+            }
             if (isTimerActive('cc_ResidentEvil')) {
                 return TempFail;
             }
@@ -2586,6 +2605,28 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (!CorpseExplosion(viewer)){
                 return TempFail;
             }
+            break;
+        case "doom_mode":
+            if (!#defined(vanilla)){
+                //Changes in player class
+                PlayerMessage("Doom Mode effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_DoomMode')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_behindTimer')) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"dragged you to hell!");
+
+            startNewTimer('cc_DoomMode',duration);
             break;
 
         default:

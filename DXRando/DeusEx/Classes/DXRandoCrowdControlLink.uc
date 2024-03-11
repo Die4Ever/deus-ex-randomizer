@@ -275,8 +275,11 @@ function int RandomOfflineEffects() {
     case 86: return ccEffects.doCrowdControlEvent("giveenemyweapon_weaponlaw", param, viewer, 0, 0);
     case 87: return ccEffects.doCrowdControlEvent("giveenemyweapon_weaponhideagun", param, viewer, 0, 0);
     case 88: return ccEffects.doCrowdControlEvent("heal_all_enemies", param, viewer, 0, 0);
-    case 89: return ccEffects.doCrowdControlEvent("resident_evil", param, viewer, 0, 0);
-    case 90: return ccEffects.doCrowdControlEvent("corpse_explosion", param, viewer, 0, 0);
+    case 89: return ccEffects.doCrowdControlEvent("corpse_explosion", param, viewer, 0, 0);
+#ifdef vanilla
+    case 90: return ccEffects.doCrowdControlEvent("resident_evil", param, viewer, 0, 0);
+    case 91: return ccEffects.doCrowdControlEvent("doom_mode", param, viewer, 0, 0);
+#endif
     }
 
     return 0;

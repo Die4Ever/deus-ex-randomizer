@@ -204,5 +204,6 @@ public class DeusEx : SimpleTCPPack
         new Effect("Enable Matrix Mode", "matrix"){Category = "Camera Effects",Price = 5,Description = "Make the player see the code behind the game...",Duration=60},
         new Effect ("Set off a Flashbang", "flashbang"){Category = "Camera Effects",Price = 5,Description = "Set off a flashbang in the players face"}, //New for fourth Crowd Control batch
         new Effect ("Resident Evil Mode", "resident_evil"){Category = "Camera Effects",Price = 20,Description = "Switch the game to fixed camera angles!  Very spooky!",Duration=60} //New for fifth Crowd Control batch
+        new Effect ("Doom Mode", "doom_mode"){Category = "Camera Effects",Price = 5,Description = "Drag the player to hell, a place where there is no looking up or down!",Duration=60} //New for fifth Crowd Control batch
     };
 }

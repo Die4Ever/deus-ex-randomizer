@@ -6,6 +6,7 @@ var DXRLoadouts loadout;
 var bool bOnLadder;
 var transient string nextMap;
 var laserEmitter aimLaser;
+var bool bDoomMode;
 
 var Rotator ShakeRotator;
 
@@ -44,6 +45,10 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
         return;
     } else {
         Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+        if (bDoomMode){
+            CameraRotation.Pitch=0;
+            ViewRotation.Pitch=0;
+        }
     }
 }
 
