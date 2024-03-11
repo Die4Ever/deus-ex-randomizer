@@ -1781,7 +1781,9 @@ function bool CorpseExplosion(string viewer)
 {
     local DeusExCarcass carc;
     local int num,i;
+    local DXRandoCrowdControlPawn viewerPawn;
 
+    viewerPawn = GetCrowdControlPawn(viewer);
     num=0;
 
     for (i=0;i<5;i++){
@@ -1789,6 +1791,7 @@ function bool CorpseExplosion(string viewer)
         if (carc==None){
             break;
         }
+        carc.Instigator = viewerPawn;
         DetonateCarcass(carc);
         num++;
     }
@@ -1868,7 +1871,7 @@ function DetonateCarcass(DeusExCarcass carc)
             spawn(class'FleshFragment',,,carc.Location);
     }
 
-    HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, carc.Location);
+    carc.HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, carc.Location);
 
     carc.Destroy();
 }
