@@ -445,7 +445,7 @@ function FixCmdElevator()
     loc = butt.Location;
     loc.Z += 7; //Three buttons are 7 apart from each other on Y axis, so put this one equally above
 
-    doorButton = Spawn(class'Button1',,,loc,rot);
+    doorButton = Spawn(class'#var(prefix)Button1',,,loc,rot);
     doorButton.moverTag = butt.moverTag;
     doorButton.ButtonType=BT_Blank;
     doorButton.Event='all_doors_button';
