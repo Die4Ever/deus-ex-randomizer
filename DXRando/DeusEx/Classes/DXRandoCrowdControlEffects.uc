@@ -72,7 +72,7 @@ var DXRandoCrowdControlPawn CrowdControlPawns[3];
 var transient AugEffectState AugEffectStates[32]; //Vanilla has a 25 array, but in case mods bump it up?
 var transient bool AugEffectStatesInit;
 
-var transient CCResidentEvilCam reCam;
+var CCResidentEvilCam reCam;
 
 var transient bool HaveFlamethrower;
 var transient bool FlamethrowerInit;
@@ -485,6 +485,27 @@ function InitOnEnter() {
     } else {
         player().shaketimer=0;
     }
+
+    if (isTimerActive('cc_ResidentEvil')) {
+        if (reCam==None){
+            SpawnRECam();
+        }
+        if (player().ViewTarget==None){
+            player().ViewTarget=reCam;
+            player().bCrosshairVisible=False;
+        }
+
+        player().bCrosshairVisible=False;
+    } else {
+        player().ViewTarget=None;
+        player().bCrosshairVisible=True;
+        if (reCam==None){
+            foreach AllActors(class'CCResidentEvilCam',reCam){
+                reCam.Destroy();
+            }
+        }
+    }
+
 }
 
 //Effects should revert to default before exiting a level
@@ -1401,6 +1422,7 @@ function int TriggerAllAlarms(String viewer) {
     local int numAlarms;
     local AlarmUnit au;
     local SecurityCamera sc;
+    local LaserTrigger lt;
 
     numAlarms = 0;
 
@@ -1409,10 +1431,18 @@ function int TriggerAllAlarms(String viewer) {
         au.Trigger(self,player());
     }
     foreach AllActors(class'SecurityCamera',sc){
+        if (CCResidentEvilCam(sc)!=None){ continue; } //Skip Resident Evil cameras
         numAlarms+=1;
         sc.TriggerEvent(True);
         sc.bPlayerSeen=True;
         sc.lastSeenTimer=0;
+    }
+    foreach AllActors(class'LaserTrigger',lt){
+        if (lt.bIsOn==False){continue;}
+        if (lt.bNoAlarm){continue;}
+        if (lt.AmbientSound!=None){continue;}
+        numAlarms+=1;
+        lt.BeginAlarm();
     }
 
     if (numAlarms==0){

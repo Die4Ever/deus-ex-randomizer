@@ -84,6 +84,10 @@ function Tick(float deltaTime)
         return;
     }
 
+    if (p.ViewTarget!=Self){
+        Destroy(); //Self destruct
+    }
+
     cameraMoveTimer+=deltaTime;
 
     curTarget = None;
@@ -163,6 +167,17 @@ function CheckPlayerVisibility(DeusExPlayer player)
     }
 }
 
+function TriggerEvent(bool bTrigger)
+{
+}
+
+function Trigger(Actor Other, Pawn Instigator)
+{
+}
+
+function UnTrigger(Actor Other, Pawn Instigator)
+{
+}
 
 defaultproperties
 {
@@ -186,4 +201,9 @@ defaultproperties
     cameraRange=750
     RotationRate=(Pitch=40000,Yaw=40000)
     AmbientSound=None
+    LightType=LT_None
+    LightBrightness=0
+    LightHue=0
+    LightSaturation=0
+    LightRadius=0
 }
