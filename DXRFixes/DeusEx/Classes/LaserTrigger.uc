@@ -21,3 +21,8 @@ function BeginAlarm()
         foreach AllActors(class 'Actor', A, Event)
             A.Trigger(Self, Pawn(emitter.HitActor));
 }
+
+defaultproperties
+{
+    bProjTarget=true
+}

@@ -9,3 +9,8 @@ function bool IsRelevant( actor Other )
     }
     return Super.IsRelevant(Other);
 }
+
+defaultproperties
+{
+    bProjTarget=true
+}
