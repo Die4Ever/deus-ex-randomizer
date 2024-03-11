@@ -65,6 +65,7 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Toggle the Flashlight", "toggle_flashlight"){Price = 1,Description = "Toggle the flashlight!"}, //New for fifth Crowd Control batch, v2.6
         new Effect ("Heal all Enemies", "heal_all_enemies"){Price = 10,Description = "Fully heal all enemies in the current level!"}, //New for fifth Crowd Control batch, v2.6
         new Effect ("Make Player Radioactive", "radioactive"){Price = 10,Description = "The player becomes radioactive and starts hurting nearby people!",Duration=60}, //New for fifth Crowd Control batch, v2.6
+        new Effect ("Corpse Explosion", "corpse_explosion"){Price = 10,Description = "Fill up to 5 nearby corpses with energy, causing them to explode violently!"}, //New for fifth Crowd Control batch, v2.6
 
         //Spawn Enemies/Allies
         //new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch

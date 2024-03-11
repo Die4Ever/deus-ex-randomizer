@@ -1777,6 +1777,102 @@ function bool HealAllEnemies(string viewer)
     return True;
 }
 
+function bool CorpseExplosion(string viewer)
+{
+    local DeusExCarcass carc;
+    local int num,i;
+
+    num=0;
+
+    for (i=0;i<5;i++){
+        carc = FindClosestCarcass(1000);
+        if (carc==None){
+            break;
+        }
+        DetonateCarcass(carc);
+        num++;
+    }
+
+    if (num==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"detonated "$num$" corpses!");
+
+    return True;
+
+}
+
+function DeusExCarcass FindClosestCarcass(float radius)
+{
+    local DeusExCarcass carc,closest;
+    local float closeDist;
+
+    closest = None;
+    closeDist = 2 * radius;
+    foreach player().RadiusActors(class'DeusExCarcass',carc,radius){
+        if (VSize(carc.Location-player().Location) < closeDist){
+            closest = carc;
+            closeDist = VSize(carc.Location-player().Location);
+        }
+    }
+
+    return closest;
+}
+
+//Duped from MIB
+function DetonateCarcass(DeusExCarcass carc)
+{
+    local SphereEffect sphere;
+    local ScorchMark s;
+    local ExplosionLight light;
+    local int i;
+    local float explosionDamage;
+    local float explosionRadius;
+
+    explosionDamage = 100;
+    explosionRadius = 256;
+
+    // alert NPCs that I'm exploding
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+    PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
+
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, carc.Location);
+    if (light != None)
+        light.size = 4;
+
+    Spawn(class'ExplosionSmall',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+    Spawn(class'ExplosionMedium',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+    Spawn(class'ExplosionMedium',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+    Spawn(class'ExplosionLarge',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+
+    sphere = Spawn(class'SphereEffect',,, carc.Location);
+    if (sphere != None)
+        sphere.size = explosionRadius / 32.0;
+
+    // spawn a mark
+    s = spawn(class'ScorchMark', carc.Base,, carc.Location-vect(0,0,1)*carc.CollisionHeight, carc.Rotation+rot(16384,0,0));
+    if (s != None)
+    {
+        s.DrawScale = FClamp(explosionDamage/30, 0.1, 3.0);
+        s.ReattachDecal();
+    }
+
+    // spawn some rocks and flesh fragments
+    for (i=0; i<explosionDamage/4; i++)
+    {
+        if (FRand() < 0.2)
+            spawn(class'Rockchip',,,carc.Location);
+        else
+            spawn(class'FleshFragment',,,carc.Location);
+    }
+
+    HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, carc.Location);
+
+    carc.Destroy();
+}
+
 function SpawnRECam()
 {
     reCam=Spawn(class'CCResidentEvilCam',,,player().Location);
@@ -2460,6 +2556,15 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             startNewTimer('cc_Radioactive',duration);
             break;
+        case "corpse_explosion":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!CorpseExplosion(viewer)){
+                return TempFail;
+            }
+            break;
+
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }
