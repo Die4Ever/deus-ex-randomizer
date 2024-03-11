@@ -113,6 +113,8 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Helicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
+
+            FixCmdElevator();
         }
 
         foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
@@ -420,6 +422,50 @@ function PreFirstEntryMapFixes()
 
         }
         break;
+    }
+}
+
+//Add a new button in the elevator to open the doors
+function FixCmdElevator()
+{
+    local #var(prefix)Button1 doorButton,butt;
+    local Dispatcher d;
+    local Trigger t;
+    local Vector loc;
+    local Rotator rot;
+
+    //Find the middle elevator button
+    foreach AllActors(class'#var(prefix)Button1',butt){
+        if (butt.Event=='delay_floor2'){
+            break;
+        }
+    }
+
+    rot = butt.Rotation;
+    loc = butt.Location;
+    loc.Z += 7; //Three buttons are 7 apart from each other on Y axis, so put this one equally above
+
+    doorButton = Spawn(class'Button1',,,loc,rot);
+    doorButton.moverTag = butt.moverTag;
+    doorButton.ButtonType=BT_Blank;
+    doorButton.Event='all_doors_button';
+    doorButton.BeginPlay();
+
+    //Doors are 'door1', 'door2', and 'door3'
+    d = Spawn(class'Dispatcher',, 'all_doors_button' );
+    d.OutEvents[0]='door1';
+    d.OutDelays[0]=0;
+    d.OutEvents[1]='door2';
+    d.OutDelays[1]=0;
+    d.OutEvents[2]='door3';
+    d.OutDelays[2]=0;
+
+    //Disable the proximity triggers on the doors
+    foreach AllActors(class'Trigger',t){
+        if (t.Event=='door1' || t.Event=='door2' || t.Event=='door3'){
+            t.Event='';
+            t.Destroy();
+        }
     }
 }
 
