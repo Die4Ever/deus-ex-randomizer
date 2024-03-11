@@ -1496,11 +1496,31 @@ function int DropPiano(string viewer)
     if(tracer != None) {
         height = tracer.GetDistanceFromSurface(loc, loc+vect(0,0,800));
     }
+
+    //Make sure it is far enough off the ground (at LEAST twice the height of the player)
+    if (height < (2 * player().CollisionHeight)){
+        return TempFail;
+    }
+
     loc.Z += height;
+
+    //Make sure there's a reasonable line of sight between the piano spawnpoint and the player
+    if (!player().FastTrace(loc)){
+        return TempFail;
+    }
+
     a = Spawn(class'#var(prefix)WHPiano',,, loc);
+    //Did it spawn successfully?
     if(a == None) {
         return TempFail;
     }
+
+    //Make sure there's still a line of sight from where it actually spawned
+    if (!a.FastTrace(player().Location)){
+        a.Destroy(); //Pretend it never existed if there isn't
+        return TempFail;
+    }
+
     a.Velocity.Z -= 200;
     a.Instigator = GetCrowdControlPawn(viewer);
     a.FamiliarName=viewer$"'s Grand Piano";
