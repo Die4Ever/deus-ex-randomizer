@@ -463,20 +463,24 @@ function FixCmdElevator()
 
     //Disable the proximity triggers on the doors
     foreach AllActors(class'Trigger',t){
-        if (t.Event=='door1' || t.Event=='door2' || t.Event=='door3'){
-            t.Event='';
-            t.Destroy();
+        switch(t.Event){
+            case 'door1':
+            case 'door2':
+            case 'door3':
+                t.Event='';
+                t.Destroy();
+                break;
         }
     }
 
-    foreach AllActors(class'Mover',eleDoor,'door1'){
-        eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
-    }
-    foreach AllActors(class'Mover',eleDoor,'door2'){
-        eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
-    }
-    foreach AllActors(class'Mover',eleDoor,'door3'){
-        eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
+    foreach AllActors(class'Mover',eleDoor){
+        switch(eleDoor.tag){
+            case 'door1':
+            case 'door2':
+            case 'door3':
+                eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
+                break;
+        }
     }
 }
 
