@@ -433,6 +433,7 @@ function FixCmdElevator()
     local Trigger t;
     local Vector loc;
     local Rotator rot;
+    local Mover eleDoor;
 
     //Find the middle elevator button
     foreach AllActors(class'#var(prefix)Button1',butt){
@@ -466,6 +467,16 @@ function FixCmdElevator()
             t.Event='';
             t.Destroy();
         }
+    }
+
+    foreach AllActors(class'Mover',eleDoor,'door1'){
+        eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
+    }
+    foreach AllActors(class'Mover',eleDoor,'door2'){
+        eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
+    }
+    foreach AllActors(class'Mover',eleDoor,'door3'){
+        eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
     }
 }
 
