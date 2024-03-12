@@ -100,7 +100,7 @@ static function bool IsCritter(class<Actor> a)
 {
     return
         ClassIsChildOf(a, class'#var(prefix)Animal') &&
-        !ClassIsChildOf(a, class'#var(prefix)Dog') &&
+        !ClassIsChildOf(a, class'#var(prefix)Doberman') &&
         !ClassIsChildOf(a, class'#var(prefix)Gray') &&
         !ClassIsChildOf(a, class'#var(prefix)Greasel') &&
         !ClassIsChildOf(a, class'#var(prefix)Karkian');
