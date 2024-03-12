@@ -4,15 +4,6 @@ var DeusExPlayer p;
 var bool Reposition;
 var float cameraMoveTimer;
 
-struct LocationNormal {
-    var vector loc;
-    var vector norm;
-};
-struct FMinMax {
-    var float min;
-    var float max;
-};
-
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
