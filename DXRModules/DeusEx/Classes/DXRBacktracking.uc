@@ -62,6 +62,11 @@ function PreFirstEntry()
             foreach AllActors(class'MapExit', exit, 'mission_done') {
                 SetDestination(exit, "12_Vandenberg_gas", '', "gas_start");
             }
+            FixTunnelsTeleporters();
+            break;
+
+        case "12_VANDENBERG_TUNNELS":
+            FixTunnelsTeleporters();
             break;
 
         case "12_VANDENBERG_GAS":
@@ -110,6 +115,45 @@ function PreFirstEntry()
 
             break;
 
+    }
+}
+
+function FixTunnelsTeleporters()
+{
+    local MapExit exit;
+    local DynamicTeleporter dt;
+
+    //Remove the original MapExits
+    foreach AllActors(class'MapExit',exit){
+        switch(exit.DestMap){
+            case "12_vandenberg_tunnels#end":
+            case "12_vandenberg_tunnels#start":
+            case "12_vandenberg_cmd#commstat":
+            case "12_vandenberg_cmd#storage":
+                exit.Destroy();
+                break;
+        }
+    }
+
+    //Replace with new DynamicTeleporters
+    switch(dxr.localURL)
+    {
+        case "12_VANDENBERG_CMD":
+            dt = Spawn(class'DynamicTeleporter',,,vectm(813,1257,-2163)); //Inside CMD
+            dt.SetCollisionSize(30,15);
+            dt.URL = "12_vandenberg_tunnels#end";
+            dt = Spawn(class'DynamicTeleporter',,,vectm(-1592,4570,-2297)); //Outside building
+            dt.SetCollisionSize(30,15);
+            dt.URL = "12_vandenberg_tunnels#start";
+            break;
+        case "12_VANDENBERG_TUNNELS":
+            dt = Spawn(class'DynamicTeleporter',,,vectm(-1625,5743,-2364)); //Start
+            dt.SetCollisionSize(30,15);
+            dt.URL = "12_vandenberg_cmd#commstat";
+            dt = Spawn(class'DynamicTeleporter',,,vectm(398,1164,-2356)); //End
+            dt.SetCollisionSize(30,15);
+            dt.URL = "12_vandenberg_cmd#storage";
+            break;
     }
 }
 

@@ -1092,7 +1092,12 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
     t = Teleporter(p);
     m = MapExit(p);
     dt = DynamicTeleporter(p);
-    if( dt != None ) curDest = dt.URL $ "?toname=" $ dt.destName;
+    if( dt != None ){
+        curDest = dt.URL;
+        if (dt.destName!=''){
+            curDest = curDest $ "?toname=" $ dt.destName;
+        }
+    }
 #ifdef injections
     else if( m != None && m.destName != '' ) curDest = m.DestMap $ "?toname=" $ m.destName;
 #endif
