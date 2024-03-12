@@ -75,6 +75,22 @@ function UpdateMedBotDisplay()
     EnableButtons();
 }
 
+function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
+{
+    local HUDMedBotAddAugsScreen augScreen;
+
+    Super.SetMedicalBot(newBot, bPlayAnim);
+
+    newBot = medBot; // just to be safe
+    if (newBot != None && newBot.augsOnly) {
+        SkipAnimation(True);
+        augScreen = HUDMedBotAddAugsScreen(root.InvokeUIScreen(Class'HUDMedBotAddAugsScreen', True));
+        augScreen.SetMedicalBot(newBot);
+    } else {
+        HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
+    }
+}
+
 function Tick(float deltaTime)
 {
     if(#defined(gmdx) || #defined(vmd)) {

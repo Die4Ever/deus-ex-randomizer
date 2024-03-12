@@ -8,6 +8,8 @@ class DXRHUDMedBotAddAugsScreen extends HUDMedBotAddAugsScreen;
 
 var PersonaActionButtonWindow btnRemove;
 
+function CreateMedbotLabel() {}
+
 function CreateButtons()
 {
     local PersonaButtonBarWindow winActionButtons;
@@ -72,7 +74,6 @@ function bool ButtonActivated(Window buttonPressed)
     return bHandled;
 }
 
-
 function RemoveAugmentation()
 {
     class'DXRAugmentations'.static.RemoveAug(player,selectedAug);
@@ -97,7 +98,6 @@ function RemoveAugmentation()
     return;
 }
 
-
 function DestroyAugmentationButtons()
 {
     local int buttonIndex,highlightIndex;
@@ -113,6 +113,17 @@ function DestroyAugmentationButtons()
     for(highlightIndex=0;highlightIndex<arrayCount(augHighlightWindows);highlightIndex++){
 	    augHighlightWindows[highlightIndex].Hide();
     }
+}
 
+function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
+{
+    Super.SetMedicalBot(newBot, bPlayAnim);
 
+    if (medBot != None && medBot.augsOnly) {
+        HUDMedBotNavBarWindow(winNavBar).CreateExitButton();
+        MedbotInterfaceText = "AUGBOT INTERFACE";
+    } else {
+        HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
+    }
+    Super.CreateMedbotLabel();
 }
