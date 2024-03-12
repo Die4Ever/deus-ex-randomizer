@@ -285,7 +285,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
     if( !IsHuman(p.class) && !IsCombatRobot(p.class) ) return; // only give random weapons to humans and robots
     // TODO: if p.bIsFemale then give only 1 handed weapons?
-    if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
+    if( p.IsA('MJ12Commando') || (!#defined(injections) && p.IsA('WIB')) ) return;
 
     if( IsHuman(p.class)) {
         if(!p.bImportant) {
