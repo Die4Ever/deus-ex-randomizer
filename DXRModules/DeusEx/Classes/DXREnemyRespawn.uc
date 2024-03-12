@@ -51,7 +51,7 @@ function PostFirstEntry()
 function SaveRespawn(ScriptedPawn p, out int i)
 {
     local int a;
-    if( !IsSwappable(p.class) ) return;
+    if( !IsRelevantPawn(p.class) ) return;
     if( p.bImportant || p.bInvincible || p.bHidden ) return;
 #ifdef gmdx
     if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) return;

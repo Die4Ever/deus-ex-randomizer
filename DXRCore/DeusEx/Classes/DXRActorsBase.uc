@@ -118,7 +118,7 @@ static function bool IsCombatPawn(class<Actor> a)
     return IsHuman(a) || IsCombatRobot(a) || IsCombatAnimal(a);
 }
 
-static function bool IsSwappable(class<Actor> a)
+static function bool IsRelevantPawn(class<Actor> a)
 {
     return IsCombatPawn(a) && !ClassIsChildOf(a, class'Merchant');
 }
