@@ -533,14 +533,26 @@ function DrawWindow(GC gc)
                 str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
             }
 
-            if(bShowInventory && Pawn(trackActor) != None) {
-                str = str $ "Inventory:" $ CR();
-                for(item = Pawn(trackActor).Inventory; item != None; item = item.Inventory) {
-                    str = str $ GetActorName(item);
-                    if (Ammo(item)!=None){
-                        str = str $ " ("$Ammo(item).AmmoAmount$")";
+            if(bShowInventory){
+                item = None;
+                bValid=False;
+                if (Pawn(trackActor) != None) {
+                    item = Pawn(trackActor).Inventory;
+                    bValid=True;
+                } else if (DeusExCarcass(trackActor)!=None){
+                    item = DeusExCarcass(trackActor).Inventory;
+                    bValid=True;
+                }
+
+                if (bValid){
+                    str = str $ "Inventory:" $ CR();
+                    for(item = item; item != None; item = item.Inventory) {
+                        str = str $ GetActorName(item);
+                        if (Ammo(item)!=None){
+                            str = str $ " ("$Ammo(item).AmmoAmount$")";
+                        }
+                        str = str $ CR();
                     }
-                    str = str $ CR();
                 }
             }
 
