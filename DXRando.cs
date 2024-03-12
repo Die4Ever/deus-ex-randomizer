@@ -80,6 +80,7 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Spawn hostile Doberman", "spawnenemy_doberman") { Category = "Spawn Enemies/Allies",Price = 5,Description = "Spawn a doberman to tear you to shreds" }, //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Greasel", "spawnenemy_greasel") { Category = "Spawn Enemies/Allies",Price = 10,Description = "Spawn a hostile greasel to poison you to death" }, //New for fourth Crowd Control batch
         new Effect ("Spawn a nasty rat", "nasty_rat") { Category = "Spawn Enemies/Allies",Price = 15,Description = "Spawn a huge rat that throws LAMs" }, //New for fifth Crowd Control batch
+        new Effect ("Raise the Dead", "raise_dead") { Category = "Spawn Enemies/Allies",Price = 10,Description = "Resurrect up to 5 nearby enemies.  They're out for blood now!" }, //New for fifth Crowd Control batch
 
         //Items
         //new Effect("Give Items","giveitems",ItemKind.Folder), //New folder for third batch

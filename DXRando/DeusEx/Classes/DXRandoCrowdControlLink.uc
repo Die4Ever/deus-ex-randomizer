@@ -280,6 +280,7 @@ function int RandomOfflineEffects() {
     case 90: return ccEffects.doCrowdControlEvent("resident_evil", param, viewer, 0, 0);
     case 91: return ccEffects.doCrowdControlEvent("doom_mode", param, viewer, 0, 0);
 #endif
+    case 92: return ccEffects.doCrowdControlEvent("raise_dead", param, viewer, 0, 0);
     }
 
     return 0;

@@ -1813,6 +1813,125 @@ function bool HealAllEnemies(string viewer)
     return True;
 }
 
+function bool RaiseDead(string viewer)
+{
+    local DeusExCarcass carc;
+    local int num,i;
+
+    num=0;
+
+    for (i=0;i<5;i++){
+        carc = FindClosestCarcass(1000,false);
+        if (carc==None){
+            break;
+        }
+        if (ResurrectCorpse(carc,viewer)){
+            num++;
+        }
+    }
+
+    if (num==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"resurrected "$num$" from the dead!");
+
+    return True;
+}
+
+function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
+{
+    local string livingClassName;
+    local class<Actor> livingClass;
+    local vector respawnLoc;
+    local ScriptedPawn sp,otherSP;
+    local int i;
+    local Inventory item, nextItem;
+    local bool removeItem;
+
+    //At least in vanilla, all carcasses are the original class name + Carcass
+    livingClassName = string(carc.class.Name);
+    livingClassName = class'DXRInfo'.static.ReplaceText(livingClassName,"Carcass","");
+
+    livingClass = ccLink.ccModule.GetClassFromString(livingClassName,class'ScriptedPawn');
+
+    if (livingClass==None){
+        return False;
+    }
+
+    respawnLoc = carc.Location;
+    respawnLoc.Z +=livingClass.Default.CollisionHeight;
+
+    sp = ScriptedPawn(Spawn(livingClass,,,respawnLoc,carc.Rotation));
+
+    if (sp==None){
+        return False;
+    }
+
+    sp.FamiliarName = viewer$"'s Zombie";
+    sp.UnfamiliarName = sp.FamiliarName;
+    sp.bInvincible = False; //If they died, they can't have been invincible
+
+    //Clear out initial inventory (since that should all be in the carcass, except for native attacks)
+    for (i=0;i<ArrayCount(sp.InitialInventory);i++){
+        if(ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCMelee') ||
+           ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCRanged')){
+            continue;
+        }
+        switch(sp.InitialInventory[i].Inventory.Default.Mesh){
+            case LodMesh'DeusExItems.InvisibleWeapon':
+            case LodMesh'DeusExItems.TestBox':
+            case None:
+                break; //NPC weapons and NPC weapon ammo
+            default:
+                sp.InitialInventory[i].Inventory=None;
+        }
+    }
+
+    sp.InitializePawn();
+
+    //Make it hostile to EVERYONE.  This thing has seen the other side
+    sp.SetAlliance('Resurrected');
+    sp.ChangeAlly('Player',-1,True);
+    foreach AllActors(class'ScriptedPawn',otherSP){
+        sp.ChangeAlly(otherSP.Alliance,-1,True);
+    }
+
+    ccLink.ccModule.RemoveFears(sp);
+    sp.ResetReactions();
+
+    //Transfer inventory from carcass back to the pawn
+    if (carc.Inventory!=None){
+        do
+        {
+            item = carc.Inventory;
+            nextItem = item.Inventory;
+            carc.DeleteInventory(item);
+            if ((DeusExWeapon(item) != None) && (DeusExWeapon(item).bNativeAttack))
+                item.Destroy();
+            else
+                sp.AddInventory(item);
+            item = nextItem;
+        }
+        until (item == None);
+    }
+    sp.bKeepWeaponDrawn=True;
+
+    //Give the resurrect guy a zombie swipe (a guaranteed melee weapon)
+    ccLink.ccModule.GiveItem(sp,class'WeaponZombieSwipe');
+
+    //Pop out a little meat for fun
+    for (i=0; i<10; i++)
+    {
+        if (FRand() > 0.2)
+            spawn(class'FleshFragment',,,carc.Location);
+    }
+
+    carc.Destroy();
+
+    return True;
+}
+
 function bool CorpseExplosion(string viewer)
 {
     local DeusExCarcass carc;
@@ -1823,7 +1942,7 @@ function bool CorpseExplosion(string viewer)
     num=0;
 
     for (i=0;i<5;i++){
-        carc = FindClosestCarcass(1000);
+        carc = FindClosestCarcass(1000,true);
         if (carc==None){
             break;
         }
@@ -1842,7 +1961,7 @@ function bool CorpseExplosion(string viewer)
 
 }
 
-function DeusExCarcass FindClosestCarcass(float radius)
+function DeusExCarcass FindClosestCarcass(float radius,optional bool bAllowAnimals)
 {
     local DeusExCarcass carc,closest;
     local float closeDist;
@@ -1850,6 +1969,12 @@ function DeusExCarcass FindClosestCarcass(float radius)
     closest = None;
     closeDist = 2 * radius;
     foreach player().RadiusActors(class'DeusExCarcass',carc,radius){
+        if (carc.bNotDead){
+            continue; //Skip unconscious bodies
+        }
+        if (!bAllowAnimals && carc.bAnimalCarcass){
+            continue;
+        }
         if (VSize(carc.Location-player().Location) < closeDist){
             closest = carc;
             closeDist = VSize(carc.Location-player().Location);
@@ -2627,6 +2752,14 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"dragged you to hell!");
 
             startNewTimer('cc_DoomMode',duration);
+            break;
+        case "raise_dead":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!RaiseDead(viewer)){
+                return TempFail;
+            }
             break;
 
         default:
