@@ -1346,7 +1346,7 @@ function int DropProjectile(string viewer, string type, optional int amount)
     return Success;
 }
 
-function ScriptedPawn findOtherHuman() {
+function ScriptedPawn findOtherHuman(bool bAllowImportant) {
     local int num;
     local ScriptedPawn p;
     local ScriptedPawn humans[512];
@@ -1355,7 +1355,9 @@ function ScriptedPawn findOtherHuman() {
 
     foreach AllActors(class'ScriptedPawn',p) {
         if (class'DXRActorsBase'.static.IsHuman(p.class) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
-            humans[num++] = p;
+            if (!p.bImportant || bAllowImportant){
+                humans[num++] = p;
+            }
         }
     }
 
@@ -1366,7 +1368,7 @@ function ScriptedPawn findOtherHuman() {
 function bool swapPlayer(string viewer) {
     local ScriptedPawn a;
 
-    a = findOtherHuman();
+    a = findOtherHuman(False);
 
     if (a == None) {
         return false;
