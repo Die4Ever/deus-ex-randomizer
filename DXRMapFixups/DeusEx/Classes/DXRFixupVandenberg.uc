@@ -92,6 +92,8 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(DeusExPrefix)Mover',door){
                 if (door.Name=='DeusExMover28'){
                     door.KeyIDNeeded='TimsClosetKey';
+                    door.Tag = 'TimsDoor';
+                    AddSwitch( vect(-1782.48,1597.85,-1969), rot(0, 0, 0), 'TimsDoor');
                 }
             }
 
