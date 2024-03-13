@@ -502,23 +502,31 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
 function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
 {
     local string strInfo;
-    local int dmg,inHandDmg,dmgDiff;
-    local string dmgDiffStr;
-    local float mod;
-    local #var(DeusExPrefix)Weapon ihw;
+    local int dmg,compDmg,dmgDiff,compMode;
+    local string dmgDiffStr,fireRateDiffStr;
+    local float mod,fireRate,compFireRate,fireRateDiff;
+    local #var(DeusExPrefix)Weapon compW;
+
+    //Maybe this should be a setting?
+    //0 = off
+    //1 = Compare to in-hand weapon
+    //2 = Compare to default values
+    compMode=1;
 
     numLines=1;
     strInfo = w.itemName;
     if (w.AmmoName != Class'DeusEx.AmmoNone' )
         strInfo = strInfo $ " (" $ w.PickupAmmoCount $ ")";
 
-    numLines++;
+    numLines++; //Damage
+    numLines++; //Fire rate
     //Calculate the damage of the weapon you're looking at
 #ifdef injections
     dmg = DXRWeapon(w).GetDamage(true);
 
     if( class<DeusExProjectile>(w.ProjectileClass) != None && class<DeusExProjectile>(w.ProjectileClass).default.bExplodes==false )
         dmg /= float(DXRWeapon(w).GetNumHits());
+
 #else
     if (w.AreaOfEffect == AOE_Cone){
         if (w.bInstantHit)
@@ -533,35 +541,46 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
     mod = 1.0 - w.GetWeaponSkill();
     dmg = mod * dmg;
 #endif
+    fireRate = 1.0/w.ShotTime;
 
     //Calculate the damage of the weapon in your hand
-    if (#var(DeusExPrefix)Weapon(player.InHand)!=None){
-        ihw = #var(DeusExPrefix)Weapon(player.InHand);
+    if (#var(DeusExPrefix)Weapon(player.InHand)!=None && compMode==1){
+        compW = #var(DeusExPrefix)Weapon(player.InHand);
 #ifdef injections
-        inHandDmg = DXRWeapon(ihw).GetDamage(true);
+        compDmg = DXRWeapon(compW).GetDamage(true);
 
-        if( class<DeusExProjectile>(ihw.ProjectileClass) != None && class<DeusExProjectile>(ihw.ProjectileClass).default.bExplodes==false )
-            inHandDmg /= float(DXRWeapon(ihw).GetNumHits());
+        if( class<DeusExProjectile>(compW.ProjectileClass) != None && class<DeusExProjectile>(compW.ProjectileClass).default.bExplodes==false )
+            compDmg /= float(DXRWeapon(compW).GetNumHits());
 #else
-        if (ihw.AreaOfEffect == AOE_Cone){
-            if (ihw.bInstantHit){
-                inHandDmg = ihw.HitDamage * 5;
+        if (compW.AreaOfEffect == AOE_Cone){
+            if (compW.bInstantHit){
+                compDmg = compW.HitDamage * 5;
             }else{
-                inHandDmg = ihw.HitDamage * 3;
+                compDmg = compW.HitDamage * 3;
             }
         }else{
-            inHandDmg = ihw.HitDamage;
+            compDmg = compW.HitDamage;
         }
-        mod = 1.0 - ihw.GetWeaponSkill();
-        inHandDmg = mod * inHandDmg;
+        mod = 1.0 - compW.GetWeaponSkill();
+        compDmg = mod * compDmg;
 #endif
+        compFireRate = 1.0/compW.ShotTime;
+    } else if (compMode==2){
+        //It's a lot more work to calculate the default weapon damage,
+        //since the convenience functions are all working with the configured
+        //values.  I'm not bothering with that for right now.
+        //Maybe we could temporarily copy the default stats over to the actual weapon,
+        //run the calculations, then swap the stats back to the randomized ones, so
+        //that we could use the same calculations?
+
+        compFireRate = 1.0/compW.Default.ShotTime;
     }
 
     strInfo=strInfo $ CR() $"Damage: "$dmg;
 
     //Show the difference in damage with your current weapon
-    if (inHandDmg!=0){
-        dmgDiff = dmg - inHandDmg;
+    if (compDmg!=0){
+        dmgDiff = dmg - compDmg;
         dmgDiffStr = string(dmgDiff);
         if (dmgDiff>0){
             dmgDiffStr="+"$dmgDiffStr;
@@ -569,6 +588,22 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
 
         if (dmgDiff!=0){
             strInfo=strInfo$" ("$dmgDiffStr$")";
+        }
+    }
+
+    if (dxr!=None){
+        strInfo=strInfo $ CR() $"Fire Rate: "$dxr.TruncateFloat(fireRate,1)$"/s";
+
+        if (compFireRate!=0){
+            fireRateDiff = fireRate - compFireRate;
+            fireRateDiffStr = dxr.TruncateFloat(fireRateDiff,1);
+            if (fireRateDiff>0){
+                fireRateDiffStr = "+"$fireRateDiffStr;
+            }
+
+            if (fireRateDiff!=0){
+                strInfo=strInfo$" ("$fireRateDiffStr$")";
+            }
         }
     }
 
