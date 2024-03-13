@@ -33,7 +33,10 @@ function BindControls(optional string action)
             EnumOption(s, i, f.settings.starting_map);
         }
     }
-    if(EnumOption("Random", -1)) {
+    if(f.settings.starting_map > 0) {
+        EnumOption("Random", f.settings.starting_map, f.settings.starting_map);
+    }
+    else if(EnumOption("Random", -1)) {
         f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
     }
 
