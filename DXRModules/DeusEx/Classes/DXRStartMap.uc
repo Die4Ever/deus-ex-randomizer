@@ -126,7 +126,9 @@ static simulated function int GetEndMissionMask(int end_mission)
 static function string GetStartingMapName(int val)
 {
     local string friendlyName;
-    _GetStartMap(val, friendlyName);
+    local int bShowInMenu;
+    _GetStartMap(val, friendlyName, bShowInMenu);
+    if(bShowInMenu == 0) return "";
     return friendlyName;
 }
 
@@ -153,21 +155,24 @@ static function string GetStartMap(Actor a, int start_map_val)
     return startMap;
 }
 
-static function string _GetStartMap(int start_map_val, out string friendlyName)
+static function string _GetStartMap(int start_map_val, out string friendlyName, optional out int bShowInMenu)
 {
     switch(start_map_val)
     {
         case 0:
-        case 10:
+            bShowInMenu=1;
+        case 10: // fall through
             friendlyName = "Liberty Island";
             return "01_NYC_UNATCOIsland";
         case 20:
+            bShowInMenu=1;
             friendlyName = "NSF Generator";
             return "02_NYC_BatteryPark";
         case 21:
             friendlyName = "";
             return "02_NYC_Street";
         case 30:
+            bShowInMenu=1;
             friendlyName = "Hunting Lebedev";
             return "03_NYC_UNATCOIsland";
         case 31:
@@ -192,6 +197,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "03_NYC_Hangar";
         case 40:
+            bShowInMenu=1;
             friendlyName = "NSF Defection";
             return "04_NYC_UNATCOHQ";
         case 41:
@@ -204,6 +210,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "04_NYC_NSFHQ";
         case 50:
+            bShowInMenu=1;
             friendlyName = "MJ12 Jail";
             return "05_NYC_UNATCOMJ12lab";
         case 55:
@@ -213,6 +220,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "06_HongKong_Helibase";
         case 61:
+            bShowInMenu=1;
             friendlyName = "Wan Chai Market";
             return "06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
         case 62:
@@ -243,6 +251,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "06_HongKong_Storage";
         case 81:
+            bShowInMenu=1;
             friendlyName = "Return to NYC";
             return "08_NYC_Smug#ToSmugFrontDoor";
         case 82:
@@ -258,6 +267,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "08_NYC_Hotel";
         case 90:
+            bShowInMenu=1;
             friendlyName = "Superfreighter";
             return "09_NYC_Dockyard";
         case 91:
@@ -270,6 +280,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "09_NYC_ShipBelow";
         case 99:
+            bShowInMenu=1;
             friendlyName = "Graveyard";
             return "09_NYC_Graveyard";
         case 100:
@@ -285,6 +296,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "10_Paris_Club";
         case 109:
+            bShowInMenu=1;
             friendlyName = "Chateau DuClare";
             return "10_Paris_Chateau";
         case 110:
@@ -294,6 +306,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "11_Paris_Underground";
         case 119:
+            bShowInMenu=1;
             friendlyName = "Everett's House";
             return "11_Paris_Everett";
         case 120:
@@ -312,6 +325,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "12_Vandenberg_Gas";// give it your best shot
         case 140:
+            bShowInMenu=1;
             friendlyName = "Ocean Lab";
             return "14_Vandenberg_Sub";
         case 141:
@@ -324,6 +338,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             friendlyName = "";
             return "14_Oceanlab_Silo";
         case 150:
+            bShowInMenu=1;
             friendlyName = "Area 51";
             return "15_Area51_Bunker";
         case 151:
