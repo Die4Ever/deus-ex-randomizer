@@ -169,190 +169,190 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             friendlyName = "NSF Generator";
             return "02_NYC_BatteryPark";
         case 21:
-            friendlyName = "";
+            friendlyName = "NSF Generator (Streets)";
             return "02_NYC_Street";
         case 30:
             bShowInMenu=1;
             friendlyName = "Hunting Lebedev";
             return "03_NYC_UNATCOIsland";
         case 31:
-            friendlyName = "";
+            friendlyName = "Hunting Lebedev (HQ)";
             return "03_NYC_UNATCOHQ";
         case 32:
-            friendlyName = "";
+            friendlyName = "Hunting Lebedev (Battery Park)";
             return "03_NYC_BatteryPark";
         case 33:
-            friendlyName = "";
+            friendlyName = "Hunting Lebedev (Brooklyn Bridge Station)";
             return "03_NYC_BrooklynBridgeStation";
         case 34:
-            friendlyName = "";
+            friendlyName = "Hunting Lebedev (Mole People)";
             return "03_NYC_MolePeople";
         case 35:
-            friendlyName = "";
+            friendlyName = "Hunting Lebedev (Helibase)";
             return "03_NYC_AirfieldHeliBase";
         case 36:
-            friendlyName = "";
+            friendlyName = "Hunting Lebedev (Airfield)";
             return "03_NYC_Airfield";
         case 37:
-            friendlyName = "";
+            friendlyName = "Hunting Lebedev (Hangar)";
             return "03_NYC_Hangar";
         case 40:
             bShowInMenu=1;
             friendlyName = "NSF Defection";
             return "04_NYC_UNATCOHQ";
         case 41:
-            friendlyName = "";
+            friendlyName = "NSF Defection (Streets)";
             return "04_NYC_Street";
         case 42:
-            friendlyName = "";
+            friendlyName = "NSF Defection (Hotel)";
             return "04_NYC_Hotel";
         case 45:
-            friendlyName = "";
+            friendlyName = "NSF Defection (NSF HQ)";
             return "04_NYC_NSFHQ";
         case 50:
             bShowInMenu=1;
             friendlyName = "MJ12 Jail";
             return "05_NYC_UNATCOMJ12lab";
         case 55:
-            friendlyName = "";
+            friendlyName = "Escaping UNATCO HQ";
             return "05_NYC_UNATCOHQ#UN_med";
         case 60:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Helibase)";
             return "06_HongKong_Helibase";
         case 61:
             bShowInMenu=1;
             friendlyName = "Wan Chai Market";
             return "06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
         case 62:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Canals)";
             return "06_HongKong_WanChai_Canal";
         case 63:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Tonnochi Road)";
             return "06_HongKong_WanChai_Street";
         case 64:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Canal Road)";
             return "06_HongKong_WanChai_Garage";
         case 65:// start here with Have_Evidence
-            friendlyName = "";
+            friendlyName = "Hong Kong (Lucky Money)";
             return "06_HongKong_WanChai_Underworld";
         case 66:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Tong's Base)";
             return "06_HongKong_TongBase";
         case 67:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Versalife Office)";
             return "06_HongKong_VersaLife";
         case 68:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Level 1 Labs)";
             return "06_HongKong_MJ12lab";
         case 70:// after versalife 1
-            friendlyName = "";
+            friendlyName = "Hong Kong (Tong's Base after Versalife)";
             return "06_HongKong_TongBase";
         case 75:
-            friendlyName = "";
+            friendlyName = "Hong Kong (Level 2 Labs)";
             return "06_HongKong_Storage";
         case 81:
             bShowInMenu=1;
             friendlyName = "Return to NYC";
             return "08_NYC_Smug#ToSmugFrontDoor";
         case 82:
-            friendlyName = "";
+            friendlyName = "Return to NYC (Sewers)";
             return "08_NYC_Underground";
         case 83:
-            friendlyName = "";
+            friendlyName = "Return to NYC (Bar)";
             return "08_NYC_Bar";
         case 84:
-            friendlyName = "";
+            friendlyName = "Return to NYC (Free Clinic)";
             return "08_NYC_FreeClinic";
         case 85:
-            friendlyName = "";
+            friendlyName = "Return to NYC (Hotel)";
             return "08_NYC_Hotel";
         case 90:
             bShowInMenu=1;
-            friendlyName = "Superfreighter";
+            friendlyName = "Superfreighter (Dockyard)";
             return "09_NYC_Dockyard";
         case 91:
-            friendlyName = "";
+            friendlyName = "Superfreighter (Ventilation System)";
             return "09_NYC_ShipFan";
         case 92:
-            friendlyName = "";
+            friendlyName = "Superfreighter (Upper Decks)";
             return "09_NYC_Ship";
         case 95:
-            friendlyName = "";
+            friendlyName = "Superfreighter (Lower Decks)";
             return "09_NYC_ShipBelow";
         case 99:
             bShowInMenu=1;
             friendlyName = "Graveyard";
             return "09_NYC_Graveyard";
         case 100:
-            friendlyName = "";
+            friendlyName = "Paris (Denfert-Rochereau)";
             return "10_Paris_Catacombs";
         case 101:
-            friendlyName = "";
+            friendlyName = "Paris (Catacombs)";
             return "10_Paris_Catacombs_Tunnels";
         case 105:
-            friendlyName = "";
+            friendlyName = "Paris (Streets)";
             return "10_Paris_Metro";
         case 106:
-            friendlyName = "";
+            friendlyName = "Paris (Club)";
             return "10_Paris_Club";
         case 109:
             bShowInMenu=1;
             friendlyName = "Chateau DuClare";
             return "10_Paris_Chateau";
         case 110:
-            friendlyName = "";
+            friendlyName = "Cathedral";
             return "11_Paris_Cathedral";
         case 115:// maybe with the cathedral already completed and gunther dead
-            friendlyName = "";
+            friendlyName = "Paris Metro Station";
             return "11_Paris_Underground";
         case 119:
             bShowInMenu=1;
             friendlyName = "Everett's House";
             return "11_Paris_Everett";
         case 120:
-            friendlyName = "";
+            friendlyName = "Vandenberg (Command)";
             return "12_Vandenberg_Cmd";
         case 121:
-            friendlyName = "";
+            friendlyName = "Vandenberg (Inside Command)";
             return "12_Vandenberg_Cmd#commstat";
         case 122:
-            friendlyName = "";
+            friendlyName = "Vandenberg (Tunnels)";
             return "12_Vandenberg_Tunnels";
         case 125:
-            friendlyName = "";
+            friendlyName = "Vandenberg (Computer)";
             return "12_Vandenberg_Computer";
         case 129:
-            friendlyName = "";
+            friendlyName = "Gas Station";
             return "12_Vandenberg_Gas";// give it your best shot
         case 140:
             bShowInMenu=1;
-            friendlyName = "Ocean Lab";
+            friendlyName = "Ocean Lab (Sub Base)";
             return "14_Vandenberg_Sub";
         case 141:
-            friendlyName = "";
+            friendlyName = "Ocean Lab (Main Lab)";
             return "14_OceanLab_Lab";
         case 142:
-            friendlyName = "";
+            friendlyName = "Ocean Lab (UC)";
             return "14_OceanLab_UC";
         case 145:
-            friendlyName = "";
+            friendlyName = "Silo";
             return "14_Oceanlab_Silo";
         case 150:
             bShowInMenu=1;
-            friendlyName = "Area 51";
+            friendlyName = "Area 51 (Exterior)";
             return "15_Area51_Bunker";
         case 151:
-            friendlyName = "";
+            friendlyName = "Area 51 (Sector 2)";
             return "15_Area51_Entrance";
         case 152:
-            friendlyName = "";
+            friendlyName = "Area 51 (Sector 3)";
             return "15_Area51_Final";
         case 153:
-            friendlyName = "";
+            friendlyName = "Area 51 (Sector 4)";
             return "15_Area51_Page";
         default:
             //There's always a place for you on Liberty Island
-            friendlyName = "";
+            friendlyName = "Unknown Start Map "$start_map_val;
             return "01_NYC_UNATCOIsland";
     }
 }
