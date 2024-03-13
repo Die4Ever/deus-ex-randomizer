@@ -337,7 +337,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName)
             return "15_Area51_Page";
         default:
             //There's always a place for you on Liberty Island
-            friendlyName = "Liberty Island";
+            friendlyName = "";
             return "01_NYC_UNATCOIsland";
     }
 }
