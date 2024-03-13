@@ -166,17 +166,17 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             return "01_NYC_UNATCOIsland";
         case 20:
             bShowInMenu=1;
-            friendlyName = "NSF Generator";
+            friendlyName = "NSF Generator (Battery Park)";
             return "02_NYC_BatteryPark";
         case 21:
             friendlyName = "NSF Generator (Streets)";
             return "02_NYC_Street";
         case 30:
             bShowInMenu=1;
-            friendlyName = "Hunting Lebedev";
+            friendlyName = "Hunting Lebedev (Liberty Island)";
             return "03_NYC_UNATCOIsland";
         case 31:
-            friendlyName = "Hunting Lebedev (HQ)";
+            friendlyName = "Hunting Lebedev (UNATCO HQ)";
             return "03_NYC_UNATCOHQ";
         case 32:
             friendlyName = "Hunting Lebedev (Battery Park)";
@@ -198,7 +198,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             return "03_NYC_Hangar";
         case 40:
             bShowInMenu=1;
-            friendlyName = "NSF Defection";
+            friendlyName = "NSF Defection (UNATCO HQ)";
             return "04_NYC_UNATCOHQ";
         case 41:
             friendlyName = "NSF Defection (Streets)";
@@ -252,7 +252,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             return "06_HongKong_Storage";
         case 81:
             bShowInMenu=1;
-            friendlyName = "Return to NYC";
+            friendlyName = "Return to NYC (Smuggler)";
             return "08_NYC_Smug#ToSmugFrontDoor";
         case 82:
             friendlyName = "Return to NYC (Sewers)";
