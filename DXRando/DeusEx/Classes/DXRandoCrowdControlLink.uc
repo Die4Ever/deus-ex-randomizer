@@ -296,16 +296,19 @@ function bool isCrowdControl(string msg) {
         return False;
     }
 
-    //code field
-    if (InStr(msg,"code")==-1){
-        //PlayerMessage("Doesn't have code");
+    //type field
+    if (InStr(msg,"type")==-1){
+        //PlayerMessage("Doesn't have type");
         return False;
     }
-    //viewer field
-    if (InStr(msg,"viewer")==-1){
-        //PlayerMessage("Doesn't have viewer");
-        return False;
-    }
+
+    //viewer field not present in stop messages
+    //if (InStr(msg,"viewer")==-1){
+    //    //PlayerMessage("Doesn't have viewer");
+    //    return False;
+    //}
+
+    //Code field is optional - not present for a "stop all" ("stop" type, no code)
 
     return True;
 }
@@ -402,11 +405,7 @@ function handleMessage(string msg) {
         if (anon) {
             viewer = "Crowd Control";
         }
-        result = ccEffects.doCrowdControlEvent(code,param,viewer,type,duration);
-
-        if (result == Success) {
-            ccModule.IncHandledEffects();
-        }
+        result = ccEffects.BranchCrowdControlType(code,param,viewer,type,duration);
 
         sendReply(id,result);
 

@@ -11,6 +11,14 @@ const Failed = 1;
 const NotAvail = 2;
 const TempFail = 3;
 
+const CCType_Test       = 0x00;
+const CCType_Start      = 0x01;
+const CCType_Stop       = 0x02;
+const CCType_PlayerInfo = 0xE0; //Not used for us
+const CCType_Login      = 0xF0; //Not used for us
+const CCType_KeepAlive  = 0xFF; //Not used for us
+
+
 var int lavaTick;
 
 const MoveSpeedMultiplier = 10;
@@ -120,40 +128,34 @@ function PeriodicUpdates()
 {
     //Matrix Mode Timer
     if (decrementTimer('cc_MatrixModeTimer')) {
-        StopMatrixMode();
+        StopCrowdControlEvent("matrix",true);
     }
 
     //EMP Field timer
     if (decrementTimer('cc_EmpTimer')) {
-            player().bWarrenEMPField = false;
-            PlayerMessage("EMP Field has disappeared...");
+        StopCrowdControlEvent("emp_field",true);
     }
 
     if (isTimerActive('cc_JumpTimer')) {
         player().JumpZ = 0;
     }
     if (decrementTimer('cc_JumpTimer')) {
-        player().JumpZ = player().Default.JumpZ;
-        PlayerMessage("Your knees feel fine again.");
+        StopCrowdControlEvent("disable_jump",true);
     }
 
     if (isTimerActive('cc_SpeedTimer')) {
         player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');
     }
     if (decrementTimer('cc_SpeedTimer')) {
-        player().Default.GroundSpeed = DefaultGroundSpeed;
-        PlayerMessage("Back to normal speed!");
+        StopCrowdControlEvent("gotta_go_fast",true); //also gotta_go_slow
     }
 
     if (decrementTimer('cc_lamthrowerTimer')) {
-        UndoLamThrowers();
-        PlayerMessage("Your flamethrower is boring again");
-
+        StopCrowdControlEvent("lamthrower",true);
     }
 
     if (decrementTimer('cc_iceTimer')) {
-        SetIcePhysics(False);
-        PlayerMessage("The ground thaws");
+        StopCrowdControlEvent("ice_physics",true);
     }
 
     if (isTimerActive('cc_behindTimer')){
@@ -162,40 +164,31 @@ function PeriodicUpdates()
         player().ViewTarget=None;
     }
     if (decrementTimer('cc_behindTimer')) {
-        player().bBehindView=False;
-        player().bCrosshairVisible = True;
-        player().ViewTarget=None;
-
-        PlayerMessage("You re-enter your body");
+        StopCrowdControlEvent("third_person",true);
     }
 
     if (decrementTimer('cc_DifficultyTimer')){
-        storeFloatValue('cc_damageMult',1.0);
-        PlayerMessage("Your body returns to its normal toughness");
+        StopCrowdControlEvent("dmg_double",true); //also dmg_half
     }
 
     if (decrementTimer('cc_floatyTimer')) {
-        SetFloatyPhysics(False);
-        PlayerMessage("You feel weighed down again");
+        StopCrowdControlEvent("floaty_physics",true);
     }
 
     if (decrementTimer('cc_floorLavaTimer')) {
-        PlayerMessage("The floor returns to normal temperatures");
+        StopCrowdControlEvent("floor_is_lava",true);
     }
 
     if (decrementTimer('cc_invertMouseTimer')) {
-        PlayerMessage("Your mouse controls return to normal");
-        player().bInvertMouse = bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
+        StopCrowdControlEvent("invert_mouse",true);
     }
 
     if (decrementTimer('cc_invertMovementTimer')) {
-        PlayerMessage("Your movement controls return to normal");
-        invertMovementControls();
+        StopCrowdControlEvent("invert_movement",true);
     }
 
     if (decrementTimer('cc_Earthquake')) {
-        PlayerMessage("The earthquake ends");
-        player().shaketimer=0;
+        StopCrowdControlEvent("earthquake",true);
     }
 
     //Re-apply the quake, just in case some other shake happened and ended during the timer (ie. superfreighter)
@@ -204,13 +197,11 @@ function PeriodicUpdates()
     }
 
     if (decrementTimer('cc_RollTimer')) {
-        PlayerMessage("Your world turns rightside up again");
-        datastorage.SetConfig('cc_cameraRoll',0, 3600*12);
-        datastorage.SetConfig('cc_cameraSpin',0, 3600*12);
+        StopCrowdControlEvent("barrel_roll",true); //also "flipped" and "limp_neck"
     }
 
     if (decrementTimer('cc_EatBeans')) {
-        PlayerMessage("Your stomach settles down");
+        StopCrowdControlEvent("eat_beans",true);
     } else if (isTimerActive('cc_EatBeans') && !InMenu()){
         Fart();
     }
@@ -223,12 +214,7 @@ function PeriodicUpdates()
         player().bCrosshairVisible=False;
     }
     if (decrementTimer('cc_ResidentEvil')) {
-        PlayerMessage("Everything feels less horrifying");
-        player().ViewTarget=None;
-        player().bCrosshairVisible=True;
-        if (reCam!=None){
-            reCam.Destroy();
-        }
+        StopCrowdControlEvent("resident_evil",true);
     }
 
     if (flashbangDuration>0){
@@ -248,7 +234,7 @@ function PeriodicUpdates()
         PlayerRadiates();
     }
     if (decrementTimer('cc_Radioactive')){
-        PlayerMessage("You stop being radioactive");
+        StopCrowdControlEvent("radioactive",true);
     }
 
 #ifdef vanilla
@@ -259,7 +245,7 @@ function PeriodicUpdates()
     }
 #endif
     if (decrementTimer('cc_DoomMode')){
-        PlayerMessage("You return to the normal world");
+        StopCrowdControlEvent("doom_mode",true);
     }
 }
 
@@ -777,6 +763,10 @@ function bool decrementTimer(name timerName) {
         return (time == 0);
     }
     return false;
+}
+
+function disableTimer(name timerName) {
+    setTimerFlag(timerName,0,False);
 }
 
 function startNewTimer(name timerName, int duration) {
@@ -2113,6 +2103,196 @@ simulated final function #var(PlayerPawn) player()
 ////                                  CROWD CONTROL EFFECT MAPPING                                       ////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function int BranchCrowdControlType(string code, string param[5], string viewer, int type, int duration) {
+    local int result;
+
+    switch (type){
+        case CCType_Start:
+            result = doCrowdControlEvent(code,param,viewer,type,duration);
+
+            if (result == Success) {
+                ccLink.ccModule.IncHandledEffects();
+            }
+            break;
+        case CCType_Stop:
+            if (code==""){
+                //Stop all
+                StopAllCrowdControlEvents();
+            } else {
+                //Stop specific effect
+                result = StopCrowdControlEvent(code);
+            }
+            break;
+        default:
+            result = Failed;
+            break;
+    }
+
+    return result;
+}
+
+//Make sure to add any timed effects into this list
+function StopAllCrowdControlEvents()
+{
+    StopCrowdControlEvent("disable_jump");
+    StopCrowdControlEvent("gotta_go_fast"); //also gotta_go_slow
+    StopCrowdControlEvent("emp_field");
+    StopCrowdControlEvent("matrix");
+    StopCrowdControlEvent("third_person");
+    StopCrowdControlEvent("ice_physics");
+    StopCrowdControlEvent("floaty_physics");
+    StopCrowdControlEvent("floor_is_lava");
+    StopCrowdControlEvent("invert_mouse");
+    StopCrowdControlEvent("invert_movement");
+    StopCrowdControlEvent("earthquake");
+    StopCrowdControlEvent("lamthrower");
+    StopCrowdControlEvent("dmg_double"); //also dmg_half
+    StopCrowdControlEvent("barrel_roll"); //also flipped and limp_neck
+    StopCrowdControlEvent("eat_beans");
+    StopCrowdControlEvent("resident_evil");
+    StopCrowdControlEvent("radioactive");
+    StopCrowdControlEvent("doom_mode");
+}
+
+function int StopCrowdControlEvent(string code, optional bool bKnownStop)
+{
+    switch(code) {
+        case "disable_jump":
+            if (bKnownStop || isTimerActive('cc_JumpTimer')){
+                player().JumpZ = player().Default.JumpZ;
+                PlayerMessage("Your knees feel fine again.");
+                disableTimer('cc_JumpTimer');
+            }
+            break;
+        case "gotta_go_fast":
+        case "gotta_go_slow":
+            if (bKnownStop || isTimerActive('cc_SpeedTimer')){
+                player().Default.GroundSpeed = DefaultGroundSpeed;
+                PlayerMessage("Back to normal speed!");
+                disableTimer('cc_SpeedTimer');
+            }
+            break;
+        case "emp_field":
+            if (bKnownStop || isTimerActive('cc_EmpTimer')){
+                player().bWarrenEMPField = false;
+                PlayerMessage("EMP Field has disappeared...");
+                disableTimer('cc_EmpTimer');
+            }
+            break;
+        case "matrix":
+            if (bKnownStop || isTimerActive('cc_MatrixModeTimer')){
+                StopMatrixMode();
+                disableTimer('cc_MatrixModeTimer');
+            }
+            break;
+        case "third_person":
+            if (bKnownStop || isTimerActive('cc_behindTimer')){
+                player().bBehindView=False;
+                player().bCrosshairVisible = True;
+                player().ViewTarget=None;
+                PlayerMessage("You re-enter your body");
+                disableTimer('cc_behindTimer');
+            }
+            break;
+        case "ice_physics":
+            if (bKnownStop || isTimerActive('cc_iceTimer')){
+                SetIcePhysics(False);
+                PlayerMessage("The ground thaws");
+                disableTimer('cc_iceTimer');
+            }
+            break;
+        case "floaty_physics":
+            if (bKnownStop || isTimerActive('cc_floatyTimer')){
+                SetFloatyPhysics(False);
+                PlayerMessage("You feel weighed down again");
+                disableTimer('cc_floatyTimer');
+            }
+            break;
+        case "floor_is_lava":
+            if (bKnownStop || isTimerActive('cc_floorLavaTimer')){
+                PlayerMessage("The floor returns to normal temperatures");
+                disableTimer('cc_floorLavaTimer');
+            }
+            break;
+        case "invert_mouse":
+            if (bKnownStop || isTimerActive('cc_invertMouseTimer')){
+                PlayerMessage("Your mouse controls return to normal");
+                player().bInvertMouse = bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
+                disableTimer('cc_invertMouseTimer');
+            }
+            break;
+        case "invert_movement":
+            if (bKnownStop || isTimerActive('cc_invertMovementTimer')){
+                PlayerMessage("Your movement controls return to normal");
+                invertMovementControls();
+                disableTimer('cc_invertMovementTimer');
+            }
+            break;
+        case "earthquake":
+            if (bKnownStop || isTimerActive('cc_Earthquake')){
+                PlayerMessage("The earthquake ends");
+                player().shaketimer=0;
+                disableTimer('cc_Earthquake');
+            }
+            break;
+        case "lamthrower":
+            if (bKnownStop || isTimerActive('cc_lamthrowerTimer')){
+                UndoLamThrowers();
+                PlayerMessage("Your flamethrower is boring again");
+                disableTimer('cc_lamthrowerTimer');
+            }
+            break;
+        case "dmg_double":
+        case "dmg_half":
+            if (bKnownStop || isTimerActive('cc_DifficultyTimer')){
+                storeFloatValue('cc_damageMult',1.0);
+                PlayerMessage("Your body returns to its normal toughness");
+                disableTimer('cc_DifficultyTimer');
+            }
+            break;
+        case "flipped":
+        case "limp_neck":
+        case "barrel_roll":
+            if (bKnownStop || isTimerActive('cc_RollTimer')){
+                PlayerMessage("Your world turns rightside up again");
+                datastorage.SetConfig('cc_cameraRoll',0, 3600*12);
+                datastorage.SetConfig('cc_cameraSpin',0, 3600*12);
+                disableTimer('cc_RollTimer');
+            }
+            break;
+        case "eat_beans":
+            if (bKnownStop || isTimerActive('cc_EatBeans')){
+                PlayerMessage("Your stomach settles down");
+                disableTimer('cc_EatBeans');
+            }
+            break;
+        case "resident_evil":
+            if (bKnownStop || isTimerActive('cc_ResidentEvil')){
+                PlayerMessage("Everything feels less horrifying");
+                player().ViewTarget=None;
+                player().bCrosshairVisible=True;
+                if (reCam!=None){
+                    reCam.Destroy();
+                }
+                disableTimer('cc_ResidentEvil');
+            }
+            break;
+        case "radioactive":
+            if (bKnownStop || isTimerActive('cc_Radioactive')){
+                PlayerMessage("You stop being radioactive");
+                disableTimer('cc_Radioactive');
+            }
+            break;
+        case "doom_mode":
+            if (bKnownStop || isTimerActive('cc_DoomMode')){
+                PlayerMessage("You return to the normal world");
+                disableTimer('cc_DoomMode');
+            }
+            break;
+    }
+
+    return Success;
+}
 
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
