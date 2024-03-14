@@ -2235,7 +2235,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "MaySung_Dead":
             return "Kill May Sung, Maggie Chow's maid.";
         case "MostWarehouseTroopsDead":
-            return "Kill most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
+            return "Kill or knock out most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
         case "CleanerBot_ClassDead":
             return "Destroy enough cleaner bots.  Disabling them with EMP does not count.";
         case "MedicalBot_ClassDead":
