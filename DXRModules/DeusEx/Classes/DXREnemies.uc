@@ -205,7 +205,7 @@ function RandoEnemies(int percent, int hidden_percent)
             RandomizeSize(p);
         }
 
-        if( IsCritter(p) ) continue;
+        if( !IsRelevantPawn(p.class) ) continue;
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
 
         enemies[num_enemies++] = p;
@@ -283,9 +283,9 @@ function RandomizeSP(ScriptedPawn p, int percent)
         p.RaiseAlarm = RAISEALARM_BeforeFleeing;
     }
 
-    if( IsCritter(p) ) return; // only give random weapons to humans and robots
+    if( !IsHuman(p.class) && !IsCombatRobot(p.class) ) return; // only give random weapons to humans and robots
     // TODO: if p.bIsFemale then give only 1 handed weapons?
-    if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
+    if( p.IsA('MJ12Commando') || (!#defined(injections) && p.IsA('WIB')) ) return;
 
     if( IsHuman(p.class)) {
         if(!p.bImportant) {

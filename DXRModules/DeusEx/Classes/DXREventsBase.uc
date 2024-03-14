@@ -668,12 +668,13 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
-            if (!isInitialPlayerEnemy(victim) && !IsCritter(victim) &&  //Must have not been an enemy initially
-                 (dxr.localURL!="04_NYC_NSFHQ" || (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False)) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
-                 ){
+            if (
+                !isInitialPlayerEnemy(victim) && //Must have not been an enemy initially
+                IsHuman(victim.class) && //There's no such thing as an innocent Cat
+                ( dxr.localURL!="04_NYC_NSFHQ" || dxr.flagbase.GetBool('NSFSignalSent')==False ) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
+            ) {
                 _MarkBingo("AlliesKilled");
             }
-
         }
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
