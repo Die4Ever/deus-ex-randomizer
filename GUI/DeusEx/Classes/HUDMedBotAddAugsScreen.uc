@@ -1,10 +1,4 @@
-#ifdef injections
 class DXRHUDMedBotAddAugsScreen injects HUDMedBotAddAugsScreen;
-#elseif hx
-class DXRHUDMedBotAddAugsScreen extends HXPersonaScreenAugmentationsMedBot;
-#else
-class DXRHUDMedBotAddAugsScreen extends HUDMedBotAddAugsScreen;
-#endif
 
 var PersonaActionButtonWindow btnRemove;
 
@@ -21,13 +15,8 @@ function CreateButtons()
     btnRemove = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnRemove.SetButtonText("|&Remove");
 
-#ifdef hx
-    InstallButton = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
-    InstallButton.SetButtonText(InstallButtonLabel);
-#else
     btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnInstall.SetButtonText(InstallButtonLabel);
-#endif
 }
 
 function EnableButtons()
@@ -54,11 +43,7 @@ function bool ButtonActivated(Window buttonPressed)
             RemoveAugmentation();
             break;
 
-#ifdef hx
-        case InstallButton:
-#else
         case btnInstall:
-#endif
             InstallAugmentation();
             break;
         default:
@@ -119,11 +104,11 @@ function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
 {
     Super.SetMedicalBot(newBot, bPlayAnim);
 
-    if (medBot != None && medBot.augsOnly) {
-        HUDMedBotNavBarWindow(winNavBar).CreateExitButton();
+    if (class'#var(injectsprefix)HUDMedBotHealthScreen'.static.isAugsOnly(medBot) && #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar) != None) {
+        #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar).CreateExitButton();
         MedbotInterfaceText = "AUGBOT INTERFACE";
-    } else {
-        HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
+    } else if(#var(injectsprefix)HUDMedBotNavBarWindow(winNavBar) != None) {
+        #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
     }
     Super.CreateMedbotLabel();
 }

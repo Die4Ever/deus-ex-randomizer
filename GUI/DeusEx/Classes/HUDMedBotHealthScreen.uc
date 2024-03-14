@@ -1,10 +1,4 @@
-#ifdef injections
 class DXRHUDMedBotHealthScreen injects HUDMedBotHealthScreen;
-#elseif hx
-class DXRHUDMedBotHealthScreen extends HXPersonaScreenHealthMedBot;
-#else
-class DXRHUDMedBotHealthScreen extends HUDMedBotHealthScreen;
-#endif
 
 function UpdateMedBotDisplay()
 {
@@ -16,6 +10,9 @@ function UpdateMedBotDisplay()
 #ifdef injections
     local MedicalBot dxrbot;
     dxrbot = medBot;
+#elseif hx
+    local DXRMedicalBot dxrbot;
+    dxrbot = None;// HACK: none of the GUI stuff works in HX anyways
 #else
     local DXRMedicalBot dxrbot;
     dxrbot = DXRMedicalBot(medBot);
@@ -82,13 +79,24 @@ function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
     Super.SetMedicalBot(newBot, bPlayAnim);
 
     newBot = medBot; // just to be safe
-    if (newBot != None && newBot.augsOnly) {
+    if (isAugsOnly(newBot)) {
         SkipAnimation(True);
         augScreen = HUDMedBotAddAugsScreen(root.InvokeUIScreen(Class'HUDMedBotAddAugsScreen', True));
         augScreen.SetMedicalBot(newBot);
-    } else {
-        HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
+    } else if(#var(injectsprefix)HUDMedBotNavBarWindow(winNavBar) != None) {
+        #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
     }
+}
+
+static function bool isAugsOnly(MedicalBot bot)
+{
+#ifdef injections
+    return bot != None && bot.augsOnly;
+#elseif hx
+    return false;
+#else
+    return #var(injectsprefix)MedicalBot(bot) != None && #var(injectsprefix)MedicalBot(bot).augsOnly;
+#endif
 }
 
 function Tick(float deltaTime)

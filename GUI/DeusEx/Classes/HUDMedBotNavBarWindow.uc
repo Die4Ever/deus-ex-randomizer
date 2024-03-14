@@ -1,4 +1,4 @@
-class DXRHUDMedBotNavBarWindow injects #var(prefix)HUDMedBotNavBarWindow;
+class DXRHUDMedBotNavBarWindow injects HUDMedBotNavBarWindow;
 
 function CreateButtons() {}
 
