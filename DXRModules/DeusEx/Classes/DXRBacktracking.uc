@@ -141,18 +141,18 @@ function FixTunnelsTeleporters()
         case "12_VANDENBERG_CMD":
             dt = Spawn(class'DynamicTeleporter',,,vectm(813,1257,-2163)); //Inside CMD
             dt.SetCollisionSize(30,15);
-            dt.SetDestination("12_vandenberg_tunnels",'',"end");
+            SetDestination(dt, "12_vandenberg_tunnels",'',"end");
             dt = Spawn(class'DynamicTeleporter',,,vectm(-1592,4570,-2297)); //Outside building
             dt.SetCollisionSize(30,15);
-            dt.SetDestination("12_vandenberg_tunnels",'',"start");
+            SetDestination(dt, "12_vandenberg_tunnels",'',"start");
             break;
         case "12_VANDENBERG_TUNNELS":
             dt = Spawn(class'DynamicTeleporter',,,vectm(-1625,5743,-2364)); //Start
             dt.SetCollisionSize(30,15);
-            dt.SetDestination("12_vandenberg_cmd",'',"commstat");
+            SetDestination(dt, "12_vandenberg_cmd",'',"commstat");
             dt = Spawn(class'DynamicTeleporter',,,vectm(398,1164,-2356)); //End
             dt.SetCollisionSize(30,15);
-            dt.SetDestination("12_vandenberg_cmd",'',"storage");
+            SetDestination(dt, "12_vandenberg_cmd",'',"storage");
             break;
     }
 }

@@ -507,7 +507,7 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
     local float mod,fireRate,compFireRate,fireRateDiff;
     local #var(DeusExPrefix)Weapon compW;
 
-    //Maybe this should be a setting?
+    // TODO: Maybe this should be a setting?
     //0 = off
     //1 = Compare to in-hand weapon
     //2 = Compare to default values
