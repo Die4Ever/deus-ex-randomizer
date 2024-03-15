@@ -108,7 +108,7 @@ function Frob(actor Frobber, Inventory frobWith)
     if ( !PianoIsBroken() ) {
         rnd = currentSong;
         while(rnd == currentSong) {
-            rnd = Rand(38); //make sure this matches the number of sounds below
+            rnd = Rand(39); //make sure this matches the number of sounds below
         }
         currentSong = rnd;
         switch(currentSong){
@@ -273,6 +273,10 @@ function Frob(actor Frobber, Inventory frobWith)
                 SelectedSound = sound'TetrisThemeA';
                 duration = 8;
                 break;
+            case 38:
+                SelectedSound = sound'NokiaRing';
+                duration = 4;
+                break;
             default:
                 log("DXRPiano went too far this time!  Got "$currentSong);
                 return;
@@ -379,6 +383,8 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played Guile's Theme from Street Fighter 2";
         case sound'TetrisThemeA':
             return "You played Theme A from Tetris";
+        case sound'NokiaRing':
+            return "You played the Nokia ringtone";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
