@@ -48,7 +48,9 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
     local bool VanillaMaps;
+    local #var(DeusExPrefix)Carcass dead;
     local #var(prefix)HumanCivilian hc;
+    local int oldSeed;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -100,6 +102,27 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
         }
+
+        oldSeed = SetGlobalSeed("'Ton Hotel Junkie Names " $ dxr.seed);
+        foreach AllActors(class'#var(DeusExPrefix)Carcass', dead) {
+            if (dead.Name == 'JunkieFemaleCarcass0') {
+                if (class'DXRMenuScreenNewGame'.static.HasLDDPInstalled()) {
+                    dead.itemName = "Dead Body (Jenna)";
+                } else {
+                    dead.itemName = "Dead Body (" $ class'DXRNames'.static.RandomName(dxr) $ ")";
+                }
+            } else if (dead.Name == 'JunkieMaleCarcass0') {
+                if (class'DXRMenuScreenNewGame'.static.HasLDDPInstalled()) {
+                    dead.itemName = "Dead Body (Kyle)";
+                } else {
+                    dead.itemName = "Dead Body (" $ class'DXRNames'.static.RandomName(dxr) $ ")";
+                }
+            } else if (dead.Name == 'LDDPHotelAddictCarcass0') {
+                dead.itemName = "Dead Body (" $ class'DXRNames'.static.RandomName(dxr) $ ")";
+            }
+        }
+        oldseed = SetGlobalSeed(oldSeed);
+
         break;
 
     case "04_NYC_NSFHQ":
