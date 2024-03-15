@@ -8,6 +8,8 @@ var name prev_anim;
 var float prev_anim_rate;
 var float prev_weapon_skill;
 
+var int WeaponTexLoc[8];
+
 function PostBeginPlay()
 {
     local DXRWeapons m;
@@ -20,6 +22,8 @@ function PostBeginPlay()
 
 function BringUp()
 {
+    local int texLoc;
+
     Super.BringUp();
 
     // don't let NPC geps lock on to targets
@@ -32,6 +36,15 @@ function BringUp()
         //LaserOn already checks to see if it has a laser, so just call it
         LaserOn();
     }
+
+    for (texLoc=0;texLoc<8;texLoc++){
+        if (IsWeaponTexture(texLoc)){
+            WeaponTexLoc[texLoc]=1;
+        } else {
+            WeaponTexLoc[texLoc]=0;
+        }
+    }
+
 }
 
 simulated function Tick(float deltaTime)
@@ -650,6 +663,57 @@ function TravelPostAccept()
 
     if (IsA('WeaponPlasmaRifle')){
         FireSound = Default.FireSound;
+    }
+}
+
+simulated function bool IsWeaponTexture(int i)
+{
+    local Texture thisTex;
+
+    thisTex = GetMeshTexture(i);
+    if (thisTex==None){
+        return false;
+    } else if (InStr(string(thisTex),"MaskTex")!=-1){
+        return false;
+    } else if (InStr(string(thisTex),"WeaponHandsTex")!=-1){
+        return false;
+    } else if (InStr(string(thisTex),"SFX")!=-1){
+        return false;
+    } else if (InStr(string(thisTex),"MapTex")!=-1){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+simulated event RenderOverlays( canvas Canvas )
+{
+    local Texture origTex[8];
+    local int texLoc;
+    Super.RenderOverlays(Canvas);
+
+    //Draw an indication that the weapon still has a shot in progress
+    //if (bFiring && !IsAnimating() && PlayerPawn(Owner)!=None){
+    //bPointing seems to be updated basically the same as bFiring, except it works for melee as well
+    if (bPointing && !IsAnimating() && !bAutomatic && PlayerPawn(Owner)!=None){
+        ScaleGlow=0.1;
+        Style = STY_Translucent;
+
+        for (texLoc=0;texLoc<8;texLoc++){
+            origTex[texLoc] = MultiSkins[texLoc];
+            if (WeaponTexLoc[texLoc]==1){
+                MultiSkins[texLoc]=Texture'Effects.Laser.LaserBeam1';
+            }
+        }
+
+        Canvas.DrawActor(self, false);
+
+        for (texLoc=0;texLoc<8;texLoc++){
+            MultiSkins[texLoc]=origTex[texLoc];
+        }
+
+        Style = STY_Normal;
+        ScaleGlow=1.0;
     }
 }
 
