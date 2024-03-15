@@ -59,15 +59,21 @@ simulated function Tick(float deltaTime)
 
     if(AnimSequence != prev_anim || GetWeaponSkill() != prev_weapon_skill) {
         prev_anim = AnimSequence;
+        r = 1.0;
         e = 1.7;
 
         if(AnimSequence == 'PlaceBegin' || AnimSequence == 'PlaceEnd')
+        {
             if(AnimFrame<0.2)// skip the beginning of the animation
                 AnimFrame=0.2;
-        else if(AnimSequence == 'Shoot'
-            || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3'
-            || AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3'
-        ) {
+        }
+        else if(AnimSequence == 'Shoot' || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3')
+        {
+            r = (default.ShotTime / ShotTime) ** 0.5;// linear relationship here makes things a bit too extreme I think
+            e = 1.0;// these animations don't scale as much with skill
+        }
+        else if(AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3')
+        {
             e = 1.0;// these animations don't scale as much with skill
         }
         if(GoverningSkill == Class'SkillDemolition') {
@@ -75,7 +81,8 @@ simulated function Tick(float deltaTime)
             e = 1.9;
         }
         prev_weapon_skill = GetWeaponSkill();
-        r = (anim_speed + -0.2 * prev_weapon_skill) ** e;
+        r *= (anim_speed + -0.2 * prev_weapon_skill) ** e;
+        r = FClamp(r, 0.001, 1000);
         prev_anim_rate = AnimRate * r;
     }
 
