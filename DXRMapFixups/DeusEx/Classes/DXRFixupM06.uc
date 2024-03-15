@@ -275,11 +275,15 @@ function PreFirstEntryMapFixes()
                 pad.bHidden = False;
         }
 
-        foreach AllActors(class'#var(prefix)Greasel', g, 'Greasel'){
+        foreach AllActors(class'#var(prefix)Greasel', g){
             g.bImportant = True;
-            g.BindName="JerryTheVentGreasel";
-            g.FamiliarName = "Jerry the Vent Greasel";
-            g.UnfamiliarName = "Jerry the Vent Greasel";
+            g.BindName = "BoringLabGreasel";
+            //The other ones are tagged as Dogs
+            if (Tag=='Greasel'){
+                g.BindName="JerryTheVentGreasel";
+                g.FamiliarName = "Jerry the Vent Greasel";
+                g.UnfamiliarName = "Jerry the Vent Greasel";
+            }
         }
 
         SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
