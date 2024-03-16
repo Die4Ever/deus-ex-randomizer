@@ -60,6 +60,20 @@ simulated function InitHints()
         }
     }
 
+    if(mission <= 3) {
+        if(dxr.flags.settings.enemiesrandomized > 0) {
+            AddHint("Some NSF terrorists are visibly augmented.", "Watch out for their special capabilities!");
+        }
+    } else if(mission <= 4) {
+        if(dxr.flags.settings.enemiesrandomized > 0) {
+            AddHint("Some UNATCO troops are visibly augmented.", "They explode when they die, so watch out!");
+        }
+    } else {
+        if(dxr.flags.settings.enemiesrandomized > 0) {
+            AddHint("Some UNATCO and MJ12 troops are visibly augmented.", "They explode when they die, so watch out!");
+        }
+    }
+
     if(mission <= 5) {
         AddHint("Melee attacks from behind do bonus damage!");
         AddHint("Don't hoard items.", "You'll find more!");
@@ -70,7 +84,7 @@ simulated function InitHints()
         AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them.");
         AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
         AddHint("Datacubes and nanokeys give off a glow.", "Keep your eyes open for it!");
-        AddHint("Some NSF terrorists are visibly augmented.", "Watch out for their special capabilities!");
+
         if(!dxr.flags.IsZeroRando())
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime)
@@ -174,8 +188,6 @@ simulated function InitHints()
         AddHint("Try not dying.");
         AddHint("Don't hoard items.", "What are you saving them for?");
         AddHint("Spend your skill points!");
-        AddHint("Some UNATCO and MJ12 troops are visibly augmented.", "They explode when they die, so watch out!");
-
     }
 
     // ~= is case insensitive equality
