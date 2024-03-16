@@ -86,7 +86,7 @@ static function string CleanupMapName(string mapName)
     v = GetCoordsMult(mapName);
     s = GetMapPostfix(v);
     ret = ReplaceText(mapName, s, "");
-    log("CleanupMapName ReplaceText("$mapName$", "$s$", \"\") == "$ret, 'DXRMapVariants');
+    //log("CleanupMapName ReplaceText("$mapName$", "$s$", \"\") == "$ret, 'DXRMapVariants');
     return ret;
 }
 
