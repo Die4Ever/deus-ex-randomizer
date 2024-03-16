@@ -127,6 +127,9 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)HackableDevices', hd) {
                 hd.hackStrength /= 3.0;
             }
+            foreach AllActors(class'#var(prefix)UNATCOTroop',troop,'UNATCOGateGuard'){
+                troop.Destroy();
+            }
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',door,'ExitDoor'){
