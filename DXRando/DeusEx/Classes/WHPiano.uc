@@ -108,7 +108,7 @@ function Frob(actor Frobber, Inventory frobWith)
     if ( !PianoIsBroken() ) {
         rnd = currentSong;
         while(rnd == currentSong) {
-            rnd = Rand(39); //make sure this matches the number of sounds below
+            rnd = Rand(44); //make sure this matches the number of sounds below
         }
         currentSong = rnd;
         switch(currentSong){
@@ -277,6 +277,26 @@ function Frob(actor Frobber, Inventory frobWith)
                 SelectedSound = sound'NokiaRing';
                 duration = 4;
                 break;
+            case 39:
+                SelectedSound = sound'AllStar';
+                duration = 8;
+                break;
+            case 40:
+                SelectedSound = sound'BlasterMasterArea1';
+                duration = 5;
+                break;
+            case 41:
+                SelectedSound = sound'DrMarioFever';
+                duration = 5;
+                break;
+            case 42:
+                SelectedSound = sound'SML2SpaceZone2';
+                duration = 7;
+                break;
+            case 43:
+                SelectedSound = sound'SimCity2kDowntownDance';
+                duration = 7;
+                break;
             default:
                 log("DXRPiano went too far this time!  Got "$currentSong);
                 return;
@@ -385,6 +405,16 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played Theme A from Tetris";
         case sound'NokiaRing':
             return "You played the Nokia ringtone";
+        case sound'AllStar':
+            return "You played All Star by Smash Mouth";
+        case sound'BlasterMasterArea1':
+            return "You played the Area 1 theme from Blaster Master";
+        case sound'DrMarioFever':
+            return "You played Fever from Dr. Mario";
+        case sound'SML2SpaceZone2':
+            return "You played Space Zone 2 from Super Mario Land 2: Six Golden Coins";
+        case sound'SimCity2kDowntownDance':
+            return "You played Downtown Dance from SimCity 2000";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
