@@ -2239,7 +2239,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "CleanerBot_ClassDead":
             return "Destroy enough cleaner bots.  Disabling them with EMP does not count.";
         case "MedicalBot_ClassDead":
-            return "Destroy enough medical bots.  Disabling them with EMP does not count.";
+            return "Destroy enough medical bots or aug bots.  Disabling them with EMP does not count.";
         case "RepairBot_ClassDead":
             return "Destroy enough repair bots.  Disabling them with EMP does not count.";
         case "DrugDealer_Dead":
