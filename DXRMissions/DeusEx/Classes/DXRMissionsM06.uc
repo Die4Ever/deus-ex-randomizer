@@ -70,7 +70,11 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 1, vect(488.291809, -2581.964355, -336.402618), rot(0,32620,0));
         AddActorLocation(loc, 2, vect(484.913330,-2345.247559,-336.401306), rot(0,32620,0));
 
-        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1,vect(-1725.911133,-565.364746,-339),rot(0,16368,0));
+        if (IsAprilFools()){
+            loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1 | SITTING_GOAL,vect(-1561,-671,-339),rot(0,16368,0));
+        } else {
+            loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1,vect(-1725.911133,-565.364746,-339),rot(0,16368,0));
+        }
         AddActorLocation(loc, 1, vect(-1794.911133,-572.364746,-339), rot(0,16368,0));
         AddActorLocation(loc, 2, vect(-1658.911133,-568.364746,-339), rot(0,16368,0));
 
