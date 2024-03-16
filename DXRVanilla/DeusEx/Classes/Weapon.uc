@@ -69,8 +69,8 @@ simulated function Tick(float deltaTime)
         }
         else if(AnimSequence == 'Shoot' || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3')
         {
-            r = (default.ShotTime / ShotTime) ** 4;
-            r = FClamp(r, 0.3, 1.75);
+            r = (default.ShotTime / ShotTime);
+            r = FClamp(r, 0.4, 1.7);
             e = 1.0;// these animations don't scale as much with skill
         }
         else if(AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3')
