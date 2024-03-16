@@ -424,8 +424,8 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             ws.default.blood_mult = 3;
             ws.anim_speed = 1.2;
             ws.default.anim_speed = 1.2;
-            w.ShotTime=0;
-            w.default.ShotTime=0;
+            w.ShotTime=0.01;
+            w.default.ShotTime=0.01;
             w.maxRange = 110;
             w.default.maxRange = 110;
             w.AccurateRange = 110;
@@ -434,8 +434,8 @@ function NinjaAdjustWeapon(DeusExWeapon w)
         case class'WeaponNanoSword':
             ws.blood_mult = 4;
             ws.default.blood_mult = 4;
-            w.ShotTime=0;
-            w.default.ShotTime=0;
+            w.ShotTime=0.01;
+            w.default.ShotTime=0.01;
             w.maxRange = 110;
             w.default.maxRange = 110;
             w.AccurateRange = 110;

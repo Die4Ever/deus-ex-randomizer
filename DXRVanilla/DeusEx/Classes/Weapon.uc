@@ -69,7 +69,8 @@ simulated function Tick(float deltaTime)
         }
         else if(AnimSequence == 'Shoot' || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3')
         {
-            r = (default.ShotTime / ShotTime) ** 0.5;// linear relationship here makes things a bit too extreme I think
+            r = (default.ShotTime / ShotTime) ** 4;
+            r = FClamp(r, 0.3, 1.75);
             e = 1.0;// these animations don't scale as much with skill
         }
         else if(AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3')
@@ -77,7 +78,7 @@ simulated function Tick(float deltaTime)
             e = 1.0;// these animations don't scale as much with skill
         }
         if(GoverningSkill == Class'SkillDemolition') {
-            anim_speed = 1.1;// why are grenades so slow?
+            r *= 1.1;// why are grenades so slow?
             e = 1.9;
         }
         prev_weapon_skill = GetWeaponSkill();
@@ -657,7 +658,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     //Hack borrowed from WCCC
     if (Other == Level){
         dxPlayer = DeusExPlayer(Owner);
-        if (dxPlayer != None && dxPlayer.FrobTarget.IsA('Mover')){
+        if (dxPlayer != None && Mover(dxPlayer.FrobTarget) != None){
             Other = dxPlayer.FrobTarget;
         }
     }

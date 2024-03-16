@@ -61,7 +61,7 @@ function CheckSkill()
     player = DeusExPlayer(Owner);
 
     if( player != None ) {
-        ShotTime = default.ShotTime * (1+GetWeaponSkill());
+        anim_speed = default.anim_speed * (1+GetWeaponSkill());
     }
 }
 
