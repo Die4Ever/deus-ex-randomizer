@@ -50,6 +50,14 @@ simulated function InitHints()
         AddHint("Weapon animation speeds now improve with skills,", "especially grenades with Demolition skill.");
         AddHint("Grenades can now be attached to the floor", "or even on a door!");
         AddHint("Attaching a grenade to a wall increases its", "blast radius and damage, especially with high skill.");
+        AddHint("You can safely save during infolinks!", "Give it a shot, Tong won't mind!");
+        AddHint("Red lasers will always set off an alarm", "Blue lasers won't, but will trigger something else!");
+        AddHint("Everything except an NPC will set off a laser!", "Better be careful around them!");
+        AddHint("Enemies with gold visors are resistant to gas", "so you might need to deal with them differently!");
+        AddHint("Enemies with helmets take less damage from headshots", "so you might need to be more careful!");
+        if (class'MenuChoice_AutoWeaponMods'.default.enabled){
+            AddHint("Picking up a weapon mod while holding a weapon", "will automatically apply it to that weapon!");
+        }
     }
 
     if(mission <= 5) {
@@ -60,7 +68,9 @@ simulated function InitHints()
         AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
         AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
         AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them.");
-        AddHint("The large metal crates are now destructible.", "They have 500 hp.");
+        AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
+        AddHint("Datacubes and nanokeys give off a glow.", "Keep your eyes open for it!");
+        AddHint("Some NSF terrorists are visibly augmented.", "Watch out for their special capabilities!");
         if(!dxr.flags.IsZeroRando())
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime)
@@ -164,6 +174,8 @@ simulated function InitHints()
         AddHint("Try not dying.");
         AddHint("Don't hoard items.", "What are you saving them for?");
         AddHint("Spend your skill points!");
+        AddHint("Some UNATCO and MJ12 troops are visibly augmented.", "They explode when they die, so watch out!");
+
     }
 
     // ~= is case insensitive equality
@@ -172,8 +184,12 @@ simulated function InitHints()
         if(map ~= "01_NYC_UNATCOIsland") {
             if(dxr.flags.settings.passwordsrandomized > 0)
                 AddHint("Passwords have been randomized.", "Don't even try smashthestate!");
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0){
                 AddHint("The locations of the terrorist commander and boat are randomized.", "Check the Goal Randomization page on our Wiki.");
+                if(#defined(injections)) {
+                    AddHint("The map of the island can show possible goal locations.", "Give it a try!");
+                }
+            }
         }
         break;
 
@@ -202,8 +218,12 @@ simulated function InitHints()
                 AddHint("The locations of some NPCs on this map are randomized.", "Check the Goal Randomization page on our Wiki.");
             break;
         case "03_NYC_Airfield":
-            if(dxr.flags.settings.goals > 0)
-                AddHint("The location of the NSF soldier with the Easy Gate key is randomized.", "Check the Goal Randomization page on our Wiki.");
+            if(dxr.flags.settings.goals > 0){
+                AddHint("The location of the NSF soldier with the East Gate key is randomized.", "Check the Goal Randomization page on our Wiki.");
+                if(#defined(injections)) {
+                    AddHint("The map of the airfield can show possible goal locations.", "Give it a try!");
+                }
+            }
             break;
         case "03_NYC_747":
             AddHint("Anna will no longer trigger a LAM", "while she's allied to you!");
@@ -213,8 +233,10 @@ simulated function InitHints()
 
     case 4:
         if (map ~= "04_NYC_NSFHQ") {
-            if(dxr.flags.settings.goals > 0)
-                AddHint("The location of the computer to open the door is randomized.", "Check the Goal Randomization page on our Wiki.");
+            if(dxr.flags.settings.goals > 0){
+                AddHint("The location of the computer to align the satellites is randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The location of the computer to send the signal is randomized.", "Check the Goal Randomization page on our Wiki.");
+            }
         } else if(dxr.flags.settings.goals > 0) {
             AddHint("Anna Navarre's location is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
@@ -225,6 +247,9 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0) {
                 AddHint("Paul's location in the lab is randomized.", "Check the Goal Randomization page on our Wiki.");
                 AddHint("Your equipment could be in either", "the armory, or the surgery ward.");
+                if(#defined(injections)) {
+                    AddHint("The map of the lab can show possible goal locations.", "Give it a try!");
+                }
             }
         } else if (map ~= "05_NYC_UnatcoHQ") {
             if(dxr.flags.settings.goals > 0) {
@@ -256,8 +281,11 @@ simulated function InitHints()
         break;
 
     case 8:
-        if(dxr.flags.settings.goals > 0)
+        if(dxr.flags.settings.goals > 0){
             AddHint("The locations of Filben, Greene, and Vinny are randomized.", "Check the Goal Randomization page on our Wiki.");
+            AddHint("The start location of the raid has been randomized.", "Look for the black vans!");
+            AddHint("The location of Jock when leaving is randomized.", "Check the Goal Randomization page on our Wiki.");
+        }
         break;
 
     case 9:
@@ -265,8 +293,13 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the signal jammer is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "09_nyc_shipbelow") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0){
                 AddHint("The locations of the tri-hull weld points are randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The location of the bilge pump computer is randomized.", "Check the Goal Randomization page on our Wiki.");
+                if(#defined(injections)) {
+                    AddHint("The map of the ship can show possible goal locations.", " Give it a try!");
+                }
+            }
         } else if (map ~= "09_nyc_dockyard") {
             if(dxr.flags.settings.goals > 0) {
                 if(dxr.flagbase.GetBool('MS_ShipBreeched'))
@@ -292,6 +325,16 @@ simulated function InitHints()
         }
         if(dxr.flags.settings.goals > 0 && (map ~= "10_paris_metro" || map ~= "10_paris_club")) {
             AddHint("The location of Nicolette DuClare is randomized.", "Check the Goal Randomization page on our Wiki.");
+            if(#defined(injections)) {
+                    AddHint("The street map can show possible goal locations.", "Give it a try!");
+            }
+        }
+        if(dxr.flags.settings.goals > 0 && (map ~= "10_Paris_Catacombs_Tunnels")) {
+            if(#defined(injections)) {
+                    AddHint("The map of the catacombs can show possible goal locations.", "Give it a try!");
+            }
+            AddHint("Agent Hela will always have two copies of the sewer key.", "She will be carrying one and keep another nearby.");
+            AddHint("The location of Agent Hela is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
         break;
 
@@ -327,6 +370,7 @@ simulated function InitHints()
         if (map ~= "14_oceanlab_silo") {
             if(dxr.flags.settings.goals > 0) {
                 AddHint("Howard Strong is now on a random floor of the missile silo.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("Howard Strong will only show up if you've done your objectives!", "Been to the Ocean Lab UC, merged Helios, and redirected the missile?");
                 AddHint("Jock will pick you up at a random location.", "Check the Goal Randomization page on our Wiki.");
             }
         }
