@@ -702,7 +702,7 @@ simulated event RenderOverlays( canvas Canvas )
     //Draw an indication that the weapon still has a shot in progress
     //if (bFiring && !IsAnimating() && PlayerPawn(Owner)!=None){
     //bPointing seems to be updated basically the same as bFiring, except it works for melee as well
-    if (bPointing && !IsAnimating() && !bAutomatic && PlayerPawn(Owner)!=None){
+    if (GetStateName()=='NormalFire' && !IsAnimating() && !bAutomatic && PlayerPawn(Owner)!=None){
         ScaleGlow=0.1;
         Style = STY_Translucent;
 
