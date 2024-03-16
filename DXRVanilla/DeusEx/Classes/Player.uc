@@ -531,7 +531,7 @@ exec function ParseRightClick()
     if (RestrictInput())
         return;
 
-    if (FrobTarget.IsA('#var(DeusExPrefix)Mover')){ //If it's a door...
+    if (#var(DeusExPrefix)Mover(FrobTarget) != None){ //If it's a door...
         dxm=#var(DeusExPrefix)Mover(FrobTarget);
         //That is locked and you have the key
         if (dxm.bLocked && dxm.KeyIDNeeded != '' && KeyRing.HasKey(dxm.KeyIDNeeded)){
