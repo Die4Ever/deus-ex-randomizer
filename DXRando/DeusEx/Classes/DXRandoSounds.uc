@@ -46,6 +46,7 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\SML2SpaceZone2.mp3"             NAME="SML2SpaceZone2"       GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\SimCity2kDowntownDance.mp3"     NAME="SimCity2kDowntownDance" GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\MoonlightSonata.mp3"            NAME="MoonlightSonata"      GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\REMansionBasement.mp3"          NAME="REMansionBasement"    GROUP="MemePiano"
 
 #exec AUDIO IMPORT FILE="Sounds\MaxPayneBrokenPianoPlay.mp3"    NAME="MaxPayneBrokenPianoPlay" GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\MaxPaynePianoJustBroke.mp3"     NAME="MaxPaynePianoJustBroke"  GROUP="MemePiano"
