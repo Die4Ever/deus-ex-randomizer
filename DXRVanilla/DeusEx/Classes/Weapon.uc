@@ -116,7 +116,10 @@ simulated function bool NearWallCheck()
         placeNormal = HitNormal;
         placeMover = Mover(HitActor);
 
-        if (!bNearWall && IsAnimating() && (GetStateName() == 'NormalFire'))
+        if (!bNearWall &&
+            IsAnimating() &&
+            (AnimSequence=='Attack' || AnimSequence=='Attack2' || AnimSequence=='Attack3' ) &&
+            (GetStateName() == 'NormalFire'))
         {
             //The throw animation is about to be canceled by a place animation.
             //Ammo gets consumed at the start of the animation, but the projectile is only spawned
