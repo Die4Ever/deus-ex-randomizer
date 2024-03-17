@@ -735,6 +735,16 @@ static function float GetVoicePitch(DXRando dxr){
     return 1.0;
 }
 
+function AddDXRCredits(CreditsWindow cw)
+{
+    if(IsAprilFools()) {
+        cw.PrintLn();
+        cw.PrintHeader("APRIL FOOLS!");
+        cw.PrintLn();
+        cw.PrintLn();
+    }
+}
+
 function bool is_valid(string s, class<Object> o)
 {// determines if a class is worthy of replacing the logo in the menu
     local class<Actor> a;

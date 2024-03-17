@@ -32,6 +32,7 @@ function PreFirstEntry()
 {
     local #var(PlayerPawn) p;
     local string startMapName;
+    local ScriptedPawn sp;
 
     foreach AllActors(class'#var(PlayerPawn)',p){break;}
 
@@ -43,6 +44,21 @@ function PreFirstEntry()
         StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
     }
 
+    switch(dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+        if(dxr.flags.settings.starting_map > 20) {
+            foreach AllActors(class'ScriptedPawn', sp, 'SubTerrorist') {
+                sp.Destroy();
+            }
+            foreach AllActors(class'ScriptedPawn', sp, 'hostageMan') {
+                sp.Destroy();
+            }
+            foreach AllActors(class'ScriptedPawn', sp, 'hostageWoman') {
+                sp.Destroy();
+            }
+        }
+        break;
+    }
 }
 
 static simulated function int GetStartingMissionMask(int start_map)
@@ -169,6 +185,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             friendlyName = "NSF Generator (Battery Park)";
             return "02_NYC_BatteryPark";
         case 21:
+            bShowInMenu=1;
             friendlyName = "NSF Generator (Streets)";
             return "02_NYC_Street";
         case 30:
@@ -440,6 +457,13 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
     }
 
     switch(start_flag) {
+        case 21:
+            flagbase.SetBool('EscapeSuccessful',true,,-1);
+            flagbase.SetBool('DL_SubwayComplete_Played',true,,-1);
+            flagbase.SetBool('SubTerroristsDead',true,,-1);
+            flagbase.SetBool('MS_DL_Played',true,, 3);
+            break;
+
         case 45:
             flagbase.SetBool('PaulInjured_Played',true,,-1);
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
@@ -489,6 +513,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
     switch(bingo_event)
     {
+        case "SubwayHostagesSaved":
+            return start_map>20;
         case "GuntherHermann_Dead":
             return start_map>=115;
         case "LeoToTheBar":
