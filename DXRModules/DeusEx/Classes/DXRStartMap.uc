@@ -513,6 +513,10 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
     switch(bingo_event)
     {
+        case "KnowYourEnemy":
+        case "SimonsAssassination":
+            return start_map>31;
+
         case "SubwayHostagesSaved":
             return start_map>20;
         case "GuntherHermann_Dead":
