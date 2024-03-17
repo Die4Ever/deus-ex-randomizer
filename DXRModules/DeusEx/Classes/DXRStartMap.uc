@@ -585,8 +585,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 9: // Dockyard and Ship
         switch(bingo_event)
         {
-        case "VialAmbrosia_Activated":
-            return start_map>=99; //Have to have started before the superfreighter upper decks, Graveyard can't backtrack to ship
         }
         break;
 
