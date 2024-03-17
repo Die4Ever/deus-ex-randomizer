@@ -369,6 +369,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             return "15_Area51_Page";
         default:
             //There's always a place for you on Liberty Island
+            bShowInMenu=0; // just in case
             friendlyName = "Unknown Start Map "$start_map_val;
             return "01_NYC_UNATCOIsland";
     }
@@ -511,19 +512,114 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
 
 static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
-    switch(bingo_event)
+    switch(start_map/10)
     {
+    case 1: // Liberty Island
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 2: // NSF Generator
+        switch(bingo_event)
+        {
+        case "SubwayHostagesSaved":
+            return start_map>20;
+        }
+        break;
+
+    case 3: // Airfield
+        switch(bingo_event)
+        {
+        case "CleanerBot_ClassDead":
+        case "AlexCloset":
+        case "CommsPit":
+        case "BathroomFlags":
+        case "ReadJCEmail":
+        case "Shannon_Dead":
+        case "TrophyHunter":
+        case "SlippingHazard":
+        case "un_PrezMeadPic_peepedtex":
+        case "WaltonConvos":
+        case "un_bboard_peepedtex":
+        case "UNATCOHandbook":
+        case "ManderleyMail":
+        case "LetMeIn":
+            return start_map > 30 && start_map < 36 && end_mission <= 3;// you can do these m03 unatco goals in m04 unatco, but if you start in helibase it's far
+
+        case "SickMan_Dead":
+        case "NYEagleStatue_peeped":
+            return start_map>35 && end_mission <= 3;// no battery park goals once you get to airfield?
+
         case "KnowYourEnemy":
         case "SimonsAssassination":
             return start_map>31;
+        }
+        break;
 
-        case "SubwayHostagesSaved":
-            return start_map>20;
+    case 4: // Paul and NSFHQ
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 5: // escape from MJ12 Jail
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 6: // Hong Kong
+    case 7:// fallthrough to 2nd half of Hong Kong
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 8: // return to NYC
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 9: // Dockyard and Ship
+        switch(bingo_event)
+        {
+        case "VialAmbrosia_Activated":
+            return start_map>=99; //Have to have started before the superfreighter upper decks, Graveyard can't backtrack to ship
+        }
+        break;
+
+    case 10: // Paris
+    case 11: // fallthrough to the rest of Paris
+        switch(bingo_event)
+        {
         case "GuntherHermann_Dead":
             return start_map>=115;
+        }
+        break;
+
+    case 12: // Vandenberg
+    case 14: // fallthrough to the rest of Vandenberg
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 15: // Area 51
+        switch(bingo_event)
+        {
+        }
+        break;
+    }
+
+    // goals that are spread across many missions, like LeoToTheBar
+    // TODO: need to reconsider all of these
+    switch(bingo_event)
+    {
         case "LeoToTheBar":
             //Only possible if you started in the first level
-            return start_map!=0;
+            return start_map>10 || end_mission < 2;
             break;
         case "MetSmuggler":
             return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
@@ -538,9 +634,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             if (end_mission < 8){
                 return True;
             }
-            return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 5
-        case "VialAmbrosia_Activated":
-            return start_map>=96; //Have to have started before the superfreighter upper decks (Arbitrarily chose 96 as that point)
+            return start_map>=60; //TODO: Have to have told Jaime to meet you in Hong Kong in mission 5
         case "Terrorist_ClassDead":
         case "Terrorist_ClassUnconscious":
         case "Terrorist_peeptime":
@@ -561,8 +655,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "IcarusCalls_Played":
         case "roof_elevator":
         case "MeetRenault_Played":
-            return start_map>100; //All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
-        case "ManWhoWasThursday":// in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
+            return start_map>100; //TODO: All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
+        case "ManWhoWasThursday":// TODO: in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
             return start_map > 100 && end_mission <= 11;
         case "PresentForManderley":
             //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
@@ -576,7 +670,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             }
             return start_map>=90;
         case "PhoneCall":
-            return start_map>100; //Last phone is in the building before the catacombs (Where Icarus calls)
+            return start_map>100; //TODO: Last phone is in the building before the catacombs (Where Icarus calls)
         default:
             return False;
     }
