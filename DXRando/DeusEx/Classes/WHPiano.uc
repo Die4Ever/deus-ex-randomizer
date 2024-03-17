@@ -108,7 +108,7 @@ function Frob(actor Frobber, Inventory frobWith)
     if ( !PianoIsBroken() ) {
         rnd = currentSong;
         while(rnd == currentSong) {
-            rnd = Rand(44); //make sure this matches the number of sounds below
+            rnd = Rand(45); //make sure this matches the number of sounds below
         }
         currentSong = rnd;
         switch(currentSong){
@@ -297,6 +297,10 @@ function Frob(actor Frobber, Inventory frobWith)
                 SelectedSound = sound'SimCity2kDowntownDance';
                 duration = 7;
                 break;
+            case 44:
+                SelectedSound = sound'MoonlightSonata';
+                duration = 10;
+                break;
             default:
                 log("DXRPiano went too far this time!  Got "$currentSong);
                 return;
@@ -415,6 +419,8 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played Space Zone 2 from Super Mario Land 2: Six Golden Coins";
         case sound'SimCity2kDowntownDance':
             return "You played Downtown Dance from SimCity 2000";
+        case sound'MoonlightSonata':
+            return "You played Moonlight Sonata by Beethoven";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
