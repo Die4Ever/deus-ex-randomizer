@@ -373,6 +373,7 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
 
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
+        if(ScriptedPawn(a.Owner) != None) continue; // don't reduce max ammo of pawns
 
         f = percent;
         f *= _GetItemMult(_max_ammo, a.class);
