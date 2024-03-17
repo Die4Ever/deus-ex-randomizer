@@ -728,6 +728,58 @@ simulated event RenderOverlays( canvas Canvas )
     }
 }
 
+function bool HandlePickupQuery(Inventory Item)
+{
+    local DeusExWeapon W;
+    local DeusExPlayer player;
+    local class<Ammo> defAmmoClass;
+    local Ammo defAmmo,newAmmo;
+    local int ammoToAdd,ammoRemaining;
+
+    W = DeusExWeapon(Item);
+    player = DeusExPlayer(Owner);
+
+    if (w!=None && player!=None && Item.Class == Class)
+    {
+        if (!( (w.bWeaponStay && (Level.NetMode == NM_Standalone)) && (!w.bHeldItem || w.bTossedOut)))
+        {
+            if ( AmmoType != None )
+            {
+                if ( AmmoNames[0] == None ){
+                    defAmmoClass = AmmoName;
+                }else{
+                    defAmmoClass = AmmoNames[0];
+                }
+                defAmmo = Ammo(player.FindInventoryType(defAmmoClass));
+                if(defAmmo!=None){
+                    ammoToAdd = w.PickUpAmmoCount;
+                    ammoRemaining=0;
+                    if ((ammoToAdd + defAmmo.AmmoAmount) > defAmmo.MaxAmmo){
+                        ammoRemaining = (ammoToAdd + defAmmo.AmmoAmount) - defAmmo.MaxAmmo;
+                        ammoToAdd = ammoToAdd - ammoRemaining;
+                    }
+
+                    w.PickUpAmmoCount = ammoToAdd;
+                    if (ammoRemaining>0){
+                        if(defAmmoClass.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
+                            //Weapons with normal ammo that exists
+                            newAmmo = Spawn(defAmmoClass,,,w.Location,w.Rotation);
+                            newAmmo.ammoAmount = ammoRemaining;
+                            newAmmo.Velocity = Velocity + VRand() * 280;
+                        } else {
+                            w.PickUpAmmoCount = ammoRemaining;
+                            defAmmo.AddAmmo(ammoToAdd);
+                            return True;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return Super.HandlePickupQuery(Item);
+}
+
 // vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0
 // we're mainly turning on MinSpreadAcc for singleplayer because of the shotguns, so we want a minimal change here of 0.05
 defaultproperties

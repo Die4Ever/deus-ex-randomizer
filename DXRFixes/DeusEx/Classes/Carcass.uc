@@ -263,8 +263,22 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
                 if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
                 {
-                    playerAmmo.AddAmmo(Weapon(item).PickupAmmoCount);
-                    AddReceivedItem(player, playerAmmo, Weapon(item).PickupAmmoCount);
+                    ammoAdded = Weapon(item).PickupAmmoCount;
+                    ammoLeftover=0;
+                    if (playerAmmo.AmmoAmount + ammoAdded > playerAmmo.MaxAmmo){
+                        ammoLeftover = (ammoAdded + playerAmmo.AmmoAmount) - playerAmmo.MaxAmmo;
+                        ammoAdded = ammoAdded - ammoLeftover;
+                    }
+                    if (ammoLeftover > 0){
+                        if(playerAmmo.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
+                            //Weapons with normal ammo that exists
+                            newAmmo = Spawn(playerAmmo.Class,,,Location,Rotation);
+                            newAmmo.ammoAmount = ammoLeftover;
+                            newAmmo.Velocity = Velocity + VRand() * 280;
+                        }
+                    }
+                    playerAmmo.AddAmmo(ammoAdded);
+                    AddReceivedItem(player, playerAmmo, ammoAdded);
 
                     // Update the ammo display on the object belt
                     player.UpdateAmmoBeltText(playerAmmo);
