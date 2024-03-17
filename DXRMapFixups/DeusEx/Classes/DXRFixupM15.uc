@@ -61,6 +61,9 @@ function PreFirstEntryMapFixes_Bunker()
     local Switch2 s2;
     local SequenceTrigger st;
     local DataLinkTrigger dlt;
+    local Dispatcher disp;
+    local OnceOnlyTrigger oot;
+    local Trigger trig;
     local #var(prefix)RatGenerator rg;
 
     // doors_lower is for backtracking
@@ -110,6 +113,33 @@ function PreFirstEntryMapFixes_Bunker()
     d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
     d.minDamageThreshold=25;
     d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
+
+    //Make it only possible to turn the power on, make it impossible to turn the power off again
+    foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
+        disp.Tag = 'power_dispatcher_real';
+        break;
+    }
+
+    oot = Spawn(class'OnceOnlyTrigger');
+    oot.Event='power_dispatcher_real';
+    oot.Tag='power_dispatcher';
+
+    //Make sure the power turns on if you get to the bottom
+    trig = Spawn(class'Trigger',,,vectm(4414,-1035,-7543));
+    trig.SetCollisionSize(180,40);
+    trig.event = 'power_dispatcher';
+
+    //Make the movers way faster
+    foreach AllActors(class'DeusExMover',d){
+        switch(d.Tag){
+            case 'upper_elevator_sw':
+            case 'upper_elevator_sw_works':
+            case 'lower_elevator_sw':
+            case 'lower_elevator_sw_works':
+                d.MoveTime=0.01; //So fast it just looks like the buttons and stuff swapped instantly, even if you're looking
+                break;
+        }
+    }
 
     //Button to open blast doors from inside
     AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');

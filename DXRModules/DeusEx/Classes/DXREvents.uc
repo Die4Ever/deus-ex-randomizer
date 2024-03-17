@@ -287,6 +287,8 @@ function SetWatchFlags() {
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)Female2 f;
     local #var(prefix)Fan1 fan1;
+    local #var(prefix)Button1 button;
+    local Dispatcher disp;
     local int i;
 
     local bool RevisionMaps;
@@ -1308,8 +1310,24 @@ function SetWatchFlags() {
             dxm.Event = 'blast_door_flag';
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'power_dispatcher',vectm(0,0,0));
+        //Need to make sure this only triggers if you hit the button to actually power on the elevator
+        //(and not if hit by the new trigger added in DXRFixupM15 at the bottom of the elevator for backtracking)
+        disp = Spawn(class'Dispatcher',,'power_dispatcher_middle');
+        disp.OutEvents[0]='power_dispatcher';
+        disp.OutDelays[0]=0;
+        disp.OutEvents[1]='power_dispatcher_bingo';
+        disp.OutDelays[1]=0;
+
+        //call 'power_dispatcher' and 'power_dispatcher_bingo'
+        bt = class'BingoTrigger'.static.Create(self,'power_dispatcher_bingo',vectm(0,0,0));
         bt.bingoEvent = "Area51ElevatorPower";
+
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='power_dispatcher'){
+                button.Event = 'power_dispatcher_middle';
+                break;
+            }
+        }
 
         bt = class'BingoTrigger'.static.Create(self,'A51CommBuildingBasement',vectm(984,2788,-750),100,40);
 
