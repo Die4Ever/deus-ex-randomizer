@@ -2871,7 +2871,7 @@ defaultproperties
     bingo_options(77)=(event="support1",desc="Blow up a gas station",max=1,missions=4096)
     bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill %s UNATCO Troopers",max=15,missions=318)
     bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill %s NSF Terrorists",max=15,missions=62)
-    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=57204)
+    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=57188)
     bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",max=10,missions=56384)
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",max=5,missions=49248)
     bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy %s Military Bots",max=5,missions=24176)
