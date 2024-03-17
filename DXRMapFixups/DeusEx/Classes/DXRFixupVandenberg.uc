@@ -7,7 +7,6 @@ var int storedBotCount;// MJ12 bots in CMD
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
-    local Button1 b;
     local ComputerSecurity comp;
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
@@ -156,12 +155,6 @@ function PreFirstEntryMapFixes()
             d.OutDelays[1]=3;
             d.OutEvents[2]='Warning';
             d.OutDelays[2]=2;
-
-            foreach AllActors(class'Button1', b) {
-                if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
-                    AddDelay(b, 5);
-                }
-            }
 
             //Swap the beam triggers that set off this turret to LaserTrigger for clarity
             foreach AllActors(class'#var(prefix)BeamTrigger',bt){
