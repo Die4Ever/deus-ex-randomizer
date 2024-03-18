@@ -11,6 +11,8 @@ var string       nameFilter;
 var bool         bLimitRadius;
 var int          actorRadius;
 var bool         bShowTagEvent;
+var bool         bShowTagConnections;
+var bool         bShowEventConnections;
 
 function SetActorRadius(string newRadius)
 {
@@ -93,6 +95,26 @@ function ShowTagEvent(bool bShow)
     bShowTagEvent = bShow;
 }
 
+function bool IsTagConnsVisible()
+{
+    return bShowTagConnections;
+}
+
+function ShowTagConns(bool bShow)
+{
+    bShowTagConnections = bShow;
+}
+
+function bool IsEventConnsVisible()
+{
+    return bShowEventConnections;
+}
+
+function ShowEventConns(bool bShow)
+{
+    bShowEventConnections = bShow;
+}
+
 function string GetActorName(Actor a)
 {
     local string str;
@@ -124,6 +146,22 @@ function string GetActorName(Actor a)
     return str;
 }
 
+function DrawColourLine(GC gc, vector point1, vector point2, int r, int g, int b)
+{
+    local float fromX, fromY;
+    local float toX, toY;
+
+    gc.SetStyle(DSTY_Normal);
+    if (ConvertVectorToCoordinates(point1, fromX, fromY) && ConvertVectorToCoordinates(point2, toX, toY))
+    {
+        gc.SetTileColorRGB(r, g, b);
+        DrawPoint(gc, fromX, fromY);
+        DrawPoint(gc, toX, toY);
+        gc.SetTileColorRGB(r, g, b);
+        Interpolate(gc, fromX, fromY, toX, toY, 8);
+    }
+}
+
 //I just want to change the font :(
 function DrawWindow(GC gc)
 {
@@ -135,7 +173,8 @@ function DrawWindow(GC gc)
     local vector tVect;
     local vector cVect;
     local PlayerPawnExt player;
-    local Actor trackActor;
+    local Actor trackActor, otherActor;
+    local Dispatcher disp;
     local ScriptedPawn trackPawn;
     local bool bValid;
     local bool bPointValid;
@@ -345,7 +384,53 @@ function DrawWindow(GC gc)
             {
                 str = str $ "|cf50aff";
                 str = str $ "Tag: "$trackActor.Tag  $ CR();
+
+                disp = Dispatcher(trackActor);
+
                 str = str $ "Event: "$trackActor.Event  $ CR();
+                if (disp!=None){
+                    for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                        if (disp.OutEvents[i]!=''){
+                            str = str $ "OutDelays["$i$"]: "$disp.OutDelays[i] $ CR();
+                            str = str $ "OutEvents["$i$"]: "$disp.OutEvents[i] $ CR();
+                        }
+                    }
+                }
+            }
+            if (bShowEventConnections)
+            {
+                if (trackActor.Event!=''){
+                    foreach player.AllActors(class'Actor',otherActor,trackActor.Event){
+                        DrawColourLine(gc,trackActor.Location,otherActor.Location,255,0,0);
+                    }
+                }
+                disp = Dispatcher(trackActor);
+                if (disp!=None){
+                    for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                        if (disp.OutEvents[i]!=''){
+                            foreach player.AllActors(class'Actor',otherActor,disp.OutEvents[i]){
+                                DrawColourLine(gc,trackActor.Location,otherActor.Location,255,0,0);
+                            }
+                        }
+                    }
+                }
+            }
+            if (bShowTagConnections)
+            {
+                if (trackActor.Tag!=''){
+                    foreach player.AllActors(class'Actor',otherActor){
+                        if (otherActor.Event == trackActor.Tag){
+                            DrawColourLine(gc,trackActor.Location,otherActor.Location,0,255,0);
+                        }
+                        foreach player.AllActors(class'Dispatcher',disp){
+                            for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                                if (disp.OutEvents[i]==trackActor.Tag){
+                                    DrawColourLine(gc,trackActor.Location,disp.Location,0,255,0);
+                                }
+                            }
+                        }
+                    }
+                }
             }
             if (bShowState || bShowData)
             {

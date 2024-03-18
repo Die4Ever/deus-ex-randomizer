@@ -7,6 +7,8 @@ var ToolCheckboxWindow	chkCustom;
 var ToolCheckboxWindow	chkInventory;
 var ToolCheckboxWindow	chkLimitRadius;
 var ToolCheckboxWindow	chkTagEvent;
+var ToolCheckboxWindow	chkTagConns;
+var ToolCheckboxWindow	chkEventConns;
 
 event InitWindow()
 {
@@ -26,7 +28,7 @@ function CreateDXRandoControls()
     nameFilter.SetInsertionPoint(Len(actorDisplay.GetNameFilter()) - 1);
     nameFilter.SetSelectedArea(0, Len(actorDisplay.GetNameFilter()));
 
-    chkCustom	= CreateToolCheckbox(215, 90,  "Show Custom Attribute", actorDisplay.IsCustomVisible());
+    chkCustom = CreateToolCheckbox(215, 90,  "Show Custom Attribute", actorDisplay.IsCustomVisible());
 
     // Spot to enter the custom attribute to show
     custAttribName = CreateToolEditWindow(235, 105, 160, 64);
@@ -38,7 +40,7 @@ function CreateDXRandoControls()
     chkInventory = CreateToolCheckbox(215, 130,  "Show Inventory", actorDisplay.IsInventoryVisible());
 
     //Limit the actors shown to a radius?
-    chkLimitRadius	= CreateToolCheckbox(215, 155,  "Limit to Radius", actorDisplay.IsRadiusLimited());
+    chkLimitRadius = CreateToolCheckbox(215, 155,  "Limit to Radius", actorDisplay.IsRadiusLimited());
 
     // Spot to enter the radius limit
     radiusFilter = CreateToolEditWindow(235, 170, 160, 64);
@@ -47,7 +49,10 @@ function CreateDXRandoControls()
     radiusFilter.SetSelectedArea(0, Len(string(actorDisplay.GetActorRadius())));
 
     //Show the tag and event of the actors?
-    chkTagEvent	= CreateToolCheckbox(215, 195,  "Show Tag and Event", actorDisplay.IsTagEventVisible());
+    chkTagEvent = CreateToolCheckbox(215, 195,  "Show Tag and Event", actorDisplay.IsTagEventVisible());
+
+    chkTagConns    = CreateToolCheckbox(215, 220,  "Show Connections to Tag (Green)", actorDisplay.IsTagConnsVisible());
+    chkEventConns  = CreateToolCheckbox(215, 245,  "Show Connections to Event (Red)", actorDisplay.IsEventConnsVisible());
 
 }
 
@@ -61,6 +66,8 @@ function SaveSettings()
 
     actorDisplay.ShowInventory(chkInventory.GetToggle());
     actorDisplay.ShowTagEvent(chkTagEvent.GetToggle());
+    actorDisplay.ShowTagConns(chkTagConns.GetToggle());
+    actorDisplay.ShowEventConns(chkEventConns.GetToggle());
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplay.SetActorRadius(radiusFilter.GetText());
