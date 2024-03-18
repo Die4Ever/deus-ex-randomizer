@@ -6,6 +6,7 @@ var ToolEditWindow radiusFilter;
 var ToolCheckboxWindow	chkCustom;
 var ToolCheckboxWindow	chkInventory;
 var ToolCheckboxWindow	chkLimitRadius;
+var ToolCheckboxWindow	chkTagEvent;
 
 event InitWindow()
 {
@@ -44,6 +45,10 @@ function CreateDXRandoControls()
     radiusFilter.SetText(string(actorDisplay.GetActorRadius()));
     radiusFilter.SetInsertionPoint(Len(string(actorDisplay.GetActorRadius())) - 1);
     radiusFilter.SetSelectedArea(0, Len(string(actorDisplay.GetActorRadius())));
+
+    //Show the tag and event of the actors?
+    chkTagEvent	= CreateToolCheckbox(215, 195,  "Show Tag and Event", actorDisplay.IsTagEventVisible());
+
 }
 
 function SaveSettings()
@@ -55,6 +60,7 @@ function SaveSettings()
     actorDisplay.ShowCustom(chkCustom.GetToggle());
 
     actorDisplay.ShowInventory(chkInventory.GetToggle());
+    actorDisplay.ShowTagEvent(chkTagEvent.GetToggle());
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplay.SetActorRadius(radiusFilter.GetText());

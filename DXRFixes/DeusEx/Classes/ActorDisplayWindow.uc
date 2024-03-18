@@ -10,6 +10,7 @@ var bool         bShowInventory;
 var string       nameFilter;
 var bool         bLimitRadius;
 var int          actorRadius;
+var bool         bShowTagEvent;
 
 function SetActorRadius(string newRadius)
 {
@@ -80,6 +81,16 @@ function bool IsInventoryVisible()
 function ShowInventory(bool bShow)
 {
     bShowInventory = bShow;
+}
+
+function bool IsTagEventVisible()
+{
+    return bShowTagEvent;
+}
+
+function ShowTagEvent(bool bShow)
+{
+    bShowTagEvent = bShow;
 }
 
 function string GetActorName(Actor a)
@@ -330,6 +341,12 @@ function DrawWindow(GC gc)
             }
 
             str = "";
+            if (bShowTagEvent || bShowData)
+            {
+                str = str $ "|cf50aff";
+                str = str $ "Tag: "$trackActor.Tag  $ CR();
+                str = str $ "Event: "$trackActor.Event  $ CR();
+            }
             if (bShowState || bShowData)
             {
                 stateName = trackActor.GetStateName();
