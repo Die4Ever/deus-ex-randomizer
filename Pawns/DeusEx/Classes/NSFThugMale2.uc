@@ -1,12 +1,7 @@
 //=============================================================================
 // NSFThugMale2.
 //=============================================================================
-class NSFThugMale2 extends #var(prefix)Terrorist;
-
-function bool Facelift(bool bOn)
-{
-    return false;
-}
+class NSFThugMale2 extends DXRTerroristBase;
 
 defaultproperties
 {
