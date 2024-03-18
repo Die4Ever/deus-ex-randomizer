@@ -1,4 +1,6 @@
-eventfile = "..\DXRModules\DeusEx\Classes\DXREvents.uc"
+import os
+
+eventfile = os.path.join("..", "DXRModules", "DeusEx", "Classes", "DXREvents.uc")
 
 mission=[]
 for i in range(0,16):
