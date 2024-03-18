@@ -72,7 +72,7 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)Karkian', 1, FactionAny);
     AddRandomEnemyType(class'#var(prefix)SecurityBot2', 2, FactionAny);//walker
     AddRandomEnemyType(class'#var(prefix)SecurityBot3', 2, FactionAny);//little guy from liberty island
-    AddRandomEnemyType(class'#var(prefix)SecurityBot4', 2, FactionAny);//unused little guy
+    AddRandomEnemyType(class'DXRSecurityBot4', 2, FactionAny);//unused little guy
 
     AddRandomEnemyType(class'#var(prefix)UNATCOTroop', 10, UNATCO);
     AddRandomEnemyType(class'UNATCOClone1', 10, UNATCO);
@@ -112,9 +112,9 @@ function CheckConfig()
     AddRandomEnemyType(class'NSFClone2', 10, NSF);
     AddRandomEnemyType(class'NSFClone3', 10, NSF);
     AddRandomEnemyType(class'NSFClone4', 10, NSF);
-    AddRandomEnemyType(class'#var(prefix)ThugMale', 5, NSF);
-    AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, NSF);
-    AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, NSF);
+    AddRandomEnemyType(class'NSFThugMale', 5, NSF);
+    AddRandomEnemyType(class'NSFThugMale2', 5, NSF);
+    AddRandomEnemyType(class'NSFThugMale3', 5, NSF);
     AddRandomEnemyType(class'NSFCloneAugShield1', 1.5, NSF);
     AddRandomEnemyType(class'NSFCloneAugTough1', 1.5, NSF);
     AddRandomEnemyType(class'NSFCloneAugStealth1', 1.5, NSF);

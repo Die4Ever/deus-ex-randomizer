@@ -1639,6 +1639,7 @@ function string RemapBingoEvent(string eventname)
             return "KnowsAnnasKillphrase";
         case "SecurityBot3_ClassDead":
         case "SecurityBot4_ClassDead":
+        case "DXRSecurityBot4_ClassDead":
             return "SecurityBotSmall_ClassDead";
         case "SpiderBot2_ClassDead":
             return "SpiderBot_ClassDead";
