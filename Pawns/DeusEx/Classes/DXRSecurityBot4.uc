@@ -3,6 +3,11 @@
 //=============================================================================
 class DXRSecurityBot4 extends #var(prefix)SecurityBot3;
 
+function bool Facelift(bool bOn)
+{
+    return false;
+}
+
 defaultproperties
 {
      SpeechTargetAcquired=Sound'DeusExSounds.Robot.SecurityBot3TargetAcquired'

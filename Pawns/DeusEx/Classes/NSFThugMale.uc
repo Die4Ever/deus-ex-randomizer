@@ -3,6 +3,11 @@
 //=============================================================================
 class NSFThugMale extends #var(prefix)Terrorist;
 
+function bool Facelift(bool bOn)
+{
+    return false;
+}
+
 defaultproperties
 {
      CarcassType=Class'DeusEx.ThugMaleCarcass'
