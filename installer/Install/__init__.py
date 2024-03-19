@@ -56,6 +56,9 @@ def GetDryrun() -> bool:
 def IsWindows() -> bool:
     return os.name == 'nt'
 
+def GetVersion():
+    return 'v2.6 Beta'
+
 def CheckVulkan() -> bool:
     if not IsWindows():
         return False # no easy way to detect Vulkan on Linux, they don't need DXVK anyways

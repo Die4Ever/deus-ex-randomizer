@@ -1,4 +1,4 @@
-from Install import GetSourcePath, SetDryrun, SetVerbose, info, debug
+from Install import GetSourcePath, SetDryrun, SetVerbose, info, debug, GetVersion
 try:
     import argparse
     import sys
@@ -18,9 +18,6 @@ parser.add_argument('--path', help='Path to DeusEx.exe for installation')
 parser.add_argument('--downloadmirrors', action="store_true", help='Default to download mirrored maps for unattended installations')
 parser.add_argument('--verbose', action="store_true", help="Output way more to the console")
 args = parser.parse_args()
-
-def GetVersion():
-    return 'v2.6'
 
 if args.verbose:
     SetVerbose(True)
