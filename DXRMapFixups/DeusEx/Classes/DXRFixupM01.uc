@@ -111,6 +111,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //To change it so Manderley will brief you if you talked to Sam and Jaime (instead of actually getting equipment from Sam)
+        SetTimer(1.0, True);
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
@@ -132,6 +135,19 @@ function PreFirstEntryMapFixes()
             hc.bImportant = true;
         }
 
+        break;
+    }
+}
+
+function TimerMapFixes()
+{
+    switch(dxr.localURL)
+    {
+    case "01_NYC_UNATCOHQ":
+        if (!dxr.flagbase.GetBool('M01ReadyForBriefing') && dxr.flagbase.GetBool('MeetCarter_Played') && dxr.flagbase.GetBool('MeetJaime_Played')){
+            dxr.flagbase.SetBool('M01ReadyForBriefing',True,,999);
+            SetTimer(0,false);
+        }
         break;
     }
 }
