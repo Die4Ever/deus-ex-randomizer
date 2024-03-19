@@ -1374,4 +1374,10 @@ exec function ShowBingoWindow()
 	InvokeUIScreen(Class'PersonaScreenBingo');
 }
 
+exec function ActivateAllAutoAugs()
+{
+    if (AugmentationSystem != None)
+        AugmentationSystem.ActivateAllAutoAugs();
+}
+
 // ---
