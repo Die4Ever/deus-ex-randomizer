@@ -8,6 +8,12 @@ function bool Facelift(bool bOn)
     return false;
 }
 
+//SecurityBot3 modifies the skin in here, so skip over that
+function BeginPlay()
+{
+    Super(Robot).BeginPlay();
+}
+
 defaultproperties
 {
      SpeechTargetAcquired=Sound'DeusExSounds.Robot.SecurityBot3TargetAcquired'
