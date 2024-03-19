@@ -341,6 +341,17 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(709,-1378,432),,'Shitting',, 'security', 1);
         class'PlaceholderEnemy'.static.Create(self,vectm(-1101,2364,-592),,'Shitting',, 'security', 1);
         class'PlaceholderEnemy'.static.Create(self,vectm(-1368,2350,-592),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(85,1351,816),,'Sitting',, 'security', 1); //Upper lookout room
+        class'PlaceholderEnemy'.static.Create(self,vectm(53,1173,816),,'Sitting',, 'security', 1); //Upper Lookout room
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1470,-540,-80),,,, 'security', 1); //Catwalk to level 2 lab elevator
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1121,-185,-752),,,, 'security', 1); //Between zappy things in lab
+        class'PlaceholderEnemy'.static.Create(self,vectm(-829,2811,-592),,,, 'security', 1); //In the shower
+        class'PlaceholderEnemy'.static.Create(self,vectm(626,-632,-80),,,, 'security', 1); //Upper level of ROM encoding room
+        class'PlaceholderEnemy'.static.Create(self,vectm(-33,155,176),,,, 'security', 1); //Main hall
+        class'PlaceholderEnemy'.static.Create(self,vectm(-8,-715,176),,,, 'security', 1); //Main hall
+        class'PlaceholderEnemy'.static.Create(self,vectm(1345,-1092,431),,,, 'security', 1); //Conference room
+        class'PlaceholderEnemy'.static.Create(self,vectm(-629,1718,-592),,,, 'security', 1); //Barracks
+
 
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
