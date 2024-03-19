@@ -20,7 +20,7 @@ parser.add_argument('--verbose', action="store_true", help="Output way more to t
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v0.4'
+    return 'v2.6'
 
 if args.verbose:
     SetVerbose(True)

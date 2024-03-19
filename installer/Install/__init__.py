@@ -1,6 +1,7 @@
 
 try:
-    outfile = open('log.txt', 'w')
+    outfile = open('log.txt', 'w', encoding="utf-8")
+    print('starting', file=outfile, flush=True)
 except Exception as e:
     print('ERROR writing to log.txt file', e)
     outfile = None
@@ -10,13 +11,14 @@ def debug(*args):
     if GetVerbose():
         print(*args)
         if outfile:
-            print(*args, file=outfile)
+            print(*args, file=outfile, flush=True)
 
 def info(*args):
     global outfile
     print(*args)
     if outfile:
-        print(*args, file=outfile)
+        print(*args, file=outfile, flush=True)
+
 
 
 
