@@ -77,7 +77,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 {
     local bool show_keys;
 
-    show_keys = bool(DeusExPlayer(Frobber).ConsoleCommand("get DeusEx.MenuChoice_ShowKeys enabled"));
+    show_keys = class'MenuChoice_ShowKeys'.default.enabled;
 
     //If trying to lockpick a door that you have the key for...
 	if (show_keys && !bDone && frobWith != None && KeyIDNeeded != '')

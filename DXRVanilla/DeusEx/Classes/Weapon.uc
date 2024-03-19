@@ -8,6 +8,8 @@ var name prev_anim;
 var float prev_anim_rate;
 var float prev_weapon_skill;
 
+var int WeaponTexLoc[8];
+
 function PostBeginPlay()
 {
     local DXRWeapons m;
@@ -20,6 +22,8 @@ function PostBeginPlay()
 
 function BringUp()
 {
+    local int texLoc;
+
     Super.BringUp();
 
     // don't let NPC geps lock on to targets
@@ -28,10 +32,19 @@ function BringUp()
     else
         bCanTrack = default.bCanTrack;
 
-    if (bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+    if (class'MenuChoice_AutoLaser'.default.enabled){
         //LaserOn already checks to see if it has a laser, so just call it
         LaserOn();
     }
+
+    for (texLoc=0;texLoc<8;texLoc++){
+        if (IsWeaponTexture(texLoc)){
+            WeaponTexLoc[texLoc]=1;
+        } else {
+            WeaponTexLoc[texLoc]=0;
+        }
+    }
+
 }
 
 simulated function Tick(float deltaTime)
@@ -46,23 +59,31 @@ simulated function Tick(float deltaTime)
 
     if(AnimSequence != prev_anim || GetWeaponSkill() != prev_weapon_skill) {
         prev_anim = AnimSequence;
+        r = 1.0;
         e = 1.7;
 
         if(AnimSequence == 'PlaceBegin' || AnimSequence == 'PlaceEnd')
+        {
             if(AnimFrame<0.2)// skip the beginning of the animation
                 AnimFrame=0.2;
-        else if(AnimSequence == 'Shoot'
-            || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3'
-            || AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3'
-        ) {
+        }
+        else if(AnimSequence == 'Shoot' || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3')
+        {
+            r = (default.ShotTime / ShotTime);
+            r = FClamp(r, 0.4, 1.7);
+            e = 1.0;// these animations don't scale as much with skill
+        }
+        else if(AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3')
+        {
             e = 1.0;// these animations don't scale as much with skill
         }
         if(GoverningSkill == Class'SkillDemolition') {
-            anim_speed = 1.1;// why are grenades so slow?
+            r *= 1.1;// why are grenades so slow?
             e = 1.9;
         }
         prev_weapon_skill = GetWeaponSkill();
-        r = (anim_speed + -0.2 * prev_weapon_skill) ** e;
+        r *= (anim_speed + -0.2 * prev_weapon_skill) ** e;
+        r = FClamp(r, 0.001, 1000);
         prev_anim_rate = AnimRate * r;
     }
 
@@ -95,7 +116,10 @@ simulated function bool NearWallCheck()
         placeNormal = HitNormal;
         placeMover = Mover(HitActor);
 
-        if (!bNearWall && IsAnimating() && (GetStateName() == 'NormalFire'))
+        if (!bNearWall &&
+            IsAnimating() &&
+            (AnimSequence=='Attack' || AnimSequence=='Attack2' || AnimSequence=='Attack3' ) &&
+            (GetStateName() == 'NormalFire'))
         {
             //The throw animation is about to be canceled by a place animation.
             //Ammo gets consumed at the start of the animation, but the projectile is only spawned
@@ -637,7 +661,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     //Hack borrowed from WCCC
     if (Other == Level){
         dxPlayer = DeusExPlayer(Owner);
-        if (dxPlayer != None && dxPlayer.FrobTarget.IsA('Mover')){
+        if (dxPlayer != None && Mover(dxPlayer.FrobTarget) != None){
             Other = dxPlayer.FrobTarget;
         }
     }
@@ -651,6 +675,109 @@ function TravelPostAccept()
     if (IsA('WeaponPlasmaRifle')){
         FireSound = Default.FireSound;
     }
+}
+
+simulated function bool IsWeaponTexture(int i)
+{
+    local Texture thisTex;
+
+    thisTex = GetMeshTexture(i);
+    if (thisTex==None){
+        return false;
+    } else if (InStr(string(thisTex),"MaskTex")!=-1){
+        return false;
+    } else if (InStr(string(thisTex),"WeaponHandsTex")!=-1){
+        return false;
+    } else if (InStr(string(thisTex),"SFX")!=-1){
+        return false;
+    } else if (InStr(string(thisTex),"MapTex")!=-1){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+simulated event RenderOverlays( canvas Canvas )
+{
+    local Texture origTex[8];
+    local int texLoc;
+    Super.RenderOverlays(Canvas);
+
+    //Draw an indication that the weapon still has a shot in progress
+    //if (bFiring && !IsAnimating() && PlayerPawn(Owner)!=None){
+    //bPointing seems to be updated basically the same as bFiring, except it works for melee as well
+    if (GetStateName()=='NormalFire' && !IsAnimating() && !bAutomatic && PlayerPawn(Owner)!=None){
+        ScaleGlow=0.1;
+        Style = STY_Translucent;
+
+        for (texLoc=0;texLoc<8;texLoc++){
+            origTex[texLoc] = MultiSkins[texLoc];
+            if (WeaponTexLoc[texLoc]==1){
+                MultiSkins[texLoc]=Texture'Effects.Laser.LaserBeam1';
+            }
+        }
+
+        Canvas.DrawActor(self, false);
+
+        for (texLoc=0;texLoc<8;texLoc++){
+            MultiSkins[texLoc]=origTex[texLoc];
+        }
+
+        Style = STY_Normal;
+        ScaleGlow=1.0;
+    }
+}
+
+function bool HandlePickupQuery(Inventory Item)
+{
+    local DeusExWeapon W;
+    local DeusExPlayer player;
+    local class<Ammo> defAmmoClass;
+    local Ammo defAmmo,newAmmo;
+    local int ammoToAdd,ammoRemaining;
+
+    W = DeusExWeapon(Item);
+    player = DeusExPlayer(Owner);
+
+    if (w!=None && player!=None && Item.Class == Class)
+    {
+        if (!( (w.bWeaponStay && (Level.NetMode == NM_Standalone)) && (!w.bHeldItem || w.bTossedOut)))
+        {
+            if ( AmmoType != None )
+            {
+                if ( AmmoNames[0] == None ){
+                    defAmmoClass = AmmoName;
+                }else{
+                    defAmmoClass = AmmoNames[0];
+                }
+                defAmmo = Ammo(player.FindInventoryType(defAmmoClass));
+                if(defAmmo!=None){
+                    ammoToAdd = w.PickUpAmmoCount;
+                    ammoRemaining=0;
+                    if ((ammoToAdd + defAmmo.AmmoAmount) > defAmmo.MaxAmmo){
+                        ammoRemaining = (ammoToAdd + defAmmo.AmmoAmount) - defAmmo.MaxAmmo;
+                        ammoToAdd = ammoToAdd - ammoRemaining;
+                    }
+
+                    w.PickUpAmmoCount = ammoToAdd;
+                    if (ammoRemaining>0){
+                        if(defAmmoClass.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
+                            //Weapons with normal ammo that exists
+                            newAmmo = Spawn(defAmmoClass,,,w.Location,w.Rotation);
+                            newAmmo.ammoAmount = ammoRemaining;
+                            newAmmo.Velocity = Velocity + VRand() * 280;
+                        } else {
+                            w.PickUpAmmoCount = ammoRemaining;
+                            defAmmo.AddAmmo(ammoToAdd);
+                            return True;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return Super.HandlePickupQuery(Item);
 }
 
 // vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0

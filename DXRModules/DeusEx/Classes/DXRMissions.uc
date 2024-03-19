@@ -383,8 +383,8 @@ function MoveActorsIn(int goalsToLocations[32])
 
 function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
-    local int i, g1, g2, r, _num_locs, _num_starts;
-    local int availLocs[64], goalsOrder[32];
+    local int i, a, g, g1, g2, r, loc, _num_locs, _num_starts, _num_goal_locs;
+    local int availLocs[64], goalsOrder[32], goalLocs[64];
 
     // build list of availLocs based on flags, also count _num_starts
     _num_locs = 0;
@@ -396,28 +396,27 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         // exclude the vanilla goal locations if randomized goal locations are disabled
         if( dxr.flags.settings.goals <= 0 && (VANILLA_GOAL & locations[i].bitMask) != 0 )
             continue;
-        availLocs[_num_locs++] = i;
 
-        if( (START_LOCATION & locations[i].bitMask) != 0)
-            _num_starts++;
+        if( (START_LOCATION & locations[i].bitMask) != 0) {
+            goalLocs[_num_starts++] = _num_locs;
+        }
+        availLocs[_num_locs++] = i;
     }
 
     // choose a starting location
     goalsToLocations[num_goals] = -1;
     if(_num_starts > 0) {
-        for(i=0; i<20; i++) {
-            r = rng(_num_locs);
-            if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0)
-                continue;
+        _num_goal_locs = _num_starts;
+        r = rng(_num_goal_locs);
+        a = goalLocs[r];
+        loc = availLocs[a];
 
-            goalsToLocations[num_goals] = availLocs[r];
-            _num_locs--;
-            availLocs[r] = availLocs[_num_locs];
-            break;
-        }
-        if(goalsToLocations[num_goals] == -1)
-            return false;
+        goalsToLocations[num_goals] = loc;
+        _num_locs--;
+        availLocs[a] = availLocs[_num_locs];
     }
+
+    if(num_goals == 0) return true;
 
     // do the goals in a random order
     for(i=0; i<num_goals; i++) {
@@ -432,19 +431,29 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
 
     // choose the goal locations
     for(g1=0; g1<num_goals; g1++) {
-        r = rng(_num_locs);
-        i = goalsOrder[g1];
-        goalsToLocations[i] = availLocs[r];
-        if( (goals[i].bitMask & locations[availLocs[r]].bitMask) == 0)
-            return false;
+        g = goalsOrder[g1];
 
-        spoilers[i].goalName=goals[i].name;
-        spoilers[i].goalLocation=locations[availLocs[r]].name;
-        spoilers[i].locationMapName=locations[availLocs[r]].mapName;
-        spoilers[i].locationId=availLocs[r];
+        // build temporary goalLocs
+        _num_goal_locs = 0;
+        for(a=0; a<_num_locs; a++) {
+            loc = availLocs[a];
+            if( (goals[g].bitMask & locations[loc].bitMask) != 0) {
+                goalLocs[_num_goal_locs++] = a;
+            }
+        }
+
+        r = rng(_num_goal_locs);
+        a = goalLocs[r];
+        loc = availLocs[a];
+        goalsToLocations[g] = loc;
+
+        spoilers[g].goalName=goals[g].name;
+        spoilers[g].goalLocation=locations[loc].name;
+        spoilers[g].locationMapName=locations[loc].mapName;
+        spoilers[g].locationId=loc;
 
         _num_locs--;
-        availLocs[r] = availLocs[_num_locs];
+        availLocs[a] = availLocs[_num_locs];
     }
 
     // check mutual exclusions
@@ -466,7 +475,12 @@ function ChooseGoalLocations(out int goalsToLocations[32])
 {
     local int attempts;
     for(attempts=0; attempts<1000; attempts++) {
-        if(_ChooseGoalLocations(goalsToLocations)) return;
+        if(_ChooseGoalLocations(goalsToLocations)) {
+            if(attempts > 100) {
+                warning("ChooseGoalLocations took " $ (attempts+1) $ " attempts!");
+            }
+            return;
+        }
     }
     err("ChooseGoalLocations took too many attempts!");
 }
@@ -523,13 +537,14 @@ function Timer()
     }
 }
 
-function UpdateGoalWithRandoInfo(name goalName, string text)
+function UpdateGoalWithRandoInfo(name goalName, string text, optional bool always)
 {
     local string goalText;
     local DeusExGoal goal;
     local int randoPos;
 
     if(player(true)==None) return;// don't spam HX logs
+    if(!always && dxr.flags.settings.goals == 0) return; //Don't add rando notes if goal randomization is turned off
 
     goal = player().FindGoal(goalName);
     if(goal == None) return;
@@ -738,14 +753,22 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
         return IsCloseToRandomStart(dxr, loc);
     }
     else {
-        too_close = 120 * 16;// worst cases are 05 jail and 06 helibase?
+        switch(dxr.localURL) {
+            case "05_NYC_UNATCOMJ12lab":
+            case "06_HongKong_Helibase":
+            case "14_Vandenberg_Sub":
+                too_close = 120 * 16;// worst cases are 05 jail and 06 helibase? for larger maps this doesn't matter much anyways
+                break;
+            default:
+                too_close = 50 * 16;
+        }
         foreach dxr.RadiusActors(class'PlayerStart', ps, too_close, loc) {
             dist = VSize(loc-ps.location);
             if( dist < too_close ) return true;
         }
     }
 
-    too_close = 75 * 16;
+    too_close = 50 * 16;
     foreach dxr.RadiusActors(class'Teleporter', t, too_close, loc) {
         if( t.Tag == '' ) continue;
         dist = VSize(loc-t.location);

@@ -184,7 +184,7 @@ function RandoCarcasses(int chance)
         item = c.Inventory;
         while( item != None ) {
             nextItem = item.Inventory;
-            if( chance_single(50) && !item.IsA('NanoKey') ) {
+            if( chance_single(50) && #var(prefix)NanoKey(item)==None && #var(prefix)AugmentationCannister(item)==None && #var(prefix)AugmentationUpgradeCannister(item)==None ) {
                 c.DeleteInventory(item);
                 item.Destroy();
             }
@@ -244,6 +244,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     local Inventory inv;
     local NanoKey k1, k2;
     local name newtag, oldAlliance;
+    local ZoneInfo zone;
 
     if( p == None ) {
         l("p == None?");
@@ -251,7 +252,10 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
 
-    loc = p.Location;
+    if(p.bInWorld)
+        loc = p.Location + loc_offset;
+    else
+        loc = p.WorldPosition + loc_offset;
     if(!IsSpawnPointGood(loc, newclass) || (p.bInWorld == true && class'DXRMissions'.static.IsCloseToStart(dxr, loc))) {
         l("CloneScriptedPawn "$p$" is in a bad spot for cloning");
         return None;
@@ -283,6 +287,13 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
             l("CloneScriptedPawn "$loc$" is too close to start!");
             continue;
         }
+
+        zone = GetZone(loc);
+        if(zone.bWaterZone || zone.bPainZone) {
+            l("CloneScriptedPawn "$loc$" bad zone " $ zone @ zone.bWaterZone @ zone.bPainZone);
+            continue;
+        }
+
         n = Spawn(newclass,, newtag, loc );
         if( n != None ) {
             if(VSize(n.Location - loc) > 160) {
@@ -315,9 +326,11 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
     {
+        // clear default initial alliances
         if(n.InitialAlliances[i].AllianceName != '') {
             n.ChangeAlly(n.InitialAlliances[i].AllianceName, 0, false);
         }
+        // instead copy alliances from parent, below we call n.InitializeAlliances()
         n.InitialAlliances[i] = p.InitialAlliances[i];
     }
 
@@ -368,9 +381,9 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     else
         n.Orders = 'Wandering';
     n.HomeTag = 'Start';
-    n.InitializeAlliances();
 
     RandomizeSize(n);
+    n.InitializePawn();
 
     if(!p.bInWorld) {
         n.bHidden = true;

@@ -30,6 +30,7 @@ function int InitGoals(int mission, string map)
         return 91;
 
     case "09_NYC_SHIPBELOW":
+        //NORMAL_GOAL for Weld Points, GOAL_TYPE1 for the bilge pump computer
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 1", NORMAL_GOAL, 'DeusExMover40', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator10', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall1', PHYS_None);
@@ -58,59 +59,71 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
         AddActorLocation(loc, 2, vect(-378, 978, -272), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',320,343,"W","Weld Point", loc,"A weld point can be located at the North end of the Engine Room.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',320,343,"W","Weld Point", loc,"A weld point can be located at the North end of the engine room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
         AddActorLocation(loc, 2, vect(-3300, -1619, -112), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',166,204,"W","Weld Point", loc,"A weld point can be located on the balcony of the Bilge Pump room.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',166,204,"W","Weld Point", loc,"A weld point can be located on the balcony of the bilge pump room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
         AddActorLocation(loc, 2, vect(-2522, -464, -144), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',212,269,"W","Weld Point", loc,"A weld point can be located in the upper hallway next to the Bilge Pump room.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',212,269,"W","Weld Point", loc,"A weld point can be located in the upper hallway next to the bilge pump room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3950, 740, -352), rot(0, 0, 0));
         AddActorLocation(loc, 2, vect(-3908, 766, -416), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',135,135,"W","Weld Point", loc,"A weld point can be located on the South East side of the Electrical Room.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',135,135,"W","Weld Point", loc,"A weld point can be located on the South East side of the electrical room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664, -926, -418), rot(0, 16384, 0));
         AddActorLocation(loc, 2, vect(-5664, -889, -432), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',47,50,"W","Weld Point", loc,"A weld point can be located on the South side of the Helipad.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',47,50,"W","Weld Point", loc,"A weld point can be located on the South side of the helipad.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4082, -816, -128), rot(0, 32768, 0));
         AddActorLocation(loc, 2, vect(-4120, -816, -128), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',130,247,"W","Weld Point", loc,"A weld point can be located in the Helipad Storage Room.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',130,247,"W","Weld Point", loc,"A weld point can be located in the helipad storage room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4752, 1536, -144), rot(0, -16384, 0));
         AddActorLocation(loc, 2, vect(-4717, 1501, -144), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',97,368,"W","Weld Point", loc,"A weld point can be located in the Air Control room of the Helipad.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',97,368,"W","Weld Point", loc,"A weld point can be located in the air control room of the helipad.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Fan Room", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
         AddActorLocation(loc, 2, vect(-3157, -48, -96), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',175,286,"W","Weld Point", loc,"A weld point can be located inside the main ventilation Fan shaft.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',175,286,"W","Weld Point", loc,"A weld point can be located inside the main ventilation fan shaft.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
         AddActorLocation(loc, 2, vect(-288, -426, 62), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',318,263,"W","Weld Point", loc,"A weld point can be located in the control tower in the Engine Room.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',318,263,"W","Weld Point", loc,"A weld point can be located in the control tower in the engine room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832, 1022, -430), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(833.449036, 993.195618, -490.899567), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',381,148,"W","Weld Point", loc,"A weld point can be located on the North West side of the Engine Room.  This is a vanilla location.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',381,148,"W","Weld Point", loc,"A weld point can be located on the North West side of the engine room.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680, 1647, -402), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(-3680.022217, 1616.057861, -490.899567), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',152,180,"W","Weld Point", loc,"A weld point can be located on the North East side of the Electical Room.  This is a vanilla location.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',152,180,"W","Weld Point", loc,"A weld point can be located on the North East side of the electical room.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6526, 200, -418), rot(0,65536,0));
         AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',5,109,"W","Weld Point", loc,"A weld point can be located on the East side of the Helipad.  This is a vanilla location.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',5,109,"W","Weld Point", loc,"A weld point can be located on the East side of the helipad.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1662.000000,-416.000000), rot(0,81920,0));
         AddActorLocation(loc, 2, vect(-3296.133789, -1632.118652, -490.899567), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',171,11,"W","Weld Point", loc,"A weld point can be located next to the Bilge Pumps.  This is a vanilla location.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',171,11,"W","Weld Point", loc,"A weld point can be located next to the bilge pumps.  This is a vanilla location.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832, -1024, -400), rot(0,16384,0));
         AddActorLocation(loc, 2, vect(831.944641, -996.442627, -490.899567), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',385,44,"W","Weld Point", loc,"A weld point can be located on the South West side of the Engine Room, behind a wall.  This is a vanilla location.");
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',385,44,"W","Weld Point", loc,"A weld point can be located on the South West side of the engine room, behind a wall.  This is a vanilla location.");
+
+
+        goal = AddGoal("09_NYC_SHIPBELOW", "Bilge Pump Computer", GOAL_TYPE1, 'ComputerPersonal0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None);
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pump Room", GOAL_TYPE1 | VANILLA_GOAL, vect(-2447.407959, -689.854431, -456.500488), rot(0, -15815, 0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',208,54,"C","Bilge Computer", loc,"The bilge pump computer can be located on a desk in the corner of the bilge pump room.  This is the vanilla location.");
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helibay Barracks", GOAL_TYPE1, vect(-5505, 175, -432), rot(0, 0, 0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',51,102,"C","Bilge Computer", loc,"The bilge pump computer can be located on a bed in the barracks underneath the helicopter in the helibay.");
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Room Tower", GOAL_TYPE1, vect(-133,-678,15), rot(0, -15815, 0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',328,256,"C","Bilge Computer", loc,"The bilge pump computer can be found in the control tower in the engine room.");
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", GOAL_TYPE1, vect(-4987,1176,-205), rot(0, 32710, 0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',78,353,"C","Bilge Computer", loc,"The bilge pump computer can be found in the air control room of the helipad.");
 
         return 92;
 
@@ -222,6 +235,7 @@ function int InitGoalsRev(int mission, string map)
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)Barrel1 barrel;
+    local #var(prefix)DataLinkTrigger dlt;
     local DeusExMover dxm;
     local Actor a;
     local name barrelName;
@@ -288,6 +302,12 @@ function PreFirstEntryMapFixes()
             a = Spawnm(class'DynamicBlockMonsters',,, vect(-3926.773438, 739.635742, -456.895294));
             a.SetCollisionSize(100, 64);
         }
+
+        foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='DL_Bilge'){
+                dlt.SetCollisionSize(dlt.CollisionRadius*2,dlt.CollisionHeight);
+            }
+        }
     }
 }
 
@@ -315,7 +335,12 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 
 function MissionTimer()
 {
-    if(dxr.flags.settings.goals > 0) {
+    switch(dxr.localURL)
+    {
+    case "09_NYC_GRAVEYARD":
+        UpdateGoalWithRandoInfo('EliminateField', "The EM generator could be anywhere in the graveyard.");
+        break;
+    default:
         UpdateGoalWithRandoInfo('Escape', "Jock could be anywhere at the dockyard.");
         UpdateGoalWithRandoInfo('ScuttleShip', "Check the map in your Images section to see where the weld points can be.");
     }

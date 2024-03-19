@@ -26,7 +26,7 @@ function Touch(Actor Other)
 {
 	Super.Touch(Other);
 
-	if (TriggerType!=TT_Shoot && IsRelevant(Other))
+	if (TriggerType!=TT_Shoot && !bPeepable && IsRelevant(Other))
 	{
 		DoBingoThing();
 	}

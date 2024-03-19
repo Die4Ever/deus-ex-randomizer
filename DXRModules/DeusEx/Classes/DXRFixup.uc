@@ -199,6 +199,7 @@ function PreFirstEntry()
 
     OverwriteDecorations();
     FixFlagTriggers();
+    FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
 
@@ -260,7 +261,7 @@ function ShowTeleporters()
     local #var(prefix)Teleporter t;
     local int show_teleporters;
 
-    show_teleporters = int(ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
+    show_teleporters = class'MenuChoice_ShowTeleporters'.default.show_teleporters;
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
         t.bHidden = !(t.bCollideActors && t.bEnabled && show_teleporters>0);
@@ -579,6 +580,7 @@ function OverwriteDecorations()
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             if(DecorationsOverwritesClasses[i] == None) continue;
             if( d.IsA(DecorationsOverwritesClasses[i].name) == false ) continue;
+            if( d.bIsSecretGoal == True) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
             d.HitPoints = DecorationsOverwrites[i].HitPoints;
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;
@@ -609,6 +611,21 @@ function FixFlagTriggers()
             l(f @ f.FlagName @ f.flagValue $" changed expiration from -1 to 999");
         }
     }
+}
+
+function FixBeamLaserTriggers()
+{
+#ifdef fixes
+    local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
+
+    foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+        bt.TriggerType=TT_AnyProximity;
+    }
+    foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+        lt.TriggerType=TT_AnyProximity;
+    }
+#endif
 }
 
 function SpawnDatacubes()
@@ -659,7 +676,7 @@ function AntiEpilepsy()
 {
     local Light l;
 
-    if (!bool(ConsoleCommand("get #var(package).MenuChoice_Epilepsy enabled"))){
+    if (!class'MenuChoice_Epilepsy'.default.enabled){
         return;
     }
 

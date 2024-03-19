@@ -153,10 +153,10 @@ function MissionTimer()
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");
-        UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.");// not actually depedent on goals rando
-
+        UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");
+        if(dxr.flags.settings.swapitems > 0) {
+            UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.",True);// dependent on swap items, not on goals rando
+        }
         if (f.GetBool('MeetNicolette_Played') &&
             !f.GetBool('NicoletteLeftClub'))
         {
@@ -185,8 +185,13 @@ function MissionTimer()
         break;
 
     case "10_PARIS_CATACOMBS_TUNNELS":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('FindNicolette', "Nicolette could be anywhere in the city");
+        UpdateGoalWithRandoInfo('FindNicolette', "Nicolette could be anywhere in the city.");
+        break;
+    case "10_PARIS_CHATEAU":
+        UpdateGoalWithRandoInfo('AccessTemplarComputer', "The computer could be anywhere in the cathedral.");
+        break;
+    case "10_PARIS_CATACOMBS":
+        UpdateGoalWithRandoInfo('KillGreasels', "The greasels could be anywhere in the area.");
         break;
     }
 }

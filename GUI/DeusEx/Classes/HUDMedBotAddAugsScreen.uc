@@ -1,12 +1,8 @@
-#ifdef injections
 class DXRHUDMedBotAddAugsScreen injects HUDMedBotAddAugsScreen;
-#elseif hx
-class DXRHUDMedBotAddAugsScreen extends HXPersonaScreenAugmentationsMedBot;
-#else
-class DXRHUDMedBotAddAugsScreen extends HUDMedBotAddAugsScreen;
-#endif
 
 var PersonaActionButtonWindow btnRemove;
+
+function CreateMedbotLabel() {}
 
 function CreateButtons()
 {
@@ -19,13 +15,8 @@ function CreateButtons()
     btnRemove = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnRemove.SetButtonText("|&Remove");
 
-#ifdef hx
-    InstallButton = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
-    InstallButton.SetButtonText(InstallButtonLabel);
-#else
     btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnInstall.SetButtonText(InstallButtonLabel);
-#endif
 }
 
 function EnableButtons()
@@ -52,11 +43,7 @@ function bool ButtonActivated(Window buttonPressed)
             RemoveAugmentation();
             break;
 
-#ifdef hx
-        case InstallButton:
-#else
         case btnInstall:
-#endif
             InstallAugmentation();
             break;
         default:
@@ -71,7 +58,6 @@ function bool ButtonActivated(Window buttonPressed)
 
     return bHandled;
 }
-
 
 function RemoveAugmentation()
 {
@@ -97,7 +83,6 @@ function RemoveAugmentation()
     return;
 }
 
-
 function DestroyAugmentationButtons()
 {
     local int buttonIndex,highlightIndex;
@@ -113,6 +98,17 @@ function DestroyAugmentationButtons()
     for(highlightIndex=0;highlightIndex<arrayCount(augHighlightWindows);highlightIndex++){
 	    augHighlightWindows[highlightIndex].Hide();
     }
+}
 
+function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
+{
+    Super.SetMedicalBot(newBot, bPlayAnim);
 
+    if (class'#var(injectsprefix)HUDMedBotHealthScreen'.static.isAugsOnly(medBot) && #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar) != None) {
+        #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar).CreateExitButton();
+        MedbotInterfaceText = "AUGBOT INTERFACE";
+    } else if(#var(injectsprefix)HUDMedBotNavBarWindow(winNavBar) != None) {
+        #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
+    }
+    Super.CreateMedbotLabel();
 }

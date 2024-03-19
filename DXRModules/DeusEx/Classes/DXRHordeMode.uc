@@ -19,9 +19,9 @@ var config int wine_bottles_per_enemy;
 var config name default_orders;
 var config name default_order_tag;
 var config string map_name;
-var config name remove_objects[12];
+var config name remove_objects[16];
 var config name unlock_doors[8];
-var config name lock_doors[8];
+var config name lock_doors[16];
 var config vector starting_location;
 
 struct EnemyChances {
@@ -43,7 +43,7 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,4,0,1) ) {
+    if( ConfigOlderThan(2,6,0,2) ) {
         time_between_waves = 65;
         time_before_damage = 180;
         damage_timer = 10;
@@ -143,11 +143,11 @@ function CheckConfig()
         enemies[i].chance = 3;
         enemies[i].minWave = 4;
         enemies[i].difficulty = 2;
-        /*i++;
-        enemies[i].type = "WIB";//bugged animations?
+        i++;
+        enemies[i].type = "WIB";
         enemies[i].chance = 2;
         enemies[i].minWave = 4;
-        enemies[i].difficulty = 2;*/
+        enemies[i].difficulty = 2;
         i++;
         enemies[i].type = "SpiderBot2";
         enemies[i].chance = 2;
@@ -235,7 +235,7 @@ function CheckConfig()
         items[i].chance = 3;
 
         map_name = "11_paris_cathedral";
-        starting_location = vectm(-3811.785156, 2170.053223, -774.903442);
+        starting_location = vect(-3811.785156, 2170.053223, -774.903442);
         default_orders = 'Attacking';
         default_order_tag = '';
 
@@ -252,6 +252,10 @@ function CheckConfig()
         lock_doors[i++] = 'BreakableGlass1';
         lock_doors[i++] = 'BreakableGlass2';
         lock_doors[i++] = 'BreakableGlass3';
+        lock_doors[i++] = 'BreakableGlass4';
+        lock_doors[i++] = 'BreakableGlass5';
+        lock_doors[i++] = 'BreakableGlass6';
+        lock_doors[i++] = 'BreakableGlass7';
         lock_doors[i++] = 'DeusExMover8';
         lock_doors[i++] = 'DeusExMover9';
         lock_doors[i++] = 'DeusExMover17';
@@ -275,11 +279,17 @@ function AnyEntry()
     local DeusExMover d;
     local DXREnemies dxre;
     local Inventory item;
+    local DXRMapVariants mapvariants;
     local int i;
 
     if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
+
     if( dxr.dxInfo.missionNumber>0 && dxr.localURL != map_name ) {
+        mapvariants = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
+        if(mapvariants != None) {
+            map_name = mapvariants.VaryMap(map_name);
+        }
         Level.Game.SendPlayer(player(), map_name);
         return;
     }
@@ -287,6 +297,7 @@ function AnyEntry()
         return;
     }
 
+    starting_location = vectm(starting_location.X, starting_location.Y, starting_location.Z);
     player().SetLocation(starting_location);
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));

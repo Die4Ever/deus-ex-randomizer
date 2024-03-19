@@ -8,6 +8,8 @@ function PreFirstEntry()
     local BlockPlayer bp;
     local MapExit exit;
     local FlagTrigger ft;
+    local DeusExDecoration button;
+    local DXRButtonHoverHint buttonHint;
 
     Super.PreFirstEntry();
 
@@ -32,7 +34,9 @@ function PreFirstEntry()
             SetDestination(dt, "10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
             dt.SetCollisionSize(160,dt.CollisionHeight);
             if(!dxr.flags.IsZeroRando()) {
-                AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+                button=AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+                buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, dt));
+                buttonHint.SetBaseActor(button);
             }
 
             foreach AllActors(class'MapExit', exit, 'ChopperExit') {
@@ -58,6 +62,11 @@ function PreFirstEntry()
             foreach AllActors(class'MapExit', exit, 'mission_done') {
                 SetDestination(exit, "12_Vandenberg_gas", '', "gas_start");
             }
+            FixTunnelsTeleporters();
+            break;
+
+        case "12_VANDENBERG_TUNNELS":
+            FixTunnelsTeleporters();
             break;
 
         case "12_VANDENBERG_GAS":
@@ -106,6 +115,45 @@ function PreFirstEntry()
 
             break;
 
+    }
+}
+
+function FixTunnelsTeleporters()
+{
+    local MapExit exit;
+    local DynamicTeleporter dt;
+
+    //Remove the original MapExits
+    foreach AllActors(class'MapExit',exit){
+        switch(exit.DestMap){
+            case "12_vandenberg_tunnels#end":
+            case "12_vandenberg_tunnels#start":
+            case "12_vandenberg_cmd#commstat":
+            case "12_vandenberg_cmd#storage":
+                exit.Destroy();
+                break;
+        }
+    }
+
+    //Replace with new DynamicTeleporters
+    switch(dxr.localURL)
+    {
+        case "12_VANDENBERG_CMD":
+            dt = Spawn(class'DynamicTeleporter',,,vectm(813,1257,-2163)); //Inside CMD
+            dt.SetCollisionSize(30,15);
+            SetDestination(dt, "12_vandenberg_tunnels",'',"end");
+            dt = Spawn(class'DynamicTeleporter',,,vectm(-1592,4570,-2297)); //Outside building
+            dt.SetCollisionSize(30,15);
+            SetDestination(dt, "12_vandenberg_tunnels",'',"start");
+            break;
+        case "12_VANDENBERG_TUNNELS":
+            dt = Spawn(class'DynamicTeleporter',,,vectm(-1625,5743,-2364)); //Start
+            dt.SetCollisionSize(30,15);
+            SetDestination(dt, "12_vandenberg_cmd",'',"commstat");
+            dt = Spawn(class'DynamicTeleporter',,,vectm(398,1164,-2356)); //End
+            dt.SetCollisionSize(30,15);
+            SetDestination(dt, "12_vandenberg_cmd",'',"storage");
+            break;
     }
 }
 
@@ -262,6 +310,7 @@ function ParisMetroAnyEntry()
     local NicoletteDuClare nicolette;
     local FlagBase flags;
     local MapExit exit;
+    local Vehicles chopper;
 
     flags = dxr.flagbase;
 
@@ -285,7 +334,10 @@ function ParisMetroAnyEntry()
 
         RemoveChoppers();
 
-        SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vectm(3134.682373, 1101.204956, 304.756897), rotm(0, -24944, 0) );
+        chopper=SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vectm(3134.682373, 1101.204956, 304.756897), rotm(0, -24944, 0) );
+
+        RebindChopperHoverHint('ChopperExit',chopper);
+
     }
 
     /*if( flags.GetBool('ClubComplete') ) {
@@ -341,6 +393,7 @@ function VandCmdAnyEntry()
     {
         RemoveChoppers('Helicopter');
         chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vectm(7014.185059, 7540.296875, -2884.704102), rotm(0, -19840, 0) );
+        RebindChopperHoverHint('mission_done',chopper);
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
         if(missions != None) {
             missions.UpdateLocation(chopper);
@@ -385,7 +438,8 @@ function VandGasAnyEntry()
 
     if( flags.GetBool('MS_ChopperGasUnhidden') ) {
         RemoveChoppers('Heli');
-        SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vectm(-3207.999756, 135.342285, -905.545044), rotm(0, -63104, 0) );
+        chopper=BlackHelicopter(SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vectm(-3207.999756, 135.342285, -905.545044), rotm(0, -63104, 0) ));
+        RebindChopperHoverHint('UN_BlackHeli',chopper);
 
         foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
             M.BlowItUp(None);
@@ -411,6 +465,7 @@ function VandSubAnyEntry()
     local Conversation c;
     local ConEvent e, nextEvent;
     local MapExit exit;
+    local Vehicles chopper,sub;
 
     if(dxr.flags.IsReducedRando()) return;
 
@@ -463,6 +518,10 @@ function VandSubAnyEntry()
             break;
         }
     }
+
+    foreach AllActors(class'Vehicles',sub,'MiniSub'){break;} //Actually finding a minisub, but the variable already exists...
+    RebindChopperHoverHint('reallysubexit',sub);
+
     // TODO: there are unused InterpolationPoints for the submarine
 
     // repeat flights to silo
@@ -471,7 +530,8 @@ function VandSubAnyEntry()
 
     if( flags.GetBool('DL_downloaded_Played') || dxr.flags.IsWaltonWare() ) {
         RemoveChoppers('BlackHelicopter');
-        SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vectm(2104.722168, 3647.967773, 896.197144), rotm(0, 0, 0) );
+        chopper=SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vectm(2104.722168, 3647.967773, 896.197144), rotm(0, 0, 0) );
+        RebindChopperHoverHint('ChopperExit',chopper);
     }
 
     // don't need to talk to Gary
@@ -570,6 +630,7 @@ function VandOceanLabAnyEntry()
     s.SetRotation(rotm(0, -16408, 0));
     s.DesiredRotation = rotm(0, -16408, 0);
     s.origRot = rotm(0, -16408, 0);
+    RebindChopperHoverHint('reallysubexit2',s);
 
     foreach AllActors(class'DataLinkTrigger', dlt) {
         if( dlt.datalinkTag != 'dl_seconddoors' ) continue;
@@ -670,16 +731,44 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
 
     chopper = SpawnChopper(ChopperTag, PathTag, BindName, loc, rot);
 
-    foreach AllActors(class'MapExit', exit, event)
+    foreach AllActors(class'MapExit', exit, event){
+        RebindChopperHoverHint(event,chopper);
         return chopper;
+    }
 
     exit = Spawn(class'MapExit',, event, loc );
     exit.SetCollision(false,false,false);
     SetDestination(exit, DestMap, DestName, DestTag);
     exit.bPlayTransition = true;
     exit.cameraPathTag = CameraPath;
+
+    RebindChopperHoverHint(event,chopper);
+
     info("BacktrackChopper spawned "$exit);
     return chopper;
+}
+
+function RebindChopperHoverHint(name ExitTag, Vehicles chopper)
+{
+    local #var(prefix)MapExit exit;
+    local DXRTeleporterHoverHint hoverHint;
+    local bool foundHint;
+
+    foreach AllActors(class'#var(prefix)MapExit',exit,ExitTag){
+        break;
+    }
+
+    foundHint=False;
+    foreach AllActors(class'DXRTeleporterHoverHint',hoverHint){
+        if (hoverHint.target==exit){
+            foundHint=True;
+            break;
+        }
+    }
+    if (!foundHint){
+        hoverHint = DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", chopper.Location, chopper.CollisionRadius+5, chopper.CollisionHeight+5, exit));
+    }
+    hoverHint.SetBaseActor(chopper);
 }
 
 function CreateInterpolationPoints(Name PathTag, vector loc)

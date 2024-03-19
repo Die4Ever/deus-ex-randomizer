@@ -164,6 +164,9 @@ simulated function RandoSkillLevelValues(Skill a)
     else if( #var(prefix)SkillComputer(a) != None ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
+    else if( #var(prefix)SkillEnviro(a)!=None ) {
+        add_desc = "Each level increases the number of fire extinguishers you can carry by 1.";
+    }
 #endif
 
     skill_value_wet_dry = float(dxr.flags.settings.skill_value_rando) / 100.0;

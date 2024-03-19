@@ -7,6 +7,6 @@ defaultproperties
 
 function Destroyed()
 {
-    class'TrashCanCommon'.static.DestroyTrashCan(self, class'#var(prefix)TrashBag2');
+    class'TrashContainerCommon'.static.DestroyTrashCan(self, class'#var(prefix)TrashBag2');
     Super.Destroyed();
 }

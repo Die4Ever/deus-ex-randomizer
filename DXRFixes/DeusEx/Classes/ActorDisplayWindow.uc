@@ -4,6 +4,44 @@ var Font textfont;
 var bool bShowHidden;
 var bool bUserFriendlyNames;
 
+var bool         bShowCustom;
+var string       customAttrib;
+var bool         bShowInventory;
+var string       nameFilter;
+var bool         bLimitRadius;
+var int          actorRadius;
+var bool         bShowTagEvent;
+var bool         bShowTagConnections;
+var bool         bShowEventConnections;
+
+function SetActorRadius(string newRadius)
+{
+    actorRadius = int(newRadius);
+}
+
+function int GetActorRadius(){
+    return actorRadius;
+}
+
+function LimitRadius(bool bLimit)
+{
+    bLimitRadius = bLimit;
+}
+
+function Bool IsRadiusLimited()
+{
+	return bLimitRadius;
+}
+
+function SetNameFilter(string newFilter)
+{
+    nameFilter = newFilter;
+}
+
+function String GetNameFilter(){
+    return nameFilter;
+}
+
 function SetViewClass(Class<Actor> newViewClass)
 {
     Super.SetViewClass(newViewClass);
@@ -16,6 +54,65 @@ function ShowLOS(bool bShow)
     Super.ShowLOS(bShow);
     bShowHidden = true;
     bUserFriendlyNames = false;
+}
+
+function ShowCustom(bool bShow)
+{
+    bShowCustom = bShow;
+}
+
+function Bool IsCustomVisible()
+{
+	return bShowCustom;
+}
+
+function SetCustomAttrib(string newCustomAttrib)
+{
+    customAttrib = newCustomAttrib;
+}
+
+function String GetCustomAttrib(){
+    return customAttrib;
+}
+
+function bool IsInventoryVisible()
+{
+    return bShowInventory;
+}
+
+function ShowInventory(bool bShow)
+{
+    bShowInventory = bShow;
+}
+
+function bool IsTagEventVisible()
+{
+    return bShowTagEvent;
+}
+
+function ShowTagEvent(bool bShow)
+{
+    bShowTagEvent = bShow;
+}
+
+function bool IsTagConnsVisible()
+{
+    return bShowTagConnections;
+}
+
+function ShowTagConns(bool bShow)
+{
+    bShowTagConnections = bShow;
+}
+
+function bool IsEventConnsVisible()
+{
+    return bShowEventConnections;
+}
+
+function ShowEventConns(bool bShow)
+{
+    bShowEventConnections = bShow;
 }
 
 function string GetActorName(Actor a)
@@ -49,6 +146,22 @@ function string GetActorName(Actor a)
     return str;
 }
 
+function DrawColourLine(GC gc, vector point1, vector point2, int r, int g, int b)
+{
+    local float fromX, fromY;
+    local float toX, toY;
+
+    gc.SetStyle(DSTY_Normal);
+    if (ConvertVectorToCoordinates(point1, fromX, fromY) && ConvertVectorToCoordinates(point2, toX, toY))
+    {
+        gc.SetTileColorRGB(r, g, b);
+        DrawPoint(gc, fromX, fromY);
+        DrawPoint(gc, toX, toY);
+        gc.SetTileColorRGB(r, g, b);
+        Interpolate(gc, fromX, fromY, toX, toY, 8);
+    }
+}
+
 //I just want to change the font :(
 function DrawWindow(GC gc)
 {
@@ -60,7 +173,8 @@ function DrawWindow(GC gc)
     local vector tVect;
     local vector cVect;
     local PlayerPawnExt player;
-    local Actor trackActor;
+    local Actor trackActor, otherActor;
+    local Dispatcher disp;
     local ScriptedPawn trackPawn;
     local bool bValid;
     local bool bPointValid;
@@ -79,24 +193,44 @@ function DrawWindow(GC gc)
     local float barWidth;
     local DeusExMover dxMover;
     local vector minpos, maxpos;
+    local Inventory item;
+    local name filter;
+    local int radius;
+    local class<Actor> classToShow;
 
     minpos = vect(999999, 999999, 999999);
     maxpos = vect(-999999, -999999, -999999);
 
     Super(Window).DrawWindow(gc);
 
-    if (viewClass == None)
+    if (viewClass == None && nameFilter=="")
         return;
+
+    classToShow = viewClass;
+    if (nameFilter!="" && classToShow==None){
+        classToShow=class'Actor';
+    }
 
     player  = GetPlayerPawn();
 
     if (bShowMesh)
         gc.ClearZ();
 
-    foreach player.AllActors(viewClass, trackActor)
+    if (nameFilter!="")
+        filter = StringToName(nameFilter);
+
+    radius = 999999;
+    if (bLimitRadius){
+        radius = actorRadius;
+    }
+
+    foreach player.RadiusActors(classToShow, trackActor,radius,player.Location)
     {
         if(!bShowHidden && trackActor.bHidden)
             continue;// DXRando: for spoilers buttons
+
+        if (filter!='' && filter!=trackActor.Name)
+            continue;
 
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
@@ -246,10 +380,66 @@ function DrawWindow(GC gc)
             }
 
             str = "";
+            if (bShowTagEvent || bShowData)
+            {
+                str = str $ "|cf50aff";
+                str = str $ "Tag: "$trackActor.Tag  $ CR();
+
+                disp = Dispatcher(trackActor);
+
+                str = str $ "Event: "$trackActor.Event  $ CR();
+                if (disp!=None){
+                    for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                        if (disp.OutEvents[i]!=''){
+                            str = str $ "OutDelays["$i$"]: "$disp.OutDelays[i] $ CR();
+                            str = str $ "OutEvents["$i$"]: "$disp.OutEvents[i] $ CR();
+                        }
+                    }
+                }
+            }
+            if (bShowEventConnections)
+            {
+                if (trackActor.Event!=''){
+                    foreach player.AllActors(class'Actor',otherActor,trackActor.Event){
+                        DrawColourLine(gc,trackActor.Location,otherActor.Location,255,0,0);
+                    }
+                }
+                disp = Dispatcher(trackActor);
+                if (disp!=None){
+                    for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                        if (disp.OutEvents[i]!=''){
+                            foreach player.AllActors(class'Actor',otherActor,disp.OutEvents[i]){
+                                DrawColourLine(gc,trackActor.Location,otherActor.Location,255,0,0);
+                            }
+                        }
+                    }
+                }
+            }
+            if (bShowTagConnections)
+            {
+                if (trackActor.Tag!=''){
+                    foreach player.AllActors(class'Actor',otherActor){
+                        if (otherActor.Event == trackActor.Tag){
+                            DrawColourLine(gc,trackActor.Location,otherActor.Location,0,255,0);
+                        }
+                        foreach player.AllActors(class'Dispatcher',disp){
+                            for(i=0;i<ArrayCount(disp.OutEvents);i++){
+                                if (disp.OutEvents[i]==trackActor.Tag){
+                                    DrawColourLine(gc,trackActor.Location,disp.Location,0,255,0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if (bShowState || bShowData)
             {
                 stateName = trackActor.GetStateName();
                 str = str $ "|p1'" $ stateName $ "'" $ CR();
+                trackPawn = ScriptedPawn(trackActor);
+                if(trackPawn != None && trackPawn.Enemy != None) {
+                    str = str $ "Enemy: " $ trackPawn.Enemy.name $ CR();
+                }
             }
             if (bShowPhysics || bShowData)
             {
@@ -441,13 +631,40 @@ function DrawWindow(GC gc)
                 }
             }
 
+            if(bShowCustom && customAttrib != "") {
+                str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
+            }
+
+            if(bShowInventory){
+                item = None;
+                bValid=False;
+                if (Pawn(trackActor) != None) {
+                    item = Pawn(trackActor).Inventory;
+                    bValid=True;
+                } else if (DeusExCarcass(trackActor)!=None){
+                    item = DeusExCarcass(trackActor).Inventory;
+                    bValid=True;
+                }
+
+                if (bValid){
+                    str = str $ "Inventory:" $ CR();
+                    for(item = item; item != None; item = item.Inventory) {
+                        str = str $ GetActorName(item);
+                        if (Ammo(item)!=None){
+                            str = str $ " ("$Ammo(item).AmmoAmount$")";
+                        }
+                        str = str $ CR();
+                    }
+                }
+            }
+
             if (str != "")
             {
                 gc.SetAlignments(HALIGN_Center, VALIGN_Top);
                 gc.SetFont(textfont);
                 //gc.SetTextColorRGB(visibility*255, visibility*255, visibility*255);
                 gc.SetTextColorRGB(0, 255, 0);
-                gc.DrawText(leftX-50, bottomY+barOffset+5, 100+rightX-leftX, 280, str);
+                gc.DrawText(leftX-100, bottomY+barOffset+5, 200+rightX-leftX, 280, str);
             }
 
             gc.SetTextColor(mainColor);
@@ -485,4 +702,6 @@ defaultproperties
 {
     textfont=Font'DeusExUI.FontFixedWidthSmall';
     bShowHidden=true
+    bShowLineOfSight=false
+    bShowPos=true
 }

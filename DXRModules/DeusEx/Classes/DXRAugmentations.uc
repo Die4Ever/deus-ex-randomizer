@@ -122,6 +122,20 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
 
 }
 
+static function RedrawAugMenu(DeusExPlayer player)
+{
+#ifdef injections
+    local #var(injectsprefix)PersonaScreenAugmentations augScreen;
+
+    if (DeusExRootWindow(player.rootWindow)==None) return;
+
+    augScreen = #var(injectsprefix)PersonaScreenAugmentations(DeusExRootWindow(player.rootWindow).GetTopWindow());
+    if (augScreen==None) return;
+
+    augScreen.RedrawAugmentations();
+#endif
+}
+
 function RandomizeAugCannisters()
 {
     local #var(prefix)AugmentationCannister a;

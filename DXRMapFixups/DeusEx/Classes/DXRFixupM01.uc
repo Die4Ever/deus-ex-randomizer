@@ -29,9 +29,14 @@ function PostFirstEntryMapFixes()
 
 function PreFirstEntryMapFixes()
 {
+    local #var(prefix)MapExit exit;
+    local #var(prefix)NYPoliceBoat b;
+    local #var(prefix)HarleyFilben harley;
+    local #var(prefix)HumanCivilian hc;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
+    local DXRHoverHint hoverHint;
     npClass = class'#var(prefix)Newspaper';
 #else
     local DXRInformationDevices np;
@@ -41,9 +46,20 @@ function PreFirstEntryMapFixes()
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
+        foreach AllActors(class'#var(prefix)HarleyFilben', harley) {
+            harley.bImportant = true;
+        }
         //Move this Joe Greene article from inside HQ to outside on the island
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0),'01_Newspaper06');//Forklift in bunker
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(3163,-1298,-207),rotm(0,0,0),'01_Newspaper06');//Backroom near jail
+
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)NYPoliceBoat',b) {
+            class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit);
+            break;
+        }
+
+        class'GuntherWeaponMegaChoice'.static.Create(Player());
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
@@ -95,6 +111,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //To change it so Manderley will brief you if you talked to Sam and Jaime (instead of actually getting equipment from Sam)
+        SetTimer(1.0, True);
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
@@ -110,6 +129,25 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
+            // Chet's name is Chet
+            hc.bImportant = true;
+        }
+
+        break;
+    }
+}
+
+function TimerMapFixes()
+{
+    switch(dxr.localURL)
+    {
+    case "01_NYC_UNATCOHQ":
+        if (!dxr.flagbase.GetBool('M01ReadyForBriefing') && dxr.flagbase.GetBool('MeetCarter_Played') && dxr.flagbase.GetBool('MeetJaime_Played')){
+            dxr.flagbase.SetBool('M01ReadyForBriefing',True,,999);
+            SetTimer(0,false);
+        }
         break;
     }
 }

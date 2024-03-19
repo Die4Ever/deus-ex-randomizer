@@ -15,7 +15,7 @@ function PlayerLogin(#var(PlayerPawn) p)
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
 
-    StartMapSpecificFlags(p.flagbase, dxr.localURL);
+    StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -32,6 +32,7 @@ function PreFirstEntry()
 {
     local #var(PlayerPawn) p;
     local string startMapName;
+    local ScriptedPawn sp;
 
     foreach AllActors(class'#var(PlayerPawn)',p){break;}
 
@@ -40,74 +41,59 @@ function PreFirstEntry()
     startMapName = Caps(startMapName);
 
     if (InStr(startMapName,dxr.localURL)!=-1){
-        StartMapSpecificFlags(p.flagbase, dxr.localURL);
+        StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
     }
 
+    switch(dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+        if(dxr.flags.settings.starting_map > 20) {
+            foreach AllActors(class'ScriptedPawn', sp, 'SubTerrorist') {
+                sp.Destroy();
+            }
+            foreach AllActors(class'ScriptedPawn', sp, 'hostageMan') {
+                sp.Destroy();
+            }
+            foreach AllActors(class'ScriptedPawn', sp, 'hostageWoman') {
+                sp.Destroy();
+            }
+        }
+        break;
+    }
 }
 
 static simulated function int GetStartingMissionMask(int start_map)
 {
+    local int mask, i;
+
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
-        case 0:
-        case 10:
-            //startMap="01_NYC_UNATCOIsland";
-            return 65535;
-            break;
-        case 20:
-            return 65532;
-            break;
-        case 30:
-            return 65528;
-            break;
-        case 40:
-            //startMap="04_NYC_UNATCOHQ"
-            return 65520;
-        case 50:
-            //startMap="05_NYC_UNATCOMJ12lab";
-            return 65504;
-            break;
-        case 61:
-            //startMap="06_HongKong_WanChai_Market";
-            return 65472;
-            break;
-        case 81:
-            //startMap="08_NYC_Smug";
-            return 65280;
-            break;
-        case 90:
-            return 65024;
+        case 70:// 2nd half of hong kong, but maybe we should actually give bingo goals the mission 7 mask?
+        case 75:
+            start_map = 60;
             break;
         case 99:
             //startMap="09_NYC_Graveyard";
-            return 64512; //Mission 10 onwards (you're at the end of mission 9)
+            start_map = 100; //Mission 10 onwards (you're at the end of mission 9)
             break;
         case 109:
             //startMap="10_Paris_Chateau";
-            return 64512; //Mission 10 onwards (but mark most mission 10 goals as impossilbe)
+            start_map = 100; //Mission 10 onwards (but mark most mission 10 goals as impossible, TODO: would this be easier using GetMaybeMissionMask for a whitelist instead of blacklist?)
             break;
         case 119:
             //startMap="11_Paris_Everett";
-            return 61440; //Mission 12 onwards
-            break;
-        case 140:
-            //startMap="14_Vandenberg_Sub";
-            return 49152;
-            break;
-        case 150:
-            //startMap="15_Area51_Bunker";
-            return 32768;
-            break;
-        default:
-            //There's always a place for you on Liberty Island
-            //startMap="01_NYC_UNATCOIsland";
-            return 65535;
+            start_map = 120;//Mission 12 onwards
             break;
     }
+
+    mask = 0xFFFF;
+    for(i=0; i < (start_map/10); i++) {
+        mask -= (1<<i);
+    }
+    return mask;
 }
 
 static simulated function int GetMaybeMissionMask(int start_map)
-{
+{// TODO: maybe add some half-missions? like 35 could get some stuff from M04 unatco
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
         case 119:
@@ -155,93 +141,27 @@ static simulated function int GetEndMissionMask(int end_mission)
 
 static function string GetStartingMapName(int val)
 {
-    switch(val){
-        case 0:
-        case 10:
-            return "Liberty Island";
-        case 20:
-            return "NSF Generator";
-        case 30:
-            return "Hunting Lebedev";
-        case 40:
-            return "NSF Defection";
-        case 50:
-            return "MJ12 Jail";
-        case 61:
-            return "Wan Chai Market";
-        case 81:
-            return "Return to NYC";
-        case 90:
-            return "Superfreighter";
-        case 99:
-            return "Graveyard";
-        case 109:
-            return "Chateau DuClare";
-        case 119:
-            return "Everett's House";
-        case 140:
-            return "Ocean Lab";
-        case 150:
-            return "Area 51";
-        default:
-            return "UNKNOWN STARTING MAP "$val$"!";
-    }
+    local string friendlyName;
+    local int bShowInMenu;
+    _GetStartMap(val, friendlyName, bShowInMenu);
+    if(bShowInMenu == 0) return "";
+    return friendlyName;
+}
+
+static function string GetStartingMapNameCredits(int val)
+{
+    local string friendlyName, map;
+    map = _GetStartMap(val, friendlyName);
+    if(friendlyName != "") return friendlyName;
+    return "UNKNOWN STARTING MAP "$val$"! " $ map;
 }
 
 static function string GetStartMap(Actor a, int start_map_val)
 {
-    local string startMap;
+    local string startMap, friendlyName;
     local DXRMapVariants mapvariants;
 
-    startMap="01_NYC_UNATCOIsland";
-
-    switch(start_map_val)
-    {
-        case 0:
-        case 10:
-            startMap="01_NYC_UNATCOIsland";
-            break;
-        case 20:
-            startMap="02_NYC_BatteryPark";
-            break;
-        case 30:
-            startMap="03_NYC_UNATCOIsland";
-            break;
-        case 40:
-            startMap="04_NYC_UNATCOHQ";
-            break;
-        case 50:
-            startMap="05_NYC_UNATCOMJ12lab";
-            break;
-        case 61:
-            startMap="06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
-            break;
-        case 81:
-            startMap="08_NYC_Smug#ToSmugFrontDoor";
-            break;
-        case 90:
-            startMap="09_NYC_Dockyard";
-            break;
-        case 99:
-            startMap="09_NYC_Graveyard";
-            break;
-        case 109:
-            startMap="10_Paris_Chateau";
-            break;
-        case 119:
-            startMap="11_Paris_Everett";
-            break;
-        case 140:
-            startMap="14_Vandenberg_Sub";
-            break;
-        case 150:
-            startMap="15_Area51_Bunker";
-            break;
-        default:
-            //There's always a place for you on Liberty Island
-            startMap="01_NYC_UNATCOIsland";
-            break;
-    }
+    startMap = _GetStartMap(start_map_val, friendlyName);
 
     foreach a.AllActors(class'DXRMapVariants', mapvariants) {
         startMap = mapvariants.VaryURL(startMap);
@@ -251,6 +171,210 @@ static function string GetStartMap(Actor a, int start_map_val)
     return startMap;
 }
 
+static function string _GetStartMap(int start_map_val, out string friendlyName, optional out int bShowInMenu)
+{
+    switch(start_map_val)
+    {
+        case 0:
+            bShowInMenu=1;
+        case 10: // fall through
+            friendlyName = "Liberty Island";
+            return "01_NYC_UNATCOIsland";
+        case 20:
+            bShowInMenu=1;
+            friendlyName = "NSF Generator (Battery Park)";
+            return "02_NYC_BatteryPark";
+        case 21:
+            bShowInMenu=1;
+            friendlyName = "NSF Generator (Streets)";
+            return "02_NYC_Street";
+        case 30:
+            bShowInMenu=1;
+            friendlyName = "Hunting Lebedev (Liberty Island)";
+            return "03_NYC_UNATCOIsland";
+        case 31:
+            friendlyName = "Hunting Lebedev (UNATCO HQ)";
+            return "03_NYC_UNATCOHQ";
+        case 32:
+            friendlyName = "Hunting Lebedev (Battery Park)";
+            return "03_NYC_BatteryPark";
+        case 33:
+            friendlyName = "Hunting Lebedev (Brooklyn Bridge Station)";
+            return "03_NYC_BrooklynBridgeStation";
+        case 34:
+            friendlyName = "Hunting Lebedev (Mole People)";
+            return "03_NYC_MolePeople";
+        case 35:
+            friendlyName = "Hunting Lebedev (Helibase)";
+            return "03_NYC_AirfieldHeliBase";
+        case 36:
+            friendlyName = "Hunting Lebedev (Airfield)";
+            return "03_NYC_Airfield";
+        case 37:
+            friendlyName = "Hunting Lebedev (Hangar)";
+            return "03_NYC_Hangar";
+        case 40:
+            bShowInMenu=1;
+            friendlyName = "NSF Defection (UNATCO HQ)";
+            return "04_NYC_UNATCOHQ";
+        case 41:
+            friendlyName = "NSF Defection (Streets)";
+            return "04_NYC_Street";
+        case 42:
+            friendlyName = "NSF Defection (Hotel)";
+            return "04_NYC_Hotel";
+        case 45:
+            friendlyName = "NSF Defection (NSF HQ)";
+            return "04_NYC_NSFHQ";
+        case 50:
+            bShowInMenu=1;
+            friendlyName = "MJ12 Jail";
+            return "05_NYC_UNATCOMJ12lab";
+        case 55:
+            friendlyName = "Escaping UNATCO HQ";
+            return "05_NYC_UNATCOHQ#UN_med";
+        case 60:
+            friendlyName = "Hong Kong (Helibase)";
+            return "06_HongKong_Helibase";
+        case 61:
+            bShowInMenu=1;
+            friendlyName = "Wan Chai Market";
+            return "06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
+        case 62:
+            friendlyName = "Hong Kong (Canals)";
+            return "06_HongKong_WanChai_Canal";
+        case 63:
+            friendlyName = "Hong Kong (Tonnochi Road)";
+            return "06_HongKong_WanChai_Street";
+        case 64:
+            friendlyName = "Hong Kong (Canal Road)";
+            return "06_HongKong_WanChai_Garage";
+        case 65:// start here with Have_Evidence
+            friendlyName = "Hong Kong (Lucky Money)";
+            return "06_HongKong_WanChai_Underworld";
+        case 66:
+            friendlyName = "Hong Kong (Tong's Base)";
+            return "06_HongKong_TongBase";
+        case 67:
+            friendlyName = "Hong Kong (Versalife Office)";
+            return "06_HongKong_VersaLife";
+        case 68:
+            friendlyName = "Hong Kong (Level 1 Labs)";
+            return "06_HongKong_MJ12lab";
+        case 70:// after versalife 1
+            friendlyName = "Hong Kong (Tong's Base after Versalife)";
+            return "06_HongKong_TongBase";
+        case 75:
+            friendlyName = "Hong Kong (Level 2 Labs)";
+            return "06_HongKong_Storage";
+        case 81:
+            bShowInMenu=1;
+            friendlyName = "Return to NYC (Smuggler)";
+            return "08_NYC_Smug#ToSmugFrontDoor";
+        case 82:
+            friendlyName = "Return to NYC (Sewers)";
+            return "08_NYC_Underground";
+        case 83:
+            friendlyName = "Return to NYC (Bar)";
+            return "08_NYC_Bar";
+        case 84:
+            friendlyName = "Return to NYC (Free Clinic)";
+            return "08_NYC_FreeClinic";
+        case 85:
+            friendlyName = "Return to NYC (Hotel)";
+            return "08_NYC_Hotel";
+        case 90:
+            bShowInMenu=1;
+            friendlyName = "Superfreighter (Dockyard)";
+            return "09_NYC_Dockyard";
+        case 91:
+            friendlyName = "Superfreighter (Ventilation System)";
+            return "09_NYC_ShipFan";
+        case 92:
+            friendlyName = "Superfreighter (Upper Decks)";
+            return "09_NYC_Ship";
+        case 95:
+            friendlyName = "Superfreighter (Lower Decks)";
+            return "09_NYC_ShipBelow";
+        case 99:
+            bShowInMenu=1;
+            friendlyName = "Graveyard";
+            return "09_NYC_Graveyard";
+        case 100:
+            friendlyName = "Paris (Denfert-Rochereau)";
+            return "10_Paris_Catacombs";
+        case 101:
+            friendlyName = "Paris (Catacombs)";
+            return "10_Paris_Catacombs_Tunnels";
+        case 105:
+            friendlyName = "Paris (Streets)";
+            return "10_Paris_Metro";
+        case 106:
+            friendlyName = "Paris (Club)";
+            return "10_Paris_Club";
+        case 109:
+            bShowInMenu=1;
+            friendlyName = "Chateau DuClare";
+            return "10_Paris_Chateau";
+        case 110:
+            friendlyName = "Cathedral";
+            return "11_Paris_Cathedral";
+        case 115:// maybe with the cathedral already completed and gunther dead
+            friendlyName = "Paris Metro Station";
+            return "11_Paris_Underground";
+        case 119:
+            bShowInMenu=1;
+            friendlyName = "Everett's House";
+            return "11_Paris_Everett";
+        case 120:
+            friendlyName = "Vandenberg (Command)";
+            return "12_Vandenberg_Cmd";
+        case 121:
+            friendlyName = "Vandenberg (Inside Command)";
+            return "12_Vandenberg_Cmd#commstat";
+        case 122:
+            friendlyName = "Vandenberg (Tunnels)";
+            return "12_Vandenberg_Tunnels";
+        case 125:
+            friendlyName = "Vandenberg (Computer)";
+            return "12_Vandenberg_Computer";
+        case 129:
+            friendlyName = "Gas Station";
+            return "12_Vandenberg_Gas";// give it your best shot
+        case 140:
+            bShowInMenu=1;
+            friendlyName = "Ocean Lab (Sub Base)";
+            return "14_Vandenberg_Sub";
+        case 141:
+            friendlyName = "Ocean Lab (Main Lab)";
+            return "14_OceanLab_Lab";
+        case 142:
+            friendlyName = "Ocean Lab (UC)";
+            return "14_OceanLab_UC";
+        case 145:
+            friendlyName = "Silo";
+            return "14_Oceanlab_Silo";
+        case 150:
+            bShowInMenu=1;
+            friendlyName = "Area 51 (Exterior)";
+            return "15_Area51_Bunker";
+        case 151:
+            friendlyName = "Area 51 (Sector 2)";
+            return "15_Area51_Entrance";
+        case 152:
+            friendlyName = "Area 51 (Sector 3)";
+            return "15_Area51_Final";
+        case 153:
+            friendlyName = "Area 51 (Sector 4)";
+            return "15_Area51_Page";
+        default:
+            //There's always a place for you on Liberty Island
+            bShowInMenu=0; // just in case
+            friendlyName = "Unknown Start Map "$start_map_val;
+            return "01_NYC_UNATCOIsland";
+    }
+}
+
 static function int GetStartMapMission(int start_map_val)
 {
     local int mission;
@@ -258,29 +382,11 @@ static function int GetStartMapMission(int start_map_val)
     switch(start_map_val)
     {
         case 0:
-        case 10:
             mission=1; //Mission 1 start, nothing
             break;
-        case 20:
-            mission=2;
-            break;
-        case 30:
-            mission=3;
-            break;
-        case 40:
-            mission=4;
-            break;
-        case 50:
-            mission=5; //Mission 5 start
-            break;
-        case 61:
-            mission=6;
-            break;
-        case 81:
-            mission=8;
-            break;
-        case 90:
-            mission=9;
+        case 70:
+        case 75:
+            mission = 6;// 2nd half of hong kong, but really still mission 6
             break;
         case 99:
             mission=10; //Mission 9 graveyard, basically mission 10
@@ -291,15 +397,8 @@ static function int GetStartMapMission(int start_map_val)
         case 119:
             mission=12; //Mission 11 Everett, but basically mission 12
             break;
-        case 140:
-            mission=14;
-            break;
-        case 150:
-            mission=15;
-            break;
         default:
-            //There's always a place for you on Liberty Island
-            mission=1;
+            mission=start_map_val/10;
             break;
     }
     return mission;
@@ -315,54 +414,210 @@ static function int GetStartMapSkillBonus(int start_map_val)
     return skillBonus * (mission-1);
 }
 
-static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
+static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag, string start_map)
 {
-    switch(start_map)
-    {
-        case "04_NYC_UNATCOHQ":
+    local DeusExNote note;
+
+    switch(start_flag/10) {
+        case 4:
             flagbase.SetBool('DL_SeeManderley_Played',true,,-1);
             break;
-        case "08_NYC_Smug":
+        case 7:
+            flagbase.SetBool('Have_ROM',true,,-1);
+            flagbase.SetBool('MeetTracerTong_Played',true,,-1);// do we need FemJC versions for these?
+            flagbase.SetBool('TriadCeremony_Played',true,,-1);
+            break;
+        case 8:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             flagbase.SetBool('MetSmuggler',true,,-1);
             break;
-        case "09_NYC_Dockyard":
+        case 9:
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
             flagbase.SetBool('DL_BadNews_Played',true,,-1);
             flagbase.SetBool('HelpSailor',true,,-1);
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
             break;
-        case "10_Paris_Chateau":
-            //Make sure Sandra spawns at the gas station
-            flagbase.SetBool('SandraWentToCalifornia',true,,-1);
+        case 10:
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
             break;
+        case 11:
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
+            break;
+        case 12:
+            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
+            break;
+        case 14:
+            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
+            flagbase.SetBool('Heliosborn',true,,-1);//Make sure Daedalus and Icarus have merged
+            break;
+        case 15:
+            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
+            break;
+    }
+
+    switch(start_flag) {
+        case 21:
+            flagbase.SetBool('EscapeSuccessful',true,,-1);
+            flagbase.SetBool('DL_SubwayComplete_Played',true,,-1);
+            flagbase.SetBool('SubTerroristsDead',true,,-1);
+            flagbase.SetBool('MS_DL_Played',true,, 3);
+            break;
+
+        case 45:
+            flagbase.SetBool('PaulInjured_Played',true,,-1);
+            flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
+            flagbase.SetBool('GatesOpen',true,,5);
+            break;
+
+        case 75:
+        case 70:
+        case 68:
+        case 67:
+        case 66://fallthrough
+            if(!flagbase.GetBool('QuickLetPlayerIn')) {// easier than checking if you already have the note
+                player.AddNote("Luminous Path door-code: 1997.", false, false);
+                flagbase.SetBool('QuickLetPlayerIn',true,,-1);
+            }
+            flagbase.SetBool('QuickConvinced',true,,-1);
+        case 65://fallthrough
+            flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
+            flagbase.SetBool('PaidForLuckyMoney',true,,-1);
+            break;
+
+        case 115:
+            flagbase.SetBool('templar_upload',true,,-1);
+            flagbase.SetBool('GuntherHermann_Dead',true,,-1);
+            break;
+
+        case 129:
+            flagbase.SetBool('GaryHostageBriefing_Played',true,,-1);
+            flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
+            break;
+        case 145:
+            flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
+            break;
+    }
+
+    switch(start_map)
+    {
         case "11_Paris_Everett":
             //First Toby conversation happened
             flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
             flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
-
-            //Make sure Sandra spawns at the gas station
-            flagbase.SetBool('SandraWentToCalifornia',true,,-1);
-            break;
-        case "14_Vandenberg_Sub":
-            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
-
-            //Make sure Sandra spawns at the gas station (In case you backtrack - shouldn't matter, but...)
-            flagbase.SetBool('SandraWentToCalifornia',true,,-1);
-
-            break;
-        case "15_Area51_Bunker":
-            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
             break;
     }
 }
 
 static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
-{
+{// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
+    switch(start_map/10)
+    {
+    case 1: // Liberty Island
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 2: // NSF Generator
+        switch(bingo_event)
+        {
+        case "SubwayHostagesSaved":
+            return start_map>20;
+        }
+        break;
+
+    case 3: // Airfield
+        switch(bingo_event)
+        {
+        case "CleanerBot_ClassDead":
+        case "AlexCloset":
+        case "CommsPit":
+        case "BathroomFlags":
+        case "ReadJCEmail":
+        case "Shannon_Dead":
+        case "TrophyHunter":
+        case "SlippingHazard":
+        case "un_PrezMeadPic_peepedtex":
+        case "WaltonConvos":
+        case "un_bboard_peepedtex":
+        case "UNATCOHandbook":
+        case "ManderleyMail":
+        case "LetMeIn":
+            return start_map > 30 && start_map < 36 && end_mission <= 3;// you can do these m03 unatco goals in m04 unatco, but if you start in helibase it's far
+
+        case "SickMan_Dead":
+        case "NYEagleStatue_peeped":
+            return start_map>35 && end_mission <= 3;// no battery park goals once you get to airfield?
+
+        case "KnowYourEnemy":
+        case "SimonsAssassination":
+            return start_map>31;
+        }
+        break;
+
+    case 4: // Paul and NSFHQ
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 5: // escape from MJ12 Jail
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 6: // Hong Kong
+    case 7:// fallthrough to 2nd half of Hong Kong
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 8: // return to NYC
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 9: // Dockyard and Ship
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 10: // Paris
+    case 11: // fallthrough to the rest of Paris
+        switch(bingo_event)
+        {
+        case "GuntherHermann_Dead":
+            return start_map>=115;
+        }
+        break;
+
+    case 12: // Vandenberg
+    case 14: // fallthrough to the rest of Vandenberg
+        switch(bingo_event)
+        {
+        }
+        break;
+
+    case 15: // Area 51
+        switch(bingo_event)
+        {
+        }
+        break;
+    }
+
+    // goals that are spread across many missions, like LeoToTheBar
+    // TODO: need to reconsider all of these
     switch(bingo_event)
     {
         case "LeoToTheBar":
             //Only possible if you started in the first level
-            return start_map!=0;
+            return start_map>10 || end_mission < 2;
             break;
         case "MetSmuggler":
             return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
@@ -377,9 +632,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             if (end_mission < 8){
                 return True;
             }
-            return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 5
-        case "VialAmbrosia_Activated":
-            return start_map>=96; //Have to have started before the superfreighter upper decks (Arbitrarily chose 96 as that point)
+            return start_map>=60; //TODO: Have to have told Jaime to meet you in Hong Kong in mission 5
         case "Terrorist_ClassDead":
         case "Terrorist_ClassUnconscious":
         case "Terrorist_peeptime":
@@ -400,8 +653,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "IcarusCalls_Played":
         case "roof_elevator":
         case "MeetRenault_Played":
-            return start_map>100; //All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
-        case "ManWhoWasThursday":// in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
+            return start_map>100; //TODO: All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
+        case "ManWhoWasThursday":// TODO: in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
             return start_map > 100 && end_mission <= 11;
         case "PresentForManderley":
             //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
@@ -415,7 +668,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             }
             return start_map>=90;
         case "PhoneCall":
-            return start_map>100; //Last phone is in the building before the catacombs (Where Icarus calls)
+            return start_map>100; //TODO: Last phone is in the building before the catacombs (Where Icarus calls)
         default:
             return False;
     }
@@ -426,6 +679,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
 
 static function bool BingoGoalPossible(string bingo_event, int start_map, int end_mission)
 {
+    // TODO: any of the exceptions in GetStartingMissionMask, and will also need to add them to GetMaybeMissionMask
     switch(start_map) {
     case 119:
         switch(bingo_event) {
@@ -446,67 +700,137 @@ static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
     local int startMap;
     local int attempts;
 
-    startMap=-1;
+    startMap=avoidStart;
     attempts=0;
     m.SetGlobalSeed("randomstartmap");
-    m.rng(1);// HACK: dummy roll to shuffle the CRC to improve rng, we should do this automatically next compatibility break
 
-    //Don't try forever.  If we manage to grab the avoided map 5 times, it was meant to be.
-    while ((startMap==-1 || startMap==avoidStart) && attempts<5){
-        i = m.rng(13);
-
-        //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
-        switch(i)
-        {
-            case 0:
-                startMap = 10;
-                break;
-            case 1:
-                startMap = 20;
-                break;
-            case 2:
-                startMap = 30;
-                break;
-            case 3:
-                startMap = 40;
-                break;
-            case 4:
-                startMap = 50;
-                break;
-            case 5:
-                startMap = 61;
-                break;
-            case 6:
-                startMap = 81;
-                break;
-            case 7:
-                startMap = 90;
-                break;
-            case 8:
-                startMap = 99;
-                break;
-            case 9:
-                startMap = 109;
-                break;
-            case 10:
-                startMap = 119;
-                break;
-            case 11:
-                startMap = 140;
-                break;
-            case 12:
-                startMap = 150;
-                break;
-            default:
-                m.err("Random Starting Map picked value "$i$" which is unhandled!");
-                startMap = 0; //Fall back on Liberty Island
-                break;
-        }
-        m.l("Start map selection attempt "$attempts$" was "$startMap);
+    //Don't try forever.  If we manage to grab the avoided map 50 times, it was meant to be.
+    //the widest span is Hong Kong: Helipad is 60, Storage is 75, a span of 15
+    while (Abs(startMap-avoidStart) <= 15 && attempts < 50){
+        startMap = _ChooseRandomStartMap(m);
+        m.l("Start map selection attempt "$ ++attempts $" was "$startMap);
     }
 
     return startMap;
 }
+
+static function int _ChooseRandomStartMap(DXRBase m)
+{
+    local int i;
+    i = m.rng(13);
+
+    if(VersionIsStable()) {
+        switch(i) {
+            case 0: return 10;
+            case 1: return 20;
+            case 2: return 30;
+            case 4: return 40;
+            case 5: return 61;
+            case 6: return 81;
+            case 7: return 90;
+            case 8: return 99;
+            case 9: return 109;
+            case 10: return 119;
+            case 11: return 140;
+            case 12: return 150;
+        }
+        m.err("Random Starting Map picked value "$i$" which is unhandled!");
+        return 0;
+    }
+
+    //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
+    switch(i)
+    {
+    case 0:// mission 1
+        return 10;
+    case 1:// mission 2
+        if(m.rngb()) return 21;
+        return 20;
+    case 2:// mission 3
+        i = m.rng(3);
+        switch(i) {
+        case 0: return 30;
+        case 1: return 35;
+        case 2: return 37;
+        }
+        return 30; // just in case the switch misses
+    case 3:// mission 4
+        if(m.rngb()) return 45;
+        return 40;
+    case 4:// mission 5
+        if(m.rngb()) return 55;
+        return 50;
+    case 5:// mission 6
+        i = m.rng(6);
+        switch(i) {
+        case 0: return 60;
+        case 1: return 61;
+        case 2: return 65;
+        case 3: return 67;
+        case 4: return 70;
+        case 5: return 75;
+        }
+        return 61;
+    case 6:// mission 8
+        i = m.rng(5);
+        switch(i) {
+        case 0: return 81;
+        case 1: return 82;
+        case 2: return 83;
+        case 3: return 84;
+        case 4: return 85;
+        }
+        return 81;
+    case 7:// mission 9
+        i = m.rng(3);
+        switch(i) {
+        case 0: return 90;
+        case 1: return 92;
+        case 2: return 95;
+        }
+        return 90;
+    case 8:// mission 10
+        i = m.rng(3);
+        switch(i) {
+        case 0: return 99;
+        case 1: return 101;
+        case 2: return 106;
+        }
+        return 99;
+    case 9:// mission 11
+        if(m.rngb()) return 115;
+        return 109;
+    case 10:// mission 12
+        i = m.rng(3);
+        switch(i) {
+        case 0: return 119;
+        case 1: return 121;
+        case 2: return 129;
+        }
+        return 119;
+    case 11:// mission 14
+        i = m.rng(4);
+        switch(i) {
+        case 0: return 140;
+        case 1: return 141;
+        case 2: return 142;
+        case 3: return 145;
+        }
+        return 140;
+    case 12:// mission 15
+        i = m.rng(4);
+        switch(i) {
+        case 0: return 150;
+        case 1: return 151;
+        case 2: return 152;
+        case 3: return 153;
+        }
+        return 150;
+    }
+    m.err("Random Starting Map picked value "$i$" which is unhandled!");
+    return 0; //Fall back on Liberty Island
+}
+
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {

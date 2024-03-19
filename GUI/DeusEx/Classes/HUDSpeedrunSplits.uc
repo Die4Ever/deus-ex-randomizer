@@ -536,6 +536,6 @@ defaultproperties
     split_names(14)="Silo"
     split_names(15)="Area 51"
 
-    splitNotes(1)="UNATCO start: no Leo at Paul or hut|nHarley start: no Leo at electric bunker|nTop start: no Leo at base of statue|nEdit these notes in DXRSplits.ini"
+    splitNotes(1)="UNATCO start: no Leo at Paul or hut|nHarley start: no Leo at electric bunker|nElectric Bunker start: no Leo at Harley dock|nTop start: no Leo at base of statue|nEdit these notes in DXRSplits.ini"
     splitNotes(14)="Howard 6th floor: no Jock at vanilla|nEdit these notes in DXRSplits.ini"
 }

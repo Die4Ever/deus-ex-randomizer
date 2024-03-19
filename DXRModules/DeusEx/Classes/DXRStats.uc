@@ -16,6 +16,16 @@ var RunInfo runs[20];
 var int missions_times[16];
 var int missions_menu_times[16];
 
+function FirstEntry()
+{
+    Super.FirstEntry();
+
+    //Track how many maps the player has visited
+    if (dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98){
+        IncStatFlag(player(),'DXRStats_mapcoverage');
+    }
+}
+
 function AnyEntry()
 {
     local int i;
@@ -540,7 +550,8 @@ static function CheckLeaderboard(DXRando dxr, Json j)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther,mapcoverage,nummaps;
+    local float mappercent;
     local CreditsLeaderboardWindow leaderboard;
 
     cw.PrintLn();
@@ -565,10 +576,19 @@ function AddDXRCredits(CreditsWindow cw)
     kos = dxr.flagbase.GetInt('DXRStats_knockouts');
     killsByOther = dxr.flagbase.GetInt('DXRStats_kills_by_other');
     kosByOther = dxr.flagbase.GetInt('DXRStats_knockouts_by_other');
+    mapcoverage = dxr.flagbase.GetInt('DXRStats_mapcoverage');
     deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
     saves = player().saveCount;
     autosaves = GetDataStorageStat(dxr, "DXRStats_autosaves");
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
+
+    //Calculate percentage of maps visited
+    if(class'DXRMapVariants'.static.IsRevisionMaps(player())){
+        nummaps=76;
+    } else {
+        nummaps=72;
+    }
+    mappercent = (float(mapcoverage)/float(nummaps))*100.0;
 
     cw.PrintHeader("Statistics");
 
@@ -587,6 +607,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Total NPCs Knocked Out: "$(kos + kosByOther));
     cw.PrintText("Total NPCs Burned to Death: "$burnkills);
     cw.PrintText("Total NPCs Gibbed: "$gibbedkills);
+    cw.PrintText("Maps Visited: "$mapcoverage$" (" $ class'DXRInfo'.static.TruncateFloat(mappercent,1) $ "%)");
     cw.PrintText("Deaths: "$deaths);
     cw.PrintText("Saves: "$saves$" ("$autosaves$" Autosaves)");
     cw.PrintText("Loads: "$loads);
@@ -650,7 +671,7 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i += SkillPointsTotal;
     i += Nanokeys * 20;// unique nanokeys
     i -= Clamp(cheats, 0, 100) * 300;
-    return i;
+    return Max(1, i);
 }
 
 function TestScoring()
@@ -664,16 +685,16 @@ function TestScoring()
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
 
     dxr.flags.SetDifficulty(1);
-    testint(dxr.flags.ScoreFlags(), 4835, "score bonus for Normal");
+    testint(dxr.flags.ScoreFlags(), 4820, "score bonus for Normal");
 
     dxr.flags.SetDifficulty(2);
-    testint(dxr.flags.ScoreFlags(), 10545, "score bonus for Hard");
+    testint(dxr.flags.ScoreFlags(), 10530, "score bonus for Hard");
 
     dxr.flags.SetDifficulty(3);
-    testint(dxr.flags.ScoreFlags(), 12645, "score bonus for Extreme");
+    testint(dxr.flags.ScoreFlags(), 12605, "score bonus for Extreme");
 
     dxr.flags.SetDifficulty(4);
-    testint(dxr.flags.ScoreFlags(), 14610, "score bonus for Impossible");
+    testint(dxr.flags.ScoreFlags(), 13915, "score bonus for Impossible");
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
@@ -689,8 +710,8 @@ function TestScoring()
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
-    names[num] = "130k Points";
-    scores[num++] = 130000;
+    names[num] = "129k Points";
+    scores[num++] = 129000;
 
     names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
     time=72000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;

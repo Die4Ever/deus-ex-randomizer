@@ -17,6 +17,7 @@ var transient int num_modules;
 
 var config string modules_to_load[47];// 1 less than the modules array, because we always load the DXRFlags module
 var config int config_version;
+var config int rando_beaten;
 
 var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
@@ -75,7 +76,6 @@ function SetdxInfo(DeusExLevelInfo i)
     CrcInit();
     ClearModules();
     LoadFlagsModule();
-    CheckConfig();
 
     Enable('Tick');
     bTickEnabled = true;
@@ -108,6 +108,7 @@ function DXRInit()
     }
     l("found flagbase: "$flagbase$", Player: "$Player);
 
+    CheckConfig();
     flags.InitCoordsMult();// for some reason flags is loaded too early and doesn't have the new map url
     flags.LoadFlags();
     LoadModules();
@@ -118,6 +119,11 @@ function CheckConfig()
 {
     local int i;
 
+    if( VersionOlderThan(config_version, 2,6,0,1) ) {
+        rando_beaten = 0;
+        player.bAskedToTrain = false;
+        player.SaveConfig();
+    }
     if( VersionOlderThan(config_version, 2,5,4,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
@@ -409,6 +415,7 @@ function DXRTick(float deltaTime)
     }
     else if(runPostFirstEntry)
     {
+        SetSeed( Crc(seed $ localURL $ " PostFirstEntry") );
         for(i=0; i<num_modules; i++) {
             modules[i].PostFirstEntry();
         }
@@ -419,6 +426,7 @@ function DXRTick(float deltaTime)
     {
         RunTests();
 
+        SetSeed( Crc(seed $ localURL $ " PostAnyEntry") );
         for(i=0; i<num_modules; i++) {
             modules[i].PostAnyEntry();
         }
@@ -455,10 +463,10 @@ function RandoEnter()
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ map @ GetURLMap());
 
+    SetSeed( Crc(seed $ localURL @ firstTime) );
     if ( firstTime == true )
     {
         //if( !IsTravel ) warning(localURL$": loaded save but FirstEntry? firstTime: "$firstTime$", IsTravel: "$IsTravel);
-        SetSeed( Crc(seed $ localURL) );
 
         info("randomizing "$localURL$" using seed " $ seed);
 
@@ -480,10 +488,12 @@ function RandoEnter()
         }
     }
 
+    SetSeed( Crc(seed $ localURL $ " AnyEntry") );
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
 
+    SetSeed( Crc(seed $ localURL $ " PlayerLogin") );
     foreach AllActors(class'#var(PlayerPawn)', pawn) {
         PlayerLogin(pawn);
     }
@@ -558,14 +568,22 @@ simulated final function int SetSeed(int s)
     return oldseed;
 }
 
+const gen1 = 1073741821;// half of gen2, rounded down
+const gen2 = 2147483643;
 simulated final function int rng(int max)
 {
-    const gen1 = 1073741821;// half of gen2, rounded down
-    const gen2 = 2147483643;
     tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
     // in unrealscript >>> is right shift and filling the left with 0s, >> shifts but keeps the sign
     // this means we don't need abs, which is a float function anyways
     return imod((tseed >>> 8), max);
+}
+
+simulated final function int rngraw()
+{
+    tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
+    // in unrealscript >>> is right shift and filling the left with 0s, >> shifts but keeps the sign
+    // this means we don't need abs, which is a float function anyways
+    return (tseed >>> 8);
 }
 
 

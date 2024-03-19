@@ -86,12 +86,41 @@ static function bool IsRobot(class<Actor> a)
     return ClassIsChildOf(a, class'Robot');
 }
 
-static function bool IsCritter(Actor a)
+static function bool IsCombatRobot(class<Actor> a)
 {
-    if( #var(prefix)CleanerBot(a) != None ) return true;
-    if( #var(prefix)MedicalBot(a) != None || #var(prefix)RepairBot(a) != None || Merchant(a) != None ) return true;
-    if( #var(prefix)Animal(a) == None ) return false;
-    return #var(prefix)Doberman(a) == None && #var(prefix)Gray(a) == None && #var(prefix)Greasel(a) == None && #var(prefix)Karkian(a) == None;
+    return
+        IsRobot(a) &&
+        !ClassIsChildOf(a, class'#var(prefix)MedicalBot') &&
+        !ClassIsChildOf(a, class'#var(prefix)RepairBot') &&
+        !ClassIsChildOf(a, class'#var(prefix)CleanerBot');
+}
+
+static function bool IsCombatAnimal(class<Actor> a)
+{
+    return
+        ClassIsChildOf(a, class'#var(prefix)Animal') && (
+            ClassIsChildOf(a, class'#var(prefix)Doberman') ||
+            ClassIsChildOf(a, class'#var(prefix)Gray') ||
+            ClassIsChildOf(a, class'#var(prefix)Greasel') ||
+            ClassIsChildOf(a, class'#var(prefix)Karkian')
+        );
+}
+
+// Returns True if the class is an animal that never starts as an enemy
+static function bool IsCritter(class<Actor> a)
+{
+    return ClassIsChildOf(a, class'#var(prefix)Animal') && !IsCombatAnimal(a);
+}
+
+// Returns True if the class ever starts as an enemy, even if some instances don't
+static function bool IsCombatPawn(class<Actor> a)
+{
+    return IsHuman(a) || IsCombatRobot(a) || IsCombatAnimal(a);
+}
+
+static function bool IsRelevantPawn(class<Actor> a)
+{
+    return IsCombatPawn(a) && !ClassIsChildOf(a, class'Merchant');
 }
 
 function bool IsInitialEnemy(ScriptedPawn p)
@@ -652,13 +681,21 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 
 function Conversation GetConversation(Name conName)
 {
-    local Conversation c;
+    local Conversation c, fallback;
+    local Name fallbackConName;
+
+    fallbackConName='';
     if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+        fallbackConName=conName;
         conName = StringToName("FemJC"$string(conName));
     }
     foreach AllObjects(class'Conversation', c) {
         if( c.conName == conName ) return c;
+        if( c.conName == fallbackConName ) fallback = c;
     }
+
+    if (fallbackConName!='') return fallback;
+
     return None;
 }
 
@@ -962,6 +999,12 @@ function bool CheckFreeSpace(out vector loc, float radius, float height)
     }
     loc = Location;
     return true;
+}
+
+function ZoneInfo GetZone(vector loc)
+{
+    SetLocation(loc);
+    return Region.Zone;
 }
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)

@@ -25,6 +25,12 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Walkway by the water", NORMAL_GOAL, vect(-420.000000, -2222.000000, -400), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, 0, 0));
+
+        if (dxr.flags.settings.starting_map > 20)
+        {
+            skip_rando_start = True;
+        }
+
         return 21;
 
     case "02_NYC_WAREHOUSE":
@@ -88,6 +94,12 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Walkway by the water", NORMAL_GOAL, vect(-420.000000, -2222.000000, -400), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, 0, 0));
+
+        if (dxr.flags.settings.starting_map > 20)
+        {
+            skip_rando_start = True;
+        }
+
         return 21;
 
     case "02_NYC_WAREHOUSE":
@@ -220,8 +232,11 @@ function MissionTimer()
 {
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
+        UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
+        break;
+    case "02_NYC_STREET":
+        UpdateGoalWithRandoInfo('DestroyGenerator', "The generator could be anywhere in the warehouse district.  It looks like a large yellow cylinder.");
+        break;
     }
 }
 
@@ -232,11 +247,16 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
 
+    if (g.name=="Generator"){
+        class'DXRHoverHint'.static.Create(self, "NSF Generator", Loc.positions[0].pos, 175, 140, g.actors[0].a);
+    }
+
     if(g.name == "Generator" && Loc.name != "Warehouse") {
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(505.710449, -605, 162.091278), rotm(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
         a.DrawScale = 4;
+        class'DXRHoverHint'.static.Create(self, "This is not the generator", a.Location, a.CollisionRadius+5, a.CollisionHeight+5);
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0));
         a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
         a.bMovable = false;

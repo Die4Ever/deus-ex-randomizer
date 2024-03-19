@@ -37,3 +37,38 @@ function UpgradeAugmentation()
         }
     }
 }
+
+function EnableButtons()
+{
+    _EnableButtons();
+
+    // vanilla disables the aug enable/disable button when you have 0 energy, but automatic augs make that incorrect
+
+    // if we have a selected aug then we need to check to enable the button
+    if (selectedAug != None) {
+        // if it's always active then you can never enable/disable it anyways
+        if(!selectedAug.IsAlwaysActive()) {
+            // if it's active then enable the button because you should always be able to disable an aug
+            // if it's automatic then you should always be able to enable/disable the aug
+            if(selectedAug.bIsActive || selectedAug.bAutomatic) {
+                btnActivate.EnableWindow(true);
+            }
+        }
+    }
+}
+
+function RedrawAugmentations()
+{
+    local int i;
+
+    selectedAug=None;
+    selectedAugButton=None;
+
+    for (i=0;i<ArrayCount(augItems);i++){
+        if (augItems[i]!=None){
+            augItems[i].Destroy();
+            augItems[i]=None;
+        }
+    }
+    CreateAugmentationButtons();
+}

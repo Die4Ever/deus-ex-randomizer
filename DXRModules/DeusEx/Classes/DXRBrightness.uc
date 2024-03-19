@@ -9,7 +9,7 @@ var ZoneBrightnessData zone_brightness[32];
 
 function int GetSavedBrightnessBoost()
 {
-    return int(player().ConsoleCommand("get #var(package).MenuChoice_BrightnessBoost BrightnessBoost"));
+    return class'MenuChoice_BrightnessBoost'.default.BrightnessBoost;
 }
 
 function PreFirstEntry()

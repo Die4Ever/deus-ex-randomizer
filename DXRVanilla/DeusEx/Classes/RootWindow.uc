@@ -37,7 +37,7 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
     local SkilledTool tool;
     local bool bFixGlitches;
 
-    bFixGlitches = bool(parentPawn.ConsoleCommand("get #var(package).MenuChoice_FixGlitches enabled"));
+    bFixGlitches = class'MenuChoice_FixGlitches'.default.enabled;
 
     // check for super jumps
     f = DeusExPlayer(parentPawn).AugmentationSystem.GetAugLevelValue(class'AugSpeed');

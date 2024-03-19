@@ -2,6 +2,9 @@ class DXRBarrel1 injects #var(prefix)Barrel1;
 
 function BeginPlay()
 {
+    bExplosive=Default.bExplosive;
+    explosionDamage=Default.explosionDamage;
+    explosionRadius=Default.explosionRadius;
     Super.BeginPlay();
     bInvincible = false;
 }
@@ -52,4 +55,14 @@ function Trigger(Actor Other, Pawn Instigator)
 
 auto state Active
 {
+    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+    {
+        //Don't get zapped by electricity
+        //Prevents the big smoke cloud in airfield that lags everything
+        if (damageType=='Shocked'){
+            return;
+        }
+
+        Super.TakeDamage(Damage,instigatedBy,hitLocation,momentum,damageType);
+    }
 }

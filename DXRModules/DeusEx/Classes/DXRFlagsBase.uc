@@ -179,9 +179,12 @@ function AnyEntry()
 function RollSeed()
 {
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
-    seed = abs(seed) % 1000000;
     dxr.seed = seed;
+    dxr.tseed = seed;
     bSetSeed = 0;
+    seed = rng(1000000);
+    dxr.seed = seed;
+    dxr.tseed = seed;
 }
 
 #ifdef hx
@@ -859,7 +862,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_starting_map':
-            return class'DXRStartMap'.static.GetStartingMapName(val);
+            return class'DXRStartMap'.static.GetStartingMapNameCredits(val);
             break;
         default:
             return val $ " (Unhandled!)";
@@ -1036,18 +1039,21 @@ function RunTests()
         t=rng(100);
         test( t >=0 && t < 100, "rng(100) got " $t$" >= 0 and < 100");
     }
+
     dxr.SetSeed(-111);
     i = rng(100);
     test( rng(100) != i, "rng(100) != rng(100)");
 
-    dxr.SetSeed(111);
+    dxr.SetSeed(72665856);
     testbool( chance_single(0), false, "chance_single(0)");
     testbool( chance_single(1), false, "chance_single(1)");
+    testbool( chance_single(99), true, "chance_single(99)");
     testbool( chance_single(100), true, "chance_single(100)");
-    testbool( chance_single(50), true, "chance_single(50) 1");
-    testbool( chance_single(50), false, "chance_single(50) 2");
+    testbool( chance_single(50), false, "chance_single(50) 1");
+    testbool( chance_single(50), true, "chance_single(50) 2");
     testbool( chance_single(50), true, "chance_single(50) 3");
-    testbool( chance_single(50), false, "chance_single(50) 4");
+    testbool( chance_single(50), true, "chance_single(50) 4");
+    testbool( chance_single(50), false, "chance_single(50) 5");
 
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
@@ -1064,9 +1070,9 @@ function RunTests()
 
 function ExtendedTests()
 {
-    local int i, total;
+    local int i, t, total, a[16];
     local float f;
-    local string credits_text;
+    local string text;
     Super.ExtendedTests();
 
     testint(FindLast("this is a test", "nope"), -1, "FindLast");
@@ -1077,6 +1083,34 @@ function ExtendedTests()
     testfloatrange( (5.7**3), 5.7*5.7*5.7, 0.001, "pow");
 
     TestRngExp(0, 1, 0.5, 1.5);
+
+    dxr.SetSeed(1112);
+    t=0;
+    for(i=0; i<100; i++) {
+        if(chance_single(1)) t++;
+    }
+    testint(t, 2, "chance_single(1) about 1%");
+    t=0;
+    for(i=0; i<100; i++) {
+        if(chance_single(50)) t++;
+    }
+    testint(t, 46, "chance_single(50) about 50%");
+    t=0;
+    for(i=0; i<100; i++) {
+        if(chance_single(99)) t++;
+    }
+    testint(t, 98, "chance_single(99) about 99%");
+
+    dxr.SetSeed(1112);
+    for(i=0;i<1000;i++) {
+        t = rng(3);
+        a[t]++;
+        test(t >= 0, "rng(3) >= 0");
+    }
+    testint(a[0], 329, "rng(3) == 0");
+    testint(a[1], 325, "rng(3) == 1");
+    testint(a[2], 346, "rng(3) == 2");
+    testint(a[3], 0, "rng(3) != 3");
 
     for(i=1;i<=4;i++)
         TestRngExp(25, 300, 100, i);
@@ -1109,11 +1143,12 @@ function ExtendedTests()
 
     TestTime();
     TestStorage();
+    TestRollSeed();
 
-    credits_text = StringifyFlags(Credits);
-    test( InStr(credits_text, "(ADD HUMAN READABLE NAME!)") == -1, "Credits does not contain (ADD HUMAN READABLE NAME!)");
-    test( InStr(credits_text, "(Unhandled!)") == -1, "Credits does not contain (Unhandled!)");
-    test( InStr(credits_text, "(Mishandled!)") == -1, "Credits does not contain (Mishandled!)");
+    text = StringifyFlags(Credits);
+    test( InStr(text, "(ADD HUMAN READABLE NAME!)") == -1, "Credits does not contain (ADD HUMAN READABLE NAME!)");
+    test( InStr(text, "(Unhandled!)") == -1, "Credits does not contain (Unhandled!)");
+    test( InStr(text, "(Mishandled!)") == -1, "Credits does not contain (Mishandled!)");
 
     teststring(ToHex(0), "0", "ToHex(0)");
     teststring(ToHex(0xF), "F", "ToHex(0xF)");
@@ -1121,19 +1156,8 @@ function ExtendedTests()
     teststring(ToHex(0x100F), "100F", "ToHex(0x100F)");
     teststring(ToHex(0x9001F), "9001F", "ToHex(0x9001F)");
 
-    gamemode = 0;
-    testint(moresettings.remove_paris_mj12, 0, "check remove_paris_mj12");
-    moresettings.remove_paris_mj12 = 50;
-    SetDifficulty(0);
-    testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
-    testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
-    testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
-    testint(settings.health, 200, "SetDifficulty check health");
-    testint(settings.energy, 200, "SetDifficulty check energy");
-    testint(moresettings.remove_paris_mj12, 0, "SetDifficulty check remove_paris_mj12");
-    SetDifficulty(1);
-    testint(settings.health, 100, "SetDifficulty check health");
-    testint(settings.energy, 100, "SetDifficulty check energy");
+    text = VersionString();
+    testbool(VersionIsStable(), InStr(text, "Alpha")==-1 && InStr(text, "Beta")==-1, "VersionIsStable() matches version text, " $ text);
 }
 
 function TestTime()
@@ -1269,4 +1293,24 @@ function TestRngExp(float minrange, float maxrange, float mid, float curve)
     test( avg > minrange, "exponential ^"$curve$" - avg "$avg$" > minrange "$minrange);
     test( lows > times/10, "exponential ^"$curve$" - lows "$lows$" > times/8 "$(times/10));
     test( highs > times/10, "exponential ^"$curve$" - highs "$highs$" > times/8 "$(times/10));
+}
+
+function TestRollSeed()
+{
+    local int i, b, t, a[32];
+
+    for(i=0; i<1000; i++) {
+        RollSeed();
+        for(b=0; b<32; b++) {
+            t = seed & (1<<b);
+            a[b] += int(t!=0);
+        }
+    }
+
+    for(b=0; b<20; b++) {
+        test(a[b] > 400 && a[b] < 600, "RollSeed bit "$b$" hit "$a[b]$" times");
+    }
+    for(b=20; b<32; b++) {
+        test(a[b] == 0, "RollSeed bit "$b$" hit "$a[b]$" times");
+    }
 }

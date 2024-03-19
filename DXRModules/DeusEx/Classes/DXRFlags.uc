@@ -35,12 +35,10 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         p.bCheatsEnabled = true;
 
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
+        p.bCheatsEnabled = true;
         p.ReducedDamageType = 'All';// god mode
         p.AllWeapons();
         p.AllAmmo();
-        if(dxr.localURL == "01_NYC_UNATCOISLAND") {
-            p.ConsoleCommand("legend");
-        }
 
 #ifdef injections
         autosave = DXRAutosave(dxr.FindModule(class'DXRAutosave'));
@@ -191,7 +189,7 @@ function CheckConfig()
     difficulty_names[i] = "Easy";
 #else
     difficulty_names[i] = "Normal";
-    difficulty_settings[i].CombatDifficulty = 1.2;
+    difficulty_settings[i].CombatDifficulty = 1.3;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
     difficulty_settings[i].doorsdestructible = 100;
@@ -227,7 +225,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 4;
     difficulty_settings[i].medbots = 35;
-    more_difficulty_settings[i].empty_medbots = 15;
+    more_difficulty_settings[i].empty_medbots = 20;
     difficulty_settings[i].repairbots = 35;
     difficulty_settings[i].medbotuses = 10;
     difficulty_settings[i].repairbotuses = 10;
@@ -262,7 +260,7 @@ function CheckConfig()
     difficulty_names[i] = "Medium";
 #else
     difficulty_names[i] = "Hard";
-    difficulty_settings[i].CombatDifficulty = 1.7;
+    difficulty_settings[i].CombatDifficulty = 2;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 40;
@@ -298,7 +296,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 2;
     difficulty_settings[i].medbots = 27;
-    more_difficulty_settings[i].empty_medbots = 15;
+    more_difficulty_settings[i].empty_medbots = 20;
     difficulty_settings[i].repairbots = 27;
     difficulty_settings[i].medbotuses = 5;
     difficulty_settings[i].repairbotuses = 5;
@@ -333,7 +331,7 @@ function CheckConfig()
     difficulty_names[i] = "Hard";
 #else
     difficulty_names[i] = "Extreme";
-    difficulty_settings[i].CombatDifficulty = 2.3;
+    difficulty_settings[i].CombatDifficulty = 3;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
@@ -359,7 +357,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
     difficulty_settings[i].maxskill = 250;
-    difficulty_settings[i].ammo = 60;
+    difficulty_settings[i].ammo = 65;
     difficulty_settings[i].medkits = 60;
     difficulty_settings[i].biocells = 50;
     difficulty_settings[i].lockpicks = 60;
@@ -369,7 +367,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 1;
     difficulty_settings[i].medbots = 25;
-    more_difficulty_settings[i].empty_medbots = 15;
+    more_difficulty_settings[i].empty_medbots = 20;
     difficulty_settings[i].repairbots = 25;
     difficulty_settings[i].medbotuses = 2;
     difficulty_settings[i].repairbotuses = 2;
@@ -404,7 +402,7 @@ function CheckConfig()
     difficulty_names[i] = "DeusEx";
 #else
     difficulty_names[i] = "Impossible";
-    difficulty_settings[i].CombatDifficulty = 3;
+    difficulty_settings[i].CombatDifficulty = 4;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
@@ -426,13 +424,13 @@ function CheckConfig()
     difficulty_settings[i].skills_disable_downgrades = 5;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 100;
-    difficulty_settings[i].banned_skills = 13;
-    difficulty_settings[i].banned_skill_levels = 7;
+    difficulty_settings[i].banned_skills = 9;
+    difficulty_settings[i].banned_skill_levels = 9;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 350;
-    difficulty_settings[i].ammo = 40;
+    difficulty_settings[i].maxskill = 300;
+    difficulty_settings[i].ammo = 50;
     difficulty_settings[i].medkits = 50;
-    difficulty_settings[i].biocells = 30;
+    difficulty_settings[i].biocells = 40;
     difficulty_settings[i].lockpicks = 50;
     difficulty_settings[i].multitools = 50;
     difficulty_settings[i].speedlevel = 1;
@@ -440,7 +438,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 1;
     difficulty_settings[i].medbots = 20;
-    more_difficulty_settings[i].empty_medbots = 15;
+    more_difficulty_settings[i].empty_medbots = 20;
     difficulty_settings[i].repairbots = 20;
     difficulty_settings[i].medbotuses = 1;
     difficulty_settings[i].repairbotuses = 1;
@@ -493,14 +491,11 @@ function MoreFlagsSettings GetMoreDifficulty(int diff)
 
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
-    local bool memes_enabled;
-
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
     moresettings = more_difficulty_settings[difficulty];
 
-    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
-    if(!memes_enabled) settings.dancingpercent = 0;
+    if(!class'MenuChoice_ToggleMemes'.default.enabled) settings.dancingpercent = 0;
 
     if(IsReducedRando()) {
         settings.doorsmode = 0;
@@ -586,7 +581,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     }
     else if(gamemode == SeriousSam) {
 #ifndef hx
-        settings.CombatDifficulty *= 0.1;
+        settings.CombatDifficulty *= 0.2;
 #endif
         settings.enemiesrandomized = 1000;
         settings.hiddenenemiesrandomized = 1000;
@@ -632,6 +627,11 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
+    }
+    else if(IsHordeMode()) {
+#ifndef hx
+        settings.CombatDifficulty *= 0.75;
+#endif
     }
     return settings;
 }
@@ -895,4 +895,18 @@ function RunTests()
 function ExtendedTests()
 {
     Super.ExtendedTests();
+
+    gamemode = 0;
+    testint(moresettings.remove_paris_mj12, 0, "check remove_paris_mj12");
+    moresettings.remove_paris_mj12 = 50;
+    SetDifficulty(0);
+    testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
+    testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
+    testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
+    testint(settings.health, 200, "SetDifficulty check health");
+    testint(settings.energy, 200, "SetDifficulty check energy");
+    testint(moresettings.remove_paris_mj12, 0, "SetDifficulty check remove_paris_mj12");
+    SetDifficulty(1);
+    testint(settings.health, 100, "SetDifficulty check health");
+    testint(settings.energy, 100, "SetDifficulty check energy");
 }

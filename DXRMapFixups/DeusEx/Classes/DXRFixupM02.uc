@@ -14,6 +14,12 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TAD tad;
     local #var(prefix)FishGenerator fg;
     local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)Trigger trig;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+    local DXRButtonHoverHint buttonHint;
+    local #var(prefix)Button1 button;
     local bool RevisionMaps;
     local bool VanillaMaps;
 
@@ -42,9 +48,11 @@ function PreFirstEntryMapFixes()
                         t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
                 }
             }
+            foreach AllActors(class'#var(prefix)MapExit',exit,'Boat_Exit'){break;}
             foreach AllActors(class'NYPoliceBoat',b) {
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
+                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit);
             }
             foreach AllActors(class'DeusExMover', d) {
                 if( d.Name == 'DeusExMover19' ) {
@@ -83,12 +91,55 @@ function PreFirstEntryMapFixes()
             kp.bToggleLock=False;
             kp.Event='DoorToWarehouse';
 
+            //Detach the trigger that opens the basement door when you get near it from inside
+            //Add a button instead
+            foreach AllActors(class'#var(prefix)Trigger',trig){
+                if (trig.Event=='SecurityDoor'){
+                    trig.Event='DontDoAnything';
+                    break;
+                }
+            }
+            AddSwitch( vect(915.534,-1046.767,-117.347), rot(0, 16368, 0), 'SecurityDoor');
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='ToStreet'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+            buttonHint.SetBaseActor(button);
+
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
             class'PlaceholderEnemy'.static.Create(self,vectm(1814,-1842,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(-31,-1485,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1121,-1095,-144));
             class'PlaceholderEnemy'.static.Create(self,vectm(467,-214,-144));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1570,493,1183)); //rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(681,1359,1424)); //rooftop window
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1820,1248,1616)); //rooftop tower
+            class'PlaceholderEnemy'.static.Create(self,vectm(-635,1983,1768)); //rooftop chimneys
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1847,1940,1800)); //rooftop building near elevator
+            class'PlaceholderEnemy'.static.Create(self,vectm(-972,765,1184)); //rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(110,530,784)); //lower rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(423,565,624)); //even lower rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(875,712,464)); //lowest rooftop
+            class'PlaceholderEnemy'.static.Create(self,vectm(-5,1415,1192)); //apartment
+            class'PlaceholderEnemy'.static.Create(self,vectm(-2080,812,48)); //alley
+            class'PlaceholderEnemy'.static.Create(self,vectm(13,-718,-96)); //Warehouse sewer entrance
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1555,2756,1584)); //Rooftops near elevator
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1717,2177,2008)); //roof of rooftop building near elevator
+            class'PlaceholderEnemy'.static.Create(self,vectm(843,75,480)); //Warehouse garage roof
+            class'PlaceholderEnemy'.static.Create(self,vectm(1649,-1393,64),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1334,-1404,64),,'Shitting');
         }
         break;
     case "02_NYC_HOTEL":
@@ -124,6 +175,15 @@ function PreFirstEntryMapFixes()
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2404,-1318,-487));//Near Smuggler
         pg.MaxCount=3;
 
+        foreach AllActors(class'#var(prefix)MapExit',exit,'ToWarehouse'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='ToWarehouse'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
+
         break;
     case "02_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1475,-580,48),rotm(0,25000,0));
@@ -149,6 +209,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-3593,1620,-961)); //Schick Fume Hood
         Spawn(class'PlaceholderItem',,, vectm(-4264,982,-981)); //Barracks bed
         Spawn(class'PlaceholderItem',,, vectm(-173,850,-322)); //Guard Room Table
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4219,1236,-976),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4059,976,-976),,'Sitting');
+
         break;
     }
 }

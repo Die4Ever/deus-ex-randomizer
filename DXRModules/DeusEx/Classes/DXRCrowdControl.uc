@@ -24,13 +24,20 @@ var config int numStupidQuestions;
 var config stupidQuestionSave StupidQuestions[50];
 var        stupidQuestion    _StupidQuestions[50];
 var int curStupidQuestion;
+var DataStorage datastorage;
 
 function Init(DXRando tdxr)
 {
     local bool anon, offline, online;
     Super.Init(tdxr);
 
-    curStupidQuestion = Rand(numStupidQuestions);
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+    if (datastorage.GetConfigKey('cc_StupidQuestionNumber')==""){
+        curStupidQuestion = Rand(numStupidQuestions);
+        datastorage.SetConfig('cc_StupidQuestionNumber',curStupidQuestion, 3600*12);
+    } else {
+        curStupidQuestion = int(datastorage.GetConfigKey('cc_StupidQuestionNumber'));
+    }
 
     if (tdxr.flags.crowdcontrol != 0) {
         link = Spawn(class'DXRandoCrowdControlLink');
@@ -281,6 +288,9 @@ function getRandomQuestion(out string question, out int numAnswers,
 
     curStupidQuestion++;
     curStupidQuestion = curStupidQuestion % numStupidQuestions;
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+    datastorage.SetConfig('cc_StupidQuestionNumber',curStupidQuestion, 3600*12);
 
     question = _StupidQuestions[curStupidQuestion].question;
     numAnswers = _StupidQuestions[curStupidQuestion].numAnswers;

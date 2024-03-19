@@ -37,7 +37,7 @@ function Tick(float deltaSeconds)
     if (CheckTime < Level.TimeSeconds) {
         if (CheckTime == 0.0) {
             //Don't throw a grenade the moment we spawn...
-            NextThrowTime = Level.TimeSeconds + ThrowFrequency;
+            CalcNextThrowTime();
         }
 
         CheckTime = Level.TimeSeconds + CheckFrequency;
@@ -79,9 +79,14 @@ function Tick(float deltaSeconds)
             ThrowPoint = Location + vect(0,0,20);
             Aim = rotator(closestTarget.Location - ThrowPoint);
             Spawn(PickAGrenade(closestTarget),self,,ThrowPoint,Aim);
-            NextThrowTime = Level.TimeSeconds + ThrowFrequency;
+            CalcNextThrowTime();
         }
     }
+}
+
+function CalcNextThrowTime()
+{
+    NextThrowTime = Level.TimeSeconds + (ThrowFrequency * (float(Health)/float(Default.Health)));
 }
 
 function class<Projectile> PickAGrenade(Actor closestTarget)
@@ -139,7 +144,7 @@ defaultproperties
      CheckTime=0.00000
      NextThrowTime=0.0000
      ThrowFrequency=6.0
-     CheckFrequency=2.0
+     CheckFrequency=1.0
      CollisionRadius=20.000000
      CollisionHeight=17.50000
      DrawScale=4.000000
@@ -160,8 +165,9 @@ defaultproperties
      MaxStepHeight=25.00000
      BaseEyeHeight=3.000000
      JumpZ=30.000000
-     WalkingSpeed=1.0
-     GroundSpeed=100.000000
+     WalkingSpeed=1.5
+     GroundSpeed=150.000000
+     WalkAnimMult=1.5
      WaterSpeed=24.000000
      AirSpeed=60.000000
      Mass=30.000

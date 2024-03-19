@@ -35,6 +35,12 @@ function PreFirstEntryMapFixes()
     local #var(prefix)RatGenerator rg;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)NanoKey k;
+    local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+    local #var(prefix)HumanCivilian hc;
+
     local DXREnemies dxre;
     local int i;
     local bool VanillaMaps;
@@ -73,6 +79,13 @@ function PreFirstEntryMapFixes()
             mj12.BindName = "MJ12CellguardRick";
         }
 
+        //Anna hates weapons (why?) in Revision, but can't hurt to set it for all mods
+        //If she sees you pull out a weapon with this set, she goes hostile and starts
+        //running around
+        foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
+            anna.bHateWeapon=False;
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover34'){
@@ -81,6 +94,12 @@ function PreFirstEntryMapFixes()
                     dxm.KeyIDNeeded='Cabinet';
                 }
             }
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-3417,1369,208),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(479,3502,-144),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
         }
 
         break;
@@ -137,6 +156,22 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
             Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
             Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(229,1828,288),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1451,654,608),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1662,786,608),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-16,-609,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-182,-859,-16),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1153,1024,-16),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1885,-279,-16),,'Sitting');
+
+        }
+
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
+            // Chet's name is Chet
+            hc.bImportant = true;
         }
 
         break;
@@ -167,6 +202,12 @@ function PreFirstEntryMapFixes()
 
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-4685,2875,-124));//Outside the front door
         pg.MaxCount=3;
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
 
         break;
     }

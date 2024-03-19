@@ -99,17 +99,26 @@ simulated event Destroyed()
 
 simulated function int SetSeed(coerce string name)
 {
-    return dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
+    dxr.rngraw();// advance the rng
+    return oldseed;
 }
 
 simulated function int SetGlobalSeed(coerce string name)
 {
-    return dxr.SetSeed( dxr.seed + dxr.Crc(name) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(name) );
+    dxr.rngraw();// advance the rng
+    return oldseed;
 }
 
 simulated function int BranchSeed(coerce string name)
 {
-    return dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
+    dxr.rngraw();// advance the rng
+    return oldseed;
 }
 
 simulated function int ReapplySeed(int oldSeed)
@@ -119,7 +128,11 @@ simulated function int ReapplySeed(int oldSeed)
 
 simulated function int rng(int max)
 {
-    return dxr.rng(max);
+    local float f;
+    // divide by 1 less than 0xFFFFFF, so that it's never the max and we don't have to worry about rounding
+    f = float(dxr.rngraw())/16777214.0;
+    f *= float(max);
+    return int(f);
 }
 
 simulated function bool rngb()
@@ -128,9 +141,9 @@ simulated function bool rngb()
 }
 
 simulated function float rngf()
-{// 0 to 1.0
+{// 0 to 1.0 inclusive
     local float f;
-    f = float(dxr.rng(100001))/100000.0;
+    f = float(dxr.rngraw())/16777215.0;// 0xFFFFFF because rngraw does a right shift by 8 bits
     //l("rngf() "$f);
     return f;
 }

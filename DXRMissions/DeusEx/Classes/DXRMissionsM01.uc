@@ -2,16 +2,17 @@ class DXRMissionsM01 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, goal2, loc, loc2;
+    local int goal, goal2, loc, loc2, loc3;
 
     goal = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
     AddGoalActor(goal, 1, 'DataLinkTrigger12', PHYS_None);
+    AddGoalActor(goal, 2, 'SkillAwardTrigger6', PHYS_None);
     goal2 = AddGoal("01_NYC_UNATCOISLAND", "Police Boat", GOAL_TYPE1, 'NYPoliceBoat0', PHYS_None);
 
     loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", NORMAL_GOAL | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
+    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "South Dock", NORMAL_GOAL | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
     AddMutualExclusion(loc, loc2);
-    AddMapMarker(class'Image01_LibertyIsland',156,364,"L","Terrorist Commander", loc2,"Leo Gold, the terrorist commander, can be located on the south dock.  This is the location you would normally start the game.");
+    AddMapMarker(class'Image01_LibertyIsland',156,364,"L","Terrorist Commander", loc2,"Leo Gold, the terrorist commander, can be located on the South dock.  This is the location you would normally start the game.");
 
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2407.206787, 205.915558, -128.899979), rot(0, 30472, 0));
     AddMutualExclusion(loc, loc2);
@@ -21,6 +22,11 @@ function int InitGoals(int mission, string map)
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
     AddMutualExclusion(loc, loc2);
     AddMapMarker(class'Image01_LibertyIsland',318,140,"L","Terrorist Commander",loc2,"Leo Gold, the terrorist commander, can be located in the back of the small bunker next to the statue.  He would be behind the malfunctioning electrical box.");
+
+    loc3 = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", NORMAL_GOAL, vect(4018,-10308,-256), rot(0, 22520, 0));
+    AddMutualExclusion(loc, loc3);
+    AddMutualExclusion(loc3, loc2);
+    AddMapMarker(class'Image01_LibertyIsland',239,15,"L","Terrorist Commander",loc3,"Leo Gold, the terrorist commander, can be located on the North dock on the opposite side from the hut.");
 
     loc=AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',235,147,"L","Terrorist Commander", loc,"Leo Gold, the terrorist commander, can be located inside the jail cell where Gunther is locked up.");
@@ -80,6 +86,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)SkillAwardTrigger sat;
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2);
@@ -103,6 +110,16 @@ function PreFirstEntryMapFixes()
                 dlt.Destroy();
             }
         }
+
+        //Increase the radius of the 750 points for reaching the top of the statue
+        //This gets moved with Leo and needs to be bigger than his conversation trigger
+        //which has a 140 invocation radius.
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat){
+            if (sat.skillPointsAdded==750){ //Reward for reaching top of statue
+                sat.SetCollisionSize(250,sat.CollisionHeight);
+                break;
+            }
+        }
     }
 }
 
@@ -110,8 +127,8 @@ function MissionTimer()
 {
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('GetToDock', "The boat could be anywhere.");
+        UpdateGoalWithRandoInfo('GetToDock', "The boat could be anywhere.");
+        break;
     }
 }
 

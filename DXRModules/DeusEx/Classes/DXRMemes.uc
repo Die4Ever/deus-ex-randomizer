@@ -132,60 +132,60 @@ function RandomMJ12Globe()
         SetGlobalSeed("RandomGlobe");
 
         earth.bIsSecretGoal=True;
-        
+
         startRot = earth.Rotation;
         scaleMult=1.0;
 
         if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random globe
 
         switch(rng(16)){
-        case 0: 
+        case 0:
             PlayDressUp(earth,class'Basketball',0);
             startRot = rotm(8000,0,7000); //Give it a bit of tilt for more drama
             scaleMult = 2;
             break;
-        case 1: 
+        case 1:
             PlayDressUp(earth,class'BoneSkull',0);
             startRot = rotm(0,32765,-5000); //Slightly tilted down
             scaleMult = 1.0;
             break;
-        case 2: 
+        case 2:
             PlayDressUp(earth,class'Liquor40oz',0);
             startRot = rotm(0,16000,12000);
             scaleMult = 2;
             break;
-        case 3: 
+        case 3:
             PlayDressUp(earth,class'#var(prefix)DXLogo',0);
             startRot = earth.Rotation;
             scaleMult = 3;
             break;
-        case 4: 
+        case 4:
             PlayDressUp(earth,class'SodaCan',0);
             startRot = rotm(6000,16000,12000);
             scaleMult = 1.0;
             break;
         case 5: //Does this one even look good?
-            PlayDressUp(earth,class'BoneFemur',0); 
+            PlayDressUp(earth,class'BoneFemur',0);
             startRot = rotm(0,16000,12000);
             scaleMult = 0.25;
             break;
-        case 6: 
-            PlayDressUp(earth,class'ChildMale2',24000); 
+        case 6:
+            PlayDressUp(earth,class'ChildMale2',24000);
             startRot = earth.Rotation;
             scaleMult = 1.5;
             break;
-        case 7: 
+        case 7:
             PlayDressUp(earth,class'Trophy',0);
             startRot = earth.Rotation;
             scaleMult = 1.0;
             break;
-        case 8: 
-            PlayDressUp(earth,class'GrayCarcass',0); 
+        case 8:
+            PlayDressUp(earth,class'GrayCarcass',0);
             startRot = rotm(-16385,20000,0);
             scaleMult = 0.25;
             break;
-        case 9: 
-            PlayDressUp(earth,class'Mutt',24000); 
+        case 9:
+            PlayDressUp(earth,class'Mutt',24000);
             startRot = earth.Rotation;
             scaleMult = 1.5;
             break;
@@ -231,12 +231,9 @@ function RandomMJ12Globe()
 
 function PreFirstEntry()
 {
-    local bool memes_enabled;
-
     Super.PreFirstEntry();
     if(dxr.flags.IsReducedRando()) return;
-    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
-    if(!memes_enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
 
     switch(dxr.localURL)
     {
@@ -269,12 +266,10 @@ function AnyEntry()
     local Actor a;
     local Rotator r;
     local Vector v;
-    local bool memes_enabled;
 
     Super.AnyEntry();
     if(dxr.flags.IsReducedRando()) return;
-    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
-    if(!memes_enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
 
     switch(dxr.localURL)
     {
@@ -344,7 +339,7 @@ function AnyEntry()
             }
 
 
-//Add me back in once we have "Randomizer" name textures!  Just change the textures below
+            //Add me back in once we have "Randomizer" name textures!  Just change the textures below
             foreach AllActors(class'#var(prefix)DXText',text)
             {
                 text.bHidden=True; //Hide all the original text
@@ -436,7 +431,6 @@ function PostFirstEntry()
     local LuciusDeBeers lucius;
     local vector v;
     local rotator r;
-    local bool memes_enabled;
 
     Super.PostFirstEntry();
 
@@ -450,8 +444,7 @@ function PostFirstEntry()
     }
 
     if(dxr.flags.IsReducedRando()) return;
-    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
-    if(!memes_enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
 
     SetSeed("Memes InterpolationPoints");
 
@@ -571,13 +564,8 @@ function PaulToilet()
 
     chair.Event = '';
     chair.Destroy();
-    toilet.DrawScale = 0.7;
-    // _AddActor does good stuff to ignore collision
-    chair = #var(prefix)Chair1(_AddActor(chair, class'#var(prefix)Chair1', toilet.Location, toilet.Rotation));
-    chair.bHidden = true;
-    chair.sitPoint[0].Y += 4.0;
 
-    paul.SetLocation(chair.Location);
+    paul.SetLocation(toilet.Location);
     ft.SetLocation(paul.Location);
 }
 
@@ -733,6 +721,27 @@ function RandomizeDialogConversation(Conversation conv)
     for(i=0;i<num;i++) {
         j = rng(num);
         SwapSpeech(speech[i], speech[j]);
+    }
+}
+
+static function float GetVoicePitch(DXRando dxr){
+    if (!dxr.flags.IsReducedRando() && dxr.IsAprilFools()){
+        if ((dxr.seed)%10>=5){
+            return 1.5;
+        } else {
+            return 0.75;
+        }
+    }
+    return 1.0;
+}
+
+function AddDXRCredits(CreditsWindow cw)
+{
+    if(IsAprilFools()) {
+        cw.PrintLn();
+        cw.PrintHeader("APRIL FOOLS!");
+        cw.PrintLn();
+        cw.PrintLn();
     }
 }
 

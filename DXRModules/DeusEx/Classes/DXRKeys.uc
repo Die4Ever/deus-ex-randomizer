@@ -119,6 +119,13 @@ function vanilla_keys_rules()
         break;
 
     case "04_NYC_NSFHQ":
+        // don't allow the basement door key to be in the vanilla transmit signal room or the basement
+        keys_rules[i].item_name = 'BasementDoor';
+        keys_rules[i].min_pos = vect(100, 329, 1010);
+        keys_rules[i].max_pos = vect(116, 345, 1050);
+        keys_rules[i].allow = false;
+        i++;
+
         keys_rules[i].item_name = 'BasementDoor';
         keys_rules[i].min_pos = vect(-99999, -99999, 0);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
@@ -291,6 +298,20 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
+        //Disallow on the upper shelves in the pit
+        keys_rules[i].item_name = 'control_room';
+        keys_rules[i].min_pos = vect(-132, 1761, -2830);
+        keys_rules[i].max_pos = vect(-724, 2233, -2640);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Disallow on the upper shelves in the pit
+        keys_rules[i].item_name = 'maintenancekey';
+        keys_rules[i].min_pos = vect(-132, 1761, -2830);
+        keys_rules[i].max_pos = vect(-724, 2233, -2640);
+        keys_rules[i].allow = false;
+        i++;
+
         keys_rules[i].item_name = 'maintenancekey';
         keys_rules[i].min_pos = vect(-3521.955078, 3413.110352, -3246.771729);
         keys_rules[i].max_pos = vect(-2844.053467, 3756.776855, -3097.210205);
@@ -301,6 +322,12 @@ function vanilla_keys_rules()
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'maintenancekey';
+        keys_rules[i].min_pos = vect(-1631, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 2971, 99999);
+        keys_rules[i].allow = false;
         i++;
 
         keys_rules[i].item_name = 'maintenancekey';
@@ -883,7 +910,7 @@ function RandoKey(#var(prefix)NanoKey k)
     if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) {
         oldseed = SetSeed( "RandoKey " $ k.Name );
         _RandoKey(k, dxr.flags.settings.keys_containers > 0);
-        dxr.SetSeed(oldseed);
+        ReapplySeed(oldseed);
     }
 }
 

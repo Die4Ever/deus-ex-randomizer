@@ -349,7 +349,7 @@ def MD5(bytes:bytes) -> str:
     return ret
 
 
-def DownloadFile(url, dest, callback):
+def DownloadFile(url, dest, callback=None):
     # still do this on dryrun because it writes to temp?
     sslcontext = ssl.create_default_context(cafile=certifi.where())
     old_func = ssl._create_default_https_context

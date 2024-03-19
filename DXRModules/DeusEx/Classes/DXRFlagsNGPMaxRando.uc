@@ -160,7 +160,7 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win, bingo_freespaces;
+    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -190,16 +190,19 @@ function NewGamePlus()
         // we only want to do this on maxrando because we want to retain the user's custom choices
         bingo_win = settings.bingo_win;
         bingo_freespaces = settings.bingo_freespaces;
+        newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
         settings.bingo_freespaces = bingo_freespaces;
+        moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
     }
 
     dxr.SetSeed(dxr.Crc("NG+ curve tweak " $ (seed - newgameplus_loops)));
+    rng(9);// advance the rng
 #ifdef hx
     p.CombatDifficulty = 3;// I don't think NG+ works in HX anyways?
 #else

@@ -2,16 +2,16 @@ class DXRFixupVandenberg extends DXRFixup;
 
 var bool M14GaryNotDone;
 var bool M12GaryHostageBriefing;
+var int storedBotCount;// MJ12 bots in CMD
 
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
-    local Button1 b;
     local ComputerSecurity comp;
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
-    local HowardStrong hs;
+    local #var(prefix)HowardStrong hs;
     local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
     local #var(prefix)TracerTong tt;
@@ -22,10 +22,23 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
     local OnceOnlyTrigger oot;
     local Actor a;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)FishGenerator fg;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+    local ScriptedPawn pawn;
+    local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)Robot bot;
+    local #var(prefix)TiffanySavage tiffany;
+    local #var(prefix)SecurityCamera sc;
+    local Dispatcher d;
+    local string botName;
+    local int securityBotNum, militaryBotNum;
+
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -44,6 +57,11 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-163,7797,-2143));
         class'PlaceholderEnemy'.static.Create(self,vectm(2512,6140,-2162));
         class'PlaceholderEnemy'.static.Create(self,vectm(2267,643,-2000));
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1702,1839,-2000),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1623,1826,-2000),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1456,1806,-2000),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1354,1813,-2000),,'Sitting');
 
         sl = #var(prefix)ShopLight(AddActor(class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
         sl.bInvincible = true;
@@ -73,6 +91,8 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(DeusExPrefix)Mover',door){
                 if (door.Name=='DeusExMover28'){
                     door.KeyIDNeeded='TimsClosetKey';
+                    door.Tag = 'TimsDoor';
+                    AddSwitch( vect(-1782.48,1597.85,-1969), rot(0, 0, 0), 'TimsDoor');
                 }
             }
 
@@ -88,7 +108,36 @@ function PreFirstEntryMapFixes()
                 }
             }
             AddSwitch( vect(-278.854828,657.390503,-1977.144531), rot(0, 16384, 0), 'CmdBackDoor');
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Helicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+
+            FixCmdElevator();
         }
+
+        foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
+            if (#var(prefix)SecurityBot2(bot) != None) {
+                botName = "MJ12 Security Bot " $ ++securityBotNum;
+            } else if (#var(prefix)MilitaryBot(bot) != None) {
+                botName = "MJ12 Military Bot " $ ++militaryBotNum;
+            } else {
+                botName = "MJ12 Bot";
+            }
+
+            hoverHint = class'DXRHoverHint'.static.Create(self, botName, bot.Location, bot.CollisionRadius*1.11, bot.CollisionHeight*1.11, bot);
+            hoverHint.SetBaseActor(bot);
+            hoverHint.VisibleDistance = 15000;
+        }
+
+        //There are 3 cameras in CMD that have 20 memoryTime instead of the default 5
+        //These are the only ones with non-default in the whole game.  Revert them.
+        foreach AllActors(class'#var(prefix)SecurityCamera',sc){
+            sc.memoryTime = sc.Default.memoryTime;
+        }
+
         break;
 
     case "12_VANDENBERG_TUNNELS":
@@ -98,11 +147,41 @@ function PreFirstEntryMapFixes()
                 e.BumpEvent = 'SC_Door3_opened';
             }
             AddSwitch( vect(-396.634888, 2295, -2542.310547), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
-            foreach AllActors(class'Button1', b) {
-                if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
-                    AddDelay(b, 5);
+            //Duplicate the dispatcher for both ends of the radioactive room that sets off the alarms and explosion
+            d = Spawn(class'Dispatcher',, 'SC_Door3_opened' );
+            d.OutEvents[0]='Warning';
+            d.OutDelays[0]=0;
+            d.OutEvents[1]='tnt';
+            d.OutDelays[1]=3;
+            d.OutEvents[2]='Warning';
+            d.OutDelays[2]=2;
+
+            //Swap the beam triggers that set off this turret to LaserTrigger for clarity
+            foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+                if (bt.Tag=='Turret_beam'){
+                    lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
+                    lt.TriggerType=bt.TriggerType;
+                    lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
+                    lt.bDynamicLight = bt.bDynamicLight;
+                    lt.bIsOn = bt.bIsOn;
+                    bt.Destroy();
                 }
             }
+
+            Spawn(class'PlaceholderItem',,, vectm(-2227,4220,-2519)); //on top of generator
+            Spawn(class'PlaceholderItem',,, vectm(-1421,5119,-2534)); //on top of boxes near start
+            Spawn(class'PlaceholderItem',,, vectm(-1205,5271,-2534)); //on top of boxes near start
+            Spawn(class'PlaceholderItem',,, vectm(-2676,3649,-2599)); //stairwell down to flooded area
+            Spawn(class'PlaceholderItem',,, vectm(-3227,3679,-2599)); //floor near stairwell down to flooded area
+            Spawn(class'PlaceholderItem',,, vectm(-1590,2796,-2599)); //airlock after spiderbot trap
+
+            Spawn(class'PlaceholderContainer',,, vectm(-2250,4586,-2577)); //across from generator
+            Spawn(class'PlaceholderContainer',,, vectm(-2414,4329,-2577)); //near generator
+            Spawn(class'PlaceholderContainer',,, vectm(-3175,3194,-2577)); //near stairwell to flooded area
+            Spawn(class'PlaceholderContainer',,, vectm(-1399,4950,-2565)); //near boxes near start
+            Spawn(class'PlaceholderContainer',,, vectm(-3083,2798,-2577)); //near corner near spiderbot trap
+            Spawn(class'PlaceholderContainer',,, vectm(-325,1386,-2577)); //after the pit
+
         }
         break;
 
@@ -147,6 +226,12 @@ function PreFirstEntryMapFixes()
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(5657,-1847,-1377));//Near tunnel to sub bay
             fg.ActiveArea=20000; //Long line of sight on this one...  Want it to trigger early
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
         }
         break;
 
@@ -227,7 +312,7 @@ function PreFirstEntryMapFixes()
     case "14_Oceanlab_silo":
         if (VanillaMaps){
             if(!dxr.flags.IsReducedRando()) {
-                foreach AllActors(class'HowardStrong', hs) {
+                foreach AllActors(class'#var(prefix)HowardStrong', hs) {
                     hs.ChangeAlly('', 1, true);
                     hs.ChangeAlly('mj12', 1, true);
                     hs.ChangeAlly('spider', 1, true);
@@ -247,6 +332,8 @@ function PreFirstEntryMapFixes()
                     if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
                         SetPawnHealth(hs, 200);
                     }
+
+                    hs.LeaveWorld();
                 }
             }
 
@@ -259,6 +346,13 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ExitPath'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+
 
             class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
             class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327));
@@ -290,25 +384,152 @@ function PreFirstEntryMapFixes()
     case "12_VANDENBERG_GAS":
         if (VanillaMaps){
             class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
+            class'PlaceholderEnemy'.static.Create(self,vectm(1351,582,-930),,'Shitting');
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1000,745,-972));//Gas Station back room
             rg.MaxCount=1;
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
             rg.MaxCount=1;
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'UN_BlackHeli'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Heli'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
+                SetOutsideGuyReactions(sp);
+            }
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'mib_garage'){
+                SetOutsideGuyReactions(sp);
+            }
+
+            //Make Tiffany actually move like a useful human being
+            foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
+                tiffany.GroundSpeed = 180;
+                tiffany.walkAnimMult = 1;
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
             Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar
             Spawn(class'PlaceholderItem',,, vectm(-88,-2087,-1553)); //Collapsed bridge road surface
             Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
             Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
+
         }
         break;
     }
+}
+
+//Add a new button in the elevator to open the doors
+function FixCmdElevator()
+{
+    local #var(prefix)Button1 doorButton,butt;
+    local Dispatcher d;
+    local Trigger t;
+    local Vector loc;
+    local Rotator rot;
+    local Mover eleDoor;
+
+    //Find the middle elevator button
+    foreach AllActors(class'#var(prefix)Button1',butt){
+        if (butt.Event=='delay_floor2'){
+            break;
+        }
+    }
+
+    rot = butt.Rotation;
+    loc = butt.Location;
+    loc.Z += 7; //Three buttons are 7 apart from each other on Y axis, so put this one equally above
+
+    doorButton = Spawn(class'#var(prefix)Button1',,,loc,rot);
+    doorButton.moverTag = butt.moverTag;
+    doorButton.ButtonType=BT_Blank;
+    doorButton.Event='all_doors_button';
+    doorButton.BeginPlay();
+
+    //Doors are 'door1', 'door2', and 'door3'
+    d = Spawn(class'Dispatcher',, 'all_doors_button' );
+    d.OutEvents[0]='door1';
+    d.OutDelays[0]=0;
+    d.OutEvents[1]='door2';
+    d.OutDelays[1]=0;
+    d.OutEvents[2]='door3';
+    d.OutDelays[2]=0;
+
+    //Disable the proximity triggers on the doors
+    foreach AllActors(class'Trigger',t){
+        switch(t.Event){
+            case 'door1':
+            case 'door2':
+            case 'door3':
+                t.Event='';
+                t.Destroy();
+                break;
+        }
+    }
+
+    foreach AllActors(class'Mover',eleDoor){
+        switch(eleDoor.tag){
+            case 'door1':
+            case 'door2':
+            case 'door3':
+                eleDoor.MoverEncroachType=ME_IgnoreWhenEncroach;
+                break;
+        }
+    }
+}
+
+function SetGarageGuyReactions(#var(prefix)ScriptedPawn sp)
+{
+    sp.RaiseAlarm=RAISEALARM_BeforeAttacking;
+    sp.bReactAlarm=True; //The various reactions on the normal garage guard
+    sp.bReactCarcass=False;
+    sp.bReactDistress=True;
+    sp.bReactFutz=False;
+    sp.bReactLoudNoise=True;
+    sp.bReactPresence=True;
+    sp.bReactProjectiles=True;
+    sp.bReactShot=True;
+    sp.bHateCarcass=False;
+    sp.bHateDistress=True;
+    sp.bHateHacking=False;
+    sp.bHateIndirectInjury=False;
+    sp.bHateInjury=True;
+    sp.bHateShot=True;
+    sp.bHateWeapon=True;
+    sp.MaxProvocations=1;
+    sp.ResetReactions();
+}
+
+function SetOutsideGuyReactions(#var(prefix)ScriptedPawn sp)
+{
+    sp.RaiseAlarm=RAISEALARM_BeforeFleeing;
+    sp.bReactAlarm=True;
+    sp.bReactCarcass=False;
+    sp.bReactDistress=False;
+    sp.bReactFutz=False;
+    sp.bReactLoudNoise=False;
+    sp.bReactPresence=True;
+    sp.bReactProjectiles=True;
+    sp.bReactShot=False;
+    sp.bHateCarcass=False;
+    sp.bHateDistress=False;
+    sp.bHateHacking=False;
+    sp.bHateIndirectInjury=False;
+    sp.bHateInjury=True;
+    sp.bHateShot=True;
+    sp.bHateWeapon=False;
+    sp.MaxProvocations=1;
+    sp.ResetReactions();
 }
 
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)CrateUnbreakableLarge c;
     local Actor a;
+    local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)AlarmUnit alarm;
+    local #var(DeusExPrefix)Mover door;
     local bool RevisionMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
@@ -328,12 +549,39 @@ function PostFirstEntryMapFixes()
         a.SetPhysics(PHYS_None);
         l("PostFirstEntryMapFixes spawned "$ActorToString(a));
         break;
+    case "12_VANDENBERG_GAS":
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
+            SetGarageGuyReactions(sp);
+        }
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'mib_garage'){
+            SetGarageGuyReactions(sp);
+            sp.Tag = 'guard2'; //
+        }
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
+            if (#var(prefix)Animal(sp)!=None){
+                //player().ClientMessage("Spawning doggy alarm for "$sp);
+                alarm=Spawn(class'#var(prefix)AlarmUnit',,, vectm(-7.312059,933.707886,-985),rotm(0,-16408,0)); //Dog Height Alarm
+                alarm.Event='guardattack';
+                alarm.Tag='alarm1'; //Same as the original alarm
+
+                //a dog can't open a door, so trigger it from the alarm panel
+                foreach RadiusActors(class'#var(DeusExPrefix)Mover',door,100,alarm.Location){
+                    if (door.KeyIDNeeded=='pipe'){
+                        door.Tag='guardattack';
+                        break;
+                    }
+                }
+                break;
+            }
+
+        }
+        break;
     }
 }
 
 function AnyEntryMapFixes()
 {
-    local MIB mib;
+    local #var(prefix)ScriptedPawn sp;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
 
@@ -344,15 +592,18 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "12_Vandenberg_gas":
-        foreach AllActors(class'MIB', mib, 'mib_garage') {
-            key = NanoKey(mib.FindInventoryType(class'NanoKey'));
-            l(mib$" has key "$key$", "$key.KeyID$", "$key.Description);
-            if(key == None) continue;
-            if(key.KeyID != '') continue;
-            l("fixing "$key$" to garage_entrance");
-            key.KeyID = 'garage_entrance';
-            key.Description = "Garage Door";
-            key.Timer();// make sure to fix the ItemName in vanilla
+        foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
+            //We switch the tag for mib_garage to guard2 for safety purposes
+            if (sp.Tag== 'mib_garage' || sp.Tag=='guard2'){
+                key = NanoKey(sp.FindInventoryType(class'NanoKey'));
+                if(key == None) continue;
+                l(sp$" has key "$key$", "$key.KeyID$", "$key.Description);
+                if(key.KeyID != '') continue;
+                l("fixing "$key$" to garage_entrance");
+                key.KeyID = 'garage_entrance';
+                key.Description = "Garage Door";
+                key.Timer();// make sure to fix the ItemName in vanilla
+            }
         }
         break;
 
@@ -369,12 +620,17 @@ function AnyEntryMapFixes()
             hs.MinHealth = 0;
         }
         Player().StartDataLinkTransmission("DL_FrontGate");
+        SetTimer(1, true);
         break;
     case "12_VANDENBERG_COMPUTER":
         SetTimer(1, true);
         break;
     case "12_VANDENBERG_CMD":
         Player().StartDataLinkTransmission("DL_no_carla");
+
+        // timer to count the MJ12 Bots
+        SetTimer(1, True);
+
         break;
     }
 }
@@ -407,6 +663,9 @@ function FixSavageSkillPointsDupe()
 function TimerMapFixes()
 {
     local #var(prefix)GarySavage gary;
+    local #var(prefix)HowardStrong hs;
+    local bool prevMapsDone;
+
     switch(dxr.localURL)
     {
     case "14_VANDENBERG_SUB":
@@ -428,5 +687,73 @@ function TimerMapFixes()
             }
         }
         break;
+    case "12_VANDENBERG_CMD":
+        CountMJ12Bots();
+        break;
+
+    case "14_Oceanlab_silo":
+        prevMapsDone = dxr.flagbase.GetBool('Heliosborn') &&  //Finished Vandenberg, mission 12
+            dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
+        prevMapsDone = prevMapsDone || !#defined(injections);
+
+        if(prevMapsDone
+           && dxr.flagbase.GetBool('missile_launched') //Redirected the missile in Silo, mission 14
+           && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden'))
+        {
+            foreach AllActors(class'#var(prefix)HowardStrong', hs) {
+                hs.EnterWorld();
+            }
+            dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
+        }
+        break;
     }
 }
+
+function CountMJ12Bots()
+{
+    local int newCount;
+    local #var(prefix)Robot bot;
+
+    newCount = 0;
+
+    foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
+        if (bot.EMPHitPoints>0){
+            newCount++;
+        }
+    }
+
+    if (newCount!=storedBotCount){
+        // A bot has been destroyed or disabled!
+        if (UpdateBotGoal(newCount)==True){
+            storedBotCount = newCount; //only update the stored count if the goal updated
+            if(newCount==0){
+                SetTimer(0, False);  // Disable the timer now that all bots are destroyed
+            }
+        }
+    }
+}
+
+function bool UpdateBotGoal(int count)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int bracketPos;
+    goal = player().FindGoal('DestroyBots');
+
+    if (goal!=None){
+        goalText = goal.text;
+        bracketPos = InStr(goalText,"[");
+
+        if (bracketPos>0){ //If the extra text is already there, strip it.
+            goalText = Mid(goalText,0,bracketPos-1);
+        }
+
+        goalText = goalText$" ["$count$" remaining]";
+
+        goal.SetText(goalText);
+
+        return True;
+    }
+    return False;
+}
+

@@ -6,6 +6,7 @@ var PersonaButtonBarWindow    winGoalHintButtons;
 
 var String GoalSpoilersText;
 var String GoalLocationsText;
+var string GoalSpoilerWindowHeader, GoalSpoilerWindowText;
 
 var DXRDataVaultMapImageNote spoilerNotes[32];
 
@@ -130,6 +131,32 @@ function AddSpoilerNotes()
     }
 }
 
+event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
+{
+    local MenuUIMessageBoxWindow msgBox;
+    local bool bHandled;
+
+    bHandled=False;
+
+    msgBox = MenuUIMessageBoxWindow(msgBoxWindow);
+    switch(msgBox.winText.GetText()) {
+    case GoalSpoilerWindowText:
+        bHandled=True;
+        if (buttonNumber==0){
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
+            AddSpoilerNotes();
+        }
+        break;
+    }
+
+    if (bHandled){
+        root.PopWindow();
+        return true;
+    }
+
+    return Super.BoxOptionSelected(msgBoxWindow,buttonNumber);
+}
+
 function bool ButtonActivated( Window buttonPressed )
 {
     local bool bHandled;
@@ -139,7 +166,7 @@ function bool ButtonActivated( Window buttonPressed )
     switch(buttonPressed)
     {
         case btnShowSpoilers:
-            AddSpoilerNotes();
+            root.MessageBox(GoalSpoilerWindowHeader,GoalSpoilerWindowText,0,False,Self);
             break;
 
         case btnGoalLocations:
@@ -167,18 +194,20 @@ function EnableButtons()
     if (player!=None){
         foreach player.AllActors(class'DXRMissions',dxrMissions) break;
     }
-    
+
     btnShowSpoilers.Show(False);
     btnGoalLocations.Show(False);
 
     //Check if image has hint information available from DXRMissions
     if (dxrMissions!=None && dxrMissions.dxr.flags.settings.goals > 0){
         if (dxrMissions.MapHasGoalMarkers(image.class)){
-            btnShowSpoilers.Show(True);
+            if (dxrMissions.dxr.flags.settings.spoilers==1){
+                btnShowSpoilers.Show(True);
+            }
             btnGoalLocations.Show(True);
         }
     }
-    
+
     Super.EnableButtons();
 }
 
@@ -200,7 +229,6 @@ function ClearViewedImageFlags()
     }
 }
 
-
 function MarkViewed(DataVaultImage newImage)
 {
     local string bingoName;
@@ -221,8 +249,18 @@ function MarkViewed(DataVaultImage newImage)
         newImage.bPlayerViewedImage = True;
     }
 }
+
+function SetImage(DataVaultImage newImage)
+{
+    class'#var(injectsprefix)DataVaultImage'.static.UpdateDataVaultImageTextures(newImage);
+    Super.SetImage(newImage);
+}
+
+
 defaultproperties
 {
-     GoalSpoilersText="Goal |&Spoilers"
-     GoalLocationsText="Goal |&Locations"
+     GoalSpoilersText="Goal S|&poilers"
+     GoalLocationsText="Goal Loca|&tions"
+     GoalSpoilerWindowHeader="Spoilers?"
+     GoalSpoilerWindowText="Do you want to see spoilers for the goal randomization? This will impact your score! Click Goal Locations instead if you don't want to hurt your score."
 }

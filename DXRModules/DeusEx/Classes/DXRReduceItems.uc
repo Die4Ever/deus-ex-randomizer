@@ -394,7 +394,8 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         maxAmmo = a.MaxAmmo;
 #endif
 
-        if( a.AmmoAmount > maxAmmo ) a.AmmoAmount = maxAmmo;
+        // don't reduce ammo of pawns
+        if( ScriptedPawn(a.Owner)==None && a.AmmoAmount > maxAmmo ) a.AmmoAmount = maxAmmo;
     }
 }
 

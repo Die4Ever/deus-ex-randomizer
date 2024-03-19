@@ -33,13 +33,12 @@ event Destroyed()
 function ThrowInventory(bool gibbed)
 {
     local Inventory item, nextItem;
-    local bool drop, melee, throw_melee;
+    local bool drop, melee;
 
-    throw_melee = bool(ConsoleCommand("get #var(package).MenuChoice_ThrowMelee enabled"));
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        if(throw_melee)
+        if(class'MenuChoice_ThrowMelee'.default.enabled)
             melee = class'DXRActorsBase'.static.IsMeleeWeapon(item);
         drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )
@@ -464,7 +463,7 @@ function UpdateFire()
 
 function Bool HasTwoHandedWeapon()
 {
-    if(bIsFemale || Mesh==LodMesh'DeusExCharacters.GM_DressShirt_S' || Mesh==LodMesh'DeusExCharacters.GM_Trench_F')
+    if(bIsFemale || Mesh==LodMesh'DeusExCharacters.GM_DressShirt_S' || Mesh==LodMesh'DeusExCharacters.GM_Trench_F' || Mesh==LodMesh'DeusExCharacters.GM_Scubasuit')
         return False;
     if ((Weapon != None) && (Weapon.Mass >= 30))
         return True;
@@ -521,8 +520,10 @@ function PrintAlliances()
 {
     local int i;
     log("PrintAlliances: "$alliance, name);
-    for(i=0; i<ArrayCount(AlliancesEx); i++)
+    for(i=0; i<ArrayCount(AlliancesEx); i++) {
+        if(AlliancesEx[i].AllianceName == '') continue;
         log("PrintAlliances "$i$": " $ AlliancesEx[i].AllianceName @ AlliancesEx[i].AllianceLevel @ AlliancesEx[i].bPermanent, name);
+    }
 }
 
 state Dying
@@ -607,6 +608,61 @@ function SupportActor(Actor standingActor)
         standingActor.SetPhysics(PHYS_Falling);
     }
 }
+
+
+state Sitting
+{
+    function FollowSeatFallbackOrders()
+    {
+        FindBestSeat();
+        if (IsSeatValid(SeatActor)){
+            GotoState('Sitting', 'Begin');
+        }else{
+            if (SeatDesperation()){
+                GotoState('Wandering');
+            }
+        }
+    }
+
+    function bool SeatDesperation()
+    {
+        local Seat aSeat,closestSeat;
+        local int bestSlot;
+        local float closeSeatDist;
+
+        closestSeat = None;
+        closeSeatDist = 9999;
+
+        foreach self.RadiusActors(class'Seat',aSeat,160){
+            if (VSize(aSeat.Location-Location)<closeSeatDist){
+                closestSeat = aSeat;
+            }
+        }
+
+        if (closestSeat==None){
+            return true;
+        }
+
+        //Find seat slot
+        bestSlot = -1;
+        bestSlot = FindBestSlot(closestSeat,closeSeatDist);
+
+        if (bestSlot<0){
+            return true;
+        }
+
+        SeatActor = closestSeat;
+        SeatActor.sittingActor[bestSlot]=self;
+        SeatLocation = SeatActor.Location;
+        bSeatLocationValid=true;
+        SeatSlot = bestSlot;
+        GotoState('Sitting','CircleToFront');
+
+        return false;
+    }
+
+}
+
 
 defaultproperties
 {

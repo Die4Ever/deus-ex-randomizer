@@ -199,6 +199,8 @@ switch(mapname)
                 case "tunnel_drop_nyc":
                 case "unatcoisland":
                     return "Liberty Island UNATCO Entrance";
+                case "":
+                    return "UNATCO Helipad";
             }
             break;
         case "02_NYC_BAR":
@@ -221,6 +223,8 @@ switch(mapname)
                     return "Battery Park Subway";
                 case "BBSExit":
                     return "Battery Park underneath Phone Booth";
+                case "":
+                    return "Battery Park";
             }
             break;
         case "02_NYC_FREECLINIC":
@@ -285,6 +289,8 @@ switch(mapname)
                 case "PathNode194":
                 case "ToStreet":
                     return "Hells Kitchen Subway";
+                case "":
+                    return "Hells Kitchen Streets";
             }
             break;
         case "02_NYC_UNDERGROUND":
@@ -375,6 +381,8 @@ switch(mapname)
             {
                 case "mj12":
                     return "UNATCO MJ12 Base Entrance";
+                case "":
+                    return "UNATCO MJ12 Jail Cell";
             }
             break;
         case "06_HONGKONG_HELIBASE":
@@ -382,6 +390,8 @@ switch(mapname)
             {
                 case "Helibase":
                     return "MJ12 Helibase Elevator";
+                case "":
+                    return "MJ12 Helibase";
             }
             break;
         case "06_HONGKONG_MJ12LAB":
@@ -486,15 +496,18 @@ switch(mapname)
                     return "Dockyard Exterior Air Conditioning Entrance";
                 case "ExitShip":
                     return "Dockyard Exterior Front Door";
+                case "":
+                    return "Brooklyn Naval Shipyards";
             }
             break;
-        //case "09_NYC_GRAVEYARD":
-        //    switch(teleportername)
-        //    {
-        //        case "Entrance":
-        //            return "Graveyard";
-        //    }
-        //    break;
+        case "09_NYC_GRAVEYARD":
+            switch(teleportername)
+            {
+                case "Entrance":
+                case "":
+                    return "Graveyard";
+            }
+            break;
         case "09_NYC_SHIP":
             switch(teleportername)
             {
@@ -533,6 +546,8 @@ switch(mapname)
             {
                 case "spiralstair":
                     return "Paris Exterior Spiral Staircase";
+                case "":
+                    return "Paris Denfert-Rochereau";
             }
             break;
         case "10_PARIS_CATACOMBS_TUNNELS":
@@ -551,6 +566,8 @@ switch(mapname)
                     return "DuClare Estate Front Doors";
                 case "Light135":
                     return "DuClare Estate Sewer Entrance";
+                case "":
+                    return "DuClare Estate";
             }
             break;
         case "10_PARIS_CLUB":
@@ -584,13 +601,13 @@ switch(mapname)
                     return "Cathedral Metro Entrance";
             }
             break;
-        //case "11_PARIS_EVERETT":
-        //    switch(teleportername)
-        //    {
-        //        case "Entrance":
-        //            return "Everett Main Entrance";
-        //    }
-        //    break;
+        case "11_PARIS_EVERETT":
+            switch(teleportername)
+            {
+                case "Entrance":
+                    return "Everett Main Entrance";
+            }
+            break;
         case "11_PARIS_UNDERGROUND":
             switch(teleportername)
             {
@@ -609,6 +626,8 @@ switch(mapname)
                     return "Vandenberg Control Center Exterior Entrance";
                 case "PathNode8":
                     return "Vandenberg Helipad";
+                case "":
+                    return "Vandenberg";
             }
             break;
         case "12_VANDENBERG_COMPUTER":
@@ -622,6 +641,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "gas_start":
+                case "":
                     return "Gas Station Main Entrance";
                 case "PathNode98":
                     return "Gas Station Junkyard Entrance";
@@ -649,6 +669,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "frontgate":
+                case "":
                     return "Silo Front Gates";
             }
             break;
@@ -665,6 +686,7 @@ switch(mapname)
                 case "subbay":
                     return "Ocean Lab Shoreside Sub Bay";
                 case "PlayerStart":
+                case "":
                     return "Ocean Lab Shoreside Helicopter";
                 case "InterpolationPoint39":
                     return "Ocean Lab Shoreside Rooftop Helicopter";
@@ -676,6 +698,9 @@ switch(mapname)
                 case "commstat":
                 case "Light188":
                     return "Area 51 Bunker Exterior Door";
+                case "":
+                case "bunker_start":
+                    return "Area 51 Bunker";
             }
             break;
         case "15_AREA51_ENTRANCE":
@@ -716,10 +741,11 @@ static function string GetTeleporterName(string mapname, string teleportername)
         teleportername = Right(teleportername,Len(teleporterName)-8);
     }
 
-    //Sometimes they left a .dx at the end of the map name - strip that
-    if (InStr(mapname,".dx")!=-1){
-        mapname = Left(mapname,Len(mapname)-4);
-    }
+    //Strip a .dx from the map name if it's there
+    mapName = class'DXRInfo'.static.ReplaceText(mapName,".dx","");
+
+    //Strip any spaces that might be in the name...
+    mapName = class'DXRInfo'.static.ReplaceText(mapName," ","");
 
     mapname = Caps(mapname); //Just to be sure
 

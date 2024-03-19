@@ -11,6 +11,14 @@ const Failed = 1;
 const NotAvail = 2;
 const TempFail = 3;
 
+const CCType_Test       = 0x00;
+const CCType_Start      = 0x01;
+const CCType_Stop       = 0x02;
+const CCType_PlayerInfo = 0xE0; //Not used for us
+const CCType_Login      = 0xF0; //Not used for us
+const CCType_KeepAlive  = 0xFF; //Not used for us
+
+
 var int lavaTick;
 
 const MoveSpeedMultiplier = 10;
@@ -41,6 +49,9 @@ const InvertMovementTimeDefault = 60;
 const EarthquakeTimeDefault = 30;
 const CameraRollTimeDefault = 60;
 const EatBeansTimeDefault = 60;
+const ResidentEvilTimeDefault = 60;
+const RadiationTimeDefault = 60;
+const DoomModeTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -69,6 +80,8 @@ var DXRandoCrowdControlPawn CrowdControlPawns[3];
 
 var transient AugEffectState AugEffectStates[32]; //Vanilla has a 25 array, but in case mods bump it up?
 var transient bool AugEffectStatesInit;
+
+var CCResidentEvilCam reCam;
 
 var transient bool HaveFlamethrower;
 var transient bool FlamethrowerInit;
@@ -115,80 +128,67 @@ function PeriodicUpdates()
 {
     //Matrix Mode Timer
     if (decrementTimer('cc_MatrixModeTimer')) {
-        StopMatrixMode();
+        StopCrowdControlEvent("matrix",true);
     }
 
     //EMP Field timer
     if (decrementTimer('cc_EmpTimer')) {
-            player().bWarrenEMPField = false;
-            PlayerMessage("EMP Field has disappeared...");
+        StopCrowdControlEvent("emp_field",true);
     }
 
     if (isTimerActive('cc_JumpTimer')) {
         player().JumpZ = 0;
     }
     if (decrementTimer('cc_JumpTimer')) {
-        player().JumpZ = player().Default.JumpZ;
-        PlayerMessage("Your knees feel fine again.");
+        StopCrowdControlEvent("disable_jump",true);
     }
 
     if (isTimerActive('cc_SpeedTimer')) {
         player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');
     }
     if (decrementTimer('cc_SpeedTimer')) {
-        player().Default.GroundSpeed = DefaultGroundSpeed;
-        PlayerMessage("Back to normal speed!");
+        StopCrowdControlEvent("gotta_go_fast",true); //also gotta_go_slow
     }
 
     if (decrementTimer('cc_lamthrowerTimer')) {
-        UndoLamThrowers();
-        PlayerMessage("Your flamethrower is boring again");
-
+        StopCrowdControlEvent("lamthrower",true);
     }
 
     if (decrementTimer('cc_iceTimer')) {
-        SetIcePhysics(False);
-        PlayerMessage("The ground thaws");
+        StopCrowdControlEvent("ice_physics",true);
     }
 
     if (isTimerActive('cc_behindTimer')){
         player().bBehindView=True;
         player().bCrosshairVisible=False;
+        player().ViewTarget=None;
     }
     if (decrementTimer('cc_behindTimer')) {
-        player().bBehindView=False;
-        player().bCrosshairVisible = True;
-
-        PlayerMessage("You re-enter your body");
+        StopCrowdControlEvent("third_person",true);
     }
 
     if (decrementTimer('cc_DifficultyTimer')){
-        storeFloatValue('cc_damageMult',1.0);
-        PlayerMessage("Your body returns to its normal toughness");
+        StopCrowdControlEvent("dmg_double",true); //also dmg_half
     }
 
     if (decrementTimer('cc_floatyTimer')) {
-        SetFloatyPhysics(False);
-        PlayerMessage("You feel weighed down again");
+        StopCrowdControlEvent("floaty_physics",true);
     }
 
     if (decrementTimer('cc_floorLavaTimer')) {
-        PlayerMessage("The floor returns to normal temperatures");
+        StopCrowdControlEvent("floor_is_lava",true);
     }
 
     if (decrementTimer('cc_invertMouseTimer')) {
-        PlayerMessage("Your mouse controls return to normal");
-        player().bInvertMouse = bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
+        StopCrowdControlEvent("invert_mouse",true);
     }
 
     if (decrementTimer('cc_invertMovementTimer')) {
-        PlayerMessage("Your movement controls return to normal");
-        invertMovementControls();
+        StopCrowdControlEvent("invert_movement",true);
     }
 
     if (decrementTimer('cc_Earthquake')) {
-        PlayerMessage("The earthquake ends");
-        player().shaketimer=0;
+        StopCrowdControlEvent("earthquake",true);
     }
 
     //Re-apply the quake, just in case some other shake happened and ended during the timer (ie. superfreighter)
@@ -197,15 +197,24 @@ function PeriodicUpdates()
     }
 
     if (decrementTimer('cc_RollTimer')) {
-        PlayerMessage("Your world turns rightside up again");
-        datastorage.SetConfig('cc_cameraRoll',0, 3600*12);
-        datastorage.SetConfig('cc_cameraSpin',0, 3600*12);
+        StopCrowdControlEvent("barrel_roll",true); //also "flipped" and "limp_neck"
     }
 
     if (decrementTimer('cc_EatBeans')) {
-        PlayerMessage("Your stomach settles down");
+        StopCrowdControlEvent("eat_beans",true);
     } else if (isTimerActive('cc_EatBeans') && !InMenu()){
         Fart();
+    }
+
+    if (isTimerActive('cc_ResidentEvil')){
+        if (reCam==None){
+            SpawnRECam();
+        }
+
+        player().bCrosshairVisible=False;
+    }
+    if (decrementTimer('cc_ResidentEvil')) {
+        StopCrowdControlEvent("resident_evil",true);
     }
 
     if (flashbangDuration>0){
@@ -219,6 +228,24 @@ function PeriodicUpdates()
     if (quickLoadTriggered){
         quickLoadTriggered = False;
         player().QuickLoadConfirmed();
+    }
+
+    if (isTimerActive('cc_Radioactive')){
+        PlayerRadiates();
+    }
+    if (decrementTimer('cc_Radioactive')){
+        StopCrowdControlEvent("radioactive",true);
+    }
+
+#ifdef vanilla
+    if (isTimerActive('cc_DoomMode')){
+        Player().bDoomMode=True;
+    } else {
+        Player().bDoomMode=False;
+    }
+#endif
+    if (decrementTimer('cc_DoomMode')){
+        StopCrowdControlEvent("doom_mode",true);
     }
 }
 
@@ -456,6 +483,27 @@ function InitOnEnter() {
     } else {
         player().shaketimer=0;
     }
+
+    if (isTimerActive('cc_ResidentEvil')) {
+        if (reCam==None){
+            SpawnRECam();
+        }
+        if (player().ViewTarget==None){
+            player().ViewTarget=reCam;
+            player().bCrosshairVisible=False;
+        }
+
+        player().bCrosshairVisible=False;
+    } else {
+        player().ViewTarget=None;
+        player().bCrosshairVisible=True;
+        if (reCam==None){
+            foreach AllActors(class'CCResidentEvilCam',reCam){
+                reCam.Destroy();
+            }
+        }
+    }
+
 }
 
 //Effects should revert to default before exiting a level
@@ -476,6 +524,10 @@ function CleanupOnExit() {
 
     if (isTimerActive('cc_invertMovementTimer')) {
         invertMovementControls();
+    }
+    if (reCam!=None && player().ViewTarget==reCam){
+        player().ViewTarget=None;
+        reCam.Destroy();
     }
 
 }
@@ -568,6 +620,12 @@ function int getDefaultTimerTimeByName(name timerName) {
             return CameraRollTimeDefault;
         case 'cc_EatBeans':
             return EatBeansTimeDefault;
+        case 'cc_ResidentEvil':
+            return ResidentEvilTimeDefault;
+        case 'cc_Radioactive':
+            return RadiationTimeDefault;
+        case 'cc_DoomMode':
+            return DoomModeTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -621,6 +679,13 @@ function string getTimerLabelByName(name timerName) {
             return "Camera";
         case 'cc_EatBeans':
             return "Beans";
+        case 'cc_ResidentEvil':
+            return "Fixed Cam";
+        case 'cc_Radioactive':
+            return "Radiation";
+        case 'cc_DoomMode':
+            return "Doom";
+
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -698,6 +763,10 @@ function bool decrementTimer(name timerName) {
         return (time == 0);
     }
     return false;
+}
+
+function disableTimer(name timerName) {
+    setTimerFlag(timerName,0,False);
 }
 
 function startNewTimer(name timerName, int duration) {
@@ -798,6 +867,10 @@ function class<ScriptedPawn> getScriptedPawnClass(string type) {
     return class<ScriptedPawn>(ccLink.ccModule.GetClassFromString(type, class'ScriptedPawn'));
 }
 
+function class<#var(DeusExPrefix)Weapon> getWeaponClass(string type) {
+    return class<#var(DeusExPrefix)Weapon>(ccLink.ccModule.GetClassFromString(type, class'#var(DeusExPrefix)Weapon'));
+}
+
 
 //"Why not just use "GivePlayerAugmentation", you ask.
 //While it works well to give the player an aug they don't
@@ -826,7 +899,7 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
         }
 
         class'DXRAugmentations'.static.UpgradeAug(anAug);
-
+        class'DXRAugmentations'.static.RedrawAugMenu(player());
         PlayerMessage(viewer@"upgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1 $ shouldSave);
         return Success;
     }
@@ -858,6 +931,9 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
 
     if ((!anAug.bAlwaysActive) && (player().bHUDShowAllAugs))
         player().AddAugmentationDisplay(anAug);
+
+    class'DXRAugmentations'.static.RedrawAugMenu(player());
+
     PlayerMessage(viewer@"gave you the "$anAug.AugmentationName$" augmentation" $ shouldSave);
     return Success;
 }
@@ -918,10 +994,12 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
         }
 
         PlayerMessage(viewer@"downgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1);
+        class'DXRAugmentations'.static.RedrawAugMenu(player());
         return Success;
     }
 
     class'DXRAugmentations'.static.RemoveAug(player(),anAug);
+    class'DXRAugmentations'.static.RedrawAugMenu(player());
 
     PlayerMessage(viewer@"removed your "$anAug.AugmentationName$" augmentation");
     return Success;
@@ -998,28 +1076,34 @@ function SetFloatyPhysics(bool enabled) {
         }
     }
 
-    if (enabled){
-        //Get everything floating immediately
-        ForEach AllActors(class'Actor',A)
-        {
-            apply = False;
-            if (A.isa('ScriptedPawn')){
-                apply = (A.GetStateName() != 'Patrolling' &&
-                         ScriptedPawn(A).Orders != 'Sitting');
-            } else if (A.isa('PlayerPawn')) {
-                apply = True;
-            } else if (A.isa('Decoration')) {
-                apply = ((A.Base!=None &&
-                          A.Physics == PHYS_None &&
-                          A.bStatic == False &&
-                          Decoration(A).bPushable == True) || A.isa('Carcass'));
-            } else if (A.isa('Inventory')) {
-                apply = (Pawn(A.Owner) == None);
-            }
+    //Get everything floating immediately
+    ForEach AllActors(class'Actor',A)
+    {
+        apply = False;
+        if (A.isa('ScriptedPawn')){
+            apply = (A.GetStateName() != 'Patrolling' &&
+                        ScriptedPawn(A).Orders != 'Sitting');
+        } else if (A.isa('PlayerPawn')) {
+            apply = True;
+        } else if (A.isa('Decoration')) {
+            apply = ((A.Base!=None &&
+                        A.Physics == PHYS_None &&
+                        A.bStatic == False &&
+                        Decoration(A).bPushable == True) || A.isa('Carcass'));
+        } else if (A.isa('Inventory')) {
+            apply = (Pawn(A.Owner) == None);
+        }
 
-            if (apply) {
+        if (apply) {
+            if (enabled){
                 A.Velocity.Z+=Rand(10)+1;
                 A.SetPhysics(PHYS_Falling);
+            } else {
+                if (Pawn(A)!=None && A.Region.Zone.bWaterZone){
+                    A.SetPhysics(PHYS_Swimming);
+                } else {
+                    A.SetPhysics(PHYS_Falling);
+                }
             }
         }
     }
@@ -1210,15 +1294,15 @@ function int GiveItem(string viewer, string type, optional int amount) {
 
     outMsg = viewer@"gave you";
     if( amount > 1 && DeusExAmmo(item) != None ) {
-        outMsg = outMsg @amount@"cases of"@item.Default.ItemName;
+        outMsg = outMsg @amount@"cases of"@item.ItemName;
     }
     else if( DeusExAmmo(item) != None ) {
-        outMsg = outMsg @"a case of"@item.Default.ItemName;
+        outMsg = outMsg @"a case of"@item.ItemName;
     }
     else if( amount > 1 ) {
-        outMsg = outMsg @ amount @ item.Default.ItemName $ "s";
+        outMsg = outMsg @ amount @ item.ItemName $ "s";
     } else {
-        outMsg = outMsg @ item.Default.ItemArticle @ item.Default.ItemName;
+        outMsg = outMsg @ item.ItemArticle @ item.ItemName;
     }
 
     PlayerMessage(outMsg $ shouldSave);
@@ -1252,7 +1336,7 @@ function int DropProjectile(string viewer, string type, optional int amount)
     return Success;
 }
 
-function ScriptedPawn findOtherHuman() {
+function ScriptedPawn findOtherHuman(bool bAllowImportant) {
     local int num;
     local ScriptedPawn p;
     local ScriptedPawn humans[512];
@@ -1261,7 +1345,9 @@ function ScriptedPawn findOtherHuman() {
 
     foreach AllActors(class'ScriptedPawn',p) {
         if (class'DXRActorsBase'.static.IsHuman(p.class) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
-            humans[num++] = p;
+            if (!p.bImportant || bAllowImportant){
+                humans[num++] = p;
+            }
         }
     }
 
@@ -1272,7 +1358,7 @@ function ScriptedPawn findOtherHuman() {
 function bool swapPlayer(string viewer) {
     local ScriptedPawn a;
 
-    a = findOtherHuman();
+    a = findOtherHuman(False);
 
     if (a == None) {
         return false;
@@ -1344,6 +1430,7 @@ function int TriggerAllAlarms(String viewer) {
     local int numAlarms;
     local AlarmUnit au;
     local SecurityCamera sc;
+    local LaserTrigger lt;
 
     numAlarms = 0;
 
@@ -1352,10 +1439,18 @@ function int TriggerAllAlarms(String viewer) {
         au.Trigger(self,player());
     }
     foreach AllActors(class'SecurityCamera',sc){
+        if (CCResidentEvilCam(sc)!=None){ continue; } //Skip Resident Evil cameras
         numAlarms+=1;
         sc.TriggerEvent(True);
         sc.bPlayerSeen=True;
         sc.lastSeenTimer=0;
+    }
+    foreach AllActors(class'LaserTrigger',lt){
+        if (lt.bIsOn==False){continue;}
+        if (lt.bNoAlarm){continue;}
+        if (lt.AmbientSound!=None){continue;}
+        numAlarms+=1;
+        lt.BeginAlarm();
     }
 
     if (numAlarms==0){
@@ -1388,6 +1483,57 @@ function int SpawnNastyRat(string viewer)
         nr.FamiliarName = viewer;
     }
 
+    return Success;
+}
+
+function int DropPiano(string viewer)
+{
+    local Actor a;
+    local DXRActorsBase tracer;
+    local vector loc;
+    local float height, leading;
+    local #var(PlayerPawn) p;
+
+    p = player();
+    loc = p.Location;
+    leading = FRand() * 0.75 + 0.25; // minimum of 25% leading means keep moving, maximum of 100% leading means you need to stop moving (or just sidestep lol)
+    loc.X += p.Velocity.X * leading;
+    loc.Y += p.Velocity.Y * leading;
+    height = 800;
+    tracer = DXRActorsBase(dxr.FindModule(class'DXRActorsBase'));
+    if(tracer != None) {
+        height = tracer.GetDistanceFromSurface(loc, loc+vect(0,0,800));
+    }
+
+    //Make sure it is far enough off the ground (at LEAST twice the height of the player)
+    if (height < (2 * player().CollisionHeight)){
+        return TempFail;
+    }
+
+    loc.Z += height;
+
+    //Make sure there's a reasonable line of sight between the piano spawnpoint and the player
+    if (!player().FastTrace(loc)){
+        return TempFail;
+    }
+
+    a = Spawn(class'#var(prefix)WHPiano',,, loc);
+    //Did it spawn successfully?
+    if(a == None) {
+        return TempFail;
+    }
+
+    //Make sure there's still a line of sight from where it actually spawned
+    if (!a.FastTrace(player().Location)){
+        a.Destroy(); //Pretend it never existed if there isn't
+        return TempFail;
+    }
+
+    a.Velocity.Z -= 200;
+    a.Instigator = GetCrowdControlPawn(viewer);
+    a.FamiliarName=viewer$"'s Grand Piano";
+    a.UnfamiliarName=a.FamiliarName;
+    PlayerMessage(viewer$" dropped a piano on you from "$int(height/16 + 0.5)$" feet with "$int(leading*100 + 0.5)$"% leading!");
     return Success;
 }
 
@@ -1503,6 +1649,403 @@ function bool canDropItem() {
 
 }
 
+function bool CanSwapEnemies()
+{
+    local int numEnemies;
+    local ScriptedPawn a;
+
+    numEnemies=0;
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( a.bImportant || a.bIsSecretGoal ) continue;
+        if( !ccLink.ccModule.IsRelevantPawn(a.class) ) continue;
+        if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
+        if( #var(prefix)Robot(a) != None && a.Orders == 'Idle' ) continue;
+#ifdef gmdx
+        if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
+#endif
+        numEnemies++;
+    }
+
+    //As long as there are two possible enemies...
+    return numEnemies > 1;
+}
+
+function bool SwapAllEnemies(string viewer)
+{
+    local DXREnemiesShuffle enemies;
+
+    foreach AllActors(class'DXREnemiesShuffle',enemies){break;}
+
+    if (enemies==None) return False; //Failed to find DXREnemiesShuffle
+
+    enemies.SwapScriptedPawns(100,true);
+
+    PlayerMessage(viewer@"swapped the position of all the enemies in the level!");
+
+    return true;
+}
+
+function bool CanSwapItems()
+{
+    local int numItems;
+    local Inventory inv;
+
+    numItems=0;
+    foreach AllActors(class'Inventory',inv){
+        if (!ccLink.ccModule.SkipActor(inv)){
+            numItems++;
+        }
+    }
+
+    return numItems>1;
+}
+
+function bool SwapAllItems(string viewer)
+{
+    ccLink.ccModule.SwapAll("Engine.Inventory",100);
+
+    PlayerMessage(viewer@"swapped the position of all the inventory items in the level!");
+
+    return true;
+}
+
+function bool ToggleFlashlight(string viewer)
+{
+    local Augmentation aug;
+
+    aug = player().AugmentationSystem.FindAugmentation(class'#var(prefix)AugLight');
+
+    if (aug==None) return False;
+
+    if (aug.IsActive()){
+        aug.Deactivate();
+    } else {
+        aug.Activate();
+    }
+
+    PlayerMessage(viewer@"toggled your flashlight!");
+
+    return true;
+
+}
+
+function int GiveAllEnemiesWeapon(class<#var(DeusExPrefix)Weapon> w,string viewer)
+{
+    local int numEnemies;
+    local inventory inv;
+    local ScriptedPawn a;
+
+    numEnemies=0;
+
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( #var(prefix)Animal(a)!=None ) continue;
+        if( #var(prefix)Robot(a) != None ) continue;
+        if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        numEnemies++;
+        inv = ccLink.ccModule.GiveItem(a,w,1);
+    }
+
+    if (numEnemies==0){
+        return TempFail;
+    }
+
+    PlayerMessage(viewer@"gave "$numEnemies$" enemies a "$inv.ItemName$"!");
+
+    return Success;
+}
+
+function bool HealAllEnemies(string viewer)
+{
+    local int numEnemies;
+    local ScriptedPawn a;
+
+    numEnemies=0;
+
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( #var(prefix)Animal(a)!=None ) continue;
+        if( #var(prefix)Robot(a) != None ) continue;
+        if( !ccLink.ccModule.IsInitialEnemy(a) ) continue;
+        if ( a.IsInState('Dying') ) continue; //It's too late for this guy...
+        if ( a.bInvincible ) continue;
+        if ( a.Health >= a.Default.Health ) continue; //Nothing to heal
+
+        numEnemies++;
+        a.Health         = a.Default.Health;
+        a.HealthArmLeft  = a.Default.HealthArmLeft;
+        a.HealthArmRight = a.Default.HealthArmRight;
+        a.HealthLegLeft  = a.Default.HealthLegLeft;
+        a.HealthLegRight = a.Default.HealthLegRight;
+        a.HealthHead     = a.Default.HealthHead;
+        a.HealthTorso    = a.Default.HealthTorso;
+
+        if (a.bOnFire){
+            a.ExtinguishFire();
+        }
+
+        //Get back in the fight, soldier!
+        if (a.IsInState('Fleeing') || a.IsInState('Burning') || a.IsInState('RubbingEyes')){
+            a.FearLevel=0;
+            a.FollowOrders();
+        }
+    }
+
+    if (numEnemies==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"healed "$numEnemies$" enemies to full health!");
+
+    return True;
+}
+
+function bool RaiseDead(string viewer)
+{
+    local DeusExCarcass carc;
+    local int num,i;
+
+    num=0;
+
+    for (i=0;i<5;i++){
+        carc = FindClosestCarcass(1000,false);
+        if (carc==None){
+            break;
+        }
+        if (ResurrectCorpse(carc,viewer)){
+            num++;
+        }
+    }
+
+    if (num==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"resurrected "$num$" from the dead!");
+
+    return True;
+}
+
+function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
+{
+    local string livingClassName;
+    local class<Actor> livingClass;
+    local vector respawnLoc;
+    local ScriptedPawn sp,otherSP;
+    local int i;
+    local Inventory item, nextItem;
+    local bool removeItem;
+
+    //At least in vanilla, all carcasses are the original class name + Carcass
+    livingClassName = string(carc.class.Name);
+    livingClassName = class'DXRInfo'.static.ReplaceText(livingClassName,"Carcass","");
+
+    livingClass = ccLink.ccModule.GetClassFromString(livingClassName,class'ScriptedPawn');
+
+    if (livingClass==None){
+        return False;
+    }
+
+    respawnLoc = carc.Location;
+    respawnLoc.Z +=livingClass.Default.CollisionHeight;
+
+    sp = ScriptedPawn(Spawn(livingClass,,,respawnLoc,carc.Rotation));
+
+    if (sp==None){
+        return False;
+    }
+
+    sp.FamiliarName = viewer$"'s Zombie";
+    sp.UnfamiliarName = sp.FamiliarName;
+    sp.bInvincible = False; //If they died, they can't have been invincible
+
+    //Clear out initial inventory (since that should all be in the carcass, except for native attacks)
+    for (i=0;i<ArrayCount(sp.InitialInventory);i++){
+        if(ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCMelee') ||
+           ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCRanged')){
+            continue;
+        }
+        switch(sp.InitialInventory[i].Inventory.Default.Mesh){
+            case LodMesh'DeusExItems.InvisibleWeapon':
+            case LodMesh'DeusExItems.TestBox':
+            case None:
+                break; //NPC weapons and NPC weapon ammo
+            default:
+                sp.InitialInventory[i].Inventory=None;
+        }
+    }
+
+    sp.InitializePawn();
+
+    //Make it hostile to EVERYONE.  This thing has seen the other side
+    sp.SetAlliance('Resurrected');
+    sp.ChangeAlly('Player',-1,True);
+    foreach AllActors(class'ScriptedPawn',otherSP){
+        sp.ChangeAlly(otherSP.Alliance,-1,True);
+    }
+
+    ccLink.ccModule.RemoveFears(sp);
+    sp.ResetReactions();
+
+    //Transfer inventory from carcass back to the pawn
+    if (carc.Inventory!=None){
+        do
+        {
+            item = carc.Inventory;
+            nextItem = item.Inventory;
+            carc.DeleteInventory(item);
+            if ((DeusExWeapon(item) != None) && (DeusExWeapon(item).bNativeAttack))
+                item.Destroy();
+            else
+                sp.AddInventory(item);
+            item = nextItem;
+        }
+        until (item == None);
+    }
+    sp.bKeepWeaponDrawn=True;
+
+    //Give the resurrect guy a zombie swipe (a guaranteed melee weapon)
+    ccLink.ccModule.GiveItem(sp,class'WeaponZombieSwipe');
+
+    //Pop out a little meat for fun
+    for (i=0; i<10; i++)
+    {
+        if (FRand() > 0.2)
+            spawn(class'FleshFragment',,,carc.Location);
+    }
+
+    carc.Destroy();
+
+    return True;
+}
+
+function bool CorpseExplosion(string viewer)
+{
+    local DeusExCarcass carc;
+    local int num,i;
+    local DXRandoCrowdControlPawn viewerPawn;
+
+    viewerPawn = GetCrowdControlPawn(viewer);
+    num=0;
+
+    for (i=0;i<5;i++){
+        carc = FindClosestCarcass(1000,true);
+        if (carc==None){
+            break;
+        }
+        carc.Instigator = viewerPawn;
+        DetonateCarcass(carc);
+        num++;
+    }
+
+    if (num==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"detonated "$num$" corpses!");
+
+    return True;
+
+}
+
+function DeusExCarcass FindClosestCarcass(float radius,optional bool bAllowAnimals)
+{
+    local DeusExCarcass carc,closest;
+    local float closeDist;
+
+    closest = None;
+    closeDist = 2 * radius;
+    foreach player().RadiusActors(class'DeusExCarcass',carc,radius){
+        if (carc.bNotDead){
+            continue; //Skip unconscious bodies
+        }
+        if (!bAllowAnimals && carc.bAnimalCarcass){
+            continue;
+        }
+        if (VSize(carc.Location-player().Location) < closeDist){
+            closest = carc;
+            closeDist = VSize(carc.Location-player().Location);
+        }
+    }
+
+    return closest;
+}
+
+//Duped from MIB
+function DetonateCarcass(DeusExCarcass carc)
+{
+    local SphereEffect sphere;
+    local ScorchMark s;
+    local ExplosionLight light;
+    local int i;
+    local float explosionDamage;
+    local float explosionRadius;
+
+    explosionDamage = 100;
+    explosionRadius = 256;
+
+    // alert NPCs that I'm exploding
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+    PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
+
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, carc.Location);
+    if (light != None)
+        light.size = 4;
+
+    Spawn(class'ExplosionSmall',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+    Spawn(class'ExplosionMedium',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+    Spawn(class'ExplosionMedium',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+    Spawn(class'ExplosionLarge',,, carc.Location + 2*VRand()*carc.CollisionRadius);
+
+    sphere = Spawn(class'SphereEffect',,, carc.Location);
+    if (sphere != None)
+        sphere.size = explosionRadius / 32.0;
+
+    // spawn a mark
+    s = spawn(class'ScorchMark', carc.Base,, carc.Location-vect(0,0,1)*carc.CollisionHeight, carc.Rotation+rot(16384,0,0));
+    if (s != None)
+    {
+        s.DrawScale = FClamp(explosionDamage/30, 0.1, 3.0);
+        s.ReattachDecal();
+    }
+
+    // spawn some rocks and flesh fragments
+    for (i=0; i<explosionDamage/4; i++)
+    {
+        if (FRand() < 0.2)
+            spawn(class'Rockchip',,,carc.Location);
+        else
+            spawn(class'FleshFragment',,,carc.Location);
+    }
+
+    carc.HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, carc.Location);
+
+    carc.Destroy();
+}
+
+function SpawnRECam()
+{
+    reCam=Spawn(class'CCResidentEvilCam',,,player().Location);
+    reCam.BindPlayer(player());
+}
+
+function PlayerRadiates()
+{
+    local ScriptedPawn sp;
+
+    //Radiate the same as a default gray - 10 damage per second in a 256 radius
+    foreach player().VisibleActors(class'ScriptedPawn', sp, 256)
+        sp.TakeDamage(10, player(), sp.Location, vect(0,0,0), 'Radiation');
+
+}
+
+
 function SplitString(string src, string divider, out string parts[8])
 {
     local int i, c;
@@ -1560,6 +2103,196 @@ simulated final function #var(PlayerPawn) player()
 ////                                  CROWD CONTROL EFFECT MAPPING                                       ////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function int BranchCrowdControlType(string code, string param[5], string viewer, int type, int duration) {
+    local int result;
+
+    switch (type){
+        case CCType_Start:
+            result = doCrowdControlEvent(code,param,viewer,type,duration);
+
+            if (result == Success) {
+                ccLink.ccModule.IncHandledEffects();
+            }
+            break;
+        case CCType_Stop:
+            if (code==""){
+                //Stop all
+                StopAllCrowdControlEvents();
+            } else {
+                //Stop specific effect
+                result = StopCrowdControlEvent(code);
+            }
+            break;
+        default:
+            result = Failed;
+            break;
+    }
+
+    return result;
+}
+
+//Make sure to add any timed effects into this list
+function StopAllCrowdControlEvents()
+{
+    StopCrowdControlEvent("disable_jump");
+    StopCrowdControlEvent("gotta_go_fast"); //also gotta_go_slow
+    StopCrowdControlEvent("emp_field");
+    StopCrowdControlEvent("matrix");
+    StopCrowdControlEvent("third_person");
+    StopCrowdControlEvent("ice_physics");
+    StopCrowdControlEvent("floaty_physics");
+    StopCrowdControlEvent("floor_is_lava");
+    StopCrowdControlEvent("invert_mouse");
+    StopCrowdControlEvent("invert_movement");
+    StopCrowdControlEvent("earthquake");
+    StopCrowdControlEvent("lamthrower");
+    StopCrowdControlEvent("dmg_double"); //also dmg_half
+    StopCrowdControlEvent("barrel_roll"); //also flipped and limp_neck
+    StopCrowdControlEvent("eat_beans");
+    StopCrowdControlEvent("resident_evil");
+    StopCrowdControlEvent("radioactive");
+    StopCrowdControlEvent("doom_mode");
+}
+
+function int StopCrowdControlEvent(string code, optional bool bKnownStop)
+{
+    switch(code) {
+        case "disable_jump":
+            if (bKnownStop || isTimerActive('cc_JumpTimer')){
+                player().JumpZ = player().Default.JumpZ;
+                PlayerMessage("Your knees feel fine again.");
+                disableTimer('cc_JumpTimer');
+            }
+            break;
+        case "gotta_go_fast":
+        case "gotta_go_slow":
+            if (bKnownStop || isTimerActive('cc_SpeedTimer')){
+                player().Default.GroundSpeed = DefaultGroundSpeed;
+                PlayerMessage("Back to normal speed!");
+                disableTimer('cc_SpeedTimer');
+            }
+            break;
+        case "emp_field":
+            if (bKnownStop || isTimerActive('cc_EmpTimer')){
+                player().bWarrenEMPField = false;
+                PlayerMessage("EMP Field has disappeared...");
+                disableTimer('cc_EmpTimer');
+            }
+            break;
+        case "matrix":
+            if (bKnownStop || isTimerActive('cc_MatrixModeTimer')){
+                StopMatrixMode();
+                disableTimer('cc_MatrixModeTimer');
+            }
+            break;
+        case "third_person":
+            if (bKnownStop || isTimerActive('cc_behindTimer')){
+                player().bBehindView=False;
+                player().bCrosshairVisible = True;
+                player().ViewTarget=None;
+                PlayerMessage("You re-enter your body");
+                disableTimer('cc_behindTimer');
+            }
+            break;
+        case "ice_physics":
+            if (bKnownStop || isTimerActive('cc_iceTimer')){
+                SetIcePhysics(False);
+                PlayerMessage("The ground thaws");
+                disableTimer('cc_iceTimer');
+            }
+            break;
+        case "floaty_physics":
+            if (bKnownStop || isTimerActive('cc_floatyTimer')){
+                SetFloatyPhysics(False);
+                PlayerMessage("You feel weighed down again");
+                disableTimer('cc_floatyTimer');
+            }
+            break;
+        case "floor_is_lava":
+            if (bKnownStop || isTimerActive('cc_floorLavaTimer')){
+                PlayerMessage("The floor returns to normal temperatures");
+                disableTimer('cc_floorLavaTimer');
+            }
+            break;
+        case "invert_mouse":
+            if (bKnownStop || isTimerActive('cc_invertMouseTimer')){
+                PlayerMessage("Your mouse controls return to normal");
+                player().bInvertMouse = bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
+                disableTimer('cc_invertMouseTimer');
+            }
+            break;
+        case "invert_movement":
+            if (bKnownStop || isTimerActive('cc_invertMovementTimer')){
+                PlayerMessage("Your movement controls return to normal");
+                invertMovementControls();
+                disableTimer('cc_invertMovementTimer');
+            }
+            break;
+        case "earthquake":
+            if (bKnownStop || isTimerActive('cc_Earthquake')){
+                PlayerMessage("The earthquake ends");
+                player().shaketimer=0;
+                disableTimer('cc_Earthquake');
+            }
+            break;
+        case "lamthrower":
+            if (bKnownStop || isTimerActive('cc_lamthrowerTimer')){
+                UndoLamThrowers();
+                PlayerMessage("Your flamethrower is boring again");
+                disableTimer('cc_lamthrowerTimer');
+            }
+            break;
+        case "dmg_double":
+        case "dmg_half":
+            if (bKnownStop || isTimerActive('cc_DifficultyTimer')){
+                storeFloatValue('cc_damageMult',1.0);
+                PlayerMessage("Your body returns to its normal toughness");
+                disableTimer('cc_DifficultyTimer');
+            }
+            break;
+        case "flipped":
+        case "limp_neck":
+        case "barrel_roll":
+            if (bKnownStop || isTimerActive('cc_RollTimer')){
+                PlayerMessage("Your world turns rightside up again");
+                datastorage.SetConfig('cc_cameraRoll',0, 3600*12);
+                datastorage.SetConfig('cc_cameraSpin',0, 3600*12);
+                disableTimer('cc_RollTimer');
+            }
+            break;
+        case "eat_beans":
+            if (bKnownStop || isTimerActive('cc_EatBeans')){
+                PlayerMessage("Your stomach settles down");
+                disableTimer('cc_EatBeans');
+            }
+            break;
+        case "resident_evil":
+            if (bKnownStop || isTimerActive('cc_ResidentEvil')){
+                PlayerMessage("Everything feels less horrifying");
+                player().ViewTarget=None;
+                player().bCrosshairVisible=True;
+                if (reCam!=None){
+                    reCam.Destroy();
+                }
+                disableTimer('cc_ResidentEvil');
+            }
+            break;
+        case "radioactive":
+            if (bKnownStop || isTimerActive('cc_Radioactive')){
+                PlayerMessage("You stop being radioactive");
+                disableTimer('cc_Radioactive');
+            }
+            break;
+        case "doom_mode":
+            if (bKnownStop || isTimerActive('cc_DoomMode')){
+                PlayerMessage("You return to the normal world");
+                disableTimer('cc_DoomMode');
+            }
+            break;
+    }
+
+    return Success;
+}
 
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
@@ -1650,17 +2383,28 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "drop_selected_item":
-            if (player().InHand == None) {
+            if (player().InHand == None && player().CarriedDecoration==None) {
                 return TempFail;
             }
 
-            if (canDropItem() == False) {
-                return TempFail;
+            if (player().InHand!=None){
+                if (canDropItem() == False) {
+                    return TempFail;
+                }
+
+                if (player().DropItem() == False) {
+                    return TempFail;
+                }
+            } else if (player().CarriedDecoration!=None){
+                player().DropDecoration(); //Doesn't return anything
+
+                //But we can check if your hands are empty afterwards...
+                if (player().CarriedDecoration!=None){
+                    //Didn't drop
+                    return TempFail;
+                }
             }
 
-            if (player().DropItem() == False) {
-                return TempFail;
-            }
             PlayerMessage(viewer@"made you fumble your item");
             break;
 
@@ -1682,6 +2426,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         case "third_person":
             if (isTimerActive('cc_behindTimer')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_ResidentEvil')) {
                 return TempFail;
             }
             player().bBehindView=True;
@@ -1778,6 +2525,30 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             break;
 
+        case "swap_enemies":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!CanSwapEnemies()){
+                return TempFail;
+            }
+            if (SwapAllEnemies(viewer) == false) {
+                return TempFail;
+            }
+            break;
+
+        case "swap_items":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!CanSwapItems()){
+                return TempFail;
+            }
+            if (SwapAllItems(viewer) == false) {
+                return TempFail;
+            }
+            break;
+
         case "floaty_physics":
             if (isTimerActive('cc_floatyTimer')) {
                 return TempFail;
@@ -1788,6 +2559,13 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (InConversation()){
                 return TempFail;
             }
+
+            //Don't start floaty physics if you're in the water.  It works,
+            //but it's janky (even if I fixed it ending in the water)
+            if (player().Region.Zone.bWaterZone){
+                return TempFail;
+            }
+
             PlayerMessage(viewer@"made you feel light as a feather");
             SetFloatyPhysics(True);
             startNewTimer('cc_floatyTimer',duration);
@@ -1910,6 +2688,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_RollTimer')) {
                 return TempFail;
             }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
             datastorage.SetConfig('cc_cameraRoll',32768, 3600*12);
 
             PlayerMessage(viewer@"turned your life upside down");
@@ -1929,6 +2710,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_RollTimer')) {
                 return TempFail;
             }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
             datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
 
             PlayerMessage(viewer@"made your head flop to the side");
@@ -1946,6 +2730,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_ResidentEvil')) {
                 return TempFail;
             }
             datastorage.SetConfig('cc_cameraSpin',1, 3600*12);
@@ -2053,6 +2840,110 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return SpawnNastyRat(viewer);
             break;
 
+        case "drop_piano":
+            if (!InGame()) {
+                return TempFail;
+            }
+            return DropPiano(viewer);
+            break;
+
+        case "toggle_flashlight":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!ToggleFlashlight(viewer)){
+                return TempFail;
+            }
+            break;
+
+        case "heal_all_enemies":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!HealAllEnemies(viewer)){
+                return TempFail;
+            }
+            break;
+        case "resident_evil":
+            if (!#defined(vanilla)){
+                //Changes in player class
+                PlayerMessage("Resident Evil effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_behindTimer')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_DoomMode')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
+            //datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
+
+            PlayerMessage(viewer@"made your view a little bit more horrific");
+            startNewTimer('cc_ResidentEvil',duration);
+            player().bCrosshairVisible = False;
+            SpawnRECam();
+            return Success;
+
+        case "radioactive":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_Radioactive')) {
+                return TempFail;
+            }
+
+            PlayerMessage(viewer@"made you radioactive!");
+
+            startNewTimer('cc_Radioactive',duration);
+            break;
+        case "corpse_explosion":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!CorpseExplosion(viewer)){
+                return TempFail;
+            }
+            break;
+        case "doom_mode":
+            if (!#defined(vanilla)){
+                //Changes in player class
+                PlayerMessage("Doom Mode effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_DoomMode')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_ResidentEvil')) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_behindTimer')) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"dragged you to hell!");
+
+            startNewTimer('cc_DoomMode',duration);
+            break;
+        case "raise_dead":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!RaiseDead(viewer)){
+                return TempFail;
+            }
+            break;
+
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }
@@ -2078,6 +2969,8 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
             return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),True,viewer);
         case "spawnenemy":
             return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),False,viewer);
+        case "giveenemyweapon":
+            return GiveAllEnemiesWeapon(getWeaponClass(words[1]),viewer);
         default:
             err("Unknown effect: "$code);
             return NotAvail;

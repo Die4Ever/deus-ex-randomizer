@@ -43,6 +43,14 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)TriadRedArrow bouncer;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)Button1 button;
+    local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
+    local DXRButtonHoverHint buttonHint;
+    local DXRHoverHint hoverHint;
+
     local bool VanillaMaps;
 
 #ifdef injections
@@ -83,10 +91,21 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='change_floors'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+            buttonHint.SetBaseActor(button);
+
             class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
             class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
             class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
             class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
+            class'PlaceholderEnemy'.static.Create(self,vectm(755,-364,144),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(877,-360,144),,'Shitting');
         }
         break;
 
@@ -110,6 +129,11 @@ function PreFirstEntryMapFixes()
         }
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
+        if (VanillaMaps) {
+            // button to get out of Tong's base
+            AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
+        }
+        // fallthrough
     case "06_HONGKONG_WANCHAI_COMPOUND":
         foreach AllActors(class'Actor', a)
         {
@@ -141,6 +165,45 @@ function PreFirstEntryMapFixes()
                     break;
                 default:
                     break;
+            }
+        }
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'outro_trigger'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
+
+        if (VanillaMaps){
+            //Elevator to Versalife
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='change_floors01'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+            buttonHint.SetBaseActor(button);
+
+            //Elevator to Helibase
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+            foreach AllActors(class'#var(prefix)Button1',button){
+                if (button.Event=='change_floors'){
+                    break;
+                }
+            }
+            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+            buttonHint.SetBaseActor(button);
+        }
+
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p){
+            if (p.BindName=="MarketKid"){
+                p.Tag = 'MarketKid';
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
+            if (ot.Tag=='KidWanders' || ot.Tag=='KidGoesToNewsStand' || ot.Tag=='KidGoesToLumPath'){
+                ot.Event='MarketKid';
             }
         }
         break;
@@ -212,14 +275,39 @@ function PreFirstEntryMapFixes()
                 pad.bHidden = False;
         }
 
-        foreach AllActors(class'#var(prefix)Greasel',g){
+        foreach AllActors(class'#var(prefix)Greasel', g){
             g.bImportant = True;
-            g.BindName="JerryTheVentGreasel";
-            g.FamiliarName = "Jerry the Vent Greasel";
-            g.UnfamiliarName = "Jerry the Vent Greasel";
+            g.BindName = "BoringLabGreasel";
+            //The other ones are tagged as Dogs
+            if (Tag=='Greasel'){
+                g.BindName="JerryTheVentGreasel";
+                g.FamiliarName = "Jerry the Vent Greasel";
+                g.UnfamiliarName = "Jerry the Vent Greasel";
+            }
         }
 
         SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
+
+        //Elevator to Versalife
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors01'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
+
+        //Elevator to Level 2
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
+
 
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
@@ -248,6 +336,21 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-980,2089,-607)); //Barracks empty side lower
         Spawn(class'PlaceholderContainer',,, vectm(-894,1465,-607)); //Barracks empty side lower
         Spawn(class'PlaceholderContainer',,, vectm(-442,-494,-607)); //Near vanilla ROM encoding computer
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(903,-1363,432),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(709,-1378,432),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1101,2364,-592),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1368,2350,-592),,'Shitting',, 'security', 1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(85,1351,816),,'Sitting',, 'security', 1); //Upper lookout room
+        class'PlaceholderEnemy'.static.Create(self,vectm(53,1173,816),,'Sitting',, 'security', 1); //Upper Lookout room
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1470,-540,-80),,,, 'security', 1); //Catwalk to level 2 lab elevator
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1121,-185,-752),,,, 'security', 1); //Between zappy things in lab
+        class'PlaceholderEnemy'.static.Create(self,vectm(-829,2811,-592),,,, 'security', 1); //In the shower
+        class'PlaceholderEnemy'.static.Create(self,vectm(626,-632,-80),,,, 'security', 1); //Upper level of ROM encoding room
+        class'PlaceholderEnemy'.static.Create(self,vectm(-33,155,176),,,, 'security', 1); //Main hall
+        class'PlaceholderEnemy'.static.Create(self,vectm(-8,-715,176),,,, 'security', 1); //Main hall
+        class'PlaceholderEnemy'.static.Create(self,vectm(1345,-1092,431),,,, 'security', 1); //Conference room
+        class'PlaceholderEnemy'.static.Create(self,vectm(-629,1718,-592),,,, 'security', 1); //Barracks
 
 
         break;
@@ -356,6 +459,27 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Elevator to Market
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors01'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
+
+        //Elevator to MJ12 Lab
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
+
+
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
         Spawn(class'PlaceholderItem',,, vectm(210.94,2062.23,204.3)); //2nd floor front cube
@@ -366,6 +490,37 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-836.9,850.3,-9.7)); //Reception desk back
         break;
     case "06_HONGKONG_STORAGE":
+        //Make sure Maggie always has her MaggieChowShowdown conversation with you if she's here.
+        //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing)
+        //Remove the requirement for M07Briefing_Played for the conversation (Done in AnyEntry)
+        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(-2.5,-3,-848));
+        ft.SetCollisionSize(1000,5);
+        ft.FlagName='MaggieFled';
+        ft.bTrigger=False;
+        ft.bSetFlag=True;
+        ft.flagValue=True;
+        ft.flagExpiration=8;
+
+        //Elevator to MJ12 Lab
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='change_floors'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
+
+        //Swap BeamTriggers to LaserTrigger, since these lasers set off an alarm
+        foreach AllActors(class'#var(prefix)BeamTrigger',bt){
+            lt = #var(prefix)LaserTrigger(SpawnReplacement(bt,class'#var(prefix)LaserTrigger'));
+            lt.TriggerType=bt.TriggerType;
+            lt.bTriggerOnceOnly = bt.bTriggerOnceOnly;
+            lt.bDynamicLight = bt.bDynamicLight;
+            lt.bIsOn = bt.bIsOn;
+            bt.Destroy();
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers
         Spawn(class'PlaceholderItem',,, vectm(1169,-1490,459)); //Water pool
@@ -421,6 +576,15 @@ function PostFirstEntryMapFixes()
             }
         }
         break;
+    }
+}
+
+function FixMaggieMoveSpeed()
+{
+    local #var(prefix)MaggieChow maggie;
+    foreach AllActors(class'#var(prefix)MaggieChow',maggie){
+        maggie.GroundSpeed = 180;
+        maggie.walkAnimMult = 1;
     }
 }
 
@@ -550,6 +714,7 @@ function AnyEntryMapFixes()
             m.bHighlight = true;
         }
         HandleJohnSmithDeath();
+        FixMaggieMoveSpeed();
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -619,6 +784,13 @@ function AnyEntryMapFixes()
             ce = ce.nextEvent;
         }
 
+        break;
+    case "06_HONGKONG_STORAGE":
+        //Make sure Maggie always has her MaggieChowShowdown conversation with you if she's here.
+        //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing) - Done in PreFirstEntry
+        //Remove the requirement for M07Briefing_Played for the conversation (This allows the conversation to trigger if you went out of order - maybe normally, maybe entrance rando)
+        DeleteConversationFlag(GetConversation('MaggieChowShowdown'), 'M07Briefing_Played', true);
+        FixMaggieMoveSpeed();
         break;
     default:
         break;

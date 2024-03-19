@@ -141,7 +141,7 @@ function FixCodes()
 
     for(i=0; i<ArrayCount(yes_passwords); i++) {
         if( yes_passwords[i].map != dxr.localURL ) continue;
-        newpassword = GeneratePassword(dxr, yes_passwords[i].password);
+        newpassword = GeneratePassword(yes_passwords[i].password);
         //replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, false);
         ReplacePassword(yes_passwords[i].search_for, newpassword );
     }
@@ -213,7 +213,7 @@ function FixMaggieChowBday(#var(prefix)Keypad k)
     oldseed = SetGlobalSeed(oldpassword);//manually set the seed to avoid using the level name in the seed
     month = rng(12)+1;
     day = rng(28)+1;// HACK: too lazy to do the right number of days in each month
-    dxr.SetSeed(oldseed);
+    ReapplySeed(oldseed);
 
     newpassword = string(month);
     if(day<10) newpassword = newpassword $ "0" $ day;

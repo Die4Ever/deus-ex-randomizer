@@ -5,11 +5,9 @@ var localized string msgShot;
 var localized string msgShots;
 var localized string msgHitPoints;
 
+var DXRando dxr;
+
 var transient bool inited;
-var transient bool auto_codes;
-var transient bool known_codes;
-var transient bool show_keys;
-var transient bool auto_weapon_mods;
 
 function DrawWindow(GC gc)
 {
@@ -30,30 +28,13 @@ function DrawWindow(GC gc)
 
 function CheckSettings()
 {
-    local int codes_mode;
-    local DXRando dxr;
 
     if( player == None || player.FlagBase == None ) return;
-    inited = true;
-
-    codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
-    if( codes_mode == 2 ) {
-        auto_codes = true;
-    } else {
-        auto_codes = false;
-    }
-    if( codes_mode >= 1 ) {
-        known_codes = true;
-    } else {
-        known_codes = false;
-    }
-
-    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys enabled"));
 
     foreach player.AllActors(class'DXRando',dxr){break;}
     if (dxr==None) return;
 
-    auto_weapon_mods = !dxr.flags.IsZeroRando() && bool(player.ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"));
+    inited = true;
 }
 
 function InitFlags()
@@ -67,6 +48,28 @@ event StyleChanged()
 {
     Super.StyleChanged();
     CheckSettings();
+}
+
+function bool GetAutoCodes()
+{
+    return class'MenuChoice_PasswordAutofill'.default.codes_mode == 2;
+
+}
+
+function bool GetKnownCodes()
+{
+    return class'MenuChoice_PasswordAutofill'.default.codes_mode >= 1;
+}
+
+function bool GetShowKeys()
+{
+    return class'MenuChoice_ShowKeys'.default.enabled;
+}
+
+function bool GetAutoWeaponMods()
+{
+    if (dxr==None) return False;
+    return !dxr.flags.IsZeroRando() && class'MenuChoice_AutoWeaponMods'.default.enabled;
 }
 
 static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)
@@ -248,6 +251,10 @@ function string GetStrInfo(Actor a, out int numLines)
         return DeviceStrInfo(HackableDevices(a), numLines);
     else if ( #var(prefix)Computers(a) != None || #var(prefix)ATM(a) != None )
         return ComputersStrInfo(#var(prefix)ElectronicDevices(a), numLines);
+    else if ( #var(prefix)Weapon(a)!=None )
+        return WeaponStrInfo(#var(DeusExPrefix)Weapon(a),numLines);
+    else if ( #var(prefix)BeamTrigger(a)!=None || #var(prefix)LaserTrigger(a)!=None)
+        return LaserStrInfo(a,numLines);
     else if (!a.bStatic && player.bObjectNames)
         return OtherStrInfo(a, numLines);
 
@@ -355,7 +362,7 @@ function string MoverStrInfo(Mover m, out int numLines)
             }
         }
         strInfo = msgLocked;
-        if (!(show_keys && keyAcq)) {
+        if (!(GetShowKeys() && keyAcq)) {
             numLines++;
             strInfo = strInfo $ CR() $ msgLockStr;
             if (dxMover.bPickable)
@@ -378,7 +385,7 @@ function string MoverStrInfo(Mover m, out int numLines)
 
         }
 
-        if ( show_keys && dxMover.KeyIDNeeded != ''){
+        if ( GetShowKeys() && dxMover.KeyIDNeeded != ''){
             numLines++;
             if (keyAcq){
                 strInfo = strInfo $ CR() $ "KEY ACQUIRED";
@@ -417,7 +424,7 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 
     strInfo = device.itemName;
 
-    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+    if(!GetAutoCodes() || k==None || (GetAutoCodes() && k!=None && !k.bCodeKnown)){
         numLines++;
         strInfo = strInfo $ CR() $ msgHackStr;
         if (device.bHackable)
@@ -435,18 +442,18 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 
     if( k!=None && (k.bCodeKnown) )
     {
-        if( auto_codes ) {
+        if( GetAutoCodes() ) {
             numLines++;
             strInfo = strInfo $ CR() $ "CODE KNOWN ("$k.validCode$")";
             k.bHackable = False;
             k.msgNotHacked = "It's secure, but you already know the code!";
         }
-        else if( known_codes ) {
+        else if( GetKnownCodes() ) {
             numLines++;
             strInfo = strInfo $ CR() $ "CODE KNOWN";
         }
     }
-    else if( device.IsA('Keypad') && known_codes )
+    else if( device.IsA('Keypad') && GetKnownCodes() )
     {
         numLines++;
         strInfo = strInfo $ CR() $ "Unknown Code";
@@ -470,7 +477,7 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
 
     c = #var(prefix)Computers(d);
     a = #var(injectsprefix)ATM(d);
-    if( known_codes && c != None )
+    if( GetKnownCodes() && c != None )
     {
         if( #var(injectsprefix)ComputerPersonal(c) != None )
             code_known = #var(injectsprefix)ComputerPersonal(c).HasKnownAccounts();
@@ -482,7 +489,7 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
         else
             strInfo = strInfo $ CR() $ "Unknown Password";
     }
-    else if( known_codes && a != None )
+    else if( GetKnownCodes() && a != None )
     {
         if( a.HasKnownAccounts() )
             strInfo = strInfo $ CR() $ "PIN Known";
@@ -492,14 +499,191 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
     return strInfo;
 }
 
+function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
+{
+    local string strInfo;
+    local int dmg,compDmg,dmgDiff,compMode;
+    local string dmgDiffStr,fireRateDiffStr;
+    local float mod,fireRate,compFireRate,fireRateDiff;
+    local #var(DeusExPrefix)Weapon compW;
+
+    // TODO: Maybe this should be a setting?
+    //0 = off
+    //1 = Compare to in-hand weapon
+    //2 = Compare to default values
+    compMode=1;
+
+    numLines=1;
+    strInfo = w.itemName;
+    if (w.AmmoName != Class'DeusEx.AmmoNone' )
+        strInfo = strInfo $ " (" $ w.PickupAmmoCount $ ")";
+
+    numLines++; //Damage
+    numLines++; //Fire rate
+    //Calculate the damage of the weapon you're looking at
+#ifdef injections
+    dmg = DXRWeapon(w).GetDamage(true);
+
+    if( class<DeusExProjectile>(w.ProjectileClass) != None && class<DeusExProjectile>(w.ProjectileClass).default.bExplodes==false )
+        dmg /= float(DXRWeapon(w).GetNumHits());
+
+#else
+    if (w.AreaOfEffect == AOE_Cone){
+        if (w.bInstantHit)
+        {
+            dmg = w.HitDamage * 5;
+        }else{
+            dmg = w.HitDamage * 3;
+        }
+    }else{
+        dmg = w.HitDamage;
+    }
+    mod = 1.0 - w.GetWeaponSkill();
+    dmg = mod * dmg;
+#endif
+    fireRate = 1.0/w.ShotTime;
+
+    //Calculate the damage of the weapon in your hand
+    if (#var(DeusExPrefix)Weapon(player.InHand)!=None && compMode==1){
+        compW = #var(DeusExPrefix)Weapon(player.InHand);
+#ifdef injections
+        compDmg = DXRWeapon(compW).GetDamage(true);
+
+        if( class<DeusExProjectile>(compW.ProjectileClass) != None && class<DeusExProjectile>(compW.ProjectileClass).default.bExplodes==false )
+            compDmg /= float(DXRWeapon(compW).GetNumHits());
+#else
+        if (compW.AreaOfEffect == AOE_Cone){
+            if (compW.bInstantHit){
+                compDmg = compW.HitDamage * 5;
+            }else{
+                compDmg = compW.HitDamage * 3;
+            }
+        }else{
+            compDmg = compW.HitDamage;
+        }
+        mod = 1.0 - compW.GetWeaponSkill();
+        compDmg = mod * compDmg;
+#endif
+        compFireRate = 1.0/compW.ShotTime;
+    } else if (compMode==2){
+        //It's a lot more work to calculate the default weapon damage,
+        //since the convenience functions are all working with the configured
+        //values.  I'm not bothering with that for right now.
+        //Maybe we could temporarily copy the default stats over to the actual weapon,
+        //run the calculations, then swap the stats back to the randomized ones, so
+        //that we could use the same calculations?
+
+        compFireRate = 1.0/compW.Default.ShotTime;
+    }
+
+    strInfo=strInfo $ CR() $"Damage: "$dmg;
+
+    //Show the difference in damage with your current weapon
+    if (compDmg!=0){
+        dmgDiff = dmg - compDmg;
+        dmgDiffStr = string(dmgDiff);
+        if (dmgDiff>0){
+            dmgDiffStr="+"$dmgDiffStr;
+        }
+
+        if (dmgDiff!=0){
+            strInfo=strInfo$" ("$dmgDiffStr$")";
+        }
+    }
+
+    if (dxr!=None){
+        strInfo=strInfo $ CR() $"Fire Rate: "$dxr.TruncateFloat(fireRate,1)$"/s";
+
+        if (compFireRate!=0){
+            fireRateDiff = fireRate - compFireRate;
+            fireRateDiffStr = dxr.TruncateFloat(fireRateDiff,1);
+            if (fireRateDiff>0){
+                fireRateDiffStr = "+"$fireRateDiffStr;
+            }
+
+            if (fireRateDiff!=0){
+                strInfo=strInfo$" ("$fireRateDiffStr$")";
+            }
+        }
+    }
+
+    return strInfo;
+
+}
+
+function string LaserStrInfo(Actor a, out int numLines)
+{
+    local #var(prefix)BeamTrigger bt;
+    local #var(prefix)LaserTrigger lt;
+    local int minDmg,hitpoints, numshots,damage;
+    local string strInfo,triggerName, numshotStr;
+#ifdef vanilla
+    local DXRWeapon w;
+#endif
+
+    bt = #var(prefix)BeamTrigger(a);
+    lt = #var(prefix)LaserTrigger(a);
+
+    if (bt!=None){
+        triggerName="Laser Trap";
+        minDmg = bt.minDamageThreshold;
+        hitpoints = bt.HitPoints;
+    } else if (lt!=None){
+        triggerName="Alarm Laser";
+        minDmg = lt.minDamageThreshold;
+        hitpoints = lt.HitPoints;
+    } else {
+        numLines=1;
+        return "SOME OTHER LASER ENDED UP IN HERE!  REPORT AS BUG!";
+    }
+
+    numshotStr="";
+#ifdef vanilla
+    w = DXRWeapon(player.inHand);
+    if( w != None ) {
+        if (w.WeaponDamageType() != 'Exploded' && w.WeaponDamageType() != 'Shot'){
+            damage = 0; //only exploded and shot damage actually hurt lasers
+        } else {
+            damage = w.GetDamage();
+            if (damage<minDmg){
+                damage = 0;
+            }
+            damage = damage * float(w.GetNumHits());
+        }
+
+        if( damage > 0 ) {
+            numshots = hitpoints/damage;
+            if (hitpoints % damage != 0){
+                numshots++;
+            }
+
+            if( numshots == 1 )
+                numshotStr = " (" $ numshots @ msgShot $ ")";
+            else
+                numshotStr = " (" $ numshots @ msgShots $ ")";
+        } else {
+            numshotStr = " (" $ msgInf @ msgShots $ ")";
+        }
+    }
+#endif
+
+
+    numLines = 3;
+    strInfo = triggerName $ CR();
+    strInfo = strInfo $ msgDamageThreshold @ minDmg $ CR();
+    strInfo = strInfo $ msgHitPoints @ hitpoints $ numshotStr;
+
+    return strInfo;
+}
+
+
 function bool WeaponModAutoApply(WeaponMod wm)
 {
     if (wm==None) return False;
     if (player.InHand==None) return False;
     if (player.InHand.IsA('DeusExWeapon')==False) return False;
     if (wm.CanUpgradeWeapon(DeusExWeapon(player.InHand))==False) return False;
-    if (auto_weapon_mods==False) return False;
-
+    if (GetAutoWeaponMods()==False) return False;
     return True;
 
 }
@@ -582,7 +766,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
 
     dxMover = DeusExMover(m);
     // draw colored bars for each value
-    if ((dxMover != None) && dxMover.bLocked && !(show_keys && keyAcq))
+    if ((dxMover != None) && dxMover.bLocked && !(GetShowKeys() && keyAcq))
     {
         gc.SetStyle(DSTY_Translucent);
         col = GetColorScaled(dxMover.lockStrength);
@@ -594,7 +778,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
     // draw the absolute number of lockpicks on top of the colored bar
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable && !(show_keys && keyAcq))
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable && !(GetShowKeys() && keyAcq))
     {
         numTools = GetNumTools(dxMover.lockStrength, player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking'));
         if (numTools == 1)
@@ -604,7 +788,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
 #ifdef vanilla
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable && !(show_keys && keyAcq))
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable && !(GetShowKeys() && keyAcq))
     {
         w = DXRWeapon(player.inHand);
         if( w != None ) {
@@ -624,7 +808,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)*2-2, strInfo);
 
     //Put a green or red bar next to key status if the door is locked and has a key
-    if (show_keys && dxMover.bLocked && dxMover.KeyIDNeeded != ''){
+    if (GetShowKeys() && dxMover.bLocked && dxMover.KeyIDNeeded != ''){
         gc.SetStyle(DSTY_Translucent);
         col.r = 0;
         col.g = 0;
@@ -660,10 +844,10 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
 #endif
 
     // Alignment changes based on the number of lines?
-    if ((auto_codes || known_codes) && k!=None){
+    if ((GetAutoCodes() || GetKnownCodes()) && k!=None){
         infoY += 2;
     }
-    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+    if(!GetAutoCodes() || k==None || (GetAutoCodes() && k!=None && !k.bCodeKnown)){
         // draw a colored bar
         if (device.hackStrength != 0.0)
         {
@@ -685,7 +869,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         }
     }
 
-    if (auto_codes && k!=None){
+    if (GetAutoCodes() && k!=None){
         gc.SetStyle(DSTY_Translucent);
         col.r = 0;
         col.g = 0;

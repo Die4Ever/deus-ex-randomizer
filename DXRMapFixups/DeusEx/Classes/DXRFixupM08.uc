@@ -16,6 +16,8 @@ function AnyEntryMapFixes()
             RemoveReactions(s);
         }
         Player().StartDataLinkTransmission("DL_Entry");
+        RearrangeMJ12ConvergingInfolink();
+        RearrangeJockExitDialog();
         break;
 
     case "08_NYC_SMUG":
@@ -26,10 +28,80 @@ function AnyEntryMapFixes()
     }
 }
 
+function RearrangeJockExitDialog()
+{
+    local Conversation c;
+    local ConEvent ce,prev;
+    local ConEventSpeech ces;
+    local ConEventAddSkillPoints ceasp;
+    local ConEventAddGoal ceag,goalComplete;
+
+    c = GetConversation('M08JockExit');
+
+    ce = c.eventList;
+    prev=None;
+    while (ce!=None){
+        if (ce.eventType==ET_AddGoal){
+            ceag = ConEventAddGoal(ce);
+            if (ceag.goalName=='GetBackToRoof'){
+                //Pull this goal out of the list
+                goalComplete = ceag;
+                prev.nextEvent = goalComplete.nextEvent;
+            }
+        } else if (ce.eventType==ET_AddSkillPoints){
+            ceasp = ConEventAddSkillPoints(ce);
+        }
+        prev=ce;
+        ce = ce.nextEvent;
+    }
+
+    if (ceasp!=None && goalComplete!=None){
+        //The "GetBackToRoof" goal normally only gets marked as complete if you have a LAM
+        //Move it to get completed when you head out with Jock
+        goalComplete.nextEvent = ceasp.nextEvent;
+        ceasp.nextEvent = goalComplete;
+    }
+
+
+}
+
+function RearrangeMJ12ConvergingInfolink()
+{
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
+
+    c = GetConversation('DL_Exit');
+
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_Speech){
+            ces = ConEventSpeech(ce);
+        } else if (ce.eventType==ET_SetFlag){
+            cesf = ConEventSetFlag(ce);
+        }
+        ce = ce.nextEvent;
+    }
+
+    if (ces!=None && cesf!=None){
+        //The conversation is typically:
+        //Speech -> SetFlag -> End
+        //but I want it to be
+        //SetFlag -> Speech -> End
+
+        ces.nextEvent = cesf.nextEvent;
+        cesf.nextEvent = ces;
+        c.eventList = cesf;
+    }
+
+}
+
 function TimerMapFixes()
 {
     local BlackHelicopter chopper;
     local bool VanillaMaps;
+    local DeusExGoal newGoal;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -42,6 +114,16 @@ function TimerMapFixes()
                 chopper.EnterWorld();
             dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
         }
+
+        if (dxr.flagbase.GetBool('MS_Helicopter_Unhidden') && player().FindGoal('GetBackToRoof')==None){
+            newGoal=player().AddGoal('GetBackToRoof',True);
+            if(dxr.flags.settings.goals > 0) {
+                newGoal.SetText("Find Jock and take the helicopter to Brooklyn Naval Shipyard.|nRando: Jock could be anywhere in the streets.");
+            } else {
+                newGoal.SetText("Find Jock and take the helicopter to Brooklyn Naval Shipyard.");
+            }
+        }
+
         break;
     }
 }
@@ -51,6 +133,9 @@ function PreFirstEntryMapFixes()
     local DataLinkTrigger dlt;
     local #var(prefix)NanoKey k;
     local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
     local bool VanillaMaps;
 
 #ifdef injections
@@ -68,8 +153,6 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL)
     {
         case "08_NYC_STREET":
-            AdjustRaidStartLocation();
-
             //Since we always spawn the helicopter on the roof immediately after the conversation,
             //the ambush should also always happen immediately after the conversation (instead of
             //after getting explosives)
@@ -82,6 +165,13 @@ function PreFirstEntryMapFixes()
 
             pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-2102,1942,-503));//In park
             pg.MaxCount=3;
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+
             break;
         case "08_NYC_HOTEL":
             if (VanillaMaps){
@@ -114,39 +204,4 @@ function PreFirstEntryMapFixes()
 
             break;
     }
-}
-
-//GOTY edition has the attack force spawn in weird spots within line of sight.
-//Revert their starting locations to where they were in the original release.
-function AdjustRaidStartLocation()
-{
-    local MJ12Troop t;
-    local vector locations[10];
-    local int i;
-
-    i=0;
-
-    //In theory we could add more starting locations for the raids (basketball court, hotel)
-
-    //Alley 1 (Sandra Renton) - Vanilla Non-GOTY
-    locations[i++]=vectm(-2086,-706,-426);
-    locations[i++]=vectm(-2041,-761,-426);
-    locations[i++]=vectm(-1886,-719,-426);
-    locations[i++]=vectm(-1849,-779,-426);
-    locations[i++]=vectm(-1692,-695,-426);
-
-    //Alley 2 (Road to NSF HQ) - Vanilla Non-GOTY
-    locations[i++]=vectm(-1907,-1534,-434);
-    locations[i++]=vectm(-1856,-1584,-434);
-    locations[i++]=vectm(-1817,-1497,-441);
-    locations[i++]=vectm(-1693,-1494,-452);
-    locations[i++]=vectm(-1577,-1585,-438);
-
-
-   //Ambush guys are tagged with MJ12AttackForce and start out of world
-   i=0;
-   foreach AllActors(class'MJ12Troop',t,'MJ12AttackForce'){
-       t.WorldPosition = locations[i];
-       t.SetLocation(locations[i++]+vectm(0,0,20000));
-   }
 }

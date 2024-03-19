@@ -61,6 +61,9 @@ function PreFirstEntryMapFixes_Bunker()
     local Switch2 s2;
     local SequenceTrigger st;
     local DataLinkTrigger dlt;
+    local Dispatcher disp;
+    local OnceOnlyTrigger oot;
+    local Trigger trig;
     local #var(prefix)RatGenerator rg;
 
     // doors_lower is for backtracking
@@ -111,6 +114,33 @@ function PreFirstEntryMapFixes_Bunker()
     d.minDamageThreshold=25;
     d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
 
+    //Make it only possible to turn the power on, make it impossible to turn the power off again
+    foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
+        disp.Tag = 'power_dispatcher_real';
+        break;
+    }
+
+    oot = Spawn(class'OnceOnlyTrigger');
+    oot.Event='power_dispatcher_real';
+    oot.Tag='power_dispatcher';
+
+    //Make sure the power turns on if you get to the bottom
+    trig = Spawn(class'Trigger',,,vectm(4414,-1035,-7543));
+    trig.SetCollisionSize(180,40);
+    trig.event = 'power_dispatcher';
+
+    //Make the movers way faster
+    foreach AllActors(class'DeusExMover',d){
+        switch(d.Tag){
+            case 'upper_elevator_sw':
+            case 'upper_elevator_sw_works':
+            case 'lower_elevator_sw':
+            case 'lower_elevator_sw_works':
+                d.MoveTime=0.01; //So fast it just looks like the buttons and stuff swapped instantly, even if you're looking
+                break;
+        }
+    }
+
     //Button to open blast doors from inside
     AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
 
@@ -129,6 +159,8 @@ function PreFirstEntryMapFixes_Bunker()
     class'PlaceholderEnemy'.static.Create(self,vectm(-2237,3225,-192));
     class'PlaceholderEnemy'.static.Create(self,vectm(4234,3569,-736));
     class'PlaceholderEnemy'.static.Create(self,vectm(3744,-1030,-7481));
+    class'PlaceholderEnemy'.static.Create(self,vectm(1341,3154,-464),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(1191,3035,-464),,'Sitting');
 
     rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1658,2544,-522));//Behind Command 24
     rg.MaxCount=1;
@@ -264,8 +296,21 @@ function PreFirstEntryMapFixes_Entrance()
     Spawn(class'PlaceholderItem',,, vectm(-1712.9,191.25,26)); //In front of ambush elevator
 
     class'PlaceholderEnemy'.static.Create(self,vectm(4623,210,-176));
-    class'PlaceholderEnemy'.static.Create(self,vectm(3314,2196,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(3314,2276,-176));
     class'PlaceholderEnemy'.static.Create(self,vectm(-190,-694,-180));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-444,-171,-16));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-394,516,-16));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-105,769,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-116,432,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-63,-147,-176));
+    class'PlaceholderEnemy'.static.Create(self,vectm(-578,313,-16));
+
+    class'PlaceholderEnemy'.static.Create(self,vectm(3286,2750,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(3316,2527,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(3297,2079,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(2930,2106,-176),,'Sitting');
+    class'PlaceholderEnemy'.static.Create(self,vectm(2977,2306,-176),,'Sitting');
+
 }
 
 

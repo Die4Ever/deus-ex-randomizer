@@ -61,6 +61,11 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponModRecoil wmr;
     local #var(prefix)Terrorist terror;
     local #var(prefix)FishGenerator fg;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+    local #var(prefix)HumanCivilian hc;
+
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -78,6 +83,10 @@ function PreFirstEntryMapFixes()
             if( i.textTag == '03_Book06' ) {
                 i.bAddToVault = true;
             }
+        }
+
+        if(VanillaMaps) {
+            AddSwitch(vect(-4621.640137, 2902.651123, -650.285461), rot(0,0,0), 'ElevatorPhone');
         }
 
         fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
@@ -155,6 +164,18 @@ function PreFirstEntryMapFixes()
 
             //Button to extend sewer platform from the other side
             AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(-326,1494,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(-422,1393,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(352,1510,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(451,1397,48),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1154,170,224),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(1044,94,224),,'Sitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
+
         }
         break;
 
@@ -179,6 +200,14 @@ function PreFirstEntryMapFixes()
                     tele.SetCollisionSize(tele.CollisionRadius, tele.CollisionHeight + 10);
                 }
             }
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(2887,3410,256),,'Shitting');
         }
         break;
 
@@ -215,6 +244,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
             Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
             Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(4030,-2958,112),,'Shitting');
+
         }
         break;
 
@@ -249,6 +281,12 @@ function PreFirstEntryMapFixes()
                 unatco.UnfamiliarName = "Corporal Lloyd";
             }
         }
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
+
         break;
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
@@ -283,6 +321,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
+            // Chet's name is Chet
+            hc.bImportant = true;
+        }
+
         break;
     }
 }

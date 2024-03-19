@@ -38,6 +38,11 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BeamTrigger beam;
     local OnceOnlyTrigger oot;
     local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)Trigger trig;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -63,6 +68,13 @@ function PreFirstEntryMapFixes()
 
             //A button *behind* the elevator that sends it up, since it's possible to fall back there and live...
             AddSwitch( vect(2905.517578,-1641.676270,-430.253693), rot(0,0,0), 'Elevator01_top', "Ramisme's Escape Button");
+
+            //Detach the triggers that opens the op room doors when you get near them from inside
+            foreach AllActors(class'#var(prefix)Trigger',trig){
+                if (trig.Event=='SecDoor1' || trig.Event=='SecDoor2'){
+                    trig.Event='DontDoAnything';
+                }
+            }
 
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-738,-1412,-474));//Near sewer grate
             rg.MaxCount=1;
@@ -93,6 +105,10 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderContainer',,, vectm(-1248,-1248,-460)); //Shipyard dock near sewer entrance
             Spawn(class'PlaceholderContainer',,, vectm(-1185,-1175,-460)); //Shipyard dock near sewer entrance
             Spawn(class'PlaceholderContainer',,, vectm(3172,-1248,-460)); //Shipyard dock near maintenance ladder
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(2639,-1817,-220),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(2805,-1824,-220),,'Shitting');
+            class'PlaceholderEnemy'.static.Create(self,vectm(2005,-68,512),,'Shitting');
         }
         break;
 
@@ -184,6 +200,12 @@ function PreFirstEntryMapFixes()
             oot=Spawn(class'OnceOnlyTrigger');
             oot.Event='BotDrop';
             oot.Tag='BotDropOnce';
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ToGraveyard'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
         }
 
         //They put the key ID in the tag for some reason
@@ -237,6 +259,10 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408));
         class'PlaceholderEnemy'.static.Create(self,vectm(3209,2333,48));
 
+        class'PlaceholderEnemy'.static.Create(self,vectm(1475,3249,48),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(2435,2271,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1038,3391,48),,'Sitting');
+
         break;
 
     case "09_NYC_SHIPFAN":
@@ -285,6 +311,13 @@ function PreFirstEntryMapFixes()
         foreach RadiusActors(class'BlockPlayer', bp, 150, vectm(255.896591, 976.539551, 291.541748)) {
             bp.bBlockPlayers = false;
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'CopterCam'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
+
         break;
     }
 }

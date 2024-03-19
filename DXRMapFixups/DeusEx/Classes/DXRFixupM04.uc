@@ -25,12 +25,13 @@ function PreTravelMapFixes()
 
 function PreFirstEntryMapFixes()
 {
-    local FlagTrigger ft;
+    local #var(prefix)FlagTrigger ft;
+    local #var(prefix)DatalinkTrigger dt;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
-    local #var(prefix)UNATCOTroop lloyd;
+    local #var(prefix)UNATCOTroop lloyd, troop;
     local #var(prefix)AutoTurret turret;
     local #var(prefix)ControlPanel panel;
     local #var(prefix)LaserTrigger laser;
@@ -41,7 +42,13 @@ function PreFirstEntryMapFixes()
     local #var(DeusExPrefix)Mover door;
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)GuntherHermann gunther;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
+    local DXRHoverHint hoverHint;
+    local DXRMapVariants mapvariants;
     local bool VanillaMaps;
+    local #var(prefix)HumanCivilian hc;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -53,7 +60,7 @@ function PreFirstEntryMapFixes()
             if( ot.Orders == 'Leaving' )
                 ot.Orders = 'Seeking';
         }
-        foreach AllActors(class'FlagTrigger', ft) {
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
             if( ft.Event == 'PaulOutaHere' )
                 ft.Destroy();
         }
@@ -69,6 +76,7 @@ function PreFirstEntryMapFixes()
             }
         }
 #endif
+        class'GilbertWeaponMegaChoice'.static.Create(Player());
 
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
@@ -95,28 +103,33 @@ function PreFirstEntryMapFixes()
         break;
 
     case "04_NYC_NSFHQ":
-        foreach AllActors(class'#var(prefix)AutoTurret', turret) {
-            turret.Event = '';
-            turret.Destroy();
-        }
-        foreach AllActors(class'#var(prefix)ControlPanel', panel) {
-            panel.Event = '';
-            panel.Destroy();
-        }
-        foreach AllActors(class'#var(prefix)LaserTrigger', laser) {
-            laser.Event = '';
-            laser.Destroy();
-        }
-        foreach AllActors(class'#var(prefix)Containers', c) {
-            if(#var(prefix)BoxLarge(c) != None || #var(prefix)BoxSmall(c) != None
-                || #var(prefix)CrateUnbreakableLarge(c) != None || #var(prefix)CrateUnbreakableMed(c) != None)
-            {
-                c.Event = '';
-                c.Destroy();
+        if(!dxr.flags.IsReducedRando()) {
+            foreach AllActors(class'#var(prefix)AutoTurret', turret) {
+                turret.Event = '';
+                turret.Destroy();
             }
-        }
-        foreach AllActors(class'#var(prefix)HackableDevices', hd) {
-            hd.hackStrength /= 3.0;
+            foreach AllActors(class'#var(prefix)ControlPanel', panel) {
+                panel.Event = '';
+                panel.Destroy();
+            }
+            foreach AllActors(class'#var(prefix)LaserTrigger', laser) {
+                laser.Event = '';
+                laser.Destroy();
+            }
+            foreach AllActors(class'#var(prefix)Containers', c) {
+                if(#var(prefix)BoxLarge(c) != None || #var(prefix)BoxSmall(c) != None
+                    || #var(prefix)CrateUnbreakableLarge(c) != None || #var(prefix)CrateUnbreakableMed(c) != None)
+                {
+                    c.Event = '';
+                    c.Destroy();
+                }
+            }
+            foreach AllActors(class'#var(prefix)HackableDevices', hd) {
+                hd.hackStrength /= 3.0;
+            }
+            foreach AllActors(class'#var(prefix)UNATCOTroop',troop,'UNATCOGateGuard'){
+                troop.Destroy();
+            }
         }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',door,'ExitDoor'){
@@ -134,15 +147,55 @@ function PreFirstEntryMapFixes()
         //Button to open basement hatch from inside
         AddSwitch( vect(-558.536499,-426.806915,-16.069786), rot(0, 0, 0), 'BasementHatch');
 
+        foreach AllActors(class'#var(prefix)UNATCOTroop', troop) {
+            if (troop.BindName=="UNATCOGateGuard" ||
+                troop.BindName=="TrooperTalking1" ||
+                troop.BindName=="TrooperTalking2" )
+            {
+                troop.bIsSecretGoal=True;
+            }
+        }
+
         if (VanillaMaps){
             //One window on the roof doesn't have a FlagTrigger to make UNATCO hate you.  Add it back.
-            ft = Spawn(class'FlagTrigger',,,vectm(233.9,693.64,1016.1));
+            ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal3',vectm(233.9,693.64,1016.1));
             ft.SetCollisionSize(128,40);
             ft.bSetFlag=False;
             ft.bTrigger=True;
             ft.FlagName='NSFSignalSent';
             ft.flagValue=True;
             ft.Event='UNATCOHatesPlayer';
+
+            Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
+            class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(-435,9,-208),,,,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(1486,1375,-208),,,,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(-438,1120,544),,,,'UNATCO',1);
+            class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
+        }
+
+        if(VanillaMaps && dxr.flags.settings.goals > 0) {
+            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
+                if(dt.datalinkTag != 'DL_SimonsPissed') continue;
+                dt.Tag = 'SendingSignal3';
+                break;
+            }
+
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
+                ft.Tag = 'SendingSignal2';
+                ft.Event = 'SendingSignal3';
+                ft.bTrigger = true;
+                // spawn intermediate trigger to check flag
+                ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vect(10,10,10));
+                ft.SetCollision(false,false,false);
+                ft.bSetFlag=False;
+                ft.bTrigger=True;
+                ft.FlagName='CanSendSignal';
+                ft.flagValue=True;
+                ft.Event='SendingSignal2';
+                break;
+            }
         }
 
         break;
@@ -156,6 +209,13 @@ function PreFirstEntryMapFixes()
                 lloyd.bImportant = true;
             }
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
+
         break;
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
@@ -183,6 +243,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
+
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
+            // Chet's name is Chet
+            hc.bImportant = true;
+        }
+
         break;
 
     case "04_NYC_BATTERYPARK":
@@ -194,6 +260,12 @@ function PreFirstEntryMapFixes()
             //Let the player free!  It's already possible to break outside of them, so just get rid of them.
             bp.bBlockPlayers=false;
         }
+        foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
+        foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""), gunther.Location, gunther.CollisionRadius+5, gunther.CollisionHeight+5);
+            hoverHint.SetBaseActor(gunther);
+        }
+
         break;
     case "04_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1440,340,48),rotm(0,-16348,0));
@@ -201,25 +273,21 @@ function PreFirstEntryMapFixes()
     case "04_NYC_STREET":
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-1849,286,-487));//Near free clinic
         pg.MaxCount=3;
+
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
+            if (ft.event == 'MainGates') {
+                // Increase the radius to extend around the corner for NSFHQ starts
+                ft.SetCollisionSize(7000.0, ft.CollisionHeight);
+            }
+        }
+
         break;
     }
 }
 
 function PostFirstEntryMapFixes()
 {
-    local DeusExMover m;
-
     FixUNATCORetinalScanner();
-
-    switch(dxr.localURL) {
-    case "04_NYC_NSFHQ":
-        // no cheating!
-        foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
-            m.bBreakable = false;
-            m.bPickable = false;
-        }
-        break;
-    }
 }
 
 function AnyEntryMapFixes()
@@ -336,7 +404,7 @@ function NYC_04_CheckPaulRaid()
 
     foreach AllActors(class'ScriptedPawn', p) {
         if( PaulDenton(p) != None ) continue;
-        if( IsCritter(p) ) continue;
+        if( !IsRelevantPawn(p.class) ) continue;
         if( p.bHidden ) continue;
         if( p.GetAllianceType('Player') != ALLIANCE_Hostile ) continue;
         p.bStasis = false;

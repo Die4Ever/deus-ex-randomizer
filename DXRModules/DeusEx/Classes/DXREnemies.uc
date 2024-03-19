@@ -72,7 +72,7 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)Karkian', 1, FactionAny);
     AddRandomEnemyType(class'#var(prefix)SecurityBot2', 2, FactionAny);//walker
     AddRandomEnemyType(class'#var(prefix)SecurityBot3', 2, FactionAny);//little guy from liberty island
-    AddRandomEnemyType(class'#var(prefix)SecurityBot4', 2, FactionAny);//unused little guy
+    AddRandomEnemyType(class'DXRSecurityBot4', 2, FactionAny);//unused little guy
 
     AddRandomEnemyType(class'#var(prefix)UNATCOTroop', 10, UNATCO);
     AddRandomEnemyType(class'UNATCOClone1', 10, UNATCO);
@@ -112,9 +112,9 @@ function CheckConfig()
     AddRandomEnemyType(class'NSFClone2', 10, NSF);
     AddRandomEnemyType(class'NSFClone3', 10, NSF);
     AddRandomEnemyType(class'NSFClone4', 10, NSF);
-    AddRandomEnemyType(class'#var(prefix)ThugMale', 5, NSF);
-    AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, NSF);
-    AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, NSF);
+    AddRandomEnemyType(class'NSFThugMale', 5, NSF);
+    AddRandomEnemyType(class'NSFThugMale2', 5, NSF);
+    AddRandomEnemyType(class'NSFThugMale3', 5, NSF);
     AddRandomEnemyType(class'NSFCloneAugShield1', 1.5, NSF);
     AddRandomEnemyType(class'NSFCloneAugTough1', 1.5, NSF);
     AddRandomEnemyType(class'NSFCloneAugStealth1', 1.5, NSF);
@@ -160,15 +160,35 @@ function FirstEntry()
     RandoEnemies(dxr.flags.settings.enemiesrandomized, dxr.flags.settings.hiddenenemiesrandomized);
     RandoCarcasses(dxr.flags.settings.swapitems);
     GivePatrols();
+
+    //DebugAlliances();
+}
+
+function DebugAlliances()
+{
+    local #var(prefix)ScriptedPawn p;
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
+        l("FixAlliances() " $ p @ p.Alliance);
+        if(p.Alliance == 'Bot' || p.Alliance == 'Robot') err(p @ p.Alliance);
+        l(p $ " reactions: "$ p.bLikesNeutral @ p.bHateWeapon @ p.bHateDistress @ p.bHateShot @ p.bHateInjury @ p.bHateIndirectInjury @ p.bHateCarcass);
+#ifdef injections
+        if(#var(prefix)Animal(p) != None) #var(prefix)Animal(p).PrintAlliances();
+        else if(#var(prefix)HumanMilitary(p) != None) #var(prefix)HumanMilitary(p).PrintAlliances();
+        else if(#var(prefix)HumanCivilian(p) != None) #var(prefix)HumanCivilian(p).PrintAlliances();
+        else if(#var(prefix)HumanThug(p) != None) #var(prefix)HumanThug(p).PrintAlliances();
+        else if(#var(prefix)Robot(p) != None) #var(prefix)Robot(p).PrintAlliances();
+        else err("unknown pawn type "$p);
+#endif
+    }
 }
 
 function RandoEnemies(int percent, int hidden_percent)
 {
     // TODO: later when hidden_percent is well tested, we can get rid of it and _perc
-    local int i, _perc;
+    local int i, _perc, num_enemies, e, new_enemies, r;
     local ScriptedPawn p;
-    local ScriptedPawn n;
-    local ScriptedPawn newsp;
+    local ScriptedPawn enemies[128];
 
     l("RandoEnemies "$percent@hidden_percent@dxr.flags.settings.enemystats);
     if(percent <= 0 && hidden_percent <= 0 && dxr.flags.settings.enemystats <= 0)
@@ -178,43 +198,42 @@ function RandoEnemies(int percent, int hidden_percent)
 
     foreach AllActors(class'ScriptedPawn', p)
     {
-        if( p != None && p.bImportant ) continue;
 #ifdef gmdx
         if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) continue;
 #endif
-        RandomizeSize(p);
-    }
+        if(!p.bImportant) {
+            RandomizeSize(p);
+        }
 
-    foreach AllActors(class'ScriptedPawn', p)
-    {
-        if( p == newsp ) break;
-        if( IsCritter(p) ) continue;
-        //if( SkipActor(p, 'ScriptedPawn') ) continue;
-        //if( IsInitialEnemy(p) == False ) continue;
-#ifdef gmdx
-        if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) continue;
-#endif
-
+        if( !IsRelevantPawn(p.class) ) continue;
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
 
+        enemies[num_enemies++] = p;
+    }
+
+    for(e=0; e<num_enemies; e++)
+    {
+        p = enemies[e];
         if(p.bHasCloak) p.CloakThreshold = p.Health - 10;// make Anna and Walt cloak quickly
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
 
-        if( chance_single(_perc) ) RandomizeSP(p, _perc);
+        if( _perc>=100 || chance_single(_perc) ) RandomizeSP(p, _perc);
         CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
         if(p.bInvincible) continue;
         if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
-        if( chance_single(_perc) == false ) continue;
+        if( _perc < 100 && chance_single(_perc) == false ) continue;
 
-        for(i = rng(enemy_multiplier*100+_perc)/100; i >= 0; i--) {
-            n = RandomEnemy(p, _perc);
-            if( newsp == None ) newsp = n;
+        r = rng(enemy_multiplier*100+_perc);
+        for(i = r/100; i >= 0; i--) {
+            if(RandomEnemy(p, _perc) != None) new_enemies++;
         }
     }
+
+    l("RandoEnemies num_enemies == " $ num_enemies $ ", new_enemies == " $ new_enemies $ ", percent == " $ percent);
 }
 
 function int GetFactionId(ScriptedPawn p)
@@ -260,13 +279,13 @@ function RandomizeSP(ScriptedPawn p, int percent)
         p.BaseAccuracy = FClamp(p.BaseAccuracy, 0, 2);//ensure BaseAccuracy doesn't go below 0
     }
 
-    if(p.RaiseAlarm==RAISEALARM_BeforeAttacking && chance_single(dxr.flags.settings.enemystats)) {
+    if(p.RaiseAlarm==RAISEALARM_BeforeAttacking && !p.bIsSecretGoal && chance_single(dxr.flags.settings.enemystats)) {
         p.RaiseAlarm = RAISEALARM_BeforeFleeing;
     }
 
-    if( IsCritter(p) ) return; // only give random weapons to humans and robots
+    if( !IsHuman(p.class) && !IsCombatRobot(p.class) ) return; // only give random weapons to humans and robots
     // TODO: if p.bIsFemale then give only 1 handed weapons?
-    if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
+    if( p.IsA('MJ12Commando') || (!#defined(injections) && p.IsA('WIB')) ) return;
 
     if( IsHuman(p.class)) {
         if(!p.bImportant) {

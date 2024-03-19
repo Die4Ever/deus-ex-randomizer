@@ -3,68 +3,47 @@ class DXREvents extends DXREventsBase;
 
 function WatchActors()
 {
-    local #var(prefix)Lamp lamp;
-    local #var(prefix)BoneFemur femur;
-    local #var(prefix)BoneSkull skull;
-    local #var(prefix)Trophy trophy;
-    local #var(prefix)PoolTableLight poolLight;
-    local #var(prefix)HKMarketLight hangingLight;
-    local #var(prefix)ShopLight shopLight;
-    local #var(prefix)HangingShopLight hangShopLight;
-    local #var(prefix)SignFloor signFloor;
-    local #var(prefix)WaterCooler cooler;
-    local #var(prefix)WaterFountain fountain;
-    local #var(prefix)Chandelier chandelier;
-    local #var(prefix)HangingChicken chicken;
-    local #var(prefix)HKHangingPig pig;
-    local #var(prefix)BarrelVirus virus;
-    local #var(prefix)Mailbox mail;
-    local #var(prefix)CigaretteMachine cigVending;
-    local #var(prefix)Lightbulb bulb;
+    local #var(DeusExPrefix)Decoration d;
 
-    foreach AllActors(class'#var(prefix)Lamp',lamp){
-        AddWatchedActor(lamp,"LightVandalism");
+    foreach AllActors(class'#var(DeusExPrefix)Decoration', d) {
+        if( #var(prefix)Lamp(d) != None
+            || #var(prefix)PoolTableLight(d) != None
+            || #var(prefix)HKMarketLight(d) != None
+            || #var(prefix)ShopLight(d) != None
+            || #var(prefix)HangingShopLight(d) != None
+            || #var(prefix)Chandelier(d) != None
+            || #var(prefix)Lightbulb(d) != None
+            || #var(prefix)HKHangingLantern(d) != None
+            || #var(prefix)HKHangingLantern2(d) != None)
+        {
+            AddWatchedActor(d,"LightVandalism");
+        }
+        else if(#var(prefix)Trophy(d) != None)
+        {
+            AddWatchedActor(d,"TrophyHunter");
+        }
+        else if(#var(prefix)SignFloor(d) != None)
+        {
+            AddWatchedActor(d,"SlippingHazard");
+        }
+        else if(#var(prefix)HangingChicken(d) != None
+            || #var(prefix)HKHangingPig(d) != None)
+        {
+            AddWatchedActor(d,"BeatTheMeat");
+        }
+        else if(#var(prefix)BarrelVirus(d) != None)
+        {
+            AddWatchedActor(d,"WhyContainIt");
+        }
+        else if(#var(prefix)Mailbox(d) != None)
+        {
+            AddWatchedActor(d,"MailModels");
+        }
+        else if(#var(prefix)CigaretteMachine(d) != None)
+        {
+            AddWatchedActor(d,"SmokingKills");
+        }
     }
-    foreach AllActors(class'#var(prefix)PoolTableLight',poolLight){
-        AddWatchedActor(poolLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)HKMarketLight',hangingLight){
-        AddWatchedActor(hangingLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)ShopLight',shopLight){
-        AddWatchedActor(shopLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)HangingShopLight',hangShopLight){
-        AddWatchedActor(hangShopLight,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)Chandelier',chandelier){
-        AddWatchedActor(chandelier,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)Lightbulb',bulb){
-        AddWatchedActor(bulb,"LightVandalism");
-    }
-    foreach AllActors(class'#var(prefix)Trophy',trophy){
-        AddWatchedActor(trophy,"TrophyHunter");
-    }
-    foreach AllActors(class'#var(prefix)SignFloor',signFloor){
-        AddWatchedActor(signFloor,"SlippingHazard");
-    }
-    foreach AllActors(class'#var(prefix)HangingChicken',chicken){
-        AddWatchedActor(chicken,"BeatTheMeat");
-    }
-    foreach AllActors(class'#var(prefix)HKHangingPig',pig){
-        AddWatchedActor(pig,"BeatTheMeat");
-    }
-    foreach AllActors(class'#var(prefix)BarrelVirus',virus){
-        AddWatchedActor(virus,"WhyContainIt");
-    }
-    foreach AllActors(class'#var(prefix)Mailbox',mail){
-        AddWatchedActor(mail,"MailModels");
-    }
-    foreach AllActors(class'#var(prefix)CigaretteMachine',cigVending){
-        AddWatchedActor(cigVending,"SmokingKills");
-    }
-
 }
 
 function AddPhoneTriggers(bool isRevision)
@@ -308,6 +287,8 @@ function SetWatchFlags() {
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)Female2 f;
     local #var(prefix)Fan1 fan1;
+    local #var(prefix)Button1 button;
+    local Dispatcher disp;
     local int i;
 
     local bool RevisionMaps;
@@ -529,6 +510,10 @@ function SetWatchFlags() {
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
+        if(RevisionMaps){
+            WatchFlag('PlayPool');
+            InitPoolBalls();
+        }
         break;
     case "03_NYC_HANGAR":
         WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
@@ -999,6 +984,15 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
         break;
+    case "10_PARIS_ENTRANCE": //A Revision-only map that covers where you start in Paris and ends after the radioactive room (and the underground section right after it)
+        foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
+            if(jf.BindName == "aimee")
+                jf.bImportant = true;
+        }
+
+        bt = class'BingoTrigger'.static.Create(self,'roof_elevator',vect(0,0,0));
+
+        break;
     case "10_PARIS_CATACOMBS":
         WatchFlag('IcarusCalls_Played');
         foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
@@ -1316,8 +1310,24 @@ function SetWatchFlags() {
             dxm.Event = 'blast_door_flag';
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'power_dispatcher',vectm(0,0,0));
+        //Need to make sure this only triggers if you hit the button to actually power on the elevator
+        //(and not if hit by the new trigger added in DXRFixupM15 at the bottom of the elevator for backtracking)
+        disp = Spawn(class'Dispatcher',,'power_dispatcher_middle');
+        disp.OutEvents[0]='power_dispatcher';
+        disp.OutDelays[0]=0;
+        disp.OutEvents[1]='power_dispatcher_bingo';
+        disp.OutDelays[1]=0;
+
+        //call 'power_dispatcher' and 'power_dispatcher_bingo'
+        bt = class'BingoTrigger'.static.Create(self,'power_dispatcher_bingo',vectm(0,0,0));
         bt.bingoEvent = "Area51ElevatorPower";
+
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='power_dispatcher'){
+                button.Event = 'power_dispatcher_middle';
+                break;
+            }
+        }
 
         bt = class'BingoTrigger'.static.Create(self,'A51CommBuildingBasement',vectm(984,2788,-750),100,40);
 
@@ -1629,6 +1639,7 @@ function string RemapBingoEvent(string eventname)
             return "KnowsAnnasKillphrase";
         case "SecurityBot3_ClassDead":
         case "SecurityBot4_ClassDead":
+        case "DXRSecurityBot4_ClassDead":
             return "SecurityBotSmall_ClassDead";
         case "SpiderBot2_ClassDead":
             return "SpiderBot_ClassDead";
@@ -1703,6 +1714,7 @@ function string RemapBingoEvent(string eventname)
         case "DXRRepairBot_ClassDead":
             return "RepairBot_ClassDead";
         case "FrenchGray_ClassDead":
+        case "GrayBaby_ClassDead":
             return "Gray_ClassDead";
         case "LiquorBottle_Activated":
         case "Liquor40oz_Activated":
@@ -2242,11 +2254,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "MaySung_Dead":
             return "Kill May Sung, Maggie Chow's maid.";
         case "MostWarehouseTroopsDead":
-            return "Kill most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
+            return "Kill or knock out most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
         case "CleanerBot_ClassDead":
             return "Destroy enough cleaner bots.  Disabling them with EMP does not count.";
         case "MedicalBot_ClassDead":
-            return "Destroy enough medical bots.  Disabling them with EMP does not count.";
+            return "Destroy enough medical bots or aug bots.  Disabling them with EMP does not count.";
         case "RepairBot_ClassDead":
             return "Destroy enough repair bots.  Disabling them with EMP does not count.";
         case "DrugDealer_Dead":
@@ -2878,7 +2890,7 @@ defaultproperties
     bingo_options(77)=(event="support1",desc="Blow up a gas station",max=1,missions=4096)
     bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill %s UNATCO Troopers",max=15,missions=318)
     bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill %s NSF Terrorists",max=15,missions=62)
-    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=57204)
+    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=57188)
     bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",max=10,missions=56384)
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",max=5,missions=49248)
     bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy %s Military Bots",max=5,missions=24176)
@@ -2989,7 +3001,7 @@ defaultproperties
     bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",max=75)
     bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s Ballistic Armors",max=3,missions=57212)
     bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",max=15)
-    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=56832)
+    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=512)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",max=3,missions=54866)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",max=3,missions=55132)

@@ -28,6 +28,12 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Subway", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(-4819.345215,3478.138916,-304.225006), rot(0,0,0));
         AddActorLocation(loc, 1, vect(-4739.345215, 3578.138916, -306), rot(0,0,0));
+
+        if (dxr.flags.settings.starting_map > 32)
+        {
+            skip_rando_start = True;
+        }
+
         return 31;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
@@ -143,6 +149,12 @@ function int InitGoalsRev(int mission, string map)
 
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Subway", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(-4819.345215,3478.138916,-304.225006), rot(0,0,0));
         AddActorLocation(loc, 1, vect(-4739.345215, 3578.138916, -306), rot(0,0,0));
+
+        if (dxr.flags.settings.starting_map > 32)
+        {
+            skip_rando_start = True;
+        }
+
         return 31;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
@@ -291,6 +303,16 @@ function MissionTimer()
                 f.SetBool('Barrel3Checked', True,, 4);
             }
         }
+        break;
+    case "03_NYC_AIRFIELDHELIBASE":
+        UpdateGoalWithRandoInfo('FindAmbrosiaBarrels', "The Ambrosia could be anywhere in the helibase or airfield.");
+        break;
+    case "03_NYC_AIRFIELD":
+        UpdateGoalWithRandoInfo('LastBarrel747', "The last barrel of Ambrosia could be in the hangar or somewhere on the 747.");
+        break;
+    case "03_NYC_BROOKLYNBRIDGESTATION":
+        UpdateGoalWithRandoInfo('TalkToCharlie', "Charlie could be anywhere in the station");
+        UpdateGoalWithRandoInfo('KillDealer', "Rock could be anywhere in the station");
         break;
     }
 }

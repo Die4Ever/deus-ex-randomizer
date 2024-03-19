@@ -364,7 +364,11 @@ function BingoWinScreen()
     p = player();
     if ( Level.Netmode == NM_Standalone ) {
         //Make it harder to get murdered during the countdown
-        Level.Game.SetGameSpeed(0.1);
+        //For whatever reason, you can set the game speed in Revision,
+        //but it doesn't stick.  Just don't bother.
+        if (!#defined(revision)){
+            Level.Game.SetGameSpeed(0.1);
+        }
         SetTimer(Level.Game.GameSpeed, true);
     }
     p.ReducedDamageType = 'All';// god mode
@@ -397,6 +401,9 @@ function HandleBingoWinCountdown()
 {
     //Blocked in HX for now (Blocked at the check, but here for safety as well)
     if(#defined(hx)) return;
+
+    //Only do the countdown while outside of menus
+    if (!InGame() && (DXRBigMessage(DeusExRootWindow(player().rootWindow).GetTopWindow()) == None)) return;
 
     if (bingo_win_countdown > 0) {
         BingoWinScreen();
@@ -661,12 +668,13 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
-            if (!isInitialPlayerEnemy(victim) && !IsCritter(victim) &&  //Must have not been an enemy initially
-                 (dxr.localURL!="04_NYC_NSFHQ" || (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False)) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
-                 ){
+            if (
+                !isInitialPlayerEnemy(victim) && //Must have not been an enemy initially
+                IsHuman(victim.class) && //There's no such thing as an innocent Cat
+                ( dxr.localURL!="04_NYC_NSFHQ" || dxr.flagbase.GetBool('NSFSignalSent')==False ) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
+            ) {
                 _MarkBingo("AlliesKilled");
             }
-
         }
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
@@ -748,6 +756,11 @@ static function BeatGame(DXRando dxr, int ending)
     local string j;
     local class<Json> js;
     js = class'Json';
+
+    // Mark the rando as having been beaten, affects dialogs on the new game menu.
+    dxr.rando_beaten = Max(1, dxr.rando_beaten + 1);
+    dxr.rando_beaten = Min(2000000000, dxr.rando_beaten);// Make sure you can beat the game over 2 billion times without overflow issues.
+    dxr.SaveConfig();
 
     stats = DXRStats(dxr.FindModule(class'DXRStats'));
 

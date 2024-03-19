@@ -38,6 +38,7 @@ function CreateChoices()
     if(#defined(vanilla)) {
         CreateChoice(class'MenuChoice_AutosaveCombat');
         CreateChoice(class'MenuChoice_EnergyDisplay');
+        CreateChoice(class'MenuChoice_AutoAugs');
         CreateChoice(class'MenuChoice_ShowKeys');
         CreateChoice(class'MenuChoice_ThrowMelee');
         CreateChoice(class'MenuChoice_AutoWeaponMods');

@@ -199,7 +199,7 @@ function SetVisibility( bool bNewVisibility )
 
 function bool IsDisabled()
 {
-    return bool(player.ConsoleCommand("get #var(package).MenuChoice_EnergyDisplay bEnergyDisplayHidden"));
+    return class'MenuChoice_EnergyDisplay'.default.bEnergyDisplayHidden;
 }
 
 // ----------------------------------------------------------------------

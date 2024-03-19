@@ -1,10 +1,23 @@
 class DXRMenuSelectDifficulty extends DXRMenuBase;
 
+var string MaxRandoBtnTitle, MaxRandoBtnMessage;
+var string AdvancedBtnTitle, AdvancedBtnMessage;
+var string ExtremeBtnTitle, ExtremeBtnMessage;
+var string ImpossibleBtnTitle, ImpossibleBtnMessage;
+
+enum ERandoMessageBoxModes
+{
+    RMB_MaxRando,
+    RMB_Advanced,
+    RMB_Difficulty,// choosing Extreme or Impossible
+};
+var ERandoMessageBoxModes nextScreenNum;
+
 event InitWindow()
 {
     Super.InitWindow();
-    InitDxr();
-    Init(InitDxr());
+    GetDxr();
+    Init(GetDxr());
 }
 
 function BindControls(optional string action)
@@ -21,7 +34,7 @@ function BindControls(optional string action)
     local bool mirrored_maps_files_found;
 #endif
 
-    f = InitFlags();
+    f = GetFlags();
 
     NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<20; i++) {
@@ -31,7 +44,7 @@ function BindControls(optional string action)
             EnumOption(ts, temp, f.gamemode);
     }
 
-    NewMenuItem("", "Which items and augs you start with and which are banned.");
+    NewMenuItem("Loadout", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
     if( loadout == None )
         EnumOption("All Items Allowed", 0, f.loadout);
@@ -109,7 +122,7 @@ function BindControls(optional string action)
     }
 #endif
 
-    NewMenuItem("Seed", "Enter a seed if you want to play the same game again.");
+    NewMenuItem("Seed", "Enter a seed if you want to play the same game again. Leave it blank for a random seed.");
     sseed = EditBox("", "1234567890");
     if( sseed != "" ) {
         f.seed = int(sseed);
@@ -120,22 +133,109 @@ function BindControls(optional string action)
     }
 
     if(writing) {
-#ifndef hx
-        // we write the difficulty and gamemode after setting the seed, TODO: menus for HX?
-        difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
-#endif
-        if( action == "ADVANCED" ) NewGameSetup(difficulty);
-        else if( action == "MAXRANDO" ) {
-            f.ExecMaxRando();
-            _InvokeNewGameScreen(difficulty, InitDxr());
+        // need to call flags.SetDifficulty to apply the game mode's and difficulty's settings, after setting the seed and before going to the next screen
+        f.SetDifficulty(f.difficulty);
+        if( action == "ADVANCED" ) {
+            HandleAdvancedButton();
         }
-        else _InvokeNewGameScreen(difficulty, InitDxr());
+        else if( action == "MAXRANDO" ) {
+            HandleMaxRandoButton();
+        }
+        else {
+            HandleNewGameButton();
+        }
     }
 }
 
-function InvokeNewGameScreen(float difficulty)
+function HandleNewGameButton()
 {
-    _InvokeNewGameScreen(difficulty, InitDxr());
+    local DXRFlags f;
+    f = GetFlags();
+
+    if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Extreme") {
+        nextScreenNum=RMB_Difficulty;
+        root.MessageBox(ExtremeBtnTitle,ExtremeBtnMessage,0,False,Self);
+    }
+    else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Impossible") {
+        nextScreenNum=RMB_Difficulty;
+        root.MessageBox(ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
+    }
+    else {
+        DoNewGameScreen();
+    }
+}
+
+function DoNewGameScreen()
+{
+    local float difficulty;
+    local DXRFlags f;
+    f = GetFlags();
+#ifndef hx
+        // TODO: menus for HX?
+        difficulty = f.settings.CombatDifficulty;
+#endif
+
+    _InvokeNewGameScreen(difficulty);
+}
+
+function HandleMaxRandoButton()
+{
+    if (dxr.rando_beaten != 0){
+        DoMaxRandoButtonConfirm();
+    } else {
+        nextScreenNum=RMB_MaxRando;
+        root.MessageBox(MaxRandoBtnTitle,MaxRandoBtnMessage,0,False,Self);
+    }
+}
+
+function DoMaxRandoButtonConfirm()
+{
+    local DXRFlags f;
+    f = GetFlags();
+    f.ExecMaxRando();
+    DoNewGameScreen();
+}
+
+function HandleAdvancedButton()
+{
+    if (dxr.rando_beaten != 0){
+        DoAdvancedButtonConfirm();
+    } else {
+        nextScreenNum=RMB_Advanced;
+        root.MessageBox(AdvancedBtnTitle,AdvancedBtnMessage,0,False,Self);
+    }
+}
+
+function DoAdvancedButtonConfirm()
+{
+#ifndef hx
+    NewGameSetup(GetFlags().settings.CombatDifficulty);
+#endif
+}
+
+event bool BoxOptionSelected(Window button, int buttonNumber)
+{
+    root.PopWindow();
+
+    switch (nextScreenNum){
+        case RMB_MaxRando:
+            if (buttonNumber==0){
+                DoMaxRandoButtonConfirm();
+            }
+            return true;
+        case RMB_Advanced:
+            if (buttonNumber==0){
+                DoAdvancedButtonConfirm();
+            }
+            return true;
+        case RMB_Difficulty:
+            if (buttonNumber==0){
+                DoNewGameScreen();
+            }
+            return true;
+    }
+
+    return Super.BoxOptionSelected(button,buttonNumber);
 }
 
 event DestroyWindow()
@@ -166,9 +266,17 @@ defaultproperties
     bEscapeSavesSettings=False
     num_rows=9
     num_cols=2
-    col_width_odd=160
-    col_width_even=240
+    col_width_odd=140
+    col_width_even=260
     row_height=20
     padding_width=20
     padding_height=10
+    MaxRandoBtnTitle="Are you sure?"
+    MaxRandoBtnMessage="It appears you're new to DX Randomizer.  Max Rando will randomize all the settings, which will likely result in a bad first time experience.  Are you sure you want to proceed?"
+    AdvancedBtnTitle="Advanced Settings?"
+    AdvancedBtnMessage="It appears you're new to DX Randomizer.  We recommend playing with default settings for a better first time experience.  Are you sure you want to adjust advanced settings?"
+    ExtremeBtnTitle="Extreme Difficulty?"
+    ExtremeBtnMessage="It appears you're new to DX Randomizer.  Extreme difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
+    ImpossibleBtnTitle="Impossible Difficulty?"
+    ImpossibleBtnMessage="It appears you're new to DX Randomizer.  Impossible difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
 }

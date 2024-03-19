@@ -9,3 +9,9 @@ function UpdateObjectText(int pos)
         if(objects[i] != None) objects[i].UpdateItemText();
     }
 }
+
+event DrawWindow(GC gc)
+{
+    Super.DrawWindow(gc);
+    UpdateObjectText(0); //Make sure ammo counts are updated
+}

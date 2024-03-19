@@ -38,7 +38,11 @@ function int InitGoals(int mission, string map)
 
         AddGoalLocation("05_NYC_UNATCOHQ", "Jail", NORMAL_GOAL, vect(-2478.156738, -1123.645874, -16.399887), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(121.921074, 287.711243, 39.599487), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
+        if (IsAprilFools()){
+            AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL | SITTING_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
+        } else {
+            AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
+        }
         AddGoalLocation("05_NYC_UNATCOHQ", "Break Room", NORMAL_GOAL, vect(718.820068, 1411.137451, 287.598999), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "West Office", NORMAL_GOAL, vect(-666.268066, -460.813965, 463.598083), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Computer Ops", NORMAL_GOAL | VANILLA_GOAL, vect(2001.611206,-801.088379,-16.225000), rot(0,23776,0));
@@ -157,7 +161,7 @@ function AfterShuffleGoals(int goalsToLocations[32])
             SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
         }
 
-    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){ 
+    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){
         //For some reason shuffling Paul's body stops it from being destroyed by the mission script
         if (!player().flagbase.GetBool('PaulDenton_Dead')){
             foreach AllActors(class'PaulDentonCarcass',paulbody){
@@ -291,5 +295,15 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         if(passwords != None) {// 05_Datacube03.txt
             passwords.ReplacePassword("the patient has been moved to the Surgery Ward", "the patient has been moved to the "$Loc.name);
         }
+    }
+}
+
+function MissionTimer()
+{
+    switch(dxr.localURL) {
+    case "05_NYC_UNATCOMJ12LAB":
+        UpdateGoalWithRandoInfo('FindPaul', "Paul could be located anywhere in the lab.  A security computer in the command center will be connected to a camera monitoring him.");
+        UpdateGoalWithRandoInfo('FindEquipment', "Your equipment could be in either the armory or the surgery bay.");
+        break;
     }
 }

@@ -70,7 +70,11 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 1, vect(488.291809, -2581.964355, -336.402618), rot(0,32620,0));
         AddActorLocation(loc, 2, vect(484.913330,-2345.247559,-336.401306), rot(0,32620,0));
 
-        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1,vect(-1725.911133,-565.364746,-339),rot(0,16368,0));
+        if (IsAprilFools()){
+            loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1 | SITTING_GOAL,vect(-1561,-671,-339),rot(0,16368,0));
+        } else {
+            loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1,vect(-1725.911133,-565.364746,-339),rot(0,16368,0));
+        }
         AddActorLocation(loc, 1, vect(-1794.911133,-572.364746,-339), rot(0,16368,0));
         AddActorLocation(loc, 2, vect(-1658.911133,-568.364746,-339), rot(0,16368,0));
 
@@ -181,10 +185,11 @@ function MissionTimer()
 
     switch(dxr.localURL) {
     case "06_HONGKONG_WANCHAI_MARKET":
-        if(dxr.flags.settings.goals > 0)
-            UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
+        UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
         break;
     case "06_HONGKONG_TONGBASE":
+        UpdateGoalWithRandoInfo('GetROM', "The computer with the ROM-encoding could be anywhere in the lab.");
+
         //Immediately start M08Briefing after M07Briefing, if possible
         ready_for_m08 = !M08Briefing && dxr.flagbase.GetBool('M07Briefing_played') && !dxr.flagbase.GetBool('M08Briefing_played');
         ready_for_m08 = ready_for_m08 && dxr.flagbase.GetBool('TriadCeremony_Played') && dxr.flagbase.GetBool('VL_UC_Destroyed') && dxr.flagbase.GetBool('VL_Got_Schematic');
@@ -205,6 +210,10 @@ function MissionTimer()
         }
         break;
     }
+
+    //Rando can give you this goal in a bunch of maps (Tonnochi Road, Canal, Market, Lucky Money)
+    //just update it whenever
+    UpdateGoalWithRandoInfo('ConvinceRedArrow', "Max Chen could be anywhere in the Lucky Money.");
 }
 
 function DeleteGoal(Goal g, GoalLocation Loc)

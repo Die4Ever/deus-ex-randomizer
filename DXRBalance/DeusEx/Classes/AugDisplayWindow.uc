@@ -215,41 +215,50 @@ function DrawBlinder(GC gc, Actor A)
     }
 }
 
-function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitLocation)
+function Actor TraceHoverHint(float checkDist)
 {
-	local Actor target;
-	local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+    local Actor target;
+    local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+    local DXRHoverHint hoverHint;
+    local float dist;
 
-	target = None;
+    target = None;
 
-	// figure out how far ahead we should trace
-	StartTrace = Player.Location;
-	EndTrace = Player.Location + (Vector(Player.ViewRotation) * checkDist);
+    // figure out how far ahead we should trace
+    StartTrace = Player.Location;
+    EndTrace = Player.Location + (Vector(Player.ViewRotation) * checkDist);
 
-	// adjust for the eye height
-	StartTrace.Z += Player.BaseEyeHeight;
-	EndTrace.Z += Player.BaseEyeHeight;
+    // adjust for the eye height
+    StartTrace.Z += Player.BaseEyeHeight;
+    EndTrace.Z += Player.BaseEyeHeight;
 
-	// find the object that we are looking at
-	foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace){
+    // find the object that we are looking at
+    foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace){
         if (target == Player.CarriedDecoration){
            continue;
         } else if (Player.IsFrobbable(target)){
             return None;
-        } else if (target.bHidden){
+        } else if (DXRHoverHint(target) != None){
+            hoverHint = DXRHoverHint(target);
+            if (hoverHint.ShouldSelfDestruct()){
+                hoverHint.Destroy();
+                continue;
+            }
+            dist = VSize(player.Location-hoverHint.Location);
+            if (hoverHint.ShouldDisplay(dist)==False){
+                continue;
+            }
+            break;
+        } else if (Teleporter(target) != None && !target.bHidden) {
+            break;
+        } else if (target.bHidden) {
             continue;
         } else {
             break;
         }
     }
 
-    if (#var(prefix)Teleporter(target)!=None)
-    {
-        HitLocation = HitLoc;
-        return #var(prefix)Teleporter(target);
-    }
-
-	return None;
+    return target;
 }
 
 function string formatMapName(string mapName)
@@ -282,12 +291,13 @@ function string formatMapName(string mapName)
 function DrawTargetAugmentation(GC gc)
 {
     local Weapon oldWeapon;
+    local Actor target;
     local #var(prefix)Teleporter tgtTeleporter;
+    local DXRHoverHint hoverHint;
     local vector AimLocation;
     local string str,teleDest;
     local float x,y,h,w, boxCX,boxCY;
     local DynamicTeleporter dynTele;
-    local int show_teleporters;
 
     gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
 
@@ -298,9 +308,9 @@ function DrawTargetAugmentation(GC gc)
     Player.Weapon = oldWeapon;
 
     // check 500 feet in front of the player
-    show_teleporters = int(Player.ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
-    if(show_teleporters > 1) {
-	    tgtTeleporter = TraceTeleporter(8000,AimLocation);
+    target = TraceHoverHint(8000);
+    if(class'MenuChoice_ShowTeleporters'.default.show_teleporters > 1) {
+	    tgtTeleporter = #var(prefix)Teleporter(target);
     }
 
     // display teleporter destinations
@@ -326,6 +336,20 @@ function DrawTargetAugmentation(GC gc)
 
         gc.DrawText(x, y, w, h, str);
 	}
+
+    //Look for any hover hints
+    hoverHint = DXRHoverHint(target);
+    if (hoverHint!=None){
+        ConvertVectorToCoordinates(hoverHint.Location, boxCX, boxCY);
+
+        str = hoverHint.GetHintText();
+        gc.SetTextColor(colWhite);
+        gc.GetTextExtent(0, w, h, str);
+        x = boxCX - w/2;
+        y=boxCY;
+
+        gc.DrawText(x, y, w, h, str);
+    }
 
     //Font is immediately changed after DrawTargetAugmentation gets called,
     //So not necessary to "change it back" to the old font

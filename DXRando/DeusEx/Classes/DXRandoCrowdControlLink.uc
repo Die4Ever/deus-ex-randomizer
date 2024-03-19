@@ -135,7 +135,7 @@ function int RandomOfflineEffects() {
     viewer = "Simulated Crowd Control";
     param[0] = "1";
 
-    switch(Rand(82)) {
+    switch(Rand(91)) {
     case 0: if(Rand(2)==0){ return 0; } else { return ccEffects.doCrowdControlEvent("poison", param, viewer, 0, 0); }
     case 1: return ccEffects.doCrowdControlEvent("glass_legs", param, viewer, 0, 0);
     case 2: param[0] = string(Rand(20)); return ccEffects.doCrowdControlEvent("give_health", param, viewer, 0, 0);
@@ -268,7 +268,19 @@ function int RandomOfflineEffects() {
     case 79: return ccEffects.doCrowdControlEvent("spawnenemy_doberman", param, viewer, 0, 0);
     case 80: return ccEffects.doCrowdControlEvent("spawnenemy_greasel", param, viewer, 0, 0);
     case 81: return ccEffects.doCrowdControlEvent("nasty_rat", param, viewer, 0, 0);
-
+    case 82: return ccEffects.doCrowdControlEvent("drop_piano", param, viewer, 0, 0);
+    case 83: return ccEffects.doCrowdControlEvent("swap_enemies", param, viewer, 0, 0);
+    case 84: return ccEffects.doCrowdControlEvent("swap_items", param, viewer, 0, 0);
+    case 85: return ccEffects.doCrowdControlEvent("toggle_flashlight", param, viewer, 0, 0);
+    case 86: return ccEffects.doCrowdControlEvent("giveenemyweapon_weaponlaw", param, viewer, 0, 0);
+    case 87: return ccEffects.doCrowdControlEvent("giveenemyweapon_weaponhideagun", param, viewer, 0, 0);
+    case 88: return ccEffects.doCrowdControlEvent("heal_all_enemies", param, viewer, 0, 0);
+    case 89: return ccEffects.doCrowdControlEvent("corpse_explosion", param, viewer, 0, 0);
+#ifdef vanilla
+    case 90: return ccEffects.doCrowdControlEvent("resident_evil", param, viewer, 0, 0);
+    case 91: return ccEffects.doCrowdControlEvent("doom_mode", param, viewer, 0, 0);
+#endif
+    case 92: return ccEffects.doCrowdControlEvent("raise_dead", param, viewer, 0, 0);
     }
 
     return 0;
@@ -284,16 +296,19 @@ function bool isCrowdControl(string msg) {
         return False;
     }
 
-    //code field
-    if (InStr(msg,"code")==-1){
-        //PlayerMessage("Doesn't have code");
+    //type field
+    if (InStr(msg,"type")==-1){
+        //PlayerMessage("Doesn't have type");
         return False;
     }
-    //viewer field
-    if (InStr(msg,"viewer")==-1){
-        //PlayerMessage("Doesn't have viewer");
-        return False;
-    }
+
+    //viewer field not present in stop messages
+    //if (InStr(msg,"viewer")==-1){
+    //    //PlayerMessage("Doesn't have viewer");
+    //    return False;
+    //}
+
+    //Code field is optional - not present for a "stop all" ("stop" type, no code)
 
     return True;
 }
@@ -390,11 +405,7 @@ function handleMessage(string msg) {
         if (anon) {
             viewer = "Crowd Control";
         }
-        result = ccEffects.doCrowdControlEvent(code,param,viewer,type,duration);
-
-        if (result == Success) {
-            ccModule.IncHandledEffects();
-        }
+        result = ccEffects.BranchCrowdControlType(code,param,viewer,type,duration);
 
         sendReply(id,result);
 

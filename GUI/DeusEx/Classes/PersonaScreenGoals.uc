@@ -23,7 +23,7 @@ function CreateControls()
     //It's free real estate!
     //Instead, use the state from MenuChoice_ConfirmNoteDelete instead
     chkConfirmNoteDeletion.Hide();
-    bConfirmNoteDeletes = bool(player.ConsoleCommand("get MenuChoice_ConfirmNoteDelete enabled"));
+    bConfirmNoteDeletes = class'MenuChoice_ConfirmNoteDelete'.default.enabled;
 
     btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnBingo.SetButtonText("|&Bingo");
@@ -159,6 +159,7 @@ function PopulateSpoilers()
     actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
     actorDisplay.SetViewClass(class'DXRGoalMarker');
     actorDisplay.ShowLOS(false);
+    actorDisplay.ShowPos(false);
     if(!#defined(injections))
         actorDisplay.ShowBindName(true);
 }
@@ -213,6 +214,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
             actorDisplay.ShowLOS(false);
+            actorDisplay.ShowPos(false);
 #ifdef injections
             actorDisplay.bUserFriendlyNames = true;
 #endif
@@ -230,6 +232,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
             actorDisplay.ShowLOS(false);
+            actorDisplay.ShowPos(false);
 #ifdef injections
             actorDisplay.bUserFriendlyNames = true;
 #endif

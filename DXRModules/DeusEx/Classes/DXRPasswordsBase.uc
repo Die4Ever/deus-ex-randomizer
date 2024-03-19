@@ -220,7 +220,7 @@ function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando)
 
     if( Len(oldpassword) < 2 ) return;
     if(rando)
-        newpassword = GeneratePassword(dxr, oldpassword);
+        newpassword = GeneratePassword(oldpassword);
     else
         newpassword = oldpassword;
     c.userList[i].password = newpassword;
@@ -528,20 +528,20 @@ simulated function HXUpdateNote(Name textTag, string newText, string TextPackage
 }
 
 
-static function string GeneratePassword(DXRando dxr, string oldpassword)
+simulated function string GeneratePassword(string oldpassword)
 {
     local string out;
     local int i;
     local int c;
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(Caps(oldpassword)) );
+    oldseed = SetGlobalSeed(Caps(oldpassword));
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
-        c = staticrng(dxr, 36) + 48;
+        c = rng(36) + 48;
         if ( c > 57 ) c += 39;
         out = out $ Chr(c);
     }
-    dxr.SetSeed(oldseed);
+    ReapplySeed(oldseed);
     return out;
 }
 
@@ -563,7 +563,7 @@ function string GeneratePasscode(string oldpasscode)
 
     oldseed = SetGlobalSeed(oldpasscode);//manually set the seed to avoid using the level name in the seed
     newpasscode = rng(maximum) $ "";
-    dxr.SetSeed(oldseed);
+    ReapplySeed(oldseed);
 
     //If the new passcode is shorter than the old one, we need to add some leading zeroes until it matches
     while (Len(newpasscode) < oldpasslength) {
@@ -681,7 +681,7 @@ function RunTests()
     testint( PassInStr("password is captain.", "captain"), 12, "yes password period");
     testint( PassInStr("password is \"captain\"", "captain"), 13, "yes password quotes");
 
-    teststring( GeneratePassword(dxr, "CAPTain"), GeneratePassword(dxr, "captain"), "GeneratePassword is case insensitive");
+    teststring( GeneratePassword("CAPTain"), GeneratePassword("captain"), "GeneratePassword is case insensitive");
 
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;

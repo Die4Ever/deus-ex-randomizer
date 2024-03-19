@@ -9,8 +9,13 @@ var DXRNews news;
 #ifdef injections
 function UpdateButtonStatus()
 {
+    local bool allowSave;
+    allowSave = class'DXRAutosave'.static.AllowManualSaves(player);// this also fast forwards the infolink, so call it first
+
     Super.UpdateButtonStatus();
-    if( ! class'DXRAutosave'.static.AllowManualSaves(player) ) winButtons[1].SetSensitivity(False);
+
+    // check if DXRAutosave disallows us from saving now
+    if( !allowSave ) winButtons[1].SetSensitivity(False);
 }
 #endif
 
@@ -104,4 +109,10 @@ function bool ButtonActivated( Window buttonPressed )
     }
 
     return bHandled;
+}
+
+defaultproperties
+{
+    AskToTrainTitle="Rando Training Mission"
+    AskToTrainMessage="Before starting DX Randomizer for the first time, we suggest running through the Rando Training Mission.  Would you like to do this now?"
 }

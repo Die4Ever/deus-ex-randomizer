@@ -32,6 +32,24 @@ function SwapItems(Pawn a, Pawn b)
     }
 }
 
+function MergeAlliances(ScriptedPawn a, ScriptedPawn b)
+{
+    local int i;
+
+    b.ChangeAlly(a.Alliance, 1, true);
+    b.ChangeAlly(b.Alliance, 1, true);
+    a.ChangeAlly(a.Alliance, 1, true);
+    a.ChangeAlly(b.Alliance, 1, true);
+    for(i=0; i<ArrayCount(a.InitialAlliances); i++ )
+    {
+        if(a.InitialAlliances[i].AllianceName != '' && a.InitialAlliances[i].AllianceLevel > 0) {
+            b.ChangeAlly(a.InitialAlliances[i].AllianceName, a.InitialAlliances[i].AllianceLevel, a.InitialAlliances[i].bPermanent);
+        }
+        if(b.InitialAlliances[i].AllianceName != '' && b.InitialAlliances[i].AllianceLevel > 0) {
+            a.ChangeAlly(b.InitialAlliances[i].AllianceName, b.InitialAlliances[i].AllianceLevel, b.InitialAlliances[i].bPermanent);
+        }
+    }
+}
 
 function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 {
@@ -41,9 +59,20 @@ function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 
 function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
     // always ok to swap with a placeholder enemy
-    if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
+    if((PlaceholderEnemy(a) != None && a.Alliance=='') || (PlaceholderEnemy(b) != None && b.Alliance=='')) return true;
     // otherwise check alliance
-    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile && b.GetAllianceType( a.Alliance ) != ALLIANCE_Hostile;
+    return a.GetAllianceType( b.Alliance ) == ALLIANCE_Friendly && b.GetAllianceType( a.Alliance ) == ALLIANCE_Friendly;
+}
+
+function bool CanSit(ScriptedPawn sp)
+{
+    if (#var(prefix)MJ12Commando(sp) != None) return False;
+    if (#var(prefix)SpiderBot2(sp) != None) return True; //Small spiderbots are very funny in chairs
+    if (#var(prefix)Robot(sp) != None) return False; //Normal robots are lame in chairs
+    if (#var(prefix)ChildMale(sp) != None) return False; //Kids don't have sitting animations
+    if (#var(prefix)ChildMale2(sp) != None) return False; //(They probably aren't getting shuffled, but might as well note it)
+    //Animals don't have any special sitting animations, but are very funny also
+    return True;
 }
 
 function SwapScriptedPawns(int percent, bool enemies)
@@ -56,6 +85,11 @@ function SwapScriptedPawns(int percent, bool enemies)
 
     num=0;
     switch(dxr.localURL) {
+    case "04_NYC_NSFHQ":
+        if(enemies)
+            SwapScriptedPawns(percent, false);
+        break;
+
     case "06_HONGKONG_MJ12LAB":
         if(enemies)
             SwapScriptedPawns(percent, false);
@@ -81,7 +115,7 @@ function SwapScriptedPawns(int percent, bool enemies)
     {
         if( a.bHidden || a.bStatic ) continue;
         if( a.bImportant || a.bIsSecretGoal ) continue;
-        if( IsCritter(a) ) continue;
+        if( !IsRelevantPawn(a.class) ) continue;
         if( IsInitialEnemy(a) != enemies ) continue;
         if( !chance_single(percent) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
@@ -128,13 +162,14 @@ function SwapScriptedPawns(int percent, bool enemies)
         SwapProperty(temp[i], temp[slot], "HomeExtent");
         SwapProperty(temp[i], temp[slot], "bUseHome");
         SwapProperty(temp[i], temp[slot], "RaiseAlarm");
+        MergeAlliances(temp[i], temp[slot]);
 
         SwapOrders(temp[i], temp[slot]);
     }
 
     for(i=0; i<num; i++) {
         a = temp[i];
-        if(#var(prefix)MJ12Commando(a) != None && a.Orders=='Sitting') {
+        if(a.Orders=='Sitting' && !CanSit(a)) {
             a.Orders='Standing';
             a.OrderTag='';
         }

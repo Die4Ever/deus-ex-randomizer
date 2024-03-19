@@ -22,7 +22,7 @@ function CheckConfig()
         save_delay = 0.1;
     }
     Super.CheckConfig();
-    autosave_combat = int(ConsoleCommand("get #var(package).MenuChoice_AutosaveCombat autosave_combat"));
+    autosave_combat = class'MenuChoice_AutosaveCombat'.default.autosave_combat;
 }
 
 function BeginPlay()
@@ -35,6 +35,7 @@ function PreFirstEntry()
 {
     Super.PreFirstEntry();
     l("PreFirstEntry() " $ dxr.dxInfo.MissionNumber);
+    if(dxr.flags.IsHordeMode()) return;
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         NeedSave();
     }
@@ -44,6 +45,7 @@ function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
+    if(dxr.flags.IsHordeMode()) return;
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave>=EveryEntry && dxr.flags.autosave != Hardcore && IsTravel ) {
         NeedSave();
     }
@@ -145,6 +147,11 @@ static function bool AllowManualSaves(DeusExPlayer player)
     if( f == None ) return true;
     if( f.autosave == Hardcore ) return false;
     if( f.IsHordeMode() ) return false;
+
+    if(player.dataLinkPlay != None) {
+        player.dataLinkPlay.FastForward();
+    }
+
     return true;
 }
 

@@ -5,6 +5,8 @@ var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
 var transient string nextMap;
+var laserEmitter aimLaser;
+var bool bDoomMode;
 
 var Rotator ShakeRotator;
 
@@ -29,6 +31,42 @@ function PlayerMove( float DeltaTime )
     log("ERROR: "$Self$".PlayerMove("$DeltaTime$"), state: "$GetStateName());
     ClientMessage("ERROR: "$Self$".PlayerMove("$DeltaTime$"), state: "$GetStateName());
     GotoState('PlayerWalking');
+}
+
+event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation )
+{
+    local CCResidentEvilCam reCam;
+
+    reCam = CCResidentEvilCam(ViewTarget);
+
+    if (reCam!=None){
+        CameraRotation = reCam.Rotation;
+        CameraLocation = reCam.Location;
+        return;
+    } else {
+        Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+        if (bDoomMode){
+            CameraRotation.Pitch=0;
+            ViewRotation.Pitch=0;
+        }
+    }
+}
+
+function CalcBehindView(out vector CameraLocation, out rotator CameraRotation, float Dist)
+{
+    local vector View,HitLocation,HitNormal;
+    local float ViewDist;
+
+    Dist = Dist/1.25; //Bring the camera in a bit closer than normal
+
+    CameraRotation = ViewRotation;
+    CameraLocation.Z+=BaseEyeHeight; //Adjust camera center to eye height
+    View = vect(1,-0.2,0) >> CameraRotation; //Slightly offset the view to the right (so it's over the shoulder)
+    if( Trace( HitLocation, HitNormal, CameraLocation - (Dist + 30) * vector(CameraRotation), CameraLocation ) != None )
+        ViewDist = FMin( (CameraLocation - HitLocation) Dot View, Dist );
+    else
+        ViewDist = Dist;
+    CameraLocation -= (ViewDist - 30) * View;
 }
 
 event ClientTravel( string URL, ETravelType TravelType, bool bItems )
@@ -138,8 +176,8 @@ exec function QuickSave()
         info = GetLevelInfo();
 
         //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
-        if (((info != None) && (info.MissionNumber < 0)) || 
-            ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) || 
+        if (((info != None) && (info.MissionNumber < 0)) ||
+            ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
             (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
         {
             ClientMessage("Cannot quick save during infolink!",, true);
@@ -171,14 +209,14 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 
     //Try to apply the mod being picked up to the currently held weapon
     //Does not happen in Zero Rando
-    if (!dxr.flags.IsZeroRando() && bool(ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"))){
+    if (!dxr.flags.IsZeroRando() && class'MenuChoice_AutoWeaponMods'.default.enabled){
         mod = #var(prefix)WeaponMod(FrobTarget);
         weap = #var(DeusExPrefix)Weapon(inHand);
         if (mod!=None && weap!=None){
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
-                if (mod.IsA('WeaponModLaser') && bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+                if (mod.IsA('WeaponModLaser') && class'MenuChoice_AutoLaser'.default.enabled){
                     weap.LaserOn();
                 }
                 mod.DestroyMod();
@@ -484,6 +522,33 @@ exec function ParseLeftClick()
     }
 }
 
+exec function ParseRightClick()
+{
+    local bool handled;
+    local #var(DeusExPrefix)Mover dxm;
+    handled=False;
+
+    if (RestrictInput())
+        return;
+
+    if (#var(DeusExPrefix)Mover(FrobTarget) != None){ //If it's a door...
+        dxm=#var(DeusExPrefix)Mover(FrobTarget);
+        //That is locked and you have the key
+        if (dxm.bLocked && dxm.KeyIDNeeded != '' && KeyRing.HasKey(dxm.KeyIDNeeded)){
+            //And you aren't carrying anything
+            if (CarriedDecoration==None){
+                handled=True;
+                PutInHand(KeyRing);
+                UpdateInHand();
+            }
+        }
+    }
+
+    if (!handled){
+        Super.ParseRightClick();
+    }
+}
+
 //A whole lot of copy paste just to add one "if (bDrop)" check to change the dropVect
 exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 {
@@ -747,8 +812,59 @@ function bool IsHighlighted(actor A)
     wasBehind = bBehindView;
     bBehindView = False;
     highlight = Super.IsHighlighted(A);
+    if (LaserTrigger(A)!=None || BeamTrigger(A)!=None){
+        highlight=True;
+    }
     bBehindView = wasBehind;
     return highlight;
+}
+
+function bool IsFrobbable(actor A)
+{
+    if (!A.bHidden)
+        if (A.IsA('BeamTrigger') || A.IsA('LaserTrigger'))
+            return True;
+
+    return Super.IsFrobbable(A);
+}
+
+function HighlightCenterObject()
+{
+    local CCResidentEvilCam reCam;
+	local Vector loc;
+
+    Super.HighlightCenterObject();
+
+
+    reCam = CCResidentEvilCam(ViewTarget);
+
+    //Activate the aim laser any time you aren't seeing through your eyes
+    if (reCam!=None || bBehindView){
+        if (aimLaser==None){
+            aimLaser = Spawn(class'LaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
+            if (aimLaser != None) {
+                aimLaser.SetHiddenBeam(False);
+                aimLaser.AmbientSound = None;
+                aimLaser.SetBlueBeam();
+            } else {
+                ClientMessage("Failed to spawn aim laser?");
+            }
+        }
+
+        loc = Location;
+        loc.Z+=BaseEyeHeight;
+        loc = loc + vector(ViewRotation) * (CollisionRadius/2);
+        aimLaser.SetLocation(loc);
+        aimLaser.SetRotation(ViewRotation);
+        aimLaser.proxy.DistanceFromPlayer=0; //Make sure the laser doesn't get frozen
+
+        aimLaser.TurnOn();
+
+    } else {
+        if (aimLaser!=None){
+            aimLaser.TurnOff();
+        }
+    }
 }
 
 exec function CrowdControlAnon()
@@ -951,6 +1067,9 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     }
 
     //Track and handle shake rotation as though we are always right-ways up
+    //Carry the Yaw over, since the shake doesn't adjust that, so it resets you
+    //to Yaw 0 when a roll starts otherwise (Issue #608)
+    ShakeRotator.Yaw = ViewRotation.Yaw;
     ViewRotation = ShakeRotator;
     Super.UpdateRotation(DeltaTime,maxPitch);
     ShakeRotator = ViewRotation;
@@ -1032,6 +1151,7 @@ function UpdateAnimRate( float augValue )
 }
 function PlayDying(name damageType, vector hitLoc)
 {
+    SetCollision(false,false,false);
     Super.PlayDying(damageType, hitLoc);
 }
 function TweenToSwimming(float tweentime)

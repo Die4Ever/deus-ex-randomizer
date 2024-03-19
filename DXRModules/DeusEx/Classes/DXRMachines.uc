@@ -243,6 +243,39 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     return true;
 }
 
+function bool GetLazyCameraLocation(out vector loc, int max_range)
+{
+    local LocationNormal locnorm, ceiling;
+    local FMinMax distrange;
+    local float mult;
+    local Vector loc2;
+    locnorm.loc = loc;
+    distrange.min = 0.1;
+    distrange.max = 16*max_range;
+
+    if( NearestCeiling(locnorm, distrange, 16) ) {
+        ceiling = locnorm;
+    } else {
+        if( ! NearestFloor(locnorm, distrange, 16) ) return false;
+        locnorm.loc.Z += 16*3;
+        ceiling = locnorm;
+        ceiling.loc.Z += 16*6;
+    }
+    distrange.max = 16*75;
+    if( ! NearestWallSearchZ(locnorm, distrange, 16*3, ceiling.loc, 10) ) return false;
+
+    if (VSize(locnorm.loc-loc)>(max_range)){
+        mult = (float(max_range)) / VSize(locnorm.loc-loc);
+        loc2 = (locnorm.loc-loc) * mult;
+        locnorm.loc = loc + loc2;
+    }
+
+    loc = locnorm.loc;
+
+    return true;
+}
+
+
 function bool MoveCamera(#var(prefix)SecurityCamera c, vector loc)
 {
     local rotator rotation;
@@ -298,6 +331,8 @@ function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, o
     local LocationNormal locnorm;
     local int i;
     local FMinMax distrange;
+    local DXRPasswords pass;
+
     info("SpawnSecurityComputer near "$loc);
     locnorm.loc = loc;
     distrange.min = 0.1;
@@ -321,7 +356,13 @@ function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, o
     }
     c.UserList[0].userName = ReplaceText(String(c.Name), "#var(injectsprefix)ComputerSecurity", "Comp");
     c.itemName = c.UserList[0].userName;
-    c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, dxr.localURL @ String(c.Name) );
+
+    pass = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+    if(pass != None) {
+        c.UserList[0].Password = pass.GeneratePassword(dxr.localURL @ String(c.Name) );
+    } else {
+        c.UserList[0].Password = "security";
+    }
     info("SpawnSecurityComputer "$c.UserList[0].userName$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );
     return c;
 }

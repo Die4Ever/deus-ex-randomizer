@@ -8,10 +8,17 @@ function PreFirstEntryMapFixes()
     local Dispatcher d;
     local ScriptedPawn sp;
     local Conversation c;
+    local #var(prefix)TobyAtanwe toby;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
+    local #var(prefix)AutoTurret at;
+    local #var(prefix)WIB wib;
+    local DXRMapVariants mapvariants;
+    local DXRHoverHint hoverHint;
+    local #var(prefix)MapExit exit;
+    local #var(prefix)BlackHelicopter jock;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -51,8 +58,21 @@ function PreFirstEntryMapFixes()
                 if( t.Event == 'MJ12CommandoSpecial' )
                     t.Touch(player());// make this guy patrol instead of t-pose
 
+            foreach AllActors(class'#var(prefix)WIB',wib){
+                wib.UnfamiliarName="Agent Hela";
+            }
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+
+            foreach AllActors(class'ScriptedPawn',sp){
+                if(sp.BindName=="bums"){
+                    sp.bImportant=True;
+                    sp.UnfamiliarName="Dr. Kit";
+                    sp.FamiliarName="Dr. Mehdi Kit";
+                    break;
+                }
+            }
+
 
             class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
@@ -106,6 +126,13 @@ function PreFirstEntryMapFixes()
             // make the apartment stairs less hidden, not safe to have stairs without a light!
             CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
             CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+
+            //Add teleporter hint text to Jock
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+
         }
         break;
 
@@ -125,6 +152,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
         break;
     case "11_PARIS_UNDERGROUND":
+        foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
+        foreach AllActors(class'#var(prefix)TobyAtanwe', toby) {
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), toby.Location, toby.CollisionRadius+5, toby.CollisionHeight+5);
+            hoverHint.SetBaseActor(toby);
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(2268.5,-563.7,-101)); //Near ATM
         Spawn(class'PlaceholderItem',,, vectm(408.3,768.7,-37)); //Near Mechanic
         Spawn(class'PlaceholderItem',,, vectm(-729,809.5,-1061)); //Bench at subway
@@ -143,6 +176,11 @@ function PreFirstEntryMapFixes()
                 dt.DamageType='Flamed';
             }
         }
+        //Restore default damage to this one turret.  The only one in the whole
+        //game with non-standard damage (10 instead of 5).  It doesn't need it.
+        foreach AllActors(class'#var(prefix)AutoTurret',at,'vault_turret'){
+            at.gunDamage=class'#var(prefix)AutoTurret'.Default.gunDamage;
+        }
         break;
     case "11_PARIS_EVERETT":
         foreach AllActors(class'#var(prefix)ComputerSecurity',cs){
@@ -156,6 +194,13 @@ function PreFirstEntryMapFixes()
                 cs.specialOptions[1].TriggerText="";
             }
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'CalledByDispatcher'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
+
         break;
     }
 }
@@ -235,33 +280,43 @@ function AnyEntryMapFixes()
     case "11_PARIS_UNDERGROUND":
         //Add a flag change to Toby's conversation so it sets MS_PlayerTeleported to false if you choose the "take me with you" option
         //This will let you choose to stay or go.
+        foreach AllActors(class'TobyAtanwe', toby) {
+            //Rebind his events to make sure his conversation is loaded if
+            //you travelled from mission 10 to 11 Underground directly.
+            //This would really only happen in Entrance Rando.
+            toby.ConBindEvents();
+        }
         c = GetConversation('MeetTobyAtanwe');
-        ce = c.eventList;
-        cePrev=ce;
-        while(ce!=None){
-            if (ce.eventType==ET_Speech){
-                ces = ConEventSpeech(ce);
-                if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
-                    //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
-                    cesf = new(c) class'ConEventSetFlag';
-                    cesf.eventType=ET_SetFlag;
-                    cesf.label="LetTobyTakeYou";
-                    cesf.flagRef = new(c) class'ConFlagRef';
-                    cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
-                    cesf.flagRef.value=True;
-                    cesf.flagRef.expiration=12;
-                    cesf.nextEvent = ces.nextEvent;
-                    ces.nextEvent = cesf;
-                }
-            } else if (ce.eventType==ET_AddSkillPoints){
-                ceasp = ConEventAddSkillPoints(ce);
-                cePrev.nextEvent = ce.nextEvent; //Remove the event from its current position
-                ce.nextEvent=None;
-                ce=cePrev;
-            }
-
+        if (c==None){
+            player().ClientMessage("Failed to find conversation for Toby Atanwe!  Report this to the devs!");
+        } else {
+            ce = c.eventList;
             cePrev=ce;
-            ce=ce.nextEvent;
+            while(ce!=None){
+                if (ce.eventType==ET_Speech){
+                    ces = ConEventSpeech(ce);
+                    if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
+                        //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
+                        cesf = new(c) class'ConEventSetFlag';
+                        cesf.eventType=ET_SetFlag;
+                        cesf.label="LetTobyTakeYou";
+                        cesf.flagRef = new(c) class'ConFlagRef';
+                        cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
+                        cesf.flagRef.value=True;
+                        cesf.flagRef.expiration=12;
+                        cesf.nextEvent = ces.nextEvent;
+                        ces.nextEvent = cesf;
+                    }
+                } else if (ce.eventType==ET_AddSkillPoints){
+                    ceasp = ConEventAddSkillPoints(ce);
+                    cePrev.nextEvent = ce.nextEvent; //Remove the event from its current position
+                    ce.nextEvent=None;
+                    ce=cePrev;
+                }
+
+                cePrev=ce;
+                ce=ce.nextEvent;
+            }
         }
 
         //Assuming we found both the "correct" conversation ending and the skill point trigger,
@@ -282,9 +337,18 @@ function AnyEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
+    local #var(prefix)WIB wib;
+
     switch(dxr.localURL) {
     case "11_PARIS_CATHEDRAL":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-3570.950684, 2238.034668, -783.901367));// right at the start
+
+        //We don't need her to be unshuffled or special, but we want her name to be set
+        foreach AllActors(class'#var(prefix)WIB',wib){
+            wib.UnfamiliarName="Adept 34501";
+            wib.FamiliarName="Adept 34501";
+        }
+
         break;
     }
 }

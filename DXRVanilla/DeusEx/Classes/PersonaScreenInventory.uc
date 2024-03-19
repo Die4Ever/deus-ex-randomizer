@@ -85,3 +85,43 @@ function string CalcChargedPickupDurations(ChargedPickup cp)
 
     return chargeVals;
 }
+
+//Dragging an item out of the inventory grid will now drop it
+function FinishButtonDrag()
+{
+    local Inventory draggedItem;
+    local Bool shouldDrop;
+
+    shouldDrop=False;
+    draggedItem=None;
+
+    if (lastDragOverWindow==None){
+        draggedItem=Inventory(dragButton.GetClientObject());
+        shouldDrop = (draggedItem!=None);
+    }
+
+    Super.FinishButtonDrag();
+
+    if (shouldDrop && draggedItem!=None){
+        SelectInventoryItem(draggedItem);
+        DropSelectedItem();
+    }
+}
+
+//Try to prevent item stacking
+//If an item is being "dragged" while the inventory is closing, put it back where it started
+event DescendantRemoved(Window descendant)
+{
+    local Inventory draggedItem;
+
+    if (descendant==winStatus){ //Only act as the inventory is being dismantled
+        if (class'MenuChoice_FixGlitches'.default.enabled && bDragging && dragButton!=None){
+            draggedItem=Inventory(dragButton.GetClientObject());
+            if (draggedItem!=None){
+                //Return the item to the slot it started in
+                player.PlaceItemInSlot(draggedItem,draggedItem.invPosX,draggedItem.invPosY);
+            }
+        }
+    }
+    Super.DescendantRemoved(descendant);
+}

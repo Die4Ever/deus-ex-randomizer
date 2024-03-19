@@ -17,7 +17,7 @@ static function bool HasLDDPInstalled()
     local DeusExTextParser parser;
     local bool opened;
 
-    if(!#defined(injections)) return false;// just to be safe if you have a lot of mods installed in the same folder
+    if(!#defined(injections)) return false;// just to be safe if you have a lot of mods installed in the same folder, Revision and VMD still allow selecting FemJC
 
     if(default.hasCheckedLDDP) {
         return default.bFemaleEnabled;
@@ -40,9 +40,9 @@ event InitWindow()
 {
     local int i;
 
-    Super(MenuUIScreenWindow).InitWindow();
-
     bFemaleEnabled = HasLDDPInstalled();
+
+    Super(MenuUIScreenWindow).InitWindow();
 
     if (bFemaleEnabled)
     {
