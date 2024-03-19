@@ -28,6 +28,10 @@ function PlayerLogin(#var(PlayerPawn) p)
     p.Energy = rng(p.default.EnergyMax-25)+25;
     p.Energy = Min(p.Energy, p.default.EnergyMax);
 
+    if(dxr.flags.IsSpeedrunMode()) {
+        p.Energy = p.EnergyMax;
+    }
+
     p.Credits=0;
 
     class'DXRStartMap'.static.AddStartingCredits(dxr,p);
