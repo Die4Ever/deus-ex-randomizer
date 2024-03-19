@@ -4,7 +4,7 @@ var bool WaltonAppeared;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, howard1, howard2, jock1, jock2;
+    local int goal, loc, howard1, howard2, howard3, jock1, jock2, jock3;
 
     switch(map) {
     case "12_VANDENBERG_CMD":
@@ -82,20 +82,25 @@ function int InitGoals(int mission, string map)
     case "14_OCEANLAB_SILO":
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
 
-        AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Control Room", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
+        howard1=AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
+        howard3=AddGoalLocation("14_OCEANLAB_SILO", "Poker Building", NORMAL_GOAL, vect(-1822,-6516,1662), rot(0, 24308, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", NORMAL_GOAL, vect(566,-4395,1474), rot(0, 21120, 0));
+        //AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Fourth Floor", NORMAL_GOAL, vect(-259.846710, -6848.406250, 326.598969), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0));
-        howard1 = AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
+        //AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0)); //this one sucks, since he runs away down the hall
+        //howard1 = AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
         howard2 = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
 
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         jock1 = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554, -5680.964355, 1507.895020), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
+        jock3 = AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
         jock2 = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
 
-        AddMutualExclusion(howard1, jock1);
-        AddMutualExclusion(howard2, jock2);
+        AddMutualExclusion(howard2, jock2); //Cherry Picker and bottom of silo Jock
+        AddMutualExclusion(howard1, jock3); //Surface meeting room and sniper tower
+        AddMutualExclusion(howard3, jock1); //Poker building and vanilla Jock
         return 142;
     }
 
