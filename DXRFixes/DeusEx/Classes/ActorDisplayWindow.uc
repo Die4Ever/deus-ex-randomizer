@@ -8,6 +8,8 @@ var bool         bShowCustom;
 var string       customAttrib;
 var bool         bShowInventory;
 var string       nameFilter;
+var string       tagFilter;
+var string       eventFilter;
 var bool         bLimitRadius;
 var int          actorRadius;
 var bool         bShowTagEvent;
@@ -40,6 +42,24 @@ function SetNameFilter(string newFilter)
 
 function String GetNameFilter(){
     return nameFilter;
+}
+
+function SetTagFilter(string newFilter)
+{
+    tagFilter = newFilter;
+}
+
+function String GetTagFilter(){
+    return tagFilter;
+}
+
+function SetEventFilter(string newFilter)
+{
+    eventFilter = newFilter;
+}
+
+function String GetEventFilter(){
+    return eventFilter;
 }
 
 function SetViewClass(Class<Actor> newViewClass)
@@ -207,7 +227,7 @@ function DrawWindow(GC gc)
         return;
 
     classToShow = viewClass;
-    if (nameFilter!="" && classToShow==None){
+    if ((nameFilter!="" || tagFilter!="" || eventFilter!="") && classToShow==None){
         classToShow=class'Actor';
     }
 
@@ -230,6 +250,10 @@ function DrawWindow(GC gc)
             continue;// DXRando: for spoilers buttons
 
         if (filter!='' && filter!=trackActor.Name)
+            continue;
+        if (tagFilter!="" && tagFilter!=string(trackActor.Tag))
+            continue;
+        if (eventFilter!="" && eventFilter!=string(trackActor.Event))
             continue;
 
         dxMover = DeusExMover(trackActor);
