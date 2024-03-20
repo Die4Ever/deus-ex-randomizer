@@ -4,7 +4,7 @@ import re
 import os
 
 block_cipher = None
-console = True
+console = False
 onefile = True
 
 

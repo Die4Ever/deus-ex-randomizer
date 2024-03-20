@@ -10,7 +10,7 @@ except Exception as e:
     info('ERROR: importing', e)
     raise
 
-parser = argparse.ArgumentParser(description='Deus Ex Randomizer')
+parser = argparse.ArgumentParser(description='Deus Ex Randomizer Installer')
 parser.add_argument('--version', action="store_true", help='Output version')
 parser.add_argument('--dryrun', action="store_true", help="Dry run, don't actually change anything")
 parser.add_argument('--unattended', action="store_true", help='Unattended installation')

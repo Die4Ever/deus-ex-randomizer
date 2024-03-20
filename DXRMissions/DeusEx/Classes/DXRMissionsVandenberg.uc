@@ -4,7 +4,10 @@ var bool WaltonAppeared;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, howard1, howard2, howard3, jock1, jock2, jock3;
+    local int goal, loc;
+    local int howard_cherry, howard_meeting, howard_radio, howard_computer;
+    local int jock_vanilla, jock_cherry, jock_tower, jock_computer;
+    local int computer_vanilla, computer_radio, computer_meeting;
 
     switch(map) {
     case "12_VANDENBERG_CMD":
@@ -80,27 +83,41 @@ function int InitGoals(int mission, string map)
         return 141;
 
     case "14_OCEANLAB_SILO":
+        // HOWARD
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
-
         AddGoalLocation("14_OCEANLAB_SILO", "Control Room", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
-        howard1=AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
-        howard3=AddGoalLocation("14_OCEANLAB_SILO", "Poker Building", NORMAL_GOAL, vect(-1822,-6516,1662), rot(0, 24308, 0));
+        howard_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
+        howard_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", NORMAL_GOAL, vect(-1822,-6516,1662), rot(0, 24308, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", NORMAL_GOAL, vect(566,-4395,1474), rot(0, 21120, 0));
         //AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Fourth Floor", NORMAL_GOAL, vect(-259.846710, -6848.406250, 326.598969), rot(0, 0, 0));
         //AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0)); //this one sucks, since he runs away down the hall
-        //howard1 = AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
-        howard2 = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
+        //howard_sixth = AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
+        howard_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
+        howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", NORMAL_GOAL, vect(-100, -1331, 832), rot(0, 32768, 0));
 
+        // JOCK
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
-        jock1 = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554, -5680.964355, 1507.895020), rot(0, 0, 0));
-        jock3 = AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
-        jock2 = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        jock_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554, -5680.964355, 1507.895020), rot(0, 0, 0));
+        jock_tower = AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
+        jock_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
+        jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
 
-        AddMutualExclusion(howard2, jock2); //Cherry Picker and bottom of silo Jock
-        AddMutualExclusion(howard1, jock3); //Surface meeting room and sniper tower
-        AddMutualExclusion(howard3, jock1); //Poker building and vanilla Jock
+        // COMPUTER
+        goal = AddGoal("14_OCEANLAB_SILO", "Missile Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None); // Launch sequence initiated.  It's gonna be a sunny day at Area 51...
+        computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
+        computer_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", GOAL_TYPE2, vect(-1721.988770, -6533.606445, 1664), rot(16384,32768,0));
+        computer_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", GOAL_TYPE2, vect(-691.854248, -3575.400391, 1475), rot(16384,0,0));
+
+        // MUTEXES
+        AddMutualExclusion(howard_radio, computer_radio);
+        AddMutualExclusion(howard_computer, computer_vanilla);
+        AddMutualExclusion(howard_meeting, computer_meeting);
+
+        AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
+        AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
+        AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
         return 142;
     }
 
@@ -291,6 +308,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
+    local #var(prefix)DataLinkTrigger dt;
+    local #var(prefix)Switch1 button;
+    local #var(DeusExPrefix)Mover door;
 
     if (g.name=="Jock and Tong") {
         foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'TongGO') {
@@ -326,6 +346,26 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
     else if (g.name=="Backup Power Keypad") {
         GlowUp(g.actors[0].a, 255);
+    }
+    else if (g.name=="Missile Computer" && Loc.name != "Computer Room") {
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
+            if(dt.name=='DataLinkTrigger1' || dt.name=='DataLinkTrigger6') {
+                dt.Destroy();
+            }
+        }
+        foreach AllActors(class'#var(prefix)Switch1', button) {
+            if(button.name=='Switch4') {
+                button.Destroy();
+                break;
+            }
+        }
+    }
+
+    if (g.name=="Missile Computer") {
+        g.actors[1].a.Tag = 'klax'; // trigger the DataLinkTrigger immediately
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'computerdoors') {
+            door.MoverEncroachType = ME_IgnoreWhenEncroach;
+        }
     }
 }
 
