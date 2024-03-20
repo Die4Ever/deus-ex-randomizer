@@ -122,7 +122,8 @@ function int InitGoals(int mission, string map)
         AddMapMarker(class'Image09_NYC_Ship_Bottom',51,102,"C","Bilge Computer", loc,"The bilge pump computer can be located on a bed in the barracks underneath the helicopter in the helibay.");
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Room Tower", GOAL_TYPE1, vect(-133,-678,15), rot(0, -15815, 0));
         AddMapMarker(class'Image09_NYC_Ship_Bottom',328,256,"C","Bilge Computer", loc,"The bilge pump computer can be found in the control tower in the engine room.");
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", GOAL_TYPE1, vect(-4987,1176,-205), rot(0, 32710, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", GOAL_TYPE1, vect(-4799, 1198, -150), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(-4799, 1198, -220), rot(0,0,0));// MAHOGANY desk
         AddMapMarker(class'Image09_NYC_Ship_Bottom',78,353,"C","Bilge Computer", loc,"The bilge pump computer can be found in the air control room of the helipad.");
 
         return 92;
@@ -329,6 +330,11 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         se.Tag='EMOff';
         se.Message="EM Field Disabled";
         se.GoToState('DisplayMessage');
+    }
+
+    if (g.name=="Bilge Pump Computer" && Loc.name=="Helipad Air Control") {
+        // spawn the MAHOGANY desk (CreateGoal only gets called for different maps)
+        g.actors[1].a = Spawnm(class'#var(prefix)WHDeskOvalOffice',,,Loc.positions[1].pos, Loc.positions[1].rot);
     }
 }
 
