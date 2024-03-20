@@ -340,7 +340,7 @@ function DrawWindow(GC gc)
     // draw notes
     if(notes != "") {
         y = 4;
-        x = windowWidth + 8;
+        x = windowWidth + 16;
 
         gc.SetAlignments(HALIGN_Left, VALIGN_Top);
         gc.SetTextColor(colorText);
