@@ -9,7 +9,6 @@ function PreFirstEntryMapFixes()
     local ScriptedPawn sp;
     local Conversation c;
     local #var(prefix)TobyAtanwe toby;
-    local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
@@ -22,29 +21,6 @@ function PreFirstEntryMapFixes()
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
-
-    // shut up, Tong! (reduced rando is not as focused on replays compared to normal rando)
-    if(!dxr.flags.IsReducedRando()) {
-        foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
-            switch(dlt.dataLinkTag) {
-            case 'DL_paris_10_shaft':
-            case 'DL_paris_10_radiation':
-            case 'DL_paris_10_catacombs':
-            case 'DL_tunnels_oldplace':
-            case 'DL_tunnels_oldplace2':
-            case 'DL_tunnels_oldplace3':
-            case 'DL_metroentrance':
-            case 'DL_club_entry':
-            case 'DL_apartments':
-            case 'DL_hotel':
-            case 'DL_bakery':
-            case 'DL_entered_graveyard':
-            case 'DL_restaurant':
-                dlt.Event='';
-                dlt.Destroy();
-            }
-        }
-    }
 
     switch(dxr.localURL)
     {
