@@ -1002,7 +1002,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         l( "#" $ starting_map @ class'DXRStartMap'.static.GetStartingMapNameCredits(starting_map) @ bingo_duration @ end_mission $ " possible bingo goals" );
         for(x=0; x<num_options; x++) {
             i = options[x];
-            l( "    " $ bingo_options[i].event );
+            l( "    " $ bingo_options[i].event $ "    - " $ bingo_options[i].desc );
         }
         test(num_options > 50, "_CreateBingoBoard more than 50 options for " $ starting_map);
         l("----------------------------------");
