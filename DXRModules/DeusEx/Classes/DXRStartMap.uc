@@ -724,7 +724,8 @@ static function int _ChooseRandomStartMap(DXRBase m)
             case 0: return 10;
             case 1: return 20;
             case 2: return 30;
-            case 4: return 40;
+            case 3: return 40;
+            case 4: return 50;
             case 5: return 61;
             case 6: return 81;
             case 7: return 90;
