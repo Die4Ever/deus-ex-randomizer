@@ -43,6 +43,8 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
+        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", NORMAL_GOAL, vect(3, 886, 820), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(3, 886, 789.101990), rot(0,0,0));// MAHOGANY desk
         return 62;
 
     case "06_HONGKONG_WANCHAI_STREET":
@@ -246,7 +248,6 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         dlt.Tag='';
         dlt.datalinkTag='DL_Tong_00';
         dlt.SetCollisionSize(100,20);
-
         break;
     }
 }
@@ -268,5 +269,14 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
     if (g.name=="Nanotech Blade ROM" && Loc.name!="ROM Encoding Room") {
         g.actors[3].a.SetCollisionSize(400, 100);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
+    }
+
+    if (Loc.name == "Overlook Office") {
+        // spawn the MAHOGANY desk (CreateGoal only gets called for different maps)
+        g.actors[1].a = Spawnm(class'#var(prefix)WHDeskOvalOffice',,,Loc.positions[1].pos, Loc.positions[1].rot);
+        if(g.actors[1].a != None) {
+            #var(prefix)WHDeskOvalOffice(g.actors[1].a).ItemName = "Mahogany Desk";
+            #var(prefix)WHDeskOvalOffice(g.actors[1].a).HitPoints *= 4;
+        }
     }
 }

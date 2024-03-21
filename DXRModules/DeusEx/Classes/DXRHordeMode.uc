@@ -43,7 +43,7 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,6,0,2) ) {
+    if( ConfigOlderThan(2,6,0,5) ) {
         time_between_waves = 65;
         time_before_damage = 180;
         damage_timer = 10;
@@ -246,6 +246,8 @@ function CheckConfig()
         remove_objects[i++] = 'Teleporter';
         remove_objects[i++] = 'SecurityCamera';
         remove_objects[i++] = 'AutoTurret';
+        remove_objects[i++] = 'AlarmUnit';
+        remove_objects[i++] = 'LaserTrigger';
 
         i=0;
         lock_doors[i++] = 'BreakableGlass0';

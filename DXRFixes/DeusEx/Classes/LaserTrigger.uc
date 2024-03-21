@@ -1,4 +1,5 @@
 class DXRLaserTrigger injects LaserTrigger;
+// the red one with the alarm built-in
 
 function bool IsRelevant( actor Other )
 {

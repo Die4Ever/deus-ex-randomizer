@@ -137,6 +137,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
     local bool VanillaMaps;
+    local ScriptedPawn pawn;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -153,6 +154,23 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL)
     {
         case "08_NYC_STREET":
+            // fix alliances
+            foreach AllActors(class'ScriptedPawn', pawn) {
+                switch(pawn.Alliance) {
+                case 'UNATCO':
+                case 'RiotCop':
+                case 'Robot':
+                case 'MJ12':
+                case 'ShadyGuy':
+                    // make their alliances permananet
+                    pawn.ChangeAlly('RiotCop', 1, true);
+                    pawn.ChangeAlly('Robot', 1, true);
+                    pawn.ChangeAlly('UNATCO', 1, true);
+                    pawn.ChangeAlly('MJ12', 1, true);
+                    pawn.ChangeAlly('ShadyGuy', 1, true);
+                    break;
+                }
+            }
             //Since we always spawn the helicopter on the roof immediately after the conversation,
             //the ambush should also always happen immediately after the conversation (instead of
             //after getting explosives)

@@ -14,6 +14,20 @@ function DeactivateAll()
     }
 }
 
+function ActivateAllAutoAugs()
+{
+    local Augmentation anAug;
+
+    if (player != None)
+    {
+        for(anAug = FirstAug; anAug != None; anAug = anAug.next)
+        {
+            if (anAug.bAutomatic)
+                anAug.Activate();
+        }
+    }
+}
+
 simulated function int NumAugsActive()
 {
     local Augmentation anAug;

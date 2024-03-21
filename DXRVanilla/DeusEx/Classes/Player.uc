@@ -1374,4 +1374,15 @@ exec function ShowBingoWindow()
 	InvokeUIScreen(Class'PersonaScreenBingo');
 }
 
+exec function ActivateAllAutoAugs()
+{
+    if (AugmentationSystem != None)
+        AugmentationSystem.ActivateAllAutoAugs();
+}
+
+exec function invis(bool B)
+{// TODO: why doesn't the invisible 1 cheat work anymore?
+    Invisible(B);
+}
+
 // ---

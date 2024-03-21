@@ -1,4 +1,4 @@
-class CCResidentEvilCam extends SecurityCamera;
+class CCResidentEvilCam extends SecurityCamera transient;
 
 var DeusExPlayer p;
 var bool Reposition;

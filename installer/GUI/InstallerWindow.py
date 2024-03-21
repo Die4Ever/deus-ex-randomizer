@@ -2,7 +2,7 @@ try:
     import webbrowser
     from GUI import *
     from pathlib import Path
-    from Install import Install, IsWindows, CheckVulkan, getDefaultPath
+    from Install import Install, IsWindows, CheckVulkan, getDefaultPath, GetVersion
     import traceback
     import re
 except Exception as e:
@@ -15,7 +15,7 @@ class InstallerWindow(GUIBase):
         self.width = 350
         self.height = 500
         self.lastprogress = ''
-        self.root.title("Deus Ex Randomizer Installer")
+        self.root.title("Deus Ex Randomizer Installer " + GetVersion())
 
         dxvk_default = CheckVulkan()# this takes a second or so
         ogl2_default = dxvk_default or not IsWindows()
