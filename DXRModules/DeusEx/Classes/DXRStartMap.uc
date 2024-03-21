@@ -524,8 +524,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 2: // NSF Generator
         switch(bingo_event)
         {
-        case "LeoToTheBar":
-            return true;
         case "SubwayHostagesSaved":
             return start_map > 20;
         }
@@ -536,7 +534,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         {
         case "KnowYourEnemy":
         case "SimonsAssassination":
-            return start_map > 30;
+            return start_map > 31;
 
         case "CleanerBot_ClassDead":
         case "AlexCloset":
@@ -553,16 +551,12 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "ManderleyMail":
         case "LetMeIn":
         case "ViewPortraits": // next location is 04_NYC_Bar
-        case "PresentForManderley":
             return start_map > 30 && start_map < 36 && end_mission <= 3;// you can do these m03 unatco goals in m04 unatco, but if you start in helibase it's far
         }
 
     case 4: // Paul and NSFHQ
         switch(bingo_event)
         {
-        case "PresentForManderley":
-            return true;
-
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
@@ -586,18 +580,18 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         break;
 
     case 6: // Hong Kong
-        // switch(bingo_event)
-        // {
+        switch(bingo_event)
+        {
         // // these two goals can actually be done with the way these starts currently work, but would normally be impossible
         // case "ClubEntryPaid":
         // case "M06JCHasDate":
         //     return start_map > 65;
-        // }
+        }
     case 7: // fallthrough to 2nd half of Hong Kong
         switch(bingo_event)
         {
         case "MaggieCanFly":
-        case "PoliceVaultBingo": // unless and until a datacube with the code gets added
+        case "PoliceVaultBingo": // TODO: remove once a datacube with the vault code is added
             return start_map > 70;
         }
         break;
@@ -605,8 +599,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 8: // return to NYC
         switch(bingo_event)
         {
-        case "LeoToTheBar":
-            return true;
         }
         break;
 
