@@ -999,7 +999,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
     l("_CreateBingoBoard found " $ num_options $ " options");
     if(bTest) {
-        l( "#" $ starting_map @ class'DXRStartMap'.static.GetStartingMapNameCredits(starting_map) @ bingo_duration @ end_mission $ " possible bingo goals" );
+        l( "#" $ starting_map @ class'DXRStartMap'.static.GetStartingMapNameCredits(starting_map) @ "(" $ bingo_duration @ end_mission $ ") " $ num_options $ " possible bingo goals" );
         for(x=0; x<num_options; x++) {
             i = options[x];
             l( "    " $ bingo_options[i].event $ "    - " $ bingo_options[i].desc );
