@@ -57,7 +57,7 @@ def IsWindows() -> bool:
     return os.name == 'nt'
 
 def GetVersion():
-    return 'v2.6 Beta'
+    return 'v2.6' # TODO: make this automatic
 
 def CheckVulkan() -> bool:
     if not IsWindows():
