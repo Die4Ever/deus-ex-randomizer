@@ -85,7 +85,8 @@ function int InitGoals(int mission, string map)
     case "14_OCEANLAB_SILO":
         // HOWARD
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
-        AddGoalLocation("14_OCEANLAB_SILO", "Control Room", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
+        howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Control Room", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
+        //howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", NORMAL_GOAL, vect(-100, -1331, 832), rot(0, 32768, 0));
         howard_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
         howard_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", NORMAL_GOAL, vect(-1822,-6516,1662), rot(0, 24308, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", NORMAL_GOAL, vect(566,-4395,1474), rot(0, 21120, 0));
@@ -94,7 +95,6 @@ function int InitGoals(int mission, string map)
         //AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0)); //this one sucks, since he runs away down the hall
         //howard_sixth = AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
         howard_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
-        howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", NORMAL_GOAL, vect(-100, -1331, 832), rot(0, 32768, 0));
 
         // JOCK
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
@@ -104,9 +104,9 @@ function int InitGoals(int mission, string map)
         jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
 
         // COMPUTER
-        goal = AddGoal("14_OCEANLAB_SILO", "Missile Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
+        goal = AddGoal("14_OCEANLAB_SILO", "Launch Control Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None); // Launch sequence initiated.  It's gonna be a sunny day at Area 51...
-        computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
+        computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Control Room", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
         computer_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", GOAL_TYPE2, vect(-1721.988770, -6533.606445, 1664), rot(16384,32768,0));
         computer_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", GOAL_TYPE2, vect(-691.854248, -3575.400391, 1475), rot(16384,0,0));
 
