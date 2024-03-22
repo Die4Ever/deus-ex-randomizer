@@ -959,7 +959,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 {
     local int x, y, i;
     local string event, desc;
-    local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions;
+    local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions;
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local float f;
 
@@ -967,7 +967,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(starting_map);
     maybe_mission_mask = class'DXRStartMap'.static.GetMaybeMissionMask(starting_map);
     if (bingo_duration!=0){
-        end_mission = starting_mission+bingo_duration-1; //The same mission is the first mission
+        end_mission = starting_mission + bingo_duration - 1; //The same mission is the first mission
 
         //Missions 7 and 13 don't exist, so don't count them
         if (starting_mission<7 && end_mission>=7){
@@ -984,21 +984,31 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
         if(bingo_options[x].event == "") continue;
-        masked_missions = bingo_options[x].missions & maybe_mission_mask;
-        if(masked_missions != 0) { // maybe?
+        maybe_masked_missions = bingo_options[x].missions & maybe_mission_mask;
+        masked_missions = bingo_options[x].missions & starting_mission_mask & end_mission_mask;
+        if(maybe_masked_missions != 0 && masked_missions == 0) { // maybe?
+            if(bTest) {
+                l("Maybe BingoGoalPossible " $ bingo_options[x].event @ starting_map @ end_mission);
+            }
             if(class'DXRStartMap'.static.BingoGoalPossible(bingo_options[x].event,starting_map,end_mission)) {
                 options[num_options++] = x;
                 continue;
             }
         }
-        masked_missions = bingo_options[x].missions & starting_mission_mask & end_mission_mask;
         if(bingo_options[x].missions!=0 && masked_missions == 0) continue;
-        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission)) continue;
+        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission)) {
+            if(bTest) {
+                l("BingoGoalImpossible " $ bingo_options[x].event @ starting_map @ end_mission);
+            }
+            continue;
+        }
         options[num_options++] = x;
     }
 
     l("_CreateBingoBoard found " $ num_options $ " options");
     if(bTest) {
+        l("starting_mission == " $ starting_mission $ ", end_mission == " $ end_mission);
+        l("starting_mission_mask == " $ starting_mission_mask $ ", end_mission_mask == " $ end_mission_mask $ ", maybe_mission_mask == " $ maybe_mission_mask);
         l( "#" $ starting_map @ class'DXRStartMap'.static.GetStartingMapNameCredits(starting_map) @ "(" $ bingo_duration @ end_mission $ ") " $ num_options $ " possible bingo goals" );
         for(x=0; x<num_options; x++) {
             i = options[x];
