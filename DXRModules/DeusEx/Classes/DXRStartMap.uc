@@ -34,7 +34,8 @@ function PreFirstEntry()
     local string startMapName;
     local ScriptedPawn sp;
 
-    foreach AllActors(class'#var(PlayerPawn)',p){break;}
+    p = player();
+    DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
 
     startMapName = GetStartMap(p,dxr.flags.settings.starting_map);
     startMapName = class'DXRMapVariants'.static.CleanupMapName(startMapName);
