@@ -61,6 +61,35 @@ function PreFirstEntry()
     }
 }
 
+static function int GetStartMapMission(int start_map_val)
+{
+    local int mission;
+
+    switch(start_map_val)
+    {
+        case 0:
+            mission=1; //Mission 1 start, nothing
+            break;
+        case 70:
+        case 75:
+            mission = 6;// 2nd half of hong kong, but really still mission 6
+            break;
+        case 99:
+            mission=10; //Mission 9 graveyard, basically mission 10
+            break;
+        case 109:
+            mission=11; //Mission 10 Chateau, but basically mission 11
+            break;
+        case 119:
+            mission=12; //Mission 11 Everett, but basically mission 12
+            break;
+        default:
+            mission=start_map_val/10;
+            break;
+    }
+    return mission;
+}
+
 static simulated function int GetStartingMissionMask(int start_map)
 {
     local int mask, i;
@@ -374,35 +403,6 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             //friendlyName = "Unknown Start Map "$start_map_val;
             return "01_NYC_UNATCOIsland";
     }
-}
-
-static function int GetStartMapMission(int start_map_val)
-{
-    local int mission;
-
-    switch(start_map_val)
-    {
-        case 0:
-            mission=1; //Mission 1 start, nothing
-            break;
-        case 70:
-        case 75:
-            mission = 6;// 2nd half of hong kong, but really still mission 6
-            break;
-        case 99:
-            mission=10; //Mission 9 graveyard, basically mission 10
-            break;
-        case 109:
-            mission=11; //Mission 10 Chateau, but basically mission 11
-            break;
-        case 119:
-            mission=12; //Mission 11 Everett, but basically mission 12
-            break;
-        default:
-            mission=start_map_val/10;
-            break;
-    }
-    return mission;
 }
 
 static function int GetStartMapSkillBonus(int start_map_val)
