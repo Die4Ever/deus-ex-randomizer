@@ -547,7 +547,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "BathroomFlags":
         case "ReadJCEmail":
         case "Shannon_Dead":
-        case "TrophyHunter":
         case "SlippingHazard":
         case "un_PrezMeadPic_peepedtex":
         case "WaltonConvos":
@@ -660,7 +659,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             }
             return start_map>=60; //Have to have told Jaime to meet you in Paris in mission 5 to get Gunther's killphrase
         case "FordSchick_Dead":
-            return start_map>=20;
+            return start_map>=30;
         case "M07MeetJaime_Played":
             if (end_mission < 8){
                 return True;
@@ -686,9 +685,9 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "IcarusCalls_Played":
         case "roof_elevator":
         case "MeetRenault_Played":
-            return start_map>100; //TODO: All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
+            return start_map>=110; //early Paris things
         case "ManWhoWasThursday":// TODO: in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
-            return start_map > 100 && end_mission <= 11;
+            return start_map >= 110 && end_mission <= 11;
         case "PresentForManderley":
             //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
             if (end_mission < 4){
