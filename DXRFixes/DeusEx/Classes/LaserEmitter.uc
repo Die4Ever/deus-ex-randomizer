@@ -1,4 +1,5 @@
 class DXRLaserEmitter injects #var(prefix)LaserEmitter;
+// used by both BeamTrigger and LaserTrigger
 
 // make sure death markers don't block lasers, continue tracing through them
 function CalcTrace(float deltaTime)

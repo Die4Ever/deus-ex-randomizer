@@ -340,7 +340,7 @@ function DrawWindow(GC gc)
     // draw notes
     if(notes != "") {
         y = 4;
-        x = windowWidth + 8;
+        x = windowWidth + 16;
 
         gc.SetAlignments(HALIGN_Left, VALIGN_Top);
         gc.SetTextColor(colorText);
@@ -463,6 +463,8 @@ function int BalancedSplit(int m)
 {
     local int balanced_split_time;
     local float ratio_of_game;
+
+    if(PB_total == 0) return Golds[m];
 
     ratio_of_game = float(Golds[m]) / float(sum_of_bests);
     balanced_split_time = ratio_of_game * float(PB_total);

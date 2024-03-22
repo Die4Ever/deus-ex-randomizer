@@ -1380,4 +1380,9 @@ exec function ActivateAllAutoAugs()
         AugmentationSystem.ActivateAllAutoAugs();
 }
 
+exec function invis(bool B)
+{// TODO: why doesn't the invisible 1 cheat work anymore?
+    Invisible(B);
+}
+
 // ---

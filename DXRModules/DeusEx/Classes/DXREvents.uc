@@ -2789,6 +2789,8 @@ function ExtendedTests()
     local string helpText;
     local int i;
 
+    Super.ExtendedTests();
+
     //Make sure all bingo goals have help text
     for (i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event!=""){

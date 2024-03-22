@@ -614,6 +614,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.skill_value_rando = 80;
         // at least level 1 speed aug
         settings.speedlevel = Max(settings.speedlevel, 1);
+        // speedrunners, please install augs
+        moresettings.empty_medbots *= 1.5;
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;
@@ -621,6 +623,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would immediately get a reroll depending what mission you start in
         settings.banned_skills = 0;// need computer skill for hacking
         settings.prison_pocket = 100; //Keep your items in mission 5
+        moresettings.empty_medbots *= 1.5; // WW gets lower medbots chances pretty quickly
         bingo_duration = 1;
         bingo_scale = 0;
         moresettings.newgameplus_curve_scalar = 50;

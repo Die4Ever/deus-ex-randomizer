@@ -173,6 +173,7 @@ static function string GetStartMap(Actor a, int start_map_val)
 
 static function string _GetStartMap(int start_map_val, out string friendlyName, optional out int bShowInMenu)
 {
+    friendlyName = ""; // clear the out param to protect against reuse by the caller
     switch(start_map_val)
     {
         case 0:
@@ -370,7 +371,7 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
         default:
             //There's always a place for you on Liberty Island
             bShowInMenu=0; // just in case
-            friendlyName = "Unknown Start Map "$start_map_val;
+            //friendlyName = "Unknown Start Map "$start_map_val;
             return "01_NYC_UNATCOIsland";
     }
 }
@@ -752,7 +753,8 @@ static function int _ChooseRandomStartMap(DXRBase m)
             case 0: return 10;
             case 1: return 20;
             case 2: return 30;
-            case 4: return 40;
+            case 3: return 40;
+            case 4: return 50;
             case 5: return 61;
             case 6: return 81;
             case 7: return 90;
