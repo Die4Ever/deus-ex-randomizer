@@ -245,6 +245,9 @@ static function string _GetStartMap(int start_map_val, out string friendlyName, 
             friendlyName = "Hunting Lebedev (Hangar)";
             return "03_NYC_Hangar";
         case 40:
+            friendlyName = "NSF Defection (Liberty Island)";
+            return "04_NYC_UNATCOISLAND";
+        case 41:
             bShowInMenu=1;
             friendlyName = "NSF Defection (UNATCO HQ)";
             return "04_NYC_UNATCOHQ";
@@ -571,7 +574,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "LetMeIn":
         case "AlexCloset":
         case "TrophyHunter":
-            return start_map > 40 && end_mission <= 4;
+            return start_map > 41 && end_mission <= 4;
         }
         break;
 
@@ -754,7 +757,7 @@ static function int _ChooseRandomStartMap(DXRBase m)
             case 0: return 10;
             case 1: return 20;
             case 2: return 30;
-            case 3: return 40;
+            case 3: return 41;
             case 4: return 50;
             case 5: return 61;
             case 6: return 81;
@@ -787,7 +790,7 @@ static function int _ChooseRandomStartMap(DXRBase m)
         return 30; // just in case the switch misses
     case 3:// mission 4
         if(m.rngb()) return 45;
-        return 40;
+        return 41;
     case 4:// mission 5
         if(m.rngb()) return 55;
         return 50;
