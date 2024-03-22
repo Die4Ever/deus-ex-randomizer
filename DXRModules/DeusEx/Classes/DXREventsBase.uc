@@ -961,6 +961,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local string event, desc;
     local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions;
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
+    local bool bPossible;
     local float f;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
@@ -987,10 +988,11 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         maybe_masked_missions = bingo_options[x].missions & maybe_mission_mask;
         masked_missions = bingo_options[x].missions & starting_mission_mask & end_mission_mask;
         if(maybe_masked_missions != 0 && masked_missions == 0) { // maybe?
+            bPossible = class'DXRStartMap'.static.BingoGoalPossible(bingo_options[x].event,starting_map,end_mission);
             if(bTest) {
-                l("Maybe BingoGoalPossible " $ bingo_options[x].event @ starting_map @ end_mission);
+                l("Maybe BingoGoalPossible " $ bingo_options[x].event @ bPossible @ starting_map @ end_mission);
             }
-            if(class'DXRStartMap'.static.BingoGoalPossible(bingo_options[x].event,starting_map,end_mission)) {
+            if(bPossible) {
                 options[num_options++] = x;
                 continue;
             }
