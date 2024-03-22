@@ -551,7 +551,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "ManderleyMail":
         case "LetMeIn":
         case "ViewPortraits": // next location is 04_NYC_Bar
-            return start_map > 30 && start_map < 36 && end_mission <= 3;// you can do these m03 unatco goals in m04 unatco, but if you start in helibase it's far
+            return start_map > 31 && start_map < 36 && end_mission <= 3;// you can do these m03 unatco goals in m04 unatco, but if you start in helibase it's far
         }
 
     case 4: // Paul and NSFHQ
