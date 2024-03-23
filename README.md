@@ -1,6 +1,6 @@
 # Deus Ex Randomizer
 
-This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story. The goal is to increase the replayability and strategy.
+This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story. The goal is to increase the replayability and strategy. You can also use it to properly configure your vanilla Deus Ex with performance fixes like DXVK, Kentie's Launcher, and config tweaks all done automatically for you.
 
 # [DOWNLOAD HERE](https://github.com/Die4Ever/deus-ex-randomizer/releases/latest)
 
