@@ -46,11 +46,11 @@ event InitWindow()
     Hide();
 
     if(class'DXRVersion'.static.VersionOlderThan(version, 2,5,3,7)) {
-        version = class'DXRVersion'.static.VersionNumber();
         x_pos = 0;
         y_pos = 0;
         SaveConfig();
     }
+    version = class'DXRVersion'.static.VersionNumber();
 }
 
 function string ReplaceVariables(string s)
