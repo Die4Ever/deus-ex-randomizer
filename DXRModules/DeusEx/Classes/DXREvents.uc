@@ -425,6 +425,15 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
+
+        // 3 triggers in a chain, like checkpoints to make sure you swim all the way through
+        bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-1348.603027, 211.117294, -459.900452),80,60);
+        bt.bDestroyOthers = false;
+        bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-836.882141, -160.352020, -425.417816),60,60);
+        bt.bDestroyOthers = false;
+        bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-19.620102, -866.462830, -403.896912),60,40);
+        bt.bDestroyOthers = false;
+
         break;
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'#var(prefix)JunkieMale',jm) {
@@ -2779,6 +2788,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Use the roof elevator in Denfert-Rochereau right at the start.  There will be a book nearby with the code for the keypad.";
         case "MeetRenault_Played":
             return "Talk to Renault, in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.";
+        case "WarehouseSewerTunnel":
+            return "Swim through the underwater tunnel in the Warehouse District";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3144,6 +3155,7 @@ defaultproperties
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
     bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
+    bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
 
 
 
