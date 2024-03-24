@@ -1,6 +1,6 @@
 # Deus Ex Randomizer
 
-This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story. The goal is to increase the replayability and strategy.
+This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story. The goal is to increase the replayability and strategy. You can also use it to properly configure your vanilla Deus Ex with performance fixes like DXVK, Kentie's Launcher, and config tweaks all done automatically for you.
 
 # [DOWNLOAD HERE](https://github.com/Die4Ever/deus-ex-randomizer/releases/latest)
 
@@ -63,6 +63,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
     * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission
     * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
+    * Zero Changes mode: This one is for the purists. Use our new installer program and it will do compatibility fixes for the vanilla game (Kentie's Launcher, D3D10, DXVK, Engine.dll fix, and more), then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
     * WaltonWare mode - A quick option to get into the game without the time commitment of the full game! You start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
