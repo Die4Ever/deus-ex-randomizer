@@ -347,7 +347,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     else if (g.name=="Backup Power Keypad") {
         GlowUp(g.actors[0].a, 255);
     }
-    else if (g.name=="Missile Computer" && Loc.name != "Computer Room") {
+    else if (g.name=="Launch Control Computer" && Loc.name != "Control Room") {
         foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
             if(dt.name=='DataLinkTrigger1' || dt.name=='DataLinkTrigger6') {
                 dt.Destroy();
@@ -361,7 +361,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         }
     }
 
-    if (g.name=="Missile Computer") {
+    if (g.name=="Launch Control Computer") {
         g.actors[1].a.Tag = 'klax'; // trigger the DataLinkTrigger immediately
         foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'computerdoors') {
             door.MoverEncroachType = ME_IgnoreWhenEncroach;

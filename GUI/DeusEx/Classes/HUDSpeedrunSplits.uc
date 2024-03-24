@@ -46,9 +46,18 @@ event InitWindow()
     Hide();
 
     if(class'DXRVersion'.static.VersionOlderThan(version, 2,5,3,7)) {
-        version = class'DXRVersion'.static.VersionNumber();
         x_pos = 0;
         y_pos = 0;
+        SaveConfig();
+    }
+    if(class'DXRVersion'.static.VersionOlderThan(version, 2,6,1,1)) {
+        colorText.R = 200;
+        colorText.G = 200;
+        colorText.B = 200;
+        colorText.A = 255;
+    }
+    if( version < class'DXRVersion'.static.VersionNumber() ) {
+        version = class'DXRVersion'.static.VersionNumber();
         SaveConfig();
     }
 }
@@ -120,8 +129,6 @@ function InitStats(DXRStats newstats)
 
     for(i=1; i<=15; i++) {
         PB_total += PB[i];
-        if(Golds[i] == 0) Golds[i] = PB[i];
-        if(Golds[i] > PB[i] && PB[i] != 0) Golds[i] = PB[i];
         sum_of_bests += Golds[i];
     }
     for(i=1; i<=15; i++) {
@@ -223,9 +230,10 @@ function InitSizes(GC gc)
 
 function DrawWindow(GC gc)
 {
-    local int i, t, prev, prevprev, cur, curTime, next, time, total, prevTotal;
+    local int i, prev, prevprev, cur, curTime, next, time, total, prevTotal;
     local float x, y, f, delta;
     local string msg, s;
+    local Color cmpColor;
 
     if(stats == None) return;
 
@@ -300,17 +308,16 @@ function DrawWindow(GC gc)
     if(showSeg) {
         msg = fmtTimeSeg(curTime);
         s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
-        t = curTime - balanced_splits[cur];
-        DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, t), x, y, s, true);
+        cmpColor = GetCmpColor(curTime, balanced_splits[cur], prevTotal, balanced_splits_totals[prev], Golds[cur]);
+        DrawTextLine(gc, "SEG:", msg, cmpColor, x, y, s, true);
         y += text_height;
     }
 
     // current overall time
     if(showCur) {
-        time = prevTotal - balanced_splits_totals[prev];
-        t = curTime - balanced_splits[cur];
         msg = fmtTime(total);
-        DrawTextLine(gc, "CUR:", msg, GetCmpColor(time, t), x, y, "", true);
+        cmpColor = GetCmpColor(prevTotal, balanced_splits_totals[prev], curTime, balanced_splits[cur]);
+        DrawTextLine(gc, "CUR:", msg, cmpColor, x, y, "", true);
         y += text_height;
     }
 
@@ -350,8 +357,9 @@ function DrawWindow(GC gc)
 
 function int DrawSplit(GC gc, int mission, int x, int y)
 {
-    local int time, total, i, diff, totalDiff;
+    local int time, total, i, totalDiff;
     local string sDiff, sTime;
+    local Color cmpColor;
 
     time = stats.missions_times[mission];
     time += stats.missions_menu_times[mission];
@@ -368,11 +376,14 @@ function int DrawSplit(GC gc, int mission, int x, int y)
             total += stats.missions_menu_times[i];
         }
         totalDiff = total - balanced_splits_totals[mission];
-        diff = time - balanced_splits[mission];
-        sDiff = fmtTimeDiff(totalDiff);
+        if(balanced_splits_totals[mission] > 0) {
+            sDiff = fmtTimeDiff(totalDiff);
+        }
 
         sTime = fmtTime(total);
-        DrawTextLine(gc, MissionName(mission), sDiff, GetCmpColor(totalDiff, diff, time, Golds[mission]), x, y, sTime);
+        cmpColor = GetCmpColor(total, balanced_splits_totals[mission], time, balanced_splits[mission], 0, Golds[mission]);
+
+        DrawTextLine(gc, MissionName(mission), sDiff, cmpColor, x, y, sTime);
     }
     else if(balanced_splits[mission] > 0) {
         // future split
@@ -427,20 +438,34 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
     gc.DrawText(x, y, width - x, text_height, " " $ extra);
 }
 
-function Color GetCmpColor(int overall_diff, int diff, optional int segtime, optional int gold)
+function Color GetCmpColor(int primary_time, int primary_comp, int secondary_time, int secondary_comp, optional int primary_best, optional int secondary_best)
 {
-    if(overall_diff <= 0) {
-        if(gold > 0 && segtime < gold) return colorBestAhead;
-        else if(diff < 0) return colorAheadGainingTime;
-        else if(diff > 0) return colorAheadLosingTime;
-        else return colorAhead;
-    } else {
-        if(gold > 0 && segtime < gold) return colorBestBehind;
-        else if(diff < 0) return colorBehindGainingTime;
-        else if(diff > 0) return colorBehindLosingTime;
-        else return colorBehind;
+    local int prim_diff, sec_diff;
+    local bool bGold;
+
+    bGold = (primary_best!=0 && primary_time < primary_best) || (secondary_best!=0 && secondary_time < secondary_best);
+
+    if(primary_comp == 0) {
+        if(bGold) return colorBest;
+        return colorText;
     }
-    return colorText;
+    prim_diff = primary_time - primary_comp;
+    if(secondary_comp != 0) sec_diff = secondary_time - secondary_comp;
+
+    if(prim_diff <= 0) {
+        if(bGold) return colorBestAhead;
+        if(sec_diff <= 0) return colorAheadGainingTime;
+        if(sec_diff > 0) return colorAheadLosingTime;
+        return colorAhead; // currently can't happen, but do we want to ever use this color?
+    }
+    if(prim_diff > 0) {
+        if(bGold) return colorBestBehind;
+        if(sec_diff < 0) return colorBehindGainingTime;
+        if(sec_diff >= 0) return colorBehindLosingTime;
+        return colorBehind; // currently can't happen, but do we want to ever use this color?
+    }
+
+    return colorText; // just in case
 }
 
 function string fmtTimeSeg(int time)
@@ -465,6 +490,7 @@ function int BalancedSplit(int m)
     local float ratio_of_game;
 
     if(PB_total == 0) return Golds[m];
+    if(sum_of_bests == 0) return PB[m];
 
     ratio_of_game = float(Golds[m]) / float(sum_of_bests);
     balanced_split_time = ratio_of_game * float(PB_total);
@@ -506,7 +532,7 @@ defaultproperties
 
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
-    colorText=(R=255,G=255,B=255,A=255)
+    colorText=(R=200,G=200,B=200,A=255)
 
     colorBehind=(R=204,G=60,B=40,A=255)
     colorBehindLosingTime=(R=204,G=18,B=0,A=255)
@@ -539,5 +565,5 @@ defaultproperties
     split_names(15)="Area 51"
 
     splitNotes(1)="UNATCO start: no Leo at Paul or hut|nHarley start: no Leo at electric bunker|nElectric Bunker start: no Leo at Harley dock|nTop start: no Leo at base of statue|nEdit these notes in DXRSplits.ini"
-    splitNotes(14)="Howard 6th floor: no Jock at vanilla|nEdit these notes in DXRSplits.ini"
+    splitNotes(14)="The computer and Howard won't be close to each other.|nHoward and Escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini"
 }

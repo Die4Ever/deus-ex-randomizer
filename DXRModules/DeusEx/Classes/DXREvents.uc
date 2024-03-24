@@ -2789,6 +2789,8 @@ function ExtendedTests()
     local string helpText;
     local int i;
 
+    Super.ExtendedTests();
+
     //Make sure all bingo goals have help text
     for (i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event!=""){
@@ -2889,7 +2891,7 @@ defaultproperties
     bingo_options(76)=(event="Greasel_ClassDead",desc="Kill %s Greasels",max=5,missions=50272)
     bingo_options(77)=(event="support1",desc="Blow up a gas station",max=1,missions=4096)
     bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill %s UNATCO Troopers",max=15,missions=318)
-    bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill %s NSF Terrorists",max=15,missions=62)
+    bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill %s NSF Terrorists",max=15,missions=46)
     bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=57188)
     bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",max=10,missions=56384)
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",max=5,missions=49248)
@@ -2902,7 +2904,7 @@ defaultproperties
     bingo_options(89)=(event="HumanStompDeath",desc="Stomp %s humans to death",max=3)
     bingo_options(90)=(event="Rat_ClassDead",desc="Kill %s rats",max=30,missions=53118)
     bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out %s UNATCO Troopers",max=15,missions=318)
-    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out %s NSF Terrorists",max=15,missions=62)
+    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out %s NSF Terrorists",max=15,missions=46)
     bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out %s MJ12 Troopers",max=25,missions=57204)
     bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out %s MJ12 Commandos",max=2,missions=56384)
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1,missions=64)
@@ -3026,7 +3028,7 @@ defaultproperties
     bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
     bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",max=25,missions=57182)
     bingo_options(202)=(event="M07MeetJaime_Played",desc="Meet Jaime in Hong Kong",max=1,missions=96)
-    bingo_options(203)=(event="Terrorist_peeptime",desc="Watch Terrorists for %s seconds",max=30,missions=62)
+    bingo_options(203)=(event="Terrorist_peeptime",desc="Watch Terrorists for %s seconds",max=30,missions=46)
     bingo_options(204)=(event="UNATCOTroop_peeptime",desc="Watch UNATCO Troopers for %s seconds",max=30,missions=318)
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",max=30,missions=57204)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",max=15,missions=56384)
