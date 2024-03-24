@@ -426,6 +426,7 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
+        // 3 triggers in a chain, like checkpoints to make sure you swim all the way through
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-1348.603027, 211.117294, -459.900452),80,60);
         bt.bDestroyOthers = false;
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-836.882141, -160.352020, -425.417816),60,60);
