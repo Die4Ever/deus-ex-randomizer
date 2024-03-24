@@ -50,7 +50,16 @@ event InitWindow()
         y_pos = 0;
         SaveConfig();
     }
-    version = class'DXRVersion'.static.VersionNumber();
+    if(class'DXRVersion'.static.VersionOlderThan(version, 2,6,1,1)) {
+        colorText.R = 200;
+        colorText.G = 200;
+        colorText.B = 200;
+        colorText.A = 255;
+    }
+    if( version < class'DXRVersion'.static.VersionNumber() ) {
+        version = class'DXRVersion'.static.VersionNumber();
+        SaveConfig();
+    }
 }
 
 function string ReplaceVariables(string s)
@@ -556,5 +565,5 @@ defaultproperties
     split_names(15)="Area 51"
 
     splitNotes(1)="UNATCO start: no Leo at Paul or hut|nHarley start: no Leo at electric bunker|nElectric Bunker start: no Leo at Harley dock|nTop start: no Leo at base of statue|nEdit these notes in DXRSplits.ini"
-    splitNotes(14)="Howard 6th floor: no Jock at vanilla|nEdit these notes in DXRSplits.ini"
+    splitNotes(14)="The computer and Howard won't be close to each other.|nHoward and Escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini"
 }
