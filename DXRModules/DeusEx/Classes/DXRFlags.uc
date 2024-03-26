@@ -8,6 +8,7 @@ const SeriousSam = 5;
 const SpeedrunMode = 6;
 const WaltonWare = 7;
 const WaltonWareEntranceRando = 8;
+const RandoMedium = 9;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -497,7 +498,12 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     if(!class'MenuChoice_ToggleMemes'.default.enabled) settings.dancingpercent = 0;
 
-    if(IsReducedRando()) {
+    if(gamemode == RandoMedium) {
+        settings.startinglocations = 0;
+        settings.goals = 0;
+        settings.dancingpercent = 0;
+    }
+    else if(IsReducedRando()) {
         settings.doorsmode = 0;
         settings.doorsdestructible = 0;
         settings.doorspickable = 0;
@@ -529,9 +535,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.dancingpercent = 0;
         settings.swapitems = 0;
         settings.swapcontainers = 0;
-        settings.bingo_win = 0;
-        settings.bingo_freespaces = 1;
-        settings.spoilers = 1;
         settings.health = 100;
         settings.energy = 100;
         if(IsZeroRando()) {
@@ -649,7 +652,19 @@ function string DifficultyName(int diff)
 
 static function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
-    return slot;
+    switch(slot) {
+        case 0: return 0;
+        case 1: return EntranceRando;
+        case 2: return WaltonWare;
+        case 3: return WaltonWareEntranceRando;
+        case 4: return SpeedrunMode;
+        case 5: return ZeroRando;
+        case 6: return RandoLite;
+        case 7: return RandoMedium;
+        case 8: return SeriousSam;
+        case 9: return HordeMode;
+    }
+    return 999999;
 }
 
 static function string GameModeName(int gamemode)
@@ -667,6 +682,8 @@ static function string GameModeName(int gamemode)
         return "Randomizer Lite";
     case ZeroRando:
         return "Zero Rando";
+    case RandoMedium:
+        return "Randomizer Medium";
     case SeriousSam:
         return "Serious Sam Mode";
     case SpeedrunMode:
@@ -701,7 +718,7 @@ function bool IsZeroRando()
 
 function bool IsReducedRando()
 {
-    return gamemode == RandoLite || gamemode == ZeroRando;
+    return gamemode == RandoLite || gamemode == ZeroRando || gamemode == RandoMedium;
 }
 
 function bool IsSpeedrunMode()
