@@ -9,6 +9,7 @@ const SpeedrunMode = 6;
 const WaltonWare = 7;
 const WaltonWareEntranceRando = 8;
 const RandoMedium = 9;
+const WaltonWareHardcore = 10;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -631,6 +632,16 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         bingo_scale = 0;
         moresettings.newgameplus_curve_scalar = 50;
 
+        if(gamemode == WaltonWareHardcore) {
+#ifndef hx
+            settings.CombatDifficulty *= 0.2;
+#endif
+            settings.medkits = 0;
+            settings.medbots = 0;
+            settings.health = 200;
+            autosave = 0; // autosaves disabled, and DXRAutosave handles disallowing manual saves based on the gamemode
+        }
+
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
     }
@@ -652,18 +663,17 @@ function string DifficultyName(int diff)
 
 static function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
-    switch(slot) {
-        case 0: return 0;
-        case 1: return EntranceRando;
-        case 2: return WaltonWare;
-        case 3: return WaltonWareEntranceRando;
-        case 4: return SpeedrunMode;
-        case 5: return ZeroRando;
-        case 6: return RandoLite;
-        case 7: return RandoMedium;
-        case 8: return SeriousSam;
-        case 9: return HordeMode;
-    }
+    if(slot--==0) return 0;
+    if(slot--==0) return EntranceRando;
+    if(slot--==0) return WaltonWare;
+    if(slot--==0) return WaltonWareEntranceRando;
+    if(slot--==0) return WaltonWareHardcore;
+    if(slot--==0) return SpeedrunMode;
+    if(slot--==0) return ZeroRando;
+    if(slot--==0) return RandoLite;
+    if(slot--==0) return RandoMedium;
+    if(slot--==0) return SeriousSam;
+    if(slot--==0) return HordeMode;
     return 999999;
 }
 
@@ -694,6 +704,8 @@ static function string GameModeName(int gamemode)
     case WaltonWareEntranceRando:
         return "WaltonWare Entrance Rando";
 #endif
+    case WaltonWareHardcore:
+        return "WaltonWare Harcore";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -728,7 +740,12 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore;
+}
+
+function bool IsWaltonWareHardcore()
+{
+    return gamemode == WaltonWareHardcore;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
