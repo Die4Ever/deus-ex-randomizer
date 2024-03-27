@@ -841,12 +841,8 @@ function HighlightCenterObject()
     //Activate the aim laser any time you aren't seeing through your eyes
     if (reCam!=None || bBehindView){
         if (aimLaser==None){
-            aimLaser = Spawn(class'LaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
-            if (aimLaser != None) {
-                aimLaser.SetHiddenBeam(False);
-                aimLaser.AmbientSound = None;
-                aimLaser.SetBlueBeam();
-            } else {
+            aimLaser = Spawn(class'DXRAimLaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
+            if (aimLaser == None) {
                 ClientMessage("Failed to spawn aim laser?");
             }
         }
