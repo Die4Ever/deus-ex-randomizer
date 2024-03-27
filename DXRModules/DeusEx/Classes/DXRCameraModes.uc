@@ -41,6 +41,23 @@ function int GetExpectedCameraMode()
 
 ///////////////////////////////////////////////////////////////////
 
+function bool IsFirstPersonGame()
+{
+    return dxr.flags.moresettings.camera_mode==CM_FirstPerson;
+}
+
+function bool IsThirdPersonGame()
+{
+    return dxr.flags.moresettings.camera_mode==CM_ThirdPerson;
+}
+
+function bool IsFixedCamGame()
+{
+    return dxr.flags.moresettings.camera_mode==CM_FixedCamera;
+}
+
+///////////////////////////////////////////////////////////////////
+
 function EnableTempThirdPerson()
 {
     tempCameraMode=CM_ThirdPerson;

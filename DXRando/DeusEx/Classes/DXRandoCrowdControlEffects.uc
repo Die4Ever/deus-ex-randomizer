@@ -256,6 +256,10 @@ function HandleEffectSelectability()
         }
         FlamethrowerInit=True;
     }
+
+    ccLink.sendEffectSelectability("third_person",!dxrCameras.IsThirdPersonGame());
+    ccLink.sendEffectSelectability("resident_evil",!dxrCameras.IsFixedCamGame());
+
     HandleAugEffectSelectability("augspeed");
     HandleAugEffectSelectability("augtarget");
     HandleAugEffectSelectability("augcloak");
