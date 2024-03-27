@@ -220,8 +220,15 @@ function DrawWindowBase(GC gc, actor frobTarget)
     if( ActorHasBars(frobTarget) )
         infoW += barLength + 2;
     infoH += 8;
-    infoX = width / 2;
-    infoY = height / 2;
+
+    if (player!=None && CCResidentEvilCam(player.ViewTarget)!=None){
+        //Original text location in corner of bounding box, only with fixed cameras
+        infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
+        infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
+    } else {
+        infoX = width / 2;
+        infoY = height / 2;
+    }
 
     // draw a dark background
     gc.SetStyle(DSTY_Modulated);

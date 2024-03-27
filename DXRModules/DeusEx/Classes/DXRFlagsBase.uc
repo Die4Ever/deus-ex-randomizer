@@ -75,6 +75,7 @@ struct MoreFlagsSettings{
     var int grenadeswap;
     var int newgameplus_curve_scalar;
     var int empty_medbots;
+    var int camera_mode;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -412,6 +413,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
     FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);
     FlagInt('Rando_num_removed_weapons', newgameplus_num_removed_weapons, mode, str);
+    FlagInt('Rando_camera_mode', moresettings.camera_mode, mode, str);
 
     return str;
 }
@@ -586,6 +588,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "New Game+ Removed Augmentations Per Loop";
         case 'Rando_num_removed_weapons':
             return "New Game+ Removed Weapons Per Loop";
+        case 'Rando_camera_mode':
+            return "Camera Mode";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -864,6 +868,17 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_starting_map':
             return class'DXRStartMap'.static.GetStartingMapNameCredits(val);
             break;
+
+        case 'Rando_camera_mode':
+            if (val==0){
+                return "First Person";
+            } else if (val==1){
+                return "Third Person";
+            } else if (val==2){
+                return "Fixed Camera";
+            }
+            break;
+
         default:
             return val $ " (Unhandled!)";
     }

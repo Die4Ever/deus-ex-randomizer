@@ -77,6 +77,13 @@ function BindControls(optional string action)
     EnumOption("Pause", 1, f.settings.menus_pause);
     EnumOption("Don't Pause", 0, f.settings.menus_pause);
 
+    NewMenuItem("Camera Mode", "What camera mode should be used");
+    EnumOption("First Person", 0, f.moresettings.camera_mode);
+    EnumOption("Third Person", 1, f.moresettings.camera_mode);
+#ifdef vanilla
+    EnumOption("Fixed Camera", 2, f.moresettings.camera_mode);
+#endif
+
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win.");

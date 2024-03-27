@@ -184,6 +184,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 #endif
 
@@ -256,6 +257,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
 #ifdef hx
@@ -327,6 +329,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
 #ifdef hx
@@ -398,6 +401,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
 #ifdef hx
@@ -469,6 +473,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {

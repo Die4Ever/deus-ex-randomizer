@@ -124,7 +124,7 @@ function CheckConfig()
         player.bAskedToTrain = false;
         player.SaveConfig();
     }
-    if( VersionOlderThan(config_version, 2,5,4,2) ) {
+    if( VersionOlderThan(config_version, 2,6,2,1) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -188,6 +188,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRWeaponMods";
     modules_to_load[i++] = "DXRGrenades";
+    modules_to_load[i++] = "DXRCameraModes";
 }
 
 function hx_modules()
@@ -260,6 +261,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRWeaponMods";
     modules_to_load[i++] = "DXRGrenades";
+    modules_to_load[i++] = "DXRCameraModes";
 }
 
 function revision_modules()
@@ -302,6 +304,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRWeaponMods";
     modules_to_load[i++] = "DXRGrenades";
+    modules_to_load[i++] = "DXRCameraModes";
 }
 
 function DXRFlags LoadFlagsModule()
