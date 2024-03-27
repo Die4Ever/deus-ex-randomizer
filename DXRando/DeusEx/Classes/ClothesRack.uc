@@ -5,9 +5,13 @@ var bool bAlreadyUsed;
 
 function Timer()
 {
-   if (p!=None) {
-       p.bBehindView = False;
-       p = None;
+   local DXRCameraModes camera;
+
+   foreach AllActors(class'DXRCameraModes',camera)
+       break;
+
+   if (p!=None && camera!=None) {
+       camera.DisableTempCamera();
    }
 }
 
@@ -16,6 +20,7 @@ function Frob(actor Frobber, Inventory frobWith)
 #ifndef vmd
     local DXRFashion fashion;
 #endif
+    local DXRCameraModes camera;
     local DXRando dxr;
 
     Super.Frob(Frobber, frobWith);
@@ -29,14 +34,18 @@ function Frob(actor Frobber, Inventory frobWith)
         p.ClientMessage("Time for some new clothes!",, true);
         foreach AllActors(class'DXRFashion',fashion)
             break;
+        foreach AllActors(class'DXRCameraModes',camera)
+            break;
 
         if (fashion!=None) {
             fashion.RandomizeClothes(p);
             fashion.GetDressed();
 
-            if (p.bBehindView == False) {
-                p.bBehindView = True;
-                SetTimer(0.75,False);
+            if (camera!=None){
+                if (camera.IsFirstPersonGame() && p.bBehindView == False) {
+                    camera.EnableTempThirdPerson();
+                    SetTimer(0.75,False);
+                }
             }
         }
 
