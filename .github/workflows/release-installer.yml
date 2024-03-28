@@ -7,14 +7,12 @@ on:
       - prereleased
   push:
     branches: ["master"]
-  workflow_run:
-    workflows: ["pre-release"]
-    types:
-      - completed
 
 jobs:
   windows:
     runs-on: windows-latest
+    env:
+        RELEASE_TAG: testing
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -22,12 +20,9 @@ jobs:
       # install stuff and run tests
       - uses: ./.github/run-tests
 
-      # default the tag to the current ref, or use the testing tag
-      - run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
-        shell: bash
-
-      - if: ${{ startsWith(github.ref, 'refs/heads/') }}
-        run: echo "RELEASE_TAG=testing" >> $GITHUB_ENV
+      # set the tag to the current ref, otherwise stick with the testing tag
+      - if: ${{ ! startsWith(github.ref, 'refs/heads/') }}
+        run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
         shell: bash
 
       # upload assets to release
@@ -53,6 +48,8 @@ jobs:
 
   linux:
     runs-on: ubuntu-latest
+    env:
+        RELEASE_TAG: testing
     defaults:
       run:
         shell: bash
@@ -66,12 +63,9 @@ jobs:
 
       - uses: ./.github/run-tests
 
-      # default the tag to the current ref, or use the testing tag
-      - run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
-        shell: bash
-
-      - if: ${{ startsWith(github.ref, 'refs/heads/') }}
-        run: echo "RELEASE_TAG=testing" >> $GITHUB_ENV
+      # set the tag to the current ref, otherwise stick with the testing tag
+      - if: ${{ ! startsWith(github.ref, 'refs/heads/') }}
+        run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
         shell: bash
 
       # update our testing tag
