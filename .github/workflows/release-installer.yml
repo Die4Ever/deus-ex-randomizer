@@ -6,7 +6,7 @@ on:
       - published
       - prereleased
   push:
-    branches: ["develop"] # TODO: switch this to master
+    branches: ["master"]
   workflow_run:
     workflows: ["pre-release"]
     types:
