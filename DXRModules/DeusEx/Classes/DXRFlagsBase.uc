@@ -17,13 +17,15 @@ var #var(flagvarprefix) int next_seed;
 var #var(flagvarprefix) int seed, playthrough_id;
 var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 
+// these config vars will be remembered for next time you open the new game screen
 var config int gamemode;//0=original, 1=rearranged, 2=horde, 3=rando lite //old... 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
-var #var(flagvarprefix) int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
-var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
+var config int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
+var config int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
+var config int mirroredmaps;
+
 var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
 var #var(flagvarprefix) int crowdcontrol;
-var #var(flagvarprefix) int mirroredmaps;
 var #var(flagvarprefix) int bingo_duration;
 var #var(flagvarprefix) int bingo_scale;
 

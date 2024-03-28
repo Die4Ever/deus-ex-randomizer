@@ -114,11 +114,15 @@ function BindControls(optional string action)
 
     if(mirrored_maps_files_found) {
         NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
-        f.mirroredmaps = 50;// default to 50% when files are available
+        if(f.mirroredmaps == -1) {
+            f.mirroredmaps = 50; // default to 50% when the files are installed
+        }
         Slider(f.mirroredmaps, 0, 100);
     } else {
+        // use -1 to indicate not installed, because this gets saved to the config
+        f.mirroredmaps = -1;
         NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
-        EnumOption("Mirror Map Files Not Found", 0, f.mirroredmaps);
+        EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
     }
 #endif
 

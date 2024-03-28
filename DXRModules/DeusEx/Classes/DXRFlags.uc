@@ -71,10 +71,7 @@ function InitDefaults()
         if( dxr != None) {
             RollSeed();
         }
-        autosave = 2;
-        loadout = 0;
         crowdcontrol = 0;
-        mirroredmaps = 0;
     }
     bingo_duration=0;
     bingo_scale=100;
@@ -91,7 +88,6 @@ function InitDefaults()
     difficulty = 1;
     maxrando = 1;
 #else
-    difficulty = 2;
     maxrando = 0;
 #endif
 
@@ -949,4 +945,13 @@ function ExtendedTests()
     SetDifficulty(1);
     testint(settings.health, 100, "SetDifficulty check health");
     testint(settings.energy, 100, "SetDifficulty check energy");
+}
+
+defaultproperties
+{
+    difficulty=2
+    autosave=2
+    loadout=0
+    crowdcontrol=0
+    mirroredmaps=50
 }
