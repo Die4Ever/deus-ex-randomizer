@@ -5,16 +5,26 @@ var transient bool restarting;
 var DataLinkTrigger dataLinkTriggerQueue[16];
 var transient float pitchAdjust;
 
+function bool bIsFastMode()
+{
+    local DXRando dxr;
+
+    if(Human(player).bZeroRando) return false;
+    dxr = Human(player).GetDXR();
+    if(dxr != None && dxr.dxInfo.missionNumber == 0) {
+        return false;
+    }
+    return true;
+}
+
 function bool PushDataLink( Conversation queueCon )
 {
-    local bool bZeroRando;
     // queue up the incoming message
     if(Super.PushDataLink(queueCon) == false)
         return false;
 
-    bZeroRando = Human(player).bZeroRando;
     // make our timer shorter
-    if(!bZeroRando && speechFastEndTime > Level.Timeseconds + 0.1 && currentEvent != None)
+    if(!bIsFastMode() && speechFastEndTime > Level.Timeseconds + 0.1 && currentEvent != None)
         SetTimer(speechFastEndTime - Level.Timeseconds, false);
 
     return true;
@@ -179,7 +189,7 @@ Begin:
     {
         PlaySpeech( ConEventSpeech(currentEvent).conSpeech.soundID );
 
-        if(HaveQueued() == false || Human(player).bZeroRando) {
+        if(HaveQueued() == false || !bIsFastMode()) {
             // Add two seconds to the sound since there seems to be a slight lag
             SetTimer( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID) / pitchAdjust, False );
         } else {

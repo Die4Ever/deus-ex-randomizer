@@ -1,4 +1,4 @@
-class DXRLoadouts extends DXRActorsBase;
+class DXRLoadouts extends DXRActorsBase transient;
 
 var int loadout;//copy locally so we don't need to make this class transient and don't need to worry about re-entering and picking up an item before DXRando loads
 

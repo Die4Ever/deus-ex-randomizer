@@ -91,3 +91,10 @@ function CapHealth(out int health, int d)
 {
     health = Min(health, d);
 }
+
+simulated function FirstEntry()
+{
+    if(dxr.dxInfo.missionNumber == 0) {
+        player().RestoreAllHealth();
+    }
+}
