@@ -3,6 +3,7 @@ name: release-installer
   release:
     types:
       - published
+      - prereleased
 
 jobs:
   windows:
