@@ -1,8 +1,8 @@
 name: "pre-release"
-
+# not currently in use
 on:
   push:
-    branches: ["develop"] # TODO: change this to master when ready
+    branches: ["master"]
     paths: ['*', 'installer/**', '.github/**']
 
 jobs:

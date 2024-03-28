@@ -1,5 +1,6 @@
 name: release-installer
-'on':
+
+on:
   release:
     types:
       - published
@@ -38,6 +39,7 @@ jobs:
           file: installer/dist/DXRandoInstaller.exe
           asset_name: DXRandoInstaller.exe
           tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
 
       - name: Upload Release Asset BingoViewer
         id: upload-release-asset-bingoviewer
@@ -47,6 +49,7 @@ jobs:
           file: installer/dist/BingoViewer.exe
           asset_name: BingoViewer.exe
           tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
 
   linux:
     runs-on: ubuntu-latest
@@ -56,19 +59,6 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-
-      # update our testing tag
-      - if: ${{ startsWith(github.ref, 'refs/heads/') }}
-        name: Update tag
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.git.updateRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'tags/testing',
-              sha: context.sha
-            })
 
       # install stuff and run tests
       - run: sudo apt-get update -y
@@ -84,6 +74,19 @@ jobs:
         run: echo "RELEASE_TAG=testing" >> $GITHUB_ENV
         shell: bash
 
+      # update our testing tag
+      - if: ${{ startsWith(github.ref, 'refs/heads/') }}
+        name: Update tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.updateRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/testing',
+              sha: context.sha
+            })
+
       # upload assets to release
       - name: Upload Release Asset DXRando
         id: upload-release-asset-dxrando
@@ -93,6 +96,7 @@ jobs:
           file: installer/dist/DXRandoInstaller
           asset_name: DXRandoInstaller-Linux
           tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
 
       - name: Upload Release Asset BingoViewer
         id: upload-release-asset-bingoviewer
@@ -102,3 +106,4 @@ jobs:
           file: installer/dist/BingoViewer
           asset_name: BingoViewer-Linux
           tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
