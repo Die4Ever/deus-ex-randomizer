@@ -15,7 +15,7 @@ class InstallerWindow(GUIBase):
         self.width = 350
         self.height = 500
         self.lastprogress = ''
-        self.root.title("Deus Ex Randomizer Installer " + GetVersion())
+        self.root.title("Deus Ex Randomizer " + GetVersion() + " Installer")
 
         dxvk_default = CheckVulkan()# this takes a second or so
         ogl2_default = dxvk_default or not IsWindows()
