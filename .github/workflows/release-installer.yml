@@ -4,6 +4,8 @@ name: release-installer
     types:
       - published
       - prereleased
+  push:
+    branches: ["develop"] # TODO: switch this to master
   workflow_run:
     workflows: ["pre-release"]
     types:
@@ -13,6 +15,11 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
+      - env:
+          EVENT_CONTEXT: ${{ toJSON(github.event) }}
+        run: |
+            echo $EVENT_CONTEXT
+
       - name: Check out repository code
         uses: actions/checkout@v4
 
