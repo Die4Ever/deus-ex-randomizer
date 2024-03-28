@@ -233,7 +233,7 @@ function PreFirstEntry()
 {
     Super.PreFirstEntry();
     if(dxr.flags.IsReducedRando()) return;
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     switch(dxr.localURL)
     {
@@ -269,7 +269,7 @@ function AnyEntry()
 
     Super.AnyEntry();
     if(dxr.flags.IsReducedRando()) return;
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     switch(dxr.localURL)
     {
@@ -444,7 +444,7 @@ function PostFirstEntry()
     }
 
     if(dxr.flags.IsReducedRando()) return;
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     SetSeed("Memes InterpolationPoints");
 

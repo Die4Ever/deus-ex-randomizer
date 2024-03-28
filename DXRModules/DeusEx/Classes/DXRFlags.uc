@@ -502,7 +502,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     settings = difficulty_settings[difficulty];
     moresettings = more_difficulty_settings[difficulty];
 
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) settings.dancingpercent = 0;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)) settings.dancingpercent = 0;
 
     if(gamemode == RandoMedium) {
         settings.startinglocations = 0;
