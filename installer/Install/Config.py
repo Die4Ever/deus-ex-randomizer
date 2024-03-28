@@ -55,7 +55,7 @@ class Config:
             self.AddToSection(self.sections[oursect], additions.get(sect))
 
 
-    def ModifySection(self, lines: list, changes: dict|None):
+    def ModifySection(self, lines: list, changes:dict):
         if not changes:
             return
         lowerchanges = {}
@@ -83,7 +83,7 @@ class Config:
             lines.append({'key': change, 'value': val})
 
 
-    def AddToSection(self, lines: list, additions: dict|None):
+    def AddToSection(self, lines: list, additions:dict):
         if not additions:
             return
         for (k,val) in additions.items():

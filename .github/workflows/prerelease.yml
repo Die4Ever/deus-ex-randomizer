@@ -12,9 +12,11 @@ jobs:
 
     steps:
        - name: Publish GitHub Release
-         uses: "marvinpinto/action-automatic-releases@latest"
+         uses: "crowbarmaster/GH-Automatic-Releases@v1.6.0"
          with:
            repo_token: "${{ secrets.GITHUB_TOKEN }}"
            automatic_release_tag: "testing"
            prerelease: true
            title: "Development Build"
+           generate_notes: false
+           body: "Don't use this unless you're willing to report bugs!"
