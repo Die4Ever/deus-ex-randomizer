@@ -1,0 +1,20 @@
+name: "pre-release"
+
+on:
+  push:
+    branches: ["develop"] # TODO: change this to master when ready
+    paths: ['*', 'installer/**', '.github/**']
+
+jobs:
+  pre-release:
+    name: "Pre Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+       - name: Publish GitHub Release
+         uses: "marvinpinto/action-automatic-releases@latest"
+         with:
+           repo_token: "${{ secrets.GITHUB_TOKEN }}"
+           automatic_release_tag: "testing"
+           prerelease: true
+           title: "Development Build"
