@@ -17,7 +17,7 @@ var #var(flagvarprefix) int next_seed;
 var #var(flagvarprefix) int seed, playthrough_id;
 var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 
-var #var(flagvarprefix) int gamemode;//0=original, 1=rearranged, 2=horde, 3=rando lite //old... 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
+var config int gamemode;//0=original, 1=rearranged, 2=horde, 3=rando lite //old... 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
 var #var(flagvarprefix) int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
 var #var(flagvarprefix) int maxrando;
@@ -942,6 +942,7 @@ simulated function SaveFlags()
     f.SetInt('Rando_version', flagsversion,, 999);
     BindFlags(Writing);
     LogFlags("SaveFlags");
+    SaveConfig();
 }
 
 simulated function LoadNoFlags()

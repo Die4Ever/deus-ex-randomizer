@@ -93,10 +93,10 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
         kentie = False
+
     exename = 'DXRando'
-    # TODO: allow separate exe file for linux, use new in_place boolean setting?
-    # maybe I can create the SteamPlay config file needed? I think it's a .desktop file
-    if not IsWindows():
+    # or should we not create a separate DXRando.exe file? Linux defaults to DeusEx.exe because of Steam
+    if not settings.get('DXRando.exe', IsWindows()):
         exename = 'DeusEx'
     exedest:Path = system / (exename+'.exe')
     CopyTo(exe_source, exedest)
@@ -106,7 +106,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     CopyTo(intfile, intdest)
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
-    VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini)
+    VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini, settings.get('ZeroRando', False))
 
     # also fix vanilla stuff
     if exename != 'DeusEx' and settings.get('FixVanilla'):
@@ -132,7 +132,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
-def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI):
+def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI, ZeroRando=False):
     defini_dest = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(sourceINI, defini_dest)
 
@@ -174,6 +174,12 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
         if 'D3D10Drv.D3D10RenderDevice' not in changes:
             changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
+
+    info('ZeroRando:', ZeroRando)
+    if ZeroRando:
+        if 'DeusEx.DXRFlags' not in changes:
+            changes['DeusEx.DXRFlags'] = {}
+        changes['DeusEx.DXRFlags'].update({'gamemode': '4'})
 
     if IsWindows() and not Vulkan:
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}

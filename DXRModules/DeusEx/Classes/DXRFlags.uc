@@ -72,8 +72,6 @@ function InitDefaults()
             RollSeed();
         }
         autosave = 2;
-
-        gamemode = 0;
         loadout = 0;
         crowdcontrol = 0;
         mirroredmaps = 0;
