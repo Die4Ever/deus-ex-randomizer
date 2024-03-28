@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       # install stuff and run tests
-      #- uses: ./.github/run-tests
+      - uses: ./.github/run-tests
 
       # default the tag to the current ref, or use the testing tag
       - run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
@@ -30,23 +30,23 @@ jobs:
         shell: bash
 
       # upload assets to release
-    #   - name: Upload Release Asset DXRando
-    #     id: upload-release-asset-dxrando
-    #     uses: svenstaro/upload-release-action@v2
-    #     with:
-    #       repo_token: ${{ secrets.GITHUB_TOKEN }}
-    #       file: installer/dist/DXRandoInstaller.exe
-    #       asset_name: DXRandoInstaller.exe
-    #       tag: ${{ env.RELEASE_TAG }}
+      - name: Upload Release Asset DXRando
+        id: upload-release-asset-dxrando
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: installer/dist/DXRandoInstaller.exe
+          asset_name: DXRandoInstaller.exe
+          tag: ${{ env.RELEASE_TAG }}
 
-    #   - name: Upload Release Asset BingoViewer
-    #     id: upload-release-asset-bingoviewer
-    #     uses: svenstaro/upload-release-action@v2
-    #     with:
-    #       repo_token: ${{ secrets.GITHUB_TOKEN }}
-    #       file: installer/dist/BingoViewer.exe
-    #       asset_name: BingoViewer.exe
-    #       tag: ${{ env.RELEASE_TAG }}
+      - name: Upload Release Asset BingoViewer
+        id: upload-release-asset-bingoviewer
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: installer/dist/BingoViewer.exe
+          asset_name: BingoViewer.exe
+          tag: ${{ env.RELEASE_TAG }}
 
   linux:
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
       - run: sudo apt-get update -y
       - run: sudo apt-get install -y python3-tk idle3 binutils
 
-      #- uses: ./.github/run-tests
+      - uses: ./.github/run-tests
 
       # default the tag to the current ref, or use the testing tag
       - run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
@@ -85,20 +85,20 @@ jobs:
         shell: bash
 
       # upload assets to release
-    #   - name: Upload Release Asset DXRando
-    #     id: upload-release-asset-dxrando
-    #     uses: svenstaro/upload-release-action@v2
-    #     with:
-    #       repo_token: ${{ secrets.GITHUB_TOKEN }}
-    #       file: installer/dist/DXRandoInstaller
-    #       asset_name: DXRandoInstaller-Linux
-    #       tag: ${{ env.RELEASE_TAG }}
+      - name: Upload Release Asset DXRando
+        id: upload-release-asset-dxrando
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: installer/dist/DXRandoInstaller
+          asset_name: DXRandoInstaller-Linux
+          tag: ${{ env.RELEASE_TAG }}
 
-    #   - name: Upload Release Asset BingoViewer
-    #     id: upload-release-asset-bingoviewer
-    #     uses: svenstaro/upload-release-action@v2
-    #     with:
-    #       repo_token: ${{ secrets.GITHUB_TOKEN }}
-    #       file: installer/dist/BingoViewer
-    #       asset_name: BingoViewer-Linux
-    #       tag: ${{ env.RELEASE_TAG }}
+      - name: Upload Release Asset BingoViewer
+        id: upload-release-asset-bingoviewer
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: installer/dist/BingoViewer
+          asset_name: BingoViewer-Linux
+          tag: ${{ env.RELEASE_TAG }}
