@@ -149,11 +149,11 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
 
     changes = {}
     if DXRandoini.exists():
-        oldconfig = DXRandoini.read_text()
-        oldconfig = Config.ReadConfig(oldconfig)
-        changes = Config.RetainConfigSections(
+        oldconfig = DXRandoini.read_bytes()
+        c = Config.Config(oldconfig)
+        changes = c.RetainConfigSections(
             set(('WinDrv.WindowsClient', 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe')),
-            oldconfig, changes
+            changes
         )
     elif not Vulkan and IsWindows():
         changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
@@ -192,13 +192,16 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
             changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
     if changes:
+        info('\n\n\n\n', defini_dest)
         b = defini_dest.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions={})
-        WriteBytes(defini_dest, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions={})
+        WriteBytes(defini_dest, c.GetBinary())
 
         b = DXRandoini.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions={})
-        WriteBytes(DXRandoini, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions={})
+        WriteBytes(DXRandoini, c.GetBinary())
 
 
 def InstallLDDP(system:Path, settings:dict):
@@ -248,14 +251,16 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
     confpath = GetDocumentsDir(system) / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
-        WriteBytes(confpath, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
+        WriteBytes(confpath, c.GetBinary())
 
     confpath = game / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
-        WriteBytes(confpath, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
+        WriteBytes(confpath, c.GetBinary())
 
     CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
 
@@ -307,37 +312,41 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
     info('ChangeModConfigs', system, modname, exename, newexename, in_place)
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()
-    b = Config.ModifyConfig(b, changes, additions)
+    c = Config.Config(b)
+    c.ModifyConfig(changes, additions)
     if in_place:
         newexename = exename
     outconf = system / (newexename + 'Default.ini')
-    WriteBytes(outconf, b)
+    WriteBytes(outconf, c.GetBinary())
 
     confpath = system / (exename + '.ini')
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
         outconf = system / (newexename + '.ini')
         if in_place:
             outconf = confpath
-        WriteBytes(outconf, b)
+        WriteBytes(outconf, c.GetBinary())
 
     # User inis
     if in_place:
         return
     confpath = system / (exename + 'DefUser.ini')
     b = confpath.read_bytes()
-    b = Config.ModifyConfig(b, changes, additions)
+    c = Config.Config(b)
+    c.ModifyConfig(changes, additions)
     outconf = system / (newexename + 'DefUser.ini')
     if in_place:
         outconf = confpath
-    WriteBytes(outconf, b)
+    WriteBytes(outconf, c.GetBinary())
 
     confpath = system / (exename + 'User.ini')
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
         outconf = system / (newexename + 'User.ini')
         if in_place:
             outconf = confpath
-        WriteBytes(outconf, b)
+        WriteBytes(outconf, c.GetBinary())

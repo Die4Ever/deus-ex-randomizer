@@ -23,10 +23,31 @@ get_options = re.compile(
     flags=re.MULTILINE
 )
 
-def ModifyConfig(data:bytes, changes:dict, additions:dict) -> bytes:
-    text:str = data.decode('iso_8859_1')# keep line endings correct
-    text = _ModifyConfig(text, changes, additions)
-    return text.encode('iso_8859_1')
+class Config:
+    def __init__(self, data: bytes):
+        if not isinstance(data, bytes):
+            raise RuntimeError('Config __init__ data needs to be bytes', type(data), data)
+        self.text = data.decode('iso_8859_1')# keep line endings correct
+        self.sections = _ReadConfig(self.text)
+
+    def GetBinary(self) -> bytes:
+        return self.text.encode('iso_8859_1')
+
+    def ModifyConfig(self, changes:dict, additions:dict):
+        self.text = _ModifyConfig(self.text, changes, additions)
+        self.sections = _ReadConfig(self.text)
+
+    def RetainConfigSections(self, names:set, changes:dict) -> dict:
+        for name in names:
+            if name not in self.sections:
+                continue
+            retain = {}
+            for (k,v) in self.sections[name].items():
+                retain[k] = v[0] # config parser makes everything a list, because of Paths
+            changes[name] = retain
+        return changes
+
+
 
 def _ModifyConfig(text:str, changes:dict, additions:dict) -> str:
     changes = changes.copy()
@@ -121,7 +142,7 @@ def _AddConfigVal(section:str, k:str, v:str) -> str:
     return addition + '\r\n' + section
 
 
-def ReadConfig(text:str):
+def _ReadConfig(text:str):
     sections = {}
     for i in get_sections.finditer(text):
         d = i.groupdict()
@@ -139,14 +160,3 @@ def ReadConfig(text:str):
 
         sections[sectname] = sect
     return sections
-
-
-def RetainConfigSections(names:set, orig:dict, changes:dict) -> dict:
-    for name in names:
-        if name not in orig:
-            continue
-        retain = {}
-        for (k,v) in orig[name].items():
-            retain[k] = v[0] # config parser makes everything a list, because of Paths
-        changes[name] = retain
-    return changes

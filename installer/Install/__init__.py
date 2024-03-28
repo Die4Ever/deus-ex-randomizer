@@ -267,13 +267,15 @@ def EngineDllFix(p:Path) -> bool:
 def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path, changes:dict):
     info('ModifyConfig', defconfig, config, outdefconfig, outconfig)
     bytes = defconfig.read_bytes()
-    bytes = Config.ModifyConfig(bytes, changes)
-    WriteBytes(outdefconfig, bytes)
+    c = Config.Config(bytes)
+    c.ModifyConfig(changes)
+    WriteBytes(outdefconfig, c.GetBinary())
 
     if config.exists():
         bytes = defconfig.read_bytes()
-        bytes = Config.ModifyConfig(bytes, changes)
-        WriteBytes(outconfig, bytes)
+        c = Config.Config(bytes)
+        c.ModifyConfig(changes)
+        WriteBytes(outconfig, c.GetBinary())
 
 
 def CopyD3DRenderers(system:Path):

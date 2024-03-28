@@ -27,6 +27,7 @@ class DXRTestCase(unittest.TestCase):
 
 
     def test_config(self):
+        # test config 1
         origconfig = (b'[Engine.Engine]\r\n'
             + b'DefaultGame=DeusEx.DeusExGameInfo\r\n'
             + b'\r\n\r\n'
@@ -40,18 +41,21 @@ class DXRTestCase(unittest.TestCase):
             + b'[Core.System]\r\nPaths=..\GMDXRandomizer\System\*.u\r\nPaths=Maps\r\nPaths=System\r\n'
         )
 
-        result = Config.ModifyConfig(origconfig,
+        c = Config.Config(origconfig)
+        c.ModifyConfig(
             {'Engine.Engine': {'DefaultGame': 'GMDXRandomizer.DXRandoGameInfo'}},#changes
             {'Core.System': {'Paths': '..\\GMDXRandomizer\\System\\*.u'}}#additions
         )
+        result = c.GetBinary()
 
         print('\nresult:')
         print(result)
         print('desired:')
         print(desiredconfig)
         print('')
-        self.assertEqual(result, desiredconfig, 'got desired config text')
+        self.assertEqual(result, desiredconfig, 'got desired config text 1')
 
+        # test config 2
         origconfig    = (b'[Engine.Engine]\r\nGameRenderDevice=D3D10Drv.D3D10RenderDevice\r\nAudioDevice=Galaxy.GalaxyAudioSubsystem\r\nNetworkDevice=IpDrv.TcpNetDriver\r\nDemoRecordingDevice=Engine.DemoRecDriver\r\nConsole=Engine.Console\r\nLanguage=VMD\r\nGameEngine=DeusEx.DeusExGameEngine\r\nEditorEngine=Editor.EditorEngine\r\nWindowedRenderDevice=SoftDrv.SoftwareRenderDevice\r\nRenderDevice=GlideDrv.GlideRenderDevice\r\n'
             + b'DefaultGame=DeusEx.DeusExGameInfo\r\n'
             + b'DefaultServerGame=DeusEx.DeathMatchGame\r\nViewportManager=WinDrv.WindowsClient\r\nRender=RenderExt.RenderExt\r\nInput=Extension.InputExt\r\nCanvas=Engine.Canvas\r\n'
@@ -66,17 +70,44 @@ class DXRTestCase(unittest.TestCase):
             + b'CdPath=D:\r\n\r\n'
             + b'\r\n\r\n[Core.System]\r\nPaths=..\\VMDRandomizer\\System\\*.u\r\n') # leftover addition with no matched section gets added
 
-        result = Config.ModifyConfig(origconfig,
+        c = Config.Config(origconfig)
+        c.ModifyConfig(
             {'Engine.Engine': {'DefaultGame': 'VMDRandomizer.DXRandoGameInfo', 'Root': 'VMDRandomizer.DXRandoRootWindow'}},#changes
             {'Core.System': {'Paths': '..\\VMDRandomizer\\System\\*.u'}}#additions
         )
+        result = c.GetBinary()
 
         print('\nresult:')
         print(result)
         print('desired:')
         print(desiredconfig)
         print('')
-        self.assertEqual(result, desiredconfig, 'got desired config text')
+        self.assertEqual(result, desiredconfig, 'got desired config text 2')
+
+        # test config 3 TODO: retain arrays in config
+        origconfig = (b'[DeusEx.DXRando]\r\n'
+            + b'modules_to_load[0]=DXRTelemetry\r\n'
+            + b'modules_to_load[1]=DXRMissions\r\n'
+            + b'\r\n\r\n'
+            + b'[Core.System]\r\nPaths=Maps\r\nPaths=System\r\n'
+        )
+
+        c = Config.Config(origconfig)
+        data = c.sections
+
+        print('\nresult:')
+        print(data)
+        print('desired:')
+        print(origconfig)
+        print('')
+        self.assertDictEqual(data,
+            {
+                'DeusEx.DXRando': {
+                    #'modules_to_load[0]': 'DXRTelemetry',
+                    #'modules_to_load[1]': 'DXRMissions',
+                },
+                'Core.System': {'Paths': ['Maps', 'System']}
+            }, 'ReadConfig test')
 
 if __name__ == "__main__":
     unittest.main(verbosity=9, warnings="error", failfast=True)
