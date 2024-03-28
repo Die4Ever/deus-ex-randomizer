@@ -50,7 +50,7 @@ function DrawVisionAugmentation(GC gc)
 
     // brighten and tint the screen
     gc.SetStyle(DSTY_Modulated);
-    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'Solid');
+    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
     gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
     gc.SetStyle(DSTY_Translucent);
 
