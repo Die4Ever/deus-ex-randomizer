@@ -68,7 +68,7 @@ class DXRTestCase(unittest.TestCase):
             + b'Root=VMDRandomizer.DXRandoRootWindow\r\n'
             + b';Root=DeusEx.DeusExRootWindow\r\n'
             + b'CdPath=D:\r\n\r\n'
-            + b'\r\n\r\n[Core.System]\r\nPaths=..\\VMDRandomizer\\System\\*.u\r\n') # leftover addition with no matched section gets added
+            + b'\r\n[Core.System]\r\nPaths=..\\VMDRandomizer\\System\\*.u\r\n') # leftover addition with no matched section gets added
 
         c = Config.Config(origconfig)
         c.ModifyConfig(
@@ -84,10 +84,11 @@ class DXRTestCase(unittest.TestCase):
         print('')
         self.assertEqual(result, desiredconfig, 'got desired config text 2')
 
-        # test config 3 TODO: retain arrays in config
+        # test config 3
         origconfig = (b'[DeusEx.DXRando]\r\n'
             + b'modules_to_load[0]=DXRTelemetry\r\n'
             + b'modules_to_load[1]=DXRMissions\r\n'
+            + b'; test comment\r\n'
             + b'\r\n\r\n'
             + b'[Core.System]\r\nPaths=Maps\r\nPaths=System\r\n'
         )
@@ -102,11 +103,15 @@ class DXRTestCase(unittest.TestCase):
         print('')
         self.assertDictEqual(data,
             {
-                'DeusEx.DXRando': {
-                    #'modules_to_load[0]': 'DXRTelemetry',
-                    #'modules_to_load[1]': 'DXRMissions',
-                },
-                'Core.System': {'Paths': ['Maps', 'System']}
+                'DeusEx.DXRando': [
+                    {'key': 'modules_to_load[0]', 'value': 'DXRTelemetry'},
+                    {'key': 'modules_to_load[1]', 'value': 'DXRMissions'},
+                    {'text': '; test comment'},
+                ],
+                'Core.System': [
+                    {'key': 'Paths', 'value': 'Maps'},
+                    {'key': 'Paths', 'value': 'System'},
+                ],
             }, 'ReadConfig test')
 
 if __name__ == "__main__":

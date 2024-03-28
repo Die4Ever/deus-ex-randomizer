@@ -152,7 +152,8 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
         oldconfig = DXRandoini.read_bytes()
         c = Config.Config(oldconfig)
         changes = c.RetainConfigSections(
-            set(('WinDrv.WindowsClient', 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe')),
+            set(('WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
+                 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
             changes
         )
     elif not Vulkan and IsWindows():

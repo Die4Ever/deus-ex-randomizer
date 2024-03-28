@@ -1,5 +1,6 @@
 from Install import info, debug
 try:
+    from collections import OrderedDict
     from pathlib import Path
     import re
 except Exception as e:
@@ -7,156 +8,132 @@ except Exception as e:
     raise
 
 # use regex, because configparser doesn't support multiple entries with the same key, like Paths
-get_sections = re.compile(
-    r'\s*(?P<all>' + r'^\['
-        + r'(?P<section>[^\r\n\[\]]+)'
-    + r'\]\s+'
-        + r'(?P<sectiondata>[^\[\]]*)'
-    + r')\s*',
-    flags=re.MULTILINE | re.DOTALL
-)
-
-get_options = re.compile(
-    r'^\s*(?P<all>'
-        + r'(?P<name>[^=]+)\s*=\s*(?P<value>[^\s]+)'
-    + r')\s*$',
-    flags=re.MULTILINE
-)
+get_section = re.compile(r'^\[(.+)\]$')
+get_keyvalue = re.compile(r'^(.+)=(.+)$')
 
 class Config:
     def __init__(self, data: bytes):
         if not isinstance(data, bytes):
             raise RuntimeError('Config __init__ data needs to be bytes', type(data), data)
-        self.text = data.decode('iso_8859_1')# keep line endings correct
-        self.sections = _ReadConfig(self.text)
+        text = data.decode('iso_8859_1')# keep line endings correct
+        self.sections: OrderedDict = _ReadConfig(text)
+
 
     def GetBinary(self) -> bytes:
-        return self.text.encode('iso_8859_1')
+        text = ''
+        for (sect, lines) in self.sections.items():
+            text += '[' + sect + ']\r\n'
+            for line in lines:
+                if line.get('text'):
+                    text += line.get('text') + '\r\n'
+                else:
+                    text += line.get('key') + '=' + line.get('value') + '\r\n'
+            text += '\r\n\r\n'
+        return text[0:-4].encode('iso_8859_1')
+
 
     def ModifyConfig(self, changes:dict, additions:dict):
-        self.text = _ModifyConfig(self.text, changes, additions)
-        self.sections = _ReadConfig(self.text)
+        # Unreal Engine 1 is case insensitive...
+        lowersections = {}
+        for sect in self.sections:
+            lowersections[sect.lower()] = sect
+
+        for sect in changes:
+            oursect = lowersections.get(sect.lower())
+            if not oursect:
+                self.sections[sect] = []
+                oursect = sect
+                lowersections[sect.lower()] = sect
+            self.ModifySection(self.sections[oursect], changes.get(sect))
+
+        for sect in additions:
+            oursect = lowersections.get(sect.lower())
+            if not oursect:
+                self.sections[sect] = []
+                oursect = sect
+                lowersections[sect.lower()] = sect
+            self.AddToSection(self.sections[oursect], additions.get(sect))
+
+
+    def ModifySection(self, lines: list, changes: dict|None):
+        if not changes:
+            return
+        lowerchanges = {}
+        for change in changes.keys():
+            lowerchanges[change.lower()] = change
+
+        tempchanges = changes.copy()
+        line: dict
+        for i in range(len(lines)):
+            line = lines[i]
+            key:str = line.get('key', '')
+            changename = lowerchanges.get(key.lower())
+            if changename:
+                if changes[changename] == line['value']:
+                    continue
+                i+=1
+                lines.insert(i, { 'text': ';' + line['key'] + '=' + line['value'] })
+                assert isinstance(changes[changename], str)
+                line['key'] = changename # fix casing?
+                line['value'] = changes[changename]
+                tempchanges.pop(changename)
+
+        # add the things we wanted to change but didn't exist
+        for (change, val) in tempchanges.items():
+            lines.append({'key': change, 'value': val})
+
+
+    def AddToSection(self, lines: list, additions: dict|None):
+        if not additions:
+            return
+        for (k,val) in additions.items():
+            if isinstance(val, list):
+                for v in reversed(val):
+                    lines.insert(0, { 'key': k, 'value': v })
+            else:
+                lines.insert(0, { 'key': k, 'value': val })
+
 
     def RetainConfigSections(self, names:set, changes:dict) -> dict:
         for name in names:
             if name not in self.sections:
                 continue
             retain = {}
-            for (k,v) in self.sections[name].items():
-                retain[k] = v[0] # config parser makes everything a list, because of Paths
+            for line in self.sections[name]:
+                key = line.get('key')
+                if key:
+                    retain[key] = line.get('value')
             changes[name] = retain
         return changes
 
 
 
-def _ModifyConfig(text:str, changes:dict, additions:dict) -> str:
-    changes = changes.copy()
-    additions = additions.copy()
-    outtext = text
-    matched = False
-    for i in get_sections.finditer(text):
-        matched = True
-        d = i.groupdict()
-        all = d['all']
-        sect = d['section']
-        content = d['sectiondata']
-        if sect in changes:
-            newcontent = _ReplaceConfigVals(content, changes.pop(sect))
-            newall = all.replace(content, newcontent)
-            outtext = outtext.replace(all, newall)
-            content = newcontent
-            all = newall
-        if sect in additions:
-            newcontent = _AddConfigVals(content, additions.pop(sect))
-            newall = all.replace(content, newcontent)
-            outtext = outtext.replace(all, newall)
-
-    # add any changes we didn't match on
-    leftovers = dict(**changes)
-    leftovers.update(**additions)
-    for k in leftovers.keys():
-        outtext += '\r\n\r\n[' + k + ']\r\n'
-        if k in changes:
-            debug(changes[k])
-            outtext += _AddConfigVals('', changes[k])
-        if k in additions:
-            debug(additions[k])
-            outtext += _AddConfigVals('', additions[k])
-    return outtext
-
-
-def _ReplaceConfigVals(section:str, changes:dict) -> str:
-    if not changes:
-        return section
-    changes = changes.copy()
-    outsect = section
-    matched = False
-
-    for i in get_options.finditer(section):
-        matched = True
-        d = i.groupdict()
-        name = d['name']
-        if name not in changes:
+def _ReadConfig(text:str) -> OrderedDict:
+    sections = OrderedDict()
+    sections[''] = []
+    currsection = ''
+    for line in text.splitlines():
+        if not line:
             continue
-        all = d['all']
-        value = d['value']
-        newval = changes.pop(name)
-        if value == newval:
+
+        m = get_section.match(line)
+        if m:
+            currsection = m.group(1)
+            if currsection not in sections:
+                sections[currsection] = []
             continue
-        oldline = name+'='+value
-        newline = name+'='+newval
-        newline += '\r\n;' + oldline# save the old line as a comment
-        newall = all.replace(oldline, newline)
-        outsect = outsect.replace(all, newall)
 
-    if changes:
-        outsect = _AddConfigVals(outsect, changes)
-    return outsect
-
-
-def _AddConfigVals(section:str, additions:dict) -> str:
-    if not additions:
-        return section
-    for (k,v) in additions.items():
-        if isinstance(v, list):
-            for i in v:
-                section = _AddConfigVal(section, k, i)
+        m = get_keyvalue.match(line)
+        if m:
+            key = m.group(1)
+            value = m.group(2)
+            linedata = { 'key': key, 'value': value }
         else:
-            section = _AddConfigVal(section, k, v)
+            linedata = { 'text': line }
 
-    return section
+        sections[currsection].append(linedata)
 
-
-def _AddConfigVal(section:str, k:str, v:str) -> str:
-    addition = k+'='+v
-    # check all the newlines
-    for ending in ('\r\n', '\n', '\r'):
-        # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
-        if section.startswith(addition + ending):
-            return section
-        if ending + addition + ending in section:
-            return section
-        if section.endswith(ending + addition):
-            return section
-
-    return addition + '\r\n' + section
-
-
-def _ReadConfig(text:str):
-    sections = {}
-    for i in get_sections.finditer(text):
-        d = i.groupdict()
-        sectname = d['section']
-        content = d['sectiondata']
-        sect = {}
-        for i in get_options.finditer(content):
-            d = i.groupdict()
-            name = d['name']
-            value = d['value']
-            if name not in sect:
-                sect[name] = [value]
-            else:
-                sect[name].append(value)
-
-        sections[sectname] = sect
+    # remove empty top of file before a section is found, but only if it's actually empty, we want to keep comments and stuff
+    if not sections['']:
+        sections.pop('')
     return sections
