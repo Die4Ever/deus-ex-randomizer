@@ -5,14 +5,19 @@ var bool bAlreadyUsed;
 
 function Timer()
 {
-   local DXRCameraModes camera;
+    local DXRCameraModes camera;
 
-   foreach AllActors(class'DXRCameraModes',camera)
-       break;
+    foreach AllActors(class'DXRCameraModes',camera)
+        break;
 
-   if (p!=None && camera!=None) {
-       camera.DisableTempCamera();
-   }
+    if (p!=None && camera!=None) {
+        if(#defined(injections) && camera.GetExpectedCameraMode() == camera.CM_ThirdPerson) {
+            camera.EnableTempFixedCamera();
+            SetTimer(0.75,False);
+        } else {
+            camera.DisableTempCamera();
+        }
+    }
 }
 
 function Frob(actor Frobber, Inventory frobWith)
