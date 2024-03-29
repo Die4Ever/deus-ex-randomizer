@@ -22,6 +22,7 @@ function CalcTrace(float deltaTime)
                 || target.bHidden
                 || target.IsA('DeathMarker')
                 || (DeusExProjectile(target) != None && !DeusExProjectile(target).bStuck)
+                || !target.bBlockActors
             ) {
                 // do nothing - keep on tracing
             }
