@@ -188,11 +188,9 @@ function GetLevelSong(bool setseed)
         LevelSong = Music(DynamicLoadObject(newSong$"."$newSong, class'Music'));
 
     if(LevelSong == None) {
-#ifdef injections
-        err("Failed to load song "$newSong$"! You need to put the UMX file in the right spot, or remove this entry from the DXRMusic.ini config!");
-#else
-        err("Failed to load song "$newSong$"! You need to put the UMX file in the right spot, or remove this entry from the #var(package)Music.ini config!");
-#endif
+        err("Failed to load song " $ newSong $ "! You need to put the UMX file in the right spot!");
+        music.SetEnabledSong(newsong, false);
+        music.SaveConfig();
     }
 
     if(LevelSongSection == DyingSection && LevelSongSection == CombatSection && LevelSongSection == ConvSection && LevelSongSection == OutroSection)

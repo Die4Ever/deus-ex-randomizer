@@ -22,7 +22,7 @@ function CheckConfig()
     local int i, g;
     local string gamesongs[100];
 
-    if( ConfigOlderThan(2,5,2,5) ) {
+    if( ConfigOlderThan(2,6,2,2) ) {
         allowCombat = default.allowCombat;
 
         for(i=0; i<ArrayCount(choices); i++) {
@@ -138,7 +138,7 @@ function GetUTSongs(out string songs[100])
     songs[i++] = "Colossus";
     songs[i++] = "Course";
     songs[i++] = "Credits.Trophy";
-    //songs[i++] = "Ending"; // duplicate song name with Unreal, complicates the menus
+    songs[i++] = "Ending"; // duplicate file name with Unreal, Ending.umx
     songs[i++] = "Enigma";
     songs[i++] = "firebr";
     songs[i++] = "Foregone";
@@ -173,7 +173,7 @@ function GetUnrealSongs(out string songs[100])
     songs[i++] = "DigSh";
     songs[i++] = "Dusk";
     songs[i++] = "EndEx";
-    songs[i++] = "Ending";
+    songs[i++] = "UEnding.Ending"; // duplicate file name with UT, rename the Ending.umx file to UEnding.umx
     songs[i++] = "EverSmoke";
     songs[i++] = "Fifth";
     songs[i++] = "Flyby";
@@ -229,16 +229,32 @@ function int AddGameSongs(string songs[100], out int i)
     return i;
 }
 
+function bool bSongExists(string song)
+{
+    local Music SongObj;
+
+    if(InStr(song, ".") != -1)
+        SongObj = Music(DynamicLoadObject(song, class'Music', true)); // MayFail=true so it doesn't spam the logs
+    else
+        SongObj = Music(DynamicLoadObject(song$"."$song, class'Music', true));
+
+    return SongObj != None;
+}
+
 function SetEnabledGameSongs(string songs[100], bool enable)
 {
     local int c, s;
-    l("SetEnabledGameSongs "$songs[0]@enable);
+    l("SetEnabledGameSongs " $ songs[0] @ enable);
     for(c=0; c<ArrayCount(choices); c++) {
         if(choices[c].song == "") continue;
         for(s=0; s<ArrayCount(songs); s++) {
             if(songs[s] == "") break;
             if(songs[s] ~= choices[c].song) {
                 choices[c].enabled = enable;
+                if(enable && !bSongExists(songs[s])) {
+                    l("SetEnabledGameSongs " $ songs[s] $ " file does not exist");
+                    choices[c].enabled = false;
+                }
                 break;
             }
         }
@@ -282,6 +298,10 @@ function SetEnabledSong(string song, bool enable)
     for(c=0; c<ArrayCount(choices); c++) {
         if(choices[c].song ~= song || choices[c].song ~= fullsong) {
             choices[c].enabled = enable;
+            if(enable && !bSongExists(fullsong)) {
+                l("SetEnabledSong " $ song $ " file does not exist");
+                choices[c].enabled = false;
+            }
         }
     }
     SaveConfig();

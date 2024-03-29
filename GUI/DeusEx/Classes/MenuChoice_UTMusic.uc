@@ -82,10 +82,7 @@ function _SaveSetting()
         GetGameSongs(songs);
         m.SetEnabledGameSongs(songs, bEnabled);
         m.SaveConfig();
-        if(bEnabled)
-            num_enabled = total;
-        else
-            num_enabled = 0;
+        bEnabled = m.AreGameSongsEnabled(songs, num_enabled, total);
         SetNumEnabledText();
     }
 }
@@ -117,9 +114,9 @@ function ResetToDefault()
 defaultproperties
 {
 #ifdef injections
-    HelpText="Ensure the UMX files are in the right place. You can also edit DXRMusic.ini for further customization."
+    HelpText="BRING YOUR OWN FILES. Ensure the UMX files are in the right place.|nYou can also edit DXRMusic.ini for further customization."
 #else
-    HelpText="Ensure the UMX files are in the right place. You can also edit #var(package)Music.ini for further customization."
+    HelpText="BRING YOUR OWN FILES. Ensure the UMX files are in the right place.|nYou can also edit #var(package)Music.ini for further customization."
 #endif
     actionText="Unreal Tournament Music"
     enumText(0)="Disabled"
