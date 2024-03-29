@@ -8,7 +8,6 @@ simulated function float GetWeaponSkill()
 defaultproperties
 {
     HitDamage=1
-    GoverningSkill=None
     FireSound=Sound'DeusExSounds.Weapons.BatonFire'
     Misc1Sound=Sound'DeusExSounds.Weapons.BatonHitFlesh'
     Misc2Sound=Sound'DeusExSounds.Weapons.BatonHitHard'
