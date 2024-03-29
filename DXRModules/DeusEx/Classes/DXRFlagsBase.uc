@@ -22,6 +22,7 @@ var config int gamemode;//0=original, 1=rearranged, 2=horde, 3=rando lite //old.
 var config int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var config int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
 var config int mirroredmaps;
+var config int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 
 var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
@@ -29,7 +30,6 @@ var #var(flagvarprefix) int crowdcontrol;
 var #var(flagvarprefix) int bingo_duration;
 var #var(flagvarprefix) int bingo_scale;
 
-var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
 var #var(flagvarprefix) int bingoBoardRoll;
 
