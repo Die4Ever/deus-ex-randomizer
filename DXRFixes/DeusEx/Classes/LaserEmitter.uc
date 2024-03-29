@@ -18,11 +18,8 @@ function CalcTrace(float deltaTime)
     {
         foreach TraceTexture(class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, StartTrace)
         {
-            if (   target.DrawType == DT_None
-                || target.bHidden
-                || target.IsA('DeathMarker')
+            if (   !target.bBlockActors
                 || (DeusExProjectile(target) != None && !DeusExProjectile(target).bStuck)
-                || !target.bBlockActors
             ) {
                 // do nothing - keep on tracing
             }
