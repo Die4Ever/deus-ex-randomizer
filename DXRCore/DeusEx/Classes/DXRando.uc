@@ -309,21 +309,24 @@ function vmd_modules()
 
 function DXRFlags LoadFlagsModule()
 {
-    flags = DXRFlags(LoadModule(class'DXRFlags'));
+    // always force a new spawn, DXRFlags is transient anyways, and then new game menu calls this function
+    flags = DXRFlags(LoadModule(class'DXRFlags', true));
     return flags;
 }
 
-function DXRBase LoadModule(class<DXRBase> moduleclass)
+function DXRBase LoadModule(class<DXRBase> moduleclass, optional bool forcenew)
 {
     local DXRBase m;
     moduleclass = moduleclass.static.GetModuleToLoad(self, moduleclass);
     l("loading module "$moduleclass);
 
-    m = FindModule(moduleclass, true);
-    if( m != None ) {
-        info("found already loaded module "$m);
-        if(m.dxr != Self) m.Init(Self);
-        return m;
+    if(!forcenew) {
+        m = FindModule(moduleclass, true);
+        if( m != None ) {
+            info("found already loaded module "$m);
+            if(m.dxr != Self) m.Init(Self);
+            return m;
+        }
     }
 
     m = Spawn(moduleclass, None);

@@ -249,9 +249,9 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 
 event DestroyWindow()
 {
-#ifdef vmd
-    Player.ConsoleCommand("Open DXOnly");
-#endif
+    if(#defined(vmd)) {
+        Player.ConsoleCommand("Open DXOnly");
+    }
 }
 
 function NewGameSetup(float difficulty)
