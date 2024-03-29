@@ -37,11 +37,10 @@ function PreFirstEntry()
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
 
-    startMapName = GetStartMap(p,dxr.flags.settings.starting_map);
-    startMapName = class'DXRMapVariants'.static.CleanupMapName(startMapName);
-    startMapName = Caps(startMapName);
+    startMapName = _GetStartMap(dxr.flags.settings.starting_map);
+    startMapName = Left(startMapName, class'DXRMapVariants'.static.SplitMapName(startMapName));
 
-    if (InStr(startMapName,dxr.localURL)!=-1){
+    if (startMapName ~= dxr.localURL){
         StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
     }
 
@@ -201,7 +200,7 @@ static function string GetStartMap(Actor a, int start_map_val)
     return startMap;
 }
 
-static function string _GetStartMap(int start_map_val, out string friendlyName, optional out int bShowInMenu)
+static function string _GetStartMap(int start_map_val, optional out string friendlyName, optional out int bShowInMenu)
 {
     friendlyName = ""; // clear the out param to protect against reuse by the caller
     switch(start_map_val)
