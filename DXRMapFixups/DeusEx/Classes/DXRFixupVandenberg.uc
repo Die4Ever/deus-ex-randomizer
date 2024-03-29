@@ -47,6 +47,8 @@ function PreFirstEntryMapFixes()
     {
     case "12_VANDENBERG_CMD":
         // add goals and keypad code
+        // you've definitely met Jock at Everett's helipad
+        player().GoalCompleted('MeetJock');
 
         foreach AllActors(class'#var(prefix)TracerTong', tt) {
             RemoveFears(tt);// he looks pretty sick
