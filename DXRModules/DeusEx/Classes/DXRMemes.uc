@@ -722,7 +722,7 @@ function RandomizeDialogConversation(Conversation conv)
 }
 
 static function float GetVoicePitch(DXRando dxr){
-    if (!dxr.flags.IsReducedRando() && dxr.IsAprilFools()){
+    if (dxr.IsAprilFools()){
         if ((dxr.seed)%10>=5){
             return 1.5;
         } else {
