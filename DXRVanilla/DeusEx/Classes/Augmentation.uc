@@ -37,7 +37,7 @@ simulated function SetAutomatic()
 simulated function bool IsTicked()
 {
     return (bAutomatic==false && bIsActive)
-        || (bAutomatic && LastUsed+AutoLength > Level.TimeSeconds && Player.Energy > 0);
+        || (bAutomatic && bIsActive && LastUsed+AutoLength > Level.TimeSeconds && Player.Energy > 0);
 }
 
 simulated function TickUse()

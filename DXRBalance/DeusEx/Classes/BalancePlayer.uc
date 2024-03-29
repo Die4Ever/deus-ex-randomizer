@@ -471,6 +471,20 @@ exec function ActivateAugmentation(int num)
         AugmentationSystem.ActivateAugByKey(num);
 }
 
+//
+// If player chose to dual map the F keys, DXRando: don't directly activate the aug, that avoids the energy check
+//
+exec function DualmapF3() { ActivateAugmentation(0); }
+exec function DualmapF4() { ActivateAugmentation(1); }
+exec function DualmapF5() { ActivateAugmentation(2); }
+exec function DualmapF6() { ActivateAugmentation(3); }
+exec function DualmapF7() { ActivateAugmentation(4); }
+exec function DualmapF8() { ActivateAugmentation(5); }
+exec function DualmapF9() { ActivateAugmentation(6); }
+exec function DualmapF10() { ActivateAugmentation(7); }
+exec function DualmapF11() { ActivateAugmentation(8); }
+exec function DualmapF12() { ActivateAugmentation(9); }
+
 simulated function MoveDrone( float DeltaTime, Vector loc )
 {
     aDrone.MoveDrone(DeltaTime, loc);// DXRando: this doesn't belong in the player...

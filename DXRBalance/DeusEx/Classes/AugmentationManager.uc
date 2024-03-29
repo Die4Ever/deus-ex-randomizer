@@ -120,6 +120,34 @@ simulated function float GetAugLevelValue(class<Augmentation> AugClass)
     return -1.0;
 }
 
+
+// GetClassLevel DXRando: just squish the AugMuscle levels
+simulated function int GetClassLevel(class<Augmentation> augClass)
+{
+    local Augmentation anAug;
+
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.Class == augClass)
+        {
+            if (anAug.bHasIt && anAug.bIsActive)
+            {
+                if(AugMuscle(anAug) != None)
+                    return anAug.CurrentLevel * 2;// we squished the AugMuscle levels to make it more useful, and some things use the level instead of the strength
+                return anAug.CurrentLevel;
+            }
+            else
+                return -1;
+        }
+
+        anAug = anAug.next;
+    }
+
+    return -1;
+}
+
+
 // ----------------------------------------------------------------------
 // CalcEnergyUse()
 //

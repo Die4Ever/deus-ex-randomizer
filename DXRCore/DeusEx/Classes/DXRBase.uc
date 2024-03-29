@@ -226,7 +226,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     aug = #var(prefix)Augmentation(a);
     sk = #var(prefix)Skill(a);
 
-    if( aug != None ) len = ArrayCount(aug.LevelValues);
+    if( aug != None ) len = aug.MaxLevel + 1;
     else if( sk != None ) len = ArrayCount(sk.LevelValues);
     else {
         err("RandoLevelValues "$a$" isn't a skill or an augmentation");
