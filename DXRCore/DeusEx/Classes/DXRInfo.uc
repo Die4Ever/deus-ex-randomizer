@@ -120,7 +120,7 @@ simulated function err(coerce string message, optional bool skip_player_message)
         log("ERROR: " $ message, class.name);
 #ifdef singleplayer
     if(!skip_player_message && player() != None) {
-        player().ClientMessage( Class @ message, 'ERROR' );
+        player().ClientMessage( Class @ message, 'ERROR', true );
     }
 #else
     BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
