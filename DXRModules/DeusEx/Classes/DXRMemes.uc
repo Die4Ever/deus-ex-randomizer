@@ -232,7 +232,6 @@ function RandomMJ12Globe()
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
-    if(dxr.flags.IsReducedRando()) return;
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     switch(dxr.localURL)
@@ -268,7 +267,6 @@ function AnyEntry()
     local Vector v;
 
     Super.AnyEntry();
-    if(dxr.flags.IsReducedRando()) return;
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     switch(dxr.localURL)
@@ -443,7 +441,6 @@ function PostFirstEntry()
         RandomDancing(sp);
     }
 
-    if(dxr.flags.IsReducedRando()) return;
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     SetSeed("Memes InterpolationPoints");
