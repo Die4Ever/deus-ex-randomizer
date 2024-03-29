@@ -196,15 +196,10 @@ class InstallerWindow(GUIBase):
         self.installButton["state"]='disabled'
 
         flavors = {}
-        #dummy = DummyCheckbox()
         for (flavorName,flavor) in self.flavors.items():
             if not flavor['install'].get():
                 continue
             flavors[flavorName] = {
-                #'exetype': flavor.get('exe', dummy).get(),
-                #'mirrors': flavor.get('mirrors', dummy).get(),
-                #'LDDP': flavor.get('LDDP', dummy).get(),
-                #'FixVanilla': flavor.get('FixVanilla', dummy).get(),
                 'downloadcallback': self.DownloadProgress,
             }
             for (k,v) in flavor.items():

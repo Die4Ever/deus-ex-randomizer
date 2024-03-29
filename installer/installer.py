@@ -1,5 +1,5 @@
 
-typechecks = True
+typechecks = False
 if typechecks:
     from typeguard import typechecked, install_import_hook
     install_import_hook('Install')

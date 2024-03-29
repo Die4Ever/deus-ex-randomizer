@@ -3,6 +3,7 @@ class DXRAugAqualung injects AugAqualung;
 function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
+    // description gets overwritten by language file
     Description = default.Description;
 }
 

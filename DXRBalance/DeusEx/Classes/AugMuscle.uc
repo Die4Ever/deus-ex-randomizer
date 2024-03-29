@@ -3,6 +3,7 @@ class DXRAugMuscle injects AugMuscle;
 function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
+    // description gets overwritten by language file
     Description = default.Description;
 }
 

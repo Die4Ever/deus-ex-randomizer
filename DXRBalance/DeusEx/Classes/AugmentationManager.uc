@@ -121,7 +121,7 @@ simulated function float GetAugLevelValue(class<Augmentation> AugClass)
 }
 
 
-// GetClassLevel DXRando: just squish the AugMuscle levels
+// GetClassLevel DXRando: just squish the AugMuscle levels, this function is only used for AugMuscle, AugSpeed, and in multiplayer AugRadarTrans
 simulated function int GetClassLevel(class<Augmentation> augClass)
 {
     local Augmentation anAug;
