@@ -145,12 +145,12 @@ function SetCameraMode(int mode)
 #ifdef vanilla
             SetFixedCamera();
 #else
-            player().ClientMessage("Fixed camera only supported in vanilla!");
+            err("Fixed camera only supported in vanilla!");
 #endif
             break;
 
         default:
-            player().ClientMessage("Unknown camera mode "$mode);
+            err("Unknown camera mode "$mode);
             break;
     }
 }
