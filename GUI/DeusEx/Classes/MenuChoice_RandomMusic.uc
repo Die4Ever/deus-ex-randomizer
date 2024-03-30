@@ -23,7 +23,8 @@ static function bool IsEnabled(DXRFlags f)
 
 defaultproperties
 {
-    value=1;
+    value=1
+    defaultvalue=1
     defaultInfoWidth=243
     defaultInfoPosX=203
     HelpText="Randomize game music. This is automatically disabled for Zero Rando and Rando Lite modes."

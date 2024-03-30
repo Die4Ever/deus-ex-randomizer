@@ -6,7 +6,8 @@ class MenuChoice_FixGlitches extends DXRMenuUIChoiceBool;
 
 defaultproperties
 {
-    enabled=True;
+    enabled=True
+    defaultvalue=True
     defaultInfoWidth=243
     defaultInfoPosX=203
     HelpText="Fix glitches used for speedruns."

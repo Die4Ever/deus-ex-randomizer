@@ -6,7 +6,8 @@ class MenuChoice_ConfirmNoteDelete extends DXRMenuUIChoiceBool;
 
 defaultproperties
 {
-     enabled=True;
+     enabled=True
+     defaultvalue=True
      defaultInfoWidth=243
      defaultInfoPosX=203
      HelpText="Confirm when deleting a note"

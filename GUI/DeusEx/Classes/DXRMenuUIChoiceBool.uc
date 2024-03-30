@@ -1,6 +1,7 @@
 class DXRMenuUIChoiceBool extends DXRMenuUIChoiceEnum abstract;
 
 var config bool enabled;
+var bool defaultvalue;
 
 // ----------------------------------------------------------------------
 // SetInitialCycleType()
@@ -36,7 +37,7 @@ function LoadSetting()
 
 function ResetToDefault()
 {
-    enabled = default.enabled;
+    enabled = defaultvalue;
     SetValue(int(enabled));
     SaveSetting();
 }
@@ -46,7 +47,8 @@ function ResetToDefault()
 
 defaultproperties
 {
-    enabled=True;
+    enabled=True
+    defaultvalue=True
     enumText(0)="Disabled"
     enumText(1)="Enabled"
 }

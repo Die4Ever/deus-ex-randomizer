@@ -261,7 +261,7 @@ function ShowTeleporters()
     local #var(prefix)Teleporter t;
     local int show_teleporters;
 
-    show_teleporters = class'MenuChoice_ShowTeleporters'.default.show_teleporters;
+    show_teleporters = class'MenuChoice_ShowTeleporters'.default.value;
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
         t.bHidden = !(t.bCollideActors && t.bEnabled && show_teleporters>0);

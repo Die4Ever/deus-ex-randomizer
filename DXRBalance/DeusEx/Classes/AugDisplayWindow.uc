@@ -308,7 +308,7 @@ function DrawTargetAugmentation(GC gc)
 
     // check 500 feet in front of the player
     target = TraceHoverHint(8000);
-    if(class'MenuChoice_ShowTeleporters'.default.show_teleporters > 1) {
+    if(class'MenuChoice_ShowTeleporters'.default.value > 1) {
 	    tgtTeleporter = #var(prefix)Teleporter(target);
     }
 

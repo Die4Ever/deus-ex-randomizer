@@ -15,6 +15,7 @@ function SaveSetting()
 defaultproperties
 {
     enabled=True
+    defaultvalue=True
     HelpText="Some augmentations will only use energy while in effect."
     actionText="Semi-Automatic Augs"
     enumText(0)="Manual Augs"

@@ -52,13 +52,13 @@ event StyleChanged()
 
 function bool GetAutoCodes()
 {
-    return class'MenuChoice_PasswordAutofill'.default.codes_mode == 2;
+    return class'MenuChoice_PasswordAutofill'.default.value == 2;
 
 }
 
 function bool GetKnownCodes()
 {
-    return class'MenuChoice_PasswordAutofill'.default.codes_mode >= 1;
+    return class'MenuChoice_PasswordAutofill'.default.value >= 1;
 }
 
 function bool GetShowKeys()

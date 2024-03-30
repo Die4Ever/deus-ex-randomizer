@@ -69,5 +69,5 @@ function bool ShouldDisplay(float dist)
         return False;
     }
 
-    return (class'MenuChoice_ShowTeleporters'.default.show_teleporters > 1);
+    return (class'MenuChoice_ShowTeleporters'.default.value > 1);
 }

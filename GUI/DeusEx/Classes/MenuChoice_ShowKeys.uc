@@ -20,7 +20,8 @@ function SaveSetting()
 
 defaultproperties
 {
-    enabled=True;
+    enabled=True
+    defaultvalue=True
     defaultInfoWidth=243
     defaultInfoPosX=203
     HelpText="Show when doors can be opened with a key"
