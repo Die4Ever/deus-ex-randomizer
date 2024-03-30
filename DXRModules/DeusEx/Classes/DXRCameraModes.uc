@@ -1,4 +1,4 @@
-class DXRCameraModes expands DXRActorsBase;
+class DXRCameraModes expands DXRActorsBase transient;
 
 var int tempCameraMode;
 var CCResidentEvilCam reCam;
@@ -121,15 +121,18 @@ function SetCameraMode(int mode)
 {
     local name stateName;
 
-    //player().ClientMessage("tempCameraMode: "$tempCameraMode$"   mode being set: "$mode);
-
     if (player()!=None){
         stateName = player().GetStateName();
 
         //These are the possible states when you're in a cutscene
         if (stateName=='Interpolating' || stateName=='Paralyzed'){
             mode = CM_FirstPerson; //Leave it in first person
+        } else if (stateName=='Dying') {
+            return; // setting camera mode while dying causes your weapon and hand to show after dying
         }
+    } else {
+        err("SetCameraMode no player");
+        return;
     }
 
     switch(mode){
