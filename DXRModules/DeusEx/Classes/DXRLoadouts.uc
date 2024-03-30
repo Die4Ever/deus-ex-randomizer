@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,6,2,3) ) {
+    if( ConfigOlderThan(2,6,2,4) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -93,8 +93,8 @@ function CheckConfig()
         item_sets[2].name = "Stick With the Prod Plus";
         item_sets[2].player_message = "Stick with the prod!";
         item_sets[2].bans = "Engine.Weapon,AmmoDart";
-        item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun,WeaponRubberBaton";
-        item_sets[2].starting_equipments = "WeaponProd,AmmoBattery,WeaponRubberBaton";
+        item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun,#var(package).WeaponRubberBaton";
+        item_sets[2].starting_equipments = "WeaponProd,AmmoBattery,#var(package).WeaponRubberBaton";
         item_sets[2].starting_augs = "AugStealth,AugMuscle";
         item_sets[2].item_spawns = "WeaponProd,30,WeaponMiniCrossbow,30,WeaponRubberBaton,20";
 
