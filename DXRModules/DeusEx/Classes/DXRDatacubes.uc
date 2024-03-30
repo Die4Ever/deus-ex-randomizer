@@ -1,15 +1,14 @@
 class DXRDatacubes extends DXRPasswordsBase abstract;
 
 var safe_rule datacubes_rules[16];
-var config float min_hack_adjust, max_hack_adjust;
+var float min_hack_adjust, max_hack_adjust;
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,4,3) ) {
-        min_hack_adjust = 0.5;
-        max_hack_adjust = 1.5;
-    }
+    min_hack_adjust = 0.4;
+    max_hack_adjust = 1.5;
+
     if(class'DXRMapVariants'.static.IsRevisionMaps(player()))
         revision_datacubes_rules();
     else
@@ -559,8 +558,8 @@ function RandoHacks()
 function _RandoHackable(#var(prefix)HackableDevices h)
 {
     if( h.bHackable ) {
-        h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
-        h.hackStrength = int(h.hackStrength*100)/100.0;
+        h.hackStrength = rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust);
+        h.hackStrength = Clamp(h.hackStrength*100, 1, 100)/100.0;
         h.initialhackStrength = h.hackStrength;
     }
 }
@@ -653,8 +652,8 @@ function MakeAllHackable(int deviceshackable)
         if( h.bHackable == false && chance_single(deviceshackable) ) {
             l("found unhackable device: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL);
             h.bHackable = true;
-            h.hackStrength = FClamp(rngrange(1, min_hack_adjust, max_hack_adjust), 0, 1);
-            h.hackStrength = int(h.hackStrength*100)/100.0;
+            h.hackStrength = rngrange(1, min_hack_adjust, max_hack_adjust);
+            h.hackStrength = Clamp(h.hackStrength*100, 1, 100) / 100.0;
             h.initialhackStrength = h.hackStrength;
         }
 

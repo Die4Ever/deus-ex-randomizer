@@ -205,11 +205,11 @@ function CheckConfig()
         break;
     }
 
-    min_lock_adjust=0.5;
+    min_lock_adjust=0.4;
     max_lock_adjust=1.5;
-    min_door_adjust=0.5;
+    min_door_adjust=0.4;
     max_door_adjust=1.5;
-    min_mindmg_adjust=0.35;
+    min_mindmg_adjust=0.3;
     max_mindmg_adjust=1.2;
 
     Super.CheckConfig();
@@ -252,13 +252,13 @@ function RandomizeDoors()
             d.minDamageThreshold = 0;
 
         if( d.bPickable ) {
-            d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
-            d.lockStrength = int(d.lockStrength*100)/100.0;
+            d.lockStrength = rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust);
+            d.lockStrength = Clamp(d.lockStrength*100, 1, 100)/100.0;
             d.initiallockStrength = d.lockStrength;
         }
         if( d.bBreakable ) {
-            d.doorStrength = FClamp(rngrange(d.doorStrength, min_door_adjust, max_door_adjust), 0, 1);
-            d.doorStrength = int(d.doorStrength*100)/100.0;
+            d.doorStrength = rngrange(d.doorStrength, min_door_adjust, max_door_adjust);
+            d.doorStrength = Clamp(d.doorStrength*100, 1, 100)/100.0;
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
 #ifndef injections
             // without injections we can't augment the highlight window to show mindamagethreshold, so keep it simple for the player
@@ -427,8 +427,8 @@ function MakePickable(#var(DeusExPrefix)Mover d)
     }
     if( d.bPickable == false ) {
         d.bPickable = true;
-        d.lockStrength = FClamp(rngrange(0.8, min_door_adjust, max_door_adjust), 0, 1);
-        d.lockStrength = int(d.lockStrength*100)/100.0;
+        d.lockStrength = rngrange(0.7, min_lock_adjust, max_lock_adjust);
+        d.lockStrength = Clamp(d.lockStrength*100, 1, 100)/100.0;
         d.initiallockStrength = d.lockStrength;
     }
 }
