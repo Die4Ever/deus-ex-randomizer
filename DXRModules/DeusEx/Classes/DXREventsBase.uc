@@ -1016,7 +1016,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             i = options[x];
             l( "    " $ bingo_options[i].event $ "    - " $ bingo_options[i].desc );
         }
-        test(num_options > 50, "_CreateBingoBoard more than 50 options for " $ starting_map);
+        test(num_options > 50, "_CreateBingoBoard more than 50 options, found " $ num_options $ " for " $ starting_map);
         l("----------------------------------");
         return;
     }

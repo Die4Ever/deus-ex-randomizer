@@ -287,7 +287,8 @@ function AnyEntry()
     if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
 
-    if( dxr.dxInfo.missionNumber>0 && dxr.localURL != map_name ) {
+    if(dxr.localURL == "INTRO") {
+        l("moving from " $ dxr.localURL $ " to " $ map_name);
         mapvariants = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
         if(mapvariants != None) {
             map_name = mapvariants.VaryMap(map_name);

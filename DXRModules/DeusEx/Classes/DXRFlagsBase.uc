@@ -17,17 +17,19 @@ var #var(flagvarprefix) int next_seed;
 var #var(flagvarprefix) int seed, playthrough_id;
 var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 
-var #var(flagvarprefix) int gamemode;//0=original, 1=rearranged, 2=horde, 3=rando lite //old... 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
-var #var(flagvarprefix) int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
-var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
+// these config vars will be remembered for next time you open the new game screen
+var config int gamemode;//0=original, 1=rearranged, 2=horde, 3=rando lite //old... 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
+var config int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
+var config int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
+var config int mirroredmaps;
+var config int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
+
 var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
 var #var(flagvarprefix) int crowdcontrol;
-var #var(flagvarprefix) int mirroredmaps;
 var #var(flagvarprefix) int bingo_duration;
 var #var(flagvarprefix) int bingo_scale;
 
-var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
 var #var(flagvarprefix) int bingoBoardRoll;
 
@@ -75,6 +77,7 @@ struct MoreFlagsSettings{
     var int grenadeswap;
     var int newgameplus_curve_scalar;
     var int empty_medbots;
+    var int camera_mode;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -412,6 +415,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
     FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);
     FlagInt('Rando_num_removed_weapons', newgameplus_num_removed_weapons, mode, str);
+    FlagInt('Rando_camera_mode', moresettings.camera_mode, mode, str);
 
     return str;
 }
@@ -586,6 +590,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "New Game+ Removed Augmentations Per Loop";
         case 'Rando_num_removed_weapons':
             return "New Game+ Removed Weapons Per Loop";
+        case 'Rando_camera_mode':
+            return "Camera Mode";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -864,6 +870,17 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_starting_map':
             return class'DXRStartMap'.static.GetStartingMapNameCredits(val);
             break;
+
+        case 'Rando_camera_mode':
+            if (val==0){
+                return "First Person";
+            } else if (val==1){
+                return "Third Person";
+            } else if (val==2){
+                return "Fixed Camera";
+            }
+            break;
+
         default:
             return val $ " (Unhandled!)";
     }
@@ -927,6 +944,7 @@ simulated function SaveFlags()
     f.SetInt('Rando_version', flagsversion,, 999);
     BindFlags(Writing);
     LogFlags("SaveFlags");
+    SaveConfig();
 }
 
 simulated function LoadNoFlags()

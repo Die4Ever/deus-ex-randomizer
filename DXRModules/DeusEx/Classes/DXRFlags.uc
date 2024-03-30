@@ -8,6 +8,8 @@ const SeriousSam = 5;
 const SpeedrunMode = 6;
 const WaltonWare = 7;
 const WaltonWareEntranceRando = 8;
+const RandoMedium = 9;
+const WaltonWareHardcore = 10;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -69,12 +71,7 @@ function InitDefaults()
         if( dxr != None) {
             RollSeed();
         }
-        autosave = 2;
-
-        gamemode = 0;
-        loadout = 0;
         crowdcontrol = 0;
-        mirroredmaps = 0;
     }
     bingo_duration=0;
     bingo_scale=100;
@@ -91,7 +88,6 @@ function InitDefaults()
     difficulty = 1;
     maxrando = 1;
 #else
-    difficulty = 2;
     maxrando = 0;
 #endif
 
@@ -182,6 +178,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 #endif
 
@@ -254,6 +251,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
 #ifdef hx
@@ -325,6 +323,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
 #ifdef hx
@@ -396,6 +395,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
 #ifdef hx
@@ -467,6 +467,7 @@ function CheckConfig()
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].camera_mode = 0;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -495,9 +496,14 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     settings = difficulty_settings[difficulty];
     moresettings = more_difficulty_settings[difficulty];
 
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) settings.dancingpercent = 0;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)) settings.dancingpercent = 0;
 
-    if(IsReducedRando()) {
+    if(gamemode == RandoMedium) {
+        settings.startinglocations = 0;
+        settings.goals = 0;
+        settings.dancingpercent = 0;
+    }
+    else if(IsReducedRando()) {
         settings.doorsmode = 0;
         settings.doorsdestructible = 0;
         settings.doorspickable = 0;
@@ -529,9 +535,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.dancingpercent = 0;
         settings.swapitems = 0;
         settings.swapcontainers = 0;
-        settings.bingo_win = 0;
-        settings.bingo_freespaces = 1;
-        settings.spoilers = 1;
         settings.health = 100;
         settings.energy = 100;
         if(IsZeroRando()) {
@@ -628,6 +631,16 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         bingo_scale = 0;
         moresettings.newgameplus_curve_scalar = 50;
 
+        if(gamemode == WaltonWareHardcore) {
+#ifndef hx
+            settings.CombatDifficulty *= 0.2;
+#endif
+            settings.medkits = 0;
+            settings.medbots = 0;
+            settings.health = 200;
+            autosave = 0; // autosaves disabled, and DXRAutosave handles disallowing manual saves based on the gamemode
+        }
+
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
     }
@@ -649,7 +662,18 @@ function string DifficultyName(int diff)
 
 static function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
-    return slot;
+    if(slot--==0) return 0;
+    if(slot--==0) return EntranceRando;
+    if(slot--==0) return WaltonWare;
+    if(slot--==0) return WaltonWareEntranceRando;
+    if(slot--==0) return WaltonWareHardcore;
+    if(slot--==0) return SpeedrunMode;
+    if(slot--==0) return ZeroRando;
+    if(slot--==0) return RandoLite;
+    if(slot--==0) return RandoMedium;
+    if(slot--==0) return SeriousSam;
+    if(slot--==0) return HordeMode;
+    return 999999;
 }
 
 static function string GameModeName(int gamemode)
@@ -667,6 +691,8 @@ static function string GameModeName(int gamemode)
         return "Randomizer Lite";
     case ZeroRando:
         return "Zero Rando";
+    case RandoMedium:
+        return "Randomizer Medium";
     case SeriousSam:
         return "Serious Sam Mode";
     case SpeedrunMode:
@@ -677,6 +703,8 @@ static function string GameModeName(int gamemode)
     case WaltonWareEntranceRando:
         return "WaltonWare Entrance Rando";
 #endif
+    case WaltonWareHardcore:
+        return "WaltonWare Harcore";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -701,7 +729,7 @@ function bool IsZeroRando()
 
 function bool IsReducedRando()
 {
-    return gamemode == RandoLite || gamemode == ZeroRando;
+    return gamemode == RandoLite || gamemode == ZeroRando || gamemode == RandoMedium;
 }
 
 function bool IsSpeedrunMode()
@@ -711,7 +739,12 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore;
+}
+
+function bool IsWaltonWareHardcore()
+{
+    return gamemode == WaltonWareHardcore;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
@@ -912,4 +945,13 @@ function ExtendedTests()
     SetDifficulty(1);
     testint(settings.health, 100, "SetDifficulty check health");
     testint(settings.energy, 100, "SetDifficulty check energy");
+}
+
+defaultproperties
+{
+    difficulty=2
+    autosave=2
+    loadout=0
+    crowdcontrol=0
+    mirroredmaps=50
 }

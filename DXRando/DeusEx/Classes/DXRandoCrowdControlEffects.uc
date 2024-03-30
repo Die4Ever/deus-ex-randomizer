@@ -4,6 +4,7 @@ var DXRandoCrowdControlLink ccLink;
 
 var DataStorage datastorage;
 var transient DXRando dxr;
+var transient DXRCameraModes dxrCameras;
 var string shouldSave;
 
 const Success = 0;
@@ -17,7 +18,6 @@ const CCType_Stop       = 0x02;
 const CCType_PlayerInfo = 0xE0; //Not used for us
 const CCType_Login      = 0xF0; //Not used for us
 const CCType_KeepAlive  = 0xFF; //Not used for us
-
 
 var int lavaTick;
 
@@ -80,8 +80,6 @@ var DXRandoCrowdControlPawn CrowdControlPawns[3];
 
 var transient AugEffectState AugEffectStates[32]; //Vanilla has a 25 array, but in case mods bump it up?
 var transient bool AugEffectStatesInit;
-
-var CCResidentEvilCam reCam;
 
 var transient bool HaveFlamethrower;
 var transient bool FlamethrowerInit;
@@ -159,9 +157,7 @@ function PeriodicUpdates()
     }
 
     if (isTimerActive('cc_behindTimer')){
-        player().bBehindView=True;
-        player().bCrosshairVisible=False;
-        player().ViewTarget=None;
+        dxrCameras.EnableTempThirdPerson();
     }
     if (decrementTimer('cc_behindTimer')) {
         StopCrowdControlEvent("third_person",true);
@@ -207,11 +203,7 @@ function PeriodicUpdates()
     }
 
     if (isTimerActive('cc_ResidentEvil')){
-        if (reCam==None){
-            SpawnRECam();
-        }
-
-        player().bCrosshairVisible=False;
+        dxrCameras.EnableTempFixedCamera();
     }
     if (decrementTimer('cc_ResidentEvil')) {
         StopCrowdControlEvent("resident_evil",true);
@@ -264,6 +256,10 @@ function HandleEffectSelectability()
         }
         FlamethrowerInit=True;
     }
+
+    ccLink.sendEffectSelectability("third_person",!dxrCameras.IsThirdPersonGame());
+    ccLink.sendEffectSelectability("resident_evil",!dxrCameras.IsFixedCamGame());
+
     HandleAugEffectSelectability("augspeed");
     HandleAugEffectSelectability("augtarget");
     HandleAugEffectSelectability("augcloak");
@@ -429,6 +425,11 @@ function InitOnEnter() {
     local inventory anItem;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
+    dxrCameras = DXRCameraModes(dxr.FindModule(class'DXRCameraModes'));
+    if (dxrCameras==None){
+        player().ClientMessage("Couldn't find cameras module");
+    }
+
     if (getTimer('cc_MatrixModeTimer') > 0) {
         StartMatrixMode();
     } else {
@@ -456,11 +457,12 @@ function InitOnEnter() {
 
     SetFloatyPhysics(isTimerActive('cc_floatyTimer'));
 
-    player().bBehindView=isTimerActive('cc_behindTimer');
-    if (player().bBehindView){
-        player().bCrosshairVisible = False;
+    if (isTimerActive('cc_behindTimer')){
+        dxrCameras.EnableTempThirdPerson();
+    } else if (isTimerActive('cc_ResidentEvil')){
+        dxrCameras.EnableTempFixedCamera();
     } else {
-        player().bCrosshairVisible = True; //Will need further logic here if adding a "hide crosshairs" effect
+        dxrCameras.DisableTempCamera();
     }
 
     if (0==retrieveFloatValue('cc_damageMult')) {
@@ -483,27 +485,6 @@ function InitOnEnter() {
     } else {
         player().shaketimer=0;
     }
-
-    if (isTimerActive('cc_ResidentEvil')) {
-        if (reCam==None){
-            SpawnRECam();
-        }
-        if (player().ViewTarget==None){
-            player().ViewTarget=reCam;
-            player().bCrosshairVisible=False;
-        }
-
-        player().bCrosshairVisible=False;
-    } else {
-        player().ViewTarget=None;
-        player().bCrosshairVisible=True;
-        if (reCam==None){
-            foreach AllActors(class'CCResidentEvilCam',reCam){
-                reCam.Destroy();
-            }
-        }
-    }
-
 }
 
 //Effects should revert to default before exiting a level
@@ -515,7 +496,7 @@ function CleanupOnExit() {
     player().Default.GroundSpeed = DefaultGroundSpeed;  //gotta_go_fast and gotta_go_slow
     UndoLamThrowers(); //lamthrower
     SetIcePhysics(False); //ice_physics
-    player().bBehindView = False; //third_person
+    dxrCameras.DisableTempCamera();
     player().bCrosshairVisible = True; //Make crosshairs show up again
     SetFloatyPhysics(False);
     if (isTimerActive('cc_invertMouseTimer')) {
@@ -525,11 +506,6 @@ function CleanupOnExit() {
     if (isTimerActive('cc_invertMovementTimer')) {
         invertMovementControls();
     }
-    if (reCam!=None && player().ViewTarget==reCam){
-        player().ViewTarget=None;
-        reCam.Destroy();
-    }
-
 }
 
 
@@ -2029,12 +2005,6 @@ function DetonateCarcass(DeusExCarcass carc)
     carc.Destroy();
 }
 
-function SpawnRECam()
-{
-    reCam=Spawn(class'CCResidentEvilCam',,,player().Location);
-    reCam.BindPlayer(player());
-}
-
 function PlayerRadiates()
 {
     local ScriptedPawn sp;
@@ -2187,9 +2157,7 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
             break;
         case "third_person":
             if (bKnownStop || isTimerActive('cc_behindTimer')){
-                player().bBehindView=False;
-                player().bCrosshairVisible = True;
-                player().ViewTarget=None;
+                dxrCameras.DisableTempCamera();
                 PlayerMessage("You re-enter your body");
                 disableTimer('cc_behindTimer');
             }
@@ -2269,11 +2237,7 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
         case "resident_evil":
             if (bKnownStop || isTimerActive('cc_ResidentEvil')){
                 PlayerMessage("Everything feels less horrifying");
-                player().ViewTarget=None;
-                player().bCrosshairVisible=True;
-                if (reCam!=None){
-                    reCam.Destroy();
-                }
+                dxrCameras.DisableTempCamera();
                 disableTimer('cc_ResidentEvil');
             }
             break;
@@ -2431,8 +2395,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_ResidentEvil')) {
                 return TempFail;
             }
-            player().bBehindView=True;
-            player().bCrosshairVisible = False;
+            dxrCameras.EnableTempThirdPerson();
 
             startNewTimer('cc_behindTimer',duration);
             PlayerMessage(viewer@"gave you an out of body experience");
@@ -2889,8 +2852,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             PlayerMessage(viewer@"made your view a little bit more horrific");
             startNewTimer('cc_ResidentEvil',duration);
-            player().bCrosshairVisible = False;
-            SpawnRECam();
+            dxrCameras.EnableTempFixedCamera();
             return Success;
 
         case "radioactive":

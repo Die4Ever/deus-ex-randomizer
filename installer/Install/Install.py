@@ -93,10 +93,10 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
         kentie = False
+
     exename = 'DXRando'
-    # TODO: allow separate exe file for linux, use new in_place boolean setting?
-    # maybe I can create the SteamPlay config file needed? I think it's a .desktop file
-    if not IsWindows():
+    # or should we not create a separate DXRando.exe file? Linux defaults to DeusEx.exe because of Steam
+    if not settings.get('DXRando.exe', IsWindows()):
         exename = 'DeusEx'
     exedest:Path = system / (exename+'.exe')
     CopyTo(exe_source, exedest)
@@ -106,7 +106,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     CopyTo(intfile, intdest)
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
-    VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini)
+    VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini, settings.get('ZeroRando', False))
 
     # also fix vanilla stuff
     if exename != 'DeusEx' and settings.get('FixVanilla'):
@@ -132,7 +132,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
-def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI):
+def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI, ZeroRando=False):
     defini_dest = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(sourceINI, defini_dest)
 
@@ -149,11 +149,12 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
 
     changes = {}
     if DXRandoini.exists():
-        oldconfig = DXRandoini.read_text()
-        oldconfig = Config.ReadConfig(oldconfig)
-        changes = Config.RetainConfigSections(
-            set(('WinDrv.WindowsClient', 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe')),
-            oldconfig, changes
+        oldconfig = DXRandoini.read_bytes()
+        c = Config.Config(oldconfig)
+        changes = c.RetainConfigSections(
+            set(('WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
+                 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
+            changes
         )
     elif not Vulkan and IsWindows():
         changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
@@ -175,6 +176,12 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
             changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
 
+    info('ZeroRando:', ZeroRando)
+    if ZeroRando:
+        if 'DeusEx.DXRFlags' not in changes:
+            changes['DeusEx.DXRFlags'] = {}
+        changes['DeusEx.DXRFlags'].update({'gamemode': '4'})
+
     if IsWindows() and not Vulkan:
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
     elif not IsWindows():
@@ -186,13 +193,16 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
             changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
     if changes:
+        info('\n\n\n\n', defini_dest)
         b = defini_dest.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions={})
-        WriteBytes(defini_dest, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions={})
+        WriteBytes(defini_dest, c.GetBinary())
 
         b = DXRandoini.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions={})
-        WriteBytes(DXRandoini, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions={})
+        WriteBytes(DXRandoini, c.GetBinary())
 
 
 def InstallLDDP(system:Path, settings:dict):
@@ -242,14 +252,16 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
     confpath = GetDocumentsDir(system) / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
-        WriteBytes(confpath, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
+        WriteBytes(confpath, c.GetBinary())
 
     confpath = game / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
-        WriteBytes(confpath, b)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
+        WriteBytes(confpath, c.GetBinary())
 
     CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
 
@@ -301,37 +313,41 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
     info('ChangeModConfigs', system, modname, exename, newexename, in_place)
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()
-    b = Config.ModifyConfig(b, changes, additions)
+    c = Config.Config(b)
+    c.ModifyConfig(changes, additions)
     if in_place:
         newexename = exename
     outconf = system / (newexename + 'Default.ini')
-    WriteBytes(outconf, b)
+    WriteBytes(outconf, c.GetBinary())
 
     confpath = system / (exename + '.ini')
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
         outconf = system / (newexename + '.ini')
         if in_place:
             outconf = confpath
-        WriteBytes(outconf, b)
+        WriteBytes(outconf, c.GetBinary())
 
     # User inis
     if in_place:
         return
     confpath = system / (exename + 'DefUser.ini')
     b = confpath.read_bytes()
-    b = Config.ModifyConfig(b, changes, additions)
+    c = Config.Config(b)
+    c.ModifyConfig(changes, additions)
     outconf = system / (newexename + 'DefUser.ini')
     if in_place:
         outconf = confpath
-    WriteBytes(outconf, b)
+    WriteBytes(outconf, c.GetBinary())
 
     confpath = system / (exename + 'User.ini')
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Config.ModifyConfig(b, changes, additions)
+        c = Config.Config(b)
+        c.ModifyConfig(changes, additions)
         outconf = system / (newexename + 'User.ini')
         if in_place:
             outconf = confpath
-        WriteBytes(outconf, b)
+        WriteBytes(outconf, c.GetBinary())

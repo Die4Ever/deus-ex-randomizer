@@ -29,7 +29,7 @@ var config string splitNotes[16];
 var string notes;
 
 var float left_col, left_col_small, center_col, text_height, ty_pos;
-var float windowWidth, windowHeight;
+var float windowWidth, windowHeight, notesWidth, notesHeight;
 
 var config float x_pos, y_pos;
 var float prevSpeed, avgSpeed, lastTime;
@@ -45,16 +45,16 @@ event InitWindow()
     player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
     Hide();
 
-    if(class'DXRVersion'.static.VersionOlderThan(version, 2,5,3,7)) {
+    if(class'DXRVersion'.static.VersionOlderThan(version, 2,6,1,1)) {
         x_pos = 0;
         y_pos = 0;
-        SaveConfig();
-    }
-    if(class'DXRVersion'.static.VersionOlderThan(version, 2,6,1,1)) {
         colorText.R = 200;
         colorText.G = 200;
         colorText.B = 200;
         colorText.A = 255;
+    }
+    if(textFont == None) {
+        textFont = Font'DeusExUI.FontMenuHeaders_DS';
     }
     if( version < class'DXRVersion'.static.VersionNumber() ) {
         version = class'DXRVersion'.static.VersionNumber();
@@ -226,6 +226,8 @@ function InitSizes(GC gc)
     windowWidth = FMax(f, windowWidth);
     gc.GetTextExtent(0, f, text_height, tfooter $"XX");
     windowWidth = FMax(f, windowWidth);
+
+    gc.GetTextExtent(FMax(100, windowWidth), notesWidth, notesHeight, notes);
 }
 
 function DrawWindow(GC gc)
@@ -351,7 +353,7 @@ function DrawWindow(GC gc)
 
         gc.SetAlignments(HALIGN_Left, VALIGN_Top);
         gc.SetTextColor(colorText);
-        gc.DrawText(x+x_pos, y+ty_pos, windowWidth, windowHeight, notes);
+        gc.DrawText(x+x_pos, y+ty_pos, notesWidth, notesHeight, notes);
     }
 }
 
@@ -509,9 +511,13 @@ function int TotalTime()
 
 function DrawBackground(GC gc)
 {
+    local float width, height;
     gc.SetStyle(backgroundDrawStyle);
     gc.SetTileColor(colorBackground);
-    gc.DrawPattern(x_pos, ty_pos, windowWidth, windowHeight, 0, 0, Texture'Solid');
+    width = windowWidth + 8;
+    if(notesWidth > 0) width += 16 + notesWidth;
+    height = FMax(windowHeight, notesHeight + 4);
+    gc.DrawPattern(x_pos, ty_pos, width, height, 0, 0, Texture'Solid');
 }
 
 // ----------------------------------------------------------------------

@@ -98,7 +98,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     p = #var(PlayerPawn)(NewPlayer);
     c = class'MenuChoice_ContinuousMusic';
     continuous_setting = c.default.continuous_music;
-    rando_music_setting = class'MenuChoice_RandomMusic'.default.enabled;
+    rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
     l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$continuous_setting@rando_music_setting@PrevSong@PrevMusicMode@dxr.dxInfo.missionNumber);
 
     // copy to LevelSong in order to support changing songs, since Level.Song is const
@@ -188,11 +188,9 @@ function GetLevelSong(bool setseed)
         LevelSong = Music(DynamicLoadObject(newSong$"."$newSong, class'Music'));
 
     if(LevelSong == None) {
-#ifdef injections
-        err("Failed to load song "$newSong$"! You need to put the UMX file in the right spot, or remove this entry from the DXRMusic.ini config!");
-#else
-        err("Failed to load song "$newSong$"! You need to put the UMX file in the right spot, or remove this entry from the #var(package)Music.ini config!");
-#endif
+        err("Failed to load song " $ newSong $ "! You need to put the UMX file in the right spot!");
+        music.SetEnabledSong(newsong, false);
+        music.SaveConfig();
     }
 
     if(LevelSongSection == DyingSection && LevelSongSection == CombatSection && LevelSongSection == ConvSection && LevelSongSection == OutroSection)
@@ -216,12 +214,12 @@ function PlayRandomSong(bool setseed)
     if(p == None) return;
 
     continuous_setting = class'MenuChoice_ContinuousMusic'.default.continuous_music;
-    rando_music_setting = class'MenuChoice_RandomMusic'.default.enabled;
+    rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
     l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
     if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
         return;
 
-    if(rando_music_setting && !dxr.flags.IsReducedRando()) {
+    if(rando_music_setting) {
         GetLevelSong(setseed);
     }
     NewSong = LevelSong;

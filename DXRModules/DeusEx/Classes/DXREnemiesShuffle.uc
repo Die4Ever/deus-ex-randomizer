@@ -21,14 +21,10 @@ function SwapItems(Pawn a, Pawn b)
     }
 
     for(i=0; i<numa; i++) {
-        item = GiveExistingItem(a, newa[i]);
-        if(Robot(a) != None)
-            ThrowItem(item, 0.1);
+        GiveExistingItem(a, newa[i]);
     }
     for(i=0; i<numb; i++) {
-        item = GiveExistingItem(b, newb[i]);
-        if(Robot(b) != None)
-            ThrowItem(item, 0.1);
+        GiveExistingItem(b, newb[i]);
     }
 }
 
@@ -82,6 +78,7 @@ function SwapScriptedPawns(int percent, bool enemies)
     local name exceptTag, exceptAlliance, keepTagName;
     local bool keepTags;
     local int num, i, slot;
+    local Inventory item, nextItem;
 
     num=0;
     switch(dxr.localURL) {
@@ -175,5 +172,13 @@ function SwapScriptedPawns(int percent, bool enemies)
         }
         if(a.Orders != 'DynamicPatrolling')// we pick these up later in DXREnemiesPatrols
             ResetOrders(a);
+        if(#var(prefix)Robot(a) != None || PlaceholderEnemy(a) != None) {
+            for(item=a.Inventory; item != None; item=nextItem) {
+                nextItem = item.Inventory;
+                if(#var(prefix)NanoKey(item) != None) {
+                    ThrowItem(item, 0.1);
+                }
+            }
+        }
     }
 }

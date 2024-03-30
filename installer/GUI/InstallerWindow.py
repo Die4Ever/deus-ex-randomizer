@@ -15,7 +15,7 @@ class InstallerWindow(GUIBase):
         self.width = 350
         self.height = 500
         self.lastprogress = ''
-        self.root.title("Deus Ex Randomizer Installer " + GetVersion())
+        self.root.title("Deus Ex Randomizer " + GetVersion() + " Installer")
 
         dxvk_default = CheckVulkan()# this takes a second or so
         ogl2_default = dxvk_default or not IsWindows()
@@ -116,7 +116,7 @@ class InstallerWindow(GUIBase):
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
             Hovertip(c, "Time to get lost again. (This will check if you already have them.)")
-            c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
+            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             row+=1
 
@@ -126,36 +126,53 @@ class InstallerWindow(GUIBase):
             settings['LDDP'] = v
             c = Checkbutton(self.frame, text="Install Lay D Denton Project for "+f, variable=v)
             Hovertip(c, "What if Zelda was a girl?")
-            c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
+            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             row+=1
 
+        # Vanilla stuff
         if f == 'Vanilla':
             l = Label(self.frame, text="Which EXE to use for vanilla:")
-            l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
+            l.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
             row += 1
 
             r = Radiobutton(self.frame, text="Kentie's Launcher", variable=exe, value='Kentie')
-            r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
+            r.grid(column=1,row=row, sticky='SW', padx=pad*16, pady=pad)
             self.FixColors(r)
             Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
             row += 1
 
             r = Radiobutton(self.frame, text="Hanfling's Launch", variable=exe, value='Launch')
-            r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
+            r.grid(column=1,row=row, sticky='SW', padx=pad*16, pady=pad)
             self.FixColors(r)
             Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
             row += 1
 
-        # "Zero Changes" mode fixes
-        if f == 'Vanilla' and IsWindows():
-            v = BooleanVar(master=self.frame, value=True)
-            settings['FixVanilla'] = v
-            c = Checkbutton(self.frame, text="Also apply fixes for vanilla", variable=v)
-            Hovertip(c, "Also apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.")
-            c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
+            v = BooleanVar(master=self.frame, value=False)
+            settings['ZeroRando'] = v
+            c = Checkbutton(self.frame, text="Default to Zero Rando mode for "+f, variable=v)
+            Hovertip(c, "This retains the vanilla menu experience for your first launch.\nAnd also sets Zero Rando mode as your default game mode for a new game.")
+            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             row+=1
+
+            v = BooleanVar(master=self.frame, value=IsWindows())
+            settings['DXRando.exe'] = v
+            c = Checkbutton(self.frame, text="Create separate DXRando.exe for "+f, variable=v)
+            Hovertip(c, "Overwriting the original DeusEx.exe makes it easier for Linux Steam players.")
+            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
+            self.FixColors(c)
+            row+=1
+
+            # "Zero Changes" mode fixes
+            v = BooleanVar(master=self.frame, value=True)
+            settings['FixVanilla'] = v
+            c = Checkbutton(self.frame, text="  Also apply fixes for DeusEx.exe\n(Zero Changes mode)", variable=v)
+            Hovertip(c, "Also apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.\nOnly has an effect when using a separate DXRando.exe for the Randomized modes.")
+            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
+            self.FixColors(c)
+            row+=1
+        # End Vanilla stuff
 
         self.flavors[f] = settings
         return row
@@ -179,17 +196,14 @@ class InstallerWindow(GUIBase):
         self.installButton["state"]='disabled'
 
         flavors = {}
-        v:IntVar
-        dummy = DummyCheckbox()
-        for (f,v) in self.flavors.items():
-            if v['install'].get():
-                flavors[f] = {
-                    'exetype': v.get('exe', dummy).get(),
-                    'mirrors': v.get('mirrors', dummy).get(),
-                    'LDDP': v.get('LDDP', dummy).get(),
-                    'FixVanilla': v.get('FixVanilla', dummy).get(),
-                    'downloadcallback': self.DownloadProgress,
-                }
+        for (flavorName,flavor) in self.flavors.items():
+            if not flavor['install'].get():
+                continue
+            flavors[flavorName] = {
+                'downloadcallback': self.DownloadProgress,
+            }
+            for (k,v) in flavor.items():
+                flavors[flavorName][k] = v.get()
 
         speedupfix = self.speedupfixval.get()
         dxvk = self.dxvkval.get()

@@ -265,19 +265,21 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""), gunther.Location, gunther.CollisionRadius+5, gunther.CollisionHeight+5);
             hoverHint.SetBaseActor(gunther);
         }
-
         break;
+
     case "04_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1440,340,48),rotm(0,-16348,0));
         break;
+
     case "04_NYC_STREET":
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-1849,286,-487));//Near free clinic
         pg.MaxCount=3;
 
         foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
             if (ft.event == 'MainGates') {
-                // Increase the radius to extend around the corner for NSFHQ starts
-                ft.SetCollisionSize(7000.0, ft.CollisionHeight);
+                // Delete this, we manually open the doors in AnyEntryMapFixes()
+                ft.Event = '';
+                ft.Destroy();
             }
         }
 
@@ -299,6 +301,7 @@ function AnyEntryMapFixes()
 #endif
     local bool RevisionMaps;
     local bool VanillaMaps;
+    local Mover door;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -339,16 +342,22 @@ function AnyEntryMapFixes()
         }
         break;
 
-#ifdef revision
     case "04_NYC_STREET":
+#ifdef revision
         if( dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') && RevisionMaps )
         {
             foreach AllActors(class'DXRKeypad',k,'SubKeypad'){
                 k.SetCollision(true);
             }
         }
-        break;
 #endif
+
+        if(dxr.flagbase.GetBool('GatesOpen')) {
+            foreach AllActors(class'Mover', door, 'MainGates') {
+                door.DoOpen();
+            }
+        }
+        break;
     }
 }
 

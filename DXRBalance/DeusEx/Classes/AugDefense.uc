@@ -5,6 +5,7 @@ class DXRAugDefense injects AugDefense;
 // DEUS_EX AMSD Exported to a function since it also needs to exist in the client
 // TriggerDefenseAugHUD;
 // DXRando: ignore bStuck projectiles, we can't do this in the super because we need it to return the 2nd closest projectile if there is a stuck one
+//          also only track projectiles to a certain distance, to reduce energy usage and annoyance
 // ------------------------------------------------------------------------------
 
 simulated function DeusExProjectile FindNearestProjectile()
@@ -15,7 +16,7 @@ simulated function DeusExProjectile FindNearestProjectile()
 
     minproj = None;
     mindist = 999999;
-    foreach AllActors(class'DeusExProjectile', proj)
+    foreach RadiusActors(class'DeusExProjectile', proj, LevelValues[CurrentLevel] + 160, player.Location)
     {
         if (Level.NetMode != NM_Standalone)
             bValidProj = !proj.bIgnoresNanoDefense;
@@ -68,6 +69,8 @@ state Active
             SetTimer(0.1,False);
             return;
         }
+
+        if (Player.energy <= 0) return;
 
         // In multiplayer propagate a sound that will let others know their in an aggressive defense field
         // with range slightly greater than the current level value of the aug

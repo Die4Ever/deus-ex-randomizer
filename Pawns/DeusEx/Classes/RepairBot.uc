@@ -75,6 +75,8 @@ simulated function string GetRemainingUsesStr()
     local int uses;
     local string msg;
 
+    if(#defined(vmd)) return "";
+
     uses = GetRemainingUses();
 
     if (uses == 0) {

@@ -37,11 +37,10 @@ function PreFirstEntry()
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
 
-    startMapName = GetStartMap(p,dxr.flags.settings.starting_map);
-    startMapName = class'DXRMapVariants'.static.CleanupMapName(startMapName);
-    startMapName = Caps(startMapName);
+    startMapName = _GetStartMap(dxr.flags.settings.starting_map);
+    startMapName = Left(startMapName, class'DXRMapVariants'.static.SplitMapName(startMapName));
 
-    if (InStr(startMapName,dxr.localURL)!=-1){
+    if (startMapName ~= dxr.localURL){
         StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
     }
 
@@ -201,7 +200,7 @@ static function string GetStartMap(Actor a, int start_map_val)
     return startMap;
 }
 
-static function string _GetStartMap(int start_map_val, out string friendlyName, optional out int bShowInMenu)
+static function string _GetStartMap(int start_map_val, optional out string friendlyName, optional out int bShowInMenu)
 {
     friendlyName = ""; // clear the out param to protect against reuse by the caller
     switch(start_map_val)
@@ -419,9 +418,18 @@ static function int GetStartMapSkillBonus(int start_map_val)
     return skillBonus * (mission-1);
 }
 
+static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
+{
+    if(bEmptyNotes) {
+        player.AddNote(text);
+    }
+}
+
 static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag, string start_map)
 {
-    local DeusExNote note;
+    local bool bEmptyNotes;
+
+    bEmptyNotes = player.FirstNote == None;
 
     switch(start_flag/10) {
         case 4:
@@ -477,14 +485,19 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             break;
 
         case 75:
-        case 70:
+        case 71:// anything greater than 70 should get these, even though this isn't an actual value currently
+            AddNote(player, bEmptyNotes, "Access code to the Versalife nanotech research wing on Level 2: 55655.  There is a back entrance at the north end of the Canal Road Tunnel, which is just east of the temple.");
+            flagbase.SetBool('M07Briefing_Played',true,,-1);// also spawns big spider in MJ12Lab
+        case 70://fallthrough
         case 68:
-        case 67:
+            AddNote(player, bEmptyNotes, "VersaLife elevator code: 6512.");
+        case 67://fallthrough
+            AddNote(player, bEmptyNotes, "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.");
+            flagbase.SetBool('MeetTracerTong_Played',true,,-1);
+            flagbase.SetBool('MeetTracerTong2_Played',true,,-1);
         case 66://fallthrough
-            if(!flagbase.GetBool('QuickLetPlayerIn')) {// easier than checking if you already have the note
-                player.AddNote("Luminous Path door-code: 1997.", false, false);
-                flagbase.SetBool('QuickLetPlayerIn',true,,-1);
-            }
+            AddNote(player, bEmptyNotes, "Luminous Path door-code: 1997.");
+            flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow

@@ -31,6 +31,7 @@ try:
     import certifi
     import ssl
     import subprocess
+    import re
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -56,8 +57,38 @@ def GetDryrun() -> bool:
 def IsWindows() -> bool:
     return os.name == 'nt'
 
+version = None
 def GetVersion():
-    return 'v2.6' # TODO: make this automatic
+    global version
+    if version:
+        return version
+
+    p = GetPackagesPath('vanilla') / 'DeusEx.u'
+    assert p.exists()
+    data = p.read_bytes()
+
+    i = data.find(b'class DXRVersion extends Info;')
+    data = data[i:]
+    i = data.find(b'////// you probably don\'t need to touch the stuff below')
+    data = data[:i]
+
+    i = data.find(b'static function CurrentVersion(')
+    CurrentVersion = data[i:]
+    i = CurrentVersion.find(b'}')
+    CurrentVersion = CurrentVersion[:i].decode('iso_8859_1')
+    m = re.search(r'major=(\d+);\s+minor=(\d+);\s+patch=(\d+);\s+build=(\d+);', CurrentVersion, flags=re.MULTILINE)
+    version = 'v' + m.group(1) + '.' + m.group(2) + '.' + m.group(3) + '.' + m.group(4)
+
+    i = data.find(b'static function string VersionString(')
+    VersionString = data[i:]
+    i = VersionString.find(b'}')
+    VersionString = VersionString[:i].decode('iso_8859_1')
+
+    m = re.search(r'status = "(.*)";', VersionString, flags=re.MULTILINE)
+    if m and m.group(1):
+        version += ' ' + m.group(1)
+
+    return version
 
 def CheckVulkan() -> bool:
     if not IsWindows():
@@ -267,13 +298,15 @@ def EngineDllFix(p:Path) -> bool:
 def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path, changes:dict):
     info('ModifyConfig', defconfig, config, outdefconfig, outconfig)
     bytes = defconfig.read_bytes()
-    bytes = Config.ModifyConfig(bytes, changes)
-    WriteBytes(outdefconfig, bytes)
+    c = Config.Config(bytes)
+    c.ModifyConfig(changes)
+    WriteBytes(outdefconfig, c.GetBinary())
 
     if config.exists():
         bytes = defconfig.read_bytes()
-        bytes = Config.ModifyConfig(bytes, changes)
-        WriteBytes(outconfig, bytes)
+        c = Config.Config(bytes)
+        c.ModifyConfig(changes)
+        WriteBytes(outconfig, c.GetBinary())
 
 
 def CopyD3DRenderers(system:Path):

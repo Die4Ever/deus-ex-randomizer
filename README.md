@@ -60,15 +60,16 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
     * Takes away 1 random augmentation, and 1 of your weapons
     * Takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
 * New game modes! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes)
-    * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission
-    * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral
+    * WaltonWare mode - A quick option to get into the game without the time commitment of the full game! You start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
+    * WaltonWare Entrance Rando - both modes combined!
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
     * Zero Changes mode: This one is for the purists. Use our new installer program and it will do compatibility fixes for the vanilla game (Kentie's Launcher, D3D10, DXVK, Engine.dll fix, and more), then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
-    * WaltonWare mode - A quick option to get into the game without the time commitment of the full game! You start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
     * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties. And a built in splits viewer!
-    * WaltonWare Entrance Rando - both modes combined!
+    * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission
+    * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral
+    * Also WaltonWare Hardcore mode and Randomizer Medium mode!
 * Challenge mode loadouts! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts)
     * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts

@@ -5,17 +5,28 @@ var transient bool restarting;
 var DataLinkTrigger dataLinkTriggerQueue[16];
 var transient float pitchAdjust;
 
+function bool bIsFastMode()
+{
+    local DXRando dxr;
+
+    if(!HaveQueued()) return false;
+    if(Human(player).bZeroRando) return false;
+    dxr = Human(player).GetDXR();
+    if(dxr != None && dxr.dxInfo.missionNumber == 0) {
+        return false;
+    }
+    return true;
+}
+
 function bool PushDataLink( Conversation queueCon )
 {
-    local bool bZeroRando;
     // queue up the incoming message
     if(Super.PushDataLink(queueCon) == false)
         return false;
 
-    bZeroRando = Human(player).bZeroRando;
     // make our timer shorter
-    if(!bZeroRando && speechFastEndTime > Level.Timeseconds + 0.1 && currentEvent != None)
-        SetTimer(speechFastEndTime - Level.Timeseconds, false);
+    if(bIsFastMode() && speechFastEndTime!=0 && currentEvent != None)
+        SetTimer(FClamp(speechFastEndTime - Level.Timeseconds, 0.1, 5), false);
 
     return true;
 }
@@ -24,7 +35,7 @@ function PlaySpeech( int soundID )
 {
     local Sound speech;
 
-    pitchAdjust=class'DXRMemes'.static.GetVoicePitch(Human(player).dxr);
+    pitchAdjust = class'DXRMemes'.static.GetVoicePitch(Human(player).dxr);
     perCharDelay = default.perCharDelay / pitchAdjust;
 
     speechFastEndTime = Level.Timeseconds + lastSpeechTextLength * perCharDelay;
@@ -162,7 +173,7 @@ Idle:
     Goto('Idle');
 
 Begin:
-    pitchAdjust=class'DXRMemes'.static.GetVoicePitch(Human(player).dxr);
+    pitchAdjust = class'DXRMemes'.static.GetVoicePitch(Human(player).dxr);
     perCharDelay = default.perCharDelay / pitchAdjust;
     // Play the sound, set the timer and go to sleep until the sound
     // has finished playing.
@@ -179,17 +190,17 @@ Begin:
     {
         PlaySpeech( ConEventSpeech(currentEvent).conSpeech.soundID );
 
-        if(HaveQueued() == false || Human(player).bZeroRando) {
+        if(!bIsFastMode()) {
             // Add two seconds to the sound since there seems to be a slight lag
             SetTimer( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID) / pitchAdjust, False );
         } else {
             // if we have queued items, use the fast timer just for showing text
-            SetTimer( lastSpeechTextLength * perCharDelay / pitchAdjust, False );
+            SetTimer( lastSpeechTextLength * perCharDelay, False );
         }
     }
     else
     {
-        SetTimer( lastSpeechTextLength * perCharDelay  / pitchAdjust, False );
+        SetTimer( lastSpeechTextLength * perCharDelay, False );
     }
 
     Goto('Idle');
@@ -318,5 +329,5 @@ defaultproperties
     blinkRate=0.3
     startDelay=0.3
     endDelay=0.3
-    perCharDelay=0.015
+    perCharDelay=0.02
 }

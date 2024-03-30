@@ -50,9 +50,8 @@ function DrawVisionAugmentation(GC gc)
 
     // brighten and tint the screen
     gc.SetStyle(DSTY_Modulated);
-    gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
-    gc.DrawPattern(0, 0, width, height, 0, 0, Texture'SolidGreen');
-    //gc.DrawPattern(0, 0, width, height, 0, 0, Texture'VisionBlue');
+    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
+    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
     gc.SetStyle(DSTY_Translucent);
 
     // at level one and higher, enhance heat sources (FLIR)

@@ -1,18 +1,31 @@
 name: release-installer
-'on':
+
+on:
   release:
     types:
       - published
+      - prereleased
+  push:
+    branches: ["master"]
 
 jobs:
   windows:
     runs-on: windows-latest
+    env:
+        RELEASE_TAG: testing
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      # install stuff and run tests
       - uses: ./.github/run-tests
 
+      # set the tag to the current ref, otherwise stick with the testing tag
+      - if: ${{ ! startsWith(github.ref, 'refs/heads/') }}
+        run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
+        shell: bash
+
+      # upload assets to release
       - name: Upload Release Asset DXRando
         id: upload-release-asset-dxrando
         uses: svenstaro/upload-release-action@v2
@@ -20,7 +33,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: installer/dist/DXRandoInstaller.exe
           asset_name: DXRandoInstaller.exe
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
 
       - name: Upload Release Asset BingoViewer
         id: upload-release-asset-bingoviewer
@@ -29,10 +43,13 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: installer/dist/BingoViewer.exe
           asset_name: BingoViewer.exe
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
 
   linux:
     runs-on: ubuntu-latest
+    env:
+        RELEASE_TAG: testing
     defaults:
       run:
         shell: bash
@@ -40,11 +57,31 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      # install stuff and run tests
       - run: sudo apt-get update -y
       - run: sudo apt-get install -y python3-tk idle3 binutils
 
       - uses: ./.github/run-tests
 
+      # set the tag to the current ref, otherwise stick with the testing tag
+      - if: ${{ ! startsWith(github.ref, 'refs/heads/') }}
+        run: echo "RELEASE_TAG=${{ github.ref }}" >> $GITHUB_ENV
+        shell: bash
+
+      # update our testing tag
+      - if: ${{ startsWith(github.ref, 'refs/heads/') }}
+        name: Update tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.updateRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/testing',
+              sha: context.sha
+            })
+
+      # upload assets to release
       - name: Upload Release Asset DXRando
         id: upload-release-asset-dxrando
         uses: svenstaro/upload-release-action@v2
@@ -52,7 +89,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: installer/dist/DXRandoInstaller
           asset_name: DXRandoInstaller-Linux
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
 
       - name: Upload Release Asset BingoViewer
         id: upload-release-asset-bingoviewer
@@ -61,4 +99,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: installer/dist/BingoViewer
           asset_name: BingoViewer-Linux
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true

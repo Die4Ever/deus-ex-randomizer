@@ -120,7 +120,7 @@ simulated function err(coerce string message, optional bool skip_player_message)
         log("ERROR: " $ message, class.name);
 #ifdef singleplayer
     if(!skip_player_message && player() != None) {
-        player().ClientMessage( Class @ message, 'ERROR' );
+        player().ClientMessage( Class @ message, 'ERROR', true );
     }
 #else
     BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
@@ -176,7 +176,7 @@ static function int _SystemTime(LevelInfo Level)
 function bool IsAprilFools()
 {
     // April Fools! (and the 2nd, because of Jesus_On_Wheels' timezone, and the Randothon 2023 schedule)
-    return Level.Month == 4 && (Level.Day == 1 || Level.Day == 2) && class'MenuChoice_ToggleMemes'.default.enabled && !GetDXR().flags.IsReducedRando();
+    return Level.Month == 4 && (Level.Day == 1 || Level.Day == 2) && class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags);
 }
 
 final function int SystemTime()

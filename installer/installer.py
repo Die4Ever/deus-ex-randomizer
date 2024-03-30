@@ -1,3 +1,12 @@
+
+typechecks = False
+if typechecks:
+    from typeguard import typechecked, install_import_hook
+    install_import_hook('Install')
+    install_import_hook('Configs')
+    install_import_hook('GUI')
+
+
 from Install import GetSourcePath, SetDryrun, SetVerbose, info, debug, GetVersion
 try:
     import argparse
@@ -9,6 +18,7 @@ try:
 except Exception as e:
     info('ERROR: importing', e)
     raise
+
 
 parser = argparse.ArgumentParser(description='Deus Ex Randomizer Installer')
 parser.add_argument('--version', action="store_true", help='Output version')

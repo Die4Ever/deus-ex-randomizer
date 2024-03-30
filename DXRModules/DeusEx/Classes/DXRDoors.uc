@@ -1,7 +1,6 @@
 class DXRDoors extends DXRActorsBase transient;
 
 struct door_fix {
-    var string map;
     var name tag;//what about doors that don't have tags? should I use name instead?
     var bool bBreakable;
     var float minDamageThreshold;
@@ -10,17 +9,19 @@ struct door_fix {
     var float lockStrength;
     var bool bHighlight;
 };
-var config door_fix door_fixes[32];
+var door_fix door_fixes[16];
 
-var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adjust, min_mindmg_adjust, max_mindmg_adjust;
+var float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adjust, min_mindmg_adjust, max_mindmg_adjust;
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,4,3) ) {
-        i=0;
+
+    switch(dxr.localURL) {
+    case "02_NYC_STREET":
+    case "04_NYC_STREET":
+    case "08_NYC_STREET":
         // SmugglersFrontDoor for all 3 maps
-        door_fixes[i].map = "02_NYC_STREET";
         door_fixes[i].tag = 'SmugglersFrontDoor';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 60;
@@ -29,15 +30,22 @@ function CheckConfig()
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
         i++;
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].map = "04_NYC_STREET";
-        i++;
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].map = "08_NYC_STREET";
-        i++;
+        break;
 
+    case "02_NYC_SMUG":
+    case "04_NYC_SMUG":
+    case "08_NYC_SMUG":
+        // Always make smugglers stash highlightable and breakable
+        door_fixes[i].tag = 'mirrordoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 5;
+        door_fixes[i].doorStrength = 0.6;
+        door_fixes[i].bHighlight = true;
+        i++;
+        break;
+
+    case "04_NYC_NSFHQ":
         // door to the basement
-        door_fixes[i].map = "04_NYC_NSFHQ";
         door_fixes[i].tag = 'ExitDoor';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 0;// 0 uses a random value instead
@@ -48,7 +56,6 @@ function CheckConfig()
         i++;
 
         // doors to the computer room
-        door_fixes[i].map = "04_NYC_NSFHQ";
         door_fixes[i].tag = 'SlidingDoor1Move';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 20;// 0 uses a random value instead
@@ -61,9 +68,10 @@ function CheckConfig()
         door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'SlidingDoor2Move';
         i++;
+        break;
 
+    case "05_NYC_UNATCOHQ":
         // just in case General Carter's door gets stuck on something
-        door_fixes[i].map = "05_NYC_UNATCOHQ";
         door_fixes[i].tag = 'supplydoor';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 60;
@@ -72,25 +80,38 @@ function CheckConfig()
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
         i++;
+        break;
 
+    case "06_HONGKONG_WANCHAI_MARKET":
         // Make sure random people don't bust down Tong's gate
-        door_fixes[i].map = "06_HONGKONG_WANCHAI_MARKET";
         door_fixes[i].tag = 'compound_gate';
         door_fixes[i].bBreakable = false;
         door_fixes[i].bPickable = false;
         door_fixes[i].bHighlight = false;
         i++;
+        break;
 
+    case "06_HONGKONG_WANCHAI_STREET":
         //Make sure the display case isn't highlightable
-        door_fixes[i].map = "06_HONGKONG_WANCHAI_STREET";
         door_fixes[i].tag = 'DispalyCase';
         door_fixes[i].bBreakable = false;
         door_fixes[i].bPickable = false;
         door_fixes[i].bHighlight = false;
         i++;
 
+    case "06_HongKong_MJ12lab":
+        // Elevator doors
+        door_fixes[i].tag = 'eledoor02';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = true;
+        door_fixes[i].minDamageThreshold = 1;
+        door_fixes[i].doorStrength = 0.01;
+        i++;
+        break;
+
+    case "09_NYC_SHIP":
         // don't break the ramp up to the ship!
-        door_fixes[i].map = "09_NYC_SHIP";
         door_fixes[i].tag = 'ShipRamp';
         door_fixes[i].bBreakable = false;
         door_fixes[i].minDamageThreshold = 60;
@@ -99,9 +120,10 @@ function CheckConfig()
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = false;
         i++;
+        break;
 
+    case "09_NYC_SHIPBELOW":
         // don't randomize the weld points
-        door_fixes[i].map = "09_NYC_SHIPBELOW";
         door_fixes[i].tag = 'ShipBreech';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 55;
@@ -110,9 +132,10 @@ function CheckConfig()
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
         i++;
+        break;
 
+    case "09_NYC_GRAVEYARD":
         // don't randomize the EMOff transmitter
-        door_fixes[i].map = "09_NYC_GRAVEYARD";
         door_fixes[i].tag = 'BreakableWall';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 1;
@@ -121,9 +144,10 @@ function CheckConfig()
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
         i++;
+        break;
 
+    case "10_Paris_Chateau":
         // make chateau cellar undefeatable, if you have lenient doors rules then you won't be going down here anyways
-        door_fixes[i].map = "10_Paris_Chateau";
         door_fixes[i].tag = 'duclare_chateau_cellar';
         door_fixes[i].bBreakable = false;
         door_fixes[i].minDamageThreshold = 100;
@@ -132,9 +156,20 @@ function CheckConfig()
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
         i++;
+        break;
 
+    case "12_VANDENBERG_GAS":
+        // Always make the junkyard doors weak and breakable
+        door_fixes[i].tag = 'junkyard_doors';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 1;
+        door_fixes[i].doorStrength = 0.1;
+        door_fixes[i].bHighlight = true;
+        i++;
+        break;
+
+    case "15_area51_entrance":
         // area 51 chambers, in vanilla you can't find the codes for all of these and sometimes the NanoKey you need is in one of them
-        door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber1';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 60;
@@ -158,51 +193,25 @@ function CheckConfig()
         door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber6';
         i++;
+        break;
 
+    case "15_area51_page":
         //Make it so the exploding door doesn't become breakable
-        door_fixes[i].map = "15_area51_page";
         door_fixes[i].tag = 'door_clone_exit';
         door_fixes[i].bBreakable = false;
         door_fixes[i].bPickable = false;
         door_fixes[i].bHighlight = false;
         i++;
-
-        // Always make the junkyard doors weak and breakable
-        door_fixes[i].map = "12_VANDENBERG_GAS";
-        door_fixes[i].tag = 'junkyard_doors';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 1;
-        door_fixes[i].doorStrength = 0.1;
-        door_fixes[i].bHighlight = true;
-        i++;
-
-        // Always make smugglers stash highlightable and breakable
-        door_fixes[i].map = "02_NYC_SMUG";
-        door_fixes[i].tag = 'mirrordoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 5;
-        door_fixes[i].doorStrength = 0.6;
-        door_fixes[i].bHighlight = true;
-        i++;
-
-        door_fixes[i]=door_fixes[i-1];
-        door_fixes[i].map = "04_NYC_SMUG";
-        i++;
-
-        door_fixes[i]=door_fixes[i-1];
-        door_fixes[i].map = "08_NYC_SMUG";
-        i++;
-
-        min_lock_adjust=0.5;
-        max_lock_adjust=1.5;
-        min_door_adjust=0.5;
-        max_door_adjust=1.5;
-        min_mindmg_adjust=0.35;
-        max_mindmg_adjust=1.2;
+        break;
     }
-    for(i=0; i<ArrayCount(door_fixes); i++) {
-        door_fixes[i].map = Caps(door_fixes[i].map);
-    }
+
+    min_lock_adjust=0.5;
+    max_lock_adjust=1.5;
+    min_door_adjust=0.5;
+    max_door_adjust=1.5;
+    min_mindmg_adjust=0.35;
+    max_mindmg_adjust=1.2;
+
     Super.CheckConfig();
 }
 
@@ -293,7 +302,6 @@ function ApplyDoorFixes()
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
         for(i=0; i<ArrayCount(door_fixes); i++) {
             if( door_fixes[i].tag != d.Tag ) continue;
-            if( dxr.localURL != door_fixes[i].map ) continue;
 
             if( door_fixes[i].bPickable ) MakePickable(d);
             d.bPickable = door_fixes[i].bPickable;

@@ -232,8 +232,7 @@ function RandomMJ12Globe()
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
-    if(dxr.flags.IsReducedRando()) return;
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     switch(dxr.localURL)
     {
@@ -268,8 +267,7 @@ function AnyEntry()
     local Vector v;
 
     Super.AnyEntry();
-    if(dxr.flags.IsReducedRando()) return;
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     switch(dxr.localURL)
     {
@@ -443,8 +441,7 @@ function PostFirstEntry()
         RandomDancing(sp);
     }
 
-    if(dxr.flags.IsReducedRando()) return;
-    if(!class'MenuChoice_ToggleMemes'.default.enabled) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     SetSeed("Memes InterpolationPoints");
 
@@ -725,7 +722,7 @@ function RandomizeDialogConversation(Conversation conv)
 }
 
 static function float GetVoicePitch(DXRando dxr){
-    if (!dxr.flags.IsReducedRando() && dxr.IsAprilFools()){
+    if (dxr.IsAprilFools()){
         if ((dxr.seed)%10>=5){
             return 1.5;
         } else {

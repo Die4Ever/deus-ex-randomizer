@@ -62,10 +62,15 @@ function BindControls(optional string action)
     else
         NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
 
-    if( f.VersionIsStable() )
+    if( f.VersionIsStable() ) {
         i=1;
-    else
+        if(f.difficulty == 0) {
+            f.difficulty = 1;
+        }
+    }
+    else {
         i=0;
+    }
 
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
         if( f.difficulty_names[i] == "" ) continue;
@@ -114,11 +119,15 @@ function BindControls(optional string action)
 
     if(mirrored_maps_files_found) {
         NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
-        f.mirroredmaps = 50;// default to 50% when files are available
+        if(f.mirroredmaps == -1) {
+            f.mirroredmaps = 50; // default to 50% when the files are installed
+        }
         Slider(f.mirroredmaps, 0, 100);
     } else {
+        // use -1 to indicate not installed, because this gets saved to the config
+        f.mirroredmaps = -1;
         NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
-        EnumOption("Mirror Map Files Not Found", 0, f.mirroredmaps);
+        EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
     }
 #endif
 
@@ -240,9 +249,9 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 
 event DestroyWindow()
 {
-#ifdef vmd
-    Player.ConsoleCommand("Open DXOnly");
-#endif
+    if(#defined(vmd)) {
+        Player.ConsoleCommand("Open DXOnly");
+    }
 }
 
 function NewGameSetup(float difficulty)

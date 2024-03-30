@@ -3,6 +3,7 @@ try:
     import tempfile
     from zipfile import ZipFile
     from Install import MD5, DownloadFile, Mkdir, WriteBytes, debug, info
+    from collections.abc import Callable
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -20,7 +21,7 @@ maps_versions = {
 latest_maps = 'v0.9.4'
 assert latest_maps in maps_versions.values()
 
-def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
+def InstallMirrors(mapsdir: Path, callback: Callable, flavor:str):
     global maps_versions, latest_maps
     info('\nInstallMirrors(', mapsdir, flavor, ')')
     callback(0, 1, 1, 'Checking Maps')

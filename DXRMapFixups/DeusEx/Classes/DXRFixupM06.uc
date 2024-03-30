@@ -248,6 +248,19 @@ function PreFirstEntryMapFixes()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+
+        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(1.412384, 1658.755614, 190.711304)); // Inside the elvator to 06_HONGKONG_VERSALIFE
+        ft.Event='SecurityRevoked';
+        ft.FlagName='Have_ROM';
+        ft.bSetFlag=False;
+        ft.bTrigger=True;
+
+        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(-1432.140991, 860.576238, -87.899834)); // Inside the elvator to 06_HONGKONG_STORAGE
+        ft.Event='SecurityRevoked';
+        ft.FlagName='Have_ROM';
+        ft.bSetFlag=False;
+        ft.bTrigger=True;
+
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'security_doors') {
             m.bBreakable = false;
             m.bPickable = false;
@@ -489,6 +502,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-914.38,255.5,458.3)); //3rd floor breakroom table
         Spawn(class'PlaceholderItem',,, vectm(-836.9,850.3,-9.7)); //Reception desk back
         break;
+
     case "06_HONGKONG_STORAGE":
         //Make sure Maggie always has her MaggieChowShowdown conversation with you if she's here.
         //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing)

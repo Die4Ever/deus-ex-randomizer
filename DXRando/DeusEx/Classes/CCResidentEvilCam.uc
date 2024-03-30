@@ -16,7 +16,7 @@ function bool FindNewCameraPosition()
     local DXRMachines dxrm;
     local Vector loc,loc2;
     local Rotator rot;
-    local Actor hit;
+    local Actor hit, aimTarget;
     local Vector HitLocation, HitNormal;
     local bool success;
 
@@ -26,27 +26,36 @@ function bool FindNewCameraPosition()
         return false;
     }
 
+    aimTarget = p;
+    if (DeusExRootWindow(p.rootWindow).scopeView.bViewVisible){
+#ifdef vanilla
+        if (Human(p).aimLaser.spot[0]!=None){
+            aimTarget = Human(p).aimLaser.spot[0];
+        }
+#endif
+    }
+
     success = False;
-    loc = p.Location;
+    loc = aimTarget.Location;
 
     success = dxrm.GetLazyCameraLocation(loc,cameraRange*0.75);
 
     if (success){
-        if (!p.FastTrace(loc)){
+        if (!aimTarget.FastTrace(loc)){
             success=False;
         }
     }
 
     if (!success){
         //Try to fall back to a position at a point somewhere behind the player
-        loc2 = p.Location + Vector(p.Rotation) * (-16 * 10);
-        hit = Trace(HitLocation, HitNormal, loc2, p.Location, True);
+        loc2 = aimTarget.Location + Vector(aimTarget.Rotation) * (-16 * 10);
+        hit = Trace(HitLocation, HitNormal, loc2, aimTarget.Location, True);
         if (hit!=None){
             loc2 = HitLocation;
         }
         loc = loc2;
     }
-    rot = Rotator(p.Location - loc);
+    rot = Rotator(aimTarget.Location - loc);
     SetLocation(loc);
     SetRotation(rot);
     DesiredRotation = rot;
@@ -109,7 +118,7 @@ function Tick(float deltaTime)
 function CheckPlayerVisibility(DeusExPlayer player)
 {
     local float yaw, pitch, dist;
-    local Actor hit;
+    local Actor hit,aimTarget;
     local Vector HitLocation, HitNormal;
     local Rotator rot;
 
@@ -119,18 +128,28 @@ function CheckPlayerVisibility(DeusExPlayer player)
     Reposition=True;
     dist = Abs(VSize(player.Location - Location));
 
-    foreach TraceActors(class'Actor',hit,HitLocation,HitNormal,player.Location,Location)
+    aimTarget = player;
+    if (DeusExRootWindow(player.rootWindow).scopeView.bViewVisible){
+#ifdef vanilla
+        if (Human(player).aimLaser.spot[0]!=None){
+            aimTarget = Human(player).aimLaser.spot[0];
+            player.DesiredFOV = Player.Default.DefaultFOV;
+        }
+#endif
+    }
+
+    foreach TraceActors(class'Actor',hit,HitLocation,HitNormal,aimTarget.Location,Location)
     {
         //Immediately reposition if you're on the far side of a wall or door
         if (LevelInfo(hit)!=None || Mover(hit)!=None){
             break;
         }
 
-        //Aim the camera at the player
-        if (hit == player)
+        //Aim the camera at the target
+        if (hit == aimTarget)
         {
             // figure out if we can see the player
-            rot = Rotator(player.Location - Location);
+            rot = Rotator(aimTarget.Location - Location);
             rot.Roll = 0;
             yaw = (Abs(Rotation.Yaw - rot.Yaw)) % 65536;
             pitch = (Abs(Rotation.Pitch - rot.Pitch)) % 65536;

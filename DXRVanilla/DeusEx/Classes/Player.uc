@@ -12,14 +12,21 @@ var Rotator ShakeRotator;
 
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
-    // 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
+    // HACK: 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
     if( msg == "  " ) return;
 
-    log("ClientMessage: "$msg, class.name);
+    if(type != 'ERROR') { // don't need to log errors twice
+        log("ClientMessage: "$msg, class.name);
+    }
     Super.ClientMessage(msg, type, bBeep);
-    class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
+    if(type != 'ERROR') { // don't need errors to hit telemetry twice
+        class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
+    }
 
-    if(bBeep) {
+    if(type == 'ERROR') {
+        DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'DeusExSounds.Generic.Buzz1');
+    }
+    else if(bBeep) {
         // we don't want to override more important log sounds like Sound'LogSkillPoints'
         if(DeusExRootWindow(rootWindow).hud.msgLog.logSoundToPlay == None)
             DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'Menu_Focus');
@@ -841,12 +848,8 @@ function HighlightCenterObject()
     //Activate the aim laser any time you aren't seeing through your eyes
     if (reCam!=None || bBehindView){
         if (aimLaser==None){
-            aimLaser = Spawn(class'LaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
-            if (aimLaser != None) {
-                aimLaser.SetHiddenBeam(False);
-                aimLaser.AmbientSound = None;
-                aimLaser.SetBlueBeam();
-            } else {
+            aimLaser = Spawn(class'DXRAimLaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
+            if (aimLaser == None) {
                 ClientMessage("Failed to spawn aim laser?");
             }
         }

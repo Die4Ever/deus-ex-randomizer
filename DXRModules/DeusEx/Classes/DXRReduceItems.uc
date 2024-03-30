@@ -27,7 +27,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,1,2) ) {
+    if( ConfigOlderThan(2,6,2,1) ) {
         min_rate_adjust = 0.3;
         max_rate_adjust = 1.75;
 
@@ -51,16 +51,16 @@ function CheckConfig()
         i++;
 
         item_reductions[i].type = "Ammo762mm";
-        item_reductions[i].percent = 80;
+        item_reductions[i].percent = 85;
         i++;
 
         item_reductions[i].type = "AmmoShell";
-        item_reductions[i].percent = 80;
+        item_reductions[i].percent = 85;
         i++;
 
         i=0;
         max_ammo[i].type = "Ammo10mm";
-        max_ammo[i].percent = 30;
+        max_ammo[i].percent = 40;
         i++;
 
         max_ammo[i].type = "AmmoPlasma";
@@ -68,11 +68,11 @@ function CheckConfig()
         i++;
 
         max_ammo[i].type = "Ammo762mm";
-        max_ammo[i].percent = 80;
+        max_ammo[i].percent = 85;
         i++;
 
         max_ammo[i].type = "AmmoShell";
-        max_ammo[i].percent = 80;
+        max_ammo[i].percent = 85;
         i++;
     }
     Super.CheckConfig();
@@ -342,9 +342,10 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
     foreach AllActors(class'#var(prefix)DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
 
-        f = percent;
+        f = float(percent) / 100.0;
         f *= _GetItemMult(_item_reductions, p.class);
-        p.maxCopies = float(p.default.maxCopies) * f / 100.0 * 0.8;
+        f *= rngrangeseeded(1, 0.8, 1.2, p.class.name);
+        p.maxCopies = float(p.default.maxCopies) * f * 0.8;
         p.maxCopies = Clamp(p.maxCopies, 1, p.default.maxCopies*10);
         owner = #var(PlayerPawn)(p.Owner);
         if(owner == None)
@@ -374,9 +375,10 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
 
-        f = percent;
+        f = float(percent) / 100.0;
         f *= _GetItemMult(_max_ammo, a.class);
-        a.MaxAmmo = float(a.default.MaxAmmo) * f / 100.0 * 0.8;
+        f *= rngrangeseeded(1, 0.8, 1.2, a.class.name);
+        a.MaxAmmo = float(a.default.MaxAmmo) * f * 0.8;
         a.MaxAmmo = Clamp(a.MaxAmmo, 1, a.default.MaxAmmo*10);
 
         owner = #var(PlayerPawn)(a.Owner);

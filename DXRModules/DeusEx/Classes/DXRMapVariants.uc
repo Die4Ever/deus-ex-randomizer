@@ -167,13 +167,13 @@ simulated function AnyEntry()
     l(GetURLMap() @ coords_mult);
 }
 
-function string VaryURL(string url)
+static function int SplitMapName(string url)
 {
-    local string map, after;
     local int i, t;
 
     i = Len(url);
-    if(i==0) return url;
+    if(i==0) return 0;
+
     t = InStr(url, "?");
     if(t != -1 && t < i)
         i = t;
@@ -184,6 +184,15 @@ function string VaryURL(string url)
     if(t != -1 && t < i)
         i = t;
 
+    return i;
+}
+
+function string VaryURL(string url)
+{
+    local string map, after;
+    local int i;
+
+    i = SplitMapName(url);
     map = Left(url, i);
     after = Mid(url, i);
     l("VaryURL url=="$url$", map=="$map$", after=="$after);
@@ -218,21 +227,24 @@ function TestCoords(string mapName, string map, float x, float y, float z)
 function ExtendedTests()
 {
     local vector v;
-    local int oldseed;
+    local int oldmirroredmaps;
     v = GetCoordsMult(GetURLMap());
     l(GetURLMap() @ v);
 
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_-1_1_1.dx", -1, 1, 1);
+    TestCoords("02_NYC_BatteryPark#tele", "02_NYC_BatteryPark_-1_1_1#tele", -1, 1, 1);
     TestCoords("DX.dx", "DX.dx", 1,1,1);
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark.dx", 1,1,1);
     TestCoords("02_NYC_BatteryPark_Test.dx", "02_NYC_BatteryPark_Test.dx", 1,1,1);
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_1_2_1.dx", 1,2,1);
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_0.1_1.2_-1.3.dx", 0.1, 1.2, -1.3);
 
-    /*oldseed = dxr.seed;
-    dxr.seed = 111;// fragile dependency on rng
-    teststring(VaryURL("test#"), "test_-1_1_1#", "VaryURL");
-    teststring(VaryURL("test"), "test_-1_1_1", "VaryURL");
-    teststring(VaryURL("test.dx"), "test_-1_1_1.dx", "VaryURL");
-    dxr.seed = oldseed;*/
+    oldmirroredmaps = dxr.flags.mirroredmaps;
+    dxr.flags.mirroredmaps = 100;
+    teststring(VaryURL("test#"), "test_-1_1_1#", "VaryURL 1");
+    teststring(VaryURL("test#tele"), "test_-1_1_1#tele", "VaryURL 2");
+    teststring(VaryURL("test"), "test_-1_1_1", "VaryURL 3");
+    teststring(VaryURL("test.dx"), "test_-1_1_1.dx", "VaryURL 4");
+    teststring(VaryURL("test?query=param"), "test_-1_1_1?query=param", "VaryURL 5");
+    dxr.flags.mirroredmaps = oldmirroredmaps;
 }
