@@ -169,5 +169,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             $ "|nIf you get really stuck then click on Show Spoilers, Show Nanokeys, or Show Datacubes.";
 
         SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0), text, true);
+
+        if(ScriptedPawn(g.actors[0].a) != None) {
+            RemoveFears(ScriptedPawn(g.actors[0].a));
+        }
     }
 }
