@@ -105,6 +105,8 @@ function CheckConfig()
         door_fixes[i].bBreakable = true;
         door_fixes[i].bPickable = false;
         door_fixes[i].bHighlight = true;
+        door_fixes[i].minDamageThreshold = 1;
+        door_fixes[i].doorStrength = 0.01;
         i++;
         break;
 
