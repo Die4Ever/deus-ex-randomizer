@@ -765,7 +765,7 @@ function bool HandlePickupQuery(Inventory Item)
                             //Weapons with normal ammo that exists
                             newAmmo = Spawn(defAmmoClass,,,w.Location,w.Rotation);
                             newAmmo.ammoAmount = ammoRemaining;
-                            newAmmo.Velocity = Velocity + VRand() * 280;
+                            newAmmo.Velocity = Velocity + VRand() * 160;
                         } else {
                             w.PickUpAmmoCount = ammoRemaining;
                             defAmmo.AddAmmo(ammoToAdd);
