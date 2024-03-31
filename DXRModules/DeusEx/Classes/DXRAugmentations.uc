@@ -329,15 +329,18 @@ simulated function RandoAug(Augmentation a)
         a.Description = add_desc $ "|n|n" $ a.Description;
     }
 
-    if( #var(prefix)AugSpeed(a) != None || #var(prefix)AugLight(a) != None || #var(prefix)AugHeartLung(a) != None
+    if( #var(prefix)AugSpeed(a) != None || #var(prefix)AugLight(a) != None
     || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None || AugNinja(a) != None )
         return;
 
     aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
-    if((#var(prefix)AugVision(a) != None || #var(prefix)AugMuscle(a) != None) && aug_value_wet_dry > 0) {
+    if(( aug_value_wet_dry > 0
+        && ( #var(prefix)AugVision(a) != None || #var(prefix)AugMuscle(a) != None) || #var(prefix)AugHeartLung(a) != None )
+    ) {
         // don't randomize vision aug strength and instead randomize its energy usage
         // so it can be used for speedrun strategies with specific spots to check from
         // aug muscle picking up heavy items is confusing when the strength is randomized, just randomize the energy cost
+        // synth heart, can't randomize its strength, just randomize energy cost
         a.energyRate = int(rngrange(a.default.energyRate, 0.5, 1.5));
         aug_value_wet_dry = 0;
         add_desc = add_desc $ "Energy Rate: "$int(a.energyRate)$" Units/Minute";
