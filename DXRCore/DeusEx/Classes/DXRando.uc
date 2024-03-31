@@ -113,9 +113,6 @@ function DXRInit()
     flags.InitCoordsMult();// for some reason flags is loaded too early and doesn't have the new map url
     flags.LoadFlags();
     LoadModules();
-    if(default.dxr != None) {
-        err("overwriting singleton " $ default.dxr $ " with " $ self);
-    }
     dxr = self;
     default.dxr = self;// singleton reference
     RandoEnter();
