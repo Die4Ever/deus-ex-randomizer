@@ -7,13 +7,6 @@ function PostPostBeginPlay()
     Description = default.Description;
 }
 
-simulated function SetAutomatic()
-{
-    Super.SetAutomatic();
-    // aqualung doesn't take the penalty for being automatic, this one is just a gift
-    energyRate = default.energyRate;
-}
-
 simulated function bool IsTicked()
 {// aqualung is perfectly automatic
     local bool bWater;
@@ -28,6 +21,8 @@ simulated function bool IsTicked()
 defaultproperties
 {
     bAutomatic=true
+    AutoLength=0
+    AutoEnergyMult=1// no penalty, it's a gift
     MaxLevel=1
     Description="Soda lime exostructures imbedded in the alveoli of the lungs convert CO2 to O2, extending the time an agent can remain underwater.|n|nTECH ONE: Lung capacity is extended moderately.|n|nTECH TWO: An agent can stay underwater indefinitely."
     LevelValues(0)=60.000000

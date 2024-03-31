@@ -273,10 +273,6 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 
     if (Loc.name == "Overlook Office") {
         // spawn the MAHOGANY desk (CreateGoal only gets called for different maps)
-        g.actors[1].a = Spawnm(class'#var(prefix)WHDeskOvalOffice',,,Loc.positions[1].pos, Loc.positions[1].rot);
-        if(g.actors[1].a != None) {
-            #var(prefix)WHDeskOvalOffice(g.actors[1].a).ItemName = "Mahogany Desk";
-            #var(prefix)WHDeskOvalOffice(g.actors[1].a).HitPoints *= 4;
-        }
+        g.actors[1].a = Spawnm(class'MahoganyDesk',,,Loc.positions[1].pos, Loc.positions[1].rot);
     }
 }

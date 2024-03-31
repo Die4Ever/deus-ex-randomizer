@@ -2,6 +2,7 @@ class DXRAugmentation merges Augmentation;
 
 var float LastUsed;
 var float AutoLength;
+var float AutoEnergyMult;
 
 function PostBeginPlay()
 {
@@ -26,7 +27,7 @@ simulated function SetAutomatic()
     if(class'MenuChoice_AutoAugs'.default.enabled) {
         bAutomatic = default.bAutomatic;
         if(bAutomatic) {
-            energyRate = default.energyRate * 2;
+            energyRate = default.energyRate * AutoEnergyMult;
         }
     }
     else {
@@ -104,4 +105,5 @@ defaultproperties
 {
     LastUsed=-100
     AutoLength=5
+    AutoEnergyMult=2
 }

@@ -1,6 +1,7 @@
 class DXRMenuUIChoiceInt extends DXRMenuUIChoiceEnum abstract;
 
 var config int value;
+var int defaultvalue;
 
 // ----------------------------------------------------------------------
 // SetInitialCycleType()
@@ -36,7 +37,7 @@ function LoadSetting()
 
 function ResetToDefault()
 {
-    value = default.value;
+    value = defaultvalue;
     SetValue(value);
     SaveSetting();
 }
@@ -46,7 +47,8 @@ function ResetToDefault()
 
 defaultproperties
 {
-    value=1;
+    value=1
+    defaultvalue=1
     enumText(0)="Disabled"
     enumText(1)="Enabled"
 }

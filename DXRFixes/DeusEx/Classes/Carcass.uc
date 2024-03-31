@@ -205,6 +205,8 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     local DeusExPickup invItem;
     local int itemCount;
     local int ammoAdded, ammoLeftover, ammoPrevious;
+    local DXRando dxr;
+    local DXRLoadouts loadout;
 
     if (item.IsA('DeusExWeapon'))
     {
@@ -242,6 +244,11 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     if (item.IsA('DeusExWeapon'))   // I *really* hate special cases
     {
+        dxr = class'DXRando'.default.dxr;
+        loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+        if (loadout != None && loadout.is_banned(Weapon(item).AmmoName))
+            Weapon(item).PickupAmmoCount = 0;
+
         // Okay, check to see if the player already has this weapon.  If so,
         // then just give the ammo and not the weapon.  Otherwise give
         // the weapon normally.

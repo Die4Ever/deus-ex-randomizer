@@ -38,12 +38,12 @@ function ConfigurationChanged()
 
 function CreateKnownAccountsWindow()
 {
-    if( class'MenuChoice_PasswordAutofill'.default.codes_mode < 1 ) return;
+    if( class'MenuChoice_PasswordAutofill'.default.value < 1 ) return;
 
     winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
     winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
-    if( class'MenuChoice_PasswordAutofill'.default.codes_mode == 2 )
+    if( class'MenuChoice_PasswordAutofill'.default.value == 2 )
         winKnownAccounts.bShowPasswords = true;
     winKnownAccounts.SetNetworkTerminal(Self);
     winKnownAccounts.SetCompOwner(compOwner);

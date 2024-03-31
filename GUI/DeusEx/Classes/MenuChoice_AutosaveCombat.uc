@@ -1,39 +1,11 @@
-class MenuChoice_AutosaveCombat extends DXRMenuUIChoiceEnum;
-
-var config int autosave_combat;
-
-function PopulateOptions()
-{
-    enumText[0] = "Wait for combat to finish";
-    enumText[1] = "Autosave immediately";
-}
-
-function SetInitialOption()
-{
-    SetValue(autosave_combat);
-}
-
-function SaveSetting()
-{
-    autosave_combat = GetValue();
-    SaveConfig();
-}
-
-function LoadSetting()
-{
-    SetValue(autosave_combat);
-}
-
-function ResetToDefault()
-{
-    autosave_combat = default.autosave_combat;
-    SetValue(autosave_combat);
-    SaveSetting();
-}
+class MenuChoice_AutosaveCombat extends DXRMenuUIChoiceInt;
 
 defaultproperties
 {
-    autosave_combat=0
+    value=0
+    defaultvalue=0
     HelpText="Should autosave wait for combat to finish?"
     actionText="Autosave During Combat"
+    enumText(0)="Wait for combat to finish"
+    enumText(1)="Autosave immediately"
 }
