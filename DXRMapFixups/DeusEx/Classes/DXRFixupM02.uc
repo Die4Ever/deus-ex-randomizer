@@ -20,6 +20,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local DXRButtonHoverHint buttonHint;
     local #var(prefix)Button1 button;
+    local OnceOnlyTrigger oot;
     local bool RevisionMaps;
     local bool VanillaMaps;
 
@@ -214,6 +215,13 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-4059,976,-976),,'Sitting');
 
         break;
+    case "02_NYC_SMUG":
+        foreach AllActors(class'DeusExMover', d,'botordertrigger') {
+            d.tag = 'botordertriggerDoor';
+        }
+        oot = Spawn(class'OnceOnlyTrigger');
+        oot.Event='botordertriggerDoor';
+        oot.Tag='botordertrigger';
     }
 }
 

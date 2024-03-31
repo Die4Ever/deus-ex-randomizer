@@ -45,6 +45,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)GuntherHermann gunther;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local OnceOnlyTrigger oot;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
     local bool VanillaMaps;
@@ -287,6 +288,15 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        break;
+
+    case "04_NYC_SMUG":
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door,'botordertrigger') {
+            door.tag = 'botordertriggerDoor';
+        }
+        oot = Spawn(class'OnceOnlyTrigger');
+        oot.Event='botordertriggerDoor';
+        oot.Tag='botordertrigger';
         break;
     }
 }

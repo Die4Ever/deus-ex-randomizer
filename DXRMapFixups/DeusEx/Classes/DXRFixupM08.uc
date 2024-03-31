@@ -135,6 +135,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local OnceOnlyTrigger oot;
+    local #var(DeusExPrefix)Mover d;
     local DXRHoverHint hoverHint;
     local bool VanillaMaps;
     local ScriptedPawn pawn;
@@ -220,6 +222,14 @@ function PreFirstEntryMapFixes()
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
             Spawn(class'BarDancer',,,vectm(-2150,-500,48),rotm(0,0,0));
 
+            break;
+        case "08_NYC_SMUG":
+            foreach AllActors(class'#var(DeusExPrefix)Mover', d,'botordertrigger') {
+                d.tag = 'botordertriggerDoor';
+            }
+            oot = Spawn(class'OnceOnlyTrigger');
+            oot.Event='botordertriggerDoor';
+            oot.Tag='botordertrigger';
             break;
     }
 }
