@@ -288,6 +288,14 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     s = "(DXRando) " $ word $ ":|n    " $ s;
 
+#ifdef injections
+    if(aug != None && aug.bAutomatic) {
+        s = s $ "|n|nThis aug is automatic";
+        if(aug.AutoLength>0.1) s = s $ ", with a linger time of " $ TrimTrailingZeros(aug.AutoLength) $ " seconds";
+        s = s $ ".";
+    }
+#endif
+
     l("RandoLevelValues "$a$" = "$s);
     ReapplySeed( oldseed );
 
