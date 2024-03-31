@@ -147,7 +147,7 @@ function CheckConfig()
         item_sets[11].name = "Explosives Only";
         item_sets[11].player_message = "Explosives Only!";
         item_sets[11].bans = "Engine.Weapon,Ammo762mm";
-        item_sets[11].allows = "WeaponGEPGun,WeaponLAW,WeaponLAM,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponAssaultGun,WeaponRubberBaton";
+        item_sets[11].allows = "WeaponGEPGun,WeaponLAW,WeaponLAM,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponAssaultGun,#var(package).WeaponRubberBaton";
         item_sets[11].starting_equipments = "WeaponGEPGun,WeaponRubberBaton";
         item_sets[11].item_spawns =
             "WeaponLAW,133,WeaponLAM,200,WeaponEMPGrenade,133,WeaponGasGrenade,133," $
