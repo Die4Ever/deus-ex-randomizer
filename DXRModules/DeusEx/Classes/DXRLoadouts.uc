@@ -149,7 +149,9 @@ function CheckConfig()
         item_sets[11].bans = "Engine.Weapon,Ammo762mm";
         item_sets[11].allows = "WeaponGEPGun,WeaponLAW,WeaponLAM,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponAssaultGun,WeaponRubberBaton";
         item_sets[11].starting_equipments = "WeaponGEPGun,WeaponRubberBaton";
-        item_sets[11].item_spawns = "WeaponGEPGun,200,WeaponLAW,133,WeaponLAM,200,WeaponEMPGrenade,133,WeaponGasGrenade,133,WeaponNanoVirusGrenade,133,WeaponRubberBaton,20,AmmoRocketWP,200";
+        item_sets[11].item_spawns =
+            "WeaponLAW,133,WeaponLAM,200,WeaponEMPGrenade,133,WeaponGasGrenade,133," $
+            "WeaponNanoVirusGrenade,133,WeaponRubberBaton,20,AmmoRocket,200,AmmoRocketWP,200";
 
         i=0;
 
