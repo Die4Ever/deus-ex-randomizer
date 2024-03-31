@@ -36,6 +36,16 @@ jobs:
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
+      - name: Upload Release Asset Vanilla Fixer
+        id: upload-release-asset-vanillafixer
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: installer/dist/DXRandoInstaller.exe
+          asset_name: DXRVanillaFixer.exe
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
       - name: Upload Release Asset BingoViewer
         id: upload-release-asset-bingoviewer
         uses: svenstaro/upload-release-action@v2
@@ -89,6 +99,16 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: installer/dist/DXRandoInstaller
           asset_name: DXRandoInstaller-Linux
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
+      - name: Upload Release Asset Vanilla Fixer
+        id: upload-release-asset-vanillafixer
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: installer/dist/DXRandoInstaller
+          asset_name: DXRVanillaFixer
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 

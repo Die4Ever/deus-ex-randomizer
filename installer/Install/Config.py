@@ -107,6 +107,13 @@ class Config:
         return changes
 
 
+    def get(self, section, key):
+        sect = self.sections.get(section, [])
+        for line in sect:
+            if line.get('key')==key:
+                return line.get('value')
+        return None
+
 
 def _ReadConfig(text:str) -> OrderedDict:
     sections = OrderedDict()

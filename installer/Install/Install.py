@@ -53,6 +53,11 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, OGL2:bool=False)
 
     for(f, settings) in flavors.items():
         ret={}
+        if not settings.get('install') and f != 'Vanilla':
+            # vanilla handles its own skipping logic
+            info('skipping installation of', f)
+            continue
+
         if 'Vanilla'==f:
             ret = InstallVanilla(system, settings, speedupfix, Vulkan=dxvk, OGL2=OGL2)
         if 'Vanilla? Madder.'==f:
@@ -84,8 +89,15 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, OGL2:bool=False)
 def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL2:bool):
     gameroot = system.parent
 
+    if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
+        return
+
     if settings.get('LDDP'):
         InstallLDDP(system, settings)
+
+    # always install FemJCu because it doesn't hurt to have
+    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
+    CopyTo(FemJCu, system / 'FemJC.u')
 
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
     exetype = settings.get('exetype')
@@ -96,8 +108,26 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
 
     exename = 'DXRando'
     # or should we not create a separate DXRando.exe file? Linux defaults to DeusEx.exe because of Steam
-    if not settings.get('DXRando.exe', IsWindows()):
+    if settings.get('install') and not settings.get('DXRando.exe', IsWindows()):
         exename = 'DeusEx'
+
+    # also fix vanilla stuff
+    if exename != 'DeusEx' and settings.get('FixVanilla'):
+        exedest:Path = system / 'DeusEx.exe'
+        CopyTo(exe_source, exedest)
+        ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
+        VanillaFixConfigs(system, 'DeusEx', kentie, Vulkan, OGL2, speedupfix, ini)
+    else:
+        info('skipping fixing of vanilla')
+
+    if kentie: # kentie needs this, copy it into the regular System folder, doesn't hurt if you don't need it
+        deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
+        CopyTo(deusexeu, system / 'DeusExe.u')
+
+    if not settings.get('install'):
+        info('skipping installation of vanilla DXRando')
+        return
+
     exedest:Path = system / (exename+'.exe')
     CopyTo(exe_source, exedest)
 
@@ -108,42 +138,30 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
     VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini, settings.get('ZeroRando', False))
 
-    # also fix vanilla stuff
-    if exename != 'DeusEx' and settings.get('FixVanilla'):
-        exedest:Path = system / 'DeusEx.exe'
-        CopyTo(exe_source, exedest)
-        ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
-        VanillaFixConfigs(system, 'DeusEx', kentie, Vulkan, OGL2, speedupfix, ini)
-
     dxrroot = gameroot / 'DXRando'
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3DRenderers(system)
 
-    if kentie: # kentie needs this, copy it into the regular System folder, doesn't hurt if you don't need it
-        deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
-        CopyTo(deusexeu, system / 'DeusExe.u')
-
-    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
-    CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
-
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
-def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI, ZeroRando=False):
-    defini_dest = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
+def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI: Path, ZeroRando=False):
+    defini_dest:Path = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(sourceINI, defini_dest)
+    c = Config.Config(defini_dest.read_bytes())
+    SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
     if kentie:
-        DeusExeU = GetSourcePath() / '3rdParty' / 'DeusExe.u'
-        CopyTo(DeusExeU, system / 'DeusExe.u')
         configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
-        Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
+        if SaveDXRando:
+            Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
     else:
         configs_dest = system
-        Mkdir(system.parent /'SaveDXRando', exist_ok=True, parents=True)
+        if SaveDXRando:
+            Mkdir(system.parent /'SaveDXRando', exist_ok=True, parents=True)
     DXRandoini = configs_dest / (exename+'.ini')
     Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
 
