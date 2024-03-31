@@ -96,7 +96,7 @@ function CheckConfig()
         item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun,#var(package).WeaponRubberBaton";
         item_sets[2].starting_equipments = "WeaponProd,AmmoBattery,#var(package).WeaponRubberBaton";
         item_sets[2].starting_augs = "AugStealth,AugMuscle";
-        item_sets[2].item_spawns = "WeaponProd,30,WeaponMiniCrossbow,30,WeaponRubberBaton,20";
+        item_sets[2].item_spawns = "WeaponProd,30,WeaponMiniCrossbow,30,#var(package).WeaponRubberBaton,20";
 
         item_sets[3].name = "Ninja JC";
         item_sets[3].player_message = "I am Ninja!";
@@ -121,7 +121,7 @@ function CheckConfig()
         item_sets[5].starting_equipments = "WeaponCrowbar";
 
         item_sets[6].name = "Grenades Only";
-        item_sets[6].player_message = "Grenades Only";
+        item_sets[6].player_message = "Grenades Only!";
         item_sets[6].bans = "Engine.Weapon";
         item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
         item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
@@ -143,6 +143,15 @@ function CheckConfig()
         item_sets[10].player_message = "By the Book";
         item_sets[10].bans = "Lockpick,Multitool";
         item_sets[10].starting_augs = "AugStealth";
+
+        item_sets[11].name = "Explosives Only";
+        item_sets[11].player_message = "Explosives Only!";
+        item_sets[11].bans = "Engine.Weapon,Ammo762mm";
+        item_sets[11].allows = "WeaponGEPGun,WeaponLAW,WeaponLAM,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponAssaultGun,#var(package).WeaponRubberBaton";
+        item_sets[11].starting_equipments = "WeaponGEPGun,#var(package).WeaponRubberBaton";
+        item_sets[11].item_spawns =
+            "WeaponLAW,133,WeaponLAM,200,WeaponEMPGrenade,133,WeaponGasGrenade,133," $
+            "WeaponNanoVirusGrenade,133,#var(package).WeaponRubberBaton,20,AmmoRocket,200,AmmoRocketWP,200";
 
         i=0;
 
