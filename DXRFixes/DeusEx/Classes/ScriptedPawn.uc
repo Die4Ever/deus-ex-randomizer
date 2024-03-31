@@ -46,9 +46,9 @@ function ThrowInventory(bool gibbed)
         if( Ammo(item) != None )
             drop = false;
         if( drop ) {
-            class'DXRActorsBase'.static.ThrowItem(item, 1.0);
+            class'DXRActorsBase'.static.ThrowItem(item, 0.3);
             if(gibbed)
-                item.Velocity *= vect(-2, -2, 2);
+                item.Velocity *= vect(-10, -10, 10);
             else
                 item.Velocity *= vect(-1.5, -1.5, 1.5);
         }
