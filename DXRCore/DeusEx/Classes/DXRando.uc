@@ -12,6 +12,7 @@ var int seed, tseed;
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
+var DXRando dxr;// singleton reference in default
 var transient DXRBase modules[48];
 var transient int num_modules;
 
@@ -112,6 +113,11 @@ function DXRInit()
     flags.InitCoordsMult();// for some reason flags is loaded too early and doesn't have the new map url
     flags.LoadFlags();
     LoadModules();
+    if(default.dxr != None) {
+        err("overwriting singleton " $ default.dxr $ " with " $ self);
+    }
+    dxr = self;
+    default.dxr = self;// singleton reference
     RandoEnter();
 }
 
