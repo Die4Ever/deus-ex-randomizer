@@ -120,8 +120,8 @@ function CheckConfig()
         item_sets[5].allows = "WeaponCrowbar";
         item_sets[5].starting_equipments = "WeaponCrowbar";
 
-        item_sets[6].name = "Grenades Only!";
-        item_sets[6].player_message = "Grenades Only";
+        item_sets[6].name = "Grenades Only";
+        item_sets[6].player_message = "Grenades Only!";
         item_sets[6].bans = "Engine.Weapon";
         item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
         item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
