@@ -244,7 +244,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     if (item.IsA('DeusExWeapon'))   // I *really* hate special cases
     {
-        foreach AllActors(class'DXRando', dxr) break;
+        dxr = class'DXRando'.default.dxr;
         loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
         if (loadout != None && loadout.is_banned(Weapon(item).AmmoName))
             Weapon(item).PickupAmmoCount = 0;

@@ -123,9 +123,9 @@ function CheckConfig()
         item_sets[6].name = "Grenades Only";
         item_sets[6].player_message = "Grenades Only!";
         item_sets[6].bans = "Engine.Weapon";
-        item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
-        item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
-        item_sets[6].item_spawns = "WeaponLAM,50,WeaponGasGrenade,50,WeaponNanoVirusGrenade,50,WeaponEMPGrenade,50";
+        item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade,#var(package).WeaponRubberBaton";
+        item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade,#var(package).WeaponRubberBaton,20";
+        item_sets[6].item_spawns = "WeaponLAM,50,WeaponGasGrenade,50,WeaponNanoVirusGrenade,50,WeaponEMPGrenade,50,#var(package).WeaponRubberBaton,20";
 
         item_sets[7].name = "No Pistols";
         item_sets[7].player_message = "No Pistols";
