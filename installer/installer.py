@@ -7,7 +7,7 @@ if typechecks:
     install_import_hook('GUI')
 
 
-from Install import GetSourcePath, SetDryrun, SetVerbose, info, debug, GetVersion
+from Install import GetSourcePath, SetDryrun, SetVanillaFixer, SetVerbose, info, debug, GetVersion
 try:
     import argparse
     import sys
@@ -27,6 +27,8 @@ parser.add_argument('--unattended', action="store_true", help='Unattended instal
 parser.add_argument('--path', help='Path to DeusEx.exe for installation')
 parser.add_argument('--downloadmirrors', action="store_true", help='Default to download mirrored maps for unattended installations')
 parser.add_argument('--verbose', action="store_true", help="Output way more to the console")
+parser.add_argument('--vanillafixer', action="store_true", help="Force vanilla fixer defaults")
+parser.add_argument('--dxrando', action="store_true", help="Force DXRando installer defaults")
 args = parser.parse_args()
 
 if args.verbose:
@@ -34,6 +36,11 @@ if args.verbose:
 
 if args.dryrun:
     SetDryrun(True)
+
+if args.vanillafixer:
+    SetVanillaFixer(True)
+elif args.dxrando:
+    SetVanillaFixer(False)
 
 if args.version:
     thirdparty = GetSourcePath() / '3rdParty'

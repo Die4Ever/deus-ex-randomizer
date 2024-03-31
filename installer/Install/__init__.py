@@ -23,6 +23,7 @@ def info(*args):
 
 
 try:
+    import sys
     import hashlib
     import os
     from pathlib import Path
@@ -53,6 +54,18 @@ def SetDryrun(val:bool):
 def GetDryrun() -> bool:
     global dryrun
     return dryrun
+
+VanillaFixer = None
+def IsVanillaFixer() -> bool:
+    global VanillaFixer
+    if VanillaFixer is not None:
+        return VanillaFixer
+    p = Path(sys.argv[0])
+    return 'dxrvanillafixer' in p.name.lower()
+
+def SetVanillaFixer(val):
+    global VanillaFixer
+    VanillaFixer = val
 
 def IsWindows() -> bool:
     return os.name == 'nt'
