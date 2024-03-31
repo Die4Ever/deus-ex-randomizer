@@ -259,12 +259,12 @@ function AnyEntry()
 function ShowTeleporters()
 {
     local #var(prefix)Teleporter t;
-    local int show_teleporters;
+    local bool hide;
 
-    show_teleporters = class'MenuChoice_ShowTeleporters'.default.value;
+    hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters(dxr.flags.IsReducedRando());
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
-        t.bHidden = !(t.bCollideActors && t.bEnabled && show_teleporters>0);
+        t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
     }
 }

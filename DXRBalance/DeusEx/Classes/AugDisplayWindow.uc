@@ -308,8 +308,8 @@ function DrawTargetAugmentation(GC gc)
 
     // check 500 feet in front of the player
     target = TraceHoverHint(8000);
-    if(class'MenuChoice_ShowTeleporters'.default.value > 1) {
-	    tgtTeleporter = #var(prefix)Teleporter(target);
+    if(class'MenuChoice_ShowTeleporters'.static.ShowDescriptions(class'DXRando'.default.dxr.flags.IsReducedRando())) {
+        tgtTeleporter = #var(prefix)Teleporter(target);
     }
 
     // display teleporter destinations
