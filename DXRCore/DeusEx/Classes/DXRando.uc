@@ -118,6 +118,11 @@ function DXRInit()
     RandoEnter();
 }
 
+simulated event PreTravel()
+{
+    default.dxr = None;// clear the singleton reference
+}
+
 function CheckConfig()
 {
     local int i;

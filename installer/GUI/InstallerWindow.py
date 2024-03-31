@@ -15,7 +15,10 @@ class InstallerWindow(GUIBase):
         self.width = 350
         self.height = 500
         self.lastprogress = ''
-        self.root.title("Deus Ex Randomizer " + GetVersion() + " Installer")
+        if IsVanillaFixer():
+            self.root.title("DXR Vanilla Fixer " + GetVersion())
+        else:
+            self.root.title("DXRando " + GetVersion() + " Installer")
 
         self.dxvk_default = CheckVulkan()# this takes a second or so
         self.ogl2_default = self.dxvk_default or not IsWindows()
@@ -114,7 +117,7 @@ class InstallerWindow(GUIBase):
             v = BooleanVar(master=self.frame, value=IsVanillaFixer())
             settings['ZeroRando'] = v
             c = Checkbutton(self.frame, text="Default to Zero Rando mode for "+f, variable=v)
-            Hovertip(c, "This retains the vanilla menu experience for your first launch.\nAnd also sets Zero Rando mode as your default game mode for a new game.")
+            Hovertip(c, "This retains the vanilla menu experience for your first launch.\nAnd also sets Zero Rando mode as your default game mode for a new game.\nYou can change this once you get into the game with the Rando menu.")
             c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             row+=1
@@ -179,7 +182,7 @@ class InstallerWindow(GUIBase):
     def GlobalFixes(self, row, pad):
         # engine.dll speedup fix, this is global
         self.speedupfixval = BooleanVar(master=self.frame, value=True)
-        self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix to support higher frame rates.", variable=self.speedupfixval)
+        self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix\nto support higher frame rates.", variable=self.speedupfixval)
         self.speedupfix.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.speedupfix, "Fixes issues with high frame rates.")
         self.FixColors(self.speedupfix)
