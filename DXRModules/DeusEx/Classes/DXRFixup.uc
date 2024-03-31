@@ -261,7 +261,7 @@ function ShowTeleporters()
     local #var(prefix)Teleporter t;
     local bool hide;
 
-    hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters(dxr.flags.IsReducedRando());
+    hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;

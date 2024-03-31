@@ -10,13 +10,17 @@ function SaveSetting()
     }
 }
 
-static function bool ShowTeleporters(bool bReducedRando)
+static function bool ShowTeleporters()
 {
+    local bool bReducedRando;
+    bReducedRando = class'DXRando'.default.dxr.flags.IsReducedRando();
     return default.value==1 || default.value==2 || (!bReducedRando && default.value==3);
 }
 
-static function bool ShowDescriptions(bool bReducedRando)
+static function bool ShowDescriptions()
 {
+    local bool bReducedRando;
+    bReducedRando = class'DXRando'.default.dxr.flags.IsReducedRando();
     return default.value==2 || (!bReducedRando && default.value==3);
 }
 

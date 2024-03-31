@@ -69,5 +69,5 @@ function bool ShouldDisplay(float dist)
         return False;
     }
 
-    return class'MenuChoice_ShowTeleporters'.static.ShowDescriptions(class'DXRando'.default.dxr.flags.IsReducedRando());
+    return class'MenuChoice_ShowTeleporters'.static.ShowDescriptions();
 }
