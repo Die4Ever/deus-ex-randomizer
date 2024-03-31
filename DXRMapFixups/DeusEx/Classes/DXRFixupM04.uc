@@ -249,6 +249,10 @@ function PreFirstEntryMapFixes()
             hc.bImportant = true;
         }
 
+        if(IsAprilFools()) {
+            Spawnm(class'MahoganyDesk',,, vect(646.848999, 1524.899902, 263.097137), rot(0, -16384, 0));
+        }
+
         break;
 
     case "04_NYC_BATTERYPARK":
