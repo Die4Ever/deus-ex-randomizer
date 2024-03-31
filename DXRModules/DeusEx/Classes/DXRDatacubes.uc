@@ -557,7 +557,7 @@ function RandoHacks()
 
 function _RandoHackable(#var(prefix)HackableDevices h)
 {
-    if( h.bHackable ) {
+    if( h.bHackable && h.hackStrength>0 ) {
         h.hackStrength = rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust);
         h.hackStrength = Clamp(h.hackStrength*100, 1, 100)/100.0;
         h.initialhackStrength = h.hackStrength;

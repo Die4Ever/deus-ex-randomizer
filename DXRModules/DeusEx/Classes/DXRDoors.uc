@@ -251,7 +251,7 @@ function RandomizeDoors()
         if(d.minDamageThreshold <= 5)
             d.minDamageThreshold = 0;
 
-        if( d.bPickable ) {
+        if( d.bPickable && d.lockStrength>0 ) {
             d.lockStrength = rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust);
             d.lockStrength = Clamp(d.lockStrength*100, 1, 100)/100.0;
             d.initiallockStrength = d.lockStrength;
