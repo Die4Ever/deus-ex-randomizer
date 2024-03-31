@@ -5,6 +5,12 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     HitDamage = default.HitDamage;
 
     if(Pawn(Other) != None) {
+        // we really just want to allow it to damage fish and birds?
+        if( !class'DXRActorsBase'.static.IsCritter(Other.class) || #var(prefix)Mutt(Other) != None || #var(prefix)Cat(Other) != None) {
+            HitDamage = 0;
+        }
+    }
+    else if(#var(prefix)Carcass(Other) != None) {
         HitDamage = 0;
     }
 
