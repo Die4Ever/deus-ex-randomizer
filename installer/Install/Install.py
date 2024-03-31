@@ -90,6 +90,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     gameroot = system.parent
 
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
+        return
 
     if settings.get('LDDP'):
         InstallLDDP(system, settings)
