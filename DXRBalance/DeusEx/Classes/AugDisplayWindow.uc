@@ -289,7 +289,6 @@ function string formatMapName(string mapName)
 // ----------------------------------------------------------------------
 function DrawTargetAugmentation(GC gc)
 {
-    local Weapon oldWeapon;
     local Actor target;
     local #var(prefix)Teleporter tgtTeleporter;
     local DXRHoverHint hoverHint;
@@ -300,11 +299,7 @@ function DrawTargetAugmentation(GC gc)
 
     gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
 
-    oldWeapon = Player.Weapon;
-    if(!Player.bCrosshairVisible)
-        Player.Weapon = None;
     SuperDrawTargetAugmentation(gc);
-    Player.Weapon = oldWeapon;
 
     // check 500 feet in front of the player
     target = TraceHoverHint(8000);
@@ -396,7 +391,8 @@ function SuperDrawTargetAugmentation(GC gc)
         }
 
         weapon = DeusExWeapon(Player.Weapon);
-        if ((weapon != None) && !weapon.bHandToHand && !bUseOldTarget)
+        // DXRando: added && Player.bCrosshairVisible
+        if (weapon != None && Player.bCrosshairVisible && !weapon.bHandToHand && !bUseOldTarget)
         {
             // if the target is out of range, don't draw the reticle
             if (weapon.MaxRange >= VSize(target.Location - Player.Location))
