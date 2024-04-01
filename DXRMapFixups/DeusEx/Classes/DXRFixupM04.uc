@@ -179,13 +179,13 @@ function PreFirstEntryMapFixes()
         if(VanillaMaps && dxr.flags.settings.goals > 0) {
             foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
                 if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                dt.Tag = 'SendingSignal3';
+                dt.Tag = 'UNATCOHatesPlayer';
                 break;
             }
 
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
-                ft.Event = 'SendingSignal3';
+                ft.Event = 'UNATCOHatesPlayer';
                 ft.bTrigger = true;
                 // spawn intermediate trigger to check flag
                 ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vect(10,10,10));
