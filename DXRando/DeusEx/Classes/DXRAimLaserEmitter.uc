@@ -77,7 +77,35 @@ function Tick(float deltaTime)
     if (proxy!=None){
         proxy.DistanceFromPlayer=0;
     }
+    if (Owner==None || owner.bDeleteMe || (#var(PlayerPawn)(owner).Health<=0)){
+        TurnOff();
+    }
     Super.Tick(deltaTime);
+}
+
+static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
+{
+    local CCResidentEvilCam reCam;
+
+    reCam = CCResidentEvilCam(player.ViewTarget);
+
+    if (player==None){
+        return False;
+    }
+
+    if (reCam==None && player.bBehindView==False){
+        return False;
+    }
+
+    if ((player.IsInState('Dying')) || (player.IsInState('Paralyzed')) || (player.IsInState('Interpolating'))){
+        return False;
+    }
+
+    if (player.aimLaser!=None && player.aimLaser.Owner==None){
+        return False;
+    }
+
+    return True;
 }
 
 defaultproperties
