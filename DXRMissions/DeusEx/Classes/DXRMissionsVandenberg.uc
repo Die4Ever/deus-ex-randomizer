@@ -259,9 +259,10 @@ function MissionTimer()
 
     case "14_OCEANLAB_SILO":
         UpdateGoalWithRandoInfo('MeetJock', "Jock could be anywhere around the silo.");
+        UpdateGoalWithRandoInfo('AbortLaunch', "The computer to reprogram the missile could be anywhere around the silo.");
 
         if (!f.GetBool('schematic_downloaded') || !f.GetBool('Heliosborn')){
-            UpdateGoalWithRandoInfo('PreventSabotage', "Howard Strong will only appear once the AIs have been merged in Vandenberg and the UC schematics have been retrieved from the ocean lab.");
+            UpdateGoalWithRandoInfo('PreventSabotage', "Howard Strong will only appear once the AIs have been merged in Vandenberg and the UC schematics have been retrieved from the Ocean Lab.");
         }
 
         break;
