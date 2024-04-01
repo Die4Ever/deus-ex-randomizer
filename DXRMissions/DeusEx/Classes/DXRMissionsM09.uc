@@ -120,7 +120,7 @@ function int InitGoals(int mission, string map)
         AddMapMarker(class'Image09_NYC_Ship_Bottom',208,54,"C","Bilge Computer", loc,"The bilge pump computer can be located on a desk in the corner of the bilge pump room.  This is the vanilla location.");
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helibay Barracks", GOAL_TYPE1, vect(-5505, 175, -432), rot(0, 0, 0));
         AddMapMarker(class'Image09_NYC_Ship_Bottom',51,102,"C","Bilge Computer", loc,"The bilge pump computer can be located on a bed in the barracks underneath the helicopter in the helibay.");
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Room Tower", GOAL_TYPE1, vect(-133,-678,15), rot(0, -15815, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Room Tower", GOAL_TYPE1, vect(-133,-658,15), rot(0, -15815, 0));
         AddMapMarker(class'Image09_NYC_Ship_Bottom',328,256,"C","Bilge Computer", loc,"The bilge pump computer can be found in the control tower in the engine room.");
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", GOAL_TYPE1, vect(-4799, 1198, -150), rot(0, 32768, 0));
         AddActorLocation(loc, 1, vect(-4799, 1198, -220), rot(0,0,0));// MAHOGANY desk

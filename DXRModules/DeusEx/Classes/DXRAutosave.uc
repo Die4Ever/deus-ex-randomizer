@@ -13,8 +13,9 @@ var float old_game_speed;
 const Disabled = 0;
 const FirstEntry = 1;
 const EveryEntry = 2;
-const Hardcore = 3;
+const Hardcore = 3;// same as FirstEntry but without manual saving
 const ExtraSafe = 4;
+const Ironman = 5; // never autosaves, TODO: maybe some fancy logic to autosave on quit and autodelete on load?
 
 function CheckConfig()
 {
@@ -35,9 +36,10 @@ function PreFirstEntry()
 {
     Super.PreFirstEntry();
     l("PreFirstEntry() " $ dxr.dxInfo.MissionNumber);
-    if(dxr.flags.IsHordeMode()) return;
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
-        NeedSave();
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
+        if(dxr.flags.autosave > 0 && dxr.flags.autosave != Ironman) {
+            NeedSave();
+        }
     }
 }
 
@@ -45,9 +47,10 @@ function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
-    if(dxr.flags.IsHordeMode()) return;
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave>=EveryEntry && dxr.flags.autosave != Hardcore && IsTravel ) {
-        NeedSave();
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && IsTravel ) {
+        if( dxr.flags.autosave==EveryEntry || dxr.flags.autosave==ExtraSafe ) {
+            NeedSave();
+        }
     }
 }
 
@@ -145,9 +148,7 @@ static function bool AllowManualSaves(DeusExPlayer player)
     local DXRFlags f;
     f = Human(player).GetDXR().flags;
     if( f == None ) return true;
-    if( f.autosave == Hardcore ) return false;
-    if( f.IsHordeMode() ) return false;
-    if( f.IsWaltonWareHardcore() ) return false;
+    if( f.autosave == Hardcore || f.autosave == Ironman ) return false;
 
     if(player.dataLinkPlay != None) {
         player.dataLinkPlay.FastForward();

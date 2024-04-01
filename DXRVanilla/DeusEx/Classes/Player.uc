@@ -837,16 +837,12 @@ function bool IsFrobbable(actor A)
 
 function HighlightCenterObject()
 {
-    local CCResidentEvilCam reCam;
-	local Vector loc;
+    local Vector loc;
 
     Super.HighlightCenterObject();
 
-
-    reCam = CCResidentEvilCam(ViewTarget);
-
     //Activate the aim laser any time you aren't seeing through your eyes
-    if (reCam!=None || bBehindView){
+    if (class'DXRAimLaserEmitter'.static.AimLaserShouldBeOn(self)){
         if (aimLaser==None){
             aimLaser = Spawn(class'DXRAimLaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
             if (aimLaser == None) {

@@ -638,7 +638,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.medkits = 0;
             settings.medbots = 0;
             settings.health = 200;
-            autosave = 0; // autosaves disabled, and DXRAutosave handles disallowing manual saves based on the gamemode
+            autosave = 5; // Ironman, autosaves and manual saves disabled
         }
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
@@ -648,6 +648,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 #ifndef hx
         settings.CombatDifficulty *= 0.75;
 #endif
+        autosave = 5; // Ironman, autosaves and manual saves disabled
     }
     return settings;
 }
@@ -666,7 +667,9 @@ static function int GameModeIdForSlot(int slot)
     if(slot--==0) return EntranceRando;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
-    if(slot--==0) return WaltonWareHardcore;
+    if(!VersionIsStable()) {
+        if(slot--==0) return WaltonWareHardcore;
+    }
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return ZeroRando;
     if(slot--==0) return RandoLite;

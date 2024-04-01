@@ -85,7 +85,7 @@ function int InitGoals(int mission, string map)
     case "14_OCEANLAB_SILO":
         // HOWARD
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
-        howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Control Room", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
+        howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
         //howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", NORMAL_GOAL, vect(-100, -1331, 832), rot(0, 32768, 0));
         howard_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
         howard_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", NORMAL_GOAL, vect(-1822,-6516,1662), rot(0, 24308, 0));
@@ -104,9 +104,9 @@ function int InitGoals(int mission, string map)
         jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
 
         // COMPUTER
-        goal = AddGoal("14_OCEANLAB_SILO", "Launch Control Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
+        goal = AddGoal("14_OCEANLAB_SILO", "Launch Command Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None); // Launch sequence initiated.  It's gonna be a sunny day at Area 51...
-        computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Control Room", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
+        computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
         computer_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", GOAL_TYPE2, vect(-1721.988770, -6533.606445, 1664), rot(16384,32768,0));
         computer_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", GOAL_TYPE2, vect(-691.854248, -3575.400391, 1475), rot(16384,0,0));
 
@@ -259,6 +259,12 @@ function MissionTimer()
 
     case "14_OCEANLAB_SILO":
         UpdateGoalWithRandoInfo('MeetJock', "Jock could be anywhere around the silo.");
+        UpdateGoalWithRandoInfo('AbortLaunch', "The computer to reprogram the missile could be anywhere around the silo.");
+
+        if (!f.GetBool('schematic_downloaded') || !f.GetBool('Heliosborn')){
+            UpdateGoalWithRandoInfo('PreventSabotage', "Howard Strong will only appear once the AIs have been merged in Vandenberg and the UC schematics have been retrieved from the Ocean Lab.");
+        }
+
         break;
     }
 }
@@ -347,7 +353,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     else if (g.name=="Backup Power Keypad") {
         GlowUp(g.actors[0].a, 255);
     }
-    else if (g.name=="Launch Control Computer" && Loc.name != "Control Room") {
+    else if (g.name=="Launch Command Computer" && Loc.name != "Launch Command") {
         foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
             if(dt.name=='DataLinkTrigger1' || dt.name=='DataLinkTrigger6') {
                 dt.Destroy();
@@ -361,7 +367,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         }
     }
 
-    if (g.name=="Launch Control Computer") {
+    if (g.name=="Launch Command Computer") {
         g.actors[1].a.Tag = 'klax'; // trigger the DataLinkTrigger immediately
         foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'computerdoors') {
             door.MoverEncroachType = ME_IgnoreWhenEncroach;

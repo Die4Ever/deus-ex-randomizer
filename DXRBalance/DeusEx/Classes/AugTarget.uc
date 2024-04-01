@@ -8,9 +8,25 @@ simulated function TickUse()
         return; // don't tick for melee
     }
     Super.TickUse();
+    SetTargetingAugStatus(CurrentLevel, bIsActive);// we're enabled
+}
+
+simulated function float GetEnergyRate()
+{
+    SetTargetingAugStatus(CurrentLevel, bIsActive && IsTicked());
+    return Super.GetEnergyRate();
+}
+
+simulated function SetTargetingAugStatus(int Level, bool IsActive)
+{
+    if(!IsTicked()) IsActive=false;
+
+    DeusExRootWindow(Player.rootWindow).hud.augDisplay.bTargetActive = IsActive;
+    DeusExRootWindow(Player.rootWindow).hud.augDisplay.targetLevel = Level;
 }
 
 defaultproperties
 {
     bAutomatic=true
+    AutoLength=1.2
 }
