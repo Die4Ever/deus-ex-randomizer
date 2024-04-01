@@ -81,6 +81,14 @@ function Activate()
         Player.AmbientSound = oldAmbient;
 }
 
+function Deactivate()
+{
+    _Deactivate();// call the super, but this is merges
+    if(bAutomatic) {
+        LastUsed = FMin(LastUsed, Level.TimeSeconds - AutoLength);
+    }
+}
+
 
 // DXRando: don't disable auto augs when upgrading
 function bool IncLevel()
