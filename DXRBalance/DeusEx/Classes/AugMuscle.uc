@@ -10,7 +10,7 @@ function PostPostBeginPlay()
 defaultproperties
 {
     MaxLevel=1
-    Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects.|n|nTECH ONE: Strength is increased moderately.|n|nTECH TWO: An agent is inhumanly strong."
-    LevelValues(0)=1.500000
-    LevelValues(1)=2.000000
+    Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects.|n|nTECH ONE: Strength is increased slightly.|n|nTECH TWO: An agent is inhumanly strong."
+    LevelValues(0)=1.25
+    LevelValues(1)=2.0
 }

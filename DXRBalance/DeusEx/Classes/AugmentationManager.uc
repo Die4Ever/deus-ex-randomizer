@@ -135,7 +135,7 @@ simulated function int GetClassLevel(class<Augmentation> augClass)
             {
                 // we squished the AugMuscle levels to make it more useful, and some things use the level instead of the strength
                 if(AugMuscle(anAug) != None)
-                    return anAug.CurrentLevel * 2 + 1;// +1 because aug levels start with 0
+                    return anAug.CurrentLevel * 4;// aug levels start with 0
                 return anAug.CurrentLevel;
             }
             else
