@@ -133,7 +133,7 @@ simulated event PreTravel()
     SetTimer(0, false);
 }
 
-event Destroyed()
+simulated event Destroyed()
 {
     default.dxr = None;// clear the singleton reference
 }
