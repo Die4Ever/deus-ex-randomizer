@@ -13,7 +13,7 @@ const CM_Disabled = -1;
 function AnyEntry()
 {
     Super.AnyEntry();
-    SetTimer(0.5, true);
+    SetTimer(0.25, true);
     SetCameraMode(GetExpectedCameraMode());
 }
 
@@ -97,6 +97,11 @@ function SetThirdPersonCamera()
     if (reCam!=None){
         reCam.Destroy();
         reCam=None;
+    }
+    if (player().bIsCrouching || player().bForceDuck){
+        player().Style= STY_Translucent;
+    } else {
+        player().Style= STY_Normal;
     }
 }
 
