@@ -100,14 +100,17 @@ function SetThirdPersonCamera()
     }
 }
 
-#ifdef vanilla
 function SetFixedCamera()
 {
+#ifdef vanilla
     player().bBehindView=False;
     player().bCrosshairVisible=False;
-    if (reCam==None){
+    if (reCam==None || reCam.bDeleteMe){
         SpawnRECam();
     }
+#else
+    err("Fixed camera only supported in vanilla!");
+#endif
 }
 
 function SpawnRECam()
@@ -115,7 +118,6 @@ function SpawnRECam()
     reCam=Spawn(class'CCResidentEvilCam',,,player().Location);
     reCam.BindPlayer(player());
 }
-#endif
 
 function SetCameraMode(int mode)
 {
@@ -145,11 +147,7 @@ function SetCameraMode(int mode)
             break;
 
         case CM_FixedCamera:  //Fixed Camera
-#ifdef vanilla
             SetFixedCamera();
-#else
-            err("Fixed camera only supported in vanilla!");
-#endif
             break;
 
         default:

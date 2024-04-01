@@ -192,13 +192,10 @@ function UnTrigger(Actor Other, Pawn Instigator)
 defaultproperties
 {
     bHidden=true
-    bCollideActors=false
     bCollideWorld=false
     bBlockActors=false
     bBlockPlayers=false
     bProjTarget=false
-    CollisionHeight=1
-    CollisionRadius=1
     bActive=True
     bNoAlarm=True
     bSwing=False
@@ -206,7 +203,8 @@ defaultproperties
     bGameRelevant=True
     bAlwaysRelevant=True
     bAlwaysTick=True
-    bInvincible=True
+    HitPoints=50
+    minDamageThreshold=5
     bStasis=False
     cameraRange=750
     RotationRate=(Pitch=40000,Yaw=40000)
