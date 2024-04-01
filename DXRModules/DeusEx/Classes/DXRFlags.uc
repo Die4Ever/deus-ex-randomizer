@@ -667,7 +667,9 @@ static function int GameModeIdForSlot(int slot)
     if(slot--==0) return EntranceRando;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
-    if(slot--==0) return WaltonWareHardcore;
+    if(!VersionIsStable()) {
+        if(slot--==0) return WaltonWareHardcore;
+    }
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return ZeroRando;
     if(slot--==0) return RandoLite;
