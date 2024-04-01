@@ -347,14 +347,9 @@ function CleanupPlaceholders(optional bool alert)
 }
 
 
-function PreTravel()
+function _PreTravel()
 {
-    Super.PreTravel();
     if(#defined(mapfixes)) {
-        if(dxr == None) {
-            warning("PreTravelMapFixes with dxr None");
-            return;
-        }
         PreTravelMapFixes();
     }
 }

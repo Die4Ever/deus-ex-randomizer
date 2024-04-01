@@ -45,6 +45,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)GuntherHermann gunther;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local OnceOnlyTrigger oot;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
     local bool VanillaMaps;
@@ -178,13 +179,13 @@ function PreFirstEntryMapFixes()
         if(VanillaMaps && dxr.flags.settings.goals > 0) {
             foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
                 if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                dt.Tag = 'SendingSignal3';
+                dt.Tag = 'UNATCOHatesPlayer';
                 break;
             }
 
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
-                ft.Event = 'SendingSignal3';
+                ft.Event = 'UNATCOHatesPlayer';
                 ft.bTrigger = true;
                 // spawn intermediate trigger to check flag
                 ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vect(10,10,10));
@@ -287,6 +288,15 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        break;
+
+    case "04_NYC_SMUG":
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door,'botordertrigger') {
+            door.tag = 'botordertriggerDoor';
+        }
+        oot = Spawn(class'OnceOnlyTrigger');
+        oot.Event='botordertriggerDoor';
+        oot.Tag='botordertrigger';
         break;
     }
 }

@@ -111,10 +111,9 @@ simulated function ExecMaxRando();
 function string DifficultyName(int diff);
 static function string GameModeName(int gamemode);
 
-simulated function PreTravel()
+simulated function _PreTravel()
 {
-    Super.PreTravel();
-    l("PreTravel "$dxr.localURL);
+    l("_PreTravel "$dxr.localURL);
 #ifndef noflags
     if( dxr != None && f != None && f.GetInt('Rando_version') == 0 ) {
         info("PreTravel "$dxr.localURL$" SaveFlags");
@@ -122,12 +121,7 @@ simulated function PreTravel()
     }
 #endif
     // the game silently crashes if you don't wipe out all references to FlagBase during PreTravel?
-    // and we want to do it here instead of in DXRando.uc to ensure it happens after SaveFlags()
     f = None;
-    dxr.flagbase = None;
-    dxr.Disable('Tick');
-    dxr.bTickEnabled = false;
-    dxr.SetTimer(0, false);
 }
 
 function Init(DXRando tdxr)

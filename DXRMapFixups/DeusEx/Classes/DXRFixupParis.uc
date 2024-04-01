@@ -198,7 +198,7 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "10_PARIS_CATACOMBS":
-        if(!dxr.flags.IsReducedRando()) {
+        if(dxr.flags.settings.swapitems > 0) {
             // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
             // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
             npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));

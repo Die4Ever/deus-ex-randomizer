@@ -55,11 +55,10 @@ simulated event Destroyed()
     Super.Destroyed();
 }
 
-simulated event PreTravel()
+simulated event _PreTravel()
 {
     Disable('Tick');
     RememberMusic();
-    Super.PreTravel();
 }
 
 function Timer()

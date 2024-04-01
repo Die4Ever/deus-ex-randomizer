@@ -82,7 +82,13 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 simulated event PreTravel()
 {
     SetTimer(0, False);
+    if(dxr != None) {
+        _PreTravel();
+    }
+    dxr = None;
 }
+
+simulated function _PreTravel();
 
 simulated event Timer()
 {

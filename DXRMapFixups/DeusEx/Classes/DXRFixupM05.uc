@@ -329,7 +329,7 @@ function BalanceJailbreak()
                 nextItem = MoveNextItemTo(nextItem, itemLocations[i], 'player_inv');
     }
 
-    if(!dxr.flags.IsReducedRando()) {
+    if(dxr.flags.settings.swapitems > 0 || dxr.flags.loadout != 0) {
         e = DXREnemies(dxr.FindModule(class'DXREnemies'));
         if( e != None ) {
             r = initchance();

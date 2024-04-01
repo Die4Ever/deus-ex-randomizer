@@ -22,8 +22,8 @@ struct _loadouts
     var class<Inventory>    allow_types[10];
     var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
-    var class<Actor>        item_spawns[5];
-    var int                 item_spawns_chances[5];// the % spawned in each map, max of 300%
+    var class<Actor>        item_spawns[10];
+    var int                 item_spawns_chances[10];// the % spawned in each map, max of 300%
 };
 
 var _loadouts _item_sets[20];
