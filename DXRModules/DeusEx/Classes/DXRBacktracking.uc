@@ -176,9 +176,8 @@ function PostFirstEntry()
     }
 }
 
-function PreTravel()
+function _PreTravel()
 {
-    Super.PreTravel();
     CheckNextMap(player().nextMap);
 }
 

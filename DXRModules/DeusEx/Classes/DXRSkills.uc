@@ -73,11 +73,11 @@ simulated function PlayerLogin(#var(PlayerPawn) player)
 #endif
 }
 
-event PreTravel()
+event _PreTravel()
 {
     local PlayerDataItem data;
     local #var(PlayerPawn) p;
-    Super.PreTravel();
+
 #ifdef multiplayer
     foreach AllActors(class'#var(PlayerPawn)', p) {
         l("PreTravel "$p);

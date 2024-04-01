@@ -350,12 +350,6 @@ simulated function Timer()
     }
 }
 
-function PreTravel()
-{
-    Super.PreTravel();
-    SetTimer(0, false);
-}
-
 function BingoWinScreen()
 {
     local #var(PlayerPawn) p;

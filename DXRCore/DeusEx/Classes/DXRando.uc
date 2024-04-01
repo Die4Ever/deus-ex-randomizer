@@ -120,7 +120,17 @@ function DXRInit()
 
 simulated event PreTravel()
 {
+    local int i;
+    for(i=0; i<num_modules; i++) {
+        modules[i].PreTravel();
+        modules[i] = None;
+    }
+    num_modules = 0;
     default.dxr = None;// clear the singleton reference
+    flagbase = None;
+    Disable('Tick');
+    bTickEnabled = false;
+    SetTimer(0, false);
 }
 
 function CheckConfig()

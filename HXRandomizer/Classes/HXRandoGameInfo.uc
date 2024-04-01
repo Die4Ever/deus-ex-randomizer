@@ -130,9 +130,6 @@ function ProcessServerTravel( string URL, bool bItems )
     local DeusExNote note;
     local DataStorage ds;
     log(Self$".ProcessServerTravel PreTravel dxr: "$dxr);
-    for(i=0; i<dxr.num_modules; i++) {
-        dxr.modules[i].PreTravel();
-    }
 
     ds = class'DataStorage'.static.GetObj(dxr);
     for( note = FirstNote; note != None; note = note.next ) {
@@ -140,6 +137,9 @@ function ProcessServerTravel( string URL, bool bItems )
         ds.AddNote( note.textTag, note.bUserNote, note.text );
     }
     ds.PreTravel();
+
+    dxr.PreTravel();
+
     Super.ProcessServerTravel( URL, bItems );
 }
 

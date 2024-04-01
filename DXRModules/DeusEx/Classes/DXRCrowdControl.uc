@@ -67,11 +67,10 @@ function AnyEntry() {
     }
 }
 
-function PreTravel() {
+function _PreTravel() {
     if( link != None && link.ccEffects != None ) {
         link.ccEffects.CleanupOnExit();
     }
-    Super.PreTravel();
 }
 
 function CheckConfig()
