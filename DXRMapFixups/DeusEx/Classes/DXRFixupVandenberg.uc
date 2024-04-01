@@ -696,7 +696,7 @@ function TimerMapFixes()
     case "14_Oceanlab_silo":
         prevMapsDone = dxr.flagbase.GetBool('Heliosborn') &&  //Finished Vandenberg, mission 12
             dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
-        prevMapsDone = prevMapsDone || !#defined(injections);
+        prevMapsDone = prevMapsDone || !#defined(injections) || dxr.flags.settings.goals<=0;
 
         if(prevMapsDone
            && dxr.flagbase.GetBool('missile_launched') //Redirected the missile in Silo, mission 14
