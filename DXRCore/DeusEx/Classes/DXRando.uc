@@ -133,6 +133,11 @@ simulated event PreTravel()
     SetTimer(0, false);
 }
 
+event Destroyed()
+{
+    default.dxr = None;// clear the singleton reference
+}
+
 function CheckConfig()
 {
     local int i;
