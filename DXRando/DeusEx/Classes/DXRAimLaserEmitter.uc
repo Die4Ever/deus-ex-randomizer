@@ -101,9 +101,11 @@ static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
         return False;
     }
 
+#ifdef injections
     if (player.aimLaser!=None && player.aimLaser.Owner==None){
         return False;
     }
+#endif
 
     return True;
 }
