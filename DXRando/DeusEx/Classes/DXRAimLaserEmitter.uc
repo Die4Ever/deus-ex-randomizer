@@ -56,21 +56,18 @@ function SetLaserColour()
     player = DeusExPlayer(Owner);
     if (player==None) return;
 
-    //White laser: Texture'Effects.UserInterface.WhiteStatic'
-    //Blue laser:  Texture'LaserBeam2';
-    //Red Laser: FireTexture'Effects.Laser.LaserBeam1'
-    //Green Laser: Texture'Effects.Fire.Wepn_Prifle_SFX'
-
     DeusExRootWindow(Player.rootWindow).hud.augDisplay.GetTargetReticleColor(HitActor,retColour);
     //player.ClientMessage("R"$retColour.R$" G"$retColour.G$" B"$retColour.B);
-    if (retColour.R==0 && retColour.G==0 && retColour.B==0){ //White
-        proxy.Skin = Texture'Effects.UserInterface.WhiteStatic';
-    } else if (retColour.R==255 && retColour.G==0 && retColour.B==0){ //Red
-        proxy.Skin = FireTexture'Effects.Laser.LaserBeam1';
-    } else if (retColour.R==0 && retColour.G==255 && retColour.B==0){ //Green
-        proxy.Skin = Texture'Effects.Fire.Wepn_Prifle_SFX';
+    if (HitActor!=None){
+        if (retColour.R==0 && retColour.G==0 && retColour.B==0){
+            proxy.Skin = Texture'Extension.SolidYellow';
+        } else if (retColour.R==255 && retColour.G==0 && retColour.B==0){
+            proxy.Skin = Texture'Extension.SolidRed';
+        } else if (retColour.R==0 && retColour.G==255 && retColour.B==0){
+            proxy.Skin = Texture'Extension.SolidGreen';
+        }
     } else {
-        proxy.Skin = Texture'LaserBeam2';
+        proxy.Skin = Texture'Extension.Solid'; //Solid White
     }
 }
 
