@@ -350,7 +350,7 @@ function DrawTargetAugmentation(GC gc)
 
 }
 
-
+// DXRando mostly copied from Super, but we want to hide aiming reticles when !bCrosshairVisible, and don't show the dumb "No Image" black rectangle on low levels of AugTarget
 function SuperDrawTargetAugmentation(GC gc)
 {
     local String str;
@@ -517,7 +517,8 @@ function SuperDrawTargetAugmentation(GC gc)
                 w = width/4;
                 h = height/4;
 
-                DrawDropShadowBox(gc, x-w/2, y-h/2, w, h);
+                // DXRando move drop shadow down into if targetLevel >2 && winZoom != None
+                //DrawDropShadowBox(gc, x-w/2, y-h/2, w, h);
 
                 boxCX = width/8 + margin;
                 boxCY = height/2;
@@ -530,6 +531,7 @@ function SuperDrawTargetAugmentation(GC gc)
                 {
                     if (winZoom != None)
                     {
+                        DrawDropShadowBox(gc, x-w/2, y-h/2, w, h); // DXRando: moved this here
                         mult = (target.CollisionRadius + target.CollisionHeight);
                         v1 = Player.Location;
                         v1.Z += Player.BaseEyeHeight;
@@ -541,8 +543,9 @@ function SuperDrawTargetAugmentation(GC gc)
                 }
                 else
                 {
+                    // DXRando: this is dumb
                     // black out the zoom window and draw a "no image" message
-                    gc.SetStyle(DSTY_Normal);
+                    /*gc.SetStyle(DSTY_Normal);
                     gc.SetTileColorRGB(0,0,0);
                     gc.DrawPattern(boxTLX, boxTLY, w, h, 0, 0, Texture'Solid');
 
@@ -550,7 +553,7 @@ function SuperDrawTargetAugmentation(GC gc)
                     gc.GetTextExtent(0, w, h, msgNoImage);
                     x = boxCX - w/2;
                     y = boxCY - h/2;
-                    gc.DrawText(x, y, w, h, msgNoImage);
+                    gc.DrawText(x, y, w, h, msgNoImage);*/
                 }
 
                 // print the name of the target above the box
