@@ -227,8 +227,6 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     wet = FClamp(wet, 0, 1);
 
-    oldseed = SetGlobalSeed(" RandoLevelValues " $ a.class.name );
-
     aug = #var(prefix)Augmentation(a);
     sk = #var(prefix)Skill(a);
 
@@ -259,6 +257,8 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     // we'll remove values later
     removals = 1;
     len += removals;
+
+    oldseed = SetGlobalSeed(" RandoLevelValues " $ a.class.name );
 
     // choose random points within the 0-1 range, with an extra point so we can remove the median
     for(i=0; i < len; i++) {
