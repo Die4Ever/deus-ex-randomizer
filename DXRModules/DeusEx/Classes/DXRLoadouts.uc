@@ -26,7 +26,7 @@ struct _loadouts
     var int                 item_spawns_chances[10];// the % spawned in each map, max of 300%
 };
 
-var _loadouts _item_sets[20];
+var _loadouts __item_sets[20];
 
 struct RandomItemStruct { var string type; var int chance; };
 struct _RandomItemStruct { var class<Inventory> type; var int chance; };
@@ -251,10 +251,10 @@ function AddBan(int s, string type)
 
     if( type == "" ) return;
 
-    for(i=0; i < ArrayCount(_item_sets[s].ban_types); i++) {
-        if( _item_sets[s].ban_types[i] == None ) {
+    for(i=0; i < ArrayCount(__item_sets[s].ban_types); i++) {
+        if( __item_sets[s].ban_types[i] == None ) {
             a = GetClassFromString(type, class'Inventory');
-            _item_sets[s].ban_types[i] = class<Inventory>(a);
+            __item_sets[s].ban_types[i] = class<Inventory>(a);
             return;
         }
     }
@@ -267,10 +267,10 @@ function AddAllow(int s, string type)
 
     if( type == "" ) return;
 
-    for(i=0; i < ArrayCount(_item_sets[s].allow_types); i++) {
-        if( _item_sets[s].allow_types[i] == None ) {
+    for(i=0; i < ArrayCount(__item_sets[s].allow_types); i++) {
+        if( __item_sets[s].allow_types[i] == None ) {
             a = GetClassFromString(type, class'Inventory');
-            _item_sets[s].allow_types[i] = class<Inventory>(a);
+            __item_sets[s].allow_types[i] = class<Inventory>(a);
             return;
         }
     }
@@ -283,10 +283,10 @@ function AddStart(int s, string type)
 
     if( type == "" ) return;
 
-    for(i=0; i < ArrayCount(_item_sets[s].starting_equipment); i++) {
-        if( _item_sets[s].starting_equipment[i] == None ) {
+    for(i=0; i < ArrayCount(__item_sets[s].starting_equipment); i++) {
+        if( __item_sets[s].starting_equipment[i] == None ) {
             a = GetClassFromString(type, class'Inventory');
-            _item_sets[s].starting_equipment[i] = class<Inventory>(a);
+            __item_sets[s].starting_equipment[i] = class<Inventory>(a);
             return;
         }
     }
@@ -299,10 +299,10 @@ function AddAug(int s, string type)
 
     if( type == "" ) return;
 
-    for(i=0; i < ArrayCount(_item_sets[s].starting_augs); i++) {
-        if( _item_sets[s].starting_augs[i] == None ) {
+    for(i=0; i < ArrayCount(__item_sets[s].starting_augs); i++) {
+        if( __item_sets[s].starting_augs[i] == None ) {
             a = GetClassFromString(type, class'Augmentation');
-            _item_sets[s].starting_augs[i] = class<Augmentation>(a);
+            __item_sets[s].starting_augs[i] = class<Augmentation>(a);
             return;
         }
     }
@@ -315,11 +315,11 @@ function AddItemSpawn(int s, string type, int chances)
 
     if( type == "" ) return;
 
-    for(i=0; i < ArrayCount(_item_sets[s].item_spawns); i++) {
-        if( _item_sets[s].item_spawns[i] == None ) {
+    for(i=0; i < ArrayCount(__item_sets[s].item_spawns); i++) {
+        if( __item_sets[s].item_spawns[i] == None ) {
             a = GetClassFromString(type, class'Actor');
-            _item_sets[s].item_spawns[i] = a;
-            _item_sets[s].item_spawns_chances[i] = chances;
+            __item_sets[s].item_spawns[i] = a;
+            __item_sets[s].item_spawns_chances[i] = chances;
             return;
         }
     }
@@ -348,7 +348,7 @@ function AnyEntry()
     // TODO: fix being given items from conversations for other mods
     /*foreach AllObjects(class'ConEventTransferObject', c) {
         l(c.objectName @ c.giveObject @ c.toName);
-        if( c.toName == "JCDenton" && is_banned(_item_sets[loadout], c.giveObject) ) {
+        if( c.toName == "JCDenton" && is_banned(__item_sets[loadout], c.giveObject) ) {
             l(c.objectName @ c.giveObject @ c.toName $ ", clearing");
             c.toName = "";
             c.toActor = None;
@@ -379,12 +379,12 @@ function bool _is_banned(_loadouts b, class<Inventory> item)
 
 function bool is_banned(class<Inventory> item)
 {
-    return _is_banned( _item_sets[loadout], item);
+    return _is_banned( __item_sets[loadout], item);
 }
 
 function class<Inventory> get_starting_item()
 {
-    return _item_sets[loadout].starting_equipment[0];
+    return __item_sets[loadout].starting_equipment[0];
 }
 
 function bool ban(DeusExPlayer player, Inventory item)
@@ -393,7 +393,7 @@ function bool ban(DeusExPlayer player, Inventory item)
 
     if(IsMeleeWeapon(item) && Carcass(item.Owner) != None && player.FindInventoryType(item.class) != None) {
         return true;
-    } else if ( _is_banned( _item_sets[loadout], item.class) ) {
+    } else if ( _is_banned( __item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
             player.ClientMessage(item_sets[loadout].player_message, 'Pickup', true);
@@ -488,8 +488,8 @@ function bool StartedWithAug(class<Augmentation> a)
 {
     local class<Augmentation> aclass;
     local int i;
-    for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
-        aclass = _item_sets[loadout].starting_augs[i];
+    for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
+        aclass = __item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
         if( aclass == a ) return true;
 
@@ -514,8 +514,8 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
     local DeusExWeapon w;
     local int i, k;
 
-    for(i=0; i < ArrayCount(_item_sets[loadout].starting_equipment); i++) {
-        iclass = _item_sets[loadout].starting_equipment[i];
+    for(i=0; i < ArrayCount(__item_sets[loadout].starting_equipment); i++) {
+        iclass = __item_sets[loadout].starting_equipment[i];
         if( iclass == None ) continue;
 
         if( class<DeusExAmmo>(iclass) == None && class'DXRActorsBase'.static.HasItem(p, iclass) )
@@ -525,8 +525,8 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
         if( bFrob && item != None ) item.Frob( p, None );
     }
 
-    for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
-        aclass = _item_sets[loadout].starting_augs[i];
+    for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
+        aclass = __item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
         class'DXRAugmentations'.static.AddAug( p, aclass, dxr.flags.settings.speedlevel );
     }
@@ -666,10 +666,10 @@ function SpawnItems()
 
     reducer = DXRReduceItems(dxr.FindModule(class'DXRReduceItems'));
 
-    for(i=0;i<ArrayCount(_item_sets[loadout].item_spawns);i++) {
-        aclass = _item_sets[loadout].item_spawns[i];
+    for(i=0;i<ArrayCount(__item_sets[loadout].item_spawns);i++) {
+        aclass = __item_sets[loadout].item_spawns[i];
         if( aclass == None ) continue;
-        chance = _item_sets[loadout].item_spawns_chances[i];
+        chance = __item_sets[loadout].item_spawns_chances[i];
         if( chance <= 0 ) continue;
 
         chance /= 3;
