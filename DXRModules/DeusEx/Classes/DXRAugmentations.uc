@@ -341,6 +341,7 @@ simulated function RandoAug(Augmentation a)
         // so it can be used for speedrun strategies with specific spots to check from
         // aug muscle picking up heavy items is confusing when the strength is randomized, just randomize the energy cost
         // synth heart, can't randomize its strength, just randomize energy cost
+        SetGlobalSeed("RandoAug " $ a.class.name);
         a.energyRate = int(rngrange(a.default.energyRate, 0.5, 1.5));
         aug_value_wet_dry = 0;
         add_desc = add_desc $ "Energy Rate: "$int(a.energyRate)$" Units/Minute";

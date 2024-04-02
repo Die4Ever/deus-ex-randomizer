@@ -65,7 +65,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
     * Zero Changes mode: This one is for the purists. Use our new installer program and it will do compatibility fixes for the vanilla game (Kentie's Launcher, D3D10, DXVK, Engine.dll fix, and more), then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
-    * Randomizer Medium - similar to Randomizer Lite but with more randomization features enabled by default.
+    * Randomizer Medium - similar to Randomizer Lite but with more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
     * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties. And a built in splits viewer!
     * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission
@@ -81,6 +81,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
     * No Swords - for people who think the sword and Dragon's Tooth Sword are OP
     * No Overpowered Weapons - bans pistols, swords, and the GEP Gun
     * By the Book - bans lockpicks and multitools
+    * Explosives Only
 * If you opt-in to Online Features (which is disabled by default, check the Rando menu)
   * Your in-game events will also contribute to [our bot on Mastodon (which is an open source and community-run version of Twitter)](https://botsin.space/@DXRandoActivity)
   * [Death Markers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Death-Markers) - see where other players have died!

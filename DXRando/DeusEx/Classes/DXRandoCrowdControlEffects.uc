@@ -1320,7 +1320,7 @@ function ScriptedPawn findOtherHuman(bool bAllowImportant) {
     num = 0;
 
     foreach AllActors(class'ScriptedPawn',p) {
-        if (class'DXRActorsBase'.static.IsHuman(p.class) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
+        if (class'DXRActorsBase'.static.IsHuman(p.class) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting' && !p.Region.Zone.IsA('SkyZoneInfo')) {
             if (!p.bImportant || bAllowImportant){
                 humans[num++] = p;
             }
