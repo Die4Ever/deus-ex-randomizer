@@ -274,6 +274,11 @@ function AnyEntry()
         case "DXONLY":
         case "DX":
             l("Memeing up "$ dxr.localURL);
+
+            foreach AllActors(class'Actor', a) {
+                a.SetCollision(false,false,false);
+            }
+
             foreach AllActors(class'#var(prefix)DXLogo', logo)
             {
                 a = ReplaceWithRandomClass(logo);
@@ -766,27 +771,112 @@ function Actor ReplaceWithRandomClass(Actor old)
         newActorClass = GetRandomActorClass();
         l(old$" replaced with "$newActorClass);
         a = ReplaceActor(old, newActorClass );
+        if(#var(injectsprefix)MedicalBot(a) != None && chance_single(50)) {
+            #var(injectsprefix)MedicalBot(a).MakeAugsOnly();
+        }
         if( a != None ) return a;
     }
     warning("ReplaceWithRandomClass("$old$") failed");
     return None;
 }
 
+const num_random_actor_classes = 557;
+
 function string GetRandomActorClass()
 {
+    local string s;
+
+    s = _GetRandomActorClass(rng(num_random_actor_classes));
+
+    if(InStr(s, ".") != -1) return s;
 #ifdef hx
-    return "HX.HX" $ _GetRandomActorClass();
+    return "HX.HX" $ s;
 #else
-    return "DeusEx." $ _GetRandomActorClass();
+    return "DeusEx." $ s;
 #endif
 }
 
-function string _GetRandomActorClass()
+
+function ExtendedTests()
 {
-    local int r, i;
+    local int r;
+    local string s;
 
-    r = rng(499);
+    Super.ExtendedTests();
 
+    r = num_random_actor_classes;
+    s = _GetRandomActorClass(r);
+    teststring(s, "", "_GetRandomActorClass(" $ r $ ") is empty string, " $ s);
+    s = _GetRandomActorClass(r-1);
+    teststring(s, "", "_GetRandomActorClass(" $ (r - 1) $ ") is not empty string, " $ s);
+}
+
+function string _GetRandomActorClass(int r)
+{
+    local int i;
+
+    // DXRando classes
+    if(r==i++) return "#var(package).DeathMarker";
+    if(r==i++) return "#var(package).BarDancer";
+    if(r==i++) return "#var(package).FrenchGray";
+    if(r==i++) return "#var(package).FrenchGrayCarcass";
+    if(r==i++) return "#var(package).LeMerchantCarcass";
+    if(r==i++) return "#var(package).MJ12Clone1";
+    if(r==i++) return "#var(package).MJ12Clone1Carcass";
+    if(r==i++) return "#var(package).MJ12Clone2";
+    if(r==i++) return "#var(package).MJ12Clone2Carcass";
+    if(r==i++) return "#var(package).MJ12Clone3";
+    if(r==i++) return "#var(package).MJ12Clone3Carcass";
+    if(r==i++) return "#var(package).MJ12Clone4";
+    if(r==i++) return "#var(package).MJ12Clone4Carcass";
+    if(r==i++) return "#var(package).MJ12CloneAugShield1";
+    if(r==i++) return "#var(package).MJ12CloneAugShield1Carcass";
+    if(r==i++) return "#var(package).MJ12CloneAugShield1NametagCarcass";
+    if(r==i++) return "#var(package).MJ12CloneAugStealth1";
+    if(r==i++) return "#var(package).MJ12CloneAugStealth1Carcass";
+    if(r==i++) return "#var(package).MJ12CloneAugStealth1NametagCarcass";
+    if(r==i++) return "#var(package).MJ12CloneAugTough1";
+    if(r==i++) return "#var(package).MJ12CloneAugTough1Carcass";
+    if(r==i++) return "#var(package).MJ12CloneAugTough1NametagCarcass";
+    if(r==i++) return "#var(package).NSFClone1";
+    if(r==i++) return "#var(package).NSFClone1Carcass";
+    if(r==i++) return "#var(package).NSFClone2";
+    if(r==i++) return "#var(package).NSFClone2Carcass";
+    if(r==i++) return "#var(package).NSFClone3";
+    if(r==i++) return "#var(package).NSFClone3Carcass";
+    if(r==i++) return "#var(package).NSFClone4";
+    if(r==i++) return "#var(package).NSFClone4Carcass";
+    if(r==i++) return "#var(package).NSFCloneAugShield1";
+    if(r==i++) return "#var(package).NSFCloneAugShield1Carcass";
+    if(r==i++) return "#var(package).NSFCloneAugShield1NametagCarcass";
+    if(r==i++) return "#var(package).NSFCloneAugStealth1";
+    if(r==i++) return "#var(package).NSFCloneAugStealth1Carcass";
+    if(r==i++) return "#var(package).NSFCloneAugStealth1NametagCarcass";
+    if(r==i++) return "#var(package).NSFCloneAugTough1";
+    if(r==i++) return "#var(package).NSFCloneAugTough1Carcass";
+    if(r==i++) return "#var(package).NSFCloneAugTough1NametagCarcass";
+    if(r==i++) return "#var(package).UNATCOClone1";
+    if(r==i++) return "#var(package).UNATCOClone1Carcass";
+    if(r==i++) return "#var(package).UNATCOClone2";
+    if(r==i++) return "#var(package).UNATCOClone2Carcass";
+    if(r==i++) return "#var(package).UNATCOClone3";
+    if(r==i++) return "#var(package).UNATCOClone3Carcass";
+    if(r==i++) return "#var(package).UNATCOClone4";
+    if(r==i++) return "#var(package).UNATCOClone4Carcass";
+    if(r==i++) return "#var(package).UNATCOCloneAugShield1";
+    if(r==i++) return "#var(package).UNATCOCloneAugShield1Carcass";
+    if(r==i++) return "#var(package).UNATCOCloneAugShield1NametagCarcass";
+    if(r==i++) return "#var(package).UNATCOCloneAugStealth1";
+    if(r==i++) return "#var(package).UNATCOCloneAugStealth1Carcass";
+    if(r==i++) return "#var(package).UNATCOCloneAugStealth1NametagCarcass";
+    if(r==i++) return "#var(package).UNATCOCloneAugTough1";
+    if(r==i++) return "#var(package).UNATCOCloneAugTough1Carcass";
+    if(r==i++) return "#var(package).UNATCOCloneAugTough1NametagCarcass";
+    // medbot class twice, with 50% chance to be an augbot
+    if(r==i++) return "#var(package).#var(injectsprefix)MedicalBot";
+    if(r==i++) return "#var(package).#var(injectsprefix)MedicalBot";
+
+    // vanilla classes
     if ( r == i++ ) return "AcousticSensor";
     if ( r == i++ ) return "AdaptiveArmor";
     if ( r == i++ ) return "AIPrototype";
@@ -1107,7 +1197,6 @@ function string _GetRandomActorClass()
     if ( r == i++ ) return "MaxChenCarcass";
     if ( r == i++ ) return "Mechanic";
     if ( r == i++ ) return "MechanicCarcass";
-    if ( r == i++ ) return "MedicalBot";
     if ( r == i++ ) return "MedKit";
     //if ( r == i++ ) return "MetalFragment";
     if ( r == i++ ) return "MIB";
@@ -1364,4 +1453,6 @@ function string _GetRandomActorClass()
     if ( r == i++ ) return "WIBCarcass";
     if ( r == i++ ) return "WineBottle";
     //if ( r == i++ ) return "WoodFragment";
+
+    return "";
 }
