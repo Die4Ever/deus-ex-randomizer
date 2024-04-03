@@ -2793,7 +2793,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "WarehouseSewerTunnel":
             return "Swim through the underwater tunnel in the Warehouse District.";
         case "PaulToTong":
-            return "Take Paul's body from the MJ12 facility under UNATCO to Tracer Tong.";
+            return "Take Paul's corpse from the MJ12 facility under UNATCO to Tracer Tong.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
