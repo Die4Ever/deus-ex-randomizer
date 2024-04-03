@@ -9,8 +9,7 @@ function UpdateSkillBanned(PersonaSkillButtonWindow b)
     b.winPointsNeeded.SetPos(260, 0);
     b.winPointsNeeded.SetSize(38, 27);
     b.winPointsNeeded.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-    if( s.GetCost() >= 98999 ) {// VMD adjusts skill costs so we need to be more lenient
-        //b.winPointsNeeded.SetText(b.NotAvailableLabel);
+    if( s.CurrentLevel < ArrayCount(s.Cost) && s.GetCost() >= 98999 ) {// VMD adjusts skill costs so we need to be more lenient
         b.winPointsNeeded.SetText("BANNED");
     }
 }

@@ -102,21 +102,12 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
 simulated function RandoSkills(Skill aSkill)
 {
-    local int mission_group;
     if( dxr == None ) {
         warning("RandoSkills dxr is None");
         return;
     }
 
     l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.settings.minskill$", max: "$dxr.flags.settings.maxskill $", reroll_missions: "$ dxr.flags.settings.skills_reroll_missions $", independent_levels: "$ dxr.flags.settings.skills_independent_levels );
-    if( dxr.flags.settings.skills_reroll_missions == 0 )
-        SetGlobalSeed("RandoSkills");
-    else {
-        if( dxr.dxInfo != None )
-            mission_group = dxr.dxInfo.missionNumber;// TODO: new game screen should use the starting mission if it isn't 1
-        mission_group = Clamp(mission_group, 1, 1000) / dxr.flags.settings.skills_reroll_missions;
-        SetGlobalSeed("RandoSkills " $ mission_group);
-    }
 
     if( dxr.flags.settings.minskill > dxr.flags.settings.maxskill ) dxr.flags.settings.maxskill = dxr.flags.settings.minskill;
 
@@ -130,9 +121,16 @@ simulated function RandoSkills(Skill aSkill)
 simulated function RandoSkill(Skill aSkill)
 {
     local float percent;
-    local int i;
+    local int i, mission_group;
     local bool banned;
     if( dxr == None ) return;
+
+    if( dxr.dxInfo != None && dxr.dxInfo.missionNumber > 0 ) {
+        // TODO: new game screen should use the starting mission if it isn't 1, but it needs to work even when doing a new game while already in a game
+        i = dxr.dxInfo.missionNumber;
+    }
+    mission_group = Clamp(i, 1, 1000) / dxr.flags.settings.skills_reroll_missions;
+    SetGlobalSeed("RandoSkills " $ mission_group @ aSkill.class.name);
 
     percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
     banned = chance_single(dxr.flags.settings.banned_skills);
@@ -264,7 +262,6 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local int m;
     local float f, perk;
     local SkillCostMultiplier scm;
-    local class<Skill> c;
 
     if( i>0 && chance_single(dxr.flags.settings.banned_skill_levels) ) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
@@ -287,9 +284,8 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 #endif
     for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
         scm = SkillCostMultipliers[m];
-        if( scm.type == "" ) continue;
-        c = class<Skill>(GetClassFromString(scm.type, class'Skill'));
-        if( aSkill.IsA(c.name) && i+1 >= scm.minLevel && i < scm.maxLevel ) {
+        if( scm.type != string(aSkill.class.name) ) continue;
+        if( i+1 >= scm.minLevel && i < scm.maxLevel ) {
             f *= float(scm.percent) / 100.0;
             perk *= float(scm.percent) / 100.0;
         }
@@ -367,6 +363,8 @@ function ExtendedTests()
     Super.ExtendedTests();
 
     TestWeightedLevelValues(0.008089, 0.052143);
+
+    testint(10/0, 0, "divide by 0? 10/0 == 0");
 
     for(f=0.01; f<2; f+=0.02) {
         TestWeightedLevelValues(f, f+0.01);

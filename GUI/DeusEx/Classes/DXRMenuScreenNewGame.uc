@@ -188,7 +188,7 @@ function String BuildSkillString( Skill aSkill )
     local String skillString;
     local String levelCost;
 
-    if ( aSkill.GetCurrentLevel() == 3 )
+    if ( aSkill.GetCurrentLevel() == ArrayCount(aSkill.Cost) )
         levelCost = "--";
     else if( aSkill.GetCost() >= 99999 )
         levelCost = "BANNED";
