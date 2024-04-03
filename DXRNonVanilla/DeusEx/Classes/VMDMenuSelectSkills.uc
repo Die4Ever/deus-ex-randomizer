@@ -9,7 +9,7 @@ function String BuildSkillString( Skill aSkill )
     local String levelCost, AddStr;
     local VMDBufferPlayer VMP;
 
-    if ( aSkill.GetCurrentLevel() == 3 )
+    if ( aSkill.GetCurrentLevel() == ArrayCount(aSkill.Cost) )
         levelCost = "--";
     else if( aSkill.GetCost() > 98999 )// VMD adjusts skill costs so we need to be more lenient
         levelCost = "BANNED";

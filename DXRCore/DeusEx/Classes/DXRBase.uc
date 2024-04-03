@@ -259,12 +259,12 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     len += removals;
 
     oldseed = SetGlobalSeed(" RandoLevelValues " $ a.class.name );
-
     // choose random points within the 0-1 range, with an extra point so we can remove the median
     for(i=0; i < len; i++) {
         v = rngexp(0, 100, 1.4) / 100.0;// should this be using a 1.4 curve?
         points[i] = v;
     }
+    ReapplySeed( oldseed );
 
     // sort the values
     for(i=1; i < len; i++) {
@@ -285,8 +285,8 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     for(i=0; i < len; i++) {
         v = points[i];
 
-        if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.LevelValues[i], v, d_max, d_min, wet, i, len);
-        else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.LevelValues[i], v, d_max, d_min, wet, i, len);
+        if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.default.LevelValues[i], v, d_max, d_min, wet, i, len);
+        else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.default.LevelValues[i], v, d_max, d_min, wet, i, len);
 
         if( i>0 ) s = s $ ", ";
         s = s $ DescriptionLevel(a, i, word);
@@ -303,7 +303,6 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 #endif
 
     l("RandoLevelValues "$a$" = "$s);
-    ReapplySeed( oldseed );
 
     if(add_desc != "") {
         s = s $ "|n|n" $ add_desc;
