@@ -769,6 +769,10 @@ function Actor ReplaceWithRandomClass(Actor old)
     local int i;
     for(i=0; i<10; i++) {
         newActorClass = GetRandomActorClass();
+        if(newActorClass == "") {
+            err("GetRandomActorClass() got empty string");
+            continue;
+        }
         l(old$" replaced with "$newActorClass);
         a = ReplaceActor(old, newActorClass );
         if(#var(injectsprefix)MedicalBot(a) != None && chance_single(50)) {
@@ -788,6 +792,7 @@ function string GetRandomActorClass()
 
     s = _GetRandomActorClass(rng(num_random_actor_classes));
 
+    if(s=="") return "";
     if(InStr(s, ".") != -1) return s;
 #ifdef hx
     return "HX.HX" $ s;
