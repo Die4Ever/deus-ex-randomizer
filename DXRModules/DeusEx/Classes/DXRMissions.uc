@@ -493,7 +493,8 @@ function Actor GetActor(out GoalActor ga)
 
     foreach AllActors(class'Actor', a) {
 #ifdef hx
-        if(a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
+        if( (HXMover(a) != None && a.Name == ga.actorName)
+            || a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
 #else
         if(a.name == ga.actorName) {
 #endif
