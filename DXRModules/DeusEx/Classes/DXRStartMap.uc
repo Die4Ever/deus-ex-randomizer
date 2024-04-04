@@ -665,7 +665,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             return start_map>10 || end_mission < 2;
             break;
         case "PaulToTong":
-            return start_map>50 || end_mission < 6;
+            // This goal is impossible with a 50+ start because he is then always alive
+            return start_map>=50 || end_mission < 6;
         case "MetSmuggler":
             return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
         case "KnowsGuntherKillphrase":
