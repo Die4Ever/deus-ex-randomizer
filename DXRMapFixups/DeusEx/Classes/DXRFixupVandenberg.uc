@@ -222,6 +222,12 @@ function PreFirstEntryMapFixes()
                     door.bHighlight = true;
                     door.bFrobbable = true;
                     door.bPickable = false;// make sure DXRDoors sees this as an undefeatable door, also in vanilla this door is obviously not pickable due to not being frobbable
+
+                    //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
+                    //so that they are centered roughly in the middle of the door
+                    door.BasePos = door.BasePos - vectm(door.PrePivot.X,door.PrePivot.Y,door.PrePivot.Z);
+                    door.PrePivot=vect(0,0,0);
+                    door.SetLocation(door.BasePos);
                 }
             }
             AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
