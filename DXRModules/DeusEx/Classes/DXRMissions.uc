@@ -370,6 +370,7 @@ function MoveActorsIn(int goalsToLocations[32])
         l("Moving player to " $ locations[g].name @ loc @ rotate);
         p.SetLocation(loc);
         p.SetRotation(rotate);
+        p.PutCarriedDecorationInHand();
         rando_start_loc = p.Location;
         b_rando_start = true;
     }
