@@ -18,6 +18,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)NanoKey k;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -109,6 +110,18 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(-1733,-2480,168));
+            k.KeyID = 'apartment12';
+            k.Description = "Key to Apartment #12";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
+
+            foreach AllActors(class'DeusExMover', m){
+                if (m.Name=='DeusExMover10'){
+                    m.KeyIDNeeded='apartment12';
+                    break;
+                }
+            }
         }
         break;
 
