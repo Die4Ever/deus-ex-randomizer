@@ -108,7 +108,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: installer/dist/DXRandoInstaller
-          asset_name: DXRVanillaFixer
+          asset_name: DXRVanillaFixer-Linux
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
