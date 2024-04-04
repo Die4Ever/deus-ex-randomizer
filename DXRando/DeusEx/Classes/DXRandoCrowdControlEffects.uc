@@ -2018,6 +2018,34 @@ function PlayerRadiates()
 }
 
 
+function bool DropMarbles(string viewer)
+{
+    local DXRMarble ball;
+    local int num,i;
+
+    num=0;
+
+    for (i=0;i<10;i++){
+        ball = Spawn(class'DXRMarble',,,player().Location+vect(0,0,80),player().Rotation);
+        if (ball!=None){
+            ball.Velocity = vector(ball.Rotation) * 300 + vect(0,0,220) + VRand()*320;
+            ball.Velocity.Z = abs(ball.Velocity.Z);
+            ball.SetSkin(Rand(16));
+            num++;
+        }
+    }
+
+    if (num==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"made you drop your marbles!");
+
+    return True;
+}
+
+
+
 function SplitString(string src, string divider, out string parts[8])
 {
     local int i, c;
@@ -2904,6 +2932,15 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (!RaiseDead(viewer)){
+                return TempFail;
+            }
+            break;
+
+        case "drop_marbles":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (!DropMarbles(viewer)){
                 return TempFail;
             }
             break;

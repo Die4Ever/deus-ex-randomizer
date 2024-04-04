@@ -202,7 +202,7 @@ simulated function bool ClassInLevel(class<Actor> className)
 
 simulated function int PoolBallsSunk()
 {
-    local #var(prefix)Poolball cue,ball;
+    local #var(injectsprefix)Poolball cue,ball;
     local int ballsSunk,tablesSunk,freshSink,radius;
 
     radius=99999;
@@ -217,10 +217,12 @@ simulated function int PoolBallsSunk()
     }
 
     tablesSunk=0;
-    foreach AllActors(class'#var(prefix)Poolball',cue){
+    foreach AllActors(class'#var(injectsprefix)Poolball',cue){
+        if (cue.Class!=class'#var(injectsprefix)Poolball') continue;
         if (cue.SkinColor==SC_Cue){
             ballsSunk=0;
-            foreach cue.RadiusActors(class'#var(prefix)Poolball',ball,radius){
+            foreach cue.RadiusActors(class'#var(injectsprefix)Poolball',ball,radius){
+                if (ball.Class!=class'#var(injectsprefix)Poolball') continue;
                 if (ball.Location.Z <= PoolBallHeight){
                     ballsSunk++;
                 }
