@@ -286,14 +286,16 @@ function HandleAugEffectSelectability(string augName)
     local bool canUpgrade,canDowngrade,sendUpgradeUpdate,sendDowngradeUpdate;
     local int augLevel,augMax, augIndex;
     local class<Augmentation> augClass;
+    local Augmentation anAug;
 
     augClass=getAugClass(augName);
     augIndex=getAugManagerIndex(augClass);
     augLevel=FindAugLevel(augClass);
     augMax=FindAugMax(augClass);
+    anAug = player().AugmentationSystem.FindAugmentation(augClass);
 
     if (augLevel==-1){
-        canUpgrade=True;
+        canUpgrade=!player().AugmentationSystem.AreSlotsFull(anAug);
         canDowngrade=False;
     } else if (augLevel==augMax){
         canUpgrade=False;
