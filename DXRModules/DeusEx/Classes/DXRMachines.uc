@@ -357,6 +357,8 @@ function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, o
     c.UserList[0].userName = ReplaceText(String(c.Name), "#var(injectsprefix)ComputerSecurity", "Comp");
     c.itemName = c.UserList[0].userName;
 
+    c.ComputerNode = CN_PageIndustries; //Should this be randomized?
+
     pass = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
     if(pass != None) {
         c.UserList[0].Password = pass.GeneratePassword(dxr.localURL @ String(c.Name) );
