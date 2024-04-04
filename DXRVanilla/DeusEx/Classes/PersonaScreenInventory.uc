@@ -36,6 +36,10 @@ function UpdateWinInfo(Inventory inv)
     }else if (ChargedPickup(anItem)!=None){
         winInfo.AppendText("|n|nDuration: "$CalcChargedPickupDurations(ChargedPickup(anItem)));
     }
+
+    if (BioElectricCell(anItem)!=None){
+        winInfo.AppendText("|n|nCurrent Energy: "$int(player.Energy)$"/"$int(player.EnergyMax));
+    }
 }
 
 
