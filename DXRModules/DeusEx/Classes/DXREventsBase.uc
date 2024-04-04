@@ -304,6 +304,10 @@ simulated function Timer()
             if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
                 FlagTriggered=True;
             }
+        } else if ( watchflags[i] == 'PaulToTong' ) {
+            if (ClassInLevel(class'PaulDentonCarcass')){
+                FlagTriggered=True;
+            }
         } else if( watchflags[i] == 'GuntherKillswitch' ) {
             if (WatchGuntherKillSwitch()){
                 FlagTriggered=True;
@@ -959,6 +963,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local bool bPossible;
     local float f;
+    // local int testGoal;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(starting_map);
@@ -1055,6 +1060,17 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     case 0:
         break;
     }
+
+    /* testGoal = some goal index;
+    data.SetBingoSpot(
+        0,
+        0,
+        bingo_options[testGoal].event,
+        bingo_options[testGoal].desc,
+        0,
+        bingo_options[testGoal].max,
+        bingo_options[testGoal].missions
+    ); */
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
