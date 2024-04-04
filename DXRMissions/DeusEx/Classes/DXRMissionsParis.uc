@@ -230,14 +230,37 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)WIB hela;
     local #var(prefix)NanoKey key;
+    local #var(DeusExPrefix)Mover m;
+    local bool VanillaMaps;
 
-    if( dxr.localURL == "10_PARIS_CATACOMBS_TUNNELS" ) {
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+
+    switch(dxr.localURL) {
+    case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'#var(prefix)WIB', hela) {
             key = #var(prefix)NanoKey(GiveItem(hela,class'#var(prefix)NanoKey'));
             key.Description="Catacombs Sewer Entry Key";
             key.keyId='catacombs_blastdoor02';
             break;
         }
+        break;
+
+    case "10_PARIS_METRO":
+        if(VanillaMaps) {
+            key = Spawn(class'#var(prefix)NanoKey',,, vectm(-1733,-2480,168));
+            key.KeyID = 'apartment12';
+            key.Description = "Key to Apartment #12";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(key);
+
+            foreach AllActors(class'#var(DeusExPrefix)Mover', m){
+                if (m.Name=='DeusExMover10') {
+                    m.KeyIDNeeded='apartment12';
+                    break;
+                }
+            }
+        }
+        break;
     }
 }
 
