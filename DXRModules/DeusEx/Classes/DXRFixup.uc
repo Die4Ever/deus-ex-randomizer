@@ -515,6 +515,7 @@ simulated function bool FixInventory(#var(PlayerPawn) p)
         item.SetBase(p);
 
         if(!item.bDisplayableInv) continue;// don't check for inventory overlap
+        if(!#defined(injections)) continue;// we're not gonna be able to fix other mods anyways
         if(item.invPosX < 0 || item.invPosY < 0) continue;
 
         for(x = item.invPosX; x < item.invPosX + item.invSlotsX; x++) {
