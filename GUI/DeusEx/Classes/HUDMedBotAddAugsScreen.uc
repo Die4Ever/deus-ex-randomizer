@@ -112,3 +112,38 @@ function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
     }
     Super.CreateMedbotLabel();
 }
+
+function SelectAugmentation(PersonaItemButton buttonPressed)
+{
+    local Augmentation aug;
+    local String augDesc;
+
+    if (HUDMedBotAugItemButton(buttonPressed)!=None){
+        if (HUDMedBotAugItemButton(buttonPressed).bSlotFull){
+            aug = HUDMedBotAugItemButton(buttonPressed).GetAugmentation();
+        }
+    }
+
+    Super.SelectAugmentation(buttonPressed);
+
+    //If the slot is full, mention that, but still show the description and what slot it goes in
+    if (selectedAug==None && selectedAugButton==None && aug!=None){
+        aug.UpdateInfo(winInfo);
+        augDesc = winInfo.winText.GetText();
+
+        winInfo.Clear();
+
+        winInfo.SetTitle(aug.AugmentationName);
+
+        winInfo.SetText(SlotFullText);
+        winInfo.AppendText(winInfo.CR());
+        winInfo.AppendText(winInfo.CR());
+        winInfo.AppendText(Sprintf(aug.OccupiesSlotLabel, aug.AugLocsText[aug.AugmentationLocation]));
+        winInfo.AppendText(winInfo.CR());
+
+        winInfo.AddLine();
+
+        winInfo.SetText(winInfo.CR());
+        winInfo.AppendText(augDesc);
+    }
+}
