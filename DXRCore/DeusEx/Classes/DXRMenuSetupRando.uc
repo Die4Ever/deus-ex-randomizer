@@ -244,9 +244,8 @@ function BindControls(optional string action)
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_add, 0, 10000);
 
-    NewMenuItem("", "Allow robots to get randomized weapons.");
-    EnumOption("Unchanged Robot Weapons", 0, f.settings.bot_weapons);
-    EnumOption("Random Robot Weapons", 4, f.settings.bot_weapons);
+    NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
+    Slider(f.settings.bot_weapons, 0, 100);
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);

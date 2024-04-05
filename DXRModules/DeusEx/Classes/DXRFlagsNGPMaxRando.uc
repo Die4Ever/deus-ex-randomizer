@@ -99,7 +99,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     }
 
     if(rngb()) {
-        settings.bot_weapons = 4;
+        settings.bot_weapons = 100;
     } else {
         settings.enemyrespawn = 0;
     }
