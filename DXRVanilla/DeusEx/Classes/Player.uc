@@ -10,6 +10,8 @@ var bool bDoomMode;
 
 var Rotator ShakeRotator;
 
+var travel int LastBrowsedAugPage, LastBrowsedAug; //OAT, 1/12/24: By popular demand.
+
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
     // HACK: 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
@@ -1381,6 +1383,37 @@ exec function ActivateAllAutoAugs()
 exec function invis(bool B)
 {// TODO: why doesn't the invisible 1 cheat work anymore?
     Invisible(B);
+}
+
+// OpenAugTree by WCCC
+exec function OpenControllerAugWindow()
+{
+    local DeusExRootWindow Root;
+    local OATMenuAugsSelector TarWindow;
+
+    Root = DeusExRootWindow(RootWindow);
+    if (Root != None)
+    {
+        TarWindow = OATMenuAugsSelector(Root.InvokeMenuScreen(Class'OATMenuAugsSelector', false));
+        if (TarWindow != None)
+        {
+            if (LastBrowsedAugPage > -1)
+            {
+                TarWindow.LoadAugPage(LastBrowsedAugPage);
+            }
+            if (LastBrowsedAug > -1)
+            {
+                TarWindow.SelectedAug = LastBrowsedAug;
+                TarWindow.UpdateHighlighterPos();
+            }
+        }
+    }
+}
+
+defaultproperties
+{
+    LastBrowsedAugPage=-1 //OAT, 1/12/24: Hack so backtracking levels doesn't sometimes forget which page you saved last.
+    LastBrowsedAug=-1 //OAT, same idea here.
 }
 
 // ---
