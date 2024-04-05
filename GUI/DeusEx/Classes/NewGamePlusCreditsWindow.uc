@@ -43,6 +43,7 @@ function AddDXRCreditsGeneral()
     PrintText("Hold the down arrow key to speed up");
     PrintText("Press Spacebar to pause/unpause");
     PrintLn();
+
     PrintHeader("Contributors");
     PrintText("Die4Ever");
     PrintText("TheAstropath");
@@ -56,6 +57,15 @@ function AddDXRCreditsGeneral()
     PrintLn();
     PrintHeader("Discord Community");
     PrintText("Mods4Ever.com/discord");
+
+    PrintLn();
+    PrintHeader("Special Thanks");
+    PrintText("WCCC for the OpenAugTree");
+    PrintText("Joe Wintergreen for the Lipsync fix");
+    PrintText("Kentie for DeusExe Launcher and D3D10");
+    PrintText("Han for Launchbox");
+    PrintText("Chris Dohnal for D3D9 and OpenGL2 Renderers");
+    PrintText("doitsujin for DXVK");
 
     PrintLn();
     PrintLn();
