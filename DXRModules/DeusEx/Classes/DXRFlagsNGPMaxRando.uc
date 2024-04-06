@@ -92,16 +92,16 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
-    if(rngb()) {
+    if(chance_single(33)) {
         settings.enemyrespawn = rng(120) + 120;
     } else {
         settings.enemyrespawn = 0;
     }
 
     if(rngb()) {
-        settings.bot_weapons = 100;
+        settings.bot_weapons = 50;
     } else {
-        settings.enemyrespawn = 0;
+        settings.bot_weapons = 0;
     }
 
     if(rngb()) {
