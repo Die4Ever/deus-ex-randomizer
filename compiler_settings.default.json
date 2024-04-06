@@ -12,7 +12,10 @@
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
         "blacklist": [ "DXRNonVanilla", "HXRandomizer", "DXRReplaceActors.uc" ],
-        "hash_check": { "class": "DeusEx.DeusExPlayer", "expected": "337315d4745deb673207594181265393" }
+        "hash_checks": [
+            { "class": "DeusEx.DeusExPlayer", "expected": "337315d4745deb673207594181265393" },
+            { "class": "DeusEx.PersonaScreenAugmentations", "expected": "f02620fc2ef9265f95c9a27b46dad1ba" }
+        ]
     },
     "hx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
