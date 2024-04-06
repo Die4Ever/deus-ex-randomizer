@@ -637,6 +637,7 @@ function SetWatchFlags() {
         WatchFlag('Shannon_Dead');
         WatchFlag('M05WaltonAlone_Played');
         WatchFlag('M05MeetManderley_Played');
+        WatchFlag('M05MeetJaime_Played');
 
         foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
             if (cp.Name=='ComputerPersonal7'){  //JC's computer
@@ -2803,6 +2804,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Learn about Olaf Stapledon's \"Last and First Men\" from the Old China Hand bartender.";
         case "M06BartenderQuestion3":
             return "Hear the Lucky Money bartender's ideas about good government.";
+        case "M05MeetJaime_Played":
+            return "Talk to Jaime while escaping UNATCO and tell him to stay or to join you in Hong Kong.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3173,6 +3176,7 @@ defaultproperties
     bingo_options(317)=(event="M04PlayerLikesUNATCO_Played",desc="You're not a terrorist",max=1,missions=16)
     bingo_options(318)=(event="Canal_Bartender_Question4",desc="Not big into books",max=1,missions=64)
     bingo_options(319)=(event="M06BartenderQuestion3",desc="The mark of the educated man",max=1,missions=64)
+    bingo_options(320)=(event="M05MeetJaime_Played",desc="Talk to Jaime during the escape",max=1,missions=32)
 
 
 
