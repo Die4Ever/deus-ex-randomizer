@@ -681,6 +681,7 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
+        WatchFlag('Canal_Bartender_Question4');
 
         foreach AllActors(class'#var(prefix)FlagTrigger',fTrigger,'FoundScientist') {
             // so you don't have to go right into the corner, default is 96, and 40 height
@@ -2797,6 +2798,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Take Paul's corpse from the MJ12 facility under UNATCO to Tracer Tong.";
         case "M04PlayerLikesUNATCO_Played":
             return "Tell Paul you won't send the distress signal after going to the NSF base.";
+        case "Canal_Bartender_Question4":
+            return "Learn about Olaf Stapledon's \"Last and First Men\" from the Old China Hand bartender.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3165,6 +3168,7 @@ defaultproperties
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
     bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
     bingo_options(317)=(event="M04PlayerLikesUNATCO_Played",desc="You're not a terrorist",max=1,missions=16)
+    bingo_options(318)=(event="Canal_Bartender_Question4",desc="Not big into books",max=1,missions=64)
 
 
 
