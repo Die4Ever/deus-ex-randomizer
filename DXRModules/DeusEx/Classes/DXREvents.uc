@@ -717,6 +717,7 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
+        WatchFlag('M06BartenderQuestion3');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -2800,6 +2801,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Tell Paul you won't send the distress signal after going to the NSF base.";
         case "Canal_Bartender_Question4":
             return "Learn about Olaf Stapledon's \"Last and First Men\" from the Old China Hand bartender.";
+        case "M06BartenderQuestion3":
+            return "Hear the Lucky Money bartender's ideas about good government.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3169,6 +3172,7 @@ defaultproperties
     bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
     bingo_options(317)=(event="M04PlayerLikesUNATCO_Played",desc="You're not a terrorist",max=1,missions=16)
     bingo_options(318)=(event="Canal_Bartender_Question4",desc="Not big into books",max=1,missions=64)
+    bingo_options(319)=(event="M06BartenderQuestion3",desc="The mark of the educated man",max=1,missions=64)
 
 
 
