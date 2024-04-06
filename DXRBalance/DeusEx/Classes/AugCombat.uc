@@ -7,7 +7,7 @@ simulated function TickUse()
     local DeusExMover mover;
 
     weapon = DeusExWeapon(Player.inHand);
-    if(weapon == None || !weapon.bHandToHand)
+    if(weapon == None || !weapon.bHandToHand || weapon.ProjectileClass!=None)
         return;
     if(weapon.GetStateName() != 'NormalFire')
         return;

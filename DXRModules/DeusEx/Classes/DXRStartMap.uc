@@ -664,6 +664,9 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             //Only possible if you started in the first level
             return start_map>10 || end_mission < 2;
             break;
+        case "PaulToTong":
+            // This goal is impossible with a 50+ start because he is then always alive
+            return start_map>=50 || end_mission < 6;
         case "MetSmuggler":
             return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
         case "KnowsGuntherKillphrase":
@@ -739,20 +742,32 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
     return false;
 }
 
+static function int SquishMission(int m)
+{
+    if(m > 12) m--;// remove M13
+    if(m > 6) m--;// remove M07
+    return m;
+}
+
 static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
 {
     local int i;
-    local int startMap;
+    local int startMap, startMission, avoidMission;
     local int attempts;
 
-    startMap=avoidStart;
+    startMap = avoidStart;
+    avoidMission = GetStartMapMission(avoidStart);
+    avoidMission = SquishMission(avoidMission);
+    startMission = avoidMission;
     attempts=0;
     m.SetGlobalSeed("randomstartmap");
 
     //Don't try forever.  If we manage to grab the avoided map 50 times, it was meant to be.
     //the widest span is Hong Kong: Helipad is 60, Storage is 75, a span of 15
-    while (Abs(startMap-avoidStart) <= 15 && attempts < 50){
+    while (Abs(startMission-avoidMission) <= 1 && attempts < 50){
         startMap = _ChooseRandomStartMap(m);
+        startMission = GetStartMapMission(startMap);
+        startMission = SquishMission(startMission);
         m.l("Start map selection attempt "$ ++attempts $" was "$startMap);
     }
 

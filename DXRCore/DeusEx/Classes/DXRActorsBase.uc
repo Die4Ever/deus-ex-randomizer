@@ -643,12 +643,20 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
     local float largestDim;
 
     loc = oldactor.Location;
+    oldactor.bHidden = true;
     newclass = class<Actor>(DynamicLoadObject(newclassstring, class'class'));
-    if( newclass.default.bStatic ) warning(newclassstring $ " defaults to bStatic, Spawn probably won't work");
+    if( newclass == None) {
+        err("ReplaceActor(" $ newclassstring $ ") can't find class");
+        oldactor.bHidden = false;
+        return None;
+    }
+    if( newclass.default.bStatic ) warning("ReplaceActor: " $ newclassstring $ " defaults to bStatic, Spawn probably won't work");
+
     a = Spawn(newclass,,,loc);
 
     if( a == None ) {
         warning("ReplaceActor("$oldactor$", "$newclassstring$"), failed to spawn in location "$oldactor.Location);
+        oldactor.bHidden = false;
         return None;
     }
 
@@ -673,7 +681,6 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 
     //Get it at the right height
     a.move(a.PrePivot);
-    oldactor.bHidden = true;
     oldactor.Destroy();
 
     return a;

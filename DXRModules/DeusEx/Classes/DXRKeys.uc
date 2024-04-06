@@ -261,6 +261,20 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "10_Paris_Metro":
+        keys_rules[i].item_name = 'apartment12';
+        keys_rules[i].min_pos = vect(-99999, -99999, 420);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'apartment12';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 420);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "10_Paris_Chateau":
         keys_rules[i].item_name = 'duclare_chateau';
         keys_rules[i].min_pos = vect(-99999, -99999, -125);

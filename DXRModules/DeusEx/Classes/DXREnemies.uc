@@ -218,17 +218,21 @@ function RandoEnemies(int percent, int hidden_percent)
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
 
+        SetSeed("RandomizeSP " $ p.name);
         if( _perc>=100 || chance_single(_perc) ) RandomizeSP(p, _perc);
+        SetSeed("CheckHelmet " $ p.name);
         CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
         if(p.bInvincible) continue;
         if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
+        SetSeed("RandomEnemy " $ p.name);
         if( _perc < 100 && chance_single(_perc) == false ) continue;
 
         r = rng(enemy_multiplier*100+_perc);
         for(i = r/100; i >= 0; i--) {
+            SetSeed("RandomEnemy " $ p.name @ i);
             if(RandomEnemy(p, _perc) != None) new_enemies++;
         }
     }
@@ -298,7 +302,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
             GiveRandomWeapon(p, false, 2);
         GiveRandomMeleeWeapon(p);
         p.SetupWeapon(false);
-    } else if (IsRobot(p.Class) && dxr.flags.settings.bot_weapons!=0) {
+    } else if (IsRobot(p.Class) && chance_single(dxr.flags.settings.bot_weapons)) {
         numWeapons = GetWeaponCount(p);
 
         //Maybe it would be better if the bots *didn't* get their baseline weapons removed?

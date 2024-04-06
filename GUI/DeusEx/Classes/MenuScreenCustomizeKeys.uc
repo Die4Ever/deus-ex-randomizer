@@ -18,10 +18,10 @@ struct S_KeyDisplayItem
 };
 
 //Make sure to update all four of these when you add a new binding
-var localized string	FunctionText[63];
-var string				MenuValues1[63];
-var string				MenuValues2[63];
-var string				AliasNames[63];
+var localized string	FunctionText[64];
+var string				MenuValues1[64];
+var string				MenuValues2[64];
+var string				AliasNames[64];
 
 
 var string				PendingCommands[100];
@@ -629,6 +629,7 @@ defaultproperties
      FunctionText(60)="Show Multiplayer Kill Details"
      FunctionText(61)="Activate Bingo Screen"
      FunctionText(62)="Activate All Auto Augs"
+     FunctionText(63)="Aug Tree By WCCC"
      AliasNames(0)="ParseLeftClick|Fire"
      AliasNames(1)="ParseRightClick"
      AliasNames(2)="DropItem"
@@ -692,6 +693,7 @@ defaultproperties
      AliasNames(60)="KillerProfile"
      AliasNames(61)="ShowBingoWindow"
      AliasNames(62)="ActivateAllAutoAugs"
+     AliasNames(63)="OpenControllerAugWindow"
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")

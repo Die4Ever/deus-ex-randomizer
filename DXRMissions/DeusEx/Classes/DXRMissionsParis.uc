@@ -230,21 +230,57 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)WIB hela;
     local #var(prefix)NanoKey key;
+    local #var(DeusExPrefix)Mover m;
+    local #var(prefix)ComputerPublic cp;
+    local bool VanillaMaps;
 
-    if( dxr.localURL == "10_PARIS_CATACOMBS_TUNNELS" ) {
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+
+    switch(dxr.localURL) {
+    case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'#var(prefix)WIB', hela) {
             key = #var(prefix)NanoKey(GiveItem(hela,class'#var(prefix)NanoKey'));
             key.Description="Catacombs Sewer Entry Key";
             key.keyId='catacombs_blastdoor02';
             break;
         }
+        break;
+
+    case "10_PARIS_METRO":
+        if(VanillaMaps) {
+            key = Spawn(class'#var(prefix)NanoKey',,, vectm(-1733,-2480,168));
+            key.KeyID = 'apartment12';
+            key.Description = "Key to Apartment #12";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(key);
+
+            foreach AllActors(class'#var(DeusExPrefix)Mover', m){
+                if (m.Name=='DeusExMover10') {
+                    m.KeyIDNeeded='apartment12';
+                    break;
+                }
+            }
+
+            foreach AllActors(class'#var(prefix)ComputerPublic',cp){
+                //The two public computers in the lobby of the hostel become guest registries
+                if (cp.Name=='ComputerPublic2' || cp.Name=='ComputerPublic3'){
+                    cp.TextPackage = "#var(package)";
+                    cp.bulletinTag='10_HostelBulletinMenu';
+                    cp.FamiliarName="Guest Registry";
+                    cp.UnfamiliarName=cp.FamiliarName;
+                }
+            }
+        }
+        break;
     }
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local DXREnemiesPatrols patrol;
+    local DXRPasswords passwords;
     local #var(prefix)NanoKey key;
+    local string guestName;
 
     if (g.name=="Agent Hela"){
         if (Loc.Name=="Back of Bunker" ||   //Vanilla
@@ -266,5 +302,18 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         if(dxr.flags.settings.keysrando > 0)
             GlowUp(key);
 
+    }
+
+    if (Loc.name=="Hostel"){
+        if (g.name=="Jaime" && dxr.flagbase.GetBool('JaimeLeftBehind')){
+            guestName="Jaime Reyes";
+        } else if (g.name=="Nicolette"){
+            guestName="Nicolette DuClare";
+        }
+
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None && guestName != "") {
+            passwords.ReplacePassword("   Room 1 is currently unoccupied", "  Guest: "$guestName);
+        }
     }
 }

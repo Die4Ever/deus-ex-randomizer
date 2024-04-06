@@ -818,6 +818,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'TongTargets',vectm(-337.2,1826,40),40,100);
         bt.MakeShootingTarget();
 
+        WatchFlag('PaulToTong');
+
         break;
     case "06_HONGKONG_HELIBASE":
         bt = class'BingoTrigger'.static.Create(self,'purge',vectm(0,0,0));
@@ -2789,7 +2791,9 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "MeetRenault_Played":
             return "Talk to Renault, in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.";
         case "WarehouseSewerTunnel":
-            return "Swim through the underwater tunnel in the Warehouse District";
+            return "Swim through the underwater tunnel in the Warehouse District.";
+        case "PaulToTong":
+            return "Take Paul's corpse from the MJ12 facility under UNATCO to Tracer Tong.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3156,6 +3160,7 @@ defaultproperties
     bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
+    bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
 
 
 

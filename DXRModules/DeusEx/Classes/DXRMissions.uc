@@ -370,6 +370,7 @@ function MoveActorsIn(int goalsToLocations[32])
         l("Moving player to " $ locations[g].name @ loc @ rotate);
         p.SetLocation(loc);
         p.SetRotation(rotate);
+        p.PutCarriedDecorationInHand();
         rando_start_loc = p.Location;
         b_rando_start = true;
     }
@@ -492,7 +493,8 @@ function Actor GetActor(out GoalActor ga)
 
     foreach AllActors(class'Actor', a) {
 #ifdef hx
-        if(a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
+        if( (HXMover(a) != None && a.Name == ga.actorName)
+            || a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
 #else
         if(a.name == ga.actorName) {
 #endif

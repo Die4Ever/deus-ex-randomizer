@@ -129,7 +129,7 @@ function CheckConfig()
     difficulty_settings[i].hiddenenemiesrandomized = 20;
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 40;
-    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_weapons = 50;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
@@ -202,7 +202,7 @@ function CheckConfig()
     difficulty_settings[i].hiddenenemiesrandomized = 20;
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 40;
-    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_weapons = 10;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
@@ -274,7 +274,7 @@ function CheckConfig()
     difficulty_settings[i].hiddenenemiesrandomized = 30;
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 60;
-    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_weapons = 20;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
@@ -346,7 +346,7 @@ function CheckConfig()
     difficulty_settings[i].hiddenenemiesrandomized = 40;
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 70;
-    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_weapons = 40;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 5;
@@ -418,7 +418,7 @@ function CheckConfig()
     difficulty_settings[i].hiddenenemiesrandomized = 50;
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 80;
-    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_weapons = 50;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 5;
@@ -615,8 +615,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.maxskill = Max(settings.minskill * 1.2, settings.maxskill);
         // skill strength rando 80% wet/dry
         settings.skill_value_rando = 80;
-        // at least level 1 speed aug
-        settings.speedlevel = Max(settings.speedlevel, 1);
+        // TODO: maybe +1 speed? or starting with 2?
+        settings.speedlevel = Clamp(settings.speedlevel, 1, 4);
         // speedrunners, please install augs
         moresettings.empty_medbots *= 1.5;
     }

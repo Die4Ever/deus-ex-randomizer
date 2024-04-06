@@ -202,7 +202,7 @@ simulated function bool ClassInLevel(class<Actor> className)
 
 simulated function int PoolBallsSunk()
 {
-    local #var(prefix)Poolball cue,ball;
+    local #var(injectsprefix)Poolball cue,ball;
     local int ballsSunk,tablesSunk,freshSink,radius;
 
     radius=99999;
@@ -217,10 +217,12 @@ simulated function int PoolBallsSunk()
     }
 
     tablesSunk=0;
-    foreach AllActors(class'#var(prefix)Poolball',cue){
+    foreach AllActors(class'#var(injectsprefix)Poolball',cue){
+        if (cue.Class!=class'#var(injectsprefix)Poolball') continue;
         if (cue.SkinColor==SC_Cue){
             ballsSunk=0;
-            foreach cue.RadiusActors(class'#var(prefix)Poolball',ball,radius){
+            foreach cue.RadiusActors(class'#var(injectsprefix)Poolball',ball,radius){
+                if (ball.Class!=class'#var(injectsprefix)Poolball') continue;
                 if (ball.Location.Z <= PoolBallHeight){
                     ballsSunk++;
                 }
@@ -300,6 +302,10 @@ simulated function Timer()
         FlagTriggered=False;
         if( watchflags[i] == 'LeoToTheBar' ) {
             if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
+                FlagTriggered=True;
+            }
+        } else if ( watchflags[i] == 'PaulToTong' ) {
+            if (ClassInLevel(class'PaulDentonCarcass')){
                 FlagTriggered=True;
             }
         } else if( watchflags[i] == 'GuntherKillswitch' ) {
@@ -957,6 +963,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local bool bPossible;
     local float f;
+    // local int testGoal;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(starting_map);
@@ -1053,6 +1060,17 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     case 0:
         break;
     }
+
+    /* testGoal = some goal index;
+    data.SetBingoSpot(
+        0,
+        0,
+        bingo_options[testGoal].event,
+        bingo_options[testGoal].desc,
+        0,
+        bingo_options[testGoal].max,
+        bingo_options[testGoal].missions
+    ); */
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {

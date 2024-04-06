@@ -34,6 +34,7 @@ function PreFirstEntryMapFixes()
     local DeusExMover d;
     local DataLinkTrigger dt;
     local ComputerSecurity cs;
+    local #var(prefix)ComputerPersonal cp;
     local #var(prefix)Keypad pad;
     local ProjectileGenerator pg;
     local #var(prefix)WeaponNanoSword dts;
@@ -50,6 +51,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
+    local int i;
 
     local bool VanillaMaps;
 
@@ -469,6 +471,14 @@ function PreFirstEntryMapFixes()
                 p.FamiliarName="Mr. Hundley"; //It's spelled this way everywhere else
                 GiveItem(p,class'#var(prefix)Credits');  //He asks for 2000 credits to get into the labs
                 GiveItem(p,class'#var(prefix)Credits');  //He's probably getting a bunch of cash from other people too.
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
+            for(i=0;i<ArrayCount(cp.UserList);i++){
+                if (cp.UserList[i].UserName=="ALL_SHIFTS"){
+                    cp.UserList[i].Password="DATA_ENTRY"; //Make sure all the ALL_SHIFTS accounts have the same password
+                }
             }
         }
 

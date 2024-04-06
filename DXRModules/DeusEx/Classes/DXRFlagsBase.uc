@@ -379,6 +379,9 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, mode, str);
     FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, mode, str);
     FlagInt('Rando_bot_weapons', settings.bot_weapons, mode, str);
+    if(stored_version < VersionToInt(2,6,3,2)  && settings.bot_weapons != 0 && mode==Reading) {
+        settings.bot_weapons = 100;
+    }
     FlagInt('Rando_bot_stats', settings.bot_stats, mode, str);
 
     FlagInt('Rando_swapitems', settings.swapitems, mode, str);
@@ -527,7 +530,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_enemies_nonhumans':
             return "Enemy Non-Human Chance";
         case 'Rando_bot_weapons':
-            return "Robot Weapons";
+            return "Robot Weapons Rando";
         case 'Rando_bot_stats':
             return "Non-human Stats";
         case 'Rando_removeparismj12':
@@ -587,6 +590,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_camera_mode':
             return "Camera Mode";
         default:
+            err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
 }
@@ -660,6 +664,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_bingo_scale':
         case 'Rando_grenadeswap':
         case 'Rando_newgameplus_curve_scalar':
+        case 'Rando_bot_weapons':
             return val$"%";
 
         case 'Rando_enemyrespawn':
@@ -702,10 +707,9 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_keys':
-        case 'Rando_bot_weapons':
-            if (val==4){
+            if (val>0) {
                 return "Randomized";
-            } else if (val==0){
+            } else {
                 return "Unchanged";
             }
             break;
@@ -815,6 +819,9 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
         //Weird, handle later
         case 'Rando_doorsmode':
+            if(val == 0) {
+                return "Unchanged";
+            }
             switch(val/256*256) {
             case undefeatabledoors:
                 ret = "undefeatable";
@@ -829,6 +836,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 ret = "highlightable";
                 break;
             default:
+                err("Rando_doorsmode upper bits " $ (val/256*256) $ " (Unhandled!)");
                 ret = (val/256*256) $ " (Unhandled!)";
                 break;
             }
@@ -837,8 +845,11 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 case doormutuallyinclusive: return ret $ "mutually inclusive";
                 case doorindependent: return ret $ "independent";
                 case doormutuallyexclusive: return ret $ "mutually exclusive";
-                default: return ret $ (val%256) $ " (Unhandled!)";
+                default:
+                    err("Rando_doorsmode lower bits " $ (val%256) $ " (Unhandled!)");
+                    return ret $ (val%256) $ " (Unhandled!)";
             }
+            err("Rando_doorsmode " $ val $ " unhandled");
             return val $ " (Unhandled!)";
 
         case 'Rando_doorspickable':
@@ -876,8 +887,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         default:
+            err("flagValToHumanVal: " $ flagname @ val $ " is unhandled");
             return val $ " (Unhandled!)";
     }
+    err("flagValToHumanVal: " $ flagname @ val $ " is mishandled");
     return val $ " (Mishandled!)";
 }
 

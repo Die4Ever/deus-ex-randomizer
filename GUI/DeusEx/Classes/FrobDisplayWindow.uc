@@ -68,8 +68,7 @@ function bool GetShowKeys()
 
 function bool GetAutoWeaponMods()
 {
-    if (dxr==None) return False;
-    return !dxr.flags.IsZeroRando() && class'MenuChoice_AutoWeaponMods'.default.enabled;
+    return class'MenuChoice_AutoWeaponMods'.default.enabled;
 }
 
 static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)

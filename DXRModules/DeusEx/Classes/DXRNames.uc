@@ -11,7 +11,7 @@ function FirstEntry()
 #endif
     Super.FirstEntry();
 
-    if(dxr.flags.IsReducedRando()) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     SetSeed( "DXRNames" );
 

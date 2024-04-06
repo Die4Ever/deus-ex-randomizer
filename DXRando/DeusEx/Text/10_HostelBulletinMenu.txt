@@ -1,0 +1,2 @@
+<FILE=10_HostelBulletin01,Hostel Room 1>
+<FILE=10_HostelBulletin02,Hostel Room 2>
