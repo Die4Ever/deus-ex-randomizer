@@ -615,7 +615,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.maxskill = Max(settings.minskill * 1.2, settings.maxskill);
         // skill strength rando 80% wet/dry
         settings.skill_value_rando = 80;
-        // +1 speed
+        // TODO: maybe +1 speed? or starting with 2?
         settings.speedlevel = Clamp(settings.speedlevel, 1, 4);
         // speedrunners, please install augs
         moresettings.empty_medbots *= 1.5;
