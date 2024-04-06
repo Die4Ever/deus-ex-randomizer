@@ -819,6 +819,9 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
         //Weird, handle later
         case 'Rando_doorsmode':
+            if(val == 0) {
+                return "Unchanged";
+            }
             switch(val/256*256) {
             case undefeatabledoors:
                 ret = "undefeatable";
