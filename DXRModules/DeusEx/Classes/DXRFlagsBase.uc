@@ -590,6 +590,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_camera_mode':
             return "Camera Mode";
         default:
+            err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
 }
@@ -832,6 +833,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 ret = "highlightable";
                 break;
             default:
+                err("Rando_doorsmode upper bits " $ (val/256*256) $ " (Unhandled!)");
                 ret = (val/256*256) $ " (Unhandled!)";
                 break;
             }
@@ -840,8 +842,11 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 case doormutuallyinclusive: return ret $ "mutually inclusive";
                 case doorindependent: return ret $ "independent";
                 case doormutuallyexclusive: return ret $ "mutually exclusive";
-                default: return ret $ (val%256) $ " (Unhandled!)";
+                default:
+                    err("Rando_doorsmode lower bits " $ (val%256) $ " (Unhandled!)");
+                    return ret $ (val%256) $ " (Unhandled!)";
             }
+            err("Rando_doorsmode " $ val $ " unhandled");
             return val $ " (Unhandled!)";
 
         case 'Rando_doorspickable':
@@ -879,8 +884,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         default:
+            err("flagValToHumanVal: " $ flagname @ val $ " is unhandled");
             return val $ " (Unhandled!)";
     }
+    err("flagValToHumanVal: " $ flagname @ val $ " is mishandled");
     return val $ " (Mishandled!)";
 }
 
