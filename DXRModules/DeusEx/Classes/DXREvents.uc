@@ -540,6 +540,7 @@ function SetWatchFlags() {
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
         WatchFlag('FamilySquabbleWrapUpGilbertDead_Played');
+        WatchFlag('M04PlayerLikesUNATCO_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         break;
     case "04_NYC_UNDERGROUND":
@@ -2794,7 +2795,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Swim through the underwater tunnel in the Warehouse District.";
         case "PaulToTong":
             return "Take Paul's corpse from the MJ12 facility under UNATCO to Tracer Tong.";
-        case "UnatcoDefectionRefused":
+        case "M04PlayerLikesUNATCO_Played":
             return "Tell Paul you won't send the distress signal after going to the NSF base.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
@@ -3163,7 +3164,7 @@ defaultproperties
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
     bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
-    bingo_options(317)=(event="UnatcoDefectionRefused",desc="You're not a terrorist",max=1,missions=16)
+    bingo_options(317)=(event="M04PlayerLikesUNATCO_Played",desc="You're not a terrorist",max=1,missions=16)
 
 
 
