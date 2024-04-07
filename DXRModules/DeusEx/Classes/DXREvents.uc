@@ -540,6 +540,7 @@ function SetWatchFlags() {
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
         WatchFlag('FamilySquabbleWrapUpGilbertDead_Played');
+        WatchFlag('M04PlayerLikesUNATCO_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         break;
     case "04_NYC_UNDERGROUND":
@@ -636,6 +637,7 @@ function SetWatchFlags() {
         WatchFlag('Shannon_Dead');
         WatchFlag('M05WaltonAlone_Played');
         WatchFlag('M05MeetManderley_Played');
+        WatchFlag('M05MeetJaime_Played');
 
         foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
             if (cp.Name=='ComputerPersonal7'){  //JC's computer
@@ -680,6 +682,7 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
+        WatchFlag('Canal_Bartender_Question4');
 
         foreach AllActors(class'#var(prefix)FlagTrigger',fTrigger,'FoundScientist') {
             // so you don't have to go right into the corner, default is 96, and 40 height
@@ -715,6 +718,7 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
+        WatchFlag('M06BartenderQuestion3');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -1026,6 +1030,7 @@ function SetWatchFlags() {
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
         WatchFlag('MeetRenault_Played');
+        WatchFlag('JoshuaInterrupted_Played');
         RewatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'#var(prefix)Mutt', starr) {
@@ -2794,6 +2799,18 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Swim through the underwater tunnel in the Warehouse District.";
         case "PaulToTong":
             return "Take Paul's corpse from the MJ12 facility under UNATCO to Tracer Tong.";
+        case "M04PlayerLikesUNATCO_Played":
+            return "Tell Paul you won't send the distress signal after going to the NSF base.";
+        case "Canal_Bartender_Question4":
+            return "Learn about Olaf Stapledon's \"Last and First Men\" from the Old China Hand bartender.";
+        case "M06BartenderQuestion3":
+            return "Hear the Lucky Money bartender's ideas about good government.";
+        case "M05MeetJaime_Played":
+            return "Talk to Jaime while escaping UNATCO and tell him to stay or to join you in Hong Kong.";
+        case "jughead_Dead":
+            return "Kill El Rey, the leader of the Rooks in the Brooklyn Bridge Station.";
+        case "JoshuaInterrupted_Played":
+            return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3161,6 +3178,12 @@ defaultproperties
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
     bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
+    bingo_options(317)=(event="M04PlayerLikesUNATCO_Played",desc="You're not a terrorist",max=1,missions=16)
+    bingo_options(318)=(event="Canal_Bartender_Question4",desc="Not big into books",max=1,missions=64)
+    bingo_options(319)=(event="M06BartenderQuestion3",desc="The mark of the educated man",max=1,missions=64)
+    bingo_options(320)=(event="M05MeetJaime_Played",desc="Talk to Jaime during the escape",max=1,missions=32)
+    bingo_options(321)=(event="jughead_Dead",desc="Kill El Rey",max=1,missions=8)
+    bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
 
 
 
@@ -3214,4 +3237,5 @@ defaultproperties
     mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_Dead")
     mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
     mutually_exclusive(47)=(e1="nsfwander",e2="MiguelLeaving")
+    mutually_exclusive(48)=(e1="PaulToTong",e2="SavedPaul")
 }
