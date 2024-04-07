@@ -1030,6 +1030,7 @@ function SetWatchFlags() {
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
         WatchFlag('MeetRenault_Played');
+        WatchFlag('JoshuaInterrupted_Played');
         RewatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'#var(prefix)Mutt', starr) {
@@ -2808,6 +2809,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Talk to Jaime while escaping UNATCO and tell him to stay or to join you in Hong Kong.";
         case "jughead_Dead":
             return "Kill El Rey, the leader of the Rooks in the Brooklyn Bridge Station.";
+        case "JoshuaInterrupted_Played":
+            return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3180,6 +3183,7 @@ defaultproperties
     bingo_options(319)=(event="M06BartenderQuestion3",desc="The mark of the educated man",max=1,missions=64)
     bingo_options(320)=(event="M05MeetJaime_Played",desc="Talk to Jaime during the escape",max=1,missions=32)
     bingo_options(321)=(event="jughead_Dead",desc="Kill El Rey",max=1,missions=8)
+    bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
 
 
 
