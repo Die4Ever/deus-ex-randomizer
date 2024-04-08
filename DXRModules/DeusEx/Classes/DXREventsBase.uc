@@ -1209,10 +1209,18 @@ static function MarkBingo(DXRando dxr, coerce string eventname, optional bool fa
     if(e != None) {
         if (failed) {
             e._MarkBingoAsFailed(eventname);
-        } else {
+        } else if (_IsBingoFailed(e, eventname) == false) {
             e._MarkBingo(eventname);
         }
     }
+}
+
+static function bool _IsBingoFailed(DXREvents e, coerce string eventname)
+{
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(e.player());
+    return data.IsBingoFailed(eventname);
 }
 
 static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
@@ -1222,8 +1230,7 @@ static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
 
     e = DXREvents(dxr.FindModule(class'DXREvents'));
     if(e != None) {
-        data = class'PlayerDataItem'.static.GiveItem(e.player());
-        return data.IsBingoFailed(eventname);
+        return _IsBingoFailed(e, eventname);
     }
     return false;
 }

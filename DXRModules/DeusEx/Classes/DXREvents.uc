@@ -612,11 +612,7 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
-
-        if (class'DXREventsBase'.static.IsBingoFailed(dxr, "LebedevLived") == false) {
-            class'DXREventsBase'.static.MarkBingo(dxr, "LebedevLived");
-        }
-
+        class'DXREventsBase'.static.MarkBingo(dxr, "LebedevLived");
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
