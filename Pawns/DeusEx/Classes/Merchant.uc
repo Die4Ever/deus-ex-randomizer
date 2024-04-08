@@ -29,6 +29,19 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
     return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
 }
 
+function Died(pawn Killer, name damageType, vector HitLocation)
+{
+    local DXRando dxr;
+
+    Super.Died(Killer, damageType, HitLocation);
+    if (FamiliarName == "Le Merchant") {
+        foreach AllActors(class'DXRando', dxr) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "AimeeLeMerchantLived");
+            break;
+        }
+    }
+}
+
 defaultproperties
 {
     CarcassType=Class'MerchantCarcass'

@@ -1027,6 +1027,7 @@ function SetWatchFlags() {
                 wib.bImportant = true;
         }
         WatchFlag('SilhouetteHostagesAllRescued');
+        class'DXREventsBase'.static.MarkBingo(dxr, "AimeeLeMerchantLived");
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
@@ -2816,6 +2817,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
         case "LebedevLived":
             return "Leave the airfield for UNATCO with Juan Lebedev still alive and Anna Navarre dead.";
+        case "AimeeLeMerchantLived":
+            return "Leave Denfert-Rochereau with Aimee and Le Merchant still alive. This is a very difficult goal.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3179,7 +3182,7 @@ defaultproperties
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
-    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
+    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert-Rochereau",max=1,missions=1024)
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
     bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
@@ -3190,6 +3193,7 @@ defaultproperties
     bingo_options(321)=(event="jughead_Dead",desc="Kill El Rey",max=1,missions=8)
     bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
     bingo_options(323)=(event="LebedevLived",desc="Keep Lebedev alive",max=1,missions=8)
+    bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1536)
 
 
 
@@ -3246,4 +3250,6 @@ defaultproperties
     mutually_exclusive(48)=(e1="PaulToTong",e2="SavedPaul")
     mutually_exclusive(49)=(e1="LebedevLived",e2="AnnaKilledLebedev")
     mutually_exclusive(50)=(e1="LebedevLived",e2="PlayerKilledLebedev")
+    mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_Dead")
+    mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_Dead")
 }
