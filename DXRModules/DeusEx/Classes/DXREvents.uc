@@ -501,6 +501,7 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         WatchFlag('PlayPool');
+        WatchFlag('OverhearLebedev_Played');
         InitPoolBalls();
         break;
     case "03_NYC_HANGAR":
@@ -2819,6 +2820,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Leave the airfield for UNATCO with Juan Lebedev still alive and Anna Navarre dead.";
         case "AimeeLeMerchantLived":
             return "Leave Denfert-Rochereau with Aimee and Le Merchant still alive. This is a very difficult goal.";
+        case "OverhearLebedev_Played":
+            return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong. It can be heard in one of the offices.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3194,6 +3197,7 @@ defaultproperties
     bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
     bingo_options(323)=(event="LebedevLived",desc="Keep Lebedev alive",max=1,missions=8)
     bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1536)
+    bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitered",max=1,missions=8)
 
 
 
