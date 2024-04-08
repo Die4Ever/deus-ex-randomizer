@@ -2815,7 +2815,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "JoshuaInterrupted_Played":
             return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
         case "LebedevLived":
-            return "Leave the airfield for UNATCO with Juan Lebedev still alive.";
+            return "Leave the airfield for UNATCO with Juan Lebedev still alive and Anna Navarre dead.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
