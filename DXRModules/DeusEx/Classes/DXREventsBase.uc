@@ -1231,7 +1231,6 @@ static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
 function bool _IsBingoFailed(coerce string eventname)
 {
     local PlayerDataItem data;
-
     data = class'PlayerDataItem'.static.GiveItem(player());
     return data.IsBingoFailed(eventname);
 }
@@ -1239,8 +1238,6 @@ function bool _IsBingoFailed(coerce string eventname)
 static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
 {
     local DXREvents e;
-    local PlayerDataItem data;
-
     e = DXREvents(dxr.FindModule(class'DXREvents'));
     if(e != None) {
         return e._IsBingoFailed(eventname);
