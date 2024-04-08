@@ -612,6 +612,11 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+
+        if (class'DXREventsBase'.static.IsBingoFailed(dxr, "LebedevLived") == false) {
+            class'DXREventsBase'.static.MarkBingo(dxr, "LebedevLived");
+        }
+
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -2811,6 +2816,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill El Rey, the leader of the Rooks in the Brooklyn Bridge Station.";
         case "JoshuaInterrupted_Played":
             return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
+        case "LebedevLived":
+            return "Leave the airfield for UNATCO with Juan Lebedev still alive.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3184,6 +3191,7 @@ defaultproperties
     bingo_options(320)=(event="M05MeetJaime_Played",desc="Talk to Jaime during the escape",max=1,missions=32)
     bingo_options(321)=(event="jughead_Dead",desc="Kill El Rey",max=1,missions=8)
     bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
+    bingo_options(323)=(event="LebedevLived",desc="Keep Lebedev alive",max=1,missions=8)
 
 
 
@@ -3238,4 +3246,6 @@ defaultproperties
     mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
     mutually_exclusive(47)=(e1="nsfwander",e2="MiguelLeaving")
     mutually_exclusive(48)=(e1="PaulToTong",e2="SavedPaul")
+    mutually_exclusive(48)=(e1="LebedevLived",e2="AnnaKilledLebedev")
+    mutually_exclusive(48)=(e1="LebedevLived",e2="PlayerKilledLebedev")
 }

@@ -1,6 +1,6 @@
 class PlayerDataItem extends Inventory config(DXRBingo);
 
-const FAILED_MISSION_MASK = 2147483648; // equal to (1 << 31). apparently that expression isn't constant, according to ucc
+const FAILED_MISSION_MASK = 1;
 
 var travel bool local_inited;
 var travel int version, initial_version;
