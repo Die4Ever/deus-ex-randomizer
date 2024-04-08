@@ -145,7 +145,6 @@ simulated function MarkBingoAsFailed(string event)
     }
 }
 
-// TODO: cannot call RemapBingoEvent, as it's non-static and has side effects
 simulated function bool IsBingoFailed(string event)
 {
     local int i;

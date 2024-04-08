@@ -6,7 +6,7 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 
     Super.Died(Killer, damageType, HitLocation);
     foreach AllActors(class'DXRando', dxr) {
-        class'DXREventsBase'.static.MarkBingo(dxr, "LebedevLived", true);
+        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "LebedevLived");
         break;
     }
 }

@@ -1188,38 +1188,46 @@ function _MarkBingo(coerce string eventname)
     }
 }
 
+static function MarkBingo(DXRando dxr, coerce string eventname)
+{
+    local DXREvents e;
+    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    log(e$".MarkBingo "$dxr$", "$eventname);
+    if(e != None) {
+        e._MarkBingo(eventname);
+    }
+}
+
 function _MarkBingoAsFailed(coerce string eventname)
 {
     local PlayerDataItem data;
 
-    eventname=RemapBingoEvent(eventname);
+    // TODO: call RemapBingoEvent if it ever loses its side effects
+    /* eventname=RemapBingoEvent(eventname);
     if (eventname==""){
         return;
-    }
+    } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
+    l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
     data.MarkBingoAsFailed(eventname);
 }
 
-static function MarkBingo(DXRando dxr, coerce string eventname, optional bool failed)
+static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
 {
     local DXREvents e;
     e = DXREvents(dxr.FindModule(class'DXREvents'));
-    log(e$".MarkBingo "$dxr$", "$eventname$" (failed? "$failed$")");
-    if(e != None) {
-        if (failed) {
-            e._MarkBingoAsFailed(eventname);
-        } else if (_IsBingoFailed(e, eventname) == false) {
-            e._MarkBingo(eventname);
-        }
+    log(e$".MarkBingoAsFailed "$dxr$", "$eventname);
+    if (e != None) {
+        e._MarkBingoAsFailed(eventname);
     }
 }
 
-static function bool _IsBingoFailed(DXREvents e, coerce string eventname)
+function bool _IsBingoFailed(coerce string eventname)
 {
     local PlayerDataItem data;
 
-    data = class'PlayerDataItem'.static.GiveItem(e.player());
+    data = class'PlayerDataItem'.static.GiveItem(player());
     return data.IsBingoFailed(eventname);
 }
 
@@ -1230,7 +1238,7 @@ static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
 
     e = DXREvents(dxr.FindModule(class'DXREvents'));
     if(e != None) {
-        return _IsBingoFailed(e, eventname);
+        return e._IsBingoFailed(eventname);
     }
     return false;
 }
