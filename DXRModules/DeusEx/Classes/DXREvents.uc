@@ -3244,6 +3244,6 @@ defaultproperties
     mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
     mutually_exclusive(47)=(e1="nsfwander",e2="MiguelLeaving")
     mutually_exclusive(48)=(e1="PaulToTong",e2="SavedPaul")
-    mutually_exclusive(48)=(e1="LebedevLived",e2="AnnaKilledLebedev")
-    mutually_exclusive(48)=(e1="LebedevLived",e2="PlayerKilledLebedev")
+    mutually_exclusive(49)=(e1="LebedevLived",e2="AnnaKilledLebedev")
+    mutually_exclusive(50)=(e1="LebedevLived",e2="PlayerKilledLebedev")
 }
