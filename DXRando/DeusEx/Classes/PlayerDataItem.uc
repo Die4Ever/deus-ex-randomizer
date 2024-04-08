@@ -1,5 +1,7 @@
 class PlayerDataItem extends Inventory config(DXRBingo);
 
+const FAILED_MISSION_MASK = 2147483648; // equal to (1 << 31). apparently that expression isn't constant, according to ucc
+
 var travel bool local_inited;
 var travel int version, initial_version;
 #ifdef multiplayer
@@ -128,6 +130,28 @@ simulated function bool IncrementBingoProgress(string event)
         log("IncrementBingoProgress "$event$": " $ bingo[i].progress $" / "$ bingo[i].max, self.class.name);
         ExportBingoState();
         return bingo[i].progress == bingo[i].max;
+    }
+    return false;
+}
+
+simulated function MarkBingoAsFailed(string event)
+{
+    local int i;
+    for(i=0; i<ArrayCount(bingo); i++) {
+        if(bingo[i].event != event) continue;
+        bingo_missions_masks[i] = FAILED_MISSION_MASK;
+        log("MarkBingoAsFailed "$event);
+        ExportBingoState();
+    }
+}
+
+// TODO: cannot call RemapBingoEvent, as it's non-static and has side effects
+simulated function bool IsBingoFailed(string event)
+{
+    local int i;
+    for(i=0; i<ArrayCount(bingo); i++) {
+        if(bingo[i].event != event) continue;
+        return bingo_missions_masks[i] == FAILED_MISSION_MASK; // TODO: actually check if it can't be completed, instead of just marked as failed?
     }
     return false;
 }

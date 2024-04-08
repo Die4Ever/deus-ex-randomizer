@@ -1188,14 +1188,44 @@ function _MarkBingo(coerce string eventname)
     }
 }
 
-static function MarkBingo(DXRando dxr, coerce string eventname)
+function _MarkBingoAsFailed(coerce string eventname)
+{
+    local PlayerDataItem data;
+
+    eventname=RemapBingoEvent(eventname);
+    if (eventname==""){
+        return;
+    }
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    data.MarkBingoAsFailed(eventname);
+}
+
+static function MarkBingo(DXRando dxr, coerce string eventname, optional bool failed)
 {
     local DXREvents e;
     e = DXREvents(dxr.FindModule(class'DXREvents'));
-    log(e$".MarkBingo "$dxr$", "$eventname);
+    log(e$".MarkBingo "$dxr$", "$eventname$" (failed? "$failed$")");
     if(e != None) {
-        e._MarkBingo(eventname);
+        if (failed) {
+            e._MarkBingoAsFailed(eventname);
+        } else {
+            e._MarkBingo(eventname);
+        }
     }
+}
+
+static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
+{
+    local DXREvents e;
+    local PlayerDataItem data;
+
+    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    if(e != None) {
+        data = class'PlayerDataItem'.static.GiveItem(e.player());
+        return data.IsBingoFailed(eventname);
+    }
+    return false;
 }
 
 function AddBingoScreen(CreditsWindow cw)
