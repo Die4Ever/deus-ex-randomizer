@@ -680,8 +680,6 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             _MarkBingo("HumanStompDeath");
         }
 
-        name = string(victim.alliance);
-        _MarkBingo(name$"_AllianceEliminated");
     } else {
         if (!dead) {
             class'DXRStats'.static.AddKnockOutByOther(player());
@@ -690,14 +688,29 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         }
     }
 
+    name = string(victim.alliance);
+    _MarkBingo(name$"_AllianceEliminated");
+
     if(!victim.bImportant)
         return;
 
-    if(victim.BindName == "PaulDenton")
-        dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
-    else if(victim.BindName == "AnnaNavarre" && dxr.flagbase.GetBool('annadies')) {
-        _MarkBingo("AnnaKillswitch");
-        Killer = player();
+    switch (victim.BindName) {
+        case "PaulDenton":
+            dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+            break;
+        case "AnnaNavarre":
+            if (dxr.flagbase.GetBool('annadies')) {
+                _MarkBingo("AnnaKillswitch");
+                Killer = player();
+            }
+            break;
+        case "JuanLebedev":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "LebedevLived");
+            break;
+        case "Aimee":
+        case "Le Merchant":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "AimeeLeMerchantLived");
+            break;
     }
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
