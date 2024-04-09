@@ -3200,7 +3200,7 @@ defaultproperties
     bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
     bingo_options(323)=(event="LebedevLived",desc="Keep Lebedev alive",max=1,missions=8)
     bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1536)
-    bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitered",max=1,missions=8)
+    bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitored",max=1,missions=8)
     bingo_options(326)=(event="ThugGang_AllianceEliminated",desc="Slaughter the Rooks",max=10,missions=8) // there are ordinarily 11 Rooks
 
 
