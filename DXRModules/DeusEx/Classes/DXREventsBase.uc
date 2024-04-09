@@ -630,7 +630,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname;
+    local string name;
     local bool dead;
 
     if (IsHuman(victim.class) && ((damageType == "Stunned") ||
@@ -653,18 +653,18 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     //Burned doesn't track who set them on fire...
     //The intent here is to only mark bingo for kills done by the player
     if( (Killer == None  && damageType=="Burned") || #var(PlayerPawn)(Killer) != None ) {
-        classname = string(victim.class.name);
-        if(#defined(hx) && InStr(classname, "HX")==0) {
-            classname = Mid(classname, 2);
+        name = string(victim.class.name);
+        if(#defined(hx) && InStr(name, "HX")==0) {
+            name = Mid(name, 2);
         }
 
         if (!dead){
-            _MarkBingo(classname$"_ClassUnconscious");
-            _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(name$"_ClassUnconscious");
+            _MarkBingo(name$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
             class'DXRStats'.static.AddKnockOut(player());
         } else {
-            _MarkBingo(classname$"_ClassDead");
-            _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(name$"_ClassDead");
+            _MarkBingo(name$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
@@ -679,6 +679,9 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
         }
+
+        name = string(victim.alliance);
+        _MarkBingo(name$"_AllianceEliminated");
     } else {
         if (!dead) {
             class'DXRStats'.static.AddKnockOutByOther(player());

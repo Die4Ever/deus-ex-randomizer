@@ -520,6 +520,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
+        WatchFlag('ThugGang_AllianceEliminated');
         if(RevisionMaps){
             WatchFlag('PlayPool');
             InitPoolBalls();
@@ -2283,7 +2284,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "RepairBot_ClassDead":
             return "Destroy enough repair bots.  Disabling them with EMP does not count.";
         case "DrugDealer_Dead":
-            return "Kill Rock, the drug dealer who lives in Brooklyn Bridge station.";
+            return "Kill Rock, the drug dealer who lives in Brooklyn Bridge Station.";
         case "botordertrigger":
             return "Set off the laser tripwires in Smuggler's hideout.";
         case "IgnitedPawn":
@@ -2822,6 +2823,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Leave Denfert-Rochereau with Aimee and Le Merchant still alive. This is a very difficult goal.";
         case "OverhearLebedev_Played":
             return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong. It can be heard in one of the offices.";
+        case "ThugGang_AllianceEliminated":
+            return "Slaughter most of the Rooks in the Brooklyn Bridge Station.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3198,6 +3201,7 @@ defaultproperties
     bingo_options(323)=(event="LebedevLived",desc="Keep Lebedev alive",max=1,missions=8)
     bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1536)
     bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitered",max=1,missions=8)
+    bingo_options(326)=(event="ThugGang_AllianceEliminated",desc="Slaughter the Rooks",max=10,missions=8) // there are ordinarily 11 Rooks
 
 
 
