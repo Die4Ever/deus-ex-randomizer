@@ -630,7 +630,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string name;
+    local string classname, alliancename;
     local bool dead;
 
     if (IsHuman(victim.class) && ((damageType == "Stunned") ||
@@ -653,18 +653,22 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     //Burned doesn't track who set them on fire...
     //The intent here is to only mark bingo for kills done by the player
     if( (Killer == None  && damageType=="Burned") || #var(PlayerPawn)(Killer) != None ) {
-        name = string(victim.class.name);
-        if(#defined(hx) && InStr(name, "HX")==0) {
-            name = Mid(name, 2);
+        classname = string(victim.class.name);
+        alliancename = string(victim.alliance);
+
+        if(#defined(hx) && InStr(classname, "HX")==0) {
+            classname = Mid(classname, 2);
         }
 
         if (!dead){
-            _MarkBingo(name$"_ClassUnconscious");
-            _MarkBingo(name$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(classname$"_ClassUnconscious");
+            _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(alliancename$"_AllianceUnconscious");
             class'DXRStats'.static.AddKnockOut(player());
         } else {
-            _MarkBingo(name$"_ClassDead");
-            _MarkBingo(name$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(classname$"_ClassDead");
+            _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(alliancename$"_AllianceDead");
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
@@ -687,9 +691,6 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             class'DXRStats'.static.AddKillByOther(player());
         }
     }
-
-    name = string(victim.alliance);
-    _MarkBingo(name$"_AllianceEliminated");
 
     if(!victim.bImportant)
         return;
@@ -1255,7 +1256,7 @@ static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
 {
     local DXREvents e;
     e = DXREvents(dxr.FindModule(class'DXREvents'));
-    if(e != None) {
+    if (e != None) {
         return e._IsBingoFailed(eventname);
     }
     return false;
