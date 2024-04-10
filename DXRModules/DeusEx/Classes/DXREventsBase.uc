@@ -630,7 +630,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname, alliancename;
+    local string classname;
     local bool dead;
 
     if (IsHuman(victim.class) && ((damageType == "Stunned") ||
@@ -654,7 +654,6 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     //The intent here is to only mark bingo for kills done by the player
     if( (Killer == None  && damageType=="Burned") || #var(PlayerPawn)(Killer) != None ) {
         classname = string(victim.class.name);
-        alliancename = string(victim.alliance);
 
         if(#defined(hx) && InStr(classname, "HX")==0) {
             classname = Mid(classname, 2);
@@ -663,12 +662,14 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (!dead){
             _MarkBingo(classname$"_ClassUnconscious");
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
-            _MarkBingo(alliancename$"_AllianceUnconscious");
+            _MarkBingo(victim.alliance$"_AllianceUnconscious");
+            _MarkBingo(victim.bindName$"_BindNameUnconscious");
             class'DXRStats'.static.AddKnockOut(player());
         } else {
             _MarkBingo(classname$"_ClassDead");
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
-            _MarkBingo(alliancename$"_AllianceDead");
+            _MarkBingo(victim.alliance$"_AllianceDead");
+            _MarkBingo(victim.bindName$"_BindNameDead");
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
