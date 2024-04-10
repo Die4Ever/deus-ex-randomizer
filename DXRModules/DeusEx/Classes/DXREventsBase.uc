@@ -1228,7 +1228,9 @@ function _MarkBingoAsFailed(coerce string eventname)
 
     data = class'PlayerDataItem'.static.GiveItem(player());
     l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
-    data.MarkBingoAsFailed(eventname);
+    if (data.MarkBingoAsFailed(eventname)) {
+        player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
+    }
 }
 
 static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)

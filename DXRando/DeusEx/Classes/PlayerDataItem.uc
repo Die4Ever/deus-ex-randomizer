@@ -138,15 +138,19 @@ simulated function bool IncrementBingoProgress(string event)
     return false;
 }
 
-simulated function MarkBingoAsFailed(string event)
+simulated function bool MarkBingoAsFailed(string event)
 {
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
         if(bingo[i].event != event) continue;
+
+        if (bingo_missions_masks[i] == FAILED_MISSION_MASK) return false;
+
         bingo_missions_masks[i] = FAILED_MISSION_MASK;
         bingo[i].progress = 0;
         log("MarkBingoAsFailed "$event);
         ExportBingoState();
+        return true;
     }
 }
 
