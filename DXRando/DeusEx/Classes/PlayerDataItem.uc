@@ -127,7 +127,7 @@ simulated function bool IncrementBingoProgress(string event)
     for(i=0; i<ArrayCount(bingo); i++) {
         if(bingo[i].event != event) continue;
         if(bingo_missions_masks[i] == FAILED_MISSION_MASK) {
-            l(self$"._MarkBingo("$eventname$") not incrementing because the goal is already marked as failed");
+            log(self$".IncrementBingoProgress("$event$") not incrementing because the goal is already marked as failed");
             break;
         }
         bingo[i].progress++;
