@@ -1177,10 +1177,6 @@ function _MarkBingo(coerce string eventname)
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.IsBingoFailed(eventname)) {
-        l(self$"._MarkBingo("$eventname$") not incrementing because the goal is already marked as failed");
-        return;
-    }
 
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
