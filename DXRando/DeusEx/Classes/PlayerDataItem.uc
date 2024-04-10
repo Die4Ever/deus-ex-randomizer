@@ -141,6 +141,7 @@ simulated function bool IncrementBingoProgress(string event)
 simulated function bool MarkBingoAsFailed(string event)
 {
     local int i;
+
     for(i=0; i<ArrayCount(bingo); i++) {
         if(bingo[i].event != event) continue;
 
@@ -152,6 +153,8 @@ simulated function bool MarkBingoAsFailed(string event)
         ExportBingoState();
         return true;
     }
+
+    return false;
 }
 
 simulated function bool IsBingoFailed(string event)
