@@ -521,6 +521,8 @@ function SetWatchFlags() {
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
         WatchFlag('ThugGang_AllianceDead');
+        WatchFlag('DonDone');
+        WatchFlag('LennyDone');
         if(RevisionMaps){
             WatchFlag('PlayPool');
             InitPoolBalls();
@@ -1903,6 +1905,9 @@ function string RemapBingoEvent(string eventname)
         case "Doberman_peeptime":
         case "Mutt_peeptime":
             return "WatchDogs";
+        case "DonDone":
+        case "LennyDone":
+            return "GiveZyme";
         default:
             return eventname;
     }
@@ -2825,6 +2830,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong. It can be heard in one of the offices.";
         case "ThugGang_AllianceDead":
             return "Slaughter most of the Rooks in the Brooklyn Bridge Station.";
+        case "GiveZyme":
+            return "Give zyme to the two junkies in the Brooklyn Bridge Station.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3202,6 +3209,7 @@ defaultproperties
     bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1536)
     bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitored",max=1,missions=8)
     bingo_options(326)=(event="ThugGang_AllianceDead",desc="Slaughter the Rooks",max=10,missions=8) // there are ordinarily 11 Rooks
+    bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
 
 
 
