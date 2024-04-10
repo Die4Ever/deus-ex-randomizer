@@ -871,6 +871,7 @@ function SetWatchFlags() {
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         WatchFlag('GreenKnowsAboutDowd');
+        class'DXREventsBase'.static.MarkBingo(dxr, "MaggieLived");
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -2825,15 +2826,17 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "LebedevLived":
             return "Leave the airfield for UNATCO with Juan Lebedev still alive and Anna Navarre dead.";
         case "AimeeLeMerchantLived":
-            return "Leave Denfert-Rochereau with Aimee and Le Merchant still alive. This is a very difficult goal.";
+            return "Leave Denfert-Rochereau with Aimee and Le Merchant still alive and conscious.  This is a very difficult goal.";
         case "OverhearLebedev_Played":
-            return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong. It can be heard in one of the offices.";
+            return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong.  It can be heard in one of the offices.";
         case "ThugGang_AllianceDead":
             return "Slaughter most of the Rooks in the Brooklyn Bridge Station.";
         case "GiveZyme":
             return "Give zyme to the two junkies in the Brooklyn Bridge Station.";
         case "MarketKid_BindNameUnconscious":
-            return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market. Crime (sometimes) doesn't pay.";
+            return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  Crime (sometimes) doesn't pay.";
+        case "MaggieLived":
+            return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3213,6 +3216,7 @@ defaultproperties
     bingo_options(326)=(event="ThugGang_AllianceDead",desc="Slaughter the Rooks",max=10,missions=8) // there are ordinarily 11 Rooks
     bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
     // bingo_options(328)=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
+    bingo_options(329)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
 
 
 
@@ -3271,4 +3275,5 @@ defaultproperties
     mutually_exclusive(50)=(e1="LebedevLived",e2="PlayerKilledLebedev")
     mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_Dead")
     mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_Dead")
+    mutually_exclusive(52)=(e1="MaggieLived",e2="MaggieCanFly")
 }

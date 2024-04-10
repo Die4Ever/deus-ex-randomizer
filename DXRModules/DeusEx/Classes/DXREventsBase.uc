@@ -713,6 +713,9 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         case "LeMerchant":
             class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "AimeeLeMerchantLived");
             break;
+        case "MaggieChow":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MaggieLived");
+            break;
     }
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
