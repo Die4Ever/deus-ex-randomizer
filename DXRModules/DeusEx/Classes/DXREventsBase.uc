@@ -1036,7 +1036,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         options[num_options++] = x;
     }
 
-    l("_CreateBingoBoard found " $ num_options $ " options");
+    l("_CreateBingoBoard found " $ num_options $ " options, starting_map==" $ starting_map $ ", starting_mission==" $ starting_mission $ ", end_mission==" $ end_mission);
     if(bTest) {
         l("starting_mission == " $ starting_mission $ ", end_mission == " $ end_mission);
         l("starting_mission_mask == " $ starting_mission_mask $ ", end_mission_mask == " $ end_mission_mask $ ", maybe_mission_mask == " $ maybe_mission_mask);

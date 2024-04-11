@@ -599,8 +599,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 6: // Hong Kong
         switch(bingo_event)
         {
-        case "MaggieLived":// not actually impossible, just really far
-            return end_mission <= 8;
         // // these two goals can actually be done with the way these starts currently work, but would normally be impossible
         // case "ClubEntryPaid":
         // case "M06JCHasDate":
@@ -685,6 +683,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return True;
             }
             return start_map>=60; //TODO: Have to have told Jaime to meet you in Hong Kong in mission 5
+        case "MaggieLived":// not actually impossible, just really far
+            return start_map < 70 && end_mission < 8;
         case "Terrorist_ClassDead":
         case "Terrorist_ClassUnconscious":
         case "Terrorist_peeptime":
