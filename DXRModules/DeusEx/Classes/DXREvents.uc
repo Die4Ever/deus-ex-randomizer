@@ -3215,7 +3215,7 @@ defaultproperties
     bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitored",max=1,missions=8)
     bingo_options(326)=(event="ThugGang_AllianceDead",desc="Slaughter the Rooks",max=10,missions=8) // there are ordinarily 11 Rooks
     bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
-    // bingo_options(328)=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
+    // bingo_options()=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(329)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
 
 
