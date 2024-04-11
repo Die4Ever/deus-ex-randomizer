@@ -227,6 +227,12 @@ function DeleteGoal(Goal g, GoalLocation Loc)
 
 function GenerateDTSHintCube(Goal g, GoalLocation Loc)
 {
+    local #var(prefix)DataLinkTrigger dt;
+    foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
+        if(dt.datalinkTag=='DL_Tong_00B') { // Greetings, JC Denton; this adds the goal for retrieving the sword, and if that happens after completing the goal then the goal is stuck
+            dt.Destroy();
+        }
+    }
     SpawnDatacubePlaintext(vectm(-1857.841064, -158.911865, 2051.345459), rotm(0,0,0),
         "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", true);
 }
