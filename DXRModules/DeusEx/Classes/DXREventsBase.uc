@@ -54,8 +54,7 @@ function CheckWatchedActors() {
 
         _MarkBingo(actor_watch[i].BingoEvent);
         num_watched_actors--;
-        actor_watch[i].BingoEvent = actor_watch[num_watched_actors].BingoEvent;
-        actor_watch[i].a = actor_watch[num_watched_actors].a;
+        actor_watch[i] = actor_watch[num_watched_actors];
         i--;// recheck this slot on the next iteration
     }
 }
@@ -299,21 +298,25 @@ simulated function Timer()
             continue;
         }
 
-        FlagTriggered=False;
-        if( watchflags[i] == 'LeoToTheBar' ) {
-            if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
-                FlagTriggered=True;
-            }
-        } else if ( watchflags[i] == 'PaulToTong' ) {
-            if (ClassInLevel(class'PaulDentonCarcass')){
-                FlagTriggered=True;
-            }
-        } else if( watchflags[i] == 'GuntherKillswitch' ) {
+        FlagTriggered = False;
+        switch(watchflags[i]) {
+        case 'LeoToTheBar':
+            FlagTriggered = ClassInLevel(class'#var(prefix)TerroristCommanderCarcass');
+            break;
+
+        case 'PaulToTong':
+            FlagTriggered = ClassInLevel(class'PaulDentonCarcass');
+            break;
+
+        case 'GuntherKillswitch':
             if (WatchGuntherKillSwitch()){
                 FlagTriggered=True;
                 _MarkBingo("GuntherHermann_Dead");
             }
-        } else if( watchflags[i] == 'PlayPool' ) {
+            break;
+
+        case 'PlayPool':
+            // we don't set FlagTriggered=true, just handle it all here to know when to delete this watcher
             num = PoolBallsSunk();
             if (num>0){
                 for (j=0;j<num;j++){
@@ -325,19 +328,23 @@ simulated function Timer()
                     watchflags[num_watchflags]='';
                     i--;
                 }
-                continue;
             }
-        } else if( watchflags[i] == 'FlowersForTheLab' ) {
-            if (ClassInLevel(class'#var(prefix)Flowers')){
-                FlagTriggered=True;
+            break;
+
+        case 'FlowersForTheLab':
+            FlagTriggered = ClassInLevel(class'#var(prefix)Flowers');
+            break;
+
+        default:
+            if (InStr(watchflags[i],"WatchKeys_")!=-1) {
+                FlagTriggered = CheckForNanoKey(Mid(watchflags[i],10));
+            } else {
+                FlagTriggered = dxr.flagbase.GetBool(watchflags[i]);
             }
-        } else if (InStr(watchflags[i],"WatchKeys_")!=-1) {
-            if (CheckForNanoKey(Mid(watchflags[i],10))){
-                FlagTriggered=True;
-            }
+            break;
         }
 
-        if( FlagTriggered || dxr.flagbase.GetBool(watchflags[i]) ) {
+        if( FlagTriggered ) {
             SendFlagEvent(watchflags[i]);
             num_watchflags--;
             watchflags[i] = watchflags[num_watchflags];
