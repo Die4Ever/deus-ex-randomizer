@@ -599,6 +599,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 6: // Hong Kong
         switch(bingo_event)
         {
+        case "MaggieLived":// not actually impossible, just really far
+            return end_mission <= 8;
         // // these two goals can actually be done with the way these starts currently work, but would normally be impossible
         // case "ClubEntryPaid":
         // case "M06JCHasDate":
