@@ -654,6 +654,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     //The intent here is to only mark bingo for kills done by the player
     if( (Killer == None  && damageType=="Burned") || #var(PlayerPawn)(Killer) != None ) {
         classname = string(victim.class.name);
+
         if(#defined(hx) && InStr(classname, "HX")==0) {
             classname = Mid(classname, 2);
         }
@@ -661,10 +662,14 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (!dead){
             _MarkBingo(classname$"_ClassUnconscious");
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(victim.alliance$"_AllianceUnconscious");
+            _MarkBingo(victim.bindName$"_BindNameUnconscious");
             class'DXRStats'.static.AddKnockOut(player());
         } else {
             _MarkBingo(classname$"_ClassDead");
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(victim.alliance$"_AllianceDead");
+            _MarkBingo(victim.bindName$"_BindNameDead");
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
@@ -679,6 +684,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
         }
+
     } else {
         if (!dead) {
             class'DXRStats'.static.AddKnockOutByOther(player());
@@ -690,11 +696,26 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     if(!victim.bImportant)
         return;
 
-    if(victim.BindName == "PaulDenton")
-        dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
-    else if(victim.BindName == "AnnaNavarre" && dxr.flagbase.GetBool('annadies')) {
-        _MarkBingo("AnnaKillswitch");
-        Killer = player();
+    switch (victim.BindName) {
+        case "PaulDenton":
+            dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+            break;
+        case "AnnaNavarre":
+            if (dxr.flagbase.GetBool('annadies')) {
+                _MarkBingo("AnnaKillswitch");
+                Killer = player();
+            }
+            break;
+        case "JuanLebedev":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "LebedevLived");
+            break;
+        case "Aimee":
+        case "LeMerchant":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "AimeeLeMerchantLived");
+            break;
+        case "MaggieChow":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MaggieLived");
+            break;
     }
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
@@ -1160,6 +1181,7 @@ function _MarkBingo(coerce string eventname)
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
+
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
 
@@ -1196,6 +1218,50 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
     if(e != None) {
         e._MarkBingo(eventname);
     }
+}
+
+function _MarkBingoAsFailed(coerce string eventname)
+{
+    local PlayerDataItem data;
+
+    // TODO: call RemapBingoEvent if it ever loses its side effects
+    /* eventname=RemapBingoEvent(eventname);
+    if (eventname==""){
+        return;
+    } */
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
+    if (data.MarkBingoAsFailed(eventname)) {
+        player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
+    }
+}
+
+static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
+{
+    local DXREvents e;
+    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    log(e$".MarkBingoAsFailed "$dxr$", "$eventname);
+    if (e != None) {
+        e._MarkBingoAsFailed(eventname);
+    }
+}
+
+function bool _IsBingoFailed(coerce string eventname)
+{
+    local PlayerDataItem data;
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    return data.IsBingoFailed(eventname);
+}
+
+static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
+{
+    local DXREvents e;
+    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    if (e != None) {
+        return e._IsBingoFailed(eventname);
+    }
+    return false;
 }
 
 function AddBingoScreen(CreditsWindow cw)

@@ -628,6 +628,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 10: // Paris
         switch(bingo_event)
         {
+            case "AimeeLeMerchantLived":
+                return start_map < 99 || start_map > 100;
         }
     case 11: // fallthrough to the rest of Paris
         switch(bingo_event)
