@@ -79,7 +79,10 @@ simulated function string GetRemainingUsesStr()
 
     uses = GetRemainingUses();
 
-    if (uses == 0) {
+    if(!HasLimitedUses()) {
+        return msg;
+    }
+    else if (uses == 0) {
         msg = " (No Charges Left)";
     } else if (uses == 1) {
         msg = " (1 Charge Left)";

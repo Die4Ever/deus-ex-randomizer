@@ -86,7 +86,7 @@ simulated function string GetRemainingUsesStr()
     if(!HasLimitedUses()) {
         return msg;
     }
-    if (uses == 0) {
+    else if (uses == 0) {
         return " (No Heals Left)";
     } else if (uses == 1) {
         msg = " (1 Heal Left)";
