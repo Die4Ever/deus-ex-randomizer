@@ -56,7 +56,7 @@ function CheckConfig()
         SkillCostMultipliers[i].type = "SkillComputer";
         SkillCostMultipliers[i].percent = 140;
         SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
+        SkillCostMultipliers[i].maxLevel = 1;
         i++;
     }
 #endif
