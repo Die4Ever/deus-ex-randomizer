@@ -296,8 +296,10 @@ function PreFirstEntryMapFixes()
             //The other ones are tagged as Dogs
             if (Tag=='Greasel'){
                 g.BindName="JerryTheVentGreasel";
-                g.FamiliarName = "Jerry the Vent Greasel";
-                g.UnfamiliarName = "Jerry the Vent Greasel";
+                if(!dxr.flags.IsReducedRando()) {
+                    g.FamiliarName = "Jerry the Vent Greasel";
+                    g.UnfamiliarName = "Jerry the Vent Greasel";
+                }
             }
         }
 

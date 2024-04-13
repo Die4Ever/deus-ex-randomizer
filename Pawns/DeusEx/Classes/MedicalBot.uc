@@ -83,7 +83,10 @@ simulated function string GetRemainingUsesStr()
 
     uses = GetRemainingUses();
 
-    if (uses == 0) {
+    if(!HasLimitedUses()) {
+        return msg;
+    }
+    else if (uses == 0) {
         return " (No Heals Left)";
     } else if (uses == 1) {
         msg = " (1 Heal Left)";
@@ -112,10 +115,11 @@ simulated function bool CanHeal()
 #endif
 
 #ifdef injections
-    if (_CanHeal()) {
+    if (_CanHeal())
 #else
-    if (Super.CanHeal()) {
+    if (Super.CanHeal())
 #endif
+    {
         if (HasLimitedUses()) {
             return (GetRemainingUses()>0);
         } else {

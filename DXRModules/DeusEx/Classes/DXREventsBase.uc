@@ -54,8 +54,7 @@ function CheckWatchedActors() {
 
         _MarkBingo(actor_watch[i].BingoEvent);
         num_watched_actors--;
-        actor_watch[i].BingoEvent = actor_watch[num_watched_actors].BingoEvent;
-        actor_watch[i].a = actor_watch[num_watched_actors].a;
+        actor_watch[i] = actor_watch[num_watched_actors];
         i--;// recheck this slot on the next iteration
     }
 }
@@ -299,21 +298,25 @@ simulated function Timer()
             continue;
         }
 
-        FlagTriggered=False;
-        if( watchflags[i] == 'LeoToTheBar' ) {
-            if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
-                FlagTriggered=True;
-            }
-        } else if ( watchflags[i] == 'PaulToTong' ) {
-            if (ClassInLevel(class'PaulDentonCarcass')){
-                FlagTriggered=True;
-            }
-        } else if( watchflags[i] == 'GuntherKillswitch' ) {
+        FlagTriggered = False;
+        switch(watchflags[i]) {
+        case 'LeoToTheBar':
+            FlagTriggered = ClassInLevel(class'#var(prefix)TerroristCommanderCarcass');
+            break;
+
+        case 'PaulToTong':
+            FlagTriggered = ClassInLevel(class'PaulDentonCarcass');
+            break;
+
+        case 'GuntherKillswitch':
             if (WatchGuntherKillSwitch()){
                 FlagTriggered=True;
                 _MarkBingo("GuntherHermann_Dead");
             }
-        } else if( watchflags[i] == 'PlayPool' ) {
+            break;
+
+        case 'PlayPool':
+            // we don't set FlagTriggered=true, just handle it all here to know when to delete this watcher
             num = PoolBallsSunk();
             if (num>0){
                 for (j=0;j<num;j++){
@@ -325,19 +328,23 @@ simulated function Timer()
                     watchflags[num_watchflags]='';
                     i--;
                 }
-                continue;
             }
-        } else if( watchflags[i] == 'FlowersForTheLab' ) {
-            if (ClassInLevel(class'#var(prefix)Flowers')){
-                FlagTriggered=True;
+            break;
+
+        case 'FlowersForTheLab':
+            FlagTriggered = ClassInLevel(class'#var(prefix)Flowers');
+            break;
+
+        default:
+            if (InStr(watchflags[i],"WatchKeys_")!=-1) {
+                FlagTriggered = CheckForNanoKey(Mid(watchflags[i],10));
+            } else {
+                FlagTriggered = dxr.flagbase.GetBool(watchflags[i]);
             }
-        } else if (InStr(watchflags[i],"WatchKeys_")!=-1) {
-            if (CheckForNanoKey(Mid(watchflags[i],10))){
-                FlagTriggered=True;
-            }
+            break;
         }
 
-        if( FlagTriggered || dxr.flagbase.GetBool(watchflags[i]) ) {
+        if( FlagTriggered ) {
             SendFlagEvent(watchflags[i]);
             num_watchflags--;
             watchflags[i] = watchflags[num_watchflags];
@@ -654,6 +661,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     //The intent here is to only mark bingo for kills done by the player
     if( (Killer == None  && damageType=="Burned") || #var(PlayerPawn)(Killer) != None ) {
         classname = string(victim.class.name);
+
         if(#defined(hx) && InStr(classname, "HX")==0) {
             classname = Mid(classname, 2);
         }
@@ -661,10 +669,14 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (!dead){
             _MarkBingo(classname$"_ClassUnconscious");
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(victim.alliance$"_AllianceUnconscious");
+            _MarkBingo(victim.bindName$"_BindNameUnconscious");
             class'DXRStats'.static.AddKnockOut(player());
         } else {
             _MarkBingo(classname$"_ClassDead");
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(victim.alliance$"_AllianceDead");
+            _MarkBingo(victim.bindName$"_BindNameDead");
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
@@ -679,6 +691,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
         }
+
     } else {
         if (!dead) {
             class'DXRStats'.static.AddKnockOutByOther(player());
@@ -690,11 +703,26 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     if(!victim.bImportant)
         return;
 
-    if(victim.BindName == "PaulDenton")
-        dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
-    else if(victim.BindName == "AnnaNavarre" && dxr.flagbase.GetBool('annadies')) {
-        _MarkBingo("AnnaKillswitch");
-        Killer = player();
+    switch (victim.BindName) {
+        case "PaulDenton":
+            dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+            break;
+        case "AnnaNavarre":
+            if (dxr.flagbase.GetBool('annadies')) {
+                _MarkBingo("AnnaKillswitch");
+                Killer = player();
+            }
+            break;
+        case "JuanLebedev":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "LebedevLived");
+            break;
+        case "Aimee":
+        case "LeMerchant":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "AimeeLeMerchantLived");
+            break;
+        case "MaggieChow":
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MaggieLived");
+            break;
     }
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
@@ -1008,7 +1036,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         options[num_options++] = x;
     }
 
-    l("_CreateBingoBoard found " $ num_options $ " options");
+    l("_CreateBingoBoard found " $ num_options $ " options, starting_map==" $ starting_map $ ", starting_mission==" $ starting_mission $ ", end_mission==" $ end_mission);
     if(bTest) {
         l("starting_mission == " $ starting_mission $ ", end_mission == " $ end_mission);
         l("starting_mission_mask == " $ starting_mission_mask $ ", end_mission_mask == " $ end_mission_mask $ ", maybe_mission_mask == " $ maybe_mission_mask);
@@ -1160,6 +1188,7 @@ function _MarkBingo(coerce string eventname)
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
+
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
 
@@ -1196,6 +1225,50 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
     if(e != None) {
         e._MarkBingo(eventname);
     }
+}
+
+function _MarkBingoAsFailed(coerce string eventname)
+{
+    local PlayerDataItem data;
+
+    // TODO: call RemapBingoEvent if it ever loses its side effects
+    /* eventname=RemapBingoEvent(eventname);
+    if (eventname==""){
+        return;
+    } */
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
+    if (data.MarkBingoAsFailed(eventname)) {
+        player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
+    }
+}
+
+static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
+{
+    local DXREvents e;
+    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    log(e$".MarkBingoAsFailed "$dxr$", "$eventname);
+    if (e != None) {
+        e._MarkBingoAsFailed(eventname);
+    }
+}
+
+function bool _IsBingoFailed(coerce string eventname)
+{
+    local PlayerDataItem data;
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    return data.IsBingoFailed(eventname);
+}
+
+static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
+{
+    local DXREvents e;
+    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    if (e != None) {
+        return e._IsBingoFailed(eventname);
+    }
+    return false;
 }
 
 function AddBingoScreen(CreditsWindow cw)

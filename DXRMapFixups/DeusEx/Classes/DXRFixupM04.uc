@@ -82,19 +82,22 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
-            key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
-            key.KeyID = 'CrackRoom';
-            key.Description = "'Ton Hotel, North Room Key";
-            if(dxr.flags.settings.keysrando > 0)
-                GlowUp(key);
+            if(!dxr.flags.IsZeroRando()) {
+                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
+                key.KeyID = 'CrackRoom';
+                key.Description = "'Ton Hotel, North Room Key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(key);
 
-            key = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
-            key.KeyID = 'Apartment';
-            key.Description = "Apartment key";
-            if(dxr.flags.settings.keysrando > 0)
-                GlowUp(key);
+                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
+                key.KeyID = 'Apartment';
+                key.Description = "Apartment key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(key);
 
-            SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+                SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+            }
+
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
@@ -222,11 +225,13 @@ function PreFirstEntryMapFixes()
         FixUNATCOCarterCloset();
         FixAlexsEmail();
 
-        key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
-        key.KeyID = 'JaimeClosetKey';
-        key.Description = "MedLab Closet Key Code";
-        if(dxr.flags.settings.keysrando > 0)
-            GlowUp(key);
+        if(!dxr.flags.IsZeroRando()) {
+            key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
+            key.KeyID = 'JaimeClosetKey';
+            key.Description = "MedLab Closet Key Code";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(key);
+        }
 
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter

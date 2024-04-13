@@ -63,19 +63,47 @@ function CheckConfig()
     local class<DeusExDecoration> c;
 
     i=0;
-    DecorationsOverwrites[i].type = "CrateUnbreakableLarge";
-    DecorationsOverwrites[i].bInvincible = false;
-    DecorationsOverwrites[i].HitPoints = 500;
-    DecorationsOverwrites[i].minDamageThreshold = 0;
-    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
-    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
-    DecorationsOverwrites[i].Flammability = c.default.Flammability;
-    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
-    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
-    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
-    DecorationsOverwrites[i].bPushable = c.default.bPushable;
+    if(!dxr.flags.IsZeroRando()) {
+        DecorationsOverwrites[i].type = "CrateUnbreakableLarge";
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 500;
+        DecorationsOverwrites[i].minDamageThreshold = 0;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
+        i++;
 
-    i++;
+        DecorationsOverwrites[i].type = "CrateUnbreakableMed";
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 500;
+        DecorationsOverwrites[i].minDamageThreshold = 0;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
+        i++;
+
+        DecorationsOverwrites[i].type = "BarrelVirus";
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 100;
+        DecorationsOverwrites[i].minDamageThreshold = 0;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
+        i++;
+    }
+
     DecorationsOverwrites[i].type = "BarrelFire";
     DecorationsOverwrites[i].bInvincible = false;
     DecorationsOverwrites[i].HitPoints = 50;
@@ -87,8 +115,8 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
-
     i++;
+
     DecorationsOverwrites[i].type = "Van";
     DecorationsOverwrites[i].bInvincible = false;
     DecorationsOverwrites[i].HitPoints = 500;
@@ -100,34 +128,8 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
-
     i++;
-    DecorationsOverwrites[i].type = "CrateUnbreakableMed";
-    DecorationsOverwrites[i].bInvincible = false;
-    DecorationsOverwrites[i].HitPoints = 500;
-    DecorationsOverwrites[i].minDamageThreshold = 0;
-    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
-    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
-    DecorationsOverwrites[i].Flammability = c.default.Flammability;
-    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
-    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
-    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
-    DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
-    i++;
-    DecorationsOverwrites[i].type = "BarrelVirus";
-    DecorationsOverwrites[i].bInvincible = false;
-    DecorationsOverwrites[i].HitPoints = 100;
-    DecorationsOverwrites[i].minDamageThreshold = 0;
-    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
-    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
-    DecorationsOverwrites[i].Flammability = c.default.Flammability;
-    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
-    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
-    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
-    DecorationsOverwrites[i].bPushable = c.default.bPushable;
-
-    i++;
     DecorationsOverwrites[i].type = "CigaretteMachine";
     DecorationsOverwrites[i].bInvincible = false;
     DecorationsOverwrites[i].HitPoints = 100;
@@ -139,8 +141,8 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
-
     i++;
+
     DecorationsOverwrites[i].type = "ShopLight";
     DecorationsOverwrites[i].bInvincible = false;
     c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
@@ -152,8 +154,8 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
-
     i++;
+
     DecorationsOverwrites[i].type = "HangingShopLight";
     DecorationsOverwrites[i].bInvincible = false;
     c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
@@ -165,8 +167,8 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
-
     i++;
+
     DecorationsOverwrites[i].type = "HKMarketLight";
     DecorationsOverwrites[i].bInvincible = false;
     c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
@@ -178,6 +180,7 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
+    i++;
 
     Super.CheckConfig();
 
@@ -457,7 +460,7 @@ function FixRevisionDecorativeInventory()
 
     foreach AllActors(class'Inventory',i){
         if (i.CollisionRadius==0 && i.CollisionHeight==0){
-            log("Making "$i$" grabbable by restoring it's original collision size");
+            l("Making "$i$" grabbable by restoring it's original collision size");
             i.SetCollisionSize(i.default.CollisionRadius,i.default.CollisionHeight);
         }
     }

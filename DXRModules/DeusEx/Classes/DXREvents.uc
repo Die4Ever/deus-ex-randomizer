@@ -501,6 +501,7 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         WatchFlag('PlayPool');
+        WatchFlag('OverhearLebedev_Played');
         InitPoolBalls();
         break;
     case "03_NYC_HANGAR":
@@ -519,6 +520,9 @@ function SetWatchFlags() {
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
+        WatchFlag('ThugGang_AllianceDead');
+        WatchFlag('DonDone');
+        WatchFlag('LennyDone');
         if(RevisionMaps){
             WatchFlag('PlayPool');
             InitPoolBalls();
@@ -540,6 +544,7 @@ function SetWatchFlags() {
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
         WatchFlag('FamilySquabbleWrapUpGilbertDead_Played');
+        WatchFlag('M04PlayerLikesUNATCO_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         break;
     case "04_NYC_UNDERGROUND":
@@ -611,6 +616,9 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        if (dxr.flagbase.GetBool('M03PlayerKilledAnna')) {
+            class'DXREventsBase'.static.MarkBingo(dxr, "LebedevLived");
+        }
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -636,6 +644,7 @@ function SetWatchFlags() {
         WatchFlag('Shannon_Dead');
         WatchFlag('M05WaltonAlone_Played');
         WatchFlag('M05MeetManderley_Played');
+        WatchFlag('M05MeetJaime_Played');
 
         foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
             if (cp.Name=='ComputerPersonal7'){  //JC's computer
@@ -680,6 +689,7 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
+        WatchFlag('Canal_Bartender_Question4');
 
         foreach AllActors(class'#var(prefix)FlagTrigger',fTrigger,'FoundScientist') {
             // so you don't have to go right into the corner, default is 96, and 40 height
@@ -715,6 +725,7 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
+        WatchFlag('M06BartenderQuestion3');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -860,6 +871,7 @@ function SetWatchFlags() {
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         WatchFlag('GreenKnowsAboutDowd');
+        class'DXREventsBase'.static.MarkBingo(dxr, "MaggieLived");
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -1020,12 +1032,14 @@ function SetWatchFlags() {
                 wib.bImportant = true;
         }
         WatchFlag('SilhouetteHostagesAllRescued');
+        class'DXREventsBase'.static.MarkBingo(dxr, "AimeeLeMerchantLived");
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
         WatchFlag('MeetRenault_Played');
+        WatchFlag('JoshuaInterrupted_Played');
         RewatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'#var(prefix)Mutt', starr) {
@@ -1892,6 +1906,9 @@ function string RemapBingoEvent(string eventname)
         case "Doberman_peeptime":
         case "Mutt_peeptime":
             return "WatchDogs";
+        case "DonDone":
+        case "LennyDone":
+            return "GiveZyme";
         default:
             return eventname;
     }
@@ -2273,7 +2290,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "RepairBot_ClassDead":
             return "Destroy enough repair bots.  Disabling them with EMP does not count.";
         case "DrugDealer_Dead":
-            return "Kill Rock, the drug dealer who lives in Brooklyn Bridge station.";
+            return "Kill Rock, the drug dealer who lives in Brooklyn Bridge Station.";
         case "botordertrigger":
             return "Set off the laser tripwires in Smuggler's hideout.";
         case "IgnitedPawn":
@@ -2794,6 +2811,32 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Swim through the underwater tunnel in the Warehouse District.";
         case "PaulToTong":
             return "Take Paul's corpse from the MJ12 facility under UNATCO to Tracer Tong.";
+        case "M04PlayerLikesUNATCO_Played":
+            return "Tell Paul you won't send the distress signal after going to the NSF base.";
+        case "Canal_Bartender_Question4":
+            return "Learn about Olaf Stapledon's \"Last and First Men\" from the Old China Hand bartender.";
+        case "M06BartenderQuestion3":
+            return "Hear the Lucky Money bartender's ideas about good government.";
+        case "M05MeetJaime_Played":
+            return "Talk to Jaime while escaping UNATCO and tell him to stay or to join you in Hong Kong.";
+        case "jughead_Dead":
+            return "Kill El Rey, the leader of the Rooks in the Brooklyn Bridge Station.";
+        case "JoshuaInterrupted_Played":
+            return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
+        case "LebedevLived":
+            return "Leave the airfield for UNATCO with Juan Lebedev still alive and Anna Navarre dead.";
+        case "AimeeLeMerchantLived":
+            return "Leave Denfert-Rochereau with Aimee and Le Merchant still alive and conscious.  This is a very difficult goal.";
+        case "OverhearLebedev_Played":
+            return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong.  It can be heard in one of the offices.";
+        case "ThugGang_AllianceDead":
+            return "Slaughter most of the Rooks in the Brooklyn Bridge Station.";
+        case "GiveZyme":
+            return "Give zyme to the two junkies in the Brooklyn Bridge Station.";
+        case "MarketKid_BindNameUnconscious":
+            return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  Crime (sometimes) doesn't pay.";
+        case "MaggieLived":
+            return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3157,10 +3200,23 @@ defaultproperties
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
-    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
+    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert-Rochereau",max=1,missions=1024)
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
     bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
+    bingo_options(317)=(event="M04PlayerLikesUNATCO_Played",desc="You're not a terrorist",max=1,missions=16)
+    bingo_options(318)=(event="Canal_Bartender_Question4",desc="Not big into books",max=1,missions=64)
+    bingo_options(319)=(event="M06BartenderQuestion3",desc="The mark of the educated man",max=1,missions=64)
+    bingo_options(320)=(event="M05MeetJaime_Played",desc="Talk to Jaime during the escape",max=1,missions=32)
+    bingo_options(321)=(event="jughead_Dead",desc="Kill El Rey",max=1,missions=8)
+    bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
+    bingo_options(323)=(event="LebedevLived",desc="Keep Lebedev alive",max=1,missions=8)
+    bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1536)
+    bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitored",max=1,missions=8)
+    bingo_options(326)=(event="ThugGang_AllianceDead",desc="Slaughter the Rooks",max=10,missions=8) // there are ordinarily 11 Rooks
+    bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
+    // bingo_options()=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
+    bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
 
 
 
@@ -3214,4 +3270,10 @@ defaultproperties
     mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_Dead")
     mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
     mutually_exclusive(47)=(e1="nsfwander",e2="MiguelLeaving")
+    mutually_exclusive(48)=(e1="PaulToTong",e2="SavedPaul")
+    mutually_exclusive(49)=(e1="LebedevLived",e2="AnnaKilledLebedev")
+    mutually_exclusive(50)=(e1="LebedevLived",e2="PlayerKilledLebedev")
+    mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_Dead")
+    mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_Dead")
+    mutually_exclusive(52)=(e1="MaggieLived",e2="MaggieCanFly")
 }

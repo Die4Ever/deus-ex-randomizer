@@ -1,5 +1,6 @@
 class SkillComputer injects SkillComputer;
 
+// vanilla is 1, 1, 2, 4
 defaultproperties
 {
     LevelValues(0)=0.8

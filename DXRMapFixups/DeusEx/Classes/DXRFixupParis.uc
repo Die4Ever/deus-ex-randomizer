@@ -40,12 +40,14 @@ function PreFirstEntryMapFixes()
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
-            foreach AllActors(class'ScriptedPawn',sp){
-                if(sp.BindName=="bums"){
-                    sp.bImportant=True;
-                    sp.UnfamiliarName="Dr. Kit";
-                    sp.FamiliarName="Dr. Mehdi Kit";
-                    break;
+            if(!dxr.flags.IsReducedRando()) {
+                foreach AllActors(class'ScriptedPawn',sp){
+                    if(sp.BindName=="bums"){
+                        sp.bImportant=True;
+                        sp.UnfamiliarName="Dr. Kit";
+                        sp.FamiliarName="Dr. Mehdi Kit";
+                        break;
+                    }
                 }
             }
 

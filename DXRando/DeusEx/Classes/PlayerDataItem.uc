@@ -1,5 +1,7 @@
 class PlayerDataItem extends Inventory config(DXRBingo);
 
+const FAILED_MISSION_MASK = 1;
+
 var travel bool local_inited;
 var travel int version, initial_version;
 #ifdef multiplayer
@@ -124,10 +126,43 @@ simulated function bool IncrementBingoProgress(string event)
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
         if(bingo[i].event != event) continue;
+        if(bingo_missions_masks[i] == FAILED_MISSION_MASK) {
+            log(self$".IncrementBingoProgress("$event$") not incrementing because the goal is already marked as failed");
+            break;
+        }
         bingo[i].progress++;
         log("IncrementBingoProgress "$event$": " $ bingo[i].progress $" / "$ bingo[i].max, self.class.name);
         ExportBingoState();
         return bingo[i].progress == bingo[i].max;
+    }
+    return false;
+}
+
+simulated function bool MarkBingoAsFailed(string event)
+{
+    local int i;
+
+    for(i=0; i<ArrayCount(bingo); i++) {
+        if(bingo[i].event != event) continue;
+
+        if (bingo_missions_masks[i] == FAILED_MISSION_MASK) return false;
+
+        bingo_missions_masks[i] = FAILED_MISSION_MASK;
+        bingo[i].progress = 0;
+        log("MarkBingoAsFailed "$event);
+        ExportBingoState();
+        return true;
+    }
+
+    return false;
+}
+
+simulated function bool IsBingoFailed(string event)
+{
+    local int i;
+    for(i=0; i<ArrayCount(bingo); i++) {
+        if(bingo[i].event != event) continue;
+        return bingo_missions_masks[i] == FAILED_MISSION_MASK; // TODO: actually check if it can't be completed, instead of just marked as failed?
     }
     return false;
 }

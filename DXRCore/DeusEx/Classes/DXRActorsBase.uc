@@ -356,6 +356,7 @@ static function ThrowItem(Inventory item, float VelocityMult)
     // kinda copied from DeusExPlayer DropItem function
     item.Velocity = rot * 300 + vect(0,0,220) + VRand()*32;
     item.Velocity *= VelocityMult;
+    item.SetCollision(true, false, false); // prevent this from blocking NPCs
 }
 
 function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
