@@ -354,17 +354,19 @@ function PreFirstEntryMapFixes_Page()
         }
     }
 
-    //Rather than duplicating the existing cubes, add new clone text so there are more possibilities
-    cloneCubeLoc[0]=vectm(6197.620117,-8455.201172,-5117.649902); //Weird little window near broken door (on Page side)
-    cloneCubeLoc[1]=vectm(5663.339355,-7955.502441,-5557.624512); //On boxes outside middle level UC door
-    cloneCubeLoc[2]=vectm(6333.112305,-7241.149414,-5557.636719); //On boxes right near middle level blue fusion reactor
-    cloneCubeLoc[3]=vectm(7687.463867,-8845.201172,-5940.627441); //On control panel that has flame button in coolant area
-    cloneCubeText[0]="SUBJECT MJID-5493OP2702|nINCEPT DATE: 3/19/65|nASSIGNED BIRTH DATE: 7/20/41|nASSIGNED BIRTH NAME: Stan Carnegie|nBASE GENETIC SAMPLE: SIMONSWALTON32A|nPROFILE: AABCAAB|nVITALS: 45/80/0.89/33/1.2|n|n             [[[[[PENDING]]]]]";
-    cloneCubeText[1]="SUBJECT MJID-2938BU3209|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Greg Pequod|nBASE GENETIC SAMPLE: |nPAGEBOB86G|nPROFILE: BAABACA|nVITALS: 51/72/1.02/20/2.1|n|n             [[[[[PENDING]]]]]";
-    cloneCubeText[2]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Jacob Queequeg|nBASE GENETIC SAMPLE: STRONGHOWARD52L|nPROFILE: CAAGATA|nVITALS: 52/73/1.01/20/2.2|n|n             [[[[[PENDING]]]]]";
-    cloneCubeText[3]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 6/17/54|nASSIGNED BIRTH DATE: 11/30/35|nASSIGNED BIRTH NAME: Jason Frudnick|nBASE GENETIC SAMPLE: GARDNERKANE88J|nPROFILE: BABTAGA|nVITALS: 51/81/1.13/20/2.0|n|n             [[[[[PENDING]]]]]";
-    for(i=0;i<4;i++){
-        SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0),cloneCubeText[i]);
+    if(!dxr.flags.IsZeroRando()) {
+        //Rather than duplicating the existing cubes, add new clone text so there are more possibilities
+        cloneCubeLoc[0]=vectm(6197.620117,-8455.201172,-5117.649902); //Weird little window near broken door (on Page side)
+        cloneCubeLoc[1]=vectm(5663.339355,-7955.502441,-5557.624512); //On boxes outside middle level UC door
+        cloneCubeLoc[2]=vectm(6333.112305,-7241.149414,-5557.636719); //On boxes right near middle level blue fusion reactor
+        cloneCubeLoc[3]=vectm(7687.463867,-8845.201172,-5940.627441); //On control panel that has flame button in coolant area
+        cloneCubeText[0]="SUBJECT MJID-5493OP2702|nINCEPT DATE: 3/19/65|nASSIGNED BIRTH DATE: 7/20/41|nASSIGNED BIRTH NAME: Stan Carnegie|nBASE GENETIC SAMPLE: SIMONSWALTON32A|nPROFILE: AABCAAB|nVITALS: 45/80/0.89/33/1.2|n|n             [[[[[PENDING]]]]]";
+        cloneCubeText[1]="SUBJECT MJID-2938BU3209|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Greg Pequod|nBASE GENETIC SAMPLE: |nPAGEBOB86G|nPROFILE: BAABACA|nVITALS: 51/72/1.02/20/2.1|n|n             [[[[[PENDING]]]]]";
+        cloneCubeText[2]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Jacob Queequeg|nBASE GENETIC SAMPLE: STRONGHOWARD52L|nPROFILE: CAAGATA|nVITALS: 52/73/1.01/20/2.2|n|n             [[[[[PENDING]]]]]";
+        cloneCubeText[3]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 6/17/54|nASSIGNED BIRTH DATE: 11/30/35|nASSIGNED BIRTH NAME: Jason Frudnick|nBASE GENETIC SAMPLE: GARDNERKANE88J|nPROFILE: BABTAGA|nVITALS: 51/81/1.13/20/2.0|n|n             [[[[[PENDING]]]]]";
+        for(i=0;i<4;i++){
+            SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0),cloneCubeText[i]);
+        }
     }
 
     //Add a switch to manually trigger the infolink that gives you the Helios computer password

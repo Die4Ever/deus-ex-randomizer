@@ -89,20 +89,22 @@ function PreFirstEntryMapFixes()
         pg.MaxCount=3;
 
         if (VanillaMaps){
-            //Add a key to Tim's closet
-            foreach AllActors(class'#var(DeusExPrefix)Mover',door){
-                if (door.Name=='DeusExMover28'){
-                    door.KeyIDNeeded='TimsClosetKey';
-                    door.Tag = 'TimsDoor';
-                    AddSwitch( vect(-1782.48,1597.85,-1969), rot(0, 0, 0), 'TimsDoor');
+            if(!dxr.flags.IsZeroRando()) {
+                //Add a key to Tim's closet
+                foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+                    if (door.Name=='DeusExMover28'){
+                        door.KeyIDNeeded='TimsClosetKey';
+                        door.Tag = 'TimsDoor';
+                        AddSwitch( vect(-1782.48,1597.85,-1969), rot(0, 0, 0), 'TimsDoor');
+                    }
                 }
-            }
 
-            key = Spawn(class'#var(prefix)NanoKey',,,vectm(-1502.665771,2130.560791,-1996.783691)); //Windowsill in Hazard Lab
-            key.KeyID='TimsClosetKey';
-            key.Description="Tim's Closet Key";
-            key.SkinColor=SC_Level3;
-            key.MultiSkins[0] = Texture'NanoKeyTex3';
+                key = Spawn(class'#var(prefix)NanoKey',,,vectm(-1502.665771,2130.560791,-1996.783691)); //Windowsill in Hazard Lab
+                key.KeyID='TimsClosetKey';
+                key.Description="Tim's Closet Key";
+                key.SkinColor=SC_Level3;
+                key.MultiSkins[0] = Texture'NanoKeyTex3';
+            }
 
             foreach AllActors(class'#var(DeusExPrefix)Mover',door){
                 if(door.name=='DeusExMover15'){

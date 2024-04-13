@@ -544,8 +544,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.passwordsrandomized = 0;
             settings.enemystats = 0;
             settings.bot_stats = 0;
-            settings.minskill = (settings.minskill*3 + settings.maxskill + 100) / 5;// Normal=80%, Hard=95%, Extreme=100%, Impossible=110%
-            settings.minskill = Clamp(settings.minskill, 85, 105);
+            settings.minskill = 100;
             settings.maxskill = settings.minskill;
             settings.ammo = 100;
             settings.medkits = 100;
@@ -564,8 +563,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.repairbotcooldowns = 0;
             settings.medbotamount = 0;
             settings.repairbotamount = 0;
-            settings.medbotuses *= 2;
-            settings.repairbotuses *= 2;
+            settings.medbotuses = 0;
+            settings.repairbotuses = 0;
             moresettings.grenadeswap = 0;
         } else {
             settings.enemystats /= 2;

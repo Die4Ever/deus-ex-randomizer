@@ -7,10 +7,10 @@ struct SkillCostMultiplier {
     var int maxLevel;//the highest skill level this adjustment will apply to
 };
 
-var config SkillCostMultiplier SkillCostMultipliers[16];
+var SkillCostMultiplier SkillCostMultipliers[12];
 
-var config float min_skill_weaken, max_skill_str;
-var config float skill_cost_curve;
+var float min_skill_weaken, max_skill_str;
+var float skill_cost_curve;
 
 replication
 {
@@ -21,7 +21,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,2,3) ) {
+
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
@@ -32,8 +32,9 @@ function CheckConfig()
         max_skill_str = 1.0;
         skill_cost_curve = 2;
 
-        i=0;
 #ifdef balance
+    i=0;
+    if(!dxr.flags.IsZeroRando()) {
         SkillCostMultipliers[i].type = "SkillDemolition";
         SkillCostMultipliers[i].percent = 80;
         SkillCostMultipliers[i].minLevel = 1;
@@ -57,8 +58,9 @@ function CheckConfig()
         SkillCostMultipliers[i].minLevel = 1;
         SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         i++;
-#endif
     }
+#endif
+
     Super.CheckConfig();
 }
 

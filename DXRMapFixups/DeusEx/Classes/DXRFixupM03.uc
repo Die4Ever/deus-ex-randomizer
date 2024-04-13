@@ -159,8 +159,10 @@ function PreFirstEntryMapFixes()
             a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
             SetActorScale(a, 1.3);
 
-            //rebreather because of #TOOCEAN connection
-            Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
+            if(!dxr.flags.IsZeroRando()) {
+                //rebreather because of #TOOCEAN connection
+                Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
+            }
 
             //Button to extend sewer platform from the other side
             AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
@@ -180,8 +182,11 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_AIRFIELD":
-        //rebreather because of #TOOCEAN connection
-        Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
+        if(!dxr.flags.IsZeroRando()) {
+            //rebreather because of #TOOCEAN connection
+            Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
+        }
+
         // extra spots for datacube
         Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower
         Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter
@@ -299,11 +304,13 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
-        k.KeyID = 'JaimeClosetKey';
-        k.Description = "MedLab Closet Key Code";
-        if(dxr.flags.settings.keysrando > 0)
-            GlowUp(k);
+        if(!dxr.flags.IsZeroRando()) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
+            k.KeyID = 'JaimeClosetKey';
+            k.Description = "MedLab Closet Key Code";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
+        }
 
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
@@ -380,6 +387,8 @@ function FixAnnaAmbush()
 {
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)ThrownProjectile p;
+
+    if(dxr.flags.IsZeroRando()) return;
 
     foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {break;}
 

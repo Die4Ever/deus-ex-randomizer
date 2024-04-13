@@ -17,8 +17,7 @@ function CheckConfig()
 
 function PartialHeal(out int health, int d)
 {
-    health = Max(d/2, health);// half default health, or keep current health
-    health = Min(health, d);// cap at the default
+    health = Clamp(health, d/2, d);
 }
 
 function PreFirstEntryMapFixes()
@@ -128,17 +127,19 @@ function PreFirstEntryMapFixes()
                 RemoveFears(j);
             }
 
-            k = Spawn(class'#var(prefix)NanoKey',,, vectm(420,195,333));
-            k.KeyID = 'UNOfficeDoorKey';
-            k.Description = "UNATCO Office Door Key";
-            if(dxr.flags.settings.keysrando > 0)
-                GlowUp(k);
+            if(!dxr.flags.IsZeroRando()) {
+                k = Spawn(class'#var(prefix)NanoKey',,, vectm(420,195,333));
+                k.KeyID = 'UNOfficeDoorKey';
+                k.Description = "UNATCO Office Door Key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(k);
 
-            k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
-            k.KeyID = 'JaimeClosetKey';
-            k.Description = "MedLab Closet Key Code";
-            if(dxr.flags.settings.keysrando > 0)
-                GlowUp(k);
+                k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
+                k.KeyID = 'JaimeClosetKey';
+                k.Description = "MedLab Closet Key Code";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(k);
+            }
 
             //Spawn some placeholders for new item locations
             Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter

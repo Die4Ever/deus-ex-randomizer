@@ -63,11 +63,13 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'Terrorist',nsf,'ShantyTerrorist'){
                 nsf.Tag = 'ShantyTerrorists';  //Restores voice lines when NSF still alive (still hard to have happen though)
             }
-            k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 339.215179));
-            k.KeyID = 'ControlRoomDoor';
-            k.Description = "Control Room Door Key";
-            if(dxr.flags.settings.keysrando > 0)
-                GlowUp(k);
+            if(!dxr.flags.IsZeroRando()) {
+                k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 339.215179));
+                k.KeyID = 'ControlRoomDoor';
+                k.Description = "Control Room Door Key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(k);
+            }
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
             fg.ActiveArea=2000;
@@ -289,13 +291,15 @@ function PostFirstEntryMapFixes()
             AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-328.287048, 767.875000, 1072.113770));
         }
 
-        // this map is too hard
-        Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
-        Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
-        Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
-        Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
-        Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
-        Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
+        if(!dxr.flags.IsZeroRando()) {
+            // this map is too hard
+            Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
+            Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
+            Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
+            Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
+            Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
+            Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
+        }
 
         break;
     }

@@ -108,6 +108,8 @@ function PostFirstEntryMapFixes()
 {
     local Actor a;
 
+    if(dxr.flags.IsZeroRando()) return;
+
     switch(dxr.localURL) {
     case "00_TrainingFinal":
         Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
