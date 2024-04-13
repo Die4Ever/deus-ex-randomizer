@@ -1,6 +1,18 @@
 class BalanceAugHealing injects AugHealing;
 
-//DXR: put a cap on the health that regen gives you
+function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+    // description gets overwritten by language file, also DXRAugmentations reads from the default.Description
+    default.Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent's health over time."
+                            $ "|n|nTECH ONE: Healing only fixes serious injuries."
+                            $ "|n|nTECH TWO: Healing fixes moderate injuries."
+                            $ "|n|nTECH THREE: Healing fixes most injuries."
+                            $ "|n|nTECH FOUR: Healing restores the agent to nearly full health.";
+    Description = default.Description;
+}
+
+//DXRando: put a cap on the health that regen gives you
 state Active
 {
 Begin:
