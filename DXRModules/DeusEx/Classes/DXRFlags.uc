@@ -10,6 +10,7 @@ const WaltonWare = 7;
 const WaltonWareEntranceRando = 8;
 const RandoMedium = 9;
 const WaltonWareHardcore = 10;
+const WaltonWarex3 = 11;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -642,6 +643,13 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.health = 200;
             autosave = 5; // Ironman, autosaves and manual saves disabled
         }
+        else if(gamemode == WaltonWarex3) {
+            settings.bingo_win = 3;
+            settings.bingo_freespaces = 1;
+            bingo_duration = 3;
+            bingo_scale = 33;
+            moresettings.newgameplus_curve_scalar = 75;
+        }
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
@@ -671,6 +679,7 @@ static function int GameModeIdForSlot(int slot)
     if(slot--==0) return WaltonWareEntranceRando;
     if(!VersionIsStable()) {
         if(slot--==0) return WaltonWareHardcore;
+        if(slot--==0) return WaltonWarex3;
     }
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return ZeroRando;
@@ -710,6 +719,8 @@ static function string GameModeName(int gamemode)
 #endif
     case WaltonWareHardcore:
         return "WaltonWare Harcore";
+    case WaltonWarex3:
+        return "WaltonWare x3";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -744,7 +755,7 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3;
 }
 
 function bool IsWaltonWareHardcore()
