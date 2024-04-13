@@ -309,22 +309,21 @@ simulated function string BindFlags(int mode, optional string str)
         FlagInt('Rando_playthrough_id', playthrough_id, mode, str);
     }
 
-    FlagInt('Rando_maxrando', maxrando, mode, str);
+    FlagInt('Rando_gamemode', gamemode, mode, str);
+    if( FlagInt('Rando_difficulty', difficulty, mode, str) ) {
+        SetDifficulty(difficulty);
+    }
 
+    FlagInt('Rando_maxrando', maxrando, mode, str);
     FlagInt('Rando_autosave', autosave, mode, str);
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
     FlagInt('Rando_loadout', loadout, mode, str);
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
-    FlagInt('Rando_gamemode', gamemode, mode, str);
     FlagInt('Rando_setseed', bSetSeed, mode, str);
     FlagInt('Rando_bingoboardroll', bingoBoardRoll, mode, str);
     FlagInt('Rando_mirroredmaps', mirroredmaps, mode, str);
     FlagInt('Rando_bingo_duration', bingo_duration, mode, str);
     FlagInt('Rando_bingo_scale', bingo_scale, mode, str);
-
-    if( FlagInt('Rando_difficulty', difficulty, mode, str) ) {
-        SetDifficulty(difficulty);
-    }
 
     FlagInt('Rando_minskill', settings.minskill, mode, str);
     FlagInt('Rando_maxskill', settings.maxskill, mode, str);
