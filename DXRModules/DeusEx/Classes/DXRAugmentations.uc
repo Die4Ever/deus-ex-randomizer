@@ -417,7 +417,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
             return string(int(a.energyRate * a.LevelValues[i] + 0.5));
         }
         word = "Noise";
-        return int(a.LevelValues[i] * 100.0) $ "%";
+        return Max(int(a.LevelValues[i] * 100.0), 0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugTarget') {
         word = "Damage";
