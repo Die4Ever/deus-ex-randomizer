@@ -92,9 +92,9 @@ function BindControls(optional string action)
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
     Slider(f.bingo_scale, 0, 100);
 
-    NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces?");
-    EnumOption("Enabled", 1, f.settings.bingo_freespaces);
-    EnumOption("Disabled", 0, f.settings.bingo_freespaces);
+    NewMenuItem("Bingo Freespaces", "Should the center be a Free Space, or even more Free Spaces?");
+    EnumOption("0 Free Spaces", 0, f.settings.bingo_freespaces);
+    EnumOption("1 Free Space", 1, f.settings.bingo_freespaces);
     EnumOption("2 Free Spaces", 2, f.settings.bingo_freespaces);
     EnumOption("3 Free Spaces", 3, f.settings.bingo_freespaces);
     EnumOption("4 Free Spaces", 4, f.settings.bingo_freespaces);
