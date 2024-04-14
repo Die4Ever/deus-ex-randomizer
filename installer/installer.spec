@@ -34,6 +34,7 @@ a_installer = Analysis(
         ('Configs/*', 'Configs'),
         ('3rdParty/*.*', '3rdParty'),
         ('3rdParty/d3d10drv/*', '3rdParty/d3d10drv'),
+        ('3rdParty/d3d10drv_deus_nsf/*', '3rdParty/d3d10drv_deus_nsf'),
         ('3rdParty/dxvk/*', '3rdParty/dxvk')
     ],
     hiddenimports=[],

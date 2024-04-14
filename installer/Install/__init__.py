@@ -346,8 +346,11 @@ def CopyD3DRenderers(system:Path, deus_nsf:bool):
 def Copyd3d10drv(source, dest):
     info('Copyd3d10drv from', source, 'to', dest)
     Mkdir(dest, exist_ok=True)
+    num = 0
     for f in source.glob('*'):
         CopyTo(f, dest / f.name, True)
+        num += 1
+    assert num > 0, 'Found '+str(num)+' d3d10drv files in '+str(source)
 
 
 def CopyDXVK(system:Path, install:bool):
