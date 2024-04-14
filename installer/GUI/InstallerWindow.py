@@ -16,11 +16,30 @@ class InstallerWindow(GUIBase):
         self.ogl2_default = self.dxvk_default or not IsWindows()
 
 
+    def setgrid(self, control, advanced:bool, **gridargs):
+        self.controls[control] = {'advanced': advanced, 'gridargs': gridargs}
+        if self.advanced or not advanced:
+            control.grid(**gridargs)
+
+
+    def ShowAdvanced(self):
+        self.root.geometry(str(self.width-1)+"x"+str(self.height-1))
+        self.installButton.grid_forget()
+        for (control, val) in self.controls.items():
+            control.grid(**val['gridargs'])
+        self.root.update()
+        self.root.geometry(str(self.width)+"x"+str(self.height))
+        self.scroll.ReConf()
+
+
     def initWindow(self):
         self.root = Tk()
+        self.lastprogress = ''
+        self.advanced = False
         self.width = 350
         self.height = 500
-        self.lastprogress = ''
+        self.controls = {}
+
         if IsVanillaFixer():
             self.root.title("DXR Vanilla Fixer " + GetVersion())
         else:
@@ -29,8 +48,8 @@ class InstallerWindow(GUIBase):
         vulkanthread = Thread(target=self.CheckVulkan) # this takes a second or so
         vulkanthread.start()
 
-        scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
-        self.frame = scroll.frame
+        self.scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
+        self.frame = self.scroll.frame
 
         filetypes = (('DeusEx.exe', 'DeusEx.exe'),)
         initdir = getDefaultPath()
@@ -53,24 +72,24 @@ class InstallerWindow(GUIBase):
 
         self.font = font.Font(size=14)
         self.linkfont = font.Font(size=12, underline=True)
-        row = 0
+        self.row = 0
         pad = 6
 
         # show the path
         pathlabel = str(p.parent.parent)
         pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', '\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
         l = Label(self.frame, text='Install path:\n' + pathlabel, wraplength=self.width - pad*8)
-        l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
-        row += 1
+        l.grid(column=1,row=self.row, sticky='SW', padx=pad*4, pady=pad)
+        self.row += 1
 
         self.flavors = {}
         self.globalsettings = {}
 
         for f in flavors:
-            row = self.InitFlavorSettings(f, row, pad)
+            self.InitFlavorSettings(f, pad)
 
         if not IsVanillaFixer():
-            row = self.GlobalFixes(row, pad)
+            self.GlobalFixes(pad)
 
         # TODO: option to enable telemetry? checking for updates?
 
@@ -85,27 +104,30 @@ class InstallerWindow(GUIBase):
         self.installButton.grid(column=1,row=101, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.installButton, 'Dew it!')
 
+        # advanced button
+        self.installButton = Button(self.frame,text='Show Advanced Options',width=20,height=1,font=self.font, command=self.ShowAdvanced)
+        self.installButton.grid(column=1,row=102, sticky='SW', padx=pad, pady=pad)
+        Hovertip(self.installButton, 'For the brave and technical')
+
         self.root.geometry(str(self.width)+"x"+str(self.height))
+        self.scroll.ReConf()
 
 
-    def InitFlavorSettings(self, f: str, row, pad) -> int:
+    def InitFlavorSettings(self, f: str, pad) -> int:
         settings = {}
 
         if f == 'Vanilla' and IsVanillaFixer():
-            settings['FixVanilla'] = self.ZeroChangesCheckbox(row, pad, pad)
-            row+=1
-            settings['LDDP'] = self.LDDPCheckbox(row, pad, pad)
-            row+=1
-            settings['exetype'] = self.ExeTypeRadios(row, pad, pad)
-            row+=3
-            row = self.GlobalFixes(row, pad)
+            settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
+            settings['LDDP'] = self.LDDPCheckbox(pad, pad)
+            settings['exetype'] = self.ExeTypeRadios(pad, pad)
+            self.GlobalFixes(pad)
 
         v = BooleanVar(master=self.frame, value=(not IsVanillaFixer()))
         settings['install'] = v
         c = Checkbutton(self.frame, text="Install DXRando for "+f, variable=v)
-        c.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        c.grid(column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(c)
-        row+=1
+        self.row+=1
 
         # mirrored maps
         if f in ['Vanilla', '####Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
@@ -113,120 +135,119 @@ class InstallerWindow(GUIBase):
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
             Hovertip(c, "Time to get lost again. (This will check if you already have them.)\nRequires DXRando.")
-            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
+            self.setgrid(c, True, column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
-            row+=1
+            self.row+=1
 
         # Vanilla stuff
         if f == 'Vanilla':
             if not IsVanillaFixer():
-                settings['exetype'] = self.ExeTypeRadios(row, pad*10, pad)
-                row+=3
+                settings['exetype'] = self.ExeTypeRadios(pad*10, pad)
 
             v = BooleanVar(master=self.frame, value=IsVanillaFixer())
             settings['ZeroRando'] = v
             c = Checkbutton(self.frame, text="Default to Zero Rando mode for "+f, variable=v)
             Hovertip(c, "This retains the vanilla menu experience for your first launch.\nAnd also sets Zero Rando mode as your default game mode for a new game.\nYou can change this once you get into the game with the Rando menu.")
-            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
+            c.grid(column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
-            row+=1
+            self.row+=1
 
             # separate DXRando.exe is difficulty for Linux Steam users, but if you're using VanillaFixer then you probably don't want to overwrite vanilla
             v = BooleanVar(master=self.frame, value=(IsWindows() or IsVanillaFixer()))
             settings['DXRando.exe'] = v
             c = Checkbutton(self.frame, text="Create separate DXRando.exe for "+f, variable=v)
             Hovertip(c, "Overwriting the original DeusEx.exe makes it easier for Linux Steam players.\nOnly applicable if installing DXRando.")
-            c.grid(column=1,row=row, sticky='SW', padx=pad*10, pady=pad)
+            c.grid(column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
-            row+=1
+            self.row+=1
 
             if not IsVanillaFixer():
-                settings['FixVanilla'] = self.ZeroChangesCheckbox(row, pad, pad)
-                row+=1
-                settings['LDDP'] = self.LDDPCheckbox(row, pad, pad)
-                row+=1
+                settings['LDDP'] = self.LDDPCheckbox(pad*10, pad)
+                settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
         # End Vanilla stuff
 
         self.flavors[f] = settings
-        return row
 
 
-    def ExeTypeRadios(self, row, padx, pad):
+    def ExeTypeRadios(self, padx, pad):
         exe = StringVar(master=self.frame, value='Kentie')
 
         l = Label(self.frame, text="Which EXE to use for vanilla:")
-        l.grid(column=1,row=row, sticky='SW', padx=padx, pady=pad)
-        row += 1
+        self.setgrid(l, True, column=1,row=self.row, sticky='SW', padx=padx, pady=pad)
+        self.row += 1
 
         r = Radiobutton(self.frame, text="Kentie's Launcher", variable=exe, value='Kentie')
-        r.grid(column=1,row=row, sticky='SW', padx=padx+pad*6, pady=pad)
+        self.setgrid(r, True, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
         self.FixColors(r)
         Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
-        row += 1
+        self.row += 1
 
         r = Radiobutton(self.frame, text="Hanfling's Launch", variable=exe, value='Launch')
-        r.grid(column=1,row=row, sticky='SW', padx=padx+pad*6, pady=pad)
+        self.setgrid(r, True, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
         self.FixColors(r)
         Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
-        row += 1
+        self.row += 1
         return exe
 
-    def ZeroChangesCheckbox(self, row, padx, pady):
+    def ZeroChangesCheckbox(self, padx, pady):
         # "Zero Changes" mode fixes
         v = BooleanVar(master=self.frame, value=True)
         c = Checkbutton(self.frame, text="  Apply compatibility fixes for DeusEx.exe\n(Zero Changes mode)", variable=v)
         Hovertip(c, "Apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.\nOnly has an effect when using a separate DXRando.exe for the Randomized modes\nor when not installing DXRando.")
-        c.grid(column=1,row=row, sticky='SW', padx=padx, pady=pady)
+        c.grid(column=1,row=self.row, sticky='SW', padx=padx, pady=pady)
+        self.row += 1
         self.FixColors(c)
         return v
 
-    def LDDPCheckbox(self, row, padx, pady):
+    def LDDPCheckbox(self, padx, pady):
         v = BooleanVar(master=self.frame, value=False)
         c = Checkbutton(self.frame, text="Install Lay D Denton Project for Vanilla", variable=v)
         Hovertip(c, "What if Zelda was a girl?")
-        c.grid(column=1,row=row, sticky='SW', padx=padx, pady=pady)
+        c.grid(column=1,row=self.row, sticky='SW', padx=padx, pady=pady)
+        self.row += 1
         self.FixColors(c)
         return v
 
-    def GlobalFixes(self, row, pad):
+    def GlobalFixes(self, pad):
         # engine.dll speedup fix, this is global
         self.globalsettings['speedupfix'] = BooleanVar(master=self.frame, value=True)
         self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix\nto support higher frame rates.", variable=self.globalsettings['speedupfix'])
-        self.speedupfix.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        self.setgrid(self.speedupfix, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.speedupfix, "Fixes issues with high frame rates.")
         self.FixColors(self.speedupfix)
-        row+=1
+        self.row+=1
 
         # DXVK is also global
         if IsWindows():
             self.globalsettings['dxvk'] = BooleanVar(master=self.frame, value=self.dxvk_default)
             self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.globalsettings['dxvk'])
-            self.dxvk.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+            self.setgrid(self.dxvk, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
             Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
             self.FixColors(self.dxvk)
-            row+=1
+            self.row+=1
         else:
             self.globalsettings['dxvk'] = DummyCheckbox()
 
-        self.globalsettings['deus_nsf_d3d10'] = BooleanVar(master=self.frame, value=False)
-        self.deus_nsf_d3d10 = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10", variable=self.globalsettings['deus_nsf_d3d10'])
-        Hovertip(self.deus_nsf_d3d10, "Tweaked D3D10 shaders for a better retro look with more vivid lighting.")
-        self.deus_nsf_d3d10.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
-        self.FixColors(self.deus_nsf_d3d10)
-        row+=1
-        # TODO: option for tweaking the retro texture filtering
-        # in d3d10drv_deus_nsf/unrealpool.fhx change line 96 from
-        # return diffusePoint;
-        # to
-        # return diffuse;
+        self.globalsettings['deus_nsf_d3d10_lighting'] = BooleanVar(master=self.frame, value=False)
+        self.deus_nsf_d3d10_lighting = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10 vivid lighting", variable=self.globalsettings['deus_nsf_d3d10_lighting'])
+        Hovertip(self.deus_nsf_d3d10_lighting, "Tweaked D3D10 shaders for more vivid lighting.")
+        self.setgrid(self.deus_nsf_d3d10_lighting, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.deus_nsf_d3d10_lighting)
+        self.row+=1
+
+        self.globalsettings['deus_nsf_d3d10_retro_textures'] = BooleanVar(master=self.frame, value=False)
+        self.deus_nsf_d3d10_retro_textures = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10 retro texture filtering", variable=self.globalsettings['deus_nsf_d3d10_retro_textures'])
+        Hovertip(self.deus_nsf_d3d10_retro_textures, "Tweaked D3D10 shaders for retro texture filtering.")
+        self.setgrid(self.deus_nsf_d3d10_retro_textures, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.deus_nsf_d3d10_retro_textures)
+        self.row+=1
 
         self.globalsettings['ogl2'] = BooleanVar(master=self.frame, value=self.ogl2_default)
         self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.globalsettings['ogl2'])
         Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
-        self.ogl2.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        self.setgrid(self.ogl2, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.ogl2)
-        row+=1
-        return row
+        self.row+=1
 
 
     def Install(self):
@@ -243,7 +264,6 @@ class InstallerWindow(GUIBase):
     def _Install(self):
         self.root.title('DXRando Installing...')
         self.root.update()
-        info(self.speedupfixval.get())
         self.installButton["state"]='disabled'
 
         flavors = {}

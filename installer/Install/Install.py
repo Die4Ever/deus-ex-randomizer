@@ -31,7 +31,7 @@ def UnattendedInstall(installpath:str, downloadmirrors):
 
     dxvk_default = IsWindows() and CheckVulkan()
 
-    globalsettings = dict(speedupfix=True, dxvk=dxvk_default, deus_nsf_d3d10=False, ogl2=dxvk_default)
+    globalsettings = dict(speedupfix=True, dxvk=dxvk_default, deus_nsf_d3d10_lighting=False, deus_nsf_d3d10_retro_textures=False, ogl2=dxvk_default)
 
     ret = Install(p, settings, globalsettings)
 
@@ -146,7 +146,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10'])
+    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['deus_nsf_d3d10_retro_textures'])
 
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
@@ -183,25 +183,23 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
 
     CopyTo(sourceINI, DXRandoini)
 
+    if 'D3D10Drv.D3D10RenderDevice' not in changes:
+        changes['D3D10Drv.D3D10RenderDevice'] = {}
     if not globalsettings['speedupfix']:
         if 'DeusExe' not in changes:
             changes['DeusExe'] = {}
         changes['DeusExe'].update({'FPSLimit': '120'})
-        if 'D3D10Drv.D3D10RenderDevice' not in changes:
-            changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'True'})
     elif exename == 'DeusEx': # ensure we don't retain bad settings from old vanilla configs since we use the same exe file name?
         if 'DeusExe' not in changes:
             changes['DeusExe'] = {}
         changes['DeusExe'].update({'FPSLimit': '0'})
-        if 'D3D10Drv.D3D10RenderDevice' not in changes:
-            changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
 
-    if globalsettings['deus_nsf_d3d10']:
-        if 'D3D10Drv.D3D10RenderDevice' not in changes:
-            changes['D3D10Drv.D3D10RenderDevice'] = {}
+    if globalsettings['deus_nsf_d3d10_lighting']:
         changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'False'})
+    else:
+        changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'True'})
 
     info('ZeroRando:', ZeroRando)
     if ZeroRando:
