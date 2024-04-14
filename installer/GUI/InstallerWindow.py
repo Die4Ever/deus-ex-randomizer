@@ -290,7 +290,7 @@ class InstallerWindow(GUIBase):
             installedflavorstext = 'Installed DXRando for: ' + installedflavorstext[0:-2]
 
         if flavors.get('Vanilla', {}).get('FixVanilla'):
-            installedflavorstext = 'Fixed vanilla.' + installedflavorstext
+            installedflavorstext = 'Fixed vanilla. ' + installedflavorstext
 
         if not installedflavorstext: # done with something idk what
             installedflavorstext = 'Done.'
