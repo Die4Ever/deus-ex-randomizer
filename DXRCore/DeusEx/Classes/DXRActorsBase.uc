@@ -1488,7 +1488,7 @@ static function LogInventory(Actor actor)
 {
     local Inventory item;
 
-    log(actor.class @ actor.bindname $ " inventory:");
+    log(actor.class @ actor @ actor.bindname $ " inventory:");
     for (item = actor.inventory; item != None; item = item.inventory) {
         log("  " $ item);
     }
