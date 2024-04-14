@@ -81,6 +81,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
         EngineDllFix(system)
 
     CopyDXVK(system, globalsettings['dxvk'])
+    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['deus_nsf_d3d10_retro_textures'])
     InstallOGL2(system, globalsettings['ogl2'])
 
     debug("Install returning", flavors)
@@ -146,7 +147,6 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['deus_nsf_d3d10_retro_textures'])
 
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
@@ -162,6 +162,8 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
         configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
         if SaveDXRando:
             Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
+        else:
+            Mkdir(configs_dest.parent /'Save', exist_ok=True, parents=True)
     else:
         configs_dest = system
         if SaveDXRando:
