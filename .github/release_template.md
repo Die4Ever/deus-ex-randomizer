@@ -1,6 +1,6 @@
 Download `DXRandoInstaller.exe` in the Assets section under the changelog. It is safe to update in the middle of a playthrough.
 
-For Nvidia users, setting ultra low latency mode for DXRando.exe can help performance. Use vanilla (optionally with Lay D Denton) to get all of the Randomizer's features and the most polished experience. Our installer has an option to install Lay D Denton for you automatically.
+Use vanilla (optionally with Lay D Denton) to get all of the Randomizer's features and the most polished experience. Our installer has an option to install Lay D Denton for you automatically.
 
 If you're having an issue with the installer program: [Manual Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
 
