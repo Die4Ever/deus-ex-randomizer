@@ -63,6 +63,7 @@ function AddDXRCreditsGeneral()
     PrintText("WCCC for the OpenAugTree");
     PrintText("Joe Wintergreen for the Lipsync fix");
     PrintText("Kentie for DeusExe Launcher and D3D10");
+    PrintText("Deus_nsf for the tweaked D3D10 Renderer");
     PrintText("Han for Launchbox");
     PrintText("Chris Dohnal for D3D9 and OpenGL2 Renderers");
     PrintText("doitsujin for DXVK");

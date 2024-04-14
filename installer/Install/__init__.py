@@ -322,7 +322,7 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
         WriteBytes(outconfig, c.GetBinary())
 
 
-def CopyD3DRenderers(system:Path):
+def CopyD3DRenderers(system:Path, deus_nsf:bool):
     source = GetSourcePath()
     thirdparty = source / '3rdParty'
     info('CopyD3DRenderers from', thirdparty, ' to ', system)
@@ -335,17 +335,28 @@ def CopyD3DRenderers(system:Path):
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
 
-    drvdir_source = thirdparty / 'd3d10drv'
-    drvdir_dest = system / 'd3d10drv'
-    Mkdir(drvdir_dest, exist_ok=True)
-    for f in drvdir_source.glob('*'):
-        CopyTo(f, drvdir_dest / f.name, True)
+    if deus_nsf:
+        Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv')
+        Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv_kentie')
+    else:
+        Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv_deus_nsf')
+        Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv')
+
+
+def Copyd3d10drv(source, dest):
+    info('Copyd3d10drv from', source, 'to', dest)
+    Mkdir(dest, exist_ok=True)
+    for f in source.glob('*'):
+        CopyTo(f, dest / f.name, True)
 
 
 def CopyDXVK(system:Path, install:bool):
     dir = GetSourcePath() / '3rdParty' / 'dxvk'
     info('CopyDXVK from', dir, ' to ', system)
     num = 0
+    # doesn't hurt to always have the dxvk.conf file?
+    CopyTo(GetSourcePath()/'Configs'/'dxvk.conf', system/'dxvk.conf')
+    # loop through all dxvk files and conditionally add or delete them
     for f in dir.glob('*'):
         dest = system / f.name
         if install:

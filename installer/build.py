@@ -60,12 +60,22 @@ for (url, dest) in downloads.items():
     if not p.exists():
         DownloadFile(Community_Update_url + url, basedest/dest)
 
-# TODO: unzip dxglr21.zip
+# extract OpenGL 2
 zip = ZipFile(basedest/'dxglr21.zip', 'r')
 zip.extractall(basedest)
 zip.close()
 (basedest/'dxglr21.zip').unlink()
 
+# Deus_nsf tweaked D3D10 shaders
+if not (basedest/'d3d10drv_deus_nsf.zip').exists():
+    DownloadFile('https://mods4ever.com/public/d3d10drv_deus_nsf.zip', basedest/'d3d10drv_deus_nsf.zip')
+zip = ZipFile(basedest/'d3d10drv_deus_nsf.zip', 'r')
+(basedest/'d3d10drv_deus_nsf').mkdir(exist_ok=True)
+for name in zip.namelist():
+    data = zip.read(name)
+    (basedest/'d3d10drv_deus_nsf'/Path(name).name).write_bytes(data)
+zip.close()
+(basedest/'d3d10drv_deus_nsf.zip').unlink()
 
 # # LDDP minimal install
 if not (basedest/'FemJC.u').exists():

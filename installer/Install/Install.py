@@ -43,7 +43,7 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, OGL2:bool=False) -> dict:
+def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, deus_nsf_d3d10:bool=False, OGL2:bool=False) -> dict:
     assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
@@ -59,7 +59,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, OGL2:bool=False)
             continue
 
         if 'Vanilla'==f:
-            ret = InstallVanilla(system, settings, speedupfix, Vulkan=dxvk, OGL2=OGL2)
+            ret = InstallVanilla(system, settings, speedupfix, Vulkan=dxvk, deus_nsf_d3d10=deus_nsf_d3d10, OGL2=OGL2)
         if 'Vanilla? Madder.'==f:
             ret = CreateModConfigs(system, settings, 'VMD', 'VMDSim')
         if 'GMDX v9'==f:
@@ -86,7 +86,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, OGL2:bool=False)
     return flavors
 
 
-def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL2:bool):
+def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, deus_nsf_d3d10:bool, OGL2:bool):
     gameroot = system.parent
 
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
@@ -116,7 +116,9 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
         exedest:Path = system / 'DeusEx.exe'
         CopyTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
-        VanillaFixConfigs(system, 'DeusEx', kentie, Vulkan, OGL2, speedupfix, ini)
+        VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
+                      Vulkan=Vulkan, deus_nsf_d3d10=deus_nsf_d3d10, OGL2=OGL2,
+                      speedupfix=speedupfix, sourceINI=ini)
     else:
         info('skipping fixing of vanilla')
 
@@ -136,19 +138,21 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     CopyTo(intfile, intdest)
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
-    VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini, settings.get('ZeroRando', False))
+    VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
+                      Vulkan=Vulkan, deus_nsf_d3d10=deus_nsf_d3d10, OGL2=OGL2,
+                      speedupfix=speedupfix, sourceINI=ini, ZeroRando=settings.get('ZeroRando', False))
 
     dxrroot = gameroot / 'DXRando'
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3DRenderers(system)
+    CopyD3DRenderers(system, deus_nsf_d3d10)
 
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
-def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI: Path, ZeroRando=False):
+def VanillaFixConfigs(system, exename, kentie, Vulkan, deus_nsf_d3d10, OGL2, speedupfix, sourceINI: Path, ZeroRando=False):
     defini_dest:Path = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(sourceINI, defini_dest)
     c = Config.Config(defini_dest.read_bytes())
@@ -193,6 +197,11 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceI
         if 'D3D10Drv.D3D10RenderDevice' not in changes:
             changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
+
+    if deus_nsf_d3d10:
+        if 'D3D10Drv.D3D10RenderDevice' not in changes:
+            changes['D3D10Drv.D3D10RenderDevice'] = {}
+        changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'False'})
 
     info('ZeroRando:', ZeroRando)
     if ZeroRando:
