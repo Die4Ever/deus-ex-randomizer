@@ -64,6 +64,7 @@ class InstallerWindow(GUIBase):
         row += 1
 
         self.flavors = {}
+        self.globalsettings = {}
 
         for f in flavors:
             row = self.InitFlavorSettings(f, row, pad)
@@ -189,8 +190,8 @@ class InstallerWindow(GUIBase):
 
     def GlobalFixes(self, row, pad):
         # engine.dll speedup fix, this is global
-        self.speedupfixval = BooleanVar(master=self.frame, value=True)
-        self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix\nto support higher frame rates.", variable=self.speedupfixval)
+        self.globalsettings['speedupfix'] = BooleanVar(master=self.frame, value=True)
+        self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix\nto support higher frame rates.", variable=self.globalsettings['speedupfix'])
         self.speedupfix.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.speedupfix, "Fixes issues with high frame rates.")
         self.FixColors(self.speedupfix)
@@ -198,17 +199,17 @@ class InstallerWindow(GUIBase):
 
         # DXVK is also global
         if IsWindows():
-            self.dxvkval = BooleanVar(master=self.frame, value=self.dxvk_default)
-            self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.dxvkval)
+            self.globalsettings['dxvk'] = BooleanVar(master=self.frame, value=self.dxvk_default)
+            self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.globalsettings['dxvk'])
             self.dxvk.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
             Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
             self.FixColors(self.dxvk)
             row+=1
         else:
-            self.dxvkval = DummyCheckbox()
+            self.globalsettings['dxvk'] = DummyCheckbox()
 
-        self.deus_nsf_d3d10val = BooleanVar(master=self.frame, value=False)
-        self.deus_nsf_d3d10 = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10", variable=self.deus_nsf_d3d10val)
+        self.globalsettings['deus_nsf_d3d10'] = BooleanVar(master=self.frame, value=False)
+        self.deus_nsf_d3d10 = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10", variable=self.globalsettings['deus_nsf_d3d10'])
         Hovertip(self.deus_nsf_d3d10, "Tweaked D3D10 shaders for a better retro look with more vivid lighting.")
         self.deus_nsf_d3d10.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.deus_nsf_d3d10)
@@ -219,8 +220,8 @@ class InstallerWindow(GUIBase):
         # to
         # return diffuse;
 
-        self.ogl2val = BooleanVar(master=self.frame, value=self.ogl2_default)
-        self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.ogl2val)
+        self.globalsettings['ogl2'] = BooleanVar(master=self.frame, value=self.ogl2_default)
+        self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.globalsettings['ogl2'])
         Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
         self.ogl2.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.ogl2)
@@ -253,11 +254,11 @@ class InstallerWindow(GUIBase):
             for (k,v) in flavor.items():
                 flavors[flavorName][k] = v.get()
 
-        speedupfix = self.speedupfixval.get()
-        dxvk = self.dxvkval.get()
-        deus_nsf_d3d10 = self.deus_nsf_d3d10val.get()
-        ogl2 = self.ogl2val.get()
-        flavors = Install.Install(self.exe, flavors, speedupfix, dxvk, deus_nsf_d3d10, ogl2)
+        globalsettings = {}
+        for (key, val) in self.globalsettings.items():
+            globalsettings[key] = val.get()
+
+        flavors = Install.Install(self.exe, flavors, globalsettings)
         flavorstext = ', '.join(flavors.keys())
         extra = ''
         if 'Vanilla' in flavors and IsWindows():
