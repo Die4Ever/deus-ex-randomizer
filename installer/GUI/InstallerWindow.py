@@ -28,6 +28,7 @@ class InstallerWindow(GUIBase):
         for (control, val) in self.controls.items():
             control.grid(**val['gridargs'])
         self.root.update()
+        self.height = max(500, self.height)
         self.root.geometry(str(self.width)+"x"+str(self.height))
         self.scroll.ReConf()
 
@@ -38,6 +39,9 @@ class InstallerWindow(GUIBase):
         self.advanced = False
         self.width = 350
         self.height = 500
+        if IsVanillaFixer():
+            self.height = 350
+
         self.controls = {}
 
         if IsVanillaFixer():
@@ -124,7 +128,7 @@ class InstallerWindow(GUIBase):
         v = BooleanVar(master=self.frame, value=(not IsVanillaFixer()))
         settings['install'] = v
         c = Checkbutton(self.frame, text="Install DXRando for "+f, variable=v)
-        c.grid(column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.setgrid(c, advanced=IsVanillaFixer(), column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(c)
         self.row+=1
 
@@ -147,7 +151,7 @@ class InstallerWindow(GUIBase):
             settings['ZeroRando'] = v
             c = Checkbutton(self.frame, text="Default to Zero Rando mode for "+f, variable=v)
             Hovertip(c, "This retains the vanilla menu experience for your first launch.\nAnd also sets Zero Rando mode as your default game mode for a new game.\nYou can change this once you get into the game with the Rando menu.")
-            c.grid(column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
+            self.setgrid(c, advanced=IsVanillaFixer(), column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             self.row+=1
 
@@ -156,7 +160,7 @@ class InstallerWindow(GUIBase):
             settings['DXRando.exe'] = v
             c = Checkbutton(self.frame, text="Create separate DXRando.exe for "+f, variable=v)
             Hovertip(c, "Overwriting the original DeusEx.exe makes it easier for Linux Steam players.\nOnly applicable if installing DXRando.")
-            c.grid(column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
+            self.setgrid(c, advanced=IsVanillaFixer(), column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             self.row+=1
 
@@ -278,15 +282,27 @@ class InstallerWindow(GUIBase):
             globalsettings[key] = val.get()
 
         flavors = Install.Install(self.exe, flavors, globalsettings)
-        flavorstext = ', '.join(flavors.keys())
+        installedflavorstext = ''
+        for (k,v) in flavors.items():
+            if v.get('install'):
+                installedflavorstext += k + ', '
+        if installedflavorstext.endswith(', '):
+            installedflavorstext = 'Installed DXRando for: ' + installedflavorstext[0:-2]
+
+        if flavors.get('Vanilla', {}).get('FixVanilla'):
+            installedflavorstext = 'Fixed vanilla.' + installedflavorstext
+
+        if not installedflavorstext: # done with something idk what
+            installedflavorstext = 'Done.'
+
         extra = ''
-        if 'Vanilla' in flavors and IsWindows():
+        if flavors.get('Vanilla', {}).get('install') and IsWindows():
             extra += '\nCreated DXRando.exe'
-        if 'Vanilla? Madder.' in flavors and IsWindows():
+        if flavors.get('Vanilla? Madder.', {}).get('install') and IsWindows():
             extra += '\nCreated VMDRandomizer.exe'
         self.root.title('DXRando Installation Complete!')
         self.root.update()
-        messagebox.showinfo('DXRando Installation Complete!', 'Installed DXRando for: ' + flavorstext + extra)
+        messagebox.showinfo('Installation Complete!', installedflavorstext + extra)
         self.closeWindow()
 
 
