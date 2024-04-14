@@ -5,11 +5,17 @@ try:
     from Install import Install, IsWindows, IsVanillaFixer, CheckVulkan, getDefaultPath, GetVersion
     import traceback
     import re
+    from threading import Thread
 except Exception as e:
     info('ERROR: importing', e)
     raise
 
 class InstallerWindow(GUIBase):
+    def CheckVulkan(self):
+        self.dxvk_default = CheckVulkan()
+        self.ogl2_default = self.dxvk_default or not IsWindows()
+
+
     def initWindow(self):
         self.root = Tk()
         self.width = 350
@@ -20,8 +26,8 @@ class InstallerWindow(GUIBase):
         else:
             self.root.title("DXRando " + GetVersion() + " Installer")
 
-        self.dxvk_default = CheckVulkan()# this takes a second or so
-        self.ogl2_default = self.dxvk_default or not IsWindows()
+        vulkanthread = Thread(target=self.CheckVulkan) # this takes a second or so
+        vulkanthread.start()
 
         scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
         self.frame = scroll.frame
@@ -32,7 +38,9 @@ class InstallerWindow(GUIBase):
         p = fd.askopenfilename(title="Find plain DeusEx.exe", filetypes=filetypes, initialdir=initdir)
         if not p:
             info('no file selected')
-            sys.exit(0)
+            sys.exit(1)
+
+        vulkanthread.join(10)
 
         p = Path(p)
         info(p)
