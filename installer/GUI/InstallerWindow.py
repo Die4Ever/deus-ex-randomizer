@@ -59,8 +59,6 @@ class InstallerWindow(GUIBase):
             info('no file selected')
             sys.exit(1)
 
-        vulkanthread.join(10)
-
         p = Path(p)
         info(p)
         assert p.name.lower() == 'deusex.exe'
@@ -69,6 +67,7 @@ class InstallerWindow(GUIBase):
 
         flavors = Install.DetectFlavors(self.exe)
         info(flavors)
+        vulkanthread.join(30)
 
         self.font = font.Font(size=14)
         self.linkfont = font.Font(size=12, underline=True)
