@@ -199,6 +199,18 @@ class InstallerWindow(GUIBase):
         else:
             self.dxvkval = DummyCheckbox()
 
+        self.deus_nsf_d3d10val = BooleanVar(master=self.frame, value=False)
+        self.deus_nsf_d3d10 = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10", variable=self.deus_nsf_d3d10val)
+        Hovertip(self.deus_nsf_d3d10, "Tweaked D3D10 shaders for a better retro look with more vivid lighting.")
+        self.deus_nsf_d3d10.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.deus_nsf_d3d10)
+        row+=1
+        # TODO: option for tweaking the retro texture filtering
+        # in d3d10drv_deus_nsf/unrealpool.fhx change line 96 from
+        # return diffusePoint;
+        # to
+        # return diffuse;
+
         self.ogl2val = BooleanVar(master=self.frame, value=self.ogl2_default)
         self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.ogl2val)
         Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
@@ -235,8 +247,9 @@ class InstallerWindow(GUIBase):
 
         speedupfix = self.speedupfixval.get()
         dxvk = self.dxvkval.get()
+        deus_nsf_d3d10 = self.deus_nsf_d3d10val.get()
         ogl2 = self.ogl2val.get()
-        flavors = Install.Install(self.exe, flavors, speedupfix, dxvk, ogl2)
+        flavors = Install.Install(self.exe, flavors, speedupfix, dxvk, deus_nsf_d3d10, ogl2)
         flavorstext = ', '.join(flavors.keys())
         extra = ''
         if 'Vanilla' in flavors and IsWindows():
