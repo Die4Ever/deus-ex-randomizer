@@ -1483,3 +1483,13 @@ function DebugMarkKeyPosition(vector pos, coerce string id)
     a = Spawn(class'DXRGoalMarker',,,pos);
     DebugMarkKeyActor(a, id);
 }
+
+static function LogInventory(Actor actor)
+{
+    local Inventory item;
+
+    log(actor.class @ actor @ actor.bindname $ " inventory:");
+    for (item = actor.inventory; item != None; item = item.inventory) {
+        log("  " $ item);
+    }
+}
