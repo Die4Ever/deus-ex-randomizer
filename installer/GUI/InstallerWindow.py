@@ -23,7 +23,7 @@ class InstallerWindow(GUIBase):
 
 
     def ShowAdvanced(self):
-        self.root.geometry(str(self.width-1)+"x"+str(self.height-1))
+        self.root.geometry(str(self.width)+"x499")
         self.installButton.grid_forget()
         for (control, val) in self.controls.items():
             control.grid(**val['gridargs'])
@@ -39,8 +39,6 @@ class InstallerWindow(GUIBase):
         self.advanced = False
         self.width = 350
         self.height = 500
-        if IsVanillaFixer():
-            self.height = 350
 
         self.controls = {}
 
@@ -108,10 +106,13 @@ class InstallerWindow(GUIBase):
         Hovertip(self.installButton, 'Dew it!')
 
         # advanced button
-        self.installButton = Button(self.frame,text='Show Advanced Options',width=20,height=1,font=self.font, command=self.ShowAdvanced)
-        self.installButton.grid(column=1,row=102, sticky='SW', padx=pad, pady=pad)
-        Hovertip(self.installButton, 'For the brave and technical')
+        self.advancedButton = Button(self.frame,text='Show Advanced Options',width=20,height=1,font=self.font, command=self.ShowAdvanced)
+        self.advancedButton.grid(column=1,row=102, sticky='SW', padx=pad, pady=pad)
+        Hovertip(self.advancedButton, 'For the brave and technical')
 
+        self.root.update()
+        end_y = self.advancedButton.winfo_y() + self.advancedButton.winfo_height()
+        self.height = min(self.height, end_y + pad*2)
         self.root.geometry(str(self.width)+"x"+str(self.height))
         self.scroll.ReConf()
 
