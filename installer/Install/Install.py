@@ -5,6 +5,7 @@ try:
     from zipfile import ZipFile
     from Install import _DetectFlavors
     from Install import MapVariants
+    from GUI.SaveMigration import SaveMigration
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -152,23 +153,36 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
+def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:bool):
+    if kentie:
+        configs_dest = dxdocs / 'System'
+        if SaveDXRando:
+            savepath = dxdocs /'SaveDXRando'
+        else:
+            savepath = dxdocs /'Save'
+    else:
+        configs_dest = system
+        if SaveDXRando:
+            savepath = system.parent /'SaveDXRando'
+        else:
+            savepath = system.parent /'Save'
+    return (savepath, configs_dest)
+
+
 def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: Path, ZeroRando=False):
     defini_dest:Path = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(sourceINI, defini_dest)
     c = Config.Config(defini_dest.read_bytes())
     SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
-    if kentie:
-        configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
-        if SaveDXRando:
-            Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
-        else:
-            Mkdir(configs_dest.parent /'Save', exist_ok=True, parents=True)
-    else:
-        configs_dest = system
-        if SaveDXRando:
-            Mkdir(system.parent /'SaveDXRando', exist_ok=True, parents=True)
-    DXRandoini = configs_dest / (exename+'.ini')
+    dxdocs = GetDocumentsDir(system)/'Deus Ex'
+    (savepath, configs_dest) = GetSaveAndConfigPaths(system, dxdocs, kentie, SaveDXRando)
+    (othersavepath, other_configs_dest) = GetSaveAndConfigPaths(system, dxdocs, not kentie, SaveDXRando)
+    Mkdir(savepath, exist_ok=True, parents=True)
+    if othersavepath.exists():
+        SaveMigration(othersavepath, savepath)
+
+    DXRandoini: Path = configs_dest / (exename+'.ini')
     Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
 
     changes = {}
