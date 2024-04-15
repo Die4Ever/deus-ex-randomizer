@@ -20,10 +20,10 @@ function InitFor(Actor Other)
         // DXRando: new naming scheme for carcasses
 
         if (ScriptedPawn(Other) == None) {
-            if (bAnimalCarcass) {
-                itemName = msgAnimalCarcass;
-            } else if (bNotDead) {
+            if (bNotDead) {
                 itemName = msgNotDead;
+            } else if (bAnimalCarcass) {
+                itemName = msgAnimalCarcass;
             }
         } else {
             if (bNotDead) {
