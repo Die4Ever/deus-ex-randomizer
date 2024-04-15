@@ -17,23 +17,7 @@ function InitFor(Actor Other)
         Acceleration = Other.Acceleration;
         Velocity = Other.Velocity;
 
-		/* if (bAnimalCarcass) {
-            if (Other.IsA('ScriptedPawn'))
-            {
-                itemName = ScriptedPawn(Other).Default.FamiliarName $ " Carcass";
-                if (ScriptedPawn(Other).FamiliarName != ScriptedPawn(Other).Default.FamiliarName)
-                    itemName = itemName $ " (" $ ScriptedPawn(Other).FamiliarName $ ")";
-            }
-            else
-                itemName = msgAnimalCarcass;
-        }
-        else
-        {
-            if (bNotDead)
-                itemName = msgNotDead;
-            if (Other.IsA('ScriptedPawn'))
-                itemName = itemName $ " (" $ ScriptedPawn(Other).FamiliarName $ ")";
-        } */
+        // DXRando: new naming scheme for carcasses
 
         if (ScriptedPawn(Other) == None) {
             if (bAnimalCarcass) {
@@ -48,6 +32,8 @@ function InitFor(Actor Other)
                 itemName = ScriptedPawn(Other).FamiliarName $ " (Dead)";
             }
         }
+
+        // DXRando: below is just vanilla code
 
 		Mass           = Other.Mass;
 		Buoyancy       = Mass * 1.2;
