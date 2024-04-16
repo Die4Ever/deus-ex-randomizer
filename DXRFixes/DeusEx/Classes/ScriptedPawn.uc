@@ -81,8 +81,7 @@ function PlayDying(name damageType, vector hitLoc)
 		PlayAnimPivot('WaterDeath',, 0.1);
 	else if (bSitting)  // if sitting, always fall forward
 		PlayAnimPivot('DeathFront',, 0.1);
-	else
-	{
+	else {
 		GetAxes(Rotation, X, Y, Z);
 		dotp = (Location - HitLoc) dot X;
 
@@ -111,21 +110,16 @@ function PlayDying(name damageType, vector hitLoc)
         unconconscious = true;
     }
 
-	if (unconconscious)
-	{
+	if (unconconscious) {
 		bStunned = True;
-        if (Animal(self) != None) {
+        if (Animal(self) != None)
 		    PlayDyingSound();
-        }
-		else if (bIsFemale) {
+		else if (bIsFemale)
 			PlaySound(Sound'FemaleUnconscious', SLOT_Pain,,,, RandomPitch());
-        }
-		else {
+		else
 			PlaySound(Sound'MaleUnconscious', SLOT_Pain,,,, RandomPitch());
-        }
 	}
-	else
-	{
+	else {
 		bStunned = False;
 		PlayDyingSound();
 	}
