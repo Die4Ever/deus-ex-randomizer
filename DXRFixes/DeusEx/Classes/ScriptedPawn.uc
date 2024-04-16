@@ -6,6 +6,7 @@ var int flareBurnTime;
 var int loopCounter;
 var float lastEnableCheckDestLocTime;
 var int EmpHealth;
+var bool bLittle;
 
 /*function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 {
@@ -61,6 +62,9 @@ function PlayDying(name damageType, vector hitLoc)
     local DeusExPlayer p;
     local Inventory item, nextItem;
     local bool gibbed;
+    local Vector X, Y, Z;
+	local float dotp;
+    local bool unconconscious;
 
     gibbed = (Health < -100) && !IsA('Robot');
 
@@ -71,7 +75,60 @@ function PlayDying(name damageType, vector hitLoc)
 
     ThrowInventory(gibbed);
 
-    Super.PlayDying(damageType, hitLoc);
+    // DXRando: modified vanilla code below to support animals being knocked unconscious
+
+	if (Region.Zone.bWaterZone)
+		PlayAnimPivot('WaterDeath',, 0.1);
+	else if (bSitting)  // if sitting, always fall forward
+		PlayAnimPivot('DeathFront',, 0.1);
+	else
+	{
+		GetAxes(Rotation, X, Y, Z);
+		dotp = (Location - HitLoc) dot X;
+
+		// die from the correct side
+		if (dotp < 0.0)		// shot from the front, fall back
+			PlayAnimPivot('DeathBack',, 0.1);
+		else				// shot from the back, fall front
+			PlayAnimPivot('DeathFront',, 0.1);
+	}
+
+    // DXRando: small creatures can't survive being hit by JC
+    if (bLittle) {
+        if (
+            (damageType == 'Stunned') ||
+            (damageType == 'Poison') ||
+            (damageType == 'PoisonEffect')
+        ) {
+            unconconscious = true;
+        }
+    } else if (
+        (damageType == 'Stunned') ||
+        (damageType == 'KnockedOut') ||
+        (damageType == 'Poison') ||
+        (damageType == 'PoisonEffect')
+    ) {
+        unconconscious = true;
+    }
+
+	if (unconconscious)
+	{
+		bStunned = True;
+        if (Animal(self) != None) {
+		    PlayDyingSound();
+        }
+		else if (bIsFemale) {
+			PlaySound(Sound'FemaleUnconscious', SLOT_Pain,,,, RandomPitch());
+        }
+		else {
+			PlaySound(Sound'MaleUnconscious', SLOT_Pain,,,, RandomPitch());
+        }
+	}
+	else
+	{
+		bStunned = False;
+		PlayDyingSound();
+	}
 }
 
 function Carcass SpawnCarcass()
