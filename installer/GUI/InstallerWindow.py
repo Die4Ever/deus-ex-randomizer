@@ -234,14 +234,14 @@ class InstallerWindow(GUIBase):
 
         self.globalsettings['deus_nsf_d3d10_lighting'] = BooleanVar(master=self.frame, value=False)
         self.deus_nsf_d3d10_lighting = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10 vivid lighting", variable=self.globalsettings['deus_nsf_d3d10_lighting'])
-        Hovertip(self.deus_nsf_d3d10_lighting, "Tweaked D3D10 shaders for more vivid lighting.")
+        Hovertip(self.deus_nsf_d3d10_lighting, "Tweaked D3D10 shaders for more vivid lighting.\nMay require more powerful hardware.")
         self.setgrid(self.deus_nsf_d3d10_lighting, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.deus_nsf_d3d10_lighting)
         self.row+=1
 
         self.globalsettings['deus_nsf_d3d10_retro_textures'] = BooleanVar(master=self.frame, value=False)
         self.deus_nsf_d3d10_retro_textures = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10 retro texture filtering", variable=self.globalsettings['deus_nsf_d3d10_retro_textures'])
-        Hovertip(self.deus_nsf_d3d10_retro_textures, "Tweaked D3D10 shaders for retro texture filtering.")
+        Hovertip(self.deus_nsf_d3d10_retro_textures, "Tweaked D3D10 shaders for retro texture filtering.\nMay require more powerful hardware.")
         self.setgrid(self.deus_nsf_d3d10_retro_textures, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.deus_nsf_d3d10_retro_textures)
         self.row+=1
