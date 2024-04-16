@@ -318,7 +318,7 @@ function DrawWindow(GC gc)
     // current segment time with comparison
     if(showSeg) {
         msg = fmtTimeSeg(curTime);
-        s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
+        s = "/ " $ fmtTimeSeg(balanced_splits[cur]) $ " / " $ fmtTimeSeg(Golds[cur]);
         cmpColor = GetCmpColor(curTime, balanced_splits[cur], prevTotal, balanced_splits_totals[prev], Golds[cur]);
         DrawTextLine(gc, "SEG:", msg, cmpColor, x, y, s, true);
         y += text_height;
@@ -358,7 +358,7 @@ function DrawWindow(GC gc)
     // draw notes
     if(notes != "") {
         y = 4;
-        x = windowWidth + 16;
+        x = windowWidth + 24;
 
         gc.SetAlignments(HALIGN_Left, VALIGN_Top);
         gc.SetTextColor(colorText);
@@ -524,7 +524,7 @@ function DrawBackground(GC gc)
     gc.SetStyle(backgroundDrawStyle);
     gc.SetTileColor(colorBackground);
     width = windowWidth + 8;
-    if(notesWidth > 0) width += 16 + notesWidth;
+    if(notesWidth > 0) width += 24 + notesWidth;
     height = FMax(windowHeight, notesHeight + 4);
     gc.DrawPattern(x_pos, ty_pos, width, height, 0, 0, Texture'Solid');
 }
