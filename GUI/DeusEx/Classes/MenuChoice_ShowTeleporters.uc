@@ -13,6 +13,9 @@ function SaveSetting()
 static function bool ShowTeleporters()
 {
     local bool bReducedRando;
+    if(class'DXRando'.default.dxr == None || class'DXRando'.default.dxr.flags == None) {
+        return false;
+    }
     bReducedRando = class'DXRando'.default.dxr.flags.IsReducedRando();
     return default.value==1 || default.value==2 || (!bReducedRando && default.value==3);
 }
@@ -20,6 +23,9 @@ static function bool ShowTeleporters()
 static function bool ShowDescriptions()
 {
     local bool bReducedRando;
+    if(class'DXRando'.default.dxr == None || class'DXRando'.default.dxr.flags == None) {
+        return false;
+    }
     bReducedRando = class'DXRando'.default.dxr.flags.IsReducedRando();
     return default.value==2 || (!bReducedRando && default.value==3);
 }
