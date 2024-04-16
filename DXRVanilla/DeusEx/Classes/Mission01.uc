@@ -4,7 +4,7 @@ function Timer()
 {
     local ScriptedPawn P;
 
-    if (!flags.GetBool('MS_MissionComplete'))
+    if (localURL == "01_NYC_UNATCOISLAND" && !flags.GetBool('MS_MissionComplete'))
     {
         if (flags.GetBool('StatueMissionComplete'))
         {

@@ -266,6 +266,7 @@ function ReduceSpawns(class<Inventory> classname, float percent)
     {
         if( PlayerPawn(a) != None ) continue;
         if( PlayerPawn(a.Owner) != None ) continue;
+        if( Merchant(a.Owner) != None ) continue;
         if(a.bIsSecretGoal) continue;
 
         _ReduceSpawn(Inventory(a), percent);

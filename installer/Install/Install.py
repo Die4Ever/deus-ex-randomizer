@@ -5,6 +5,7 @@ try:
     from zipfile import ZipFile
     from Install import _DetectFlavors
     from Install import MapVariants
+    from GUI.SaveMigration import SaveMigration
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -31,7 +32,9 @@ def UnattendedInstall(installpath:str, downloadmirrors):
 
     dxvk_default = IsWindows() and CheckVulkan()
 
-    ret = Install(p, settings, speedupfix=True, dxvk=dxvk_default, ogl2=dxvk_default)
+    globalsettings = dict(speedupfix=True, dxvk=dxvk_default, deus_nsf_d3d10_lighting=False, deus_nsf_d3d10_retro_textures=False, ogl2=dxvk_default)
+
+    ret = Install(p, settings, globalsettings)
 
 
 def DetectFlavors(exe:Path) -> list:
@@ -43,13 +46,13 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, deus_nsf_d3d10:bool=False, OGL2:bool=False) -> dict:
+def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
     assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
 
-    info('Installing flavors:', flavors, speedupfix, exe)
+    info('Installing flavors:', flavors, globalsettings, exe)
 
     for(f, settings) in flavors.items():
         ret={}
@@ -59,7 +62,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, deus_nsf_d3d10:b
             continue
 
         if 'Vanilla'==f:
-            ret = InstallVanilla(system, settings, speedupfix, Vulkan=dxvk, deus_nsf_d3d10=deus_nsf_d3d10, OGL2=OGL2)
+            ret = InstallVanilla(system, settings, globalsettings)
         if 'Vanilla? Madder.'==f:
             ret = CreateModConfigs(system, settings, 'VMD', 'VMDSim')
         if 'GMDX v9'==f:
@@ -75,18 +78,19 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, deus_nsf_d3d10:b
         if ret and settings:
             settings.update(ret)
 
-    if speedupfix:
+    if globalsettings['speedupfix']:
         EngineDllFix(system)
 
-    CopyDXVK(system, dxvk)
-    InstallOGL2(system, OGL2)
+    CopyDXVK(system, globalsettings['dxvk'])
+    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['deus_nsf_d3d10_retro_textures'])
+    InstallOGL2(system, globalsettings['ogl2'])
 
     debug("Install returning", flavors)
 
     return flavors
 
 
-def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, deus_nsf_d3d10:bool, OGL2:bool):
+def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     gameroot = system.parent
 
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
@@ -117,8 +121,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, deu
         CopyTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
         VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
-                      Vulkan=Vulkan, deus_nsf_d3d10=deus_nsf_d3d10, OGL2=OGL2,
-                      speedupfix=speedupfix, sourceINI=ini)
+                          globalsettings=globalsettings, sourceINI=ini)
     else:
         info('skipping fixing of vanilla')
 
@@ -139,34 +142,47 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, deu
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
     VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
-                      Vulkan=Vulkan, deus_nsf_d3d10=deus_nsf_d3d10, OGL2=OGL2,
-                      speedupfix=speedupfix, sourceINI=ini, ZeroRando=settings.get('ZeroRando', False))
+                      globalsettings=globalsettings, sourceINI=ini, ZeroRando=settings.get('ZeroRando', False))
 
     dxrroot = gameroot / 'DXRando'
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3DRenderers(system, deus_nsf_d3d10)
 
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
-def VanillaFixConfigs(system, exename, kentie, Vulkan, deus_nsf_d3d10, OGL2, speedupfix, sourceINI: Path, ZeroRando=False):
+def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:bool):
+    if kentie:
+        configs_dest = dxdocs / 'System'
+        if SaveDXRando:
+            savepath = dxdocs /'SaveDXRando'
+        else:
+            savepath = dxdocs /'Save'
+    else:
+        configs_dest = system
+        if SaveDXRando:
+            savepath = system.parent /'SaveDXRando'
+        else:
+            savepath = system.parent /'Save'
+    return (savepath, configs_dest)
+
+
+def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: Path, ZeroRando=False):
     defini_dest:Path = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(sourceINI, defini_dest)
     c = Config.Config(defini_dest.read_bytes())
     SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
-    if kentie:
-        configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
-        if SaveDXRando:
-            Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
-    else:
-        configs_dest = system
-        if SaveDXRando:
-            Mkdir(system.parent /'SaveDXRando', exist_ok=True, parents=True)
-    DXRandoini = configs_dest / (exename+'.ini')
+    dxdocs = GetDocumentsDir(system)/'Deus Ex'
+    (savepath, configs_dest) = GetSaveAndConfigPaths(system, dxdocs, kentie, SaveDXRando)
+    (othersavepath, other_configs_dest) = GetSaveAndConfigPaths(system, dxdocs, not kentie, SaveDXRando)
+    Mkdir(savepath, exist_ok=True, parents=True)
+    if othersavepath.exists():
+        SaveMigration(othersavepath, savepath)
+
+    DXRandoini: Path = configs_dest / (exename+'.ini')
     Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
 
     changes = {}
@@ -178,30 +194,28 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, deus_nsf_d3d10, OGL2, spe
                  'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
             changes
         )
-    elif not Vulkan and IsWindows():
+    elif not globalsettings['dxvk'] and IsWindows():
         changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
 
     CopyTo(sourceINI, DXRandoini)
 
-    if not speedupfix:
+    if 'D3D10Drv.D3D10RenderDevice' not in changes:
+        changes['D3D10Drv.D3D10RenderDevice'] = {}
+    if not globalsettings['speedupfix']:
         if 'DeusExe' not in changes:
             changes['DeusExe'] = {}
         changes['DeusExe'].update({'FPSLimit': '120'})
-        if 'D3D10Drv.D3D10RenderDevice' not in changes:
-            changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'True'})
     elif exename == 'DeusEx': # ensure we don't retain bad settings from old vanilla configs since we use the same exe file name?
         if 'DeusExe' not in changes:
             changes['DeusExe'] = {}
         changes['DeusExe'].update({'FPSLimit': '0'})
-        if 'D3D10Drv.D3D10RenderDevice' not in changes:
-            changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
 
-    if deus_nsf_d3d10:
-        if 'D3D10Drv.D3D10RenderDevice' not in changes:
-            changes['D3D10Drv.D3D10RenderDevice'] = {}
+    if globalsettings['deus_nsf_d3d10_lighting']:
         changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'False'})
+    else:
+        changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'True'})
 
     info('ZeroRando:', ZeroRando)
     if ZeroRando:
@@ -209,10 +223,10 @@ def VanillaFixConfigs(system, exename, kentie, Vulkan, deus_nsf_d3d10, OGL2, spe
             changes['DeusEx.DXRFlags'] = {}
         changes['DeusEx.DXRFlags'].update({'gamemode': '4'})
 
-    if IsWindows() and not Vulkan:
+    if IsWindows() and not globalsettings['dxvk']:
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
     elif not IsWindows():
-        if OGL2:
+        if globalsettings['ogl2']:
             changes['Engine.Engine'] = {'GameRenderDevice': 'OpenGLDrv.OpenGLRenderDevice'}
         else:
             changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}

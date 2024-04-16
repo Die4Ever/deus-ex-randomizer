@@ -93,7 +93,7 @@ class ScrollableFrame:
 
         self.scrollbar.config(command=self.canvas.yview)
 
-        self.canvas.bind('<Configure>', lambda e: self.canvas.configure(scrollregion = self.canvas.bbox("all")))
+        self.canvas.bind('<Configure>', self.ReConf)
 
         self.frame = Frame(self.canvas,width=self.width,height=self.height)
         self.frame.pack(expand=True,fill=BOTH)
@@ -101,6 +101,10 @@ class ScrollableFrame:
 
         self.frame.bind("<Enter>", self.entered)
         self.frame.bind("<Leave>", self.left)
+
+    def ReConf(self, *args, **kargs):
+        self.canvas.configure(scrollregion = self.canvas.bbox("all"))
+
 
     def _on_mouse_wheel(self,event):
         self.canvas.yview_scroll(-1 * int((event.delta / 120)), "units")

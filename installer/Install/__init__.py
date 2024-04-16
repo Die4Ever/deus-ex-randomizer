@@ -108,7 +108,7 @@ def CheckVulkan() -> bool:
         return False # no easy way to detect Vulkan on Linux, they don't need DXVK anyways
     try:
         info('CheckVulkan')
-        ret = subprocess.run(['vulkaninfo', '--summary'], text=True, capture_output=True, timeout=30)
+        ret = subprocess.run(['vulkaninfo', '--summary'], text=True, capture_output=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
         debug(ret.stdout)
         debug(ret.stderr)
         info('CheckVulkan got:', not ret.returncode)
@@ -322,7 +322,7 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
         WriteBytes(outconfig, c.GetBinary())
 
 
-def CopyD3DRenderers(system:Path, deus_nsf:bool):
+def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, deus_nsf_retro_textures:bool):
     source = GetSourcePath()
     thirdparty = source / '3rdParty'
     info('CopyD3DRenderers from', thirdparty, ' to ', system)
@@ -335,12 +335,19 @@ def CopyD3DRenderers(system:Path, deus_nsf:bool):
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
 
-    if deus_nsf:
+    if deus_nsf_lighting or deus_nsf_retro_textures:
+        deus_nsf = system / 'd3d10drv'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv')
         Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv_kentie')
     else:
+        deus_nsf = system / 'd3d10drv_deus_nsf'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv_deus_nsf')
         Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv')
+
+    if deus_nsf_retro_textures:
+        CopyTo(deus_nsf/'unrealpool_retro_textures.fxh', deus_nsf/'unrealpool.fxh')
+    else:
+        CopyTo(deus_nsf/'unrealpool_smooth_textures.fxh', deus_nsf/'unrealpool.fxh')
 
 
 def Copyd3d10drv(source, dest):

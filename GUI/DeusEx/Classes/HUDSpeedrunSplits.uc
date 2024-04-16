@@ -33,6 +33,7 @@ var float windowWidth, windowHeight, notesWidth, notesHeight;
 
 var config float x_pos, y_pos;
 var float prevSpeed, avgSpeed, lastTime;
+var int rememberedMission;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -244,7 +245,15 @@ function DrawWindow(GC gc)
     gc.SetFont(textfont);
 
     total = TotalTime();
-    cur = stats.dxr.dxInfo.MissionNumber;
+    if(stats.dxr != None) {
+        cur = stats.dxr.dxInfo.MissionNumber;
+        rememberedMission = cur;
+    } else if(rememberedMission > 0 && rememberedMission <= 15) {
+        cur = rememberedMission;
+    } else {
+        return;
+    }
+
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
@@ -302,14 +311,14 @@ function DrawWindow(GC gc)
         || (i == next && showNext)
         || (i == ArrayCount(Golds)-1 && showPB)
         ) {
-            y = DrawSplit(gc, i, x, y);
+            y = DrawSplit(gc, i, cur, x, y);
         }
     }
 
     // current segment time with comparison
     if(showSeg) {
         msg = fmtTimeSeg(curTime);
-        s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
+        s = "/ " $ fmtTimeSeg(balanced_splits[cur]) $ " / " $ fmtTimeSeg(Golds[cur]);
         cmpColor = GetCmpColor(curTime, balanced_splits[cur], prevTotal, balanced_splits_totals[prev], Golds[cur]);
         DrawTextLine(gc, "SEG:", msg, cmpColor, x, y, s, true);
         y += text_height;
@@ -349,7 +358,7 @@ function DrawWindow(GC gc)
     // draw notes
     if(notes != "") {
         y = 4;
-        x = windowWidth + 16;
+        x = windowWidth + 24;
 
         gc.SetAlignments(HALIGN_Left, VALIGN_Top);
         gc.SetTextColor(colorText);
@@ -357,7 +366,7 @@ function DrawWindow(GC gc)
     }
 }
 
-function int DrawSplit(GC gc, int mission, int x, int y)
+function int DrawSplit(GC gc, int mission, int curMission, int x, int y)
 {
     local int time, total, i, totalDiff;
     local string sDiff, sTime;
@@ -366,7 +375,7 @@ function int DrawSplit(GC gc, int mission, int x, int y)
     time = stats.missions_times[mission];
     time += stats.missions_menu_times[mission];
 
-    if(mission == stats.dxr.dxInfo.MissionNumber) {
+    if(mission == curMission) {
         // current split
         sTime = fmtTime(balanced_splits_totals[mission]);
         DrawTextLine(gc, MissionName(mission), "", colorText, x, y, sTime);
@@ -515,7 +524,7 @@ function DrawBackground(GC gc)
     gc.SetStyle(backgroundDrawStyle);
     gc.SetTileColor(colorBackground);
     width = windowWidth + 8;
-    if(notesWidth > 0) width += 16 + notesWidth;
+    if(notesWidth > 0) width += 24 + notesWidth;
     height = FMax(windowHeight, notesHeight + 4);
     gc.DrawPattern(x_pos, ty_pos, width, height, 0, 0, Texture'Solid');
 }
