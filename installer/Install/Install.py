@@ -223,7 +223,10 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
             changes['DeusEx.DXRFlags'] = {}
         changes['DeusEx.DXRFlags'].update({'gamemode': '4'})
 
-    if IsWindows() and not globalsettings['dxvk']:
+    if globalsettings['deus_nsf_d3d10_lighting'] or globalsettings['deus_nsf_d3d10_retro_textures']:
+        # keep D3D10 because obviously they wanted it
+        changes['Engine.Engine'] = {'GameRenderDevice': 'D3D10Drv.D3D10RenderDevice'}
+    elif IsWindows() and not globalsettings['dxvk']:
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
     elif not IsWindows():
         if globalsettings['ogl2']:
