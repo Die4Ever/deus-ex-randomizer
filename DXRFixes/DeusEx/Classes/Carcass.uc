@@ -7,7 +7,7 @@ function InitFor(Actor Other)
     local int i;
 
     if (Other != None)
-	{
+    {
         DrawScale = Other.DrawScale;
         Fatness = Other.Fatness;
         for(i=0; i<ArrayCount(MultiSkins); i++) {
@@ -35,46 +35,46 @@ function InitFor(Actor Other)
 
         // DXRando: below is just vanilla code
 
-		Mass           = Other.Mass;
-		Buoyancy       = Mass * 1.2;
-		MaxDamage      = 0.8*Mass;
-		if (ScriptedPawn(Other) != None)
-			if (ScriptedPawn(Other).bBurnedToDeath)
-				CumulativeDamage = MaxDamage-1;
+        Mass           = Other.Mass;
+        Buoyancy       = Mass * 1.2;
+        MaxDamage      = 0.8*Mass;
+        if (ScriptedPawn(Other) != None)
+            if (ScriptedPawn(Other).bBurnedToDeath)
+                CumulativeDamage = MaxDamage-1;
 
-		SetScaleGlow();
+        SetScaleGlow();
 
-		// Will this carcass spawn flies?
-		if (bAnimalCarcass)
-		{
-			if (FRand() < 0.2)
-				bGenerateFlies = true;
-		}
-		else if (!Other.IsA('Robot') && !bNotDead)
-		{
-			if (FRand() < 0.1)
-				bGenerateFlies = true;
-			bEmitCarcass = true;
-		}
+        // Will this carcass spawn flies?
+        if (bAnimalCarcass)
+        {
+            if (FRand() < 0.2)
+                bGenerateFlies = true;
+        }
+        else if (!Other.IsA('Robot') && !bNotDead)
+        {
+            if (FRand() < 0.1)
+                bGenerateFlies = true;
+            bEmitCarcass = true;
+        }
 
-		if (Other.AnimSequence == 'DeathFront')
-			Mesh = Mesh2;
+        if (Other.AnimSequence == 'DeathFront')
+            Mesh = Mesh2;
 
-		// set the instigator and tag information
-		if (Other.Instigator != None)
-		{
-			KillerBindName = Other.Instigator.BindName;
-			KillerAlliance = Other.Instigator.Alliance;
-		}
-		else
-		{
-			KillerBindName = Other.BindName;
-			KillerAlliance = '';
-		}
-		Tag = Other.Tag;
-		Alliance = Pawn(Other).Alliance;
-		CarcassName = Other.Name;
-	}
+        // set the instigator and tag information
+        if (Other.Instigator != None)
+        {
+            KillerBindName = Other.Instigator.BindName;
+            KillerAlliance = Other.Instigator.Alliance;
+        }
+        else
+        {
+            KillerBindName = Other.BindName;
+            KillerAlliance = '';
+        }
+        Tag = Other.Tag;
+        Alliance = Pawn(Other).Alliance;
+        CarcassName = Other.Name;
+    }
 }
 
 // HACK to fix compatibility with Lay D Denton, see Carcass2.uc
