@@ -24,7 +24,7 @@ class InstallerWindow(GUIBase):
 
     def ShowAdvanced(self):
         self.root.geometry(str(self.width)+"x499")
-        self.installButton.grid_forget()
+        self.advancedButton.grid_forget()
         for (control, val) in self.controls.items():
             control.grid(**val['gridargs'])
         self.root.update()
