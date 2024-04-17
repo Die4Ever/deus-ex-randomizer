@@ -6,7 +6,6 @@ var int flareBurnTime;
 var int loopCounter;
 var float lastEnableCheckDestLocTime;
 var int EmpHealth;
-var bool bLittle;
 
 /*function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 {
@@ -66,7 +65,7 @@ function PlayDying(name damageType, vector hitLoc)
 	local float dotp;
     local bool unconconscious;
 
-    gibbed = (Health < -100) && !IsA('Robot');
+    gibbed = (Health < -100) && Robot(self) == None;
 
     if( gibbed ) {
         p = DeusExPlayer(GetPlayerPawn());
@@ -93,7 +92,7 @@ function PlayDying(name damageType, vector hitLoc)
 	}
 
     // DXRando: small creatures can't survive being hit by JC
-    if (bLittle) {
+    if (mass <= 30.0) {
         if (
             (damageType == 'Stunned') ||
             (damageType == 'Poison') ||
