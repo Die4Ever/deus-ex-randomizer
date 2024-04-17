@@ -699,7 +699,8 @@ function bool CanKnockUnconscious(coerce string damageType)
         return false;
     }
 
-    if (mass <= 30.0) {
+    // small creatures can't survive being hit by JC
+    if (mass <= 10.0) {
         if (
             (damageType == "Stunned") ||
             (damageType == "Poison") ||
