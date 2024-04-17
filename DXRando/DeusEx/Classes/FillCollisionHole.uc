@@ -1,4 +1,4 @@
-class FillCollisionHole extends BlockAll;
+class FillCollisionHole extends DeusExDecoration;
 
 simulated function BaseChange()
 {
@@ -43,4 +43,9 @@ defaultproperties
     bHidden=False
     Mesh=None
     Texture=None
+    bPushable=false
+    bHighlight=false
+    Physics=PHYS_None
+    bInvincible=true
+    ItemName="Wall"
 }

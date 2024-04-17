@@ -195,9 +195,25 @@ function PreFirstEntryMapFixes()
         class'FillCollisionHole'.static.CreateLine(self, vectm(-1300, 130, 69), vectm(-1030, 130, 69), 32, 80);
         class'FillCollisionHole'.static.CreateLine(self, vectm(-1030, 160, 69), vectm(-1030, 231, 69), 32, 80);
 
-        class'FillCollisionHole'.static.CreateLine(self, vectm(4726, -2680, 69), vectm(4830, -2680, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(4726, -2685, 69), vectm(4835, -2685, 69), 32, 80);
         class'FillCollisionHole'.static.CreateLine(self, vectm(4830, -2650, 69), vectm(4830, -2430, 69), 32, 80);
         class'FillCollisionHole'.static.CreateLine(self, vectm(4800, -2430, 69), vectm(4727, -2430, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-545, 585, 69), vectm(-545, 485, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-580, 485, 69), vectm(-805, 485, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-805, 510, 69), vectm(-805, 574, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-325, 1275, 69), vectm(-325, 1385, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-565, 1271, 69), vectm(-565, 1385, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(585, 3395, 69), vectm(485, 3395, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(485, 3360, 69), vectm(485, 3127, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(485, 2805, 69), vectm(485, 2920, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(1471, 3440, 69), vectm(1565, 3424, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(1565, 3460, 69), vectm(1565, 3675, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(1520, 3675, 69), vectm(1464, 3675, 69), 32, 80);
 
         // extra spots for datacube
         Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower

@@ -932,7 +932,7 @@ exec function crate(optional string name)
     c = Spawn(class'CrateUnbreakableSmall');
     if(name != "") c.ItemName = name;
     actorDisplay = DeusExRootWindow(rootWindow).actorDisplay;
-    if(actorDisplay.GetViewClass() == None) {
+    if(actorDisplay.GetViewClass() == None && !class'DXRVersion'.static.VersionIsStable()) {
         actorDisplay.SetViewClass(class'CrateUnbreakableSmall');
         actorDisplay.ShowLOS(false);
         actorDisplay.ShowPos(true);
