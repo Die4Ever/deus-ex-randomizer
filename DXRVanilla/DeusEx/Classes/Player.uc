@@ -925,6 +925,22 @@ exec function po()
     Level.bPlayersOnly = !Level.bPlayersOnly;
 }
 
+exec function crate(optional string name)
+{
+    local CrateUnbreakableSmall c;
+    local ActorDisplayWindow actorDisplay;
+    c = Spawn(class'CrateUnbreakableSmall');
+    if(name != "") c.ItemName = name;
+    actorDisplay = DeusExRootWindow(rootWindow).actorDisplay;
+    if(actorDisplay.GetViewClass() == None) {
+        actorDisplay.SetViewClass(class'CrateUnbreakableSmall');
+        actorDisplay.ShowLOS(false);
+        actorDisplay.ShowPos(true);
+    }
+    CarriedDecoration = c;
+    PutCarriedDecorationInHand();
+}
+
 exec function FixAugHotkeys()
 {
     local AugmentationManager am;

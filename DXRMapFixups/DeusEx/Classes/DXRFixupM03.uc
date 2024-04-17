@@ -187,6 +187,18 @@ function PreFirstEntryMapFixes()
             Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
         }
 
+        // fix collision with the static crates https://github.com/Die4Ever/deus-ex-randomizer/issues/665
+        class'FillCollisionHole'.static.CreateLine(self, vectm(792.113403, -1343.670166, 69), vectm(675, -1343.670166, 69), 32, 90);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(675, -1300, 69), vectm(675, -1093.477783, 69), 32, 90);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(718, -1093.477783, 69), vectm(779.922424, -1093.477783, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-1300, 130, 69), vectm(-1030, 130, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-1030, 160, 69), vectm(-1030, 231, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(4726, -2680, 69), vectm(4830, -2680, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(4830, -2650, 69), vectm(4830, -2430, 69), 32, 80);
+        class'FillCollisionHole'.static.CreateLine(self, vectm(4800, -2430, 69), vectm(4727, -2430, 69), 32, 80);
+
         // extra spots for datacube
         Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower
         Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter

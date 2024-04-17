@@ -181,7 +181,6 @@ function Timer()
     if( dxr == None ) return;
     //Increment timer flag
     IncMissionTimer(dxr.dxInfo.MissionNumber);
-
 }
 
 static function string fmtTimeToString(int time, optional bool hidehours, optional bool hidetenths, optional bool bShort)

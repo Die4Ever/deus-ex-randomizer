@@ -23,8 +23,6 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local bool RevisionMaps;
     local bool VanillaMaps;
-    local DynamicBlockAll block;
-    local vector v;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -126,12 +124,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'DeusExMover', d) {
                 if(d.Event == 'BlewFence') break;
             }
-            v = vect(-2184, 1266.793335, 79.291428);
-            for(v.x=v.x; v.x<-2050; v.x+=14) {
-                block = DynamicBlockAll(Spawnm(class'DynamicBlockAll',,, v));
-                block.SetCollisionSize(10, 80);
-                block.SetBase(d);
-            }
+            class'FillCollisionHole'.static.CreateLine(self, vectm(-2184, 1266.793335, 79.291428), vectm(-2050, 1266.793335, 79.291428), 10, 80, d);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
