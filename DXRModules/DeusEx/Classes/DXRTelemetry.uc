@@ -144,7 +144,7 @@ function ReceivedData(string data)
     local Json tjs;
 
     if(Len(data) > 500 && j==None) {
-        err("ReceivedData doing latent json parsing: " @ Len(data));
+        l("ReceivedData doing latent json parsing: " @ Len(data));
         j = new(Level) class'Json';
         j.StartParse(data);
     } else {
@@ -170,6 +170,7 @@ simulated function Tick(float deltaTime)
             class'DXRStats'.static.CheckLeaderboard(dxr, j);
             CriticalDelete(j);
             j = None;
+            l("finished latent json parsing");
         } else {
             CheckDeaths(j, oldCount);
         }
