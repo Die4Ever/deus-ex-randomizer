@@ -84,6 +84,8 @@ var transient bool AugEffectStatesInit;
 var transient bool HaveFlamethrower;
 var transient bool FlamethrowerInit;
 
+var bool effectSelectInit;
+
 var int mostRecentCcPawn;
 
 var int fartSoundId;
@@ -105,6 +107,8 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
 
     lavaTick = 0;
     mostRecentCcPawn = 0;
+
+    effectSelectInit=False;
 }
 
 function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
@@ -257,8 +261,12 @@ function HandleEffectSelectability()
         FlamethrowerInit=True;
     }
 
-    ccLink.sendEffectSelectability("third_person",!dxrCameras.IsThirdPersonGame());
-    ccLink.sendEffectSelectability("resident_evil",!dxrCameras.IsFixedCamGame());
+    //Effects that won't change state during a given level, so only need to be set once
+    if (effectSelectInit==False){
+        ccLink.sendEffectSelectability("third_person",!dxrCameras.IsThirdPersonGame());
+        ccLink.sendEffectSelectability("resident_evil",!dxrCameras.IsFixedCamGame());
+        effectSelectInit=True;
+    }
 
     HandleAugEffectSelectability("augspeed");
     HandleAugEffectSelectability("augtarget");
