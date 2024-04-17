@@ -23,6 +23,8 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local bool RevisionMaps;
     local bool VanillaMaps;
+    local DynamicBlockAll block;
+    local vector v;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -98,7 +100,8 @@ function PreFirstEntryMapFixes()
             //Add a button instead
             foreach AllActors(class'#var(prefix)Trigger',trig){
                 if (trig.Event=='SecurityDoor'){
-                    trig.Event='DontDoAnything';
+                    trig.Event='';
+                    trig.Destroy();
                     break;
                 }
             }
@@ -118,6 +121,17 @@ function PreFirstEntryMapFixes()
             }
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
+
+            // fix collision with the fence https://github.com/Die4Ever/deus-ex-randomizer/issues/665
+            foreach AllActors(class'DeusExMover', d) {
+                if(d.Event == 'BlewFence') break;
+            }
+            v = vect(-2184, 1266.793335, 79.291428);
+            for(v.x=v.x; v.x<-2050; v.x+=14) {
+                block = DynamicBlockAll(Spawnm(class'DynamicBlockAll',,, v));
+                block.SetCollisionSize(10, 80);
+                block.SetBase(d);
+            }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
