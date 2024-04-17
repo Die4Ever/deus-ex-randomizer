@@ -695,6 +695,10 @@ state Sitting
 // returns true if the damage type can knock the pawn out
 function bool CanKnockUnconscious(coerce string damageType)
 {
+    if (Robot(self) != None) {
+        return false;
+    }
+
     if (mass <= 30.0) {
         if (
             (damageType == "Stunned") ||
@@ -711,6 +715,7 @@ function bool CanKnockUnconscious(coerce string damageType)
     ) {
         return true;
     }
+
     return false;
 }
 
