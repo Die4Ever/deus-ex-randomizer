@@ -20,20 +20,31 @@ struct JsonMsg
     var int count;
 };
 
-var string _buf;
 var JsonMsg j;
+var bool singleton;
+
+// parsing state variables
+var int i;
+var IntPair p;
+var int parsestate;
+var int inBraces;
+var string msg;
+var string _buf;
 
 // #endregion
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                    JSON PUBLIC INTERFACE                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // #region Json Public Interface
-static function Json parse(LevelInfo parent, string msg, optional Json o) {
-    if(o == None)
-        foreach parent.AllObjects(class'json', o)
-            break;
-    if(o == None)
-        o = new(parent) class'json';
+static function Json parse(LevelInfo parent, string msg) {
+    local Json o;
+    foreach parent.AllObjects(class'Json', o) {
+        if(o.singleton) break;
+    }
+    if(o == None) {
+        o = new(parent) class'Json';
+        o.singleton = true;
+    }
     o._parse(msg);
     return o;
 }
@@ -136,10 +147,6 @@ const ValState = 2;
 const ArrayState = 3;
 const ArrayDoneState = 4;
 const EndState = 5;
-
-function _parse(string msg) {
-    ParseJson(msg);
-}
 
 static function l(coerce string message, string j)
 {
@@ -425,28 +432,39 @@ function ParseQuotes(string msg, out int i, out IntPair p) {
     }
 }
 
-function ParseJson(string msg) {
-    local int i;
-    local IntPair p;
-    local int parsestate;
-    local int inBraces;
-    local JsonMsg data;
 
+function _parse(string tmsg) {
+    StartParse(tmsg);
+    if(! ParseIter(999999)) {
+        log("ERROR: _parse ran too long, i: "$i);
+    }
+    msg = "";
+}
+
+function bool StartParse(string tmsg)
+{
+    local JsonMsg data;
     parsestate = KeyState;
     j = data;// clear the global
 
     //Strip any spaces outside of strings to standardize the input a bit
-    msg = JsonStripSpaces(msg);
+    msg = JsonStripSpaces(tmsg);
     if( Len(msg) < 2 ) {
-        l(".ParseJson IsJson failed!", msg);
-        return;
+        parsestate = EndState;
+        l(".StartParse IsJson failed!", msg);
+        return false;
     }
 
     _buf = "";
+    i = 0;
+    return true;
+}
 
-    //l("ParseJson start", msg);
-    for(i=0; i<999999; i++) {
-        //log("ParseJson state: "$parsestate);
+function bool ParseIter(int num)
+{
+    // returns false when done, so you can easily while loop on it
+    for(num=num+i; i<num; i++) {
+        //log("ParseIter state: "$parsestate);
         switch(parsestate) {
         case KeyState:
             parsestate = ParseKey(msg, i, p, inBraces);
@@ -461,9 +479,10 @@ function ParseJson(string msg) {
             parsestate = ParseArrayDone(msg, i, p, inBraces);
             break;
         case EndState:
-            return;
+            return true;
         }
     }
-    //log("ERROR: ParseJson ran too long, i: "$i);
+    return false;
 }
+
 // #endregion
