@@ -640,14 +640,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     local string classname;
     local bool dead;
 
-    if (IsHuman(victim.class) && ((damageType == "Stunned") ||
-                        (damageType == "KnockedOut") ||
-                        (damageType == "Poison") ||
-                        (damageType == "PoisonEffect"))){
-        dead = false;
-    } else {
-        dead = true;
-    }
+    dead = !FixScriptedPawn(victim).CanKnockUnconscious(damageType);
 
     if (dead){
         _MarkBingo(victim.BindName$"_Dead");

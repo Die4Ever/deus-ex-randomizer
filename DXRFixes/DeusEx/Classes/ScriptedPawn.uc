@@ -63,7 +63,6 @@ function PlayDying(name damageType, vector hitLoc)
     local bool gibbed;
     local Vector X, Y, Z;
 	local float dotp;
-    local bool unconconscious;
 
     gibbed = (Health < -100) && Robot(self) == None;
 
@@ -91,35 +90,15 @@ function PlayDying(name damageType, vector hitLoc)
 			PlayAnimPivot('DeathFront',, 0.1);
 	}
 
-    // DXRando: small creatures can't survive being hit by JC
-    if (mass <= 30.0) {
-        if (
-            (damageType == 'Stunned') ||
-            (damageType == 'Poison') ||
-            (damageType == 'PoisonEffect')
-        ) {
-            unconconscious = true;
-        }
-    } else if (
-        (damageType == 'Stunned') ||
-        (damageType == 'KnockedOut') ||
-        (damageType == 'Poison') ||
-        (damageType == 'PoisonEffect')
-    ) {
-        unconconscious = true;
-    }
+    bStunned = CanKnockUnconscious(damageType);
 
-	if (unconconscious) {
-		bStunned = True;
-        if (Animal(self) != None)
-		    PlayDyingSound();
-		else if (bIsFemale)
+	if (bStunned && Animal(self) == None) {
+		if (bIsFemale)
 			PlaySound(Sound'FemaleUnconscious', SLOT_Pain,,,, RandomPitch());
 		else
 			PlaySound(Sound'MaleUnconscious', SLOT_Pain,,,, RandomPitch());
 	}
 	else {
-		bStunned = False;
 		PlayDyingSound();
 	}
 }
@@ -713,6 +692,27 @@ state Sitting
 
 }
 
+// returns true if the damage type can knock the pawn out
+function bool CanKnockUnconscious(coerce string damageType)
+{
+    if (mass <= 30.0) {
+        if (
+            (damageType == "Stunned") ||
+            (damageType == "Poison") ||
+            (damageType == "PoisonEffect")
+        ) {
+            return true;
+        }
+    } else if (
+        (damageType == "Stunned") ||
+        (damageType == "KnockedOut") ||
+        (damageType == "Poison") ||
+        (damageType == "PoisonEffect")
+    ) {
+        return true;
+    }
+    return false;
+}
 
 defaultproperties
 {
