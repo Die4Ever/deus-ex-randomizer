@@ -24,6 +24,11 @@ function AnyEntryMapFixes()
         if (VanillaMaps){
             FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
         }
+
+        if (dxr.flagbase.getBool('SmugglerDoorDone')) {
+            dxr.flagbase.setBool('MetSmuggler', true,, -1);
+        }
+
         break;
     }
 }
