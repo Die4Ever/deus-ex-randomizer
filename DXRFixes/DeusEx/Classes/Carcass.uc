@@ -322,49 +322,48 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         if (W != None || (W == None && !player.FindInventorySlot(item, True)))
         {
             // Don't bother with this if there's no ammo
-            if (Weapon(item).AmmoType != None && Weapon(item).PickupAmmoCount > 0)
-            {
+            if(Weapon(item).AmmoName != class'AmmoNone' && Weapon(item).PickupAmmoCount > 0) {
                 playerAmmo = Ammo(player.FindInventoryType(Weapon(item).AmmoName));
+            }
 
-                if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
-                {
-                    ammoAdded = Weapon(item).PickupAmmoCount;
-                    ammoLeftover=0;
-                    if (playerAmmo.AmmoAmount + ammoAdded > playerAmmo.MaxAmmo){
-                        ammoLeftover = (ammoAdded + playerAmmo.AmmoAmount) - playerAmmo.MaxAmmo;
-                        ammoAdded = ammoAdded - ammoLeftover;
-                    }
-                    if (ammoLeftover > 0){
-                        if(playerAmmo.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
-                            //Weapons with normal ammo that exists
-                            newAmmo = Spawn(playerAmmo.Class,,,Location,Rotation);
-                            newAmmo.ammoAmount = ammoLeftover;
-                            newAmmo.Velocity = Velocity + VRand() * 280;
-                        }
-                    }
-                    playerAmmo.AddAmmo(ammoAdded);
-                    AddReceivedItem(player, playerAmmo, ammoAdded);
-
-                    // Update the ammo display on the object belt
-                    player.UpdateAmmoBeltText(playerAmmo);
-
-                    // if this is an illegal ammo type, use the weapon name to print the message
-                    if (playerAmmo.PickupViewMesh == Mesh'TestBox')
-                        player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
-                    else
-                        player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
-
-                    // Mark it as 0 to prevent it from being added twice
-                    Weapon(item).AmmoType.AmmoAmount = 0;
-                    Weapon(item).PickupAmmoCount = 0;
+            if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
+            {
+                ammoAdded = Weapon(item).PickupAmmoCount;
+                ammoLeftover=0;
+                if (playerAmmo.AmmoAmount + ammoAdded > playerAmmo.MaxAmmo){
+                    ammoLeftover = (ammoAdded + playerAmmo.AmmoAmount) - playerAmmo.MaxAmmo;
+                    ammoAdded = ammoAdded - ammoLeftover;
                 }
-                else // Rando: toss the weapon just for the ammo
-                {
-                    player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
-                    //Also toss the item out of the carcass
-                    TossItem(item,player);
-                    return true;
+                if (ammoLeftover > 0){
+                    if(playerAmmo.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
+                        //Weapons with normal ammo that exists
+                        newAmmo = Spawn(playerAmmo.Class,,,Location,Rotation);
+                        newAmmo.ammoAmount = ammoLeftover;
+                        newAmmo.Velocity = Velocity + VRand() * 280;
+                    }
                 }
+                playerAmmo.AddAmmo(ammoAdded);
+                AddReceivedItem(player, playerAmmo, ammoAdded);
+
+                // Update the ammo display on the object belt
+                player.UpdateAmmoBeltText(playerAmmo);
+
+                // if this is an illegal ammo type, use the weapon name to print the message
+                if (playerAmmo.PickupViewMesh == Mesh'TestBox')
+                    player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+                else
+                    player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+
+                // Mark it as 0 to prevent it from being added twice
+                Weapon(item).AmmoType.AmmoAmount = 0;
+                Weapon(item).PickupAmmoCount = 0;
+            }
+            else // Rando: toss the weapon just for the ammo
+            {
+                player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
+                //Also toss the item out of the carcass
+                TossItem(item,player);
+                return true;
             }
 
             // Print a message "Cannot pickup blah blah blah" if inventory is full
