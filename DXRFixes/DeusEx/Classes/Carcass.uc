@@ -370,7 +370,14 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
             playerAmmo = Ammo(player.FindInventoryType(item.AmmoName));
         }
 
-        if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
+        if(playerAmmo == None && item.AmmoName != class'AmmoNone' && item.PickupAmmoCount > 0
+            && item.AmmoName.Default.Mesh != LodMesh'DeusExItems.TestBox') {
+                //Weapons with normal ammo that exists, but the player has never gotten any yet
+                newAmmo = Spawn(item.AmmoName,,,Location,Rotation);
+                newAmmo.ammoAmount = item.PickupAmmoCount;
+                TryLootAmmo(player, newAmmo, true);
+        }
+        else if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
         {
             ammoAdded = item.PickupAmmoCount;
             ammoLeftover=0;
