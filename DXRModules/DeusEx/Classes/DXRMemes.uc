@@ -141,17 +141,17 @@ function RandomMJ12Globe()
         switch(rng(16)){
         case 0:
             PlayDressUp(earth,class'Basketball',0);
-            startRot = rotm(8000,0,7000); //Give it a bit of tilt for more drama
+            startRot = rotm(8000,0,7000,0); //Give it a bit of tilt for more drama
             scaleMult = 2;
             break;
         case 1:
             PlayDressUp(earth,class'BoneSkull',0);
-            startRot = rotm(0,32765,-5000); //Slightly tilted down
+            startRot = rotm(0,32765,-5000,0); //Slightly tilted down
             scaleMult = 1.0;
             break;
         case 2:
             PlayDressUp(earth,class'Liquor40oz',0);
-            startRot = rotm(0,16000,12000);
+            startRot = rotm(0,16000,12000,0);
             scaleMult = 2;
             break;
         case 3:
@@ -161,12 +161,12 @@ function RandomMJ12Globe()
             break;
         case 4:
             PlayDressUp(earth,class'SodaCan',0);
-            startRot = rotm(6000,16000,12000);
+            startRot = rotm(6000,16000,12000,0);
             scaleMult = 1.0;
             break;
         case 5: //Does this one even look good?
             PlayDressUp(earth,class'BoneFemur',0);
-            startRot = rotm(0,16000,12000);
+            startRot = rotm(0,16000,12000,0);
             scaleMult = 0.25;
             break;
         case 6:
@@ -181,7 +181,7 @@ function RandomMJ12Globe()
             break;
         case 8:
             PlayDressUp(earth,class'GrayCarcass',0);
-            startRot = rotm(-16385,20000,0);
+            startRot = rotm(-16385,20000,0,0);
             scaleMult = 0.25;
             break;
         case 9:
@@ -348,28 +348,28 @@ function AnyEntry()
                 text.bHidden=True; //Hide all the original text
             }
             if (dxr.localURL=="DX"){
-                text = Spawn(class'DXRText',,,vectm(-60.979568,57.046417,-137.022430),rotm(0,32768,0));
+                text = Spawn(class'DXRText',,,vectm(-60.979568,57.046417,-137.022430),rotm(0,32768,0,0));
                 text.Skin = None;
-                text = Spawn(class'DXRText',,,vectm(138.886353,57.125278,-137.022430),rotm(0,32768,0));
+                text = Spawn(class'DXRText',,,vectm(138.886353,57.125278,-137.022430),rotm(0,32768,0,0));
                 text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
 
                 // Randomizer logo
                 v = vect(10, 57.15, -177.66);// midpoint
-                text = Spawn(class'DXRText',,,vectm(v.X - 100, v.Y, v.Z),rotm(0,32768,0));
+                text = Spawn(class'DXRText',,,vectm(v.X - 100, v.Y, v.Z),rotm(0,32768,0,0));
                 text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
-                text = Spawn(class'DXRText',,,vectm(v.X + 100, v.Y, v.Z),rotm(0,32768,0));
+                text = Spawn(class'DXRText',,,vectm(v.X + 100, v.Y, v.Z),rotm(0,32768,0,0));
                 text.Skin = Texture'RandomizerTextTex2';  //Right half of "Randomizer" text texture
             } else if (dxr.localURL=="DXONLY"){
-                text = Spawn(class'DXRText',,,vectm(-62.015648,-55.260841,-139.022430),rotm(0,49136,0));
+                text = Spawn(class'DXRText',,,vectm(-62.015648,-55.260841,-139.022430),rotm(0,49136,0,0));
                 text.Skin = None;
-                text = Spawn(class'DXRText',,,vectm(-61.787956,144.605042,-139.022430),rotm(0,49136,0));
+                text = Spawn(class'DXRText',,,vectm(-61.787956,144.605042,-139.022430),rotm(0,49136,0,0));
                 text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
 
                 // Randomizer logo
                 v = vect(-62, 10, -178.990417);// midpoint
-                text = Spawn(class'DXRText',,,vectm(v.X, v.Y - 100, v.Z),rotm(0,49136,0));
+                text = Spawn(class'DXRText',,,vectm(v.X, v.Y - 100, v.Z),rotm(0,49136,0,0));
                 text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
-                text = Spawn(class'DXRText',,,vectm(v.X, v.Y + 100, v.Z),rotm(0,49136,0));
+                text = Spawn(class'DXRText',,,vectm(v.X, v.Y + 100, v.Z),rotm(0,49136,0,0));
                 text.Skin = Texture'RandomizerTextTex2';  //Right half of "Randomizer" text texture
             }
 

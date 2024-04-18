@@ -256,7 +256,7 @@ function PreFirstEntryMapFixes()
             barrel.Destroy();
         }
 
-        SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
+        SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
 
         ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK?
     } else if (dxr.localURL=="09_NYC_SHIPBELOW"){

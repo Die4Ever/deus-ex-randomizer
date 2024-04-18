@@ -168,7 +168,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             $ "|n|nPS: You can see all my possible locations by clicking the Goal Locations button on your Goals screen."
             $ "|nIf you get really stuck then click on Show Spoilers, Show Nanokeys, or Show Datacubes.";
 
-        SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0), text, true);
+        SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0,0), text, true);
 
         if(ScriptedPawn(g.actors[0].a) != None) {
             RemoveFears(ScriptedPawn(g.actors[0].a));

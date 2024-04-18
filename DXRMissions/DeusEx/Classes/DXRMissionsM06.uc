@@ -233,7 +233,7 @@ function GenerateDTSHintCube(Goal g, GoalLocation Loc)
             dt.Destroy();
         }
     }
-    SpawnDatacubePlaintext(vectm(-1857.841064, -158.911865, 2051.345459), rotm(0,0,0),
+    SpawnDatacubePlaintext(vectm(-1857.841064, -158.911865, 2051.345459), rotm(0,0,0,0),
         "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", true);
 }
 

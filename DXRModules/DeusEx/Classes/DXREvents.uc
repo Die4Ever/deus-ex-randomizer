@@ -195,7 +195,7 @@ function AddPhoneTriggers(bool isRevision)
         break;
     case "09_NYC_DOCKYARD":
         if (!isRevision){
-            p=Spawn(class'#var(prefix)Phone',,,vectm(2333,2153,53),rotm(0,5688,0));
+            p=#var(prefix)Phone(Spawnm(class'#var(prefix)Phone',,,vect(2333,2153,53),rot(0,5688,0)));
         }
         break;
 

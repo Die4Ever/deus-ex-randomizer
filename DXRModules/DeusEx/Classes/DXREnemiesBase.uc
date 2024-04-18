@@ -159,7 +159,7 @@ function ReadConfig()
     }
     for(i=0; i < num; i++) {
         total = totals[_randomenemies[i].faction];
-        l(_randomenemies[i].type$" before: "$_randomenemies[i].chance@total);
+        //l(_randomenemies[i].type$" before: "$_randomenemies[i].chance@total);
         _randomenemies[i].chance *= 100.0/total;
         //l(_randomenemies[i].type$" after: "$_randomenemies[i].chance@total);
     }

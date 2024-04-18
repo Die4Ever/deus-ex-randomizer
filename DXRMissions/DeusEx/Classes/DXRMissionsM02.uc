@@ -262,12 +262,12 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {
-        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(505.710449, -605, 162.091278), rotm(16384,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(505.710449, -605, 162.091278), rotm(16384,0,0, GetRotationOffset(class'#var(prefix)CrateUnbreakableLarge')));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
         a.DrawScale = 4;
         class'DXRHoverHint'.static.Create(self, "This is not the generator", a.Location, a.CollisionRadius+5, a.CollisionHeight+5);
-        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0, GetRotationOffset(class'#var(prefix)CrateUnbreakableLarge')));
         a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
         a.bMovable = false;
         a.DrawScale = 2;

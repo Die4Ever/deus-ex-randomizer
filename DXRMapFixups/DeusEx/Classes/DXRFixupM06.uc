@@ -303,7 +303,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
+        SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0,0),Class'DeusEx.Image15_GrayDisection');
 
         //Elevator to Versalife
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
