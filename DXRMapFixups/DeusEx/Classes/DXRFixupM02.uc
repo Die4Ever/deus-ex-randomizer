@@ -311,3 +311,10 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+
+function AnyEntryMapFixes()
+{
+    if (dxr.flagbase.getBool('SmugglerDoorDone')) {
+        dxr.flagbase.setBool('MetSmuggler', true,, -1);
+    }
+}
