@@ -258,28 +258,8 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function bool TryLootItem(DeusExPlayer player, Inventory item)
 {
-    local ammo itemAmmo, playerAmmo, newAmmo;
-    local DeusExWeapon W;
     local DeusExPickup invItem;
     local int itemCount;
-    local int ammoAdded, ammoLeftover, ammoPrevious;
-    local DXRando dxr;
-    local DXRLoadouts loadout;
-
-    if (item.IsA('DeusExWeapon'))
-    {
-        // Any weapons have their ammo set to a random number of rounds (1-4)
-        // unless it's a grenade, in which case we only want to dole out one.
-        // DEUS_EX AMSD In multiplayer, give everything away.
-        W = DeusExWeapon(item);
-
-        // Grenades and LAMs always pickup 1
-        if (W.IsA('WeaponNanoVirusGrenade') ||
-            W.IsA('WeaponGasGrenade') ||
-            W.IsA('WeaponEMPGrenade') ||
-            W.IsA('WeaponLAM'))
-            W.PickupAmmoCount = 1;
-    }
 
     if (item.IsA('NanoKey'))
     {
@@ -302,137 +282,12 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     if (item.IsA('DeusExWeapon'))   // I *really* hate special cases
     {
-        dxr = class'DXRando'.default.dxr;
-        loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
-        if (loadout != None && loadout.is_banned(Weapon(item).AmmoName))
-            Weapon(item).PickupAmmoCount = 0;
-
-        // Okay, check to see if the player already has this weapon.  If so,
-        // then just give the ammo and not the weapon.  Otherwise give
-        // the weapon normally.
-        W = DeusExWeapon(player.FindInventoryType(item.Class));
-
-        // If the player already has this item in his inventory, piece of cake,
-        // we just give him the ammo.  However, if the Weapon is *not* in the
-        // player's inventory, first check to see if there's room for it.  If so,
-        // then we'll give it to him normally.  If there's *NO* room, then we
-        // want to give the player the AMMO only (as if the player already had
-        // the weapon).
-
-        if (W != None || (W == None && !player.FindInventorySlot(item, True)))
-        {
-            // Don't bother with this if there's no ammo
-            if(Weapon(item).AmmoName != class'AmmoNone' && Weapon(item).PickupAmmoCount > 0) {
-                playerAmmo = Ammo(player.FindInventoryType(Weapon(item).AmmoName));
-            }
-
-            if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
-            {
-                ammoAdded = Weapon(item).PickupAmmoCount;
-                ammoLeftover=0;
-                if (playerAmmo.AmmoAmount + ammoAdded > playerAmmo.MaxAmmo){
-                    ammoLeftover = (ammoAdded + playerAmmo.AmmoAmount) - playerAmmo.MaxAmmo;
-                    ammoAdded = ammoAdded - ammoLeftover;
-                }
-                if (ammoLeftover > 0){
-                    if(playerAmmo.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
-                        //Weapons with normal ammo that exists
-                        newAmmo = Spawn(playerAmmo.Class,,,Location,Rotation);
-                        newAmmo.ammoAmount = ammoLeftover;
-                        newAmmo.Velocity = Velocity + VRand() * 280;
-                    }
-                }
-                playerAmmo.AddAmmo(ammoAdded);
-                AddReceivedItem(player, playerAmmo, ammoAdded);
-
-                // Update the ammo display on the object belt
-                player.UpdateAmmoBeltText(playerAmmo);
-
-                // if this is an illegal ammo type, use the weapon name to print the message
-                if (playerAmmo.PickupViewMesh == Mesh'TestBox')
-                    player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
-                else
-                    player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
-
-                // Mark it as 0 to prevent it from being added twice
-                Weapon(item).AmmoType.AmmoAmount = 0;
-                Weapon(item).PickupAmmoCount = 0;
-            }
-            else // Rando: toss the weapon just for the ammo
-            {
-                player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
-                //Also toss the item out of the carcass
-                TossItem(item,player);
-                return true;
-            }
-
-            // Print a message "Cannot pickup blah blah blah" if inventory is full
-            // and the player can't pickup this weapon, so the player at least knows
-            // if he empties some inventory he can get something potentially cooler
-            // than he already has.
-            if (W == None && !player.FindInventorySlot(item, True)){
-                player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
-
-                //Also toss the item out of the carcass
-                TossItem(item,player);
-                return true;
-            }
-
-            // Only destroy the weapon if the player already has it
-            if (W != None)
-            {
-                // Destroy the weapon, baby!
-                DeleteInventory(item);
-                item.Destroy();
-            }
-
-            return true;
-        }
+        return TryLootWeapon(player, DeusExWeapon(item));
     }
 
     if (item.IsA('Ammo'))
     {
-        itemAmmo = Ammo(item);
-        if (!dropsAmmo || itemAmmo.AmmoAmount == 0) {
-            DeleteInventory(item);
-            item.Destroy();
-            return false;
-        }
-
-        playerAmmo = Ammo(player.FindInventoryType(item.class));
-
-        if (playerAmmo == None) {
-            ammoPrevious = 0;
-        } else {
-            ammoPrevious = playerAmmo.AmmoAmount;
-        }
-        ammoAdded = Min(itemAmmo.AmmoAmount, itemAmmo.MaxAmmo - ammoPrevious );
-        ammoLeftover = itemAmmo.AmmoAmount - ammoAdded;
-
-        if (ammoLeftover > 0) {
-            newAmmo = Spawn(itemAmmo.class,,, Location);
-            newAmmo.AmmoAmount = ammoLeftover;
-            newAmmo.Velocity = Velocity + VRand() * 280; // same as vanilla corpse drops
-        }
-
-        if (playerAmmo == None) {
-            TryLootRegularItem(player, item);
-        } else {
-            playerAmmo.AddAmmo(ammoAdded);
-
-            AddReceivedItem(player, itemAmmo, ammoAdded);
-            player.UpdateAmmoBeltText(playerAmmo);
-            if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
-                player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
-            } else {
-                player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
-            }
-
-            DeleteInventory(item);
-            item.Destroy();
-        }
-
-        return true;
+        return TryLootAmmo(player, Ammo(item));
     }
 
     // Special case if this is a DeusExPickup(), it can have multiple copies
@@ -474,6 +329,158 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     }
 
     return TryLootRegularItem(player, item);
+}
+
+function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
+{
+    local Ammo playerAmmo, newAmmo;
+    local int ammoAdded, ammoLeftover;
+    local DXRando dxr;
+    local DXRLoadouts loadout;
+    local DeusExWeapon W;
+
+    // Grenades and LAMs always pickup 1
+    if (item.IsA('WeaponNanoVirusGrenade') ||
+        item.IsA('WeaponGasGrenade') ||
+        item.IsA('WeaponEMPGrenade') ||
+        item.IsA('WeaponLAM'))
+        item.PickupAmmoCount = 1;
+
+    dxr = class'DXRando'.default.dxr;
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if (loadout != None && loadout.is_banned(item.AmmoName))
+        item.PickupAmmoCount = 0;
+
+    // Okay, check to see if the player already has this weapon.  If so,
+    // then just give the ammo and not the weapon.  Otherwise give
+    // the weapon normally.
+    W = DeusExWeapon(player.FindInventoryType(item.Class));
+
+    // If the player already has this item in his inventory, piece of cake,
+    // we just give him the ammo.  However, if the Weapon is *not* in the
+    // player's inventory, first check to see if there's room for it.  If so,
+    // then we'll give it to him normally.  If there's *NO* room, then we
+    // want to give the player the AMMO only (as if the player already had
+    // the weapon).
+
+    if (W != None || (W == None && !player.FindInventorySlot(item, True)))
+    {
+        // Don't bother with this if there's no ammo
+        if(item.AmmoName != class'AmmoNone' && item.PickupAmmoCount > 0) {
+            playerAmmo = Ammo(player.FindInventoryType(item.AmmoName));
+        }
+
+        if (playerAmmo != None && playerAmmo.AmmoAmount < playerAmmo.MaxAmmo)
+        {
+            ammoAdded = item.PickupAmmoCount;
+            ammoLeftover=0;
+            if (playerAmmo.AmmoAmount + ammoAdded > playerAmmo.MaxAmmo){
+                ammoLeftover = (ammoAdded + playerAmmo.AmmoAmount) - playerAmmo.MaxAmmo;
+                ammoAdded = ammoAdded - ammoLeftover;
+            }
+            if (ammoLeftover > 0){
+                if(playerAmmo.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
+                    //Weapons with normal ammo that exists
+                    newAmmo = Spawn(playerAmmo.Class,,,Location,Rotation);
+                    newAmmo.ammoAmount = ammoLeftover;
+                    newAmmo.Velocity = Velocity + VRand() * 280;
+                }
+            }
+            playerAmmo.AddAmmo(ammoAdded);
+            AddReceivedItem(player, playerAmmo, ammoAdded);
+
+            // Update the ammo display on the object belt
+            player.UpdateAmmoBeltText(playerAmmo);
+
+            // if this is an illegal ammo type, use the weapon name to print the message
+            if (playerAmmo.PickupViewMesh == Mesh'TestBox')
+                player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+            else
+                player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+
+            // Mark it as 0 to prevent it from being added twice
+            item.AmmoType.AmmoAmount = 0;
+            item.PickupAmmoCount = 0;
+        }
+        else // Rando: toss the weapon just for the ammo
+        {
+            player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
+            //Also toss the item out of the carcass
+            TossItem(item,player);
+            return true;
+        }
+
+        // Print a message "Cannot pickup blah blah blah" if inventory is full
+        // and the player can't pickup this weapon, so the player at least knows
+        // if he empties some inventory he can get something potentially cooler
+        // than he already has.
+        if (W == None && !player.FindInventorySlot(item, True)){
+            player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
+
+            //Also toss the item out of the carcass
+            TossItem(item,player);
+            return true;
+        }
+
+        // Only destroy the weapon if the player already has it
+        if (W != None)
+        {
+            // Destroy the weapon, baby!
+            DeleteInventory(item);
+            item.Destroy();
+        }
+
+        return true;
+    }
+
+    return TryLootRegularItem(player, item);
+}
+
+function bool TryLootAmmo(DeusExPlayer player, Ammo item, optional bool bForce)
+{
+    local int ammoAdded, ammoLeftover, ammoPrevious;
+    local Ammo playerAmmo, newAmmo;
+
+    if (!bForce && (!dropsAmmo || item.AmmoAmount == 0)) {
+        DeleteInventory(item);
+        item.Destroy();
+        return false;
+    }
+
+    playerAmmo = Ammo(player.FindInventoryType(item.class));
+
+    if (playerAmmo == None) {
+        ammoPrevious = 0;
+    } else {
+        ammoPrevious = playerAmmo.AmmoAmount;
+    }
+    ammoAdded = Min(item.AmmoAmount, item.MaxAmmo - ammoPrevious );
+    ammoLeftover = item.AmmoAmount - ammoAdded;
+
+    if (ammoLeftover > 0) {
+        newAmmo = Spawn(item.class,,, Location);
+        newAmmo.AmmoAmount = ammoLeftover;
+        newAmmo.Velocity = Velocity + VRand() * 280; // same as vanilla corpse drops
+    }
+
+    if (playerAmmo == None) {
+        TryLootRegularItem(player, item);
+    } else {
+        playerAmmo.AddAmmo(ammoAdded);
+
+        AddReceivedItem(player, item, ammoAdded);
+        player.UpdateAmmoBeltText(playerAmmo);
+        if (playerAmmo.PickupViewMesh == Mesh'TestBox') {
+            player.ClientMessage(item.PickupMessage @ item.itemArticle @ item.itemName, 'Pickup');
+        } else {
+            player.ClientMessage(playerAmmo.PickupMessage @ playerAmmo.itemArticle @ playerAmmo.itemName, 'Pickup');
+        }
+
+        DeleteInventory(item);
+        item.Destroy();
+    }
+
+    return true;
 }
 
 function bool TryLootRegularItem(DeusExPlayer player, Inventory item)
