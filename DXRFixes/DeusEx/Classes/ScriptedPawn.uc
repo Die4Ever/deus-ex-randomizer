@@ -90,7 +90,7 @@ function PlayDying(name damageType, vector hitLoc)
 			PlayAnimPivot('DeathFront',, 0.1);
 	}
 
-    bStunned = CanKnockUnconscious(damageType);
+    bStunned = class'DXRActorsBase'.static.CanKnockUnconscious(self, damageType);
 
 	if (bStunned && Animal(self) == None) {
 		if (bIsFemale)
@@ -690,34 +690,6 @@ state Sitting
         return false;
     }
 
-}
-
-// returns true if the damage type can knock the pawn out
-function bool CanKnockUnconscious(coerce string damageType)
-{
-    if (Robot(self) != None) {
-        return false;
-    }
-
-    // small creatures can't survive being hit by JC
-    if (mass <= 10.0) {
-        if (
-            (damageType == "Stunned") ||
-            (damageType == "Poison") ||
-            (damageType == "PoisonEffect")
-        ) {
-            return true;
-        }
-    } else if (
-        (damageType == "Stunned") ||
-        (damageType == "KnockedOut") ||
-        (damageType == "Poison") ||
-        (damageType == "PoisonEffect")
-    ) {
-        return true;
-    }
-
-    return false;
 }
 
 defaultproperties

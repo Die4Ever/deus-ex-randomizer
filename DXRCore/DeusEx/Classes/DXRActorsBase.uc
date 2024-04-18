@@ -1484,6 +1484,21 @@ function DebugMarkKeyPosition(vector pos, coerce string id)
     DebugMarkKeyActor(a, id);
 }
 
+static function bool IsNonlethal(coerce string damageType)
+{
+    return (damageType == "Stunned") || (damageType == "KnockedOut") || (damageType == "Poison") || (damageType == "PoisonEffect");
+}
+
+// returns true if the damage type can knock the pawn out
+static function bool CanKnockUnconscious(ScriptedPawn sp, coerce string damageType)
+{
+    if (#defined(injections)) {
+        return sp.mass > 5.0 && IsNonlethal(damageType) && (Animal(sp) != None || IsHuman(sp.class));
+    } else {
+        return IsNonlethal(damageType) && IsHuman(sp.class);
+    }
+}
+
 static function LogInventory(Actor actor)
 {
     local Inventory item;
