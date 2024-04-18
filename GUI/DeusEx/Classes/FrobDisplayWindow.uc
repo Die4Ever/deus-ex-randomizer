@@ -367,7 +367,12 @@ function string MoverStrInfo(Mover m, out int numLines)
                 keyAcq = false;
             }
         }
-        strInfo = msgLocked;
+        if((BreakableWall(m)!=None || BreakableGlass(m)!=None) && dxMover.KeyIDNeeded == '' && !dxMover.bPickable) {
+            strInfo = "Breakable";
+        }
+        else {
+            strInfo = msgLocked;
+        }
         if (!(GetShowKeys() && keyAcq)) {
             numLines++;
             strInfo = strInfo $ CR() $ msgLockStr;

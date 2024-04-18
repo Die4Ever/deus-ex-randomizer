@@ -226,6 +226,9 @@ function PreFirstEntryMapFixes()
             it.Destroy();
         }
     }
+    if(dxr.localURL=="02_NYC_WAREHOUSE") {
+        ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK? maybe better than creating a new subclass for DynamicSoundTriggered and then doing replacements
+    }
 }
 
 function MissionTimer()
@@ -246,9 +249,16 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(DeusExPrefix)Mover m;
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
+    local int i;
 
     if (g.name=="Generator"){
         class'DXRHoverHint'.static.Create(self, "NSF Generator", Loc.positions[0].pos, 175, 140, g.actors[0].a);
+
+        for(i=0; i<ArrayCount(g.actors); i++) {
+            if( AmbientSoundTriggered(g.actors[i].a) != None) {
+                AmbientSoundTriggered(g.actors[i].a).SoundRadius = 1600;
+            }
+        }
     }
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {
