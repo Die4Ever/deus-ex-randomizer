@@ -86,7 +86,7 @@ function int InitGoals(int mission, string map)
         // HOWARD
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
         howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
-        //howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", NORMAL_GOAL, vect(-100, -1331, 832), rot(0, 32768, 0));
+        //howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", NORMAL_GOAL, vect(-100, -1331, 832), rot(0, 32768, 0));
         howard_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
         howard_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", NORMAL_GOAL, vect(-1822,-6516,1662), rot(0, 24308, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", NORMAL_GOAL, vect(566,-4395,1474), rot(0, 21120, 0));
@@ -101,7 +101,7 @@ function int InitGoals(int mission, string map)
         jock_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554, -5680.964355, 1507.895020), rot(0, 0, 0));
         jock_tower = AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
         jock_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
-        jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
 
         // COMPUTER
         goal = AddGoal("14_OCEANLAB_SILO", "Launch Command Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
@@ -118,6 +118,7 @@ function int InitGoals(int mission, string map)
         AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
         AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
         AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
+        AddMutualExclusion(howard_computer, jock_computer); // both in the same room
         return 142;
     }
 
@@ -215,7 +216,7 @@ function int InitGoalsRev(int mission, string map)
         jock1 = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554,-5680.769043,1513.223389), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
         jock2 = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
 
         AddMutualExclusion(howard1, jock1);
         AddMutualExclusion(howard2, jock2);

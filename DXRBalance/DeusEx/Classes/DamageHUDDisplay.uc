@@ -1,5 +1,59 @@
 class DXRDamageHUDDisplay injects DamageHUDDisplay;
 
+event InitWindow()
+{
+    Super(Window).InitWindow();
+
+    // Get a pointer to the player
+    player = DeusExPlayer(GetRootWindow().parentPawn);
+
+    // couldn't get these to work in the defaultproperties section
+    iconInfo[0].damageType[0] = 'Shocked';
+    iconInfo[0].icon = Texture'DamageIconElectricity';
+    iconInfo[0].color.R = 0;
+    iconInfo[0].color.G = 196;
+    iconInfo[0].color.B = 255;
+    iconInfo[1].damageType[0] = 'EMP';
+    iconInfo[1].icon = Texture'DamageIconEMP';
+    iconInfo[1].color.R = 0;
+    iconInfo[1].color.G = 196;
+    iconInfo[1].color.B = 255;
+    iconInfo[2].damageType[0] = 'Burned';
+    iconInfo[2].damageType[1] = 'Flamed';
+    iconInfo[2].damageType[2] = 'Exploded';
+    iconInfo[2].icon = Texture'DamageIconFire';
+    iconInfo[2].color.R = 255;
+    iconInfo[2].color.G = 96;
+    iconInfo[2].color.B = 0;
+    iconInfo[3].damageType[0] = 'PoisonGas';
+    iconInfo[3].damageType[1] = 'TearGas';
+    iconInfo[3].icon = Texture'DamageIconGas';
+    iconInfo[3].color.R = 0;
+    iconInfo[3].color.G = 196;
+    iconInfo[3].color.B = 0;
+    iconInfo[4].damageType[0] = 'Drowned';
+    iconInfo[4].damageType[1] = 'HalonGas';
+    iconInfo[4].icon = Texture'DamageIconOxygen';
+    iconInfo[4].color.R = 0;
+    iconInfo[4].color.G = 128;
+    iconInfo[4].color.B = 255;
+    iconInfo[5].damageType[0] = 'Radiation';
+    iconInfo[5].icon = Texture'DamageIconRadiation';
+    iconInfo[5].color.R = 255;
+    iconInfo[5].color.G = 255;
+    iconInfo[5].color.B = 0;
+    iconInfo[6].damageType[0] = 'Shot';
+    iconInfo[6].damageType[1] = 'Sabot';
+    iconInfo[6].damageType[2] = 'AutoShot';// DXRando: vanilla forgot autoshot damage lol
+    iconInfo[6].icon = None;
+    iconInfo[6].color.R = 255;
+    iconInfo[6].color.G = 0;
+    iconInfo[6].color.B = 0;
+
+    Hide();
+}
+
+
 // ----------------------------------------------------------------------
 // DrawWindow()
 // ----------------------------------------------------------------------

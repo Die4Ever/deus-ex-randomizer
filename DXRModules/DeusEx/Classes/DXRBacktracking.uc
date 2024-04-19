@@ -333,7 +333,7 @@ function ParisMetroAnyEntry()
 
         RemoveChoppers();
 
-        chopper=SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vectm(3134.682373, 1101.204956, 304.756897), rotm(0, -24944, 0) );
+        chopper=SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vect(3134.682373, 1101.204956, 304.756897), rot(0, -24944, 0) );
 
         RebindChopperHoverHint('ChopperExit',chopper);
 
@@ -365,7 +365,7 @@ function ParisChateauAnyEntry()
     RemoveChoppers();
 
     CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vectm(-500,250,0) );
-    BacktrackChopper( 'ChopperExit', 'BlackHelicopter', 'UN_BlackHeli_Fly', "Jock", 'Camera1', "10_PARIS_METRO", 'PathNode447', "", vectm(-825.793274, 1976.029297, 176.545380), rotm(0, -10944, 0) );
+    BacktrackChopper( 'ChopperExit', 'BlackHelicopter', 'UN_BlackHeli_Fly', "Jock", 'Camera1', "10_PARIS_METRO", 'PathNode447', "", vect(-825.793274, 1976.029297, 176.545380), rot(0, -10944, 0) );
 }
 
 function VandCmdAnyEntry()
@@ -391,7 +391,7 @@ function VandCmdAnyEntry()
     if ( flags.GetBool('GaryHostageBriefing_Played') )
     {
         RemoveChoppers('Helicopter');
-        chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vectm(7014.185059, 7540.296875, -2884.704102), rotm(0, -19840, 0) );
+        chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
         RebindChopperHoverHint('mission_done',chopper);
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
         if(missions != None) {
@@ -427,7 +427,7 @@ function VandGasAnyEntry()
 
     if(!dxr.flags.IsZeroRando()) {
         // I could also give Jock a "Let's go" conversation
-        BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vectm(2520.256836, -2489.873535, -1402.078857), rotm(0,0,0) );
+        BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
     }
 
 
@@ -437,7 +437,7 @@ function VandGasAnyEntry()
 
     if( flags.GetBool('MS_ChopperGasUnhidden') ) {
         RemoveChoppers('Heli');
-        chopper=BlackHelicopter(SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vectm(-3207.999756, 135.342285, -905.545044), rotm(0, -63104, 0) ));
+        chopper=BlackHelicopter(SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vect(-3207.999756, 135.342285, -905.545044), rot(0, -63104, 0) ));
         RebindChopperHoverHint('UN_BlackHeli',chopper);
 
         foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
@@ -495,11 +495,11 @@ function VandSubAnyEntry()
             if( p.Position > 4 ) p.bEndOfPath = true;
             if( p.Position > 2 ) continue;
             p.SetLocation(vectm(7035.433594, 3841.281250, -379.008362));
-            if( p.Position < 2 ) p.SetRotation(rotm(0, -15720, 0));
+            if( p.Position < 2 ) p.SetRotation(rotm(0, -15720, 0, 0));
         }
 
         CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'backtrack_camera', vectm(200,600,0) );
-        BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vectm(7035.433594, 3841.281250, -379.008362), rotm(0, -15720, 0) );
+        BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vect(7035.433594, 3841.281250, -379.008362), rot(0, -15720, 0) );
     }
 
     // need to backtrack with the sub too
@@ -529,7 +529,7 @@ function VandSubAnyEntry()
 
     if( flags.GetBool('DL_downloaded_Played') || dxr.flags.IsWaltonWare() ) {
         RemoveChoppers('BlackHelicopter');
-        chopper=SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vectm(2104.722168, 3647.967773, 896.197144), rotm(0, 0, 0) );
+        chopper=SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vect(2104.722168, 3647.967773, 896.197144), rot(0, 0, 0) );
         RebindChopperHoverHint('ChopperExit',chopper);
     }
 
@@ -622,13 +622,13 @@ function VandOceanLabAnyEntry()
         me.SetCollision(false,false,false);
     }
 
-    s = Spawn(class'MiniSub',, 'MiniSub', vectm(186.735916, 243.355240, -2217.393555), rotm(0, -16408, 0) );
+    s = MiniSub(Spawnm(class'MiniSub',, 'MiniSub', vect(186.735916, 243.355240, -2217.393555), rot(0, -16408, 0) ));
     s.Event = 'subexit2';
     s.bFloating = true;
     s.SetPhysics(PHYS_Swimming);
-    s.SetRotation(rotm(0, -16408, 0));
-    s.DesiredRotation = rotm(0, -16408, 0);
-    s.origRot = rotm(0, -16408, 0);
+    s.SetRotation(rotm(0, -16408, 0, GetRotationOffset(class'MiniSub')));
+    s.DesiredRotation = rotm(0, -16408, 0, GetRotationOffset(class'MiniSub'));
+    s.origRot = rotm(0, -16408, 0, GetRotationOffset(class'MiniSub'));
     RebindChopperHoverHint('reallysubexit2',s);
 
     foreach AllActors(class'DataLinkTrigger', dlt) {
@@ -658,7 +658,7 @@ function VandSiloAnyEntry()
 
     RemoveChoppers('backtrack_chopper');
     if(!dxr.flags.IsZeroRando()) {
-        chopper = BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vectm(507, -2500, 1600), rotm(0,0,0) );
+        chopper = BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vect(507, -2500, 1600), rot(0,0,0) );
         chopper.FamiliarName = "Backtrack";
         chopper.UnFamiliarName = "Backtrack";
     }
@@ -700,12 +700,13 @@ function Vehicles SpawnChopper(Name ChopperTag, Name PathTag, string BindName, v
     bOldCollideWorld = class'BlackHelicopter'.default.bCollideWorld;
     class'BlackHelicopter'.default.bCollideWorld = false;
 
-    chopper = Spawn(class'BlackHelicopter',, ChopperTag, loc, rot );
+    chopper = BlackHelicopter(Spawnm(class'BlackHelicopter',, ChopperTag, loc, rot ));
     chopper.Event = PathTag;
     chopper.BindName = BindName;
     chopper.FamiliarName = "Jock";
     chopper.UnFamiliarName = "Jock";
     chopper.ConBindEvents();
+    chopper.SoundRadius = chopper.SoundRadius / 4;
 
     class'BlackHelicopter'.default.bCollideWorld = bOldCollideWorld;
     info("SpawnChopper("$ChopperTag$", "$PathTag$", "$BindName$", ("$loc$"), ("$rot$") ) spawned "$chopper);
@@ -721,7 +722,7 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
     info("BacktrackChopper("$event$", "$ChopperTag$", "$PathTag$", "$BindName$"...)");
 
     if( event != '' ) {
-        t = Spawn(class'InterpolateTrigger',, event, loc);
+        t = InterpolateTrigger(Spawnm(class'InterpolateTrigger',, event, loc));
         t.bTriggerOnceOnly = false;
         t.Event = ChopperTag;
         t.SetCollision(false,false,false);
@@ -735,7 +736,7 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
         return chopper;
     }
 
-    exit = Spawn(class'MapExit',, event, loc );
+    exit = MapExit(Spawnm(class'MapExit',, event, loc ));
     exit.SetCollision(false,false,false);
     SetDestination(exit, DestMap, DestName, DestTag);
     exit.bPlayTransition = true;
@@ -779,7 +780,7 @@ function CreateInterpolationPoints(Name PathTag, vector loc)
         return;// don't do anything if PathTag already exists
 
     for(i=0; i<10 ; i++) {
-        p = Spawn(class'InterpolationPoint',, PathTag, loc, rotm(0,0,0) );
+        p = Spawn(class'InterpolationPoint',, PathTag, loc, rotm(0,0,0,0) );
         p.Position = i;
         p.RateModifier = 2;
         loc.Z += 20*i;

@@ -44,6 +44,14 @@ function CheckConfig()
         i++;
         break;
 
+    case "02_NYC_WAREHOUSE":
+        door_fixes[i].tag = 'Generator';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = true;
+        i++;
+        break;
+
     case "04_NYC_NSFHQ":
         // door to the basement
         door_fixes[i].tag = 'ExitDoor';

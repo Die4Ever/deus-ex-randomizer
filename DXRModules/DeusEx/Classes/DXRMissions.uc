@@ -341,7 +341,7 @@ function MoveActorsOut()
             a.bMovable = True;
             success = a.SetLocation(a.Location + vect(0,0,20000));
             if (!success){
-                l("Failed to move "$a.Name$" out");
+                warning("Failed to move "$a.Name$" out");
             }
         }
     }

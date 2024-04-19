@@ -418,7 +418,7 @@ simulated function vector vectclean(vector v)
 }
 
 // see unreal-map-flipper for a list of offsets, scriptpawns use an offset of 16384, most other things seem to use 0
-simulated function rotator rotm(int p, int y, int roll, optional int offset)
+simulated function rotator rotm(int p, int y, int roll, int offset)
 {
     local Rotator r;
     // TODO: only works for X or Y mirrors, haven't tested Y mirrors

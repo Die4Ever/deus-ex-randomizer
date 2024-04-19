@@ -95,7 +95,7 @@ function PreFirstEntryMapFixes()
                 if(dxr.flags.settings.keysrando > 0)
                     GlowUp(key);
 
-                SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+                SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
             }
 
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
@@ -141,7 +141,7 @@ function PreFirstEntryMapFixes()
         }
 
         if(!dxr.flags.IsReducedRando()) {
-            k = Spawn(class'#var(prefix)Karkian',,, vectm(54.688416, 1208.957275, -237.351410), rotm(0,32768,0));
+            k = #var(prefix)Karkian(Spawnm(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0)));
             k.BindName="NSFMinotaur";
             k.bImportant = true;
             k.ChangeAlly('Player', -1, false);
@@ -278,7 +278,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "04_NYC_BAR":
-        Spawn(class'BarDancer',,,vectm(-1440,340,48),rotm(0,-16348,0));
+        Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
         break;
 
     case "04_NYC_STREET":
@@ -359,6 +359,11 @@ function AnyEntryMapFixes()
                     ford.EnterWorld();
             }
         }
+
+        if (dxr.flagbase.getBool('SmugglerDoorDone')) {
+            dxr.flagbase.setBool('MetSmuggler', true,, -1);
+        }
+
         break;
 
     case "04_NYC_STREET":

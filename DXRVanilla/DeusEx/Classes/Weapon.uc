@@ -20,6 +20,12 @@ function PostBeginPlay()
     }
 }
 
+function ScopeOff()
+{
+    bWasZoomed = false;
+    Super.ScopeOff();
+}
+
 function BringUp()
 {
     local int texLoc;

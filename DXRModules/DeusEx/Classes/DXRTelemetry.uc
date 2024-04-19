@@ -16,6 +16,8 @@ var string newsdates[5];
 var string newsheaders[5];
 var string newstexts[5];
 
+var Json j;
+
 function CheckConfig()
 {
     if( server == "" || config_version < VersionNumber() ) {
@@ -139,18 +141,40 @@ function int GetAddrFromCache()
 function ReceivedData(string data)
 {
     local string status;
-    local Json j;
-    j = class'Json'.static.parse(Level, data);
-    data = "";
-    status = j.get("status");
-    l("HTTPReceivedData: " $ status $ ", j.count(): " $ j.count());
-    if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
-        // we probably don't want to use warning or err here because that would send to telemetry which could cause an infinite loop
-        l("ERROR: HTTPReceivedData: " $ status);
+    local Json tjs;
+
+    if(Len(data) > 500 && j==None) {
+        l("ReceivedData doing latent json parsing: " @ Len(data));
+        j = new(Level) class'Json';
+        j.StartParse(data);
+    } else {
+        tjs = class'Json'.static.parse(Level, data);
+        CheckNotification(j);
+        CheckDeaths(j, 0);
+        class'DXRStats'.static.CheckLeaderboard(dxr, j);
     }
-    CheckNotification(j);
-    CheckDeaths(j);
-    class'DXRStats'.static.CheckLeaderboard(dxr, j);
+    data = "";
+}
+
+simulated function Tick(float deltaTime)
+{
+    local int oldCount;
+    Super.Tick(deltaTime);
+
+    if(j != None) {
+        oldCount = j.count();
+
+        if(j.ParseIter(1)) {
+            CheckNotification(j);
+            CheckDeaths(j, oldCount);
+            class'DXRStats'.static.CheckLeaderboard(dxr, j);
+            CriticalDelete(j);
+            j = None;
+            l("finished latent json parsing");
+        } else {
+            CheckDeaths(j, oldCount);
+        }
+    }
 }
 
 function bool CanShowNotification()
@@ -176,8 +200,15 @@ function CheckNotification(Json j)
     local DXRNewsWindow newswindow;
     local DXRNews news;
     local DeusExRootWindow r;
-    local string title;
+    local string title, status;
     local int i;
+
+    status = j.get("status");
+    l("HTTPReceivedData: " $ status $ ", j.count(): " $ j.count());
+    if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
+        // we probably don't want to use warning or err here because that would send to telemetry which could cause an infinite loop
+        l("ERROR: HTTPReceivedData: " $ status);
+    }
 
     if( ! CanShowNotification() ) return;
     if(j.get("newsheader0") == "") return;
@@ -217,14 +248,14 @@ function MessageBoxClicked(int button, int callbackId){
     //OK = 2
 }
 
-function CheckDeaths(Json j) {
+function CheckDeaths(Json j, int oldCount) {
     local string k, t;
     local int i;
     local vector loc;
 
     // if death_markers is disabled, we still should parse the list so we can tell the server the newest one we've already received?
 
-    for(i=0; i<j.count(); i++) {
+    for(i=oldCount; i<j.count(); i++) {
         k = j.key_at(i);
         if( InStr(k, "deaths.") == 0 ) {
             loc.x = float(j.at(i, 5));

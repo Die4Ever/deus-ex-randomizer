@@ -54,6 +54,8 @@ function PreFirstEntryMapFixes()
             RemoveFears(tt);// he looks pretty sick
         }
 
+        class'FillCollisionHole'.static.CreateLine(self, vectm(3081.067383, 1640, -2031.417969), vectm(3081.067383, 6584, -2031.417969), 40, 300);
+
         class'PlaceholderEnemy'.static.Create(self,vectm(-2467,866,-2000));
         class'PlaceholderEnemy'.static.Create(self,vectm(-2689,4765,-2143));
         class'PlaceholderEnemy'.static.Create(self,vectm(-163,7797,-2143));
@@ -570,7 +572,7 @@ function PostFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
             if (#var(prefix)Animal(sp)!=None){
                 //player().ClientMessage("Spawning doggy alarm for "$sp);
-                alarm=Spawn(class'#var(prefix)AlarmUnit',,, vectm(-7.312059,933.707886,-985),rotm(0,-16408,0)); //Dog Height Alarm
+                alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
                 alarm.Event='guardattack';
                 alarm.Tag='alarm1'; //Same as the original alarm
 

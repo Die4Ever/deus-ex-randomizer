@@ -11,21 +11,21 @@ function int InitGoals(int mission, string map)
 
     loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "South Dock", NORMAL_GOAL | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
-    AddMutualExclusion(loc, loc2);
+    AddMutualExclusion(loc, loc2);// unatco vs south dock (paul dock)
     AddMapMarker(class'Image01_LibertyIsland',156,364,"L","Terrorist Commander", loc2,"Leo Gold, the terrorist commander, can be located on the South dock.  This is the location you would normally start the game.");
 
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2407.206787, 205.915558, -128.899979), rot(0, 30472, 0));
-    AddMutualExclusion(loc, loc2);
+    AddMutualExclusion(loc, loc2);// unatco vs hut
     AddMapMarker(class'Image01_LibertyIsland',156,199,"L","Terrorist Commander", loc2,"Leo Gold, the terrorist commander, can be located in the small hut in front of the statue.");
 
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
+    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
-    AddMutualExclusion(loc, loc2);
+    AddMutualExclusion(loc, loc2);// north dock start (filben dock) vs electric bunker
     AddMapMarker(class'Image01_LibertyIsland',318,140,"L","Terrorist Commander",loc2,"Leo Gold, the terrorist commander, can be located in the back of the small bunker next to the statue.  He would be behind the malfunctioning electrical box.");
 
     loc3 = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", NORMAL_GOAL, vect(4018,-10308,-256), rot(0, 22520, 0));
-    AddMutualExclusion(loc, loc3);
-    AddMutualExclusion(loc3, loc2);
+    AddMutualExclusion(loc, loc3);// north dock start vs north dock leo
+    AddMutualExclusion(loc3, loc2);// north dock leo vs electric bunker
     AddMapMarker(class'Image01_LibertyIsland',239,15,"L","Terrorist Commander",loc3,"Leo Gold, the terrorist commander, can be located on the North dock on the opposite side from the hut.");
 
     loc=AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
@@ -35,7 +35,7 @@ function int InitGoals(int mission, string map)
     AddMapMarker(class'Image01_LibertyIsland',257,159,"L","Terrorist Commander",loc,"Leo Gold, the terrorist commander, can be located on the highest outside level of the base of the statue.");
     loc2 = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
     AddMapMarker(class'Image01_LibertyIsland',260,184,"L","Terrorist Commander",loc2,"Leo Gold, the terrorist commander, can be located in the command post at the top of the statue.  This is his vanilla location.");
-    AddMutualExclusion(loc, loc2);
+    AddMutualExclusion(loc, loc2);// top of the base vs top of the statue
 
     //Boat locations
     loc=AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL , vect(-5122.414551, 10138.813477, -269.806213), rot(0, 0, 0));
@@ -58,26 +58,26 @@ function int InitGoalsRev(int mission, string map)
     AddGoal("01_NYC_UNATCOISLAND", "Police Boat", GOAL_TYPE1, 'NYPoliceBoat0', PHYS_None);
 
     loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6146.002930, 1748.501709, -87.000000), rot(0, 0, 0));
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", NORMAL_GOAL | VANILLA_START, vect(-4728.569824, 9358.811523, -280.674988), rot(0, -7040, 0));
-    AddMutualExclusion(loc, loc2);
+    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "South Dock", NORMAL_GOAL | VANILLA_START, vect(-4728.569824, 9358.811523, -280.674988), rot(0, -7040, 0));
+    AddMutualExclusion(loc, loc2);// unatco start vs south dock (paul dock)
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2404,177,-83), rot(0, 30472, 0));
-    AddMutualExclusion(loc, loc2);
+    AddMutualExclusion(loc, loc2);// unatco start vs hut leo
 
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
+    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
-    AddMutualExclusion(loc, loc2);
+    AddMutualExclusion(loc, loc2);// north dock start vs electric bunker leo
 
     AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
 
     loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
-    AddMutualExclusion(loc, loc2);
+    AddMutualExclusion(loc, loc2);// top of the base leo vs top of the statue start
 
     //Boat locations
-    AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL , vect(-5023.598145,9131.867188,-269.806213), rot(0, 16192, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4471, -10046.186523, -269.806213), rot(0, 16192, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 231.813477, 2108.193848), rot(0, 16192, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4571,135,24), rot(0, 16192, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL, vect(-5023.598145,9131.867188,-269.806213), rot(0, 16192, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1, vect(4471, -10046.186523, -269.806213), rot(0, 16192, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1, vect(3682.585449, 231.813477, 2108.193848), rot(0, 16192, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1, vect(-4571,135,24), rot(0, 16192, 0));
 
     return mission;
 }
@@ -168,7 +168,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             $ "|n|nPS: You can see all my possible locations by clicking the Goal Locations button on your Goals screen."
             $ "|nIf you get really stuck then click on Show Spoilers, Show Nanokeys, or Show Datacubes.";
 
-        SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0), text, true);
+        SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0,0), text, true);
 
         if(ScriptedPawn(g.actors[0].a) != None) {
             RemoveFears(ScriptedPawn(g.actors[0].a));

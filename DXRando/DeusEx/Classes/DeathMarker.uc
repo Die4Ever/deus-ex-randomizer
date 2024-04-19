@@ -56,6 +56,8 @@ static function string DamageTypeText(string dmg, out string pre) {
             return "had their killswitch flipped";
         case "Helicopter":
             return "sliced to pieces by helicopter blades";
+        case "Crushed":
+            return "crushed";
     }
     log("WARNING: missing DamageTypeText for "$dmg);
     return "killed";

@@ -16,6 +16,7 @@ var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, s
 var config int PB[16];
 var config int Golds[16];
 var config byte alwaysShowSplit[16];
+var config int goal_time;
 
 var config string title, subtitle, footer;
 var string ttitle, tsubtitle, tfooter;
@@ -497,14 +498,16 @@ function string fmtTimeDiff(int diff)
 
 function int BalancedSplit(int m)
 {
-    local int balanced_split_time;
+    local int balanced_split_time, goal;
     local float ratio_of_game;
 
-    if(PB_total == 0) return Golds[m];
+    goal = PB_total;
+    if(goal_time != 0) goal = goal_time;
+    if(goal == 0) return Golds[m];
     if(sum_of_bests == 0) return PB[m];
 
     ratio_of_game = float(Golds[m]) / float(sum_of_bests);
-    balanced_split_time = ratio_of_game * float(PB_total);
+    balanced_split_time = ratio_of_game * float(goal);
     return balanced_split_time;
 }
 

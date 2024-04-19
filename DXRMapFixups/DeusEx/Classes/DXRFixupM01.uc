@@ -50,8 +50,8 @@ function PreFirstEntryMapFixes()
             harley.bImportant = true;
         }
         //Move this Joe Greene article from inside HQ to outside on the island
-        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0),'01_Newspaper06');//Forklift in bunker
-        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(3163,-1298,-207),rotm(0,0,0),'01_Newspaper06');//Backroom near jail
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0,0),'01_Newspaper06');//Forklift in bunker
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(3163,-1298,-207),rotm(0,0,0,0),'01_Newspaper06');//Backroom near jail
 
         foreach AllActors(class'#var(prefix)MapExit',exit){break;}
         foreach AllActors(class'#var(prefix)NYPoliceBoat',b) {

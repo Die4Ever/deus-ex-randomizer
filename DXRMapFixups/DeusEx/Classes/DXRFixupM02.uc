@@ -78,8 +78,8 @@ function PreFirstEntryMapFixes()
         break;
     case "02_NYC_WAREHOUSE":
         if (VanillaMaps){
-            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
-            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
+            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
+            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
 
             //Remove the small boxes in the sewers near the ladder so that bigger boxes don't shuffle into those spots
             foreach AllActors(class'DeusExMover',d,'DrainGrate'){break;}
@@ -89,7 +89,7 @@ function PreFirstEntryMapFixes()
             AddSwitch( vect(-1518.989136,278.541260,-439.973816), rot(0, 2768, 0), 'DrainGrate');
 
             //A keypad in the sewer walking path to allow backtracking
-            kp = Spawn(class'#var(prefix)Keypad2',,,vectm(-622.685,497.4295,-60.437), rotm(0,-49192,0));
+            kp = #var(prefix)Keypad2(Spawnm(class'#var(prefix)Keypad2',,,vect(-622.685,497.4295,-60.437), rot(0,-49192,0)));
             kp.validCode="2577";
             kp.bToggleLock=False;
             kp.Event='DoorToWarehouse';
@@ -98,7 +98,8 @@ function PreFirstEntryMapFixes()
             //Add a button instead
             foreach AllActors(class'#var(prefix)Trigger',trig){
                 if (trig.Event=='SecurityDoor'){
-                    trig.Event='DontDoAnything';
+                    trig.Event='';
+                    trig.Destroy();
                     break;
                 }
             }
@@ -118,6 +119,12 @@ function PreFirstEntryMapFixes()
             }
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
+
+            // fix collision with the fence https://github.com/Die4Ever/deus-ex-randomizer/issues/665
+            foreach AllActors(class'DeusExMover', d) {
+                if(d.Event == 'BlewFence') break;
+            }
+            class'FillCollisionHole'.static.CreateLine(self, vectm(-2184, 1266.793335, 79.291428), vectm(-2050, 1266.793335, 79.291428), 10, 80, d);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
             class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
@@ -189,7 +196,7 @@ function PreFirstEntryMapFixes()
 
         break;
     case "02_NYC_BAR":
-        Spawn(class'BarDancer',,,vectm(-1475,-580,48),rotm(0,25000,0));
+        Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
         break;
 
     case "02_NYC_UNDERGROUND":
@@ -302,5 +309,14 @@ function PostFirstEntryMapFixes()
         }
 
         break;
+    }
+}
+
+function AnyEntryMapFixes()
+{
+    if (dxr.localURL == "02_NYC_SMUG") {
+        if (dxr.flagbase.getBool('SmugglerDoorDone')) {
+            dxr.flagbase.setBool('MetSmuggler', true,, -1);
+        }
     }
 }

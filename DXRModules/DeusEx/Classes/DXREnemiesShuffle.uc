@@ -81,6 +81,7 @@ function SwapScriptedPawns(int percent, bool enemies)
     local Inventory item, nextItem;
 
     num=0;
+    keepTagName = 'SwapAll';// don't match any real tags so that all tags get swapped by default, this used to be the empty name ''
     switch(dxr.localURL) {
     case "04_NYC_NSFHQ":
         if(enemies)

@@ -656,9 +656,9 @@ function SpawnDatacubes()
             loc = GetRandomPosition();
 
 #ifdef injections
-        dc = Spawn(class'#var(prefix)DataCube',,, loc, rotm(0,0,0));
+        dc = Spawn(class'#var(prefix)DataCube',,, loc, rotm(0,0,0,0));
 #else
-        dc = Spawn(class'DXRInformationDevices',,, loc, rotm(0,0,0));
+        dc = Spawn(class'DXRInformationDevices',,, loc, rotm(0,0,0,0));
 #endif
 
         if( dc != None ){

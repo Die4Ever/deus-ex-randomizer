@@ -7,6 +7,7 @@ var bool bOnLadder;
 var transient string nextMap;
 var laserEmitter aimLaser;
 var bool bDoomMode;
+var bool bAutorun;
 
 var Rotator ShakeRotator;
 
@@ -115,7 +116,7 @@ function ResetGoals()
 
 function DXRando GetDXR()
 {
-    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
+    if( dxr == None ) dxr = class'DXRando'.default.dxr;
     return dxr;
 }
 
@@ -925,6 +926,22 @@ exec function po()
     Level.bPlayersOnly = !Level.bPlayersOnly;
 }
 
+exec function crate(optional string name)
+{
+    local CrateUnbreakableSmall c;
+    local ActorDisplayWindow actorDisplay;
+    c = Spawn(class'CrateUnbreakableSmall');
+    if(name != "") c.ItemName = name;
+    actorDisplay = DeusExRootWindow(rootWindow).actorDisplay;
+    if(actorDisplay.GetViewClass() == None && !class'DXRVersion'.static.VersionIsStable()) {
+        actorDisplay.SetViewClass(class'CrateUnbreakableSmall');
+        actorDisplay.ShowLOS(false);
+        actorDisplay.ShowPos(true);
+    }
+    CarriedDecoration = c;
+    PutCarriedDecorationInHand();
+}
+
 exec function FixAugHotkeys()
 {
     local AugmentationManager am;
@@ -1402,6 +1419,21 @@ exec function OpenControllerAugWindow()
                 TarWindow.UpdateHighlighterPos();
             }
         }
+    }
+}
+
+exec function ToggleAutorun()
+{
+    bAutorun = !bAutorun;
+}
+
+event PlayerInput( float DeltaTime )
+{
+    if (!InConversation()) {
+        if(bAutorun) {
+            aBaseY=3000;
+        }
+        Super.PlayerInput(DeltaTime);
     }
 }
 

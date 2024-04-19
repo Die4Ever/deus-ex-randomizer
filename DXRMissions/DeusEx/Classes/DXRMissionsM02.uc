@@ -226,6 +226,9 @@ function PreFirstEntryMapFixes()
             it.Destroy();
         }
     }
+    if(dxr.localURL=="02_NYC_WAREHOUSE") {
+        ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK? maybe better than creating a new subclass for DynamicSoundTriggered and then doing replacements
+    }
 }
 
 function MissionTimer()
@@ -246,18 +249,25 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(DeusExPrefix)Mover m;
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
+    local int i;
 
     if (g.name=="Generator"){
         class'DXRHoverHint'.static.Create(self, "NSF Generator", Loc.positions[0].pos, 175, 140, g.actors[0].a);
+
+        for(i=0; i<ArrayCount(g.actors); i++) {
+            if( AmbientSoundTriggered(g.actors[i].a) != None) {
+                AmbientSoundTriggered(g.actors[i].a).SoundRadius = 1600;
+            }
+        }
     }
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {
-        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(505.710449, -605, 162.091278), rotm(16384,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(505.710449, -605, 162.091278), rotm(16384,0,0, GetRotationOffset(class'#var(prefix)CrateUnbreakableLarge')));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
         a.DrawScale = 4;
         class'DXRHoverHint'.static.Create(self, "This is not the generator", a.Location, a.CollisionRadius+5, a.CollisionHeight+5);
-        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0, GetRotationOffset(class'#var(prefix)CrateUnbreakableLarge')));
         a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
         a.bMovable = false;
         a.DrawScale = 2;
