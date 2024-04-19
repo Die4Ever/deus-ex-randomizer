@@ -7,6 +7,7 @@ var bool bOnLadder;
 var transient string nextMap;
 var laserEmitter aimLaser;
 var bool bDoomMode;
+var bool bAutorun;
 
 var Rotator ShakeRotator;
 
@@ -1418,6 +1419,21 @@ exec function OpenControllerAugWindow()
                 TarWindow.UpdateHighlighterPos();
             }
         }
+    }
+}
+
+exec function ToggleAutorun()
+{
+    bAutorun = !bAutorun;
+}
+
+event PlayerInput( float DeltaTime )
+{
+    if (!InConversation()) {
+        if(bAutorun) {
+            aBaseY=3000;
+        }
+        Super.PlayerInput(DeltaTime);
     }
 }
 
