@@ -1,5 +1,5 @@
 //=============================================================================
-// MenuChoice_PasswordAutofill
+// MenuChoice_UTMusic
 //=============================================================================
 
 class MenuChoice_UTMusic extends DXRMenuUIChoiceEnum;

@@ -152,10 +152,8 @@ function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
 
         lstAccounts.AddRow(username$";"$password);
 
-#ifndef hx
-        if (Caps(winTerm.GetUserName()) == username)
+        if(known)
             userRowIndex = compIndex;
-#endif
     }
 
     // Select the row that matches the current user
