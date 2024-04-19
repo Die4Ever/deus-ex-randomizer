@@ -35,8 +35,10 @@ simulated function SetAutomatic()
         LevelValues[i] = default.LevelValues[i];
     }
 
-    raugs = DXRAugmentations(Human(player).DXRFindModule(class'DXRAugmentations'));
-    raugs.RandoAug(self);
+    if(player != None)
+        raugs = DXRAugmentations(Human(player).DXRFindModule(class'DXRAugmentations'));
+    if(raugs != None)
+        raugs.RandoAug(self);
 }
 
 defaultproperties
