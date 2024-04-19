@@ -116,7 +116,7 @@ function ResetGoals()
 
 function DXRando GetDXR()
 {
-    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
+    if( dxr == None ) dxr = class'DXRando'.default.dxr;
     return dxr;
 }
 
