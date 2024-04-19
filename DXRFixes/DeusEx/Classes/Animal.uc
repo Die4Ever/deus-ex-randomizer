@@ -1,4 +1,5 @@
-class DXRAnimal injects Animal;
+class DXRAnimal merges Animal;
+// TODO: we can change this to injects but it breaks savegame compatibility
 
 function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
                             Vector offset, Name damageType)
