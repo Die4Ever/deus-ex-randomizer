@@ -26,11 +26,15 @@ function FirstEntry()
     foreach AllActors(class'#var(DeusExPrefix)Carcass', c)
 #endif
     {
-        if ( c.itemName != "Dead Body" && c.itemName != "Unconscious" && c.itemName != "Animal Carcass" )
-            continue;
-        if ( c.BindName == "PaulDentonCarcass" )
-            continue;
-        c.itemName = c.itemName $ " (" $ RandomName(dxr) $ ")";
+        if (c.itemName == "Dead Body" || c.itemName == "Animal Carcass") { // this is apparently always true in the vanilla maps
+            if (c.BindName == "PaulDentonCarcass") {
+                c.itemName = "Paul Denton (Dead)";
+            } else {
+                c.itemName = RandomName(dxr) $ " (Dead)";
+            }
+        } else if (c.itemName == "Unconscious") {
+            c.itemName = RandomName(dxr) $ " (Unconscious)";
+        }
     }
 
     foreach AllActors(class'#var(prefix)BoneSkull', skull) {
