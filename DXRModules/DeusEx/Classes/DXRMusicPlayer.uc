@@ -167,7 +167,7 @@ function string GetCurrentSongName()
 
 function GetLevelSong(bool setseed)
 {
-    local string oldSong, newSong;
+    local string newSong;
     local DXRMusic music;
 
     if(setseed) {
@@ -176,14 +176,13 @@ function GetLevelSong(bool setseed)
             SetGlobalSeed("NYCStreets2_Music");
     } else {
         SetGlobalSeed(FRand());
-        oldSong = GetCurrentSongName();
     }
 
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
     if(music == None) {
         return;
     }
-    music._GetLevelSong(oldSong, newSong, LevelSongSection, DyingSection, CombatSection, ConvSection, OutroSection);
+    music._GetLevelSong(newSong, LevelSongSection, DyingSection, CombatSection, ConvSection, OutroSection);
 
     l("GetLevelSong() "$newSong@LevelSongSection@DyingSection@CombatSection@ConvSection@OutroSection);
 
@@ -286,6 +285,17 @@ function PlayRandomSong(bool setseed)
 
     SetTimer(1.0, True);
     Enable('Tick');
+}
+
+function SkipSong()
+{
+    local DXRMusic music;
+
+    music = DXRMusic(dxr.FindModule(class'DXRMusic'));
+    if(music != None) {
+        music.MarkSkippedSong(GetCurrentSongName());
+    }
+    PlayRandomSong(true);
 }
 
 // ----------------------------------------------------------------------

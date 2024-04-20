@@ -14,7 +14,7 @@ struct SongChoice {
 var config bool allowCombat;
 var config SongChoice choices[300];// keep size in sync with _GetLevelSong tchoices[]
 
-var string skipped_songs[10];// copied back to defaults, so they get remembered across loading screens but not when you close the program, otherwise use the disable button instead of the change song button
+var string skipped_songs[20];// copied back to defaults, so they get remembered across loading screens but not when you close the program, otherwise use the disable button instead of the change song button
 var int last_skipped_song;
 
 function CheckConfig()
@@ -37,8 +37,8 @@ function CheckConfig()
         choices[i++] = MakeSongChoice("Area51_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("Area51Bunker_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("BatteryPark_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("HKClub_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("HKClub2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("HKClub_Music", 0, 0, 0, 4, 0); // only has ambient and convo
+        choices[i++] = MakeSongChoice("HKClub2_Music", 0, 0, 0, 0, 0); // only ambient
         choices[i++] = MakeSongChoice("HongKong_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("HongKongCanal_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("HongKongHelipad_Music", 0, 1, 3, 4, 5);
@@ -54,8 +54,8 @@ function CheckConfig()
         choices[i++] = MakeSongChoice("OceanLab2_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("ParisCathedral_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("ParisChateau_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("ParisClub_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("ParisClub2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("ParisClub_Music", 0, 0, 0, 0, 0); // has ambient and a single section combat song
+        choices[i++] = MakeSongChoice("ParisClub2_Music", 0, 0, 0, 0, 0); // has ambient and a single section combat song
         choices[i++] = MakeSongChoice("Tunnels_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("UNATCO_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("UNATCOReturn_Music", 0, 1, 3, 4, 5);
@@ -323,7 +323,18 @@ function SongChoice MakeSongChoice(string song, optional int ambient, optional i
     return s;
 }
 
-function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSection, out byte DyingSection, out byte CombatSection, out byte ConvSection, out byte OutroSection)
+function MarkSkippedSong(string oldSong)
+{
+    // remember skipped songs
+    if(oldSong != "") {
+        last_skipped_song = last_skipped_song % ArrayCount(skipped_songs);
+        skipped_songs[last_skipped_song] = oldSong;
+        default.skipped_songs[last_skipped_song] = skipped_songs[last_skipped_song];
+        default.last_skipped_song = ++last_skipped_song;
+    }
+}
+
+function _GetLevelSong(out string newSong, out byte LevelSongSection, out byte DyingSection, out byte CombatSection, out byte ConvSection, out byte OutroSection)
 {
     local SongChoice tchoices[300], s;
     local int i, j, num;
@@ -348,21 +359,7 @@ function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSec
         if(s.enabled == false) continue;
         if(s.song == "") continue;
         if(s.cutscene_only && !cutscene) continue;
-        tchoices[num++] = s;
-    }
 
-    // remember skipped songs
-    if(oldSong != "") {
-        last_skipped_song = last_skipped_song % ArrayCount(skipped_songs);
-        skipped_songs[last_skipped_song] = oldSong;
-        default.skipped_songs[last_skipped_song] = skipped_songs[last_skipped_song];
-        default.last_skipped_song = ++last_skipped_song;
-    }
-
-    // choose the song
-    for(j=0; j<100; j++) {
-        i = rng(num);
-        s = tchoices[i];
         goodSong = true;
         for(i=0; i<ArrayCount(skipped_songs); i++) {
             if(s.song ~= skipped_songs[i]) {
@@ -370,8 +367,15 @@ function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSec
                 break;
             }
         }
-        if(goodSong) break;
+
+        if(goodSong) tchoices[num++] = s;
     }
+
+    // choose the song
+    // if we don't put the num into the seed then skipping songs causes you to get the same rng result, which means you skip songs in order
+    BranchSeed(num);
+    i = rng(num);
+    s = tchoices[i];
 
     newSong = s.song;
     LevelSongSection = s.ambient;
