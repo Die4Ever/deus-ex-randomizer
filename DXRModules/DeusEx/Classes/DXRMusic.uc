@@ -22,7 +22,7 @@ function CheckConfig()
     local int i, g;
     local string gamesongs[100];
 
-    if( ConfigOlderThan(2,6,2,2) ) {
+    if( ConfigOlderThan(2,6,3,8) ) {
         allowCombat = default.allowCombat;
 
         for(i=0; i<ArrayCount(choices); i++) {
