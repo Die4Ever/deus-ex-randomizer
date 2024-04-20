@@ -18,14 +18,14 @@ struct S_KeyDisplayItem
 };
 
 //Make sure to update all four of these when you add a new binding
-var localized string	FunctionText[65];
-var string				MenuValues1[65];
-var string				MenuValues2[65];
-var string				AliasNames[65];
+var localized string	FunctionText[66];
+var string				MenuValues1[66];
+var string				MenuValues2[66];
+var string				AliasNames[66];
 
 
 var string				PendingCommands[100];
-var localized S_KeyDisplayItem    keyDisplayNames[71];
+var localized S_KeyDisplayItem    keyDisplayNames[73];
 var localized string			  NoneText;
 var int					Pending;
 var int					selection;
@@ -631,6 +631,7 @@ defaultproperties
      FunctionText(62)="Activate All Auto Augs"
      FunctionText(63)="Aug Tree By WCCC"
      FunctionText(64)="Toggle Autorun"
+     FunctionText(65)="Pause"
      AliasNames(0)="ParseLeftClick|Fire"
      AliasNames(1)="ParseRightClick"
      AliasNames(2)="DropItem"
@@ -696,6 +697,7 @@ defaultproperties
      AliasNames(62)="ActivateAllAutoAugs"
      AliasNames(63)="OpenControllerAugWindow"
      AliasNames(64)="ToggleAutorun"
+     AliasNames(65)="Pause"
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")
@@ -767,6 +769,8 @@ defaultproperties
      keyDisplayNames(68)=(inputKey=IK_Backspace,displayName="Backspace")
      keyDisplayNames(69)=(inputKey=IK_Shift,displayName="Shift")
      keyDisplayNames(70)=(inputKey=IK_Space,displayName="Space")
+     keyDisplayNames(71)=(inputKey=IK_Pause,displayName="Pause")
+     keyDisplayNames(72)=(inputKey=IK_Tilde,displayName="Tilde")
      NoneText="[None]"
      strHeaderActionLabel="Action"
      strHeaderAssignedLabel="Assigned Key/Button"
