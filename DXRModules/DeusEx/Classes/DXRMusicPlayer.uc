@@ -142,6 +142,12 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
 function AnyEntry()
 {
     local DXRMusic music;
+
+    if(p == None) {
+        p = player();
+        ClientSetMusic(p, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
+    }
+
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
     if(music != None) {
         allowCombat = music.allowCombat;
@@ -210,11 +216,12 @@ function PlayRandomSong(bool setseed)
     local bool rando_music_setting;
     local int continuous_setting;
 
+    l("PlayRandomSong " $ setseed @ p);
     if(p == None) return;
 
     continuous_setting = class'MenuChoice_ContinuousMusic'.default.value;
     rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
-    l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
+    l("PlayRandomSong 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
     if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
         return;
 
@@ -226,7 +233,7 @@ function PlayRandomSong(bool setseed)
     NewCdTrack = 255;
     NewTransition = MTRAN_Fade;
 
-    l("AnyEntry 2: "$NewSong@NewSection@NewCdTrack@NewTransition@PrevSong@PrevSongSection@PrevSavedSection@PrevMusicMode);
+    l("PlayRandomSong 2: "$NewSong@NewSection@NewCdTrack@NewTransition@PrevSong@PrevSongSection@PrevSavedSection@PrevMusicMode);
 
     // ensure musicMode defaults to ambient, to fix combat music re-entry
     musicMode = MUS_Ambient;
