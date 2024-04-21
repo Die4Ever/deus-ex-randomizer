@@ -1437,6 +1437,11 @@ event PlayerInput( float DeltaTime )
     }
 }
 
+exec function RemoveBeltItem()
+{
+    RemoveObjectFromBelt(InHand);
+}
+
 defaultproperties
 {
     LastBrowsedAugPage=-1 //OAT, 1/12/24: Hack so backtracking levels doesn't sometimes forget which page you saved last.
