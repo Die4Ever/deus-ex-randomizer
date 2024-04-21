@@ -15,7 +15,7 @@ local DXRando dxr;
         Level.Game.SetGameSpeed(0.05);
         SetTimer(0.075, True);
     }
-    if( ran_first_frame == true && started_conv == false && player!=None  && player.CanStartConversation() ) {
+    if( ran_first_frame == true && started_conv == false && player!=None && player.CanStartConversation() ) {
         foreach AllActors(class'#var(prefix)BobPage',bob){break;}
         if (bob!=None){
             Super.FirstFrame();
@@ -28,7 +28,7 @@ local DXRando dxr;
             }
         }
     } else {
-        if (!player.CanStartConversation()){
+        if (ran_first_frame && !started_conv && !player.CanStartConversation()){
             log("WARNING: "$Self$": Unable to start intro conversation...  State: "$player.GetStateName()$"  Physics: "$player.Physics);
         }
     }
@@ -39,7 +39,7 @@ local DXRando dxr;
     // After the Intro conversation is over, tell the player to go on
     // to the next map (which will either be the main menu map or
     // the first game mission if we're starting a new game.
-    if (player!=None && flags.GetBool('Intro_Played'))
+    if (player!=None && flags!=None && flags.GetBool('Intro_Played'))
     {
         flags.SetBool('Intro_Played', False,, 1);
         if( flags.GetInt('Rando_newgameplus_loops') > 0 ) {
