@@ -184,6 +184,8 @@ function bool _GivePatrol(ScriptedPawn pawn)
 function LinkPoints(DynamicPatrolPoint prev, DynamicPatrolPoint next)
 {
     local rotator lookAngle;
+    if(prev==None || next==None) return;
+
     prev.Nextpatrol = next.Tag;
     prev.NextPatrolPoint = next;
 

@@ -1058,7 +1058,7 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
     local DXRMusicPlayer m;
     GetDXR();
     if (dxr==None){ //Probably only during ENDGAME4?
-        log("Couldn't find a DXR so we can set the music");
+        log("Couldn't find a DXR so we can set the music to " $ NewSong);
         return;
     }
     m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));
@@ -1435,6 +1435,11 @@ event PlayerInput( float DeltaTime )
         }
         Super.PlayerInput(DeltaTime);
     }
+}
+
+exec function RemoveBeltItem()
+{
+    RemoveObjectFromBelt(InHand);
 }
 
 defaultproperties

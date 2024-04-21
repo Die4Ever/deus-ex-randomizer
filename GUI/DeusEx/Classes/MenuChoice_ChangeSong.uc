@@ -13,7 +13,7 @@ function bool ButtonActivated( Window buttonPressed )
 {
     local DXRMusicPlayer music;
     foreach player.AllActors(class'DXRMusicPlayer', music) {
-        music.PlayRandomSong(false);
+        music.SkipSong();
     }
 	return True;
 }

@@ -74,6 +74,7 @@ function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)T
     local #var(prefix)ThrownProjectile gren;
 
     gren = Spawn(type,owner,tag,loc,rot);
+    if(gren == None) return gren;
 
     gren.PlayAnim('Open');
     gren.SetPhysics(PHYS_None);
@@ -114,6 +115,7 @@ function FirstEntry()
         oldTag = grens[i].tag;
         oldEvent=grens[i].event;
         oldOwner=grens[i].owner;
+        grens[i].SetCollision(false,false,false);
         grens[i].Destroy();
 
         gren = SpawnNewPlantedGrenade(PickRandomGrenade(),loc,rot,oldTag,oldEvent,oldOwner);

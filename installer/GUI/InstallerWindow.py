@@ -196,7 +196,7 @@ class InstallerWindow(GUIBase):
     def ZeroChangesCheckbox(self, padx, pady):
         # "Zero Changes" mode fixes
         v = BooleanVar(master=self.frame, value=True)
-        c = Checkbutton(self.frame, text="  Apply compatibility fixes for DeusEx.exe\n(Zero Changes mode)", variable=v)
+        c = Checkbutton(self.frame, text="DXRVanillaFixer\n  Apply compatibility fixes for DeusEx.exe", variable=v)
         Hovertip(c, "Apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.\nOnly has an effect when using a separate DXRando.exe for the Randomized modes\nor when not installing DXRando.")
         c.grid(column=1,row=self.row, sticky='SW', padx=padx, pady=pady)
         self.row += 1

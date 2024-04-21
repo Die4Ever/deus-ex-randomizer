@@ -142,6 +142,12 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
 function AnyEntry()
 {
     local DXRMusic music;
+
+    if(p == None) {
+        p = player();
+        ClientSetMusic(p, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
+    }
+
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
     if(music != None) {
         allowCombat = music.allowCombat;
@@ -161,7 +167,7 @@ function string GetCurrentSongName()
 
 function GetLevelSong(bool setseed)
 {
-    local string oldSong, newSong;
+    local string newSong;
     local DXRMusic music;
 
     if(setseed) {
@@ -170,14 +176,13 @@ function GetLevelSong(bool setseed)
             SetGlobalSeed("NYCStreets2_Music");
     } else {
         SetGlobalSeed(FRand());
-        oldSong = GetCurrentSongName();
     }
 
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
     if(music == None) {
         return;
     }
-    music._GetLevelSong(oldSong, newSong, LevelSongSection, DyingSection, CombatSection, ConvSection, OutroSection);
+    music._GetLevelSong(newSong, LevelSongSection, DyingSection, CombatSection, ConvSection, OutroSection);
 
     l("GetLevelSong() "$newSong@LevelSongSection@DyingSection@CombatSection@ConvSection@OutroSection);
 
@@ -210,11 +215,12 @@ function PlayRandomSong(bool setseed)
     local bool rando_music_setting;
     local int continuous_setting;
 
+    l("PlayRandomSong " $ setseed @ p);
     if(p == None) return;
 
     continuous_setting = class'MenuChoice_ContinuousMusic'.default.value;
     rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
-    l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
+    l("PlayRandomSong 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
     if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
         return;
 
@@ -226,7 +232,7 @@ function PlayRandomSong(bool setseed)
     NewCdTrack = 255;
     NewTransition = MTRAN_Fade;
 
-    l("AnyEntry 2: "$NewSong@NewSection@NewCdTrack@NewTransition@PrevSong@PrevSongSection@PrevSavedSection@PrevMusicMode);
+    l("PlayRandomSong 2: "$NewSong@NewSection@NewCdTrack@NewTransition@PrevSong@PrevSongSection@PrevSavedSection@PrevMusicMode);
 
     // ensure musicMode defaults to ambient, to fix combat music re-entry
     musicMode = MUS_Ambient;
@@ -279,6 +285,17 @@ function PlayRandomSong(bool setseed)
 
     SetTimer(1.0, True);
     Enable('Tick');
+}
+
+function SkipSong()
+{
+    local DXRMusic music;
+
+    music = DXRMusic(dxr.FindModule(class'DXRMusic'));
+    if(music != None) {
+        music.MarkSkippedSong(GetCurrentSongName());
+    }
+    PlayRandomSong(true);
 }
 
 // ----------------------------------------------------------------------

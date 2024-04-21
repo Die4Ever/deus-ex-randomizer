@@ -149,9 +149,9 @@ function ReceivedData(string data)
         j.StartParse(data);
     } else {
         tjs = class'Json'.static.parse(Level, data);
-        CheckNotification(j);
-        CheckDeaths(j, 0);
-        class'DXRStats'.static.CheckLeaderboard(dxr, j);
+        CheckNotification(tjs);
+        CheckDeaths(tjs, 0);
+        class'DXRStats'.static.CheckLeaderboard(dxr, tjs);
     }
     data = "";
 }
