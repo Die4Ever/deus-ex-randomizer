@@ -729,6 +729,26 @@ function TimerMapFixes()
 
     case "14_Oceanlab_silo":
         // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
+
+        if (!dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden') && dxr.flagbase.GetBool('missile_launched')) {
+            foreach AllActors(class'HowardStrong', hs) {
+                strongAlive = True;
+                break;
+            }
+
+            if (strongAlive == False) {
+                // both goals completed just now
+                foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
+					chopper.EnterWorld();
+                    break;
+                }
+				dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
+            } else {
+                // only computer goal completed
+                player().StartDataLinkTransmission("DL_Savage3");
+            }
+        }
+
         if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
             if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
                 // both goals completed, computer infolink played
@@ -744,23 +764,6 @@ function TimerMapFixes()
                         ce.nextEvent = None;
                     }
                 }
-                player().StartDataLinkTransmission("DL_Savage3");
-            }
-        } else if (dxr.flagbase.GetBool('missile_launched')) {
-            foreach AllActors(class'HowardStrong', hs) {
-                strongAlive = True;
-                break;
-            }
-
-            if (strongAlive == False) {
-                // both goals completed just now
-                foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
-					chopper.EnterWorld();
-                    break;
-                }
-				dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
-            } else {
-                // only computer goal completed
                 player().StartDataLinkTransmission("DL_Savage3");
             }
         }
