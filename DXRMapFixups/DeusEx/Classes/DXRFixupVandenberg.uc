@@ -731,10 +731,8 @@ function TimerMapFixes()
         // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
         if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
             if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
-                if (!dxr.flagbase.GetBool('DL_Dead_Played')) {
-                    // both goals completed, computer infolink played
-                    player().StartDataLinkTransmission("DL_Dead");
-                }
+                // both goals completed, computer infolink played
+                player().StartDataLinkTransmission("DL_Dead");
             } else {
                 // both goals completed, computer infolink not played
                 for (ce = GetConversation('DL_Savage3').eventList; ce != None; ce = ce.nextEvent) {
@@ -753,14 +751,16 @@ function TimerMapFixes()
                 strongAlive = True;
                 break;
             }
+
             if (strongAlive == False) {
+                // both goals completed just now
                 foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
 					chopper.EnterWorld();
                     break;
                 }
 				dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
-            } else if (!dxr.flagbase.GetBool('DL_Savage3_Played')) {
-                // only computer goal completed, computer infolink not played
+            } else {
+                // only computer goal completed
                 player().StartDataLinkTransmission("DL_Savage3");
             }
         }
