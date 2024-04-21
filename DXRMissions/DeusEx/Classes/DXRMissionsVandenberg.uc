@@ -119,6 +119,9 @@ function int InitGoals(int mission, string map)
         AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
         AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
         AddMutualExclusion(howard_computer, jock_computer); // both in the same room
+
+        AddMutualExclusion(computer_vanilla, jock_computer);
+
         return 142;
     }
 
