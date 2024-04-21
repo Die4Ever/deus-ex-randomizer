@@ -1422,6 +1422,18 @@ exec function OpenControllerAugWindow()
     }
 }
 
+
+event TravelPostAccept()
+{
+	Super.TravelPostAccept();
+    if(bCrouchOn && bToggleCrouch) {
+        bDuck = 0;
+        bCrouchOn = true;
+        bWasCrouchOn = false;
+        lastbDuck = 0;
+    }
+}
+
 exec function ToggleAutorun()
 {
     bAutorun = !bAutorun;
