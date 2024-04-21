@@ -374,6 +374,10 @@ function PreFirstEntryMapFixes()
         }
 
         dxr.flagbase.SetBool('MS_UnhideHelicopter', True);
+        foreach AllActors(class'DataLinkTrigger', dlt, 'klax') {
+            dlt.Destroy();
+            break;
+        }
 
         break;
     case "12_VANDENBERG_COMPUTER":
@@ -681,6 +685,7 @@ function TimerMapFixes()
     local #var(prefix)HowardStrong hs;
     local bool prevMapsDone, strongAlive;
     local BlackHelicopter chopper;
+    local ConEvent ce;
 
     switch(dxr.localURL)
     {
@@ -720,9 +725,25 @@ function TimerMapFixes()
             dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
         }
 
+        // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
         if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
-            if (dxr.flagbase.GetBool('DL_Savage3_Played') && !dxr.flagbase.GetBool('DL_Dead_Played')) {
-				player().StartDataLinkTransmission("DL_Dead");
+            if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
+                if (!dxr.flagbase.GetBool('DL_Dead_Played')) {
+                    // both goals completed, computer infolink played
+                    player().StartDataLinkTransmission("DL_Dead");
+                }
+            } else {
+                // both goals completed, computer infolink not played
+                for (ce = GetConversation('DL_Savage3').eventList; ce != None; ce = ce.nextEvent) {
+                    if (
+                        ce.nextEvent != None &&
+                        ce.nextEvent.eventType == ET_Speech &&
+                        ConEventSpeech(ce.nextEvent).conSpeech.speech == "JC, go to the silo.  Make sure no one interferes with this launch."
+                    ) {
+                        ce.nextEvent = None;
+                    }
+                }
+                player().StartDataLinkTransmission("DL_Savage3");
             }
         } else if (dxr.flagbase.GetBool('missile_launched')) {
             foreach AllActors(class'HowardStrong', hs) {
@@ -735,6 +756,9 @@ function TimerMapFixes()
                     break;
                 }
 				dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
+            } else if (!dxr.flagbase.GetBool('DL_Savage3_Played')) {
+                // only computer goal completed, computer infolink not played
+                player().StartDataLinkTransmission("DL_Savage3");
             }
         }
 
