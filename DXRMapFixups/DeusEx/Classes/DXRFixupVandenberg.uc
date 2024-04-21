@@ -715,11 +715,16 @@ function TimerMapFixes()
         if(prevMapsDone && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
             foreach AllActors(class'#var(prefix)HowardStrong', hs) {
                 hs.EnterWorld();
+                break;
             }
             dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
         }
 
-        if (!dxr.flagbase.GetBool('DXR_EscapeHelicopterUnhidden') && dxr.flagbase.GetBool('missile_launched')) {
+        if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
+            if (dxr.flagbase.GetBool('DL_Savage3_Played') && !dxr.flagbase.GetBool('DL_Dead_Played')) {
+				player().StartDataLinkTransmission("DL_Dead");
+            }
+        } else if (dxr.flagbase.GetBool('missile_launched')) {
             foreach AllActors(class'HowardStrong', hs) {
                 strongAlive = True;
                 break;
@@ -727,9 +732,8 @@ function TimerMapFixes()
             if (strongAlive == False) {
                 foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
 					chopper.EnterWorld();
+                    break;
                 }
-				player().StartDataLinkTransmission("DL_Dead");
-				player().StartDataLinkTransmission("DL_Dead");
 				dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
             }
         }
