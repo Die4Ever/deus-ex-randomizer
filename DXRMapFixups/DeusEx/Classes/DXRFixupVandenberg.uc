@@ -697,9 +697,6 @@ function FixSavageSkillPointsDupe()
 function TimerMapFixes()
 {
     local #var(prefix)GarySavage gary;
-    local #var(prefix)HowardStrong hs;
-    local bool strongAlive;
-    local BlackHelicopter chopper;
     local ConEvent ce;
 
     switch(dxr.localURL)
@@ -729,46 +726,61 @@ function TimerMapFixes()
 
     case "14_Oceanlab_silo":
         // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
-
-        if (!dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden') && dxr.flagbase.GetBool('missile_launched')) {
-            foreach AllActors(class'HowardStrong', hs) {
-                strongAlive = True;
-                break;
-            }
-
-            if (strongAlive == False) {
-                // both goals completed just now
-                foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
-					chopper.EnterWorld();
-                    break;
-                }
-				dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
-            } else {
-                // only computer goal completed
-                player().StartDataLinkTransmission("DL_Savage3");
-            }
-        }
-
-        if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
-            if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
-                // both goals completed, computer infolink played
-                player().StartDataLinkTransmission("DL_Dead");
-            } else {
-                // both goals completed, computer infolink not played
-                for (ce = GetConversation('DL_Savage3').eventList; ce != None; ce = ce.nextEvent) {
-                    if (
-                        ce.nextEvent != None &&
-                        ce.nextEvent.eventType == ET_Speech &&
-                        ConEventSpeech(ce.nextEvent).conSpeech.speech == "JC, go to the silo.  Make sure no one interferes with this launch."
-                    ) {
-                        ce.nextEvent = None;
-                    }
-                }
-                player().StartDataLinkTransmission("DL_Savage3");
-            }
-        }
-
+        _MissileLaunchedChecks();
+        _CheckMoreSiloInfolinks();
         break;
+    }
+}
+
+function private _MissileLaunchedChecks() {
+    local #var(prefix)HowardStrong hs;
+    local bool strongAlive;
+    local BlackHelicopter chopper;
+
+    if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden') || !dxr.flagbase.GetBool('missile_launched')) {
+        return;
+    }
+
+    foreach AllActors(class'HowardStrong', hs) {
+        strongAlive = True;
+        break;
+    }
+
+    if (strongAlive == False) {
+        // both goals completed just now
+        foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
+            chopper.EnterWorld();
+            break;
+        }
+        dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
+    } else {
+        // only computer goal completed
+        player().StartDataLinkTransmission("DL_Savage3");
+    }
+}
+
+function private _CheckMoreSiloInfolinks() {
+    local ConEvent ce;
+
+    if (!dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
+        return;
+    }
+
+    if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
+        // both goals completed, computer infolink played
+        player().StartDataLinkTransmission("DL_Dead");
+    } else {
+        // both goals completed, computer infolink not played
+        for (ce = GetConversation('DL_Savage3').eventList; ce != None; ce = ce.nextEvent) {
+            if (
+                ce.nextEvent != None &&
+                ce.nextEvent.eventType == ET_Speech &&
+                ConEventSpeech(ce.nextEvent).conSpeech.speech == "JC, go to the silo.  Make sure no one interferes with this launch."
+            ) {
+                ce.nextEvent = None;
+            }
+        }
+        player().StartDataLinkTransmission("DL_Savage3");
     }
 }
 
