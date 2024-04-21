@@ -603,6 +603,7 @@ function AnyEntryMapFixes()
     local #var(prefix)ScriptedPawn sp;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
+    local bool prevMapsDone;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -638,8 +639,22 @@ function AnyEntryMapFixes()
             RemoveFears(hs);
             hs.MinHealth = 0;
         }
+
         Player().StartDataLinkTransmission("DL_FrontGate");
+
+        prevMapsDone = dxr.flagbase.GetBool('Heliosborn') && //Finished Vandenberg, mission 12
+            dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
+        prevMapsDone = prevMapsDone || !#defined(injections) || dxr.flags.settings.goals<=0;
+        if(prevMapsDone && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
+            foreach AllActors(class'#var(prefix)HowardStrong', hs) {
+                hs.EnterWorld();
+                break;
+            }
+            dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
+        }
+
         SetTimer(1, true);
+
         break;
     case "12_VANDENBERG_COMPUTER":
         SetTimer(1, true);
@@ -683,7 +698,7 @@ function TimerMapFixes()
 {
     local #var(prefix)GarySavage gary;
     local #var(prefix)HowardStrong hs;
-    local bool prevMapsDone, strongAlive;
+    local bool strongAlive;
     local BlackHelicopter chopper;
     local ConEvent ce;
 
@@ -713,18 +728,6 @@ function TimerMapFixes()
         break;
 
     case "14_Oceanlab_silo":
-        prevMapsDone = dxr.flagbase.GetBool('Heliosborn') &&  //Finished Vandenberg, mission 12
-            dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
-        prevMapsDone = prevMapsDone || !#defined(injections) || dxr.flags.settings.goals<=0;
-
-        if(prevMapsDone && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
-            foreach AllActors(class'#var(prefix)HowardStrong', hs) {
-                hs.EnterWorld();
-                break;
-            }
-            dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
-        }
-
         // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
         if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
             if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
