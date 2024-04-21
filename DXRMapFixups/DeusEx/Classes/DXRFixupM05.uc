@@ -39,6 +39,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
+    local #var(prefix)Keypad3 kp;
 
     local DXREnemies dxre;
     local int i;
@@ -91,6 +92,13 @@ function PreFirstEntryMapFixes()
                     //I think this filing cabinet door was supposed to
                     //be unlockable with Agent Sherman's key as well
                     dxm.KeyIDNeeded='Cabinet';
+                }
+            }
+
+            foreach AllActors(class'#var(prefix)Keypad3', kp, 'Keypad3') {
+                if(kp.Name=='Keypad10') {
+                    kp.Event = 'ExitDoor';
+                    kp.hackStrength = 0.1;
                 }
             }
 
