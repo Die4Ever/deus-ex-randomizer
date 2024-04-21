@@ -738,6 +738,9 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
         case "TobyAtanwe_Dead":
         case "MeetAI4_Played":
         case "DeBeersDead":
+        case "GotHelicopterInfo":
+        case "EverettAquarium":
+        case "GoneFishing":
             return true;
         }
         break;
