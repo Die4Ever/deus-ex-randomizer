@@ -363,10 +363,11 @@ function TitleScreenRandoLogo()
     local #var(prefix)DXText text;
     local vector v;
 
-    //Add me back in once we have "Randomizer" name textures!  Just change the textures below
-    foreach AllActors(class'#var(prefix)DXText',text)
-    {
-        text.bHidden=True; //Hide all the original text
+    if(dxr.localURL == "DXONLY" || dxr.localURL == "DX") {
+        foreach AllActors(class'#var(prefix)DXText',text)
+        {
+            text.bHidden=True; //Hide all the original text
+        }
     }
     if (dxr.localURL=="DX"){
         text = Spawn(class'DXRText',,,vectm(-60.979568,57.046417,-137.022430),rotm(0,32768,0,0));
