@@ -637,6 +637,10 @@ function AnyEntryMapFixes()
 
     case "14_VANDENBERG_SUB":
         FixSavageSkillPointsDupe();
+
+        GetConversation('JockArea51').AddFlagRef('dummy', True); // 'JockArea51' can never play
+        DeleteConversationFlag(GetConversation('JockBarks'), 'DL_Dead_Played', false); // 'JockBarks' can always play
+
         break;
 
     case "14_OCEANLAB_SILO":
@@ -778,14 +782,14 @@ function private _SiloRedirectedMissileWithHowardDead() {
     // both goals completed out of order, computer infolink not played
     local ConEventSpeech cesInitiated, cesMinutes;
 
-        cesInitiated = GetSpeechEvent(GetConversation('DL_Savage3').eventList, "Launch sequence initiated");
-        cesMinutes = GetSpeechEvent(cesInitiated, "You've got about 10 minutes");
+    cesInitiated = GetSpeechEvent(GetConversation('DL_Savage3').eventList, "Launch sequence initiated");
+    cesMinutes = GetSpeechEvent(cesInitiated, "You've got about 10 minutes");
 
-        cesInitiated.nextEvent = cesMinutes;
-        cesMinutes.nextEvent = GetConversation('DL_Dead').eventList;
-        dxr.flagbase.SetBool('DL_Dead_Played', True);
+    cesInitiated.nextEvent = cesMinutes;
+    cesMinutes.nextEvent = GetConversation('DL_Dead').eventList;
+    dxr.flagbase.SetBool('DL_Dead_Played', True);
 
-        player().StartDataLinkTransmission("DL_Savage3");
+    player().StartDataLinkTransmission("DL_Savage3");
 }
 
 function CountMJ12Bots()

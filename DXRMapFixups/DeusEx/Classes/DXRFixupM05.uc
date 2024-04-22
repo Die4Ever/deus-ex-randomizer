@@ -96,9 +96,10 @@ function PreFirstEntryMapFixes()
             }
 
             foreach AllActors(class'#var(prefix)Keypad3', kp, 'Keypad3') {
-                if(kp.Name=='Keypad10') {
+                if(kp.Name=='Keypad10' && kp.Event=='') {
                     kp.Event = 'ExitDoor';
                     kp.hackStrength = 0.1;
+                    kp.validCode = "1125";
                 }
             }
 
@@ -263,8 +264,16 @@ function BalanceJailbreak()
     local DXRMissions missions;
     local string PaulLocation;
     local #var(prefix)DataLinkTrigger dlt;
+    local #var(prefix)AnnaNavarre anna;
 
     SetSeed("BalanceJailbreak");
+
+    if(dxr.flags.settings.starting_map > 50) {
+        foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
+            anna.Destroy();
+        }
+        return;
+    }
 
     // move the items instead of letting Mission05.uc do it
     // Revision also removes ammo and credits, and spawns special weapons from Paul if you saved him

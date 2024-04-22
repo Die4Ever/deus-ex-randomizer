@@ -250,6 +250,10 @@ function PreFirstEntryMapFixes()
         break;
 
     case "06_HONGKONG_MJ12LAB":
+        // alarm in MiB's overlook office
+        if(VanillaMaps) {
+            Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
+        }
 
         ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(1.412384, 1658.755614, 190.711304)); // Inside the elvator to 06_HONGKONG_VERSALIFE
         ft.Event='SecurityRevoked';

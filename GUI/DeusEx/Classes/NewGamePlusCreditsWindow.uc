@@ -67,6 +67,7 @@ function AddDXRCreditsGeneral()
     PrintText("Han for Launchbox");
     PrintText("Chris Dohnal for D3D9 and OpenGL2 Renderers");
     PrintText("doitsujin for DXVK");
+    PrintText("The Lay D Denton team");
 
     PrintLn();
     PrintLn();

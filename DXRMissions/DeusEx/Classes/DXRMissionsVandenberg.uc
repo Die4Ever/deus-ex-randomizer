@@ -107,7 +107,7 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("14_OCEANLAB_SILO", "Launch Command Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None); // Launch sequence initiated.  It's gonna be a sunny day at Area 51...
         computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
-        computer_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", GOAL_TYPE2, vect(-1721.988770, -6533.606445, 1664), rot(16384,32768,0));
+        computer_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", GOAL_TYPE2, vect(-1721.988770, -6533.606445, 1665), rot(16384,32768,0));
         computer_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", GOAL_TYPE2, vect(-691.854248, -3575.400391, 1475), rot(16384,0,0));
 
         // MUTEXES
