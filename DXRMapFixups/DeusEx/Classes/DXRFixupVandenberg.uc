@@ -357,6 +357,13 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-1257,-3472,1468));
             class'PlaceholderEnemy'.static.Create(self,vectm(1021,-3323,1476));
         }
+
+        dxr.flagbase.SetBool('MS_UnhideHelicopter', True);
+        foreach AllActors(class'DataLinkTrigger', dlt, 'klax') {
+            dlt.Destroy();
+            break;
+        }
+
         break;
     case "12_VANDENBERG_COMPUTER":
         if (VanillaMaps){
@@ -604,6 +611,7 @@ function AnyEntryMapFixes()
     local #var(prefix)ScriptedPawn sp;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
+    local bool prevMapsDone;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -639,8 +647,22 @@ function AnyEntryMapFixes()
             RemoveFears(hs);
             hs.MinHealth = 0;
         }
+
         Player().StartDataLinkTransmission("DL_FrontGate");
+
+        prevMapsDone = dxr.flagbase.GetBool('Heliosborn') && //Finished Vandenberg, mission 12
+            dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
+        prevMapsDone = prevMapsDone || !#defined(injections) || dxr.flags.settings.goals<=0;
+        if(prevMapsDone && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
+            foreach AllActors(class'#var(prefix)HowardStrong', hs) {
+                hs.EnterWorld();
+                break;
+            }
+            dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
+        }
+
         SetTimer(1, true);
+
         break;
     case "12_VANDENBERG_COMPUTER":
         SetTimer(1, true);
@@ -683,8 +705,6 @@ function FixSavageSkillPointsDupe()
 function TimerMapFixes()
 {
     local #var(prefix)GarySavage gary;
-    local #var(prefix)HowardStrong hs;
-    local bool prevMapsDone;
 
     switch(dxr.localURL)
     {
@@ -712,20 +732,61 @@ function TimerMapFixes()
         break;
 
     case "14_Oceanlab_silo":
-        prevMapsDone = dxr.flagbase.GetBool('Heliosborn') &&  //Finished Vandenberg, mission 12
-            dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
-        prevMapsDone = prevMapsDone || !#defined(injections) || dxr.flags.settings.goals<=0;
-
-        if(prevMapsDone
-           && dxr.flagbase.GetBool('missile_launched') //Redirected the missile in Silo, mission 14
-           && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden'))
-        {
-            foreach AllActors(class'#var(prefix)HowardStrong', hs) {
-                hs.EnterWorld();
-            }
-            dxr.flagbase.SetBool('MS_HowardStrongUnhidden', True,, 15);
-        }
+        // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
+        _SiloGoalChecks();
+        _SiloEndInfolinks();
         break;
+    }
+}
+
+function private _SiloGoalChecks() {
+    local #var(prefix)HowardStrong hs;
+    local bool strongAlive;
+    local BlackHelicopter chopper;
+
+    if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden') || !dxr.flagbase.GetBool('missile_launched')) {
+        return;
+    }
+
+    foreach AllActors(class'HowardStrong', hs) {
+        strongAlive = True;
+        break;
+    }
+
+    if (strongAlive == False) {
+        // both goals completed just now
+        foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
+            chopper.EnterWorld();
+            break;
+        }
+        dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
+    } else {
+        // only computer goal completed
+        player().StartDataLinkTransmission("DL_Savage3");
+    }
+}
+
+function private _SiloEndInfolinks() {
+    local ConEventSpeech cesInitiated, cesMinutes;
+
+    if (!dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
+        return;
+    }
+
+    if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
+        // both goals completed, computer infolink played
+        player().StartDataLinkTransmission("DL_Dead");
+    } else {
+        // both goals completed, computer infolink not played
+
+        cesInitiated = GetSpeechEvent(GetConversation('DL_Savage3').eventList, "Launch sequence initiated");
+        cesMinutes = GetSpeechEvent(cesInitiated, "You've got about 10 minutes");
+
+        cesInitiated.nextEvent = cesMinutes;
+        cesMinutes.nextEvent = GetConversation('DL_Dead').eventList;
+        dxr.flagbase.SetBool('DL_Dead_Played', True);
+
+        player().StartDataLinkTransmission("DL_Savage3");
     }
 }
 

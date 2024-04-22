@@ -1592,3 +1592,13 @@ static function LogInventory(Actor actor)
         log("  " $ item);
     }
 }
+
+static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
+    while (start != None) {
+        if (start.eventType == ET_Speech && InStr(ConEventSpeech(start).conSpeech.speech, speech) != -1) {
+            return ConEventSpeech(start);
+        }
+        start = start.nextEvent;
+    }
+    return None;
+}
