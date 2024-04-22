@@ -1451,6 +1451,30 @@ exec function RemoveBeltItem()
     RemoveObjectFromBelt(InHand);
 }
 
+// ----------------------------------------------------------------------
+// InvokeUIScreen()
+//
+// Calls DeusExRootWindow::InvokeUIScreen(), but first make sure
+// a modifier (Alt, Shift, Ctrl) key isn't being held down.
+// DXRando: how about, no? fix alt+tab bug where the RootWindow still thinks the alt key is held down
+// ----------------------------------------------------------------------
+
+function InvokeUIScreen(Class<DeusExBaseWindow> windowClass)
+{
+    local DeusExRootWindow root;
+    local Window w;
+    root = DeusExRootWindow(rootWindow);
+    if (root != None)
+    {
+        //if ( root.IsKeyDown( IK_Alt ) || root.IsKeyDown( IK_Shift ) || root.IsKeyDown( IK_Ctrl ))
+        //    return;
+
+        root.InvokeUIScreen(windowClass);
+    }
+}
+
+
+
 defaultproperties
 {
     LastBrowsedAugPage=-1 //OAT, 1/12/24: Hack so backtracking levels doesn't sometimes forget which page you saved last.
