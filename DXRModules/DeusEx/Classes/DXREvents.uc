@@ -1493,13 +1493,17 @@ simulated function AnyEntry()
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
+        // SoldRenaultZyme bingo goal issue #705
         conv = GetConversation('RenaultPays');
+        // add trigger for BingoTrigger event SoldRenaultZyme
         ce = conv.GetEventFromLabel("SellRepeat");
         ce = NewConEvent(conv, ce, class'ConEventTrigger');
         ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
         ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        // remove the event with label Sell which checks for the RenaultPaid flag
         RemoveConvEventByLabel(conv, "Sell");
 
+        // remove the flag checks for entering the bakery, since you can get zyme from other places
         ce = conv.GetEventFromLabel("ActualChoice");
         for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
             DeleteChoiceFlag(choice, 'M10EnteredBakery', true);

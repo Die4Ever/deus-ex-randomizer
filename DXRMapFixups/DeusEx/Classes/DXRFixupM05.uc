@@ -96,7 +96,7 @@ function PreFirstEntryMapFixes()
             }
 
             foreach AllActors(class'#var(prefix)Keypad3', kp, 'Keypad3') {
-                if(kp.Name=='Keypad10') {
+                if(kp.Name=='Keypad10' && kp.Event=='') {
                     kp.Event = 'ExitDoor';
                     kp.hackStrength = 0.1;
                 }

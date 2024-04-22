@@ -791,6 +791,17 @@ static function DeleteChoiceFlag(ConChoice c, name Name, bool Value)
     }
 }
 
+static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
+    while (start != None) {
+        if (start.eventType == ET_Speech && InStr(ConEventSpeech(start).conSpeech.speech, speech) != -1) {
+            return ConEventSpeech(start);
+        }
+        start = start.nextEvent;
+    }
+    return None;
+}
+
+
 static function string GetActorName(Actor a)
 {
     local #var(PlayerPawn) player;
@@ -1591,14 +1602,4 @@ static function LogInventory(Actor actor)
     for (item = actor.inventory; item != None; item = item.inventory) {
         log("  " $ item);
     }
-}
-
-static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
-    while (start != None) {
-        if (start.eventType == ET_Speech && InStr(ConEventSpeech(start).conSpeech.speech, speech) != -1) {
-            return ConEventSpeech(start);
-        }
-        start = start.nextEvent;
-    }
-    return None;
 }
