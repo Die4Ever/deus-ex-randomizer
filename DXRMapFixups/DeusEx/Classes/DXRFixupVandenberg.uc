@@ -639,7 +639,7 @@ function AnyEntryMapFixes()
         FixSavageSkillPointsDupe();
 
         GetConversation('JockArea51').AddFlagRef('dummy', True); // 'JockArea51' can never play
-        GetConversation('JockBarks').AddFlagRef('DL_Dead_Played', dxr.flagbase.GetBool('DL_Dead_Played')); // 'JockBarks' can always play
+        DeleteConversationFlag(GetConversation('JockBarks'), 'DL_Dead_Played', false); // 'JockBarks' can always play
 
         break;
 
