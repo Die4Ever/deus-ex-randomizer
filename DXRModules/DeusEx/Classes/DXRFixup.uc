@@ -726,22 +726,6 @@ function Actor CandleabraLight(vector pos, rotator r)
     return c;
 }
 
-static function DeleteConversationFlag(Conversation c, name Name, bool Value)
-{
-    local ConFlagRef f, prev;
-    if( c == None ) return;
-    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
-        if( f.flagName == Name && f.value == Value ) {
-            if( prev == None )
-                c.flagRefList = f.nextFlagRef;
-            else
-                prev.nextFlagRef = f.nextFlagRef;
-            return;
-        }
-        prev = f;
-    }
-}
-
 static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
 {
     local ConFlagRef f;
@@ -811,22 +795,6 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
             n.eventType = ET_AddNote;
         }
     }
-}
-
-static function ConEvent FixConversationDeleteEvent(ConEvent del, ConEvent prev)
-{
-    local ConEvent next;
-    if(del == del.Conversation.eventList) {
-        del.Conversation.eventList = del.nextEvent;
-    }
-    if(prev != None) {
-        prev.nextEvent = del.nextEvent;
-    }
-    next = del.nextEvent;
-    del.Conversation = None;
-    del.nextEvent = None;
-    CriticalDelete(del);
-    return next;
 }
 
 defaultproperties

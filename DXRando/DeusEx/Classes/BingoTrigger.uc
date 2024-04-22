@@ -8,6 +8,9 @@ var() bool bDestroyOthers;
 var() bool bUntrigger;
 var() bool bPeepable;
 
+var name FinishedFlag;
+var int FinishedMax;
+
 function Trigger(Actor Other, Pawn Instigator)
 {
 	Super.Trigger(Other, Instigator);
@@ -63,6 +66,11 @@ function DoBingoThing()
         break;
     }
 
+    FinishedMax--;
+    if(FinishedMax == 0) {
+        dxr.flagbase.SetBool(FinishedFlag, true,, 999);
+    }
+
     if (bTriggerOnceOnly) {
         if (bDestroyOthers){
             foreach AllActors(class'BingoTrigger',bt,Tag){
@@ -97,6 +105,12 @@ function MakePeepable()
 {
     bPeepable=True;
     SetCollision(True,False,False);
+}
+
+function SetFinishedFlag(name NewFinishedFlag, int NewFinishedMax)
+{
+    FinishedFlag = NewFinishedFlag;
+    FinishedMax = NewFinishedMax;
 }
 
 static function BingoTrigger Create(Actor a, Name bingoEvent, vector loc, optional float rad, optional float height)

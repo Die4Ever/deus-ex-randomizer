@@ -382,7 +382,7 @@ simulated function InitHints()
         if (map ~= "14_oceanlab_silo") {
             if(dxr.flags.settings.goals > 0) {
                 AddHint("Howard Strong is now on a random floor of the missile silo.", "Check the Goal Randomization page on our Wiki.");
-                AddHint("Howard Strong will only show up if you've done your objectives!", "Been to the Ocean Lab UC, merged Helios, and redirected the missile?");
+                AddHint("Howard Strong will only show up if you've done your objectives!", "Been to the Ocean Lab UC and merged Helios?");
                 AddHint("Jock will pick you up at a random location.", "Check the Goal Randomization page on our Wiki.");
             }
         }

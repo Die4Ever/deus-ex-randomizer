@@ -99,8 +99,9 @@ function bool IncLevel()
         return False;
     }
 
-    if (bIsActive && !bAutomatic) {
+    if (bIsActive && AugDrone(self) != None) {
         Deactivate();
+        Activate();
     }
 
     CurrentLevel++;

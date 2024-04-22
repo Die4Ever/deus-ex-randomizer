@@ -22,7 +22,7 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
         AddMapMarker(class'Image05_NYC_MJ12Lab',379,96,"P","Paul", loc,"Paul can be located in the surgery ward.  This is the vanilla location.  If Paul is in this location, your equipment will be located in the armory.");
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(456,3947,-604), rot(0, 8048, 0));
         AddActorLocation(loc, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
         AddMapMarker(class'Image05_NYC_MJ12Lab',325,226,"P","Paul", loc,"Paul can be located in the greasel pit accessed through the vent on the back wall of the nanotech lab.  If Paul is in this location, your equipment will be located in the armory.");
 
@@ -85,7 +85,7 @@ function int InitGoalsRev(int mission, string map)
         AddActorLocation(loc, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
         AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(456,3947,-604), rot(0, 8048, 0));
         AddActorLocation(loc, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
@@ -215,7 +215,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)ComputerSecurity', cs) {
             if(cs.name != 'ComputerSecurity4') continue;
             for(i=0; i<ArrayCount(cs.Views); i++) {
-                if(cs.Views[i].CameraTag != 'medcam') {
+                if(cs.Views[i].CameraTag == 'medcam') {
                     cs.Views[i].titleString = "Paul Denton";
                 }
             }

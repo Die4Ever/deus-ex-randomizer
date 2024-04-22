@@ -738,6 +738,9 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
         case "TobyAtanwe_Dead":
         case "MeetAI4_Played":
         case "DeBeersDead":
+        case "GotHelicopterInfo":
+        case "EverettAquarium":
+        case "GoneFishing":
             return true;
         }
         break;
@@ -782,26 +785,6 @@ static function int _ChooseRandomStartMap(DXRBase m)
 {
     local int i;
     i = m.rng(13);
-
-    if(VersionIsStable()) {
-        switch(i) {
-            case 0: return 10;
-            case 1: return 20;
-            case 2: return 30;
-            case 3: return 41;
-            case 4: return 50;
-            case 5: return 61;
-            case 6: return 81;
-            case 7: return 90;
-            case 8: return 99;
-            case 9: return 109;
-            case 10: return 119;
-            case 11: return 140;
-            case 12: return 150;
-        }
-        m.err("Random Starting Map picked value "$i$" which is unhandled!");
-        return 0;
-    }
 
     //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
     switch(i)

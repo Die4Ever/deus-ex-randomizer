@@ -201,7 +201,7 @@ function RandoEnemies(int percent, int hidden_percent)
 #ifdef gmdx
         if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) continue;
 #endif
-        if(!p.bImportant) {
+        if(!p.bImportant && Robot(p) == None) {
             RandomizeSize(p);
         }
 

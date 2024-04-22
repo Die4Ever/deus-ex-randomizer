@@ -57,6 +57,7 @@ function RandoTurrets(int percent_move, int percent_add)
         info("RandoTurret move "$t$" to near "$loc);
         cam = GetCameraForTurret(t);
         if( cam == None ) continue;
+        if(cam.bIsSecretGoal || t.bIsSecretGoal) continue;
         if( ! MoveCamera(cam, loc) ) continue;
         MoveTurret(t, loc);
     }

@@ -298,7 +298,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     if(aug != None && aug.bAutomatic) {
         s = s $ "|n|nThis aug is automatic";
         if(aug.AutoLength>0.1) s = s $ ", with a linger time of " $ TrimTrailingZeros(aug.AutoLength) $ " seconds";
-        s = s $ ".";
+        s = s $ ", leave it enabled and it will only use energy when necessary.";
     }
 #endif
 
