@@ -771,15 +771,22 @@ function private _CheckMoreSiloInfolinks() {
         player().StartDataLinkTransmission("DL_Dead");
     } else {
         // both goals completed, computer infolink not played
+
         for (ce = GetConversation('DL_Savage3').eventList; ce != None; ce = ce.nextEvent) {
-            if (
-                ce.nextEvent != None &&
-                ce.nextEvent.eventType == ET_Speech &&
-                ConEventSpeech(ce.nextEvent).conSpeech.speech == "JC, go to the silo.  Make sure no one interferes with this launch."
-            ) {
-                ce.nextEvent = None;
+            if (ce.nextEvent != None && ce.nextEvent.eventType == ET_Speech) {
+                if (
+                    ConEventSpeech(ce.nextEvent).conSpeech.speech == "Just like your lab work, Savage: premature celebration." ||
+                    ConEventSpeech(ce.nextEvent).conSpeech.speech == "As a scientist, you should have learned to expect surprises."
+                ) {
+                    ce.nextEvent = ce.nextEvent.nextEvent;
+                } else if (ConEventSpeech(ce.nextEvent).conSpeech.speech == "JC, go to the silo.  Make sure no one interferes with this launch.") {
+                    ce.nextEvent = GetConversation('DL_Dead').eventList;
+                    dxr.flagbase.SetBool('DL_Dead_Played', True);
+                    break;
+                }
             }
         }
+
         player().StartDataLinkTransmission("DL_Savage3");
     }
 }
