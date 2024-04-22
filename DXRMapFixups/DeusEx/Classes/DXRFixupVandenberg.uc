@@ -637,6 +637,10 @@ function AnyEntryMapFixes()
 
     case "14_VANDENBERG_SUB":
         FixSavageSkillPointsDupe();
+
+        GetConversation('JockArea51').AddFlagRef('dummy', True); // 'JockArea51' can never play
+        DeleteConversationFlag(GetConversation('JockBarks'), 'DL_Dead_Played', false); // 'JockBarks' can always play
+
         break;
 
     case "14_OCEANLAB_SILO":
