@@ -697,7 +697,6 @@ function FixSavageSkillPointsDupe()
 function TimerMapFixes()
 {
     local #var(prefix)GarySavage gary;
-    local ConEvent ce;
 
     switch(dxr.localURL)
     {
@@ -726,13 +725,13 @@ function TimerMapFixes()
 
     case "14_Oceanlab_silo":
         // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
-        _MissileLaunchedChecks();
-        _CheckMoreSiloInfolinks();
+        _SiloGoalChecks();
+        _SiloEndInfolinks();
         break;
     }
 }
 
-function private _MissileLaunchedChecks() {
+function private _SiloGoalChecks() {
     local #var(prefix)HowardStrong hs;
     local bool strongAlive;
     local BlackHelicopter chopper;
@@ -759,8 +758,8 @@ function private _MissileLaunchedChecks() {
     }
 }
 
-function private _CheckMoreSiloInfolinks() {
-    local ConEvent ce;
+function private _SiloEndInfolinks() {
+    local ConEventSpeech cesInitiated, cesMinutes;
 
     if (!dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden')) {
         return;
@@ -772,20 +771,12 @@ function private _CheckMoreSiloInfolinks() {
     } else {
         // both goals completed, computer infolink not played
 
-        for (ce = GetConversation('DL_Savage3').eventList; ce != None; ce = ce.nextEvent) {
-            if (ce.nextEvent != None && ce.nextEvent.eventType == ET_Speech) {
-                if (
-                    ConEventSpeech(ce.nextEvent).conSpeech.speech == "Just like your lab work, Savage: premature celebration." ||
-                    ConEventSpeech(ce.nextEvent).conSpeech.speech == "As a scientist, you should have learned to expect surprises."
-                ) {
-                    ce.nextEvent = ce.nextEvent.nextEvent;
-                } else if (ConEventSpeech(ce.nextEvent).conSpeech.speech == "JC, go to the silo.  Make sure no one interferes with this launch.") {
-                    ce.nextEvent = GetConversation('DL_Dead').eventList;
-                    dxr.flagbase.SetBool('DL_Dead_Played', True);
-                    break;
-                }
-            }
-        }
+        cesInitiated = GetSpeechEvent(GetConversation('DL_Savage3').eventList, "Launch sequence initiated");
+        cesMinutes = GetSpeechEvent(cesInitiated, "You've got about 10 minutes");
+
+        cesInitiated.nextEvent = cesMinutes;
+        cesMinutes.nextEvent = GetConversation('DL_Dead').eventList;
+        dxr.flagbase.SetBool('DL_Dead_Played', True);
 
         player().StartDataLinkTransmission("DL_Savage3");
     }
