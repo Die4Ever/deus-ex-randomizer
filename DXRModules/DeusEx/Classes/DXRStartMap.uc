@@ -435,6 +435,13 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
         case 4:
             flagbase.SetBool('DL_SeeManderley_Played',true,,-1);
             break;
+        case 5:
+            if(start_flag > 50) {
+                AddNote(player, bEmptyNotes, "Facility exit: 1125.");
+                AddNote(player, bEmptyNotes, "Until the grid is fully restored, the detention block door code has been reset to 4089 while _all_ detention cells have been reset to 4679.");
+                flagbase.SetBool('DL_NoPaul_Played',true,,6);
+                flagbase.SetBool('MS_InventoryRemoved',true,,6);
+            }
         case 7:
             flagbase.SetBool('Have_ROM',true,,-1);
             flagbase.SetBool('MeetTracerTong_Played',true,,-1);// do we need FemJC versions for these?
