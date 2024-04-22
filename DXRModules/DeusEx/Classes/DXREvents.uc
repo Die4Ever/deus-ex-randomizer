@@ -288,6 +288,7 @@ function SetWatchFlags() {
     local #var(prefix)Female2 f;
     local #var(prefix)Fan1 fan1;
     local #var(prefix)Button1 button;
+    local #var(prefix)VialCrack zyme;
     local Dispatcher disp;
     local int i;
 
@@ -1055,6 +1056,16 @@ function SetWatchFlags() {
             bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
             bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         }
+
+        // SoldRenaultZyme
+        bt = class'BingoTrigger'.static.Create(self,'SoldRenaultZyme', vectm(1953,2195,159));
+        bt.bTriggerOnceOnly = false;
+        bt.SetFinishedFlag('RenaultPaid', 6);
+        foreach AllActors(class'#var(prefix)VialCrack', zyme) {
+            if(zyme.name == 'VialCrack1' || zyme.name == 'VialCrack3') {
+                zyme.bIsSecretGoal = true;
+            }
+        }
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
@@ -1468,6 +1479,31 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(7235,-8823,-5134),40,40);
         bt.bDestroyOthers=False;
 
+        break;
+    }
+}
+
+simulated function AnyEntry()
+{
+    local Conversation conv;
+    local ConEvent ce;
+    local ConChoice choice;
+
+    Super.AnyEntry();
+
+    switch(dxr.localURL) {
+    case "10_PARIS_METRO":
+        conv = GetConversation('RenaultPays');
+        ce = conv.GetEventFromLabel("SellRepeat");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
+        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        RemoveConvEventByLabel(conv, "Sell");
+
+        ce = conv.GetEventFromLabel("ActualChoice");
+        for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
+            DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
+        }
         break;
     }
 }
@@ -2807,6 +2843,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Use the roof elevator in Denfert-Rochereau right at the start.  There will be a book nearby with the code for the keypad.";
         case "MeetRenault_Played":
             return "Talk to Renault, in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.";
+        case "SoldRenaultZyme":
+            return "Sell at least 5 vials of Zyme to Renault in the Paris hostel.";
         case "WarehouseSewerTunnel":
             return "Swim through the underwater tunnel in the Warehouse District.";
         case "PaulToTong":
@@ -3217,6 +3255,7 @@ defaultproperties
     bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
     // bingo_options()=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
+    bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=1024)
 
 
 
@@ -3276,4 +3315,5 @@ defaultproperties
     mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_Dead")
     mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_Dead")
     mutually_exclusive(52)=(e1="MaggieLived",e2="MaggieCanFly")
+    mutually_exclusive(53)=(e1="MeetRenault_Played",e2="SoldRenaultZyme")
 }

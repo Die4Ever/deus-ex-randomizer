@@ -499,15 +499,3 @@ function ConEventJump AddJump(Conversation c, ConEvent prev, string after_label)
     AddConEvent(c, prev, j);
     return j;
 }
-
-function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
-{
-    if( prev != None ) {
-        if( prev.nextEvent != None )// this might be good to do intentionally sometimes
-            warning("prev.nextEvent != None, c: "$c$", prev: "$prev$", e: "$e);
-        e.nextEvent = prev.nextEvent;
-        prev.nextEvent = e;
-    }
-    else
-        c.eventList = e;
-}

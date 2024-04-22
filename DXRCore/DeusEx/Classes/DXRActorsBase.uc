@@ -707,6 +707,90 @@ function Conversation GetConversation(Name conName)
     return None;
 }
 
+static function RemoveConvEventByLabel(Conversation conv, string label)
+{
+    local ConEvent prev, ce;
+
+    for(ce=conv.eventList; ce != None; ce=ce.nextEvent) {
+        if(ce.label == label) {
+            FixConversationDeleteEvent(ce, prev);
+            break;
+        }
+        prev = ce;
+    }
+}
+
+static function ConEvent FixConversationDeleteEvent(ConEvent del, ConEvent prev)
+{
+    local ConEvent next;
+    if(del == del.Conversation.eventList) {
+        del.Conversation.eventList = del.nextEvent;
+    }
+    if(prev != None) {
+        prev.nextEvent = del.nextEvent;
+    }
+    next = del.nextEvent;
+    if(next != None && next.label == "") {
+        next.label = del.label;
+    }
+    del.Conversation = None;
+    del.nextEvent = None;
+    CriticalDelete(del);
+    return next;
+}
+
+static function ConEvent NewConEvent(Conversation c, ConEvent prev, class<ConEvent> newclass)
+{
+    local ConEvent e;
+    e = new(c) newclass;
+    AddConEvent(c, prev, e);
+    return e;
+}
+
+static function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
+{
+    e.conversation = c;
+    if( prev != None ) {
+        e.nextEvent = prev.nextEvent;
+        prev.nextEvent = e;
+    }
+    else {
+        c.eventList = e;
+    }
+}
+
+static function DeleteConversationFlag(Conversation c, name Name, bool Value)
+{
+    local ConFlagRef f, prev;
+    if( c == None ) return;
+    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
+        if( f.flagName == Name && f.value == Value ) {
+            if( prev == None )
+                c.flagRefList = f.nextFlagRef;
+            else
+                prev.nextFlagRef = f.nextFlagRef;
+            return;
+        }
+        prev = f;
+    }
+}
+
+static function DeleteChoiceFlag(ConChoice c, name Name, bool Value)
+{
+    local ConFlagRef f, prev;
+    if( c == None ) return;
+    for(f = c.flagRef; f!=None; f=f.nextFlagRef) {
+        if( f.flagName == Name && f.value == Value ) {
+            if( prev == None )
+                c.flagRef = f.nextFlagRef;
+            else
+                prev.nextFlagRef = f.nextFlagRef;
+            return;
+        }
+        prev = f;
+    }
+}
+
 static function string GetActorName(Actor a)
 {
     local #var(PlayerPawn) player;
