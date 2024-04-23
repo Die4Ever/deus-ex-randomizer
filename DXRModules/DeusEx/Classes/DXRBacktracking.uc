@@ -706,7 +706,6 @@ function Vehicles SpawnChopper(Name ChopperTag, Name PathTag, string BindName, v
     chopper.FamiliarName = "Jock";
     chopper.UnFamiliarName = "Jock";
     chopper.ConBindEvents();
-    chopper.SoundRadius = chopper.SoundRadius / 4;
 
     class'BlackHelicopter'.default.bCollideWorld = bOldCollideWorld;
     info("SpawnChopper("$ChopperTag$", "$PathTag$", "$BindName$", ("$loc$"), ("$rot$") ) spawned "$chopper);
@@ -730,6 +729,7 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
     }
 
     chopper = SpawnChopper(ChopperTag, PathTag, BindName, loc, rot);
+    chopper.SoundRadius = chopper.SoundRadius / 4;
 
     foreach AllActors(class'MapExit', exit, event){
         RebindChopperHoverHint(event,chopper);
