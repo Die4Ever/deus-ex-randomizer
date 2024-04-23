@@ -966,5 +966,5 @@ defaultproperties
     autosave=2
     loadout=0
     crowdcontrol=0
-    mirroredmaps=50
+    mirroredmaps=-1
 }

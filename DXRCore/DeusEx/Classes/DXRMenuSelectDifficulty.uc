@@ -119,7 +119,9 @@ function BindControls(optional string action)
 
     if(mirrored_maps_files_found) {
         NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
-        if(f.mirroredmaps == -1) {
+        if(f.mirroredmaps == -1 && f.IsZeroRando()) {
+            f.mirroredmaps = 0; // default to 0% because of Zero Rando
+        } else if(f.mirroredmaps == -1) {
             f.mirroredmaps = 50; // default to 50% when the files are installed
         }
         Slider(f.mirroredmaps, 0, 100);
