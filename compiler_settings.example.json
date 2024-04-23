@@ -2,22 +2,27 @@
     "default": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Rando/",
-        "mods_paths": [ "../Lay-D-Denton-Project", "./" ]
+        "mods_paths": [ "../Lay-D-Denton-Project", "./" ],
+        "preproc_definitions": { }
     },
     "hx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
-        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/"
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/",
+        "preproc_definitions": { }
     },
     "gmdx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
-        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/"
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/",
+        "preproc_definitions": { }
     },
     "revision": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
-        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Rando/"
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Rando/",
+        "preproc_definitions": { }
     },
     "vmd": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
-        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/"
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/",
+        "preproc_definitions": { }
     }
 }
