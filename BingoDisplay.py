@@ -314,7 +314,7 @@ parser.add_argument('--version', action="store_true", help='Output version')
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v1.0'
+    return 'v2.7'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)
