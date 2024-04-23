@@ -1,8 +1,4 @@
-#ifdef injections
-class DXRMenuBase expands MenuUIScreenWindow;
-#else
-class DXRMenuBase expands MenuUIScreenWindow;
-#endif
+class DXRMenuBase extends MenuUIScreenWindow;
 
 var MenuUIInfoButtonWindow winNameBorder;
 
