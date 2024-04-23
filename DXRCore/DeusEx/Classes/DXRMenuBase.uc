@@ -4,7 +4,13 @@ var MenuUIInfoButtonWindow winNameBorder;
 
 struct EnumBtn {
     var MenuUIActionButtonWindow btn;
+
+#ifdef allstarts
+    var string values[64];
+#else
     var string values[32];
+#endif
+
     var int value;
 };
 var EnumBtn enums[128];
