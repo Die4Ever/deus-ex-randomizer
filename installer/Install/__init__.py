@@ -89,8 +89,11 @@ def GetVersion():
     CurrentVersion = data[i:]
     i = CurrentVersion.find(b'}')
     CurrentVersion = CurrentVersion[:i].decode('iso_8859_1')
-    m = re.search(r'major=(\d+);\s+minor=(\d+);\s+patch=(\d+);\s+build=(\d+);', CurrentVersion, flags=re.MULTILINE)
-    version = 'v' + m.group(1) + '.' + m.group(2) + '.' + m.group(3) + '.' + m.group(4)
+    v = re.search(r'major=(\d+);\s+minor=(\d+);\s+patch=(\d+);\s+build=(\d+);', CurrentVersion, flags=re.MULTILINE)
+    fullversion = 'v' + v.group(1) + '.' + v.group(2) + '.' + v.group(3) + '.' + v.group(4)
+    version = 'v' + v.group(1) + '.' + v.group(2)
+    if v.group(3) != '0':
+        version += '.' + v.group(3)
 
     i = data.find(b'static function string VersionString(')
     VersionString = data[i:]
@@ -99,7 +102,7 @@ def GetVersion():
 
     m = re.search(r'status = "(.*)";', VersionString, flags=re.MULTILINE)
     if m and m.group(1):
-        version += ' ' + m.group(1)
+        version = fullversion + ' ' + m.group(1)
 
     return version
 
