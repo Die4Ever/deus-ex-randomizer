@@ -142,15 +142,15 @@ function CopySkills()
 
     Super.CopySkills();
 
-    for(i=0; i<ArrayCount(localSkills); i++) {
-        if( SkillWeaponPistol(localSkills[i]) != None ) {
-            localSkills[i].DecLevel();
-        }
-    }
-
     for(i=1; i<ArrayCount(localSkills); i++) {
         if( localSkills[i-1] == None ) break;
         localSkills[i-1].next = localSkills[i];
+
+        if(SkillWeaponPistol(localSkills[i]) != None && localSkills[i].CanAffordToUpgrade(player.SkillPointsAvail)
+            && flags != None && flags.IsZeroRando())
+        {
+            localSkills[i].IncLevel(player);
+        }
     }
 
     if(dxr!=None)
