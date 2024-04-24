@@ -1603,3 +1603,20 @@ static function LogInventory(Actor actor)
         log("  " $ item);
     }
 }
+
+static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName, float allianceLevel, bool bPermanent) {
+    local int i;
+
+    for (i = 0; i < ArrayCount(pawn.InitialAlliances); i++) {
+		if ((pawn.InitialAlliances[i].AllianceName == allianceName) || (pawn.InitialAlliances[i].AllianceName == ''))
+			break;
+    }
+    if (i == ArrayCount(pawn.InitialAlliances))
+        return false;
+
+    pawn.InitialAlliances[i].AllianceName = allianceName;
+    pawn.InitialAlliances[i].AllianceLevel = FClamp(allianceLevel, -1.0, 1.0);
+    pawn.InitialAlliances[i].bPermanent = bPermanent;
+
+    return true;
+}
