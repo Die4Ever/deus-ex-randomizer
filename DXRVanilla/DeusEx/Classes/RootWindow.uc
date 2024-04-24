@@ -3,6 +3,9 @@ class DXRandoRootWindow merges DeusExRootWindow;
 
 var HUDSpeedrunSplits splits;
 
+var localized String LoadLatestTitle;
+var localized String LoadLatestMessage;
+
 event InitWindow()
 {
     _InitWindow();
@@ -87,4 +90,40 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
 {
     log("DXRandoRootWindow InvokeUIScreen "$newScreen);
     return _InvokeUIScreen(newScreen, GetNoPause(bNoPause));
+}
+
+function ConfirmLoadLatest()
+{
+    local MenuUIMessageBoxWindow msgBox;
+
+    msgBox = MessageBox(LoadLatestTitle, LoadLatestMessage, 0, False, Self);
+    msgBox.SetDeferredKeyPress(True);
+}
+
+// ----------------------------------------------------------------------
+// BoxOptionSelected()
+// ----------------------------------------------------------------------
+
+event bool BoxOptionSelected(Window messagebox, int buttonNumber)
+{
+    local string s;
+
+    s = MenuUIMessageBoxWindow(messagebox).winText.GetText();
+    // Destroy the msgbox!
+    PopWindow();
+
+    if (buttonNumber == 0 && s == QuickLoadMessage) {
+        DeusExPlayer(parentPawn).QuickLoadConfirmed();
+    }
+    else if(buttonNumber == 0 && s == LoadLatestMessage) {
+        Human(parentPawn).LoadLatestConfirmed();
+    }
+
+    return true;
+}
+
+defaultproperties
+{
+    LoadLatestTitle="Load Latest Save?"
+    LoadLatestMessage="You will lose your current game in progress, are you sure you wish to Load?"
 }

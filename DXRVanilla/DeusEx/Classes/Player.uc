@@ -1451,6 +1451,69 @@ exec function RemoveBeltItem()
     RemoveObjectFromBelt(InHand);
 }
 
+exec function LoadLatest()
+{
+   //Don't allow in multiplayer.
+    if (Level.Netmode != NM_Standalone)
+        return;
+
+    if (DeusExRootWindow(rootWindow) != None)
+        DeusExRootWindow(rootWindow).ConfirmLoadLatest();
+}
+
+function LoadLatestConfirmed()
+{
+    local int saveIndex;
+    local DeusExSaveInfo saveInfo;
+    local GameDirectory saveDir;
+    local int latestYear, latestTime, latestSave, time; // split the year into its own int so we don't have to worry about integer overflow
+
+    if (Level.Netmode != NM_Standalone)
+        return;
+
+    saveDir = GetSaveGameDirectory();
+    latestSave = -9999;
+
+    for( saveIndex=-1; saveIndex<saveDir.GetDirCount(); saveIndex++)
+    {
+        if(saveIndex < 0) {
+            saveInfo = saveDir.GetSaveInfo(saveIndex);
+        } else {
+            saveInfo = saveDir.GetSaveInfoFromDirectoryIndex(saveIndex);
+        }
+        if (saveInfo == None) continue;
+
+        time = saveInfo.Second + saveInfo.Minute*60 + saveInfo.Hour*3600 + saveInfo.Day*86400 + saveInfo.Month*2678400;
+
+        if(saveInfo.Year > latestYear || (saveInfo.Year == latestYear && time > latestTime)) {
+            latestYear = saveInfo.Year;
+            latestTime = time;
+            latestSave = saveInfo.DirectoryIndex;
+        }
+
+        saveDir.DeleteSaveInfo(saveInfo);
+    }
+
+    CriticalDelete(saveDir);
+
+    if(latestSave != -9999) {
+        LoadGame(latestSave);
+    }
+}
+
+function GameDirectory GetSaveGameDirectory()
+{
+    local GameDirectory saveDir;
+
+    // Create our Map Directory class
+    saveDir = CreateGameDirectoryObject();
+    saveDir.SetDirType(saveDir.EGameDirectoryTypes.GD_SaveGames);
+    saveDir.GetGameDirectory();
+
+    return saveDir;
+}
+
+
 // ----------------------------------------------------------------------
 // InvokeUIScreen()
 //
