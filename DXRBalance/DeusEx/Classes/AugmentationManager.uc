@@ -164,9 +164,7 @@ simulated function Float CalcEnergyUse(float deltaTime)
     energyUse = 0;
     energyMult = 1.0;
 
-    if (Player.AmbientSound == class'Augmentation'.Default.LoopSound) {
-        Player.AmbientSound = None;
-    }
+    Player.AmbientSound = None;
 
     anAug = FirstAug;
     while(anAug != None)
@@ -185,7 +183,7 @@ simulated function Float CalcEnergyUse(float deltaTime)
             }
             energyUse += f;
 
-            if (anAug.bAutomatic == false && anAug.bAlwaysActive == false) {
+            if ((anAug.bAutomatic == false && anAug.bAlwaysActive == false) || f > 0.0) {
                 Player.AmbientSound = anAug.LoopSound;
             }
         }
