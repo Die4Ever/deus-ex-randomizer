@@ -68,7 +68,7 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
         hint != "Viewers, you could've prevented this with Crowd Control." &&
         hint != "Don't forget you (the viewer!) can" &&
         details != "We just shared your death publicly, go retweet it!" &&
-        !(MultiSkins[0] == Texture'DeusExCharacters.Skins.ChefTex0' && hint == "If you need a Hazmat suit")
+        !(CarcassType == Class'LeMerchantCarcass' && hint == "If you need a Hazmat suit")
     )
 
     ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Hehehehe");
