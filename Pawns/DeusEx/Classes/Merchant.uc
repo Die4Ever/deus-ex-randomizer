@@ -42,6 +42,7 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 {
     local DXRando dxr;
     local DXRHints hints;
+    local ConListItem cli;
     local Conversation con;
     local ConEvent ce;
     local ConEventSpeech ces;
@@ -52,10 +53,9 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
         hints = DXRHints(dxr.FindModule(class'DXRHints'));
         break;
     }
-    foreach AllObjects(class'Conversation', con) {
-        if (con.description == "Merchant") {
-            break;
-        }
+    for(cli=ConListItem(ConListItems); cli!=None; cli=cli.next) {
+        con = cli.con;
+        break;
     }
 
     for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
