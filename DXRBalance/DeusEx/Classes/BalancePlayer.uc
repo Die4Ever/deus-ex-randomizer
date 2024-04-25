@@ -66,8 +66,8 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
         {
             if(!bZeroRando) {
-                // do 1.75x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
-                return Damage * 0.875;
+                // do 1.7x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
+                return Damage * 0.85;
             }
         }
     }
@@ -86,8 +86,8 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         }
         else if(!bZeroRando)
         {
-            // and finally, the torso! do 1.5x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
-            return Damage * 0.75;
+            // and finally, the torso! do 1.4x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
+            return Damage * 0.7;
         }
     }
 
