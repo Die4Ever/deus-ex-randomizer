@@ -1423,11 +1423,17 @@ exec function OpenControllerAugWindow()
 }
 
 
-event TravelPostAccept()
-{
-	Super.TravelPostAccept();
-    if(bCrouchOn && bToggleCrouch) {
-        bWasCrouchOn = false;
+
+function HandleWalking()
+{// DXRando: fix dropping crates into the void when climbing ladders
+    local Decoration oldDec;
+    oldDec = CarriedDecoration;
+
+    Super.HandleWalking();
+
+    if(CarriedDecoration==None && oldDec!=None) {
+        CarriedDecoration = oldDec;
+        PutCarriedDecorationInHand();
     }
 }
 
