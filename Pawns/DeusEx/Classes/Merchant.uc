@@ -33,11 +33,12 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
 
 function Frob(Actor frobber, Inventory frobWith)
 {
+    local DXRando dxr;
+    local DXRHints hints;
     local Conversation con;
     local ConEventSpeech ces;
-    local DXRHints hints;
     local int newHint;
-    local DXRando dxr;
+    local string hint, details;
 
     foreach AllActors(class'DXRando', dxr) {
         hints = DXRHints(dxr.FindModule(class'DXRHints'));
@@ -51,12 +52,20 @@ function Frob(Actor frobber, Inventory frobWith)
 
     do {
         newHint = hints.GetHint();
-    } until (newHint != lastHint - 1);
+        hint = hints.hints[newHint];
+        details = hints.details[newHint];
+    } until (
+        newHint != lastHint - 1 &&
+        hint != "Viewers, you could've prevented this with Crowd Control." &&
+        hint != "Don't forget you (the viewer!) can" &&
+        details != "We just shared your death publicly, go retweet it!" &&
+        !(MultiSkins[0] == Texture'DeusExCharacters.Skins.ChefTex0' && hint == "If you need a Hazmat suit")
+    )
 
     ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Hehehehe");
-    ces.conSpeech.speech = "Hehehehe, thank you. Here's a tip: " $ hints.hints[newHint] @ hints.details[newHint];
+    ces.conSpeech.speech = "Hehehehe, thank you. Here's a tip: " $ hint @ details;
     ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Come back");
-    ces.conSpeech.speech = "Come back anytime. Here's a tip: " $ hints.hints[newHint] @ hints.details[newHint];
+    ces.conSpeech.speech = "Come back anytime. Here's a tip: " $ hint @ details;
 
     // offset newHint by 1 so that 0 always indicates unassigned, otherwise hint 0 can never be chosen first
     lastHint = newHint + 1;
