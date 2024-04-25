@@ -31,7 +31,7 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
     return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
 }
 
-function Frob(Actor frobber, Inventory frobWith)
+function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 {
     local DXRando dxr;
     local DXRHints hints;
@@ -70,7 +70,7 @@ function Frob(Actor frobber, Inventory frobWith)
     // offset newHint by 1 so that 0 always indicates unassigned, otherwise hint 0 can never be chosen first
     lastHint = newHint + 1;
 
-    Super.Frob(frobber, frobWith);
+    Super.EnterConversationState(bFirstPerson, bAvoidState);
 }
 
 defaultproperties
