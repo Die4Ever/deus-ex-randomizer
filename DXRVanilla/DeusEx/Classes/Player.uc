@@ -1467,6 +1467,18 @@ exec function RemoveBeltItem()
     RemoveObjectFromBelt(InHand);
 }
 
+
+function QuickLoadConfirmed()
+{
+   if (Level.Netmode != NM_Standalone)
+      return;
+    if(class'MenuChoice_LoadLatest'.default.enabled) {
+        LoadLatestConfirmed();
+    } else {
+        LoadGame(-1);
+    }
+}
+
 exec function LoadLatest()
 {
    //Don't allow in multiplayer.

@@ -154,7 +154,7 @@ static function bool AllowManualSaves(DeusExPlayer player)
     if( f == None ) return true;
     if( f.autosave == Hardcore || f.autosave == Ironman ) return false;
 
-    if(player.dataLinkPlay != None) {
+    if(player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
         player.dataLinkPlay.FastForward();
     }
 
