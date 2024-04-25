@@ -1437,6 +1437,16 @@ function HandleWalking()
     }
 }
 
+event TravelPostAccept()
+{
+    Super.TravelPostAccept();
+    if(bCrouchOn && bToggleCrouch && !flagBase.GetBool('PlayerTraveling')) {
+        bWasCrouchOn = false;
+        bDuck = 1;
+    }
+}
+
+
 exec function ToggleAutorun()
 {
     bAutorun = !bAutorun;
