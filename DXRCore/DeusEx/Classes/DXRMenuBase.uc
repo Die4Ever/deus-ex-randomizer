@@ -1,14 +1,16 @@
-#ifdef injections
-class DXRMenuBase expands MenuUIScreenWindow;
-#else
-class DXRMenuBase expands MenuUIScreenWindow;
-#endif
+class DXRMenuBase extends MenuUIScreenWindow;
 
 var MenuUIInfoButtonWindow winNameBorder;
 
 struct EnumBtn {
     var MenuUIActionButtonWindow btn;
+
+#ifdef allstarts
+    var string values[64];
+#else
     var string values[32];
+#endif
+
     var int value;
 };
 var EnumBtn enums[128];

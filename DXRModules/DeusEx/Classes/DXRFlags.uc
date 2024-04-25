@@ -350,7 +350,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 40;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
-    difficulty_settings[i].skills_disable_downgrades = 5;
+    difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 100;
     difficulty_settings[i].banned_skills = 9;
@@ -422,7 +422,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 50;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
-    difficulty_settings[i].skills_disable_downgrades = 5;
+    difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 100;
     difficulty_settings[i].banned_skills = 9;

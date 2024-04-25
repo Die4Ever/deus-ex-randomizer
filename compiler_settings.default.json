@@ -30,7 +30,7 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRAutosave.uc" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
     },
     "gmdx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
@@ -45,7 +45,7 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRAutosave.uc" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
     },
     "revision": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
@@ -60,7 +60,7 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRAutosave.uc" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
     },
     "vmd": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
@@ -75,6 +75,6 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRAutosave.uc", "DXRFashion.uc" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
     }
 }

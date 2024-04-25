@@ -1,9 +1,5 @@
-#ifndef revision
-class DXRRevMissionEndgame extends Actor;
-#else
+#compileif revision
 class DXRRevMissionEndgame extends RevisionMissionEndgame;
-
-
 
 function Timer()
 {
@@ -62,5 +58,3 @@ function PrintEndgameQuote(int num)
         }
     }
 }
-
-#endif

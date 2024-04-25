@@ -1,3 +1,4 @@
+#dontcompileif vmd
 class DXRFashion extends DXRBase transient;
 
 var class<ScriptedPawn> influencers[100];

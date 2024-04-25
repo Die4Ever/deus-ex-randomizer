@@ -75,7 +75,7 @@ simulated function Tick(float deltaTime)
         }
         else if(AnimSequence == 'Shoot' || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3')
         {
-            r = (default.ShotTime / ShotTime);
+            r = (class'DXRWeapons'.static.GetDefaultShottime(self) / ShotTime);
             r = FClamp(r, 0.4, 1.7);
             e = 1.0;// these animations don't scale as much with skill
         }
@@ -94,6 +94,25 @@ simulated function Tick(float deltaTime)
     }
 
     AnimRate = prev_anim_rate;
+    OldAnimRate = prev_anim_rate;
+}
+
+function bool LoadAmmo(int ammoNum)
+{
+    local bool ret;
+    local DXRWeapons dxrw;
+
+    ret = Super.LoadAmmo(ammoNum);
+
+    // we need to re-randomize the shottime
+    if(class'DXRando'.default.dxr != None) {
+        dxrw = DXRWeapons(class'DXRando'.default.dxr.FindModule(class'DXRWeapons'));
+        if(dxrw != None) {
+            dxrw.RandoWeapon(self);
+        }
+    }
+
+    return ret;
 }
 
 //

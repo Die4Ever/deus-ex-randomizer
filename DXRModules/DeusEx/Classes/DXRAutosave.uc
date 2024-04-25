@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAutosave extends DXRActorsBase transient;
 
 var transient bool bNeedSave;

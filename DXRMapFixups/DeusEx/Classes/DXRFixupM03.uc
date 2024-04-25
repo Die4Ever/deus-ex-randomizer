@@ -92,8 +92,10 @@ function PreFirstEntryMapFixes()
         fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
         fg.ActiveArea=2000;
 
-        //rebreather because of #TOOCEAN connection
-        AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
+        if(!dxr.flags.IsZeroRando()) {
+            //rebreather because of #TOOCEAN connection
+            AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
+        }
 
         //Add some junk around the park so that there are some item locations outside of the shanty town
         AddActor(class'Liquor40oz', vect(933.56,-3554.86,279.04));

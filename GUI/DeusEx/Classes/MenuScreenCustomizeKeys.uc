@@ -18,10 +18,10 @@ struct S_KeyDisplayItem
 };
 
 //Make sure to update all four of these when you add a new binding
-var localized string	FunctionText[67];
-var string				MenuValues1[67];
-var string				MenuValues2[67];
-var string				AliasNames[67];
+var localized string	FunctionText[68];
+var string				MenuValues1[68];
+var string				MenuValues2[68];
+var string				AliasNames[68];
 
 
 var string				PendingCommands[100];
@@ -633,6 +633,7 @@ defaultproperties
      FunctionText(64)="Toggle Autorun"
      FunctionText(65)="Pause"
      FunctionText(66)="Remove Item From Belt"
+     FunctionText(67)="Load Latest Save"
      AliasNames(0)="ParseLeftClick|Fire"
      AliasNames(1)="ParseRightClick"
      AliasNames(2)="DropItem"
@@ -700,6 +701,7 @@ defaultproperties
      AliasNames(64)="ToggleAutorun"
      AliasNames(65)="Pause"
      AliasNames(66)="RemoveBeltItem"
+     AliasNames(67)="LoadLatest"
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")

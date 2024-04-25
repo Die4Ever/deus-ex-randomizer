@@ -1,6 +1,4 @@
-#ifndef revision
-class DXRRevMissionIntro extends Actor;
-#else
+#compileif revision
 class DXRRevMissionIntro extends RevisionMissionIntro;
 
 function Timer()
@@ -19,5 +17,3 @@ function Timer()
     }
     Super.Timer();
 }
-
-#endif

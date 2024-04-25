@@ -89,7 +89,7 @@ function RearrangeMJ12ConvergingInfolink()
         ce = ce.nextEvent;
     }
 
-    if (ces!=None && cesf!=None){
+    if (ces!=None && cesf!=None && ces.nextEvent==cesf){
         //The conversation is typically:
         //Speech -> SetFlag -> End
         //but I want it to be

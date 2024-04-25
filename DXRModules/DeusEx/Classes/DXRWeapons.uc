@@ -2,17 +2,10 @@ class DXRWeapons extends DXRBase transient;
 // do not change a weapon's defaults, since we use them in the calculations so this is all safe to be called multiple times
 var DXRLoadouts loadouts;
 
-function CheckConfig()
-{
-    if( ConfigOlderThan(1,6,0,1) ) {
-    }
-    Super.CheckConfig();
-}
-
-simulated function AnyEntry()
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local DeusExWeapon w;
-    Super.AnyEntry();
+    Super.PlayerAnyEntry(p);
 
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
@@ -21,16 +14,10 @@ simulated function AnyEntry()
     }
 }
 
-simulated function PlayerAnyEntry(#var(PlayerPawn) p)
-{
-    Super.PlayerAnyEntry(p);
-    AnyEntry();
-}
-
 simulated function RandoWeapon(DeusExWeapon w)
 {
     local int oldseed, i;
-    local float min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime, new_damage;
+    local float min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime, new_damage, default_shottime;
     if( dxr == None ) return;
     oldseed = SetGlobalSeed("RandoWeapon " $ w.class.name);
 
@@ -64,7 +51,8 @@ simulated function RandoWeapon(DeusExWeapon w)
 
     min_weapon_shottime = float(dxr.flags.settings.min_weapon_shottime) / 100;
     max_weapon_shottime = float(dxr.flags.settings.max_weapon_shottime) / 100;
-    w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
+    default_shottime = GetDefaultShottime(w);
+    w.ShotTime = rngrange(default_shottime, min_weapon_shottime, max_weapon_shottime);
     l(w $ " w.HitDamage="$ w.HitDamage $ ", ShotTime=" $ w.ShotTime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;
@@ -75,6 +63,13 @@ simulated function RandoWeapon(DeusExWeapon w)
     f = w.default.BaseAccuracy * (rngf()+0.5);
     w.BaseAccuracy = f;*/
     ReapplySeed(oldseed);
+}
+
+static function float GetDefaultShottime(DeusExWeapon w) {
+    if(w.ProjectileClass != None && (w.AmmoNames[1] != None || w.AmmoNames[2] != None)) {
+        return 1;// ShotTime of 1 is hardcoded when switching ammo to something with a projectile
+    }
+    return w.default.ShotTime;
 }
 
 simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)

@@ -293,6 +293,11 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        foreach AllActors(class'#var(prefix)UNATCOTroop', troop, 'UNATCOGateGuard') {
+            troop.ChangeAlly('Player', 1.0, false);
+            ChangeInitialAlliance(troop, 'Player', 1.0, false);
+        }
+
         break;
 
     case "04_NYC_SMUG":
