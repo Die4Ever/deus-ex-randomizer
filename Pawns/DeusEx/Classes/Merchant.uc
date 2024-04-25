@@ -42,7 +42,6 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 {
     local DXRando dxr;
     local DXRHints hints;
-    local ConListItem cli;
     local Conversation con;
     local ConEvent ce;
     local ConEventSpeech ces;
@@ -54,9 +53,7 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
         break;
     }
 
-    cli=ConListItem(ConListItems);
-    if(cli == None || cli.con == None) return;
-    con = cli.con;
+    con = ConListItem(ConListItems).con;
 
     for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
         if (ConEventSpeech(ce) != None) {
@@ -81,6 +78,8 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
     ces.conSpeech.speech = "Hehehehe, thank you. Here's a tip: " $ hint @ details;
     ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Come back");
     ces.conSpeech.speech = "Come back anytime. Here's a tip: " $ hint @ details;
+    ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Not enough cash");
+    ces.conSpeech.speech = "Not enough cash, stranger. Here's a tip: " $ hint @ details;
 
     lastHint = newHint;
 
