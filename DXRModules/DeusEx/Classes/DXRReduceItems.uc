@@ -350,7 +350,7 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
         p.maxCopies = Clamp(p.maxCopies, 1, p.default.maxCopies*10);
         owner = #var(PlayerPawn)(p.Owner);
         if(owner == None)
-            owner = player();
+            owner = player(true);
         if( #defined(balance) && owner != None && #var(prefix)FireExtinguisher(p) != None )
             p.maxCopies += owner.SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
 
@@ -384,7 +384,7 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
 
         owner = #var(PlayerPawn)(a.Owner);
         if(owner == None)
-            owner = player();
+            owner = player(true);
         if( #defined(balance) && owner != None
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
         ) {
