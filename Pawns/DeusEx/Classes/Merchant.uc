@@ -53,10 +53,10 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
         hints = DXRHints(dxr.FindModule(class'DXRHints'));
         break;
     }
-    for(cli=ConListItem(ConListItems); cli!=None; cli=cli.next) {
-        con = cli.con;
-        break;
-    }
+
+    cli=ConListItem(ConListItems);
+    if(cli == None || cli.con == None) return;
+    con = cli.con;
 
     for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
         if (ConEventSpeech(ce) != None) {
