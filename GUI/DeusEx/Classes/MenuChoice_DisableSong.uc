@@ -31,7 +31,7 @@ function bool ButtonActivated( Window buttonPressed )
 event InitWindow()
 {
     Super.InitWindow();
-    SetActionButtonWidth(446);
+    SetActionButtonWidth(350);
 
     AddTimer(0.5, true, 0, 'UpdateText');
     UpdateText(0,0,0);

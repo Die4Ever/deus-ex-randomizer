@@ -20,7 +20,7 @@ function bool ButtonActivated( Window buttonPressed )
 event InitWindow()
 {
 	Super.InitWindow();
-    SetActionButtonWidth(260);
+    SetActionButtonWidth(350);
 }
 
 // ----------------------------------------------------------------------
@@ -30,6 +30,6 @@ defaultproperties
 {
      Action=MA_Custom
      HelpText="Opens a link to the Deus Ex Randomizer Discord server"
-     actionText="Join the Discord server"
+     actionText="Join the Discord chat server"
      discord_url="https://discord.gg/daQVyAp2ds"
 }

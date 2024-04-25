@@ -20,7 +20,7 @@ function bool ButtonActivated( Window buttonPressed )
 event InitWindow()
 {
 	Super.InitWindow();
-    SetActionButtonWidth(260);
+    SetActionButtonWidth(350);
 }
 
 // ----------------------------------------------------------------------
@@ -29,7 +29,7 @@ event InitWindow()
 defaultproperties
 {
      Action=MA_Custom
-     HelpText="Open the Deus Ex Randomizer releases page"
-     actionText="Go to Deus Ex Randomizer Releases"
-     release_url="https://github.com/Die4Ever/deus-ex-randomizer/releases"
+     HelpText="Open the Deus Ex Randomizer latest release webpage on GitHub"
+     actionText="Download Latest Deus Ex Randomizer"
+     release_url="https://github.com/Die4Ever/deus-ex-randomizer/releases/latest"
 }

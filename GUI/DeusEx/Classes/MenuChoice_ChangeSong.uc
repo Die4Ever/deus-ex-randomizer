@@ -21,7 +21,7 @@ function bool ButtonActivated( Window buttonPressed )
 event InitWindow()
 {
 	Super.InitWindow();
-    SetActionButtonWidth(260);
+    SetActionButtonWidth(350);
 }
 
 // ----------------------------------------------------------------------
