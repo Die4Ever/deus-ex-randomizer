@@ -77,6 +77,8 @@ function RearrangeMJ12ConvergingInfolink()
     local ConEventSpeech ces;
     local ConEventSetFlag cesf;
 
+    if(#defined(gmdx)) return; // HACK: maybe fix this later
+
     c = GetConversation('DL_Exit');
 
     ce = c.eventList;
