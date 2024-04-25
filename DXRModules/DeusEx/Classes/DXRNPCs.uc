@@ -175,6 +175,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
     c.conOwnerName = String(bindname);
     c.bGenerateAudioNames = false;
     c.bInvokeFrob = true;
+    c.Description = "Merchant";
 
     //Got a selection of good things on sale, stranger.
     //Got somethin' that might interest ya'.

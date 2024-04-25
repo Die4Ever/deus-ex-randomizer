@@ -1,5 +1,7 @@
 class Merchant extends #var(prefix)Businessman3;
 
+var int lastHint;
+
 #ifdef vmd
 function bool ShouldDoSinglePickPocket(DeusExPlayer Frobbie)
 {
@@ -27,6 +29,39 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
     if(damageType == 'Radiation')
         return false;
     return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
+}
+
+function Frob(Actor frobber, Inventory frobWith)
+{
+    local Conversation con;
+    local ConEventSpeech ces;
+    local DXRHints hints;
+    local int newHint;
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando', dxr) {
+        hints = DXRHints(dxr.FindModule(class'DXRHints'));
+        break;
+    }
+    foreach AllObjects(class'Conversation', con) {
+        if (con.description == "Merchant") {
+            break;
+        }
+    }
+
+    do {
+        newHint = hints.GetHint();
+    } until (newHint != lastHint - 1);
+
+    ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Hehehehe");
+    ces.conSpeech.speech = "Hehehehe, thank you. Here's a tip: " $ hints.hints[newHint] @ hints.details[newHint];
+    ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Come back");
+    ces.conSpeech.speech = "Come back anytime. Here's a tip: " $ hints.hints[newHint] @ hints.details[newHint];
+
+    // offset newHint by 1 so that 0 always indicates unassigned, otherwise hint 0 can never be chosen first
+    lastHint = newHint + 1;
+
+    Super.Frob(frobber, frobWith);
 }
 
 defaultproperties
