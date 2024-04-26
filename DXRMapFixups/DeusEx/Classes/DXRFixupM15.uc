@@ -369,8 +369,10 @@ function PreFirstEntryMapFixes_Page()
         }
     }
 
-    //Add a switch to manually trigger the infolink that gives you the Helios computer password
-    AddSwitch( vect(5635.609375,-5352.036133,-5240.890625), rot(0, 0, 0), 'PasswordCallReset', "Forgot your Password?");
+    if(!dxr.flags.IsZeroRando()) {
+        //Add a switch to manually trigger the infolink that gives you the Helios computer password
+        AddSwitch( vect(5635.609375,-5352.036133,-5240.890625), rot(0, 0, 0), 'PasswordCallReset', "Forgot your Password?");
+    }
 
     ft=Spawn(class'#var(prefix)FlagTrigger');
     ft.bSetFlag=True;  //Setting both of these means it will set the flag
