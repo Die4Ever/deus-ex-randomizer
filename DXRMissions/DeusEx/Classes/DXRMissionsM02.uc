@@ -3,7 +3,7 @@ class DXRMissionsM02 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc, loc2, vents_start, jock_sewer, generator_sewer, generator_alley;
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -14,7 +14,7 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 4, 'DataLinkTrigger1', PHYS_None);
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
-        AddGoalLocation("02_NYC_BATTERYPARK", "Ventilation system", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
+        vents_start = AddGoalLocation("02_NYC_BATTERYPARK", "Ventilation system", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
 
         loc = AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
         AddActorLocation(loc, PLAYER_LOCATION, vect(81.434570, -1123.060547, -384.397644), rot(0, 8000, 0));
@@ -23,8 +23,10 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Behind the cargo", NORMAL_GOAL, vect(58.725319, -446.887207, -405.899323), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "By the desk", NORMAL_GOAL, vect(-615.152161, -665.281738, -397.581146), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Walkway by the water", NORMAL_GOAL, vect(-420.000000, -2222.000000, -400), rot(0, 0, 0));
-        AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, 0, 0));
-        AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, 0, 0));
+        loc = AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, 0, 0));
+        AddMutualExclusion(loc, vents_start);// don't put ambrosia in the subway if you start right there in the vents, too easy
+        loc = AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, 0, 0));
+        AddMutualExclusion(loc, vents_start);// don't put ambrosia in the subway if you start right there in the vents, too easy
 
         if (dxr.flags.settings.starting_map > 20)
         {
@@ -40,7 +42,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
-        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
+        jock_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
 
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
@@ -48,11 +50,12 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
         AddGoalActor(goal, 4, 'AmbientSoundTriggered1', PHYS_None);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(576.000000, -512.000000, 71.999939), rot(32768, -16384, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-640.000000, 1760.000000, 128.000000), rot(0,32768,-16384));
+        generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-640.000000, 1760.000000, 128.000000), rot(0,32768,-16384));
+        AddMutualExclusion(generator_alley, jock_sewer);// too easy
         AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(368.000000, 1248.000000, 992.000000), rot(0,32768,-16384));
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(224, -512, -192), rot(0,-16384,-16384));
-        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1600.000000, 784.000000, -256.000000), rot(32768,-32768,0));
-        AddMutualExclusion(loc, loc2);// can't put Jock and the generator both in the sewers
+        generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1600.000000, 784.000000, -256.000000), rot(32768,-32768,0));
+        AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
         // pawns run into these and break them
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
