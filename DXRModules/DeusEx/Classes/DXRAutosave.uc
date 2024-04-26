@@ -147,14 +147,14 @@ function Tick(float delta)
     }
 }
 
-static function bool AllowManualSaves(DeusExPlayer player)
+static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOnly)
 {
     local DXRFlags f;
     f = Human(player).GetDXR().flags;
     if( f == None ) return true;
     if( f.autosave == Hardcore || f.autosave == Ironman ) return false;
 
-    if(player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
+    if(!checkOnly && player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
         player.dataLinkPlay.FastForward();
     }
 

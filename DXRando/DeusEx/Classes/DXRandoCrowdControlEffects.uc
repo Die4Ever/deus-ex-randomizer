@@ -265,6 +265,8 @@ function HandleEffectSelectability()
     if (effectSelectInit==False){
         ccLink.sendEffectSelectability("third_person",!dxrCameras.IsThirdPersonGame());
         ccLink.sendEffectSelectability("resident_evil",!dxrCameras.IsFixedCamGame());
+        ccLink.sendEffectSelectability("quick_save",class'DXRAutosave'.static.AllowManualSaves(player(),True));
+        ccLink.sendEffectSelectability("quick_load",class'DXRAutosave'.static.AllowManualSaves(player(),True));
         effectSelectInit=True;
     }
 
