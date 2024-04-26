@@ -60,7 +60,7 @@ function CheckConfig()
 
         i=0;
         max_ammo[i].type = "Ammo10mm";
-        max_ammo[i].percent = 40;
+        max_ammo[i].percent = 50;
         i++;
 
         max_ammo[i].type = "AmmoPlasma";

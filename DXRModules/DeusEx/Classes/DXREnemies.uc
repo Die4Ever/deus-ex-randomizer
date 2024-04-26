@@ -16,10 +16,10 @@ function CheckConfig()
     min_rate_adjust = 0.1;
     max_rate_adjust = 3.0;
 
-    AddRandomWeapon(class'#var(prefix)WeaponShuriken', 10);
-    AddRandomWeapon(class'#var(prefix)WeaponPistol', 6);
-    AddRandomWeapon(class'#var(prefix)WeaponStealthPistol', 4);
-    AddRandomWeapon(class'#var(prefix)WeaponAssaultGun', 12);
+    AddRandomWeapon(class'#var(prefix)WeaponShuriken', 9);
+    AddRandomWeapon(class'#var(prefix)WeaponPistol', 7);
+    AddRandomWeapon(class'#var(prefix)WeaponStealthPistol', 5);
+    AddRandomWeapon(class'#var(prefix)WeaponAssaultGun', 11);
     AddRandomWeapon(class'#var(prefix)WeaponMiniCrossbow', 6);
 #ifdef gmdx
     AddRandomWeapon(class'#var(prefix)#var(package).GMDXGepGun', 4);
@@ -40,8 +40,8 @@ function CheckConfig()
     AddRandomWeapon(class'#var(prefix)WeaponSawedOffShotgun', 7);
     AddRandomWeapon(class'#var(prefix)WeaponProd', 3);
 
-    AddRandomMelee(class'#var(prefix)WeaponBaton', 15);
-    AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 65);
+    AddRandomMelee(class'#var(prefix)WeaponBaton', 20);
+    AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 60);
     AddRandomMelee(class'#var(prefix)WeaponCrowbar', 15);
     AddRandomMelee(class'#var(prefix)WeaponSword', 5);
 
