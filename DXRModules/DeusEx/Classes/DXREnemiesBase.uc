@@ -1,21 +1,17 @@
 class DXREnemiesBase extends DXRActorsBase abstract;
 
-var config int enemy_multiplier;
+var int enemy_multiplier;
 
-struct RandomWeaponStruct { var string type; var int chance; };
 struct _RandomWeaponStruct { var class<DeusExWeapon> type; var float chance; };
-var config RandomWeaponStruct randommelees[8];
-var _RandomWeaponStruct _randommelees[8];
-var config RandomWeaponStruct randomweapons[32];
-var _RandomWeaponStruct _randomweapons[32];
-var config RandomWeaponStruct randombotweapons[32];
-var _RandomWeaponStruct _randombotweapons[32];
+var transient _RandomWeaponStruct _randommelees[8];
+var transient _RandomWeaponStruct _randomweapons[32];
+var transient _RandomWeaponStruct _randombotweapons[32];
 
 struct _RandomEnemyStruct { var class<ScriptedPawn> type; var float chance; var int faction; };
 var transient _RandomEnemyStruct _randomenemies[128];
 
-var config name defaultOrders;
-var config float min_rate_adjust, max_rate_adjust;
+var name defaultOrders;
+var float min_rate_adjust, max_rate_adjust;
 
 struct WatchEnterWorld {
     var ScriptedPawn watch, target;
@@ -37,37 +33,37 @@ function int GetFactionId(ScriptedPawn p);
 function RandomizeSP(ScriptedPawn p, int percent);
 function CheckHelmet(ScriptedPawn p);
 
-function AddRandomBotWeapon(string t, int c)
+function AddRandomBotWeapon(class<DeusExWeapon> t, int c)
 {
     local int i;
-    for(i=0; i < ArrayCount(randombotweapons); i++) {
-        if( randombotweapons[i].type == "" ) {
-            randombotweapons[i].type = t;
-            randombotweapons[i].chance = c;
+    for(i=0; i < ArrayCount(_randombotweapons); i++) {
+        if( _randombotweapons[i].type == None ) {
+            _randombotweapons[i].type = t;
+            _randombotweapons[i].chance = c;
             return;
         }
     }
 }
 
-function AddRandomWeapon(string t, int c)
+function AddRandomWeapon(class<DeusExWeapon> t, int c)
 {
     local int i;
-    for(i=0; i < ArrayCount(randomweapons); i++) {
-        if( randomweapons[i].type == "" ) {
-            randomweapons[i].type = t;
-            randomweapons[i].chance = c;
+    for(i=0; i < ArrayCount(_randomweapons); i++) {
+        if( _randomweapons[i].type == None ) {
+            _randomweapons[i].type = t;
+            _randomweapons[i].chance = c;
             return;
         }
     }
 }
 
-function AddRandomMelee(string t, int c)
+function AddRandomMelee(class<DeusExWeapon> t, int c)
 {
     local int i;
-    for(i=0; i < ArrayCount(randommelees); i++) {
-        if( randommelees[i].type == "" ) {
-            randommelees[i].type = t;
-            randommelees[i].chance = c;
+    for(i=0; i < ArrayCount(_randommelees); i++) {
+        if( _randommelees[i].type == None ) {
+            _randommelees[i].type = t;
+            _randommelees[i].chance = c;
             return;
         }
     }
@@ -94,74 +90,56 @@ function AddRandomEnemyType(class<ScriptedPawn> t, float c, int faction)
 
 function ReadConfig()
 {
-    local int i, num;
-    local float total, target_total, totals[16];
+    local int i;
+    local float total, totals[16];
     local class<Actor> a;
 
     total=0;
-    target_total=0;
-    num=0;
-    for(i=0; i < ArrayCount(randommelees); i++) {
-        if( randommelees[i].type != "" ) {
-            a = GetClassFromString(randommelees[i].type, class'DeusExWeapon');
-            if( a == None ) continue;
-            _randommelees[num].type = class<DeusExWeapon>(a);
-            _randommelees[num].chance = rngrangeseeded(randommelees[i].chance, min_rate_adjust, max_rate_adjust, a.name);
-            total += _randommelees[num].chance;
-            target_total += randommelees[i].chance;
-            num++;
+    for(i=0; i < ArrayCount(_randommelees); i++) {
+        if( _randommelees[i].type != None ) {
+            _randommelees[i].chance = rngrangeseeded(_randommelees[i].chance, min_rate_adjust, max_rate_adjust, _randommelees[i].type.name);
+            total += _randommelees[i].chance;
         }
     }
-    for(i=0; i < num; i++) {
-        _randommelees[i].chance *= target_total / total;
-        //l(_randommelees[i].type$": "$_randommelees[i].chance);
+    for(i=0; i < ArrayCount(_randommelees); i++) {
+        if(_randommelees[i].type != None) {
+            _randommelees[i].chance *= 100 / total;
+        }
     }
 
     total=0;
-    num=0;
-    for(i=0; i < ArrayCount(randomweapons); i++) {
-        if( randomweapons[i].type != "" ) {
-            a = GetClassFromString(randomweapons[i].type, class'DeusExWeapon');
-            if( a == None ) continue;
-            _randomweapons[num].type = class<DeusExWeapon>(a);
-            _randomweapons[num].chance = rngrangeseeded(randomweapons[i].chance, min_rate_adjust, max_rate_adjust, a.name);
-            total += _randomweapons[num].chance;
-            num++;
+    for(i=0; i < ArrayCount(_randomweapons); i++) {
+        if( _randomweapons[i].type != None ) {
+            _randomweapons[i].chance = rngrangeseeded(_randomweapons[i].chance, min_rate_adjust, max_rate_adjust, _randomweapons[i].type.name);
+            total += _randomweapons[i].chance;
         }
     }
-    for(i=0; i < num; i++) {
-        _randomweapons[i].chance *= 100.0/total;
-        //l(_randomweapons[i].type$": "$_randomweapons[i].chance);
+    for(i=0; i < ArrayCount(_randomweapons); i++) {
+        if(_randomweapons[i].type != None) {
+            _randomweapons[i].chance *= 100.0/total;
+        }
     }
 
     total=0;
-    num=0;
-    for(i=0; i < ArrayCount(randombotweapons); i++) {
-        if( randombotweapons[i].type != "" ) {
-            a = GetClassFromString(randombotweapons[i].type, class'DeusExWeapon');
-            if( a == None ) continue;
-            _randombotweapons[num].type = class<DeusExWeapon>(a);
-            _randombotweapons[num].chance = rngrangeseeded(randombotweapons[i].chance, min_rate_adjust, max_rate_adjust, a.name);
-            total += _randombotweapons[num].chance;
-            num++;
+    for(i=0; i < ArrayCount(_randombotweapons); i++) {
+        if( _randombotweapons[i].type != None ) {
+            _randombotweapons[i].chance = rngrangeseeded(_randombotweapons[i].chance, min_rate_adjust, max_rate_adjust, _randombotweapons[i].type.name);
+            total += _randombotweapons[i].chance;
         }
     }
-    for(i=0; i < num; i++) {
-        _randombotweapons[i].chance *= 100.0/total;
-        //l(_randombotweapons[i].type$": "$randombotweapons[i].chance);
+    for(i=0; i < ArrayCount(_randombotweapons); i++) {
+        if(_randombotweapons[i].type != None) {
+            _randombotweapons[i].chance *= 100.0/total;
+        }
     }
 
-    num=0;
     for(i=0; i < ArrayCount(_randomenemies); i++) {
         if( _randomenemies[i].type == None ) continue;
-        totals[_randomenemies[num].faction] += _randomenemies[num].chance;
-        num++;
+        totals[_randomenemies[i].faction] += _randomenemies[i].chance;
     }
-    for(i=0; i < num; i++) {
+    for(i=0; i < ArrayCount(_randomenemies); i++) {
         total = totals[_randomenemies[i].faction];
-        //l(_randomenemies[i].type$" before: "$_randomenemies[i].chance@total);
         _randomenemies[i].chance *= 100.0/total;
-        //l(_randomenemies[i].type$" after: "$_randomenemies[i].chance@total);
     }
 }
 
@@ -575,7 +553,8 @@ function RandomizeSize(Actor a)
 
 function RunTests()
 {
-    local int i, total;
+    local int i;
+    local float total;
     Super.RunTests();
 
     total=0;
@@ -587,13 +566,18 @@ function RunTests()
     }
     //test( total <= 100, "config randomenemies chances, check total "$total);// TODO: fix this test again
     total=0;
-    for(i=0; i < ArrayCount(randomweapons); i++ ) {
-        total += randomweapons[i].chance;
+    for(i=0; i < ArrayCount(_randomweapons); i++ ) {
+        total += _randomweapons[i].chance;
     }
-    testint( total, 100, "config randomweapons chances, check total "$total);
+    testfloat( total, 100, "_randomweapons chances, check total "$total);
     total=0;
-    for(i=0; i < ArrayCount(randommelees); i++ ) {
-        total += randommelees[i].chance;
+    for(i=0; i < ArrayCount(_randommelees); i++ ) {
+        total += _randommelees[i].chance;
     }
-    testint( total, 100, "config randommelees chances, check total "$total);
+    testfloat( total, 100, "_randommelees chances, check total "$total);
+    total=0;
+    for(i=0; i < ArrayCount(_randombotweapons); i++ ) {
+        total += _randombotweapons[i].chance;
+    }
+    testfloat( total, 100, "_randombotweapons chances, check total "$total);
 }
