@@ -163,6 +163,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             g.actors[0].a.DrawScale = 1;
             g.actors[0].a.SetCollisionSize(320, 87);
         }
+        g.actors[0].a.SoundRadius = 255;// this is a byte, FLOAT WorldSoundRadius() const {return 25.0 * ((int)SoundRadius+1);}
     }
 }
 
