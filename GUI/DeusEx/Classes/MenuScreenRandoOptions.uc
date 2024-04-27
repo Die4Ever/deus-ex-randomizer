@@ -46,6 +46,7 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_AutoWeaponMods');
         CreateChoice(class'MenuChoice_AutoLaser');
         CreateChoice(class'MenuChoice_Epilepsy');
+        CreateChoice(class'MenuChoice_BarrelTextures');
     }
 
     CreateChoice(class'MenuChoice_PasswordAutofill');

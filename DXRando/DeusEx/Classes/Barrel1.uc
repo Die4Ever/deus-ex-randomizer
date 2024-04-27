@@ -12,6 +12,54 @@ function BeginPlay()
     _SkinColor = SkinColor;
 }
 
+function PostPostBeginPlay()
+{
+    UpdateBarrelTexture();
+}
+
+function UpdateBarrelTexture()
+{
+    if (class'MenuChoice_BarrelTextures'.static.IsEnabled(self)){
+        //Update skins with nice colour-coded striped barrels
+        switch(SkinColor){
+            case SC_Explosive:
+            case SC_FlammableLiquid:
+            case SC_FlammableSolid:
+                Skin=Texture'RedExplosiveBarrel';
+                break;
+            case SC_Poison:
+            case SC_Biohazard:
+                Skin=Texture'GreenPoisonBarrel';
+                break;
+            case SC_RadioActive:
+                Skin=Texture'YellowRadioactiveBarrel';
+                break;
+        }
+    } else {
+        //Original barrel textures
+        switch(SkinColor){
+            case SC_Explosive:
+                Skin=Texture'Barrel1Tex5';
+                break;
+            case SC_FlammableLiquid:
+                Skin=Texture'Barrel1Tex6';
+                break;
+            case SC_FlammableSolid:
+                Skin=Texture'Barrel1Tex7';
+                break;
+            case SC_Poison:
+                Skin=Texture'Barrel1Tex8';
+                break;
+            case SC_Biohazard:
+                Skin=Texture'Barrel1Tex1';
+                break;
+            case SC_RadioActive:
+                Skin=Texture'Barrel1Tex9';
+                break;
+        }
+    }
+}
+
 event TravelPostAccept()
 {
     Super.TravelPostAccept();
