@@ -16,6 +16,9 @@ static function bool IsEnabled(Actor a)
 {
     local DXRFlags f;
 
+    if (default.value==2) { return True; }
+    if (default.value==0) { return False; }
+
     foreach a.AllActors(class'DXRFlags',f){break;}
     if (f==None){return False;}
 
