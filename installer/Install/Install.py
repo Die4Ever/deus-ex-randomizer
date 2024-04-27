@@ -217,8 +217,18 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
     else:
         changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'True'})
 
-    info('ZeroRando:', ZeroRando)
-    if ZeroRando:
+    info('ZeroRando:', ZeroRando, exename)
+    # if doing an in-place installation like on Linux, we use DeusEx.ini for most things, but this will still be in DXRando.ini
+    if ZeroRando and exename == 'DeusEx':
+        ZeroRandoIni: Path = configs_dest / ('DXRando.ini')
+        if ZeroRandoIni.exists():
+            oldconfig = ZeroRandoIni.read_bytes()
+            c = Config.Config(oldconfig)
+        else:
+            c = Config.Config(b'')
+        c.ModifyConfig(changes={'DeusEx.DXRFlags': {'gamemode': '4'}}, additions={})
+        WriteBytes(ZeroRandoIni, c.GetBinary())
+    elif ZeroRando:
         if 'DeusEx.DXRFlags' not in changes:
             changes['DeusEx.DXRFlags'] = {}
         changes['DeusEx.DXRFlags'].update({'gamemode': '4'})

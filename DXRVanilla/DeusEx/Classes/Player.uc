@@ -397,7 +397,9 @@ function DoJump( optional float F )
     local DeusExWeapon w;
     local float scaleFactor, augLevel;
 
-    if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
+    augLevel = AugmentationSystem.GetAugLevelValue(class'AugMuscle') * 1.3;
+    if(augLevel < 1) augLevel = 1;
+    if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20.0 * augLevel))
         return;
     else if (bForceDuck || IsLeaning())
         return;
@@ -1423,13 +1425,29 @@ exec function OpenControllerAugWindow()
 }
 
 
-event TravelPostAccept()
-{
-	Super.TravelPostAccept();
-    if(bCrouchOn && bToggleCrouch) {
-        bWasCrouchOn = false;
+
+function HandleWalking()
+{// DXRando: fix dropping crates into the void when climbing ladders
+    local Decoration oldDec;
+    oldDec = CarriedDecoration;
+
+    Super.HandleWalking();
+
+    if(CarriedDecoration==None && oldDec!=None) {
+        CarriedDecoration = oldDec;
+        PutCarriedDecorationInHand();
     }
 }
+
+event TravelPostAccept()
+{
+    Super.TravelPostAccept();
+    if(bCrouchOn && bToggleCrouch && !flagBase.GetBool('PlayerTraveling')) {
+        bWasCrouchOn = false;
+        bDuck = 1;
+    }
+}
+
 
 exec function ToggleAutorun()
 {
@@ -1449,6 +1467,18 @@ event PlayerInput( float DeltaTime )
 exec function RemoveBeltItem()
 {
     RemoveObjectFromBelt(InHand);
+}
+
+
+function QuickLoadConfirmed()
+{
+   if (Level.Netmode != NM_Standalone)
+      return;
+    if(class'MenuChoice_LoadLatest'.default.enabled) {
+        LoadLatestConfirmed();
+    } else {
+        LoadGame(-1);
+    }
 }
 
 exec function LoadLatest()

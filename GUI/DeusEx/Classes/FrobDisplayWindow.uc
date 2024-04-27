@@ -497,7 +497,7 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
 
         if( code_known )
             strInfo = strInfo $ CR() $ "Password Known";
-        else
+        else if(#var(injectsprefix)ComputerPublic(c) == None)
             strInfo = strInfo $ CR() $ "Unknown Password";
     }
     else if( GetKnownCodes() && a != None )

@@ -6,7 +6,7 @@ class DXRMissionsM08 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc, loc2, bar1, bar2;
 
     AddGoal("08_NYC_Bar", "Harley Filben", GOAL_TYPE1, 'HarleyFilben0', PHYS_Falling);
     goal = AddGoal("08_NYC_Bar", "Vinny", GOAL_TYPE1, 'NathanMadison0', PHYS_Falling);
@@ -15,8 +15,9 @@ function int InitGoals(int mission, string map)
     AddGoal("08_NYC_FreeClinic", "Joe Greene", GOAL_TYPE1, 'JoeGreene0', PHYS_Falling);
 
     AddGoalLocation("08_NYC_Street", "Hotel Roof", START_LOCATION | VANILLA_START | GOAL_TYPE1, vect(-354.250427, 795.071594, 594.411743), rot(0, -18600, 0));
-    AddGoalLocation("08_NYC_Bar", "Bar Table", GOAL_TYPE1 | VANILLA_GOAL | SITTING_GOAL, vect(-1689.125122, 337.159912, 63.599533), rot(0,-10144,0));
-    AddGoalLocation("08_NYC_Bar", "Bar", GOAL_TYPE1 | VANILLA_GOAL, vect(-931.038086, -488.537109, 47.600464), rot(0,9536,0));
+    bar1 = AddGoalLocation("08_NYC_Bar", "Bar Table", GOAL_TYPE1 | VANILLA_GOAL | SITTING_GOAL, vect(-1689.125122, 337.159912, 63.599533), rot(0,-10144,0));
+    bar2 = AddGoalLocation("08_NYC_Bar", "Bar", GOAL_TYPE1 | VANILLA_GOAL, vect(-931.038086, -488.537109, 47.600464), rot(0,9536,0));
+    AddMutualExclusion(bar1, bar2);
     AddGoalLocation("08_NYC_FreeClinic", "Clinic", GOAL_TYPE1 | VANILLA_GOAL, vect(904.356262, -1229.045166, -272.399506), rot(0,31640,0));
     AddGoalLocation("08_NYC_Underground", "Sewers", GOAL_TYPE1, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
     AddGoalLocation("08_NYC_Hotel", "Hotel", GOAL_TYPE1 | SITTING_GOAL, vect(-108.541245, -2709.490479, 111.600838), rot(0,20000,0));
@@ -47,7 +48,7 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc, loc2, bar1, bar2;
 
     AddGoal("08_NYC_Bar", "Harley Filben", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
     goal = AddGoal("08_NYC_Bar", "Vinny", NORMAL_GOAL, 'NathanMadison0', PHYS_Falling);
@@ -56,8 +57,9 @@ function int InitGoalsRev(int mission, string map)
     AddGoal("08_NYC_FreeClinic", "Joe Greene", NORMAL_GOAL, 'JoeGreene0', PHYS_Falling);
 
     AddGoalLocation("08_NYC_Street", "Hotel Roof", START_LOCATION | VANILLA_START | NORMAL_GOAL, vect(-462.25,856,634.4), rot(0, -18600, 0));
-    AddGoalLocation("08_NYC_Bar", "Bar Table", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-1394.78,727.7,95.6), rot(0,-10144,0));
-    AddGoalLocation("08_NYC_Bar", "Bar", NORMAL_GOAL | VANILLA_GOAL, vect(-556.6,-403.86,49.6), rot(0,41832,0));
+    bar1 = AddGoalLocation("08_NYC_Bar", "Bar Table", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-1394.78,727.7,95.6), rot(0,-10144,0));
+    bar2 = AddGoalLocation("08_NYC_Bar", "Bar", NORMAL_GOAL | VANILLA_GOAL, vect(-556.6,-403.86,49.6), rot(0,41832,0));
+    AddMutualExclusion(bar1, bar2);
     AddGoalLocation("08_NYC_FreeClinic", "Clinic", NORMAL_GOAL | VANILLA_GOAL, vect(1293.991211,-1226.047852,-239.399506), rot(0,31640,0));
     AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
     AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(316,-3439,111), rot(0,0,0));
@@ -161,6 +163,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             g.actors[0].a.DrawScale = 1;
             g.actors[0].a.SetCollisionSize(320, 87);
         }
+        g.actors[0].a.SoundRadius = 255;// this is a byte, FLOAT WorldSoundRadius() const {return 25.0 * ((int)SoundRadius+1);}
     }
 }
 

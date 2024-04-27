@@ -248,7 +248,7 @@ function PeriodicUpdates()
 function HandleEffectSelectability()
 {
     local Inventory anItem;
-    local bool haveFT;
+    local bool haveFT, canFreelySave;
 
     //LamThrower
     if (#defined(vanilla)){
@@ -265,6 +265,14 @@ function HandleEffectSelectability()
     if (effectSelectInit==False){
         ccLink.sendEffectSelectability("third_person",!dxrCameras.IsThirdPersonGame());
         ccLink.sendEffectSelectability("resident_evil",!dxrCameras.IsFixedCamGame());
+
+#ifdef vanilla
+        canFreelySave=class'DXRAutosave'.static.AllowManualSaves(player(),True);
+#else
+        canFreelySave=True; //Revision has a "no manual saving" mode, but it isn't accessible through rando at the moment
+#endif
+        ccLink.sendEffectSelectability("quick_save",canFreelySave);
+        ccLink.sendEffectSelectability("quick_load",canFreelySave);
         effectSelectInit=True;
     }
 

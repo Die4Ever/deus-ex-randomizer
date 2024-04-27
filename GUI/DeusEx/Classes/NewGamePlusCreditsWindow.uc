@@ -13,6 +13,9 @@ function DoNewGamePlus()
     if (!bLoadIntro) return;
 
     foreach player.AllActors(class'DXRFlags', f) {
+        if(f.IsZeroRando()) {
+            return; // no NG+ for you! not yet...
+        }
         f.NewGamePlus();
         bLoadIntro=false;
         break;

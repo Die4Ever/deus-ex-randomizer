@@ -134,10 +134,12 @@ function PreFirstEntryMapFixes()
                     m.Tag = 'Sewerdoor';
                 }
             }
-            foreach AllActors(class'Trigger', t) {
-                //disable the platforms that fall when you step on them
-                if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
-                    t.Event = '';
+            if(!dxr.flags.IsZeroRando()) {
+                foreach AllActors(class'Trigger', t) {
+                    //disable the platforms that fall when you step on them
+                    if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
+                        t.Event = '';
+                    }
                 }
             }
             foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {

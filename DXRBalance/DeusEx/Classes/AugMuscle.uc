@@ -9,9 +9,11 @@ function PostPostBeginPlay()
     Description = default.Description;
 }
 
+// LevelValues only affect throwing velocity in vanilla, and in DXRando also DoJump
+// otherwise vanilla uses GetClassLevel() + 2
 defaultproperties
 {
     MaxLevel=1
     LevelValues(0)=1.25
-    LevelValues(1)=2.0
+    LevelValues(1)=2
 }

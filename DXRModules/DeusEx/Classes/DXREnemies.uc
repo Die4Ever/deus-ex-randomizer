@@ -11,60 +11,51 @@ const Police = 5;
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,0,9) ) {
-        enemy_multiplier = 1;
-        min_rate_adjust = 0.1;
-        max_rate_adjust = 3.0;
 
-        for(i=0; i < ArrayCount(randomweapons); i++ ) {
-            randomweapons[i].type = "";
-            randomweapons[i].chance = 0;
-        }
-        for(i=0; i < ArrayCount(randommelees); i++ ) {
-            randommelees[i].type = "";
-            randommelees[i].chance = 0;
-        }
+    enemy_multiplier = 1;
+    min_rate_adjust = 0.1;
+    max_rate_adjust = 3.0;
 
-        AddRandomWeapon("WeaponShuriken", 10);
-        AddRandomWeapon("WeaponPistol", 6);
-        AddRandomWeapon("WeaponStealthPistol", 4);
-        AddRandomWeapon("WeaponAssaultGun", 12);
-        AddRandomWeapon("WeaponMiniCrossbow", 6);
+    AddRandomWeapon(class'#var(prefix)WeaponShuriken', 9);
+    AddRandomWeapon(class'#var(prefix)WeaponPistol', 7);
+    AddRandomWeapon(class'#var(prefix)WeaponStealthPistol', 5);
+    AddRandomWeapon(class'#var(prefix)WeaponAssaultGun', 11);
+    AddRandomWeapon(class'#var(prefix)WeaponMiniCrossbow', 6);
 #ifdef gmdx
-        AddRandomWeapon("#var(package).GMDXGepGun", 4);
+    AddRandomWeapon(class'#var(prefix)#var(package).GMDXGepGun', 4);
 #else
-        AddRandomWeapon("WeaponGEPGun", 4);
+    AddRandomWeapon(class'#var(prefix)WeaponGEPGun', 4);
 #endif
-        AddRandomWeapon("WeaponAssaultShotgun", 6);
-        AddRandomWeapon("WeaponEMPGrenade", 4);
-        AddRandomWeapon("WeaponFlamethrower", 4);
-        AddRandomWeapon("WeaponGasGrenade", 4);
-        AddRandomWeapon("WeaponHideAGun", 3);
-        AddRandomWeapon("WeaponLAM", 5);
-        AddRandomWeapon("WeaponLAW", 4);
-        AddRandomWeapon("WeaponNanoVirusGrenade", 4);
-        AddRandomWeapon("WeaponPepperGun", 2);
-        AddRandomWeapon("WeaponPlasmaRifle", 6);
-        AddRandomWeapon("WeaponRifle", 6);
-        AddRandomWeapon("WeaponSawedOffShotgun", 7);
-        AddRandomWeapon("WeaponProd", 3);
+    AddRandomWeapon(class'#var(prefix)WeaponAssaultShotgun', 6);
+    AddRandomWeapon(class'#var(prefix)WeaponEMPGrenade', 4);
+    AddRandomWeapon(class'#var(prefix)WeaponFlamethrower', 4);
+    AddRandomWeapon(class'#var(prefix)WeaponGasGrenade', 4);
+    AddRandomWeapon(class'#var(prefix)WeaponHideAGun', 3);
+    AddRandomWeapon(class'#var(prefix)WeaponLAM', 5);
+    AddRandomWeapon(class'#var(prefix)WeaponLAW', 4);
+    AddRandomWeapon(class'#var(prefix)WeaponNanoVirusGrenade', 4);
+    AddRandomWeapon(class'#var(prefix)WeaponPepperGun', 2);
+    AddRandomWeapon(class'#var(prefix)WeaponPlasmaRifle', 6);
+    AddRandomWeapon(class'#var(prefix)WeaponRifle', 6);
+    AddRandomWeapon(class'#var(prefix)WeaponSawedOffShotgun', 7);
+    AddRandomWeapon(class'#var(prefix)WeaponProd', 3);
 
-        AddRandomMelee("WeaponBaton", 15);
-        AddRandomMelee("WeaponCombatKnife", 65);
-        AddRandomMelee("WeaponCrowbar", 15);
-        AddRandomMelee("WeaponSword", 5);
+    AddRandomMelee(class'#var(prefix)WeaponBaton', 20);
+    AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 60);
+    AddRandomMelee(class'#var(prefix)WeaponCrowbar', 15);
+    AddRandomMelee(class'#var(prefix)WeaponSword', 5);
 
-        AddRandomBotWeapon("WeaponRobotMachinegun", 60);
-        AddRandomBotWeapon("WeaponRobotRocket", 10);
-        AddRandomBotWeapon("WeaponMJ12Rocket", 10);
-        AddRandomBotWeapon("WeaponSpiderBot", 5);
-        AddRandomBotWeapon("WeaponSpiderBot2", 5);
-        AddRandomBotWeapon("WeaponFlamethrower", 5);
-        AddRandomBotWeapon("WeaponPlasmaRifle", 5);
-        //AddRandomBotWeapon("WeaponGraySpit", 5);  //Gray Spit doesn't seem to work immediately
+    AddRandomBotWeapon(class'#var(prefix)WeaponRobotMachinegun', 60);
+    AddRandomBotWeapon(class'#var(prefix)WeaponRobotRocket', 10);
+    AddRandomBotWeapon(class'#var(prefix)WeaponMJ12Rocket', 10);
+    AddRandomBotWeapon(class'#var(prefix)WeaponSpiderBot', 5);
+    AddRandomBotWeapon(class'#var(prefix)WeaponSpiderBot2', 5);
+    AddRandomBotWeapon(class'#var(prefix)WeaponFlamethrower', 5);
+    AddRandomBotWeapon(class'#var(prefix)WeaponPlasmaRifle', 5);
+    //AddRandomBotWeapon(class'#var(prefix)WeaponGraySpit', 5);  //Gray Spit doesn't seem to work immediately
 
-        defaultOrders = 'DynamicPatrolling';
-    }
+    defaultOrders = 'DynamicPatrolling';
+
     Super.CheckConfig();
 
     AddRandomEnemyType(class'#var(prefix)Greasel', 4, FactionAny);

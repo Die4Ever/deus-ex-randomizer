@@ -255,6 +255,7 @@ function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataV
 
 function AddMutualExclusion(int L1, int L2)
 {
+    l("AddMutualExclusion: " $ locations[L1].name $ " and "$ locations[L2].name $ " are mutually exclusive");
     mutually_exclusive[num_mututally_exclusives].L1 = L1;
     mutually_exclusive[num_mututally_exclusives].L2 = L2;
     num_mututally_exclusives++;

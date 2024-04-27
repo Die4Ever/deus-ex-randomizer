@@ -5,6 +5,7 @@ var bool WaltonAppeared;
 function int InitGoals(int mission, string map)
 {
     local int goal, loc;
+    local int front_gate_start;
     local int howard_cherry, howard_meeting, howard_radio, howard_computer;
     local int jock_vanilla, jock_cherry, jock_tower, jock_computer;
     local int computer_vanilla, computer_radio, computer_meeting;
@@ -25,7 +26,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Roof", NORMAL_GOAL | START_LOCATION | VANILLA_START, vect(927.361328, 2426.330811, -867.404114), rot(0, 32768, 0));
         AddActorLocation(loc, PLAYER_LOCATION, vect(657.233215, 2501.673096, -908.798096), rot(0, -16384, 0));
 
-        AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6750.350586, 7763.461426, -3092.699951), rot(0, 0, 0));
+        front_gate_start = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6436.471680, 7621.873535, -3061.458740), rot(0, 0, 0));
         AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
 
@@ -33,8 +34,9 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
+        AddMutualExclusion(front_gate_start, loc); // starting at the front gate and then exiting at the front gate is a LOT of walking
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5046.039063, -2050.704102), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(-659.219116, 5350.891113, -2142.458740), rot(0,-27976,0));
@@ -131,6 +133,7 @@ function int InitGoals(int mission, string map)
 function int InitGoalsRev(int mission, string map)
 {
     local int goal, loc, howard1, howard2, jock1, jock2;
+    local int front_gate_start;
 
     switch(map) {
     case "12_VANDENBERG_CMD":
@@ -148,7 +151,7 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Roof", NORMAL_GOAL | START_LOCATION | VANILLA_START, vect(927.361328, 2426.330811, -867.404114), rot(0, 32768, 0));
         AddActorLocation(loc, PLAYER_LOCATION, vect(657.233215, 2501.673096, -908.798096), rot(0, -16384, 0));
 
-        AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6750.350586, 7763.461426, -3092.699951), rot(0, 0, 0));
+        front_gate_start = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6436.471680, 7621.873535, -3061.458740), rot(0, 0, 0));
         AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
 
@@ -156,8 +159,9 @@ function int InitGoalsRev(int mission, string map)
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'JockHelicopter2', PHYS_None);
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7040,7540,-2984), rot(0,-19840,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", GOAL_TYPE1 | VANILLA_GOAL, vect(7040,7540,-2984), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
+        AddMutualExclusion(front_gate_start, loc); // starting at the front gate and then exiting at the front gate is a LOT of walking
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5564, -2050.704102), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(-659.219116, 5350.891113, -2142.458740), rot(0,-27976,0));

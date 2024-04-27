@@ -1012,6 +1012,10 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
             slot=rng(num);// vanilla is not good
         }
         info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot] $" ("$temp[slot].Location$")");
+
+        if(PlaceholderItem(temp[slot]) != None) {
+            temp[slot].SetCollisionSize(k.CollisionRadius, k.CollisionHeight);
+        }
         // Swap argument A is more lenient with collision than argument B
         if( Swap(temp[slot], k) ) break;
     }

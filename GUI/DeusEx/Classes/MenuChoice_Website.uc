@@ -20,7 +20,7 @@ function bool ButtonActivated( Window buttonPressed )
 event InitWindow()
 {
     Super.InitWindow();
-    SetActionButtonWidth(260);
+    SetActionButtonWidth(350);
 }
 
 // ----------------------------------------------------------------------
@@ -30,6 +30,6 @@ defaultproperties
 {
      Action=MA_Custom
      HelpText="Open the Mods4Ever.com Website"
-     actionText="Go to Mods4Ever.com"
+     actionText="Go to Mods4Ever.com website"
      url="https://mods4ever.com"
 }

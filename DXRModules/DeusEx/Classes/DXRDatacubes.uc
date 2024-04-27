@@ -594,7 +594,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
     local Inventory inv;
     local Containers c;
     local Actor temp[1024];
-    local int num, slot, numHasPass, bads;
+    local int num, slot, numHasPass, bads, tries;
     local int hasPass[64];
 
     InfoDevsHasPass(id, hasPass, numHasPass);
@@ -630,15 +630,21 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
     }
 
     l("DatacubePositionCheck datacube "$id$" got num "$num$" with "$bads$" unsafe positions in map "$dxr.localurl);
-    slot=rng(num+1);//+1 for the vanilla location, since we're not in the list
-    if(slot==0) {
-        l("not swapping infodevice "$ActorToString(id));
-        return;
+    for(tries=0; tries<5; tries++) {
+        slot=rng(num+1);//+1 for the vanilla location, since we're not in the list
+        if(slot==0) {
+            l("not swapping infodevice "$ActorToString(id));
+            return;
+        }
+        slot--;
+        l("swapping infodevice "$ActorToString(id)$" with "$temp[slot] $" ("$temp[slot].Location$")");
+
+        if(PlaceholderItem(temp[slot]) != None) {
+            temp[slot].SetCollisionSize(id.CollisionRadius, id.CollisionHeight);
+        }
+        // Swap argument A is more lenient with collision than argument B
+        if(Swap(temp[slot], id)) break;
     }
-    slot--;
-    l("swapping infodevice "$ActorToString(id)$" with "$temp[slot] $" ("$temp[slot].Location$")");
-    // Swap argument A is more lenient with collision than argument B
-    Swap(temp[slot], id);
 }
 
 function MakeAllHackable(int deviceshackable)
