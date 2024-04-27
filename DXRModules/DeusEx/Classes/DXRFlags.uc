@@ -715,7 +715,7 @@ static function string GameModeName(int gamemode)
         return "WaltonWare Entrance Rando";
 #endif
     case WaltonWareHardcore:
-        return "WaltonWare Harcore";
+        return "WaltonWare Hardcore";
     case WaltonWarex3:
         return "WaltonWare x3";
     }

@@ -65,6 +65,7 @@ event TravelPostAccept()
     Super.TravelPostAccept();
     SkinColor = _SkinColor;
     BeginPlay();
+    UpdateBarrelTexture();
 }
 
 function Trigger(Actor Other, Pawn Instigator)
