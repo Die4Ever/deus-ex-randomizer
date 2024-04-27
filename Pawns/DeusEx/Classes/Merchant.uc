@@ -1,7 +1,7 @@
 class Merchant extends #var(prefix)Businessman3;
 
 var int lastHint;
-var string greetings[5];
+var string greetings[4];
 
 #ifdef vmd
 function bool ShouldDoSinglePickPocket(DeusExPlayer Frobbie)
@@ -106,5 +106,4 @@ defaultproperties
     greetings(1)="Got a selection of good things on sale, stranger."
     greetings(2)="Got somethin' that might interest ya'."
     greetings(3)="Got some rare things on sale, stranger!"
-    greetings(4)="Welcome!"
 }
