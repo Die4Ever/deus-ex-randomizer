@@ -201,6 +201,7 @@ function doAutosave()
         /*(p.dataLinkPlay != None) ||*/ (dxr.Level.Netmode != NM_Standalone) || (p.InConversation())
     ){
         info("doAutosave() not saving yet");
+        SetGameSpeed(1);
         return;
     }
 
