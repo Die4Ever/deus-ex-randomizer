@@ -397,7 +397,9 @@ function DoJump( optional float F )
     local DeusExWeapon w;
     local float scaleFactor, augLevel;
 
-    if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
+    augLevel = AugmentationSystem.GetAugLevelValue(class'AugMuscle') * 1.3;
+    if(augLevel < 1) augLevel = 1;
+    if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20.0 * augLevel))
         return;
     else if (bForceDuck || IsLeaning())
         return;
