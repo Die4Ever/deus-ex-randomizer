@@ -6,7 +6,7 @@ struct EndQuote
     var string attribution;
 };
 
-var EndQuote quotes[130];
+var EndQuote quotes[140];
 var int numQuotes;
 
 //For now, this is limited to the default UnrealScript limit of 256 characters in a string
