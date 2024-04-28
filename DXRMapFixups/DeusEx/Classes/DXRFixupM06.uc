@@ -211,6 +211,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
+        SetupMaggieGuardBarkFix();
         foreach AllActors(class'#var(prefix)WeaponNanoSword', dts) {
             dts.bIsSecretGoal = true;// just in case you don't have DXRMissions enabled
         }
@@ -607,6 +608,31 @@ function PostFirstEntryMapFixes()
         }
         break;
     }
+}
+
+function SetupMaggieGuardBarkFix()
+{
+    local #var(prefix)MJ12Troop t;
+    local BarkBindTrigger bbt;
+
+    foreach AllActors(class'#var(prefix)MJ12Troop',t,'MaggieTroop')
+    {
+        //Remove their default bark bind names
+        t.BarkBindName=""; //Default is "MJ12Troop"
+        t.ConBindEvents();
+    }
+
+    //Add BarkBindTriggers
+    //Main entrance
+    class'BarkBindTrigger'.static.Create(self,'MaggieTroop',"MJ12Troop", vectm(-943,-448,2024),50,40);
+    //Buddha entrance
+    class'BarkBindTrigger'.static.Create(self,'MaggieTroop',"MJ12Troop", vectm(-1295, -1174, 2024),50,40);
+    //Rooftop entrance
+    class'BarkBindTrigger'.static.Create(self,'MaggieTroop',"MJ12Troop", vectm(-1297,-1268,2405),50,40);
+    //Floor below entrance
+    bbt=class'BarkBindTrigger'.static.Create(self,'MaggieTroop',"MJ12Troop", vectm(-1203, -934, 1736),50,40);
+
+    bbt.Tag = 'Onalert'; //Make the triggers also go off when the alarm triggers
 }
 
 function FixMaggieMoveSpeed()
