@@ -338,8 +338,78 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         // spawn the MAHOGANY desk (CreateGoal only gets called for different maps)
         g.actors[1].a = Spawnm(class'MahoganyDesk',,,Loc.positions[1].pos, Loc.positions[1].rot);
     }
+
+    if (g.name=="Weld Point 1" ||
+        g.name=="Weld Point 2" ||
+        g.name=="Weld Point 3" ||
+        g.name=="Weld Point 4" ||
+        g.name=="Weld Point 5")
+    {
+        class'DXRHoverHint'.static.Create(self, g.name, Loc.positions[0].pos, 40, 40, g.actors[0].a);
+    }
 }
 
+function AfterShuffleGoals(int goalsToLocations[32])
+{
+    local int g;
+    local bool l1,l2,l3,l4,l5,create;
+    if (dxr.localURL == "09_NYC_SHIPBELOW"){
+        for(g=0; g<num_goals; g++) {
+            switch(locations[goalsToLocations[g]].name)
+            {
+                case "NW Engine Room":
+                    l1=True;
+                    break;
+                case "NE Electical Room":
+                    l2=True;
+                    break;
+                case "East Helipad":
+                    l3=True;
+                    break;
+                case "Bilge Pumps":
+                    l4=True;
+                    break;
+                case "SW Engine Room":
+                    l5=True;
+                    break;
+            }
+        }
+        for(g=0; g<num_locations; g++) {
+            create=False;
+            switch(locations[g].name)
+            {
+                case "NW Engine Room":
+                    if (l1==False){
+                        create=True;
+                    }
+                    break;
+                case "NE Electical Room":
+                    if (l2==False){
+                        create=True;
+                    }
+                    break;
+                case "East Helipad":
+                    if (l3==False){
+                        create=True;
+                    }
+                    break;
+                case "Bilge Pumps":
+                    if (l4==False){
+                        create=True;
+                    }
+                    break;
+                case "SW Engine Room":
+                    if (l5==False){
+                        create=True;
+                    }
+                    break;
+            }
+            if (create){
+                class'DXRHoverHint'.static.Create(self, "Not a Weld Point", locations[g].positions[0].pos, 40, 40);
+            }
+        }
+    }
+}
 
 function MissionTimer()
 {
