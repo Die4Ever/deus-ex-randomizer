@@ -184,40 +184,43 @@ function float _GetItemMult(_ItemReduction reductions[16], class<Actor> item)
     return mult;
 }
 
+function int ApplyItemMult(int count, float mult)
+{
+    local float f;
+    local int i;
+    f = FClamp(float(count) * mult, 1, 1000);
+    if(rngf() < (f%1.0)) {// DXRando: random rounding, 1.9 is more likely to round up than 1.1 is
+        f += 0.999;
+    }
+    i = f;
+    l("    reducing from " $ count $ " to " $ i $ " (" $ f $ ") with mult " $ mult);
+    return i;
+}
+
 function _ReduceWeaponAmmo(Weapon w, float mult)
 {
-    local int i;
-    local float tmult;
     if( w.AmmoName == None || w.PickupAmmoCount <= 0 ) return;
     // don't reduce weapon PickupAmmoCount owned by Robots? does this matter?
     if(#var(prefix)Robot(w.Owner) != None) return;
 
     mult *= _GetItemMult(_item_reductions, w.AmmoName);
-    tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
+    mult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
     // owned weapons get their PickupAmmoCount reduced a bit more, otherwise looting bodies gives too much
     if(Pawn(w.Owner) != None)
-        tmult *= 0.7;
-    i = Clamp(float(w.PickupAmmoCount) * tmult, 1, 1000);
-    if(w.PickupAmmoCount > 1 && chance_single(30))
-        i++;// chance to round up
-    l("reducing ammo in "$ActorToString(w)$" from "$w.PickupAmmoCount$" down to "$i$", tmult: "$tmult);
-    w.PickupAmmoCount = i;
+        mult *= 0.7;
+    l("reducing ammo in "$ActorToString(w)$" from "$w.PickupAmmoCount);
+    w.PickupAmmoCount = ApplyItemMult(w.PickupAmmoCount, mult);
 }
 
 function _ReduceAmmo(Ammo a, float mult)
 {
-    local int i;
-    local float tmult;
     // don't reduce ammo owned by pawns
     if( a.AmmoAmount <= 0 || CarriedItem(a) ) return;
 
     mult *= _GetItemMult(_item_reductions, a.class);
-    tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
-    i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
-    if(a.AmmoAmount > 1 && chance_single(30))
-        i++;// chance to round up
-    l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount$" down to "$i$", tmult: "$tmult);
-    a.AmmoAmount = i;
+    mult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
+    l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount);
+    a.AmmoAmount = ApplyItemMult(a.AmmoAmount, mult);
 }
 
 function ReduceAmmo(class<Ammo> type, float mult)
