@@ -7,7 +7,9 @@ function SaveSetting()
     Super.SaveSetting();
 
     foreach player.AllActors(class'Barrel1', b) {
+#ifdef injections
         b.UpdateBarrelTexture();
+#endif
     }
 }
 

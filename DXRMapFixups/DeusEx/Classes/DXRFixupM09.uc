@@ -76,6 +76,12 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            foreach AllActors(class'ComputerSecurity',cs){
+                if (cs.ComputerNode==CN_UNATCO){
+                    cs.ComputerNode=CN_China;
+                }
+            }
+
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-738,-1412,-474));//Near sewer grate
             rg.MaxCount=1;
 
