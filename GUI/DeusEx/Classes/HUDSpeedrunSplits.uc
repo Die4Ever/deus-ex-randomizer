@@ -15,6 +15,7 @@ var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, s
 
 var config int PB[16];
 var config int Golds[16];
+var config int Avgs[16];
 var config byte alwaysShowSplit[16];
 var config int goal_time;
 
@@ -114,7 +115,6 @@ function InitStats(DXRStats newstats)
 {
     local int i, t, total, curMission, time;
     local string msg;
-    local bool bNewPB;
 
     stats = newstats;
 
@@ -160,18 +160,7 @@ function InitStats(DXRStats newstats)
     }
 
     if(curMission == 99) {
-        // write back new PBs and Golds
-        bNewPB = PB_total == 0 || total < PB_total;
-        for(i=1; i<=15; i++) {
-            time = stats.missions_times[i];
-            time += stats.missions_menu_times[i];
-            if(Golds[i] == 0 || time < Golds[i]) {
-                Golds[i] = time;
-            }
-            if(bNewPB) {
-                PB[i] = time;
-            }
-        }
+        CompletedRun();
     }
     SaveConfig();
 
@@ -182,6 +171,31 @@ function InitStats(DXRStats newstats)
 
     Show();
     StyleChanged();
+}
+
+function CompletedRun()
+{
+    local int i, total, time;
+    local bool bNewPB;
+
+    // write back new PBs and Golds
+    bNewPB = PB_total == 0 || total < PB_total;
+    for(i=1; i<=15; i++) {
+        time = stats.missions_times[i];
+        time += stats.missions_menu_times[i];
+        if(Golds[i] == 0 || time < Golds[i]) {
+            Golds[i] = time;
+        }
+        if(bNewPB) {
+            PB[i] = time;
+        }
+        if(Avgs[i] <= 0) {
+            Avgs[i] = time;
+        } else {
+            // moving average across about 5 runs
+            Avgs[i] = (Avgs[i]*4 + time) / 5;
+        }
+    }
 }
 
 function UpdatePos()
