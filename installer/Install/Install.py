@@ -6,6 +6,7 @@ try:
     from Install import _DetectFlavors
     from Install import MapVariants
     from GUI.SaveMigration import SaveMigration
+    import datetime
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -257,6 +258,13 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
         c = Config.Config(b)
         c.ModifyConfig(changes, additions={})
         WriteBytes(DXRandoini, c.GetBinary())
+
+    SpeedrunSplitsIni: Path = configs_dest / ('DXRSplits.ini')
+    bakName = datetime.datetime.now().strftime("%Y-%m-%d")
+    bakName = 'DXRSplits ' + bakName + '.ini'
+    SplitsBackupIni = configs_dest / bakName
+    if SpeedrunSplitsIni.exists() and not SplitsBackupIni.exists():
+        CopyTo(SpeedrunSplitsIni, SplitsBackupIni)
 
 
 def InstallLDDP(system:Path, settings:dict):
