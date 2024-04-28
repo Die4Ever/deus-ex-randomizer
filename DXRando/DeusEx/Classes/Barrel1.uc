@@ -28,9 +28,21 @@ function AdjustBarrelBehaviour()
             bExplosive = True;
             explosionDamage = 200;
             explosionRadius = class'Barrel1'.Default.ExplosionRadius;
+            ItemName = "Explosive Barrel";
             break;
         case SC_Wood:
             FragType=class'WoodFragment';
+            ItemName = "Wooden Barrel";
+            break;
+        case SC_Poison:
+        case SC_Biohazard:
+            ItemName = "Poison Gas Barrel";
+            break;
+        case SC_RadioActive:
+            ItemName = "Radioactive Barrel";
+            break;
+        default:
+            ItemName = "Barrel";
             break;
     }
 
