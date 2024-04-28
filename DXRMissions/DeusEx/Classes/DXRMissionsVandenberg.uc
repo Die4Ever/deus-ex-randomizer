@@ -6,9 +6,9 @@ function int InitGoals(int mission, string map)
 {
     local int goal, loc;
     local int front_gate_start;
-    local int howard_cherry, howard_meeting, howard_radio, howard_computer;
+    local int howard_cherry, howard_meeting, howard_radio, howard_computer, howard_machine_shop;
     local int jock_vanilla, jock_cherry, jock_tower, jock_computer;
-    local int computer_vanilla, computer_radio, computer_meeting;
+    local int computer_vanilla, computer_radio, computer_meeting, computer_machine_shop;
 
     switch(map) {
     case "12_VANDENBERG_CMD":
@@ -90,8 +90,8 @@ function int InitGoals(int mission, string map)
         howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", NORMAL_GOAL, vect(38,-1306,832), rot(0, 28804, 0));
         //howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", NORMAL_GOAL, vect(-100, -1331, 832), rot(0, 32768, 0));
         howard_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
-        howard_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", NORMAL_GOAL, vect(-1822,-6516,1662), rot(0, 24308, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", NORMAL_GOAL, vect(566,-4395,1474), rot(0, 21120, 0));
+        howard_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", NORMAL_GOAL, vect(-1794,-6147,1662), rot(0, 18000, 0));
+        howard_machine_shop = AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", NORMAL_GOAL, vect(566,-4395,1474), rot(0, 21120, 0));
         //AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Fourth Floor", NORMAL_GOAL, vect(-259.846710, -6848.406250, 326.598969), rot(0, 0, 0));
         //AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0)); //this one sucks, since he runs away down the hall
@@ -111,11 +111,13 @@ function int InitGoals(int mission, string map)
         computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
         computer_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", GOAL_TYPE2, vect(-1721.988770, -6533.606445, 1665), rot(16384,32768,0));
         computer_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", GOAL_TYPE2, vect(-691.854248, -3575.400391, 1475), rot(16384,0,0));
+        computer_machine_shop = AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", GOAL_TYPE2, vect(234, -4439, 1475.204590), rot(16384,0,0));
 
         // MUTEXES
         AddMutualExclusion(howard_radio, computer_radio);
         AddMutualExclusion(howard_computer, computer_vanilla);
         AddMutualExclusion(howard_meeting, computer_meeting);
+        AddMutualExclusion(howard_machine_shop, computer_machine_shop);
 
         AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
         AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
