@@ -15,6 +15,21 @@ function BeginPlay()
 function PostPostBeginPlay()
 {
     UpdateBarrelTexture();
+    MergeBarrelTypeExplosions();
+}
+
+function MergeBarrelTypeExplosions()
+{
+    switch(SkinColor){
+        case SC_Explosive:
+        case SC_FlammableLiquid:
+        case SC_FlammableSolid:
+            bExplosive = True;
+            explosionDamage = 200;
+            explosionRadius = class'Barrel1'.Default.ExplosionRadius;
+            break;
+    }
+
 }
 
 function UpdateBarrelTexture()
@@ -36,22 +51,16 @@ function UpdateBarrelTexture()
                 break;
         }
     } else {
-        //Original barrel textures
+        //Original barrel textures (merged)
         switch(SkinColor){
             case SC_Explosive:
-                Skin=Texture'Barrel1Tex5';
-                break;
+            case SC_FlammableSolid:
             case SC_FlammableLiquid:
                 Skin=Texture'Barrel1Tex6';
                 break;
-            case SC_FlammableSolid:
-                Skin=Texture'Barrel1Tex7';
-                break;
+            case SC_Biohazard:
             case SC_Poison:
                 Skin=Texture'Barrel1Tex8';
-                break;
-            case SC_Biohazard:
-                Skin=Texture'Barrel1Tex1';
                 break;
             case SC_RadioActive:
                 Skin=Texture'Barrel1Tex9';
@@ -66,6 +75,7 @@ event TravelPostAccept()
     SkinColor = _SkinColor;
     BeginPlay();
     UpdateBarrelTexture();
+    MergeBarrelTypeExplosions();
 }
 
 function Trigger(Actor Other, Pawn Instigator)
