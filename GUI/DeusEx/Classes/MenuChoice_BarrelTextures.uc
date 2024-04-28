@@ -2,14 +2,12 @@ class MenuChoice_BarrelTextures extends DXRMenuUIChoiceInt;
 
 function SaveSetting()
 {
-    local Barrel1 b;
+    local #var(injectsprefix)Barrel1 b;
 
     Super.SaveSetting();
 
-    foreach player.AllActors(class'Barrel1', b) {
-#ifdef injections
+    foreach player.AllActors(class'#var(injectsprefix)Barrel1', b) {
         b.UpdateBarrelTexture();
-#endif
     }
 }
 
