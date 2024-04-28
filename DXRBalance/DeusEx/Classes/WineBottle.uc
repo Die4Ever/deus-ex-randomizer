@@ -3,6 +3,27 @@
 //=============================================================================
 class WineBottle extends HealingItem;
 
+function Destroyed()
+{
+    local Vector HitLocation, HitNormal, EndTrace;
+    local Actor hit;
+    local WinePool pool;
+
+    if (Owner==None){
+        // trace down about 20 feet if we're not in water
+        if (!Region.Zone.bWaterZone)
+        {
+            EndTrace = Location - vect(0,0,320);
+            hit = Trace(HitLocation, HitNormal, EndTrace, Location, False);
+            pool = spawn(class'WinePool',,, HitLocation+HitNormal, Rotator(HitNormal));
+            if (pool != None)
+                pool.maxDrawScale = CollisionRadius / 5.0;
+        }
+    }
+
+    Super.Destroyed();
+}
+
 defaultproperties
 {
     bBreakable=True

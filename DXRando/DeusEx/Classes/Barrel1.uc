@@ -87,6 +87,27 @@ function Trigger(Actor Other, Pawn Instigator)
     TakeDamage(50,Instigator,Location,vect(0,0,0),'shot'); //Destroy the barrel if it is triggered
 }
 
+function Destroyed()
+{
+    local Vector HitLocation, HitNormal, EndTrace;
+    local Actor hit;
+    local WinePool pool;
+
+    if (SkinColor==SC_Wood){
+        // trace down about 20 feet if we're not in water
+        if (!Region.Zone.bWaterZone)
+        {
+            EndTrace = Location - vect(0,0,320);
+            hit = Trace(HitLocation, HitNormal, EndTrace, Location, False);
+            pool = spawn(class'WinePool',,, HitLocation+HitNormal, Rotator(HitNormal));
+            if (pool != None)
+                pool.maxDrawScale = CollisionRadius / 10.0;
+        }
+    }
+
+    Super.Destroyed();
+}
+
 auto state Active
 {
     function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
