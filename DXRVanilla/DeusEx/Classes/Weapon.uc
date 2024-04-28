@@ -805,6 +805,16 @@ function bool HandlePickupQuery(Inventory Item)
     return Super.HandlePickupQuery(Item);
 }
 
+function DropFrom(vector StartLocation)
+{
+    local int oldAmmo;
+    if(PlayerPawn(Owner) == None) {
+        oldAmmo = PickupAmmoCount;
+    }
+    Super.DropFrom(StartLocation);
+    PickupAmmoCount = oldAmmo;
+}
+
 // vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0
 // we're mainly turning on MinSpreadAcc for singleplayer because of the shotguns, so we want a minimal change here of 0.05
 defaultproperties
