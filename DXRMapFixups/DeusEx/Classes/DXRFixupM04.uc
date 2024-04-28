@@ -25,6 +25,7 @@ function PreTravelMapFixes()
 
 function PreFirstEntryMapFixes()
 {
+    local Actor a;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)DatalinkTrigger dt;
     local OrdersTrigger ot;
@@ -124,6 +125,10 @@ function PreFirstEntryMapFixes()
                 if(#var(prefix)BoxLarge(c) != None || #var(prefix)BoxSmall(c) != None
                     || #var(prefix)CrateUnbreakableLarge(c) != None || #var(prefix)CrateUnbreakableMed(c) != None)
                 {
+                    c.SetCollision(false,false,false);
+                    foreach c.BasedActors(class'Actor', a) {
+                        a.SetLocation(a.Location - c.CollisionHeight*vect(0,0,2));
+                    }
                     c.Event = '';
                     c.Destroy();
                 }
