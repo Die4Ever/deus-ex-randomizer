@@ -15,18 +15,22 @@ function BeginPlay()
 function PostPostBeginPlay()
 {
     UpdateBarrelTexture();
-    MergeBarrelTypeExplosions();
+    AdjustBarrelBehaviour();
 }
 
-function MergeBarrelTypeExplosions()
+function AdjustBarrelBehaviour()
 {
     switch(SkinColor){
+        //Merge explosive barrel behaviour into a single type
         case SC_Explosive:
         case SC_FlammableLiquid:
         case SC_FlammableSolid:
             bExplosive = True;
             explosionDamage = 200;
             explosionRadius = class'Barrel1'.Default.ExplosionRadius;
+            break;
+        case SC_Wood:
+            FragType=class'WoodFragment';
             break;
     }
 
@@ -75,7 +79,7 @@ event TravelPostAccept()
     SkinColor = _SkinColor;
     BeginPlay();
     UpdateBarrelTexture();
-    MergeBarrelTypeExplosions();
+    AdjustBarrelBehaviour();
 }
 
 function Trigger(Actor Other, Pawn Instigator)
