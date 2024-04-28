@@ -340,7 +340,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
     local DeusExWeapon W;
     local Inventory otheritem;
 
-    if (item.PickupAmmoCount <= 0) {
+    if (item.PickupAmmoCount < 0) {
         DeleteInventory(item);
         item.Destroy();
         return false;
@@ -359,10 +359,10 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
     if (loadout != None && loadout.is_banned(item.AmmoName))
         item.PickupAmmoCount = 0;
 
-    // don't loot ammo from duplicate weapons
+    // HACK: don't loot ammo from duplicate weapons
     for(otheritem=item.Inventory; otheritem!=None; otheritem=otheritem.Inventory) {
         if(otheritem.class.name == item.class.name) {
-            DeusExWeapon(otheritem).PickupAmmoCount = 0;
+            DeusExWeapon(otheritem).PickupAmmoCount = -1;
         }
     }
 
