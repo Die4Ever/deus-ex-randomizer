@@ -5,8 +5,8 @@ try:
     from zipfile import ZipFile
     from Install import _DetectFlavors
     from Install import MapVariants
+    from Install import Config
     from GUI.SaveMigration import SaveMigration
-    import datetime
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -171,9 +171,7 @@ def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:b
 
 
 def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: Path, ZeroRando=False):
-    defini_dest:Path = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
-    CopyTo(sourceINI, defini_dest)
-    c = Config.Config(defini_dest.read_bytes())
+    c = Config.Config(sourceINI.read_bytes())
     SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
     dxdocs = GetDocumentsDir(system)/'Deus Ex'
@@ -183,22 +181,10 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
     if othersavepath.exists():
         SaveMigration(othersavepath, savepath)
 
-    DXRandoini: Path = configs_dest / (exename+'.ini')
-    Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
-
     changes = {}
-    if DXRandoini.exists():
-        oldconfig = DXRandoini.read_bytes()
-        c = Config.Config(oldconfig)
-        changes = c.RetainConfigSections(
-            set(('WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
-                 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
-            changes
-        )
-    elif not globalsettings['dxvk'] and IsWindows():
-        changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
 
-    CopyTo(sourceINI, DXRandoini)
+    if not globalsettings['dxvk'] and IsWindows():
+        changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
 
     if 'D3D10Drv.D3D10RenderDevice' not in changes:
         changes['D3D10Drv.D3D10RenderDevice'] = {}
@@ -228,7 +214,7 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
         else:
             c = Config.Config(b'')
         c.ModifyConfig(changes={'DeusEx.DXRFlags': {'gamemode': '4'}}, additions={})
-        WriteBytes(ZeroRandoIni, c.GetBinary())
+        c.WriteFile(ZeroRandoIni)
     elif ZeroRando:
         if 'DeusEx.DXRFlags' not in changes:
             changes['DeusEx.DXRFlags'] = {}
@@ -247,24 +233,32 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
         if 'WinDrv.WindowsClient' not in changes:
             changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
+    # write default config
     if changes:
+        defini_dest:Path = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
         info('\n\n\n\n', defini_dest)
-        b = defini_dest.read_bytes()
+        b = sourceINI.read_bytes()
         c = Config.Config(b)
         c.ModifyConfig(changes, additions={})
-        WriteBytes(defini_dest, c.GetBinary())
+        c.WriteFile(defini_dest)
 
-        b = DXRandoini.read_bytes()
+    # write non default config
+    DXRandoini: Path = configs_dest / (exename+'.ini')
+    Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
+    if DXRandoini.exists():
+        oldconfig = DXRandoini.read_bytes()
+        c = Config.Config(oldconfig)
+        changes = c.RetainConfigSections(
+            set(('WinDrv.WindowsClient', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe',
+                 'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
+            changes
+        )
+    if changes:
         c = Config.Config(b)
         c.ModifyConfig(changes, additions={})
-        WriteBytes(DXRandoini, c.GetBinary())
+        c.WriteFile(DXRandoini)
 
-    SpeedrunSplitsIni: Path = configs_dest / ('DXRSplits.ini')
-    bakName = datetime.datetime.now().strftime("%Y-%m-%d")
-    bakName = 'DXRSplits ' + bakName + '.ini'
-    SplitsBackupIni = configs_dest / bakName
-    if SpeedrunSplitsIni.exists() and not SplitsBackupIni.exists():
-        CopyTo(SpeedrunSplitsIni, SplitsBackupIni)
+    Config.BackupSplits(configs_dest/'DXRSplits.ini')
 
 
 def InstallLDDP(system:Path, settings:dict):
@@ -316,14 +310,14 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
         b = confpath.read_bytes()
         c = Config.Config(b)
         c.ModifyConfig(changes, additions)
-        WriteBytes(confpath, c.GetBinary())
+        c.WriteFile(confpath)
 
     confpath = game / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         c = Config.Config(b)
         c.ModifyConfig(changes, additions)
-        WriteBytes(confpath, c.GetBinary())
+        c.WriteFile(confpath)
 
     CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
 
@@ -380,7 +374,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
     if in_place:
         newexename = exename
     outconf = system / (newexename + 'Default.ini')
-    WriteBytes(outconf, c.GetBinary())
+    c.WriteFile(outconf)
 
     confpath = system / (exename + '.ini')
     if confpath.exists():
@@ -390,7 +384,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         outconf = system / (newexename + '.ini')
         if in_place:
             outconf = confpath
-        WriteBytes(outconf, c.GetBinary())
+        c.WriteFile(outconf)
 
     # User inis
     if in_place:
@@ -402,7 +396,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
     outconf = system / (newexename + 'DefUser.ini')
     if in_place:
         outconf = confpath
-    WriteBytes(outconf, c.GetBinary())
+    c.WriteFile(outconf)
 
     confpath = system / (exename + 'User.ini')
     if confpath.exists():
@@ -412,4 +406,4 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         outconf = system / (newexename + 'User.ini')
         if in_place:
             outconf = confpath
-        WriteBytes(outconf, c.GetBinary())
+        c.WriteFile(outconf)
