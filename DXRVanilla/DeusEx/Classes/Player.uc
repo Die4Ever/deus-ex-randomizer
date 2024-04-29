@@ -295,6 +295,18 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     return bCanPickup;
 }
 
+function GrabDecoration()
+{
+    if (class'MenuChoice_DecoPickupBehaviour'.Default.enabled==True && inHand!=None){
+        PutInHand(None);
+        UpdateInHand();
+        //This could return so that it doesn't say "your hands are full" if
+        //your inHand has a put down time, but it's kind of nice if you're
+        //carrying something without a put down time (like fire extinguishers)
+    }
+    Super.GrabDecoration();
+}
+
 function bool AddInventory( inventory NewItem )
 {
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
