@@ -637,7 +637,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname;
+    local string classname, failed1, failed2;
     local bool dead;
 
     dead = !CanKnockUnconscious(victim, damageType);
@@ -693,6 +693,11 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         }
     }
 
+    // note that this treats both kills and knockouts the same
+    class'DXREvents'.static.MapBingoFailEvents(victim.bindName $ "_Dead", failed1, failed2);
+    MarkBingoAsFailed(dxr, failed1);
+    MarkBingoAsFailed(dxr, failed2);
+
     if(!victim.bImportant)
         return;
 
@@ -705,16 +710,6 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
                 _MarkBingo("AnnaKillswitch");
                 Killer = player();
             }
-            break;
-        case "JuanLebedev":
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "LebedevLived");
-            break;
-        case "Aimee":
-        case "LeMerchant":
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "AimeeLeMerchantLived");
-            break;
-        case "MaggieChow":
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MaggieLived");
             break;
     }
 
@@ -1231,8 +1226,8 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
     if (data.MarkBingoAsFailed(eventname)) {
+        l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
@@ -1241,7 +1236,6 @@ static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
 {
     local DXREvents e;
     e = DXREvents(dxr.FindModule(class'DXREvents'));
-    log(e$".MarkBingoAsFailed "$dxr$", "$eventname);
     if (e != None) {
         e._MarkBingoAsFailed(eventname);
     }

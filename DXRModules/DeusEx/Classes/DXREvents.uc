@@ -1956,6 +1956,112 @@ function string RemapBingoEvent(string eventname)
 
 }
 
+static function MapBingoFailEvents(string eventname, out string failed1, out string failed2)
+{
+    failed1 = "";
+    failed2 = "";
+
+    switch (eventname) {
+        case "PaulDenton_Dead":
+            failed1 = "SavedPaul";
+            break;
+        case "JuanLebedev_Dead":
+            failed1 = "LebedevLived";
+            break;
+        case "Aimee_Dead":
+        case "LeMerchant_Dead":
+            failed1 = "AimeeLeMerchantLived";
+        case "MaggieChow_Dead":
+            break;
+            failed1 = "MaggieLived";
+            break;
+        case "FordSchick_Dead":
+            failed1 = "FordSchickRescued";
+            break;
+        case "AlleyBum_Dead":
+            failed1 = "AlleyBumRescued";
+            break;
+        case "Camille_Dead":
+            failed1 = "CamilleConvosDone";
+            break;
+        case "Miguel_Dead":
+            failed1 = "nsfwander";
+            break;
+        case "Josh_Dead":
+            failed1 = "JoshFed";
+            break;
+        case "Billy_Dead":
+            failed1 = "M02BillyDone";
+            break;
+        case "Canal_Bartender_Dead":
+            failed1 = "Canal_Bartender_Question4";
+            break;
+        case "ClubBartender_Dead":
+            failed1 = "M06BartenderQuestion3";
+            break;
+        case "Joshua_Dead":
+            failed1 = "JoshuaInterrupted_Played";
+            break;
+        case "Mamasan_Dead":
+        case "Date1_Dead":
+            failed1 = "M06JCHasDate";
+            break;
+        case "ClubMercedes_Dead":
+        case "ClubTessa_Dead":
+            failed1 = "ClubEntryPaid";
+            break;
+        // omg these hostage names
+        case "SubHostageFemale_Dead":
+        case "SubHostageMale_Dead":
+            failed1 = "SubwayHostagesSaved";
+            break;
+        case "JoJoFine_Dead":
+            failed1 = "GaveRentonGun";
+            break;
+        case "GilbertRenton_Dead":
+            failed1 = "GaveRentonGun";
+            // fallthrough
+        case "FemaleHostage_Dead":
+        case "MaleHostage_Dead":
+            failed2 = "HotelHostagesSaved";
+            break;
+        case "hostage_female_Dead":
+        case "hostage_Dead":
+            failed1 = "SilhouetteHostagesAllRescued";
+            break;
+        case "Doctor2_Dead":
+            failed1 = "BoughtClinicPlan";
+            break;
+        case "M06Junkie_Dead":
+            failed1 = "M06PaidJunkie";
+            break;
+        case "MarketBum1_Dead": // TODO: make sure this bindname is unique
+            failed1 = "M06BoughtVersaLife";
+            break;
+        case "Supervisor01_Dead":
+            failed1 = "Supervisor_Paid";
+            break;
+        // TODO: should only be marked as failed if maggie is still alive and conscious
+        case "BeenToCops":
+            failed1 = "MaggieCanFly";
+            break;
+        case "Joshua_Dead":
+            failed1 = "JoshuaInterrupted_Played";
+            break;
+        case "Don_Dead":
+        case "Lenny_Dead":
+            failed1 = "GiveZyme";
+            break;
+        case "MaggieChow_Dead":
+            failed1 = "MaggieLived";
+            break;
+        case "Renault_Dead":
+            failed1 = "MeetRenault_Played";
+            failed2 = "SoldRenaultZyme";
+            break;
+    }
+}
+
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string msg;
