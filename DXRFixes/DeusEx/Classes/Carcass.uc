@@ -359,12 +359,12 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
     if (loadout != None && loadout.is_banned(item.AmmoName))
         item.PickupAmmoCount = 0;
 
-    // HACK: don't loot ammo from duplicate weapons
-    for(otheritem=item.Inventory; otheritem!=None; otheritem=otheritem.Inventory) {
+    // TODO: don't loot ammo from duplicate weapons, also carcass destruction, and pawn gibbing throwing items would need to do this
+    /*for(otheritem=item.Inventory; otheritem!=None; otheritem=otheritem.Inventory) {
         if(otheritem.class.name == item.class.name) {
             DeusExWeapon(otheritem).PickupAmmoCount = -1;
         }
-    }
+    }*/
 
     // Okay, check to see if the player already has this weapon.  If so,
     // then just give the ammo and not the weapon.  Otherwise give
