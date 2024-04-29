@@ -1959,98 +1959,110 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function string GetBingoFailedGoals(DXRando dxr, string eventname, out string failed2)
+static function MapBingoFailEvents(string eventname, out string failed1, out string failed2)
 {
+    failed1 = "";
     failed2 = "";
 
-    // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
+        case "PaulDenton_Dead":
+            failed1 = "SavedPaul";
+            break;
         case "JuanLebedev_Dead":
-            return "LebedevLived";
+            failed1 = "LebedevLived";
+            break;
         case "Aimee_Dead":
         case "LeMerchant_Dead":
-            return "AimeeLeMerchantLived";
+            failed1 = "AimeeLeMerchantLived";
         case "MaggieChow_Dead":
-            return "MaggieLived";
+            break;
+            failed1 = "MaggieLived";
+            break;
         case "FordSchick_Dead":
-            return "FordSchickRescued";
+            failed1 = "FordSchickRescued";
+            break;
         case "AlleyBum_Dead":
-            return "AlleyBumRescued";
+            failed1 = "AlleyBumRescued";
+            break;
         case "Camille_Dead":
-            return "CamilleConvosDone";
+            failed1 = "CamilleConvosDone";
+            break;
         case "Miguel_Dead":
-            return "nsfwander";
+            failed1 = "nsfwander";
+            break;
         case "Josh_Dead":
-            return "JoshFed";
+            failed1 = "JoshFed";
+            break;
         case "Billy_Dead":
-            return "M02BillyDone";
+            failed1 = "M02BillyDone";
+            break;
         case "Canal_Bartender_Dead":
-            return "Canal_Bartender_Question4";
+            failed1 = "Canal_Bartender_Question4";
+            break;
         case "ClubBartender_Dead":
-            return "M06BartenderQuestion3";
+            failed1 = "M06BartenderQuestion3";
+            break;
         case "Joshua_Dead":
-            return "JoshuaInterrupted_Played";
+            failed1 = "JoshuaInterrupted_Played";
+            break;
         case "Mamasan_Dead":
         case "Date1_Dead":
-            return "M06JCHasDate";
-
-        case "KnowsAboutNanoSword":
-            failed2 = "M06JCHasDate";
-            // fallthrough
+            failed1 = "M06JCHasDate";
+            break;
         case "ClubMercedes_Dead":
         case "ClubTessa_Dead":
-            return "ClubEntryPaid";
-
+            failed1 = "ClubEntryPaid";
+            break;
         // omg these hostage names
         case "SubHostageFemale_Dead":
         case "SubHostageMale_Dead":
-            return "SubwayHostagesSaved";
+            failed1 = "SubwayHostagesSaved";
+            break;
         case "JoJoFine_Dead":
-            return "GaveRentonGun";
-
+            failed1 = "GaveRentonGun";
+            break;
         case "GilbertRenton_Dead":
-            failed2 = "GaveRentonGun";
+            failed1 = "GaveRentonGun";
             // fallthrough
         case "FemaleHostage_Dead":
         case "MaleHostage_Dead":
-            return "HotelHostagesSaved";
-
+            failed2 = "HotelHostagesSaved";
+            break;
         case "hostage_female_Dead":
         case "hostage_Dead":
-            return "SilhouetteHostagesAllRescued";
+            failed1 = "SilhouetteHostagesAllRescued";
+            break;
+        case "Doctor2_Dead":
+            failed1 = "BoughtClinicPlan";
+            break;
         case "M06Junkie_Dead":
-            return "M06PaidJunkie";
-        case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
-            return "M06BoughtVersaLife";
+            failed1 = "M06PaidJunkie";
+            break;
+        case "MarketBum1_Dead": // TODO: make sure this bindname is unique
+            failed1 = "M06BoughtVersaLife";
+            break;
         case "Supervisor01_Dead":
-            return "Supervisor_Paid";
+            failed1 = "Supervisor_Paid";
+            break;
+        // TODO: should only be marked as failed if maggie is still alive and conscious
         case "BeenToCops":
-            if (dxr.flagbase.GetBool('MaggieChow_Dead') == false) { // unless she's still alive, Maggie's body might still be in her apartment, ready to be taught how to fly
-                return "MaggieCanFly";
-            }
-            return "";
+            failed1 = "MaggieCanFly";
+            break;
         case "Joshua_Dead":
-            return "JoshuaInterrupted_Played";
+            failed1 = "JoshuaInterrupted_Played";
+            break;
         case "Don_Dead":
         case "Lenny_Dead":
-            return "GiveZyme";
+            failed1 = "GiveZyme";
+            break;
+        case "MaggieChow_Dead":
+            failed1 = "MaggieLived";
+            break;
         case "Renault_Dead":
-            failed2 = "MeetRenault_Played";
-            return "SoldRenaultZyme";
-        case "TimBaker_Dead":
-            return "MeetTimBaker_Played";
-        case "drbernard_Dead":
-            return "MeetDrBernard_Played";
-        case "JaimeRecruited":
-            return "KnowsGuntherKillphrase";
-        case "JaimeLeftBehind":
-            return "M07MeetJaime_Played";
-        // TODO: fail both if Jaime isn't talked to?
-        case "NSFSignalSent":
-            return "M04PlayerLikesUNATCO_Played";
+            failed1 = "MeetRenault_Played";
+            failed2 = "SoldRenaultZyme";
+            break;
     }
-
-    return "";
 }
 
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)

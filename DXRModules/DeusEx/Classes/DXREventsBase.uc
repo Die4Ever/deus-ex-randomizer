@@ -640,7 +640,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname, failed2;
+    local string classname, failed1, failed2;
     local bool dead;
 
     dead = !CanKnockUnconscious(victim, damageType);
@@ -697,7 +697,8 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    MarkBingoAsFailed(dxr, GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed2));
+    class'DXREvents'.static.MapBingoFailEvents(victim.bindName $ "_Dead", failed1, failed2);
+    MarkBingoAsFailed(dxr, failed1);
     MarkBingoAsFailed(dxr, failed2);
 
     if(!victim.bImportant)
@@ -1230,7 +1231,8 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.MarkBingoAsFailed(eventname) && (!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0)) {
+    if (data.MarkBingoAsFailed(eventname)) {
+        l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
