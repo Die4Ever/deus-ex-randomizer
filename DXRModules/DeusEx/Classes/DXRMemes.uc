@@ -789,7 +789,7 @@ function Actor ReplaceWithRandomClass(Actor old)
     return None;
 }
 
-const num_random_actor_classes = 557;
+const num_random_actor_classes = 546;
 
 function string GetRandomActorClass()
 {
@@ -818,7 +818,7 @@ function ExtendedTests()
     s = _GetRandomActorClass(r);
     teststring(s, "", "_GetRandomActorClass(" $ r $ ") is empty string, " $ s);
     s = _GetRandomActorClass(r-1);
-    teststring(s, "", "_GetRandomActorClass(" $ (r - 1) $ ") is not empty string, " $ s);
+    test(s!="", "_GetRandomActorClass(" $ (r - 1) $ ") is not empty string, " $ s);
 }
 
 function string _GetRandomActorClass(int r)
