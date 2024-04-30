@@ -471,7 +471,7 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
-    local string j, failed1, failed2;
+    local string j, failed2;
     local class<Json> js;
     js = class'Json';
 
@@ -499,8 +499,7 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
     _MarkBingo(eventname);
-    class'DXREvents'.static.GetBingoFailedGoals(dxr, eventname, failed1, failed2);
-    MarkBingoAsFailed(dxr, failed1);
+    MarkBingoAsFailed(dxr, GetBingoFailedGoals(dxr, eventname, failed2));
     MarkBingoAsFailed(dxr, failed2);
 }
 
@@ -641,7 +640,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname, failed1, failed2;
+    local string classname, failed2;
     local bool dead;
 
     dead = !CanKnockUnconscious(victim, damageType);
@@ -698,8 +697,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    class'DXREvents'.static.GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed1, failed2);
-    MarkBingoAsFailed(dxr, failed1);
+    MarkBingoAsFailed(dxr, GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed2));
     MarkBingoAsFailed(dxr, failed2);
 
     if(!victim.bImportant)
