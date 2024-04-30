@@ -1598,6 +1598,27 @@ function GameDirectory GetSaveGameDirectory()
     return saveDir;
 }
 
+exec function Inv() // INVisible and INVincible
+{
+    if (bDetectable == false && ReducedDamageType == 'All') { // only toggle off if both are on
+        Invisible(false);
+        God();
+    } else {
+        if (bDetectable)
+            Invisible(true);
+        if (ReducedDamageType != 'All')
+            God();
+    }
+}
+
+exec function Tcl() // toggle clipping, name borrowed from Gamebryo
+{
+    if (bCollideWorld)
+        Ghost();
+    else
+        Walk();
+}
+
 
 // ----------------------------------------------------------------------
 // InvokeUIScreen()
