@@ -351,8 +351,15 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 
 function AfterShuffleGoals(int goalsToLocations[32])
 {
-    local int g;
+    local int g, roll, xmin, xmax, ymin, ymax;
     local bool l1,l2,l3,l4,l5,create;
+    local string texture;
+    local Vector loc;
+    local float scale;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
     if (dxr.localURL == "09_NYC_SHIPBELOW"){
         for(g=0; g<num_goals; g++) {
             switch(locations[goalsToLocations[g]].name)
@@ -376,37 +383,105 @@ function AfterShuffleGoals(int goalsToLocations[32])
         }
         for(g=0; g<num_locations; g++) {
             create=False;
+            texture = "Metal.BoilerDetail_C";
+            loc = locations[g].positions[0].pos;
+            roll = 0;
+            scale = 3;
+            xmin=0;
+            xmax=0;
+            ymin=0;
+            ymax=0;
             switch(locations[g].name)
             {
                 case "NW Engine Room":
                     if (l1==False){
                         create=True;
+                        texture = "CoreTexMetal.Metal.BoilerDetail_C";
+                        loc -= vect(0,0,26);
                     }
                     break;
                 case "NE Electical Room":
                     if (l2==False){
                         create=True;
+                        texture = "Supertanker.Metal.N_ShWall_C";
+                        roll = 16384;
+                        loc += vect(-116, 0, 17);
+                        scale = 4;
+                        xmin=-1;
                     }
                     break;
                 case "East Helipad":
                     if (l3==False){
                         create=True;
+                        texture = "Supertanker.Metal.N_ShWall_B";
+                        roll = 16384;
+                        loc += vect(0,-41,-32);
+                        scale = 2.5;
+                        xmin=-1;
+                        ymax=1;
                     }
                     break;
                 case "Bilge Pumps":
                     if (l4==False){
                         create=True;
+                        texture = "Supertanker.Metal.N_ShWall_C";
+                        roll = 16384;
+                        loc += vect(50, 0, 26);
+                        scale = 2.6;
+                        xmin=-1;
+                        ymin=-1;
                     }
                     break;
                 case "SW Engine Room":
                     if (l5==False){
                         create=True;
+                        texture = "CoreTexMetal.Metal.BoilerDetail_C";
+                        loc -= vect(0,0,57);
+                        ymin=-1;
+                        ymax=1;
                     }
                     break;
             }
             if (create){
-                class'DXRHoverHint'.static.Create(self, "Not a Weld Point", locations[g].positions[0].pos, 40, 40);
+                if(RevisionMaps) {
+                    class'DXRHoverHint'.static.Create(self, "Not a Weld Point", locations[g].positions[0].pos, 40, 40);
+                } else {
+                    PatchHole(loc, locations[g].positions[0].rot, texture, roll, scale, xmin, xmax, ymin, ymax);
+                }
             }
+        }
+    }
+}
+
+function PatchHole(Vector baseloc, Rotator baserot, string texture, int roll, float scale, int xmin, int xmax, int ymin, int ymax)
+{
+    local Actor a;
+    local int x, y;
+    local Vector loc, offset;
+    local Rotator rot;
+
+    rot = baserot;
+    rot.Yaw += 32768;
+    rot.Roll += roll;
+    rot = rotm(rot.Pitch, rot.Yaw, rot.Roll, 16384);
+
+    offset.X = -3;
+    for(x=xmin; x<=xmax; x++) {
+        offset.Y = float(x) * -50 * scale;
+        for(y=ymin; y<=ymax; y++) {
+            offset.Z = float(y) * 49.5 * scale;
+            loc = baseloc + (offset >> baserot);
+            loc = vectm(loc.X, loc.Y, loc.Z);
+            a = spawn(class'#var(prefix)CeilingFanMotor',,, loc, rot);
+            a.bCollideWorld = false;
+            a.SetPhysics(PHYS_None);
+            a.SetCollision(false,false,false);
+            a.DrawScale = scale;
+            a.ScaleGlow = 0.2;
+            a.bUnlit = true;
+            a.AmbientSound = None;
+            a.Mesh = LodMesh'DeusExItems.FlatFX';
+            a.Skin = Texture(DynamicLoadObject(texture, class'Texture'));
         }
     }
 }
