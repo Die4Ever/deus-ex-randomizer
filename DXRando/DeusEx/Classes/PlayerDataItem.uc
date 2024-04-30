@@ -146,6 +146,7 @@ simulated function bool MarkBingoAsFailed(string event)
         if(bingo[i].event != event) continue;
 
         if (bingo_missions_masks[i] == FAILED_MISSION_MASK) return false;
+        if (bingo[i].progress >= bingo[i].max) return false; // don't mark a goal as failed if it's already marked as succeeded
 
         bingo_missions_masks[i] = FAILED_MISSION_MASK;
         bingo[i].progress = 0;
