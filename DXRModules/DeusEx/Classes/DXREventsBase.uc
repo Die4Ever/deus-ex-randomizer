@@ -1230,8 +1230,7 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.MarkBingoAsFailed(eventname)) {
-        l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
+    if (data.MarkBingoAsFailed(eventname) && (!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0)) {
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
