@@ -1972,6 +1972,7 @@ static function GetBingoFailedGoals(DXRando dxr, string eventname, out string fa
         case "Aimee_Dead":
         case "LeMerchant_Dead":
             failed1 = "AimeeLeMerchantLived";
+            break;
         case "MaggieChow_Dead":
             failed1 = "MaggieLived";
             break;
