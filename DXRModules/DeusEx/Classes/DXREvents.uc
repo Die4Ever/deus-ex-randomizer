@@ -1959,7 +1959,7 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function MapBingoFailEvents(string eventname, out string failed1, out string failed2)
+static function GetBingoFailedGoals(DXRando dxr, string eventname, out string failed1, out string failed2)
 {
     failed1 = "";
     failed2 = "";
@@ -2043,7 +2043,9 @@ static function MapBingoFailEvents(string eventname, out string failed1, out str
             failed1 = "Supervisor_Paid";
             break;
         case "BeenToCops":
-            failed1 = "MaggieCanFly"; // TODO: should only be marked as failed if maggie is still alive and conscious
+            if (dxr.flagbase.GetBool('MaggieChow_Dead') == false) { // unless she's still alive, Maggie's body might still be in her apartment, ready to be taught how to fly
+                failed1 = "MaggieCanFly";
+            }
             break;
         case "Joshua_Dead":
             failed1 = "JoshuaInterrupted_Played";

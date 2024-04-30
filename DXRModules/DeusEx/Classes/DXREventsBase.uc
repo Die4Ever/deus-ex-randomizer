@@ -499,7 +499,7 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
     _MarkBingo(eventname);
-    class'DXREvents'.static.MapBingoFailEvents(eventname, failed1, failed2);
+    class'DXREvents'.static.GetBingoFailedGoals(dxr, eventname, failed1, failed2);
     MarkBingoAsFailed(dxr, failed1);
     MarkBingoAsFailed(dxr, failed2);
 }
@@ -698,7 +698,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    class'DXREvents'.static.MapBingoFailEvents(victim.bindName $ "_Dead", failed1, failed2);
+    class'DXREvents'.static.GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed1, failed2);
     MarkBingoAsFailed(dxr, failed1);
     MarkBingoAsFailed(dxr, failed2);
 
