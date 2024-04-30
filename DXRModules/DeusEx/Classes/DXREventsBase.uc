@@ -470,7 +470,7 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
-    local string j;
+    local string j, failed1, failed2;
     local class<Json> js;
     js = class'Json';
 
@@ -498,6 +498,9 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
     _MarkBingo(eventname);
+    class'DXREvents'.static.MapBingoFailEvents(eventname, failed1, failed2);
+    MarkBingoAsFailed(dxr, failed1);
+    MarkBingoAsFailed(dxr, failed2);
 }
 
 function M02HotelHostagesRescued()

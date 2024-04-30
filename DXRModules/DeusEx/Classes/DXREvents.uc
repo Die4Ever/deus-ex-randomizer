@@ -727,6 +727,7 @@ function SetWatchFlags() {
         WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
         WatchFlag('M06BartenderQuestion3');
+        WatchFlag('KnowsAboutNanoSword');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -1961,10 +1962,8 @@ static function MapBingoFailEvents(string eventname, out string failed1, out str
     failed1 = "";
     failed2 = "";
 
+    // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
-        case "PaulDenton_Dead":
-            failed1 = "SavedPaul";
-            break;
         case "JuanLebedev_Dead":
             failed1 = "LebedevLived";
             break;
@@ -2006,9 +2005,12 @@ static function MapBingoFailEvents(string eventname, out string failed1, out str
         case "Date1_Dead":
             failed1 = "M06JCHasDate";
             break;
+        case "KnowsAboutNanoSword":
+            failed1 = "M06JCHasDate";
+            // fallthrough
         case "ClubMercedes_Dead":
         case "ClubTessa_Dead":
-            failed1 = "ClubEntryPaid";
+            failed2 = "ClubEntryPaid";
             break;
         // omg these hostage names
         case "SubHostageFemale_Dead":
@@ -2029,21 +2031,17 @@ static function MapBingoFailEvents(string eventname, out string failed1, out str
         case "hostage_Dead":
             failed1 = "SilhouetteHostagesAllRescued";
             break;
-        case "Doctor2_Dead":
-            failed1 = "BoughtClinicPlan";
-            break;
         case "M06Junkie_Dead":
             failed1 = "M06PaidJunkie";
             break;
-        case "MarketBum1_Dead": // TODO: make sure this bindname is unique
+        case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
             failed1 = "M06BoughtVersaLife";
             break;
         case "Supervisor01_Dead":
             failed1 = "Supervisor_Paid";
             break;
-        // TODO: should only be marked as failed if maggie is still alive and conscious
         case "BeenToCops":
-            failed1 = "MaggieCanFly";
+            failed1 = "MaggieCanFly"; // TODO: should only be marked as failed if maggie is still alive and conscious
             break;
         case "Joshua_Dead":
             failed1 = "JoshuaInterrupted_Played";
@@ -2058,6 +2056,22 @@ static function MapBingoFailEvents(string eventname, out string failed1, out str
         case "Renault_Dead":
             failed1 = "MeetRenault_Played";
             failed2 = "SoldRenaultZyme";
+            break;
+        case "TimBaker_Dead":
+            failed1 = "MeetTimBaker_Played";
+            break;
+        case "drbernard_Dead":
+            failed1 = "MeetDrBernard_Played";
+            break;
+        case "JaimeRecruited":
+            failed1 = "KnowsGuntherKillphrase";
+            break;
+        case "JaimeLeftBehind":
+            failed1 = "M07MeetJaime_Played";
+            break;
+        // TODO: fail both if Jaime isn't talked to?
+        case "NSFSignalSent":
+            failed1 = "M04PlayerLikesUNATCO_Played";
             break;
     }
 }
