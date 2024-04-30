@@ -940,6 +940,49 @@ exec function po()
     Level.bPlayersOnly = !Level.bPlayersOnly;
 }
 
+exec function MoveClass(Name ClassName, int x, int y, int z)
+{
+    local Actor a;
+    local class<Actor> objclass;
+    local string holdName;
+    local Vector v;
+
+    if (instr(ClassName, ".") == -1)
+        holdName = "DeusEx." $ ClassName;
+    else
+        holdName = string(ClassName);
+
+    objclass = class<actor>(DynamicLoadObject(holdName, class'Class'));
+    v.X = x;
+    v.Y = y;
+    v.Z = z;
+    foreach AllActors(objclass, a) {
+        a.SetLocation(a.Location + v);
+    }
+}
+
+exec function RotateClass(Name ClassName, int pitch, int yaw, int roll)
+{
+    local Actor a;
+    local class<Actor> objclass;
+    local string holdName;
+    local Rotator r;
+
+    if (instr(ClassName, ".") == -1)
+        holdName = "DeusEx." $ ClassName;
+    else
+        holdName = string(ClassName);
+
+    objclass = class<actor>(DynamicLoadObject(holdName, class'Class'));
+    foreach AllActors(objclass, a) {
+        r = a.Rotation;
+        r.Pitch += pitch;
+        r.Yaw += yaw;
+        r.Roll += roll;
+        a.SetRotation(r);
+    }
+}
+
 exec function crate(optional string name)
 {
     local CrateUnbreakableSmall c;
