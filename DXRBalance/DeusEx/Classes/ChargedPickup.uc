@@ -10,11 +10,15 @@ function ChargedPickupBegin(DeusExPlayer Player)
 {
     local Human p;
     if(bOneUseOnly) {
-        bDisplayableInv = false;
         p = Human(Owner);
         if( p != None ) {
+            if(p.InHand == self) {
+                p.PutInHand(None);
+                p.UpdateInHand();
+            }
             p.HideInventory(self);
         }
+        bDisplayableInv = false;
     }
     _ChargedPickupBegin(Player);
 }

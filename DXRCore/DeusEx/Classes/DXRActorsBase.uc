@@ -927,6 +927,7 @@ function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector l
     local #var(prefix)Containers box;
     box = #var(prefix)Containers(_AddActor(Self, c, loc, rotate));
     box.bInvincible = true;
+    box.bIsSecretGoal = true;
     return box;
 }
 

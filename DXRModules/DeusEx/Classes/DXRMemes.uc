@@ -789,7 +789,7 @@ function Actor ReplaceWithRandomClass(Actor old)
     return None;
 }
 
-const num_random_actor_classes = 557;
+const num_random_actor_classes = 546;
 
 function string GetRandomActorClass()
 {
@@ -818,7 +818,7 @@ function ExtendedTests()
     s = _GetRandomActorClass(r);
     teststring(s, "", "_GetRandomActorClass(" $ r $ ") is empty string, " $ s);
     s = _GetRandomActorClass(r-1);
-    teststring(s, "", "_GetRandomActorClass(" $ (r - 1) $ ") is not empty string, " $ s);
+    test(s!="", "_GetRandomActorClass(" $ (r - 1) $ ") is not empty string, " $ s);
 }
 
 function string _GetRandomActorClass(int r)
@@ -1036,7 +1036,7 @@ function string _GetRandomActorClass(int r)
     if ( r == i++ ) return "DXText";
     if ( r == i++ ) return "Earth";
     //if ( r == i++ ) return "EidosLogo";//Warning: SpawnActor failed because class EidosLogo has bStatic or bNoDelete
-    if ( r == i++ ) return "EMPGrenade";
+    //if ( r == i++ ) return "EMPGrenade";
     if ( r == i++ ) return "Fan1";
     if ( r == i++ ) return "Fan1Vertical";
     if ( r == i++ ) return "Fan2";
@@ -1064,7 +1064,7 @@ function string _GetRandomActorClass(int r)
     if ( r == i++ ) return "FordSchickCarcass";
     if ( r == i++ ) return "GarySavage";
     if ( r == i++ ) return "GarySavageCarcass";
-    if ( r == i++ ) return "GasGrenade";
+    //if ( r == i++ ) return "GasGrenade";
     if ( r == i++ ) return "GilbertRenton";
     if ( r == i++ ) return "GilbertRentonCarcass";
     //if ( r == i++ ) return "GlassFragment";
@@ -1230,7 +1230,7 @@ function string _GetRandomActorClass(int r)
     if ( r == i++ ) return "Mutt";
     if ( r == i++ ) return "MuttCarcass";
     if ( r == i++ ) return "NanoKey";
-    if ( r == i++ ) return "NanoVirusGrenade";
+    //if ( r == i++ ) return "NanoVirusGrenade";
     if ( r == i++ ) return "NathanMadison";
     if ( r == i++ ) return "NathanMadisonCarcass";
     if ( r == i++ ) return "Newspaper";
@@ -1262,7 +1262,7 @@ function string _GetRandomActorClass(int r)
     if ( r == i++ ) return "Plant1";
     if ( r == i++ ) return "Plant2";
     if ( r == i++ ) return "Plant3";
-    if ( r == i++ ) return "PlasmaBolt";
+    //if ( r == i++ ) return "PlasmaBolt";
     //if ( r == i++ ) return "PlasticFragment";
     if ( r == i++ ) return "Poolball";
     if ( r == i++ ) return "PoolTableLight";
@@ -1279,12 +1279,12 @@ function string _GetRandomActorClass(int r)
     if ( r == i++ ) return "RiotCop";
     if ( r == i++ ) return "RiotCopCarcass";
     if ( r == i++ ) return "RoadBlock";
-    if ( r == i++ ) return "Rockchip";
-    if ( r == i++ ) return "Rocket";
-    if ( r == i++ ) return "RocketLAW";
-    if ( r == i++ ) return "RocketMini";
-    if ( r == i++ ) return "RocketRobot";
-    if ( r == i++ ) return "RocketWP";
+    //if ( r == i++ ) return "Rockchip";
+    //if ( r == i++ ) return "Rocket";
+    //if ( r == i++ ) return "RocketLAW";
+    //if ( r == i++ ) return "RocketMini";
+    //if ( r == i++ ) return "RocketRobot";
+    //if ( r == i++ ) return "RocketWP";
     if ( r == i++ ) return "Sailor";
     if ( r == i++ ) return "SailorCarcass";
     if ( r == i++ ) return "SamCarter";

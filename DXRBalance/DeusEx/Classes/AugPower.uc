@@ -23,8 +23,8 @@ simulated function SetAutomatic()
     if(energyRate == 0) {
         default.LevelValues[0] = 0.92;
         default.LevelValues[1] = 0.85;
-        default.LevelValues[2] = 0.7;
-        default.LevelValues[3] = 0.5;
+        default.LevelValues[2] = 0.75;
+        default.LevelValues[3] = 0.6;
     } else {
         default.LevelValues[0] = 0.9;
         default.LevelValues[1] = 0.8;

@@ -1,8 +1,9 @@
-from Install import info, debug
+from Install import CopyTo, WriteBytes, info, debug
 try:
     from collections import OrderedDict
     from pathlib import Path
     import re
+    import datetime
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -28,8 +29,25 @@ class Config:
                     text += line.get('text') + '\r\n'
                 else:
                     text += line.get('key') + '=' + line.get('value') + '\r\n'
-            text += '\r\n\r\n'
-        return text[0:-4].encode('iso_8859_1')
+            text += '\r\n'
+        return text.encode('iso_8859_1')
+
+
+    def WriteFile(self, dest:Path):
+        bin = self.GetBinary()
+        if dest.exists():
+            oldBin = dest.read_bytes()
+            if oldBin == bin:
+                return
+            self.BackupFile(dest)
+        WriteBytes(dest, bin)
+
+    @staticmethod
+    def BackupFile(src:Path):
+        bakDate = datetime.datetime.now().strftime("%Y-%m-%d")
+        bakIni = src.parent / (src.stem + ' ' + bakDate + src.suffix)
+        if src.exists() and not bakIni.exists():
+            CopyTo(src, bakIni)
 
 
     def ModifyConfig(self, changes:dict, additions:dict):
@@ -38,7 +56,7 @@ class Config:
         for sect in self.sections:
             lowersections[sect.lower()] = sect
 
-        for sect in changes:
+        for sect in sorted(changes):
             oursect = lowersections.get(sect.lower())
             if not oursect:
                 self.sections[sect] = []
@@ -46,7 +64,7 @@ class Config:
                 lowersections[sect.lower()] = sect
             self.ModifySection(self.sections[oursect], changes.get(sect))
 
-        for sect in additions:
+        for sect in sorted(additions):
             oursect = lowersections.get(sect.lower())
             if not oursect:
                 self.sections[sect] = []
@@ -64,15 +82,17 @@ class Config:
 
         tempchanges = changes.copy()
         line: dict
-        for i in range(len(lines)):
+        i=0
+        while i < len(lines): # range(len(lines)) doesn't update as you add to the list
             line = lines[i]
+            i+=1
             key:str = line.get('key', '')
             changename = lowerchanges.get(key.lower())
             if changename:
                 if changes[changename] == line['value']:
                     continue
-                i+=1
                 lines.insert(i, { 'text': ';' + line['key'] + '=' + line['value'] })
+                i+=1
                 assert isinstance(changes[changename], str)
                 line['key'] = changename # fix casing?
                 line['value'] = changes[changename]
@@ -144,3 +164,19 @@ def _ReadConfig(text:str) -> OrderedDict:
     if not sections['']:
         sections.pop('')
     return sections
+
+
+def BackupSplits(splitsPath:Path):
+    splits = Config(splitsPath.read_bytes())
+    found_splits = CheckSplits(splits, ['PB', 'Golds', 'Avgs'])
+    if found_splits:
+        Config.BackupFile(splitsPath)
+
+def CheckSplits(splits:Config, keys) -> bool:
+    for sect in splits.sections.keys():
+        for i in range(0, 16):
+            for key in keys:
+                val = splits.get(sect, key + '['+str(i)+']')
+                if val and val != '0':
+                    return True
+    return False
