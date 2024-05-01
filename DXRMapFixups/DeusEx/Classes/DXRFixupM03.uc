@@ -26,7 +26,6 @@ function PostFirstEntryMapFixes()
             a = AddActor(class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));
             Barrel1(a).SkinColor = SC_Explosive;
             a.BeginPlay();
-            a.PostPostBeginPlay();
         }
         break;
 

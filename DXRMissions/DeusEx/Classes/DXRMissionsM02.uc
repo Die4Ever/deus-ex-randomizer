@@ -199,7 +199,6 @@ function ReplaceBatteryParkSubwayTNT()
         if (barrel!=None){
             barrel.bIsSecretGoal=True;
             barrel.BeginPlay();
-            barrel.PostPostBeginPlay();
             barrel.Tag='ExplosiveCrate';
         }
 

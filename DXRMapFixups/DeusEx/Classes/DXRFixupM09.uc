@@ -297,7 +297,6 @@ function PreFirstEntryMapFixes()
         barrel = #var(prefix)Barrel1(AddActor(class'#var(prefix)Barrel1', vect(-1112.480469,1120.735840,29.096186)));
         barrel.SkinColor = SC_Explosive;
         barrel.BeginPlay();
-        barrel.PostPostBeginPlay();
 
         // just in case the gate keeper gets stuck, or if you wanna go fast!
         foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'CheckGateFlag') {
