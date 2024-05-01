@@ -167,6 +167,8 @@ def _ReadConfig(text:str) -> OrderedDict:
 
 
 def BackupSplits(splitsPath:Path):
+    if not splitsPath.exists():
+        return
     splits = Config(splitsPath.read_bytes())
     found_splits = CheckSplits(splits, ['PB', 'Golds', 'Avgs'])
     if found_splits:
