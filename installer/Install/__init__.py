@@ -27,7 +27,6 @@ try:
     import hashlib
     import os
     from pathlib import Path
-    import Install.Config as Config
     import urllib.request
     import certifi
     import ssl
@@ -310,19 +309,6 @@ def EngineDllFix(p:Path) -> bool:
     WriteBytes(dll, bytes)
     return True
 
-
-def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path, changes:dict):
-    info('ModifyConfig', defconfig, config, outdefconfig, outconfig)
-    bytes = defconfig.read_bytes()
-    c = Config.Config(bytes)
-    c.ModifyConfig(changes)
-    WriteBytes(outdefconfig, c.GetBinary())
-
-    if config.exists():
-        bytes = defconfig.read_bytes()
-        c = Config.Config(bytes)
-        c.ModifyConfig(changes)
-        WriteBytes(outconfig, c.GetBinary())
 
 
 def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, deus_nsf_retro_textures:bool):

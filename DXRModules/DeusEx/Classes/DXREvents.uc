@@ -727,6 +727,7 @@ function SetWatchFlags() {
         WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
         WatchFlag('M06BartenderQuestion3');
+        WatchFlag('KnowsAboutNanoSword');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -781,6 +782,8 @@ function SetWatchFlags() {
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
+        WatchFlag('BeenToCops');
+
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'station_door_05'){
             break;
         }
@@ -1954,6 +1957,100 @@ function string RemapBingoEvent(string eventname)
     }
     return eventname;
 
+}
+
+static function string GetBingoFailedGoals(DXRando dxr, string eventname, out string failed2)
+{
+    failed2 = "";
+
+    // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
+    switch (eventname) {
+        case "JuanLebedev_Dead":
+            return "LebedevLived";
+        case "Aimee_Dead":
+        case "LeMerchant_Dead":
+            return "AimeeLeMerchantLived";
+        case "MaggieChow_Dead":
+            return "MaggieLived";
+        case "FordSchick_Dead":
+            return "FordSchickRescued";
+        case "AlleyBum_Dead":
+            return "AlleyBumRescued";
+        case "Camille_Dead":
+            return "CamilleConvosDone";
+        case "Miguel_Dead":
+            return "nsfwander";
+        case "Josh_Dead":
+            return "JoshFed";
+        case "Billy_Dead":
+            return "M02BillyDone";
+        case "Canal_Bartender_Dead":
+            return "Canal_Bartender_Question4";
+        case "ClubBartender_Dead":
+            return "M06BartenderQuestion3";
+        case "Joshua_Dead":
+            return "JoshuaInterrupted_Played";
+        case "Mamasan_Dead":
+        case "Date1_Dead":
+            return "M06JCHasDate";
+
+        case "KnowsAboutNanoSword":
+            failed2 = "M06JCHasDate";
+            // fallthrough
+        case "ClubMercedes_Dead":
+        case "ClubTessa_Dead":
+            return "ClubEntryPaid";
+
+        // omg these hostage names
+        case "SubHostageFemale_Dead":
+        case "SubHostageMale_Dead":
+            return "SubwayHostagesSaved";
+        case "JoJoFine_Dead":
+            return "GaveRentonGun";
+
+        case "GilbertRenton_Dead":
+            failed2 = "GaveRentonGun";
+            // fallthrough
+        case "FemaleHostage_Dead":
+        case "MaleHostage_Dead":
+            return "HotelHostagesSaved";
+
+        case "hostage_female_Dead":
+        case "hostage_Dead":
+            return "SilhouetteHostagesAllRescued";
+        case "M06Junkie_Dead":
+            return "M06PaidJunkie";
+        case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
+            return "M06BoughtVersaLife";
+        case "Supervisor01_Dead":
+            return "Supervisor_Paid";
+        case "BeenToCops":
+            if (dxr.flagbase.GetBool('MaggieChow_Dead') == false) { // unless she's still alive, Maggie's body might still be in her apartment, ready to be taught how to fly
+                return "MaggieCanFly";
+            }
+            return "";
+        case "Joshua_Dead":
+            return "JoshuaInterrupted_Played";
+        case "Don_Dead":
+        case "Lenny_Dead":
+            return "GiveZyme";
+        case "Renault_Dead":
+            failed2 = "MeetRenault_Played";
+            return "SoldRenaultZyme";
+        case "TimBaker_Dead":
+            return "MeetTimBaker_Played";
+        case "drbernard_Dead":
+            return "MeetDrBernard_Played";
+        case "JaimeRecruited":
+            return "KnowsGuntherKillphrase";
+        case "JaimeLeftBehind":
+            return "M07MeetJaime_Played";
+        // TODO: fail both if Jaime isn't talked to?
+        case "NSFSignalSent":
+            return "M04PlayerLikesUNATCO_Played";
+    }
+
+    return "";
 }
 
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)

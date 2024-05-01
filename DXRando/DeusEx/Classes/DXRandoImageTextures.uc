@@ -11,3 +11,8 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\RandomizerTextCredits2.pcx"			    NAME="RandomizerTextCredits2"			GROUP="DXRandoImages"
 
 #exec TEXTURE IMPORT FILE="Textures\VisionFilter.pcx"		    	        NAME="VisionFilter"	        		    GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\RedExplosiveBarrel.pcx"	    	        NAME="RedExplosiveBarrel"      		    GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\GreenPoisonBarrel.pcx"	    	        NAME="GreenPoisonBarrel"      		    GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\YellowRadioactiveBarrel.pcx"	        NAME="YellowRadioactiveBarrel"          GROUP="DXRandoImages"
+
+#exec TEXTURE IMPORT FILE="Textures\WinePuddle.pcx"	                        NAME="WinePuddle"                       GROUP="DXRandoImages"

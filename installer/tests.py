@@ -37,8 +37,9 @@ class DXRTestCase(unittest.TestCase):
         desiredconfig = (b'[Engine.Engine]\r\n'
             + b'DefaultGame=GMDXRandomizer.DXRandoGameInfo\r\n'
             + b';DefaultGame=DeusEx.DeusExGameInfo\r\n'# old values are commented out
-            + b'\r\n\r\n'
+            + b'\r\n'
             + b'[Core.System]\r\nPaths=..\GMDXRandomizer\System\*.u\r\nPaths=Maps\r\nPaths=System\r\n'
+            + b'\r\n'
         )
 
         c = Config.Config(origconfig)
@@ -67,8 +68,9 @@ class DXRTestCase(unittest.TestCase):
             + b'DefaultServerGame=DeusEx.DeathMatchGame\r\nViewportManager=WinDrv.WindowsClient\r\nRender=RenderExt.RenderExt\r\nInput=Extension.InputExt\r\nCanvas=Engine.Canvas\r\n'
             + b'Root=VMDRandomizer.DXRandoRootWindow\r\n'
             + b';Root=DeusEx.DeusExRootWindow\r\n'
-            + b'CdPath=D:\r\n\r\n'
-            + b'\r\n[Core.System]\r\nPaths=..\\VMDRandomizer\\System\\*.u\r\n') # leftover addition with no matched section gets added
+            + b'CdPath=D:\r\n'
+            + b'\r\n[Core.System]\r\nPaths=..\\VMDRandomizer\\System\\*.u\r\n' # leftover addition with no matched section gets added
+            + b'\r\n')
 
         c = Config.Config(origconfig)
         c.ModifyConfig(
@@ -113,6 +115,10 @@ class DXRTestCase(unittest.TestCase):
                     {'key': 'Paths', 'value': 'System'},
                 ],
             }, 'ReadConfig test')
+
+        # test backup function, from class and from instance
+        Config.Config.BackupFile(Path('fakepaththatshouldneverexist/plz/0451.ini'))
+        c.BackupFile(Path('fakepaththatshouldneverexist/plz/0451.ini'))
 
 if __name__ == "__main__":
     unittest.main(verbosity=9, warnings="error", failfast=True)

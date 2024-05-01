@@ -295,6 +295,18 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     return bCanPickup;
 }
 
+function GrabDecoration()
+{
+    if (class'MenuChoice_DecoPickupBehaviour'.Default.enabled==True && inHand!=None){
+        PutInHand(None);
+        UpdateInHand();
+        //This could return so that it doesn't say "your hands are full" if
+        //your inHand has a put down time, but it's kind of nice if you're
+        //carrying something without a put down time (like fire extinguishers)
+    }
+    Super.GrabDecoration();
+}
+
 function bool AddInventory( inventory NewItem )
 {
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
@@ -928,6 +940,49 @@ exec function po()
     Level.bPlayersOnly = !Level.bPlayersOnly;
 }
 
+exec function MoveClass(Name ClassName, int x, int y, int z)
+{
+    local Actor a;
+    local class<Actor> objclass;
+    local string holdName;
+    local Vector v;
+
+    if (instr(ClassName, ".") == -1)
+        holdName = "DeusEx." $ ClassName;
+    else
+        holdName = string(ClassName);
+
+    objclass = class<actor>(DynamicLoadObject(holdName, class'Class'));
+    v.X = x;
+    v.Y = y;
+    v.Z = z;
+    foreach AllActors(objclass, a) {
+        a.SetLocation(a.Location + v);
+    }
+}
+
+exec function RotateClass(Name ClassName, int pitch, int yaw, int roll)
+{
+    local Actor a;
+    local class<Actor> objclass;
+    local string holdName;
+    local Rotator r;
+
+    if (instr(ClassName, ".") == -1)
+        holdName = "DeusEx." $ ClassName;
+    else
+        holdName = string(ClassName);
+
+    objclass = class<actor>(DynamicLoadObject(holdName, class'Class'));
+    foreach AllActors(objclass, a) {
+        r = a.Rotation;
+        r.Pitch += pitch;
+        r.Yaw += yaw;
+        r.Roll += roll;
+        a.SetRotation(r);
+    }
+}
+
 exec function crate(optional string name)
 {
     local CrateUnbreakableSmall c;
@@ -1541,6 +1596,27 @@ function GameDirectory GetSaveGameDirectory()
     saveDir.GetGameDirectory();
 
     return saveDir;
+}
+
+exec function Inv() // INVisible and INVincible
+{
+    if (bDetectable == false && ReducedDamageType == 'All') { // only toggle off if both are on
+        Invisible(false);
+        God();
+    } else {
+        if (bDetectable)
+            Invisible(true);
+        if (ReducedDamageType != 'All')
+            God();
+    }
+}
+
+exec function Tcl() // toggle clipping, name borrowed from Gamebryo
+{
+    if (bCollideWorld)
+        Ghost();
+    else
+        Walk();
 }
 
 

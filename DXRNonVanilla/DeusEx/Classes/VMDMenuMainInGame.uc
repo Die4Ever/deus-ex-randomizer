@@ -101,7 +101,7 @@ function bool ButtonActivated( Window buttonPressed )
     if (!bHandled){
         if (buttonPressed == randoSettingsButton){
             // Check to see if there's somewhere to go
-            ProcessMenuAction(MA_MenuScreen, Class'MenuScreenRandoOptions');
+            ProcessMenuAction(MA_MenuScreen, Class'MenuScreenRandoOptChoices');
             bHandled = True;
         }
     }

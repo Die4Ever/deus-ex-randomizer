@@ -3,6 +3,25 @@
 //=============================================================================
 class WineBottle extends HealingItem;
 
+simulated function BreakItSmashIt(class<fragment> FragType, float size)
+{
+    local Vector HitLocation, HitNormal, EndTrace;
+    local Actor hit;
+    local WinePool pool;
+
+    // trace down about 20 feet if we're not in water
+    if (!Region.Zone.bWaterZone)
+    {
+        EndTrace = Location - vect(0,0,320);
+        hit = Trace(HitLocation, HitNormal, EndTrace, Location, False);
+        pool = spawn(class'WinePool',,, HitLocation+HitNormal, Rotator(HitNormal));
+        if (pool != None)
+            pool.maxDrawScale = CollisionRadius / 5.0;
+    }
+
+    Super.BreakItSmashIt(FragType, size);
+}
+
 defaultproperties
 {
     bBreakable=True

@@ -53,11 +53,13 @@ function int InitGoals(int mission, string map)
     case "11_PARIS_CATHEDRAL":
         goal = AddGoal("11_PARIS_CATHEDRAL", "Templar Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'GuntherHermann0', PHYS_Falling);
-        AddGoalActor(goal, 2, 'OrdersTrigger0', PHYS_None);
-        AddGoalActor(goal, 3, 'GoalCompleteTrigger0', PHYS_None);
-        AddGoalActor(goal, 4, 'SkillAwardTrigger3', PHYS_None);
-        AddGoalActor(goal, 5, 'FlagTrigger2', PHYS_None);
-        AddGoalActor(goal, 6, 'DataLinkTrigger8', PHYS_None);
+        //AddGoalActor(goal, 2, 'OrdersTrigger0', PHYS_None); Tag=CathedralGuntherAttacks
+        //AddGoalActor(goal, 3, 'GoalCompleteTrigger0', PHYS_None); Tag=templar_upload
+        AddGoalActor(goal, 2, 'SkillAwardTrigger3', PHYS_None);
+        //AddGoalActor(goal, 5, 'FlagTrigger2', PHYS_None); Tag=templar_upload
+        AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None); // DL_morgan_uplink "I'm getting what I need.  Good work."
+        AddGoalActor(goal, 4, 'DataLinkTrigger14', PHYS_None); // DL_gunthernearcomp
+        AddGoalActor(goal, 5, 'DataLinkTrigger10', PHYS_None); // DL_gunthernearcomp
 
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Barracks", NORMAL_GOAL, vect(2990.853516, 30.971684, -392.498993), rot(0, 16384, 0));
         AddActorLocation(loc, 1, vect(2971.853516, 144.971680, -392.498993), rot(0,-8000,0));
@@ -281,6 +283,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local DXRPasswords passwords;
     local #var(prefix)NanoKey key;
     local string guestName;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     if (g.name=="Agent Hela"){
         if (Loc.Name=="Back of Bunker" ||   //Vanilla
@@ -315,5 +320,10 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         if(passwords != None && guestName != "") {
             passwords.ReplacePassword("   Room 1 is currently unoccupied", "  Guest: "$guestName);
         }
+    }
+
+    if (g.name=="Templar Computer" && VanillaMaps) { // TODO: make this work in Revision too
+        g.actors[2].a.SetCollisionSize(160,64);
+        g.actors[4].a.SetCollisionSize(1600,200);
     }
 }

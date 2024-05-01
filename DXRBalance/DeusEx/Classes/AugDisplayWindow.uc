@@ -128,7 +128,7 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
     }
     else {
         SetSkins(A, oldSkins);
-        gc.DrawActor(A, False, False, True, 1.0, DrawGlow, None);
+        gc.DrawActor(A, False, False, True, 1.0, DrawGlow/4, None);
         ResetSkins(A, oldSkins);
     }
 }

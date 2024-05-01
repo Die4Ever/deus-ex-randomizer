@@ -338,18 +338,33 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
     local DXRando dxr;
     local DXRLoadouts loadout;
     local DeusExWeapon W;
+    local Inventory otheritem;
+
+    if (item.PickupAmmoCount < 0) {
+        DeleteInventory(item);
+        item.Destroy();
+        return false;
+    }
 
     // Grenades and LAMs always pickup 1
     if (item.IsA('WeaponNanoVirusGrenade') ||
         item.IsA('WeaponGasGrenade') ||
         item.IsA('WeaponEMPGrenade') ||
-        item.IsA('WeaponLAM'))
+        item.IsA('WeaponLAM')) {
         item.PickupAmmoCount = 1;
+    }
 
     dxr = class'DXRando'.default.dxr;
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
     if (loadout != None && loadout.is_banned(item.AmmoName))
         item.PickupAmmoCount = 0;
+
+    // TODO: don't loot ammo from duplicate weapons, also carcass destruction, and pawn gibbing throwing items would need to do this
+    /*for(otheritem=item.Inventory; otheritem!=None; otheritem=otheritem.Inventory) {
+        if(otheritem.class.name == item.class.name) {
+            DeusExWeapon(otheritem).PickupAmmoCount = -1;
+        }
+    }*/
 
     // Okay, check to see if the player already has this weapon.  If so,
     // then just give the ammo and not the weapon.  Otherwise give
