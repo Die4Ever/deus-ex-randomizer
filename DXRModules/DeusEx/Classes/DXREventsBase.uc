@@ -590,6 +590,8 @@ static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Ac
         // myKiller is only set in multiplayer
         if(player.myKiller != None)
             Killer = player.myKiller;
+    } else if (Left(killer.bindName, 8) == "JCDenton") {
+        class'DXREvents'.static.MarkBingo(dxr, "Suicide");
     }
 
     if(damageType == "shot") {
@@ -1017,9 +1019,9 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             }
         }
         if(bingo_options[x].missions!=0 && masked_missions == 0) continue;
-        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission)) {
+        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,dxr,starting_map,end_mission)) {
             if(bTest) {
-                l("BingoGoalImpossible " $ bingo_options[x].event @ starting_map @ end_mission);
+                l("BingoGoalImpossible " $ bingo_options[x].event @ dxr @ starting_map @ end_mission);
             }
             continue;
         }

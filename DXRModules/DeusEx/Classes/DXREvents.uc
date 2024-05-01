@@ -2976,6 +2976,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  Crime (sometimes) doesn't pay.";
         case "MaggieLived":
             return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
+        case "Suicide":
+            return "You can still get a bingo!";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3356,7 +3358,8 @@ defaultproperties
     bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
     // bingo_options()=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
-    bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=1024)
+    bingo_options(329)=(event="SoldRenaultZyme",desc="Sell zyme to Renault",max=5,missions=1024)
+    bingo_options(330)=(event="Suicide",desc="Die by your own hand",max=1,missions=65534) // perhaps calling it simply "Suicide" would be seen as distasteful by some
 
 
 
