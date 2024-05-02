@@ -786,7 +786,8 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
 function FailIfCorpseNotHeld(string died)
 {
     local POVCorpse corpse;
-    local string failed1, failed2;
+    local string failed[5];
+    local int i;
 
     died = "DeusEx." $ died $ "Carcass";
     foreach AllActors(class'POVCorpse', corpse) {
@@ -795,9 +796,10 @@ function FailIfCorpseNotHeld(string died)
         }
         break;
     }
-    failed1 = class'DXREvents'.static.GetBingoFailedGoals(dxr, died $ "_NotHeld", failed2);
-    class'DXREventsBase'.static.MarkBingoAsFailed(dxr, failed1);
-    class'DXREventsBase'.static.MarkBingoAsFailed(dxr, failed2);
+    class'DXREvents'.static.GetBingoFailedGoals(dxr, died $ "_NotHeld", failed);
+    for (i = 0; i < ArrayCount(failed); i++) {
+        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, failed[i]);
+    }
 }
 
 //tests to ensure that there are more goal locations than movable actors for each map

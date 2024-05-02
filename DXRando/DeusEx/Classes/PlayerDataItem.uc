@@ -90,7 +90,14 @@ simulated function bool MarkRead(name textTag) {
 }
 
 
-simulated function int GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max)
+simulated function int GetBingoSpot(
+    int x,
+    int y,
+    optional out string event,
+    optional out string desc,
+    optional out int progress,
+    optional out int max
+)
 {
     local DXRando dxr;
     local int currentMission;

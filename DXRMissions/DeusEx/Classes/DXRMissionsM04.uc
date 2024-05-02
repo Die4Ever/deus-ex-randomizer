@@ -92,8 +92,28 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
 function PreFirstEntryMapFixes()
 {
-    if (dxr.localURL == "04_NYC_UNATCOISLAND" || dxr.localURL == "04_NYC_STREET") {
+    local int x, y, progress, max;
+    local string event;
+    local PlayerDataItem data;
+
+    switch (dxr.localURL) {
+    case "04_NYC_UNATCOISLAND":
+        data = class'PlayerDataItem'.static.GiveItem(player());
+        for (x = 0; x < 5; x++) {
+            for (y = 0; y < 5; y++) {
+                data.GetBingoSpot(x, y, event,, progress, max);
+                if (event == "Terrorist_ClassDead" || event == "Terrorist_ClassUnconscious") {
+                    if (max - progress > 1) {
+                        // more than one NSF needed, but only Miguel is left
+                        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, event);
+                    }
+                }
+            }
+        }
+        //fallthrough
+    case "04_NYC_STREET":
         FailIfCorpseNotHeld("TerroristCommander");
+        break;
     }
 }
 

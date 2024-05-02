@@ -32,7 +32,7 @@ simulated function string tweakBingoDescription(string event, string desc);
 function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
-static function string GetBingoFailedGoals(DXRando dxr, string eventname, out string failed2);
+static function GetBingoFailedGoals(DXRando dxr, string eventname, out string failed[5]);
 
 function AddWatchedActor(Actor a,String eventName)
 {
@@ -471,7 +471,8 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
-    local string j, failed2;
+    local string j, failed[5];
+    local int i;
     local class<Json> js;
     js = class'Json';
 
@@ -499,8 +500,10 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
     _MarkBingo(eventname);
-    MarkBingoAsFailed(dxr, GetBingoFailedGoals(dxr, eventname, failed2));
-    MarkBingoAsFailed(dxr, failed2);
+    GetBingoFailedGoals(dxr, eventname, failed);
+    for (i = 0; i < ArrayCount(failed); i++) {
+        MarkBingoAsFailed(dxr, failed[i]);
+    }
 }
 
 function M02HotelHostagesRescued()
@@ -640,8 +643,9 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname, failed2;
+    local string classname, failed[5];
     local bool dead;
+    local int i;
 
     dead = !CanKnockUnconscious(victim, damageType);
 
@@ -697,8 +701,10 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    MarkBingoAsFailed(dxr, GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed2));
-    MarkBingoAsFailed(dxr, failed2);
+    GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed);
+    for (i = 0; i < ArrayCount(failed); i++) {
+        MarkBingoAsFailed(dxr, failed[i]);
+    }
 
     if(!victim.bImportant)
         return;
