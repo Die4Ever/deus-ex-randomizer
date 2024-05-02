@@ -122,6 +122,9 @@ function bool ShouldDrawActorDist(Actor A, float dist)
 function _DrawActor(GC gc, Actor A, float DrawGlow)
 {
     local Texture oldSkins[9];
+    local #var(prefix)Containers c;
+    local class<Inventory> i;
+    local Mesh oldMesh;
 
     if(A.Mesh == None) {
         DrawBrush(gc, A);
@@ -129,6 +132,19 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
     else {
         SetSkins(A, oldSkins);
         gc.DrawActor(A, False, False, True, 1.0, DrawGlow/4, None);
+
+        c = #var(prefix)Containers(A);
+        if(c != None) {
+            i = c.Contents;
+            if(i == None) i = c.Content2;
+            if(i == None) i = c.Content3;
+            if(i != None) {
+                oldMesh = c.Mesh;
+                c.Mesh = i.default.Mesh;
+                gc.DrawActor(A, False, False, True, 1.0, DrawGlow, None);
+                c.Mesh = oldMesh;
+            }
+        }
         ResetSkins(A, oldSkins);
     }
 }
