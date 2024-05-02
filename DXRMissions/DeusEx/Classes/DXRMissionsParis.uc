@@ -323,7 +323,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     if (g.name=="Templar Computer" && VanillaMaps) { // TODO: make this work in Revision too
-        g.actors[2].a.SetCollisionSize(160,64);
-        g.actors[4].a.SetCollisionSize(1600,200);
+        g.actors[2].a.SetCollisionSize(160,64);// skillawardtrigger
+        g.actors[4].a.SetCollisionSize(1400,180);// DL_gunthernearcomp
     }
 }
