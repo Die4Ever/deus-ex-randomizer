@@ -27,7 +27,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,6,2,1) ) {
+    if( ConfigOlderThan(2,7,1,4) ) {
         min_rate_adjust = 0.3;
         max_rate_adjust = 1.75;
 
@@ -93,7 +93,15 @@ function PostFirstEntry()
 {
     local int mission, scale;
     Super.PostFirstEntry();
-    if(dxr.flags.IsZeroRando()) return;
+
+    if(dxr.flags.settings.ammo==100
+        && dxr.flags.settings.multitools==100
+        && dxr.flags.settings.lockpicks==100
+        && dxr.flags.settings.biocells==100
+        && dxr.flags.settings.medkits==100
+    ) {
+        return;
+    }
 
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
