@@ -40,6 +40,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)Keypad3 kp;
+    local #var(prefix)Cigarettes cigs;
 
     local DXREnemies dxre;
     local int i;
@@ -100,6 +101,12 @@ function PreFirstEntryMapFixes()
                     kp.Event = 'ExitDoor';
                     kp.hackStrength = 0.1;
                     kp.validCode = "1125";
+                }
+            }
+
+            foreach AllActors(class'#var(prefix)Cigarettes', cigs) {
+                if(cigs.Name=='Cigarettes0') {
+                    cigs.Destroy();
                 }
             }
 
