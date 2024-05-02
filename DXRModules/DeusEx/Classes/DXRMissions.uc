@@ -107,6 +107,7 @@ function int InitGoalsRev(int mission, string map);// return a salt for the seed
 function CreateGoal(out Goal g, GoalLocation Loc);
 function DeleteGoal(Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
+function AfterMovePlayerToStartLocation(GoalLocation Loc);
 function PreFirstEntryMapFixes();
 function MissionTimer();
 function AddMissionGoals();
@@ -374,6 +375,7 @@ function MoveActorsIn(int goalsToLocations[32])
         p.PutCarriedDecorationInHand();
         rando_start_loc = p.Location;
         b_rando_start = true;
+        AfterMovePlayerToStartLocation(locations[g]);
     }
 
     if( dxr.flags.settings.goals > 0 ) {
