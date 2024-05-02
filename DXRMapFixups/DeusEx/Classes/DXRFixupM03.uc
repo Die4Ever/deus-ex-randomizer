@@ -65,6 +65,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
+    local #var(prefix)OrdersTrigger ot;
 
     local bool VanillaMaps;
 
@@ -342,6 +343,13 @@ function PreFirstEntryMapFixes()
             k.Description = "MedLab Closet Key Code";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(k);
+        }
+
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
+            if (ot.ordersTag=='CarterAtWindow'){
+                ot.Orders='RunningTo';
+                break;
+            }
         }
 
         //Spawn some placeholders for new item locations
