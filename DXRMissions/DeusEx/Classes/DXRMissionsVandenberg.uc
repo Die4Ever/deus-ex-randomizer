@@ -392,10 +392,13 @@ function PreFirstEntryMapFixes()
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
-    if (RevisionMaps && dxr.localURL=="12_VANDENBERG_CMD"){
-        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
-            //Jock starts in the Wandering state for some reason
-            sp.SetOrders('Standing');
+    if (dxr.localURL == "12_VANDENBERG_CMD") {
+        if (RevisionMaps) {
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
+                //Jock starts in the Wandering state for some reason
+                sp.SetOrders('Standing');
+            }
         }
+        FailIfCorpseNotHeld("TerroristCommander");
     }
 }

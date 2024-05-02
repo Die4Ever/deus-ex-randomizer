@@ -783,6 +783,23 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
     return false;
 }
 
+function FailIfCorpseNotHeld(string died)
+{
+    local POVCorpse corpse;
+    local string failed1, failed2;
+
+    died = "DeusEx." $ died $ "Carcass";
+    foreach AllActors(class'POVCorpse', corpse) {
+        if (died == corpse.carcClassString) {
+            return;
+        }
+        break;
+    }
+    failed1 = class'DXREvents'.static.GetBingoFailedGoals(dxr, died $ "_NotHeld", failed2);
+    class'DXREventsBase'.static.MarkBingoAsFailed(dxr, failed1);
+    class'DXREventsBase'.static.MarkBingoAsFailed(dxr, failed2);
+}
+
 //tests to ensure that there are more goal locations than movable actors for each map
 function RunTests()
 {

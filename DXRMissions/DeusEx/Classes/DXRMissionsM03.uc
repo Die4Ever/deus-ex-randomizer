@@ -242,6 +242,11 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Terrorist t;
 
     switch(dxr.localURL) {
+    case "03_NYC_UNATCOISLAND":
+    case "03_NYC_BATTERYPARK":
+        FailIfCorpseNotHeld("TerroristCommander");
+        break;
+
     case "03_NYC_AIRFIELDHELIBASE":
         foreach AllActors(class'FlagTrigger',ft){// probably ambrosia
             if (ft.Name=='FlagTrigger0'){

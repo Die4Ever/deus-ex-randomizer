@@ -90,6 +90,13 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     }
 }
 
+function PreFirstEntryMapFixes()
+{
+    if (dxr.localURL == "04_NYC_UNATCOISLAND" || dxr.localURL == "04_NYC_STREET") {
+        FailIfCorpseNotHeld("TerroristCommander");
+    }
+}
+
 function MissionTimer()
 {
     switch(dxr.localURL) {

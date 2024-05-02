@@ -249,3 +249,10 @@ function MoveAssaultSquads()
         t.SetLocation(assaultLocations[i++]+vectm(0,0,20000));
     }
 }
+
+function PreFirstEntryMapFixes()
+{
+    if (dxr.localURL == "08_NYC_STREET") {
+        FailIfCorpseNotHeld("TerroristCommander");
+    }
+}

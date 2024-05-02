@@ -2048,6 +2048,8 @@ static function string GetBingoFailedGoals(DXRando dxr, string eventname, out st
         // TODO: fail both if Jaime isn't talked to?
         case "NSFSignalSent":
             return "M04PlayerLikesUNATCO_Played";
+        case "DeusEx.TerroristCommanderCarcass_NotHeld":
+            return "LeoToTheBar";
     }
 
     return "";
