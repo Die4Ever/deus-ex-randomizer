@@ -60,11 +60,26 @@ def IsVanillaFixer() -> bool:
     if VanillaFixer is not None:
         return VanillaFixer
     p = Path(sys.argv[0])
-    return 'dxrvanillafixer' in p.name.lower()
+    VanillaFixer = 'vanillafixer' in p.name.lower()
+    return VanillaFixer
+
+ZeroRando = None
+def IsZeroRando() -> bool:
+    global ZeroRando
+    if ZeroRando is not None:
+        return ZeroRando
+    p = Path(sys.argv[0])
+    ZeroRando = 'zerorando' in p.name.lower()
+    return ZeroRando
+
 
 def SetVanillaFixer(val):
     global VanillaFixer
     VanillaFixer = val
+
+def SetZeroRando(val):
+    global ZeroRando
+    ZeroRando = val
 
 def IsWindows() -> bool:
     return os.name == 'nt'
