@@ -2032,12 +2032,18 @@ static function GetBingoFailedGoals(DXRando dxr, string eventname, out string fa
             failed[0] = "GaveRentonGun";
             return;
 
+        case "SandraRenton_Dead":
+            failed[0] = "FamilySquabbleWrapUpGilbertDead_Played";
+            return;
         case "GilbertRenton_Dead":
-            failed[0] = "GaveRentonGun";
+            if (dxr.localURL != "04_NYC_HOTEL") {
+                failed[0] = "FamilySquabbleWrapUpGilbertDead_Played";
+            }
+            failed[1] = "GaveRentonGun";
             // fallthrough
         case "FemaleHostage_Dead":
         case "MaleHostage_Dead":
-            failed[1] = "HotelHostagesSaved";
+            failed[2] = "HotelHostagesSaved";
             return;
 
         case "hostage_female_Dead":
@@ -2820,7 +2826,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "BeatTheMeat":
             return "Destroy enough hanging slaughtered chickens or pigs.";
         case "FamilySquabbleWrapUpGilbertDead_Played":
-            return "Talk to Sandra Renton after Gilbert and JoJo both die.  He was a good man...  What a rotten way to die.";
+            return "Talk to Sandra Renton after Gilbert and JoJo both die in Mission 4.  He was a good man...  What a rotten way to die.";
         case "CrackSafe":
             msg="Open enough safes throughout the game.  ";
             if (mission<=2){
