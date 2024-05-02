@@ -2059,11 +2059,6 @@ static function GetBingoFailedGoals(DXRando dxr, string eventname, out string fa
         case "Supervisor01_Dead":
             failed[0] = "Supervisor_Paid";
             return;
-        case "BeenToCops":
-            if (dxr.flagbase.GetBool('MaggieChow_Dead') == false) { // unless she's still alive, Maggie's body might still be in her apartment, ready to be taught how to fly
-                failed[0] = "MaggieCanFly";
-            }
-            return;
         case "Joshua_Dead":
             failed[0] = "JoshuaInterrupted_Played";
             return;

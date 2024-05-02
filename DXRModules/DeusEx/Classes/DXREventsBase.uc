@@ -471,7 +471,7 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
-    local string j, failed[5];
+    local string j;
     local int i;
     local class<Json> js;
     js = class'Json';
@@ -489,6 +489,9 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
         return;
     }
 
+    _MarkBingo(eventname);
+    MarkAllFailedBingoGoals(dxr, eventname);
+
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
@@ -499,11 +502,6 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
-    _MarkBingo(eventname);
-    GetBingoFailedGoals(dxr, eventname, failed);
-    for (i = 0; i < ArrayCount(failed); i++) {
-        MarkBingoAsFailed(dxr, failed[i]);
-    }
 }
 
 function M02HotelHostagesRescued()
@@ -643,7 +641,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname, failed[5];
+    local string classname;
     local bool dead;
     local int i;
 
@@ -701,10 +699,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed);
-    for (i = 0; i < ArrayCount(failed); i++) {
-        MarkBingoAsFailed(dxr, failed[i]);
-    }
+    MarkAllFailedBingoGoals(dxr, victim.bindName $ "_Dead");
 
     if(!victim.bImportant)
         return;
@@ -1249,6 +1244,16 @@ static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
     if (e != None) {
         e._MarkBingoAsFailed(eventname);
     }
+}
+
+static function MarkAllFailedBingoGoals(DXRando dxr, coerce string eventname)
+{
+    local string failed[5];
+    local int i;
+
+    GetBingoFailedGoals(dxr, eventname, failed);
+    for (i = 0; i < ArrayCount(failed); i++)
+        MarkBingoAsFailed(dxr, failed[i]);
 }
 
 function bool _IsBingoFailed(coerce string eventname)
