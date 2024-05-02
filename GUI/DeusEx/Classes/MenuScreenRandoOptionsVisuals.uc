@@ -26,4 +26,6 @@ function CreateChoices()
 defaultproperties
 {
      Title="Randomizer Visuals"
+     ClientHeight=270
+     helpPosY=234//helpPosY = ClientHeight - 36
 }
