@@ -167,6 +167,17 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 }
 
+function AfterMovePlayerToStartLocation(GoalLocation Loc)
+{
+    local #var(prefix)InterpolateTrigger it;
+
+    if (Loc.name!="Hotel Roof") {
+        foreach AllActors(class'#var(prefix)InterpolateTrigger', it) {
+            if(it.Event=='EntranceCopter') it.Trigger(self, None);
+        }
+    }
+}
+
 function AfterShuffleGoals(int goalsToLocations[32])
 {
     local int g;

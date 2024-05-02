@@ -10,9 +10,21 @@ function BeginPlay()
     Super.BeginPlay();
     bInvincible = false;
     _SkinColor = SkinColor;
+    SetTimer(0.1,False);
 }
 
-function PostPostBeginPlay()
+function Timer()
+{
+    local DXRFlags f;
+    foreach AllActors(class'DXRFlags',f){break;}
+    if (f==None){
+        SetTimer(0.1,False);
+        return;
+    }
+    AdjustBarrels();
+}
+
+function AdjustBarrels()
 {
     UpdateBarrelTexture();
     AdjustBarrelBehaviour();
@@ -92,8 +104,6 @@ event TravelPostAccept()
     Super.TravelPostAccept();
     SkinColor = _SkinColor;
     BeginPlay();
-    UpdateBarrelTexture();
-    AdjustBarrelBehaviour();
 }
 
 function Trigger(Actor Other, Pawn Instigator)

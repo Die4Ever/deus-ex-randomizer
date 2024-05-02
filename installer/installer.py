@@ -7,7 +7,7 @@ if typechecks:
     install_import_hook('GUI')
 
 
-from Install import GetSourcePath, SetDryrun, SetVanillaFixer, SetVerbose, info, debug, GetVersion
+from Install import GetSourcePath, SetDryrun, SetVanillaFixer, SetZeroRando, SetVerbose, info, debug, GetVersion
 try:
     import argparse
     import sys
@@ -29,6 +29,7 @@ def main():
     parser.add_argument('--verbose', action="store_true", help="Output way more to the console")
     parser.add_argument('--vanillafixer', action="store_true", help="Force vanilla fixer defaults")
     parser.add_argument('--dxrando', action="store_true", help="Force DXRando installer defaults")
+    parser.add_argument('--zerorando', action="store_true", help="Force Zero Rando defaults")
     args = parser.parse_args()
     info(sys.argv)
 
@@ -40,6 +41,8 @@ def main():
 
     if args.vanillafixer:
         SetVanillaFixer(True)
+    elif args.zerorando:
+        SetZeroRando(True)
     elif args.dxrando:
         SetVanillaFixer(False)
 

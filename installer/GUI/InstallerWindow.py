@@ -2,7 +2,7 @@ try:
     import webbrowser
     from GUI import *
     from pathlib import Path
-    from Install import Install, IsWindows, IsVanillaFixer, CheckVulkan, getDefaultPath, GetVersion
+    from Install import Install, IsWindows, IsVanillaFixer, IsZeroRando, CheckVulkan, getDefaultPath, GetVersion
     import traceback
     import re
     from threading import Thread
@@ -44,6 +44,8 @@ class InstallerWindow(GUIBase):
 
         if IsVanillaFixer():
             self.root.title("DXR Vanilla Fixer " + GetVersion())
+        elif IsZeroRando():
+            self.root.title("DXR Zero Rando " + GetVersion() + " Installer")
         else:
             self.root.title("DXRando " + GetVersion() + " Installer")
 
@@ -79,8 +81,8 @@ class InstallerWindow(GUIBase):
         # show the path
         pathlabel = str(p.parent.parent)
         pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', '\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
-        l = Label(self.frame, text='Install path:\n' + pathlabel, wraplength=self.width - pad*8)
-        l.grid(column=1,row=self.row, sticky='SW', padx=pad*4, pady=pad)
+        l = Label(self.frame, text='Install path:\n' + pathlabel, wraplength=self.width - pad*16, justify='center')
+        l.grid(column=1,row=self.row, sticky='SW', padx=pad*8, pady=pad)
         self.row += 1
 
         self.flavors = {}
@@ -102,12 +104,12 @@ class InstallerWindow(GUIBase):
 
         # install button
         self.installButton = Button(self.frame,text='Install!',width=24,height=2,font=self.font, command=self.Install)
-        self.installButton.grid(column=1,row=101, sticky='SW', padx=pad, pady=pad)
+        self.installButton.grid(column=1,row=101, sticky='SW', padx=pad*4, pady=pad)
         Hovertip(self.installButton, 'Dew it!')
 
         # advanced button
         self.advancedButton = Button(self.frame,text='Show Advanced Options',width=20,height=1,font=self.font, command=self.ShowAdvanced)
-        self.advancedButton.grid(column=1,row=102, sticky='SW', padx=pad, pady=pad)
+        self.advancedButton.grid(column=1,row=102, sticky='SW', padx=pad*8, pady=pad)
         Hovertip(self.advancedButton, 'For the brave and technical')
 
         self.root.update()
@@ -148,7 +150,7 @@ class InstallerWindow(GUIBase):
             if not IsVanillaFixer():
                 settings['exetype'] = self.ExeTypeRadios(pad*10, pad)
 
-            v = BooleanVar(master=self.frame, value=IsVanillaFixer())
+            v = BooleanVar(master=self.frame, value=IsVanillaFixer() or IsZeroRando())
             settings['ZeroRando'] = v
             c = Checkbutton(self.frame, text="Default to Zero Rando mode for "+f, variable=v)
             Hovertip(c, "This retains the vanilla menu experience for your first launch.\nAnd also sets Zero Rando mode as your default game mode for a new game.\nYou can change this once you get into the game with the Rando menu.")
@@ -156,7 +158,7 @@ class InstallerWindow(GUIBase):
             self.FixColors(c)
             self.row+=1
 
-            # separate DXRando.exe is difficulty for Linux Steam users, but if you're using VanillaFixer then you probably don't want to overwrite vanilla
+            # separate DXRando.exe is difficult for Linux Steam users, but if you're using VanillaFixer then you probably don't want to overwrite vanilla
             v = BooleanVar(master=self.frame, value=(IsWindows() or IsVanillaFixer()))
             settings['DXRando.exe'] = v
             c = Checkbutton(self.frame, text="Create separate DXRando.exe for "+f, variable=v)
@@ -267,8 +269,9 @@ class InstallerWindow(GUIBase):
 
     def _Install(self):
         self.root.title('DXRando Installing...')
-        self.root.update()
         self.installButton["state"]='disabled'
+        self.installButton['text']='Installing...'
+        self.root.update()
 
         flavors = {}
         for (flavorName,flavor) in self.flavors.items():
@@ -316,6 +319,7 @@ class InstallerWindow(GUIBase):
             return
         self.root.title(newtitle)
         self.lastprogress = newtitle
+        self.installButton['text']=newtitle
         self.root.update()
 
 

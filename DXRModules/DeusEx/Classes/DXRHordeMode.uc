@@ -679,7 +679,6 @@ function GenerateItem()
     else if( barrel != None ) {
         barrel.SkinColor = SC_Poison;
         barrel.BeginPlay();
-        barrel.PostPostBeginPlay();
     }
 }
 

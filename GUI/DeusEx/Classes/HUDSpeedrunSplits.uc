@@ -160,7 +160,7 @@ function InitStats(DXRStats newstats)
     }
 
     if(curMission == 99) {
-        CompletedRun();
+        CompletedRun(total);
     }
     SaveConfig();
 
@@ -173,9 +173,9 @@ function InitStats(DXRStats newstats)
     StyleChanged();
 }
 
-function CompletedRun()
+function CompletedRun(int total)
 {
-    local int i, total, time;
+    local int i, time;
     local bool bNewPB;
 
     // write back new PBs and Golds

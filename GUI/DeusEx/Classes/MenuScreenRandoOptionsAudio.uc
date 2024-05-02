@@ -26,4 +26,6 @@ function CreateChoices()
 defaultproperties
 {
      Title="Randomizer Audio"
+     ClientHeight=300
+     helpPosY=264//helpPosY = ClientHeight - 36
 }
