@@ -263,6 +263,10 @@ function PreFirstEntryMapFixes()
 
         FailIfCorpseNotHeld("TerroristCommander");
 
+        if (! HasItem(player(), class'VialAmbrosia')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
+        }
+
         break;
 
     case "09_NYC_DOCKYARD":

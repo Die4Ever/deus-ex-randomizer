@@ -2235,7 +2235,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SmugglerDied":
             return "Let Smuggler die by not warning him of the UNATCO raid.  This can be done either by not talking to him at all, or not warning him of the raid if you talk to him after talking to Dowd.";
         case "GaveDowdAmbrosia":
-            return "Find a vial of ambrosia on the upper decks of the superfreighter and bring to to Stanton Dowd in the graveyard.";
+            return "Find a vial of ambrosia on the upper decks of the superfreighter and bring it to Stanton Dowd in the graveyard.";
         case "JockBlewUp":
             return "Don't kill the fake mechanic at Everett's house so that Jock dies when you arrive in Area 51.";
         case "SavedPaul":
