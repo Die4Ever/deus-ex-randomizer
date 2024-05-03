@@ -19,6 +19,9 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_UnrealMusic');
         CreateChoice(class'MenuChoice_DXMusic');
     }
+    if(#defined(injections)){
+        CreateChoice(class'MenuChoice_ChargeTimer');
+    }
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }
