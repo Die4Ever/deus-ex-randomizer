@@ -287,5 +287,6 @@ function PreFirstEntryMapFixes()
 {
     if (dxr.localURL == "06_HONGKONG_HELIBASE") {
         FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld("PaulDenton");
     }
 }

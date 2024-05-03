@@ -1251,9 +1251,10 @@ static function MarkAllFailedBingoGoals(DXRando dxr, coerce string eventname)
     local string failed[5];
     local int i;
 
-    GetBingoFailedGoals(dxr, eventname, failed);
-    for (i = 0; i < ArrayCount(failed); i++)
+    class'DXREvents'.static.GetBingoFailedGoals(dxr, eventname, failed);
+    for (i = 0; i < ArrayCount(failed); i++) {
         MarkBingoAsFailed(dxr, failed[i]);
+    }
 }
 
 function bool _IsBingoFailed(coerce string eventname)

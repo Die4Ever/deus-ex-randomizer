@@ -2086,8 +2086,11 @@ static function GetBingoFailedGoals(DXRando dxr, string eventname, out string fa
         case "NSFSignalSent":
             failed[0] = "M04PlayerLikesUNATCO_Played";
             return;
-        case "DeusEx.TerroristCommanderCarcass_NotHeld":
+        case "TerroristCommanderCarcass_NotHeld":
             failed[0] = "LeoToTheBar";
+            return;
+        case "PaulDentonCarcass_NotHeld":
+            failed[0] = "PaulToTong";
             return;
     }
 }
@@ -3150,7 +3153,7 @@ defaultproperties
 #endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1,missions=8)
 #ifndef hx
-    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1,missions=17686)
+    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to a bar",max=1,missions=17686)
 #endif
     bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",max=6,missions=10)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
