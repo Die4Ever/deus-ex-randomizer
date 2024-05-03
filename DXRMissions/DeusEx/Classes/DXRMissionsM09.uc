@@ -266,6 +266,7 @@ function PreFirstEntryMapFixes()
         if (! HasItem(player(), class'VialAmbrosia')) {
             class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
         }
+        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "ChangeClothes");
 
         break;
 
