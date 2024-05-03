@@ -52,3 +52,6 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\MaxPaynePianoJustBroke.mp3"     NAME="MaxPaynePianoJustBroke"  GROUP="MemePiano"
 
 #exec AUDIO IMPORT FILE="Sounds\JockLetsGo.mp3"                 NAME="PocketJockLetsGo"     GROUP="DXRandoItems"
+
+#exec AUDIO IMPORT FILE="Sounds\TimerTick.mp3"                 NAME="TimerTick"     GROUP="DXRandoItems"
+#exec AUDIO IMPORT FILE="Sounds\TimerTock.mp3"                 NAME="TimerTock"     GROUP="DXRandoItems"

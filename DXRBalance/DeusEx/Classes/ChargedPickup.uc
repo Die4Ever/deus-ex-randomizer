@@ -55,10 +55,11 @@ function PlayTickSound(DeusExPlayer Player)
         if (class'MenuChoice_ChargeTimer'.Default.enabled==False){return;}
 
         //Always play the sound from the player themselves
+        //Use different audio slots so the sounds can theoretically overlap
         if (lastSound){
-            Player.PlaySound(sound'Switch3ClickOn',,1,,,1.5);
+            Player.PlaySound(sound'TimerTick',SLOT_Misc);
         } else {
-            Player.PlaySound(sound'Switch3ClickOn',,1,,,0.75);
+            Player.PlaySound(sound'TimerTock',SLOT_None);
         }
         lastSound=!lastSound;
 }
