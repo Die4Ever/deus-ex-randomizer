@@ -6,9 +6,6 @@ class MenuScreenRandoOptionsRandomizer expands MenuScreenRandoOptionsBase;
 
 function CreateChoices()
 {
-    controlsParent = winClient;
-    CreateScrollWindow();
-
     CreateChoice(class'MenuChoice_Telemetry');
     CreateChoice(class'MenuChoice_JoinDiscord');
     CreateChoice(class'MenuChoice_Website');
@@ -16,14 +13,10 @@ function CreateChoices()
     // TODO: button to open Mastodon?
 
     CreateChoice(class'MenuChoice_ShowNews');
-
-    controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }
 
 
 defaultproperties
 {
      Title="Randomizer Options"
-     ClientHeight=230
-     helpPosY=194//helpPosY = ClientHeight - 36
 }

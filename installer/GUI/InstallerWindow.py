@@ -65,8 +65,8 @@ class InstallerWindow(GUIBase):
 
         p = Path(p)
         info(p)
-        assert p.name.lower() == 'deusex.exe'
-        assert p.parent.name.lower() == 'system'
+        assert p.name.lower() == 'deusex.exe', "You need to select DeusEx.exe"
+        assert p.parent.name.lower() == 'system', "DeusEx.exe is supposed to be in the game's System folder"
         self.exe = p
 
         flavors = Install.DetectFlavors(self.exe)

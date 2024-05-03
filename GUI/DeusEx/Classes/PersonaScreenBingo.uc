@@ -72,10 +72,10 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
         if (buttonNumber==0){
             action = "reset";
         }
-    } else if (msgBox.winText.GetText()==InfoWindowText){
-        if (buttonNumber==0){
-            action="wiki";
-        }
+    //} else if (msgBox.winText.GetText()==InfoWindowText){
+    //    if (buttonNumber==0){
+    //        action="wiki";
+    //    }
     }
 
     // Destroy the msgbox!
@@ -122,6 +122,7 @@ function ShowBingoGoalHelp( Window bingoTile )
 function bool ButtonActivated( Window buttonPressed )
 {
     local int val;
+    local BingoHintMsgBox msgbox;
 
     if(buttonPressed == btnReset) {
         root.MessageBox(ResetWindowHeader,ResetWindowText,0,False,Self);
@@ -129,7 +130,11 @@ function bool ButtonActivated( Window buttonPressed )
         return true;
     }
     else if(buttonPressed == btnBingoInfo) {
-        root.MessageBox(InfoWindowHeader,InfoWindowText,0,False,Self);
+        //root.MessageBox(InfoWindowHeader,InfoWindowText,0,False,Self);
+        msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox',False));
+        msgbox.SetTitle(InfoWindowHeader);
+        msgbox.SetMessageText(InfoWindowText);
+        msgbox.SetNotifyWindow(Self);
 
         return true;
     }
@@ -163,7 +168,7 @@ defaultproperties
      clientBorderTextureCols=3
      ResetWindowHeader="Are you sure?"
      ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
-     InfoWindowHeader="Open Wiki?"
-     InfoWindowText="Would you like to open the DXRando Bingo Goal wiki page in your web browser?"
+     InfoWindowHeader="Bingo Info"
+     InfoWindowText="Complete specific tasks to mark off bingo squares!|n|nSquares marked gray can be completed this mission. Black squares cannot be completed in this mission.  Green squares have been completed.  Red squares can no longer be completed.|n|nClick on the squares to get more info about the specific task in each one!"
      bingoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Bingo-Goals"
 }

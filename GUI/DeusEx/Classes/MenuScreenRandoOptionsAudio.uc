@@ -6,9 +6,6 @@ class MenuScreenRandoOptionsAudio expands MenuScreenRandoOptionsBase;
 
 function CreateChoices()
 {
-    controlsParent = winClient;
-    CreateScrollWindow();
-
     if(!#defined(revision)) {
         CreateChoice(class'MenuChoice_ContinuousMusic');
         CreateChoice(class'MenuChoice_RandomMusic');
@@ -19,13 +16,12 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_UnrealMusic');
         CreateChoice(class'MenuChoice_DXMusic');
     }
-
-    controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
+    if(#defined(injections)){
+        CreateChoice(class'MenuChoice_ChargeTimer');
+    }
 }
 
 defaultproperties
 {
-     Title="Randomizer Audio"
-     ClientHeight=300
-     helpPosY=264//helpPosY = ClientHeight - 36
+    Title="Randomizer Audio"
 }

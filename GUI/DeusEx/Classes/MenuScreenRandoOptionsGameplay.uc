@@ -6,9 +6,6 @@ class MenuScreenRandoOptionsGameplay expands MenuScreenRandoOptionsBase;
 
 function CreateChoices()
 {
-    controlsParent = winClient;
-    CreateScrollWindow();
-
     CreateChoice(class'MenuChoice_ToggleMemes');
     // TODO: simulated crowd control strength
 
@@ -27,8 +24,6 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_PasswordAutofill');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
-
-    controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }
 
 defaultproperties

@@ -2,21 +2,37 @@
 // MenuScreenRandoOptionsBase
 //=============================================================================
 
-class MenuScreenRandoOptionsBase expands MenuUIScreenWindow;
+class MenuScreenRandoOptionsBase expands MenuUIScreenWindow abstract;
 
 var MenuUIScrollAreaWindow winScroll;
 var Window controlsParent;
 
-function CreateChoices()
-{
-}
+function CreateChoices();
 
+event InitWindow()
+{
+    local int scrollHeight;
+
+    Super(MenuUIWindow).InitWindow();
+
+    controlsParent = winClient;
+    CreateScrollWindow();
+
+    CreateChoices();
+    LoadSettings();
+
+    scrollHeight = choiceStartY + (choiceCount * choiceVerticalGap);
+    controlsParent.SetSize(clientWidth, scrollHeight);
+
+    ClientHeight = Min(scrollHeight + 36, default.ClientHeight);
+    winClient.SetSize(clientWidth, ClientHeight);
+
+    helpPosY = ClientHeight - 36;
+    winScroll.SetSize(ClientWidth, helpPosY);
+}
 
 function CreateScrollWindow()
 {
-    local MenuUIListWindow lstKeys;
-    local DXRNews news;
-
     winScroll = CreateScrollAreaWindow(winClient);
     winScroll.vScale.SetThumbStep(20);
     winScroll.SetPos(0, 0);
