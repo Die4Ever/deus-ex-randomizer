@@ -1959,138 +1959,134 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function GetBingoFailedGoals(DXRando dxr, string eventname, out string failed[5])
+static function int GetBingoFailedGoals(DXRando dxr, string eventname, out string failed[5])
 {
-    local int i;
-
-    for (i = 0; i < ArrayCount(failed); i++) {
-        failed[i] = "";
-    }
+    local int num_failed;
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
         case "JuanLebedev_Dead":
-            failed[0] = "LebedevLived";
-            return;
+            failed[num_failed++] = "LebedevLived";
+            return num_failed;
         case "Aimee_Dead":
         case "LeMerchant_Dead":
-            failed[0] = "AimeeLeMerchantLived";
-            return;
+            failed[num_failed++] = "AimeeLeMerchantLived";
+            return num_failed;
         case "MaggieChow_Dead":
-            failed[0] = "MaggieLived";
+            failed[num_failed++] = "MaggieLived";
         case "FordSchick_Dead":
-            failed[0] = "FordSchickRescued";
-            return;
+            failed[num_failed++] = "FordSchickRescued";
+            return num_failed;
         case "AlleyBum_Dead":
-            failed[0] = "AlleyBumRescued";
-            return;
+            failed[num_failed++] = "AlleyBumRescued";
+            return num_failed;
         case "Camille_Dead":
-            failed[0] = "CamilleConvosDone";
-            return;
+            failed[num_failed++] = "CamilleConvosDone";
+            return num_failed;
         case "Miguel_Dead":
-            failed[0] = "Terrorist_peeptime";
-            failed[1] = "Terrorist_ClassDead";
-            failed[2] = "Terrorist_ClassUnconscious";
-            failed[3] = "nsfwander";
-            failed[4] = "MiguelLeaving";
-            return;
+            failed[num_failed++] = "Terrorist_peeptime";
+            failed[num_failed++] = "Terrorist_ClassDead";
+            failed[num_failed++] = "Terrorist_ClassUnconscious";
+            failed[num_failed++] = "nsfwander";
+            failed[num_failed++] = "MiguelLeaving";
+            return num_failed;
         case "Josh_Dead":
-            failed[0] = "JoshFed";
-            return;
+            failed[num_failed++] = "JoshFed";
+            return num_failed;
         case "Billy_Dead":
-            failed[0] = "M02BillyDone";
-            return;
+            failed[num_failed++] = "M02BillyDone";
+            return num_failed;
         case "Canal_Bartender_Dead":
-            failed[0] = "Canal_Bartender_Question4";
-            return;
+            failed[num_failed++] = "Canal_Bartender_Question4";
+            return num_failed;
         case "ClubBartender_Dead":
-            failed[0] = "M06BartenderQuestion3";
-            return;
+            failed[num_failed++] = "M06BartenderQuestion3";
+            return num_failed;
         case "Joshua_Dead":
-            failed[0] = "JoshuaInterrupted_Played";
-            return;
+            failed[num_failed++] = "JoshuaInterrupted_Played";
+            return num_failed;
         case "Mamasan_Dead":
         case "Date1_Dead":
-            failed[0] = "M06JCHasDate";
-            return;
+            failed[num_failed++] = "M06JCHasDate";
+            return num_failed;
 
         case "KnowsAboutNanoSword":
-            failed[1] = "M06JCHasDate";
+            failed[num_failed++] = "M06JCHasDate";
             // fallthrough
         case "ClubMercedes_Dead":
         case "ClubTessa_Dead":
-            failed[0] = "ClubEntryPaid";
-            return;
+            failed[num_failed++] = "ClubEntryPaid";
+            return num_failed;
 
         // omg these hostage names
         case "SubHostageFemale_Dead":
         case "SubHostageMale_Dead":
-            failed[0] = "SubwayHostagesSaved";
-            return;
+            failed[num_failed++] = "SubwayHostagesSaved";
+            return num_failed;
         case "JoJoFine_Dead":
-            failed[0] = "GaveRentonGun";
-            return;
+            failed[num_failed++] = "GaveRentonGun";
+            return num_failed;
 
         case "SandraRenton_Dead":
-            failed[0] = "FamilySquabbleWrapUpGilbertDead_Played";
-            return;
+            failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
+            return num_failed;
         case "GilbertRenton_Dead":
             if (dxr.localURL != "04_NYC_HOTEL") {
-                failed[0] = "FamilySquabbleWrapUpGilbertDead_Played";
+                failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             }
-            failed[1] = "GaveRentonGun";
+            failed[num_failed++] = "GaveRentonGun";
             // fallthrough
         case "FemaleHostage_Dead":
         case "MaleHostage_Dead":
-            failed[2] = "HotelHostagesSaved";
-            return;
+            failed[num_failed++] = "HotelHostagesSaved";
+            return num_failed;
 
         case "hostage_female_Dead":
         case "hostage_Dead":
-            failed[0] = "SilhouetteHostagesAllRescued";
-            return;
+            failed[num_failed++] = "SilhouetteHostagesAllRescued";
+            return num_failed;
         case "M06Junkie_Dead":
-            failed[0] = "M06PaidJunkie";
-            return;
+            failed[num_failed++] = "M06PaidJunkie";
+            return num_failed;
         case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
-            failed[0] = "M06BoughtVersaLife";
-            return;
+            failed[num_failed++] = "M06BoughtVersaLife";
+            return num_failed;
         case "Supervisor01_Dead":
-            failed[0] = "Supervisor_Paid";
-            return;
+            failed[num_failed++] = "Supervisor_Paid";
+            return num_failed;
         case "Joshua_Dead":
-            failed[0] = "JoshuaInterrupted_Played";
-            return;
+            failed[num_failed++] = "JoshuaInterrupted_Played";
+            return num_failed;
         case "Don_Dead":
         case "Lenny_Dead":
-            failed[0] = "GiveZyme";
-            return;
+            failed[num_failed++] = "GiveZyme";
+            return num_failed;
         case "Renault_Dead":
-            failed[0] = "SoldRenaultZyme";
-            failed[1] = "MeetRenault_Played";
-            return;
+            failed[num_failed++] = "SoldRenaultZyme";
+            failed[num_failed++] = "MeetRenault_Played";
+            return num_failed;
         case "TimBaker_Dead":
-            failed[0] = "MeetTimBaker_Played";
-            return;
+            failed[num_failed++] = "MeetTimBaker_Played";
+            return num_failed;
         case "drbernard_Dead":
-            failed[0] = "MeetDrBernard_Played";
-            return;
+            failed[num_failed++] = "MeetDrBernard_Played";
+            return num_failed;
         case "JaimeRecruited":
-            failed[0] = "KnowsGuntherKillphrase";
-            return;
+            failed[num_failed++] = "KnowsGuntherKillphrase";
+            return num_failed;
         case "JaimeLeftBehind":
-            failed[0] = "M07MeetJaime_Played";
-            return;
+            failed[num_failed++] = "M07MeetJaime_Played";
+            return num_failed;
         // TODO: fail both if Jaime isn't talked to?
         case "NSFSignalSent":
-            failed[0] = "M04PlayerLikesUNATCO_Played";
-            return;
+            failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
+            return num_failed;
         case "TerroristCommanderCarcass_NotHeld":
-            failed[0] = "LeoToTheBar";
-            return;
+            failed[num_failed++] = "LeoToTheBar";
+            return num_failed;
         case "PaulDentonCarcass_NotHeld":
-            failed[0] = "PaulToTong";
-            return;
+            failed[num_failed++] = "PaulToTong";
+            return num_failed;
     }
 }
 

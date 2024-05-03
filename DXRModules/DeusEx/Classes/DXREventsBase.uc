@@ -32,7 +32,7 @@ simulated function string tweakBingoDescription(string event, string desc);
 function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
-static function GetBingoFailedGoals(DXRando dxr, string eventname, out string failed[5]);
+static function int GetBingoFailedGoals(DXRando dxr, string eventname, out string failed[5]);
 
 function AddWatchedActor(Actor a,String eventName)
 {
@@ -1249,10 +1249,10 @@ static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
 static function MarkAllFailedBingoGoals(DXRando dxr, coerce string eventname)
 {
     local string failed[5];
-    local int i;
+    local int i, num_failed;
 
-    class'DXREvents'.static.GetBingoFailedGoals(dxr, eventname, failed);
-    for (i = 0; i < ArrayCount(failed); i++) {
+    num_failed = class'DXREvents'.static.GetBingoFailedGoals(dxr, eventname, failed);
+    for (i = 0; i < num_failed; i++) {
         MarkBingoAsFailed(dxr, failed[i]);
     }
 }
