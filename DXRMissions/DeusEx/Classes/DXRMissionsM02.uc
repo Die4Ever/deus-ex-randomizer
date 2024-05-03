@@ -258,7 +258,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local int i;
 
     if (g.name=="Generator"){
-        class'DXRHoverHint'.static.Create(self, "NSF Generator", Loc.positions[0].pos, 175, 140, g.actors[0].a);
+        class'DXRHoverHint'.static.Create(self, "NSF Generator", g.actors[0].a.Location, 175, 140, g.actors[0].a);
 
         for(i=0; i<ArrayCount(g.actors); i++) {
             if( AmbientSoundTriggered(g.actors[i].a) != None) {

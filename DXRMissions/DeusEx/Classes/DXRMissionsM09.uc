@@ -345,7 +345,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.name=="Weld Point 4" ||
         g.name=="Weld Point 5")
     {
-        class'DXRHoverHint'.static.Create(self, g.name, Loc.positions[0].pos, 40, 40, g.actors[0].a);
+        class'DXRHoverHint'.static.Create(self, g.name, g.actors[0].a.Location, 40, 40, g.actors[0].a);
     }
 }
 
@@ -444,7 +444,7 @@ function AfterShuffleGoals(int goalsToLocations[32])
             }
             if (create){
                 if(RevisionMaps) {
-                    class'DXRHoverHint'.static.Create(self, "Not a Weld Point", locations[g].positions[0].pos, 40, 40);
+                    class'DXRHoverHint'.static.Create(self, "Not a Weld Point", locations[g].positions[0].pos*coords_mult, 40, 40);
                 } else {
                     PatchHole(loc, locations[g].positions[0].rot, texture, roll, scale, xmin, xmax, ymin, ymax);
                 }
