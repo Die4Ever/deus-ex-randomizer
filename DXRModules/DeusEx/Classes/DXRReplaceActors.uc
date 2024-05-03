@@ -339,6 +339,7 @@ function ReplaceVendingMachine(#var(prefix)VendingMachine a)
         return;
 
     n.SkinColor=a.SkinColor;
+    n.PreBeginPlay();
     n.BeginPlay();
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
