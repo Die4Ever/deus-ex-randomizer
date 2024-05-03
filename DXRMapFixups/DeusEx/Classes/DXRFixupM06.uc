@@ -756,6 +756,12 @@ function AnyEntryMapFixes()
         }
         HandleJohnSmithDeath();
         SetTimer(1.0, True); //To handle updating the DTS goal description
+
+        if (dxr.flagbase.GetBool('Have_ROM')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
+        }
+
         break;
 
     case "06_HONGKONG_VERSALIFE":
@@ -787,6 +793,12 @@ function AnyEntryMapFixes()
 #endif
                 }
         }
+
+        if (dxr.flagbase.GetBool('Have_ROM')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
+        }
+
         break;
     case "06_HONGKONG_MJ12LAB":
         c = GetConversation('MJ12Lab_BioWeapons_Overheard');
