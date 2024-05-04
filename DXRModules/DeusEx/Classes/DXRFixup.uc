@@ -205,6 +205,7 @@ function PreFirstEntry()
     FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
+    SetAllLampsState(true);
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -795,6 +796,29 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
             n.eventType = ET_AddNote;
         }
     }
+}
+
+function SetAllLampsState(bool on)
+{
+#ifdef vanilla
+    local #var(prefix)Lamp l;
+
+    foreach AllActors(class'#var(prefix)Lamp', l) {
+        if (on && l.bOn == false) {
+            l.bOn = True;
+            l.LightType = LT_Steady;
+            // l.PlaySound(sound'Switch4ClickOn');
+            l.bUnlit = True;
+            l.ScaleGlow = 3.0;
+        } else if (!on && l.bOn) {
+            l.bOn = False;
+            l.LightType = LT_None;
+            // l.PlaySound(sound'Switch4ClickOff');
+            l.bUnlit = False;
+            l.ResetScaleGlow();
+        }
+    }
+#endif
 }
 
 defaultproperties
