@@ -237,7 +237,11 @@ function PreFirstEntryMapFixes()
             oot = Spawn(class'OnceOnlyTrigger');
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
-            SetAllLampsState(false);
+            SetAllLampsState(false, true, true);
+            break;
+
+        case "08_NYC_FREECLINIC":
+            SetAllLampsState(true, true, false);
             break;
     }
 }

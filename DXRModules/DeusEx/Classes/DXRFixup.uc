@@ -205,7 +205,7 @@ function PreFirstEntry()
     FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
-    SetAllLampsState(true);
+    SetAllLampsState(true, true, true);
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -798,25 +798,34 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetAllLampsState(bool on)
+function SetLampState(#var(prefix)Lamp l, bool turnOn) // could maybe go in DXRLamp if it existed
+{
+    if (turnOn && !l.bOn) {
+        l.bOn = True;
+        l.LightType = LT_Steady;
+        // l.PlaySound(sound'Switch4ClickOn');
+        l.bUnlit = True;
+        l.ScaleGlow = 3.0;
+    } else if (!turnOn && l.bOn) {
+        l.bOn = False;
+        l.LightType = LT_None;
+        // l.PlaySound(sound'Switch4ClickOff');
+        l.bUnlit = False;
+        l.ResetScaleGlow();
+    }
+}
+
+function SetAllLampsState(bool type1, bool type2, bool type3)
 {
 #ifdef vanilla
     local #var(prefix)Lamp l;
 
     foreach AllActors(class'#var(prefix)Lamp', l) {
-        if (on && l.bOn == false) {
-            l.bOn = True;
-            l.LightType = LT_Steady;
-            // l.PlaySound(sound'Switch4ClickOn');
-            l.bUnlit = True;
-            l.ScaleGlow = 3.0;
-        } else if (!on && l.bOn) {
-            l.bOn = False;
-            l.LightType = LT_None;
-            // l.PlaySound(sound'Switch4ClickOff');
-            l.bUnlit = False;
-            l.ResetScaleGlow();
-        }
+        SetLampState(l, (Lamp1(l) != None && type1) || (Lamp2(l) != None && type2) || (Lamp3(l) != None && type3));
+        l.LightHue = l.Default.LightHue;
+        l.LightSaturation = l.Default.LightSaturation;
+        l.LightBrightness = l.Default.LightBrightness;
+        l.LightRadius = l.Default.LightRadius;
     }
 #endif
 }
