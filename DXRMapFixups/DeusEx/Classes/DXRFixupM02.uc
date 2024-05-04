@@ -168,6 +168,8 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
             Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
+
+            SetAllLampsState(false, true, true); // the lamp in Paul's apartment
         }
         break;
 
@@ -193,6 +195,8 @@ function PreFirstEntryMapFixes()
         }
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
+
+        SetAllLampsState(false, true, true); // the lamp in Paul's apartment, seen through the window
 
         break;
     case "02_NYC_BAR":
