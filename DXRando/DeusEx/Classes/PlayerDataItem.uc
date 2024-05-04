@@ -37,6 +37,8 @@ simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
     local PlayerDataItem i;
 
+    if(p==None){return None;}
+
     i = PlayerDataItem(p.FindInventoryType(class'PlayerDataItem'));
     if( i == None )
     {
