@@ -85,6 +85,9 @@ DerivedDataCache/*
 # Settings file for the compiler
 compiler_settings.json
 
+# File that specifies where the bingo viewer can send bingo data online
+pushjson.txt
+
 __pycache__
 
 # python virtual environment
