@@ -12,4 +12,5 @@ defaultproperties
      UnfamiliarName="Stand Lamp"
      LightHue=44
      LightSaturation=128
+     LightRadius=20
 }

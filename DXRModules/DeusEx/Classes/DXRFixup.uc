@@ -800,13 +800,14 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
 
 function SetLampState(#var(prefix)Lamp l, bool turnOn) // could maybe go in DXRLamp if it existed
 {
-    if (turnOn && !l.bOn) {
+    log("debug LightType: " $ l.LightType);
+    if (turnOn) {
         l.bOn = True;
         l.LightType = LT_Steady;
         // l.PlaySound(sound'Switch4ClickOn');
         l.bUnlit = True;
         l.ScaleGlow = 3.0;
-    } else if (!turnOn && l.bOn) {
+    } else if (l.bOn) {
         l.bOn = False;
         l.LightType = LT_None;
         // l.PlaySound(sound'Switch4ClickOff');

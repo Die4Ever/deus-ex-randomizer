@@ -312,7 +312,7 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
-        SetAllLampsState(false, true, true);
+        SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         break;
     }
 }

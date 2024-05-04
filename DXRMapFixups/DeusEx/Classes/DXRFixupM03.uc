@@ -35,7 +35,7 @@ function PostFirstEntryMapFixes()
             AddActor(class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60));
             AddActor(class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75));
         }
-        SetAllLampsState(true, true, false);
+        SetAllLampsState(true, true, false); // this map has one desk lamp, in an office no one is in
         break;
     }
 }

@@ -231,11 +231,11 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
-        SetAllLampsState(false, true, true);
+        SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         break;
 
     case "02_NYC_FREECLINIC":
-        SetAllLampsState(true, true, false);
+        SetAllLampsState(true, true, false); // the free clinic has one desk lamp, at a desk no one is using
         break;
     }
 }
