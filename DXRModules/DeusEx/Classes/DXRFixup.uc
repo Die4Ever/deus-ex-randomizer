@@ -800,7 +800,11 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
 
 function SetLampState(#var(prefix)Lamp l, bool turnOn) // could maybe go in DXRLamp if it existed
 {
-    log("debug LightType: " $ l.LightType);
+    l.LightHue = l.Default.LightHue;
+    l.LightSaturation = l.Default.LightSaturation;
+    l.LightBrightness = l.Default.LightBrightness;
+    l.LightRadius = l.Default.LightRadius;
+
     if (turnOn) {
         l.bOn = True;
         l.LightType = LT_Steady;
@@ -816,17 +820,20 @@ function SetLampState(#var(prefix)Lamp l, bool turnOn) // could maybe go in DXRL
     }
 }
 
-function SetAllLampsState(bool type1, bool type2, bool type3)
+// the Plane struct is repurposed here to describe a disk orthogonal to the xy-plane
+function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p)
 {
 #ifdef vanilla
     local #var(prefix)Lamp l;
 
-    foreach AllActors(class'#var(prefix)Lamp', l) {
-        SetLampState(l, (Lamp1(l) != None && type1) || (Lamp2(l) != None && type2) || (Lamp3(l) != None && type3));
-        l.LightHue = l.Default.LightHue;
-        l.LightSaturation = l.Default.LightSaturation;
-        l.LightBrightness = l.Default.LightBrightness;
-        l.LightRadius = l.Default.LightRadius;
+    if (p.W == 0.0) {
+        foreach AllActors(class'#var(prefix)Lamp', l) {
+            SetLampState(l, (Lamp1(l) != None && type1) || (Lamp2(l) != None && type2) || (Lamp3(l) != None && type3));
+        }
+    } else {
+        foreach RadiusActors(class'#var(prefix)Lamp', l, p.W, p) {
+            SetLampState(l, (Lamp1(l) != None && type1) || (Lamp2(l) != None && type2) || (Lamp3(l) != None && type3));
+        }
     }
 #endif
 }
