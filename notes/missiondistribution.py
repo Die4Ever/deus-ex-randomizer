@@ -7,6 +7,9 @@ for i in range(0,16):
     mission.append([])
 
 def parseBingoLine(line):
+    if ("//" in line):
+        line = line.rsplit("//")[0]
+
     if "missions" in line:
         missionVal = int(line.split("missions=")[1].replace(")",""))
         #print(missionVal)
