@@ -554,6 +554,8 @@ function SetWatchFlags() {
         break;
     case "05_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
+        bt.Tag='SavedMiguel';
+
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
 
         break;
@@ -1511,6 +1513,14 @@ simulated function AnyEntry()
         for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
             DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
         }
+        break;
+    case "05_NYC_UNATCOISLAND":
+        //Add a trigger event to hit the SavedMiguel bingo trigger
+        conv = GetConversation('MiguelHack');
+        ce = conv.GetEventFromLabel("Hop");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;
+        ConEventTrigger(ce).triggerTag = 'SavedMiguel';
         break;
     }
 }
