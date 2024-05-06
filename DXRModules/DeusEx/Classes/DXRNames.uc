@@ -47,8 +47,34 @@ function FirstEntry()
 static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 {
     if( p.bImportant || p.bIsSecretGoal ) return;
-    p.UnfamiliarName = RandomName(dxr, p);
-    p.FamiliarName = p.UnfamiliarName;
+
+    if ( // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
+        p.bindName == "SickBum1" ||
+        p.bindName == "BarWoman1" ||
+        p.bindName == "SubHostageMale" ||
+        p.bindName == "LDDPBatParkOldBum" ||
+        p.bindName == "SickBum1" ||
+        p.bindName == "ClinicSickWoman" ||
+        p.bindName == "LDDPHotelAddict" ||
+        p.bindName == "StreetBum4" ||
+        p.bindName == "LDDPStreetLoser" ||
+        p.bindName == "LDDPBatPark2NiceBum" ||
+        p.bindName == "Canal_Merchant" ||
+        p.bindName == "DrinkingWoman" ||
+        p.bindName == "DrinkingMan" ||
+        p.bindName == "Ray" || // Everett's mechanic. Maybe change his FamiliarName to Ray instead of randomizing it?
+        p.bindname == "FemaleHostage" ||
+        p.bindname == "MaleHostage" ||
+        p.bindname == "MallGuard" ||
+        (p.FamiliarName != p.UnfamiliarName && Right(p.tag, 6) == "_clone") // don't give clones the same famiiliar name
+    ) {
+        p.FamiliarName = RandomName(dxr);
+    } else if ( // assume at this point that familiar/unfamiliar names aren't real names if they're the same
+        p.FamiliarName == p.UnfamiliarName
+    ) {
+        p.UnfamiliarName = RandomName(dxr);
+        p.FamiliarName = p.UnfamiliarName;
+    }
 }
 
 static function string RandomName(DXRando dxr, optional Actor a)
