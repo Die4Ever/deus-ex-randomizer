@@ -260,15 +260,19 @@ def _DetectFlavors(system:Path):
 
     if (game / 'GMDXv9').is_dir():
         flavors.append('GMDX v9')
+
     if (game / 'GMDXvRSD').is_dir():
         flavors.append('GMDX RSD')
+
     if (game / 'GMDXv10').is_dir():
         flavors.append('GMDX v10')
+
     if (system / 'HX.u').exists():
         if not is_vanilla:
             info('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')
         flavors.append('HX')
-    if (game / 'Revision').is_dir():
+
+    if (game / 'Revision').is_dir() and (game/'Revision'/'System'/'RevisionDefault.ini').exists():
         flavors.append('Revision')
 
     if (game / 'VMDSim').is_dir():
