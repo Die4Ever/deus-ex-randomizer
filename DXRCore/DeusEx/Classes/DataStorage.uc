@@ -125,7 +125,7 @@ function EndPlaythrough()
     slen = Len(pid);
 
     time = SystemTime();
-    expired = time-1;
+    expired = time + 86400;
     for( i=0; i < ArrayCount(config_data); i++) {
         if( ! IsCurrentData(config_data[i], time) ) continue;
         if( Right(config_data[i].key, slen) != pid ) continue;

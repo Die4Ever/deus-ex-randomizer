@@ -30,14 +30,14 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 
 ## Major Changes
 
-*
+-
 
 ## Minor Changes
 
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-*
+-
 </details>
 
 Download `DXRandoInstaller.exe` in the Assets section right below this line:
