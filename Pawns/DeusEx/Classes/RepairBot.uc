@@ -174,7 +174,9 @@ function Tick(float delta)
         updateName();
     }
 
-    if(CanCharge()){
+    if (EMPHitPoints<=0){
+        LightType=LT_None;
+    } else if(CanCharge()){
         LightHue=89;
         LightType=LT_Steady;
     } else {

@@ -172,7 +172,9 @@ function Tick(float delta)
         updateName();
     }
 
-    if(CanHeal()){
+    if (EMPHitPoints<=0){
+        LightType=LT_None;
+    } else if(CanHeal()){
         LightHue=89;
         LightType=LT_Steady;
     } else {
