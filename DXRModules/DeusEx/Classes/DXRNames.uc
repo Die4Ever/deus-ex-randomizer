@@ -69,9 +69,7 @@ static function GiveRandomName(DXRando dxr, ScriptedPawn p)
         (p.FamiliarName != p.UnfamiliarName && Right(p.tag, 6) == "_clone") // don't give clones the same famiiliar name
     ) {
         p.FamiliarName = RandomName(dxr);
-    } else if ( // assume at this point that familiar/unfamiliar names aren't real names if they're the same
-        p.FamiliarName == p.UnfamiliarName
-    ) {
+    } else if (p.FamiliarName == p.UnfamiliarName) { // assume at this point that familiar/unfamiliar names aren't real names if they're the same
         p.UnfamiliarName = RandomName(dxr);
         p.FamiliarName = p.UnfamiliarName;
     }
