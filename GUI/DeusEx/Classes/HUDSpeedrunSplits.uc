@@ -512,16 +512,42 @@ function string fmtTimeDiff(int diff)
 
 function int BalancedSplit(int m)
 {
-    local int balanced_split_time, goal;
+    local int i, balanced_split_time;
+    local int total_goal, average_total;
+    local int typical_split_time, typical_total_time;
     local float ratio_of_game;
 
-    goal = PB_total;
-    if(goal_time != 0) goal = goal_time;
-    if(goal == 0) return Golds[m];
-    if(sum_of_bests == 0) return PB[m];
+    total_goal = PB_total;
+    if(goal_time != 0) total_goal = goal_time;
+    for(i=0; i<ArrayCount(Avgs); i++) {
+        average_total += Avgs[i];
+        if(Avgs[i] < Golds[i]) {
+            // invalid average? need to check every split, so there are no inconsistencies with this function getting called for different missions
+            average_total = 0;
+            break;
+        }
+    }
 
-    ratio_of_game = float(Golds[m]) / float(sum_of_bests);
-    balanced_split_time = ratio_of_game * float(goal);
+    typical_split_time = Golds[m];
+    typical_total_time = sum_of_bests;
+
+    if(average_total > typical_total_time) {
+        typical_split_time = Avgs[m];
+        typical_total_time = average_total;
+    }
+
+    if(total_goal == 0) {
+        if(Avgs[m] > 0) return Avgs[m];
+        return Golds[m];
+    }
+    if(typical_total_time == 0) {
+        if(Avgs[m] > 0) return Avgs[m];
+        return PB[m];
+    }
+
+    ratio_of_game = float(typical_split_time) / float(typical_total_time);
+
+    balanced_split_time = ratio_of_game * float(total_goal);
     return balanced_split_time;
 }
 
