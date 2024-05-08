@@ -821,11 +821,12 @@ function SetLampState(#var(prefix)Lamp l, bool turnOn) // could maybe go in DXRL
 }
 
 // the Plane struct is repurposed here to describe a disk orthogonal to the xy-plane
-function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p, optional bool applyToMofiedMaps)
+function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p, optional bool applyToModifiedMaps)
 {
     local #var(prefix)Lamp l;
 
-    if (!applyToMofiedMaps && #defined(revision || gmdx)) return;
+    if (class'MenuChoice_AutoLamps'.default.enabled == false || (!applyToModifiedMaps && #defined(revision || gmdx)))
+        return;
 
     if (p.W == 0.0) {
         foreach AllActors(class'#var(prefix)Lamp', l) {
