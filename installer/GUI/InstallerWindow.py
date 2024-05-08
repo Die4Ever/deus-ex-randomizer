@@ -245,7 +245,7 @@ class InstallerWindow(GUIBase):
         self.FixColors(self.deus_nsf_d3d10_lighting)
         self.row+=1
 
-        self.globalsettings['d3d10_textures'] = self.Radios('Which EXE to use for vanilla:', 'Smooth', pad, pad, advanced=True,
+        self.globalsettings['d3d10_textures'] = self.Radios('Which method to use for D3D texture filtering:', 'Smooth', pad, pad, advanced=True,
             options=OrderedDict(
                 Retro={ 'text': "Deus_nsf D3D10 retro texture filtering", 'hover': "Tweaked D3D10 shaders for retro texture filtering.\nMay require more powerful hardware." },
                 Balanced={ 'text': "Deus_nsf D3D10 semi-retro texture filtering", 'hover': "Tweaked D3D10 shaders for semi-retro texture filtering.\nMay require more powerful hardware." },
