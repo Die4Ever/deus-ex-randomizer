@@ -6,6 +6,7 @@ try:
     import traceback
     import re
     from threading import Thread
+    from collections import OrderedDict
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -175,25 +176,28 @@ class InstallerWindow(GUIBase):
         self.flavors[f] = settings
 
 
+    def Radios(self, label, default, padx, pad, advanced:bool, options:OrderedDict):
+        var = StringVar(master=self.frame, value=default)
+
+        l = Label(self.frame, text=label)
+        self.setgrid(l, advanced, column=1,row=self.row, sticky='SW', padx=padx, pady=pad)
+        self.row += 1
+
+        for (k,v) in options.items():
+            r = Radiobutton(self.frame, text=v['text'], variable=var, value=k)
+            self.setgrid(r, advanced, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
+            self.FixColors(r)
+            Hovertip(r, v['hover'])
+            self.row += 1
+        return var
+
+
     def ExeTypeRadios(self, padx, pad):
-        exe = StringVar(master=self.frame, value='Kentie')
-
-        l = Label(self.frame, text="Which EXE to use for vanilla:")
-        self.setgrid(l, True, column=1,row=self.row, sticky='SW', padx=padx, pady=pad)
-        self.row += 1
-
-        r = Radiobutton(self.frame, text="Kentie's Launcher", variable=exe, value='Kentie')
-        self.setgrid(r, True, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
-        self.FixColors(r)
-        Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
-        self.row += 1
-
-        r = Radiobutton(self.frame, text="Hanfling's Launch", variable=exe, value='Launch')
-        self.setgrid(r, True, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
-        self.FixColors(r)
-        Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
-        self.row += 1
-        return exe
+        return self.Radios('Which EXE to use for vanilla:', 'Kentie', padx, pad, advanced=True,
+            options=OrderedDict(
+                Kentie={ 'text': "Kentie's Launcher", 'hover': "Kentie's Launcher stores configs and saves in your Documents folder." },
+                Launch={ 'text': "Hanfling's Launch", 'hover': "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play." },
+        ))
 
     def ZeroChangesCheckbox(self, padx, pady):
         # "Zero Changes" mode fixes
