@@ -330,7 +330,7 @@ def EngineDllFix(p:Path) -> bool:
 
 
 
-def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, deus_nsf_retro_textures:bool):
+def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, d3d10_textures:str):
     source = GetSourcePath()
     thirdparty = source / '3rdParty'
     info('CopyD3DRenderers from', thirdparty, ' to ', system)
@@ -343,7 +343,7 @@ def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, deus_nsf_retro_texture
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
 
-    if deus_nsf_lighting or deus_nsf_retro_textures:
+    if deus_nsf_lighting or d3d10_textures != 'Smooth':
         deus_nsf = system / 'd3d10drv'
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv')
         Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv_kentie')
@@ -352,9 +352,11 @@ def CopyD3DRenderers(system:Path, deus_nsf_lighting:bool, deus_nsf_retro_texture
         Copyd3d10drv(thirdparty / 'd3d10drv_deus_nsf', system / 'd3d10drv_deus_nsf')
         Copyd3d10drv(thirdparty / 'd3d10drv', system / 'd3d10drv')
 
-    if deus_nsf_retro_textures:
+    if d3d10_textures=='Retro':
         CopyTo(deus_nsf/'unrealpool_retro_textures.fxh', deus_nsf/'unrealpool.fxh')
-    else:
+    elif d3d10_textures=='Balanced':
+        CopyTo(deus_nsf/'unrealpool_balanced_textures.fxh', deus_nsf/'unrealpool.fxh')
+    elif d3d10_textures=='Smooth':
         CopyTo(deus_nsf/'unrealpool_smooth_textures.fxh', deus_nsf/'unrealpool.fxh')
 
 

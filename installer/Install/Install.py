@@ -83,7 +83,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
         EngineDllFix(system)
 
     CopyDXVK(system, globalsettings['dxvk'])
-    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['deus_nsf_d3d10_retro_textures'])
+    CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])
     InstallOGL2(system, globalsettings['ogl2'])
 
     debug("Install returning", flavors)
@@ -220,7 +220,7 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
             changes['DeusEx.DXRFlags'] = {}
         changes['DeusEx.DXRFlags'].update({'gamemode': '4'})
 
-    if globalsettings['deus_nsf_d3d10_lighting'] or globalsettings['deus_nsf_d3d10_retro_textures']:
+    if globalsettings['deus_nsf_d3d10_lighting'] or globalsettings['d3d10_textures'] != 'Smooth':
         # keep D3D10 because obviously they wanted it
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3D10Drv.D3D10RenderDevice'}
     elif IsWindows() and not globalsettings['dxvk']:
