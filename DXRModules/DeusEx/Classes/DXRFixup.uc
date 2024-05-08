@@ -826,18 +826,18 @@ function SetLampState(#var(prefix)Lamp lmp, bool turnOn) // could maybe go in DX
 // the Plane struct is repurposed here to describe a disk orthogonal to the xy-plane
 function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p, optional bool applyToModifiedMaps)
 {
-    local #var(prefix)Lamp l;
+    local #var(prefix)Lamp lmp;
 
     if (class'MenuChoice_AutoLamps'.default.enabled == false || (!applyToModifiedMaps && #defined(revision || gmdx)))
         return;
 
     if (p.W == 0.0) {
-        foreach AllActors(class'#var(prefix)Lamp', l) {
-            SetLampState(l, (Lamp1(l) != None && type1) || (Lamp2(l) != None && type2) || (Lamp3(l) != None && type3));
+        foreach AllActors(class'#var(prefix)Lamp', lmp) {
+            SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
         }
     } else {
-        foreach RadiusActors(class'#var(prefix)Lamp', l, p.W, p) {
-            SetLampState(l, (Lamp1(l) != None && type1) || (Lamp2(l) != None && type2) || (Lamp3(l) != None && type3));
+        foreach RadiusActors(class'#var(prefix)Lamp', lmp, p.W, p) {
+            SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
         }
     }
 }
