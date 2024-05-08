@@ -195,6 +195,8 @@ function CheckConfig()
 
 function PreFirstEntry()
 {
+    local #var(prefix)Lamp lmp;
+
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
@@ -206,6 +208,12 @@ function PreFirstEntry()
     SpawnDatacubes();
     AntiEpilepsy();
     SetAllLampsState(true, true, true,, true);
+    foreach AllActors(class'#var(prefix)Lamp', lmp) {
+        lmp.LightHue = lmp.Default.LightHue;
+        lmp.LightSaturation = lmp.Default.LightSaturation;
+        lmp.LightBrightness = lmp.Default.LightBrightness;
+        lmp.LightRadius = lmp.Default.LightRadius;
+    }
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -798,25 +806,20 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetLampState(#var(prefix)Lamp l, bool turnOn) // could maybe go in DXRLamp if it existed
+function SetLampState(#var(prefix)Lamp lmp, bool turnOn) // could maybe go in DXRLamp if it existed
 {
-    l.LightHue = l.Default.LightHue;
-    l.LightSaturation = l.Default.LightSaturation;
-    l.LightBrightness = l.Default.LightBrightness;
-    l.LightRadius = l.Default.LightRadius;
-
     if (turnOn) {
-        l.bOn = True;
-        l.LightType = LT_Steady;
-        // l.PlaySound(sound'Switch4ClickOn');
-        l.bUnlit = True;
-        l.ScaleGlow = 3.0;
-    } else if (l.bOn) {
-        l.bOn = False;
-        l.LightType = LT_None;
-        // l.PlaySound(sound'Switch4ClickOff');
-        l.bUnlit = False;
-        l.ResetScaleGlow();
+        lmp.bOn = True;
+        lmp.LightType = LT_Steady;
+        // lmp.PlaySound(sound'Switch4ClickOn');
+        lmp.bUnlit = True;
+        lmp.ScaleGlow = 3.0;
+    } else if (lmp.bOn) {
+        lmp.bOn = False;
+        lmp.LightType = LT_None;
+        // lmp.PlaySound(sound'Switch4ClickOff');
+        lmp.bUnlit = False;
+        lmp.ResetScaleGlow();
     }
 }
 
