@@ -368,12 +368,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
-
-        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
-            // Chet's name is Chet
-            hc.bImportant = true;
-        }
-
+        
         break;
     }
 }
