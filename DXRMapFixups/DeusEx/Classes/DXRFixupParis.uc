@@ -83,7 +83,7 @@ function PreFirstEntryMapFixes()
                 m.MoveTime = 1;
             }
 
-            SetAllLampsState(false, false, false); // surely Nicolette didn't leave all the lights on when she moved out
+            SetAllLampsState(false, false, false,, true); // surely Nicolette didn't leave all the lights on when she moved out
         }
         break;
     case "10_PARIS_METRO":

@@ -205,7 +205,7 @@ function PreFirstEntry()
     FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
-    SetAllLampsState(true, true, true);
+    SetAllLampsState(true, true, true,, true);
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -821,10 +821,11 @@ function SetLampState(#var(prefix)Lamp l, bool turnOn) // could maybe go in DXRL
 }
 
 // the Plane struct is repurposed here to describe a disk orthogonal to the xy-plane
-function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p)
+function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p, optional bool applyToMofiedMaps)
 {
-#ifdef vanilla
     local #var(prefix)Lamp l;
+
+    if (!applyToMofiedMaps && #defined(revision || gmdx)) return;
 
     if (p.W == 0.0) {
         foreach AllActors(class'#var(prefix)Lamp', l) {
@@ -835,9 +836,4 @@ function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p)
             SetLampState(l, (Lamp1(l) != None && type1) || (Lamp2(l) != None && type2) || (Lamp3(l) != None && type3));
         }
     }
-#endif
-}
-
-defaultproperties
-{
 }
