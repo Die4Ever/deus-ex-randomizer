@@ -835,7 +835,7 @@ function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector lo
             SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
         }
     } else {
-        foreach RadiusActors(class'#var(prefix)Lamp', lmp, rad, vectm(loc.x, loc.y, loc.z)) {
+        foreach RadiusActors(class'#var(prefix)Lamp', lmp, rad, loc * coords_mult) {
             SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
         }
     }
