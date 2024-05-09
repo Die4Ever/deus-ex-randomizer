@@ -207,7 +207,7 @@ function PreFirstEntry()
     FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
-    SetAllLampsState(true, true, true,, true);
+    SetAllLampsState(true, true, true,,, true);
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
         lmp.LightHue = lmp.Default.LightHue;
         lmp.LightSaturation = lmp.Default.LightSaturation;
@@ -823,20 +823,19 @@ function SetLampState(#var(prefix)Lamp lmp, bool turnOn) // could maybe go in DX
     }
 }
 
-// the Plane struct is repurposed here to describe a disk orthogonal to the xy-plane
-function SetAllLampsState(bool type1, bool type2, bool type3, optional Plane p, optional bool applyToModifiedMaps)
+function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad, optional bool applyToModifiedMaps)
 {
     local #var(prefix)Lamp lmp;
 
     if (class'MenuChoice_AutoLamps'.default.enabled == false || (!applyToModifiedMaps && #defined(revision || gmdx)))
         return;
 
-    if (p.W == 0.0) {
+    if (rad == 0.0) {
         foreach AllActors(class'#var(prefix)Lamp', lmp) {
             SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
         }
     } else {
-        foreach RadiusActors(class'#var(prefix)Lamp', lmp, p.W, p) {
+        foreach RadiusActors(class'#var(prefix)Lamp', lmp, rad, vectm(loc.x, loc.y, loc.z)) {
             SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
         }
     }

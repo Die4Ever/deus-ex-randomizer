@@ -18,7 +18,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local bool VanillaMaps;
-    local Plane p;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -83,7 +82,7 @@ function PreFirstEntryMapFixes()
                 m.MoveTime = 1;
             }
 
-            SetAllLampsState(false, false, false,, true); // surely Nicolette didn't leave all the lights on when she moved out
+            SetAllLampsState(false, false, false,,, true); // surely Nicolette didn't leave all the lights on when she moved out
         }
         break;
     case "10_PARIS_METRO":
@@ -124,11 +123,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
         Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
 
-        p.x = -1821.85;
-        p.y = -351.37;
-        p.z = -207.11;
-        p.w = 200.0;
-        SetAllLampsState(true, true, false, p); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
+        SetAllLampsState(true, true, false, vect(-1821.85, -351.37, -207.11), 200.0); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
 
         break;
     case "11_PARIS_UNDERGROUND":
