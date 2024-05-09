@@ -2,9 +2,10 @@ class MenuChoice_AutoLamps extends DXRMenuUIChoiceBool;
 
 defaultproperties
 {
-    defaultvalue=true
-    HelpText="Should lamps usually be on when you first enter a map?"
-    actionText="Lamps Start On"
-    enumText(0)="Off"
-    enumText(1)="On"
+    enabled=True
+    defaultvalue=True
+    HelpText="Should lamps start turned on where it logically makes sense?"
+    actionText="Lamps"
+    enumText(0)="On/Off As In the Original Game"
+    enumText(1)="Most Start On"
 }
