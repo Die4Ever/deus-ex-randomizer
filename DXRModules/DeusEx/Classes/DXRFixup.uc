@@ -207,7 +207,7 @@ function PreFirstEntry()
     FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
-    SetAllLampsState(true, true, true,,, true);
+    SetAllLampsState(true, true, true);
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
         lmp.LightHue = lmp.Default.LightHue;
         lmp.LightSaturation = lmp.Default.LightSaturation;
@@ -823,11 +823,11 @@ function SetLampState(#var(prefix)Lamp lmp, bool turnOn) // could maybe go in DX
     }
 }
 
-function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad, optional bool applyToModifiedMaps)
+function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad)
 {
     local #var(prefix)Lamp lmp;
 
-    if (class'MenuChoice_AutoLamps'.default.enabled == false || (!applyToModifiedMaps && #defined(revision || gmdx)))
+    if (class'MenuChoice_AutoLamps'.default.enabled == false || #defined(revision || gmdx))
         return;
 
     if (rad == 0.0) {
