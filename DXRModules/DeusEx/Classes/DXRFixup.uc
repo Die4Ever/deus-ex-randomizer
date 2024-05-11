@@ -833,11 +833,11 @@ function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector lo
 
     if (rad == 0.0) {
         foreach AllActors(class'#var(prefix)Lamp', lmp) {
-            SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
+            SetLampState(lmp, (#var(prefix)Lamp1(lmp) != None && type1) || (#var(prefix)Lamp2(lmp) != None && type2) || (#var(prefix)Lamp3(lmp) != None && type3));
         }
     } else {
         foreach RadiusActors(class'#var(prefix)Lamp', lmp, rad, loc * coords_mult) {
-            SetLampState(lmp, (Lamp1(lmp) != None && type1) || (Lamp2(lmp) != None && type2) || (Lamp3(lmp) != None && type3));
+            SetLampState(lmp, (#var(prefix)Lamp1(lmp) != None && type1) || (#var(prefix)Lamp2(lmp) != None && type2) || (#var(prefix)Lamp3(lmp) != None && type3));
         }
     }
 }
