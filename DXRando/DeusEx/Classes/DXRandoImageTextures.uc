@@ -22,3 +22,6 @@ class DXRandoImageTextures extends Object abstract;
 
 #exec TEXTURE IMPORT FILE="Textures\MenuRandoOptionsFiveChoice_1.pcx"	    NAME="MenuRandoOptionsFiveChoice_1"     GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\MenuRandoOptionsFiveChoice_2.pcx"	    NAME="MenuRandoOptionsFiveChoice_2"     GROUP="DXRandoImages"
+
+#exec TEXTURE IMPORT FILE="Textures\OpenDoorButtonLit.pcx"                  NAME="OpenDoorButtonLit"                GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\OpenDoorButtonUnlit.pcx"                NAME="OpenDoorButtonUnlit"              GROUP="DXRandoImages"

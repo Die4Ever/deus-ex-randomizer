@@ -43,6 +43,9 @@ function ReplaceActors()
         else if( #var(prefix)Keypad(a) != None ) {
             ReplaceKeypad(#var(prefix)Keypad(a));
         }
+        else if( #var(prefix)Button1(a) != None ) {
+            ReplaceButton1(#var(prefix)Button1(a));
+        }
         else if( #var(prefix)WHPiano(a) != None ) {
             ReplacePiano(#var(prefix)WHPiano(a));
         }
@@ -197,6 +200,23 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     ReplaceDeusExDecoration(a, n);
     a.Destroy();
 #endif
+}
+
+function ReplaceButton1(#var(prefix)Button1 a)
+{
+    local DXRButton1 n;
+    if(a.IsA('DXRButton1'))
+        return;
+
+    n = DXRButton1(SpawnReplacement(a, class'DXRButton1'));
+    if(n==None)
+        return;
+    n.ButtonType = a.ButtonType;
+    n.RandoButtonType=RBT_Vanilla; //Default to the vanilla button textures
+
+    ReplaceDeusExDecoration(a, n);
+    a.Destroy();
+    n.BeginPlay(); //Get the skins applied appropriately
 }
 
 function ReplaceFaucet(#var(prefix)Faucet a)
