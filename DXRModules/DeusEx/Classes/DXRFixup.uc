@@ -662,7 +662,7 @@ function SpawnDatacubes()
 #endif
 
         if( dc != None ){
-            dx.SetCollision(true,false,false);
+            dc.SetCollision(true,false,false);
             if(dxr.flags.settings.infodevices > 0)
                 GlowUp(dc);
             dc.plaintext = add_datacubes[i].text;
