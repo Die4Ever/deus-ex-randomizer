@@ -320,6 +320,31 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        //Added datacube with security computer login/password (LUCKYMONEY/REDARROW)
+
+        //Don't allow in the Quickstop
+        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].min_pos = vect(-169,254,-305);
+        datacubes_rules[i].max_pos = vect(443,650,-170);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Don't allow in the Freezer
+        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].min_pos = vect(-1841,-3203,-360);
+        datacubes_rules[i].max_pos = vect(-1393,-2420,-163);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "08_NYC_HOTEL":
         // The code to Paul's bookshelf stash
         datacubes_rules[i].item_name = '02_Datacube07';
@@ -575,11 +600,11 @@ static function RandoHackable(DXRando dxr, #var(prefix)HackableDevices h)
 
 function RandoInfoDevs(int percent)
 {
-    local #var(prefix)InformationDevices id;
+    local #var(injectsprefix)InformationDevices id;
 
     if(percent <= 0) return;
 
-    foreach AllActors(class'#var(prefix)InformationDevices', id)
+    foreach AllActors(class'#var(injectsprefix)InformationDevices', id)
     {
         if(!id.bHidden && id.Mesh == class'#var(prefix)DataCube'.default.Mesh)
             GlowUp(id);
@@ -589,7 +614,7 @@ function RandoInfoDevs(int percent)
     }
 }
 
-function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
+function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers)
 {
     local Inventory inv;
     local Containers c;
@@ -671,7 +696,7 @@ function MakeAllHackable(int deviceshackable)
     }
 }
 
-simulated function bool InfoDevsHasPass(#var(prefix)InformationDevices id, optional out int hasPass[64], optional out int numHasPass)
+simulated function bool InfoDevsHasPass(#var(injectsprefix)InformationDevices id, optional out int hasPass[64], optional out int numHasPass)
 {
     local DeusExTextParser parser;
     local int i;
@@ -737,7 +762,7 @@ simulated function ProcessStringHasPass(string text, out int hasPass[64], out in
     }
 }
 
-function bool CheckComputerPosition(#var(prefix)InformationDevices id, #var(prefix)Computers c, vector newpos, int hasPass[64])
+function bool CheckComputerPosition(#var(injectsprefix)InformationDevices id, #var(prefix)Computers c, vector newpos, int hasPass[64])
 {
     local int a, i;
 
@@ -757,7 +782,7 @@ function bool CheckComputerPosition(#var(prefix)InformationDevices id, #var(pref
     return True;
 }
 
-function bool CheckKeypadPosition(#var(prefix)InformationDevices id, #var(prefix)Keypad k, vector newpos, int hasPass[64])
+function bool CheckKeypadPosition(#var(injectsprefix)InformationDevices id, #var(prefix)Keypad k, vector newpos, int hasPass[64])
 {
     local int i;
 
@@ -772,18 +797,28 @@ function bool CheckKeypadPosition(#var(prefix)InformationDevices id, #var(prefix
     return True;
 }
 
-function bool InfoPositionGood(#var(prefix)InformationDevices id, vector newpos, int hasPass[64], int numHasPass)
+function bool InfoPositionGood(#var(injectsprefix)InformationDevices id, vector newpos, int hasPass[64], int numHasPass)
 {
     local #var(prefix)Computers c;
     local #var(prefix)Keypad k;
+    local name TextTag;
+    local String mapname;
     local int i;
 
-    i = GetSafeRule( datacubes_rules, id.textTag, newpos);
+    if (id.textTag!=''){
+        TextTag = id.textTag;
+    } else {
+        //Generate a text tag for cubes with plaintext isntead of TextTag
+        mapname = id.GetMapNameStripped();
+        TextTag = StringToName(mapname$"_"$ id.Crc());
+    }
+
+    i = GetSafeRule( datacubes_rules, TextTag, newpos);
     if( i != -1 ) return datacubes_rules[i].allow;
 
     if( VSize( id.Location - newpos ) > 5000 ) return False;
 
-    if ( id.textTag == '' ) {
+    if ( TextTag == '' ) {
         //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, no textTag");
         return True;
     }
