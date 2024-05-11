@@ -1,5 +1,8 @@
 class PersonaScreenInventory injects PersonaScreenInventory;
 
+var PersonaActionButtonWindow btnGarbage;
+var PersonaActionButtonWindow btnAutoconsume;
+
 function SelectInventory(PersonaItemButton buttonPressed)
 {
     Super.SelectInventory(buttonPressed);
@@ -128,4 +131,143 @@ event DescendantRemoved(Window descendant)
         }
     }
     Super.DescendantRemoved(descendant);
+}
+
+function CreateButtons()
+{
+	local PersonaButtonBarWindow winActionButtons;
+
+	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+	winActionButtons.SetPos(9, 339);
+	winActionButtons.SetWidth(267);
+
+	btnAutoconsume = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+	btnAutoconsume.SetButtonText("AutoUse");
+
+	btnGarbage = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+	btnGarbage.SetButtonText("Trash");
+
+	btnDrop = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+	btnDrop.SetButtonText(DropButtonLabel);
+
+	btnUse = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+	btnUse.SetButtonText(UseButtonLabel);
+
+	btnEquip = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+	btnEquip.SetButtonText(EquipButtonLabel);
+}
+
+function EnableButtons()
+{
+	local Inventory inv;
+
+	// Make sure all the buttons exist!
+	if ((btnAutoconsume == None) || (btnGarbage == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
+		return;
+
+	if (selectedItem == None) {
+		btnGarbage.DisableWindow();
+		btnDrop.DisableWindow();
+		btnEquip.DisableWindow();
+		btnUse.DisableWindow();
+        btnAutoconsume.DisableWindow();
+	} else {
+		btnGarbage.EnableWindow();
+		btnEquip.EnableWindow();
+		btnUse.EnableWindow();
+        btnAutoconsume.EnableWindow();
+		btnGarbage.EnableWindow();
+		btnDrop.EnableWindow();
+
+		inv = Inventory(selectedItem.GetClientObject());
+
+		if (inv != None) {
+			// Anything can be dropped, except the NanoKeyRing
+			btnDrop.EnableWindow();
+
+			if (inv.IsA('WeaponMod')) {
+				btnChangeAmmo.DisableWindow();
+				btnUse.DisableWindow();
+		        btnAutoconsume.DisableWindow();
+			} else if (inv.IsA('NanoKeyRing')) {
+				btnChangeAmmo.DisableWindow();
+				btnDrop.DisableWindow();
+				btnEquip.DisableWindow();
+				btnUse.DisableWindow();
+		        btnAutoconsume.DisableWindow();
+                btnGarbage.EnableWindow();
+			}
+			// Augmentation Upgrade Cannisters cannot be used
+			// on this screen
+			else if ( inv.IsA('AugmentationUpgradeCannister') ) {
+				btnUse.DisableWindow();
+		        btnAutoconsume.DisableWindow();
+				btnChangeAmmo.DisableWindow();
+			}
+			// Ammo can't be used or equipped
+			else if ( inv.IsA('Ammo') ) {
+				btnUse.DisableWindow();
+		        btnAutoconsume.DisableWindow();
+				btnEquip.DisableWindow();
+                btnGarbage.DisableWindow();
+			} else {
+				if ((inv == player.inHand ) || (inv == player.inHandPending))
+					btnEquip.SetButtonText(UnequipButtonLabel);
+				else
+					btnEquip.SetButtonText(EquipButtonLabel);
+			}
+		}
+		else {
+			btnChangeAmmo.DisableWindow();
+			btnDrop.DisableWindow();
+			btnEquip.DisableWindow();
+			btnUse.DisableWindow();
+		    btnAutoconsume.DisableWindow();
+		}
+
+        if (
+            SoyFood(inv) == None &&
+            Candybar(inv) == None &&
+            Sodacan(inv) == None &&
+            LiquorBottle(inv) == None &&
+            Liquor40oz(inv) == None &&
+            WineBottle(inv) == None
+            // anyone ignorant enough to do this with cigarettes/zyme needs to be stopped
+        ) {
+            btnAutoconsume.DisableWindow();
+        }
+	}
+}
+
+function bool ButtonActivated(Window buttonPressed)
+{
+    local bool ret;
+
+    if (buttonPressed == btnGarbage) {
+        Garbage();
+        return true;
+    }
+    if (buttonPressed == btnAutoconsume) {
+        Autoconsume();
+        return true;
+    }
+
+    ret = Super.ButtonActivated(buttonPressed);
+    if (PersonaAmmoDetailButton(buttonPressed) != None) {
+        btnDrop.DisableWindow();
+        btnGarbage.DisableWindow();
+        btnEquip.DisableWindow();
+        btnUse.DisableWindow();
+        btnAutoconsume.DisableWindow();
+    }
+    return ret;
+}
+
+function Garbage()
+{
+    player.ClientMessage("ButtonActivated trash button pressed");
+}
+
+function Autoconsume() {
+    player.ClientMessage("ButtonActivated autouse button pressed");
 }
