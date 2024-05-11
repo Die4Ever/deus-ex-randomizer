@@ -450,7 +450,8 @@ function VandenbergCmdFixTimsDoor()
 //Add a new button in the elevator to open the doors
 function FixCmdElevator()
 {
-    local #var(prefix)Button1 doorButton,butt;
+    local #var(injectsprefix)Button1 doorButton;
+    local #var(prefix)Button1 butt;
     local Dispatcher d;
     local Trigger t;
     local Vector loc;
@@ -468,8 +469,9 @@ function FixCmdElevator()
     loc = butt.Location;
     loc.Z += 7; //Three buttons are 7 apart from each other on Y axis, so put this one equally above
 
-    doorButton = Spawn(class'#var(prefix)Button1',,,loc,rot);
+    doorButton = Spawn(class'#var(injectsprefix)Button1',,,loc,rot);
     doorButton.moverTag = butt.moverTag;
+    doorButton.RandoButtonType=RBT_OpenDoors;
     doorButton.ButtonType=BT_Blank;
     doorButton.Event='all_doors_button';
     doorButton.BeginPlay();

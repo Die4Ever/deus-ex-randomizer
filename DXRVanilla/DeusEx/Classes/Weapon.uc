@@ -812,7 +812,9 @@ function DropFrom(vector StartLocation)
         oldAmmo = PickupAmmoCount;
     }
     Super.DropFrom(StartLocation);
-    PickupAmmoCount = oldAmmo;
+    if(oldAmmo > 0) {
+        PickupAmmoCount = oldAmmo;
+    }
 }
 
 // vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0

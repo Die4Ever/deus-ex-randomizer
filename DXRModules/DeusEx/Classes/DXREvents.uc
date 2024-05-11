@@ -554,6 +554,8 @@ function SetWatchFlags() {
         break;
     case "05_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
+        bt.Tag='SavedMiguel';
+
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
 
         break;
@@ -1511,6 +1513,14 @@ simulated function AnyEntry()
         for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
             DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
         }
+        break;
+    case "05_NYC_UNATCOISLAND":
+        //Add a trigger event to hit the SavedMiguel bingo trigger
+        conv = GetConversation('MiguelHack');
+        ce = conv.GetEventFromLabel("Hop");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;
+        ConEventTrigger(ce).triggerTag = 'SavedMiguel';
         break;
     }
 }
@@ -3238,11 +3248,13 @@ defaultproperties
 #ifdef vanilla
     bingo_options(213)=(event="BethsPainting",desc="Admire Beth DuClare's favourite painting",max=1,missions=1024)
 #endif
+#ifndef hx
     bingo_options(214)=(event="ViewPortraits",desc="Look at %s portraits",max=2,missions=4890)
     bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
     bingo_options(216)=(event="ViewMaps",desc="View %s maps",max=6,missions=56686)
     bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
     bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist picture",max=1,missions=2576)
+#endif
     bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
     bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
     bingo_options(221)=(event="12_Email04",desc="Read a motivational email from Gary",max=1,missions=4096)

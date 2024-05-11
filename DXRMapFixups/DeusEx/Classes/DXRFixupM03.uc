@@ -35,6 +35,7 @@ function PostFirstEntryMapFixes()
             AddActor(class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60));
             AddActor(class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75));
         }
+        SetAllLampsState(true, true, false); // this map has one desk lamp, in an office no one is in
         break;
     }
 }
@@ -368,12 +369,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
-
-        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
-            // Chet's name is Chet
-            hc.bImportant = true;
-        }
-
+        
         break;
     }
 }

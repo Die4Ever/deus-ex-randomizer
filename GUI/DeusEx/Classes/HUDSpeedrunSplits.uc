@@ -12,6 +12,7 @@ var config Font  textfont;
 var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
 var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB, showSpeed, showAllSplits;
+var config bool showAverage, useAverageGoal;
 
 var config int PB[16];
 var config int Golds[16];
@@ -23,7 +24,7 @@ var config string title, subtitle, footer;
 var string ttitle, tsubtitle, tfooter;
 
 var int balanced_splits[16], balanced_splits_totals[16];
-var int PB_total, sum_of_bests;
+var int PB_total, sum_of_bests, average_total;
 
 var config string split_names[16];
 
@@ -132,6 +133,13 @@ function InitStats(DXRStats newstats)
     for(i=1; i<=15; i++) {
         PB_total += PB[i];
         sum_of_bests += Golds[i];
+    }
+    for(i=1; i<=15; i++) {
+        if(Avgs[i] < Golds[i]) {
+            if(PB[i] > Golds[i]) Avgs[i] = PB[i];
+            else Avgs[i] = Golds[i];
+        }
+        average_total += Avgs[i];
     }
     for(i=1; i<=15; i++) {
         balanced_splits[i] = BalancedSplit(i);
@@ -250,7 +258,7 @@ function DrawWindow(GC gc)
 {
     local int i, prev, prevprev, cur, curTime, next, time, total, prevTotal;
     local float x, y, f, delta;
-    local string msg, s;
+    local string msg, msg2;
     local Color cmpColor;
 
     if(stats == None) return;
@@ -333,9 +341,9 @@ function DrawWindow(GC gc)
     // current segment time with comparison
     if(showSeg) {
         msg = fmtTimeSeg(curTime);
-        s = "/ " $ fmtTimeSeg(balanced_splits[cur]) $ " / " $ fmtTimeSeg(Golds[cur]);
+        msg2 = "/ " $ fmtTimeSeg(balanced_splits[cur]) $ " / " $ fmtTimeSeg(Golds[cur]);
         cmpColor = GetCmpColor(curTime, balanced_splits[cur], prevTotal, balanced_splits_totals[prev], Golds[cur]);
-        DrawTextLine(gc, "SEG:", msg, cmpColor, x, y, s, true);
+        DrawTextLine(gc, "SEG:", msg, cmpColor, x, y, msg2, true);
         y += text_height;
     }
 
@@ -344,6 +352,13 @@ function DrawWindow(GC gc)
         msg = fmtTime(total);
         cmpColor = GetCmpColor(prevTotal, balanced_splits_totals[prev], curTime, balanced_splits[cur]);
         DrawTextLine(gc, "CUR:", msg, cmpColor, x, y, "", true);
+        y += text_height;
+    }
+
+    if(showAverage) {
+        msg = fmtTimeSeg(Avgs[cur]);
+        msg2 = "/ " $ fmtTime(average_total);
+        DrawTextLine(gc, "AVG:", msg, colorText, x, y, msg2, true);
         y += text_height;
     }
 
@@ -356,9 +371,9 @@ function DrawWindow(GC gc)
         avgSpeed -= avgSpeed * delta;
         avgSpeed += f * delta;
         msg = stats.FloatToString(FMax(f, prevSpeed), 1);
-        s = stats.FloatToString(avgSpeed, 1);
+        msg2 = stats.FloatToString(avgSpeed, 1);
         prevSpeed = f;
-        DrawTextLine(gc, "SPD:", msg, colorText, x, y, s, true);
+        DrawTextLine(gc, "SPD:", msg, colorText, x, y, msg2, true);
         y += text_height;
     }
 
@@ -512,16 +527,37 @@ function string fmtTimeDiff(int diff)
 
 function int BalancedSplit(int m)
 {
-    local int balanced_split_time, goal;
+    local int i, balanced_split_time;
+    local int total_goal;
+    local int typical_split_time, typical_total_time;
     local float ratio_of_game;
 
-    goal = PB_total;
-    if(goal_time != 0) goal = goal_time;
-    if(goal == 0) return Golds[m];
-    if(sum_of_bests == 0) return PB[m];
+    total_goal = PB_total;
+    if(goal_time != 0) total_goal = goal_time;
+    if(useAverageGoal && average_total > 0 && (average_total < goal_time || goal_time==0)) {
+        total_goal = average_total;
+    }
 
-    ratio_of_game = float(Golds[m]) / float(sum_of_bests);
-    balanced_split_time = ratio_of_game * float(goal);
+    typical_split_time = Golds[m];
+    typical_total_time = sum_of_bests;
+
+    if(average_total > typical_total_time) {
+        typical_split_time = Avgs[m];
+        typical_total_time = average_total;
+    }
+
+    if(total_goal == 0) {
+        if(Avgs[m] > 0) return Avgs[m];
+        return Golds[m];
+    }
+    if(typical_total_time == 0) {
+        if(Avgs[m] > 0) return Avgs[m];
+        return PB[m];
+    }
+
+    ratio_of_game = float(typical_split_time) / float(typical_total_time);
+
+    balanced_split_time = ratio_of_game * float(total_goal);
     return balanced_split_time;
 }
 

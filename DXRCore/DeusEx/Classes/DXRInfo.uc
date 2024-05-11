@@ -62,6 +62,9 @@ simulated final function #var(PlayerPawn) player(optional bool quiet)
     p = dxr.Player;
     if( p == None ) {
         p = #var(PlayerPawn)(GetPlayerPawn());
+        if(p==None){ //If GetPlayerPawn() didn't work (probably in HX)
+            foreach AllActors(class'#var(PlayerPawn)', p){break;}
+        }
         dxr.Player = p;
     }
     if( p == None && !quiet ) warning("player() found None");

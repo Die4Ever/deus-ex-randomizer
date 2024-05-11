@@ -117,7 +117,6 @@ function _DropItems(Name classname, vector offset, vector velocity)
 function DropKeys()
 {
     _DropItems('NanoKey', vect(0,0,80), vect(-0.2, -0.2, 1) );
-    SetCollision(true,true,bBlockPlayers);
 }
 
 function Destroyed()

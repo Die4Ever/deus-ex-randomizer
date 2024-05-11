@@ -385,6 +385,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector l
     d = SpawnDatacubePlaintext(locnorm.loc, Rotator(locnorm.norm),
         c.UserList[0].userName $ " password is " $ c.UserList[0].Password);
 
+    d.SetCollision(true,false,false);
     d.new_passwords[0] = c.UserList[0].Password;
 
     return d;
@@ -532,6 +533,7 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, i
 
     d = #var(prefix)Datacube(SpawnNewActor(class'#var(prefix)Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;
+    d.SetCollision(true,false,false);
     d.TextPackage = "#var(package)";
     d.textTag = datacubeTag;
     d.bAddToVault = false;

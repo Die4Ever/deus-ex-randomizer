@@ -145,6 +145,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local bool VanillaMaps;
     local ScriptedPawn pawn;
+    local #var(prefix)LaserTrigger lt;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -237,6 +238,17 @@ function PreFirstEntryMapFixes()
             oot = Spawn(class'OnceOnlyTrigger');
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
+            SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
             break;
+
+        case "08_NYC_FREECLINIC":
+            SetAllLampsState(true, true, false); // the free clinic has one desk lamp, at a desk no one is using
+            break;
+        case "08_NYC_UNDERGROUND":
+            foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+                if (lt.Location.Z < -574 && lt.Location.Z > -575){
+                    lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in missions 2 and 4, so you can crouch under
+                }
+            }
     }
 }

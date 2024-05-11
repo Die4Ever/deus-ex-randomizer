@@ -6,6 +6,7 @@ try:
     import traceback
     import re
     from threading import Thread
+    from collections import OrderedDict
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -175,25 +176,28 @@ class InstallerWindow(GUIBase):
         self.flavors[f] = settings
 
 
+    def Radios(self, label, default, padx, pad, advanced:bool, options:OrderedDict):
+        var = StringVar(master=self.frame, value=default)
+
+        l = Label(self.frame, text=label)
+        self.setgrid(l, advanced, column=1,row=self.row, sticky='SW', padx=padx, pady=pad)
+        self.row += 1
+
+        for (k,v) in options.items():
+            r = Radiobutton(self.frame, text=v['text'], variable=var, value=k)
+            self.setgrid(r, advanced, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
+            self.FixColors(r)
+            Hovertip(r, v['hover'])
+            self.row += 1
+        return var
+
+
     def ExeTypeRadios(self, padx, pad):
-        exe = StringVar(master=self.frame, value='Kentie')
-
-        l = Label(self.frame, text="Which EXE to use for vanilla:")
-        self.setgrid(l, True, column=1,row=self.row, sticky='SW', padx=padx, pady=pad)
-        self.row += 1
-
-        r = Radiobutton(self.frame, text="Kentie's Launcher", variable=exe, value='Kentie')
-        self.setgrid(r, True, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
-        self.FixColors(r)
-        Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
-        self.row += 1
-
-        r = Radiobutton(self.frame, text="Hanfling's Launch", variable=exe, value='Launch')
-        self.setgrid(r, True, column=1,row=self.row, sticky='SW', padx=padx+pad*6, pady=pad)
-        self.FixColors(r)
-        Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
-        self.row += 1
-        return exe
+        return self.Radios('Which EXE to use for vanilla:', 'Kentie', padx, pad, advanced=True,
+            options=OrderedDict(
+                Kentie={ 'text': "Kentie's Launcher", 'hover': "Kentie's Launcher stores configs and saves in your Documents folder." },
+                Launch={ 'text': "Hanfling's Launch", 'hover': "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play." },
+        ))
 
     def ZeroChangesCheckbox(self, padx, pady):
         # "Zero Changes" mode fixes
@@ -235,18 +239,18 @@ class InstallerWindow(GUIBase):
             self.globalsettings['dxvk'] = DummyCheckbox()
 
         self.globalsettings['deus_nsf_d3d10_lighting'] = BooleanVar(master=self.frame, value=False)
-        self.deus_nsf_d3d10_lighting = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10 vivid lighting", variable=self.globalsettings['deus_nsf_d3d10_lighting'])
+        self.deus_nsf_d3d10_lighting = Checkbutton(self.frame, text="Deus_nsf D3D10 vivid lighting", variable=self.globalsettings['deus_nsf_d3d10_lighting'])
         Hovertip(self.deus_nsf_d3d10_lighting, "Tweaked D3D10 shaders for more vivid lighting.\nMay require more powerful hardware.")
         self.setgrid(self.deus_nsf_d3d10_lighting, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.deus_nsf_d3d10_lighting)
         self.row+=1
 
-        self.globalsettings['deus_nsf_d3d10_retro_textures'] = BooleanVar(master=self.frame, value=False)
-        self.deus_nsf_d3d10_retro_textures = Checkbutton(self.frame, text="Deus_nsf tweaked D3D10 retro texture filtering", variable=self.globalsettings['deus_nsf_d3d10_retro_textures'])
-        Hovertip(self.deus_nsf_d3d10_retro_textures, "Tweaked D3D10 shaders for retro texture filtering.\nMay require more powerful hardware.")
-        self.setgrid(self.deus_nsf_d3d10_retro_textures, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
-        self.FixColors(self.deus_nsf_d3d10_retro_textures)
-        self.row+=1
+        self.globalsettings['d3d10_textures'] = self.Radios('Which method to use for D3D10 texture filtering:', 'Smooth', pad, pad, advanced=True,
+            options=OrderedDict(
+                Retro={ 'text': "Deus_nsf D3D10 retro texture filtering", 'hover': "Tweaked D3D10 shaders for retro texture filtering.\nMay require more powerful hardware." },
+                Balanced={ 'text': "Deus_nsf D3D10 semi-retro texture filtering", 'hover': "Tweaked D3D10 shaders for semi-retro texture filtering.\nMay require more powerful hardware." },
+                Smooth={ 'text': "D3D10 normal smooth texture filtering", 'hover': "Typical D3D10 shaders for texture filtering." },
+        ))
 
         self.globalsettings['ogl2'] = BooleanVar(master=self.frame, value=self.ogl2_default)
         self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.globalsettings['ogl2'])

@@ -255,11 +255,6 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
-        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
-            // Chet's name is Chet
-            hc.bImportant = true;
-        }
-
         if(IsAprilFools()) {
             Spawnm(class'MahoganyDesk',,, vect(646.848999, 1524.899902, 263.097137), rot(0, -16384, 0));
         }
@@ -312,6 +307,7 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+        SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         break;
     }
 }

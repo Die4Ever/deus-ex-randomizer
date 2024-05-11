@@ -75,9 +75,9 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'#var(prefix)MJ12Troop', mj12, 'Cellguard') {
             mj12.bImportant = true;
-            mj12.UnfamiliarName = "Rick";
-            mj12.FamiliarName = "Rick";
-            mj12.BindName = "MJ12CellguardRick";
+            mj12.UnfamiliarName = class'DXRNames'.static.RandomName(dxr);
+            mj12.FamiliarName = mj12.UnfamiliarName;
+            mj12.BindName = "MJ12CellguardRick"; // he's still Rick in our hearts
         }
 
         //Anna hates weapons (why?) in Revision, but can't hurt to set it for all mods
@@ -184,11 +184,6 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(1153,1024,-16),,'Sitting');
             class'PlaceholderEnemy'.static.Create(self,vectm(1885,-279,-16),,'Sitting');
 
-        }
-
-        foreach AllActors(class'#var(prefix)HumanCivilian', hc, 'LDDPChet') {
-            // Chet's name is Chet
-            hc.bImportant = true;
         }
 
         break;

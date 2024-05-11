@@ -617,6 +617,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.skill_value_rando = 80;
         // TODO: maybe +1 speed? or starting with 2?
         settings.speedlevel = Clamp(settings.speedlevel, 1, 4);
+        // slightly more starting equipment
+        settings.equipment += 1;
         // speedrunners, please install augs
         moresettings.empty_medbots *= 1.5;
     }

@@ -380,7 +380,6 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     if(player != None) {
         if (item.IsA('ChargedPickup'))
             ChargedPickup(item).ChargedPickupEnd(player);
-        player.DeleteInventory(item);
     }
 
     for(i=0; i<100; i++) {

@@ -486,6 +486,9 @@ function QueryLeaderboard()
     js.static.Add(j, "flagshash", dxr.flags.FlagsHash());
     js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
     js.static.Add(j, "PlayerName", class'DXRActorsBase'.static.GetActorName(dxr.player));
+    js.static.Add(j, "GameMode", dxr.flags.gamemode);
+    js.static.Add(j, "GameModeName", dxr.flags.GameModeName(dxr.flags.gamemode));
+    js.static.Add(j, "difficulty", dxr.flags.difficulty);
     js.static.End(j);
 
     l("QueryLeaderboard(): "$j);
