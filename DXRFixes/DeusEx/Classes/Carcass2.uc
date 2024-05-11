@@ -23,3 +23,28 @@ simulated function PostPostBeginPlay()
     if(Mesh3 != None)
         SetMesh3(Mesh3);
 }
+
+function ZoneChange(ZoneInfo NewZone)
+{
+    if(Mesh3 != None)
+        SetMesh3(Mesh3);
+
+    Super.ZoneChange(NewZone);
+
+    //Make sure it updates with the Mesh3 from this class
+    if (NewZone.bWaterZone)
+        Mesh = Mesh3;
+}
+
+function InitFor(Actor Other)
+{
+    if(Mesh2 != None)
+        SetMesh2(Mesh2);
+
+    Super.InitFor(Other);
+
+    //Make sure it updates with the Mesh2 from this class
+    if (Other.AnimSequence == 'DeathFront')
+        Mesh = Mesh2;
+
+}
