@@ -13,3 +13,13 @@ simulated function PreBeginPlay()
     if(Mesh3 != None)
         SetMesh3(Mesh3);
 }
+
+//Fixes carcasses disappearing after loading a game
+simulated function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+    if(Mesh2 != None)
+        SetMesh2(Mesh2);
+    if(Mesh3 != None)
+        SetMesh3(Mesh3);
+}
