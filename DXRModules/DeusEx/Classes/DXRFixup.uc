@@ -207,13 +207,9 @@ function PreFirstEntry()
     FixBeamLaserTriggers();
     SpawnDatacubes();
     AntiEpilepsy();
+
+    foreach AllActors(class'#var(prefix)Lamp', lmp) lmp.InitLight();
     SetAllLampsState(true, true, true);
-    foreach AllActors(class'#var(prefix)Lamp', lmp) {
-        lmp.LightHue = lmp.Default.LightHue;
-        lmp.LightSaturation = lmp.Default.LightSaturation;
-        lmp.LightBrightness = lmp.Default.LightBrightness;
-        lmp.LightRadius = lmp.Default.LightRadius;
-    }
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -671,7 +667,6 @@ function SpawnDatacubes()
 #endif
 
         if( dc != None ){
-            dc.SetCollision(true,false,false);
             if(dxr.flags.settings.infodevices > 0)
                 GlowUp(dc);
             dc.plaintext = add_datacubes[i].text;
@@ -807,23 +802,6 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetLampState(#var(prefix)Lamp lmp, bool turnOn) // could maybe go in DXRLamp if it existed
-{
-    if (turnOn) {
-        lmp.bOn = True;
-        lmp.LightType = LT_Steady;
-        // lmp.PlaySound(sound'Switch4ClickOn');
-        lmp.bUnlit = True;
-        lmp.ScaleGlow = 3.0;
-    } else if (lmp.bOn) {
-        lmp.bOn = False;
-        lmp.LightType = LT_None;
-        // lmp.PlaySound(sound'Switch4ClickOff');
-        lmp.bUnlit = False;
-        lmp.ResetScaleGlow();
-    }
-}
-
 function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad)
 {
     local #var(prefix)Lamp lmp;
@@ -833,11 +811,19 @@ function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector lo
 
     if (rad == 0.0) {
         foreach AllActors(class'#var(prefix)Lamp', lmp) {
-            SetLampState(lmp, (#var(prefix)Lamp1(lmp) != None && type1) || (#var(prefix)Lamp2(lmp) != None && type2) || (#var(prefix)Lamp3(lmp) != None && type3));
+            lmp.SetState(
+                (Lamp1(lmp) != None && type1) ||
+                (Lamp2(lmp) != None && type2) ||
+                (Lamp3(lmp) != None && type3)
+            );
         }
     } else {
         foreach RadiusActors(class'#var(prefix)Lamp', lmp, rad, loc * coords_mult) {
-            SetLampState(lmp, (#var(prefix)Lamp1(lmp) != None && type1) || (#var(prefix)Lamp2(lmp) != None && type2) || (#var(prefix)Lamp3(lmp) != None && type3));
+            lmp.SetState(
+                (Lamp1(lmp) != None && type1) ||
+                (Lamp2(lmp) != None && type2) ||
+                (Lamp3(lmp) != None && type3)
+            );
         }
     }
 }
