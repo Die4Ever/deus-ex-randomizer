@@ -15,11 +15,8 @@ function InitLight()
     if (lt == None) {
         lt = Spawn(class'DynamicLight');
 
-        lt.SetPhysics(PHYS_None);
-        lt.SetCollisionSize(0.0, 0.0);
-
         loc = Location;
-        loc.z += CollisionHeight * 1.47;
+        loc.z += CollisionHeight * 1.35;
         lt.SetLocation(loc);
 
         lt.LightHue=44;
@@ -27,8 +24,6 @@ function InitLight()
         lt.LightBrightness = 255;
         // increasing the radius to 25 causes weird flickering on a couch in the Free Clinic, probably elsewhere
         lt.LightRadius = 20;
-
-        lt.Mesh = None;
     }
 
     SetState(bOn);
