@@ -974,6 +974,50 @@ simulated function CreateBingoBoard()
     _CreateBingoBoard(data, dxr.flags.settings.starting_map, dxr.flags.bingo_duration);
 }
 
+// a nice, convenient function to test a specific goal
+function bool AddTestGoal(
+    PlayerDataItem data,
+    string event,
+    int boardIdx,
+    optional int max,
+    optional int starting_mission,
+    optional int masked_missions
+)
+{
+    local BingoOption option;
+    local int bingoIdx;
+    local string desc;
+    local float f;
+
+    if (event == "") return false;
+    for (bingoIdx = 0; bingoIdx < ArrayCount(bingo_options); bingoIdx++)
+        if (bingo_options[bingoIdx].event == event) break;
+    if (bingoIdx == ArrayCount(bingo_options)) return false;
+
+    if (max == 0) {
+        max = bingo_options[bingoIdx].max;
+        desc = bingo_options[bingoIdx].desc;
+        f = float(dxr.flags.bingo_scale)/100.0;
+        f = rngrange(f, 0.8, 1);// 80% to 100%
+        f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
+        max = Ceil(float(max) * f);
+        max = self.Max(max, 1);
+    }
+    desc = sprintf(bingo_options[bingoIdx].desc, max);
+
+    data.SetBingoSpot(
+        boardIdx % 5,
+        boardIdx / 5,
+        bingo_options[bingoIdx].event,
+        desc,
+        0,
+        max,
+        bingo_options[bingoIdx].missions
+    );
+
+    return true;
+}
+
 simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
 {
     local int x, y, i;
@@ -982,7 +1026,6 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local bool bPossible;
     local float f;
-    // local int testGoal;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(starting_map);
@@ -1080,16 +1123,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         break;
     }
 
-    /* testGoal = some goal index;
-    data.SetBingoSpot(
-        0,
-        0,
-        bingo_options[testGoal].event,
-        bingo_options[testGoal].desc,
-        0,
-        bingo_options[testGoal].max,
-        bingo_options[testGoal].missions
-    ); */
+    // AddTestGoal(data, "some_event", 0);
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {

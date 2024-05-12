@@ -114,6 +114,21 @@ simulated function int GetBingoSpot(
     return class'DXREvents'.static.BingoActiveMission(currentMission, GetBingoMissionMask(x,y));
 }
 
+function int GetBingoProgress(string event, optional out int max)
+ {
+    local int x, y, progress;
+
+    for (x = 0; x < 5; x++) {
+        for (y = 0; y < 5; y++) {
+            GetBingoSpot(x, y, event,, progress, max);
+            return progress;
+        }
+    }
+
+    max = 1024;
+    return 0;
+ }
+
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
 {
     bingo[x*5+y].event = event;
