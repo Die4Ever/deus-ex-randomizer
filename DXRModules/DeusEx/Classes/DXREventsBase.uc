@@ -32,7 +32,11 @@ simulated function string tweakBingoDescription(string event, string desc);
 function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
-static function int GetBingoFailedGoals(DXRando dxr, string eventname, out string failed[5]);
+
+// for goals that can be detected as impossible by an event
+static function int GetBingoFailedEvents(DXRando dxr, string eventname, out string failed[5]);
+// for goals that can not be detected as impossible by an event
+function MarkBingoFailedSpecial();
 
 function AddWatchedActor(Actor a,String eventName)
 {
@@ -74,6 +78,8 @@ function PreFirstEntry()
             SetWatchFlags();
             break;
     }
+
+    MarkBingoFailedSpecial();
 }
 
 function PostFirstEntry()
@@ -490,7 +496,7 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
     }
 
     _MarkBingo(eventname);
-    MarkAllFailedBingoGoals(dxr, eventname);
+    MarkBingoFailedEvents(dxr, eventname);
 
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
@@ -699,7 +705,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    MarkAllFailedBingoGoals(dxr, victim.bindName $ "_Dead");
+    MarkBingoFailedEvents(dxr, victim.bindName $ "_Dead");
 
     if(!victim.bImportant)
         return;
@@ -1123,7 +1129,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         break;
     }
 
-    // AddTestGoal(data, "some_event", 0);
+    // AddTestGoal(data, "some_goal", 0);
+    // AddTestGoal(data, "some_other_goal", 1);
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
@@ -1265,7 +1272,7 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.MarkBingoAsFailed(eventname)) {
+    if (data.MarkBingoAsFailed(eventname) && (!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0)) {
         l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }
@@ -1280,15 +1287,16 @@ static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
     }
 }
 
-static function MarkAllFailedBingoGoals(DXRando dxr, coerce string eventname)
+static function MarkBingoFailedEvents(DXRando dxr, coerce string eventname)
 {
     local string failed[5];
     local int i, num_failed;
 
-    num_failed = class'DXREvents'.static.GetBingoFailedGoals(dxr, eventname, failed);
+    num_failed = GetBingoFailedEvents(dxr, eventname, failed);
     for (i = 0; i < num_failed; i++) {
         MarkBingoAsFailed(dxr, failed[i]);
     }
+
 }
 
 function bool _IsBingoFailed(coerce string eventname)

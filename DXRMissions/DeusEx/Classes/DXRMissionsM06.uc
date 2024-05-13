@@ -282,11 +282,3 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.actors[1].a = Spawnm(class'MahoganyDesk',,,Loc.positions[1].pos, Loc.positions[1].rot);
     }
 }
-
-function PreFirstEntryMapFixes()
-{
-    if (dxr.localURL == "06_HONGKONG_HELIBASE") {
-        FailIfCorpseNotHeld("TerroristCommander");
-        FailIfCorpseNotHeld("PaulDenton");
-    }
-}

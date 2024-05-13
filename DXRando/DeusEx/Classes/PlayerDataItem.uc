@@ -116,12 +116,12 @@ simulated function int GetBingoSpot(
 
 function int GetBingoProgress(string event, optional out int max)
  {
-    local int x, y, progress;
+    local int i, progress;
 
-    for (x = 0; x < 5; x++) {
-        for (y = 0; y < 5; y++) {
-            GetBingoSpot(x, y, event,, progress, max);
-            return progress;
+    for (i = 0; i < ArrayCount(bingo); i++) {
+        if (bingo[i].event == event) {
+            max = bingo[i].max;
+            return bingo[i].progress;
         }
     }
 
@@ -185,7 +185,7 @@ simulated function bool IsBingoFailed(string event)
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
         if(bingo[i].event != event) continue;
-        return bingo_missions_masks[i] == FAILED_MISSION_MASK; // TODO: actually check if it can't be completed, instead of just marked as failed?
+        return bingo_missions_masks[i] == FAILED_MISSION_MASK;
     }
     return false;
 }

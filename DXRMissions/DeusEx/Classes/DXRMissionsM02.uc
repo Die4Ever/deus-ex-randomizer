@@ -225,7 +225,6 @@ function PreFirstEntryMapFixes()
             anna.HomeRot = vector(anna.Rotation);
         }
         ReplaceBatteryParkSubwayTNT();
-        FailIfCorpseNotHeld("TerroristCommander");
     }
 
     if (RevisionMaps && dxr.localURL=="02_NYC_WAREHOUSE"){

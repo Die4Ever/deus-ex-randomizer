@@ -239,10 +239,6 @@ function PreFirstEntryMapFixes()
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL) {
-    case "10_PARIS_CATACOMBS":
-    case "11_PARIS_EVERETT":
-        FailIfCorpseNotHeld("TerroristCommander");
-        break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'#var(prefix)WIB', hela) {
             key = #var(prefix)NanoKey(GiveItem(hela,class'#var(prefix)NanoKey'));

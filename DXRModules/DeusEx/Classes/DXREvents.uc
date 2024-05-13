@@ -1486,6 +1486,80 @@ function SetWatchFlags() {
     }
 }
 
+function FailIfCorpseNotHeld(string corpseStr)
+{
+    local POVCorpse corpse;
+
+    corpseStr = corpseStr $ "Carcass";
+    foreach AllActors(class'POVCorpse', corpse) {
+        if (("DeusEx." $ corpseStr) == corpse.carcClassString) {
+            return;
+        }
+        break;
+    }
+    class'DXREventsBase'.static.MarkBingoFailedEvents(dxr, corpseStr $ "_NotHeld");
+}
+
+function MarkBingoFailedSpecial()
+{
+    local int progress, maxProgress;
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+
+    switch (dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+    case "03_NYC_UNATCOISLAND":
+    case "03_NYC_BATTERYPARK":
+        FailIfCorpseNotHeld("TerroristCommander");
+        break;
+    case "04_NYC_UNATCOISLAND":
+        FailIfCorpseNotHeld("TerroristCommander");
+
+        progress = data.GetBingoProgress("Terrorist_ClassDead", maxProgress);
+        if (maxProgress - progress > 1) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "Terrorist_ClassDead");
+        }
+        progress = data.GetBingoProgress("Terrorist_ClassUnconscious", maxProgress);
+        if (maxProgress - progress > 1) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "Terrorist_ClassUnconscious");
+        }
+
+        break;
+    case "04_NYC_STREET":
+    case "05_NYC_UNATCOMJ12Lab":
+        FailIfCorpseNotHeld("TerroristCommander");
+        break;
+    case "06_HONGKONG_HELIBASE":
+        FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld("PaulDenton");
+        break;
+    case "06_HONGKONG_WANCHAI_MARKET":
+    case "06_HONGKONG_WANCHAI_CANAL":
+        if (dxr.flagbase.GetBool('Have_ROM')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
+        }
+        break;
+    case "08_NYC_STREET":
+    case "09_NYC_DOCKYARD":
+        FailIfCorpseNotHeld("TerroristCommander");
+        break;
+    case "09_NYC_GRAVEYARD":
+        FailIfCorpseNotHeld("TerroristCommander");
+        if (! HasItem(player(), class'VialAmbrosia')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
+        }
+        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "ChangeClothes");
+        break;
+    case "10_PARIS_CATACOMBS":
+    case "11_PARIS_EVERETT":
+    case "12_VANDENBERG_CMD":
+        FailIfCorpseNotHeld("TerroristCommander");
+        break;
+    }
+}
+
 simulated function AnyEntry()
 {
     local Conversation conv;
@@ -1959,7 +2033,7 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function int GetBingoFailedGoals(DXRando dxr, string eventname, out string failed[5])
+static function int GetBingoFailedEvents(DXRando dxr, string eventname, out string failed[5])
 {
     local int num_failed;
 

@@ -244,8 +244,7 @@ function PreFirstEntryMapFixes()
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
-    switch(dxr.localURL) {
-    case "09_NYC_GRAVEYARD":
+    if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
         // //barrel next to the transmitter thing, it explodes when I move it
         if(RevisionMaps){
             barrelName='EMOff';
@@ -260,22 +259,8 @@ function PreFirstEntryMapFixes()
         SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
 
         ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK?
-
-        FailIfCorpseNotHeld("TerroristCommander");
-
-        if (! HasItem(player(), class'VialAmbrosia')) {
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
-        }
-        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "ChangeClothes");
-
-        break;
-
-    case "09_NYC_DOCKYARD":
-        FailIfCorpseNotHeld("TerroristCommander");
-        break;
-
-    case "09_NYC_SHIPBELOW":
-        if(RevisionMaps) {
+    } else if (dxr.localURL=="09_NYC_SHIPBELOW"){
+        if(RevisionMaps){
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover64' ||
                     dxm.Name=='DeusExMover16' ||
@@ -326,8 +311,6 @@ function PreFirstEntryMapFixes()
                 dlt.SetCollisionSize(dlt.CollisionRadius*2,dlt.CollisionHeight);
             }
         }
-
-        break;
     }
 }
 

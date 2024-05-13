@@ -227,8 +227,6 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
-
-        FailIfCorpseNotHeld("TerroristCommander");
     }
 }
 
