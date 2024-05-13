@@ -13,11 +13,10 @@ function InitLight()
     local vector loc;
 
     if (lt == None) {
-        lt = Spawn(class'DynamicLight');
-
         loc = Location;
         loc.z += CollisionHeight * 1.35;
-        lt.SetLocation(loc);
+
+        lt = Spawn(class'DynamicLight',,, loc);
 
         lt.LightHue=44;
         lt.LightSaturation = 160;
@@ -51,6 +50,8 @@ function Frob(Actor frobber, Inventory frobWith)
     Super.Frob(frobber, frobWith);
     SetState(bOn);
 }
+
+function Destroyed() { if (lt != None) lt.Destroy(); }
 
 defaultproperties
 {
