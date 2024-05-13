@@ -980,14 +980,14 @@ simulated function CreateBingoBoard()
     _CreateBingoBoard(data, dxr.flags.settings.starting_map, dxr.flags.bingo_duration);
 }
 
-// a nice, convenient function to test a specific goal
+// a nice, convenient function to test some specified goal
 function bool AddTestGoal(
     PlayerDataItem data,
     string event,
     int boardIdx,
     optional int max,
     optional int starting_mission,
-    optional int masked_missions
+    optional int missions
 )
 {
     local BingoOption option;
@@ -1000,12 +1000,17 @@ function bool AddTestGoal(
         if (bingo_options[bingoIdx].event == event) break;
     if (bingoIdx == ArrayCount(bingo_options)) return false;
 
+    if (starting_mission == 0)
+        starting_mission = 1;
+    if (missions == 0)
+        missions = bingo_options[bingoIdx].missions;
+
     if (max == 0) {
         max = bingo_options[bingoIdx].max;
         desc = bingo_options[bingoIdx].desc;
         f = float(dxr.flags.bingo_scale)/100.0;
         f = rngrange(f, 0.8, 1);// 80% to 100%
-        f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
+        f *= MissionsMaskAvailability(starting_mission, missions) ** 1.5;
         max = Ceil(float(max) * f);
         max = self.Max(max, 1);
     }
@@ -1014,11 +1019,11 @@ function bool AddTestGoal(
     data.SetBingoSpot(
         boardIdx % 5,
         boardIdx / 5,
-        bingo_options[bingoIdx].event,
+        event,
         desc,
         0,
         max,
-        bingo_options[bingoIdx].missions
+        missions
     );
 
     return true;

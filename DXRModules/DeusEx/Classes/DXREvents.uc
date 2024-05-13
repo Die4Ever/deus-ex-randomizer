@@ -2145,13 +2145,12 @@ static function int GetBingoFailedEvents(DXRando dxr, string eventname, out stri
         case "drbernard_Dead":
             failed[num_failed++] = "MeetDrBernard_Played";
             return num_failed;
+        case "JaimeLeftBehind":
+            failed[num_failed++] = "M07MeetJaime_Played";
+            // fallthrough
         case "JaimeRecruited":
             failed[num_failed++] = "KnowsGuntherKillphrase";
             return num_failed;
-        case "JaimeLeftBehind":
-            failed[num_failed++] = "M07MeetJaime_Played";
-            return num_failed;
-        // TODO: fail both if Jaime isn't talked to?
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
             return num_failed;
