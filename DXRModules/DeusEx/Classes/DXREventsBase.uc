@@ -1000,21 +1000,22 @@ function bool AddTestGoal(
         if (bingo_options[bingoIdx].event == event) break;
     if (bingoIdx == ArrayCount(bingo_options)) return false;
 
+    if (max == 0)
+        max = bingo_options[bingoIdx].max;
     if (starting_mission == 0)
         starting_mission = 1;
     if (missions == 0)
         missions = bingo_options[bingoIdx].missions;
 
-    if (max == 0) {
-        max = bingo_options[bingoIdx].max;
-        desc = bingo_options[bingoIdx].desc;
+    desc = bingo_options[bingoIdx].desc;
+    if (max > 1 && InStr(desc, "%s") != -1) {
         f = float(dxr.flags.bingo_scale)/100.0;
         f = rngrange(f, 0.8, 1);// 80% to 100%
         f *= MissionsMaskAvailability(starting_mission, missions) ** 1.5;
         max = Ceil(float(max) * f);
         max = self.Max(max, 1);
+        desc = sprintf(bingo_options[bingoIdx].desc, max);
     }
-    desc = sprintf(bingo_options[bingoIdx].desc, max);
 
     data.SetBingoSpot(
         boardIdx % 5,
@@ -1301,7 +1302,6 @@ static function MarkBingoFailedEvents(DXRando dxr, coerce string eventname)
     for (i = 0; i < num_failed; i++) {
         MarkBingoAsFailed(dxr, failed[i]);
     }
-
 }
 
 function bool _IsBingoFailed(coerce string eventname)
