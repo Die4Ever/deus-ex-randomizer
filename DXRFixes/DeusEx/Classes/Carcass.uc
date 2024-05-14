@@ -126,13 +126,12 @@ function Destroyed()
 }
 
 //Toss the item, but not very hard
-function TossItem(Inventory inv, DeusExPlayer Frobber){
-    local float xVel,yVel;
+function TossItem(Inventory inv){
     local vector velocity;
 
     DeleteInventory(inv);
     class'DXRActorsBase'.static.ThrowItem(inv, 0.5);
-    inv.SetLocation( Location + vect(0,0,20));
+    inv.SetLocation(Location + vect(0,0,20));
 
     velocity.X = ((FRand() - 0.5) * 2);
     velocity.Y = ((FRand() - 0.5) * 2);
@@ -155,6 +154,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     local bool bFoundSomething;
     local DeusExPlayer player;
     local POVCorpse corpse;
+    local DataStorage datastorage;
 
     //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -216,6 +216,8 @@ function Frob(Actor Frobber, Inventory frobWith)
 
     if (Inventory != None && player != None)
     {
+        datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+
         item = Inventory;
         startItem = item;
 
@@ -223,8 +225,15 @@ function Frob(Actor Frobber, Inventory frobWith)
         {
             //player.ClientMessage(self@"=> item="$item);
             nextItem = item.Inventory;
-            if(TryLootItem(player, item))
+
+            if (InStr(datastorage.GetConfigKey("item_refusals"), "," $ item.class.name $ ",") != -1) {
+                // TODO: remove ammo from weapons and give it to the player
+                TossItem(item);
                 bFoundSomething = true;
+            } else if(TryLootItem(player, item)) {
+                bFoundSomething = true;
+            }
+
             item = nextItem;
         }
         until ((item == None) || (item == startItem));
@@ -313,7 +322,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             {
                 player.ClientMessage(Sprintf(msgCannotPickup, invItem.itemName));
                 //Also toss the item out of the carcass
-                TossItem(item,player);
+                TossItem(item);
             }
         }
         else
@@ -427,7 +436,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
         {
             player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
             //Also toss the item out of the carcass
-            TossItem(item,player);
+            TossItem(item);
             return true;
         }
 
@@ -439,7 +448,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
             player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
 
             //Also toss the item out of the carcass
-            TossItem(item,player);
+            TossItem(item);
             return true;
         }
 
@@ -527,7 +536,7 @@ function bool TryLootRegularItem(DeusExPlayer player, Inventory item)
             player.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.itemName, 'Pickup');
             PlaySound(Item.PickupSound);
         } else {
-            TossItem(item,player);
+            TossItem(item);
         }
         return true;
     }

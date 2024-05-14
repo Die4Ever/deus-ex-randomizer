@@ -247,9 +247,14 @@ function Garbage()
     inv = Inventory(selectedItem.GetClientObject());
 
     item_refusals = datastorage.GetConfigKey("item_refusals");
-    if (item_refusals == "") item_refusals = ",";
-    item_refusals = item_refusals $ inv.class.name $ ",";
-    datastorage.SetConfig("item_refusals", item_refusals, 2147483647);
+    if (InStr(item_refusals, "," $ inv.class.name $ ",") == -1) {
+        if (item_refusals == "") item_refusals = ",";
+        item_refusals = item_refusals $ inv.class.name $ ",";
+        datastorage.SetConfig("item_refusals", item_refusals, 2147483647);
+    }
 
+    DropSelectedItem();
+
+    log("item_refusals: " $ item_refusals);
     player.ClientMessage("ButtonActivated new item_refusals: " $ item_refusals);
 }
