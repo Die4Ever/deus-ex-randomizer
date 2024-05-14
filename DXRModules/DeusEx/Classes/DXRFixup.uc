@@ -208,12 +208,12 @@ function PreFirstEntry()
     SpawnDatacubes();
     AntiEpilepsy();
 
-    if (#defined(vanilla)) {
-        foreach AllActors(class'#var(prefix)Lamp', lmp) {
-            lmp.InitLight();
-        }
+#ifdef vanilla
+    foreach AllActors(class'#var(prefix)Lamp', lmp) {
+        lmp.InitLight();
     }
     SetAllLampsState(true, true, true);
+#endif
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -809,9 +809,10 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
 
 function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad)
 {
+#ifdev vanilla
     local #var(prefix)Lamp lmp;
 
-    if (class'MenuChoice_AutoLamps'.default.enabled == false || #defined(vanilla) == false)
+    if (class'MenuChoice_AutoLamps'.default.enabled == false)
         return;
 
     if (rad == 0.0) {
@@ -831,4 +832,5 @@ function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector lo
             );
         }
     }
+#endif
 }
