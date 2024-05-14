@@ -11,5 +11,7 @@ defaultproperties
      FamiliarName="Stand Lamp"
      UnfamiliarName="Stand Lamp"
      LightHue=44
-     LightSaturation=128
+     LightSaturation=160
+     // increasing the radius to 25 causes weird flickering on a couch in the Free Clinic, probably elsewhere
+     LightRadius=15
 }

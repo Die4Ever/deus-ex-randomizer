@@ -12,7 +12,7 @@ var config Font  textfont;
 var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
 var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB, showSpeed, showAllSplits;
-var config bool showAverage;
+var config bool showAverage, useAverageGoal;
 
 var config int PB[16];
 var config int Golds[16];
@@ -534,6 +534,9 @@ function int BalancedSplit(int m)
 
     total_goal = PB_total;
     if(goal_time != 0) total_goal = goal_time;
+    if(useAverageGoal && average_total > 0 && (average_total < goal_time || goal_time==0)) {
+        total_goal = average_total;
+    }
 
     typical_split_time = Golds[m];
     typical_total_time = sum_of_bests;

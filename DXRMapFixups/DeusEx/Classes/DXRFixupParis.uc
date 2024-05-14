@@ -25,6 +25,7 @@ function PreFirstEntryMapFixes()
     {
     case "10_PARIS_CATACOMBS":
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
+        SetAllLampsState(true, false, true); // lamps in the building next to the metro station
         break;
 
     case "10_PARIS_CATACOMBS_TUNNELS":
@@ -80,6 +81,8 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'DeusExMover', m, 'cellar_door') {
                 m.MoveTime = 1;
             }
+
+            SetAllLampsState(false, false, false); // surely Nicolette didn't leave all the lights on when she moved out
         }
         break;
     case "10_PARIS_METRO":
@@ -119,6 +122,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1464,-1649.6,-197)); //Bathroom stall 1
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
         Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
+
+        SetAllLampsState(true, true, false, vect(-1821.85, -351.37, -207.11), 200.0); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
+
         break;
     case "11_PARIS_UNDERGROUND":
         foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
@@ -169,6 +175,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
         hoverHint.SetBaseActor(jock);
+
+        SetAllLampsState(true, false, true); // Everett's bedroom
 
         break;
     }

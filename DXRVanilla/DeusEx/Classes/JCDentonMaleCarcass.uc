@@ -16,14 +16,14 @@ function SetSkin(DeusExPlayer player)
             Mesh2 = LodMesh'DeusExCharacters.GFM_Trench_CarcassB';
             Mesh3 = LodMesh'DeusExCharacters.GFM_Trench_CarcassC';
             break;
-        
+
         case LodMesh'DeusExCharacters.GFM_SuitSkirt':
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_F':
             Mesh = LodMesh'DeusExCharacters.GFM_SuitSkirt_Carcass';
             Mesh2 = LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassB';
             Mesh3 = LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassC';
             break;
-        
+
         case LodMesh'DeusExCharacters.GFM_TShirtPants':
             Mesh = LodMesh'DeusExCharacters.GFM_TShirtPants_Carcass';
             Mesh2 = LodMesh'DeusExCharacters.GFM_TShirtPants_CarcassB';
@@ -36,7 +36,7 @@ function SetSkin(DeusExPlayer player)
             Mesh2 = LodMesh'DeusExCharacters.GM_Trench_CarcassB';
             Mesh3 = LodMesh'DeusExCharacters.GM_Trench_CarcassC';
             break;
-            
+
         case LodMesh'MPCharacters.mp_jumpsuit':
         case LodMesh'DeusExCharacters.GM_DressShirt_B':
         case LodMesh'DeusExCharacters.GM_DressShirt':
@@ -52,9 +52,12 @@ function SetSkin(DeusExPlayer player)
             self.Texture = player.Texture;
             break;
     }
-    
+
     for (i = 0; i <= 7; i++) {
         MultiSkins[i]=player.MultiSkins[i];
     }
 
+    if (Region.Zone.bWaterZone){
+        Mesh = Mesh3;
+    }
 }
