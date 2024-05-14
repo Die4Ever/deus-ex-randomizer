@@ -1,6 +1,9 @@
 class PersonaScreenInventory injects PersonaScreenInventory;
 
-var PersonaActionButtonWindow btnGarbage;
+const RefuseLabel = "|&Trash";
+const AcceptLabel = "Not |&Trash";
+
+var PersonaActionButtonWindow btnRefusal;
 
 function SelectInventory(PersonaItemButton buttonPressed)
 {
@@ -140,8 +143,8 @@ function CreateButtons()
 	winActionButtons.SetPos(9, 339);
 	winActionButtons.SetWidth(267);
 
-	btnGarbage = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnGarbage.SetButtonText("|&Trash");
+	btnRefusal = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+	btnRefusal.SetButtonText(RefuseLabel);
 
 	btnDrop = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 	btnDrop.SetButtonText(DropButtonLabel);
@@ -155,63 +158,55 @@ function CreateButtons()
 
 function EnableButtons()
 {
-	local Inventory inv;
+    local DataStorage datastorage;
+    local Inventory inv;
 
-	// Make sure all the buttons exist!
-	if ((btnGarbage == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
+	if ((btnRefusal == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
 		return;
 
+    btnRefusal.SetButtonText(RefuseLabel);
+
 	if (selectedItem == None) {
-		btnGarbage.DisableWindow();
+		btnRefusal.DisableWindow();
 		btnDrop.DisableWindow();
 		btnEquip.DisableWindow();
 		btnUse.DisableWindow();
 	} else {
-		btnGarbage.EnableWindow();
+		btnRefusal.EnableWindow();
 		btnEquip.EnableWindow();
 		btnUse.EnableWindow();
-		btnGarbage.EnableWindow();
 		btnDrop.EnableWindow();
 
 		inv = Inventory(selectedItem.GetClientObject());
 
 		if (inv != None) {
-			// Anything can be dropped, except the NanoKeyRing
-			btnDrop.EnableWindow();
+            datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+            if (InStr(datastorage.GetConfigKey("item_refusals"), "," $ inv.class.name $ ",") == -1) {
+                btnRefusal.SetButtonText(RefuseLabel);
+            } else {
+                btnRefusal.SetButtonText(AcceptLabel);
+            }
 
-			if (inv.IsA('WeaponMod')) {
-				btnChangeAmmo.DisableWindow();
-				btnUse.DisableWindow();
-			} else if (inv.IsA('NanoKeyRing')) {
-				btnChangeAmmo.DisableWindow();
-				btnDrop.DisableWindow();
+            if (NanoKeyRing(inv) != None) {
+                btnDrop.DisableWindow();
 				btnEquip.DisableWindow();
 				btnUse.DisableWindow();
-                btnGarbage.DisableWindow();
-			}
-			// Augmentation Upgrade Cannisters cannot be used
-			// on this screen
-			else if ( inv.IsA('AugmentationUpgradeCannister') ) {
-				btnUse.DisableWindow();
-				btnChangeAmmo.DisableWindow();
-			}
-			// Ammo can't be used or equipped
-			else if ( inv.IsA('Ammo') ) {
-				btnUse.DisableWindow();
-				btnEquip.DisableWindow();
-                btnGarbage.DisableWindow();
+                btnRefusal.DisableWindow();
 			} else {
-				if ((inv == player.inHand ) || (inv == player.inHandPending))
-					btnEquip.SetButtonText(UnequipButtonLabel);
-				else
-					btnEquip.SetButtonText(EquipButtonLabel);
-			}
-		}
-		else {
-			btnChangeAmmo.DisableWindow();
+                if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None) {
+                    btnUse.DisableWindow();
+                } else {
+                    if ((inv == player.inHand ) || (inv == player.inHandPending))
+                        btnEquip.SetButtonText(UnequipButtonLabel);
+                    else
+                        btnEquip.SetButtonText(EquipButtonLabel);
+                }
+            }
+		} else {
 			btnDrop.DisableWindow();
 			btnEquip.DisableWindow();
 			btnUse.DisableWindow();
+		    btnRefusal.EnableWindow();
 		}
 	}
 }
@@ -220,41 +215,44 @@ function bool ButtonActivated(Window buttonPressed)
 {
     local bool ret;
 
-    if (buttonPressed == btnGarbage) {
-        Garbage();
+    if (buttonPressed == btnRefusal) {
+        Refuse();
         return true;
     }
 
     ret = Super.ButtonActivated(buttonPressed);
     if (PersonaAmmoDetailButton(buttonPressed) != None) {
         btnDrop.DisableWindow();
-        btnGarbage.DisableWindow();
+        btnRefusal.DisableWindow();
         btnEquip.DisableWindow();
         btnUse.DisableWindow();
     }
     return ret;
 }
 
-function Garbage()
+function Refuse()
 {
-    local DXRando dxr;
     local DataStorage datastorage;
     local Inventory inv;
-    local string item_refusals;
+    local string item_refusals, leftPart, rightPart;
+    local int strIdx;
 
-    foreach player.AllActors(class'DXRando', dxr) break;
-    datastorage = class'DataStorage'.static.GetObj(dxr);
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     inv = Inventory(selectedItem.GetClientObject());
 
     item_refusals = datastorage.GetConfigKey("item_refusals");
-    if (InStr(item_refusals, "," $ inv.class.name $ ",") == -1) {
+
+    strIdx = InStr(item_refusals, "," $ inv.class.name $ ",");
+    if (strIdx == -1) {
         if (item_refusals == "") item_refusals = ",";
         item_refusals = item_refusals $ inv.class.name $ ",";
-        datastorage.SetConfig("item_refusals", item_refusals, 2147483647);
+        DropSelectedItem(); // TODO: drop all for stackables
+    } else {
+        leftPart = Left(item_refusals, strIdx);
+        rightPart = Right(item_refusals, Len(item_refusals) - (strIdx + Len(inv.class.name) + 1));
+        item_refusals = leftPart $ rightPart;
+        btnRefusal.SetButtonText(RefuseLabel);
     }
 
-    DropSelectedItem();
-
-    log("item_refusals: " $ item_refusals);
-    player.ClientMessage("ButtonActivated new item_refusals: " $ item_refusals);
+    datastorage.SetConfig("item_refusals", item_refusals, 2147483647);
 }
