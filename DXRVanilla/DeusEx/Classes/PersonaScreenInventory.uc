@@ -141,7 +141,7 @@ function CreateButtons()
 	winActionButtons.SetWidth(267);
 
 	btnGarbage = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnGarbage.SetButtonText("Trash");
+	btnGarbage.SetButtonText("|&Trash");
 
 	btnDrop = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 	btnDrop.SetButtonText(DropButtonLabel);
@@ -187,7 +187,7 @@ function EnableButtons()
 				btnDrop.DisableWindow();
 				btnEquip.DisableWindow();
 				btnUse.DisableWindow();
-                btnGarbage.EnableWindow();
+                btnGarbage.DisableWindow();
 			}
 			// Augmentation Upgrade Cannisters cannot be used
 			// on this screen
