@@ -208,7 +208,11 @@ function PreFirstEntry()
     SpawnDatacubes();
     AntiEpilepsy();
 
-    foreach AllActors(class'#var(prefix)Lamp', lmp) lmp.InitLight();
+    if (#defined(vanilla)) {
+        foreach AllActors(class'#var(prefix)Lamp', lmp) {
+            lmp.InitLight();
+        }
+    }
     SetAllLampsState(true, true, true);
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
@@ -807,7 +811,7 @@ function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector lo
 {
     local #var(prefix)Lamp lmp;
 
-    if (class'MenuChoice_AutoLamps'.default.enabled == false || #defined(revision || gmdx))
+    if (class'MenuChoice_AutoLamps'.default.enabled == false || #defined(vanilla) == false)
         return;
 
     if (rad == 0.0) {

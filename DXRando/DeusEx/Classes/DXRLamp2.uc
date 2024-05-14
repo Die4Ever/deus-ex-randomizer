@@ -22,7 +22,7 @@ function InitLight()
         lt.LightSaturation = 160;
         lt.LightBrightness = 255;
         // increasing the radius to 25 causes weird flickering on a couch in the Free Clinic, probably elsewhere
-        lt.LightRadius = 20;
+        lt.LightRadius = 15;
     }
 
     SetState(bOn);
