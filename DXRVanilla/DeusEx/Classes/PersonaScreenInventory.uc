@@ -1,7 +1,6 @@
 class PersonaScreenInventory injects PersonaScreenInventory;
 
 var PersonaActionButtonWindow btnGarbage;
-var PersonaActionButtonWindow btnAutoconsume;
 
 function SelectInventory(PersonaItemButton buttonPressed)
 {
@@ -141,9 +140,6 @@ function CreateButtons()
 	winActionButtons.SetPos(9, 339);
 	winActionButtons.SetWidth(267);
 
-	btnAutoconsume = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnAutoconsume.SetButtonText("AutoUse");
-
 	btnGarbage = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 	btnGarbage.SetButtonText("Trash");
 
@@ -162,7 +158,7 @@ function EnableButtons()
 	local Inventory inv;
 
 	// Make sure all the buttons exist!
-	if ((btnAutoconsume == None) || (btnGarbage == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
+	if ((btnGarbage == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
 		return;
 
 	if (selectedItem == None) {
@@ -170,12 +166,10 @@ function EnableButtons()
 		btnDrop.DisableWindow();
 		btnEquip.DisableWindow();
 		btnUse.DisableWindow();
-        btnAutoconsume.DisableWindow();
 	} else {
 		btnGarbage.EnableWindow();
 		btnEquip.EnableWindow();
 		btnUse.EnableWindow();
-        btnAutoconsume.EnableWindow();
 		btnGarbage.EnableWindow();
 		btnDrop.EnableWindow();
 
@@ -188,26 +182,22 @@ function EnableButtons()
 			if (inv.IsA('WeaponMod')) {
 				btnChangeAmmo.DisableWindow();
 				btnUse.DisableWindow();
-		        btnAutoconsume.DisableWindow();
 			} else if (inv.IsA('NanoKeyRing')) {
 				btnChangeAmmo.DisableWindow();
 				btnDrop.DisableWindow();
 				btnEquip.DisableWindow();
 				btnUse.DisableWindow();
-		        btnAutoconsume.DisableWindow();
                 btnGarbage.EnableWindow();
 			}
 			// Augmentation Upgrade Cannisters cannot be used
 			// on this screen
 			else if ( inv.IsA('AugmentationUpgradeCannister') ) {
 				btnUse.DisableWindow();
-		        btnAutoconsume.DisableWindow();
 				btnChangeAmmo.DisableWindow();
 			}
 			// Ammo can't be used or equipped
 			else if ( inv.IsA('Ammo') ) {
 				btnUse.DisableWindow();
-		        btnAutoconsume.DisableWindow();
 				btnEquip.DisableWindow();
                 btnGarbage.DisableWindow();
 			} else {
@@ -222,20 +212,7 @@ function EnableButtons()
 			btnDrop.DisableWindow();
 			btnEquip.DisableWindow();
 			btnUse.DisableWindow();
-		    btnAutoconsume.DisableWindow();
 		}
-
-        if (
-            SoyFood(inv) == None &&
-            Candybar(inv) == None &&
-            Sodacan(inv) == None &&
-            LiquorBottle(inv) == None &&
-            Liquor40oz(inv) == None &&
-            WineBottle(inv) == None
-            // anyone ignorant enough to do this with cigarettes/zyme needs to be stopped
-        ) {
-            btnAutoconsume.DisableWindow();
-        }
 	}
 }
 
@@ -247,10 +224,6 @@ function bool ButtonActivated(Window buttonPressed)
         Garbage();
         return true;
     }
-    if (buttonPressed == btnAutoconsume) {
-        Autoconsume();
-        return true;
-    }
 
     ret = Super.ButtonActivated(buttonPressed);
     if (PersonaAmmoDetailButton(buttonPressed) != None) {
@@ -258,16 +231,25 @@ function bool ButtonActivated(Window buttonPressed)
         btnGarbage.DisableWindow();
         btnEquip.DisableWindow();
         btnUse.DisableWindow();
-        btnAutoconsume.DisableWindow();
     }
     return ret;
 }
 
 function Garbage()
 {
-    player.ClientMessage("ButtonActivated trash button pressed");
-}
+    local DXRando dxr;
+    local DataStorage datastorage;
+    local Inventory inv;
+    local string item_refusals;
 
-function Autoconsume() {
-    player.ClientMessage("ButtonActivated autouse button pressed");
+    foreach player.AllActors(class'DXRando', dxr) break;
+    datastorage = class'DataStorage'.static.GetObj(dxr);
+    inv = Inventory(selectedItem.GetClientObject());
+
+    item_refusals = datastorage.GetConfigKey("item_refusals");
+    if (item_refusals == "") item_refusals = ",";
+    item_refusals = item_refusals $ inv.class.name $ ",";
+    datastorage.SetConfig("item_refusals", item_refusals, 2147483647);
+
+    player.ClientMessage("ButtonActivated new item_refusals: " $ item_refusals);
 }
