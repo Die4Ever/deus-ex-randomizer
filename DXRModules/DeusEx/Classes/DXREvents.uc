@@ -1491,7 +1491,7 @@ function bool FailIfCorpseNotHeld(class<#var(DeusExPrefix)Carcass> carcClass, st
     local #var(PlayerPawn) p;
 
     p = player();
-    if (POVCorpse(p.inHand) == None || ("DeusEx." $ carcClass.name) != POVCorpse(p.inHand).carcClassString) {
+    if (POVCorpse(p.inHand) == None || string(carcClass) != POVCorpse(p.inHand).carcClassString) {
         class'DXREventsBase'.static.MarkBingoAsFailed(dxr, goal);
         return true;
     }
