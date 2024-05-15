@@ -234,6 +234,7 @@ function Refuse()
 {
     local DataStorage datastorage;
     local Inventory inv;
+    local Pickup droppedItem;
     local string item_refusals, leftPart, rightPart;
     local int strIdx;
 
@@ -246,7 +247,14 @@ function Refuse()
     if (strIdx == -1) {
         if (item_refusals == "") item_refusals = ",";
         item_refusals = item_refusals $ inv.class.name $ ",";
-        DropSelectedItem(); // TODO: drop all for stackables
+
+        if (Pickup(inv) == None) {
+            DropSelectedItem();
+        } else {
+            droppedItem = Pickup(player.Spawn(inv.class)); // TODO: drop the item a bit in front of the player as in vanilla
+            droppedItem.numCopies = Pickup(inv).numCopies;
+            inv.Destroy();
+        }
     } else {
         leftPart = Left(item_refusals, strIdx);
         rightPart = Right(item_refusals, Len(item_refusals) - (strIdx + Len(inv.class.name) + 1));
