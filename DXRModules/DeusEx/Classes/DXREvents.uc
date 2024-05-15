@@ -1511,10 +1511,10 @@ function MarkBingoFailedSpecial()
     case "02_NYC_BATTERYPARK":
     case "03_NYC_UNATCOISLAND":
     case "03_NYC_BATTERYPARK":
-        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         break;
     case "04_NYC_UNATCOISLAND":
-        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
 
         // the last Terrorist left is Miguel
         progress = data.GetBingoProgress("Terrorist_ClassDead", maxProgress);
@@ -1529,11 +1529,11 @@ function MarkBingoFailedSpecial()
         break;
     case "04_NYC_STREET":
     case "05_NYC_UNATCOMJ12Lab":
-        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         break;
     case "06_HONGKONG_HELIBASE":
-        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
-        FailIfCorpseNotHeld(class'PaulDentonCarcass', "PaulToTong");
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)PaulDentonCarcass', "PaulToTong");
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -1544,10 +1544,10 @@ function MarkBingoFailedSpecial()
         break;
     case "08_NYC_STREET":
     case "09_NYC_DOCKYARD":
-        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         break;
     case "09_NYC_GRAVEYARD":
-        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         if (! HasItem(player(), class'VialAmbrosia')) {
             class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
         }
@@ -1556,7 +1556,7 @@ function MarkBingoFailedSpecial()
     case "10_PARIS_CATACOMBS":
     case "11_PARIS_EVERETT":
     case "12_VANDENBERG_CMD":
-        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         break;
     }
 }
