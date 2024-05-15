@@ -17,6 +17,7 @@ function InitLight()
         loc.z += CollisionHeight * 1.35;
 
         lt = Spawn(class'DynamicLight',,, loc);
+        lt.SetBase(self);
 
         lt.LightHue = default.LightHue;
         lt.LightSaturation = default.LightSaturation;
