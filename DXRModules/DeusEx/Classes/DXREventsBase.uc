@@ -921,7 +921,6 @@ static function InventoryData(DXRando dxr, out string j)
             }
 
             invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\"}";
-            log(invInfo);
             j = j $",\"" $ invId $ "\":" $ invInfo;
         }
 
