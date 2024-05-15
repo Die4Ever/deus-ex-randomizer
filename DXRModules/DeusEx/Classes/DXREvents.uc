@@ -2047,6 +2047,7 @@ static function int GetBingoFailedEvents(DXRando dxr, string eventname, out stri
             return num_failed;
         case "MaggieChow_Dead":
             failed[num_failed++] = "MaggieLived";
+            return num_failed;
         case "FordSchick_Dead":
             failed[num_failed++] = "FordSchickRescued";
             return num_failed;
