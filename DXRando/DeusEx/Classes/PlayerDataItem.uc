@@ -92,7 +92,14 @@ simulated function bool MarkRead(name textTag) {
 }
 
 
-simulated function int GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max)
+simulated function int GetBingoSpot(
+    int x,
+    int y,
+    optional out string event,
+    optional out string desc,
+    optional out int progress,
+    optional out int max
+)
 {
     local DXRando dxr;
     local int currentMission;
@@ -108,6 +115,21 @@ simulated function int GetBingoSpot(int x, int y, out string event, out string d
     currentMission = dxr.dxInfo.missionNumber;
     return class'DXREvents'.static.BingoActiveMission(currentMission, GetBingoMissionMask(x,y));
 }
+
+function int GetBingoProgress(string event, optional out int max)
+ {
+    local int i, progress;
+
+    for (i = 0; i < ArrayCount(bingo); i++) {
+        if (bingo[i].event == event) {
+            max = bingo[i].max;
+            return bingo[i].progress;
+        }
+    }
+
+    max = 1024;
+    return 0;
+ }
 
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
 {
@@ -165,7 +187,7 @@ simulated function bool IsBingoFailed(string event)
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
         if(bingo[i].event != event) continue;
-        return bingo_missions_masks[i] == FAILED_MISSION_MASK; // TODO: actually check if it can't be completed, instead of just marked as failed?
+        return bingo_missions_masks[i] == FAILED_MISSION_MASK;
     }
     return false;
 }
