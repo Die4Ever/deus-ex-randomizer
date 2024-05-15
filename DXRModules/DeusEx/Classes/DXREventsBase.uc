@@ -813,6 +813,7 @@ static function BeatGame(DXRando dxr, int ending)
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
+    InventoryData(dxr,j);
     GameTimeEventData(dxr, j);
 
     js.static.Add(j, "score", stats.ScoreRun());
@@ -888,6 +889,47 @@ static function AugmentationData(DXRando dxr, out string j)
 
         anAug = anAug.next;
     }
+
+}
+
+static function InventoryData(DXRando dxr, out string j)
+{
+    local Inventory item;
+    local string invId,invClass,invInfo,invName;
+    local int invNum,invPosX,invPosY,count;
+    local #var(DeusExPrefix)Weapon dxw;
+
+    item = dxr.player.Inventory;
+    invNum=0;
+
+    while(item!=None)
+    {
+        if (Item.bDisplayableInv){
+            invId="Inv-"$invNum++;
+            invClass=string(Item.Class.Name);
+            invName=Item.ItemName;
+            invPosX=Item.invPosX;
+            invPosY=Item.invPosY;
+            count=0;
+            if(Pickup(Item)!=None){ //Pickups can have a count
+                count = Pickup(Item).NumCopies;
+            } else if (#var(DeusExPrefix)Weapon(Item)!=None){ //Thrown weapons also show a count
+                dxw = #var(DeusExPrefix)Weapon(Item);
+                if(ClassIsChildOf(dxw.ProjectileClass, class'#var(prefix)ThrownProjectile')){
+                    count=dxw.AmmoType.AmmoAmount;
+                }
+            }
+
+            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\"}";
+            log(invInfo);
+            j = j $",\"" $ invId $ "\":" $ invInfo;
+        }
+
+        item = item.Inventory;
+    }
+
+    j = j $ ",\"credits\":" $ dxr.player.credits;
+
 
 }
 
