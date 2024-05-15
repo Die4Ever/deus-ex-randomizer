@@ -809,7 +809,7 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
 
 function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad)
 {
-#ifdev vanilla
+#ifdef vanilla
     local #var(prefix)Lamp lmp;
 
     if (class'MenuChoice_AutoLamps'.default.enabled == false)

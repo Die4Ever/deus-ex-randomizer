@@ -18,11 +18,10 @@ function InitLight()
 
         lt = Spawn(class'DynamicLight',,, loc);
 
-        lt.LightHue=44;
-        lt.LightSaturation = 160;
-        lt.LightBrightness = 255;
-        // increasing the radius to 25 causes weird flickering on a couch in the Free Clinic, probably elsewhere
-        lt.LightRadius = 15;
+        lt.LightHue = default.LightHue;
+        lt.LightSaturation = default.LightSaturation;
+        lt.LightBrightness = default.LightBrightness;
+        lt.LightRadius = default.LightRadius;
     }
 
     SetState(bOn);
@@ -55,7 +54,12 @@ function Destroyed() { if (lt != None) lt.Destroy(); }
 
 defaultproperties
 {
-     ItemName="Stand Lamp"
-     FamiliarName="Stand Lamp"
-     UnfamiliarName="Stand Lamp"
+    ItemName="Stand Lamp"
+    FamiliarName="Stand Lamp"
+    UnfamiliarName="Stand Lamp"
+    LightHue=44;
+    LightSaturation = 160;
+    LightBrightness = 255;
+    // increasing the radius to ~21-25 causes weird flickering on a couch in the Free Clinic, probably elsewhere
+    LightRadius = 15;
 }
