@@ -1486,18 +1486,16 @@ function SetWatchFlags() {
     }
 }
 
-function FailIfCorpseNotHeld(string corpseStr)
+function bool FailIfCorpseNotHeld(class<#var(DeusExPrefix)Carcass> carcClass, string goal)
 {
-    local POVCorpse corpse;
+    local #var(PlayerPawn) p;
 
-    corpseStr = corpseStr $ "Carcass";
-    foreach AllActors(class'POVCorpse', corpse) {
-        if (("DeusEx." $ corpseStr) == corpse.carcClassString) {
-            return;
-        }
-        break;
+    p = player();
+    if (POVCorpse(p.inHand) == None || ("DeusEx." $ carcClass.name) != POVCorpse(p.inHand).carcClassString) {
+        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, goal);
+        return true;
     }
-    class'DXREventsBase'.static.MarkBingoFailedEvents(dxr, corpseStr $ "_NotHeld");
+    return false;
 }
 
 function MarkBingoFailedSpecial()
@@ -1511,11 +1509,12 @@ function MarkBingoFailedSpecial()
     case "02_NYC_BATTERYPARK":
     case "03_NYC_UNATCOISLAND":
     case "03_NYC_BATTERYPARK":
-        FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
         break;
     case "04_NYC_UNATCOISLAND":
-        FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
 
+        // the last Terrorist left is Miguel
         progress = data.GetBingoProgress("Terrorist_ClassDead", maxProgress);
         if (maxProgress - progress > 1) {
             class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "Terrorist_ClassDead");
@@ -1528,11 +1527,11 @@ function MarkBingoFailedSpecial()
         break;
     case "04_NYC_STREET":
     case "05_NYC_UNATCOMJ12Lab":
-        FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
         break;
     case "06_HONGKONG_HELIBASE":
-        FailIfCorpseNotHeld("TerroristCommander");
-        FailIfCorpseNotHeld("PaulDenton");
+        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'PaulDentonCarcass', "PaulToTong");
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -1543,10 +1542,10 @@ function MarkBingoFailedSpecial()
         break;
     case "08_NYC_STREET":
     case "09_NYC_DOCKYARD":
-        FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
         break;
     case "09_NYC_GRAVEYARD":
-        FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
         if (! HasItem(player(), class'VialAmbrosia')) {
             class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
         }
@@ -1555,7 +1554,7 @@ function MarkBingoFailedSpecial()
     case "10_PARIS_CATACOMBS":
     case "11_PARIS_EVERETT":
     case "12_VANDENBERG_CMD":
-        FailIfCorpseNotHeld("TerroristCommander");
+        FailIfCorpseNotHeld(class'TerroristCommanderCarcass', "LeoToTheBar");
         break;
     }
 }
@@ -2154,13 +2153,9 @@ static function int GetBingoFailedEvents(DXRando dxr, string eventname, out stri
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
             return num_failed;
-        case "TerroristCommanderCarcass_NotHeld":
-            failed[num_failed++] = "LeoToTheBar";
-            return num_failed;
-        case "PaulDentonCarcass_NotHeld":
-            failed[num_failed++] = "PaulToTong";
-            return num_failed;
     }
+
+    return num_failed;
 }
 
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
