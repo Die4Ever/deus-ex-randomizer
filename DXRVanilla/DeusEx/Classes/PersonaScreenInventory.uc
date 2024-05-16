@@ -237,6 +237,8 @@ function Refuse()
     local Pickup droppedItem;
     local string item_refusals, leftPart, rightPart;
     local int strIdx;
+    local Vector x, y, z;
+    local Vector dropVect;
 
     datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     inv = Inventory(selectedItem.GetClientObject());
@@ -251,9 +253,20 @@ function Refuse()
         if (Pickup(inv) == None) {
             DropSelectedItem();
         } else {
-            droppedItem = Pickup(player.Spawn(inv.class)); // TODO: drop the item a bit in front of the player as in vanilla
+            droppedItem = Pickup(player.Spawn(inv.class));
             droppedItem.numCopies = Pickup(inv).numCopies;
             inv.Destroy();
+
+            GetAxes(player.Rotation, x, y, z);
+            dropVect = player.Location + (player.CollisionRadius + 2.0 * droppedItem.CollisionRadius) * x;
+            dropVect.z += player.BaseEyeHeight; // TODO: change drop height based on where the player is looking
+
+            if (player.FastTrace(dropVect)) {
+                droppedItem.DropFrom(dropVect);
+                droppedItem.bFixedRotationDir = true;
+                droppedItem.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
+                droppedItem.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
+            }
         }
     } else {
         leftPart = Left(item_refusals, strIdx);
