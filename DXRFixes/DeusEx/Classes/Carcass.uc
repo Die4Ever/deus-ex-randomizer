@@ -155,6 +155,9 @@ function Frob(Actor Frobber, Inventory frobWith)
     local DeusExPlayer player;
     local POVCorpse corpse;
     local DataStorage datastorage;
+    local DeusExWeapon weap;
+    local Ammo playerAmmo;
+    local int newAmmoAmmout, ammoAdded;
 
     //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -227,7 +230,18 @@ function Frob(Actor Frobber, Inventory frobWith)
             nextItem = item.Inventory;
 
             if (InStr(datastorage.GetConfigKey("item_refusals"), "," $ item.class.name $ ",") != -1) {
-                // TODO: remove ammo from weapons and give it to the player
+                weap = DeusExWeapon(item);
+                if (weap != None) {
+                    playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
+                    if (playerAmmo == None) {
+                        playerAmmo = player.Spawn(weap.AmmoName);
+                        playerAmmo.GiveTo(player);
+                    }
+                    newAmmoAmmout = Min(playerAmmo.MaxAmmo, playerAmmo.AmmoAmount + weap.PickupAmmoCount);
+                    ammoAdded = newAmmoAmmout - playerAmmo.AmmoAmount;
+                    playerAmmo.AmmoAmount = newAmmoAmmout;
+                    weap.PickupAmmoCount -= ammoAdded;
+                }
                 TossItem(item);
                 bFoundSomething = true;
             } else if(TryLootItem(player, item)) {
