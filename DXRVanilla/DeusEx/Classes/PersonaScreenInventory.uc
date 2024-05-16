@@ -167,15 +167,15 @@ function EnableButtons()
     btnRefusal.SetButtonText(RefuseLabel);
 
 	if (selectedItem == None) {
-		btnRefusal.DisableWindow();
 		btnDrop.DisableWindow();
+		btnRefusal.DisableWindow();
 		btnEquip.DisableWindow();
 		btnUse.DisableWindow();
 	} else {
-		btnRefusal.EnableWindow();
 		btnEquip.EnableWindow();
 		btnUse.EnableWindow();
 		btnDrop.EnableWindow();
+		btnRefusal.EnableWindow();
 
 		inv = Inventory(selectedItem.GetClientObject());
 
@@ -189,9 +189,9 @@ function EnableButtons()
 
             if (NanoKeyRing(inv) != None) {
                 btnDrop.DisableWindow();
+                btnRefusal.DisableWindow();
 				btnEquip.DisableWindow();
 				btnUse.DisableWindow();
-                btnRefusal.DisableWindow();
 			} else {
                 if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None) {
                     btnUse.DisableWindow();
@@ -202,11 +202,12 @@ function EnableButtons()
                         btnEquip.SetButtonText(EquipButtonLabel);
                 }
             }
+            log("debug inv: " $ inv);
 		} else {
 			btnDrop.DisableWindow();
+		    btnRefusal.DisableWindow();
 			btnEquip.DisableWindow();
 			btnUse.DisableWindow();
-		    btnRefusal.EnableWindow();
 		}
 	}
 }
