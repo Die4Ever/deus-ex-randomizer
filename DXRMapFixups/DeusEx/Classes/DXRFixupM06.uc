@@ -104,6 +104,18 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+
+            foreach AllActors(class'Button1', b) {
+                if (b.tag == 'Weapons_Lock_broken' || b.tag == 'Missile_door_toggle' || b.tag == 'Weapons_lock') {
+                    b.SetRotation(rot(14312, 18536, 51312)); // my guess is that the vanilla rotations were each done indiviually by eye
+                }
+            }
+            // this button has no identifying property other than than its vanilla postion, as far a I can tell, so this this is my last resort
+            foreach RadiusActors(class'Button1', b, 0.01, vectm(-261.32, 560.37, 643.79)) {
+                b.SetRotation(rot(14312, 18536, 51312));
+                break;
+            }
+
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
 
