@@ -1620,3 +1620,12 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
 
     return true;
 }
+
+static function bool IsRefused(class<Inventory> type, optional out int strIdx)
+{
+    local DataStorage datastorage;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    strIdx = InStr(datastorage.GetConfigKey("item_refusals"), "," $ type.name $ ",");
+    return strIdx != -1;
+}

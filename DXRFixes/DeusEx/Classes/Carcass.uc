@@ -154,10 +154,6 @@ function Frob(Actor Frobber, Inventory frobWith)
     local bool bFoundSomething;
     local DeusExPlayer player;
     local POVCorpse corpse;
-    local DataStorage datastorage;
-    local DeusExWeapon weap;
-    local Ammo playerAmmo;
-    local int newAmmoAmmout, ammoAdded;
 
     //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -219,8 +215,6 @@ function Frob(Actor Frobber, Inventory frobWith)
 
     if (Inventory != None && player != None)
     {
-        datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-
         item = Inventory;
         startItem = item;
 
@@ -228,26 +222,8 @@ function Frob(Actor Frobber, Inventory frobWith)
         {
             //player.ClientMessage(self@"=> item="$item);
             nextItem = item.Inventory;
-
-            if (InStr(datastorage.GetConfigKey("item_refusals"), "," $ item.class.name $ ",") != -1) {
-                weap = DeusExWeapon(item);
-                if (weap != None) {
-                    playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
-                    if (playerAmmo == None) {
-                        playerAmmo = player.Spawn(weap.AmmoName);
-                        playerAmmo.GiveTo(player);
-                    }
-                    newAmmoAmmout = Min(playerAmmo.MaxAmmo, playerAmmo.AmmoAmount + weap.PickupAmmoCount);
-                    ammoAdded = newAmmoAmmout - playerAmmo.AmmoAmount;
-                    playerAmmo.AmmoAmount = newAmmoAmmout;
-                    weap.PickupAmmoCount -= ammoAdded;
-                }
-                TossItem(item);
+            if(TryLootItem(player, item))
                 bFoundSomething = true;
-            } else if(TryLootItem(player, item)) {
-                bFoundSomething = true;
-            }
-
             item = nextItem;
         }
         until ((item == None) || (item == startItem));
@@ -281,7 +257,28 @@ function Frob(Actor Frobber, Inventory frobWith)
 function bool TryLootItem(DeusExPlayer player, Inventory item)
 {
     local DeusExPickup invItem;
-    local int itemCount;
+    local int itemCount, newAmmoAmmout, ammoAddedAmount;
+    local Weapon weap;
+    local Ammo playerAmmo;
+
+    if (class'DXRActorsBase'.static.IsRefused(item.class)) {
+        weap = Weapon(item);
+        if (weap != None && weap.AmmoName != class'AmmoNone') {
+            playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
+            if (playerAmmo == None) {
+                playerAmmo = player.Spawn(weap.AmmoName);
+                playerAmmo.GiveTo(player);
+            }
+            newAmmoAmmout = Min(playerAmmo.MaxAmmo, playerAmmo.AmmoAmount + weap.PickupAmmoCount);
+            ammoAddedAmount = newAmmoAmmout - playerAmmo.AmmoAmount;
+            playerAmmo.AmmoAmount = newAmmoAmmout;
+            weap.PickupAmmoCount -= ammoAddedAmount;
+        }
+
+        TossItem(item);
+
+        return true;
+    }
 
     if (item.IsA('NanoKey'))
     {

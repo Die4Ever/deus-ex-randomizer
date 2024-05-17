@@ -234,7 +234,7 @@ function bool ButtonActivated(Window buttonPressed)
 function Refuse()
 {
     local DataStorage datastorage;
-    local Inventory inv;
+    local Inventory item;
     local Pickup droppedItem;
     local string item_refusals, leftPart, rightPart;
     local int strIdx;
@@ -242,21 +242,25 @@ function Refuse()
     local Vector dropVect;
 
     datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    inv = Inventory(selectedItem.GetClientObject());
+    item = Inventory(selectedItem.GetClientObject());
 
     item_refusals = datastorage.GetConfigKey("item_refusals");
 
-    strIdx = InStr(item_refusals, "," $ inv.class.name $ ",");
-    if (strIdx == -1) {
+    if (class'DXRActorsBase'.static.IsRefused(item.class, strIdx)) {
+        leftPart = Left(item_refusals, strIdx);
+        rightPart = Right(item_refusals, Len(item_refusals) - (strIdx + Len(item.class.name) + 1));
+        item_refusals = leftPart $ rightPart;
+        btnRefusal.SetButtonText(RefuseLabel);
+    } else {
         if (item_refusals == "") item_refusals = ",";
-        item_refusals = item_refusals $ inv.class.name $ ",";
+        item_refusals = item_refusals $ item.class.name $ ",";
 
-        if (Pickup(inv) == None) {
+        if (Pickup(item) == None) {
             DropSelectedItem();
         } else {
-            droppedItem = Pickup(player.Spawn(inv.class));
-            droppedItem.numCopies = Pickup(inv).numCopies;
-            inv.Destroy();
+            droppedItem = Pickup(player.Spawn(item.class));
+            droppedItem.numCopies = Pickup(item).numCopies;
+            item.Destroy();
 
             GetAxes(player.Rotation, x, y, z);
             dropVect = player.Location + (player.CollisionRadius + 2.0 * droppedItem.CollisionRadius) * x;
@@ -269,11 +273,6 @@ function Refuse()
                 droppedItem.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
             }
         }
-    } else {
-        leftPart = Left(item_refusals, strIdx);
-        rightPart = Right(item_refusals, Len(item_refusals) - (strIdx + Len(inv.class.name) + 1));
-        item_refusals = leftPart $ rightPart;
-        btnRefusal.SetButtonText(RefuseLabel);
     }
 
     datastorage.SetConfig("item_refusals", item_refusals, 2147483647);
