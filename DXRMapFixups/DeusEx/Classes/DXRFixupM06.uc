@@ -78,16 +78,16 @@ function PreFirstEntryMapFixes()
                 pg.ProjectileClass = class'PurgeGas';
                 switch(pg.Name) {
                 case 'ProjectileGenerator5':// left side
-                    pg.SetRotation(rotm(-7000, 80000, 0, 16384));
+                    pg.SetRotation(rotm(-7000, 80000, 0, GetRotationOffset(pg.class)));
                     break;
                 case 'ProjectileGenerator2':// middle left
-                    pg.SetRotation(rotm(-6024, 70000, 0, 16384));
+                    pg.SetRotation(rotm(-6024, 70000, 0, GetRotationOffset(pg.class)));
                     break;
                 case 'ProjectileGenerator3':// middle right
-                    pg.SetRotation(rotm(-8056, 64000, 0, 16384));
+                    pg.SetRotation(rotm(-8056, 64000, 0, GetRotationOffset(pg.class)));
                     break;
                 case 'ProjectileGenerator7':// right side
-                    pg.SetRotation(rotm(-8056, 60000, 0, 16384));
+                    pg.SetRotation(rotm(-8056, 60000, 0, GetRotationOffset(pg.class)));
                     break;
                 }
             }
@@ -106,14 +106,9 @@ function PreFirstEntryMapFixes()
             }
 
             foreach AllActors(class'Button1', b) {
-                if (b.tag == 'Weapons_Lock_broken' || b.tag == 'Missile_door_toggle' || b.tag == 'Weapons_lock') {
-                    b.SetRotation(rot(14312, 18536, 51312)); // my guess is that the vanilla rotations were each done indiviually by eye
+                if (b.tag == 'Weapons_Lock_broken' || b.tag == 'Weapons_lock' || b.event == 'missile_door') {
+                    b.SetRotation(rot(14312, 18536, 51312)); // my guess is that the vanilla rotations were each done by eye
                 }
-            }
-            // this button has no identifying property other than than its vanilla postion, as far a I can tell, so this this is my last resort
-            foreach RadiusActors(class'Button1', b, 0.01, vectm(-261.32, 560.37, 643.79)) {
-                b.SetRotation(rot(14312, 18536, 51312));
-                break;
             }
 
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
