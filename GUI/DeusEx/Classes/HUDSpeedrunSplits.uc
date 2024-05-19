@@ -550,6 +550,9 @@ function int BalancedSplit(int m)
         if(Avgs[m] > 0) return Avgs[m];
         return Golds[m];
     }
+    if(m == 15) { // last split, avoid rounding issues
+        return total_goal - balanced_splits_totals[m-1];
+    }
     if(typical_total_time == 0) {
         if(Avgs[m] > 0) return Avgs[m];
         return PB[m];
@@ -597,6 +600,7 @@ defaultproperties
     showPB=true
     showSpeed=true
     showAllSplits=false
+    showAverage=true
 
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
