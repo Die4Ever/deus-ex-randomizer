@@ -586,8 +586,9 @@ function PostFirstEntryMapFixes()
             SetGarageGuyReactions(sp);
             sp.Tag = 'guard2'; //
         }
+        alarm = None;
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
-            if (#var(prefix)Animal(sp)!=None){
+            if (#var(prefix)Animal(sp)!=None && alarm==None) {
                 //player().ClientMessage("Spawning doggy alarm for "$sp);
                 alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
                 alarm.Event='guardattack';
@@ -600,9 +601,11 @@ function PostFirstEntryMapFixes()
                         break;
                     }
                 }
-                break;
             }
-
+            if (#var(prefix)MJ12Commando(sp)!=None) {
+                sp.DrawScale = 1;
+                sp.SetCollisionSize(sp.default.CollisionRadius, sp.default.CollisionHeight);
+            }
         }
         break;
     }
