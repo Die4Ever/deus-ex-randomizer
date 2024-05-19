@@ -86,3 +86,10 @@ function CalcTrace(float deltaTime)
         EndTrace = Reflection * 10000;
     }
 }
+
+
+function TurnOn()
+{
+    Super.TurnOn();
+    SoundVolume = 80;
+}
