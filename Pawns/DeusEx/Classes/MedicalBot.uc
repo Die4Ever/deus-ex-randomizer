@@ -37,19 +37,44 @@ function updateName()
 
 function int HealPlayer(DeusExPlayer player)
 {
-    local int healAmount;
-
-#ifdef injections
-    healAmount = _HealPlayer(player);
-#else
-    healAmount = Super.HealPlayer(player);
-#endif
+    local int healedPoints, uses;
+    local string msg;
 
     numUses++;
 
+#ifdef injections
+    if (Human(player) != None) {
+        healedPoints = Human(player)._HealPlayer(healAmount);
+        lastHealTime = Level.TimeSeconds;
+        uses = GetRemainingUses();
+
+        if (healedPoints == 1)
+            msg = "Healed 1 point";
+        else
+            msg = "Healed " $ healedPoints $ " points";
+        if (healedPoints < healAmount)
+            msg = msg $ " (max " $ healAmount $ ")";
+
+        if (uses == 0) {
+            msg = msg $ ". No heals left.";
+        } else {
+            msg = msg $ ". " $ healRefreshTime $ "s until recharged. ";
+            if (uses == 1)
+                msg = msg $ "1 heal left.";
+            else
+                msg = msg $ uses $ " heals left.";
+        }
+
+        player.ClientMessage(msg);
+    }
+#else
+    healAmount = Super.HealPlayer(player);
+    // don't show multiple client messages
+#endif
+
     updateName();
 
-    return healAmount;
+    return healedPoints;
 }
 
 simulated function int GetMaxUses()
