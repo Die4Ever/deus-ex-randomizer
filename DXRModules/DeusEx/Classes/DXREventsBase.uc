@@ -32,7 +32,11 @@ simulated function string tweakBingoDescription(string event, string desc);
 function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
-static function string GetBingoFailedGoals(DXRando dxr, string eventname, out string failed2);
+
+// for goals that can be detected as impossible by an event
+static function int GetBingoFailedEvents(DXRando dxr, string eventname, out string failed[5]);
+// for goals that can not be detected as impossible by an event
+function MarkBingoFailedSpecial();
 
 function AddWatchedActor(Actor a,String eventName)
 {
@@ -74,6 +78,8 @@ function PreFirstEntry()
             SetWatchFlags();
             break;
     }
+
+    MarkBingoFailedSpecial();
 }
 
 function PostFirstEntry()
@@ -471,7 +477,8 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
-    local string j, failed2;
+    local string j;
+    local int i;
     local class<Json> js;
     js = class'Json';
 
@@ -488,6 +495,9 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
         return;
     }
 
+    _MarkBingo(eventname);
+    MarkBingoFailedEvents(dxr, eventname);
+
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
@@ -498,9 +508,6 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
-    _MarkBingo(eventname);
-    MarkBingoAsFailed(dxr, GetBingoFailedGoals(dxr, eventname, failed2));
-    MarkBingoAsFailed(dxr, failed2);
 }
 
 function M02HotelHostagesRescued()
@@ -640,8 +647,9 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string classname, failed2;
+    local string classname;
     local bool dead;
+    local int i;
 
     dead = !CanKnockUnconscious(victim, damageType);
 
@@ -697,8 +705,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    MarkBingoAsFailed(dxr, GetBingoFailedGoals(dxr, victim.bindName $ "_Dead", failed2));
-    MarkBingoAsFailed(dxr, failed2);
+    MarkBingoFailedEvents(dxr, victim.bindName $ "_Dead");
 
     if(!victim.bImportant)
         return;
@@ -806,6 +813,7 @@ static function BeatGame(DXRando dxr, int ending)
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
+    InventoryData(dxr,j);
     GameTimeEventData(dxr, j);
 
     js.static.Add(j, "score", stats.ScoreRun());
@@ -881,6 +889,46 @@ static function AugmentationData(DXRando dxr, out string j)
 
         anAug = anAug.next;
     }
+
+}
+
+static function InventoryData(DXRando dxr, out string j)
+{
+    local Inventory item;
+    local string invId,invClass,invInfo,invName;
+    local int invNum,invPosX,invPosY,count;
+    local #var(DeusExPrefix)Weapon dxw;
+
+    item = dxr.player.Inventory;
+    invNum=0;
+
+    while(item!=None)
+    {
+        if (Item.bDisplayableInv){
+            invId="Inv-"$invNum++;
+            invClass=string(Item.Class.Name);
+            invName=Item.ItemName;
+            invPosX=Item.invPosX;
+            invPosY=Item.invPosY;
+            count=0;
+            if(Pickup(Item)!=None){ //Pickups can have a count
+                count = Pickup(Item).NumCopies;
+            } else if (#var(DeusExPrefix)Weapon(Item)!=None){ //Thrown weapons also show a count
+                dxw = #var(DeusExPrefix)Weapon(Item);
+                if(ClassIsChildOf(dxw.ProjectileClass, class'#var(prefix)ThrownProjectile')){
+                    count=dxw.AmmoType.AmmoAmount;
+                }
+            }
+
+            invInfo = "{\"class\":\"" $ invClass $"\",\"x\":"$invPosX$",\"y\":"$invPosY$",\"count\":"$count$",\"name\":\"" $ invName $"\"}";
+            j = j $",\"" $ invId $ "\":" $ invInfo;
+        }
+
+        item = item.Inventory;
+    }
+
+    j = j $ ",\"credits\":" $ dxr.player.credits;
+
 
 }
 
@@ -973,6 +1021,56 @@ simulated function CreateBingoBoard()
     _CreateBingoBoard(data, dxr.flags.settings.starting_map, dxr.flags.bingo_duration);
 }
 
+// a nice, convenient function to test some specified goal
+function bool AddTestGoal(
+    PlayerDataItem data,
+    string event,
+    int boardIdx,
+    optional int max,
+    optional int starting_mission,
+    optional int missions
+)
+{
+    local BingoOption option;
+    local int bingoIdx;
+    local string desc;
+    local float f;
+
+    if (event == "") return false;
+    for (bingoIdx = 0; bingoIdx < ArrayCount(bingo_options); bingoIdx++)
+        if (bingo_options[bingoIdx].event == event) break;
+    if (bingoIdx == ArrayCount(bingo_options)) return false;
+
+    if (max == 0)
+        max = bingo_options[bingoIdx].max;
+    if (starting_mission == 0)
+        starting_mission = 1;
+    if (missions == 0)
+        missions = bingo_options[bingoIdx].missions;
+
+    desc = bingo_options[bingoIdx].desc;
+    if (max > 1 && InStr(desc, "%s") != -1) {
+        f = float(dxr.flags.bingo_scale)/100.0;
+        f = rngrange(f, 0.8, 1);// 80% to 100%
+        f *= MissionsMaskAvailability(starting_mission, missions) ** 1.5;
+        max = Ceil(float(max) * f);
+        max = self.Max(max, 1);
+        desc = sprintf(bingo_options[bingoIdx].desc, max);
+    }
+
+    data.SetBingoSpot(
+        boardIdx % 5,
+        boardIdx / 5,
+        event,
+        desc,
+        0,
+        max,
+        missions
+    );
+
+    return true;
+}
+
 simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
 {
     local int x, y, i;
@@ -981,7 +1079,6 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local bool bPossible;
     local float f;
-    // local int testGoal;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(starting_map);
@@ -1079,16 +1176,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         break;
     }
 
-    /* testGoal = some goal index;
-    data.SetBingoSpot(
-        0,
-        0,
-        bingo_options[testGoal].event,
-        bingo_options[testGoal].desc,
-        0,
-        bingo_options[testGoal].max,
-        bingo_options[testGoal].missions
-    ); */
+    // AddTestGoal(data, "some_goal", 0);
+    // AddTestGoal(data, "some_other_goal", 1);
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
@@ -1231,6 +1320,7 @@ function _MarkBingoAsFailed(coerce string eventname)
 
     data = class'PlayerDataItem'.static.GiveItem(player());
     if (data.MarkBingoAsFailed(eventname) && (!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0)) {
+        l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
@@ -1241,6 +1331,17 @@ static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
     e = DXREvents(dxr.FindModule(class'DXREvents'));
     if (e != None) {
         e._MarkBingoAsFailed(eventname);
+    }
+}
+
+static function MarkBingoFailedEvents(DXRando dxr, coerce string eventname)
+{
+    local string failed[5];
+    local int i, num_failed;
+
+    num_failed = GetBingoFailedEvents(dxr, eventname, failed);
+    for (i = 0; i < num_failed; i++) {
+        MarkBingoAsFailed(dxr, failed[i]);
     }
 }
 

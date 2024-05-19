@@ -34,8 +34,8 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
-        AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", GOAL_TYPE1 | VANILLA_GOAL, vect(6062.185059, 7079.296875, -2984.704102), rot(0,-19840,0));
+        AddActorLocation(loc, 1, vect(5570.471680, 7471.873535, -3061.458740), rot(0,-27976,0));
         AddMutualExclusion(front_gate_start, loc); // starting at the front gate and then exiting at the front gate is a LOT of walking
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5046.039063, -2050.704102), rot(0,-19840,0));

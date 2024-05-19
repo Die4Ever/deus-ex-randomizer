@@ -20,6 +20,11 @@ function CheckConfig()
     add_datacubes[i].text = "It's so handy being able to quickly grab some cash from the Quick Stop before getting to the club!|nAccount: 2332316 |nPIN: 1608 ";
     i++;
 
+    add_datacubes[i].map = "06_HONGKONG_WANCHAI_UNDERWORLD";
+    add_datacubes[i].text = "Max,|nIf you need to get into the freezer again, I've connected the door to the security terminal in the meeting room.|n|nLogin: LUCKYMONEY |nPassword: REDARROW |n|nRemember, that's the same account as your own computer.";
+    add_datacubes[i].Location = vect(367,-2511,-334);
+    i++;
+
     Super.CheckConfig();
 }
 
@@ -73,16 +78,16 @@ function PreFirstEntryMapFixes()
                 pg.ProjectileClass = class'PurgeGas';
                 switch(pg.Name) {
                 case 'ProjectileGenerator5':// left side
-                    pg.SetRotation(rotm(-7000, 80000, 0, 16384));
+                    pg.SetRotation(rotm(-7000, 80000, 0, GetRotationOffset(pg.class)));
                     break;
                 case 'ProjectileGenerator2':// middle left
-                    pg.SetRotation(rotm(-6024, 70000, 0, 16384));
+                    pg.SetRotation(rotm(-6024, 70000, 0, GetRotationOffset(pg.class)));
                     break;
                 case 'ProjectileGenerator3':// middle right
-                    pg.SetRotation(rotm(-8056, 64000, 0, 16384));
+                    pg.SetRotation(rotm(-8056, 64000, 0, GetRotationOffset(pg.class)));
                     break;
                 case 'ProjectileGenerator7':// right side
-                    pg.SetRotation(rotm(-8056, 60000, 0, 16384));
+                    pg.SetRotation(rotm(-8056, 60000, 0, GetRotationOffset(pg.class)));
                     break;
                 }
             }
@@ -99,6 +104,13 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+
+            foreach AllActors(class'Button1', b) {
+                if (b.tag == 'Weapons_Lock_broken' || b.tag == 'Weapons_lock' || b.event == 'missile_door') {
+                    b.SetRotation(rot(14312, 18536, 51312)); // my guess is that the vanilla rotations were each done by eye
+                }
+            }
+
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
 

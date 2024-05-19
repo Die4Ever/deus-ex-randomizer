@@ -3,7 +3,7 @@ class DXRMissionsM02 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2, vents_start, jock_sewer, generator_sewer, generator_alley;
+    local int goal, loc, loc2, shanty_start, jock_sewer, generator_sewer, generator_alley;
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -14,7 +14,7 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 4, 'DataLinkTrigger1', PHYS_None);
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
-        vents_start = AddGoalLocation("02_NYC_BATTERYPARK", "Ventilation system", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
+        shanty_start = AddGoalLocation("02_NYC_BATTERYPARK", "Shanty Town", NORMAL_GOAL | START_LOCATION, vect(-2970,1840,348), rot(0, 0, 0));
 
         loc = AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
         AddActorLocation(loc, PLAYER_LOCATION, vect(81.434570, -1123.060547, -384.397644), rot(0, 8000, 0));
@@ -24,9 +24,9 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "By the desk", NORMAL_GOAL, vect(-615.152161, -665.281738, -397.581146), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Walkway by the water", NORMAL_GOAL, vect(-420.000000, -2222.000000, -400), rot(0, 0, 0));
         loc = AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, 0, 0));
-        AddMutualExclusion(loc, vents_start);// don't put ambrosia in the subway if you start right there in the vents, too easy
+        AddMutualExclusion(loc, shanty_start);// don't put ambrosia in the subway if you start right there in the shanty town, too easy
         loc = AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, 0, 0));
-        AddMutualExclusion(loc, vents_start);// don't put ambrosia in the subway if you start right there in the vents, too easy
+        AddMutualExclusion(loc, shanty_start);// don't put ambrosia in the subway if you start right there in the shanty town, too easy
 
         if (dxr.flags.settings.starting_map > 20)
         {

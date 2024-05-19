@@ -203,9 +203,9 @@ static function string GetStartMap(Actor a, int start_map_val)
 static function string _GetStartMap(int start_map_val, optional out string friendlyName, optional out int bShowInMenu)
 {
     friendlyName = ""; // clear the out param to protect against reuse by the caller
-#ifdef allstarts
-    bShowInMenu=1;
-#endif
+
+    if (#defined(allstarts))
+        bShowInMenu=1;
     switch(start_map_val)
     {
         case 0:
@@ -274,7 +274,7 @@ static function string _GetStartMap(int start_map_val, optional out string frien
             return "06_HongKong_Helibase";
         case 61:
             bShowInMenu=1;
-            friendlyName = "Wan Chai Market";
+            friendlyName = "Hong Kong (Market)";
             return "06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
         case 62:
             friendlyName = "Hong Kong (Canals)";

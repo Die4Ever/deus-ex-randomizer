@@ -1488,6 +1488,79 @@ function SetWatchFlags() {
     }
 }
 
+function bool FailIfCorpseNotHeld(class<#var(DeusExPrefix)Carcass> carcClass, string goal)
+{
+    local #var(PlayerPawn) p;
+
+    p = player();
+    if (POVCorpse(p.inHand) == None || string(carcClass) != POVCorpse(p.inHand).carcClassString) {
+        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, goal);
+        return true;
+    }
+    return false;
+}
+
+function MarkBingoFailedSpecial()
+{
+    local int progress, maxProgress;
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+
+    switch (dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+    case "03_NYC_UNATCOISLAND":
+    case "03_NYC_BATTERYPARK":
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        break;
+    case "04_NYC_UNATCOISLAND":
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+
+        // the last Terrorist left is Miguel
+        progress = data.GetBingoProgress("Terrorist_ClassDead", maxProgress);
+        if (maxProgress - progress > 1) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "Terrorist_ClassDead");
+        }
+        progress = data.GetBingoProgress("Terrorist_ClassUnconscious", maxProgress);
+        if (maxProgress - progress > 1) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "Terrorist_ClassUnconscious");
+        }
+
+        break;
+    case "04_NYC_STREET":
+    case "05_NYC_UNATCOMJ12Lab":
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        break;
+    case "06_HONGKONG_HELIBASE":
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        FailIfCorpseNotHeld(class'#var(prefix)PaulDentonCarcass', "PaulToTong");
+        break;
+    case "06_HONGKONG_WANCHAI_MARKET":
+    case "06_HONGKONG_WANCHAI_CANAL":
+        if (dxr.flagbase.GetBool('Have_ROM')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
+        }
+        break;
+    case "08_NYC_STREET":
+    case "09_NYC_DOCKYARD":
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        break;
+    case "09_NYC_GRAVEYARD":
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        if (! HasItem(player(), class'VialAmbrosia')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
+        }
+        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "ChangeClothes");
+        break;
+    case "10_PARIS_CATACOMBS":
+    case "11_PARIS_EVERETT":
+    case "12_VANDENBERG_CMD":
+        FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        break;
+    }
+}
+
 simulated function AnyEntry()
 {
     local Conversation conv;
@@ -1969,98 +2042,131 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function string GetBingoFailedGoals(DXRando dxr, string eventname, out string failed2)
+static function int GetBingoFailedEvents(DXRando dxr, string eventname, out string failed[5])
 {
-    failed2 = "";
+    local int num_failed;
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
         case "JuanLebedev_Dead":
-            return "LebedevLived";
+            failed[num_failed++] = "LebedevLived";
+            return num_failed;
         case "Aimee_Dead":
         case "LeMerchant_Dead":
-            return "AimeeLeMerchantLived";
+            failed[num_failed++] = "AimeeLeMerchantLived";
+            return num_failed;
         case "MaggieChow_Dead":
-            return "MaggieLived";
+            failed[num_failed++] = "MaggieLived";
+            return num_failed;
         case "FordSchick_Dead":
-            return "FordSchickRescued";
+            failed[num_failed++] = "FordSchickRescued";
+            return num_failed;
         case "AlleyBum_Dead":
-            return "AlleyBumRescued";
+            failed[num_failed++] = "AlleyBumRescued";
+            return num_failed;
         case "Camille_Dead":
-            return "CamilleConvosDone";
+            failed[num_failed++] = "CamilleConvosDone";
+            return num_failed;
         case "Miguel_Dead":
-            return "nsfwander";
+            failed[num_failed++] = "Terrorist_peeptime";
+            failed[num_failed++] = "Terrorist_ClassDead";
+            failed[num_failed++] = "Terrorist_ClassUnconscious";
+            failed[num_failed++] = "nsfwander";
+            failed[num_failed++] = "MiguelLeaving";
+            return num_failed;
         case "Josh_Dead":
-            return "JoshFed";
+            failed[num_failed++] = "JoshFed";
+            return num_failed;
         case "Billy_Dead":
-            return "M02BillyDone";
+            failed[num_failed++] = "M02BillyDone";
+            return num_failed;
         case "Canal_Bartender_Dead":
-            return "Canal_Bartender_Question4";
+            failed[num_failed++] = "Canal_Bartender_Question4";
+            return num_failed;
         case "ClubBartender_Dead":
-            return "M06BartenderQuestion3";
+            failed[num_failed++] = "M06BartenderQuestion3";
+            return num_failed;
         case "Joshua_Dead":
-            return "JoshuaInterrupted_Played";
+            failed[num_failed++] = "JoshuaInterrupted_Played";
+            return num_failed;
         case "Mamasan_Dead":
         case "Date1_Dead":
-            return "M06JCHasDate";
+            failed[num_failed++] = "M06JCHasDate";
+            return num_failed;
 
         case "KnowsAboutNanoSword":
-            failed2 = "M06JCHasDate";
+            failed[num_failed++] = "M06JCHasDate";
             // fallthrough
         case "ClubMercedes_Dead":
         case "ClubTessa_Dead":
-            return "ClubEntryPaid";
+            failed[num_failed++] = "ClubEntryPaid";
+            return num_failed;
 
         // omg these hostage names
         case "SubHostageFemale_Dead":
         case "SubHostageMale_Dead":
-            return "SubwayHostagesSaved";
+            failed[num_failed++] = "SubwayHostagesSaved";
+            return num_failed;
         case "JoJoFine_Dead":
-            return "GaveRentonGun";
+            failed[num_failed++] = "GaveRentonGun";
+            return num_failed;
 
+        case "SandraRenton_Dead":
+            failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
+            return num_failed;
         case "GilbertRenton_Dead":
-            failed2 = "GaveRentonGun";
+            if (dxr.localURL != "04_NYC_HOTEL") {
+                failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
+            }
+            failed[num_failed++] = "GaveRentonGun";
             // fallthrough
         case "FemaleHostage_Dead":
         case "MaleHostage_Dead":
-            return "HotelHostagesSaved";
+            failed[num_failed++] = "HotelHostagesSaved";
+            return num_failed;
 
         case "hostage_female_Dead":
         case "hostage_Dead":
-            return "SilhouetteHostagesAllRescued";
+            failed[num_failed++] = "SilhouetteHostagesAllRescued";
+            return num_failed;
         case "M06Junkie_Dead":
-            return "M06PaidJunkie";
+            failed[num_failed++] = "M06PaidJunkie";
+            return num_failed;
         case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
-            return "M06BoughtVersaLife";
+            failed[num_failed++] = "M06BoughtVersaLife";
+            return num_failed;
         case "Supervisor01_Dead":
-            return "Supervisor_Paid";
-        case "BeenToCops":
-            if (dxr.flagbase.GetBool('MaggieChow_Dead') == false) { // unless she's still alive, Maggie's body might still be in her apartment, ready to be taught how to fly
-                return "MaggieCanFly";
-            }
-            return "";
+            failed[num_failed++] = "Supervisor_Paid";
+            return num_failed;
         case "Joshua_Dead":
-            return "JoshuaInterrupted_Played";
+            failed[num_failed++] = "JoshuaInterrupted_Played";
+            return num_failed;
         case "Don_Dead":
         case "Lenny_Dead":
-            return "GiveZyme";
+            failed[num_failed++] = "GiveZyme";
+            return num_failed;
         case "Renault_Dead":
-            failed2 = "MeetRenault_Played";
-            return "SoldRenaultZyme";
+            failed[num_failed++] = "SoldRenaultZyme";
+            failed[num_failed++] = "MeetRenault_Played";
+            return num_failed;
         case "TimBaker_Dead":
-            return "MeetTimBaker_Played";
+            failed[num_failed++] = "MeetTimBaker_Played";
+            return num_failed;
         case "drbernard_Dead":
-            return "MeetDrBernard_Played";
-        case "JaimeRecruited":
-            return "KnowsGuntherKillphrase";
+            failed[num_failed++] = "MeetDrBernard_Played";
+            return num_failed;
         case "JaimeLeftBehind":
-            return "M07MeetJaime_Played";
-        // TODO: fail both if Jaime isn't talked to?
+            failed[num_failed++] = "M07MeetJaime_Played";
+            // fallthrough
+        case "JaimeRecruited":
+            failed[num_failed++] = "KnowsGuntherKillphrase";
+            return num_failed;
         case "NSFSignalSent":
-            return "M04PlayerLikesUNATCO_Played";
+            failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
+            return num_failed;
     }
 
-    return "";
+    return num_failed;
 }
 
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
@@ -2203,7 +2309,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SmugglerDied":
             return "Let Smuggler die by not warning him of the UNATCO raid.  This can be done either by not talking to him at all, or not warning him of the raid if you talk to him after talking to Dowd.";
         case "GaveDowdAmbrosia":
-            return "Find a vial of ambrosia on the upper decks of the superfreighter and bring to to Stanton Dowd in the graveyard.";
+            return "Find a vial of ambrosia on the upper decks of the superfreighter and bring it to Stanton Dowd in the graveyard.";
         case "JockBlewUp":
             return "Don't kill the fake mechanic at Everett's house so that Jock dies when you arrive in Area 51.";
         case "SavedPaul":
@@ -2321,7 +2427,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "09_NYC_DOCKYARD--796967769":
             return "Find Jenny's number (867-5309) somewhere in the outer area of the Brooklyn Naval Yards on a datacube.";
         case "JacobsShadow":
-            msg="Read enough chapters of Jacob's Shadow.  ";
+            msg="Read enough chapters of Jacob's Shadow.";
             if (mission<=2){
                 msg=msg$"There is a chapter in the MJ12 sewer base in Hell's Kitchen.";
             } else if (mission<=3){
@@ -2792,7 +2898,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "BeatTheMeat":
             return "Destroy enough hanging slaughtered chickens or pigs.";
         case "FamilySquabbleWrapUpGilbertDead_Played":
-            return "Talk to Sandra Renton after Gilbert and JoJo both die.  He was a good man...  What a rotten way to die.";
+            return "Talk to Sandra Renton after Gilbert and JoJo both die in Mission 4.  He was a good man...  What a rotten way to die.";
         case "CrackSafe":
             msg="Open enough safes throughout the game.  ";
             if (mission<=2){
@@ -3121,7 +3227,7 @@ defaultproperties
 #endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1,missions=8)
 #ifndef hx
-    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1,missions=17686)
+    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to a bar",max=1,missions=17686)
 #endif
     bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",max=6,missions=10)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)

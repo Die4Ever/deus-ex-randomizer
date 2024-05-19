@@ -564,7 +564,9 @@ function UpdateGoalWithRandoInfo(name goalName, string text, optional bool alway
 
 function int _UpdateLocation(Actor a, string goalName)
 {
-    local int g, l;
+    local int g, loc;
+
+    l("_UpdateLocation " $ a @ goalName);
 
     // make sure locations have been chosen
     AnyEntry();
@@ -574,14 +576,16 @@ function int _UpdateLocation(Actor a, string goalName)
         break;
     }
     if(g>=num_goals) return -1;
-    for(l=0; l < num_locations; l++) {
-        if(spoilers[g].goalLocation != locations[l].name) continue;
+    for(loc=0; loc < num_locations; loc++) {
+        if(spoilers[g].goalLocation != locations[loc].name) continue;
+        if( (goals[g].bitMask & locations[loc].bitMask) == 0) continue;
         break;
     }
-    if(l>=num_locations) return -1;
+    if(loc>=num_locations) return -1;
 
+    l("_UpdateLocation " $ a @ goalName @ g @ loc);
     goals[g].actors[0].a = a;
-    MoveGoalToLocation(goals[g], locations[l]);
+    MoveGoalToLocation(goals[g], locations[loc]);
     return g;
 }
 
