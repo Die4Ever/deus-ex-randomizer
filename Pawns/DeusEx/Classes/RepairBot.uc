@@ -34,15 +34,15 @@ function updateName()
     unfamiliarName = familiarName;
 }
 
-function int ChargePlayer(DeusExPlayer playerToCharge)
+function int ChargePlayer(DeusExPlayer PlayerToCharge)
 {
     local int chargedPoints, uses;
     local string msg;
 
 #ifdef injections
-    chargedPoints = _ChargePlayer(playerToCharge);
+    chargedPoints = _ChargePlayer(PlayerToCharge);
 #else
-    chargedPoints = Super.ChargePlayer(playerToCharge);
+    chargedPoints = Super.ChargePlayer(PlayerToCharge);
 #endif
 
     numUses++;
@@ -65,7 +65,7 @@ function int ChargePlayer(DeusExPlayer playerToCharge)
             msg = msg $ uses $ " charges left.";
     }
 
-    playerToCharge.ClientMessage(msg);
+    PlayerToCharge.ClientMessage(msg);
 
     updateName();
 

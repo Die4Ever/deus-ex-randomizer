@@ -35,15 +35,15 @@ function updateName()
     unfamiliarName = familiarName;
 }
 
-function int HealPlayer(DeusExPlayer playerToHeal)
+function int HealPlayer(DeusExPlayer PlayerToHeal)
 {
     local int healedPoints, uses;
     local string msg;
 
 #ifdef injections
     // vanilla HealPlayer but with a different client message
-    if (Human(playerToHeal) != None) {
-        healedPoints = Human(playerToHeal)._HealPlayer(healAmount);
+    if (Human(PlayerToHeal) != None) {
+        healedPoints = Human(PlayerToHeal)._HealPlayer(healAmount);
         numUses++;
 
         lastHealTime = Level.TimeSeconds;
@@ -66,7 +66,7 @@ function int HealPlayer(DeusExPlayer playerToHeal)
                 msg = msg $ uses $ " heals left.";
         }
 
-        playerToHeal.ClientMessage(msg);
+        PlayerToHeal.ClientMessage(msg);
     }
 #else
     healAmount = Super.HealPlayer(player);
