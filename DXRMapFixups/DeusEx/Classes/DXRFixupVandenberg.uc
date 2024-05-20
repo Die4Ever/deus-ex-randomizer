@@ -350,6 +350,7 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
+            class'FrictionTrigger'.static.CreateIce(self, vectm(28.63,-5129.48,-231.285), 1190, 650);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
             class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327));
