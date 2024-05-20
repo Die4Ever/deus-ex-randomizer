@@ -72,7 +72,7 @@ function Scream()
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     PlaySound(Sound'ChildDeath', SLOT_Pain,100,,, RandomPitch());
-    AISendEvent('LoudNoise', EAITYPE_Audio);
+    //AISendEvent('LoudNoise', EAITYPE_Audio);
 }
 
 function Destroyed()

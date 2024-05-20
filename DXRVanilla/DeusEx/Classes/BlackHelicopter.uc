@@ -53,7 +53,7 @@ function Scream()
 
     //Increase the radius from the default 4096 just so you can hear it from a distance
     PlaySound(Sound'ChildDeath', SLOT_Pain,100,,9000, RandomPitch());
-    AISendEvent('LoudNoise', EAITYPE_Audio);
+    //AISendEvent('LoudNoise', EAITYPE_Audio);
 }
 
 function Destroyed()
