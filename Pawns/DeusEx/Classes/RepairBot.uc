@@ -34,17 +34,38 @@ function updateName()
     unfamiliarName = familiarName;
 }
 
-function int ChargePlayer(DeusExPlayer PlayerToCharge)
+function int ChargePlayer(DeusExPlayer playerToCharge)
 {
-    local int chargeAmount;
+    local int chargedPoints, uses;
+    local string msg;
 
 #ifdef injections
-    chargeAmount = _ChargePlayer(PlayerToCharge);
+    chargedPoints = _ChargePlayer(playerToCharge);
 #else
-    chargeAmount = Super.ChargePlayer(PlayerToCharge);
+    chargedPoints = Super.ChargePlayer(playerToCharge);
 #endif
 
     numUses++;
+
+    uses = GetRemainingUses();
+    if (chargedPoints == 1)
+        msg = "Charged 1 point";
+    else
+        msg = "Charged " $ chargedPoints $ " points";
+    if (chargedPoints < chargeAmount)
+        msg = msg $ " (max " $ chargeAmount $ ")";
+
+    if (uses == 0) {
+        msg = msg $ ". No charges left.";
+    } else {
+        msg = msg $ ". " $ chargeRefreshTime $ "s until recharged. ";
+        if (uses == 1)
+            msg = msg $ "1 charge left.";
+        else
+            msg = msg $ uses $ " charges left.";
+    }
+
+    playerToCharge.ClientMessage(msg);
 
     updateName();
 
