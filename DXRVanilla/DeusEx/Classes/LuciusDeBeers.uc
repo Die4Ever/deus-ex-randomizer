@@ -65,6 +65,12 @@ function SetDead()
 
 function Scream()
 {
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando',dxr){break;}
+    if (dxr==None) return;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
+
     PlaySound(Sound'ChildDeath', SLOT_Pain,100,,, RandomPitch());
     AISendEvent('LoudNoise', EAITYPE_Audio);
 }
