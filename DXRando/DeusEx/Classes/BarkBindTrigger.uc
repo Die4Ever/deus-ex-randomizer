@@ -3,7 +3,6 @@
 //=============================================================================
 class BarkBindTrigger expands Trigger;
 
-var() bool bDestroyOthers;
 var() string newBindName;
 
 function Touch(Actor Other)

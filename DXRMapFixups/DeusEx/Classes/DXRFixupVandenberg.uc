@@ -38,6 +38,7 @@ function PreFirstEntryMapFixes()
     local Dispatcher d;
     local string botName;
     local int securityBotNum, militaryBotNum;
+    local #var(prefix)DataCube dc;
 
     local bool VanillaMaps;
 
@@ -257,6 +258,15 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            //There is an invisible wall that makes this location hard to reach on the mirrored map.
+            //just nudge the datacube over a bit
+            foreach AllActors(class'#var(prefix)DataCube',dc){
+                if(dc.TextTag=='14_Datacube06'){
+                    dc.SetLocation(vectm(4169,407,-1540));
+                    break;
+                }
+            }
+
             Spawn(class'PlaceholderItem',,, vectm(37.5,531.4,-1569)); //Secretary desk
             Spawn(class'PlaceholderItem',,, vectm(2722,226.5,-1481)); //Greasel Lab desk
             Spawn(class'PlaceholderItem',,, vectm(4097.8,395.4,-1533)); //Desk with zappy electricity near construction zone
@@ -350,6 +360,7 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
+            class'FrictionTrigger'.static.CreateIce(self, vectm(28.63,-5129.48,-231.285), 1190, 650);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
             class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327));
@@ -586,8 +597,9 @@ function PostFirstEntryMapFixes()
             SetGarageGuyReactions(sp);
             sp.Tag = 'guard2'; //
         }
+        alarm = None;
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
-            if (#var(prefix)Animal(sp)!=None){
+            if (#var(prefix)Animal(sp)!=None && alarm==None) {
                 //player().ClientMessage("Spawning doggy alarm for "$sp);
                 alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
                 alarm.Event='guardattack';
@@ -600,9 +612,11 @@ function PostFirstEntryMapFixes()
                         break;
                     }
                 }
-                break;
             }
-
+            if (#var(prefix)MJ12Commando(sp)!=None) {
+                sp.DrawScale = 1;
+                sp.SetCollisionSize(sp.default.CollisionRadius, sp.default.CollisionHeight);
+            }
         }
         break;
     }
