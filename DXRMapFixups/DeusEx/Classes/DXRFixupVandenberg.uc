@@ -38,6 +38,7 @@ function PreFirstEntryMapFixes()
     local Dispatcher d;
     local string botName;
     local int securityBotNum, militaryBotNum;
+    local #var(prefix)DataCube dc;
 
     local bool VanillaMaps;
 
@@ -254,6 +255,15 @@ function PreFirstEntryMapFixes()
                 if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
                     comp.UserList[0].userName = "Oceanguard";
                     comp.UserList[0].Password = "Kraken";
+                }
+            }
+
+            //There is an invisible wall that makes this location hard to reach on the mirrored map.
+            //just nudge the datacube over a bit
+            foreach AllActors(class'#var(prefix)DataCube',dc){
+                if(dc.TextTag=='14_Datacube06'){
+                    dc.SetLocation(vectm(4169,407,-1540));
+                    break;
                 }
             }
 
