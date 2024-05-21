@@ -58,11 +58,12 @@ function Scream()
 
 function Destroyed()
 {
-    //Daddy screamed real good before he died!
-    Scream();
-
-    //Also generate gibs
-    ChunkUp();
+    if (class'DXRando'.default.dxr.localURL == "15_AREA51_BUNKER") {
+        //Daddy screamed real good before he died!
+        Scream();
+        //Also generate gibs
+        ChunkUp();
+    }
 
     //Destroy as normal
     Super.Destroyed();
