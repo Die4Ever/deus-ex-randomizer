@@ -69,7 +69,7 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
 
     updateName();
 
-    return chargeAmount;
+    return chargedPoints;
 }
 
 simulated function int GetMaxUses()
