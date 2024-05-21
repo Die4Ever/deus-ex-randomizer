@@ -2164,6 +2164,9 @@ static function int GetBingoFailedEvents(DXRando dxr, string eventname, out stri
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
             return num_failed;
+        case "GeneratorBlown":
+            failed[num_failed++] = "JockSecondStory";
+            return num_failed;
     }
 
     return num_failed;
