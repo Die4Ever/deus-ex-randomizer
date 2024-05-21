@@ -1,5 +1,7 @@
 class DXRBlackHelicopter injects BlackHelicopter;
 
+var bool bDying;
+
 singular function SupportActor(Actor standingActor)
 {
 	// kill whatever lands on the blades
@@ -58,11 +60,13 @@ function Scream()
 
 function Destroyed()
 {
-    //Daddy screamed real good before he died!
-    Scream();
+    if (bDying){
+        //Daddy screamed real good before he died!
+        Scream();
 
-    //Also generate gibs
-    ChunkUp();
+        //Also generate gibs
+        ChunkUp();
+    }
 
     //Destroy as normal
     Super.Destroyed();
@@ -85,5 +89,6 @@ auto state Flying
 
 defaultproperties
 {
+    bDying=False
     CollisionRadius=360
 }

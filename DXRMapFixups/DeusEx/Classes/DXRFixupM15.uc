@@ -53,6 +53,17 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+function FixJockExplosion()
+{
+#ifdef injections
+    local BlackHelicopter chopper;
+
+    foreach AllActors(class'BlackHelicopter',chopper,'heli_sabotaged'){
+        chopper.bDying=True;
+    }
+#endif
+}
+
 function PreFirstEntryMapFixes_Bunker()
 {
     local DeusExMover d;
@@ -143,6 +154,8 @@ function PreFirstEntryMapFixes_Bunker()
 
     //Button to open blast doors from inside
     AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
+
+    FixJockExplosion();
 
     Spawn(class'#var(prefix)LiquorBottle',,, vectm(1005.13,2961.26,-480)); //Liquor in a locker, so every mission has alcohol
 
