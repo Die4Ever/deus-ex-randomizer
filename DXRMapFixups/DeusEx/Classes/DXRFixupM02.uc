@@ -330,7 +330,7 @@ function AnyEntryMapFixes()
     case "02_NYC_BAR":
         if (dxr.flagbase.getBool('GeneratorBlown')) {
             foreach AllActors(class'Jock', j) {
-                j.Destroy();
+                j.LeaveWorld();
                 break;
             }
         }
