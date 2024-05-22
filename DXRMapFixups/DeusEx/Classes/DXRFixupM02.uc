@@ -25,6 +25,7 @@ function PreFirstEntryMapFixes()
     local bool VanillaMaps;
     local CrateUnbreakableSmall crateSmall;
     local CrateUnbreakableMed crateMedium;
+    local Vector loc;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -82,9 +83,16 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps){
             foreach RadiusActors(class'CrateUnbreakableSmall', crateSmall, 0.0, vectm(-1658.93, 664.61, -358.68)) {
                 crateSmall.bIsSecretGoal = true;
+                loc = crateSmall.Location;
+                loc.y -= 130.0;
+                crateSmall.SetLocation(loc);
+                break; // does this actually save any cycles with a zero radius?
             }
             foreach RadiusActors(class'CrateUnbreakableMed', crateMedium, 20.0, vectm(-1606.68, 640.60, -435.55)) {
                 crateMedium.bIsSecretGoal = true;
+                loc = crateMedium.Location;
+                loc.y -= 130.0;
+                crateMedium.SetLocation(loc);
             }
 
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
