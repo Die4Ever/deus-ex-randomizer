@@ -210,6 +210,7 @@ function _ReduceWeaponAmmo(Weapon w, float mult)
     if( w.AmmoName == None || w.PickupAmmoCount <= 0 ) return;
     // don't reduce weapon PickupAmmoCount owned by Robots? does this matter?
     if(#var(prefix)Robot(w.Owner) != None) return;
+    if( w.bIsSecretGoal ) return;
 
     mult *= _GetItemMult(_item_reductions, w.AmmoName);
     mult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
@@ -224,6 +225,7 @@ function _ReduceAmmo(Ammo a, float mult)
 {
     // don't reduce ammo owned by pawns
     if( a.AmmoAmount <= 0 || CarriedItem(a) ) return;
+    if( a.bIsSecretGoal ) return;
 
     mult *= _GetItemMult(_item_reductions, a.class);
     mult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
