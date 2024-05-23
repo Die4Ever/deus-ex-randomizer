@@ -69,7 +69,7 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
         PlayerToHeal.ClientMessage(msg);
     }
 #else
-    healedPoints = Super.HealPlayer(player);
+    healedPoints = Super.HealPlayer(PlayerToHeal);
     numUses++;
     // don't show multiple client messages
 #endif
