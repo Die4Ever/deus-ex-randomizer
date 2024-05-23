@@ -324,7 +324,18 @@ function PostFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
-    if (dxr.localURL == "02_NYC_SMUG") {
+    Local Jock j;
+
+    switch (dxr.localURL) {
+    case "02_NYC_BAR":
+        if (dxr.flagbase.getBool('GeneratorBlown')) {
+            foreach AllActors(class'Jock', j) {
+                j.LeaveWorld();
+                break;
+            }
+        }
+        break;
+    case "02_NYC_SMUG":
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
