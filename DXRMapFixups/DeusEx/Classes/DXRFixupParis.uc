@@ -84,7 +84,6 @@ function PreFirstEntryMapFixes()
             }
 
             SetAllLampsState(false, false, false); // surely Nicolette didn't leave all the lights on when she moved out
-            FixConversationFlag(GetConversation('NicoletteInCellar'), 'ChateauInCeller', true, 'ChateauInCellar', true);
 
             foreach AllActors(class'FlagTrigger', ft) {
                 if (ft.FlagName == 'ChateauInCellar') {
@@ -259,6 +258,7 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
+        FixConversationFlag(GetConversation('NicoletteInCellar'), 'ChateauInCeller', true, 'ChateauInCellar', true);
         break;
     case "10_PARIS_METRO":
         //Tong gives you a map of the streets when you enter via the subway
