@@ -3,9 +3,9 @@ class BalanceAugDrone injects AugDrone;
 defaultproperties
 {
     reconstructTime=1
-    EnergyRate=100
-    LevelValues(0)=50
-    LevelValues(1)=75
-    LevelValues(2)=100
-    LevelValues(3)=150
+    EnergyRate=20
+    LevelValues(0)=30
+    LevelValues(1)=50
+    LevelValues(2)=70
+    LevelValues(3)=100
 }
