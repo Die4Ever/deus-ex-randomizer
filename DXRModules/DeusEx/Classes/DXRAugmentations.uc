@@ -337,7 +337,8 @@ simulated function RandoAug(Augmentation a)
 
     aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
     if(( aug_value_wet_dry > 0
-        && ( #var(prefix)AugVision(a) != None || #var(prefix)AugMuscle(a) != None) || #var(prefix)AugHeartLung(a) != None )
+        && ( #var(prefix)AugVision(a) != None || #var(prefix)AugMuscle(a) != None)
+        || (#var(prefix)AugHeartLung(a) != None && !#defined(injections)) )
     ) {
         // don't randomize vision aug strength and instead randomize its energy usage
         // so it can be used for speedrun strategies with specific spots to check from
@@ -403,7 +404,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Strength";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'#var(prefix)AugPower') {
+    else if( a.Class == class'#var(prefix)AugPower' || (a.Class == class'#var(prefix)AugHeartLung' && #defined(injections))) {
         word = "Energy";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
@@ -430,6 +431,10 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         if(a.LevelValues[i] < 0)
             a.LevelValues[i] = 0;
         return int(a.LevelValues[i] / 16.0) $" ft";
+    }
+    else if( a.Class == class'#var(prefix)AugHeartLung') {
+        word = "Energy Usage";
+        return Max(int(a.LevelValues[i] * 100.0), 0) $ "%";
     }
 
 #ifdef gmdx
