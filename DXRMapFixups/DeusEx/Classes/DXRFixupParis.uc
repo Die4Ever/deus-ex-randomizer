@@ -18,6 +18,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local bool VanillaMaps;
+    local FlagTrigger ft;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -83,6 +84,31 @@ function PreFirstEntryMapFixes()
             }
 
             SetAllLampsState(false, false, false); // surely Nicolette didn't leave all the lights on when she moved out
+
+            foreach AllActors(class'FlagTrigger', ft) {
+                if (ft.FlagName == 'ChateauInCellar') {
+                    ft.Destroy();
+                    break;
+                }
+            }
+
+            ft = Spawn(class'FlagTrigger',,, vectm(1364.082031, 2048.021240, -311.900421));
+            ft.SetCollisionSize(250.0, 40.0);
+            ft.bWhileStandingOnly = true;
+            ft.bTriggerOnceOnly = false;
+            ft.FlagName = 'ChateauInCellar';
+
+            ft = Spawn(class'FlagTrigger',,, vectm(979.147034, 2428.054932, -392.494201));
+            ft.SetCollisionSize(300.0, 40.0);
+            ft.bWhileStandingOnly = true;
+            ft.bTriggerOnceOnly = false;
+            ft.FlagName = 'ChateauInCellar';
+
+            ft = Spawn(class'FlagTrigger',,, vectm(1798.484375, 2425.229736, -392.494201));
+            ft.SetCollisionSize(300.0, 40.0);
+            ft.bWhileStandingOnly = true;
+            ft.bTriggerOnceOnly = false;
+            ft.FlagName = 'ChateauInCellar';
         }
         break;
     case "10_PARIS_METRO":
@@ -232,6 +258,7 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
+        FixConversationFlag(GetConversation('NicoletteInCellar'), 'ChateauInCeller', true, 'ChateauInCellar', true);
         break;
     case "10_PARIS_METRO":
         //Tong gives you a map of the streets when you enter via the subway
