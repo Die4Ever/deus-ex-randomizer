@@ -137,62 +137,60 @@ event DescendantRemoved(Window descendant)
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(9, 339);
-	winActionButtons.SetWidth(267);
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(9, 339);
+    winActionButtons.SetWidth(267);
 
-	btnRefusal = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnRefusal.SetButtonText(RefuseLabel);
+    btnRefusal = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnRefusal.SetButtonText(RefuseLabel);
 
-	btnDrop = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnDrop.SetButtonText(DropButtonLabel);
+    btnDrop = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnDrop.SetButtonText(DropButtonLabel);
 
-	btnUse = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnUse.SetButtonText(UseButtonLabel);
+    btnUse = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnUse.SetButtonText(UseButtonLabel);
 
-	btnEquip = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnEquip.SetButtonText(EquipButtonLabel);
+    btnEquip = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnEquip.SetButtonText(EquipButtonLabel);
 }
 
 function EnableButtons()
 {
-    local DataStorage datastorage;
     local Inventory inv;
 
-	if ((btnRefusal == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
-		return;
+    if ((btnRefusal == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
+        return;
 
     btnRefusal.SetButtonText(RefuseLabel);
 
-	if (selectedItem == None) {
-		btnDrop.DisableWindow();
-		btnRefusal.DisableWindow();
-		btnEquip.DisableWindow();
-		btnUse.DisableWindow();
-	} else {
-		btnEquip.EnableWindow();
-		btnUse.EnableWindow();
-		btnDrop.EnableWindow();
-		btnRefusal.EnableWindow();
+    if (selectedItem == None) {
+        btnDrop.DisableWindow();
+        btnRefusal.DisableWindow();
+        btnEquip.DisableWindow();
+        btnUse.DisableWindow();
+    } else {
+        btnEquip.EnableWindow();
+        btnUse.EnableWindow();
+        btnDrop.EnableWindow();
+        btnRefusal.EnableWindow();
 
-		inv = Inventory(selectedItem.GetClientObject());
+        inv = Inventory(selectedItem.GetClientObject());
 
-		if (inv != None) {
-            datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-            if (InStr(datastorage.GetConfigKey("item_refusals"), "," $ inv.class.name $ ",") == -1) {
-                btnRefusal.SetButtonText(RefuseLabel);
-            } else {
+        if (inv != None) {
+            if (class'DXRLoadouts'.static.IsRefused(inv.class)) {
                 btnRefusal.SetButtonText(AcceptLabel);
+            } else {
+                btnRefusal.SetButtonText(RefuseLabel);
             }
 
             if (NanoKeyRing(inv) != None) {
                 btnDrop.DisableWindow();
                 btnRefusal.DisableWindow();
-				btnEquip.DisableWindow();
-				btnUse.DisableWindow();
-			} else {
+                btnEquip.DisableWindow();
+                btnUse.DisableWindow();
+            } else {
                 if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None) {
                     btnUse.DisableWindow();
                 } else {
@@ -202,14 +200,13 @@ function EnableButtons()
                         btnEquip.SetButtonText(EquipButtonLabel);
                 }
             }
-            log("debug inv: " $ inv);
-		} else {
-			btnDrop.DisableWindow();
-		    btnRefusal.DisableWindow();
-			btnEquip.DisableWindow();
-			btnUse.DisableWindow();
-		}
-	}
+        } else {
+            btnDrop.DisableWindow();
+            btnRefusal.DisableWindow();
+            btnEquip.DisableWindow();
+            btnUse.DisableWindow();
+        }
+    }
 }
 
 function bool ButtonActivated(Window buttonPressed)
@@ -217,7 +214,11 @@ function bool ButtonActivated(Window buttonPressed)
     local bool ret;
 
     if (buttonPressed == btnRefusal) {
-        Refuse();
+        if(btnRefusal.buttonText == RefuseLabel) {
+            SetRefuseItem();
+        } else {
+            UnsetRefuseItem();
+        }
         return true;
     }
 
@@ -231,49 +232,48 @@ function bool ButtonActivated(Window buttonPressed)
     return ret;
 }
 
-function Refuse()
+function UnsetRefuseItem()
 {
-    local DataStorage datastorage;
+    local Inventory item;
+
+    item = Inventory(selectedItem.GetClientObject());
+    if(item == None) return;
+
+    class'DXRLoadouts'.static.UnsetRefuseItem(item.class);
+    btnRefusal.SetButtonText(RefuseLabel);
+    player.ClientMessage(item.ItemName $ " set as not trash.");
+}
+
+function SetRefuseItem()
+{
     local Inventory item;
     local Pickup droppedItem;
-    local string item_refusals, leftPart, rightPart;
-    local int strIdx;
     local Vector x, y, z;
     local Vector dropVect;
 
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     item = Inventory(selectedItem.GetClientObject());
+    if(item == None) return;
 
-    item_refusals = datastorage.GetConfigKey("item_refusals");
+    class'DXRLoadouts'.static.SetRefuseItem(item.class);
 
-    if (class'DXRActorsBase'.static.IsRefused(item.class, strIdx)) {
-        leftPart = Left(item_refusals, strIdx);
-        rightPart = Right(item_refusals, Len(item_refusals) - (strIdx + Len(item.class.name) + 1));
-        item_refusals = leftPart $ rightPart;
-        btnRefusal.SetButtonText(RefuseLabel);
+    if (Pickup(item) == None) {
+        DropSelectedItem();
     } else {
-        if (item_refusals == "") item_refusals = ",";
-        item_refusals = item_refusals $ item.class.name $ ",";
+        droppedItem = Pickup(player.Spawn(item.class));
+        droppedItem.numCopies = Pickup(item).numCopies;
+        item.Destroy();
 
-        if (Pickup(item) == None) {
-            DropSelectedItem();
-        } else {
-            droppedItem = Pickup(player.Spawn(item.class));
-            droppedItem.numCopies = Pickup(item).numCopies;
-            item.Destroy();
+        GetAxes(player.Rotation, x, y, z);
+        dropVect = player.Location + (player.CollisionRadius + 2.0 * droppedItem.CollisionRadius) * x;
+        dropVect.z += player.BaseEyeHeight; // TODO: change drop height based on where the player is looking
 
-            GetAxes(player.Rotation, x, y, z);
-            dropVect = player.Location + (player.CollisionRadius + 2.0 * droppedItem.CollisionRadius) * x;
-            dropVect.z += player.BaseEyeHeight; // TODO: change drop height based on where the player is looking
-
-            if (player.FastTrace(dropVect)) {
-                droppedItem.DropFrom(dropVect);
-                droppedItem.bFixedRotationDir = true;
-                droppedItem.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
-                droppedItem.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
-            }
+        if (player.FastTrace(dropVect)) {
+            droppedItem.DropFrom(dropVect);
+            droppedItem.bFixedRotationDir = true;
+            droppedItem.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
+            droppedItem.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
         }
     }
 
-    datastorage.SetConfig("item_refusals", item_refusals, 2147483647);
+    player.ClientMessage(item.ItemName $ " set as trash.");
 }

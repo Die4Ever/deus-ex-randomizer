@@ -1,5 +1,7 @@
 class DXRLoadouts extends DXRActorsBase transient;
 
+const default_item_refusals = ",#var(prefix)Cigarettes,";
+
 var int loadout;//copy locally so we don't need to make this class transient and don't need to worry about re-entering and picking up an item before DXRando loads
 
 struct loadouts
@@ -687,6 +689,55 @@ function SpawnItems()
 
     if( reducer != None )
         reducer.Timer();
+}
+
+static function bool IsRefused(class<Inventory> type, optional out int strIdx)
+{
+    local DataStorage datastorage;
+    local string refusals;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    refusals = datastorage.GetConfigKey("item_refusals");
+    if(refusals == "") {
+        refusals = default_item_refusals;
+    }
+    strIdx = InStr(refusals, "," $ type.name $ ",");
+    return strIdx != -1;
+}
+
+static function UnsetRefuseItem(class<Inventory> type)
+{
+    local DataStorage datastorage;
+    local string refusals, leftPart, rightPart;
+    local int strIdx;
+
+    if (!IsRefused(type, strIdx))
+        return;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    refusals = datastorage.GetConfigKey("item_refusals");
+    leftPart = Left(refusals, strIdx);
+    rightPart = Right(refusals, Len(refusals) - (strIdx + Len(type.name) + 1));
+    refusals = leftPart $ rightPart;
+
+    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
+}
+
+static function SetRefuseItem(class<Inventory> type)
+{
+    local DataStorage datastorage;
+    local string refusals;
+
+    if (IsRefused(type))
+        return;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    refusals = datastorage.GetConfigKey("item_refusals");
+
+    if (refusals == "") refusals = default_item_refusals;
+    refusals = refusals $ type.name $ ",";
+
+    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
 }
 
 function RunTests()

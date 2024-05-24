@@ -261,7 +261,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
     local Weapon weap;
     local Ammo playerAmmo;
 
-    if (class'DXRActorsBase'.static.IsRefused(item.class)) {
+    if (class'DXRLoadouts'.static.IsRefused(item.class)) {
         weap = Weapon(item);
         if (weap != None && weap.AmmoName != class'AmmoNone') {
             playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
