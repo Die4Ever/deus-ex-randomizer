@@ -92,19 +92,19 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            ft = Spawn(class'FlagTrigger',,, vect(1364.082031, 2048.021240, -311.900421));
+            ft = Spawn(class'FlagTrigger',,, vectm(1364.082031, 2048.021240, -311.900421));
             ft.SetCollisionSize(250.0, 40.0);
             ft.bWhileStandingOnly = true;
             ft.bTriggerOnceOnly = false;
             ft.FlagName = 'ChateauInCellar';
 
-            ft = Spawn(class'FlagTrigger',,, vect(979.147034, 2428.054932, -392.494201));
+            ft = Spawn(class'FlagTrigger',,, vectm(979.147034, 2428.054932, -392.494201));
             ft.SetCollisionSize(300.0, 40.0);
             ft.bWhileStandingOnly = true;
             ft.bTriggerOnceOnly = false;
             ft.FlagName = 'ChateauInCellar';
 
-            ft = Spawn(class'FlagTrigger',,, vect(1798.484375, 2425.229736, -392.494201));
+            ft = Spawn(class'FlagTrigger',,, vectm(1798.484375, 2425.229736, -392.494201));
             ft.SetCollisionSize(300.0, 40.0);
             ft.bWhileStandingOnly = true;
             ft.bTriggerOnceOnly = false;
