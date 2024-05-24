@@ -107,7 +107,7 @@ function PreFirstEntryMapFixes()
 
             foreach AllActors(class'Button1', b) {
                 if (b.tag == 'Weapons_Lock_broken' || b.tag == 'Weapons_lock' || b.event == 'missile_door') {
-                    b.SetRotation(rot(14312, 18536, 51312)); // my guess is that the vanilla rotations were each done by eye
+                    b.SetRotation(rotm(14400,16500,0,GetRotationOffset(class'Button1'))); //A similar rotation to original that only rotates in two axes instead of all three
                 }
             }
 

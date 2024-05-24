@@ -894,6 +894,8 @@ static function int GetRotationOffset(class<Actor> c)
         return 16384;
     if(ClassIsChildOf(c, class'ProjectileGenerator'))
         return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)Button1'))
+        return 16384;
     //ComputerPersonal is fine without this, so just leave it commented out
     //if(ClassIsChildOf(c, class'#var(prefix)ComputerPersonal'))
     //    return 32768;
