@@ -83,15 +83,13 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps){
             foreach RadiusActors(class'#var(prefix)CrateUnbreakableSmall', crateSmall, 8.0, vectm(-1658.93, 664.61, -358.68)) {
                 crateSmall.bIsSecretGoal = true;
-                loc = crateSmall.Location;
-                loc.y -= 123.0;
+                loc = crateSmall.Location - vectm(0, 123.0, 0);
                 crateSmall.SetLocation(loc);
                 break;
             }
             foreach RadiusActors(class'#var(prefix)CrateUnbreakableMed', crateMedium, 20.0, vectm(-1606.68, 640.60, -435.55)) {
                 crateMedium.bIsSecretGoal = true;
-                loc = crateMedium.Location;
-                loc.y -= 123.0;
+                loc = crateMedium.Location - vectm(0, 123.0, 0);
                 crateMedium.SetLocation(loc);
             }
 
