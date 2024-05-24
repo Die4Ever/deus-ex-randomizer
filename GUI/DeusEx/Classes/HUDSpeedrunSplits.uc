@@ -1,6 +1,3 @@
-//=============================================================================
-// HUDEnergyDisplay
-//=============================================================================
 class HUDSpeedrunSplits expands HUDBaseWindow config(DXRSplits);
 
 var DeusExPlayer    player;

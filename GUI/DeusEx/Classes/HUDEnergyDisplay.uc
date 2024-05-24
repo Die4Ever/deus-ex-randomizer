@@ -43,7 +43,10 @@ event Tick(float deltaSeconds)
 {
     local float energyUse;
 
-    energyUse = GetTotalEnergyUse();
+    if(player != None && player.AugmentationSystem != None) {
+        energyUse = player.AugmentationSystem.CalcEnergyUse(1);
+    }
+
     text.SetText(
         class'DXRInfo'.static.FloatToString(energyUse,3) $ " / Sec|n"
         $ class'DXRInfo'.static.FloatToString(GetEnergyTimeRemaining(energyUse),1)$" sec left"
@@ -55,40 +58,6 @@ event Tick(float deltaSeconds)
 function float GetEnergyTimeRemaining(float energyUse)
 {
     return player.Energy / energyUse;
-}
-
-function float GetTotalEnergyUse()
-{
-	local float energyUse, energyMult;
-	local Augmentation anAug;
-    local Augmentation PowerAug;
-
-	energyUse = 0;
-	energyMult = 1.0;
-
-    if(player == None || player.AugmentationSystem == None)
-        return 0;
-
-	anAug = player.AugmentationSystem.FirstAug;
-	while(anAug != None)
-	{
-        if (anAug.IsA('AugPower'))
-            PowerAug = anAug;
-	    if (anAug.bHasIt && anAug.bIsActive)
-		{
-			energyUse += ((anAug.GetEnergyRate()/60));
-		    if (anAug.IsA('AugPower'))
-            {
-			    energyMult = anAug.LevelValues[anAug.CurrentLevel];
-            }
-		}
-		anAug = anAug.next;
-    }
-
-    if (PowerAug.bIsActive)
-        energyMult = PowerAug.LevelValues[PowerAug.CurrentLevel];
-
-    return energyUse * energyMult;
 }
 
 // ----------------------------------------------------------------------
