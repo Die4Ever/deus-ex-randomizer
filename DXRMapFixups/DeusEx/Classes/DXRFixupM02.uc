@@ -23,8 +23,8 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local bool RevisionMaps;
     local bool VanillaMaps;
-    local CrateUnbreakableSmall crateSmall;
-    local CrateUnbreakableMed crateMedium;
+    local #var(prefix)CrateUnbreakableSmall crateSmall;
+    local #var(prefix)CrateUnbreakableMed crateMedium;
     local Vector loc;
 
 #ifdef injections
@@ -81,17 +81,17 @@ function PreFirstEntryMapFixes()
         break;
     case "02_NYC_WAREHOUSE":
         if (VanillaMaps){
-            foreach RadiusActors(class'CrateUnbreakableSmall', crateSmall, 0.0, vectm(-1658.93, 664.61, -358.68)) {
+            foreach RadiusActors(class'#var(prefix)CrateUnbreakableSmall', crateSmall, 8.0, vectm(-1658.93, 664.61, -358.68)) {
                 crateSmall.bIsSecretGoal = true;
                 loc = crateSmall.Location;
-                loc.y -= 130.0;
+                loc.y -= 123.0;
                 crateSmall.SetLocation(loc);
-                break; // does this actually save any cycles with a zero radius?
+                break;
             }
-            foreach RadiusActors(class'CrateUnbreakableMed', crateMedium, 20.0, vectm(-1606.68, 640.60, -435.55)) {
+            foreach RadiusActors(class'#var(prefix)CrateUnbreakableMed', crateMedium, 20.0, vectm(-1606.68, 640.60, -435.55)) {
                 crateMedium.bIsSecretGoal = true;
                 loc = crateMedium.Location;
-                loc.y -= 130.0;
+                loc.y -= 123.0;
                 crateMedium.SetLocation(loc);
             }
 
