@@ -157,31 +157,31 @@ simulated function int GetClassLevel(class<Augmentation> augClass)
 
 simulated function Float CalcEnergyUse(float deltaTime)
 {
-    local float f, energyUse, energyMult;
-    local Augmentation anAug, augBoost;
-    local bool bBoosting;
+    local float f, energyUse, boostedEnergyUse, energyMult, boostMult;
+    local Augmentation anAug;
 
     energyUse = 0;
     energyMult = 1.0;
+    boostMult = 1.0;
 
     Player.AmbientSound = None;
 
     anAug = FirstAug;
     while(anAug != None)
     {
-        if (AugPower(anAug) != None && anAug.bHasIt)
+        if (AugPower(anAug) != None && anAug.bHasIt && anAug.bIsActive)
             energyMult = anAug.LevelValues[anAug.CurrentLevel];
+        if (AugHeartLung(anAug) != None && anAug.bHasIt && anAug.bIsActive)
+            boostMult = anAug.LevelValues[anAug.CurrentLevel];
 
         if (anAug.bHasIt && anAug.bIsActive)
         {
-            if (AugHeartLung(anAug) != None) {
-                augBoost = AnAug;
-            }
             f = ((anAug.GetEnergyRate()/60) * deltaTime);
             if(f > 0 && anAug.bBoosted) {
-                bBoosting = true;
+                boostedEnergyUse += f;
+            } else {
+                energyUse += f;
             }
-            energyUse += f;
 
             if ((anAug.bAutomatic == false && anAug.bAlwaysActive == false) || f > 0.0) {
                 Player.AmbientSound = anAug.LoopSound;
@@ -190,14 +190,8 @@ simulated function Float CalcEnergyUse(float deltaTime)
         anAug = anAug.next;
     }
 
-    if(bBoosting) {
-        f = (augBoost.GetEnergyRate()/60) * deltaTime;// check if it wasn't using energy yet
-        augBoost.TickUse();
-        if(f == 0) { // add in its energy usage if this is the first tick
-            f = (augBoost.GetEnergyRate()/60) * deltaTime;
-            energyUse += f;
-        }
-    }
+    // check for synthetic heart
+    energyUse += boostedEnergyUse * boostMult;
 
     // check for the power augmentation
     energyUse *= energyMult;
