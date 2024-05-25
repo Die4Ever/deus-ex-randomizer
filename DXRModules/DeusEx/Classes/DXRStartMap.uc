@@ -539,8 +539,12 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
     }
 }
 
-static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
+static function bool BingoGoalImpossible(string bingo_event, DXRando dxr, int start_map, int end_mission)
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
+    if (bingo_event == "Suicide") {
+        return !dxr.flags.IsWaltonWare() || #defined(hx);
+    }
+
     switch(start_map/10)
     {
     case 1: // Liberty Island
