@@ -41,7 +41,7 @@ function PetAnimal(#var(PlayerPawn) petter)
     local bool highPet;
 
     if (petter==None) return;
-    if (GetAllianceType('player')==ALLIANCE_Hostile) return;
+    //if (GetAllianceType('player')==ALLIANCE_Hostile) return;
 
     foreach AllActors(class'DXRCameraModes',camera)
         break;
