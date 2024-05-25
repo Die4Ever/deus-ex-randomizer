@@ -78,6 +78,8 @@ simulated function Tick(float deltaTime)
             r = (class'DXRWeapons'.static.GetDefaultShottime(self) / ShotTime);
             r = FClamp(r, 0.4, 1.7);
             e = 1.0;// these animations don't scale as much with skill
+            // PS20/40 should get thrown away more quickly
+            if(WeaponHideAGun(self) != None) r *= 1.2;
         }
         else if(AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3')
         {
