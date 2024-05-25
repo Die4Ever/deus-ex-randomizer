@@ -567,6 +567,12 @@ exec function ParseRightClick()
         }
     }
 
+    //PET THE ANIMAL
+    if (Animal(FrobTarget)!=None){
+        handled=True;
+        FrobTarget.Frob(self, None);
+    }
+
     if (!handled){
         Super.ParseRightClick();
     }
