@@ -527,6 +527,36 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
             break;
+        case 153:
+            flagbase.SetBool('DL_Helios_Door1_Played',true,,-1);
+            flagbase.SetBool('DL_Helios_Intro_Played',true,,-1);
+            flagbase.SetBool('DL_Final_Page03_Played',true,,-1);
+            flagbase.SetBool('M15PaulHolo_Played',true,,-1);
+            flagbase.SetBool('MeetHelios_Played',true,,-1);
+            flagbase.SetBool('M15GaryHolo_Played',true,,-1);
+            flagbase.SetBool('M15MeetTong_Played',true,,-1);
+            // fallthrough
+        case 152:
+            flagbase.SetBool('DL_Final_Page02_Played',true,,-1);
+            flagbase.SetBool('DL_elevator_Played',true,,-1);
+            flagbase.SetBool('DL_conveyor_room_Played',true,,-1);
+            flagbase.SetBool('M15MeetEverett_Played',true,,-1);
+            // fallthrough
+        case 151:
+            flagbase.SetBool('DL_tong1_Played',true,,-1);
+            flagbase.SetBool('DL_tong_reached_bunker_Played',true,,-1);
+            flagbase.SetBool('DL_JockDeathTongComment_Played',true,,-1);
+            flagbase.SetBool('DL_JockDeath_Played',true,,-1);
+            flagbase.SetBool('DL_Bunker_Start_Played',true,,-1);
+            flagbase.SetBool('DL_Bunker_PowerRoom_Played',true,,-1);
+            flagbase.SetBool('DL_Bunker_Power_Played',true,,-1);
+            flagbase.SetBool('DL_Bunker_Hangar_Played',true,,-1);
+            // Jump!  You can make it!
+            // flagbase.SetBool('DL_Bunker_Fan_Played',true,,-1);
+            flagbase.SetBool('DL_Bunker_Elevator_Played',true,,-1);
+            flagbase.SetBool('DL_Bunker_blastdoor_Played',true,,-1);
+            flagbase.SetBool('DL_blastdoor_shut_Played',true,,-1);
+            break;
     }
 
     switch(start_map)
