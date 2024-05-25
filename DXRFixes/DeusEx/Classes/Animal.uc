@@ -29,13 +29,16 @@ function Timer()
             bHasBeenPet=True;
             class'DXREvents'.static.MarkBingo(camera.dxr,"PetAnimal_"$Class.Name);
         }
+        camera.player().bPetting=False;
+        camera.player().AnimEnd();
     }
 }
 
 function PetAnimal(#var(PlayerPawn) petter)
 {
     local DXRCameraModes camera;
-    local float animTime;
+    local float animTime,tweenTime;
+    local bool highPet;
 
     if (petter==None) return;
     if (GetAllianceType('player')==ALLIANCE_Hostile) return;
@@ -45,13 +48,24 @@ function PetAnimal(#var(PlayerPawn) petter)
 
     camera.EnableTempThirdPerson();
 
-    //This should probably have some logic around crouching
-    if (petter.Location.Z - Location.Z < 16){
-        petter.PlayAnim('PushButton',0.75,0.5);
-        animTime=2.25;
+    highPet=False;
+    if ((petter.bIsCrouching || petter.bForceDuck)){
+        if (Location.Z - petter.Location.Z > 16){
+            highPet=True;
+        }
+    } else {
+        if (petter.Location.Z - Location.Z < 16){
+            highPet=True;
+        }
+    }
+
+    petter.bPetting=True;
+    if (highPet){
+        petter.PlayAnim('PushButton',0.75,0.1);
+        animTime=1.75;
     }else{
         petter.PlayAnim('Pickup',0.5,0.1);
-        animTime=1.5;
+        animTime=1.25;
     }
     SetTimer(animTime,False);
 
