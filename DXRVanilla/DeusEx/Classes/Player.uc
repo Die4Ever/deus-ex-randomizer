@@ -1642,6 +1642,11 @@ function InvokeUIScreen(Class<DeusExBaseWindow> windowClass)
     }
 }
 
+function PreTravel()
+{
+    DeusExRootWindow(rootWindow).ClearWindowStack();
+    Super.PreTravel();
+}
 
 
 defaultproperties
