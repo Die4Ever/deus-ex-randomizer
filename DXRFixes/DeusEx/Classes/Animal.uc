@@ -29,8 +29,8 @@ function Timer()
             bHasBeenPet=True;
             class'DXREvents'.static.MarkBingo(camera.dxr,"PetAnimal_"$Class.Name);
         }
-        camera.player().bPetting=False;
-        camera.player().AnimEnd();
+        camera.player().bBlockAnimations=False;
+        camera.player().AnimEnd(); //Kicks the appropriate normal animations off again
     }
 }
 
@@ -59,7 +59,7 @@ function PetAnimal(#var(PlayerPawn) petter)
         }
     }
 
-    petter.bPetting=True;
+    petter.bBlockAnimations=True;
     if (highPet){
         petter.PlayAnim('PushButton',0.75,0.1);
         animTime=1.75;

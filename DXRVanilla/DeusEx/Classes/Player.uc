@@ -8,7 +8,7 @@ var transient string nextMap;
 var laserEmitter aimLaser;
 var bool bDoomMode;
 var bool bAutorun;
-var bool bPetting;
+var bool bBlockAnimations;
 
 var Rotator ShakeRotator;
 
@@ -1170,7 +1170,7 @@ function PlayTakeHitSound(int Damage, name damageType, int Mult)
 }
 function TweenToRunning(float tweentime)
 {
-    if(bPetting){return;}
+    if(bBlockAnimations){return;}
 
     Super.TweenToRunning(tweentime);
 }
@@ -1178,7 +1178,7 @@ function PlayWalking()
 {
     local float newhumanAnimRate;
 
-    if(bPetting){return;}
+    if(bBlockAnimations){return;}
 
     newhumanAnimRate = humanAnimRate;
 
@@ -1214,7 +1214,7 @@ function TweenToWaiting(float tweentime)
 {
     //	ClientMessage("TweenToWaiting()");
 
-    if(bPetting){return;}
+    if(bBlockAnimations){return;}
 
     if (IsInState('PlayerSwimming') || (Physics == PHYS_Swimming))
     {
@@ -1265,7 +1265,7 @@ function PlayWeaponSwitch(Weapon newWeapon)
 function PlayCrawling()
 {
     //	ClientMessage("PlayCrawling()");
-    if(bPetting){return;}
+    if(bBlockAnimations){return;}
 
     if (IsFiring())
         LoopAnim('CrouchShoot');
@@ -1279,7 +1279,7 @@ function PlayRising()
 function PlayDuck()
 {
     //	ClientMessage("PlayDuck()");
-    if(bPetting){return;}
+    if(bBlockAnimations){return;}
 
     if ((AnimSequence != 'Crouch') && (AnimSequence != 'CrouchWalk'))
     {
@@ -1307,7 +1307,7 @@ function PlayWaiting()
 {
 //	ClientMessage("PlayWaiting()");
 
-    if(bPetting){return;}
+    if(bBlockAnimations){return;}
 
     if (IsInState('PlayerSwimming') || (Physics == PHYS_Swimming))
     {
@@ -1328,7 +1328,7 @@ function PlayWaiting()
 }
 function PlayRunning()
 {
-    if(bPetting){return;}
+    if(bBlockAnimations){return;}
 
     Super.PlayRunning();
 }
