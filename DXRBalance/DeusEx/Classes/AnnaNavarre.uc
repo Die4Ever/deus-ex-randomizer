@@ -21,3 +21,11 @@ function float ShieldDamage(name damageType)
         return 0;
     return Super.ShieldDamage(damageType);
 }
+
+function GotoDisabledState(name damageType, EHitLocation hitPos)
+{
+    if(EmpHealth > 0)
+        Super.GotoDisabledState(damageType, hitPos);
+    else
+        Super(HumanMilitary).GotoDisabledState(damageType, hitPos);
+}
