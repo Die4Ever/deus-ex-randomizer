@@ -1,6 +1,6 @@
 class DXRAimLaserEmitter extends LaserEmitter;
 
-var bool forceOff;
+var bool bForcedOff;
 
 //Mostly copied from LaserEmitter, but modified so it doesn't even try to reflect the laser
 function CalcTrace(float deltaTime)
@@ -95,7 +95,7 @@ static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
         return False;
     }
 
-    if (player.aimLaser.forceOff) {
+    if (player.aimLaser.bForcedOff) {
         return false;
     }
 
