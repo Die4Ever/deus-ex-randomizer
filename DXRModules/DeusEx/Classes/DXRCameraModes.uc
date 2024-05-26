@@ -58,20 +58,35 @@ function bool IsFixedCamGame()
 
 ///////////////////////////////////////////////////////////////////
 
-function EnableTempThirdPerson()
+function EnableTempThirdPerson(optional bool noLaser)
 {
+    local #var(PlayerPawn) player;
+
+    player = class'DXRando'.default.dxr.player;
+    if (player != None)
+        player.bForceAimLaserOff = noLaser;
     tempCameraMode=CM_ThirdPerson;
     SetCameraMode(tempCameraMode);
 }
 
-function EnableTempFixedCamera()
+function EnableTempFixedCamera(optional bool noLaser)
 {
+    local #var(PlayerPawn) player;
+
+    player = class'DXRando'.default.dxr.player;
+    if (player != None)
+        player.bForceAimLaserOff = noLaser;
     tempCameraMode=CM_FixedCamera;
     SetCameraMode(tempCameraMode);
 }
 
 function DisableTempCamera()
 {
+    local #var(PlayerPawn) player;
+
+    player = class'DXRando'.default.dxr.player;
+    if (player != None)
+        player.bForceAimLaserOff = false;
     tempCameraMode=CM_Disabled;
     SetCameraMode(GetExpectedCameraMode());
 }

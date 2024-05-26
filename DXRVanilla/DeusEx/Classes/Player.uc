@@ -9,6 +9,7 @@ var laserEmitter aimLaser;
 var bool bDoomMode;
 var bool bAutorun;
 var bool bBlockAnimations;
+var bool bForceAimLaserOff;
 
 var Rotator ShakeRotator;
 

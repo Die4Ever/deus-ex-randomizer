@@ -93,6 +93,10 @@ static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
         return False;
     }
 
+    if (player.bForceAimLaserOff){
+        return False;
+    }
+
     if (reCam==None && player.bBehindView==False){
         return False;
     }
