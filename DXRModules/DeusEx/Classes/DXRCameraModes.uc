@@ -62,33 +62,43 @@ function EnableTempThirdPerson(optional bool noLaser)
 {
     local #var(PlayerPawn) player;
 
-    player = class'DXRando'.default.dxr.player;
-    if (player != None)
-        player.bForceAimLaserOff = noLaser;
     tempCameraMode=CM_ThirdPerson;
     SetCameraMode(tempCameraMode);
+
+    if (noLaser) {
+        player = class'DXRando'.default.dxr.player;
+        if (player != None) {
+            player.CreateAimLaser();
+            player.aimLaser.forceOff = true;
+        }
+    }
 }
 
 function EnableTempFixedCamera(optional bool noLaser)
 {
     local #var(PlayerPawn) player;
 
-    player = class'DXRando'.default.dxr.player;
-    if (player != None)
-        player.bForceAimLaserOff = noLaser;
     tempCameraMode=CM_FixedCamera;
     SetCameraMode(tempCameraMode);
+
+    if (noLaser) {
+        player = class'DXRando'.default.dxr.player;
+        if (player != None) {
+            player.CreateAimLaser();
+            player.aimLaser.forceOff = true;
+        }
+    }
 }
 
 function DisableTempCamera()
 {
     local #var(PlayerPawn) player;
 
-    player = class'DXRando'.default.dxr.player;
-    if (player != None)
-        player.bForceAimLaserOff = false;
     tempCameraMode=CM_Disabled;
     SetCameraMode(GetExpectedCameraMode());
+    player = class'DXRando'.default.dxr.player;
+    if (player != None && player.aimLaser != None)
+        player.aimLaser.forceOff = false;
 }
 
 function SetFirstPersonCamera()

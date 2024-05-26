@@ -5,11 +5,10 @@ var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
 var transient string nextMap;
-var laserEmitter aimLaser;
+var DXRAimLaserEmitter aimLaser;
 var bool bDoomMode;
 var bool bAutorun;
 var bool bBlockAnimations;
-var bool bForceAimLaserOff;
 
 var Rotator ShakeRotator;
 
@@ -859,6 +858,16 @@ function bool IsFrobbable(actor A)
     return Super.IsFrobbable(A);
 }
 
+function CreateAimLaser()
+{
+    if (aimLaser == None) {
+        aimLaser = Spawn(class'DXRAimLaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
+            if (aimLaser == None) {
+                ClientMessage("Failed to spawn aim laser?");
+            }
+    }
+}
+
 function HighlightCenterObject()
 {
     local Vector loc;
@@ -867,12 +876,7 @@ function HighlightCenterObject()
 
     //Activate the aim laser any time you aren't seeing through your eyes
     if (class'DXRAimLaserEmitter'.static.AimLaserShouldBeOn(self)){
-        if (aimLaser==None){
-            aimLaser = Spawn(class'DXRAimLaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
-            if (aimLaser == None) {
-                ClientMessage("Failed to spawn aim laser?");
-            }
-        }
+        CreateAimLaser();
 
         loc = Location;
         loc.Z+=BaseEyeHeight;
