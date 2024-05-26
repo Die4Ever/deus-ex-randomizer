@@ -862,9 +862,9 @@ function CreateAimLaser()
 {
     if (aimLaser == None) {
         aimLaser = Spawn(class'DXRAimLaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
-            if (aimLaser == None) {
-                ClientMessage("Failed to spawn aim laser?");
-            }
+        if (aimLaser == None) {
+            ClientMessage("Failed to spawn aim laser?");
+        }
     }
 }
 
