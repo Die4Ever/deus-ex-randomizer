@@ -41,6 +41,9 @@ function PetAnimal(#var(PlayerPawn) petter)
     local bool highPet;
 
     if (petter==None) return;
+    if (petter.InHand!=None) return; //Must have free hands to pet!
+    if (petter.Region.Zone.bWaterZone) return; //No underwater petting (but you can pet things that are IN the water)
+    if (Fly(self)!=None) return; //No, you can't pet the flies
     //if (GetAllianceType('player')==ALLIANCE_Hostile) return;
 
     foreach AllActors(class'DXRCameraModes',camera)
