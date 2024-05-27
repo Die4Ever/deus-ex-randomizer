@@ -142,6 +142,18 @@ function Carcass SpawnCarcass()
     return Super.SpawnCarcass();
 }
 
+// only draw a new shield if we haven't spawned one recently
+function MaybeDrawShield()
+{
+    local EllipseEffect shield;
+
+    foreach BasedActors(class'EllipseEffect', shield) {
+        if(shield.LifeSpan > 0.6) return;
+    }
+
+    DrawShield();
+}
+
 function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType,
                         bool bPlayAnim)
 {
