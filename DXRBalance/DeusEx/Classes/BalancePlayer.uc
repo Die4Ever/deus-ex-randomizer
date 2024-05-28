@@ -504,9 +504,9 @@ function CreateDrone()
         //aDrone.MaxSpeed = 3 * spyDroneLevelValue;
         aDrone.MaxSpeed = 5 * spyDroneLevelValue;
         //aDrone.Damage = 5 * spyDroneLevelValue;
-        aDrone.Damage = 3 * spyDroneLevelValue;
+        aDrone.Damage = 2 * spyDroneLevelValue;
         //aDrone.blastRadius = 8 * spyDroneLevelValue;
-        aDrone.blastRadius = 5 * spyDroneLevelValue;
+        aDrone.blastRadius = 4 * spyDroneLevelValue;
         // window construction now happens in Tick()
     }
 }

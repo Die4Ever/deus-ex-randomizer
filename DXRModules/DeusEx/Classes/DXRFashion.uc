@@ -255,9 +255,10 @@ simulated function AddInfluencer(class<ScriptedPawn> male, class<ScriptedPawn> f
 simulated function AddInfluencerName(class<ScriptedPawn> male, name female)
 {
     local class<ScriptedPawn> femaleClass;
+
     // don't want to require LDDP for compilation, so this handles it at runtime
-    if( isFemale )
-        femaleClass = GetInfluencerClass(female);
+    femaleClass = GetInfluencerClass(female);
+
     AddInfluencer(male, femaleClass);
 }
 

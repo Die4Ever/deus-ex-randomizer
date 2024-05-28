@@ -83,6 +83,7 @@ function SetFirstPersonCamera()
         player().bCrosshairVisible=True;
     }
     player().ViewTarget=None;
+    player().Style= STY_Normal;
     if (reCam!=None){
         reCam.Destroy();
         reCam=None;
@@ -110,6 +111,7 @@ function SetFixedCamera()
 #ifdef vanilla
     player().bBehindView=False;
     player().bCrosshairVisible=False;
+    player().Style= STY_Normal;
     if (reCam==None || reCam.bDeleteMe){
         SpawnRECam();
     }
