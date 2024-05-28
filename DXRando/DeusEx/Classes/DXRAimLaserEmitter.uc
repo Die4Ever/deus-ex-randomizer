@@ -95,9 +95,11 @@ static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
         return False;
     }
 
+#ifdef injections
     if (player.aimLaser.bForcedOff) {
         return false;
     }
+#endif
 
     if (reCam==None && player.bBehindView==False){
         return False;

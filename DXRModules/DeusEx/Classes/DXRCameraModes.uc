@@ -65,6 +65,7 @@ function EnableTempThirdPerson(optional bool noLaser)
     tempCameraMode=CM_ThirdPerson;
     SetCameraMode(tempCameraMode);
 
+#ifdef injections
     if (noLaser) {
         p = player();
         if (p != None) {
@@ -72,6 +73,7 @@ function EnableTempThirdPerson(optional bool noLaser)
             p.aimLaser.bForcedOff = true;
         }
     }
+#endif
 }
 
 function EnableTempFixedCamera(optional bool noLaser)
@@ -81,6 +83,7 @@ function EnableTempFixedCamera(optional bool noLaser)
     tempCameraMode=CM_FixedCamera;
     SetCameraMode(tempCameraMode);
 
+#ifdef injections
     if (noLaser) {
         p = player();
         if (p != None) {
@@ -88,6 +91,7 @@ function EnableTempFixedCamera(optional bool noLaser)
             p.aimLaser.bForcedOff = true;
         }
     }
+#endif
 }
 
 function DisableTempCamera()
@@ -96,9 +100,11 @@ function DisableTempCamera()
 
     tempCameraMode=CM_Disabled;
     SetCameraMode(GetExpectedCameraMode());
+#ifdef injections
     p = player();
     if (p != None && p.aimLaser != None)
         p.aimLaser.bForcedOff = false;
+#endif
 }
 
 function SetFirstPersonCamera()
