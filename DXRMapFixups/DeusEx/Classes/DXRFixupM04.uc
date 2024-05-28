@@ -298,6 +298,8 @@ function PreFirstEntryMapFixes()
             ChangeInitialAlliance(troop, 'Player', 1.0, false);
         }
 
+        Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
+
         break;
 
     case "04_NYC_SMUG":
@@ -308,6 +310,7 @@ function PreFirstEntryMapFixes()
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+        Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
         break;
     }
 }
@@ -369,6 +372,7 @@ function AnyEntryMapFixes()
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
+        MoveSmugglerElevator();
 
         break;
 
@@ -387,6 +391,9 @@ function AnyEntryMapFixes()
                 door.DoOpen();
             }
         }
+
+        MoveSmugglerElevator();
+
         break;
     }
 }

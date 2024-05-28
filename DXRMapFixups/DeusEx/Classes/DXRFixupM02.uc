@@ -133,6 +133,7 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
 
@@ -213,6 +214,7 @@ function PreFirstEntryMapFixes()
         buttonHint.SetBaseActor(button);
 
         SetAllLampsState(false, true, true); // the lamp in Paul's apartment, seen through the window
+        Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
 
         break;
     case "02_NYC_BAR":
@@ -248,10 +250,14 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', d,'botordertrigger') {
             d.tag = 'botordertriggerDoor';
         }
+
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+        Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
+
         break;
 
     case "02_NYC_FREECLINIC":
@@ -340,7 +346,7 @@ function PostFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
-    Local Jock j;
+    local Jock j;
 
     switch (dxr.localURL) {
     case "02_NYC_BAR":
@@ -351,10 +357,16 @@ function AnyEntryMapFixes()
             }
         }
         break;
+
+    case "02_NYC_STREET":
+        MoveSmugglerElevator();
+        break;
+
     case "02_NYC_SMUG":
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
+        MoveSmugglerElevator();
         break;
     }
 }

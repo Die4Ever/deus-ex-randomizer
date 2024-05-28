@@ -18,6 +18,7 @@ function AnyEntryMapFixes()
         Player().StartDataLinkTransmission("DL_Entry");
         RearrangeMJ12ConvergingInfolink();
         RearrangeJockExitDialog();
+        MoveSmugglerElevator();
         break;
 
     case "08_NYC_SMUG":
@@ -28,7 +29,7 @@ function AnyEntryMapFixes()
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
-
+        MoveSmugglerElevator();
         break;
     }
 }
@@ -198,6 +199,8 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
+            Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
+
             break;
         case "08_NYC_HOTEL":
             if (VanillaMaps){
@@ -239,6 +242,7 @@ function PreFirstEntryMapFixes()
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
             SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+            Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
             break;
 
         case "08_NYC_FREECLINIC":

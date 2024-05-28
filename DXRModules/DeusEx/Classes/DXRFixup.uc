@@ -834,3 +834,23 @@ function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector lo
     }
 #endif
 }
+
+function MoveSmugglerElevator()
+{
+    local #var(prefix)DeusExMover elevator;
+
+    foreach AllActors(class'#var(prefix)DeusExMover', elevator, 'elevatorbutton') {
+        if (dxr.localURL == "02_NYC_STREET" || dxr.localURL == "04_NYC_STREET" || dxr.localURL == "08_NYC_STREET") {
+            if (dxr.flagbase.getBool('DXRSmugglerElevatorUsed'))
+                elevator.InterpolateTo(1, 0.0);
+            else
+                elevator.InterpolateTo(0, 0.0);
+        } else {
+            if (dxr.flagbase.getBool('DXRSmugglerElevatorUsed'))
+                elevator.InterpolateTo(0, 0.0);
+            else
+                elevator.InterpolateTo(1, 0.0);
+        }
+        break;
+    }
+}

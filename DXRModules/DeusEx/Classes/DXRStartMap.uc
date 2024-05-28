@@ -514,7 +514,9 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('DL_Tong_00_Played',true,,7); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
             break;
-
+        case 81:
+            flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
+            break;
         case 115:
             flagbase.SetBool('templar_upload',true,,-1);
             flagbase.SetBool('GuntherHermann_Dead',true,,-1);
