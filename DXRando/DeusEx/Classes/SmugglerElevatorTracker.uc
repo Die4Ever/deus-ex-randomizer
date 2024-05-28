@@ -6,6 +6,8 @@ function Trigger(Actor Other, Pawn Instigator)
     local int expiration;
     local bool oldState;
 
+    if (!#defined(vanilla)) Destroy();
+
     foreach AllActors(class'DXRando', dxr) break;
 
     switch(dxr.localURL) {
