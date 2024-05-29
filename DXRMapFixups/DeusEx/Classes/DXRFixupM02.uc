@@ -214,7 +214,8 @@ function PreFirstEntryMapFixes()
         buttonHint.SetBaseActor(button);
 
         SetAllLampsState(false, true, true); // the lamp in Paul's apartment, seen through the window
-        Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
+        if (#defined(vanilla))
+            class'SmugglerElevatorTracker'.static.CreateSET(dxr);
 
         break;
     case "02_NYC_BAR":
@@ -256,7 +257,8 @@ function PreFirstEntryMapFixes()
         oot.Tag='botordertrigger';
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
-        Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
+        if (#defined(vanilla))
+            class'SmugglerElevatorTracker'.static.CreateSET(dxr);
 
         break;
 
@@ -359,14 +361,12 @@ function AnyEntryMapFixes()
         break;
 
     case "02_NYC_STREET":
-        MoveSmugglerElevator();
         break;
 
     case "02_NYC_SMUG":
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
-        MoveSmugglerElevator();
         break;
     }
 }

@@ -1,32 +1,47 @@
-class SmugglerElevatorTracker extends Trigger;
+class SmugglerElevatorTracker expands FlagToggleTrigger;
 
-function Trigger(Actor Other, Pawn Instigator)
+var bool street, elevatorMoved;
+
+static function SmugglerElevatorTracker CreateSET(DXRando dxr)
 {
-    local DXRando dxr;
-    local int expiration;
-    local bool oldState;
+    local SmugglerElevatorTracker set;
 
-    if (!#defined(vanilla)) Destroy();
+    set = dxr.Spawn(class'SmugglerElevatorTracker',, 'elevatorbutton');
+    set.street = dxr.localURL == "02_NYC_STREET" || dxr.localURL == "04_NYC_STREET" || dxr.localURL == "08_NYC_STREET";
+    set.flagExpiration = dxr.dxInfo.missionNumber + 1;
 
-    foreach AllActors(class'DXRando', dxr) break;
+    return set;
+}
 
-    switch(dxr.localURL) {
-        case "02_NYC_STREET":
-        case "02_NYC_SMUG":
-            expiration = 3;
-            break;
-        case "04_NYC_STREET":
-        case "04_NYC_SMUG":
-            expiration = 5;
-            break;
-        case "08_NYC_STREET":
-        case "08_NYC_SMUG":
-            expiration = 9;
-            break;
+event Tick(float deltaTime)
+{
+    if (elevatorMoved == false) {
+        MoveElevator();
+        elevatorMoved = true;
     }
+    Super.Tick(deltaTime);
+}
 
-    oldState = dxr.flagbase.getBool('DXRSmugglerElevatorUsed');
-    dxr.flagbase.setBool('DXRSmugglerElevatorUsed', !oldState,, expiration);
+function MoveElevator()
+{
+    local DeusExPlayer player;
+    local #var(prefix)DeusExMover elevator;
 
-    Super.Trigger(Other, Instigator);
+    player = DeusExPlayer(GetPlayerPawn());
+    foreach player.AllActors(class'#var(prefix)DeusExMover', elevator, 'elevatorbutton') break;
+
+    if (player.flagbase.getBool(flagName))
+        elevator.InterpolateTo(Float(street), 0.0);
+    else
+        elevator.InterpolateTo(Float(!street), 0.0);
+}
+
+function PostPostBeginPlay()
+{
+    elevatorMoved = false;
+}
+
+defaultproperties
+{
+    flagName="DXRSmugglerElevatorUsed"
 }
