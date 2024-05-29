@@ -27,7 +27,7 @@ function bool MoveElevator()
 
     player = DeusExPlayer(GetPlayerPawn());
     if (player == None) return false;
-    foreach player.AllActors(class'#var(prefix)DeusExMover', elevator, 'elevatorbutton') break;
+    foreach player.AllActors(class'#var(prefix)DeusExMover', elevator, tag) break;
     if (elevator == None) return false;
 
     if (player.flagbase.getBool(flagName))

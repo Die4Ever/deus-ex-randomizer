@@ -11,7 +11,7 @@ static function FlagToggleTrigger CreateFTT(Actor a, name event, name flagName, 
 
     ftt.flagName = flagName;
     if (flagExpiration == 0)
-        ftt.flagExpiration = -1;
+        ftt.flagExpiration = 999;
     else
         ftt.flagExpiration = flagExpiration;
 
