@@ -30,3 +30,8 @@ function Trigger(Actor Other, Pawn Instigator)
 
     Super.Trigger(Other, Instigator);
 }
+
+defaultproperties
+{
+    bCollideActors=false
+}

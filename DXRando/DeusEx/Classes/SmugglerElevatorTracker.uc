@@ -15,25 +15,27 @@ static function SmugglerElevatorTracker CreateSET(DXRando dxr)
 
 event Tick(float deltaTime)
 {
-    if (elevatorMoved == false) {
-        MoveElevator();
-        elevatorMoved = true;
-    }
+    if (elevatorMoved == false)
+        elevatorMoved = MoveElevator();
     Super.Tick(deltaTime);
 }
 
-function MoveElevator()
+function bool MoveElevator()
 {
     local DeusExPlayer player;
     local #var(prefix)DeusExMover elevator;
 
     player = DeusExPlayer(GetPlayerPawn());
+    if (player == None) return false;
     foreach player.AllActors(class'#var(prefix)DeusExMover', elevator, 'elevatorbutton') break;
+    if (elevator == None) return false;
 
     if (player.flagbase.getBool(flagName))
-        elevator.InterpolateTo(Float(street), 0.0);
+        elevator.InterpolateTo(Int(street), 0.0);
     else
-        elevator.InterpolateTo(Float(!street), 0.0);
+        elevator.InterpolateTo(Int(!street), 0.0);
+
+    return true;
 }
 
 function PostPostBeginPlay()
