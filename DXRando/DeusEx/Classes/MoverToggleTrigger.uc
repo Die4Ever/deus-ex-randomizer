@@ -9,7 +9,7 @@ var bool moversMoved;
 static function MoverToggleTrigger CreateMTT(
     Actor a,
     name flagName,
-    name event,
+    name tag,
     byte keyFrame1,
     byte keyFrame2,
     float duration,
@@ -17,9 +17,9 @@ static function MoverToggleTrigger CreateMTT(
 ) {
     local MoverToggleTrigger mtt;
 
-    if (event == '') return None;
+    if (tag == '') return None;
 
-    mtt = a.Spawn(class'MoverToggleTrigger',, event);
+    mtt = a.Spawn(class'MoverToggleTrigger',, tag);
     mtt.flagName = flagName;
     mtt.keyFrame1 = keyFrame1;
     mtt.keyFrame2 = keyFrame2;

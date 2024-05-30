@@ -3,13 +3,13 @@ class FlagToggleTrigger extends Trigger;
 var name flagName;
 var int flagExpiration;
 
-static function FlagToggleTrigger CreateFTT(Actor a, name event, name flagName, optional int flagExpiration)
+static function FlagToggleTrigger CreateFTT(Actor a, name tag, name flagName, optional int flagExpiration)
 {
     local FlagToggleTrigger ftt;
 
-    if (event == '') return None;
+    if (tag == '') return None;
 
-    ftt = a.Spawn(class'FlagToggleTrigger',, event);
+    ftt = a.Spawn(class'FlagToggleTrigger',, tag);
 
     ftt.flagName = flagName;
     if (flagExpiration == 0)
