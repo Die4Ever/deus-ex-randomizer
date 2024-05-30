@@ -298,7 +298,7 @@ function PreFirstEntryMapFixes()
             ChangeInitialAlliance(troop, 'Player', 1.0, false);
         }
         if (#defined(vanilla))
-            class'SmugglerElevatorTracker'.static.CreateSET(dxr);
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 5);
 
         break;
 
@@ -311,7 +311,7 @@ function PreFirstEntryMapFixes()
         oot.Tag='botordertrigger';
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         if (#defined(vanilla))
-            class'SmugglerElevatorTracker'.static.CreateSET(dxr);
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
         break;
     }
 }

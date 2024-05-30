@@ -198,7 +198,7 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
 
             if (#defined(vanilla))
-                class'SmugglerElevatorTracker'.static.CreateSET(dxr);
+                class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 9);
 
             break;
         case "08_NYC_HOTEL":
@@ -242,7 +242,7 @@ function PreFirstEntryMapFixes()
             oot.Tag='botordertrigger';
             SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
             if (#defined(vanilla))
-                class'SmugglerElevatorTracker'.static.CreateSET(dxr);
+                class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
             break;
 
         case "08_NYC_FREECLINIC":

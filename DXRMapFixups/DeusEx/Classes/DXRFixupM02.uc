@@ -215,7 +215,7 @@ function PreFirstEntryMapFixes()
 
         SetAllLampsState(false, true, true); // the lamp in Paul's apartment, seen through the window
         if (#defined(vanilla))
-            class'SmugglerElevatorTracker'.static.CreateSET(dxr);
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 3);
 
         break;
     case "02_NYC_BAR":
@@ -258,7 +258,7 @@ function PreFirstEntryMapFixes()
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         if (#defined(vanilla))
-            class'SmugglerElevatorTracker'.static.CreateSET(dxr);
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 3);
 
         break;
 
@@ -358,9 +358,6 @@ function AnyEntryMapFixes()
                 break;
             }
         }
-        break;
-
-    case "02_NYC_STREET":
         break;
 
     case "02_NYC_SMUG":
