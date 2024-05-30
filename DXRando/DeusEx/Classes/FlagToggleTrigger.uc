@@ -7,6 +7,8 @@ static function FlagToggleTrigger CreateFTT(Actor a, name event, name flagName, 
 {
     local FlagToggleTrigger ftt;
 
+    if (event == '') return None;
+
     ftt = a.Spawn(class'FlagToggleTrigger',, event);
 
     ftt.flagName = flagName;
