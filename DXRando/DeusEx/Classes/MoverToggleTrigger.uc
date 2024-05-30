@@ -1,4 +1,4 @@
-class MoverToggleTrigger expands FlagToggleTrigger;
+class MoverToggleTrigger extends FlagToggleTrigger;
 
 var byte keyFrame1;
 var byte keyFrame2;
