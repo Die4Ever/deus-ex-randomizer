@@ -4,7 +4,7 @@ var byte keyFrame1;
 var byte keyFrame2;
 var float duration;
 
-var bool moverMoved;
+var bool moversMoved;
 
 static function MoverToggleTrigger CreateMTT(
     Actor a,
@@ -33,32 +33,35 @@ static function MoverToggleTrigger CreateMTT(
     return mtt;
 }
 
-function bool MoveMover()
+function bool MoveMovers()
 {
     local DeusExPlayer player;
     local #var(prefix)DeusExMover mover;
+    local bool moved, flagVal;
 
     player = DeusExPlayer(GetPlayerPawn());
     if (player == None) return false;
-    foreach player.AllActors(class'#var(prefix)DeusExMover', mover, tag) break;
-    if (mover == None) return false;
 
-    if (player.flagbase.getBool(flagName))
-        mover.InterpolateTo(keyFrame2, duration);
-    else
-        mover.InterpolateTo(keyFrame1, duration);
+    flagVal = player.flagbase.getBool(flagName);
+    foreach player.AllActors(class'#var(prefix)DeusExMover', mover, tag) {
+        if (flagVal)
+            mover.InterpolateTo(keyFrame2, duration);
+        else
+            mover.InterpolateTo(keyFrame1, duration);
+        moved = true;
+    }
 
-    return true;
+    return moved;
 }
 
 function PostPostBeginPlay()
 {
-    moverMoved = false;
+    moversMoved = false;
 }
 
 event Tick(float deltaTime)
 {
-    if (moverMoved == false)
-        moverMoved = MoveMover();
+    if (moversMoved == false)
+        moversMoved = MoveMovers();
     Super.Tick(deltaTime);
 }
