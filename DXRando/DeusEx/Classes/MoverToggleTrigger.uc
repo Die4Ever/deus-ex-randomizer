@@ -17,7 +17,7 @@ static function MoverToggleTrigger CreateMTT(
 ) {
     local MoverToggleTrigger mtt;
 
-    if (tag == '') return None;
+    if (a == None || tag == '' || flagName == '') return None;
 
     mtt = a.Spawn(class'MoverToggleTrigger',, tag);
     mtt.flagName = flagName;

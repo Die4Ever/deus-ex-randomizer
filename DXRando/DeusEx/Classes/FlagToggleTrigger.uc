@@ -7,7 +7,7 @@ static function FlagToggleTrigger CreateFTT(Actor a, name tag, name flagName, op
 {
     local FlagToggleTrigger ftt;
 
-    if (tag == '') return None;
+    if (a == None || tag == '' || flagName == '') return None;
 
     ftt = a.Spawn(class'FlagToggleTrigger',, tag);
 
