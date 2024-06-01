@@ -353,6 +353,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        SetAllLampsState(true, false, true); // alex isn't in his office
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
@@ -369,7 +371,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
-        
+
         break;
     }
 }
