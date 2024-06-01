@@ -15,11 +15,21 @@ static function MoverToggleTrigger CreateMTT(
     float duration,
     optional int flagExpiration
 ) {
-    local MoverToggleTrigger mtt;
+    if (a == None) return None;
+    return _CreateMTT(a.Spawn(class'MoverToggleTrigger',, tag), flagName, tag, keyFrame1, keyFrame2, duration, flagExpiration);
+}
 
-    if (a == None || tag == '' || flagName == '') return None;
+static function MoverToggleTrigger _CreateMTT(
+    MoverToggleTrigger mtt,
+    name flagName,
+    name tag,
+    byte keyFrame1,
+    byte keyFrame2,
+    float duration,
+    optional int flagExpiration
+) {
+    if (mtt == None || tag == '' || flagName == '') return None;
 
-    mtt = a.Spawn(class'MoverToggleTrigger',, tag);
     mtt.flagName = flagName;
     mtt.keyFrame1 = keyFrame1;
     mtt.keyFrame2 = keyFrame2;
@@ -57,6 +67,7 @@ function bool MoveMovers()
 function PostPostBeginPlay()
 {
     moversMoved = false;
+    Super.PostPostBeginPlay();
 }
 
 event Tick(float deltaTime)

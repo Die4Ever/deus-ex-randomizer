@@ -240,9 +240,18 @@ function PreFirstEntryMapFixes()
             oot = Spawn(class'OnceOnlyTrigger');
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
+
             SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
-            if (#defined(vanilla))
-                class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
+            if (#defined(vanilla)) class'PlayerMoverToggleTrigger'.static.CreatePMTT(
+                self,
+                'DXRSmugglerElevatorUsed',
+                'elevatorbutton',
+                1, 0,
+                0.0,
+                vectm(0.435074, -1452.027466, 19.649994),
+                3
+            );
+
             break;
 
         case "08_NYC_FREECLINIC":
