@@ -1667,7 +1667,16 @@ function InvokeUIScreen(Class<DeusExBaseWindow> windowClass)
 
 function PreTravel()
 {
-    DeusExRootWindow(rootWindow).ClearWindowStack();
+    local DeusExRootWindow root;
+
+    root = DeusExRootWindow(rootWindow);
+
+    //Don't clear the stack if the top of the stack is the Credits.
+    //We're pretraveling as part of the DestroyWindow call chain
+    if (root!=None && CreditsWindow(root.GetTopWindow())==None){
+        root.ClearWindowStack();
+    }
+
     Super.PreTravel();
 }
 
