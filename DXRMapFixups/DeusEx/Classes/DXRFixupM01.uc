@@ -61,6 +61,8 @@ function PreFirstEntryMapFixes()
 
         class'GuntherWeaponMegaChoice'.static.Create(Player());
 
+        GetConversation('DL_Top').AddFlagRef('TerroristCommander_Dead', false);
+
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
         Spawn(class'PlaceholderContainer',,, vectm(1376,-9952.5,-271)); //Harley's house
