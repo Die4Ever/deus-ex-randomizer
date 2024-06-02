@@ -4,10 +4,10 @@ defaultproperties
 {
     enabled=False
     defaultvalue=False
-    HelpText="Should food and drinks be dropped when looting a body?"
-    actionText="Drop Food & Drinks"
-    enumText(0)="Don't Drop"
-    enumText(1)="Drop"
+    HelpText="When starting a new game, should food and drinks be added to the list of Junk items that get dropped when looting a corpse?"
+    actionText="Food and Drinks"
+    enumText(0)="Not Junk"
+    enumText(1)="Junk"
 
     refusedItems(0)=class'SoyFood'
     refusedItems(1)=class'Candybar'
@@ -16,4 +16,3 @@ defaultproperties
     refusedItems(4)=class'LiquorBottle'
     refusedItems(5)=class'WineBottle'
 }
-
