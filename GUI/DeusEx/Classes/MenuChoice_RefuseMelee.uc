@@ -4,10 +4,10 @@ defaultproperties
 {
     enabled=False
     defaultvalue=False
-    HelpText="When starting a new game, should melee weapons be added to the list of Junk items that get dropped when looting a corpse?"
-    actionText="Melee Weapons"
-    enumText(0)="Not Junk"
-    enumText(1)="Junk"
+    HelpText="Should melee weapons be included in the list of Junk items that get dropped when looting a body?"
+    actionText="Drop Melee Weapons"
+    enumText(0)="Don't Drop"
+    enumText(1)="Drop"
 
     refusedItems(0)=class'WeaponCombatKnife'
     refusedItems(1)=class'WeaponCrowbar'

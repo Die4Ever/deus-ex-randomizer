@@ -4,10 +4,10 @@ defaultproperties
 {
     enabled=True
     defaultvalue=True
-    HelpText="When starting a new game, should cigarettes and zyme be added to the list of Junk items that get dropped when looting a corpse?"
-    actionText="Cigarettes and Zyme"
-    enumText(0)="Not Junk"
-    enumText(1)="Junk"
+    HelpText="Should cigarettes and zyme be included in the list of Junk items that get dropped when looting a body?"
+    actionText="Drop Cigarettes & Zyme" // text is too long without abreviating "and"
+    enumText(0)="Don't Drop"
+    enumText(1)="Drop"
 
     refusedItems(0)=class'Cigarettes'
     refusedItems(1)=class'VialCrack'

@@ -58,6 +58,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_RefuseUseless');
     CreateChoice(class'MenuChoice_RefuseFoodDrink');
     CreateChoice(class'MenuChoice_RefuseMelee');
+    CreateChoice(class'MenuChoice_RefuseMisc');
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }

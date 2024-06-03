@@ -480,6 +480,7 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     class'MenuChoice_RefuseUseless'.static.SetRefusals();
     class'MenuChoice_RefuseFoodDrink'.static.SetRefusals();
     class'MenuChoice_RefuseMelee'.static.SetRefusals();
+    class'MenuChoice_RefuseMisc'.static.SetRefusals();
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)
