@@ -528,34 +528,33 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
             break;
         case 153:
-            flagbase.SetBool('DL_Helios_Door1_Played',true,,-1);
-            flagbase.SetBool('DL_Helios_Intro_Played',true,,-1);
-            flagbase.SetBool('DL_Final_Page03_Played',true,,-1);
-            flagbase.SetBool('M15PaulHolo_Played',true,,-1);
-            flagbase.SetBool('MeetHelios_Played',true,,-1);
-            flagbase.SetBool('M15GaryHolo_Played',true,,-1);
-            flagbase.SetBool('M15MeetTong_Played',true,,-1);
+            flagbase.SetBool('DL_Helios_Door1_Played',true,,-1);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
+            flagbase.SetBool('DL_Helios_Intro_Played',true,,-1);         // I will now explain why you have been allowed to reach Sector 3.
+            flagbase.SetBool('DL_Final_Page03_Played',true,,-1);         // Don't get your hopes up; my compound is quite secure.
+            flagbase.SetBool('M15PaulHolo_Played',true,,-1);             // It let me through... I can't believe it. [Paul]
+            flagbase.SetBool('MeetHelios_Played',true,,-1);              // You will go to Sector 4 and deactivate the uplink locks, yes.
+            flagbase.SetBool('M15GaryHolo_Played',true,,-1);             // It let me through... I can't believe it. [Gary]
+            flagbase.SetBool('M15MeetTong_Played',true,,-1);             // We can get you into Sector 3 -- but no further.
             // fallthrough
         case 152:
-            flagbase.SetBool('DL_Final_Page02_Played',true,,-1);
-            flagbase.SetBool('DL_elevator_Played',true,,-1);
-            flagbase.SetBool('DL_conveyor_room_Played',true,,-1);
-            flagbase.SetBool('M15MeetEverett_Played',true,,-1);
+            flagbase.SetBool('DL_Final_Page02_Played',true,,-1);         // Barely a scratch.
+            flagbase.SetBool('DL_elevator_Played',true,,-1);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
+            flagbase.SetBool('DL_conveyor_room_Played',true,,-1);        // Page is further down.  Find the elevator.
+            flagbase.SetBool('M15MeetEverett_Played',true,,-1);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             // fallthrough
         case 151:
-            flagbase.SetBool('DL_tong1_Played',true,,-1);
-            flagbase.SetBool('DL_tong_reached_bunker_Played',true,,-1);
-            flagbase.SetBool('DL_JockDeathTongComment_Played',true,,-1);
-            flagbase.SetBool('DL_JockDeath_Played',true,,-1);
-            flagbase.SetBool('DL_Bunker_Start_Played',true,,-1);
-            flagbase.SetBool('DL_Bunker_PowerRoom_Played',true,,-1);
-            flagbase.SetBool('DL_Bunker_Power_Played',true,,-1);
-            flagbase.SetBool('DL_Bunker_Hangar_Played',true,,-1);
-            // Jump!  You can make it!
-            // flagbase.SetBool('DL_Bunker_Fan_Played',true,,-1);
-            flagbase.SetBool('DL_Bunker_Elevator_Played',true,,-1);
-            flagbase.SetBool('DL_Bunker_blastdoor_Played',true,,-1);
-            flagbase.SetBool('DL_blastdoor_shut_Played',true,,-1);
+            flagbase.SetBool('DL_tong1_Played',true,,-1);                // Here's a satellite image of the damage from the missile.
+            flagbase.SetBool('DL_tong_reached_bunker_Played',true,,-1);  // Good work.  You've reached the bunker.
+            flagbase.SetBool('DL_JockDeathTongComment_Played',true,,-1); // I don't believe it!  JC!  We lost Jock!
+            flagbase.SetBool('DL_JockDeath_Played',true,,-1);            // JC!  Got a problem.  Someone planted a bo-----
+            flagbase.SetBool('DL_Bunker_Start_Played',true,,-1);         // Just spotted a sniper in the tower.
+            flagbase.SetBool('DL_Bunker_PowerRoom_Played',true,,-1);     // You're nearing the power room.
+            flagbase.SetBool('DL_Bunker_Power_Played',true,,-1);         // The elevator power is online.
+            flagbase.SetBool('DL_Bunker_Hangar_Played',true,,-1);        // I saw some soldiers running away from the hangar.
+            // flagbase.SetBool('DL_Bunker_Fan_Played',true,,-1);        // Jump!  You can make it!
+            flagbase.SetBool('DL_Bunker_Elevator_Played',true,,-1);      // The power to the elevator is down.
+            flagbase.SetBool('DL_Bunker_blastdoor_Played',true,,-1);     // The schematics show an elevator to the west, but utility power is down.
+            flagbase.SetBool('DL_blastdoor_shut_Played',true,,-1);       // These blast doors are the reason I don't have to worry about nukes -- or you.
             break;
     }
 
