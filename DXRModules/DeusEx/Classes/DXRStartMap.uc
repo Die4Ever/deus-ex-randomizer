@@ -89,24 +89,31 @@ function PostFirstEntry()
     local #var(PlayerPawn) p;
     local DeusExGoal newGoal;
     local int starting_map;
+    local Inventory item;
 
     p = player();
     starting_map = dxr.flags.settings.starting_map;
 
     if (Caps(dxr.localURL) == Caps(_GetStartMap(starting_map))) {
         switch(starting_map) {
+            case 151:
+                GivePlayerImage(p, class'Image15_Area51Bunker');
+                break;
+
             case 152:
                 newGoal = p.AddGoal('KillPage', false);
-                newGoal.SetText(class'GoalInfo'.static.GetGoalText('KillPage'));
+                newGoal.SetText(GetGoalTextGC('KillPage', 'M15MeetEverett'));
+                GivePlayerImage(p, class'Image15_Area51Bunker');
                 break;
 
             case 153:
                 newGoal = p.AddGoal('KillPage', false);
-                newGoal.SetText(class'GoalInfo'.static.GetGoalText('KillPage'));
+                newGoal.SetText(GetGoalTextGC('KillPage', 'M15MeetEverett'));
                 newGoal = p.AddGoal('DestroyArea51', false);
-                newGoal.SetText(class'GoalInfo'.static.GetGoalText('DestroyArea51'));
+                newGoal.SetText(GetGoalTextGC('DestroyArea51', 'M15MeetTong'));
                 newGoal = p.AddGoal('DeactivateLocks', false);
-                newGoal.SetText(class'GoalInfo'.static.GetGoalText('DeactivateLocks'));
+                newGoal.SetText(GetGoalTextGC('DeactivateLocks', 'MeetHelios'));
+                GivePlayerImage(p, class'Image15_Area51Bunker');
                 break;
         }
     }

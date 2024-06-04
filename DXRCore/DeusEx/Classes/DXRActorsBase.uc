@@ -400,6 +400,18 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     return nextItem;
 }
 
+function DataVaultImage GivePlayerImage(DeusExPlayer player, class<DataVaultImage> imageClass)
+{
+    local DataVaultImage image;
+
+    image = player.Spawn(imageClass);
+    image.ItemName = imageClass.default.imageDescription;
+    image.ItemArticle = "-";
+    image.Frob(player, None);
+
+    return image;
+}
+
 function bool SkipActorBase(Actor a)
 {
     if( a.Owner != None || a.bStatic || a.bHidden || a.bMovable==False || a.bIsSecretGoal || a.bDeleteMe )
@@ -798,6 +810,27 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
         start = start.nextEvent;
     }
     return None;
+}
+
+static function string GetGoalText(name goalName, Conversation con)
+{
+    local ConEvent ce;
+    local ConEventAddGoal ceag;
+
+    if (con == None || goalName == '') return "";
+
+    for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
+        ceag = ConEventAddGoal(ce);
+        if (ceag != None && ceag.goalName == goalName)
+            return ceag.goalText;
+    }
+
+    return "";
+}
+
+function string GetGoalTextGC(name goalName, name conversationName)
+{
+    return GetGoalText(goalName, GetConversation(conversationName));
 }
 
 
