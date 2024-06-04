@@ -33,6 +33,8 @@ function PreFirstEntry()
     local #var(PlayerPawn) p;
     local string startMapName;
     local ScriptedPawn sp;
+    local DeusExMover dxMover;
+    local ElevatorMover eMover;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
@@ -57,7 +59,56 @@ function PreFirstEntry()
                 sp.Destroy();
             }
         }
+
+    case "15_Area51_Bunker":
+        if (dxr.flags.settings.starting_map < 151) { // don't delete goals if backtracking
+            player().DeleteAllGoals();
+        } else {
+            foreach AllActors(class'DeusExMover', dxmover, 'doors_lower') {
+                dxMover.InterpolateTo(1, 0.0);
+            }
+            foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
+                eMover.InterpolateTo(1, 0.0);
+                break;
+            }
+        }
         break;
+
+    case "15_Area51_Final":
+        if (dxr.flags.settings.starting_map == 153) {
+            foreach AllActors(class'DeusExMover', dxMover) {
+                if (dxMover.tag == 'Page_Blastdoors' || dxMover.tag == 'door_pagearea')
+                    dxMover.InterpolateTo(1, 0.0);
+            }
+        }
+    }
+}
+
+function PostFirstEntry()
+{
+    local #var(PlayerPawn) p;
+    local DeusExGoal newGoal;
+    local int starting_map;
+
+    p = player();
+    starting_map = dxr.flags.settings.starting_map;
+
+    if (Caps(dxr.localURL) == Caps(_GetStartMap(starting_map))) {
+        switch(starting_map) {
+            case 152:
+                newGoal = p.AddGoal('KillPage', false);
+                newGoal.SetText(class'GoalInfo'.static.GetGoalText('KillPage'));
+                break;
+
+            case 153:
+                newGoal = p.AddGoal('KillPage', false);
+                newGoal.SetText(class'GoalInfo'.static.GetGoalText('KillPage'));
+                newGoal = p.AddGoal('DestroyArea51', false);
+                newGoal.SetText(class'GoalInfo'.static.GetGoalText('DestroyArea51'));
+                newGoal = p.AddGoal('DeactivateLocks', false);
+                newGoal.SetText(class'GoalInfo'.static.GetGoalText('DeactivateLocks'));
+                break;
+        }
     }
 }
 

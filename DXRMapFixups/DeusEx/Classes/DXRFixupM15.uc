@@ -76,21 +76,9 @@ function PreFirstEntryMapFixes_Bunker()
     local OnceOnlyTrigger oot;
     local Trigger trig;
     local #var(prefix)RatGenerator rg;
-    local ElevatorMover eMover;
 
     // doors_lower is for backtracking
     AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
-    if (dxr.flags.settings.starting_map < 151) { // don't delete goals if backtracking
-        player().DeleteAllGoals();
-    } else {
-        foreach AllActors(class'DeusExMover', d, 'doors_lower') {
-            d.InterpolateTo(1, 0.0);
-        }
-        foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
-            eMover.InterpolateTo(1, 0.0);
-            break;
-        }
-    }
 
     //Change vent entry security computer password so it isn't pre-known
     foreach AllActors(class'ComputerSecurity',c){
@@ -200,13 +188,6 @@ function PreFirstEntryMapFixes_Final()
     local SpecialEvent se;
     local DataLinkTrigger dlt;
     local DeusExMover Mover;
-
-    if (dxr.flags.settings.starting_map == 153) {
-        foreach AllActors(class'DeusExMover', mover) {
-            if (mover.tag == 'Page_Blastdoors' || mover.tag == 'door_pagearea')
-                mover.InterpolateTo(1, 0.0);
-        }
-    }
 
     // Generator_overload is the cover over the beat the game button used in speedruns
     foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
