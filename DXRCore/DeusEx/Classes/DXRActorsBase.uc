@@ -400,7 +400,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     return nextItem;
 }
 
-function DataVaultImage GivePlayerImage(DeusExPlayer player, class<DataVaultImage> imageClass)
+static function DataVaultImage GivePlayerImage(DeusExPlayer player, class<DataVaultImage> imageClass)
 {
     local DataVaultImage image;
 

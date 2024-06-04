@@ -187,7 +187,6 @@ function PreFirstEntryMapFixes_Final()
     local Switch2 s2;
     local SpecialEvent se;
     local DataLinkTrigger dlt;
-    local DeusExMover Mover;
 
     // Generator_overload is the cover over the beat the game button used in speedruns
     foreach AllActors(class'DeusExMover', d, 'Generator_overload') {

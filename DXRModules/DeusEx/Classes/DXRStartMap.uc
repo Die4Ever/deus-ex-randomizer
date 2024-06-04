@@ -96,14 +96,9 @@ function PostFirstEntry()
 
     if (Caps(dxr.localURL) == Caps(_GetStartMap(starting_map))) {
         switch(starting_map) {
-            case 151:
-                GivePlayerImage(p, class'Image15_Area51Bunker');
-                break;
-
             case 152:
                 newGoal = p.AddGoal('KillPage', false);
                 newGoal.SetText(GetGoalTextGC('KillPage', 'M15MeetEverett'));
-                GivePlayerImage(p, class'Image15_Area51Bunker');
                 break;
 
             case 153:
@@ -113,7 +108,6 @@ function PostFirstEntry()
                 newGoal.SetText(GetGoalTextGC('DestroyArea51', 'M15MeetTong'));
                 newGoal = p.AddGoal('DeactivateLocks', false);
                 newGoal.SetText(GetGoalTextGC('DeactivateLocks', 'MeetHelios'));
-                GivePlayerImage(p, class'Image15_Area51Bunker');
                 break;
         }
     }
@@ -590,8 +584,8 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('DL_Helios_Intro_Played',true,,-1);         // I will now explain why you have been allowed to reach Sector 3.
             flagbase.SetBool('DL_Final_Page03_Played',true,,-1);         // Don't get your hopes up; my compound is quite secure.
             flagbase.SetBool('M15PaulHolo_Played',true,,-1);             // It let me through... I can't believe it. [Paul]
-            flagbase.SetBool('MeetHelios_Played',true,,-1);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('M15GaryHolo_Played',true,,-1);             // It let me through... I can't believe it. [Gary]
+            flagbase.SetBool('MeetHelios_Played',true,,-1);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('M15MeetTong_Played',true,,-1);             // We can get you into Sector 3 -- but no further.
             // fallthrough
         case 152:
@@ -599,6 +593,7 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('DL_elevator_Played',true,,-1);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
             flagbase.SetBool('DL_conveyor_room_Played',true,,-1);        // Page is further down.  Find the elevator.
             flagbase.SetBool('M15MeetEverett_Played',true,,-1);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
+            AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
             // fallthrough
         case 151:
             flagbase.SetBool('DL_tong1_Played',true,,-1);                // Here's a satellite image of the damage from the missile.
@@ -613,6 +608,7 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('DL_Bunker_Elevator_Played',true,,-1);      // The power to the elevator is down.
             flagbase.SetBool('DL_Bunker_blastdoor_Played',true,,-1);     // The schematics show an elevator to the west, but utility power is down.
             flagbase.SetBool('DL_blastdoor_shut_Played',true,,-1);       // These blast doors are the reason I don't have to worry about nukes -- or you.
+            GivePlayerImage(player, class'Image15_Area51Bunker');
             break;
     }
 
