@@ -33,7 +33,6 @@ function PreFirstEntry()
     local #var(PlayerPawn) p;
     local string startMapName;
     local ScriptedPawn sp;
-    local DeusExMover dxMover;
     local ElevatorMover eMover;
 
     p = player();
@@ -64,9 +63,6 @@ function PreFirstEntry()
         if (dxr.flags.settings.starting_map < 151) { // don't delete goals if backtracking
             player().DeleteAllGoals();
         } else {
-            foreach AllActors(class'DeusExMover', dxmover, 'doors_lower') {
-                dxMover.InterpolateTo(1, 0.0);
-            }
             foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
                 eMover.InterpolateTo(1, 0.0);
                 break;
