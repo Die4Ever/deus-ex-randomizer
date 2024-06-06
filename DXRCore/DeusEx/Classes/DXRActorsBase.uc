@@ -404,10 +404,13 @@ static function DataVaultImage GivePlayerImage(DeusExPlayer player, class<DataVa
 {
     local DataVaultImage image;
 
-    image = player.Spawn(imageClass);
-    image.ItemName = imageClass.default.imageDescription;
-    image.ItemArticle = "-";
-    image.Frob(player, None);
+    image = DataVaultImage(player.FindInventoryType(imageClass));
+    if (image == None) {
+        image = player.Spawn(imageClass);
+        image.ItemName = imageClass.default.imageDescription;
+        image.ItemArticle = "-";
+        image.Frob(player, None);
+    }
 
     return image;
 }
