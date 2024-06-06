@@ -34,6 +34,7 @@ function PreFirstEntry()
     local string startMapName;
     local ScriptedPawn sp;
     local ElevatorMover eMover;
+    local DeusExMover dxMover;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
@@ -583,6 +584,7 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('M15GaryHolo_Played',true,,-1);             // It let me through... I can't believe it. [Gary]
             flagbase.SetBool('MeetHelios_Played',true,,-1);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('M15MeetTong_Played',true,,-1);             // We can get you into Sector 3 -- but no further.
+            GivePlayerImage(player, class'Image15_Area51_Sector3');
             // fallthrough
         case 152:
             flagbase.SetBool('DL_Final_Page02_Played',true,,-1);         // Barely a scratch.
