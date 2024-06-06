@@ -41,6 +41,7 @@ simulated function InitHints()
     AddHint("Attaching a LAM or Gas Grenade to a wall can be very strong!", "Also try to lure enemies into them.");
     AddHint("You don't trigger your own grenades.", "Setup traps without fear.");
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
+    AddHint("Sabot rounds can damage tough objects no matter the damage threshold.","Check the highlight text!");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
     if(dxr.flags.settings.energy != 100) {
         AddHint("Your max energy is "$dxr.flags.settings.energy$" points.", "Your energy meter shows percent relative to this value.");
@@ -108,7 +109,7 @@ simulated function InitHints()
             AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
             AddHint("Flare darts now set enemies on fire for 3 seconds.");
             AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
-            AddHint("Read the pop-up text on doors to see how many", "hits from your equiped weapon it takes to break it.");
+            AddHint("Read the pop-up text on doors to see how many", "hits from your equipped weapon it takes to break it.");
             AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
             AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
         } else {
