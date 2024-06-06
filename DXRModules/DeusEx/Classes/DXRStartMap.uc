@@ -59,6 +59,7 @@ function PreFirstEntry()
                 sp.Destroy();
             }
         }
+        break;
 
     case "15_Area51_Bunker":
         if (dxr.flags.settings.starting_map < 151) { // don't delete goals if backtracking
