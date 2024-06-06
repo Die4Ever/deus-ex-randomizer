@@ -1642,6 +1642,25 @@ exec function Tcl() // toggle clipping, name borrowed from Gamebryo
         Walk();
 }
 
+exec function ShowRefused()
+{
+    local string refusals, msg;
+    local int idx;
+
+    refusals = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("item_refusals");
+
+    // basically just adds a space after every comma
+    while (Len(refusals) > 1) {
+        refusals = Right(refusals, Len(refusals) - 1);
+        idx = InStr(refusals, ",");
+        msg = msg $ Left(refusals, idx) $ ", ";
+        refusals = Right(refusals, Len(refusals) - idx);
+    }
+    msg = Left(msg, Len(msg) - 2);
+
+    ClientMessage("Refused items: " $ msg);
+}
+
 
 // ----------------------------------------------------------------------
 // InvokeUIScreen()
