@@ -18,12 +18,26 @@ static function PlayerMoverToggleTrigger CreatePMTT(
 ) {
     local PlayerMoverToggleTrigger pmtt;
 
-    pmtt = a.Spawn(class'PlayerMoverToggleTrigger',, tag);
-    _CreateMTT(pmtt, flagName, tag, keyFrame1, keyFrame2, duration, flagExpiration);
-    pmtt.loc = loc;
-    pmtt.radius = radius;
+    if (a == None || tag == '' || flagName == '') return None;
 
+    pmtt = a.Spawn(class'PlayerMoverToggleTrigger',, tag);
+    pmtt.InitPMTT(flagName, keyFrame1, keyFrame2, duration, loc, flagExpiration, radius);
     return pmtt;
+}
+
+function InitPMTT(
+    name flagName,
+    byte keyFrame1,
+    byte keyFrame2,
+    float duration,
+    Vector loc,
+    optional int flagExpiration,
+    optional float radius
+) {
+    InitMTT(flagName, keyFrame1, keyFrame2, duration, flagExpiration);
+
+    self.loc = loc;
+    self.radius = radius;
 }
 
 function PostPostBeginPlay()
