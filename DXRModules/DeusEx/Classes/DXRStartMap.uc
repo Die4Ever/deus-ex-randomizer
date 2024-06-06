@@ -92,7 +92,7 @@ function PostFirstEntry()
     p = player();
     starting_map = dxr.flags.settings.starting_map;
 
-    if (Caps(dxr.localURL) == Caps(_GetStartMap(starting_map))) {
+    if (dxr.localURL ~= _GetStartMap(starting_map)) {
         switch(starting_map) {
             case 152:
                 newGoal = p.AddGoal('KillPage', false);
