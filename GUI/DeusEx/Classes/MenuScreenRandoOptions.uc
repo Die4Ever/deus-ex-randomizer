@@ -48,17 +48,17 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_Epilepsy');
         CreateChoice(class'MenuChoice_BarrelTextures');
         CreateChoice(class'MenuChoice_DecoPickupBehaviour');
+        CreateChoice(class'MenuChoice_AutoLamps');
+        CreateChoice(class'MenuChoice_RefuseUseless');
+        CreateChoice(class'MenuChoice_RefuseFoodDrink');
+        CreateChoice(class'MenuChoice_RefuseMelee');
+        CreateChoice(class'MenuChoice_RefuseMisc');
     }
 
     CreateChoice(class'MenuChoice_PasswordAutofill');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
     CreateChoice(class'MenuChoice_ShowTeleporters');
-    CreateChoice(class'MenuChoice_AutoLamps');
-    CreateChoice(class'MenuChoice_RefuseUseless');
-    CreateChoice(class'MenuChoice_RefuseFoodDrink');
-    CreateChoice(class'MenuChoice_RefuseMelee');
-    CreateChoice(class'MenuChoice_RefuseMisc');
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }
