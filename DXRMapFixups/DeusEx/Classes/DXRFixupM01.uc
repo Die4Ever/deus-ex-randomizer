@@ -158,6 +158,9 @@ function AnyEntryMapFixes()
     // if you can talk to gunther then obviously he's been rescued
     DeleteConversationFlag(GetConversation('GuntherRescued'), 'GuntherFreed', true);
 
+    // you can't take a corpse alive and conscious
+    GetConversation('DL_Top').AddFlagRef('TerroristCommander_Dead', false);
+
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
 
