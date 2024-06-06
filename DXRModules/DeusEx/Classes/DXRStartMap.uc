@@ -34,7 +34,7 @@ function PreFirstEntry()
     local string startMapName;
     local ScriptedPawn sp;
     local ElevatorMover eMover;
-    local DeusExMover dxMover;
+    local #var(DeusExPrefix)Mover dxMover;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
@@ -62,9 +62,7 @@ function PreFirstEntry()
         break;
 
     case "15_Area51_Bunker":
-        if (dxr.flags.settings.starting_map < 151) { // don't delete goals if backtracking
-            player().DeleteAllGoals();
-        } else {
+        if (dxr.flags.settings.starting_map > 150) {
             foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
                 eMover.InterpolateTo(1, 0.0);
                 break;
