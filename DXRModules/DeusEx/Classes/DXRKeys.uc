@@ -957,6 +957,7 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     local Containers c;
     local int num, slot, tries;
     local bool vanilla_good;
+    local Vector newloc;
 
 #ifndef injections
     k.ItemName = k.default.ItemName $ " (" $ k.Description $ ")";
@@ -1014,7 +1015,10 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot] $" ("$temp[slot].Location$")");
 
         if(PlaceholderItem(temp[slot]) != None) {
+            newloc = temp[slot].Location;
+            newloc.Z -= temp[slot].CollisionHeight - k.CollisionHeight;
             temp[slot].SetCollisionSize(k.CollisionRadius, k.CollisionHeight);
+            temp[slot].SetLocation(newloc);
         }
         // Swap argument A is more lenient with collision than argument B
         if( Swap(temp[slot], k) ) break;
