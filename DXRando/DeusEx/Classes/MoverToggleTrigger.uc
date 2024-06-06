@@ -46,7 +46,7 @@ static function MoverToggleTrigger _CreateMTT(
 function bool MoveMovers()
 {
     local DeusExPlayer player;
-    local #var(prefix)DeusExMover mover;
+    local #var(DeusExPrefix)Mover mover;
     local bool moved, flagVal;
 
     player = DeusExPlayer(GetPlayerPawn());
