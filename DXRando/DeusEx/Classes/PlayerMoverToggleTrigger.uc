@@ -49,6 +49,7 @@ function PostPostBeginPlay()
 event Tick(float deltaTime)
 {
     local DeusExPlayer player;
+    local float distance;
 
     Super.Tick(deltaTime);
 
@@ -56,7 +57,8 @@ event Tick(float deltaTime)
         player = DeusExPlayer(GetPlayerPawn());
         if (player == None) return;
 
-        if (player.location == loc || (radius != 0 && VSize(player.location - loc) > radius))
+        distance = VSize(player.location - loc);
+        if (distance < 10.0 || (radius != 0.0 && distance > radius))
             playerMoved = true;
         else
             player.SetLocation(loc);
