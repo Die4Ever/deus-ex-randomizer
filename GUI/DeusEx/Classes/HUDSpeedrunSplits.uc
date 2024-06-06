@@ -539,7 +539,8 @@ function int BalancedSplit(int m)
     local int i, balanced_split_time;
     local int total_goal;
     local int typical_split_time, typical_total_time;
-    local float ratio_of_game;
+    local int timesave, total_timesave;
+    local float ratio;
 
     total_goal = PB_total;
     if(goal_time != 0) total_goal = goal_time;
@@ -560,16 +561,25 @@ function int BalancedSplit(int m)
         return Golds[m];
     }
     if(m == 15) { // last split, avoid rounding issues
-        return total_goal - balanced_splits_totals[m-1];
+        balanced_split_time = total_goal - balanced_splits_totals[m-1];
+        //log("Mission: " $ m $ ", balanced: " $ fmtTimeSeg(balanced_split_time) $ ", gold: " $ fmtTimeSeg(Golds[m]) $ ", PB: " $ fmtTimeSeg(PB[m]) $ ", Avg: " $ fmtTimeSeg(Avgs[m]));
+        return balanced_split_time;
     }
     if(typical_total_time == 0) {
         if(Avgs[m] > 0) return Avgs[m];
         return PB[m];
     }
 
-    ratio_of_game = float(typical_split_time) / float(typical_total_time);
-
-    balanced_split_time = ratio_of_game * float(total_goal);
+    if(sum_of_bests > 0) {
+        timesave = typical_split_time - Golds[m];
+        total_timesave = typical_total_time - sum_of_bests;
+        ratio = float(typical_total_time - total_goal) / float(total_timesave);// ratio is the desired timesave divided by the maximum timesave
+        balanced_split_time = typical_split_time - timesave * ratio;
+    } else {
+        ratio = float(typical_split_time) / float(typical_total_time);
+        balanced_split_time = ratio * float(total_goal);
+    }
+    //log("Mission: " $ m $ ", balanced: " $ fmtTimeSeg(balanced_split_time) $ ", gold: " $ fmtTimeSeg(Golds[m]) $ ", PB: " $ fmtTimeSeg(PB[m]) $ ", Avg: " $ fmtTimeSeg(Avgs[m]));
     return balanced_split_time;
 }
 
