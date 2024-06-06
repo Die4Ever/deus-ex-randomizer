@@ -79,6 +79,7 @@ function PreFirstEntry()
                     dxMover.InterpolateTo(1, 0.0);
             }
         }
+        break;
     }
 }
 
