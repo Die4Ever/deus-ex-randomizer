@@ -180,9 +180,9 @@ defaultproperties
 {
      currentScrollSpeed=100.0000
      scrollSpeed=100.0000
-     minScrollSpeed=-500
-     maxScrollSpeed=500
-     speedAdjustment=10
+     minScrollSpeed=-600
+     maxScrollSpeed=600
+     speedAdjustment=15
      maxTileWidth=700
      maxTextWidth=700
 }
