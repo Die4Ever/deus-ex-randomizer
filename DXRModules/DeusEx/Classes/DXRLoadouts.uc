@@ -477,10 +477,12 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     Super.PlayerLogin(p);
 
     RandoStartingEquipment(p, false);
+#ifdef injections
     class'MenuChoice_RefuseUseless'.static.SetRefusals();
     class'MenuChoice_RefuseFoodDrink'.static.SetRefusals();
     class'MenuChoice_RefuseMelee'.static.SetRefusals();
     class'MenuChoice_RefuseMisc'.static.SetRefusals();
+#endif
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)

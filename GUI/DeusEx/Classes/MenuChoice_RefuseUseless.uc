@@ -1,4 +1,5 @@
 class MenuChoice_RefuseUseless extends MenuChoice_ItemRefusal;
+#compileif injections
 
 defaultproperties
 {

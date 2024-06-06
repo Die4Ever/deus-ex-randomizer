@@ -1,4 +1,5 @@
 class MenuChoice_ItemRefusal extends DXRMenuUIChoiceBool;
+#compileif injections
 
 var class<Inventory> refusedItems[6];
 

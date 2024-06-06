@@ -1,4 +1,5 @@
 class MenuChoice_RefuseFoodDrink extends MenuChoice_ItemRefusal;
+#compileif injections
 
 defaultproperties
 {
