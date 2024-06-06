@@ -1,6 +1,7 @@
 class PlayerMoverToggleTrigger extends MoverToggleTrigger;
 
 var Vector loc;
+var float radius;
 
 var bool playerMoved;
 
@@ -12,13 +13,15 @@ static function PlayerMoverToggleTrigger CreatePMTT(
     byte keyFrame2,
     float duration,
     Vector loc,
-    optional int flagExpiration
+    optional int flagExpiration,
+    optional float radius
 ) {
     local PlayerMoverToggleTrigger pmtt;
 
     pmtt = a.Spawn(class'PlayerMoverToggleTrigger',, tag);
     _CreateMTT(pmtt, flagName, tag, keyFrame1, keyFrame2, duration, flagExpiration);
     pmtt.loc = loc;
+    pmtt.radius = radius;
 
     return pmtt;
 }
@@ -39,7 +42,7 @@ event Tick(float deltaTime)
         player = DeusExPlayer(GetPlayerPawn());
         if (player == None) return;
 
-        if (player.location == loc)
+        if (player.location == loc || (radius != 0 && VSize(player.location - loc) > radius))
             playerMoved = true;
         else
             player.SetLocation(loc);

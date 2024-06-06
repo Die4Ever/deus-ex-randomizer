@@ -249,7 +249,8 @@ function PreFirstEntryMapFixes()
                 1, 0,
                 0.0,
                 vectm(0.435074, -1452.027466, 19.649994),
-                3
+                3,
+                1000.0
             );
 
             break;
