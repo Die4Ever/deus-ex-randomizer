@@ -48,7 +48,7 @@ function bool MoveMovers()
     if (player == None) return false;
 
     flagVal = player.flagbase.getBool(flagName);
-    foreach player.AllActors(class'#var(prefix)DeusExMover', mover, tag) {
+    foreach player.AllActors(class'#var(DeusExPrefix)Mover', mover, tag) {
         if (flagVal)
             mover.InterpolateTo(keyFrame2, duration);
         else
