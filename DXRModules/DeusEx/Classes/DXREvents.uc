@@ -289,6 +289,7 @@ function SetWatchFlags() {
     local #var(prefix)Fan1 fan1;
     local #var(prefix)Button1 button;
     local #var(prefix)VialCrack zyme;
+    local #var(prefix)ControlPanel conPanel;
     local Dispatcher disp;
     local int i;
 
@@ -1254,15 +1255,12 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(1135,2360,-2138),40,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',vectm(0,0,0));
-        bt.bUntrigger=True;
-        bt.Tag='level1_emitter';
-        bt.bDestroyOthers=False;
-
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',vectm(0,0,0));
-        bt.bUntrigger=True;
-        bt.Tag='level3_emitter';
-        bt.bDestroyOthers=False;
+        foreach AllActors(class'#var(prefix)ControlPanel',conPanel){
+            bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',conPanel.Location);
+            bt.Tag=conPanel.name;
+            bt.bDestroyOthers=False;
+            conPanel.event=conPanel.name;
+        }
 
         break;
     case "14_OCEANLAB_SILO":
