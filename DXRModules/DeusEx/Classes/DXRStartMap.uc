@@ -72,7 +72,7 @@ function PreFirstEntry()
 
     case "15_Area51_Final":
         if (dxr.flags.settings.starting_map == 153) {
-            foreach AllActors(class'DeusExMover', dxMover) {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover) {
                 if (dxMover.tag == 'Page_Blastdoors' || dxMover.tag == 'door_pagearea')
                     dxMover.InterpolateTo(1, 0.0);
             }
