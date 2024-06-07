@@ -15,6 +15,7 @@ function PostFirstEntryMapFixes()
 {
     local Actor a;
     local bool RevisionMaps;
+    local #var(prefix)NanoKey key;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -36,6 +37,14 @@ function PostFirstEntryMapFixes()
             AddActor(class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75));
         }
         SetAllLampsState(true, true, false); // this map has one desk lamp, in an office no one is in
+        break;
+
+    case "03_NYC_AIRFIELD":
+        foreach AllActors(class'#var(prefix)NanoKey', key) {
+            if(key.KeyID == 'securitytower' && key.Owner == None) {
+                key.Destroy();
+            }
+        }
         break;
     }
 }
