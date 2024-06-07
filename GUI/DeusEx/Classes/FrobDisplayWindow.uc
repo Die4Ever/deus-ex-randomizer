@@ -284,7 +284,15 @@ function bool KeyAcquired(Mover m)
 
 function int CalcDecoDamage(int iDamage, name damageType, #var(DeusExPrefix)Decoration deco)
 {
-    if (iDamage < deco.minDamageThreshold) return 0;
+    if (iDamage < deco.minDamageThreshold) {
+        if (damageType=='Sabot'){
+            return iDamage * 0.5;
+        } else if (damageType=='Exploded'){
+            return iDamage * 0.25;
+        } else {
+            return 0;
+        }
+    }
 
     if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
         return 0;

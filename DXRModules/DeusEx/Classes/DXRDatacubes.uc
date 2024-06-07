@@ -621,6 +621,7 @@ function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers
     local Actor temp[1024];
     local int num, slot, numHasPass, bads, tries;
     local int hasPass[64];
+    local Vector newloc;
 
     InfoDevsHasPass(id, hasPass, numHasPass);
 
@@ -665,7 +666,10 @@ function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers
         l("swapping infodevice "$ActorToString(id)$" with "$temp[slot] $" ("$temp[slot].Location$")");
 
         if(PlaceholderItem(temp[slot]) != None) {
+            newloc = temp[slot].Location;
+            newloc.Z -= temp[slot].CollisionHeight - id.CollisionHeight;
             temp[slot].SetCollisionSize(id.CollisionRadius, id.CollisionHeight);
+            temp[slot].SetLocation(newloc);
         }
         // Swap argument A is more lenient with collision than argument B
         if(Swap(temp[slot], id)) break;

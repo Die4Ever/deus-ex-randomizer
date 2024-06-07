@@ -1,7 +1,5 @@
 class DXRLoadouts extends DXRActorsBase transient;
 
-const default_item_refusals = ",#var(prefix)Cigarettes,";
-
 var int loadout;//copy locally so we don't need to make this class transient and don't need to worry about re-entering and picking up an item before DXRando loads
 
 struct loadouts
@@ -477,7 +475,14 @@ function FirstEntry()
 simulated function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
+
     RandoStartingEquipment(p, false);
+#ifdef injections
+    class'MenuChoice_RefuseUseless'.static.SetRefusals();
+    class'MenuChoice_RefuseFoodDrink'.static.SetRefusals();
+    class'MenuChoice_RefuseMelee'.static.SetRefusals();
+    class'MenuChoice_RefuseMisc'.static.SetRefusals();
+#endif
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)
@@ -699,7 +704,7 @@ static function bool IsRefused(class<Inventory> type, optional out int strIdx)
     datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     refusals = datastorage.GetConfigKey("item_refusals");
     if(refusals == "") {
-        refusals = default_item_refusals;
+        return false;
     }
     strIdx = InStr(refusals, "," $ type.name $ ",");
     return strIdx != -1;
@@ -734,7 +739,7 @@ static function SetRefuseItem(class<Inventory> type)
     datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     refusals = datastorage.GetConfigKey("item_refusals");
 
-    if (refusals == "") refusals = default_item_refusals;
+    if (refusals == "") refusals = ",";
     refusals = refusals $ type.name $ ",";
 
     datastorage.SetConfig("item_refusals", refusals, 3600*24*366);

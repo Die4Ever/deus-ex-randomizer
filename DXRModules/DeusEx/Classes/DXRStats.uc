@@ -249,7 +249,7 @@ function string GetCompleteMissionMenuTimeString(int mission)
     return fmtTimeToString(time);
 }
 
-function String GetTotalTimeString()
+function int GetTotalSuccessTime()
 {
     local int i, totaltime;
 
@@ -257,10 +257,10 @@ function String GetTotalTimeString()
         totaltime += GetMissionTime(i);
     }
 
-    return fmtTimeToString(totaltime);
+    return totaltime;
 }
 
-function String GetTotalCompleteTimeString()
+function int GetTotalCompleteTime()
 {
     local int i, totaltime;
 
@@ -268,7 +268,7 @@ function String GetTotalCompleteTimeString()
         totaltime += GetCompleteMissionTime(i);
     }
 
-    return fmtTimeToString(totaltime);
+    return totaltime;
 }
 
 static function int GetTotalTime(DXRando dxr)
@@ -295,7 +295,7 @@ function String GetTotalMenuTimeString()
     return fmtTimeToString(time);
 }
 
-function String GetTotalCompleteMenuTimeString()
+function int GetTotalCompleteMenuTime()
 {
     local int i, totaltime;
 
@@ -303,7 +303,7 @@ function String GetTotalCompleteMenuTimeString()
         totaltime += GetCompleteMissionMenuTime(i);
     }
 
-    return fmtTimeToString(totaltime);
+    return totaltime;
 }
 
 static function int GetTotalMenuTime(DXRando dxr)
@@ -446,34 +446,65 @@ function String FormatCreditsTimeStrings(String missionNum, String missionName, 
 function AddMissionTimeTable(CreditsWindow cw)
 {
     local CreditsTimerWindow ctw;
-    local int i, totalTime, totalRealTime;
+    local int i, dyingTime, successTime, successMenuTime, menuTime, completeTime;
+    local int dyingTimeWithoutMenusTotal, timeWithoutMenusTotal;
+    local int dyingTimeMenusTotal, timeMenusTotal;
+    local string s;
 
     ctw = CreditsTimerWindow(cw.winScroll.NewChild(Class'CreditsTimerWindow'));
 
-    ctw.AddMissionTime("1","Liberty Island",GetMissionTimeString(1),GetCompleteMissionTimeWithMenusString(1));
-    ctw.AddMissionTime("2","NYC Generator",GetMissionTimeString(2),GetCompleteMissionTimeWithMenusString(2));
-    ctw.AddMissionTime("3","Airfield",GetMissionTimeString(3),GetCompleteMissionTimeWithMenusString(3));
-    ctw.AddMissionTime("4","NSF HQ",GetMissionTimeString(4),GetCompleteMissionTimeWithMenusString(4));
-    ctw.AddMissionTime("5","UNATCO MJ12 Base",GetMissionTimeString(5),GetCompleteMissionTimeWithMenusString(5));
-    ctw.AddMissionTime("6","Hong Kong",GetMissionTimeString(6),GetCompleteMissionTimeWithMenusString(6));
-    ctw.AddMissionTime("8","Return to NYC",GetMissionTimeString(8),GetCompleteMissionTimeWithMenusString(8));
-    ctw.AddMissionTime("9","Superfreighter",GetMissionTimeString(9),GetCompleteMissionTimeWithMenusString(9));
-    ctw.AddMissionTime("10","Paris Streets",GetMissionTimeString(10),GetCompleteMissionTimeWithMenusString(10));
-    ctw.AddMissionTime("11","Cathedral",GetMissionTimeString(11),GetCompleteMissionTimeWithMenusString(11));
-    ctw.AddMissionTime("12","Vandenberg",GetMissionTimeString(12),GetCompleteMissionTimeWithMenusString(12));
-    ctw.AddMissionTime("14","Ocean Lab",GetMissionTimeString(14),GetCompleteMissionTimeWithMenusString(14));
-    ctw.AddMissionTime("15","Area 51",GetMissionTimeString(15),GetCompleteMissionTimeWithMenusString(15));
-    ctw.AddMissionTime("----","--------------","-------------","-------------");
-    ctw.AddMissionTime(" ","Total Without Menus",GetTotalTimeString(),GetTotalCompleteTimeString());
-    ctw.AddMissionTime(" ","Total Menu Time",GetTotalMenuTimeString(),GetTotalCompleteMenuTimeString());
+    for(i=1; i<=15; i++) {
+        if(i==7 || i==13) continue;
+        switch(i) {
+            case 1: s="Liberty Island"; break;
+            case 2: s="NYC Generator"; break;
+            case 3: s="Airfield"; break;
+            case 4: s="NSF HQ"; break;
+            case 5: s="UNATCO MJ12 Base"; break;
+            case 6: s="Hong Kong"; break;
+            case 8: s="Return to NYC"; break;
+            case 9: s="Superfreighter"; break;
+            case 10: s="Paris Streets"; break;
+            case 11: s="Cathedral"; break;
+            case 12: s="Vandenberg"; break;
+            case 14: s="Ocean Lab"; break;
+            case 15: s="Area 51"; break;
 
-    totalTime = GetTotalTime(dxr)+GetTotalMenuTime(dxr);
-    totalRealTime = 0;
-    for (i=1;i<=15;i++) {
-        totalRealTime += GetCompleteMissionTime(i);
-        totalRealTime += GetCompleteMissionMenuTime(i);
+            default:
+                err("AddMissionTimeTable mission " $ i);
+                s="?";
+                break;
+        }
+
+        successTime = GetMissionTime(i);
+        successMenuTime = GetMissionMenuTime(i);
+        completeTime = GetCompleteMissionTime(i);
+        menuTime = GetCompleteMissionMenuTime(i);
+
+        dyingTimeWithoutMenusTotal += completeTime - successTime;
+        timeWithoutMenusTotal += completeTime;
+        dyingTimeMenusTotal += menuTime - successMenuTime;
+        timeMenusTotal += menuTime;
+
+        completeTime += menuTime;
+        dyingTime = completeTime - successTime - successMenuTime;
+
+        ctw.AddMissionTime(string(i), s, fmtTimeToString(dyingTime), fmtTimeToString(completeTime));
     }
-    ctw.AddMissionTime(" ","Total With Menus",fmtTimeToString(totalTime),fmtTimeToString(totalRealTime));
+
+    ctw.AddMissionTime("----","--------------------------","-------------","-------------");
+    ctw.AddMissionTime(" ","Total Without Menus",
+        fmtTimeToString(dyingTimeWithoutMenusTotal),
+        fmtTimeToString(timeWithoutMenusTotal)
+    );
+    ctw.AddMissionTime(" ","Total Menu Time",
+        fmtTimeToString(dyingTimeMenusTotal),
+        fmtTimeToString(timeMenusTotal)
+    );
+    ctw.AddMissionTime(" ","Total Time With Menus",
+        fmtTimeToString(dyingTimeWithoutMenusTotal + dyingTimeMenusTotal),
+        fmtTimeToString(timeWithoutMenusTotal + timeMenusTotal)
+    );
 }
 
 function QueryLeaderboard()
