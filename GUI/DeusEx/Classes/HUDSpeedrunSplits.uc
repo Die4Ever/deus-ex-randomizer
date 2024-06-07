@@ -55,9 +55,9 @@ event InitWindow()
     }
     if( version < class'DXRVersion'.static.VersionToInt(2, 7, 3, 1) ) {
         colorText=RGB(200,200,200);
-        colorBehind=RGB(204,90,80);
+        colorBehind=RGB(220,90,80);
         colorBehindLosingTime=RGB(255,60,40);
-        colorBehindGainingTime=RGB(234,140,131);
+        colorBehindGainingTime=RGB(250,140,131);
     }
     if( version < class'DXRVersion'.static.VersionNumber() ) {
         version = class'DXRVersion'.static.VersionNumber();
@@ -634,9 +634,9 @@ defaultproperties
     colorNotesBackground=(R=0,G=0,B=0,A=100)
     colorText=(R=200,G=200,B=200,A=255)
 
-    colorBehind=(R=204,G=90,B=80,A=255)
+    colorBehind=(R=220,G=90,B=80,A=255)
     colorBehindLosingTime=(R=255,G=60,B=40,A=255)
-    colorBehindGainingTime=(R=234,G=140,B=131,A=255)
+    colorBehindGainingTime=(R=250,G=140,B=131,A=255)
 
     colorAhead=(R=40,G=204,B=80,A=255)
     colorAheadLosingTime=(R=82,G=204,B=115,A=255)
