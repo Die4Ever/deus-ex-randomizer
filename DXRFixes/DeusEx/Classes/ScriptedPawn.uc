@@ -298,7 +298,7 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
         SetEnemy(instigatedBy, 0, true);
 
         // gib us if we get blown up
-        if (DamageType == 'Exploded')
+        if (DamageType == 'Exploded' || DamageType == 'Helicopter')
             Health = -10000;
         else
             Health = -1;
