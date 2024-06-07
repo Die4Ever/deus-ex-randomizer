@@ -8,6 +8,7 @@ var transient string nextMap;
 var laserEmitter aimLaser;
 var bool bDoomMode;
 var bool bAutorun;
+var bool bBlockAnimations;
 
 var Rotator ShakeRotator;
 
@@ -565,6 +566,12 @@ exec function ParseRightClick()
                 UpdateInHand();
             }
         }
+    }
+
+    //PET THE ANIMAL
+    if (Animal(FrobTarget)!=None){
+        handled=True;
+        FrobTarget.Frob(self, None);
     }
 
     if (!handled){
@@ -1163,11 +1170,15 @@ function PlayTakeHitSound(int Damage, name damageType, int Mult)
 }
 function TweenToRunning(float tweentime)
 {
+    if(bBlockAnimations){return;}
+
     Super.TweenToRunning(tweentime);
 }
 function PlayWalking()
 {
     local float newhumanAnimRate;
+
+    if(bBlockAnimations){return;}
 
     newhumanAnimRate = humanAnimRate;
 
@@ -1202,6 +1213,9 @@ function PlayFiring()
 function TweenToWaiting(float tweentime)
 {
     //	ClientMessage("TweenToWaiting()");
+
+    if(bBlockAnimations){return;}
+
     if (IsInState('PlayerSwimming') || (Physics == PHYS_Swimming))
     {
         if (IsFiring())
@@ -1251,6 +1265,8 @@ function PlayWeaponSwitch(Weapon newWeapon)
 function PlayCrawling()
 {
     //	ClientMessage("PlayCrawling()");
+    if(bBlockAnimations){return;}
+
     if (IsFiring())
         LoopAnim('CrouchShoot');
     else if(HasAnim('CrouchWalk'))
@@ -1263,6 +1279,8 @@ function PlayRising()
 function PlayDuck()
 {
     //	ClientMessage("PlayDuck()");
+    if(bBlockAnimations){return;}
+
     if ((AnimSequence != 'Crouch') && (AnimSequence != 'CrouchWalk'))
     {
         if (IsFiring())
@@ -1288,6 +1306,9 @@ function PlaySwimming()
 function PlayWaiting()
 {
 //	ClientMessage("PlayWaiting()");
+
+    if(bBlockAnimations){return;}
+
     if (IsInState('PlayerSwimming') || (Physics == PHYS_Swimming))
     {
         if (IsFiring())
@@ -1307,6 +1328,8 @@ function PlayWaiting()
 }
 function PlayRunning()
 {
+    if(bBlockAnimations){return;}
+
     Super.PlayRunning();
 }
 function PlayTurning()
@@ -1619,6 +1642,25 @@ exec function Tcl() // toggle clipping, name borrowed from Gamebryo
         Walk();
 }
 
+exec function ShowRefused()
+{
+    local string refusals, msg;
+    local int idx;
+
+    refusals = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("item_refusals");
+
+    // basically just adds a space after every comma
+    while (Len(refusals) > 1) {
+        refusals = Right(refusals, Len(refusals) - 1);
+        idx = InStr(refusals, ",");
+        msg = msg $ Left(refusals, idx) $ ", ";
+        refusals = Right(refusals, Len(refusals) - idx);
+    }
+    msg = Left(msg, Len(msg) - 2);
+
+    ClientMessage("Refused items: " $ msg);
+}
+
 
 // ----------------------------------------------------------------------
 // InvokeUIScreen()
@@ -1642,6 +1684,20 @@ function InvokeUIScreen(Class<DeusExBaseWindow> windowClass)
     }
 }
 
+function PreTravel()
+{
+    local DeusExRootWindow root;
+
+    root = DeusExRootWindow(rootWindow);
+
+    //Don't clear the stack if the top of the stack is the Credits.
+    //We're pretraveling as part of the DestroyWindow call chain
+    if (root!=None && CreditsWindow(root.GetTopWindow())==None){
+        root.ClearWindowStack();
+    }
+
+    Super.PreTravel();
+}
 
 
 defaultproperties

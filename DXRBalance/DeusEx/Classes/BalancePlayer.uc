@@ -489,7 +489,52 @@ exec function DualmapF10() { ActivateAugmentation(7); }
 exec function DualmapF11() { ActivateAugmentation(8); }
 exec function DualmapF12() { ActivateAugmentation(9); }
 
+function CreateDrone()
+{
+    local Vector loc;
+
+    loc = (2.0 + class'SpyDrone'.Default.CollisionRadius + CollisionRadius) * Vector(ViewRotation);
+    loc.Z = BaseEyeHeight;
+    loc += Location;
+    aDrone = Spawn(class'SpyDrone', Self,, loc, ViewRotation);
+    if (aDrone != None)
+    {
+        //aDrone.Speed = 3 * spyDroneLevelValue;
+        aDrone.Speed = 5 * spyDroneLevelValue;
+        //aDrone.MaxSpeed = 3 * spyDroneLevelValue;
+        aDrone.MaxSpeed = 5 * spyDroneLevelValue;
+        //aDrone.Damage = 5 * spyDroneLevelValue;
+        aDrone.Damage = 2 * spyDroneLevelValue;
+        //aDrone.blastRadius = 8 * spyDroneLevelValue;
+        aDrone.blastRadius = 4 * spyDroneLevelValue;
+        // window construction now happens in Tick()
+    }
+}
+
 simulated function MoveDrone( float DeltaTime, Vector loc )
 {
+    if(aDrone == None) {
+        // just in case the drone got killed
+        DroneExplode();
+        return;
+    }
     aDrone.MoveDrone(DeltaTime, loc);// DXRando: this doesn't belong in the player...
+}
+
+function DroneExplode()
+{
+    local AugDrone anAug;
+
+    if (aDrone == None) {
+        anAug = AugDrone(AugmentationSystem.FindAugmentation(class'AugDrone'));
+        if (anAug != None) anAug.Deactivate();
+        return;
+    }
+
+    if(Energy >= 10) {
+        Energy -= 10;
+        Super.DroneExplode();
+    } else {
+        ClientMessage("You need 10 bio-electric energy to detonate the spy drone.");
+    }
 }

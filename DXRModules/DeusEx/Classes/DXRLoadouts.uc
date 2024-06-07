@@ -475,7 +475,14 @@ function FirstEntry()
 simulated function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
+
     RandoStartingEquipment(p, false);
+#ifdef injections
+    class'MenuChoice_RefuseUseless'.static.SetRefusals();
+    class'MenuChoice_RefuseFoodDrink'.static.SetRefusals();
+    class'MenuChoice_RefuseMelee'.static.SetRefusals();
+    class'MenuChoice_RefuseMisc'.static.SetRefusals();
+#endif
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)
@@ -687,6 +694,55 @@ function SpawnItems()
 
     if( reducer != None )
         reducer.Timer();
+}
+
+static function bool IsRefused(class<Inventory> type, optional out int strIdx)
+{
+    local DataStorage datastorage;
+    local string refusals;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    refusals = datastorage.GetConfigKey("item_refusals");
+    if(refusals == "") {
+        return false;
+    }
+    strIdx = InStr(refusals, "," $ type.name $ ",");
+    return strIdx != -1;
+}
+
+static function UnsetRefuseItem(class<Inventory> type)
+{
+    local DataStorage datastorage;
+    local string refusals, leftPart, rightPart;
+    local int strIdx;
+
+    if (!IsRefused(type, strIdx))
+        return;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    refusals = datastorage.GetConfigKey("item_refusals");
+    leftPart = Left(refusals, strIdx);
+    rightPart = Right(refusals, Len(refusals) - (strIdx + Len(type.name) + 1));
+    refusals = leftPart $ rightPart;
+
+    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
+}
+
+static function SetRefuseItem(class<Inventory> type)
+{
+    local DataStorage datastorage;
+    local string refusals;
+
+    if (IsRefused(type))
+        return;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    refusals = datastorage.GetConfigKey("item_refusals");
+
+    if (refusals == "") refusals = ",";
+    refusals = refusals $ type.name $ ",";
+
+    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
 }
 
 function RunTests()

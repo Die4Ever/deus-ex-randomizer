@@ -289,6 +289,7 @@ function SetWatchFlags() {
     local #var(prefix)Fan1 fan1;
     local #var(prefix)Button1 button;
     local #var(prefix)VialCrack zyme;
+    local #var(prefix)ControlPanel conPanel;
     local Dispatcher disp;
     local int i;
 
@@ -1254,15 +1255,12 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(1135,2360,-2138),40,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',vectm(0,0,0));
-        bt.bUntrigger=True;
-        bt.Tag='level1_emitter';
-        bt.bDestroyOthers=False;
-
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',vectm(0,0,0));
-        bt.bUntrigger=True;
-        bt.Tag='level3_emitter';
-        bt.bDestroyOthers=False;
+        foreach AllActors(class'#var(prefix)ControlPanel',conPanel){
+            bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',conPanel.Location);
+            bt.Tag=conPanel.name;
+            bt.bDestroyOthers=False;
+            conPanel.event=conPanel.name;
+        }
 
         break;
     case "14_OCEANLAB_SILO":
@@ -2035,6 +2033,21 @@ function string RemapBingoEvent(string eventname)
         case "DonDone":
         case "LennyDone":
             return "GiveZyme";
+        case "PetAnimal_Karkian":
+        case "PetAnimal_KarkianBaby":
+            return "PetKarkians";
+        case "PetAnimal_Doberman":
+        case "PetAnimal_Mutt":
+            return "PetDogs";
+        case "PetAnimal_Fish":
+        case "PetAnimal_Fish2":
+            return "PetFish";
+        case "PetAnimal_Pigeon":
+        case "PetAnimal_Seagull":
+            return "PetBirds";
+        case "PetAnimal_Rat":
+        case "PetAnimal_NastyRat":
+            return "PetRats";
         default:
             return eventname;
     }
@@ -2163,6 +2176,9 @@ static function int GetBingoFailedEvents(DXRando dxr, string eventname, out stri
             return num_failed;
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
+            return num_failed;
+        case "GeneratorBlown":
+            failed[num_failed++] = "JockSecondStory";
             return num_failed;
     }
 
@@ -3092,6 +3108,20 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  Crime (sometimes) doesn't pay.";
         case "MaggieLived":
             return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
+        case "PetKarkians":
+            return "Hear me out - Karkians are basically just big puppies...  Give enough of them the head rubs they deserve!  Make sure your hands are empty, or you won't be able to pet anything!";
+        case "PetDogs":
+            return "That's right, you can pet the dog!  Give enough dogs some petting time.  Make sure your hands are empty, or you won't be able to pet anything!";
+        case "PetFish":
+            return "Trust me, fish like getting pet.  Max Chen has some fish in his office who would really appreciate it.  Make sure your hands are empty, or you won't be able to pet anything!";
+        case "PetBirds":
+            return "Ok, maybe you shouldn't pet the birds, but can you help yourself?  Give enough birds a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
+        case "PetAnimal_Cat":
+            return "Ohhhh, that cat really wants to get pet!  Give enough cats a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
+        case "PetAnimal_Greasel":
+            return "They might look a bit greasy and very mean, but they sure love head pats!  Give those greasels some pets!  Make sure your hands are empty, or you won't be able to pet anything!";
+        case "PetRats":
+            return "Get down there and pet enough rats!  Make sure your hands are empty, or you won't be able to pet anything!";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3475,6 +3505,15 @@ defaultproperties
     // bingo_options()=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
     bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=1024)
+#ifdef vanilla
+    bingo_options(330)=(event="PetKarkians",desc="Karkians are just big leather dogs (%s)",max=3,missions=49248)
+    bingo_options(331)=(event="PetDogs",desc="You can pet the dog (%s)",max=5,missions=21604)
+    bingo_options(332)=(event="PetFish",desc="They feel kind of slimy (%s)",max=5,missions=64)
+    bingo_options(333)=(event="PetBirds",desc="Feel the hollow bones (%s)",max=3,missions=19806)
+    bingo_options(334)=(event="PetAnimal_Cat",desc="Here kitty, kitty, kitty! (%s)",max=3,missions=7256)
+    bingo_options(335)=(event="PetAnimal_Greasel",desc="Green, Greasy, and very pettable (%s)",max=5,missions=50272)
+    bingo_options(336)=(event="PetRats",desc="Pat dat rat (%s)",max=25,missions=53118)
+#endif
 
 
 
@@ -3534,5 +3573,12 @@ defaultproperties
     mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_Dead")
     mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_Dead")
     mutually_exclusive(52)=(e1="MaggieLived",e2="MaggieCanFly")
-    mutually_exclusive(53)=(e1="MeetRenault_Played",e2="SoldRenaultZyme")
+    mutually_exclusive(53)=(e1="GoneFishing",e2="PetFish")
+    mutually_exclusive(54)=(e1="BirdWatching",e2="PetBirds")
+    mutually_exclusive(55)=(e1="Cat_peeptime",e2="PetAnimal_Cat")
+    mutually_exclusive(56)=(e1="Greasel_ClassDead",e2="PetAnimal_Greasel")
+    mutually_exclusive(57)=(e1="Rat_ClassDead",e2="PetRats")
+    mutually_exclusive(58)=(e1="Karkian_ClassDead",e2="PetKarkians")
+    mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
+    mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
 }

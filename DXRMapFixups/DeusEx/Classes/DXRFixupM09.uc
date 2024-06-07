@@ -212,6 +212,8 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
+
+            AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
         }
 
         //They put the key ID in the tag for some reason

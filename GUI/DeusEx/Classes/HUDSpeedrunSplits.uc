@@ -1,6 +1,3 @@
-//=============================================================================
-// HUDEnergyDisplay
-//=============================================================================
 class HUDSpeedrunSplits expands HUDBaseWindow config(DXRSplits);
 
 var DeusExPlayer    player;
@@ -9,7 +6,7 @@ var DXRStats        stats;
 var config int version;
 var config Font  textfont;
 
-var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
+var config Color colorBackground, colorNotesBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
 var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB, showSpeed, showAllSplits;
 var config bool showAverage, useAverageGoal;
@@ -52,18 +49,30 @@ event InitWindow()
     if(class'DXRVersion'.static.VersionOlderThan(version, 2,6,1,1)) {
         x_pos = 0;
         y_pos = 0;
-        colorText.R = 200;
-        colorText.G = 200;
-        colorText.B = 200;
-        colorText.A = 255;
     }
     if(textFont == None) {
         textFont = Font'DeusExUI.FontMenuHeaders_DS';
+    }
+    if( version < class'DXRVersion'.static.VersionToInt(2, 7, 3, 1) ) {
+        colorText=RGB(200,200,200);
+        colorBehind=RGB(220,90,80);
+        colorBehindLosingTime=RGB(255,60,40);
+        colorBehindGainingTime=RGB(250,140,131);
     }
     if( version < class'DXRVersion'.static.VersionNumber() ) {
         version = class'DXRVersion'.static.VersionNumber();
         SaveConfig();
     }
+}
+
+function Color RGB(int r, int g, int b)
+{
+    local Color c;
+    c.A=255;
+    c.R=r;
+    c.G=g;
+    c.B=b;
+    return c;
 }
 
 function string ReplaceVariables(string s)
@@ -530,7 +539,8 @@ function int BalancedSplit(int m)
     local int i, balanced_split_time;
     local int total_goal;
     local int typical_split_time, typical_total_time;
-    local float ratio_of_game;
+    local int timesave, total_timesave;
+    local float ratio;
 
     total_goal = PB_total;
     if(goal_time != 0) total_goal = goal_time;
@@ -551,16 +561,25 @@ function int BalancedSplit(int m)
         return Golds[m];
     }
     if(m == 15) { // last split, avoid rounding issues
-        return total_goal - balanced_splits_totals[m-1];
+        balanced_split_time = total_goal - balanced_splits_totals[m-1];
+        //log("Mission: " $ m $ ", balanced: " $ fmtTimeSeg(balanced_split_time) $ ", gold: " $ fmtTimeSeg(Golds[m]) $ ", PB: " $ fmtTimeSeg(PB[m]) $ ", Avg: " $ fmtTimeSeg(Avgs[m]));
+        return balanced_split_time;
     }
     if(typical_total_time == 0) {
         if(Avgs[m] > 0) return Avgs[m];
         return PB[m];
     }
 
-    ratio_of_game = float(typical_split_time) / float(typical_total_time);
-
-    balanced_split_time = ratio_of_game * float(total_goal);
+    if(sum_of_bests > 0) {
+        timesave = typical_split_time - Golds[m];
+        total_timesave = typical_total_time - sum_of_bests;
+        ratio = float(typical_total_time - total_goal) / float(total_timesave);// ratio is the desired timesave divided by the maximum timesave
+        balanced_split_time = typical_split_time - timesave * ratio;
+    } else {
+        ratio = float(typical_split_time) / float(typical_total_time);
+        balanced_split_time = ratio * float(total_goal);
+    }
+    //log("Mission: " $ m $ ", balanced: " $ fmtTimeSeg(balanced_split_time) $ ", gold: " $ fmtTimeSeg(Golds[m]) $ ", PB: " $ fmtTimeSeg(PB[m]) $ ", Avg: " $ fmtTimeSeg(Avgs[m]));
     return balanced_split_time;
 }
 
@@ -577,12 +596,19 @@ function int TotalTime()
 function DrawBackground(GC gc)
 {
     local float width, height;
+
+    backgroundDrawStyle = default.backgroundDrawStyle;// StyleChanged overwrites this, but we can read from default to get the config value
     gc.SetStyle(backgroundDrawStyle);
     gc.SetTileColor(colorBackground);
     width = windowWidth + 8;
-    if(notesWidth > 0) width += 24 + notesWidth;
+    if(notesWidth > 0) width += 12;
     height = FMax(windowHeight, notesHeight + 4);
-    gc.DrawPattern(x_pos, ty_pos, width, height, 0, 0, Texture'Solid');
+    gc.DrawPattern(x_pos, ty_pos, width, height, 0, 0, Texture'DeusExUI.UserInterface.WindowShadow_Center');
+
+    if(notesWidth > 0) {
+        gc.SetTileColor(colorNotesBackground);
+        gc.DrawPattern(x_pos + width, ty_pos, notesWidth + 12, height, 0, 0, Texture'DeusExUI.UserInterface.WindowShadow_Center');
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -602,13 +628,15 @@ defaultproperties
     showAllSplits=false
     showAverage=true
 
+    backgroundDrawStyle=DSTY_Translucent
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
+    colorNotesBackground=(R=0,G=0,B=0,A=100)
     colorText=(R=200,G=200,B=200,A=255)
 
-    colorBehind=(R=204,G=60,B=40,A=255)
-    colorBehindLosingTime=(R=204,G=18,B=0,A=255)
-    colorBehindGainingTime=(R=204,G=92,B=82,A=255)
+    colorBehind=(R=220,G=90,B=80,A=255)
+    colorBehindLosingTime=(R=255,G=60,B=40,A=255)
+    colorBehindGainingTime=(R=250,G=140,B=131,A=255)
 
     colorAhead=(R=40,G=204,B=80,A=255)
     colorAheadLosingTime=(R=82,G=204,B=115,A=255)

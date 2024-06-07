@@ -122,7 +122,7 @@ static function string RandomNamePart(DXRando dxr, int min, int max)
         if ( i == 0 ) n = Caps(n);
     }
 
-    if(WordInStr(Caps(n), "FAG", 3, true) != -1 || WordInStr(Caps(n), "RAPE", 4, true) != -1) {
+    if(WordInStr(Caps(n), "FAG", 3, true) != -1 || WordInStr(Caps(n), "RAPE", 4, true) != -1 || WordInStr(Caps(n), "JEW", 3, true) != -1) {
         return RandomNamePart(dxr, min, max);
     }
     return n;

@@ -34,7 +34,7 @@ function SetState(bool turnOn)
         bOn = true;
         lt.LightType = LT_Steady;
         bUnlit = True;
-        ScaleGlow = 3.0;
+        ScaleGlow = 2.5;
     } else {
         bOn = false;
         lt.LightType = LT_None;
@@ -59,8 +59,8 @@ defaultproperties
     FamiliarName="Stand Lamp"
     UnfamiliarName="Stand Lamp"
     LightHue=44
-    LightSaturation=160
+    LightSaturation=128
     LightBrightness=255
     // increasing the radius to ~21-25 causes weird flickering on a couch in the Free Clinic, probably elsewhere
-    LightRadius=15
+    LightRadius=12
 }

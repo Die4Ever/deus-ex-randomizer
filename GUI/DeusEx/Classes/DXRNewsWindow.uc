@@ -27,6 +27,21 @@ function ProcessAction(String actionKey)
     }
 }
 
+
+event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
+{
+    if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) )
+        return False;
+
+    switch( key )
+    {
+        case IK_Escape:
+            player.PlaySound(Sound'DeusExSounds.Generic.Buzz1');
+            return True;
+            break;
+    }
+}
+
 function Set(DXRTelemetry tel, string newtitle)
 {
     callbackModule = tel;
@@ -36,7 +51,7 @@ function Set(DXRTelemetry tel, string newtitle)
 
 defaultproperties
 {
-    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Cancel",Key="CANCEL")
+    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Other,Text="Keep Using Old Version",Key="CANCEL")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Open In Browser",Key="OPEN")
     Title="News"
     ClientWidth=400

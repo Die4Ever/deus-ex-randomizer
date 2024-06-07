@@ -32,7 +32,6 @@ function PreFirstEntryMapFixes()
 {
     local Actor a;
     local #var(prefix)ScriptedPawn p;
-    local Button1 b;
     local ElevatorMover e;
     local #var(DeusExPrefix)Mover m;
     local #var(prefix)AllianceTrigger at;
@@ -51,7 +50,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TriadRedArrow bouncer;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
-    local #var(prefix)Button1 button;
+    local #var(injectsprefix)Button1 button;
     local #var(prefix)BeamTrigger bt;
     local #var(prefix)LaserTrigger lt;
     local DXRButtonHoverHint buttonHint;
@@ -99,20 +98,20 @@ function PreFirstEntryMapFixes()
             }
 
             foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-            foreach AllActors(class'#var(prefix)Button1',button){
+            foreach AllActors(class'#var(injectsprefix)Button1',button){
                 if (button.Event=='change_floors'){
                     break;
                 }
             }
-
-            foreach AllActors(class'Button1', b) {
-                if (b.tag == 'Weapons_Lock_broken' || b.tag == 'Weapons_lock' || b.event == 'missile_door') {
-                    b.SetRotation(rot(14312, 18536, 51312)); // my guess is that the vanilla rotations were each done by eye
-                }
-            }
-
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
+
+
+            foreach AllActors(class'#var(injectsprefix)Button1', button) {
+                if (button.tag == 'Weapons_Lock_broken' || button.tag == 'Weapons_lock' || button.event == 'missile_door') {
+                    button.SetRotation(rotm(14400,16500,0,GetRotationOffset(button.class))); //A similar rotation to original that only rotates in two axes instead of all three
+                }
+            }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
             class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
@@ -190,7 +189,7 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps){
             //Elevator to Versalife
             foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
-            foreach AllActors(class'#var(prefix)Button1',button){
+            foreach AllActors(class'#var(injectsprefix)Button1',button){
                 if (button.Event=='change_floors01'){
                     break;
                 }
@@ -200,7 +199,7 @@ function PreFirstEntryMapFixes()
 
             //Elevator to Helibase
             foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-            foreach AllActors(class'#var(prefix)Button1',button){
+            foreach AllActors(class'#var(injectsprefix)Button1',button){
                 if (button.Event=='change_floors'){
                     break;
                 }
@@ -228,11 +227,11 @@ function PreFirstEntryMapFixes()
             dts.bIsSecretGoal = true;// just in case you don't have DXRMissions enabled
         }
         if (VanillaMaps){
-            foreach AllActors(class'Button1',b)
+            foreach AllActors(class'#var(injectsprefix)Button1',button)
             {
-                if (b.Event=='JockShaftTop')
+                if (button.Event=='JockShaftTop')
                 {
-                    b.Event='JocksElevatorTop';
+                    button.Event='JocksElevatorTop';
                 }
             }
 
@@ -324,7 +323,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to Versalife
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
-        foreach AllActors(class'#var(prefix)Button1',button){
+        foreach AllActors(class'#var(injectsprefix)Button1',button){
             if (button.Event=='change_floors01'){
                 break;
             }
@@ -334,7 +333,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to Level 2
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-        foreach AllActors(class'#var(prefix)Button1',button){
+        foreach AllActors(class'#var(injectsprefix)Button1',button){
             if (button.Event=='change_floors'){
                 break;
             }
@@ -503,7 +502,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to Market
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
-        foreach AllActors(class'#var(prefix)Button1',button){
+        foreach AllActors(class'#var(injectsprefix)Button1',button){
             if (button.Event=='change_floors01'){
                 break;
             }
@@ -513,7 +512,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to MJ12 Lab
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-        foreach AllActors(class'#var(prefix)Button1',button){
+        foreach AllActors(class'#var(injectsprefix)Button1',button){
             if (button.Event=='change_floors'){
                 break;
             }
@@ -546,7 +545,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to MJ12 Lab
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-        foreach AllActors(class'#var(prefix)Button1',button){
+        foreach AllActors(class'#var(injectsprefix)Button1',button){
             if (button.Event=='change_floors'){
                 break;
             }

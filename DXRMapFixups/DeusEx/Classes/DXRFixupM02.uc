@@ -23,6 +23,9 @@ function PreFirstEntryMapFixes()
     local OnceOnlyTrigger oot;
     local bool RevisionMaps;
     local bool VanillaMaps;
+    local #var(prefix)CrateUnbreakableSmall crateSmall;
+    local #var(prefix)CrateUnbreakableMed crateMedium;
+    local Vector loc;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -78,6 +81,19 @@ function PreFirstEntryMapFixes()
         break;
     case "02_NYC_WAREHOUSE":
         if (VanillaMaps){
+            // crates for climbing out of the sewer water
+            foreach RadiusActors(class'#var(prefix)CrateUnbreakableSmall', crateSmall, 8.0, vectm(-1658.93, 664.61, -358.68)) {
+                crateSmall.bIsSecretGoal = true;
+                loc = crateSmall.Location - vectm(0, 123.0, 0);
+                crateSmall.SetLocation(loc);
+                break;
+            }
+            foreach RadiusActors(class'#var(prefix)CrateUnbreakableMed', crateMedium, 20.0, vectm(-1606.68, 640.60, -435.55)) {
+                crateMedium.bIsSecretGoal = true;
+                loc = crateMedium.Location - vectm(0, 123.0, 0);
+                crateMedium.SetLocation(loc);
+            }
+
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
 
@@ -324,9 +340,21 @@ function PostFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
-    if (dxr.localURL == "02_NYC_SMUG") {
+    Local Jock j;
+
+    switch (dxr.localURL) {
+    case "02_NYC_BAR":
+        if (dxr.flagbase.getBool('GeneratorBlown')) {
+            foreach AllActors(class'Jock', j) {
+                j.LeaveWorld();
+                break;
+            }
+        }
+        break;
+    case "02_NYC_SMUG":
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
+        break;
     }
 }
