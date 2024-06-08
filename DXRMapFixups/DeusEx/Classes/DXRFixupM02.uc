@@ -222,6 +222,7 @@ function PreFirstEntryMapFixes()
                 if (tel.URL == "02_NYC_Smug#ToSmugFrontDoor") {
                     dtel = class'DynamicTeleporter'.static.ReplaceTeleporter(tel);
                     dtel.SetDestination("02_NYC_Smug", 'PathNode83',, 16384);
+                    class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, dtel);
                     break;
                 }
             }

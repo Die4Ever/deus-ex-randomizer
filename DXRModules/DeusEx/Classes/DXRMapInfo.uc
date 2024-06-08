@@ -252,6 +252,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "ToSmugFrontDoor":
+                case "PathNode83":
                     return "Smuggler Front Door Interior";
                 case "ToSmugBackDoor":
                     return "Smuggler Back Door Interior";
