@@ -191,7 +191,7 @@ function EnableButtons()
                 btnEquip.DisableWindow();
                 btnUse.DisableWindow();
             } else {
-                if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None) {
+                if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None || DeusExWeapon(inv) != None) {
                     btnUse.DisableWindow();
                 } else {
                     if ((inv == player.inHand ) || (inv == player.inHandPending))
@@ -247,7 +247,6 @@ function UnsetRefuseItem()
 function SetRefuseItem()
 {
     local Inventory item;
-    local Pickup droppedItem;
     local Vector x, y, z;
     local Vector dropVect;
 
@@ -259,20 +258,17 @@ function SetRefuseItem()
     if (Pickup(item) == None) {
         DropSelectedItem();
     } else {
-        droppedItem = Pickup(player.Spawn(item.class));
-        droppedItem.numCopies = Pickup(item).numCopies;
-        item.Destroy();
-
+        // we don't want to drop just 1 copy, so do our own drop code
         GetAxes(player.Rotation, x, y, z);
-        dropVect = player.Location + (player.CollisionRadius + 2.0 * droppedItem.CollisionRadius) * x;
+        dropVect = player.Location + (player.CollisionRadius + 2.0 * item.CollisionRadius) * x;
         dropVect.z += player.BaseEyeHeight; // TODO: change drop height based on where the player is looking
 
-        if (player.FastTrace(dropVect)) {
-            droppedItem.DropFrom(dropVect);
-            droppedItem.bFixedRotationDir = true;
-            droppedItem.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
-            droppedItem.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
-        }
+        if(!player.FastTrace(dropVect)) dropVect = player.Location;
+
+        item.DropFrom(dropVect);
+        item.bFixedRotationDir = true;
+        item.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
+        item.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
     }
 
     player.ClientMessage(item.ItemName $ " set as trash.");

@@ -109,7 +109,7 @@ function PreFirstEntryMapFixes()
 
             foreach AllActors(class'#var(injectsprefix)Button1', button) {
                 if (button.tag == 'Weapons_Lock_broken' || button.tag == 'Weapons_lock' || button.event == 'missile_door') {
-                    button.SetRotation(rotm(14400,16500,0,GetRotationOffset(class'#var(injectsprefix)Button1'))); //A similar rotation to original that only rotates in two axes instead of all three
+                    button.SetRotation(rotm(14400,16500,0,GetRotationOffset(button.class))); //A similar rotation to original that only rotates in two axes instead of all three
                 }
             }
 

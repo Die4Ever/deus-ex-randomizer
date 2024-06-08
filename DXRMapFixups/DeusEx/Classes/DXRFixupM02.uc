@@ -81,6 +81,7 @@ function PreFirstEntryMapFixes()
         break;
     case "02_NYC_WAREHOUSE":
         if (VanillaMaps){
+            // crates for climbing out of the sewer water
             foreach RadiusActors(class'#var(prefix)CrateUnbreakableSmall', crateSmall, 8.0, vectm(-1658.93, 664.61, -358.68)) {
                 crateSmall.bIsSecretGoal = true;
                 loc = crateSmall.Location - vectm(0, 123.0, 0);

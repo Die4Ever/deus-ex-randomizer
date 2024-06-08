@@ -660,13 +660,20 @@ function string LaserStrInfo(Actor a, out int numLines)
 #ifdef vanilla
     w = DXRWeapon(player.inHand);
     if( w != None ) {
-        if (w.WeaponDamageType() != 'Exploded' && w.WeaponDamageType() != 'Shot'){
-            damage = 0; //only exploded and shot damage actually hurt lasers
+        if (w.WeaponDamageType() != 'Exploded' && w.WeaponDamageType() != 'Shot' && w.WeaponDamageType() != 'Sabot'){
+            damage = 0; //only exploded, shot, and sabot damage actually hurt lasers
         } else {
             damage = w.GetDamage();
-            if (damage<minDmg){
-                damage = 0;
+            if (damage < minDmg) {
+                if (w.WeaponDamageType()=='Sabot'){
+                    damage = damage * 0.5;
+                } else if (w.WeaponDamageType()=='Exploded'){
+                    damage = damage * 0.25;
+                } else {
+                    damage = 0;
+                }
             }
+
             damage = damage * float(w.GetNumHits());
         }
 

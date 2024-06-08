@@ -65,7 +65,7 @@ function PetAnimal(#var(PlayerPawn) petter)
     foreach AllActors(class'DXRCameraModes',camera)
         break;
 
-    camera.EnableTempThirdPerson();
+    camera.EnableTempThirdPerson(true);
 
     highPet=False;
     if ((petter.bIsCrouching || petter.bForceDuck)){

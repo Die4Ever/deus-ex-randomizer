@@ -267,6 +267,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
             if (playerAmmo == None) {
                 playerAmmo = player.Spawn(weap.AmmoName);
+                playerAmmo.AmmoAmount = 0;
                 playerAmmo.GiveTo(player);
             }
             newAmmoAmmout = Min(playerAmmo.MaxAmmo, playerAmmo.AmmoAmount + weap.PickupAmmoCount);

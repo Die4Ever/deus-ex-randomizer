@@ -434,6 +434,22 @@ simulated function rotator rotm(int p, int y, int roll, int offset)
     return r;
 }
 
+static simulated function rotator rotm_static(int p, int y, int roll, int offset, vector coords_mult)
+{
+    local Rotator r;
+    // TODO: only works for X or Y mirrors, haven't tested Y mirrors
+    if( (coords_mult.X < 0 && coords_mult.Y > 0) || (coords_mult.X > 0 && coords_mult.Y < 0)) {
+        y += offset;
+        y = imod(y, 65535) * -1;
+        y -= offset;
+        y = imod(y, 65535);
+    }
+    r.Pitch = p;
+    r.Yaw = y;
+    r.Roll = roll;
+    return r;
+}
+
 final function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )
 {
 #ifdef hx
