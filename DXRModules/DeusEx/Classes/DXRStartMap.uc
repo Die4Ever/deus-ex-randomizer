@@ -595,7 +595,8 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             MarkConvPlayed('DL_Final_Page02_Played', bFemale);         // Barely a scratch.
             MarkConvPlayed('DL_elevator_Played', bFemale);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
             MarkConvPlayed('DL_conveyor_room_Played', bFemale);        // Page is further down.  Find the elevator.
-            flagbase.SetBool('MS_EverettAppeared',true,,-1);             // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
+            MarkConvPlayed('M15MeetEverett_Played', bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
+            flagbase.SetBool('MS_EverettAppeared',true,,-1);
             AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
             AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
             // fallthrough
