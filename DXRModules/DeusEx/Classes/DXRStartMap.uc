@@ -15,7 +15,7 @@ function PlayerLogin(#var(PlayerPawn) p)
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
 
-    StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
+    StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map);
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -31,20 +31,12 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
 function PreFirstEntry()
 {
     local #var(PlayerPawn) p;
-    local string startMapName;
     local ScriptedPawn sp;
     local ElevatorMover eMover;
     local #var(DeusExPrefix)Mover dxMover;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
-
-    startMapName = _GetStartMap(dxr.flags.settings.starting_map);
-    startMapName = Left(startMapName, class'DXRMapVariants'.static.SplitMapName(startMapName));
-
-    if (startMapName ~= dxr.localURL){
-        StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map, dxr.localURL);
-    }
 
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
@@ -59,6 +51,12 @@ function PreFirstEntry()
                 sp.Destroy();
             }
         }
+        break;
+
+    case "11_PARIS_EVERETT":
+        // don't do the conversation from 11_Paris_Underground
+        dxr.flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
+        dxr.flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
         break;
 
     case "15_Area51_Bunker":
@@ -78,35 +76,6 @@ function PreFirstEntry()
             }
         }
         break;
-    }
-}
-
-function PostFirstEntry()
-{
-    local #var(PlayerPawn) p;
-    local DeusExGoal newGoal;
-    local int starting_map;
-    local Inventory item;
-
-    p = player();
-    starting_map = dxr.flags.settings.starting_map;
-
-    if (dxr.localURL ~= _GetStartMap(starting_map)) {
-        switch(starting_map) {
-            case 152:
-                newGoal = p.AddGoal('KillPage', false);
-                newGoal.SetText(GetGoalTextGC('KillPage', 'M15MeetEverett'));
-                break;
-
-            case 153:
-                newGoal = p.AddGoal('KillPage', false);
-                newGoal.SetText(GetGoalTextGC('KillPage', 'M15MeetEverett'));
-                newGoal = p.AddGoal('DestroyArea51', false);
-                newGoal.SetText(GetGoalTextGC('DestroyArea51', 'M15MeetTong'));
-                newGoal = p.AddGoal('DeactivateLocks', false);
-                newGoal.SetText(GetGoalTextGC('DeactivateLocks', 'MeetHelios'));
-                break;
-        }
     }
 }
 
@@ -247,6 +216,16 @@ static function string GetStartMap(Actor a, int start_map_val)
     }
 
     return startMap;
+}
+
+function bool IsStartMap()
+{
+    local string startMapName;
+
+    startMapName = _GetStartMap(dxr.flags.settings.starting_map);
+    startMapName = Left(startMapName, class'DXRMapVariants'.static.SplitMapName(startMapName));
+
+    return startMapName ~= dxr.localURL;
 }
 
 static function string _GetStartMap(int start_map_val, optional out string friendlyName, optional out int bShowInMenu)
@@ -477,7 +456,15 @@ static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
     }
 }
 
-static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag, string start_map)
+function AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname)
+{
+    local DeusExGoal newGoal;
+    newGoal = player.AddGoal(goaltag, true);
+    if(newGoal == None) return;
+    newGoal.SetText(GetGoalTextGC(goaltag, convname));
+}
+
+function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local bool bEmptyNotes;
 
@@ -585,6 +572,8 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('MeetHelios_Played',true,,-1);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('M15MeetTong_Played',true,,-1);             // We can get you into Sector 3 -- but no further.
             GivePlayerImage(player, class'Image15_Area51_Sector3');
+            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
+            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
             // fallthrough
         case 152:
             flagbase.SetBool('DL_Final_Page02_Played',true,,-1);         // Barely a scratch.
@@ -592,6 +581,7 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('DL_conveyor_room_Played',true,,-1);        // Page is further down.  Find the elevator.
             flagbase.SetBool('M15MeetEverett_Played',true,,-1);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
+            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
             // fallthrough
         case 151:
             flagbase.SetBool('DL_tong1_Played',true,,-1);                // Here's a satellite image of the damage from the missile.
@@ -607,15 +597,6 @@ static function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase
             flagbase.SetBool('DL_Bunker_blastdoor_Played',true,,-1);     // The schematics show an elevator to the west, but utility power is down.
             flagbase.SetBool('DL_blastdoor_shut_Played',true,,-1);       // These blast doors are the reason I don't have to worry about nukes -- or you.
             GivePlayerImage(player, class'Image15_Area51Bunker');
-            break;
-    }
-
-    switch(start_map)
-    {
-        case "11_Paris_Everett":
-            //First Toby conversation happened
-            flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
-            flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
             break;
     }
 }
