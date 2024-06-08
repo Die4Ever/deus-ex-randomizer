@@ -2,6 +2,7 @@ class DXRCameraModes expands DXRActorsBase transient;
 
 var int tempCameraMode;
 var CCResidentEvilCam reCam;
+var bool aimLaserDisabled;
 
 //Enums are really annoying, so just use consts instead
 const CM_FirstPerson = 0;
@@ -58,21 +59,28 @@ function bool IsFixedCamGame()
 
 ///////////////////////////////////////////////////////////////////
 
-function EnableTempThirdPerson()
+function EnableTempThirdPerson(optional bool disableAimLaser)
 {
     tempCameraMode=CM_ThirdPerson;
+    if(dxr.flags.moresettings.camera_mode == CM_FirstPerson) {
+        aimLaserDisabled = disableAimLaser;
+    }
     SetCameraMode(tempCameraMode);
 }
 
-function EnableTempFixedCamera()
+function EnableTempFixedCamera(optional bool disableAimLaser)
 {
     tempCameraMode=CM_FixedCamera;
+    if(dxr.flags.moresettings.camera_mode == CM_FirstPerson) {
+        aimLaserDisabled = disableAimLaser;
+    }
     SetCameraMode(tempCameraMode);
 }
 
 function DisableTempCamera()
 {
     tempCameraMode=CM_Disabled;
+    aimLaserDisabled=false;
     SetCameraMode(GetExpectedCameraMode());
 }
 

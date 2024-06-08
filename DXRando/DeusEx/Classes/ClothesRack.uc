@@ -12,7 +12,7 @@ function Timer()
 
     if (p!=None && camera!=None) {
         if(#defined(injections) && camera.GetExpectedCameraMode() == camera.CM_ThirdPerson) {
-            camera.EnableTempFixedCamera();
+            camera.EnableTempFixedCamera(true);
             SetTimer(0.75,False);
         } else {
             camera.DisableTempCamera();
@@ -48,7 +48,7 @@ function Frob(actor Frobber, Inventory frobWith)
 
             if (camera!=None){
                 if (camera.IsFirstPersonGame() && p.bBehindView == False) {
-                    camera.EnableTempThirdPerson();
+                    camera.EnableTempThirdPerson(true);
                     SetTimer(0.75,False);
                 }
             }

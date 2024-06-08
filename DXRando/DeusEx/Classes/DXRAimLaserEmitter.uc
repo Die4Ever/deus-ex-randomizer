@@ -1,4 +1,5 @@
 class DXRAimLaserEmitter extends LaserEmitter;
+#compileif injections
 
 //Mostly copied from LaserEmitter, but modified so it doesn't even try to reflect the laser
 function CalcTrace(float deltaTime)
@@ -86,6 +87,7 @@ function Tick(float deltaTime)
 static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
 {
     local CCResidentEvilCam reCam;
+    local DXRCameraModes cameraModes;
 
     reCam = CCResidentEvilCam(player.ViewTarget);
 
@@ -94,6 +96,11 @@ static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
     }
 
     if (reCam==None && player.bBehindView==False){
+        return False;
+    }
+
+    cameraModes = DXRCameraModes(player.DXRFindModule(class'DXRCameraModes'));
+    if (cameraModes == None || cameraModes.aimLaserDisabled) {
         return False;
     }
 
