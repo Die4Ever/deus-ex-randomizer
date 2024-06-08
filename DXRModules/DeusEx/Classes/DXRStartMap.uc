@@ -34,6 +34,7 @@ function PreFirstEntry()
     local ScriptedPawn sp;
     local ElevatorMover eMover;
     local #var(DeusExPrefix)Mover dxMover;
+    local Dispatcher disp;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
@@ -73,10 +74,13 @@ function PreFirstEntry()
         break;
 
     case "15_Area51_Final":
-        if (dxr.flags.settings.starting_map == 153) {
+        if (dxr.flags.settings.starting_map >= 153) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover) {
                 if (dxMover.tag == 'Page_Blastdoors' || dxMover.tag == 'door_pagearea')
                     dxMover.InterpolateTo(1, 0.0);
+            }
+            foreach AllActors(class'Dispatcher', disp, 'Raid_start') {
+                disp.Trigger(self, p);
             }
         }
         break;
