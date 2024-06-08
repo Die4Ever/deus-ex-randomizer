@@ -1,12 +1,15 @@
 class DynamicTeleporter extends Teleporter;
 
 var name destName;
+var int yaw;
 
-function SetDestination(string destURL, name dest_actor_name, optional string tag)
-{
+function SetDestination(string destURL, name dest_actor_name, optional string tag, optional int dest_yaw)
+{// TODO: make dest_yaw a required argument, have to add rotations to DXRBacktracking
     URL = destURL $ "#" $ tag;
     destName = dest_actor_name;
-    log(Self$": SetDestination("$destURL$", "$dest_actor_name$", "$tag$") URL: "$URL$", destName: "$destName);
+    yaw = dest_yaw;
+    yaw = 16384;
+    log(Self$": SetDestination("$destURL$", "$dest_actor_name$", " $ yaw $", "$tag$") URL: "$URL$", destName: "$destName);
 }
 
 event PostPostBeginPlay()
@@ -20,8 +23,9 @@ function Trigger(Actor Other, Pawn Instigator)
 	Touch(Instigator);
 }
 
-static function name GetToName(DeusExPlayer player)
+static function name GetToName(DeusExPlayer player, out int yaw)
 {
+    yaw = player.flagbase.GetInt('DynTeleportYaw');
     return player.flagbase.GetName('DynTeleport');
 }
 
@@ -38,11 +42,13 @@ static function ClearTeleport(DeusExPlayer player)
 {
     player.flagbase.DeleteFlag('DynTeleport', FLAG_Name);
     player.flagbase.DeleteFlag('DynTeleportPos', FLAG_Vector);
+    player.flagbase.DeleteFlag('DynTeleportYaw', FLAG_Int);
 }
 
-static function SetDestName(DeusExPlayer player, name destName)
+static function SetDestName(DeusExPlayer player, name destName, optional int yaw)
 {
     player.flagbase.SetName('DynTeleport', destName,, 999);
+    player.flagbase.SetInt('DynTeleportYaw', yaw,, 999);
 }
 
 static function SetDestPos(DeusExPlayer player, vector pos, vector coords_mult)
@@ -61,7 +67,7 @@ simulated function Touch( actor Other )
 
     p = DeusExPlayer(Other);
     if( p != None ) {
-        SetDestName(p, destName);
+        SetDestName(p, destName, yaw);
     }
 
     Super.Touch(Other);
@@ -73,8 +79,9 @@ static function bool CheckTeleport(DeusExPlayer player, vector coords_mult)
     local Actor a;
     local vector pos;
     local bool got_pos;
+    local int yaw;
 
-    toname = GetToName(player);
+    toname = GetToName(player, yaw);
     got_pos = GetToPos(player, pos);
     if( toname == '' && !got_pos ) return true;
     ClearTeleport(player);
@@ -86,6 +93,9 @@ static function bool CheckTeleport(DeusExPlayer player, vector coords_mult)
 
     foreach player.AllActors(class'Actor', a) {
         if( a.Name == toname ) {
+            if(yaw != 0) {
+                player.ViewRotation = class'DXRBase'.static.rotm_static(0, yaw, 0, 16384, coords_mult);
+            }
             return player.SetLocation(a.Location);
         }
     }
