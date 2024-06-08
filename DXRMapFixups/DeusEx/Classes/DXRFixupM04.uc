@@ -320,7 +320,7 @@ function PreFirstEntryMapFixes()
         oot.Tag='botordertrigger';
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
-        class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 3);
+        class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
         break;
     }
