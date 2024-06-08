@@ -4,8 +4,6 @@ var byte keyFrame1;
 var byte keyFrame2;
 var float duration;
 
-var bool moversMoved;
-
 static function MoverToggleTrigger CreateMTT(
     Actor a,
     name flagName,
@@ -61,13 +59,13 @@ function bool MoveMovers()
 
 function PostPostBeginPlay()
 {
-    moversMoved = false;
+    Enable('Tick');
     Super.PostPostBeginPlay();
 }
 
 event Tick(float deltaTime)
 {
-    if (moversMoved == false)
-        moversMoved = MoveMovers();
-    Super.Tick(deltaTime);
+    if(MoveMovers()) {
+        Disable('Tick');
+    }
 }
