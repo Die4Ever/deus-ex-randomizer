@@ -38,6 +38,10 @@ function PreFirstEntry()
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
 
+    if(IsStartMap()) {
+        StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map);
+    }
+
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
         if(dxr.flags.settings.starting_map > 20) {
@@ -459,32 +463,44 @@ static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
 function AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname)
 {
     local DeusExGoal newGoal;
+    newGoal = player.FindGoal(goaltag);
+    if(newGoal != None) return;
     newGoal = player.AddGoal(goaltag, true);
     if(newGoal == None) return;
     newGoal.SetText(GetGoalTextGC(goaltag, convname));
 }
 
+function MarkConvPlayed(name flagname, bool bFemale)
+{
+    dxr.flagbase.SetBool(flagname,true,,-1);
+    if(bFemale) {
+        flagname = StringToName("FemJC"$string(flagname));
+        dxr.flagbase.SetBool(flagname,true,,-1);
+    }
+}
+
 function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
-    local bool bEmptyNotes;
+    local bool bEmptyNotes, bFemale;
 
     bEmptyNotes = player.FirstNote == None;
+    bFemale = flagbase.GetBool('LDDPJCIsFemale');
 
     switch(start_flag/10) {
         case 4:
-            flagbase.SetBool('DL_SeeManderley_Played',true,,-1);
+            MarkConvPlayed('DL_SeeManderley_Played', bFemale);
             break;
         case 5:
             if(start_flag > 50) {
                 AddNote(player, bEmptyNotes, "Facility exit: 1125.");
                 AddNote(player, bEmptyNotes, "Until the grid is fully restored, the detention block door code has been reset to 4089 while _all_ detention cells have been reset to 4679.");
-                flagbase.SetBool('DL_NoPaul_Played',true,,6);
+                MarkConvPlayed('DL_NoPaul_Played', bFemale);
                 flagbase.SetBool('MS_InventoryRemoved',true,,6);
             }
         case 7:
             flagbase.SetBool('Have_ROM',true,,-1);
-            flagbase.SetBool('MeetTracerTong_Played',true,,-1);// do we need FemJC versions for these?
-            flagbase.SetBool('TriadCeremony_Played',true,,-1);
+            MarkConvPlayed('MeetTracerTong_Played', bFemale);// do we need FemJC versions for these?
+            MarkConvPlayed('TriadCeremony_Played', bFemale);
             break;
         case 8:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
@@ -492,7 +508,7 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             break;
         case 9:
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
-            flagbase.SetBool('DL_BadNews_Played',true,,-1);
+            MarkConvPlayed('DL_BadNews_Played', bFemale);
             flagbase.SetBool('HelpSailor',true,,-1);
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
             break;
@@ -519,13 +535,13 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
     switch(start_flag) {
         case 21:
             flagbase.SetBool('EscapeSuccessful',true,,-1);
-            flagbase.SetBool('DL_SubwayComplete_Played',true,,-1);
+            MarkConvPlayed('DL_SubwayComplete_Played', bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
-            flagbase.SetBool('MS_DL_Played',true,, 3);
+            MarkConvPlayed('MS_DL_Played', bFemale);
             break;
 
         case 45:
-            flagbase.SetBool('PaulInjured_Played',true,,-1);
+            MarkConvPlayed('PaulInjured_Played', bFemale);
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
             flagbase.SetBool('GatesOpen',true,,5);
             break;
@@ -533,21 +549,22 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
         case 75:
         case 71:// anything greater than 70 should get these, even though this isn't an actual value currently
             AddNote(player, bEmptyNotes, "Access code to the Versalife nanotech research wing on Level 2: 55655.  There is a back entrance at the north end of the Canal Road Tunnel, which is just east of the temple.");
-            flagbase.SetBool('M07Briefing_Played',true,,-1);// also spawns big spider in MJ12Lab
+            MarkConvPlayed('M07Briefing_Played', bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
         case 68:
             AddNote(player, bEmptyNotes, "VersaLife elevator code: 6512.");
         case 67://fallthrough
             AddNote(player, bEmptyNotes, "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.");
-            flagbase.SetBool('MeetTracerTong_Played',true,,-1);
-            flagbase.SetBool('MeetTracerTong2_Played',true,,-1);
+            MarkConvPlayed('MeetTracerTong_Played', bFemale);
+            MarkConvPlayed('MeetTracerTong2_Played', bFemale);
+            flagbase.SetBool('KillswitchFixed',true,,-1);
         case 66://fallthrough
             AddNote(player, bEmptyNotes, "Luminous Path door-code: 1997.");
             flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
-            flagbase.SetBool('DL_Tong_00_Played',true,,7); // disable "Now take the sword to Max Chen" infolink you would have heard already
+            MarkConvPlayed('DL_Tong_00_Played', bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
             break;
 
@@ -557,45 +574,44 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             break;
 
         case 129:
-            flagbase.SetBool('GaryHostageBriefing_Played',true,,-1);
+            MarkConvPlayed('GaryHostageBriefing_Played', bFemale);
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
             break;
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
             break;
         case 153:
-            flagbase.SetBool('DL_Helios_Door1_Played',true,,-1);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
-            flagbase.SetBool('DL_Helios_Intro_Played',true,,-1);         // I will now explain why you have been allowed to reach Sector 3.
-            flagbase.SetBool('DL_Final_Page03_Played',true,,-1);         // Don't get your hopes up; my compound is quite secure.
-            flagbase.SetBool('M15PaulHolo_Played',true,,-1);             // It let me through... I can't believe it. [Paul]
-            flagbase.SetBool('M15GaryHolo_Played',true,,-1);             // It let me through... I can't believe it. [Gary]
-            flagbase.SetBool('MeetHelios_Played',true,,-1);              // You will go to Sector 4 and deactivate the uplink locks, yes.
-            flagbase.SetBool('M15MeetTong_Played',true,,-1);             // We can get you into Sector 3 -- but no further.
+            MarkConvPlayed('DL_Helios_Door1_Played', bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
+            MarkConvPlayed('DL_Helios_Intro_Played', bFemale);         // I will now explain why you have been allowed to reach Sector 3.
+            MarkConvPlayed('DL_Final_Page03_Played', bFemale);         // Don't get your hopes up; my compound is quite secure.
+            flagbase.SetBool('MS_PaulOrGaryAppeared',true,,-1);          // It let me through... I can't believe it.
+            MarkConvPlayed('MeetHelios_Played', bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
+            flagbase.SetBool('MS_TongAppeared',true,,-1);                // We can get you into Sector 3 -- but no further.
             GivePlayerImage(player, class'Image15_Area51_Sector3');
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
             AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
             // fallthrough
         case 152:
-            flagbase.SetBool('DL_Final_Page02_Played',true,,-1);         // Barely a scratch.
-            flagbase.SetBool('DL_elevator_Played',true,,-1);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
-            flagbase.SetBool('DL_conveyor_room_Played',true,,-1);        // Page is further down.  Find the elevator.
-            flagbase.SetBool('M15MeetEverett_Played',true,,-1);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
+            MarkConvPlayed('DL_Final_Page02_Played', bFemale);         // Barely a scratch.
+            MarkConvPlayed('DL_elevator_Played', bFemale);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
+            MarkConvPlayed('DL_conveyor_room_Played', bFemale);        // Page is further down.  Find the elevator.
+            flagbase.SetBool('MS_EverettAppeared',true,,-1);             // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
             AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
             // fallthrough
         case 151:
-            flagbase.SetBool('DL_tong1_Played',true,,-1);                // Here's a satellite image of the damage from the missile.
-            flagbase.SetBool('DL_tong_reached_bunker_Played',true,,-1);  // Good work.  You've reached the bunker.
-            flagbase.SetBool('DL_JockDeathTongComment_Played',true,,-1); // I don't believe it!  JC!  We lost Jock!
-            flagbase.SetBool('DL_JockDeath_Played',true,,-1);            // JC!  Got a problem.  Someone planted a bo-----
-            flagbase.SetBool('DL_Bunker_Start_Played',true,,-1);         // Just spotted a sniper in the tower.
-            flagbase.SetBool('DL_Bunker_PowerRoom_Played',true,,-1);     // You're nearing the power room.
-            flagbase.SetBool('DL_Bunker_Power_Played',true,,-1);         // The elevator power is online.
-            flagbase.SetBool('DL_Bunker_Hangar_Played',true,,-1);        // I saw some soldiers running away from the hangar.
-            // flagbase.SetBool('DL_Bunker_Fan_Played',true,,-1);        // Jump!  You can make it!
-            flagbase.SetBool('DL_Bunker_Elevator_Played',true,,-1);      // The power to the elevator is down.
-            flagbase.SetBool('DL_Bunker_blastdoor_Played',true,,-1);     // The schematics show an elevator to the west, but utility power is down.
-            flagbase.SetBool('DL_blastdoor_shut_Played',true,,-1);       // These blast doors are the reason I don't have to worry about nukes -- or you.
+            MarkConvPlayed('DL_tong1_Played', bFemale);                // Here's a satellite image of the damage from the missile.
+            MarkConvPlayed('DL_tong_reached_bunker_Played', bFemale);  // Good work.  You've reached the bunker.
+            MarkConvPlayed('DL_JockDeathTongComment_Played', bFemale); // I don't believe it!  JC!  We lost Jock!
+            MarkConvPlayed('DL_JockDeath_Played', bFemale);            // JC!  Got a problem.  Someone planted a bo-----
+            MarkConvPlayed('DL_Bunker_Start_Played', bFemale);         // Just spotted a sniper in the tower.
+            MarkConvPlayed('DL_Bunker_PowerRoom_Played', bFemale);     // You're nearing the power room.
+            MarkConvPlayed('DL_Bunker_Power_Played', bFemale);         // The elevator power is online.
+            MarkConvPlayed('DL_Bunker_Hangar_Played', bFemale);        // I saw some soldiers running away from the hangar.
+            // MarkConvPlayed('DL_Bunker_Fan_Played', bFemale);        // Jump!  You can make it!
+            MarkConvPlayed('DL_Bunker_Elevator_Played', bFemale);      // The power to the elevator is down.
+            MarkConvPlayed('DL_Bunker_blastdoor_Played', bFemale);     // The schematics show an elevator to the west, but utility power is down.
+            MarkConvPlayed('DL_blastdoor_shut_Played', bFemale);       // These blast doors are the reason I don't have to worry about nukes -- or you.
             GivePlayerImage(player, class'Image15_Area51Bunker');
             break;
     }
