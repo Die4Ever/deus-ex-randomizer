@@ -8,7 +8,6 @@ function SetDestination(string destURL, name dest_actor_name, optional string ta
     URL = destURL $ "#" $ tag;
     destName = dest_actor_name;
     yaw = dest_yaw;
-    yaw = 16384;
     log(Self$": SetDestination("$destURL$", "$dest_actor_name$", " $ yaw $", "$tag$") URL: "$URL$", destName: "$destName);
 }
 
