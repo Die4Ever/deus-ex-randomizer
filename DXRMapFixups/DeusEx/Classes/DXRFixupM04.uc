@@ -51,6 +51,8 @@ function PreFirstEntryMapFixes()
     local DXRMapVariants mapvariants;
     local bool VanillaMaps;
     local #var(prefix)HumanCivilian hc;
+    local Teleporter tel;
+    local DynamicTeleporter dtel;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -297,6 +299,16 @@ function PreFirstEntryMapFixes()
             troop.ChangeAlly('Player', 1.0, false);
             ChangeInitialAlliance(troop, 'Player', 1.0, false);
         }
+        if (#defined(vanilla))
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 5);
+            foreach AllActors(class'Teleporter', tel) {
+                if (tel.URL == "04_NYC_Smug#ToSmugFrontDoor") {
+                    dtel = class'DynamicTeleporter'.static.ReplaceTeleporter(tel);
+                    dtel.SetDestination("04_NYC_Smug", 'PathNode83',, 16384);
+                    class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, dtel);
+                    break;
+                }
+            }
 
         break;
 
@@ -307,7 +319,10 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+        class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
+
         break;
     }
 }
@@ -387,6 +402,7 @@ function AnyEntryMapFixes()
                 door.DoOpen();
             }
         }
+
         break;
     }
 }

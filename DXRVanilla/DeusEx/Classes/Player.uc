@@ -1636,10 +1636,17 @@ exec function Inv() // INVisible and INVincible
 
 exec function Tcl() // toggle clipping, name borrowed from Gamebryo
 {
-    if (bCollideWorld)
+    if (bCollideWorld) {
         Ghost();
-    else
+    } else {
         Walk();
+        ClientMessage("You feel corporeal");
+    }
+}
+
+exec function PlayerLoc()
+{
+    ClientMessage("Player location: (" $ Location.x $ ", " $ Location.y $ ", " $ Location.z $ ")");
 }
 
 exec function ShowRefused()

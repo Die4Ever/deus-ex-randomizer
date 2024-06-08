@@ -113,6 +113,9 @@ static function DynamicTeleporter ReplaceTeleporter(Teleporter t)
         t.Disable('Touch');
         t.Disable('Trigger');
         t.SetCollision(false, false, false);
+        dt.bHidden = t.bHidden;
+        dt.DrawScale = t.DrawScale;
+        t.bHidden = true;
         dt.URL = t.URL;
         dt.SetCollisionSize(t.CollisionRadius,t.CollisionHeight);
     }

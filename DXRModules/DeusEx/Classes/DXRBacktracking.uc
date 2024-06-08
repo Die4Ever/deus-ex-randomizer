@@ -832,7 +832,6 @@ function ConversationFrobOnly(Conversation c)
 
 function SetDestination(NavigationPoint p, string destURL, name dest_actor_name, optional string tag)
 {
-    local DXREntranceRando entrancerando;
     local DXRMapVariants maps;
     local MapExit m;
     local DynamicTeleporter t;
@@ -852,8 +851,6 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
     else
         err("SetDestination failed for "$p);
 
-    entrancerando = DXREntranceRando(dxr.FindModule(class'DXREntranceRando'));
-    if(entrancerando != None)
-        entrancerando.AdjustTeleporter(p);
+    class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, p);
 #endif
 }
