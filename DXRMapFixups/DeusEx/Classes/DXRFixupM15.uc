@@ -265,6 +265,7 @@ function PreFirstEntryMapFixes_Entrance()
 {
     local DeusExMover d;
     local ComputerSecurity c;
+    local #var(prefix)FlagTrigger ft;
 
     foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
         if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
@@ -297,6 +298,16 @@ function PreFirstEntryMapFixes_Entrance()
             d.lockStrength=0.25;
         }
     }
+
+    //After Bob says "I'm sending up the man who did the job", the elevator call button will also open the doors
+    ft=Spawn(class'#var(prefix)FlagTrigger');
+    ft.SetCollision(False,False,False);
+    ft.bSetFlag=False;
+    ft.bTrigger=True;
+    ft.FlagName='DL_elevator_Played';
+    ft.flagValue=True;
+    ft.Tag='elevator_floor1';
+    ft.Event='elevator_doors';
 
     Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters
     Spawn(class'#var(prefix)Liquor40oz',,, vectm(4611,27,-174));
