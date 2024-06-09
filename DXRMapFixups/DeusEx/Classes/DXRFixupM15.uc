@@ -77,9 +77,12 @@ function PreFirstEntryMapFixes_Bunker()
     local Trigger trig;
     local #var(prefix)RatGenerator rg;
 
+    if (dxr.flags.settings.starting_map < 151) {
+        player().DeleteAllGoals();
+    }
+
     // doors_lower is for backtracking
     AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
-    player().DeleteAllGoals();
 
     //Change vent entry security computer password so it isn't pre-known
     foreach AllActors(class'ComputerSecurity',c){

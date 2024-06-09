@@ -89,6 +89,12 @@ function Deactivate()
     }
 }
 
+function Reset()
+{
+    // re-activate to adjust to upgrades/downgrades, without burning energy in a new TickUse()
+    _Deactivate();
+    Activate();
+}
 
 // DXRando: don't disable auto augs when upgrading
 function bool IncLevel()
@@ -100,8 +106,7 @@ function bool IncLevel()
     }
 
     if (bIsActive && AugDrone(self) != None) {
-        Deactivate();
-        Activate();
+        Reset();
     }
 
     CurrentLevel++;

@@ -149,8 +149,12 @@ function SwapScriptedPawns(int percent, bool enemies)
 
         // TODO: swap non-weapons/ammo inventory, only need to swap nanokeys?
         SwapItems(temp[i], temp[slot]);
-        if( !keepTags && temp[i].Tag != keepTagName && temp[slot].Tag != keepTagName )
+        if( !keepTags &&
+            temp[i].Tag != keepTagName && temp[slot].Tag != keepTagName &&
+            temp[i].Tag != '' && temp[slot].Tag != ''){
+
             SwapNames(temp[i].Tag, temp[slot].Tag);
+        }
         SwapNames(temp[i].Event, temp[slot].Event);
         SwapNames(temp[i].AlarmTag, temp[slot].AlarmTag);
         SwapNames(temp[i].SharedAlarmTag, temp[slot].SharedAlarmTag);

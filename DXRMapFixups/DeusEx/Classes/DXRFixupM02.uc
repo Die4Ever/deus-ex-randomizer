@@ -26,6 +26,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)CrateUnbreakableSmall crateSmall;
     local #var(prefix)CrateUnbreakableMed crateMedium;
     local Vector loc;
+    local Teleporter tel;
+    local DynamicTeleporter dtel;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -133,6 +135,7 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
 
@@ -213,6 +216,16 @@ function PreFirstEntryMapFixes()
         buttonHint.SetBaseActor(button);
 
         SetAllLampsState(false, true, true); // the lamp in Paul's apartment, seen through the window
+        if (#defined(vanilla))
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 3);
+            foreach AllActors(class'Teleporter', tel) {
+                if (tel.URL == "02_NYC_Smug#ToSmugFrontDoor") {
+                    dtel = class'DynamicTeleporter'.static.ReplaceTeleporter(tel);
+                    dtel.SetDestination("02_NYC_Smug", 'PathNode83',, 16384);
+                    class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, dtel);
+                    break;
+                }
+            }
 
         break;
     case "02_NYC_BAR":
@@ -248,10 +261,16 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', d,'botordertrigger') {
             d.tag = 'botordertriggerDoor';
         }
+
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+        if (#defined(vanilla)) {
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 3);
+        }
+
         break;
 
     case "02_NYC_FREECLINIC":
@@ -340,7 +359,7 @@ function PostFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
-    Local Jock j;
+    local Jock j;
 
     switch (dxr.localURL) {
     case "02_NYC_BAR":
@@ -351,6 +370,7 @@ function AnyEntryMapFixes()
             }
         }
         break;
+
     case "02_NYC_SMUG":
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);

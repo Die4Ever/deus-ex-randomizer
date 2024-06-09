@@ -28,7 +28,6 @@ function AnyEntryMapFixes()
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
-
         break;
     }
 }
@@ -146,6 +145,8 @@ function PreFirstEntryMapFixes()
     local bool VanillaMaps;
     local ScriptedPawn pawn;
     local #var(prefix)LaserTrigger lt;
+    local Teleporter tel;
+    local DynamicTeleporter dtel;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -198,6 +199,18 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
+            if (#defined(vanilla)) {
+                class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 9);
+                foreach AllActors(class'Teleporter', tel) {
+                    if (tel.URL == "08_NYC_Smug#ToSmugFrontDoor") {
+                        dtel = class'DynamicTeleporter'.static.ReplaceTeleporter(tel);
+                        dtel.SetDestination("08_NYC_Smug", 'PathNode83',, 16384);
+                        class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, dtel);
+                        break;
+                    }
+                }
+            }
+
             break;
         case "08_NYC_HOTEL":
             if (VanillaMaps){
@@ -238,7 +251,10 @@ function PreFirstEntryMapFixes()
             oot = Spawn(class'OnceOnlyTrigger');
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
+
             SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
+
             break;
 
         case "08_NYC_FREECLINIC":

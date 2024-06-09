@@ -222,14 +222,16 @@ function static UpgradeAug(Augmentation anAug)
     }
 
     wasActive=anAug.bIsActive;
-    if (anAug.bIsActive){
-        anAug.Deactivate();
-    }
 
     anAug.CurrentLevel++;
 
     if(wasActive){
+    #ifdef injections
+        anAug.Reset();
+    #else
+        anAug.Deactivate();
         anAug.Activate();
+    #endif
     }
 }
 

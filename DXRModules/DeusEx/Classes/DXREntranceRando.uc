@@ -847,7 +847,7 @@ function RandoMission2()
     AddDoubleXfer("02_NYC_FreeClinic","FromStreet","02_NYC_Street","FromClinic");
     AddDoubleXfer("02_NYC_Hotel","ToHotelBedroom","02_NYC_Street","BedroomWindow");
     AddDoubleXfer("02_NYC_Hotel","ToHotelFrontDoor","02_NYC_Street","FromHotelFrontDoor");
-    AddDoubleXfer("02_NYC_Smug","ToSmugFrontDoor","02_NYC_Street","FromSmugFrontDoor");
+    AddDoubleXfer("02_NYC_Smug","?toname=PathNode83","02_NYC_Street","FromSmugFrontDoor");
     AddDoubleXfer("02_NYC_Smug","ToSmugBackDoor","02_NYC_Street","FromSmugBackDoor");
     AddDoubleXfer("02_NYC_Underground","ToNYCUndergroundSewer2","02_NYC_Street","FromNYCUndergroundSewer2");
     AddDoubleXfer("02_NYC_Underground","ToNYCSump","02_NYC_Street","FromNYCSump");
@@ -872,7 +872,7 @@ function RandoMission4()
     AddFixedConn("04_NYC_Street","x", "04_NYC_Street","x");
     //AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
     AddDoubleXfer("04_NYC_STREET","FromSmugBackDoor","04_NYC_Smug","ToSmugBackDoor");
-    AddDoubleXfer("04_NYC_STREET","FromSmugFrontDoor","04_NYC_Smug","ToSmugFrontDoor");
+    AddDoubleXfer("04_NYC_STREET","FromSmugFrontDoor","04_NYC_Smug","?toname=PathNode83");
     AddDoubleXfer("04_NYC_STREET","FromBarBackEntrance","04_NYC_Bar","ToBarBackEntrance");
     AddDoubleXfer("04_NYC_STREET","FromBarFrontEntrance","04_NYC_Bar","ToBarFrontEntrance");
     AddDoubleXfer("04_NYC_STREET","FromHotelFrontDoor","04_NYC_Hotel","ToHotelFrontDoor");
@@ -907,7 +907,7 @@ function RandoMission8()
     AddDoubleXfer("08_NYC_FREECLINIC","FromStreet","08_NYC_Street","FromClinic");
     AddDoubleXfer("08_NYC_HOTEL","ToHotelFrontDoor","08_NYC_Street","FromHotelFrontDoor");
     AddDoubleXfer("08_NYC_HOTEL","ToHotelBedroom","08_NYC_Street","BedroomWindow");
-    AddDoubleXfer("08_NYC_SMUG","ToSmugFrontDoor","08_NYC_Street","FromSmugFrontDoor");
+    AddDoubleXfer("08_NYC_SMUG","?toname=PathNode83","08_NYC_Street","FromSmugFrontDoor");
     AddDoubleXfer("08_NYC_SMUG","ToSmugBackDoor","08_NYC_Street","FromSmugBackDoor");
     AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCSump","08_NYC_Street","FromNYCSump");
     AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCUndergroundSewer2","08_NYC_Street","FromNYCUndergroundSewer2");
@@ -1076,6 +1076,14 @@ function ApplyEntranceRando(int missionNum)
         AdjustTeleporter(m);
     }
 
+}
+
+static function AdjustTeleporterStatic(DXRando dxr, NavigationPoint p)
+{
+    local DXREntranceRando entrancerando;
+    entrancerando = DXREntranceRando(dxr.FindModule(class'DXREntranceRando'));
+    if(entrancerando != None)
+        entrancerando.AdjustTeleporter(p);
 }
 
 function NavigationPoint AdjustTeleporter(NavigationPoint p)

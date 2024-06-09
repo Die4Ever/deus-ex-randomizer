@@ -10,6 +10,14 @@ function PostPostBeginPlay()
     Description = default.Description;
 }
 
+function Deactivate()
+{
+    Super(Augmentation).Deactivate();
+
+    Player.AugmentationSystem.BoostAugs(False, Self);
+    //Player.AugmentationSystem.DeactivateAll();
+}
+
 defaultproperties
 {
     bAutomatic=true

@@ -1,5 +1,7 @@
 class DXRFixupM06 extends DXRFixup;
 
+var bool raidStarted;
+
 function CheckConfig()
 {
     local int i;
@@ -110,6 +112,10 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(injectsprefix)Button1', button) {
                 if (button.tag == 'Weapons_Lock_broken' || button.tag == 'Weapons_lock' || button.event == 'missile_door') {
                     button.SetRotation(rotm(14400,16500,0,GetRotationOffset(button.class))); //A similar rotation to original that only rotates in two axes instead of all three
+                } else if (button.Event=='elevator_door' && button.ButtonType==BT_Blank){
+                    //Both the button inside and outside
+                    button.RandoButtonType=RBT_OpenDoors;
+                    button.BeginPlay();
                 }
             }
 
@@ -145,6 +151,12 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps) {
             // button to get out of Tong's base
             AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
+            foreach AllActors(class'#var(injectsprefix)Button1', button) {
+                if ((button.Event=='elevator_door' || button.Event=='elevator_door01') && button.ButtonType==BT_Blank){ //Helibase and Versalife elevators
+                    button.RandoButtonType=RBT_OpenDoors;
+                    button.BeginPlay();
+                }
+            }
         }
         // fallthrough
     case "06_HONGKONG_WANCHAI_COMPOUND":
@@ -258,6 +270,13 @@ function PreFirstEntryMapFixes()
                     d.bFrobbable=True;
                 }
             }
+            foreach AllActors(class'#var(injectsprefix)Button1', button) {
+                if ((button.Event=='Eledoor01' || button.Event=='eledoor02') && button.ButtonType==BT_Blank){ //Penthouse and renovation elevators
+                    button.RandoButtonType=RBT_OpenDoors;
+                    button.BeginPlay();
+                }
+            }
+
         }
         break;
 
@@ -341,6 +360,20 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
+        foreach AllActors(class'#var(injectsprefix)Button1', button) {
+            if ((button.Event=='elevator_door' || button.Event=='elevator_door01') && button.ButtonType==BT_Blank){ //Office and Level 2 elevators
+                button.RandoButtonType=RBT_OpenDoors;
+                button.BeginPlay();
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)AllianceTrigger',at){
+            //These alliance triggers didn't have the right tag set,
+            //so secretaries and Mr Harrison didn't get mad at you
+            if (at.Event=='Secretary' || at.Event=='Businessman1'){
+                at.Tag='SecurityRevoked';
+            }
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
@@ -469,6 +502,34 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //The cops hate shots (which is reasonable normally), but that also means they'll
+        //aggro on you if you're killing a commando and they're nearby.  They should hate them
+        //to start, but stop hating them when the raid starts.  They also hate distress, so if
+        //someone runs past who you distressed, they can get aggroed on you.  We can take that
+        //away always, I think.
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p,'Beat_Cop'){
+            //p.bHateShot=False;
+            p.bHateDistress=False;
+            p.ResetReactions();
+        }
+
+        //Cops run into the club as you exit, after the raid has started
+        ft=Spawn(class'#var(prefix)FlagTrigger',,,vectm(-1024,-594,-343));
+        ft.bSetFlag=False;
+        ft.bTrigger=True;
+        ft.FlagName='Raid_Underway';
+        ft.SetCollisionSize(160,40);
+        ft.flagValue=True;
+        ft.Event='SendTheCopsIn';
+
+        ot=Spawn(class'#var(prefix)OrdersTrigger',,'SendTheCopsIn');
+        ot.SetCollision(False,False,False);
+        ot.Event='Beat_Cop';
+        ot.Orders='RunningTo';
+        ot.OrdersTag='Cruising01'; //A patrol point inside the club doors
+
+        SetTimer(1.0, True); //Start the timer so we can remove bHateShot once the raid starts
+
         break;
 
     case "06_HONGKONG_WANCHAI_GARAGE":
@@ -520,6 +581,13 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
+        foreach AllActors(class'#var(injectsprefix)Button1', button) {
+            if ((button.Event=='LobbyDoor' || button.Event=='elevator_door') && button.ButtonType==BT_Blank){ //Market and Level 1 elevators
+                button.RandoButtonType=RBT_OpenDoors;
+                button.BeginPlay();
+            }
+        }
+
 
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
@@ -552,6 +620,13 @@ function PreFirstEntryMapFixes()
         }
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
+
+        foreach AllActors(class'#var(injectsprefix)Button1', button) {
+            if (button.Event=='elevator_door' && button.ButtonType==BT_Blank){ //Level 1 elevator
+                button.RandoButtonType=RBT_OpenDoors;
+                button.BeginPlay();
+            }
+        }
 
         //Swap BeamTriggers to LaserTrigger, since these lasers set off an alarm
         foreach AllActors(class'#var(prefix)BeamTrigger',bt){
@@ -863,6 +938,26 @@ function AnyEntryMapFixes()
         break;
     }
 }
+
+function TimerMapFixes()
+{
+    local #var(prefix)ScriptedPawn sp;
+
+    switch(dxr.localURL)
+    {
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        if (!raidStarted && dxr.flagbase.GetBool('Raid_Underway') )
+        {
+            foreach AllActors(class'#var(prefix)ScriptedPawn', sp, 'Beat_Cop'){
+                sp.bHateShot=False;
+                sp.ResetReactions();
+            }
+            raidStarted=True;
+        }
+        break;
+    }
+}
+
 
 function HandleJohnSmithDeath()
 {

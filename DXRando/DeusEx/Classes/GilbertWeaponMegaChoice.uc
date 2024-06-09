@@ -13,7 +13,7 @@ function bool HasNoWeapons()
 function GenerateWeaponChoice()
 {
     local Conversation c;
-    local ConEvent ce;
+    local ConEvent ce, insertPoint;
     local ConEventChoice megaChoiceEv,choiceEv;
     local ConChoice sawedOffChoice,stealthChoice,pistolChoice,knifeChoice,crossbowChoice,noHelpChoice,choiceIter;
 
@@ -25,14 +25,8 @@ function GenerateWeaponChoice()
     ce = c.eventList;
 
     while (ce!=None){
-        if (ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject && megaChoiceEv==None){
-            megaChoiceEv = new(c) class'ConEventChoice';
-            megaChoiceEv.eventType=ET_Choice;
-            megaChoiceEv.nextEvent = ce.nextEvent;
-            ce.nextEvent = megaChoiceEv;
-            megaChoiceEv.conversation = c;
-            megaChoiceEv.bClearScreen = true;
-            megaChoiceEv.label="megachoice";
+        if (ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject && insertPoint==None){
+            insertPoint=ce;
         } else if (ce.eventType==ET_Choice){
             choiceEv = ConEventChoice(ce);
             if (choiceEv.ChoiceList!=None){
@@ -59,6 +53,29 @@ function GenerateWeaponChoice()
         }
         ce = ce.nextEvent;
     }
+
+    if (insertPoint==None ||
+        sawedOffChoice==None || stealthChoice==None || pistolChoice==None ||
+        knifeChoice==None || crossbowChoice==None || noHelpChoice==None){
+
+        log("ERROR: GilbertWeaponMegaChoice failed to find all conversation options!  Is there a conversation altering mod installed?");
+        log("insertPoint: "$insertPoint);
+        log("sawedOffChoice: "$sawedOffChoice);
+        log("stealthChoice: "$stealthChoice);
+        log("pistolChoice: "$pistolChoice);
+        log("knifeChoice: "$knifeChoice);
+        log("crossbowChoice: "$crossbowChoice);
+        log("noHelpChoice: "$noHelpChoice);
+        return;
+    }
+
+    megaChoiceEv = new(c) class'ConEventChoice';
+    megaChoiceEv.eventType=ET_Choice;
+    megaChoiceEv.nextEvent = insertPoint.nextEvent;
+    insertPoint.nextEvent = megaChoiceEv;
+    megaChoiceEv.conversation = c;
+    megaChoiceEv.bClearScreen = true;
+    megaChoiceEv.label="megachoice";
 
     megaChoiceEv.ChoiceList = None;
 

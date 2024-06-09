@@ -128,8 +128,8 @@ function Timer()
     if (localURL == "ENDGAME4" || localURL == "ENDGAME4REV") {
         endgameTimer += checkTime;
 
-        if (!bQuotePrinted && endgameTimer > 15) {
-            endgameDelays[2]=60.0;
+        if (!bQuotePrinted && endgameTimer > 5) {
+            endgameDelays[2]=70.0;
             PrintEndgameQuote(2);
         }
 
