@@ -710,7 +710,7 @@ simulated function ApplyInfluencers(Actor p, name coatinfluencer, name pantsinfl
     }
 
     //FemJC can use male trenchcoat textures, but obviously shouldn't use the male model
-    if (isFemale){
+    if (isFemale && isJC){
         switch(model.default.Mesh){
             case LodMesh'DeusExCharacters.GM_Trench_F':
             case LodMesh'DeusExCharacters.GM_Trench':
