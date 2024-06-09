@@ -341,6 +341,13 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
+        foreach AllActors(class'#var(prefix)AllianceTrigger',at){
+            //These alliance triggers didn't have the right tag set,
+            //so secretaries and Mr Harrison didn't get mad at you
+            if (at.Event=='Secretary' || at.Event=='Businessman1'){
+                at.Tag='SecurityRevoked';
+            }
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
