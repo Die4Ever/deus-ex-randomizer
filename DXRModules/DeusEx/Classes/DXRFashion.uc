@@ -73,7 +73,7 @@ simulated function InitInfluencers()
     AddInfluencer(class'ThugMale2', None);
     AddInfluencer(class'ThugMale3', None);
     AddInfluencer(class'BusinessMan2', None);
-    AddInfluencer(class'Butler', None);
+    AddInfluencer(class'Butler', class'Maid');
     AddInfluencer(class'Chef', None);
     AddInfluencer(class'ChildMale', None);
     AddInfluencer(class'ChildMale2', None);
@@ -862,6 +862,9 @@ simulated function _RandomizeClothes(#var(PlayerPawn) player, bool female)
             styleInfluencer = RandomCoatInfluencer(female,true);
     } else if (isFemaleShirt) {
         styleInfluencer = RandomFemaleShirtInfluencer();
+    } else if (isSkirt) {
+        //Fall through without changing the styleInfluencer
+        //Shirt influencer should match the pants influencer for skirts so the full thing matches
     } else {
         // for shirts we might be able to pull from male shirts too
         styleInfluencer = RandomUniSexNonCoatInfluencer(female, isOtherSkinColor);
