@@ -361,7 +361,7 @@ function PreFirstEntryMapFixes()
         buttonHint.SetBaseActor(button);
 
         foreach AllActors(class'#var(injectsprefix)Button1', button) {
-            if ((button.Event=='elevator_door' || button.Event=='elevator_door01') && button.ButtonType==BT_Blank){ //Office and Level 2 elevators
+            if ((button.Event=='elevator_door' || button.Event=='elevator_door01' || button.Event=='eledoor02') && button.ButtonType==BT_Blank){ //Office, Level 2, and balcony elevators
                 button.RandoButtonType=RBT_OpenDoors;
                 button.BeginPlay();
             }
