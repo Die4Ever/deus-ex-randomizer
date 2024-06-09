@@ -160,6 +160,7 @@ simulated function Float CalcEnergyUse(float deltaTime)
     local float f, energyUse, boostedEnergyUse, energyMult, boostMult;
     local Augmentation anAug;
 
+    boostedEnergyUse = 0;
     energyUse = 0;
     energyMult = 1.0;
     boostMult = 1.0;
@@ -177,7 +178,7 @@ simulated function Float CalcEnergyUse(float deltaTime)
         if (anAug.bHasIt && anAug.bIsActive)
         {
             f = ((anAug.GetEnergyRate()/60) * deltaTime);
-            if(f > 0 && anAug.bBoosted) {
+            if(anAug.bBoosted) {
                 boostedEnergyUse += f;
             } else {
                 energyUse += f;
@@ -197,4 +198,32 @@ simulated function Float CalcEnergyUse(float deltaTime)
     energyUse *= energyMult;
 
     return energyUse;
+}
+
+function BoostAugs(bool bBoostEnabled, Augmentation augBoosting)
+{
+    local Augmentation anAug;
+
+    for(anAug = FirstAug; anAug != None; anAug = anAug.next)
+    {
+        // Don't boost the augmentation causing the boosting!
+        if (anAug == augBoosting) continue;
+
+        // DXRando: don't boost free augs because (0 * synth_heart_strength) == 0
+        if (bBoostEnabled && anAug.energyRate > 0)
+        {
+            if (anAug.bIsActive && !anAug.bBoosted && (anAug.CurrentLevel < anAug.MaxLevel))
+            {
+                anAug.CurrentLevel++;
+                anAug.bBoosted = True;
+                anAug.Reset();
+            }
+        }
+        else if (anAug.bBoosted)
+        {
+            anAug.CurrentLevel--;
+            anAug.bBoosted = False;
+            anAug.Reset();
+        }
+    }
 }
