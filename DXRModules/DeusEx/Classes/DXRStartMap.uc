@@ -590,9 +590,9 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             MarkConvPlayed('DL_Helios_Door1_Played', bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
             MarkConvPlayed('DL_Helios_Intro_Played', bFemale);         // I will now explain why you have been allowed to reach Sector 3.
             MarkConvPlayed('DL_Final_Page03_Played', bFemale);         // Don't get your hopes up; my compound is quite secure.
-            flagbase.SetBool('MS_PaulOrGaryAppeared',true,,-1);          // It let me through... I can't believe it.
+            flagbase.SetBool('MS_PaulOrGaryAppeared',true,,-1);        // It let me through... I can't believe it.
             MarkConvPlayed('MeetHelios_Played', bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
-            flagbase.SetBool('MS_TongAppeared',true,,-1);                // We can get you into Sector 3 -- but no further.
+            flagbase.SetBool('MS_TongAppeared',true,,-1);              // We can get you into Sector 3 -- but no further.
             GivePlayerImage(player, class'Image15_Area51_Sector3');
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
             AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
