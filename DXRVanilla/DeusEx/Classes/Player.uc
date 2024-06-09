@@ -8,6 +8,7 @@ var transient string nextMap;
 var laserEmitter aimLaser;
 var bool bDoomMode;
 var bool bAutorun;
+var float autorunTime;
 var bool bBlockAnimations;
 
 var Rotator ShakeRotator;
@@ -1530,13 +1531,18 @@ event TravelPostAccept()
 exec function ToggleAutorun()
 {
     bAutorun = !bAutorun;
+    autorunTime = Level.TimeSeconds;
 }
 
 event PlayerInput( float DeltaTime )
 {
     if (!InConversation()) {
         if(bAutorun) {
-            aBaseY=3000;
+            if(aBaseY == 0 || autorunTime > Level.TimeSeconds-0.5) {
+                aBaseY = 3000;
+            } else {
+                bAutorun = false;
+            }
         }
         Super.PlayerInput(DeltaTime);
     }
