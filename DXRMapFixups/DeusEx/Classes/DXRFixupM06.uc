@@ -1,5 +1,7 @@
 class DXRFixupM06 extends DXRFixup;
 
+var bool raidStarted;
+
 function CheckConfig()
 {
     local int i;
@@ -476,6 +478,34 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //The cops hate shots (which is reasonable normally), but that also means they'll
+        //aggro on you if you're killing a commando and they're nearby.  They should hate them
+        //to start, but stop hating them when the raid starts.  They also hate distress, so if
+        //someone runs past who you distressed, they can get aggroed on you.  We can take that
+        //away always, I think.
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p,'Beat_Cop'){
+            //p.bHateShot=False;
+            p.bHateDistress=False;
+            p.ResetReactions();
+        }
+
+        //Cops run into the club as you exit, after the raid has started
+        ft=Spawn(class'#var(prefix)FlagTrigger',,,vectm(-1024,-594,-343));
+        ft.bSetFlag=False;
+        ft.bTrigger=True;
+        ft.FlagName='Raid_Underway';
+        ft.SetCollisionSize(160,40);
+        ft.flagValue=True;
+        ft.Event='SendTheCopsIn';
+
+        ot=Spawn(class'#var(prefix)OrdersTrigger',,'SendTheCopsIn');
+        ot.SetCollision(False,False,False);
+        ot.Event='Beat_Cop';
+        ot.Orders='RunningTo';
+        ot.OrdersTag='Cruising01'; //A patrol point inside the club doors
+
+        SetTimer(1.0, True); //Start the timer so we can remove bHateShot once the raid starts
+
         break;
 
     case "06_HONGKONG_WANCHAI_GARAGE":
@@ -870,6 +900,26 @@ function AnyEntryMapFixes()
         break;
     }
 }
+
+function TimerMapFixes()
+{
+    local #var(prefix)ScriptedPawn sp;
+
+    switch(dxr.localURL)
+    {
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        if (!raidStarted && dxr.flagbase.GetBool('Raid_Underway') )
+        {
+            foreach AllActors(class'#var(prefix)ScriptedPawn', sp, 'Beat_Cop'){
+                sp.bHateShot=False;
+                sp.ResetReactions();
+            }
+            raidStarted=True;
+        }
+        break;
+    }
+}
+
 
 function HandleJohnSmithDeath()
 {
