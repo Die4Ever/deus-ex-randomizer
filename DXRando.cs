@@ -67,6 +67,7 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Make Player Radioactive", "radioactive"){Price = 10,Description = "The player becomes radioactive and starts hurting nearby people!",Duration=60}, //New for fifth Crowd Control batch, v2.6
         new Effect ("Corpse Explosion", "corpse_explosion"){Price = 10,Description = "Fill up to 5 nearby corpses with energy, causing them to explode violently!"}, //New for fifth Crowd Control batch, v2.6
         new Effect ("Lose your Marbles", "drop_marbles"){Price = 3,Description = "Oops, JC dropped all the marbles!"}, //New for sixth Crowd Control batch
+        new Effect ("Drop some Pamphlets", "spam_datacubes"){Price = 3,Description = "Air drop a selection of informative datacubes around the level!"}, //New for sixth Crowd Control batch
 
         //Spawn Enemies/Allies
         //new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch
