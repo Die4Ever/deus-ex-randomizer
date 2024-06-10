@@ -1553,6 +1553,15 @@ exec function RemoveBeltItem()
     RemoveObjectFromBelt(InHand);
 }
 
+exec function AllSkillPoints()
+{
+    if (!bCheatsEnabled)
+        return;
+
+    SkillPointsTotal = 999999;
+    SkillPointsAvail = 999999;
+}
+
 
 function QuickLoadConfirmed()
 {
