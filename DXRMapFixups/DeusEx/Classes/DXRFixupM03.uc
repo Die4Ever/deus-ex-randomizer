@@ -90,11 +90,6 @@ function PreFirstEntryMapFixes()
                 k.Destroy();
             }
         }
-        foreach AllActors(class'#var(prefix)InformationDevices', i) {
-            if( i.textTag == '03_Book06' ) {
-                i.bAddToVault = true;
-            }
-        }
 
         if(VanillaMaps) {
             AddSwitch(vect(-4621.640137, 2902.651123, -650.285461), rot(0,0,0), 'ElevatorPhone');

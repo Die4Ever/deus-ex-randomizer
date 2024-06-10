@@ -602,14 +602,16 @@ function RandoInfoDevs(int percent)
 {
     local #var(injectsprefix)InformationDevices id;
 
-    if(percent <= 0) return;
-
     foreach AllActors(class'#var(injectsprefix)InformationDevices', id)
     {
         if(!id.bHidden && id.Mesh == class'#var(prefix)DataCube'.default.Mesh)
             GlowUp(id);
-        if( id.bIsSecretGoal ) continue;
-        if( ! chance_single(percent) ) continue;
+        if( id.bIsSecretGoal || !chance_single(percent) ) {
+            if( ! id.bAddToVault ) { // Zero Rando books should add to vault too
+                InfoDevsHasPass(id);
+            }
+            continue;
+        }
         _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
     }
 }
