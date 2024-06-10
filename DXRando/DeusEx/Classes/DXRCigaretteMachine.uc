@@ -9,9 +9,13 @@ function Frob(Actor frobber, Inventory frobWith)
 
     Super.Frob(frobber, frobWith);
 
-    if (numUses == 0 && usesBefore != 0) {
+    if (usesBefore != 0 && numUses != usesBefore) {
         foreach AllActors(class'DXRando', dxr) {
-            class'DXREvents'.static.MarkBingo(dxr, "VendingMachineEmpty");
+            class'DXREvents'.static.MarkBingo(dxr,"VendingMachineDispense_Cigs");
+            class'DXREvents'.static.MarkBingo(dxr,"VendingMachineDispense");
+            if (numUses == 0) {
+                class'DXREvents'.static.MarkBingo(dxr, "VendingMachineEmpty");
+            }
             break;
         }
     }
