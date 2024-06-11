@@ -39,10 +39,6 @@ function PreFirstEntry()
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
 
-    if(IsStartMap()) {
-        StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map);
-    }
-
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
         if(dxr.flags.settings.starting_map > 20) {
@@ -84,6 +80,13 @@ function PreFirstEntry()
             }
         }
         break;
+    }
+}
+
+function PostFirstEntry()
+{
+    if(IsStartMap()) {
+        StartMapSpecificFlags(player(), dxr.flagbase, dxr.flags.settings.starting_map);
     }
 }
 
