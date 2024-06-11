@@ -540,6 +540,15 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_SubwayComplete", bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
             MarkConvPlayed("MS_DL", bFemale);
+            GivePlayerImage(player, class'Image02_Ambrosia_Flyer');
+            break;
+
+        case 31:
+            MarkConvPlayed("DL_WelcomeBack", bFemale);
+            break;
+        case 37:
+            GivePlayerImage(player, class'Image03_NYC_Airfield');
+            MarkConvPlayed("DL_LebedevKill_Played", bFemale);
             break;
 
         case 45:
@@ -622,6 +631,22 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     switch(start_flag) {
+        case 21:
+            AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete', true);
+            break;
+
+        case 31:
+            AddGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack', true);
+            break;
+        case 32:
+        case 33:
+        case 34:
+        case 35:
+            AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02', true);
+            break;
+        case 37:
+            AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill', true);
+
         case 153:
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
             AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios', true);
