@@ -134,19 +134,16 @@ function MissionTimer()
 
 function AddMissionGoals()
 {
-    local DeusExGoal newGoal;
+    local #var(PlayerPawn) p;
+
     if(dxr.localURL != "01_NYC_UNATCOISLAND") return;
 
     //The MeetPaul conversation would normally give you several goals.
     //Give them manually instead of via that conversation.
-    newGoal=player().AddGoal('DefeatNSFCommandCenter',True);
-    newGoal.SetText("The NSF seem to be directing the attack from somewhere on the island.  Find the commander.");
-
-    newGoal=player().AddGoal('RescueAgent',False);
-    newGoal.SetText("One of UNATCO's top agents is being held inside the Statue.  Break him out, and he'll back you up against the NSF.");
-
-    newGoal=player().AddGoal('MeetFilben',False);
-    newGoal.SetText("Meet UNATCO informant Harley Filben at the North Docks.  He has a key to the Statue doors.");
+    p = player();
+    AddGoalFromConv(p, 'DefeatNSFCommandCenter', 'MeetPaul', true);
+    AddGoalFromConv(p, 'RescueAgent', 'MeetPaul', false);
+    AddGoalFromConv(p, 'MeetFilben', 'MeetPaul', false);
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)

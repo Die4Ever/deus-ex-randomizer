@@ -467,16 +467,6 @@ static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
     }
 }
 
-function AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname)
-{
-    local DeusExGoal newGoal;
-    newGoal = player.FindGoal(goaltag);
-    if(newGoal != None) return;
-    newGoal = player.AddGoal(goaltag, true);
-    if(newGoal == None) return;
-    newGoal.SetText(GetGoalTextGC(goaltag, convname));
-}
-
 function MarkConvPlayed(name flagname, bool bFemale)
 {
     dxr.flagbase.SetBool(flagname,true,,-1);
@@ -597,8 +587,8 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             MarkConvPlayed('MeetHelios_Played', bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('MS_TongAppeared',true,,-1);              // We can get you into Sector 3 -- but no further.
             GivePlayerImage(player, class'Image15_Area51_Sector3');
-            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
-            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
+            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
+            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios', true);
             // fallthrough
         case 152:
             MarkConvPlayed('DL_Final_Page02_Played', bFemale);         // Barely a scratch.
@@ -607,7 +597,7 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             MarkConvPlayed('M15MeetEverett_Played', bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             flagbase.SetBool('MS_EverettAppeared',true,,-1);
             AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
-            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
+            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett', true);
             // fallthrough
         case 151:
             MarkConvPlayed('DL_tong1_Played', bFemale);                // Here's a satellite image of the damage from the missile.
