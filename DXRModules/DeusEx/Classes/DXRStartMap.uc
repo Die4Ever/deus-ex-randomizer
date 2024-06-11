@@ -469,9 +469,10 @@ static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
 
 function MarkConvPlayed(name flagname, bool bFemale)
 {
+    flagname = StringToName(flagname$"_Played");
     dxr.flagbase.SetBool(flagname,true,,-1);
     if(bFemale) {
-        flagname = StringToName("FemJC"$string(flagname));
+        flagname = StringToName("FemJC"$flagname);
         dxr.flagbase.SetBool(flagname,true,,-1);
     }
 }
@@ -485,19 +486,19 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
 
     switch(start_flag/10) {
         case 4:
-            MarkConvPlayed('DL_SeeManderley_Played', bFemale);
+            MarkConvPlayed('DL_SeeManderley', bFemale);
             break;
         case 5:
             if(start_flag > 50) {
                 AddNote(player, bEmptyNotes, "Facility exit: 1125.");
                 AddNote(player, bEmptyNotes, "Until the grid is fully restored, the detention block door code has been reset to 4089 while _all_ detention cells have been reset to 4679.");
-                MarkConvPlayed('DL_NoPaul_Played', bFemale);
+                MarkConvPlayed('DL_NoPaul', bFemale);
                 flagbase.SetBool('MS_InventoryRemoved',true,,6);
             }
         case 7:
             flagbase.SetBool('Have_ROM',true,,-1);
-            MarkConvPlayed('MeetTracerTong_Played', bFemale);// do we need FemJC versions for these?
-            MarkConvPlayed('TriadCeremony_Played', bFemale);
+            MarkConvPlayed('MeetTracerTong', bFemale);// do we need FemJC versions for these?
+            MarkConvPlayed('TriadCeremony', bFemale);
             break;
         case 8:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
@@ -505,7 +506,7 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             break;
         case 9:
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
-            MarkConvPlayed('DL_BadNews_Played', bFemale);
+            MarkConvPlayed('DL_BadNews', bFemale);
             flagbase.SetBool('HelpSailor',true,,-1);
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
             break;
@@ -532,13 +533,13 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
     switch(start_flag) {
         case 21:
             flagbase.SetBool('EscapeSuccessful',true,,-1);
-            MarkConvPlayed('DL_SubwayComplete_Played', bFemale);
+            MarkConvPlayed('DL_SubwayComplete', bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
-            MarkConvPlayed('MS_DL_Played', bFemale);
+            MarkConvPlayed('MS_DL', bFemale);
             break;
 
         case 45:
-            MarkConvPlayed('PaulInjured_Played', bFemale);
+            MarkConvPlayed('PaulInjured', bFemale);
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
             flagbase.SetBool('GatesOpen',true,,5);
             break;
@@ -546,14 +547,14 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
         case 75:
         case 71:// anything greater than 70 should get these, even though this isn't an actual value currently
             AddNote(player, bEmptyNotes, "Access code to the Versalife nanotech research wing on Level 2: 55655.  There is a back entrance at the north end of the Canal Road Tunnel, which is just east of the temple.");
-            MarkConvPlayed('M07Briefing_Played', bFemale);// also spawns big spider in MJ12Lab
+            MarkConvPlayed('M07Briefing', bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
         case 68:
             AddNote(player, bEmptyNotes, "VersaLife elevator code: 6512.");
         case 67://fallthrough
             AddNote(player, bEmptyNotes, "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.");
-            MarkConvPlayed('MeetTracerTong_Played', bFemale);
-            MarkConvPlayed('MeetTracerTong2_Played', bFemale);
+            MarkConvPlayed('MeetTracerTong', bFemale);
+            MarkConvPlayed('MeetTracerTong2', bFemale);
             flagbase.SetBool('KillswitchFixed',true,,-1);
         case 66://fallthrough
             AddNote(player, bEmptyNotes, "Luminous Path door-code: 1997.");
@@ -561,7 +562,7 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             flagbase.SetBool('QuickConvinced',true,,-1);
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
-            MarkConvPlayed('DL_Tong_00_Played', bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
+            MarkConvPlayed('DL_Tong_00', bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
             break;
         case 81:
@@ -573,45 +574,45 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             break;
 
         case 129:
-            MarkConvPlayed('GaryHostageBriefing_Played', bFemale);
+            MarkConvPlayed('GaryHostageBriefing', bFemale);
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
             break;
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
             break;
         case 153:
-            MarkConvPlayed('DL_Helios_Door1_Played', bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
-            MarkConvPlayed('DL_Helios_Intro_Played', bFemale);         // I will now explain why you have been allowed to reach Sector 3.
-            MarkConvPlayed('DL_Final_Page03_Played', bFemale);         // Don't get your hopes up; my compound is quite secure.
+            MarkConvPlayed('DL_Helios_Door1', bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
+            MarkConvPlayed('DL_Helios_Intro', bFemale);         // I will now explain why you have been allowed to reach Sector 3.
+            MarkConvPlayed('DL_Final_Page03', bFemale);         // Don't get your hopes up; my compound is quite secure.
             flagbase.SetBool('MS_PaulOrGaryAppeared',true,,-1);        // It let me through... I can't believe it.
-            MarkConvPlayed('MeetHelios_Played', bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
+            MarkConvPlayed('MeetHelios', bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('MS_TongAppeared',true,,-1);              // We can get you into Sector 3 -- but no further.
             GivePlayerImage(player, class'Image15_Area51_Sector3');
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
             AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios', true);
             // fallthrough
         case 152:
-            MarkConvPlayed('DL_Final_Page02_Played', bFemale);         // Barely a scratch.
-            MarkConvPlayed('DL_elevator_Played', bFemale);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
-            MarkConvPlayed('DL_conveyor_room_Played', bFemale);        // Page is further down.  Find the elevator.
-            MarkConvPlayed('M15MeetEverett_Played', bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
+            MarkConvPlayed('DL_Final_Page02', bFemale);         // Barely a scratch.
+            MarkConvPlayed('DL_elevator', bFemale);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
+            MarkConvPlayed('DL_conveyor_room', bFemale);        // Page is further down.  Find the elevator.
+            MarkConvPlayed('M15MeetEverett', bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             flagbase.SetBool('MS_EverettAppeared',true,,-1);
             AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
             AddGoalFromConv(player, 'KillPage', 'M15MeetEverett', true);
             // fallthrough
         case 151:
-            MarkConvPlayed('DL_tong1_Played', bFemale);                // Here's a satellite image of the damage from the missile.
-            MarkConvPlayed('DL_tong_reached_bunker_Played', bFemale);  // Good work.  You've reached the bunker.
-            MarkConvPlayed('DL_JockDeathTongComment_Played', bFemale); // I don't believe it!  JC!  We lost Jock!
-            MarkConvPlayed('DL_JockDeath_Played', bFemale);            // JC!  Got a problem.  Someone planted a bo-----
-            MarkConvPlayed('DL_Bunker_Start_Played', bFemale);         // Just spotted a sniper in the tower.
-            MarkConvPlayed('DL_Bunker_PowerRoom_Played', bFemale);     // You're nearing the power room.
-            MarkConvPlayed('DL_Bunker_Power_Played', bFemale);         // The elevator power is online.
-            MarkConvPlayed('DL_Bunker_Hangar_Played', bFemale);        // I saw some soldiers running away from the hangar.
-            // MarkConvPlayed('DL_Bunker_Fan_Played', bFemale);        // Jump!  You can make it!
-            MarkConvPlayed('DL_Bunker_Elevator_Played', bFemale);      // The power to the elevator is down.
-            MarkConvPlayed('DL_Bunker_blastdoor_Played', bFemale);     // The schematics show an elevator to the west, but utility power is down.
-            MarkConvPlayed('DL_blastdoor_shut_Played', bFemale);       // These blast doors are the reason I don't have to worry about nukes -- or you.
+            MarkConvPlayed('DL_tong1', bFemale);                // Here's a satellite image of the damage from the missile.
+            MarkConvPlayed('DL_tong_reached_bunker', bFemale);  // Good work.  You've reached the bunker.
+            MarkConvPlayed('DL_JockDeathTongComment', bFemale); // I don't believe it!  JC!  We lost Jock!
+            MarkConvPlayed('DL_JockDeath', bFemale);            // JC!  Got a problem.  Someone planted a bo-----
+            MarkConvPlayed('DL_Bunker_Start', bFemale);         // Just spotted a sniper in the tower.
+            MarkConvPlayed('DL_Bunker_PowerRoom', bFemale);     // You're nearing the power room.
+            MarkConvPlayed('DL_Bunker_Power', bFemale);         // The elevator power is online.
+            MarkConvPlayed('DL_Bunker_Hangar', bFemale);        // I saw some soldiers running away from the hangar.
+            // MarkConvPlayed('DL_Bunker_Fan', bFemale);        // Jump!  You can make it!
+            MarkConvPlayed('DL_Bunker_Elevator', bFemale);      // The power to the elevator is down.
+            MarkConvPlayed('DL_Bunker_blastdoor', bFemale);     // The schematics show an elevator to the west, but utility power is down.
+            MarkConvPlayed('DL_blastdoor_shut', bFemale);       // These blast doors are the reason I don't have to worry about nukes -- or you.
             GivePlayerImage(player, class'Image15_Area51Bunker');
             break;
     }
