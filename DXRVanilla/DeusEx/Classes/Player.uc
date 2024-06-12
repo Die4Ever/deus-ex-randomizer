@@ -1538,7 +1538,7 @@ event PlayerInput( float DeltaTime )
 {
     if (!InConversation()) {
         if(bAutorun) {
-            if(aBaseY == 0 || autorunTime > Level.TimeSeconds-0.5) {
+            if(aBaseY == 0 || autorunTime > Level.TimeSeconds-1) {
                 aBaseY = 3000;
             } else {
                 bAutorun = false;
