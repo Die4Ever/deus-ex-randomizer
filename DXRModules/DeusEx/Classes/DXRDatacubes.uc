@@ -160,8 +160,8 @@ function vanilla_datacubes_rules()
         // datacube for hanger keypad
         // disallow in security tower
         datacubes_rules[i].item_name = '03_Datacube10';
-        datacubes_rules[i].min_pos = vect(5200, 3650, 200);
-        datacubes_rules[i].max_pos = vect(999999, 999999, 9999);
+        datacubes_rules[i].min_pos = vect(5100, 3600, -999999);
+        datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
         datacubes_rules[i].allow = false;
         i++;
 
@@ -175,7 +175,7 @@ function vanilla_datacubes_rules()
         // allow anywhere else past the gate
         datacubes_rules[i].item_name = '03_Datacube10';
         datacubes_rules[i].min_pos = vect(1700, 2400, -999999);
-        datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+        datacubes_rules[i].max_pos = vect(5000, 3600, 999999);
         datacubes_rules[i].allow = true;
         i++;
         break;
@@ -636,7 +636,7 @@ function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers
             continue;
         }
 #ifdef debug
-        //if(id.textTag == '03_Datacube10') DebugMarkKeyPosition(inv.Location, id.textTag);
+        if(id.textTag == '03_Datacube10') DebugMarkKeyPosition(inv.Location, id.textTag);
 #endif
         temp[num++] = inv;
     }
@@ -651,7 +651,7 @@ function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers
             }
             if( HasBased(c) ) continue;
 #ifdef debug
-            //DebugMarkKeyPosition(c.Location, id.textTag);
+            DebugMarkKeyPosition(c.Location, id.textTag);
 #endif
             temp[num++] = c;
         }
