@@ -292,10 +292,10 @@ static function string _GetStartMap(int start_map_val, optional out string frien
             bShowInMenu=1;
             friendlyName = "NSF Defection (UNATCO HQ)";
             return "04_NYC_UNATCOHQ";
-        case 41:
+        case 42:
             friendlyName = "NSF Defection (Streets)";
             return "04_NYC_Street";
-        case 42:
+        case 43:
             friendlyName = "NSF Defection (Hotel)";
             return "04_NYC_Hotel";
         case 45:
