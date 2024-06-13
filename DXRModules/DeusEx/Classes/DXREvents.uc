@@ -3486,7 +3486,7 @@ defaultproperties
     bingo_options(309)=(event="OceanLabMedBay",desc="Enter the flooded med bay in the Ocean Lab",max=1,missions=16384)
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
-    bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
+    bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=5)
     bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert-Rochereau",max=1,missions=1024)
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)

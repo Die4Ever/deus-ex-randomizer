@@ -39,6 +39,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
+    local #var(prefix)Terrorist miguel;
     local #var(prefix)Keypad3 kp;
     local #var(prefix)Cigarettes cigs;
 
@@ -141,6 +142,10 @@ function PreFirstEntryMapFixes()
             }
             foreach AllActors(class'#var(prefix)JaimeReyes', j) {
                 RemoveFears(j);
+            }
+            foreach AllActors(class'#var(prefix)Terrorist', miguel){
+                miguel.bHateShot=False;
+                miguel.ResetReactions();
             }
 
             if(!dxr.flags.IsZeroRando()) {

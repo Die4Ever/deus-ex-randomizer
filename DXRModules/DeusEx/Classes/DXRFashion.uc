@@ -73,7 +73,7 @@ simulated function InitInfluencers()
     AddInfluencer(class'ThugMale2', None);
     AddInfluencer(class'ThugMale3', None);
     AddInfluencer(class'BusinessMan2', None);
-    AddInfluencer(class'Butler', None);
+    AddInfluencer(class'Butler', class'Maid');
     AddInfluencer(class'Chef', None);
     AddInfluencer(class'ChildMale', None);
     AddInfluencer(class'ChildMale2', None);
@@ -87,7 +87,7 @@ simulated function InitInfluencers()
     AddInfluencer(class'TracerTong', None);
     AddInfluencer(class'BobPage', None);
     AddInfluencer(class'HKMilitary', None);
-    AddInfluencer(class'JosephManderley', None);
+    AddInfluencer(class'JosephManderley', class'JosephManderley');
     AddInfluencer(class'MJ12Troop', None);
     AddInfluencer(class'RiotCop', None);
     AddInfluencer(class'SamCarter', None);
@@ -95,27 +95,26 @@ simulated function InitInfluencers()
     AddInfluencer(class'Terrorist', None);
     AddInfluencer(class'UNATCOTroop', None);
     AddInfluencer(class'Chad', None);
-    AddInfluencer(class'ThugMale', None);
+    AddInfluencer(class'ThugMale', class'ThugMale');
     AddInfluencer(class'TriadLumPath', None);
     AddInfluencer(class'TriadLumPath2', None);
-    AddInfluencer(class'BumMale2', None);
-    AddInfluencer(class'BumMale3', None);
-    AddInfluencer(class'JaimeReyes', None);
-    AddInfluencer(class'HarleyFilben', None);
-    AddInfluencer(class'GilbertRenton', None);
-    AddInfluencer(class'FordSchick', None);
-    AddInfluencer(class'GordonQuick', None);
-    AddInfluencer(class'JuanLebedev', None);
-    AddInfluencer(class'WaltonSimons', None);
-    AddInfluencer(class'Smuggler', None);
-    AddInfluencer(class'TobyAtanwe', None);
-    AddInfluencer(class'TerroristCommander', None);
-    AddInfluencer(class'TriadRedArrow', None);
+    AddInfluencer(class'BumMale2', class'BumMale2');
+    AddInfluencer(class'BumMale3', class'BumMale3');
+    AddInfluencer(class'JaimeReyes', class'MaxChen'); //Max Chen isn't related to Jaime, but get Max in the mix for FemJC outfit choices
+    AddInfluencer(class'HarleyFilben', class'HarleyFilben');
+    AddInfluencer(class'GilbertRenton', class'GilbertRenton');
+    AddInfluencer(class'FordSchick', class'FordSchick');
+    AddInfluencer(class'GordonQuick', class'GordonQuick'); //Obviously we don't want his "shirt" for FemJC... His jacket is fine though
+    AddInfluencer(class'JuanLebedev', class'JuanLebedev');
+    AddInfluencer(class'WaltonSimons', class'WaltonSimons');
+    AddInfluencer(class'Smuggler', class'Smuggler'); //His shirt is a bit tight and looks weird on FemJC
+    AddInfluencer(class'TobyAtanwe', class'TobyAtanwe');
+    AddInfluencer(class'TerroristCommander', class'TerroristCommander'); //His shirt isn't great for FemJC
+    AddInfluencer(class'TriadRedArrow', class'TriadRedArrow');
     AddInfluencer(class'GarySavage', None);
-    AddInfluencer(class'StantonDowd', None);
-    AddInfluencer(class'Jock', None);
-    AddInfluencer(class'ThugMale', None);
-    AddInfluencer(class'PaulDenton', None);
+    AddInfluencer(class'StantonDowd', class'StantonDowd');
+    AddInfluencer(class'Jock', class'Jock');
+    AddInfluencer(class'PaulDenton', class'PaulDenton');
 }
 
 simulated function texture GetCoat1(class<ScriptedPawn> p)
@@ -257,7 +256,9 @@ simulated function AddInfluencerName(class<ScriptedPawn> male, name female)
     local class<ScriptedPawn> femaleClass;
 
     // don't want to require LDDP for compilation, so this handles it at runtime
-    femaleClass = GetInfluencerClass(female);
+    if( dxr.flagbase.GetBool('LDDPJCIsFemale') ) { //isFemale won't be initialized when this is called
+        femaleClass = GetInfluencerClass(female);
+    }
 
     AddInfluencer(male, femaleClass);
 }
@@ -320,28 +321,42 @@ simulated function class<ScriptedPawn> RandomInfluencer(bool female)
         return influencers[Rand(numInfluencers)];
 }
 
-simulated function class<ScriptedPawn> RandomCoatInfluencer(bool female)
+simulated function class<ScriptedPawn> RandomCoatInfluencer(bool female, bool shirtSearch)
 {
     local LodMesh meshes[16];
+    local class<ScriptedPawn> c;
+    local int i;
+    local bool compatible;
 
     if(female) {
         meshes[0] = LodMesh'DeusExCharacters.GFM_Trench';
+        meshes[1] = LodMesh'DeusExCharacters.GM_Trench'; //These mens coats work on the female model also
+        meshes[2] = LodMesh'DeusExCharacters.GM_Trench_F';
 
     } else {
         meshes[0] = LodMesh'DeusExCharacters.GM_Trench';
         meshes[1] = LodMesh'DeusExCharacters.GM_Trench_F';
     }
 
-    return RandomInfluencerForMeshes(female, meshes);
+    for(i=0; i < 10 && !compatible; i++) {
+        c = RandomInfluencerForMeshes(female, meshes);
+
+        compatible=true;
+        if (female && shirtSearch){
+            compatible = isValidFemaleShirtInfluencer(c);
+        }
+    }
+
+    return c;
 }
 
-simulated function class<ScriptedPawn> RandomCoatOtherSkinInfluencer(bool female)
+simulated function class<ScriptedPawn> RandomCoatOtherSkinInfluencer(bool female, bool shirtSearch)
 {
     local int i;
     local class<ScriptedPawn> c;
     local bool compatible;
     for(i=0; i < 10 && !compatible; i++) {
-        c = RandomCoatInfluencer(female);
+        c = RandomCoatInfluencer(female,shirtSearch);
         compatible = isOtherSkinCompatible(c);
     }
     return c;
@@ -442,7 +457,12 @@ simulated function bool isOtherSkinCompatible(class<ScriptedPawn> c)
 {
     return ! (c == class'Female4' || c == class'Male4' || c == class'HKMilitary' || c == class'SamCarter'
             || c == class'BoatPerson' || c == class'LowerClassMale' || c == class'GordonQuick' || c == class'ThugMale3');
-            // maybe ThugMale3?
+}
+
+//Influencers who are valid for other bits, but not shirts
+simulated function bool isValidFemaleShirtInfluencer(class<ScriptedPawn> c)
+{
+    return ! (c == class'GordonQuick' || c == class'Smuggler' || c == class'TerroristCommander' || c == class'JuanLebedev');
 }
 
 simulated function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
@@ -546,7 +566,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
             p.MultiSkins[1] = coat1;
             p.MultiSkins[2] = pants;
             p.MultiSkins[4] = shirt;
-            // 5 is skirt?
+            p.MultiSkins[5] = coat2;
 
             if (isJC) {
                 p.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex4';
@@ -689,6 +709,17 @@ simulated function ApplyInfluencers(Actor p, name coatinfluencer, name pantsinfl
         shirt = GetShirt(styleInfluencer);
     }
 
+    //FemJC can use male trenchcoat textures, but obviously shouldn't use the male model
+    if (isFemale && isJC){
+        switch(model.default.Mesh){
+            case LodMesh'DeusExCharacters.GM_Trench_F':
+            case LodMesh'DeusExCharacters.GM_Trench':
+                model = class'ScientistFemale'; //Placeholder for a generic trenchcoat female
+        }
+    }
+
+
+
     ApplyOutfit(p, model, coat1, coat2, shirt, pants, helmet, isJC);
 }
 
@@ -794,7 +825,7 @@ simulated function _RandomizeClothes(#var(PlayerPawn) player, bool female)
     //Randomize Coat (Multiskin 1 and 5)
     isOtherSkinColor = player.PlayerSkin == 1 || player.PlayerSkin == 2 || player.PlayerSkin == 4;
     if(female && isOtherSkinColor)
-        styleInfluencer = RandomCoatInfluencer(female);
+        styleInfluencer = RandomCoatInfluencer(female,false);
     else
         styleInfluencer = RandomInfluencer(female);
     isTrench = IsTrenchInfluencer(styleInfluencer);
@@ -826,11 +857,14 @@ simulated function _RandomizeClothes(#var(PlayerPawn) player, bool female)
     //Randomize Shirt (Multiskin 4)
     if (isTrench) {
         if(isOtherSkinColor)
-            styleInfluencer = RandomCoatOtherSkinInfluencer(female);
+            styleInfluencer = RandomCoatOtherSkinInfluencer(female,true);
         else
-            styleInfluencer = RandomCoatInfluencer(female);
+            styleInfluencer = RandomCoatInfluencer(female,true);
     } else if (isFemaleShirt) {
         styleInfluencer = RandomFemaleShirtInfluencer();
+    } else if (isSkirt) {
+        //Fall through without changing the styleInfluencer
+        //Shirt influencer should match the pants influencer for skirts so the full thing matches
     } else {
         // for shirts we might be able to pull from male shirts too
         styleInfluencer = RandomUniSexNonCoatInfluencer(female, isOtherSkinColor);

@@ -2060,6 +2060,54 @@ function bool DropMarbles(string viewer)
     return True;
 }
 
+function string RandomSpamDatacubeText(String viewer)
+{
+    switch(Rand(19)){
+        case 0:   return "Enlarge your Dragon Tooth!  Contact "$viewer$" Corp. for more details on how YOU can gain 4 inches TODAY!";
+        case 1:   return "You've won the Gray Death vaccine lottery!  As thanks for signing up for more information on any vaccine news, you have won 1000 credits!  For more details, please send your full name, date of birth, occupation, drivers license, and 5000 credits to "$viewer$"!";
+        case 2:   return "Your NYCNet account has violated security policies and will be deleted in three (3) days!  If you would like to keep your account, please send a picture of your ID as well as your mothers maiden name to "$viewer$" to prove your innocence.  Revalidating your account will cost a minimum fee of 12000 credits.";
+        case 3:   return "Please update your payment details.  Your account with Classic Movies is missing information and may be locked if not provided within one (1) week.  Please respond to "$viewer$" for more details.";
+        case 4:   return "You have been been selected as the lucky winner of the Nuka Cola online draw!  Contact "$viewer$" for more information on how to claim your lifetime supply.|n|n|n|n(Lifetime is defined as 1 year under current conditions)";
+        case 5:   return "Register for YOUR opportunity to receive the Gray Death vaccine NOW!  Don't miss your shot, this is a first-come, first-served offer!  Send your information to "$viewer$" to get in line RIGHT NOW!";
+        case 6:   return "You are a FOOL!|n|n-"$viewer;
+        case 7:   return "ICARUS HAS FOUND YOU... And wants to offer you an exclusive vacation offer to visit beautiful Paris!  Please contact your closest MJ12 associate ("$viewer$") to set up your vacation today!";
+        case 8:   return "Your package from "$viewer$" has been delivered to the 'Ton Hotel!  Please come to pick it up promptly, as it may be returned otherwise.  This package requires a payment of 7500 credits before being handed off.";
+        case 9:   return "I have been watching and recording you through your Infolink and I know EVERYTHING that you've done.  If you want to keep this information private from your brother, Paul, you will need to send 400 PageCoins to the digital wallet held under the name "$viewer$".  If you do not pay within three (3) days, these videos will be sent to Paul.";
+        case 10:  return "Free guitar lessons!  Please contact "$viewer$" to set up a lesson today!";
+        case 11:  return "Lost dog!|n|nHave you seen my dog?  They might respond to the name "$viewer$" but honestly I never did much training, so no guarantees!  Help PLEASE!";
+        case 12:  return "15% off all drinks at the Underworld Tavern!  Tell the bartender "$viewer$" sent you!";
+        case 13:  return "Do you want to be your own boss?  Do you want to have additional revenue streams?  Do you want to grow your own business?  Attend a presentation this weekend by "$viewer$" to learn about the amazing possibilities!";
+        case 14:  return "Wow, Crowd Control sure is neat!  At least, "$viewer$" certainly seems to think so!";
+        case 15:  return "Mechanical augmentations got you down?  Need your latest dose of neuropozyne but don't have the credits to get it?  Buy cheap Nu-Poz from the Canadian "$viewer$" Online Pharmacy today!  Prices are less than half what you might pay in your local pharmacy!";
+        case 16:  return "Hi.  I want to offer promotion of your channel, viewers, followers, views, chat bots.  The price is lower than any competitor, the quality is guaranteed to be the best."$"  Auto-in.  Incredibly flexible and convenient order management panel, everything is in your hands, turn it on/off/customize.  Go to "$viewer$" dot com";
+        case 17:  return "Hi, this is "$viewer$".  It seems you are a beginner.  I can improve the appearance of your channel with awesome ideas that would give your channel a professional look."$"  I have been a professional artist and graphic designer for over a decade, and designed my own graphics for said stream";
+        case 18:  return "We've been trying to reach you concerning your vehicle's extended warranty.  You should've received a notice in the mail about your car's extended warranty eligibility."$"  Since we've not gotten a response, we're giving you a final courtesy datacube before we close out your file.  Please contact "$viewer$" to learn more about possibly extending or reinstating your vehicle's warranty.";
+    }
+
+    return "SOMEHOW FAILED TO GENERATE SPAM MESSAGE FOR "$viewer$" SO ENJOY THIS COMPLIMENTARY ERROR DATACUBE INSTEAD";
+}
+
+function bool SpamDatacubes(String viewer)
+{
+    local int num,i;
+    local #var(injectsprefix)InformationDevices dc;
+
+    for (i=0;i<5;i++){
+        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer));
+        if (dc!=None){
+            ccLink.ccModule.GlowUp(dc);
+            num++;
+        }
+    }
+    if (num==0){
+        return False;
+    }
+
+    PlayerMessage(viewer@"dropped off "$num$" advertising datacubes!");
+
+    return True;
+}
+
 
 
 function SplitString(string src, string divider, out string parts[8])
@@ -2957,6 +3005,15 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (!DropMarbles(viewer)){
+                return TempFail;
+            }
+            break;
+
+        case "spam_datacubes":
+            if (!InGame()){
+                return TempFail;
+            }
+            if (!SpamDatacubes(viewer)){
                 return TempFail;
             }
             break;

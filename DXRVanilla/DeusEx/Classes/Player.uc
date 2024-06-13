@@ -1538,7 +1538,7 @@ event PlayerInput( float DeltaTime )
 {
     if (!InConversation()) {
         if(bAutorun) {
-            if(aBaseY == 0 || autorunTime > Level.TimeSeconds-0.5) {
+            if(aBaseY == 0 || autorunTime > Level.TimeSeconds-1) {
                 aBaseY = 3000;
             } else {
                 bAutorun = false;
@@ -1551,6 +1551,15 @@ event PlayerInput( float DeltaTime )
 exec function RemoveBeltItem()
 {
     RemoveObjectFromBelt(InHand);
+}
+
+exec function AllSkillPoints()
+{
+    if (!bCheatsEnabled)
+        return;
+
+    SkillPointsTotal = 999999;
+    SkillPointsAvail = 999999;
 }
 
 
