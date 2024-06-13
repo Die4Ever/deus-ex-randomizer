@@ -193,6 +193,9 @@ function EnableButtons()
             } else {
                 if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None || DeusExWeapon(inv) != None) {
                     btnUse.DisableWindow();
+                } else if (AugmentationCannister(inv) != None) {
+                    btnRefusal.DisableWindow();
+                    btnUse.DisableWindow();
                 } else {
                     if ((inv == player.inHand ) || (inv == player.inHandPending))
                         btnEquip.SetButtonText(UnequipButtonLabel);
