@@ -15,7 +15,7 @@ function PlayerLogin(#var(PlayerPawn) p)
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
 
-    StartMapSpecificFlags(p, p.flagbase, dxr.flags.settings.starting_map);
+    PreFirstEntryStartMapFixes(p, p.flagbase, dxr.flags.settings.starting_map);
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -38,6 +38,10 @@ function PreFirstEntry()
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
+
+    if(IsStartMap()) {
+        PreFirstEntryStartMapFixes(p, p.flagbase, dxr.flags.settings.starting_map);
+    }
 
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
@@ -86,7 +90,7 @@ function PreFirstEntry()
 function PostFirstEntry()
 {
     if(IsStartMap()) {
-        StartMapSpecificFlags(player(), dxr.flagbase, dxr.flags.settings.starting_map);
+        PostFirstEntryStartMapFixes(player(), dxr.flagbase, dxr.flags.settings.starting_map);
     }
 }
 
@@ -477,7 +481,7 @@ function MarkConvPlayed(string flagname, bool bFemale)
     }
 }
 
-function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
+function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local bool bEmptyNotes, bFemale;
 
@@ -588,8 +592,6 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             MarkConvPlayed("MeetHelios", bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('MS_TongAppeared',true,,-1);              // We can get you into Sector 3 -- but no further.
             GivePlayerImage(player, class'Image15_Area51_Sector3');
-            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
-            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios', true);
             // fallthrough
         case 152:
             MarkConvPlayed("DL_Final_Page02", bFemale);         // Barely a scratch.
@@ -598,7 +600,6 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             MarkConvPlayed("M15MeetEverett", bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             flagbase.SetBool('MS_EverettAppeared',true,,-1);
             AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
-            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett', true);
             // fallthrough
         case 151:
             MarkConvPlayed("DL_tong1", bFemale);                // Here's a satellite image of the damage from the missile.
@@ -614,6 +615,19 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             MarkConvPlayed("DL_Bunker_blastdoor", bFemale);     // The schematics show an elevator to the west, but utility power is down.
             MarkConvPlayed("DL_blastdoor_shut", bFemale);       // These blast doors are the reason I don't have to worry about nukes -- or you.
             GivePlayerImage(player, class'Image15_Area51Bunker');
+            break;
+    }
+}
+
+function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
+{
+    switch(start_flag) {
+        case 153:
+            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
+            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios', true);
+            //fallthrough
+        case 152:
+            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett', true);
             break;
     }
 }
@@ -759,7 +773,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             // This goal is impossible with a 50+ start because he is then always alive
             return start_map>=50 || end_mission < 6;
         case "MetSmuggler":
-            return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
+            return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see PreFirstEntryStartMapFixes)
         case "KnowsGuntherKillphrase":
             if (end_mission < 12){
                 return True;
