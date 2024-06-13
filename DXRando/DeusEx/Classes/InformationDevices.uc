@@ -51,6 +51,10 @@ function int Crc()
 function MarkTextRead(name ttextTag)
 {
     local DXREvents e;
+
+    //Disable lights on the information device so you know you've read it
+    LightType=LT_None;
+
     foreach AllActors(class'DXREvents', e) {
         e.ReadText(ttextTag);
     }
