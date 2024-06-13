@@ -621,6 +621,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.equipment += 1;
         // speedrunners, please install augs
         moresettings.empty_medbots *= 1.5;
+        // realtime menus
+        settings.menus_pause = 0;
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;
