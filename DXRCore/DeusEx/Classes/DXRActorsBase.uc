@@ -815,30 +815,29 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function string GetGoalTextStatic(name goalName, Conversation con, optional int which)
+static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
 
-    if (con == None || goalName == '' || which < 0) return "";
+    if (con == None || goalName == '' || which < 0) return None;
 
     for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
         ceag = ConEventAddGoal(ce);
         if (ceag != None && ceag.goalName == goalName) {
             if (which == 0) // keep looping until we find the version of the goal we want
-                return ceag.goalText;
+                return ceag;
             which--;
         }
     }
 
-    return "";
+    return None;
 }
 
-function string GetGoalText(name goalName, name conversationName, optional int which)
+function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which)
 {
-    return GetGoalTextStatic(goalName, GetConversation(conversationName), which);
+    return GetGoalConEventStatic(goalName, GetConversation(convname), which);
 }
-
 
 static function string GetActorName(Actor a)
 {
@@ -1664,16 +1663,18 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
     return true;
 }
 
-function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, bool primary, optional int which)
+function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which)
 {
     local DeusExGoal goal;
+    local ConEventAddGoal ceag;
 
     goal = player.FindGoal(goaltag);
 
     if (goal == None) {
-        goal = player.AddGoal(goaltag, primary);
-        if(goal == None) return None;
-        goal.SetText(GetGoalText(goaltag, convname, which));
+        ceag = GetGoalConEvent(goaltag, convname, which);
+        if (ceag == None) return None;
+        goal = player.AddGoal(goaltag, ceag.bPrimaryGoal);
+        goal.SetText(ceag.goalText);
     }
 
     return goal;
