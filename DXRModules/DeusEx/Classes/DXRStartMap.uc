@@ -592,6 +592,16 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 81:
             flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
             break;
+
+        case 105:
+            GivePlayerImage(player, class'Image10_Paris_CatacombsTunnels');
+            break;
+        case 106:
+        case 109:
+            GivePlayerImage(player, class'Image10_Paris_CatacombsTunnels');
+            GivePlayerImage(player, class'Image10_Paris_Metro');
+            break;
+
         case 115:
             flagbase.SetBool('templar_upload',true,,-1);
             flagbase.SetBool('GuntherHermann_Dead',true,,-1);
@@ -659,6 +669,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
         case 37:
             AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
+            break;
 
         case 62:
         case 63:
@@ -697,6 +708,19 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             }
             break;
 
+        case 101:
+            AddGoalFromConv(player, 'FindSilhouette', 'DL_paris_10_start');
+            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            break;
+        case 105:
+        case 106:
+            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            AddGoalFromConv(player, 'FindNicolette', 'DL_tunnels_down');
+            break;
+        case 109:
+            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            AddGoalFromConv(player, 'FindEverett', 'NicoletteOutside');
+            break;
 
         case 153:
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
