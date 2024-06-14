@@ -551,10 +551,18 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_LebedevKill_Played", bFemale);
             break;
 
+        case 41:
+            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley', true);
+            break;
+        case 43:
+            AddGoalFromConv(player, 'CheckOnPaul', 'DL_JockParkStart', true);
+            break;
         case 45:
-            MarkConvPlayed("PaulInjured", bFemale);
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
             flagbase.SetBool('GatesOpen',true,,5);
+            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured', true);
+            MarkConvPlayed("PaulInjured", bFemale);
+            GivePlayerImage(player, class'Image04_NSFHeadquarters');
             break;
 
         case 75:
@@ -573,11 +581,14 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             AddNote(player, bEmptyNotes, "Luminous Path door-code: 1997.");
             flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
+            MarkConvPlayed("Gate_Guard2", bFemale);
+            MarkConvPlayed("MeetMaxChen", bFemale);
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
             MarkConvPlayed("DL_Tong_00", bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
             break;
+
         case 81:
             flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
             break;
@@ -646,6 +657,32 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
         case 37:
             AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill', true);
+
+        case 62:
+        case 63:
+        case 64:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05', true);
+            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05', true);
+            break;
+        case 65:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05', true);
+            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05', true);
+            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00', true);
+            break;
+        case 66:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05', true);
+            break;
+        case 67:
+        case 68:
+            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2', true);
+            break;
+        case 70:
+            AddGoalFromConv(player, 'ReportToTong', 'TriadCeremony', true);
+            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony', false);
+            break;
+        case 75:
+            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony', false);
+            break;
 
         case 153:
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
