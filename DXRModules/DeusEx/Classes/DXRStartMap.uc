@@ -552,15 +552,15 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
 
         case 41:
-            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley', true);
+            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
             break;
         case 43:
-            AddGoalFromConv(player, 'CheckOnPaul', 'DL_JockParkStart', true);
+            AddGoalFromConv(player, 'CheckOnPaul', 'DL_JockParkStart');
             break;
         case 45:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
             flagbase.SetBool('GatesOpen',true,,5);
-            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured', true);
+            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
             MarkConvPlayed("PaulInjured", bFemale);
             GivePlayerImage(player, class'Image04_NSFHeadquarters');
             break;
@@ -645,45 +645,45 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 
     switch(start_flag) {
         case 21:
-            AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete', true);
+            AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete');
             break;
 
         case 31:
-            AddGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack', true);
+            AddGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack');
             break;
         case 32:
         case 33:
         case 34:
         case 35:
-            AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02', true);
+            AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
             break;
         case 37:
-            AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill', true);
+            AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
 
         case 62:
         case 63:
         case 64:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05', true);
-            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05', true);
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
             break;
         case 65:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05', true);
-            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05', true);
-            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00', true);
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
+            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00');
             break;
         case 66:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05', true);
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
             break;
         case 67:
         case 68:
-            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2', true);
+            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2');
             break;
         case 70:
-            AddGoalFromConv(player, 'ReportToTong', 'TriadCeremony', true);
-            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony', false);
+            AddGoalFromConv(player, 'ReportToTong', 'TriadCeremony');
+            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 75:
-            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony', false);
+            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
 
         case 90:
