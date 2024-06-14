@@ -641,6 +641,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
+    local DeusExGoal goal;
+
     switch(start_flag) {
         case 21:
             AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete', true);
@@ -683,6 +685,18 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 75:
             AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony', false);
             break;
+
+        case 90:
+        case 91:
+        case 92:
+        case 95:
+            // the conversation that gives you this goal is in M08, and it says "PCS" instead of "PRCS"
+            if (player.FindGoal('ScuttleShip') == None) {
+                goal = player.AddGoal('ScuttleShip', true);
+                goal.SetText("Scuttle the PRCS Wall Cloud by destroying the 5 tri-hull welds with explosives and by reversing the bilge-pump flow.  Pumping water into the bilges will destabilize the ship's weight distribution and cause the hull to split open.");
+            }
+            break;
+
 
         case 153:
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
