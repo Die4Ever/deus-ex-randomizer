@@ -141,9 +141,9 @@ function AddMissionGoals()
     //The MeetPaul conversation would normally give you several goals.
     //Give them manually instead of via that conversation.
     p = player();
-    AddGoalFromConv(p, 'DefeatNSFCommandCenter', 'MeetPaul', true);
-    AddGoalFromConv(p, 'RescueAgent', 'MeetPaul', false);
-    AddGoalFromConv(p, 'MeetFilben', 'MeetPaul', false);
+    AddGoalFromConv(p, 'DefeatNSFCommandCenter', 'MeetPaul');
+    AddGoalFromConv(p, 'RescueAgent', 'MeetPaul');
+    AddGoalFromConv(p, 'MeetFilben', 'MeetPaul');
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)

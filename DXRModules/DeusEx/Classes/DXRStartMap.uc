@@ -623,11 +623,11 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 {
     switch(start_flag) {
         case 153:
-            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong', true);
-            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios', true);
+            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
+            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
             //fallthrough
         case 152:
-            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett', true);
+            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
             break;
     }
 }
