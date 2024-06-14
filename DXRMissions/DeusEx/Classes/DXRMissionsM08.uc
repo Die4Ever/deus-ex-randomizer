@@ -143,10 +143,16 @@ function String PickSurveillanceVanName()
 
 function MissionTimer()
 {
+    local DeusExGoal goal;
+
     switch(dxr.localURL)
     {
     case "08_NYC_STREET":
         UpdateGoalWithRandoInfo('FindHarleyFilben', "Harley could be anywhere in Hell's Kitchen");
+        goal = player().FindGoal('ScuttleShip');
+        if (goal != None) {
+            goal.SetText(ReplaceText(goal.text, "PCS", "PRCS"));
+        }
         break;
     }
 
