@@ -118,6 +118,9 @@ function string ReplaceVariables(string s)
     t = player.TruePlayerName;
     s = f.ReplaceText(s, "%playername", t);
 
+    t = f.GameModeName(f.gamemode);
+    s = f.ReplaceText(s, "%gamemode", t);
+
     return s;
 }
 
@@ -128,7 +131,7 @@ function InitStats(DXRStats newstats)
 
     stats = newstats;
 
-    if(stats == None || !stats.dxr.flags.IsSpeedrunMode()) {
+    if(stats == None || stats.dxr.flags.moresettings.splits_overlay == 0) {
         Hide();
         return;
     }
@@ -647,7 +650,7 @@ defaultproperties
     colorBestAhead=(R=216,G=175,B=31,A=255)
 
     title="Deus Ex Randomizer"
-    subtitle="%version %difficulty Speedrun"
+    subtitle="%version %difficulty %gamemode"
     footer=""
 
     split_names(1)="Liberty Island"

@@ -180,6 +180,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
 
@@ -253,6 +254,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
 #ifdef hx
@@ -325,6 +327,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
 #ifdef hx
@@ -397,6 +400,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
 #ifdef hx
@@ -469,6 +473,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -623,6 +628,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         moresettings.empty_medbots *= 1.5;
         // realtime menus
         settings.menus_pause = 0;
+        // splits overlay
+        moresettings.splits_overlay = 1;
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;

@@ -84,6 +84,10 @@ function BindControls(optional string action)
     EnumOption("Fixed Camera", 2, f.moresettings.camera_mode);
 #endif
 
+    NewMenuItem("Splits Overlay", "Splits and total game time overlay");
+    EnumOption("Don't Show", 0, f.moresettings.splits_overlay);
+    EnumOption("Show", 1, f.moresettings.splits_overlay);
+
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win.");
