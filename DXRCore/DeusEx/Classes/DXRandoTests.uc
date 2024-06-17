@@ -24,6 +24,11 @@ function PostBeginPlay()
     local PlayerPawn p;
     local string error, localURL;
 
+#ifdef playersonly
+    log("ERROR: can't run tests in playersonly mode!");
+    ConsoleCommand("Exit");
+#endif
+
     SetTimer(0, false);
 
     foreach AllActors(class'DXRando', dxr) { break; }
