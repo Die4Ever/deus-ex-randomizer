@@ -30,7 +30,7 @@ function Landed(vector HitNormal)
 
     if (Velocity.Z <= -200)
     {
-        soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 500);
+        soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 900);
     }
 }
 
@@ -72,7 +72,7 @@ simulated function Tick(float deltaTime)
         }
         currentSong=JUST_BROKEN_PIANO;
         PlayDoneTime = 1.0 + Level.TimeSeconds;
-        soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 500);
+        soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 900);
         message = GetSongMessage(sound'MaxPaynePianoJustBroke');
     }
 }
@@ -325,7 +325,7 @@ function Frob(actor Frobber, Inventory frobWith)
         message = GetSongMessage(SelectedSound);
     }
 
-    soundHandle = PlaySound(SelectedSound, SLOT_Misc,5.0,, 500);
+    soundHandle = PlaySound(SelectedSound, SLOT_Misc,5.0,, 900);
     bUsing = True;
 
     duration = FMax(duration-0.5, 1);// some leniency
