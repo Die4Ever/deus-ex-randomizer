@@ -2443,7 +2443,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "09_NYC_DOCKYARD--796967769":
             return "Find Jenny's number (867-5309) somewhere in the outer area of the Brooklyn Naval Yards on a datacube.";
         case "JacobsShadow":
-            msg="Read enough chapters of Jacob's Shadow.";
+            msg="Read enough chapters of Jacob's Shadow.  ";
             if (mission<=2){
                 msg=msg$"There is a chapter in the MJ12 sewer base in Hell's Kitchen.";
             } else if (mission<=3){
