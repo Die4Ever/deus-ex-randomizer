@@ -342,6 +342,7 @@ function AnyEntryMapFixes()
     local bool RevisionMaps;
     local bool VanillaMaps;
     local Mover door;
+    local ConEventSpeech ces;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -402,6 +403,10 @@ function AnyEntryMapFixes()
                 door.DoOpen();
             }
         }
+
+        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "...");
+        if (ces != None)
+            ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
 
         break;
     }
