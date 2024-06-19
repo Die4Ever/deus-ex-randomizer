@@ -53,6 +53,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
+    local Vector loc;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -176,6 +177,16 @@ function PreFirstEntryMapFixes()
             ft.FlagName='NSFSignalSent';
             ft.flagValue=True;
             ft.Event='UNATCOHatesPlayer';
+
+            foreach AllActors(class'Teleporter', tel) {
+                if (tel.event == 'FromNSFHQ') {
+                    loc = tel.Location;
+                    loc.z -= 40.0;
+                    tel.SetLocation(loc);
+                    tel.SetCollisionSize(tel.CollisionRadius, tel.CollisionHeight + 40.0);
+                    break;
+                }
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
             class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
