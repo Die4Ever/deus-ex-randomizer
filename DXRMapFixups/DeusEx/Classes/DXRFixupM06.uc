@@ -638,6 +638,16 @@ function PreFirstEntryMapFixes()
             bt.Destroy();
         }
 
+        //The ramp can just be frobbed normally (unintentional, presumably, since it isn't highlightable either)
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'FloodDoor08'){
+            //Really make sure the randomizer knows you shouldn't be able to interact with it
+            m.bFrobbable=False;
+            m.bHighlight=False;
+            m.bIsDoor=False;
+            m.bLocked=False;
+            m.bBreakable=False;
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers
         Spawn(class'PlaceholderItem',,, vectm(1169,-1490,459)); //Water pool
