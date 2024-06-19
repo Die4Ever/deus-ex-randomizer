@@ -82,6 +82,12 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            foreach AllActors(class'#var(prefix)Teleporter',t){
+                if (t.URL=="09_NYC_Dockyard#ToDockyardSewer"){
+                    t.SetCollisionSize(80,80); //bigger, so you can't sneak past
+                }
+            }
+
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-738,-1412,-474));//Near sewer grate
             rg.MaxCount=1;
 
