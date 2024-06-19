@@ -39,6 +39,7 @@ function PreFirstEntryMapFixes()
     local string botName;
     local int securityBotNum, militaryBotNum;
     local #var(prefix)DataCube dc;
+    local #var(prefix)Teleporter t;
 
     local bool VanillaMaps;
 
@@ -264,6 +265,12 @@ function PreFirstEntryMapFixes()
                 if(dc.TextTag=='14_Datacube06'){
                     dc.SetLocation(vectm(4169,407,-1540));
                     break;
+                }
+            }
+
+            foreach AllActors(class'#var(prefix)Teleporter',t){
+                if (t.URL=="14_OceanLab_UC.dx #UC"){
+                    t.SetCollisionSize(t.CollisionRadius,150); //Taller so you can't jump over
                 }
             }
 

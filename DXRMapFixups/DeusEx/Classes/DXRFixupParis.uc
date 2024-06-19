@@ -19,6 +19,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BlackHelicopter jock;
     local bool VanillaMaps;
     local FlagTrigger ft;
+    local #var(prefix)Teleporter tele;
     local Businesswoman1 bw;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -188,6 +189,15 @@ function PreFirstEntryMapFixes()
         //game with non-standard damage (10 instead of 5).  It doesn't need it.
         foreach AllActors(class'#var(prefix)AutoTurret',at,'vault_turret'){
             at.gunDamage=class'#var(prefix)AutoTurret'.Default.gunDamage;
+        }
+
+        if (VanillaMaps){
+            foreach AllActors(class'#var(prefix)Teleporter',tele){
+                if (tele.URL=="11_Paris_Underground#Paris_Underground"){
+                    tele.SetCollisionSize(tele.CollisionRadius,120); //Twice as tall, so you can't crouch under
+                }
+
+            }
         }
         break;
     case "11_PARIS_EVERETT":
