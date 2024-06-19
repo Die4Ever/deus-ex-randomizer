@@ -57,6 +57,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
+    local WaterCooler wc;
+    local Rotator rot;
     local int i;
 
     local bool VanillaMaps;
@@ -588,6 +590,15 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if (VanillaMaps) {
+            foreach RadiusActors(class'WaterCooler', wc, 1.0, vectm(-1000.329651, 155.701721, 201.670242)) {
+                // this water cooler faces the wall normally
+                rot = wc.Rotation;
+                rot.yaw += 32768;
+                wc.SetRotation(rot);
+                break;
+            }
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
@@ -597,6 +608,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(607.54,1629.1,460.3)); //3rd floor back cube
         Spawn(class'PlaceholderItem',,, vectm(-914.38,255.5,458.3)); //3rd floor breakroom table
         Spawn(class'PlaceholderItem',,, vectm(-836.9,850.3,-9.7)); //Reception desk back
+
         break;
 
     case "06_HONGKONG_STORAGE":
