@@ -242,6 +242,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Terrorist t;
 
     switch(dxr.localURL) {
+    case "03_NYC_MOLEPEOPLE":
+        Spawn(class'ExtinguishFireTrigger',,, vectm(0.0, -528.0, 18.0)).SetCollisionSize(60.0, 10.0); // mole people water
+        break;
+
     case "03_NYC_AIRFIELDHELIBASE":
         foreach AllActors(class'FlagTrigger',ft){// probably ambrosia
             if (ft.Name=='FlagTrigger0'){
