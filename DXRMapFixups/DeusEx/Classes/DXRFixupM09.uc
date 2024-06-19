@@ -214,6 +214,12 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
 
             AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
+
+            foreach RadiusActors(class'Teleporter', t, 1.0, vectm(2239.068115, 6495.949707, -246.996796)) {
+                // if you hug the wall, you can squeeze past the sewer teleporter
+                t.SetCollisionSize(100.0, t.CollisionHeight);
+                break;
+            }
         }
 
         //They put the key ID in the tag for some reason
