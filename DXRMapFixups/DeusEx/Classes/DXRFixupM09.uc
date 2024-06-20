@@ -215,10 +215,12 @@ function PreFirstEntryMapFixes()
 
             AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
 
-            foreach RadiusActors(class'Teleporter', t, 1.0, vectm(2239.068115, 6495.949707, -246.996796)) {
+            foreach AllActors(class'Teleporter', t) {
                 // if you hug the wall, you can squeeze past the sewer teleporter
-                t.SetCollisionSize(100.0, t.CollisionHeight);
-                break;
+                if (t.url == "09_NYC_Ship#FromDockyardSewer") {
+                    t.SetCollisionSize(80.0, t.CollisionHeight);
+                    break;
+                }
             }
         }
 
