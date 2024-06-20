@@ -179,7 +179,7 @@ function PreFirstEntryMapFixes()
             ft.Event='UNATCOHatesPlayer';
 
             foreach AllActors(class'Teleporter', tel) {
-                if (tel.event == 'FromNSFHQ') {
+                if (tel.url == "04_NYC_Street#FromNSFHQ") {
                     loc = tel.Location;
                     loc.z -= 40.0;
                     tel.SetLocation(loc);
