@@ -326,6 +326,10 @@ function PreFirstEntryMapFixes()
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
         hoverHint.SetBaseActor(jock);
 
+        if (#defined(vanilla)) {
+            dxr.dxInfo.startupMessage[0] = "New York City, Lower East Side Cemetery"; // fix "cemetery" misspelling
+        }
+
         break;
     }
 }
