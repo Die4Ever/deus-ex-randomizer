@@ -181,6 +181,11 @@ function PreFirstEntryMapFixes()
             //CreateAnsweringMachineConversation(tad);
             //tad.ConBindEvents();
 
+            foreach RadiusActors(class'DeusExMover', d, 1.0, vectm(-304.0, -3000.0, 64.0)) {
+                // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
+                d.InterpolateTo(1, 0.0);
+                break;
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
