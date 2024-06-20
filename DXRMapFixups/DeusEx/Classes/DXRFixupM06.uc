@@ -57,6 +57,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
+    local MJ12Commando commando;
     local int i;
 
     local bool VanillaMaps;
@@ -636,6 +637,12 @@ function PreFirstEntryMapFixes()
             lt.bDynamicLight = bt.bDynamicLight;
             lt.bIsOn = bt.bIsOn;
             bt.Destroy();
+        }
+
+        foreach AllActors(class'MJ12Commando', commando) {
+            if (commando.BarkBindName == "MJ12 Commando" || commando.BarkBindName == "") {
+                commando.BarkBindName = "MJ12Commando";
+            }
         }
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
