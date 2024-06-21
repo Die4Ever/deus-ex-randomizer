@@ -22,7 +22,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Keypad2 k;
     local Button1 b;
     local WeaponGasGrenade gas;
-    local Teleporter t;
+    local #var(prefix)Teleporter t;
     local BlockPlayer bp;
     local DynamicBlockPlayer dbp;
     local #var(prefix)OrdersTrigger ord;
@@ -165,7 +165,7 @@ function PreFirstEntryMapFixes()
             }
 
             //Remove the stupid gas grenades that are past the level exit
-            foreach AllActors(class'Teleporter',t){
+            foreach AllActors(class'#var(prefix)Teleporter',t){
                 if (t.Tag=='ToAbove') break;
             }
             gas = WeaponGasGrenade(findNearestToActor(class'WeaponGasGrenade',t));
