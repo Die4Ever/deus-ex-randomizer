@@ -1,6 +1,7 @@
 class BingoTile extends ButtonWindow;
 
 var int progress, max;
+var string event;
 var string helpText;
 var int missions;
 var int bActiveMission;// -1==impossible, 0==false, 1==maybe, 2==true
@@ -80,6 +81,7 @@ event DrawWindow(GC gc)
 
 simulated function SetHelpText(string event, int mission, bool FemJC)
 {
+    self.event = event;
     helpText = class'DXREvents'.static.GetBingoGoalHelpText(event,mission,FemJC);
 }
 
