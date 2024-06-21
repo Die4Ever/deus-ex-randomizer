@@ -48,6 +48,10 @@ static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 {
     if( p.bImportant || p.bIsSecretGoal ) return;
 
+    if (p.UnfamiliarName == "woman") {
+        p.UnfamiliarName = "Woman";
+    }
+
     if ( // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
         p.bindName == "SickBum1" ||
         p.bindName == "BarWoman1" ||
@@ -69,7 +73,9 @@ static function GiveRandomName(DXRando dxr, ScriptedPawn p)
         (p.FamiliarName != p.UnfamiliarName && Right(p.tag, 6) == "_clone") // don't give clones the same famiiliar name
     ) {
         p.FamiliarName = RandomName(dxr);
-    } else if (p.FamiliarName == p.UnfamiliarName) { // assume at this point that familiar/unfamiliar names aren't real names if they're the same
+    } else if (p.FamiliarName == p.UnfamiliarName) {
+        // assume at this point that familiar/unfamiliar names aren't real names if they're the same
+        // it looks tempting to only change the familiar name, but barks tend to cause the name to go from familiar to unfamiliar almost instantly
         p.UnfamiliarName = RandomName(dxr);
         p.FamiliarName = p.UnfamiliarName;
     }
