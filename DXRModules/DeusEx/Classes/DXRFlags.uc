@@ -34,7 +34,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     p.bReducedRando = IsReducedRando();
 #endif
 
-    if(!VersionIsStable())
+    if(!VersionIsStable() || #defined(debug))
         p.bCheatsEnabled = true;
 
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
