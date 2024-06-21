@@ -282,3 +282,17 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.actors[1].a = Spawnm(class'MahoganyDesk',,,Loc.positions[1].pos, Loc.positions[1].rot);
     }
 }
+
+function AnyEntry()
+{
+    local ConEventSpeech ces;
+
+    switch (dxr.localURL) {
+    case "06_HONGKONG_STORAGE":
+        if (IsAprilFools()) {
+            ces = GetSpeechEvent(GetConversation('DL_Tong_06').eventList, "... tracking down this Dowd connection");
+            ces.conSpeech.speech = "... tracking down this Dowd connection.  Illuminati fingerprints all over the sterics -- I'm talking about the molecule's shape: 17 segments, 48 coupling points... Only Illuminati technicians use sleeve bearings with 34-fold and 96-fold symmetry: "$"multiples of 17 and 48.  1748.  The birth of Adam Weishaupt.  Not a coincidence.";
+        }
+        break;
+    }
+}
