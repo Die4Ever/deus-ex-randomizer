@@ -76,6 +76,7 @@ function PreFirstEntryMapFixes_Bunker()
     local OnceOnlyTrigger oot;
     local Trigger trig;
     local #var(prefix)RatGenerator rg;
+    local Vector loc;
 
     if (dxr.flags.settings.starting_map < 151) {
         player().DeleteAllGoals();
@@ -115,10 +116,11 @@ function PreFirstEntryMapFixes_Bunker()
             break;
         }
     }
-    //Lock the fan entrance top door
     foreach AllActors(class'DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Bunker_Fan'){ break;}
     }
+
+    //Lock the fan entrance top door
     d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
     d.bLocked=True;
     d.bBreakable=True;
@@ -127,6 +129,12 @@ function PreFirstEntryMapFixes_Bunker()
     d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
     d.minDamageThreshold=25;
     d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
+
+    //Make Page tell you to jump even if you enter the fan entrance through the hatch
+    loc = dlt.Location;
+    loc.z -= 1 00.0;
+    dlt.SetLocation(loc);
+    dlt.SetCollisionSize(dlt.CollisionRadius, dlt.CollisionHeight + 100.0);
 
     //Make it only possible to turn the power on, make it impossible to turn the power off again
     foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
