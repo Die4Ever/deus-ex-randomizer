@@ -63,6 +63,20 @@ function Trigger(Actor Other,Pawn Instigator)
     GenerateWeaponChoice();
 }
 
+function ConChoice CreateConChoiceCopy(Conversation c, ConChoice sourceChoice) {
+    local ConChoice newChoice;
+
+    newChoice = new(c) class'ConChoice';
+    newChoice.choiceText = sourceChoice.choiceText;
+    newChoice.choiceLabel = sourceChoice.choiceLabel;
+    newChoice.bDisplayAsSpeech = sourceChoice.bDisplayAsSpeech;
+    newChoice.soundID = sourceChoice.soundID;
+    newChoice.skillNeeded = sourceChoice.skillNeeded;
+    newChoice.skillLevelNeeded = sourceChoice.skillLevelNeeded;
+
+    return newChoice;
+}
+
 function GenerateWeaponChoice();
 
 defaultproperties

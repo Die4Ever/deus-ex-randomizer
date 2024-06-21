@@ -1,36 +1,43 @@
 class GuntherWeaponMegaChoice extends WeaponMegaChoice;
 
+var bool bHasWeaponAssaultGun,bHasWeaponStealthPistol,bHasWeaponPistol,bHasWeaponCombatKnife;
+
 function GenerateWeaponChoice()
 {
     local Conversation c;
     local ConEvent ce, insertPoint;
     local ConEventChoice megaChoiceEv,choiceEv;
     local ConChoice assaultChoice,stealthChoice,pistolChoice,knifeChoice,nothingChoice,noHelpChoice,choiceIter;
-    local int numChoices;
+
+    // Check for weapons in inventory only once, and store the result in a variable
+    bHasWeaponAssaultGun    = p.FindInventoryType(class'WeaponAssaultGun') != None;
+    bHasWeaponStealthPistol = p.FindInventoryType(class'WeaponStealthPistol') != None;
+    bHasWeaponPistol        = p.FindInventoryType(class'WeaponPistol') != None;
+    bHasWeaponCombatKnife   = p.FindInventoryType(class'WeaponCombatKnife') != None;
 
     c = GetConversation(convoName);
     ce = c.eventList;
 
     while (ce!=None){
-        if (ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject && insertPoint==None){
+        if (insertPoint==None && ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject){
             insertPoint=ce;
         } else if (ce.eventType==ET_Choice){
             choiceEv = ConEventChoice(ce);
             if (choiceEv.ChoiceList!=None){
                 choiceIter=choiceEv.ChoiceList;
                 while(choiceIter!=None){
-                    if (InStr(choiceIter.choiceText,"assault gun")!=-1){
-                        assaultChoice = choiceIter;
-                    } else if (InStr(choiceIter.choiceText,"stealth pistol")!=-1){
-                        stealthChoice = choiceIter;
-                    } else if (InStr(choiceIter.choiceText,"Take my pistol")!=-1){
-                        pistolChoice = choiceIter;
-                    } else if (InStr(choiceIter.choiceText,"Take my knife")!=-1){
-                        knifeChoice = choiceIter;
-                    } else if (InStr(choiceIter.choiceText,"not very well armed")!=-1){
-                        nothingChoice = choiceIter;
-                    } else if (InStr(choiceIter.choiceText,"handle the enemy")!=-1){
-                        noHelpChoice = choiceIter;
+                    if (assaultChoice == None && InStr(choiceIter.choiceText,"Take my assault gun")!=-1){
+                        assaultChoice = CreateConChoiceCopy(c, choiceIter);
+                    } else if (stealthChoice == None && InStr(choiceIter.choiceText,"Take my stealth pistol")!=-1){
+                        stealthChoice = CreateConChoiceCopy(c, choiceIter);
+                    } else if (pistolChoice == None && InStr(choiceIter.choiceText,"Take my pistol")!=-1){
+                        pistolChoice = CreateConChoiceCopy(c, choiceIter);
+                    } else if (knifeChoice == None && InStr(choiceIter.choiceText,"Take my knife")!=-1){
+                        knifeChoice = CreateConChoiceCopy(c, choiceIter);
+                    } else if (nothingChoice == None && InStr(choiceIter.choiceText,"not very well armed")!=-1){
+                        nothingChoice = CreateConChoiceCopy(c, choiceIter);
+                    } else if (noHelpChoice == None && InStr(choiceIter.choiceText,"handle the enemy")!=-1){
+                        noHelpChoice = CreateConChoiceCopy(c, choiceIter);
                     }
                     choiceIter=choiceIter.nextChoice;
                 }
@@ -63,35 +70,29 @@ function GenerateWeaponChoice()
     megaChoiceEv.bClearScreen = true;
     megaChoiceEv.label="megachoice";
 
-    numChoices = 0;
-    megaChoiceEv.ChoiceList = None;
-    if (p.FindInventoryType(class'WeaponAssaultGun')!=None){
-        assaultChoice.nextChoice=megaChoiceEv.ChoiceList;
-        megaChoiceEv.ChoiceList = assaultChoice;
-        numChoices++;
-    }
-    if (p.FindInventoryType(class'WeaponPistol')!=None){
-        pistolChoice.nextChoice=megaChoiceEv.ChoiceList;
-        megaChoiceEv.ChoiceList = pistolChoice;
-        numChoices++;
-    }
-    if (p.FindInventoryType(class'WeaponStealthPistol')!=None){
-        stealthChoice.nextChoice=megaChoiceEv.ChoiceList;
-        megaChoiceEv.ChoiceList = stealthChoice;
-        numChoices++;
-    }
-    if (p.FindInventoryType(class'WeaponCombatKnife')!=None){
+    // Start with noHelpChoice at the end of the chain, then work backwards through the other choices
+    megaChoiceEv.ChoiceList = noHelpChoice;
+
+    if (bHasWeaponCombatKnife){
         knifeChoice.nextChoice=megaChoiceEv.ChoiceList;
         megaChoiceEv.ChoiceList = knifeChoice;
-        numChoices++;
     }
-    if (numChoices==0){
+    if (bHasWeaponPistol){
+        pistolChoice.nextChoice=megaChoiceEv.ChoiceList;
+        megaChoiceEv.ChoiceList = pistolChoice;
+    }
+    if (bHasWeaponStealthPistol){
+        stealthChoice.nextChoice=megaChoiceEv.ChoiceList;
+        megaChoiceEv.ChoiceList = stealthChoice;
+    }
+    if (bHasWeaponAssaultGun){
+        assaultChoice.nextChoice=megaChoiceEv.ChoiceList;
+        megaChoiceEv.ChoiceList = assaultChoice;
+    }
+    if (megaChoiceEv.ChoiceList == noHelpChoice){
         nothingChoice.nextChoice=megaChoiceEv.ChoiceList;
         megaChoiceEv.ChoiceList = nothingChoice;
     }
-
-    noHelpChoice.nextChoice=megaChoiceEv.ChoiceList;
-    megaChoiceEv.ChoiceList = noHelpChoice;
 }
 
 defaultproperties
