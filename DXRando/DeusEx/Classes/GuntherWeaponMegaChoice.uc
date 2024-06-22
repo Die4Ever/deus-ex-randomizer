@@ -1,5 +1,15 @@
 class GuntherWeaponMegaChoice extends WeaponMegaChoice;
 
+var bool bHasWeaponAssaultGun,bHasWeaponStealthPistol,bHasWeaponPistol,bHasWeaponCombatKnife;
+
+function GetWeapons()
+{
+    bHasWeaponPistol=(p.FindInventoryType(class'WeaponPistol')!=None);
+    bHasWeaponStealthPistol=(p.FindInventoryType(class'WeaponStealthPistol')!=None);
+    bHasWeaponAssaultGun=(p.FindInventoryType(class'WeaponAssaultGun')!=None);
+    bHasWeaponCombatKnife=(p.FindInventoryType(class'WeaponCombatKnife')!=None);
+}
+
 function GenerateWeaponChoice()
 {
     local Conversation c;
@@ -12,7 +22,7 @@ function GenerateWeaponChoice()
     ce = c.eventList;
 
     while (ce!=None){
-        if (ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject && insertPoint==None){
+        if (insertPoint==None && ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject){
             insertPoint=ce;
         } else if (ce.eventType==ET_Choice){
             choiceEv = ConEventChoice(ce);
@@ -55,6 +65,10 @@ function GenerateWeaponChoice()
         return;
     }
 
+    if (assaultChoice.flagRef!=None || stealthChoice.flagRef!=None || pistolChoice.flagRef!=None || knifeChoice.flagRef!=None){
+        log("GuntherWeaponMegaChoice found a flag ref on at least one of the conversation options...  You must have a conversation altering mod installed? Confix?");
+    }
+
     megaChoiceEv = new(c) class'ConEventChoice';
     megaChoiceEv.eventType=ET_Choice;
     megaChoiceEv.nextEvent = insertPoint.nextEvent;
@@ -65,23 +79,30 @@ function GenerateWeaponChoice()
 
     numChoices = 0;
     megaChoiceEv.ChoiceList = None;
-    if (p.FindInventoryType(class'WeaponAssaultGun')!=None){
+
+    //Confix adds flagrefs to the weapon choices, so just remove any flagrefs if they exist.
+    //Should at least make them work.
+    if (bHasWeaponAssaultGun){
         assaultChoice.nextChoice=megaChoiceEv.ChoiceList;
+        assaultChoice.flagRef=None;
         megaChoiceEv.ChoiceList = assaultChoice;
         numChoices++;
     }
-    if (p.FindInventoryType(class'WeaponPistol')!=None){
+    if (bHasWeaponPistol){
         pistolChoice.nextChoice=megaChoiceEv.ChoiceList;
+        pistolChoice.flagRef=None;
         megaChoiceEv.ChoiceList = pistolChoice;
         numChoices++;
     }
-    if (p.FindInventoryType(class'WeaponStealthPistol')!=None){
+    if (bHasWeaponStealthPistol){
         stealthChoice.nextChoice=megaChoiceEv.ChoiceList;
+        stealthChoice.flagRef=None;
         megaChoiceEv.ChoiceList = stealthChoice;
         numChoices++;
     }
-    if (p.FindInventoryType(class'WeaponCombatKnife')!=None){
+    if (bHasWeaponCombatKnife){
         knifeChoice.nextChoice=megaChoiceEv.ChoiceList;
+        knifeChoice.flagRef=None;
         megaChoiceEv.ChoiceList = knifeChoice;
         numChoices++;
     }
