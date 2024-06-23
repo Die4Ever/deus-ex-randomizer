@@ -101,7 +101,7 @@ function PreFirstEntryMapFixes()
                 SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
             }
 
-            foreach RadiusActors(class'DeusExMover', door, 1.0, vectm(-304.0, -3000.0, 64.0)) {
+            foreach RadiusActors(class'#var(DeusExPrefix)Mover', door, 1.0, vectm(-304.0, -3000.0, 64.0)) {
                 // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
                 door.InterpolateTo(1, 0.0);
                 break;
