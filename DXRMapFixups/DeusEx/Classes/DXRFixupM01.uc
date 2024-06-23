@@ -32,6 +32,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)NYPoliceBoat b;
     local #var(prefix)HarleyFilben harley;
+    local #var(prefix)GuntherHermann gunther;
     local #var(prefix)HumanCivilian hc;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -60,6 +61,14 @@ function PreFirstEntryMapFixes()
         }
 
         class'GuntherWeaponMegaChoice'.static.Create(Player());
+        foreach AllActors(class'#var(prefix)GuntherHermann',gunther){
+            //Make sure he has ammo for Assault Rifle (7.62mm), Stealth Pistol(10mm), Pistol (10mm)
+            GiveItem(gunther, class'Ammo762mm');
+            GiveItem(gunther, class'Ammo762mm',300);
+            GiveItem(gunther, class'Ammo10mm');
+            GiveItem(gunther, class'Ammo10mm',150);
+            break;
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship

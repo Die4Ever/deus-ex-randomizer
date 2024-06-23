@@ -44,6 +44,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)GuntherHermann gunther;
+    local #var(prefix)GilbertRenton gilbert;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local OnceOnlyTrigger oot;
@@ -81,6 +82,17 @@ function PreFirstEntryMapFixes()
         }
 #endif
         class'GilbertWeaponMegaChoice'.static.Create(Player());
+        foreach AllActors(class'#var(prefix)GilbertRenton',gilbert){
+            //Make sure he has ammo for Stealth Pistol(10mm), Pistol (10mm),
+            //Sawed-off (Buckshot shells), Mini Crossbow (Tranq Darts)
+            GiveItem(gilbert, class'AmmoShell');
+            GiveItem(gilbert, class'AmmoShell',20);
+            GiveItem(gilbert, class'Ammo10mm');
+            GiveItem(gilbert, class'Ammo10mm',20);
+            GiveItem(gilbert, class'AmmoDartPoison');
+            GiveItem(gilbert, class'AmmoDartPoison',20);
+            break;
+        }
 
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
