@@ -146,14 +146,15 @@ simulated function bool NearWallCheck()
         if (!bNearWall &&
             IsAnimating() &&
             (AnimSequence=='Attack' || AnimSequence=='Attack2' || AnimSequence=='Attack3' ) &&
+            (AnimFrame < 0.7) && //Grenade spawns at the 0.7 point (#805) - this is in the AllWeapons.uc file
             (GetStateName() == 'NormalFire'))
         {
             //The throw animation is about to be canceled by a place animation.
             //Ammo gets consumed at the start of the animation, but the projectile is only spawned
-            //when the animation completely finishes.  If it is interrupted, the projectile won't
-            //be spawned.  The animation can be easily canceled if you get near a wall and the
-            //grenade PlaceBegin and PlaceEnd animations play.  We need to catch that to fix
-            //issue #519
+            //when the animation completely finishes (Just kidding, #805 proves it spawns at the 0.7 AnimFrame).
+            //If it is interrupted, the projectile won't be spawned.  The animation can be easily
+            //canceled if you get near a wall and the grenade PlaceBegin and PlaceEnd animations play.
+            //We need to catch that to fix issue #519
 
             AmmoType.AddAmmo(1); //Give the ammo back
             bDestroyOnFinish=False; //Make sure it isn't destroyed afterwards
