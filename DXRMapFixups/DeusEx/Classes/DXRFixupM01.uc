@@ -63,9 +63,7 @@ function PreFirstEntryMapFixes()
         class'GuntherWeaponMegaChoice'.static.Create(Player());
         foreach AllActors(class'#var(prefix)GuntherHermann',gunther){
             //Make sure he has ammo for Assault Rifle (7.62mm), Stealth Pistol(10mm), Pistol (10mm)
-            GiveItem(gunther, class'Ammo762mm');
             GiveItem(gunther, class'Ammo762mm',300);
-            GiveItem(gunther, class'Ammo10mm');
             GiveItem(gunther, class'Ammo10mm',150);
             break;
         }
