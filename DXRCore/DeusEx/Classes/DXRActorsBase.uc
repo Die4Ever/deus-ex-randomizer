@@ -256,6 +256,9 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
                 player.UpdateAmmoBeltText(a);
             item.Destroy();
             return a;
+        } else {
+            //Make sure the extra ammo is included even if the pawn doesn't have it already
+            Ammo(item).AmmoAmount += add_ammo;
         }
     }
 

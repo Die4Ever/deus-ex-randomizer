@@ -85,11 +85,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)GilbertRenton',gilbert){
             //Make sure he has ammo for Stealth Pistol(10mm), Pistol (10mm),
             //Sawed-off (Buckshot shells), Mini Crossbow (Tranq Darts)
-            GiveItem(gilbert, class'AmmoShell');
             GiveItem(gilbert, class'AmmoShell',20);
-            GiveItem(gilbert, class'Ammo10mm');
             GiveItem(gilbert, class'Ammo10mm',20);
-            GiveItem(gilbert, class'AmmoDartPoison');
             GiveItem(gilbert, class'AmmoDartPoison',20);
             break;
         }
