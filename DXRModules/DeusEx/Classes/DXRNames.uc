@@ -44,30 +44,43 @@ function FirstEntry()
     }
 }
 
+static function bool HasRealFamiliarName(ScriptedPawn p){
+    if (p==None){
+        return True; //Just get outta here
+    }
+
+    // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
+    switch (p.BindName){
+        case "SickBum1":
+        case "BarWoman1":
+        case "SubHostageMale":
+        case "LDDPBatParkOldBum":
+        case "SickBum1":
+        case "ClinicSickWoman":
+        case "LDDPHotelAddict":
+        case "StreetBum4":
+        case "LDDPStreetLoser":
+        case "LDDPBatPark2NiceBum":
+        case "Canal_Merchant":
+        case "DrinkingWoman":
+        case "DrinkingMan":
+        case "Ray": // Everett's mechanic. Maybe change his FamiliarName to Ray instead of randomizing it?
+        case "FemaleHostage":
+        case "MaleHostage":
+        case "MallGuard":
+            return False;
+        default:
+            //Clones who have a different familiar/unfamiliar name should still get randomized names
+            return !(p.FamiliarName != p.UnfamiliarName && Right(p.tag, 6) == "_clone");
+    }
+    return True;
+}
+
 static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 {
     if( p.bImportant || p.bIsSecretGoal ) return;
 
-    if ( // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
-        p.bindName == "SickBum1" ||
-        p.bindName == "BarWoman1" ||
-        p.bindName == "SubHostageMale" ||
-        p.bindName == "LDDPBatParkOldBum" ||
-        p.bindName == "SickBum1" ||
-        p.bindName == "ClinicSickWoman" ||
-        p.bindName == "LDDPHotelAddict" ||
-        p.bindName == "StreetBum4" ||
-        p.bindName == "LDDPStreetLoser" ||
-        p.bindName == "LDDPBatPark2NiceBum" ||
-        p.bindName == "Canal_Merchant" ||
-        p.bindName == "DrinkingWoman" ||
-        p.bindName == "DrinkingMan" ||
-        p.bindName == "Ray" || // Everett's mechanic. Maybe change his FamiliarName to Ray instead of randomizing it?
-        p.bindname == "FemaleHostage" ||
-        p.bindname == "MaleHostage" ||
-        p.bindname == "MallGuard" ||
-        (p.FamiliarName != p.UnfamiliarName && Right(p.tag, 6) == "_clone") // don't give clones the same famiiliar name
-    ) {
+    if (!HasRealFamiliarName(p)) { // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
         p.FamiliarName = RandomName(dxr,p);
     } else if (p.FamiliarName == p.UnfamiliarName) { // assume at this point that familiar/unfamiliar names aren't real names if they're the same
         p.UnfamiliarName = RandomName(dxr,p);
