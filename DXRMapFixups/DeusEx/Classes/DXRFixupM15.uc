@@ -352,6 +352,7 @@ function PreFirstEntryMapFixes_Page()
     local #var(prefix)FlagTrigger ft;
     local vector cloneCubeLoc[4];
     local string cloneCubeText[4];
+    local #var(DeusExPrefix)Mover door;
 
     foreach AllActors(class'ComputerSecurity', c) {
         if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
@@ -418,6 +419,10 @@ function PreFirstEntryMapFixes_Page()
         }
     }
 
+    foreach AllActors(class'DeusExMover', door, 'GreyDoors') {
+        // don't let the player close the set of double doors to the gray room
+        door.bFrobbable = false;
+    }
 }
 
 function PreFirstEntryMapFixes()
