@@ -20,13 +20,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     local int lastUpdate, i;
     local class<Pawn> jcd;
     Super.PlayerAnyEntry(p);
+
+    isFemale = dxr.flagbase.GetBool('LDDPJCIsFemale');
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
-    isFemale = false;
-    //if( Level.Game.Class.Name == 'JCDentonFemaleGameInfo' ) {
-    if( dxr.flagbase.GetBool('LDDPJCIsFemale') ) {
-        isFemale = true;
-        //dxr.flagbase.SetBool('LDDPJCIsFemale', true,, 999);
+    if(isFemale) {
         info("DXRFashion isFemale, Level.Game.Class.Name == " $ Level.Game.Class.Name);
     }
 
