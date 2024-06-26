@@ -257,11 +257,21 @@ function Frob(Actor Frobber, Inventory frobWith)
 function bool TryLootItem(DeusExPlayer player, Inventory item)
 {
     local DeusExPickup invItem;
-    local int itemCount, newAmmoAmmout, ammoAddedAmount;
+    local int itemCount, newAmmoAmmout, ammoAddedAmount, action;
     local Weapon weap;
     local Ammo playerAmmo;
 
-    if (class'DXRLoadouts'.static.IsRefused(item.class)) {
+    action = class'DXRLoadouts'.static.GetLootAction(item.class);
+
+    if (action == 2 && DeusExPickup(item) != None) {
+        if (player.health != player.default.health || (player.energy != player.default.energy && HealingItem(item) != None)) {
+            DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
+            Human(player).Consume(DeusExPickup(item));
+            return true;
+        }
+    }
+
+    if (action > 0) { // drop
         weap = Weapon(item);
         if (weap != None && weap.AmmoName != class'AmmoNone') {
             playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));

@@ -49,11 +49,11 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_BarrelTextures');
     CreateChoice(class'MenuChoice_DecoPickupBehaviour');
     CreateChoice(class'MenuChoice_AutoLamps');
-    CreateChoice(class'MenuChoice_RefuseUseless');
-    CreateChoice(class'MenuChoice_FoodSoda');
-    CreateChoice(class'MenuChoice_Alcohol');
-    CreateChoice(class'MenuChoice_RefuseMelee');
-    CreateChoice(class'MenuChoice_RefuseMisc');
+    CreateChoice(class'MenuChoice_LootActionUseless');
+    CreateChoice(class'MenuChoice_LootActionFoodSoda');
+    CreateChoice(class'MenuChoice_LootActionAlcohol');
+    CreateChoice(class'MenuChoice_LootActionMelee');
+    CreateChoice(class'MenuChoice_LootActionMisc');
 #endif
 
     CreateChoice(class'MenuChoice_PasswordAutofill');

@@ -516,33 +516,39 @@ function bool CanInstantLeftClick(DeusExPickup item)
     return true;
 }
 
+function Consume(DeusExPickup item)
+{
+    local Actor A;
+    local int i;
+
+    foreach item.BasedActors(class'Actor', A)
+        A.SetBase(None);
+    // So that any effects get applied to you
+    item.SetOwner(self);
+    item.SetBase(self);
+    // add to the player's inventory, so ChargedPickups travel across maps
+    item.BecomeItem();
+    item.bDisplayableInv = false;
+    item.Inventory = Inventory;
+    Inventory = item;
+    if(FireExtinguisher(item) != None) {
+        // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
+        item.NumCopies = 1;
+    }
+    for(i=item.NumCopies; i > 0; i--) {
+        item.Activate();
+    }
+}
+
 exec function ParseLeftClick()
 {
     local DeusExPickup item;
-    local Actor A;
-    local int i;
 
     Super.ParseLeftClick();
     item = DeusExPickup(FrobTarget);
     if (item != None && CanInstantLeftClick(item))
     {
-        foreach item.BasedActors(class'Actor', A)
-            A.SetBase(None);
-        // So that any effects get applied to you
-        item.SetOwner(self);
-        item.SetBase(self);
-        // add to the player's inventory, so ChargedPickups travel across maps
-        item.BecomeItem();
-        item.bDisplayableInv = false;
-        item.Inventory = Inventory;
-        Inventory = item;
-        if(FireExtinguisher(item) != None) {
-            // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
-            item.NumCopies = 1;
-        }
-        for(i=item.NumCopies; i > 0; i--) {
-            item.Activate();
-        }
+        Consume(item);
         FrobTarget = None;
     }
 }
@@ -1662,44 +1668,6 @@ exec function Tcl() // toggle clipping, name borrowed from Gamebryo
 exec function PlayerLoc()
 {
     ClientMessage("Player location: (" $ Location.x $ ", " $ Location.y $ ", " $ Location.z $ ")");
-}
-
-exec function ShowRefused()
-{
-    local string refusals, msg;
-    local int idx;
-
-    refusals = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("item_refusals");
-
-    // basically just adds a space after every comma
-    while (Len(refusals) > 1) {
-        refusals = Right(refusals, Len(refusals) - 1);
-        idx = InStr(refusals, ",");
-        msg = msg $ Left(refusals, idx) $ ", ";
-        refusals = Right(refusals, Len(refusals) - idx);
-    }
-    msg = Left(msg, Len(msg) - 2);
-
-    ClientMessage("Refused items: " $ msg);
-}
-
-exec function ShowAutoconsumed()
-{
-    local string autoconsumed, msg;
-    local int idx;
-
-    autoconsumed = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("autoconsumed");
-
-    // basically just adds a space after every comma
-    while (Len(autoconsumed) > 1) {
-        autoconsumed = Right(autoconsumed, Len(autoconsumed) - 1);
-        idx = InStr(autoconsumed, ",");
-        msg = msg $ Left(autoconsumed, idx) $ ", ";
-        autoconsumed = Right(autoconsumed, Len(autoconsumed) - idx);
-    }
-    msg = Left(msg, Len(msg) - 2);
-
-    ClientMessage("Autoconsumed items: " $ msg);
 }
 
 

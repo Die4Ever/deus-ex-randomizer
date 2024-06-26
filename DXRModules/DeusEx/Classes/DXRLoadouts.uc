@@ -478,11 +478,11 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
 
     RandoStartingEquipment(p, false);
 #ifdef injections
-    class'MenuChoice_RefuseUseless'.static.SetRefusals();
-    class'MenuChoice_FoodSoda'.static.SetRefusals();
-    class'MenuChoice_Alcohol'.static.SetRefusals();
-    class'MenuChoice_RefuseMelee'.static.SetRefusals();
-    class'MenuChoice_RefuseMisc'.static.SetRefusals();
+    class'MenuChoice_LootActionUseless'.static.SetActions();
+    class'MenuChoice_LootActionFoodSoda'.static.SetActions();
+    class'MenuChoice_LootActionAlcohol'.static.SetActions();
+    class'MenuChoice_LootActionMelee'.static.SetActions();
+    class'MenuChoice_LootActionMisc'.static.SetActions();
 #endif
 }
 
@@ -697,110 +697,23 @@ function SpawnItems()
         reducer.Timer();
 }
 
-static function bool IsRefused(class<Inventory> type, optional out int strIdx)
+static function int GetLootAction(class<Inventory> itemClass, optional DataStorage storage)
 {
-    local DataStorage datastorage;
-    local string refusals;
+    if (storage == None)
+        storage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    return Int(storage.GetConfigKey("LootAction_" $ itemClass.name));
+}
 
-    if (type == None) {
-        return false;
+static function SetLootAction(class<Inventory> itemClass, int action, optional DataStorage storage)
+{
+    if (storage == None) {
+        storage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     }
 
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    refusals = datastorage.GetConfigKey("item_refusals");
-    if(refusals == "") {
-        return false;
+    if (GetLootAction(itemClass, storage) != action) {
+        log("Setting " $ itemClass.name $ " loot action to: " $ action);
+        storage.SetConfig("LootAction_" $ itemClass.name, action, 3600*24*366);
     }
-    strIdx = InStr(refusals, "," $ type.name $ ",");
-    return strIdx != -1;
-}
-
-static function UnsetRefuseItem(class<Inventory> type)
-{
-    local DataStorage datastorage;
-    local string refusals, leftPart, rightPart;
-    local int strIdx;
-
-    if (!IsRefused(type, strIdx))
-        return;
-
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    refusals = datastorage.GetConfigKey("item_refusals");
-    leftPart = Left(refusals, strIdx);
-    rightPart = Right(refusals, Len(refusals) - (strIdx + Len(type.name) + 1));
-    refusals = leftPart $ rightPart;
-
-    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
-}
-
-static function SetRefuseItem(class<Inventory> type)
-{
-    local DataStorage datastorage;
-    local string refusals;
-
-    if (IsRefused(type))
-        return;
-
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    refusals = datastorage.GetConfigKey("item_refusals");
-
-    if (refusals == "") refusals = ",";
-    refusals = refusals $ type.name $ ",";
-
-    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
-}
-
-static function bool IsAutoconsumed(class<DeusExPickup> type, optional out int strIdx)
-{
-    local DataStorage datastorage;
-    local string autoconsumed;
-
-    if (type == None) {
-        return false;
-    }
-
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    autoconsumed = datastorage.GetConfigKey("autoconsumed");
-    if(autoconsumed == "") {
-        return false;
-    }
-    strIdx = InStr(autoconsumed, "," $ type.name $ ",");
-    return strIdx != -1;
-}
-
-static function UnsetAutoconsumedItem(class<DeusExPickup> type)
-{
-    local DataStorage datastorage;
-    local string autoconsumed, leftPart, rightPart;
-    local int strIdx;
-
-    if (!IsAutoconsumed(type, strIdx))
-        return;
-
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    autoconsumed = datastorage.GetConfigKey("autoconsumed");
-    leftPart = Left(autoconsumed, strIdx);
-    rightPart = Right(autoconsumed, Len(autoconsumed) - (strIdx + Len(type.name) + 1));
-    autoconsumed = leftPart $ rightPart;
-
-    datastorage.SetConfig("autoconsumed", autoconsumed, 3600*24*366);
-}
-
-static function SetAutoconsumedItem(class<DeusExPickup> type)
-{
-    local DataStorage datastorage;
-    local string autoconsumed;
-
-    if (IsAutoconsumed(type))
-        return;
-
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    autoconsumed = datastorage.GetConfigKey("autoconsumed");
-
-    if (autoconsumed == "") autoconsumed = ",";
-    autoconsumed = autoconsumed $ type.name $ ",";
-
-    datastorage.SetConfig("autoconsumed", autoconsumed, 3600*24*366);
 }
 
 function RunTests()

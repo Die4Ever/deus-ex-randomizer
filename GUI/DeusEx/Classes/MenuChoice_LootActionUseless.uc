@@ -1,4 +1,4 @@
-class MenuChoice_RefuseUseless extends MenuChoice_ItemRefusal;
+class MenuChoice_LootActionUseless extends MenuChoice_LootAction;
 #compileif injections
 
 defaultproperties
@@ -8,6 +8,6 @@ defaultproperties
     HelpText="Should cigarettes and zyme be included in the list of Junk items that get dropped when looting a body?"
     actionText="Cigarettes and Zyme"
 
-    refusedItems(0)=class'Cigarettes'
-    refusedItems(1)=class'VialCrack'
+    itemClasses(0)=class'Cigarettes'
+    itemClasses(1)=class'VialCrack'
 }
