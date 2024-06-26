@@ -3,12 +3,8 @@ class MenuChoice_RefuseMelee extends MenuChoice_ItemRefusal;
 
 defaultproperties
 {
-    enabled=False
-    defaultvalue=False
     HelpText="Should melee weapons be included in the list of Junk items that get dropped when looting a body?"
-    actionText="Drop Melee Weapons"
-    enumText(0)="Don't Drop"
-    enumText(1)="Drop"
+    actionText="Melee Weapons"
 
     refusedItems(0)=class'WeaponCombatKnife'
     refusedItems(1)=class'WeaponCrowbar'

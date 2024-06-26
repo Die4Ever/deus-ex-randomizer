@@ -1683,6 +1683,25 @@ exec function ShowRefused()
     ClientMessage("Refused items: " $ msg);
 }
 
+exec function ShowAutoconsumed()
+{
+    local string autoconsumed, msg;
+    local int idx;
+
+    autoconsumed = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("autoconsumed");
+
+    // basically just adds a space after every comma
+    while (Len(autoconsumed) > 1) {
+        autoconsumed = Right(autoconsumed, Len(autoconsumed) - 1);
+        idx = InStr(autoconsumed, ",");
+        msg = msg $ Left(autoconsumed, idx) $ ", ";
+        autoconsumed = Right(autoconsumed, Len(autoconsumed) - idx);
+    }
+    msg = Left(msg, Len(msg) - 2);
+
+    ClientMessage("Autoconsumed items: " $ msg);
+}
+
 
 // ----------------------------------------------------------------------
 // InvokeUIScreen()

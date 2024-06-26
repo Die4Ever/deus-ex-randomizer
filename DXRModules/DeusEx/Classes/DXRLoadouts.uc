@@ -479,7 +479,8 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     RandoStartingEquipment(p, false);
 #ifdef injections
     class'MenuChoice_RefuseUseless'.static.SetRefusals();
-    class'MenuChoice_RefuseFoodDrink'.static.SetRefusals();
+    class'MenuChoice_FoodSoda'.static.SetRefusals();
+    class'MenuChoice_Alcohol'.static.SetRefusals();
     class'MenuChoice_RefuseMelee'.static.SetRefusals();
     class'MenuChoice_RefuseMisc'.static.SetRefusals();
 #endif
@@ -701,6 +702,10 @@ static function bool IsRefused(class<Inventory> type, optional out int strIdx)
     local DataStorage datastorage;
     local string refusals;
 
+    if (type == None) {
+        return false;
+    }
+
     datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     refusals = datastorage.GetConfigKey("item_refusals");
     if(refusals == "") {
@@ -743,6 +748,59 @@ static function SetRefuseItem(class<Inventory> type)
     refusals = refusals $ type.name $ ",";
 
     datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
+}
+
+static function bool IsAutoconsumed(class<DeusExPickup> type, optional out int strIdx)
+{
+    local DataStorage datastorage;
+    local string autoconsumed;
+
+    if (type == None) {
+        return false;
+    }
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    autoconsumed = datastorage.GetConfigKey("autoconsumed");
+    if(autoconsumed == "") {
+        return false;
+    }
+    strIdx = InStr(autoconsumed, "," $ type.name $ ",");
+    return strIdx != -1;
+}
+
+static function UnsetAutoconsumedItem(class<DeusExPickup> type)
+{
+    local DataStorage datastorage;
+    local string autoconsumed, leftPart, rightPart;
+    local int strIdx;
+
+    if (!IsAutoconsumed(type, strIdx))
+        return;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    autoconsumed = datastorage.GetConfigKey("autoconsumed");
+    leftPart = Left(autoconsumed, strIdx);
+    rightPart = Right(autoconsumed, Len(autoconsumed) - (strIdx + Len(type.name) + 1));
+    autoconsumed = leftPart $ rightPart;
+
+    datastorage.SetConfig("autoconsumed", autoconsumed, 3600*24*366);
+}
+
+static function SetAutoconsumedItem(class<DeusExPickup> type)
+{
+    local DataStorage datastorage;
+    local string autoconsumed;
+
+    if (IsAutoconsumed(type))
+        return;
+
+    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    autoconsumed = datastorage.GetConfigKey("autoconsumed");
+
+    if (autoconsumed == "") autoconsumed = ",";
+    autoconsumed = autoconsumed $ type.name $ ",";
+
+    datastorage.SetConfig("autoconsumed", autoconsumed, 3600*24*366);
 }
 
 function RunTests()
