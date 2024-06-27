@@ -263,12 +263,13 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     action = class'DXRLoadouts'.static.GetLootAction(item.class);
 
-    if (action == 2 && DeusExPickup(item) != None) {
-        if (player.health != player.default.health || (player.energy != player.default.energy && HealingItem(item) != None)) {
-            DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
-            Human(player).Consume(DeusExPickup(item));
-            return true;
-        }
+    if (
+        (action == 2 && DeusExPickup(item) != None) &&
+        (player.health != player.default.health || (player.energy != player.default.energy && HealingItem(item) != None))
+    ) { // consume
+        DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
+        Human(player).Consume(DeusExPickup(item));
+        return true;
     }
 
     if (action > 0) { // drop
