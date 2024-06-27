@@ -161,6 +161,10 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
 
         if (ScriptedPawn(peepee)!=None){
             class'DXREvents'.static.MarkBingo(dxr,"PawnState_"$peepee.GetStateName());
+            if (ScriptedPawn(peepee).bDancing) {
+                // a ScriptedPawn can be dancing but not in the Dancing state
+                class'DXREvents'.static.MarkBingo(dxr,"PeepDancing");
+            }
         }
 
         if (BingoTrigger(peepee)!=None){

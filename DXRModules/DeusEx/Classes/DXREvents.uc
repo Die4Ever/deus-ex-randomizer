@@ -2730,7 +2730,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Watch MJ12 Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Commando_peeptime":
             return "Watch MJ12 Commandos through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "PawnState_Dancing":
+        case "PeepDancing":
             return "Watch someone dance through a pair of binoculars or a scope.  There should be someone vibing in a bar or club.";
         case "BirdWatching":
             return "Watch birds through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
@@ -3375,7 +3375,7 @@ defaultproperties
     bingo_options(204)=(event="UNATCOTroop_peeptime",desc="Watch UNATCO Troopers for %s seconds",max=30,missions=318)
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",max=30,missions=57204)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",max=15,missions=56384)
-    bingo_options(207)=(event="PawnState_Dancing",desc="You can dance if you want to",max=1,missions=1364)
+    bingo_options(207)=(event="PeepDancing",desc="You can dance if you want to",max=1,missions=1364)
     bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",max=30,missions=19806)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
@@ -3557,7 +3557,7 @@ defaultproperties
     mutually_exclusive(35)=(e1="Binoculars_Activated",e2="MJ12Commando_peeptime")
     mutually_exclusive(36)=(e1="Binoculars_Activated",e2="NYEagleStatue_peeped")
     mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching")
-    mutually_exclusive(38)=(e1="Binoculars_Activated",e2="PawnState_Dancing")
+    mutually_exclusive(38)=(e1="Binoculars_Activated",e2="PeepDancing")
     mutually_exclusive(39)=(e1="Supervisor_Paid",e2="M06BoughtVersaLife")
     mutually_exclusive(40)=(e1="VendingMachineEmpty",e2="VendingMachineEmpty_Drink")
     mutually_exclusive(41)=(e1="VendingMachineEmpty",e2="VendingMachineDispense_Candy")
