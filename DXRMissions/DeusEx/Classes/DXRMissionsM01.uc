@@ -135,13 +135,16 @@ function MissionTimer()
 function AddMissionGoals()
 {
     local #var(PlayerPawn) p;
+    local DeusExGoal newGoal;
 
     if(dxr.localURL != "01_NYC_UNATCOISLAND") return;
 
     //The MeetPaul conversation would normally give you several goals.
     //Give them manually instead of via that conversation.
+    //Leo is not necessarily in the statue, so that goal text cannot be retrieved directly from the conversation.
     p = player();
-    AddGoalFromConv(p, 'DefeatNSFCommandCenter', 'MeetPaul');
+    newGoal=p.AddGoal('DefeatNSFCommandCenter',True);
+    newGoal.SetText("The NSF seem to be directing the attack from somewhere on the island.  Find the commander.");
     AddGoalFromConv(p, 'RescueAgent', 'MeetPaul');
     AddGoalFromConv(p, 'MeetFilben', 'MeetPaul');
 }
