@@ -220,6 +220,14 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
 
             AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
+
+            foreach AllActors(class'Teleporter', t) {
+                // if you hug the wall, you can squeeze past the sewer teleporter
+                if (t.url == "09_NYC_Ship#FromDockyardSewer") {
+                    t.SetCollisionSize(80.0, t.CollisionHeight);
+                    break;
+                }
+            }
         }
 
         //They put the key ID in the tag for some reason
