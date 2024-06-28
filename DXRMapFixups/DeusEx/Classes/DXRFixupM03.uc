@@ -76,6 +76,8 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
+    local AlarmUnit au;
+    local vector loc;
 
     local bool VanillaMaps;
 
@@ -251,6 +253,15 @@ function PreFirstEntryMapFixes()
 
             class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
             class'PlaceholderEnemy'.static.Create(self,vectm(2887,3410,256),,'Shitting');
+
+            foreach RadiusActors(class'AlarmUnit', au, 1.0, vectm(-1967.865112, 1858.142822, 101.505104)) {
+                // alarm inside the boat house is too high up for enemies to reach
+                loc = au.Location;
+                // loc.z = 58.946182; // height of the alarm on the outside of the boat house
+                loc.z = 80.225643; // halfway between them
+                au.SetLocation(loc);
+                break;
+            }
         }
         break;
 
