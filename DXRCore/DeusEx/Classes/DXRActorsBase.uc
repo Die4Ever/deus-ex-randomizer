@@ -441,6 +441,19 @@ function bool SkipActor(Actor a)
 function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrders)
 {
     local ScriptedPawn p;
+    local #var(prefix)Barrel1 b;
+    local Effects gen;
+
+    b = #var(prefix)Barrel1(a);
+    if (b!=None){
+        //Look for any ParticleGenerator or ProjectileGenerator that might be associated with the barrel
+        foreach b.BasedActors(class'Effects', gen){
+            if (ParticleGenerator(gen)!=None || ProjectileGenerator(gen)!=None){
+                break;
+            }
+        }
+    }
+
 
     if( ! a.SetLocation(newloc) ) return false;
 
@@ -450,6 +463,14 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         p.HomeTag = 'Start';
         p.HomeLoc = p.Location;
     }
+
+    //Move the generator as well, and make sure it's based on the barrel again
+    //(They get detached when the barrel is moved)
+    if (b!=None && gen!=None){
+        gen.SetLocation(b.Location);
+        gen.SetBase(b);
+    }
+
 
     return true;
 }
