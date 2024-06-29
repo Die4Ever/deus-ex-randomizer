@@ -191,6 +191,7 @@ function PreFirstEntryMapFixes_Final()
     local Switch2 s2;
     local SpecialEvent se;
     local DataLinkTrigger dlt;
+    local SkillAwardTrigger sat;
 
     // Generator_overload is the cover over the beat the game button used in speedruns
     foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
@@ -249,6 +250,13 @@ function PreFirstEntryMapFixes_Final()
     dlt = Spawn(class'DataLinkTrigger',,,vectm(-3988,1215,-1542));
     dlt.SetCollisionSize(200,40);
     dlt.datalinkTag='DL_Final_Helios07';
+
+    foreach AllActors(class'SkillAwardTrigger',sat){
+        if (sat.awardMessage=="Critical Loctaion Bonus"){
+            sat.awardMessage="Critical Location Bonus";
+            break;
+        }
+    }
 
     Spawn(class'PlaceholderItem',,, vectm(-4185.2,-207.35,-1386)); //Helios storage room
     Spawn(class'PlaceholderItem',,, vectm(-4346.5,-1404.5,-2020)); //Storage room near sector 4 door
