@@ -352,7 +352,6 @@ function PreFirstEntryMapFixes_Page()
     local #var(prefix)FlagTrigger ft;
     local vector cloneCubeLoc[4];
     local string cloneCubeText[4];
-    local #var(DeusExPrefix)Mover door;
 
     foreach AllActors(class'ComputerSecurity', c) {
         if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
@@ -418,11 +417,6 @@ function PreFirstEntryMapFixes_Page()
             break;
         }
     }
-
-    foreach AllActors(class'DeusExMover', door, 'GreyDoors') {
-        // don't let the player close the set of double doors to the gray room
-        door.bFrobbable = false;
-    }
 }
 
 function PreFirstEntryMapFixes()
@@ -445,6 +439,19 @@ function PreFirstEntryMapFixes()
         case "15_AREA51_PAGE":
             PreFirstEntryMapFixes_Page();
             break;
+        }
+    }
+}
+
+function PostFirstEntryMapFixes()
+{
+    local #var(DeusExPrefix)Mover door;
+
+    if (class'DXRMapVariants'.static.IsVanillaMaps(player()) && dxr.localURL == "15_AREA51_PAGE") {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'GreyDoors') {
+            // don't let the player close the set of double doors to the gray room
+            door.bFrobbable = false;
+            door.bHighlight = false;
         }
     }
 }
