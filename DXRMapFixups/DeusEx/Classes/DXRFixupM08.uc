@@ -232,7 +232,7 @@ function PreFirstEntryMapFixes()
                         GlowUp(k);
                 }
 
-                foreach RadiusActors(class'DeusExMover', d, 1.0, vectm(-304.0, -3000.0, 64.0)) {
+                foreach RadiusActors(class'#var(DeusExPrefix)Mover', d, 1.0, vectm(-304.0, -3000.0, 64.0)) {
                     // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
                     d.InterpolateTo(1, 0.0);
                     break;
