@@ -132,7 +132,7 @@ function PreFirstEntryMapFixes_Bunker()
 
     //Make Page tell you to jump even if you enter the fan entrance through the hatch
     loc = dlt.Location;
-    loc.z -= 1 00.0;
+    loc.z -= 100.0;
     dlt.SetLocation(loc);
     dlt.SetCollisionSize(dlt.CollisionRadius, dlt.CollisionHeight + 100.0);
 
