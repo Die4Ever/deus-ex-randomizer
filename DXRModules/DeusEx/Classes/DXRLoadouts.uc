@@ -697,23 +697,45 @@ function SpawnItems()
         reducer.Timer();
 }
 
-static function int GetLootAction(class<Inventory> itemClass, optional DataStorage storage)
-{
+static function int GetLootAction(
+    class<Inventory> itemClass,
+    optional DataStorage storage,
+    optional out string lootActions,
+    optional out int strIdx
+) {
     if (storage == None)
         storage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    return Int(storage.GetConfigKey("LootAction_" $ itemClass.name));
+
+    lootActions = storage.GetConfigKey("loot_actions");
+    strIdx = InStr(lootActions, "," $ itemClass.name $ "=");
+    if (strIdx != -1) {
+        return Int(Mid(lootActions, strIdx + Len(itemClass.name) + 2, 1));
+    }
+    return 0;
 }
 
 static function SetLootAction(class<Inventory> itemClass, int action, optional DataStorage storage)
 {
+    local string lootActions, leftPart, rightPart;
+    local int strIdx;
+
     if (storage == None) {
         storage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
     }
-
-    if (GetLootAction(itemClass, storage) != action) {
-        log("Setting " $ itemClass.name $ " loot action to: " $ action);
-        storage.SetConfig("LootAction_" $ itemClass.name, action, 3600*24*366);
+    if (GetLootAction(itemClass, storage, lootActions, strIdx) == action) {
+        return;
     }
+
+    if (lootActions == "") {
+        lootActions = "," $ itemClass.name $ "=" $ action $ ",";
+    } else if (strIdx == -1) {
+        lootActions = lootActions $ itemClass.name $ "=" $ action $ ",";
+    } else {
+        leftPart = Left(lootActions, strIdx + Len(itemClass.name) + 2);
+        rightPart = Mid(lootActions, strIdx + Len(itemClass.name) + 3);
+        lootActions = leftPart $ action $ rightPart;
+    }
+    storage.SetConfig("loot_actions", lootActions, 3600*24*366);
 }
 
 function RunTests()

@@ -267,8 +267,10 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         (action == 2 && DeusExPickup(item) != None) &&
         (player.health != player.default.health || (player.energy != player.default.energy && HealingItem(item) != None))
     ) { // consume
+        item.SetOwner(player);
+        item.Activate();
+        DeleteInventory(item);
         DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
-        Human(player).Consume(DeusExPickup(item));
         return true;
     }
 
