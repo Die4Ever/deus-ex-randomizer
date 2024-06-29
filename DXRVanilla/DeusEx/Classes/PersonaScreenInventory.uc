@@ -1,7 +1,7 @@
 class PersonaScreenInventory injects PersonaScreenInventory;
 
 const RefuseLabel = "|&Trash";
-const AcceptLabel = "Not |&Trash";
+const AcceptLabel = "|&Not Trash";
 
 var PersonaActionButtonWindow btnRefusal;
 
