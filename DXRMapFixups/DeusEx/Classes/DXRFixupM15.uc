@@ -243,6 +243,13 @@ function PreFirstEntryMapFixes_Final()
         }
     }
 
+    //There's a trigger for this at the top of the elevator, but it has collide actors false.
+    //Easier to just spawn a new one near the elevator so you can actually hear it before
+    //the game is over.
+    dlt = Spawn(class'DataLinkTrigger',,,vectm(-3988,1215,-1542));
+    dlt.SetCollisionSize(200,40);
+    dlt.datalinkTag='DL_Final_Helios07';
+
     Spawn(class'PlaceholderItem',,, vectm(-4185.2,-207.35,-1386)); //Helios storage room
     Spawn(class'PlaceholderItem',,, vectm(-4346.5,-1404.5,-2020)); //Storage room near sector 4 door
     Spawn(class'PlaceholderItem',,, vectm(-5828.7,-412.6,-1514)); //Storage room on stairs to sector 4
