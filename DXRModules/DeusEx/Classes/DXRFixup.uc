@@ -205,6 +205,7 @@ function PreFirstEntry()
     OverwriteDecorations();
     FixFlagTriggers();
     FixBeamLaserTriggers();
+    FixAutoTurrets();
     SpawnDatacubes();
     AntiEpilepsy();
 
@@ -632,6 +633,17 @@ function FixBeamLaserTriggers()
     }
     foreach AllActors(class'#var(prefix)LaserTrigger',lt){
         lt.TriggerType=TT_AnyProximity;
+    }
+#endif
+}
+
+function FixAutoTurrets()
+{
+#ifdef fixes
+    local #var(prefix)AutoTurret at;
+    foreach AllActors(class'#var(prefix)AutoTurret',at){
+        at.gunDamage=at.Default.gunDamage; //One turret in Cathedral has non-standard damage
+        at.fireRate=at.Default.fireRate; //Make sure large and small turrets use their appropriate firerates
     }
 #endif
 }

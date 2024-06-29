@@ -178,11 +178,6 @@ function PreFirstEntryMapFixes()
                 dt.DamageType='Flamed';
             }
         }
-        //Restore default damage to this one turret.  The only one in the whole
-        //game with non-standard damage (10 instead of 5).  It doesn't need it.
-        foreach AllActors(class'#var(prefix)AutoTurret',at,'vault_turret'){
-            at.gunDamage=class'#var(prefix)AutoTurret'.Default.gunDamage;
-        }
 
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)Teleporter',tele){
