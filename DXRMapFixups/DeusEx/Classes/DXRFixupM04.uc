@@ -404,7 +404,7 @@ function AnyEntryMapFixes()
             }
         }
 
-        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "...");
+        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
         if (ces != None)
             ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
 

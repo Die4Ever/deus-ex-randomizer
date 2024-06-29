@@ -364,7 +364,7 @@ function AnyEntryMapFixes()
 
     switch (dxr.localURL) {
     case "02_NYC_STREET":
-        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "...");
+        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
         if (ces != None)
             ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
         break;
