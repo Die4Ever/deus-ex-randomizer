@@ -47,6 +47,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)GilbertRenton gilbert;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)JoJoFine jojo;
     local OnceOnlyTrigger oot;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
@@ -114,6 +115,10 @@ function PreFirstEntryMapFixes()
                 // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
                 door.InterpolateTo(1, 0.0);
                 break;
+            }
+
+            foreach AllActors(class'#var(prefix)JoJoFine',jojo){
+                jojo.BarkBindName="JoJoFine";
             }
 
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
