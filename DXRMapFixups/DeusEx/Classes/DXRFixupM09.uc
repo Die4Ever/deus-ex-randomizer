@@ -383,7 +383,13 @@ function PostFirstEntryMapFixes()
 function AnyEntryMapFixes()
 {
     local #var(DeusExPrefix)Mover m;
+    local bool RevisionMaps;
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+    local #var(prefix)AutoTurret t;
 
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     switch(dxr.localURL)
     {
     case "09_NYC_SHIP":
@@ -397,6 +403,30 @@ function AnyEntryMapFixes()
     case "09_NYC_SHIPBELOW":
         SetTimer(1, True);
         Tag = 'FanToggle';
+
+        if (!RevisionMaps){
+            foreach AllActors(class'#var(prefix)AutoTurret',t){
+                if (t.BindName=="Ops1Dummy"){
+                    t.FamiliarName="Loudspeaker";
+                    t.UnfamiliarName=t.FamiliarName;
+                    break;
+                }
+            }
+            c = GetConversation('Ops1DummyOverheard');
+            c.radiusDistance=400;
+            ce = c.eventList;
+            while (ce!=None){
+                if (ce.eventType==ET_Speech){
+                    ces = ConEventSpeech(ce);
+                    ces.speaker=t;
+                    ces.speakingTo=t; //Normally this conversation speaks to Ops2Dummy, which doesn't exist
+                }
+                ce = ce.nextEvent;
+            }
+
+        }
+
+
         break;
 
     case "09_NYC_SHIPFAN":
