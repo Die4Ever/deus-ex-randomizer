@@ -1,4 +1,4 @@
-class DXRAutoTurretSmall injects AutoTurretSmall;
+class DXRAutoTurretSmall injects #var(prefix)AutoTurretSmall;
 
 function Fire()
 {
