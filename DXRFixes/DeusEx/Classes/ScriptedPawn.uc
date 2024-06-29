@@ -231,6 +231,8 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
     // DXRando EmpHealth to disable shields
     if(damageType=='EMP') EmpHealth -= Damage;
 
+    if(EmpHealth <= 0) bHasCloak = False;
+
     // Block certain damage types; perform special ops on others
     if (!FilterDamageType(instigatedBy, hitLocation, offset, damageType))
         return;
