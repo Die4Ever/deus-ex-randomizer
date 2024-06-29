@@ -48,10 +48,6 @@ static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 {
     if( p.bImportant || p.bIsSecretGoal ) return;
 
-    if (p.UnfamiliarName == "woman") {
-        p.UnfamiliarName = "Woman";
-    }
-
     if ( // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
         p.bindName == "SickBum1" ||
         p.bindName == "BarWoman1" ||
