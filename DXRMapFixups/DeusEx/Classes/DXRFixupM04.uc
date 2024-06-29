@@ -53,7 +53,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
-    local Vector loc;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -180,9 +179,6 @@ function PreFirstEntryMapFixes()
 
             foreach AllActors(class'Teleporter', tel) {
                 if (tel.url == "04_NYC_Street#FromNSFHQ") {
-                    loc = tel.Location;
-                    loc.z -= 40.0;
-                    tel.SetLocation(loc);
                     tel.SetCollisionSize(tel.CollisionRadius, tel.CollisionHeight + 40.0);
                     break;
                 }
