@@ -128,6 +128,7 @@ simulated function Timer()
 
         if (ScriptedPawn(peepee)!=None){
             class'DXREvents'.static.MarkBingo(dxr,"PawnState_"$peepee.GetStateName());
+            class'DXREvents'.static.MarkBingo(dxr,"PawnAnim_"$peepee.AnimSequence);
         }
 
         if (BingoTrigger(peepee)!=None){
