@@ -432,7 +432,6 @@ function PreFirstEntryMapFixes_Page()
             break;
         }
     }
-
 }
 
 function PreFirstEntryMapFixes()
@@ -455,6 +454,19 @@ function PreFirstEntryMapFixes()
         case "15_AREA51_PAGE":
             PreFirstEntryMapFixes_Page();
             break;
+        }
+    }
+}
+
+function PostFirstEntryMapFixes()
+{
+    local #var(DeusExPrefix)Mover door;
+
+    if (class'DXRMapVariants'.static.IsVanillaMaps(player()) && dxr.localURL == "15_AREA51_PAGE") {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'GreyDoors') {
+            // don't let the player close the set of double doors to the gray room
+            door.bFrobbable = false;
+            door.bHighlight = false;
         }
     }
 }
