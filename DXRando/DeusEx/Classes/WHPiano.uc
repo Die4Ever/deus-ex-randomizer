@@ -1,6 +1,6 @@
 class DXRPiano injects #var(prefix)WHPiano;
 
-var int SongPlayed[38];
+var int SongPlayed[50];
 var DXRando dxr;
 
 var #var(PlayerPawn) player;
@@ -108,7 +108,9 @@ function Frob(actor Frobber, Inventory frobWith)
     if ( !PianoIsBroken() ) {
         rnd = currentSong;
         while(rnd == currentSong) {
-            rnd = Rand(46); //make sure this matches the number of sounds below
+             //make sure this matches the number of sounds below
+             //also update the length of the SongPlayed array at the top of the file
+            rnd = Rand(50);
         }
         currentSong = rnd;
         switch(currentSong){
@@ -305,6 +307,22 @@ function Frob(actor Frobber, Inventory frobWith)
                 SelectedSound = sound'REMansionBasement';
                 duration = 9;
                 break;
+            case 46:
+                SelectedSound = sound'PachelbelsCanon';
+                duration = 9;
+                break;
+            case 47:
+                SelectedSound = sound'SMRPGForestMaze';
+                duration = 5;
+                break;
+            case 48:
+                SelectedSound = sound'HKSynapse';
+                duration = 5;
+                break;
+            case 49:
+                SelectedSound = sound'ToZanarkand';
+                duration = 8;
+                break;
             default:
                 log("DXRPiano went too far this time!  Got "$currentSong);
                 return;
@@ -427,6 +445,14 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played Moonlight Sonata by Beethoven";
         case sound'REMansionBasement':
             return "You played the Basement theme from Resident Evil: Director's Cut... for some reason";
+        case sound'PachelbelsCanon':
+            return "You played Canon in D by Johann Pachelbel";
+        case sound'SMRPGForestMaze':
+            return "You played Forest Maze from Super Mario RPG";
+        case sound'HKSynapse':
+            return "You played The Synapse from Deus Ex";
+        case sound'ToZanarkand':
+            return "You played To Zanarkand from Final Fantasy X";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
