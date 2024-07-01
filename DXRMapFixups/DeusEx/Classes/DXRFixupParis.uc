@@ -13,6 +13,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)AutoTurret at;
     local #var(prefix)WIB wib;
+    local #var(prefix)MorganEverett everett;
     local DXRMapVariants mapvariants;
     local DXRHoverHint hoverHint;
     local #var(prefix)MapExit exit;
@@ -199,6 +200,12 @@ function PreFirstEntryMapFixes()
                 cs.specialOptions[1].TriggerEvent='';
                 cs.specialOptions[1].TriggerText="";
             }
+        }
+
+        foreach AllActors(class'#var(prefix)MorganEverett', everett) {
+            // Everett's vanilla BarkBindName is "Man"
+            everett.BarkBindName = "MorganEverett";
+            break;
         }
 
         //Add teleporter hint text to Jock
