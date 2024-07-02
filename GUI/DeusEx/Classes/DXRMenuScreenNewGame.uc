@@ -266,6 +266,7 @@ function GiveTip()
 
 defaultproperties
 {
+    btnLabelResetToDefaults="Restore Defaults"
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
     actionButtons(3)=(Align=HALIGN_Left,Action=AB_Other,Text="|&New Seed",Key="NEWSEED")
 }
