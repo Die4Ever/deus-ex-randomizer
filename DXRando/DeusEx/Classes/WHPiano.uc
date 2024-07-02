@@ -1,11 +1,12 @@
 class DXRPiano injects #var(prefix)WHPiano;
 
-var int SongPlayed[50];
+var int SongPlayed[53];
 var DXRando dxr;
 
 var #var(PlayerPawn) player;
 var string message;
 var int soundHandle, currentSong;
+var int numSongsPlayed;
 var float PlayDoneTime;
 var bool broken;
 #ifdef hx
@@ -22,6 +23,18 @@ function bool ValidSong(int i)
     }
 
     return True;
+}
+
+function UpdateSongCount()
+{
+    local int i;
+
+    numSongsPlayed=0;
+    for (i=0;i<ArrayCount(SongPlayed);i++){
+        if (ValidSong(i) && SongPlayed[i]!=0){
+            numSongsPlayed++;
+        }
+    }
 }
 
 function Landed(vector HitNormal)
@@ -60,6 +73,7 @@ simulated function Tick(float deltaTime)
             bUsing = False;
             message = "";
             soundHandle = 0;
+            UpdateSongCount();
         }
     }
 
@@ -110,7 +124,7 @@ function Frob(actor Frobber, Inventory frobWith)
         while(rnd == currentSong) {
              //make sure this matches the number of sounds below
              //also update the length of the SongPlayed array at the top of the file
-            rnd = Rand(50);
+            rnd = Rand(53);
         }
         currentSong = rnd;
         switch(currentSong){
@@ -249,7 +263,7 @@ function Frob(actor Frobber, Inventory frobWith)
                 break;
             case 31:
                 SelectedSound = sound'Halo';
-                duration = 11;
+                duration = 10;
                 break;
             case 32:
                 SelectedSound = sound'SH2PromiseReprise';
@@ -322,6 +336,18 @@ function Frob(actor Frobber, Inventory frobWith)
             case 49:
                 SelectedSound = sound'ToZanarkand';
                 duration = 8;
+                break;
+            case 50:
+                SelectedSound = sound'BubbleBobble';
+                duration = 8;
+                break;
+            case 51:
+                SelectedSound = sound'CruelAngelsThesis';
+                duration = 8;
+                break;
+            case 52:
+                SelectedSound = sound'ZeldaOverworld';
+                duration = 6;
                 break;
             default:
                 log("DXRPiano went too far this time!  Got "$currentSong);
@@ -453,6 +479,12 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played The Synapse from Deus Ex";
         case sound'ToZanarkand':
             return "You played To Zanarkand from Final Fantasy X";
+        case sound'BubbleBobble':
+            return "You played Quest Begins from Bubble Bobble";
+        case sound'CruelAngelsThesis':
+            return "You played A Cruel Angel's Thesis from Neon Genesis Evangelion";
+        case sound'ZeldaOverworld':
+            return "You played the Overworld theme from The Legend of Zelda";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
