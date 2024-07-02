@@ -10,7 +10,7 @@ var float PoolBallHeight;
 var int NumPoolTables, PoolTablesSunk, BallsPerTable;
 
 struct BingoOption {
-    var string event, desc;
+    var string event, desc, desc_singular;
     var int max;
     var int missions;// bit masks
 };
@@ -1190,7 +1190,6 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             i = options[slot];
             event = bingo_options[i].event;
             desc = bingo_options[i].desc;
-            desc = tweakBingoDescription(event,desc);
             missions = bingo_options[i].missions;
             masked_missions = missions & end_mission_mask; //Pre-mask the bingo endpoint
             max = bingo_options[i].max;
@@ -1201,8 +1200,14 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
                 f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
                 max = Ceil(float(max) * f);
                 max = self.Max(max, 1);
-                desc = sprintf(desc, max);
+
+                if (max == 1 && bingo_options[i].desc_singular != "") {
+                    desc = bingo_options[i].desc_singular;
+                } else {
+                    desc = sprintf(desc, max);
+                }
             }
+            desc = tweakBingoDescription(event,desc);
 
             num_options--;
             options[slot] = options[num_options];
