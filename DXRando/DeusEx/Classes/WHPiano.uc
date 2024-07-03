@@ -507,20 +507,21 @@ function int PickSongIndexOld()
     return rnd;
 }
 
-function bool SongHasExtraWeight(int songIdx)
+//How many times should a particular song be added into the possible song list
+function int GetSongWeight(int songIdx)
 {
     switch (songIdx){
         case 0: //Deus Ex theme (Bingo goal)
         case 7: //7th Guest, The Game (bingo goal)
-            return True;
+            return 5;
     }
-    return False;
+    return 1;
 }
 
 //More intelligent picking, weights less played songs more
 function int PickSongIndex()
 {
-    local int rnd, i, songPlayedAvg, numValidSongs;
+    local int rnd, i, j, songPlayedAvg, numValidSongs;
     local int validSongs[100]; //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
 
     songPlayedAvg=0;
@@ -532,10 +533,7 @@ function int PickSongIndex()
     numValidSongs=0;
     for (i=0;i<NUM_PIANO_SONGS;i++){
         if (SongPlayed[i]<=songPlayedAvg && i!=currentSong){
-            validSongs[numValidSongs++]=i;
-            if (SongHasExtraWeight(i)){
-                //Extra-weighted songs are three times more likely than others
-                validSongs[numValidSongs++]=i;
+            for (j=GetSongWeight(i);j>0;j--){
                 validSongs[numValidSongs++]=i;
             }
         }
