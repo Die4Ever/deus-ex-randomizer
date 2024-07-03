@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[53]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[54]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -256,6 +256,8 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played A Cruel Angel's Thesis from Neon Genesis Evangelion";
         case sound'ZeldaOverworld':
             return "You played the Overworld theme from The Legend of Zelda";
+        case sound'Terran1':
+            return "You played Terran Theme 1 from Starcraft";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
@@ -488,6 +490,10 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
         case 52:
             SelectedSound = sound'ZeldaOverworld';
             duration = 6;
+            break;
+        case 53:
+            SelectedSound = sound'Terran1';
+            duration = 7;
             break;
         default:
             SelectedSound = None;

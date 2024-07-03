@@ -54,6 +54,7 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\BubbleBobble.mp3"               NAME="BubbleBobble"         GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\CruelAngelsThesis.mp3"          NAME="CruelAngelsThesis"    GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\ZeldaOverworld.mp3"             NAME="ZeldaOverworld"       GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\Terran1.mp3"                    NAME="Terran1"              GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\ZAMNNoAssembly.mp3"             NAME="ZAMNNoAssembly"       GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\SA2PumpkinHill.mp3"             NAME="SA2PumpkinHill"       GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\SkeletonsInMyCloset.mp3"        NAME="SkeletonsInMyCloset"  GROUP="MemePiano"
