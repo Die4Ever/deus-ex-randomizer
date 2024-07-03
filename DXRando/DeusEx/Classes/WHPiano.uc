@@ -257,7 +257,7 @@ function string GetSongMessage(Sound SelectedSound)
         case sound'ZeldaOverworld':
             return "You played the Overworld theme from The Legend of Zelda";
         case sound'Terran1':
-            return "You played Terran Theme 1 from Starcraft";
+            return "You played Terran Theme 1 from StarCraft";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
