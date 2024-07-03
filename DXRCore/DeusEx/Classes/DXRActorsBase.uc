@@ -1594,8 +1594,18 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
-static function GlowUp(Actor a, optional byte hue, optional byte saturation)
+static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
+    local DynamicLight lt;
+
+    // if `a` is a datacube, spawn a new light instead
+    if (#var(prefix)DataCube(a) != None) {
+        lt = a.Spawn(class'DynamicLight',,, a.Location + vect(0, 0, 6.0));
+        lt.SetBase(a);
+        a = lt;
+        a.LightSaturation = 0;
+    }
+
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
     a.LightBrightness=160;
@@ -1603,6 +1613,8 @@ static function GlowUp(Actor a, optional byte hue, optional byte saturation)
     a.LightHue=hue;
     if(saturation !=0) a.LightSaturation=saturation;
     a.LightRadius=6;
+
+    return a;
 }
 
 function DebugMarkKeyActor(Actor a, coerce string id)

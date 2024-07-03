@@ -318,6 +318,22 @@ function bool Facelift(bool bOn)
 }
 #endif
 
+function Frob(actor Frobber, Inventory frobWith)
+{
+    local DynamicLight lt;
+
+    Super.Frob(Frobber, frobWith);
+
+    if (#var(prefix)DataCube(self) != None) {
+        foreach AllActors(class'DynamicLight', lt) {
+            if (lt.Base == self) {
+                lt.Destroy();
+                break;
+            }
+        }
+    }
+}
+
 defaultproperties
 {
     bInvincible=True
