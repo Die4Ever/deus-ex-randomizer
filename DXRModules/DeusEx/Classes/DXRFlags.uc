@@ -40,7 +40,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
         p.bCheatsEnabled = true;
         p.ReducedDamageType = 'All';// god mode
-        p.AllWeapons();
+        //p.AllWeapons();
         p.AllAmmo();
 
 #ifdef injections
