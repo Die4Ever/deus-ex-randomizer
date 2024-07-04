@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[54]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[64]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -241,7 +241,7 @@ function string GetSongMessage(Sound SelectedSound)
         case sound'MoonlightSonata':
             return "You played Moonlight Sonata by Beethoven";
         case sound'REMansionBasement':
-            return "You played the Basement theme from Resident Evil: Director's Cut... for some reason";
+            return "You played the Basement theme from Resident Evil: Director's Cut Dualshock Edition... for some reason";
         case sound'PachelbelsCanon':
             return "You played Canon in D by Johann Pachelbel";
         case sound'SMRPGForestMaze':
@@ -258,6 +258,26 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played the Overworld theme from The Legend of Zelda";
         case sound'Terran1':
             return "You played Terran Theme 1 from StarCraft";
+        case sound'BabaYetu':
+            return "You played Baba Yetu from Civilization 4";
+        case sound'DuckTalesMoon':
+            return "You played the Moon Theme from DuckTales";
+        case sound'HKHornet':
+            return "You played Hornet's Theme from Hollow Knight";
+        case sound'THPSSuperman':
+            return "You played Superman by Goldfinger (from Tony Hawk's Pro Skater)";
+        case sound'BakaMitai':
+            return "You played Baka Mitai from the Yakuza series";
+        case sound'DragonRoostIsland':
+            return "You played Dragon Roost Island from Legend of Zelda: Wind Waker";
+        case sound'LonelyRollingStar':
+            return "You played Lonely Rolling Star from Katamari Damacy";
+        case sound'MM3WeaponGet':
+            return "You played Weapon Get from Mega Man 3";
+        case sound'SOTNTragicPrince':
+            return "You played The Tragic Prince from Castlevania: Symphony of the Night";
+        case sound'PictionaryDrawingGame':
+            return "You played Drawing Game from Pictionary (NES)";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
@@ -373,7 +393,7 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             break;
         case 23:
             SelectedSound = sound'ChronoTriggerTheme';
-            duration = 7.5;
+            duration = 7;
             break;
         case 24:
             SelectedSound = sound'DoomE1M1';
@@ -494,6 +514,46 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
         case 53:
             SelectedSound = sound'Terran1';
             duration = 7;
+            break;
+        case 54:
+            SelectedSound = sound'BabaYetu';
+            duration = 11;
+            break;
+        case 55:
+            SelectedSound = sound'DuckTalesMoon';
+            duration = 9;
+            break;
+        case 56:
+            SelectedSound = sound'HKHornet';
+            duration = 5;
+            break;
+        case 57:
+            SelectedSound = sound'THPSSuperman';
+            duration = 10;
+            break;
+        case 58:
+            SelectedSound = sound'BakaMitai';
+            duration = 10;
+            break;
+        case 59:
+            SelectedSound = sound'DragonRoostIsland';
+            duration = 7;
+            break;
+        case 60:
+            SelectedSound = sound'LonelyRollingStar';
+            duration = 11;
+            break;
+        case 61:
+            SelectedSound = sound'MM3WeaponGet';
+            duration = 4;
+            break;
+        case 62:
+            SelectedSound = sound'SOTNTragicPrince';
+            duration = 7;
+            break;
+        case 63:
+            SelectedSound = sound'PictionaryDrawingGame';
+            duration = 10;
             break;
         default:
             SelectedSound = None;
