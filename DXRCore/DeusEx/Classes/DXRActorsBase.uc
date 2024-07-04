@@ -570,11 +570,11 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
 
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
 
-    if (DataCube(a) != None) {
-        DataCube(a).GlowOff();
+    if (#var(prefix)DataCube(a) != None) {
+        #var(prefix)DataCube(a).GlowOff();
     }
-    if (DataCube(b) != None) {
-        DataCube(b).GlowOff();
+    if (#var(prefix)DataCube(b) != None) {
+        #var(prefix)DataCube(b).GlowOff();
     }
 
     AbCollideActors = a.bCollideActors;
@@ -613,10 +613,10 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     b.SetPhysics(aphysics);
     if(abase != bbase) b.SetBase(abase);
 
-    if (DataCube(a) != None) {
+    if (#var(prefix)DataCube(a) != None) {
         GlowUp(a);
     }
-    if (DataCube(b) != None) {
+    if (#var(prefix)DataCube(b) != None) {
         GlowUp(b);
     }
 
