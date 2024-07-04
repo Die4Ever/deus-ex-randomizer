@@ -320,16 +320,18 @@ function bool Facelift(bool bOn)
 
 function Frob(actor Frobber, Inventory frobWith)
 {
+    Super.Frob(Frobber, frobWith);
+    GlowOff();
+}
+
+final function bool GlowOff()
+{
     local DynamicLight lt;
 
-    Super.Frob(Frobber, frobWith);
-
-    if (#var(prefix)DataCube(self) != None) {
-        foreach AllActors(class'DynamicLight', lt) {
-            if (lt.Base == self) {
-                lt.Destroy();
-                break;
-            }
+    if (DataCube(self) != None) {
+        foreach RadiusActors(class'DynamicLight', lt, 10.0) {
+            lt.Destroy();
+            break;
         }
     }
 }

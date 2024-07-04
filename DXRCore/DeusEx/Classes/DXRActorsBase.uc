@@ -570,6 +570,13 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
 
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
 
+    if (DataCube(a) != None) {
+        DataCube(a).GlowOff();
+    }
+    if (DataCube(b) != None) {
+        DataCube(b).GlowOff();
+    }
+
     AbCollideActors = a.bCollideActors;
     AbBlockActors = a.bBlockActors;
     AbBlockPlayers = a.bBlockPlayers;
@@ -605,6 +612,13 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     if(abase != bbase) a.SetBase(bbase);
     b.SetPhysics(aphysics);
     if(abase != bbase) b.SetBase(abase);
+
+    if (DataCube(a) != None) {
+        GlowUp(a);
+    }
+    if (DataCube(b) != None) {
+        GlowUp(b);
+    }
 
     return true;
 }
@@ -1596,13 +1610,9 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
-    local DynamicLight lt;
-
     // if `a` is a datacube, spawn a new light instead
     if (#var(prefix)DataCube(a) != None) {
-        lt = a.Spawn(class'DynamicLight',,, a.Location + vect(0, 0, 6.0));
-        lt.SetBase(a);
-        a = lt;
+        a = a.Spawn(class'DynamicLight', a,, a.Location + vect(0, 0, 6.0));
         a.LightSaturation = 0;
     }
 
