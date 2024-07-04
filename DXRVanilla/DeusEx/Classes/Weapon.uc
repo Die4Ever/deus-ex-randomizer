@@ -202,7 +202,7 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
     a.Velocity = HitNormal * -900.0;
 }
 
-function float GetDamage(optional bool ignore_skill)
+function float GetDamage(optional bool ignore_skill, optional bool get_default)
 {
     local float mult;
     // AugCombat increases our damage if hand to hand
@@ -217,7 +217,7 @@ function float GetDamage(optional bool ignore_skill)
     // skill also affects our damage
     // GetWeaponSkill returns 0.0 to -0.7 (max skill/aug)
     mult += -2.0 * GetWeaponSkill();
-    if(ignore_skill)
+    if(ignore_skill)// also ignores aug
         mult = 1.0;
 
     if( ! bInstantHit && class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
@@ -227,7 +227,8 @@ function float GetDamage(optional bool ignore_skill)
         }
         return ProjectileClass.default.Damage * mult;
     }
-    return HitDamage * mult;
+    if(get_default) return default.HitDamage * mult;
+    else return HitDamage * mult;
 }
 
 function int GetNumHits()
@@ -383,7 +384,6 @@ simulated function bool UpdateInfo(Object winObject)
 
     // base damage
     dmg = GetDamage(true);
-
     if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
         dmg /= float(GetNumHits());
 
@@ -395,7 +395,17 @@ simulated function bool UpdateInfo(Object winObject)
         str = str @ "=" @ FormatFloatString(dmg * mod, 1.0);
     }
 
+    // default damage
+    dmg = GetDamage(true, true);
+    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
+        dmg /= float(GetNumHits());
+    //str = str $ "|n  (Default: " $ dmg $ ")";
+
     winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
+
+    // default damage
+    str = "  (Default: " $ dmg $ ")";
+    winInfo.AddInfoItem("", str);
 
     winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), true);
 
@@ -431,8 +441,17 @@ simulated function bool UpdateInfo(Object winObject)
             str = msgInfoSingle;
 
         str = str $ "," @ FormatFloatString(1.0/ShotTime, 0.1) @ msgInfoRoundsPerSec;
+
+        //str = str $ "|n  (Default: " $ FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
     }
     winInfo.AddInfoItem(msgInfoROF, str);
+
+    // default rate of fire
+    if ((Default.ReloadCount != 0) && !bHandToHand)
+    {
+        str = FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
+        winInfo.AddInfoItem("", "  (Default: " $ str);
+    }
 
     // reload time
     if ((Default.ReloadCount == 0) || bHandToHand)
