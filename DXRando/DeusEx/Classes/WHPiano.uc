@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[64]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[68]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -278,6 +278,14 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played The Tragic Prince from Castlevania: Symphony of the Night";
         case sound'PictionaryDrawingGame':
             return "You played Drawing Game from Pictionary (NES)";
+        case sound'CelesteFirstSteps':
+            return "You played First Steps from Celeste";
+        case sound'MM2WilyStage1':
+            return "You played Wily Stage 1 from Mega Man 2";
+        case sound'Mario2Overworld':
+            return "You played the Overworld theme from Super Mario Bros 2 (Did you know it was originally called Doki Doki Panic?)";
+        case sound'SMGCometObservatory':
+            return "You played Comet Observatory from Super Mario Galaxy";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
@@ -554,6 +562,22 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
         case 63:
             SelectedSound = sound'PictionaryDrawingGame';
             duration = 10;
+            break;
+        case 64:
+            SelectedSound = sound'CelesteFirstSteps';
+            duration = 7;
+            break;
+        case 65:
+            SelectedSound = sound'MM2WilyStage1';
+            duration = 8;
+            break;
+        case 66:
+            SelectedSound = sound'Mario2Overworld';
+            duration = 10;
+            break;
+        case 67:
+            SelectedSound = sound'SMGCometObservatory';
+            duration = 8;
             break;
         default:
             SelectedSound = None;
