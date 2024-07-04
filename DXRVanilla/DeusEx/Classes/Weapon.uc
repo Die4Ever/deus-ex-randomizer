@@ -285,10 +285,14 @@ simulated function bool UpdateInfo(Object winObject)
     local Pawn P;
     local Ammo weaponAmmo;
     local int  ammoAmount;
+    local bool bZeroRando; // used for showing defaults
 
     P = Pawn(Owner);
     if (P == None)
         return False;
+
+    if(Human(P) != None)
+        bZeroRando = Human(P).bZeroRando;
 
     winInfo = PersonaInventoryInfoWindow(winObject);
     if (winInfo == None)
@@ -379,8 +383,12 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddAmmoTypesItem(msgInfoAmmo, str);
 
-    if( AmmoType != None && AmmoName != None && AmmoName != Class'DeusEx.AmmoNone' )
-        winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
+    if( AmmoType != None && AmmoName != None && AmmoName != Class'DeusEx.AmmoNone' ) {
+        if(bZeroRando)
+            winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
+        else
+            winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo $ " (Default: " $ AmmoType.default.MaxAmmo $ ")");
+    }
 
     // base damage
     dmg = GetDamage(true);
@@ -395,17 +403,16 @@ simulated function bool UpdateInfo(Object winObject)
         str = str @ "=" @ FormatFloatString(dmg * mod, 1.0);
     }
 
-    // default damage
-    dmg = GetDamage(true, true);
-    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
-        dmg /= float(GetNumHits());
-    //str = str $ "|n  (Default: " $ dmg $ ")";
-
     winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
 
     // default damage
-    str = "  (Default: " $ dmg $ ")";
-    winInfo.AddInfoItem("", str);
+    if(!bZeroRando) {
+        dmg = GetDamage(true, true);
+        if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
+            dmg /= float(GetNumHits());
+        str = "  (Default: " $ dmg $ ")";
+        winInfo.AddInfoItem("", str);
+    }
 
     winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), true);
 
@@ -447,7 +454,7 @@ simulated function bool UpdateInfo(Object winObject)
     winInfo.AddInfoItem(msgInfoROF, str);
 
     // default rate of fire
-    if ((Default.ReloadCount != 0) && !bHandToHand)
+    if (!bZeroRando && Default.ReloadCount != 0 && !bHandToHand)
     {
         str = FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
         winInfo.AddInfoItem("", "  (Default: " $ str);

@@ -219,7 +219,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 {
     local #var(prefix)Augmentation aug;
     local #var(prefix)Skill sk;
-    local string s, word;
+    local string s, word, s_defaults;
     local int i, len, mid, oldseed, removals;
     local float v;
     local float d_min, d_max, avg_diff;
@@ -285,6 +285,12 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     for(i=0; i < len; i++) {
         v = points[i];
 
+        if( aug != None ) aug.LevelValues[i] = aug.default.LevelValues[i];
+        else if( sk != None ) sk.LevelValues[i] = sk.default.LevelValues[i];
+
+        if( i>0 ) s_defaults = s_defaults $ ", ";
+        s_defaults = s_defaults $ DescriptionLevel(a, i, word);
+
         if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.default.LevelValues[i], v, d_max, d_min, wet, i, len);
         else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.default.LevelValues[i], v, d_max, d_min, wet, i, len);
 
@@ -292,7 +298,12 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
         s = s $ DescriptionLevel(a, i, word);
     }
 
-    s = "(DXRando) " $ word $ ":|n    " $ s;
+    if(dxr.flags.IsZeroRando()) {
+        s = "(Strength) " $ word $ ":|n    " $ s;
+    } else {
+        s = "(DXRando) " $ word $ ":|n    " $ s;
+        s = s $ "|n(Defaults) " $ word $ ":|n    " $ s_defaults;
+    }
 
 #ifdef injections
     if(aug != None && aug.bAutomatic) {
