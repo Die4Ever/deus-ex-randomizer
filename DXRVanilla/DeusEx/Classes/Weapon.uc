@@ -500,7 +500,7 @@ simulated function bool UpdateInfo(Object winObject)
     if (HasRangeMod())
     {
         str = str @ BuildPercentString(ModAccurateRange);
-        str = str @ "=" @ FormatFloatString(AccurateRange/16.0, 1.0) @ msgRangeUnit;
+        str = str @ "|n    =" @ FormatFloatString(AccurateRange/16.0, 1.0) @ msgRangeUnit;
     }
     winInfo.AddInfoItem(msgInfoAccRange, str, HasRangeMod());
 
@@ -514,7 +514,12 @@ simulated function bool UpdateInfo(Object winObject)
         else
             str = FormatFloatString(Default.MaxRange/16.0, 1.0) @ msgRangeUnit;
     }
-    winInfo.AddInfoItem(msgInfoMaxRange, str);
+    if (HasRangeMod())
+    {
+        str = str @ BuildPercentString(ModAccurateRange);
+        str = str @ "|n    =" @ FormatFloatString(MaxRange/16.0, 1.0) @ msgRangeUnit;
+    }
+    winInfo.AddInfoItem(msgInfoMaxRange, str, HasRangeMod());
 
     // mass
     winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
