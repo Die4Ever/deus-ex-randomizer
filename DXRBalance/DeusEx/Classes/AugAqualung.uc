@@ -21,12 +21,16 @@ simulated function bool IsTicked()
         || (bAutomatic && bIsActive && bWater && Player.Energy > 0);
 }
 
+function Tick(float deltaTime)
+{
+    if (IsTicked())
+        player.SwimTimer = 8388608.0; /// max float value according to the wiki
+    Super.Tick(deltaTime);
+}
+
 defaultproperties
 {
-    bAutomatic=true
-    AutoLength=0
-    AutoEnergyMult=1// no penalty, it's a gift
-    MaxLevel=1
-    LevelValues(0)=60.000000
-    LevelValues(1)=240.000000
+    bAlwaysActive=true
+    EnergyRate=0
+    MaxLevel=0
 }
