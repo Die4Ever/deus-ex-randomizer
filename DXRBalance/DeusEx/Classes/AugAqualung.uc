@@ -11,20 +11,15 @@ function PostPostBeginPlay()
 }
 
 simulated function bool IsTicked()
-{// aqualung is perfectly automatic
-    local bool bWater;
-
-    if(Player == None) return false;
-    bWater = Player.HeadRegion.Zone.bWaterZone && Player.swimTimer > 0;
-
-    return (bAutomatic==false && bIsActive)
-        || (bAutomatic && bIsActive && bWater && Player.Energy > 0);
+{// aqualung is, conceptually, always on
+    return bIsActive && Player != None && Player.HeadRegion.Zone.bWaterZone;
 }
 
 function Tick(float deltaTime)
 {
-    if (IsTicked())
-        player.SwimTimer = 8388608.0; /// max float value according to the wiki
+    if (IsTicked()) {
+        player.swimTimer = player.swimDuration;
+    }
     Super.Tick(deltaTime);
 }
 
