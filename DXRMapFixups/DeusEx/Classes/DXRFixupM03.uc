@@ -228,7 +228,7 @@ function PreFirstEntryMapFixes()
         class'FillCollisionHole'.static.CreateLine(self, vectm(1520, 3675, 69), vectm(1464, 3675, 69), 32, 80);
 
         // extra spots for datacube
-        Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower
+        Spawn(class'PlaceholderItem',,, vectm(5113,3615,6.3));        //In front of guard tower
         Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(3225,3193,275));        //Different Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(2850,3448,219));        //Bathroom stall

@@ -12,6 +12,28 @@ function PostPostBeginPlay()
     }
 }
 
+simulated function PreBeginPlay()
+{
+    local Vector HitLocation, HitNormal,botLoc;
+    local Actor HitActor;
+    local #var(PlayerPawn) player;
+
+    Super.PreBeginPlay();
+
+    if(!class'DXRVersion'.static.VersionIsStable()) {
+        //Make sure placeholders are high enough off the ground so that any swaps can
+        //adjust height based on collision size and still stay out of the ground.
+        botLoc=Location;
+        botLoc.Z=botLoc.Z - CollisionHeight/2;
+        HitActor=Trace(HitLocation,HitNormal,botLoc);
+        if (HitActor!=None){
+            foreach AllActors(class'#var(PlayerPawn)',player){
+                player.ClientMessage(self$" is not high enough off the ground!  Distance="$VSize(Location-HitLocation));
+            }
+        }
+    }
+}
+
 defaultproperties
 {
     ItemName="Randomizer Placeholder: REPORT BUG!"
