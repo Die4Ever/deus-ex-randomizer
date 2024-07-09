@@ -433,6 +433,16 @@ function AnyEntryMapFixes()
             phone.ConBindEvents();
         }
         break;
+
+    case "03_NYC_BROOKLYNBRIDGESTATION":
+        DeleteConversationFlag(GetConversation('MeetLenny'), 'FoundMoles', False);
+        c=GetConversation('LennyFinalBarks');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+        c=GetConversation('LennyFinalBarks2');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+        break;
     }
 }
 
