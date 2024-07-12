@@ -35,6 +35,7 @@ function PreFirstEntry()
     local ElevatorMover eMover;
     local #var(DeusExPrefix)Mover dxMover;
     local Dispatcher disp;
+    local ScientistMale sm;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
@@ -62,6 +63,16 @@ function PreFirstEntry()
         // don't do the conversation from 11_Paris_Underground
         dxr.flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
         dxr.flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
+        break;
+
+    case "12_VANDENBERG_CMD":
+        if (dxr.flags.settings.starting_map >= 129) {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
+                dxMover.InterpolateTo(1, 0.0);
+                break;
+            }
+            dxr.flagbase.SetBool('DL_TonyScared_Played', true,, 15); // You won't find cover in the comm building.
+        }
         break;
 
     case "15_Area51_Bunker":
