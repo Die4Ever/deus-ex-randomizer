@@ -76,6 +76,7 @@ function PreFirstEntryMapFixes_Bunker()
     local OnceOnlyTrigger oot;
     local Trigger trig;
     local #var(prefix)RatGenerator rg;
+    local #var(prefix)Fan1 fan;
 
     if (dxr.flags.settings.starting_map < 151) {
         player().DeleteAllGoals();
@@ -161,6 +162,10 @@ function PreFirstEntryMapFixes_Bunker()
     FixJockExplosion();
 
     Spawn(class'#var(prefix)LiquorBottle',,, vectm(1005.13,2961.26,-480)); //Liquor in a locker, so every mission has alcohol
+
+    foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
+        fan.bHighlight=True;
+    }
 
     Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building
     Spawn(class'PlaceholderItem',,, vectm(-1565.4,3384.8,-213)); //Back of Storage building

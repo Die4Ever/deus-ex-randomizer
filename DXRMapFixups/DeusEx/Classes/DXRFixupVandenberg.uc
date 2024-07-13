@@ -40,6 +40,7 @@ function PreFirstEntryMapFixes()
     local int securityBotNum, militaryBotNum;
     local #var(prefix)DataCube dc;
     local #var(prefix)Teleporter t;
+    local #var(prefix)Fan1 fan;
 
     local bool VanillaMaps;
 
@@ -321,6 +322,11 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1280.84,8534.17,-2913)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(1892,8754.5,-2901)); //Turret room, opposite from bait computer
         }
+
+        foreach AllActors(class'#var(prefix)Fan1',fan){
+            fan.bHighlight=True;
+        }
+
         break;
 
     case "14_Oceanlab_silo":
