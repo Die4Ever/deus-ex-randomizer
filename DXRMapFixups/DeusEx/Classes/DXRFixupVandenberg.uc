@@ -251,7 +251,7 @@ function PreFirstEntryMapFixes()
             // backtracking button for crew module
             AddSwitch( vect(4888.692871, 3537.360107, -1753.115845), rot(0, 16384, 0), 'crewkey').bCollideWorld = false;
             // backtracking button for greasel lab
-            AddSwitch( vect(1893.359985, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
+            AddSwitch( vect(1889.5, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
 
             foreach AllActors(class'ComputerSecurity', comp) {
                 if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
