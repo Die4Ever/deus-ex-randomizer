@@ -14,9 +14,12 @@ function CheckConfig()
 function PostFirstEntryMapFixes()
 {
     local Actor a;
-    local bool RevisionMaps;
+    local bool VanillaMaps, RevisionMaps;
     local #var(prefix)NanoKey key;
+    local ElevatorMover eMover;
+    local float moveTime;
 
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     FixUNATCORetinalScanner();
@@ -36,7 +39,20 @@ function PostFirstEntryMapFixes()
             AddActor(class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60));
             AddActor(class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75));
         }
+
+        if (VanillaMaps) {
+            foreach AllActors(class'ElevatorMover', eMover, 'Elevator1') {
+                // When the map first loads, the elevator interpolates to the top, at a normal speed.
+                // This is ordinarilly never seen but can be on a 35/36 start, so set it there instantly.
+                moveTime = eMover.MoveTime;
+                eMover.MoveTime = 0.005;
+                eMover.InterpolateTo(1, 0.0);
+                eMover.MoveTime = moveTime;
+            }
+        }
+
         SetAllLampsState(true, true, false); // this map has one desk lamp, in an office no one is in
+
         break;
 
     case "03_NYC_AIRFIELD":
