@@ -41,6 +41,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)DataCube dc;
     local #var(prefix)Teleporter t;
     local #var(prefix)Fan1 fan;
+    local #var(prefix)Fan2 fan2;
 
     local bool VanillaMaps;
 
@@ -402,6 +403,11 @@ function PreFirstEntryMapFixes()
                 door.bLocked=true;
                 door.bPickable=false;
             }
+
+            foreach AllActors(class'#var(prefix)Fan2',fan2){
+                fan2.bHighlight=True;
+            }
+
 
             Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
             Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
