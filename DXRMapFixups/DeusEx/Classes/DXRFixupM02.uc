@@ -364,9 +364,16 @@ function PostFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
+    local ConEventSpeech ces;
     local Jock j;
 
     switch (dxr.localURL) {
+    case "02_NYC_STREET":
+        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
+        if (ces != None)
+            ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
+        break;
+
     case "02_NYC_BAR":
         if (dxr.flagbase.getBool('GeneratorBlown')) {
             foreach AllActors(class'Jock', j) {
