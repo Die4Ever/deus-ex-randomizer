@@ -197,6 +197,13 @@ function PreFirstEntryMapFixes()
             ft.flagValue=True;
             ft.Event='UNATCOHatesPlayer';
 
+            foreach AllActors(class'Teleporter', tel) {
+                if (tel.url == "04_NYC_Street#FromNSFHQ") {
+                    tel.SetCollisionSize(tel.CollisionRadius, tel.CollisionHeight + 40.0);
+                    break;
+                }
+            }
+
             Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
             class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
             class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
