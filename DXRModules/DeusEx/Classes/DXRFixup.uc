@@ -277,6 +277,7 @@ function ShowTeleporters()
     hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
+        t.SetCollision( t.bCollideActors, true, t.bBlockPlayers );// don't let pawns walk through
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
     }
