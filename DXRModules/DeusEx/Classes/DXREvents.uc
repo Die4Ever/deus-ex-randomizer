@@ -3371,7 +3371,7 @@ defaultproperties
     bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
     bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",desc_singular="Burn 1 bag of trash",max=25,missions=57182)
     bingo_options(202)=(event="M07MeetJaime_Played",desc="Meet Jaime in Hong Kong",max=1,missions=96)
-    bingo_options(203)=(event="Terrorist_peeptime",desc="Watch Terrorists for 1 second",max=30,missions=46)
+    bingo_options(203)=(event="Terrorist_peeptime",desc="Watch Terrorists for %s seconds",desc_singular="Watch Terrorists for 1 second",max=30,missions=46)
     bingo_options(204)=(event="UNATCOTroop_peeptime",desc="Watch UNATCO Troopers for %s seconds",desc_singular="Watch UNATCO Troopers for 1 second",max=30,missions=318)
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",desc_singular="Watch MJ12 Troopers for 1 second",max=30,missions=57204)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",desc_singular="Watch MJ12 Commandos for 1 second",max=15,missions=56384)
