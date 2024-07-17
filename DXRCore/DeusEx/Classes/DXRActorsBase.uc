@@ -256,6 +256,9 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
                 player.UpdateAmmoBeltText(a);
             item.Destroy();
             return a;
+        } else {
+            //Make sure the extra ammo is included even if the pawn doesn't have it already
+            Ammo(item).AmmoAmount += add_ammo;
         }
     }
 
@@ -438,6 +441,19 @@ function bool SkipActor(Actor a)
 function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrders)
 {
     local ScriptedPawn p;
+    local #var(prefix)Barrel1 b;
+    local Effects gen;
+
+    b = #var(prefix)Barrel1(a);
+    if (b!=None){
+        //Look for any ParticleGenerator or ProjectileGenerator that might be associated with the barrel
+        foreach b.BasedActors(class'Effects', gen){
+            if (ParticleGenerator(gen)!=None || ProjectileGenerator(gen)!=None){
+                break;
+            }
+        }
+    }
+
 
     if( ! a.SetLocation(newloc) ) return false;
 
@@ -447,6 +463,14 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         p.HomeTag = 'Start';
         p.HomeLoc = p.Location;
     }
+
+    //Move the generator as well, and make sure it's based on the barrel again
+    //(They get detached when the barrel is moved)
+    if (b!=None && gen!=None){
+        gen.SetLocation(b.Location);
+        gen.SetBase(b);
+    }
+
 
     return true;
 }
@@ -535,10 +559,11 @@ static function bool PawnIsInCombat(Pawn p)
 
 function bool Swap(Actor a, Actor b, optional bool retainOrders)
 {
-    local vector newloc, oldloc;
+    local vector newloc, oldloc, aloc, bloc;
+    local Vector HitLocation, HitNormal;
     local rotator newrot;
     local bool asuccess, bsuccess;
-    local Actor abase, bbase;
+    local Actor abase, bbase, HitActor;
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
     local EPhysics aphysics, bphysics;
 
@@ -554,18 +579,48 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     oldloc = a.Location;
     newloc = b.Location;
 
-    bsuccess = SetActorLocation(b, oldloc + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1), retainOrders );
+    bloc = oldloc + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1);
+    bsuccess = SetActorLocation(b, bloc, retainOrders );
     a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
     if( bsuccess == false ) {
         warning("bsuccess failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
         return false;
+    } else {
+        //Move succeeded, but was kind of far from where it should be
+        if (VSize(bloc - b.Location)>5){
+            HitActor=Trace(HitLocation,HitNormal,b.Location,bloc,False);
+            if (HitActor!=None){
+                //There's a wall or something between the locations, this new location shouldn't have succeeded
+                //Move it back to the original location and give up
+                warning("Should have moved to "$bloc$" but ended up at "$b.Location$" instead (distance="$VSize(bloc - b.Location)$")");
+                SetActorLocation(b, newloc, retainOrders);
+                warning("bsuccess moved " $ ActorToString(b) $ " into location of " $ ActorToString(a) $ ", but was moved out of line of sight of intended location ("$HitActor$" in the way)");
+                return False;
+            }
+        }
     }
 
-    asuccess = SetActorLocation(a, newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1), retainOrders);
+    aloc = newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
+    asuccess = SetActorLocation(a, aloc, retainOrders);
     if( asuccess == false ) {
         warning("asuccess failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
         SetActorLocation(b, newloc, retainOrders);
         return false;
+    } else {
+        //Move succeeded, but was kind of far from where it should be
+        if (VSize(aloc - a.Location)>5){
+            HitActor=Trace(HitLocation,HitNormal,a.Location,aloc,False);
+            if (HitActor!=None){
+                //There's a wall or something between the locations, this new location shouldn't have succeeded
+                //Move it back to the original location and give up
+                warning("Should have moved to "$aloc$" but ended up at "$a.Location$" instead (distance="$VSize(aloc - a.Location)$")");
+                SetActorLocation(a, oldloc, retainOrders);
+                SetActorLocation(b, newloc, retainOrders);
+                warning("asuccess moved " $ ActorToString(a) $ " into location of " $ ActorToString(b) $ ", but was moved out of line of sight of intended location ("$HitActor$" in the way)");
+                return False;
+            }
+        }
+
     }
 
     newrot = b.Rotation;

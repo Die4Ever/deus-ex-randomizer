@@ -1,13 +1,19 @@
 class GilbertWeaponMegaChoice extends WeaponMegaChoice;
 
+var bool bHasWeaponPistol,bHasWeaponStealthPistol,bHasWeaponSawedOffShotgun,bHasWeaponCombatKnife,bHasWeaponMiniCrossbow;
+
 function bool HasNoWeapons()
 {
-    if (p.FindInventoryType(class'WeaponSawedOffShotgun')!=None) return False;
-    if (p.FindInventoryType(class'WeaponPistol')!=None) return False;
-    if (p.FindInventoryType(class'WeaponStealthPistol')!=None) return False;
-    if (p.FindInventoryType(class'WeaponCombatKnife')!=None) return False;
-    if (p.FindInventoryType(class'WeaponMiniCrossbow')!=None) return False;
-    return True;
+    return (!bHasWeaponPistol && !bHasWeaponStealthPistol && !bHasWeaponSawedOffShotgun && !bHasWeaponCombatKnife && !bHasWeaponMiniCrossbow);
+}
+
+function GetWeapons()
+{
+    bHasWeaponPistol=(p.FindInventoryType(class'WeaponPistol')!=None);
+    bHasWeaponStealthPistol=(p.FindInventoryType(class'WeaponStealthPistol')!=None);
+    bHasWeaponSawedOffShotgun=(p.FindInventoryType(class'WeaponSawedOffShotgun')!=None);
+    bHasWeaponCombatKnife=(p.FindInventoryType(class'WeaponCombatKnife')!=None);
+    bHasWeaponMiniCrossbow=(p.FindInventoryType(class'WeaponMiniCrossbow')!=None);
 }
 
 function GenerateWeaponChoice()
@@ -25,7 +31,7 @@ function GenerateWeaponChoice()
     ce = c.eventList;
 
     while (ce!=None){
-        if (ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject && insertPoint==None){
+        if (insertPoint==None && ce.nextEvent!=None && ce.nextEvent.eventType==ET_CheckObject){
             insertPoint=ce;
         } else if (ce.eventType==ET_Choice){
             choiceEv = ConEventChoice(ce);
@@ -69,6 +75,11 @@ function GenerateWeaponChoice()
         return;
     }
 
+    if (sawedOffChoice.flagRef!=None || stealthChoice.flagRef!=None || pistolChoice.flagRef!=None ||
+        knifeChoice.flagRef!=None || crossbowChoice.flagRef!=None){
+        log("GilbertWeaponMegaChoice found a flag ref on at least one of the conversation options...  You must have a conversation altering mod installed? Confix?");
+    }
+
     megaChoiceEv = new(c) class'ConEventChoice';
     megaChoiceEv.eventType=ET_Choice;
     megaChoiceEv.nextEvent = insertPoint.nextEvent;
@@ -79,24 +90,31 @@ function GenerateWeaponChoice()
 
     megaChoiceEv.ChoiceList = None;
 
-    if (p.FindInventoryType(class'WeaponCombatKnife')!=None){
+    //Confix adds flagrefs to the weapon choices, so just remove any flagrefs if they exist.
+    //Should at least make them work.
+    if (bHasWeaponCombatKnife){
         knifeChoice.nextChoice=megaChoiceEv.ChoiceList;
+        knifeChoice.flagRef=None;
         megaChoiceEv.ChoiceList = knifeChoice;
     }
-    if (p.FindInventoryType(class'WeaponSawedOffShotgun')!=None){
+    if (bHasWeaponSawedOffShotgun){
         sawedOffChoice.nextChoice=megaChoiceEv.ChoiceList;
+        sawedOffChoice.flagRef=None;
         megaChoiceEv.ChoiceList = sawedOffChoice;
     }
-    if (p.FindInventoryType(class'WeaponPistol')!=None){
+    if (bHasWeaponPistol){
         pistolChoice.nextChoice=megaChoiceEv.ChoiceList;
+        pistolChoice.flagRef=None;
         megaChoiceEv.ChoiceList = pistolChoice;
     }
-    if (p.FindInventoryType(class'WeaponStealthPistol')!=None){
+    if (bHasWeaponStealthPistol){
         stealthChoice.nextChoice=megaChoiceEv.ChoiceList;
+        stealthChoice.flagRef=None;
         megaChoiceEv.ChoiceList = stealthChoice;
     }
-    if (p.FindInventoryType(class'WeaponMiniCrossbow')!=None){
+    if (bHasWeaponMiniCrossbow){
         crossbowChoice.nextChoice=megaChoiceEv.ChoiceList;
+        crossbowChoice.flagRef=None;
         megaChoiceEv.ChoiceList = crossbowChoice;
     }
 

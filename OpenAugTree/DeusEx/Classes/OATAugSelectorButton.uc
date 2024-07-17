@@ -25,7 +25,7 @@ function SetAugmentation(Augmentation NewAug)
 {
 	CurAug = NewAug;
 	//VAug = VMDBufferAugmentation(NewAug);
-	
+
 	if (CurAug != None)
 	{
 		AugIcon = CurAug.SmallIcon;
@@ -62,14 +62,14 @@ function UpdateAugColor()
 
 event DrawWindow(GC gc)
 {
-	GC.SetStyle(DSTY_Masked);
-	
+	GC.SetStyle(DSTY_Normal);
+
 	if (CurAug != None)
 	{
 		GC.SetTileColor(AugColor);
 		GC.DrawTexture(SublayerOffset.X, SublayerOffset.Y, 32, 32, 0, 0, AugIcon);
 	}
-	
+
 	GC.SetTileColor(ColButtonFace);
 	GC.DrawTexture(0, 0, 36, 36, 0, 0, Texture'OATAugControllerAugCase');
 }
@@ -83,7 +83,7 @@ event DrawWindow(GC gc)
 event InitWindow()
 {
 	Super.InitWindow();
-	
+
 	SetSize(36, 36);
 }
 
@@ -97,14 +97,14 @@ defaultproperties
      ColorPassive=(R=192,G=255,B=96)
      ColorPassiveDisabled=(R=255,G=96,B=96)
      SublayerOffset=(X=2,Y=2)
-     
+
      Left_Textures(0)=(Tex=None,Width=0)
      Left_Textures(1)=(Tex=None,Width=0)
      Right_Textures(0)=(Tex=Texture'OATNextAugPageIcon',Width=36)
      Right_Textures(1)=(Tex=Texture'OATNextAugPageIcon',Width=36)
      Center_Textures(0)=(Tex=None,Width=0)
      Center_Textures(1)=(Tex=None,Width=0)
-     
+
      buttonHeight=36
      minimumButtonWidth=36
 }

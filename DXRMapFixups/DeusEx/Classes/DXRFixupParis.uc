@@ -13,12 +13,14 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)AutoTurret at;
     local #var(prefix)WIB wib;
+    local #var(prefix)MorganEverett everett;
     local DXRMapVariants mapvariants;
     local DXRHoverHint hoverHint;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local bool VanillaMaps;
     local FlagTrigger ft;
+    local #var(prefix)Teleporter tele;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -177,10 +179,14 @@ function PreFirstEntryMapFixes()
                 dt.DamageType='Flamed';
             }
         }
-        //Restore default damage to this one turret.  The only one in the whole
-        //game with non-standard damage (10 instead of 5).  It doesn't need it.
-        foreach AllActors(class'#var(prefix)AutoTurret',at,'vault_turret'){
-            at.gunDamage=class'#var(prefix)AutoTurret'.Default.gunDamage;
+
+        if (VanillaMaps){
+            foreach AllActors(class'#var(prefix)Teleporter',tele){
+                if (tele.URL=="11_Paris_Underground#Paris_Underground"){
+                    tele.SetCollisionSize(tele.CollisionRadius,120); //Twice as tall, so you can't crouch under
+                }
+
+            }
         }
         break;
     case "11_PARIS_EVERETT":
@@ -194,6 +200,12 @@ function PreFirstEntryMapFixes()
                 cs.specialOptions[1].TriggerEvent='';
                 cs.specialOptions[1].TriggerText="";
             }
+        }
+
+        foreach AllActors(class'#var(prefix)MorganEverett', everett) {
+            // Everett's vanilla BarkBindName is "Man"
+            everett.BarkBindName = "MorganEverett";
+            break;
         }
 
         //Add teleporter hint text to Jock

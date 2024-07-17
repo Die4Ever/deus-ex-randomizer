@@ -60,20 +60,26 @@ simulated event Timer()
 
 function SetdxInfo(DeusExLevelInfo i)
 {
-    local LevelInfo li;
     dxInfo = i;
     if(i == None) {
-        foreach AllActors(class'LevelInfo', li) { break; }
-        warning("SetdxInfo got None, LevelInfo: "$li @ li.Title);
+        warning("SetdxInfo got None, LevelInfo: "$ Level @ Level.Title);
         return;
     }
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
+    dxr = self;
+    default.dxr = self;// singleton reference
+
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
 
+#ifdef playersonly
+    Level.bPlayersOnly = true;
+#elseif supercut
+    Level.bPlayersOnly = false;
+#endif
     CrcInit();
     ClearModules();
     LoadFlagsModule();
@@ -95,6 +101,12 @@ function DXRInit()
     if(Player == None)
         return;
 
+#ifdef supercut
+    Player.bCheatsEnabled = true;
+    Player.Invisible(true);
+    Player.GotoState('Paralyzed');
+#endif
+
 #ifdef revision
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(Player,true);
 #endif
@@ -112,9 +124,10 @@ function DXRInit()
     CheckConfig();
     flags.InitCoordsMult();// for some reason flags is loaded too early and doesn't have the new map url
     flags.LoadFlags();
+#ifdef supercut
+    flags.RollSeed();
+#endif
     LoadModules();
-    dxr = self;
-    default.dxr = self;// singleton reference
     RandoEnter();
 }
 
