@@ -57,6 +57,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
+    local #var(prefix)MJ12Commando commando;
     local WaterCooler wc;
     local Rotator rot;
     local int i;
@@ -655,6 +656,12 @@ function PreFirstEntryMapFixes()
             lt.bDynamicLight = bt.bDynamicLight;
             lt.bIsOn = bt.bIsOn;
             bt.Destroy();
+        }
+
+        foreach AllActors(class'#var(prefix)MJ12Commando', commando) {
+            if (commando.BarkBindName == "MJ12 Commando" || commando.BarkBindName == "") {
+                commando.BarkBindName = "MJ12Commando";
+            }
         }
 
         //The ramp can just be frobbed normally (unintentional, presumably, since it isn't highlightable either)
