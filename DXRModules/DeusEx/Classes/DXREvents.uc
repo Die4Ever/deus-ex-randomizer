@@ -3238,6 +3238,7 @@ defaultproperties
     bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",desc_singular="Kill 1 MJ12 Trooper",max=25,missions=57188)
     bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",desc_singular="Kill 1 MJ12 Commando",max=10,missions=56384)
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",desc_singular="Kill 1 Karkian",max=5,missions=49248)
+    bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy %s Military Bots",desc_singular="Destroy 1 Military Bot",max=5,missions=24176)
     bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1,missions=4096)
     bingo_options(85)=(event="BoatEngineRoom",desc="Access the engine room on the boat in the Hong Kong canals",max=1,missions=64)
     bingo_options(86)=(event="SecurityBot2_ClassDead",desc="Destroy %s Walking Security Bots",desc_singular="Destroy 1 Walking Security Bot",max=5,missions=57202)
