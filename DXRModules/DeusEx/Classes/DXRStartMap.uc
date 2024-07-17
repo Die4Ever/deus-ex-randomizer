@@ -585,6 +585,11 @@ function StartMapSpecificFlags(#var(PlayerPawn) player, FlagBase flagbase, int s
             break;
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
+            // fallthrough
+        case 141:
+        case 142:
+        case 140:
+            flagbase.SetBool('TiffanySavage_Dead',true,,15);
             break;
         case 153:
             MarkConvPlayed('DL_Helios_Door1_Played', bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.

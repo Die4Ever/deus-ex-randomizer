@@ -60,10 +60,12 @@ function AddWeaponChoiceTrigger()
 
 function Trigger(Actor Other,Pawn Instigator)
 {
+    GetWeapons();
     GenerateWeaponChoice();
 }
 
 function GenerateWeaponChoice();
+function GetWeapons();
 
 defaultproperties
 {

@@ -249,6 +249,7 @@ function HandleEffectSelectability()
 {
     local Inventory anItem;
     local bool haveFT, canFreelySave;
+    local DXRLoadouts loadout;
 
     //LamThrower
     if (#defined(vanilla)){
@@ -273,6 +274,66 @@ function HandleEffectSelectability()
 #endif
         ccLink.sendEffectSelectability("quick_save",canFreelySave);
         ccLink.sendEffectSelectability("quick_load",canFreelySave);
+
+        loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
+        if (loadout!=None){
+            //Items
+            HandleItemLoadoutSelectability(loadout,"medkit");
+            HandleItemLoadoutSelectability(loadout,"bioelectriccell");
+            HandleItemLoadoutSelectability(loadout,"fireextinguisher");
+            HandleItemLoadoutSelectability(loadout,"ballisticarmor");
+            HandleItemLoadoutSelectability(loadout,"lockpick");
+            HandleItemLoadoutSelectability(loadout,"multitool");
+            HandleItemLoadoutSelectability(loadout,"rebreather");
+            HandleItemLoadoutSelectability(loadout,"adaptivearmor");
+            HandleItemLoadoutSelectability(loadout,"hazmatsuit");
+            HandleItemLoadoutSelectability(loadout,"winebottle");
+            HandleItemLoadoutSelectability(loadout,"techgoggles");
+
+            //Weapons
+            HandleItemLoadoutSelectability(loadout,"weaponflamethrower");
+            HandleItemLoadoutSelectability(loadout,"weapongepgun");
+            HandleItemLoadoutSelectability(loadout,"weaponnanosword");
+            HandleItemLoadoutSelectability(loadout,"weaponplasmarifle");
+            HandleItemLoadoutSelectability(loadout,"weaponlaw");
+            HandleItemLoadoutSelectability(loadout,"weaponrifle");
+            HandleItemLoadoutSelectability(loadout,"weaponassaultgun");
+            HandleItemLoadoutSelectability(loadout,"weaponassaultshotgun");
+            HandleItemLoadoutSelectability(loadout,"weaponbaton");
+            HandleItemLoadoutSelectability(loadout,"weaponcombatknife");
+            HandleItemLoadoutSelectability(loadout,"weaponcrowbar");
+            HandleItemLoadoutSelectability(loadout,"weaponminicrossbow");
+            HandleItemLoadoutSelectability(loadout,"weaponpeppergun");
+            HandleItemLoadoutSelectability(loadout,"weaponpistol");
+            HandleItemLoadoutSelectability(loadout,"weaponstealthpistol");
+            HandleItemLoadoutSelectability(loadout,"weaponprod");
+            HandleItemLoadoutSelectability(loadout,"weaponsawedoffshotgun");
+            HandleItemLoadoutSelectability(loadout,"weaponshuriken");
+            HandleItemLoadoutSelectability(loadout,"weaponsword");
+            HandleItemLoadoutSelectability(loadout,"weaponlam");
+            HandleItemLoadoutSelectability(loadout,"weaponempgrenade");
+            HandleItemLoadoutSelectability(loadout,"weapongasgrenade");
+            HandleItemLoadoutSelectability(loadout,"weaponnanovirusgrenade");
+            HandleItemLoadoutSelectability(loadout,"weaponhideagun");
+
+            //Ammo
+            HandleItemLoadoutSelectability(loadout,"ammo10mm");
+            HandleItemLoadoutSelectability(loadout,"ammo20mm");
+            HandleItemLoadoutSelectability(loadout,"ammo762mm");
+            HandleItemLoadoutSelectability(loadout,"ammo3006");
+            HandleItemLoadoutSelectability(loadout,"ammobattery");
+            HandleItemLoadoutSelectability(loadout,"ammodart");
+            HandleItemLoadoutSelectability(loadout,"ammodartflare");
+            HandleItemLoadoutSelectability(loadout,"ammodartpoison");
+            HandleItemLoadoutSelectability(loadout,"ammonapalm");
+            HandleItemLoadoutSelectability(loadout,"ammopepper");
+            HandleItemLoadoutSelectability(loadout,"ammoplasma");
+            HandleItemLoadoutSelectability(loadout,"ammorocket");
+            HandleItemLoadoutSelectability(loadout,"ammorocketwp");
+            HandleItemLoadoutSelectability(loadout,"ammosabot");
+            HandleItemLoadoutSelectability(loadout,"ammoshell");
+        }
+
         effectSelectInit=True;
     }
 
@@ -295,6 +356,15 @@ function HandleEffectSelectability()
     HandleAugEffectSelectability("augheartlung");
     HandleAugEffectSelectability("augpower");
     AugEffectStatesInit=True;
+}
+
+function HandleItemLoadoutSelectability(DXRLoadouts loadout, string invName)
+{
+    local class<Inventory> invClass;
+
+    invClass=getInvClass(invName);
+    //player().ClientMessage("give_"$invName$"   "$!loadout.is_banned(invClass));
+    ccLink.sendEffectSelectability("give_"$invName,!loadout.is_banned(invClass));
 }
 
 function HandleAugEffectSelectability(string augName)
@@ -853,6 +923,10 @@ function MakeLamThrower (inventory anItem) {
     f.beltDescription = "LAMTHWR";
 }
 
+function class<Inventory> getInvClass(string type) {
+    return class<Inventory>(ccLink.ccModule.GetClassFromString(type, class'Inventory'));
+}
+
 function class<Augmentation> getAugClass(string type) {
     return class<Augmentation>(ccLink.ccModule.GetClassFromString(type, class'Augmentation'));
 }
@@ -1272,6 +1346,7 @@ function int GiveItem(string viewer, string type, optional int amount) {
     local class<Inventory> itemclass;
     local string outMsg;
     local Inventory item;
+    local DXRLoadouts loadout;
 
     if( amount < 1 ) amount = 1;
 
@@ -1279,6 +1354,15 @@ function int GiveItem(string viewer, string type, optional int amount) {
 
     if (itemclass == None) {
         return NotAvail;
+    }
+
+    //Check loadout for simulated effects or in case the selectability somehow failed
+    loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
+    if (loadout!=None){
+        if (loadout.is_banned(itemclass)){
+            //This could possibly be available later in the session if they change loadouts
+            return TempFail;
+        }
     }
 
     for (i=0;i<amount;i++) {

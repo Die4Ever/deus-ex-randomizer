@@ -60,6 +60,10 @@ function EnableCloak(bool bEnable)  // beware! called from C++
 
 function bool ShouldBeCloaked()
 {
+#ifdef injections
+    if(EmpHealth <= 0) return False;
+#endif
+
     switch(GetStateName()){
         case 'Seeking':
         case 'Alerting':

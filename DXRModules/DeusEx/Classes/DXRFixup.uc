@@ -102,24 +102,24 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
         i++;
+
+        DecorationsOverwrites[i].type = "Van";
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 500;
+        DecorationsOverwrites[i].minDamageThreshold = 50;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
+        i++;
     }
 
     DecorationsOverwrites[i].type = "BarrelFire";
     DecorationsOverwrites[i].bInvincible = false;
     DecorationsOverwrites[i].HitPoints = 50;
-    DecorationsOverwrites[i].minDamageThreshold = 0;
-    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
-    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
-    DecorationsOverwrites[i].Flammability = c.default.Flammability;
-    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
-    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
-    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
-    DecorationsOverwrites[i].bPushable = c.default.bPushable;
-    i++;
-
-    DecorationsOverwrites[i].type = "Van";
-    DecorationsOverwrites[i].bInvincible = false;
-    DecorationsOverwrites[i].HitPoints = 500;
     DecorationsOverwrites[i].minDamageThreshold = 0;
     c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
     DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
@@ -205,6 +205,7 @@ function PreFirstEntry()
     OverwriteDecorations();
     FixFlagTriggers();
     FixBeamLaserTriggers();
+    FixAutoTurrets();
     SpawnDatacubes();
     AntiEpilepsy();
 
@@ -276,6 +277,7 @@ function ShowTeleporters()
     hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
+        t.SetCollision( t.bCollideActors, true, t.bBlockPlayers );// don't let pawns walk through
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
     }
@@ -632,6 +634,17 @@ function FixBeamLaserTriggers()
     }
     foreach AllActors(class'#var(prefix)LaserTrigger',lt){
         lt.TriggerType=TT_AnyProximity;
+    }
+#endif
+}
+
+function FixAutoTurrets()
+{
+#ifdef fixes
+    local #var(prefix)AutoTurret at;
+    foreach AllActors(class'#var(prefix)AutoTurret',at){
+        at.gunDamage=at.Default.gunDamage; //One turret in Cathedral has non-standard damage
+        at.fireRate=at.Default.fireRate; //Make sure large and small turrets use their appropriate firerates
     }
 #endif
 }
