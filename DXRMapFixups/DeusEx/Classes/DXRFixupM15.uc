@@ -120,24 +120,26 @@ function PreFirstEntryMapFixes_Bunker()
 
     // find the DataLinkTrigger where Page tells you to jump, we use this for finding the door and adjusting its position
     foreach AllActors(class'DataLinkTrigger',dlt){
-        if (dlt.datalinkTag=='DL_Bunker_Fan'){ break;}
+        if (dlt.datalinkTag=='DL_Bunker_Fan') {
+            //Lock the fan entrance top door
+            d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
+            d.bLocked=True;
+            d.bBreakable=True;
+            d.FragmentClass=Class'DeusEx.MetalFragment';
+            d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
+            d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
+            d.minDamageThreshold=25;
+            d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
+
+            //Make Page tell you to jump even if you enter the fan entrance through the hatch
+            loc = dlt.Location;
+            loc.z -= 100.0;
+            dlt.SetLocation(loc);
+            dlt.SetCollisionSize(dlt.CollisionRadius, dlt.CollisionHeight + 100.0);
+
+            break;
+        }
     }
-
-    //Lock the fan entrance top door
-    d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
-    d.bLocked=True;
-    d.bBreakable=True;
-    d.FragmentClass=Class'DeusEx.MetalFragment';
-    d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
-    d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
-    d.minDamageThreshold=25;
-    d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
-
-    //Make Page tell you to jump even if you enter the fan entrance through the hatch
-    loc = dlt.Location;
-    loc.z -= 100.0;
-    dlt.SetLocation(loc);
-    dlt.SetCollisionSize(dlt.CollisionRadius, dlt.CollisionHeight + 100.0);
 
     //Make it only possible to turn the power on, make it impossible to turn the power off again
     foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
