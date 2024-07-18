@@ -208,6 +208,7 @@ function PreFirstEntry()
     FixAutoTurrets();
     SpawnDatacubes();
     AntiEpilepsy();
+    FixHolograms();
 
 #ifdef vanilla
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
@@ -485,6 +486,17 @@ function FixCleanerBot()
         cb.bInvincible=False;
     }
 }
+
+function FixHolograms()
+{
+    local #var(prefix)ScriptedPawn sp;
+    foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
+        if (sp.Style==STY_Translucent){
+            RemoveReactions(sp);
+        }
+    }
+}
+
 
 simulated function FixAmmoShurikenName()
 {
