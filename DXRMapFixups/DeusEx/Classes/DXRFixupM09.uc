@@ -19,8 +19,6 @@ function PreFirstEntryMapFixes()
 {
     local #var(DeusExPrefix)Mover m;
     local ComputerSecurity cs;
-    local #var(prefix)Keypad2 k;
-    local Button1 b;
     local WeaponGasGrenade gas;
     local #var(prefix)Teleporter t;
     local BlockPlayer bp;
@@ -240,19 +238,6 @@ function PreFirstEntryMapFixes()
         //Button to open the sewer grate from the ship side
         AddSwitch( vect(1883.546753,6404.096191,-232.870697), rot(0, 0, 0), 'DrainGrate');
 
-
-        foreach AllActors(class'Button1',b){
-            if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
-                rot = b.Rotation;
-                k = Spawn(class'#var(prefix)Keypad2',,,b.Location, rot);
-                k.validCode="8675309"; //They really like Jenny in this place
-                k.bToggleLock=False;
-                k.Event='Lift';
-                b.Event=''; //If you don't unset the event, it gets called when the button is destroyed...
-                b.Destroy();
-                break;
-            }
-        }
         // near the start of the map to jump over the wall, from (2536.565674, 1600.856323, 251.924713) to 3982.246826
         foreach RadiusActors(class'BlockPlayer', bp, 725, vectm(3259, 1601, 252)) {
             bp.bBlockPlayers=false;
