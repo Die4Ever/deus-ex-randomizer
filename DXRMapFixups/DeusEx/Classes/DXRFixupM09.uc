@@ -22,7 +22,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Keypad2 k;
     local Button1 b;
     local WeaponGasGrenade gas;
-    local Teleporter t;
+    local #var(prefix)Teleporter t;
     local BlockPlayer bp;
     local DynamicBlockPlayer dbp;
     local #var(prefix)OrdersTrigger ord;
@@ -79,6 +79,12 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'ComputerSecurity',cs){
                 if (cs.ComputerNode==CN_UNATCO){
                     cs.ComputerNode=CN_China;
+                }
+            }
+
+            foreach AllActors(class'#var(prefix)Teleporter',t){
+                if (t.URL=="09_NYC_Dockyard#ToDockyardSewer"){
+                    t.SetCollisionSize(80,80); //bigger, so you can't sneak past
                 }
             }
 
@@ -159,7 +165,7 @@ function PreFirstEntryMapFixes()
             }
 
             //Remove the stupid gas grenades that are past the level exit
-            foreach AllActors(class'Teleporter',t){
+            foreach AllActors(class'#var(prefix)Teleporter',t){
                 if (t.Tag=='ToAbove') break;
             }
             gas = WeaponGasGrenade(findNearestToActor(class'WeaponGasGrenade',t));
@@ -214,6 +220,14 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
 
             AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
+
+            foreach AllActors(class'#var(prefix)Teleporter', t) {
+                // if you hug the wall, you can squeeze past the sewer teleporter
+                if (t.url == "09_NYC_Ship#FromDockyardSewer") {
+                    t.SetCollisionSize(80.0, t.CollisionHeight);
+                    break;
+                }
+            }
         }
 
         //They put the key ID in the tag for some reason
@@ -326,6 +340,10 @@ function PreFirstEntryMapFixes()
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
         hoverHint.SetBaseActor(jock);
 
+        if (#defined(vanilla) && InStr(dxr.dxInfo.startupMessage[0], "Cemetary") != -1) {
+            dxr.dxInfo.startupMessage[0] = "New York City, Lower East Side Cemetery"; // fix "cemetery" misspelling
+        }
+
         break;
     }
 }
@@ -369,7 +387,13 @@ function PostFirstEntryMapFixes()
 function AnyEntryMapFixes()
 {
     local #var(DeusExPrefix)Mover m;
+    local bool RevisionMaps;
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+    local #var(prefix)AutoTurret t;
 
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     switch(dxr.localURL)
     {
     case "09_NYC_SHIP":
@@ -383,6 +407,30 @@ function AnyEntryMapFixes()
     case "09_NYC_SHIPBELOW":
         SetTimer(1, True);
         Tag = 'FanToggle';
+
+        if (!RevisionMaps){
+            foreach AllActors(class'#var(prefix)AutoTurret',t){
+                if (t.BindName=="Ops1Dummy"){
+                    t.FamiliarName="Loudspeaker";
+                    t.UnfamiliarName=t.FamiliarName;
+                    break;
+                }
+            }
+            c = GetConversation('Ops1DummyOverheard');
+            c.radiusDistance=400;
+            ce = c.eventList;
+            while (ce!=None){
+                if (ce.eventType==ET_Speech){
+                    ces = ConEventSpeech(ce);
+                    ces.speaker=t;
+                    ces.speakingTo=t; //Normally this conversation speaks to Ops2Dummy, which doesn't exist
+                }
+                ce = ce.nextEvent;
+            }
+
+        }
+
+
         break;
 
     case "09_NYC_SHIPFAN":

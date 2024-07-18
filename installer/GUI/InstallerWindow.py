@@ -228,15 +228,15 @@ class InstallerWindow(GUIBase):
         self.row+=1
 
         # DXVK is also global
+        self.globalsettings['dxvk'] = BooleanVar(master=self.frame, value=self.dxvk_default)
+        self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.globalsettings['dxvk'])
+        self.setgrid(self.dxvk, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         if IsWindows():
-            self.globalsettings['dxvk'] = BooleanVar(master=self.frame, value=self.dxvk_default)
-            self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.globalsettings['dxvk'])
-            self.setgrid(self.dxvk, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
             Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
-            self.FixColors(self.dxvk)
-            self.row+=1
         else:
-            self.globalsettings['dxvk'] = DummyCheckbox()
+            Hovertip(self.dxvk, "Shouldn't be necessary on Linux.")
+        self.FixColors(self.dxvk)
+        self.row+=1
 
         self.globalsettings['deus_nsf_d3d10_lighting'] = BooleanVar(master=self.frame, value=False)
         self.deus_nsf_d3d10_lighting = Checkbutton(self.frame, text="Deus_nsf D3D10 vivid lighting", variable=self.globalsettings['deus_nsf_d3d10_lighting'])

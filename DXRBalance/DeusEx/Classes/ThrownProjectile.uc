@@ -96,6 +96,15 @@ function SpawnCloud(class<Cloud> type, Name DamageType)
     gas.Instigator = Instigator;
 }
 
+simulated function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Momentum, name damageType)
+{
+    //Grenades should *not* take damage from halon...
+    if (DamageType == 'HalonGas')
+        return;
+
+    Super.TakeDamage(Damage,instigatedBy,HitLocation,Momentum,damageType);
+}
+
 // DXRando: also apply damage to AutoTurretGun
 state Exploding
 {
