@@ -283,7 +283,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         return true;
     }
 
-    if (action == 2 && class'DXRActorsBase'.static.ConsumableWouldHelp(player, item)) { // consume
+    if (action == 2 && Human(player).ConsumableWouldHelp(item)) { // consume
         item.SetOwner(player);
         item.Activate();
         DeleteInventory(item);

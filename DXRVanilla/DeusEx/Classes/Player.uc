@@ -1688,6 +1688,16 @@ exec function LootActions()
     ClientMessage("Loot actions: " $ msg);
 }
 
+function bool ConsumableWouldHelp(Inventory item) {
+    return (
+        health < default.health &&
+        (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None || (HealingItem(item) != None && HealingItem(item).health > 0))
+    ) || (
+        energy < default.energy &&
+        (BioElectricCell(item) != None || (HealingItem(item) != None && HealingItem(item).energy > 0))
+    );
+}
+
 
 // ----------------------------------------------------------------------
 // InvokeUIScreen()

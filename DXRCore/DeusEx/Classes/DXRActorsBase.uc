@@ -1734,13 +1734,3 @@ function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name 
 
     return goal;
 }
-
-static function bool ConsumableWouldHelp(DeusExPlayer player, Inventory item) {
-    return (
-        player.health < player.default.health &&
-        (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None || (HealingItem(item) != None && HealingItem(item).health > 0))
-    ) || (
-        player.energy < player.default.energy &&
-        (BioElectricCell(item) != None || (HealingItem(item) != None && HealingItem(item).energy > 0))
-    );
-}
