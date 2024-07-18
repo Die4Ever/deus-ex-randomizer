@@ -4,8 +4,19 @@ var travel bool bZeroRando, bReducedRando;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
+    local float augLevel;
+
     if(damageType == 'NanoVirus') {
-        RandomizeAugStates();
+        augLevel = -1;
+        if (AugmentationSystem != None)
+            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
+        if(augLevel == -1) {
+            RandomizeAugStates();
+        }
+        else {
+            AddDamageDisplay('NanoVirus', vect(0,0,0));
+            SetDamagePercent(1);
+        }
     }
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 }
@@ -98,6 +109,8 @@ function float ReduceEnviroDamage(float damage, name damageType)
 {
     local float skillLevel, augLevel;
 
+    augLevel = -1;
+
     if (damageType != 'TearGas' && damageType != 'PoisonGas' && damageType != 'Radiation'
         && damageType != 'HalonGas' && damageType != 'PoisonEffect' && damageType != 'Poison'
         && damageType != 'Flamed' && damageType != 'Burned' && damageType != 'Shocked' ) {
@@ -169,6 +182,8 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     local BallisticArmor armor;
     local bool bReduced;
     local float damageMult;
+
+    augLevel = -1;
 
     bReduced = False;
     newDamage = Float(Damage);

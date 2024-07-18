@@ -161,7 +161,7 @@ simulated function RandoSkillLevelValues(Skill a)
     else if( #var(prefix)SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level. For attached greandes, this skill also improves the blast radius and damage slightly.";
     }
-    else if( #var(prefix)SkillComputer(a) != None ) {
+    else if( #var(prefix)SkillComputer(a) != None && !dxr.flags.IsZeroRando() ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
     else if( #var(prefix)SkillEnviro(a)!=None ) {
