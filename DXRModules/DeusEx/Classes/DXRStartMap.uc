@@ -64,6 +64,16 @@ function PreFirstEntry()
         dxr.flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
         break;
 
+    case "12_VANDENBERG_CMD":
+        if (dxr.flags.settings.starting_map >= 129) {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
+                dxMover.InterpolateTo(1, 0.0);
+                break;
+            }
+            dxr.flagbase.SetBool('DL_TonyScared_Played', true,, 15); // You won't find cover in the comm building.
+        }
+        break;
+
     case "15_Area51_Bunker":
         if (dxr.flags.settings.starting_map > 150) {
             foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
