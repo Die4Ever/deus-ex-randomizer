@@ -42,7 +42,7 @@ function int InitGoals(int mission, string map)
     AddMapMarker(class'Image01_LibertyIsland',130,371,"B","Police Boat",loc,"The police boat can be located at the South dock, where you normally start the game.  This is the vanilla location.");
     loc=AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4535.585938, -10046.186523, -269.806213), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',250,16,"B","Police Boat",loc,"The police boat can be located at the North dock, near where Harley Filben is located.");
-    loc=AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 231.813477, 2108.193848), rot(0, 0, 0));
+    loc=AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 326, 2108.193848), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',281,179,"B","Police Boat",loc,"The police boat can be located floating off the side of an upper level of the statue.");
     loc=AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4578.414551, 267.813477, 24.193787), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',121,200,"B","Police Boat",loc,"The police boat can be located floating behind UNATCO HQ, near the small hut in front of the statue.");
