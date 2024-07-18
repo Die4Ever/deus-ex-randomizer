@@ -21,6 +21,7 @@ function PreFirstEntryMapFixes()
     local bool VanillaMaps;
     local FlagTrigger ft;
     local #var(prefix)Teleporter tele;
+    local Businesswoman1 bw;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -142,6 +143,14 @@ function PreFirstEntryMapFixes()
                 sp.bImportant=True;
             }
         }
+        foreach AllActors(class'Businesswoman1', bw) {
+            if (bw.UnfamiliarName == "woman") { // don't fix it if it's already been changed somewhere else
+                bw.UnfamiliarName = "Woman";
+            }
+        }
+
+        SetAllLampsState(true, true, false, vect(-1821.85, -351.37, -207.11), 200.0); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
+
         Spawn(class'PlaceholderItem',,, vectm(-607.8,-1003.2,59)); //Table near Nicolette Vanilla
         Spawn(class'PlaceholderItem',,, vectm(-239.927216,499.098633,43)); //Ledge near club owner
         Spawn(class'PlaceholderItem',,, vectm(-1164.5,1207.85,-133)); //Table near biocell guy
@@ -150,8 +159,6 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1464,-1649.6,-197)); //Bathroom stall 1
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
         Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
-
-        SetAllLampsState(true, true, false, vect(-1821.85, -351.37, -207.11), 200.0); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
 
         break;
     case "11_PARIS_UNDERGROUND":
