@@ -117,6 +117,8 @@ function PreFirstEntryMapFixes_Bunker()
             break;
         }
     }
+
+    // find the DataLinkTrigger where Page tells you to jump, we use this for finding the door and adjusting its position
     foreach AllActors(class'DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Bunker_Fan'){ break;}
     }
