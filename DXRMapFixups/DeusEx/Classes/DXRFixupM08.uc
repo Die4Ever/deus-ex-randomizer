@@ -147,6 +147,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local Teleporter tel;
     local DynamicTeleporter dtel;
+    local RiotCop rc;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -230,6 +231,12 @@ function PreFirstEntryMapFixes()
                     k.Description = "Apartment key";
                     if(dxr.flags.settings.keysrando > 0)
                         GlowUp(k);
+                }
+
+                foreach AllActors(class'RiotCop', rc) {
+                    if (rc.bindname == "RiotCop") {
+                        rc.bindname = "Cop";
+                    }
                 }
 
                 foreach RadiusActors(class'#var(DeusExPrefix)Mover', d, 1.0, vectm(-304.0, -3000.0, 64.0)) {
