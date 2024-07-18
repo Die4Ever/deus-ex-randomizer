@@ -263,18 +263,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
     action = class'DXRLoadouts'.static.GetLootAction(item.class);
 
-    if (
-        (action == 2 && DeusExPickup(item) != None) &&
-        (player.health != player.default.health || (player.energy != player.default.energy && HealingItem(item) != None))
-    ) { // consume
-        item.SetOwner(player);
-        item.Activate();
-        DeleteInventory(item);
-        DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
-        return true;
-    }
-
-    if (action > 0) { // drop
+    if (action == 1) { // drop
         weap = Weapon(item);
         if (weap != None && weap.AmmoName != class'AmmoNone') {
             playerAmmo = Ammo(player.FindInventoryType(weap.AmmoName));
@@ -291,6 +280,14 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
 
         TossItem(item);
 
+        return true;
+    }
+
+    if (action == 2 && class'DXRActorsBase'.static.ConsumableWouldHelp(player, item)) { // consume
+        item.SetOwner(player);
+        item.Activate();
+        DeleteInventory(item);
+        DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
         return true;
     }
 
