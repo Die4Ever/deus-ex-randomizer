@@ -870,27 +870,29 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function string GetGoalText(name goalName, Conversation con)
+static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
 
-    if (con == None || goalName == '') return "";
+    if (con == None || goalName == '' || which < 0) return None;
 
     for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
         ceag = ConEventAddGoal(ce);
-        if (ceag != None && ceag.goalName == goalName)
-            return ceag.goalText;
+        if (ceag != None && ceag.goalName == goalName) {
+            if (which == 0) // keep looping until we find the version of the goal we want
+                return ceag;
+            which--;
+        }
     }
 
-    return "";
+    return None;
 }
 
-function string GetGoalTextGC(name goalName, name conversationName)
+function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which)
 {
-    return GetGoalText(goalName, GetConversation(conversationName));
+    return GetGoalConEventStatic(goalName, GetConversation(convname), which);
 }
-
 
 static function string GetActorName(Actor a)
 {
@@ -1714,4 +1716,21 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
     pawn.InitialAlliances[i].bPermanent = bPermanent;
 
     return true;
+}
+
+function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which)
+{
+    local DeusExGoal goal;
+    local ConEventAddGoal ceag;
+
+    goal = player.FindGoal(goaltag);
+
+    if (goal == None) {
+        ceag = GetGoalConEvent(goaltag, convname, which);
+        if (ceag == None) return None;
+        goal = player.AddGoal(goaltag, ceag.bPrimaryGoal);
+        goal.SetText(ceag.goalText);
+    }
+
+    return goal;
 }
