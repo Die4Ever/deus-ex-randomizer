@@ -557,6 +557,7 @@ function DroneExplode()
 state PlayerWalking
 {
     // lets us affect the player's movement
+    // DXRando: we need to copy-paste everything to mess with movement speed https://github.com/Die4Ever/deus-ex-randomizer/issues/842
     function ProcessMove(float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
     {
         local int newSpeed, defSpeed;
@@ -566,7 +567,7 @@ state PlayerWalking
         local bool bCantStandUp;
         local Vector loc, traceSize;
         local float alpha, maxLeanDist;
-        local float legTotal, weapSkill, augValue;
+        local float legTotal, weapSkill, augValue, carriedMass;
 
         // if the spy drone augmentation is active
         if (bSpyDroneActive)
@@ -682,9 +683,11 @@ state PlayerWalking
                 Bob = Default.Bob;
         }
         */
+
         // slow the player down if he's carrying something heavy
         // Like a DEAD BODY!  AHHHHHH!!!
-        if (CarriedDecoration != None)
+        // old vanilla code commented out
+        /*if (CarriedDecoration != None)
         {
             newSpeed -= CarriedDecoration.Mass * 2;
         }
@@ -697,7 +700,27 @@ state PlayerWalking
         else if ((inHand != None) && inHand.IsA('POVCorpse'))
         {
             newSpeed -= inHand.Mass * 3;
+        }*/
+        // DXRando: mix it up https://github.com/Die4Ever/deus-ex-randomizer/issues/842
+        // AugMuscle now helps carrying decorations and bodies
+        if (AugmentationSystem != None)
+            augValue = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+        augValue = FClamp(augValue, 1, 5);
+        if (CarriedDecoration != None)
+            carriedMass = CarriedDecoration.Mass;
+        if(inHand != None && POVCorpse(inHand) != None)
+            carriedMass = inHand.Mass;
+        newSpeed -= (carriedMass * 2) / (augValue ** 2);
+        // adjust player speed according to weapon skill, and AugMuscle
+        if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone)
+        {
+            weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
+            weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) counts as 150% weapon skill (advanced)
+            weapSkill = FClamp(weapSkill, 1.25, 1.75);
+            weapSkill = (weapSkill - 1.25) * 2;// put it on a 0 to 1 scale
+            newSpeed = (defSpeed / 3 * (1 - weapSkill)) + (defSpeed * weapSkill);
         }
+
 
         // Multiplayer movement adjusters
         if ( Level.NetMode != NM_Standalone )
