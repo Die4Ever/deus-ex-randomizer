@@ -1662,13 +1662,11 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
 }
 
 static function bool ConsumableWouldHelp(DeusExPlayer player, Inventory item) {
-    if (
-        (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None || Liquor40oz(item) != None || LiquorBottle(item) != None || WineBottle(item) != None) &&
-        player.health < player.default.health
-    ) {
-        return true;
-    }
-
-    return (BioElectricCell(item) != None || Liquor40oz(item) != None || LiquorBottle(item) != None || WineBottle(item) != None) &&
-        player.energy < player.default.energy;
+    return (
+        player.health < player.default.health &&
+        (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None || (HealingItem(item) != None && HealingItem(item).health > 0))
+    ) || (
+        player.energy < player.default.energy &&
+        (BioElectricCell(item) != None || (HealingItem(item) != None && HealingItem(item).energy > 0))
+    );
 }
