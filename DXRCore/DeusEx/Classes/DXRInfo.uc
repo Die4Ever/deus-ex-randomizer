@@ -182,6 +182,15 @@ function bool IsAprilFools()
     return Level.Month == 4 && Level.Day == 1 && class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags);
 }
 
+function bool IsOctoberUnlocked()
+{
+    // Happy Halloween! unlock forever
+    // or do it by version number? allow if(#defined(debug))?
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
+    if(#defined(debug)) return true;
+    return Level.Month >= 10 || Level.Year > 2024;
+}
+
 final function int SystemTime()
 {
     return _SystemTime(Level);
