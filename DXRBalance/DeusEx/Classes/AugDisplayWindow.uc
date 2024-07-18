@@ -718,6 +718,10 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
     local SecurityCamera sc;
     local ThrownProjectile tp;
 
+    if(target == None) {
+        xcolor = colWhite;
+        return;
+    }
     Super.GetTargetReticleColor(target,xcolor);
 
     if ( Player.Level.NetMode == NM_Standalone ) {

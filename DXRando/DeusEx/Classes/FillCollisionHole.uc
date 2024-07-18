@@ -38,6 +38,7 @@ static function CreateLine(Actor a, vector start, vector end, float radius, floa
 defaultproperties
 {
     bStatic=false
+    bCanBeBase=true
     bCollideWorld=false
     bBlockSight=True
     bHidden=False

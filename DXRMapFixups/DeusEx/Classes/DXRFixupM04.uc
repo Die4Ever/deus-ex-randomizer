@@ -44,8 +44,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)GuntherHermann gunther;
+    local #var(prefix)GilbertRenton gilbert;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)JoJoFine jojo;
     local OnceOnlyTrigger oot;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
@@ -81,6 +83,14 @@ function PreFirstEntryMapFixes()
         }
 #endif
         class'GilbertWeaponMegaChoice'.static.Create(Player());
+        foreach AllActors(class'#var(prefix)GilbertRenton',gilbert){
+            //Make sure he has ammo for Stealth Pistol(10mm), Pistol (10mm),
+            //Sawed-off (Buckshot shells), Mini Crossbow (Tranq Darts)
+            GiveItem(gilbert, class'AmmoShell',20);
+            GiveItem(gilbert, class'Ammo10mm',20);
+            GiveItem(gilbert, class'AmmoDartPoison',20);
+            break;
+        }
 
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
@@ -99,6 +109,16 @@ function PreFirstEntryMapFixes()
                     GlowUp(key);
 
                 SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+            }
+
+            foreach RadiusActors(class'#var(DeusExPrefix)Mover', door, 1.0, vectm(-304.0, -3000.0, 64.0)) {
+                // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
+                door.InterpolateTo(1, 0.0);
+                break;
+            }
+
+            foreach AllActors(class'#var(prefix)JoJoFine',jojo){
+                jojo.BarkBindName="JoJoFine";
             }
 
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
@@ -176,6 +196,13 @@ function PreFirstEntryMapFixes()
             ft.FlagName='NSFSignalSent';
             ft.flagValue=True;
             ft.Event='UNATCOHatesPlayer';
+
+            foreach AllActors(class'Teleporter', tel) {
+                if (tel.url == "04_NYC_Street#FromNSFHQ") {
+                    tel.SetCollisionSize(tel.CollisionRadius, tel.CollisionHeight + 40.0);
+                    break;
+                }
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
             class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
@@ -342,6 +369,7 @@ function AnyEntryMapFixes()
     local bool RevisionMaps;
     local bool VanillaMaps;
     local Mover door;
+    local ConEventSpeech ces;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -402,6 +430,10 @@ function AnyEntryMapFixes()
                 door.DoOpen();
             }
         }
+
+        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
+        if (ces != None)
+            ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
 
         break;
     }

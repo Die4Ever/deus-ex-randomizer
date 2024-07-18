@@ -76,6 +76,8 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
+    local AlarmUnit au;
+    local vector loc;
 
     local bool VanillaMaps;
 
@@ -226,7 +228,7 @@ function PreFirstEntryMapFixes()
         class'FillCollisionHole'.static.CreateLine(self, vectm(1520, 3675, 69), vectm(1464, 3675, 69), 32, 80);
 
         // extra spots for datacube
-        Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower
+        Spawn(class'PlaceholderItem',,, vectm(5113,3615,6.3));        //In front of guard tower
         Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(3225,3193,275));        //Different Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(2850,3448,219));        //Bathroom stall
@@ -251,6 +253,15 @@ function PreFirstEntryMapFixes()
 
             class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
             class'PlaceholderEnemy'.static.Create(self,vectm(2887,3410,256),,'Shitting');
+
+            foreach RadiusActors(class'AlarmUnit', au, 1.0, vectm(-1967.865112, 1858.142822, 101.505104)) {
+                // alarm inside the boat house is too high up for enemies to reach
+                loc = au.Location;
+                // loc.z = 58.946182; // height of the alarm on the outside of the boat house
+                loc.z = 80.225643; // halfway between them
+                au.SetLocation(loc);
+                break;
+            }
         }
         break;
 

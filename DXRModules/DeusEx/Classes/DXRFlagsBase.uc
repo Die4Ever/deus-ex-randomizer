@@ -78,6 +78,7 @@ struct MoreFlagsSettings{
     var int newgameplus_curve_scalar;
     var int empty_medbots;
     var int camera_mode;
+    var int splits_overlay;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -411,7 +412,9 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
     FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);
     FlagInt('Rando_num_removed_weapons', newgameplus_num_removed_weapons, mode, str);
+
     FlagInt('Rando_camera_mode', moresettings.camera_mode, mode, str);
+    FlagInt('Rando_splits_overlay', moresettings.splits_overlay, mode, str);
 
     return str;
 }
@@ -588,6 +591,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "New Game+ Removed Weapons Per Loop";
         case 'Rando_camera_mode':
             return "Camera Mode";
+        case 'Rando_splits_overlay':
+            return "Splits Overlay";
         default:
             err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
@@ -882,6 +887,14 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Third Person";
             } else if (val==2){
                 return "Fixed Camera";
+            }
+            break;
+
+        case 'Rando_splits_overlay':
+            if (val == 0) {
+                return "Don't Show";
+            } else {
+                return "Show";
             }
             break;
 

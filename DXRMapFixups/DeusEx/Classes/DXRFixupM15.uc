@@ -77,6 +77,7 @@ function PreFirstEntryMapFixes_Bunker()
     local Trigger trig;
     local #var(prefix)RatGenerator rg;
     local Vector loc;
+    local #var(prefix)Fan1 fan;
 
     if (dxr.flags.settings.starting_map < 151) {
         player().DeleteAllGoals();
@@ -170,6 +171,10 @@ function PreFirstEntryMapFixes_Bunker()
 
     Spawn(class'#var(prefix)LiquorBottle',,, vectm(1005.13,2961.26,-480)); //Liquor in a locker, so every mission has alcohol
 
+    foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
+        fan.bHighlight=True;
+    }
+
     Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building
     Spawn(class'PlaceholderItem',,, vectm(-1565.4,3384.8,-213)); //Back of Storage building
     Spawn(class'PlaceholderItem',,, vectm(-1160.9,256.3,-501)); //Tower basement
@@ -199,6 +204,7 @@ function PreFirstEntryMapFixes_Final()
     local Switch2 s2;
     local SpecialEvent se;
     local DataLinkTrigger dlt;
+    local SkillAwardTrigger sat;
 
     // Generator_overload is the cover over the beat the game button used in speedruns
     foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
@@ -248,6 +254,20 @@ function PreFirstEntryMapFixes_Final()
     foreach AllActors(class'DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Helios_Door2'){
             dlt.SetCollisionSize(900,dlt.CollisionHeight);
+        }
+    }
+
+    //There's a trigger for this at the top of the elevator, but it has collide actors false.
+    //Easier to just spawn a new one near the elevator so you can actually hear it before
+    //the game is over.
+    dlt = Spawn(class'DataLinkTrigger',,,vectm(-3988,1215,-1542));
+    dlt.SetCollisionSize(200,40);
+    dlt.datalinkTag='DL_Final_Helios07';
+
+    foreach AllActors(class'SkillAwardTrigger',sat){
+        if (sat.awardMessage=="Critical Loctaion Bonus"){
+            sat.awardMessage="Critical Location Bonus";
+            break;
         }
     }
 

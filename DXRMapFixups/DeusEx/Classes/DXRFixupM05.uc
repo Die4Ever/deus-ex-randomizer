@@ -76,8 +76,10 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'#var(prefix)MJ12Troop', mj12, 'Cellguard') {
             mj12.bImportant = true;
-            mj12.UnfamiliarName = class'DXRNames'.static.RandomName(dxr);
-            mj12.FamiliarName = mj12.UnfamiliarName;
+            if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
+                mj12.UnfamiliarName = class'DXRNames'.static.RandomName(dxr);
+                mj12.FamiliarName = mj12.UnfamiliarName;
+            }
             mj12.BindName = "MJ12CellguardRick"; // he's still Rick in our hearts
         }
 
