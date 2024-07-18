@@ -59,7 +59,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vect(342.584808, -1802.576172, 1713.509521), rot(0, 0, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(204.923828, -195.652588, 1795), rot(0, 40000, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Canal Waterside Apartment", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
