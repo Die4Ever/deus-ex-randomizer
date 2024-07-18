@@ -696,6 +696,7 @@ function MakeAllHackable(int deviceshackable)
 
         // make Helios ending slightly harder?
         if(h.Event == 'door_helios_room') {
+            h.bHackable = false;
             h.hackStrength = 1;
             h.initialhackStrength = h.hackStrength;
         }

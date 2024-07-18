@@ -198,10 +198,6 @@ function PreFirstEntryMapFixes_Final()
     local DataLinkTrigger dlt;
     local SkillAwardTrigger sat;
 
-    // Generator_overload is the cover over the beat the game button used in speedruns
-    foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
-        d.move(vectm(0, 0, -1));
-    }
     AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
     AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
     AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
@@ -497,12 +493,6 @@ function AnyEntryMapFixes()
                 ee.DamageAmount /= 2;
                 ee.damageTime *= 2.0;
                 ee.randomAngle /= 2.0;
-            }
-        }
-
-        if((!RevisionMaps) && (!#defined(gmdx))) {// cover the button better
-            foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'Page_button') {
-                d.SetLocation(d.Location-vectm(0,0,2)); // original Z was -5134
             }
         }
         break;
