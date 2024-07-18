@@ -35,7 +35,6 @@ function PreFirstEntry()
     local ElevatorMover eMover;
     local #var(DeusExPrefix)Mover dxMover;
     local Dispatcher disp;
-    local ScientistMale sm;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
