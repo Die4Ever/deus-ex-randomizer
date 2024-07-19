@@ -291,7 +291,30 @@ function PreFirstEntry()
 
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
+    ApplyGoalTexturesToAllActors();
     RandoMissionGoals = true;
+}
+
+function ApplyGoalTexturesToAllActors()
+{
+    local int g,a;
+
+    if(!#defined(vanilla)) return;
+    if(num_goals == 0 && num_locations == 0) return;
+
+    for(g=0;g<num_goals;g++){
+        for(a=0;a<ArrayCount(goals[g].actors);a++){
+            ApplyGoalTextureToActor(goals[g].actors[a].a);
+        }
+    }
+}
+
+//Generic textures we want to apply consistently across all goal actors
+function ApplyGoalTextureToActor(Actor a)
+{
+    if (ComputerSecurity(a)!=None){
+        a.Skin=Texture'GoalSecurityComputer';
+    }
 }
 
 function ShuffleGoals()
