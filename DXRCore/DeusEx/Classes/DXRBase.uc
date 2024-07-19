@@ -219,9 +219,9 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 {
     local #var(prefix)Augmentation aug;
     local #var(prefix)Skill sk;
-    local string s, word, s_defaults;
+    local string s, word, s_defaults, t;
     local int i, len, mid, oldseed, removals;
-    local float v;
+    local float val, defaultval;
     local float d_min, d_max, avg_diff;
     local float points[16];
 
@@ -261,17 +261,16 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     oldseed = SetGlobalSeed(" RandoLevelValues " $ a.class.name );
     // choose random points within the 0-1 range, with an extra point so we can remove the median
     for(i=0; i < len; i++) {
-        v = rngexp(0, 100, 1.4) / 100.0;// should this be using a 1.4 curve?
-        points[i] = v;
+        points[i] = rngexp(0, 100, 1.4) / 100.0;// should this be using a 1.4 curve?
     }
     ReapplySeed( oldseed );
 
     // sort the values
     for(i=1; i < len; i++) {
         if( points[i] < points[i-1] ) {
-            v = points[i];
+            val = points[i];
             points[i] = points[i-1];
-            points[i-1] = v;
+            points[i-1] = val;
             i=0;
         }
     }
@@ -283,19 +282,37 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     // apply the values
     for(i=0; i < len; i++) {
-        v = points[i];
-
-        if( aug != None ) aug.LevelValues[i] = aug.default.LevelValues[i];
-        else if( sk != None ) sk.LevelValues[i] = sk.default.LevelValues[i];
+        if( aug != None ) defaultval = aug.default.LevelValues[i];
+        else if( sk != None ) defaultval = sk.default.LevelValues[i];
 
         if( i>0 ) s_defaults = s_defaults $ ", ";
-        s_defaults = s_defaults $ DescriptionLevel(a, i, word);
+        val = defaultval;
+        s_defaults = s_defaults $ DescriptionLevel(a, i, word, val, defaultval);
 
-        if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.default.LevelValues[i], v, d_max, d_min, wet, i, len);
-        else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.default.LevelValues[i], v, d_max, d_min, wet, i, len);
+        val = WeightedLevelValue(defaultval, points[i], d_max, d_min, wet, i, len);
 
         if( i>0 ) s = s $ ", ";
-        s = s $ DescriptionLevel(a, i, word);
+        s = s $ DescriptionLevel(a, i, word, val, defaultval);
+
+        if( aug != None ) aug.LevelValues[i] = val;
+        else if( sk != None ) sk.LevelValues[i] = val;
+    }
+
+    if(aug != None && aug.default.Level5Value != -1) {
+        defaultval = aug.default.Level5Value;
+        val += defaultval - aug.default.LevelValues[3];// increment past the level 4 strength
+        t = DescriptionLevel(a, 4, word, val, defaultval);// DescriptionLevel applies bounds checks
+        if(Abs(val-aug.LevelValues[3]) < Abs(avg_diff*0.3)) {
+            // if the gain is too small, disable level 5 so Synth Heart doesn't waste the player's energy
+            s = s $ ", --";
+            aug.Level5Value = -1;
+        } else {
+            s = s $ ", " $ t;
+            aug.Level5Value = val;
+        }
+        val = defaultval;
+        t = DescriptionLevel(a, 4, word, val, defaultval);
+        s_defaults = s_defaults $ ", " $ t;
     }
 
     if(dxr.flags.IsZeroRando()) {
@@ -359,25 +376,14 @@ simulated function RemoveSmallestJump(int len, out float a[16])
     }
 }
 
-simulated function string DescriptionLevel(Actor a, int i, out string word)
+simulated function string DescriptionLevel(Actor a, int i, out string word, out float val, float defaultval)
 {
-    local Skill sk;
-    local Augmentation aug;
     local float f;
 
     warn("DXRBase DescriptionLevel failed for "$a);
-    sk = Skill(a);
-    aug = Augmentation(a);
-    if(sk != None) {
-        word = "% of Normal";
-        f = sk.LevelValues[i] / sk.default.LevelValues[i];
-        return int(f * 100.0) $ "%";
-    } else if(aug != None) {
-        word = "% of Normal";
-        f = aug.LevelValues[i] / aug.default.LevelValues[i];
-        return int(f * 100.0) $ "%";
-    }
-    return "err";
+    word = "% of Normal";
+    f = val / defaultval;
+    return int(f * 100.0) $ "%";
 }
 
 simulated function static int staticrng(DXRando dxr, int max)

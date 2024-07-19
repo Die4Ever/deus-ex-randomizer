@@ -173,7 +173,7 @@ simulated function RandoSkillLevelValues(Skill a)
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevel(Actor act, int i, out string word)
+simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
 {
     local Skill s;
     local float f;
@@ -194,15 +194,15 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
     if( s.Class == class'#var(prefix)SkillDemolition' || InStr(String(s.Class.Name), "#var(prefix)SkillWeapon") == 0 ) {
         word = "Damage";
-        f = -2.0 * s.LevelValues[i] + 1.0;
+        f = -2.0 * val + 1.0;
         return int(f * 100.0) $ p;
     }
     else if( s.Class == class'#var(prefix)SkillLockpicking' || s.Class == class'#var(prefix)SkillTech' ) {
         word = "Efficiency";
-        return int(s.LevelValues[i] * 100.0) $ p;
+        return int(val * 100.0) $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
-        f = s.LevelValues[i];
+        f = val;
 
 #ifdef vanilla
         word = "Damage Reduction (Passive/HazMat/Armor)";
@@ -234,27 +234,27 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( s.Class == class'#var(prefix)SkillMedicine') {
         word = "Healing";
-        return int( s.LevelValues[i] * 30.0 ) $ " HP";
+        return int( val * 30.0 ) $ " HP";
     }
     else if( s.Class == class'#var(prefix)SkillComputer') {
         word = "Hack Time";
         if( i == 0 ) return "--";
-        f = 15.0 / (s.LevelValues[i] * 1.5);
+        f = 15.0 / (val * 1.5);
         return FloatToString(f, 1) $ " sec";
     }
     else if( s.Class == class'#var(prefix)SkillSwimming') {
         word = "Swimming Speed";
-        return int(s.LevelValues[i] * 100.0) $ p;
+        return int(val * 100.0) $ p;
     }
 #ifdef gmdx
     else if( s.Class == class'SkillStealth' ) {
         // TODO: improve description
         word = "Values";
-        return string(s.LevelValues[i]);
+        return string(val);
     }
 #endif
     else {
-        return Super.DescriptionLevel(act, i, word);
+        return Super.DescriptionLevel(act, i, word, val, defaultval);
     }
 }
 
