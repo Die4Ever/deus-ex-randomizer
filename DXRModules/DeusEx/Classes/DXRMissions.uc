@@ -304,16 +304,26 @@ function ApplyGoalTexturesToAllActors()
 
     for(g=0;g<num_goals;g++){
         for(a=0;a<ArrayCount(goals[g].actors);a++){
-            ApplyGoalTextureToActor(goals[g].actors[a].a);
+            ApplyGoalTextureToActor(goals[g].actors[a].a, True);
         }
     }
 }
 
 //Generic textures we want to apply consistently across all goal actors
-function ApplyGoalTextureToActor(Actor a)
+function ApplyGoalTextureToActor(Actor a, bool enable)
 {
+    local bool changed;
+
     if (ComputerSecurity(a)!=None){
         a.Skin=Texture'GoalSecurityComputer';
+        changed=True;
+    } else if (ComputerPersonal(a)!=None){
+        a.Skin=Texture'GoalComputerPersonalYellow';
+        changed=True;
+    }
+
+    if (!enable && changed){
+        a.Skin=a.Default.Skin;
     }
 }
 
