@@ -5,22 +5,29 @@ function PostFirstEntryMapFixes()
 {
     local DeusExMover m;
     local BlockPlayer bp;
+    local Lamp3 lamp;
 
     FixUNATCORetinalScanner();
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
+
         foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
             m.bBreakable = false;
             m.bPickable = false;
             m.bIsDoor = false;// this prevents Lloyd from opening the door
         }
+
         foreach AllActors(class'BlockPlayer', bp) {
             if(bp.Group == 'waterblock') {
                 bp.bBlockPlayers = false;
             }
         }
+
+        SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
+        SetAllLampsState(,, false, vect(3313.0954215, -1662.294768, -176.938141), 0.01);
+
         break;
     }
 
