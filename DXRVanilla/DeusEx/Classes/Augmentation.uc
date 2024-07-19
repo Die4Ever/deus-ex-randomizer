@@ -3,6 +3,7 @@ class DXRAugmentation merges Augmentation;
 var float LastUsed;
 var float AutoLength;
 var float AutoEnergyMult;
+var float Level5Value;
 
 function PostBeginPlay()
 {
@@ -42,6 +43,7 @@ simulated function float GetAugLevelValue()
         if(Player.Energy <= 0 && bAutomatic) {
             return -1.0;
         } else {
+            if(CurrentLevel >= 4) return Level5Value;
             return LevelValues[CurrentLevel];
         }
     }
@@ -59,10 +61,15 @@ simulated function int GetClassLevel()
 
 function BoostAug(bool bBoostEnabled)
 {
+    local int maxBoostLevel;
+
     // DXRando: don't boost free augs because (0 * synth_heart_strength) == 0
     if (bBoostEnabled && energyRate > 0)
     {
-        if (bIsActive && !bBoosted && CurrentLevel < MaxLevel)
+        maxBoostLevel = MaxLevel;
+        if(Level5Value != -1) maxBoostLevel++;
+
+        if (bIsActive && !bBoosted && CurrentLevel < maxBoostLevel)
         {
             CurrentLevel++;
             bBoosted = True;
@@ -168,4 +175,5 @@ defaultproperties
     LastUsed=-100
     AutoLength=5
     AutoEnergyMult=2
+    Level5Value=-1
 }
