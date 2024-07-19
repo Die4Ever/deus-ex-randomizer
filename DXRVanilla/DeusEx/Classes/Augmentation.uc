@@ -44,7 +44,10 @@ simulated function bool IsTicked()
 simulated function TickUse()
 {
     if(bAutomatic && !IsTicked()) {
+        // don't punish the player for auto aug turning off and immediately turning on again within the same one-second cycle
+        if(LastUsed < Level.TimeSeconds-1) {
         Player.Energy -= energyRate/60.0;
+        }
         if(Player.Energy <= 0) {
             Player.Energy = 0;
             return;// don't update the LastUsed
