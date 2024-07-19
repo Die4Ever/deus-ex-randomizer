@@ -281,7 +281,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             cp.specialOptions[i].userName = "DEMIURGE";
             break;
         }
-        ApplyGoalTextureToActor(cp,True); //Should the killphrase computers actually be visually distinct?
+        ApplyGoalTextureToActor(cp,class'MenuChoice_GoalTextures'.static.IsEnabled(self)); //Should the killphrase computers actually be visually distinct?
     }
     else if (g.name=="Paul" && Loc.name!="Surgery Ward") {
         passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));

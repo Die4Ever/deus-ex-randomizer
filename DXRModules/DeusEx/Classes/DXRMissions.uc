@@ -304,7 +304,7 @@ function ApplyGoalTexturesToAllActors()
 
     for(g=0;g<num_goals;g++){
         for(a=0;a<ArrayCount(goals[g].actors);a++){
-            ApplyGoalTextureToActor(goals[g].actors[a].a, True);
+            ApplyGoalTextureToActor(goals[g].actors[a].a, class'MenuChoice_GoalTextures'.static.IsEnabled(self));
         }
     }
 }
