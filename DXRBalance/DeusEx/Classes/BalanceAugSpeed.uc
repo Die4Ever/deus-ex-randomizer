@@ -9,13 +9,44 @@ Begin:
         Player.Energy = 0;
         Deactivate();
     } else {
-        Player.GroundSpeed *= LevelValues[CurrentLevel];
-        Player.JumpZ *= LevelValues[CurrentLevel];
+        Player.GroundSpeed *= GetAugLevelValue();
+        Player.JumpZ *= GetAugLevelValue();
         if ( Level.NetMode != NM_Standalone )
         {
             if ( Human(Player) != None )
-                Human(Player).UpdateAnimRate( LevelValues[CurrentLevel] );
+                Human(Player).UpdateAnimRate( GetAugLevelValue() );
         }
+    }
+}
+
+simulated function float GetAugLevelValue()
+{
+    if (bHasIt && bIsActive) {
+        TickUse();
+        if(CurrentLevel >= 4) return 1.8;// Level 5 is the same as vanilla level 4
+        return LevelValues[CurrentLevel];
+    }
+    else
+        return -1.0;
+}
+
+function BoostAug(bool bBoostEnabled)
+{
+    // DXRando: don't boost free augs because (0 * synth_heart_strength) == 0
+    if (bBoostEnabled && energyRate > 0)
+    {
+        if (bIsActive && !bBoosted && CurrentLevel < MaxLevel+1)// we allow boosting speed to level 5
+        {
+            CurrentLevel++;
+            bBoosted = True;
+            Reset();
+        }
+    }
+    else if (bBoosted)
+    {
+        CurrentLevel--;
+        bBoosted = False;
+        Reset();
     }
 }
 
