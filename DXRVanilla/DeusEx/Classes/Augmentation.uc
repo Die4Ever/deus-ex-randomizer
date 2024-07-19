@@ -94,8 +94,11 @@ function Deactivate()
 
 function Reset()
 {
+    local float oldLastUsed;
     // re-activate to adjust to upgrades/downgrades, without burning energy in a new TickUse()
-    _Deactivate();
+    oldLastUsed = LastUsed;
+    Deactivate();
+    LastUsed = oldLastUsed;
     Activate();
 }
 
