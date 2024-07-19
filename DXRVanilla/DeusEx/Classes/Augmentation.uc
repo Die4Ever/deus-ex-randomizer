@@ -35,6 +35,48 @@ simulated function SetAutomatic()
     }
 }
 
+simulated function float GetAugLevelValue()
+{
+    if (bHasIt && bIsActive) {
+        TickUse();
+        if(Player.Energy <= 0 && bAutomatic) {
+            return -1.0;
+        } else {
+            return LevelValues[CurrentLevel];
+        }
+    }
+    else
+        return -1.0;
+}
+
+simulated function int GetClassLevel()
+{
+    if (bHasIt && bIsActive)
+        return CurrentLevel;
+    else
+        return -1;
+}
+
+function BoostAug(bool bBoostEnabled)
+{
+    // DXRando: don't boost free augs because (0 * synth_heart_strength) == 0
+    if (bBoostEnabled && energyRate > 0)
+    {
+        if (bIsActive && !bBoosted && CurrentLevel < MaxLevel)
+        {
+            CurrentLevel++;
+            bBoosted = True;
+            Reset();
+        }
+    }
+    else if (bBoosted && !bBoostEnabled)
+    {
+        CurrentLevel--;
+        bBoosted = False;
+        Reset();
+    }
+}
+
 simulated function bool IsTicked()
 {
     return (bAutomatic==false && bIsActive)
@@ -46,7 +88,7 @@ simulated function TickUse()
     if(bAutomatic && !IsTicked()) {
         // don't punish the player for auto aug turning off and immediately turning on again within the same one-second cycle
         if(LastUsed < Level.TimeSeconds-1) {
-        Player.Energy -= energyRate/60.0;
+            Player.Energy -= energyRate/60.0;
         }
         if(Player.Energy <= 0) {
             Player.Energy = 0;
