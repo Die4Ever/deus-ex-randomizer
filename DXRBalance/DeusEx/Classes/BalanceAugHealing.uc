@@ -106,4 +106,5 @@ defaultproperties
      LevelValues(1)=40
      LevelValues(2)=55
      LevelValues(3)=70
+     Level5Value=90
 }

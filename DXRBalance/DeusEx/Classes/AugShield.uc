@@ -7,4 +7,5 @@ defaultproperties
     bAutomatic=true
     EnergyRate=25
     LevelValues(0)=0.799999
+    Level5Value=0.05
 }
