@@ -259,7 +259,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         oldDamage *= CombatDifficulty;
     }
     else if (damageType != 'fell' && damageType != 'Drowned') {
-        damageMult = (CombatDifficulty*0.4) + 0.5;// basically wet/dry
+        damageMult = CombatDifficultyMultEnviro();
         newDamage *= damageMult;
         oldDamage *= damageMult;
     }
@@ -278,6 +278,11 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     }
 
     return bReduced;
+}
+
+function float CombatDifficultyMultEnviro()
+{
+    return (CombatDifficulty*0.25) + 0.75;// 25% wet / 75% dry
 }
 
 function float GetDamageMultiplier()

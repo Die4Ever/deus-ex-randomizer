@@ -577,16 +577,16 @@ function FixInvalidBindNames()
 function ScaleZoneDamage()
 {
     local ZoneInfo z;
+    local float f;
 
-    if(!#defined(vanilla)){
-        return;
-    }
-
+#ifdef injections
     foreach AllActors(class'ZoneInfo',z){
         if (z.bPainZone){
-            z.DamagePerSec=Clamp((z.DamagePerSec+1)/player().CombatDifficulty,1,(z.DamagePerSec+1));
+            f = player().CombatDifficultyMultEnviro();
+            z.DamagePerSec=Clamp((z.DamagePerSec+1)/f, 1, (z.DamagePerSec+1));
         }
     }
+#endif
 }
 
 function OverwriteDecorations()
