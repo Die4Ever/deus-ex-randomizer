@@ -315,7 +315,7 @@ function ApplyGoalTextureToActor(Actor a, bool enable)
     local bool changed;
 
     if (ComputerSecurity(a)!=None){
-        a.Skin=Texture'GoalSecurityComputer';
+        a.Skin=Texture'GoalSecurityComputerGreen';
         changed=True;
     } else if (ComputerPersonal(a)!=None){
         a.Skin=Texture'GoalComputerPersonalYellow';
