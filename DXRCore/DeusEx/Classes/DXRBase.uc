@@ -298,6 +298,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
         else if( sk != None ) sk.LevelValues[i] = val;
     }
 
+#ifdef injections
     if(aug != None && aug.default.Level5Value != -1) {
         defaultval = aug.default.Level5Value;
         val += defaultval - aug.default.LevelValues[3];// increment past the level 4 strength
@@ -314,6 +315,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
         t = DescriptionLevel(a, 4, word, val, defaultval);
         s_defaults = s_defaults $ ", " $ t;
     }
+#endif
 
     if(dxr.flags.IsZeroRando()) {
         s = "(Strength) " $ word $ ":|n    " $ s;
