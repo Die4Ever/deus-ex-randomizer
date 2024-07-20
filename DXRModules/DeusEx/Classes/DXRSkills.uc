@@ -202,14 +202,14 @@ simulated function string DescriptionLevel(Actor act, int i, out string word, ou
         return int(val * 100.0) $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
-        f = val;
-
 #ifdef vanilla
         word = "Damage Reduction (Passive/HazMat/Armor)";
-        f = FClamp(f, 0, 1.1);
+        val = FClamp(val, 0, 1.1);
 #else
         word = "Damage Reduction (HazMat/Armor)";
 #endif
+
+        f = val;
 
         switch(i) {
         case 0: r = "Untrained: "; break;
@@ -218,7 +218,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word, ou
         case 3: r = "|n    Master: "; break;
         }
 #ifdef vanilla
-        r = r $ int( (1 - (f * 1.25 + 0.25)) * 100.0 ) $ p $ " / "; // passive is * 1.25 + 0.25
+        r = r $ int( (1 - (f * 1.1 + 0.3)) * 100.0 ) $ p $ " / "; // passive is * 1.1 + 0.3
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #elseif vmd

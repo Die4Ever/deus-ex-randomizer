@@ -145,7 +145,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
     }
     else // passive enviro skill still gives some damage reduction
     {
-        damage *= 1.25 * skillLevel + 0.25;
+        damage *= 1.1 * skillLevel + 0.3;
     }
 
     return damage;
