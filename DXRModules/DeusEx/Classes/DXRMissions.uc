@@ -324,6 +324,11 @@ function DignifyGoalActor(Actor a, bool enableTextures)
         a.Skin=Texture'GoalComputerPersonalYellow';
         changed=True;
     }
+#ifdef injections
+    else if (DataLinkTrigger(a)!=None) {
+        DataLinkTrigger(a).bImportant = true;
+    }
+#endif
 
     if (!enableTextures && changed){
         a.Skin=a.Default.Skin;
