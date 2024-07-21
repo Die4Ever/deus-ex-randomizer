@@ -269,6 +269,18 @@ function PreFirstEntryMapFixes()
             }
             AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
 
+            foreach AllActors(class'Mover', m, 'WaterChanges') {
+                if(m.Name == 'DeusExMover0') {
+                    // lower the mole people broken water
+                    m.SetLocation(m.Location + vectm(0,0, -16));
+                } else if(m.Name == 'DeusExMover1') {
+                    // mole people running water can extinuish fire, great for bingo
+                    a = Spawn(class'ExtinguishFireTrigger',,, m.Location + vectm(0, 0, -14));
+                    a.SetCollisionSize(60.0, 10.0);
+                    a.SetBase(m);
+                }
+            }
+
             //The Leader can go hostile so easily... just make that not possible
             foreach AllActors(class'#var(prefix)Terrorist',terror){
                 if (terror.BindName=="TerroristLeader"){

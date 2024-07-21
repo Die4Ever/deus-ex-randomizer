@@ -8,14 +8,12 @@ function Touch(Actor other)
         if (DeusExPlayer(other) != None) {
             DeusExPlayer(other).ExtinguishFire();
         }
-        if (ScriptedPawn(other) != None) {
+        else if (ScriptedPawn(other) != None) {
             ScriptedPawn(other).ExtinguishFire();
         }
-        return;
     }
-    if (DeusExDecoration(other) != None) {
+    else if (DeusExDecoration(other) != None) {
         DeusExDecoration(other).ExtinguishFire();
-        return;
     }
 }
 
