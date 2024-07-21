@@ -435,6 +435,7 @@ function AnyEntryMapFixes()
         break;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
+        // Lenny's final barks seem to mistakenly be started by frobbing or bumping into him, causing them to take priority over `MeetLenny`
         DeleteConversationFlag(GetConversation('MeetLenny'), 'FoundMoles', False);
         c=GetConversation('LennyFinalBarks');
         c.bInvokeBump=False;
