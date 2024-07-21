@@ -7,7 +7,7 @@ function SaveSetting()
     Super.SaveSetting();
 
     foreach player.AllActors(class'DXRMissions', dxrm) {
-        dxrm.ApplyGoalTexturesToAllActors();
+        dxrm.DignifyAllGoalActors();
     }
 }
 

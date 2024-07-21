@@ -291,26 +291,29 @@ function PreFirstEntry()
 
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
-    ApplyGoalTexturesToAllActors();
+    DignifyAllGoalActors();
     RandoMissionGoals = true;
 }
 
-function ApplyGoalTexturesToAllActors()
+function DignifyAllGoalActors()
 {
     local int g,a;
+    local bool bTextures;
 
     if(!#defined(vanilla)) return;
     if(num_goals == 0 && num_locations == 0) return;
 
+    bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled(self);
+
     for(g=0;g<num_goals;g++){
         for(a=0;a<ArrayCount(goals[g].actors);a++){
-            ApplyGoalTextureToActor(goals[g].actors[a].a, class'MenuChoice_GoalTextures'.static.IsEnabled(self));
+            DignifyGoalActor(goals[g].actors[a].a, bTextures);
         }
     }
 }
 
 //Generic textures we want to apply consistently across all goal actors
-function ApplyGoalTextureToActor(Actor a, bool enable)
+function DignifyGoalActor(Actor a, bool enableTextures)
 {
     local bool changed;
 
@@ -322,7 +325,7 @@ function ApplyGoalTextureToActor(Actor a, bool enable)
         changed=True;
     }
 
-    if (!enable && changed){
+    if (!enableTextures && changed){
         a.Skin=a.Default.Skin;
     }
 }
