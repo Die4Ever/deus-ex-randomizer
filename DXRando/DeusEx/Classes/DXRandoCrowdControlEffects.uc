@@ -94,6 +94,8 @@ var int fartDuration;
 var int flashbangSoundId;
 var int flashbangDuration;
 
+var Texture coronaTexture;
+
 var bool quickLoadTriggered;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -865,15 +867,35 @@ function storeFloatValue(name valName, float val) {
 
 
 function StartMatrixMode() {
+    local Light l;
     if (player().Sprite == None)
     {
+        if (coronaTexture==None){
+            //Find the corona texture used for lights in this level so it can be restored later
+            foreach AllActors(class'Light',l){
+                if (l.bCorona && l.Skin!=None){
+                    coronaTexture = l.Skin;
+                    break;
+                }
+            }
+        }
         player().Matrix();
     }
 }
 
 function StopMatrixMode(optional bool silent) {
+    local Light l;
     if (player().Sprite!=None) {
         player().Matrix();
+
+        //Stopping Matrix mode the normal way doesn't seem to correctly set the Skin value back on lights (which use the skin for Corona)
+        if (coronaTexture!=None){
+            foreach AllActors(class'Light',l){
+                if (l.bCorona){
+                    l.Skin=coronaTexture;
+                }
+            }
+        }
     }
 
     if (!silent) {
