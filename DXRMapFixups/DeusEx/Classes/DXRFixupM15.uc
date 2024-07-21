@@ -446,7 +446,6 @@ function PreFirstEntryMapFixes_Page()
             break;
         }
     }
-
 }
 
 function PreFirstEntryMapFixes()
