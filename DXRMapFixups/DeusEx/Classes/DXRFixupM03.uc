@@ -433,6 +433,18 @@ function AnyEntryMapFixes()
             phone.ConBindEvents();
         }
         break;
+
+    case "03_NYC_BROOKLYNBRIDGESTATION":
+        // allow Lenny to trade LAM for Zyme even if you enter the maps out of order
+        DeleteConversationFlag(GetConversation('MeetLenny'), 'FoundMoles', False);
+        // Lenny's final barks seem to mistakenly be started by frobbing or bumping into him, causing them to take priority over `MeetLenny`
+        c=GetConversation('LennyFinalBarks');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+        c=GetConversation('LennyFinalBarks2');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+        break;
     }
 }
 
