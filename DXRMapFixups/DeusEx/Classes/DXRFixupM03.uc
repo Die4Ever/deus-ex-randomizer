@@ -284,11 +284,20 @@ function PreFirstEntryMapFixes()
                 if(m.Name == 'DeusExMover0') {
                     // lower the mole people broken water
                     m.SetLocation(m.Location + vectm(0,0, -16));
+                    m.MoveTime = 0.1;
+                    // put the flag trigger here instead of the "start" of the map, for entrance rando
+                    foreach AllActors(class'Trigger', t, 'FlagTrigger') {
+                        if(t.Event == 'WaterChanges') {
+                            t.SetLocation(m.Location);
+                            t.SetCollisionSize(1280, 1280);
+                        }
+                    }
                 } else if(m.Name == 'DeusExMover1') {
                     // mole people running water can extinuish fire, great for bingo
                     a = Spawn(class'ExtinguishFireTrigger',,, m.Location + vectm(0, 0, -14));
                     a.SetCollisionSize(60.0, 10.0);
                     a.SetBase(m);
+                    m.MoveTime = 0.1;
                 }
             }
 
