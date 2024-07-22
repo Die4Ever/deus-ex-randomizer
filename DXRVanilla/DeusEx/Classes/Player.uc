@@ -15,8 +15,6 @@ var Rotator ShakeRotator;
 
 var travel int LastBrowsedAugPage, LastBrowsedAug; //OAT, 1/12/24: By popular demand.
 
-var Actor FrobTargetFromHighlight;
-
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
     // HACK: 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
@@ -880,66 +878,61 @@ function HighlightCenterObjectMain()
 
     root = DeusExRootWindow(rootWindow);
 
-    // only do the trace every hundredth of a second, this is 10 times faster than vanilla
-    if (FrobTime >= 0.01)
+    // we do the trace every frame, unlike the vanilla behaviour of doing it every 100ms
+
+    // figure out how far ahead we should trace
+    StartTrace = Location;
+    EndTrace = Location + (Vector(ViewRotation) * MaxFrobDistance);
+
+    // adjust for the eye height
+    StartTrace.Z += BaseEyeHeight;
+    EndTrace.Z += BaseEyeHeight;
+
+    smallestTarget = None;
+    minSize = 99999;
+    bFirstTarget = True;
+
+    // find the object that we are looking at
+    // make sure we don't select the object that we're carrying
+    // use the last traced object as the target...this will handle
+    // smaller items under larger items for example
+    // ScriptedPawns always have precedence, though
+    foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
     {
-        // figure out how far ahead we should trace
-        StartTrace = Location;
-        EndTrace = Location + (Vector(ViewRotation) * MaxFrobDistance);
-
-        // adjust for the eye height
-        StartTrace.Z += BaseEyeHeight;
-        EndTrace.Z += BaseEyeHeight;
-
-        smallestTarget = None;
-        minSize = 99999;
-        bFirstTarget = True;
-
-        // find the object that we are looking at
-        // make sure we don't select the object that we're carrying
-        // use the last traced object as the target...this will handle
-        // smaller items under larger items for example
-        // ScriptedPawns always have precedence, though
-        foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
+        if (IsFrobbable(target) && (target != CarriedDecoration))
         {
-            if (IsFrobbable(target) && (target != CarriedDecoration))
+            if (target.IsA('ScriptedPawn'))
             {
-                if (target.IsA('ScriptedPawn'))
-                {
-                    smallestTarget = target;
-                    break;
-                }
-                else if (target.IsA('Mover') && bFirstTarget)
-                {
-                    smallestTarget = target;
-                    break;
-                }
-                else if (target.CollisionRadius < minSize)
-                {
-                    minSize = target.CollisionRadius;
-                    smallestTarget = target;
-                    bFirstTarget = False;
-                }
+                smallestTarget = target;
+                break;
+            }
+            else if (target.IsA('Mover') && bFirstTarget)
+            {
+                smallestTarget = target;
+                break;
+            }
+            else if (target.CollisionRadius < minSize)
+            {
+                minSize = target.CollisionRadius;
+                smallestTarget = target;
+                bFirstTarget = False;
             }
         }
-
-        // if we already have a frob target, and the player looks away such as that no item is being
-        // traced, we still wait for the full 100ms vanilla duration before clearing the frob
-        // target.
-        //
-        // note that this means we don't wait for the full 100ms vanilla duration if the player is
-        // rapidly changing frob target.
-        if ((FrobTime < 0.1) && (FrobTargetFromHighlight != None) && (smallestTarget == None))
-        {
-            return;
-        }
-
-        FrobTarget = smallestTarget;
-        FrobTargetFromHighlight = smallestTarget;
-
-        // reset our frob timer
-        FrobTime = 0;
     }
+
+    // if we already have a frob target, and the player looks away such as that no item is being
+    // traced, we still wait for the full 100ms vanilla duration before clearing the frob
+    // target.
+    //
+    // note that this means we don't wait for the full 100ms vanilla duration if the player is
+    // rapidly changing frob target.
+    if ((FrobTime < 0.1) && (FrobTarget != None) && (smallestTarget == None))
+    {
+        return;
+    }
+
+    FrobTarget = smallestTarget;
+    FrobTime = 0; // reset our frob timer
 }
 
 function HighlightCenterObjectLaser()
