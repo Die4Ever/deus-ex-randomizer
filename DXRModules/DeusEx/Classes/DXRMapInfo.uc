@@ -336,7 +336,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "BHElevatorEnt":
-                    return "Bottom of Elevator in Helibase";
+                    return "Elevator in Helibase";
                 case "SewerEnt":
                     return "Helibase Entrance from Mole People";
                 case "FromOcean":
