@@ -5,7 +5,6 @@ function PostFirstEntryMapFixes()
 {
     local DeusExMover m;
     local BlockPlayer bp;
-    local Lamp3 lamp;
 
     FixUNATCORetinalScanner();
 
