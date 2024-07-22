@@ -9,12 +9,12 @@ Begin:
         Player.Energy = 0;
         Deactivate();
     } else {
-        Player.GroundSpeed *= LevelValues[CurrentLevel];
-        Player.JumpZ *= LevelValues[CurrentLevel];
+        Player.GroundSpeed *= GetAugLevelValue();
+        Player.JumpZ *= GetAugLevelValue();
         if ( Level.NetMode != NM_Standalone )
         {
             if ( Human(Player) != None )
-                Human(Player).UpdateAnimRate( LevelValues[CurrentLevel] );
+                Human(Player).UpdateAnimRate( GetAugLevelValue() );
         }
     }
 }
@@ -28,4 +28,5 @@ defaultproperties
     LevelValues(1)=1.35
     LevelValues(2)=1.5
     LevelValues(3)=1.7
+    Level5Value=1.8
 }

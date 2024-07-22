@@ -20,10 +20,6 @@ function Deactivate()
 
 defaultproperties
 {
-    bAutomatic=true
-    AutoLength=0
-    AutoEnergyMult=1
-
     EnergyRate=0
     MaxLevel=3
     LevelValues(0)=2

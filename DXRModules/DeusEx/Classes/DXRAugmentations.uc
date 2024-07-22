@@ -354,7 +354,7 @@ simulated function RandoAug(Augmentation a)
     RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevel(Actor act, int i, out string word)
+simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
 {
     local Augmentation a;
     local float f;
@@ -367,7 +367,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
     if( a.Class == class'#var(prefix)AugAqualung') {
         word = "Breath";
-        return int(a.LevelValues[i]) $" sec";
+        return int(val) $" sec";
     }
     else if( a.Class == class'#var(prefix)AugCombat'
 #ifdef gmdx
@@ -375,86 +375,89 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 #endif
     ) {
         word = "Damage";
-        return int(a.LevelValues[i] * 100.0) $"%";
+        return int(val * 100.0) $"%";
     }
     else if( a.Class == class'#var(prefix)AugBallistic' || a.Class == class'#var(prefix)AugEMP' || a.Class == class'#var(prefix)AugEnviro' || a.Class == class'#var(prefix)AugShield') {
         word = "Damage Reduction";
-        if(a.LevelValues[i] < 0) {
-            a.LevelValues[i] = 0;
+        if(val < 0) {
+            val = 0;
         }
-        return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
+        return int( (1.0 - val) * 100.0 ) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugCloak' || a.Class == class'#var(prefix)AugRadarTrans') {
         word = "Energy Use";
-        return int(a.EnergyRate * a.LevelValues[i]) $" per min";
+        return int(a.EnergyRate * val) $" per min";
     }
     else if( a.Class == class'#var(prefix)AugDefense') {
         word = "Distance";
-        return int(a.LevelValues[i] / 16.0) $" ft";
+        return int(val / 16.0) $" ft";
     }
     else if( a.Class == class'#var(prefix)AugDrone') {
         // TODO: improve description
         word = "Values";
-        return string(int(a.LevelValues[i]));
+        return string(int(val));
     }
     else if( a.Class == class'#var(prefix)AugHealing') {
         if(#defined(injections)) word = "Max Health Cap";
+        if(#defined(injections) && val > 100 && val > dxr.flags.settings.health) {
+            val = FMax(100, dxr.flags.settings.health);
+        }
         else word = "Healing";
-        return int(a.LevelValues[i]) $ " HP";
+        return int(val) $ " HP";
     }
     else if( a.Class == class'#var(prefix)AugMuscle') {
         word = "Strength";
-        return int(a.LevelValues[i] * 100.0) $ "%";
+        return int(val * 100.0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugPower' || (a.Class == class'#var(prefix)AugHeartLung' && #defined(injections))) {
         word = "Energy";
-        return int(a.LevelValues[i] * 100.0) $ "%";
+        return int(val * 100.0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugSpeed' || a.Class == class'AugNinja') {
         word = "Speed";
-        return int(a.LevelValues[i] * 100.0) $ "%";
+        return int(val * 100.0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugStealth') {
         if(#defined(vmd175)) {
             word = "Energy Cost Per Minute";
-            return string(int(a.energyRate * a.LevelValues[i] + 0.5));
+            return string(int(a.energyRate * val + 0.5));
         }
         word = "Noise";
-        return Max(int(a.LevelValues[i] * 100.0), 0) $ "%";
+        return Max(int(val * 100.0), 0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugTarget') {
         word = "Damage";
-        f = -2.0 * a.LevelValues[i] + 1.0;
+        f = -2.0 * val + 1.0;
         return int(f * 100.0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugVision') {
         word = "See-through walls distance";
         if(!#defined(balance) && i<2) return "--";
-        if(a.LevelValues[i] < 0)
-            a.LevelValues[i] = 0;
-        return int(a.LevelValues[i] / 16.0) $" ft";
+        if(val < 0)
+            val = 0;
+        return int(val / 16.0) $" ft";
     }
     else if( a.Class == class'#var(prefix)AugHeartLung') {
         word = "Energy Usage";
-        return Max(int(a.LevelValues[i] * 100.0), 0) $ "%";
+        return Max(int(val * 100.0), 0) $ "%";
     }
 
 #ifdef gmdx
     else if( a.Class == class'AugBallisticPassive') {
         word = "Damage Reduction";
-        if(a.LevelValues[i] < 0) {
-            a.LevelValues[i] = 0;
+        if(val < 0) {
+            val = 0;
         }
-        return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
+        return int( (1.0 - val) * 100.0 ) $ "%";
     }
     else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' || a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
         // TODO: improve description
         word = "Values";
-        return string(a.LevelValues[i]);
+        return string(val);
     }
     else if( a.Class.Name == 'AugAmmoCap' ) {
         word = "Ammo Cap";
-        f = a.LevelValues[i]*100.0;
+        f = val*100.0;
         return "+" $ string(int(f)) $ "%";
     }
 #endif
@@ -470,13 +473,13 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         || a.Class.Name == 'AugDefenseHeli'
     ) {
         word = "% of Normal";
-        f = a.LevelValues[i] / a.default.LevelValues[i];
+        f = val / defaultval;
         return int(f * 100.0) $ "%";
     }
 #endif
 
     else {
-        return Super.DescriptionLevel(act, i, word);
+        return Super.DescriptionLevel(act, i, word, val, defaultval);
     }
 }
 

@@ -3,6 +3,7 @@ class DXRAugmentation merges Augmentation;
 var float LastUsed;
 var float AutoLength;
 var float AutoEnergyMult;
+var float Level5Value;
 
 function PostBeginPlay()
 {
@@ -35,6 +36,54 @@ simulated function SetAutomatic()
     }
 }
 
+simulated function float GetAugLevelValue()
+{
+    if (bHasIt && bIsActive) {
+        TickUse();
+        if(Player.Energy <= 0 && bAutomatic) {
+            return -1.0;
+        } else {
+            if(CurrentLevel >= 4) return Level5Value;
+            return LevelValues[CurrentLevel];
+        }
+    }
+    else
+        return -1.0;
+}
+
+simulated function int GetClassLevel()
+{
+    if (bHasIt && bIsActive)
+        return CurrentLevel;
+    else
+        return -1;
+}
+
+function BoostAug(bool bBoostEnabled)
+{
+    local int maxBoostLevel;
+
+    // DXRando: don't boost free augs because (0 * synth_heart_strength) == 0
+    if (bBoostEnabled && energyRate > 0)
+    {
+        maxBoostLevel = MaxLevel;
+        if(Level5Value != -1) maxBoostLevel++;
+
+        if (bIsActive && !bBoosted && CurrentLevel < maxBoostLevel)
+        {
+            CurrentLevel++;
+            bBoosted = True;
+            Reset();
+        }
+    }
+    else if (bBoosted && !bBoostEnabled)
+    {
+        CurrentLevel--;
+        bBoosted = False;
+        Reset();
+    }
+}
+
 simulated function bool IsTicked()
 {
     return (bAutomatic==false && bIsActive)
@@ -44,7 +93,10 @@ simulated function bool IsTicked()
 simulated function TickUse()
 {
     if(bAutomatic && !IsTicked()) {
-        Player.Energy -= energyRate/60.0;
+        // don't punish the player for auto aug turning off and immediately turning on again within the same one-second cycle
+        if(LastUsed < Level.TimeSeconds-1) {
+            Player.Energy -= energyRate/60.0;
+        }
         if(Player.Energy <= 0) {
             Player.Energy = 0;
             return;// don't update the LastUsed
@@ -91,8 +143,11 @@ function Deactivate()
 
 function Reset()
 {
+    local float oldLastUsed;
     // re-activate to adjust to upgrades/downgrades, without burning energy in a new TickUse()
-    _Deactivate();
+    oldLastUsed = LastUsed;
+    Deactivate();
+    LastUsed = oldLastUsed;
     Activate();
 }
 
@@ -120,4 +175,5 @@ defaultproperties
     LastUsed=-100
     AutoLength=5
     AutoEnergyMult=2
+    Level5Value=-1
 }
