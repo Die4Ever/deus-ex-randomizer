@@ -283,11 +283,10 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
         return true;
     }
 
-    if (action == 2 && Human(player).ConsumableWouldHelp(item)) { // consume
-        item.SetOwner(player);
-        item.Activate();
+    if (action == 2 && Human(player).ConsumableWouldHelp(item) && DeusExPickup(item) != None) { // consume
         DeleteInventory(item);
         DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(item, 1);
+        Human(player).InstantlyUseItem(DeusExPickup(item));
         return true;
     }
 
