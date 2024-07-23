@@ -179,10 +179,17 @@ function EnableButtons()
         inv = Inventory(selectedItem.GetClientObject());
 
         if (inv != None) {
-            if (class'DXRLoadouts'.static.GetLootAction(inv.class) == 1) {
-                btnRefusal.SetButtonText(AcceptLabel);
-            } else {
-                btnRefusal.SetButtonText(RefuseLabel);
+            switch (class'DXRLoadouts'.static.GetLootAction(inv.class)) {
+                case 0:
+                    btnRefusal.SetButtonText(RefuseLabel);
+                    break;
+                case 1:
+                    btnRefusal.SetButtonText(AcceptLabel);
+                    break;
+                case 2:
+                    btnRefusal.SetButtonText(RefuseLabel);
+                    btnRefusal.DisableWindow();
+                    break;
             }
 
             if (NanoKeyRing(inv) != None) {
