@@ -174,6 +174,9 @@ function AnyEntryMapFixes()
     // you can't take a corpse alive and conscious
     GetConversation('DL_Top').AddFlagRef('TerroristCommander_Dead', false);
 
+    // don't play the "patchwork seturity systems" infolink after finding Leo
+    GetConversation('DL_FrontEntrance').AddFlagRef('MeetTerrorist_Played', false);
+
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
 
