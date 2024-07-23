@@ -832,7 +832,7 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad)
+function SetAllLampsState(optional bool type1, optional bool type2, optional bool type3, optional Vector loc, optional float rad)
 {
 #ifdef vanilla
     local #var(prefix)Lamp lmp;

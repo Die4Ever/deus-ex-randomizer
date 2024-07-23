@@ -266,6 +266,8 @@ function PreFirstEntryMapFixes()
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
         hoverHint.SetBaseActor(jock);
 
+        SetAllLampsState(,, false, vect(-5723.258798, 1437.040527, -79.614632), 0.01);
+
         break;
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
