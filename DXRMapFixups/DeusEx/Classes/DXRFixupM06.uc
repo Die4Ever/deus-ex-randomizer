@@ -339,7 +339,7 @@ function PreFirstEntryMapFixes()
             g.bImportant = True;
             g.BindName = "BoringLabGreasel";
             //The other ones are tagged as Dogs
-            if (Tag=='Greasel'){
+            if (g.Tag=='Greasel'){
                 g.BindName="JerryTheVentGreasel";
                 if(!dxr.flags.IsReducedRando()) {
                     g.FamiliarName = "Jerry the Vent Greasel";
