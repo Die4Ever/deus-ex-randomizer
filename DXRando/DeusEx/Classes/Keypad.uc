@@ -68,6 +68,5 @@ function bool WasHacked()
 defaultproperties
 {
     bCodeKnown=False
-    bToggleLock=False
     bUnlock=True
 }
