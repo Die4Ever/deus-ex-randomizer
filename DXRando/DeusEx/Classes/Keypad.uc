@@ -55,10 +55,8 @@ function UnlockDoor()
 {
     local #var(DeusExPrefix)Mover dxm;
 
-    if (bUnlock) {
-        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, Event) {
-            dxm.bLocked = false;
-        }
+    foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, Event) {
+        dxm.bLocked = false;
     }
 }
 
@@ -70,5 +68,6 @@ function bool WasHacked()
 defaultproperties
 {
     bCodeKnown=False
+    bToggleLock=False
     bUnlock=True
 }
