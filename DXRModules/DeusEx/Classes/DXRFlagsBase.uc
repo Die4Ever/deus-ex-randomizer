@@ -1101,8 +1101,6 @@ function RunTests()
     teststring( TrimTrailingZeros(FloatToString(1, 5)), "1", "TrimTrailingZeros 3");
     teststring( TrimTrailingZeros(FloatToString(10, 5)), "10", "TrimTrailingZeros 4");
     teststring( TrimTrailingZeros(FloatToString(0.01, 5)), "0.01", "TrimTrailingZeros 5");
-
-    testbool( #defined(debug), false, "debug is disabled");
 }
 
 function ExtendedTests()
@@ -1195,6 +1193,7 @@ function ExtendedTests()
 
     text = VersionString();
     testbool(VersionIsStable(), InStr(text, "Alpha")==-1 && InStr(text, "Beta")==-1, "VersionIsStable() matches version text, " $ text);
+    testbool( #defined(debug), false, "debug is disabled");
 }
 
 function TestTime()

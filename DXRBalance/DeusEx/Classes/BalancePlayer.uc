@@ -4,8 +4,19 @@ var travel bool bZeroRando, bReducedRando;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
+    local float augLevel;
+
     if(damageType == 'NanoVirus') {
-        RandomizeAugStates();
+        augLevel = -1;
+        if (AugmentationSystem != None)
+            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
+        if(augLevel == -1) {
+            RandomizeAugStates();
+        }
+        else {
+            AddDamageDisplay('NanoVirus', vect(0,0,0));
+            SetDamagePercent(1);
+        }
     }
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 }
@@ -98,6 +109,8 @@ function float ReduceEnviroDamage(float damage, name damageType)
 {
     local float skillLevel, augLevel;
 
+    augLevel = -1;
+
     if (damageType != 'TearGas' && damageType != 'PoisonGas' && damageType != 'Radiation'
         && damageType != 'HalonGas' && damageType != 'PoisonEffect' && damageType != 'Poison'
         && damageType != 'Flamed' && damageType != 'Burned' && damageType != 'Shocked' ) {
@@ -132,7 +145,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
     }
     else // passive enviro skill still gives some damage reduction
     {
-        damage *= 1.25 * skillLevel + 0.25;
+        damage *= 1.1 * skillLevel + 0.3;
     }
 
     return damage;
@@ -169,6 +182,8 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     local BallisticArmor armor;
     local bool bReduced;
     local float damageMult;
+
+    augLevel = -1;
 
     bReduced = False;
     newDamage = Float(Damage);
@@ -244,7 +259,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         oldDamage *= CombatDifficulty;
     }
     else if (damageType != 'fell' && damageType != 'Drowned') {
-        damageMult = (CombatDifficulty*0.4) + 0.5;// basically wet/dry
+        damageMult = CombatDifficultyMultEnviro();
         newDamage *= damageMult;
         oldDamage *= damageMult;
     }
@@ -263,6 +278,11 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     }
 
     return bReduced;
+}
+
+function float CombatDifficultyMultEnviro()
+{
+    return (CombatDifficulty*0.25) + 0.75;// 25% wet / 75% dry
 }
 
 function float GetDamageMultiplier()
@@ -536,5 +556,383 @@ function DroneExplode()
         Super.DroneExplode();
     } else {
         ClientMessage("You need 10 bio-electric energy to detonate the spy drone.");
+    }
+}
+
+state PlayerWalking
+{
+    // lets us affect the player's movement
+    // DXRando: we need to copy-paste everything to mess with movement speed https://github.com/Die4Ever/deus-ex-randomizer/issues/842
+    function ProcessMove(float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
+    {
+        local int newSpeed, defSpeed;
+        local name mat;
+        local vector HitLocation, HitNormal, checkpoint, downcheck;
+        local Actor HitActor, HitActorDown;
+        local bool bCantStandUp;
+        local Vector loc, traceSize;
+        local float alpha, maxLeanDist;
+        local float legTotal, weapSkill, augValue, carriedMass;
+
+        // if the spy drone augmentation is active
+        if (bSpyDroneActive)
+        {
+            if ( aDrone != None )
+            {
+                // put away whatever is in our hand
+                if (inHand != None)
+                    PutInHand(None);
+
+                // make the drone's rotation match the player's view
+                aDrone.SetRotation(ViewRotation);
+
+                // move the drone
+                loc = Normal((aUp * vect(0,0,1) + aForward * vect(1,0,0) + aStrafe * vect(0,1,0)) >> ViewRotation);
+
+                // opportunity for client to translate movement to server
+                MoveDrone( DeltaTime, loc );
+
+                // freeze the player
+                Velocity = vect(0,0,0);
+            }
+            return;
+        }
+
+        defSpeed = GetCurrentGroundSpeed();
+
+        // crouching makes you two feet tall
+        if (bIsCrouching || bForceDuck)
+        {
+            if ( Level.NetMode != NM_Standalone )
+                SetBasedPawnSize(Default.CollisionRadius, 30.0);
+            else
+                SetBasedPawnSize(Default.CollisionRadius, 16);
+
+            // check to see if we could stand up if we wanted to
+            checkpoint = Location;
+            // check normal standing height
+            checkpoint.Z = checkpoint.Z - CollisionHeight + 2 * GetDefaultCollisionHeight();
+            traceSize.X = CollisionRadius;
+            traceSize.Y = CollisionRadius;
+            traceSize.Z = 1;
+            HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, traceSize);
+            if (HitActor == None)
+                bCantStandUp = False;
+            else
+                bCantStandUp = True;
+        }
+        else
+        {
+            // DEUS_EX AMSD Changed this to grab defspeed, because GetCurrentGroundSpeed takes 31k cycles to run.
+            GroundSpeed = defSpeed;
+
+            // make sure the collision height is fudged for the floor problem - CNN
+            if (!IsLeaning())
+            {
+                ResetBasedPawnSize();
+            }
+        }
+
+        if (bCantStandUp)
+            bForceDuck = True;
+        else
+            bForceDuck = False;
+
+        // if the player's legs are damaged, then reduce our speed accordingly
+        newSpeed = defSpeed;
+
+        if ( Level.NetMode == NM_Standalone )
+        {
+            if (HealthLegLeft < 1)
+                newSpeed -= (defSpeed/2) * 0.25;
+            else if (HealthLegLeft < 34)
+                newSpeed -= (defSpeed/2) * 0.15;
+            else if (HealthLegLeft < 67)
+                newSpeed -= (defSpeed/2) * 0.10;
+
+            if (HealthLegRight < 1)
+                newSpeed -= (defSpeed/2) * 0.25;
+            else if (HealthLegRight < 34)
+                newSpeed -= (defSpeed/2) * 0.15;
+            else if (HealthLegRight < 67)
+                newSpeed -= (defSpeed/2) * 0.10;
+
+            if (HealthTorso < 67)
+                newSpeed -= (defSpeed/2) * 0.05;
+        }
+
+        // let the player pull themselves along with their hands even if both of
+        // their legs are blown off
+        if ((HealthLegLeft < 1) && (HealthLegRight < 1))
+        {
+            newSpeed = defSpeed * 0.8;
+            bIsWalking = True;
+            bForceDuck = True;
+        }
+        // make crouch speed faster than normal
+        else if (bIsCrouching || bForceDuck)
+        {
+            //newSpeed = defSpeed * 1.8;		// DEUS_EX CNN - uncomment to speed up crouch
+            bIsWalking = True;
+        }
+
+        // CNN - Took this out because it sucks ASS!
+        // if the legs are seriously damaged, increase the head bob
+        // (unless the player has turned it off)
+        /*if (Bob > 0.0)
+        {
+            legTotal = (HealthLegLeft + HealthLegRight) / 2.0;
+            if (legTotal < 50)
+                Bob = Default.Bob * FClamp(0.05*(70 - legTotal), 1.0, 3.0);
+            else
+                Bob = Default.Bob;
+        }
+        */
+
+        // slow the player down if he's carrying something heavy
+        // Like a DEAD BODY!  AHHHHHH!!!
+        // old vanilla code commented out
+        /*if (CarriedDecoration != None)
+        {
+            newSpeed -= CarriedDecoration.Mass * 2;
+        }
+        // don't slow the player down if he's skilled at the corresponding weapon skill
+        else if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) && (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25) && (Level.NetMode==NM_Standalone))
+        {
+            bIsWalking = True;
+            newSpeed = defSpeed;
+        }
+        else if ((inHand != None) && inHand.IsA('POVCorpse'))
+        {
+            newSpeed -= inHand.Mass * 3;
+        }*/
+        // DXRando: mix it up https://github.com/Die4Ever/deus-ex-randomizer/issues/842
+        // AugMuscle now helps carrying decorations and bodies
+        if (AugmentationSystem != None)
+            augValue = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+        augValue = FClamp(augValue, 1, 5);
+        if (CarriedDecoration != None)
+            carriedMass = CarriedDecoration.Mass;
+        if(inHand != None && POVCorpse(inHand) != None)
+            carriedMass = inHand.Mass;
+        newSpeed -= (carriedMass * 2) / (augValue ** 2);
+        // adjust player speed according to weapon skill, and AugMuscle
+        if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone)
+        {
+            weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
+            weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) counts as 150% weapon skill (advanced)
+            weapSkill = FClamp(weapSkill, 1.25, 1.75);
+            weapSkill = (weapSkill - 1.25) * 2;// put it on a 0 to 1 scale
+            newSpeed = (defSpeed / 3 * (1 - weapSkill)) + (defSpeed * weapSkill);
+        }
+
+
+        // Multiplayer movement adjusters
+        if ( Level.NetMode != NM_Standalone )
+        {
+            if ( Weapon != None )
+            {
+                weapSkill = DeusExWeapon(Weapon).GetWeaponSkill();
+                // Slow down heavy weapons in multiplayer
+                if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) )
+                {
+                    newSpeed = defSpeed;
+                    newSpeed -= ((( Weapon.Mass - 30.0 ) / (class'WeaponGEPGun'.Default.Mass - 30.0 )) * (0.70 + weapSkill) * defSpeed );
+                }
+                // Slow turn rate of GEP gun in multiplayer to discourage using it as the most effective close quarters weapon
+                if ((WeaponGEPGun(Weapon) != None) && (!WeaponGEPGun(Weapon).bZoomed))
+                    TurnRateAdjuster = FClamp( 0.20 + -(weapSkill*0.5), 0.25, 1.0 );
+                else
+                    TurnRateAdjuster = 1.0;
+            }
+            else
+                TurnRateAdjuster = 1.0;
+        }
+
+        // if we are moving really slow, force us to walking
+        if ((newSpeed <= defSpeed / 3) && !bForceDuck)
+        {
+            bIsWalking = True;
+            newSpeed = defSpeed;
+        }
+
+        // if we are moving backwards, we should move slower
+        // DEUS_EX AMSD Turns out this wasn't working right in multiplayer, I have a fix
+        // for it, but it would change all our balance.
+        if ((aForward < 0) && (Level.NetMode == NM_Standalone))
+            newSpeed *= 0.65;
+
+        GroundSpeed = FMax(newSpeed, 100);
+
+        // if we are moving or crouching, we can't lean
+        // uncomment below line to disallow leaning during crouch
+
+        if ((VSize(Velocity) < 10) && (aForward == 0))		// && !bIsCrouching && !bForceDuck)
+            bCanLean = True;
+        else
+            bCanLean = False;
+
+        // check leaning buttons (axis aExtra0 is used for leaning)
+        maxLeanDist = 40;
+
+        if (IsLeaning())
+        {
+            if ( PlayerIsClient() || (Level.NetMode == NM_Standalone) )
+                ViewRotation.Roll = curLeanDist * 20;
+
+            if (!bIsCrouching && !bForceDuck)
+                SetBasedPawnSize(CollisionRadius, GetDefaultCollisionHeight() - Abs(curLeanDist) / 3.0);
+        }
+        if (bCanLean && (aExtra0 != 0))
+        {
+            // lean
+            DropDecoration();		// drop the decoration that we are carrying
+            if (AnimSequence != 'CrouchWalk')
+                PlayCrawling();
+
+            alpha = maxLeanDist * aExtra0 * 2.0 * DeltaTime;
+
+            loc = vect(0,0,0);
+            loc.Y = alpha;
+            if (Abs(curLeanDist + alpha) < maxLeanDist)
+            {
+                // check to make sure the destination not blocked
+                checkpoint = (loc >> Rotation) + Location;
+                traceSize.X = CollisionRadius;
+                traceSize.Y = CollisionRadius;
+                traceSize.Z = CollisionHeight;
+                HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, traceSize);
+
+                // check down as well to make sure there's a floor there
+                downcheck = checkpoint - vect(0,0,1) * CollisionHeight;
+                HitActorDown = Trace(HitLocation, HitNormal, downcheck, checkpoint, True, traceSize);
+                if ((HitActor == None) && (HitActorDown != None))
+                {
+                    if ( PlayerIsClient() || (Level.NetMode == NM_Standalone))
+                    {
+                        SetLocation(checkpoint);
+                        ServerUpdateLean( checkpoint );
+                        curLeanDist += alpha;
+                    }
+                }
+            }
+            else
+            {
+                if ( PlayerIsClient() || (Level.NetMode == NM_Standalone) )
+                    curLeanDist = aExtra0 * maxLeanDist;
+            }
+        }
+        else if (IsLeaning())	//if (!bCanLean && IsLeaning())	// uncomment this to not hold down lean
+        {
+            // un-lean
+            if (AnimSequence == 'CrouchWalk')
+                PlayRising();
+
+            if ( PlayerIsClient() || (Level.NetMode == NM_Standalone))
+            {
+                prevLeanDist = curLeanDist;
+                alpha = FClamp(7.0 * DeltaTime, 0.001, 0.9);
+                curLeanDist *= 1.0 - alpha;
+                if (Abs(curLeanDist) < 1.0)
+                    curLeanDist = 0;
+            }
+
+            loc = vect(0,0,0);
+            loc.Y = -(prevLeanDist - curLeanDist);
+
+            // check to make sure the destination not blocked
+            checkpoint = (loc >> Rotation) + Location;
+            traceSize.X = CollisionRadius;
+            traceSize.Y = CollisionRadius;
+            traceSize.Z = CollisionHeight;
+            HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, True, traceSize);
+
+            // check down as well to make sure there's a floor there
+            downcheck = checkpoint - vect(0,0,1) * CollisionHeight;
+            HitActorDown = Trace(HitLocation, HitNormal, downcheck, checkpoint, True, traceSize);
+            if ((HitActor == None) && (HitActorDown != None))
+            {
+                if ( PlayerIsClient() || (Level.NetMode == NM_Standalone))
+                {
+                    SetLocation( checkpoint );
+                    ServerUpdateLean( checkpoint );
+                }
+            }
+        }
+
+        PlayerPawnProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot);
+    }
+
+    // can't call Super(PlayerPawn.PlayerWalking).ProcessMove, so we gotta copy-paste it too...
+    function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
+    {
+        local vector OldAccel;
+
+        OldAccel = Acceleration;
+        Acceleration = NewAccel;
+        bIsTurning = ( Abs(DeltaRot.Yaw/DeltaTime) > 5000 );
+        if ( (DodgeMove == DODGE_Active) && (Physics == PHYS_Falling) )
+            DodgeDir = DODGE_Active;
+        else if ( (DodgeMove != DODGE_None) && (DodgeMove < DODGE_Active) )
+            Dodge(DodgeMove);
+
+        if ( bPressedJump )
+            DoJump();
+        if ( (Physics == PHYS_Walking) && (GetAnimGroup(AnimSequence) != 'Dodge') )
+        {
+            if (!bIsCrouching)
+            {
+                if (bDuck != 0)
+                {
+                    bIsCrouching = true;
+                    PlayDuck();
+                }
+            }
+            else if (bDuck == 0)
+            {
+                OldAccel = vect(0,0,0);
+                bIsCrouching = false;
+                TweenToRunning(0.1);
+            }
+
+            if ( !bIsCrouching )
+            {
+                if ( (!bAnimTransition || (AnimFrame > 0)) && (GetAnimGroup(AnimSequence) != 'Landing') )
+                {
+                    if ( Acceleration != vect(0,0,0) )
+                    {
+                        if ( (GetAnimGroup(AnimSequence) == 'Waiting') || (GetAnimGroup(AnimSequence) == 'Gesture') || (GetAnimGroup(AnimSequence) == 'TakeHit') )
+                        {
+                            bAnimTransition = true;
+                            TweenToRunning(0.1);
+                        }
+                    }
+                    else if ( (Velocity.X * Velocity.X + Velocity.Y * Velocity.Y < 1000)
+                        && (GetAnimGroup(AnimSequence) != 'Gesture') )
+                    {
+                        if ( GetAnimGroup(AnimSequence) == 'Waiting' )
+                        {
+                            if ( bIsTurning && (AnimFrame >= 0) )
+                            {
+                                bAnimTransition = true;
+                                PlayTurning();
+                            }
+                        }
+                        else if ( !bIsTurning )
+                        {
+                            bAnimTransition = true;
+                            TweenToWaiting(0.2);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if ( (OldAccel == vect(0,0,0)) && (Acceleration != vect(0,0,0)) )
+                    PlayCrawling();
+                else if ( !bIsTurning && (Acceleration == vect(0,0,0)) && (AnimFrame > 0.1) )
+                    PlayDuck();
+            }
+        }
     }
 }

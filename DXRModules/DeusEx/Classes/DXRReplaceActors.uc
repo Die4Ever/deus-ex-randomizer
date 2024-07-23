@@ -109,6 +109,9 @@ function ReplaceActors()
         else if( a.class==class'#var(prefix)VendingMachine' ) {
             ReplaceVendingMachine(#var(prefix)VendingMachine(a));
         }
+        else if( #var(prefix)CigaretteMachine(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRCigaretteMachine');
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));

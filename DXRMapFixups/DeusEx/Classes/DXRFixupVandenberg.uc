@@ -637,6 +637,10 @@ function PostFirstEntryMapFixes()
                 sp.SetCollisionSize(sp.default.CollisionRadius, sp.default.CollisionHeight);
             }
         }
+        // if speedrun mode, put a TNT crate for instant death
+        if(dxr.flags.IsSpeedrunMode()) {
+            Spawnm(class'#var(prefix)CrateExplosiveSmall',, 'guardattack', vect(84.125946, 699.975220, -1001.023193));
+        }
         break;
     }
 }

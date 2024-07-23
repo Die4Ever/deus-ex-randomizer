@@ -213,19 +213,31 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
         }
 
-        if(VanillaMaps && dxr.flags.settings.goals > 0) {
-            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
-                if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                dt.Tag = 'UNATCOHatesPlayer';
-                break;
+        if(VanillaMaps) {
+            // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
+            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'SendingSignal') {
+                if(dt.datalinkTag == 'DL_PaulGoodJob') {
+                    dt.bTriggerOnceOnly = false;
+                }
+            }
+
+            if(dxr.flags.settings.goals > 0) {
+                foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
+                    if(dt.datalinkTag != 'DL_SimonsPissed') continue;
+                    dt.Tag = 'UNATCOHatesPlayer';
+                    break;
+                }
             }
 
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
-                ft.Event = 'UNATCOHatesPlayer';
+                if(dxr.flags.settings.goals > 0) {
+                    // immediately change alliances and trigger walt's dialog, but only if the goals are randomized (player won't be near the old triggers)
+                    ft.Event = 'UNATCOHatesPlayer';
+                }
                 ft.bTrigger = true;
                 // spawn intermediate trigger to check flag
-                ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vect(10,10,10));
+                ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vectm(10,10,10));
                 ft.SetCollision(false,false,false);
                 ft.bSetFlag=False;
                 ft.bTrigger=True;
@@ -385,6 +397,11 @@ function AnyEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    case "04_NYC_NSFHQ":
+        // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
+        GetConversation('DL_PaulGoodJob').bDisplayOnce = false;
+        break;
+
     case "04_NYC_HOTEL":
 #ifdef vanilla
         NYC_04_CheckPaulUndead();

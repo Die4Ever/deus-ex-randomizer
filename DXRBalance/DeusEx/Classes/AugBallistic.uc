@@ -5,4 +5,5 @@ defaultproperties
 {
     bAutomatic=true
     LevelValues(0)=0.799999
+    Level5Value=0.15
 }

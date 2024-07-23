@@ -3,7 +3,7 @@ class DXRPasswords extends DXRDatacubes;
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,4,3) ) {
+    if( ConfigOlderThan(3,0,1,3) ) {
         i=0;
         not_passwords[i++] = "dragon head";
         not_passwords[i++] = "security restriction";
@@ -63,6 +63,10 @@ function CheckConfig()
         not_passwords[i++] = ":12";
         not_passwords[i++] = "4/12";
         not_passwords[i++] = "Chapter 12";
+        not_passwords[i++] = "12%";
+        not_passwords[i++] = ".12";
+        not_passwords[i++] = "REPORT 12-Y";
+        not_passwords[i++] = "LAB 12";
         not_passwords[i++] = "the Illuminati";
         not_passwords[i++] = "raptor-chickens";
         not_passwords[i++] = "of Illuminati";

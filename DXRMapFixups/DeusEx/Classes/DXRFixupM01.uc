@@ -40,6 +40,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HarleyFilben harley;
     local #var(prefix)GuntherHermann gunther;
     local #var(prefix)HumanCivilian hc;
+    local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)FlagTrigger ft;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -72,6 +74,24 @@ function PreFirstEntryMapFixes()
             GiveItem(gunther, class'Ammo762mm',300);
             GiveItem(gunther, class'Ammo10mm',150);
             break;
+        }
+
+        // Prevent Gunther from going to WaitingFor orders if you talk to him before going to his cell door
+        // (aka if you spawn in his cell)
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
+            if (ot.Orders=='WaitingFor' && ot.Event=='GuntherHermann'){
+                ot.SetCollision(False,False,False); //You no longer interact directly with the OrdersTrigger
+                ot.Tag='GuntherWaitingOrders';
+
+                //Instead you will interact with this FlagTrigger to conditionally hit the OrdersTrigger instead
+                ft=Spawn(class'#var(prefix)FlagTrigger',,,ot.Location);
+                ft.SetCollisionSize(ot.CollisionRadius,ot.CollisionHeight);
+                ft.Event='GuntherWaitingOrders';
+                ft.bSetFlag=False;
+                ft.bTrigger=True;
+                ft.FlagName='GuntherRescued_Played'; //Only trigger the orders if you have *not* talked to Gunther yet
+                ft.flagValue=False;
+            }
         }
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
