@@ -185,8 +185,27 @@ function SaveSettings()
 
 function String BuildSkillString( Skill aSkill )
 {
+    local DXRSkills dxrs;
     local String skillString;
     local String levelCost;
+    local String levelValuesDisplay[4];
+    local string word;
+    local float val;
+    local float defaultval;
+    local int i;
+    local string shortDisplay;
+
+    if(dxr!=None)
+    {
+        dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
+    }
+
+    for( i=0; i<4; i++ )
+    {
+        val = aSkill.levelValues[i];
+        dxrs.DescriptionLevelExtended(aSkill, i, word, val, defaultval, shortDisplay);
+        levelValuesDisplay[i] = shortDisplay;
+    }
 
     if ( aSkill.GetCurrentLevel() == ArrayCount(aSkill.Cost) )
         levelCost = "--";
@@ -198,15 +217,53 @@ function String BuildSkillString( Skill aSkill )
     skillString = aSkill.skillName $ ";" $
                   aSkill.GetCurrentLevelString()
                   // space for padding
+                  $ "; " $ levelValuesDisplay[0]
+                  $ "; " $ levelValuesDisplay[1]
+                  $ "; " $ levelValuesDisplay[2]
+                  $ "; " $ levelValuesDisplay[3]
                   $ "; " $ levelCost;
 
     return skillString;
 }
 
+function CreateTextHeaders()
+{
+	local MenuUILabelWindow winLabel;
+
+	CreateMenuLabel( 21,  17, HeaderCodeNameLabel,     winClient);
+	CreateMenuLabel( 21,  73, HeaderNameLabel,         winClient);
+	CreateMenuLabel( 21, 133, HeaderAppearanceLabel,   winClient);
+	CreateMenuLabel(172,  17, HeaderSkillsLabel,       winClient);
+	
+	winLabel = CreateMenuLabel(312,  18, HeaderSkillLevelLabel,   winClient);
+	winLabel.SetFont(Font'FontMenuSmall');
+
+    winLabel = CreateMenuLabel(380,  18, "Values", winClient);
+	winLabel.SetFont(Font'FontMenuSmall');
+
+	winLabel = CreateMenuLabel(505,  18, HeaderPointsNeededLabel, winClient);
+	winLabel.SetFont(Font'FontMenuSmall');
+	
+	CreateMenuLabel(409, 344, HeaderSkillPointsLabel,  winClient); 
+}
+
 function CreateSkillsListWindow()
 {
     Super.CreateSkillsListWindow();
-    lstSkills.SetColumnAlignment(2, HALIGN_Left);
+    lstSkills.SetNumColumns(7);
+
+    lstSkills.SetColumnWidth(0, 138);
+	lstSkills.SetColumnWidth(1,  66);
+    lstSkills.SetColumnWidth(2,  30);
+    lstSkills.SetColumnWidth(3,  30);
+    lstSkills.SetColumnWidth(4,  30);
+    lstSkills.SetColumnWidth(5,  30);
+	lstSkills.SetColumnWidth(6,  82);
+    lstSkills.SetColumnAlignment(2, HALIGN_Right);
+    lstSkills.SetColumnAlignment(3, HALIGN_Right);
+    lstSkills.SetColumnAlignment(4, HALIGN_Right);
+    lstSkills.SetColumnAlignment(5, HALIGN_Right);
+    lstSkills.SetColumnAlignment(6, HALIGN_Left);
 }
 
 
