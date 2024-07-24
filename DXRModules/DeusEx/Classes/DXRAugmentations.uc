@@ -327,6 +327,9 @@ simulated function RandoAug(Augmentation a)
     else if( #var(prefix)AugLight(a) != None ) {
         add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
     }
+    else if( #var(prefix)AugAqualung(a) != None ) {
+        return;
+    }
 #endif
 
     if( add_desc != "" && InStr(a.Description, add_desc) == -1 ) {
