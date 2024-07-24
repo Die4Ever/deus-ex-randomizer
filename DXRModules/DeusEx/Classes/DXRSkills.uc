@@ -175,8 +175,17 @@ simulated function RandoSkillLevelValues(Skill a)
 
 simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
 {
-    local string s;
-    return DescriptionLevelExtended(act, i, word, val, defaultval, s);
+    local string shortDisplay;
+    return DescriptionLevelExtended(act, i, word, val, defaultval, shortDisplay);
+}
+
+simulated function string DescriptionLevelShort(Actor act, int i, out float val)
+{
+    local string word;
+    local float defaultval;
+    local string shortDisplay;
+    DescriptionLevelExtended(act, i, word, val, defaultVal, shortDisplay);
+    return shortDisplay;
 }
 
 simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)

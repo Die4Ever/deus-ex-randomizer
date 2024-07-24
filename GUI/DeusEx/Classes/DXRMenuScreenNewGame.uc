@@ -12,6 +12,12 @@ var bool hasCheckedLDDP;
 var bool bFemaleEnabled;
 #endif
 
+const SkillsColWidth = 140;
+const SkillLevelColWidth = 70;
+const SkillValueColWidth = 34;
+const SkillCostColWidth = 51;
+const SkillCostLeftPad = 10;
+
 static function bool HasLDDPInstalled()
 {
     local DeusExTextParser parser;
@@ -185,27 +191,8 @@ function SaveSettings()
 
 function String BuildSkillString( Skill aSkill )
 {
-    local DXRSkills dxrs;
     local String skillString;
     local String levelCost;
-    local String levelValuesDisplay[4];
-    local string word;
-    local float val;
-    local float defaultval;
-    local int i;
-    local string shortDisplay;
-
-    if(dxr!=None)
-    {
-        dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
-    }
-
-    for( i=0; i<4; i++ )
-    {
-        val = aSkill.levelValues[i];
-        dxrs.DescriptionLevelExtended(aSkill, i, word, val, defaultval, shortDisplay);
-        levelValuesDisplay[i] = shortDisplay;
-    }
 
     if ( aSkill.GetCurrentLevel() == ArrayCount(aSkill.Cost) )
         levelCost = "--";
@@ -215,57 +202,106 @@ function String BuildSkillString( Skill aSkill )
         levelCost = String(aSkill.GetCost());
 
     skillString = aSkill.skillName $ ";" $
-                  aSkill.GetCurrentLevelString()
-                  // space for padding
-                  $ "; " $ levelValuesDisplay[0]
-                  $ "; " $ levelValuesDisplay[1]
-                  $ "; " $ levelValuesDisplay[2]
-                  $ "; " $ levelValuesDisplay[3]
-                  $ "; " $ levelCost;
+                  aSkill.GetCurrentLevelString() $ ";" $
+                  BuildSkillStrengthString( aSkill, 0) $ ";" $
+                  BuildSkillStrengthString( aSkill, 1) $ ";" $
+                  BuildSkillStrengthString( aSkill, 2) $ ";" $
+                  BuildSkillStrengthString( aSkill, 3) $ ";" $
+                  levelCost;
 
     return skillString;
 }
 
+function String BuildSkillStrengthString( Skill aSkill, int i )
+{
+    local DXRSkills dxrs;
+    local String prefix;
+    local float val;
+
+    if( dxr!=None )
+    {
+        dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
+    }
+
+    // This helps visually indicate which skill strength the player possess
+    // at their current skill training.
+    if ( aSkill.GetCurrentLevel()==i )
+    {
+        prefix = ">";
+    }
+    else
+    {
+        prefix = " ";
+    }
+
+    val = aSkill.levelValues[i];
+    return prefix $ dxrs.DescriptionLevelShort(aSkill, i, val);
+}
+
 function CreateTextHeaders()
 {
-	local MenuUILabelWindow winLabel;
+    local MenuUILabelWindow winLabel;
+    local int x;
+    local int y;
 
-	CreateMenuLabel( 21,  17, HeaderCodeNameLabel,     winClient);
-	CreateMenuLabel( 21,  73, HeaderNameLabel,         winClient);
-	CreateMenuLabel( 21, 133, HeaderAppearanceLabel,   winClient);
-	CreateMenuLabel(172,  17, HeaderSkillsLabel,       winClient);
-	
-	winLabel = CreateMenuLabel(312,  18, HeaderSkillLevelLabel,   winClient);
-	winLabel.SetFont(Font'FontMenuSmall');
+    CreateMenuLabel(21, 17, HeaderCodeNameLabel, winClient);
+    CreateMenuLabel(21, 73, HeaderNameLabel, winClient);
+    CreateMenuLabel(21, 133, HeaderAppearanceLabel, winClient);
+    CreateMenuLabel(409, 344, HeaderSkillPointsLabel,  winClient);
 
-    winLabel = CreateMenuLabel(380,  18, "Values", winClient);
-	winLabel.SetFont(Font'FontMenuSmall');
+    // ...Skill Table Headers Start Here...
+    x = 172;
+    y = 18;
 
-	winLabel = CreateMenuLabel(505,  18, HeaderPointsNeededLabel, winClient);
-	winLabel.SetFont(Font'FontMenuSmall');
-	
-	CreateMenuLabel(409, 344, HeaderSkillPointsLabel,  winClient); 
+    // Col 0
+    // Because this column's header and cell contents have different font sizes,
+    // the header needs some adjustment to visually align with the cell
+    // contents.
+    winLabel = CreateMenuLabel(x + 3, y - 1, HeaderSkillsLabel, winClient);
+
+    // I'm not sure quite sure why, but nudging the other headers by a small
+    // amount makes them look more aligned with their cell contents.
+    x = x + 2;
+
+    // Col 1
+    x = x + SkillsColWidth;
+    winLabel = CreateMenuLabel(x, y, HeaderSkillLevelLabel, winClient);
+    winLabel.SetFont(Font'FontMenuSmall');
+
+    // Col 2-6
+    x = x + SkillLevelColWidth;
+    winLabel = CreateMenuLabel(x, y, "Skill Strength", winClient);
+    winLabel.SetFont(Font'FontMenuSmall');
+
+    // Col 7
+    x = x + SkillValueColWidth * 4 + SkillCostLeftPad;
+    winLabel = CreateMenuLabel(x, y, "Cost", winClient);
+    winLabel.SetFont(Font'FontMenuSmall');
 }
 
 function CreateSkillsListWindow()
 {
+    local int i;
+
+    // The size of the skill list is (397, 150).
+    // The position of the table is (172, 41).
+    // So, the widths should sum up to 397.
     Super.CreateSkillsListWindow();
+
     lstSkills.SetNumColumns(7);
-
-    lstSkills.SetColumnWidth(0, 138);
-	lstSkills.SetColumnWidth(1,  66);
-    lstSkills.SetColumnWidth(2,  30);
-    lstSkills.SetColumnWidth(3,  30);
-    lstSkills.SetColumnWidth(4,  30);
-    lstSkills.SetColumnWidth(5,  30);
-	lstSkills.SetColumnWidth(6,  82);
-    lstSkills.SetColumnAlignment(2, HALIGN_Right);
-    lstSkills.SetColumnAlignment(3, HALIGN_Right);
-    lstSkills.SetColumnAlignment(4, HALIGN_Right);
-    lstSkills.SetColumnAlignment(5, HALIGN_Right);
-    lstSkills.SetColumnAlignment(6, HALIGN_Left);
+    lstSkills.SetColumnWidth(0, SkillsColWidth);
+    lstSkills.SetColumnWidth(1, SkillLevelColWidth);
+    lstSkills.SetColumnWidth(2, SkillValueColWidth);
+    lstSkills.SetColumnWidth(3, SkillValueColWidth);
+    lstSkills.SetColumnWidth(4, SkillValueColWidth);
+    lstSkills.SetColumnWidth(5, SkillValueColWidth + SkillCostLeftPad);
+    lstSkills.SetColumnWidth(6, SkillCostColWidth - SkillCostLeftPad);
+    
+    for( i=0; i<7; i++ )
+    {
+        lstSkills.SetColumnAlignment(i, HALIGN_Left);
+    }
 }
-
 
 function ProcessAction(String actionKey)
 {
