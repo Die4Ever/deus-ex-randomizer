@@ -2,7 +2,11 @@ class DXRHUDMultiSkills injects HUDMultiSkills;
 
 const skillLevelX	= 0.22;
 
+const curValX = 0.14;
+const nextValX = 0.18;
+
 var bool dashPressed;
+var Color	colMax;
 
 function CheckDashPress()
 {
@@ -34,9 +38,11 @@ event DrawWindow(GC gc)
 {
     local Skill askill;
     local float curx, cury, w, h;
-    local String str, costStr;
-    local int index;
-    local float barLen, costx, levelx;
+    local String str, costStr, word;
+    local int index, i;
+    local float barLen, costx, levelx, curvaluex, nextvaluex, val, defaultval;
+    local DXRSkills dxrs;
+    local String levelValuesDisplay[4];
 
     if ( Player == None )
         return;
@@ -47,13 +53,19 @@ event DrawWindow(GC gc)
 
         if ( Player.SkillSystem != None )
         {
+#ifdef vanilla
+            dxrs = DXRSkills(Human(Player).dxr.FindModule(class'DXRSkills'));
+#endif
             gc.SetFont(Font'FontMenuSmall_DS');
+            gc.SetTextColor( colWhite );
             index = 1;
             askill = Player.SkillSystem.FirstSkill;
             cury = height * skillListY;
             curx = width * skillListX;
             costx = width * skillCostX;
             levelx = width * skillLevelX;
+            curvaluex = width * curValX;
+            nextvaluex = width * nextValX;
             gc.GetTextExtent( 0, w, h, CostString );
             barLen = (costx+(w*1.33))-curx;
             gc.DrawBox( curx, cury, barLen, 1, 0, 0, 1, Texture'Solid');
@@ -67,9 +79,15 @@ event DrawWindow(GC gc)
             str = SkillString;
             gc.GetTextExtent( 0, w, h, str );
             gc.DrawText( curx, cury, w, h, str );
+            str = "Current";
+            gc.GetTextExtent( 0, w, h, str );
+            gc.DrawText( curvaluex-7, cury, w, h, str ); //Slight offset to look a bit nicer
+            str = "Next";
+            gc.GetTextExtent( 0, w, h, str );
+            gc.DrawText( nextvaluex, cury, w, h, str );
             str = LevelString;
             gc.GetTextExtent( 0, w, h, str );
-            gc.DrawText( levelx, cury, w, h, str );
+            gc.DrawText( levelx-4, cury, w, h, str ); //Slight offset to look a bit nicer
             str = CostString;
             gc.GetTextExtent( 0, w, h, str );
             gc.DrawText( costx, cury, w, h, str );
@@ -89,21 +107,21 @@ event DrawWindow(GC gc)
                 gc.GetTextExtent( 0, w, h, str );
                 if ( askill.CurrentLevel == 3)
                 {
-                    gc.SetTileColor( colBlue );
-                    gc.SetTextColor( colBlue );
+                    gc.SetTileColor( colMax );
+                    gc.SetTextColor( colMax );
                     costStr = NAString;
                 }
                 else if ( Player.SkillPointsAvail >= askill.GetCost() )
                 {
-                    gc.SetTextColor( colLtGreen );
-                    gc.SetTileColor( colLtGreen );
+                    gc.SetTextColor( colGreen );
+                    gc.SetTileColor( colGreen );
 
                     costStr = "" $ askill.GetCost();
                 }
                 else
                 {
-                    gc.SetTileColor( colLtRed );
-                    gc.SetTextColor( colLtRed );
+                    gc.SetTileColor( colRed );
+                    gc.SetTextColor( colRed );
 
                     if (askill.GetCost()>=99999){
                         costStr = "BANNED";
@@ -112,9 +130,23 @@ event DrawWindow(GC gc)
                     }
                 }
                 gc.DrawText( curx, cury, w, h, str );
-                DrawLevel( gc, levelx, cury, askill.CurrentLevel );
+                gc.DrawText( levelx, cury, w, h, ""$askill.CurrentLevel+1 ); //Draw text, not boxes
+                //DrawLevel( gc, levelx, cury, askill.CurrentLevel );
                 gc.GetTextExtent(	0, w, h, costStr );
                 gc.DrawText( costx, cury, w, h, costStr );
+
+                if (dxrs!=None){
+                    for (i=0;i<4;i++){
+                        val = askill.levelValues[i];
+                        dxrs.DescriptionLevel(aSkill, i, word, val, defaultval); //Give me DescriptionLevelExtended plz
+                        levelValuesDisplay[i] = ""$int(val * 100.0); //This isn't correct
+                    }
+                    gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[askill.CurrentLevel]);
+                    if (askill.CurrentLevel<3){
+                        gc.DrawText( nextvaluex, cury, w, h, levelValuesDisplay[askill.CurrentLevel+1]);
+                    }
+                }
+
                 cury += h;
                 index += 1;
                 askill = askill.next;
@@ -184,4 +216,11 @@ function bool OverrideBelt( DeusExPlayer thisPlayer, int objectNum )
         return True;
     else
         return False;
+}
+
+defaultproperties
+{
+     colMax=(R=216,G=175,B=31,A=255)
+     colGreen=(R=40,G=204,B=80,A=255)
+     colRed=(R=220,G=90,B=80,A=255)
 }
