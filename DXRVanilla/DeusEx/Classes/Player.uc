@@ -1726,6 +1726,41 @@ function PreTravel()
     Super.PreTravel();
 }
 
+exec function BuySkills()
+{
+    // First turn off scores if we're heading into skill menu
+    if ( !bBuySkills )
+        ClientTurnOffScores();
+
+    bBuySkills = !bBuySkills;
+    BuySkillSound( 2 );
+}
+
+//Copied from vanilla
+exec function ActivateBelt(int objectNum)
+{
+    local DeusExRootWindow root;
+
+    if (RestrictInput())
+        return;
+
+    if (bBuySkills) //This used to have a check for multiplayer as well
+    {
+        root = DeusExRootWindow(rootWindow);
+        if ( root != None )
+        {
+            if ( root.hud.hms.OverrideBelt( Self, objectNum ))
+                return;
+        }
+    }
+
+    if (CarriedDecoration == None)
+    {
+        root = DeusExRootWindow(rootWindow);
+        if (root != None)
+            root.ActivateObjectInBelt(objectNum);
+    }
+}
 
 defaultproperties
 {
