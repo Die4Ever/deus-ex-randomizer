@@ -275,6 +275,10 @@ function DrawWindow(GC gc)
 
     if(stats == None) return;
 
+#ifdef injections
+    if(DeusExRootWindow(player.rootWindow).hud.hms.bShowing) return;
+#endif
+
     UpdatePos();
     Super.DrawWindow(gc);
     gc.SetFont(textfont);

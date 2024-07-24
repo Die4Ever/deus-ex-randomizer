@@ -10,6 +10,7 @@ var bool bDoomMode;
 var bool bAutorun;
 var float autorunTime;
 var bool bBlockAnimations;
+var bool bUpgradeAugs;
 
 var Rotator ShakeRotator;
 
@@ -1733,6 +1734,22 @@ exec function BuySkills()
         ClientTurnOffScores();
 
     bBuySkills = !bBuySkills;
+    if (bBuySkills){
+        bUpgradeAugs=False;
+    }
+    BuySkillSound( 2 );
+}
+
+exec function UpgradeAugs()
+{
+    // First turn off scores if we're heading into aug menu
+    if ( !bUpgradeAugs )
+        ClientTurnOffScores();
+
+    bUpgradeAugs = !bUpgradeAugs;
+    if (bUpgradeAugs){
+        bBuySkills=False;
+    }
     BuySkillSound( 2 );
 }
 
@@ -1744,7 +1761,7 @@ exec function ActivateBelt(int objectNum)
     if (RestrictInput())
         return;
 
-    if (bBuySkills) //This used to have a check for multiplayer as well
+    if (bBuySkills || bUpgradeAugs) //This used to have a check for multiplayer as well
     {
         root = DeusExRootWindow(rootWindow);
         if ( root != None )
