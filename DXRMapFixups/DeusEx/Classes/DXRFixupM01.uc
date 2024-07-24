@@ -193,6 +193,10 @@ function AnyEntryMapFixes()
 
     // you can't take a corpse alive and conscious
     GetConversation('DL_Top').AddFlagRef('TerroristCommander_Dead', false);
+    // "the NSF have set up patchwork security systems here"
+    GetConversation('DL_FrontEntrance').AddFlagRef('StatueMissionComplete', false);
+    // "you might be able to avoid some of the security by entering this way"
+    GetConversation('DL_BackEntrance').AddFlagRef('StatueMissionComplete', false);
 
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
