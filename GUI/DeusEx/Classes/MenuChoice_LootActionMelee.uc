@@ -3,6 +3,8 @@ class MenuChoice_LootActionMelee extends MenuChoice_LootAction;
 
 defaultproperties
 {
+    value=1
+    defaultvalue=1
     HelpText="Should melee weapons be included in the list of Junk items that get dropped when looting a body?"
     actionText="Melee Weapons"
 
