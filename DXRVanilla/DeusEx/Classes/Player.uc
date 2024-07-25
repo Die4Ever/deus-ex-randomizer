@@ -1698,7 +1698,7 @@ exec function LootActions()
 
 function bool ConsumableWouldHelp(Inventory item) {
     if (health < default.health) {
-        if (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None) {
+        if (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None || Sodacan(item) != None) {
             return true;
         }
         if (HealingItem(item) != None && HealingItem(item).health > 0) {
