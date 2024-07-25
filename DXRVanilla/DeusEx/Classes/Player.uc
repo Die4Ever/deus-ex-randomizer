@@ -532,31 +532,39 @@ function bool CanInstantLeftClick(DeusExPickup item)
 exec function ParseLeftClick()
 {
     local DeusExPickup item;
-    local Actor A;
-    local int i;
 
     Super.ParseLeftClick();
     item = DeusExPickup(FrobTarget);
     if (item != None && CanInstantLeftClick(item))
     {
-        foreach item.BasedActors(class'Actor', A)
-            A.SetBase(None);
-        // So that any effects get applied to you
-        item.SetOwner(self);
-        item.SetBase(self);
-        // add to the player's inventory, so ChargedPickups travel across maps
-        item.BecomeItem();
-        item.bDisplayableInv = false;
-        item.Inventory = Inventory;
-        Inventory = item;
-        if(FireExtinguisher(item) != None) {
-            // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
-            item.NumCopies = 1;
-        }
-        for(i=item.NumCopies; i > 0; i--) {
-            item.Activate();
-        }
+        InstantlyUseItem(item);
         FrobTarget = None;
+    }
+}
+
+function InstantlyUseItem(DeusExPickup item)
+{
+    local Actor A;
+    local int i;
+
+    if(item == None) return;
+
+    foreach item.BasedActors(class'Actor', A)
+        A.SetBase(None);
+    // So that any effects get applied to you
+    item.SetOwner(self);
+    item.SetBase(self);
+    // add to the player's inventory, so ChargedPickups travel across maps
+    item.BecomeItem();
+    item.bDisplayableInv = false;
+    item.Inventory = Inventory;
+    Inventory = item;
+    if(FireExtinguisher(item) != None) {
+        // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
+        item.NumCopies = 1;
+    }
+    for(i=item.NumCopies; i > 0; i--) {
+        item.Activate();
     }
 }
 
@@ -1682,23 +1690,45 @@ exec function PlayerRot()
     ClientMessage("Player rotation: (" $ Rotation.pitch $ ", " $ Rotation.yaw $ ", " $ Rotation.roll $ ")");
 }
 
-exec function ShowRefused()
+exec function LootActions()
 {
-    local string refusals, msg;
+    local string lootActions, msg;
     local int idx;
 
-    refusals = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("item_refusals");
+    lootActions = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("loot_actions");
 
     // basically just adds a space after every comma
-    while (Len(refusals) > 1) {
-        refusals = Right(refusals, Len(refusals) - 1);
-        idx = InStr(refusals, ",");
-        msg = msg $ Left(refusals, idx) $ ", ";
-        refusals = Right(refusals, Len(refusals) - idx);
+    lootActions = Mid(lootActions, 1);
+    while (lootActions != "") {
+        idx = InStr(lootActions, ",");
+        msg = msg $ Left(lootActions, idx) $ ", ";
+        lootActions = Mid(lootActions, idx + 1);
     }
     msg = Left(msg, Len(msg) - 2);
 
-    ClientMessage("Refused items: " $ msg);
+    ClientMessage("Loot actions: " $ msg);
+}
+
+function bool ConsumableWouldHelp(Inventory item) {
+    if (health < default.health) {
+        if (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None || Sodacan(item) != None) {
+            return true;
+        }
+        if (HealingItem(item) != None && HealingItem(item).health > 0) {
+            return true;
+        }
+    }
+
+    if (energy < default.energy) {
+        if (BioElectricCell(item) != None) {
+            return true;
+        }
+        if (HealingItem(item) != None && HealingItem(item).energy > 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
