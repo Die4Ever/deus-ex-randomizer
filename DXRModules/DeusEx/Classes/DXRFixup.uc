@@ -440,7 +440,10 @@ function FixAlexsEmail()
     local #var(prefix)ComputerPersonal cp;
 
     foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
-        if (cp.UserList[0].UserName=="ajacobson" && cp.UserList[1].UserName==""){
+        if (
+            (cp.UserList[0].UserName=="ajacobson" && cp.UserList[1].UserName=="") ||
+            (cp.UserList[0].UserName=="DEMIURGE" && cp.UserList[1].UserName=="ajacobson" && cp.UserList[2].UserName=="")
+        ) {
             cp.TextPackage = "#var(package)";
             break;
         }
@@ -832,7 +835,7 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad)
+function SetAllLampsState(optional bool type1, optional bool type2, optional bool type3, optional Vector loc, optional float rad)
 {
 #ifdef vanilla
     local #var(prefix)Lamp lmp;

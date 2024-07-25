@@ -11,16 +11,22 @@ function PostFirstEntryMapFixes()
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
+
         foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
             m.bBreakable = false;
             m.bPickable = false;
             m.bIsDoor = false;// this prevents Lloyd from opening the door
         }
+
         foreach AllActors(class'BlockPlayer', bp) {
             if(bp.Group == 'waterblock') {
                 bp.bBlockPlayers = false;
             }
         }
+
+        SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
+        SetAllLampsState(,, false, vect(3313.0954215, -1662.294768, -176.938141), 0.01);
+
         break;
     }
 
@@ -187,6 +193,10 @@ function AnyEntryMapFixes()
 
     // you can't take a corpse alive and conscious
     GetConversation('DL_Top').AddFlagRef('TerroristCommander_Dead', false);
+    // "the NSF have set up patchwork security systems here"
+    GetConversation('DL_FrontEntrance').AddFlagRef('StatueMissionComplete', false);
+    // "you might be able to avoid some of the security by entering this way"
+    GetConversation('DL_BackEntrance').AddFlagRef('StatueMissionComplete', false);
 
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando

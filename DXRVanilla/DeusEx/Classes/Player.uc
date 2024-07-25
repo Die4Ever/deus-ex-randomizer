@@ -10,6 +10,7 @@ var bool bDoomMode;
 var bool bAutorun;
 var float autorunTime;
 var bool bBlockAnimations;
+var bool bUpgradeAugs;
 
 var Rotator ShakeRotator;
 
@@ -178,6 +179,18 @@ function ShowIntro(optional bool bStartNewGame)
     if(maps != None)
         intro = maps.VaryMap(intro);
     Level.Game.SendPlayer(Self, intro);
+}
+
+exec function ShowMainMenu()
+{
+    local DeusExLevelInfo info;
+
+    // DXRando: we just don't want to do vanilla behavior during the intro (misison 98)
+    // escape skips the conversation which still skips the intro anyways
+    // the vanilla code would skip the intro here as well even before the conversation started, which could also mean before flags are cleared
+    info = GetLevelInfo();
+    if ((info != None) && (info.MissionNumber == 98)) return;
+    Super.ShowMainMenu();
 }
 
 exec function QuickSave()
@@ -1756,6 +1769,57 @@ function PreTravel()
     Super.PreTravel();
 }
 
+exec function BuySkills()
+{
+    // First turn off scores if we're heading into skill menu
+    if ( !bBuySkills )
+        ClientTurnOffScores();
+
+    bBuySkills = !bBuySkills;
+    if (bBuySkills){
+        bUpgradeAugs=False;
+    }
+    BuySkillSound( 2 );
+}
+
+exec function UpgradeAugs()
+{
+    // First turn off scores if we're heading into aug menu
+    if ( !bUpgradeAugs )
+        ClientTurnOffScores();
+
+    bUpgradeAugs = !bUpgradeAugs;
+    if (bUpgradeAugs){
+        bBuySkills=False;
+    }
+    BuySkillSound( 2 );
+}
+
+//Copied from vanilla
+exec function ActivateBelt(int objectNum)
+{
+    local DeusExRootWindow root;
+
+    if (RestrictInput())
+        return;
+
+    if (bBuySkills || bUpgradeAugs) //This used to have a check for multiplayer as well
+    {
+        root = DeusExRootWindow(rootWindow);
+        if ( root != None )
+        {
+            if ( root.hud.hms.OverrideBelt( Self, objectNum ))
+                return;
+        }
+    }
+
+    if (CarriedDecoration == None)
+    {
+        root = DeusExRootWindow(rootWindow);
+        if (root != None)
+            root.ActivateObjectInBelt(objectNum);
+    }
+}
 
 defaultproperties
 {

@@ -413,6 +413,8 @@ function byte FixSavedSection(byte section, byte start)
 
 function EnterConversation()
 {
+    if(dxr.flags.moresettings.splits_overlay > 0) return;
+
     l("EnterConversation");
     SaveSection();
     musicMode = MUS_Conversation;
