@@ -181,6 +181,18 @@ function ShowIntro(optional bool bStartNewGame)
     Level.Game.SendPlayer(Self, intro);
 }
 
+exec function ShowMainMenu()
+{
+    local DeusExLevelInfo info;
+
+    // DXRando: we just don't want to do vanilla behavior during the intro (misison 98)
+    // escape skips the conversation which still skips the intro anyways
+    // the vanilla code would skip the intro here as well even before the conversation started, which could also mean before flags are cleared
+    info = GetLevelInfo();
+    if ((info != None) && (info.MissionNumber == 98)) return;
+    Super.ShowMainMenu();
+}
+
 exec function QuickSave()
 {
     local DeusExLevelInfo info;
