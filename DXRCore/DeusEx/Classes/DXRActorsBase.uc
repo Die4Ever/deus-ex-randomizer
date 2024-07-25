@@ -1217,11 +1217,11 @@ function vector GetRandomPosition(optional vector target, optional float mindist
     if( maxdist <= mindist )
         maxdist = 9999999;
 
-    foreach AllActors(class'PathNode', p) {
+    foreach RadiusActors(class'PathNode', p, maxdist, target) {
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;
-        dist = VSize(p.Location-target);
+        dist = VSize((p.Location-target) * vect(1,1,3));// multiply the weight of the Z axis so things are usually on the correct floor
         if( dist < mindist ) continue;
         if( dist > maxdist ) continue;
         temp[num++] = p;
