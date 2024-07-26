@@ -954,7 +954,7 @@ static function BingoEventData(DXRando dxr, out string j)
 
 static function GameTimeEventData(DXRando dxr, out string j)
 {
-    local int time, realtime, time_without_menus, i, t;
+    local int time, totaltime, time_without_menus, i, t;
     local DXRStats stats;
     local class<Json> js;
     js = class'Json';
@@ -967,17 +967,15 @@ static function GameTimeEventData(DXRando dxr, out string j)
         t += stats.GetMissionMenuTime(i);
         js.static.Add(j, "mission-" $ i $ "-time", t);
         time += t;
-        t = stats.GetCompleteMissionTime(i);
-        js.static.Add(j, "mission-" $ i $ "-realtime", t);
-        realtime += t;
+        t = stats.GetCompleteMissionTime(i);// without menus
         time_without_menus += t;
-        t = stats.GetCompleteMissionMenuTime(i);
-        js.static.Add(j, "mission-" $ i $ "-menutime", t);
-        realtime += t;
+        t += stats.GetCompleteMissionMenuTime(i);// add in the menu time for the total
+        js.static.Add(j, "mission-" $ i $ "-realtime", t);
+        totaltime += t;
     }
     js.static.Add(j, "time", time);
-    js.static.Add(j, "timewithoutmenus", time_without_menus);
-    js.static.Add(j, "realtime", realtime);
+    js.static.Add(j, "timewithoutmenus", time_without_menus);// we don't use this currently
+    js.static.Add(j, "realtime", totaltime);
 }
 
 static function string GetLoadoutName(DXRando dxr)
