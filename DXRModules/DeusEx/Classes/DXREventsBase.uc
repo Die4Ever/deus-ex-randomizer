@@ -964,6 +964,7 @@ static function GameTimeEventData(DXRando dxr, out string j)
 
     for (i=1;i<=15;i++) {
         t = stats.GetMissionTime(i);
+        t += stats.GetMissionMenuTime(i);
         js.static.Add(j, "mission-" $ i $ "-time", t);
         time += t;
         t = stats.GetCompleteMissionTime(i);
