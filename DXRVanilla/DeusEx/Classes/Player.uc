@@ -878,8 +878,8 @@ function HighlightCenterObjectMain()
 
     if(LevelInfo(target) != None) target = None;
 
-    if(target != None) {
-        t = HighlightCenterObjectRay(vect(0,0,1.5), dist2);
+    if(target != None && class'MenuChoice_FixGlitches'.default.enabled) {
+        t = HighlightCenterObjectRay(vect(0,-0.2,1.5), dist2);
         fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
 
         t = HighlightCenterObjectRay(vect(0,-1,-1), dist2);
