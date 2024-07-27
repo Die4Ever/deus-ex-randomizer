@@ -882,9 +882,119 @@ function bool IsFrobbable(actor A)
 
 function HighlightCenterObject()
 {
-    local Vector loc;
+    if (IsInState('Dying'))
+        return;
 
-    Super.HighlightCenterObject();
+    HighlightCenterObjectMain();
+    HighlightCenterObjectLaser();
+}
+
+function HighlightCenterObjectMain()
+{
+    local Actor target, t;
+    local int fails;
+    local float dist, dist2;
+
+    target = HighlightCenterObjectRay(vect(0,0,0), dist);
+
+    if(LevelInfo(target) != None) target = None;
+
+    if(target != None && class'MenuChoice_FixGlitches'.default.enabled) {
+        t = HighlightCenterObjectRay(vect(0,-0.2,1.5), dist2);
+        fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
+
+        t = HighlightCenterObjectRay(vect(0,-1,-1), dist2);
+        fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
+
+        t = HighlightCenterObjectRay(vect(0,1.5,-0.5), dist2);
+        fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
+
+        if(fails > 1) target = None;
+    }
+
+    // DXRando: if we already have a frob target, and the player looks away such as that no item is being
+    // traced, we still wait for the full 100ms vanilla duration before clearing the frob
+    // target.
+    //
+    // note that this means we don't wait for the full 100ms vanilla duration if the player is
+    // rapidly changing frob target.
+    if ((FrobTime < 0.1) && (FrobTarget != None) && (target == None))
+    {
+        return;
+    }
+
+    FrobTarget = target;
+    FrobTime = 0; // reset our frob timer
+}
+
+function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetDist)
+{
+    local Actor target, smallestTarget;
+    local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+    local float minSize;
+    local bool bFirstTarget;
+
+    // DXRando: we do the trace every frame, unlike the vanilla behaviour of doing it every 100ms
+
+    // figure out how far ahead we should trace
+    StartTrace = Location + (offset >> ViewRotation);
+    EndTrace = StartTrace + (Vector(ViewRotation) * MaxFrobDistance);
+
+    // adjust for the eye height
+    StartTrace.Z += BaseEyeHeight;
+    EndTrace.Z += BaseEyeHeight;
+
+    smallestTarget = None;
+    minSize = 99999;
+    smallestTargetDist = 99999;
+    bFirstTarget = True;
+
+    // find the object that we are looking at
+    // make sure we don't select the object that we're carrying
+    // use the last traced object as the target...this will handle
+    // smaller items under larger items for example
+    // ScriptedPawns always have precedence, though
+    foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
+    {
+        if (IsFrobbable(target) && (target != CarriedDecoration))
+        {
+            if (target.IsA('ScriptedPawn'))
+            {
+                smallestTarget = target;
+                smallestTargetDist = VSize(Location-HitLoc);
+                break;
+            }
+            else if (target.IsA('Mover'))
+            {
+                if(bFirstTarget) {
+                    smallestTarget = target;
+                    smallestTargetDist = VSize(Location-HitLoc);
+                }
+                break;
+            }
+            else if (target.CollisionRadius < minSize)
+            {
+                minSize = target.CollisionRadius;
+                smallestTarget = target;
+                bFirstTarget = False;
+                smallestTargetDist = VSize(Location-HitLoc);
+            }
+        }
+        else if(LevelInfo(target) != None || Brush(target) != None) {
+            if(bFirstTarget) {
+                smallestTargetDist = VSize(Location-HitLoc);
+                return Level;
+            }
+            return smallestTarget;
+        }
+    }
+
+    return smallestTarget;
+}
+
+function HighlightCenterObjectLaser()
+{
+    local Vector loc;
 
     //Activate the aim laser any time you aren't seeing through your eyes
     if (class'DXRAimLaserEmitter'.static.AimLaserShouldBeOn(self)){
