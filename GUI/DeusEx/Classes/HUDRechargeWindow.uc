@@ -1,5 +1,19 @@
 class DXRHUDRechargeWindow injects #var(prefix)HUDRechargeWindow;
 
+function CreateBioWindows()
+{
+    Super.CreateBioWindows();
+
+    winBioBarText.SetPos(114, 92); //Bumped up one pixel
+}
+
+function CreateRepairbotWindows()
+{
+    Super.CreateRepairbotWindows();
+
+    winRepairBotBarText.SetPos(114, 112); //Bumped up one pixel
+}
+
 function UpdateRepairBotWindows()
 {
     local float barPercent;
