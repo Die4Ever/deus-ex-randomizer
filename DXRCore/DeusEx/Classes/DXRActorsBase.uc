@@ -454,8 +454,16 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         }
     }
 
+    if (#var(prefix)DataCube(a) != None) {
+        #var(prefix)DataCube(a).GlowOff();
+    }
 
-    if( ! a.SetLocation(newloc) ) return false;
+    if( ! a.SetLocation(newloc) ) {
+        if (#var(prefix)DataCube(a) != None) {
+            GlowUp(a);
+        }
+        return false;
+    }
 
     p = ScriptedPawn(a);
     if( p != None && p.Orders == 'Patrolling' && !retainOrders ) {
@@ -471,6 +479,9 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         gen.SetBase(b);
     }
 
+    if (#var(prefix)DataCube(a) != None) {
+        GlowUp(a);
+    }
 
     return true;
 }
@@ -1627,8 +1638,15 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
-static function GlowUp(Actor a, optional byte hue, optional byte saturation)
+static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
+    // if `a` is a datacube, spawn a new light instead
+    if (#var(prefix)DataCube(a) != None) {
+        a = a.Spawn(class'DynamicLight', a,, a.Location + vect(0, 0, 6.0));
+        a.SetBase(a.Owner);
+        a.LightSaturation = 0;
+    }
+
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
     a.LightBrightness=160;
@@ -1636,6 +1654,8 @@ static function GlowUp(Actor a, optional byte hue, optional byte saturation)
     a.LightHue=hue;
     if(saturation !=0) a.LightSaturation=saturation;
     a.LightRadius=6;
+
+    return a;
 }
 
 function DebugMarkKeyActor(Actor a, coerce string id)
