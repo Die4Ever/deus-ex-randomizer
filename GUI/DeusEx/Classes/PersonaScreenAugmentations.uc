@@ -1,6 +1,14 @@
 //Already "merges"d in Lay D Denton, so merging here as well
 class DXRPersonaScreenAugmentations merges PersonaScreenAugmentations;
 
+function CreateBioCellBar()
+{
+    _CreateBioCellBar();
+
+    //Vanilla location seems to be too close to the bottom of the bar.  Bumped up one pixel
+    winBioEnergyText.SetPos(446, 390);
+}
+
 function UpdateBioEnergyBar()
 {
 	local float energyPercent;
