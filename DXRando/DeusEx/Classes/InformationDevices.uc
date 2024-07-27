@@ -329,9 +329,8 @@ final function bool GlowOff()
     local DynamicLight lt;
 
     if (#var(prefix)DataCube(self) != None) {
-        foreach RadiusActors(class'DynamicLight', lt, 10.0) {
+        foreach BasedActors(class'DynamicLight', lt) {
             lt.Destroy();
-            break;
         }
     }
 }

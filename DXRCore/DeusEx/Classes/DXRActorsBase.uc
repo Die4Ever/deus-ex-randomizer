@@ -454,7 +454,6 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         }
     }
 
-
     if( ! a.SetLocation(newloc) ) return false;
 
     p = ScriptedPawn(a);
@@ -471,6 +470,9 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         gen.SetBase(b);
     }
 
+    if (#var(prefix)DataCube(a) != None) {
+        GlowUp(a);
+    }
 
     return true;
 }
@@ -612,13 +614,6 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     if(abase != bbase) a.SetBase(bbase);
     b.SetPhysics(aphysics);
     if(abase != bbase) b.SetBase(abase);
-
-    if (#var(prefix)DataCube(a) != None) {
-        GlowUp(a);
-    }
-    if (#var(prefix)DataCube(b) != None) {
-        GlowUp(b);
-    }
 
     return true;
 }
@@ -1613,6 +1608,7 @@ static function Actor GlowUp(Actor a, optional byte hue, optional byte saturatio
     // if `a` is a datacube, spawn a new light instead
     if (#var(prefix)DataCube(a) != None) {
         a = a.Spawn(class'DynamicLight', a,, a.Location + vect(0, 0, 6.0));
+        a.SetBase(a.Owner);
         a.LightSaturation = 0;
     }
 
