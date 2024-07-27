@@ -29,4 +29,5 @@ defaultproperties
 {
     bAutomatic=true
     AutoLength=1.2
+    Level5Value=-0.25
 }

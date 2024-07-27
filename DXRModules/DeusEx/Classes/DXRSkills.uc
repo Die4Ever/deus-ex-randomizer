@@ -161,7 +161,7 @@ simulated function RandoSkillLevelValues(Skill a)
     else if( #var(prefix)SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level. For attached greandes, this skill also improves the blast radius and damage slightly.";
     }
-    else if( #var(prefix)SkillComputer(a) != None ) {
+    else if( #var(prefix)SkillComputer(a) != None && !dxr.flags.IsZeroRando() ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
     else if( #var(prefix)SkillEnviro(a)!=None ) {
@@ -173,7 +173,7 @@ simulated function RandoSkillLevelValues(Skill a)
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevel(Actor act, int i, out string word)
+simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
 {
     local Skill s;
     local float f;
@@ -194,22 +194,22 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
     if( s.Class == class'#var(prefix)SkillDemolition' || InStr(String(s.Class.Name), "#var(prefix)SkillWeapon") == 0 ) {
         word = "Damage";
-        f = -2.0 * s.LevelValues[i] + 1.0;
+        f = -2.0 * val + 1.0;
         return int(f * 100.0) $ p;
     }
     else if( s.Class == class'#var(prefix)SkillLockpicking' || s.Class == class'#var(prefix)SkillTech' ) {
         word = "Efficiency";
-        return int(s.LevelValues[i] * 100.0) $ p;
+        return int(val * 100.0) $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
-        f = s.LevelValues[i];
-
 #ifdef vanilla
         word = "Damage Reduction (Passive/HazMat/Armor)";
-        f = FClamp(f, 0, 1.1);
+        val = FClamp(val, 0, 1.1);
 #else
         word = "Damage Reduction (HazMat/Armor)";
 #endif
+
+        f = val;
 
         switch(i) {
         case 0: r = "Untrained: "; break;
@@ -218,7 +218,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         case 3: r = "|n    Master: "; break;
         }
 #ifdef vanilla
-        r = r $ int( (1 - (f * 1.25 + 0.25)) * 100.0 ) $ p $ " / "; // passive is * 1.25 + 0.25
+        r = r $ int( (1 - (f * 1.1 + 0.3)) * 100.0 ) $ p $ " / "; // passive is * 1.1 + 0.3
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #elseif vmd
@@ -234,27 +234,27 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( s.Class == class'#var(prefix)SkillMedicine') {
         word = "Healing";
-        return int( s.LevelValues[i] * 30.0 ) $ " HP";
+        return int( val * 30.0 ) $ " HP";
     }
     else if( s.Class == class'#var(prefix)SkillComputer') {
         word = "Hack Time";
         if( i == 0 ) return "--";
-        f = 15.0 / (s.LevelValues[i] * 1.5);
+        f = 15.0 / (val * 1.5);
         return FloatToString(f, 1) $ " sec";
     }
     else if( s.Class == class'#var(prefix)SkillSwimming') {
         word = "Swimming Speed";
-        return int(s.LevelValues[i] * 100.0) $ p;
+        return int(val * 100.0) $ p;
     }
 #ifdef gmdx
     else if( s.Class == class'SkillStealth' ) {
         // TODO: improve description
         word = "Values";
-        return string(s.LevelValues[i]);
+        return string(val);
     }
 #endif
     else {
-        return Super.DescriptionLevel(act, i, word);
+        return Super.DescriptionLevel(act, i, word, val, defaultval);
     }
 }
 

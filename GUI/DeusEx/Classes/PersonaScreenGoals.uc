@@ -331,9 +331,12 @@ function generateEntranceNote(bool bSpoil)
 
     foreach player.AllActors(class'DXREntranceRando',entRando){
         entRando.LoadConns();
-        player.ClientMessage("Found "$entRando.numConns$" connections in EntranceRando");
         for (i=0;i<entRando.numConns;i++){
             found=False;
+            if (entRando.GetConnection(i).a.mapname==entRando.GetConnection(i).b.mapname){
+                // just a dummy connection to tell entrance rando you can get to this map
+                continue;
+            }
             if (entRando.GetConnection(i).a.mapname==entRando.dxr.localURL){
                 source = class'DXRMapInfo'.static.GetTeleporterName(entRando.dxr.localURL,entRando.GetConnection(i).a.inTag);
                 dest = class'DXRMapInfo'.static.GetTeleporterName(entRando.GetConnection(i).b.mapname,entRando.GetConnection(i).b.inTag);

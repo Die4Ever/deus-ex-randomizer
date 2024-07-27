@@ -382,7 +382,6 @@ function SuperDrawTargetAugmentation(GC gc)
     local vector AimLocation;
     local int AimBodyPart;
 
-
     crossColor.R = 255; crossColor.G = 255; crossColor.B = 255;
 
     // check 500 feet in front of the player
@@ -710,6 +709,52 @@ function SuperDrawTargetAugmentation(GC gc)
     DeusExRootWindow(player.rootWindow).hud.cross.SetCrosshairColor(crossColor);
 }
 
+// DXRando: TraceLOS mostly vanilla, except ignore DeathMarkers
+function Actor TraceLOS(float checkDist, out vector HitLocation)
+{
+    local Actor target;
+    local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+
+    target = None;
+
+    // figure out how far ahead we should trace
+    StartTrace = Player.Location;
+    EndTrace = Player.Location + (Vector(Player.ViewRotation) * checkDist);
+
+    // adjust for the eye height
+    StartTrace.Z += Player.BaseEyeHeight;
+    EndTrace.Z += Player.BaseEyeHeight;
+
+    // find the object that we are looking at
+    // make sure we don't select the object that we're carrying
+    foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
+    {
+        //DXRando: just ignore death markers
+        if(DeathMarker(target) != None) continue;
+        // back to vanilla code
+        if (target.IsA('Pawn') || target.IsA('DeusExDecoration') || target.IsA('ThrownProjectile') ||
+            (target.IsA('DeusExMover') && DeusExMover(target).bBreakable))
+        {
+            if (target != Player.CarriedDecoration)
+            {
+                if ( (Player.Level.NetMode != NM_Standalone) && target.IsA('DeusExPlayer') )
+                {
+                    if ( DeusExPlayer(target).AdjustHitLocation( HitLoc, EndTrace - StartTrace ) )
+                        break;
+                    else
+                        target = None;
+                }
+                else
+                    break;
+            }
+        }
+    }
+
+    HitLocation = HitLoc;
+
+    return target;
+}
+
 
 function GetTargetReticleColor( Actor target, out Color xcolor )
 {
@@ -718,6 +763,10 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
     local SecurityCamera sc;
     local ThrownProjectile tp;
 
+    if(target == None) {
+        xcolor = colWhite;
+        return;
+    }
     Super.GetTargetReticleColor(target,xcolor);
 
     if ( Player.Level.NetMode == NM_Standalone ) {

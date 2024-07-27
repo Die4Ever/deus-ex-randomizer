@@ -14,3 +14,11 @@ function GotoDisabledState(name damageType, EHitLocation hitPos)
         Super.GotoDisabledState(damageType, hitPos);
     }
 }
+
+/*
+function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+    class'DXRAnimTracker'.static.Create(self, "hat");
+}
+*/

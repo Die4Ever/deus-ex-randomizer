@@ -39,6 +39,9 @@ function PreFirstEntryMapFixes()
     local string botName;
     local int securityBotNum, militaryBotNum;
     local #var(prefix)DataCube dc;
+    local #var(prefix)Teleporter t;
+    local #var(prefix)Fan1 fan;
+    local #var(prefix)Fan2 fan2;
 
     local bool VanillaMaps;
 
@@ -249,7 +252,7 @@ function PreFirstEntryMapFixes()
             // backtracking button for crew module
             AddSwitch( vect(4888.692871, 3537.360107, -1753.115845), rot(0, 16384, 0), 'crewkey').bCollideWorld = false;
             // backtracking button for greasel lab
-            AddSwitch( vect(1893.359985, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
+            AddSwitch( vect(1889.5, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
 
             foreach AllActors(class'ComputerSecurity', comp) {
                 if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
@@ -264,6 +267,12 @@ function PreFirstEntryMapFixes()
                 if(dc.TextTag=='14_Datacube06'){
                     dc.SetLocation(vectm(4169,407,-1540));
                     break;
+                }
+            }
+
+            foreach AllActors(class'#var(prefix)Teleporter',t){
+                if (t.URL=="14_OceanLab_UC.dx #UC"){
+                    t.SetCollisionSize(t.CollisionRadius,150); //Taller so you can't jump over
                 }
             }
 
@@ -314,6 +323,11 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1280.84,8534.17,-2913)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(1892,8754.5,-2901)); //Turret room, opposite from bait computer
         }
+
+        foreach AllActors(class'#var(prefix)Fan1',fan){
+            fan.bHighlight=True;
+        }
+
         break;
 
     case "14_Oceanlab_silo":
@@ -389,6 +403,11 @@ function PreFirstEntryMapFixes()
                 door.bLocked=true;
                 door.bPickable=false;
             }
+
+            foreach AllActors(class'#var(prefix)Fan2',fan2){
+                fan2.bHighlight=True;
+            }
+
 
             Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
             Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
@@ -617,6 +636,10 @@ function PostFirstEntryMapFixes()
                 sp.DrawScale = 1;
                 sp.SetCollisionSize(sp.default.CollisionRadius, sp.default.CollisionHeight);
             }
+        }
+        // if speedrun mode, put a TNT crate for instant death
+        if(dxr.flags.IsSpeedrunMode()) {
+            Spawnm(class'#var(prefix)CrateExplosiveSmall',, 'guardattack', vect(84.125946, 699.975220, -1001.023193));
         }
         break;
     }

@@ -76,6 +76,8 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
+    local AlarmUnit au;
+    local vector loc;
 
     local bool VanillaMaps;
 
@@ -226,7 +228,7 @@ function PreFirstEntryMapFixes()
         class'FillCollisionHole'.static.CreateLine(self, vectm(1520, 3675, 69), vectm(1464, 3675, 69), 32, 80);
 
         // extra spots for datacube
-        Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower
+        Spawn(class'PlaceholderItem',,, vectm(5113,3615,6.3));        //In front of guard tower
         Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(3225,3193,275));        //Different Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(2850,3448,219));        //Bathroom stall
@@ -251,6 +253,15 @@ function PreFirstEntryMapFixes()
 
             class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
             class'PlaceholderEnemy'.static.Create(self,vectm(2887,3410,256),,'Shitting');
+
+            foreach RadiusActors(class'AlarmUnit', au, 1.0, vectm(-1967.865112, 1858.142822, 101.505104)) {
+                // alarm inside the boat house is too high up for enemies to reach
+                loc = au.Location;
+                // loc.z = 58.946182; // height of the alarm on the outside of the boat house
+                loc.z = 80.225643; // halfway between them
+                au.SetLocation(loc);
+                break;
+            }
         }
         break;
 
@@ -268,6 +279,27 @@ function PreFirstEntryMapFixes()
                 if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
             }
             AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
+
+            foreach AllActors(class'Mover', m, 'WaterChanges') {
+                if(m.Name == 'DeusExMover0') {
+                    // lower the mole people broken water
+                    m.SetLocation(m.Location + vectm(0,0, -16));
+                    m.MoveTime = 0.1;
+                    // put the flag trigger here instead of the "start" of the map, for entrance rando
+                    foreach AllActors(class'Trigger', t, 'FlagTrigger') {
+                        if(t.Event == 'WaterChanges') {
+                            t.SetLocation(m.Location);
+                            t.SetCollisionSize(1280, 1280);
+                        }
+                    }
+                } else if(m.Name == 'DeusExMover1') {
+                    // mole people running water can extinuish fire, great for bingo
+                    a = Spawn(class'ExtinguishFireTrigger',,, m.Location + vectm(0, 0, -14));
+                    a.SetCollisionSize(60.0, 10.0);
+                    a.SetBase(m);
+                    m.MoveTime = 0.1;
+                }
+            }
 
             //The Leader can go hostile so easily... just make that not possible
             foreach AllActors(class'#var(prefix)Terrorist',terror){
@@ -329,6 +361,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
         hoverHint.SetBaseActor(jock);
+
+        SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
 
         break;
     case "03_NYC_UNATCOHQ":
@@ -421,6 +455,18 @@ function AnyEntryMapFixes()
 
             phone.ConBindEvents();
         }
+        break;
+
+    case "03_NYC_BROOKLYNBRIDGESTATION":
+        // allow Lenny to trade LAM for Zyme even if you enter the maps out of order
+        DeleteConversationFlag(GetConversation('MeetLenny'), 'FoundMoles', False);
+        // Lenny's final barks seem to mistakenly be started by frobbing or bumping into him, causing them to take priority over `MeetLenny`
+        c=GetConversation('LennyFinalBarks');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+        c=GetConversation('LennyFinalBarks2');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
         break;
     }
 }

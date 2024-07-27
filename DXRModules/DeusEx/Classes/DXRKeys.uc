@@ -971,10 +971,10 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         if( SkipActor(a) ) continue;
         if( KeyPositionGood(k, a.Location) == False ) continue;
 #ifdef debug
-        /*if(k.KeyID=='Glab') {
+        if(k.KeyID=='Glab') {
             DebugMarkKeyPosition(a.Location, k.KeyID);
-            continue;
-        }*/
+            //continue;
+        }
 #endif
         temp[num++] = a;
     }
@@ -986,10 +986,10 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
             if( KeyPositionGood(k, c.Location) == False ) continue;
             if( HasBased(c) ) continue;
 #ifdef debug
-            /*if(k.KeyID=='crewkey') {
+            if(k.KeyID=='crewkey') {
                 DebugMarkKeyPosition(c.Location, k.KeyID);
-                continue;
-            }*/
+                //continue;
+            }
 #endif
             temp[num++] = c;
         }

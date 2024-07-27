@@ -10,7 +10,7 @@ var float PoolBallHeight;
 var int NumPoolTables, PoolTablesSunk, BallsPerTable;
 
 struct BingoOption {
-    var string event, desc;
+    var string event, desc, desc_singular;
     var int max;
     var int missions;// bit masks
 };
@@ -954,7 +954,7 @@ static function BingoEventData(DXRando dxr, out string j)
 
 static function GameTimeEventData(DXRando dxr, out string j)
 {
-    local int time, realtime, time_without_menus, i, t;
+    local int time, totaltime, time_without_menus, i, t;
     local DXRStats stats;
     local class<Json> js;
     js = class'Json';
@@ -964,19 +964,18 @@ static function GameTimeEventData(DXRando dxr, out string j)
 
     for (i=1;i<=15;i++) {
         t = stats.GetMissionTime(i);
+        t += stats.GetMissionMenuTime(i);
         js.static.Add(j, "mission-" $ i $ "-time", t);
         time += t;
-        t = stats.GetCompleteMissionTime(i);
-        js.static.Add(j, "mission-" $ i $ "-realtime", t);
-        realtime += t;
+        t = stats.GetCompleteMissionTime(i);// without menus
         time_without_menus += t;
-        t = stats.GetCompleteMissionMenuTime(i);
-        js.static.Add(j, "mission-" $ i $ "-menutime", t);
-        realtime += t;
+        t += stats.GetCompleteMissionMenuTime(i);// add in the menu time for the total
+        js.static.Add(j, "mission-" $ i $ "-realtime", t);
+        totaltime += t;
     }
     js.static.Add(j, "time", time);
-    js.static.Add(j, "timewithoutmenus", time_without_menus);
-    js.static.Add(j, "realtime", realtime);
+    js.static.Add(j, "timewithoutmenus", time_without_menus);// we don't use this currently
+    js.static.Add(j, "realtime", totaltime);
 }
 
 static function string GetLoadoutName(DXRando dxr)
@@ -1190,7 +1189,6 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             i = options[slot];
             event = bingo_options[i].event;
             desc = bingo_options[i].desc;
-            desc = tweakBingoDescription(event,desc);
             missions = bingo_options[i].missions;
             masked_missions = missions & end_mission_mask; //Pre-mask the bingo endpoint
             max = bingo_options[i].max;
@@ -1201,8 +1199,14 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
                 f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
                 max = Ceil(float(max) * f);
                 max = self.Max(max, 1);
-                desc = sprintf(desc, max);
+
+                if (max == 1 && bingo_options[i].desc_singular != "") {
+                    desc = bingo_options[i].desc_singular;
+                } else {
+                    desc = sprintf(desc, max);
+                }
             }
+            desc = tweakBingoDescription(event,desc);
 
             num_options--;
             options[slot] = options[num_options];

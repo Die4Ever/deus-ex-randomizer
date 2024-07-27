@@ -14,6 +14,7 @@ event InitWindow()
     iconInfo[0].color.G = 196;
     iconInfo[0].color.B = 255;
     iconInfo[1].damageType[0] = 'EMP';
+    iconInfo[1].damageType[1] = 'NanoVirus'; // NanoVirus too!
     iconInfo[1].icon = Texture'DamageIconEMP';
     iconInfo[1].color.R = 0;
     iconInfo[1].color.G = 196;

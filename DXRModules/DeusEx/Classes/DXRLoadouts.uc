@@ -478,10 +478,11 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
 
     RandoStartingEquipment(p, false);
 #ifdef injections
-    class'MenuChoice_RefuseUseless'.static.SetRefusals();
-    class'MenuChoice_RefuseFoodDrink'.static.SetRefusals();
-    class'MenuChoice_RefuseMelee'.static.SetRefusals();
-    class'MenuChoice_RefuseMisc'.static.SetRefusals();
+    class'MenuChoice_LootActionUseless'.static.SetActions();
+    class'MenuChoice_LootActionFoodSoda'.static.SetActions();
+    class'MenuChoice_LootActionAlcohol'.static.SetActions();
+    class'MenuChoice_LootActionMelee'.static.SetActions();
+    class'MenuChoice_LootActionMisc'.static.SetActions();
 #endif
 }
 
@@ -696,53 +697,45 @@ function SpawnItems()
         reducer.Timer();
 }
 
-static function bool IsRefused(class<Inventory> type, optional out int strIdx)
-{
-    local DataStorage datastorage;
-    local string refusals;
+static function int GetLootAction(
+    class<Inventory> itemClass,
+    optional DataStorage storage,
+    optional out string lootActions,
+    optional out int strIdx
+) {
+    if (storage == None)
+        storage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
 
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    refusals = datastorage.GetConfigKey("item_refusals");
-    if(refusals == "") {
-        return false;
+    lootActions = storage.GetConfigKey("loot_actions");
+    strIdx = InStr(lootActions, "," $ itemClass.name $ "=");
+    if (strIdx != -1) {
+        return Int(Mid(lootActions, strIdx + Len(itemClass.name) + 2, 1));
     }
-    strIdx = InStr(refusals, "," $ type.name $ ",");
-    return strIdx != -1;
+    return 0;
 }
 
-static function UnsetRefuseItem(class<Inventory> type)
+static function SetLootAction(class<Inventory> itemClass, int action, optional DataStorage storage)
 {
-    local DataStorage datastorage;
-    local string refusals, leftPart, rightPart;
+    local string lootActions, leftPart, rightPart;
     local int strIdx;
 
-    if (!IsRefused(type, strIdx))
+    if (storage == None) {
+        storage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
+    }
+    if (GetLootAction(itemClass, storage, lootActions, strIdx) == action) {
         return;
+    }
 
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    refusals = datastorage.GetConfigKey("item_refusals");
-    leftPart = Left(refusals, strIdx);
-    rightPart = Right(refusals, Len(refusals) - (strIdx + Len(type.name) + 1));
-    refusals = leftPart $ rightPart;
-
-    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
-}
-
-static function SetRefuseItem(class<Inventory> type)
-{
-    local DataStorage datastorage;
-    local string refusals;
-
-    if (IsRefused(type))
-        return;
-
-    datastorage = class'DataStorage'.static.GetObj(class'DXRando'.default.dxr);
-    refusals = datastorage.GetConfigKey("item_refusals");
-
-    if (refusals == "") refusals = ",";
-    refusals = refusals $ type.name $ ",";
-
-    datastorage.SetConfig("item_refusals", refusals, 3600*24*366);
+    if (lootActions == "") {
+        lootActions = "," $ itemClass.name $ "=" $ action $ ",";
+    } else if (strIdx == -1) {
+        lootActions = lootActions $ itemClass.name $ "=" $ action $ ",";
+    } else {
+        leftPart = Left(lootActions, strIdx + Len(itemClass.name) + 2);
+        rightPart = Mid(lootActions, strIdx + Len(itemClass.name) + 3);
+        lootActions = leftPart $ action $ rightPart;
+    }
+    storage.SetConfig("loot_actions", lootActions, 3600*24*366);
 }
 
 function RunTests()

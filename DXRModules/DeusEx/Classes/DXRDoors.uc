@@ -210,6 +210,12 @@ function CheckConfig()
         door_fixes[i].bPickable = false;
         door_fixes[i].bHighlight = false;
         i++;
+
+        // Don't let the player close the set of double doors to the gray room
+        door_fixes[i].tag = 'GreyDoors';
+        door_fixes[i].bHighlight = false;
+        i++;
+
         break;
     }
 

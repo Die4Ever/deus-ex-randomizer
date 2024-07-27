@@ -25,3 +25,10 @@ class DXRandoImageTextures extends Object abstract;
 
 #exec TEXTURE IMPORT FILE="Textures\OpenDoorButtonLit.pcx"                  NAME="OpenDoorButtonLit"                GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\OpenDoorButtonUnlit.pcx"                NAME="OpenDoorButtonUnlit"              GROUP="DXRandoImages"
+
+#exec TEXTURE IMPORT FILE="Textures\GoalSecurityComputerRed.pcx"            NAME="GoalSecurityComputerRed"          GROUP="DXRandoImages" FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\GoalSecurityComputerYellow.pcx"         NAME="GoalSecurityComputerYellow"       GROUP="DXRandoImages" FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\GoalSecurityComputerGreen.pcx"          NAME="GoalSecurityComputerGreen"        GROUP="DXRandoImages" FLAGS=2
+
+#exec TEXTURE IMPORT FILE="Textures\GoalComputerPersonalYellow.pcx"         NAME="GoalComputerPersonalYellow"       GROUP="DXRandoImages" FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\GoalComputerPersonalRed.pcx"            NAME="GoalComputerPersonalRed"          GROUP="DXRandoImages" FLAGS=2

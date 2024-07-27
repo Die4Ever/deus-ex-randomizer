@@ -9,6 +9,17 @@ function PostPostBeginPlay()
     Description = default.Description;
 }
 
+simulated function int GetClassLevel()
+{
+    if (bHasIt && bIsActive)
+    {
+        // we squished the AugMuscle levels to make it more useful, and some things use the level instead of the strength
+        return CurrentLevel * 3;// aug levels start with 0
+    }
+    else
+        return -1;
+}
+
 // LevelValues only affect throwing velocity in vanilla, and in DXRando also DoJump
 // otherwise vanilla uses GetClassLevel() + 2
 defaultproperties

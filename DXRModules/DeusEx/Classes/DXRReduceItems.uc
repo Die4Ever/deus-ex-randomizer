@@ -27,7 +27,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,7,1,4) ) {
+    if( ConfigOlderThan(3,0,1,1) ) {
         min_rate_adjust = 0.3;
         max_rate_adjust = 1.75;
 
@@ -43,7 +43,7 @@ function CheckConfig()
 
         i=0;
         item_reductions[i].type = "Ammo10mm";
-        item_reductions[i].percent = 80;
+        item_reductions[i].percent = 85;
         i++;
 
         item_reductions[i].type = "AmmoPlasma";
@@ -60,7 +60,7 @@ function CheckConfig()
 
         i=0;
         max_ammo[i].type = "Ammo10mm";
-        max_ammo[i].percent = 50;
+        max_ammo[i].percent = 60;
         i++;
 
         max_ammo[i].type = "AmmoPlasma";

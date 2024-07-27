@@ -18,10 +18,10 @@ struct S_KeyDisplayItem
 };
 
 //Make sure to update all four of these when you add a new binding
-var localized string	FunctionText[68];
-var string				MenuValues1[68];
-var string				MenuValues2[68];
-var string				AliasNames[68];
+var localized string	FunctionText[69];
+var string				MenuValues1[69];
+var string				MenuValues2[69];
+var string				AliasNames[69];
 
 
 var string				PendingCommands[100];
@@ -625,7 +625,7 @@ defaultproperties
      FunctionText(56)="Show Multiplayer Scores"
      FunctionText(57)="Send Message To Team"
      FunctionText(58)="Send Message To All"
-     FunctionText(59)="Activate Multiplayer Skill Menu"
+     FunctionText(59)="Activate Quick Skill Menu"
      FunctionText(60)="Show Multiplayer Kill Details"
      FunctionText(61)="Activate Bingo Screen"
      FunctionText(62)="Activate All Auto Augs"
@@ -634,6 +634,7 @@ defaultproperties
      FunctionText(65)="Pause"
      FunctionText(66)="Remove Item From Belt"
      FunctionText(67)="Load Latest Save"
+     FunctionText(68)="Activate Quick Aug Menu"
      AliasNames(0)="ParseLeftClick|Fire"
      AliasNames(1)="ParseRightClick"
      AliasNames(2)="DropItem"
@@ -702,6 +703,7 @@ defaultproperties
      AliasNames(65)="Pause"
      AliasNames(66)="RemoveBeltItem"
      AliasNames(67)="LoadLatest"
+     AliasNames(68)="UpgradeAugs"
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")

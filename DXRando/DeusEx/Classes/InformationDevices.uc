@@ -51,6 +51,10 @@ function int Crc()
 function MarkTextRead(name ttextTag)
 {
     local DXREvents e;
+
+    //Disable lights on the information device so you know you've read it
+    LightType=LT_None;
+
     foreach AllActors(class'DXREvents', e) {
         e.ReadText(ttextTag);
     }
@@ -313,6 +317,23 @@ function bool Facelift(bool bOn)
 	return false;
 }
 #endif
+
+function Frob(actor Frobber, Inventory frobWith)
+{
+    Super.Frob(Frobber, frobWith);
+    GlowOff();
+}
+
+final function bool GlowOff()
+{
+    local DynamicLight lt;
+
+    if (#var(prefix)DataCube(self) != None) {
+        foreach BasedActors(class'DynamicLight', lt) {
+            lt.Destroy();
+        }
+    }
+}
 
 defaultproperties
 {

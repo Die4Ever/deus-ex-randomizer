@@ -64,6 +64,16 @@ function PreFirstEntry()
         dxr.flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
         break;
 
+    case "12_VANDENBERG_CMD":
+        if (dxr.flags.settings.starting_map >= 129) {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
+                dxMover.InterpolateTo(1, 0.0);
+                break;
+            }
+            dxr.flagbase.SetBool('DL_TonyScared_Played', true,, 15); // You won't find cover in the comm building.
+        }
+        break;
+
     case "15_Area51_Bunker":
         if (dxr.flags.settings.starting_map > 150) {
             foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
@@ -620,6 +630,11 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
+            // fallthrough
+        case 141:
+        case 142:
+        case 140:
+            flagbase.SetBool('TiffanySavage_Dead',true,,15);
             break;
         case 153:
             MarkConvPlayed("DL_Helios_Door1", bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
