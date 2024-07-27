@@ -454,7 +454,16 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         }
     }
 
-    if( ! a.SetLocation(newloc) ) return false;
+    if (#var(prefix)DataCube(a) != None) {
+        #var(prefix)DataCube(a).GlowOff();
+    }
+
+    if( ! a.SetLocation(newloc) ) {
+        if (#var(prefix)DataCube(a) != None) {
+            GlowUp(a);
+        }
+        return false;
+    }
 
     p = ScriptedPawn(a);
     if( p != None && p.Orders == 'Patrolling' && !retainOrders ) {
@@ -571,13 +580,6 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     if( a == b ) return true;
 
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
-
-    if (#var(prefix)DataCube(a) != None) {
-        #var(prefix)DataCube(a).GlowOff();
-    }
-    if (#var(prefix)DataCube(b) != None) {
-        #var(prefix)DataCube(b).GlowOff();
-    }
 
     AbCollideActors = a.bCollideActors;
     AbBlockActors = a.bBlockActors;
