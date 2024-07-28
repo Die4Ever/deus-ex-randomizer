@@ -454,9 +454,16 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         }
     }
 
+#ifdef injections
     if (#var(prefix)DataCube(a) != None) {
         #var(prefix)DataCube(a).GlowOff();
     }
+#else
+    if (DXRInformationDevices(a) != None) {
+        DXRInformationDevices(a).GlowOff();
+    }
+#endif
+
 
     if( ! a.SetLocation(newloc) ) {
         if (#var(prefix)DataCube(a) != None) {

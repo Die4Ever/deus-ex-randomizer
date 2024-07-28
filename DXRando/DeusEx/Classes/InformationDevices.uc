@@ -327,8 +327,15 @@ function Frob(actor Frobber, Inventory frobWith)
 final function bool GlowOff()
 {
     local DynamicLight lt;
+#ifdef injections
+    local #var(prefix)DataCube dc;
+    dc = #var(prefix)DataCube(self);
+#else
+    local DXRInformationDevices dc;
+    dc = self;
+#endif
 
-    if (#var(prefix)DataCube(self) != None) {
+    if (dc != None) {
         foreach BasedActors(class'DynamicLight', lt) {
             lt.Destroy();
         }
