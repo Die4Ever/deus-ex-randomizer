@@ -2,8 +2,8 @@ class DXRRobotBalance shims Robot;
 
 function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType, bool bPlayAnim)
 {
-    // disable the damage resistance for plasma
-    if(damageType == 'Burned') Damage *= 4;
+    // robots now have 25% damage resistance for plasma instead of 75%
+    if(damageType == 'Burned') Damage *= 3;
     Super.TakeDamageBase(Damage, instigatedBy, hitLocation, momentum, damageType, bPlayAnim);
 }
 
