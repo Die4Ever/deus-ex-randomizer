@@ -43,28 +43,34 @@ function int InitGoals(int mission, string map)
     case "15_AREA51_PAGE":
         goal = AddGoal("15_AREA51_PAGE", "Aquinas Substation Computer", NORMAL_GOAL, 'ComputerSecurity0', PHYS_None);
         loc = AddGoalLocation("15_AREA51_PAGE", "Aquinas Substation", NORMAL_GOAL | VANILLA_GOAL, vect(7676.954590, -5536.813965, -5952.371094), rot(0, -32824, 0));
+        AddMapMarker(class'Image15_Area51_Sector4',316,199,"E","Ending", loc,"One of the end game goals can be located on the wall of the Aquinas Substation.");
 
         goal = AddGoal("15_AREA51_PAGE", "Coolant Deactivation Button", NORMAL_GOAL, 'Switch0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger2', PHYS_None); // shutting down the coolant, DL_tong3: Good.  Now go to the reactor lab.
         AddGoalActor(goal, 2, 'DataLinkTrigger12', PHYS_None); // same
         AddGoalActor(goal, 3, 'DataLinkTrigger37', PHYS_None); // DL_ButtonWarning: You will stay away from the coolant controls.  I will be destroyed if the reactors become unstable, and without me there will be chaos.
         loc = AddGoalLocation("15_AREA51_PAGE", "Coolant B13", NORMAL_GOAL | VANILLA_GOAL, vect(7530.221191,-10824.041992, -5968.846680), rot(11200, -16088, 0));
+        AddMapMarker(class'Image15_Area51_Sector4',78,208,"E","Ending", loc,"One of the end game goals can be located on the control panel in the Coolant B13 room.");
 
         goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 3 Control", NORMAL_GOAL, 'Keypad5', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger17', PHYS_None); // DL_Blue_Fusion: That's one of the blue-fusion reactors.  You need to shut down all four.
         loc = AddGoalLocation("15_AREA51_PAGE", "Ground Floor", NORMAL_GOAL | VANILLA_GOAL, vect(6360.212402, -6899.757324, -5988.736328), rot(0, -45056, 0));
+        AddMapMarker(class'Image15_Area51_Sector4',256,254,"E","Ending", loc,"One of the end game goals can be located on the base of the ground floor Blue Fusion Reactor.");
 
         goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 4 Control", NORMAL_GOAL, 'Keypad6', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger19', PHYS_None); // DL_Blue_Fusion
         loc = AddGoalLocation("15_AREA51_PAGE", "Radioactive Room", NORMAL_GOAL | VANILLA_GOAL, vect(4764.696289, -6270.016113, -5596.736328), rot(0, -61760, 0));
+        AddMapMarker(class'Image15_Area51_Sector4',155,376,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor in the radioactive room.");
 
         goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 2 Control", NORMAL_GOAL, 'Keypad1', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger18', PHYS_None); // DL_Blue_Fusion
         loc = AddGoalLocation("15_AREA51_PAGE", "Under Page", NORMAL_GOAL | VANILLA_GOAL, vect(6153.652832, -7133.199219, -5596.736328), rot(0, -61568, 0));
+        AddMapMarker(class'Image15_Area51_Sector4',115,314,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor on the middle floor underneath Bob Page.");
 
         goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 1 Control", NORMAL_GOAL, 'Keypad0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger21', PHYS_None); // DL_Blue_Fusion
         loc = AddGoalLocation("15_AREA51_PAGE", "Observation Deck", NORMAL_GOAL | VANILLA_GOAL, vect(6029.028809, -8301.839844, -5148.736328), rot(0, -36944, 0));
+        AddMapMarker(class'Image15_Area51_Sector4',192,77,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor in the top floor Observation Deck overlooking Bob Page.");
         break;
     }
 
