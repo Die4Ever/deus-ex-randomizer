@@ -1,108 +1,84 @@
 class DXRReduceItems extends DXRActorsBase transient;
 
-struct ItemReduction {
-    var string type;
-    var int percent;
-};
-
 struct _ItemReduction {
     var class<Actor> type;
     var int percent;
 };
 
-var config int mission_scaling[16];
-var config ItemReduction item_reductions[16];
-var config ItemReduction max_ammo[16];
+var int mission_scaling[16];
 var _ItemReduction _item_reductions[16];
 var _ItemReduction _max_ammo[16];
 
-var config float min_rate_adjust, max_rate_adjust;
+var float min_rate_adjust, max_rate_adjust;
 
 replication
 {
     reliable if( Role == ROLE_Authority )
-        mission_scaling, item_reductions, max_ammo, _item_reductions, _max_ammo, min_rate_adjust, max_rate_adjust;
+        mission_scaling, _item_reductions, _max_ammo, min_rate_adjust, max_rate_adjust;
 }
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(3,0,1,4) ) {
-        min_rate_adjust = 0.3;
-        max_rate_adjust = 1.75;
 
-        for(i=0; i < ArrayCount(mission_scaling); i++) {
-            mission_scaling[i] = 100;
-        }
-        for(i=0; i < ArrayCount(item_reductions); i++) {
-            item_reductions[i].type = "";
-        }
-        for(i=0; i < ArrayCount(max_ammo); i++) {
-            max_ammo[i].type = "";
-        }
+    min_rate_adjust = 0.3;
+    max_rate_adjust = 1.75;
 
-        i=0;
-        item_reductions[i].type = "Ammo10mm";
-        item_reductions[i].percent = 85;
-        i++;
-
-        item_reductions[i].type = "AmmoPlasma";
-        item_reductions[i].percent = 130;
-        i++;
-
-        item_reductions[i].type = "Ammo762mm";
-        item_reductions[i].percent = 85;
-        i++;
-
-        item_reductions[i].type = "AmmoShell";
-        item_reductions[i].percent = 85;
-        i++;
-
-        item_reductions[i].type = "AmmoDart";
-        item_reductions[i].percent = 120;
-        i++;
-
-        item_reductions[i].type = "AmmoDartFlare";
-        item_reductions[i].percent = 120;
-        i++;
-
-        i=0;
-        max_ammo[i].type = "Ammo10mm";
-        max_ammo[i].percent = 60;
-        i++;
-
-        max_ammo[i].type = "AmmoPlasma";
-        max_ammo[i].percent = 130;
-        i++;
-
-        max_ammo[i].type = "Ammo762mm";
-        max_ammo[i].percent = 85;
-        i++;
-
-        max_ammo[i].type = "AmmoShell";
-        max_ammo[i].percent = 85;
-        i++;
-
-        max_ammo[i].type = "AmmoDart";
-        max_ammo[i].percent = 130;
-        i++;
-
-        max_ammo[i].type = "AmmoDartFlare";
-        max_ammo[i].percent = 130;
-        i++;
+    for(i=0; i < ArrayCount(mission_scaling); i++) {
+        mission_scaling[i] = 100;
     }
+
+    i=0;
+    _item_reductions[i].type = class'#var(prefix)Ammo10mm';
+    _item_reductions[i].percent = 85;
+    i++;
+
+    _item_reductions[i].type = class'#var(prefix)AmmoPlasma';
+    _item_reductions[i].percent = 130;
+    i++;
+
+    _item_reductions[i].type = class'#var(prefix)Ammo762mm';
+    _item_reductions[i].percent = 85;
+    i++;
+
+    _item_reductions[i].type = class'#var(prefix)AmmoShell';
+    _item_reductions[i].percent = 85;
+    i++;
+
+    _item_reductions[i].type = class'#var(prefix)AmmoDart';
+    _item_reductions[i].percent = 120;
+    i++;
+
+    _item_reductions[i].type = class'#var(prefix)AmmoDartFlare';
+    _item_reductions[i].percent = 120;
+    i++;
+
+    i=0;
+    _max_ammo[i].type = class'#var(prefix)Ammo10mm';
+    _max_ammo[i].percent = 60;
+    i++;
+
+    _max_ammo[i].type = class'#var(prefix)AmmoPlasma';
+    _max_ammo[i].percent = 130;
+    i++;
+
+    _max_ammo[i].type = class'#var(prefix)Ammo762mm';
+    _max_ammo[i].percent = 85;
+    i++;
+
+    _max_ammo[i].type = class'#var(prefix)AmmoShell';
+    _max_ammo[i].percent = 85;
+    i++;
+
+    _max_ammo[i].type = class'#var(prefix)AmmoDart';
+    _max_ammo[i].percent = 130;
+    i++;
+
+    _max_ammo[i].type = class'#var(prefix)AmmoDartFlare';
+    _max_ammo[i].percent = 130;
+    i++;
+
     Super.CheckConfig();
-
-    for(i=0; i < ArrayCount(item_reductions); i++) {
-        if( item_reductions[i].type == "" ) continue;
-        _item_reductions[i].type = GetClassFromString( item_reductions[i].type, class'Inventory' );
-        _item_reductions[i].percent = item_reductions[i].percent;
-    }
-    for(i=0; i < ArrayCount(max_ammo); i++) {
-        if( max_ammo[i].type == "" ) continue;
-        _max_ammo[i].type = GetClassFromString( max_ammo[i].type, class'Ammo' );
-        _max_ammo[i].percent = max_ammo[i].percent;
-    }
 }
 
 function PostFirstEntry()
