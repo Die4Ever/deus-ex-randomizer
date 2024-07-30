@@ -8,8 +8,13 @@ function bool EvaluateFlag()
 
     ret = Super.EvaluateFlag();
 
-    if(ret && player != None && player.dataLinkPlay != None && bImportant) {
-        player.dataLinkPlay.FastForward();
+    player.ClientMessage(self @ checkFlag @ datalinkTag @ ret);
+
+    if(ret && player != None && bImportant) {
+        if(player.dataLinkPlay != None) {
+            player.dataLinkPlay.FastForward();
+        }
+        bImportant = false;
     }
     return ret;
 }
