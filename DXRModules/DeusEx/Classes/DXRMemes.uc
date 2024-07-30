@@ -437,6 +437,7 @@ function PostFirstEntry()
     local ScriptedPawn sp;
     local InterpolationPoint p;
     local LuciusDeBeers lucius;
+    local #var(prefix)SignFloor sf;
     local vector v;
     local rotator r;
 
@@ -449,6 +450,12 @@ function PostFirstEntry()
         //Make people dance across the world, reduced rando sets this to 0%
         // we want to keep this in memes disabled because it could affect speed/difficulty/score/races
         RandomDancing(sp);
+    }
+
+    if(IsAprilFools()) {
+        foreach AllActors(class'#var(prefix)SignFloor', sf) {
+            class'FrictionTrigger'.static.CreateIce(sf, sf.Location, 160, 32);
+        }
     }
 
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
