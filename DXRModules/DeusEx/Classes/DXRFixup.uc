@@ -727,22 +727,6 @@ function AntiEpilepsy()
     }
 }
 
-function AddDelayEvent(Name tag, Name event, float time)
-{
-    local Dispatcher d;
-    d = Spawn(class'Dispatcher',, tag);
-    d.OutEvents[0] = event;
-    d.OutDelays[0] = time;
-}
-
-function AddDelay(Actor trigger, float time)
-{
-    local name tagname;
-    tagname = StringToName( "dxr_delay_" $ trigger.Event );
-    AddDelayEvent(tagname, trigger.Event, time);
-    trigger.Event = tagname;
-}
-
 function Actor CandleabraLight(vector pos, rotator r)
 {
     local Actor c, light;

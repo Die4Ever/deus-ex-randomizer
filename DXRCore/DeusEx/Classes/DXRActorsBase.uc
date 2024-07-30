@@ -1007,6 +1007,10 @@ static function int GetRotationOffset(class<Actor> c)
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)Button1'))
         return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)Switch1'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)Switch2'))
+        return 16384;
     //ComputerPersonal is fine without this, so just leave it commented out
     //if(ClassIsChildOf(c, class'#var(prefix)ComputerPersonal'))
     //    return 32768;
@@ -1346,6 +1350,22 @@ function RemoveComputerSpecialOption(#var(prefix)Computers comp, Name TriggerEve
         }
         num++;
     }
+}
+
+function AddDelayEvent(Name tag, Name event, float time)
+{
+    local Dispatcher d;
+    d = Spawn(class'Dispatcher',, tag);
+    d.OutEvents[0] = event;
+    d.OutDelays[0] = time;
+}
+
+function AddDelay(Actor trigger, float time)
+{
+    local name tagname;
+    tagname = StringToName( "dxr_delay_" $ trigger.Event );
+    AddDelayEvent(tagname, trigger.Event, time);
+    trigger.Event = tagname;
 }
 
 //I could have fuzzy logic and allow these Is___Normal functions to have overlap? or make them more strict where some normals don't classify as any of these?
