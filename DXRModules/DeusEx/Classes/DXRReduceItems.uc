@@ -21,8 +21,13 @@ function CheckConfig()
 {
     local int i;
 
-    min_rate_adjust = 0.3;
-    max_rate_adjust = 1.75;
+    if(dxr.flags.IsSpeedrunMode()) {
+        min_rate_adjust = 0.5;
+        max_rate_adjust = 1.5;
+    } else {
+        min_rate_adjust = 0.4;
+        max_rate_adjust = 1.6;
+    }
 
     for(i=0; i < ArrayCount(mission_scaling); i++) {
         mission_scaling[i] = 100;

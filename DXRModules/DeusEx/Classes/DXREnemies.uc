@@ -13,8 +13,8 @@ function CheckConfig()
     local int i;
 
     enemy_multiplier = 1;
-    min_rate_adjust = 0.1;
-    max_rate_adjust = 3.0;
+    min_rate_adjust = 0.3;
+    max_rate_adjust = 4.0;
 
     AddRandomWeapon(class'#var(prefix)WeaponShuriken', 9);
     AddRandomWeapon(class'#var(prefix)WeaponPistol', 7);

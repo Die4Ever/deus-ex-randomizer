@@ -34,7 +34,7 @@ function AddRandomGrenade(class<#var(prefix)ThrownProjectile> gren, float c)
     for(i=0;i < ArrayCount(randomgrens);i++){
         if (randomgrens[i].type==None){
             randomgrens[i].type=gren;
-            randomgrens[i].chance=rngrangeseeded(c,min_rate_adjust,max_rate_adjust,gren.name);
+            randomgrens[i].chance=rngrangeseeded(c,min_rate_adjust,max_rate_adjust,gren.name) ** 2;
             return;
         }
     }

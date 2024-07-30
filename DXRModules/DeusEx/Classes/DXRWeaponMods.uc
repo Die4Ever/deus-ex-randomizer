@@ -33,7 +33,7 @@ function AddRandomMod(class<#var(prefix)WeaponMod> mod, float c)
     for(i=0;i < ArrayCount(randommods);i++){
         if (randommods[i].type==None){
             randommods[i].type=mod;
-            randommods[i].chance=rngrangeseeded(c,min_rate_adjust,max_rate_adjust,mod.name);
+            randommods[i].chance=rngrangeseeded(c,min_rate_adjust,max_rate_adjust,mod.name) ** 2;
             return;
         }
     }
