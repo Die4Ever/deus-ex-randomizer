@@ -742,6 +742,23 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     Super.ProcessTraceHit(Other,HitLocation,HitNormal,X,Y,Z);
 }
 
+simulated function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
+{
+    local float oldCurrentAccuracy;
+    local Projectile p;
+
+    oldCurrentAccuracy = currentAccuracy;
+    if(bLasing) {
+        if (AreaOfEffect == AOE_Cone)
+            currentAccuracy = FMin(currentAccuracy, 0.1);
+        else
+            currentAccuracy = 0;
+    }
+    p = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
+    currentAccuracy = oldCurrentAccuracy;// just make sure we don't accidentally affect anything else
+    return p;
+}
+
 function TravelPostAccept()
 {
     Super.TravelPostAccept();
