@@ -27,7 +27,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(3,0,1,1) ) {
+    if( ConfigOlderThan(3,0,1,4) ) {
         min_rate_adjust = 0.3;
         max_rate_adjust = 1.75;
 
@@ -58,6 +58,14 @@ function CheckConfig()
         item_reductions[i].percent = 85;
         i++;
 
+        item_reductions[i].type = "AmmoDart";
+        item_reductions[i].percent = 120;
+        i++;
+
+        item_reductions[i].type = "AmmoDartFlare";
+        item_reductions[i].percent = 120;
+        i++;
+
         i=0;
         max_ammo[i].type = "Ammo10mm";
         max_ammo[i].percent = 60;
@@ -73,6 +81,14 @@ function CheckConfig()
 
         max_ammo[i].type = "AmmoShell";
         max_ammo[i].percent = 85;
+        i++;
+
+        max_ammo[i].type = "AmmoDart";
+        max_ammo[i].percent = 130;
+        i++;
+
+        max_ammo[i].type = "AmmoDartFlare";
+        max_ammo[i].percent = 130;
         i++;
     }
     Super.CheckConfig();
