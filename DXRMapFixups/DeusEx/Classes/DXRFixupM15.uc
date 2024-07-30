@@ -45,11 +45,6 @@ function CheckConfig()
         "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
     i++;
 
-    add_datacubes[i].map = "15_AREA51_PAGE";
-    add_datacubes[i].text =
-        "The security guys found my last datacube so they changed the Aquinas Router code to 6188. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
-    i++;
-
     Super.CheckConfig();
 }
 
@@ -390,6 +385,8 @@ function PreFirstEntryMapFixes_Page()
     foreach AllActors(class'Keypad', k) {
         if( k.validCode == "9248" )
             k.validCode = "2242";
+        else if (k.validCode == "6188")
+            k.validCode = "6765";
     }
     foreach AllActors(class'Switch1',s){
         if (s.Name == 'Switch21'){
