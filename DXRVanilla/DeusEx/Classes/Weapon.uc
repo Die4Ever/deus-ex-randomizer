@@ -20,6 +20,21 @@ function PostBeginPlay()
     }
 }
 
+function ScopeOn()
+{
+    local DeusExPlayer player;
+
+    Super.ScopeOn();
+    player = DeusExPlayer(Owner);
+
+    ShakeYaw = currentAccuracy * (Rand(1024) - 512);
+    ShakePitch = currentAccuracy * (Rand(1024) - 512);
+    if (player != None && bZoomed) {
+        player.ViewRotation.Yaw += ShakeYaw;
+        player.ViewRotation.Pitch += ShakePitch;
+    }
+}
+
 function ScopeOff()
 {
     bWasZoomed = false;
