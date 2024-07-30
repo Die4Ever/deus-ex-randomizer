@@ -141,7 +141,7 @@ function String PickSurveillanceVanName()
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
     switch(dxr.localURL)
     {

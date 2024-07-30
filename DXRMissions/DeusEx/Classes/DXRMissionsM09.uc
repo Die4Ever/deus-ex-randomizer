@@ -486,7 +486,7 @@ function PatchHole(Vector baseloc, Rotator baserot, string texture, int roll, fl
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
     switch(dxr.localURL)
     {

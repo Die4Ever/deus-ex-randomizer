@@ -291,7 +291,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
     switch(dxr.localURL) {
     case "05_NYC_UNATCOMJ12LAB":

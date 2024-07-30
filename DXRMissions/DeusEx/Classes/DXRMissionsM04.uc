@@ -90,7 +90,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
     switch(dxr.localURL) {
     case "04_NYC_NSFHQ":

@@ -123,7 +123,7 @@ function PreFirstEntryMapFixes()
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":

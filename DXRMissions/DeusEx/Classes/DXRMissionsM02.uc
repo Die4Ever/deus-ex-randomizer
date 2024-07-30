@@ -237,7 +237,7 @@ function PreFirstEntryMapFixes()
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":

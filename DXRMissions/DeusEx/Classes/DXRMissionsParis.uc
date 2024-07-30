@@ -155,10 +155,6 @@ function MissionTimer()
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
-        UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");
-        if(dxr.flags.settings.swapitems > 0) {
-            UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.",True);// dependent on swap items, not on goals rando
-        }
         if (f.GetBool('MeetNicolette_Played') &&
             !f.GetBool('NicoletteLeftClub'))
         {
@@ -185,7 +181,17 @@ function MissionTimer()
                 chopper.EnterWorld();
         }
         break;
+    }
+}
 
+function AnyEntry()
+{
+    switch(dxr.localURL) {
+    case "10_PARIS_METRO":
+        UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");
+        if(dxr.flags.settings.swapitems > 0) {
+            UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.",True);// dependent on swap items, not on goals rando
+        }
     case "10_PARIS_CATACOMBS_TUNNELS":
         UpdateGoalWithRandoInfo('FindNicolette', "Nicolette could be anywhere in the city.");
         break;
