@@ -238,7 +238,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)DataLinkTrigger dlt;
     local DeusExMover dxm;
-    //local Actor a;
     local name barrelName;
     local bool RevisionMaps;
 

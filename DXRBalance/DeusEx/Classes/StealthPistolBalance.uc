@@ -1,9 +1,10 @@
 class StealthPistolBalance injects WeaponStealthPistol;
 
-// lower range, better accuracy
+// slightly higher damage, lower range, better accuracy
 defaultproperties
 {
+    HitDamage=9
     maxRange=2000
     AccurateRange=1000
-    BaseAccuracy=0.65
+    BaseAccuracy=0.6
 }
