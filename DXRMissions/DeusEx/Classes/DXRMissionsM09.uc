@@ -238,7 +238,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)DataLinkTrigger dlt;
     local DeusExMover dxm;
-    local Actor a;
+    //local Actor a;
     local name barrelName;
     local bool RevisionMaps;
 
@@ -302,8 +302,6 @@ function PreFirstEntryMapFixes()
                     dxm.PrePivot=vect(-3,-2.5,5);
                 }
             }
-            a = Spawnm(class'DynamicBlockMonsters',,, vect(-3926.773438, 739.635742, -456.895294));
-            a.SetCollisionSize(100, 64);
         }
 
         foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
@@ -318,6 +316,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local #var(prefix)Keypad1 keypad;
     local SpecialEvent se;
+    local Actor a;
 
     if (g.name=="Jammer") {
         //Add a keypad to disable the jammer
@@ -346,6 +345,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.name=="Weld Point 5")
     {
         class'DXRHoverHint'.static.Create(self, g.name, g.actors[0].a.Location, 40, 40, g.actors[0].a);
+        a = Spawn(class'DynamicBlockMonsters',,, g.actors[0].a.Location);
+        a.SetBase(g.actors[0].a);
+        a.SetCollisionSize(80, 100);
     }
 }
 
