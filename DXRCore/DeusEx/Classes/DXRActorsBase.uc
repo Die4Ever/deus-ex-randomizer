@@ -466,7 +466,7 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
 
 
     if( ! a.SetLocation(newloc) ) {
-        if (#var(prefix)DataCube(a) != None) {
+        if (a.Mesh == class'#var(prefix)DataCube'.default.Mesh) {
             GlowUp(a);
         }
         return false;
@@ -486,7 +486,7 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         gen.SetBase(b);
     }
 
-    if (#var(prefix)DataCube(a) != None) {
+    if (a.Mesh == class'#var(prefix)DataCube'.default.Mesh) {
         GlowUp(a);
     }
 
@@ -624,21 +624,18 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
         warning("asuccess failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
         SetActorLocation(b, newloc, retainOrders);
         return false;
-    } else {
+    } else if (VSize(aloc - a.Location)>5) {
         //Move succeeded, but was kind of far from where it should be
-        if (VSize(aloc - a.Location)>5){
-            HitActor=Trace(HitLocation,HitNormal,a.Location,aloc,False);
-            if (HitActor!=None){
-                //There's a wall or something between the locations, this new location shouldn't have succeeded
-                //Move it back to the original location and give up
-                warning("Should have moved to "$aloc$" but ended up at "$a.Location$" instead (distance="$VSize(aloc - a.Location)$")");
-                SetActorLocation(a, oldloc, retainOrders);
-                SetActorLocation(b, newloc, retainOrders);
-                warning("asuccess moved " $ ActorToString(a) $ " into location of " $ ActorToString(b) $ ", but was moved out of line of sight of intended location ("$HitActor$" in the way)");
-                return False;
-            }
+        HitActor=Trace(HitLocation,HitNormal,a.Location,aloc,False);
+        if (HitActor!=None){
+            //There's a wall or something between the locations, this new location shouldn't have succeeded
+            //Move it back to the original location and give up
+            warning("Should have moved to "$aloc$" but ended up at "$a.Location$" instead (distance="$VSize(aloc - a.Location)$")");
+            SetActorLocation(a, oldloc, retainOrders);
+            SetActorLocation(b, newloc, retainOrders);
+            warning("asuccess moved " $ ActorToString(a) $ " into location of " $ ActorToString(b) $ ", but was moved out of line of sight of intended location ("$HitActor$" in the way)");
+            return False;
         }
-
     }
 
     newrot = b.Rotation;
