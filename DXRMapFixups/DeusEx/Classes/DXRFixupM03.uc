@@ -257,8 +257,7 @@ function PreFirstEntryMapFixes()
             foreach RadiusActors(class'AlarmUnit', au, 1.0, vectm(-1967.865112, 1858.142822, 101.505104)) {
                 // alarm inside the boat house is too high up for enemies to reach
                 loc = au.Location;
-                // loc.z = 58.946182; // height of the alarm on the outside of the boat house
-                loc.z = 80.225643; // halfway between them
+                loc.z = 80.225643; // halfway between the one inside the boat house and the one outside
                 au.SetLocation(loc);
                 break;
             }
