@@ -211,6 +211,8 @@ function MissionTimer()
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "06_HONGKONG_WANCHAI_MARKET":
         UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");

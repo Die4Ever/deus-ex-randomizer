@@ -267,6 +267,8 @@ function MissionTimer()
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "12_VANDENBERG_CMD":
         UpdateGoalWithRandoInfo('FindJock', "Jock could be anywhere around the Command Center.");

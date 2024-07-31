@@ -143,6 +143,8 @@ function String PickSurveillanceVanName()
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL)
     {
     case "08_NYC_STREET":

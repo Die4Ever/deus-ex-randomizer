@@ -125,6 +125,8 @@ function PreFirstEntryMapFixes()
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":
         UpdateGoalWithRandoInfo('GetToDock', "The boat could be anywhere.");

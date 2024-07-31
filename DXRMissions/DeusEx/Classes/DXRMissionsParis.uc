@@ -186,6 +186,8 @@ function MissionTimer()
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
         UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");

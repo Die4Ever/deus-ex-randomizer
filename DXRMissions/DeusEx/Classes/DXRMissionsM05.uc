@@ -293,6 +293,8 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "05_NYC_UNATCOMJ12LAB":
         UpdateGoalWithRandoInfo('FindPaul', "Paul could be located anywhere in the lab.  A security computer in the command center will be connected to a camera monitoring him.");

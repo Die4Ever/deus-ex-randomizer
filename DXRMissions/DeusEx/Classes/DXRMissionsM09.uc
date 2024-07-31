@@ -488,6 +488,8 @@ function PatchHole(Vector baseloc, Rotator baserot, string texture, int roll, fl
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL)
     {
     case "09_NYC_GRAVEYARD":
