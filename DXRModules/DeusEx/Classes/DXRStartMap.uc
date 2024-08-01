@@ -550,12 +550,36 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_SubwayComplete", bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
             MarkConvPlayed("MS_DL", bFemale);
+            GivePlayerImage(player, class'Image02_Ambrosia_Flyer');
             break;
 
+        case 37:
+            GivePlayerImage(player, class'Image03_NYC_Airfield');
+            MarkConvPlayed("DL_LebedevKill_Played", bFemale);
+            // fallthrough
+        case 36:
+        case 35:
+        case 34:
+        case 33:
+            AddNote(player, bEmptyNotes, "6653 -- Code to the phone-booth entrance to mole-people hideout.");
+            MarkConvPlayed("dl_batterypark", bFemale); // We're dropping you off in Battery Park
+            break;
+        case 31:
+            MarkConvPlayed("DL_WelcomeBack", bFemale);
+            break;
+
+        case 41:
+            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
+            break;
+        case 43:
+            AddGoalFromConv(player, 'CheckOnPaul', 'DL_JockParkStart');
+            break;
         case 45:
-            MarkConvPlayed("PaulInjured", bFemale);
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
             flagbase.SetBool('GatesOpen',true,,5);
+            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
+            MarkConvPlayed("PaulInjured", bFemale);
+            GivePlayerImage(player, class'Image04_NSFHeadquarters');
             break;
 
         case 75:
@@ -574,14 +598,27 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             AddNote(player, bEmptyNotes, "Luminous Path door-code: 1997.");
             flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
+            MarkConvPlayed("Gate_Guard2", bFemale);
+            MarkConvPlayed("MeetMaxChen", bFemale);
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
             MarkConvPlayed("DL_Tong_00", bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
             break;
+
         case 81:
             flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
             break;
+
+        case 105:
+            GivePlayerImage(player, class'Image10_Paris_CatacombsTunnels');
+            break;
+        case 106:
+        case 109:
+            GivePlayerImage(player, class'Image10_Paris_CatacombsTunnels');
+            GivePlayerImage(player, class'Image10_Paris_Metro');
+            break;
+
         case 115:
             flagbase.SetBool('templar_upload',true,,-1);
             flagbase.SetBool('GuntherHermann_Dead',true,,-1);
@@ -636,7 +673,77 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
+    local DeusExGoal goal;
+
     switch(start_flag) {
+        case 21:
+            AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete');
+            break;
+
+        case 31:
+            AddGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack');
+            break;
+        case 32:
+        case 33:
+        case 34:
+        case 35:
+            AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
+            break;
+        case 37:
+            AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
+            break;
+
+        case 62:
+        case 63:
+        case 64:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
+            break;
+        case 65:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
+            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00');
+            break;
+        case 66:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            break;
+        case 67:
+        case 68:
+            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2');
+            break;
+        case 70:
+            AddGoalFromConv(player, 'ReportToTong', 'TriadCeremony');
+            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            break;
+        case 75:
+            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            break;
+
+        case 90:
+        case 91:
+        case 92:
+        case 95:
+            // the conversation that gives you this goal is in M08, and it says "PCS" instead of "PRCS"
+            if (player.FindGoal('ScuttleShip') == None) {
+                goal = player.AddGoal('ScuttleShip', true);
+                goal.SetText("Scuttle the PRCS Wall Cloud by destroying the 5 tri-hull welds with explosives and by reversing the bilge-pump flow.  Pumping water into the bilges will destabilize the ship's weight distribution and cause the hull to split open.");
+            }
+            break;
+
+        case 101:
+            AddGoalFromConv(player, 'FindSilhouette', 'DL_paris_10_start');
+            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            break;
+        case 105:
+        case 106:
+            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            AddGoalFromConv(player, 'FindNicolette', 'DL_tunnels_down');
+            break;
+        case 109:
+            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            AddGoalFromConv(player, 'FindEverett', 'NicoletteOutside');
+            break;
+
         case 153:
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
             AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');

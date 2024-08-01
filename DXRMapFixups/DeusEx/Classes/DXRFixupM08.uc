@@ -4,6 +4,7 @@ function AnyEntryMapFixes()
 {
     local StantonDowd s;
     local bool VanillaMaps;
+    local ConEventAddGoal ceag;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -12,12 +13,20 @@ function AnyEntryMapFixes()
     switch(dxr.localURL) {
     case "08_NYC_STREET":
         SetTimer(1.0, True);
+
         foreach AllActors(class'StantonDowd', s) {
             RemoveReactions(s);
         }
+
         Player().StartDataLinkTransmission("DL_Entry");
         RearrangeMJ12ConvergingInfolink();
         RearrangeJockExitDialog();
+
+        ceag = GetGoalConEvent('ScuttleShip', 'StantonDowd');
+        if (ceag != None) {
+            ceag.goalText = ReplaceText(ceag.goalText, "PCS", "PRCS");
+        }
+
         break;
 
     case "08_NYC_SMUG":
