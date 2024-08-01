@@ -585,19 +585,14 @@ function Timer()
 
 function UpdateGoalWithRandoInfo(name goalName, string text, optional bool always)
 {
-    local Conversation c;
-    local ConEvent ce;
     local ConEventAddGoal ceag;
 
     if (player(true) == None) return; // don't spam HX logs
     if (!always && dxr.flags.settings.goals == 0) return; // don't add rando notes if goal randomization is turned off
 
-    foreach AllObjects(class'Conversation', c) {
-        for (ce = c.eventList; ce != None; ce = ce.nextEvent) {
-            ceag = ConEventAddGoal(ce);
-            if (ceag != None && ceag.goalName == goalName && InStr(ceag.goalText, "Rando: ") == -1) {
-                ceag.goalText = ceag.goalText $ "|nRando: " $ text;
-            }
+    foreach AllObjects(class'ConEventAddGoal', ceag) {
+        if (ceag != None && ceag.goalName == goalName && InStr(ceag.goalText, "Rando: ") == -1) {
+            ceag.goalText = ceag.goalText $ "|nRando: " $ text;
         }
     }
 }
