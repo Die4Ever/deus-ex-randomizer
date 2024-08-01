@@ -173,7 +173,7 @@ simulated function RandoSkillLevelValues(Skill a)
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
+simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local Skill s;
     local float f;
@@ -195,11 +195,13 @@ simulated function string DescriptionLevel(Actor act, int i, out string word, ou
     if( s.Class == class'#var(prefix)SkillDemolition' || InStr(String(s.Class.Name), "#var(prefix)SkillWeapon") == 0 ) {
         word = "Damage";
         f = -2.0 * val + 1.0;
-        return int(f * 100.0) $ p;
+        shortDisplay = string(int(f * 100.0));
+        return shortDisplay $ p;
     }
     else if( s.Class == class'#var(prefix)SkillLockpicking' || s.Class == class'#var(prefix)SkillTech' ) {
         word = "Efficiency";
-        return int(val * 100.0) $ p;
+        shortDisplay = string(int(val * 100.0));
+        return shortDisplay $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
 #ifdef vanilla
@@ -218,15 +220,18 @@ simulated function string DescriptionLevel(Actor act, int i, out string word, ou
         case 3: r = "|n    Master: "; break;
         }
 #ifdef vanilla
-        r = r $ int( (1 - (f * 1.1 + 0.3)) * 100.0 ) $ p $ " / "; // passive is * 1.1 + 0.3
+        shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
+        r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #elseif vmd
         f = (f + 1) / 2;// VMD nerfed enviro skill
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
+        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #else
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
+        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #endif
 
@@ -234,23 +239,31 @@ simulated function string DescriptionLevel(Actor act, int i, out string word, ou
     }
     else if( s.Class == class'#var(prefix)SkillMedicine') {
         word = "Healing";
-        return int( val * 30.0 ) $ " HP";
+        shortDisplay = string(int( val * 30.0 ));
+        return shortDisplay $ " HP";
     }
     else if( s.Class == class'#var(prefix)SkillComputer') {
         word = "Hack Time";
-        if( i == 0 ) return "--";
+        if( i == 0 )
+        {
+            shortDisplay = "--";
+            return "--";
+        }
         f = 15.0 / (val * 1.5);
-        return FloatToString(f, 1) $ " sec";
+        shortDisplay = FloatToString(f, 1);
+        return shortDisplay $ " sec";
     }
     else if( s.Class == class'#var(prefix)SkillSwimming') {
         word = "Swimming Speed";
-        return int(val * 100.0) $ p;
+        shortDisplay = string(int(val * 100.0));
+        return shortDisplay $ p;
     }
 #ifdef gmdx
     else if( s.Class == class'SkillStealth' ) {
         // TODO: improve description
         word = "Values";
-        return string(val);
+        shortDisplay = string(val);
+        return shortDisplay;
     }
 #endif
     else {

@@ -357,7 +357,7 @@ simulated function RandoAug(Augmentation a)
     RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
+simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local Augmentation a;
     local float f;
