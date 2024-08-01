@@ -4,6 +4,13 @@ class DXRMenuScreenNewGame extends RevMenuScreenNewGame;
 class DXRMenuScreenNewGame extends MenuScreenNewGame;
 #endif
 
+#exec TEXTURE IMPORT FILE="Textures\MenuNewGameBackgroundExtended_1.pcx"	NAME="MenuNewGameBackgroundExtended_1"	GROUP="DXRandoUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuNewGameBackgroundExtended_2.pcx"	NAME="MenuNewGameBackgroundExtended_2"	GROUP="DXRandoUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuNewGameBackgroundExtended_3.pcx"	NAME="MenuNewGameBackgroundExtended_3"	GROUP="DXRandoUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuNewGameBackgroundExtended_4.pcx"	NAME="MenuNewGameBackgroundExtended_4"	GROUP="DXRandoUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuNewGameBackgroundExtended_5.pcx"	NAME="MenuNewGameBackgroundExtended_5"	GROUP="DXRandoUI" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\MenuNewGameBackgroundExtended_6.pcx"	NAME="MenuNewGameBackgroundExtended_6"	GROUP="DXRandoUI" MIPS=Off
+
 var DXRando dxr;
 var DXRFlags flags;
 var config string last_player_name;
@@ -12,11 +19,11 @@ var bool hasCheckedLDDP;
 var bool bFemaleEnabled;
 #endif
 
-const SkillsColWidth = 140;
-const SkillLevelColWidth = 70;
+const SkillsColWidth = 141;
+const SkillLevelColWidth = 68;
 const SkillValueColWidth = 34;
 const SkillCostColWidth = 51;
-const SkillCostLeftPad = 10;
+const SkillCostLeftPad = 9;
 
 static function bool HasLDDPInstalled()
 {
@@ -251,13 +258,13 @@ function CreateTextHeaders()
 
     // ...Skill Table Headers Start Here...
     x = 172;
-    y = 18;
+    y = 19;
 
     // Col 0
     // Because this column's header and cell contents have different font sizes,
     // the header needs some adjustment to visually align with the cell
     // contents.
-    winLabel = CreateMenuLabel(x + 3, y - 1, HeaderSkillsLabel, winClient);
+    winLabel = CreateMenuLabel(x + 3, y - 2, HeaderSkillsLabel, winClient);
 
     // I'm not sure quite sure why, but nudging the other headers by a small
     // amount makes them look more aligned with their cell contents.
@@ -362,4 +369,10 @@ defaultproperties
     btnLabelResetToDefaults="Restore Defaults"
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
     actionButtons(3)=(Align=HALIGN_Left,Action=AB_Other,Text="|&New Seed",Key="NEWSEED")
+    clientTextures(0)=Texture'MenuNewGameBackgroundExtended_1'
+    clientTextures(1)=Texture'MenuNewGameBackgroundExtended_2'
+    clientTextures(2)=Texture'MenuNewGameBackgroundExtended_3'
+    clientTextures(3)=Texture'MenuNewGameBackgroundExtended_4'
+    clientTextures(4)=Texture'MenuNewGameBackgroundExtended_5'
+    clientTextures(5)=Texture'MenuNewGameBackgroundExtended_6'
 }
