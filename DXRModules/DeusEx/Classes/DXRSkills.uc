@@ -212,7 +212,6 @@ simulated function string DescriptionLevelExtended(Actor act, int i, out string 
 #endif
 
         f = val;
-        shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
 
         switch(i) {
         case 0: r = "Untrained: "; break;
@@ -221,15 +220,18 @@ simulated function string DescriptionLevelExtended(Actor act, int i, out string 
         case 3: r = "|n    Master: "; break;
         }
 #ifdef vanilla
-        r = r $ int( (1 - (f * 1.1 + 0.3)) * 100.0 ) $ p $ " / "; // passive is * 1.1 + 0.3
+        shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
+        r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #elseif vmd
         f = (f + 1) / 2;// VMD nerfed enviro skill
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
+        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #else
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
+        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #endif
 
