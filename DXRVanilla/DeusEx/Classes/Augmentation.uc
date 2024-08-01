@@ -92,20 +92,38 @@ simulated function bool IsTicked()
 
 simulated function TickUse()
 {
+    local float useEnergy;
+
     if(bAutomatic && !IsTicked()) {
         // don't punish the player for auto aug turning off and immediately turning on again within the same one-second cycle
         if(LastUsed < Level.TimeSeconds-1) {
-            Player.Energy -= energyRate/60.0;
+            useEnergy = energyRate/60.0 * GetEnergyMult();
         }
-        if(Player.Energy <= 0) {
-            Player.Energy = 0;
+        if(Player.Energy < useEnergy) {
             return;// don't update the LastUsed
         } else {
+            Player.Energy -= useEnergy;
             Player.PlaySound(ActivateSound, SLOT_None, 0.75);
             Player.AmbientSound = LoopSound;
         }
     }
     LastUsed = Level.TimeSeconds;
+}
+
+simulated function float GetEnergyMult()
+{
+    local float mult;
+    local Augmentation a;
+    mult = 1;
+    for(a=Player.AugmentationSystem.FirstAug; a!=None; a=a.next) {
+        if (AugPower(a) != None && a.bHasIt && a.bIsActive)
+            mult *= a.GetAugLevelValue();
+
+        if (bBoosted && AugHeartLung(a) != None && a.bHasIt && a.bIsActive)
+            mult *= a.GetAugLevelValue();
+    }
+    Player.ClientMessage(self $ " GetEnergyMult() " $ mult);
+    return mult;
 }
 
 simulated function float GetEnergyRate()

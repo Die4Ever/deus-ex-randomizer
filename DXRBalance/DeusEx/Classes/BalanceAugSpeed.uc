@@ -3,12 +3,19 @@ class BalanceAugSpeed injects AugSpeed;
 state Active
 {
 Begin:
+    DoActivate();
+}
+
+simulated function DoActivate()
+{
+    local float useEnergy;
+
     // DXRando: instantly use 1 energy to prevent abuse
-    Player.Energy -= 1;
-    if(Player.Energy <= 0) {
-        Player.Energy = 0;
+    useEnergy = 1;
+    if(Player.Energy < useEnergy) {
         Deactivate();
     } else {
+        Player.Energy -= useEnergy;
         Player.GroundSpeed *= GetAugLevelValue();
         Player.JumpZ *= GetAugLevelValue();
         if ( Level.NetMode != NM_Standalone )
