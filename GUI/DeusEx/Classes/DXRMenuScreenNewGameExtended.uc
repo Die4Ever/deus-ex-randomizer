@@ -120,7 +120,7 @@ function CreateSkillsListWindow()
     lstSkills.SetColumnWidth(4, SkillValueColWidth);
     lstSkills.SetColumnWidth(5, SkillValueColWidth + SkillCostLeftPad);
     lstSkills.SetColumnWidth(6, SkillCostColWidth - SkillCostLeftPad);
-    
+
     for( i=0; i<7; i++ )
     {
         lstSkills.SetColumnAlignment(i, HALIGN_Left);
@@ -129,9 +129,6 @@ function CreateSkillsListWindow()
 
 defaultproperties
 {
-    btnLabelResetToDefaults="Restore Defaults"
-    actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
-    actionButtons(3)=(Align=HALIGN_Left,Action=AB_Other,Text="|&New Seed",Key="NEWSEED")
     clientTextures(0)=Texture'MenuNewGameBackgroundExtended_1'
     clientTextures(1)=Texture'MenuNewGameBackgroundExtended_2'
     clientTextures(2)=Texture'MenuNewGameBackgroundExtended_3'
