@@ -122,7 +122,6 @@ simulated function float GetEnergyMult()
         if (bBoosted && AugHeartLung(a) != None && a.bHasIt && a.bIsActive)
             mult *= a.GetAugLevelValue();
     }
-    Player.ClientMessage(self $ " GetEnergyMult() " $ mult);
     return mult;
 }
 
