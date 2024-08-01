@@ -141,8 +141,10 @@ function String PickSurveillanceVanName()
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL)
     {
     case "08_NYC_STREET":

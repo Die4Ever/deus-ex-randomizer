@@ -90,8 +90,10 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "04_NYC_NSFHQ":
         UpdateGoalWithRandoInfo('SendSignal', "The computers to align the dishes and send the signal could be anywhere in NSF HQ.");
