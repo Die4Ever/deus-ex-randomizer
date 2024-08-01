@@ -167,8 +167,7 @@ function DrawSkillsScreen(GC gc)
             if (dxrs!=None){
                 for (i=0;i<4;i++){
                     val = askill.levelValues[i];
-                    dxrs.DescriptionLevel(aSkill, i, word, val, defaultval); //Give me DescriptionLevelExtended plz
-                    levelValuesDisplay[i] = ""$int(val * 100.0); //This isn't correct
+                    levelValuesDisplay[i] = dxrs.DescriptionLevelShort(aSkill, i, val);
                 }
                 gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[askill.CurrentLevel]);
                 if (askill.CurrentLevel<3){
@@ -199,7 +198,7 @@ function DrawAugsScreen(GC gc)
 {
     local Augmentation anaug;
     local float curx, cury, w, h;
-    local String str, costStr, word;
+    local String str, costStr;
     local int index, i, numUpgrades;
     local float barLen, levelx, curvaluex, nextvaluex, val, defaultval;
     local DXRAugmentations dxra;
@@ -277,14 +276,8 @@ function DrawAugsScreen(GC gc)
                 if (dxra!=None){
                     for (i=0;i<4;i++){
                         val = anAug.LevelValues[i];
-                        levelValuesDisplay[i] = dxra.DescriptionLevel(anAug, i, word, val, defaultval);
+                        levelValuesDisplay[i] = dxra.DescriptionLevelShort(anAug, i, val);
                     }
-                    /*
-                    gc.DrawText( curvaluex, cury, w, h, ""$int(anAug.LevelValues[anAug.CurrentLevel]*100));
-                    if (anAug.CurrentLevel<anAug.MaxLevel){
-                        gc.DrawText( nextvaluex, cury, w, h, ""$int(anAug.LevelValues[anAug.CurrentLevel+1]*100));
-                    }
-                    */
                     gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[anAug.CurrentLevel]);
                     if (anAug.CurrentLevel<anAug.MaxLevel){
                         gc.DrawText( nextvaluex, cury, w, h, levelValuesDisplay[anAug.CurrentLevel+1]);
