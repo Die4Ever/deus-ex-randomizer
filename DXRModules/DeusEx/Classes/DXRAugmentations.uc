@@ -467,7 +467,7 @@ simulated function string DescriptionLevelExtended(Actor act, int i, out string 
         if(val < 0) {
             val = 0;
         }
-        shortDisplay=int( (1.0 - val) * 100.0 ) $ "%"
+        shortDisplay=int( (1.0 - val) * 100.0 ) $ "%";
         return shortDisplay;
     }
     else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' || a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
