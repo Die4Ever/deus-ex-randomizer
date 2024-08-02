@@ -609,11 +609,11 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        // give Nervous Worker a blue tie so he stands out
+        // give nervous worker some new threads so he stands out
         foreach AllActors(class'Male1', male) {
-            if (male.UnfamiliarName == "Nervous worker") {
-                male.MultiSkins[5] = Texture'NervousWorkerBody';
+            if (male.BindName == "Disgruntled_Guy") {
                 male.MultiSkins[3] = Texture'NervousWorkerPants';
+                male.MultiSkins[5] = Texture'NervousWorkerBody';
                 break;
             }
         }
