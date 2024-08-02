@@ -3350,7 +3350,7 @@ defaultproperties
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",desc_singular="Use 1 HazMat Suit",max=3,missions=54866)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
-    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottles of alcohol",max=75)
+    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
 #ifdef injections
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)
