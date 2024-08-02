@@ -612,11 +612,8 @@ function PreFirstEntryMapFixes()
         // give Nervous Worker a blue tie so he stands out
         foreach AllActors(class'Male1', male) {
             if (male.UnfamiliarName == "Nervous worker") {
-                log("debug found nervous worker");
                 male.MultiSkins[5] = Texture'NervousWorkerBody';
-                for (i = 0; i < ArrayCount(male.MultiSkins); i++) {
-                    log("debug multiskin " $ i $ ": " $ male.MultiSkins[i]);
-                }
+                male.MultiSkins[3] = Texture'NervousWorkerPants';
                 break;
             }
         }

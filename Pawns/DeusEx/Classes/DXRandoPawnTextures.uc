@@ -64,6 +64,7 @@ class DXRandoPawnTextures extends Object abstract;
 
 // Nervous worker
 #exec TEXTURE IMPORT NAME=NervousWorkerBody FILE=Textures\NervousWorkerBody.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=NervousWorkerPants FILE=Textures\NervousWorkerPants.pcx GROUP=DXRandoPawns
 
 
 // Augbots
