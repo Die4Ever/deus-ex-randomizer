@@ -62,6 +62,9 @@ class DXRandoPawnTextures extends Object abstract;
 //MJ12 Troop without goggles
 #exec TEXTURE IMPORT NAME=MJ12TroopTex4NoGoggles FILE=Textures\MJ12TroopTex4NoGoggles.pcx GROUP=DXRandoPawns
 
+// Nervous worker
+#exec TEXTURE IMPORT NAME=NervousWorkerBody FILE=Textures\NervousWorkerBody.pcx GROUP=DXRandoPawns
+
 
 // Augbots
 #exec TEXTURE IMPORT NAME=AugBotTex1 FILE=Textures\AugBotTex1.pcx GROUP=DXRandoPawns FLAGS=2

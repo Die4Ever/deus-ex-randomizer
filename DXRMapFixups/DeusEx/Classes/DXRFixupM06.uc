@@ -60,6 +60,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MJ12Commando commando;
     local WaterCooler wc;
     local Rotator rot;
+    local Male1 male;
     local int i;
 
     local bool VanillaMaps;
@@ -604,6 +605,18 @@ function PreFirstEntryMapFixes()
                 rot = wc.Rotation;
                 rot.yaw += 32768;
                 wc.SetRotation(rot);
+                break;
+            }
+        }
+
+        // give Nervous Worker a blue tie so he stands out
+        foreach AllActors(class'Male1', male) {
+            if (male.UnfamiliarName == "Nervous worker") {
+                log("debug found nervous worker");
+                male.MultiSkins[5] = Texture'NervousWorkerBody';
+                for (i = 0; i < ArrayCount(male.MultiSkins); i++) {
+                    log("debug multiskin " $ i $ ": " $ male.MultiSkins[i]);
+                }
                 break;
             }
         }
