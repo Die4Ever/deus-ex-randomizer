@@ -614,6 +614,7 @@ function PreFirstEntryMapFixes()
             if (male.BindName == "Disgruntled_Guy") {
                 male.MultiSkins[3] = Texture'NervousWorkerPants';
                 male.MultiSkins[5] = Texture'NervousWorkerBody';
+                male.CarcassType = class'NervousWorkerCarcass';
                 break;
             }
         }
@@ -910,7 +911,7 @@ function AnyEntryMapFixes()
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
             foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body')
                 if (carc.bHidden){
-				    carc.bHidden = False;
+                    carc = carc.Spawn(class'NervousWorkerCarcass');
 #ifdef injections
                     //HACK: to be removed once the problems with Carcass2 are fixed/removed
                     carc.mesh = LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC';  //His body starts in the water, so this is fine
