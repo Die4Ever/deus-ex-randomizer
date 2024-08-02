@@ -102,7 +102,7 @@ function FirstEntry()
         if (!IsValidModClass(mod.class)){
             continue;
         }
-        if (mod.Owner==None){
+        if (mod.Owner==None && !mod.bIsSecretGoal){
             mods[i++]=mod;
         }
     }
