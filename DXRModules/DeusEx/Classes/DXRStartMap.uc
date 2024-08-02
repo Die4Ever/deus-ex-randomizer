@@ -356,6 +356,9 @@ static function string _GetStartMap(int start_map_val, optional out string frien
         case 75:
             friendlyName = "Hong Kong (Level 2 Labs)";
             return "06_HongKong_Storage";
+        case 80:
+            friendlyName = "Return to NYC (Streets)";
+            return "08_NYC_Street";
         case 81:
             bShowInMenu=1;
             friendlyName = "Return to NYC (Smuggler)";
