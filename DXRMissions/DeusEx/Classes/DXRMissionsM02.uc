@@ -237,8 +237,10 @@ function PreFirstEntryMapFixes()
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
         UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");

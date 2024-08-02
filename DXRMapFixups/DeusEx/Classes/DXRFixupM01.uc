@@ -11,16 +11,22 @@ function PostFirstEntryMapFixes()
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
+
         foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
             m.bBreakable = false;
             m.bPickable = false;
             m.bIsDoor = false;// this prevents Lloyd from opening the door
         }
+
         foreach AllActors(class'BlockPlayer', bp) {
             if(bp.Group == 'waterblock') {
                 bp.bBlockPlayers = false;
             }
         }
+
+        SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
+        SetAllLampsState(,, false, vect(3313.0954215, -1662.294768, -176.938141), 0.01);
+
         break;
     }
 
@@ -32,7 +38,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)NYPoliceBoat b;
     local #var(prefix)HarleyFilben harley;
+    local #var(prefix)GuntherHermann gunther;
     local #var(prefix)HumanCivilian hc;
+    local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)FlagTrigger ft;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -60,6 +69,30 @@ function PreFirstEntryMapFixes()
         }
 
         class'GuntherWeaponMegaChoice'.static.Create(Player());
+        foreach AllActors(class'#var(prefix)GuntherHermann',gunther){
+            //Make sure he has ammo for Assault Rifle (7.62mm), Stealth Pistol(10mm), Pistol (10mm)
+            GiveItem(gunther, class'Ammo762mm',300);
+            GiveItem(gunther, class'Ammo10mm',150);
+            break;
+        }
+
+        // Prevent Gunther from going to WaitingFor orders if you talk to him before going to his cell door
+        // (aka if you spawn in his cell)
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
+            if (ot.Orders=='WaitingFor' && ot.Event=='GuntherHermann'){
+                ot.SetCollision(False,False,False); //You no longer interact directly with the OrdersTrigger
+                ot.Tag='GuntherWaitingOrders';
+
+                //Instead you will interact with this FlagTrigger to conditionally hit the OrdersTrigger instead
+                ft=Spawn(class'#var(prefix)FlagTrigger',,,ot.Location);
+                ft.SetCollisionSize(ot.CollisionRadius,ot.CollisionHeight);
+                ft.Event='GuntherWaitingOrders';
+                ft.bSetFlag=False;
+                ft.bTrigger=True;
+                ft.FlagName='GuntherRescued_Played'; //Only trigger the orders if you have *not* talked to Gunther yet
+                ft.flagValue=False;
+            }
+        }
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
@@ -160,6 +193,10 @@ function AnyEntryMapFixes()
 
     // you can't take a corpse alive and conscious
     GetConversation('DL_Top').AddFlagRef('TerroristCommander_Dead', false);
+    // "the NSF have set up patchwork security systems here"
+    GetConversation('DL_FrontEntrance').AddFlagRef('StatueMissionComplete', false);
+    // "you might be able to avoid some of the security by entering this way"
+    GetConversation('DL_BackEntrance').AddFlagRef('StatueMissionComplete', false);
 
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando

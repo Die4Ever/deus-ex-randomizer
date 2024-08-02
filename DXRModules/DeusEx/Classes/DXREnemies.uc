@@ -13,12 +13,12 @@ function CheckConfig()
     local int i;
 
     enemy_multiplier = 1;
-    min_rate_adjust = 0.1;
-    max_rate_adjust = 3.0;
+    min_rate_adjust = 0.3;
+    max_rate_adjust = 4.0;
 
-    AddRandomWeapon(class'#var(prefix)WeaponShuriken', 9);
-    AddRandomWeapon(class'#var(prefix)WeaponPistol', 7);
-    AddRandomWeapon(class'#var(prefix)WeaponStealthPistol', 5);
+    AddRandomWeapon(class'#var(prefix)WeaponShuriken', 8);
+    AddRandomWeapon(class'#var(prefix)WeaponPistol', 8);
+    AddRandomWeapon(class'#var(prefix)WeaponStealthPistol', 6);
     AddRandomWeapon(class'#var(prefix)WeaponAssaultGun', 11);
     AddRandomWeapon(class'#var(prefix)WeaponMiniCrossbow', 6);
 #ifdef gmdx
@@ -32,7 +32,7 @@ function CheckConfig()
     AddRandomWeapon(class'#var(prefix)WeaponGasGrenade', 4);
     AddRandomWeapon(class'#var(prefix)WeaponHideAGun', 3);
     AddRandomWeapon(class'#var(prefix)WeaponLAM', 5);
-    AddRandomWeapon(class'#var(prefix)WeaponLAW', 4);
+    AddRandomWeapon(class'#var(prefix)WeaponLAW', 3);
     AddRandomWeapon(class'#var(prefix)WeaponNanoVirusGrenade', 4);
     AddRandomWeapon(class'#var(prefix)WeaponPepperGun', 2);
     AddRandomWeapon(class'#var(prefix)WeaponPlasmaRifle', 6);

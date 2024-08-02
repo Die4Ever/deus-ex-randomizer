@@ -78,7 +78,7 @@ function RandoTurrets(int percent_move, int percent_add)
         info("RandoTurret add near "$loc);
         cam = SpawnCamera(loc);
         if( cam == None ) continue;
-        t = SpawnTurret(loc);
+        t = SpawnTurret(loc,rngb());
         c = SpawnSecurityComputer(loc, t, cam);
         if( c != None ) {
             loc = GetRandomPosition(loc, min_datacube_distance, max_datacube_distance);
@@ -135,9 +135,10 @@ function MoveTurret(#var(prefix)AutoTurret t, vector loc)
     t.gun.SetBase(t);
 }
 
-function #var(prefix)AutoTurret SpawnTurret(vector loc)
+function #var(prefix)AutoTurret SpawnTurret(vector loc, bool small)
 {
     local #var(prefix)AutoTurret t;
+    local class<#var(prefix)AutoTurret> turretClass;
     local rotator rotation;
 
     if( ! GetTurretLocation(loc, rotation) ) {
@@ -145,7 +146,13 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc)
         return None;
     }
 
-    t = Spawn(class'#var(prefix)AutoTurret',,, loc, rotation);
+    if (small){
+        turretClass=class'#var(injectsprefix)AutoTurretSmall';
+    } else {
+        turretClass=class'#var(prefix)AutoTurret';
+    }
+    t = Spawn(turretClass,,, loc, rotation);
+
     if( t == None ) {
         warning("SpawnTurret failed at "$loc);
         return None;
@@ -155,7 +162,7 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc)
     t.bTrackPawnsOnly = false;
     t.bTrackPlayersOnly = true;
     t.maxRange = t.maxRange * 2;
-    t.fireRate *= 0.9;// lower numbers are stronger
+    //t.fireRate *= 0.9;// lower numbers are stronger - Don't adjust fireRate so that the behaviour is consistent for all large/small turrets
     t.gunAccuracy *= 0.8;// lower numbers are stronger
     class'DXRPasswords'.static.RandoHackable(dxr, t.gun);
     info("SpawnTurret "$t$" done at ("$loc$"), ("$rotation$")");

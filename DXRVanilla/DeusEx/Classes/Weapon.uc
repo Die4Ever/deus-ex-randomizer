@@ -20,6 +20,21 @@ function PostBeginPlay()
     }
 }
 
+function ScopeOn()
+{
+    local DeusExPlayer player;
+
+    Super.ScopeOn();
+    player = DeusExPlayer(Owner);
+
+    ShakeYaw = currentAccuracy * (Rand(1024) - 512);
+    ShakePitch = currentAccuracy * (Rand(1024) - 512);
+    if (player != None && bZoomed) {
+        player.ViewRotation.Yaw += ShakeYaw;
+        player.ViewRotation.Pitch += ShakePitch;
+    }
+}
+
 function ScopeOff()
 {
     bWasZoomed = false;
@@ -146,14 +161,15 @@ simulated function bool NearWallCheck()
         if (!bNearWall &&
             IsAnimating() &&
             (AnimSequence=='Attack' || AnimSequence=='Attack2' || AnimSequence=='Attack3' ) &&
+            (AnimFrame < 0.7) && //Grenade spawns at the 0.7 point (#805) - this is in the AllWeapons.uc file
             (GetStateName() == 'NormalFire'))
         {
             //The throw animation is about to be canceled by a place animation.
             //Ammo gets consumed at the start of the animation, but the projectile is only spawned
-            //when the animation completely finishes.  If it is interrupted, the projectile won't
-            //be spawned.  The animation can be easily canceled if you get near a wall and the
-            //grenade PlaceBegin and PlaceEnd animations play.  We need to catch that to fix
-            //issue #519
+            //when the animation completely finishes (Just kidding, #805 proves it spawns at the 0.7 AnimFrame).
+            //If it is interrupted, the projectile won't be spawned.  The animation can be easily
+            //canceled if you get near a wall and the grenade PlaceBegin and PlaceEnd animations play.
+            //We need to catch that to fix issue #519
 
             AmmoType.AddAmmo(1); //Give the ammo back
             bDestroyOnFinish=False; //Make sure it isn't destroyed afterwards
@@ -201,7 +217,7 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
     a.Velocity = HitNormal * -900.0;
 }
 
-function float GetDamage(optional bool ignore_skill)
+function float GetDamage(optional bool ignore_skill, optional bool get_default)
 {
     local float mult;
     // AugCombat increases our damage if hand to hand
@@ -216,7 +232,7 @@ function float GetDamage(optional bool ignore_skill)
     // skill also affects our damage
     // GetWeaponSkill returns 0.0 to -0.7 (max skill/aug)
     mult += -2.0 * GetWeaponSkill();
-    if(ignore_skill)
+    if(ignore_skill)// also ignores aug
         mult = 1.0;
 
     if( ! bInstantHit && class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
@@ -226,7 +242,8 @@ function float GetDamage(optional bool ignore_skill)
         }
         return ProjectileClass.default.Damage * mult;
     }
-    return HitDamage * mult;
+    if(get_default) return default.HitDamage * mult;
+    else return HitDamage * mult;
 }
 
 function int GetNumHits()
@@ -283,10 +300,14 @@ simulated function bool UpdateInfo(Object winObject)
     local Pawn P;
     local Ammo weaponAmmo;
     local int  ammoAmount;
+    local bool bZeroRando; // used for showing defaults
 
     P = Pawn(Owner);
     if (P == None)
         return False;
+
+    if(Human(P) != None)
+        bZeroRando = Human(P).bZeroRando;
 
     winInfo = PersonaInventoryInfoWindow(winObject);
     if (winInfo == None)
@@ -377,12 +398,15 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddAmmoTypesItem(msgInfoAmmo, str);
 
-    if( AmmoType != None && AmmoName != None && AmmoName != Class'DeusEx.AmmoNone' )
-        winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
+    if( AmmoType != None && AmmoName != None && AmmoName != Class'DeusEx.AmmoNone' ) {
+        if(bZeroRando)
+            winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
+        else
+            winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo $ " (Default: " $ AmmoType.default.MaxAmmo $ ")");
+    }
 
     // base damage
     dmg = GetDamage(true);
-
     if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
         dmg /= float(GetNumHits());
 
@@ -395,6 +419,15 @@ simulated function bool UpdateInfo(Object winObject)
     }
 
     winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
+
+    // default damage
+    if(!bZeroRando) {
+        dmg = GetDamage(true, true);
+        if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
+            dmg /= float(GetNumHits());
+        str = "  (Default: " $ dmg $ ")";
+        winInfo.AddInfoItem("", str);
+    }
 
     winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), true);
 
@@ -430,8 +463,17 @@ simulated function bool UpdateInfo(Object winObject)
             str = msgInfoSingle;
 
         str = str $ "," @ FormatFloatString(1.0/ShotTime, 0.1) @ msgInfoRoundsPerSec;
+
+        //str = str $ "|n  (Default: " $ FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
     }
     winInfo.AddInfoItem(msgInfoROF, str);
+
+    // default rate of fire
+    if (!bZeroRando && Default.ReloadCount != 0 && !bHandToHand)
+    {
+        str = FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
+        winInfo.AddInfoItem("", "  (Default: " $ str);
+    }
 
     // reload time
     if ((Default.ReloadCount == 0) || bHandToHand)
@@ -499,7 +541,7 @@ simulated function bool UpdateInfo(Object winObject)
     if (HasRangeMod())
     {
         str = str @ BuildPercentString(ModAccurateRange);
-        str = str @ "=" @ FormatFloatString(AccurateRange/16.0, 1.0) @ msgRangeUnit;
+        str = str @ "|n    =" @ FormatFloatString(AccurateRange/16.0, 1.0) @ msgRangeUnit;
     }
     winInfo.AddInfoItem(msgInfoAccRange, str, HasRangeMod());
 
@@ -513,7 +555,12 @@ simulated function bool UpdateInfo(Object winObject)
         else
             str = FormatFloatString(Default.MaxRange/16.0, 1.0) @ msgRangeUnit;
     }
-    winInfo.AddInfoItem(msgInfoMaxRange, str);
+    if (HasRangeMod())
+    {
+        str = str @ BuildPercentString(ModAccurateRange);
+        str = str @ "|n    =" @ FormatFloatString(MaxRange/16.0, 1.0) @ msgRangeUnit;
+    }
+    winInfo.AddInfoItem(msgInfoMaxRange, str, HasRangeMod());
 
     // mass
     winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
@@ -693,6 +740,23 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
         }
     }
     Super.ProcessTraceHit(Other,HitLocation,HitNormal,X,Y,Z);
+}
+
+simulated function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
+{
+    local float oldCurrentAccuracy;
+    local Projectile p;
+
+    oldCurrentAccuracy = currentAccuracy;
+    if(bLasing) {
+        if (AreaOfEffect == AOE_Cone)
+            currentAccuracy = FMin(currentAccuracy, 0.1);
+        else
+            currentAccuracy = 0;
+    }
+    p = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
+    currentAccuracy = oldCurrentAccuracy;// just make sure we don't accidentally affect anything else
+    return p;
 }
 
 function TravelPostAccept()

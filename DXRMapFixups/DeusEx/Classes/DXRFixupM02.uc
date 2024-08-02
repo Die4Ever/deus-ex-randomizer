@@ -181,6 +181,11 @@ function PreFirstEntryMapFixes()
             //CreateAnsweringMachineConversation(tad);
             //tad.ConBindEvents();
 
+            foreach RadiusActors(class'DeusExMover', d, 1.0, vectm(-304.0, -3000.0, 64.0)) {
+                // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
+                d.InterpolateTo(1, 0.0);
+                break;
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
@@ -359,9 +364,16 @@ function PostFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
+    local ConEventSpeech ces;
     local Jock j;
 
     switch (dxr.localURL) {
+    case "02_NYC_STREET":
+        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
+        if (ces != None)
+            ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
+        break;
+
     case "02_NYC_BAR":
         if (dxr.flagbase.getBool('GeneratorBlown')) {
             foreach AllActors(class'Jock', j) {

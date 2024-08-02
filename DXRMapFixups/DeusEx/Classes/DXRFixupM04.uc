@@ -44,8 +44,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)GuntherHermann gunther;
+    local #var(prefix)GilbertRenton gilbert;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)JoJoFine jojo;
     local OnceOnlyTrigger oot;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
@@ -81,6 +83,14 @@ function PreFirstEntryMapFixes()
         }
 #endif
         class'GilbertWeaponMegaChoice'.static.Create(Player());
+        foreach AllActors(class'#var(prefix)GilbertRenton',gilbert){
+            //Make sure he has ammo for Stealth Pistol(10mm), Pistol (10mm),
+            //Sawed-off (Buckshot shells), Mini Crossbow (Tranq Darts)
+            GiveItem(gilbert, class'AmmoShell',20);
+            GiveItem(gilbert, class'Ammo10mm',20);
+            GiveItem(gilbert, class'AmmoDartPoison',20);
+            break;
+        }
 
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
@@ -99,6 +109,16 @@ function PreFirstEntryMapFixes()
                     GlowUp(key);
 
                 SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+            }
+
+            foreach RadiusActors(class'#var(DeusExPrefix)Mover', door, 1.0, vectm(-304.0, -3000.0, 64.0)) {
+                // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
+                door.InterpolateTo(1, 0.0);
+                break;
+            }
+
+            foreach AllActors(class'#var(prefix)JoJoFine',jojo){
+                jojo.BarkBindName="JoJoFine";
             }
 
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
@@ -177,6 +197,13 @@ function PreFirstEntryMapFixes()
             ft.flagValue=True;
             ft.Event='UNATCOHatesPlayer';
 
+            foreach AllActors(class'Teleporter', tel) {
+                if (tel.url == "04_NYC_Street#FromNSFHQ") {
+                    tel.SetCollisionSize(tel.CollisionRadius, tel.CollisionHeight + 40.0);
+                    break;
+                }
+            }
+
             Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
             class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
             class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
@@ -186,19 +213,31 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
         }
 
-        if(VanillaMaps && dxr.flags.settings.goals > 0) {
-            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
-                if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                dt.Tag = 'UNATCOHatesPlayer';
-                break;
+        if(VanillaMaps) {
+            // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
+            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'SendingSignal') {
+                if(dt.datalinkTag == 'DL_PaulGoodJob') {
+                    dt.bTriggerOnceOnly = false;
+                }
+            }
+
+            if(dxr.flags.settings.goals > 0) {
+                foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
+                    if(dt.datalinkTag != 'DL_SimonsPissed') continue;
+                    dt.Tag = 'UNATCOHatesPlayer';
+                    break;
+                }
             }
 
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
-                ft.Event = 'UNATCOHatesPlayer';
+                if(dxr.flags.settings.goals > 0) {
+                    // immediately change alliances and trigger walt's dialog, but only if the goals are randomized (player won't be near the old triggers)
+                    ft.Event = 'UNATCOHatesPlayer';
+                }
                 ft.bTrigger = true;
                 // spawn intermediate trigger to check flag
-                ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vect(10,10,10));
+                ft = Spawn(class'#var(prefix)FlagTrigger',, 'SendingSignal', ft.Location+vectm(10,10,10));
                 ft.SetCollision(false,false,false);
                 ft.bSetFlag=False;
                 ft.bTrigger=True;
@@ -226,6 +265,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
         hoverHint.SetBaseActor(jock);
+
+        SetAllLampsState(,, false, vect(-5723.258798, 1437.040527, -79.614632), 0.01);
 
         break;
     case "04_NYC_UNATCOHQ":
@@ -342,6 +383,7 @@ function AnyEntryMapFixes()
     local bool RevisionMaps;
     local bool VanillaMaps;
     local Mover door;
+    local ConEventSpeech ces;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -355,6 +397,11 @@ function AnyEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    case "04_NYC_NSFHQ":
+        // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
+        GetConversation('DL_PaulGoodJob').bDisplayOnce = false;
+        break;
+
     case "04_NYC_HOTEL":
 #ifdef vanilla
         NYC_04_CheckPaulUndead();
@@ -402,6 +449,10 @@ function AnyEntryMapFixes()
                 door.DoOpen();
             }
         }
+
+        ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
+        if (ces != None)
+            ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
 
         break;
     }

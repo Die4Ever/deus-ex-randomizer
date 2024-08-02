@@ -741,6 +741,10 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ CR() $ "Auto applies to current weapon";
 #endif
     }
+#ifdef injections
+    else if (frobTarget.IsA('WHPiano'))
+        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ WHPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+#endif
     else if (frobTarget.IsA('DeusExDecoration'))
         strInfo = player.GetDisplayName(frobTarget) $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExProjectile'))

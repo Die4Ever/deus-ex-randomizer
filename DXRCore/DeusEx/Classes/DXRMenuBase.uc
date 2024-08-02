@@ -141,7 +141,12 @@ function _InvokeNewGameScreen(float difficulty)
     return;
 #endif
 
-    newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGame'));
+    if ( flags.settings.skill_value_rando > 0) {
+        newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGameExtended'));
+    }
+    else {
+        newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGame'));
+    }
 
     if (newGame != None) {
 #ifdef gmdx

@@ -42,7 +42,7 @@ function int InitGoals(int mission, string map)
     AddMapMarker(class'Image01_LibertyIsland',130,371,"B","Police Boat",loc,"The police boat can be located at the South dock, where you normally start the game.  This is the vanilla location.");
     loc=AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4535.585938, -10046.186523, -269.806213), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',250,16,"B","Police Boat",loc,"The police boat can be located at the North dock, near where Harley Filben is located.");
-    loc=AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 231.813477, 2108.193848), rot(0, 0, 0));
+    loc=AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 326, 2108.193848), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',281,179,"B","Police Boat",loc,"The police boat can be located floating off the side of an upper level of the statue.");
     loc=AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4578.414551, 267.813477, 24.193787), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',121,200,"B","Police Boat",loc,"The police boat can be located floating behind UNATCO HQ, near the small hut in front of the statue.");
@@ -123,8 +123,10 @@ function PreFirstEntryMapFixes()
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":
         UpdateGoalWithRandoInfo('GetToDock', "The boat could be anywhere.");
@@ -134,19 +136,19 @@ function MissionTimer()
 
 function AddMissionGoals()
 {
+    local #var(PlayerPawn) p;
     local DeusExGoal newGoal;
+
     if(dxr.localURL != "01_NYC_UNATCOISLAND") return;
 
     //The MeetPaul conversation would normally give you several goals.
     //Give them manually instead of via that conversation.
-    newGoal=player().AddGoal('DefeatNSFCommandCenter',True);
+    //Leo is not necessarily in the statue, so that goal text cannot be retrieved directly from the conversation.
+    p = player();
+    newGoal=p.AddGoal('DefeatNSFCommandCenter',True);
     newGoal.SetText("The NSF seem to be directing the attack from somewhere on the island.  Find the commander.");
-
-    newGoal=player().AddGoal('RescueAgent',False);
-    newGoal.SetText("One of UNATCO's top agents is being held inside the Statue.  Break him out, and he'll back you up against the NSF.");
-
-    newGoal=player().AddGoal('MeetFilben',False);
-    newGoal.SetText("Meet UNATCO informant Harley Filben at the North Docks.  He has a key to the Statue doors.");
+    AddGoalFromConv(p, 'RescueAgent', 'MeetPaul');
+    AddGoalFromConv(p, 'MeetFilben', 'MeetPaul');
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)

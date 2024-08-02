@@ -45,11 +45,6 @@ function CheckConfig()
         "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
     i++;
 
-    add_datacubes[i].map = "15_AREA51_PAGE";
-    add_datacubes[i].text =
-        "The security guys found my last datacube so they changed the Aquinas Router code to 6188. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
-    i++;
-
     Super.CheckConfig();
 }
 
@@ -76,6 +71,8 @@ function PreFirstEntryMapFixes_Bunker()
     local OnceOnlyTrigger oot;
     local Trigger trig;
     local #var(prefix)RatGenerator rg;
+    local Vector loc;
+    local #var(prefix)Fan1 fan;
 
     if (dxr.flags.settings.starting_map < 151) {
         player().DeleteAllGoals();
@@ -115,18 +112,30 @@ function PreFirstEntryMapFixes_Bunker()
             break;
         }
     }
-    //Lock the fan entrance top door
+
+    // find the DataLinkTrigger where Page tells you to jump, we use this for finding the door and adjusting its position
     foreach AllActors(class'DataLinkTrigger',dlt){
-        if (dlt.datalinkTag=='DL_Bunker_Fan'){ break;}
+        if (dlt.datalinkTag=='DL_Bunker_Fan') {
+            //Lock the fan entrance top door
+            d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
+            if(d == None) break;
+            d.bLocked=True;
+            d.bBreakable=True;
+            d.FragmentClass=Class'DeusEx.MetalFragment';
+            d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
+            d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
+            d.minDamageThreshold=25;
+            d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
+
+            //Make Page tell you to jump even if you enter the fan entrance through the hatch
+            loc = dlt.Location;
+            loc.z -= 100.0;
+            dlt.SetLocation(loc);
+            dlt.SetCollisionSize(dlt.CollisionRadius, dlt.CollisionHeight + 100.0);
+
+            break;
+        }
     }
-    d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
-    d.bLocked=True;
-    d.bBreakable=True;
-    d.FragmentClass=Class'DeusEx.MetalFragment';
-    d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
-    d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
-    d.minDamageThreshold=25;
-    d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
 
     //Make it only possible to turn the power on, make it impossible to turn the power off again
     foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
@@ -162,6 +171,10 @@ function PreFirstEntryMapFixes_Bunker()
 
     Spawn(class'#var(prefix)LiquorBottle',,, vectm(1005.13,2961.26,-480)); //Liquor in a locker, so every mission has alcohol
 
+    foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
+        fan.bHighlight=True;
+    }
+
     Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building
     Spawn(class'PlaceholderItem',,, vectm(-1565.4,3384.8,-213)); //Back of Storage building
     Spawn(class'PlaceholderItem',,, vectm(-1160.9,256.3,-501)); //Tower basement
@@ -191,11 +204,8 @@ function PreFirstEntryMapFixes_Final()
     local Switch2 s2;
     local SpecialEvent se;
     local DataLinkTrigger dlt;
+    local SkillAwardTrigger sat;
 
-    // Generator_overload is the cover over the beat the game button used in speedruns
-    foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
-        d.move(vectm(0, 0, -1));
-    }
     AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
     AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
     AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
@@ -240,6 +250,20 @@ function PreFirstEntryMapFixes_Final()
     foreach AllActors(class'DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Helios_Door2'){
             dlt.SetCollisionSize(900,dlt.CollisionHeight);
+        }
+    }
+
+    //There's a trigger for this at the top of the elevator, but it has collide actors false.
+    //Easier to just spawn a new one near the elevator so you can actually hear it before
+    //the game is over.
+    dlt = Spawn(class'DataLinkTrigger',,,vectm(-3988,1215,-1542));
+    dlt.SetCollisionSize(200,40);
+    dlt.datalinkTag='DL_Final_Helios07';
+
+    foreach AllActors(class'SkillAwardTrigger',sat){
+        if (sat.awardMessage=="Critical Loctaion Bonus"){
+            sat.awardMessage="Critical Location Bonus";
+            break;
         }
     }
 
@@ -361,6 +385,8 @@ function PreFirstEntryMapFixes_Page()
     foreach AllActors(class'Keypad', k) {
         if( k.validCode == "9248" )
             k.validCode = "2242";
+        else if (k.validCode == "6188")
+            k.validCode = "6765";
     }
     foreach AllActors(class'Switch1',s){
         if (s.Name == 'Switch21'){
@@ -417,7 +443,6 @@ function PreFirstEntryMapFixes_Page()
             break;
         }
     }
-
 }
 
 function PreFirstEntryMapFixes()
@@ -477,12 +502,6 @@ function AnyEntryMapFixes()
                 ee.DamageAmount /= 2;
                 ee.damageTime *= 2.0;
                 ee.randomAngle /= 2.0;
-            }
-        }
-
-        if((!RevisionMaps) && (!#defined(gmdx))) {// cover the button better
-            foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'Page_button') {
-                d.SetLocation(d.Location-vectm(0,0,2)); // original Z was -5134
             }
         }
         break;

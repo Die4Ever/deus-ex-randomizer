@@ -4,29 +4,26 @@ function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
     // description gets overwritten by language file, also DXRAugmentations reads from the default.Description
-    // use the vanilla Level 3 description for our max level even though we're using level 4 strength, because the level 4 description makes no sense
-    default.Description = "Soda lime exostructures imbedded in the alveoli of the lungs convert CO2 to O2, extending the time an agent can remain underwater."
-                            $ "|n|nTECH ONE: Lung capacity is extended moderately.|n|nTECH TWO: Lung capacity is extended significantly.";
+    default.Description = "Soda lime exostructures imbedded in the alveoli of the lungs convert CO2 to O2, allowing an agent to remain underwater indefinitely.";
     Description = default.Description;
 }
 
 simulated function bool IsTicked()
-{// aqualung is perfectly automatic
-    local bool bWater;
+{// aqualung is, conceptually, always on
+    return bIsActive && Player != None && Player.HeadRegion.Zone.bWaterZone;
+}
 
-    if(Player == None) return false;
-    bWater = Player.HeadRegion.Zone.bWaterZone && Player.swimTimer > 0;
-
-    return (bAutomatic==false && bIsActive)
-        || (bAutomatic && bIsActive && bWater && Player.Energy > 0);
+function Tick(float deltaTime)
+{
+    Super.Tick(deltaTime);
+    if (IsTicked()) {
+        player.swimTimer = player.swimDuration;
+    }
 }
 
 defaultproperties
 {
-    bAutomatic=true
-    AutoLength=0
-    AutoEnergyMult=1// no penalty, it's a gift
-    MaxLevel=1
-    LevelValues(0)=60.000000
-    LevelValues(1)=240.000000
+    bAlwaysActive=true
+    EnergyRate=0
+    MaxLevel=0
 }

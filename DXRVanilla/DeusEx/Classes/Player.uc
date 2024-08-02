@@ -10,6 +10,7 @@ var bool bDoomMode;
 var bool bAutorun;
 var float autorunTime;
 var bool bBlockAnimations;
+var bool bUpgradeAugs;
 
 var Rotator ShakeRotator;
 
@@ -178,6 +179,18 @@ function ShowIntro(optional bool bStartNewGame)
     if(maps != None)
         intro = maps.VaryMap(intro);
     Level.Game.SendPlayer(Self, intro);
+}
+
+exec function ShowMainMenu()
+{
+    local DeusExLevelInfo info;
+
+    // DXRando: we just don't want to do vanilla behavior during the intro (misison 98)
+    // escape skips the conversation which still skips the intro anyways
+    // the vanilla code would skip the intro here as well even before the conversation started, which could also mean before flags are cleared
+    info = GetLevelInfo();
+    if ((info != None) && (info.MissionNumber == 98)) return;
+    Super.ShowMainMenu();
 }
 
 exec function QuickSave()
@@ -519,31 +532,39 @@ function bool CanInstantLeftClick(DeusExPickup item)
 exec function ParseLeftClick()
 {
     local DeusExPickup item;
-    local Actor A;
-    local int i;
 
     Super.ParseLeftClick();
     item = DeusExPickup(FrobTarget);
     if (item != None && CanInstantLeftClick(item))
     {
-        foreach item.BasedActors(class'Actor', A)
-            A.SetBase(None);
-        // So that any effects get applied to you
-        item.SetOwner(self);
-        item.SetBase(self);
-        // add to the player's inventory, so ChargedPickups travel across maps
-        item.BecomeItem();
-        item.bDisplayableInv = false;
-        item.Inventory = Inventory;
-        Inventory = item;
-        if(FireExtinguisher(item) != None) {
-            // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
-            item.NumCopies = 1;
-        }
-        for(i=item.NumCopies; i > 0; i--) {
-            item.Activate();
-        }
+        InstantlyUseItem(item);
         FrobTarget = None;
+    }
+}
+
+function InstantlyUseItem(DeusExPickup item)
+{
+    local Actor A;
+    local int i;
+
+    if(item == None) return;
+
+    foreach item.BasedActors(class'Actor', A)
+        A.SetBase(None);
+    // So that any effects get applied to you
+    item.SetOwner(self);
+    item.SetBase(self);
+    // add to the player's inventory, so ChargedPickups travel across maps
+    item.BecomeItem();
+    item.bDisplayableInv = false;
+    item.Inventory = Inventory;
+    Inventory = item;
+    if(FireExtinguisher(item) != None) {
+        // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
+        item.NumCopies = 1;
+    }
+    for(i=item.NumCopies; i > 0; i--) {
+        item.Activate();
     }
 }
 
@@ -861,9 +882,119 @@ function bool IsFrobbable(actor A)
 
 function HighlightCenterObject()
 {
-    local Vector loc;
+    if (IsInState('Dying'))
+        return;
 
-    Super.HighlightCenterObject();
+    HighlightCenterObjectMain();
+    HighlightCenterObjectLaser();
+}
+
+function HighlightCenterObjectMain()
+{
+    local Actor target, t;
+    local int fails;
+    local float dist, dist2;
+
+    target = HighlightCenterObjectRay(vect(0,0,0), dist);
+
+    if(LevelInfo(target) != None) target = None;
+
+    if(target != None && class'MenuChoice_FixGlitches'.default.enabled) {
+        t = HighlightCenterObjectRay(vect(0,-0.2,1.5), dist2);
+        fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
+
+        t = HighlightCenterObjectRay(vect(0,-1,-1), dist2);
+        fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
+
+        t = HighlightCenterObjectRay(vect(0,1.5,-0.5), dist2);
+        fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
+
+        if(fails > 1) target = None;
+    }
+
+    // DXRando: if we already have a frob target, and the player looks away such as that no item is being
+    // traced, we still wait for the full 100ms vanilla duration before clearing the frob
+    // target.
+    //
+    // note that this means we don't wait for the full 100ms vanilla duration if the player is
+    // rapidly changing frob target.
+    if ((FrobTime < 0.1) && (FrobTarget != None) && (target == None))
+    {
+        return;
+    }
+
+    FrobTarget = target;
+    FrobTime = 0; // reset our frob timer
+}
+
+function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetDist)
+{
+    local Actor target, smallestTarget;
+    local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+    local float minSize;
+    local bool bFirstTarget;
+
+    // DXRando: we do the trace every frame, unlike the vanilla behaviour of doing it every 100ms
+
+    // figure out how far ahead we should trace
+    StartTrace = Location + (offset >> ViewRotation);
+    EndTrace = StartTrace + (Vector(ViewRotation) * MaxFrobDistance);
+
+    // adjust for the eye height
+    StartTrace.Z += BaseEyeHeight;
+    EndTrace.Z += BaseEyeHeight;
+
+    smallestTarget = None;
+    minSize = 99999;
+    smallestTargetDist = 99999;
+    bFirstTarget = True;
+
+    // find the object that we are looking at
+    // make sure we don't select the object that we're carrying
+    // use the last traced object as the target...this will handle
+    // smaller items under larger items for example
+    // ScriptedPawns always have precedence, though
+    foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
+    {
+        if (IsFrobbable(target) && (target != CarriedDecoration))
+        {
+            if (target.IsA('ScriptedPawn'))
+            {
+                smallestTarget = target;
+                smallestTargetDist = VSize(Location-HitLoc);
+                break;
+            }
+            else if (target.IsA('Mover'))
+            {
+                if(bFirstTarget) {
+                    smallestTarget = target;
+                    smallestTargetDist = VSize(Location-HitLoc);
+                }
+                break;
+            }
+            else if (target.CollisionRadius < minSize)
+            {
+                minSize = target.CollisionRadius;
+                smallestTarget = target;
+                bFirstTarget = False;
+                smallestTargetDist = VSize(Location-HitLoc);
+            }
+        }
+        else if(LevelInfo(target) != None || Brush(target) != None) {
+            if(bFirstTarget) {
+                smallestTargetDist = VSize(Location-HitLoc);
+                return Level;
+            }
+            return smallestTarget;
+        }
+    }
+
+    return smallestTarget;
+}
+
+function HighlightCenterObjectLaser()
+{
+    local Vector loc;
 
     //Activate the aim laser any time you aren't seeing through your eyes
     if (class'DXRAimLaserEmitter'.static.AimLaserShouldBeOn(self)){
@@ -1664,23 +1795,50 @@ exec function PlayerLoc()
     ClientMessage("Player location: (" $ Location.x $ ", " $ Location.y $ ", " $ Location.z $ ")");
 }
 
-exec function ShowRefused()
+exec function PlayerRot()
 {
-    local string refusals, msg;
+    ClientMessage("Player rotation: (" $ Rotation.pitch $ ", " $ Rotation.yaw $ ", " $ Rotation.roll $ ")");
+}
+
+exec function LootActions()
+{
+    local string lootActions, msg;
     local int idx;
 
-    refusals = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("item_refusals");
+    lootActions = class'DataStorage'.static.GetObj(GetDXR()).GetConfigKey("loot_actions");
 
     // basically just adds a space after every comma
-    while (Len(refusals) > 1) {
-        refusals = Right(refusals, Len(refusals) - 1);
-        idx = InStr(refusals, ",");
-        msg = msg $ Left(refusals, idx) $ ", ";
-        refusals = Right(refusals, Len(refusals) - idx);
+    lootActions = Mid(lootActions, 1);
+    while (lootActions != "") {
+        idx = InStr(lootActions, ",");
+        msg = msg $ Left(lootActions, idx) $ ", ";
+        lootActions = Mid(lootActions, idx + 1);
     }
     msg = Left(msg, Len(msg) - 2);
 
-    ClientMessage("Refused items: " $ msg);
+    ClientMessage("Loot actions: " $ msg);
+}
+
+function bool ConsumableWouldHelp(Inventory item) {
+    if (health < default.health) {
+        if (MedKit(item) != None || SoyFood(item) != None || Candybar(item) != None || Sodacan(item) != None) {
+            return true;
+        }
+        if (HealingItem(item) != None && HealingItem(item).health > 0) {
+            return true;
+        }
+    }
+
+    if (energy < default.energy) {
+        if (BioElectricCell(item) != None) {
+            return true;
+        }
+        if (HealingItem(item) != None && HealingItem(item).energy > 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
@@ -1721,6 +1879,57 @@ function PreTravel()
     Super.PreTravel();
 }
 
+exec function BuySkills()
+{
+    // First turn off scores if we're heading into skill menu
+    if ( !bBuySkills )
+        ClientTurnOffScores();
+
+    bBuySkills = !bBuySkills;
+    if (bBuySkills){
+        bUpgradeAugs=False;
+    }
+    BuySkillSound( 2 );
+}
+
+exec function UpgradeAugs()
+{
+    // First turn off scores if we're heading into aug menu
+    if ( !bUpgradeAugs )
+        ClientTurnOffScores();
+
+    bUpgradeAugs = !bUpgradeAugs;
+    if (bUpgradeAugs){
+        bBuySkills=False;
+    }
+    BuySkillSound( 2 );
+}
+
+//Copied from vanilla
+exec function ActivateBelt(int objectNum)
+{
+    local DeusExRootWindow root;
+
+    if (RestrictInput())
+        return;
+
+    if (bBuySkills || bUpgradeAugs) //This used to have a check for multiplayer as well
+    {
+        root = DeusExRootWindow(rootWindow);
+        if ( root != None )
+        {
+            if ( root.hud.hms.OverrideBelt( Self, objectNum ))
+                return;
+        }
+    }
+
+    if (CarriedDecoration == None)
+    {
+        root = DeusExRootWindow(rootWindow);
+        if (root != None)
+            root.ActivateObjectInBelt(objectNum);
+    }
+}
 
 defaultproperties
 {

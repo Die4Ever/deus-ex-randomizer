@@ -102,24 +102,24 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
         i++;
+
+        DecorationsOverwrites[i].type = "Van";
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 500;
+        DecorationsOverwrites[i].minDamageThreshold = 50;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
+        i++;
     }
 
     DecorationsOverwrites[i].type = "BarrelFire";
     DecorationsOverwrites[i].bInvincible = false;
     DecorationsOverwrites[i].HitPoints = 50;
-    DecorationsOverwrites[i].minDamageThreshold = 0;
-    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
-    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
-    DecorationsOverwrites[i].Flammability = c.default.Flammability;
-    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
-    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
-    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
-    DecorationsOverwrites[i].bPushable = c.default.bPushable;
-    i++;
-
-    DecorationsOverwrites[i].type = "Van";
-    DecorationsOverwrites[i].bInvincible = false;
-    DecorationsOverwrites[i].HitPoints = 500;
     DecorationsOverwrites[i].minDamageThreshold = 0;
     c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
     DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
@@ -205,8 +205,10 @@ function PreFirstEntry()
     OverwriteDecorations();
     FixFlagTriggers();
     FixBeamLaserTriggers();
+    FixAutoTurrets();
     SpawnDatacubes();
     AntiEpilepsy();
+    FixHolograms();
 
 #ifdef vanilla
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
@@ -276,6 +278,7 @@ function ShowTeleporters()
     hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
     foreach AllActors(class'#var(prefix)Teleporter', t) {
+        t.SetCollision( t.bCollideActors, true, t.bBlockPlayers );// don't let pawns walk through
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
     }
@@ -437,7 +440,10 @@ function FixAlexsEmail()
     local #var(prefix)ComputerPersonal cp;
 
     foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
-        if (cp.UserList[0].UserName=="ajacobson" && cp.UserList[1].UserName==""){
+        if (
+            (cp.UserList[0].UserName=="ajacobson" && cp.UserList[1].UserName=="") ||
+            (cp.UserList[0].UserName=="DEMIURGE" && cp.UserList[1].UserName=="ajacobson" && cp.UserList[2].UserName=="")
+        ) {
             cp.TextPackage = "#var(package)";
             break;
         }
@@ -483,6 +489,17 @@ function FixCleanerBot()
         cb.bInvincible=False;
     }
 }
+
+function FixHolograms()
+{
+    local #var(prefix)ScriptedPawn sp;
+    foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
+        if (sp.Style==STY_Translucent){
+            RemoveReactions(sp);
+        }
+    }
+}
+
 
 simulated function FixAmmoShurikenName()
 {
@@ -563,16 +580,16 @@ function FixInvalidBindNames()
 function ScaleZoneDamage()
 {
     local ZoneInfo z;
+    local float f;
 
-    if(!#defined(vanilla)){
-        return;
-    }
-
+#ifdef injections
     foreach AllActors(class'ZoneInfo',z){
         if (z.bPainZone){
-            z.DamagePerSec=Clamp((z.DamagePerSec+1)/player().CombatDifficulty,1,(z.DamagePerSec+1));
+            f = player().CombatDifficultyMultEnviro();
+            z.DamagePerSec=Clamp((z.DamagePerSec+1)/f, 1, (z.DamagePerSec+1));
         }
     }
+#endif
 }
 
 function OverwriteDecorations()
@@ -632,6 +649,17 @@ function FixBeamLaserTriggers()
     }
     foreach AllActors(class'#var(prefix)LaserTrigger',lt){
         lt.TriggerType=TT_AnyProximity;
+    }
+#endif
+}
+
+function FixAutoTurrets()
+{
+#ifdef fixes
+    local #var(prefix)AutoTurret at;
+    foreach AllActors(class'#var(prefix)AutoTurret',at){
+        at.gunDamage=at.Default.gunDamage; //One turret in Cathedral has non-standard damage
+        at.fireRate=at.Default.fireRate; //Make sure large and small turrets use their appropriate firerates
     }
 #endif
 }
@@ -697,22 +725,6 @@ function AntiEpilepsy()
             l.LightType=LT_Pulse;
         }
     }
-}
-
-function AddDelayEvent(Name tag, Name event, float time)
-{
-    local Dispatcher d;
-    d = Spawn(class'Dispatcher',, tag);
-    d.OutEvents[0] = event;
-    d.OutDelays[0] = time;
-}
-
-function AddDelay(Actor trigger, float time)
-{
-    local name tagname;
-    tagname = StringToName( "dxr_delay_" $ trigger.Event );
-    AddDelayEvent(tagname, trigger.Event, time);
-    trigger.Event = tagname;
 }
 
 function Actor CandleabraLight(vector pos, rotator r)
@@ -807,7 +819,7 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetAllLampsState(bool type1, bool type2, bool type3, optional Vector loc, optional float rad)
+function SetAllLampsState(optional bool type1, optional bool type2, optional bool type3, optional Vector loc, optional float rad)
 {
 #ifdef vanilla
     local #var(prefix)Lamp lmp;

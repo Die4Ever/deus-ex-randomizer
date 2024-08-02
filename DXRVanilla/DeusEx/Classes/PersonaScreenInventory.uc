@@ -1,7 +1,7 @@
 class PersonaScreenInventory injects PersonaScreenInventory;
 
 const RefuseLabel = "|&Trash";
-const AcceptLabel = "Not |&Trash";
+const AcceptLabel = "|&Not Trash";
 
 var PersonaActionButtonWindow btnRefusal;
 
@@ -179,10 +179,17 @@ function EnableButtons()
         inv = Inventory(selectedItem.GetClientObject());
 
         if (inv != None) {
-            if (class'DXRLoadouts'.static.IsRefused(inv.class)) {
-                btnRefusal.SetButtonText(AcceptLabel);
-            } else {
-                btnRefusal.SetButtonText(RefuseLabel);
+            switch (class'DXRLoadouts'.static.GetLootAction(inv.class)) {
+                case 0:
+                    btnRefusal.SetButtonText(RefuseLabel);
+                    break;
+                case 1:
+                    btnRefusal.SetButtonText(AcceptLabel);
+                    break;
+                case 2:
+                    btnRefusal.SetButtonText(RefuseLabel);
+                    btnRefusal.DisableWindow();
+                    break;
             }
 
             if (NanoKeyRing(inv) != None) {
@@ -240,9 +247,9 @@ function UnsetRefuseItem()
     local Inventory item;
 
     item = Inventory(selectedItem.GetClientObject());
-    if(item == None) return;
+    if (item == None) return;
 
-    class'DXRLoadouts'.static.UnsetRefuseItem(item.class);
+    class'DXRLoadouts'.static.SetLootAction(item.class, 0);
     btnRefusal.SetButtonText(RefuseLabel);
     player.ClientMessage(item.ItemName $ " set as not trash.");
 }
@@ -254,9 +261,9 @@ function SetRefuseItem()
     local Vector dropVect;
 
     item = Inventory(selectedItem.GetClientObject());
-    if(item == None) return;
+    if (item == None) return;
 
-    class'DXRLoadouts'.static.SetRefuseItem(item.class);
+    class'DXRLoadouts'.static.SetLootAction(item.class, 1);
 
     if (Pickup(item) == None) {
         DropSelectedItem();

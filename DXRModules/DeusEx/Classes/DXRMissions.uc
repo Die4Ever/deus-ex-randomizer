@@ -291,7 +291,48 @@ function PreFirstEntry()
 
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
+    DignifyAllGoalActors();
     RandoMissionGoals = true;
+}
+
+function DignifyAllGoalActors()
+{
+    local int g,a;
+    local bool bTextures;
+
+    if(!#defined(vanilla)) return;
+    if(num_goals == 0 && num_locations == 0) return;
+
+    bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled(self);
+
+    for(g=0;g<num_goals;g++){
+        for(a=0;a<ArrayCount(goals[g].actors);a++){
+            DignifyGoalActor(goals[g].actors[a].a, bTextures);
+        }
+    }
+}
+
+//Generic textures we want to apply consistently across all goal actors
+function DignifyGoalActor(Actor a, bool enableTextures)
+{
+    local bool changed;
+
+    if (ComputerSecurity(a)!=None){
+        a.Skin=Texture'GoalSecurityComputerGreen';
+        changed=True;
+    } else if (ComputerPersonal(a)!=None){
+        a.Skin=Texture'GoalComputerPersonalYellow';
+        changed=True;
+    }
+#ifdef injections
+    else if (DataLinkTrigger(a)!=None) {
+        DataLinkTrigger(a).bImportant = true;
+    }
+#endif
+
+    if (!enableTextures && changed){
+        a.Skin=a.Default.Skin;
+    }
 }
 
 function ShuffleGoals()
@@ -544,22 +585,16 @@ function Timer()
 
 function UpdateGoalWithRandoInfo(name goalName, string text, optional bool always)
 {
-    local string goalText;
-    local DeusExGoal goal;
-    local int randoPos;
+    local ConEventAddGoal ceag;
 
-    if(player(true)==None) return;// don't spam HX logs
-    if(!always && dxr.flags.settings.goals == 0) return; //Don't add rando notes if goal randomization is turned off
+    if (player(true) == None) return; // don't spam HX logs
+    if (!always && dxr.flags.settings.goals == 0) return; // don't add rando notes if goal randomization is turned off
 
-    goal = player().FindGoal(goalName);
-    if(goal == None) return;
-
-    randoPos = InStr(goal.text, "Rando: ");
-    if(randoPos != -1) return;
-
-    text = goal.text $ "|nRando: " $ text;
-    goal.SetText(text);
-    player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
+    foreach AllObjects(class'ConEventAddGoal', ceag) {
+        if (ceag != None && ceag.goalName == goalName && InStr(ceag.goalText, "Rando: ") == -1) {
+            ceag.goalText = ceag.goalText $ "|nRando: " $ text;
+        }
+    }
 }
 
 function int _UpdateLocation(Actor a, string goalName)

@@ -244,15 +244,12 @@ function AddMissionGoals()
             dlt.Destroy();
         }
     }
-    newGoal=player().AddGoal('FindPaul', true);
-    if(dxr.flagbase.GetBool('PaulDenton_Dead'))
-        newGoal.SetText("Get the datavault from your brother's body.  Tracer Tong will need it to defeat the killswitch.");
-    else
-        newGoal.SetText("Find your brother and access information in his datavault that Tracer Tong will need to defeat the killswitch.");
 
-    newGoal=player().AddGoal('FindEquipment', false);
-    l("added goal "$newGoal);
-    newGoal.SetText("Find the equipment taken from you when you were captured by UNATCO.");
+    if(dxr.flagbase.GetBool('PaulDenton_Dead'))
+        AddGoalFromConv(player(), 'FindPaul', 'DL_Choice', 1);
+    else
+        AddGoalFromConv(player(), 'FindPaul', 'DL_Choice');
+    AddGoalFromConv(player(), 'FindEquipment', 'DL_Choice');
 
     GivePlayerImage(player(), class'Image05_NYC_MJ12Lab');
 }
@@ -284,6 +281,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             cp.specialOptions[i].userName = "DEMIURGE";
             break;
         }
+        DignifyGoalActor(cp,class'MenuChoice_GoalTextures'.static.IsEnabled(self)); //Should the killphrase computers actually be visually distinct?
     }
     else if (g.name=="Paul" && Loc.name!="Surgery Ward") {
         passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
@@ -293,8 +291,10 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL) {
     case "05_NYC_UNATCOMJ12LAB":
         UpdateGoalWithRandoInfo('FindPaul', "Paul could be located anywhere in the lab.  A security computer in the command center will be connected to a camera monitoring him.");

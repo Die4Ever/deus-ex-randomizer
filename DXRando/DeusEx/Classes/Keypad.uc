@@ -1,6 +1,7 @@
 class DXRKeypad injects Keypad;
 
 var () bool bCodeKnown;
+var() bool bUnlock;
 
 simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
 {
@@ -33,8 +34,13 @@ function bool GetInstantSuccess(DeusExPlayer Hacker, bool bHacked)
 function RunEvents(DeusExPlayer Player, bool bSuccess)
 {
     super.RunEvents(Player,bSuccess);
-    if (bSuccess && !WasHacked()){
-        bCodeKnown = True;
+    if (bSuccess){
+        if ( !WasHacked() ) {
+            bCodeKnown = True;
+        }
+        if (bUnlock) {
+            UnlockDoor();
+        }
     }
 }
 
@@ -45,6 +51,15 @@ function ToggleLocks(DeusExPlayer Player)
         bCodeKnown = True;
 }
 
+function UnlockDoor()
+{
+    local #var(DeusExPrefix)Mover dxm;
+
+    foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, Event) {
+        dxm.bLocked = false;
+    }
+}
+
 function bool WasHacked()
 {
     return bHackable && hackStrength == 0.0;
@@ -53,4 +68,5 @@ function bool WasHacked()
 defaultproperties
 {
     bCodeKnown=False
+    bUnlock=True
 }

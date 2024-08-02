@@ -250,10 +250,6 @@ function MissionTimer()
     f = dxr.flagbase;
 
     switch(dxr.localURL) {
-    case "12_VANDENBERG_CMD":
-        UpdateGoalWithRandoInfo('FindJock', "Jock could be anywhere around the Command Center.");
-        UpdateGoalWithRandoInfo('ActivatePower', "The keypads can be anywhere around the Command Center.");
-        break;
 
     case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_UC":
@@ -266,15 +262,24 @@ function MissionTimer()
 
         }
         break;
+    }
+}
 
+function AnyEntry()
+{
+    Super.AnyEntry();
+
+    switch(dxr.localURL) {
+    case "12_VANDENBERG_CMD":
+        UpdateGoalWithRandoInfo('FindJock', "Jock could be anywhere around the Command Center.");
+        UpdateGoalWithRandoInfo('ActivatePower', "The keypads can be anywhere around the Command Center.");
+        break;
     case "14_OCEANLAB_SILO":
         UpdateGoalWithRandoInfo('MeetJock', "Jock could be anywhere around the silo.");
         UpdateGoalWithRandoInfo('AbortLaunch', "The computer to reprogram the missile could be anywhere around the silo.");
-
-        if (!f.GetBool('schematic_downloaded') || !f.GetBool('Heliosborn')){
+        if (!dxr.flagbase.GetBool('schematic_downloaded') || !dxr.flagbase.GetBool('Heliosborn')) {
             UpdateGoalWithRandoInfo('PreventSabotage', "Howard Strong will only appear once the AIs have been merged in Vandenberg and the UC schematics have been retrieved from the Ocean Lab.");
         }
-
         break;
     }
 }

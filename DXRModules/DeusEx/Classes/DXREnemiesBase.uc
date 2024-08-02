@@ -81,7 +81,7 @@ function AddRandomEnemyType(class<ScriptedPawn> t, float c, int faction)
     for(i=0; i < ArrayCount(_randomenemies); i++) {
         if( _randomenemies[i].type == None ) {
             _randomenemies[i].type = t;
-            _randomenemies[i].chance = rngrangeseeded(c, min_rate_adjust, max_rate_adjust, t.name);
+            _randomenemies[i].chance = rngrangeseeded(c, min_rate_adjust, max_rate_adjust, t.name) ** 2;
             _randomenemies[i].faction = faction;
             return;
         }
@@ -97,7 +97,7 @@ function ReadConfig()
     total=0;
     for(i=0; i < ArrayCount(_randommelees); i++) {
         if( _randommelees[i].type != None ) {
-            _randommelees[i].chance = rngrangeseeded(_randommelees[i].chance, min_rate_adjust, max_rate_adjust, _randommelees[i].type.name);
+            _randommelees[i].chance = rngrangeseeded(_randommelees[i].chance, min_rate_adjust, max_rate_adjust, _randommelees[i].type.name) ** 2;
             total += _randommelees[i].chance;
         }
     }
@@ -110,7 +110,7 @@ function ReadConfig()
     total=0;
     for(i=0; i < ArrayCount(_randomweapons); i++) {
         if( _randomweapons[i].type != None ) {
-            _randomweapons[i].chance = rngrangeseeded(_randomweapons[i].chance, min_rate_adjust, max_rate_adjust, _randomweapons[i].type.name);
+            _randomweapons[i].chance = rngrangeseeded(_randomweapons[i].chance, min_rate_adjust, max_rate_adjust, _randomweapons[i].type.name) ** 2;
             total += _randomweapons[i].chance;
         }
     }
@@ -123,7 +123,7 @@ function ReadConfig()
     total=0;
     for(i=0; i < ArrayCount(_randombotweapons); i++) {
         if( _randombotweapons[i].type != None ) {
-            _randombotweapons[i].chance = rngrangeseeded(_randombotweapons[i].chance, min_rate_adjust, max_rate_adjust, _randombotweapons[i].type.name);
+            _randombotweapons[i].chance = rngrangeseeded(_randombotweapons[i].chance, min_rate_adjust, max_rate_adjust, _randombotweapons[i].type.name) ** 2;
             total += _randombotweapons[i].chance;
         }
     }

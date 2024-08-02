@@ -18,7 +18,7 @@ function int InitGoals(int mission, string map)
     bar1 = AddGoalLocation("08_NYC_Bar", "Bar Table", GOAL_TYPE1 | VANILLA_GOAL | SITTING_GOAL, vect(-1689.125122, 337.159912, 63.599533), rot(0,-10144,0));
     bar2 = AddGoalLocation("08_NYC_Bar", "Bar", GOAL_TYPE1 | VANILLA_GOAL, vect(-931.038086, -488.537109, 47.600464), rot(0,9536,0));
     AddMutualExclusion(bar1, bar2);
-    AddGoalLocation("08_NYC_FreeClinic", "Clinic", GOAL_TYPE1 | VANILLA_GOAL, vect(904.356262, -1229.045166, -272.399506), rot(0,31640,0));
+    AddGoalLocation("08_NYC_FreeClinic", "Clinic", GOAL_TYPE1 | VANILLA_GOAL, vect(-86.643738, -263.045166, -272.399506), rot(0,31640,0));
     AddGoalLocation("08_NYC_Underground", "Sewers", GOAL_TYPE1, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
     AddGoalLocation("08_NYC_Hotel", "Hotel", GOAL_TYPE1 | SITTING_GOAL, vect(-108.541245, -2709.490479, 111.600838), rot(0,20000,0));
     AddGoalLocation("08_NYC_Street", "Basketball Court", GOAL_TYPE1 | START_LOCATION, vect(2694.934082, -2792.844971, -448.396637), rot(0,32768,0));
@@ -141,8 +141,10 @@ function String PickSurveillanceVanName()
     }
 }
 
-function MissionTimer()
+function AnyEntry()
 {
+    Super.AnyEntry();
+
     switch(dxr.localURL)
     {
     case "08_NYC_STREET":

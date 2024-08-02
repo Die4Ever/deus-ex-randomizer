@@ -33,7 +33,7 @@ function AddRandomMod(class<#var(prefix)WeaponMod> mod, float c)
     for(i=0;i < ArrayCount(randommods);i++){
         if (randommods[i].type==None){
             randommods[i].type=mod;
-            randommods[i].chance=rngrangeseeded(c,min_rate_adjust,max_rate_adjust,mod.name);
+            randommods[i].chance=rngrangeseeded(c,min_rate_adjust,max_rate_adjust,mod.name) ** 2;
             return;
         }
     }
@@ -108,13 +108,17 @@ function FirstEntry()
     }
 
     for (i=0;mods[i]!=None;i++){
-        mod = #var(prefix)WeaponMod(SpawnReplacement(mods[i],PickRandomMod(),True));
-        if (mod!=None){
-            l("Spawned a "$mod.name$" to replace "$mods[i].name);
-            mods[i].Destroy();
+        newMod = PickRandomMod();
+        if (newMod == mods[i].Class){
+            l("WeaponMod "$mods[i].name$" not changing type");
         } else {
-            //Spawn replacement will fail if the new class is the same, so this is completely possible
-            l("Failed to replace weapon mod "$mods[i].Name$" (It might have selected the same mod type)");
+            mod = #var(prefix)WeaponMod(SpawnReplacement(mods[i],newMod,True));
+            if (mod!=None){
+                l("Spawned a "$mod.name$" to replace "$mods[i].name);
+                mods[i].Destroy();
+            } else {
+                l("Failed to replace weapon mod "$mods[i].Name);
+            }
         }
     }
 

@@ -177,6 +177,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         }
         if(a.Orders != 'DynamicPatrolling')// we pick these up later in DXREnemiesPatrols
             ResetOrders(a);
+        // when an unlootable enemy ends up with a nanokey, just drop it
         if(#var(prefix)Robot(a) != None || PlaceholderEnemy(a) != None) {
             for(item=a.Inventory; item != None; item=nextItem) {
                 nextItem = item.Inventory;

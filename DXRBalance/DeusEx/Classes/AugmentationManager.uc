@@ -102,16 +102,7 @@ simulated function float GetAugLevelValue(class<Augmentation> AugClass)
     {
         if (anAug.Class == augClass)
         {
-            if (anAug.bHasIt && anAug.bIsActive) {
-                anAug.TickUse();
-                if(Player.Energy <= 0 && anAug.bAutomatic) {
-                    return -1.0;
-                } else {
-                    return anAug.LevelValues[anAug.CurrentLevel];
-                }
-            }
-            else
-                return -1.0;
+            return anAug.GetAugLevelValue();
         }
 
         anAug = anAug.next;
@@ -131,15 +122,7 @@ simulated function int GetClassLevel(class<Augmentation> augClass)
     {
         if (anAug.Class == augClass)
         {
-            if (anAug.bHasIt && anAug.bIsActive)
-            {
-                // we squished the AugMuscle levels to make it more useful, and some things use the level instead of the strength
-                if(AugMuscle(anAug) != None)
-                    return anAug.CurrentLevel * 3;// aug levels start with 0
-                return anAug.CurrentLevel;
-            }
-            else
-                return -1;
+            return anAug.GetClassLevel();
         }
 
         anAug = anAug.next;
@@ -171,9 +154,9 @@ simulated function Float CalcEnergyUse(float deltaTime)
     while(anAug != None)
     {
         if (AugPower(anAug) != None && anAug.bHasIt && anAug.bIsActive)
-            energyMult = anAug.LevelValues[anAug.CurrentLevel];
+            energyMult = anAug.GetAugLevelValue();
         if (AugHeartLung(anAug) != None && anAug.bHasIt && anAug.bIsActive)
-            boostMult = anAug.LevelValues[anAug.CurrentLevel];
+            boostMult = anAug.GetAugLevelValue();
 
         if (anAug.bHasIt && anAug.bIsActive)
         {
@@ -208,22 +191,6 @@ function BoostAugs(bool bBoostEnabled, Augmentation augBoosting)
     {
         // Don't boost the augmentation causing the boosting!
         if (anAug == augBoosting) continue;
-
-        // DXRando: don't boost free augs because (0 * synth_heart_strength) == 0
-        if (bBoostEnabled && anAug.energyRate > 0)
-        {
-            if (anAug.bIsActive && !anAug.bBoosted && (anAug.CurrentLevel < anAug.MaxLevel))
-            {
-                anAug.CurrentLevel++;
-                anAug.bBoosted = True;
-                anAug.Reset();
-            }
-        }
-        else if (anAug.bBoosted)
-        {
-            anAug.CurrentLevel--;
-            anAug.bBoosted = False;
-            anAug.Reset();
-        }
+        anAug.BoostAug(bBoostEnabled);
     }
 }

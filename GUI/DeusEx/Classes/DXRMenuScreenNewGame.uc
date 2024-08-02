@@ -78,7 +78,7 @@ function SetDxr(DXRando d)
 {
     dxr=d;
     flags = DXRFlags(dxr.FindModule(class'DXRFlags'));
-    if(flags.IsSpeedrunMode())
+    if(flags.moresettings.splits_overlay > 0)
         actionButtons[3].btn.Show();
     else
         actionButtons[3].btn.Hide();
@@ -266,6 +266,7 @@ function GiveTip()
 
 defaultproperties
 {
+    btnLabelResetToDefaults="Restore Defaults"
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
     actionButtons(3)=(Align=HALIGN_Left,Action=AB_Other,Text="|&New Seed",Key="NEWSEED")
 }

@@ -46,9 +46,10 @@ function ThrowInventory(bool gibbed)
         if( Ammo(item) != None )
             drop = false;
         if( drop ) {
+            item.SetLocation(Location);
             class'DXRActorsBase'.static.ThrowItem(item, 0.3);
             if(gibbed)
-                item.Velocity *= vect(-10, -10, 10);
+                item.Velocity *= vect(-4, -4, 4);
             else
                 item.Velocity *= vect(-1.5, -1.5, 1.5);
         }
@@ -230,6 +231,8 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
 
     // DXRando EmpHealth to disable shields
     if(damageType=='EMP') EmpHealth -= Damage;
+
+    if(EmpHealth <= 0) bHasCloak = False;
 
     // Block certain damage types; perform special ops on others
     if (!FilterDamageType(instigatedBy, hitLocation, offset, damageType))
