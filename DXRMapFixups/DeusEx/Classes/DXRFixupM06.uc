@@ -614,6 +614,8 @@ function PreFirstEntryMapFixes()
             if (male.BindName == "Disgruntled_Guy") {
                 male.MultiSkins[3] = Texture'NervousWorkerPants';
                 male.MultiSkins[5] = Texture'NervousWorkerBody';
+                male.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex1';
+                male.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex1';
                 male.CarcassType = class'NervousWorkerCarcass';
                 break;
             }
