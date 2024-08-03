@@ -913,7 +913,8 @@ function AnyEntryMapFixes()
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
             foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body')
                 if (carc.bHidden){
-                    carc = carc.Spawn(class'NervousWorkerCarcass');
+                    carc = carc.Spawn(class'NervousWorkerCarcass',, carc.Tag);
+                    carc.Owner.Destroy();
 #ifdef injections
                     //HACK: to be removed once the problems with Carcass2 are fixed/removed
                     carc.mesh = LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC';  //His body starts in the water, so this is fine
