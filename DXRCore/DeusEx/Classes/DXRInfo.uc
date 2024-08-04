@@ -184,11 +184,24 @@ function bool IsAprilFools()
 
 function bool IsOctoberUnlocked()
 {
-    // Happy Halloween! unlock forever
+    // Happy Halloween! unlock gamemode forever and other features
     // or do it by version number? allow if(#defined(debug))?
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     if(#defined(debug)) return true;
     return Level.Month >= 10 || Level.Year > 2024;
+}
+
+function bool IsOctober()
+{
+    // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
+    if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
+    return Level.Month == 10;
+}
+
+function bool IsFridayThe13th()
+{// idk what we would use this for, giving the player "bad luck"? lol
+    return Level.DayOfWeek == 5 && Level.Day == 13;
 }
 
 final function int SystemTime()

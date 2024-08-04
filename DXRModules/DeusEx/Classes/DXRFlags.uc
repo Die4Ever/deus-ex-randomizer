@@ -11,6 +11,7 @@ const WaltonWareEntranceRando = 8;
 const RandoMedium = 9;
 const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
+const HalloweenMode = 1031;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -668,6 +669,9 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 #endif
         autosave = 5; // Ironman, autosaves and manual saves disabled
     }
+    else if(IsHalloweenMode()) {
+        // TODO
+    }
     return settings;
 }
 
@@ -679,9 +683,10 @@ function string DifficultyName(int diff)
     return difficulty_names[diff];
 }
 
-static function int GameModeIdForSlot(int slot)
+function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
     if(slot--==0) return 0;
+    if(IsOctoberUnlocked() && slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
@@ -698,7 +703,7 @@ static function int GameModeIdForSlot(int slot)
     return 999999;
 }
 
-static function string GameModeName(int gamemode)
+function string GameModeName(int gamemode)
 {
     switch(gamemode) {
     case 0:
@@ -729,6 +734,9 @@ static function string GameModeName(int gamemode)
         return "WaltonWare Hardcore";
     case WaltonWarex3:
         return "WaltonWare x3";
+    case HalloweenMode:
+        if(IsOctoberUnlocked()) return "Halloween Mode";// maybe needs a better name
+        break;
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -769,6 +777,11 @@ function bool IsWaltonWare()
 function bool IsWaltonWareHardcore()
 {
     return gamemode == WaltonWareHardcore;
+}
+
+function bool IsHalloweenMode()
+{
+    return gamemode == HalloweenMode;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
