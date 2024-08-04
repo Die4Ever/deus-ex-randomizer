@@ -2048,6 +2048,25 @@ function string RemapBingoEvent(string eventname)
         case "PetAnimal_Rat":
         case "PetAnimal_NastyRat":
             return "PetRats";
+        case "PianoSong9Played":
+        case "PianoSong32Played":
+        case "PianoSong33Played":
+        case "PianoSong45Played":
+        case "PianoSong62Played":
+        case "PianoSong73Played":
+        case "PianoSong74Played":
+        case "PianoSong75Played":
+        case "PianoSong76Played":
+        case "PianoSong77Played":
+        case "PianoSong78Played":
+        case "PianoSong79Played":
+        case "PianoSong80Played":
+        case "PianoSong81Played":
+        case "PianoSong82Played":
+        case "PianoSong83Played":
+        case "PianoSong84Played":
+        case "PianoSong85Played":
+            return "SeasonalPianoPlayed";
         default:
             return eventname;
     }

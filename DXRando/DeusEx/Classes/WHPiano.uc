@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[84]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[86]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -318,6 +318,10 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played Spooky, Scary Skeletons by Andrew Gold";
         case sound'ThisIsHalloween':
             return "You played This Is Halloween from The Nightmare Before Christmas";
+        case sound'AllIWantForChristmas':
+            return "You played All I Want For Christmas Is You by Mariah Carey";
+        case sound'PeanutsLinusLucy':
+            return "You played Linus and Lucy from A Charlie Brown Christmas";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
@@ -675,6 +679,14 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'ThisIsHalloween';
             duration = 6;
             break;
+        case 84:
+            SelectedSound = sound'AllIWantForChristmas';
+            duration = 34;  //Deal with it
+            break;
+        case 85:
+            SelectedSound = sound'PeanutsLinusLucy';
+            duration = 14;
+            break;
         default:
             SelectedSound = None;
             duration = 0;
@@ -728,6 +740,13 @@ function int GetSongWeight(int songIdx)
             if(dxr.IsOctober()) return 3;
             return 0; // else these songs are not active
 
+        case 84: //AllIWantForChristmas
+            if (dxr.IsChristmasSeason()) return 75; //The ice thaws
+            return 0; //She stays frozen in the block of ice
+        case 85: //PeanutsLinusLucy
+            if (dxr.IsChristmasSeason()) return 3;
+            return 0;
+
     }
     return 1;
 }
@@ -736,7 +755,7 @@ function int GetSongWeight(int songIdx)
 function int PickSongIndex()
 {
     local int rnd, i, j, songPlayedAvg, numValidSongs, numActiveSongs;
-    local int validSongs[150]; //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
+    local int validSongs[175]; //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
 
     songPlayedAvg=0;
     numActiveSongs=0;

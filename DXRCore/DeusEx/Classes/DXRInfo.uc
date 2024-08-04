@@ -204,6 +204,13 @@ function bool IsFridayThe13th()
     return Level.DayOfWeek == 5 && Level.Day == 13;
 }
 
+function bool IsChristmasSeason()
+{
+    if (Level.Month==11) return true;
+    if (Level.Month==12 && Level.Day<=25) return true;
+    return false;
+}
+
 final function int SystemTime()
 {
     return _SystemTime(Level);
