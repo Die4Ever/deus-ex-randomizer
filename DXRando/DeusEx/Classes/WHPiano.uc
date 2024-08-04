@@ -696,10 +696,23 @@ function int PickSongIndexOld()
 //How many times should a particular song be added into the possible song list
 function int GetSongWeight(int songIdx)
 {
+    local DXRando dxr;
+    dxr = class'DXRando'.default.dxr; //Pull a reference out of the defaults
+
     switch (songIdx){
         case 0: //Deus Ex theme (Bingo goal)
         case 7: //7th Guest, The Game (bingo goal)
             return 5;
+
+        //old Halloween-themed songs that are active outside of October and Halloween mode, but at a normal rate
+        case 9:  // BloodyTears
+        case 32: // SH2PromiseReprise
+        case 33: // SH2EndingTheme, I guess...
+        case 45: // REMansionBasement
+        case 62: // SOTNTragicPrince
+            if(dxr.IsOctober()) return 3;
+            break; // else use the default return at the bottom
+
         //Halloween-themed songs (These are inactive outside of October or Halloween mode)
         case 73: //ZAMNNoAssembly
         case 74: //SA2PumpkinHill
@@ -712,34 +725,11 @@ function int GetSongWeight(int songIdx)
         case 81: //HalloweenTheme
         case 82: //SpookyScarySkeletons
         case 83: //ThisIsHalloween
-            return 3;
+            if(dxr.IsOctober()) return 3;
+            return 0; // else these songs are not active
 
     }
     return 1;
-}
-
-function bool IsSongActive(int songIdx)
-{
-    local DXRando dxr;
-
-    dxr = class'DXRando'.default.dxr; //Pull a reference out of the defaults
-
-    switch (songIdx){
-        //Halloween-themed songs
-        case 73: //ZAMNNoAssembly
-        case 74: //SA2PumpkinHill
-        case 75: //SkeletonsInMyCloset
-        case 76: //T7GPuzzles
-        case 77: //ToccataFugue
-        case 78: //ExorcistTubularBells
-        case 79: //FF6PhantomTrain
-        case 80: //GnGStage1
-        case 81: //HalloweenTheme
-        case 82: //SpookyScarySkeletons
-        case 83: //ThisIsHalloween
-            return dxr.IsOctober(); //Only available in October or Halloween Mode
-    }
-    return True;
 }
 
 //More intelligent picking, weights less played songs more
@@ -751,7 +741,7 @@ function int PickSongIndex()
     songPlayedAvg=0;
     numActiveSongs=0;
     for (i=0;i<NUM_PIANO_SONGS;i++){
-        if (IsSongActive(i)){
+        if (GetSongWeight(i) > 0){
             songPlayedAvg+=SongPlayed[i];
             numActiveSongs++;
         }
@@ -761,10 +751,8 @@ function int PickSongIndex()
     numValidSongs=0;
     for (i=0;i<NUM_PIANO_SONGS;i++){
         if (SongPlayed[i]<=songPlayedAvg && i!=currentSong){
-            if (IsSongActive(i)){
-                for (j=GetSongWeight(i);j>0;j--){
-                    validSongs[numValidSongs++]=i;
-                }
+            for (j=GetSongWeight(i); j>0; j--){
+                validSongs[numValidSongs++]=i;
             }
         }
     }
