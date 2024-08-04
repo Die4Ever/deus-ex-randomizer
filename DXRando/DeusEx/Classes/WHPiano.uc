@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[73]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[84]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -296,6 +296,28 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played Frog's Theme from Chrono Trigger";
         case sound'HarvestMoonTown':
             return "You played the Town Theme from Harvest Moon";
+        case sound'ZAMNNoAssembly':
+            return "You played No Assembly Required from Zombies Ate My Neighbors";
+        case sound'SA2PumpkinHill':
+            return "You played A Ghost's Pumpkin Soup from Sonic Adventure 2";
+        case sound'SkeletonsInMyCloset':
+            return "You played Skeletons in my Closet from The 7th Guest";
+        case sound'T7GPuzzles':
+            return "You played Puzzles from The 7th Guest";
+        case sound'ToccataFugue':
+            return "You played Toccata and Fugue in D Minor by Bach";
+        case sound'ExorcistTubularBells':
+            return "You played Tubular Bells by Mike Oldfield (from The Exorcist)";
+        case sound'FF6PhantomTrain':
+            return "You played Phantom Train from Final Fantasy 6";
+        case sound'GnGStage1':
+            return "You played the Stage 1 theme from Ghosts 'n Goblins";
+        case sound'HalloweenTheme':
+            return "You played the Theme from Halloween";
+        case sound'SpookyScarySkeletons':
+            return "You played Spooky, Scary Skeletons by Andrew Gold";
+        case sound'ThisIsHalloween':
+            return "You played This Is Halloween from The Nightmare Before Christmas";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
@@ -609,6 +631,50 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'HarvestMoonTown';
             duration = 7;
             break;
+        case 73:
+            SelectedSound = sound'ZAMNNoAssembly';
+            duration = 6;
+            break;
+        case 74:
+            SelectedSound = sound'SA2PumpkinHill';
+            duration = 6;
+            break;
+        case 75:
+            SelectedSound = sound'SkeletonsInMyCloset';
+            duration = 8;
+            break;
+        case 76:
+            SelectedSound = sound'T7GPuzzles';
+            duration = 7;
+            break;
+        case 77:
+            SelectedSound = sound'ToccataFugue';
+            duration = 11;
+            break;
+        case 78:
+            SelectedSound = sound'ExorcistTubularBells';
+            duration = 8;
+            break;
+        case 79:
+            SelectedSound = sound'FF6PhantomTrain';
+            duration = 8;
+            break;
+        case 80:
+            SelectedSound = sound'GnGStage1';
+            duration = 5;
+            break;
+        case 81:
+            SelectedSound = sound'HalloweenTheme';
+            duration = 9;
+            break;
+        case 82:
+            SelectedSound = sound'SpookyScarySkeletons';
+            duration = 12;
+            break;
+        case 83:
+            SelectedSound = sound'ThisIsHalloween';
+            duration = 6;
+            break;
         default:
             SelectedSound = None;
             duration = 0;
@@ -634,27 +700,71 @@ function int GetSongWeight(int songIdx)
         case 0: //Deus Ex theme (Bingo goal)
         case 7: //7th Guest, The Game (bingo goal)
             return 5;
+        //Halloween-themed songs (These are inactive outside of October or Halloween mode)
+        case 73: //ZAMNNoAssembly
+        case 74: //SA2PumpkinHill
+        case 75: //SkeletonsInMyCloset
+        case 76: //T7GPuzzles
+        case 77: //ToccataFugue
+        case 78: //ExorcistTubularBells
+        case 79: //FF6PhantomTrain
+        case 80: //GnGStage1
+        case 81: //HalloweenTheme
+        case 82: //SpookyScarySkeletons
+        case 83: //ThisIsHalloween
+            return 3;
+
     }
     return 1;
+}
+
+function bool IsSongActive(int songIdx)
+{
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr; //Pull a reference out of the defaults
+
+    switch (songIdx){
+        //Halloween-themed songs
+        case 73: //ZAMNNoAssembly
+        case 74: //SA2PumpkinHill
+        case 75: //SkeletonsInMyCloset
+        case 76: //T7GPuzzles
+        case 77: //ToccataFugue
+        case 78: //ExorcistTubularBells
+        case 79: //FF6PhantomTrain
+        case 80: //GnGStage1
+        case 81: //HalloweenTheme
+        case 82: //SpookyScarySkeletons
+        case 83: //ThisIsHalloween
+            return dxr.IsOctober(); //Only available in October or Halloween Mode
+    }
+    return True;
 }
 
 //More intelligent picking, weights less played songs more
 function int PickSongIndex()
 {
-    local int rnd, i, j, songPlayedAvg, numValidSongs;
-    local int validSongs[100]; //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
+    local int rnd, i, j, songPlayedAvg, numValidSongs, numActiveSongs;
+    local int validSongs[150]; //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
 
     songPlayedAvg=0;
+    numActiveSongs=0;
     for (i=0;i<NUM_PIANO_SONGS;i++){
-        songPlayedAvg+=SongPlayed[i];
+        if (IsSongActive(i)){
+            songPlayedAvg+=SongPlayed[i];
+            numActiveSongs++;
+        }
     }
-    songPlayedAvg = songPlayedAvg/NUM_PIANO_SONGS;
+    songPlayedAvg = songPlayedAvg/numActiveSongs;
 
     numValidSongs=0;
     for (i=0;i<NUM_PIANO_SONGS;i++){
         if (SongPlayed[i]<=songPlayedAvg && i!=currentSong){
-            for (j=GetSongWeight(i);j>0;j--){
-                validSongs[numValidSongs++]=i;
+            if (IsSongActive(i)){
+                for (j=GetSongWeight(i);j>0;j--){
+                    validSongs[numValidSongs++]=i;
+                }
             }
         }
     }
