@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[68]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[73]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -286,6 +286,16 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played the Overworld theme from Super Mario Bros 2 (Did you know it was originally called Doki Doki Panic?)";
         case sound'SMGCometObservatory':
             return "You played Comet Observatory from Super Mario Galaxy";
+        case sound'MKWiiCoconutMall':
+            return "You played Coconut Mall from Mario Kart Wii";
+        case sound'OdeToJoy':
+            return "You played Ode to Joy by Beethoven";
+        case sound'TotakasSong':
+            return "You played Totaka's Song by Kazumi Totaka";
+        case sound'ChronoTriggerFrogsTheme':
+            return "You played Frog's Theme from Chrono Trigger";
+        case sound'HarvestMoonTown':
+            return "You played the Town Theme from Harvest Moon";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
         case sound'MaxPaynePianoJustBroke':
@@ -385,7 +395,7 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             break;
         case 19:
             SelectedSound = sound'FurretWalk';
-            duration = 7;
+            duration = 6;
             break;
         case 20:
             SelectedSound = sound'ProfOaksLab';
@@ -397,7 +407,7 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             break;
         case 22:
             SelectedSound = sound'AquaticAmbience';
-            duration = 8;
+            duration = 7;
             break;
         case 23:
             SelectedSound = sound'ChronoTriggerTheme';
@@ -425,7 +435,7 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             break;
         case 29:
             SelectedSound = sound'MegaManStageStart';
-            duration = 8;
+            duration = 7;
             break;
         case 30:
             SelectedSound = sound'MGS2MainTheme';
@@ -437,7 +447,7 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             break;
         case 32:
             SelectedSound = sound'SH2PromiseReprise';
-            duration = 8;
+            duration = 7;
             break;
         case 33:
             SelectedSound = sound'SH2EndingTheme';
@@ -578,6 +588,26 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
         case 67:
             SelectedSound = sound'SMGCometObservatory';
             duration = 8;
+            break;
+        case 68:
+            SelectedSound = sound'MKWiiCoconutMall';
+            duration = 4;
+            break;
+        case 69:
+            SelectedSound = sound'OdeToJoy';
+            duration = 8;
+            break;
+        case 70:
+            SelectedSound = sound'TotakasSong';
+            duration = 11;
+            break;
+        case 71:
+            SelectedSound = sound'ChronoTriggerFrogsTheme';
+            duration = 5;
+            break;
+        case 72:
+            SelectedSound = sound'HarvestMoonTown';
+            duration = 7;
             break;
         default:
             SelectedSound = None;
