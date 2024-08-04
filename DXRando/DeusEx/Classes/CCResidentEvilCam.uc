@@ -3,6 +3,8 @@ class CCResidentEvilCam extends SecurityCamera transient;
 var DeusExPlayer p;
 var bool Reposition;
 var float cameraMoveTimer;
+var float JoltMagnitude;
+var vector DesiredLoc;
 
 function PostBeginPlay()
 {
@@ -58,7 +60,9 @@ function bool FindNewCameraPosition()
     rot = Rotator(aimTarget.Location - loc);
     SetLocation(loc);
     SetRotation(rot);
+    DesiredLoc = loc;
     DesiredRotation = rot;
+    JoltMagnitude /= 2;
     Reposition=False;
     cameraMoveTimer=0;
 
@@ -83,6 +87,8 @@ function Tick(float deltaTime)
     if (p==None){
         return;
     }
+
+    HandleJolt(deltaTime);
 
     if (p.ViewTarget!=Self){
         Destroy(); //Self destruct
@@ -187,6 +193,31 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function UnTrigger(Actor Other, Pawn Instigator)
 {
+}
+
+event JoltView()
+{
+    local float newJoltMagnitude;
+    if(p == None) return;
+    newJoltMagnitude = p.JoltMagnitude;
+    newJoltMagnitude *= 10;
+    if (Abs(JoltMagnitude) < Abs(newJoltMagnitude))
+        JoltMagnitude = newJoltMagnitude;
+}
+
+function HandleJolt(float delta)
+{
+    if(JoltMagnitude == 0) return;
+
+    delta *= JoltMagnitude;
+    SetLocation(Location + (delta*vect(0,0,12)));
+    if(Location.Z < DesiredLoc.Z) {
+        JoltMagnitude = 0;
+        SetLocation(DesiredLoc);
+    }
+    else if(Location.Z >= DesiredLoc.Z + JoltMagnitude) {
+        if(JoltMagnitude > 0) JoltMagnitude *= -1;
+    }
 }
 
 defaultproperties

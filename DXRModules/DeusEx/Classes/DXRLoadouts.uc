@@ -301,6 +301,9 @@ function AddAug(int s, string type)
 
     for(i=0; i < ArrayCount(__item_sets[s].starting_augs); i++) {
         if( __item_sets[s].starting_augs[i] == None ) {
+            if(dxr.flags.IsHalloweenMode() && type=="AugSpeed") {
+                type = "AugStealth";// this is Halloween!
+            }
             a = GetClassFromString(type, class'Augmentation');
             __item_sets[s].starting_augs[i] = class<Augmentation>(a);
             return;

@@ -670,7 +670,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         autosave = 5; // Ironman, autosaves and manual saves disabled
     }
     else if(IsHalloweenMode()) {
-        // TODO
+        moresettings.camera_mode = 2;
     }
     return settings;
 }
