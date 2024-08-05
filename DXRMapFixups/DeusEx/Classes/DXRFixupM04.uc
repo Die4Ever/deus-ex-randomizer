@@ -370,6 +370,14 @@ function PreFirstEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
+    local #var(prefix)Secretary janice;
+
+    foreach AllActors(class'Secretary', janice) {
+        if (janice.BindName == "JaniceReed") {
+            janice.UnfamiliarName = janice.FamiliarName;
+        }
+    }
+
     FixUNATCORetinalScanner();
 }
 

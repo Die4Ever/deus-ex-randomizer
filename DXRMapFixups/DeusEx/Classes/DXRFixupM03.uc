@@ -75,6 +75,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BlackHelicopter jock;
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
+    local #var(prefix)Secretary janice;
     local #var(prefix)OrdersTrigger ot;
     local AlarmUnit au;
     local vector loc;
@@ -387,6 +388,12 @@ function PreFirstEntryMapFixes()
             if (ot.ordersTag=='CarterAtWindow'){
                 ot.Orders='RunningTo';
                 break;
+            }
+        }
+
+        foreach AllActors(class'Secretary', janice) {
+            if (janice.BindName == "JaniceReed") {
+                janice.UnfamiliarName = janice.FamiliarName;
             }
         }
 
