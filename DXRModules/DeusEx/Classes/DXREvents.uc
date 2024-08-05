@@ -3306,7 +3306,7 @@ defaultproperties
     bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
     bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
     bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
-    bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chows maid",max=1,missions=64)
+    bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chow's maid",max=1,missions=64)
     bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
     bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy %s Cleaner Bots",desc_singular="Destroy 1 Cleaner Bot",max=5,missions=286)
     bingo_options(129)=(event="MedicalBot_ClassDead",desc="Destroy %s Medical Bots",desc_singular="Destroy 1 Medical Bot",max=3)
