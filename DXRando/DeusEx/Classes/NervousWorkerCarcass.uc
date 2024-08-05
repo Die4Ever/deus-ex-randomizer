@@ -1,4 +1,4 @@
-class NervousWorkerCarcass extends Male1Carcass;
+class NervousWorkerCarcass extends #var(prefix)Male1Carcass;
 
 defaultproperties
 {
