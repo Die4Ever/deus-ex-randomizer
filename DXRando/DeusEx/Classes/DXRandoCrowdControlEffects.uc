@@ -1917,7 +1917,7 @@ function bool RaiseDead(string viewer)
         if (carc==None){
             break;
         }
-        if (ResurrectCorpse(carc,viewer)){
+        if (ResurrectCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
             num++;
         }
     }
@@ -1931,7 +1931,7 @@ function bool RaiseDead(string viewer)
     return True;
 }
 
-function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
+static function bool ResurrectCorpse(DXRActorsBase module, DeusExCarcass carc, optional String pawnname)
 {
     local string livingClassName;
     local class<Actor> livingClass;
@@ -1943,9 +1943,9 @@ function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
 
     //At least in vanilla, all carcasses are the original class name + Carcass
     livingClassName = string(carc.class.Name);
-    livingClassName = class'DXRInfo'.static.ReplaceText(livingClassName,"Carcass","");
+    livingClassName = module.ReplaceText(livingClassName,"Carcass","");
 
-    livingClass = ccLink.ccModule.GetClassFromString(livingClassName,class'ScriptedPawn');
+    livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
 
     if (livingClass==None){
         return False;
@@ -1954,14 +1954,19 @@ function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
     respawnLoc = carc.Location;
     respawnLoc.Z +=livingClass.Default.CollisionHeight;
 
-    sp = ScriptedPawn(Spawn(livingClass,,,respawnLoc,carc.Rotation));
+    sp = ScriptedPawn(carc.Spawn(livingClass,,,respawnLoc,carc.Rotation));
 
     if (sp==None){
         return False;
     }
 
-    sp.FamiliarName = viewer$"'s Zombie";
-    sp.UnfamiliarName = sp.FamiliarName;
+    if(pawnname != "") {
+        sp.FamiliarName = pawnname;
+        sp.UnfamiliarName = sp.FamiliarName;
+    } else {
+        sp.FamiliarName = sp.FamiliarName $ " Zombie";
+        sp.UnfamiliarName = sp.FamiliarName;
+    }
     sp.bInvincible = False; //If they died, they can't have been invincible
 
     //Clear out initial inventory (since that should all be in the carcass, except for native attacks)
@@ -1985,11 +1990,11 @@ function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
     //Make it hostile to EVERYONE.  This thing has seen the other side
     sp.SetAlliance('Resurrected');
     sp.ChangeAlly('Player',-1,True);
-    foreach AllActors(class'ScriptedPawn',otherSP){
+    foreach sp.AllActors(class'ScriptedPawn',otherSP){
         sp.ChangeAlly(otherSP.Alliance,-1,True);
     }
 
-    ccLink.ccModule.RemoveFears(sp);
+    module.RemoveFears(sp);
     sp.ResetReactions();
 
     //Transfer inventory from carcass back to the pawn
@@ -2010,13 +2015,13 @@ function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
     sp.bKeepWeaponDrawn=True;
 
     //Give the resurrect guy a zombie swipe (a guaranteed melee weapon)
-    ccLink.ccModule.GiveItem(sp,class'WeaponZombieSwipe');
+    module.GiveItem(sp,class'WeaponZombieSwipe');
 
     //Pop out a little meat for fun
     for (i=0; i<10; i++)
     {
         if (FRand() > 0.2)
-            spawn(class'FleshFragment',,,carc.Location);
+            carc.spawn(class'FleshFragment',,,carc.Location);
     }
 
     carc.Destroy();
