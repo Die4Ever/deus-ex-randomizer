@@ -670,7 +670,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         autosave = 5; // Ironman, autosaves and manual saves disabled
     }
     else if(IsHalloweenMode()) {
-        moresettings.camera_mode = 2;
+        //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
     }
     return settings;
 }
@@ -735,7 +735,7 @@ function string GameModeName(int gamemode)
     case WaltonWarex3:
         return "WaltonWare x3";
     case HalloweenMode:
-        if(IsOctoberUnlocked()) return "Halloween Mode";// maybe needs a better name
+        if(IsOctoberUnlocked()) return "Halloween Mode (Alpha)";// maybe needs a better name
         break;
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
