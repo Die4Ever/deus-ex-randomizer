@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[86]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[87]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -586,6 +586,11 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             duration = 14;
             message="You played Linus and Lucy from A Charlie Brown Christmas";
             break;
+        case 86:
+            SelectedSound = sound'Thriller';
+            duration = 9;
+            message="You played Thriller by Michael Jackson";
+            break;
         default:
             SelectedSound = None;
             duration = 0;
@@ -637,6 +642,7 @@ function int GetSongWeight(int songIdx)
         case 81: //HalloweenTheme
         case 82: //SpookyScarySkeletons
         case 83: //ThisIsHalloween
+        case 86: //Thriller
             if(dxr.IsOctober()) return 3;
             return 0; // else these songs are not active
 
