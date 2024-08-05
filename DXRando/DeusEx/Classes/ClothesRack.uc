@@ -50,11 +50,9 @@ function Frob(actor Frobber, Inventory frobWith)
             fashion.RandomizeClothes(p);
             fashion.GetDressed();
 
-            if (camera!=None && !dxr.flags.IsSpeedrunMode()){
-                if (camera.IsFirstPersonGame() && p.bBehindView == False) {
-                    camera.EnableTempThirdPerson(true);
-                    SetTimer(0.75,False);
-                }
+            if (camera != None && camera.IsFirstPersonGame() && p.bBehindView == False && !dxr.flags.IsSpeedrunMode()) {
+                camera.EnableTempThirdPerson(true);
+                SetTimer(0.75,False);
             }
         }
 
