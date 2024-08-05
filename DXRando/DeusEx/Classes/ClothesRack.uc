@@ -41,12 +41,16 @@ function Frob(actor Frobber, Inventory frobWith)
             break;
         foreach AllActors(class'DXRCameraModes',camera)
             break;
+        foreach AllActors(class'DXRando',dxr)
+            break;
+        if (dxr == None)
+            return;
 
         if (fashion!=None) {
             fashion.RandomizeClothes(p);
             fashion.GetDressed();
 
-            if (camera!=None){
+            if (camera!=None && !dxr.flags.IsSpeedrunMode()){
                 if (camera.IsFirstPersonGame() && p.bBehindView == False) {
                     camera.EnableTempThirdPerson(true);
                     SetTimer(0.75,False);
@@ -56,9 +60,7 @@ function Frob(actor Frobber, Inventory frobWith)
 
         if (!bAlreadyUsed){
             bAlreadyUsed=true;
-            foreach AllActors(class'DXRando', dxr) {
-                class'DXREvents'.static.MarkBingo(dxr,"ChangeClothes");
-            }
+            class'DXREvents'.static.MarkBingo(dxr,"ChangeClothes");
         }
 
     }
