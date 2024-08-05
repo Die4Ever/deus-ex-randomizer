@@ -587,7 +587,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             AddNote(player, bEmptyNotes, "Access code to the Versalife nanotech research wing on Level 2: 55655.  There is a back entrance at the north end of the Canal Road Tunnel, which is just east of the temple.");
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
-        case 68:
+            flagbase.SetBool('Disgruntled_Guy_Dead', true);
+        case 68://fallthrough
             AddNote(player, bEmptyNotes, "VersaLife elevator code: 6512.");
         case 67://fallthrough
             AddNote(player, bEmptyNotes, "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.");

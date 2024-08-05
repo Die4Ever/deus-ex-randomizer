@@ -60,6 +60,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MJ12Commando commando;
     local WaterCooler wc;
     local Rotator rot;
+    local Male1 male;
     local int i;
 
     local bool VanillaMaps;
@@ -608,6 +609,20 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if (dxr.flags.IsZeroRando() == false) {
+            // give nervous worker some new threads so he stands out
+            foreach AllActors(class'Male1', male) {
+                if (male.BindName == "Disgruntled_Guy") {
+                    male.MultiSkins[3] = Texture'NervousWorkerPants';
+                    male.MultiSkins[5] = Texture'NervousWorkerBody';
+                    male.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex1';
+                    male.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex1';
+                    male.CarcassType = class'NervousWorkerCarcass';
+                    break;
+                }
+            }
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
         Spawn(class'PlaceholderItem',,, vectm(210.94,2062.23,204.3)); //2nd floor front cube
@@ -898,16 +913,30 @@ function AnyEntryMapFixes()
     case "06_HONGKONG_WANCHAI_CANAL":
         HandleJohnSmithDeath();
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
-            foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body')
-                if (carc.bHidden){
-				    carc.bHidden = False;
-#ifdef injections
-                    //HACK: to be removed once the problems with Carcass2 are fixed/removed
-                    carc.mesh = LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC';  //His body starts in the water, so this is fine
-                    carc.SetMesh2(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassB');
-                    carc.SetMesh3(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC');
-#endif
+            foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body') {
+                if (dxr.flags.IsZeroRando()) {
+                    if (carc.bHidden) {
+                        carc.bHidden = false;
+                        carc.ItemName = "John Smith (Dead)";
+                    } else {
+                        break;
+                    }
+                } else if (NervousWorkerCarcass(carc) == None) {
+                    carc = carc.Spawn(class'NervousWorkerCarcass', carc, carc.Tag);
+                    carc.Owner.Destroy();
+                } else {
+                    break;
                 }
+
+                #ifdef injections
+                //HACK: to be removed once the problems with Carcass2 are fixed/removed
+                carc.mesh = LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC';  //His body starts in the water, so this is fine
+                carc.SetMesh2(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassB');
+                carc.SetMesh3(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC');
+                #endif
+
+                break;
+            }
         }
         break;
     case "06_HONGKONG_MJ12LAB":
