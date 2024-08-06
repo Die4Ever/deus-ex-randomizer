@@ -237,6 +237,7 @@ function PreFirstEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local RetinalScanner r;
+    local #var(prefix)Secretary janice;
 
     switch(dxr.localURL) {
     case "05_NYC_UNATCOHQ":
@@ -253,6 +254,14 @@ function PostFirstEntryMapFixes()
                 r.msgUsed = "Access De-/.&*% g r a n t e d";
             }
         }
+
+        foreach AllActors(class'Secretary', janice) {
+            if (janice.BindName == "JaniceReed") {
+                janice.FamiliarName = "Janice Reed";
+                janice.UnfamiliarName = janice.FamiliarName;
+            }
+        }
+
         break;
 
     case "05_NYC_UNATCOMJ12LAB":
