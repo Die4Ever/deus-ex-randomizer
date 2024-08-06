@@ -899,7 +899,7 @@ function HighlightCenterObjectMain()
 
     if(LevelInfo(target) != None) target = None;
 
-    if(target != None && class'MenuChoice_FixGlitches'.default.enabled) {
+    if(target != None && Brush(target) == None && class'MenuChoice_FixGlitches'.default.enabled) {
         t = HighlightCenterObjectRay(vect(0,-0.2,1.5), dist2);
         fails += int(t!=target && dist2 < dist && (LevelInfo(t)!=None || Brush(t)!=None));
 
@@ -983,9 +983,9 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
         else if(LevelInfo(target) != None || Brush(target) != None) {
             if(bFirstTarget) {
                 smallestTargetDist = VSize(Location-HitLoc);
-                return Level;
+                smallestTarget = Level;
             }
-            return smallestTarget;
+            minSize = -1; // don't allow any actors after this, but do allow Movers
         }
     }
 

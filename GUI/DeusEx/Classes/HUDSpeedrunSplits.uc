@@ -59,6 +59,10 @@ event InitWindow()
         colorBehindLosingTime=RGB(255,60,40);
         colorBehindGainingTime=RGB(250,140,131);
     }
+    if( class'DXRVersion'.static.VersionOlderThan(version, 3,1,0,2)) {
+        splitNotes[1]="The starting location, Leo, and the boat|ncannot be close to each other.|nEdit these notes in DXRSplits.ini";
+        splitNotes[14]="The computer and Howard won't be close to each other.|nHoward and Escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini";
+    }
     if( version < class'DXRVersion'.static.VersionNumber() ) {
         version = class'DXRVersion'.static.VersionNumber();
         SaveConfig();
@@ -671,6 +675,6 @@ defaultproperties
     split_names(14)="Silo"
     split_names(15)="Area 51"
 
-    splitNotes(1)="UNATCO start: no Leo at Paul or hut|nHarley start: no Leo at electric bunker|nElectric Bunker start: no Leo at Harley dock|nTop start: no Leo at base of statue|nEdit these notes in DXRSplits.ini"
+    splitNotes(1)="The starting location, Leo, and the boat|ncannot be close to each other.|nEdit these notes in DXRSplits.ini"
     splitNotes(14)="The computer and Howard won't be close to each other.|nHoward and Escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini"
 }

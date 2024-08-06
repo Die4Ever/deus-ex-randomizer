@@ -37,13 +37,14 @@ var class<ScriptedPawn> enemyclasses[32];
 struct ItemChances {
     var string type;
     var int chance;
+    var float lastDamageTime;
 };
 var config ItemChances items[32];
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,6,0,5) ) {
+    if( ConfigOlderThan(3,1,0,2) ) {
         time_between_waves = 65;
         time_before_damage = 180;
         damage_timer = 10;
@@ -183,10 +184,10 @@ function CheckConfig()
         items[i].chance = 6;
         i++;
         items[i].type = "CrateExplosiveSmall";
-        items[i].chance = 9;
+        items[i].chance = 8;
         i++;
         items[i].type = "Barrel1";
-        items[i].chance = 10;
+        items[i].chance = 8;
         i++;
         items[i].type = "WeaponGasGrenade";
         items[i].chance = 7;
@@ -220,10 +221,13 @@ function CheckConfig()
         i++;
         items[i].type = "AmmoDartPoison";
         items[i].chance = 1;
-        // and 16% more...
+        // and 19% more...
         i++;
         items[i].type = "AugmentationCannister";
         items[i].chance = 5;
+        i++;
+        items[i].type = "RepairBot";
+        items[i].chance = 3;
         i++;
         items[i].type = "MedicalBot";
         items[i].chance = 5;
@@ -321,7 +325,7 @@ function AnyEntry()
     }
     foreach AllActors(class'Actor', a) {
         for(i=0; i < ArrayCount(remove_objects); i++) {
-            if( a.IsA(remove_objects[i]) )
+            if( a.IsA(remove_objects[i]) && MrX(a)==None )// don't delete Mr X...
                 a.Destroy();
         }
     }
@@ -628,7 +632,14 @@ function SetAlliance(ScriptedPawn p)
 function GenerateItems()
 {
     local int i;
+    local #var(injectsprefix)MedicalBot medbot;
+
     SetGlobalSeed("Horde GenerateItems" $ wave);
+
+    // always make an augbot
+    medbot = Spawn(class'#var(injectsprefix)MedicalBot',,, GetRandomItemPosition());
+    if(medbot != None) medbot.MakeAugsOnly();
+
     for(i=0;i<items_per_wave;i++) {
         GenerateItem();
     }
@@ -644,19 +655,40 @@ function GenerateItem()
     local Barrel1 barrel;
     local DeusExMover d;
     local float r;
+
     r = initchance();
     for(i=0; i < ArrayCount(items); i++) {
-        if( chance(items[i].chance, r) ) c = GetClassFromString(items[i].type, class'Actor');
+        if( chance(items[i].chance, r) ) {
+            c = GetClassFromString(items[i].type, class'Actor');
+            break;
+        }
     }
+    chance_remaining(r);// clear the chance counter
+
+    // count how many we have
     foreach AllActors(c, a) {
         num++;
-        if( num > items_per_wave/2 ) {
+    }
+    // now damage or move the oldest ones (at the start of the list)
+    i = 0;
+    if(num > items_per_wave/2 && items[i].lastDamageTime < Level.TimeSeconds && ClassIsChildOf(c, class'#var(prefix)Containers')) {
+        items[i].lastDamageTime = Level.TimeSeconds;
+        foreach AllActors(c, a) {
+            a.TakeDamage(1, None, vect(0,0,0), vect(0,0,0), 'Shot');
+            i++;
+            if(i > num/2) break;
+        }
+    }
+    else if(num > items_per_wave/2 && items[i].lastDamageTime < Level.TimeSeconds) {
+        items[i].lastDamageTime = Level.TimeSeconds;
+        foreach AllActors(c, a) {
             loc = GetRandomItemPosition();
             a.SetLocation(loc);
+            i++;
+            if(i > num/2) break;
         }
-        if( num > items_per_wave )
-            break;
     }
+
     if( num > items_per_wave ) {
         l("already have too many of "$c.name);
         return;

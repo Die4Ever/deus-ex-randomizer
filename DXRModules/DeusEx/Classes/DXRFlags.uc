@@ -11,6 +11,8 @@ const WaltonWareEntranceRando = 8;
 const RandoMedium = 9;
 const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
+const HordeZombies = 1030;
+const HalloweenMode = 1031;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -668,6 +670,9 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 #endif
         autosave = 5; // Ironman, autosaves and manual saves disabled
     }
+    else if(IsHalloweenMode()) {
+        //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
+    }
     return settings;
 }
 
@@ -679,9 +684,10 @@ function string DifficultyName(int diff)
     return difficulty_names[diff];
 }
 
-static function int GameModeIdForSlot(int slot)
+function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
     if(slot--==0) return 0;
+    if(IsOctoberUnlocked() && slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
@@ -694,11 +700,12 @@ static function int GameModeIdForSlot(int slot)
     if(slot--==0) return RandoLite;
     if(slot--==0) return RandoMedium;
     if(slot--==0) return SeriousSam;
+    if(IsOctoberUnlocked() && slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
     return 999999;
 }
 
-static function string GameModeName(int gamemode)
+function string GameModeName(int gamemode)
 {
     switch(gamemode) {
     case 0:
@@ -729,6 +736,12 @@ static function string GameModeName(int gamemode)
         return "WaltonWare Hardcore";
     case WaltonWarex3:
         return "WaltonWare x3";
+    case HordeZombies:
+        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
+        break;
+    case HalloweenMode:
+        if(IsOctoberUnlocked()) return "Halloween Mode (Alpha)";// maybe needs a better name
+        break;
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -743,7 +756,7 @@ function bool IsEntranceRando()
 
 function bool IsHordeMode()
 {
-    return gamemode == HordeMode;
+    return gamemode == HordeMode || gamemode == HordeZombies;
 }
 
 function bool IsZeroRando()
@@ -769,6 +782,11 @@ function bool IsWaltonWare()
 function bool IsWaltonWareHardcore()
 {
     return gamemode == WaltonWareHardcore;
+}
+
+function bool IsHalloweenMode()
+{
+    return gamemode == HalloweenMode || gamemode == HordeZombies;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

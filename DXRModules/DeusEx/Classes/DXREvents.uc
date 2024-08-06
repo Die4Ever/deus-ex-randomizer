@@ -2048,6 +2048,25 @@ function string RemapBingoEvent(string eventname)
         case "PetAnimal_Rat":
         case "PetAnimal_NastyRat":
             return "PetRats";
+        case "PianoSong9Played":
+        case "PianoSong32Played":
+        case "PianoSong33Played":
+        case "PianoSong45Played":
+        case "PianoSong62Played":
+        case "PianoSong73Played":
+        case "PianoSong74Played":
+        case "PianoSong75Played":
+        case "PianoSong76Played":
+        case "PianoSong77Played":
+        case "PianoSong78Played":
+        case "PianoSong79Played":
+        case "PianoSong80Played":
+        case "PianoSong81Played":
+        case "PianoSong82Played":
+        case "PianoSong83Played":
+        case "PianoSong84Played":
+        case "PianoSong85Played":
+            return "SeasonalPianoPlayed";
         default:
             return eventname;
     }
@@ -3287,7 +3306,7 @@ defaultproperties
     bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
     bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
     bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
-    bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chows maid",max=1,missions=64)
+    bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chow's maid",max=1,missions=64)
     bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
     bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy %s Cleaner Bots",desc_singular="Destroy 1 Cleaner Bot",max=5,missions=286)
     bingo_options(129)=(event="MedicalBot_ClassDead",desc="Destroy %s Medical Bots",desc_singular="Destroy 1 Medical Bot",max=3)
@@ -3350,7 +3369,7 @@ defaultproperties
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",desc_singular="Use 1 HazMat Suit",max=3,missions=54866)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
-    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottles of alcohol",max=75)
+    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
 #ifdef injections
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)

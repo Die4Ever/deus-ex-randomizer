@@ -1588,7 +1588,7 @@ function int SpawnNastyRat(string viewer)
 
 function int DropPiano(string viewer)
 {
-    local Actor a;
+    local #var(prefix)WHPiano piano;
     local DXRActorsBase tracer;
     local vector loc;
     local float height, leading;
@@ -1617,22 +1617,28 @@ function int DropPiano(string viewer)
         return TempFail;
     }
 
-    a = Spawn(class'#var(prefix)WHPiano',,, loc);
+    piano = Spawn(class'#var(prefix)WHPiano',,, loc);
     //Did it spawn successfully?
-    if(a == None) {
+    if(piano == None) {
         return TempFail;
     }
 
     //Make sure there's still a line of sight from where it actually spawned
-    if (!a.FastTrace(player().Location)){
-        a.Destroy(); //Pretend it never existed if there isn't
+    if (!piano.FastTrace(player().Location)){
+        piano.Destroy(); //Pretend it never existed if there isn't
         return TempFail;
     }
 
-    a.Velocity.Z -= 200;
-    a.Instigator = GetCrowdControlPawn(viewer);
-    a.FamiliarName=viewer$"'s Grand Piano";
-    a.UnfamiliarName=a.FamiliarName;
+    if(ccLink.ccModule.IsOctober()) {
+        piano.ItemName = viewer $ "'s Staufway Piano";
+    } else {
+        piano.ItemName = viewer $ "'s Grand Piano";
+    }
+
+    piano.Velocity.Z -= 200;
+    piano.Instigator = GetCrowdControlPawn(viewer);
+    piano.FamiliarName = piano.ItemName;
+    piano.UnfamiliarName = piano.FamiliarName;
     PlayerMessage(viewer$" dropped a piano on you from "$int(height/16 + 0.5)$" feet with "$int(leading*100 + 0.5)$"% leading!");
     return Success;
 }
@@ -1907,7 +1913,7 @@ function bool HealAllEnemies(string viewer)
 
 function bool RaiseDead(string viewer)
 {
-    local DeusExCarcass carc;
+    local #var(DeusExPrefix)Carcass carc;
     local int num,i;
 
     num=0;
@@ -1917,7 +1923,7 @@ function bool RaiseDead(string viewer)
         if (carc==None){
             break;
         }
-        if (ResurrectCorpse(carc,viewer)){
+        if (class'DXRHalloween'.static.ResurrectCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
             num++;
         }
     }
@@ -1931,102 +1937,9 @@ function bool RaiseDead(string viewer)
     return True;
 }
 
-function bool ResurrectCorpse(DeusExCarcass carc, String viewer)
-{
-    local string livingClassName;
-    local class<Actor> livingClass;
-    local vector respawnLoc;
-    local ScriptedPawn sp,otherSP;
-    local int i;
-    local Inventory item, nextItem;
-    local bool removeItem;
-
-    //At least in vanilla, all carcasses are the original class name + Carcass
-    livingClassName = string(carc.class.Name);
-    livingClassName = class'DXRInfo'.static.ReplaceText(livingClassName,"Carcass","");
-
-    livingClass = ccLink.ccModule.GetClassFromString(livingClassName,class'ScriptedPawn');
-
-    if (livingClass==None){
-        return False;
-    }
-
-    respawnLoc = carc.Location;
-    respawnLoc.Z +=livingClass.Default.CollisionHeight;
-
-    sp = ScriptedPawn(Spawn(livingClass,,,respawnLoc,carc.Rotation));
-
-    if (sp==None){
-        return False;
-    }
-
-    sp.FamiliarName = viewer$"'s Zombie";
-    sp.UnfamiliarName = sp.FamiliarName;
-    sp.bInvincible = False; //If they died, they can't have been invincible
-
-    //Clear out initial inventory (since that should all be in the carcass, except for native attacks)
-    for (i=0;i<ArrayCount(sp.InitialInventory);i++){
-        if(ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCMelee') ||
-           ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCRanged')){
-            continue;
-        }
-        switch(sp.InitialInventory[i].Inventory.Default.Mesh){
-            case LodMesh'DeusExItems.InvisibleWeapon':
-            case LodMesh'DeusExItems.TestBox':
-            case None:
-                break; //NPC weapons and NPC weapon ammo
-            default:
-                sp.InitialInventory[i].Inventory=None;
-        }
-    }
-
-    sp.InitializePawn();
-
-    //Make it hostile to EVERYONE.  This thing has seen the other side
-    sp.SetAlliance('Resurrected');
-    sp.ChangeAlly('Player',-1,True);
-    foreach AllActors(class'ScriptedPawn',otherSP){
-        sp.ChangeAlly(otherSP.Alliance,-1,True);
-    }
-
-    ccLink.ccModule.RemoveFears(sp);
-    sp.ResetReactions();
-
-    //Transfer inventory from carcass back to the pawn
-    if (carc.Inventory!=None){
-        do
-        {
-            item = carc.Inventory;
-            nextItem = item.Inventory;
-            carc.DeleteInventory(item);
-            if ((DeusExWeapon(item) != None) && (DeusExWeapon(item).bNativeAttack))
-                item.Destroy();
-            else
-                sp.AddInventory(item);
-            item = nextItem;
-        }
-        until (item == None);
-    }
-    sp.bKeepWeaponDrawn=True;
-
-    //Give the resurrect guy a zombie swipe (a guaranteed melee weapon)
-    ccLink.ccModule.GiveItem(sp,class'WeaponZombieSwipe');
-
-    //Pop out a little meat for fun
-    for (i=0; i<10; i++)
-    {
-        if (FRand() > 0.2)
-            spawn(class'FleshFragment',,,carc.Location);
-    }
-
-    carc.Destroy();
-
-    return True;
-}
-
 function bool CorpseExplosion(string viewer)
 {
-    local DeusExCarcass carc;
+    local #var(DeusExPrefix)Carcass carc;
     local int num,i;
     local DXRandoCrowdControlPawn viewerPawn;
 
@@ -2053,14 +1966,14 @@ function bool CorpseExplosion(string viewer)
 
 }
 
-function DeusExCarcass FindClosestCarcass(float radius,optional bool bAllowAnimals)
+function #var(DeusExPrefix)Carcass FindClosestCarcass(float radius,optional bool bAllowAnimals)
 {
-    local DeusExCarcass carc,closest;
+    local #var(DeusExPrefix)Carcass carc,closest;
     local float closeDist;
 
     closest = None;
     closeDist = 2 * radius;
-    foreach player().RadiusActors(class'DeusExCarcass',carc,radius){
+    foreach player().RadiusActors(class'#var(DeusExPrefix)Carcass',carc,radius){
         if (carc.bNotDead){
             continue; //Skip unconscious bodies
         }
@@ -2077,7 +1990,7 @@ function DeusExCarcass FindClosestCarcass(float radius,optional bool bAllowAnima
 }
 
 //Duped from MIB
-function DetonateCarcass(DeusExCarcass carc)
+function DetonateCarcass(#var(DeusExPrefix)Carcass carc)
 {
     local SphereEffect sphere;
     local ScorchMark s;

@@ -9,3 +9,39 @@ function Tick(float deltaTime)
         Super.Tick(deltaTime);
     }
 }
+
+#ifdef injections
+state Wandering
+{
+    ignores EnemyNotVisible;
+
+Begin:
+    destPoint = None;
+
+GoHome:
+    bAcceptBump = false;
+    TweenToWalking(0.15);
+    WaitForLanding();
+    FinishAnim();
+    PlayWalking();
+
+Wander:
+    PickDestination();
+
+Moving:
+    // Move from pathnode to pathnode until we get where we're going
+    PlayWalking();
+    MoveTo(destLoc, GetWalkingSpeed());
+
+Pausing:
+    if (destLoc == Location)
+        Sleep(1.0);
+    Goto('Wander');
+
+ContinueWander:
+ContinueFromDoor:
+    FinishAnim();
+    PlayWalking();
+    Goto('Wander');
+}
+#endif

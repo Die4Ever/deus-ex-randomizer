@@ -18,7 +18,7 @@ var #var(flagvarprefix) int seed, playthrough_id;
 var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 
 // these config vars will be remembered for next time you open the new game screen
-var config int gamemode;//0=original, 1=rearranged, 2=horde, 3=rando lite //old... 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
+var config int gamemode;// see DXRFlags.uc for definitions
 var config int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var config int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
 var config int mirroredmaps;
@@ -110,7 +110,7 @@ function InitDefaults();
 function FlagsSettings SetDifficulty(int new_difficulty);
 simulated function ExecMaxRando();
 function string DifficultyName(int diff);
-static function string GameModeName(int gamemode);
+function string GameModeName(int gamemode);
 
 simulated function _PreTravel()
 {
