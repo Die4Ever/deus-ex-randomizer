@@ -154,8 +154,8 @@ simulated function RandoSkillLevelValues(Skill a)
     local string add_desc;
     local float skill_value_wet_dry;
 
-    if( #var(prefix)SkillWeaponHeavy(a) != None ) {// TODO: maybe make this a sliding scale?
-        add_desc = "150% or higher will allow you to move more quickly while carrying a heavy weapon.";
+    if( #var(prefix)SkillWeaponHeavy(a) != None ) {
+        add_desc = "Over 120% will allow you to move more quickly while carrying a heavy weapon, up to full speed at 170%.";
     }
 #ifdef injections
     else if( #var(prefix)SkillDemolition(a) != None ) {
