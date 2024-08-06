@@ -41,24 +41,24 @@ function Frob(actor Frobber, Inventory frobWith)
             break;
         foreach AllActors(class'DXRCameraModes',camera)
             break;
+        foreach AllActors(class'DXRando',dxr)
+            break;
+        if (dxr == None)
+            return;
 
         if (fashion!=None) {
             fashion.RandomizeClothes(p);
             fashion.GetDressed();
 
-            if (camera!=None){
-                if (camera.IsFirstPersonGame() && p.bBehindView == False) {
-                    camera.EnableTempThirdPerson(true);
-                    SetTimer(0.75,False);
-                }
+            if (camera != None && camera.IsFirstPersonGame() && p.bBehindView == False && !dxr.flags.IsSpeedrunMode()) {
+                camera.EnableTempThirdPerson(true);
+                SetTimer(0.75,False);
             }
         }
 
         if (!bAlreadyUsed){
             bAlreadyUsed=true;
-            foreach AllActors(class'DXRando', dxr) {
-                class'DXREvents'.static.MarkBingo(dxr,"ChangeClothes");
-            }
+            class'DXREvents'.static.MarkBingo(dxr,"ChangeClothes");
         }
 
     }
