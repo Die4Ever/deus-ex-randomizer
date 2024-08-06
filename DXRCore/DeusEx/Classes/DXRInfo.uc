@@ -188,6 +188,7 @@ function bool IsOctoberUnlocked()
     // or do it by version number? allow if(#defined(debug))?
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     if(#defined(debug)) return true;
+    if(VersionOlderThan(VersionNumber(), 3,2,0,0)) return false;
     return Level.Month >= 10 || Level.Year > 2024;
 }
 
@@ -195,6 +196,7 @@ function bool IsOctober()
 {
     // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
     if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
+    if(VersionOlderThan(VersionNumber(), 3,2,0,0)) return false;
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     return Level.Month == 10;
 }

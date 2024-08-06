@@ -12,7 +12,7 @@ static function MrX Create(DXRActorsBase a)
         m.Destroy();
     }
 
-    a.SetSeed("Mr. X");
+    a.SetSeed("Mr. X");// should this be seeded or not?
     loc = a.GetRandomPosition(a.player().Location, 16*150, 9999999);
 
     m = a.Spawn(class'MrX',,, loc);
@@ -140,6 +140,7 @@ defaultproperties
     HearingThreshold=0
     RandomWandering=0.1
     Wanderlust=3
+    HomeExtent=100000
 
     walkAnimMult=0.75
     runAnimMult=0.9

@@ -11,6 +11,7 @@ const WaltonWareEntranceRando = 8;
 const RandoMedium = 9;
 const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
+const HordeZombies = 1030;
 const HalloweenMode = 1031;
 
 #ifdef hx
@@ -699,6 +700,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return RandoLite;
     if(slot--==0) return RandoMedium;
     if(slot--==0) return SeriousSam;
+    if(IsOctoberUnlocked() && slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
     return 999999;
 }
@@ -734,6 +736,9 @@ function string GameModeName(int gamemode)
         return "WaltonWare Hardcore";
     case WaltonWarex3:
         return "WaltonWare x3";
+    case HordeZombies:
+        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
+        break;
     case HalloweenMode:
         if(IsOctoberUnlocked()) return "Halloween Mode (Alpha)";// maybe needs a better name
         break;
@@ -751,7 +756,7 @@ function bool IsEntranceRando()
 
 function bool IsHordeMode()
 {
-    return gamemode == HordeMode;
+    return gamemode == HordeMode || gamemode == HordeZombies;
 }
 
 function bool IsZeroRando()
@@ -781,7 +786,7 @@ function bool IsWaltonWareHardcore()
 
 function bool IsHalloweenMode()
 {
-    return gamemode == HalloweenMode;
+    return gamemode == HalloweenMode || gamemode == HordeZombies;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

@@ -17,6 +17,7 @@ function FirstEntry()
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
             piano.ItemName = "Staufway Piano";
         }
+        MakeSpiderWebs();
     }
 }
 
@@ -137,6 +138,10 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.BindName = "";// Zombies don't talk
     sp.BarkBindName = "";
 
+    sp.DrawScale = carc.DrawScale;
+    sp.SetCollisionSize(sp.CollisionRadius*sp.DrawScale, sp.CollisionHeight*sp.DrawScale);
+    sp.Fatness = carc.Fatness;
+
     //Clear out initial inventory (since that should all be in the carcass, except for native attacks)
     for (i=0;i<ArrayCount(sp.InitialInventory);i++){
         if(ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCMelee') ||
@@ -159,7 +164,9 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.SetAlliance('Resurrected');
     sp.ChangeAlly('Player',-1,True);
     foreach sp.AllActors(class'ScriptedPawn',otherSP){
-        sp.ChangeAlly(otherSP.Alliance,-1,True);
+        if(otherSP.Alliance != 'MrX') {
+            sp.ChangeAlly(otherSP.Alliance,-1,True);
+        }
     }
 
     module.RemoveFears(sp);
@@ -201,4 +208,93 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     carc.Destroy();
 
     return True;
+}
+
+function MakeSpiderWebs()
+{
+    local NavigationPoint p;
+    local Spiderweb web;
+    local vector loc;
+    local rotator rot;
+    local int i;
+
+    SetSeed("MakeSpiderWebs");
+
+    foreach AllActors(class'NavigationPoint', p) {
+        for(i=0; i<3; i++) {
+            loc = p.Location;
+            loc.X += rngfn() * 160.0;// 10 feet in either direction
+            loc.Y += rngfn() * 160.0;// 10 feet in either direction
+            loc.Z += rngf() * 80.0;// 5 feet upwards
+            if(GetSpiderwebLocation(loc, rot)) {
+                rot.roll = rng(65536);
+                web = Spawn(class'Spiderweb',,, loc, rot);
+            }
+        }
+    }
+}
+
+function bool GetSpiderwebLocation(out vector loc, out rotator rot)
+{
+    local bool found_ceiling, found_floor;
+    local LocationNormal ceiling, floor, ceiling_or_floor, wall1, wall2;
+    local vector norm;
+    local float dist, f;
+    local FMinMax distrange;
+
+    ceiling.loc = loc;
+    floor.loc = loc;
+    distrange.min = 0.1;
+    distrange.max = 16*100;
+
+    found_ceiling = NearestCeiling(ceiling, distrange, 16);
+    found_floor = NearestFloor(floor, distrange, 16);
+    //floor.loc.Z += 16*9;
+
+    if(found_ceiling && chance_single(60)) {
+        ceiling_or_floor = ceiling;
+    } else if(found_floor && chance_single(60)) {
+        ceiling_or_floor = floor;
+        found_ceiling = false;
+    } else if(found_ceiling && found_floor) {
+        f = rngf();
+        ceiling_or_floor.loc = (ceiling.loc*f) + (floor.loc*(1-f));
+        found_ceiling = false;
+        found_floor = false;
+    } else {
+        ceiling_or_floor.loc = loc;
+        found_ceiling = false;
+        found_floor = false;
+    }
+
+    distrange.max = 16*75;
+    wall1 = ceiling_or_floor;
+    if( ! NearestWallSearchZ(wall1, distrange, 16*3, ceiling_or_floor.loc, 10) ) return false;
+    ceiling_or_floor.loc.X = wall1.loc.X;
+    ceiling_or_floor.loc.Y = wall1.loc.Y;
+
+    // TODO: ensure ceiling/floor is still with us
+
+    distrange.max = 16*50;
+    wall2 = wall1;
+    if(chance_single(40) || !NearestCornerSearchZ(wall2, distrange, wall1.norm, 16*3, ceiling_or_floor.loc, 10) ) {
+        // just 2 axis (ceiling/floor + wall1)
+        rot = Rotator(wall1.norm);
+        if( found_ceiling ) rot.pitch -= 4096;
+        else if( found_floor ) rot.pitch += 4096;
+        loc = wall1.loc;
+        return true;
+    }
+
+    norm = Normal((wall1.norm + wall2.norm) / 2);
+
+    rot = Rotator(norm);
+    if( found_ceiling ) rot.pitch -= 4096;
+    else if( found_floor ) rot.pitch += 4096;
+    //norm = vector(rot);
+
+    loc = wall2.loc;
+
+    // TODO: ensure wall1 is still with us
+    return true;
 }
