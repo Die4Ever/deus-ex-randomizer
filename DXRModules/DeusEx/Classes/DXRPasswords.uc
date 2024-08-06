@@ -178,7 +178,19 @@ function FixCodes()
         case "15_AREA51_PAGE":
             newpassword = GeneratePasscode("7243");
             ReplacePassword("724", Left(newpassword, 3) );
+            FixArea51BlueFusionReactorCodes(Right(newpassword, 1));
             break;
+    }
+}
+
+function FixArea51BlueFusionReactorCodes(string validCode)
+{
+    local #var(prefix)Keypad kp;
+
+    foreach AllActors(class'#var(prefix)Keypad', kp) {
+        if(kp.validCode == "7243") {
+            kp.validCode = validCode;
+        }
     }
 }
 
