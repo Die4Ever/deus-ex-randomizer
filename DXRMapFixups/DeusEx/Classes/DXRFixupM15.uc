@@ -480,6 +480,11 @@ function AnyEntryMapFixes()
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
+    if(dxr.localURL != "15_AREA51_BUNKER") {
+        player().GoalCompleted('EnterBlastDoors');
+        player().GoalCompleted('PenetrateBunker');
+    }
+
     switch(dxr.localURL)
     {
     case "15_AREA51_FINAL":
@@ -496,6 +501,9 @@ function AnyEntryMapFixes()
         FixConversationAddNote(GetConversation('DL_Final_Helios06'), "Use the login");
         // timer to count the blue fusion reactors
         SetTimer(1, True);
+        if(#defined(vanilla)) {
+            dxr.flagbase.SetBool('MS_DL_Played', True,, 16);// don't let vanilla run checks for the BFR, we're gonna do it in our own timer
+        }
 
         foreach AllActors(class'ElectricityEmitter', ee, 'emitter_relay_room') {
             if(ee.DamageAmount >= 30) {// these are OP
@@ -520,60 +528,85 @@ function TimerMapFixes()
 
 function Area51_CountBlueFusion()
 {
-    local int newCount;
+    local int remaining;
+    local int required;
+    local FlagBase f;
 
-    newCount = 4;
+    f = dxr.flagbase;
 
-    if (dxr.flagbase.GetBool('Node1_Frobbed'))
-        newCount--;
-    if (dxr.flagbase.GetBool('Node2_Frobbed'))
-        newCount--;
-    if (dxr.flagbase.GetBool('Node3_Frobbed'))
-        newCount--;
-    if (dxr.flagbase.GetBool('Node4_Frobbed'))
-        newCount--;
+    required = 4;
+    if(#defined(vanilla) && dxr.flags.settings.goals > 0) required = 3;
+    remaining = required;
 
-    if (newCount!=storedReactorCount){
+    if (f.GetBool('Node1_Frobbed'))
+        remaining--;
+    if (f.GetBool('Node2_Frobbed'))
+        remaining--;
+    if (f.GetBool('Node3_Frobbed'))
+        remaining--;
+    if (f.GetBool('Node4_Frobbed'))
+        remaining--;
+
+    UpdateReactorGoal(remaining, required);
+    if (remaining != storedReactorCount && remaining < required) {// don't alert the player at the start of the level
         // A fusion reactor has been shut down!
-        storedReactorCount = newCount;
+        storedReactorCount = remaining;
 
-        switch(newCount){
-            case 0:
-                player().ClientMessage("All Blue Fusion reactors shut down!");
-                SetTimer(0, False);  // Disable the timer now that all fusion reactors are shut down
-                break;
-            case 1:
-                player().ClientMessage("1 Blue Fusion reactor remaining");
-                break;
-            case 4:
-                // don't alert the player at the start of the level
-                break;
-            default:
-                player().ClientMessage(newCount$" Blue Fusion reactors remaining");
-                break;
+        switch(Max(remaining, 0)) {// don't do negative numbers
+        case 0:
+            player().ClientMessage("All Blue Fusion reactors shut down!");
+            SetTimer(0, False);  // Disable the timer now that all fusion reactors are shut down
+            break;
+        case 1:
+            player().ClientMessage("1 Blue Fusion reactor remaining");
+            break;
+        default:
+            player().ClientMessage(remaining$" Blue Fusion reactors remaining");
+            break;
         }
+    }
 
-        UpdateReactorGoal(newCount);
+    if(#defined(vanilla) && !f.GetBool('DL_Blue4_Played') && remaining < required) {
+        // play datalinks when devices are frobbed
+        if (remaining == 3 && !f.GetBool('DL_Blue1_Played')) {
+            player().StartDataLinkTransmission("DL_Blue1");
+        }
+        else if (remaining == 2 && !f.GetBool('DL_Blue2_Played')) {
+            player().StartDataLinkTransmission("DL_Blue2");
+        }
+        else if (remaining == 1 && !f.GetBool('DL_Blue3_Played')) {
+            player().StartDataLinkTransmission("DL_Blue3");
+        }
+        else if (remaining <= 0 && !f.GetBool('DL_Blue4_Played'))
+        {
+            player().StartDataLinkTransmission("DL_Blue4");
+        }
     }
 }
 
-function UpdateReactorGoal(int count)
+function bool UpdateReactorGoal(int count, int required)
 {
     local string goalText;
     local DeusExGoal goal;
     local int bracketPos;
     goal = player().FindGoal('OverloadForceField');
 
-    if (goal!=None){
+    if (goal!=None) {
+        count = Max(count, 0);// don't do negative numbers
         goalText = goal.text;
         bracketPos = InStr(goalText,"[");
 
-        if (bracketPos>0){ //If the extra text is already there, strip it.
+        if (bracketPos>0) { //If the extra text is already there, strip it.
             goalText = Mid(goalText,0,bracketPos-1);
         }
 
         goalText = goalText$" ["$count$" remaining]";
 
+        if(required == 2) goalText = ReplaceText(goalText, "the four blue-fusion", "the two blue-fusion");
+        if(required == 3) goalText = ReplaceText(goalText, "the four blue-fusion", "the three blue-fusion");
+
         goal.SetText(goalText);
+        return true;
     }
+    return false;
 }
