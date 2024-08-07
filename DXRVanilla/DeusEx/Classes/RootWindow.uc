@@ -122,6 +122,72 @@ event bool BoxOptionSelected(Window messagebox, int buttonNumber)
     return true;
 }
 
+// maybe fix some alt+tab issues
+
+event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
+{
+    local bool bKeyHandled;
+    local DeusExPlayer Player;
+    local bool accelKey;
+
+    Player = DeusExPlayer(parentPawn);
+
+    bKeyHandled = True;
+
+    Super.VirtualKeyPressed(key, bRepeat);// we are merges, so this calls DeusExRootWindow's Super
+
+    // Check for Ctrl-F9, which is a hard-coded key to take a screenshot
+    if ( IsKeyDown( IK_Ctrl ) && ( key == IK_F9 ))
+    {
+        parentPawn.ConsoleCommand("SHOT");
+        return True;
+    }
+
+    // DXRando: escape takes priority over alt, due to alt+tab issues
+    accelKey = key >= IK_A && key <= IK_Z;
+    if ( accelKey && (IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) || IsKeyDown( IK_Ctrl )))
+        return False;
+
+    // When player dies in multiplayer...
+    if ((Player != None) && (Player.Health <= 0) && (Player.Level.NetMode != NM_Standalone))
+    {
+        if (( MultiplayerMessageWin(GetTopWindow()) != None ) && ( key == IK_Escape ))
+        {
+            PopWindow();
+            Player.ShowMainMenu();
+        }
+        return True;
+    }
+
+    // Check if this is a DataVault key
+    if (!ProcessDataVaultSelection(key))
+    {
+        switch( key )
+        {
+            // Hide the screen if the Escape key is pressed
+            // Temp: Also if the Return key is pressed
+            case IK_Escape:
+                PopWindow();
+                break;
+
+            // We want Print Screen to work in UI screens
+            case IK_PrintScrn:
+                parentPawn.ConsoleCommand("SHOT");
+                break;
+
+    //		case IK_GreyMinus:
+    //			PushWindow(Class'MenuScreenRGB');
+    //			break;
+
+            default:
+                bKeyHandled = False;
+        }
+    }
+
+    return bKeyHandled;
+}
+
+
 defaultproperties
 {
     LoadLatestTitle="Load Latest Save?"

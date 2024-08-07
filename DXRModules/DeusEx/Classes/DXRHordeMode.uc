@@ -372,8 +372,8 @@ function InWaveTick()
     local float dist, ratio;
 
     foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
-        if( p.IsA('Animal') ) continue;
         if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
+        p.LastRenderTime = Level.TimeSeconds;
         p.bStasis = false;
         dist = VSize(p.Location-player().Location);
         if( dist > popin_dist ) {
@@ -477,8 +477,7 @@ function GetOverHere()
     time_overdue = time_in_wave-time_before_teleport_enemies;
     maxdist = popin_dist - float(time_overdue*5);
     foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
-        if( p.IsA('Animal') ) continue;
-
+        p.LastRenderTime = Level.TimeSeconds;
         p.bStasis = false;
         dist = VSize(player().Location-p.Location);
         if( (time_in_wave+i) % 7 == 0 && p.CanSee(player()) == false && dist > maxdist ) {
@@ -574,6 +573,10 @@ function float GenerateEnemy(DXREnemies dxre)
     p = None;
     for(i=0; i < 10 && p == None; i++ ) {
         loc = GetRandomPosition(player().Location, popin_dist*0.8, popin_dist*2.5);
+        if(loc == player().Location) {
+            // couldn't find anything near the player, player is probably ghosting out of bounds
+            loc = GetRandomPosition(vect(0,0,0), 0, 999999);
+        }
         loc.X += rngfn() * 25;
         loc.Y += rngfn() * 25;
         p = Spawn(c,, 'hordeenemy', loc );
@@ -590,6 +593,7 @@ function float GenerateEnemy(DXREnemies dxre)
     dxre.RandomizeSP(p, 100);
     GiveRandomItems(p);
     p.InitializeInventory();
+    p.LastRenderTime = Level.TimeSeconds;
     p.bStasis = false;
     class'DXRNames'.static.GiveRandomName(dxr, p);
 

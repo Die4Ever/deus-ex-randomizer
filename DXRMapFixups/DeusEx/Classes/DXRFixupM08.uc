@@ -197,6 +197,14 @@ function PreFirstEntryMapFixes()
             {
                 if (dlt.CheckFlag=='PlayerHasExplosives'){
                     dlt.CheckFlag='StantonDowd_Played';
+                    if(VanillaMaps) {
+                        dlt.SetCollisionSize(516, 1000);
+                        dlt = spawn(class'DataLinkTrigger',,, vectm(990.951843, 1799.208252, -455.899506));
+                        dlt.SetCollisionSize(516, 1000);
+                        dlt.CheckFlag='StantonDowd_Played';
+                        dlt.datalinkTag = 'DL_Exit';
+                        break;
+                    }
                 }
             }
 

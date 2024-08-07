@@ -40,10 +40,23 @@ function PlayDressUp(Actor a,class<Actor> influencer, float rotYaw)
 function RandomLiberty()
 {
     local NYLiberty liberty;
+    local NYLibertyTop top;
     local int i;
+
+    foreach AllActors(class'NYLibertyTop',top){
+        if(IsOctober()) {
+            liberty.style = STY_Translucent;
+            liberty.ScaleGlow = 0.5;
+        }
+    }
 
     foreach AllActors(class'NYLiberty',liberty){
         SetGlobalSeed("RandomLiberty");
+
+        if(IsOctober()) {
+            liberty.style = STY_Translucent;
+            liberty.ScaleGlow = 0.5;
+        }
 
         if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random statue
 
@@ -476,15 +489,19 @@ function PostFirstEntry()
         p.SetRotation( r );
     }*/
 
-    //Add Leo Gold if he made it!
+    //Add Leo Gold if he made it! and other intro/outro stuff
     switch(dxr.localURL)
     {
+        case "INTRO":
+            MakeAllGhosts();
+            break;
         case "ENDGAME1":
         case "ENDGAME2":
         case "ENDGAME3":
         case "ENDGAME4":
         case "ENDGAME4REV":
             AddLeo();
+            MakeAllGhosts();
             break;
     }
 
@@ -606,6 +623,24 @@ state() RotatingState {
     }
 }
 
+state() JumpInTheLine {
+    event Tick(float delta)
+    {
+        local float t;
+        local #var(prefix)ScriptedPawn p;
+        local vector v;
+
+        // why does this only affect some of the ScriptedPawns?
+        foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
+            t = Level.TimeSeconds - p.Location.X - p.Location.Y;
+            t = sin(t / 2.0) * 160.0;
+            v = p.Location;
+            v.Z = t - 16;
+            p.SetLocation(v);
+        }
+    }
+}
+
 function RandomizeCutscene()
 {
     local Actor a;
@@ -678,6 +713,30 @@ function RandomizeCutscene()
     RandomMJ12Globe();
 
     RandomizeDialog();
+}
+
+function MakeAllGhosts()
+{
+    local #var(prefix)ScriptedPawn p;
+    local bool isEndgame4;
+
+    if(!IsOctober()) return;
+
+    if(dxr.localURL~="ENDGAME4" || dxr.localURL~="ENDGAME4REV") {
+        isEndgame4 = true;
+        GotoState('JumpInTheLine');
+    }
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
+        if(#var(prefix)Robot(p) != None) continue;
+        class'DXRHalloween'.static.MakeGhost(p);
+        if(isEndgame4) {
+            p.SetPhysics(PHYS_None);
+            p.SetCollision(false,false,false);
+            p.SetLocation(p.Location+vect(0,0,8));// raise them by half a foot?
+            Level.Game.SetGameSpeed(0.5);
+        }
+    }
 }
 
 function SwapSpeech(ConSpeech a, ConSpeech b)

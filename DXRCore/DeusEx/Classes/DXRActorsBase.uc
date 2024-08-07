@@ -552,6 +552,17 @@ function SetPawnHealth(ScriptedPawn p, int health)
     p.GenerateTotalHealth();
 }
 
+static function HateEveryone(ScriptedPawn sp, optional name except)
+{
+    local ScriptedPawn other;
+    sp.ChangeAlly('Player',-1,True);
+    foreach sp.AllActors(class'ScriptedPawn',other) {
+        if(other.Alliance != except && other.Alliance != sp.Alliance) {
+            sp.ChangeAlly(other.Alliance,-1,True);
+        }
+    }
+}
+
 static function bool PawnIsInCombat(Pawn p)
 {
     local #var(prefix)ScriptedPawn npc;
@@ -1228,15 +1239,15 @@ function ZoneInfo GetZone(vector loc)
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)
 {
-    local PathNode temp[4096];
-    local PathNode p;
+    local NavigationPoint temp[4096];
+    local NavigationPoint p;
     local int i, num, slot;
     local float dist;
 
     if( maxdist <= mindist )
         maxdist = 9999999;
 
-    foreach RadiusActors(class'PathNode', p, maxdist, target) {
+    foreach RadiusActors(class'NavigationPoint', p, maxdist, target) {
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;

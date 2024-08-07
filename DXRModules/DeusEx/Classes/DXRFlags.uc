@@ -13,6 +13,7 @@ const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
 const HordeZombies = 1030;
 const HalloweenMode = 1031;
+const WaltonWareHalloween = 1032;// why didn't they put leap day at the end of October?
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -180,7 +181,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
-    more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
@@ -571,6 +572,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.medbotuses = 0;
             settings.repairbotuses = 0;
             moresettings.grenadeswap = 0;
+            // disable NG+ by default
+            moresettings.newgameplus_curve_scalar = -1;
         } else {
             settings.enemystats /= 2;
             settings.minskill = (settings.minskill + 100) / 2;
@@ -632,6 +635,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.menus_pause = 0;
         // splits overlay
         moresettings.splits_overlay = 1;
+        // disable NG+ by default
+        moresettings.newgameplus_curve_scalar = -1;
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;
@@ -689,6 +694,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return 0;
     if(IsOctoberUnlocked() && slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
+    if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloween;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
     if(!VersionIsStable()) {
@@ -726,6 +732,9 @@ function string GameModeName(int gamemode)
         return "Serious Sam Mode";
     case SpeedrunMode:
         return "Speedrun Mode";
+    case WaltonWareHalloween:
+        if(IsOctoberUnlocked()) return "WaltonWare Halloween";
+        break;
     case WaltonWare:
         return "WaltonWare";
 #ifdef injections
@@ -776,7 +785,7 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3 || gamemode == WaltonWareHalloween;
 }
 
 function bool IsWaltonWareHardcore()
@@ -786,7 +795,7 @@ function bool IsWaltonWareHardcore()
 
 function bool IsHalloweenMode()
 {
-    return gamemode == HalloweenMode || gamemode == HordeZombies;
+    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

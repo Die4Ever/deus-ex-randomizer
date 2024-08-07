@@ -186,8 +186,8 @@ function bool IsOctoberUnlocked()
 {
     // Happy Halloween! unlock gamemode forever and other features
     // or do it by version number? allow if(#defined(debug))?
-    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     if(#defined(debug)) return true;
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     if(VersionOlderThan(VersionNumber(), 3,2,0,0)) return false;
     return Level.Month >= 10 || Level.Year > 2024;
 }

@@ -1079,6 +1079,12 @@ exec function po()
     Level.bPlayersOnly = !Level.bPlayersOnly;
 }
 
+//fast version of EditActor class=classname
+exec function ea(Name ClassName)
+{
+    ConsoleCommand("editactor class=" $ ClassName);
+}
+
 exec function MoveClass(Name ClassName, int x, int y, int z)
 {
     local Actor a;

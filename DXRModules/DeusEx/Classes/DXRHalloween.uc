@@ -63,6 +63,10 @@ function CheckCarcasses()
     }
 
     foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
+        if(#var(prefix)RatCarcass(carc) != None || #var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None) {
+            // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds? cats have an override on the Attacking state
+            continue;
+        }
         for(i=0; i < num_carcs; i++) {
             if(carcs[i] == carc) {
                 break;
@@ -142,36 +146,23 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.SetCollisionSize(sp.CollisionRadius*sp.DrawScale, sp.CollisionHeight*sp.DrawScale);
     sp.Fatness = carc.Fatness;
 
-    //Clear out initial inventory (since that should all be in the carcass, except for native attacks)
+    //Clear out initial inventory (since that should all be in the carcass)
     for (i=0;i<ArrayCount(sp.InitialInventory);i++){
-        if(ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCMelee') ||
-           ClassIsChildOf(sp.InitialInventory[i].Inventory,class'#var(prefix)WeaponNPCRanged')){
-            continue;
-        }
-        switch(sp.InitialInventory[i].Inventory.Default.Mesh){
-            case LodMesh'DeusExItems.InvisibleWeapon':
-            case LodMesh'DeusExItems.TestBox':
-            case None:
-                break; //NPC weapons and NPC weapon ammo
-            default:
-                sp.InitialInventory[i].Inventory=None;
-        }
+        sp.InitialInventory[i].Inventory=None;
     }
 
     sp.InitializePawn();
 
     //Make it hostile to EVERYONE.  This thing has seen the other side
     sp.SetAlliance('Resurrected');
-    sp.ChangeAlly('Player',-1,True);
-    foreach sp.AllActors(class'ScriptedPawn',otherSP){
-        if(otherSP.Alliance != 'MrX') {
-            sp.ChangeAlly(otherSP.Alliance,-1,True);
-        }
-    }
-
+    module.HateEveryone(sp, 'MrX');
     module.RemoveFears(sp);
+    if(#var(prefix)Animal(sp) != None) {
+        #var(prefix)Animal(sp).bFleeBigPawns = false;
+    }
     sp.MinHealth = 0;
     sp.ResetReactions();
+    sp.bCanStrafe = false;// messes with melee attack animations, especially on commandos
 
     //Transfer inventory from carcass back to the pawn
     item = carc.Inventory;
@@ -194,7 +185,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     }
     until (item == None);
 
-    //Give the resurrect guy a zombie swipe (a guaranteed melee weapon)
+    //Give the resurrected guy a zombie swipe (a guaranteed melee weapon)
     module.GiveItem(sp,class'WeaponZombieSwipe');
     sp.bKeepWeaponDrawn=True;
 
@@ -297,4 +288,79 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
 
     // TODO: ensure wall1 is still with us
     return true;
+}
+
+static function MakeGhost(#var(prefix)ScriptedPawn p)
+{
+    p.Style = STY_Translucent;
+    p.ScaleGlow = 0.7;
+    p.bHasShadow = false;
+    p.KillShadow();
+
+    switch(p.Mesh) {
+    case LodMesh'DeusExCharacters.GFM_SuitSkirt':
+    case LodMesh'DeusExCharacters.GFM_SuitSkirt_F':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GFM_Dress':
+        p.MultiSkins[1] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        break;
+
+    case LodMesh'DeusExCharacters.GFM_Trench':
+        p.MultiSkins[2] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GFM_TShirtPants':
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[4] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_Trench':
+    case LodMesh'DeusExCharacters.GM_Trench_F':
+        p.MultiSkins[2] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GMK_DressShirt':
+    case LodMesh'DeusExCharacters.GMK_DressShirt_F':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_Jumpsuit':
+        p.MultiSkins[1] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[5] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses/goggles lens
+        break;
+
+    case LodMesh'DeusExCharacters.GM_DressShirt':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    //case LodMesh'DeusExCharacters.GM_DressShirt_B':
+    case LodMesh'DeusExCharacters.GM_DressShirt_F':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_DressShirt_S':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_Suit':
+        p.MultiSkins[1] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[5] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        //p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+    }
 }
