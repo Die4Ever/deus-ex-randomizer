@@ -13,6 +13,7 @@ const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
 const HordeZombies = 1030;
 const HalloweenMode = 1031;
+const WaltonWareHalloween = 1032;// why didn't they put leap day at the end of October?
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -693,6 +694,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return 0;
     if(IsOctoberUnlocked() && slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
+    if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloween;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
     if(!VersionIsStable()) {
@@ -730,6 +732,9 @@ function string GameModeName(int gamemode)
         return "Serious Sam Mode";
     case SpeedrunMode:
         return "Speedrun Mode";
+    case WaltonWareHalloween:
+        if(IsOctoberUnlocked()) return "WaltonWare Halloween";
+        break;
     case WaltonWare:
         return "WaltonWare";
 #ifdef injections
@@ -780,7 +785,7 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3 || gamemode == WaltonWareHalloween;
 }
 
 function bool IsWaltonWareHardcore()
@@ -790,7 +795,7 @@ function bool IsWaltonWareHardcore()
 
 function bool IsHalloweenMode()
 {
-    return gamemode == HalloweenMode || gamemode == HordeZombies;
+    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
