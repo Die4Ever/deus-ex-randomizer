@@ -155,7 +155,7 @@ simulated function RandoSkillLevelValues(Skill a)
     local float skill_value_wet_dry;
 
     if( #var(prefix)SkillWeaponHeavy(a) != None ) {
-        add_desc = "Over 120% will allow you to move more quickly while carrying a heavy weapon, up to full speed at 170%.";
+        add_desc = "Over 100% will allow you to move more quickly while carrying a heavy weapon, up to full speed at 160%.";
     }
 #ifdef injections
     else if( #var(prefix)SkillDemolition(a) != None ) {

@@ -721,7 +721,7 @@ state PlayerWalking
         {
             weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
             weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) gives +50% skill, equivalent to 150% weapon skill (advanced)
-            weapSkill = (weapSkill - 1.2) / 0.5;// subtract away the lower bound (120%) so it's 0, then divided by the span (upper - lower) so we're on an 0 to 1 scale
+            weapSkill = (weapSkill - 1) / 0.6;// subtract away the lower bound (100%) so it's 0, then divided by the span (upper - lower) so we're on an 0 to 1 scale
             weapSkill = FClamp(weapSkill, 0, 1);
             newSpeed = (newSpeed / 3 * (1 - weapSkill)) + (newSpeed * weapSkill);
         }
