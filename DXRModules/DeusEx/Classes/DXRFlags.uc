@@ -180,7 +180,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
-    more_difficulty_settings[i].newgameplus_curve_scalar = 100;
+    more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
@@ -571,6 +571,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.medbotuses = 0;
             settings.repairbotuses = 0;
             moresettings.grenadeswap = 0;
+            // disable NG+ by default
+            moresettings.newgameplus_curve_scalar = -1;
         } else {
             settings.enemystats /= 2;
             settings.minskill = (settings.minskill + 100) / 2;
@@ -632,6 +634,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.menus_pause = 0;
         // splits overlay
         moresettings.splits_overlay = 1;
+        // disable NG+ by default
+        moresettings.newgameplus_curve_scalar = -1;
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;
