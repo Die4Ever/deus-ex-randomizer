@@ -298,3 +298,78 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
     // TODO: ensure wall1 is still with us
     return true;
 }
+
+static function MakeGhost(#var(prefix)ScriptedPawn p)
+{
+    p.Style = STY_Translucent;
+    p.ScaleGlow = 0.7;
+    p.bHasShadow = false;
+    p.KillShadow();
+
+    switch(p.Mesh) {
+    case LodMesh'DeusExCharacters.GFM_SuitSkirt':
+    case LodMesh'DeusExCharacters.GFM_SuitSkirt_F':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GFM_Dress':
+        p.MultiSkins[1] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        break;
+
+    case LodMesh'DeusExCharacters.GFM_Trench':
+        p.MultiSkins[2] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GFM_TShirtPants':
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[4] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_Trench':
+    case LodMesh'DeusExCharacters.GM_Trench_F':
+        p.MultiSkins[2] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GMK_DressShirt':
+    case LodMesh'DeusExCharacters.GMK_DressShirt_F':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_Jumpsuit':
+        p.MultiSkins[1] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[5] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses/goggles lens
+        break;
+
+    case LodMesh'DeusExCharacters.GM_DressShirt':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    //case LodMesh'DeusExCharacters.GM_DressShirt_B':
+    case LodMesh'DeusExCharacters.GM_DressShirt_F':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_DressShirt_S':
+        p.MultiSkins[3] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+
+    case LodMesh'DeusExCharacters.GM_Suit':
+        p.MultiSkins[1] = Texture'DeusExItems.Skins.PinkMaskTex';// remove legs
+        p.MultiSkins[5] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        //p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';// remove glasses
+        break;
+    }
+}
