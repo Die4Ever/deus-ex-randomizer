@@ -717,13 +717,13 @@ state PlayerWalking
             carriedMass = inHand.Mass;
         newSpeed -= (carriedMass * 2) / (augValue ** 2);
         // adjust player speed according to weapon skill, and AugMuscle
-        if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone)
+        if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone && !bIsWalking)
         {
             weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
             weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) gives +50% skill, equivalent to 150% weapon skill (advanced)
             weapSkill = (weapSkill - 1.2) / 0.5;// subtract away the lower bound (120%) so it's 0, then divided by the span (upper - lower) so we're on an 0 to 1 scale
             weapSkill = FClamp(weapSkill, 0, 1);
-            newSpeed = (defSpeed / 3 * (1 - weapSkill)) + (defSpeed * weapSkill);
+            newSpeed = (newSpeed / 3 * (1 - weapSkill)) + (newSpeed * weapSkill);
         }
 
         // Multiplayer movement adjusters
