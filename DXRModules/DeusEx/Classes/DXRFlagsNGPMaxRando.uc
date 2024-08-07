@@ -54,6 +54,10 @@ simulated function InitMaxRandoSettings()
 //the options available in DXRMenuSetupRando
 simulated function RandomizeSettings(bool forceMenuOptions)
 {
+    local DeusExPlayer p;
+
+    p = player();
+
     info("RandomizeSettings("$string(forceMenuOptions)$")");
 
     // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
@@ -133,6 +137,14 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.aug_value_rando = 100;
 
     settings.health += rng(100) - 50;
+    p.default.HealthHead = settings.Health;
+	p.default.HealthTorso = settings.Health;
+	p.default.HealthLegLeft = settings.Health;
+	p.default.HealthLegRight = settings.Health;
+	p.default.HealthArmLeft = settings.Health;
+	p.default.HealthArmRight = settings.Health;
+	p.default.Health = settings.Health;
+
     MaxRandoVal(settings.energy);
 }
 
