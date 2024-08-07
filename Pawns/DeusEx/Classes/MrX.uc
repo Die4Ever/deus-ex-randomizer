@@ -1,36 +1,158 @@
 class MrX extends GuntherHermann;
 
 var float healthRegen;
+var NavigationPoint nextTarget, farthestStart, closestStart, midStart;
+var float lastMoveTime, lastCheckMoveTime;
+var vector targetDirection;
+var #var(PlayerPawn) player;
 
 static function MrX Create(DXRActorsBase a)
 {
     local vector loc;
-    local MrX m;
+    local MrX x;
+    local int i;
 
     // Mr. X is a singleton
-    foreach a.AllActors(class'MrX', m) {
-        m.Destroy();
+    foreach a.AllActors(class'MrX', x) {
+        x.Destroy();
     }
 
     a.SetSeed("Mr. X");// should this be seeded or not?
-    loc = a.GetRandomPosition(a.player().Location, 16*150, 9999999);
 
-    m = a.Spawn(class'MrX',,, loc);
+    x = None;
+    for(i=0; i<100 && x == None; i++) {
+        loc = a.GetRandomPosition(a.player().Location, 16*150, 999999);
+        x = a.Spawn(class'MrX',,, loc);
+    }
+    if(x != None) {
+        x.player = a.player();
+        x.SetLocation(loc);
+        x.HomeLoc = loc;
+        x.bUseHome = true;
+        x.InitTargetDirection();
+    }
 
-    return m;
+    return x;
 }
 
-/*
+
 function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
-    class'DXRAnimTracker'.static.Create(self, "hat");
+    //class'DXRAnimTracker'.static.Create(self, "hat");
+
+    GetTarget(Location, HomeExtent);
 }
-*/
+
+function InitTargetDirection()
+{
+    local NavigationPoint p;
+    local vector total;
+    local float dist, maxDist, minDist;
+    local int num;
+
+    minDist = 999999;
+    foreach AllActors(class'NavigationPoint', p) {
+        if(p.bPlayerOnly) continue;
+        total += p.Location;
+        num++;
+        dist = VSize(Location - p.Location);
+        if(dist > maxDist) {
+            maxDist = dist;
+            farthestStart = p;
+        }
+        if(dist < minDist) {
+            minDist = dist;
+            closestStart = p;
+        }
+    }
+    targetDirection = total / num;
+    midStart = GetClosestPoint(targetDirection, HomeExtent);
+    targetDirection = Normal(targetDirection-Location);
+    //player.ClientMessage("InitTargetDirection() " $ targetDirection);
+    //player.ClientMessage("InitTargetDirection() " $ closestStart @ midStart @ farthestStart);
+}
+
+function NavigationPoint GetClosestPoint(vector loc, float radius)
+{
+    local float dist, minDist;
+    local NavigationPoint closest, p;
+
+    minDist = 999999;
+    foreach RadiusActors(class'NavigationPoint', p, radius, loc) {
+        if(p.bPlayerOnly) continue;
+        dist = VSize(loc - p.Location);
+        if(dist < minDist) {
+            minDist = dist;
+            closest = p;
+        }
+    }
+    return closest;
+}
+
+function NavigationPoint GetClosestReachablePoint(Actor from, float radius)
+{
+    local float dist, minDist;
+    local NavigationPoint closest, p;
+
+    minDist = 999999;
+    foreach ReachablePathnodes(class'NavigationPoint', p, from, dist) {
+        if(p.bPlayerOnly) continue;
+        if(dist > radius) continue;
+        if(dist < minDist) {
+            minDist = dist;
+            closest = p;
+        }
+    }
+    return closest;
+}
+
+function GetTarget(vector loc, float radius)
+{
+    local NavigationPoint closest;
+
+    closest = GetClosestPoint(loc, radius);
+    if(nextTarget != closest && closest != None) {
+        HomeLoc = closest.Location;
+        bUseHome = true;
+        lastMoveTime = Level.TimeSeconds;
+        nextTarget = closest;
+    }
+}
+
+function UpdateTarget()
+{
+    local float delta, radius;
+    local NavigationPoint p;
+    local vector loc;
+
+    lastCheckMoveTime = Level.TimeSeconds;
+    delta = Level.TimeSeconds - lastMoveTime;
+    loc = HomeLoc + targetDirection * delta * 16;// 1 foot per second?
+    radius = HomeExtent * delta * 0.1;
+
+    //player.ClientMessage("UpdateTarget() HomeLoc: " $ HomeLoc );
+    //player.ClientMessage("UpdateTarget() goal loc: " $ loc );
+    //player.ClientMessage("UpdateTarget() delta: " $ delta );
+
+    GetTarget(loc, radius);
+
+    /*if(VSize(HomeLoc - Location) > HomeExtent && GetStateName()=='Wandering') {
+        p = GetClosestPoint((HomeLoc+Location)/2, HomeExtent);
+        if(p != None) {
+            HomeLoc = p.Location;
+            bUseHome = true;
+        }
+        SetLocation(HomeLoc);
+    }*/
+}
 
 function Tick(float delta)
 {
     Super.Tick(delta);
+
+    LastRenderTime = Level.TimeSeconds;
+    bStasis = false;
 
     healthRegen += delta;
     if(healthRegen > 1) {
@@ -45,6 +167,10 @@ function Tick(float delta)
         EmpHealth = FClamp(EmpHealth + 10, 0, default.EmpHealth);
 #endif
         GenerateTotalHealth();
+    }
+
+    if(Level.TimeSeconds - lastCheckMoveTime > 5) {
+        UpdateTarget();
     }
 }
 
@@ -138,9 +264,11 @@ defaultproperties
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
 
     HearingThreshold=0
-    RandomWandering=0.1
-    Wanderlust=3
-    HomeExtent=100000
+    RandomWandering=1
+    Wanderlust=0.01
+    HomeExtent=5000
+    bUseHome=true
+    bStasis=false
 
     walkAnimMult=0.75
     runAnimMult=0.9
