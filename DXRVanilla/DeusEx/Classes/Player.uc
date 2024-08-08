@@ -185,6 +185,15 @@ exec function ShowMainMenu()
 {
     local DeusExLevelInfo info;
 
+    // DXRando: close multiplayer style skills and augs screens
+
+    if (bBuySkills || bUpgradeAugs) // close the DXMP style skills/augs screens
+    {
+        bBuySkills = false;
+        bUpgradeAugs = false;
+        return;
+    }
+
     // DXRando: we just don't want to do vanilla behavior during the intro (misison 98)
     // escape skips the conversation which still skips the intro anyways
     // the vanilla code would skip the intro here as well even before the conversation started, which could also mean before flags are cleared

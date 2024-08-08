@@ -22,10 +22,6 @@ simulated function BeginPlay()
 
 function Timer()
 {
-    local Actor A;
-    local DeusExMover M;
-    local LifeSupportBase base;
-
     Super.Timer();
 
     // fix bob page exploding

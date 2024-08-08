@@ -64,7 +64,7 @@ function CheckCarcasses()
 
     foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
         if(#var(prefix)RatCarcass(carc) != None || #var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None) {
-            // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds? cats have an override on the Attacking state
+            // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
             continue;
         }
         for(i=0; i < num_carcs; i++) {
