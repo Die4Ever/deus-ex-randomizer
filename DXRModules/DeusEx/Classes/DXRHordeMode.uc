@@ -24,6 +24,8 @@ var config name unlock_doors[8];
 var config name lock_doors[16];
 var config vector starting_location;
 
+var DXRMachines machines;
+
 struct EnemyChances {
     var string type;
     var float difficulty;
@@ -285,22 +287,11 @@ function AnyEntry()
     local DeusExMover d;
     local DXREnemies dxre;
     local Inventory item;
-    local DXRMapVariants mapvariants;
     local int i;
 
     if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
-
-    if(dxr.localURL == "INTRO") {
-        l("moving from " $ dxr.localURL $ " to " $ map_name);
-        mapvariants = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
-        if(mapvariants != None) {
-            map_name = mapvariants.VaryMap(map_name);
-        }
-        Level.Game.SendPlayer(player(), map_name);
-        return;
-    }
-    else if( dxr.localURL != map_name ) {
+    if( dxr.localURL != map_name ) {
         return;
     }
 
@@ -311,6 +302,8 @@ function AnyEntry()
     if( dxre == None ) {
         err("Could not find DXREnemies! This is required for Horde Mode.");
     }
+
+    machines = DXRMachines(dxr.FindModule(class'DXRMachines'));
 
     class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.settings.speedlevel );
     dxre.GiveRandomWeapon(player());
@@ -347,6 +340,19 @@ function AnyEntry()
     SetTimer(1.0, true);
 
     GenerateItems();
+}
+
+function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    local DXRMapVariants mapvariants;
+    local string m;
+
+    mapvariants = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
+    if(mapvariants != None) {
+        p.strStartMap = mapvariants.VaryMap(map_name);
+    } else {
+        p.strStartMap = map_name;
+    }
 }
 
 function Timer()
@@ -422,6 +428,8 @@ function OutOfWaveTick()
 function StartWave()
 {
     local MedicalBot mb;
+    local RepairBot rb;
+    local #var(prefix)Datacube d;
     local #var(DeusExPrefix)Carcass c;
     local int num_carcasses;
     local int num_items;
@@ -429,6 +437,12 @@ function StartWave()
     local Weapon w;
     foreach AllActors(class'MedicalBot', mb) {
         mb.TakeDamage(10000, mb, mb.Location, vect(0,0,0), 'Exploded');
+    }
+    foreach AllActors(class'RepairBot', rb) {
+        rb.TakeDamage(10000, rb, rb.Location, vect(0,0,0), 'Exploded');
+    }
+    foreach AllActors(class'#var(prefix)Datacube', d, 'botdatacube') {
+        d.Destroy();
     }
     foreach AllActors(class'#var(DeusExPrefix)Carcass', c) {
         num_items = 0;
@@ -641,8 +655,7 @@ function GenerateItems()
     SetGlobalSeed("Horde GenerateItems" $ wave);
 
     // always make an augbot
-    medbot = Spawn(class'#var(injectsprefix)MedicalBot',,, GetRandomItemPosition());
-    if(medbot != None) medbot.MakeAugsOnly();
+    machines.SpawnAugbot();
 
     for(i=0;i<items_per_wave;i++) {
         GenerateItem();
@@ -695,6 +708,15 @@ function GenerateItem()
 
     if( num > items_per_wave ) {
         l("already have too many of "$c.name);
+        return;
+    }
+
+    if(c == class'MedicalBot') {
+        machines.SpawnMedbot();
+        return;
+    }
+    if(c == class'RepairBot') {
+        machines.SpawnRepairbot();
         return;
     }
     for(i=0; i<10 && a == None; i++) {

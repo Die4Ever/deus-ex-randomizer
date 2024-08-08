@@ -674,6 +674,10 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.CombatDifficulty *= 0.75;
 #endif
         autosave = 5; // Ironman, autosaves and manual saves disabled
+        // horde mode handles the greenbots itself
+        settings.medbots = 0;
+        settings.repairbots = 0;
+        moresettings.empty_medbots = 0;
     }
     else if(IsHalloweenMode()) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
