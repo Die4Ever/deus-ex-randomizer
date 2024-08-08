@@ -14,20 +14,22 @@ struct AnimOffsets {
 };
 
 #ifdef debug
-var config vector offset;// default offset when no matched animation
-var config float ForceFrame;
-var config bool bFPV;
+var(AnimTracker) config vector offset;// default offset when no matched animation
+var(AnimTracker) config float ForceFrame;
+var(AnimTracker) config bool bFPV;
 
-var config AnimOffsets anim_offsets[16];
-var config string config_part;
+var(AnimTracker) config AnimOffsets anim_offsets[16];
+var(AnimTracker) config string config_part;
 #else
-var vector offset;// default offset when no matched animation
-var float ForceFrame;
-var bool bFPV;
+var(AnimTracker) vector offset;// default offset when no matched animation
+var(AnimTracker) float ForceFrame;
+var(AnimTracker) bool bFPV;
 
-var AnimOffsets anim_offsets[16];
-var string config_part;
+var(AnimTracker) AnimOffsets anim_offsets[16];
+var(AnimTracker) string config_part;
 #endif
+
+var(AnimTracker) bool editing;
 
 static function DXRAnimTracker Create(Pawn owner, string part)
 {
@@ -46,8 +48,8 @@ function Init(string part)
     if(#defined(debug) && part == config_part) return;
 
     for(a=0; a<ArrayCount(anim_offsets); a++) {
-        anim_offsets[a].frames[0] = 0;
-        anim_offsets[a].frames[1] = 999;
+        anim_offsets[a].frames[0] = -1;
+        anim_offsets[a].frames[1] = 2;
     }
     a=0;
 
@@ -123,11 +125,35 @@ function Init(string part)
     if(#defined(debug)) SaveConfig();// write back new values to config
 }
 
+function edit()
+{
+    local int i;
+
+    Mesh = LodMesh'DeusExDeco.Basketball';// about 14 unit radius visually, which can help you judge how much you need to adjust the offsets
+    editing = true;
+
+    for(i=0; i<ArrayCount(anim_offsets); i++) {
+        if(anim_offsets[i].AnimName == Owner.AnimSequence) break;
+        if(anim_offsets[i].AnimName == '') {
+            anim_offsets[i].AnimName = Owner.AnimSequence;
+            break;
+        }
+    }
+
+    ForceFrame = Owner.AnimFrame;
+
+    if(!#defined(debug)) Human(GetPlayerPawn()).ClientMessage("DXRAnimTracker WARNING: not compiled in debug mode!");
+}
+
 simulated function Tick(float deltaTime)
 {
     local vector loc, a_off, b_off;
     local int a, i;
     local float a_frame, b_frame, f;
+
+#ifdef debug
+    if(editing) SaveConfig();
+#endif
 
     if(Owner == None) {
         Destroy();
@@ -139,7 +165,10 @@ simulated function Tick(float deltaTime)
 
     // TODO: handle rotation, probably needs a better default mesh to show it
     for(a=0; a<ArrayCount(anim_offsets); a++) {
-        if(anim_offsets[a].AnimName == '') break;
+        if(anim_offsets[a].AnimName == '') {
+            if(editing) anim_offsets[a].AnimName = Owner.AnimSequence;
+            else break;
+        }
         if(anim_offsets[a].AnimName != Owner.AnimSequence) continue;
 
         for(i=0; i<ArrayCount(anim_offsets[a].frames); i++) {
@@ -156,14 +185,14 @@ simulated function Tick(float deltaTime)
             loc = (a_off * (1.0-f)) + (b_off * f);
         }
 
-        if(#defined(debug)) {
+        if(#defined(debug) && editing) {
             Human(GetPlayerPawn()).ClientMessage(Owner.AnimSequence @ Owner.AnimFrame @ loc);
         }
         ApplyOffset(loc);
         return;
     }
 
-    if(#defined(debug) && Owner.AnimSequence != '') {
+    if(#defined(debug) && Owner.AnimSequence != '' && editing) {
         Human(GetPlayerPawn()).ClientMessage(Owner.AnimSequence @ Owner.AnimFrame);
     }
 
@@ -202,10 +231,7 @@ function ApplyOffset(vector off)
 defaultproperties
 {
     ForceFrame=-1// set dxranimtracker forceframe 0.5 can be very useful
-#ifdef debug
-    Mesh=LodMesh'DeusExDeco.Basketball'// about 14 unit radius visually, which can help you judge how much you need to adjust the offsets
-#else
     Mesh=None
-#endif
     DrawScale=1
+    bAlwaysTick=true
 }

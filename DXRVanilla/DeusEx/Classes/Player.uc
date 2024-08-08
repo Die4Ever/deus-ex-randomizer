@@ -1257,6 +1257,34 @@ exec function Mirror()
     Level.Game.SendPlayer(Self, s);
 }
 
+exec function slowmo(float s)
+{
+    if (!bCheatsEnabled)
+        return;
+    s = FMax(s, 0.0001);// regular slomo cheat only goes down to 0.1, but 0 gives a black screen
+    Level.Game.GameSpeed = s;
+    Level.TimeDilation = s;
+    Level.Game.SetTimer(s, true);
+    if(s == 1) {// slomo always saves the configs but I don't see a point in saving anything except regular speed
+        Level.Game.SaveConfig();
+        Level.Game.GameReplicationInfo.SaveConfig();
+    }
+}
+
+exec function animtrack()
+{// a single command to start work on DXRAnimTracker
+    local DXRAnimTracker a;
+    local int i;
+
+    slowmo(0.1);
+    SetPause(true);
+    ReducedDamageType = 'All';
+    foreach AllActors(class'DXRAnimTracker', a) {
+        a.edit();
+    }
+    ea('DXRAnimTracker');
+}
+
 //========= MUSIC STUFF
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
