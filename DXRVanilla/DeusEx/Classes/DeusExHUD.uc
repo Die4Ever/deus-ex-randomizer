@@ -283,11 +283,11 @@ function DestroyInfoLinkWindow()
 
 function PartialShow(bool bShow)
 {
-    if(!bShow) { // UpdateSettings should take care of most of the showing again
+    if(!bShow) { // UpdateSettings should take care of most of these showing again
         if(belt!=None) belt.Show(bShow);
         if(receivedItems!=None) receivedItems.Show(bShow);
-        if(msgLog!=None) msgLog.Show(bShow);
-        if(infolink!=None) infolink.Show(bShow);
         if(startDisplay!=None) startDisplay.Show(bShow);
     }
+    if(msgLog!=None) msgLog.Show(bShow);
+    if(infolink!=None) infolink.Show(bShow);
 }

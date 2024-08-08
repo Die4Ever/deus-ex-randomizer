@@ -74,10 +74,6 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
     }
 
     _PopWindow(bNoUnpause);
-
-    if(winCount<=0) {
-        ShowHud(True);
-    }
 }
 
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
