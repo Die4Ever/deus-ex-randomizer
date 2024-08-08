@@ -755,6 +755,33 @@ function bool MoveGoalTo(string goalName, int locNumber)
     return false;
 }
 
+function PartialInWorld(Actor a, vector offset, bool onlyIfOutOfWorld)
+{
+    local ScriptedPawn p;
+    local #var(prefix)Vehicles v;
+
+    p = ScriptedPawn(a);
+    v = #var(prefix)Vehicles(a);
+
+    if(p!=None) {
+        warning("PartialInWorld for ScriptedPawns is not implemented yet! " $ a);
+    }
+    else if(v!=None) {
+        if(v.bInWorld && onlyIfOutOfWorld) return;
+        if(v.bInWorld) v.WorldPosition = v.Location;
+        v.bInWorld = false;
+        v.bHidden = false;
+        v.bDetectable = false;
+        v.SetCollision(false, false, false);
+        v.bCollideWorld = false;
+        v.SetPhysics(PHYS_None);
+        v.SetLocation(v.WorldPosition + offset);  // move it partially out of the way
+    }
+    else {
+        warning("PartialInWorld idk what to do with " $ a);
+    }
+}
+
 static function bool IsCloseToRandomStart(DXRando dxr, vector loc)
 {
     local float too_close, dist;
