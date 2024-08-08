@@ -25,8 +25,10 @@ function bool GetNoPause(bool bNoPause) {
     local DXRFlags flags;
 
     foreach parentPawn.AllActors(class'DXRFlags', flags) {
-        if(flags.settings.menus_pause == 0)
+        if(!bNoPause && flags.settings.menus_pause == 0) {
             bNoPause = true;
+            PartialHideHud();
+        }
     }
 
     return bNoPause;
@@ -72,6 +74,10 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
     }
 
     _PopWindow(bNoUnpause);
+
+    if(winCount<=0) {
+        ShowHud(True);
+    }
 }
 
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
@@ -98,6 +104,35 @@ function ConfirmLoadLatest()
 
     msgBox = MessageBox(LoadLatestTitle, LoadLatestMessage, 0, False, Self);
     msgBox.SetDeferredKeyPress(True);
+}
+
+function ShowHud(bool bShow)
+{
+    if(splits!= None) splits.Show(bShow);
+
+    if (hud != None)
+    {
+        if (bShow)
+        {
+            hud.UpdateSettings(DeusExPlayer(parentPawn));
+            hud.Show();
+            hud.PartialShow(true);// DXRando
+            scopeView.ShowView();
+        }
+        else
+        {
+            hud.Hide();
+            scopeView.HideView();
+        }
+    }
+}
+
+function PartialHideHud()
+{
+    if(hud != None) {
+        hud.PartialShow(false);
+    }
+    if(splits!= None) splits.Show(false);
 }
 
 // ----------------------------------------------------------------------
