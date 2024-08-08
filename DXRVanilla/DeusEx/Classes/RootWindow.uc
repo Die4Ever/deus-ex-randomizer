@@ -104,7 +104,8 @@ function ConfirmLoadLatest()
 
 function ShowHud(bool bShow)
 {
-    if(splits!= None) splits.Show(bShow);
+    if(splits!= None && bShow) splits.UpdateVisibility();
+    else if(splits!= None) splits.Hide();
 
     if (hud != None)
     {

@@ -129,6 +129,25 @@ function string ReplaceVariables(string s)
     return s;
 }
 
+function bool CheckDesiredVisiblity()
+{
+    local int curMission;
+
+    if(stats == None || stats.dxr.flags.moresettings.splits_overlay == 0) {
+        return false;
+    }
+
+    if(!enabled) return false;
+
+    curMission = stats.dxr.dxInfo.MissionNumber;
+    if(curMission < 1 || curMission > 15) return false;
+}
+
+function UpdateVisibility()
+{
+    Show(CheckDesiredVisiblity());
+}
+
 function InitStats(DXRStats newstats)
 {
     local int i, t, total, curMission, time;
