@@ -1,6 +1,7 @@
 class DXRandoHUD merges DeusExHUD;
 
 var HUDEnergyDisplay  energy;
+const infolink_and_logs_min_width=950; // 1920x1080 with 2x GUI scaling is 960 width
 
 event InitWindow()
 {
@@ -32,10 +33,10 @@ function ConfigurationChanged()
     local float conHeight;
     local float barkWidth, barkHeight;
     local float recWidth, recHeight, recPosY;
-    local float logTop;
 
     //DXRando:
     local float energyWidth, energyHeight;
+    local float infolinkWidth;
 
     if (ammo != None)
     {
@@ -108,32 +109,33 @@ function ConfigurationChanged()
         activeItems.ConfigureChild(width - itemsWidth, 0, itemsWidth, height - beltHeight);
     }
 
-    // Display the Log in the upper-left corner, to the right of
-    // the hit display.
-
-    if (msgLog != None)
-    {
-        qHeight = msgLog.QueryPreferredHeight(width - hitWidth - itemsWidth - 40);
-        msgLog.ConfigureChild(hitWidth + 20, 10, width - hitWidth - itemsWidth - 40, qHeight);
-
-        if (msgLog.IsVisible())
-            logTop = max(infoTop, 10 + qHeight);
-    }
-
     // Display the infolink to the right of the hit display
-    // and underneath the Log window if it's visible.
-
+    // and underneath the Log window if it's visible. (DXRando: actually no)
     if (infolink != None)
     {
-        infolink.QueryPreferredSize(qWidth, qHeight);
+        infolink.QueryPreferredSize(infolinkWidth, qHeight);
 
-        if ((msgLog != None) && (msgLog.IsVisible()))
-            infolink.ConfigureChild(hitWidth + 20, msgLog.Height + 20, qWidth, qHeight);
-        else
-            infolink.ConfigureChild(hitWidth + 20, 0, qWidth, qHeight);
+        if (msgLog != None && msgLog.IsVisible() && width < infolink_and_logs_min_width) // old yucky vanilla layout
+            infolink.ConfigureChild(hitWidth + 20, msgLog.Height + 20, infolinkWidth, qHeight);
+        else// DXRando: side-by-side infolink with logs
+            infolink.ConfigureChild(hitWidth + 10, 0, infolinkWidth, qHeight);
 
         if (infolink.IsVisible())
             infoTop = max(infoTop, 10 + qHeight);
+    }
+
+    // Display the Log in the upper-left corner, to the right of
+    // the hit display.
+
+    if (msgLog != None && infolink != None && width >= infolink_and_logs_min_width)
+    { // DXRando: side by side infolink and logs
+        qHeight = msgLog.QueryPreferredHeight(width - hitWidth - itemsWidth - 0 - infolinkWidth);
+        msgLog.ConfigureChild(hitWidth + 10 + infolinkWidth, 10, width - hitWidth - itemsWidth - 0 - infolinkWidth, qHeight);
+    }
+    else if (msgLog != None)
+    {
+        qHeight = msgLog.QueryPreferredHeight(width - hitWidth - itemsWidth - 40);
+        msgLog.ConfigureChild(hitWidth + 20, 10, width - hitWidth - itemsWidth - 40, qHeight);
     }
 
     // First-person conversation window
@@ -250,8 +252,8 @@ function HUDInfoLinkDisplay CreateInfoLinkWindow()
 
     infolink = HUDInfoLinkDisplay(NewChild(Class'HUDInfoLinkDisplay'));
 
-    // Hide Log window
-    if ( msgLog != None )
+    // Hide Log window DXRando: or don't
+    if (msgLog != None && width < infolink_and_logs_min_width)
         msgLog.Hide();
 
     infolink.AskParentForReconfigure();
@@ -270,8 +272,12 @@ function DestroyInfoLinkWindow()
         infoLink.Destroy();
 
         // If the msgLog window was visible, show it again
-        if (( msgLog != None ) && ( msgLog.MessagesWaiting() ))
+        if (msgLog != None && msgLog.MessagesWaiting()) {
             msgLog.Show();
+        }
+        if (msgLog != None && msgLog.IsVisible()) {// DXRando: reconfigure the window so the logs can be the proper width again
+            msgLog.AskParentForReconfigure();
+        }
     }
 }
 
