@@ -502,7 +502,7 @@ simulated function string DescriptionLevelExtended(Actor act, int i, out string 
 #endif
 
     else {
-        return Super.DescriptionLevel(act, i, word, val, defaultval);
+        return Super.DescriptionLevelExtended(act, i, word, val, defaultval, shortDisplay);
     }
 }
 

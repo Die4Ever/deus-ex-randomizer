@@ -75,6 +75,9 @@ function ReplaceActors()
         else if( #var(prefix)Trashbag2(a) != None ) {
             ReplaceGenericDecoration(a,class'DXRTrashbag2');
         }
+        else if( #var(prefix)CeilingFan(a) != None ) {
+            ReplaceCeilingFan(#var(prefix)CeilingFan(a));
+        }
         else if( #var(prefix)ComputerPublic(a) != None ) {
             ReplaceComputerPublic(#var(prefix)ComputerPublic(a));
         }
@@ -381,6 +384,22 @@ function ReplacePoolball(#var(prefix)Poolball a)
     n.Skin = a.Skin;
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
+
+    a.Destroy();
+}
+
+function ReplaceCeilingFan(#var(prefix)CeilingFan a)
+{
+    local Actor n;
+
+    n = SpawnReplacement(a, class'DXRCeilingFan');
+
+    ReplaceDeusExDecoration(a,#var(DeusExPrefix)Decoration(n));
+
+    #var(prefix)CeilingFan(n).bHighlight=#var(prefix)CeilingFan(n).Default.bHighlight;
+
+    if(n == None)
+        return;
 
     a.Destroy();
 }

@@ -3141,6 +3141,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "They might look a bit greasy and very mean, but they sure love head pats!  Give those greasels some pets!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetRats":
             return "Get down there and pet enough rats!  Make sure your hands are empty, or you won't be able to pet anything!";
+        case "NotABigFan":
+            return "Turn off enough ceiling fans through the game.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3533,6 +3535,7 @@ defaultproperties
     bingo_options(335)=(event="PetAnimal_Greasel",desc="Green, Greasy, and very pettable (%s)",max=5,missions=50272)
     bingo_options(336)=(event="PetRats",desc="Pat dat rat (%s)",max=25,missions=53118)
 #endif
+    bingo_options(337)=(event="NotABigFan",desc="Not a big fan (%s)",max=20,missions=17244)
 
 
 
