@@ -1,3 +1,4 @@
+#dontcompileif vmd
 class DXRFashionManager extends Inventory;
 
 enum EClothesType

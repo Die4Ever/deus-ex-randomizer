@@ -386,7 +386,7 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 function ExtendedTests()
 {
     local int val, i, oldSeed;
-    local float fval;
+    local float fval, old_scaling;
     local string s;
 
     Super.ExtendedTests();
@@ -394,6 +394,9 @@ function ExtendedTests()
     oldSeed = dxr.seed;
     dxr.seed = 123456;
     SetGlobalSeed("NG+ tests");
+
+    old_scaling = moresettings.newgameplus_curve_scalar;
+    moresettings.newgameplus_curve_scalar = 100;
 
     val = NewGamePlusVal(5, 1.2, 3, 1, 100, False);
     test(val > 5, "NewGamePlusVal 1.2 goes up");
@@ -427,6 +430,8 @@ function ExtendedTests()
 
     fval = NewGamePlusVal(50.0, 1.01, 3, 0, 100, True);
     test(fval > 50.0, "NewGamePlusVal doesn't switch from increasing to decreasing");
+
+    moresettings.newgameplus_curve_scalar = old_scaling;
 
     dxr.SetSeed(oldSeed);
 }
