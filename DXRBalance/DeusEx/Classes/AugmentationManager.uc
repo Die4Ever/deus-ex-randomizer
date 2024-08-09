@@ -143,6 +143,9 @@ simulated function Float CalcEnergyUse(float deltaTime)
     local float f, energyUse, boostedEnergyUse, energyMult, boostMult;
     local Augmentation anAug;
 
+    if(Level.LevelAction != LEVACT_None) return 0;
+    deltaTime = FMin(deltaTime, 0.255);// this is usually approximately 0.25
+
     boostedEnergyUse = 0;
     energyUse = 0;
     energyMult = 1.0;

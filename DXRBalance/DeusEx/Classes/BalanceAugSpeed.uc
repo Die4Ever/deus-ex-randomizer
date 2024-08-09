@@ -15,7 +15,9 @@ simulated function DoActivate()
     if(Player.Energy < useEnergy) {
         Deactivate();
     } else {
-        Player.Energy -= useEnergy;
+        if(Level.LevelAction == LEVACT_None) {
+            Player.Energy -= useEnergy;
+        }
         Player.GroundSpeed *= GetAugLevelValue();
         Player.JumpZ *= GetAugLevelValue();
         if ( Level.NetMode != NM_Standalone )
