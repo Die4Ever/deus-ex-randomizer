@@ -71,6 +71,7 @@ function NeedSave()
     }
     if(autosave_combat>0 || !PawnIsInCombat(player())) {
         autosave_combat = 1;// we're all in on this autosave because of the player rotation
+        Level.LevelAction = LEVACT_Saving;// save game cleans this up when it finishes
         if(!set_player_pos) {
             set_player_pos = true;
             class'DynamicTeleporter'.static.CheckTeleport(player(), coords_mult);
