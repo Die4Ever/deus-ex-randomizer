@@ -44,7 +44,7 @@ event Tick(float deltaSeconds)
     local float energyUse;
 
     if(player != None && player.AugmentationSystem != None) {
-        energyUse = player.AugmentationSystem.CalcEnergyUse(1);
+        energyUse = player.AugmentationSystem.CalcEnergyUse(0.25) * 4;
     }
 
     text.SetText(
