@@ -65,6 +65,8 @@ function SetdxInfo(DeusExLevelInfo i)
         warning("SetdxInfo got None, LevelInfo: "$ Level @ Level.Title);
         return;
     }
+
+    Level.LevelAction = LEVACT_Loading;
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
@@ -90,6 +92,7 @@ function SetdxInfo(DeusExLevelInfo i)
 
 function DXRInit()
 {
+    Level.LevelAction = LEVACT_Loading;
     if(!#defined(hx))
         l("DXRInit has localURL == " $ localURL $ ", flagbase == "$flagbase);
     if( flagbase != None ) return;
@@ -134,6 +137,7 @@ function DXRInit()
 simulated event PreTravel()
 {
     local int i;
+    Level.LevelAction = LEVACT_Loading;
     for(i=0; i<num_modules; i++) {
         modules[i].PreTravel();
         modules[i] = None;
@@ -155,6 +159,7 @@ function CheckConfig()
 {
     local int i;
 
+    Level.LevelAction = LEVACT_Loading;
     if( VersionOlderThan(config_version, 2,6,0,1) ) {
         rando_beaten = 0;
         player.bAskedToTrain = false;
@@ -448,6 +453,8 @@ function DXRTick(float deltaTime)
 {
     local #var(PlayerPawn) pawn;
     local int i;
+
+    Level.LevelAction = LEVACT_Loading;
     SetTimer(0, false);
     if( dxInfo == None )
     {
@@ -479,6 +486,7 @@ function DXRTick(float deltaTime)
 
         Disable('Tick');
         bTickEnabled = false;
+        if(Level.LevelAction == LEVACT_Loading) Level.LevelAction = LEVACT_None;
     }
 }
 
