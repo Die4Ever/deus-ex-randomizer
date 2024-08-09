@@ -43,19 +43,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
         p.bCheatsEnabled = true;
         p.ReducedDamageType = 'All';// god mode
-        //p.AllWeapons();
         p.AllAmmo();
-
-#ifdef injections
-        autosave = DXRAutosave(dxr.FindModule(class'DXRAutosave'));
-        if(autosave == None || !autosave.bNeedSave) {
-            p.ServerSetSloMo(2);
-        } else {
-            autosave.old_game_speed = 2;
-        }
-#else
-        p.ServerSetSloMo(2);
-#endif
     }
 
     //Disable achievements for Revision Rando, as requested
