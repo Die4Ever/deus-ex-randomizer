@@ -939,6 +939,7 @@ function HighlightCenterObjectMain()
 function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetDist)
 {
     local Actor target, smallestTarget;
+    local DeathMarker dm;
     local Vector HitLoc, HitNormal, StartTrace, EndTrace;
     local float minSize;
     local bool bFirstTarget;
@@ -965,6 +966,13 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
     // ScriptedPawns always have precedence, though
     foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
     {
+        if(DeathMarker(target) != None) {
+            if(dm == None && target.CollisionRadius < minSize) {
+                dm = DeathMarker(target);
+                if(bFirstTarget) smallestTargetDist = VSize(Location-HitLoc);
+            }
+            continue;
+        }
         if (IsFrobbable(target) && (target != CarriedDecoration))
         {
             if (target.IsA('ScriptedPawn'))
@@ -990,12 +998,16 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
             }
         }
         else if(LevelInfo(target) != None || Brush(target) != None) {
-            if(bFirstTarget) {
+            if(bFirstTarget && dm==None) {
                 smallestTargetDist = VSize(Location-HitLoc);
                 smallestTarget = Level;
             }
             minSize = -1; // don't allow any actors after this, but do allow Movers
         }
+    }
+
+    if(smallestTarget == None || LevelInfo(target) != None) {
+        return dm;
     }
 
     return smallestTarget;
