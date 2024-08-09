@@ -6,6 +6,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 {
     local float augLevel;
 
+    if(Level.LevelAction != LEVACT_None) return;
+
     if(damageType == 'NanoVirus') {
         augLevel = -1;
         if (AugmentationSystem != None)
@@ -762,6 +764,7 @@ state PlayerWalking
             newSpeed *= 0.65;
 
         GroundSpeed = FMax(newSpeed, 100);
+        if(Level.LevelAction != LEVACT_None) GroundSpeed = 0;
 
         // if we are moving or crouching, we can't lean
         // uncomment below line to disallow leaning during crouch
