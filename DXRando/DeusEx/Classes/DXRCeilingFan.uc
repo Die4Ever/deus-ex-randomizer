@@ -2,6 +2,25 @@ class DXRCeilingFan injects #var(prefix)CeilingFan;
 
 var bool bAlreadyUsed;
 var int adjustRate;
+var int baseAdjustRate;
+var int maxFanSpeed;
+
+function BeginPlay()
+{
+    Super.BeginPlay();
+    InitFanSpeed();
+}
+
+function InitFanSpeed()
+{
+    local int divisor;
+
+    maxFanSpeed = RotationRate.Yaw;
+
+    divisor = 50 + Rand(30); //Some fans are better lubricated than others
+    baseAdjustRate = maxFanSpeed / divisor;
+
+}
 
 function Timer()
 {
@@ -9,8 +28,8 @@ function Timer()
 
     if (RotationRate.Yaw<0 && adjustRate<0){
         RotationRate.Yaw=0; //Only clamp the rotation rate to 0 if it's being slowed down
-    } else if (RotationRate.Yaw>Default.RotationRate.Yaw && adjustRate>0){
-        RotationRate.Yaw=Default.RotationRate.Yaw; //Only clamp the rotation rate to the maximum if it's being sped up
+    } else if (RotationRate.Yaw>maxFanSpeed && adjustRate>0){
+        RotationRate.Yaw=maxFanSpeed; //Only clamp the rotation rate to the maximum if it's being sped up
     } else {
         return;
     }
@@ -26,13 +45,13 @@ function ToggleFan()
 
     if (RotationRate.Yaw > 0 && adjustRate>0){
         turningOn=False; //Fan is on in the process of turning on, so turn it off
-    } else if (RotationRate.Yaw<Default.RotationRate.Yaw && adjustRate<0){
+    } else if (RotationRate.Yaw<maxFanSpeed && adjustRate<0){
         turningOn=True; //Fan is off or in the process of turning off, so turn it on
     } else {
         if (adjustRate==0){ //Fan isn't in a transition state, but isn't within the bounds of the default speeds
             if (RotationRate.Yaw <= 0) { //Fan is off, or rotating the opposite direction.  Start it spinning towards the right way
                 turningOn=True;
-            } else if (RotationRate.Yaw >= Default.RotationRate.Yaw){ //Fan is on, possibly spinning faster than normal
+            } else if (RotationRate.Yaw >= maxFanSpeed){ //Fan is on, possibly spinning faster than normal
                 turningOn=False;
             }
         } else {
@@ -47,15 +66,11 @@ function ToggleFan()
 
     if (turningOn){
         PlaySound(sound'Switch4ClickOn');
-        adjustRate=250; //Default speed of 16384 means this takes 65 timer ticks to adjust
+        adjustRate=baseAdjustRate; //Default speed of 16384 means this takes 65 timer ticks to adjust
         if (motor!=None){motor.AmbientSound=motor.Default.AmbientSound;}
     } else {
         PlaySound(sound'Switch4ClickOff');
-        if (RotationRate.Yaw > Default.RotationRate.Yaw){
-            adjustRate = -(RotationRate.Yaw / 65); //Calculate a new adjust rate to bring the speed down in the same time
-        } else {
-            adjustRate=-250;
-        }
+        adjustRate=-baseAdjustRate;
         if (motor!=None){motor.AmbientSound=None;}
     }
 
@@ -84,4 +99,6 @@ defaultproperties
 {
      bHighlight=True
      adjustRate=0
+     baseAdjustRate=250
+     maxFanSpeed=16384
 }
