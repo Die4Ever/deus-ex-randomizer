@@ -654,7 +654,6 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Final_Page02", bFemale);         // Barely a scratch.
             MarkConvPlayed("DL_elevator", bFemale);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
             MarkConvPlayed("DL_conveyor_room", bFemale);        // Page is further down.  Find the elevator.
-            MarkConvPlayed("M15MeetEverett", bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             flagbase.SetBool('MS_EverettAppeared',true,,-1);
             AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
             // fallthrough
