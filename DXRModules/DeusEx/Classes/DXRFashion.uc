@@ -11,7 +11,6 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     Super.PlayerAnyEntry(p);
 
     isFemale = dxr.flagbase.GetBool('LDDPJCIsFemale');
-    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 
     if(isFemale) {
         info("DXRFashion isFemale, Level.Game.Class.Name == " $ Level.Game.Class.Name);
@@ -20,7 +19,8 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     f=class'DXRFashionManager'.static.GiveItem(p);
 
     info("got DXRFashion_LastUpdate: "$lastUpdate);
-    if (f.lastUpdate < dxr.dxInfo.MissionNumber || f.lastUpdate > dxr.dxInfo.MissionNumber + 2) {
+    if ((class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags))
+        && (f.lastUpdate < dxr.dxInfo.MissionNumber || f.lastUpdate > dxr.dxInfo.MissionNumber + 2)) {
         f.RandomizeClothes(player());
     }
 

@@ -45,7 +45,15 @@ function Frob(actor Frobber, Inventory frobWith)
             return;
 
         if (fashion!=None) {
-            fashion.RandomizeClothes(p);
+            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                fashion.RandomizeClothes(p);
+            } else {
+                if (fashion.HasSkinOverrides()){
+                    fashion.ClearSkinOverrides();
+                } else {
+                    fashion.RandomizeClothes(p);
+                }
+            }
             fashion.GetDressed();
 
             if (camera != None && camera.IsFirstPersonGame() && p.bBehindView == False && !dxr.flags.IsSpeedrunMode()) {

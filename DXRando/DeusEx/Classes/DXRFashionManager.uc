@@ -399,6 +399,43 @@ simulated function HandleSkirtLegs(Texture faceTex, EOutfitType outfit, out Text
     }
 }
 
+simulated function ClearSkinOverrides()
+{
+    curOutfit[cPLAYER].skinOverride0="";
+    curOutfit[cPLAYER].skinOverride1="";
+    curOutfit[cPLAYER].skinOverride2="";
+    curOutfit[cPLAYER].skinOverride3="";
+    curOutfit[cPLAYER].skinOverride4="";
+    curOutfit[cPLAYER].skinOverride5="";
+    curOutfit[cPLAYER].skinOverride6="";
+    curOutfit[cPLAYER].skinOverride7="";
+    curOutfit[cPLAYER].curOutfit=OT_Trench;
+
+    curOutfit[cPAUL].skinOverride0="";
+    curOutfit[cPAUL].skinOverride1="";
+    curOutfit[cPAUL].skinOverride2="";
+    curOutfit[cPAUL].skinOverride3="";
+    curOutfit[cPAUL].skinOverride4="";
+    curOutfit[cPAUL].skinOverride5="";
+    curOutfit[cPAUL].skinOverride6="";
+    curOutfit[cPAUL].skinOverride7="";
+    curOutfit[cPAUL].curOutfit=OT_Trench;
+}
+
+//Checks the player for any skin overrides
+simulated function bool HasSkinOverrides()
+{
+    if (curOutfit[cPLAYER].skinOverride0!="") return True;
+    if (curOutfit[cPLAYER].skinOverride1!="") return True;
+    if (curOutfit[cPLAYER].skinOverride2!="") return True;
+    if (curOutfit[cPLAYER].skinOverride3!="") return True;
+    if (curOutfit[cPLAYER].skinOverride4!="") return True;
+    if (curOutfit[cPLAYER].skinOverride5!="") return True;
+    if (curOutfit[cPLAYER].skinOverride6!="") return True;
+    if (curOutfit[cPLAYER].skinOverride7!="") return True;
+    return False;
+}
+
 simulated function PullSkinOverride(CurrentOutfit current, out Texture overrides[8])
 {
     local int i;
