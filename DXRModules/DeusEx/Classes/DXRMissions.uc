@@ -757,6 +757,7 @@ function bool MoveGoalTo(string goalName, int locNumber)
 
 function PartialInWorld(Actor a, vector offset, bool onlyIfOutOfWorld)
 {
+    #ifndef hx
     local ScriptedPawn p;
     local #var(prefix)Vehicles v;
 
@@ -780,6 +781,7 @@ function PartialInWorld(Actor a, vector offset, bool onlyIfOutOfWorld)
     else {
         warning("PartialInWorld idk what to do with " $ a);
     }
+    #endif
 }
 
 static function bool IsCloseToRandomStart(DXRando dxr, vector loc)
