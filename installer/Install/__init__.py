@@ -126,10 +126,31 @@ def CheckVulkan() -> bool:
     try:
         info('CheckVulkan')
         ret = subprocess.run(['vulkaninfo', '--summary'], text=True, capture_output=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
-        debug(ret.stdout)
+        out = ret.stdout
+        debug(out)
         debug(ret.stderr)
         info('CheckVulkan got:', not ret.returncode)
-        return not ret.returncode
+        if ret.returncode:
+            return False
+        found_nvidia = False
+        found_amd = False
+        found_intel = False
+        try: # try to detect GPU brands
+            for m in re.finditer(r'deviceName\s*=\s*(.*)\n', out):
+                deviceName = m.group(1)
+                info(deviceName)
+                if 'NVIDIA' in deviceName:
+                    found_nvidia = True
+                elif 'Intel' in deviceName:
+                    found_intel = True
+                elif 'AMD' in deviceName:
+                    found_amd = True
+            if not found_nvidia and not found_amd:
+                info("did not find Nvidia or AMD GPU, defaulting to no DXVK")
+                return False # https://github.com/Die4Ever/deus-ex-randomizer/issues/898
+        except Exception as e:
+            info(e)
+        return True
     except Exception as e:
         info(e)
         return False
