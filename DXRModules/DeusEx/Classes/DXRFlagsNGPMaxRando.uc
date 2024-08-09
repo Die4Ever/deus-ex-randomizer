@@ -244,7 +244,6 @@ function NewGamePlus()
     p.DeleteAllNotes();
     p.DeleteAllGoals();
     p.ResetConversationHistory();
-    p.RestoreAllHealth();
     ClearDataVaultImages();
 
     l("NewGamePlus skill points was "$p.SkillPointsAvail);

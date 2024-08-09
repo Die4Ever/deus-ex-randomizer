@@ -243,7 +243,7 @@ static function string GetStartMap(Actor a, int start_map_val)
     return startMap;
 }
 
-function bool IsStartMap()
+static function bool _IsStartMap(DXRando dxr)
 {
     local string startMapName;
 
@@ -251,6 +251,11 @@ function bool IsStartMap()
     startMapName = Left(startMapName, class'DXRMapVariants'.static.SplitMapName(startMapName));
 
     return startMapName ~= dxr.localURL;
+}
+
+function bool IsStartMap()
+{
+    return _IsStartMap(dxr);
 }
 
 static function string _GetStartMap(int start_map_val, optional out string friendlyName, optional out int bShowInMenu)
