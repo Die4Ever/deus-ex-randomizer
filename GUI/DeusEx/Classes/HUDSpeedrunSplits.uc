@@ -133,7 +133,7 @@ function bool CheckDesiredVisiblity()
 {
     local int curMission;
 
-    if(stats == None || stats.dxr.flags.moresettings.splits_overlay == 0) {
+    if(stats == None || stats.dxr == None || stats.dxr.flags.moresettings.splits_overlay == 0) {
         return false;
     }
 
