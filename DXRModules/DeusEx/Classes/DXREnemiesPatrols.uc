@@ -151,6 +151,7 @@ function bool _GivePatrol(ScriptedPawn pawn)
         prev = p;
         s = string(pawn.name) $ "_" $ (i++);
         p = CreatePoint(quadrants_farthest[q], StringToName(s));
+        if(p==None) continue;
 
         if(first==None)
             first = p;
