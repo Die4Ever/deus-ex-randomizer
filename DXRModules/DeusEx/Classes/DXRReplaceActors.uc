@@ -397,6 +397,7 @@ function ReplaceCeilingFan(#var(prefix)CeilingFan a)
     ReplaceDeusExDecoration(a,#var(DeusExPrefix)Decoration(n));
 
     #var(prefix)CeilingFan(n).bHighlight=#var(prefix)CeilingFan(n).Default.bHighlight;
+    #var(prefix)CeilingFan(n).RotationRate.Yaw=a.RotationRate.Yaw; //Copy the rotation speed across
 
     if(n == None)
         return;
