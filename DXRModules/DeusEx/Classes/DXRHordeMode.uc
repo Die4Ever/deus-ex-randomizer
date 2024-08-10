@@ -318,8 +318,13 @@ function AnyEntry()
     }
     foreach AllActors(class'Actor', a) {
         for(i=0; i < ArrayCount(remove_objects); i++) {
-            if( a.IsA(remove_objects[i]) && MrX(a)==None )// don't delete Mr X...
+            if( ! a.IsA(remove_objects[i])) continue;
+            if(#var(prefix)MapExit(a)!=None && DynamicMapExit(a)==None) {
+                a.Tag='';// disable don't destroy, destroying messes with the navigationpoints graph
+                a.SetCollision(false,false,false);
+            } else if(MrX(a)==None) {// don't delete Mr X...
                 a.Destroy();
+            }
         }
     }
 
@@ -381,7 +386,7 @@ function InWaveTick()
         if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
         p.LastRenderTime = Level.TimeSeconds;
         p.bStasis = false;
-        dist = VSize(p.Location-player().Location);
+        dist = p.DistanceFromPlayer;
         if( dist > popin_dist ) {
             ratio = dist/popin_dist;
             p.GroundSpeed = p.class.default.GroundSpeed * ratio*ratio;
@@ -435,6 +440,7 @@ function StartWave()
     local int num_items;
     local Inventory item;
     local Weapon w;
+
     foreach AllActors(class'MedicalBot', mb) {
         mb.TakeDamage(10000, mb, mb.Location, vect(0,0,0), 'Exploded');
     }
@@ -484,24 +490,26 @@ function EndWave()
 function GetOverHere()
 {
     local ScriptedPawn p;
+    local #var(PlayerPawn) plyr;
     local int i, time_overdue;
     local vector loc;
     local float dist, maxdist;
 
     time_overdue = time_in_wave-time_before_teleport_enemies;
     maxdist = popin_dist - float(time_overdue*5);
+    plyr = player();
     foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
         p.LastRenderTime = Level.TimeSeconds;
         p.bStasis = false;
-        dist = VSize(player().Location-p.Location);
-        if( (time_in_wave+i) % 7 == 0 && p.CanSee(player()) == false && dist > maxdist ) {
-            loc = GetCloserPosition(player().Location, p.Location, maxdist*2);
+        dist = p.DistanceFromPlayer;
+        if( (time_in_wave+i) % 7 == 0 && p.CanSee(plyr) == false && dist > maxdist ) {
+            loc = GetCloserPosition(plyr.Location, p.Location, maxdist*2);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
             p.SetLocation( loc );
         }
-        else if( (time_in_wave+i) % 13 == 0 && p.CanSee(player()) == false && dist > maxdist*2 ) {
-            loc = GetRandomPosition(player().Location, maxdist, dist);
+        else if( (time_in_wave+i) % 13 == 0 && p.CanSee(plyr) == false && dist > maxdist*2 ) {
+            loc = GetRandomPosition(plyr.Location, maxdist, dist);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
             p.SetLocation(loc);

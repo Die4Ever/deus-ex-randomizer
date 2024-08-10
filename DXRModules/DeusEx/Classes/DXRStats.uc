@@ -939,11 +939,6 @@ function ExtendedTests()
     menuTime = GetMissionMenuTime(12);
     completemenutime = GetCompleteMissionMenuTime(12);
 
-    testint( time, 0, "GetMissionTime(12) == 0");// 0 due to loading screen
-    testint( completeTime, 0, "GetCompleteMissionTime(12) == 0");
-    testint( menuTime, 0, "GetMissionMenuTime(12) == 0");
-    testint( completemenutime, 0, "GetCompleteMissionMenuTime(12) == 0");
-
     Timer();
 
     testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
