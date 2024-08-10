@@ -104,8 +104,7 @@ function ConfirmLoadLatest()
 
 function ShowHud(bool bShow)
 {
-    if(splits!= None && bShow) splits.UpdateVisibility();
-    else if(splits!= None) splits.Hide();
+    if(splits!= None) splits.UpdateVisibility();// don't hide the splits for conversations or helicopter scenes
 
     if (hud != None)
     {
