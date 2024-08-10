@@ -332,6 +332,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)DataLinkTrigger dt;
     local #var(prefix)Switch1 button;
     local #var(DeusExPrefix)Mover door;
+    local DynamicLight light;
+    local vector locv;
+    local rotator rot;
 
     if (g.name=="Jock and Tong") {
         foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'TongGO') {
@@ -366,7 +369,16 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         cp.TextPackage = "#var(package)";
     }
     else if (g.name=="Backup Power Keypad") {
-        GlowUp(g.actors[0].a, 255);
+        locv = g.actors[0].a.Location;
+        rot = g.actors[0].a.Rotation;
+        locv += vect(16,0,0) >> rot;
+        light = Spawn(class'DynamicLight',,, locv);
+        light.LightSaturation = 0;
+        light.LightType=LT_Steady;
+        light.LightEffect=LE_None;
+        light.LightBrightness=160;
+        light.LightHue=255;
+        light.LightRadius=8;
     }
     else if (g.name=="Launch Command Computer" && Loc.name != "Launch Command") {
         foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
