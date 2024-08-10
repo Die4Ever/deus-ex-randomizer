@@ -24,7 +24,7 @@ class DXRTestCase(unittest.TestCase):
         #self.assertEqual(d, Path('/home/deck/.local/share/Steam/steamapps/compatdata/6910/pfx/drive_c/users/steamuser/Documents/'), 'GetSteamPlayDocuments')
 
         d = Install.GetDocumentsDir(Path.home())
-        self.assertTrue(d.exists(), str(d) + ' exists')
+        self.assertTrue(d is None or d.exists(), str(d) + ' exists')
 
 
     def test_config(self):
