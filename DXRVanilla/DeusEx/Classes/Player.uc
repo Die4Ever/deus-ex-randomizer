@@ -927,7 +927,7 @@ function HighlightCenterObjectMain()
     //
     // note that this means we don't wait for the full 100ms vanilla duration if the player is
     // rapidly changing frob target.
-    if ((FrobTime < 0.1) && (FrobTarget != None) && (target == None))
+    if (FrobTime < 0.1 && FrobTarget != None && target == None && !FrobTarget.bDeleteMe)
     {
         return;
     }
