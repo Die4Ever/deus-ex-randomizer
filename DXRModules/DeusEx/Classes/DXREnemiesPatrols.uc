@@ -172,14 +172,19 @@ function bool _GivePatrol(ScriptedPawn pawn)
     first.SetMyGuy(pawn);
     LinkPoints(p, first);
 
+    ApplyDynamicPatrol(pawn, first);
+
+    l("GivePatrol "$pawn$" end "$p@p.Tag$" linking back to "$first@first.Tag);
+    return true;
+}
+
+static function ApplyDynamicPatrol(ScriptedPawn pawn, DynamicPatrolPoint first)
+{
     pawn.SetOrders('Patrolling', first.tag, false);
     pawn.FollowOrders(false);
     // skip past the Begin section of the state, because that sets destPoint to None and tries to search inside of a native list of NavigationPoints
     pawn.GotoState('Patrolling', 'Patrol');
     pawn.destPoint = first;
-
-    l("GivePatrol "$pawn$" end "$p@p.Tag$" linking back to "$first@first.Tag);
-    return true;
 }
 
 function LinkPoints(DynamicPatrolPoint prev, DynamicPatrolPoint next)
