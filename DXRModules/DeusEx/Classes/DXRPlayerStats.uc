@@ -94,7 +94,7 @@ function CapHealth(out int health, int d)
 
 simulated function FirstEntry()
 {
-    if(class'DXRStartMap'.static._IsStartMap(dxr) || dxr.dxInfo.missionNumber == 0) {
+    if((class'DXRStartMap'.static._IsStartMap(dxr) && dxr.flags.autosave != 5) || dxr.dxInfo.missionNumber == 0) {
         player().RestoreAllHealth();
     }
 }
