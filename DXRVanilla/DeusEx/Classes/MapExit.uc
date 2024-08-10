@@ -55,6 +55,5 @@ function LoadMap(Actor Other)
 
 defaultproperties
 {
-    bStatic=false
     used=-999
 }
