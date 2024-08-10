@@ -190,7 +190,7 @@ def GetSourcePath() -> Path:
     raise RuntimeError('failed to GetSourcePath()', p)
 
 
-def GetSteamPlayDocuments(system:Path) -> Path:
+def GetSteamPlayDocuments(system:Path):
     if 'Steam' in system.parts:
         idx = system.parts.index('Steam')
         idx = len(system.parents) - idx - 1 # parents array is backwards
