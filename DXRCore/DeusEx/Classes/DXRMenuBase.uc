@@ -117,6 +117,7 @@ function DXRando GetDxr()
     foreach player.AllActors(class'DXRando', dxr) { break; }
 #else
     dxr = player.Spawn(class'DXRando', None);
+    dxr.Disable('Tick');
 #endif
     log("GetDxr got "$dxr);
     dxr.CrcInit();
