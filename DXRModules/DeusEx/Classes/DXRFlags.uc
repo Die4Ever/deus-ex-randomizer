@@ -713,6 +713,9 @@ function string GameModeName(int gamemode)
         return "Entrance Randomization";
     case HordeMode:
         return "Horde Mode";
+    case HordeZombies:
+        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
+        break;
 #endif
     case RandoLite:
         return "Randomizer Lite";
@@ -737,9 +740,6 @@ function string GameModeName(int gamemode)
         return "WaltonWare Hardcore";
     case WaltonWarex3:
         return "WaltonWare x3";
-    case HordeZombies:
-        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
-        break;
     case HalloweenMode:
         if(IsOctoberUnlocked()) return "Halloween Mode (Alpha)";// maybe needs a better name
         break;
