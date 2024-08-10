@@ -233,6 +233,7 @@ def _GetAltSteamPlayDocuments(p):
 
 def GetDocumentsDir(system:Path) -> Path:
     if not IsWindows():
+        p = None
         if 'Steam' in system.parts:
             p = GetSteamPlayDocuments(system)
             Mkdir(p, True, True)

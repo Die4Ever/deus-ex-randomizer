@@ -118,8 +118,11 @@ class DXRTestCase(unittest.TestCase):
             }, 'ReadConfig test')
 
         # test backup function, from class and from instance
+        print("\n\ntesting Config.BackupFile")
         Config.Config.BackupFile(Path('fakepaththatshouldneverexist/plz/0451.ini'))
+        print("\n\ntesting Config.BackupFile 2")
         c.BackupFile(Path('fakepaththatshouldneverexist/plz/0451.ini'))
+        print("")
 
 if __name__ == "__main__":
     unittest.main(verbosity=9, warnings="error", failfast=True)
