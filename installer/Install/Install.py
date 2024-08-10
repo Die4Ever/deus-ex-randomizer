@@ -37,6 +37,27 @@ def UnattendedInstall(installpath:str, downloadmirrors):
 
     ret = Install(p, settings, globalsettings)
 
+def ExtractAll(path:str):
+    if path:
+        out = Path(path).expanduser()
+    else:
+        out = Path()
+    info("extracting to", out.absolute())
+    assert out.exists()
+    source = GetSourcePath()
+    Extract(source/'3rdParty', out/'3rdParty')
+    for f in (GetPackagesPath('')).glob('*.u'):
+        CopyTo(f, out/f.name)
+
+
+def Extract(source:Path, out:Path):
+    if source.is_file():
+        Mkdir(out.parent, True, True)
+        CopyTo(source, out)
+        return
+    for f in source.glob('*'):
+        Extract(f, out/f.name)
+
 
 def DetectFlavors(exe:Path) -> list:
     assert exe.exists(), str(exe)

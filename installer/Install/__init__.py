@@ -196,16 +196,50 @@ def GetSteamPlayDocuments(system:Path) -> Path:
         idx = len(system.parents) - idx - 1 # parents array is backwards
         p = system.parents[idx]
         info('GetSteamPlayDocuments() == ', p)
+        if not (p/'steamapps'/'compatdata').exists():
+            return None
         p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
         info('GetSteamPlayDocuments() == ', p)
         return p
+    return None
+
+
+def GetAltSteamPlayDocuments(): # game and steam are in different folders or drives, just make a guess for now...
+    checks = [
+        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam',
+        Path.home() /'.steam'/'steam',
+        Path.home() /'.steam',
+        Path.home() /'.local'/'share'/'Steam'
+    ]
+    for p in checks:
+        docs = _GetAltSteamPlayDocuments(p)
+        if docs:
+            return docs
+    return Path.home()
+
+
+def _GetAltSteamPlayDocuments(p):
+    if not p.exists():
+        return None
+    if not (p/'steam.sh').exists():
+        return None
+    compatdata = p/'steamapps'/'compatdata'
+    if not compatdata.exists():
+        return None
+    docs = compatdata/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
+    info('_GetAltSteamPlayDocuments == ', docs)
+    return docs
+
 
 def GetDocumentsDir(system:Path) -> Path:
     if not IsWindows():
         if 'Steam' in system.parts:
             p = GetSteamPlayDocuments(system)
             Mkdir(p, True, True)
-        else:
+        if (not p) and 'steamapps' in system.parts:
+            p = GetAltSteamPlayDocuments()
+            Mkdir(p, True, True)
+        if not p:
             p = Path.home()
         assert p.exists(), str(p)
         return p
@@ -233,6 +267,7 @@ def getDefaultPath():
         Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
         Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
         Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.steam'/'steam'/'steamapps'/'common'/'Deus Ex'/'System', # not sure if this ever happens but the one above with different capitalization had me suspicious
         Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
     ]
     p:Path
