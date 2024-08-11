@@ -551,7 +551,16 @@ function PreFirstEntryMapFixes()
             ft.bTrigger=True;
             ft.FlagName='M06JCHasDate';
             ft.flagValue=True;
+            ft.Event='CheckResumeDateOver';
+            ft.SetCollision(false,false,false);
+
+            ft=Spawn(class'#var(prefix)FlagTrigger',, 'CheckResumeDateOver');
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.FlagName='M06DateDone';
+            ft.flagValue=false;
             ft.Event='ResumeDate';
+            ft.SetCollision(false,false,false);
         }
 
         break;
