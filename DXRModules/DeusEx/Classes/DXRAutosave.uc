@@ -213,13 +213,12 @@ function doAutosave()
     }
 
     saveSlot = -3;
-    saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
+    saveName = "DXR " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flags.f.GetInt('Rando_lastmission');
 
     isDifferentMission = lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
     if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
         saveSlot = 0;
-        saveName = "DXR " $ dxr.seed $ ", Mission " $ dxr.dxInfo.MissionNumber $ ": " $ dxr.dxInfo.MissionLocation;
     }
     dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
