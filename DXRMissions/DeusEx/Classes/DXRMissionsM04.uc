@@ -16,7 +16,7 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("04_NYC_NSFHQ", "Rooftop", GOAL_TYPE1 | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
 
     AddGoal("04_NYC_NSFHQ", "Transmitter Computer", GOAL_TYPE2, 'ComputerPersonal4', PHYS_Falling);
-    //AddGoalLocation("04_NYC_NSFHQ", "Rooftop Secure Room", GOAL_TYPE2 | VANILLA_GOAL, vect(116.650787, 400.400024, 1032.054199), rot(0,49384,0));
+    AddGoalLocation("04_NYC_NSFHQ", "Rooftop Secure Room", GOAL_TYPE2 | VANILLA_GOAL, vect(116.650787, 400.400024, 1032.054199), rot(0,49384,0));
 
     goal = AddGoal("04_NYC_BatteryPark", "Anna Navarre", GOAL_TYPE3, 'AnnaNavarre0', PHYS_Falling);
     AddGoalActor(goal, 1, 'AllianceTrigger11', PHYS_None); //AnnaAttacksJC
