@@ -535,7 +535,8 @@ function Area51_CountBlueFusion()
     f = dxr.flagbase;
 
     required = 4;
-    if(#defined(vanilla) && dxr.flags.settings.goals > 0) required = 3;
+    //SetSeed("Area51_CountBlueFusion");
+    //if(chance_single(50) && #defined(vanilla) && dxr.flags.settings.goals > 0) required = 3;
     remaining = required;
 
     if (f.GetBool('Node1_Frobbed'))
@@ -548,7 +549,7 @@ function Area51_CountBlueFusion()
         remaining--;
 
     UpdateReactorGoal(remaining, required);
-    if (remaining != storedReactorCount && remaining < required) {// don't alert the player at the start of the level
+    if (remaining != storedReactorCount) {
         // A fusion reactor has been shut down!
         storedReactorCount = remaining;
 
@@ -609,4 +610,9 @@ function bool UpdateReactorGoal(int count, int required)
         return true;
     }
     return false;
+}
+
+defaultproperties
+{
+    storedReactorCount=-1
 }

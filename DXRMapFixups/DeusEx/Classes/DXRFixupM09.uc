@@ -626,3 +626,8 @@ function ToggleFan()
         }
     }
 }
+
+defaultproperties
+{
+    storedWeldCount=-1
+}
