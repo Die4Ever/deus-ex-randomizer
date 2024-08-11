@@ -1,10 +1,8 @@
 class MrX extends GuntherHermann;
 
-var float healthRegen;
-var NavigationPoint nextTarget, farthestStart, closestStart, midStart;
-var float lastMoveTime, lastCheckMoveTime;
-var vector targetDirection;
+var float healthRegenTimer;
 var #var(PlayerPawn) player;
+var int FleeHealth;// like MinHealth, but we need more control
 
 static function MrX Create(DXRActorsBase a)
 {
@@ -24,127 +22,50 @@ static function MrX Create(DXRActorsBase a)
         loc = a.GetRandomPosition(a.player().Location, 16*150, 999999);
         x = a.Spawn(class'MrX',,, loc);
     }
-    if(x != None) {
-        x.player = a.player();
-        x.SetLocation(loc);
-        x.HomeLoc = loc;
-        x.bUseHome = true;
-        x.InitTargetDirection();
-    }
+    if(x == None) return None;
+
+    x.player = a.player();
+    x.HomeLoc = loc;
+    x.bUseHome = true;
 
     return x;
 }
-
 
 function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
     //class'DXRAnimTracker'.static.Create(self, "hat");
-
-    GetTarget(Location, HomeExtent);
 }
 
-function InitTargetDirection()
+function InitializePawn()
 {
-    local NavigationPoint p;
-    local vector total;
+    local NavigationPoint p, farthest, closest;
     local float dist, maxDist, minDist;
-    local int num;
+    local int i;
+    local DXREnemiesPatrols patrols;
+
+    Super.InitializePawn();
 
     minDist = 999999;
     foreach AllActors(class'NavigationPoint', p) {
         if(p.bPlayerOnly) continue;
-        total += p.Location;
-        num++;
         dist = VSize(Location - p.Location);
         if(dist > maxDist) {
             maxDist = dist;
-            farthestStart = p;
+            farthest = p;
         }
-        if(dist < minDist) {
-            minDist = dist;
-            closestStart = p;
-        }
-    }
-    targetDirection = total / num;
-    midStart = GetClosestPoint(targetDirection, HomeExtent);
-    targetDirection = Normal(targetDirection-Location);
-    //player.ClientMessage("InitTargetDirection() " $ targetDirection);
-    //player.ClientMessage("InitTargetDirection() " $ closestStart @ midStart @ farthestStart);
-}
-
-function NavigationPoint GetClosestPoint(vector loc, float radius)
-{
-    local float dist, minDist;
-    local NavigationPoint closest, p;
-
-    minDist = 999999;
-    foreach RadiusActors(class'NavigationPoint', p, radius, loc) {
-        if(p.bPlayerOnly) continue;
-        dist = VSize(loc - p.Location);
         if(dist < minDist) {
             minDist = dist;
             closest = p;
         }
     }
-    return closest;
-}
 
-function NavigationPoint GetClosestReachablePoint(Actor from, float radius)
-{
-    local float dist, minDist;
-    local NavigationPoint closest, p;
+    foreach AllActors(class'DXREnemiesPatrols', patrols) { break; }
 
-    minDist = 999999;
-    foreach ReachablePathnodes(class'NavigationPoint', p, from, dist) {
-        if(p.bPlayerOnly) continue;
-        if(dist > radius) continue;
-        if(dist < minDist) {
-            minDist = dist;
-            closest = p;
-        }
+    dist = VSize(closest.Location - farthest.Location);
+    for(i=0; i<10; i++) {
+        if(patrols._GivePatrol(self, dist, 0.5, 1.5, 1600, 0, true)) return;
     }
-    return closest;
-}
-
-function GetTarget(vector loc, float radius)
-{
-    local NavigationPoint closest;
-
-    closest = GetClosestPoint(loc, radius);
-    if(nextTarget != closest && closest != None) {
-        HomeLoc = closest.Location;
-        bUseHome = true;
-        lastMoveTime = Level.TimeSeconds;
-        nextTarget = closest;
-    }
-}
-
-function UpdateTarget()
-{
-    local float delta, radius;
-    local NavigationPoint p;
-    local vector loc;
-
-    lastCheckMoveTime = Level.TimeSeconds;
-    delta = Level.TimeSeconds - lastMoveTime;
-    loc = HomeLoc + targetDirection * delta * 16;// 1 foot per second?
-    radius = HomeExtent * delta * 0.1;
-
-    //player.ClientMessage("UpdateTarget() HomeLoc: " $ HomeLoc );
-    //player.ClientMessage("UpdateTarget() goal loc: " $ loc );
-    //player.ClientMessage("UpdateTarget() delta: " $ delta );
-
-    GetTarget(loc, radius);
-
-    /*if(VSize(HomeLoc - Location) > HomeExtent && GetStateName()=='Wandering') {
-        p = GetClosestPoint((HomeLoc+Location)/2, HomeExtent);
-        if(p != None) {
-            HomeLoc = p.Location;
-            bUseHome = true;
-        }
-        SetLocation(HomeLoc);
-    }*/
 }
 
 function Tick(float delta)
@@ -154,9 +75,22 @@ function Tick(float delta)
     LastRenderTime = Level.TimeSeconds;
     bStasis = false;
 
-    healthRegen += delta;
-    if(healthRegen > 1) {
-        healthRegen = 0;
+    healthRegenTimer += delta;
+    if(healthRegenTimer > 1) {
+        healthRegenTimer = 0;
+
+        if(health < FleeHealth) {
+            MinHealth = default.health/2;
+            bDetectable=false;
+            bIgnore=true;
+            Visibility=0;
+        } else if(health > MinHealth) {
+            MinHealth = default.MinHealth;
+            bDetectable=true;
+            bIgnore=false;
+            Visibility=default.Visibility;
+        }
+
         HealthHead += 10;
         HealthTorso += 10;
         HealthArmLeft += 10;
@@ -167,10 +101,6 @@ function Tick(float delta)
         EmpHealth = FClamp(EmpHealth + 10, 0, default.EmpHealth);
 #endif
         GenerateTotalHealth();
-    }
-
-    if(Level.TimeSeconds - lastCheckMoveTime > 5) {
-        UpdateTarget();
     }
 }
 
@@ -206,20 +136,29 @@ function PlayRunning()
     }
 }
 
-
 function GenerateTotalHealth()
 {
     // you can hurt him but you can't kill him
-    HealthHead     = FClamp(HealthHead, MinHealth/2, default.HealthHead);
-    HealthTorso    = FClamp(HealthTorso, MinHealth/2, default.HealthTorso);
-    HealthArmLeft  = FClamp(HealthArmLeft, MinHealth/2, default.HealthArmLeft);
-    HealthArmRight = FClamp(HealthArmRight, MinHealth/2, default.HealthArmRight);
-    HealthLegLeft  = FClamp(HealthLegLeft, MinHealth/2, default.HealthLegLeft);
-    HealthLegRight = FClamp(HealthLegRight, MinHealth/2, default.HealthLegRight);
+    HealthHead     = FClamp(HealthHead, FleeHealth/2, default.HealthHead);
+    HealthTorso    = FClamp(HealthTorso, FleeHealth/2, default.HealthTorso);
+    HealthArmLeft  = FClamp(HealthArmLeft, FleeHealth/2, default.HealthArmLeft);
+    HealthArmRight = FClamp(HealthArmRight, FleeHealth/2, default.HealthArmRight);
+    HealthLegLeft  = FClamp(HealthLegLeft, FleeHealth/2, default.HealthLegLeft);
+    HealthLegRight = FClamp(HealthLegRight, FleeHealth/2, default.HealthLegRight);
     Super.GenerateTotalHealth();
-    Health = FClamp(Health, MinHealth/2, default.Health);
+    Health = FClamp(Health, FleeHealth/2, default.Health);
 }
 
+function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+{
+    if(health < MinHealth) return;
+    Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+}
+
+function bool ShouldDropWeapon()
+{
+    return false;
+}
 
 function PlayFootStep()
 {
@@ -232,6 +171,7 @@ function PlayFootStep()
     }
 }
 
+// collision radius 1.0 is 22, height is 50.6
 defaultproperties
 {
     DrawScale=1.3
@@ -249,27 +189,23 @@ defaultproperties
     bShowPain=False
     BindName="MrX"
     MinHealth=100
-    bImportant=false
+    FleeHealth=100
     bInvincible=false
     FamiliarName="Mr. X"
     UnfamiliarName="Mr. X"
-
     InitialInventory(0)=(Inventory=class'WeaponMrXPunch')
     InitialInventory(1)=(Inventory=None)
     InitialInventory(2)=(Inventory=None)
     InitialInventory(3)=(Inventory=None)
     InitialInventory(4)=(Inventory=None)
-
     Alliance=MrX
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
-
     HearingThreshold=0
-    RandomWandering=1
+    RandomWandering=0.3
     Wanderlust=0.01
-    HomeExtent=5000
+    HomeExtent=2000
     bUseHome=true
     bStasis=false
-
     walkAnimMult=0.75
     runAnimMult=0.9
     bCanStrafe=false
