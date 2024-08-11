@@ -29,6 +29,19 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
         class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
     }
 
+    if( InStr(msg, Left(InventoryFull, 22))!=-1 // You don't have enough
+        || InStr(msg, Left(TooMuchAmmo, 24))!=-1 // You already have enough
+        || InStr(msg, Left(CanCarryOnlyOne, 19))!=-1 // You can only carry
+        || msg == InventoryFull
+        || msg == TooHeavyToLift
+        || msg == CannotLift
+        || msg == NoRoomToLift
+        || msg == CannotDropHere
+        || msg == HandsFull
+    ) {
+        bBeep = true;
+    }
+
     if(type == 'ERROR') {
         DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'DeusExSounds.Generic.Buzz1');
     }
