@@ -7,6 +7,7 @@ class MenuScreenRandoOptionsVisuals expands MenuScreenRandoOptionsBase;
 function CreateChoices()
 {
     CreateChoice(class'MenuChoice_BrightnessBoost');
+    CreateChoice(class'MenuChoice_Fog');
 
     if(#defined(vanilla)) {
         CreateChoice(class'MenuChoice_EnergyDisplay');
