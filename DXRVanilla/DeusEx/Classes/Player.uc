@@ -38,6 +38,7 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
         || msg == NoRoomToLift
         || msg == CannotDropHere
         || msg == HandsFull
+        || msg == class'DeusExPickup'.default.msgTooMany
     ) {
         bBeep = true;
     }
