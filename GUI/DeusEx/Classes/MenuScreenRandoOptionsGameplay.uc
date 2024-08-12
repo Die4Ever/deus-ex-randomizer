@@ -30,6 +30,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_PasswordAutofill');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
+    CreateChoice(class'MenuChoice_NewGamePlus');
 }
 
 defaultproperties
