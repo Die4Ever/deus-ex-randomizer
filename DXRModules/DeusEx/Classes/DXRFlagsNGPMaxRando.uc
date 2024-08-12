@@ -132,7 +132,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 
     settings.aug_value_rando = 100;
 
-    if (dxr.flags.autosave != 5) { // don't steal health from players in ironman mode
+    if (autosave != 5) { // don't steal health from players in ironman mode
         settings.health += rng(100) - 50;
     }
 
