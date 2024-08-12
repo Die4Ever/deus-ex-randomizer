@@ -1054,7 +1054,12 @@ function bool AddTestGoal(
         f *= MissionsMaskAvailability(starting_mission, missions) ** 1.5;
         max = Ceil(float(max) * f);
         max = self.Max(max, 1);
-        desc = sprintf(bingo_options[bingoIdx].desc, max);
+
+        if (max == 1 && bingo_options[bingoIdx].desc_singular != "") {
+            desc = bingo_options[bingoIdx].desc_singular;
+        } else {
+            desc = sprintf(desc, max);
+        }
     }
 
     data.SetBingoSpot(
