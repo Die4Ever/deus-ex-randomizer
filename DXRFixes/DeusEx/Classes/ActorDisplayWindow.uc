@@ -246,16 +246,16 @@ function DrawWindow(GC gc)
         radius = actorRadius;
     }
 
-    foreach player.RadiusActors(classToShow, trackActor,radius,player.Location)
+    foreach player.RadiusActors(classToShow, trackActor, radius, player.Location)
     {
         if(!bShowHidden && trackActor.bHidden)
             continue;// DXRando: for spoilers buttons
 
         if (filter!='' && filter!=trackActor.Name)
             continue;
-        if (tagFilter!="" && tagFilter!=string(trackActor.Tag))
+        if (tagFilter!="" && !(tagFilter~=string(trackActor.Tag)))
             continue;
-        if (eventFilter!="" && eventFilter!=string(trackActor.Event))
+        if (eventFilter!="" && !(eventFilter~=string(trackActor.Event)))
             continue;
 
         dxMover = DeusExMover(trackActor);
