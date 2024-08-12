@@ -75,7 +75,7 @@ simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
         f.GiveTo(p);
         f.isFemale=p.flagBase.GetBool('LDDPJCIsFemale');
         f.InitClothes(true);
-        log("spawned new "$f$" for "$p);
+        log("spawned new " $ f $ " for " $ p);
     }
     return f;
 }
@@ -216,7 +216,7 @@ function InitClothes(bool giveAll)
 /*
     //Not working for some reason?
     carcClass = class<#var(DeusExPrefix)Carcass>(class'DXRando'.Default.dxr.GetClassFromString("FemJC.JCDentonFemaleCarcass",class'#var(DeusExPrefix)Carcass'));
-    p.ClientMessage("Found JC Female Carcass class: "$carcClass);
+    p.ClientMessage("Found JC Female Carcass class: " $ carcClass);
     if (carcClass!=None){
         //IngestCarcass(class'FemJC.JCDentonFemaleCarcass');
         IngestCarcass(carcClass.Default.Class);
