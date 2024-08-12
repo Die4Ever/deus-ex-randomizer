@@ -251,7 +251,7 @@ function AddMissionGoals()
         AddGoalFromConv(player(), 'FindPaul', 'DL_Choice');
     AddGoalFromConv(player(), 'FindEquipment', 'DL_Choice');
 
-    GivePlayerImage(player(), class'Image05_NYC_MJ12Lab');
+    GiveImage(player(), class'Image05_NYC_MJ12Lab');
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
