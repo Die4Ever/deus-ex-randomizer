@@ -216,6 +216,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)InformationDevices dc2;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)Switch1 button;
+    local Dispatcher disp;
     local string dctext;
 
     if (g.name=="Area 51 Blast Door Computer" && Loc.name != "the tower") {
@@ -255,6 +256,15 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         button.Skin=Texture'DeusExDeco.Skins.Switch1Tex2';
         button.DrawScale=2;
         button.SetCollisionSize(5.260000, 5.940000);
+    }
+    else if (g.name=="Aquinas Substation Computer") {
+        g.actors[0].a.Event = 'AquinasDoorComputer';
+    }
+
+    if(Loc.name=="Observation Deck") {// for releasing the bots behind you
+        foreach AllActors(class'Dispatcher', disp, 'node1') {
+            disp.Tag = g.actors[0].a.Event;
+        }
     }
 }
 
