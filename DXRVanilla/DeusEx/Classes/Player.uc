@@ -29,9 +29,11 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
         class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
     }
 
+    // trying to make these likely to work with all languages...
     if( InStr(msg, Left(InventoryFull, 22))!=-1 // You don't have enough
         || InStr(msg, Left(TooMuchAmmo, 24))!=-1 // You already have enough
         || InStr(msg, Left(CanCarryOnlyOne, 19))!=-1 // You can only carry
+        || InStr(msg, Left(class'DeusExCarcass'.default.msgCannotPickup, 18))!=-1 // You cannot pickup
         || msg == InventoryFull
         || msg == TooHeavyToLift
         || msg == CannotLift
@@ -39,6 +41,7 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
         || msg == CannotDropHere
         || msg == HandsFull
         || msg == class'DeusExPickup'.default.msgTooMany
+        || msg == class'DeusExCarcass'.default.msgEmpty
     ) {
         bBeep = true;
     }
@@ -262,7 +265,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         if (mod!=None && weap!=None){
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
-                ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
+                ClientMessage(mod.ItemName$" applied to "$weap.ItemName,, true);
                 if (mod.IsA('WeaponModLaser') && class'MenuChoice_AutoLaser'.default.enabled){
                     weap.LaserOn();
                 }
@@ -308,7 +311,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 
                 ownAmmo.AddAmmo(ammoToAdd);
                 weap.PickUpAmmoCount=ammoRemaining;
-                ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName);
+                ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName,, true);
                 UpdateBeltText(weap);
             }
         }
@@ -324,7 +327,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
                 pickup.NumCopies = (ownedPickup.NumCopies+pickup.NumCopies)-ownedPickup.maxCopies;
                 ownedPickup.NumCopies = ownedPickup.maxCopies;
                 UpdateBeltText(ownedPickup);
-                ClientMessage("Picked up "$ammoToAdd$" of the "$pickup.ItemName);
+                ClientMessage("Picked up "$ammoToAdd$" of the "$pickup.ItemName,, true);
             }
         }
 
@@ -668,7 +671,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 		// check to see if we're blocked by terrain
 		if (!FastTrace(dropVect))
 		{
-			ClientMessage(CannotDropHere);
+			ClientMessage(CannotDropHere,, true);
 			return False;
 		}
 
@@ -834,7 +837,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			if (((inHand == None) || (inHandPending == None)) && (item.Physics != PHYS_Falling))
 			{
 				PutInHand(item);
-				ClientMessage(CannotDropHere);
+				ClientMessage(CannotDropHere,, true);
 				bDropped = False;
 			}
 			else
