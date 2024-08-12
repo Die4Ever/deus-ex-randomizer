@@ -403,19 +403,32 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     return nextItem;
 }
 
-static function DataVaultImage GivePlayerImage(DeusExPlayer player, class<DataVaultImage> imageClass)
+static function DataVaultImage GiveImage(Pawn p, class<DataVaultImage> imageClass)
 {
     local DataVaultImage image;
 
-    image = DataVaultImage(player.FindInventoryType(imageClass));
+    image = DataVaultImage(p.FindInventoryType(imageClass));
     if (image == None) {
-        image = player.Spawn(imageClass);
+        image = p.Spawn(imageClass);
         image.ItemName = imageClass.default.imageDescription;
         image.ItemArticle = "-";
-        image.Frob(player, None);
+        image.Frob(p, None);
     }
 
     return image;
+}
+
+static function #var(prefix)Nanokey GiveKey(Pawn p, name keyID, string desciption)
+{
+    local #var(prefix)Nanokey key;
+
+    key = p.Spawn(class'#var(prefix)Nanokey', p);
+    key.KeyID = keyID;
+    key.Description = desciption;
+    key.GiveTo(p);
+    key.SetBase(p);
+
+    return key;
 }
 
 function bool SkipActorBase(Actor a)

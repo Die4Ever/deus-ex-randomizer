@@ -554,11 +554,11 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_SubwayComplete", bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
             MarkConvPlayed("MS_DL", bFemale);
-            GivePlayerImage(player, class'Image02_Ambrosia_Flyer');
+            GiveImage(player, class'Image02_Ambrosia_Flyer');
             break;
 
         case 37:
-            GivePlayerImage(player, class'Image03_NYC_Airfield');
+            GiveImage(player, class'Image03_NYC_Airfield');
             MarkConvPlayed("DL_LebedevKill_Played", bFemale);
             // fallthrough
         case 36:
@@ -583,7 +583,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('GatesOpen',true,,5);
             AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
             MarkConvPlayed("PaulInjured", bFemale);
-            GivePlayerImage(player, class'Image04_NSFHeadquarters');
+            GiveImage(player, class'Image04_NSFHeadquarters');
             break;
 
         case 75:
@@ -616,17 +616,18 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
 
         case 105:
-            GivePlayerImage(player, class'Image10_Paris_CatacombsTunnels');
+            GiveImage(player, class'Image10_Paris_CatacombsTunnels');
             break;
         case 106:
         case 109:
-            GivePlayerImage(player, class'Image10_Paris_CatacombsTunnels');
-            GivePlayerImage(player, class'Image10_Paris_Metro');
+            GiveImage(player, class'Image10_Paris_CatacombsTunnels');
+            GiveImage(player, class'Image10_Paris_Metro');
             break;
 
         case 115:
             flagbase.SetBool('templar_upload',true,,-1);
             flagbase.SetBool('GuntherHermann_Dead',true,,-1);
+            GiveKey(player, 'cathedralgatekey', "Gatekeeper's Key");
             break;
 
         case 129:
@@ -648,7 +649,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('MS_PaulOrGaryAppeared',true,,-1);        // It let me through... I can't believe it.
             MarkConvPlayed("MeetHelios", bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('MS_TongAppeared',true,,-1);              // We can get you into Sector 3 -- but no further.
-            GivePlayerImage(player, class'Image15_Area51_Sector3');
+            GiveImage(player, class'Image15_Area51_Sector3');
             // fallthrough
         case 152:
             MarkConvPlayed("DL_Final_Page02", bFemale);         // Barely a scratch.
@@ -671,7 +672,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Bunker_Elevator", bFemale);      // The power to the elevator is down.
             MarkConvPlayed("DL_Bunker_blastdoor", bFemale);     // The schematics show an elevator to the west, but utility power is down.
             MarkConvPlayed("DL_blastdoor_shut", bFemale);       // These blast doors are the reason I don't have to worry about nukes -- or you.
-            GivePlayerImage(player, class'Image15_Area51Bunker');
+            GiveImage(player, class'Image15_Area51Bunker');
             break;
     }
 }
