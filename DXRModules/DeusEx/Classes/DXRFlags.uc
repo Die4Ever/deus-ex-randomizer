@@ -624,7 +624,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         // splits overlay
         moresettings.splits_overlay = 1;
         // disable NG+ by default
-        moresettings.newgameplus_curve_scalar = -1;
+        if(class'MenuChoice_NewGamePlus'.default.value != 2)
+            moresettings.newgameplus_curve_scalar = -1;
     }
     else if(IsWaltonWare()) {
         settings.bingo_win = 1;
@@ -670,6 +671,10 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     else if(IsHalloweenMode()) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
     }
+
+    if(class'MenuChoice_NewGamePlus'.default.value == 0)
+        moresettings.newgameplus_curve_scalar = -1;
+
     return settings;
 }
 

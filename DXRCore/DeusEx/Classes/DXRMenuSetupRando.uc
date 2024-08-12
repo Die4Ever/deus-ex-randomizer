@@ -355,7 +355,7 @@ function BindControls(optional string action)
 
     NewGroup("New Game+");
 
-    NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops. Set to -1 to disable.");
+    NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops. Set to -1 to disable. 100% is default.");
     Slider(f.moresettings.newgameplus_curve_scalar, -1, 200);
     NewMenuItem("Max Item Carryover", "Maximum number of the same item that can carry over between loops, not including stackable items.");
     Slider(f.newgameplus_max_item_carryover, 0, 30);

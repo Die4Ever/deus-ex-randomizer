@@ -232,7 +232,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     //log("  bFoundSomething = " $ bFoundSomething);
 
     if (!bFoundSomething)
-        P.ClientMessage(msgEmpty);
+        P.ClientMessage(msgEmpty,, true);
 
     if ((player != None) && (Level.Netmode != NM_Standalone))
     {
@@ -341,7 +341,7 @@ function bool TryLootItem(DeusExPlayer player, Inventory item)
             }
             else
             {
-                player.ClientMessage(Sprintf(msgCannotPickup, invItem.itemName));
+                player.ClientMessage(Sprintf(msgCannotPickup, invItem.itemName),, true);
                 //Also toss the item out of the carcass
                 TossItem(item);
             }
@@ -455,7 +455,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
         }
         else // Rando: toss the weapon just for the ammo
         {
-            player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
+            player.ClientMessage(Sprintf(player.InventoryFull, item.itemName),, true);
             //Also toss the item out of the carcass
             TossItem(item);
             return true;
@@ -466,7 +466,7 @@ function bool TryLootWeapon(DeusExPlayer player, DeusExWeapon item)
         // if he empties some inventory he can get something potentially cooler
         // than he already has.
         if (W == None && !player.FindInventorySlot(item, True)){
-            player.ClientMessage(Sprintf(player.InventoryFull, item.itemName));
+            player.ClientMessage(Sprintf(player.InventoryFull, item.itemName),, true);
 
             //Also toss the item out of the carcass
             TossItem(item);

@@ -456,7 +456,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
             }
             player.AddNote(msg, false, i==numHints-1);
         }
-        player.ClientMessage("Press G or F2 to check your Goals/Notes screen!");
+        player.ClientMessage("Press G or F2 to check your Goals/Notes screen!",, true);
     }
 }
 

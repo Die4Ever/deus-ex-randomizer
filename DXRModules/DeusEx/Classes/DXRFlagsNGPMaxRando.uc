@@ -132,7 +132,10 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 
     settings.aug_value_rando = 100;
 
-    settings.health += rng(100) - 50;
+    if (autosave != 5) { // don't steal health from players in ironman mode
+        settings.health += rng(100) - 50;
+    }
+
     MaxRandoVal(settings.energy);
 }
 
@@ -244,7 +247,6 @@ function NewGamePlus()
     p.DeleteAllNotes();
     p.DeleteAllGoals();
     p.ResetConversationHistory();
-    p.RestoreAllHealth();
     ClearDataVaultImages();
 
     l("NewGamePlus skill points was "$p.SkillPointsAvail);

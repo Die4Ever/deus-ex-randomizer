@@ -315,6 +315,11 @@ simulated function string BindFlags(int mode, optional string str)
         SetDifficulty(difficulty);
     }
 
+    if(mode != Hashing) {
+        // things that don't affect the flagshash, but come after SetDifficulty (so they don't get overwritten)
+        FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
+    }
+
     FlagInt('Rando_maxrando', maxrando, mode, str);
     FlagInt('Rando_autosave', autosave, mode, str);
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
@@ -407,7 +412,6 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_starting_map', settings.starting_map, mode, str);
     FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
-    FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
     FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
     FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
     FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);

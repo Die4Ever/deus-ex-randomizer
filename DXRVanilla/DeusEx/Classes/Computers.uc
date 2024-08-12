@@ -105,7 +105,7 @@ state On
         }
         else if (VSize(curFrobber.Location - Location) > 150)// DXRando: reduced from 1500 down to 150
         {
-            curFrobber.ClientMessage(ItemName$" is too far to use!");
+            curFrobber.ClientMessage(ItemName$" is too far to use!",, true);
             termwindow.CloseScreen("EXIT");
         }
     }
@@ -120,7 +120,7 @@ Begin:
         bOn = True;
         bAnimating = False;
         if (VSize(curFrobber.Location - Location) > 150) {// DXRando
-            curFrobber.ClientMessage(ItemName$" is too far to use!");
+            curFrobber.ClientMessage(ItemName$" is too far to use!",, true);
             GotoState('Off');
         } else {
             ChangePlayerVisibility(False);

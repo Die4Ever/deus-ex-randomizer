@@ -563,6 +563,7 @@ function GenerateEnemies()
     }
 
     maxdifficulty = float(wave-1)*difficulty_per_wave + difficulty_first_wave;
+    maxdifficulty *= float(dxr.flags.settings.enemiesrandomized) * 0.03;
     numEnemies = int(maxdifficulty*2);
     for(i=0; i<numEnemies || difficulty < 0.1 ; i++) {
         difficulty += GenerateEnemy(dxre);
