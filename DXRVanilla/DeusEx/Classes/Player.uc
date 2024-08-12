@@ -29,6 +29,19 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
         class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
     }
 
+    if( InStr(msg, Left(InventoryFull, 22))!=-1 // You don't have enough
+        || InStr(msg, Left(TooMuchAmmo, 24))!=-1 // You already have enough
+        || InStr(msg, Left(CanCarryOnlyOne, 19))!=-1 // You can only carry
+        || msg == InventoryFull
+        || msg == TooHeavyToLift
+        || msg == CannotLift
+        || msg == NoRoomToLift
+        || msg == CannotDropHere
+        || msg == HandsFull
+    ) {
+        bBeep = true;
+    }
+
     if(type == 'ERROR') {
         DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'DeusExSounds.Generic.Buzz1');
     }
@@ -184,6 +197,15 @@ function ShowIntro(optional bool bStartNewGame)
 exec function ShowMainMenu()
 {
     local DeusExLevelInfo info;
+
+    // DXRando: close multiplayer style skills and augs screens
+
+    if (bBuySkills || bUpgradeAugs) // close the DXMP style skills/augs screens
+    {
+        bBuySkills = false;
+        bUpgradeAugs = false;
+        return;
+    }
 
     // DXRando: we just don't want to do vanilla behavior during the intro (misison 98)
     // escape skips the conversation which still skips the intro anyways
@@ -918,7 +940,7 @@ function HighlightCenterObjectMain()
     //
     // note that this means we don't wait for the full 100ms vanilla duration if the player is
     // rapidly changing frob target.
-    if ((FrobTime < 0.1) && (FrobTarget != None) && (target == None))
+    if (FrobTime < 0.1 && FrobTarget != None && target == None && !FrobTarget.bDeleteMe)
     {
         return;
     }
@@ -930,6 +952,7 @@ function HighlightCenterObjectMain()
 function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetDist)
 {
     local Actor target, smallestTarget;
+    local DeathMarker dm;
     local Vector HitLoc, HitNormal, StartTrace, EndTrace;
     local float minSize;
     local bool bFirstTarget;
@@ -956,6 +979,13 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
     // ScriptedPawns always have precedence, though
     foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
     {
+        if(DeathMarker(target) != None) {
+            if(dm == None && target.CollisionRadius < minSize) {
+                dm = DeathMarker(target);
+                if(bFirstTarget) smallestTargetDist = VSize(Location-HitLoc);
+            }
+            continue;
+        }
         if (IsFrobbable(target) && (target != CarriedDecoration))
         {
             if (target.IsA('ScriptedPawn'))
@@ -981,12 +1011,16 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
             }
         }
         else if(LevelInfo(target) != None || Brush(target) != None) {
-            if(bFirstTarget) {
+            if(bFirstTarget && dm==None) {
                 smallestTargetDist = VSize(Location-HitLoc);
                 smallestTarget = Level;
             }
             minSize = -1; // don't allow any actors after this, but do allow Movers
         }
+    }
+
+    if(smallestTarget == None || LevelInfo(target) != None) {
+        return dm;
     }
 
     return smallestTarget;
@@ -1246,6 +1280,34 @@ exec function Mirror()
     log("Mirror cheat " $ maps @ GetURLMap() @ s @ Location @ maps.coords_mult);
     flagBase.SetBool('PlayerTraveling', True, True, 0);
     Level.Game.SendPlayer(Self, s);
+}
+
+exec function slowmo(float s)
+{
+    if (!bCheatsEnabled)
+        return;
+    s = FMax(s, 0.0001);// regular slomo cheat only goes down to 0.1, but 0 gives a black screen
+    Level.Game.GameSpeed = s;
+    Level.TimeDilation = s;
+    Level.Game.SetTimer(s, true);
+    if(s == 1) {// slomo always saves the configs but I don't see a point in saving anything except regular speed
+        Level.Game.SaveConfig();
+        Level.Game.GameReplicationInfo.SaveConfig();
+    }
+}
+
+exec function animtrack()
+{// a single command to start work on DXRAnimTracker
+    local DXRAnimTracker a;
+    local int i;
+
+    slowmo(0.1);
+    SetPause(true);
+    ReducedDamageType = 'All';
+    foreach AllActors(class'DXRAnimTracker', a) {
+        a.edit();
+    }
+    ea('DXRAnimTracker');
 }
 
 //========= MUSIC STUFF

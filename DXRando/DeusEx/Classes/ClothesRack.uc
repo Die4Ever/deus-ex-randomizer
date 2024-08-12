@@ -23,7 +23,7 @@ function Timer()
 function Frob(actor Frobber, Inventory frobWith)
 {
 #ifndef vmd
-    local DXRFashion fashion;
+    local DXRFashionManager fashion;
 #endif
     local DXRCameraModes camera;
     local DXRando dxr;
@@ -37,17 +37,23 @@ function Frob(actor Frobber, Inventory frobWith)
     if (#var(PlayerPawn)(Frobber) != None){
         p = #var(PlayerPawn)(Frobber);
         p.ClientMessage("Time for some new clothes!",, true);
-        foreach AllActors(class'DXRFashion',fashion)
-            break;
+        fashion=class'DXRFashionManager'.static.GiveItem(p);
         foreach AllActors(class'DXRCameraModes',camera)
             break;
-        foreach AllActors(class'DXRando',dxr)
-            break;
+        dxr = class'DXRando'.default.dxr;
         if (dxr == None)
             return;
 
         if (fashion!=None) {
-            fashion.RandomizeClothes(p);
+            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+                fashion.RandomizeClothes(p);
+            } else {
+                if (fashion.HasSkinOverrides()){
+                    fashion.ClearSkinOverrides();
+                } else {
+                    fashion.RandomizeClothes(p);
+                }
+            }
             fashion.GetDressed();
 
             if (camera != None && camera.IsFirstPersonGame() && p.bBehindView == False && !dxr.flags.IsSpeedrunMode()) {

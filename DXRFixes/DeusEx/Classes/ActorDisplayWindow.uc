@@ -1,4 +1,5 @@
 class ActorDisplayWindow injects ActorDisplayWindow;
+// legend, for searching
 
 var Font textfont;
 var bool bShowHidden;
@@ -195,6 +196,7 @@ function DrawWindow(GC gc)
     local PlayerPawnExt player;
     local Actor trackActor, otherActor;
     local Dispatcher disp;
+    local LogicTrigger logic;
     local ScriptedPawn trackPawn;
     local bool bValid;
     local bool bPointValid;
@@ -419,6 +421,13 @@ function DrawWindow(GC gc)
                             str = str $ "OutEvents["$i$"]: "$disp.OutEvents[i] $ CR();
                         }
                     }
+                }
+
+                logic = LogicTrigger(trackActor);
+                if (logic!=None) {
+                    if(logic.Not) str = str $ "NOT ";
+                    str = str $ logic.inGroup1 @ logic.Op @ logic.inGroup2 $ CR();
+                    str = str $ logic.in1 @ logic.in2 $ CR();
                 }
             }
             if (bShowEventConnections)

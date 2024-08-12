@@ -28,12 +28,15 @@ function Timer()
     if(myGuy.InStasis()) {
         lastMoveTime = Level.TimeSeconds;
     } else if(VSize(lastPos - myGuy.Location) <3) {
-        if( (Level.TimeSeconds - lastMoveTime) > 10 ) {
+        if( (Level.TimeSeconds - lastMoveTime) > 15 ) {
             myGuy.SetOrders('Wandering',, true);
-            log(self@myGuy@myGuy.Location$" dynamic patrol was stuck, set to Wandering");
+            log(self @ myGuy @ myGuy.Location @myGuy.GetStateName() $" dynamic patrol was stuck, set to Wandering");
             SetTimer(0, false);
             myGuy = None;
-            return;
+        }
+        else if( (Level.TimeSeconds - lastMoveTime) > 10 ) {
+            log(self @ myGuy @ myGuy.Location @myGuy.GetStateName() $" dynamic patrol was stuck, trying again");
+            class'DXREnemiesPatrols'.static.ApplyDynamicPatrol(myGuy, self);
         }
     }
     else {

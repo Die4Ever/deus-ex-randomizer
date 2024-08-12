@@ -21,6 +21,7 @@ function PlayerLogin(#var(PlayerPawn) p)
 function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local string m;
+    if(dxr.flags.IsHordeMode()) return;// let horde mode handle it, partly because we don't want to give skillpoints and augs
     p.strStartMap = GetStartMap(self, dxr.flags.settings.starting_map); // this also calls DXRMapVariants.VaryURL()
 #ifdef vmd
     if(dxr.flags.settings.starting_map != 0)

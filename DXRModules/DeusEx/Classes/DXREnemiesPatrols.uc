@@ -49,35 +49,36 @@ function bool GivePatrol(ScriptedPawn pawn)
     local int i;
 
     for(i=0; i<10; i++) {
-        if(_GivePatrol(pawn)) return true;
+        if(_GivePatrol(pawn, 750, 0.5, 1.3, 64, 10, false)) return true;
     }
     return false;
 }
 
-function bool _GivePatrol(ScriptedPawn pawn)
+function bool _GivePatrol(ScriptedPawn pawn, float range, float minmult, float maxmult, float max_z_dist, int chance_less_points, bool allow_movers)
 {
     local #var(DeusExPrefix)Mover m;
     local DynamicPatrolPoint p, prev, first;
-    local NavigationPoint nps[100], np;
+    local NavigationPoint nps[512], np;
     local string s;
     local int i, q, num;
-    local float maxradius, max_z_dist, dist;
+    local float maxradius, dist;
     local NavigationPoint quadrants_farthest[4];
     local float quadrants_farthest_dists[4];
     local vector center;// the center of the points is not always where the pawn is
 
-    maxradius = rngrange(750, 0.5, 1.3);
-    max_z_dist = 64;
-    l("GivePatrol "$pawn@pawn.Location@maxradius@max_z_dist);
+    maxradius = rngrange(range, minmult, maxmult);
+    l("GivePatrol " $ pawn @ pawn.Location @ maxradius @ max_z_dist);
 
-    foreach RadiusActors(class'#var(DeusExPrefix)Mover', m, maxradius, pawn.Location) {
-        dist = VSize(pawn.Location - m.Location);
-        dist -= 64;
-        if(dist < maxradius)
-            maxradius = dist;
-        if(maxradius < 15*16) {// 15 feet minimum?
-            l("GivePatrol bailing because of "$m);
-            return false;
+    if(!allow_movers) {
+        foreach RadiusActors(class'#var(DeusExPrefix)Mover', m, maxradius, pawn.Location) {
+            dist = VSize(pawn.Location - m.Location);
+            dist -= 64;
+            if(dist < maxradius)
+                maxradius = dist;
+            if(maxradius < 15*16) {// 15 feet minimum?
+                l("GivePatrol bailing because of "$m);
+                return false;
+            }
         }
     }
 
@@ -151,6 +152,10 @@ function bool _GivePatrol(ScriptedPawn pawn)
         prev = p;
         s = string(pawn.name) $ "_" $ (i++);
         p = CreatePoint(quadrants_farthest[q], StringToName(s));
+        if(p==None) {
+            p = prev;
+            continue;
+        }
 
         if(first==None)
             first = p;
@@ -171,17 +176,22 @@ function bool _GivePatrol(ScriptedPawn pawn)
     first.SetMyGuy(pawn);
     LinkPoints(p, first);
 
-    pawn.SetOrders('Patrolling', first.tag, false);
-    pawn.FollowOrders(false);
-    // skip past the Begin section of the state, because that sets destPoint to None and tries to search inside of a native list of NavigationPoints
-    pawn.GotoState('Patrolling', 'Patrol');
-    pawn.destPoint = first;
+    ApplyDynamicPatrol(pawn, first);
 
     l("GivePatrol "$pawn$" end "$p@p.Tag$" linking back to "$first@first.Tag);
     return true;
 }
 
-function LinkPoints(DynamicPatrolPoint prev, DynamicPatrolPoint next)
+static function ApplyDynamicPatrol(ScriptedPawn pawn, NavigationPoint first)
+{// doesn't call SetMyGuy, but accepting a plain NavigationPoint makes it easy to get someone to walk to a point instead of using RunningTo orders
+    pawn.SetOrders('Patrolling', first.tag, false);
+    pawn.FollowOrders(false);
+    // skip past the Begin section of the state, because that sets destPoint to None and tries to search inside of a native list of NavigationPoints
+    pawn.GotoState('Patrolling', 'Patrol');
+    pawn.destPoint = first;
+}
+
+static function LinkPoints(DynamicPatrolPoint prev, DynamicPatrolPoint next)
 {
     local rotator lookAngle;
     if(prev==None || next==None) return;

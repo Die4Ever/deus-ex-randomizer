@@ -130,7 +130,8 @@ function FixTunnelsTeleporters()
             case "12_vandenberg_tunnels#start":
             case "12_vandenberg_cmd#commstat":
             case "12_vandenberg_cmd#storage":
-                exit.Destroy();
+                exit.Tag='';
+                exit.SetCollision(false,false,false);
                 break;
         }
     }
@@ -550,10 +551,15 @@ function VandSubAnyEntry()
     c.bDisplayOnce = false;
 
     foreach AllActors(class'MapExit', exit, 'SiloExit') {
-        exit.event = '';
-        exit.Destroy();
+        if(DynamicMapExit(exit) == None) {
+            exit.Tag = '';
+            exit.SetCollision(false,false,false);
+        } else {
+            exit.event = '';
+            exit.Destroy();
+        }
     }
-    exit = Spawn(class'MapExit',, 'SiloExit', vectm(2620, 3284.822754, 743.136780) );
+    exit = Spawn(class'DynamicMapExit',, 'SiloExit', vectm(2620, 3284.822754, 743.136780) );
     SetDestination(exit, "14_Oceanlab_silo", '', "frontgate");
     exit.event = 'BlackHelicopter';
     exit.SetCollision(false,false,false);
@@ -736,7 +742,7 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
         return chopper;
     }
 
-    exit = MapExit(Spawnm(class'MapExit',, event, loc ));
+    exit = MapExit(Spawnm(class'DynamicMapExit',, event, loc ));
     exit.SetCollision(false,false,false);
     SetDestination(exit, DestMap, DestName, DestTag);
     exit.bPlayTransition = true;

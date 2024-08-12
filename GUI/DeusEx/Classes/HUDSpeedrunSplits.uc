@@ -14,6 +14,7 @@ var config bool showAverage, useAverageGoal;
 var config int PB[16];
 var config int Golds[16];
 var config int Avgs[16];
+var config int std_devs[16];
 var config byte alwaysShowSplit[16];
 var config int goal_time;
 
@@ -128,6 +129,25 @@ function string ReplaceVariables(string s)
     return s;
 }
 
+function bool CheckDesiredVisiblity()
+{
+    local int curMission;
+
+    if(stats == None || stats.dxr == None || stats.dxr.flags.moresettings.splits_overlay == 0) {
+        return false;
+    }
+
+    if(!enabled) return false;
+
+    curMission = stats.dxr.dxInfo.MissionNumber;
+    if(curMission < 1 || curMission > 15) return false;
+}
+
+function UpdateVisibility()
+{
+    Show(CheckDesiredVisiblity());
+}
+
 function InitStats(DXRStats newstats)
 {
     local int i, t, total, curMission, time;
@@ -200,6 +220,7 @@ function InitStats(DXRStats newstats)
 function CompletedRun(int total)
 {
     local int i, time;
+    local float avg, dev;
     local bool bNewPB;
 
     // write back new PBs and Golds
@@ -215,10 +236,15 @@ function CompletedRun(int total)
         }
         if(Avgs[i] <= 0) {
             Avgs[i] = time;
+            avg = time;
         } else {
             // moving average across about 5 runs
-            Avgs[i] = (Avgs[i]*4 + time) / 5;
+            avg = float(Avgs[i]*4 + time) / 5;
+            Avgs[i] = int(avg + 0.5);
         }
+        dev = Abs(time-avg);// deviation from average
+        dev = (std_devs[i]*4 + dev) / 5;// moving average standard deviation based on a moving average, probably a sin of mathematics
+        std_devs[i] = int(dev + 0.5);
     }
 }
 

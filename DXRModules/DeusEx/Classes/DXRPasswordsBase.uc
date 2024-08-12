@@ -119,7 +119,7 @@ simulated function bool UpdateString(out string str, string oldpassword, string 
     //l(str);
     //l("---");
 
-    str = ReplaceText( str, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    str = ReplaceText( str, oldpassword, newpassword, true );//spaces around the password make it so you can double click to highlight it then copy it easily
 
     return true;
 }

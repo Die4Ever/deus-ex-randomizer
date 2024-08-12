@@ -14,7 +14,7 @@ try:
     import traceback
 
     import GUI.InstallerWindow
-    from Install.Install import UnattendedInstall
+    from Install.Install import UnattendedInstall, ExtractAll
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -24,7 +24,8 @@ def main():
     parser.add_argument('--version', action="store_true", help='Output version')
     parser.add_argument('--dryrun', action="store_true", help="Dry run, don't actually change anything")
     parser.add_argument('--unattended', action="store_true", help='Unattended installation')
-    parser.add_argument('--path', help='Path to DeusEx.exe for installation')
+    parser.add_argument('--extract', action="store_true", help='Extract contents')
+    parser.add_argument('--path', help='Path to DeusEx.exe for installation or extraction')
     parser.add_argument('--downloadmirrors', action="store_true", help='Default to download mirrored maps for unattended installations')
     parser.add_argument('--verbose', action="store_true", help="Output way more to the console")
     parser.add_argument('--vanillafixer', action="store_true", help="Force vanilla fixer defaults")
@@ -63,6 +64,10 @@ def main():
             info(e, '\n')
             info(traceback.format_exc())
             info('falling back to manual install')
+
+    if args.extract:
+        ExtractAll(args.path)
+        sys.exit(0)
 
     GUI.InstallerWindow.main()
 

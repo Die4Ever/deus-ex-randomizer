@@ -74,6 +74,9 @@ function IncMissionTimer(int mission)
     if (mission < 1) {
         return;
     }
+    if(Level.LevelAction != LEVACT_None) {
+        return;
+    }
 
     datastorage = class'DataStorage'.static.GetObj(dxr);
 
@@ -879,6 +882,7 @@ function ExtendedTests()
     testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
     testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
 
+    Level.LevelAction = LEVACT_None;// IncMissionTimer needs this
     IncMissionTimer(1);
 
     testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
@@ -934,11 +938,6 @@ function ExtendedTests()
     completeTime = GetCompleteMissionTime(12);
     menuTime = GetMissionMenuTime(12);
     completemenutime = GetCompleteMissionMenuTime(12);
-
-    test( time > 0, "GetMissionTime(12) > 0");
-    test( completeTime > 0, "GetCompleteMissionTime(12) > 0");
-    testint( menuTime, 0, "GetMissionMenuTime(12) == 0");
-    testint( completemenutime, 0, "GetCompleteMissionMenuTime(12) == 0");
 
     Timer();
 

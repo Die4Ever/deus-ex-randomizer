@@ -24,6 +24,10 @@ function PreFirstEntry()
         if(SkyZoneInfo(Z) != None) continue;
         SaveDefaultZoneBrightness(Z);
     }
+
+    if(!class'MenuChoice_Fog'.default.enabled) {
+        ConsoleCommand("set ZoneInfo bFogZone false");
+    }
 }
 
 function AnyEntry()
@@ -65,6 +69,12 @@ function IncreaseZoneBrightness(int brightness, ZoneInfo z)
     // if the zone had 0 brightness then the color wouldn't have shown, so whatever color it has we need to disable it
     if(zb.brightness == 0)
         z.AmbientSaturation = 255;
+
+    if(IsOctober()) {
+        z.AmbientBrightness = Max(z.AmbientBrightness, 5);
+        z.AmbientSaturation = Min(z.AmbientSaturation, 100);
+        z.AmbientHue = 255;
+    }
 }
 
 static function AdjustBrightness(DeusExPlayer a, int brightness)

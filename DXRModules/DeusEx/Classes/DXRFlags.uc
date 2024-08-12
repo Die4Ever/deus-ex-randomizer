@@ -43,19 +43,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
         p.bCheatsEnabled = true;
         p.ReducedDamageType = 'All';// god mode
-        //p.AllWeapons();
         p.AllAmmo();
-
-#ifdef injections
-        autosave = DXRAutosave(dxr.FindModule(class'DXRAutosave'));
-        if(autosave == None || !autosave.bNeedSave) {
-            p.ServerSetSloMo(2);
-        } else {
-            autosave.old_game_speed = 2;
-        }
-#else
-        p.ServerSetSloMo(2);
-#endif
     }
 
     //Disable achievements for Revision Rando, as requested
@@ -674,6 +662,10 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.CombatDifficulty *= 0.75;
 #endif
         autosave = 5; // Ironman, autosaves and manual saves disabled
+        // horde mode handles the greenbots itself
+        settings.medbots = 0;
+        settings.repairbots = 0;
+        moresettings.empty_medbots = 0;
     }
     else if(IsHalloweenMode()) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
@@ -721,6 +713,9 @@ function string GameModeName(int gamemode)
         return "Entrance Randomization";
     case HordeMode:
         return "Horde Mode";
+    case HordeZombies:
+        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
+        break;
 #endif
     case RandoLite:
         return "Randomizer Lite";
@@ -745,9 +740,6 @@ function string GameModeName(int gamemode)
         return "WaltonWare Hardcore";
     case WaltonWarex3:
         return "WaltonWare x3";
-    case HordeZombies:
-        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
-        break;
     case HalloweenMode:
         if(IsOctoberUnlocked()) return "Halloween Mode (Alpha)";// maybe needs a better name
         break;

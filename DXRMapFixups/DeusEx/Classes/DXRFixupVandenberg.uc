@@ -71,6 +71,7 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-1456,1806,-2000),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(-1354,1813,-2000),,'Sitting');
 
+        // some extra platforming!
         sl = #var(prefix)ShopLight(AddActor(class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
         sl.bInvincible = true;
         sl.bCanBeBase = true;
@@ -111,6 +112,7 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
 
             FixCmdElevator();
+            UnleashingBotsOpenCommsDoor();
         }
 
         foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
@@ -475,6 +477,44 @@ function VandenbergCmdFixTimsDoor()
         key.SkinColor=SC_Level3;
         key.MultiSkins[0] = Texture'NanoKeyTex3';
     }
+}
+
+function UnleashingBotsOpenCommsDoor()
+{
+    local DXRSimpleTrigger t;
+    local #var(prefix)LogicTrigger logic;
+    local #var(prefix)DataLinkTrigger dt;
+    local #var(prefix)FlagTrigger ft;
+
+    // releasing the bots should be enough to get into the comms building, especially for Stick With the Prod players
+
+    foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
+        if(dt.datalinkTag == 'DL_command_bots_destroyed') {
+            dt.Tag = 'bots_released';
+            break;
+        }
+    }
+
+    logic = spawn(class'#var(prefix)LogicTrigger',, 'bunker_doors');
+    logic.inGroup1 = 'bunker_door1';
+    logic.inGroup2 = 'bunker_door2';
+    logic.Op = GATE_AND;
+    logic.Event = 'bots_released';
+#ifdef hx
+    logic.bOneShot = true;
+#else
+    logic.OneShot = true;
+#endif
+
+    t = spawn(class'DXRSimpleTrigger',, 'bunker_door1');
+    t.Group = 'bunker_door1';
+    t.Event = 'bunker_doors';
+    t = spawn(class'DXRSimpleTrigger',, 'bunker_door2');
+    t.Group = 'bunker_door2';
+    t.Event = 'bunker_doors';
+
+    ft = spawn(class'#var(prefix)FlagTrigger',, 'bots_released');
+    ft.flagName = 'MS_DL_Played';
 }
 
 //Add a new button in the elevator to open the doors

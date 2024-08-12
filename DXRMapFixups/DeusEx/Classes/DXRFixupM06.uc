@@ -541,6 +541,28 @@ function PreFirstEntryMapFixes()
 
         SetTimer(1.0, True); //Start the timer so we can remove bHateShot once the raid starts
 
+        if(VanillaMaps) {
+            foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'RaidIsOver') {
+                ot.Tag = 'ResumeDate';
+            }
+
+            ft=Spawn(class'#var(prefix)FlagTrigger',, 'RaidIsOver');
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.FlagName='M06JCHasDate';
+            ft.flagValue=True;
+            ft.Event='CheckResumeDateOver';
+            ft.SetCollision(false,false,false);
+
+            ft=Spawn(class'#var(prefix)FlagTrigger',, 'CheckResumeDateOver');
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.FlagName='M06DateDone';
+            ft.flagValue=false;
+            ft.Event='ResumeDate';
+            ft.SetCollision(false,false,false);
+        }
+
         break;
 
     case "06_HONGKONG_WANCHAI_GARAGE":

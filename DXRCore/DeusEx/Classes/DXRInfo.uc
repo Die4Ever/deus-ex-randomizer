@@ -184,11 +184,10 @@ function bool IsAprilFools()
 
 function bool IsOctoberUnlocked()
 {
-    // Happy Halloween! unlock gamemode forever and other features
-    // or do it by version number? allow if(#defined(debug))?
+    // Happy Halloween! unlock gamemodes forever and other features
     if(#defined(debug)) return true;
-    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     if(VersionOlderThan(VersionNumber(), 3,2,0,0)) return false;
+    if(!VersionIsStable()) return true;// allow alphas and betas of v3.2 to get access early
     return Level.Month >= 10 || Level.Year > 2024;
 }
 

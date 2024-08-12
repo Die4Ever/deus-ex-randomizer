@@ -1,4 +1,5 @@
 try:
+    from Install import GetDryrun
     from GUI import *
     from pathlib import Path
     import math
@@ -17,8 +18,9 @@ def PathSize(path: Path):
 def SaveMigration(oldpath:Path, newpath:Path):
     info('SaveMigration old:', oldpath.absolute())
     info('SaveMigration new:', newpath.absolute())
-    assert oldpath.exists()
-    assert newpath.exists()
+    assert oldpath.exists(), str(oldpath)
+    if not GetDryrun():
+        assert newpath.exists(), str(newpath)
 
     newest = []
     totalsize = 0
@@ -60,6 +62,9 @@ def SaveMigration(oldpath:Path, newpath:Path):
         if not savefolder.exists():
             continue # just in case they deleted stuff while looking at the dialog?
         outfolder = newpath/savefolder.name
+        if GetDryrun():
+            info("would've migrated save", f.name)
+            continue
         if outfolder.exists():
             continue
         outfolder.mkdir()

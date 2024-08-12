@@ -96,10 +96,10 @@ simulated function TickUse()
 
     if(bAutomatic && !IsTicked()) {
         // don't punish the player for auto aug turning off and immediately turning on again within the same one-second cycle
-        if(LastUsed < Level.TimeSeconds-1) {
+        if(LastUsed < Level.TimeSeconds-1 && Level.LevelAction == LEVACT_None) {
             useEnergy = energyRate/60.0 * GetEnergyMult();
         }
-        if(Player.Energy < useEnergy) {
+        if(Player.Energy <= useEnergy) {
             return;// don't update the LastUsed
         } else {
             Player.Energy -= useEnergy;

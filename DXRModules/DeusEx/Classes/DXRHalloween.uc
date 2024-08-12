@@ -64,7 +64,7 @@ function CheckCarcasses()
 
     foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
         if(#var(prefix)RatCarcass(carc) != None || #var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None) {
-            // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds? cats have an override on the Attacking state
+            // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
             continue;
         }
         for(i=0; i < num_carcs; i++) {
@@ -75,6 +75,7 @@ function CheckCarcasses()
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
             times[num_carcs] = Level.TimeSeconds;
+            carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;
         }
     }
@@ -204,25 +205,47 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
 function MakeSpiderWebs()
 {
     local NavigationPoint p;
-    local Spiderweb web;
-    local vector loc;
-    local rotator rot;
-    local int i;
+    local Light lgt;
+    local vector locs[4096];
+    local int i, num, slot;
 
     SetSeed("MakeSpiderWebs");
 
     foreach AllActors(class'NavigationPoint', p) {
-        for(i=0; i<3; i++) {
-            loc = p.Location;
-            loc.X += rngfn() * 160.0;// 10 feet in either direction
-            loc.Y += rngfn() * 160.0;// 10 feet in either direction
-            loc.Z += rngf() * 80.0;// 5 feet upwards
-            if(GetSpiderwebLocation(loc, rot)) {
-                rot.roll = rng(65536);
-                web = Spawn(class'Spiderweb',,, loc, rot);
-            }
-        }
+        locs[num++] = p.Location;
+        if(rngb()) continue;
+        SpawnSpiderweb(p.Location);
     }
+    // spiderwebs near lights?
+    foreach AllActors(class'Light', lgt) {
+        locs[num++] = lgt.Location;
+    }
+    // random order gives better results
+    for(i=0; i<num; i++) {
+        slot = rng(num);
+        SpawnSpiderweb(locs[slot]);
+    }
+}
+
+function SpawnSpiderweb(vector loc)
+{
+    local Spiderweb web;
+    local float dist;
+    local rotator rot;
+
+    loc.X += rngfn() * 256.0;// 16 feet in either direction
+    loc.Y += rngfn() * 256.0;// 16 feet in either direction
+    loc.Z += rngf() * 80.0;// 5 feet upwards
+
+    if(!GetSpiderwebLocation(loc, rot)) return;
+
+    foreach RadiusActors(class'Spiderweb', web, 100, loc) {
+        dist = VSize(loc-web.Location);
+        if(chance_single(100-dist)) return;
+    }
+
+    rot.roll = rng(65536);
+    web = Spawn(class'Spiderweb',,, loc, rot);
 }
 
 function bool GetSpiderwebLocation(out vector loc, out rotator rot)
@@ -242,14 +265,20 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
     found_floor = NearestFloor(floor, distrange, 16);
     //floor.loc.Z += 16*9;
 
-    if(found_ceiling && chance_single(60)) {
+    if(found_ceiling && chance_single(50)) {
         ceiling_or_floor = ceiling;
-    } else if(found_floor && chance_single(60)) {
+    } else if(found_floor && chance_single(40)) {
         ceiling_or_floor = floor;
         found_ceiling = false;
     } else if(found_ceiling && found_floor) {
         f = rngf();
         ceiling_or_floor.loc = (ceiling.loc*f) + (floor.loc*(1-f));
+        found_ceiling = false;
+        found_floor = false;
+    } else if(!found_ceiling) {
+        f = rngf() * 512;// 32 feet
+        loc.Z += f;
+        ceiling_or_floor.loc = loc;
         found_ceiling = false;
         found_floor = false;
     } else {

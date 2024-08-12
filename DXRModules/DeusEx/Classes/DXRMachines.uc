@@ -402,50 +402,47 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
 {
     local #var(prefix)RepairBot r;
     local #var(prefix)MedicalBot m;
-    local #var(prefix)Datacube d;
-    local #var(injectsprefix)MedicalBot ab;
-    local Name medHint;
-    local Name augHint;
-    local Name repairHint;
-
-    // TODO: get rid of this later, but still delete the old ones for now to reduce confusion for players used to previous releases
-    medHint = '01_Datacube09';
-    repairHint = '03_Datacube11';
 
     if( medbots > -1 ) {
         DestroyMedbotDoors();
         foreach AllActors(class'#var(prefix)MedicalBot', m) {
             m.Destroy();
         }
-        foreach AllActors(class'#var(prefix)Datacube', d) {
-            if( d.textTag == medHint ) d.Destroy();
-        }
     }
     if( repairbots > -1 ) {
         foreach AllActors(class'#var(prefix)RepairBot', r) {
             r.Destroy();
         }
-        foreach AllActors(class'#var(prefix)Datacube', d) {
-            if( d.textTag == repairHint ) d.Destroy();
-        }
     }
-
-    medHint = 'MedbotNearby';
-    augHint = 'AugbotNearby';
-    repairHint = 'RepairbotNearby';
 
     SetSeed( "RandoMedBots" );
     if( chance_single(medbots) ) {
-        SpawnBot(class'#var(injectsprefix)MedicalBot', medHint, "Medical Bot Nearby", 89);
+        SpawnMedbot();
     } else if ( chance_single(empty_medbots) ) {
-        ab = #var(injectsprefix)MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', augHint, "Augmentation Bot Nearby", 255));
-        ab.MakeAugsOnly();
+        SpawnAugbot();
     }
 
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
-        SpawnBot(class'#var(injectsprefix)RepairBot', repairHint, "Repair Bot Nearby", 89);
+        SpawnRepairbot();
     }
+}
+
+function SpawnMedbot()
+{
+    SpawnBot(class'#var(injectsprefix)MedicalBot', 'MedbotNearby', "Medical Bot Nearby", 89);
+}
+
+function SpawnAugbot()
+{
+    local #var(injectsprefix)MedicalBot ab;
+    ab = #var(injectsprefix)MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', 'AugbotNearby', "Augmentation Bot Nearby", 255));
+    ab.MakeAugsOnly();
+}
+
+function SpawnRepairbot()
+{
+    SpawnBot(class'#var(injectsprefix)RepairBot', 'RepairbotNearby', "Repair Bot Nearby", 89);
 }
 
 function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcooldown, int rbcooldown)
@@ -540,6 +537,7 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, i
 
     d = #var(prefix)Datacube(SpawnNewActor(class'#var(prefix)Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;
+    d.Tag = 'botdatacube';
     d.SetCollision(true,false,false);
     d.TextPackage = "#var(package)";
     d.textTag = datacubeTag;
