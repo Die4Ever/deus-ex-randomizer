@@ -627,7 +627,8 @@ function GiveRandomItems(ScriptedPawn p)
 {
     local DeusExPickup item;
 
-    item = DeusExPickup(GiveItem(p, class'WineBottle'));// this is how Paris works in real life, right?
+    item = DeusExPickup(GiveItem(p, class'#var(prefix)WineBottle'));// this is how Paris works in real life, right?
+    item.maxCopies = 100;
     item.numCopies = wine_bottles_per_enemy;
 }
 
@@ -660,6 +661,7 @@ function GenerateItems()
 {
     local int i;
     local #var(injectsprefix)MedicalBot medbot;
+    local #var(prefix)WineBottle wine;
 
     SetGlobalSeed("Horde GenerateItems" $ wave);
 
@@ -668,6 +670,10 @@ function GenerateItems()
 
     for(i=0;i<items_per_wave;i++) {
         GenerateItem();
+    }
+
+    foreach AllActors(class'#var(prefix)WineBottle', wine) {
+        wine.maxCopies = 100;
     }
 }
 
