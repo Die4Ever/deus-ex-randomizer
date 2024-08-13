@@ -71,7 +71,7 @@ function NeedSave()
     }
     if(autosave_combat>0 || !PawnIsInCombat(player())) {
         autosave_combat = 1;// we're all in on this autosave because of the player rotation
-        Level.LevelAction = LEVACT_Saving;// save game cleans this up when it finishes
+        Level.LevelAction = LEVACT_Saving;
         if(!set_player_pos) {
             set_player_pos = true;
             class'DynamicTeleporter'.static.CheckTeleport(player(), coords_mult);
@@ -115,7 +115,7 @@ function FixPlayer(optional bool pos)
 {
     local #var(PlayerPawn) p;
 
-    if(set_player_pos) {
+    /*if(set_player_pos) {
         p=player();
         if(pos) {
             p.SetLocation(player_pos - vect(0,0,16));// a foot lower so you don't raise up
@@ -124,7 +124,7 @@ function FixPlayer(optional bool pos)
         p.ViewRotation = player_rot;
         p.Velocity = vect(0,0,0);
         p.Acceleration = vect(0,0,0);
-    }
+    }*/
 }
 
 function Tick(float delta)
@@ -139,8 +139,10 @@ function Tick(float delta)
         }
     }
     else if(save_timer <= 0) {
-        if(Level.Game.GameSpeed == 1)// TODO: figure out what's wrong with using old_game_speed instead of 1
+        if(Level.Game.GameSpeed == 1) {// TODO: figure out what's wrong with using old_game_speed instead of 1
             Disable('Tick');
+            Level.LevelAction = LEVACT_None;
+        }
         FixPlayer(Level.Game.GameSpeed == 1);
         SetGameSpeed(1);
     } else {
@@ -227,6 +229,7 @@ function doAutosave()
     SetGameSpeed(1);// TODO: figure out what's wrong with using old_game_speed instead of 1
     class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
     p.SaveGame(saveSlot, saveName);
+    Level.LevelAction = LEVACT_Saving;
     SetGameSpeed(0);
 
     if( interruptedDL != None ) {
