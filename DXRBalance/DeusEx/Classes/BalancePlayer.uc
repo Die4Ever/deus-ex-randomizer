@@ -647,19 +647,19 @@ state PlayerWalking
         {
             if (HealthLegLeft < 1)
                 newSpeed -= (defSpeed/2) * 0.25;
-            else if (HealthLegLeft < 34)
+            else if (HealthLegLeft < default.HealthLegLeft * 0.34)
                 newSpeed -= (defSpeed/2) * 0.15;
-            else if (HealthLegLeft < 67)
+            else if (HealthLegLeft < default.HealthLegLeft * 0.67)
                 newSpeed -= (defSpeed/2) * 0.10;
 
             if (HealthLegRight < 1)
                 newSpeed -= (defSpeed/2) * 0.25;
-            else if (HealthLegRight < 34)
+            else if (HealthLegRight < default.HealthLegRight * 0.34)
                 newSpeed -= (defSpeed/2) * 0.15;
-            else if (HealthLegRight < 67)
+            else if (HealthLegRight < default.HealthLegRight * 0.67)
                 newSpeed -= (defSpeed/2) * 0.10;
 
-            if (HealthTorso < 67)
+            if (HealthTorso < default.HealthTorso * 0.67)
                 newSpeed -= (defSpeed/2) * 0.05;
         }
 
