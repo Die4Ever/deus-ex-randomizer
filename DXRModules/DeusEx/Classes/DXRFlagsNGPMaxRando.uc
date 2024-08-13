@@ -73,7 +73,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 
     if (forceMenuOptions){
         //Eventually we can add logic to randomize between the door menu options
-    } else {
+    } else if (dxr.flags.IsSpeedrunMode() == false) {
         settings.doorsmode = undefeatabledoors + doorindependent;
         settings.doorsdestructible = rng(100);
         settings.doorspickable = rng(100);
