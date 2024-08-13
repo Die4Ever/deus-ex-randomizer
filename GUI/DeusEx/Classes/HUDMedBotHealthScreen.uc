@@ -101,15 +101,15 @@ static function bool isAugsOnly(MedicalBot bot)
 
 function Tick(float deltaTime)
 {
-    if(#defined(gmdx) || #defined(vmd)) {
-        Super.Tick(deltaTime);
-        return;
-    }
-
     if(medBot == None || medBot.bDeleteMe || player == None || player.bDeleteMe) {
         player = None;
         medBot = None;
-        DestroyWindow();
+        root.ClearWindowStack();
+        return;
+    }
+
+    if(#defined(gmdx) || #defined(vmd)) {
+        Super.Tick(deltaTime);
         return;
     }
 
