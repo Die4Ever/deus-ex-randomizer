@@ -111,6 +111,8 @@ function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
         #var(injectsprefix)HUDMedBotNavBarWindow(winNavBar).CreateAllButtons();
     }
     Super.CreateMedbotLabel();
+
+    bTickEnabled = True;
 }
 
 function SelectAugmentation(PersonaItemButton buttonPressed)
@@ -145,5 +147,15 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 
         winInfo.SetText(winInfo.CR());
         winInfo.AppendText(augDesc);
+    }
+}
+
+function Tick(float deltaTime)
+{
+    if(medBot == None || medBot.bDeleteMe || player == None || player.bDeleteMe) {
+        player = None;
+        medBot = None;
+        root.ClearWindowStack();
+        return;
     }
 }

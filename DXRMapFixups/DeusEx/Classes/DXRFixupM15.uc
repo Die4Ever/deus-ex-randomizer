@@ -205,6 +205,8 @@ function PreFirstEntryMapFixes_Final()
     local SpecialEvent se;
     local DataLinkTrigger dlt;
     local SkillAwardTrigger sat;
+    local Dispatcher disp;
+    local int i;
 
     AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
     AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
@@ -238,6 +240,30 @@ function PreFirstEntryMapFixes_Final()
         }
     }
 
+    // also make Tong ending a little faster
+    if(dxr.flags.moresettings.splits_overlay > 0) {
+        foreach AllActors(class'Dispatcher', disp) {
+            switch(disp.Tag) {
+            case 'button_1':
+            case 'button_2':
+            case 'button_3':
+                for(i=0; i<ArrayCount(disp.OutDelays); i++) {
+                    disp.OutDelays[i] /= 3;
+                }
+                break;
+            }
+        }
+        foreach AllActors(class'DeusExMover', d) {
+            switch(d.Tag) {
+            case 'Generator_panel':
+            case 'injector2':
+            case 'injector3':
+            case 'Generator_overload':
+                d.MoveTime /= 2;
+                break;
+            }
+        }
+    }
 
     //Generator Failsafe buttons should spit out some sort of message if the coolant isn't cut
     //start_buzz1 and start_buzz2 are the tags that get hit when the coolant isn't cut

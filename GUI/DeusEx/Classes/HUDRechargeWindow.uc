@@ -121,16 +121,15 @@ function UpdateBioWindows()
 
 event Tick(float deltaSeconds)
 {
-    if(#defined(gmdx) || #defined(vmd)) {
-        Super.Tick(deltaSeconds);
-        return;
-    }
-
     if(repairBot == None || repairBot.bDeleteMe || player == None || player.bDeleteMe) {
         player = None;
         repairBot = None;
-        DestroyWindow();
-        root.PopWindow();
+        root.ClearWindowStack();
+        return;
+    }
+
+    if(#defined(gmdx) || #defined(vmd)) {
+        Super.Tick(deltaSeconds);
         return;
     }
 
