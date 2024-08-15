@@ -473,6 +473,16 @@ function FirstEntry()
     Super.FirstEntry();
 
     SpawnItems();
+
+    #ifdef injections
+    if (dxr.dxInfo.missionNumber == 98) {
+        class'MenuChoice_LootActionUseless'.static.SetActions();
+        class'MenuChoice_LootActionFoodSoda'.static.SetActions();
+        class'MenuChoice_LootActionAlcohol'.static.SetActions();
+        class'MenuChoice_LootActionMelee'.static.SetActions();
+        class'MenuChoice_LootActionMisc'.static.SetActions();
+    }
+    #endif
 }
 
 simulated function PlayerLogin(#var(PlayerPawn) p)
@@ -480,13 +490,6 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     Super.PlayerLogin(p);
 
     RandoStartingEquipment(p, false);
-#ifdef injections
-    class'MenuChoice_LootActionUseless'.static.SetActions();
-    class'MenuChoice_LootActionFoodSoda'.static.SetActions();
-    class'MenuChoice_LootActionAlcohol'.static.SetActions();
-    class'MenuChoice_LootActionMelee'.static.SetActions();
-    class'MenuChoice_LootActionMisc'.static.SetActions();
-#endif
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)
