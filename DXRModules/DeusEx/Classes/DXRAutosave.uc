@@ -124,7 +124,7 @@ function FixPlayer(optional bool pos)
         p.ViewRotation = player_rot;
         p.Velocity = vect(0,0,0);
         p.Acceleration = vect(0,0,0);
-    }*/
+    }
 }
 
 function Tick(float delta)
