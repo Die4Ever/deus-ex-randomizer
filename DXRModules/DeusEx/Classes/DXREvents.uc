@@ -392,6 +392,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_STREET":
         WatchFlag('M02SallyDone');
+        WatchFlag('MeetSandraRenton_Played');
         break;
     case "02_NYC_HOTEL":
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
@@ -2083,6 +2084,9 @@ function string RemapBingoEvent(string eventname)
         case "MaleHostageRescued_Played":
         case "M02SallyDone":
             return "InterviewLocals";
+        case "MeetSandraRenton_Played":
+            _MarkBingo("InterviewLocals"); //Split into another event, but still return this one as-is
+            return eventname;
         default:
             return eventname;
     }
@@ -3163,6 +3167,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Talk to the injured trooper in the UNATCO HQ Medical Lab.";
         case "InterviewLocals":
             return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
+        case "MeetSandraRenton_Played":
+            return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld bar.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3558,6 +3564,7 @@ defaultproperties
     bingo_options(337)=(event="NotABigFan",desc="Not a big fan (%s)",max=20,missions=17244)
     bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
     bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4)
+    bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
 
 
 
