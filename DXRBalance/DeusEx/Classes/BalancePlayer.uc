@@ -765,7 +765,7 @@ state PlayerWalking
 
         GroundSpeed = FMax(newSpeed, 100);
         if(Level.LevelAction != LEVACT_None) GroundSpeed = 0;// DXRando: don't move during loading/randomization/autosave
-        else if(DeltaTime > 0.1 && class'MenuChoice_FixGlitches'.default.enabled) GroundSpeed /= 15 * DeltaTime;// DXRando: anyone running the game at 10fps?
+        else if(DeltaTime > 0.1 && class'MenuChoice_FixGlitches'.default.enabled) GroundSpeed /= 4 * DeltaTime;// DXRando: anyone running the game at 10fps?
 
         // if we are moving or crouching, we can't lean
         // uncomment below line to disallow leaning during crouch
