@@ -788,6 +788,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         {
         case "KnowYourEnemy":
         case "SimonsAssassination":
+        case "MeetInjuredTrooper2_Played":
             return start_map > 31;
 
         case "CleanerBot_ClassDead":

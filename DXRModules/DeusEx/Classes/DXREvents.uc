@@ -457,6 +457,7 @@ function SetWatchFlags() {
         WatchFlag('SimonsAssassination');
         WatchFlag('Shannon_Dead');
         WatchFlag('MeetWalton_Played');
+        WatchFlag('MeetInjuredTrooper2_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
@@ -3143,6 +3144,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Get down there and pet enough rats!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "NotABigFan":
             return "Turn off enough ceiling fans through the game.";
+        case "MeetInjuredTrooper2_Played":
+            return "Talk to the injured trooper in the UNATCO HQ Medical Lab.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3536,6 +3539,7 @@ defaultproperties
     bingo_options(336)=(event="PetRats",desc="Pat dat rat (%s)",max=25,missions=53118)
 #endif
     bingo_options(337)=(event="NotABigFan",desc="Not a big fan (%s)",max=20,missions=17244)
+    bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
 
 
 
