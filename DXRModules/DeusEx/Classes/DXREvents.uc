@@ -390,8 +390,12 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
         break;
+    case "02_NYC_STREET":
+        WatchFlag('M02SallyDone');
+        break;
     case "02_NYC_HOTEL":
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
+        WatchFlag('MaleHostageRescued_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
 
         break;
@@ -406,9 +410,13 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
         InitPoolBalls();
+        WatchFlag('JordanSheaConvos_Played');
+        WatchFlag('WorkerGivesInfo_Played');
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
+        WatchFlag('MeetClinicOlderBum_Played');
+        WatchFlag('MeetWindowBum_Played');
         break;
     case "02_NYC_SMUG":
         WatchFlag('MetSmuggler');
@@ -2068,6 +2076,13 @@ function string RemapBingoEvent(string eventname)
         case "PianoSong84Played":
         case "PianoSong85Played":
             return "SeasonalPianoPlayed";
+        case "MeetClinicOlderBum_Played":
+        case "MeetWindowBum_Played":
+        case "JordanSheaConvos_Played":
+        case "WorkerGivesInfo_Played":
+        case "MaleHostageRescued_Played":
+        case "M02SallyDone":
+            return "InterviewLocals";
         default:
             return eventname;
     }
@@ -3146,6 +3161,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Turn off enough ceiling fans through the game.";
         case "MeetInjuredTrooper2_Played":
             return "Talk to the injured trooper in the UNATCO HQ Medical Lab.";
+        case "InterviewLocals":
+            return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3540,6 +3557,7 @@ defaultproperties
 #endif
     bingo_options(337)=(event="NotABigFan",desc="Not a big fan (%s)",max=20,missions=17244)
     bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
+    bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4)
 
 
 
