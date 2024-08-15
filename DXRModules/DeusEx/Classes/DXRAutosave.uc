@@ -115,16 +115,16 @@ function FixPlayer(optional bool pos)
 {
     local #var(PlayerPawn) p;
 
-    /*if(set_player_pos) {
+    if(set_player_pos) {
         p=player();
-        if(pos) {
+        /*if(pos) {
             p.SetLocation(player_pos - vect(0,0,16));// a foot lower so you don't raise up
             p.PutCarriedDecorationInHand();
-        }
+        }*/
         p.ViewRotation = player_rot;
         p.Velocity = vect(0,0,0);
         p.Acceleration = vect(0,0,0);
-    }*/
+    }
 }
 
 function Tick(float delta)
