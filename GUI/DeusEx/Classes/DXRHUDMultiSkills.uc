@@ -133,7 +133,6 @@ function DrawSkillsScreen(GC gc)
             else
                 str = index $ ". " $ askill.SkillName;
 
-            gc.GetTextExtent( 0, w, h, str );
             if ( askill.CurrentLevel == 3)
             {
                 gc.SetTileColor( colMax );
@@ -158,9 +157,14 @@ function DrawSkillsScreen(GC gc)
                     costStr = "" $ askill.GetCost();
                 }
             }
+            gc.GetTextExtent( 0, w, h, str );
             gc.DrawText( curx, cury, w, h, str );
-            gc.DrawText( levelx, cury, w, h, ""$askill.CurrentLevel+1 ); //Draw text, not boxes
+
+            str = ""$askill.CurrentLevel+1;
+            gc.GetTextExtent( 0, w, h, str );
+            gc.DrawText( levelx, cury, w, h, str ); //Draw text, not boxes
             //DrawLevel( gc, levelx, cury, askill.CurrentLevel );
+
             gc.GetTextExtent(	0, w, h, costStr );
             gc.DrawText( costx, cury, w, h, costStr );
 
@@ -169,8 +173,10 @@ function DrawSkillsScreen(GC gc)
                     val = askill.levelValues[i];
                     levelValuesDisplay[i] = dxrs.DescriptionLevelShort(aSkill, i, val);
                 }
+                gc.GetTextExtent(	0, w, h, levelValuesDisplay[askill.CurrentLevel] );
                 gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[askill.CurrentLevel]);
                 if (askill.CurrentLevel<3){
+                    gc.GetTextExtent(	0, w, h, levelValuesDisplay[askill.CurrentLevel+1] );
                     gc.DrawText( nextvaluex, cury, w, h, levelValuesDisplay[askill.CurrentLevel+1]);
                 }
             }
@@ -252,7 +258,6 @@ function DrawAugsScreen(GC gc)
             if (anAug.bHasIt && anAug.AugmentationLocation!=LOC_Default){
                 str = index $ ". " $ anAug.AugmentationName;
 
-                gc.GetTextExtent( 0, w, h, str );
                 if ( anAug.CurrentLevel == anAug.MaxLevel)
                 {
                     gc.SetTileColor( colMax );
@@ -269,8 +274,12 @@ function DrawAugsScreen(GC gc)
                     gc.SetTextColor( colRed );
                 }
 
+                gc.GetTextExtent( 0, w, h, str );
                 gc.DrawText( curx, cury, w, h, str );
-                gc.DrawText( levelx, cury, w, h, ""$anAug.CurrentLevel+1 ); //Draw text, not boxes
+
+                str = ""$anAug.CurrentLevel+1;
+                gc.GetTextExtent( 0, w, h, str );
+                gc.DrawText( levelx, cury, w, h, str ); //Draw text, not boxes
                 //DrawLevel( gc, levelx, cury, askill.CurrentLevel );
 
                 if (dxra!=None){
@@ -278,8 +287,10 @@ function DrawAugsScreen(GC gc)
                         val = anAug.LevelValues[i];
                         levelValuesDisplay[i] = dxra.DescriptionLevelShort(anAug, i, val);
                     }
+                    gc.GetTextExtent( 0, w, h, levelValuesDisplay[anAug.CurrentLevel] );
                     gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[anAug.CurrentLevel]);
                     if (anAug.CurrentLevel<anAug.MaxLevel){
+                        gc.GetTextExtent( 0, w, h, levelValuesDisplay[anAug.CurrentLevel+1] );
                         gc.DrawText( nextvaluex, cury, w, h, levelValuesDisplay[anAug.CurrentLevel+1]);
                     }
                 }
