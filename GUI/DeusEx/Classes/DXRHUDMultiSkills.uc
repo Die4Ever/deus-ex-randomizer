@@ -379,6 +379,12 @@ function int GetNumAugUpgrades( DeusExPlayer thisPlayer )
     local int augCanCount;
 
     augCanCount=0;
+
+    //Allow usage of an aug upgrade can on the ground
+    if (#var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget)!=None){
+        augCanCount++;
+    }
+
     anItem = thisPlayer.Inventory;
     while (anItem != None)
     {
@@ -426,7 +432,13 @@ function bool AttemptUpgradeAug( DeusExPlayer thisPlayer, Augmentation anAug )
             thisPlayer.BuySkillSound( 1 );
             return False;
         } else {
-            augCan = #var(prefix)AugmentationUpgradeCannister(player.FindInventoryType(Class'#var(prefix)AugmentationUpgradeCannister'));
+            //Prioritize a highlighted aug upgrade over one in your inventory
+            if (#var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget)!=None){
+                augCan = #var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget);
+                thisPlayer.AddInventory(augCan); //Needs to be in inventory so the Aug can see it is available for upgrading
+            } else {
+                augCan = #var(prefix)AugmentationUpgradeCannister(player.FindInventoryType(Class'#var(prefix)AugmentationUpgradeCannister'));
+            }
             if (augCan!=None){
                 anAug.IncLevel();
                 augCan.UseOnce();
