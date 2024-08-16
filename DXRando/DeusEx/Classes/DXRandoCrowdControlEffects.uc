@@ -1649,6 +1649,7 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
     local ScriptedPawn n,o;
     local float radius;
     local vector loc, loc_offset;
+    local rotator rot;
     local Inventory inv;
     local NanoKey k1, k2;
 
@@ -1670,7 +1671,13 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
 
         loc = p.Location + (radius*loc_offset);
 
-        n = Spawn(newclass,,, loc,p.Rotation);
+        if (friendly) {
+            rot = Rotator(loc-p.Location); //Face friendlies away from the player
+        } else {
+            rot = Rotator(p.Location-loc); //Face enemies towards the player
+        }
+
+        n = Spawn(newclass,,, loc,rot);
 
         if( n != None ) break;
     }
