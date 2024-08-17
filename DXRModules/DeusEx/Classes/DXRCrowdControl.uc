@@ -11,17 +11,7 @@ struct stupidQuestion {
     var String answers[3];
 };
 
-//The config file didn't want to load an array inside a struct
-struct stupidQuestionSave {
-    var String question;
-    var int numAnswers;
-    var String answerOne;
-    var String answerTwo;
-    var String answerThree;
-};
-
-var config int numStupidQuestions;
-var config stupidQuestionSave StupidQuestions[50];
+var int numStupidQuestions;
 var        stupidQuestion    _StupidQuestions[50];
 var int curStupidQuestion;
 var DataStorage datastorage;
@@ -31,6 +21,7 @@ function Init(DXRando tdxr)
     local bool anon, offline, online;
     Super.Init(tdxr);
 
+    InitStupidQuestions();
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     if (datastorage.GetConfigKey('cc_StupidQuestionNumber')==""){
         curStupidQuestion = Rand(numStupidQuestions);
@@ -78,42 +69,9 @@ function CheckConfig()
     if ( crowd_control_addr=="" ) {
         crowd_control_addr = "localhost";
     }
-    if (numStupidQuestions == 0 || ConfigOlderThan(1,5,5,0) ) {
-        InitStupidQuestions();
-        StupidQuestionsToSave();
-        SaveConfig();
-    }
 
     Super.CheckConfig();
-
-    SaveToStupidQuestions();
 }
-
-
-function StupidQuestionsToSave() {
-    local int i;
-
-    for (i=0;i<numStupidQuestions;i++) {
-        StupidQuestions[i].question = _StupidQuestions[i].question;
-        StupidQuestions[i].numAnswers = _StupidQuestions[i].numAnswers;
-        StupidQuestions[i].answerOne = _StupidQuestions[i].answers[0];
-        StupidQuestions[i].answerTwo = _StupidQuestions[i].answers[1];
-        StupidQuestions[i].answerThree = _StupidQuestions[i].answers[2];
-    }
-}
-
-function SaveToStupidQuestions() {
-    local int i;
-
-    for (i=0;i<numStupidQuestions;i++) {
-        _StupidQuestions[i].question = StupidQuestions[i].question;
-        _StupidQuestions[i].numAnswers = StupidQuestions[i].numAnswers;
-        _StupidQuestions[i].answers[0] = StupidQuestions[i].answerOne;
-        _StupidQuestions[i].answers[1] = StupidQuestions[i].answerTwo;
-        _StupidQuestions[i].answers[2] = StupidQuestions[i].answerThree;
-    }
-}
-
 
 function InitStupidQuestions() {
     numStupidQuestions=0;
@@ -155,7 +113,6 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "No";
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     _StupidQuestions[numStupidQuestions].answers[2] = "Excuse me?";
-
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Is your vision augmented?";
@@ -337,12 +294,6 @@ function InitStupidQuestions() {
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "If you write a book about failure, and it doesn't sell, is it called a success?";
-    _StupidQuestions[numStupidQuestions].numAnswers = 2;
-    _StupidQuestions[numStupidQuestions].answers[0] = "No";
-    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
-    numStupidQuestions++;
-
-    _StupidQuestions[numStupidQuestions].Question = "If you write a book about failure and it doesn't sell, is it called a success?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "No";
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
