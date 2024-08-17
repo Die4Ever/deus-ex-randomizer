@@ -315,6 +315,50 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "Remain Ignorant";
     _StupidQuestions[numStupidQuestions].answers[1] = "I Understand";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Hey guys, did you know that in terms of human companionship, Flareon is objectively the most huggable Pokemon?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Vaporeon?";
+    _StupidQuestions[numStupidQuestions].answers[1] = "No";
+    _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are there more wheels or doors in the world";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are you feeling paranoid right now?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Behind You";
+    _StupidQuestions[numStupidQuestions].answers[1] = "No";
+    _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you write a book about failure, and it doesn't sell, is it called a success?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you write a book about failure and it doesn't sell, is it called a success?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If 4 out of 5 people suffer from diarrhea, does that mean the fifth one enjoys it?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you attached buttered toast to the back of a cat and dropped it, would it land butter side down, or cat feet side down?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Butter";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Cat Feet";
+    numStupidQuestions++;
 }
 
 
