@@ -248,7 +248,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        dxr.flagbase.SetBool('DXRando_VisitedNSFHQ', true,, 5);
+        dxr.flagbase.SetBool('DXRando_NSFHQVisited', true,, 5);
 
         break;
 
@@ -420,9 +420,8 @@ function AnyEntryMapFixes()
         DeleteConversationFlag(GetConversation('FamilySquabbleWrapUpGilbertDead'), 'PlayerKilledRenton', false);
         FixConversationFlag(GetConversation('SandraMadAtPlayer'), 'PlayerKilledRenton', true, 'AlwaysFalse', true);
 
-        if (dxr.flagbase.GetBool('DXRando_VisitedNSFHQ')) {
-            // so you can tell Paul you won't defect if even if you avoided talking to the gate guard, without disabling the guard conversation
-            dxr.flagbase.SetBool('M04MeetGateGuard_Played', true);
+        if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
+            DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
         }
 
         break;
