@@ -2087,6 +2087,10 @@ function string RemapBingoEvent(string eventname)
         case "MeetSandraRenton_Played":
             _MarkBingo("InterviewLocals"); //Split into another event, but still return this one as-is
             return eventname;
+        case "BlackCat_peeptime":
+            return "Cat_peeptime";
+        case "PetAnimal_BlackCat":
+            return "PetAnimal_Cat";
         default:
             return eventname;
     }

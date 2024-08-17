@@ -282,8 +282,8 @@ function InitStupidQuestions() {
 
     _StupidQuestions[numStupidQuestions].Question = "Are there more wheels or doors in the world";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
-    _StupidQuestions[numStupidQuestions].answers[0] = "No";
-    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    _StupidQuestions[numStupidQuestions].answers[0] = "Doors";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Wheels";
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Are you feeling paranoid right now?";
@@ -309,6 +309,36 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "Butter";
     _StupidQuestions[numStupidQuestions].answers[1] = "Cat Feet";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Is ketchup a smoothie?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Is cereal with milk a soup?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you punch yourself and it hurts, are you weak or strong?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Strong";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Weak";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "In the word 'Scent', which letter is silent?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "C";
+    _StupidQuestions[numStupidQuestions].answers[1] = "S";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Would you rather have permanent clown shoes or permanent clown makeup?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Makeup";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Shoes";
     numStupidQuestions++;
 }
 
