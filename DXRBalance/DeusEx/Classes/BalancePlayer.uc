@@ -19,6 +19,10 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             AddDamageDisplay('NanoVirus', vect(0,0,0));
             SetDamagePercent(1);
         }
+    } else if (damageType=='Shot'){
+        if (WineBulletsActive()){
+            drugEffectTimer+=3.0;
+        }
     }
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 }
@@ -292,6 +296,13 @@ function float GetDamageMultiplier()
     local DataStorage datastorage;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return float(datastorage.GetConfigKey('cc_damageMult'));
+}
+
+function bool WineBulletsActive()
+{
+    local DataStorage datastorage;
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+    return bool(datastorage.GetConfigKey('cc_WineBullets'));
 }
 
 function CatchFire( Pawn burner )

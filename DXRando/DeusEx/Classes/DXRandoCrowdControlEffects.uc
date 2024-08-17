@@ -52,6 +52,7 @@ const EatBeansTimeDefault = 60;
 const ResidentEvilTimeDefault = 60;
 const RadiationTimeDefault = 60;
 const DoomModeTimeDefault = 60;
+const WineBulletsTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -245,6 +246,10 @@ function PeriodicUpdates()
     if (decrementTimer('cc_DoomMode')){
         StopCrowdControlEvent("doom_mode",true);
     }
+
+    if (decrementTimer('cc_WineBullets')){
+        StopCrowdControlEvent("wine_bullets",true);
+    }
 }
 
 function HandleEffectSelectability()
@@ -276,6 +281,7 @@ function HandleEffectSelectability()
 #endif
         ccLink.sendEffectSelectability("quick_save",canFreelySave);
         ccLink.sendEffectSelectability("quick_load",canFreelySave);
+        ccLink.sendEffectSelectability("wine_bullets",#defined(vanilla));
 
         loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
         if (loadout!=None){
@@ -692,6 +698,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return RadiationTimeDefault;
         case 'cc_DoomMode':
             return DoomModeTimeDefault;
+        case 'cc_WineBullets':
+            return WineBulletsTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -751,6 +759,8 @@ function string getTimerLabelByName(name timerName) {
             return "Radiation";
         case 'cc_DoomMode':
             return "Doom";
+        case 'cc_WineBullets':
+            return "Wine Dmg";
 
 
         default:
@@ -2373,6 +2383,14 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
                 disableTimer('cc_DoomMode');
             }
             break;
+        case "wine_bullets":
+            if (bKnownStop || isTimerActive('cc_WineBullets')){
+                PlayerMessage("Bullets are no longer coated in wine!");
+                datastorage.SetConfig('cc_WineBullets',0, 3600*12);
+                disableTimer('cc_WineBullets');
+            }
+            break;
+
     }
 
     return Success;
@@ -3042,6 +3060,19 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (!SpamDatacubes(viewer)){
                 return TempFail;
             }
+            break;
+        case "wine_bullets":
+            if (!#defined(vanilla)){
+                PlayerMessage("Wine Bullets effect unavailable in this mod");
+                return NotAvail;
+            }
+
+            if (isTimerActive('cc_WineBullets')) {
+                return TempFail;
+            }
+            datastorage.SetConfig('cc_WineBullets',1, 3600*12);
+            PlayerMessage(viewer@"coated all the enemies bullets in wine!");
+            startNewTimer('cc_WineBullets',duration);
             break;
 
         default:
