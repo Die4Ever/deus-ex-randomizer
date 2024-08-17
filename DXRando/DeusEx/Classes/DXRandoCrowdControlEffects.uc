@@ -282,6 +282,7 @@ function HandleEffectSelectability()
         ccLink.sendEffectSelectability("quick_save",canFreelySave);
         ccLink.sendEffectSelectability("quick_load",canFreelySave);
         ccLink.sendEffectSelectability("wine_bullets",#defined(vanilla));
+        ccLink.sendEffectSelectability("blood_god",!Level.Game.bLowGore && !Level.Game.bVeryLowGore); //Blood doesn't spawn with low gore
 
         loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
         if (loadout!=None){
@@ -2150,7 +2151,51 @@ function bool SpamDatacubes(String viewer)
     return True;
 }
 
+function bool BloodForTheBloodGod()
+{
+    local #var(PlayerPawn) p;
+    local #var(prefix)ScriptedPawn sp;
+    local int num;
 
+    num=0;
+
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+        if (sp.bCanBleed){
+            sp.bleedRate = 5;
+            SpawnBloodPool(sp);
+            num++;
+        }
+    }
+
+    foreach AllActors(class'#var(PlayerPawn)',p){
+        p.bleedRate=5;
+        SpawnBloodPool(p);
+        num++;
+    }
+
+    return num>0;
+}
+
+//Logic copied from DeusExCarcass HandleLanding()
+function SpawnBloodPool(Actor a)
+{
+    local BloodPool bp;
+    local Vector HitLocation, HitNormal, EndTrace;
+    local Actor hit;
+
+    if (a.Region.Zone.bWaterZone){
+        return; //Don't spawn blood pools if you're in the water
+    }
+
+    // trace down about 20 feet if we're not in water
+    EndTrace = a.Location - vect(0,0,320);
+    hit = Trace(HitLocation, HitNormal, EndTrace, a.Location, False);
+
+    bp = spawn(class'BloodPool',,, HitLocation+HitNormal, Rotator(HitNormal));
+    if (bp!=None){
+        bp.maxDrawScale = a.CollisionRadius / 40.0;
+    }
+}
 
 function SplitString(string src, string divider, out string parts[8])
 {
@@ -3072,13 +3117,30 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 PlayerMessage("Wine Bullets effect unavailable in this mod");
                 return NotAvail;
             }
-
+            if (!InGame()){
+                return TempFail;
+            }
             if (isTimerActive('cc_WineBullets')) {
                 return TempFail;
             }
             datastorage.SetConfig('cc_WineBullets',1, 3600*12);
             PlayerMessage(viewer@"coated all the enemies bullets in wine!");
             startNewTimer('cc_WineBullets',duration);
+            break;
+
+        case "blood_god":
+            if (Level.Game.bLowGore || Level.Game.bVeryLowGore){
+                return TempFail;
+            }
+            if (!InGame()){
+                return TempFail;
+            }
+            if (!BloodForTheBloodGod()){
+                return TempFail;
+            }
+
+            PlayerMessage(viewer@"bestowed an offering to the Blood God!");
+
             break;
 
         default:
