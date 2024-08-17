@@ -279,6 +279,42 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "Yes";
     _StupidQuestions[numStupidQuestions].answers[1] = "YES!";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Do you think you could pilot a helicopter into a sewer?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "My name is Jock";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Which came first, the chicken or the egg?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Chicken";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Egg";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Can dogs look up?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are we human or are we dancer?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Dancer";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Human";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Why do they call it oven when you of in the cold food of out hot eat the food?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Unfortunately, the clock is ticking, the hours are going by.  The past increases, the future recedes.  Possibilities decreasing, regrets mounting.";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Remain Ignorant";
+    _StupidQuestions[numStupidQuestions].answers[1] = "I Understand";
+    numStupidQuestions++;
 }
 
 
