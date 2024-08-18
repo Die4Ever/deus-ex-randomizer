@@ -15,7 +15,7 @@ defaultproperties
      Mesh=LodMesh'DeusExDeco.Poolball'
      MultiSkins(0)=Texture'PumpkinTex'
      CollisionRadius=10
-     CollisionHeight=10
+     CollisionHeight=8
      DrawScale=6
      Mass=15.000000
      Buoyancy=2.000000
