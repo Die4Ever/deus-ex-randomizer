@@ -8,6 +8,7 @@ static function ConvertNormalCat(#var(prefix)Cat cat)
     cat.CarcassType=class'BlackCat'.Default.CarcassType;
     cat.Fatness=class'BlackCat'.Default.Fatness;
     cat.ScaleGlow=class'BlackCat'.Default.ScaleGlow; //To help their eyes shine in dark areas
+    cat.bUnlit=class'BlackCat'.Default.bUnlit;
 }
 
 defaultproperties
@@ -16,4 +17,5 @@ defaultproperties
     Fatness=132
     MultiSkins(0)=Texture'BlackCatTex1'
     ScaleGlow=100
+    bUnlit=True
 }

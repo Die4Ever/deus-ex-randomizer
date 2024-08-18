@@ -165,10 +165,12 @@ function Frob(Actor Frobber, Inventory frobWith)
     if (bQueuedDestroy)
         return;
 
+#ifndef vmd
     fashion = class'DXRFashionManager'.static.GiveItem(#var(PlayerPawn)(player));
     if (fashion.IngestCarcass(class<#var(DeusExPrefix)Carcass>(Class))){
         player.ClientMessage("Looted some clothes!");
     }
+#endif
 
     // if we've already been searched, let the player pick us up
     // don't pick up animal carcii

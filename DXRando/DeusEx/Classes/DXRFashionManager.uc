@@ -495,6 +495,36 @@ simulated function RandomizeClothes(#var(PlayerPawn) player)
 
     lastUpdate = class'DXRando'.Default.dxr.dxInfo.MissionNumber;
 
+    IncrementOutfitChanges(player);
+}
+
+simulated function IncrementOutfitChanges(#var(PlayerPawn) player)
+{
+    local DataStorage datastorage;
+    local int changes;
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
+    if (datastorage.GetConfigKey('DXRFashion_OutfitChanges')==""){
+        datastorage.SetConfig('DXRFashion_OutfitChanges',1, 3600*24*366); //First outfit change
+    } else {
+        changes = int(datastorage.GetConfigKey('DXRFashion_OutfitChanges'));
+        datastorage.SetConfig('DXRFashion_OutfitChanges',changes+1, 3600*24*366);
+    }
+}
+
+simulated function int GetNumOutfitChanges(#var(PlayerPawn) player)
+{
+    local DataStorage datastorage;
+    local int changes;
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
+    if (datastorage.GetConfigKey('DXRFashion_OutfitChanges')==""){
+        return 0;
+    } else {
+        return int(datastorage.GetConfigKey('DXRFashion_OutfitChanges'));
+    }
 }
 
 simulated function ApplyCarcassMeshes(Actor a)
@@ -646,6 +676,8 @@ simulated function EGender GetCarcassShirtGender(class<#var(DeusExPrefix)Carcass
 simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassClass)
 {
     local int num;
+
+    if (carcassClass==None) return False; //Can't loot nothing!
 
     num=0;
 
