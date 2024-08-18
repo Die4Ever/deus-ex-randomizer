@@ -61,6 +61,7 @@ function PreFirstEntryMapFixes()
     local WaterCooler wc;
     local Rotator rot;
     local Male1 male;
+    local GordonQuick gordon;
     local int i;
 
     local bool VanillaMaps;
@@ -167,6 +168,12 @@ function PreFirstEntryMapFixes()
                     button.RandoButtonType=RBT_OpenDoors;
                     button.BeginPlay();
                 }
+            }
+        }
+        if (dxr.flagbase.GetBool('DragonHeadsInLuckyMoney')) {
+            foreach AllActors(class'GordonQuick', gordon) {
+                gordon.LeaveWorld();
+                break;
             }
         }
         // fallthrough
