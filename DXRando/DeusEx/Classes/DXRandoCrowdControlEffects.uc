@@ -283,6 +283,7 @@ function HandleEffectSelectability()
         ccLink.sendEffectSelectability("quick_load",canFreelySave);
         ccLink.sendEffectSelectability("wine_bullets",#defined(vanilla));
         ccLink.sendEffectSelectability("blood_god",!Level.Game.bLowGore && !Level.Game.bVeryLowGore); //Blood doesn't spawn with low gore
+        ccLink.sendEffectSelectability("random_clothes",!#defined(vmd));
 
         loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
         if (loadout!=None){
@@ -2176,6 +2177,22 @@ function bool BloodForTheBloodGod()
     return num>0;
 }
 
+function bool RandomClothes()
+{
+#ifndef vmd
+    local DXRFashionManager fashion;
+
+    fashion = class'DXRFashionManager'.static.GiveItem(player());
+
+    if (fashion==None) return False; //Shouldn't happen, but might as well be sure of it
+
+    fashion.RandomizeClothes(player());
+    fashion.GetDressed();
+
+    return True;
+#endif
+}
+
 //Logic copied from DeusExCarcass HandleLanding()
 function SpawnBloodPool(Actor a)
 {
@@ -3142,6 +3159,23 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"bestowed an offering to the Blood God!");
 
             break;
+
+        case "random_clothes":
+            if (#defined(vmd)){
+                return NotAvail;
+            }
+
+            //Allow this to be used during conversations, just not while in menus
+            if (InMenu()) {
+                return TempFail;
+            }
+
+           if (!RandomClothes()){
+                return TempFail;
+           }
+            PlayerMessage(viewer@"gave you a fresh new outfit!");
+
+            return Success;
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);

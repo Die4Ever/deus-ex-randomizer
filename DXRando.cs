@@ -70,6 +70,7 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Drop some Pamphlets", "spam_datacubes"){Price = 3,Description = "Air drop a selection of informative datacubes around the level!"}, //New for sixth Crowd Control batch
         new Effect ("Wine-Glazed Bullets", "wine_bullets"){Price = 2,Description = "Bullets become coated in wine, making you drunk every time you get hit by one!"}, //New for sixth Crowd Control batch
         new Effect ("Blood for the Blood God", "blood_god"){Price = 1,Description = "Bestow an offering to the Blood God and make everything bleed!"}, //New for sixth Crowd Control batch
+        new Effect ("Randomize Clothing", "random_clothes"){Price = 1,Description = "Give JC a fresh new outfit!"}, //New for sixth Crowd Control batch
 
         //Spawn Enemies/Allies
         //new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch
