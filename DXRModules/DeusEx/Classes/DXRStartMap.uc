@@ -518,14 +518,19 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
                 MarkConvPlayed("DL_NoPaul", bFemale);
                 flagbase.SetBool('MS_InventoryRemoved',true,,6);
             }
+            flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
+            break;
+        case 6:
+            flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
+            break;
         case 7:
             flagbase.SetBool('Have_ROM',true,,-1);
             MarkConvPlayed("MeetTracerTong", bFemale);// do we need FemJC versions for these?
             MarkConvPlayed("TriadCeremony", bFemale);
+            flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             break;
         case 8:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
-            flagbase.SetBool('MetSmuggler',true,,-1);
             break;
         case 9:
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
@@ -618,6 +623,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
         case 81:
             flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
+            flagbase.SetBool('MetSmuggler',true,,-1);
             break;
 
         case 105:
