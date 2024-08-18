@@ -26,3 +26,17 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 
     f.GetDressed();
 }
+
+function AddDXRCredits(CreditsWindow cw)
+{
+    local DXRFashionManager f;
+
+    if (IsOctoberUnlocked()) {
+        f=class'DXRFashionManager'.static.GiveItem(player());
+
+        cw.PrintHeader("Fashion");
+        cw.PrintText("Number of Clothes in Closet:"@f.numClothes);
+        //Might be cool to track number of outfit changes also
+        cw.PrintLn();
+    }
+}

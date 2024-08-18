@@ -75,6 +75,7 @@ function InitDefaults()
     newgameplus_num_removed_augs = 1;
     newgameplus_num_removed_weapons = 1;
 
+    clothes_looting=0;
 
 #ifdef hx
     difficulty = 1;
@@ -670,6 +671,12 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     }
     else if(IsHalloweenMode()) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
+    }
+
+    if (IsHalloweenMode()){
+        clothes_looting = 1;
+    } else {
+        clothes_looting = 0;
     }
 
     if(class'MenuChoice_NewGamePlus'.default.value == 0)

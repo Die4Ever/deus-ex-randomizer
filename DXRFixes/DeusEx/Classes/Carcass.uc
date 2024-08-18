@@ -154,6 +154,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     local bool bFoundSomething;
     local DeusExPlayer player;
     local POVCorpse corpse;
+    local DXRFashionManager fashion;
 
     //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -163,6 +164,11 @@ function Frob(Actor Frobber, Inventory frobWith)
     // No doublefrobbing in multiplayer.
     if (bQueuedDestroy)
         return;
+
+    fashion = class'DXRFashionManager'.static.GiveItem(#var(PlayerPawn)(player));
+    if (fashion.IngestCarcass(class<#var(DeusExPrefix)Carcass>(Class))){
+        player.ClientMessage("Looted some clothes!");
+    }
 
     // if we've already been searched, let the player pick us up
     // don't pick up animal carcii
