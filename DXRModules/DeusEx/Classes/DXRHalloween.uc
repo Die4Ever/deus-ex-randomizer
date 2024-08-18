@@ -111,7 +111,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local bool removeItem;
 
     //At least in vanilla, all carcasses are the original class name + Carcass
-    livingClassName = string(carc.class.Name);
+    livingClassName = string(carc.class);
     livingClassName = module.ReplaceText(livingClassName,"Carcass","");
 
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
