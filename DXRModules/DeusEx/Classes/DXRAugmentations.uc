@@ -95,6 +95,8 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
     }
 
     aug.Deactivate();
+    if (AugAqualung(aug) != None)
+        aug.bIsActive = false; // Deactivate() skips bAlwaysActive augs
     aug.bHasIt = False;
     aug.CurrentLevel=0;
 
@@ -119,7 +121,6 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
     // This is needed, otherwise the side-of-screen aug display gets confused
     // when you add a new aug
     am.RefreshAugDisplay();
-
 }
 
 static function RedrawAugMenu(DeusExPlayer player)
