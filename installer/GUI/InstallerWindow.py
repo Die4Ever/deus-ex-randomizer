@@ -232,9 +232,9 @@ class InstallerWindow(GUIBase):
         self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.globalsettings['dxvk'])
         self.setgrid(self.dxvk, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         if IsWindows():
-            Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
+            Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan. May cause issues with opening the game.")
         else:
-            Hovertip(self.dxvk, "Shouldn't be necessary on Linux.")
+            Hovertip(self.dxvk, "Shouldn't be necessary on Linux. May cause issues with opening the game.")
         self.FixColors(self.dxvk)
         self.row+=1
 
