@@ -130,10 +130,10 @@ function CreateRandomMerchant()
 
     RandomizeItems(items);
 
-    CreateMerchant("The Merchant", 'DXRNPCs1', items, GetRandomMerchantPosition());
+    CreateMerchant("The Merchant", 'DXRNPCs1', class'Merchant', items, GetRandomMerchantPosition());
 }
 
-function ScriptedPawn CreateForcedMerchant(string name, Name bindname, vector loc, rotator rot, optional class<Inventory> forcedItem)
+function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Merchant> mClass, vector loc, rotator rot, optional class<Inventory> forcedItem)
 {
     local ItemPurchase items[8];
     local int forced;
@@ -149,10 +149,10 @@ function ScriptedPawn CreateForcedMerchant(string name, Name bindname, vector lo
     }
     RandomizeItems(items, forced);
 
-    return CreateMerchant(name, bindname, items, loc, rot);
+    return CreateMerchant(name, bindname, mclass, items, loc, rot);
 }
 
-function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase items[8], vector loc, optional rotator rot)
+function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant> mClass, ItemPurchase items[8], vector loc, optional rotator rot)
 {
     local #var(prefix)Businessman3 oldnpc;
     local Merchant npc;
@@ -211,7 +211,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
         info("CreateMerchant reusing merchant "$oldnpc@bindname);
         return None;
     }
-    npc = Spawn(class'Merchant',, bindname, loc, rot );
+    npc = Spawn(mClass,, bindname, loc, rot );
     if( npc == None ) {
         warning("CreateMerchant failed to spawn merchant");
         return None;

@@ -10,20 +10,6 @@ function bool ShouldDoSinglePickPocket(DeusExPlayer Frobbie)
 }
 #endif
 
-//Oui Oui
-function MakeFrench()
-{
-    MultiSkins[0]=Texture'DeusExCharacters.Skins.ChefTex0';
-    MultiSkins[7]=Texture'DeusExCharacters.Skins.ChefTex3'; //Should he actually have the hat?
-    CarcassType=Class'LeMerchantCarcass';
-
-    bHateCarcass=true;
-    bHateDistress=true;
-    bHateIndirectInjury=true;
-    bHateInjury=true;
-    bHateShot=true;
-}
-
 #ifdef revision
 function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
                                Vector offset, Name damageType, optional bool bTestOnly)

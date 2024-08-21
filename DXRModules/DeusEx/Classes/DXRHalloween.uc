@@ -100,6 +100,40 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
     return ResurrectCorpse(self, carc);
 }
 
+static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#var(DeusExPrefix)Carcass> carcClass)
+{
+    local string livingClassName;
+
+    //For handling special cases that we're too lazy to make unique living classes for
+    switch(carcClass){
+        case class'MJ12CloneAugShield1NametagCarcass':
+            return "MJ12CloneAugShield1";
+        case class'MJ12CloneAugStealth1NametagCarcass':
+            return "MJ12CloneAugStealth1";
+        case class'MJ12CloneAugTough1NametagCarcass':
+            return "MJ12CloneAugTough1";
+        case class'NSFCloneAugShield1NametagCarcass':
+            return "NSFCloneAugShield1";
+        case class'NSFCloneAugStealth1NametagCarcass':
+            return "NSFCloneAugStealth1";
+        case class'NSFCloneAugTough1NametagCarcass':
+            return "NSFCloneAugTough1";
+        case class'UNATCOCloneAugShield1NametagCarcass':
+            return "UNATCOCloneAugShield1";
+        case class'UNATCOCloneAugStealth1NametagCarcass':
+            return "UNATCOCloneAugStealth1";
+        case class'UNATCOCloneAugTough1NametagCarcass':
+            return "UNATCOCloneAugTough1";
+        default:
+            //Standard carcass with a matching living class
+            //(We should probably strive for this to be the norm)
+            //At least in vanilla, all carcasses are the original class name + Carcass
+            livingClassName = string(carcClass);
+            livingClassName = module.ReplaceText(livingClassName,"Carcass","");
+            return livingClassName;
+    }
+}
+
 static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Carcass carc, optional String pawnname)
 {
     local string livingClassName;
@@ -110,10 +144,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local Inventory item, nextItem;
     local bool removeItem;
 
-    //At least in vanilla, all carcasses are the original class name + Carcass
-    livingClassName = string(carc.class);
-    livingClassName = module.ReplaceText(livingClassName,"Carcass","");
-
+    livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
 
     if (livingClass==None){
