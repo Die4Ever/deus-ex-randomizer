@@ -5,12 +5,12 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
     //Plastic Fragments look more like pumpkin chunks
     //The generically calculated DSize is a bit small for how a pumpkin shatters
     //Calculates too few frags
-    Super.Frag(class'DeusEx.PlasticFragment',Momentum,DSize*1.5,NumFrags*4);
+    Super.Frag(class'JackOLanternFragment',Momentum,DSize*1.5,NumFrags*4);
 }
 
 defaultproperties
 {
-     FragType=class'DeusEx.FleshFragment'
+     FragType=class'JackOLanternFragment'
      ItemName="Jack-O'-Lantern"
      Mesh=LodMesh'DeusExDeco.Poolball'
      MultiSkins(0)=Texture'PumpkinTex'

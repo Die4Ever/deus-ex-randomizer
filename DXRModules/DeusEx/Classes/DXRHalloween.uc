@@ -17,7 +17,7 @@ function FirstEntry()
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
             piano.ItemName = "Staufway Piano";
         }
-        MakeSpiderWebs();
+        MakeCosmetics();
     }
 }
 
@@ -233,7 +233,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     return True;
 }
 
-function MakeSpiderWebs()
+function MakeCosmetics()
 {
     local NavigationPoint p;
     local Light lgt;
@@ -252,23 +252,68 @@ function MakeSpiderWebs()
         locs[num++] = lgt.Location;
     }
     // random order gives better results
-    for(i=0; i<num; i++) {
+    for(i=0; i<num/2; i++) {
         slot = rng(num);
         SpawnSpiderweb(locs[slot]);
+    }
+
+    SetSeed("MakeJackOLanterns");
+    for(i=0; i<num/30; i++) {
+        slot = rng(num);
+        SpawnJackOLantern(locs[slot]);
+    }
+}
+
+function SpawnJackOLantern(vector loc)
+{
+    local DXRJackOLantern jacko;
+    local LocationNormal floor, wall1;
+    local FMinMax distrange;
+    local float size;
+    local Rotator r, r2;
+    local int i, num;
+
+    loc.X += rngfn() * 256.0;// 16 feet in either direction
+    loc.Y += rngfn() * 256.0;// 16 feet in either direction
+    loc.Z += rngf() * 80.0;// 5 feet upwards (this can make them end up above counters and stuff where there aren't normally PathNodes)
+
+    floor.loc = loc;
+    distrange.min = 0.1;
+    distrange.max = 16*100;
+    size = rngf() + 0.6;
+
+    if(!NearestFloor(floor, distrange, size)) return;
+
+    distrange.max = 16*75;
+    wall1 = floor;
+    if( ! NearestWallSearchZ(wall1, distrange, 16*3, floor.loc, size) ) return;
+
+    r.Yaw = Rotator(wall1.norm).Yaw;
+    jacko = spawn(class'DXRJackOLantern',,, wall1.loc, r);
+    jacko.DrawScale *= size;
+
+    num = rng(6);
+    for(i=0; i<num; i++) {
+        r2.Yaw = rng(20000) - 10000;
+        loc = wall1.loc + (wall1.norm << r2) * 32;
+        jacko = spawn(class'DXRJackOLantern',,, loc, r);
+        size = rngf() + 0.6;
+        jacko.DrawScale *= size;
     }
 }
 
 function SpawnSpiderweb(vector loc)
 {
     local Spiderweb web;
-    local float dist;
+    local float dist, size;
     local rotator rot;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
     loc.Z += rngf() * 80.0;// 5 feet upwards
 
-    if(!GetSpiderwebLocation(loc, rot)) return;
+    size = rngf() + 0.5;
+    if(!GetSpiderwebLocation(loc, rot, size * 10)) return;
 
     foreach RadiusActors(class'Spiderweb', web, 100, loc) {
         dist = VSize(loc-web.Location);
@@ -277,9 +322,10 @@ function SpawnSpiderweb(vector loc)
 
     rot.roll = rng(65536);
     web = Spawn(class'Spiderweb',,, loc, rot);
+    web.DrawScale = size;
 }
 
-function bool GetSpiderwebLocation(out vector loc, out rotator rot)
+function bool GetSpiderwebLocation(out vector loc, out rotator rot, float size)
 {
     local bool found_ceiling, found_floor;
     local LocationNormal ceiling, floor, ceiling_or_floor, wall1, wall2;
@@ -292,9 +338,9 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
     distrange.min = 0.1;
     distrange.max = 16*100;
 
-    found_ceiling = NearestCeiling(ceiling, distrange, 16);
-    found_floor = NearestFloor(floor, distrange, 16);
-    //floor.loc.Z += 16*9;
+    found_ceiling = NearestCeiling(ceiling, distrange, size);
+    found_floor = NearestFloor(floor, distrange, size);
+    //floor.loc.Z += size*9;
 
     if(found_ceiling && chance_single(50)) {
         ceiling_or_floor = ceiling;
@@ -320,7 +366,7 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
 
     distrange.max = 16*75;
     wall1 = ceiling_or_floor;
-    if( ! NearestWallSearchZ(wall1, distrange, 16*3, ceiling_or_floor.loc, 10) ) return false;
+    if( ! NearestWallSearchZ(wall1, distrange, 16*3, ceiling_or_floor.loc, size) ) return false;
     ceiling_or_floor.loc.X = wall1.loc.X;
     ceiling_or_floor.loc.Y = wall1.loc.Y;
 
@@ -328,7 +374,7 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
 
     distrange.max = 16*50;
     wall2 = wall1;
-    if(chance_single(40) || !NearestCornerSearchZ(wall2, distrange, wall1.norm, 16*3, ceiling_or_floor.loc, 10) ) {
+    if(chance_single(40) || !NearestCornerSearchZ(wall2, distrange, wall1.norm, 16*3, ceiling_or_floor.loc, size) ) {
         // just 2 axis (ceiling/floor + wall1)
         rot = Rotator(wall1.norm);
         if( found_ceiling ) rot.pitch -= 4096;
