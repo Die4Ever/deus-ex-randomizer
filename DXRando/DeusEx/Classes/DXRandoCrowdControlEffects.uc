@@ -2321,6 +2321,7 @@ function StopAllCrowdControlEvents()
     StopCrowdControlEvent("resident_evil");
     StopCrowdControlEvent("radioactive");
     StopCrowdControlEvent("doom_mode");
+    StopCrowdControlEvent("wine_bullets");
 }
 
 function int StopCrowdControlEvent(string code, optional bool bKnownStop)

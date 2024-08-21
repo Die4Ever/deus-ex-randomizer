@@ -1,5 +1,32 @@
 class DXRJackOLantern extends #var(DeusExPrefix)Decoration;
 
+function BeginPlay()
+{
+    Super.BeginPlay();
+    SetSkin(Rand(5));
+}
+
+function SetSkin(int skinNum)
+{
+    switch(skinNum){
+        case 0:
+            MultiSkins[0]=Texture'PumpkinTex';
+            break;
+        case 1:
+            MultiSkins[0]=Texture'PumpkinTex2';
+            break;
+        case 2:
+            MultiSkins[0]=Texture'PumpkinTex3';
+            break;
+        case 3:
+            MultiSkins[0]=Texture'PumpkinTex4';
+            break;
+        case 4:
+            MultiSkins[0]=Texture'PumpkinTex5';
+            break;
+    }
+}
+
 simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFrags)
 {
     //Plastic Fragments look more like pumpkin chunks
