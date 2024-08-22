@@ -527,6 +527,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('Have_ROM',true,,-1);
             MarkConvPlayed("MeetTracerTong", bFemale);// do we need FemJC versions for these?
             MarkConvPlayed("TriadCeremony", bFemale);
+            flagbase.SetBool('DragonHeadsInLuckyMoney', true);
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             break;
         case 8:
