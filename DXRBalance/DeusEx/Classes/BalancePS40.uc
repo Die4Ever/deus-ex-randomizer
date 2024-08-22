@@ -37,4 +37,5 @@ function int UpgradeToPS40()
 defaultproperties
 {
     HitDamage=15// in between the 8 damage bugged vanilla, and the 25 or 40 damage the code implies vanilla intended
+    ProjectileClass=Class'PlasmaBoltFixTicks'
 }

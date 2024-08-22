@@ -257,31 +257,91 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
     if(ignore_skill)// also ignores aug
         mult = 1.0;
 
-    if( ! bInstantHit && class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
+    if( ProjectileClass != None ) {
         // ProjectileClass is the currently loaded ammo
         if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes ) {
             mult *= 2.0 / float(GetNumHits());
         }
+    }
+
+    if(get_default) {
+        if(#var(prefix)WeaponHideAGun(self) != None) return 100 * mult;
+        // mostly copied from DXRWeapons module
+        switch(ProjectileClass) {
+        case class'#var(prefix)Dart':
+            return 15.0 * mult;
+
+        case class'#var(prefix)DartFlare':
+        case class'#var(prefix)DartPoison':
+            return 5.0 * mult;
+
+        case class'#var(prefix)PlasmaBolt':
+        case class'PlasmaBoltFixTicks':
+            return 18.0 * mult;
+
+        case class'#var(prefix)Rocket':
+        case class'RocketFixTicks':
+            return 300.0 * mult;
+
+        case class'#var(prefix)RocketWP':
+            return 300.0 * mult;
+
+        case class'#var(prefix)HECannister20mm':
+        case class'HECannisterFixTicks':
+            // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
+            return 180.0 * mult;
+
+        case class'#var(prefix)Shuriken':
+        case class'#var(prefix)Fireball':
+            return default.HitDamage * mult;
+
+        case class'#var(prefix)LAM':
+            return 500.0 * mult;
+
+        case class'#var(prefix)RocketLAW':
+            return 1000.0 * mult;
+
+        case class'#var(prefix)GreaselSpit':
+        case class'#var(prefix)GraySpit':
+            return 8.0 * mult;
+
+        case class'#var(prefix)RocketMini':
+            return 50.0 * mult;
+
+        case None:
+            return default.HitDamage * mult;
+        }
         return ProjectileClass.default.Damage * mult;
     }
-    if(get_default) return default.HitDamage * mult;
-    else return HitDamage * mult;
+
+    if( class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
+        return ProjectileClass.default.Damage * mult;
+    }
+
+    return HitDamage * mult;
 }
 
 function int GetNumHits()
 {
-    if( ProjectileClass == class'RocketFixTicks' )
-        return 4;
-    if( ProjectileClass == class'HECannisterFixTicks' || ProjectileClass == class'PlasmaBoltFixTicks' )
-        return 3;
+    local int i;
 
-    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes )
-        return 5;
+    if( ProjectileClass == class'RocketFixTicks' )
+        i = 4;
+    else if( ProjectileClass == class'HECannisterFixTicks' )
+        i = 3;
+    else if( ProjectileClass == class'PlasmaBoltFixTicks' )
+        i = 2;
+    else if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes )
+        i = 5;
+    else
+        i = 1;
+
     if( bInstantHit && AreaOfEffect == AOE_Cone)
-        return 5;
+        i *= 5;
     if( ! bInstantHit && AreaOfEffect == AOE_Cone)
-        return 3;
-    return 1;
+        i *= 3;
+
+    return i;
 }
 
 function Fire(float value)
