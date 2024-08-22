@@ -626,19 +626,23 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('MetSmuggler',true,,-1);
             break;
 
-        case 105:
-            GiveImage(player, class'Image10_Paris_CatacombsTunnels');
-            break;
-        case 106:
-        case 109:
-            GiveImage(player, class'Image10_Paris_CatacombsTunnels');
-            GiveImage(player, class'Image10_Paris_Metro');
+        case 95:
+            GiveKey(player, 'EngineRoomDoor', "Below Decks key");
             break;
 
         case 115:
             flagbase.SetBool('templar_upload',true,,-1);
             flagbase.SetBool('GuntherHermann_Dead',true,,-1);
             GiveKey(player, 'cathedralgatekey', "Gatekeeper's Key");
+            GiveImage(player, class'Image11_Paris_Cathedral');
+            GiveImage(player, class'Image11_Paris_CathedralEntrance');
+        case 109:
+            GiveImage(player, class'Image10_Paris_Metro');
+        case 106:
+        case 105:
+            GiveImage(player, class'Image10_Paris_CatacombsTunnels');
+            GiveKey(player, 'catacombs_blastdoor', "Blast Door Key");
+            GiveKey(player, 'catacombs_blastdoor02', "Catacombs Sewer Entry Key");
             break;
 
         case 129:
@@ -657,9 +661,9 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Helios_Door1", bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
             MarkConvPlayed("DL_Helios_Intro", bFemale);         // I will now explain why you have been allowed to reach Sector 3.
             MarkConvPlayed("DL_Final_Page03", bFemale);         // Don't get your hopes up; my compound is quite secure.
-            flagbase.SetBool('MS_PaulOrGaryAppeared',true,,-1);        // It let me through... I can't believe it.
+            flagbase.SetBool('MS_PaulOrGaryAppeared',true,,-1); // It let me through... I can't believe it.
             MarkConvPlayed("MeetHelios", bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
-            flagbase.SetBool('MS_TongAppeared',true,,-1);              // We can get you into Sector 3 -- but no further.
+            flagbase.SetBool('MS_TongAppeared',true,,-1);       // We can get you into Sector 3 -- but no further.
             GiveImage(player, class'Image15_Area51_Sector3');
             // fallthrough
         case 152:
