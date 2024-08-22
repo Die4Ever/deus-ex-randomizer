@@ -95,6 +95,11 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
     }
 
     aug.Deactivate();
+    // Deactivate() skips bAlwaysActive augs
+    aug.bIsActive = false;
+    if(aug.IsInState('Active')) {
+        aug.GotoState('Inactive');
+    }
     aug.bHasIt = False;
     aug.CurrentLevel=0;
 
