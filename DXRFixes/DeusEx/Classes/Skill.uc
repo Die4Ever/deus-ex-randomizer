@@ -27,17 +27,29 @@ function bool IncLevel(optional DeusExPlayer usePlayer)
                 // decrement the cost and increment the current skill level
                 localPlayer.SkillPointsAvail -= GetCost();
                 CurrentLevel++;
-                localPlayer.ClientMessage(SkillName $ " upgraded to " $ skillLevelStrings[CurrentLevel]);
+                localPlayer.ClientMessage(UpgradeMessage());
                 return True;
             }
         }
         else
         {
             CurrentLevel++;
-            log(SkillName $ " upgraded to " $ skillLevelStrings[CurrentLevel]);
+            log(UpgradeMessage());
             return True;
         }
     }
 
     return False;
+}
+
+function string UpgradeMessage()
+{
+    local float before, after;
+
+    before = LevelValues[CurrentLevel-1];
+    after = LevelValues[CurrentLevel];
+
+    return SkillName $ " upgraded to " $ skillLevelStrings[CurrentLevel]
+        $ " (from " $ class'DXRSkills'.static.DescriptionLevelShort(self, CurrentLevel-1, before)
+        $ " to " $ class'DXRSkills'.static.DescriptionLevelShort(self, CurrentLevel, after) $ ")";
 }

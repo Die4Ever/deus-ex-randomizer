@@ -362,14 +362,14 @@ simulated function RandoAug(Augmentation a)
     RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
+static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local Augmentation a;
     local float f;
 
     a = Augmentation(act);
     if( a == None ) {
-        err("DescriptionLevel failed for aug "$act);
+        log("ERROR: DescriptionLevel failed for aug "$act);
         shortDisplay = "err";
         return shortDisplay;
     }
@@ -414,8 +414,8 @@ simulated function string DescriptionLevelExtended(Actor act, int i, out string 
     }
     else if( a.Class == class'#var(prefix)AugHealing') {
         if(#defined(injections)) word = "Max Health Cap";
-        if(#defined(injections) && val > 100 && val > dxr.flags.settings.health) {
-            val = FMax(100, dxr.flags.settings.health);
+        if(#defined(injections) && val > 100 && val > class'DXRando'.default.dxr.flags.settings.health) {
+            val = FMax(100, class'DXRando'.default.dxr.flags.settings.health);
         }
         else word = "Healing";
         shortDisplay=int(val) $ " HP";

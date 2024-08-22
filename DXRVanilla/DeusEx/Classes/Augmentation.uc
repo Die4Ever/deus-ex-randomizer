@@ -183,9 +183,21 @@ function bool IncLevel()
 
     CurrentLevel++;
 
-    Player.ClientMessage(Sprintf(AugNowHave, AugmentationName, CurrentLevel + 1));
+    Player.ClientMessage(UpgradeMessage());
 }
 
+function string UpgradeMessage()
+{
+    local float before, after;
+
+    before = LevelValues[CurrentLevel-1];
+    if(CurrentLevel >= 4) after = Level5Value;
+    else after = LevelValues[CurrentLevel];
+
+    return Sprintf(AugNowHave, AugmentationName, CurrentLevel + 1)
+        $ " (from " $ class'DXRAugmentations'.static.DescriptionLevelShort(self, CurrentLevel-1, before)
+        $ " to " $ class'DXRAugmentations'.static.DescriptionLevelShort(self, CurrentLevel, after) $ ")";
+}
 
 defaultproperties
 {

@@ -173,7 +173,7 @@ simulated function RandoSkillLevelValues(Skill a)
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
+static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local Skill s;
     local float f;
@@ -182,7 +182,7 @@ simulated function string DescriptionLevelExtended(Actor act, int i, out string 
 
     s = Skill(act);
     if( s == None ) {
-        err("DescriptionLevel failed for skill "$act);
+        log("ERROR: DescriptionLevel failed for skill "$act);
         return "err";
     }
 

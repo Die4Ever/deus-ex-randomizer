@@ -378,13 +378,13 @@ simulated function RemoveSmallestJump(int len, out float a[16])
     }
 }
 
-simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
+static simulated function string DescriptionLevel(Actor act, int i, out string word, out float val, float defaultval)
 {
     local string shortDisplay;
     return DescriptionLevelExtended(act, i, word, val, defaultval, shortDisplay);
 }
 
-simulated function string DescriptionLevelShort(Actor act, int i, out float val)
+static simulated function string DescriptionLevelShort(Actor act, int i, out float val)
 {
     local string word;
     local float defaultval;
@@ -393,11 +393,11 @@ simulated function string DescriptionLevelShort(Actor act, int i, out float val)
     return shortDisplay;
 }
 
-simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
+static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local float f;
 
-    warn("DXRBase DescriptionLevel failed for " $ act);
+    log("WARNING: DXRBase DescriptionLevel failed for " $ act);
     word = "% of Normal";
     f = val / defaultval;
     shortDisplay = string(int(f * 100.0));
