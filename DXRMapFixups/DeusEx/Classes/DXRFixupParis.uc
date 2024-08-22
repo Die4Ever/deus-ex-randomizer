@@ -249,11 +249,7 @@ function AnyEntryMapFixes()
             // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
             npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
             if(npcs != None) {
-                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384), class'#var(prefix)HazMatSuit');
-                m = Merchant(sp);
-                if (m!=None){  // CreateForcedMerchant returns None if he already existed, but we still need to call it to recreate the conversation since those are transient
-                    m.MakeFrench();
-                }
+                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384), class'#var(prefix)HazMatSuit');
             }
             // give him weapons to defend himself
             dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));

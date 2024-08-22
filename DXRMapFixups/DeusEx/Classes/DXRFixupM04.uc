@@ -248,6 +248,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        dxr.flagbase.SetBool('DXRando_NSFHQVisited', true,, 5);
+
         break;
 
     case "04_NYC_UNATCOISLAND":
@@ -417,6 +419,11 @@ function AnyEntryMapFixes()
 #endif
         DeleteConversationFlag(GetConversation('FamilySquabbleWrapUpGilbertDead'), 'PlayerKilledRenton', false);
         FixConversationFlag(GetConversation('SandraMadAtPlayer'), 'PlayerKilledRenton', true, 'AlwaysFalse', true);
+
+        if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
+            DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
+        }
+
         break;
 
     case "04_NYC_SMUG":

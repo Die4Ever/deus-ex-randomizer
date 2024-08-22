@@ -40,8 +40,8 @@ simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
 // level value is feet*16
 defaultproperties
 {
-    LevelValues(0)=120
-    LevelValues(1)=240
+    LevelValues(0)=160
+    LevelValues(1)=320
     LevelValues(2)=640
     LevelValues(3)=1600
 }

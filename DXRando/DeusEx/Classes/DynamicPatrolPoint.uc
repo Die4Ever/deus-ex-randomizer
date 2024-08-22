@@ -19,7 +19,7 @@ function SetMyGuy(ScriptedPawn p)
 
 function Timer()
 {
-    if(myGuy == None) {
+    if(myGuy == None || myGuy.GetStateName() == 'Disabled') {
         SetTimer(0, false);
         myGuy = None;
         return;

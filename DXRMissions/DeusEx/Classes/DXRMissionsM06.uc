@@ -11,7 +11,7 @@ function int InitGoals(int mission, string map)
     case "06_HONGKONG_VERSALIFE":
         AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | SITTING_GOAL, 'Male2', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
-        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'Male9', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'NervousWorker0', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundley", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
@@ -102,7 +102,7 @@ function int InitGoalsRev(int mission, string map)
     case "06_HONGKONG_VERSALIFE":
         AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | SITTING_GOAL, 'Male2', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
-        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'Male9', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'NervousWorker0', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundley", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
@@ -226,6 +226,26 @@ function AnyEntry()
     UpdateGoalWithRandoInfo('ConvinceRedArrow', "Max Chen could be anywhere in the Lucky Money.");
 }
 
+function PreFirstEntryMapFixes()
+{
+    local #var(prefix)Male1 male;
+
+    Super.AnyEntry();
+
+    switch(dxr.localURL) {
+    case "06_HONGKONG_VERSALIFE":
+        //Delete the original
+        foreach AllActors(class'#var(prefix)Male1',male){
+            if (male.BindName == "Disgruntled_Guy"){
+                male.Destroy();
+                break;
+            }
+        }
+        break;
+    }
+
+}
+
 function DeleteGoal(Goal g, GoalLocation Loc)
 {
     if (g.name=="Dragon's Tooth Sword"){
@@ -249,6 +269,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local WeaponNanoSword dts;
     local DataLinkTrigger dlt;
+    local NervousWorker   nw;
 
     switch(g.name) {
     case "Dragon's Tooth Sword":
@@ -263,7 +284,23 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         dlt.datalinkTag='DL_Tong_00';
         dlt.SetCollisionSize(100,20);
         break;
+    case "John Smith":
+        nw = NervousWorker(Spawnm(class'NervousWorker',,,Loc.positions[0].pos,Loc.positions[0].rot));
+        g.actors[0].a=nw;
+        nw.ConBindEvents();
+        break;
     }
+}
+
+function MoveGoalToLocation(Goal g, GoalLocation Loc)
+{
+    if (g.Name=="John Smith"){
+        if (g.actors[0].a==None){
+            CreateGoal(g,Loc); //Spawn the actual Nervous Worker
+        }
+    }
+
+    Super.MoveGoalToLocation(g,Loc);
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)

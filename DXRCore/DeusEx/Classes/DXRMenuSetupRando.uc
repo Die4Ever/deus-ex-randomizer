@@ -88,6 +88,14 @@ function BindControls(optional string action)
     EnumOption("Don't Show", 0, f.moresettings.splits_overlay);
     EnumOption("Show", 1, f.moresettings.splits_overlay);
 
+#ifdef vanilla
+    if (f.IsOctoberUnlocked()){
+        NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
+        EnumOption("Full Closet", 0, f.clothes_looting);
+        EnumOption("Looting Required", 1, f.clothes_looting);
+    }
+#endif
+
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win.");

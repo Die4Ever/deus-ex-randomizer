@@ -2087,6 +2087,10 @@ function string RemapBingoEvent(string eventname)
         case "MeetSandraRenton_Played":
             _MarkBingo("InterviewLocals"); //Split into another event, but still return this one as-is
             return eventname;
+        case "BlackCat_peeptime":
+            return "Cat_peeptime";
+        case "PetAnimal_BlackCat":
+            return "PetAnimal_Cat";
         default:
             return eventname;
     }
@@ -3402,7 +3406,7 @@ defaultproperties
 #ifdef injections
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)
 #endif
-    bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",max=3,missions=54346)
+    bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",desc_singular="Use tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use 1 rebreather",max=3,missions=55400)
     bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",desc_singular="Hunt 1 bird",max=10,missions=24446)
     bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18510)

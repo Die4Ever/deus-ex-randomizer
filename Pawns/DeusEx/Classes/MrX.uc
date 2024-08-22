@@ -175,8 +175,8 @@ function PlayFootStep()
 defaultproperties
 {
     DrawScale=1.3
-    CollisionRadius=28.6
-    CollisionHeight=65.78
+    CollisionRadius=25
+    CollisionHeight=58
     Mass=1000
     WalkSound=Sound'DeusExSounds.Robot.MilitaryBotWalk'
     Health=2000

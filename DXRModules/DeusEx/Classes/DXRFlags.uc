@@ -11,6 +11,7 @@ const WaltonWareEntranceRando = 8;
 const RandoMedium = 9;
 const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
+const ZeroRandoPlus = 12;
 const HordeZombies = 1030;
 const HalloweenMode = 1031;
 const WaltonWareHalloween = 1032;// why didn't they put leap day at the end of October?
@@ -33,7 +34,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 
     Super.PlayerAnyEntry(p);
 #ifdef injections
-    p.bZeroRando = IsZeroRando();
+    p.bZeroRando = IsZeroRandoPure();
     p.bReducedRando = IsReducedRando();
 #endif
 
@@ -75,6 +76,7 @@ function InitDefaults()
     newgameplus_num_removed_augs = 1;
     newgameplus_num_removed_weapons = 1;
 
+    clothes_looting=0;
 
 #ifdef hx
     difficulty = 1;
@@ -672,6 +674,12 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
     }
 
+    if (IsHalloweenMode()){
+        clothes_looting = 1;
+    } else {
+        clothes_looting = 0;
+    }
+
     if(class'MenuChoice_NewGamePlus'.default.value == 0)
         moresettings.newgameplus_curve_scalar = -1;
 
@@ -700,6 +708,7 @@ function int GameModeIdForSlot(int slot)
     }
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return ZeroRando;
+    if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
     if(slot--==0) return RandoMedium;
     if(slot--==0) return SeriousSam;
@@ -726,6 +735,8 @@ function string GameModeName(int gamemode)
         return "Randomizer Lite";
     case ZeroRando:
         return "Zero Rando";
+    case ZeroRandoPlus:
+        return "Zero Rando Plus";
     case RandoMedium:
         return "Randomizer Medium";
     case SeriousSam:
@@ -767,12 +778,17 @@ function bool IsHordeMode()
 
 function bool IsZeroRando()
 {
+    return gamemode == ZeroRando || gamemode == ZeroRandoPlus;
+}
+
+function bool IsZeroRandoPure()
+{
     return gamemode == ZeroRando;
 }
 
 function bool IsReducedRando()
 {
-    return gamemode == RandoLite || gamemode == ZeroRando || gamemode == RandoMedium;
+    return gamemode == RandoLite || gamemode == ZeroRando || gamemode == ZeroRandoPlus || gamemode == RandoMedium;
 }
 
 function bool IsSpeedrunMode()

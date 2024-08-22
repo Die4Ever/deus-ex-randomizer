@@ -38,6 +38,8 @@ var #var(flagvarprefix) int newgameplus_num_skill_downgrades;
 var #var(flagvarprefix) int newgameplus_num_removed_augs;
 var #var(flagvarprefix) int newgameplus_num_removed_weapons;
 
+var #var(flagvarprefix) int clothes_looting;
+
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
 // CheckConfig in subclass, maybe ExecMaxRando if it should be included in that, ScoreFlags, and SetDifficulty for different game modes
@@ -420,6 +422,11 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_camera_mode', moresettings.camera_mode, mode, str);
     FlagInt('Rando_splits_overlay', moresettings.splits_overlay, mode, str);
 
+    //Keep this option hidden in the credits until October
+    if (mode!=Credits || IsOctoberUnlocked()){
+        FlagInt('Rando_clothes_looting',clothes_looting,mode,str);
+    }
+
     return str;
 }
 
@@ -597,6 +604,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Camera Mode";
         case 'Rando_splits_overlay':
             return "Splits Overlay";
+        case 'Rando_clothes_looting':
+            return "Clothes Looting";
         default:
             err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
@@ -899,6 +908,14 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Don't Show";
             } else {
                 return "Show";
+            }
+            break;
+
+        case 'Rando_clothes_looting':
+            if (val==0){
+                return "Full Closet";
+            } else {
+                return "Looting Required";
             }
             break;
 

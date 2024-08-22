@@ -317,7 +317,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     }
 #endif
 
-    if(dxr.flags.IsZeroRando()) {
+    if(wet == 0) {
         s = "(Strength) " $ word $ ":|n    " $ s;
     } else {
         s = "(DXRando) " $ word $ ":|n    " $ s;

@@ -212,6 +212,11 @@ function bool IsChristmasSeason()
     return false;
 }
 
+function bool ClothesLootingEnabled()
+{
+    return GetDXR().flags.clothes_looting != 0;
+}
+
 final function int SystemTime()
 {
     return _SystemTime(Level);
