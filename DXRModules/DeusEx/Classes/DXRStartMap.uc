@@ -936,6 +936,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "Terrorist_ClassUnconscious":
         case "Terrorist_peeptime":
             return start_map>=40; //Miguel is the only Terrorist after mission 3 - easier to just block this
+        case "Supervisor_Paid":
+            return start_map >= 70;
         case "WarehouseEntered":
         case "Antoine_Dead":
         case "Chad_Dead":
