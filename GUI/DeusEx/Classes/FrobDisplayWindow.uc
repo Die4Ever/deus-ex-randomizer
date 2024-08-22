@@ -521,16 +521,8 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
 function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
 {
     local string strInfo;
-    local int dmg,compDmg,dmgDiff,compMode;
-    local string dmgDiffStr,fireRateDiffStr;
-    local float mod,fireRate,compFireRate,fireRateDiff;
-    local #var(DeusExPrefix)Weapon compW;
-
-    // TODO: Maybe this should be a setting?
-    //0 = off
-    //1 = Compare to in-hand weapon
-    //2 = Compare to default values
-    compMode=1;
+    local int dmg,compDmg;
+    local float mod,fireRate,compFireRate;
 
     numLines=1;
     strInfo = w.itemName;
@@ -539,13 +531,11 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
 
     numLines++; //Damage
     numLines++; //Fire rate
+
     //Calculate the damage of the weapon you're looking at
 #ifdef injections
     dmg = DXRWeapon(w).GetDamage(true);
-
-    if( class<DeusExProjectile>(w.ProjectileClass) != None && class<DeusExProjectile>(w.ProjectileClass).default.bExplodes==false )
-        dmg /= float(DXRWeapon(w).GetNumHits());
-
+    compDmg = DXRWeapon(w).GetDamage(true,true);
 #else
     if (w.AreaOfEffect == AOE_Cone){
         if (w.bInstantHit)
@@ -561,69 +551,19 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
     dmg = mod * dmg;
 #endif
     fireRate = 1.0/w.ShotTime;
-
-    //Calculate the damage of the weapon in your hand
-    if (#var(DeusExPrefix)Weapon(player.InHand)!=None && compMode==1){
-        compW = #var(DeusExPrefix)Weapon(player.InHand);
-#ifdef injections
-        compDmg = DXRWeapon(compW).GetDamage(true);
-
-        if( class<DeusExProjectile>(compW.ProjectileClass) != None && class<DeusExProjectile>(compW.ProjectileClass).default.bExplodes==false )
-            compDmg /= float(DXRWeapon(compW).GetNumHits());
-#else
-        if (compW.AreaOfEffect == AOE_Cone){
-            if (compW.bInstantHit){
-                compDmg = compW.HitDamage * 5;
-            }else{
-                compDmg = compW.HitDamage * 3;
-            }
-        }else{
-            compDmg = compW.HitDamage;
-        }
-        mod = 1.0 - compW.GetWeaponSkill();
-        compDmg = mod * compDmg;
-#endif
-        compFireRate = 1.0/compW.ShotTime;
-    } else if (compMode==2){
-        //It's a lot more work to calculate the default weapon damage,
-        //since the convenience functions are all working with the configured
-        //values.  I'm not bothering with that for right now.
-        //Maybe we could temporarily copy the default stats over to the actual weapon,
-        //run the calculations, then swap the stats back to the randomized ones, so
-        //that we could use the same calculations?
-
-        compFireRate = 1.0/compW.Default.ShotTime;
-    }
+    compFireRate = 1.0/w.Default.ShotTime;
 
     strInfo=strInfo $ CR() $"Damage: "$dmg;
 
-    //Show the difference in damage with your current weapon
-    if (compDmg!=0){
-        dmgDiff = dmg - compDmg;
-        dmgDiffStr = string(dmgDiff);
-        if (dmgDiff>0){
-            dmgDiffStr="+"$dmgDiffStr;
-        }
-
-        if (dmgDiff!=0){
-            strInfo=strInfo$" ("$dmgDiffStr$")";
-        }
+    //Show the default damage
+    if (compDmg!=0 && compDmg!=dmg){
+        strInfo=strInfo$" (Default: "$compDmg$")";
     }
 
-    if (dxr!=None){
-        strInfo=strInfo $ CR() $"Fire Rate: "$dxr.TruncateFloat(fireRate,1)$"/s";
+    strInfo=strInfo $ CR() $"Fire Rate: "$ class'DXRInfo'.static.TruncateFloat(fireRate,1)$"/s";
 
-        if (compFireRate!=0){
-            fireRateDiff = fireRate - compFireRate;
-            fireRateDiffStr = dxr.TruncateFloat(fireRateDiff,1);
-            if (fireRateDiff>0){
-                fireRateDiffStr = "+"$fireRateDiffStr;
-            }
-
-            if (fireRateDiff!=0){
-                strInfo=strInfo$" ("$fireRateDiffStr$")";
-            }
-        }
+    if (compFireRate!=0 && compFireRate!=fireRate){
+        strInfo=strInfo$" (Default: "$class'DXRInfo'.static.TruncateFloat(compFireRate,1)$")";
     }
 
     return strInfo;
