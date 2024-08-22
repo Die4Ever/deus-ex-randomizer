@@ -272,6 +272,7 @@ function SpawnJackOLantern(vector loc)
     local float size;
     local Rotator r, r2;
     local int i, num;
+    local ZoneInfo zone;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -288,9 +289,16 @@ function SpawnJackOLantern(vector loc)
     wall1 = floor;
     if( ! NearestWallSearchZ(wall1, distrange, 16*3, floor.loc, size) ) return;
 
+    zone = GetZone(wall1.loc);
+    if (zone.bWaterZone){
+        //No underwater Jack O Lanterns
+        return;
+    }
+
     r.Yaw = Rotator(wall1.norm).Yaw;
     jacko = spawn(class'DXRJackOLantern',,, wall1.loc, r);
     jacko.DrawScale *= size;
+    jacko.SetCollisionSize(jacko.CollisionRadius*size,jacko.CollisionHeight*size);
 
     num = rng(6);
     for(i=0; i<num; i++) {
@@ -307,6 +315,7 @@ function SpawnSpiderweb(vector loc)
     local Spiderweb web;
     local float dist, size;
     local rotator rot;
+    local ZoneInfo zone;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -314,6 +323,12 @@ function SpawnSpiderweb(vector loc)
 
     size = rngf() + 0.5;
     if(!GetSpiderwebLocation(loc, rot, size * 10)) return;
+
+    zone = GetZone(loc);
+    if (zone.bWaterZone){
+        //No underwater spiderwebs
+        return;
+    }
 
     foreach RadiusActors(class'Spiderweb', web, 100, loc) {
         dist = VSize(loc-web.Location);
