@@ -25,6 +25,12 @@ function Timer()
         return;
     }
 
+    if(myGuy.GetStateName() != 'Patrolling' && myGuy.GetStateName() != 'Wandering') {
+        // they're probably attacking or seeking or something
+        lastMoveTime = Level.TimeSeconds;
+        return;
+    }
+
     if(myGuy.InStasis()) {
         lastMoveTime = Level.TimeSeconds;
     } else if(VSize(lastPos - myGuy.Location) <3) {

@@ -58,7 +58,7 @@ function bool _GivePatrol(ScriptedPawn pawn, float range, float minmult, float m
 {
     local #var(DeusExPrefix)Mover m;
     local DynamicPatrolPoint p, prev, first;
-    local NavigationPoint nps[512], np;
+    local NavigationPoint nps[2048], np;
     local string s;
     local int i, q, num;
     local float maxradius, dist;
