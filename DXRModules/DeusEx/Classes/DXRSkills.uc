@@ -34,7 +34,7 @@ function CheckConfig()
 
 #ifdef balance
     i=0;
-    if(!dxr.flags.IsZeroRando()) {
+    if(!dxr.flags.IsZeroRandoPure()) {
         SkillCostMultipliers[i].type = "SkillDemolition";
         SkillCostMultipliers[i].percent = 80;
         SkillCostMultipliers[i].minLevel = 1;
@@ -161,7 +161,7 @@ simulated function RandoSkillLevelValues(Skill a)
     else if( #var(prefix)SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level. For attached greandes, this skill also improves the blast radius and damage slightly.";
     }
-    else if( #var(prefix)SkillComputer(a) != None && !dxr.flags.IsZeroRando() ) {
+    else if( #var(prefix)SkillComputer(a) != None && !dxr.flags.IsZeroRandoPure() ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
     else if( #var(prefix)SkillEnviro(a)!=None ) {
@@ -173,7 +173,7 @@ simulated function RandoSkillLevelValues(Skill a)
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
 }
 
-simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
+static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local Skill s;
     local float f;
@@ -182,7 +182,7 @@ simulated function string DescriptionLevelExtended(Actor act, int i, out string 
 
     s = Skill(act);
     if( s == None ) {
-        err("DescriptionLevel failed for skill "$act);
+        log("ERROR: DescriptionLevel failed for skill "$act);
         return "err";
     }
 

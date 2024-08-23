@@ -121,7 +121,7 @@ function int GetBingoProgress(string event, optional out int max)
     local int i, progress;
 
     for (i = 0; i < ArrayCount(bingo); i++) {
-        if (bingo[i].event == event) {
+        if (bingo[i].event ~= event) {
             max = bingo[i].max;
             return bingo[i].progress;
         }
@@ -149,7 +149,7 @@ simulated function bool IncrementBingoProgress(string event)
 {
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
-        if(bingo[i].event != event) continue;
+        if(!(bingo[i].event ~= event)) continue;
         if(bingo_missions_masks[i] == FAILED_MISSION_MASK) {
             log(self$".IncrementBingoProgress("$event$") not incrementing because the goal is already marked as failed");
             break;
@@ -167,7 +167,7 @@ simulated function bool MarkBingoAsFailed(string event)
     local int i;
 
     for(i=0; i<ArrayCount(bingo); i++) {
-        if(bingo[i].event != event) continue;
+        if(!(bingo[i].event ~= event)) continue;
 
         if (bingo_missions_masks[i] == FAILED_MISSION_MASK) return false;
         if (bingo[i].progress >= bingo[i].max) return false; // don't mark a goal as failed if it's already marked as succeeded
@@ -186,7 +186,7 @@ simulated function bool IsBingoFailed(string event)
 {
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
-        if(bingo[i].event != event) continue;
+        if(!(bingo[i].event ~= event)) continue;
         return bingo_missions_masks[i] == FAILED_MISSION_MASK;
     }
     return false;
@@ -196,7 +196,7 @@ simulated function string GetBingoDescription(string event)
 {
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
-        if(bingo[i].event != event) continue;
+        if(!(bingo[i].event ~= event)) continue;
         return bingo[i].desc;
     }
     return "";

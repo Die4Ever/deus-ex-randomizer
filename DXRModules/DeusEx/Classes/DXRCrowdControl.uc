@@ -11,17 +11,7 @@ struct stupidQuestion {
     var String answers[3];
 };
 
-//The config file didn't want to load an array inside a struct
-struct stupidQuestionSave {
-    var String question;
-    var int numAnswers;
-    var String answerOne;
-    var String answerTwo;
-    var String answerThree;
-};
-
-var config int numStupidQuestions;
-var config stupidQuestionSave StupidQuestions[50];
+var int numStupidQuestions;
 var        stupidQuestion    _StupidQuestions[50];
 var int curStupidQuestion;
 var DataStorage datastorage;
@@ -31,6 +21,7 @@ function Init(DXRando tdxr)
     local bool anon, offline, online;
     Super.Init(tdxr);
 
+    InitStupidQuestions();
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     if (datastorage.GetConfigKey('cc_StupidQuestionNumber')==""){
         curStupidQuestion = Rand(numStupidQuestions);
@@ -78,42 +69,9 @@ function CheckConfig()
     if ( crowd_control_addr=="" ) {
         crowd_control_addr = "localhost";
     }
-    if (numStupidQuestions == 0 || ConfigOlderThan(1,5,5,0) ) {
-        InitStupidQuestions();
-        StupidQuestionsToSave();
-        SaveConfig();
-    }
 
     Super.CheckConfig();
-
-    SaveToStupidQuestions();
 }
-
-
-function StupidQuestionsToSave() {
-    local int i;
-
-    for (i=0;i<numStupidQuestions;i++) {
-        StupidQuestions[i].question = _StupidQuestions[i].question;
-        StupidQuestions[i].numAnswers = _StupidQuestions[i].numAnswers;
-        StupidQuestions[i].answerOne = _StupidQuestions[i].answers[0];
-        StupidQuestions[i].answerTwo = _StupidQuestions[i].answers[1];
-        StupidQuestions[i].answerThree = _StupidQuestions[i].answers[2];
-    }
-}
-
-function SaveToStupidQuestions() {
-    local int i;
-
-    for (i=0;i<numStupidQuestions;i++) {
-        _StupidQuestions[i].question = StupidQuestions[i].question;
-        _StupidQuestions[i].numAnswers = StupidQuestions[i].numAnswers;
-        _StupidQuestions[i].answers[0] = StupidQuestions[i].answerOne;
-        _StupidQuestions[i].answers[1] = StupidQuestions[i].answerTwo;
-        _StupidQuestions[i].answers[2] = StupidQuestions[i].answerThree;
-    }
-}
-
 
 function InitStupidQuestions() {
     numStupidQuestions=0;
@@ -155,7 +113,6 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "No";
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     _StupidQuestions[numStupidQuestions].answers[2] = "Excuse me?";
-
     numStupidQuestions++;
 
     _StupidQuestions[numStupidQuestions].Question = "Is your vision augmented?";
@@ -279,6 +236,110 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "Yes";
     _StupidQuestions[numStupidQuestions].answers[1] = "YES!";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Do you think you could pilot a helicopter into a sewer?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "My name is Jock";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Which came first, the chicken or the egg?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Chicken";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Egg";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Can dogs look up?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are we human or are we dancer?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Dancer";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Human";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Why do they call it oven when you of in the cold food of out hot eat the food?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Unfortunately, the clock is ticking, the hours are going by.  The past increases, the future recedes.  Possibilities decreasing, regrets mounting.";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Remain Ignorant";
+    _StupidQuestions[numStupidQuestions].answers[1] = "I Understand";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Hey guys, did you know that in terms of human companionship, Flareon is objectively the most huggable Pokemon?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Vaporeon?";
+    _StupidQuestions[numStupidQuestions].answers[1] = "No";
+    _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are there more wheels or doors in the world";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Doors";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Wheels";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are you feeling paranoid right now?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Behind You";
+    _StupidQuestions[numStupidQuestions].answers[1] = "No";
+    _StupidQuestions[numStupidQuestions].answers[2] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you write a book about failure, and it doesn't sell, is it called a success?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If 4 out of 5 people suffer from diarrhea, does that mean the fifth one enjoys it?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you attached buttered toast to the back of a cat and dropped it, would it land butter side down, or cat feet side down?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Butter";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Cat Feet";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Is ketchup a smoothie?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Is cereal with milk a soup?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you punch yourself and it hurts, are you weak or strong?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Strong";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Weak";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "In the word 'Scent', which letter is silent?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "C";
+    _StupidQuestions[numStupidQuestions].answers[1] = "S";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Would you rather have permanent clown shoes or permanent clown makeup?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Makeup";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Shoes";
+    numStupidQuestions++;
 }
 
 
@@ -302,15 +363,18 @@ function IncHandledEffects()
 {
     local int numEffects;
 
-    numEffects = dxr.flagbase.GetInt('cc_numCCEffects');
-    dxr.flagbase.SetInt('cc_numCCEffects',numEffects+1,,999);
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
+    numEffects = int(datastorage.GetConfigKey('cc_numCCEffects'));
+    datastorage.SetConfig('cc_numCCEffects',numEffects+1, 3600*12);
 }
 
 function AddDXRCredits(CreditsWindow cw)
 {
     local int numEffects;
 
-    numEffects = dxr.flagbase.GetInt('cc_numCCEffects');
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+    numEffects = int(datastorage.GetConfigKey('cc_numCCEffects'));
 
     if (numEffects>0) {
         cw.PrintText("Number of Crowd Control Effects:"@numEffects);

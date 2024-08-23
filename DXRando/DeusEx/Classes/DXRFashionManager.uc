@@ -65,6 +65,7 @@ var travel int lastUpdate;
 simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
 {
     local DXRFashionManager f;
+    local bool clothesLooting;
 
     if(p==None){return None;}
 
@@ -74,7 +75,8 @@ simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
         f = p.Spawn(class'DXRFashionManager');
         f.GiveTo(p);
         f.isFemale=p.flagBase.GetBool('LDDPJCIsFemale');
-        f.InitClothes(true);
+        clothesLooting = bool(p.flagBase.GetInt('Rando_clothes_looting'));
+        f.InitClothes(!clothesLooting);
         log("spawned new " $ f $ " for " $ p);
     }
     return f;
@@ -123,6 +125,7 @@ function InitClothes(bool giveAll)
 #endif
     IngestCarcass(class'#var(prefix)PaulDentonCarcass');
     IngestCarcass(class'#var(prefix)UNATCOTroopCarcass');
+    AddClothing(G_Male,CT_Helmet,Texture'DeusExItems.Skins.PinkMaskTex',None); //Add "no helmet" into the default helmet selections
 
     if (giveAll){
         IngestCarcass(class'#var(prefix)Male1Carcass');
@@ -492,6 +495,36 @@ simulated function RandomizeClothes(#var(PlayerPawn) player)
 
     lastUpdate = class'DXRando'.Default.dxr.dxInfo.MissionNumber;
 
+    IncrementOutfitChanges(player);
+}
+
+simulated function IncrementOutfitChanges(#var(PlayerPawn) player)
+{
+    local DataStorage datastorage;
+    local int changes;
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
+    if (datastorage.GetConfigKey('DXRFashion_OutfitChanges')==""){
+        datastorage.SetConfig('DXRFashion_OutfitChanges',1, 3600*24*366); //First outfit change
+    } else {
+        changes = int(datastorage.GetConfigKey('DXRFashion_OutfitChanges'));
+        datastorage.SetConfig('DXRFashion_OutfitChanges',changes+1, 3600*24*366);
+    }
+}
+
+simulated function int GetNumOutfitChanges(#var(PlayerPawn) player)
+{
+    local DataStorage datastorage;
+    local int changes;
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
+    if (datastorage.GetConfigKey('DXRFashion_OutfitChanges')==""){
+        return 0;
+    } else {
+        return int(datastorage.GetConfigKey('DXRFashion_OutfitChanges'));
+    }
 }
 
 simulated function ApplyCarcassMeshes(Actor a)
@@ -598,14 +631,14 @@ simulated function GetDressed()
         ApplyPaulClothing(paulCarcass);
 }
 
-simulated function AddClothing(EGender gender, EClothesType type, Texture tex1, Texture tex2)
+simulated function int AddClothing(EGender gender, EClothesType type, Texture tex1, Texture tex2)
 {
     local int i;
     local string tex1s,tex2s;
 
     //log("Adding Clothing "$numClothes$":  Type="$type$"  Gender="$gender$"  Tex1="$tex1$"  Tex2="$Tex2);
 
-    if (tex1==None) return; //Something went wrong - don't save these clothes
+    if (tex1==None) return 0; //Something went wrong - don't save these clothes
 
     tex1s=String(tex1);
     if(tex2!=None){
@@ -618,7 +651,7 @@ simulated function AddClothing(EGender gender, EClothesType type, Texture tex1, 
         if (Clothing[i].Type!=type) continue;
         if (Clothing[i].tex1!=tex1s) continue;
         if (Clothing[i].tex2!=tex2s) continue;
-        return; //Clothing already obtained
+        return 0; //Clothing already obtained
     }
 
     Clothing[numClothes].type=type;
@@ -626,6 +659,9 @@ simulated function AddClothing(EGender gender, EClothesType type, Texture tex1, 
     Clothing[numClothes].tex1=tex1s;
     Clothing[numClothes].tex2=tex2s;
     numClothes++;
+
+    //Could check if it is gender appropriate, but that would only apply if you're male JC (since FemJC will still loot clothes for Paul)
+    return 1;
 }
 
 //For handling special cases where a texture maybe only applies to one gender that would normally be considered for both
@@ -637,55 +673,63 @@ simulated function EGender GetCarcassShirtGender(class<#var(DeusExPrefix)Carcass
     return G_Both;
 }
 
-simulated function IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassClass)
+simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassClass)
 {
+    local int num;
+
+    if (carcassClass==None) return False; //Can't loot nothing!
+
+    num=0;
+
     switch(carcassClass.Default.mesh){
         case LodMesh'DeusExCharacters.GM_Trench_F_Carcass':
         case LodMesh'DeusExCharacters.GM_Trench_Carcass':
-            AddClothing(GetCarcassShirtGender(carcassClass),CT_TrenchShirt,carcassClass.Default.MultiSkins[4],None);
-            AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[2],None);
-            AddClothing(G_Both,CT_Jacket,carcassClass.Default.MultiSkins[1],carcassClass.Default.MultiSkins[5]);
+            num += AddClothing(GetCarcassShirtGender(carcassClass),CT_TrenchShirt,carcassClass.Default.MultiSkins[4],None);
+            num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[2],None);
+            num += AddClothing(G_Both,CT_Jacket,carcassClass.Default.MultiSkins[1],carcassClass.Default.MultiSkins[5]);
             break;
         case LodMesh'DeusExCharacters.GFM_Trench_Carcass':
-            AddClothing(G_Female,CT_TrenchShirt,carcassClass.Default.MultiSkins[4],None);
-            AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[2],None);
-            AddClothing(G_Both,CT_Jacket,carcassClass.Default.MultiSkins[1],carcassClass.Default.MultiSkins[5]);
+            num += AddClothing(G_Female,CT_TrenchShirt,carcassClass.Default.MultiSkins[4],None);
+            num += AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[2],None);
+            num += AddClothing(G_Both,CT_Jacket,carcassClass.Default.MultiSkins[1],carcassClass.Default.MultiSkins[5]);
             break;
 
         //Non-Trenchcoat shirts don't map onto the trenchcoat body properly
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_Carcass':
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_F_Carcass':
-            AddClothing(G_Female,CT_Skirt,carcassClass.Default.MultiSkins[4],carcassClass.Default.MultiSkins[5]);
+            num += AddClothing(G_Female,CT_Skirt,carcassClass.Default.MultiSkins[4],carcassClass.Default.MultiSkins[5]);
             break;
         case LodMesh'DeusExCharacters.GFM_TShirtPants_Carcass':
-            AddClothing(G_Female,CT_Shirt,carcassClass.Default.MultiSkins[7],None);
-            AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[6],None);
+            num += AddClothing(G_Female,CT_Shirt,carcassClass.Default.MultiSkins[7],None);
+            num += AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[6],None);
             break;
         case LodMesh'DeusExCharacters.GM_DressShirt_B_Carcass':
-            AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[0],None);
-            AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
+            num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[0],None);
+            num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
             break;
         case LodMesh'DeusExCharacters.GM_DressShirt_Carcass':
         case LodMesh'DeusExCharacters.GM_DressShirt_F_Carcass':
         case LodMesh'DeusExCharacters.GM_DressShirt_S_Carcass':
-            AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[5],None);
-            AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[3],None);
+            num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[5],None);
+            num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[3],None);
             break;
         case LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass':
-            AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[2],None);
-            AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
-            AddClothing(G_Male,CT_Helmet,carcassClass.Default.MultiSkins[6],None);
+            num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[2],None);
+            num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
+            num += AddClothing(G_Male,CT_Helmet,carcassClass.Default.MultiSkins[6],None);
             break;
         case LodMesh'DeusExCharacters.GMK_DressShirt_Carcass':
         case LodMesh'DeusExCharacters.GMK_DressShirt_F_Carcass':
-            AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[1],None);
-            AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[2],None);
+            num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[1],None);
+            num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[2],None);
             break;
         case LodMesh'DeusExCharacters.GM_Suit_Carcass':
-            AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[3],None);
-            AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
+            num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[3],None);
+            num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
             break;
     }
+
+    return num>0;
 }
 
 defaultproperties

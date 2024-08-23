@@ -69,3 +69,6 @@ class DXRandoPawnTextures extends Object abstract;
 
 // Augbots
 #exec TEXTURE IMPORT NAME=AugBotTex1 FILE=Textures\AugBotTex1.pcx GROUP=DXRandoPawns FLAGS=2
+
+//Black Cats
+#exec TEXTURE IMPORT FILE="Textures\BlackCatTex1.pcx"  NAME="BlackCatTex1"  GROUP="DXRandoPawns"

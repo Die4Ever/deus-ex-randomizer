@@ -19,9 +19,15 @@ function SetMyGuy(ScriptedPawn p)
 
 function Timer()
 {
-    if(myGuy == None) {
+    if(myGuy == None || myGuy.GetStateName() == 'Disabled') {
         SetTimer(0, false);
         myGuy = None;
+        return;
+    }
+
+    if(myGuy.GetStateName() != 'Patrolling' && myGuy.GetStateName() != 'Wandering') {
+        // they're probably attacking or seeking or something
+        lastMoveTime = Level.TimeSeconds;
         return;
     }
 

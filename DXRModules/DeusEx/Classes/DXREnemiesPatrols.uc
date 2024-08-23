@@ -58,7 +58,7 @@ function bool _GivePatrol(ScriptedPawn pawn, float range, float minmult, float m
 {
     local #var(DeusExPrefix)Mover m;
     local DynamicPatrolPoint p, prev, first;
-    local NavigationPoint nps[512], np;
+    local NavigationPoint nps[2048], np;
     local string s;
     local int i, q, num;
     local float maxradius, dist;
@@ -184,6 +184,9 @@ function bool _GivePatrol(ScriptedPawn pawn, float range, float minmult, float m
 
 static function ApplyDynamicPatrol(ScriptedPawn pawn, NavigationPoint first)
 {// doesn't call SetMyGuy, but accepting a plain NavigationPoint makes it easy to get someone to walk to a point instead of using RunningTo orders
+    if(pawn.GetStateName() == 'Disabled') {
+        return;
+    }
     pawn.SetOrders('Patrolling', first.tag, false);
     pawn.FollowOrders(false);
     // skip past the Begin section of the state, because that sets destPoint to None and tries to search inside of a native list of NavigationPoints

@@ -457,7 +457,7 @@ function AnyEntryMapFixes()
         break;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
-        // allow Lenny to trade LAM for Zyme even if you enter the maps out of order
+        // allow giving zyme to junkies even if you enter the maps out of order
         DeleteConversationFlag(GetConversation('MeetLenny'), 'FoundMoles', False);
         // Lenny's final barks seem to mistakenly be started by frobbing or bumping into him, causing them to take priority over `MeetLenny`
         c=GetConversation('LennyFinalBarks');
@@ -466,6 +466,18 @@ function AnyEntryMapFixes()
         c=GetConversation('LennyFinalBarks2');
         c.bInvokeBump=False;
         c.bInvokeFrob=False;
+
+        DeleteConversationFlag(GetConversation('MeetDon'), 'FoundMoles', False);
+        c=GetConversation('DonFinalBarks');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+        c=GetConversation('DonFinalBarks2');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+        c=GetConversation('DonReturnBarks');
+        c.bInvokeBump=False;
+        c.bInvokeFrob=False;
+
         break;
     }
 }

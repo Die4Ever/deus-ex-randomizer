@@ -2,6 +2,7 @@ class DXRClothesRack injects #var(prefix)ClothesRack;
 
 var #var(PlayerPawn) p;
 var bool bAlreadyUsed;
+var class<#var(DeusExPrefix)Carcass> lootableClothes;
 
 function Timer()
 {
@@ -36,8 +37,16 @@ function Frob(actor Frobber, Inventory frobWith)
 #ifndef vmd
     if (#var(PlayerPawn)(Frobber) != None){
         p = #var(PlayerPawn)(Frobber);
+
+        //Check if the rack has clothes available to loot
+        fashion = class'DXRFashionManager'.static.GiveItem(p);
+        if (fashion.IngestCarcass(lootableClothes)){
+            p.ClientMessage("Took a set of clothes off the rack!");
+            return;
+        }
+
         p.ClientMessage("Time for some new clothes!",, true);
-        fashion=class'DXRFashionManager'.static.GiveItem(p);
+
         foreach AllActors(class'DXRCameraModes',camera)
             break;
         dxr = class'DXRando'.default.dxr;

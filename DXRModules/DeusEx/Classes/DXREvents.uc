@@ -390,8 +390,13 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
         break;
+    case "02_NYC_STREET":
+        WatchFlag('M02SallyDone');
+        WatchFlag('MeetSandraRenton_Played');
+        break;
     case "02_NYC_HOTEL":
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
+        WatchFlag('MaleHostageRescued_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
 
         break;
@@ -406,9 +411,13 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
         InitPoolBalls();
+        WatchFlag('JordanSheaConvos_Played');
+        WatchFlag('WorkerGivesInfo_Played');
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
+        WatchFlag('MeetClinicOlderBum_Played');
+        WatchFlag('MeetWindowBum_Played');
         break;
     case "02_NYC_SMUG":
         WatchFlag('MetSmuggler');
@@ -457,6 +466,7 @@ function SetWatchFlags() {
         WatchFlag('SimonsAssassination');
         WatchFlag('Shannon_Dead');
         WatchFlag('MeetWalton_Played');
+        WatchFlag('MeetInjuredTrooper2_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
@@ -2067,6 +2077,20 @@ function string RemapBingoEvent(string eventname)
         case "PianoSong84Played":
         case "PianoSong85Played":
             return "SeasonalPianoPlayed";
+        case "MeetClinicOlderBum_Played":
+        case "MeetWindowBum_Played":
+        case "JordanSheaConvos_Played":
+        case "WorkerGivesInfo_Played":
+        case "MaleHostageRescued_Played":
+        case "M02SallyDone":
+            return "InterviewLocals";
+        case "MeetSandraRenton_Played":
+            _MarkBingo("InterviewLocals"); //Split into another event, but still return this one as-is
+            return eventname;
+        case "BlackCat_peeptime":
+            return "Cat_peeptime";
+        case "PetAnimal_BlackCat":
+            return "PetAnimal_Cat";
         default:
             return eventname;
     }
@@ -3143,6 +3167,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Get down there and pet enough rats!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "NotABigFan":
             return "Turn off enough ceiling fans through the game.";
+        case "MeetInjuredTrooper2_Played":
+            return "Talk to the injured trooper in the UNATCO HQ Medical Lab.";
+        case "InterviewLocals":
+            return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
+        case "MeetSandraRenton_Played":
+            return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld bar.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3376,7 +3406,7 @@ defaultproperties
 #ifdef injections
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)
 #endif
-    bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",max=3,missions=54346)
+    bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",desc_singular="Use tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use 1 rebreather",max=3,missions=55400)
     bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",desc_singular="Hunt 1 bird",max=10,missions=24446)
     bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18510)
@@ -3536,6 +3566,9 @@ defaultproperties
     bingo_options(336)=(event="PetRats",desc="Pat dat rat (%s)",max=25,missions=53118)
 #endif
     bingo_options(337)=(event="NotABigFan",desc="Not a big fan (%s)",max=20,missions=17244)
+    bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
+    bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4)
+    bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
 
 
 

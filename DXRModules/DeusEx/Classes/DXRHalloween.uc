@@ -17,7 +17,7 @@ function FirstEntry()
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
             piano.ItemName = "Staufway Piano";
         }
-        MakeSpiderWebs();
+        MakeCosmetics();
     }
 }
 
@@ -100,6 +100,40 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
     return ResurrectCorpse(self, carc);
 }
 
+static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#var(DeusExPrefix)Carcass> carcClass)
+{
+    local string livingClassName;
+
+    //For handling special cases that we're too lazy to make unique living classes for
+    switch(carcClass){
+        case class'MJ12CloneAugShield1NametagCarcass':
+            return "MJ12CloneAugShield1";
+        case class'MJ12CloneAugStealth1NametagCarcass':
+            return "MJ12CloneAugStealth1";
+        case class'MJ12CloneAugTough1NametagCarcass':
+            return "MJ12CloneAugTough1";
+        case class'NSFCloneAugShield1NametagCarcass':
+            return "NSFCloneAugShield1";
+        case class'NSFCloneAugStealth1NametagCarcass':
+            return "NSFCloneAugStealth1";
+        case class'NSFCloneAugTough1NametagCarcass':
+            return "NSFCloneAugTough1";
+        case class'UNATCOCloneAugShield1NametagCarcass':
+            return "UNATCOCloneAugShield1";
+        case class'UNATCOCloneAugStealth1NametagCarcass':
+            return "UNATCOCloneAugStealth1";
+        case class'UNATCOCloneAugTough1NametagCarcass':
+            return "UNATCOCloneAugTough1";
+        default:
+            //Standard carcass with a matching living class
+            //(We should probably strive for this to be the norm)
+            //At least in vanilla, all carcasses are the original class name + Carcass
+            livingClassName = string(carcClass);
+            livingClassName = module.ReplaceText(livingClassName,"Carcass","");
+            return livingClassName;
+    }
+}
+
 static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Carcass carc, optional String pawnname)
 {
     local string livingClassName;
@@ -110,10 +144,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local Inventory item, nextItem;
     local bool removeItem;
 
-    //At least in vanilla, all carcasses are the original class name + Carcass
-    livingClassName = string(carc.class.Name);
-    livingClassName = module.ReplaceText(livingClassName,"Carcass","");
-
+    livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
 
     if (livingClass==None){
@@ -202,7 +233,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     return True;
 }
 
-function MakeSpiderWebs()
+function MakeCosmetics()
 {
     local NavigationPoint p;
     local Light lgt;
@@ -212,32 +243,94 @@ function MakeSpiderWebs()
     SetSeed("MakeSpiderWebs");
 
     foreach AllActors(class'NavigationPoint', p) {
+        if(p.Region.Zone.bWaterZone) continue;
         locs[num++] = p.Location;
         if(rngb()) continue;
         SpawnSpiderweb(p.Location);
     }
     // spiderwebs near lights?
     foreach AllActors(class'Light', lgt) {
+        if(lgt.Region.Zone.bWaterZone) continue;
         locs[num++] = lgt.Location;
     }
     // random order gives better results
-    for(i=0; i<num; i++) {
+    for(i=0; i<num/2; i++) {
         slot = rng(num);
         SpawnSpiderweb(locs[slot]);
+    }
+
+    SetSeed("MakeJackOLanterns");
+    for(i=0; i<num/30; i++) {
+        slot = rng(num);
+        SpawnJackOLantern(locs[slot]);
+    }
+}
+
+function SpawnJackOLantern(vector loc)
+{
+    local DXRJackOLantern jacko;
+    local LocationNormal floor, wall1;
+    local FMinMax distrange;
+    local float size;
+    local Rotator r, r2;
+    local int i, num;
+    local ZoneInfo zone;
+
+    loc.X += rngfn() * 256.0;// 16 feet in either direction
+    loc.Y += rngfn() * 256.0;// 16 feet in either direction
+    loc.Z += rngf() * 80.0;// 5 feet upwards (this can make them end up above counters and stuff where there aren't normally PathNodes)
+
+    floor.loc = loc;
+    distrange.min = 0.1;
+    distrange.max = 16*100;
+    size = rngf() + 0.6;
+
+    if(!NearestFloor(floor, distrange, size)) return;
+
+    distrange.max = 16*75;
+    wall1 = floor;
+    if( ! NearestWallSearchZ(wall1, distrange, 16*3, floor.loc, size) ) return;
+
+    zone = GetZone(wall1.loc);
+    if (zone.bWaterZone){
+        //No underwater Jack O Lanterns
+        return;
+    }
+
+    r.Yaw = Rotator(wall1.norm).Yaw;
+    jacko = spawn(class'DXRJackOLantern',,, wall1.loc, r);
+    jacko.DrawScale *= size;
+    jacko.SetCollisionSize(jacko.CollisionRadius*size,jacko.CollisionHeight*size);
+
+    num = rng(6);
+    for(i=0; i<num; i++) {
+        r2.Yaw = rng(20000) - 10000;
+        loc = wall1.loc + (wall1.norm << r2) * 32;
+        jacko = spawn(class'DXRJackOLantern',,, loc, r);
+        size = rngf() + 0.6;
+        jacko.DrawScale *= size;
     }
 }
 
 function SpawnSpiderweb(vector loc)
 {
     local Spiderweb web;
-    local float dist;
+    local float dist, size;
     local rotator rot;
+    local ZoneInfo zone;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
     loc.Z += rngf() * 80.0;// 5 feet upwards
 
-    if(!GetSpiderwebLocation(loc, rot)) return;
+    size = rngf() + 0.5;
+    if(!GetSpiderwebLocation(loc, rot, size * 10)) return;
+
+    zone = GetZone(loc);
+    if (zone.bWaterZone){
+        //No underwater spiderwebs
+        return;
+    }
 
     foreach RadiusActors(class'Spiderweb', web, 100, loc) {
         dist = VSize(loc-web.Location);
@@ -246,9 +339,10 @@ function SpawnSpiderweb(vector loc)
 
     rot.roll = rng(65536);
     web = Spawn(class'Spiderweb',,, loc, rot);
+    web.DrawScale = size;
 }
 
-function bool GetSpiderwebLocation(out vector loc, out rotator rot)
+function bool GetSpiderwebLocation(out vector loc, out rotator rot, float size)
 {
     local bool found_ceiling, found_floor;
     local LocationNormal ceiling, floor, ceiling_or_floor, wall1, wall2;
@@ -261,9 +355,9 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
     distrange.min = 0.1;
     distrange.max = 16*100;
 
-    found_ceiling = NearestCeiling(ceiling, distrange, 16);
-    found_floor = NearestFloor(floor, distrange, 16);
-    //floor.loc.Z += 16*9;
+    found_ceiling = NearestCeiling(ceiling, distrange, size);
+    found_floor = NearestFloor(floor, distrange, size);
+    //floor.loc.Z += size*9;
 
     if(found_ceiling && chance_single(50)) {
         ceiling_or_floor = ceiling;
@@ -289,7 +383,7 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
 
     distrange.max = 16*75;
     wall1 = ceiling_or_floor;
-    if( ! NearestWallSearchZ(wall1, distrange, 16*3, ceiling_or_floor.loc, 10) ) return false;
+    if( ! NearestWallSearchZ(wall1, distrange, 16*3, ceiling_or_floor.loc, size) ) return false;
     ceiling_or_floor.loc.X = wall1.loc.X;
     ceiling_or_floor.loc.Y = wall1.loc.Y;
 
@@ -297,7 +391,7 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot)
 
     distrange.max = 16*50;
     wall2 = wall1;
-    if(chance_single(40) || !NearestCornerSearchZ(wall2, distrange, wall1.norm, 16*3, ceiling_or_floor.loc, 10) ) {
+    if(chance_single(40) || !NearestCornerSearchZ(wall2, distrange, wall1.norm, 16*3, ceiling_or_floor.loc, size) ) {
         // just 2 axis (ceiling/floor + wall1)
         rot = Rotator(wall1.norm);
         if( found_ceiling ) rot.pitch -= 4096;
