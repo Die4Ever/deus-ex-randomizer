@@ -33,7 +33,7 @@ simulated function PreFirstEntry()
     local #var(injectsprefix)ClothesRack cr;
     local bool VanillaMaps;
 
-    if (!ClothesLootingEnabled()) return; //Everything past here is "important" for clothes looting
+    if (dxr.flags.clothes_looting == 0) return; //Everything past here is "important" for clothes looting
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
