@@ -1189,7 +1189,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     return newactor;
 }
 
-static function DestroyMover(DeusExMover m)
+static function DestroyMover(#var(DeusExPrefix)Mover m)
 {
     local DeusExDecal D;
 
