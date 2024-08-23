@@ -118,7 +118,17 @@ simulated function PreFirstEntry()
         }
     }
 
-    //Any remaining clothes racks without specific clothes can get random generic ones
+}
+
+function FirstEntry()
+{
+    local #var(injectsprefix)ClothesRack cr;
+
+    if (dxr.flags.clothes_looting == 0) return; //Everything past here is "important" for clothes looting
+
+    SetSeed("RandoFashion");
+
+    //Any clothes racks without specific clothes can get random generic ones
     foreach AllActors(class'#var(injectsprefix)ClothesRack',cr){
         if (cr.lootableClothes==None){
             cr.lootableClothes=RandomGenericClothes();
@@ -128,7 +138,7 @@ simulated function PreFirstEntry()
 
 simulated function class<#var(DeusExPrefix)Carcass> RandomGenericClothes()
 {
-    switch(Rand(20))
+    switch(rng(20))
     {
         case 0:  return class'#var(prefix)Male1Carcass';
         case 1:  return class'#var(prefix)Male2Carcass';
