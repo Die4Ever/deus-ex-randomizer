@@ -36,6 +36,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 #ifdef injections
     p.bZeroRando = IsZeroRandoPure();
     p.bReducedRando = IsReducedRando();
+    p.bCrowdControl = (crowdcontrol!=0);
 #endif
 
     if(!VersionIsStable() || #defined(debug))
