@@ -243,12 +243,14 @@ function MakeCosmetics()
     SetSeed("MakeSpiderWebs");
 
     foreach AllActors(class'NavigationPoint', p) {
+        if(p.Region.Zone.bWaterZone) continue;
         locs[num++] = p.Location;
         if(rngb()) continue;
         SpawnSpiderweb(p.Location);
     }
     // spiderwebs near lights?
     foreach AllActors(class'Light', lgt) {
+        if(lgt.Region.Zone.bWaterZone) continue;
         locs[num++] = lgt.Location;
     }
     // random order gives better results

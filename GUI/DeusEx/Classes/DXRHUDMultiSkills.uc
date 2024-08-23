@@ -208,7 +208,7 @@ function DrawAugsScreen(GC gc)
     local int index, i, numUpgrades;
     local float barLen, levelx, curvaluex, nextvaluex, val, defaultval;
     local DXRAugmentations dxra;
-    local String levelValuesDisplay[4];
+    local String levelValuesDisplay[5];
 
     if ( Player.AugmentationSystem != None )
     {
@@ -287,6 +287,12 @@ function DrawAugsScreen(GC gc)
                         val = anAug.LevelValues[i];
                         levelValuesDisplay[i] = dxra.DescriptionLevelShort(anAug, i, val);
                     }
+                #ifdef injections
+                    if(anAug.Level5Value != -1) {
+                        val = anAug.Level5Value;
+                        levelValuesDisplay[4] = dxra.DescriptionLevelShort(anAug, 4, val);
+                    }
+                #endif
                     gc.GetTextExtent( 0, w, h, levelValuesDisplay[anAug.CurrentLevel] );
                     gc.DrawText( curvaluex, cury, w, h, levelValuesDisplay[anAug.CurrentLevel]);
                     if (anAug.CurrentLevel<anAug.MaxLevel){
