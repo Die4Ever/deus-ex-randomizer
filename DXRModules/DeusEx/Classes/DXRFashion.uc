@@ -65,6 +65,14 @@ simulated function PreFirstEntry()
                 cr.lootableClothes=class'#var(prefix)SmugglerCarcass';
                 break;
 
+            case "02_NYC_HOTEL":
+            case "04_NYC_HOTEL":
+            case "08_NYC_HOTEL":
+                foreach AllActors(class'#var(injectsprefix)ClothesRack',cr){ //The two clothes racks in Paul's closet
+                    cr.lootableClothes = class'#var(prefix)PaulDentonCarcass';
+                }
+                break;
+
             case "03_NYC_BATTERYPARK":
                 cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(-3994,357,415))); //In first shanty town hut
                 cr.lootableClothes=class'#var(prefix)HarleyFilbenCarcass';
