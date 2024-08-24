@@ -958,3 +958,8 @@ state PlayerWalking
         }
     }
 }
+
+// just in case it tries to get called from a different state, to prevent "Failed to find function" crashes
+function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
+{
+}
