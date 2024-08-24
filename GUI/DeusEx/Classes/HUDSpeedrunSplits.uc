@@ -607,7 +607,7 @@ function int BalancedSplit(int m)
         return PB[m];
     }
 
-    if(sum_of_bests > 0) {
+    if(sum_of_bests > 0 && sum_of_bests < total_goal) {
         timesave = typical_split_time - Golds[m];
         total_timesave = typical_total_time - sum_of_bests;
         ratio = float(typical_total_time - total_goal) / float(total_timesave);// ratio is the desired timesave divided by the maximum timesave
