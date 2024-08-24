@@ -1,4 +1,4 @@
-class MrXCarcass extends DeusExCarcass;
+class MrXCarcass extends #var(DeusExPrefix)Carcass;
 
 defaultproperties
 {

@@ -25,34 +25,36 @@ function CreateSkillsList()
     }
 }
 
-function UpdateSwimSpeed()
+static function UpdateSwimSpeed(Skill s, #var(prefix)Human p)
 {
     local float mult,augLevel;
 
-    if (!selectedSkill.isA('SkillSwimming')){
+    if (!s.isA('#var(prefix)SkillSwimming')){
         return;
     }
 
-    if (!player.HeadRegion.Zone.bWaterZone){
+    if (!p.HeadRegion.Zone.bWaterZone){
         return;
     }
 
     if(#defined(vmd)) return; // VMD has different calculations
 
     //Calculation from DeusExPlayer HeadZoneChange
-    mult = selectedSkill.LevelValues[selectedSkill.CurrentLevel];
-    if ( player.Level.NetMode == NM_Standalone )
+    mult = s.LevelValues[s.CurrentLevel];
+    if ( p.Level.NetMode == NM_Standalone || #defined(hx))
 	{
-        player.WaterSpeed = player.Default.WaterSpeed * mult;
+        p.WaterSpeed = p.Default.WaterSpeed * mult;
     } else {
-        if (player.AugmentationSystem!=None){
-            augLevel = player.AugmentationSystem.GetAugLevelValue(class'AugAqualung');
+#ifndef hx
+        if (p.AugmentationSystem!=None){
+            augLevel = p.AugmentationSystem.GetAugLevelValue(class'AugAqualung');
             if (augLevel==-1.0){
-                player.WaterSpeed = Human(player).Default.mpWaterSpeed * mult;
+                p.WaterSpeed = p.Default.mpWaterSpeed * mult;
             } else {
-                player.WaterSpeed = Human(player).Default.mpWaterSpeed * 2.0 * mult;
+                p.WaterSpeed = p.Default.mpWaterSpeed * 2.0 * mult;
             }
         }
+#endif
     }
 }
 
@@ -66,7 +68,7 @@ function UpgradeSkill()
     }
 
     Super.UpgradeSkill();
-    UpdateSwimSpeed();
+    UpdateSwimSpeed(selectedSkill,#var(prefix)Human(player));
     UpdateSkillBanned(selectedSkillButton);
 
     if (selectedSkill!=None){
