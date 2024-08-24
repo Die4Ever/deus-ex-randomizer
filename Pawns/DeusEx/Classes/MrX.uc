@@ -220,4 +220,5 @@ defaultproperties
     bEmitDistress=false
     bLookingForLoudNoise=true
     bReactLoudNoise=true
+    CarcassType=Class'MrXCarcass'
 }

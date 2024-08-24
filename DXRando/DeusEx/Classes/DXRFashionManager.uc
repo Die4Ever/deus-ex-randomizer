@@ -225,6 +225,7 @@ function InitClothes(bool giveAll)
         IngestCarcass(class'UNATCOCloneAugShield1Carcass');
         IngestCarcass(class'UNATCOCloneAugStealth1Carcass');
         IngestCarcass(class'UNATCOCloneAugTough1Carcass');
+        IngestCarcass(class'MrXCarcass');
     }
 
 /*
