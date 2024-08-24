@@ -1806,9 +1806,10 @@ function ForcePutCarriedDecorationInHand()
     }
 }
 
-// vanilla DropDecortation() for this commit
+// DXRando: like vanilla, except better order of operations for the decoration's BaseChange event
 function DropDecoration()
 {
+    local Decoration dec;// DXRando
     local Vector X, Y, Z, dropVect, origLoc, HitLocation, HitNormal, extent;
     local float velscale, size, mult;
     local bool bSuccess;
@@ -1880,18 +1881,20 @@ function DropDecoration()
         // if we can drop it here, then drop it
         if (bSuccess)
         {
-            CarriedDecoration.bWasCarried = True;
-            CarriedDecoration.SetBase(None);
-            CarriedDecoration.SetPhysics(PHYS_Falling);
-            CarriedDecoration.Instigator = Self;
+            dec = CarriedDecoration;
+            CarriedDecoration = None;// DXRando, clear the CarriedDecoration before changing the base
+
+            dec.bWasCarried = True;
+            dec.SetBase(None);
+            dec.SetPhysics(PHYS_Falling);
+            dec.Instigator = Self;
 
             // turn off translucency
-            CarriedDecoration.Style = CarriedDecoration.Default.Style;
-            CarriedDecoration.bUnlit = CarriedDecoration.Default.bUnlit;
-            if (CarriedDecoration.IsA('DeusExDecoration'))
-                DeusExDecoration(CarriedDecoration).ResetScaleGlow();
+            dec.Style = dec.Default.Style;
+            dec.bUnlit = dec.Default.bUnlit;
+            if (dec.IsA('DeusExDecoration'))
+                DeusExDecoration(dec).ResetScaleGlow();
 
-            CarriedDecoration = None;
         }
         else
         {
