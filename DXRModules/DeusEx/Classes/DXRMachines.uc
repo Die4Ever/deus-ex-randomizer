@@ -585,11 +585,11 @@ function Actor SpawnNewActor(class<Actor> c, bool jitter, optional vector target
 
 function DestroyMedbotDoors()
 {
-    local DeusExMover m;
+    local #var(DeusExPrefix)Mover m;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
-        foreach AllActors(class'DeusExMover', m) {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m) {
             if(m.name == 'DeusExMover0' || m.name == 'DeusExMover2') {
                 DestroyMover(m);
             }
