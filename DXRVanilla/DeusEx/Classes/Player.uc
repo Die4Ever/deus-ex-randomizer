@@ -1707,17 +1707,102 @@ exec function OpenControllerAugWindow()
 }
 
 
-
 function HandleWalking()
-{// DXRando: fix dropping crates into the void when climbing ladders
-    local Decoration oldDec;
-    oldDec = CarriedDecoration;
+{
+    PlayerPawnHandleWalking();
 
-    Super.HandleWalking();
+    if (bAlwaysRun)
+        bIsWalking = (bRun != 0) || (bDuck != 0);
+    else
+        bIsWalking = (bRun == 0) || (bDuck != 0);
 
-    if(CarriedDecoration==None && oldDec!=None) {
-        CarriedDecoration = oldDec;
-        PutCarriedDecorationInHand();
+    // handle the toggle walk key
+    if (bToggleWalk)
+        bIsWalking = !bIsWalking;
+
+    if (bToggleCrouch)
+    {
+        if (!bCrouchOn && !bWasCrouchOn && (bDuck != 0))
+        {
+            bCrouchOn = True;
+        }
+        else if (bCrouchOn && !bWasCrouchOn && (bDuck == 0))
+        {
+            bWasCrouchOn = True;
+        }
+        else if (bCrouchOn && bWasCrouchOn && (bDuck == 0) && (lastbDuck != 0))
+        {
+            bCrouchOn = False;
+            bWasCrouchOn = False;
+        }
+
+        if (bCrouchOn)
+        {
+            bIsCrouching = True;
+            bDuck = 1;
+        }
+
+        lastbDuck = bDuck;
+    }
+}
+
+// DXRando: PlayerPawn.HandleWalking, but with ForcePutCarriedDecorationInHand() instead of DropDecoration()
+function PlayerPawnHandleWalking()
+{
+    local rotator carried;
+
+    // this is changed from Unreal -- default is now walk - DEUS_EX CNN
+    bIsWalking = ((bRun == 0) || (bDuck != 0)) && !Region.Zone.IsA('WarpZoneInfo');
+
+    if ( CarriedDecoration != None )
+    {
+        if ( (Role == ROLE_Authority) && (standingcount == 0) )
+            CarriedDecoration = None;
+        if ( CarriedDecoration != None ) //verify its still in front
+        {
+            bIsWalking = true;
+            if ( Role == ROLE_Authority )
+            {
+                carried = Rotator(CarriedDecoration.Location - Location);
+                carried.Yaw = ((carried.Yaw & 65535) - (Rotation.Yaw & 65535)) & 65535;
+                if ( (carried.Yaw > 3072) && (carried.Yaw < 62463) )
+                    ForcePutCarriedDecorationInHand();
+            }
+        }
+    }
+}
+
+
+// a lot like the vanilla PutCarriedDecorationInHand()
+function ForcePutCarriedDecorationInHand()
+{
+    local vector lookDir, upDir;
+
+    if (CarriedDecoration != None)
+    {
+        lookDir = Vector(Rotation);
+        lookDir.Z = 0;
+        upDir = vect(0,0,0);
+        upDir.Z = CollisionHeight / 2;		// put it up near eye level
+        CarriedDecoration.SetPhysics(PHYS_None);
+        CarriedDecoration.SetCollision(False, False, False);
+        CarriedDecoration.bCollideWorld = False;
+
+        if ( CarriedDecoration.SetLocation(Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir) )
+        {
+            CarriedDecoration.SetBase(self);
+            // make it translucent
+            CarriedDecoration.Style = STY_Translucent;
+            CarriedDecoration.ScaleGlow = 1.0;
+            CarriedDecoration.bUnlit = True;
+
+            FrobTarget = None;
+        }
+        else
+        {
+            log("ERROR: Why would ForcePutCarriedDecorationInHand() fail? " $ CarriedDecoration);
+            CarriedDecoration = None;
+        }
     }
 }
 
