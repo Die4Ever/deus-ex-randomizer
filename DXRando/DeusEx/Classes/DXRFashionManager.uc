@@ -593,6 +593,11 @@ simulated function ApplyJCClothing(Actor a)
         }
     }
     a.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+
+    //The male jumpsuit mesh uses the face texture in slot 3, even though it's in slot 0 as well
+    if (curOutfit[cPLAYER].curOutfit==OT_NoTrench && !isFemale){
+        a.MultiSkins[3]=a.MultiSkins[0]; //Copy face into slot 3 also
+    }
 }
 
 simulated function ApplyPaulClothing(Actor a)
@@ -613,6 +618,11 @@ simulated function ApplyPaulClothing(Actor a)
         }
     }
     a.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+
+    //The jumpsuit mesh uses the face texture in slot 3, even though it's in slot 0 as well
+    if (curOutfit[cPAUL].curOutfit==OT_NoTrench){
+        a.MultiSkins[3]=a.MultiSkins[0]; //Copy face into slot 3 also
+    }
 }
 
 simulated function GetDressed()
