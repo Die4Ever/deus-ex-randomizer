@@ -1,4 +1,4 @@
-class MrX extends GuntherHermann;
+class MrX extends HumanMilitary;
 
 var float healthRegenTimer;
 var #var(PlayerPawn) player;
@@ -30,6 +30,66 @@ static function MrX Create(DXRActorsBase a)
 
     return x;
 }
+
+//
+// Damage type table for Mr X (Copied from Gunther):
+//
+// Shot			- 100%
+// Sabot		- 100%
+// Exploded		- 100%
+// TearGas		- 10%
+// PoisonGas	- 10%
+// Poison		- 10%
+// HalonGas		- 10%
+// Radiation	- 10%
+// Shocked		- 10%
+// Stunned		- 0%
+// KnockedOut   - 0%
+// Flamed		- 0%
+// Burned		- 0%
+// NanoVirus	- 0%
+// EMP			- 0%
+//
+
+//Copied from GuntherHermann
+function float ShieldDamage(name damageType)
+{
+    // handle special damage types
+    if ((damageType == 'Flamed') || (damageType == 'Burned') || (damageType == 'Stunned') ||
+        (damageType == 'KnockedOut'))
+        return 0.0;
+    else if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas') ||
+            (damageType == 'Radiation') || (damageType == 'Shocked') || (damageType == 'Poison') ||
+            (damageType == 'PoisonEffect'))
+        return 0.1;
+    else
+        return Super.ShieldDamage(damageType);
+}
+
+//Copied from GuntherHermann
+function GotoDisabledState(name damageType, EHitLocation hitPos)
+{
+    if (!bCollideActors && !bBlockActors && !bBlockPlayers)
+        return;
+    if (CanShowPain())
+        TakeHit(hitPos);
+    else
+        GotoNextState();
+}
+
+//Copied from GuntherHermann, only to demonstrate that Mr X doesn't explode
+//(also he shouldn't really die, but...)
+/*
+function Carcass SpawnCarcass()
+{
+    if (bStunned)
+        return Super.SpawnCarcass();
+
+    Explode();
+
+    return None;
+}
+*/
 
 function PostPostBeginPlay()
 {
@@ -193,6 +253,8 @@ defaultproperties
     bInvincible=false
     FamiliarName="Mr. X"
     UnfamiliarName="Mr. X"
+    Texture=Texture'DeusExItems.Skins.BlackMaskTex'
+    Mesh=LodMesh'DeusExCharacters.GM_DressShirt_B'
     MultiSkins(0)=Texture'MrXShirt'
     MultiSkins(1)=Texture'MrXPants'
     MultiSkins(2)=Texture'MrXFace'
@@ -221,4 +283,9 @@ defaultproperties
     bLookingForLoudNoise=true
     bReactLoudNoise=true
     CarcassType=Class'MrXCarcass'
+    WalkingSpeed=0.350000
+    bImportant=True
+    BurnPeriod=0.000000
+    GroundSpeed=210.000000
+    BaseEyeHeight=44.000000
 }

@@ -114,8 +114,8 @@ simulated function PreFirstEntry()
                 cr.lootableClothes=class'#var(prefix)MorganEverettCarcass';
                 break;
 
-            case "12_VANDENBERG_COMPUTER":
-                cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(1135,2137,-1620))); //Entry floor computer lab overlooking milnet uplink
+            case "12_VANDENBERG_CMD":
+                cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(-1746.67,4633.04,-2119.85))); //One of the lockers in the comm building
                 cr.lootableClothes=class'#var(prefix)GarySavageCarcass';
                 break;
 

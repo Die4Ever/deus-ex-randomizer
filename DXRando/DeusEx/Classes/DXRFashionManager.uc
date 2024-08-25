@@ -9,7 +9,8 @@ enum EClothesType
     CT_Pants,
     CT_Skirt,
     CT_Jacket,
-    CT_Helmet
+    CT_Helmet,
+    CT_Glasses
 };
 
 enum EGender
@@ -330,8 +331,8 @@ simulated function ClothesTextures FetchClothesTextures(Clothes c)
 simulated function GenerateOverrides(bool female, EOutfitType outfit, out Texture newMultis[8])
 {
     local int i;
-    local Clothes c1,c2,c3;
-    local ClothesTextures ct1,ct2,ct3;
+    local Clothes c1,c2,c3,c4;
+    local ClothesTextures ct1,ct2,ct3,ct4;
 
     for (i=0;i<ArrayCount(newMultis);i++){
         newMultis[i]=None;
@@ -345,10 +346,14 @@ simulated function GenerateOverrides(bool female, EOutfitType outfit, out Textur
             ct2=FetchClothesTextures(c2);
             c3=PickRandomClothingByType(CT_Jacket,female);
             ct3=FetchClothesTextures(c3);
+            c4=PickRandomClothingByType(CT_Glasses,female);
+            ct4=FetchClothesTextures(c4);
             newMultis[2]=ct1.tex1; //Pants
             newMultis[4]=ct2.tex1; //Shirt
             newMultis[1]=ct3.tex1; //Jacket top
             newMultis[5]=ct3.tex2; //Jacket bottom
+            newMultis[6]=ct4.tex1; //Glasses Frames
+            newMultis[7]=ct4.tex2; //Glasses Lenses
             break;
         case OT_NoTrench:
             c1=PickRandomClothingByType(CT_Pants,female);
@@ -357,11 +362,15 @@ simulated function GenerateOverrides(bool female, EOutfitType outfit, out Textur
             ct2=FetchClothesTextures(c2);
             c3=PickRandomClothingByType(CT_Helmet,female);
             ct3=FetchClothesTextures(c3);
+            c4=PickRandomClothingByType(CT_Glasses,female);
+            ct4=FetchClothesTextures(c4);
             if (female){
                 newMultis[6]=ct1.tex1; //pants
                 newMultis[7]=ct2.tex1; //shirt
                 newMultis[1]=Texture'DeusExItems.Skins.PinkMaskTex'; //Hair on sides
                 newMultis[2]=Texture'DeusExItems.Skins.PinkMaskTex'; //ponytail
+                newMultis[3]=ct4.tex1; //Glasses Frames
+                newMultis[4]=ct4.tex2; //Glasses Lenses
             } else {
                 newMultis[1]=ct1.tex1; //pants
                 newMultis[2]=ct2.tex1; //shirt
@@ -369,14 +378,19 @@ simulated function GenerateOverrides(bool female, EOutfitType outfit, out Textur
                 newMultis[4]=Texture'DeusExItems.Skins.PinkMaskTex'; //Face mask, like for NSF guys
                 newMultis[5]=Texture'DeusExItems.Skins.PinkMaskTex'; //Visor lens
                 newMultis[7]=Texture'DeusExItems.Skins.PinkMaskTex';
+                //No Trench male mesh has nowhere to wear glasses :(
             }
             break;
         case OT_Skirt:
             c1=PickRandomClothingByType(CT_Skirt,female);
             ct1=FetchClothesTextures(c1);
+            c2=PickRandomClothingByType(CT_Glasses,female);
+            ct2=FetchClothesTextures(c2);
             newMultis[4]=ct1.tex1;
             newMultis[5]=ct1.tex2;
             newMultis[1]=Texture'DeusExItems.Skins.PinkMaskTex'; //Hairbun
+            newMultis[6]=ct4.tex1; //Glasses Frames
+            newMultis[7]=ct4.tex2; //Glasses Lenses
             break;
     }
 
@@ -395,8 +409,12 @@ simulated function HandleGlasses(bool hasGlasses, bool female, EOutfitType outfi
         lensIdx=7;
     }
     if (hasGlasses){
-        newMultis[frameIdx]=Texture'DeusExCharacters.Skins.FramesTex4';
-        newMultis[lensIdx]=Texture'DeusExCharacters.Skins.LensesTex5';
+        //GenerateOverrides has already applied glasses
+        if (false){ //Should there be a toggle for "Always Vanilla Shades"?
+            //Always wear default JC glasses
+            newMultis[frameIdx]=Texture'DeusExCharacters.Skins.FramesTex4';
+            newMultis[lensIdx]=Texture'DeusExCharacters.Skins.LensesTex5';
+        }
     } else {
         newMultis[frameIdx]=Texture'DeusExItems.Skins.GrayMaskTex';
         newMultis[lensIdx]=Texture'DeusExItems.Skins.BlackMaskTex';
@@ -667,6 +685,12 @@ simulated function int AddClothing(EGender gender, EClothesType type, Texture te
         tex2s=String(tex2);
     }
 
+    //We don't allow ingesting "no glasses"
+    if (type==CT_Glasses){
+        if (tex1s=="DeusExItems.Skins.GrayMaskTex") return 0;
+        if (tex2s=="DeusExItems.Skins.BlackMaskTex") return 0;
+    }
+
     //Check for a dupe
     for (i=0;i<numClothes;i++){
         if (Clothing[i].Gender!=gender) continue;
@@ -709,31 +733,38 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
             num += AddClothing(GetCarcassShirtGender(carcassClass),CT_TrenchShirt,carcassClass.Default.MultiSkins[4],None);
             num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[2],None);
             num += AddClothing(G_Both,CT_Jacket,carcassClass.Default.MultiSkins[1],carcassClass.Default.MultiSkins[5]);
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
             break;
         case LodMesh'DeusExCharacters.GFM_Trench_Carcass':
             num += AddClothing(G_Female,CT_TrenchShirt,carcassClass.Default.MultiSkins[4],None);
             num += AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[2],None);
             num += AddClothing(G_Both,CT_Jacket,carcassClass.Default.MultiSkins[1],carcassClass.Default.MultiSkins[5]);
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
             break;
 
         //Non-Trenchcoat shirts don't map onto the trenchcoat body properly
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_Carcass':
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_F_Carcass':
             num += AddClothing(G_Female,CT_Skirt,carcassClass.Default.MultiSkins[4],carcassClass.Default.MultiSkins[5]);
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
             break;
         case LodMesh'DeusExCharacters.GFM_TShirtPants_Carcass':
             num += AddClothing(G_Female,CT_Shirt,carcassClass.Default.MultiSkins[7],None);
             num += AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[6],None);
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[3],carcassClass.Default.MultiSkins[4]);
             break;
         case LodMesh'DeusExCharacters.GM_DressShirt_B_Carcass':
             num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[0],None);
             num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
+            //Who knew this mesh could wear glasses?
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[5],carcassClass.Default.MultiSkins[6]);
             break;
         case LodMesh'DeusExCharacters.GM_DressShirt_Carcass':
         case LodMesh'DeusExCharacters.GM_DressShirt_F_Carcass':
         case LodMesh'DeusExCharacters.GM_DressShirt_S_Carcass':
             num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[5],None);
             num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[3],None);
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
             break;
         case LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass':
             num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[2],None);
@@ -744,10 +775,12 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
         case LodMesh'DeusExCharacters.GMK_DressShirt_F_Carcass':
             num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[1],None);
             num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[2],None);
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
             break;
         case LodMesh'DeusExCharacters.GM_Suit_Carcass':
             num += AddClothing(G_Male,CT_Shirt,carcassClass.Default.MultiSkins[3],None);
             num += AddClothing(G_Male,CT_Pants,carcassClass.Default.MultiSkins[1],None);
+            num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[5],carcassClass.Default.MultiSkins[6]);
             break;
     }
 
