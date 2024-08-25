@@ -15,7 +15,7 @@ local DXRando dxr;
         Level.Game.SetGameSpeed(0.05);
         SetTimer(0.075, True);
     }
-    if( ran_first_frame == true && started_conv == false && player!=None && player.CanStartConversation() ) {
+    if( ran_first_frame == true && started_conv == false && player!=None) {
         foreach AllActors(class'#var(prefix)BobPage',bob){break;}
         if (bob!=None){
             Super.FirstFrame();
@@ -28,7 +28,7 @@ local DXRando dxr;
             }
         }
     } else {
-        if (ran_first_frame && !started_conv && !player.CanStartConversation()){
+        if (ran_first_frame && !started_conv){
             log("WARNING: "$Self$": Unable to start intro conversation...  State: "$player.GetStateName()$"  Physics: "$player.Physics);
         }
     }
