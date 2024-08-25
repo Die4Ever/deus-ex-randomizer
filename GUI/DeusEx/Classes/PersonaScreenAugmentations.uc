@@ -24,8 +24,41 @@ function UpdateBioEnergyBar()
 	winBioEnergyText.SetText(Int(player.Energy)$"/"$Int(player.EnergyMax)$" Energy");
 }
 
+//Same as vanilla but also checks if the player is targeting a can
+function UpdateAugCans()
+{
+    local Inventory anItem;
+    local int augCanCount;
+
+    if (winAugCans != None)
+    {
+        winAugCans.SetText(AugCanUseText);
+
+        // Loop through the player's inventory and count how many upgrade cans
+        // the player has
+        anItem = player.Inventory;
+
+        while(anItem != None)
+        {
+            if (anItem.IsA('#var(prefix)AugmentationUpgradeCannister'))
+                augCanCount++;
+
+            anItem = anItem.Inventory;
+        }
+
+        //This part is new
+        if (#var(prefix)AugmentationUpgradeCannister(player.FrobTarget)!=None){
+            augCanCount++;
+        }
+
+        winAugCans.SetCount(augCanCount);
+    }
+}
+
 function UpgradeAugmentation()
 {
+    local AugmentationUpgradeCannister augCan;
+    local bool wasFrobTarget;
     local int levelBefore;
     local DXRando dxr;
 
@@ -33,7 +66,44 @@ function UpgradeAugmentation()
         levelBefore = selectedAug.CurrentLevel;
     }
 
-    _UpgradeAugmentation();
+
+    //This indented section was vanilla (except for the part about FrobTarget)
+
+        // First make sure we have a selected Augmentation
+        if (selectedAug == None)
+            return;
+
+        if (#var(prefix)AugmentationUpgradeCannister(player.FrobTarget)!=None){
+            augCan = #var(prefix)AugmentationUpgradeCannister(player.FrobTarget);
+            player.AddInventory(augCan); //Needs to be in inventory so the Aug can see it is available for upgrading
+            wasFrobTarget=True;
+        } else {
+            // Now check to see if we have an upgrade cannister
+            augCan = #var(prefix)AugmentationUpgradeCannister(player.FindInventoryType(Class'#var(prefix)AugmentationUpgradeCannister'));
+        }
+
+        if (augCan != None)
+        {
+            // Increment the level and remove the aug cannister from
+            // the player's inventory
+
+            selectedAug.IncLevel();
+            selectedAug.UpdateInfo(winInfo);
+
+            augCan.UseOnce();
+            if (wasFrobTarget){
+                player.FrobTarget=None;
+            }
+
+            // Update the level icons
+            if (selectedAugButton != None)
+                PersonaAugmentationItemButton(selectedAugButton).SetLevel(selectedAug.GetCurrentLevel());
+        }
+
+        UpdateAugCans();
+        EnableButtons();
+
+    //End of vanilla aug menu logic
 
     if (selectedAug!=None){
         if (selectedAug.CurrentLevel!=levelBefore){
@@ -62,6 +132,12 @@ function EnableButtons()
                 btnActivate.EnableWindow(true);
             }
         }
+
+        //Allow upgrading with a highlighted aug upgrade
+        if (#var(prefix)AugmentationUpgradeCannister(player.FrobTarget)!=None){
+            btnUpgrade.EnableWindow(selectedAug.currentLevel < selectedAug.MaxLevel);
+        }
+
     }
 }
 

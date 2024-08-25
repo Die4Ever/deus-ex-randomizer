@@ -123,11 +123,11 @@ function InitClothes(bool giveAll)
 #else
     IngestCarcass(class'HXJCDentonCarcass');
 #endif
-    IngestCarcass(class'#var(prefix)PaulDentonCarcass');
     IngestCarcass(class'#var(prefix)UNATCOTroopCarcass');
     AddClothing(G_Male,CT_Helmet,Texture'DeusExItems.Skins.PinkMaskTex',None); //Add "no helmet" into the default helmet selections
 
     if (giveAll){
+        IngestCarcass(class'#var(prefix)PaulDentonCarcass');
         IngestCarcass(class'#var(prefix)Male1Carcass');
         IngestCarcass(class'#var(prefix)Male2Carcass');
         IngestCarcass(class'#var(prefix)Male3Carcass');
@@ -214,6 +214,18 @@ function InitClothes(bool giveAll)
         IngestCarcass(class'#var(prefix)StantonDowdCarcass');
         IngestCarcass(class'#var(prefix)JockCarcass');
         IngestCarcass(class'NervousWorkerCarcass');
+        IngestCarcass(class'MerchantCarcass');
+        IngestCarcass(class'LeMerchantCarcass');
+        IngestCarcass(class'MJ12CloneAugShield1Carcass');
+        IngestCarcass(class'MJ12CloneAugStealth1Carcass');
+        IngestCarcass(class'MJ12CloneAugTough1Carcass');
+        IngestCarcass(class'NSFCloneAugShield1Carcass');
+        IngestCarcass(class'NSFCloneAugStealth1Carcass');
+        IngestCarcass(class'NSFCloneAugTough1Carcass');
+        IngestCarcass(class'UNATCOCloneAugShield1Carcass');
+        IngestCarcass(class'UNATCOCloneAugStealth1Carcass');
+        IngestCarcass(class'UNATCOCloneAugTough1Carcass');
+        IngestCarcass(class'MrXCarcass');
     }
 
 /*
@@ -581,6 +593,11 @@ simulated function ApplyJCClothing(Actor a)
         }
     }
     a.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+
+    //The male jumpsuit mesh uses the face texture in slot 3, even though it's in slot 0 as well
+    if (curOutfit[cPLAYER].curOutfit==OT_NoTrench && !isFemale){
+        a.MultiSkins[3]=a.MultiSkins[0]; //Copy face into slot 3 also
+    }
 }
 
 simulated function ApplyPaulClothing(Actor a)
@@ -601,6 +618,11 @@ simulated function ApplyPaulClothing(Actor a)
         }
     }
     a.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+
+    //The jumpsuit mesh uses the face texture in slot 3, even though it's in slot 0 as well
+    if (curOutfit[cPAUL].curOutfit==OT_NoTrench){
+        a.MultiSkins[3]=a.MultiSkins[0]; //Copy face into slot 3 also
+    }
 }
 
 simulated function GetDressed()

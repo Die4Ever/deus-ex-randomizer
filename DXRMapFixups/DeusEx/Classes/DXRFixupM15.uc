@@ -206,6 +206,8 @@ function PreFirstEntryMapFixes_Final()
     local DataLinkTrigger dlt;
     local SkillAwardTrigger sat;
     local Dispatcher disp;
+    local FlagTrigger ft;
+    local OnceOnlyTrigger oot;
     local int i;
 
     AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
@@ -229,30 +231,51 @@ function PreFirstEntryMapFixes_Final()
     //but like... for REAL
     foreach AllActors(class'Switch2',s2){
         if (s2.Event=='button_1'){
+            s2.Event = 'button_1_once';
+            oot = Spawn(class'OnceOnlyTrigger',, 'button_1_once');
+            oot.Event = 'button_1';
             s2.Tag='button_1_switch';
             class'DXRTriggerEnable'.static.Create(s2,'Generator_panel','button_1_switch');
         } else if (s2.Event=='button_2'){
+            s2.Event = 'button_2_once';
+            oot = Spawn(class'OnceOnlyTrigger',, 'button_2_once');
+            oot.Event = 'button_2';
             s2.Tag='button_2_switch';
             class'DXRTriggerEnable'.static.Create(s2,'injector2','button_2_switch');
         } else if (s2.Event=='button_3'){
+            s2.Event = 'button_3_once';
+            oot = Spawn(class'OnceOnlyTrigger',, 'button_3_once');
+            oot.Event = 'button_3';
             s2.Tag='button_3_switch';
             class'DXRTriggerEnable'.static.Create(s2,'injector3','button_3_switch');
         }
     }
 
-    // also make Tong ending a little faster
-    if(dxr.flags.moresettings.splits_overlay > 0) {
-        foreach AllActors(class'Dispatcher', disp) {
-            switch(disp.Tag) {
-            case 'button_1':
-            case 'button_2':
-            case 'button_3':
+    // make the Tong ending flag trigger not based on collision
+    foreach AllActors(class'FlagTrigger', ft, 'FlagTrigger') {
+        if(ft.event != 'Generator_overload') continue;
+        ft.Tag = 'Check_Generator_overload';
+        ft.SetCollision(false,false,false);
+    }
+
+    foreach AllActors(class'Dispatcher', disp) {
+        switch(disp.Tag) {
+        case 'button_3':
+            disp.OutEvents[6] = 'Check_Generator_overload';
+            // fallthrough
+        case 'button_1':
+        case 'button_2':
+            if(dxr.flags.moresettings.splits_overlay > 0) {// also make Tong ending a little faster
                 for(i=0; i<ArrayCount(disp.OutDelays); i++) {
                     disp.OutDelays[i] /= 3;
                 }
-                break;
             }
+            break;
         }
+    }
+
+    // also make Tong ending a little faster
+    if(dxr.flags.moresettings.splits_overlay > 0) {
         foreach AllActors(class'DeusExMover', d) {
             switch(d.Tag) {
             case 'Generator_panel':
@@ -400,8 +423,25 @@ function PreFirstEntryMapFixes_Page()
     local int i;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)ScriptedPawn sp;
     local vector cloneCubeLoc[4];
     local string cloneCubeText[4];
+
+    // fix in-fighting
+    foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
+        if(#var(prefix)MJ12Commando(sp) != None && sp.Alliance=='') {
+            sp.SetAlliance('MJ12');
+        }
+        if(sp.Alliance=='') {
+            continue;// probably the security bots you can release
+        }
+        sp.ChangeAlly('MJ12', 1, true);
+        sp.ChangeAlly('Karkian', 1, true);
+        sp.ChangeAlly('Gray', 1, true);
+        sp.ChangeAlly('Greasel', 1, true);
+        sp.ChangeAlly('Subject1', 1, true);
+        sp.ChangeAlly('bots', 1, true);
+    }
 
     foreach AllActors(class'ComputerSecurity', c) {
         if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
@@ -514,6 +554,7 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "15_AREA51_FINAL":
+        SetTimer(1, true);// fix ReactorReady flag being set by infolinks
         if (VanillaMaps){
             foreach AllActors(class'Gray', g) {
                 if( g.Tag == 'reactorgray1' ) g.BindName = "ReactorGray1";
@@ -546,6 +587,11 @@ function TimerMapFixes()
 {
     switch(dxr.localURL)
     {
+    case "15_AREA51_FINAL":
+        if(dxr.flagbase.GetBool('ReactorSwitch1') && dxr.flagbase.GetBool('ReactorSwitch2')) {
+            dxr.flagbase.SetBool('ReactorReady', true);
+        }
+        break;
     case "15_AREA51_PAGE":
         Area51_CountBlueFusion();
         break;

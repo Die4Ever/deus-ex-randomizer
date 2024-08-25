@@ -1707,19 +1707,204 @@ exec function OpenControllerAugWindow()
 }
 
 
-
 function HandleWalking()
-{// DXRando: fix dropping crates into the void when climbing ladders
-    local Decoration oldDec;
-    oldDec = CarriedDecoration;
+{
+    PlayerPawnHandleWalking();
 
-    Super.HandleWalking();
+    if (bAlwaysRun)
+        bIsWalking = (bRun != 0) || (bDuck != 0);
+    else
+        bIsWalking = (bRun == 0) || (bDuck != 0);
 
-    if(CarriedDecoration==None && oldDec!=None) {
-        CarriedDecoration = oldDec;
-        PutCarriedDecorationInHand();
+    // handle the toggle walk key
+    if (bToggleWalk)
+        bIsWalking = !bIsWalking;
+
+    if (bToggleCrouch)
+    {
+        if (!bCrouchOn && !bWasCrouchOn && (bDuck != 0))
+        {
+            bCrouchOn = True;
+        }
+        else if (bCrouchOn && !bWasCrouchOn && (bDuck == 0))
+        {
+            bWasCrouchOn = True;
+        }
+        else if (bCrouchOn && bWasCrouchOn && (bDuck == 0) && (lastbDuck != 0))
+        {
+            bCrouchOn = False;
+            bWasCrouchOn = False;
+        }
+
+        if (bCrouchOn)
+        {
+            bIsCrouching = True;
+            bDuck = 1;
+        }
+
+        lastbDuck = bDuck;
     }
 }
+
+// DXRando: PlayerPawn.HandleWalking, but with ForcePutCarriedDecorationInHand() instead of DropDecoration()
+function PlayerPawnHandleWalking()
+{
+    local rotator carried;
+
+    // this is changed from Unreal -- default is now walk - DEUS_EX CNN
+    bIsWalking = ((bRun == 0) || (bDuck != 0)) && !Region.Zone.IsA('WarpZoneInfo');
+
+    if ( CarriedDecoration != None )
+    {
+        if ( (Role == ROLE_Authority) && (standingcount == 0) )
+            CarriedDecoration = None;
+        if ( CarriedDecoration != None ) //verify its still in front
+        {
+            bIsWalking = true;
+            if ( Role == ROLE_Authority )
+            {
+                carried = Rotator(CarriedDecoration.Location - Location);
+                carried.Yaw = ((carried.Yaw & 65535) - (Rotation.Yaw & 65535)) & 65535;
+                if ( (carried.Yaw > 3072) && (carried.Yaw < 62463) )
+                    ForcePutCarriedDecorationInHand();
+            }
+        }
+    }
+}
+
+
+// a lot like the vanilla PutCarriedDecorationInHand()
+function ForcePutCarriedDecorationInHand()
+{
+    local vector lookDir, upDir;
+
+    if (CarriedDecoration != None)
+    {
+        lookDir = Vector(Rotation);
+        lookDir.Z = 0;
+        upDir = vect(0,0,0);
+        upDir.Z = CollisionHeight / 2;		// put it up near eye level
+        CarriedDecoration.SetPhysics(PHYS_None);
+        CarriedDecoration.SetCollision(False, False, False);
+        CarriedDecoration.bCollideWorld = False;
+
+        if ( CarriedDecoration.SetLocation(Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir) )
+        {
+            CarriedDecoration.SetBase(self);
+            // make it translucent
+            CarriedDecoration.Style = STY_Translucent;
+            CarriedDecoration.ScaleGlow = 1.0;
+            CarriedDecoration.bUnlit = True;
+
+            FrobTarget = None;
+        }
+        else
+        {
+            log("ERROR: Why would ForcePutCarriedDecorationInHand() fail? " $ CarriedDecoration);
+            CarriedDecoration = None;
+        }
+    }
+}
+
+// DXRando: like vanilla, except better order of operations for the decoration's BaseChange event
+function DropDecoration()
+{
+    local Decoration dec;// DXRando
+    local Vector X, Y, Z, dropVect, origLoc, HitLocation, HitNormal, extent;
+    local float velscale, size, mult;
+    local bool bSuccess;
+    local Actor hitActor;
+
+    bSuccess = False;
+
+    if (CarriedDecoration != None)
+    {
+        origLoc = CarriedDecoration.Location;
+        GetAxes(Rotation, X, Y, Z);
+
+        // if we are highlighting something, try to place the object on the target
+        if ((FrobTarget != None) && !FrobTarget.IsA('Pawn'))
+        {
+            CarriedDecoration.Velocity = vect(0,0,0);
+
+            // try to drop the object about one foot above the target
+            size = FrobTarget.CollisionRadius - CarriedDecoration.CollisionRadius * 2;
+            dropVect.X = size/2 - FRand() * size;
+            dropVect.Y = size/2 - FRand() * size;
+            dropVect.Z = FrobTarget.CollisionHeight + CarriedDecoration.CollisionHeight + 16;
+            dropVect += FrobTarget.Location;
+        }
+        else
+        {
+            // throw velocity is based on augmentation
+            if (AugmentationSystem != None)
+            {
+                mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+                if (mult == -1.0)
+                    mult = 1.0;
+            }
+
+            if (IsLeaning())
+                CarriedDecoration.Velocity = vect(0,0,0);
+            else
+                CarriedDecoration.Velocity = Vector(ViewRotation) * mult * 500 + vect(0,0,220) + 40 * VRand();
+
+            // scale it based on the mass
+            velscale = FClamp(CarriedDecoration.Mass / 20.0, 1.0, 40.0);
+
+            CarriedDecoration.Velocity /= velscale;
+            dropVect = Location + (CarriedDecoration.CollisionRadius + CollisionRadius + 4) * X;
+            dropVect.Z += BaseEyeHeight;
+        }
+
+        // is anything blocking the drop point? (like thin doors)
+        if (FastTrace(dropVect))
+        {
+            CarriedDecoration.SetCollision(True, True, True);
+            CarriedDecoration.bCollideWorld = True;
+
+            // check to see if there's space there
+            extent.X = CarriedDecoration.CollisionRadius;
+            extent.Y = CarriedDecoration.CollisionRadius;
+            extent.Z = 1;
+            hitActor = Trace(HitLocation, HitNormal, dropVect, CarriedDecoration.Location, True, extent);
+
+            if ((hitActor == None) && CarriedDecoration.SetLocation(dropVect))
+                bSuccess = True;
+            else
+            {
+                CarriedDecoration.SetCollision(False, False, False);
+                CarriedDecoration.bCollideWorld = False;
+            }
+        }
+
+        // if we can drop it here, then drop it
+        if (bSuccess)
+        {
+            dec = CarriedDecoration;
+            CarriedDecoration = None;// DXRando, clear the CarriedDecoration before changing the base
+
+            dec.bWasCarried = True;
+            dec.SetBase(None);
+            dec.SetPhysics(PHYS_Falling);
+            dec.Instigator = Self;
+
+            // turn off translucency
+            dec.Style = dec.Default.Style;
+            dec.bUnlit = dec.Default.bUnlit;
+            if (dec.IsA('DeusExDecoration'))
+                DeusExDecoration(dec).ResetScaleGlow();
+
+        }
+        else
+        {
+            // otherwise, don't drop it and display a message
+            CarriedDecoration.SetLocation(origLoc);
+            ClientMessage(CannotDropHere);
+        }
+    }
+}
+
 
 event TravelPostAccept()
 {

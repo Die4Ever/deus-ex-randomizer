@@ -292,8 +292,8 @@ function SpawnJackOLantern(vector loc)
     if( ! NearestWallSearchZ(wall1, distrange, 16*3, floor.loc, size) ) return;
 
     zone = GetZone(wall1.loc);
-    if (zone.bWaterZone){
-        //No underwater Jack O Lanterns
+    if (zone.bWaterZone || SkyZoneInfo(zone)!=None){
+        //No underwater or skybox Jack O Lanterns
         return;
     }
 
@@ -327,8 +327,8 @@ function SpawnSpiderweb(vector loc)
     if(!GetSpiderwebLocation(loc, rot, size * 10)) return;
 
     zone = GetZone(loc);
-    if (zone.bWaterZone){
-        //No underwater spiderwebs
+    if (zone.bWaterZone || SkyZoneInfo(zone)!=None){
+        //No underwater or skybox spiderwebs
         return;
     }
 

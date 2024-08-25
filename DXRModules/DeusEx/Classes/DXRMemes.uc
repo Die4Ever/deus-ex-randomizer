@@ -855,7 +855,7 @@ function Actor ReplaceWithRandomClass(Actor old)
     return None;
 }
 
-const num_random_actor_classes = 546;
+const num_random_actor_classes = 549;
 
 function string GetRandomActorClass()
 {
@@ -951,6 +951,9 @@ function string _GetRandomActorClass(int r)
     // medbot class twice, with 50% chance to be an augbot
     if(r==i++) return "#var(package).#var(injectsprefix)MedicalBot";
     if(r==i++) return "#var(package).#var(injectsprefix)MedicalBot";
+    if(r==i++) return "#var(package).NervousWorker";
+    if(r==i++) return "#var(package).NervousWorkerCarcass";
+    if(r==i++) return "#var(package).LeMerchant";
 
     // vanilla classes
     if ( r == i++ ) return "AcousticSensor";

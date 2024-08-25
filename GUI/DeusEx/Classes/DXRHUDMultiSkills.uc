@@ -62,6 +62,7 @@ function CheckDashPress()
                     if (aSkill!=None){
                         if (AttemptBuySkill(Player,aSkill)){
                             //Player.bBuySkills=False; //Keep the menu open after buying
+                            class'#var(injectsprefix)PersonaScreenSkills'.static.UpdateSwimSpeed(aSkill,#var(prefix)Human(Player));
                         }
                     }
                 }

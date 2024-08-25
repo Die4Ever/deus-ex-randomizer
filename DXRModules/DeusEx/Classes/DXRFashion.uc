@@ -65,6 +65,14 @@ simulated function PreFirstEntry()
                 cr.lootableClothes=class'#var(prefix)SmugglerCarcass';
                 break;
 
+            case "02_NYC_HOTEL":
+            case "04_NYC_HOTEL":
+            case "08_NYC_HOTEL":
+                foreach AllActors(class'#var(injectsprefix)ClothesRack',cr){ //The two clothes racks in Paul's closet
+                    cr.lootableClothes = class'#var(prefix)PaulDentonCarcass';
+                }
+                break;
+
             case "03_NYC_BATTERYPARK":
                 cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(-3994,357,415))); //In first shanty town hut
                 cr.lootableClothes=class'#var(prefix)HarleyFilbenCarcass';
@@ -118,7 +126,17 @@ simulated function PreFirstEntry()
         }
     }
 
-    //Any remaining clothes racks without specific clothes can get random generic ones
+}
+
+function FirstEntry()
+{
+    local #var(injectsprefix)ClothesRack cr;
+
+    if (dxr.flags.clothes_looting == 0) return; //Everything past here is "important" for clothes looting
+
+    SetSeed("RandoFashion");
+
+    //Any clothes racks without specific clothes can get random generic ones
     foreach AllActors(class'#var(injectsprefix)ClothesRack',cr){
         if (cr.lootableClothes==None){
             cr.lootableClothes=RandomGenericClothes();
@@ -128,7 +146,7 @@ simulated function PreFirstEntry()
 
 simulated function class<#var(DeusExPrefix)Carcass> RandomGenericClothes()
 {
-    switch(Rand(20))
+    switch(rng(20))
     {
         case 0:  return class'#var(prefix)Male1Carcass';
         case 1:  return class'#var(prefix)Male2Carcass';

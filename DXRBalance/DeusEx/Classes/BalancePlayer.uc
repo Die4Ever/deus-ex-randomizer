@@ -1,6 +1,6 @@
 class BalancePlayer injects Human;
 
-var travel bool bZeroRando, bReducedRando;
+var travel bool bZeroRando, bReducedRando, bCrowdControl;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
@@ -19,7 +19,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             AddDamageDisplay('NanoVirus', vect(0,0,0));
             SetDamagePercent(1);
         }
-    } else if (damageType=='Shot'){
+    } else if (damageType=='Shot' || damageType=='AutoShot'){
         if (WineBulletsActive()){
             drugEffectTimer+=3.0;
         }
@@ -294,6 +294,9 @@ function float CombatDifficultyMultEnviro()
 function float GetDamageMultiplier()
 {
     local DataStorage datastorage;
+
+    if (!bCrowdControl) return 0;
+
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return float(datastorage.GetConfigKey('cc_damageMult'));
 }
@@ -301,6 +304,9 @@ function float GetDamageMultiplier()
 function bool WineBulletsActive()
 {
     local DataStorage datastorage;
+
+    if (!bCrowdControl) return False;
+
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return bool(datastorage.GetConfigKey('cc_WineBullets'));
 }
@@ -951,4 +957,9 @@ state PlayerWalking
             }
         }
     }
+}
+
+// just in case it tries to get called from a different state, to prevent "Failed to find function" crashes
+function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
+{
 }

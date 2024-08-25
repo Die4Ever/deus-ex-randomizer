@@ -20,6 +20,11 @@ var int CurPage, SelectedAug;
 var Texture PageIcons[2];
 var OATButtonPos HighlighterOffset, PageLabelPos[2], AugButtonPos[7];
 
+var localized string StrNextPage, StrLastPage, StrCloseWindow;
+var string CurAugName;
+var OATButtonPos AugNameLabelPos, AugNameLabelSize;
+var MenuUILabelWindow AugNameLabel;
+
 var Augmentation Augs[10];
 var MenuUIHeaderWindow PageLabels[2];
 var OATAugSelectorButton AugButtons[5];
@@ -33,6 +38,117 @@ var EInputKey MenuValues1[8], MenuValues2[8], MenuValues3[8], HackKey,
 var string AliasNames[8];
 
 var Mutator LastMutator; //OAT, 1/12/24: Not always useful, depending which method you used.
+
+event StyleChanged()
+{
+	local ColorTheme theme;
+	
+	Super.StyleChanged();
+	
+	theme = player.ThemeManager.GetCurrentHUDColorTheme();
+	
+	AugNameLabel.ColLabel = theme.GetColorFromName('HUDColor_ButtonTextNormal');
+	AugNameLabel.SetTextColor(AugNameLabel.ColLabel);
+}
+
+//OAT, 8/4/24: So this is bullshit. There's a native function for this, but it's often inherently unreliable.
+//We're going to brute force this instead, because text centering ALSO doesn't work. Never trust native functionality, I swear to god.
+function int GetCharacterWidth(string TestChar)
+{
+	local int Ret;
+	
+	//OAT, 8/4/24: Hack for non-english characters being presumed to be chunky. This WILL be slightly wrong.
+	//If you're making a localization support for this, you can do TestChar == Chr(X), with X as the numerical ID of the non-english character...
+	//Then just pop in the proper value you've deduced from screenshots of the characters, minus the spacing between them and neighboring characters.
+	Ret = 7;
+	
+	if (TestChar == "A") Ret = 8;
+	else if (TestChar == "B") Ret = 8;
+	else if (TestChar == "C") Ret = 8;
+	else if (TestChar == "D") Ret = 8;
+	else if (TestChar == "E") Ret = 8;
+	else if (TestChar == "F") Ret = 8;
+	else if (TestChar == "G") Ret = 8;
+	else if (TestChar == "H") Ret = 8;
+	else if (TestChar == "I") Ret = 2;
+	else if (TestChar == "J") Ret = 7;
+	else if (TestChar == "K") Ret = 8;
+	else if (TestChar == "L") Ret = 7;
+	else if (TestChar == "M") Ret = 10;
+	else if (TestChar == "N") Ret = 8;
+	else if (TestChar == "O") Ret = 9;
+	else if (TestChar == "P") Ret = 8;
+	else if (TestChar == "Q") Ret = 10;
+	else if (TestChar == "R") Ret = 8;
+	else if (TestChar == "S") Ret = 8;
+	else if (TestChar == "T") Ret = 8;
+	else if (TestChar == "U") Ret = 8;
+	else if (TestChar == "V") Ret = 8;
+	else if (TestChar == "W") Ret = 13;
+	else if (TestChar == "X") Ret = 8;
+	else if (TestChar == "Y") Ret = 8;
+	else if (TestChar == "Z") Ret = 8;
+	
+	else if (TestChar == "a") Ret = 7;
+	else if (TestChar == "b") Ret = 7;
+	else if (TestChar == "c") Ret = 6;
+	else if (TestChar == "d") Ret = 7;
+	else if (TestChar == "e") Ret = 6;
+	else if (TestChar == "f") Ret = 5;
+	else if (TestChar == "g") Ret = 7;
+	else if (TestChar == "h") Ret = 7;
+	else if (TestChar == "i") Ret = 2;
+	else if (TestChar == "j") Ret = 3;
+	else if (TestChar == "k") Ret = 7;
+	else if (TestChar == "l") Ret = 2;
+	else if (TestChar == "m") Ret = 8;
+	else if (TestChar == "n") Ret = 6;
+	else if (TestChar == "o") Ret = 7;
+	else if (TestChar == "p") Ret = 7;
+	else if (TestChar == "q") Ret = 7;
+	else if (TestChar == "r") Ret = 5;
+	else if (TestChar == "s") Ret = 7;
+	else if (TestChar == "t") Ret = 5;
+	else if (TestChar == "u") Ret = 7;
+	else if (TestChar == "v") Ret = 7;
+	else if (TestChar == "w") Ret = 10;
+	else if (TestChar == "x") Ret = 7;
+	else if (TestChar == "y") Ret = 7;
+	else if (TestChar == "z") Ret = 7;
+	
+	else if (TestChar == " ") Ret = 5;
+	else if (TestChar == "-") Ret = 6;
+	else if (TestChar == "_") Ret = 7;
+	else if (TestChar == ".") Ret = 2;
+	else if (TestChar == "0") Ret = 9;
+	else if (TestChar == "1") Ret = 2;
+	else if (TestChar == "2") Ret = 8;
+	else if (TestChar == "3") Ret = 8;
+	else if (TestChar == "4") Ret = 9;
+	else if (TestChar == "5") Ret = 8;
+	else if (TestChar == "6") Ret = 8;
+	else if (TestChar == "7") Ret = 9;
+	else if (TestChar == "8") Ret = 9;
+	else if (TestChar == "9") Ret = 8;
+	
+	return Ret;
+}
+
+function int GetStringWidth(string TestString)
+{
+	local int i, Ret;
+	local string TSnippet;
+	
+	for(i=0; i<Len(TestString); i++)
+	{
+		TSnippet = Mid(TestString, i, 1);
+		Ret += GetCharacterWidth(TSnippet);
+	}
+	
+	Ret += Len(TestString)-1;
+	
+	return Ret;
+}
 
 //MADDERS, 8/26/23: One last hack from beyond the grave: Update our colors to menu type. Thanks.
 function CreateClientWindow()
@@ -109,6 +225,107 @@ function LoadAugPage(int PageNum)
 function UpdateHighlighterPos()
 {
 	Highlighter.SetPos(AugButtonPos[SelectedAug].X + HighlighterOffset.X, AugButtonPos[SelectedAug].Y + HighlighterOffset.Y);
+	
+	CurAugName = "";
+	switch(SelectedAug)
+	{
+		case 0:
+			if (CurPage == 0)
+			{
+				if (Augs[0] != None)
+				{
+					CurAugName = Augs[0].AugmentationName;
+				}
+			}
+			else
+			{
+				if (Augs[5] != None)
+				{
+					CurAugName = Augs[5].AugmentationName;
+				}
+			}
+		break;
+		case 1:
+			if (CurPage == 0)
+			{
+				if (Augs[1] != None)
+				{
+					CurAugName = Augs[1].AugmentationName;
+				}
+			}
+			else
+			{
+				if (Augs[6] != None)
+				{
+					CurAugName = Augs[6].AugmentationName;
+				}
+			}
+		break;
+		case 2:
+			if (CurPage == 0)
+			{
+				if (Augs[2] != None)
+				{
+					CurAugName = Augs[2].AugmentationName;
+				}
+			}
+			else
+			{
+				if (Augs[7] != None)
+				{
+					CurAugName = Augs[7].AugmentationName;
+				}
+			}
+		break;
+		case 3:
+			if (CurPage == 0)
+			{
+				if (Augs[3] != None)
+				{
+					CurAugName = Augs[3].AugmentationName;
+				}
+			}
+			else
+			{
+				if (Augs[8] != None)
+				{
+					CurAugName = Augs[8].AugmentationName;
+				}
+			}
+		break;
+		case 4:
+			if (CurPage == 0)
+			{
+				if (Augs[4] != None)
+				{
+					CurAugName = Augs[4].AugmentationName;
+				}
+			}
+			else
+			{
+				if (Augs[9] != None)
+				{
+					CurAugName = Augs[9].AugmentationName;
+				}
+			}
+		break;
+		case 5:
+			if (CurPage == 0)
+			{
+				CurAugName = StrNextPage;
+			}
+			else
+			{
+				CurAugName = StrLastPage;
+			}
+		break;
+		case 6:
+			CurAugName = StrCloseWindow;
+		break;
+	}
+	
+	AugNameLabel.SetPos(AugNameLabelPos.X  + (GetStringWidth(CurAugName) * -0.5), AugNameLabelPos.Y);
+	AugNameLabel.SetText(CurAugName);
 }
 
 //MADDERS, 8/26/23: If you're wondering why not just pop window, it's because sometimes code
@@ -194,6 +411,10 @@ function CreateControls()
 		//MADDERS: Select down button for fast cycling.
 		Highlighter = OATAugSelectorHighlight(NewChild(class'OATAugSelectorHighlight'));
 		Highlighter.SetSensitivity(False);
+		
+		AugNameLabel = CreateMenuLabel(AugNameLabelPos.X, AugNameLabelPos.Y, "", winClient);
+		AugNameLabel.SetSize(AugNameLabelSize.X, AugNameLabelSize.Y);
+		AugNameLabel.SetPos(AugNameLabelPos.X, AugNameLabelPos.Y);
 		
 		//MADDERS: If we don't have any augs except flashlight or some bullshit, start on page 2, of course.
 		LoadAugPage(1 - int(bHadFirstFive));
@@ -504,6 +725,12 @@ function bool CanStack()
 
 defaultproperties
 {
+     AugNameLabelPos=(X=93,Y=246)
+     AugNameLabelSize=(X=186,Y=24)
+     StrNextPage="Next Page"
+     StrLastPage="Prev. Page"
+     StrCloseWindow="Close menu"
+     
      PageIcons(0)=Texture'OATNextAugPageIcon'
      PageIcons(1)=Texture'OATPrevAugPageIcon'
      HighlighterOffset=(X=-3,Y=-3)
@@ -517,8 +744,8 @@ defaultproperties
      AugButtonPos(5)=(X=75,Y=147)
      AugButtonPos(6)=(X=75,Y=195)
      
-     ClientWidth=186
-     ClientHeight=234
+     ClientWidth=256
+     ClientHeight=258
      
      clientTextures(0)=Texture'OATAugControllerMenu'
      clientTextures(1)=None

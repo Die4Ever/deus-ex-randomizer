@@ -74,3 +74,22 @@ Check it out at: https://discord.gg/jCFJ3A6
 -As suggested, by DefaultPlayer001, the exact aug you had last selected in the window is now remembered as well.
 -Fixed mutate commands still not actually being read.
 -Fixed aliases detected being case sensitive... Related.
+
+1.5:
+++++++
+-Changed the draw style of aug icons and page buttons to normal instead of masked, because aug icons don't mask so well with the pictures used.
+-Add a text preview for what option you have selected. We were perhaps a little TOO minimalist, in that regard.
+
+1.6:
+++++++
+-Changed highlighter style from color themed aligned to pure white. Testing has proven this works better overall, both in contrast and consistency across themes.
+
+1.7:
+++++++
+-Used a new function to massively improve text centering for the previewed aug name. Ugly, but overdue. Special shoutout to unreliable native functionality on this one.
+-Fixed an issue with the text label using menu color theme instead of HUD color theme, causing color mismatches in many possible cases.
+
+1.8:
+++++++
+-Added a pixel size definition for periods, such as in "Prev. Page". This fixes centering being wrong on it by 5 pixels.
+-Fixed some debug log crap being left in, giving a healthy amount of log spam when using the tree.

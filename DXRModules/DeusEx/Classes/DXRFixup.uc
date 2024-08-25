@@ -53,6 +53,8 @@ static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> reque
         return class'DXRFixupVandenberg';
     case 15:
         return class'DXRFixupM15';
+    case 98:
+        return class'DXRFixupIntro';
     }
     return request;
 }

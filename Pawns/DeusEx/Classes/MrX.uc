@@ -193,6 +193,14 @@ defaultproperties
     bInvincible=false
     FamiliarName="Mr. X"
     UnfamiliarName="Mr. X"
+    MultiSkins(0)=Texture'MrXShirt'
+    MultiSkins(1)=Texture'MrXPants'
+    MultiSkins(2)=Texture'MrXFace'
+    MultiSkins(3)=Texture'MrXFace'
+    MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
+    MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
+    MultiSkins(6)=Texture'DeusExItems.Skins.BlackMaskTex'
+    MultiSkins(7)=Texture'DeusExItems.Skins.BlackMaskTex'
     InitialInventory(0)=(Inventory=class'WeaponMrXPunch')
     InitialInventory(1)=(Inventory=None)
     InitialInventory(2)=(Inventory=None)
@@ -212,4 +220,5 @@ defaultproperties
     bEmitDistress=false
     bLookingForLoudNoise=true
     bReactLoudNoise=true
+    CarcassType=Class'MrXCarcass'
 }

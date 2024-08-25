@@ -384,8 +384,8 @@ function SuperDrawTargetAugmentation(GC gc)
 
     crossColor.R = 255; crossColor.G = 255; crossColor.B = 255;
 
-    // check 500 feet in front of the player
-    target = TraceLOS(8000,AimLocation);
+    // check 1000 feet instead of 500 feet in front of the player, to spot Leo from the top of the statue
+    target = TraceLOS(16000,AimLocation);
 
     targetplayerhealthstring = "";
     targetplayerlocationstring = "";
