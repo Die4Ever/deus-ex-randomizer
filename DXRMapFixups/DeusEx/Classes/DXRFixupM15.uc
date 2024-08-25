@@ -423,8 +423,25 @@ function PreFirstEntryMapFixes_Page()
     local int i;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)ScriptedPawn sp;
     local vector cloneCubeLoc[4];
     local string cloneCubeText[4];
+
+    // fix in-fighting
+    foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
+        if(#var(prefix)MJ12Commando(sp) != None && sp.Alliance=='') {
+            sp.SetAlliance('MJ12');
+        }
+        if(sp.Alliance=='') {
+            continue;// probably the security bots you can release
+        }
+        sp.ChangeAlly('MJ12', 1, true);
+        sp.ChangeAlly('Karkian', 1, true);
+        sp.ChangeAlly('Gray', 1, true);
+        sp.ChangeAlly('Greasel', 1, true);
+        sp.ChangeAlly('Subject1', 1, true);
+        sp.ChangeAlly('bots', 1, true);
+    }
 
     foreach AllActors(class'ComputerSecurity', c) {
         if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
