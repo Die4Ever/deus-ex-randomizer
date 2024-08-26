@@ -227,6 +227,7 @@ function InitClothes(bool giveAll)
         IngestCarcass(class'UNATCOCloneAugStealth1Carcass');
         IngestCarcass(class'UNATCOCloneAugTough1Carcass');
         IngestCarcass(class'MrXCarcass');
+        IngestCarcass(class'BarDancerCarcass');
     }
 
 /*
@@ -686,10 +687,7 @@ simulated function int AddClothing(EGender gender, EClothesType type, Texture te
     }
 
     //We don't allow ingesting "no glasses"
-    if (type==CT_Glasses){
-        if (tex1s=="DeusExItems.Skins.GrayMaskTex") return 0;
-        if (tex2s=="DeusExItems.Skins.BlackMaskTex") return 0;
-    }
+    if ((type==CT_Glasses) && (tex1s=="DeusExItems.Skins.GrayMaskTex") && (tex2s=="DeusExItems.Skins.BlackMaskTex")) return 0;
 
     //Check for a dupe
     for (i=0;i<numClothes;i++){
