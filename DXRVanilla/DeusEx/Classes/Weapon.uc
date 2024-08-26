@@ -71,23 +71,25 @@ function BringUp()
 //Fix the "Shoot LAWs through narrow walls" glitch
 simulated function Vector ComputeProjectileStart(Vector X, Vector Y, Vector Z)
 {
-    local Vector Start;
+    local Vector ProjSpawn, Closest;
     local Vector HitLocation, HitNormal;
     local Actor hit;
 
-    Start = Super.ComputeProjectileStart(X,Y,Z);
+    ProjSpawn = Super.ComputeProjectileStart(X,Y,Z);
+    Closest = Owner.Location;
+    Closest.Z = ProjSpawn.Z;
 
     if (!bInstantHit && class'MenuChoice_FixGlitches'.default.enabled){
         //Use a full trace (instead of FastTrace) so that we can get the HitLocation
-        hit = Trace(HitLocation, HitNormal, Start, Owner.Location, False);
+        hit = Trace(HitLocation, HitNormal, ProjSpawn, Closest, False);
         //If you hit something between the owner and where the projectile should have spawned,
         //just spawn the projectile where it hit the thing instead.  Oops!
-        if (Hit!=None){
-            Start = HitLocation;
+        if (hit!=None){
+            ProjSpawn = HitLocation;
         }
     }
 
-    return Start;
+    return ProjSpawn;
 }
 
 simulated function Tick(float deltaTime)
