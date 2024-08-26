@@ -1,4 +1,4 @@
-class BarDancer extends MichaelHamner;
+class BarDancer extends #var(prefix)MichaelHamner;
 
 defaultproperties
 {
