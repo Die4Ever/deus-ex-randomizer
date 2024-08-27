@@ -19,6 +19,8 @@ function FirstEntry()
         }
         MakeCosmetics();
     }
+
+    MakeBlackCats(); //Black cats always exist
 }
 
 function ReEntry(bool IsTravel)
@@ -263,6 +265,32 @@ function MakeCosmetics()
     for(i=0; i<num/30; i++) {
         slot = rng(num);
         SpawnJackOLantern(locs[slot]);
+    }
+}
+
+function MakeBlackCats()
+{
+    local #var(prefix)Cat cat;
+    local #var(prefix)CatCarcass catCarc;
+    local float catChance;
+
+    SetSeed("MakeBlackCats");
+
+    if (IsFridayThe13th())                catChance = 50.0;
+    else if (dxr.flags.IsHalloweenMode()) catChance = 30.0;
+    else if (IsOctober())                 catChance = 10.0;
+    else                                  catChance =  1.0;
+
+    //Chance to convert living cats
+    foreach AllActors(class'#var(prefix)Cat',cat){
+        if (!chance_single(catChance)) continue;
+        class'BlackCat'.static.ConvertNormalCat(cat);
+    }
+
+    //Chance to convert dead cats
+    foreach AllActors(class'#var(prefix)CatCarcass',catCarc){
+        if (!chance_single(catChance)) continue;
+        class'BlackCatCarcass'.static.ConvertNormalCat(catCarc);
     }
 }
 

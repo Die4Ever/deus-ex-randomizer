@@ -22,6 +22,7 @@ function PreFirstEntryMapFixes()
     local FlagTrigger ft;
     local #var(prefix)Teleporter tele;
     local Businesswoman1 bw;
+    local #var(prefix)NicoletteDuclare nico;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -147,6 +148,10 @@ function PreFirstEntryMapFixes()
             if (bw.UnfamiliarName == "woman") { // don't fix it if it's already been changed somewhere else
                 bw.UnfamiliarName = "Woman";
             }
+        }
+
+        foreach AllActors(class'#var(prefix)NicoletteDuclare',nico){
+            RemoveReactions(nico);
         }
 
         SetAllLampsState(true, true, false, vect(-1821.85, -351.37, -207.11), 200.0); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
