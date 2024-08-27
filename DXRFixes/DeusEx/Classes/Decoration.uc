@@ -1,6 +1,6 @@
 class DXRDecoration merges DeusExDecoration;
 
-singular function BaseChange()
+function BaseChange()
 {
     local Human p;
     // DXRando: check if we're being carried
