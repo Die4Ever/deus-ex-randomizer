@@ -234,7 +234,11 @@ function PreFirstEntryMapFixes()
 
         break;
     case "02_NYC_BAR":
-        Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
+        if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+            Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
+        } else {
+            Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
+        }
         break;
 
     case "02_NYC_UNDERGROUND":

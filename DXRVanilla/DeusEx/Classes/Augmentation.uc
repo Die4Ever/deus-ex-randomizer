@@ -161,6 +161,10 @@ function Deactivate()
 function Reset()
 {
     local float oldLastUsed;
+
+    //Don't actually reset if the aug is already inactive
+    if (!bIsActive) return;
+
     // re-activate to adjust to upgrades/downgrades, without burning energy in a new TickUse()
     oldLastUsed = LastUsed;
     Deactivate();

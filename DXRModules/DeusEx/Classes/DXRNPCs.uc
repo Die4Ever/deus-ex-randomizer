@@ -122,6 +122,8 @@ function CreateRandomMerchant()
 {
     local ItemPurchase items[8];
 
+    if(dxr.dxInfo.MissionNumber < 0) return;
+
     SetSeed("CreateMerchant");
     if( ! chance_single( dxr.flags.settings.merchants ) ) return;
     if( dxr.flags.f.GetBool('DXRNPCs1_Dead') ) {

@@ -338,6 +338,13 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        //Don't allow in the safe
+        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].min_pos = vect(-1235, 125, -325);
+        datacubes_rules[i].max_pos = vect(-1200, 155, -290);
+        datacubes_rules[i].allow = false;
+        i++;
+
         datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);

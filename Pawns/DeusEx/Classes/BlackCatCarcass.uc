@@ -1,4 +1,4 @@
-class BlackCatCarcass extends CatCarcass;
+class BlackCatCarcass extends #var(prefix)CatCarcass;
 
 defaultproperties
 {

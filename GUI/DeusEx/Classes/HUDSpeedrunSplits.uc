@@ -164,7 +164,8 @@ function InitStats(DXRStats newstats)
     tsubtitle = ReplaceVariables(subtitle);
     tfooter = ReplaceVariables(footer);
     curMission = stats.dxr.dxInfo.MissionNumber;
-    notes = class'DXRInfo'.static.ReplaceText(splitNotes[curMission], "|n", CR());
+    if(curMission >= 1 && curMission <= 15)
+        notes = class'DXRInfo'.static.ReplaceText(splitNotes[curMission], "|n", CR());
 
     for(i=1; i<=15; i++) {
         PB_total += PB[i];
