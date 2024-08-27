@@ -454,7 +454,7 @@ function PreFirstEntryMapFixes()
             if (d.Region.Zone.ZoneGroundFriction < 8) {
                 //Less than default friction should be the freezer
                 d.Tag='FreezerDoor';
-                if(dxr.flags.settings.doorsdestructible >= 100) { // this door can be rough in speedruns
+                if(dxr.flags.settings.doorsdestructible >= 90) { // this door can be rough in speedruns
                     d.bBreakable = true;
                     d.minDamageThreshold = 40;
                     d.doorStrength = 0.5;
