@@ -16,6 +16,6 @@ defaultproperties
     CarcassType=class'BlackCatCarcass'
     Fatness=132
     MultiSkins(0)=Texture'BlackCatTex1'
-    ScaleGlow=100
+    ScaleGlow=1
     bUnlit=True
 }
