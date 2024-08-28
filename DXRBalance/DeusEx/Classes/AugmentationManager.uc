@@ -151,7 +151,8 @@ simulated function Float CalcEnergyUse(float deltaTime)
     energyMult = 1.0;
     boostMult = 1.0;
 
-    Player.AmbientSound = None;
+    if(Player != None) // TODO: figure out why this happens in the dxonly map, obviously the player exists if they're calling CalcEnergyUse
+        Player.AmbientSound = None;
 
     anAug = FirstAug;
     while(anAug != None)
@@ -171,7 +172,7 @@ simulated function Float CalcEnergyUse(float deltaTime)
             }
 
             if ((anAug.bAutomatic == false && anAug.bAlwaysActive == false) || f > 0.0) {
-                Player.AmbientSound = anAug.LoopSound;
+                if(Player != None) Player.AmbientSound = anAug.LoopSound;
             }
         }
         anAug = anAug.next;
