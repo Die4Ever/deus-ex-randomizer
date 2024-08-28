@@ -13,7 +13,7 @@ var string release_url;
 // ----------------------------------------------------------------------
 function bool ButtonActivated( Window buttonPressed )
 {
-    player.ConsoleCommand("start "$release_url);
+    class'DXRInfo'.static.OpenURL(player, release_url);
 	return True;
 }
 

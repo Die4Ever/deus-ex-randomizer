@@ -132,6 +132,13 @@ simulated function err(coerce string message, optional bool skip_player_message)
     class'DXRTelemetry'.static.SendLog(GetDXR(), Self, "ERROR", message);
 }
 
+static function OpenURL(PlayerPawn p, string url)
+{
+    class'DXRando'.default.dxr.bIsOpeningURL = true;
+    p.ConsoleCommand("start " $ url);
+    class'DXRando'.default.dxr.bIsOpeningURL = false;
+}
+
 static function int _SystemTime(LevelInfo Level)
 {
     local int time, m;
@@ -203,6 +210,14 @@ function bool IsOctober()
 function bool IsFridayThe13th()
 {// idk what we would use this for, giving the player "bad luck"? lol
     return Level.DayOfWeek == 5 && Level.Day == 13;
+}
+
+function bool DateAtLeast(int year, int month, int day)
+{
+    if(Level.Year > year) return true;
+    if(Level.Year == year && Level.Month > month) return true;
+    if(Level.Year == year && Level.Month == month && Level.Day >= day) return true;
+    return false;
 }
 
 function bool IsChristmasSeason()

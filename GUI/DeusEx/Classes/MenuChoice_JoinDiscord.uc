@@ -13,8 +13,8 @@ var string discord_url;
 // ----------------------------------------------------------------------
 function bool ButtonActivated( Window buttonPressed )
 {
-    player.ConsoleCommand("start "$discord_url);
-	return True;
+    class'DXRInfo'.static.OpenURL(player, discord_url);
+    return True;
 }
 
 event InitWindow()

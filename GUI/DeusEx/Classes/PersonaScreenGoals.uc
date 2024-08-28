@@ -283,8 +283,7 @@ function OpenGoalRandoWikiPage()
     }
 
     url = sprintf(goalRandoWikiUrl, missionNum);
-
-    player.ConsoleCommand("start "$url);
+    class'DXRInfo'.static.OpenURL(player, url);
 }
 
 function Teleporter findOtherTeleporter(Teleporter nearThis){

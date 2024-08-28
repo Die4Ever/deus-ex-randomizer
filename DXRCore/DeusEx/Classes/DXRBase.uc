@@ -81,6 +81,8 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
 simulated event PreTravel()
 {
+    if(dxr != None && dxr.bIsOpeningURL) return;
+
     SetTimer(0, False);
     if(dxr != None) {
         _PreTravel();
