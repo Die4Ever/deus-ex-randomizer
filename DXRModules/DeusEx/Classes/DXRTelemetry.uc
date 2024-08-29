@@ -32,6 +32,7 @@ function CheckConfig()
 function AnyEntry()
 {
     local #var(PlayerPawn) p;
+
     Super.AnyEntry();
 #ifdef hx
     //SetTimer(300, true);
@@ -41,6 +42,36 @@ function AnyEntry()
     if( p == None ) return;
     info("health: "$p.health$", HealthLegLeft: "$p.HealthLegLeft$", HealthLegRight: "$p.HealthLegRight$", HealthTorso: "$p.HealthTorso$", HealthHead: "$p.HealthHead$", HealthArmLeft: "$p.HealthArmLeft$", HealthArmRight: "$p.HealthArmRight);
     info("renderer: " $ GetConfig("Engine.Engine", "GameRenderDevice"));
+
+    CheckOfflineUpdates();
+}
+
+function CheckOfflineUpdates()
+{
+    local DXRNews news;
+    local DXRNewsWindow newswindow;
+    local DeusExRootWindow r;
+
+    if(enabled) return;// telemetry enabled, get real updates
+    if(!CanShowNotification()) return;
+    if(!DateAtLeast(2024, 10, 2)) return;// don't show until Oct 2nd to be safe, especially with timezones
+
+    if(!VersionOlderThan(VersionNumber(), 3,3,0,0)) return;// v3.3 doesn't need this notification
+    if(VersionIsStable() && !VersionOlderThan(VersionNumber(), 3,2,0,0)) return;// a stable branch of v3.2 doesn't need this
+
+    newsdates[0] = "2024-10-01";
+    newsheaders[0] = "v3.2 Halloween Update!";// it's supposed to be a surprise!
+    newstexts[0] = "You have Online Features disabled, so we can't know for sure, but there's a good chance that the Halloween Update has been released!";
+
+    notification_url = "https://github.com/Die4Ever/deus-ex-randomizer/releases/latest";
+
+    foreach AllObjects(class'DXRNews', news) {
+        news.Set(self);
+    }
+
+    r = DeusExRootWindow(player().rootWindow);
+    newswindow = DXRNewsWindow(r.InvokeUIScreen(class'DXRNewsWindow'));
+    newswindow.Set(self, newsheaders[0]);
 }
 
 function Timer()
@@ -239,7 +270,7 @@ function CheckNotification(Json j)
 function MessageBoxClicked(int button, int callbackId){
     Super.MessageBoxClicked(button, callbackId);
     if( button == 0 ) {
-        player().ConsoleCommand("start "$notification_url);
+        OpenURL(player(), notification_url);
     }
     //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
     //Buttons:

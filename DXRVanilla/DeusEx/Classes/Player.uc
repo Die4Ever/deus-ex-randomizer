@@ -102,6 +102,7 @@ function CalcBehindView(out vector CameraLocation, out rotator CameraRotation, f
 event ClientTravel( string URL, ETravelType TravelType, bool bItems )
 {
     nextMap = URL;
+    log("ClientTravel " $ URL @ TravelType @ bItems);
     Super.ClientTravel(URL, TravelType, bItems);
 }
 

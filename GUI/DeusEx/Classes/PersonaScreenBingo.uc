@@ -84,7 +84,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     if (action=="reset"){
         ResetBingoBoard();
     } else if (action=="wiki"){
-        player.ConsoleCommand("start "$bingoWikiUrl);
+        class'DXRInfo'.static.OpenURL(player, bingoWikiUrl);
     }
 
 	return True;

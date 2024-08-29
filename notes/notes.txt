@@ -1,3 +1,35 @@
+
+from aizome8086:
+
+(need to compile against a modified Object.uc to remove const on name, so it would have to be in its own package that we don't recompile often)
+
+class FixedEngine extends Object config;
+
+var config string GameRenderDevice;
+
+static final function SetGameRenderDevice(string RenderDevicePath)
+{
+    local Package LastOuterObject;
+    local Name LastClassName;
+
+    LastOuterObject = Default.Class.Outer;
+    LastClassName = Default.Class.Name;
+
+    Default.Class.Outer = class'Engine'.Outer;
+    Default.Class.Name = 'Engine';
+    Default.GameRenderDevice = RenderDevicePath;
+
+    StaticSaveConfig();
+
+    Default.Class.Outer = LastOuterObject;
+    Default.Class.Name = LastClassName;
+}
+
+(could maybe be useful for HUDSpeedrunSplits to save config as separate classes for each difficulty and gamemode?)
+
+-----------------------------
+-----------------------------
+
 check gas grenades ammo
 loadouts score boosts?
 

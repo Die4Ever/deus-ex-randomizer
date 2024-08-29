@@ -58,6 +58,7 @@ Here's a trailer for WaltonWare mode. WaltonWare mode is focused on quick wins b
     * WaltonWare mode - A quick option to get into the game without the time commitment of the full game! You start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
     * WaltonWare Entrance Rando - both modes combined!
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
+    * Zero Rando Plus - similar to Zero Rando, but with a few more of our balance changes.
     * DXRVanillaFixer: This one is for the purists. Use our new installer program and it will do compatibility fixes for the vanilla game (Kentie's Launcher, D3D10, DXVK, Engine.dll fix, and more), then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Randomizer Medium - similar to Randomizer Lite but with more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.

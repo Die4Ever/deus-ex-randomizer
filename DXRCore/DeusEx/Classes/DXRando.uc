@@ -23,6 +23,7 @@ var config int rando_beaten;
 var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
 var transient bool bLoginReady;
+var transient bool bIsOpeningURL;
 
 #ifdef revision
 var transient bool RevisionMaps;
@@ -137,7 +138,9 @@ function DXRInit()
 simulated event PreTravel()
 {
     local int i;
+    if(bIsOpeningURL) return;
     Level.LevelAction = LEVACT_Loading;
+    log("PreTravel()");
     for(i=0; i<num_modules; i++) {
         modules[i].PreTravel();
         modules[i] = None;
