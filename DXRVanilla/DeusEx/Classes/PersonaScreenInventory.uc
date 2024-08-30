@@ -39,11 +39,11 @@ function UpdateWinInfo(Inventory inv)
     if(anItem != None && anItem.maxCopies > 1) {
         winInfo.AppendText(" / " $ anItem.maxCopies);
     }else if (ChargedPickup(anItem)!=None){
-        winInfo.AppendText("|n|nDuration: "$CalcChargedPickupDurations(ChargedPickup(anItem)));
+        winInfo.AppendText("|n|nDuration: " $ CalcChargedPickupDurations(ChargedPickup(anItem)));
     }
 
     if (BioElectricCell(anItem)!=None){
-        winInfo.AppendText("|n|nCurrent Energy: "$int(player.Energy)$"/"$int(player.EnergyMax));
+        winInfo.AppendText("|n|nCurrent Energy: " $ int(player.Energy) $ "/" $ int(player.EnergyMax));
     }
 }
 
@@ -51,8 +51,8 @@ function UpdateWinInfo(Inventory inv)
 function string CalcChargedPickupDurations(ChargedPickup cp)
 {
     local string chargeVals;
-    local int i;
-    local float workingVal, skillVal, drain;
+    local int i, drain;
+    local float workingVal, skillVal;
     local bool curLevel;
     local int maxLevel;
 
@@ -74,8 +74,8 @@ function string CalcChargedPickupDurations(ChargedPickup cp)
         drain *=skillVal;
         if (drain < 1) drain=1;
 
-        workingVal = workingVal/drain; //How many times can it drain at this rate?
-        workingVal = workingVal/10.0; //drain happens every 0.1 seconds
+        workingVal = workingVal / float(drain); //How many times can it drain at this rate?
+        workingVal = workingVal / 10.0; //drain happens every 0.1 seconds
 
         if (curLevel){
             chargeVals = chargeVals $ ">";

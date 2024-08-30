@@ -85,6 +85,8 @@ function BindControls(optional string action)
     EnumOption("First Entry", autosave.FirstEntry, f.autosave);
     EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave);
     EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave);
+    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
+    EnumOption("Fixed Saves", autosave.FixedSaves, f.autosave);
     EnumOption("Off", autosave.Disabled, f.autosave);
 #endif
 

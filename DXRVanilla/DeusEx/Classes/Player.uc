@@ -224,21 +224,20 @@ exec function QuickSave()
 {
     local DeusExLevelInfo info;
 
-    if( class'DXRAutosave'.static.AllowManualSaves(self) ){
-        info = GetLevelInfo();
+    if( !class'DXRAutosave'.static.AllowManualSaves(self) ) return;
 
-        //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
-        if (((info != None) && (info.MissionNumber < 0)) ||
-            ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
-            (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
-        {
-            ClientMessage("Cannot quick save during infolink!",, true);
-        } else {
-            Super.QuickSave();
-            ClientMessage("Quick Saved",, true);
-        }
+    info = GetLevelInfo();
+
+    //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
+    if (((info != None) && (info.MissionNumber < 0)) ||
+        ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
+        (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
+    {
+        ClientMessage("Cannot quick save during infolink!",, true);
     } else {
-        ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
+        class'DXRAutosave'.static.UseSaveItem(self);
+        Super.QuickSave();
+        ClientMessage("Quick Saved",, true);
     }
 }
 

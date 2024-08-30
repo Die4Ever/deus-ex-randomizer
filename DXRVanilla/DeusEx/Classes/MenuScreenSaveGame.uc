@@ -1,5 +1,6 @@
-class FixSaveGameNegativeSpace injects MenuScreenSaveGame;
+class DXRMenuScreenSaveGame injects MenuScreenSaveGame;
 
+// Fix negative free space issue, if you don't have Kentie's Launcher installed
 function ConfirmSaveGame()
 {
     // First check to see how much disk space we have.
@@ -29,4 +30,11 @@ function ConfirmSaveGame()
             root.MessageBox( OverwriteTitle, OverwritePrompt, 0, False, Self);
         }
     }
+}
+
+function SaveGame(int rowId)
+{
+    if( !class'DXRAutosave'.static.AllowManualSaves(player) ) return;
+    class'DXRAutosave'.static.UseSaveItem(player);
+    Super.SaveGame(rowId);
 }
