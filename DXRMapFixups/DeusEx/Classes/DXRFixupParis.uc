@@ -28,8 +28,6 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL)
     {
     case "10_PARIS_CATACOMBS":
-        AddGoalFromConv(player(), 'FindSilhouette', 'DL_paris_10_start',, true);
-    case "10_PARIS_CATACOMBS":
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
         SetAllLampsState(true, false, true); // lamps in the building next to the metro station
         break;
