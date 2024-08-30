@@ -55,7 +55,7 @@ function PreFirstEntryMapFixes()
         player().GoalCompleted('MeetJock');
 
         foreach AllActors(class'#var(prefix)TracerTong', tt) {
-            RemoveFears(tt);// he looks pretty sick
+            RemoveReactions(tt);// he looks pretty sick
         }
 
         class'FillCollisionHole'.static.CreateLine(self, vectm(3081.067383, 1640, -2031.417969), vectm(3081.067383, 6584, -2031.417969), 40, 300);
