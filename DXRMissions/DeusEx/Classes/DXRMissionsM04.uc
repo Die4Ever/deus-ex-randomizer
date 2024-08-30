@@ -72,6 +72,9 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.SetAlliance('UNATCO');
         sp.bInvincible = false;
         sp.SetOrders('WaitingFor');
+        sp.MaxProvocations = 0;
+        sp.AgitationSustainTime = 3600;
+        sp.AgitationDecayRate = 0;
         at = #var(prefix)AllianceTrigger(Spawnm(class'#var(prefix)AllianceTrigger',, 'AnnaAttacksJC', Loc.positions[0].pos));
         at.Event = 'AnnaNavarre';
         at.Alliance = 'UNATCO';

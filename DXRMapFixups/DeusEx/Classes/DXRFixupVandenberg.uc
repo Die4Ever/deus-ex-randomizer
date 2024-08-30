@@ -12,6 +12,7 @@ function PreFirstEntryMapFixes()
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
     local #var(prefix)HowardStrong hs;
+    local #var(prefix)WaltonSimons ws;
     local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
     local #var(prefix)TracerTong tt;
@@ -276,6 +277,12 @@ function PreFirstEntryMapFixes()
                 if (t.URL=="14_OceanLab_UC.dx #UC"){
                     t.SetCollisionSize(t.CollisionRadius,150); //Taller so you can't jump over
                 }
+            }
+
+            foreach AllActors(class'#var(prefix)WaltonSimons',ws){
+                ws.MaxProvocations = 0;
+                ws.AgitationSustainTime = 3600;
+                ws.AgitationDecayRate = 0;
             }
 
             Spawn(class'PlaceholderItem',,, vectm(37.5,531.4,-1569)); //Secretary desk

@@ -182,6 +182,9 @@ function PreFirstEntryMapFixes()
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);
+            g.MaxProvocations = 0;
+            g.AgitationSustainTime = 3600;
+            g.AgitationDecayRate = 0;
         }
         foreach AllActors(class'#var(prefix)DamageTrigger',dt){
             //There should only be two damage triggers in the map,

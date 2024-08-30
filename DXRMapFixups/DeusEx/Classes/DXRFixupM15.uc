@@ -73,6 +73,7 @@ function PreFirstEntryMapFixes_Bunker()
     local #var(prefix)RatGenerator rg;
     local Vector loc;
     local #var(prefix)Fan1 fan;
+    local #var(prefix)WaltonSimons ws;
 
     if (dxr.flags.settings.starting_map < 151) {
         player().DeleteAllGoals();
@@ -173,6 +174,12 @@ function PreFirstEntryMapFixes_Bunker()
 
     foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
         fan.bHighlight=True;
+    }
+
+    foreach AllActors(class'#var(prefix)WaltonSimons',ws){
+        ws.MaxProvocations = 0;
+        ws.AgitationSustainTime = 3600;
+        ws.AgitationDecayRate = 0;
     }
 
     Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building

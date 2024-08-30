@@ -491,6 +491,8 @@ function FixAnnaAmbush()
 
     foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {break;}
 
+    anna.MaxProvocations = 0;
+
     // if she's angry then let her blow up
     if(anna != None && anna.GetAllianceType('player') == ALLIANCE_Hostile) anna = None;
 

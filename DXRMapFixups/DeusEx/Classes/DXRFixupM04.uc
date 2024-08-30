@@ -44,6 +44,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)GuntherHermann gunther;
+    local #var(prefix)AnnaNavarre anna;
     local #var(prefix)GilbertRenton gilbert;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
@@ -320,6 +321,12 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""), gunther.Location, gunther.CollisionRadius+5, gunther.CollisionHeight+5);
             hoverHint.SetBaseActor(gunther);
         }
+        foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
+            anna.MaxProvocations = 0;
+            anna.AgitationSustainTime = 3600;
+            anna.AgitationDecayRate = 0;
+        }
+
         break;
 
     case "04_NYC_BAR":

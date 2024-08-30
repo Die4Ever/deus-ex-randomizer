@@ -521,6 +521,7 @@ function RemoveFears(ScriptedPawn p)
     p.bFearDistress = false;
     p.bFearAlarm = false;
     p.bFearProjectiles = false;
+    p.ResetReactions();
 }
 
 function RemoveReactions(ScriptedPawn p)
@@ -545,6 +546,7 @@ function RemoveReactions(ScriptedPawn p)
     p.bReactCarcass = false;
     p.bReactDistress = false;
     p.bReactProjectiles = false;
+    p.ResetReactions();
 }
 
 function SetPawnHealth(ScriptedPawn p, int health)

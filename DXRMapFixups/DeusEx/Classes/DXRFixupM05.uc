@@ -88,6 +88,7 @@ function PreFirstEntryMapFixes()
         //running around
         foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
             anna.bHateWeapon=False;
+            anna.ResetReactions();
         }
 
         if (VanillaMaps){
@@ -148,6 +149,12 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)Terrorist', miguel){
                 miguel.bHateShot=False;
                 miguel.ResetReactions();
+            }
+
+            foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
+                anna.MaxProvocations = 0;
+                anna.AgitationSustainTime = 3600;
+                anna.AgitationDecayRate = 0;
             }
 
             if(!dxr.flags.IsZeroRando()) {
