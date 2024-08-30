@@ -88,7 +88,9 @@ function Timer() {
         ManualReceiveBinary();
     }
 
-    ccEffects.ContinuousUpdates();
+    if (ccEffects!=None){
+        ccEffects.ContinuousUpdates();
+    }
 
     if (ticker%10 != 0) {
         return;
@@ -102,13 +104,15 @@ function Timer() {
         }
     }
 
-    ccEffects.PeriodicUpdates();
+    if (ccEffects!=None){
+        ccEffects.PeriodicUpdates();
+    }
 
-    if(offline) {
+    if(ccEffects!= None && offline) {
         RandomOfflineEffects();
     }
 
-    if (online && IsConnected()) {
+    if (ccEffects!=None && online && IsConnected()) {
         ccEffects.HandleEffectSelectability();
     }
 
@@ -477,7 +481,9 @@ function Resolved( IpAddr Addr )
 
     Addr.port=CrowdControlPort;
     if (False==Open(Addr)){
-        err("Could not connect to Crowd Control client");
+        if (!dxr.OnTitleScreen()){
+            err("Could not connect to Crowd Control client");
+        }
         reconnectTimer = ReconDefault;
         return;
 
