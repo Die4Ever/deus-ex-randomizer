@@ -9,12 +9,6 @@ const HALF_TIME = 5;
 const QUARTER_TIME = 2;
 const LAST_SECONDS = 1;
 
-function BeginPlay()
-{
-    FixChargeRounding();
-    Super.BeginPlay();
-}
-
 function PostPostBeginPlay()
 {
     SoundVolume = 50;
