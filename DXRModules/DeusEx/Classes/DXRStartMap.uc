@@ -646,10 +646,6 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             GiveKey(player, 'catacombs_blastdoor02', "Catacombs Sewer Entry Key");
             break;
 
-        case 129:
-            MarkConvPlayed("GaryHostageBriefing", bFemale);
-            flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
-            break;
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
             // fallthrough
@@ -657,6 +653,11 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 142:
         case 140:
             flagbase.SetBool('TiffanySavage_Dead',true,,15);
+            // fallthrough
+        case 129:
+            MarkConvPlayed("GaryHostageBriefing", bFemale);
+            flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
+            GiveImage(player, class'Image12_Tiffany_HostagePic');
             break;
         case 153:
             MarkConvPlayed("DL_Helios_Door1", bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
