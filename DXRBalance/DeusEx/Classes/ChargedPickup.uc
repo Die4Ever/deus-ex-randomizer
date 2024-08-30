@@ -9,9 +9,29 @@ const HALF_TIME = 5;
 const QUARTER_TIME = 2;
 const LAST_SECONDS = 1;
 
+function BeginPlay()
+{
+    FixChargeRounding();
+    Super.BeginPlay();
+}
+
 function PostPostBeginPlay()
 {
     SoundVolume = 50;
+    FixChargeRounding();
+    Super.PostPostBeginPlay();
+}
+
+function FixChargeRounding()
+{// compatibility with old save games, without breaking travel
+    if(!IsActive() && Charge == default.Charge) {
+        Charge = default.Charge * 100;
+    }
+}
+
+simulated function Float GetCurrentCharge()
+{
+    return Float(Charge) / Float(Default.Charge);
 }
 
 function ChargedPickupBegin(DeusExPlayer Player)
@@ -34,11 +54,17 @@ function ChargedPickupBegin(DeusExPlayer Player)
 
 simulated function int CalcChargeDrain(DeusExPlayer Player)
 {
-    local int drain;
+    local float skillValue;
+    local float drain;
 
-    drain = _CalcChargeDrain(Player);
-    if( drain < 1 ) drain = 1;
-    return drain;
+    drain = 400.0;// multiplied by 100 to fix rounding issues with ints
+    skillValue = 1.0;
+
+    if (skillNeeded != None)
+        skillValue = Player.SkillSystem.GetSkillLevelValue(skillNeeded);
+    drain *= skillValue;
+
+    return Max(Int(drain), 1);
 }
 
 // overriding the Pickup class's function returning true, we return false in order to allow the pickup to happen
@@ -66,19 +92,20 @@ function PlayTickSound(DeusExPlayer Player)
 
 function HandleTickSound(DeusExPlayer Player)
 {
-    local int endDrain;
+    local int endDrain, defaultCharge;
 
     endDrain = CalcChargeDrain(Player) * 30;
+    defaultCharge = default.Charge * 100;
 
     if(ticksRemaining-- <= 0){
 
         PlayTickSound(Player);
 
-        if (Charge > (Default.Charge/2)){
+        if (Charge > (defaultCharge/2)){
             ticksRemaining=DEFAULT_TIME;
         } else if (charge < endDrain){
             ticksRemaining=LAST_SECONDS;
-        } else if (Charge < (Default.Charge/4)){
+        } else if (Charge < (defaultCharge/4)){
             ticksRemaining=QUARTER_TIME;
         } else {
             ticksRemaining=HALF_TIME;

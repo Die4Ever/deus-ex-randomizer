@@ -63,18 +63,18 @@ function string CalcChargedPickupDurations(ChargedPickup cp)
     }
 
     for (i=0;i<=maxLevel;i++){
-        workingVal = cp.Default.Charge;
-        drain = 4.0;
+        workingVal = cp.Default.Charge * 100;// multiplied by 100 to fix rounding issues with ints
+        drain = 400.0;
         skillVal = 1.0;
         curLevel = False;
         if (cp.SkillNeeded!=None){
             skillVal = Player.SkillSystem.GetSkillFromClass(cp.skillNeeded).LevelValues[i];
             curLevel = Player.SkillSystem.GetSkillLevel(cp.skillNeeded) == i;
         }
-        drain *=skillVal;
-        if (drain < 1) drain=1;
+        log("CalcChargedPickupDurations " $ drain $ " *= " $ skillVal $ " == " $ int(drain*skillVal) );
+        drain *= skillVal;
 
-        workingVal = workingVal / float(drain); //How many times can it drain at this rate?
+        workingVal = workingVal / Max(drain, 1); //How many times can it drain at this rate? Max() converts to int
         workingVal = workingVal / 10.0; //drain happens every 0.1 seconds
 
         if (curLevel){
