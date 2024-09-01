@@ -30,8 +30,8 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE2, vect(-2222,-770,-390), rot(0, 0, 0));
 
     //The MJ12 assault squads now get randomized as two squads of 5 (as they were split in non-GOTY)
-    AddGoal("08_NYC_StreetFake", "MJ12 Assault Squad 1", GOAL_TYPE3, 'Van0', PHYS_None); //CreateGoal only runs if the goal map doesn't match
-    AddGoal("08_NYC_StreetFake", "MJ12 Assault Squad 2", GOAL_TYPE3, 'Van1', PHYS_None); //CreateGoal only runs if the goal map doesn't match
+    AddGoal("08_NYC_Street", "MJ12 Assault Squad 1", GOAL_TYPE3 | ALWAYS_CREATE, 'Van0', PHYS_None);
+    AddGoal("08_NYC_Street", "MJ12 Assault Squad 2", GOAL_TYPE3 | ALWAYS_CREATE, 'Van1', PHYS_None);
     AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE3 | VANILLA_GOAL, vect(-1893.816406,-614.223816,-445.429260), rot(0, -32616, 0));
     AddGoalLocation("08_NYC_Street", "Road to NSF HQ", GOAL_TYPE3 | VANILLA_GOAL, vect(-1758.505249,-1704.474976,-445.434998), rot(0, 32832, 0));
     AddGoalLocation("08_NYC_Street", "Basketball Court", GOAL_TYPE3, vect(2914,-3000,-429), rot(0, 7200, 0));

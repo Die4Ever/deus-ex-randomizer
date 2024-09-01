@@ -11,7 +11,7 @@ function int InitGoals(int mission, string map)
     case "06_HONGKONG_VERSALIFE":
         AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | SITTING_GOAL, 'Male2', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
-        AddGoal("06_HONGKONG_VERSALIFE_FAKE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'NervousWorker0', PHYS_Falling); //CreateGoal only runs if the goal map doesn't match
+        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL | ALWAYS_CREATE, 'NervousWorker0', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundley", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
@@ -102,7 +102,7 @@ function int InitGoalsRev(int mission, string map)
     case "06_HONGKONG_VERSALIFE":
         AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | SITTING_GOAL, 'Male2', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
-        AddGoal("06_HONGKONG_VERSALIFE_FAKE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'NervousWorker0', PHYS_Falling); //CreateGoal only runs if the goal map doesn't match
+        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL | ALWAYS_CREATE, 'NervousWorker0', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundley", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
