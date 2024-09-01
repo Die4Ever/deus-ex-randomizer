@@ -522,6 +522,7 @@ function UnleashingBotsOpenCommsDoor()
 
     ft = spawn(class'#var(prefix)FlagTrigger',, 'bots_released');
     ft.flagName = 'MS_DL_Played';
+    ft.SetCollision(false,false,false);
 }
 
 //Add a new button in the elevator to open the doors
