@@ -814,3 +814,35 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
         }
     }
 }
+
+function DrawSpyDroneAugmentation(GC gc)
+{
+    local String str;
+    local float boxCX, boxCY, boxTLY, boxH;
+    local float x, y, w, h;
+
+    Super.DrawSpyDroneAugmentation(gc);
+
+#ifdef injections
+    if (winDrone!=None){
+        //Balanced SpyDrone costs 10 energy to detonate.  Display a message if you don't have enough
+        //See "DroneExplode" in DXRBalance/BalancePlayer.uc
+        if (Player.Energy < 10){
+
+            //Find the useful coords of the drone window
+            boxH = height/4;
+            boxCX = width/8 + margin;
+            boxCY = height/2;
+            boxTLY = boxCY - boxH/2;
+
+            str = "Not enough energy to detonate!";
+            gc.GetTextExtent(0, w, h, str);
+            x = boxCX - w/2;
+            y = boxTLY + margin + h + margin;
+            gc.SetTextColorRGB(255,0,0);
+            gc.DrawText(x, y, w, h, str);
+            gc.SetTextColor(colHeaderText);
+        }
+    }
+#endif
+}
