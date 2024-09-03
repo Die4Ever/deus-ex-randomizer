@@ -166,6 +166,8 @@ function PreFirstEntryMapFixes_Bunker()
         }
     }
 
+    //The buttons on the big elevator down to the bunker entrance could be used if you reached around
+    //the invisible power.  Make them unusable until the power is turned on.
     foreach AllActors(class'#var(prefix)Button1',b){
         if (b.Event=='level1'){
             b.Tag='level1_switch';
