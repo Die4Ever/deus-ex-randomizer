@@ -119,6 +119,49 @@ function bool ShouldDrawActorDist(Actor A, float dist)
     return dist <= maxDist;
 }
 
+//Allow different actors to show up as different colours
+function Texture GetActorHighlightTex(Actor a){
+    if (#var(prefix)Datacube(a)!=None){
+        //Should this depend on whether the datacube has been read or not?
+        return Texture'Nano_SFX'; //Blue
+    } else if (#var(prefix)NanoKey(a)!=None){
+        return Texture'Nano_SFX';  //Blue
+    } else if (#var(prefix)BookClosed(a)!=None){
+        return Texture'Nano_SFX';  //Blue
+    } else if (#var(prefix)BookOpen(a)!=None){
+        return Texture'Nano_SFX';  //Blue
+    }
+
+    //Green: Texture'Wepn_Prifle_SFX'
+    //Red:   Texture'Virus_SFX'
+
+    return Texture'WhiteStatic';
+}
+
+function SetSkins(Actor actor, out Texture oldSkins[9])
+{
+    local int     i;
+
+    Super.SetSkins(actor,oldSkins);
+
+    if (!#defined(vanilla)) return;
+
+    if (true) return;
+    //Should we do this at all?
+    //Should it apply only at a certain level of Vision Enhancement and higher?
+    //Tech Goggles only?
+
+    for (i=0; i<8; i++){
+        if (actor.MultiSkins[i]==Texture'WhiteStatic'){
+            actor.MultiSkins[i]=GetActorHighlightTex(actor);
+        }
+    }
+
+    if (actor.Skin==Texture'WhiteStatic'){
+        actor.Skin = GetActorHighlightTex(actor);
+    }
+}
+
 function _DrawActor(GC gc, Actor A, float DrawGlow)
 {
     local Texture oldSkins[9];
