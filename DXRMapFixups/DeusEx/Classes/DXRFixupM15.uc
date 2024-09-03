@@ -64,6 +64,7 @@ function PreFirstEntryMapFixes_Bunker()
     local DeusExMover d;
     local ComputerSecurity c;
     local Keypad k;
+    local #var(prefix)Button1 b;
     local Switch2 s2;
     local SequenceTrigger st;
     local DataLinkTrigger dlt;
@@ -164,6 +165,17 @@ function PreFirstEntryMapFixes_Bunker()
                 break;
         }
     }
+
+    foreach AllActors(class'#var(prefix)Button1',b){
+        if (b.Event=='level1'){
+            b.Tag='level1_switch';
+            class'DXRTriggerEnable'.static.Create(b,'power','level1_switch');
+        } else if (b.Event=='level2'){
+            b.Tag='level2_switch';
+            class'DXRTriggerEnable'.static.Create(b,'power','level2_switch');
+        }
+    }
+
 
     //Button to open blast doors from inside
     AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
