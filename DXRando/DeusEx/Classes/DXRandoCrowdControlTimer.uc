@@ -14,7 +14,7 @@ function initTimer( DXRCrowdControlEffects ccEffects, name tName, int defaultTim
     timerName = tName;
     defTime = defaultTime;
     timerLabel = label;
-    
+
     SetPhysics(PHYS_None);
     SetCollision(False,False,False);
     bHidden = True;
@@ -33,9 +33,9 @@ function name GetTimerName()
 function Float GetCurrentCharge()
 {
     local int curTime;
-    
+
     curTime = effects.getTimer(timerName);
-    
+
     return (Float(curTime) / Float(defTime)) * 100.0;
 }
 
@@ -49,7 +49,7 @@ function ChargedPickupEnd(DeusExPlayer Player)
 {
     Player.RemoveChargedDisplay(Self);
     bIsActive = False;
-    
+
     effects.removeTimerDisplay(self);
 }
 
@@ -58,13 +58,13 @@ function UsedUp()
     local DeusExPlayer Player;
 
     Player = effects.player();
-    
+
     if (Player != None)
     {
         ChargedPickupEnd(Player);
-        
+
     }
-    
+
     Destroy();
 }
 
@@ -76,9 +76,9 @@ state Activated
         //effects.PlayerMessage("Charge is now "$Charge);
         if (Charge <= 0)
             UsedUp();
- 
+
     }
-    
+
     function BeginState()
     {
         local DeusExPlayer Player;

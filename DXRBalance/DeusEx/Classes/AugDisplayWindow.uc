@@ -49,9 +49,16 @@ function DrawVisionAugmentation(GC gc)
     local Actor A;
 
     // brighten and tint the screen
-    gc.SetStyle(DSTY_Modulated);
-    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
-    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
+    if(class'MenuUIChoiceVisionTint'.default.value == 1) {
+        gc.SetStyle(DSTY_Modulated);
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
+    } else if(class'MenuUIChoiceVisionTint'.default.value == 2) {
+        gc.SetStyle(DSTY_Modulated);
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'SolidGreen');
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'SolidGreen');
+    }
+
     gc.SetStyle(DSTY_Translucent);
 
     // at level one and higher, enhance heat sources (FLIR)
@@ -117,6 +124,37 @@ function bool ShouldDrawActorDist(Actor A, float dist)
         maxDist /= 2.0;
 
     return dist <= maxDist;
+}
+
+//Allow different actors to show up as different colours
+function Texture GetGridTexture(Texture tex)
+{
+    switch(tex) {
+        case None:
+        case Texture'BlackMaskTex':
+        case Texture'GrayMaskTex':
+        case Texture'PinkMaskTex':
+            return Texture'BlackMaskTex';
+
+        case Texture'DeusExItems.Skins.DataCubeTex1':
+        case Texture'DeusExItems.Skins.DataCubeTex2':
+        case Texture'DeusExItems.Skins.NanoKeyTex1':
+        //case Texture'Effects.Electricity.BioCell_SFX': // nanokey multiskin 1
+        case Texture'DeusExDeco.Skins.BookClosedTex1':
+        case Texture'DeusExDeco.Skins.BookOpenTex1':
+            return Texture'Nano_SFX'; //Blue
+    }
+
+    switch(VisionTargetStatus) {
+        case VISIONENEMY:
+            return Texture'Virus_SFX';
+        case VISIONALLY:
+            return Texture'Wepn_Prifle_SFX';
+        case VISIONNEUTRAL:
+            return Texture'WhiteStatic';
+    }
+
+    return Texture'WhiteStatic';
 }
 
 function _DrawActor(GC gc, Actor A, float DrawGlow)
@@ -813,4 +851,36 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
             }
         }
     }
+}
+
+function DrawSpyDroneAugmentation(GC gc)
+{
+    local String str;
+    local float boxCX, boxCY, boxTLY, boxH;
+    local float x, y, w, h;
+
+    Super.DrawSpyDroneAugmentation(gc);
+
+#ifdef injections
+    if (winDrone!=None){
+        //Balanced SpyDrone costs 10 energy to detonate.  Display a message if you don't have enough
+        //See "DroneExplode" in DXRBalance/BalancePlayer.uc
+        if (Player.Energy < 10){
+
+            //Find the useful coords of the drone window
+            boxH = height/4;
+            boxCX = width/8 + margin;
+            boxCY = height/2;
+            boxTLY = boxCY - boxH/2;
+
+            str = "Not enough energy to detonate!";
+            gc.GetTextExtent(0, w, h, str);
+            x = boxCX - w/2;
+            y = boxTLY + margin + h + margin;
+            gc.SetTextColorRGB(255,0,0);
+            gc.DrawText(x, y, w, h, str);
+            gc.SetTextColor(colHeaderText);
+        }
+    }
+#endif
 }

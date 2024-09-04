@@ -673,6 +673,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     }
     else if(IsHalloweenMode()) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
+        autosave = 7;// fixed saves
     }
 
     if (IsHalloweenMode()){

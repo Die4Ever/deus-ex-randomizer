@@ -227,6 +227,14 @@ function bool IsChristmasSeason()
     return false;
 }
 
+function bool OnTitleScreen()
+{
+    local DXRando dxr;
+    dxr = class'DXRando'.default.dxr;
+
+    return dxr.LocalURL=="DX" || dxr.LocalURL=="DXONLY";
+}
+
 final function int SystemTime()
 {
     return _SystemTime(Level);

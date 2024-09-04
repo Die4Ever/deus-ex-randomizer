@@ -64,6 +64,7 @@ function PreFirstEntryMapFixes_Bunker()
     local DeusExMover d;
     local ComputerSecurity c;
     local Keypad k;
+    local #var(prefix)Button1 b;
     local Switch2 s2;
     local SequenceTrigger st;
     local DataLinkTrigger dlt;
@@ -73,6 +74,7 @@ function PreFirstEntryMapFixes_Bunker()
     local #var(prefix)RatGenerator rg;
     local Vector loc;
     local #var(prefix)Fan1 fan;
+    local #var(prefix)WaltonSimons ws;
 
     if (dxr.flags.settings.starting_map < 151) {
         player().DeleteAllGoals();
@@ -164,6 +166,20 @@ function PreFirstEntryMapFixes_Bunker()
         }
     }
 
+    //The buttons on the big elevator down to the bunker entrance could be used if you reached around
+    //the invisible panel that is supposed to block them.  Make them actually unusable until the power
+    //is turned on.
+    foreach AllActors(class'#var(prefix)Button1',b){
+        if (b.Event=='level1'){
+            b.Tag='level1_switch';
+            class'DXRTriggerEnable'.static.Create(b,'power','level1_switch');
+        } else if (b.Event=='level2'){
+            b.Tag='level2_switch';
+            class'DXRTriggerEnable'.static.Create(b,'power','level2_switch');
+        }
+    }
+
+
     //Button to open blast doors from inside
     AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
 
@@ -173,6 +189,12 @@ function PreFirstEntryMapFixes_Bunker()
 
     foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
         fan.bHighlight=True;
+    }
+
+    foreach AllActors(class'#var(prefix)WaltonSimons',ws){
+        ws.MaxProvocations = 0;
+        ws.AgitationSustainTime = 3600;
+        ws.AgitationDecayRate = 0;
     }
 
     Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building

@@ -131,6 +131,11 @@ function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
 
 function PeriodicUpdates()
 {
+
+    if (dxr.OnTitleScreen()){
+        return;
+    }
+
     //Matrix Mode Timer
     if (decrementTimer('cc_MatrixModeTimer')) {
         StopCrowdControlEvent("matrix",true);
@@ -257,6 +262,10 @@ function HandleEffectSelectability()
     local Inventory anItem;
     local bool haveFT, canFreelySave;
     local DXRLoadouts loadout;
+
+    if (dxr.OnTitleScreen()){
+        return;
+    }
 
     //LamThrower
     if (#defined(vanilla)){
@@ -488,6 +497,10 @@ function ContinuousUpdates()
     local DataStorage datastorage;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
+    if (dxr.OnTitleScreen()){
+        return;
+    }
+
     //Lava floor logic
     if (isTimerActive('cc_floorLavaTimer') && InGame()){
         floorIsLava();
@@ -521,6 +534,11 @@ function ContinuousUpdates()
 //Make sure to do that here
 function InitOnEnter() {
     local inventory anItem;
+
+    if (dxr.OnTitleScreen()){
+        return;
+    }
+
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
     dxrCameras = DXRCameraModes(dxr.FindModule(class'DXRCameraModes'));
@@ -588,6 +606,11 @@ function InitOnEnter() {
 //Effects should revert to default before exiting a level
 //so that they can be cleanly re-applied next time you enter
 function CleanupOnExit() {
+
+    if (dxr.OnTitleScreen()){
+        return;
+    }
+
     StopMatrixMode(True);  //matrix
     player().bWarrenEMPField = false;  //emp
     player().JumpZ = player().Default.JumpZ;  //disable_jump
@@ -2469,6 +2492,11 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
     local ColorTheme theme;
+
+    //Effects can't start on the title screen
+    if (dxr.OnTitleScreen()){
+        return TempFail;
+    }
 
     switch(code) {
         case "poison":

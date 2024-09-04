@@ -18,8 +18,10 @@ var DataStorage datastorage;
 
 function Init(DXRando tdxr)
 {
-    local bool anon, offline, online;
+    local bool anon, offline, online, forced;
     Super.Init(tdxr);
+
+    forced = tdxr.OnTitleScreen(); //Force Crowd Control on during the title screen
 
     InitStupidQuestions();
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
@@ -30,11 +32,11 @@ function Init(DXRando tdxr)
         curStupidQuestion = int(datastorage.GetConfigKey('cc_StupidQuestionNumber'));
     }
 
-    if (tdxr.flags.crowdcontrol != 0) {
+    if (tdxr.flags.crowdcontrol != 0 || forced) {
         link = Spawn(class'DXRandoCrowdControlLink');
         info("spawned "$link);
         online = true;
-        if (tdxr.flags.crowdcontrol == 1) {
+        if (tdxr.flags.crowdcontrol == 1 || forced) {
             anon = False;
         } else if (tdxr.flags.crowdcontrol == 2) {
             anon = True;

@@ -62,6 +62,27 @@ simulated function ReEntry(bool IsTravel)
     }
 }
 
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    local Skill s;
+    local Augmentation a;
+    local string str, timestamp;
+
+    timestamp = fmtTimeToString(GetTotalAllTime());
+
+    for(s = p.SkillSystem.FirstSkill; s!=None; s=s.next) {
+        str = str @ s.SkillName $ ":" $ s.CurrentLevel $ ",";
+    }
+    for(a = p.AugmentationSystem.FirstAug; a!=None; a=a.next) {
+        if(a.bHasIt) {
+            str = str @ a.AugmentationName $ ":" $ a.CurrentLevel $ ",";
+        }
+    }
+    if(str != "") {
+        info("PlayerAnyEntry " $ timestamp $ " skills/augs:" $ str);
+    }
+}
+
 function IncMissionTimer(int mission)
 {
     local string flagname, dataname;
@@ -307,6 +328,18 @@ function int GetTotalCompleteMenuTime()
     }
 
     return totaltime;
+}
+
+function int GetTotalAllTime()
+{
+    local int i, total;
+
+    for (i=1;i<=15;i++) {
+        total += missions_times[i];
+        total += missions_menu_times[i];
+    }
+
+    return total;
 }
 
 static function int GetTotalMenuTime(DXRando dxr)

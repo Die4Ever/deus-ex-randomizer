@@ -228,6 +228,11 @@ function InitClothes(bool giveAll)
         IngestCarcass(class'UNATCOCloneAugTough1Carcass');
         IngestCarcass(class'MrXCarcass');
         IngestCarcass(class'BarDancerCarcass');
+
+        //New helmets that can be randomly given to enemies (but aren't present on their default carcasses)
+        AddClothing(G_Male,CT_Helmet,Texture'NSFHelmet',None);
+        AddClothing(G_Male,CT_Helmet,Texture'PlainRiotHelmet',None);
+
     }
 
 /*
@@ -672,6 +677,21 @@ simulated function GetDressed()
         ApplyPaulClothing(paulCarcass);
 }
 
+//For cases where there might be different textures for the carcass compared to the normal living guy
+simulated function ModifyClothingTextures(EGender gender, EClothesType type, out string tex1s, out string tex2s)
+{
+    if (type==CT_Helmet){
+        switch(tex1s){
+            case "#var(package).DXRandoPawns.NSFCloneAugStealth1GogglesNoglow":
+                tex1s="#var(package).DXRandoPawns.NSFCloneAugStealth1Goggles";
+                break;
+            case "#var(package).DXRandoPawns.MJ12CloneAugStealth1GogglesDark":
+                tex1s="#var(package).DXRandoPawns.MJ12CloneAugStealth1Goggles";
+                break;
+        }
+    }
+}
+
 simulated function int AddClothing(EGender gender, EClothesType type, Texture tex1, Texture tex2)
 {
     local int i;
@@ -685,6 +705,8 @@ simulated function int AddClothing(EGender gender, EClothesType type, Texture te
     if(tex2!=None){
         tex2s=String(tex2);
     }
+
+    ModifyClothingTextures(gender,type,tex1s,tex2s);
 
     //We don't allow ingesting "no glasses"
     if ((type==CT_Glasses) && (tex1s=="DeusExItems.Skins.GrayMaskTex") && (tex2s=="DeusExItems.Skins.BlackMaskTex")) return 0;

@@ -15,6 +15,7 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_Epilepsy');
         CreateChoice(class'MenuChoice_BarrelTextures');
         CreateChoice(class'MenuChoice_GoalTextures');
+        CreateChoice(class'MenuUIChoiceVisionTint');
     }
 
     CreateChoice(class'MenuChoice_ShowTeleporters');

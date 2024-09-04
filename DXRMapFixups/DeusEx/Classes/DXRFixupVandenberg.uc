@@ -12,6 +12,7 @@ function PreFirstEntryMapFixes()
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
     local #var(prefix)HowardStrong hs;
+    local #var(prefix)WaltonSimons ws;
     local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
     local #var(prefix)TracerTong tt;
@@ -55,7 +56,7 @@ function PreFirstEntryMapFixes()
         player().GoalCompleted('MeetJock');
 
         foreach AllActors(class'#var(prefix)TracerTong', tt) {
-            RemoveFears(tt);// he looks pretty sick
+            RemoveReactions(tt);// he looks pretty sick
         }
 
         class'FillCollisionHole'.static.CreateLine(self, vectm(3081.067383, 1640, -2031.417969), vectm(3081.067383, 6584, -2031.417969), 40, 300);
@@ -278,6 +279,12 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            foreach AllActors(class'#var(prefix)WaltonSimons',ws){
+                ws.MaxProvocations = 0;
+                ws.AgitationSustainTime = 3600;
+                ws.AgitationDecayRate = 0;
+            }
+
             Spawn(class'PlaceholderItem',,, vectm(37.5,531.4,-1569)); //Secretary desk
             Spawn(class'PlaceholderItem',,, vectm(2722,226.5,-1481)); //Greasel Lab desk
             Spawn(class'PlaceholderItem',,, vectm(4097.8,395.4,-1533)); //Desk with zappy electricity near construction zone
@@ -486,6 +493,8 @@ function UnleashingBotsOpenCommsDoor()
     local #var(prefix)DataLinkTrigger dt;
     local #var(prefix)FlagTrigger ft;
 
+    if(dxr.flags.IsZeroRandoPure()) return;
+
     // releasing the bots should be enough to get into the comms building, especially for Stick With the Prod players
 
     foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
@@ -515,6 +524,7 @@ function UnleashingBotsOpenCommsDoor()
 
     ft = spawn(class'#var(prefix)FlagTrigger',, 'bots_released');
     ft.flagName = 'MS_DL_Played';
+    ft.SetCollision(false,false,false);
 }
 
 //Add a new button in the elevator to open the doors
@@ -680,7 +690,7 @@ function PostFirstEntryMapFixes()
         // if speedrun mode, put a TNT crate for assured death
         if(dxr.flags.IsSpeedrunMode()) {
             AddDelayEvent('guardattack', 'TiffanyTNT', 15);
-            Spawnm(class'#var(prefix)CrateExplosiveSmall',, 'TiffanyTNT', vect(84.125946, 699.975220, -1001.023193));
+            Spawnm(class'#var(prefix)CrateExplosiveSmall',, 'TiffanyTNT', vect(145.933289, 695, -1007.897644));
         }
         break;
     }

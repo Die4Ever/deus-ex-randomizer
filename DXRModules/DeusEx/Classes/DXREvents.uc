@@ -1085,7 +1085,11 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
-        WatchFlag('LDDPAchilleDone');
+
+        //Achille only counts if you're female
+        if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+            WatchFlag('LDDPAchilleDone');
+        }
         WatchFlag('LeoToTheBar');
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');

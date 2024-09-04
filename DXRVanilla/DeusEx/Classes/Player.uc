@@ -18,11 +18,18 @@ var travel int LastBrowsedAugPage, LastBrowsedAug; //OAT, 1/12/24: By popular de
 
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
+    local DXRStats stats;
+    local string timer;
+
     // HACK: 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
     if( msg == "  " ) return;
 
     if(type != 'ERROR') { // don't need to log errors twice
-        log("ClientMessage: "$msg, class.name);
+        stats = DXRStats(DXRFindModule(class'DXRStats'));
+        if(stats != None) {
+            timer = stats.fmtTimeToString(stats.GetTotalAllTime());
+        }
+        log("ClientMessage: " $ msg @ timer, class.name);
     }
     Super.ClientMessage(msg, type, bBeep);
     if(type != 'ERROR') { // don't need errors to hit telemetry twice
@@ -224,21 +231,20 @@ exec function QuickSave()
 {
     local DeusExLevelInfo info;
 
-    if( class'DXRAutosave'.static.AllowManualSaves(self) ){
-        info = GetLevelInfo();
+    if( !class'DXRAutosave'.static.AllowManualSaves(self) ) return;
 
-        //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
-        if (((info != None) && (info.MissionNumber < 0)) ||
-            ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
-            (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
-        {
-            ClientMessage("Cannot quick save during infolink!",, true);
-        } else {
-            Super.QuickSave();
-            ClientMessage("Quick Saved",, true);
-        }
+    info = GetLevelInfo();
+
+    //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
+    if (((info != None) && (info.MissionNumber < 0)) ||
+        ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
+        (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
+    {
+        ClientMessage("Cannot quick save during infolink!",, true);
     } else {
-        ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
+        class'DXRAutosave'.static.UseSaveItem(self);
+        Super.QuickSave();
+        ClientMessage("Quick Saved",, true);
     }
 }
 

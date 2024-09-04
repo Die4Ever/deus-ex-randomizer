@@ -300,6 +300,9 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.Tag='WaltonSimons';
         sp.SetOrders('WaitingFor');
         sp.bInvincible=False;
+        sp.MaxProvocations = 0;
+        sp.AgitationSustainTime = 3600;
+        sp.AgitationDecayRate = 0;
 
         //scuba in the OceanLab, probably needs to be mj12 on shore, maybe something else if in UC area?
         if (Loc.mapName == "14_OCEANLAB_LAB"){

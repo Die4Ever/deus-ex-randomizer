@@ -143,6 +143,41 @@ function Carcass SpawnCarcass()
     return Super.SpawnCarcass();
 }
 
+//Copied from vanilla ScriptedPawn
+//'Exploded' moved from secondary to primary
+function bool IsPrimaryDamageType(name damageType)
+{
+    local bool bPrimary;
+
+    switch (damageType)
+    {
+        case 'TearGas':
+        case 'HalonGas':
+        case 'PoisonGas':
+        case 'PoisonEffect':
+        case 'Radiation':
+        case 'EMP':
+        case 'Drowned':
+        case 'NanoVirus':
+            bPrimary = false;
+            break;
+
+        case 'Stunned':
+        case 'KnockedOut':
+        case 'Burned':
+        case 'Flamed':
+        case 'Poison':
+        case 'Shot':
+        case 'Sabot':
+        case 'Exploded':
+        default:
+            bPrimary = true;
+            break;
+    }
+
+    return (bPrimary);
+}
+
 // only draw a new shield if we haven't spawned one recently
 function MaybeDrawShield()
 {

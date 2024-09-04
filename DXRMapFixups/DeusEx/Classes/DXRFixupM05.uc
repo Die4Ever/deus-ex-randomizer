@@ -88,6 +88,7 @@ function PreFirstEntryMapFixes()
         //running around
         foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
             anna.bHateWeapon=False;
+            anna.ResetReactions();
         }
 
         if (VanillaMaps){
@@ -148,6 +149,12 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)Terrorist', miguel){
                 miguel.bHateShot=False;
                 miguel.ResetReactions();
+            }
+
+            foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
+                anna.MaxProvocations = 0;
+                anna.AgitationSustainTime = 3600;
+                anna.AgitationDecayRate = 0;
             }
 
             if(!dxr.flags.IsZeroRando()) {
@@ -356,6 +363,13 @@ function BalanceJailbreak()
         while(nextItem != None)
             for(i=0; i<num; i++)
                 nextItem = MoveNextItemTo(nextItem, itemLocations[i], 'player_inv');
+    } else {
+        //If Prison Pocket is enabled, there is no equipment to be found.  Remove the infolink.
+        //If we implement tiers of Prison Pocket (ie. keep only one item), this will need to be revisited.
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+            if(dlt.datalinkTag != 'dl_equipment') continue;
+            dlt.Destroy();
+        }
     }
 
     if(dxr.flags.settings.swapitems > 0 || dxr.flags.loadout != 0) {

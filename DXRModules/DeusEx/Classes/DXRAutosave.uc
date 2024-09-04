@@ -17,6 +17,8 @@ const EveryEntry = 2;
 const Hardcore = 3;// same as FirstEntry but without manual saving
 const ExtraSafe = 4;
 const Ironman = 5; // never autosaves, TODO: maybe some fancy logic to autosave on quit and autodelete on load?
+const LimitedSaves = 6; // need an item to save
+const FixedSaves = 7; // can only save at computers, AND need an item
 
 function CheckConfig()
 {
@@ -38,7 +40,7 @@ function PreFirstEntry()
     Super.PreFirstEntry();
     l("PreFirstEntry() " $ dxr.dxInfo.MissionNumber);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
-        if(dxr.flags.autosave > 0 && dxr.flags.autosave != Ironman) {
+        if(dxr.flags.autosave > 0 && dxr.flags.autosave < Ironman) {
             NeedSave();
         }
     }
@@ -153,15 +155,51 @@ function Tick(float delta)
 static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOnly)
 {
     local DXRFlags f;
+    local DeusExPickup item;
+
     f = Human(player).GetDXR().flags;
     if( f == None ) return true;
-    if( f.autosave == Hardcore || f.autosave == Ironman ) return false;
+    if( f.autosave == Hardcore || f.autosave == Ironman ) {
+        player.ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
+        return false;
+    }
+
+    if( f.autosave == LimitedSaves || f.autosave == FixedSaves ) {
+        item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
+        if(item == None || item.NumCopies <= 0) {
+            player.ClientMessage("You need an MCU to save! Good Luck!",, true);
+            return false;
+        }
+    }
+    if( f.autosave == FixedSaves ) {
+        if(Computers(player.FrobTarget) == None) {
+            player.ClientMessage("You need to have a computer highlighted to save! Good Luck!",, true);
+            return false;
+        }
+    }
 
     if(!checkOnly && player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
         player.dataLinkPlay.FastForward();
     }
 
     return true;
+}
+
+
+static function UseSaveItem(DeusExPlayer player)
+{
+    local DXRFlags f;
+    local DeusExPickup item;
+
+    f = Human(player).GetDXR().flags;
+    if( f == None ) return;
+
+    if( f.autosave != LimitedSaves && f.autosave != FixedSaves ) return;
+
+    item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
+    if(item == None) return;
+
+    item.UseOnce();
 }
 
 function doAutosave()

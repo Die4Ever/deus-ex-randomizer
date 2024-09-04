@@ -5,6 +5,7 @@ const GOAL_TYPE1 = 2;
 const GOAL_TYPE2 = 4;
 const GOAL_TYPE3 = 8;
 const GOAL_TYPE4 = 16;
+const ALWAYS_CREATE = 134217728;
 const SITTING_GOAL = 268435456;
 const VANILLA_GOAL = 536870912;
 const START_LOCATION = 1073741824;
@@ -647,7 +648,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         DeleteGoal(g, Loc);
         return;
     }
-    else if(g.mapName != dxr.localURL && Loc.mapName == dxr.localURL) {
+    else if(Loc.mapName == dxr.localURL &&
+            (g.mapName != dxr.localURL || (g.bitMask & ALWAYS_CREATE)!=0)) {
         CreateGoal(g, Loc);
         info("CreateGoal " $ g.name @ Loc.name @ g.actors[0].a);
     }

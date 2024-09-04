@@ -42,3 +42,7 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\PumpkinTex3.pcx"			            NAME="PumpkinTex3"			            GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\PumpkinTex4.pcx"			            NAME="PumpkinTex4"			            GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\PumpkinTex5.pcx"			            NAME="PumpkinTex5"			            GROUP="DXRandoImages"
+
+#exec TEXTURE IMPORT FILE="Textures\MemConUnitTex1.pcx"                     NAME="MemConUnitTex1"                   GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BeltIconMemConUnit.pcx"                 NAME="BeltIconMemConUnit"               GROUP="DXRandoImages" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\LargeIconMemConUnit.pcx"                NAME="LargeIconMemConUnit"              GROUP="DXRandoImages" MIPS=Off
