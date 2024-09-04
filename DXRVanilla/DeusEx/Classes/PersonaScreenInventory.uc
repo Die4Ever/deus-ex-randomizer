@@ -71,7 +71,6 @@ function string CalcChargedPickupDurations(ChargedPickup cp)
             skillVal = Player.SkillSystem.GetSkillFromClass(cp.skillNeeded).LevelValues[i];
             curLevel = Player.SkillSystem.GetSkillLevel(cp.skillNeeded) == i;
         }
-        log("CalcChargedPickupDurations " $ drain $ " *= " $ skillVal $ " == " $ int(drain*skillVal) );
         drain *= skillVal;
 
         workingVal = workingVal / Max(drain, 1); //How many times can it drain at this rate? Max() converts to int
