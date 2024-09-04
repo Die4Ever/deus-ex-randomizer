@@ -49,9 +49,16 @@ function DrawVisionAugmentation(GC gc)
     local Actor A;
 
     // brighten and tint the screen
-    gc.SetStyle(DSTY_Modulated);
-    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
-    gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
+    if(class'MenuUIChoiceVisionTint'.default.value == 1) {
+        gc.SetStyle(DSTY_Modulated);
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'VisionFilter');
+    } else if(class'MenuUIChoiceVisionTint'.default.value == 2) {
+        gc.SetStyle(DSTY_Modulated);
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'SolidGreen');
+        gc.DrawPattern(30, 30, width-60, height-60, 0, 0, Texture'SolidGreen');
+    }
+
     gc.SetStyle(DSTY_Translucent);
 
     // at level one and higher, enhance heat sources (FLIR)
@@ -120,46 +127,34 @@ function bool ShouldDrawActorDist(Actor A, float dist)
 }
 
 //Allow different actors to show up as different colours
-function Texture GetActorHighlightTex(Actor a){
-    if (#var(prefix)Datacube(a)!=None){
-        //Should this depend on whether the datacube has been read or not?
-        return Texture'Nano_SFX'; //Blue
-    } else if (#var(prefix)NanoKey(a)!=None){
-        return Texture'Nano_SFX';  //Blue
-    } else if (#var(prefix)BookClosed(a)!=None){
-        return Texture'Nano_SFX';  //Blue
-    } else if (#var(prefix)BookOpen(a)!=None){
-        return Texture'Nano_SFX';  //Blue
+function Texture GetGridTexture(Texture tex)
+{
+    switch(tex) {
+        case None:
+        case Texture'BlackMaskTex':
+        case Texture'GrayMaskTex':
+        case Texture'PinkMaskTex':
+            return Texture'BlackMaskTex';
+
+        case Texture'DeusExItems.Skins.DataCubeTex1':
+        case Texture'DeusExItems.Skins.DataCubeTex2':
+        case Texture'DeusExItems.Skins.NanoKeyTex1':
+        //case Texture'Effects.Electricity.BioCell_SFX': // nanokey multiskin 1
+        case Texture'DeusExDeco.Skins.BookClosedTex1':
+        case Texture'DeusExDeco.Skins.BookOpenTex1':
+            return Texture'Nano_SFX'; //Blue
     }
 
-    //Green: Texture'Wepn_Prifle_SFX'
-    //Red:   Texture'Virus_SFX'
+    switch(VisionTargetStatus) {
+        case VISIONENEMY:
+            return Texture'Virus_SFX';
+        case VISIONALLY:
+            return Texture'Wepn_Prifle_SFX';
+        case VISIONNEUTRAL:
+            return Texture'WhiteStatic';
+    }
 
     return Texture'WhiteStatic';
-}
-
-function SetSkins(Actor actor, out Texture oldSkins[9])
-{
-    local int     i;
-
-    Super.SetSkins(actor,oldSkins);
-
-    if (!#defined(vanilla)) return;
-
-    if (true) return;
-    //Should we do this at all?
-    //Should it apply only at a certain level of Vision Enhancement and higher?
-    //Tech Goggles only?
-
-    for (i=0; i<8; i++){
-        if (actor.MultiSkins[i]==Texture'WhiteStatic'){
-            actor.MultiSkins[i]=GetActorHighlightTex(actor);
-        }
-    }
-
-    if (actor.Skin==Texture'WhiteStatic'){
-        actor.Skin = GetActorHighlightTex(actor);
-    }
 }
 
 function _DrawActor(GC gc, Actor A, float DrawGlow)
