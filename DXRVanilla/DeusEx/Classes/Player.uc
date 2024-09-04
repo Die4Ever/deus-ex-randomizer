@@ -18,11 +18,18 @@ var travel int LastBrowsedAugPage, LastBrowsedAug; //OAT, 1/12/24: By popular de
 
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
+    local DXRStats stats;
+    local string timer;
+
     // HACK: 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
     if( msg == "  " ) return;
 
     if(type != 'ERROR') { // don't need to log errors twice
-        log("ClientMessage: "$msg, class.name);
+        stats = DXRStats(DXRFindModule(class'DXRStats'));
+        if(stats != None) {
+            timer = stats.fmtTimeToString(stats.GetTotalAllTime());
+        }
+        log("ClientMessage: " $ msg @ timer, class.name);
     }
     Super.ClientMessage(msg, type, bBeep);
     if(type != 'ERROR') { // don't need errors to hit telemetry twice
