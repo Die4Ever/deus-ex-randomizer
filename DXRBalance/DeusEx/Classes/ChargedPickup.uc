@@ -24,7 +24,7 @@ function FixChargeRounding()
 }
 
 simulated function Float GetCurrentCharge()
-{
+{// no longer need * 100
     return Float(Charge) / Float(Default.Charge);
 }
 
