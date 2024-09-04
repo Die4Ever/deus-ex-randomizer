@@ -493,6 +493,8 @@ function UnleashingBotsOpenCommsDoor()
     local #var(prefix)DataLinkTrigger dt;
     local #var(prefix)FlagTrigger ft;
 
+    if(dxr.flags.IsZeroRandoPure()) return;
+
     // releasing the bots should be enough to get into the comms building, especially for Stick With the Prod players
 
     foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
@@ -688,7 +690,7 @@ function PostFirstEntryMapFixes()
         // if speedrun mode, put a TNT crate for assured death
         if(dxr.flags.IsSpeedrunMode()) {
             AddDelayEvent('guardattack', 'TiffanyTNT', 15);
-            Spawnm(class'#var(prefix)CrateExplosiveSmall',, 'TiffanyTNT', vect(84.125946, 699.975220, -1001.023193));
+            Spawnm(class'#var(prefix)CrateExplosiveSmall',, 'TiffanyTNT', vect(145.933289, 695, -1007.897644));
         }
         break;
     }
