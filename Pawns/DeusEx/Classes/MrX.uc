@@ -3,6 +3,7 @@ class MrX extends HumanMilitary;
 var float healthRegenTimer;
 var #var(PlayerPawn) player;
 var int FleeHealth;// like MinHealth, but we need more control
+var Actor firstDestPoint;
 
 static function MrX Create(DXRActorsBase a)
 {
@@ -124,8 +125,12 @@ function InitializePawn()
 
     dist = VSize(closest.Location - farthest.Location);
     for(i=0; i<10; i++) {
-        if(patrols._GivePatrol(self, dist, 0.5, 1.5, 1600, 0, true)) return;
+        if(patrols._GivePatrol(self, dist, 0.5, 1.5, 1600, 0, true)) {
+            firstDestPoint = destPoint;
+            return;
+        }
     }
+    SetOrders('Wandering');
 }
 
 function Tick(float delta)
@@ -162,6 +167,8 @@ function Tick(float delta)
 #endif
         GenerateTotalHealth();
     }
+
+    if(IsInState('Standing')) SetOrders('Wandering',, true);
 }
 
 // only walking animation

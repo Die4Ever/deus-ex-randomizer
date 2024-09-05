@@ -69,6 +69,9 @@ function CheckCarcasses()
             // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
             continue;
         }
+        if(carc.bNotDead) {
+            continue;
+        }
         for(i=0; i < num_carcs; i++) {
             if(carcs[i] == carc) {
                 break;
@@ -82,6 +85,57 @@ function CheckCarcasses()
         }
     }
 }
+
+#ifdef injections
+function float _GetZombieTime(#var(DeusExPrefix)Carcass carc)
+{
+    local int i;
+
+    for(i=0; i < num_carcs; i++) {
+        if(carcs[i] == carc) {
+            return times[i];
+        }
+    }
+    return Level.TimeSeconds;
+}
+
+static function float GetZombieTime(#var(DeusExPrefix)Carcass carc)
+{
+    local DXRHalloween h;
+
+    h = DXRHalloween(class'DXRando'.default.dxr.FindModule(class'DXRHalloween'));
+    if(h == None) return carc.Level.TimeSeconds;
+    return h._GetZombieTime(carc);
+}
+
+function _SetZombieTime(#var(DeusExPrefix)Carcass carc, float time)
+{
+    local int i;
+
+    if(!dxr.flags.IsHalloweenMode()) return;
+
+    for(i=0; i < num_carcs; i++) {
+        if(carcs[i] == carc) {
+            times[i] = FMin(times[i], time);
+            return;
+        }
+    }
+
+    carcs[num_carcs] = carc;
+    times[num_carcs] = time;
+    carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
+    num_carcs++;
+}
+
+static function SetZombieTime(#var(DeusExPrefix)Carcass carc, float time)
+{
+    local DXRHalloween h;
+
+    h = DXRHalloween(class'DXRando'.default.dxr.FindModule(class'DXRHalloween'));
+    if(h == None) return;
+    h._SetZombieTime(carc, time);
+}
+#endif
 
 function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
 {
@@ -241,6 +295,13 @@ function MakeCosmetics()
     local Light lgt;
     local vector locs[4096];
     local int i, num, slot;
+    local SkyZoneInfo z;
+
+    foreach AllActors(class'SkyZoneInfo', z) {
+        z.AmbientBrightness = 5;
+        z.AmbientSaturation = 100;
+        z.AmbientHue = 255;
+    }
 
     SetSeed("MakeSpiderWebs");
 
@@ -333,10 +394,11 @@ function SpawnJackOLantern(vector loc)
     num = rng(6);
     for(i=0; i<num; i++) {
         r2.Yaw = rng(20000) - 10000;
-        loc = wall1.loc + (wall1.norm << r2) * 32;
+        loc = wall1.loc + (wall1.norm << r2) * 64;
         jacko = spawn(class'DXRJackOLantern',,, loc, r);
         size = rngf() + 0.6;
         jacko.DrawScale *= size;
+        jacko.SetCollisionSize(jacko.CollisionRadius*size, jacko.CollisionHeight*size);
     }
 }
 

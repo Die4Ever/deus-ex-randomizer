@@ -43,6 +43,10 @@ function PreFirstEntry()
         if(dxr.flags.autosave > 0 && dxr.flags.autosave < Ironman) {
             NeedSave();
         }
+        else if(dxr.flags.autosave == LimitedSaves || dxr.flags.autosave == FixedSaves && dxr.flagbase.GetInt('Rando_lastmission')==0) {
+            // save at the start
+            NeedSave();
+        }
     }
 }
 
@@ -167,7 +171,7 @@ static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOn
     if( f.autosave == LimitedSaves || f.autosave == FixedSaves ) {
         item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
         if(item == None || item.NumCopies <= 0) {
-            player.ClientMessage("You need an MCU to save! Good Luck!",, true);
+            player.ClientMessage("You need a Memory Containment Unit to save! Good Luck!",, true);
             return false;
         }
     }
@@ -254,13 +258,13 @@ function doAutosave()
 
     saveSlot = -3;
     saveName = "DXR " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation;
-    lastMission = dxr.flags.f.GetInt('Rando_lastmission');
+    lastMission = dxr.flagbase.GetInt('Rando_lastmission');
 
     isDifferentMission = lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
     if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
         saveSlot = 0;
     }
-    dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
+    dxr.flagbase.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
     info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
     bNeedSave = false;

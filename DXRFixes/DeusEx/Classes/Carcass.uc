@@ -121,7 +121,7 @@ function DropKeys()
 
 function Destroyed()
 {
-    _DropItems('Inventory', vect(0,0,0), vect(-2, -2, 3) );
+    _DropItems('Inventory', vect(0,0,0), vect(-0.2, -0.2, 1) );
     Super.Destroyed();
 }
 
@@ -153,7 +153,6 @@ function Frob(Actor Frobber, Inventory frobWith)
     local Pawn P;
     local bool bFoundSomething;
     local DeusExPlayer player;
-    local POVCorpse corpse;
     local DXRFashionManager fashion;
 
     //log("DeusExCarcass::Frob()--------------------------------");
@@ -184,25 +183,7 @@ function Frob(Actor Frobber, Inventory frobWith)
         {
             if (!bInvincible)
             {
-                corpse = Spawn(class'POVCorpse');
-                if (corpse != None)
-                {
-                    // destroy the actual carcass and put the fake one
-                    // in the player's hands
-                    corpse.carcClassString = String(Class);
-                    corpse.KillerAlliance = KillerAlliance;
-                    corpse.KillerBindName = KillerBindName;
-                    corpse.Alliance = Alliance;
-                    corpse.bNotDead = bNotDead;
-                    corpse.bEmitCarcass = bEmitCarcass;
-                    corpse.CumulativeDamage = CumulativeDamage;
-                    corpse.MaxDamage = MaxDamage;
-                    corpse.CorpseItemName = itemName;
-                    corpse.CarcassName = CarcassName;
-                    corpse.Frob(player, None);
-                    corpse.SetBase(player);
-                    player.PutInHand(corpse);
-                    bQueuedDestroy=True;
+                if(class'POVCorpse'.static.Create(player, DeusExCarcass(self)) != None) {
                     Destroy();
                     return;
                 }

@@ -671,13 +671,14 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.repairbots = 0;
         moresettings.empty_medbots = 0;
     }
-    else if(IsHalloweenMode()) {
+    else if(gamemode == HalloweenMode) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
-        autosave = 7;// fixed saves
+        //autosave = 7;// fixed saves, HACK: we set this in DXRMenuSelectDifficulty so you can override it
     }
 
     if (IsHalloweenMode()){
         clothes_looting = 1;
+        settings.speedlevel = 0;// in DXRLoadouts we override level 0 speed to mean lvl 1 run silent
     } else {
         clothes_looting = 0;
     }
@@ -708,11 +709,11 @@ function int GameModeIdForSlot(int slot)
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
     }
-    if(slot--==0) return SpeedrunMode;
     if(slot--==0) return ZeroRando;
     if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
     if(slot--==0) return RandoMedium;
+    if(slot--==0) return SpeedrunMode;
     if(slot--==0) return SeriousSam;
     if(IsOctoberUnlocked() && slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;

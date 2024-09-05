@@ -301,7 +301,7 @@ function AddAug(int s, string type)
 
     for(i=0; i < ArrayCount(__item_sets[s].starting_augs); i++) {
         if( __item_sets[s].starting_augs[i] == None ) {
-            if(dxr.flags.IsHalloweenMode() && type=="AugSpeed") {
+            if(dxr.flags.IsHalloweenMode() && type=="AugSpeed" && dxr.flags.settings.speedlevel == 0) {
                 type = "AugStealth";// this is Halloween!
             }
             a = GetClassFromString(type, class'Augmentation');
@@ -502,13 +502,14 @@ function bool StartedWithAug(class<Augmentation> a)
 {
     local class<Augmentation> aclass;
     local int i;
+
+    if( a.default.AugmentationLocation == LOC_Default )
+        return true;
+
     for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
         aclass = __item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
         if( aclass == a ) return true;
-
-        if( a.default.AugmentationLocation == LOC_Default )
-            return true;
 
         //speed, stealth, ninja, muscle...
         if( aclass.default.AugmentationLocation == a.default.AugmentationLocation ) {
@@ -526,7 +527,7 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
     local Inventory item;
     local Ammo a;
     local DeusExWeapon w;
-    local int i, k;
+    local int i, k, auglevel;
 
     for(i=0; i < ArrayCount(__item_sets[loadout].starting_equipment); i++) {
         iclass = __item_sets[loadout].starting_equipment[i];
@@ -539,10 +540,17 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
         if( bFrob && item != None ) item.Frob( p, None );
     }
 
+    auglevel = dxr.flags.settings.speedlevel;
+    if(dxr.flags.IsHalloweenMode()) {
+        if(auglevel == 0) {
+            auglevel = 1;
+        }
+        GiveItem(p, class'MemConUnit');
+    }
     for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
         aclass = __item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
-        class'DXRAugmentations'.static.AddAug( p, aclass, dxr.flags.settings.speedlevel );
+        class'DXRAugmentations'.static.AddAug( p, aclass, auglevel );
     }
 }
 
@@ -696,6 +704,17 @@ function SpawnItems()
                 if( reducer != None && Inventory(a) != None )
                     reducer.ReduceItem(Inventory(a));
             }
+        }
+    }
+
+    if(dxr.flags.autosave == 7) { // Fixed Saves
+        SetSeed("SpawnItems() MCU");
+        aclass = class'MemConUnit';
+        chance = 80;
+        if(chance_single(chance)) {
+            loc = GetRandomPositionFine();
+            a = Spawn(aclass,,, loc);
+            l("SpawnItems() spawned "$a$" at "$loc);
         }
     }
 
