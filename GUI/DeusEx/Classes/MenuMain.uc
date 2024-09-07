@@ -127,16 +127,14 @@ function ProcessCustomMenuButton(string key)
     switch(key)
     {
         case "SAVEGAME":
-#ifdef injections
+            #ifdef injections
             reason = class'DXRAutosave'.static.GetSaveFailReason(player);
+            #endif
 
-            //Only outside of the other check so that it I don't need another ifdef
             if (reason==""){
+                #ifdef injections
                 class'DXRAutosave'.static.SkipInfolinksForSave(player);
-            }
-#endif
-
-            if (reason==""){
+                #endif
                 root.InvokeMenuScreen(Class'MenuScreenSaveGame');
             } else {
                 root.MessageBox(NoSavingTitle, reason, 1, False, Self);
