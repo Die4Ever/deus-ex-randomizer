@@ -3,6 +3,7 @@ class DXRMenuMain injects MenuMain;
 var float countdown;
 var int nameLen, firstSpace, secondSpace;
 var MenuUIMenuButtonWindow randoSettingsButton;
+var string NoSavingTitle;
 
 var DXRNews news;
 
@@ -10,12 +11,20 @@ var DXRNews news;
 function UpdateButtonStatus()
 {
     local bool allowSave;
-    allowSave = class'DXRAutosave'.static.AllowManualSaves(player);// this also fast forwards the infolink, so call it first
+    allowSave = class'DXRAutosave'.static.CanSaveDuringInfolinks(player);
 
     Super.UpdateButtonStatus();
 
-    // check if DXRAutosave disallows us from saving now
-    if( !allowSave ) winButtons[1].SetSensitivity(False);
+    //We will leave the save button active in game modes
+    //that restrict saving so that we can show a message
+    //when you hit the button explaining why.  Only make
+    //the button clickable if an infolink is playing and
+    //you have the choice allowing save during infolinks
+    //since the infolink will only skip when opening the
+    //save screen itself.
+    if (player.dataLinkPlay!=None && allowSave){
+        winButtons[1].SetSensitivity(True);
+    }
 }
 #endif
 
@@ -111,8 +120,52 @@ function bool ButtonActivated( Window buttonPressed )
     return bHandled;
 }
 
+function ProcessCustomMenuButton(string key)
+{
+    local string reason;
+
+    switch(key)
+    {
+        case "SAVEGAME":
+#ifdef injections
+            reason = class'DXRAutosave'.static.GetSaveFailReason(player);
+
+            //Only outside of the other check so that it I don't need another ifdef
+            if (reason==""){
+                class'DXRAutosave'.static.SkipInfolinksForSave(player);
+            }
+#endif
+
+            if (reason==""){
+                root.InvokeMenuScreen(Class'MenuScreenSaveGame');
+            } else {
+                root.MessageBox(NoSavingTitle, reason, 1, False, Self);
+            }
+            break;
+    }
+}
+
+//"button" can actually be the message box itself
+event bool BoxOptionSelected(Window button, int buttonNumber)
+{
+    local string s;
+
+    if (MenuUIMessageBoxWindow(button)!=None){
+        s = MenuUIMessageBoxWindow(button).winTitle.titleText;
+    }
+
+    if (s==NoSavingTitle){
+        root.PopWindow();
+        return true;
+    } else {
+        return Super.BoxOptionSelected(button,buttonNumber);
+    }
+}
+
 defaultproperties
 {
     AskToTrainTitle="Rando Training Mission"
     AskToTrainMessage="Before starting DX Randomizer for the first time, we suggest running through the Rando Training Mission.  Would you like to do this now?"
+    buttonDefaults(1)=(Y=49,Action=MA_Custom,Key="SAVEGAME")
+    NoSavingTitle="Can't Save!"
 }

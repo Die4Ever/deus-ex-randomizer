@@ -156,34 +156,68 @@ function Tick(float delta)
     }
 }
 
-static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOnly)
+static function string GetSaveFailReason(DeusExPlayer player)
 {
     local DXRFlags f;
     local DeusExPickup item;
 
     f = Human(player).GetDXR().flags;
-    if( f == None ) return true;
+    if( f == None ) return "";
+
     if( f.autosave == Hardcore || f.autosave == Ironman ) {
-        player.ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
-        return false;
+        return "Manual saving is not allowed in this game mode! Good Luck!";
     }
 
     if( f.autosave == LimitedSaves || f.autosave == FixedSaves ) {
         item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
         if(item == None || item.NumCopies <= 0) {
-            player.ClientMessage("You need a Memory Containment Unit to save! Good Luck!",, true);
-            return false;
+            return "You need a Memory Containment Unit to save! Good Luck!";
         }
     }
     if( f.autosave == FixedSaves ) {
         if(Computers(player.FrobTarget) == None) {
-            player.ClientMessage("You need to have a computer highlighted to save! Good Luck!",, true);
-            return false;
+            return "You need to have a computer highlighted to save! Good Luck!";
         }
     }
 
-    if(!checkOnly && player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
+    return "";
+}
+
+static function bool CanSaveDuringInfolinks(DeusExPlayer player)
+{
+    local DXRFlags f;
+    f = Human(player).GetDXR().flags;
+    if( f == None ) return false;
+
+    return class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f);
+}
+
+static function SkipInfolinksForSave(DeusExPlayer player)
+{
+    local DXRFlags f;
+    f = Human(player).GetDXR().flags;
+    if( f == None ) return;
+
+    if(player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
         player.dataLinkPlay.FastForward();
+    }
+}
+
+static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOnly)
+{
+    local string reason;
+
+    reason = GetSaveFailReason(player);
+
+    if (reason!=""){
+        if (!checkOnly){
+            player.ClientMessage(reason,, true);
+        }
+        return false;
+    }
+
+    if(!checkOnly) {
+        SkipInfolinksForSave(player);
     }
 
     return true;
