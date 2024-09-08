@@ -985,7 +985,7 @@ function int ScoreFlags()
     //settings.spoilers = 1;
     score -= settings.health;
     score -= settings.energy;
-    score -= moresettings.remove_paris_mj12;
+    score -= remove_paris_mj12;
     return score * 5;// lazy multiply by 5 at the end
 }
 
@@ -999,15 +999,12 @@ function ExtendedTests()
     Super.ExtendedTests();
 
     gamemode = 0;
-    testint(moresettings.remove_paris_mj12, 0, "check remove_paris_mj12");
-    moresettings.remove_paris_mj12 = 50;
     SetDifficulty(0);
     testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
     testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
     testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
-    testint(moresettings.remove_paris_mj12, 0, "SetDifficulty check remove_paris_mj12");
     SetDifficulty(1);
     testint(settings.health, 100, "SetDifficulty check health");
     testint(settings.energy, 100, "SetDifficulty check energy");

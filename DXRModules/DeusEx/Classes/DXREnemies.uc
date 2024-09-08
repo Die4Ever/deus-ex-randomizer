@@ -133,7 +133,7 @@ function FirstEntry()
     Super.FirstEntry();
 
     SetSeed("DXREnemies FirstEntry");
-    if(dxr.localURL == "10_PARIS_METRO" && chance_single(dxr.flags.moresettings.remove_paris_mj12)) {
+    if(dxr.localURL == "10_PARIS_METRO" && chance_single(dxr.flags.remove_paris_mj12)) {
         foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
             if(sp.Alliance=='mj12') {
                 sp.Event='';

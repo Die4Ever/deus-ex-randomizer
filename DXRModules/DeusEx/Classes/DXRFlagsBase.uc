@@ -40,6 +40,8 @@ var #var(flagvarprefix) int newgameplus_num_removed_weapons;
 
 var #var(flagvarprefix) int clothes_looting;
 
+var #var(flagvarprefix) int remove_paris_mj12;
+
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
 // CheckConfig in subclass, maybe ExecMaxRando if it should be included in that, ScoreFlags, and SetDifficulty for different game modes
@@ -81,8 +83,6 @@ struct MoreFlagsSettings{
     var int empty_medbots;
     var int camera_mode;
     var int splits_overlay;
-
-    var int remove_paris_mj12;// keep this at the end for automated tests
 };
 
 var #var(flagvarprefix) FlagsSettings settings;
@@ -359,7 +359,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
     FlagInt('Rando_doorsmode', settings.doorsmode, mode, str);
     FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
-    FlagInt('Rando_removeparismj12', moresettings.remove_paris_mj12, mode, str);
+    FlagInt('Rando_removeparismj12', remove_paris_mj12, mode, str);
 
     FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, mode, str);
     FlagInt('Rando_skills_reroll_missions', settings.skills_reroll_missions, mode, str);
