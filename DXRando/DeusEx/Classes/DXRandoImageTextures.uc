@@ -36,6 +36,8 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\GoalComputerPersonalRed.pcx"            NAME="GoalComputerPersonalRed"          GROUP="DXRandoImages" FLAGS=2
 
 #exec TEXTURE IMPORT FILE="Textures\Spiderweb.pcx"			                NAME="Spiderweb"			            GROUP="DXRandoImages" FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\Spiderweb2.pcx"			                NAME="Spiderweb2"			            GROUP="DXRandoImages" FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\Spiderweb3.pcx"			                NAME="Spiderweb3"			            GROUP="DXRandoImages" FLAGS=2
 
 #exec TEXTURE IMPORT FILE="Textures\PumpkinTex.pcx"			                NAME="PumpkinTex"			            GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\PumpkinTex2.pcx"			            NAME="PumpkinTex2"			            GROUP="DXRandoImages"

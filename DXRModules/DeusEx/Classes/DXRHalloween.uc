@@ -408,6 +408,7 @@ function SpawnSpiderweb(vector loc)
     local float dist, size;
     local rotator rot;
     local ZoneInfo zone;
+    local class<Spiderweb> webClass;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -428,7 +429,14 @@ function SpawnSpiderweb(vector loc)
     }
 
     rot.roll = rng(65536);
-    web = Spawn(class'Spiderweb',,, loc, rot);
+
+    switch(rng(3)){
+        case 0: webClass=class'Spiderweb1'; break;
+        case 1: webClass=class'Spiderweb2'; break;
+        case 2: webClass=class'Spiderweb3'; break;
+        default: webClass=class'Spiderweb1'; break; //just in case
+    }
+    web = Spawn(webClass,,, loc, rot);
     web.DrawScale = size;
 }
 
