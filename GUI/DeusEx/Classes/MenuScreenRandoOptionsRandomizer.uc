@@ -13,6 +13,7 @@ function CreateChoices()
     // TODO: button to open Mastodon?
 
     CreateChoice(class'MenuChoice_ShowNews');
+    CreateChoice(class'MenuChoice_ShowBingoUpdates');
 }
 
 

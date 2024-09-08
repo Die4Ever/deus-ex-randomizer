@@ -78,8 +78,19 @@ function PreFirstEntry()
             SetWatchFlags();
             break;
     }
-
     MarkBingoFailedSpecial();
+    MarkBingoFailedGeneric();
+}
+
+//If a goal naturally expires (due to passing the last mission mask bit), actively mark the goal as failed
+function MarkBingoFailedGeneric()
+{
+    local PlayerDataItem data;
+    local int curMission;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    curMission = dxr.dxInfo.missionNumber;
+    data.CheckForExpiredBingoGoals(curMission);
 }
 
 function PostFirstEntry()
@@ -1219,6 +1230,10 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         }
     }
 
+    //Make sure any impossible goals are marked as failed
+    MarkBingoFailedSpecial();
+    MarkBingoFailedGeneric();
+
     // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();
 }
@@ -1287,7 +1302,7 @@ function _MarkBingo(coerce string eventname)
 
     if( nowbingos > previousbingos ) {
         time = class'DXRStats'.static.GetTotalTime(dxr);
-        if(!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0) {
+        if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags) || dxr.flags.settings.bingo_win>0) {
             player().ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
         }
 
@@ -1302,7 +1317,7 @@ function _MarkBingo(coerce string eventname)
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
         CheckBingoWin(dxr,nowbingos);
-    } else if(!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0) {
+    } else if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
@@ -1328,7 +1343,7 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.MarkBingoAsFailed(eventname) && (!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0)) {
+    if (data.MarkBingoAsFailed(eventname) && (class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags) || dxr.flags.settings.bingo_win>0)) {
         l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }
@@ -1352,23 +1367,6 @@ static function MarkBingoFailedEvents(DXRando dxr, coerce string eventname)
     for (i = 0; i < num_failed; i++) {
         MarkBingoAsFailed(dxr, failed[i]);
     }
-}
-
-function bool _IsBingoFailed(coerce string eventname)
-{
-    local PlayerDataItem data;
-    data = class'PlayerDataItem'.static.GiveItem(player());
-    return data.IsBingoFailed(eventname);
-}
-
-static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
-{
-    local DXREvents e;
-    e = DXREvents(dxr.FindModule(class'DXREvents'));
-    if (e != None) {
-        return e._IsBingoFailed(eventname);
-    }
-    return false;
 }
 
 function AddBingoScreen(CreditsWindow cw)

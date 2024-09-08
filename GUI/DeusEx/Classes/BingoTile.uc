@@ -122,7 +122,11 @@ simulated function string GetHelpText()
     //Display the list of missions the goal is possible in...
     helpmsg=helpmsg$"|n|n"$GenerateMissionString();
 
-    if (max>1){
+    //mention that the goal has been failed (bit 0: FAILED_MISSION_MASK)
+    if ((missions & 1)!=0){
+        helpmsg=helpmsg$"|n";
+        helpmsg = helpmsg $ "Progress: Failed";
+    } else if (max>1){ //Or show actual progress towards the goal
         helpmsg=helpmsg$"|n";
         helpmsg=helpmsg$"Progress: "$progress$"/"$max;
     }
