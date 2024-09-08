@@ -19,6 +19,7 @@ const ExtraSafe = 4;
 const Ironman = 5; // never autosaves, TODO: maybe some fancy logic to autosave on quit and autodelete on load?
 const LimitedSaves = 6; // need an item to save
 const FixedSaves = 7; // can only save at computers, AND need an item
+const UnlimitedFixedSaves = 8; // need computer, but no item
 
 function CheckConfig()
 {
@@ -43,7 +44,9 @@ function PreFirstEntry()
         if(dxr.flags.autosave > 0 && dxr.flags.autosave < Ironman) {
             NeedSave();
         }
-        else if(dxr.flags.autosave == LimitedSaves || dxr.flags.autosave == FixedSaves && dxr.flagbase.GetInt('Rando_lastmission')==0) {
+        else if((dxr.flags.autosave == LimitedSaves || dxr.flags.autosave == FixedSaves || dxr.flags.autosave == UnlimitedFixedSaves)
+               && dxr.flagbase.GetInt('Rando_lastmission')==0)
+        {
             // save at the start
             NeedSave();
         }
@@ -174,7 +177,7 @@ static function string GetSaveFailReason(DeusExPlayer player)
             return "You need a Memory Containment Unit to save! Good Luck!";
         }
     }
-    if( f.autosave == FixedSaves ) {
+    if( f.autosave == FixedSaves || f.autosave == UnlimitedFixedSaves ) {
         if(Computers(player.FrobTarget) == None) {
             return "You need to have a computer highlighted to save! Good Luck!";
         }

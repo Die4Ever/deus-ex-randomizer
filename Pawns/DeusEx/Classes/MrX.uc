@@ -3,7 +3,8 @@ class MrX extends HumanMilitary;
 var float healthRegenTimer;
 var #var(PlayerPawn) player;
 var int FleeHealth;// like MinHealth, but we need more control
-var Actor firstDestPoint;
+var Actor closestDestPoint, farthestDestPoint;
+var float maxDist; // for iterative farthestDestPoint
 
 static function MrX Create(DXRActorsBase a)
 {
@@ -78,58 +79,57 @@ function GotoDisabledState(name damageType, EHitLocation hitPos)
         GotoNextState();
 }
 
-//Copied from GuntherHermann, only to demonstrate that Mr X doesn't explode
-//(also he shouldn't really die, but...)
-/*
-function Carcass SpawnCarcass()
-{
-    if (bStunned)
-        return Super.SpawnCarcass();
-
-    Explode();
-
-    return None;
-}
-*/
-
 function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
     //class'DXRAnimTracker'.static.Create(self, "hat");
 }
 
+function Actor GetFarthestNavPoint(Actor from, optional int iters)
+{
+    local Actor farthest, t;
+    local NavigationPoint p;
+    local float dist;
+
+    dist = VSize(closestDestPoint.Location-from.Location);
+    if(dist > maxDist) {
+        maxDist = dist;
+        farthest = from;
+    }
+
+    if(iters > 3) return farthest;
+
+    foreach ReachablePathnodes(class'NavigationPoint', p, from, dist) {
+        t = GetFarthestNavPoint(p, iters+1);
+        if(t != None) {
+            farthest = t;
+        }
+    }
+
+    return farthest;
+}
+
 function InitializePawn()
 {
-    local NavigationPoint p, farthest, closest;
-    local float dist, maxDist, minDist;
+    local NavigationPoint p, closest;
+    local float dist, minDist;
     local int i;
-    local DXREnemiesPatrols patrols;
 
     Super.InitializePawn();
 
     minDist = 999999;
-    foreach AllActors(class'NavigationPoint', p) {
+    foreach RadiusActors(class'NavigationPoint', p, 1600) {
         if(p.bPlayerOnly) continue;
+        if(GetNextWaypoint(p)==None) continue;
         dist = VSize(Location - p.Location);
-        if(dist > maxDist) {
-            maxDist = dist;
-            farthest = p;
-        }
         if(dist < minDist) {
             minDist = dist;
             closest = p;
         }
     }
 
-    foreach AllActors(class'DXREnemiesPatrols', patrols) { break; }
+    closestDestPoint = closest;
 
-    dist = VSize(closest.Location - farthest.Location);
-    for(i=0; i<10; i++) {
-        if(patrols._GivePatrol(self, dist, 0.5, 1.5, 1600, 0, true)) {
-            firstDestPoint = destPoint;
-            return;
-        }
-    }
     SetOrders('Wandering');
 }
 
@@ -167,9 +167,70 @@ function Tick(float delta)
 #endif
         GenerateTotalHealth();
     }
-
-    if(IsInState('Standing')) SetOrders('Wandering',, true);
 }
+
+
+state Wandering
+{
+    function PickDestination()
+    {
+        local Actor   target;
+        local int     iterations;
+        local float   magnitude, dist1, dist2;
+        local rotator rot1;
+
+        target = GetFarthestNavPoint(self);
+        if(target != None) {
+            farthestDestPoint = target;
+        }
+
+        if(farthestDestPoint == None || closestDestPoint == None) {
+            Super.PickDestination();
+            return;
+        }
+
+        target = farthestDestPoint;
+        dist1 = VSize(Location - farthestDestPoint.Location);
+        dist2 = VSize(Location - closestDestPoint.Location);
+
+        if(dist1 < dist2*0.1) {
+            // swap target
+            target = closestDestPoint;
+            closestDestPoint = farthestDestPoint;
+            farthestDestPoint = target;
+            dist1 = dist2;
+        }
+
+        if (dist1 > 16)
+        {
+            target = FindPathToward(farthestDestPoint);
+            if(target == None) {
+                target = farthestDestPoint;
+            }
+        }
+
+        if(target == None) {
+            Super.PickDestination();
+            return;
+        }
+
+        iterations = 5;
+        magnitude  = 4000*(FRand()*0.4+0.8);  // 4000, +/-20%
+        rot1       = Rotator(Location - target.Location);
+        rot1.Yaw  += 32768; // looking towards target
+
+        destLoc = target.Location;
+
+        if (!AIPickRandomDestination(100, magnitude, rot1.Yaw, 0.8, -rot1.Pitch, 0.8, iterations,
+                                        FRand()*0.4+0.35, destLoc))
+        {
+            target = FindPathToward(farthestDestPoint);
+            if(target != None) destLoc = target.Location;
+            else Super.PickDestination();
+        }
+    }
+}
+
 
 // only walking animation
 function TweenToRunning(float tweentime)
@@ -254,6 +315,7 @@ defaultproperties
     HealthArmLeft=2000
     HealthArmRight=2000
     bShowPain=False
+    UnderWaterTime=-1.000000
     BindName="MrX"
     MinHealth=100
     FleeHealth=100
@@ -280,8 +342,8 @@ defaultproperties
     HearingThreshold=0
     RandomWandering=0.3
     Wanderlust=0.01
-    HomeExtent=2000
-    bUseHome=true
+    HomeExtent=20000
+    bUseHome=false
     bStasis=false
     walkAnimMult=0.75
     runAnimMult=0.9

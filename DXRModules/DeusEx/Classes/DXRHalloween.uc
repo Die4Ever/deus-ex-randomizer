@@ -253,10 +253,8 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.bCanStrafe = false;// messes with melee attack animations, especially on commandos
 
     //Transfer inventory from carcass back to the pawn
-    item = carc.Inventory;
-    do
+    for(item = carc.Inventory; item != None; item = nextItem)
     {
-        item = carc.Inventory;
         nextItem = item.Inventory;
         carc.DeleteInventory(item);
         if (DeusExWeapon(item) != None) {// Zombies don't use weapons
@@ -269,9 +267,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         else {
             sp.AddInventory(item);
         }
-        item = nextItem;
     }
-    until (item == None);
 
     //Give the resurrected guy a zombie swipe (a guaranteed melee weapon)
     module.GiveItem(sp,class'WeaponZombieSwipe');
@@ -303,29 +299,28 @@ function MakeCosmetics()
         z.AmbientHue = 255;
     }
 
-    SetSeed("MakeSpiderWebs");
-
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
         locs[num++] = p.Location;
-        if(rngb()) continue;
-        SpawnSpiderweb(p.Location);
-    }
-    // spiderwebs near lights?
-    foreach AllActors(class'Light', lgt) {
-        if(lgt.Region.Zone.bWaterZone) continue;
-        locs[num++] = lgt.Location;
-    }
-    // random order gives better results
-    for(i=0; i<num/2; i++) {
-        slot = rng(num);
-        SpawnSpiderweb(locs[slot]);
     }
 
     SetSeed("MakeJackOLanterns");
     for(i=0; i<num/30; i++) {
         slot = rng(num);
         SpawnJackOLantern(locs[slot]);
+    }
+
+    // spiderwebs near lights?
+    foreach AllActors(class'Light', lgt) {
+        if(lgt.Region.Zone.bWaterZone) continue;
+        locs[num++] = lgt.Location;
+    }
+
+    SetSeed("MakeSpiderWebs");
+    // random order gives better results
+    for(i=0; i<num/2; i++) {
+        slot = rng(num);
+        SpawnSpiderweb(locs[slot]);
     }
 }
 

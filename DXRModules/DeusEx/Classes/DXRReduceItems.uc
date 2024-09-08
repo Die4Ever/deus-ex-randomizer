@@ -148,7 +148,6 @@ function ReduceItem(Inventory a)
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
-    if(dxr.flags.IsZeroRando()) return;
     SetTimer(1.0, true);
 }
 

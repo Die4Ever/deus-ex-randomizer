@@ -82,14 +82,15 @@ function BindControls(optional string action)
 
 #ifdef injections
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
-    autosave_enum = NewMenuItem("Autosave", "Saves the game in case you die!");
-    EnumOption("Every Entry", autosave.EveryEntry, f.autosave);
-    EnumOption("First Entry", autosave.FirstEntry, f.autosave);
+    autosave_enum = NewMenuItem("Save Behavior", "Saves the game in case you die!");
+    EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave);
+    EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave);
     EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave);
     EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave);
     if(f.IsOctoberUnlocked()) {
         EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
-        EnumOption("Fixed Saves", autosave.FixedSaves, f.autosave);
+        EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
+        EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
     }
     EnumOption("Off", autosave.Disabled, f.autosave);
 #endif
@@ -169,8 +170,10 @@ function string SetEnumValue(int e, string text)
 {
     // HACK: this allows you to override the autosave option instead of SetDifficulty forcing it by game mode
     Super.SetEnumValue(e, text);
-    if(e == gamemode_enum && InStr(text, "Halloween Mode")!=-1 && #defined(injections)) {
-        Super.SetEnumValue(autosave_enum, "Fixed Saves");
+    if(e == gamemode_enum && #defined(injections)
+        && (InStr(text, "Halloween Mode")==0 || InStr(text, "WaltonWare Halloween")==0))
+    {
+        Super.SetEnumValue(autosave_enum, "Limited Fixed Saves");
     }
 }
 
