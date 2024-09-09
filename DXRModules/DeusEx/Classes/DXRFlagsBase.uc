@@ -82,7 +82,8 @@ struct MoreFlagsSettings{
     var int newgameplus_curve_scalar;
     var int empty_medbots;
     var int camera_mode;
-    var int splits_overlay;
+
+    var int splits_overlay;// keep this at the end for automated tests
 };
 
 var #var(flagvarprefix) FlagsSettings settings;

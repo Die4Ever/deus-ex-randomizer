@@ -999,12 +999,15 @@ function ExtendedTests()
     Super.ExtendedTests();
 
     gamemode = 0;
+    testint(moresettings.splits_overlay, 0, "check splits_overlay");
+    moresettings.splits_overlay = 50;// testing for struct size
     SetDifficulty(0);
     testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
     testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
     testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
+    testint(moresettings.splits_overlay, 0, "SetDifficulty check splits_overlay");
     SetDifficulty(1);
     testint(settings.health, 100, "SetDifficulty check health");
     testint(settings.energy, 100, "SetDifficulty check energy");
