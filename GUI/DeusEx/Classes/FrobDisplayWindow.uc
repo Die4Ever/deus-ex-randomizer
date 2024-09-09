@@ -685,6 +685,8 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
     else if (frobTarget.IsA('WHPiano'))
         strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ WHPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
 #endif
+    else if (frobTarget.IsA('#var(injectsprefix)ClothesRack'))
+        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Right Click to change clothing " $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExDecoration'))
         strInfo = player.GetDisplayName(frobTarget) $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExProjectile'))

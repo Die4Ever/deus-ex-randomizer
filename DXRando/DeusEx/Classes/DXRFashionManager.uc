@@ -707,7 +707,7 @@ simulated function GetDressed()
 //For cases where there might be different textures for the carcass compared to the normal living guy
 simulated function ModifyClothingTextures(EGender gender, EClothesType type, out string tex1s, out string tex2s)
 {
-    if (type==CT_Helmet){
+    if (type==CT_Helmet || type==CT_Shirt){
         switch(tex1s){
             case "#var(package).DXRandoPawns.NSFCloneAugStealth1GogglesNoglow":
                 tex1s="#var(package).DXRandoPawns.NSFCloneAugStealth1Goggles";
@@ -715,6 +715,34 @@ simulated function ModifyClothingTextures(EGender gender, EClothesType type, out
             case "#var(package).DXRandoPawns.MJ12CloneAugStealth1GogglesDark":
                 tex1s="#var(package).DXRandoPawns.MJ12CloneAugStealth1Goggles";
                 break;
+            case "#var(package).DXRandoPawns.MJ12CloneAugShield1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.MJ12CloneAugShield1Body";
+                break;
+            case "#var(package).DXRandoPawns.MJ12CloneAugStealth1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.MJ12CloneAugStealth1Body";
+                break;
+            case "#var(package).DXRandoPawns.MJ12CloneAugTough1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.MJ12CloneAugTough1Body";
+                break;
+            case "#var(package).DXRandoPawns.NSFCloneAugShield1NametagBody": //Yes, this one breaks the naming scheme
+                tex1s="#var(package).DXRandoPawns.NSFCloneAugShield1Body";
+                break;
+            case "#var(package).DXRandoPawns.NSFCloneAugStealth1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.NSFCloneAugStealth1Body";
+                break;
+            case "#var(package).DXRandoPawns.NSFCloneAugTough1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.NSFCloneAugTough1Body";
+                break;
+            case "#var(package).DXRandoPawns.UNATCOCloneAugShield1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.UNATCOCloneAugShield1Body";
+                break;
+            case "#var(package).DXRandoPawns.UNATCOCloneAugStealth1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.UNATCOCloneAugStealth1Body";
+                break;
+            case "#var(package).DXRandoPawns.UNATCOCloneAugTough1BodyNametag":
+                tex1s="#var(package).DXRandoPawns.UNATCOCloneAugTough1Body";
+                break;
+
         }
     }
 }

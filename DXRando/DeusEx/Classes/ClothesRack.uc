@@ -84,3 +84,7 @@ function Frob(actor Frobber, Inventory frobWith)
 #endif
 }
 
+defaultproperties
+{
+    bHighlight=true
+}
