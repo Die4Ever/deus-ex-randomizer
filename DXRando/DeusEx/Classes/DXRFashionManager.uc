@@ -816,4 +816,6 @@ defaultproperties
     InvSlotsX=-1
     InvSlotsY=-1
     Physics=PHYS_None
+    beltDescription="CLOTHES"
+    Icon=Texture'BeltIconClothes'
 }

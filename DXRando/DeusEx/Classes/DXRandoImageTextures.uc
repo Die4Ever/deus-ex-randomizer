@@ -48,3 +48,5 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\MemConUnitTex1.pcx"                     NAME="MemConUnitTex1"                   GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\BeltIconMemConUnit.pcx"                 NAME="BeltIconMemConUnit"               GROUP="DXRandoImages" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\LargeIconMemConUnit.pcx"                NAME="LargeIconMemConUnit"              GROUP="DXRandoImages" MIPS=Off
+
+#exec TEXTURE IMPORT FILE="Textures\BeltIconClothes.pcx"                    NAME="BeltIconClothes"                  GROUP="DXRandoImages" MIPS=Off

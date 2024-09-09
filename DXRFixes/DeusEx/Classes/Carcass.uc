@@ -153,7 +153,10 @@ function Frob(Actor Frobber, Inventory frobWith)
     local Pawn P;
     local bool bFoundSomething;
     local DeusExPlayer player;
+    local bool foundClothes;
+#ifndef vmd
     local DXRFashionManager fashion;
+#endif
 
     //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -167,7 +170,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 #ifndef vmd
     fashion = class'DXRFashionManager'.static.GiveItem(#var(PlayerPawn)(player));
     if (fashion.IngestCarcass(class<#var(DeusExPrefix)Carcass>(Class))){
-        player.ClientMessage("Looted some clothes!");
+        foundClothes=true;
     }
 #endif
 
@@ -179,7 +182,7 @@ function Frob(Actor Frobber, Inventory frobWith)
         // and since the PutInHand propagation doesn't just work, this is work we don't need to do.
         // Were you to do it, you'd need to check the respawning issue, destroy the POVcorpse it creates and point to the
         // one in inventory (like I did when giving the player starting inventory).
-        if ((Inventory == None) && (player != None) && (player.inHand == None) && (Level.NetMode == NM_Standalone))
+        if ((Inventory == None) && (foundClothes==False) && (player != None) && (player.inHand == None) && (Level.NetMode == NM_Standalone))
         {
             if (!bInvincible)
             {
@@ -219,6 +222,14 @@ function Frob(Actor Frobber, Inventory frobWith)
     }
 
     //log("  bFoundSomething = " $ bFoundSomething);
+
+    #ifndef vmd
+    if (foundClothes){
+        DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(fashion,1);
+        player.ClientMessage("You looted some clothes!");
+        bFoundSomething=true;
+    }
+    #endif
 
     if (!bFoundSomething)
         P.ClientMessage(msgEmpty,, true);
