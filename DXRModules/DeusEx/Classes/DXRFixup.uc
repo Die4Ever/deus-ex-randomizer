@@ -277,6 +277,9 @@ function FixFOV()
 {
     local vector v;
     local float n, w;// narrow and wide multipliers
+    local Lockpick lp;
+    local Multitool mt;
+    local NanoKeyRing nkr;
 
     if(!#defined(vanilla)) return; // would need to check the defaults in other mods
 
@@ -308,6 +311,209 @@ function FixFOV()
     v = vect(28, 12, 4) * n;
     v += vect(38, 12, 4) * w;
     class'WeaponLAW'.default.FireOffset = v;
+
+    // assault gun
+    v = vect(16.000000,-5.000000,-11.500000) * n;
+    v += vect(8.000000,-5.000000,-10.000000) * w;
+    class'WeaponAssaultGun'.default.PlayerViewOffset = v;
+    v = vect(-16.000000,5.000000,11.500000) * n;
+    v += vect(-8.000000,5.000000,10.000000) * w;
+    class'WeaponAssaultGun'.default.FireOffset = v;
+
+    // WeaponAssaultShotgun
+    v = vect(0,-10.000000,-12.000000) * n;
+    v += vect(17.500000,-10.000000,-18.000000) * w;
+    class'WeaponAssaultShotgun'.default.PlayerViewOffset = v;
+    v = vect(-30.000000,10.000000,12.000000) * n;
+    v += vect(-17.500000,10.000000,18.000000) * w;
+    class'WeaponAssaultShotgun'.default.FireOffset = v;
+
+    // WeaponBaton
+    v = vect(24.000000,-14.000000,-17.000000) * n;
+    v += vect(18.000000,-14.000000,-22.000000) * w;
+    class'WeaponBaton'.default.PlayerViewOffset = v;
+    v = vect(-24.000000,14.000000,17.000000) * n;
+    v += vect(-18.000000,14.000000,22.000000) * w;
+    class'WeaponBaton'.default.FireOffset = v;
+
+    // WeaponCombatKnife
+    v = vect(5.000000,-8.000000,-14.000000) * n;
+    v += vect(1.000000,-8.000000,-17.000000) * w;
+    class'WeaponCombatKnife'.default.PlayerViewOffset = v;
+    v = vect(-5.000000,8.000000,14.000000) * n;
+    v += vect(-1.000000,8.000000,17.000000) * w;
+    class'WeaponCombatKnife'.default.FireOffset = v;
+
+    // WeaponCrowbar
+    v = vect(40.000000,-15.000000,-8.000000) * n;
+    v += vect(26.000000,-15.000000,-10.000000) * w;
+    class'WeaponCrowbar'.default.PlayerViewOffset = v;
+    v = vect(-40.000000,15.000000,8.000000) * n;
+    v += vect(-26.000000,15.000000,10.000000) * w;
+    class'WeaponCrowbar'.default.FireOffset = v;
+
+    // WeaponEMPGrenade
+    v = vect(24.000000,-15.000000,-19.000000) * n;
+    v += vect(24.000000,-15.000000,-24.000000) * w;
+    class'WeaponEMPGrenade'.default.PlayerViewOffset = v;
+    v = vect(0,10.000000,20.000000) * n;
+    v += vect(0.000000,10.000000,25.000000) * w;
+    class'WeaponEMPGrenade'.default.FireOffset = v;
+
+    // WeaponFlamethrower
+    v = vect(20.000000,-14.000000,-12.000000) * n;
+    v += vect(12.000000,-14.000000,-12.000000) * w;
+    class'WeaponFlamethrower'.default.PlayerViewOffset = v;
+    v = vect(0,10.000000,10.000000) * n;
+    v += vect(8.000000,10.000000,10.000000) * w;
+    class'WeaponFlamethrower'.default.FireOffset = v;
+
+    // WeaponGasGrenade
+    v = vect(0,-13.000000,-19.000000) * n;
+    v += vect(30.000000,-13.000000,-24.000000) * w;
+    class'WeaponGasGrenade'.default.PlayerViewOffset = v;
+    v = vect(0,10.000000,20.000000) * n;
+    v += vect(0.000000,10.000000,25.000000) * w;
+    class'WeaponGasGrenade'.default.FireOffset = v;
+
+    // WeaponHideAGun
+    v = vect(20.000000,-10.000000,-16.000000) * n;
+    v += vect(12.000000,-10.000000,-16.000000) * w;
+    class'WeaponHideAGun'.default.PlayerViewOffset = v;
+    v = vect(-20.000000,10.000000,16.000000) * n;
+    v += vect(-12.000000,10.000000,16.000000) * w;
+    class'WeaponHideAGun'.default.FireOffset = v;
+
+    // WeaponLAM
+    v = vect(24.000000,-15.000000,-17.000000) * n;
+    v += vect(24.000000,-15.000000,-24.000000) * w;
+    class'WeaponLAM'.default.PlayerViewOffset = v;
+    v = vect(0,10.000000,20.000000) * n;
+    v += vect(0.000000,10.000000,25.000000) * w;
+    class'WeaponLAM'.default.FireOffset = v;
+
+    // WeaponMiniCrossbow
+    v = vect(25.000000,-8.000000,-14.000000) * n;
+    v += vect(25.000000,-8.000000,-14.000000) * w;
+    class'WeaponMiniCrossbow'.default.PlayerViewOffset = v;
+    v = vect(-25.000000,8.000000,14.000000) * n;
+    v += vect(-25.000000,8.000000,14.000000) * w;
+    class'WeaponMiniCrossbow'.default.FireOffset = v;
+
+    // WeaponNanoSword
+    v = vect(21.000000,-16.000000,-27.000000) * n;
+    v += vect(13.000000,-16.000000,-27.000000) * w;
+    class'WeaponNanoSword'.default.PlayerViewOffset = v;
+    v = vect(-21.000000,16.000000,27.000000) * n;
+    v += vect(-13.000000,16.000000,27.000000) * w;
+    class'WeaponNanoSword'.default.FireOffset = v;
+
+    // WeaponNanoVirusGrenade
+    v = vect(24.000000,-15.000000,-19.000000) * n;
+    v += vect(18.000000,-15.000000,-20.00000) * w;
+    class'WeaponNanoVirusGrenade'.default.PlayerViewOffset = v;
+    v = vect(0,10.000000,20.000000) * n;
+    v += vect(6.000000,10.000000,21.000000) * w;
+    class'WeaponNanoVirusGrenade'.default.FireOffset = v;
+
+    // WeaponPepperGun
+    v = vect(16.000000,-10.000000,-16.000000) * n;
+    v += vect(8.000000,-10.000000,-16.000000) * w;
+    class'WeaponPepperGun'.default.PlayerViewOffset = v;
+    v = vect(8.000000,4.000000,14.000000) * n;
+    v += vect(16.000000,4.000000,14.000000) * w;
+    class'WeaponPepperGun'.default.FireOffset = v;
+
+    // WeaponPistol
+    v = vect(22.000000,-10.000000,-14.000000) * n;
+    v += vect(18.000000,-10.000000,-17.000000) * w;
+    class'WeaponPistol'.default.PlayerViewOffset = v;
+    v = vect(-22.000000,10.000000,14.000000) * n;
+    v += vect(-18.000000,10.000000,17.000000) * w;
+    class'WeaponPistol'.default.FireOffset = v;
+
+    // WeaponPlasmaRifle
+    v = vect(18.000000,0,-7.000000) * n;
+    v += vect(10.000000,0,-7.000000) * w;
+    class'WeaponPlasmaRifle'.default.PlayerViewOffset = v;
+    v = vect(0,0,0) * n;
+    v += vect(-10.000000,0,0) * w;
+    class'WeaponPlasmaRifle'.default.FireOffset = v;
+
+    // WeaponProd
+    v = vect(21.000000,-12.000000,-19.000000) * n;
+    v += vect(11.000000,-12.000000,-19.000000) * w;
+    class'WeaponProd'.default.PlayerViewOffset = v;
+    v = vect(-21.000000,12.000000,19.000000) * n;
+    v += vect(-11.000000,12.000000,19.000000) * w;
+    class'WeaponProd'.default.FireOffset = v;
+
+    // WeaponRifle
+    v = vect(20.000000,-2.000000,-30.000000) * n;
+    v += vect(13.000000,-2.000000,-29.000000) * w;
+    class'WeaponRifle'.default.PlayerViewOffset = v;
+    v = vect(-20.000000,2.000000,30.000000) * n;
+    v += vect(-13.000000,2.000000,29.000000) * w;
+    class'WeaponRifle'.default.FireOffset = v;
+
+    // WeaponSawedOffShotgun
+    v = vect(11.000000,-4.000000,-13.000000) * n;
+    v += vect(1.000000,-4.000000,-17.000000) * w;
+    class'WeaponSawedOffShotgun'.default.PlayerViewOffset = v;
+    v = vect(-11.000000,4.000000,13.000000) * n;
+    v += vect(-1.000000,4.000000,17.000000) * w;
+    class'WeaponSawedOffShotgun'.default.FireOffset = v;
+
+    // WeaponShuriken
+    v = vect(24.000000,-12.000000,-21.000000) * n;
+    v += vect(16.000000,-14.000000,-22.000000) * w;
+    class'WeaponShuriken'.default.PlayerViewOffset = v;
+    v = vect(-10.000000,14.000000,22.000000) * n;
+    v += vect(-2.000000,14.000000,23.000000) * w;
+    class'WeaponShuriken'.default.FireOffset = v;
+
+    // WeaponStealthPistol
+    v = vect(24.000000,-10.000000,-14.000000) * n;
+    v += vect(17.000000,-10.000000,-15.000000) * w;
+    class'WeaponStealthPistol'.default.PlayerViewOffset = v;
+    v = vect(-24.000000,10.000000,14.000000) * n;
+    v += vect(-17.000000,10.000000,15.000000) * w;
+    class'WeaponStealthPistol'.default.FireOffset = v;
+
+    // WeaponSword
+    v = vect(25.000000,-10.000000,-24.000000) * n;
+    v += vect(20.000000,-10.000000,-32.000000) * w;
+    class'WeaponSword'.default.PlayerViewOffset = v;
+    v = vect(-25.000000,10.000000,24.000000) * n;
+    v += vect(-20.000000,10.000000,32.000000) * w;
+    class'WeaponSword'.default.FireOffset = v;
+
+    // Lockpick
+    v = vect(16,8,-16) * n;
+    v += vect(15,8,-17) * w;
+    class'Lockpick'.default.PlayerViewOffset = v;
+    v *= 100;
+    foreach AllActors(class'Lockpick', lp) {
+        lp.PlayerViewOffset = v;
+    }
+
+    // Multitool
+    v = vect(20.000000,10.000000,-16.000000) * n;
+    v += vect(19.00,10.00,-17.00) * w;
+    class'Multitool'.default.PlayerViewOffset = v;
+    v *= 100;
+    foreach AllActors(class'Multitool', mt) {
+        mt.PlayerViewOffset = v;
+    }
+
+    // NanoKeyRing
+    v = vect(16.000000,15.000000,-16.000000) * n;
+    v += vect(14.00,15.00,-18.00) * w;
+    class'NanoKeyRing'.default.PlayerViewOffset = v;
+    v *= 100;
+    foreach AllActors(class'NanoKeyRing', nkr) {
+        nkr.PlayerViewOffset = v;
+    }
 }
 
 function ShowTeleporters()
