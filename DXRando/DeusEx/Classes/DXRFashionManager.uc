@@ -564,6 +564,38 @@ simulated function int GetNumOutfitChanges(#var(PlayerPawn) player)
     }
 }
 
+simulated function GetCarcassMeshes(mesh inMesh, out mesh oMesh, out mesh oMesh2, out mesh oMesh3)
+{
+    switch(inMesh){
+        case LodMesh'DeusExCharacters.GFM_Trench':
+            oMesh =LodMesh'DeusExCharacters.GFM_Trench_Carcass';
+            oMesh2=LodMesh'DeusExCharacters.GFM_Trench_CarcassB';
+            oMesh3=LodMesh'DeusExCharacters.GFM_Trench_CarcassC';
+            break;
+        case LodMesh'DeusExCharacters.GM_Trench':
+            oMesh = LodMesh'DeusExCharacters.GM_Trench_Carcass';
+            oMesh2= LodMesh'DeusExCharacters.GM_Trench_CarcassB';
+            oMesh3= LodMesh'DeusExCharacters.GM_Trench_CarcassC';
+            break;
+        case LodMesh'DeusExCharacters.GFM_TShirtPants':
+            oMesh =LodMesh'DeusExCharacters.GFM_TShirtPants_Carcass';
+            oMesh2=LodMesh'DeusExCharacters.GFM_TShirtPants_CarcassB';
+            oMesh3=LodMesh'DeusExCharacters.GFM_TShirtPants_CarcassC';
+            break;
+        case LodMesh'MPCharacters.mp_jumpsuit':
+            oMesh = LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass';
+            oMesh2= LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB';
+            oMesh3= LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC';
+            break;
+        case LodMesh'DeusExCharacters.GFM_SuitSkirt':
+            oMesh = LodMesh'DeusExCharacters.GFM_SuitSkirt_Carcass';
+            oMesh2= LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassB';
+            oMesh3= LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassC';
+            break;
+    }
+
+}
+
 simulated function ApplyCarcassMeshes(Actor a)
 {
     local #var(DeusExPrefix)Carcass c;
@@ -571,47 +603,57 @@ simulated function ApplyCarcassMeshes(Actor a)
     c = #var(DeusExPrefix)Carcass(a);
     if (c==None) return;
 
-    switch(c.Mesh){
-        case LodMesh'DeusExCharacters.GFM_Trench':
-            c.Mesh =LodMesh'DeusExCharacters.GFM_Trench_Carcass';
-            c.Mesh2=LodMesh'DeusExCharacters.GFM_Trench_CarcassB';
-            c.Mesh3=LodMesh'DeusExCharacters.GFM_Trench_CarcassC';
-            break;
-        case LodMesh'DeusExCharacters.GM_Trench':
-            c.Mesh = LodMesh'DeusExCharacters.GM_Trench_Carcass';
-            c.Mesh2= LodMesh'DeusExCharacters.GM_Trench_CarcassB';
-            c.Mesh3= LodMesh'DeusExCharacters.GM_Trench_CarcassC';
-            break;
-        case LodMesh'DeusExCharacters.GFM_TShirtPants':
-            c.Mesh =LodMesh'DeusExCharacters.GFM_TShirtPants_Carcass';
-            c.Mesh2=LodMesh'DeusExCharacters.GFM_TShirtPants_CarcassB';
-            c.Mesh3=LodMesh'DeusExCharacters.GFM_TShirtPants_CarcassC';
-            break;
-        case LodMesh'MPCharacters.mp_jumpsuit':
-            c.Mesh = LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass';
-            c.Mesh2= LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB';
-            c.Mesh3= LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC';
-            break;
-        case LodMesh'DeusExCharacters.GFM_SuitSkirt':
-            c.Mesh = LodMesh'DeusExCharacters.GFM_SuitSkirt_Carcass';
-            c.Mesh2= LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassB';
-            c.Mesh3= LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassC';
-            break;
-    }
+    GetCarcassMeshes(c.Mesh,c.Mesh,c.Mesh2,c.Mesh3);
 }
 
-simulated function ApplyJCClothing(Actor a)
+simulated function ApplyCarcassDefaults(class<#var(DeusExPrefix)Carcass> carcClass, actor a)
+{
+    local int i;
+    //local mesh mesh1,mesh2,mesh3;
+
+    if (#var(PlayerPawn)(a)==None && #var(prefix)PaulDenton(a)==None) return;
+
+    for (i=1;i<ArrayCount(a.MultiSkins);i++){
+        carcClass.default.MultiSkins[i]=a.MultiSkins[i];
+    }
+
+    carcClass.default.Texture = a.Texture;
+
+    GetCarcassMeshes(a.Mesh,carcClass.default.Mesh,carcClass.default.Mesh2,carcClass.default.Mesh3);
+}
+
+simulated function ForceCarcassType(Actor a)
+{
+    if (#var(PlayerPawn)(a)==None) return;
+
+    //LDDP: take control away from FemJC package
+    #var(PlayerPawn)(a).CarcassType = class'JCDentonMaleCarcass';
+}
+
+simulated function mesh GetCurModelByPerson(int person)
+{
+    if (person==cPLAYER){
+        return getCurModel();
+    } else if (person==cPAUL){
+        return getCurPaulModel();
+    }
+    return None;
+}
+
+simulated function ApplyClothing(Actor a, int person)
 {
     local int i;
     local Texture overrides[8];
 
-    a.Mesh=getCurModel();
+    ForceCarcassType(a);
+
+    a.Mesh=GetCurModelByPerson(person);
     ApplyCarcassMeshes(a);
     for (i=1;i<ArrayCount(a.MultiSkins);i++){
         a.MultiSkins[i]=a.Default.MultiSkins[i];
     }
 
-    PullSkinOverride(curOutfit[cPLAYER],overrides);
+    PullSkinOverride(curOutfit[person],overrides);
     for (i=0;i<ArrayCount(overrides);i++){
         if (overrides[i]!=None){
             a.MultiSkins[i]=overrides[i];
@@ -620,35 +662,19 @@ simulated function ApplyJCClothing(Actor a)
     a.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
 
     //The male jumpsuit mesh uses the face texture in slot 3, even though it's in slot 0 as well
-    if (curOutfit[cPLAYER].curOutfit==OT_NoTrench && !isFemale){
-        a.MultiSkins[3]=a.MultiSkins[0]; //Copy face into slot 3 also
-    }
-}
-
-simulated function ApplyPaulClothing(Actor a)
-{
-    local int i;
-    local Texture overrides[8];
-
-    a.Mesh=getCurPaulModel();
-    ApplyCarcassMeshes(a);
-    for (i=1;i<ArrayCount(a.MultiSkins);i++){
-        a.MultiSkins[i]=a.Default.MultiSkins[i];
-    }
-
-    PullSkinOverride(curOutfit[cPAUL],overrides);
-    for (i=0;i<ArrayCount(overrides);i++){
-        if (overrides[i]!=None){
-            a.MultiSkins[i]=overrides[i];
+    if (curOutfit[person].curOutfit==OT_NoTrench){
+        if (person==cPAUL || !isFemale){
+            a.MultiSkins[3]=a.MultiSkins[0]; //Copy face into slot 3 also
         }
     }
-    a.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
 
-    //The jumpsuit mesh uses the face texture in slot 3, even though it's in slot 0 as well
-    if (curOutfit[cPAUL].curOutfit==OT_NoTrench){
-        a.MultiSkins[3]=a.MultiSkins[0]; //Copy face into slot 3 also
+    if (person==cPLAYER){
+        ApplyCarcassDefaults(class'JCDentonMaleCarcass',a);
+    } else if (person==cPAUL){
+        ApplyCarcassDefaults(class'#var(prefix)PaulDentonCarcass',a);
     }
 }
+
 
 simulated function GetDressed()
 {
@@ -660,22 +686,22 @@ simulated function GetDressed()
 
     // JC Denton Carcass
     foreach AllActors(class'JCDentonMaleCarcass', jcCarcass)
-        ApplyJCClothing(jcCarcass);
+        ApplyClothing(jcCarcass,cPLAYER);
 
     // JC's stunt double
     foreach AllActors(class'JCDouble', jc)
-        ApplyJCClothing(jc);
+        ApplyClothing(jc,cPLAYER);
 
     foreach AllActors(class'#var(PlayerPawn)', player)
-        ApplyJCClothing(player);
+        ApplyClothing(player,cPLAYER);
 
     // Paul Denton
     foreach AllActors(class'PaulDenton', paul)
-        ApplyPaulClothing(paul);
+        ApplyClothing(paul,cPAUL);
 
     // Paul Denton Carcass
     foreach AllActors(class'PaulDentonCarcass', paulCarcass)
-        ApplyPaulClothing(paulCarcass);
+        ApplyClothing(paulCarcass,cPAUL);
 }
 
 //For cases where there might be different textures for the carcass compared to the normal living guy
