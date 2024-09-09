@@ -264,7 +264,7 @@ function BindControls(optional string action)
     EnumOption("Random Non-human Stats", 100, f.settings.bot_stats);
 
     NewMenuItem("Paris Chill %", "Removes MJ12 from the Champs-Elysees.");
-    Slider(f.moresettings.remove_paris_mj12, 0, 100);
+    Slider(f.remove_paris_mj12, 0, 100);
 
 
     NewGroup("Skills");
