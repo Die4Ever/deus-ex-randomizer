@@ -257,6 +257,7 @@ function AnyEntry()
 
     SetSeed( "DXRFixup AllAnyEntry" );
     AllAnyEntry();
+    FixFOV();
 
     foreach AllActors(class'#var(prefix)Button1', b) {
         if(b.CollisionRadius <3 && b.CollisionHeight <3)
@@ -270,6 +271,43 @@ function AnyEntry()
     }
 
     ShowTeleporters();
+}
+
+function FixFOV()
+{
+    local vector v;
+    local float n, w;// narrow and wide multipliers
+
+    if(!#defined(vanilla)) return; // would need to check the defaults in other mods
+
+    w = class'Human'.default.DefaultFOV;
+    w = (w - 75) / (110 - 75); // put it on a range of 0-1 for 75 to 110
+    w = FClamp(w, 0, 1);
+    n = 1-w;
+
+    // interpolate between 75 FOV and 110 FOV, multiply vanilla values by n and wide FOV values by w
+    // wide values provided by Tundoori https://discord.com/channels/823629359931195394/823629360929046530/1282526555536625778
+
+    // POVCorpse
+    v = (vect(20, 12, -5) * n);
+    v += (vect(15, 15, -5) * w);
+    class'POVCorpse'.default.PlayerViewOffset = v;
+
+    // GEP Gun
+    v = vect(46, -22, -10) * n;
+    v += vect(32, -22, -10) * w;
+    class'WeaponGEPGun'.default.PlayerViewOffset = v;
+    v = vect(-46, 22, 10) * n;
+    v += vect(-32, 22, 10) * w;
+    class'WeaponGEPGun'.default.FireOffset = v;
+
+    // LAW
+    v = vect(18, -18, -7) * n;
+    v += vect(8, -18, -7) * w;
+    class'WeaponLAW'.default.PlayerViewOffset = v;
+    v = vect(28, 12, 4) * n;
+    v += vect(38, 12, 4) * w;
+    class'WeaponLAW'.default.FireOffset = v;
 }
 
 function ShowTeleporters()
