@@ -41,6 +41,10 @@ function Frob(actor Frobber, Inventory frobWith)
         //Check if the rack has clothes available to loot
         fashion = class'DXRFashionManager'.static.GiveItem(p);
         if (fashion.IngestCarcass(lootableClothes)){
+            if (Level.NetMode==NM_Standalone){
+                DeusExRootWindow(p.rootWindow).hud.receivedItems.RemoveItems();
+                DeusExRootWindow(p.rootWindow).hud.receivedItems.AddItem(fashion,1);
+            }
             p.ClientMessage("Took a set of clothes off the rack!");
             return;
         }

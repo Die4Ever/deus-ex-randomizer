@@ -78,6 +78,7 @@ simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
         f.isFemale=p.flagBase.GetBool('LDDPJCIsFemale');
         clothesLooting = bool(p.flagBase.GetInt('Rando_clothes_looting'));
         f.InitClothes(!clothesLooting);
+        p.RemoveObjectFromBelt(f); //Now that it has an icon, it ends up on the belt...
         log("spawned new " $ f $ " for " $ p);
     }
     return f;
