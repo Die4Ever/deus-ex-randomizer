@@ -1547,13 +1547,6 @@ function MarkBingoFailedSpecial()
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         FailIfCorpseNotHeld(class'#var(prefix)PaulDentonCarcass', "PaulToTong");
         break;
-    case "06_HONGKONG_VERSALIFE":
-    case "06_HONGKONG_STORAGE":
-        if (dxr.flagbase.GetBool('Have_ROM')) {
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
-        }
-        break;
     case "08_NYC_STREET":
     case "09_NYC_DOCKYARD":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
@@ -1569,6 +1562,15 @@ function MarkBingoFailedSpecial()
     case "11_PARIS_EVERETT":
     case "12_VANDENBERG_CMD":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        break;
+    }
+
+    switch (dxr.dxInfo.missionNumber) {
+    case 6:
+        if (dxr.flagbase.GetBool('Have_ROM')) {
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
+            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
+        }
         break;
     }
 }

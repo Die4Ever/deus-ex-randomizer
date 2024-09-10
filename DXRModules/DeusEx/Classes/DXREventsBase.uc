@@ -1417,7 +1417,7 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     if(missionAnded != 0) return 2;// 2==true
 #endif
 
-    if((missionsMask & FAILED_MISSION_MASK) != 0) {
+    if(missionsMask < (1<<minMission) || (missionsMask & FAILED_MISSION_MASK) != 0) {
         return -1;// goal is failed
     }
 
