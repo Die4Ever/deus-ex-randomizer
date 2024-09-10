@@ -825,6 +825,10 @@ simulated function AddDXRCredits(CreditsWindow cw)
 
 simulated function TutorialDisableRandomization(bool enableSomeRando)
 {
+    if(!IsReducedRando()) {
+        gamemode = 0;// no weird game modes in the training
+    }
+
     // a little bit of safe rando just to get a taste?
     if(enableSomeRando) {
         // training final

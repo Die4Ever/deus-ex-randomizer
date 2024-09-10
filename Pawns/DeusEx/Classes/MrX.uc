@@ -172,7 +172,11 @@ function Tick(float delta)
 
 state Wandering
 {
+    #ifdef vmd
+    function bool PickDestination()
+    #else
     function PickDestination()
+    #endif
     {
         local Actor   target;
         local int     iterations;
@@ -185,8 +189,12 @@ state Wandering
         }
 
         if(farthestDestPoint == None || closestDestPoint == None) {
+            #ifdef vmd
+            return Super.PickDestination();
+            #else
             Super.PickDestination();
             return;
+            #endif
         }
 
         target = farthestDestPoint;
@@ -210,8 +218,12 @@ state Wandering
         }
 
         if(target == None) {
+            #ifdef vmd
+            return Super.PickDestination();
+            #else
             Super.PickDestination();
             return;
+            #endif
         }
 
         iterations = 5;
@@ -226,8 +238,19 @@ state Wandering
         {
             target = FindPathToward(farthestDestPoint);
             if(target != None) destLoc = target.Location;
-            else Super.PickDestination();
+            else {
+                #ifdef vmd
+                return Super.PickDestination();
+                #else
+                Super.PickDestination();
+                return;
+                #endif
+            }
         }
+
+        #ifdef vmd
+        return true;
+        #endif
     }
 }
 

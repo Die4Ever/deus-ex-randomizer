@@ -627,7 +627,11 @@ simulated function ForceCarcassType(Actor a)
     if (#var(PlayerPawn)(a)==None) return;
 
     //LDDP: take control away from FemJC package
+#ifdef hx
+    #var(PlayerPawn)(a).CarcassType = class'HXJCDentonCarcass';
+#else
     #var(PlayerPawn)(a).CarcassType = class'JCDentonMaleCarcass';
+#endif
 }
 
 simulated function mesh GetCurModelByPerson(int person)
@@ -669,7 +673,11 @@ simulated function ApplyClothing(Actor a, int person)
     }
 
     if (person==cPLAYER){
+    #ifdef hx
+        ApplyCarcassDefaults(class'HXJCDentonCarcass',a);
+    #else
         ApplyCarcassDefaults(class'JCDentonMaleCarcass',a);
+    #endif
     } else if (person==cPAUL){
         ApplyCarcassDefaults(class'#var(prefix)PaulDentonCarcass',a);
     }
