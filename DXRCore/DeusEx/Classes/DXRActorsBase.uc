@@ -1434,7 +1434,7 @@ function float GetDistanceFromSurface(vector StartTrace, vector EndTrace)
 
 function bool NearestCeiling(out LocationNormal out, FMinMax distrange, optional float away_from_wall)
 {
-    local vector EndTrace, MoveOffWall;
+    local vector EndTrace;
     EndTrace = out.loc;
     EndTrace.Z += distrange.max;
     if( NearestSurface(out.loc + (vect(0,0,1)*distrange.min), EndTrace, out) == false ) {
@@ -1443,17 +1443,13 @@ function bool NearestCeiling(out LocationNormal out, FMinMax distrange, optional
     if( ! IsCeilingNormal(out.norm) ) {
         return false;
     }
-    MoveOffWall.X = away_from_wall;
-    MoveOffWall.Y = away_from_wall;
-    MoveOffWall.Z = away_from_wall;
-    MoveOffWall *= out.norm;
-    out.loc += MoveOffWall;
+    out.loc += out.norm * away_from_wall;
     return true;
 }
 
 function bool NearestFloor(out LocationNormal out, FMinMax distrange, optional float away_from_wall)
 {
-    local vector EndTrace, MoveOffWall;
+    local vector EndTrace;
     EndTrace = out.loc;
     EndTrace.Z -= distrange.max;
     if( NearestSurface(out.loc - (vect(0,0,1)*distrange.min), EndTrace, out) == false ) {
@@ -1462,11 +1458,7 @@ function bool NearestFloor(out LocationNormal out, FMinMax distrange, optional f
     if( ! IsFloorNormal(out.norm) ) {
         return false;
     }
-    MoveOffWall.X = away_from_wall;
-    MoveOffWall.Y = away_from_wall;
-    MoveOffWall.Z = away_from_wall;
-    MoveOffWall *= out.norm;
-    out.loc += MoveOffWall;
+    out.loc += out.norm * away_from_wall;
     return true;
 }
 
@@ -1533,23 +1525,17 @@ function bool _NearestWall(out LocationNormal out, FMinMax distrange)
 
 function bool NearestWall(out LocationNormal out, FMinMax distrange, optional float away_from_wall)
 {
-    local vector MoveOffWall, normal;
 
     if( _NearestWall(out, distrange) == false ) {
         return false;
     }
-    MoveOffWall.X = away_from_wall;
-    MoveOffWall.Y = away_from_wall;
-    MoveOffWall.Z = away_from_wall;
-    MoveOffWall *= out.norm;
-    out.loc += MoveOffWall;
+    out.loc += out.norm * away_from_wall;
     return true;
 }
 
 function bool NearestWallSearchZ(out LocationNormal out, FMinMax distrange, float z_range, vector target, optional float away_from_wall)
 {
     local LocationNormal wall, ret;
-    local vector MoveOffWall;
     local float closest_dist, dist;
     local int i;
     local float len;
@@ -1571,11 +1557,7 @@ function bool NearestWallSearchZ(out LocationNormal out, FMinMax distrange, floa
     if( closest_dist >= distrange.max ) {
         return false;
     }
-    MoveOffWall.X = away_from_wall;
-    MoveOffWall.Y = away_from_wall;
-    MoveOffWall.Z = away_from_wall;
-    MoveOffWall *= ret.norm;
-    ret.loc += MoveOffWall;
+    ret.loc += ret.norm * away_from_wall;
     out = ret;
     return true;
 }
@@ -1583,7 +1565,6 @@ function bool NearestWallSearchZ(out LocationNormal out, FMinMax distrange, floa
 function bool NearestCornerSearchZ(out LocationNormal out, FMinMax distrange, vector against, float z_range, vector target, optional float away_from_wall)
 {
     local LocationNormal wall, ret;
-    local vector MoveOffWall;
     local float closest_dist, dist;
     local int i;
     local float len;
@@ -1605,11 +1586,7 @@ function bool NearestCornerSearchZ(out LocationNormal out, FMinMax distrange, ve
     if( closest_dist >= distrange.max ) {
         return false;
     }
-    MoveOffWall.X = away_from_wall;
-    MoveOffWall.Y = away_from_wall;
-    MoveOffWall.Z = away_from_wall;
-    MoveOffWall *= ret.norm;
-    ret.loc += MoveOffWall;
+    ret.loc += ret.norm * away_from_wall;
     out = ret;
     return true;
 }

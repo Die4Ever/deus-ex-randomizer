@@ -1,4 +1,4 @@
-class MrX extends HumanMilitary;
+class MrH extends HumanMilitary;
 
 var float healthRegenTimer;
 var #var(PlayerPawn) player;
@@ -6,31 +6,31 @@ var int FleeHealth;// like MinHealth, but we need more control
 var Actor closestDestPoint, farthestDestPoint;
 var float maxDist; // for iterative farthestDestPoint
 
-static function MrX Create(DXRActorsBase a)
+static function MrH Create(DXRActorsBase a)
 {
     local vector loc;
-    local MrX x;
+    local MrH h;
     local int i;
 
-    // Mr. X is a singleton
-    foreach a.AllActors(class'MrX', x) {
-        x.Destroy();
+    // Mr. H is a singleton
+    foreach a.AllActors(class'MrH', h) {
+        h.Destroy();
     }
 
-    a.SetSeed("Mr. X");// should this be seeded or not?
+    a.SetSeed("Mr. H");// should this be seeded or not?
 
-    x = None;
-    for(i=0; i<100 && x == None; i++) {
+    h = None;
+    for(i=0; i<100 && h == None; i++) {
         loc = a.GetRandomPosition(a.player().Location, 16*150, 999999);
-        x = a.Spawn(class'MrX',,, loc);
+        h = a.Spawn(class'MrH',,, loc);
     }
-    if(x == None) return None;
+    if(h == None) return None;
 
-    x.player = a.player();
-    x.HomeLoc = loc;
-    x.bUseHome = true;
+    h.player = a.player();
+    h.HomeLoc = loc;
+    h.bUseHome = true;
 
-    return x;
+    return h;
 }
 
 //
@@ -339,28 +339,28 @@ defaultproperties
     HealthArmRight=2000
     bShowPain=False
     UnderWaterTime=-1.000000
-    BindName="MrX"
+    BindName="MrH"
     MinHealth=100
     FleeHealth=100
     bInvincible=false
-    FamiliarName="Mr. X"
-    UnfamiliarName="Mr. X"
+    FamiliarName="Mr. H"
+    UnfamiliarName="Mr. H"
     Texture=Texture'DeusExItems.Skins.BlackMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_DressShirt_B'
-    MultiSkins(0)=Texture'MrXShirt'
-    MultiSkins(1)=Texture'MrXPants'
-    MultiSkins(2)=Texture'MrXFace'
-    MultiSkins(3)=Texture'MrXFace'
+    MultiSkins(0)=Texture'MrHShirt'
+    MultiSkins(1)=Texture'MrHPants'
+    MultiSkins(2)=Texture'MrHFace'
+    MultiSkins(3)=Texture'MrHFace'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(6)=Texture'DeusExItems.Skins.BlackMaskTex'
     MultiSkins(7)=Texture'DeusExItems.Skins.BlackMaskTex'
-    InitialInventory(0)=(Inventory=class'WeaponMrXPunch')
+    InitialInventory(0)=(Inventory=class'WeaponMrHPunch')
     InitialInventory(1)=(Inventory=None)
     InitialInventory(2)=(Inventory=None)
     InitialInventory(3)=(Inventory=None)
     InitialInventory(4)=(Inventory=None)
-    Alliance=MrX
+    Alliance=MrH
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
     HearingThreshold=0
     RandomWandering=0.3
@@ -374,7 +374,7 @@ defaultproperties
     bEmitDistress=false
     bLookingForLoudNoise=true
     bReactLoudNoise=true
-    CarcassType=Class'MrXCarcass'
+    CarcassType=Class'MrHCarcass'
     WalkingSpeed=0.350000
     bImportant=True
     BurnPeriod=0.000000

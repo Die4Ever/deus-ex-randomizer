@@ -62,7 +62,7 @@ simulated function InitHints()
     }
 
     if(dxr.flags.IsHalloweenMode()) {
-        AddHint("Mr X cannot die, run away!");
+        AddHint("Mr. H cannot die, run away!");
         AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
     }
     if(dxr.flags.autosave == 3 && !dxr.flags.IsHordeMode()) {
@@ -73,9 +73,11 @@ simulated function InitHints()
     }
     else if(dxr.flags.autosave == 6) {
         AddHint("You need a Memory Containment Unit to save the game.", "Search every map you can for them.");
+        AddHint("You need a Memory Containment Unit to save the game.", "Remember you can leave them on the floor and grab them later.");
     }
     else if(dxr.flags.autosave == 7) {
         AddHint("You need a Memory Containment Unit to save the game at a computer.", "Search every map you can for them.");
+        AddHint("You need a Memory Containment Unit to save the game at a computer.", "Remember you can leave them on the floor and grab them later.");
     }
     else if(dxr.flags.autosave == 8) {
         AddHint("You need to highlight a computer to save your game.", "You do know where they all are, right?");

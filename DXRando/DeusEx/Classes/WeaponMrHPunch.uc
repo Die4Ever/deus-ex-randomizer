@@ -1,4 +1,4 @@
-class WeaponMrXPunch extends WeaponZombieSwipe;
+class WeaponMrHPunch extends WeaponZombieSwipe;
 
 simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
 {

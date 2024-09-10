@@ -322,7 +322,7 @@ function AnyEntry()
             if(#var(prefix)MapExit(a)!=None && DynamicMapExit(a)==None) {
                 a.Tag='';// disable don't destroy, destroying messes with the navigationpoints graph
                 a.SetCollision(false,false,false);
-            } else if(MrX(a)==None) {// don't delete Mr X...
+            } else if(MrH(a)==None) {// don't delete Mr H...
                 a.Destroy();
             }
         }

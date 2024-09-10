@@ -4,14 +4,14 @@ var #var(DeusExPrefix)Carcass carcs[256];
 var float times[256];
 var int num_carcs;
 
-function FirstEntry()
+function PostFirstEntry()
 {
     local #var(prefix)WHPiano piano;
-    Super.FirstEntry();
+    Super.PostFirstEntry();
 
     if(dxr.flags.IsHalloweenMode()) {
-        // Mr. X is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
-        class'MrX'.static.Create(self);
+        // Mr. H is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
+        class'MrH'.static.Create(self);
     }
     if(IsOctober()) {
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
@@ -27,7 +27,7 @@ function ReEntry(bool IsTravel)
 {
     if(IsTravel && dxr.flags.IsHalloweenMode()) {
         // recreate him if you leave the map and come back, but not if you load a save
-        class'MrX'.static.Create(self);
+        class'MrH'.static.Create(self);
     }
 }
 
@@ -243,7 +243,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
 
     //Make it hostile to EVERYONE.  This thing has seen the other side
     sp.SetAlliance('Resurrected');
-    module.HateEveryone(sp, 'MrX');
+    module.HateEveryone(sp, 'MrH');
     module.RemoveFears(sp);
     if(#var(prefix)Animal(sp) != None) {
         #var(prefix)Animal(sp).bFleeBigPawns = false;
@@ -410,7 +410,7 @@ function SpawnSpiderweb(vector loc)
     loc.Z += rngf() * 80.0;// 5 feet upwards
 
     size = rngf() + 0.5;
-    if(!GetSpiderwebLocation(loc, rot, size * 10)) return;
+    if(!GetSpiderwebLocation(loc, rot, size * 12)) return;
 
     zone = GetZone(loc);
     if (zone.bWaterZone || SkyZoneInfo(zone)!=None){
@@ -480,29 +480,60 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot, float size)
     ceiling_or_floor.loc.X = wall1.loc.X;
     ceiling_or_floor.loc.Y = wall1.loc.Y;
 
-    // TODO: ensure ceiling/floor is still with us
-
     distrange.max = 16*50;
     wall2 = wall1;
     if(chance_single(40) || !NearestCornerSearchZ(wall2, distrange, wall1.norm, 16*3, ceiling_or_floor.loc, size) ) {
         // just 2 axis (ceiling/floor + wall1)
+        loc = wall1.loc;
         rot = Rotator(wall1.norm);
+
+        // ensure ceiling/floor is still with us
+        distrange.max = size * 2;
+        if(found_ceiling) {
+            ceiling.loc = loc;
+            found_ceiling = NearestCeiling(ceiling, distrange);
+        }
+        if(found_floor) {
+            floor.loc = loc;
+            found_floor = NearestFloor(floor, distrange);
+        }
+
         if( found_ceiling ) rot.pitch -= 4096;
         else if( found_floor ) rot.pitch += 4096;
-        loc = wall1.loc;
+        else loc -= wall1.norm * (size * 0.9);
+
         return true;
     }
 
-    norm = Normal((wall1.norm + wall2.norm) / 2);
-
-    rot = Rotator(norm);
-    if( found_ceiling ) rot.pitch -= 4096;
-    else if( found_floor ) rot.pitch += 4096;
-    //norm = vector(rot);
-
     loc = wall2.loc;
 
-    // TODO: ensure wall1 is still with us
+    // ensure wall1 is still with us
+    distrange.max = size*2;
+    wall1.loc = wall2.loc - (wall1.norm*(size*2));
+    if(Trace(wall1.loc, wall1.norm, wall1.loc, loc, false, vect(1,1,1))==None) {
+        l("wall1 no longer with us" @ loc);
+        norm = wall2.norm;
+    } else {
+        norm = Normal((wall1.norm + wall2.norm) / 2);
+    }
+
+    rot = Rotator(norm);
+
+    // ensure ceiling/floor is still with us
+    distrange.max = size*2;
+    if(found_ceiling) {
+        ceiling.loc = loc;
+        found_ceiling = NearestCeiling(ceiling, distrange);
+    }
+    if(found_floor) {
+        floor.loc = loc;
+        found_floor = NearestFloor(floor, distrange);
+    }
+
+    if( found_ceiling ) rot.pitch -= 4096;
+    else if( found_floor ) rot.pitch += 4096;
+    else if(norm == wall2.norm) loc -= wall2.norm * (size * 0.9);
+
     return true;
 }
 
