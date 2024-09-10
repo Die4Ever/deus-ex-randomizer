@@ -66,7 +66,7 @@ function PreFirstEntry()
         break;
 
     case "12_VANDENBERG_CMD":
-        if (dxr.flags.settings.starting_map >= 129) {
+        if (dxr.flags.settings.starting_map >= 121) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
                 dxMover.InterpolateTo(1, 0.0);
                 break;
