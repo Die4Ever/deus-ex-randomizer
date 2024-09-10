@@ -1466,6 +1466,8 @@ function RunTests()
 
     testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
     testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");
+    testint(BingoActiveMission(2, (1<<1)), -1, "BingoActiveMission too late");
+    testint(BingoActiveMission(2, FAILED_MISSION_MASK), -1, "BingoActiveMission failed");
     testint(BingoActiveMission(15, (1<<15)), 2, "BingoActiveMission");
     testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
 }
