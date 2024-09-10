@@ -292,8 +292,8 @@ function FixFOV()
     // wide values provided by Tundoori https://discord.com/channels/823629359931195394/823629360929046530/1282526555536625778
 
     // POVCorpse
-    v = (vect(20, 12, -5) * n);
-    v += (vect(15, 15, -5) * w);
+    v = vect(20, 12, -5) * n;
+    v += vect(15, 15, -5) * w;
     class'POVCorpse'.default.PlayerViewOffset = v;
 
     // GEP Gun
@@ -321,11 +321,11 @@ function FixFOV()
     class'WeaponAssaultGun'.default.FireOffset = v;
 
     // WeaponAssaultShotgun
-    v = vect(0,-10.000000,-12.000000) * n;
-    v += vect(17.500000,-10.000000,-18.000000) * w;
+    v = vect(30,-10,-12) * n;
+    v += vect(38,-10,-18) * w;
     class'WeaponAssaultShotgun'.default.PlayerViewOffset = v;
-    v = vect(-30.000000,10.000000,12.000000) * n;
-    v += vect(-17.500000,10.000000,18.000000) * w;
+    v = vect(-30,10,12) * n;
+    v += vect(-38,10,18) * w;
     class'WeaponAssaultShotgun'.default.FireOffset = v;
 
     // WeaponBaton
@@ -369,7 +369,7 @@ function FixFOV()
     class'WeaponFlamethrower'.default.FireOffset = v;
 
     // WeaponGasGrenade
-    v = vect(0,-13.000000,-19.000000) * n;
+    v = vect(30.000000,-13.000000,-19.000000) * n;
     v += vect(30.000000,-13.000000,-24.000000) * w;
     class'WeaponGasGrenade'.default.PlayerViewOffset = v;
     v = vect(0,10.000000,20.000000) * n;
