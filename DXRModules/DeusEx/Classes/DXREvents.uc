@@ -1547,8 +1547,8 @@ function MarkBingoFailedSpecial()
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         FailIfCorpseNotHeld(class'#var(prefix)PaulDentonCarcass', "PaulToTong");
         break;
-    case "06_HONGKONG_WANCHAI_MARKET":
-    case "06_HONGKONG_WANCHAI_CANAL":
+    case "06_HONGKONG_VERSALIFE":
+    case "06_HONGKONG_STORAGE":
         if (dxr.flagbase.GetBool('Have_ROM')) {
             class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
             class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
