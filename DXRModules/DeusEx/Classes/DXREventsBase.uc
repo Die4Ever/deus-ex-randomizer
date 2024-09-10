@@ -1,5 +1,7 @@
 class DXREventsBase extends DXRActorsBase;
 
+const FAILED_MISSION_MASK = 1;
+
 var bool died;
 var name watchflags[32];
 var int num_watchflags;
@@ -88,8 +90,9 @@ function MarkBingoFailedGeneric()
     local PlayerDataItem data;
     local int curMission;
 
-    data = class'PlayerDataItem'.static.GiveItem(player());
     curMission = dxr.dxInfo.missionNumber;
+    if (curMission == 98) return;
+    data = class'PlayerDataItem'.static.GiveItem(player());
     data.CheckForExpiredBingoGoals(curMission);
 }
 
@@ -1414,8 +1417,8 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     if(missionAnded != 0) return 2;// 2==true
 #endif
 
-    if(missionsMask < (1<<minMission)) {
-        return -1;// impossible in future missions
+    if(missionsMask < (1<<minMission) || (missionsMask & FAILED_MISSION_MASK) != 0) {
+        return -1;// goal is failed
     }
 
     return 0;// 0==false
@@ -1464,6 +1467,7 @@ function RunTests()
     testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
     testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");
     testint(BingoActiveMission(2, (1<<1)), -1, "BingoActiveMission too late");
+    testint(BingoActiveMission(2, FAILED_MISSION_MASK), -1, "BingoActiveMission failed");
     testint(BingoActiveMission(15, (1<<15)), 2, "BingoActiveMission");
     testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
 }
