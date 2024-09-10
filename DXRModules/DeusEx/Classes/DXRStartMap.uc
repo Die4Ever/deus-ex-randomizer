@@ -428,7 +428,7 @@ static function string _GetStartMap(int start_map_val, optional out string frien
             friendlyName = "Vandenberg (Command)";
             return "12_Vandenberg_Cmd";
         case 121:
-            friendlyName = "Vandenberg (Inside Command)";
+            friendlyName = "Vandenberg (Inside Commsat)";
             return "12_Vandenberg_Cmd#commstat";
         case 122:
             friendlyName = "Vandenberg (Tunnels)";
