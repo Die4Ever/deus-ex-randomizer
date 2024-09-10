@@ -1390,6 +1390,7 @@ function AddDXRCredits(CreditsWindow cw)
 static function int BingoActiveMission(int currentMission, int missionsMask)
 {
     local int missionAnded, minMission;
+    if ((missionsMask & FAILED_MISSION_MASK) != 0) return -1; //-1=impossible/failed
     if(missionsMask == 0) return 1;// 1==maybe
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded != 0) return 2;// 2==true
@@ -1417,7 +1418,7 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     if(missionAnded != 0) return 2;// 2==true
 #endif
 
-    if(missionsMask < (1<<minMission) || (missionsMask & FAILED_MISSION_MASK) != 0) {
+    if(missionsMask < (1<<minMission)) {
         return -1;// goal is failed
     }
 
