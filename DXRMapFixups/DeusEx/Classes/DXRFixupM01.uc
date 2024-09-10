@@ -197,6 +197,8 @@ function AnyEntryMapFixes()
     GetConversation('DL_FrontEntrance').AddFlagRef('StatueMissionComplete', false);
     // "you might be able to avoid some of the security by entering this way"
     GetConversation('DL_BackEntrance').AddFlagRef('StatueMissionComplete', false);
+    // NSF everywhere, JC.  Your orders are to shoot on sight.
+    GetConversation('DL_LeaveDockNoGun').AddFlagRef('StatueMissionComplete', false);
 
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
