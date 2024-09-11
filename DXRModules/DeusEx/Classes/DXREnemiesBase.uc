@@ -528,29 +528,6 @@ function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
         return Spawn(wclass);
 }
 
-function RandomizeSize(Actor a)
-{
-    local Decoration carried;
-    local DeusExPlayer p;
-    local float scale;
-
-    p = DeusExPlayer(a);
-    if( p != None && p.carriedDecoration != None ) {
-        carried = p.carriedDecoration;
-        p.DropDecoration();
-        carried.SetPhysics(PHYS_None);
-    }
-
-    scale = rngrange(1, 0.9, 1.1);
-    SetActorScale(a, scale);
-    a.Fatness += rng(10) + rng(10) - 10;
-
-    if( carried != None ) {
-        p.carriedDecoration = carried;
-        p.PutCarriedDecorationInHand();
-    }
-}
-
 function RunTests()
 {
     local int i;

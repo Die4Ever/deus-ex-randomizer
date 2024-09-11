@@ -26,7 +26,12 @@ function InitFor(Actor Other)
                 itemName = msgAnimalCarcass;
             }
         } else {
-            if (bNotDead) {
+            if(InStr(ScriptedPawn(Other).FamiliarName, "Zombie")!=-1) {
+                itemName = class'DXRInfo'.static.ReplaceText(ScriptedPawn(Other).FamiliarName, "'s Zombie", "");
+                itemName = itemName $ " (Dead?)";
+                bNotDead = false;// zombies always resurrect even if you knock them out?
+            }
+            else if (bNotDead) {
                 itemName = ScriptedPawn(Other).FamiliarName $ " (Unconscious)";
             } else {
                 itemName = ScriptedPawn(Other).FamiliarName $ " (Dead)";

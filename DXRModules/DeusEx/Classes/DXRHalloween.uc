@@ -66,12 +66,14 @@ function CheckCarcasses()
     }
 
     foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
-        if(#var(prefix)RatCarcass(carc) != None || #var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None) {
-            // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
-            continue;
-        }
-        if(carc.bNotDead || carc.bInvincible || carc.bHidden) {
-            continue;
+        if(carc.Tag != 'ForceZombie') {
+            if(#var(prefix)RatCarcass(carc) != None || #var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None) {
+                // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
+                continue;
+            }
+            if(carc.bNotDead || carc.bInvincible || carc.bHidden) {
+                continue;
+            }
         }
         for(i=0; i < num_carcs; i++) {
             if(carcs[i] == carc) {
@@ -200,6 +202,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local int i;
     local Inventory item, nextItem;
     local bool removeItem;
+    local string s;
 
     livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
@@ -223,7 +226,14 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         sp.FamiliarName = pawnname;
         sp.UnfamiliarName = sp.FamiliarName;
     } else {
-        sp.FamiliarName = sp.FamiliarName $ " Zombie";
+        if(#defined(injections)) {
+            s = ReplaceText(carc.itemName, " (Dead)", "");
+            s = ReplaceText(s, " (Dead?)", "");
+            sp.FamiliarName = s $ "'s Zombie";
+        }
+        else {
+            sp.FamiliarName = sp.FamiliarName $ " Zombie";
+        }
         sp.UnfamiliarName = sp.FamiliarName;
     }
     sp.bInvincible = false; // If they died, they can't have been invincible
@@ -291,6 +301,7 @@ function MapFixes()
 {
     local PathNode p;
     local #var(DeusExPrefix)Carcass carc;
+    local class<#var(DeusExPrefix)Carcass> carcclass;
     local float dist;
 
     switch(dxr.localURL) {
@@ -308,30 +319,31 @@ function MapFixes()
 
             switch(rng(7)){
             case 0:
-                carc = spawn(class'#var(prefix)BumFemaleCarcass',,, p.Location);
+                carcclass = class'#var(prefix)BumFemaleCarcass';
                 break;
             case 1:
-                carc = spawn(class'#var(prefix)BumMale2Carcass',,, p.Location);
+                carcclass = class'#var(prefix)BumMale2Carcass';
                 break;
             case 2:
-                carc = spawn(class'#var(prefix)BumMale3Carcass',,, p.Location);
+                carcclass = class'#var(prefix)BumMale3Carcass';
                 break;
             case 3:
-                carc = spawn(class'#var(prefix)BumMaleCarcass',,, p.Location);
+                carcclass = class'#var(prefix)BumMaleCarcass';
                 break;
             case 4:
-                carc = spawn(class'#var(prefix)JunkieFemaleCarcass',,, p.Location);
+                carcclass = class'#var(prefix)JunkieFemaleCarcass';
                 break;
             case 5:
-                carc = spawn(class'#var(prefix)JunkieMaleCarcass',,, p.Location);
+                carcclass = class'#var(prefix)JunkieMaleCarcass';
                 break;
             case 6:
-                carc = spawn(class'#var(prefix)Female4Carcass',,, p.Location);
+                carcclass = class'#var(prefix)Female4Carcass';
                 break;
             default:
-                carc = spawn(class'#var(prefix)BumMaleCarcass',,, p.Location);
+                carcclass = class'#var(prefix)BumMaleCarcass';
                 break;
             }
+            carc = spawn(carcclass,, 'ForceZombie', p.Location);
             if(carc==None) continue;
             carc.Mesh=None;
             carc.Mesh2=None;
@@ -339,6 +351,8 @@ function MapFixes()
             carc.SetCollision(false,false,false);
             carc.bHighlight=false;
             carc.bVisionImportant=false;
+            carc.bNotDead=true;// prevent blood
+            RandomizeSize(carc);
         }
         break;
     }
