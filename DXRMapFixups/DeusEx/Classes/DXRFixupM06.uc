@@ -748,10 +748,13 @@ function PreFirstEntryMapFixes()
 
     case "06_HONGKONG_WANCHAI_CANAL":
 
-        //Give the drug dealer and pusher 100 credits each
+        //Give the drug dealer and pusher 100 credits each, and make them defend each other if attacked
         foreach AllActors(class'#var(prefix)ScriptedPawn',p){
             if (p.BindName=="Canal_Thug1" || p.BindName=="Canal_Thug2"){
                 GiveItem(p,class'#var(prefix)Credits');
+                p.bHateDistress = true;
+                p.bHateIndirectInjury = true;
+                p.bHateInjury = true;
             }
         }
 
