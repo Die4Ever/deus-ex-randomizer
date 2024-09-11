@@ -755,6 +755,7 @@ function PreFirstEntryMapFixes()
                 p.bHateDistress = true;
                 p.bHateIndirectInjury = true;
                 p.bHateInjury = true;
+                p.ResetReactions();
             }
         }
 
