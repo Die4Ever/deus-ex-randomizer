@@ -12,6 +12,7 @@ function PostFirstEntry()
     if(dxr.flags.IsHalloweenMode()) {
         // Mr. H is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
         class'MrH'.static.Create(self);
+        MapFixes();
     }
     if(IsOctober()) {
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
@@ -69,7 +70,7 @@ function CheckCarcasses()
             // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
             continue;
         }
-        if(carc.bNotDead) {
+        if(carc.bNotDead || carc.bInvincible || carc.bHidden) {
             continue;
         }
         for(i=0; i < num_carcs; i++) {
@@ -144,7 +145,7 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
     // return true to compress the array
     if(carc == None) return true;
 
-    ZombieTime = 20;
+    ZombieTime = 15 + FRand()*10;
     if(#var(prefix)MuttCarcass(carc) != None || #var(prefix)DobermanCarcass(carc) != None) {
         // special sauce for dogs?
         ZombieTime = 2;
@@ -243,6 +244,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
 
     //Make it hostile to EVERYONE.  This thing has seen the other side
     sp.SetAlliance('Resurrected');
+    sp.ChangeAlly('Resurrected', 1, true, false);
     module.HateEveryone(sp, 'MrH');
     module.RemoveFears(sp);
     if(#var(prefix)Animal(sp) != None) {
@@ -285,6 +287,63 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     return True;
 }
 
+function MapFixes()
+{
+    local PathNode p;
+    local #var(DeusExPrefix)Carcass carc;
+    local float dist;
+
+    switch(dxr.localURL) {
+    case "09_NYC_GRAVEYARD":
+        SetSeed("DXRHalloween MapFixes graveyard bodies");
+        foreach AllActors(class'PathNode', p) {
+            // only the region with tombstones
+            if(p.Location.Z < 10 || p.Location.Z > 20) continue;
+            if(p.Location.X / coords_mult.X > 300) continue;
+
+            // exclude the paved path
+            if(p.name=='PathNode26' || p.name=='PathNode12' || p.name=='PathNode70' || p.name=='PathNode69' || p.name=='PathNode68') continue;
+
+            if(chance_single(80)) continue;
+
+            switch(rng(7)){
+            case 0:
+                carc = spawn(class'#var(prefix)BumFemaleCarcass',,, p.Location);
+                break;
+            case 1:
+                carc = spawn(class'#var(prefix)BumMale2Carcass',,, p.Location);
+                break;
+            case 2:
+                carc = spawn(class'#var(prefix)BumMale3Carcass',,, p.Location);
+                break;
+            case 3:
+                carc = spawn(class'#var(prefix)BumMaleCarcass',,, p.Location);
+                break;
+            case 4:
+                carc = spawn(class'#var(prefix)JunkieFemaleCarcass',,, p.Location);
+                break;
+            case 5:
+                carc = spawn(class'#var(prefix)JunkieMaleCarcass',,, p.Location);
+                break;
+            case 6:
+                carc = spawn(class'#var(prefix)Female4Carcass',,, p.Location);
+                break;
+            default:
+                carc = spawn(class'#var(prefix)BumMaleCarcass',,, p.Location);
+                break;
+            }
+            if(carc==None) continue;
+            carc.Mesh=None;
+            carc.Mesh2=None;
+            carc.Mesh3=None;
+            carc.SetCollision(false,false,false);
+            carc.bHighlight=false;
+            carc.bVisionImportant=false;
+        }
+        break;
+    }
+}
+
 function MakeCosmetics()
 {
     local NavigationPoint p;
@@ -292,6 +351,7 @@ function MakeCosmetics()
     local vector locs[4096];
     local int i, num, slot;
     local SkyZoneInfo z;
+    local #var(DeusExPrefix)Carcass carc;
 
     foreach AllActors(class'SkyZoneInfo', z) {
         z.AmbientBrightness = 5;
