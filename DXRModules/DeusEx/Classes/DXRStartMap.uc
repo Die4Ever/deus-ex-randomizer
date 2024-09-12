@@ -574,6 +574,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             // fallthrough
         case 36:
         case 35:
+            GiveKey(player, 'MoleRestroomKey', "Molepeople Bathroom Key");
+            // fallthrough
         case 34:
         case 33:
             AddNote(player, bEmptyNotes, "6653 -- Code to the phone-booth entrance to mole-people hideout.");
