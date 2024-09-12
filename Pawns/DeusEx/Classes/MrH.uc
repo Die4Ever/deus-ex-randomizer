@@ -317,8 +317,10 @@ function PlayFootStep()
 
     Super.PlayFootStep();
 
-    foreach AllActors(class'CCResidentEvilCam', cam) {
-        cam.JoltView();// TODO: also make this work for 3rd person
+    if(!#defined(injections)) { // for injections, we already do this inside our ScriptedPawn.uc
+        foreach RadiusActors(class'CCResidentEvilCam', cam, 800) {
+            cam.JoltView();// TODO: also make this work for 3rd person
+        }
     }
 }
 

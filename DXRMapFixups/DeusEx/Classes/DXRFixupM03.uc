@@ -432,6 +432,7 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local bool RevisionMaps;
     local #var(prefix)SecurityCamera cam;
+    local #var(prefix)AutoTurret turret;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -470,6 +471,9 @@ function AnyEntryMapFixes()
         if (dxr.flagbase.GetBool('MeetLebedev_Played') || dxr.flagbase.GetBool('JuanLebedev_Dead')) {
             foreach AllActors(class'#var(prefix)SecurityCamera', cam) {
                 cam.UnTrigger(None, None);
+            }
+            foreach AllActors(class'#var(prefix)AutoTurret', turret) {
+                turret.UnTrigger(None, None);
             }
         }
 

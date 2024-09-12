@@ -1305,7 +1305,7 @@ function _MarkBingo(coerce string eventname)
 
     if( nowbingos > previousbingos ) {
         time = class'DXRStats'.static.GetTotalTime(dxr);
-        if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags) || dxr.flags.settings.bingo_win>0) {
+        if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
             player().ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
         }
 
@@ -1346,7 +1346,7 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.MarkBingoAsFailed(eventname) && (class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags) || dxr.flags.settings.bingo_win>0)) {
+    if (data.MarkBingoAsFailed(eventname) && class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
         l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }

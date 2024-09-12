@@ -693,6 +693,7 @@ function PlayFootStep()
     local float shakeRadius, shakeMagnitude, shakeAmount, hdDist;
     local vector shakeStrength;
     local HangingDecoration hd;
+    local CCResidentEvilCam cam;
 
     Super.PlayFootStep();
 
@@ -707,6 +708,9 @@ function PlayFootStep()
             shakeStrength = velocity * shakeAmount;
             hd.CalculateHit(Location,shakeStrength);
             hd.bSwaying=True;
+        }
+        foreach RadiusActors(class'CCResidentEvilCam', cam, shakeRadius) {
+            cam.JoltView();// TODO: also make this work for 3rd person
         }
     }
 }

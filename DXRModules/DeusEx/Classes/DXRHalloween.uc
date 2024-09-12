@@ -343,12 +343,7 @@ function MapFixes()
             }
             carc = spawn(carcclass,, 'ForceZombie', p.Location);
             if(carc==None) continue;
-            carc.Mesh=None;
-            carc.Mesh2=None;
-            carc.Mesh3=None;
-            carc.SetCollision(false,false,false);
-            carc.bHighlight=false;
-            carc.bVisionImportant=false;
+            carc.bHidden = true;// ForceZombie tag allows zombies to spawn out of hidden and bNotDead carcasses
             carc.bNotDead=true;// prevent blood
             RandomizeSize(carc);
         }
@@ -583,7 +578,6 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot, float size)
     distrange.max = size*2;
     wall1.loc = wall2.loc - (wall1.norm*(size*2));
     if(Trace(wall1.loc, wall1.norm, wall1.loc, loc, false, vect(1,1,1))==None) {
-        l("wall1 no longer with us" @ loc);
         norm = wall2.norm;
     } else {
         norm = Normal((wall1.norm + wall2.norm) / 2);
