@@ -431,6 +431,7 @@ function AnyEntryMapFixes()
     local ConEvent ce;
     local ConEventSpeech ces;
     local bool RevisionMaps;
+    local #var(prefix)SecurityCamera cam;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -465,6 +466,13 @@ function AnyEntryMapFixes()
 
             phone.ConBindEvents();
         }
+
+        if (dxr.flagbase.GetBool('MeetLebedev_Played') || dxr.flagbase.GetBool('JuanLebedev_Dead')) {
+            foreach AllActors(class'#var(prefix)SecurityCamera', cam) {
+                cam.UnTrigger(None, None);
+            }
+        }
+
         break;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
