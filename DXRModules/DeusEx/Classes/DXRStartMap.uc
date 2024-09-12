@@ -571,12 +571,11 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
             MarkConvPlayed("DL_LebedevKill_Played", bFemale);
-            // fallthrough
-        case 36:
-        case 35:
+        case 36: // fallthrough
+            GiveKey(player, 'Sewerdoor', "Sewer Door");
+        case 35: // fallthrough
             GiveKey(player, 'MoleRestroomKey', "Molepeople Bathroom Key");
-            // fallthrough
-        case 34:
+        case 34: // fallthrough
         case 33:
             AddNote(player, bEmptyNotes, "6653 -- Code to the phone-booth entrance to mole-people hideout.");
             MarkConvPlayed("dl_batterypark", bFemale); // We're dropping you off in Battery Park
