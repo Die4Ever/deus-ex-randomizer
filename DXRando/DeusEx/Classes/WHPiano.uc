@@ -29,14 +29,45 @@ function bool ValidSong(int i)
 
 function UpdateSongCount()
 {
-    local int i;
+    local int i, oldNumSongsPlayed;
+    local bool bAllSongsPlayed;
 
+    bAllSongsPlayed = true;
+    oldNumSongsPlayed = numSongsPlayed;
     numSongsPlayed=0;
+
     for (i=0;i<ArrayCount(SongPlayed);i++){
-        if (ValidSong(i) && SongPlayed[i]!=0){
-            numSongsPlayed++;
+        if (ValidSong(i)) {
+            if(SongPlayed[i]!=0){
+                numSongsPlayed++;
+            } else if(GetSongWeight(i) > 0) {
+                bAllSongsPlayed = false;
+            }
         }
     }
+
+    if(numSongsPlayed > oldNumSongsPlayed && bAllSongsPlayed) {
+        AllSongsPlayed();
+    }
+}
+
+function AllSongsPlayed()
+{
+    local string j;
+    local DXRando dxr;
+    local class<Json> js;
+    js = class'Json';
+
+    log(self $ " AllSongsPlayed()");
+    dxr = class'DXRando'.default.dxr;
+
+    j = js.static.Start("Flag");
+    js.static.Add(j, "flag", "AllSongsPlayed");
+    js.static.Add(j, "num", numSongsPlayed);
+    class'DXREvents'.static.GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, self, j);
 }
 
 function Landed(vector HitNormal)
@@ -288,7 +319,7 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             break;
         case 26:
             SelectedSound = sound'FFVictoryFanfare';
-            duration = 5;
+            duration = 4.5;
             message="You played the Victory Fanfare from Final Fantasy";
             break;
         case 27:

@@ -56,7 +56,7 @@ function CheckOfflineUpdates()
     if(!CanShowNotification()) return;
     if(!DateAtLeast(2024, 10, 2)) return;// don't show until Oct 2nd to be safe, especially with timezones
 
-    if(!VersionOlderThan(VersionNumber(), 3,3,0,0)) return;// v3.3 doesn't need this notification
+    if(!VersionOlderThan(VersionNumber(), 3,2,1,0)) return;// v3.2.1 doesn't need this notification
     if(VersionIsStable() && !VersionOlderThan(VersionNumber(), 3,2,0,0)) return;// a stable branch of v3.2 doesn't need this
 
     newsdates[0] = "2024-10-01";

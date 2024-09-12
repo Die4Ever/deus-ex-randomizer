@@ -67,7 +67,9 @@ function CheckCarcasses()
 
     foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
         if(carc.Tag != 'ForceZombie') {
-            if(#var(prefix)RatCarcass(carc) != None || #var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None) {
+            if(#var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None
+               || #var(prefix)RatCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None)
+            {
                 // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
                 continue;
             }
@@ -82,7 +84,11 @@ function CheckCarcasses()
         }
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
-            times[num_carcs] = Level.TimeSeconds;
+            if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
+                times[num_carcs] = Level.TimeSeconds + 3 + FRand()*2;
+            } else {
+                times[num_carcs] = Level.TimeSeconds + 15 + FRand()*10;
+            }
             carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;
         }
@@ -142,19 +148,11 @@ static function SetZombieTime(#var(DeusExPrefix)Carcass carc, float time)
 
 function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
 {
-    local float ZombieTime;
-
     // return true to compress the array
     if(carc == None) return true;
 
-    ZombieTime = 15 + FRand()*10;
-    if(#var(prefix)MuttCarcass(carc) != None || #var(prefix)DobermanCarcass(carc) != None) {
-        // special sauce for dogs?
-        ZombieTime = 2;
-    }
-
     // wait for Zombie Time!
-    if(time + ZombieTime > Level.TimeSeconds) return false;
+    if(time > Level.TimeSeconds) return false;
 
     return ResurrectCorpse(self, carc);
 }
