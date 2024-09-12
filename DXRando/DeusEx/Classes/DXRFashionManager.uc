@@ -307,6 +307,68 @@ simulated function bool AppropriateForGender(bool female, EGender gender)
     return False; //Something went wrong
 }
 
+//Fallback, just in case the player somehow doesn't have suitable clothes.
+//In theory we shouldn't really ever need these, but better safe than sorry
+simulated function Clothes DefaultClothingByType(EClothesType type, bool female)
+{
+    local Clothes defClothes;
+
+    defClothes.type=type;
+    defClothes.gender=G_Both;
+
+    switch (type){
+        case CT_Shirt:
+            if (!female){
+                //UNATCO trooper shirt
+                defClothes.tex1="DeusExCharacters.Skins.UNATCOTroopTex2";
+                defClothes.tex2="";
+            } else {
+                //Tiffany Savage shirt
+                defClothes.tex1="DeusExCharacters.Skins.TiffanySavageTex1";
+                defClothes.tex2="";
+            }
+            break;
+        case CT_TrenchShirt:
+            //Vanilla JC shirt
+            defClothes.tex1="DeusExCharacters.Skins.JCDentonTex1";
+            defClothes.tex2="";
+            break;
+        case CT_Pants:
+            //Default JC pants
+            defClothes.tex1="DeusExCharacters.Skins.JCDentonTex3";
+            defClothes.tex2="";
+            break;
+        case CT_Skirt:
+            //WIB Skirt
+            defClothes.gender=G_Female;
+            defClothes.tex1="DeusExCharacters.Skins.WIBTex1";
+            defClothes.tex2="DeusExCharacters.Skins.WIBTex1";
+            break;
+        case CT_Jacket:
+            //Default JC Jacket
+            defClothes.tex1="DeusExCharacters.Skins.JCDentonTex2";
+            defClothes.tex2="DeusExCharacters.Skins.JCDentonTex2";
+            break;
+        case CT_Helmet:
+            //No helmet
+            defClothes.tex1="DeusExItems.Skins.PinkMaskTex";
+            defClothes.tex2="";
+            break;
+        case CT_Glasses:
+            //Default JC Glasses
+            defClothes.tex1="DeusExCharacters.Skins.FramesTex4";
+            defClothes.tex2="DeusExCharacters.Skins.LensesTex5";
+            break;
+        default:
+            //Who knows what this is, PinkMaskTex is *probably* safe
+            defClothes.tex1="DeusExItems.Skins.PinkMaskTex";
+            defClothes.tex2="DeusExItems.Skins.PinkMaskTex";
+            break;
+    }
+
+    return defClothes;
+}
+
 simulated function Clothes PickRandomClothingByType(EClothesType type, bool female)
 {
     local Clothes choices[ArrayCount(clothing)];
@@ -317,6 +379,9 @@ simulated function Clothes PickRandomClothingByType(EClothesType type, bool fema
             choices[numChoices++]=clothing[i];
         }
     }
+
+    //How did we pick this clothing type and not end up with any clothing choices?
+    if (numChoices==0) return DefaultClothingByType(type,female);
 
     return choices[Rand(numChoices)];
 }
