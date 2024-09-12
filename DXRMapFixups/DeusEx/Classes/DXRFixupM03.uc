@@ -16,6 +16,7 @@ function PostFirstEntryMapFixes()
     local Actor a;
     local bool RevisionMaps;
     local #var(prefix)NanoKey key;
+    local AllianceTrigger at;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -27,6 +28,16 @@ function PostFirstEntryMapFixes()
             a = AddActor(class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));
             Barrel1(a).SkinColor = SC_Explosive;
             a.BeginPlay();
+        }
+        break;
+
+    case "03_NYC_MOLEPEOPLE":
+        if (dxr.flags.settings.starting_map >= 35) {
+            foreach AllActors(class'AllianceTrigger', at, 'surrender') {
+                at.Trigger(None, None);
+                break;
+            }
+            dxr.flagbase.SetBool('M03MeetTerroristLeader_Played', true);
         }
         break;
 
