@@ -11,20 +11,34 @@ simulated function DoActivate()
     local float useEnergy;
 
     // DXRando: instantly use 1 energy to prevent abuse
-    useEnergy = 1;
+    if(Level.LevelAction == LEVACT_None) {
+        useEnergy = 1;
+    }
     if(Player.Energy < useEnergy) {
         Deactivate();
     } else {
-        if(Level.LevelAction == LEVACT_None) {
-            Player.Energy -= useEnergy;
-        }
+        Player.Energy -= useEnergy;
+        Reset();
+    }
+}
+
+function Reset()
+{
+    //Don't actually reset if the aug is already inactive
+    if (!bIsActive) return;
+
+    // reset without burning 1 energy
+    if(class'MenuChoice_FixGlitches'.default.enabled) {
+        Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
+        Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
+    } else {
         Player.GroundSpeed *= GetAugLevelValue();
         Player.JumpZ *= GetAugLevelValue();
-        if ( Level.NetMode != NM_Standalone )
-        {
-            if ( Human(Player) != None )
-                Human(Player).UpdateAnimRate( GetAugLevelValue() );
-        }
+    }
+    if ( Level.NetMode != NM_Standalone )
+    {
+        if ( Human(Player) != None )
+            Human(Player).UpdateAnimRate( GetAugLevelValue() );
     }
 }
 

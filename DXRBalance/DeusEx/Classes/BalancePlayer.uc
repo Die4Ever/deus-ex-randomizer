@@ -536,6 +536,11 @@ function CreateDrone()
     loc.Z = BaseEyeHeight;
     loc += Location;
     aDrone = Spawn(class'SpyDrone', Self,, loc, ViewRotation);
+    SetDroneStats();
+}
+
+function SetDroneStats()
+{
     if (aDrone != None)
     {
         //aDrone.Speed = 3 * spyDroneLevelValue;
