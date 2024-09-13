@@ -39,6 +39,11 @@ simulated function DXRando GetDXR()
     return dxr;
 }
 
+static function DXRBase Find()
+{
+    return class'DXRando'.default.dxr.FindModule(default.class);
+}
+
 simulated event PostNetBeginPlay()
 {
     Super.PostNetBeginPlay();

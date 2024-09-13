@@ -34,10 +34,7 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
     local int newHint;
     local string hint, details;
 
-    foreach AllActors(class'DXRando', dxr) {
-        hints = DXRHints(dxr.FindModule(class'DXRHints'));
-        break;
-    }
+    hints = DXRHints(class'DXRHints'.static.Find());
 
     con = ConListItem(ConListItems).con;
 

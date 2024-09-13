@@ -631,7 +631,7 @@ function SetWatchFlags() {
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         if (dxr.flagbase.GetBool('M03PlayerKilledAnna')) {
-            class'DXREventsBase'.static.MarkBingo(dxr, "LebedevLived");
+            MarkBingo(dxr, "LebedevLived");
         }
         break;
     case "05_NYC_UNATCOMJ12LAB":
@@ -888,7 +888,7 @@ function SetWatchFlags() {
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         WatchFlag('GreenKnowsAboutDowd');
-        class'DXREventsBase'.static.MarkBingo(dxr, "MaggieLived");
+        MarkBingo(dxr, "MaggieLived");
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -1049,7 +1049,7 @@ function SetWatchFlags() {
                 wib.bImportant = true;
         }
         WatchFlag('SilhouetteHostagesAllRescued');
-        class'DXREventsBase'.static.MarkBingo(dxr, "AimeeLeMerchantLived");
+        MarkBingo(dxr, "AimeeLeMerchantLived");
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
@@ -1506,7 +1506,7 @@ function bool FailIfCorpseNotHeld(class<#var(DeusExPrefix)Carcass> carcClass, st
 
     p = player();
     if (POVCorpse(p.inHand) == None || string(carcClass) != POVCorpse(p.inHand).carcClassString) {
-        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, goal);
+        MarkBingoAsFailed(goal);
         return true;
     }
     return false;
@@ -1531,11 +1531,11 @@ function MarkBingoFailedSpecial()
         // the last Terrorist left is Miguel
         progress = data.GetBingoProgress("Terrorist_ClassDead", maxProgress);
         if (maxProgress - progress > 1) {
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "Terrorist_ClassDead");
+            MarkBingoAsFailed("Terrorist_ClassDead");
         }
         progress = data.GetBingoProgress("Terrorist_ClassUnconscious", maxProgress);
         if (maxProgress - progress > 1) {
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "Terrorist_ClassUnconscious");
+            MarkBingoAsFailed("Terrorist_ClassUnconscious");
         }
 
         break;
@@ -1554,9 +1554,9 @@ function MarkBingoFailedSpecial()
     case "09_NYC_GRAVEYARD":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         if (! HasItem(player(), class'VialAmbrosia')) {
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "GaveDowdAmbrosia");
+            MarkBingoAsFailed("GaveDowdAmbrosia");
         }
-        class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "ChangeClothes");
+        MarkBingoAsFailed("ChangeClothes");
         break;
     case "10_PARIS_CATACOMBS":
     case "11_PARIS_EVERETT":
@@ -1568,8 +1568,8 @@ function MarkBingoFailedSpecial()
     switch (dxr.dxInfo.missionNumber) {
     case 6:
         if (dxr.flagbase.GetBool('Have_ROM')) {
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_Dead");
-            class'DXREventsBase'.static.MarkBingoAsFailed(dxr, "MarketKid_BindNameUnconscious");
+            MarkBingoAsFailed("MarketKid_Dead");
+            MarkBingoAsFailed("MarketKid_BindNameUnconscious");
         }
         break;
     }
@@ -2104,7 +2104,7 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function int GetBingoFailedEvents(DXRando dxr, string eventname, out string failed[5])
+static function int GetBingoFailedEvents(string eventname, out string failed[5])
 {
     local int num_failed;
 
@@ -2177,7 +2177,7 @@ static function int GetBingoFailedEvents(DXRando dxr, string eventname, out stri
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             return num_failed;
         case "GilbertRenton_Dead":
-            if (dxr.localURL != "04_NYC_HOTEL") {
+            if (class'DXRando'.default.dxr.localURL != "04_NYC_HOTEL") {
                 failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             }
             failed[num_failed++] = "GaveRentonGun";

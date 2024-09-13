@@ -36,7 +36,7 @@ simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
 
 // for goals that can be detected as impossible by an event
-static function int GetBingoFailedEvents(DXRando dxr, string eventname, out string failed[5]);
+static function int GetBingoFailedEvents(string eventname, out string failed[5]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
 
@@ -510,7 +510,7 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
     }
 
     _MarkBingo(eventname);
-    MarkBingoFailedEvents(dxr, eventname);
+    MarkBingoFailedEvents(eventname);
 
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
@@ -594,7 +594,7 @@ static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Ac
         class'DXRHints'.static.AddDeath(dxr, player);
     else {
         // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
-        ev = DXREvents(dxr.FindModule(class'DXREvents'));
+        ev = DXREvents(Find());
         if(ev != None)
             ev.died = true;
     }
@@ -625,13 +625,10 @@ static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Ac
 
 static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local DXRando dxr;
     local DXREvents e;
-    foreach victim.AllActors(class'DXRando', dxr) break;
 
-    if(dxr != None)
-        e = DXREvents(dxr.FindModule(class'DXREvents'));
-    log(e$".AddPawnDeath "$dxr$", "$victim);
+    e = DXREvents(Find());
+    log(e$".AddPawnDeath, "$victim);
     if(e != None)
         e._AddPawnDeath(victim, Killer, damageType, HitLocation);
 }
@@ -719,7 +716,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     }
 
     // note that this treats both kills and knockouts the same
-    MarkBingoFailedEvents(dxr, victim.bindName $ "_Dead");
+    MarkBingoFailedEvents(victim.bindName $ "_Dead");
 
     if(!victim.bImportant)
         return;
@@ -1352,23 +1349,23 @@ function _MarkBingoAsFailed(coerce string eventname)
     }
 }
 
-static function MarkBingoAsFailed(DXRando dxr, coerce string eventname)
+static function MarkBingoAsFailed(coerce string eventname)
 {
     local DXREvents e;
-    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    e = DXREvents(Find());
     if (e != None) {
         e._MarkBingoAsFailed(eventname);
     }
 }
 
-static function MarkBingoFailedEvents(DXRando dxr, coerce string eventname)
+static function MarkBingoFailedEvents(coerce string eventname)
 {
     local string failed[5];
     local int i, num_failed;
 
-    num_failed = GetBingoFailedEvents(dxr, eventname, failed);
+    num_failed = GetBingoFailedEvents(eventname, failed);
     for (i = 0; i < num_failed; i++) {
-        MarkBingoAsFailed(dxr, failed[i]);
+        MarkBingoAsFailed(failed[i]);
     }
 }
 

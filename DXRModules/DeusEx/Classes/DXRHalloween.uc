@@ -112,7 +112,7 @@ static function float GetZombieTime(#var(DeusExPrefix)Carcass carc)
 {
     local DXRHalloween h;
 
-    h = DXRHalloween(class'DXRando'.default.dxr.FindModule(class'DXRHalloween'));
+    h = DXRHalloween(Find());
     if(h == None) return carc.Level.TimeSeconds;
     return h._GetZombieTime(carc);
 }

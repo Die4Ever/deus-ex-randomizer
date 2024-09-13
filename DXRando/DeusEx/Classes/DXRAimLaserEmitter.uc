@@ -99,7 +99,7 @@ static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
         return False;
     }
 
-    cameraModes = DXRCameraModes(player.DXRFindModule(class'DXRCameraModes'));
+    cameraModes = DXRCameraModes(class'DXRCameraModes'.static.Find());
     if (cameraModes == None || cameraModes.aimLaserDisabled) {
         return False;
     }
