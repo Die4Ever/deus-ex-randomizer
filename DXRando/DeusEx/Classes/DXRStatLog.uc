@@ -25,7 +25,6 @@ function LogPickup(Inventory Item, Pawn Other)
 //Called any
 function LogItemActivate(Inventory Item, Pawn Other)
 {
-    local DXRando dxr;
     local string className;
 
     if ( (Item == None) )
@@ -47,7 +46,5 @@ function LogItemActivate(Inventory Item, Pawn Other)
     //Strip any package names for simplicity
     className = class'DXRInfo'.static.ReplaceText(className,"DeusEx.","");
     className = class'DXRInfo'.static.ReplaceText(className,"HX.HX","");
-    foreach AllActors(class'DXRando',dxr){
-        class'DXREvents'.static.MarkBingo(dxr,className$"_Activated");
-    }
+    class'DXREvents'.static.MarkBingo(className$"_Activated");
 }

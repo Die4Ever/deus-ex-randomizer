@@ -232,7 +232,6 @@ function ClearViewedImageFlags()
 function MarkViewed(DataVaultImage newImage)
 {
     local string bingoName;
-    local DXRando dxr;
 
     if (newImage!=None && newImage.bPlayerViewedImage==False){
         bingoName = newImage.imageDescription;
@@ -242,9 +241,7 @@ function MarkViewed(DataVaultImage newImage)
         bingoName = class'DXRInfo'.static.ReplaceText(bingoName,",","");
         bingoName = "ImageOpened_"$bingoName;
 
-        foreach newImage.AllActors(class'DXRando', dxr) {
-            class'DXREvents'.static.MarkBingo(dxr,bingoName);
-        }
+        class'DXREvents'.static.MarkBingo(bingoName);
 
         newImage.bPlayerViewedImage = True;
     }

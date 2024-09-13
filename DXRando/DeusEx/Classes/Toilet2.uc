@@ -27,9 +27,7 @@ function Frob(actor Frobber, Inventory frobWith)
     if (player!=None){
         if (!bAlreadyUsed){
             bAlreadyUsed = true;
-            foreach AllActors(class'DXRando', dxr) {
-                class'DXREvents'.static.MarkBingo(dxr,"FlushUrinal");
-            }
+            class'DXREvents'.static.MarkBingo("FlushUrinal");
         }
     }
 }

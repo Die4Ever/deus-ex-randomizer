@@ -61,13 +61,11 @@ function DoBingoThing()
         return;
     }
 
-    foreach AllActors(class'DXRando',dxr){
-        class'DXREvents'.static.MarkBingo(dxr,bingoEvent);
-        break;
-    }
+    class'DXREvents'.static.MarkBingo(bingoEvent);
 
     FinishedMax--;
     if(FinishedMax == 0) {
+        dxr = class'DXRando'.default.dxr;
         dxr.flagbase.SetBool(FinishedFlag, true,, 999);
     }
 

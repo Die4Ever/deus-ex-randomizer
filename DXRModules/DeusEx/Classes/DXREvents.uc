@@ -631,7 +631,7 @@ function SetWatchFlags() {
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         if (dxr.flagbase.GetBool('M03PlayerKilledAnna')) {
-            MarkBingo(dxr, "LebedevLived");
+            MarkBingo("LebedevLived");
         }
         break;
     case "05_NYC_UNATCOMJ12LAB":
@@ -888,7 +888,7 @@ function SetWatchFlags() {
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         WatchFlag('GreenKnowsAboutDowd');
-        MarkBingo(dxr, "MaggieLived");
+        MarkBingo("MaggieLived");
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -1049,7 +1049,7 @@ function SetWatchFlags() {
                 wib.bImportant = true;
         }
         WatchFlag('SilhouetteHostagesAllRescued');
-        MarkBingo(dxr, "AimeeLeMerchantLived");
+        MarkBingo("AimeeLeMerchantLived");
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');

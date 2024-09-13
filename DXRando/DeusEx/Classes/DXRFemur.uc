@@ -2,11 +2,7 @@ class DXRFemur injects #var(prefix)BoneFemur;
 
 function Destroyed()
 {
-    local DXRando dxr;
-
-    foreach AllActors(class'DXRando', dxr) {
-        class'DXREvents'.static.MarkBingo(dxr,"FightSkeletons");
-    }
+    class'DXREvents'.static.MarkBingo("FightSkeletons");
 
     Super.Destroyed();
 }

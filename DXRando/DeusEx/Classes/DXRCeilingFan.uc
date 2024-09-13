@@ -79,19 +79,13 @@ function ToggleFan()
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-    local DXRando dxr;
-
     Super.Frob(Frobber, frobWith);
 
     ToggleFan();
 
-    dxr = class'DXRando'.default.dxr;
-    if (dxr == None)
-        return;
-
     if (!bAlreadyUsed){
         bAlreadyUsed=true;
-        class'DXREvents'.static.MarkBingo(dxr,"NotABigFan");
+        class'DXREvents'.static.MarkBingo("NotABigFan");
     }
 }
 

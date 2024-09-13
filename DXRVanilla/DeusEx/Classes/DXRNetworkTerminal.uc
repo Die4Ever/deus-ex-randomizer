@@ -130,11 +130,7 @@ function CloseKnownAccountsWindow()
 
 function ComputerHacked()
 {
-    local DXRando dxr;
     Super.ComputerHacked();
 
-    foreach Player.AllActors(class'DXRando',dxr){
-        class'DXREvents'.static.MarkBingo(dxr,"ComputerHacked");
-        break;
-    }
+    class'DXREvents'.static.MarkBingo("ComputerHacked");
 }

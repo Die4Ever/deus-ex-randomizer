@@ -77,7 +77,7 @@ function Frob(actor Frobber, Inventory frobWith)
 
         if (!bAlreadyUsed){
             bAlreadyUsed=true;
-            class'DXREvents'.static.MarkBingo(dxr,"ChangeClothes");
+            class'DXREvents'.static.MarkBingo("ChangeClothes");
         }
 
     }

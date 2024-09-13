@@ -766,7 +766,7 @@ static function PaulDied(DXRando dxr)
     js.static.End(j);
     dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
-    MarkBingo(dxr, "PaulDenton_Dead");
+    MarkBingo("PaulDenton_Dead");
 }
 
 static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int health)
@@ -782,7 +782,7 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
-    MarkBingo(dxr, "SavedPaul");
+    MarkBingo("SavedPaul");
 }
 
 static function BeatGame(DXRando dxr, int ending)
@@ -846,7 +846,7 @@ static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer pl
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, player, j);
-    MarkBingo(dxr, "ExtinguishFire");
+    MarkBingo("ExtinguishFire");
 }
 
 static function GeneralEventData(DXRando dxr, out string j)
@@ -1322,11 +1322,11 @@ function _MarkBingo(coerce string eventname)
     }
 }
 
-static function MarkBingo(DXRando dxr, coerce string eventname)
+static function MarkBingo(coerce string eventname)
 {
     local DXREvents e;
-    e = DXREvents(dxr.FindModule(class'DXREvents'));
-    log(e$".MarkBingo "$dxr$", "$eventname);
+    e = DXREvents(Find());
+    log(e$".MarkBingo "$eventname);
     if(e != None) {
         e._MarkBingo(eventname);
     }
