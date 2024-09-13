@@ -192,17 +192,13 @@ function bool IsAprilFools()
 function bool IsOctoberUnlocked()
 {
     // Happy Halloween! unlock gamemodes forever and other features
-    if(#defined(debug)) return true;
-    if(VersionOlderThan(VersionNumber(), 3,2,0,0)) return false;
-    if(!VersionIsStable()) return true;// allow alphas and betas of v3.2 to get access early
-    return Level.Month >= 10 || Level.Year > 2024;
+    return true;
 }
 
 function bool IsOctober()
 {
     // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
     if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
-    if(VersionOlderThan(VersionNumber(), 3,2,0,0)) return false;
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     return Level.Month == 10;
 }
