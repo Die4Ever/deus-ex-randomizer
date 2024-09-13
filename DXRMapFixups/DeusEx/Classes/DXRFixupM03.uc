@@ -16,6 +16,7 @@ function PostFirstEntryMapFixes()
     local Actor a;
     local bool RevisionMaps;
     local #var(prefix)NanoKey key;
+    local AllianceTrigger at;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -27,6 +28,16 @@ function PostFirstEntryMapFixes()
             a = AddActor(class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));
             Barrel1(a).SkinColor = SC_Explosive;
             a.BeginPlay();
+        }
+        break;
+
+    case "03_NYC_MOLEPEOPLE":
+        if (dxr.flags.settings.starting_map >= 35) {
+            foreach AllActors(class'AllianceTrigger', at, 'surrender') {
+                at.Trigger(None, None);
+                break;
+            }
+            dxr.flagbase.SetBool('M03MeetTerroristLeader_Played', true);
         }
         break;
 
@@ -420,6 +431,8 @@ function AnyEntryMapFixes()
     local ConEvent ce;
     local ConEventSpeech ces;
     local bool RevisionMaps;
+    local #var(prefix)SecurityCamera cam;
+    local #var(prefix)AutoTurret turret;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -454,6 +467,16 @@ function AnyEntryMapFixes()
 
             phone.ConBindEvents();
         }
+
+        if (dxr.flagbase.GetBool('MeetLebedev_Played') || dxr.flagbase.GetBool('JuanLebedev_Dead')) {
+            foreach AllActors(class'#var(prefix)SecurityCamera', cam) {
+                cam.UnTrigger(None, None);
+            }
+            foreach AllActors(class'#var(prefix)AutoTurret', turret) {
+                turret.UnTrigger(None, None);
+            }
+        }
+
         break;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":

@@ -74,9 +74,9 @@ class DXRandoPawnTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\BlackCatTex1.pcx"  NAME="BlackCatTex1"  GROUP="DXRandoPawns"
 
 //Mr X
-#exec TEXTURE IMPORT NAME=MrXFace  FILE=Textures\MrXFace.pcx GROUP=DXRandoPawns
-#exec TEXTURE IMPORT NAME=MrXPants FILE=Textures\MrXPants.pcx GROUP=DXRandoPawns
-#exec TEXTURE IMPORT NAME=MrXShirt FILE=Textures\MrXShirt.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=MrHFace  FILE=Textures\MrHFace.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=MrHPants FILE=Textures\MrHPants.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=MrHShirt FILE=Textures\MrHShirt.pcx GROUP=DXRandoPawns
 
 //New glasses
 #exec TEXTURE IMPORT NAME=FramesShutters FILE=Textures\FramesShutters.pcx GROUP=DXRandoPawns FLAGS=2

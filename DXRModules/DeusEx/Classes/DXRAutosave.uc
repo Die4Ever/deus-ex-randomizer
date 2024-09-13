@@ -19,6 +19,7 @@ const ExtraSafe = 4;
 const Ironman = 5; // never autosaves, TODO: maybe some fancy logic to autosave on quit and autodelete on load?
 const LimitedSaves = 6; // need an item to save
 const FixedSaves = 7; // can only save at computers, AND need an item
+const UnlimitedFixedSaves = 8; // need computer, but no item
 
 function CheckConfig()
 {
@@ -41,6 +42,12 @@ function PreFirstEntry()
     l("PreFirstEntry() " $ dxr.dxInfo.MissionNumber);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
         if(dxr.flags.autosave > 0 && dxr.flags.autosave < Ironman) {
+            NeedSave();
+        }
+        else if((dxr.flags.autosave == LimitedSaves || dxr.flags.autosave == FixedSaves || dxr.flags.autosave == UnlimitedFixedSaves)
+               && dxr.flagbase.GetInt('Rando_lastmission')==0)
+        {
+            // save at the start
             NeedSave();
         }
     }
@@ -152,34 +159,68 @@ function Tick(float delta)
     }
 }
 
-static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOnly)
+static function string GetSaveFailReason(DeusExPlayer player)
 {
     local DXRFlags f;
     local DeusExPickup item;
 
     f = Human(player).GetDXR().flags;
-    if( f == None ) return true;
+    if( f == None ) return "";
+
     if( f.autosave == Hardcore || f.autosave == Ironman ) {
-        player.ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
-        return false;
+        return "Manual saving is not allowed in this game mode! Good Luck!";
     }
 
     if( f.autosave == LimitedSaves || f.autosave == FixedSaves ) {
         item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
         if(item == None || item.NumCopies <= 0) {
-            player.ClientMessage("You need an MCU to save! Good Luck!",, true);
-            return false;
+            return "You need a Memory Containment Unit to save! Good Luck!";
         }
     }
-    if( f.autosave == FixedSaves ) {
+    if( f.autosave == FixedSaves || f.autosave == UnlimitedFixedSaves ) {
         if(Computers(player.FrobTarget) == None) {
-            player.ClientMessage("You need to have a computer highlighted to save! Good Luck!",, true);
-            return false;
+            return "You need to have a computer highlighted to save! Good Luck!";
         }
     }
 
-    if(!checkOnly && player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
+    return "";
+}
+
+static function bool CanSaveDuringInfolinks(DeusExPlayer player)
+{
+    local DXRFlags f;
+    f = Human(player).GetDXR().flags;
+    if( f == None ) return false;
+
+    return class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f);
+}
+
+static function SkipInfolinksForSave(DeusExPlayer player)
+{
+    local DXRFlags f;
+    f = Human(player).GetDXR().flags;
+    if( f == None ) return;
+
+    if(player.dataLinkPlay != None && class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(f)) {
         player.dataLinkPlay.FastForward();
+    }
+}
+
+static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOnly)
+{
+    local string reason;
+
+    reason = GetSaveFailReason(player);
+
+    if (reason!=""){
+        if (!checkOnly){
+            player.ClientMessage(reason,, true);
+        }
+        return false;
+    }
+
+    if(!checkOnly) {
+        SkipInfolinksForSave(player);
     }
 
     return true;
@@ -254,13 +295,13 @@ function doAutosave()
 
     saveSlot = -3;
     saveName = "DXR " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation;
-    lastMission = dxr.flags.f.GetInt('Rando_lastmission');
+    lastMission = dxr.flagbase.GetInt('Rando_lastmission');
 
     isDifferentMission = lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
     if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
         saveSlot = 0;
     }
-    dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
+    dxr.flagbase.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
     info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
     bNeedSave = false;

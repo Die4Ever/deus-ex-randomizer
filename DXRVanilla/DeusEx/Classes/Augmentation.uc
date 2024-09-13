@@ -181,11 +181,11 @@ function bool IncLevel()
         return False;
     }
 
-    if (bIsActive && AugDrone(self) != None) {
+    CurrentLevel++;
+
+    if (bIsActive) {
         Reset();
     }
-
-    CurrentLevel++;
 
     Player.ClientMessage(UpgradeMessage());
 }

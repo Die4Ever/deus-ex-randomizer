@@ -35,6 +35,11 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
     Super.Frag(class'JackOLanternFragment',Momentum,DSize*1.5,NumFrags*4);
 }
 
+function ResetScaleGlow()
+{// don't darken when damaged
+    ScaleGlow = default.ScaleGlow;
+}
+
 defaultproperties
 {
      FragType=class'JackOLanternFragment'
@@ -42,10 +47,10 @@ defaultproperties
      Mesh=LodMesh'DeusExDeco.Poolball'
      MultiSkins(0)=Texture'PumpkinTex'
      CollisionRadius=10
-     CollisionHeight=8
+     CollisionHeight=9
      DrawScale=6
-     Mass=15.000000
-     Buoyancy=2.000000
+     Mass=7
+     Buoyancy=9
      LightType=LT_SubtlePulse
      LightPeriod=45
      LightEffect=LE_FireWaver
@@ -53,6 +58,6 @@ defaultproperties
      LightHue=33
      LightSaturation=175
      LightRadius=5
-     ScaleGlow=2.0;
+     ScaleGlow=2.0
      bUnlit=True
 }

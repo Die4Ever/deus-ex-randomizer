@@ -688,6 +688,32 @@ function SupportActor(Actor standingActor)
     }
 }
 
+function PlayFootStep()
+{
+    local float shakeRadius, shakeMagnitude, shakeAmount, hdDist;
+    local vector shakeStrength;
+    local HangingDecoration hd;
+    local CCResidentEvilCam cam;
+
+    Super.PlayFootStep();
+
+    //Heavy footsteps can make hanging decorations sway
+    if (Mass > 400)
+    {
+        shakeRadius = FClamp((Mass-400)/600, 0, 1.0) * ((Mass/100.0)*500.0);
+        shakeMagnitude = FClamp((Mass-400)/1600, 0, 1.0);
+
+        foreach RadiusActors(class'HangingDecoration',hd,shakeRadius){
+            shakeAmount = FClamp(1.0-(VSize(Location-hd.Location)/shakeRadius), 0, 1.0) * shakeMagnitude;
+            shakeStrength = velocity * shakeAmount;
+            hd.CalculateHit(Location,shakeStrength);
+            hd.bSwaying=True;
+        }
+        foreach RadiusActors(class'CCResidentEvilCam', cam, shakeRadius) {
+            cam.JoltView();// TODO: also make this work for 3rd person
+        }
+    }
+}
 
 state Sitting
 {

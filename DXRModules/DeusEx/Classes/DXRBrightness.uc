@@ -15,6 +15,7 @@ function int GetSavedBrightnessBoost()
 function PreFirstEntry()
 {
     local ZoneInfo Z;
+    local Light lght;
 
     Super.PreFirstEntry();
 
@@ -27,6 +28,11 @@ function PreFirstEntry()
 
     if(!class'MenuChoice_Fog'.default.enabled) {
         ConsoleCommand("set ZoneInfo bFogZone false");
+        foreach AllActors(class'Light', lght) {
+            lght.VolumeBrightness = 0;
+            lght.VolumeFog = 0;
+            lght.VolumeRadius = 0;
+        }
     }
 }
 

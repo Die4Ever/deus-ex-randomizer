@@ -150,7 +150,7 @@ simulated function bool IncrementBingoProgress(string event)
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
         if(!(bingo[i].event ~= event)) continue;
-        if(bingo_missions_masks[i] == FAILED_MISSION_MASK) {
+        if((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) {
             log(self$".IncrementBingoProgress("$event$") not incrementing because the goal is already marked as failed");
             break;
         }
@@ -169,10 +169,10 @@ simulated function bool MarkBingoAsFailed(string event)
     for(i=0; i<ArrayCount(bingo); i++) {
         if(!(bingo[i].event ~= event)) continue;
 
-        if (bingo_missions_masks[i] == FAILED_MISSION_MASK) return false;
+        if ((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) return false;
         if (bingo[i].progress >= bingo[i].max) return false; // don't mark a goal as failed if it's already marked as succeeded
 
-        bingo_missions_masks[i] = FAILED_MISSION_MASK;
+        bingo_missions_masks[i] = bingo_missions_masks[i] | FAILED_MISSION_MASK;
         bingo[i].progress = 0;
         log("MarkBingoAsFailed "$event);
         ExportBingoState();
@@ -182,14 +182,19 @@ simulated function bool MarkBingoAsFailed(string event)
     return false;
 }
 
-simulated function bool IsBingoFailed(string event)
+simulated function CheckForExpiredBingoGoals(int missionNum)
 {
     local int i;
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando', dxr) {break;}
+
     for(i=0; i<ArrayCount(bingo); i++) {
-        if(!(bingo[i].event ~= event)) continue;
-        return bingo_missions_masks[i] == FAILED_MISSION_MASK;
+        if ((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) continue; //Skip some extra looping in MarkBingoAsFailed
+        if (class'DXREvents'.static.BingoActiveMission(missionNum, bingo_missions_masks[i])==-1){
+            class'DXREvents'.static.MarkBingoAsFailed(dxr,bingo[i].event);
+        }
     }
-    return false;
 }
 
 simulated function string GetBingoDescription(string event)

@@ -671,13 +671,14 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.repairbots = 0;
         moresettings.empty_medbots = 0;
     }
-    else if(IsHalloweenMode()) {
+    else if(gamemode == HalloweenMode) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
-        autosave = 7;// fixed saves
+        //autosave = 7;// fixed saves, HACK: we set this in DXRMenuSelectDifficulty so you can override it
     }
 
     if (IsHalloweenMode()){
         clothes_looting = 1;
+        settings.speedlevel = 0;// in DXRLoadouts we override level 0 speed to mean lvl 1 run silent
     } else {
         clothes_looting = 0;
     }
@@ -708,11 +709,11 @@ function int GameModeIdForSlot(int slot)
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
     }
-    if(slot--==0) return SpeedrunMode;
     if(slot--==0) return ZeroRando;
     if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
     if(slot--==0) return RandoMedium;
+    if(slot--==0) return SpeedrunMode;
     if(slot--==0) return SeriousSam;
     if(IsOctoberUnlocked() && slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
@@ -824,6 +825,10 @@ simulated function AddDXRCredits(CreditsWindow cw)
 
 simulated function TutorialDisableRandomization(bool enableSomeRando)
 {
+    if(!IsReducedRando()) {
+        gamemode = 0;// no weird game modes in the training
+    }
+
     // a little bit of safe rando just to get a taste?
     if(enableSomeRando) {
         // training final
@@ -985,7 +990,7 @@ function int ScoreFlags()
     //settings.spoilers = 1;
     score -= settings.health;
     score -= settings.energy;
-    score -= moresettings.remove_paris_mj12;
+    score -= remove_paris_mj12;
     return score * 5;// lazy multiply by 5 at the end
 }
 
@@ -999,15 +1004,15 @@ function ExtendedTests()
     Super.ExtendedTests();
 
     gamemode = 0;
-    testint(moresettings.remove_paris_mj12, 0, "check remove_paris_mj12");
-    moresettings.remove_paris_mj12 = 50;
+    testint(moresettings.splits_overlay, 0, "check splits_overlay");
+    moresettings.splits_overlay = 50;// testing for struct size
     SetDifficulty(0);
     testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
     testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
     testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
-    testint(moresettings.remove_paris_mj12, 0, "SetDifficulty check remove_paris_mj12");
+    testint(moresettings.splits_overlay, 0, "SetDifficulty check splits_overlay");
     SetDifficulty(1);
     testint(settings.health, 100, "SetDifficulty check health");
     testint(settings.energy, 100, "SetDifficulty check energy");

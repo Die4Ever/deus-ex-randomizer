@@ -4,7 +4,7 @@ defaultproperties
 {
     Mesh=None
     DrawType=DT_None
-    CollisionRadius=6
+    CollisionRadius=8
     CollisionHeight=12
     Physics=PHYS_None
     bCollideWorld=False

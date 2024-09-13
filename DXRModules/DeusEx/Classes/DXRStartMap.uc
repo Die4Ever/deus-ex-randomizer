@@ -66,7 +66,7 @@ function PreFirstEntry()
         break;
 
     case "12_VANDENBERG_CMD":
-        if (dxr.flags.settings.starting_map >= 129) {
+        if (dxr.flags.settings.starting_map >= 121) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
                 dxMover.InterpolateTo(1, 0.0);
                 break;
@@ -428,7 +428,7 @@ static function string _GetStartMap(int start_map_val, optional out string frien
             friendlyName = "Vandenberg (Command)";
             return "12_Vandenberg_Cmd";
         case 121:
-            friendlyName = "Vandenberg (Inside Command)";
+            friendlyName = "Vandenberg (Inside Commsat)";
             return "12_Vandenberg_Cmd#commstat";
         case 122:
             friendlyName = "Vandenberg (Tunnels)";
@@ -571,10 +571,11 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
             MarkConvPlayed("DL_LebedevKill_Played", bFemale);
-            // fallthrough
-        case 36:
-        case 35:
-        case 34:
+        case 36: // fallthrough
+            GiveKey(player, 'Sewerdoor', "Sewer Door");
+        case 35: // fallthrough
+            GiveKey(player, 'MoleRestroomKey', "Molepeople Bathroom Key");
+        case 34: // fallthrough
         case 33:
             AddNote(player, bEmptyNotes, "6653 -- Code to the phone-booth entrance to mole-people hideout.");
             MarkConvPlayed("dl_batterypark", bFemale); // We're dropping you off in Battery Park

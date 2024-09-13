@@ -26,7 +26,12 @@ function InitFor(Actor Other)
                 itemName = msgAnimalCarcass;
             }
         } else {
-            if (bNotDead) {
+            if(InStr(ScriptedPawn(Other).FamiliarName, "Zombie")!=-1) {
+                itemName = class'DXRInfo'.static.ReplaceText(ScriptedPawn(Other).FamiliarName, "'s Zombie", "");
+                itemName = itemName $ " (Dead?)";
+                bNotDead = false;// zombies always resurrect even if you knock them out?
+            }
+            else if (bNotDead) {
                 itemName = ScriptedPawn(Other).FamiliarName $ " (Unconscious)";
             } else {
                 itemName = ScriptedPawn(Other).FamiliarName $ " (Dead)";
@@ -121,7 +126,7 @@ function DropKeys()
 
 function Destroyed()
 {
-    _DropItems('Inventory', vect(0,0,0), vect(-2, -2, 3) );
+    _DropItems('Inventory', vect(0,0,0), vect(-0.2, -0.2, 1) );
     Super.Destroyed();
 }
 
@@ -153,8 +158,10 @@ function Frob(Actor Frobber, Inventory frobWith)
     local Pawn P;
     local bool bFoundSomething;
     local DeusExPlayer player;
-    local POVCorpse corpse;
+    local bool foundClothes;
+#ifndef vmd
     local DXRFashionManager fashion;
+#endif
 
     //log("DeusExCarcass::Frob()--------------------------------");
 
@@ -168,7 +175,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 #ifndef vmd
     fashion = class'DXRFashionManager'.static.GiveItem(#var(PlayerPawn)(player));
     if (fashion.IngestCarcass(class<#var(DeusExPrefix)Carcass>(Class))){
-        player.ClientMessage("Looted some clothes!");
+        foundClothes=true;
     }
 #endif
 
@@ -180,29 +187,11 @@ function Frob(Actor Frobber, Inventory frobWith)
         // and since the PutInHand propagation doesn't just work, this is work we don't need to do.
         // Were you to do it, you'd need to check the respawning issue, destroy the POVcorpse it creates and point to the
         // one in inventory (like I did when giving the player starting inventory).
-        if ((Inventory == None) && (player != None) && (player.inHand == None) && (Level.NetMode == NM_Standalone))
+        if ((Inventory == None) && (foundClothes==False) && (player != None) && (player.inHand == None) && (Level.NetMode == NM_Standalone))
         {
             if (!bInvincible)
             {
-                corpse = Spawn(class'POVCorpse');
-                if (corpse != None)
-                {
-                    // destroy the actual carcass and put the fake one
-                    // in the player's hands
-                    corpse.carcClassString = String(Class);
-                    corpse.KillerAlliance = KillerAlliance;
-                    corpse.KillerBindName = KillerBindName;
-                    corpse.Alliance = Alliance;
-                    corpse.bNotDead = bNotDead;
-                    corpse.bEmitCarcass = bEmitCarcass;
-                    corpse.CumulativeDamage = CumulativeDamage;
-                    corpse.MaxDamage = MaxDamage;
-                    corpse.CorpseItemName = itemName;
-                    corpse.CarcassName = CarcassName;
-                    corpse.Frob(player, None);
-                    corpse.SetBase(player);
-                    player.PutInHand(corpse);
-                    bQueuedDestroy=True;
+                if(class'POVCorpse'.static.Create(player, DeusExCarcass(self)) != None) {
                     Destroy();
                     return;
                 }
@@ -238,6 +227,14 @@ function Frob(Actor Frobber, Inventory frobWith)
     }
 
     //log("  bFoundSomething = " $ bFoundSomething);
+
+    #ifndef vmd
+    if (foundClothes){
+        DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(fashion,1);
+        player.ClientMessage("You looted some clothes!");
+        bFoundSomething=true;
+    }
+    #endif
 
     if (!bFoundSomething)
         P.ClientMessage(msgEmpty,, true);

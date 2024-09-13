@@ -1,5 +1,7 @@
 class DXREventsBase extends DXRActorsBase;
 
+const FAILED_MISSION_MASK = 1;
+
 var bool died;
 var name watchflags[32];
 var int num_watchflags;
@@ -78,8 +80,20 @@ function PreFirstEntry()
             SetWatchFlags();
             break;
     }
-
     MarkBingoFailedSpecial();
+    MarkBingoFailedGeneric();
+}
+
+//If a goal naturally expires (due to passing the last mission mask bit), actively mark the goal as failed
+function MarkBingoFailedGeneric()
+{
+    local PlayerDataItem data;
+    local int curMission;
+
+    curMission = dxr.dxInfo.missionNumber;
+    if (curMission == 98) return;
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    data.CheckForExpiredBingoGoals(curMission);
 }
 
 function PostFirstEntry()
@@ -1219,6 +1233,10 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         }
     }
 
+    //Make sure any impossible goals are marked as failed
+    MarkBingoFailedSpecial();
+    MarkBingoFailedGeneric();
+
     // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();
 }
@@ -1287,7 +1305,7 @@ function _MarkBingo(coerce string eventname)
 
     if( nowbingos > previousbingos ) {
         time = class'DXRStats'.static.GetTotalTime(dxr);
-        if(!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0) {
+        if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
             player().ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
         }
 
@@ -1302,7 +1320,7 @@ function _MarkBingo(coerce string eventname)
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
         CheckBingoWin(dxr,nowbingos);
-    } else if(!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0) {
+    } else if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
@@ -1328,7 +1346,7 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.MarkBingoAsFailed(eventname) && (!dxr.flags.IsZeroRando() || dxr.flags.settings.bingo_win>0)) {
+    if (data.MarkBingoAsFailed(eventname) && class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
         l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
         player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
     }
@@ -1354,23 +1372,6 @@ static function MarkBingoFailedEvents(DXRando dxr, coerce string eventname)
     }
 }
 
-function bool _IsBingoFailed(coerce string eventname)
-{
-    local PlayerDataItem data;
-    data = class'PlayerDataItem'.static.GiveItem(player());
-    return data.IsBingoFailed(eventname);
-}
-
-static function bool IsBingoFailed(DXRando dxr, coerce string eventname)
-{
-    local DXREvents e;
-    e = DXREvents(dxr.FindModule(class'DXREvents'));
-    if (e != None) {
-        return e._IsBingoFailed(eventname);
-    }
-    return false;
-}
-
 function AddBingoScreen(CreditsWindow cw)
 {
     local CreditsBingoWindow cbw;
@@ -1389,6 +1390,7 @@ function AddDXRCredits(CreditsWindow cw)
 static function int BingoActiveMission(int currentMission, int missionsMask)
 {
     local int missionAnded, minMission;
+    if ((missionsMask & FAILED_MISSION_MASK) != 0) return -1; //-1=impossible/failed
     if(missionsMask == 0) return 1;// 1==maybe
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded != 0) return 2;// 2==true
@@ -1417,7 +1419,7 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
 #endif
 
     if(missionsMask < (1<<minMission)) {
-        return -1;// impossible in future missions
+        return -1;// goal is failed
     }
 
     return 0;// 0==false
@@ -1466,6 +1468,7 @@ function RunTests()
     testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
     testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");
     testint(BingoActiveMission(2, (1<<1)), -1, "BingoActiveMission too late");
+    testint(BingoActiveMission(2, FAILED_MISSION_MASK), -1, "BingoActiveMission failed");
     testint(BingoActiveMission(15, (1<<15)), 2, "BingoActiveMission");
     testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
 }

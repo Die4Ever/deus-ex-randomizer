@@ -13,6 +13,17 @@ function PostPostBeginPlay()
     Description = default.Description;
 }
 
+function Reset()
+{
+    //Don't actually reset if the aug is already inactive
+    if (!bIsActive) return;
+
+    Player.spyDroneLevel = CurrentLevel;
+    Player.spyDroneLevelValue = GetAugLevelValue();
+
+    Human(Player).SetDroneStats();
+}
+
 // original values went from 10 to 50, but we also adjust the multipliers in BalancePlayer.uc
 defaultproperties
 {

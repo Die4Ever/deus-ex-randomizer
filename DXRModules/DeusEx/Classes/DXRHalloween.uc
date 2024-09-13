@@ -4,14 +4,15 @@ var #var(DeusExPrefix)Carcass carcs[256];
 var float times[256];
 var int num_carcs;
 
-function FirstEntry()
+function PostFirstEntry()
 {
     local #var(prefix)WHPiano piano;
-    Super.FirstEntry();
+    Super.PostFirstEntry();
 
     if(dxr.flags.IsHalloweenMode()) {
-        // Mr. X is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
-        class'MrX'.static.Create(self);
+        // Mr. H is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
+        class'MrH'.static.Create(self);
+        MapFixes();
     }
     if(IsOctober()) {
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
@@ -27,7 +28,7 @@ function ReEntry(bool IsTravel)
 {
     if(IsTravel && dxr.flags.IsHalloweenMode()) {
         // recreate him if you leave the map and come back, but not if you load a save
-        class'MrX'.static.Create(self);
+        class'MrH'.static.Create(self);
     }
 }
 
@@ -65,9 +66,16 @@ function CheckCarcasses()
     }
 
     foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
-        if(#var(prefix)RatCarcass(carc) != None || #var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None) {
-            // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
-            continue;
+        if(carc.Tag != 'ForceZombie') {
+            if(#var(prefix)PigeonCarcass(carc) != None || #var(prefix)SeagullCarcass(carc) != None
+               || #var(prefix)RatCarcass(carc) != None || #var(prefix)CatCarcass(carc) != None)
+            {
+                // skip critter carcasses, TODO: maybe find the PawnGenerator and increase its PawnCount so we can have zombie rats and birds without there being infinity of them? or track a maximum number of zombie critters here? cats have an override on the Attacking state
+                continue;
+            }
+            if(carc.bNotDead || carc.bInvincible || carc.bHidden) {
+                continue;
+            }
         }
         for(i=0; i < num_carcs; i++) {
             if(carcs[i] == carc) {
@@ -76,28 +84,75 @@ function CheckCarcasses()
         }
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
-            times[num_carcs] = Level.TimeSeconds;
+            if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
+                times[num_carcs] = Level.TimeSeconds + 3 + FRand()*2;
+            } else {
+                times[num_carcs] = Level.TimeSeconds + 15 + FRand()*10;
+            }
             carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;
         }
     }
 }
 
+#ifdef injections
+function float _GetZombieTime(#var(DeusExPrefix)Carcass carc)
+{
+    local int i;
+
+    for(i=0; i < num_carcs; i++) {
+        if(carcs[i] == carc) {
+            return times[i];
+        }
+    }
+    return Level.TimeSeconds;
+}
+
+static function float GetZombieTime(#var(DeusExPrefix)Carcass carc)
+{
+    local DXRHalloween h;
+
+    h = DXRHalloween(class'DXRando'.default.dxr.FindModule(class'DXRHalloween'));
+    if(h == None) return carc.Level.TimeSeconds;
+    return h._GetZombieTime(carc);
+}
+
+function _SetZombieTime(#var(DeusExPrefix)Carcass carc, float time)
+{
+    local int i;
+
+    if(!dxr.flags.IsHalloweenMode()) return;
+
+    for(i=0; i < num_carcs; i++) {
+        if(carcs[i] == carc) {
+            times[i] = FMin(times[i], time);
+            return;
+        }
+    }
+
+    carcs[num_carcs] = carc;
+    times[num_carcs] = time;
+    carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
+    num_carcs++;
+}
+
+static function SetZombieTime(#var(DeusExPrefix)Carcass carc, float time)
+{
+    local DXRHalloween h;
+
+    h = DXRHalloween(class'DXRando'.default.dxr.FindModule(class'DXRHalloween'));
+    if(h == None) return;
+    h._SetZombieTime(carc, time);
+}
+#endif
+
 function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
 {
-    local float ZombieTime;
-
     // return true to compress the array
     if(carc == None) return true;
 
-    ZombieTime = 20;
-    if(#var(prefix)MuttCarcass(carc) != None || #var(prefix)DobermanCarcass(carc) != None) {
-        // special sauce for dogs?
-        ZombieTime = 2;
-    }
-
     // wait for Zombie Time!
-    if(time + ZombieTime > Level.TimeSeconds) return false;
+    if(time > Level.TimeSeconds) return false;
 
     return ResurrectCorpse(self, carc);
 }
@@ -145,6 +200,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local int i;
     local Inventory item, nextItem;
     local bool removeItem;
+    local string s;
 
     livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
@@ -168,7 +224,14 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         sp.FamiliarName = pawnname;
         sp.UnfamiliarName = sp.FamiliarName;
     } else {
-        sp.FamiliarName = sp.FamiliarName $ " Zombie";
+        if(#defined(injections)) {
+            s = ReplaceText(carc.itemName, " (Dead)", "");
+            s = ReplaceText(s, " (Dead?)", "");
+            sp.FamiliarName = s $ "'s Zombie";
+        }
+        else {
+            sp.FamiliarName = sp.FamiliarName $ " Zombie";
+        }
         sp.UnfamiliarName = sp.FamiliarName;
     }
     sp.bInvincible = false; // If they died, they can't have been invincible
@@ -189,7 +252,8 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
 
     //Make it hostile to EVERYONE.  This thing has seen the other side
     sp.SetAlliance('Resurrected');
-    module.HateEveryone(sp, 'MrX');
+    sp.ChangeAlly('Resurrected', 1, true, false);
+    module.HateEveryone(sp, 'MrH');
     module.RemoveFears(sp);
     if(#var(prefix)Animal(sp) != None) {
         #var(prefix)Animal(sp).bFleeBigPawns = false;
@@ -199,10 +263,8 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.bCanStrafe = false;// messes with melee attack animations, especially on commandos
 
     //Transfer inventory from carcass back to the pawn
-    item = carc.Inventory;
-    do
+    for(item = carc.Inventory; item != None; item = nextItem)
     {
-        item = carc.Inventory;
         nextItem = item.Inventory;
         carc.DeleteInventory(item);
         if (DeusExWeapon(item) != None) {// Zombies don't use weapons
@@ -215,9 +277,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         else {
             sp.AddInventory(item);
         }
-        item = nextItem;
     }
-    until (item == None);
 
     //Give the resurrected guy a zombie swipe (a guaranteed melee weapon)
     module.GiveItem(sp,class'WeaponZombieSwipe');
@@ -235,36 +295,99 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     return True;
 }
 
+function MapFixes()
+{
+    local PathNode p;
+    local #var(DeusExPrefix)Carcass carc;
+    local class<#var(DeusExPrefix)Carcass> carcclass;
+    local float dist;
+
+    switch(dxr.localURL) {
+    case "09_NYC_GRAVEYARD":
+        SetSeed("DXRHalloween MapFixes graveyard bodies");
+        foreach AllActors(class'PathNode', p) {
+            // only the region with tombstones
+            if(p.Location.Z < 10 || p.Location.Z > 20) continue;
+            if(p.Location.X / coords_mult.X > 300) continue;
+
+            // exclude the paved path
+            if(p.name=='PathNode26' || p.name=='PathNode12' || p.name=='PathNode70' || p.name=='PathNode69' || p.name=='PathNode68') continue;
+
+            if(chance_single(80)) continue;
+
+            switch(rng(7)){
+            case 0:
+                carcclass = class'#var(prefix)BumFemaleCarcass';
+                break;
+            case 1:
+                carcclass = class'#var(prefix)BumMale2Carcass';
+                break;
+            case 2:
+                carcclass = class'#var(prefix)BumMale3Carcass';
+                break;
+            case 3:
+                carcclass = class'#var(prefix)BumMaleCarcass';
+                break;
+            case 4:
+                carcclass = class'#var(prefix)JunkieFemaleCarcass';
+                break;
+            case 5:
+                carcclass = class'#var(prefix)JunkieMaleCarcass';
+                break;
+            case 6:
+                carcclass = class'#var(prefix)Female4Carcass';
+                break;
+            default:
+                carcclass = class'#var(prefix)BumMaleCarcass';
+                break;
+            }
+            carc = spawn(carcclass,, 'ForceZombie', p.Location);
+            if(carc==None) continue;
+            carc.bHidden = true;// ForceZombie tag allows zombies to spawn out of hidden and bNotDead carcasses
+            carc.bNotDead=true;// prevent blood
+            RandomizeSize(carc);
+        }
+        break;
+    }
+}
+
 function MakeCosmetics()
 {
     local NavigationPoint p;
     local Light lgt;
     local vector locs[4096];
     local int i, num, slot;
+    local SkyZoneInfo z;
+    local #var(DeusExPrefix)Carcass carc;
 
-    SetSeed("MakeSpiderWebs");
+    foreach AllActors(class'SkyZoneInfo', z) {
+        z.AmbientBrightness = 5;
+        z.AmbientSaturation = 100;
+        z.AmbientHue = 255;
+    }
 
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
         locs[num++] = p.Location;
-        if(rngb()) continue;
-        SpawnSpiderweb(p.Location);
-    }
-    // spiderwebs near lights?
-    foreach AllActors(class'Light', lgt) {
-        if(lgt.Region.Zone.bWaterZone) continue;
-        locs[num++] = lgt.Location;
-    }
-    // random order gives better results
-    for(i=0; i<num/2; i++) {
-        slot = rng(num);
-        SpawnSpiderweb(locs[slot]);
     }
 
     SetSeed("MakeJackOLanterns");
     for(i=0; i<num/30; i++) {
         slot = rng(num);
         SpawnJackOLantern(locs[slot]);
+    }
+
+    // spiderwebs near lights?
+    foreach AllActors(class'Light', lgt) {
+        if(lgt.Region.Zone.bWaterZone) continue;
+        locs[num++] = lgt.Location;
+    }
+
+    SetSeed("MakeSpiderWebs");
+    // random order gives better results
+    for(i=0; i<num/2; i++) {
+        slot = rng(num);
+        SpawnSpiderweb(locs[slot]);
     }
 }
 
@@ -333,10 +456,11 @@ function SpawnJackOLantern(vector loc)
     num = rng(6);
     for(i=0; i<num; i++) {
         r2.Yaw = rng(20000) - 10000;
-        loc = wall1.loc + (wall1.norm << r2) * 32;
+        loc = wall1.loc + (wall1.norm << r2) * 64;
         jacko = spawn(class'DXRJackOLantern',,, loc, r);
         size = rngf() + 0.6;
         jacko.DrawScale *= size;
+        jacko.SetCollisionSize(jacko.CollisionRadius*size, jacko.CollisionHeight*size);
     }
 }
 
@@ -346,13 +470,14 @@ function SpawnSpiderweb(vector loc)
     local float dist, size;
     local rotator rot;
     local ZoneInfo zone;
+    local class<Spiderweb> webClass;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
     loc.Z += rngf() * 80.0;// 5 feet upwards
 
     size = rngf() + 0.5;
-    if(!GetSpiderwebLocation(loc, rot, size * 10)) return;
+    if(!GetSpiderwebLocation(loc, rot, size * 12)) return;
 
     zone = GetZone(loc);
     if (zone.bWaterZone || SkyZoneInfo(zone)!=None){
@@ -366,7 +491,14 @@ function SpawnSpiderweb(vector loc)
     }
 
     rot.roll = rng(65536);
-    web = Spawn(class'Spiderweb',,, loc, rot);
+
+    switch(rng(3)){
+        case 0: webClass=class'Spiderweb1'; break;
+        case 1: webClass=class'Spiderweb2'; break;
+        case 2: webClass=class'Spiderweb3'; break;
+        default: webClass=class'Spiderweb1'; break; //just in case
+    }
+    web = Spawn(webClass,,, loc, rot);
     web.DrawScale = size;
 }
 
@@ -415,29 +547,59 @@ function bool GetSpiderwebLocation(out vector loc, out rotator rot, float size)
     ceiling_or_floor.loc.X = wall1.loc.X;
     ceiling_or_floor.loc.Y = wall1.loc.Y;
 
-    // TODO: ensure ceiling/floor is still with us
-
     distrange.max = 16*50;
     wall2 = wall1;
     if(chance_single(40) || !NearestCornerSearchZ(wall2, distrange, wall1.norm, 16*3, ceiling_or_floor.loc, size) ) {
         // just 2 axis (ceiling/floor + wall1)
+        loc = wall1.loc;
         rot = Rotator(wall1.norm);
+
+        // ensure ceiling/floor is still with us
+        distrange.max = size * 2;
+        if(found_ceiling) {
+            ceiling.loc = loc;
+            found_ceiling = NearestCeiling(ceiling, distrange);
+        }
+        if(found_floor) {
+            floor.loc = loc;
+            found_floor = NearestFloor(floor, distrange);
+        }
+
         if( found_ceiling ) rot.pitch -= 4096;
         else if( found_floor ) rot.pitch += 4096;
-        loc = wall1.loc;
+        else loc -= wall1.norm * (size * 0.9);
+
         return true;
     }
 
-    norm = Normal((wall1.norm + wall2.norm) / 2);
-
-    rot = Rotator(norm);
-    if( found_ceiling ) rot.pitch -= 4096;
-    else if( found_floor ) rot.pitch += 4096;
-    //norm = vector(rot);
-
     loc = wall2.loc;
 
-    // TODO: ensure wall1 is still with us
+    // ensure wall1 is still with us
+    distrange.max = size*2;
+    wall1.loc = wall2.loc - (wall1.norm*(size*2));
+    if(Trace(wall1.loc, wall1.norm, wall1.loc, loc, false, vect(1,1,1))==None) {
+        norm = wall2.norm;
+    } else {
+        norm = Normal((wall1.norm + wall2.norm) / 2);
+    }
+
+    rot = Rotator(norm);
+
+    // ensure ceiling/floor is still with us
+    distrange.max = size*2;
+    if(found_ceiling) {
+        ceiling.loc = loc;
+        found_ceiling = NearestCeiling(ceiling, distrange);
+    }
+    if(found_floor) {
+        floor.loc = loc;
+        found_floor = NearestFloor(floor, distrange);
+    }
+
+    if( found_ceiling ) rot.pitch -= 4096;
+    else if( found_floor ) rot.pitch += 4096;
+    else if(norm == wall2.norm) loc -= wall2.norm * (size * 0.9);
+
     return true;
 }
 

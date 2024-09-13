@@ -5,6 +5,8 @@ var string AdvancedBtnTitle, AdvancedBtnMessage;
 var string ExtremeBtnTitle, ExtremeBtnMessage;
 var string ImpossibleBtnTitle, ImpossibleBtnMessage;
 
+var int gamemode_enum, autosave_enum;
+
 enum ERandoMessageBoxModes
 {
     RMB_MaxRando,
@@ -36,7 +38,7 @@ function BindControls(optional string action)
 
     f = GetFlags();
 
-    NewMenuItem("Game Mode", "Choose a game mode!");
+    gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<20; i++) {
         temp = f.GameModeIdForSlot(i);
         if(temp==999999) continue;
@@ -80,16 +82,17 @@ function BindControls(optional string action)
 
 #ifdef injections
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
-    NewMenuItem("Autosave", "Saves the game in case you die!");
-    EnumOption("Every Entry", autosave.EveryEntry, f.autosave);
-    EnumOption("First Entry", autosave.FirstEntry, f.autosave);
+    autosave_enum = NewMenuItem("Save Behavior", "Saves the game in case you die!");
+    EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave);
+    EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave);
     EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave);
     EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave);
     if(f.IsOctoberUnlocked()) {
         EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
-        EnumOption("Fixed Saves", autosave.FixedSaves, f.autosave);
+        EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
+        EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
     }
-    EnumOption("Off", autosave.Disabled, f.autosave);
+    EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave);
 #endif
 
     NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $BR$ "See their website crowdcontrol.live");
@@ -161,6 +164,37 @@ function BindControls(optional string action)
             HandleNewGameButton();
         }
     }
+}
+
+function string SetEnumValue(int e, string text)
+{
+    // HACK: this allows you to override the autosave option instead of SetDifficulty forcing it by game mode
+    Super.SetEnumValue(e, text);
+    if(e == gamemode_enum && #defined(injections)) {
+        if(InStr(text, "Halloween Mode")==0 || InStr(text, "WaltonWare Halloween")==0)
+        {
+            Super.SetEnumValue(autosave_enum, "Limited Fixed Saves");
+        }
+        else if(InStr(text, "Hardcore")==-1 && InStr(text, "Horde")==-1)
+        {
+            Super.SetEnumValue(autosave_enum, "Autosave Every Entry");
+        }
+    }
+}
+
+function EnumListAddButton(DXREnumList list, string title, string val, string prev)
+{
+    if(title == "Game Mode") {
+        if(InStr(prev, "WaltonWare")==-1 && InStr(val, "WaltonWare")!=-1) {
+            list.CreateLabel("WaltonWare modes");
+        }
+        else if(InStr(prev, "Zero Rando")==-1 && InStr(val, "Zero Rando")!=-1) {
+            list.CreateLabel("Reduced Randomization modes");
+        } else if(prev == "Randomizer Medium") {
+            list.CreateLabel("Other game modes");
+        }
+    }
+    list.AddButton(val);
 }
 
 function HandleNewGameButton()

@@ -460,6 +460,14 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         goalsToLocations[num_goals] = loc;
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
+
+        for(a=0; a<_num_locs; a++) {
+            if(!IsComboAllowed(loc, availLocs[a])) {
+                _num_locs--;
+                availLocs[a] = availLocs[_num_locs];
+                a--;
+            }
+        }
     }
 
     if(num_goals == 0) return true;
@@ -488,6 +496,8 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
             }
         }
 
+        if(_num_goal_locs==0) return false;
+
         r = rng(_num_goal_locs);
         a = goalLocs[r];
         loc = availLocs[a];
@@ -500,19 +510,28 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
 
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
-    }
 
-    // check mutual exclusions
-    for(i=0; i<num_mututally_exclusives; i++) {
-        for(g1=0; g1<num_goals; g1++) {
-            // num_goals is the player start, so we use <= instead of <
-            for(g2=g1+1; g2<=num_goals; g2++) {
-                if( mutually_exclusive[i].L1 == goalsToLocations[g1] && mutually_exclusive[i].L2 == goalsToLocations[g2] )
-                    return false;
-                if( mutually_exclusive[i].L2 == goalsToLocations[g1] && mutually_exclusive[i].L1 == goalsToLocations[g2] )
-                    return false;
+        for(a=0; a<_num_locs; a++) {
+            if(!IsComboAllowed(loc, availLocs[a])) {
+                _num_locs--;
+                availLocs[a] = availLocs[_num_locs];
+                a--;
             }
         }
+    }
+
+    return true;
+}
+
+function bool IsComboAllowed(int loc1, int loc2)
+{
+    local int i;
+
+    for(i=0; i<num_mututally_exclusives; i++) {
+        if( mutually_exclusive[i].L1 == loc1 && mutually_exclusive[i].L2 == loc2 )
+            return false;
+        if( mutually_exclusive[i].L2 == loc1 && mutually_exclusive[i].L1 == loc2 )
+            return false;
     }
     return true;
 }

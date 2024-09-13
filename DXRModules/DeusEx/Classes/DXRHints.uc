@@ -61,6 +61,28 @@ simulated function InitHints()
         }
     }
 
+    if(dxr.flags.IsHalloweenMode()) {
+        AddHint("Mr. H cannot die, run away!");
+        AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
+    }
+    if(dxr.flags.autosave == 3 && !dxr.flags.IsHordeMode()) {
+        AddHint("You're not allowed to manually save,", "you only get an autosave when first entering a map.");
+    }
+    else if(dxr.flags.autosave == 5) {
+        AddHint("You're not allowed to save the game.", "You really need to try not dying!");
+    }
+    else if(dxr.flags.autosave == 6) {
+        AddHint("You need a Memory Containment Unit to save the game.", "Search every map you can for them.");
+        AddHint("You need a Memory Containment Unit to save the game.", "Remember you can leave them on the floor and grab them later.");
+    }
+    else if(dxr.flags.autosave == 7) {
+        AddHint("You need a Memory Containment Unit to save the game at a computer.", "Search every map you can for them.");
+        AddHint("You need a Memory Containment Unit to save the game at a computer.", "Remember you can leave them on the floor and grab them later.");
+    }
+    else if(dxr.flags.autosave == 8) {
+        AddHint("You need to highlight a computer to save your game.", "You do know where they all are, right?");
+    }
+
     if(mission <= 3) {
         if(dxr.flags.settings.enemiesrandomized > 0) {
             AddHint("Some NSF terrorists are visibly augmented.", "Watch out for their special capabilities!");

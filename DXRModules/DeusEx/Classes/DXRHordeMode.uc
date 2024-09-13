@@ -27,18 +27,17 @@ var config vector starting_location;
 var DXRMachines machines;
 
 struct EnemyChances {
-    var string type;
+    var class<ScriptedPawn> type;
     var float difficulty;
     var int minWave;
     var int maxWave;
-    var int chance;
+    var float chance;
 };
-var config EnemyChances enemies[32];
-var class<ScriptedPawn> enemyclasses[32];
+var EnemyChances enemies[64];
 
 struct ItemChances {
     var string type;
-    var int chance;
+    var float chance;
     var float lastDamageTime;
 };
 var config ItemChances items[32];
@@ -59,124 +58,6 @@ function CheckConfig()
         difficulty_per_wave = 1.75;
         difficulty_first_wave = 3;
         wine_bottles_per_enemy = 2;
-
-        for(i=0; i < ArrayCount(enemies); i++) {
-            enemies[i].type = "";
-            enemies[i].chance = 0;
-            enemies[i].minWave = 1;
-            enemies[i].maxWave = 99999;
-            enemies[i].difficulty = 1;
-        }
-        i=0;
-        enemies[i].type = "Terrorist";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).NSFClone1";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).NSFClone2";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).NSFClone3";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).NSFClone4";
-        enemies[i].chance = 3;
-        i++;
-
-        enemies[i].type = "UNATCOTroop";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).UNATCOClone1";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).UNATCOClone2";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).UNATCOClone3";
-        enemies[i].chance = 3;
-        i++;
-        enemies[i].type = "#var(package).UNATCOClone4";
-        enemies[i].chance = 3;
-        i++;
-
-        enemies[i].type = "ThugMale";
-        enemies[i].chance = 10;
-        i++;
-        enemies[i].type = "ThugMale2";
-        enemies[i].chance = 10;
-        i++;
-        enemies[i].type = "ThugMale3";
-        enemies[i].chance = 10;
-        i++;
-
-        enemies[i].type = "MJ12Commando";
-        enemies[i].chance = 6;
-        enemies[i].minWave = 3;
-        enemies[i].difficulty = 2.5;
-        i++;
-
-        enemies[i].type = "MJ12Troop";
-        enemies[i].chance = 2;
-        enemies[i].minWave = 2;
-        enemies[i].difficulty = 2;
-        i++;
-        enemies[i].type = "#var(package).MJ12Clone1";
-        enemies[i].chance = 2;
-        enemies[i].minWave = 3;
-        enemies[i].difficulty = 2.2;
-        i++;
-        enemies[i].type = "#var(package).MJ12Clone2";
-        enemies[i].chance = 2;
-        enemies[i].minWave = 2;
-        enemies[i].difficulty = 2;
-        i++;
-        enemies[i].type = "#var(package).MJ12Clone2";
-        enemies[i].chance = 2;
-        enemies[i].minWave = 2;
-        enemies[i].difficulty = 2;
-        i++;
-        enemies[i].type = "#var(package).MJ12Clone2";
-        enemies[i].chance = 2;
-        enemies[i].minWave = 2;
-        enemies[i].difficulty = 2;
-        i++;
-
-        enemies[i].type = "MIB";
-        enemies[i].chance = 3;
-        enemies[i].minWave = 4;
-        enemies[i].difficulty = 2;
-        i++;
-        enemies[i].type = "WIB";
-        enemies[i].chance = 2;
-        enemies[i].minWave = 4;
-        enemies[i].difficulty = 2;
-        i++;
-        enemies[i].type = "SpiderBot2";
-        enemies[i].chance = 2;
-        enemies[i].minWave = 5;
-        enemies[i].difficulty = 2.5;
-        i++;
-        enemies[i].type = "MilitaryBot";
-        enemies[i].chance = 1;
-        enemies[i].minWave = 10;
-        enemies[i].difficulty = 5;
-        i++;
-        enemies[i].type = "SecurityBot2";
-        enemies[i].chance = 1;
-        enemies[i].minWave = 7;
-        enemies[i].difficulty = 4;
-        i++;
-        enemies[i].type = "SecurityBot3";
-        enemies[i].chance = 1;
-        enemies[i].minWave = 7;
-        enemies[i].difficulty = 4;
-        i++;
-        enemies[i].type = "SecurityBot4";
-        enemies[i].chance = 1;
-        enemies[i].minWave = 7;
-        enemies[i].difficulty = 4;
-
         for(i=0; i<ArrayCount(items); i++) {
             items[i].type="";
             items[i].chance=0;
@@ -274,9 +155,194 @@ function CheckConfig()
     map_name = Caps(map_name);
     Super.CheckConfig();
 
-    for(i=0; i < ArrayCount(enemies); i++) {
-        if(enemies[i].type == "") continue;
-        enemyclasses[i] = class<ScriptedPawn>(GetClassFromString(enemies[i].type, class'ScriptedPawn'));
+    for(i=0; i<ArrayCount(enemies); i++) {
+        enemies[i].difficulty = 1;
+        enemies[i].minWave = 1;
+        enemies[i].maxWave = 9999999;
+    }
+    i=0;
+    enemies[i].type = class'#var(prefix)Terrorist';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'NSFClone1';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'NSFClone2';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'NSFClone3';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'NSFClone4';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'NSFCloneAugShield1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'NSFCloneAugTough1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'NSFCloneAugStealth1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+
+    enemies[i].type = class'#var(prefix)UNATCOTroop';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'UNATCOClone1';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'UNATCOClone2';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'UNATCOClone3';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'UNATCOClone4';
+    enemies[i].chance = 3;
+    i++;
+    enemies[i].type = class'UNATCOCloneAugShield1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'UNATCOCloneAugTough1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'UNATCOCloneAugStealth1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+
+    enemies[i].type = class'#var(prefix)ThugMale';
+    enemies[i].chance = 4;
+    i++;
+    enemies[i].type = class'#var(prefix)ThugMale2';
+    enemies[i].chance = 4;
+    i++;
+    enemies[i].type = class'#var(prefix)ThugMale3';
+    enemies[i].chance = 4;
+    i++;
+
+    enemies[i].type = class'#var(prefix)MJ12Commando';
+    enemies[i].chance = 4;
+    enemies[i].minWave = 3;
+    enemies[i].difficulty = 2.5;
+    i++;
+
+    enemies[i].type = class'#var(prefix)MJ12Troop';
+    enemies[i].chance = 2;
+    enemies[i].minWave = 2;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'MJ12Clone1';
+    enemies[i].chance = 2;
+    enemies[i].minWave = 3;
+    enemies[i].difficulty = 2.2;
+    i++;
+    enemies[i].type = class'MJ12Clone2';
+    enemies[i].chance = 2;
+    enemies[i].minWave = 2;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'MJ12Clone2';
+    enemies[i].chance = 2;
+    enemies[i].minWave = 2;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'MJ12Clone2';
+    enemies[i].chance = 2;
+    enemies[i].minWave = 2;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'MJ12CloneAugShield1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'MJ12CloneAugTough1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'MJ12CloneAugStealth1';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2;
+    i++;
+
+    enemies[i].type = class'#var(prefix)MIB';
+    enemies[i].chance = 3;
+    enemies[i].minWave = 4;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'#var(prefix)WIB';
+    enemies[i].chance = 2;
+    enemies[i].minWave = 4;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'#var(prefix)SpiderBot2';
+    enemies[i].chance = 2;
+    enemies[i].minWave = 5;
+    enemies[i].difficulty = 2.5;
+    i++;
+    enemies[i].type = class'#var(prefix)MilitaryBot';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 10;
+    enemies[i].difficulty = 5;
+    i++;
+    enemies[i].type = class'#var(prefix)SecurityBot2';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 7;
+    enemies[i].difficulty = 4;
+    i++;
+    enemies[i].type = class'#var(prefix)SecurityBot3';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 7;
+    enemies[i].difficulty = 4;
+    i++;
+    enemies[i].type = class'#var(prefix)SecurityBot4';
+    enemies[i].chance = 1;
+    enemies[i].minWave = 7;
+    enemies[i].difficulty = 4;
+
+    i++;
+    enemies[i].type = class'#var(prefix)Greasel';
+    enemies[i].chance = 0.2;
+    enemies[i].minWave = 3;
+    enemies[i].difficulty = 2;
+    i++;
+    enemies[i].type = class'#var(prefix)Karkian';
+    enemies[i].chance = 0.2;
+    enemies[i].minWave = 3;
+    enemies[i].difficulty = 2;
+
+    if(dxr.dxInfo.missionNumber == 10 || dxr.dxInfo.missionNumber == 11) {
+        i++;
+        enemies[i].type = class'#var(prefix)Gray';
+        enemies[i].chance = 0.2;
+        enemies[i].minWave = 5;
+        enemies[i].difficulty = 3;
+        i++;
+        enemies[i].type = class'FrenchGray';
+        enemies[i].chance = 0.2;
+        enemies[i].minWave = 5;
+        enemies[i].difficulty = 3;
+    } else {
+        i++;
+        enemies[i].type = class'#var(prefix)Gray';
+        enemies[i].chance = 0.4;
+        enemies[i].minWave = 5;
+        enemies[i].difficulty = 3;
     }
 }
 
@@ -322,7 +388,7 @@ function AnyEntry()
             if(#var(prefix)MapExit(a)!=None && DynamicMapExit(a)==None) {
                 a.Tag='';// disable don't destroy, destroying messes with the navigationpoints graph
                 a.SetCollision(false,false,false);
-            } else if(MrX(a)==None) {// don't delete Mr X...
+            } else if(MrH(a)==None) {// don't delete Mr H...
                 a.Destroy();
             }
         }
@@ -584,7 +650,7 @@ function float GenerateEnemy(DXREnemies dxre)
         if( enemies[i].minWave > wave ) continue;
         if( enemies[i].maxWave < wave ) continue;
         if( chance( enemies[i].chance, r ) ) {
-            c = enemyclasses[i];
+            c = enemies[i].type;
             difficulty = enemies[i].difficulty;
         }
     }
@@ -777,7 +843,8 @@ function vector GetRandomItemPosition()
 
 function RunTests()
 {
-    local int i, total;
+    local int i;
+    local float total;
     Super.RunTests();
 
     total=0;
@@ -789,5 +856,5 @@ function RunTests()
     for(i=0; i < ArrayCount(items); i++ ) {
         total += items[i].chance;
     }
-    testint( total, 100, "config items chances, check total adds up to 100%");
+    testfloat( total, 100, "config items chances, check total adds up to 100%");
 }

@@ -159,13 +159,14 @@ function _InvokeNewGameScreen(float difficulty)
     }
 }
 
-function NewMenuItem(string label, string helptext, optional bool hide_label)
+function int NewMenuItem(string label, string helptext, optional bool hide_label)
 {
     id++;
     labels[id] = label;
     hide_labels[id] = int(hide_label);
     helptexts[id] = helptext;
     log(Self @ label);
+    return id;
 }
 
 function BreakLine()
@@ -606,7 +607,6 @@ function ClickEnum(int iEnum, bool rightClick)
 {
     local EnumBtn e;
     local int numValues, i;
-    local DXREnumList list;
 
     e = enums[iEnum];
 
@@ -617,14 +617,7 @@ function ClickEnum(int iEnum, bool rightClick)
     }
 
     if(numValues > 5) {
-        list = DXREnumList(root.InvokeUIScreen(class'DXREnumList'));
-        list.Init(self, iEnum, labels[iEnum], helptexts[iEnum], e.values[e.value]);
-        for(i=0; i<ArrayCount(e.values); i++) {
-            if(e.values[i] != "") {
-                list.AddButton(e.values[i]);
-            }
-        }
-        list.Finalize();
+        OpenEnumList(iEnum);
         return;
     }
 
@@ -644,6 +637,31 @@ function ClickEnum(int iEnum, bool rightClick)
     }
     e.btn.SetButtonText(e.values[e.value]);
     enums[iEnum] = e;
+}
+
+function OpenEnumList(int iEnum)
+{
+    local DXREnumList list;
+    local EnumBtn e;
+    local int i;
+    local string prev;
+
+    e = enums[iEnum];
+
+    list = DXREnumList(root.InvokeUIScreen(class'DXREnumList'));
+    list.Init(self, iEnum, labels[iEnum], helptexts[iEnum], e.values[e.value]);
+    for(i=0; i<ArrayCount(e.values); i++) {
+        if(e.values[i] != "") {
+            EnumListAddButton(list, labels[iEnum], e.values[i], prev);
+            prev = e.values[i];
+        }
+    }
+    list.Finalize();
+}
+
+function EnumListAddButton(DXREnumList list, string title, string val, string prev)
+{
+    list.AddButton(val);
 }
 
 function int GetSliderValue(MenuUIEditWindow w)

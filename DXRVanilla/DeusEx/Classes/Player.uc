@@ -641,8 +641,6 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	local Inventory previousItemInHand;
 	local Vector X, Y, Z, dropVect;
 	local float size, mult;
-	local DeusExCarcass carc;
-	local class<DeusExCarcass> carcClass;
 	local bool bDropped;
 	local bool bRemovedFromSlots;
 	local int  itemPosX, itemPosY;
@@ -789,41 +787,11 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
         // if we are a corpse, spawn the actual carcass
         if (item.IsA('POVCorpse'))
         {
-            if (POVCorpse(item).carcClassString != "")
-            {
-                carcClass = class<DeusExCarcass>(DynamicLoadObject(POVCorpse(item).carcClassString, class'Class'));
-                if (carcClass != None)
-                {
-                    carc = Spawn(carcClass);
-                    if (carc != None)
-                    {
-                        carc.Mesh = carc.Mesh2;
-                        carc.KillerAlliance = POVCorpse(item).KillerAlliance;
-                        carc.KillerBindName = POVCorpse(item).KillerBindName;
-                        carc.Alliance = POVCorpse(item).Alliance;
-                        carc.bNotDead = POVCorpse(item).bNotDead;
-                        carc.bEmitCarcass = POVCorpse(item).bEmitCarcass;
-                        carc.CumulativeDamage = POVCorpse(item).CumulativeDamage;
-                        carc.MaxDamage = POVCorpse(item).MaxDamage;
-                        carc.itemName = POVCorpse(item).CorpseItemName;
-                        carc.CarcassName = POVCorpse(item).CarcassName;
-                        carc.Velocity = item.Velocity * 0.5;
-                        item.Velocity = vect(0,0,0);
-                        carc.bHidden = False;
-                        carc.SetPhysics(PHYS_Falling);
-                        carc.SetScaleGlow();
-                        if (carc.SetLocation(dropVect))
-                        {
-                            // must circumvent PutInHand() since it won't allow
-                            // things in hand when you're carrying a corpse
-                            SetInHandPending(None);
-                            item.Destroy();
-                            item = None;
-                        }
-                        else
-                            carc.bHidden = True;
-                    }
-                }
+            if(POVCorpse(item).Drop(dropVect) != None) {
+                // must circumvent PutInHand() since it won't allow
+                // things in hand when you're carrying a corpse
+                SetInHandPending(None);
+                item = None;
             }
         }
         else
