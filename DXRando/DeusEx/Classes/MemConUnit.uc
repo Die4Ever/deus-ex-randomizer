@@ -29,8 +29,8 @@ defaultproperties
      CollisionRadius=5.0
      CollisionHeight=9.5
      PickupViewScale=2.0
-     Mass=2.000000
-     Buoyancy=3.000000
+     Mass=7
+     Buoyancy=8
      MultiSkins(0)=Texture'MemConUnitTex1'
      MultiSkins(1)=Texture'DeusExDeco.Skins.AlarmLightTex7'
 }

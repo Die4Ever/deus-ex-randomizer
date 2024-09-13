@@ -49,8 +49,8 @@ defaultproperties
      CollisionRadius=10
      CollisionHeight=9
      DrawScale=6
-     Mass=15.000000
-     Buoyancy=2.000000
+     Mass=7
+     Buoyancy=9
      LightType=LT_SubtlePulse
      LightPeriod=45
      LightEffect=LE_FireWaver

@@ -30,10 +30,13 @@ function CopyAlliances(ScriptedPawn from)
     ChangeAlly('Player', -1, true);// TODO: make this smarter
 }
 
+function Tick(float deltaTime)
+{
+    // do NOT call Super
+    if(Base==None) Destroy();
+}
 
 // do a bunch of nothing
-function Tick(float deltaTime)
-{}
 function PreBeginPlay()
 {}
 function BeginPlay()
