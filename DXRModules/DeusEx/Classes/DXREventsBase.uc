@@ -833,10 +833,13 @@ static function BeatGame(DXRando dxr, int ending)
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
 }
 
-static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer player)
+static function ExtinguishFire(string extinguisher, DeusExPlayer player)
 {
     local string j;
+    local DXRando dxr;
     local class<Json> js;
+
+    dxr = class'DXRando'.default.dxr;
     js = class'Json';
 
     j = js.static.Start("ExtinguishFire");
