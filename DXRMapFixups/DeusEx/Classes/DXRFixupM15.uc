@@ -543,9 +543,6 @@ function PreFirstEntryMapFixes_Page()
                 ast = class'DXRAmbientSoundTrigger'.static.ReplaceAmbientSound(as, 'Gray_rad');
                 ast.CopyValsToUntriggered(ast);
                 ast.UntriggeredSoundVolume /= 3;
-
-                as.AmbientSound = None;
-
                 break;
             }
         }
