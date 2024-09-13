@@ -540,11 +540,7 @@ function PreFirstEntryMapFixes_Page()
     if (VanillaMaps) {
         foreach AllActors(class'AmbientSound', as) {
             if (as.AmbientSound == Sound'Ambient.Ambient.GeigerLoop') {
-                ast = as.Spawn(class'DXRAmbientSoundTrigger',, 'Gray_rad');
-                ast.AmbientSound = as.AmbientSound;
-                ast.SoundRadius = as.SoundRadius;
-                ast.SoundVolume = as.SoundVolume;
-                ast.SoundPitch = as.SoundPitch;
+                ast = class'DXRAmbientSoundTrigger'.static.ReplaceAmbientSound(as, 'Gray_rad');
                 ast.CopyValsToUntriggered(ast);
                 ast.UntriggeredSoundVolume /= 3;
 

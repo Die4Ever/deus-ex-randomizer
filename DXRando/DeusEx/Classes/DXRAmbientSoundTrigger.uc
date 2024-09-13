@@ -31,6 +31,22 @@ function UnTrigger(Actor Other, Pawn Instigator)
     bAlreadyUntriggered = true;
 }
 
+static function DXRAmbientSoundTrigger ReplaceAmbientSound(AmbientSound as, optional name spawnTag, optional Vector spawnLocation)
+{
+    local DXRAmbientSoundTrigger ast;
+
+    if (as == None) return None;
+
+    if (spawnLocation == vect(0.0, 0.0, 0.0)) {
+        spawnLocation = as.Location;
+    }
+    ast = as.Spawn(class'DXRAmbientSoundTrigger',, spawnTag, spawnLocation);
+    ast.CopyValsToTriggered(as);
+    ast.Trigger(None, None);
+
+    return ast;
+}
+
 function CopyValsToTriggered(Actor other)
 {
     TriggeredAmbientSound = other.AmbientSound;
