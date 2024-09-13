@@ -448,6 +448,11 @@ function PreFirstEntryMapFixes_Page()
     local #var(prefix)ScriptedPawn sp;
     local vector cloneCubeLoc[4];
     local string cloneCubeText[4];
+    local AmbientSound as;
+    local DXRAmbientSoundTrigger ast;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     // fix in-fighting
     foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
@@ -529,6 +534,24 @@ function PreFirstEntryMapFixes_Page()
         if (dlt.datalinkTag=='DL_Final_Helios06'){
             dlt.Tag='PasswordCall';
             break;
+        }
+    }
+
+    if (VanillaMaps) {
+        foreach AllActors(class'AmbientSound', as) {
+            if (as.AmbientSound == Sound'Ambient.Ambient.GeigerLoop') {
+                ast = as.Spawn(class'DXRAmbientSoundTrigger',, 'Gray_rad');
+                ast.AmbientSound = as.AmbientSound;
+                ast.SoundRadius = as.SoundRadius;
+                ast.SoundVolume = as.SoundVolume;
+                ast.SoundPitch = as.SoundPitch;
+                ast.CopyValsToUntriggered(ast);
+                ast.UntriggeredSoundVolume /= 3;
+
+                as.AmbientSound = None;
+
+                break;
+            }
         }
     }
 }
