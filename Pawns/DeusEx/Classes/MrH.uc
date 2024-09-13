@@ -5,6 +5,7 @@ var #var(PlayerPawn) player;
 var int FleeHealth;// like MinHealth, but we need more control
 var Actor closestDestPoint, farthestDestPoint;
 var float maxDist; // for iterative farthestDestPoint
+var float proxySize;
 
 static function MrH Create(DXRActorsBase a)
 {
@@ -30,6 +31,8 @@ static function MrH Create(DXRActorsBase a)
     h.HomeLoc = loc;
     h.bUseHome = true;
 
+    h.ResetBasedPawnSize();
+    class'DamageProxy'.static.Create(h, h.proxySize);
     return h;
 }
 
@@ -324,12 +327,39 @@ function PlayFootStep()
     }
 }
 
+function ResetBasedPawnSize()
+{
+    SetBasedPawnSize(Default.CollisionRadius, GetDefaultCollisionHeight() - proxySize);
+}
+
+#ifdef revision
+function EHitLocation HandleDamage(int Damage, Vector hitLocation, Vector offset, name damageType, optional bool bAnimOnly)
+{
+    offset.Z -=  proxySize/2;
+    return Super.HandleDamage(Damage, hitLocation, offset, damageType, bAnimOnly);
+}
+#elseif gmdx
+function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector offset, name damageType, optional Pawn instigatedBy)
+{
+    offset.Z -=  proxySize/2;
+    return Super.HandleDamage(actualDamage, hitLocation, offset, damageType, instigatedBy);
+}
+#else
+function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector offset, name damageType)
+{
+    offset.Z -=  proxySize/2;
+    return Super.HandleDamage(actualDamage, hitLocation, offset, damageType);
+}
+#endif
+
+
 // collision radius 1.0 is 22, height is 50.6
 defaultproperties
 {
     DrawScale=1.3
     CollisionRadius=25
-    CollisionHeight=58
+    CollisionHeight=64
+    proxySize=14
     Mass=1000
     WalkSound=Sound'DeusExSounds.Robot.MilitaryBotWalk'
     Health=2000
