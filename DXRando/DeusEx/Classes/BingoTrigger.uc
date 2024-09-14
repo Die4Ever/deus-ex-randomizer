@@ -128,6 +128,37 @@ static function BingoTrigger Create(Actor a, Name bingoEvent, vector loc, option
 
 }
 
+static function BingoTrigger PeepCreate(Actor a, Name bingoEvent, vector loc, float rad, float height)
+{
+    local BingoTrigger bt;
+
+    bt = Create(a,bingoEvent,loc,rad,height);
+    bt.MakePeepable();
+
+    return bt;
+}
+
+static function BingoTrigger ProxCreate(Actor a, Name bingoEvent, vector loc, float rad, float height, class<Actor> className)
+{
+    local BingoTrigger bt;
+
+    bt = Create(a,bingoEvent,loc,rad,height);
+    bt.MakeClassProximityTrigger(className);
+
+    return bt;
+}
+
+static function BingoTrigger ShootCreate(Actor a, Name bingoEvent, vector loc, float rad, float height)
+{
+    local BingoTrigger bt;
+
+    bt = Create(a,bingoEvent,loc,rad,height);
+    bt.MakeShootingTarget();
+
+    return bt;
+}
+
+
 defaultproperties
 {
      bingoEvent=""

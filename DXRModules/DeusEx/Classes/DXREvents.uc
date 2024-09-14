@@ -335,15 +335,12 @@ function SetWatchFlags() {
         WatchFlag('Shannon_Dead');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
-            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            bt.MakePeepable();
+            class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -402,9 +399,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
-
-        bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
-        bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
+        class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
         break;
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
@@ -469,15 +464,12 @@ function SetWatchFlags() {
         WatchFlag('MeetInjuredTrooper2_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
-            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            bt.MakePeepable();
+            class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -560,8 +552,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         break;
     case "04_NYC_UNDERGROUND":
-        bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
-        bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
+        class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
         break;
     case "05_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
@@ -598,20 +589,15 @@ function SetWatchFlags() {
         WatchFlag('Shannon_Dead');
         WatchFlag('M04MeetWalton_Played');
         if(RevisionMaps){
-            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
-            bt = class'BingoTrigger'.static.Create(self,'PresentForManderley',vectm(960,234,297),350,60);
-            bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
+            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(960,234,297),350,60,class'#var(prefix)JuanLebedevCarcass');
         } else {
-            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
-            bt = class'BingoTrigger'.static.Create(self,'PresentForManderley',vectm(220,4,280),300,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
+            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(220,4,280),300,40,class'#var(prefix)JuanLebedevCarcass');
 
-            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            bt.MakePeepable();
+            class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -677,16 +663,13 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'BrowserHistoryCleared',cp.Location);
 
         if(RevisionMaps){
-            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
         } else {
-            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
-            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            bt.MakePeepable();
+            class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -788,10 +771,9 @@ function SetWatchFlags() {
             maid.BarkBindName = "MaySung";
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
+        class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40);
-        bt.MakeClassProximityTrigger(class'#var(prefix)MaggieChowCarcass');
+        class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
@@ -837,14 +819,9 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'TongsHotTub',water.Location);
 
         //Need to make sure these are slightly out of the wall so that explosions hit them
-        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vectm(-596.3,1826,40),40,100);
-        bt.MakeShootingTarget();
-
-        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vectm(-466.5,1826,40),40,100);
-        bt.MakeShootingTarget();
-
-        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vectm(-337.2,1826,40),40,100);
-        bt.MakeShootingTarget();
+        class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-596.3,1826,40),40,100);
+        class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-466.5,1826,40),40,100);
+        class'BingoTrigger'.static.ShootCreate(self,'TongTargets',vectm(-337.2,1826,40),40,100);
 
         WatchFlag('PaulToTong');
 
@@ -857,9 +834,7 @@ function SetWatchFlags() {
                 break;
             }
         }
-        bt = class'BingoTrigger'.static.Create(self,'HongKongBBall',trig.Location,14,3);
-        bt.MakeClassProximityTrigger(class'#var(prefix)Basketball');
-
+        class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
         break;
     case "06_HONGKONG_MJ12LAB":
         foreach AllActors(class'ZoneInfo',zone){
@@ -908,13 +883,12 @@ function SetWatchFlags() {
         InitPoolBalls();
         break;
     case "08_NYC_HOTEL":
-        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
+        class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         WatchFlag('GreenKnowsAboutDowd');
         break;
     case "08_NYC_UNDERGROUND":
         WatchFlag('GreenKnowsAboutDowd');
-        bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
-        bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
+        class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
         break;
     case "08_NYC_FREECLINIC":
         WatchFlag('GreenKnowsAboutDowd');
@@ -1064,13 +1038,10 @@ function SetWatchFlags() {
             starr.BindName = "Starr";
         }
         if(RevisionMaps){
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(217,-5306,328),50,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(217,-5306,328),50,40,class'#var(prefix)ChefCarcass');
         } else {
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40,class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40,class'#var(prefix)ChefCarcass');
         }
 
         // SoldRenaultZyme
@@ -1139,23 +1110,16 @@ function SetWatchFlags() {
         WatchFlag('M11WaltonHolo_Played');
 
         if (RevisionMaps){
-            bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(3811,-3200,-64),20,15);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(3869,-4256,-64),20,15);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(3387,-3233,-7.9),50,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(4100,-3469,-6.9),50,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3811,-3200,-64),20,15,class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3869,-4256,-64),20,15,class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3387,-3233,-7.9),50,40,class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(4100,-3469,-6.9),50,40,class'#var(prefix)ChefCarcass');
         } else {
-            bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(1578,-2286,-647),50,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(2019,-2256,-704),20,15,class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15,class'#var(prefix)ChefCarcass');
+            class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(1578,-2286,-647),50,40,class'#var(prefix)ChefCarcass');
         }
         bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
 
@@ -1234,16 +1198,13 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergWaterTower',vectm(-1030,80,-1600),350,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'CliffSacrifice',vectm(1915,2795,-3900),10000,40);
-        bt.MakeClassProximityTrigger(class'#var(DeusExPrefix)Carcass');
+        class'BingoTrigger'.static.ProxCreate(self,'CliffSacrifice',vectm(1915,2795,-3900),10000,40,class'#var(DeusExPrefix)Carcass');
 
-        bt = class'BingoTrigger'.static.Create(self,'CliffSacrifice',vectm(-190,-1350,-2760),8000,40);
-        bt.MakeClassProximityTrigger(class'#var(DeusExPrefix)Carcass');
+        class'BingoTrigger'.static.ProxCreate(self,'CliffSacrifice',vectm(-190,-1350,-2760),8000,40,class'#var(DeusExPrefix)Carcass');
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergShaft',vectm(1442.694580,1303.784180,-1755),110,10);
 
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergAntenna',vectm(1800,2590,344.44),40,60);
-        bt.MakeShootingTarget();
+        class'BingoTrigger'.static.ShootCreate(self,'VandenbergAntenna',vectm(1800,2590,344.44),40,60);
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergHazLab',vectm(0,0,0));
         bt.bUntrigger=True;
@@ -1332,15 +1293,9 @@ function SetWatchFlags() {
         //Same location in Revision and Vanilla
         bt = class'BingoTrigger'.static.Create(self,'OceanLabShed',vectm(618.923523,4063.243896,-391.901031),160,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'SubBaseSatellite',vectm(2717.3,3874.84,1342),100,100);
-        bt.MakeShootingTarget();
-
-        bt = class'BingoTrigger'.static.Create(self,'SubBaseSatellite',vectm(2817,3771,1571),100,100);
-        bt.MakeShootingTarget();
-
-        bt = class'BingoTrigger'.static.Create(self,'SubBaseSatellite',vectm(2817,3965,1839),100,100);
-        bt.MakeShootingTarget();
-
+        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2717.3,3874.84,1342),100,100);
+        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3771,1571),100,100);
+        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3965,1839),100,100);
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
