@@ -1,5 +1,5 @@
-class DXRAmbientSoundTrigger extends AmbientSound;
 // Note that this class behaves very differently from AmbientSoundTriggered.
+class DXRAmbientSoundTrigger extends AmbientSound;
 
 var sound TriggeredAmbientSound, UntriggeredAmbientSound;
 var() byte TriggeredSoundRadius, UntriggeredSoundRadius, TriggeredSoundVolume, UntriggeredSoundVolume, TriggeredSoundPitch, UntriggeredSoundPitch;
@@ -41,12 +41,20 @@ static function DXRAmbientSoundTrigger ReplaceAmbientSound(AmbientSound as, opti
         spawnLocation = as.Location;
     }
     ast = as.Spawn(class'DXRAmbientSoundTrigger',, spawnTag, spawnLocation);
-    ast.CopyValsToTriggered(as);
-    ast.Trigger(None, None);
+    ast.CopyVals(as);
+    ast.CopyValsToTriggered(ast);
 
     as.AmbientSound = None;
 
     return ast;
+}
+
+function CopyVals(Actor other)
+{
+    AmbientSound = other.AmbientSound;
+    SoundRadius = other.SoundRadius;
+    SoundVolume = other.SoundVolume;
+    SoundPitch = other.SoundPitch;
 }
 
 function CopyValsToTriggered(Actor other)
