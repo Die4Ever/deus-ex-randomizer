@@ -31,7 +31,7 @@ function CheckSettings()
 
     if( player == None || player.FlagBase == None ) return;
 
-    foreach player.AllActors(class'DXRando',dxr){break;}
+    dxr = class'DXRando'.default.dxr;
     if (dxr==None) return;
 
     inited = true;

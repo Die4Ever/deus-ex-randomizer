@@ -30,7 +30,7 @@ function PrintEndgameQuote(int num)
     bQuotePrinted = True;
     flags.SetBool('EndgameExplosions', False);
 
-    foreach AllActors(class'DXRando',dxr) break;
+    dxr = class'DXRando'.default.dxr;
 
     qMgr = Spawn(class'EndgameQuoteManager');
     qMgr.LoadQuotes();

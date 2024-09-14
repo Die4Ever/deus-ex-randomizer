@@ -132,14 +132,9 @@ function string GetMapNameStripped()
 function int DxrCrc(string plaintext)
 {
     local DXRando dxr;
-    local #var(prefix)PlayerPawn pp;
-#ifdef hx
-    pp = PlayerPawn;
-#else
-    pp = player;
-#endif
 
-    foreach pp.AllActors(class'DXRando', dxr) {
+    dxr = class'DXRando'.default.dxr;
+    if (dxr!=None) {
         return dxr.Crc(plaintext);
     }
     return 0;

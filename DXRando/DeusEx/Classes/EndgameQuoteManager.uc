@@ -193,7 +193,7 @@ function PickRandomQuote(out string quote, out string attrib)
     local DXRando dxr;
     local EndQuote q;
 
-    foreach AllActors(class'DXRando',dxr) break;
+    dxr = class'DXRando'.default.dxr;
 
     if(dxr != None) {
         q = quotes[dxr.rng(numQuotes)];

@@ -109,7 +109,7 @@ simulated function int GetBingoSpot(
     progress = bingo[x*5+y].progress;
     max = bingo[x*5+y].max;
 
-    foreach AllActors(class'DXRando', dxr) { break; }
+    dxr = class'DXRando'.default.dxr;
     if(dxr == None) return 1;// 1==maybe
 
     currentMission = dxr.dxInfo.missionNumber;

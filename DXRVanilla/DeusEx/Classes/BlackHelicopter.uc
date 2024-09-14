@@ -53,7 +53,7 @@ function Scream()
 {
     local DXRando dxr;
 
-    foreach AllActors(class'DXRando',dxr){break;}
+    dxr = class'DXRando'.default.dxr;
     if (dxr==None) return;
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
 

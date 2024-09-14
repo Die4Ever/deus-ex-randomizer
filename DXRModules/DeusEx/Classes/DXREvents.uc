@@ -1653,7 +1653,7 @@ simulated function string tweakBingoDescription(string event, string desc)
 {
     local DXRando dxr;
 
-    foreach AllActors(class'DXRando', dxr) {break;}
+    dxr = class'DXRando'.default.dxr;
 
     switch(event){
         //FemJC gets a male character instead.  Russ normally, Noah in Revision

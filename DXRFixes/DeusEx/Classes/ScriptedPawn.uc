@@ -571,7 +571,7 @@ function EnableCheckDestLoc(bool bEnable)
     if( loopCounter > 10 ) {
         message = "EnableCheckDestLoc, bEnable: "$bEnable$", loopCounter: "$loopCounter$", destPoint: "$destPoint$", lastEnableCheckDestLocTime: "$lastEnableCheckDestLocTime;
         log(self$": WARNING: "$message);
-        foreach AllActors(class'DXRando', dxr) break;
+        dxr = class'DXRando'.default.dxr;
         if( dxr != None ) class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 
         //calling the BackOff() function also works and makes them attempt to patrol again after, but I expect it would always just fail over and over

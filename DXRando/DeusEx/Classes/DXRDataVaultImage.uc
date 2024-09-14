@@ -18,7 +18,7 @@ static function UpdateDataVaultImageTextures(DataVaultImage newImage)
 {
     local DXRando dxr;
 
-    foreach newImage.AllActors(class'DXRando',dxr) {break;}
+    dxr = class'DXRando'.default.dxr;
 
     //Check if we're ready or not
     if (dxr==None) return;

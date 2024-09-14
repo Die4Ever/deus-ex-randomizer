@@ -744,7 +744,7 @@ static function AddDeath(Pawn victim, optional Actor Killer, optional coerce str
     player = #var(PlayerPawn)(victim);
     sp = #var(prefix)ScriptedPawn(victim);
     if(player != None) {
-        foreach victim.AllActors(class'DXRando', dxr) break;
+        dxr = class'DXRando'.default.dxr;
         AddPlayerDeath(dxr, player, Killer, damageType, HitLocation);
     }
     else if(sp != None)
