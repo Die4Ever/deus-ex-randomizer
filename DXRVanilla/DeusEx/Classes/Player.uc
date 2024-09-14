@@ -2163,6 +2163,19 @@ exec function ActivateBelt(int objectNum)
     }
 }
 
+state CheatFlying
+{
+ignores SeePlayer, HearNoise, Bump, TakeDamage;
+    event PlayerTick( float DeltaTime )
+    {
+        super.PlayerTick(DeltaTime);
+
+        //Make object highlighting work while flying or ghosting
+        HighlightCenterObject();
+        FrobTime += deltaTime;
+    }
+}
+
 defaultproperties
 {
     SkillPointsTotal=6575
