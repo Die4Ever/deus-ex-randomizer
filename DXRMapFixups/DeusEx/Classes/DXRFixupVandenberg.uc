@@ -4,6 +4,17 @@ var bool M14GaryNotDone;
 var bool M12GaryHostageBriefing;
 var int storedBotCount;// MJ12 bots in CMD
 
+function CheckConfig()
+{
+    local int i;
+
+    add_datacubes[i].map = "12_VANDENBERG_GAS";
+    add_datacubes[i].imageClass = class'Image12_Tiffany_HostagePic';
+    i++;
+
+    Super.CheckConfig();
+}
+
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
