@@ -2170,6 +2170,7 @@ ignores SeePlayer, HearNoise, Bump, TakeDamage;
     {
         super.PlayerTick(DeltaTime);
 
+        UpdateInHand();
         //Make object highlighting work while flying or ghosting
         HighlightCenterObject();
         FrobTime += deltaTime;
