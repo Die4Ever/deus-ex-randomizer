@@ -446,7 +446,10 @@ function EEventAction SetupEventAddGoal( ConEventAddGoal event, out String nextL
 		player.GoalCompleted(event.goalName);
 	}
 
-    goal.SetText(event.goalText);
+    if ( goal != None )
+    {
+        goal.SetText(event.goalText);
+    }
 
 	return EA_NextEvent;
 }
