@@ -935,6 +935,28 @@ function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional 
     return GetGoalConEventStatic(goalName, GetConversation(convname), which);
 }
 
+// Creates or updates a goal with text taken from a Conversation
+function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
+{
+    local DeusExGoal goal;
+    local ConEventAddGoal ceag;
+
+    ceag = GetGoalConEvent(goaltag, convname, which);
+    if (ceag == None)
+        return None;
+    goal = player.FindGoal(goaltag);
+
+    if (goal == None)
+        goal = player.AddGoal(goaltag, ceag.bPrimaryGoal);
+    else if (replaceText == false)
+        return goal;
+
+    goal.SetText(ceag.goalText);
+
+    return goal;
+}
+
+
 static function string GetActorName(Actor a)
 {
     local #var(PlayerPawn) player;
@@ -1786,21 +1808,4 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
     pawn.InitialAlliances[i].bPermanent = bPermanent;
 
     return true;
-}
-
-function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which)
-{
-    local DeusExGoal goal;
-    local ConEventAddGoal ceag;
-
-    goal = player.FindGoal(goaltag);
-
-    if (goal == None) {
-        ceag = GetGoalConEvent(goaltag, convname, which);
-        if (ceag == None) return None;
-        goal = player.AddGoal(goaltag, ceag.bPrimaryGoal);
-        goal.SetText(ceag.goalText);
-    }
-
-    return goal;
 }

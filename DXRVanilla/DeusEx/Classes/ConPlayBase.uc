@@ -421,3 +421,35 @@ log("  event.transferCount = " $ event.transferCount);
 
 	return itemsTransferred;
 }
+
+// ----------------------------------------------------------------------
+// SetupEventAddGoal()
+//
+// TODO: Add support for goals longer than 255 characters.
+// ----------------------------------------------------------------------
+
+function EEventAction SetupEventAddGoal( ConEventAddGoal event, out String nextLabel )
+{
+	local DeusExGoal goal;
+
+	// First check to see if this goal exists
+	goal = player.FindGoal( event.goalName );
+
+	if (( goal == None ) && ( !event.bGoalCompleted ))
+	{
+		// Add this goal to the player's goals
+		goal = player.AddGoal(event.goalName, event.bPrimaryGoal);
+	}
+	// Check if we're just marking this goal as complete
+	else if (( goal != None ) && ( event.bGoalCompleted ))
+	{
+		player.GoalCompleted(event.goalName);
+	}
+
+    if ( goal != None )
+    {
+        goal.SetText(event.goalText);
+    }
+
+	return EA_NextEvent;
+}
