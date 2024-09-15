@@ -76,10 +76,6 @@ function PreFirstEntryMapFixes_Bunker()
     local #var(prefix)Fan1 fan;
     local #var(prefix)WaltonSimons ws;
 
-    if (dxr.flags.settings.starting_map < 151) {
-        player().DeleteAllGoals();
-    }
-
     // doors_lower is for backtracking
     AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
 

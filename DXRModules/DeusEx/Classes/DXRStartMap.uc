@@ -36,6 +36,9 @@ function PreFirstEntry()
     local ElevatorMover eMover;
     local #var(DeusExPrefix)Mover dxMover;
     local Dispatcher disp;
+    local AllianceTrigger at;
+    local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)OrdersTrigger ot;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
@@ -55,6 +58,33 @@ function PreFirstEntry()
             }
             foreach AllActors(class'ScriptedPawn', sp, 'hostageWoman') {
                 sp.Destroy();
+            }
+        }
+        break;
+
+    case "03_NYC_MOLEPEOPLE":
+        if (dxr.flags.settings.starting_map >= 35) {
+            foreach AllActors(class'AllianceTrigger', at, 'surrender') {
+                at.Trigger(None, None);
+                break;
+            }
+        }
+        break;
+
+    case "05_NYC_UNATCOMJ12LAB":
+        if(dxr.flags.settings.starting_map > 50) {
+            foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
+                anna.Destroy();
+            }
+        }
+        break;
+
+    case "06_HONGKONG_TONGBASE":
+        if (dxr.flags.settings.starting_map > 66) {
+            // set Tong to patrol his control room, which is his correct behavior after talking to him after he deactivates your killswitch
+            foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'TracerWanders') {
+                ot.Trigger(self, None);
+                break;
             }
         }
         break;
@@ -81,6 +111,9 @@ function PreFirstEntry()
                 eMover.InterpolateTo(1, 0.0);
                 break;
             }
+        }
+        if (dxr.flags.settings.starting_map < 151) {
+            player().DeleteAllGoals();
         }
         break;
 
@@ -570,11 +603,12 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
-            MarkConvPlayed("DL_LebedevKill_Played", bFemale);
+            MarkConvPlayed("DL_LebedevKill", bFemale);
         case 36: // fallthrough
             GiveKey(player, 'Sewerdoor', "Sewer Door");
         case 35: // fallthrough
             GiveKey(player, 'MoleRestroomKey', "Molepeople Bathroom Key");
+            MarkConvPlayed("M03MeetTerroristLeader", bFemale);
         case 34: // fallthrough
         case 33:
             AddNote(player, bEmptyNotes, "6653 -- Code to the phone-booth entrance to mole-people hideout.");
@@ -802,6 +836,9 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "SimonsAssassination":
         case "MeetInjuredTrooper2_Played":
             return start_map > 31;
+
+        case "surrender": //We make the mole people NSF pre-surrendered on 35+ starts
+            return start_map >=35;
 
         case "CleanerBot_ClassDead":
         case "AlexCloset":

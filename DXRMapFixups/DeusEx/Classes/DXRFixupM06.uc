@@ -158,15 +158,6 @@ function PreFirstEntryMapFixes()
                     break;
             }
         }
-
-        if (dxr.flags.settings.starting_map > 66) {
-            // set Tong to patrol his control room, which is his correct behavior after talking to him after he deactivates your killswitch
-            foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'TracerWanders') {
-                ot.Trigger(self, None);
-                break;
-            }
-        }
-
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
         if (VanillaMaps) {
