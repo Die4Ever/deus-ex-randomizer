@@ -2169,11 +2169,19 @@ ignores SeePlayer, HearNoise, Bump, TakeDamage;
     event PlayerTick( float DeltaTime )
     {
         super.PlayerTick(DeltaTime);
+        DrugEffects(deltaTime); //Drunk and on drugs happy funtime
+        Bleed(deltaTime);   //Make blood drops happen
+        HighlightCenterObject();  //Make object highlighting actually happen
+        UpdateDynamicMusic(deltaTime); //Make sure the music can still change states while flying around
+        UpdateWarrenEMPField(deltaTime);
+        MultiplayerTick(deltaTime); //UpdateInHand, Poison, burning, shields, etc
+        FrobTime += deltaTime; //Make sure we keep track of how long you've been highlighting things
 
-        UpdateInHand();
-        //Make object highlighting work while flying or ghosting
-        HighlightCenterObject();
-        FrobTime += deltaTime;
+        CheckActiveConversationRadius(); // Check if player has walked outside a first-person convo.
+        CheckActorDistances(); // Check if all the people involved in a conversation are in a reasonable radius
+
+        UpdateTimePlayed(deltaTime); //The timer for the game save
+
     }
 }
 
