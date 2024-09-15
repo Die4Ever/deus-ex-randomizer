@@ -262,6 +262,11 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.ResetReactions();
     sp.bCanStrafe = false;// messes with melee attack animations, especially on commandos
 
+    if(sp.Intelligence==BRAINS_HUMAN) {
+        sp.Intelligence = BRAINS_MAMMAL;
+    }
+    sp.RaiseAlarm = RAISEALARM_Never;
+
     //Transfer inventory from carcass back to the pawn
     for(item = carc.Inventory; item != None; item = nextItem)
     {
