@@ -642,8 +642,8 @@ function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers
             bads++;
             continue;
         }
-#ifdef debug
-        if(id.textTag == '03_Datacube10') DebugMarkKeyPosition(inv.Location, id.textTag);
+#ifdef locdebug
+        if(id.textTag == '#var(locdebug)') DebugMarkKeyPosition(inv.Location, id.textTag);
 #endif
         temp[num++] = inv;
     }
@@ -657,7 +657,7 @@ function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers
                 continue;
             }
             if( HasBased(c) ) continue;
-#ifdef debug
+#ifdef locdebug
             DebugMarkKeyPosition(c.Location, id.textTag);
 #endif
             temp[num++] = c;
