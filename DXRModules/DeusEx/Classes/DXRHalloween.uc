@@ -181,6 +181,8 @@ static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#
             return "UNATCOCloneAugStealth1";
         case class'UNATCOCloneAugTough1NametagCarcass':
             return "UNATCOCloneAugTough1";
+        case class'#var(prefix)JCDentonMaleCarcass':
+            return "JCDouble";
         default:
             //Standard carcass with a matching living class
             //(We should probably strive for this to be the norm)
@@ -199,6 +201,7 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local ScriptedPawn sp,otherSP;
     local int i;
     local Inventory item, nextItem;
+    local DXRFashionManager fashion;
     local bool removeItem;
     local string s;
 
@@ -282,6 +285,13 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         else {
             sp.AddInventory(item);
         }
+    }
+
+    if(#var(prefix)JCDouble(sp)!=None || #var(prefix)PaulDenton(sp)!=None) {
+        foreach sp.AllActors(class'DXRFashionManager', fashion) { break; }
+        i = 0;
+        if(#var(prefix)PaulDenton(sp)!=None) i = 1;
+        if(fashion!=None) fashion.ApplyClothing(sp, i);
     }
 
     //Give the resurrected guy a zombie swipe (a guaranteed melee weapon)
