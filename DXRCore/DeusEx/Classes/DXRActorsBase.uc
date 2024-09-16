@@ -320,13 +320,17 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
     return item;
 }
 
-static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
+static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int amount)
 {
     local inventory item;
 
     item = p.Spawn(iclass, p);
     if( item == None ) return None;
-    return GiveExistingItem(p, item, add_ammo);
+    if(DeusExPickup(item)!=None && amount > 0) {
+        DeusExPickup(item).NumCopies = amount;
+        amount = 0;
+    }
+    return GiveExistingItem(p, item, amount);
 }
 
 static function ThrowItem(Inventory item, float VelocityMult)

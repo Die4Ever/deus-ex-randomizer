@@ -181,8 +181,12 @@ static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#
             return "UNATCOCloneAugStealth1";
         case class'UNATCOCloneAugTough1NametagCarcass':
             return "UNATCOCloneAugTough1";
+#ifdef hx
+        case class'HXJCDentonCarcass':
+#else
         case class'#var(prefix)JCDentonMaleCarcass':
-            return "JCDouble";
+#endif
+            return "#var(prefix)JCDouble";
         default:
             //Standard carcass with a matching living class
             //(We should probably strive for this to be the norm)

@@ -28,10 +28,6 @@ function PostFirstEntryMapFixes()
             a = AddActor(class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));
             Barrel1(a).SkinColor = SC_Explosive;
             a.BeginPlay();
-
-            if(dxr.flags.autosave==7 || dxr.flags.autosave==8) {// fixed saves needs a computer in M03 before helibase
-                AddActor(class'#var(prefix)ComputerPublic', vect(-1417.867065, -1937.349854, 446), rot(0,16384,0));
-            }
         }
         break;
 
