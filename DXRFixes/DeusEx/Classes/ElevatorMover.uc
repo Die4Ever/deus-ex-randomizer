@@ -1,8 +1,50 @@
 class ElevatorMover merges ElevatorMover;
 // can't do injects because it uses a state
 
-var float lastTime;
-var float moveSpeed, originalMoveTime;
+var float lastTime, moveSpeed, originalMoveTime;
+var int numKeyPos;
+var bool initialized;
+
+function Initialize()
+{
+    local SequenceTrigger st;
+    local float dist, maxDist, avgDist, distSum;
+    local int validKeyPos[8];
+    local int i, j;
+
+    if (initialized) return;
+
+    // calculate numKeyPos and make a list of valid KeyPos indices
+    foreach AllActors(class'SequenceTrigger', st) {
+        if (st.event != tag) continue;
+
+        // check if st.seqnum is already in the list
+        for (i = 0; i < numKeyPos; i++) {
+            if (validKeyPos[i] == st.seqnum) {
+                break;
+            }
+        }
+        // if not, add it and increment numKeyPos
+        if (i == numKeyPos) {
+            validKeyPos[numKeyPos++] = st.seqnum;
+        }
+    }
+
+    // do calculations using only valid KeyPos elements
+    for (i = 0; i < numKeyPos; i++) {
+        for (j = i + 1; j < numKeyPos; j++) {
+            dist = VSize(KeyPos[validKeyPos[i]] - KeyPos[validKeyPos[j]]);
+            maxDist = FMax(maxDist, dist);
+            distSum += dist;
+        }
+    }
+
+    avgDist = distSum / (numKeyPos * (numKeyPos - 1) / 2.0);
+    moveSpeed = (maxDist*0.33 + avgDist*0.67) / MoveTime;
+    originalMoveTime = MoveTime;
+
+    initialized = true;
+}
 
 function bool EncroachingOn( actor Other )
 {
@@ -18,50 +60,24 @@ function bool EncroachingOn( actor Other )
     return false;
 }
 
-function float GetMoveSpeed()
-{
-    // assumes no valid KeyPos elements after the first are (0, 0, 0)
-    local float maxDist, avgDist, distSum, dist;
-    local int i, j;
-
-    if (moveSpeed == 0.0) {
-        for (i = 0; i < ArrayCount(KeyPos); i++) {
-            if (i > 0 && KeyPos[i] == vect(0.0, 0.0, 0.0)) break;
-
-            for (j = i + 1; j < ArrayCount(KeyPos); j++) {
-                if (KeyPos[j] == vect(0.0, 0.0, 0.0)) break;
-
-                dist = VSize(KeyPos[i] - KeyPos[j]);
-                maxDist = FMax(maxDist, dist);
-                distSum += dist;
-            }
-        }
-
-        avgDist = distSum / (i * (i - 1) / 2.0);
-        moveSpeed = (maxDist*0.33 + avgDist*0.67) / MoveTime;
-        originalMoveTime = MoveTime;
-    }
-
-    return moveSpeed;
-}
-
 function SetSeq(int seqnum)
 {
     local bool oldSeq;
     local int prevKeyNum;
     local float dist;
 
-    if ( bIsMoving && !oldSeq )
-        return;
+    Initialize();
 
     if( MoveTime/2 < Level.TimeSeconds-lastTime )
         oldSeq = true;
 
+    if ( bIsMoving && !oldSeq )
+        return;
+
     dist = VSize(BasePos + KeyPos[seqnum] - Location);
 
-    if (KeyPos[2] != vect(0.0, 0.0, 0.0)) {
-        MoveTime = FMax(dist / GetMoveSpeed(), originalMoveTime / 2.5);
-    }
+    if (numKeyPos > 2)
+        MoveTime = FMax(dist / moveSpeed, originalMoveTime / 2.5);
 
     if (KeyNum != seqnum || oldSeq)
     {
