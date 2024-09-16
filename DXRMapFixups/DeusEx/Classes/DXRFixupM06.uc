@@ -842,6 +842,7 @@ function AnyEntryMapFixes()
     local ConEventSetFlag cesf;
     local ConEventTrigger cet;
     local #var(prefix)Pigeon pigeon;
+    local #var(prefix)MaggieChow maggie;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -953,8 +954,21 @@ function AnyEntryMapFixes()
             m.bLocked = false;
             m.bHighlight = true;
         }
+
         HandleJohnSmithDeath();
         FixMaggieMoveSpeed();
+
+        if (dxr.flagbase.GetBool('Have_ROM')) {
+            foreach AllActors(class'#var(prefix)MaggieChow', maggie) {
+                maggie.LeaveWorld();
+                break;
+            }
+            foreach AllActors(class'ScriptedPawn', p, 'MaggieMaid') {
+                p.LeaveWorld();
+                break;
+            }
+        }
+
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":
