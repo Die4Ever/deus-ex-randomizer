@@ -290,6 +290,7 @@ function FixFOV()
 
     // interpolate between 75 FOV and 120 FOV, multiply vanilla values by n and wide FOV values by w
     // wide values provided by Tundoori https://discord.com/channels/823629359931195394/823629360929046530/1282526555536625778
+    // X is distance from camera, Y is left/right, Z is up/down
 
     // POVCorpse
     v =  vect(20, 12, -5) * n;
@@ -402,10 +403,10 @@ function FixFOV()
 
     // WeaponNanoSword
     v =  vect(21, -16, -27) * n;
-    v += vect(13, -16, -27) * w;
+    v += vect(7, -16, -30) * w;
     class'WeaponNanoSword'.default.PlayerViewOffset = v;
     v =  vect(-21, 16, 27) * n;
-    v += vect(-13, 16, 27) * w;
+    v += vect(-7, 16, 30) * w;
     class'WeaponNanoSword'.default.FireOffset = v;
 
     // WeaponNanoVirusGrenade
