@@ -848,18 +848,14 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 6: // Hong Kong
         switch(bingo_event)
         {
+        case "MaggieCanFly":
+            return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
         // // these two goals can actually be done with the way these starts currently work, but would normally be impossible
         // case "ClubEntryPaid":
         // case "M06JCHasDate":
         //     return start_map > 65;
         }
     case 7: // fallthrough to 2nd half of Hong Kong
-        switch(bingo_event)
-        {
-        case "MaggieCanFly":
-        case "PoliceVaultBingo": // TODO: remove once a datacube with the vault code is added
-            return start_map > 70;
-        }
         break;
 
     case 8: // return to NYC
