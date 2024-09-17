@@ -1000,7 +1000,11 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         return;
     }
     vanilla_good = KeyPositionGood(k, k.Location);
-
+#ifdef locdebug
+            if(k.KeyID=='#var(locdebug)') {
+                DebugMarkKeyPosition(k.Location, k.KeyID);
+            }
+#endif
     for(tries=0; tries<5; tries++) {
         if(vanilla_good) {
             slot=rng(num+1);// +1 for vanilla, since we're not in the list
