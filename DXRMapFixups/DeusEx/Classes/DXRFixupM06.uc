@@ -402,6 +402,15 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if (dxr.flagbase.GetBool('Meet_MJ12Lab_Supervisor_Played')) { // 70+ starts set this to true
+            foreach AllActors(class'#var(prefix)ScriptedPawn', p, 'Businessman1') {
+                if (p.BindName == "MJ12Lab_Supervisor") {
+                    p.SetOrders('Wandering');
+                    break;
+                }
+            }
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(1519.6,-1251,442.3)); //Conference room side table
