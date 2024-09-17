@@ -10,6 +10,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TobyAtanwe toby;
     local #var(prefix)JaimeReyes j;
     local #var(prefix)DamageTrigger dt;
+    local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)AutoTurret at;
     local #var(prefix)WIB wib;
@@ -23,6 +24,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Teleporter tele;
     local Businesswoman1 bw;
     local #var(prefix)NicoletteDuclare nico;
+    local #var(prefix)NanoKey k;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -125,6 +127,25 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)JaimeReyes', j) {
                 RemoveFears(j);
             }
+
+            //Add a key for the media store
+            if(!dxr.flags.IsZeroRando()) {
+                //On the table in the cafe
+                k = Spawn(class'#var(prefix)NanoKey',,, vectm(-2020,1115,340));
+                k.KeyID = 'mediastore_door';
+                k.Description = "Media Store Door Key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(k);
+
+                //The media store datalinkTrigger is basically inside the door we want
+                foreach AllActors (class'#var(prefix)DataLinkTrigger',dlt){
+                    if (dlt.datalinkTag=='DL_mediastore') break;
+                }
+                m = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
+                m.KeyIDNeeded='mediastore_door';
+            }
+
+
 
             // make the apartment stairs less hidden, not safe to have stairs without a light!
             CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));

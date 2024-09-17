@@ -262,13 +262,61 @@ function vanilla_keys_rules()
         break;
 
     case "10_Paris_Metro":
+        //Anything on the second floor
         keys_rules[i].item_name = 'apartment12';
         keys_rules[i].min_pos = vect(-99999, -99999, 420);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = false;
         i++;
 
+        //In the media store
         keys_rules[i].item_name = 'apartment12';
+        keys_rules[i].min_pos = vect(669,2080,130);
+        keys_rules[i].max_pos = vect(1596,1634,375);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'apartment12';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 420);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anything on the second floor
+        keys_rules[i].item_name = 'hotel_roomdoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, 420);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //In the media store
+        keys_rules[i].item_name = 'hotel_roomdoor';
+        keys_rules[i].min_pos = vect(669,2080,130);
+        keys_rules[i].max_pos = vect(1596,1634,375);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'hotel_roomdoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 420);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anything on the second floor
+        keys_rules[i].item_name = 'mediastore_door';
+        keys_rules[i].min_pos = vect(-99999, -99999, 420);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //In the media store
+        keys_rules[i].item_name = 'mediastore_door';
+        keys_rules[i].min_pos = vect(669,2080,130);
+        keys_rules[i].max_pos = vect(1596,1634,375);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'mediastore_door';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 420);
         keys_rules[i].allow = true;
