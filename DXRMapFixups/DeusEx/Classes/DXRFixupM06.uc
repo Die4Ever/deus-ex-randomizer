@@ -962,15 +962,16 @@ function AnyEntryMapFixes()
         HandleJohnSmithDeath();
         FixMaggieMoveSpeed();
 
-        if (dxr.flags.settings.starting_map >= 68 || dxr.flagbase.GetBool('M06_HONGKONG_MJ12LAB_Randomized')) {
+        if (
+            dxr.flags.settings.starting_map >= 68 ||
+            dxr.flagbase.GetBool('M06_HONGKONG_MJ12LAB_Randomized') ||
+            dxr.flagbase.GetBool('06_HONGKONG_STORAGE_Randomized')
+        ) {
             foreach AllActors(class'#var(prefix)MaggieChow', maggie) {
                 maggie.LeaveWorld();
                 break;
             }
-            foreach AllActors(class'ScriptedPawn', p, 'MaggieMaid') {
-                p.LeaveWorld();
-                break;
-            }
+            DeleteConversationFlag(GetConversation('MaySungStranger'), 'MaggieChow_Dead', True);
         }
 
         break;
