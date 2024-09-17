@@ -119,7 +119,7 @@ simulated function bool UpdateString(out string str, string oldpassword, string 
     //l(str);
     //l("---");
 
-    str = ReplaceText( str, oldpassword, newpassword, true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    str = ReplaceText( str, oldpassword, newpassword, true );
 
     return true;
 }
@@ -434,7 +434,7 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
 
     info("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
-    goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    goal.text = ReplaceText( goal.text, oldpassword, newpassword, true );
 
 #ifdef hx
     HXGameInfo(Level.Game).AddNote(goal.text, false, true, '');
@@ -494,7 +494,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     updated++;
     info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
-    note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    note.text = ReplaceText( note.text, oldpassword, newpassword, true );
 #ifdef injections
     note.SetNewPassword(newpassword);
 #elseif hx
