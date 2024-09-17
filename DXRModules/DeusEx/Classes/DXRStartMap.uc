@@ -638,6 +638,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
             flagbase.SetBool('Disgruntled_Guy_Dead', true);
+            MarkConvPlayed("Meet_MJ12Lab_Supervisor", bFemale);
         case 68://fallthrough
             AddNote(player, bEmptyNotes, "VersaLife elevator code: 6512.");
         case 67://fallthrough
