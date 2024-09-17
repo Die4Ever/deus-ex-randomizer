@@ -658,7 +658,7 @@ function _RandoInfoDev(#var(injectsprefix)InformationDevices id, bool containers
             }
             if( HasBased(c) ) continue;
 #ifdef locdebug
-            DebugMarkKeyPosition(c.Location, id.textTag);
+            if(id.textTag == '#var(locdebug)') DebugMarkKeyPosition(c.Location, id.textTag);
 #endif
             temp[num++] = c;
         }

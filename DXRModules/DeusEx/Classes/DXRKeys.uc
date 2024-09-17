@@ -1001,9 +1001,9 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     }
     vanilla_good = KeyPositionGood(k, k.Location);
 #ifdef locdebug
-            if(k.KeyID=='#var(locdebug)') {
-                DebugMarkKeyPosition(k.Location, k.KeyID);
-            }
+    if(vanilla_good && k.KeyID=='#var(locdebug)') {
+        DebugMarkKeyPosition(k.Location, k.KeyID);
+    }
 #endif
     for(tries=0; tries<5; tries++) {
         if(vanilla_good) {
