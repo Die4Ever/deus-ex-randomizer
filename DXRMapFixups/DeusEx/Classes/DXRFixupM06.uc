@@ -4,6 +4,7 @@ var bool raidStarted;
 
 function CheckConfig()
 {
+    local Rotator                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               rot;
     local int i;
 
     add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
@@ -24,6 +25,9 @@ function CheckConfig()
 
     add_datacubes[i].map = "06_HONGKONG_WANCHAI_STREET";
     add_datacubes[i].text = "Miss Chow,|nOur agents have ascertained the access codes to the police evidence vault in the market.  When you are ready, our agents can enter the vault and remove the evidence located within using the code 87342.|n|nCommander Triolet";
+    add_datacubes[i].Location = vect(-300.4, -1544.0, 1970.4);
+    rot.Yaw = -2250.0;
+    add_datacubes[i].rotation = rot;
     i++;
 
     add_datacubes[i].map = "06_HONGKONG_WANCHAI_UNDERWORLD";

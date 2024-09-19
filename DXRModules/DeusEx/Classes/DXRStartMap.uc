@@ -856,6 +856,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         //     return start_map > 65;
         }
     case 7: // fallthrough to 2nd half of Hong Kong
+        case "MaggieCanFly":
+            return true;
         break;
 
     case 8: // return to NYC

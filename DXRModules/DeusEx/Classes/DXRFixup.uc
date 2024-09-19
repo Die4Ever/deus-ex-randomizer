@@ -20,6 +20,7 @@ struct AddDatacube {
     var string map;
     var string text;
     var vector location;// 0,0,0 for random
+    var rotator rotation;
     // spawned in PreFirstEntry, so if you set a location then it will be moved according to the logic of DXRPasswords
 };
 var AddDatacube add_datacubes[32];
@@ -919,6 +920,7 @@ function SpawnDatacubes()
 #endif
 
     local vector loc;
+    local rotator rot;
     local int i;
 
     if(dxr.flags.IsReducedRando())
@@ -937,11 +939,13 @@ function SpawnDatacubes()
         loc = add_datacubes[i].location * coords_mult;
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
             loc = GetRandomPosition();
+        rot = add_datacubes[i].rotation;
+        rot = rotm(rot.Pitch, rot.Yaw, rot.Roll, 0.0);
 
 #ifdef injections
-        dc = Spawn(class'#var(prefix)DataCube',,, loc, rotm(0,0,0,0));
+        dc = Spawn(class'#var(prefix)DataCube',,, loc, rot);
 #else
-        dc = Spawn(class'DXRInformationDevices',,, loc, rotm(0,0,0,0));
+        dc = Spawn(class'DXRInformationDevices',,, loc, rot);
 #endif
 
         if( dc != None ){
