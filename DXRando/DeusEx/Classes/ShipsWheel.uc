@@ -4,18 +4,15 @@ var bool bAlreadyUsed;
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	local #var(PlayerPawn) player;
-    local DXRando      dxr;
+    local #var(PlayerPawn) player;
 
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	player = #var(PlayerPawn)(Frobber);
+    player = #var(PlayerPawn)(Frobber);
     if (player!=None){
         if (!bAlreadyUsed){
             bAlreadyUsed = true;
-            foreach AllActors(class'DXRando', dxr) {
-                class'DXREvents'.static.MarkBingo(dxr,"SpinShipsWheel");
-            }
+            class'DXREvents'.static.MarkBingo("SpinShipsWheel");
         }
     }
 }

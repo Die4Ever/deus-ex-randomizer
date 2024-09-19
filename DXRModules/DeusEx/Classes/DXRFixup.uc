@@ -284,12 +284,13 @@ function FixFOV()
     if(!#defined(vanilla)) return; // would need to check the defaults in other mods
 
     w = class'Human'.default.DefaultFOV;
-    w = (w - 75) / (110 - 75); // put it on a range of 0-1 for 75 to 110
+    w = (w - 75) / (120 - 75); // put it on a range of 0-1 for 75 to 120
     w = FClamp(w, 0, 1);
     n = 1-w;
 
-    // interpolate between 75 FOV and 110 FOV, multiply vanilla values by n and wide FOV values by w
+    // interpolate between 75 FOV and 120 FOV, multiply vanilla values by n and wide FOV values by w
     // wide values provided by Tundoori https://discord.com/channels/823629359931195394/823629360929046530/1282526555536625778
+    // X is distance from camera, Y is left/right, Z is up/down
 
     // POVCorpse
     v =  vect(20, 12, -5) * n;
@@ -322,10 +323,10 @@ function FixFOV()
 
     // WeaponAssaultShotgun
     v =  vect(30, -10, -12) * n;
-    v += vect(38, -10, -18) * w;
+    v += vect(17.5, -10, -18) * w;
     class'WeaponAssaultShotgun'.default.PlayerViewOffset = v;
     v =  vect(-30, 10, 12) * n;
-    v += vect(-38, 10, 18) * w;
+    v += vect(-17.5, 10, 18) * w;
     class'WeaponAssaultShotgun'.default.FireOffset = v;
 
     // WeaponBaton
@@ -402,10 +403,10 @@ function FixFOV()
 
     // WeaponNanoSword
     v =  vect(21, -16, -27) * n;
-    v += vect(13, -16, -27) * w;
+    v += vect(7, -16, -30) * w;
     class'WeaponNanoSword'.default.PlayerViewOffset = v;
     v =  vect(-21, 16, 27) * n;
-    v += vect(-13, 16, 27) * w;
+    v += vect(-7, 16, 30) * w;
     class'WeaponNanoSword'.default.FireOffset = v;
 
     // WeaponNanoVirusGrenade

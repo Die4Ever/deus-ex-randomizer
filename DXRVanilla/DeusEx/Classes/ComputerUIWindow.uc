@@ -119,7 +119,8 @@ function int DxrCrc(string plaintext)
 {
     local DXRando dxr;
 
-    foreach player.AllActors(class'DXRando', dxr) {
+    dxr = class'DXRando'.default.dxr;
+    if (dxr!=None) {
         return dxr.Crc(plaintext);
     }
     return 0;

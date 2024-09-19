@@ -44,7 +44,6 @@ simulated function Timer()
     local Vector HitNormal, HitLocation, StartTrace, EndTrace;
     local Actor peepee;// pronounced peep-ee, not pee-pee
     local Actor target;
-    local DXRando dxr;
     local bool newPeepee, newPeepTex;
     local name texName,texGroup;
     local int flags, i;
@@ -87,11 +86,6 @@ simulated function Timer()
 
     //peeper.ClientMessage("Peeping "$peepee.Name$" in state "$peepee.GetStateName());
 
-    foreach AllActors(class'DXRando', dxr) {break;}
-
-    if (dxr==None){
-        return;
-    }
 
     if(peepee.IsA('LevelInfo')){
         peepee=None;
@@ -124,11 +118,11 @@ simulated function Timer()
     if (newPeepee){
         //peeper.ClientMessage("New peeped actor is "$peepee.class.Name);
         //This should probably only trigger once per thing - TODO, will probably be tracked in DXREvents and PlayerDataItem, like function ReadText(name textTag)
-        class'DXREvents'.static.MarkBingo(dxr,peepee.Class.Name$"_peeped");
+        class'DXREvents'.static.MarkBingo(peepee.Class.Name$"_peeped");
 
         if (ScriptedPawn(peepee)!=None){
-            class'DXREvents'.static.MarkBingo(dxr,"PawnState_"$peepee.GetStateName());
-            class'DXREvents'.static.MarkBingo(dxr,"PawnAnim_"$peepee.AnimSequence);
+            class'DXREvents'.static.MarkBingo("PawnState_"$peepee.GetStateName());
+            class'DXREvents'.static.MarkBingo("PawnAnim_"$peepee.AnimSequence);
         }
 
         if (BingoTrigger(peepee)!=None){
@@ -136,12 +130,12 @@ simulated function Timer()
         }
     } else if (newPeepTex) {
         //peeper.ClientMessage("New peeped texture is "$lastWatchedTex);
-        class'DXREvents'.static.MarkBingo(dxr,lastWatchedTex$"_peepedtex");
+        class'DXREvents'.static.MarkBingo(lastWatchedTex$"_peepedtex");
     } else {
         watchTime++;
         if(watchTime>=4){
             watchTime=0;
-            class'DXREvents'.static.MarkBingo(dxr,peepee.Class.Name$"_peeptime");
+            class'DXREvents'.static.MarkBingo(peepee.Class.Name$"_peeptime");
         }
     }
 }

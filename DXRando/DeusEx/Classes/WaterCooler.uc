@@ -7,7 +7,6 @@ function Frob(Actor Frobber, Inventory frobWith)
 {
     local bool oldUsing, newUsing;
     local int oldNumUses;
-    local DXRando dxr;
     local bool chugged;
 
 #ifdef hx
@@ -37,9 +36,7 @@ function Frob(Actor Frobber, Inventory frobWith)
         if (chugged)
         {
             PlayDrown(Frobber);
-            foreach AllActors(class'DXRando', dxr) {
-                class'DXREvents'.static.MarkBingo(dxr,"ChugWater");
-            }
+            class'DXREvents'.static.MarkBingo("ChugWater");
         }
     }
 }
@@ -68,11 +65,7 @@ simulated static function PlayDrown(Actor a)
 
 function Destroyed()
 {
-    local DXRando dxr;
-
-    foreach AllActors(class'DXRando', dxr) {
-        class'DXREvents'.static.MarkBingo(dxr,"Dehydrated");
-    }
+    class'DXREvents'.static.MarkBingo("Dehydrated");
 
     Super.Destroyed();
 }

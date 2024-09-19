@@ -61,13 +61,11 @@ function DoBingoThing()
         return;
     }
 
-    foreach AllActors(class'DXRando',dxr){
-        class'DXREvents'.static.MarkBingo(dxr,bingoEvent);
-        break;
-    }
+    class'DXREvents'.static.MarkBingo(bingoEvent);
 
     FinishedMax--;
     if(FinishedMax == 0) {
+        dxr = class'DXRando'.default.dxr;
         dxr.flagbase.SetBool(FinishedFlag, true,, 999);
     }
 
@@ -129,6 +127,37 @@ static function BingoTrigger Create(Actor a, Name bingoEvent, vector loc, option
     return bt;
 
 }
+
+static function BingoTrigger PeepCreate(Actor a, Name bingoEvent, vector loc, float rad, float height)
+{
+    local BingoTrigger bt;
+
+    bt = Create(a,bingoEvent,loc,rad,height);
+    bt.MakePeepable();
+
+    return bt;
+}
+
+static function BingoTrigger ProxCreate(Actor a, Name bingoEvent, vector loc, float rad, float height, class<Actor> className)
+{
+    local BingoTrigger bt;
+
+    bt = Create(a,bingoEvent,loc,rad,height);
+    bt.MakeClassProximityTrigger(className);
+
+    return bt;
+}
+
+static function BingoTrigger ShootCreate(Actor a, Name bingoEvent, vector loc, float rad, float height)
+{
+    local BingoTrigger bt;
+
+    bt = Create(a,bingoEvent,loc,rad,height);
+    bt.MakeShootingTarget();
+
+    return bt;
+}
+
 
 defaultproperties
 {

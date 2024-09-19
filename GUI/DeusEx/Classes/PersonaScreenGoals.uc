@@ -32,7 +32,8 @@ function CreateControls()
 
     CreateKeysAndDatacubesButtons();
 
-    foreach player.AllActors(class'DXRando',dxr){
+    dxr = class'DXRando'.default.dxr;
+    if (dxr!=None){
         if (dxr.flags.settings.goals > 0) {
             btnGoalHints = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
             btnGoalHints.SetButtonText("|&Goal Randomization Wiki");
@@ -63,7 +64,6 @@ function CreateControls()
                 btnEntranceSpoilers.SetSensitivity(true);
             }
         }
-        break;
     }
 }
 

@@ -31,7 +31,7 @@ function PostBeginPlay()
 
     SetTimer(0, false);
 
-    foreach AllActors(class'DXRando', dxr) { break; }
+    dxr = class'DXRando'.default.dxr;
 
     if( dxr.localURL != "12_VANDENBERG_TUNNELS" ) {
         dxr.Destroy();
@@ -52,7 +52,7 @@ function Timer()
 {
     local DXRando dxr;
 
-    foreach AllActors(class'DXRando', dxr) { break; }
+    dxr = class'DXRando'.default.dxr;
     if( dxr.bTickEnabled ) {
         log("waiting... dxr: " $ dxr $ ", dxr.bTickEnabled: " $ dxr.bTickEnabled );
         return;

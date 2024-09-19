@@ -578,9 +578,20 @@ exec function ParseLeftClick()
 function InstantlyUseItem(DeusExPickup item)
 {
     local Actor A;
+    local DeusExPickup p;
     local int i;
 
     if(item == None) return;
+
+    //Only consume one of the things if it's in a stack.
+    //Spawn an individual one to split it from the stack before using it.
+    if (item.NumCopies>1){
+        p = Spawn(item.Class,,,item.Location,item.Rotation);
+        p.NumCopies=1;
+        item.NumCopies--;
+        InstantlyUseItem(p);
+        return;
+    }
 
     foreach item.BasedActors(class'Actor', A)
         A.SetBase(None);
@@ -594,8 +605,11 @@ function InstantlyUseItem(DeusExPickup item)
     Inventory = item;
     if(FireExtinguisher(item) != None) {
         // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
+        // this shouldn't get hit anymore, but still do this, just in case
         item.NumCopies = 1;
     }
+
+    //In theory this should only be one, but just in case we slipped through the case above...
     for(i=item.NumCopies; i > 0; i--) {
         item.Activate();
     }
@@ -2160,6 +2174,28 @@ exec function ActivateBelt(int objectNum)
         root = DeusExRootWindow(rootWindow);
         if (root != None)
             root.ActivateObjectInBelt(objectNum);
+    }
+}
+
+state CheatFlying
+{
+ignores SeePlayer, HearNoise, Bump, TakeDamage;
+    event PlayerTick( float DeltaTime )
+    {
+        super.PlayerTick(DeltaTime);
+        DrugEffects(deltaTime); //Drunk and on drugs happy funtime
+        Bleed(deltaTime);   //Make blood drops happen
+        HighlightCenterObject();  //Make object highlighting actually happen
+        UpdateDynamicMusic(deltaTime); //Make sure the music can still change states while flying around
+        UpdateWarrenEMPField(deltaTime);
+        MultiplayerTick(deltaTime); //UpdateInHand, Poison, burning, shields, etc
+        FrobTime += deltaTime; //Make sure we keep track of how long you've been highlighting things
+
+        CheckActiveConversationRadius(); // Check if player has walked outside a first-person convo.
+        CheckActorDistances(); // Check if all the people involved in a conversation are in a reasonable radius
+
+        UpdateTimePlayed(deltaTime); //The timer for the game save
+
     }
 }
 

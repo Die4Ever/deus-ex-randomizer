@@ -545,7 +545,6 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
         if(auglevel == 0) {
             auglevel = 1;
         }
-        GiveItem(p, class'MemConUnit');
     }
     for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
         aclass = __item_sets[loadout].starting_augs[i];
@@ -556,7 +555,7 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
 
 function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 {
-    local Inventory item, anItem;
+    local Inventory item, nextItem;
     local DXREnemies dxre;
     local int i, start_amount;
 
@@ -574,19 +573,17 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
 
-    item = player.Inventory;
-    while(item != None)
-    {
-        anItem = item;
-        item = item.Inventory;
-        l("RandoStartingEquipment("$player$") checking item "$anItem$", bDisplayableInv: "$anItem.bDisplayableInv);
-        if( Ammo(anItem) == None && ! anItem.bDisplayableInv ) continue;
-        if( #var(prefix)NanoKeyRing(anItem) != None ) continue;
-        if( dxre == None && Weapon(anItem) != None ) continue;
-        if( dxre == None && Ammo(anItem) != None ) continue;
-        l("RandoStartingEquipment("$player$") removing item: "$anItem);
-        player.DeleteInventory(anItem);
-        anItem.Destroy();
+    for(item = player.Inventory; item != None; item=nextItem) {
+        nextItem = item.Inventory;
+        l("RandoStartingEquipment("$player$") checking item "$item$", bDisplayableInv: "$item.bDisplayableInv);
+        if( Ammo(item) == None && ! item.bDisplayableInv ) continue;
+        if( #var(prefix)NanoKeyRing(item) != None ) continue;
+        if( dxre == None && Weapon(item) != None ) continue;
+        if( dxre == None && Ammo(item) != None ) continue;
+        if( MemConUnit(item) != None ) continue;
+        l("RandoStartingEquipment("$player$") removing item: "$item);
+        player.DeleteInventory(item);
+        item.Destroy();
     }
 
 #ifdef gmdx
@@ -704,17 +701,6 @@ function SpawnItems()
                 if( reducer != None && Inventory(a) != None )
                     reducer.ReduceItem(Inventory(a));
             }
-        }
-    }
-
-    if(dxr.flags.autosave == 7) { // Fixed Saves
-        SetSeed("SpawnItems() MCU");
-        aclass = class'MemConUnit';
-        chance = 80;
-        if(chance_single(chance)) {
-            loc = GetRandomPositionFine();
-            a = Spawn(aclass,,, loc);
-            l("SpawnItems() spawned "$a$" at "$loc);
         }
     }
 

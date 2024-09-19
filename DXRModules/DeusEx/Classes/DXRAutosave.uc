@@ -51,6 +51,8 @@ function PreFirstEntry()
             NeedSave();
         }
     }
+
+    MapAdjustments();
 }
 
 function ReEntry(bool IsTravel)
@@ -322,4 +324,41 @@ function doAutosave()
     }
 
     info("doAutosave() completed, save_delay: "$save_delay);
+}
+
+simulated function PlayerLogin(#var(PlayerPawn) p)
+{
+    Super.PlayerLogin(p);
+
+    if(dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves) { // Limited Saves
+        GiveItem(p, class'MemConUnit', 2);// start with 2?
+    }
+}
+
+function MapAdjustments()
+{
+    local Actor a;
+    local vector loc;
+    local bool fixed, limited;
+
+    fixed = dxr.flags.autosave==FixedSaves || dxr.flags.autosave==UnlimitedFixedSaves;
+    limited = dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves;
+
+    switch(dxr.localURL) {
+    case "03_NYC_BrooklynBridgeStation":
+        // fixed saves needs a computer in M03 before helibase
+        if(fixed) {
+            AddActor(class'#var(prefix)ComputerPublic', vect(-1417.867065, -1937.349854, 446), rot(0,16384,0));
+        }
+        break;
+    }
+
+    if(limited) {
+        SetSeed("spawn MCU");
+        if(chance_single(80)) {
+            loc = GetRandomPositionFine();
+            a = Spawn(class'MemConUnit',,, loc);
+            l("MapAdjustments() spawned MCU " $ a $ " at " $ loc);
+        }
+    }
 }

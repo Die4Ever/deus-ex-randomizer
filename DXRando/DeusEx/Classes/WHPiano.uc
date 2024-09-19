@@ -84,18 +84,15 @@ simulated function Tick(float deltaTime)
 {
     if (bUsing){
         if (PlayDoneTime<=Level.TimeSeconds) {
-            if (dxr==None){
-                foreach AllActors(class'DXRando', dxr) {break;}
-            }
 
             if (!PianoIsBroken() && SongPlayed[currentSong]==0){
                 SongPlayed[currentSong]++;
-                class'DXREvents'.static.MarkBingo(dxr,"PianoSong"$currentSong$"Played");
+                class'DXREvents'.static.MarkBingo("PianoSong"$currentSong$"Played");
                 if (ValidSong(currentSong)){
-                    class'DXREvents'.static.MarkBingo(dxr,"PianoSongPlayed");
+                    class'DXREvents'.static.MarkBingo("PianoSongPlayed");
                 }
             } else if (currentSong==BROKEN_PIANO_SONG) {
-                class'DXREvents'.static.MarkBingo(dxr,"BrokenPianoPlayed");
+                class'DXREvents'.static.MarkBingo("BrokenPianoPlayed");
             }
 
             if(player != None) {

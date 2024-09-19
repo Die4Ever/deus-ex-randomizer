@@ -320,13 +320,17 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
     return item;
 }
 
-static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
+static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int amount)
 {
     local inventory item;
 
     item = p.Spawn(iclass, p);
     if( item == None ) return None;
-    return GiveExistingItem(p, item, add_ammo);
+    if(DeusExPickup(item)!=None && amount > 0) {
+        DeusExPickup(item).NumCopies = amount;
+        amount = 0;
+    }
+    return GiveExistingItem(p, item, amount);
 }
 
 static function ThrowItem(Inventory item, float VelocityMult)
@@ -726,10 +730,7 @@ function bool HasConversation(Actor a) {
 }
 
 function bool HasBased(Actor a) {
-    local Actor b;
-    foreach a.BasedActors(class'Actor', b)
-        return true;
-    return false;
+    return a.StandingCount > 0;
 }
 
 function bool DestroyActor( Actor d )
@@ -934,6 +935,28 @@ function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional 
 {
     return GetGoalConEventStatic(goalName, GetConversation(convname), which);
 }
+
+// Creates or updates a goal with text taken from a Conversation
+function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
+{
+    local DeusExGoal goal;
+    local ConEventAddGoal ceag;
+
+    ceag = GetGoalConEvent(goaltag, convname, which);
+    if (ceag == None)
+        return None;
+    goal = player.FindGoal(goaltag);
+
+    if (goal == None)
+        goal = player.AddGoal(goaltag, ceag.bPrimaryGoal);
+    else if (replaceText == false)
+        return goal;
+
+    goal.SetText(ceag.goalText);
+
+    return goal;
+}
+
 
 static function string GetActorName(Actor a)
 {
@@ -1711,8 +1734,8 @@ static function Actor GlowUp(Actor a, optional byte hue, optional byte saturatio
 function DebugMarkKeyActor(Actor a, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
-    if( ! #defined(debug)) {
-        err("Don't call DebugMarkKeyActor without debug mode! Add debug to the compiler_settings.default.json file");
+    if( ! #defined(locdebug)) {
+        err("Don't call DebugMarkKeyActor without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }
 
@@ -1737,8 +1760,8 @@ function DebugMarkKeyPosition(vector pos, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
     local Actor a;
-    if( ! #defined(debug)) {
-        err("Don't call DebugMarkKeyPosition without debug mode! Add debug to the compiler_settings.default.json file");
+    if( ! #defined(locdebug)) {
+        err("Don't call DebugMarkKeyPosition without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }
 
@@ -1786,21 +1809,4 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
     pawn.InitialAlliances[i].bPermanent = bPermanent;
 
     return true;
-}
-
-function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which)
-{
-    local DeusExGoal goal;
-    local ConEventAddGoal ceag;
-
-    goal = player.FindGoal(goaltag);
-
-    if (goal == None) {
-        ceag = GetGoalConEvent(goaltag, convname, which);
-        if (ceag == None) return None;
-        goal = player.AddGoal(goaltag, ceag.bPrimaryGoal);
-        goal.SetText(ceag.goalText);
-    }
-
-    return goal;
 }

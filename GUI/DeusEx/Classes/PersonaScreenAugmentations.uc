@@ -60,7 +60,6 @@ function UpgradeAugmentation()
     local AugmentationUpgradeCannister augCan;
     local bool wasFrobTarget;
     local int levelBefore;
-    local DXRando dxr;
 
     if (selectedAug!=None){
         levelBefore = selectedAug.CurrentLevel;
@@ -107,11 +106,9 @@ function UpgradeAugmentation()
 
     if (selectedAug!=None){
         if (selectedAug.CurrentLevel!=levelBefore){
-            foreach player.AllActors(class'DXRando',dxr){break;}
-            class'DXREvents'.static.MarkBingo(dxr,"AugUpgraded"); //General "Upgrade x augs" kind of situation
-            class'DXREvents'.static.MarkBingo(dxr,selectedAug.Class.Name$"Upgraded"); //aug-specific upgrade goals
-            class'DXREvents'.static.MarkBingo(dxr,"AugLevel"$(selectedAug.CurrentLevel+1)); //"Get X Augs to level Y" type goals
-
+            class'DXREvents'.static.MarkBingo("AugUpgraded"); //General "Upgrade x augs" kind of situation
+            class'DXREvents'.static.MarkBingo(selectedAug.Class.Name$"Upgraded"); //aug-specific upgrade goals
+            class'DXREvents'.static.MarkBingo("AugLevel"$(selectedAug.CurrentLevel+1)); //"Get X Augs to level Y" type goals
         }
     }
 }

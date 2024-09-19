@@ -109,7 +109,7 @@ static function bool IsRevisionMaps(#var(PlayerPawn) player, optional Bool init)
     local Bool rc;
     local DXRando dxr;
 
-    foreach player.AllActors(class'DXRando',dxr){break;}
+    dxr = class'DXRando'.default.dxr;
 
     if (init){
         mapMenu = new(None) class'RevMenuChoice_Maps';

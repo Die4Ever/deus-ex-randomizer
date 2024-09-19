@@ -1,11 +1,11 @@
 class MrH extends HumanMilitary;
 
-var float healthRegenTimer;
+var float healthRegenTimer, empRegenTimer;
 var #var(PlayerPawn) player;
 var int FleeHealth;// like MinHealth, but we need more control
 var Actor closestDestPoint, farthestDestPoint;
 var float maxDist; // for iterative farthestDestPoint
-var float proxySize;
+var float proxyHeight;
 
 static function MrH Create(DXRActorsBase a)
 {
@@ -31,20 +31,19 @@ static function MrH Create(DXRActorsBase a)
     h.HomeLoc = loc;
     h.bUseHome = true;
 
+    class'DamageProxy'.static.Create(h, h.proxyHeight);
     h.ResetBasedPawnSize();
-    class'DamageProxy'.static.Create(h, h.proxySize);
     return h;
 }
 
 //
-// Damage type table for Mr X (Copied from Gunther):
+// Damage type table for Mr H (Copied from Gunther):
 //
 // Shot			- 100%
 // Sabot		- 100%
 // Exploded		- 100%
 // TearGas		- 10%
 // PoisonGas	- 10%
-// Poison		- 10%
 // HalonGas		- 10%
 // Radiation	- 10%
 // Shocked		- 10%
@@ -54,6 +53,7 @@ static function MrH Create(DXRActorsBase a)
 // Burned		- 0%
 // NanoVirus	- 0%
 // EMP			- 0%
+// delted: Poison 10%
 //
 
 //Copied from GuntherHermann
@@ -64,12 +64,30 @@ function float ShieldDamage(name damageType)
         (damageType == 'KnockedOut'))
         return 0.0;
     else if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas') ||
-            (damageType == 'Radiation') || (damageType == 'Shocked') || (damageType == 'Poison') ||
-            (damageType == 'PoisonEffect'))
+            (damageType == 'Radiation') || (damageType == 'Shocked'))
         return 0.1;
     else
         return Super.ShieldDamage(damageType);
 }
+
+// Exploded damage reduced here so no shield graphic, so players don't think he's immune
+#ifdef revision
+function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
+                            Vector offset, Name damageType, optional bool bTestOnly)
+{
+    if (damageType == 'Exploded')
+        Damage *= 0.7;
+    return Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType, bTestOnly);
+}
+#else
+function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
+                            Vector offset, Name damageType)
+{
+    if (damageType == 'Exploded')
+        Damage *= 0.7;
+    return Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
+}
+#endif
 
 //Copied from GuntherHermann
 function GotoDisabledState(name damageType, EHitLocation hitPos)
@@ -138,14 +156,17 @@ function InitializePawn()
 
 function Tick(float delta)
 {
+    local int i;
+
     Super.Tick(delta);
 
     LastRenderTime = Level.TimeSeconds;
     bStasis = false;
 
     healthRegenTimer += delta;
-    if(healthRegenTimer > 1) {
+    if(healthRegenTimer > 2) {
         healthRegenTimer = 0;
+        i = 20;
 
         if(health < FleeHealth) {
             MinHealth = default.health/2;
@@ -157,18 +178,24 @@ function Tick(float delta)
             bDetectable=true;
             bIgnore=false;
             Visibility=default.Visibility;
+            i = 10;
         }
 
-        HealthHead += 10;
-        HealthTorso += 10;
-        HealthArmLeft += 10;
-        HealthArmRight += 10;
-        HealthLegLeft += 10;
-        HealthLegRight += 10;
-#ifdef injections
-        EmpHealth = FClamp(EmpHealth + 10, 0, default.EmpHealth);
-#endif
+        HealthHead += i;
+        HealthTorso += i;
+        HealthArmLeft += i;
+        HealthArmRight += i;
+        HealthLegLeft += i;
+        HealthLegRight += i;
         GenerateTotalHealth();
+    }
+
+    empRegenTimer += delta;
+    if(empRegenTimer > 30) {
+        empRegenTimer = 0;
+        #ifdef injections
+        EmpHealth = FClamp(EmpHealth + 10, 0, default.EmpHealth);
+        #endif
     }
 }
 
@@ -299,13 +326,16 @@ function GenerateTotalHealth()
     HealthArmRight = FClamp(HealthArmRight, FleeHealth/2, default.HealthArmRight);
     HealthLegLeft  = FClamp(HealthLegLeft, FleeHealth/2, default.HealthLegLeft);
     HealthLegRight = FClamp(HealthLegRight, FleeHealth/2, default.HealthLegRight);
+    bInvincible    = false;// damageproxy hack, GenerateTotalHealth() sets health to maximum when invincible
     Super.GenerateTotalHealth();
+    bInvincible    = true;// damageproxy hack
     Health = FClamp(Health, FleeHealth/2, default.Health);
 }
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
-    if(health < MinHealth) return;
+    if(damageType == 'EMP') empRegenTimer=0;
+    else if(health < MinHealth) return;
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 }
 
@@ -329,25 +359,32 @@ function PlayFootStep()
 
 function ResetBasedPawnSize()
 {
-    SetBasedPawnSize(Default.CollisionRadius, GetDefaultCollisionHeight() - proxySize);
+    SetBasedPawnSize(Default.CollisionRadius - 4, GetDefaultCollisionHeight() - proxyHeight);
+}
+
+function Timer()
+{
+    bInvincible=false;// damageproxy hack
+    Super.Timer();
+    bInvincible=true;
 }
 
 #ifdef revision
 function EHitLocation HandleDamage(int Damage, Vector hitLocation, Vector offset, name damageType, optional bool bAnimOnly)
 {
-    offset.Z -=  proxySize/2;
+    if(offset!=vect(0,0,0)) offset.Z -=  proxyHeight/2;
     return Super.HandleDamage(Damage, hitLocation, offset, damageType, bAnimOnly);
 }
 #elseif gmdx
 function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector offset, name damageType, optional Pawn instigatedBy)
 {
-    offset.Z -=  proxySize/2;
+    if(offset!=vect(0,0,0)) offset.Z -=  proxyHeight/2;
     return Super.HandleDamage(actualDamage, hitLocation, offset, damageType, instigatedBy);
 }
 #else
 function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector offset, name damageType)
 {
-    offset.Z -=  proxySize/2;
+    if(offset!=vect(0,0,0)) offset.Z -=  proxyHeight/2;
     return Super.HandleDamage(actualDamage, hitLocation, offset, damageType);
 }
 #endif
@@ -358,17 +395,17 @@ defaultproperties
 {
     DrawScale=1.3
     CollisionRadius=25
-    CollisionHeight=64
-    proxySize=14
+    CollisionHeight=60
+    proxyHeight=8
     Mass=1000
     WalkSound=Sound'DeusExSounds.Robot.MilitaryBotWalk'
-    Health=2000
-    HealthHead=2000
-    HealthTorso=2000
-    HealthLegLeft=2000
-    HealthLegRight=2000
-    HealthArmLeft=2000
-    HealthArmRight=2000
+    Health=1800
+    HealthHead=1800
+    HealthTorso=1800
+    HealthLegLeft=1800
+    HealthLegRight=1800
+    HealthArmLeft=1800
+    HealthArmRight=1800
     bShowPain=False
     UnderWaterTime=-1.000000
     BindName="MrH"

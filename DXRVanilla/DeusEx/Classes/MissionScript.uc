@@ -63,7 +63,7 @@ function FirstFrame()
 function Timer()
 {
     // ensure DXRFlags can load flags before we start
-    if( dxr == None ) foreach AllActors(class'DXRando', dxr) break;
+    if( dxr == None ) dxr = class'DXRando'.default.dxr;
     if( dxr == None ) return;
     if( dxr.flagbase == None ) return;
 

@@ -185,7 +185,7 @@ simulated function static DataStorage GetObjFromPlayer(Actor p)
     }
 #endif
 
-    foreach p.AllActors(class'DXRando', dxr) { break; }
+    dxr = class'DXRando'.default.dxr;
     if(dxr == None)
         return None;
 

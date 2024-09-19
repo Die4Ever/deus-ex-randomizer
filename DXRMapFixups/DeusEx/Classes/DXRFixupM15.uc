@@ -76,10 +76,6 @@ function PreFirstEntryMapFixes_Bunker()
     local #var(prefix)Fan1 fan;
     local #var(prefix)WaltonSimons ws;
 
-    if (dxr.flags.settings.starting_map < 151) {
-        player().DeleteAllGoals();
-    }
-
     // doors_lower is for backtracking
     AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
 
@@ -448,6 +444,11 @@ function PreFirstEntryMapFixes_Page()
     local #var(prefix)ScriptedPawn sp;
     local vector cloneCubeLoc[4];
     local string cloneCubeText[4];
+    local AmbientSound as;
+    local DXRAmbientSoundTrigger ast;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     // fix in-fighting
     foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
@@ -529,6 +530,17 @@ function PreFirstEntryMapFixes_Page()
         if (dlt.datalinkTag=='DL_Final_Helios06'){
             dlt.Tag='PasswordCall';
             break;
+        }
+    }
+
+    if (VanillaMaps) {
+        foreach AllActors(class'AmbientSound', as) {
+            if (as.AmbientSound == Sound'Ambient.Ambient.GeigerLoop') {
+                ast = class'DXRAmbientSoundTrigger'.static.ReplaceAmbientSound(as, 'Gray_rad');
+                ast.CopyValsToUntriggered(ast);
+                ast.UntriggeredSoundVolume /= 3;
+                break;
+            }
         }
     }
 }

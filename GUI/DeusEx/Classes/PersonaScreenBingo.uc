@@ -116,7 +116,7 @@ function ShowBingoGoalHelp( Window bingoTile )
 
     msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox',False));
     if(#defined(bingocheat)) {
-        class'DXREvents'.static.MarkBingo(class'DXRando'.default.dxr, bt.event);
+        class'DXREvents'.static.MarkBingo(bt.event);
         bt.progress++;
     }
     msgbox.SetTitle(bt.GetText());

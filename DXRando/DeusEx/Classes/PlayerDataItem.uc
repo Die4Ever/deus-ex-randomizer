@@ -109,7 +109,7 @@ simulated function int GetBingoSpot(
     progress = bingo[x*5+y].progress;
     max = bingo[x*5+y].max;
 
-    foreach AllActors(class'DXRando', dxr) { break; }
+    dxr = class'DXRando'.default.dxr;
     if(dxr == None) return 1;// 1==maybe
 
     currentMission = dxr.dxInfo.missionNumber;
@@ -185,14 +185,11 @@ simulated function bool MarkBingoAsFailed(string event)
 simulated function CheckForExpiredBingoGoals(int missionNum)
 {
     local int i;
-    local DXRando dxr;
-
-    foreach AllActors(class'DXRando', dxr) {break;}
 
     for(i=0; i<ArrayCount(bingo); i++) {
         if ((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) continue; //Skip some extra looping in MarkBingoAsFailed
         if (class'DXREvents'.static.BingoActiveMission(missionNum, bingo_missions_masks[i])==-1){
-            class'DXREvents'.static.MarkBingoAsFailed(dxr,bingo[i].event);
+            class'DXREvents'.static.MarkBingoAsFailed(bingo[i].event);
         }
     }
 }

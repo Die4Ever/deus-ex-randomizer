@@ -1216,6 +1216,7 @@ function ExtendedTests()
     text = VersionString();
     testbool(VersionIsStable(), InStr(text, "Alpha")==-1 && InStr(text, "Beta")==-1, "VersionIsStable() matches version text, " $ text);
     testbool( #defined(debug), false, "debug is disabled");
+    testbool( #defined(locdebug), false, "locdebug is disabled");
 }
 
 function TestTime()

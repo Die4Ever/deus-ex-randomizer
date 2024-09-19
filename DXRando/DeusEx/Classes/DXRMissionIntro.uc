@@ -22,10 +22,8 @@ local DXRando dxr;
             started_conv = true;
             Level.Game.SetGameSpeed(1);
             SetTimer(checkTime, True);
-            foreach AllActors(class'DXRando',dxr){
-                dxr.flags.SaveFlags();
-                break;
-            }
+            dxr = class'DXRando'.default.dxr;
+            dxr.flags.SaveFlags();
         }
     } else {
         if (ran_first_frame && !started_conv){

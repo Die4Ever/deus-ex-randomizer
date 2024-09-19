@@ -209,8 +209,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
 
     if (!wasOnFire && bOnFire && instigatedBy==GetPlayerPawn()){
-        h = Human(GetPlayerPawn());
-        class'DXREvents'.static.MarkBingo(h.dxr,"IgnitedPawn");
+        class'DXREvents'.static.MarkBingo("IgnitedPawn");
     }
 
     if (bBurnedToDeath) {
@@ -225,11 +224,8 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     }
 
     if ((Health < -100) && !IsA('Robot') && !IsA('Animal'))
-	{
-        if (h==None){
-            h = Human(GetPlayerPawn());
-            class'DXREvents'.static.MarkBingo(h.dxr,"GibbedPawn");
-        }
+    {
+        class'DXREvents'.static.MarkBingo("GibbedPawn");
     }
 }
 
@@ -575,7 +571,7 @@ function EnableCheckDestLoc(bool bEnable)
     if( loopCounter > 10 ) {
         message = "EnableCheckDestLoc, bEnable: "$bEnable$", loopCounter: "$loopCounter$", destPoint: "$destPoint$", lastEnableCheckDestLocTime: "$lastEnableCheckDestLocTime;
         log(self$": WARNING: "$message);
-        foreach AllActors(class'DXRando', dxr) break;
+        dxr = class'DXRando'.default.dxr;
         if( dxr != None ) class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 
         //calling the BackOff() function also works and makes them attempt to patrol again after, but I expect it would always just fail over and over
