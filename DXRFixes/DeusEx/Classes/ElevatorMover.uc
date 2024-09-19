@@ -68,7 +68,7 @@ function SetSeq(int seqnum)
 
     Initialize();
 
-    if( MoveTime/2 < Level.TimeSeconds-lastTime )
+    if( MoveTime/10 < Level.TimeSeconds-lastTime )
         oldSeq = true;
 
     if ( bIsMoving && !oldSeq )
