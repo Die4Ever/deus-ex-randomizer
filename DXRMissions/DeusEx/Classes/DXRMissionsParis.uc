@@ -334,9 +334,11 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     if (Loc.name=="Media Store"){
         if ((g.name=="Nicolette") || (g.name=="Jaime" && dxr.flagbase.GetBool('JaimeLeftBehind'))){
             //Spawn a small spotlight just to make it a bit easier to spot them through the window
-            dl = Spawn(class'DynamicLight',,,vectm(1025,1768,200));
-            dl.LightRadius=3;
-            dl.LightBrightness=100;
+            dl = Spawn(class'DynamicLight',,,vectm(990,1768,300),rot(-16385,0,0));
+            dl.LightRadius=6;
+            dl.LightCone=1;
+            dl.LightBrightness=255;
+            dl.LightEffect=LE_Spotlight;
         }
     }
 
