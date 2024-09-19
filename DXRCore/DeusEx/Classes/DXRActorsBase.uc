@@ -730,10 +730,7 @@ function bool HasConversation(Actor a) {
 }
 
 function bool HasBased(Actor a) {
-    local Actor b;
-    foreach a.BasedActors(class'Actor', b)
-        return true;
-    return false;
+    return a.StandingCount > 0;
 }
 
 function bool DestroyActor( Actor d )
