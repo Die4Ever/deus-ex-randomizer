@@ -849,8 +849,10 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local ConEventSetFlag cesf;
     local ConEventTrigger cet;
+    local OrdersTrigger ot;
     local #var(prefix)Pigeon pigeon;
     local #var(prefix)MaggieChow maggie;
+    local #var(prefix)Maid maysung;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -966,16 +968,17 @@ function AnyEntryMapFixes()
         HandleJohnSmithDeath();
         FixMaggieMoveSpeed();
 
-        if (
-            dxr.flags.settings.starting_map >= 68 ||
-            dxr.flagbase.GetBool('M06_HONGKONG_MJ12LAB_Randomized') ||
-            dxr.flagbase.GetBool('06_HONGKONG_STORAGE_Randomized')
-        ) {
+        if (dxr.flagbase.GetBool('MaxChenConvinced')) {
             foreach AllActors(class'#var(prefix)MaggieChow', maggie) {
                 maggie.LeaveWorld();
                 break;
             }
-            DeleteConversationFlag(GetConversation('MaySungStranger'), 'MaggieChow_Dead', True);
+
+            dxr.flagbase.SetBool('MeetMaySung_Played', true);
+            foreach AllActors(class'OrdersTrigger', ot, 'MaySungFollows') {
+                ot.Trigger(None, None);
+                break;
+            }
         }
 
         break;

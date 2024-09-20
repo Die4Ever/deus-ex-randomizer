@@ -613,6 +613,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('KillswitchFixed',true,,-1);
         case 66://fallthrough
             AddNote(player, bEmptyNotes, "Luminous Path door-code: 1997.");
+            flagbase.SetBool('MaxChenConvinced',true,,-1);
             flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
             MarkConvPlayed("Gate_Guard2", bFemale);
@@ -846,18 +847,15 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         break;
 
     case 6: // Hong Kong
+    case 7:
         switch(bingo_event)
         {
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
-        // // these two goals can actually be done with the way these starts currently work, but would normally be impossible
-        // case "ClubEntryPaid":
+        // // this goal can actually be done with the way these starts currently work, but would normally be impossible
         // case "M06JCHasDate":
         //     return start_map > 65;
         }
-    case 7: // fallthrough to 2nd half of Hong Kong
-        case "MaggieCanFly":
-            return true;
         break;
 
     case 8: // return to NYC
