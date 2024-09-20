@@ -10,6 +10,7 @@ function CheckConfig()
 
     add_datacubes[i].map = "12_VANDENBERG_GAS";
     add_datacubes[i].imageClass = class'Image12_Tiffany_HostagePic';
+    add_datacubes[i].location = vect(-107.1, 901.3, -939.4);
     i++;
 
     Super.CheckConfig();
