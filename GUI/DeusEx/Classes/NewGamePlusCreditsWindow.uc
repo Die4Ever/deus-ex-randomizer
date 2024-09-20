@@ -22,6 +22,30 @@ function DoNewGamePlus()
     }
 }
 
+//Draw up to 3 columns across the screen
+function PrintColumns(String colHeader[3], String colTxt[3])
+{
+    local AlignWindow winAlign;
+    local TextWindow  winText;
+    local int i;
+
+    winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
+    winAlign.SetWindowAlignments(HALIGN_Center, VALIGN_Top);
+    winAlign.SetChildVAlignment(VALIGN_Top);
+    winAlign.SetChildSpacing(15);
+
+    for (i=0;i<ArrayCount(colTxt) && colTxt[i]!="";i++){
+        winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
+        winText.SetFont(fontText);
+        winText.SetTextColor(colText);
+        winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
+        winText.SetTextMargins(0, 0);
+        winText.SetText(colHeader[i]$"|n"$colTxt[i]);
+    }
+
+    winAlign.SetWidth((maxTextWidth*i)/3);
+}
+
 function AddDXRCreditsGeneral()
 {
     local Texture randoTextTextures[6];
