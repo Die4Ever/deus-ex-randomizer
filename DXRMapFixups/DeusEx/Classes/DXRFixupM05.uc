@@ -331,16 +331,26 @@ function BalanceJailbreak()
 
         else {
             // put the items in the surgery ward
-            itemLocations[num++] = vectm(2175,-569,-203);// paul's bed
-            itemLocations[num++] = vectm(2175,-518,-203);// paul's bed
-            itemLocations[num++] = vectm(1792,-738,-203);// bed 2
-            itemLocations[num++] = vectm(1792,-802,-203);// bed 2
-            itemLocations[num++] = vectm(1570,-739,-203);// bed 1
-            itemLocations[num++] = vectm(1570,-801,-203);// bed 1
+            itemLocations[num++] = vectm(2160,-585,-203);// paul's bed
+            itemLocations[num++] = vectm(2160,-505,-203);// paul's bed
+            itemLocations[num++] = vectm(1805,-730,-203);// middle bed
+            itemLocations[num++] = vectm(1805,-810,-203);// middle bed
+            itemLocations[num++] = vectm(1555,-730,-203);// bed near ambrosia
+            itemLocations[num++] = vectm(1555,-810,-203);// bed near ambrosia
+
+            //Third bed locations
+            itemLocations[num++] = vectm(2190,-545,-203);// paul's bed
+            itemLocations[num++] = vectm(1775,-770,-203);// middle bed
+            itemLocations[num++] = vectm(1585,-770,-203);// bed near ambrosia
+
+
             itemLocations[num++] = vectm(1270,-522,-211);// near ambrosia
-            itemLocations[num++] = vectm(1909,-376,-211);// desk with microscope and datacube
-            itemLocations[num++] = vectm(2160,-327,-211);// table with two monitors
-            itemLocations[num++] = vectm(2055,-327,-211);// table with two monitors
+            itemLocations[num++] = vectm(1275,-710,-211);// table with two microscopes and datacube (left)
+            itemLocations[num++] = vectm(1275,-805,-211);// table with two microscopes and datacube (right)
+            itemLocations[num++] = vectm(1910,-375,-211);// desk with microscope and datacube
+            itemLocations[num++] = vectm(2160,-327,-211);// table with two monitors (left)
+            itemLocations[num++] = vectm(2055,-327,-211);// table with two monitors (right)
+            itemLocations[num++] = vectm(2110,-327,-211);// table with two monitors (middle)
 
             // on the floor, at the wall with the monitors, starting in the center, working out
             itemLocations[num++] = vectm(1575,-950,-251);
@@ -360,13 +370,6 @@ function BalanceJailbreak()
             itemLocations[num++] = vectm(1500,-900,-251);
             itemLocations[num++] = vectm(1725,-900,-251);
             itemLocations[num++] = vectm(1425,-900,-251);
-            itemLocations[num++] = vectm(1800,-900,-251);
-            itemLocations[num++] = vectm(1350,-900,-251);
-            itemLocations[num++] = vectm(1875,-900,-251);
-            itemLocations[num++] = vectm(1275,-900,-251);
-
-            itemLocations[num++] = vectm(1275,-850,-251); // continuing towards the ambrosia along the wall
-            itemLocations[num++] = vectm(1350,-850,-251);
 
             foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
                 if(dlt.datalinkTag != 'dl_equipment') continue;
