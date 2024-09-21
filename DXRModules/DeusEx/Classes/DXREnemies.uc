@@ -447,19 +447,18 @@ function AddDXRCredits(CreditsWindow cw)
 
     //We'll bundle randomized bot weapons into the same column as melee weapons
     //to give more width per column and melee and robot weapons are short lists
+    hdrs[2]="";
+    texts[2]="";
     if(dxr.flags.settings.bot_weapons!=0) {
-        texts[1]=texts[1] $ "|n|n|n|nExtra Weapons For Robots|n";
+        hdrs[2]="Extra Weapons For Robots";
         for(i=0; i < ArrayCount(_randombotweapons); i++) {
             if( _randombotweapons[i].type == None ) continue;
             weaponName = GetBotWeaponName(_randombotweapons[i].type);
-            texts[1]=texts[1]$weaponName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "% |n";
+            texts[2]=texts[2]$weaponName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "% |n";
         }
     }
 
-    hdrs[2]="";
-    texts[2]="";
-
-    ncw.PrintColumns(hdrs,texts);
+    ncw.PrintTeeColumns(hdrs,texts);
     cw.PrintLn();
 }
 

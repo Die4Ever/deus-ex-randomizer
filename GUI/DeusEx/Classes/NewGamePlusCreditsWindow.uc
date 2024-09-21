@@ -23,6 +23,9 @@ function DoNewGamePlus()
 }
 
 //Draw up to 3 columns across the screen
+//  1 | 2 | 3
+//     or
+//    1 | 2
 function PrintColumns(String colHeader[3], String colTxt[3])
 {
     local AlignWindow winAlign;
@@ -49,6 +52,52 @@ function PrintColumns(String colHeader[3], String colTxt[3])
             winText.SetWidth(maxTextWidth/numCols);
         }
     }
+    winAlign.SetWidth(maxTextWidth);
+}
+
+//Draw 1 tall column and two stacked rows
+//     | 2
+//   1 |---
+//     | 3
+function PrintTeeColumns(String colHeader[3], String colTxt[3])
+{
+    local AlignWindow winAlign;
+    local TileWindow  winTile;
+    local TextWindow  winText;
+
+    winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
+    winAlign.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
+    winAlign.SetChildVAlignment(VALIGN_Top);
+
+    winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
+    winText.SetFont(fontText);
+    winText.SetTextColor(colText);
+    winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
+    winText.SetTextMargins(0, 0);
+    winText.SetText(colHeader[0]$"|n"$colTxt[0]);
+    winText.SetWidth(maxTextWidth/2);
+
+    winTile = TileWindow(winAlign.NewChild(Class'TileWindow'));
+    winTile.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
+    winTile.SetWidth(maxTextWidth/2);
+
+    winText = TextWindow(winTile.NewChild(Class'TextWindow'));
+    winText.SetFont(fontText);
+    winText.SetTextColor(colText);
+    winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winText.SetTextMargins(0, 0);
+    winText.SetText(colHeader[1]$"|n"$colTxt[1]);
+    winText.SetWidth(maxTextWidth/2);
+
+    winText = TextWindow(winTile.NewChild(Class'TextWindow'));
+    winText.SetFont(fontText);
+    winText.SetTextColor(colText);
+    winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    winText.SetTextMargins(0, 0);
+    winText.SetText(colHeader[2]$"|n"$colTxt[2]);
+    winText.SetWidth(maxTextWidth/2);
+
+
     winAlign.SetWidth(maxTextWidth);
 }
 
