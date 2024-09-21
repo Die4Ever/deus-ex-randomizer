@@ -29,7 +29,7 @@ function DoNewGamePlus()
 function PrintColumns(String colHeader[3], String colTxt[3])
 {
     local AlignWindow winAlign;
-    local TextWindow  winText;
+    local HeaderedColumnWindow winColumn;
     local int i,numCols;
 
     winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
@@ -43,13 +43,10 @@ function PrintColumns(String colHeader[3], String colTxt[3])
 
     for (i=0;i<ArrayCount(colTxt);i++){
         if (colTxt[i]!=""){
-            winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
-            winText.SetFont(fontText);
-            winText.SetTextColor(colText);
-            winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
-            winText.SetTextMargins(0, 0);
-            winText.SetText(colHeader[i]$"|n"$colTxt[i]);
-            winText.SetWidth(maxTextWidth/numCols);
+            winColumn = HeaderedColumnWindow(winAlign.NewChild(Class'HeaderedColumnWindow'));
+            winColumn.SetColumnWidth(maxTextWidth/numCols);
+            winColumn.SetTitle(colHeader[i]);
+            winColumn.SetText(colTxt[i]);
         }
     }
     winAlign.SetWidth(maxTextWidth);
@@ -63,40 +60,30 @@ function PrintTeeColumns(String colHeader[3], String colTxt[3])
 {
     local AlignWindow winAlign;
     local TileWindow  winTile;
-    local TextWindow  winText;
+    local HeaderedColumnWindow winColumn;
 
     winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
     winAlign.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
     winAlign.SetChildVAlignment(VALIGN_Top);
 
-    winText = TextWindow(winAlign.NewChild(Class'TextWindow'));
-    winText.SetFont(fontText);
-    winText.SetTextColor(colText);
-    winText.SetTextAlignments(HALIGN_Center, VALIGN_Top);
-    winText.SetTextMargins(0, 0);
-    winText.SetText(colHeader[0]$"|n"$colTxt[0]);
-    winText.SetWidth(maxTextWidth/2);
+    winColumn = HeaderedColumnWindow(winAlign.NewChild(Class'HeaderedColumnWindow'));
+    winColumn.SetColumnWidth(maxTextWidth/2);
+    winColumn.SetTitle(colHeader[0]);
+    winColumn.SetText(colTxt[0]);
 
     winTile = TileWindow(winAlign.NewChild(Class'TileWindow'));
     winTile.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
     winTile.SetWidth(maxTextWidth/2);
 
-    winText = TextWindow(winTile.NewChild(Class'TextWindow'));
-    winText.SetFont(fontText);
-    winText.SetTextColor(colText);
-    winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-    winText.SetTextMargins(0, 0);
-    winText.SetText(colHeader[1]$"|n"$colTxt[1]);
-    winText.SetWidth(maxTextWidth/2);
+    winColumn = HeaderedColumnWindow(winTile.NewChild(Class'HeaderedColumnWindow'));
+    winColumn.SetColumnWidth(maxTextWidth/2);
+    winColumn.SetTitle(colHeader[1]);
+    winColumn.SetText(colTxt[1]);
 
-    winText = TextWindow(winTile.NewChild(Class'TextWindow'));
-    winText.SetFont(fontText);
-    winText.SetTextColor(colText);
-    winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
-    winText.SetTextMargins(0, 0);
-    winText.SetText(colHeader[2]$"|n"$colTxt[2]);
-    winText.SetWidth(maxTextWidth/2);
-
+    winColumn = HeaderedColumnWindow(winTile.NewChild(Class'HeaderedColumnWindow'));
+    winColumn.SetColumnWidth(maxTextWidth/2);
+    winColumn.SetTitle(colHeader[2]);
+    winColumn.SetText(colTxt[2]);
 
     winAlign.SetWidth(maxTextWidth);
 }

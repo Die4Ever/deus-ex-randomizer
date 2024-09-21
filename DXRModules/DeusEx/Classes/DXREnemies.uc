@@ -429,6 +429,8 @@ function AddDXRCredits(CreditsWindow cw)
     ncw.PrintColumns(hdrs,texts);
 
     cw.PrintLn();
+    cw.PrintLn();
+
     cw.PrintHeader("Extra Weapons");
 
     hdrs[0]="Extra Weapons For Enemies";
