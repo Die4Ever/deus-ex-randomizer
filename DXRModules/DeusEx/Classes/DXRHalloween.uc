@@ -77,6 +77,7 @@ function CheckCarcasses()
                 continue;
             }
         }
+        if(carc.bDeleteMe) continue;
         for(i=0; i < num_carcs; i++) {
             if(carcs[i] == carc) {
                 break;
@@ -150,11 +151,11 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
 {
     // return true to compress the array
     if(carc == None) return true;
+    if(carc.bDeleteMe) return true;
 
     // wait for Zombie Time!
     if(time > Level.TimeSeconds) return false;
 
-    l("CheckResurrectCorpse " $ carc @ time @ Level.TimeSeconds);
     return ResurrectCorpse(self, carc);
 }
 
@@ -194,6 +195,8 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     #endif
     local bool removeItem;
     local string s;
+
+    if(carc==None || carc.bDeleteMe) return False;
 
     livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
