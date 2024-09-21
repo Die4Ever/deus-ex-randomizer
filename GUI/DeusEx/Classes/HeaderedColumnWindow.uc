@@ -28,6 +28,26 @@ event InitWindow()
     winText.SetPos(0,24);
 }
 
+event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidth,
+                                   bool bHeightSpecified, out float preferredHeight)
+{
+    local float w,h,height;
+
+    preferredWidth=columnWidth;
+
+    height=0;
+    winTitle.QueryPreferredSize(w,h);
+    height+=h;
+    winText.QueryPreferredSize(w,h);
+    height+=h;
+}
+
+function SetTextAlignment(EHAlign newHAlign, EVAlign newVAlign)
+{
+    winTitle.SetTextAlignments(newHAlign,newVAlign);
+    winText.SetTextAlignments(newHAlign,newVAlign);
+}
+
 function SetColumnWidth(float newWidth)
 {
     SetWidth(newWidth);

@@ -64,7 +64,7 @@ function PrintTeeColumns(String colHeader[3], String colTxt[3])
 
     winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
     winAlign.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
-    winAlign.SetChildVAlignment(VALIGN_Top);
+    winAlign.SetChildVAlignment(VALIGN_Center);
 
     winColumn = HeaderedColumnWindow(winAlign.NewChild(Class'HeaderedColumnWindow'));
     winColumn.SetColumnWidth(maxTextWidth/2);
