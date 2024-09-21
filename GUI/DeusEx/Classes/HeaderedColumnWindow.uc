@@ -12,8 +12,6 @@ var float        columnWidth;
 event InitWindow()
 {
     Super.InitWindow();
-    //SetSize(1000,1024);
-    //columnWidth=1000;
 
     winTitle = TextWindow(NewChild(Class'TextWindow'));
     winTitle.SetFont(fontHeader);
