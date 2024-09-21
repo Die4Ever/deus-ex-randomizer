@@ -2,7 +2,7 @@ class ElevatorMover merges ElevatorMover;
 // can't do injects because it uses a state
 
 var float lastTime, moveSpeed, originalMoveTime;
-var int numKeyPos;
+var int numKeyPos, prevSeqNum;
 var bool initialized;
 
 function Initialize()
@@ -68,7 +68,7 @@ function SetSeq(int seqnum)
 
     Initialize();
 
-    if( MoveTime/10 < Level.TimeSeconds-lastTime )
+    if( seqnum != prevSeqNum && MoveTime/3 < Level.TimeSeconds-lastTime ) // HACK: for 12_vandenberg_cmd elevator
         oldSeq = true;
 
     if ( bIsMoving && !oldSeq )
@@ -81,6 +81,7 @@ function SetSeq(int seqnum)
 
     if (KeyNum != seqnum || oldSeq)
     {
+        prevSeqNum = seqnum;
         prevKeyNum = KeyNum;
         KeyNum = seqnum;
 
@@ -90,4 +91,9 @@ function SetSeq(int seqnum)
             bIsMoving = false;
         else lastTime = Level.TimeSeconds;
     }
+}
+
+defaultproperties
+{
+    prevSeqNum=-1
 }
