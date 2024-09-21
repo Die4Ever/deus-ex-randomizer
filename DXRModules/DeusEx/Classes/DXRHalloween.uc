@@ -154,6 +154,7 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
     // wait for Zombie Time!
     if(time > Level.TimeSeconds) return false;
 
+    l("CheckResurrectCorpse " $ carc @ time @ Level.TimeSeconds);
     return ResurrectCorpse(self, carc);
 }
 
@@ -306,9 +307,23 @@ function MapFixes()
     local PathNode p;
     local #var(DeusExPrefix)Carcass carc;
     local class<#var(DeusExPrefix)Carcass> carcclass;
+    local ScriptedPawn sp;
     local float dist;
 
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOHQ":
+    case "03_NYC_UNATCOHQ":
+    case "04_NYC_UNATCOHQ":
+        foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
+            carc.bNotDead = true;
+            carc.itemName = ReplaceText(carc.itemName, " (Dead)", " (Unconscious)");
+        }
+        foreach AllActors(class'ScriptedPawn', sp) {
+            if(sp.bInvincible) {
+                RemoveFears(sp);
+            }
+        }
+        break;
     case "09_NYC_GRAVEYARD":
         SetSeed("DXRHalloween MapFixes graveyard bodies");
         foreach AllActors(class'PathNode', p) {
