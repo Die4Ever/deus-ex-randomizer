@@ -230,9 +230,6 @@ function AnyEntry()
     Super.AnyEntry();
 
     switch(dxr.localURL) {
-    case "03_NYC_BATTERYPARK":
-        Player().StartDataLinkTransmission("dl_batterypark");
-        break;
     case "03_NYC_AIRFIELDHELIBASE":
         UpdateGoalWithRandoInfo('FindAmbrosiaBarrels', "The Ambrosia could be anywhere in the helibase or airfield.");
         break;
