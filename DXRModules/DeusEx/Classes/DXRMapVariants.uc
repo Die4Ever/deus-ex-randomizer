@@ -142,6 +142,9 @@ static function bool IsVanillaMaps(#var(PlayerPawn) player)
 
 function int GetMirrorMapsSetting()
 {
+#ifndef injections
+    return -1; //Ignore the mirroredmaps setting, since we don't support them without injections
+#endif
     return dxr.flags.mirroredmaps;
 }
 
