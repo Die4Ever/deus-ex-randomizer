@@ -12,9 +12,21 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     foreach AllActors(class'DeusExWeapon', w) {
         RandoWeapon(w);
     }
+    if(!#defined(injections)) SetTimer(1, true);
 }
 
-simulated function RandoWeapon(DeusExWeapon w)
+simulated function Timer()
+{
+    local DeusExWeapon w;
+    Super.Timer();
+    if( dxr == None ) return;
+
+    foreach AllActors(class'DeusExWeapon', w) {
+        RandoWeapon(w, true);
+    }
+}
+
+simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
 {
     local int oldseed, i;
     local float min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime, new_damage, default_shottime;
@@ -36,7 +48,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     new_damage = rngrange(new_damage, min_weapon_dmg, max_weapon_dmg);
     w.HitDamage = int(new_damage + 0.5);
     if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {
-        l(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
+        if(!silent) l(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
         w.HitDamage = 2;
     }
 
@@ -53,7 +65,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     max_weapon_shottime = float(dxr.flags.settings.max_weapon_shottime) / 100;
     default_shottime = GetDefaultShottime(w);
     w.ShotTime = rngrange(default_shottime, min_weapon_shottime, max_weapon_shottime);
-    l(w $ " w.HitDamage="$ w.HitDamage $ ", ShotTime=" $ w.ShotTime);
+    if(!silent) l(w $ " w.HitDamage="$ w.HitDamage $ ", ShotTime=" $ w.ShotTime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;
     f = float(w.default.MaxRange) * (rngf()+0.5);
@@ -66,7 +78,8 @@ simulated function RandoWeapon(DeusExWeapon w)
 }
 
 static function float GetDefaultShottime(DeusExWeapon w) {
-    if(w.ProjectileClass != None && (w.AmmoNames[1] != None || w.AmmoNames[2] != None)) {
+    // HACK: changing ammo types is awkward because there's no array for ShotTime, technically a nerf to the crossbow?
+    if(/*w.default.ProjectileClass == None &&*/ w.ProjectileClass != None && (w.AmmoNames[1] != None || w.AmmoNames[2] != None)) {
         return 1;// ShotTime of 1 is hardcoded when switching ammo to something with a projectile
     }
     return w.default.ShotTime;
