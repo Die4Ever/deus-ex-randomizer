@@ -176,3 +176,10 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
 
     return true;
 }
+
+#ifndef injections
+defaultproperties
+{
+    bAlwaysTick=True
+}
+#endif
