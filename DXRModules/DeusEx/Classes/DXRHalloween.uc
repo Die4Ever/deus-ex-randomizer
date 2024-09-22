@@ -53,6 +53,12 @@ function CheckCarcasses()
 {
     local int i;
     local #var(DeusExPrefix)Carcass carc;
+    local float zombie_time, dog_zombie_time;
+
+    if( dxr.flags.settings.enemyrespawn <= 0 ) return;
+    zombie_time = dxr.flags.settings.enemyrespawn - 5;
+    zombie_time = FClamp(zombie_time, 1, 10000);
+    dog_zombie_time = zombie_time / 5;
 
     for(i=0; i < num_carcs; i++) {
         if(CheckResurrectCorpse(carcs[i], times[i])) {
@@ -86,9 +92,9 @@ function CheckCarcasses()
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
             if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
-                times[num_carcs] = Level.TimeSeconds + 3 + FRand()*2;
+                times[num_carcs] = Level.TimeSeconds + dog_zombie_time + FRand()*2;
             } else {
-                times[num_carcs] = Level.TimeSeconds + 15 + FRand()*10;
+                times[num_carcs] = Level.TimeSeconds + zombie_time + FRand()*10;
             }
             carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;

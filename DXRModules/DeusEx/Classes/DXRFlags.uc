@@ -679,6 +679,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     if (IsHalloweenMode()){
         clothes_looting = 1;
         settings.speedlevel = 0;// in DXRLoadouts we override level 0 speed to mean lvl 1 run silent
+        settings.enemyrespawn = 20;
     } else {
         clothes_looting = 0;
     }
