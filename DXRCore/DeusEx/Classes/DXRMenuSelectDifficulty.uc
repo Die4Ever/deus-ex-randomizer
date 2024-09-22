@@ -139,6 +139,9 @@ function BindControls(optional string action)
         NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
         EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
     }
+#else
+    //Disable mirrored maps entirely if map variants aren't supported
+    f.mirroredmaps=-1;
 #endif
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again. Leave it blank for a random seed.");
