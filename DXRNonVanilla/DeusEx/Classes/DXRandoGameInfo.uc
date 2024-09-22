@@ -137,7 +137,8 @@ event Super_PostLogin( playerpawn NewPlayer )
     local Pawn P;
     local DXRMusicPlayer m;
     // Start player's music.
-    m = DXRMusicPlayer(GetDXR().LoadModule(class'DXRMusicPlayer'));
+    if(!#defined(revision))
+        m = DXRMusicPlayer(class'DXRMusicPlayer'.static.Find());
     if(m!=None)
         m.ClientSetMusic( NewPlayer, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
     else
