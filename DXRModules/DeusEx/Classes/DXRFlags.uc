@@ -39,7 +39,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     p.bCrowdControl = (crowdcontrol!=0);
 #endif
 
-    if(!VersionIsStable() || #defined(debug))
+    if(!VersionIsStable() || #bool(debug))
         p.bCheatsEnabled = true;
 
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {

@@ -1734,7 +1734,7 @@ static function Actor GlowUp(Actor a, optional byte hue, optional byte saturatio
 function DebugMarkKeyActor(Actor a, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
-    if( ! #defined(locdebug)) {
+    if( ! #bool(locdebug)) {
         err("Don't call DebugMarkKeyActor without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }
@@ -1760,7 +1760,7 @@ function DebugMarkKeyPosition(vector pos, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
     local Actor a;
-    if( ! #defined(locdebug)) {
+    if( ! #bool(locdebug)) {
         err("Don't call DebugMarkKeyPosition without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }
