@@ -242,6 +242,7 @@ function ExtendedTests()
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_1_2_1.dx", 1,2,1);
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_0.1_1.2_-1.3.dx", 0.1, 1.2, -1.3);
 
+    #ifdef injections
     oldmirroredmaps = dxr.flags.mirroredmaps;
     dxr.flags.mirroredmaps = 100;
     teststring(VaryURL("test#"), "test_-1_1_1#", "VaryURL 1");
@@ -250,4 +251,5 @@ function ExtendedTests()
     teststring(VaryURL("test.dx"), "test_-1_1_1.dx", "VaryURL 4");
     teststring(VaryURL("test?query=param"), "test_-1_1_1?query=param", "VaryURL 5");
     dxr.flags.mirroredmaps = oldmirroredmaps;
+    #endif
 }

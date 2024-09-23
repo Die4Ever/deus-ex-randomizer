@@ -60,6 +60,17 @@ simulated static function int VersionNumber()
     return VersionToInt(major, minor, patch, build);
 }
 
+simulated static function bool FeatureFlag(int major, int minor, int patch, string feature)
+{
+    #ifdef allfeatures
+        return true;
+    #elseif enablefeature
+        if("#var(enablefeature)" == feature) return true;
+    #endif
+
+    return VersionNumber() >= VersionToInt(major, minor, patch, 0);
+}
+
 simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, int build)
 {
     return config_version < VersionToInt(major, minor, patch, build);

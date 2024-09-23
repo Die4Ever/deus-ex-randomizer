@@ -1218,6 +1218,12 @@ function ExtendedTests()
     testbool( #defined(debug), false, "debug is disabled");
     testbool( #defined(locdebug), false, "locdebug is disabled");
     testbool( #defined(debugnames), false, "debugnames is disabled");
+    if(#defined(allfeatures)) { // we MIGHT want to ship alphas and betas with this?
+        warning("!!! allfeatures is defined !!!");
+    }
+    if(#defined(enablefeature)) {
+        warning("!!! enablefeature is defined as #var(enablefeature) !!!");
+    }
 }
 
 function TestTime()
