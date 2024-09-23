@@ -208,6 +208,10 @@ function DrawWindowBase(GC gc, actor frobTarget)
 
     // draw object-specific info
     strInfo = GetStrInfo(frobTarget, numLines);
+    #ifdef debugnames
+    strInfo = string(frobTarget.name) @ frobTarget.Tag @ frobTarget.Event $ CR() $ strInfo;
+    numLines++;
+    #endif
 
     infoX = boxTLX + 10;
     infoY = boxTLY + 10;
