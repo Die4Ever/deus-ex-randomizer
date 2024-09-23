@@ -148,7 +148,7 @@ event Super_PostLogin( playerpawn NewPlayer )
     #endif
 
     if(useDXRMusicPlayer)
-        m = DXRMusicPlayer(class'DXRMusicPlayer'.static.Find());
+        m = DXRMusicPlayer(GetDXR().LoadModule(class'DXRMusicPlayer'));// this can get called before the module is loaded
     if(m!=None)
         m.ClientSetMusic( NewPlayer, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
     else

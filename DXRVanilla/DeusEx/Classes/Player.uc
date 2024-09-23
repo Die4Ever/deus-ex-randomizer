@@ -1313,13 +1313,14 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
     local DXRMusicPlayer m;
-    m = DXRMusicPlayer(class'DXRMusicPlayer'.static.Find());
+    m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));// this can get called before the module is loaded
     if (m==None){
         log("WARNING: DXRMusicPlayer module not found");
         _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
         return;
+    } else {
+        m.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
     }
-    m.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
 //=========== END OF MUSIC STUFF

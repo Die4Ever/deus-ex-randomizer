@@ -41,6 +41,7 @@ simulated function DXRando GetDXR()
 
 static function DXRBase Find()
 {
+    if(class'DXRando'.default.dxr == None) return None;
     return class'DXRando'.default.dxr.FindModule(default.class);
 }
 
