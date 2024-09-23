@@ -7,6 +7,21 @@ function BeginPlay()
     MultiSkins[1] = Texture(DynamicLoadObject("Extras.Matrix_A00", class'Texture'));
 }
 
+function PostPostBeginPlay()
+{
+    local DXRFlags m;
+    Super.PostPostBeginPlay();
+
+    m = DXRFlags(class'DXRFlags'.static.Find());
+
+    if (m==None) return; //There should always be a DXRFlags, but better safe than sorry
+
+    if (m.autosave==7){ //Fixed Saves
+        Description=Description $ "|n|nYou must have an ATM, personal computer, public terminal, or security computer highlighted in order to save your game.";
+    }
+}
+
+
 defaultproperties
 {
      maxCopies=5
