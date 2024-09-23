@@ -296,7 +296,7 @@ static function string _GetStartMap(int start_map_val, optional out string frien
 {
     friendlyName = ""; // clear the out param to protect against reuse by the caller
 
-    if (#defined(allstarts))
+    if (#bool(allstarts))
         bShowInMenu=1;
     switch(start_map_val)
     {
