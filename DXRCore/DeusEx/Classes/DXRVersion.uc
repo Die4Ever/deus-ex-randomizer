@@ -62,13 +62,16 @@ simulated static function int VersionNumber()
 
 simulated static function bool FeatureFlag(int major, int minor, int patch, string feature)
 {
-    #ifdef allfeatures
-        return true;
-    #elseif enablefeature
+    if(#bool(allfeatures)) return true;
+    #ifdef enablefeature
         if("#var(enablefeature)" == feature) return true;
     #endif
 
-    return VersionNumber() >= VersionToInt(major, minor, patch, 0);
+    if(VersionNumber() >= VersionToInt(major, minor, patch, 0)) {
+        log("WARNING: FeatureFlag " $ feature $ " only requires v" $ major $ "." $ minor $ "." $ patch, default.class.name);
+        return true;
+    }
+    return false;
 }
 
 simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, int build)
