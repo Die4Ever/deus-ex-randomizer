@@ -23,6 +23,8 @@ function PostFirstEntryMapFixes()
     FixUNATCORetinalScanner();
 
     switch(dxr.localURL) {
+    case "03_NYC_BatteryPark":
+        player().StartDataLinkTransmission("dl_batterypark");
     case "03_NYC_BrooklynBridgeStation":
         if (!RevisionMaps){
             a = AddActor(class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));

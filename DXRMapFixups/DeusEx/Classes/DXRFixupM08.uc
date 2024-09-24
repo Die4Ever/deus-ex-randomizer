@@ -18,6 +18,7 @@ function AnyEntryMapFixes()
             RemoveReactions(s);
         }
 
+        Player().StartDataLinkTransmission("DL_Entry");
         RearrangeMJ12ConvergingInfolink();
         RearrangeJockExitDialog();
 

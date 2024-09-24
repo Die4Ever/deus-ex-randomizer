@@ -764,12 +764,6 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 {
     local DeusExGoal goal;
 
-    switch(start_flag/10) {
-        case 8:
-            player.StartDataLinkTransmission("DL_Entry");
-            break;
-    }
-
     switch(start_flag) {
         case 21:
             AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete');
@@ -779,8 +773,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             AddGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack');
             break;
         case 32:
-            player.StartDataLinkTransmission("dl_batterypark");
-        case 33: // fallthrough
+        case 33:
         case 34:
         case 35:
             AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
@@ -886,9 +879,6 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
         case 121:
             AddGoalFromConv(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
-            break;
-        case 120:
-            player.StartDataLinkTransmission("DL_no_carla");
             break;
 
         case 153:
