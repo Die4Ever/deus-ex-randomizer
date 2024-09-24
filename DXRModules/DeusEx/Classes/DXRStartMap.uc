@@ -523,27 +523,33 @@ static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
     }
 }
 
-function AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, name convname, optional int which)
+function DeusExNote AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, name convname, optional int which)
 {
     local Conversation con;
     local ConEvent ce;
     local ConEventAddNote cean;
+    local DeusExNote note;
 
-    if (bEmptyNotes == false) return;
+    if (bEmptyNotes == false) {
+        return None;
+    }
 
     con = GetConversation(convname);
 
-    // passing a negative value for `which` adds all notes
+    // passing a negative value for `which` adds all notes, and returns None
     for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
         cean = ConEventAddNote(ce);
         if (cean != None) {
             if (which <= 0) {
-                player.Addnote(cean.noteText);
-                if (which == 0) break;
+                note = player.Addnote(cean.noteText);
+                if (which == 0) {
+                    return note;
+                }
             }
             which--;
         }
     }
+    return None;
 }
 
 function MarkConvPlayed(string flagname, bool bFemale)
