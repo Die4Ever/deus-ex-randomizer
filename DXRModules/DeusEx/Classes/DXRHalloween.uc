@@ -53,6 +53,12 @@ function CheckCarcasses()
 {
     local int i;
     local #var(DeusExPrefix)Carcass carc;
+    local float zombie_time, dog_zombie_time;
+
+    if( dxr.flags.settings.enemyrespawn <= 0 ) return;
+    zombie_time = dxr.flags.settings.enemyrespawn - 5;
+    zombie_time = FClamp(zombie_time, 1, 10000);
+    dog_zombie_time = zombie_time / 5;
 
     for(i=0; i < num_carcs; i++) {
         if(CheckResurrectCorpse(carcs[i], times[i])) {
@@ -77,6 +83,7 @@ function CheckCarcasses()
                 continue;
             }
         }
+        if(carc.bDeleteMe) continue;
         for(i=0; i < num_carcs; i++) {
             if(carcs[i] == carc) {
                 break;
@@ -85,9 +92,9 @@ function CheckCarcasses()
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
             if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
-                times[num_carcs] = Level.TimeSeconds + 3 + FRand()*2;
+                times[num_carcs] = Level.TimeSeconds + dog_zombie_time + FRand()*2;
             } else {
-                times[num_carcs] = Level.TimeSeconds + 15 + FRand()*10;
+                times[num_carcs] = Level.TimeSeconds + zombie_time + FRand()*10;
             }
             carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;
@@ -150,6 +157,7 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
 {
     // return true to compress the array
     if(carc == None) return true;
+    if(carc.bDeleteMe) return true;
 
     // wait for Zombie Time!
     if(time > Level.TimeSeconds) return false;
@@ -163,29 +171,18 @@ static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#
 
     //For handling special cases that we're too lazy to make unique living classes for
     switch(carcClass){
-        case class'MJ12CloneAugShield1NametagCarcass':
-            return "MJ12CloneAugShield1";
-        case class'MJ12CloneAugStealth1NametagCarcass':
-            return "MJ12CloneAugStealth1";
-        case class'MJ12CloneAugTough1NametagCarcass':
-            return "MJ12CloneAugTough1";
-        case class'NSFCloneAugShield1NametagCarcass':
-            return "NSFCloneAugShield1";
-        case class'NSFCloneAugStealth1NametagCarcass':
-            return "NSFCloneAugStealth1";
-        case class'NSFCloneAugTough1NametagCarcass':
-            return "NSFCloneAugTough1";
-        case class'UNATCOCloneAugShield1NametagCarcass':
-            return "UNATCOCloneAugShield1";
-        case class'UNATCOCloneAugStealth1NametagCarcass':
-            return "UNATCOCloneAugStealth1";
-        case class'UNATCOCloneAugTough1NametagCarcass':
-            return "UNATCOCloneAugTough1";
+#ifdef hx
+        case class'HXJCDentonCarcass':
+#else
+        case class'#var(prefix)JCDentonMaleCarcass':
+#endif
+            return "#var(prefix)JCDouble";
         default:
             //Standard carcass with a matching living class
             //(We should probably strive for this to be the norm)
             //At least in vanilla, all carcasses are the original class name + Carcass
             livingClassName = string(carcClass);
+            livingClassName = module.ReplaceText(livingClassName,"NametagCarcass","");// for our Aug guys
             livingClassName = module.ReplaceText(livingClassName,"Carcass","");
             return livingClassName;
     }
@@ -199,8 +196,13 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local ScriptedPawn sp,otherSP;
     local int i;
     local Inventory item, nextItem;
+    #ifndef vmd
+    local DXRFashionManager fashion;
+    #endif
     local bool removeItem;
     local string s;
+
+    if(carc==None || carc.bDeleteMe) return False;
 
     livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
@@ -262,6 +264,11 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     sp.ResetReactions();
     sp.bCanStrafe = false;// messes with melee attack animations, especially on commandos
 
+    if(sp.Intelligence==BRAINS_HUMAN) {
+        sp.Intelligence = BRAINS_MAMMAL;
+    }
+    sp.RaiseAlarm = RAISEALARM_Never;
+
     //Transfer inventory from carcass back to the pawn
     for(item = carc.Inventory; item != None; item = nextItem)
     {
@@ -278,6 +285,15 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
             sp.AddInventory(item);
         }
     }
+
+    #ifndef vmd
+    if(#var(prefix)JCDouble(sp)!=None || #var(prefix)PaulDenton(sp)!=None) {
+        foreach sp.AllActors(class'DXRFashionManager', fashion) { break; }
+        i = 0;
+        if(#var(prefix)PaulDenton(sp)!=None) i = 1;
+        if(fashion!=None) fashion.ApplyClothing(sp, i);
+    }
+    #endif
 
     //Give the resurrected guy a zombie swipe (a guaranteed melee weapon)
     module.GiveItem(sp,class'WeaponZombieSwipe');
@@ -300,9 +316,23 @@ function MapFixes()
     local PathNode p;
     local #var(DeusExPrefix)Carcass carc;
     local class<#var(DeusExPrefix)Carcass> carcclass;
+    local ScriptedPawn sp;
     local float dist;
 
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOHQ":
+    case "03_NYC_UNATCOHQ":
+    case "04_NYC_UNATCOHQ":
+        foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
+            carc.bNotDead = true;
+            carc.itemName = ReplaceText(carc.itemName, " (Dead)", " (Unconscious)");
+        }
+        foreach AllActors(class'ScriptedPawn', sp) {
+            if(sp.bInvincible) {
+                RemoveFears(sp);
+            }
+        }
+        break;
     case "09_NYC_GRAVEYARD":
         SetSeed("DXRHalloween MapFixes graveyard bodies");
         foreach AllActors(class'PathNode', p) {

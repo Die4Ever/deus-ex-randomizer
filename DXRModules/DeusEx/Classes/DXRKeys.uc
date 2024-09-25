@@ -262,13 +262,61 @@ function vanilla_keys_rules()
         break;
 
     case "10_Paris_Metro":
+        //Anything on the second floor
         keys_rules[i].item_name = 'apartment12';
         keys_rules[i].min_pos = vect(-99999, -99999, 420);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = false;
         i++;
 
+        //In the media store
         keys_rules[i].item_name = 'apartment12';
+        keys_rules[i].min_pos = vect(669,2080,130);
+        keys_rules[i].max_pos = vect(1596,1634,375);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'apartment12';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 420);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anything on the second floor
+        keys_rules[i].item_name = 'hotel_roomdoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, 420);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //In the media store
+        keys_rules[i].item_name = 'hotel_roomdoor';
+        keys_rules[i].min_pos = vect(669,2080,130);
+        keys_rules[i].max_pos = vect(1596,1634,375);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'hotel_roomdoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 420);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anything on the second floor
+        keys_rules[i].item_name = 'mediastore_door';
+        keys_rules[i].min_pos = vect(-99999, -99999, 420);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //In the media store
+        keys_rules[i].item_name = 'mediastore_door';
+        keys_rules[i].min_pos = vect(669,2080,130);
+        keys_rules[i].max_pos = vect(1596,1634,375);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'mediastore_door';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 420);
         keys_rules[i].allow = true;
@@ -970,8 +1018,8 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         if( a == k ) continue;
         if( SkipActor(a) ) continue;
         if( KeyPositionGood(k, a.Location) == False ) continue;
-#ifdef debug
-        if(k.KeyID=='Glab') {
+#ifdef locdebug
+        if(k.KeyID=='#var(locdebug)') {
             DebugMarkKeyPosition(a.Location, k.KeyID);
             //continue;
         }
@@ -985,8 +1033,8 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
             if( SkipActor(c) ) continue;
             if( KeyPositionGood(k, c.Location) == False ) continue;
             if( HasBased(c) ) continue;
-#ifdef debug
-            if(k.KeyID=='crewkey') {
+#ifdef locdebug
+            if(k.KeyID=='#var(locdebug)') {
                 DebugMarkKeyPosition(c.Location, k.KeyID);
                 //continue;
             }
@@ -1000,7 +1048,11 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         return;
     }
     vanilla_good = KeyPositionGood(k, k.Location);
-
+#ifdef locdebug
+    if(vanilla_good && k.KeyID=='#var(locdebug)') {
+        DebugMarkKeyPosition(k.Location, k.KeyID);
+    }
+#endif
     for(tries=0; tries<5; tries++) {
         if(vanilla_good) {
             slot=rng(num+1);// +1 for vanilla, since we're not in the list

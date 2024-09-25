@@ -31,10 +31,8 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
     local Conversation con;
     local ConEvent ce;
     local ConEventSpeech ces;
-    local int newHint;
+    local int newHint, i;
     local string hint, details;
-
-    hints = DXRHints(class'DXRHints'.static.Find());
 
     con = ConListItem(ConListItems).con;
 
@@ -45,24 +43,32 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
         }
     }
 
-    do {
-        newHint = hints.GetHint();
-        hint = hints.hints[newHint];
-        details = hints.details[newHint];
-    } until (
-        newHint != lastHint &&
-        hint != "Viewers, you could've prevented this with Crowd Control." &&
-        hint != "Don't forget you (the viewer!) can" &&
-        details != "We just shared your death publicly, go retweet it!" &&
-        !(CarcassType == Class'LeMerchantCarcass' && hint == "If you need a Hazmat suit")
-    )
+    hints = DXRHints(class'DXRHints'.static.Find());
 
-    ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Hehehehe");
-    ces.conSpeech.speech = "Hehehehe, thank you. Here's a tip: " $ hint @ details;
-    ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Come back");
-    ces.conSpeech.speech = "Come back anytime. Here's a tip: " $ hint @ details;
-    ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Not enough cash");
-    ces.conSpeech.speech = "Not enough cash, stranger. Here's a tip: " $ hint @ details;
+    if(hints != None) {
+        for(i=0; i<100; i++) {
+            newHint = hints.GetHint();
+            hint = hints.hints[newHint];
+            details = hints.details[newHint];
+            if(
+                newHint != lastHint &&
+                hint != "Viewers, you could've prevented this with Crowd Control." &&
+                hint != "Don't forget you (the viewer!) can" &&
+                details != "We just shared your death publicly, go retweet it!" &&
+                !(CarcassType == Class'LeMerchantCarcass' && hint == "If you need a Hazmat suit")
+            ) break;
+        }
+        if(i>=100) hint = "";
+    }
+
+    if(hint!="") {
+        ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Hehehehe");
+        ces.conSpeech.speech = "Hehehehe, thank you. Here's a tip: " $ hint @ details;
+        ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Come back");
+        ces.conSpeech.speech = "Come back anytime. Here's a tip: " $ hint @ details;
+        ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Not enough cash");
+        ces.conSpeech.speech = "Not enough cash, stranger. Here's a tip: " $ hint @ details;
+    }
 
     lastHint = newHint;
 

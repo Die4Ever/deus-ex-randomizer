@@ -5,7 +5,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=3;
     minor=2;
     patch=0;
-    build=0;//build can't be higher than 99
+    build=1;//build can't be higher than 99
 }
 
 simulated static function bool VersionIsStable()
@@ -18,7 +18,7 @@ simulated static function string VersionString(optional bool full)
     local int major,minor,patch,build;
     local string status;
 
-    status = "Alpha";
+    status = "Beta";
 
     if(status!="") {
         status = " " $ status;
@@ -58,6 +58,20 @@ simulated static function int VersionNumber()
     local int major,minor,patch,build;
     CurrentVersion(major,minor,patch,build);
     return VersionToInt(major, minor, patch, build);
+}
+
+simulated static function bool FeatureFlag(int major, int minor, int patch, string feature)
+{
+    if(#bool(allfeatures)) return true;
+    #ifdef enablefeature
+        if("#var(enablefeature)" == feature) return true;
+    #endif
+
+    if(VersionNumber() >= VersionToInt(major, minor, patch, 0)) {
+        log("WARNING: FeatureFlag " $ feature $ " only requires v" $ major $ "." $ minor $ "." $ patch, default.class.name);
+        return true;
+    }
+    return false;
 }
 
 simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, int build)

@@ -1215,7 +1215,17 @@ function ExtendedTests()
 
     text = VersionString();
     testbool(VersionIsStable(), InStr(text, "Alpha")==-1 && InStr(text, "Beta")==-1, "VersionIsStable() matches version text, " $ text);
-    testbool( #defined(debug), false, "debug is disabled");
+    testbool( #bool(debug), false, "debug is disabled");
+    testbool( #bool(locdebug), false, "locdebug is disabled");
+    testbool( #bool(debugnames), false, "debugnames is disabled");
+    if(#bool(allfeatures)) { // we MIGHT want to ship alphas and betas with this?
+        if(VersionIsStable()) test(false, "allfeatures is defined");
+        else warning("!!! allfeatures is defined !!!");
+    }
+    if(#bool(enablefeature)) {
+        if(VersionIsStable()) test(false, "allfeatures is defined as #var(enablefeature)");
+        else warning("!!! enablefeature is defined as #var(enablefeature) !!!");
+    }
 }
 
 function TestTime()

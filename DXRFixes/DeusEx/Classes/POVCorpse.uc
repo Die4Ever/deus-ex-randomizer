@@ -14,7 +14,8 @@ function InitFor(DeusExCarcass carc)
     MaxDamage = carc.MaxDamage;
     CorpseItemName = carc.itemName;
     CarcassName = carc.CarcassName;
-    ZombieTime = class'DXRHalloween'.static.GetZombieTime(carc);
+    if(!bNotDead)
+        ZombieTime = class'DXRHalloween'.static.GetZombieTime(carc);
 }
 
 static function POVCorpse Create(DeusExPlayer player, DeusExCarcass carc)
@@ -65,7 +66,8 @@ function DeusExCarcass Drop(vector dropVect)
     carc.SetScaleGlow();
     if (carc.SetLocation(dropVect))
     {
-        class'DXRHalloween'.static.SetZombieTime(carc, ZombieTime);
+        if(!bNotDead)
+            class'DXRHalloween'.static.SetZombieTime(carc, ZombieTime);
         Destroy();
         return carc;
     }

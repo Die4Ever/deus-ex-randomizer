@@ -51,6 +51,8 @@ function PreFirstEntry()
             NeedSave();
         }
     }
+
+    MapAdjustments();
 }
 
 function ReEntry(bool IsTravel)
@@ -178,7 +180,7 @@ static function string GetSaveFailReason(DeusExPlayer player)
         }
     }
     if( f.autosave == FixedSaves || f.autosave == UnlimitedFixedSaves ) {
-        if(Computers(player.FrobTarget) == None) {
+        if(Computers(player.FrobTarget) == None && ATM(player.FrobTarget) == None) {
             return "You need to have a computer highlighted to save! Good Luck!";
         }
     }
@@ -240,6 +242,7 @@ static function UseSaveItem(DeusExPlayer player)
     item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
     if(item == None) return;
 
+    player.ClientMessage("You used " $ item.ItemArticle @ item.ItemName $ " to save.");
     item.UseOnce();
 }
 
@@ -322,4 +325,32 @@ function doAutosave()
     }
 
     info("doAutosave() completed, save_delay: "$save_delay);
+}
+
+simulated function PlayerLogin(#var(PlayerPawn) p)
+{
+    Super.PlayerLogin(p);
+
+    if(dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves) { // Limited Saves
+        GiveItem(p, class'MemConUnit', 2);// start with 2?
+    }
+}
+
+function MapAdjustments()
+{
+    local Actor a;
+    local vector loc;
+    local bool fixed, limited;
+
+    fixed = dxr.flags.autosave==FixedSaves || dxr.flags.autosave==UnlimitedFixedSaves;
+    limited = dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves;
+
+    if(limited) {
+        SetSeed("spawn MCU");
+        if(chance_single(80)) {
+            loc = GetRandomPositionFine();
+            a = Spawn(class'MemConUnit',,, loc);
+            l("MapAdjustments() spawned MCU " $ a $ " at " $ loc);
+        }
+    }
 }

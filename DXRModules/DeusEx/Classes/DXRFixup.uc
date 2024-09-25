@@ -19,7 +19,8 @@ var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 struct AddDatacube {
     var string map;
     var string text;
-    var vector location;// 0,0,0 for random
+    var vector location;
+    var class<DataVaultImage> imageClass;
     var rotator rotation;
     // spawned in PreFirstEntry, so if you set a location then it will be moved according to the logic of DXRPasswords
 };
@@ -291,6 +292,7 @@ function FixFOV()
 
     // interpolate between 75 FOV and 120 FOV, multiply vanilla values by n and wide FOV values by w
     // wide values provided by Tundoori https://discord.com/channels/823629359931195394/823629360929046530/1282526555536625778
+    // X is distance from camera, Y is left/right, Z is up/down
 
     // POVCorpse
     v =  vect(20, 12, -5) * n;
@@ -403,10 +405,10 @@ function FixFOV()
 
     // WeaponNanoSword
     v =  vect(21, -16, -27) * n;
-    v += vect(13, -16, -27) * w;
+    v += vect(7, -16, -30) * w;
     class'WeaponNanoSword'.default.PlayerViewOffset = v;
     v =  vect(-21, 16, 27) * n;
-    v += vect(-13, 16, 27) * w;
+    v += vect(-7, 16, 30) * w;
     class'WeaponNanoSword'.default.FireOffset = v;
 
     // WeaponNanoVirusGrenade
@@ -953,9 +955,10 @@ function SpawnDatacubes()
             if(dxr.flags.settings.infodevices > 0)
                 GlowUp(dc);
             dc.plaintext = add_datacubes[i].text;
-            l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
+            dc.imageClass = add_datacubes[i].imageClass;
+            l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", location: "$loc);
         }
-        else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
+        else warning("failed to spawn datacube at "$loc$", text: \""$add_datacubes[i].text$"\", image: "$dc.imageClass);
     }
 }
 

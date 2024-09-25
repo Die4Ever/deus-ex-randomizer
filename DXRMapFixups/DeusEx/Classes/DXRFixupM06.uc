@@ -166,15 +166,6 @@ function PreFirstEntryMapFixes()
                     break;
             }
         }
-
-        if (dxr.flags.settings.starting_map > 66) {
-            // set Tong to patrol his control room, which is his correct behavior after talking to him after he deactivates your killswitch
-            foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'TracerWanders') {
-                ot.Trigger(self, None);
-                break;
-            }
-        }
-
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
         if (VanillaMaps) {
@@ -407,6 +398,15 @@ function PreFirstEntryMapFixes()
             //so secretaries and Mr Harrison didn't get mad at you
             if (at.Event=='Secretary' || at.Event=='Businessman1'){
                 at.Tag='SecurityRevoked';
+            }
+        }
+
+        if (dxr.flagbase.GetBool('Meet_MJ12Lab_Supervisor_Played')) { // 70+ starts set this to true
+            foreach AllActors(class'#var(prefix)ScriptedPawn', p, 'Businessman1') {
+                if (p.BindName == "MJ12Lab_Supervisor") {
+                    p.SetOrders('Wandering');
+                    break;
+                }
             }
         }
 

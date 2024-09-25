@@ -320,13 +320,17 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
     return item;
 }
 
-static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
+static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int amount)
 {
     local inventory item;
 
     item = p.Spawn(iclass, p);
     if( item == None ) return None;
-    return GiveExistingItem(p, item, add_ammo);
+    if(DeusExPickup(item)!=None && amount > 0) {
+        DeusExPickup(item).NumCopies = amount;
+        amount = 0;
+    }
+    return GiveExistingItem(p, item, amount);
 }
 
 static function ThrowItem(Inventory item, float VelocityMult)
@@ -726,10 +730,7 @@ function bool HasConversation(Actor a) {
 }
 
 function bool HasBased(Actor a) {
-    local Actor b;
-    foreach a.BasedActors(class'Actor', b)
-        return true;
-    return false;
+    return a.StandingCount > 0;
 }
 
 function bool DestroyActor( Actor d )
@@ -1710,6 +1711,17 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
+function RemoveDXMoverPrePivot(#var(DeusExPrefix)Mover dxm)
+{
+    local vector pivot;
+    local rotator r;
+
+    pivot = dxm.PrePivot >> dxm.Rotation;
+    dxm.BasePos = dxm.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
+    dxm.PrePivot=vect(0,0,0);
+    dxm.SetLocation(dxm.BasePos);
+}
+
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
     // if `a` is a datacube, spawn a new light instead
@@ -1733,8 +1745,8 @@ static function Actor GlowUp(Actor a, optional byte hue, optional byte saturatio
 function DebugMarkKeyActor(Actor a, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
-    if( ! #defined(debug)) {
-        err("Don't call DebugMarkKeyActor without debug mode! Add debug to the compiler_settings.default.json file");
+    if( ! #bool(locdebug)) {
+        err("Don't call DebugMarkKeyActor without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }
 
@@ -1759,8 +1771,8 @@ function DebugMarkKeyPosition(vector pos, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
     local Actor a;
-    if( ! #defined(debug)) {
-        err("Don't call DebugMarkKeyPosition without debug mode! Add debug to the compiler_settings.default.json file");
+    if( ! #bool(locdebug)) {
+        err("Don't call DebugMarkKeyPosition without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }
 

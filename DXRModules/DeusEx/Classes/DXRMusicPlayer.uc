@@ -92,6 +92,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
 {
     local bool changed_song, set_seed;
     local bool rando_music_setting;
+    local bool use_random_music, play_music;
     local int continuous_setting;
 
     p = #var(PlayerPawn)(NewPlayer);
@@ -119,9 +120,23 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
         CombatSection = 26;// idk why but section 3 takes time to start playing the song
     }
 
-    // ignore complicated logic if everything is disabled
+    use_random_music=True;
+    play_music=True;
     if( p == None || dxr == None || (continuous_setting == c.default.disabled && rando_music_setting == false) ) {
-        _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
+        use_random_music = False;
+    }
+#ifdef revision
+    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack){
+        use_random_music = False;
+        play_music=False;
+    }
+#endif
+
+    // ignore complicated logic if everything is disabled
+    if( !use_random_music ) {
+        if(play_music){
+            _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
+        }
         // really make sure we clean the config
         PrevSong = NewSong;
         PrevMusicMode = 0;
@@ -217,6 +232,11 @@ function PlayRandomSong(bool setseed)
 
     l("PlayRandomSong " $ setseed @ p);
     if(p == None) return;
+
+#ifdef revision
+    //Don't play music via the DXRMusicPlayer if Revision soundtrack is enabled
+    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) return;
+#endif
 
     continuous_setting = class'MenuChoice_ContinuousMusic'.default.value;
     rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
@@ -317,6 +337,12 @@ simulated event Tick(float deltaTime)
 
     if(p == None && string(Level.Game.class.name) == "DXRandoTests")
         return;
+
+#ifdef revision
+    //Don't do anything with the music player if Revision soundtrack is enabled
+    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack)
+        return;
+#endif
 
     // DEUS_EX AMSD In singleplayer, do the old thing.
     // In multiplayer, we can come out of dying.

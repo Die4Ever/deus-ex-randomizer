@@ -578,9 +578,20 @@ exec function ParseLeftClick()
 function InstantlyUseItem(DeusExPickup item)
 {
     local Actor A;
+    local DeusExPickup p;
     local int i;
 
     if(item == None) return;
+
+    //Only consume one of the things if it's in a stack.
+    //Spawn an individual one to split it from the stack before using it.
+    if (item.NumCopies>1){
+        p = Spawn(item.Class,,,item.Location,item.Rotation);
+        p.NumCopies=1;
+        item.NumCopies--;
+        InstantlyUseItem(p);
+        return;
+    }
 
     foreach item.BasedActors(class'Actor', A)
         A.SetBase(None);
@@ -594,8 +605,11 @@ function InstantlyUseItem(DeusExPickup item)
     Inventory = item;
     if(FireExtinguisher(item) != None) {
         // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
+        // this shouldn't get hit anymore, but still do this, just in case
         item.NumCopies = 1;
     }
+
+    //In theory this should only be one, but just in case we slipped through the case above...
     for(i=item.NumCopies; i > 0; i--) {
         item.Activate();
     }
@@ -1299,17 +1313,14 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
     local DXRMusicPlayer m;
-    GetDXR();
-    if (dxr==None){ //Probably only during ENDGAME4?
-        log("Couldn't find a DXR so we can set the music to " $ NewSong);
-        return;
-    }
-    m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));
+    m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));// this can get called before the module is loaded
     if (m==None){
-        log("Found a DXR but no DXRMusicPlayer module to set the music");
+        log("WARNING: DXRMusicPlayer module not found");
+        _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
         return;
+    } else {
+        m.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
     }
-    m.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
 //=========== END OF MUSIC STUFF

@@ -4,6 +4,18 @@ var bool M14GaryNotDone;
 var bool M12GaryHostageBriefing;
 var int storedBotCount;// MJ12 bots in CMD
 
+function CheckConfig()
+{
+    local int i;
+
+    add_datacubes[i].map = "12_VANDENBERG_GAS";
+    add_datacubes[i].imageClass = class'Image12_Tiffany_HostagePic';
+    add_datacubes[i].location = vect(-107.1, 901.3, -939.4);
+    i++;
+
+    Super.CheckConfig();
+}
+
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
@@ -221,9 +233,7 @@ function PreFirstEntryMapFixes()
 
                     //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
                     //so that they are centered roughly in the middle of the door
-                    door.BasePos = door.BasePos - vectm(door.PrePivot.X,door.PrePivot.Y,door.PrePivot.Z);
-                    door.PrePivot=vect(0,0,0);
-                    door.SetLocation(door.BasePos);
+                    RemoveDXMoverPrePivot(door);
                 }
             }
             AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');

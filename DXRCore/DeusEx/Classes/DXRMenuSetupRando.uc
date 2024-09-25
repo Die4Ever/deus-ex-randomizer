@@ -247,7 +247,7 @@ function BindControls(optional string action)
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);
 
-    NewMenuItem("Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable.");
+    NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn. Leave blank or 0 to disable.");
     Slider(f.settings.enemyrespawn, 0, 10000);
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");

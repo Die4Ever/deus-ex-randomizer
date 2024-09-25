@@ -76,10 +76,6 @@ function PreFirstEntryMapFixes_Bunker()
     local #var(prefix)Fan1 fan;
     local #var(prefix)WaltonSimons ws;
 
-    if (dxr.flags.settings.starting_map < 151) {
-        player().DeleteAllGoals();
-    }
-
     // doors_lower is for backtracking
     AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
 
@@ -615,6 +611,25 @@ function AnyEntryMapFixes()
                 ee.DamageAmount /= 2;
                 ee.damageTime *= 2.0;
                 ee.randomAngle /= 2.0;
+            }
+        }
+        break;
+    }
+}
+
+
+function PostFirstEntryMapFixes()
+{
+    local #var(prefix)Keypad k;
+
+    switch(dxr.localURL) {
+    case "15_area51_final":
+        if(dxr.flags.IsSpeedrunMode() && FeatureFlag(3,3,0, "Area51EndingBalancePass2")) {
+            foreach AllActors(class'#var(prefix)Keypad', k) {
+                if(k.Event == 'blastdoor_upper') {
+                    k.bHackable = false;
+                    break;
+                }
             }
         }
         break;

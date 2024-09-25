@@ -291,6 +291,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local DXRPasswords passwords;
     local #var(prefix)NanoKey key;
     local string guestName;
+    local DynamicLight dl;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -327,6 +328,17 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
         if(passwords != None && guestName != "") {
             passwords.ReplacePassword("   Room 1 is currently unoccupied", "  Guest: "$guestName);
+        }
+    }
+
+    if (Loc.name=="Media Store"){
+        if ((g.name=="Nicolette") || (g.name=="Jaime" && dxr.flagbase.GetBool('JaimeLeftBehind'))){
+            //Spawn a small spotlight just to make it a bit easier to spot them through the window
+            dl = DynamicLight(Spawnm(class'DynamicLight',,,vect(990,1768,300),rot(-16385,0,0)));
+            dl.LightRadius=6;
+            dl.LightCone=1;
+            dl.LightBrightness=255;
+            dl.LightEffect=LE_Spotlight;
         }
     }
 

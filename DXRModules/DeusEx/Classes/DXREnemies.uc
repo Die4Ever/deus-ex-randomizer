@@ -367,6 +367,15 @@ function AddDXRCredits(CreditsWindow cw)
 {
     local int i, f;
     local string weaponName, factionName;
+    local string factHeaders[6],factTexts[6],hdrs[3],texts[3];
+    #ifdef injections
+    local CreditsWindow ncw;
+    ncw=cw;
+    #else
+    local NewGamePlusCreditsWindow ncw;
+    ncw = NewGamePlusCreditsWindow(cw);
+    #endif
+
     if(dxr.flags.IsZeroRando()) return;
 
     for(f=FactionAny+1; f<FactionsEnd; f++) {
@@ -389,38 +398,91 @@ function AddDXRCredits(CreditsWindow cw)
         default:
             factionName = "Faction "$f;
         }
-        cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies for "$factionName);
+        //cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies for "$factionName);
+        factHeaders[f]= factionName;
+        factTexts[f]="";
         for(i=0; i < ArrayCount(_randomenemies); i++) {
             if( _randomenemies[i].type == None || _randomenemies[i].faction != f ) continue;
-            cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
+            //cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
+            factTexts[f] = factTexts[f] $ _randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "% |n";
         }
-        cw.PrintLn();
+        //cw.PrintLn();
     }
 
-    cw.PrintHeader("Extra Weapons For Enemies");
+    //Show the factions in a column format so they don't take up so much space
+    cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies for Factions");
+
+    hdrs[0]=factHeaders[NSF];
+    hdrs[1]=factHeaders[UNATCO];
+    hdrs[2]=factHeaders[MJ12];
+    texts[0]=factTexts[NSF];
+    texts[1]=factTexts[UNATCO];
+    texts[2]=factTexts[MJ12];
+    ncw.PrintColumns(hdrs,texts);
+
+    hdrs[0]=factHeaders[Police];
+    hdrs[1]=factHeaders[FactionOther];
+    hdrs[2]="";
+    texts[0]=factTexts[Police];
+    texts[1]=factTexts[FactionOther];
+    texts[2]="";
+    ncw.PrintColumns(hdrs,texts);
+
+    cw.PrintLn();
+    cw.PrintLn();
+
+    cw.PrintHeader("Extra Weapons");
+
+    hdrs[0]="Extra Weapons For Enemies";
+    texts[0]="";
     for(i=0; i < ArrayCount(_randomweapons); i++) {
         if( _randomweapons[i].type == None ) continue;
-        cw.PrintText( _randomweapons[i].type.default.ItemName $ ": " $ FloatToString(_randomweapons[i].chance, 1) $ "%" );
+        texts[0]=texts[0]$_randomweapons[i].type.default.ItemName $ ": " $ FloatToString(_randomweapons[i].chance, 1) $ "% |n";
     }
-    cw.PrintLn();
 
-    cw.PrintHeader("Melee Weapons For Enemies");
+    hdrs[1]="Melee Weapons For Enemies";
+    texts[1]="";
     for(i=0; i < ArrayCount(_randommelees); i++) {
         if( _randommelees[i].type == None ) continue;
-        cw.PrintText( _randommelees[i].type.default.ItemName $ ": " $ FloatToString(_randommelees[i].chance, 1) $ "%" );
+        texts[1]=texts[1]$_randommelees[i].type.default.ItemName $ ": " $ FloatToString(_randommelees[i].chance, 1) $ "% |n";
     }
-    cw.PrintLn();
 
+    //We'll bundle randomized bot weapons into the same column as melee weapons
+    //to give more width per column and melee and robot weapons are short lists
+    hdrs[2]="";
+    texts[2]="";
     if(dxr.flags.settings.bot_weapons!=0) {
-        cw.PrintHeader("Extra Weapons For Robots");
+        hdrs[2]="Extra Weapons For Robots";
         for(i=0; i < ArrayCount(_randombotweapons); i++) {
             if( _randombotweapons[i].type == None ) continue;
-            weaponName = _randombotweapons[i].type.default.ItemName;
-            if (InStr(weaponName,"DEFAULT WEAPON NAME")!=-1){  //Many NPC weapons don't have proper names set
-                weaponName = String(_randombotweapons[i].type.default.Class);
-            }
-            cw.PrintText( weaponName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "%" );
+            weaponName = GetBotWeaponName(_randombotweapons[i].type);
+            texts[2]=texts[2]$weaponName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "% |n";
         }
-        cw.PrintLn();
+    }
+
+    ncw.PrintTeeColumns(hdrs,texts);
+    cw.PrintLn();
+}
+
+function String GetBotWeaponName(class<DeusExWeapon> type)
+{
+    local String weaponName;
+    switch(type){
+        case class'WeaponRobotMachinegun':
+            return "Robot Machine Gun";
+        case class'WeaponRobotRocket':
+            return "Robot Rocket";
+        case class'WeaponMJ12Rocket':
+            return "MJ12 Commando Rocket";
+        case class'WeaponSpiderBot':
+            return "Big Spiderbot Zap";
+        case class'WeaponSpiderBot2':
+            return "Small Spiderbot Zap";
+        default:
+            weaponName = type.default.ItemName;
+            if (InStr(weaponName,"DEFAULT WEAPON NAME")!=-1){  //Many NPC weapons don't have proper names set
+                weaponName = String(type.default.Class);
+            }
+            return weaponName;
     }
 }
