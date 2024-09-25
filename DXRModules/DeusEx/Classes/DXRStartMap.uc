@@ -666,7 +666,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 68://fallthrough
             AddNoteFromConv(player, bEmptyNotes, 'M06SupervisorConvos', 0); // VersaLife elevator code: 6512
         case 67://fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'MeetTracerTong2', 2); // VersaLife employee ID: 06288; TODO: add all notes from this conversation?
+            AddNoteFromConv(player, bEmptyNotes, 'MeetTracerTong2', -1); // VersaLife employee ID: 06288
             MarkConvPlayed("MeetTracerTong", bFemale);
             MarkConvPlayed("MeetTracerTong2", bFemale);
             flagbase.SetBool('KillswitchFixed',true,,-1);
