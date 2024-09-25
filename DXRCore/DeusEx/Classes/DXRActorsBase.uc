@@ -48,6 +48,11 @@ function SwapAll(string classname, float percent_chance)
         temp[num++] = a;
     }
 
+    if(num<2) {
+        l("SwapAll(" $ classname $ ", " $ percent_chance $ ") only found " $ num);
+        return;
+    }
+
     for(i=0; i<num; i++) {
         if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself
@@ -1309,6 +1314,8 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         maxdist = 9999999;
 
     foreach RadiusActors(class'NavigationPoint', p, maxdist, target) {
+        if(Teleporter(p)!=None) continue;
+        if(MapExit(p)!=None) continue;
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;

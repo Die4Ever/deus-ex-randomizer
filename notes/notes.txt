@@ -173,6 +173,8 @@ http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrea
 
 Various UnrealEd information (mostly for the very detailed Lighting information): https://lodev.org/unrealed/
 
+Texture Reference List (rather than squinting at the tiny previews in UEd): https://dxgalaxy.org/docs/reference/textures/
+
 http://dark191.333networks.com/uncodex/
 
 https://www.bunnytrack.net/package-explorer/

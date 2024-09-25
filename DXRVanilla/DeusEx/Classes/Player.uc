@@ -1330,7 +1330,7 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     local DataStorage datastorage;
     local int rollAmount;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
-    rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
+    if(datastorage != None) rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
 
     if(rollAmount == 0) {
         Super.UpdateRotation(DeltaTime,maxPitch);

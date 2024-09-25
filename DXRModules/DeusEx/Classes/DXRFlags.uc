@@ -12,7 +12,9 @@ const RandoMedium = 9;
 const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
 const ZeroRandoPlus = 12;
-const HordeZombies = 1030;
+const HordeZombies = 1020;
+const WaltonWareHalloweenEntranceRando = 1029;
+const HalloweenEntranceRando = 1030;
 const HalloweenMode = 1031;
 const WaltonWareHalloween = 1032;// why didn't they put leap day at the end of October?
 
@@ -703,7 +705,9 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return 0;
     if(IsOctoberUnlocked() && slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
+    if(IsOctoberUnlocked() && slot--==0) return HalloweenEntranceRando;
     if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloween;
+    if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloweenEntranceRando;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
     if(!VersionIsStable()) {
@@ -729,6 +733,8 @@ function string GameModeName(int gamemode)
 #ifdef injections
     case EntranceRando:
         return "Entrance Randomization";
+    case HalloweenEntranceRando:
+        return "Halloween Entrance Randomization";
     case HordeMode:
         return "Horde Mode";
     case HordeZombies:
@@ -755,6 +761,8 @@ function string GameModeName(int gamemode)
 #ifdef injections
     case WaltonWareEntranceRando:
         return "WaltonWare Entrance Rando";
+    case WaltonWareHalloweenEntranceRando:
+        return "WaltonWare Halloween Entrance Rando";
 #endif
     case WaltonWareHardcore:
         return "WaltonWare Hardcore";
@@ -772,7 +780,7 @@ function string GameModeName(int gamemode)
 
 function bool IsEntranceRando()
 {
-    return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando;
+    return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
 }
 
 function bool IsHordeMode()
@@ -802,7 +810,7 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3 || gamemode == WaltonWareHalloween;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3 || gamemode == WaltonWareHalloween || gamemode == WaltonWareHalloweenEntranceRando;
 }
 
 function bool IsWaltonWareHardcore()
@@ -812,7 +820,7 @@ function bool IsWaltonWareHardcore()
 
 function bool IsHalloweenMode()
 {
-    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween;
+    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
