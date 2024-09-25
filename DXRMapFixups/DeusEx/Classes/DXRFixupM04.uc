@@ -383,7 +383,20 @@ function PreFirstEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
-    FixUNATCORetinalScanner();
+    local DeusExGoal goal;
+
+    switch(dxr.localURL)
+    {
+        case "04_NYC_UNATCOHQ":
+            FixUNATCORetinalScanner();
+            break;
+        case "04_NYC_STREET":
+            goal = player().FindGoal('TellJaime');
+            if (goal != None) {
+                goal.SetCompleted();
+            }
+            break;
+    }
 }
 
 function AnyEntryMapFixes()
