@@ -19,7 +19,7 @@ var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 struct AddDatacube {
     var string map;
     var string text;
-    var vector location;
+    var vector location;// 0,0,0 for random
     var class<DataVaultImage> imageClass;
     var rotator rotation;
     // spawned in PreFirstEntry, so if you set a location then it will be moved according to the logic of DXRPasswords

@@ -4,7 +4,7 @@ var bool raidStarted;
 
 function CheckConfig()
 {
-    local Rotator                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               rot;
+    local Rotator rot;
     local int i;
 
     add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
