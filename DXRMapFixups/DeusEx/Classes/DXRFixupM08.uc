@@ -18,7 +18,6 @@ function AnyEntryMapFixes()
             RemoveReactions(s);
         }
 
-        Player().StartDataLinkTransmission("DL_Entry");
         RearrangeMJ12ConvergingInfolink();
         RearrangeJockExitDialog();
 
@@ -301,4 +300,9 @@ function PreFirstEntryMapFixes()
                 }
             }
     }
+}
+
+function PostFirstEntryMapFixes()
+{
+    Player().StartDataLinkTransmission("DL_Entry"); // play on any start
 }

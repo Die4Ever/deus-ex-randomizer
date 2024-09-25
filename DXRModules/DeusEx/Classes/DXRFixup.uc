@@ -657,17 +657,11 @@ function FixUNATCORetinalScanner()
 {
     local RetinalScanner r;
 
-    switch(dxr.localURL) {
-    case "01_NYC_UNATCOHQ":
-    case "03_NYC_UNATCOHQ":
-    case "04_NYC_UNATCOHQ":
-        foreach AllActors(class'RetinalScanner', r) {
-            if( r.Event != 'retinal_msg_trigger' ) continue;
-            r.bHackable = false;
-            r.hackStrength = 0;
-            r.msgUsed = "";
-        }
-        break;
+    foreach AllActors(class'RetinalScanner', r) {
+        if( r.Event != 'retinal_msg_trigger' ) continue;
+        r.bHackable = false;
+        r.hackStrength = 0;
+        r.msgUsed = "";
     }
 }
 
