@@ -217,7 +217,9 @@ state Wandering
         local float   magnitude, dist1, dist2;
         local rotator rot1;
 
-        target = GetFarthestNavPoint(self);
+        if(closestDestPoint != None) {
+            target = GetFarthestNavPoint(self);
+        }
         if(target != None) {
             farthestDestPoint = target;
         }

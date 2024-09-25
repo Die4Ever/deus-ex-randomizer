@@ -48,6 +48,11 @@ function SwapAll(string classname, float percent_chance)
         temp[num++] = a;
     }
 
+    if(num<2) {
+        l("SwapAll(" $ classname $ ", " $ percent_chance $ ") only found " $ num);
+        return;
+    }
+
     for(i=0; i<num; i++) {
         if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself

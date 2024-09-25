@@ -45,8 +45,8 @@ function RandomLiberty()
 
     foreach AllActors(class'NYLibertyTop',top){
         if(IsOctober()) {
-            liberty.style = STY_Translucent;
-            liberty.ScaleGlow = 0.5;
+            top.style = STY_Translucent;
+            top.ScaleGlow = 0.5;
         }
     }
 

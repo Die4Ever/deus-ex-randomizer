@@ -60,7 +60,7 @@ simulated static function int VersionNumber()
     return VersionToInt(major, minor, patch, build);
 }
 
-simulated static function bool FeatureFlag(int major, int minor, int patch, string feature)
+simulated static function bool FeatureFlag(int major, int minor, int patch, string feature) // make sure to have an issue in GitHub with the feature flag name! and it should be attached to a milestone
 {
     if(#bool(allfeatures)) return true;
     #ifdef enablefeature

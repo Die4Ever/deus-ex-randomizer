@@ -174,7 +174,7 @@ function string SetEnumValue(int e, string text)
     // HACK: this allows you to override the autosave option instead of SetDifficulty forcing it by game mode
     Super.SetEnumValue(e, text);
     if(e == gamemode_enum && #defined(injections)) {
-        if(InStr(text, "Halloween Mode")==0 || InStr(text, "WaltonWare Halloween")==0)
+        if(InStr(text, "Halloween")!=-1)
         {
             Super.SetEnumValue(autosave_enum, "Limited Fixed Saves");
         }

@@ -607,7 +607,7 @@ function InitOnEnter() {
 //so that they can be cleanly re-applied next time you enter
 function CleanupOnExit() {
 
-    if (dxr.OnTitleScreen()){
+    if (dxr==None || dxr.OnTitleScreen()){
         return;
     }
 
