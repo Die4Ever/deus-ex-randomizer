@@ -501,6 +501,12 @@ function SpawnSpiderweb(vector loc)
     local rotator rot;
     local ZoneInfo zone;
     local class<Spiderweb> webClass;
+    // Used for texture trace
+    local vector  EndTrace, StartTrace, HitLocation, HitNormal;
+    local actor   target;
+    local int     texFlags;
+    local name    texName, texGroup;
+    local bool    bInvisibleWall;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -518,6 +524,14 @@ function SpawnSpiderweb(vector loc)
     foreach RadiusActors(class'Spiderweb', web, 100, loc) {
         dist = VSize(loc-web.Location);
         if(chance_single(100-dist)) return;
+    }
+
+    EndTrace = loc + vector(rot) * -32;
+    foreach TraceTexture(class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, loc) {
+        if ((texFlags & 1) !=0) { // 1 = PF_Invisible
+            return;
+        }
+        break;
     }
 
     rot.roll = rng(65536);
