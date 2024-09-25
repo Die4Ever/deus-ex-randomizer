@@ -488,6 +488,7 @@ function SpawnJackOLantern(vector loc)
         r2.Yaw = rng(20000) - 10000;
         loc = wall1.loc + (wall1.norm << r2) * 64;
         jacko = spawn(class'DXRJackOLantern',,, loc, r);
+        if(jacko == None) continue;
         size = rngf() + 0.6;
         jacko.DrawScale *= size;
         jacko.SetCollisionSize(jacko.CollisionRadius*size, jacko.CollisionHeight*size);
