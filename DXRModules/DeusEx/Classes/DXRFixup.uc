@@ -20,6 +20,7 @@ struct AddDatacube {
     var string map;
     var string text;
     var vector location;// 0,0,0 for random
+    var class<DataVaultImage> imageClass;
     // spawned in PreFirstEntry, so if you set a location then it will be moved according to the logic of DXRPasswords
 };
 var AddDatacube add_datacubes[32];
@@ -950,9 +951,10 @@ function SpawnDatacubes()
             if(dxr.flags.settings.infodevices > 0)
                 GlowUp(dc);
             dc.plaintext = add_datacubes[i].text;
-            l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
+            dc.imageClass = add_datacubes[i].imageClass;
+            l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", location: "$loc);
         }
-        else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
+        else warning("failed to spawn datacube at "$loc$", text: \""$add_datacubes[i].text$"\", image: "$dc.imageClass);
     }
 }
 
