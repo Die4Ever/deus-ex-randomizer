@@ -71,6 +71,26 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 1, 'DataLinkTrigger21', PHYS_None); // DL_Blue_Fusion
         loc = AddGoalLocation("15_AREA51_PAGE", "Observation Deck", NORMAL_GOAL | VANILLA_GOAL, vect(6029.028809, -8301.839844, -5148.736328), rot(0, -36944, 0));
         AddMapMarker(class'Image15_Area51_Sector4',192,77,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor in the top floor Observation Deck overlooking Bob Page.");
+
+        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+            if (#bool(shuffleucswitches)){
+                //Shuffle the UC switches themselves
+                goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
+                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(7873,-7548,-5096), rot(0, 16384, 0));
+
+                goal = AddGoal("15_AREA51_PAGE", "Middle UC Shutdown", NORMAL_GOAL, 'DeusExMover51', PHYS_MovingBrush);
+                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(5518,-8644,-5540), rot(0, 16384, 0));
+
+                goal = AddGoal("15_AREA51_PAGE", "Bottom UC Shutdown", NORMAL_GOAL, 'DeusExMover49', PHYS_MovingBrush);
+                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(7956,-7495,-5931), rot(0, 32768, 0));
+            } else {
+                //Only use the rooms as extra locations
+                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", NORMAL_GOAL, vect(7991,-7395,-5096), rot(0, 32768, 0));
+                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL, vect(5382,-8556,-5540), rot(0, 0, 0));
+                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL, vect(7868,-7631,-5931), rot(0, 16384, 0));
+            }
+        }
+
         break;
     }
 
@@ -132,6 +152,8 @@ function PreFirstEntryMapFixes()
 {
     local Trigger t;
     local FlagTrigger ft;
+    local #var(DeusExPrefix)Mover dxm;
+    local vector v;
     local bool RevisionMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
@@ -149,6 +171,25 @@ function PreFirstEntryMapFixes()
             if (ft.Event=='SimonsSequence'){
                 ft.Event='';
                 ft.Destroy();
+            }
+        }
+    } else if (dxr.localURL=="15_AREA51_PAGE" && !RevisionMaps) {
+        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+            //Remove the insane prepivot on the UC door closers
+            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+                if (dxm.Event=='UC_shutdoor1' ||
+                    dxm.Event=='UC_shutdoor2' ||
+                    dxm.Event=='UC_shutdoor3'){
+
+                    v=vectm(0,0,dxm.PrePivot.Z);
+
+                    RemoveDXMoverPrePivot(dxm);
+
+                    //Return the Z component of the prepivot so the switches rotate on center
+                    dxm.PrePivot=v;
+                    dxm.BasePos=dxm.BasePos+v;
+                    dxm.SetLocation(dxm.BasePos);
+                }
             }
         }
     }
@@ -220,6 +261,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)Switch1 button;
     local Dispatcher disp;
+    local rotator r;
     local string dctext;
 
     if (g.name=="Area 51 Blast Door Computer" && Loc.name != "the tower") {
@@ -262,6 +304,19 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
     else if (g.name=="Aquinas Substation Computer") {
         g.actors[0].a.Event = 'AquinasDoorComputer';
+    }
+    else if (g.name=="Upper UC Shutdown" || g.name=="Middle UC Shutdown" || g.name=="Bottom UC Shutdown"){
+        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+            r = g.actors[0].a.rotation;
+            r.Yaw = r.Yaw - 32768;
+            if (r.Pitch!=0){ //Adjust the pitch for the coolant control panel location
+                r.Pitch = -r.Pitch;
+            }
+            g.actors[0].a.SetRotation(r);
+            #var(DeusExPrefix)Mover(g.actors[0].a).BaseRot=r;
+
+            class'DXRHoverHint'.static.Create(self, g.name, g.actors[0].a.Location, 15, 10, g.actors[0].a);
+        }
     }
 
     if(Loc.name=="Observation Deck") {// for releasing the bots behind you

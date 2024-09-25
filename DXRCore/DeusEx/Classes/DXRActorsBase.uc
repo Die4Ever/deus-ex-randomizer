@@ -1711,6 +1711,17 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
+function RemoveDXMoverPrePivot(#var(DeusExPrefix)Mover dxm)
+{
+    local vector pivot;
+    local rotator r;
+
+    pivot = dxm.PrePivot >> dxm.Rotation;
+    dxm.BasePos = dxm.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
+    dxm.PrePivot=vect(0,0,0);
+    dxm.SetLocation(dxm.BasePos);
+}
+
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
     // if `a` is a datacube, spawn a new light instead
