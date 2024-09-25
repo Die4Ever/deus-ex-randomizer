@@ -60,6 +60,20 @@ simulated static function int VersionNumber()
     return VersionToInt(major, minor, patch, build);
 }
 
+simulated static function bool FeatureFlag(int major, int minor, int patch, string feature) // make sure to have an issue in GitHub with the feature flag name! and it should be attached to a milestone
+{
+    if(#bool(allfeatures)) return true;
+    #ifdef enablefeature
+        if("#var(enablefeature)" == feature) return true;
+    #endif
+
+    if(VersionNumber() >= VersionToInt(major, minor, patch, 0)) {
+        log("WARNING: FeatureFlag " $ feature $ " only requires v" $ major $ "." $ minor $ "." $ patch, default.class.name);
+        return true;
+    }
+    return false;
+}
+
 simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, int build)
 {
     return config_version < VersionToInt(major, minor, patch, build);

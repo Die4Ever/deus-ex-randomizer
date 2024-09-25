@@ -2,13 +2,13 @@ class ElevatorMover merges ElevatorMover;
 // can't do injects because it uses a state
 
 var float lastTime, moveSpeed, originalMoveTime;
-var int numKeyPos;
+var int numKeyPos, prevSeqNum;
 var bool initialized;
 
 function Initialize()
 {
     local SequenceTrigger st;
-    local float dist, maxDist, avgDist, distSum;
+    local float dist, maxDist, maxDist2, avgDist, distSum;
     local int validKeyPos[8];
     local int i, j;
 
@@ -34,13 +34,18 @@ function Initialize()
     for (i = 0; i < numKeyPos; i++) {
         for (j = i + 1; j < numKeyPos; j++) {
             dist = VSize(KeyPos[validKeyPos[i]] - KeyPos[validKeyPos[j]]);
-            maxDist = FMax(maxDist, dist);
+            if(dist > maxDist) {
+                maxDist2 = maxDist;
+                maxDist = dist;
+            } else if(dist > maxDist2) {
+                maxDist2 = dist;
+            }
             distSum += dist;
         }
     }
 
     avgDist = distSum / (numKeyPos * (numKeyPos - 1) / 2.0);
-    moveSpeed = (maxDist*0.33 + avgDist*0.67) / MoveTime;
+    moveSpeed = (maxDist*0.5 + maxDist2*0.5) / MoveTime;
     originalMoveTime = MoveTime;
 
     initialized = true;
@@ -68,7 +73,7 @@ function SetSeq(int seqnum)
 
     Initialize();
 
-    if( MoveTime/10 < Level.TimeSeconds-lastTime )
+    if( seqnum != prevSeqNum && MoveTime/3 < Level.TimeSeconds-lastTime ) // HACK: for 12_vandenberg_cmd elevator
         oldSeq = true;
 
     if ( bIsMoving && !oldSeq )
@@ -81,6 +86,7 @@ function SetSeq(int seqnum)
 
     if (KeyNum != seqnum || oldSeq)
     {
+        prevSeqNum = seqnum;
         prevKeyNum = KeyNum;
         KeyNum = seqnum;
 
@@ -90,4 +96,9 @@ function SetSeq(int seqnum)
             bIsMoving = false;
         else lastTime = Level.TimeSeconds;
     }
+}
+
+defaultproperties
+{
+    prevSeqNum=-1
 }

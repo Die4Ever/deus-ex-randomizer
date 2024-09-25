@@ -296,7 +296,7 @@ static function string _GetStartMap(int start_map_val, optional out string frien
 {
     friendlyName = ""; // clear the out param to protect against reuse by the caller
 
-    if (#defined(allstarts))
+    if (#bool(allstarts))
         bShowInMenu=1;
     switch(start_map_val)
     {
@@ -672,6 +672,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('KillswitchFixed',true,,-1);
         case 66://fallthrough
             AddNoteFromConv(player, bEmptyNotes, 'Gate_Guard2', 1); // Luminous Path door-code: 1997
+            flagbase.SetBool('MaxChenConvinced',true,,-1);
             flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
             MarkConvPlayed("Gate_Guard2", bFemale);
@@ -962,19 +963,14 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         break;
 
     case 6: // Hong Kong
-        switch(bingo_event)
-        {
-        // // these two goals can actually be done with the way these starts currently work, but would normally be impossible
-        // case "ClubEntryPaid":
-        // case "M06JCHasDate":
-        //     return start_map > 65;
-        }
-    case 7: // fallthrough to 2nd half of Hong Kong
+    case 7:
         switch(bingo_event)
         {
         case "MaggieCanFly":
-        case "PoliceVaultBingo": // TODO: remove once a datacube with the vault code is added
-            return start_map > 70;
+            return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
+        // // this goal can actually be done with the way these starts currently work, but would normally be impossible
+        // case "M06JCHasDate":
+        //     return start_map > 65;
         }
         break;
 

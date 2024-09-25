@@ -44,8 +44,8 @@ function Init(string part)
     local rotator rot;
     local int a, i;
 
-    if(#defined(debug)) SaveConfig();// create/update the config file
-    if(#defined(debug) && part == config_part) return;
+    if(#bool(debug)) SaveConfig();// create/update the config file
+    if(#bool(debug) && part == config_part) return;
 
     for(a=0; a<ArrayCount(anim_offsets); a++) {
         anim_offsets[a].frames[0] = -1;
@@ -122,7 +122,7 @@ function Init(string part)
         break;
     }
 
-    if(#defined(debug)) SaveConfig();// write back new values to config
+    if(#bool(debug)) SaveConfig();// write back new values to config
 }
 
 function edit()
@@ -142,7 +142,7 @@ function edit()
 
     ForceFrame = Owner.AnimFrame;
 
-    if(!#defined(debug)) Human(GetPlayerPawn()).ClientMessage("DXRAnimTracker WARNING: not compiled in debug mode!");
+    if(!#bool(debug)) Human(GetPlayerPawn()).ClientMessage("DXRAnimTracker WARNING: not compiled in debug mode!");
 }
 
 simulated function Tick(float deltaTime)
@@ -185,14 +185,14 @@ simulated function Tick(float deltaTime)
             loc = (a_off * (1.0-f)) + (b_off * f);
         }
 
-        if(#defined(debug) && editing) {
+        if(#bool(debug) && editing) {
             Human(GetPlayerPawn()).ClientMessage(Owner.AnimSequence @ Owner.AnimFrame @ loc);
         }
         ApplyOffset(loc);
         return;
     }
 
-    if(#defined(debug) && Owner.AnimSequence != '' && editing) {
+    if(#bool(debug) && Owner.AnimSequence != '' && editing) {
         Human(GetPlayerPawn()).ClientMessage(Owner.AnimSequence @ Owner.AnimFrame);
     }
 

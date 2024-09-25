@@ -92,7 +92,10 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
-    if(chance_single(33) && !DXRFlags(self).IsHalloweenMode()) { // this cast is pretty nasty
+    if(DXRFlags(self).IsHalloweenMode()) {
+        settings.enemyrespawn = rng(10) + 15;
+    }
+    if(chance_single(33)) { // this cast is pretty nasty
         settings.enemyrespawn = rng(120) + 120;
     } else {
         settings.enemyrespawn = 0;
