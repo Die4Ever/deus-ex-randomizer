@@ -7,6 +7,10 @@ var Actor closestDestPoint, farthestDestPoint;
 var float maxDist; // for iterative farthestDestPoint
 var float proxyHeight;
 
+// for bumping pawns
+var Actor lastBumpActor;
+var float lastBumpTime;
+
 static function MrH Create(DXRActorsBase a)
 {
     local vector loc;
@@ -22,7 +26,7 @@ static function MrH Create(DXRActorsBase a)
 
     h = None;
     for(i=0; i<100 && h == None; i++) {
-        loc = a.GetRandomPosition(a.player().Location, 16*150, 999999);
+        loc = a.GetRandomPosition(a.player().Location, 16*100, 999999);
         h = a.Spawn(class'MrH',,, loc);
     }
     if(h == None) return None;
@@ -344,6 +348,30 @@ function bool ShouldDropWeapon()
     return false;
 }
 
+event Bump( Actor Other )
+{
+    if(Teleporter(Other) != None || #var(prefix)MapExit(Other) != None) {
+        Other.SetCollision( Other.bCollideActors, false, Other.bBlockPlayers );
+    } else if(Decoration(Other) != None) {
+        BumpDamage(Other, 55, 1000);
+    } else if(ScriptedPawn(Other) != None) {
+        BumpDamage(Other, 1, 20000);
+    } else if(DamageProxy(Other) != None) {
+        return;
+    }
+
+    Super.Bump(Other);
+}
+
+function BumpDamage(Actor Other, int damage, float momentum)
+{
+    if(Other != lastBumpActor || lastBumpTime < Level.TimeSeconds-1) {
+        Other.TakeDamage(damage, None, Location, Vect(0,1,0.5)*momentum, 'Shot');
+        lastBumpActor = Other;
+        lastBumpTime = Level.TimeSeconds;
+    }
+}
+
 function PlayFootStep()
 {
     local CCResidentEvilCam cam;
@@ -396,7 +424,7 @@ defaultproperties
     DrawScale=1.3
     CollisionRadius=25
     CollisionHeight=60
-    proxyHeight=8
+    proxyHeight=12
     Mass=1000
     WalkSound=Sound'DeusExSounds.Robot.MilitaryBotWalk'
     Health=1800
