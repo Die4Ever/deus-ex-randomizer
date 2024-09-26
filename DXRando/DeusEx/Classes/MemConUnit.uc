@@ -17,7 +17,7 @@ function PostPostBeginPlay()
     if (m==None) return; //There should always be a DXRFlags, but better safe than sorry
 
     if (m.autosave==7){ //Fixed Saves
-        Description=Description $ "|n|nYou must have an ATM, personal computer, public terminal, or security computer highlighted in order to save your game.";
+        Description=default.Description $ "|n|nYou must have an ATM, personal computer, public terminal, or security computer highlighted in order to save your game.";
     }
 }
 

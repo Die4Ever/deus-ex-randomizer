@@ -68,8 +68,14 @@ function ReEntry(bool IsTravel)
 
 function PostAnyEntry()
 {
+    local MemConUnit mcu;
+
     if(bNeedSave)
         NeedSave();
+
+    foreach AllActors(class'MemConUnit', mcu) {
+        mcu.PostPostBeginPlay();
+    }
 }
 
 function NeedSave()

@@ -1313,6 +1313,10 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
     local DXRMusicPlayer m;
+    if (GetDXR()==None){ //Probably only during ENDGAME4?
+        log("Couldn't find a DXR so we can set the music to " $ NewSong);
+        return;
+    }
     m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));// this can get called before the module is loaded
     if (m==None){
         log("WARNING: DXRMusicPlayer module not found");
