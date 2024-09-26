@@ -522,12 +522,15 @@ function FixFOV()
 function ShowTeleporters()
 {
     local #var(prefix)Teleporter t;
-    local bool hide;
+    local bool hide, collision;
 
     hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
+    // smuggler maps are exempt from teleporter collision, since they don't need it, and it blocks the elevator's button
+    if(InStr(dxr.localURL, "_NYC_SMUG")==-1) collision = true;
+
     foreach AllActors(class'#var(prefix)Teleporter', t) {
-        t.SetCollision( t.bCollideActors, true, t.bBlockPlayers );// don't let pawns walk through
+        t.SetCollision( t.bCollideActors, collision, t.bBlockPlayers );// don't let pawns walk through
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
     }
