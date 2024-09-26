@@ -53,6 +53,12 @@ function CheckCarcasses()
 {
     local int i;
     local #var(DeusExPrefix)Carcass carc;
+    local float zombie_time, dog_zombie_time;
+
+    if( dxr.flags.settings.enemyrespawn <= 0 ) return;
+    zombie_time = dxr.flags.settings.enemyrespawn - 5;
+    zombie_time = FClamp(zombie_time, 1, 10000);
+    dog_zombie_time = zombie_time / 5;
 
     for(i=0; i < num_carcs; i++) {
         if(CheckResurrectCorpse(carcs[i], times[i])) {
@@ -77,6 +83,7 @@ function CheckCarcasses()
                 continue;
             }
         }
+        if(carc.bDeleteMe) continue;
         for(i=0; i < num_carcs; i++) {
             if(carcs[i] == carc) {
                 break;
@@ -85,9 +92,9 @@ function CheckCarcasses()
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
             if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
-                times[num_carcs] = Level.TimeSeconds + 3 + FRand()*2;
+                times[num_carcs] = Level.TimeSeconds + dog_zombie_time + FRand()*2;
             } else {
-                times[num_carcs] = Level.TimeSeconds + 15 + FRand()*10;
+                times[num_carcs] = Level.TimeSeconds + zombie_time + FRand()*10;
             }
             carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;
@@ -150,6 +157,7 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
 {
     // return true to compress the array
     if(carc == None) return true;
+    if(carc.bDeleteMe) return true;
 
     // wait for Zombie Time!
     if(time > Level.TimeSeconds) return false;
@@ -193,6 +201,8 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     #endif
     local bool removeItem;
     local string s;
+
+    if(carc==None || carc.bDeleteMe) return False;
 
     livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
     livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
@@ -306,9 +316,23 @@ function MapFixes()
     local PathNode p;
     local #var(DeusExPrefix)Carcass carc;
     local class<#var(DeusExPrefix)Carcass> carcclass;
+    local ScriptedPawn sp;
     local float dist;
 
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOHQ":
+    case "03_NYC_UNATCOHQ":
+    case "04_NYC_UNATCOHQ":
+        foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
+            carc.bNotDead = true;
+            carc.itemName = ReplaceText(carc.itemName, " (Dead)", " (Unconscious)");
+        }
+        foreach AllActors(class'ScriptedPawn', sp) {
+            if(sp.bInvincible) {
+                RemoveFears(sp);
+            }
+        }
+        break;
     case "09_NYC_GRAVEYARD":
         SetSeed("DXRHalloween MapFixes graveyard bodies");
         foreach AllActors(class'PathNode', p) {
@@ -464,6 +488,7 @@ function SpawnJackOLantern(vector loc)
         r2.Yaw = rng(20000) - 10000;
         loc = wall1.loc + (wall1.norm << r2) * 64;
         jacko = spawn(class'DXRJackOLantern',,, loc, r);
+        if(jacko == None) continue;
         size = rngf() + 0.6;
         jacko.DrawScale *= size;
         jacko.SetCollisionSize(jacko.CollisionRadius*size, jacko.CollisionHeight*size);
@@ -477,6 +502,12 @@ function SpawnSpiderweb(vector loc)
     local rotator rot;
     local ZoneInfo zone;
     local class<Spiderweb> webClass;
+    // Used for texture trace
+    local vector  EndTrace, StartTrace, HitLocation, HitNormal;
+    local actor   target;
+    local int     texFlags;
+    local name    texName, texGroup;
+    local bool    bInvisibleWall;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -494,6 +525,14 @@ function SpawnSpiderweb(vector loc)
     foreach RadiusActors(class'Spiderweb', web, 100, loc) {
         dist = VSize(loc-web.Location);
         if(chance_single(100-dist)) return;
+    }
+
+    EndTrace = loc + vector(rot) * -32;
+    foreach TraceTexture(class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, loc) {
+        if ((texFlags & 1) !=0) { // 1 = PF_Invisible
+            return;
+        }
+        break;
     }
 
     rot.roll = rng(65536);

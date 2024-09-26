@@ -5,6 +5,11 @@ struct _ItemReduction {
     var int percent;
 };
 
+struct AmmoInfo {
+    var class<Ammo> type;
+    var String backupName;
+};
+
 var int mission_scaling[16];
 var _ItemReduction _item_reductions[16];
 var _ItemReduction _max_ammo[16];
@@ -413,9 +418,9 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
 
 simulated function AddDXRCredits(CreditsWindow cw)
 {
-    local int i;
+    //local int i;
     local DXREnemies e;
-    local class<DeusExWeapon> w;
+    //local class<DeusExWeapon> w;
     if(dxr.flags.IsZeroRando()) return;
     cw.PrintHeader( "Items" );
 
@@ -429,27 +434,53 @@ simulated function AddDXRCredits(CreditsWindow cw)
     cw.PrintHeader( "Ammo: "$dxr.flags.settings.ammo$"%" );
     e = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if(e != None) {
-        for(i=0; i < 100; i++) {
-            w = e.GetWeaponConfig(i).type;
-            if( w == None ) break;
-            PrintAmmoRates(cw, w);
-        }
+        GatherAmmoRates(cw,e);
     }
 
     cw.PrintLn();
 }
 
-simulated function PrintAmmoRates(CreditsWindow cw, class<DeusExWeapon> w)
+
+simulated function GatherAmmoRates(CreditsWindow cw, DXREnemies e)
 {
-    local class<Ammo> a;
+    local int i,j;
+    local class<DeusExWeapon> w;
+    local AmmoInfo ammoTypes[50];
+
+
+    for(i=0; i < 100; i++) {
+        w = e.GetWeaponConfig(i).type;
+        if( w == None ) break;
+
+        AddAmmoInfo(w.Default.AmmoName,w,ammoTypes);
+        for(j=0; j<ArrayCount(w.default.AmmoNames); j++) {
+            AddAmmoInfo(w.default.AmmoNames[j],w,ammoTypes);
+        }
+    }
+
+    for(i=0;i<ArrayCount(ammoTypes);i++){
+        if (ammoTypes[i].type==None) break;
+        PrintItemRate(cw, ammoTypes[i].type, dxr.flags.settings.ammo, true, ammoTypes[i].backupName);
+    }
+}
+
+simulated function AddAmmoInfo(class<Ammo> a, class<DeusExWeapon> w, out AmmoInfo types[50])
+{
     local int i;
 
-    a = w.default.AmmoName;
-    PrintItemRate(cw, a, dxr.flags.settings.ammo, true, w.default.ItemName $ " Ammo");
-    for(i=0; i<ArrayCount(w.default.AmmoNames); i++) {
-        if( w.default.AmmoNames[i] != a )
-            PrintItemRate(cw, w.default.AmmoNames[i], dxr.flags.settings.ammo, true, w.default.ItemName $ " Ammo");
+    if (a==None) return;
+
+    for (i=0;i<ArrayCount(types);i++)
+    {
+        if (types[i].type==a) return; //Type is already in the list
+        if (types[i].type!=None) continue; //Keep going
+
+        //Didn't find ourself and we reached an empty spot in the list
+        types[i].type=a;
+        types[i].backupName=w.default.ItemName $ " Ammo";
+        return;
     }
+    //list is full, I guess?
 }
 
 simulated function PrintItemRate(CreditsWindow cw, class<Inventory> c, int percent, optional bool AllowIncrease, optional string BackupName)

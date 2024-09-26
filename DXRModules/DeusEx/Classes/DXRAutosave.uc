@@ -68,8 +68,14 @@ function ReEntry(bool IsTravel)
 
 function PostAnyEntry()
 {
+    local MemConUnit mcu;
+
     if(bNeedSave)
         NeedSave();
+
+    foreach AllActors(class'MemConUnit', mcu) {
+        mcu.PostPostBeginPlay();
+    }
 }
 
 function NeedSave()
@@ -180,7 +186,7 @@ static function string GetSaveFailReason(DeusExPlayer player)
         }
     }
     if( f.autosave == FixedSaves || f.autosave == UnlimitedFixedSaves ) {
-        if(Computers(player.FrobTarget) == None) {
+        if(Computers(player.FrobTarget) == None && ATM(player.FrobTarget) == None) {
             return "You need to have a computer highlighted to save! Good Luck!";
         }
     }
@@ -242,6 +248,7 @@ static function UseSaveItem(DeusExPlayer player)
     item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
     if(item == None) return;
 
+    player.ClientMessage("You used " $ item.ItemArticle @ item.ItemName $ " to save.");
     item.UseOnce();
 }
 
@@ -343,15 +350,6 @@ function MapAdjustments()
 
     fixed = dxr.flags.autosave==FixedSaves || dxr.flags.autosave==UnlimitedFixedSaves;
     limited = dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves;
-
-    switch(dxr.localURL) {
-    case "03_NYC_BrooklynBridgeStation":
-        // fixed saves needs a computer in M03 before helibase
-        if(fixed) {
-            AddActor(class'#var(prefix)ComputerPublic', vect(-1417.867065, -1937.349854, 446), rot(0,16384,0));
-        }
-        break;
-    }
 
     if(limited) {
         SetSeed("spawn MCU");

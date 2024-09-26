@@ -4,7 +4,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Rando/",
         "preproc_definitions": {
             "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "flags": 1, "prefix":"", "vanillamaps":1,
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx", "injectsprefix": ""
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx", "injectsprefix": "", "allfeatures": false
         },
         "mods_paths": [ "../Lay-D-Denton-Project", "./" ],
         "packages": [ "DeusEx" ],
@@ -22,7 +22,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/",
         "preproc_definitions": {
             "hx":1, "multiplayer":1, "mapfixes":1, "balance":1, "noflags":1, "prefix":"HX",
-            "DeusExPrefix":"HX", "PlayerPawn":"HXPlayerPawn", "flagvarprefix": "config", "package": "HXRandomizer", "injectsprefix": "DXR"
+            "DeusExPrefix":"HX", "PlayerPawn":"HXPlayerPawn", "flagvarprefix": "config", "package": "HXRandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],
         "packages": [ "HXRandomizer" ],
@@ -37,7 +37,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/",
         "preproc_definitions": {
             "gmdx":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "GMDXRandomizer", "injectsprefix": "DXR"
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "GMDXRandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],
         "packages": [ "GMDXRandomizer" ],
@@ -52,7 +52,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision/",
         "preproc_definitions": {
             "revision":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "RevRandomizer", "injectsprefix": "DXR"
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "RevRandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],
         "packages": [ "RevRandomizer" ],
@@ -67,7 +67,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/",
         "preproc_definitions": {
             "vmd":1, "vmd175":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"", "vanillamaps":1,
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "VMDRandomizer", "injectsprefix": "DXR"
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "VMDRandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],
         "packages": [ "VMDRandomizer" ],

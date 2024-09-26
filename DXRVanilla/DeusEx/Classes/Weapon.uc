@@ -15,7 +15,8 @@ function PostBeginPlay()
     local DXRWeapons m;
     Super.PostBeginPlay();
 
-    foreach AllActors(class'DXRWeapons', m) {
+    m = DXRWeapons(class'DXRWeapons'.static.Find());
+    if(m != None) {
         m.RandoWeapon(self);
     }
 }
@@ -146,11 +147,9 @@ function bool LoadAmmo(int ammoNum)
     ret = Super.LoadAmmo(ammoNum);
 
     // we need to re-randomize the shottime
-    if(class'DXRando'.default.dxr != None) {
-        dxrw = DXRWeapons(class'DXRando'.default.dxr.FindModule(class'DXRWeapons'));
-        if(dxrw != None) {
-            dxrw.RandoWeapon(self);
-        }
+    dxrw = DXRWeapons(class'DXRWeapons'.static.Find());
+    if(dxrw != None) {
+        dxrw.RandoWeapon(self);
     }
 
     return ret;

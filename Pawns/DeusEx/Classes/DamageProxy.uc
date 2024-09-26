@@ -32,6 +32,11 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     }
 }
 
+event Bump( Actor Other )
+{
+    Base.Bump(Other);
+}
+
 function CopyAlliances(ScriptedPawn from)
 {
     Alliance = from.Alliance;
@@ -43,7 +48,7 @@ function Tick(float deltaTime)
     local vector loc;
 
     // do NOT call Super
-    if(Base==None) {
+    if(Base==None || Base.bDeleteMe) {
         Destroy();
         return;
     }
@@ -69,8 +74,6 @@ function PostPostBeginPlay()
 function ZoneChange(ZoneInfo newZone)
 {}
 singular function BaseChange()
-{}
-function Bump(actor Other)
 {}
 function HitWall(vector HitLocation, Actor hitActor)
 {}

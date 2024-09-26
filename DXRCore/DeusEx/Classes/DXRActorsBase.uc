@@ -48,6 +48,11 @@ function SwapAll(string classname, float percent_chance)
         temp[num++] = a;
     }
 
+    if(num<2) {
+        l("SwapAll(" $ classname $ ", " $ percent_chance $ ") only found " $ num);
+        return;
+    }
+
     for(i=0; i<num; i++) {
         if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself
@@ -1309,6 +1314,8 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         maxdist = 9999999;
 
     foreach RadiusActors(class'NavigationPoint', p, maxdist, target) {
+        if(Teleporter(p)!=None) continue;
+        if(MapExit(p)!=None) continue;
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;
@@ -1711,6 +1718,17 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
+function RemoveDXMoverPrePivot(#var(DeusExPrefix)Mover dxm)
+{
+    local vector pivot;
+    local rotator r;
+
+    pivot = dxm.PrePivot >> dxm.Rotation;
+    dxm.BasePos = dxm.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
+    dxm.PrePivot=vect(0,0,0);
+    dxm.SetLocation(dxm.BasePos);
+}
+
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
     // if `a` is a datacube, spawn a new light instead
@@ -1734,7 +1752,7 @@ static function Actor GlowUp(Actor a, optional byte hue, optional byte saturatio
 function DebugMarkKeyActor(Actor a, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
-    if( ! #defined(locdebug)) {
+    if( ! #bool(locdebug)) {
         err("Don't call DebugMarkKeyActor without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }
@@ -1760,7 +1778,7 @@ function DebugMarkKeyPosition(vector pos, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
     local Actor a;
-    if( ! #defined(locdebug)) {
+    if( ! #bool(locdebug)) {
         err("Don't call DebugMarkKeyPosition without locdebug mode! Add locdebug to the compiler_settings.default.json file");
         return;
     }

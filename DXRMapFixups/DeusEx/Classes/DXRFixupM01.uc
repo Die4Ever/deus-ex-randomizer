@@ -6,8 +6,6 @@ function PostFirstEntryMapFixes()
     local DeusExMover m;
     local BlockPlayer bp;
 
-    FixUNATCORetinalScanner();
-
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
@@ -28,8 +26,10 @@ function PostFirstEntryMapFixes()
         SetAllLampsState(,, false, vect(3313.0954215, -1662.294768, -176.938141), 0.01);
 
         break;
+    case "01_NYC_UNATCOHQ":
+        FixUNATCORetinalScanner();
+        break;
     }
-
 }
 
 

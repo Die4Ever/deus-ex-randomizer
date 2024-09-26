@@ -136,8 +136,19 @@ event Super_PostLogin( playerpawn NewPlayer )
 {
     local Pawn P;
     local DXRMusicPlayer m;
+    local bool useDXRMusicPlayer;
+
     // Start player's music.
-    m = DXRMusicPlayer(GetDXR().LoadModule(class'DXRMusicPlayer'));
+    useDXRMusicPlayer=True;
+
+    #ifdef revision
+    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack){
+        useDXRMusicPlayer=False;
+    }
+    #endif
+
+    if(useDXRMusicPlayer)
+        m = DXRMusicPlayer(GetDXR().LoadModule(class'DXRMusicPlayer'));// this can get called before the module is loaded
     if(m!=None)
         m.ClientSetMusic( NewPlayer, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
     else

@@ -331,18 +331,45 @@ function BalanceJailbreak()
 
         else {
             // put the items in the surgery ward
-            itemLocations[num++] = vectm(2174.416504,-569.534729,-213.660309);// paul's bed
-            itemLocations[num++] = vectm(2176.658936,-518.937012,-213.659302);// paul's bed
-            itemLocations[num++] = vectm(1792.696533,-738.417175,-213.660248);// bed 2
-            itemLocations[num++] = vectm(1794.898682,-802.133301,-213.658630);// bed 2
-            itemLocations[num++] = vectm(1572.443237,-739.527649,-213.660095);// bed 1
-            itemLocations[num++] = vectm(1570.557007,-801.213806,-213.660095);// bed 1
-            itemLocations[num++] = vectm(1269.494019,-522.082458,-221.659180);// near ambrosia
-            itemLocations[num++] = vectm(1909.302979,-376.711639,-221.660095);// desk with microscope and datacube
-            itemLocations[num++] = vectm(1572.411865,-967.828735,-261.659546);// on the floor, at the wall with the monitors
-            itemLocations[num++] = vectm(1642.170532,-968.813354,-261.660736);
-            itemLocations[num++] = vectm(1715.513062,-965.846558,-261.657837);
-            itemLocations[num++] = vectm(1782.731689,-966.754700,-261.661041);
+            itemLocations[num++] = vectm(2160,-585,-203);// paul's bed
+            itemLocations[num++] = vectm(2160,-505,-203);// paul's bed
+            itemLocations[num++] = vectm(1805,-730,-203);// middle bed
+            itemLocations[num++] = vectm(1805,-810,-203);// middle bed
+            itemLocations[num++] = vectm(1555,-730,-203);// bed near ambrosia
+            itemLocations[num++] = vectm(1555,-810,-203);// bed near ambrosia
+
+            //Third bed locations
+            itemLocations[num++] = vectm(2190,-545,-203);// paul's bed
+            itemLocations[num++] = vectm(1775,-770,-203);// middle bed
+            itemLocations[num++] = vectm(1585,-770,-203);// bed near ambrosia
+
+
+            itemLocations[num++] = vectm(1270,-522,-211);// near ambrosia
+            itemLocations[num++] = vectm(1275,-710,-211);// table with two microscopes and datacube (left)
+            itemLocations[num++] = vectm(1275,-805,-211);// table with two microscopes and datacube (right)
+            itemLocations[num++] = vectm(1910,-375,-211);// desk with microscope and datacube
+            itemLocations[num++] = vectm(2160,-327,-211);// table with two monitors (left)
+            itemLocations[num++] = vectm(2055,-327,-211);// table with two monitors (right)
+            itemLocations[num++] = vectm(2110,-327,-211);// table with two monitors (middle)
+
+            // on the floor, at the wall with the monitors, starting in the center, working out
+            itemLocations[num++] = vectm(1575,-950,-251);
+            itemLocations[num++] = vectm(1650,-950,-251);
+            itemLocations[num++] = vectm(1500,-950,-251);
+            itemLocations[num++] = vectm(1725,-950,-251);
+            itemLocations[num++] = vectm(1425,-950,-251);
+            itemLocations[num++] = vectm(1800,-950,-251);
+            itemLocations[num++] = vectm(1350,-950,-251);
+            itemLocations[num++] = vectm(1875,-950,-251);
+            itemLocations[num++] = vectm(1275,-950,-251);
+
+            // seriously, why do you have so much stuff, I never want to see these spots get used
+            // on the floor, at the wall with the monitors, emergency second row
+            itemLocations[num++] = vectm(1575,-900,-251);
+            itemLocations[num++] = vectm(1650,-900,-251);
+            itemLocations[num++] = vectm(1500,-900,-251);
+            itemLocations[num++] = vectm(1725,-900,-251);
+            itemLocations[num++] = vectm(1425,-900,-251);
 
             foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
                 if(dlt.datalinkTag != 'dl_equipment') continue;

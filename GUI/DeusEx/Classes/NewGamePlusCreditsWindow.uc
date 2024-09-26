@@ -22,6 +22,72 @@ function DoNewGamePlus()
     }
 }
 
+//Draw up to 3 columns across the screen
+//  1 | 2 | 3
+//     or
+//    1 | 2
+function PrintColumns(String colHeader[3], String colTxt[3])
+{
+    local AlignWindow winAlign;
+    local HeaderedColumnWindow winColumn;
+    local int i,numCols;
+
+    winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
+    winAlign.SetWindowAlignments(HALIGN_Center, VALIGN_Top);
+    winAlign.SetChildVAlignment(VALIGN_Top);
+
+    numCols=0;
+    if (colTxt[0]!="") numCols++;
+    if (colTxt[1]!="") numCols++;
+    if (colTxt[2]!="") numCols++;
+
+    for (i=0;i<ArrayCount(colTxt);i++){
+        if (colTxt[i]!=""){
+            winColumn = HeaderedColumnWindow(winAlign.NewChild(Class'HeaderedColumnWindow'));
+            winColumn.SetColumnWidth(maxTextWidth/numCols);
+            winColumn.SetTitle(colHeader[i]);
+            winColumn.SetText(colTxt[i]);
+        }
+    }
+    winAlign.SetWidth(maxTextWidth);
+}
+
+//Draw 1 tall column and two stacked rows
+//     | 2
+//   1 |---
+//     | 3
+function PrintTeeColumns(String colHeader[3], String colTxt[3])
+{
+    local AlignWindow winAlign;
+    local TileWindow  winTile;
+    local HeaderedColumnWindow winColumn;
+
+    winAlign = AlignWindow(winScroll.NewChild(Class'AlignWindow'));
+    winAlign.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
+    winAlign.SetChildVAlignment(VALIGN_Center);
+
+    winColumn = HeaderedColumnWindow(winAlign.NewChild(Class'HeaderedColumnWindow'));
+    winColumn.SetColumnWidth(maxTextWidth/2);
+    winColumn.SetTitle(colHeader[0]);
+    winColumn.SetText(colTxt[0]);
+
+    winTile = TileWindow(winAlign.NewChild(Class'TileWindow'));
+    winTile.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
+    winTile.SetWidth(maxTextWidth/2);
+
+    winColumn = HeaderedColumnWindow(winTile.NewChild(Class'HeaderedColumnWindow'));
+    winColumn.SetColumnWidth(maxTextWidth/2);
+    winColumn.SetTitle(colHeader[1]);
+    winColumn.SetText(colTxt[1]);
+
+    winColumn = HeaderedColumnWindow(winTile.NewChild(Class'HeaderedColumnWindow'));
+    winColumn.SetColumnWidth(maxTextWidth/2);
+    winColumn.SetTitle(colHeader[2]);
+    winColumn.SetText(colTxt[2]);
+
+    winAlign.SetWidth(maxTextWidth);
+}
+
 function AddDXRCreditsGeneral()
 {
     local Texture randoTextTextures[6];

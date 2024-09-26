@@ -30,21 +30,6 @@ static final function SetGameRenderDevice(string RenderDevicePath)
 -----------------------------
 -----------------------------
 
-check gas grenades ammo
-loadouts score boosts?
-
-allow loadouts to mess with skills? remove the config crap? loadouts give bonus points?
-taking some items/ammo out of a stack but not all when full
-make aquinas router door keypad unhackable maybe?
-
-manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules, basically a whitelist of actor names (and/or a quick way to generate safety rules based on actor names?)
-
-check gmdx augs list
-add a note for every mission change?
-What if consuming the VialAmbrosia yourself gave you a full heal or something lol
-check mission 5 jailbreak in all mods
-
-
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
 Patched editor https://coding.hanfling.de/launch/#dxstuff
@@ -82,8 +67,6 @@ EditPackages=HX
 EditPackages=HXRandomizer
 
 HX scale difficulty with extra players like diablo, slightly increase enemy randomization and combat difficulty
-can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
-	will need to mark it as played when entering unatco though, pretty sure it can break stuff
 GUI for NG+? can open a window similar to the advanced settings page
 create new "stories", start with a hub area (either hell's kitchen or hong kong, but which hell's kitchen?)
 	class DXRStories extends DXREntranceRando;
@@ -93,11 +76,6 @@ create new "stories", start with a hub area (either hell's kitchen or hong kong,
 	remove all vanilla npcs and dialog and add new ones
 	after beating a hub area, it can take you to the "next" area just by running a different seed, maybe do something to ensure it's based on a different hub area
 	I need to reuse the data in DXREntranceRando, maybe by subclassing it
-dynamically generate patrol routes? will probably need a new state for scriptedpawns to replace patrolling
-randomize item pool by replacing 50% of items?
-with flags binding, maybe I could convert some of them to floats or ints x100
-flashbang grenades?
-	for flashbang grenades, stun duration is hardcoded to sleep for 15 seconds in ScriptedPawn state Stunned Begin, maybe have to call them stun grenades
 
 CleanerBot Tick function could also cleanup Effects, TrashPaper, Fragment...
 
@@ -193,6 +171,10 @@ https://web.archive.org/web/20201023054944/http://wiki.beyondunreal.com/Legacy:C
 
 http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
 
+Various UnrealEd information (mostly for the very detailed Lighting information): https://lodev.org/unrealed/
+
+Texture Reference List (rather than squinting at the tiny previews in UEd): https://dxgalaxy.org/docs/reference/textures/
+
 http://dark191.333networks.com/uncodex/
 
 https://www.bunnytrack.net/package-explorer/
@@ -202,8 +184,6 @@ https://web.archive.org/web/20051025132508/http://mimesis.csc.ncsu.edu/Unreal/Sy
 https://ut99.org/viewtopic.php?t=5985
 
 https://www.dx-revision.com/dxtutorials/constructor/tutorials.htm
-
-charisma setting/skill that disables random dialog options with low charisma?
 
 https://forums.epicgames.com/unreal-tournament-3/unreal-tournament-3-programming-unrealscript/176322-decompile-u-files
 

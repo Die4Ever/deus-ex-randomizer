@@ -139,6 +139,9 @@ function BindControls(optional string action)
         NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
         EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
     }
+#else
+    //Disable mirrored maps entirely if map variants aren't supported
+    f.mirroredmaps=-1;
 #endif
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again. Leave it blank for a random seed.");
@@ -171,7 +174,7 @@ function string SetEnumValue(int e, string text)
     // HACK: this allows you to override the autosave option instead of SetDifficulty forcing it by game mode
     Super.SetEnumValue(e, text);
     if(e == gamemode_enum && #defined(injections)) {
-        if(InStr(text, "Halloween Mode")==0 || InStr(text, "WaltonWare Halloween")==0)
+        if(InStr(text, "Halloween")!=-1)
         {
             Super.SetEnumValue(autosave_enum, "Limited Fixed Saves");
         }

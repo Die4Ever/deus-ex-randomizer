@@ -1313,17 +1313,18 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
     local DXRMusicPlayer m;
-    GetDXR();
-    if (dxr==None){ //Probably only during ENDGAME4?
+    if (GetDXR()==None){ //Probably only during ENDGAME4?
         log("Couldn't find a DXR so we can set the music to " $ NewSong);
         return;
     }
-    m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));
+    m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));// this can get called before the module is loaded
     if (m==None){
-        log("Found a DXR but no DXRMusicPlayer module to set the music");
+        log("WARNING: DXRMusicPlayer module not found");
+        _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
         return;
+    } else {
+        m.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
     }
-    m.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
 //=========== END OF MUSIC STUFF
@@ -1333,7 +1334,7 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     local DataStorage datastorage;
     local int rollAmount;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
-    rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
+    if(datastorage != None) rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
 
     if(rollAmount == 0) {
         Super.UpdateRotation(DeltaTime,maxPitch);

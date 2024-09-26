@@ -58,14 +58,13 @@ simulated final function #var(PlayerPawn) player(optional bool quiet)
     local #var(PlayerPawn) p;
     local DXRando dxr;
     dxr = GetDXR();
-    //p = #var(PlayerPawn)(GetPlayerPawn());
-    p = dxr.Player;
+    if(dxr != None) p = dxr.Player;
     if( p == None ) {
         p = #var(PlayerPawn)(GetPlayerPawn());
         if(p==None){ //If GetPlayerPawn() didn't work (probably in HX)
             foreach AllActors(class'#var(PlayerPawn)', p){break;}
         }
-        dxr.Player = p;
+        if(dxr != None) dxr.Player = p;
     }
     if( p == None && !quiet ) warning("player() found None");
     return p;
@@ -227,7 +226,7 @@ function bool OnTitleScreen()
 {
     local DXRando dxr;
     dxr = class'DXRando'.default.dxr;
-
+    if(dxr == None) return true;
     return dxr.LocalURL=="DX" || dxr.LocalURL=="DXONLY";
 }
 

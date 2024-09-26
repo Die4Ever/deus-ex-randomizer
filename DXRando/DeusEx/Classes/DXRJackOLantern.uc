@@ -42,6 +42,7 @@ function ResetScaleGlow()
 
 defaultproperties
 {
+     HitPoints=5
      FragType=class'JackOLanternFragment'
      ItemName="Jack-O'-Lantern"
      Mesh=LodMesh'DeusExDeco.Poolball'

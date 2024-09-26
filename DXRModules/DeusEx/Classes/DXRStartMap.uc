@@ -296,7 +296,7 @@ static function string _GetStartMap(int start_map_val, optional out string frien
 {
     friendlyName = ""; // clear the out param to protect against reuse by the caller
 
-    if (#defined(allstarts))
+    if (#bool(allstarts))
         bShowInMenu=1;
     switch(start_map_val)
     {
@@ -523,6 +523,35 @@ static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
     }
 }
 
+function DeusExNote AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, name convname, optional int which)
+{
+    local Conversation con;
+    local ConEvent ce;
+    local ConEventAddNote cean;
+    local DeusExNote note;
+
+    if (bEmptyNotes == false) {
+        return None;
+    }
+
+    con = GetConversation(convname);
+
+    // passing a negative value for `which` adds all notes, and returns None
+    for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
+        cean = ConEventAddNote(ce);
+        if (cean != None) {
+            if (which <= 0) {
+                note = player.Addnote(cean.noteText);
+                if (which == 0) {
+                    return note;
+                }
+            }
+            which--;
+        }
+    }
+    return None;
+}
+
 function MarkConvPlayed(string flagname, bool bFemale)
 {
     flagname = flagname$"_Played";
@@ -545,12 +574,6 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_SeeManderley", bFemale);
             break;
         case 5:
-            if(start_flag > 50) {
-                AddNote(player, bEmptyNotes, "Facility exit: 1125.");
-                AddNote(player, bEmptyNotes, "Until the grid is fully restored, the detention block door code has been reset to 4089 while _all_ detention cells have been reset to 4679.");
-                MarkConvPlayed("DL_NoPaul", bFemale);
-                flagbase.SetBool('MS_InventoryRemoved',true,,6);
-            }
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             break;
         case 6:
@@ -611,43 +634,45 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("M03MeetTerroristLeader", bFemale);
         case 34: // fallthrough
         case 33:
-            AddNote(player, bEmptyNotes, "6653 -- Code to the phone-booth entrance to mole-people hideout.");
+            AddNoteFromConv(player, bEmptyNotes, 'MeetCurly', 0); // 6653 -- Code to the phone-booth entrance
             MarkConvPlayed("dl_batterypark", bFemale); // We're dropping you off in Battery Park
             break;
         case 31:
             MarkConvPlayed("DL_WelcomeBack", bFemale);
             break;
 
-        case 41:
-            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
-            break;
-        case 43:
-            AddGoalFromConv(player, 'CheckOnPaul', 'DL_JockParkStart');
-            break;
         case 45:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
             flagbase.SetBool('GatesOpen',true,,5);
-            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
             MarkConvPlayed("PaulInjured", bFemale);
             GiveImage(player, class'Image04_NSFHeadquarters');
             break;
 
-        case 75:
-        case 71:// anything greater than 70 should get these, even though this isn't an actual value currently
-            AddNote(player, bEmptyNotes, "Access code to the Versalife nanotech research wing on Level 2: 55655.  There is a back entrance at the north end of the Canal Road Tunnel, which is just east of the temple.");
+        case 55:
+            AddNoteFromConv(player, bEmptyNotes, 'PaulInMedLab', 0); // Anna Navarre's killphrase is stored in two pieces on two computers
+            AddNoteFromConv(player, bEmptyNotes, 'DL_paul', 0); // Facility exit: 1125
+            MarkConvPlayed("DL_NoPaul", bFemale);
+            MarkConvPlayed("PaulInMedLab", bFemale);
+            MarkConvPlayed("DL_Paul", bFemale);
+            flagbase.SetBool('MS_InventoryRemoved',true,,6);
+            break;
+
+        case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
+            AddNoteFromConv(player, bEmptyNotes, 'M07Briefing'); // Access code to the Versalife nanotech research wing on Level 2: 55655
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
             flagbase.SetBool('Disgruntled_Guy_Dead', true);
             MarkConvPlayed("Meet_MJ12Lab_Supervisor", bFemale);
         case 68://fallthrough
-            AddNote(player, bEmptyNotes, "VersaLife elevator code: 6512.");
+            AddNoteFromConv(player, bEmptyNotes, 'M06SupervisorConvos', 0); // VersaLife elevator code: 6512
         case 67://fallthrough
-            AddNote(player, bEmptyNotes, "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.");
+            AddNoteFromConv(player, bEmptyNotes, 'MeetTracerTong2', -1); // VersaLife employee ID: 06288
             MarkConvPlayed("MeetTracerTong", bFemale);
             MarkConvPlayed("MeetTracerTong2", bFemale);
             flagbase.SetBool('KillswitchFixed',true,,-1);
         case 66://fallthrough
-            AddNote(player, bEmptyNotes, "Luminous Path door-code: 1997.");
+            AddNoteFromConv(player, bEmptyNotes, 'Gate_Guard2', 1); // Luminous Path door-code: 1997
+            flagbase.SetBool('MaxChenConvinced',true,,-1);
             flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
             MarkConvPlayed("Gate_Guard2", bFemale);
@@ -673,6 +698,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             GiveKey(player, 'cathedralgatekey', "Gatekeeper's Key");
             GiveImage(player, class'Image11_Paris_Cathedral');
             GiveImage(player, class'Image11_Paris_CathedralEntrance');
+            MarkConvPlayed("DL_intro_cathedral", bFemale);
         case 109:
             GiveImage(player, class'Image10_Paris_Metro');
         case 106:
@@ -686,6 +712,12 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("GaryHostageBriefing", bFemale);
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
             break;
+        case 122:
+            AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
+        case 121: // fallthrough
+            AddNoteFromConv(player, bEmptyNotes, 'MeetCarlaBrown', 0); // Backup power for the bot security system
+            break;
+
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
             // fallthrough
@@ -707,9 +739,9 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Final_Page02", bFemale);         // Barely a scratch.
             MarkConvPlayed("DL_elevator", bFemale);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
             MarkConvPlayed("DL_conveyor_room", bFemale);        // Page is further down.  Find the elevator.
-            MarkConvPlayed("M15MeetEverett", bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
+            // MarkConvPlayed("M15MeetEverett", bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             flagbase.SetBool('MS_EverettAppeared',true,,-1);
-            AddNote(player, bEmptyNotes, "Crew-complex security code: 8946.");
+            AddNoteFromConv(player, bEmptyNotes, 'M15MeetEverett', 0); // Crew-complex security code: 8946; TODO: figure out why Everett refuses to appear for this conversation on later starts
             // fallthrough
         case 151:
             MarkConvPlayed("DL_tong1", bFemale);                // Here's a satellite image of the damage from the missile.
@@ -747,34 +779,54 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 35:
             AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
             break;
+        case 36:
+            player.StartDataLinkTransmission("DL_LebedevKill");
+            break;
         case 37:
             AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
             break;
 
-        case 62:
-        case 63:
-        case 64:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
-            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
+        case 45:
+            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
             break;
-        case 65:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
-            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
-            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00');
+        case 43:
+            player.StartDataLinkTransmission("DL_JockParkStart");
             break;
-        case 66:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+        case 41:
+            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
             break;
-        case 67:
-        case 68:
-            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2');
+
+        case 55:
+            AddGoalFromConv(player, 'FindEquipment', 'DL_Choice');
+            AddGoalFromConv(player, 'FindAnnasKillprhase', 'PaulInMedLab');
+            break;
+
+        case 75:
+            AddGoalFromConv(player, 'GetVirusSchematic', 'M07Briefing');
+            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 70:
             AddGoalFromConv(player, 'ReportToTong', 'TriadCeremony');
             AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
-        case 75:
-            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+        case 68:
+        case 67:
+            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2');
+            break;
+        case 66:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            AddGoalFromConv(player, 'GetSword', 'DL_Tong_00B');
+            break;
+        case 65:
+            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
+            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00');
+            AddGoalFromConv(player, 'GetSword', 'DL_Tong_00B');
+            break;
+        case 64:
+        case 63:
+        case 62:
+            player.StartDataLinkTransmission("DL_Jock_05");
             break;
 
         case 90:
@@ -802,11 +854,38 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             AddGoalFromConv(player, 'FindEverett', 'NicoletteOutside');
             break;
 
+        case 119:
+            goal = player.AddGoal('ContactIlluminati', true);
+            goal.SetText("Make contact with the Illuminati in Paris, where the former Illuminati leader, Morgan Everett, is rumored to be in hiding.");
+            break;
+        case 115:
+            goal = player.AddGoal('ContactIlluminati', true);
+            goal.SetText("Make contact with the Illuminati in Paris, where the former Illuminati leader, Morgan Everett, is rumored to be in hiding.");
+            AddGoalFromConv(player, 'GoToMetroStation', 'DL_morgan_uplink');
+            AddGoalFromConv(player, 'RecoverGold', 'DL_intro_cathedral');
+            break;
+        case 110:
+            goal = player.AddGoal('ContactIlluminati', true);
+            goal.SetText("Make contact with the Illuminati in Paris, where the former Illuminati leader, Morgan Everett, is rumored to be in hiding.");
+            goal = player.AddGoal('AccessTemplarComputer', true);
+            goal.SetText("Access the Templar computer system so that Morgan Everett can complete work on a cure for the Gray Death.");
+            break;
+
+        case 129:
+            AddGoalFromConv(player, 'RescueTiffany', 'GaryHostageBriefing');
+            break;
+        case 125:
+        case 122:
+            AddGoalFromConv(player, 'FindGarySavage', 'MeetTonyMares');
+            break;
+        case 121:
+            AddGoalFromConv(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
+            break;
+
         case 153:
             AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
             AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
-            //fallthrough
-        case 152:
+        case 152: // fallthrough
             AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
             break;
     }
@@ -884,19 +963,14 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         break;
 
     case 6: // Hong Kong
-        switch(bingo_event)
-        {
-        // // these two goals can actually be done with the way these starts currently work, but would normally be impossible
-        // case "ClubEntryPaid":
-        // case "M06JCHasDate":
-        //     return start_map > 65;
-        }
-    case 7: // fallthrough to 2nd half of Hong Kong
+    case 7:
         switch(bingo_event)
         {
         case "MaggieCanFly":
-        case "PoliceVaultBingo": // TODO: remove once a datacube with the vault code is added
-            return start_map > 70;
+            return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
+        // // this goal can actually be done with the way these starts currently work, but would normally be impossible
+        // case "M06JCHasDate":
+        //     return start_map > 65;
         }
         break;
 
