@@ -143,6 +143,7 @@ function InitClothes(bool giveAll)
         IngestCarcass(class'#var(prefix)ScientistMaleCarcass');
         IngestCarcass(class'#var(prefix)ScientistFemaleCarcass');
         IngestCarcass(class'#var(prefix)BartenderCarcass');
+        IngestCarcass(class'#var(prefix)SandraRentonCarcass');
         IngestCarcass(class'#var(prefix)JordanSheaCarcass');
         IngestCarcass(class'#var(prefix)MaxChenCarcass');
         IngestCarcass(class'#var(prefix)MaggieChowCarcass');
