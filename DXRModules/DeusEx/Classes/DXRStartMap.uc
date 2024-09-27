@@ -105,6 +105,24 @@ function PreFirstEntry()
         }
         break;
 
+    case "14_VANDENBERG_SUB":
+        if (dxr.flags.settings.starting_map == 142) {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'Elevator1') {
+                dxMover.InterpolateTo(1, 0.0);
+                break;
+            }
+        }
+        break;
+
+    case "14_OCEANLAB_LAB":
+        if (dxr.flags.settings.starting_map == 142) {
+            foreach AllActors(class'ElevatorMover', eMover, 'lift') {
+                eMover.InterpolateTo(1, 0.0);
+                break;
+            }
+        }
+        break;
+
     case "15_Area51_Bunker":
         if (dxr.flags.settings.starting_map > 150) {
             foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
@@ -720,12 +738,13 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
-            // fallthrough
+        case 142: // fallthrough
         case 141:
-        case 142:
-        case 140:
+            MarkConvPlayed("DL_Underwater", bFemale); // The URV bay is in this module.  You might not hear from me again.
+        case 140: // fallthrough
             flagbase.SetBool('TiffanySavage_Dead',true,,15);
             break;
+
         case 153:
             MarkConvPlayed("DL_Helios_Door1", bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
             MarkConvPlayed("DL_Helios_Intro", bFemale);         // I will now explain why you have been allowed to reach Sector 3.
