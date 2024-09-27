@@ -106,7 +106,7 @@ function PreFirstEntry()
         break;
 
     case "14_VANDENBERG_SUB":
-        if (dxr.flags.settings.starting_map == 142) {
+        if (dxr.flags.settings.starting_map == 141 || dxr.flags.settings.starting_map == 142) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'Elevator1') {
                 dxMover.InterpolateTo(1, 0.0);
                 break;
