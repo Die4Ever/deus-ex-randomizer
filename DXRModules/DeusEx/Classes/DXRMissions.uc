@@ -651,6 +651,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local ScriptedPawn sp;
     local string result;
     local DXRGoalMarker marker;
+    local #var(DeusExPrefix)Mover dxm;
 
     result = g.name $ " to " $ Loc.name;
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
@@ -681,6 +682,14 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         if(ElectronicDevices(a) != None)
             ElectronicDevices(a).ItemName = g.name;
         MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
+
+        //If actor was a mover, make it have dynamic lighting so it looks right
+        dxm = #var(DeusExPrefix)Mover(a);
+        if (dxm!=None){
+            dxm.bDynamicLightMover=False;//very quickly disable
+            dxm.bDynamicLightMover=True; //Make lighting apply properly
+        }
+
     }
 
     if( (Loc.bitMask & SITTING_GOAL) != 0) {

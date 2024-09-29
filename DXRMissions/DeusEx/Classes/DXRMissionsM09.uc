@@ -273,7 +273,6 @@ function PreFirstEntryMapFixes()
                     //the same strength.
                     dxm.bBreakable=True;
                     dxm.minDamageThreshold=60;
-                    dxm.bDynamicLightMover=True;
                 }
 
                 //Adjust the prepivots of all the movers to the values set in vanilla
@@ -300,7 +299,6 @@ function PreFirstEntryMapFixes()
                     dxm.Name=='DeusExMover31' ||
                     dxm.Name=='DeusExMover32'){
                     dxm.PrePivot=vect(-3,-2.5,5);
-                    dxm.bDynamicLightMover=True;
                 }
             }
         }

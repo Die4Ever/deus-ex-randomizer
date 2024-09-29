@@ -28,6 +28,7 @@ function PreFirstEntryMapFixes()
     local Vector loc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
+    local DynamicLight light;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -138,6 +139,14 @@ function PreFirstEntryMapFixes()
 
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
+
+            //add a small light to the lower floor of the apartment.
+            //This helps to just put a little bit of light on the generator location
+            //in the case of 0 brightness boost
+            light = Spawn(class'DynamicLight',,, vectm(500,900,1050));
+            light.LightType=LT_Steady;
+            light.LightBrightness=16;
+            light.LightRadius=10;
 
             // fix collision with the fence https://github.com/Die4Ever/deus-ex-randomizer/issues/665
             foreach AllActors(class'DeusExMover', d) {
