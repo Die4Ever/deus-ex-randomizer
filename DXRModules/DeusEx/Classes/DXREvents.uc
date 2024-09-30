@@ -2264,7 +2264,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return msg;
         case "JoeGreene_Dead":
             msg= "Kill Joe Greene, the reporter poking around in New York.  ";
-            if (mission<=2){
+            if (mission<=4){
                 msg=msg$"He can be found in the Underworld bar.";
             }else if (mission<=8){
                 msg=msg$"He can be found somewhere in New York after you return from Hong Kong.";
