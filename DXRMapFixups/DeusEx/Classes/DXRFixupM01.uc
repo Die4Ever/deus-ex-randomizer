@@ -42,6 +42,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)ComputerPublic compublic;
+    local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -52,6 +54,8 @@ function PreFirstEntryMapFixes()
     local class<DXRInformationDevices> npClass;
     npClass = class'DXRInformationDevices';
 #endif
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -91,6 +95,14 @@ function PreFirstEntryMapFixes()
                 ft.bTrigger=True;
                 ft.FlagName='GuntherRescued_Played'; //Only trigger the orders if you have *not* talked to Gunther yet
                 ft.flagValue=False;
+            }
+        }
+
+        if (#defined(injections) && VanillaMaps) {
+            foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
+                compublic.SetLocation(vectm(741.36, 1609.34, 289.27));
+                compublic.SetRotation(rotm(0, -16384, 0, 0));
+                break;
             }
         }
 

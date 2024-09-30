@@ -93,6 +93,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local AlarmUnit au;
     local vector loc;
+    local #var(prefix)ComputerPublic compublic;
 
     local bool VanillaMaps;
 
@@ -401,6 +402,14 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
             if (ot.ordersTag=='CarterAtWindow'){
                 ot.Orders='RunningTo';
+                break;
+            }
+        }
+
+        if (#defined(injections) && VanillaMaps) {
+            foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
+                compublic.SetLocation(vectm(741.36, 1609.34, 289.27));
+                compublic.SetRotation(rotm(0, -16384, 0, 0));
                 break;
             }
         }

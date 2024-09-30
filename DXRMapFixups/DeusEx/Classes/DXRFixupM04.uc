@@ -56,6 +56,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
+    local #var(prefix)ComputerPublic compublic;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -282,6 +283,11 @@ function PreFirstEntryMapFixes()
             key.Description = "MedLab Closet Key Code";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(key);
+        }
+
+        if (#defined(injections) && VanillaMaps) {
+            compublic = Spawn(class'#var(prefix)ComputerPublic',,, vectm(741.36, 1609.34, 289.27), rotm(0, -16384, 0, 0));
+            compublic.BulletinTag = '03_BulletinMenu'; // same content that's in M03
         }
 
         //Spawn some placeholders for new item locations

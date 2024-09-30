@@ -42,6 +42,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Terrorist miguel;
     local #var(prefix)Keypad3 kp;
     local #var(prefix)Cigarettes cigs;
+    local #var(prefix)ComputerPublic compublic;
 
     local DXREnemies dxre;
     local int i;
@@ -169,6 +170,14 @@ function PreFirstEntryMapFixes()
                 k.Description = "MedLab Closet Key Code";
                 if(dxr.flags.settings.keysrando > 0)
                     GlowUp(k);
+            }
+
+            if (#defined(injections)) {
+                foreach AllActors(class'ComputerPublic', compublic) {
+                    compublic.SetLocation(vectm(741.36, 1609.34, 289.27));
+                    compublic.SetRotation(rotm(0, -16384, 0, 0));
+                    break;
+                }
             }
 
             //Spawn some placeholders for new item locations
