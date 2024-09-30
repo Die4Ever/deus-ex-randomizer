@@ -12,7 +12,12 @@ If you're having an issue with the installer program: [Manual Installation Instr
 If you don't know what Deus Ex Randomizer is, then here's our trailer which shows a breakdown of how it works:
 
 <a href="https://www.youtube.com/watch?v=V3mTcG6xeq4&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
-<img src="https://img.youtube.com/vi/V3mTcG6xeq4/0.jpg" alt="v3.0 Trailer" width="500"/></a>
+<img src="https://img.youtube.com/vi/V3mTcG6xeq4/maxresdefault.jpg" alt="v3.0 Trailer" width="500"/></a>
+
+Here's a trailer for our new Halloween modes!
+
+<a href="https://www.youtube.com/watch?v=FbzNkWJXZ1o&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
+<img src="https://github.com/user-attachments/assets/d92bea02-55a3-462d-ac5f-45e3d56a7497" alt="Halloween Trailer" width="500"/></a>
 
 Here's a trailer for WaltonWare mode. WaltonWare mode is focused on quick wins by completing a single bingo line, and increasing difficulty after every win. The bingo goals are all scaled to their minimum settings and you start in a random area. All bingo goals will be completable within just a few maps!
 
