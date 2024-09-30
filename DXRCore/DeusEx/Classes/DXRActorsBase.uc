@@ -1722,11 +1722,18 @@ function RemoveDXMoverPrePivot(#var(DeusExPrefix)Mover dxm)
 {
     local vector pivot;
     local rotator r;
+    local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
 
+    AbCollideActors = dxm.bCollideActors;
+    AbBlockActors = dxm.bBlockActors;
+    AbBlockPlayers = dxm.bBlockPlayers;
+
+    dxm.SetCollision(false,false,false);
     pivot = dxm.PrePivot >> dxm.Rotation;
     dxm.BasePos = dxm.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
     dxm.PrePivot=vect(0,0,0);
     dxm.SetLocation(dxm.BasePos);
+    dxm.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
