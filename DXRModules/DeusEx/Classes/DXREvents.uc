@@ -3476,7 +3476,7 @@ defaultproperties
     bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",desc_singular="Make 1 phone call",max=5,missions=1916)
     bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",desc_singular="Open 1 sleeping pod in Area 51",max=4,missions=32768)
-    bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",desc_singular="Close 1 steam valve in Area 51",max=2,missions=32768)
+    bingo_options(286)=(event="Area51SteamValve",desc="Close the steam valves in Area 51",max=2,missions=32768)
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",desc_singular="Deactivate 1 laser grid under the dockyard",max=3,missions=512)
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
     bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the superfreighter",max=1,missions=512)
