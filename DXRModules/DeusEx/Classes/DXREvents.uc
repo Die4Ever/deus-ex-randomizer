@@ -415,7 +415,7 @@ function SetWatchFlags() {
         WatchFlag('MeetWindowBum_Played');
         break;
     case "02_NYC_SMUG":
-        WatchFlag('MetSmuggler');
+        WatchFlag('MeetSmuggler_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -574,7 +574,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'MadeItToBP',vectm(0,0,0));
         break;
     case "04_NYC_SMUG":
-        RewatchFlag('MetSmuggler');
+        WatchFlag('M04MeetSmuggler_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -867,7 +867,7 @@ function SetWatchFlags() {
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
-        RewatchFlag('MetSmuggler');
+        WatchFlag('M08SmugglerConvos_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -2052,6 +2052,10 @@ function string RemapBingoEvent(string eventname)
             return "Cat_peeptime";
         case "PetAnimal_BlackCat":
             return "PetAnimal_Cat";
+        case "MeetSmuggler_Played":
+        case "M04MeetSmuggler_Played":
+        case "M08SmugglerConvos_Played":
+            return "MeetSmuggler";
         default:
             return eventname;
     }
@@ -2352,7 +2356,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill Manderley while escaping from UNATCO.";
         case "MadeItToBP":
             return "After the raid on the 'Ton hotel, escape to Gunther's roadblock in Battery Park.";
-        case "MetSmuggler":
+        case "MeetSmuggler":
             return "Talk to Smuggler in his Hell's Kitchen hideout.";
         case "SickMan_Dead":
             return "Kill the junkie in Battery Park who asks for someone to kill him.  He is typically found near the East Coast Memorial (the eagle statue and large plaques)";
@@ -3226,7 +3230,7 @@ defaultproperties
     bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1,missions=1024)
     bingo_options(57)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1,missions=32)
     bingo_options(58)=(event="MadeItToBP",desc="Escape to Battery Park",max=1,missions=16)
-    bingo_options(59)=(event="MetSmuggler",desc="Meet Smuggler",max=1,missions=276)
+    bingo_options(59)=(event="MeetSmuggler",desc="Meet Smuggler",max=1,missions=276)
     bingo_options(60)=(event="SickMan_Dead",desc="Kill the sick man who wants to die",max=1,missions=12)
     bingo_options(61)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1,missions=64)
     bingo_options(62)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1,missions=64)
