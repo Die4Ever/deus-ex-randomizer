@@ -11,7 +11,9 @@ function PostFirstEntry()
 
     if(dxr.flags.IsHalloweenMode()) {
         // Mr. H is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
-        class'MrH'.static.Create(self);
+        if(!dxr.OnTitleScreen()) {
+            class'MrH'.static.Create(self);
+        }
         MapFixes();
     }
     if(IsOctober()) {
