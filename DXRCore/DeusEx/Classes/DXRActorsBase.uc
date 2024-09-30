@@ -1718,22 +1718,22 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
-function RemoveDXMoverPrePivot(#var(DeusExPrefix)Mover dxm)
+function RemoveMoverPrePivot(Mover m)
 {
     local vector pivot;
     local rotator r;
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
 
-    AbCollideActors = dxm.bCollideActors;
-    AbBlockActors = dxm.bBlockActors;
-    AbBlockPlayers = dxm.bBlockPlayers;
+    AbCollideActors = m.bCollideActors;
+    AbBlockActors = m.bBlockActors;
+    AbBlockPlayers = m.bBlockPlayers;
 
-    dxm.SetCollision(false,false,false);
-    pivot = dxm.PrePivot >> dxm.Rotation;
-    dxm.BasePos = dxm.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
-    dxm.PrePivot=vect(0,0,0);
-    dxm.SetLocation(dxm.BasePos);
-    dxm.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
+    m.SetCollision(false,false,false);
+    pivot = m.PrePivot >> m.Rotation;
+    m.BasePos = m.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
+    m.PrePivot=vect(0,0,0);
+    m.SetLocation(m.BasePos);
+    m.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
