@@ -331,10 +331,10 @@ simulated function RandoAug(Augmentation a)
     }
     else if( #var(prefix)AugLight(a) != None ) {
         if(dxr.flags.IsHalloweenMode()) {
-            add_desc = "DXRando: The light costs more energy in Halloween modes. ";
+            add_desc = "DXRando: The light costs more energy in Halloween modes, and can be upgraded to level 2. ";
             a.energyRate = 20;
-            a.LevelValues[0] = 1024;// back to vanilla, although this doesn't change much
         } else {
+            a.CurrentLevel = 1;
             add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
         }
     }

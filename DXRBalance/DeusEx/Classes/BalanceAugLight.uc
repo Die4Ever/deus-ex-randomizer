@@ -3,7 +3,7 @@ class BalanceAugLight injects AugLight;
 function SetBeamLocation()
 {
     Super.SetBeamLocation();
-    if(EnergyRate>0)// quick way to check that we're in a Halloween mode
+    if(CurrentLevel==0)// quick way to check that we're in a Halloween mode
         return;
     if( b1 == None || b2 == None )
         return;
@@ -21,5 +21,7 @@ function SetBeamLocation()
 defaultproperties
 {
     EnergyRate=0.000000
-    LevelValues(0)=1000
+    LevelValues(0)=1024
+    LevelValues(1)=1000
+    MaxLevel=1
 }
