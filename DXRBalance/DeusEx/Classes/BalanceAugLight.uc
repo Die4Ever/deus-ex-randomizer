@@ -33,6 +33,12 @@ function PostPostBeginPlay()
     GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
 }
 
+function TravelPostAccept()
+{
+    Super.TravelPostAccept();
+    GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
+}
+
 function bool IncLevel()
 {
     Super.IncLevel();
