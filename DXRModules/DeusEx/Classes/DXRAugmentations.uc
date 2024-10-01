@@ -330,7 +330,13 @@ simulated function RandoAug(Augmentation a)
         add_desc = "DXRando: You can see characters, goals, items, datacubes, vehicles, crates, and electronic devices through walls. ";
     }
     else if( #var(prefix)AugLight(a) != None ) {
-        add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
+        if(dxr.flags.IsHalloweenMode()) {
+            add_desc = "DXRando: The light costs more energy in Halloween modes. ";
+            a.energyRate = 20;
+            a.LevelValues[0] = 1024;// back to vanilla, although this doesn't change much
+        } else {
+            add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
+        }
     }
     else if( #var(prefix)AugAqualung(a) != None ) {
         return;

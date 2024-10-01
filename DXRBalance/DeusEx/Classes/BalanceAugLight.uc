@@ -3,9 +3,11 @@ class BalanceAugLight injects AugLight;
 function SetBeamLocation()
 {
     Super.SetBeamLocation();
+    if(EnergyRate>0)// quick way to check that we're in a Halloween mode
+        return;
     if( b1 == None || b2 == None )
         return;
-    
+
     b1.LightRadius *= 2;
     b1.LightBrightness = 220; // default is 192
     b2.LightRadius = 8; // default is 4
