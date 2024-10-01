@@ -6,14 +6,17 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 
 * [for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/releases/latest)
 
-#### If the game is not running well, even for vanilla Deus Ex, [see the recommended tweaks here.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks#recommended-tweaks-for-running-deus-ex-on-modern-computers)
-
 ## Trailers
 
 If you don't know what Deus Ex Randomizer is, then here's our trailer which shows a breakdown of how it works:
 
 <a href="https://www.youtube.com/watch?v=V3mTcG6xeq4&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
-<img src="https://img.youtube.com/vi/V3mTcG6xeq4/0.jpg" alt="v3.0 Trailer" width="500"/></a>
+<img src="https://img.youtube.com/vi/V3mTcG6xeq4/maxresdefault.jpg" alt="v3.0 Trailer" width="500"/></a>
+
+Here's a trailer for our new Halloween modes!
+
+<a href="https://www.youtube.com/watch?v=FbzNkWJXZ1o&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
+<img src="https://github.com/user-attachments/assets/d92bea02-55a3-462d-ac5f-45e3d56a7497" alt="Halloween Trailer" width="500"/></a>
 
 Here's a trailer for WaltonWare mode. WaltonWare mode is focused on quick wins by completing a single bingo line, and increasing difficulty after every win. The bingo goals are all scaled to their minimum settings and you start in a random area. All bingo goals will be completable within just a few maps!
 
@@ -54,28 +57,22 @@ Here's a trailer for WaltonWare mode. WaltonWare mode is focused on quick wins b
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
     * Takes away 1 random augmentation, and 1 of your weapons
     * Takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
-* New game modes! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes)
+* New game modes! See the [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes) for a full list!
     * WaltonWare mode - A quick option to get into the game without the time commitment of the full game! You start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
-    * WaltonWare Entrance Rando - both modes combined!
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
-    * Zero Rando Plus - similar to Zero Rando, but with a few more of our balance changes.
-    * DXRVanillaFixer: This one is for the purists. Use our new installer program and it will do compatibility fixes for the vanilla game (Kentie's Launcher, D3D10, DXVK, Engine.dll fix, and more), then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
+    * Vanilla Fixer: This one is for the purists. Use our new installer program and it will do compatibility fixes for the vanilla game (Kentie's Launcher, D3D10, DXVK, Engine.dll fix, and more), then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
-    * Randomizer Medium - similar to Randomizer Lite but with more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
-    * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties. And a built in splits viewer!
     * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission
     * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral
-* Challenge mode loadouts! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts)
+    * Various [Halloween modes](https://www.youtube.com/watch?v=FbzNkWJXZ1o) that add some survival horror mechanics!
+* Challenge mode loadouts! See the [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts) for a full list!
     * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
     * Ninja JC - the only weapons allowed are throwing knives, swords, pepper spray, grenades, knife, and mini-crossbow. You also get a Ninja Augmentation which gives you speed and stealth at the same time.
     * Don't Give Me the GEP Gun - bans the GEP gun
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
-    * No Pistols - for people who think the pistol is OP
-    * No Swords - for people who think the sword and Dragon's Tooth Sword are OP
-    * No Overpowered Weapons - bans pistols, swords, and the GEP Gun
     * By the Book - bans lockpicks and multitools
     * Explosives Only
 * If you opt-in to Online Features (which is disabled by default, check the Rando menu)

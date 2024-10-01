@@ -233,7 +233,7 @@ function PreFirstEntryMapFixes()
 
                     //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
                     //so that they are centered roughly in the middle of the door
-                    RemoveDXMoverPrePivot(door);
+                    RemoveMoverPrePivot(door);
                 }
             }
             AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');

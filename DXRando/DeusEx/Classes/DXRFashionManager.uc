@@ -78,10 +78,19 @@ simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
         f.isFemale=p.flagBase.GetBool('LDDPJCIsFemale');
         clothesLooting = bool(p.flagBase.GetInt('Rando_clothes_looting'));
         f.InitClothes(!clothesLooting);
-        p.RemoveObjectFromBelt(f); //Now that it has an icon, it ends up on the belt...
         log("spawned new " $ f $ " for " $ p);
     }
+    p.RemoveObjectFromBelt(f); //Now that it has an icon, it ends up on the belt sometimes...
     return f;
+}
+
+event TravelPreAccept()
+{
+    Super.TravelPreAccept();
+
+    //Just make sure it doesn't end up on your belt, for real
+    bInObjectBelt=False;
+    beltPos=-1;
 }
 
 function Mesh ModelFromOutfitGender(EOutfitType type, bool female)
@@ -143,6 +152,7 @@ function InitClothes(bool giveAll)
         IngestCarcass(class'#var(prefix)ScientistMaleCarcass');
         IngestCarcass(class'#var(prefix)ScientistFemaleCarcass');
         IngestCarcass(class'#var(prefix)BartenderCarcass');
+        IngestCarcass(class'#var(prefix)SandraRentonCarcass');
         IngestCarcass(class'#var(prefix)JordanSheaCarcass');
         IngestCarcass(class'#var(prefix)MaxChenCarcass');
         IngestCarcass(class'#var(prefix)MaggieChowCarcass');
@@ -937,6 +947,7 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
 
 defaultproperties
 {
+    bCanUseObjectBelt=false
     bDisplayableInv=false
     ItemName="DXRFashionManager"
     bHidden=true

@@ -690,6 +690,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
         case 95:
             GiveKey(player, 'EngineRoomDoor', "Below Decks key");
+            MarkConvPlayed("DL_ShipEntry", bFemale); // find a way to get below decks
             break;
 
         case 115:
