@@ -76,9 +76,13 @@ function IncreaseZoneBrightness(int brightness, ZoneInfo z)
     if(zb.brightness == 0)
         z.AmbientSaturation = 255;
 
-    if(IsOctober()) {
+    if(IsHalloween()) {
         z.AmbientBrightness = Max(z.AmbientBrightness, 5);
         z.AmbientSaturation = Min(z.AmbientSaturation, 100);
+        z.AmbientHue = 255;
+    } else if(IsOctober()) {
+        z.AmbientBrightness = Max(z.AmbientBrightness, 5);
+        z.AmbientSaturation = Min(z.AmbientSaturation, 255 - (Level.Day*155/40));// divided by 40 instead of 31 to make it weaker
         z.AmbientHue = 255;
     }
 }

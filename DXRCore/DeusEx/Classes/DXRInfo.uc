@@ -202,6 +202,14 @@ function bool IsOctober()
     return Level.Month == 10;
 }
 
+function bool IsHalloween()
+{
+    // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
+    if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
+    return Level.Month == 10 && Level.Day == 31;
+}
+
 function bool IsFridayThe13th()
 {// idk what we would use this for, giving the player "bad luck"? lol
     return Level.DayOfWeek == 5 && Level.Day == 13;
