@@ -54,14 +54,11 @@ function CheckOfflineUpdates()
 
     if(enabled) return;// telemetry enabled, get real updates
     if(!CanShowNotification()) return;
-    if(!DateAtLeast(2024, 10, 2)) return;// don't show until Oct 2nd to be safe, especially with timezones
+    if(!DateAtLeast(2025, 6, 23)) return;// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler
 
-    if(!VersionOlderThan(VersionNumber(), 3,2,1,0)) return;// v3.2.1 doesn't need this notification
-    if(VersionIsStable() && !VersionOlderThan(VersionNumber(), 3,2,0,0)) return;// a stable branch of v3.2 doesn't need this
-
-    newsdates[0] = "2024-10-01";
-    newsheaders[0] = "v3.2 Halloween Update!";// it's supposed to be a surprise!
-    newstexts[0] = "You have Online Features disabled, so we can't know for sure, but there's a good chance that the Halloween Update has been released!";
+    newsdates[0] = "2025-06-22";
+    newsheaders[0] = "Anniversary Update!";
+    newstexts[0] = "You have Online Features disabled, so we can't know for sure, but there's a good chance that you are behind many updates!|n|nAlso happy anniversary to Deus Ex and Randomizer!";
 
     notification_url = "https://github.com/Die4Ever/deus-ex-randomizer/releases/latest";
 

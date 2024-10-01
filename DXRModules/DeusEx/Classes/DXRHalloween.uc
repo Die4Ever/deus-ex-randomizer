@@ -388,7 +388,7 @@ function MakeCosmetics()
     local NavigationPoint p;
     local Light lgt;
     local vector locs[4096];
-    local int i, num, slot;
+    local int i, num, len, slot;
     local SkyZoneInfo z;
     local #var(DeusExPrefix)Carcass carc;
 
@@ -400,25 +400,29 @@ function MakeCosmetics()
 
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
-        locs[num++] = p.Location;
+        locs[len++] = p.Location;
     }
 
     SetSeed("MakeJackOLanterns");
-    for(i=0; i<num/30; i++) {
-        slot = rng(num);
+    if(IsHalloween()) num = len/30;
+    else num = len/30 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
+    for(i=0; i<num; i++) {
+        slot = rng(len);
         SpawnJackOLantern(locs[slot]);
     }
 
     // spiderwebs near lights?
     foreach AllActors(class'Light', lgt) {
         if(lgt.Region.Zone.bWaterZone) continue;
-        locs[num++] = lgt.Location;
+        locs[len++] = lgt.Location;
     }
 
     SetSeed("MakeSpiderWebs");
     // random order gives better results
-    for(i=0; i<num/2; i++) {
-        slot = rng(num);
+    if(IsHalloween()) num = len/2;
+    else num = len/2 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
+    for(i=0; i<num; i++) {
+        slot = rng(len);
         SpawnSpiderweb(locs[slot]);
     }
 }
