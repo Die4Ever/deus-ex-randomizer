@@ -80,10 +80,6 @@ function IncreaseZoneBrightness(int brightness, ZoneInfo z)
         z.AmbientBrightness = Max(z.AmbientBrightness, 5);
         z.AmbientSaturation = Min(z.AmbientSaturation, 100);
         z.AmbientHue = 255;
-    } else if(IsOctober()) {
-        z.AmbientBrightness = Max(z.AmbientBrightness, 5);
-        z.AmbientSaturation = Min(z.AmbientSaturation, 255 - (Level.Day*155/40));// divided by 40 instead of 31 to make it weaker
-        z.AmbientHue = 255;
     }
 }
 
