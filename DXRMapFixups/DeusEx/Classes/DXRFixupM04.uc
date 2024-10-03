@@ -56,7 +56,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
-    local #var(prefix)ComputerPublic compublic;
+    local #var(injectsprefix)ComputerPublic compublic;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -285,8 +285,8 @@ function PreFirstEntryMapFixes()
                 GlowUp(key);
         }
 
-        if (#defined(injections) && VanillaMaps) {
-            compublic = Spawn(class'#var(prefix)ComputerPublic',,, vectm(741.36, 1609.34, 289.27), rotm(0, -16384, 0, 0));
+        if (VanillaMaps) {
+            compublic = #var(injectsprefix)ComputerPublic(Spawnm(class'#var(injectsprefix)ComputerPublic',,, vect(741.36, 1609.34, 298.0), rot(0, -16384, 0)));
             compublic.BulletinTag = '03_BulletinMenu'; // same content that's in M03
         }
 
