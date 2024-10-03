@@ -62,15 +62,6 @@ function PreFirstEntry()
         }
         break;
 
-    case "03_NYC_MOLEPEOPLE":
-        if (dxr.flags.settings.starting_map >= 35) {
-            foreach AllActors(class'AllianceTrigger', at, 'surrender') {
-                at.Trigger(None, None);
-                break;
-            }
-        }
-        break;
-
     case "05_NYC_UNATCOMJ12LAB":
         if(dxr.flags.settings.starting_map > 50) {
             foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
@@ -133,8 +124,21 @@ function PreFirstEntry()
 
 function PostFirstEntry()
 {
+    local AllianceTrigger at;
+
     if(IsStartMap()) {
         PostFirstEntryStartMapFixes(player(), dxr.flagbase, dxr.flags.settings.starting_map);
+    }
+
+    switch(dxr.localURL) {
+    case "03_NYC_MOLEPEOPLE":
+        if (dxr.flags.settings.starting_map >= 35) {
+            foreach AllActors(class'AllianceTrigger', at, 'surrender') {
+                at.Trigger(None, None);
+                break;
+            }
+        }
+        break;
     }
 }
 
