@@ -93,7 +93,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local AlarmUnit au;
     local vector loc;
-    local #var(injectsprefix)ComputerPublic compublic;
+    local #var(prefix)ComputerPublic compublic;
 
     local bool VanillaMaps;
 
@@ -407,7 +407,8 @@ function PreFirstEntryMapFixes()
         }
 
         if (VanillaMaps) {
-            foreach AllActors(class'#var(injectsprefix)ComputerPublic', compublic) {
+            foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
+                compublic.bCollideWorld = false;
                 compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 break;

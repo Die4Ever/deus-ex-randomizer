@@ -42,7 +42,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Terrorist miguel;
     local #var(prefix)Keypad3 kp;
     local #var(prefix)Cigarettes cigs;
-    local #var(injectsprefix)ComputerPublic compublic;
+    local #var(prefix)ComputerPublic compublic;
 
     local DXREnemies dxre;
     local int i;
@@ -172,7 +172,8 @@ function PreFirstEntryMapFixes()
                     GlowUp(k);
             }
 
-            foreach AllActors(class'#var(injectsprefix)ComputerPublic', compublic) {
+            foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
+                compublic.bCollideWorld = false;
                 compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 break;
