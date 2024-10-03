@@ -34,6 +34,7 @@ simulated function string tweakBingoDescription(string event, string desc);
 function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
+function int GetBingoMax(string event, int defaultMax, int starting_map);
 
 // for goals that can be detected as impossible by an event
 static function int GetBingoFailedEvents(string eventname, out string failed[5]);
@@ -1040,12 +1041,12 @@ function bool AddTestGoal(
     string event,
     int boardIdx,
     optional int max,
-    optional int starting_mission,
+    optional int starting_map,
     optional int missions
 )
 {
     local BingoOption option;
-    local int bingoIdx;
+    local int bingoIdx, starting_mission;
     local string desc;
     local float f;
 
@@ -1054,10 +1055,13 @@ function bool AddTestGoal(
         if (bingo_options[bingoIdx].event == event) break;
     if (bingoIdx == ArrayCount(bingo_options)) return false;
 
+    if (starting_map == 0)
+        starting_map = dxr.flags.settings.starting_map;
+    starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
+
     if (max == 0)
-        max = bingo_options[bingoIdx].max;
-    if (starting_mission == 0)
-        starting_mission = 1;
+        max = GetBingoMax(event, bingo_options[bingoIdx].max, starting_map);
+
     if (missions == 0)
         missions = bingo_options[bingoIdx].missions;
 
@@ -1210,7 +1214,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             desc = bingo_options[i].desc;
             missions = bingo_options[i].missions;
             masked_missions = missions & end_mission_mask; //Pre-mask the bingo endpoint
-            max = bingo_options[i].max;
+            max = GetBingoMax(event, bingo_options[i].max, starting_map);
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && InStr(desc, "%s") != -1) {
                 f = float(dxr.flags.bingo_scale)/100.0;

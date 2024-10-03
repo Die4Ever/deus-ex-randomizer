@@ -913,7 +913,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 3: // Airfield
         switch(bingo_event)
         {
-        case "KnowYourEnemy":
         case "SimonsAssassination":
         case "MeetInjuredTrooper2_Played":
             return start_map > 31;
@@ -954,6 +953,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "AlexCloset":
         case "TrophyHunter":
             return start_map > 41 && end_mission <= 4;
+        case "KnowYourEnemy":
+            return start_map >= 42;
         }
         break;
 

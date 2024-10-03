@@ -3143,6 +3143,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
     }
 }
 
+function int GetBingoMax(string event, int defaultMax, int starting_map)
+{
+    switch(event) {
+        case "KnowYourEnemy":
+            if (starting_map >= 32)
+                return 2;
+            if (starting_map >= 20)
+                return 4;
+        default:
+            return defaultMax;
+    }
+}
+
 function ExtendedTests()
 {
     local string helpText;
