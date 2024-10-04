@@ -12,7 +12,8 @@ enum EClothesType
     CT_Helmet,
     CT_Glasses,
     CT_DressTop,
-    CT_DressPants
+    CT_DressPants,
+    CT_DressSkirt
 };
 
 enum EGender
@@ -395,7 +396,12 @@ simulated function Clothes DefaultClothingByType(EClothesType type, bool female)
         case CT_DressTop:
             //Nicolette's top
             defClothes.tex1="DeusExCharacters.Skins.NicoletteDuClareTex1";
-            defClothes.tex2="DeusExCharacters.Skins.NicoletteDuClareTex2";
+            defClothes.tex2="";
+            break;
+        case CT_DressSkirt:
+            //Nicolette's skirt
+            defClothes.tex1="DeusExCharacters.Skins.NicoletteDuClareTex2";
+            defClothes.tex2="";
             break;
         case CT_DressPants:
             //Nicolette's pants
@@ -512,10 +518,12 @@ simulated function GenerateOverrides(bool female, EOutfitType outfit, out Textur
             ct1=FetchClothesTextures(c1);
             c2=PickRandomClothingByType(CT_DressPants,female);
             ct2=FetchClothesTextures(c2);
+            c3=PickRandomClothingByType(CT_DressSkirt,female);
+            ct3=FetchClothesTextures(c3);
             newMultis[1]=ct2.tex1; //Pants
-            newMultis[2]=ct1.tex2; //Top of miniskirt
+            newMultis[2]=ct3.tex1; //Top of miniskirt
             newMultis[3]=ct1.tex1; //Shirt
-            newMultis[4]=ct1.tex2; //Bottom of miniskirt
+            newMultis[4]=ct3.tex1; //Bottom of miniskirt
             newMultis[5]=Texture'DeusExItems.Skins.PinkMaskTex'; //Hair bob
             newMultis[6]=Texture'DeusExItems.Skins.PinkMaskTex'; //Ponytail
             break;
@@ -970,7 +978,8 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
             num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
             break;
         case LodMesh'DeusExCharacters.GFM_Dress_Carcass':
-            num += AddClothing(G_Female,CT_DressTop,carcassClass.Default.MultiSkins[3],carcassClass.Default.MultiSkins[2]); //3 is the shirt, 2 is the miniskirt (which is used in slots 2 and 4)
+            num += AddClothing(G_Female,CT_DressTop,carcassClass.Default.MultiSkins[3],None);
+            num += AddClothing(G_Female,CT_DressSkirt,carcassClass.Default.MultiSkins[2],None);
             num += AddClothing(G_Female,CT_DressPants,carcassClass.Default.MultiSkins[1],None);
             break;
         case LodMesh'DeusExCharacters.GFM_TShirtPants_Carcass':
