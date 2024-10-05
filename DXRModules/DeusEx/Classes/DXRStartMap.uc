@@ -36,7 +36,6 @@ function PreFirstEntry()
     local ElevatorMover eMover;
     local #var(DeusExPrefix)Mover dxMover;
     local Dispatcher disp;
-    local AllianceTrigger at;
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)OrdersTrigger ot;
 
