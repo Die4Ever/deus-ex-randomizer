@@ -36,7 +36,6 @@ function PreFirstEntry()
     local ElevatorMover eMover;
     local #var(DeusExPrefix)Mover dxMover;
     local Dispatcher disp;
-    local AllianceTrigger at;
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)OrdersTrigger ot;
 
@@ -58,15 +57,6 @@ function PreFirstEntry()
             }
             foreach AllActors(class'ScriptedPawn', sp, 'hostageWoman') {
                 sp.Destroy();
-            }
-        }
-        break;
-
-    case "03_NYC_MOLEPEOPLE":
-        if (dxr.flags.settings.starting_map >= 35) {
-            foreach AllActors(class'AllianceTrigger', at, 'surrender') {
-                at.Trigger(None, None);
-                break;
             }
         }
         break;
@@ -133,8 +123,21 @@ function PreFirstEntry()
 
 function PostFirstEntry()
 {
+    local AllianceTrigger at;
+
     if(IsStartMap()) {
         PostFirstEntryStartMapFixes(player(), dxr.flagbase, dxr.flags.settings.starting_map);
+    }
+
+    switch(dxr.localURL) {
+    case "03_NYC_MOLEPEOPLE":
+        if (dxr.flags.settings.starting_map >= 35) {
+            foreach AllActors(class'AllianceTrigger', at, 'surrender') {
+                at.Trigger(None, None);
+                break;
+            }
+        }
+        break;
     }
 }
 
