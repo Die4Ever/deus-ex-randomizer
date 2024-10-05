@@ -892,8 +892,10 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
     }
 }
 
-static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
+static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission, optional out int maxMax)
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
+    maxMax = MaxInt;
+
     switch(start_map/10)
     {
     case 1: // Liberty Island
@@ -905,6 +907,12 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 2: // NSF Generator
         switch(bingo_event)
         {
+        case "KnowYourEnemy":
+            if (end_mission == 2)
+                return true;
+            maxMax = 2;
+            return false;
+
         case "SubwayHostagesSaved":
             return start_map > 20;
         }
@@ -914,12 +922,18 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         switch(bingo_event)
         {
         case "KnowYourEnemy":
+            if (start_map < 32) {
+                maxMax = 2;
+                return false;
+            }
+            return true;
+
         case "SimonsAssassination":
         case "MeetInjuredTrooper2_Played":
             return start_map > 31;
 
         case "surrender": //We make the mole people NSF pre-surrendered on 35+ starts
-            return start_map >=35;
+            return start_map >= 35;
 
         case "CleanerBot_ClassDead":
         case "AlexCloset":
