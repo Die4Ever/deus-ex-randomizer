@@ -52,7 +52,7 @@ function int InitGoals(int mission, string map)
 
         if (FeatureFlag(3,3,0, "M02GeneratorRework")){
             AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
-            generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 80), rot(0,32768,-16384));
+            generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
             AddMutualExclusion(generator_alley, jock_sewer);// too easy
             AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(460,1130,1000), rot(0,32768,-16384));
             AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
