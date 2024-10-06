@@ -411,6 +411,8 @@ function PreFirstEntryMapFixes()
                 compublic.bCollideWorld = false;
                 compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
+                compublic.TextPackage = "#var(package)";
+                compublic.BulletinTag = '03_BulletinMenu';
                 break;
             }
         }

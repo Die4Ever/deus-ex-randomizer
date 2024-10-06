@@ -292,7 +292,8 @@ function PreFirstEntryMapFixes()
                 vect(741.36, 1609.34, 298.00),
                 rot(0, -16384, 0)
             ));
-            compublic.BulletinTag = '03_BulletinMenu'; // same content that's in M03
+            compublic.TextPackage = "#var(package)";
+            compublic.BulletinTag = '04_BulletinMenuUnatco';
         }
 
         //Spawn some placeholders for new item locations

@@ -1,0 +1,10 @@
+<DC=255,255,255>
+<P><B>Terrorism -- War Without Fronts</B>
+<P>
+<P>How do we fight an underground threat, one with no defined territory, base, or -- often -- known leader?  We look to military history.
+<P>
+<P>The casebook example of how to manage civil unrest is the Hamlet Evaluation System (HES) developed by the United States military during its occupation of South Vietnam in the 20th Century.  Since population centers in that country contained both Communist rebels and loyal citizens, the towns were ranked on a scale from 1 to 5, five being the safest.  The monthly reports of local commanders, useful in Vietnam for maintaining contour maps of ideology concentration, have provided many components of the UNATCO Sector Field Report.
+<P>
+<P>The modern UDU (UNATCO Deployed Unit) has been modeled on the CAP (Combined Action Platoon) deployed in Vietnam, a 15-man rifle squad responsible for a single hamlet.  CAP-protected villages typically earned a 2.95 HET score, compared to a 1.6 average in the same region.  CAP units performed in many mission roles, but they primarily worked with indigenous police to strengthen ideological ties.  Like CAP units, UNATCO teams are primarily concerned with building safe communities.
+<P>
+<P>-- Joseph Manderley, Director, UNATCO
