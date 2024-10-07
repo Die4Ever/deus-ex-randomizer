@@ -535,7 +535,7 @@ function SpawnSpiderweb(vector loc)
 
     EndTrace = loc + vector(rot) * -32;
     foreach TraceTexture(class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, loc) {
-        if ((texFlags & 1) !=0) { // 1 = PF_Invisible
+        if ((texFlags & 0x81) !=0) { // 1 = PF_Invisible, 0x80 == PF_FakeBackdrop
             return;
         }
         break;
