@@ -379,7 +379,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     local int i;
     l("MoveNextItemTo("$item@Location@Tag$")");
     // Find the next item we can process.
-    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
+    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None || MemConUnit(item) != None))
         item = item.Inventory;
 
     if(item == None) return None;
@@ -581,6 +581,7 @@ static function HateEveryone(ScriptedPawn sp, optional name except)
     local ScriptedPawn other;
     sp.ChangeAlly('Player',-1,True);
     foreach sp.AllActors(class'ScriptedPawn',other) {
+        if(IsCritter(other.class)) continue;
         if(other.Alliance != except && other.Alliance != sp.Alliance) {
             sp.ChangeAlly(other.Alliance,-1,True);
         }

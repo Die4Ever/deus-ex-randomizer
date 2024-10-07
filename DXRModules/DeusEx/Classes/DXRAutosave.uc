@@ -187,7 +187,7 @@ static function string GetSaveFailReason(DeusExPlayer player)
     }
     if( f.autosave == FixedSaves || f.autosave == UnlimitedFixedSaves ) {
         if(Computers(player.FrobTarget) == None && ATM(player.FrobTarget) == None) {
-            return "You need to have a computer highlighted to save! Good Luck!";
+            return "Saving is only allowed when a computer is highlighted! Good Luck!";
         }
     }
 
@@ -347,16 +347,20 @@ function MapAdjustments()
     local Actor a;
     local vector loc;
     local bool fixed, limited;
+    local int i;
 
     fixed = dxr.flags.autosave==FixedSaves || dxr.flags.autosave==UnlimitedFixedSaves;
     limited = dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves;
 
     if(limited) {
         SetSeed("spawn MCU");
-        if(chance_single(80)) {
+        for(i=0; i<10; i++) {
             loc = GetRandomPositionFine();
             a = Spawn(class'MemConUnit',,, loc);
-            l("MapAdjustments() spawned MCU " $ a $ " at " $ loc);
+            if(a != None) {
+                l("MapAdjustments() spawned MCU " $ a $ " at " $ loc);
+                break;
+            }
         }
     }
 }

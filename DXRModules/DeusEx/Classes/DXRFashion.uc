@@ -104,6 +104,11 @@ simulated function PreFirstEntry()
                 cr.lootableClothes=class'#var(prefix)StantonDowdCarcass';
                 break;
 
+            case "10_PARIS_CHATEAU":
+                cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(-743,677,445),rot(0,16384,0))); //In Nicolette's room
+                cr.lootableClothes=class'#var(prefix)NicoletteDuclareCarcass';
+                break;
+
             case "11_PARIS_CATHEDRAL":
                 cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(4776,-661,-827),rot(0,16328,0))); //Near Gunther's vanilla spot
                 cr.lootableClothes=class'#var(prefix)GuntherHermannCarcass';

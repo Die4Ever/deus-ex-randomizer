@@ -148,6 +148,15 @@ function PreFirstEntryMapFixes()
             light.LightBrightness=16;
             light.LightRadius=10;
 
+            //add a small spotlight from the lamp in the alley.
+            //This helps to just put a little bit of light on the generator location
+            //in the case of 0 brightness boost
+            light = DynamicLight(Spawnm(class'DynamicLight',,, vect(-645,1760,310),rot(-10000,-16384,0)));
+            light.LightType=LT_Steady;
+            light.LightEffect=LE_Spotlight;
+            light.LightBrightness=32;
+            light.LightRadius=64;
+
             // fix collision with the fence https://github.com/Die4Ever/deus-ex-randomizer/issues/665
             foreach AllActors(class'DeusExMover', d) {
                 if(d.Event == 'BlewFence') break;
