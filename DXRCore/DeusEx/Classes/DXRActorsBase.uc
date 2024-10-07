@@ -379,7 +379,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     local int i;
     l("MoveNextItemTo("$item@Location@Tag$")");
     // Find the next item we can process.
-    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
+    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None || MemConUnit(item) != None))
         item = item.Inventory;
 
     if(item == None) return None;
