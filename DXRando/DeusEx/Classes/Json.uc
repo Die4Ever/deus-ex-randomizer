@@ -1,9 +1,10 @@
 //////////////////////////////////////////////////////////////////////
-//                    JSON Handling for UnrealScript                //
+//                  JSON Handling for UnrealScript                  //
 //                                                                  //
-//                 Written by Die4Ever and TheAstropath             //
+//               Written by Die4Ever and TheAstropath               //
 //                                                                  //
 //  Report issues with this class at https://mods4ever.com/discord  //
+//        or https://github.com/Die4Ever/deus-ex-randomizer         //
 //////////////////////////////////////////////////////////////////////
 
 class Json extends Object transient;
