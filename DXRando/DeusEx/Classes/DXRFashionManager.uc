@@ -251,10 +251,10 @@ function InitClothes(bool giveAll)
         IngestCarcass(class'UNATCOCloneAugTough1Carcass');
         IngestCarcass(class'MrHCarcass');
         IngestCarcass(class'BarDancerCarcass');
-        IngestCarcass(class'Hooker1Carcass');
-        IngestCarcass(class'Hooker2Carcass');
-        IngestCarcass(class'NicoletteDuclareCarcass');
-        IngestCarcass(class'SarahMeadCarcass');
+        IngestCarcass(class'#var(prefix)Hooker1Carcass');
+        IngestCarcass(class'#var(prefix)Hooker2Carcass');
+        IngestCarcass(class'#var(prefix)NicoletteDuclareCarcass');
+        IngestCarcass(class'#var(prefix)SarahMeadCarcass');
 
         //New helmets that can be randomly given to enemies (but aren't present on their default carcasses)
         AddClothing(G_Male,CT_Helmet,Texture'NSFHelmet',None);
