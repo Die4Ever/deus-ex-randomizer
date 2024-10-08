@@ -359,6 +359,7 @@ function CreateAnsweringMachineConversation(Actor tad)
 function PostFirstEntryMapFixes()
 {
     local bool RevisionMaps;
+    local Female2 female;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -380,6 +381,14 @@ function PostFirstEntryMapFixes()
             Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
         }
 
+        break;
+    case "02_NYC_BAR":
+        foreach AllActors(class'Female2', female, 'Female2') {
+            if (female.bindName == "BarWoman1") {
+                female.FamiliarName = "Meg";
+                break;
+            }
+        }
         break;
     }
 }
