@@ -296,7 +296,7 @@ function PreFirstEntryMapFixes()
         case "08_NYC_UNDERGROUND":
             foreach AllActors(class'#var(prefix)LaserTrigger',lt){
                 if (lt.Location.Z < -574 && lt.Location.Z > -575){
-                    lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in missions 2 and 4, so you can crouch under
+                    lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
                 }
             }
     }

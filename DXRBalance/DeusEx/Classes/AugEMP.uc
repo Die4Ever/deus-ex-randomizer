@@ -4,7 +4,7 @@ function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
     // DXRando: AugEMP makes you immune to Scramble Grenades
-    default.Description = "Nanoscale EMP generators partially protect individual nanites and reduce bioelectrical drain by canceling incoming pulses."
+    default.Description = "Nanoscale EMP generators partially protect individual nanites and reduce bioelectrical drain by canceling incoming pulses.  "
         $ "All levels make you immune to Scramble Grenades."
         $ "|n|nTECH ONE: Damage from EMP attacks is reduced slightly."
         $ "|n|nTECH TWO: Damage from EMP attacks is reduced moderately."

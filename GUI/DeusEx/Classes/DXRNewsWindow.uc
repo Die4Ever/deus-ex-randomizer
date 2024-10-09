@@ -9,6 +9,7 @@ function CreateControls()
 
     news = DXRNews(winClient.NewChild(class'DXRNews'));
     news.CreateNews(player, 0, 0, ClientWidth, ClientHeight);
+    news.SetBackgroundStyle(DSTY_Normal); // update notification window has a solid black background, because it can appear on top of other windows
 }
 
 function ProcessAction(String actionKey)

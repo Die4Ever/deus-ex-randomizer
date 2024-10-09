@@ -56,6 +56,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
+    local #var(prefix)LaserTrigger lt;
+    local #var(prefix)Datacube dc;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -364,6 +366,13 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+        foreach AllActors(class'#var(prefix)Datacube', dc) {
+            if (dc.textTag == '04_Datacube03') {
+                dc.TextPackage = "#var(package)";
+                break;
+            }
+        }
+
         break;
 
     case "04_NYC_SMUG":
@@ -377,6 +386,14 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
+        break;
+
+    case "04_NYC_UNDERGROUND":
+        foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+            if (lt.Location.Z < -574 && lt.Location.Z > -575){
+                lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+            }
+        }
         break;
     }
 }
