@@ -43,7 +43,7 @@ function AnyEntry()
     info("health: "$p.health$", HealthLegLeft: "$p.HealthLegLeft$", HealthLegRight: "$p.HealthLegRight$", HealthTorso: "$p.HealthTorso$", HealthHead: "$p.HealthHead$", HealthArmLeft: "$p.HealthArmLeft$", HealthArmRight: "$p.HealthArmRight);
     info("renderer: " $ GetConfig("Engine.Engine", "GameRenderDevice"));
 
-    CheckOfflineUpdates();
+    if(!enabled) CheckOfflineUpdates();
 }
 
 function CheckOfflineUpdates()
@@ -51,15 +51,28 @@ function CheckOfflineUpdates()
     local DXRNews news;
     local DXRNewsWindow newswindow;
     local DeusExRootWindow r;
+    local string s;
 
-    if(enabled) return;// telemetry enabled, get real updates
+    if(newsdates[0]!="") return;
     if(!CanShowNotification()) return;
-    if(!DateAtLeast(2025, 6, 23)) return;// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler
 
-    newsdates[0] = "2025-06-22";
-    newsheaders[0] = "Anniversary Update!";
-    newstexts[0] = "You have Online Features disabled, so we can't know for sure, but there's a good chance that you are behind many updates!|n|nAlso happy anniversary to Deus Ex and Randomizer!";
+    if(DateAtLeast(2052, 1, 1)) {
+        newsdates[0] = "2052-01-01";
+        newsheaders[0] = "Is Deus Ex Real Life Yet?";
+        newstexts[0] = "Thank you for still playing this mod in the year " $ Level.Year $ ", but you're probably extremely behind on updates. The project is open source, so even if we have moved on, maybe someone else has taken over?";
+    }
+    else if(DateAtLeast(2025, 6, 23)) {// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler
+        newsdates[0] = "2025-06-22";
+        newsheaders[0] = "Anniversary Update!";
+        newstexts[0] = "You have Online Features disabled or the server is down, so we can't know for sure, but there's a good chance that you are behind many updates!|n|nAlso happy anniversary to Deus Ex and Randomizer!";
+    } else {
+        return;
+    }
 
+    s = "offline " $ Level.Year @ Level.Month @ (Level.Day/7);
+    if(s == last_notification) return;
+    last_notification = s;
+    SaveConfig();
     notification_url = "https://github.com/Die4Ever/deus-ex-randomizer/releases/latest";
 
     foreach AllObjects(class'DXRNews', news) {
@@ -164,6 +177,12 @@ function int GetAddrFromCache()
 {
     log(Self$": got addr from cache " $ cache_addr );
     return cache_addr;
+}
+
+function HTTPError(int Code)
+{
+    if(newsdates[0]=="")
+        CheckOfflineUpdates();
 }
 
 function ReceivedData(string data)

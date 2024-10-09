@@ -50,31 +50,17 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
         AddGoalActor(goal, 4, 'AmbientSoundTriggered1', PHYS_None);
 
-        if (FeatureFlag(3,3,0, "M02GeneratorRework")){
-            AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
-            generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
-            AddMutualExclusion(generator_alley, jock_sewer);// too easy
-            AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(460,1130,1000), rot(0,32768,-16384));
-            AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
-            generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1695,784,-210), rot(32768,-32768,0));
-            AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
-            //This location works now (with the rework), but we can wait on enabling it until we feel like we want to ruin runs
-            //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1340, -700, 575), rot(32768, 0, 32768)); //Near the ramp
-            //AddGoalLocation("02_NYC_WAREHOUSE", "4th Floor", GOAL_TYPE1, vect(390,-660,832), rot(32768,0,0)); //Among the boxes
+        AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
+        generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
+        AddMutualExclusion(generator_alley, jock_sewer);// too easy
+        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(460,1130,1000), rot(0,32768,-16384));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
+        generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1695,784,-210), rot(32768,-32768,0));
+        AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
+        //This location works now (with the rework), but we can wait on enabling it until we feel like we want to ruin runs
+        //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1340, -700, 575), rot(32768, 0, 32768)); //Near the ramp
+        //AddGoalLocation("02_NYC_WAREHOUSE", "4th Floor", GOAL_TYPE1, vect(390,-660,832), rot(32768,0,0)); //Among the boxes
 
-        } else {
-            AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(576.000000, -512.000000, 71.999939), rot(32768, -16384, 0));
-            generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-640.000000, 1760.000000, 128.000000), rot(0,32768,-16384));
-            AddMutualExclusion(generator_alley, jock_sewer);// too easy
-            AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(368.000000, 1248.000000, 992.000000), rot(0,32768,-16384));
-            AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(224, -512, -192), rot(0,-16384,-16384));
-            generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1600.000000, 784.000000, -256.000000), rot(32768,-32768,0));
-
-            // pawns run into these and break them
-            //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
-            //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
-
-        }
         AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
 
 
@@ -254,7 +240,7 @@ function PreFirstEntryMapFixes()
     if(dxr.localURL=="02_NYC_WAREHOUSE") {
         ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK? maybe better than creating a new subclass for DynamicSoundTriggered and then doing replacements
 
-        if (!RevisionMaps && FeatureFlag(3,3,0, "M02GeneratorRework")){
+        if (!RevisionMaps){
             foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Generator'){
                 dxm.SetCollision(false,false,false);
                 RemoveMoverPrePivot(dxm);
@@ -293,7 +279,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if (g.name=="Generator"){
-        if (!RevisionMaps && FeatureFlag(3,3,0, "M02GeneratorRework")){
+        if (!RevisionMaps){
             if (Loc.Name=="Warehouse" || Loc.Name=="Sewer" || Loc.Name=="3rd Floor" || Loc.Name=="4th Floor"){ //These ones lie horizontal
                 rad=175;
                 height=100;
