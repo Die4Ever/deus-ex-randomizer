@@ -82,6 +82,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local AlarmUnit au;
     local vector loc;
+    local #var(prefix)ComputerPublic compublic;
 
     local bool VanillaMaps;
 
@@ -390,6 +391,17 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
             if (ot.ordersTag=='CarterAtWindow'){
                 ot.Orders='RunningTo';
+                break;
+            }
+        }
+
+        if (VanillaMaps) {
+            foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
+                compublic.bCollideWorld = false;
+                compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
+                compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
+                compublic.TextPackage = "#var(package)";
+                compublic.BulletinTag = '03_BulletinMenu';
                 break;
             }
         }

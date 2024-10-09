@@ -42,6 +42,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)ComputerPublic compublic;
+    local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -52,6 +54,8 @@ function PreFirstEntryMapFixes()
     local class<DXRInformationDevices> npClass;
     npClass = class'DXRInformationDevices';
 #endif
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -146,6 +150,17 @@ function PreFirstEntryMapFixes()
 
         //To change it so Manderley will brief you if you talked to Sam and Jaime (instead of actually getting equipment from Sam)
         SetTimer(1.0, True);
+
+        if (VanillaMaps) {
+            foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
+                compublic.bCollideWorld = false;
+                compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
+                compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
+                compublic.TextPackage = "#var(package)";
+                compublic.BulletinTag = '01_BulletinMenu';
+                break;
+            }
+        }
 
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
