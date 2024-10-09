@@ -57,6 +57,7 @@ function PreFirstEntryMapFixes()
     local Teleporter tel;
     local DynamicTeleporter dtel;
     local #var(prefix)LaserTrigger lt;
+    local #var(prefix)Datacube dc;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -364,6 +365,13 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+
+        foreach AllActors(class'#var(prefix)Datacube', dc) {
+            if (dc.textTag == '04_Datacube03') {
+                dc.TextPackage = "#var(package)";
+                break;
+            }
+        }
 
         break;
 
