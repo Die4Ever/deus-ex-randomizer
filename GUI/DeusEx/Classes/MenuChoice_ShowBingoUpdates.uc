@@ -2,6 +2,7 @@ class MenuChoice_ShowBingoUpdates extends DXRMenuUIChoiceInt;
 
 static function bool IsEnabled(DXRFlags f)
 {
+    if(f.IsHordeMode()) return false;
     return (default.value==2) ||
            (default.value==1 && !f.IsReducedRando() && !f.IsSpeedrunMode()) ||
            (default.value==1 && f.settings.bingo_win>0);
