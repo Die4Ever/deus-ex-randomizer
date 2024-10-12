@@ -11,6 +11,11 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'trap_door'){
             DestroyMover(dxm);
         }
+
+        if (!dxr.flags.IsZeroRando()) {
+            class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot or Augbot.";
+        }
+
         break;
     }
 }
