@@ -12,8 +12,8 @@ function PreFirstEntryMapFixes()
             DestroyMover(dxm);
         }
 
-        if (!dxr.flags.IsZeroRando()) {
-            class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot or Augbot.";
+        if (dxr.flags.moresettings.empty_medbots > 0) {
+            class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot or AugBot.";
         }
 
         break;
