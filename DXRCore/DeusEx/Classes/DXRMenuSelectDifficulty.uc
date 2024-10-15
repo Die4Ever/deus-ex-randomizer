@@ -87,11 +87,9 @@ function BindControls(optional string action)
     EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave);
     EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave);
     EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave);
-    if(f.IsOctoberUnlocked()) {
-        EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
-        EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
-        EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
-    }
+    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
+    EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
+    EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
     EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave);
 #endif
 

@@ -181,12 +181,10 @@ function AddDXRCredits(CreditsWindow cw)
 {
     local DXRFashionManager f;
 
-    if (IsOctoberUnlocked()) {
-        f=class'DXRFashionManager'.static.GiveItem(player());
+    f=class'DXRFashionManager'.static.GiveItem(player());
 
-        cw.PrintHeader("Fashion");
-        cw.PrintText("Number of Clothes in Closet:"@f.numClothes);
-        cw.PrintText("Number of Outfit Changes:"@f.GetNumOutfitChanges(player()));
-        cw.PrintLn();
-    }
+    cw.PrintHeader("Fashion");
+    cw.PrintText("Number of Clothes in Closet:"@f.numClothes);
+    cw.PrintText("Number of Outfit Changes:"@f.GetNumOutfitChanges(player()));
+    cw.PrintLn();
 }

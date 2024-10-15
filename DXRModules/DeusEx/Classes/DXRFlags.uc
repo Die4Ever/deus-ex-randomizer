@@ -12,6 +12,7 @@ const RandoMedium = 9;
 const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
 const ZeroRandoPlus = 12;
+const OneItemMode = 13;
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -703,11 +704,11 @@ function string DifficultyName(int diff)
 function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
     if(slot--==0) return 0;
-    if(IsOctoberUnlocked() && slot--==0) return HalloweenMode;
+    if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
-    if(IsOctoberUnlocked() && slot--==0) return HalloweenEntranceRando;
-    if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloween;
-    if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloweenEntranceRando;
+    if(slot--==0) return HalloweenEntranceRando;
+    if(slot--==0) return WaltonWareHalloween;
+    if(slot--==0) return WaltonWareHalloweenEntranceRando;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
     if(!VersionIsStable()) {
@@ -720,8 +721,9 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return RandoMedium;
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return SeriousSam;
-    if(IsOctoberUnlocked() && slot--==0) return HordeZombies;
+    if(slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
+    if(slot--==0) return OneItemMode;
     return 999999;
 }
 
@@ -738,8 +740,7 @@ function string GameModeName(int gamemode)
     case HordeMode:
         return "Horde Mode";
     case HordeZombies:
-        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
-        break;
+        return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
 #endif
     case RandoLite:
         return "Randomizer Lite";
@@ -754,8 +755,7 @@ function string GameModeName(int gamemode)
     case SpeedrunMode:
         return "Speedrun Mode";
     case WaltonWareHalloween:
-        if(IsOctoberUnlocked()) return "WaltonWare Halloween";
-        break;
+        return "WaltonWare Halloween";
     case WaltonWare:
         return "WaltonWare";
 #ifdef injections
@@ -769,8 +769,9 @@ function string GameModeName(int gamemode)
     case WaltonWarex3:
         return "WaltonWare x3";
     case HalloweenMode:
-        if(IsOctoberUnlocked()) return "Halloween Mode";// maybe needs a better name
-        break;
+        return "Halloween Mode";// maybe needs a better name
+    case OneItemMode:
+        return "One Item Mode";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -821,6 +822,11 @@ function bool IsWaltonWareHardcore()
 function bool IsHalloweenMode()
 {
     return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
+}
+
+function bool IsOneItemMode()
+{
+    return gamemode == OneItemMode;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
