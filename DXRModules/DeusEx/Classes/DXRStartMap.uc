@@ -907,12 +907,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 2: // NSF Generator
         switch(bingo_event)
         {
-        case "KnowYourEnemy":
-            if (end_mission == 2)
-                return true;
-            maxMax = 2;
-            return false;
-
         case "SubwayHostagesSaved":
             return start_map > 20;
         }
@@ -921,13 +915,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 3: // Airfield
         switch(bingo_event)
         {
-        case "KnowYourEnemy":
-            if (start_map < 32) {
-                maxMax = 2;
-                return false;
-            }
-            return true;
-
         case "SimonsAssassination":
         case "MeetInjuredTrooper2_Played":
             return start_map > 31;
