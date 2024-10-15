@@ -20,6 +20,7 @@ const Ironman = 5; // never autosaves, TODO: maybe some fancy logic to autosave 
 const LimitedSaves = 6; // need an item to save
 const FixedSaves = 7; // can only save at computers, AND need an item
 const UnlimitedFixedSaves = 8; // need computer, but no item
+const FixedSavesExtreme = 9; // can only save at computers, and need TWO MCUs
 
 function CheckConfig()
 {
@@ -44,8 +45,7 @@ function PreFirstEntry()
         if(dxr.flags.autosave > 0 && dxr.flags.autosave < Ironman) {
             NeedSave();
         }
-        else if((dxr.flags.autosave == LimitedSaves || dxr.flags.autosave == FixedSaves || dxr.flags.autosave == UnlimitedFixedSaves)
-               && dxr.flagbase.GetInt('Rando_lastmission')==0)
+        else if((IsFixedSaves() || IsLimitedSaves()) && dxr.flagbase.GetInt('Rando_lastmission')==0)
         {
             // save at the start
             NeedSave();
@@ -170,22 +170,30 @@ function Tick(float delta)
 static function string GetSaveFailReason(DeusExPlayer player)
 {
     local DXRFlags f;
+    local DXRAutosave m;
     local DeusExPickup item;
 
-    f = Human(player).GetDXR().flags;
-    if( f == None ) return "";
+    m = DXRAutosave(class'DXRAutosave'.static.Find());
+    if( m == None ) return "";
+    f = m.dxr.flags;
 
     if( f.autosave == Hardcore || f.autosave == Ironman ) {
         return "Manual saving is not allowed in this game mode! Good Luck!";
     }
 
-    if( f.autosave == LimitedSaves || f.autosave == FixedSaves ) {
+    if( f.autosave == FixedSavesExtreme ) {
+        item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
+        if(item == None || item.NumCopies <= 1) {
+            return "You need 2 Memory Containment Units to save! Good Luck!";
+        }
+    }
+    else if( m.IsLimitedSaves() ) {
         item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
         if(item == None || item.NumCopies <= 0) {
             return "You need a Memory Containment Unit to save! Good Luck!";
         }
     }
-    if( f.autosave == FixedSaves || f.autosave == UnlimitedFixedSaves ) {
+    if( m.IsFixedSaves() ) {
         if(Computers(player.FrobTarget) == None && ATM(player.FrobTarget) == None) {
             return "Saving is only allowed when a computer is highlighted! Good Luck!";
         }
@@ -237,19 +245,25 @@ static function bool AllowManualSaves(DeusExPlayer player, optional bool checkOn
 
 static function UseSaveItem(DeusExPlayer player)
 {
-    local DXRFlags f;
+    local DXRAutosave m;
     local DeusExPickup item;
 
-    f = Human(player).GetDXR().flags;
-    if( f == None ) return;
+    m = DXRAutosave(class'DXRAutosave'.static.Find());
+    if( m == None ) return;
 
-    if( f.autosave != LimitedSaves && f.autosave != FixedSaves ) return;
+    if( !m.IsLimitedSaves() ) return;
 
     item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
     if(item == None) return;
 
-    player.ClientMessage("You used " $ item.ItemArticle @ item.ItemName $ " to save.");
-    item.UseOnce();
+    if(m.dxr.flags.autosave == FixedSavesExtreme) {
+        player.ClientMessage("You used 2 " $ item.ItemName $ "s to save.");
+        item.UseOnce();
+        item.UseOnce();
+    } else {
+        player.ClientMessage("You used " $ item.ItemArticle @ item.ItemName $ " to save.");
+        item.UseOnce();
+    }
 }
 
 function doAutosave()
@@ -337,22 +351,28 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
 
-    if(dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves) { // Limited Saves
+    if(IsLimitedSaves()) { // Limited Saves
         GiveItem(p, class'MemConUnit', 2);// start with 2?
     }
+}
+
+function bool IsFixedSaves()
+{
+    return dxr.flags.autosave==FixedSaves || dxr.flags.autosave==UnlimitedFixedSaves || dxr.flags.autosave==FixedSavesExtreme;
+}
+
+function bool IsLimitedSaves()
+{
+    return dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves || dxr.flags.autosave==FixedSavesExtreme;
 }
 
 function MapAdjustments()
 {
     local Actor a;
     local vector loc;
-    local bool fixed, limited;
     local int i;
 
-    fixed = dxr.flags.autosave==FixedSaves || dxr.flags.autosave==UnlimitedFixedSaves;
-    limited = dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves;
-
-    if(limited) {
+    if(IsLimitedSaves()) {
         SetSeed("spawn MCU");
         for(i=0; i<10; i++) {
             loc = GetRandomPositionFine();

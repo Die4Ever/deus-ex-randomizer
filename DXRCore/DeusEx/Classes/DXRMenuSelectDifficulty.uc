@@ -90,6 +90,7 @@ function BindControls(optional string action)
     EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
     EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
     EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
+    EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave);
     EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave);
 #endif
 
