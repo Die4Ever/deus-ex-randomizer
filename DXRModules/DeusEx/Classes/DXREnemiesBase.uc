@@ -90,15 +90,57 @@ function AddRandomEnemyType(class<ScriptedPawn> t, float c, int faction)
 
 function ReadConfig()
 {
-    local int i;
-    local float total, totals[16];
+    local int i, nums[32], nummelees[8], totalweaps, totalmelees;
+    local float total, f, c, totals[16];
     local class<Actor> a;
+    local DeusExWeapon w;
+
+    // count existing in level
+    foreach AllActors(class'DeusExWeapon', w) {
+        if(PlayerPawn(w.Owner)!=None) continue;
+        if(ScriptedPawn(w.Owner)!=None && ScriptedPawn(w.Owner).bInvincible) continue;
+        for(i=0; i < ArrayCount(_randommelees); i++) {
+            if(_randommelees[i].type == w.class) {
+                nummelees[i]++;
+                totalmelees++;
+            }
+        }
+        for(i=0; i < ArrayCount(_randomweapons); i++) {
+            if(_randomweapons[i].type == w.class) {
+                nums[i]++;
+                totalweaps++;
+            }
+        }
+    }
+
+    if(totalmelees==0) {
+        for(i=0; i < ArrayCount(_randommelees); i++) {
+            if(_randommelees[i].type == class'#var(prefix)WeaponCombatKnife') {
+                nummelees[i]++;
+                totalmelees++;
+                break;
+            }
+        }
+    }
+    if(totalweaps==0) {
+        for(i=0; i < ArrayCount(_randomweapons); i++) {
+            if(_randomweapons[i].type == class'#var(prefix)WeaponPistol') {
+                nums[i]++;
+                totalweaps++;
+                break;
+            }
+        }
+    }
 
     total=0;
+    f = float(dxr.flags.moresettings.enemies_weapons) / 100.0;
     for(i=0; i < ArrayCount(_randommelees); i++) {
         if( _randommelees[i].type != None ) {
             _randommelees[i].chance = rngrangeseeded(_randommelees[i].chance, min_rate_adjust, max_rate_adjust, _randommelees[i].type.name) ** 2;
-            total += _randommelees[i].chance;
+            c = _randommelees[i].chance * f;
+            c += float(nummelees[i]) / float(totalmelees) * (1.0-f) * 100.0;
+            _randommelees[i].chance = c;
+            total += c;
         }
     }
     for(i=0; i < ArrayCount(_randommelees); i++) {
@@ -111,12 +153,15 @@ function ReadConfig()
     for(i=0; i < ArrayCount(_randomweapons); i++) {
         if( _randomweapons[i].type != None ) {
             _randomweapons[i].chance = rngrangeseeded(_randomweapons[i].chance, min_rate_adjust, max_rate_adjust, _randomweapons[i].type.name) ** 2;
-            total += _randomweapons[i].chance;
+            c = _randomweapons[i].chance * f;
+            c += float(nums[i]) / float(totalweaps) * (1.0-f) * 100.0;
+            _randomweapons[i].chance = c;
+            total += c;
         }
     }
     for(i=0; i < ArrayCount(_randomweapons); i++) {
         if(_randomweapons[i].type != None) {
-            _randomweapons[i].chance *= 100.0/total;
+            _randomweapons[i].chance *= 100.0 / total;
         }
     }
 
@@ -511,6 +556,7 @@ function class<Weapon> GiveRandomMeleeWeaponClass(Pawn p, optional bool allow_du
         }
     }
 
+    chance_remaining(r);
     return wclass;
 }
 
