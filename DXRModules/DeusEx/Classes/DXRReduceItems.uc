@@ -126,7 +126,8 @@ function OneItemMode()
 {
     local Inventory item, nextItem, items[1024];
     local #var(prefix)Containers d;
-    local class<Inventory> contents[1024], newclass;
+    local class<Actor> contents[1024];
+    local class<Inventory> newclass;
     local #var(DeusExPrefix)Carcass carc;
     local int num, numcontents, i, slot;
     local vector loc;
@@ -150,9 +151,11 @@ function OneItemMode()
     }
 
     if(num<=1) return;
-    slot = rng(num+numcontents);
-    if(slot<num) newclass = items[slot].class;
-    else newclass = contents[slot-num];
+    while(newclass==None) {
+        slot = rng(num+numcontents);
+        if(slot<num) newclass = items[slot].class;
+        else newclass = class<Inventory>(contents[slot-num]);
+    }
 
     for(i=0; i<num; i++) {
         if(i==slot) continue;
@@ -378,7 +381,6 @@ function bool _ReduceSpawnInContainer(#var(prefix)Containers d, class<Inventory>
 function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
 {
     local #var(prefix)Containers d;
-    local class<Inventory> contents;
 
     SetSeed( "ReduceSpawnsInContainers " $ classname.Name );
 

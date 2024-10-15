@@ -177,6 +177,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -251,6 +252,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -324,6 +326,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -397,6 +400,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -470,6 +474,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -505,6 +510,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.startinglocations = 0;
         settings.goals = 0;
         settings.dancingpercent = 0;
+        settings.enemiesrandomized *= 0.8;
+        moresettings.enemies_weapons *= 0.8;
     }
     else if(IsReducedRando()) {
         settings.doorsmode = 0;
@@ -516,6 +523,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.deviceshackable = 0;
         settings.infodevices = 0;
         settings.enemiesrandomized = 0;
+        moresettings.enemies_weapons = 0;
         settings.hiddenenemiesrandomized = 0;
         settings.enemiesshuffled = 0;
         settings.enemies_nonhumans = 0;

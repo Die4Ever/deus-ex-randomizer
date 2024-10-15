@@ -82,6 +82,7 @@ struct MoreFlagsSettings{
     var int newgameplus_curve_scalar;
     var int empty_medbots;
     var int camera_mode;
+    var int enemies_weapons;
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -353,6 +354,7 @@ simulated function string BindFlags(int mode, optional string str)
     if(!FlagInt('Rando_enemystats', settings.enemystats, mode, str) && mode==Reading) {
         settings.enemystats = settings.enemiesrandomized * 2;
     }
+    FlagInt('Rando_enemies_weapons', moresettings.enemies_weapons, mode, str);
     FlagInt('Rando_hiddenenemiesrandomized', settings.hiddenenemiesrandomized, mode, str);
     FlagInt('Rando_enemiesshuffled', settings.enemiesshuffled, mode, str);
     FlagInt('Rando_infodevices', settings.infodevices, mode, str);
@@ -604,6 +606,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Splits Overlay";
         case 'Rando_clothes_looting':
             return "Clothes Looting";
+        case 'Rando_enemies_weapons':
+            return "Enemy weapons rando";
         default:
             err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
@@ -680,6 +684,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_grenadeswap':
         case 'Rando_newgameplus_curve_scalar':
         case 'Rando_bot_weapons':
+        case 'Rando_enemies_weapons':
             return val$"%";
 
         case 'Rando_enemyrespawn':

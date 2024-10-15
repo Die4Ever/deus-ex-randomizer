@@ -636,6 +636,7 @@ function class<Inventory> _GetRandomUtilityItem()
         if( _randomitems[i].type == None ) continue;
         if( chance( _randomitems[i].chance, r ) ) iclass = _randomitems[i].type;
     }
+    chance_remaining(r);
     return iclass;
 }
 
