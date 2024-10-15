@@ -61,6 +61,7 @@ function int SendText( coerce string Str )
 function HTTPError(int Code)
 {
     log(Self$": HTTPError: " $ Code);
+    module.HTTPError(Code);
     Super.HTTPError(Code);
 }
 
@@ -116,7 +117,10 @@ function Done()
         ServerIpAddr.Addr = module.GetAddrFromCache();
     }
     running = false;
-    if( ServerIpAddr.Addr == 0 ) return;
+    if( ServerIpAddr.Addr == 0 ) {
+        module.HTTPError(0);
+        return;
+    }
     i = Len(content[start]);
     if( i > 0 ) {
         log(Self$": coming back for "$i$" more!");

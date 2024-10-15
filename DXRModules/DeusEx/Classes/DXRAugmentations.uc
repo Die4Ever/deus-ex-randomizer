@@ -330,7 +330,15 @@ simulated function RandoAug(Augmentation a)
         add_desc = "DXRando: You can see characters, goals, items, datacubes, vehicles, crates, and electronic devices through walls. ";
     }
     else if( #var(prefix)AugLight(a) != None ) {
-        add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
+        if(dxr.flags.IsHalloweenMode()) {
+            add_desc = "DXRando: The light costs more energy in Halloween modes. Can be upgraded to level 2 which costs no energy and is brighter. ";
+        } else {
+            if(a.CurrentLevel<1) {
+                a.CurrentLevel = 1;
+                a.PostPostBeginPlay();
+            }
+            add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
+        }
     }
     else if( #var(prefix)AugAqualung(a) != None ) {
         return;
@@ -353,7 +361,7 @@ simulated function RandoAug(Augmentation a)
         // don't randomize vision aug strength and instead randomize its energy usage
         // so it can be used for speedrun strategies with specific spots to check from
         // aug muscle picking up heavy items is confusing when the strength is randomized, just randomize the energy cost
-        // synth heart, can't randomize its strength, just randomize energy cost
+        // synth heart in non-vanilla, can't randomize its strength, just randomize energy cost
         SetGlobalSeed("RandoAug " $ a.class.name);
         a.energyRate = int(rngrange(a.default.energyRate, 0.5, 1.5));
         aug_value_wet_dry = 0;
@@ -464,6 +472,11 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         word = "Energy Usage";
         shortDisplay=Max(int(val * 100.0), 0) $ "%";
         return shortDisplay;
+    }
+    else if( a.Class == class'#var(prefix)AugLight') {
+        word = "";
+        shortDisplay = "";
+        return "";
     }
 
 #ifdef gmdx

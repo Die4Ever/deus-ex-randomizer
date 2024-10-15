@@ -357,7 +357,7 @@ event Bump( Actor Other )
     } else if(Decoration(Other) != None) {
         BumpDamage(Other, 55, 1000);
     } else if(ScriptedPawn(Other) != None) {
-        BumpDamage(Other, 1, 20000);
+        BumpDamage(Other, 1, 70000);
     } else if(DamageProxy(Other) != None) {
         return;
     }
@@ -428,6 +428,7 @@ defaultproperties
     CollisionHeight=60
     proxyHeight=12
     Mass=1000
+    Buoyancy=1005
     WalkSound=Sound'DeusExSounds.Robot.MilitaryBotWalk'
     Health=1800
     HealthHead=1800

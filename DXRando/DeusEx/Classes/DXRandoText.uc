@@ -23,6 +23,9 @@ class DXRandoText extends object abstract;
 #exec DEUSEXTEXT IMPORT FILE=Text\10_HostelBulletin01.txt
 #exec DEUSEXTEXT IMPORT FILE=Text\10_HostelBulletin02.txt
 
+#exec DEUSEXTEXT IMPORT FILE=Text\04_Datacube03.txt
+
+// UNATCO public terminals
 #exec DEUSEXTEXT IMPORT FILE=Text\01_BulletinMenu.txt
 #exec DEUSEXTEXT IMPORT FILE=Text\03_BulletinMenu.txt
 #exec DEUSEXTEXT IMPORT FILE=Text\04_BulletinMenuUnatco.txt

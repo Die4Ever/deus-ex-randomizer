@@ -57,7 +57,7 @@ function HealPart(out int points, out int amt)
 {
     local int max;
 
-    max = Int(LevelValues[CurrentLevel]);
+    max = Int(GetAugLevelValue());
     HealPartMax(points, amt, max);
 }
 
@@ -71,7 +71,7 @@ function HealPartMax(out int points, out int amt, int max)
     local int spill;
 
     max = Min(max, Player.default.HealthTorso);
-    max = Min(max, LevelValues[CurrentLevel]);
+    max = Min(max, GetAugLevelValue());
 
     if(points >= max) return;
     if(amt <= 0) return;
@@ -89,7 +89,7 @@ function HealPartMax(out int points, out int amt, int max)
 function bool NeedsHeal()
 {
     local int i;
-    i = Int(LevelValues[CurrentLevel]);
+    i = Int(GetAugLevelValue());
     return Player.HealthHead < Min(i, Player.default.HealthHead)
         || Player.HealthTorso < Min(i, Player.default.HealthTorso)
         || Player.HealthLegRight < Min(i, Player.default.HealthLegRight)

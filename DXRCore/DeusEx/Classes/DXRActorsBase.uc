@@ -379,7 +379,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     local int i;
     l("MoveNextItemTo("$item@Location@Tag$")");
     // Find the next item we can process.
-    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
+    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None || MemConUnit(item) != None))
         item = item.Inventory;
 
     if(item == None) return None;
@@ -581,6 +581,7 @@ static function HateEveryone(ScriptedPawn sp, optional name except)
     local ScriptedPawn other;
     sp.ChangeAlly('Player',-1,True);
     foreach sp.AllActors(class'ScriptedPawn',other) {
+        if(IsCritter(other.class)) continue;
         if(other.Alliance != except && other.Alliance != sp.Alliance) {
             sp.ChangeAlly(other.Alliance,-1,True);
         }
@@ -1718,15 +1719,22 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
-function RemoveDXMoverPrePivot(#var(DeusExPrefix)Mover dxm)
+function RemoveMoverPrePivot(Mover m)
 {
     local vector pivot;
     local rotator r;
+    local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
 
-    pivot = dxm.PrePivot >> dxm.Rotation;
-    dxm.BasePos = dxm.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
-    dxm.PrePivot=vect(0,0,0);
-    dxm.SetLocation(dxm.BasePos);
+    AbCollideActors = m.bCollideActors;
+    AbBlockActors = m.bBlockActors;
+    AbBlockPlayers = m.bBlockPlayers;
+
+    m.SetCollision(false,false,false);
+    pivot = m.PrePivot >> m.Rotation;
+    m.BasePos = m.BasePos - vectm(pivot.X,pivot.Y,pivot.Z);
+    m.PrePivot=vect(0,0,0);
+    m.SetLocation(m.BasePos);
+    m.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)

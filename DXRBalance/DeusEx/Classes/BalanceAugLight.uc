@@ -3,9 +3,11 @@ class BalanceAugLight injects AugLight;
 function SetBeamLocation()
 {
     Super.SetBeamLocation();
+    if(CurrentLevel==0)// quick way to check that we're in a Halloween mode
+        return;
     if( b1 == None || b2 == None )
         return;
-    
+
     b1.LightRadius *= 2;
     b1.LightBrightness = 220; // default is 192
     b2.LightRadius = 8; // default is 4
@@ -16,8 +18,37 @@ function SetBeamLocation()
     b2.LightSaturation = 140; // default is 140
 }
 
+simulated function float GetEnergyRate()
+{
+    if(CurrentLevel>0) EnergyRate = 0;
+    else EnergyRate = 20;
+    return EnergyRate;
+}
+
+function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+    default.Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.";
+    Description = default.Description;
+    GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
+}
+
+function TravelPostAccept()
+{
+    Super.TravelPostAccept();
+    GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
+}
+
+function bool IncLevel()
+{
+    Super.IncLevel();
+    GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
+}
+
 defaultproperties
 {
-    EnergyRate=0.000000
-    LevelValues(0)=1000
+    EnergyRate=0
+    LevelValues(0)=1024
+    LevelValues(1)=1000
+    MaxLevel=1
 }

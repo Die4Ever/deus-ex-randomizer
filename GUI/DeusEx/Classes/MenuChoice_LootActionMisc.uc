@@ -4,7 +4,7 @@ class MenuChoice_LootActionMisc extends MenuChoice_LootAction;
 defaultproperties
 {
     HelpText="Should rebreathers, tech goggles, binoculars and flares be included in the list of Junk items that get dropped when looting a body?"
-    actionText="Miscellaneous"
+    actionText="Miscellaneous Items"
 
     itemClasses(0)=class'Rebreather'
     itemClasses(1)=class'TechGoggles'

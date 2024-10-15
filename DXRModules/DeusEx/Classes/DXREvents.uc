@@ -415,7 +415,7 @@ function SetWatchFlags() {
         WatchFlag('MeetWindowBum_Played');
         break;
     case "02_NYC_SMUG":
-        WatchFlag('MetSmuggler');
+        WatchFlag('MeetSmuggler_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -574,7 +574,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'MadeItToBP',vectm(0,0,0));
         break;
     case "04_NYC_SMUG":
-        RewatchFlag('MetSmuggler');
+        WatchFlag('M04MeetSmuggler_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -867,7 +867,7 @@ function SetWatchFlags() {
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
-        RewatchFlag('MetSmuggler');
+        WatchFlag('M08SmugglerConvos_Played');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
@@ -2052,6 +2052,10 @@ function string RemapBingoEvent(string eventname)
             return "Cat_peeptime";
         case "PetAnimal_BlackCat":
             return "PetAnimal_Cat";
+        case "MeetSmuggler_Played":
+        case "M04MeetSmuggler_Played":
+        case "M08SmugglerConvos_Played":
+            return "MeetSmuggler";
         default:
             return eventname;
     }
@@ -2202,15 +2206,15 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "PaulDenton_Dead":
             return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel";
         case "JordanShea_Dead":
-            return "Kill Jordan Shea, the bartender at the Underworld bar in New York";
+            return "Kill Jordan Shea, the bartender at the Underworld Tavern in New York";
         case "SandraRenton_Dead":
             msg = "Kill Sandra Renton (or let her die).  ";
             if (mission<=2){
-                msg=msg$"  She can be found in an alley next to the Underworld bar in New York";
+                msg=msg$"  She can be found in an alley next to the Underworld Tavern in New York";
             } else if (mission<=4){
                 msg=msg$"  She can be found inside the hotel";
             } else if (mission<=8){
-                msg=msg$"  She can be found in the Underworld bar";
+                msg=msg$"  She can be found in the Underworld Tavern";
             } else if (mission<=12){
                 msg=msg$"  She can be found outside the gas station";
             }
@@ -2264,8 +2268,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return msg;
         case "JoeGreene_Dead":
             msg= "Kill Joe Greene, the reporter poking around in New York.  ";
-            if (mission<=2){
-                msg=msg$"He can be found in the Underworld bar.";
+            if (mission<=4){
+                msg=msg$"He can be found in the Underworld Tavern.";
             }else if (mission<=8){
                 msg=msg$"He can be found somewhere in New York after you return from Hong Kong.";
             }
@@ -2319,7 +2323,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "DL_Flooded_Played":
             return "Swim outside of the Ocean Lab on the ocean floor and enter the flooded section through the hole blasted in the underside of the structure.  There is a flickering light above the hole you need to enter.";
         case "JockSecondStory":
-            return "Buy two beers from Jordan Shea and give them to Jock in the Underworld bar.";
+            return "Buy two beers from Jordan Shea and give them to Jock in the Underworld Tavern.";
         case "M07ChenSecondGive_Played":
             return "After the triad meeting in the temple, meet the leaders in the Lucky Money and receive all the gifted bottles of wine from each Dragon Head.";
         case "DeBeersDead":
@@ -2352,7 +2356,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill Manderley while escaping from UNATCO.";
         case "MadeItToBP":
             return "After the raid on the 'Ton hotel, escape to Gunther's roadblock in Battery Park.";
-        case "MetSmuggler":
+        case "MeetSmuggler":
             return "Talk to Smuggler in his Hell's Kitchen hideout.";
         case "SickMan_Dead":
             return "Kill the junkie in Battery Park who asks for someone to kill him.  He is typically found near the East Coast Memorial (the eagle statue and large plaques)";
@@ -2703,17 +2707,17 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             if (mission<=1){
                 msg=msg$"There is a machine in Alex's office as well as the break room.";
             } else if (mission<=2){
-                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+                msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
             } else if (mission<=3){
                 msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, two machines in the LaGuardia helibase break room, and one in the Airfield barracks.";
             } else if (mission<=4){
-                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, as well as one in the Underworld bar in Hell's Kitchen.";
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, as well as one in the Underworld Tavern in Hell's Kitchen.";
             } else if (mission<=5){
                 msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ.";
             } else if (mission<=6){
                 msg=msg$"There is a machine in the MJ12 Helibase, one in the MJ12 Lab barracks, one in the Old China Hand, and one in the Lucky Money.";
             } else if (mission<=8){
-                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+                msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
             } else if (mission<=12){
                 msg=msg$"There is a machine in the Comms building in Vandenberg.";
             } else if (mission<=15){
@@ -3133,7 +3137,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "InterviewLocals":
             return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
         case "MeetSandraRenton_Played":
-            return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld bar.";
+            return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld Tavern.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3226,7 +3230,7 @@ defaultproperties
     bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1,missions=1024)
     bingo_options(57)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1,missions=32)
     bingo_options(58)=(event="MadeItToBP",desc="Escape to Battery Park",max=1,missions=16)
-    bingo_options(59)=(event="MetSmuggler",desc="Meet Smuggler",max=1,missions=276)
+    bingo_options(59)=(event="MeetSmuggler",desc="Meet Smuggler",max=1,missions=276)
     bingo_options(60)=(event="SickMan_Dead",desc="Kill the sick man who wants to die",max=1,missions=12)
     bingo_options(61)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1,missions=64)
     bingo_options(62)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1,missions=64)
@@ -3472,7 +3476,7 @@ defaultproperties
     bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",desc_singular="Make 1 phone call",max=5,missions=1916)
     bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",desc_singular="Open 1 sleeping pod in Area 51",max=4,missions=32768)
-    bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",desc_singular="Close 1 steam valve in Area 51",max=2,missions=32768)
+    bingo_options(286)=(event="Area51SteamValve",desc="Close the steam valves in Area 51",max=2,missions=32768)
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",desc_singular="Deactivate 1 laser grid under the dockyard",max=3,missions=512)
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
     bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the superfreighter",max=1,missions=512)

@@ -423,10 +423,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_camera_mode', moresettings.camera_mode, mode, str);
     FlagInt('Rando_splits_overlay', moresettings.splits_overlay, mode, str);
 
-    //Keep this option hidden in the credits until October
-    if (mode!=Credits || IsOctoberUnlocked()){
-        FlagInt('Rando_clothes_looting',clothes_looting,mode,str);
-    }
+    FlagInt('Rando_clothes_looting',clothes_looting,mode,str);
 
     return str;
 }

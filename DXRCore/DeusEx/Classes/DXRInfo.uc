@@ -188,18 +188,20 @@ function bool IsAprilFools()
     return Level.Month == 4 && Level.Day == 1 && class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags);
 }
 
-function bool IsOctoberUnlocked()
-{
-    // Happy Halloween! unlock gamemodes forever and other features
-    return true;
-}
-
 function bool IsOctober()
 {
     // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
     if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
     return Level.Month == 10;
+}
+
+function bool IsHalloween()
+{
+    // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
+    if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
+    return Level.Month == 10 && Level.Day == 31;
 }
 
 function bool IsFridayThe13th()

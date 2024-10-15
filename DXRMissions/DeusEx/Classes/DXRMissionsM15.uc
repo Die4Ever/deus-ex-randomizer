@@ -183,7 +183,7 @@ function PreFirstEntryMapFixes()
 
                     v=vectm(0,0,dxm.PrePivot.Z);
 
-                    RemoveDXMoverPrePivot(dxm);
+                    RemoveMoverPrePivot(dxm);
 
                     //Return the Z component of the prepivot so the switches rotate on center
                     dxm.PrePivot=v;

@@ -104,6 +104,11 @@ simulated function PreFirstEntry()
                 cr.lootableClothes=class'#var(prefix)StantonDowdCarcass';
                 break;
 
+            case "10_PARIS_CHATEAU":
+                cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(-743,677,445),rot(0,16384,0))); //In Nicolette's room
+                cr.lootableClothes=class'#var(prefix)NicoletteDuclareCarcass';
+                break;
+
             case "11_PARIS_CATHEDRAL":
                 cr = #var(injectsprefix)ClothesRack(Spawnm(class'#var(injectsprefix)ClothesRack',,,vect(4776,-661,-827),rot(0,16328,0))); //Near Gunther's vanilla spot
                 cr.lootableClothes=class'#var(prefix)GuntherHermannCarcass';
@@ -176,12 +181,10 @@ function AddDXRCredits(CreditsWindow cw)
 {
     local DXRFashionManager f;
 
-    if (IsOctoberUnlocked()) {
-        f=class'DXRFashionManager'.static.GiveItem(player());
+    f=class'DXRFashionManager'.static.GiveItem(player());
 
-        cw.PrintHeader("Fashion");
-        cw.PrintText("Number of Clothes in Closet:"@f.numClothes);
-        cw.PrintText("Number of Outfit Changes:"@f.GetNumOutfitChanges(player()));
-        cw.PrintLn();
-    }
+    cw.PrintHeader("Fashion");
+    cw.PrintText("Number of Clothes in Closet:"@f.numClothes);
+    cw.PrintText("Number of Outfit Changes:"@f.GetNumOutfitChanges(player()));
+    cw.PrintLn();
 }

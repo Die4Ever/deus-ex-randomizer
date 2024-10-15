@@ -89,6 +89,8 @@ function PreFirstEntryMapFixes()
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-738,-1412,-474));//Near sewer grate
             rg.MaxCount=1;
 
+            SetAllLampsState(false, true, false); // the lamps in zhao's empty room
+
             //Add some new locations for containers and items
             Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
             Spawn(class'PlaceholderContainer',,, vectm(-3109,-73,305)); //Front of ship

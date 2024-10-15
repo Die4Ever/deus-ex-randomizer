@@ -849,13 +849,17 @@ function Actor ReplaceWithRandomClass(Actor old)
         if(#var(injectsprefix)MedicalBot(a) != None && chance_single(50)) {
             #var(injectsprefix)MedicalBot(a).MakeAugsOnly();
         }
+        if(DXRJackOLantern(a) != None) {
+            a.SetRotation(rot(0, 16384, 0));
+            a.DrawScale *= 4;
+        }
         if( a != None ) return a;
     }
     warning("ReplaceWithRandomClass("$old$") failed");
     return None;
 }
 
-const num_random_actor_classes = 549;
+const num_random_actor_classes = 551;
 
 function string GetRandomActorClass()
 {
@@ -883,8 +887,13 @@ function ExtendedTests()
     r = num_random_actor_classes;
     s = _GetRandomActorClass(r);
     teststring(s, "", "_GetRandomActorClass(" $ r $ ") is empty string, " $ s);
-    s = _GetRandomActorClass(r-1);
-    test(s!="", "_GetRandomActorClass(" $ (r - 1) $ ") is not empty string, " $ s);
+
+    r--;
+    s = _GetRandomActorClass(r);
+    test(s!="", "_GetRandomActorClass(" $ r $ ") is not empty string, " $ s);
+
+    s = _GetRandomActorClass(0);
+    test(s!="", "_GetRandomActorClass(0) is not empty string, " $ s);
 }
 
 function string _GetRandomActorClass(int r)
@@ -892,6 +901,9 @@ function string _GetRandomActorClass(int r)
     local int i;
 
     // DXRando classes
+    if(r==i++) return "#var(package).MrH";
+    //if(r=i++) return "#var(package).Spiderweb"; // doesn't look good
+    if(r==i++) return "#var(package).DXRJackOLantern";
     if(r==i++) return "#var(package).DeathMarker";
     if(r==i++) return "#var(package).BarDancer";
     if(r==i++) return "#var(package).FrenchGray";

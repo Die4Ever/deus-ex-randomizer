@@ -11,7 +11,9 @@ function PostFirstEntry()
 
     if(dxr.flags.IsHalloweenMode()) {
         // Mr. H is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
-        class'MrH'.static.Create(self);
+        if(!dxr.OnTitleScreen()) {
+            class'MrH'.static.Create(self);
+        }
         MapFixes();
     }
     if(IsOctober()) {
@@ -386,7 +388,7 @@ function MakeCosmetics()
     local NavigationPoint p;
     local Light lgt;
     local vector locs[4096];
-    local int i, num, slot;
+    local int i, num, len, slot;
     local SkyZoneInfo z;
     local #var(DeusExPrefix)Carcass carc;
 
@@ -398,25 +400,29 @@ function MakeCosmetics()
 
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
-        locs[num++] = p.Location;
+        locs[len++] = p.Location;
     }
 
     SetSeed("MakeJackOLanterns");
-    for(i=0; i<num/30; i++) {
-        slot = rng(num);
+    if(IsHalloween()) num = len/30;
+    else num = len/30 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
+    for(i=0; i<num; i++) {
+        slot = rng(len);
         SpawnJackOLantern(locs[slot]);
     }
 
     // spiderwebs near lights?
     foreach AllActors(class'Light', lgt) {
         if(lgt.Region.Zone.bWaterZone) continue;
-        locs[num++] = lgt.Location;
+        locs[len++] = lgt.Location;
     }
 
     SetSeed("MakeSpiderWebs");
     // random order gives better results
-    for(i=0; i<num/2; i++) {
-        slot = rng(num);
+    if(IsHalloween()) num = len/2;
+    else num = len/2 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
+    for(i=0; i<num; i++) {
+        slot = rng(len);
         SpawnSpiderweb(locs[slot]);
     }
 }
@@ -529,7 +535,7 @@ function SpawnSpiderweb(vector loc)
 
     EndTrace = loc + vector(rot) * -32;
     foreach TraceTexture(class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, loc) {
-        if ((texFlags & 1) !=0) { // 1 = PF_Invisible
+        if ((texFlags & 0x81) !=0) { // 1 = PF_Invisible, 0x80 == PF_FakeBackdrop
             return;
         }
         break;

@@ -193,14 +193,20 @@ function bool IncLevel()
 function string UpgradeMessage()
 {
     local float before, after;
+    local string s_before, s_after;
 
     before = LevelValues[CurrentLevel-1];
     if(CurrentLevel >= 4) after = Level5Value;
     else after = LevelValues[CurrentLevel];
 
+    s_before = class'DXRAugmentations'.static.DescriptionLevelShort(self, CurrentLevel-1, before);
+    s_after = class'DXRAugmentations'.static.DescriptionLevelShort(self, CurrentLevel, after);
+
+    if(s_before=="" || s_after=="") {
+        return Sprintf(AugNowHave, AugmentationName, CurrentLevel + 1);
+    }
     return Sprintf(AugNowHave, AugmentationName, CurrentLevel + 1)
-        $ " (from " $ class'DXRAugmentations'.static.DescriptionLevelShort(self, CurrentLevel-1, before)
-        $ " to " $ class'DXRAugmentations'.static.DescriptionLevelShort(self, CurrentLevel, after) $ ")";
+        $ " (from " $ s_before $ " to " $ s_after $ ")";
 }
 
 defaultproperties

@@ -233,7 +233,7 @@ function PreFirstEntryMapFixes()
 
                     //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
                     //so that they are centered roughly in the middle of the door
-                    RemoveDXMoverPrePivot(door);
+                    RemoveMoverPrePivot(door);
                 }
             }
             AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
@@ -777,6 +777,11 @@ function AnyEntryMapFixes()
         // timer to count the MJ12 Bots
         SetTimer(1, True);
 
+        break;
+
+    case "14_OCEANLAB_LAB":
+        GetConversation('DL_Simons1').AddFlagRef('WaltonSimons_Dead', false);
+        GetConversation('DL_Simons2').AddFlagRef('WaltonSimons_Dead', false);
         break;
     }
 }
