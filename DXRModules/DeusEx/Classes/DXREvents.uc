@@ -2447,7 +2447,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "LeoToTheBar":
             return "Bring the body of Leo Gold (The terrorist commander from Liberty Island) to any bar in the game (New York, Hong Kong, Paris) and set him down.  You can also bring him to the bottom of the Ocean Lab, since it is under many BARs of pressure.";
         case "KnowYourEnemy":
-            return "Read enough 'Know Your Enemy' articles on the public computer in the UNATCO break room.";
+            return "Read enough \"Know Your Enemy\" bulletins on the public computer in the UNATCO break room.";
         case "09_NYC_DOCKYARD--796967769":
             return "Find Jenny's number (867-5309) somewhere in the outer area of the Brooklyn Naval Yards on a datacube.";
         case "JacobsShadow":
@@ -3275,7 +3275,7 @@ defaultproperties
 #ifndef hx
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to a bar",max=1,missions=17686)
 #endif
-    bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read 1 Know Your Enemy bulletin",max=6,missions=10)
+    bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read 1 Know Your Enemy bulletin",max=6,missions=26)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
     bingo_options(102)=(event="JacobsShadow",desc="Read %s parts of Jacob's Shadow",desc_singular="Read 1 part of Jacob's Shadow",max=4,missions=38492)
     bingo_options(103)=(event="ManWhoWasThursday",desc="Read %s parts of The Man Who Was Thursday",desc_singular="Read 1 part of The Man Who Was Thursday",max=4,missions=54300)

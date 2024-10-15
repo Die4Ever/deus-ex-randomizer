@@ -56,6 +56,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local Teleporter tel;
     local DynamicTeleporter dtel;
+    local #var(prefix)ComputerPublic compublic;
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
 
@@ -284,6 +285,17 @@ function PreFirstEntryMapFixes()
             key.Description = "MedLab Closet Key Code";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(key);
+        }
+
+        if (VanillaMaps) {
+            class'#var(prefix)ComputerPublic'.default.bCollideWorld = false;
+            compublic = #var(prefix)ComputerPublic(Spawnm(
+                class'#var(prefix)ComputerPublic',,,
+                vect(741.36, 1609.34, 298.00),
+                rot(0, -16384, 0)
+            ));
+            compublic.TextPackage = "#var(package)";
+            compublic.BulletinTag = '04_BulletinMenuUnatco';
         }
 
         //Spawn some placeholders for new item locations
