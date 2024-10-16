@@ -37,6 +37,9 @@ function BindControls(optional string action)
 #endif
 
     f = GetFlags();
+    if(writing) {
+        f.InitAdvancedDefaults();
+    }
 
     gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<20; i++) {

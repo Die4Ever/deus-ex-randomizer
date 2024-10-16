@@ -59,17 +59,8 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     l("starting map is set to "$settings.starting_map);
 }
 
-function InitDefaults()
+function InitAdvancedDefaults()
 {
-    InitVersion();
-    if(!#defined(hx)) {
-        seed = 0;
-        NewPlaythroughId();
-        if( dxr != None) {
-            RollSeed();
-        }
-        crowdcontrol = 0;
-    }
     bingo_duration=0;
     bingo_scale=100;
     newgameplus_loops = 0;
@@ -81,6 +72,20 @@ function InitDefaults()
     newgameplus_num_removed_weapons = 1;
 
     clothes_looting=0;
+}
+
+function InitDefaults()
+{
+    InitVersion();
+    if(!#defined(hx)) {
+        seed = 0;
+        NewPlaythroughId();
+        if( dxr != None) {
+            RollSeed();
+        }
+        crowdcontrol = 0;
+    }
+    InitAdvancedDefaults();
 
 #ifdef hx
     difficulty = 1;
