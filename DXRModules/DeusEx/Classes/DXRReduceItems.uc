@@ -102,6 +102,7 @@ function PostFirstEntry()
         && dxr.flags.settings.biocells==100
         && dxr.flags.settings.medkits==100
     ) {
+        if(dxr.flags.IsOneItemMode()) OneItemMode();
         return;
     }
 
@@ -117,6 +118,78 @@ function PostFirstEntry()
 
     SetAllMaxCopies(scale);
     SetTimer(1.0, true);
+
+    if(dxr.flags.IsOneItemMode()) OneItemMode();
+}
+
+function OneItemMode()
+{
+    local Inventory item, nextItem, items[1024];
+    local #var(prefix)Containers d;
+    local class<Actor> contents[1024];
+    local class<Inventory> newclass;
+    local #var(DeusExPrefix)Carcass carc;
+    local int num, numcontents, i, slot;
+    local vector loc;
+    local rotator rot;
+    local EPhysics phys;
+    local Actor base;
+
+    foreach AllActors(class'Inventory', item) {
+        if(item.bIsSecretGoal) continue;
+        if(Pawn(item.Owner) != None) continue;
+        if(item.bDeleteMe) continue;
+        if(#var(prefix)NanoKey(item) != None) continue;
+        items[num++] = item;
+    }
+
+    foreach AllActors(class'#var(prefix)Containers', d) {
+        if (#var(PlayerPawn)(d.base)!=None) continue;
+        if(d.Contents!=None) contents[numcontents++] = d.Contents;
+        if(d.Content2!=None) contents[numcontents++] = d.Content2;
+        if(d.Content3!=None) contents[numcontents++] = d.Content3;
+    }
+
+    if(num<=1) return;
+    while(newclass==None) {
+        slot = rng(num+numcontents);
+        if(slot<num) newclass = items[slot].class;
+        else newclass = class<Inventory>(contents[slot-num]);
+    }
+
+    for(i=0; i<num; i++) {
+        if(i==slot) continue;
+        item = items[i];
+        loc = item.Location;
+        loc.Z -= item.CollisionHeight;
+        rot = item.Rotation;
+        phys = item.physics;
+        base = item.Base;
+        carc = #var(DeusExPrefix)Carcass(item.Owner);
+        if(carc != None) carc.DeleteInventory(item);
+        item.Destroy();
+
+        loc.Z += newclass.default.CollisionHeight;
+
+        item = Spawn(newclass,,, loc, rot);
+        if(item==None) continue;
+        item.SetPhysics(phys);
+        item.SetBase(base);
+
+        if(carc!=None) {
+            item.BecomeItem();
+            carc.AddInventory(item);
+            item.GotoState('Idle2');
+        }
+    }
+
+    foreach AllActors(class'#var(prefix)Containers', d) {
+        if (#var(PlayerPawn)(d.base)!=None) continue;
+        if(d.Contents==None && d.Content2==None && d.Content3==None) continue;
+        d.Contents = newclass;
+        d.Content2 = None;
+        d.Content3 = None;
+    }
 }
 
 function ReduceItem(Inventory a)
@@ -308,7 +381,6 @@ function bool _ReduceSpawnInContainer(#var(prefix)Containers d, class<Inventory>
 function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
 {
     local #var(prefix)Containers d;
-    local class<Inventory> contents;
 
     SetSeed( "ReduceSpawnsInContainers " $ classname.Name );
 

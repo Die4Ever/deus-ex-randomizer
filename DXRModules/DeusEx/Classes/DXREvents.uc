@@ -2206,15 +2206,15 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "PaulDenton_Dead":
             return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel";
         case "JordanShea_Dead":
-            return "Kill Jordan Shea, the bartender at the Underworld bar in New York";
+            return "Kill Jordan Shea, the bartender at the Underworld Tavern in New York";
         case "SandraRenton_Dead":
             msg = "Kill Sandra Renton (or let her die).  ";
             if (mission<=2){
-                msg=msg$"  She can be found in an alley next to the Underworld bar in New York";
+                msg=msg$"  She can be found in an alley next to the Underworld Tavern in New York";
             } else if (mission<=4){
                 msg=msg$"  She can be found inside the hotel";
             } else if (mission<=8){
-                msg=msg$"  She can be found in the Underworld bar";
+                msg=msg$"  She can be found in the Underworld Tavern";
             } else if (mission<=12){
                 msg=msg$"  She can be found outside the gas station";
             }
@@ -2269,7 +2269,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "JoeGreene_Dead":
             msg= "Kill Joe Greene, the reporter poking around in New York.  ";
             if (mission<=4){
-                msg=msg$"He can be found in the Underworld bar.";
+                msg=msg$"He can be found in the Underworld Tavern.";
             }else if (mission<=8){
                 msg=msg$"He can be found somewhere in New York after you return from Hong Kong.";
             }
@@ -2323,7 +2323,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "DL_Flooded_Played":
             return "Swim outside of the Ocean Lab on the ocean floor and enter the flooded section through the hole blasted in the underside of the structure.  There is a flickering light above the hole you need to enter.";
         case "JockSecondStory":
-            return "Buy two beers from Jordan Shea and give them to Jock in the Underworld bar.";
+            return "Buy two beers from Jordan Shea and give them to Jock in the Underworld Tavern.";
         case "M07ChenSecondGive_Played":
             return "After the triad meeting in the temple, meet the leaders in the Lucky Money and receive all the gifted bottles of wine from each Dragon Head.";
         case "DeBeersDead":
@@ -2447,7 +2447,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "LeoToTheBar":
             return "Bring the body of Leo Gold (The terrorist commander from Liberty Island) to any bar in the game (New York, Hong Kong, Paris) and set him down.  You can also bring him to the bottom of the Ocean Lab, since it is under many BARs of pressure.";
         case "KnowYourEnemy":
-            return "Read enough 'Know Your Enemy' articles on the public computer in the UNATCO break room.";
+            return "Read enough \"Know Your Enemy\" bulletins on the public computer in the UNATCO break room.";
         case "09_NYC_DOCKYARD--796967769":
             return "Find Jenny's number (867-5309) somewhere in the outer area of the Brooklyn Naval Yards on a datacube.";
         case "JacobsShadow":
@@ -2707,17 +2707,17 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             if (mission<=1){
                 msg=msg$"There is a machine in Alex's office as well as the break room.";
             } else if (mission<=2){
-                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+                msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
             } else if (mission<=3){
                 msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, two machines in the LaGuardia helibase break room, and one in the Airfield barracks.";
             } else if (mission<=4){
-                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, as well as one in the Underworld bar in Hell's Kitchen.";
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, as well as one in the Underworld Tavern in Hell's Kitchen.";
             } else if (mission<=5){
                 msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ.";
             } else if (mission<=6){
                 msg=msg$"There is a machine in the MJ12 Helibase, one in the MJ12 Lab barracks, one in the Old China Hand, and one in the Lucky Money.";
             } else if (mission<=8){
-                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+                msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
             } else if (mission<=12){
                 msg=msg$"There is a machine in the Comms building in Vandenberg.";
             } else if (mission<=15){
@@ -3137,7 +3137,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "InterviewLocals":
             return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
         case "MeetSandraRenton_Played":
-            return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld bar.";
+            return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld Tavern.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3275,7 +3275,7 @@ defaultproperties
 #ifndef hx
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to a bar",max=1,missions=17686)
 #endif
-    bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read 1 Know Your Enemy bulletin",max=6,missions=10)
+    bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read 1 Know Your Enemy bulletin",max=6,missions=26)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
     bingo_options(102)=(event="JacobsShadow",desc="Read %s parts of Jacob's Shadow",desc_singular="Read 1 part of Jacob's Shadow",max=4,missions=38492)
     bingo_options(103)=(event="ManWhoWasThursday",desc="Read %s parts of The Man Who Was Thursday",desc_singular="Read 1 part of The Man Who Was Thursday",max=4,missions=54300)

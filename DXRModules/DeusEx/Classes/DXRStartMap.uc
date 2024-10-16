@@ -991,9 +991,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         {
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
-        // // this goal can actually be done with the way these starts currently work, but would normally be impossible
-        // case "M06JCHasDate":
-        //     return start_map > 65;
+        case "M06JCHasDate":
+            return start_map > 65;
         }
         break;
 

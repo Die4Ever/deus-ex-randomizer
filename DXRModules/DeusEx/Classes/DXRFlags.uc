@@ -12,6 +12,7 @@ const RandoMedium = 9;
 const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
 const ZeroRandoPlus = 12;
+const OneItemMode = 13;
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -58,17 +59,8 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     l("starting map is set to "$settings.starting_map);
 }
 
-function InitDefaults()
+function InitAdvancedDefaults()
 {
-    InitVersion();
-    if(!#defined(hx)) {
-        seed = 0;
-        NewPlaythroughId();
-        if( dxr != None) {
-            RollSeed();
-        }
-        crowdcontrol = 0;
-    }
     bingo_duration=0;
     bingo_scale=100;
     newgameplus_loops = 0;
@@ -80,6 +72,20 @@ function InitDefaults()
     newgameplus_num_removed_weapons = 1;
 
     clothes_looting=0;
+}
+
+function InitDefaults()
+{
+    InitVersion();
+    if(!#defined(hx)) {
+        seed = 0;
+        NewPlaythroughId();
+        if( dxr != None) {
+            RollSeed();
+        }
+        crowdcontrol = 0;
+    }
+    InitAdvancedDefaults();
 
 #ifdef hx
     difficulty = 1;
@@ -176,6 +182,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -250,6 +257,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -323,6 +331,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -396,6 +405,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -469,6 +479,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
+    more_difficulty_settings[i].enemies_weapons = 100;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -504,6 +515,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.startinglocations = 0;
         settings.goals = 0;
         settings.dancingpercent = 0;
+        settings.enemiesrandomized *= 0.8;
+        moresettings.enemies_weapons *= 0.8;
     }
     else if(IsReducedRando()) {
         settings.doorsmode = 0;
@@ -515,6 +528,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.deviceshackable = 0;
         settings.infodevices = 0;
         settings.enemiesrandomized = 0;
+        moresettings.enemies_weapons = 0;
         settings.hiddenenemiesrandomized = 0;
         settings.enemiesshuffled = 0;
         settings.enemies_nonhumans = 0;
@@ -703,11 +717,11 @@ function string DifficultyName(int diff)
 function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
     if(slot--==0) return 0;
-    if(IsOctoberUnlocked() && slot--==0) return HalloweenMode;
+    if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
-    if(IsOctoberUnlocked() && slot--==0) return HalloweenEntranceRando;
-    if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloween;
-    if(IsOctoberUnlocked() && slot--==0) return WaltonWareHalloweenEntranceRando;
+    if(slot--==0) return HalloweenEntranceRando;
+    if(slot--==0) return WaltonWareHalloween;
+    if(slot--==0) return WaltonWareHalloweenEntranceRando;
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
     if(!VersionIsStable()) {
@@ -720,8 +734,9 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return RandoMedium;
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return SeriousSam;
-    if(IsOctoberUnlocked() && slot--==0) return HordeZombies;
+    if(slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
+    if(slot--==0) return OneItemMode;
     return 999999;
 }
 
@@ -738,8 +753,7 @@ function string GameModeName(int gamemode)
     case HordeMode:
         return "Horde Mode";
     case HordeZombies:
-        if(IsOctoberUnlocked()) return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
-        break;
+        return "Zombies Horde Mode";// maybe a full-time replacement for original horde mode?
 #endif
     case RandoLite:
         return "Randomizer Lite";
@@ -754,8 +768,7 @@ function string GameModeName(int gamemode)
     case SpeedrunMode:
         return "Speedrun Mode";
     case WaltonWareHalloween:
-        if(IsOctoberUnlocked()) return "WaltonWare Halloween";
-        break;
+        return "WaltonWare Halloween";
     case WaltonWare:
         return "WaltonWare";
 #ifdef injections
@@ -769,8 +782,9 @@ function string GameModeName(int gamemode)
     case WaltonWarex3:
         return "WaltonWare x3";
     case HalloweenMode:
-        if(IsOctoberUnlocked()) return "Halloween Mode";// maybe needs a better name
-        break;
+        return "Halloween Mode";// maybe needs a better name
+    case OneItemMode:
+        return "One Item Mode";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -821,6 +835,11 @@ function bool IsWaltonWareHardcore()
 function bool IsHalloweenMode()
 {
     return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
+}
+
+function bool IsOneItemMode()
+{
+    return gamemode == OneItemMode;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

@@ -342,6 +342,14 @@ final function bool GlowOff()
     }
 }
 
+function BaseChange()
+{
+    Super.BaseChange();
+    if(LevelInfo(Base)!=None || Brush(Base)!=None) {
+        SetCollision(true,false,false);
+    }
+}
+
 defaultproperties
 {
     bInvincible=True

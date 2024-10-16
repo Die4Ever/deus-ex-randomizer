@@ -89,11 +89,9 @@ function BindControls(optional string action)
     EnumOption("Show", 1, f.moresettings.splits_overlay);
 
 #ifdef vanilla
-    if (f.IsOctoberUnlocked()){
-        NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
-        EnumOption("Full Closet", 0, f.clothes_looting);
-        EnumOption("Looting Required", 1, f.clothes_looting);
-    }
+    NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
+    EnumOption("Full Closet", 0, f.clothes_looting);
+    EnumOption("Looting Required", 1, f.clothes_looting);
 #endif
 
     NewGroup("Bingo");
@@ -243,6 +241,9 @@ function BindControls(optional string action)
 
     NewMenuItem("Enemy Shuffling %", "Shuffle enemies around the map.");
     Slider(f.settings.enemiesshuffled, 0, 100);
+
+    NewMenuItem("Enemy Weapons Variety %", "Should enemies be using weapons that normally exist in the map?");
+    Slider(f.moresettings.enemies_weapons, 0, 100);
 
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);

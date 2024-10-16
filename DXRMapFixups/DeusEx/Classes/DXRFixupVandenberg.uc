@@ -778,6 +778,11 @@ function AnyEntryMapFixes()
         SetTimer(1, True);
 
         break;
+
+    case "14_OCEANLAB_LAB":
+        GetConversation('DL_Simons1').AddFlagRef('WaltonSimons_Dead', false);
+        GetConversation('DL_Simons2').AddFlagRef('WaltonSimons_Dead', false);
+        break;
     }
 }
 

@@ -808,12 +808,16 @@ simulated function bool FixInventory(#var(PlayerPawn) p)
         for(x = item.invPosX; x < item.invPosX + item.invSlotsX; x++) {
             for(y = item.invPosY; y < item.invPosY + item.invSlotsY; y++) {
                 if(slots[x*8 + y] > 0) {
-                    err("inventory overlap at (" $ x $ ", " $ y $ ") " $ item);
+                    warning("inventory overlap at (" $ x $ ", " $ y $ ") " $ item);
                     good = false;
                 }
                 slots[x*8 + y]++;
             }
         }
+    }
+
+    if(!good && class'MenuChoice_FixGlitches'.default.enabled) {
+        err("inventory overlap");
     }
 
     return good;

@@ -37,6 +37,9 @@ function BindControls(optional string action)
 #endif
 
     f = GetFlags();
+    if(writing) {
+        f.InitAdvancedDefaults();
+    }
 
     gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<20; i++) {
@@ -87,11 +90,10 @@ function BindControls(optional string action)
     EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave);
     EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave);
     EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave);
-    if(f.IsOctoberUnlocked()) {
-        EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
-        EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
-        EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
-    }
+    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
+    EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
+    EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
+    EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave);
     EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave);
 #endif
 

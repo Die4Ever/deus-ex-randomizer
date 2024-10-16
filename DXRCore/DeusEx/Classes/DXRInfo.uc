@@ -188,12 +188,6 @@ function bool IsAprilFools()
     return Level.Month == 4 && Level.Day == 1 && class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags);
 }
 
-function bool IsOctoberUnlocked()
-{
-    // Happy Halloween! unlock gamemodes forever and other features
-    return true;
-}
-
 function bool IsOctober()
 {
     // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting

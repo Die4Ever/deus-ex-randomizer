@@ -16,6 +16,9 @@ function ReplaceActors()
         else if( #var(prefix)AllianceTrigger(a) != None ) {
             ReplaceAllianceTrigger(#var(prefix)AllianceTrigger(a));
         }
+        else if( #var(prefix)OrdersTrigger(a) != None ) {
+            ReplaceOrdersTrigger(#var(prefix)OrdersTrigger(a));
+        }
         else if( #var(prefix)ShakeTrigger(a) != None ) {
             ReplaceShakeTrigger(#var(prefix)ShakeTrigger(a));
         }
@@ -297,6 +300,20 @@ function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
         n.Alliances[i].AllianceLevel = a.Alliances[i].AllianceLevel;
         n.Alliances[i].bPermanent = a.Alliances[i].bPermanent;
     }
+
+    ReplaceTrigger(a, n);
+    a.Destroy();
+}
+
+function ReplaceOrdersTrigger(#var(prefix)OrdersTrigger a)
+{
+    local DXROrdersTrigger n;
+    n = DXROrdersTrigger(SpawnReplacement(a, class'DXROrdersTrigger'));
+    if(n == None)
+        return;
+
+    n.Orders = a.Orders;
+    n.ordersTag = a.ordersTag;
 
     ReplaceTrigger(a, n);
     a.Destroy();

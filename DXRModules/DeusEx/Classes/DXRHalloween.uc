@@ -404,6 +404,8 @@ function MakeCosmetics()
     }
 
     SetSeed("MakeJackOLanterns");
+    ConsoleCommand("set DXRJackOLantern bBlockActors " $ (!dxr.flags.IsSpeedrunMode()));
+    ConsoleCommand("set DXRJackOLantern bBlockPlayers " $ (!dxr.flags.IsSpeedrunMode()));
     if(IsHalloween()) num = len/30;
     else num = len/30 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
     for(i=0; i<num; i++) {
@@ -486,6 +488,7 @@ function SpawnJackOLantern(vector loc)
 
     r.Yaw = Rotator(wall1.norm).Yaw;
     jacko = spawn(class'DXRJackOLantern',,, wall1.loc, r);
+    if(jacko == None) return;
     jacko.DrawScale *= size;
     jacko.SetCollisionSize(jacko.CollisionRadius*size,jacko.CollisionHeight*size);
 
@@ -540,6 +543,7 @@ function SpawnSpiderweb(vector loc)
         }
         break;
     }
+    if(target == None) return;
 
     rot.roll = rng(65536);
 
@@ -551,6 +555,7 @@ function SpawnSpiderweb(vector loc)
     }
     web = Spawn(webClass,,, loc, rot);
     web.DrawScale = size;
+    if(Mover(target)!=None) web.SetBase(target);
 }
 
 function bool GetSpiderwebLocation(out vector loc, out rotator rot, float size)
