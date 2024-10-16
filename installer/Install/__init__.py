@@ -263,19 +263,25 @@ def GetDocumentsDir(system:Path) -> Path:
 
 
 def getDefaultPath():
-    checks = [
-        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
-        Path.home() /'.steam'/'steam'/'steamapps'/'common'/'Deus Ex'/'System', # not sure if this ever happens but the one above with different capitalization had me suspicious
-        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-    ]
-    p:Path
-    for p in checks:
-        f:Path = p / "DeusEx.exe"
-        if f.exists():
-            return p
+    try:
+        checks = [
+            Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+            Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+            Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+            Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+            Path.home() /'.steam'/'steam'/'steamapps'/'common'/'Deus Ex'/'System', # not sure if this ever happens but the one above with different capitalization had me suspicious
+            Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+        ]
+        p:Path
+        for p in checks:
+            try:
+                f:Path = p / "DeusEx.exe"
+                if f.exists():
+                    return p
+            except Exception as e:
+                info(e)
+    except Exception as e:
+        info(e)
     return None
 
 
