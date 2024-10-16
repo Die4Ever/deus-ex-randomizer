@@ -255,32 +255,41 @@ def saveLastUsedBingoFile(f):
     # TODO: save last used file and reuse it for getDefaultPath()
 
 def getDefaultPath():
-    checks = [
-        Path.home() / "Documents" / "Deus Ex" / "System",
-        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
-        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
-        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        # Linux
-        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
-        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
-        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-    ]
+    try:
+        checks = [
+            Path.home() / "Documents" / "Deus Ex" / "System",
+            Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
+            Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
+            Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+            Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+            # Linux
+            Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+            Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+            Path.home() /'.local'/'share'/'Steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
+            Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+        ]
 
-    modified_times = {}
-    for p in checks:
-        f:Path = p / "DXRBingo.ini"
-        if f.exists():
-            modified_times[p] = os.path.getmtime(f)
-    sorted_paths = sorted(modified_times.keys(), key=lambda f: modified_times[f])
+        modified_times = {}
+        for p in checks:
+            try:
+                f:Path = p / "DXRBingo.ini"
+                if f.exists():
+                    modified_times[p] = os.path.getmtime(f)
+            except Exception as e:
+                print(e)
+        sorted_paths = sorted(modified_times.keys(), key=lambda f: modified_times[f])
 
-    if len(sorted_paths) > 0:
-        return sorted_paths[-1]
-    p:Path
-    for p in checks:
-        if p.is_dir():
-            return p
+        if len(sorted_paths) > 0:
+            return sorted_paths[-1]
+        p:Path
+        for p in checks:
+            try:
+                if p.is_dir():
+                    return p
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
     return None
 
 def findBingoFile():
