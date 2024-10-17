@@ -1040,12 +1040,14 @@ function bool AddTestGoal(
     string event,
     int boardIdx,
     optional int max,
-    optional int starting_mission,
+    optional int maxMax,
+    optional int starting_map,
+    optional int end_mission,
     optional int missions
 )
 {
     local BingoOption option;
-    local int bingoIdx;
+    local int bingoIdx, starting_mission;
     local string desc;
     local float f;
 
@@ -1056,10 +1058,15 @@ function bool AddTestGoal(
 
     if (max == 0)
         max = bingo_options[bingoIdx].max;
-    if (starting_mission == 0)
-        starting_mission = 1;
+    if (starting_map == 0)
+        starting_map = dxr.flags.settings.starting_map;
+    starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     if (missions == 0)
         missions = bingo_options[bingoIdx].missions;
+    if (end_mission == 0)
+        end_mission = starting_mission + dxr.flags.bingo_duration - 1;
+    if (maxMax == 0)
+        class'DXRStartMap'.static.BingoGoalImpossible(event, starting_map, end_mission, maxMax);
 
     desc = bingo_options[bingoIdx].desc;
     if (max > 1 && InStr(desc, "%s") != -1) {
@@ -1067,7 +1074,7 @@ function bool AddTestGoal(
         f = rngrange(f, 0.8, 1);// 80% to 100%
         f *= MissionsMaskAvailability(starting_mission, missions) ** 1.5;
         max = Ceil(float(max) * f);
-        max = self.Max(max, 1);
+        max = Clamp(max, 1, maxMax);
 
         if (max == 1 && bingo_options[bingoIdx].desc_singular != "") {
             desc = bingo_options[bingoIdx].desc_singular;
@@ -1093,8 +1100,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 {
     local int x, y, i;
     local string event, desc;
-    local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions;
-    local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
+    local int progress, max, maxMax, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions;
+    local int options[ArrayCount(bingo_options)], maxMaxes[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local bool bPossible;
     local float f;
 
@@ -1132,13 +1139,14 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             }
         }
         if(bingo_options[x].missions!=0 && masked_missions == 0) continue;
-        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission)) {
+        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission,maxMax)) {
             if(bTest) {
                 l("BingoGoalImpossible " $ bingo_options[x].event @ starting_map @ end_mission);
             }
             continue;
         }
         options[num_options++] = x;
+        maxMaxes[x] = maxMax;
     }
 
     l("_CreateBingoBoard found " $ num_options $ " options, starting_map==" $ starting_map $ ", starting_mission==" $ starting_mission $ ", end_mission==" $ end_mission);
@@ -1211,13 +1219,14 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             missions = bingo_options[i].missions;
             masked_missions = missions & end_mission_mask; //Pre-mask the bingo endpoint
             max = bingo_options[i].max;
+            maxMax = maxMaxes[i];
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && InStr(desc, "%s") != -1) {
                 f = float(dxr.flags.bingo_scale)/100.0;
                 f = rngrange(f, 0.8, 1);// 80% to 100%
                 f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
                 max = Ceil(float(max) * f);
-                max = self.Max(max, 1);
+                max = Clamp(max, 1, maxMax);
 
                 if (max == 1 && bingo_options[i].desc_singular != "") {
                     desc = bingo_options[i].desc_singular;
