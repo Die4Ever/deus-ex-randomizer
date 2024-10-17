@@ -78,14 +78,10 @@ function SetDxr(DXRando d)
     dxr=d;
     flags = DXRFlags(dxr.FindModule(class'DXRFlags'));
 
-    if(
-        class'MenuChoice_ShowNewSeed'.default.value == 1 ||
-        (class'MenuChoice_ShowNewSeed'.default.value == 0 && flags.moresettings.splits_overlay > 0)
-    ) {
+    if(class'MenuChoice_ShowNewSeed'.static.ShowNewSeed(dxr))
         actionButtons[3].btn.Show();
-    } else {
+    else
         actionButtons[3].btn.Hide();
-    }
 
     player.SkillPointsAvail = player.Default.SkillPointsAvail;
     player.SkillPointsTotal = player.Default.SkillPointsTotal;

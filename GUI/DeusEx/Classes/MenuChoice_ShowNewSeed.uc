@@ -1,5 +1,10 @@
 class MenuChoice_ShowNewSeed extends DXRMenuUIChoiceInt;
 
+static function bool ShowNewSeed(DXRando dxr)
+{
+    return default.value == 1 || (default.value == 0 && dxr.flags.moresettings.splits_overlay > 0);
+}
+
 defaultproperties
 {
     value=0;
