@@ -394,8 +394,17 @@ function AnyEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)WIB wib;
+    local #var(prefix)NicoletteDuclare nico;
 
     switch(dxr.localURL) {
+    case "10_PARIS_METRO":
+        if (dxr.flags.settings.starting_map >= 109) {
+            foreach AllActors(class'#var(prefix)NicoletteDuclare', nico, 'DXRMissions') {
+                nico.LeaveWorld();
+                break;
+            }
+        }
+        break;
     case "11_PARIS_CATHEDRAL":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-3570.950684, 2238.034668, -783.901367));// right at the start
 
