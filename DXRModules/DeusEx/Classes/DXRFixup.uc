@@ -273,6 +273,12 @@ function AnyEntry()
     }
 
     ShowTeleporters();
+
+    if (dxr.flags.moresettings.empty_medbots > 0) {
+        class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot or AugBot.";
+    } else {
+        class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot.";
+    }
 }
 
 function FixFOV()
