@@ -6,6 +6,16 @@ function BeginPlay()
     SetSkin(Rand(5));
 }
 
+function NewSkin()
+{
+    local Texture oldTexture;
+
+    oldTexture = MultiSkins[0];
+    while(MultiSkins[0] == oldTexture) {
+        SetSkin(Rand(5));
+    }
+}
+
 function SetSkin(int skinNum)
 {
     switch(skinNum){
@@ -27,12 +37,40 @@ function SetSkin(int skinNum)
     }
 }
 
+function bool CheckCarve(Pawn EventInstigator, name DamageType)
+{
+    if(EventInstigator == None) return false;
+    if(#var(prefix)WeaponCombatKnife(EventInstigator.Weapon) == None && #var(prefix)WeaponSword(EventInstigator.Weapon) == None) return false;
+    if(DeusExWeapon(EventInstigator.Weapon).WeaponDamageType() != DamageType) return false; // make sure it's not chained damage, aka knife to TNT
+
+    NewSkin();
+    return true;
+}
+
+auto state Active
+{
+    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+    {
+        if(!CheckCarve(EventInstigator, DamageType) && Damage<HitPoints) Damage=HitPoints;
+        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
+    }
+}
+
+state Burning
+{
+    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+    {
+        if(!CheckCarve(EventInstigator, DamageType) && Damage<HitPoints) Damage=HitPoints;
+        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
+    }
+}
+
 simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFrags)
 {
     //Plastic Fragments look more like pumpkin chunks
     //The generically calculated DSize is a bit small for how a pumpkin shatters
     //Calculates too few frags
-    Super.Frag(class'JackOLanternFragment',Momentum,DSize*1.5,NumFrags*4);
+    Super.Frag(FragType,Momentum,DSize*1.5,NumFrags*4);
 }
 
 function ResetScaleGlow()
@@ -42,7 +80,7 @@ function ResetScaleGlow()
 
 defaultproperties
 {
-     HitPoints=5
+     HitPoints=7
      FragType=class'JackOLanternFragment'
      ItemName="Jack-O'-Lantern"
      Mesh=LodMesh'DeusExDeco.Poolball'
