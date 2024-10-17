@@ -134,6 +134,7 @@ function OneItemMode()
     local rotator rot;
     local EPhysics phys;
     local Actor base;
+    local bool bOwned;
 
     foreach AllActors(class'Inventory', item) {
         if(item.bIsSecretGoal) continue;
@@ -165,6 +166,7 @@ function OneItemMode()
         rot = item.Rotation;
         phys = item.physics;
         base = item.Base;
+        bOwned = item.bOwned;
         carc = #var(DeusExPrefix)Carcass(item.Owner);
         if(carc != None) carc.DeleteInventory(item);
         item.Destroy();
@@ -175,6 +177,7 @@ function OneItemMode()
         if(item==None) continue;
         item.SetPhysics(phys);
         item.SetBase(base);
+        item.bOwned = bOwned;
 
         if(carc!=None) {
             item.BecomeItem();

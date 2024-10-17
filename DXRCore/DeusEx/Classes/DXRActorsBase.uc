@@ -618,7 +618,7 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     local rotator newrot;
     local bool asuccess, bsuccess;
     local Actor abase, bbase, HitActor;
-    local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
+    local bool AbCollideActors, AbBlockActors, AbBlockPlayers, AbOwned;
     local EPhysics aphysics, bphysics;
 
     if( a == b ) return true;
@@ -687,6 +687,10 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     if(abase != bbase) a.SetBase(bbase);
     b.SetPhysics(aphysics);
     if(abase != bbase) b.SetBase(abase);
+
+    AbOwned = a.bOwned;
+    a.bOwned = b.bOwned;
+    b.bOwned = AbOwned;
 
     return true;
 }
