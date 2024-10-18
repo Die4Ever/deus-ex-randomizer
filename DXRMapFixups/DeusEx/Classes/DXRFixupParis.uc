@@ -299,6 +299,8 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CLUB":
         FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
+        GetConversation('AnnetteInterrupted').AddFlagRef('Chad_Dead', false);
+        GetConversation('CharlotteInterrupted').AddFlagRef('Chad_Dead', false);
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
