@@ -1806,6 +1806,7 @@ function DropDecoration()
     local Actor hitActor;
 
     bSuccess = False;
+    dec = CarriedDecoration;
 
     if (CarriedDecoration != None)
     {
@@ -1858,11 +1859,14 @@ function DropDecoration()
             extent.Y = CarriedDecoration.CollisionRadius;
             extent.Z = 1;
             hitActor = Trace(HitLocation, HitNormal, dropVect, CarriedDecoration.Location, True, extent);
+            CarriedDecoration = None;
 
-            if ((hitActor == None) && CarriedDecoration.SetLocation(dropVect))
+            if ((hitActor == None) && dec.SetLocation(dropVect)) {
                 bSuccess = True;
+            }
             else
             {
+                CarriedDecoration = dec;
                 CarriedDecoration.SetCollision(False, False, False);
                 CarriedDecoration.bCollideWorld = False;
             }
@@ -1871,14 +1875,13 @@ function DropDecoration()
         // if we can drop it here, then drop it
         if (bSuccess)
         {
-            dec = CarriedDecoration;
-            CarriedDecoration = None;// DXRando, clear the CarriedDecoration before changing the base
             FinishDrop(dec);
         }
         else
         {
             // otherwise, don't drop it and display a message
             CarriedDecoration.SetLocation(origLoc);
+            ForcePutCarriedDecorationInHand();
             ClientMessage(CannotDropHere);
         }
     }
@@ -1886,6 +1889,9 @@ function DropDecoration()
 
 function FinishDrop(Decoration dec)
 {
+    dec.SetCollision(True, True, True);
+    dec.bCollideWorld = True;
+
     dec.bWasCarried = True;
     dec.SetBase(None);
     dec.SetPhysics(PHYS_Falling);
@@ -1896,6 +1902,28 @@ function FinishDrop(Decoration dec)
     dec.bUnlit = dec.Default.bUnlit;
     if (dec.IsA('DeusExDecoration'))
         DeusExDecoration(dec).ResetScaleGlow();
+}
+
+function bool SetBasedPawnSize(float newRadius, float newHeight)
+{
+    local bool success, oldWaterZone;
+    local Decoration dec;
+    dec = CarriedDecoration;
+    CarriedDecoration = None;
+
+    oldWaterZone = Region.Zone.bWaterZone;
+    success = Super.SetBasedPawnSize(newRadius, newHeight);
+
+    if(dec != None) {
+        if(Region.Zone.bWaterZone && !oldWaterZone) {
+            CarriedDecoration = dec;
+            DropDecoration();
+        } else {
+            CarriedDecoration = dec;
+            ForcePutCarriedDecorationInHand();
+        }
+    }
+    return success;
 }
 
 
