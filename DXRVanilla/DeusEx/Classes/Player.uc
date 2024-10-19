@@ -1873,18 +1873,7 @@ function DropDecoration()
         {
             dec = CarriedDecoration;
             CarriedDecoration = None;// DXRando, clear the CarriedDecoration before changing the base
-
-            dec.bWasCarried = True;
-            dec.SetBase(None);
-            dec.SetPhysics(PHYS_Falling);
-            dec.Instigator = Self;
-
-            // turn off translucency
-            dec.Style = dec.Default.Style;
-            dec.bUnlit = dec.Default.bUnlit;
-            if (dec.IsA('DeusExDecoration'))
-                DeusExDecoration(dec).ResetScaleGlow();
-
+            FinishDrop(dec);
         }
         else
         {
@@ -1893,6 +1882,20 @@ function DropDecoration()
             ClientMessage(CannotDropHere);
         }
     }
+}
+
+function FinishDrop(Decoration dec)
+{
+    dec.bWasCarried = True;
+    dec.SetBase(None);
+    dec.SetPhysics(PHYS_Falling);
+    dec.Instigator = Self;
+
+    // turn off translucency
+    dec.Style = dec.Default.Style;
+    dec.bUnlit = dec.Default.bUnlit;
+    if (dec.IsA('DeusExDecoration'))
+        DeusExDecoration(dec).ResetScaleGlow();
 }
 
 

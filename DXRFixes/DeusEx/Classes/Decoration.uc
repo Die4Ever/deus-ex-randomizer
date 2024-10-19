@@ -9,6 +9,10 @@ function BaseChange()
         p.ForcePutCarriedDecorationInHand();
         return;
     }
+    if(p != None && PlayerPawn(base) != None && p.CarriedDecoration != Self) {
+        p.FinishDrop(self);
+        return;
+    }
 
     // back to vanilla code
     _BaseChange();
