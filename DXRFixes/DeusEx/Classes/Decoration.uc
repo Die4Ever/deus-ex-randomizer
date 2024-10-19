@@ -4,12 +4,15 @@ function BaseChange()
 {
     local Human p;
     // DXRando: check if we're being carried
-    p = Human(GetPlayerPawn());
-    if(base == None && p != None && p.CarriedDecoration == self) {
-        p.ForcePutCarriedDecorationInHand();
-        return;
+    p = Human(base);
+    if(p == None) {
+        p = Human(GetPlayerPawn());
+        if(p != None && p.CarriedDecoration == self) {
+            p.ForcePutCarriedDecorationInHand();
+            return;
+        }
     }
-    if(p != None && PlayerPawn(base) != None && p.CarriedDecoration != Self) {
+    else if(p != None && p.CarriedDecoration != Self) {
         p.FinishDrop(self);
         return;
     }
