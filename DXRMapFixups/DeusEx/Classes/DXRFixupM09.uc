@@ -355,12 +355,14 @@ function PostFirstEntryMapFixes()
 
     case "09_NYC_SHIPBELOW":
         if (!RevisionMaps){
-            if(!dxr.flags.IsZeroRando()) {
+            if(dxr.flags.settings.goals > 0 || dxr.flags.loadout != 0) {
                 // add a tnt crate on top of the pipe, visible from the ground floor
                 AddActor(class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567));
             }
-            // add a tnt crate in the locked storage closet overlooking the helipad
-            AddActor(class'#var(prefix)CrateExplosiveSmall', vect(-4185.878906, -357.704376, -239.899658));
+            if(dxr.flags.settings.goals > 0) {
+                // add a tnt crate in the locked storage closet overlooking the helipad
+                AddActor(class'#var(prefix)CrateExplosiveSmall', vect(-4185.878906, -357.704376, -239.899658));
+            }
             // remove big crates blocking the window to the pipe, 16 units == 1 foot
             foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vectm(-136.125000, -743.875000, -215.899323)) {
                 c.Event = '';
