@@ -274,7 +274,7 @@ function AnyEntry()
 
     ShowTeleporters();
 
-    if (dxr.flags.moresettings.empty_medbots > 0) {
+    if (dxr.flags.moresettings.empty_medbots > 0) { // this change isn't helpful until the next map reads from the defaults, but that's ok because we run this in the intro too
         class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot or AugBot.";
     } else {
         class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot.";
