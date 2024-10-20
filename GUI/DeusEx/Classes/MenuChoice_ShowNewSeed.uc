@@ -7,7 +7,7 @@ static function bool ShowNewSeed(DXRando dxr)
 
 defaultproperties
 {
-    value=0;
+    value=0
     defaultvalue=0
     HelpText="Should the New Seed button be shown on the New Game window?"
     actionText="New Seed Button"
