@@ -252,6 +252,13 @@ static function bool ResurrectCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         sp.InitialInventory[i].Inventory=None;
     }
 
+    for (i=0;i<8;i++){
+        sp.InitialAlliances[i].AllianceName='';
+        sp.InitialAlliances[i].AllianceLevel=0;
+    }
+    sp.InitialAlliances[0].AllianceName = 'Player';
+    sp.InitialAlliances[0].AllianceLevel = -1;
+
     sp.InitializePawn();
 
     //Make it hostile to EVERYONE.  This thing has seen the other side
