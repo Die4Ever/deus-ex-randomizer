@@ -60,6 +60,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
     CreateChoice(class'MenuChoice_ShowTeleporters');
+    CreateChoice(class'MenuChoice_ShowNewSeed');
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }

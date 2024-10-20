@@ -76,7 +76,7 @@ Here's a trailer for WaltonWare mode. WaltonWare mode is focused on quick wins b
     * By the Book - bans lockpicks and multitools
     * Explosives Only
 * If you opt-in to Online Features (which is disabled by default, check the Rando menu)
-  * Your in-game events will also contribute to [our bot on Mastodon (which is an open source and community-run version of Twitter)](https://botsin.space/@DXRandoActivity)
+  * Your in-game events will also contribute to [our bot on Mastodon (which is an open source and community-run version of Twitter)](https://mastodon.social/@DXRandoActivity)
   * [Death Markers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Death-Markers) - see where other players have died!
   * Get notifications of new updates
   * In-game [Leaderboard](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Leaderboard) to see everyone's high scores in the end credits

@@ -1805,94 +1805,123 @@ function DropDecoration()
     local bool bSuccess;
     local Actor hitActor;
 
+    if(CarriedDecoration == None) return;
     bSuccess = False;
+    dec = CarriedDecoration;
 
-    if (CarriedDecoration != None)
+    origLoc = CarriedDecoration.Location;
+    GetAxes(Rotation, X, Y, Z);
+
+    // if we are highlighting something, try to place the object on the target
+    if ((FrobTarget != None) && !FrobTarget.IsA('Pawn'))
     {
-        origLoc = CarriedDecoration.Location;
-        GetAxes(Rotation, X, Y, Z);
+        CarriedDecoration.Velocity = vect(0,0,0);
 
-        // if we are highlighting something, try to place the object on the target
-        if ((FrobTarget != None) && !FrobTarget.IsA('Pawn'))
+        // try to drop the object about one foot above the target
+        size = FrobTarget.CollisionRadius - CarriedDecoration.CollisionRadius * 2;
+        dropVect.X = size/2 - FRand() * size;
+        dropVect.Y = size/2 - FRand() * size;
+        dropVect.Z = FrobTarget.CollisionHeight + CarriedDecoration.CollisionHeight + 16;
+        dropVect += FrobTarget.Location;
+    }
+    else
+    {
+        // throw velocity is based on augmentation
+        if (AugmentationSystem != None)
         {
+            mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+            if (mult == -1.0)
+                mult = 1.0;
+        }
+
+        if (IsLeaning())
             CarriedDecoration.Velocity = vect(0,0,0);
+        else
+            CarriedDecoration.Velocity = Vector(ViewRotation) * mult * 500 + vect(0,0,220) + 40 * VRand();
 
-            // try to drop the object about one foot above the target
-            size = FrobTarget.CollisionRadius - CarriedDecoration.CollisionRadius * 2;
-            dropVect.X = size/2 - FRand() * size;
-            dropVect.Y = size/2 - FRand() * size;
-            dropVect.Z = FrobTarget.CollisionHeight + CarriedDecoration.CollisionHeight + 16;
-            dropVect += FrobTarget.Location;
+        // scale it based on the mass
+        velscale = FClamp(CarriedDecoration.Mass / 20.0, 1.0, 40.0);
+
+        CarriedDecoration.Velocity /= velscale;
+        dropVect = Location + (CarriedDecoration.CollisionRadius + CollisionRadius + 4) * X;
+        dropVect.Z += BaseEyeHeight;
+    }
+
+    // is anything blocking the drop point? (like thin doors)
+    if (FastTrace(dropVect))
+    {
+        CarriedDecoration.SetCollision(True, True, True);
+        CarriedDecoration.bCollideWorld = True;
+
+        // check to see if there's space there
+        extent.X = CarriedDecoration.CollisionRadius;
+        extent.Y = CarriedDecoration.CollisionRadius;
+        extent.Z = 1;
+        hitActor = Trace(HitLocation, HitNormal, dropVect, CarriedDecoration.Location, True, extent);
+        CarriedDecoration = None;
+
+        if ((hitActor == None) && dec.SetLocation(dropVect)) {
+            bSuccess = True;
         }
         else
         {
-            // throw velocity is based on augmentation
-            if (AugmentationSystem != None)
-            {
-                mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
-                if (mult == -1.0)
-                    mult = 1.0;
-            }
-
-            if (IsLeaning())
-                CarriedDecoration.Velocity = vect(0,0,0);
-            else
-                CarriedDecoration.Velocity = Vector(ViewRotation) * mult * 500 + vect(0,0,220) + 40 * VRand();
-
-            // scale it based on the mass
-            velscale = FClamp(CarriedDecoration.Mass / 20.0, 1.0, 40.0);
-
-            CarriedDecoration.Velocity /= velscale;
-            dropVect = Location + (CarriedDecoration.CollisionRadius + CollisionRadius + 4) * X;
-            dropVect.Z += BaseEyeHeight;
-        }
-
-        // is anything blocking the drop point? (like thin doors)
-        if (FastTrace(dropVect))
-        {
-            CarriedDecoration.SetCollision(True, True, True);
-            CarriedDecoration.bCollideWorld = True;
-
-            // check to see if there's space there
-            extent.X = CarriedDecoration.CollisionRadius;
-            extent.Y = CarriedDecoration.CollisionRadius;
-            extent.Z = 1;
-            hitActor = Trace(HitLocation, HitNormal, dropVect, CarriedDecoration.Location, True, extent);
-
-            if ((hitActor == None) && CarriedDecoration.SetLocation(dropVect))
-                bSuccess = True;
-            else
-            {
-                CarriedDecoration.SetCollision(False, False, False);
-                CarriedDecoration.bCollideWorld = False;
-            }
-        }
-
-        // if we can drop it here, then drop it
-        if (bSuccess)
-        {
-            dec = CarriedDecoration;
-            CarriedDecoration = None;// DXRando, clear the CarriedDecoration before changing the base
-
-            dec.bWasCarried = True;
-            dec.SetBase(None);
-            dec.SetPhysics(PHYS_Falling);
-            dec.Instigator = Self;
-
-            // turn off translucency
-            dec.Style = dec.Default.Style;
-            dec.bUnlit = dec.Default.bUnlit;
-            if (dec.IsA('DeusExDecoration'))
-                DeusExDecoration(dec).ResetScaleGlow();
-
-        }
-        else
-        {
-            // otherwise, don't drop it and display a message
-            CarriedDecoration.SetLocation(origLoc);
-            ClientMessage(CannotDropHere);
+            CarriedDecoration = dec;
+            CarriedDecoration.SetCollision(False, False, False);
+            CarriedDecoration.bCollideWorld = False;
         }
     }
+
+    // if we can drop it here, then drop it
+    if (bSuccess)
+    {
+        FinishDrop(dec);
+    }
+    else
+    {
+        // otherwise, don't drop it and display a message
+        CarriedDecoration.SetLocation(origLoc);
+        ForcePutCarriedDecorationInHand();
+        ClientMessage(CannotDropHere);
+    }
+}
+
+function FinishDrop(Decoration dec)
+{
+    dec.SetCollision(True, True, True);
+    dec.bCollideWorld = True;
+
+    dec.bWasCarried = True;
+    dec.SetBase(None);
+    dec.SetPhysics(PHYS_Falling);
+    dec.Instigator = Self;
+
+    // turn off translucency
+    dec.Style = dec.Default.Style;
+    dec.bUnlit = dec.Default.bUnlit;
+    if (dec.IsA('DeusExDecoration'))
+        DeusExDecoration(dec).ResetScaleGlow();
+}
+
+function bool SetBasedPawnSize(float newRadius, float newHeight)
+{
+    local bool success, oldWaterZone;
+    local Decoration dec;
+    dec = CarriedDecoration;
+    CarriedDecoration = None;
+
+    oldWaterZone = Region.Zone.bWaterZone;
+    success = Super.SetBasedPawnSize(newRadius, newHeight);
+
+    if(dec != None) {
+        if(Region.Zone.bWaterZone && !oldWaterZone) {
+            CarriedDecoration = dec;
+            DropDecoration();
+        } else {
+            CarriedDecoration = dec;
+            ForcePutCarriedDecorationInHand();
+        }
+    }
+    return success;
 }
 
 

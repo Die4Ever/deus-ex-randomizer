@@ -299,6 +299,8 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CLUB":
         FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
+        GetConversation('AnnetteInterrupted').AddFlagRef('Chad_Dead', false);
+        GetConversation('CharlotteInterrupted').AddFlagRef('Chad_Dead', false);
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
@@ -394,8 +396,17 @@ function AnyEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)WIB wib;
+    local #var(prefix)NicoletteDuclare nico;
 
     switch(dxr.localURL) {
+    case "10_PARIS_METRO":
+        if (dxr.flags.settings.starting_map >= 109) {
+            foreach AllActors(class'#var(prefix)NicoletteDuclare', nico, 'DXRMissions') {
+                nico.LeaveWorld();
+                break;
+            }
+        }
+        break;
     case "11_PARIS_CATHEDRAL":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-3570.950684, 2238.034668, -783.901367));// right at the start
 

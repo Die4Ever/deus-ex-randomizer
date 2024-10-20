@@ -11,6 +11,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'trap_door'){
             DestroyMover(dxm);
         }
+
         break;
     }
 }

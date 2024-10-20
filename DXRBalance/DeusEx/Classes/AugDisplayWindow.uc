@@ -1,5 +1,15 @@
 class AugDisplayWindow injects AugmentationDisplayWindow;
 
+var transient bool d3d11;// d3d11 drawing the viewport of targeting aug fills the entire screen, just disable that
+
+function ConfigurationChanged()
+{
+    local string r;
+    Super.ConfigurationChanged();
+    r = GetConfig("Engine.Engine", "GameRenderDevice");
+    d3d11 = "D3D11Drv.D3D11RenderDevice" ~= r;
+}
+
 function bool IsHeatSource(Actor A)
 {
     if ((A.bHidden) && (Player.Level.NetMode != NM_Standalone))
@@ -580,7 +590,10 @@ function SuperDrawTargetAugmentation(GC gc)
                 boxBRX = boxCX + width/8;
                 boxBRY = boxCY + height/8;
 
-                if (targetLevel > 2)
+                if(d3d11 && winZoom!=None) {
+                    winZoom.Hide();
+                }
+                else if (targetLevel > 2)
                 {
                     if (winZoom != None)
                     {

@@ -73,12 +73,12 @@ event InitWindow()
     StyleChanged();
 }
 
-
 function SetDxr(DXRando d)
 {
     dxr=d;
     flags = DXRFlags(dxr.FindModule(class'DXRFlags'));
-    if(flags.moresettings.splits_overlay > 0)
+
+    if(class'MenuChoice_ShowNewSeed'.static.ShowNewSeed(dxr))
         actionButtons[3].btn.Show();
     else
         actionButtons[3].btn.Hide();
