@@ -1,7 +1,7 @@
 class DXRHalloween extends DXRActorsBase;
 
 var #var(DeusExPrefix)Carcass carcs[256];
-var float times[256];
+var float times[256], curtime;
 var int num_carcs;
 
 function PostFirstEntry()
@@ -28,6 +28,9 @@ function PostFirstEntry()
 
 function ReEntry(bool IsTravel)
 {
+    if(curtime~=0) {
+        curtime = Level.TimeSeconds;// when updating the game
+    }
     if(IsTravel && dxr.flags.IsHalloweenMode()) {
         // recreate him if you leave the map and come back, but not if you load a save
         class'MrH'.static.Create(self);
@@ -58,6 +61,7 @@ function CheckCarcasses()
     local float zombie_time, dog_zombie_time;
 
     if( dxr.flags.settings.enemyrespawn <= 0 ) return;
+    curtime += 1;
     zombie_time = dxr.flags.settings.enemyrespawn - 5;
     zombie_time = FClamp(zombie_time, 1, 10000);
     dog_zombie_time = zombie_time / 5;
@@ -94,9 +98,9 @@ function CheckCarcasses()
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
             if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
-                times[num_carcs] = Level.TimeSeconds + dog_zombie_time + FRand()*2;
+                times[num_carcs] = curtime + dog_zombie_time + FRand()*2;
             } else {
-                times[num_carcs] = Level.TimeSeconds + zombie_time + FRand()*10;
+                times[num_carcs] = curtime + zombie_time + FRand()*10;
             }
             carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;
@@ -108,13 +112,23 @@ function CheckCarcasses()
 function float _GetZombieTime(#var(DeusExPrefix)Carcass carc)
 {
     local int i;
+    local float zombie_time, dog_zombie_time;
 
     for(i=0; i < num_carcs; i++) {
         if(carcs[i] == carc) {
             return times[i];
         }
     }
-    return Level.TimeSeconds;
+
+    zombie_time = dxr.flags.settings.enemyrespawn - 5;
+    zombie_time = FClamp(zombie_time, 1, 10000);
+    dog_zombie_time = zombie_time / 5;
+
+    if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
+        return curtime + dog_zombie_time + FRand()*2;
+    } else {
+        return curtime + zombie_time + FRand()*10;
+    }
 }
 
 static function float GetZombieTime(#var(DeusExPrefix)Carcass carc)
@@ -122,7 +136,7 @@ static function float GetZombieTime(#var(DeusExPrefix)Carcass carc)
     local DXRHalloween h;
 
     h = DXRHalloween(Find());
-    if(h == None) return carc.Level.TimeSeconds;
+    if(h == None) return carc.Level.TimeSeconds + 20;
     return h._GetZombieTime(carc);
 }
 
@@ -162,7 +176,7 @@ function bool CheckResurrectCorpse(#var(DeusExPrefix)Carcass carc, float time)
     if(carc.bDeleteMe) return true;
 
     // wait for Zombie Time!
-    if(time > Level.TimeSeconds) return false;
+    if(time > curtime) return false;
 
     return ResurrectCorpse(self, carc);
 }
