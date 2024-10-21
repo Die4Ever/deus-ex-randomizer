@@ -598,7 +598,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover',d,'secret_door'){
             d.bFrobbable=False;
         }
-        foreach AllActors(class'AllianceTrigger', at) {
+        foreach AllActors(class'#var(prefix)AllianceTrigger', at) {
             if (at.event == 'crashscene_cops') {
                 at.event = 'RumbleCops';
             }
