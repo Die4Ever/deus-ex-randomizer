@@ -240,6 +240,8 @@ function AnyEntry()
 {
     local #var(prefix)Vehicles v;
     local #var(prefix)Button1 b;
+    local WeaponMiniCrossbow mcb;
+
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -278,6 +280,11 @@ function AnyEntry()
         class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot or AugBot.";
     } else {
         class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot.";
+    }
+
+    // this is necessary for some reason
+    foreach AllActors(class'WeaponMiniCrossbow', mcb) {
+        mcb.FireSound = Sound'DeusExSounds.Weapons.MiniCrossbowFire';
     }
 }
 
