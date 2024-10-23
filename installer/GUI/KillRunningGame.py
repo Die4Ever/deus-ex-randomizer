@@ -34,12 +34,11 @@ def AskKillGame(source:Path, dest:Path):
 
     info('Ask kill game', dest)
     resp = messagebox.askyesno('Close game?', dest.name + ' is currently running and must be closed in order to install. Would you like to close it now?\n\nYou will lose any unsaved progress.')
-    if not resp:
-        return
-
-    cmd = ['taskkill', '/F', '/IM', dest.name]
-    info('Killing game', dest, cmd)
-    subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
-    time.sleep(1)
+    if resp:
+        cmd = ['taskkill', '/F', '/IM', dest.name]
+        info('Killing game', dest, cmd)
+        subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
+        time.sleep(1)
+    # now try again, even if the user declines because maybe they closed the game manually
     CopyTo(source, dest)
     return True
