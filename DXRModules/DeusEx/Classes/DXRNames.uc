@@ -88,6 +88,13 @@ static function GiveRandomName(DXRando dxr, ScriptedPawn p)
     }
 }
 
+static function GiveRandomCarcassName(DXRando dxr, #var(DeusExPrefix)Carcass c)
+{
+    c.UnfamiliarName = RandomName(dxr,c);
+    c.FamiliarName = c.UnfamiliarName;
+    c.ItemName = c.FamiliarName;
+}
+
 static function string RandomName(DXRando dxr, optional Actor a)
 {
     if ( a != None && a.IsA('#var(prefix)Robot') ) {

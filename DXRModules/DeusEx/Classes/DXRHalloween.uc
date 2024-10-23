@@ -399,6 +399,7 @@ function MapFixes()
             carc.bHidden = true;// ForceZombie tag allows zombies to spawn out of hidden and bNotDead carcasses
             carc.bNotDead=true;// prevent blood
             RandomizeSize(carc);
+            class'DXRNames'.static.GiveRandomCarcassName(dxr, carc);
         }
         break;
     }
