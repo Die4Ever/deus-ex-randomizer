@@ -151,7 +151,7 @@ function OneItemMode()
         if(d.Content3!=None) contents[numcontents++] = d.Content3;
     }
 
-    if(num<=1) return;
+    if(num+numcontents <= 1) return;
     while(newclass==None) {
         slot = rng(num+numcontents);
         if(slot<num) newclass = items[slot].class;

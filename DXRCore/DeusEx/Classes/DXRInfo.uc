@@ -192,7 +192,7 @@ function bool IsOctober()
 {
     // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
     if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
-    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
+    if(!class'MenuChoice_OctoberCosmetics'.static.IsEnabled(GetDXR().flags)) return false;
     return Level.Month == 10;
 }
 
@@ -200,7 +200,7 @@ function bool IsHalloween()
 {
     // Happy Halloween! This will be used for general halloween things like cosmetic changes and piano song weighting
     if(GetDXR().flags.IsHalloweenMode()) return true; // this takes priority over memes
-    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(GetDXR().flags)) return false;
+    if(!class'MenuChoice_OctoberCosmetics'.static.IsEnabled(GetDXR().flags)) return false;
     return Level.Month == 10 && Level.Day == 31;
 }
 

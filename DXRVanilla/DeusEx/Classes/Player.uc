@@ -1786,7 +1786,7 @@ function ForcePutCarriedDecorationInHand()
             CarriedDecoration.ScaleGlow = 1.0;
             CarriedDecoration.bUnlit = True;
 
-            FrobTarget = None;
+            if(FrobTarget == CarriedDecoration) FrobTarget = None;
         }
         else
         {

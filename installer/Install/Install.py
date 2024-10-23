@@ -7,6 +7,7 @@ try:
     from Install import MapVariants
     from Install import Config
     from GUI.SaveMigration import SaveMigration
+    from GUI.KillRunningGame import CopyExeTo
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -140,7 +141,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     # also fix vanilla stuff
     if exename != 'DeusEx' and settings.get('FixVanilla'):
         exedest:Path = system / 'DeusEx.exe'
-        CopyTo(exe_source, exedest)
+        CopyExeTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
         VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
                           globalsettings=globalsettings, sourceINI=ini)
@@ -156,7 +157,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
         return
 
     exedest:Path = system / (exename+'.exe')
-    CopyTo(exe_source, exedest)
+    CopyExeTo(exe_source, exedest)
 
     intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
     intdest = system / (exename+'.int')
@@ -369,7 +370,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     if not IsWindows():
         in_place = True
     if not in_place:
-        CopyTo(exepath, newexepath)
+        CopyExeTo(exepath, newexepath)
 
     intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
     intdest = system / (newexename+'.int')

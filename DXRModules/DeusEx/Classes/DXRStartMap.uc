@@ -1012,7 +1012,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         switch(bingo_event)
         {
             case "AimeeLeMerchantLived":
-                return start_map < 99 || start_map > 100;
+                return start_map > 100;
         }
     case 11: // fallthrough to the rest of Paris
         switch(bingo_event)
@@ -1074,6 +1074,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             return start_map>=40; //Miguel is the only Terrorist after mission 3 - easier to just block this
         case "Supervisor_Paid":
             return start_map >= 70;
+        case "AimeeLeMerchantLived":
+            return end_mission < 10;
         case "WarehouseEntered":
         case "Antoine_Dead":
         case "Chad_Dead":

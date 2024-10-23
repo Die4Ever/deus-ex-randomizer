@@ -76,7 +76,7 @@ function IncreaseZoneBrightness(int brightness, ZoneInfo z)
     if(zb.brightness == 0)
         z.AmbientSaturation = 255;
 
-    if(IsHalloween()) {
+    if(dxr.flags.IsHalloweenMode()) {
         z.AmbientBrightness = Max(z.AmbientBrightness, 5);
         z.AmbientSaturation = Min(z.AmbientSaturation, 100);
         z.AmbientHue = 255;

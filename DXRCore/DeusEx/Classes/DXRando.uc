@@ -168,7 +168,7 @@ function CheckConfig()
         player.bAskedToTrain = false;
         player.SaveConfig();
     }
-    if( VersionOlderThan(config_version, 3,1,0,1) ) {
+    if( VersionOlderThan(config_version, 3,2,3,3) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }

@@ -73,7 +73,7 @@ function CheckOfflineUpdates()
     if(s == last_notification) return;
     last_notification = s;
     SaveConfig();
-    notification_url = "https://github.com/Die4Ever/deus-ex-randomizer/releases/latest";
+    notification_url = "https://mods4ever.com";
 
     foreach AllObjects(class'DXRNews', news) {
         news.Set(self);
