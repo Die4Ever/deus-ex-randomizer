@@ -6,7 +6,6 @@ class MenuScreenRandoOptionsGameplay expands MenuScreenRandoOptionsBase;
 
 function CreateChoices()
 {
-    CreateChoice(class'MenuChoice_ToggleMemes');
     // TODO: simulated crowd control strength
 
 #ifdef vanilla

@@ -2,7 +2,7 @@
 // MenuScreenRandoOptions
 //=============================================================================
 
-class MenuScreenRandoOptions expands MenuUIScreenWindow;
+class MenuScreenRandoOptions expands MenuUIScreenWindow; // obsolete all-in-one menu
 
 var MenuUIScrollAreaWindow winScroll;
 var Window controlsParent;
@@ -20,6 +20,7 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_BrightnessBoost');
     CreateChoice(class'MenuChoice_ToggleMemes');
+    CreateChoice(class'MenuChoice_OctoberCosmetics');
     // TODO: simulated crowd control strength
 
     if(!#defined(revision)) {
