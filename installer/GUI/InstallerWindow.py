@@ -295,7 +295,7 @@ class InstallerWindow(GUIBase):
             if v.get('install'):
                 installedflavorstext += k + ', '
         if installedflavorstext.endswith(', '):
-            installedflavorstext = 'Installed DXRando for: ' + installedflavorstext[0:-2]
+            installedflavorstext = 'Installed for: ' + installedflavorstext[0:-2]
 
         if flavors.get('Vanilla', {}).get('FixVanilla'):
             installedflavorstext = 'Fixed vanilla. ' + installedflavorstext
@@ -308,6 +308,8 @@ class InstallerWindow(GUIBase):
             extra += '\nCreated DXRando.exe'
         if flavors.get('Vanilla? Madder.', {}).get('install') and IsWindows():
             extra += '\nCreated VMDRandomizer.exe'
+        if extra:
+            extra = '\n' + extra
         self.root.title('DXRando Installation Complete!')
         self.root.update()
         messagebox.showinfo('Installation Complete!', installedflavorstext + extra)
