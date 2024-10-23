@@ -7,7 +7,7 @@ try:
     from Install import MapVariants
     from Install import Config
     from GUI.SaveMigration import SaveMigration
-    from GUI.KillRunningGame import CopyExeTo
+    from GUI.KillRunningGame import AskKillGame, CopyExeTo
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -77,6 +77,8 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
 
     info('Installing flavors:', flavors, globalsettings, exe)
 
+    AskKillGame(exe)
+
     for(f, settings) in flavors.items():
         ret={}
         if not settings.get('install') and f != 'Vanilla':
@@ -119,13 +121,6 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     if not settings.get('install') and not settings.get('LDDP') and not settings.get('FixVanilla'):
         return
 
-    if settings.get('LDDP'):
-        InstallLDDP(system, settings)
-
-    # always install FemJCu because it doesn't hurt to have
-    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
-    CopyTo(FemJCu, system / 'FemJC.u')
-
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
     exetype = settings.get('exetype')
     kentie = True
@@ -148,16 +143,24 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     else:
         info('skipping fixing of vanilla')
 
+    if settings.get('install'):
+        exedest:Path = system / (exename+'.exe')
+        CopyExeTo(exe_source, exedest)
+
     if kentie: # kentie needs this, copy it into the regular System folder, doesn't hurt if you don't need it
         deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
         CopyTo(deusexeu, system / 'DeusExe.u')
 
+    if settings.get('LDDP'):
+        InstallLDDP(system, settings)
+
+    # always install FemJCu because it doesn't hurt to have
+    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
+    CopyTo(FemJCu, system / 'FemJC.u')
+
     if not settings.get('install'):
         info('skipping installation of vanilla DXRando')
         return
-
-    exedest:Path = system / (exename+'.exe')
-    CopyExeTo(exe_source, exedest)
 
     intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
     intdest = system / (exename+'.int')
@@ -323,6 +326,8 @@ def InstallLDDP(system:Path, settings:dict):
 
 def InstallGMDX(system:Path, settings:dict, exename:str):
     game = system.parent
+    AskKillGame(system/'GMDX.exe')
+    AskKillGame(system/'GMDXv10.exe')
     (changes, additions) = GetConfChanges('GMDX')
     Mkdir(game/'SaveGMDXRando', exist_ok=True)
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
@@ -347,10 +352,12 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
 def InstallRevision(system:Path, settings:dict):
     # Revision's exe is special and calls back to Steam which calls the regular Revision.exe file, so we pass in_place=True
     revsystem = system.parent / 'Revision' / 'System'
+    AskKillGame(revsystem/'Revision.exe')
     CreateModConfigs(revsystem, settings, 'Rev', 'Revision', in_place=True)
 
 
 def InstallHX(system:Path, settings:dict):
+    AskKillGame(system/'HX.exe')
     CopyPackageFiles('HX', system.parent, ['HXRandomizer.u'])
     (changes, additions) = GetConfChanges('HX')
     Mkdir(system.parent/'SaveHXRando', exist_ok=True)
@@ -366,6 +373,8 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     newexepath = system / (newexename+'.exe')
     modpath = system.parent / (modname+'Randomizer')
     mapspath = modpath / 'Maps'
+    AskKillGame(exepath)
+    AskKillGame(newexepath)
     Mkdir(mapspath, exist_ok=True, parents=True)
     if not IsWindows():
         in_place = True

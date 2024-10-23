@@ -736,7 +736,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return SeriousSam;
     if(slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
-    if(slot--==0) return OneItemMode;
+    if(!VersionIsStable()) if(slot--==0) return OneItemMode;
     return 999999;
 }
 

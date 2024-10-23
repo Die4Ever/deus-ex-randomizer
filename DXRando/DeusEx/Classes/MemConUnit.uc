@@ -17,8 +17,12 @@ function PostPostBeginPlay()
 
     if (m==None) return;
 
+    Description = default.Description;
+    if(m.FixedSavesExtreme == m.dxr.flags.autosave){
+        Description="This item is capable of capturing and containing half of your memories, requiring 2 of them to save the game one time. The only freebie autosave you get is at the very start of the game.";
+    }
     if (m.IsFixedSaves()){
-        Description=default.Description $ "|n|nYou must have an ATM, personal computer, public terminal, or security computer highlighted in order to save your game.";
+        Description=Description $ "|n|nYou must have an ATM, personal computer, public terminal, or security computer highlighted in order to save your game. You do not need to open the computer, just look at it. Then you can use the normal Save Game menu or the Quicksave button.";
     }
 }
 #endif
@@ -39,7 +43,7 @@ defaultproperties
      largeIcon=Texture'LargeIconMemConUnit'
      largeIconWidth=18
      largeIconHeight=44
-     Description="This item is capable of capturing and containing your memories, allowing you to save the game one time."
+     Description="This item is capable of capturing and containing your memories, allowing you to save the game one time. The only freebie autosave you get is at the very start of the game."
      beltDescription="MCU"
      Mesh=LodMesh'DeusExItems.VialAmbrosia'
      CollisionRadius=5.0
