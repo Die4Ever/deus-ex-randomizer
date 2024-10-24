@@ -573,16 +573,6 @@ function DeusExNote AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, n
     return None;
 }
 
-function MarkConvPlayed(string flagname, bool bFemale)
-{
-    flagname = flagname$"_Played";
-    dxr.flagbase.SetBool(StringToName(flagname),true,,-1);
-    if(bFemale) {
-        flagname = "FemJC"$flagname;
-        dxr.flagbase.SetBool(StringToName(flagname),true,,-1);
-    }
-}
-
 function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local bool bEmptyNotes, bFemale;
