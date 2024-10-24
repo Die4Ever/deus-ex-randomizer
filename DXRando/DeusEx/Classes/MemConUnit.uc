@@ -22,7 +22,10 @@ function PostPostBeginPlay()
         Description="This item is capable of capturing and containing half of your memories, requiring 2 of them to save the game one time. The only freebie autosave you get is at the very start of the game.";
     }
     if (m.IsFixedSaves()){
-        Description=Description $ "|n|nYou must have an ATM, personal computer, public terminal, or security computer highlighted in order to save your game. You do not need to open the computer, just look at it. Then you can use the normal Save Game menu or the Quicksave button.";
+        Description=Description
+            $ "|n|nYou must have an ATM, personal computer, public terminal, or security computer highlighted in order to save your game. You do not need to open the computer, just look at it. Then you can use the normal Save Game menu or the Quicksave button."
+            $ "|n|nSometimes you might want to backtrack to save."
+            $ "|n|nRemember that if you die not all is lost, because you now have a better plan!";
     }
 }
 #endif
