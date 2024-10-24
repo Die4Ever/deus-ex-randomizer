@@ -307,8 +307,8 @@ function AnyEntryMapFixes()
         FixConversationFlag(GetConversation('NicoletteInCellar'), 'ChateauInCeller', true, 'ChateauInCellar', true);
         break;
     case "10_PARIS_METRO":
-        //Tong gives you a map of the streets when you enter via the subway
-        c = GetConversation('DL_military');
+        //Tong gives you a map of the streets when you enter via the sewer
+        c = GetConversation('DL_metrosewer');
         ce = c.eventList;
         cePrev=ce;
         while(ce!=None){
