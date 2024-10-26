@@ -848,7 +848,6 @@ function TimerMapFixes()
 
 function private _SiloGoalChecks() {
     local #var(prefix)HowardStrong hs;
-    local bool strongAlive;
     local BlackHelicopter chopper;
 
     // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
@@ -856,13 +855,8 @@ function private _SiloGoalChecks() {
         return;
     }
 
-    // but we do play the vanilla infolink if you redirect the missile and howard is still alive
-    foreach AllActors(class'#var(prefix)HowardStrong', hs) {
-        strongAlive = True;
-        break;
-    }
-
-    if (strongAlive == False) {
+    // but we do things differently if you redirect the missile while Howard is (un?)dead
+    if (dxr.flagbase.GetBool('HowardStrong_Dead')) {
         // both goals completed
         if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
             // both goals completed in order, computer infolink already played, play vanilla infolink
