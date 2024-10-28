@@ -828,6 +828,16 @@ function Conversation GetConversation(Name conName)
     return None;
 }
 
+function MarkConvPlayed(string flagname, bool bFemale)
+{
+    flagname = flagname$"_Played";
+    dxr.flagbase.SetBool(StringToName(flagname),true,,-1);
+    if(bFemale) {
+        flagname = "FemJC"$flagname;
+        dxr.flagbase.SetBool(StringToName(flagname),true,,-1);
+    }
+}
+
 static function RemoveConvEventByLabel(Conversation conv, string label)
 {
     local ConEvent prev, ce;

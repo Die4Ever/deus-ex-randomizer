@@ -134,6 +134,7 @@ function FirstEntry()
 
     SetSeed("DXREnemies FirstEntry");
     if(dxr.localURL == "10_PARIS_METRO" && chance_single(dxr.flags.remove_paris_mj12)) {
+        MarkConvPlayed("DL_military", dxr.flagbase.GetBool('LDDPJCIsFemale')); // Above I'm showing MJ12 troops and the Paris police
         foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
             if(sp.Alliance=='mj12') {
                 sp.Event='';
