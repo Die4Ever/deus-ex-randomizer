@@ -847,7 +847,6 @@ function TimerMapFixes()
 }
 
 function private _SiloGoalChecks() {
-    local #var(prefix)HowardStrong hs;
     local BlackHelicopter chopper;
 
     // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
