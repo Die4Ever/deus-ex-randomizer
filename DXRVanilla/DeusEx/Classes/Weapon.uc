@@ -15,7 +15,7 @@ function PostBeginPlay()
     local DXRWeapons m;
     Super.PostBeginPlay();
 
-    m = DXRWeapons(class'DXRWeapons'.static.Find());
+    m = DXRWeapons(class'DXRWeapons'.static.Find(true));
     if(m != None) {
         m.RandoWeapon(self);
     }
