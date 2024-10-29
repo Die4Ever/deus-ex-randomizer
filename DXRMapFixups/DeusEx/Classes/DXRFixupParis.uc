@@ -25,6 +25,7 @@ function PreFirstEntryMapFixes()
     local Businesswoman1 bw;
     local #var(prefix)NicoletteDuclare nico;
     local #var(prefix)NanoKey k;
+    local DXRMoverSequenceTrigger elevatortrig;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -33,6 +34,11 @@ function PreFirstEntryMapFixes()
     case "10_PARIS_CATACOMBS":
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
         SetAllLampsState(true, false, true); // lamps in the building next to the metro station
+
+        AddSwitch(vect(-3615.780029, 3953.899902, 2121.5), rot(0, 16384, 0), 'roof_elevator_call');
+        elevatortrig = Spawn(class'DXRMoverSequenceTrigger',, 'roof_elevator_call');
+        elevatortrig.Event = 'roof_elevator';
+
         break;
 
     case "10_PARIS_CATACOMBS_TUNNELS":
@@ -307,8 +313,8 @@ function AnyEntryMapFixes()
         FixConversationFlag(GetConversation('NicoletteInCellar'), 'ChateauInCeller', true, 'ChateauInCellar', true);
         break;
     case "10_PARIS_METRO":
-        //Tong gives you a map of the streets when you enter via the subway
-        c = GetConversation('DL_military');
+        //Tong gives you a map of the streets when you enter via the sewer
+        c = GetConversation('DL_metrosewer');
         ce = c.eventList;
         cePrev=ce;
         while(ce!=None){

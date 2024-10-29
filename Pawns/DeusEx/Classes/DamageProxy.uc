@@ -1,4 +1,4 @@
-class DamageProxy extends ScriptedPawn;
+class DamageProxy extends #var(prefix)ScriptedPawn;
 
 var float height;
 

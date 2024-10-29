@@ -1,4 +1,4 @@
-class MrH extends HumanMilitary;
+class MrH extends #var(prefix)HumanMilitary;
 
 var float healthRegenTimer, empRegenTimer;
 var #var(PlayerPawn) player;

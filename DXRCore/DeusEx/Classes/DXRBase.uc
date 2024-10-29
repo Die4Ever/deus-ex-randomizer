@@ -39,10 +39,10 @@ simulated function DXRando GetDXR()
     return dxr;
 }
 
-static function DXRBase Find()
+static function DXRBase Find(optional bool bSilent)
 {
     if(class'DXRando'.default.dxr == None) return None;
-    return class'DXRando'.default.dxr.FindModule(default.class);
+    return class'DXRando'.default.dxr.FindModule(default.class, bSilent);
 }
 
 simulated event PostNetBeginPlay()

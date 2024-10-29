@@ -148,11 +148,11 @@ function DXRando GetDXR()
     return dxr;
 }
 
-function DXRBase DXRFindModule(class<DXRBase> class)
+function DXRBase DXRFindModule(class<DXRBase> class, optional bool bSilent)
 {
     local DXRBase m;
     if( dxr == None ) GetDXR();
-    if( dxr != None ) m = dxr.FindModule(class);
+    if( dxr != None ) m = dxr.FindModule(class, bSilent);
     return m;
 }
 
@@ -259,7 +259,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     local #var(DeusExPrefix)Pickup pickup,ownedPickup;
     local #var(prefix)WeaponMod mod;
 
-    if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
+    if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts', true));
     if ( loadout != None && Inventory(FrobTarget) != None && loadout.ban(self, Inventory(FrobTarget)) ) {
         FrobTarget.Destroy();
         return true;

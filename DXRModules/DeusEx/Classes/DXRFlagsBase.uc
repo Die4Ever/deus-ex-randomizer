@@ -1215,8 +1215,7 @@ function ExtendedTests()
     teststring(ToHex(0x100F), "100F", "ToHex(0x100F)");
     teststring(ToHex(0x9001F), "9001F", "ToHex(0x9001F)");
 
-    text = VersionString();
-    testbool(VersionIsStable(), InStr(text, "Alpha")==-1 && InStr(text, "Beta")==-1, "VersionIsStable() matches version text, " $ text);
+    testbool(VersionIsStable(), VersionString()=="", "VersionIsStable() matches version text, " $ text);
     testbool( #bool(debug), false, "debug is disabled");
     testbool( #bool(locdebug), false, "locdebug is disabled");
     testbool( #bool(debugnames), false, "debugnames is disabled");
