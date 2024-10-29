@@ -632,6 +632,7 @@ state() JumpInTheLine {
 
         // why does this only affect some of the ScriptedPawns?
         foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
+            if(MrH(p) != None) continue;
             t = Level.TimeSeconds - p.Location.X - p.Location.Y;
             t = sin(t / 2.0) * 160.0;
             v = p.Location;
@@ -729,6 +730,7 @@ function MakeAllGhosts()
 
     foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
         if(#var(prefix)Robot(p) != None) continue;
+        if(MrH(p) != None) continue;
         class'DXRHalloween'.static.MakeGhost(p);
         if(isEndgame4) {
             p.SetPhysics(PHYS_None);

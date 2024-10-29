@@ -177,6 +177,8 @@ function Ending_FirstEntry()
 
     if (ending!=0){
         //Notify of game completion with correct ending number
+        player().bCollideWorld = false;
+        player().SetCollision(false,false,false);
         BeatGame(dxr,ending);
     }
 }
@@ -1017,7 +1019,9 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     data.GetBingoSpot(0, 0, event, desc, progress, max);
     if( event != "" ) {
         //Make sure bingo didn't get completed just before leaving a level
-        CheckBingoWin(dxr,data.NumberOfBingos());
+        if(dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber != 99) {
+            CheckBingoWin(dxr,data.NumberOfBingos());
+        }
     } else {
         SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
         _CreateBingoBoard(data, dxr.flags.settings.starting_map, dxr.flags.bingo_duration);
