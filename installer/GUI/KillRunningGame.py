@@ -19,25 +19,28 @@ def CopyExeTo(source:Path, dest:Path):
 
 
 def AskKillGame(exe:Path):
-    if not IsWindows():
-        return False
-    selfpath = Path(sys.argv[0]).resolve()
-    if selfpath == exe.resolve():
-        info('Cannot overwrite self', exe)
-        messagebox.showerror('Cannot overwrite installer', 'Rename the installer file and run it again.')
-        sys.exit(1)
+    try:
+        if not IsWindows():
+            return False
+        selfpath = Path(sys.argv[0]).resolve()
+        if selfpath == exe.resolve():
+            info('Cannot overwrite self', exe)
+            messagebox.showerror('Cannot overwrite installer', 'Rename the installer file and run it again.')
+            sys.exit(1)
 
-    if not IsGameRunning(exe):
-        return False
+        if not IsGameRunning(exe):
+            return False
 
-    info('Ask kill game', exe)
-    resp = messagebox.askyesno('Close game?', exe.name + ' is currently running and must be closed in order to install. Would you like to close it now?\n\nYou will lose any unsaved progress.')
-    if resp:
-        cmd = ['taskkill', '/F', '/IM', exe.name]
-        info('Killing game', exe, cmd)
-        subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
-        time.sleep(1)
-    # try again, even if the user declines because maybe they closed the game manually
+        info('Ask kill game', exe)
+        resp = messagebox.askyesno('Close game?', exe.name + ' is currently running and must be closed in order to install. Would you like to close it now?\n\nYou will lose any unsaved progress.')
+        if resp:
+            cmd = ['taskkill', '/F', '/IM', exe.name]
+            info('Killing game', exe, cmd)
+            subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
+            time.sleep(1)
+        # try again, even if the user declines because maybe they closed the game manually
+    except Exception as e:
+        info('Error in AskKillGame', e, exe)
     return True
 
 
