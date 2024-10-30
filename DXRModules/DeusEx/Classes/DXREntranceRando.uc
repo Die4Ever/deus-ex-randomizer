@@ -1162,7 +1162,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
         }
         else {
             if( dt != None )
-                dt.SetDestination(newMap, '', newTag);
+                dt.SetDestination(newMap,, newTag);
 #ifdef injections
             else if( m != None )
                 m.SetDestination(newMap, '', newTag);
