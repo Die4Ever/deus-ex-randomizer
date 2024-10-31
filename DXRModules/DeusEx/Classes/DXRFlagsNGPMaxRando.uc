@@ -95,7 +95,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 
     if(DXRFlags(self).IsHalloweenMode()) {
         moresettings.reanimation = rng(10) + 15;
-    } else if(chance_single(33)) { // this cast is pretty nasty
+    } else if (chance_single(33)) { // this cast is pretty nasty
         if (chance_single(50)) {
             settings.enemyrespawn = rng(120) + 120;
         } else {
