@@ -209,6 +209,7 @@ function RandoEnemies(int percent, int hidden_percent)
         if(p.bHasCloak) p.CloakThreshold = p.Health - 10;// make Anna and Walt cloak quickly
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
+        if (dxr.flags.IsWaltonWare()) _perc *= 0.7;
 
         SetSeed("RandomizeSP " $ p.name);
         if( _perc>=100 || chance_single(_perc) ) RandomizeSP(p, _perc);

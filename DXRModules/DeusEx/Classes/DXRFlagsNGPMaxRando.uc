@@ -95,8 +95,9 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     if(DXRFlags(self).IsHalloweenMode()) {
         settings.enemyrespawn = rng(10) + 15;
     }
-    if(chance_single(33)) { // this cast is pretty nasty
-        settings.enemyrespawn = rng(120) + 120;
+    if(chance_single(20)) { // this cast is pretty nasty
+        settings.enemyrespawn = rng(240) + 180;
+
     } else {
         settings.enemyrespawn = 0;
     }
@@ -366,10 +367,7 @@ simulated function MaxRandoValPair(out int min, out int max)
 
 function float NewGamePlusVal(float val, float curve, float exp, float min, float max, bool doTweak)
 {
-    local bool increases;
     local float tweak;
-
-    increases = curve > 1.0;
 
     curve = (curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0; // chop off 1 and scale the rest based on the scalar setting
     if (doTweak) {
@@ -378,7 +376,7 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
     }
     curve += 1.0; // restore the 1
 
-    if (increases) {
+    if (curve > 1.0) {
         curve = FMax(curve, 1.02);
     } else {
         curve = FMin(curve, 0.98);
