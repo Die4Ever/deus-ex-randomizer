@@ -252,10 +252,10 @@ function BindControls(optional string action)
     Slider(f.settings.enemies_nonhumans, 0, 100);
 
     NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn. Leave blank or 0 to disable.");
-    Slider(f.settings.enemyrespawn, 0, 10000);
+    Slider(f.settings.enemyrespawn, 0, 3600);
 
     NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to rise from the dead as zombies. Leave blank or 0 to disable.");
-    Slider(f.moresettings.reanimation, 0, 10000);
+    Slider(f.moresettings.reanimation, 0, 3600);
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_move, 0, 100);
