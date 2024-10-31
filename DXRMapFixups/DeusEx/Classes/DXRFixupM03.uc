@@ -69,6 +69,7 @@ function PreFirstEntryMapFixes()
     local Actor a;
     local Trigger t;
     local Teleporter tele;
+    local DynamicTeleporter dt;
     local #var(prefix)NanoKey k;
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
@@ -250,6 +251,18 @@ function PreFirstEntryMapFixes()
                     tele.SetCollisionSize(tele.CollisionRadius, tele.CollisionHeight + 10);
                 }
             }
+
+            foreach AllActors(class'Teleporter', tele) {
+                if (tele.event != 'BHElevatorEnt') continue;
+
+                tele.event = '';
+                tele.SetCollision(false, false, false);
+                break;
+            }
+            dt = Spawn(class'DynamicTeleporter',,, vectm(2048.0, -2827.0, 56.1));
+            dt.SetCollisionSize(50.0, 40.0);
+            dt.SetDestination("03_NYC_AirfieldHeliBase",, "BHElevatorEnt");
+
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
