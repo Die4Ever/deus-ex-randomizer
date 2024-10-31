@@ -93,7 +93,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
-    if(DXRFlags(self).IsHalloweenMode()) {
+    if(DXRFlags(self).IsHalloweenMode()) {  // this cast is pretty nasty
         moresettings.reanimation = rng(10) + 15;
     } else if (chance_single(33)) { // this cast is pretty nasty
         if (chance_single(50)) {
