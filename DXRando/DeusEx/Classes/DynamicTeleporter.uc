@@ -3,7 +3,7 @@ class DynamicTeleporter extends Teleporter;
 var name destName;
 var int yaw;
 
-function SetDestination(string destURL, name dest_actor_name, optional string tag, optional int dest_yaw)
+function SetDestination(string destURL, optional name dest_actor_name, optional string tag, optional int dest_yaw)
 {// TODO: make dest_yaw a required argument, have to add rotations to DXRBacktracking
     URL = destURL $ "#" $ tag;
     destName = dest_actor_name;
