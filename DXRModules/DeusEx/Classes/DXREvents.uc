@@ -388,8 +388,11 @@ function SetWatchFlags() {
 
         break;
     case "02_NYC_STREET":
+        WatchFlag('AlleyBumRescued');
         WatchFlag('M02SallyDone');
         WatchFlag('MeetSandraRenton_Played');
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
+        bt.bingoEvent="MadeBasket";
         break;
     case "02_NYC_HOTEL":
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
@@ -555,18 +558,6 @@ function SetWatchFlags() {
     case "04_NYC_UNDERGROUND":
         class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
         break;
-    case "05_NYC_UNATCOISLAND":
-        bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
-        bt.Tag='SavedMiguel';
-
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
-
-        break;
-    case "02_NYC_STREET":
-        WatchFlag('AlleyBumRescued');
-        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
-        bt.bingoEvent="MadeBasket";
-        break;
     case "04_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
@@ -682,6 +673,13 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
         bt.Tag = 'holoswitch';
+
+        break;
+    case "05_NYC_UNATCOISLAND":
+        bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
+        bt.Tag='SavedMiguel';
+
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -2070,7 +2068,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
-        
+
         case "SubHostageFemale_Dead":
         case "SubHostageMale_Unconscious":
         case "SubHostageFemale_Dead":
