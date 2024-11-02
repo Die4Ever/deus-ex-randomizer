@@ -717,17 +717,19 @@ function string DifficultyName(int diff)
 function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
     if(slot--==0) return 0;
-    if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
+    if(slot--==0) return HalloweenMode;
     if(slot--==0) return HalloweenEntranceRando;
-    if(slot--==0) return WaltonWareHalloween;
-    if(slot--==0) return WaltonWareHalloweenEntranceRando;
+
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareEntranceRando;
     if(!VersionIsStable()) {
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
     }
+    if(slot--==0) return WaltonWareHalloween;
+    if(slot--==0) return WaltonWareHalloweenEntranceRando;
+
     if(slot--==0) return ZeroRando;
     if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
