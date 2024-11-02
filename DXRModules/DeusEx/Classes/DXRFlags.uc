@@ -705,7 +705,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     } else {
         clothes_looting = 0;
     }
-
+    
     if(class'MenuChoice_NewGamePlus'.default.value == 0 && !IsWaltonWare())
         moresettings.newgameplus_curve_scalar = -1;
 

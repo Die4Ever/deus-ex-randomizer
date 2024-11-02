@@ -15,7 +15,7 @@ function InitFor(DeusExCarcass carc)
     CorpseItemName = carc.itemName;
     CarcassName = carc.CarcassName;
     if(!bNotDead)
-        ZombieTime = class'DXREnemyRespawn'.static.GetZombieTime(carc);
+        ZombieTime = class'DXRZombies'.static.GetZombieTime(carc);
 }
 
 static function POVCorpse Create(DeusExPlayer player, DeusExCarcass carc)
@@ -67,7 +67,7 @@ function DeusExCarcass Drop(vector dropVect)
     if (carc.SetLocation(dropVect))
     {
         if(!bNotDead)
-            class'DXREnemyRespawn'.static.SetZombieTime(carc, ZombieTime);
+            class'DXRZombies'.static.SetZombieTime(carc, ZombieTime);
         Destroy();
         return carc;
     }

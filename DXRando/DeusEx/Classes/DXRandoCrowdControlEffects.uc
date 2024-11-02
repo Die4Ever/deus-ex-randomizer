@@ -1965,7 +1965,7 @@ function bool RaiseDead(string viewer)
         if (carc==None){
             break;
         }
-        if (class'DXREnemyRespawn'.static.ReanimateCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
+        if (class'DXRZombies'.static.ReanimateCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
             num++;
         }
     }
