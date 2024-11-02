@@ -71,9 +71,9 @@ function CheckCarcasses()
         if(carcs[i] != carc) {
             carcs[num_carcs] = carc;
             if(#var(prefix)DobermanCarcass(carc) != None || #var(prefix)MuttCarcass(carc) != None) { // special sauce for dogs
-                times[num_carcs] = curtime + dog_zombie_time + FRand()*2;
+                times[num_carcs] = curtime + dog_zombie_time + (FRand() * dxr.flags.moresettings.reanimation * 0.1);
             } else {
-                times[num_carcs] = curtime + zombie_time + FRand()*10;
+                times[num_carcs] = curtime + zombie_time + (FRand() * dxr.flags.moresettings.reanimation * 0.5);
             }
             carc.MaxDamage = 0.1 * carc.Mass;// easier to destroy carcasses
             num_carcs++;
