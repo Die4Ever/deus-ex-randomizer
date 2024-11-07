@@ -687,6 +687,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.CombatDifficulty *= 0.75;
 #endif
         autosave = 5; // Ironman, autosaves and manual saves disabled
+        settings.merchants = 100;
         // horde mode handles the greenbots itself
         settings.medbots = 0;
         settings.repairbots = 0;
