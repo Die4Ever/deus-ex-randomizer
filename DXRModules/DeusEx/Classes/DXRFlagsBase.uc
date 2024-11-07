@@ -757,14 +757,17 @@ simulated function string flagValToHumanVal(name flagname, int val){
             }
 
         case 'Rando_autosave':
-            if (val==0) {
-                return "Off";
-            } else if (val==1) {
-                return "First Entry";
-            } else if (val==2) {
-                return "Every Entry";
-            } else if (val==3) {
-                return "Autosaves Only (Hardcore)";
+            switch(val) {
+            case 0: return "Off";
+            case 1: return "First Entry";
+            case 2: return "Every Entry";
+            case 3: return "Autosaves Only (Hardcore)";
+            case 4: return "Extra Safe";
+            case 5: return "Ironman";
+            case 6: return "Limited Saves";
+            case 7: return "Limited Fixed Saves";
+            case 8: return "Unlimited Fixed Saves";
+            case 9: return "Extreme Limited Fixed Saves";
             }
             break;
 
