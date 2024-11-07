@@ -269,12 +269,12 @@ function NewGamePlus()
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
 
     augsToRemove = newgameplus_num_removed_augs;
-    if (aug_loc_rando>0 && augs!=None) {
+    if (augs!=None) {
         oldseed = SetGlobalSeed("CleanupAugSlotRando"); //This seed doesn't really matter, just want to get the current seed
 
         augs.RandoAllAugs(); //Apply the new aug randomization (so we know what slot the augs will end up in)
-        randoSlotAugsRemoved = augs.CleanUpRandomSlotAugs(p); //Remove augs that no longer fit due to the newly assigned slots
-        l("CleanUpRandomSlotAugs removed "$randoSlotAugsRemoved$" augs due to new aug slot assignments");
+        randoSlotAugsRemoved = augs.CleanUpAugSlots(p); //Remove augs that no longer fit due to the newly assigned slots
+        l("CleanUpAugSlots removed "$randoSlotAugsRemoved$" augs due to new aug slot assignments");
         augsToRemove = augsToRemove - randoSlotAugsRemoved; //Count those removed augs towards the augs to remove for the new loop
 
         augs.FixAugHotkeys(p,false); //Hotkeys will have totally changed after randomizing the slots, make sure they're corrected

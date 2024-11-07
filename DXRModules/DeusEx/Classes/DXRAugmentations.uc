@@ -358,9 +358,13 @@ simulated function RandoAug(Augmentation a)
     local string add_desc;
     if( dxr == None ) return;
 
-    if (a.AugmentationLocation!=LOC_Default && dxr.flags.moresettings.aug_loc_rando!=0){
-        SetGlobalSeed("RandoAugLoc " $ a.class.name);
+    SetGlobalSeed("RandoAugLoc " $ a.class.name);
+    if (a.AugmentationLocation!=LOC_Default && chance_single(dxr.flags.moresettings.aug_loc_rando)){
         PickRandomAugLocation(a);
+    } else {
+        //Make sure it's set to the default location if not randomizing
+        //(This allows it to revert in a later loop)
+        a.AugmentationLocation = a.Default.AugmentationLocation;
     }
 
 #ifdef injections
@@ -585,7 +589,7 @@ simulated function CleanUpAugCounts(#var(PlayerPawn) p)
     }
 }
 
-simulated function int CleanUpRandomSlotAugs(#var(PlayerPawn) p)
+simulated function int CleanUpAugSlots(#var(PlayerPawn) p)
 {
     local int numAugs[7]; //Count of the number of augs in each slot
     local int augsRemoved, i, j;
@@ -655,7 +659,7 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot,
         if( #var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
             continue;
 
-        if( loadouts != None && loadouts.StartedWithAug(a) )
+        if( loadouts != None && loadouts.StartedWithAug(a,true) )
             continue;
 
         augs[numAugs++] = a;

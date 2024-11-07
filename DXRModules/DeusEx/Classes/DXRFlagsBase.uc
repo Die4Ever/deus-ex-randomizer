@@ -690,6 +690,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_newgameplus_curve_scalar':
         case 'Rando_bot_weapons':
         case 'Rando_enemies_weapons':
+        case 'Rando_aug_loc_rando':
             return val$"%";
 
         case 'Rando_enemyrespawn':
@@ -775,14 +776,12 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_startinglocations':
         case 'Rando_goals':
         case 'Rando_infodevices':
-        case 'Rando_aug_loc_rando':
             if (val==0){
                 return "Unchanged";
             } else if (val==100){
                 return "Randomized";
             }
             break;
-
         case 'Rando_skills_disable_downgrades':
             if (val==0){
                 return "Allowed";
