@@ -83,6 +83,7 @@ struct MoreFlagsSettings{
     var int empty_medbots;
     var int camera_mode;
     var int enemies_weapons;
+    var int aug_loc_rando;
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -427,6 +428,8 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_clothes_looting',clothes_looting,mode,str);
 
+    FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
+
     return str;
 }
 
@@ -608,6 +611,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Clothes Looting";
         case 'Rando_enemies_weapons':
             return "Enemy weapons rando";
+        case 'Rando_aug_loc_rando':
+            return "Aug Slot Randomization";
         default:
             err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
@@ -767,6 +772,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_startinglocations':
         case 'Rando_goals':
         case 'Rando_infodevices':
+        case 'Rando_aug_loc_rando':
             if (val==0){
                 return "Unchanged";
             } else if (val==100){

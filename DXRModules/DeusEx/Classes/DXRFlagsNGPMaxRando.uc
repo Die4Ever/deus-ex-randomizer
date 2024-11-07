@@ -166,10 +166,11 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, menus_pause;
+    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, menus_pause, aug_loc_rando;
     local float exp;
     local int randomStart;
     local int oldseed;
+    local int augsToRemove,randoSlotAugsRemoved;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -198,12 +199,14 @@ function NewGamePlus()
         bingo_freespaces = settings.bingo_freespaces;
         newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
         menus_pause = settings.menus_pause;
+        aug_loc_rando=moresettings.aug_loc_rando;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
         settings.bingo_freespaces = bingo_freespaces;
         moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
         settings.menus_pause = menus_pause;
+        moresettings.aug_loc_rando=aug_loc_rando;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
@@ -264,7 +267,22 @@ function NewGamePlus()
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
-    for (i = 0; i < newgameplus_num_removed_augs; i++)
+
+    augsToRemove = newgameplus_num_removed_augs;
+    if (aug_loc_rando>0 && augs!=None) {
+        oldseed = SetGlobalSeed("CleanupAugSlotRando"); //This seed doesn't really matter, just want to get the current seed
+
+        augs.RandoAllAugs(); //Apply the new aug randomization (so we know what slot the augs will end up in)
+        randoSlotAugsRemoved = augs.CleanUpRandomSlotAugs(p); //Remove augs that no longer fit due to the newly assigned slots
+        l("CleanUpRandomSlotAugs removed "$randoSlotAugsRemoved$" augs due to new aug slot assignments");
+        augsToRemove = augsToRemove - randoSlotAugsRemoved; //Count those removed augs towards the augs to remove for the new loop
+
+        augs.FixAugHotkeys(p,false); //Hotkeys will have totally changed after randomizing the slots, make sure they're corrected
+
+        ReapplySeed(oldseed);
+    }
+
+    for (i = 0; i < augsToRemove; i++)
         if( augs != None )
             augs.RemoveRandomAug(p);
 

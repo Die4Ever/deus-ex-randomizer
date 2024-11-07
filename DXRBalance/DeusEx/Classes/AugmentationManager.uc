@@ -69,21 +69,6 @@ function Augmentation GetAugByKey(int keyNum)
     return None;
 }
 
-simulated function Augmentation GetAug(class<Augmentation> AugClass)
-{
-    local Augmentation anAug;
-
-    anAug = FirstAug;
-    while(anAug != None)
-    {
-        if (anAug.Class == augClass)
-            return anAug;
-        anAug = anAug.next;
-    }
-
-    return None;
-}
-
 // ----------------------------------------------------------------------
 // GetAugLevelValue()
 //

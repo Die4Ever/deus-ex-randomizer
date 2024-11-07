@@ -183,6 +183,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -258,6 +259,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -332,6 +334,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -406,6 +409,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -480,6 +484,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
