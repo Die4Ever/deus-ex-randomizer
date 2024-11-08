@@ -6,6 +6,11 @@ var TextWindow   energyMeter;
 var Color colWhite;
 var int energyMeterTimer;
 
+var PersonaActionButtonWindow btnBiocell;
+var String BiocellButtonLabel;
+var int biocellCount;
+
+
 function Tick(float deltaTime)
 {
     local Human p;
@@ -63,9 +68,115 @@ function CreateHackMessageWindow()
         energyMeterTimer = AddTimer(0.1, true, 0, 'UpdateEnergyMeterTimer');
 }
 
+function CreateHackButton()
+{
+    local #var(PlayerPawn) p;
+
+    //Make the hacking button
+    Super.CreateHackButton();
+
+    p = #var(PlayerPawn)(player);
+    if (p==None || p.bZeroRando) return;
+
+    //Make the Biocell button as well
+    btnBiocell = PersonaActionButtonWindow(NewChild(Class'DXRPersonaActionButtonWindow'));
+    btnBioCell.minimumButtonWidth=111;
+    btnBioCell.SetPos(83,86);
+    btnBioCell.CenterText(true);
+    UpdateBiocellButtonCount();
+}
+
+function UpdateBiocellButtonCount()
+{
+    local #var(prefix)BioElectricCell bc;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(player);
+
+    if (p==None || btnBiocell==None || p.bZeroRando) return;
+
+    if (p!=None){
+        bc = #var(prefix)BioElectricCell(p.FindInventoryType(class'#var(prefix)BioElectricCell'));
+        if (bc!=None){
+            biocellCount = bc.NumCopies;
+        }
+    }
+
+    btnBiocell.SetButtonText(BiocellButtonLabel$" ("$biocellCount$")");
+
+    UpdateBiocellButtonClickability();
+
+}
+
+function UpdateBiocellButtonClickability()
+{
+    local bool enable;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(player);
+    enable=False;
+
+    if (p==None || btnBiocell==None || p.bZeroRando) return;
+
+    if (p!=None && biocellCount!=0){
+        if (p.Energy<p.EnergyMax){
+            enable=True;
+        }
+    }
+
+    if (!bHacked){
+        btnBiocell.EnableWindow(enable);
+    } else {
+        btnBiocell.Hide(); //Hide biocell button once the computer is hacked
+    }
+}
+
+function HandleBiocellButton()
+{
+    local #var(prefix)BioElectricCell bc;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(player);
+
+    if (p!=None){
+        bc = #var(prefix)BioElectricCell(p.FindInventoryType(class'#var(prefix)BioElectricCell'));
+        if (bc!=None){
+            bc.Activate();
+            UpdateBiocellButtonCount();
+        }
+    }
+}
+
+function bool ButtonActivated( Window buttonPressed )
+{
+    local bool bHandled;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(player);
+
+    bHandled = False;
+
+    if (p==None || btnBiocell==None || p.bZeroRando) return Super.ButtonActivated(buttonPressed);
+
+    switch( buttonPressed )
+    {
+        case btnBiocell:
+            bHandled=True;
+            HandleBiocellButton();
+            break;
+    }
+
+    if (bHandled){
+        return True;
+    } else {
+        return Super.ButtonActivated(buttonPressed);
+    }
+}
+
 function UpdateEnergyMeterTimer(int timerID, int invocations, int clientData)
 {
     UpdateEnergyMeter();
+    UpdateBiocellButtonClickability(); //Button can change clickability based on remaining energy
 }
 
 event DestroyWindow()
@@ -82,7 +193,7 @@ event DestroyWindow()
 function UpdateEnergyMeter()
 {
     local Human p;
-    local int energy,energydec,req,reqdec;
+    local int energy,energydec,req,reqdec,maxenergy,maxenergydec;
     local float reqEnergy;
     local string msg;
 
@@ -94,12 +205,15 @@ function UpdateEnergyMeter()
     energy = int(p.Energy);
     energydec = int((p.Energy * 10) - (energy*10));
 
+    maxenergy = int(p.EnergyMax);
+    maxenergydec = int((p.EnergyMax * 10) - (maxenergy*10));
+
     reqEnergy = hackTime * 5.0;
     req = int(reqEnergy);
     reqdec = int((reqEnergy*10) - (req*10));
 
 
-    msg = "Energy: "$energy$"."$energydec;
+    msg = "Energy: "$energy$"."$energydec$" / "$maxenergy$"."$maxenergydec;
 
     if (!bHacking) {
         msg = msg$"|n";
@@ -139,4 +253,5 @@ defaultproperties
 {
     colWhite=(R=255,G=255,B=255)
     energyMeterTimer=-1
+    BiocellButtonLabel="Use |&Biocell"
 }
