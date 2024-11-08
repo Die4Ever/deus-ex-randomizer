@@ -95,6 +95,7 @@ function UpdateBiocellButtonCount()
 
     if (p==None || btnBiocell==None || p.bZeroRando) return;
 
+    biocellCount = 0;
     if (p!=None){
         bc = #var(prefix)BioElectricCell(p.FindInventoryType(class'#var(prefix)BioElectricCell'));
         if (bc!=None){
