@@ -317,7 +317,23 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         GiveItem(sp,class'WeaponNanoSword');
 
         sp.ConBindEvents();
-        sp.bInWorld=False;
+
+        //We directly set bInWorld here rather than using EnterWorld/LeaveWorld,
+        //because this is running before InitializePawn.  InitializePawn will
+        //set up all the stuff necessary to handle his worldlyness.  The call
+        //in MissionTimer can also hit EnterWorld in between this spawn and
+        //InitializePawn, so it can screw things up too.
+        if (dxr.flagbase.GetBool('schematic_downloaded'))
+        {
+            //Leave him in-world because he's being spawned and should already exist
+            //(Probably a WaltonWare mission start Oceanlab or later)
+            sp.bInWorld=True; //Not explicitly necessary, but here for clarity
+            WaltonAppeared=True; //Prevent the mission timer from triggering to bring him in
+        } else {
+            //Normal playthrough order, he would get spawned in out-of-world, then
+            //EnterWorld later, after you go to Oceanlab and come back
+            sp.bInWorld=False;
+        }
 
         ot.Event='WaltonSimons';
         ot.Orders='Attacking';
