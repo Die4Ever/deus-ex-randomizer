@@ -33,7 +33,17 @@ function UpdateColours()
     healthColour = class'ColorThemeMenu_Health'.static.GetHealthColor(player);
 
     for (i=0;i<=13;i++){
-        Colors[i]=healthColour;
+        switch(i){
+            case 6:  //HUDColor_ButtonTextDisabled
+            case 11: //HUDColor_ListHighlight
+                //Dark Gray for disabled buttons and list highlights, so they stand out
+                Colors[i].R=20;
+                Colors[i].G=20;
+                Colors[i].B=20;
+                break;
+            default:
+                Colors[i]=healthColour;
+        }
     }
     if (DeusExRootWindow(player.rootWindow)!=None){
         DeusExRootWindow(player.rootWindow).ChangeStyle();
