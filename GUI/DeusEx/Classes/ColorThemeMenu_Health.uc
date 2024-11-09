@@ -66,6 +66,7 @@ function UpdateColours()
                 break;
             default:
                 Colors[i]=healthColour;
+                break;
         }
     }
     if (DeusExRootWindow(player.rootWindow)!=None){
