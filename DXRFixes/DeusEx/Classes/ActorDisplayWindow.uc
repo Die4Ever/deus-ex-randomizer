@@ -16,6 +16,7 @@ var int          actorRadius;
 var bool         bShowTagEvent;
 var bool         bShowTagConnections;
 var bool         bShowEventConnections;
+var bool         bShowCollision;
 
 function SetActorRadius(string newRadius)
 {
@@ -134,6 +135,16 @@ function bool IsEventConnsVisible()
 function ShowEventConns(bool bShow)
 {
     bShowEventConnections = bShow;
+}
+
+function bool IsCollisionVisible()
+{
+    return bShowCollision;
+}
+
+function ShowCollision(bool bShow)
+{
+    bShowCollision = bShow;
 }
 
 function string GetActorName(Actor a)
@@ -662,6 +673,16 @@ function DrawWindow(GC gc)
                                    0, 0, Texture'Solid');
                     barOffset += 5;
                 }
+            }
+            if (bShowCollision || bShowData)
+            {
+                str = str $ "|c8080ff";
+                str = str $ "CollisionRadius=" $ trackActor.CollisionRadius $ CR() $
+                            "CollisionHeight=" $ trackActor.CollisionHeight $ CR() $
+                            "bCollideActors=" $ trackActor.bCollideActors $ CR() $
+                            "bCollideWorld=" $ trackActor.bCollideWorld $ CR() $
+                            "bBlockActors=" $ trackActor.bBlockActors $ CR() $
+                            "bBlockPlayers=" $ trackActor.bBlockPlayers $ CR();
             }
 
             if(bShowCustom && customAttrib != "") {

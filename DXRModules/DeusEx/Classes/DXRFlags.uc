@@ -183,6 +183,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -258,6 +259,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -332,6 +334,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -360,7 +363,7 @@ function CheckConfig()
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
-    difficulty_settings[i].skills_independent_levels = 100;
+    difficulty_settings[i].skills_independent_levels = 1;
     difficulty_settings[i].banned_skills = 9;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
@@ -406,6 +409,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -434,7 +438,7 @@ function CheckConfig()
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
-    difficulty_settings[i].skills_independent_levels = 100;
+    difficulty_settings[i].skills_independent_levels = 1;
     difficulty_settings[i].banned_skills = 9;
     difficulty_settings[i].banned_skill_levels = 9;
     difficulty_settings[i].minskill = 50;
@@ -480,6 +484,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -682,6 +687,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.CombatDifficulty *= 0.75;
 #endif
         autosave = 5; // Ironman, autosaves and manual saves disabled
+        settings.merchants = 100;
         // horde mode handles the greenbots itself
         settings.medbots = 0;
         settings.repairbots = 0;
@@ -973,7 +979,7 @@ function int ScoreFlags()
         score += 1500 - settings.enemyrespawn;
     //settings.skills_disable_downgrades = 5;
     //settings.skills_reroll_missions = 5;
-    //settings.skills_independent_levels = 100;
+    //settings.skills_independent_levels = 1;
     score += ClampFlagValue(settings.banned_skills,0,100) * 30;
     score += ClampFlagValue(settings.banned_skill_levels,0,100) * 30;
     score += sqrt(settings.minskill) * 60; //Square root so the bonus tapers off as you get more extreme

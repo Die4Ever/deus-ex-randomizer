@@ -17,21 +17,27 @@ function FirstEntry()
 
 function AnyEntry()
 {
-    local Augmentation a;
     Super.AnyEntry();
 
-    foreach AllActors(class'Augmentation', a) {
-        RandoAug(a);
-    }
+    RandoAllAugs();
 }
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
-    local Augmentation a;
     Super.PlayerAnyEntry(p);
+
+    RandoAllAugs();
+}
+
+simulated function RandoAllAugs()
+{
+    local Augmentation a;
+
     foreach AllActors(class'Augmentation', a) {
         RandoAug(a);
     }
+
+    CleanUpAugCounts(player()); //Recount the number of augs in each slot
 }
 
 function PostFirstEntry()
@@ -43,7 +49,7 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
 #ifdef injections
-    aug = AugVision(player().AugmentationSystem.GetAug(class'AugVision'));
+    aug = AugVision(player().AugmentationSystem.FindAugmentation(class'AugVision'));
     foreach AllActors(class'TechGoggles', goggles) {
         goggles.Description = class'TechGoggles'.static.CalcDescription(aug);
     }
@@ -161,6 +167,7 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
 {
     local DXRLoadouts loadouts;
     local class<Augmentation> a;
+    local Augmentation anAug;
     local int i;
 
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
@@ -176,7 +183,8 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
             continue;
         }
         if( loadouts != None ) {
-            if( loadouts.StartedWithAug(a) ) {
+            anAug = loadouts.player().AugmentationSystem.FindAugmentation(a);
+            if( anAug!=None && loadouts.StartedWithAug(anAug) ) {
                 banned[i] = 1;
                 continue;
             }
@@ -316,11 +324,48 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50
     return aug;
 }
 
+//Weighted to match the number of slots per location
+simulated function PickRandomAugLocation(Augmentation a)
+{
+    switch (rng(9)){
+        case 0:
+            a.AugmentationLocation = LOC_Cranial;
+            break;
+        case 1:
+            a.AugmentationLocation = LOC_Eye;
+            break;
+        case 2:
+        case 3:
+        case 4:
+            a.AugmentationLocation = LOC_Torso;
+            break;
+        case 5:
+            a.AugmentationLocation = LOC_Arm;
+            break;
+        case 6:
+             a.AugmentationLocation = LOC_Leg;
+             break;
+        case 7:
+        case 8:
+            a.AugmentationLocation = LOC_Subdermal;
+            break;
+    }
+}
+
 simulated function RandoAug(Augmentation a)
 {
     local float aug_value_wet_dry;
     local string add_desc;
     if( dxr == None ) return;
+
+    SetGlobalSeed("RandoAugLoc " $ a.class.name);
+    if (a.AugmentationLocation!=LOC_Default && chance_single(dxr.flags.moresettings.aug_loc_rando)){
+        PickRandomAugLocation(a);
+    } else {
+        //Make sure it's set to the default location if not randomizing
+        //(This allows it to revert in a later loop)
+        a.AugmentationLocation = a.Default.AugmentationLocation;
+    }
 
 #ifdef injections
     if( #var(prefix)AugSpeed(a) != None ) {
@@ -524,7 +569,82 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
 }
 
-simulated function RemoveRandomAug(#var(PlayerPawn) p)
+simulated function CleanUpAugCounts(#var(PlayerPawn) p)
+{
+    local int i;
+    local Augmentation a;
+    local AugmentationManager am;
+
+    am = p.AugmentationSystem;
+
+    //Clear out the existing augCounts in each slot, since the slots were randomized...
+    for (i=0;i<ArrayCount(am.AugLocs);i++){
+        am.AugLocs[i].augCount=0;
+    }
+
+    //Recount the official augCount per aug slot
+    for (a=am.FirstAug; a!=None; a = a.next ) {
+        if (!a.bHasIt) continue;
+        am.AugLocs[a.AugmentationLocation].augCount++;
+    }
+}
+
+simulated function int CleanUpAugSlots(#var(PlayerPawn) p)
+{
+    local int numAugs[7]; //Count of the number of augs in each slot
+    local int augsRemoved, i, j;
+    local Augmentation a;
+    local AugmentationManager am;
+
+    am = p.AugmentationSystem;
+
+    //Get a count of how many augs you have in each slot
+    for (a=am.FirstAug; a!=None; a = a.next ) {
+        if (!a.bHasIt) continue;
+        if (a.AugmentationLocation == LOC_Default) continue;
+        numAugs[a.AugmentationLocation]++;
+    }
+
+    //Determine how many augs need to be removed from each slot
+    for (i=0;i<ArrayCount(numAugs);i++){
+        numAugs[i] = Max(numAugs[i]-am.AugLocs[i].NumSlots,0);
+        for (j=0;j<numAugs[i];j++){
+            RemoveRandomAug(p,true,i);
+            augsRemoved++;
+        }
+    }
+
+    return augsRemoved;
+
+}
+
+static simulated function FixAugHotkeys(PlayerPawn player, bool verbose)
+{
+    local AugmentationManager am;
+    local int hotkeynums[7], loc;
+    local Augmentation a;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(player);
+
+    am = p.AugmentationSystem;
+    for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {
+        hotkeynums[loc] = am.AugLocs[loc].KeyBase + 1;
+    }
+    for( a = am.FirstAug; a != None; a = a.next ) {
+        if( !a.bHasIt ) continue;
+        loc = a.AugmentationLocation;
+        if( a.AugmentationLocation == LOC_Default ) continue;
+        if (verbose){
+            p.ClientMessage(a.AugmentationName$" will bind to F"$hotkeynums[loc]);
+        }
+        a.HotKeyNum = hotkeynums[loc]++;
+    }
+
+    am.RefreshAugDisplay();
+}
+
+simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot, optional byte slotToRemove)
 {
     local Augmentation a, b, augs[64];
     local AugmentationManager am;
@@ -537,11 +657,12 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p)
     for( a = am.FirstAug; a != None; a = a.next ) {
         if( !a.bHasIt ) continue;
         if( a.AugmentationLocation == LOC_Default ) continue;
+        if (singleSlot && a.AugmentationLocation!=slotToRemove) continue;
 
         if( #var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
             continue;
 
-        if( loadouts != None && loadouts.StartedWithAug(a.class) )
+        if( loadouts != None && loadouts.StartedWithAug(a,true) )
             continue;
 
         augs[numAugs++] = a;
@@ -549,7 +670,7 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p)
 
     if( numAugs == 0 ) return;
 
-    SetSeed( "RemoveRandomAug " $ numAugs );
+    SetGlobalSeed( "RemoveRandomAug " $ numAugs );
     slot = rng(numAugs);
     a = augs[slot];
     info("RemoveRandomAug("$p$") Removing aug "$a$" from "$am$", numAugs was "$numAugs);
