@@ -134,6 +134,8 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-592.426758,329.524597,-743.972717), rot(0,49160,0));
+        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", NORMAL_GOAL, vect(-190, 886, 820), rot(0, 32768, 0)); //One window over compared to vanilla to avoid patrol point
+        AddActorLocation(loc, 1, vect(-190, 886, 789.101990), rot(0,0,0));// MAHOGANY desk
         return 62;
 
     case "06_HONGKONG_WANCHAI_STREET":

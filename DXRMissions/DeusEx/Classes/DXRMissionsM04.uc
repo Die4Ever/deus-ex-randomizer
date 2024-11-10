@@ -32,15 +32,18 @@ function int InitGoalsRev(int mission, string map)
 {
     local int goal, loc, loc2;
 
-    // GOAL_TYPE1 for the computer, 3 for Anna
-    AddGoal("04_NYC_NSFHQ", "Computer", GOAL_TYPE1, 'ComputerPersonal3', PHYS_Falling);
-    AddGoalLocation("04_NYC_NSFHQ", "Third Floor", GOAL_TYPE1, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
-    AddGoalLocation("04_NYC_NSFHQ", "Second Floor", GOAL_TYPE1, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
-    AddGoalLocation("04_NYC_NSFHQ", "Garage", GOAL_TYPE1, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
-    AddGoalLocation("04_NYC_NSFHQ", "Break Room", GOAL_TYPE1, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
-    AddGoalLocation("04_NYC_NSFHQ", "Basement Exit", GOAL_TYPE1, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
-    AddGoalLocation("04_NYC_NSFHQ", "Basement Entrance", GOAL_TYPE1, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
+    // GOAL_TYPE1 for the dish computer, 2 for transmitter, 3 for Anna
+    AddGoal("04_NYC_NSFHQ", "Dish Alignment Computer", GOAL_TYPE1, 'ComputerPersonal3', PHYS_Falling);
+    AddGoalLocation("04_NYC_NSFHQ", "Third Floor", GOAL_TYPE1 | GOAL_TYPE2, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
+    AddGoalLocation("04_NYC_NSFHQ", "Second Floor", GOAL_TYPE1 | GOAL_TYPE2, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
+    AddGoalLocation("04_NYC_NSFHQ", "Garage", GOAL_TYPE1 | GOAL_TYPE2, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
+    AddGoalLocation("04_NYC_NSFHQ", "Break Room", GOAL_TYPE1 | GOAL_TYPE2, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
+    AddGoalLocation("04_NYC_NSFHQ", "Basement Exit", GOAL_TYPE1 | GOAL_TYPE2, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
+    AddGoalLocation("04_NYC_NSFHQ", "Basement Entrance", GOAL_TYPE1 | GOAL_TYPE2, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
     AddGoalLocation("04_NYC_NSFHQ", "Rooftop", GOAL_TYPE1 | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
+
+    AddGoal("04_NYC_NSFHQ", "Transmitter Computer", GOAL_TYPE2, 'ComputerPersonal4', PHYS_Falling);
+    AddGoalLocation("04_NYC_NSFHQ", "Rooftop Secure Room", GOAL_TYPE2 | VANILLA_GOAL, vect(116.650787, 400.400024, 1032.054199), rot(0,49384,0));
 
     goal = AddGoal("04_NYC_BatteryPark", "Anna Navarre", GOAL_TYPE3, 'AnnaNavarre0', PHYS_Falling);
     AddGoalActor(goal, 1, 'AllianceTrigger11', PHYS_None); //AnnaAttacksJC
