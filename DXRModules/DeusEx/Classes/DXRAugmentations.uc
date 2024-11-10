@@ -618,11 +618,14 @@ simulated function int CleanUpAugSlots(#var(PlayerPawn) p)
 
 }
 
-static simulated function FixAugHotkeys(#var(PlayerPawn) p, bool verbose)
+static simulated function FixAugHotkeys(PlayerPawn player, bool verbose)
 {
     local AugmentationManager am;
     local int hotkeynums[7], loc;
     local Augmentation a;
+    local #var(PlayerPawn) p;
+
+    p = #var(PlayerPawn)(player);
 
     am = p.AugmentationSystem;
     for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {

@@ -587,9 +587,12 @@ static function string GetRandomizedName(Actor a)
     return sp.FamiliarName;
 }
 
-static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddPlayerDeath(DXRando dxr, PlayerPawn p, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXREvents ev;
+    local #var(PlayerPawn) player;
+
+    player = #var(PlayerPawn)(p);
     class'DXRStats'.static.AddDeath(player);
 
     if(#defined(injections))

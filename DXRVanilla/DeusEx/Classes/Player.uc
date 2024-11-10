@@ -868,7 +868,7 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 
 function Died(pawn Killer, name damageType, vector HitLocation)
 {
-    class'DXREvents'.static.AddPlayerDeath(GetDXR(), #var(PlayerPawn)(self), Killer, damageType, HitLocation);
+    class'DXREvents'.static.AddPlayerDeath(GetDXR(), self, Killer, damageType, HitLocation);
     Super.Died(Killer,damageType,HitLocation);
 }
 
@@ -1024,7 +1024,7 @@ function HighlightCenterObjectLaser()
     local Vector loc;
 
     //Activate the aim laser any time you aren't seeing through your eyes
-    if (class'DXRAimLaserEmitter'.static.AimLaserShouldBeOn(#var(PlayerPawn)(self))){
+    if (class'DXRAimLaserEmitter'.static.AimLaserShouldBeOn(self)){
         if (aimLaser==None){
             aimLaser = Spawn(class'DXRAimLaserEmitter', Self, , Location, Pawn(Owner).ViewRotation);
             if (aimLaser == None) {
@@ -1173,7 +1173,7 @@ exec function crate(optional string name)
 
 exec function FixAugHotkeys()
 {
-    class'DXRAugmentations'.static.FixAugHotkeys(#var(PlayerPawn)(self),true);
+    class'DXRAugmentations'.static.FixAugHotkeys(self,true);
 }
 
 exec function ShuffleGoals()
