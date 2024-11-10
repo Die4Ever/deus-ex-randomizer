@@ -64,7 +64,8 @@ function int InitGoals(int mission, string map)
         AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
 
 
-        AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        goal = AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        AddGoalActor(goal, 1, 'AmbientSoundTriggered3', PHYS_None);
         AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE2 | VANILLA_GOAL, vect(1002.848999, -897.071167, -136.499573), rot(0, -17064, 0));
@@ -300,6 +301,13 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
                 AmbientSoundTriggered(g.actors[i].a).SoundRadius = 1600;
             }
         }
+
+        //Spawn an alarm sound at the generator as well (the original one goes with the computer)
+        a = Spawn(class'AmbientSoundTriggered',,'WarningSound', g.actors[0].a.Location);
+        AmbientSoundTriggered(a).savedSound=Sound'Ambient.Ambient.Klaxon4';
+        AmbientSoundTriggered(a).bTriggerOnceOnly=True;
+        AmbientSoundTriggered(a).bActive=False;
+
     }
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {
