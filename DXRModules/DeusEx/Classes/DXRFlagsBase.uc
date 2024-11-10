@@ -83,6 +83,7 @@ struct MoreFlagsSettings{
     var int empty_medbots;
     var int camera_mode;
     var int enemies_weapons;
+    var int aug_loc_rando;
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -427,6 +428,8 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_clothes_looting',clothes_looting,mode,str);
 
+    FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
+
     return str;
 }
 
@@ -608,6 +611,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Clothes Looting";
         case 'Rando_enemies_weapons':
             return "Enemy weapons rando";
+        case 'Rando_aug_loc_rando':
+            return "Aug Slot Randomization";
         default:
             err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
@@ -685,6 +690,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_newgameplus_curve_scalar':
         case 'Rando_bot_weapons':
         case 'Rando_enemies_weapons':
+        case 'Rando_aug_loc_rando':
             return val$"%";
 
         case 'Rando_enemyrespawn':
@@ -752,14 +758,17 @@ simulated function string flagValToHumanVal(name flagname, int val){
             }
 
         case 'Rando_autosave':
-            if (val==0) {
-                return "Off";
-            } else if (val==1) {
-                return "First Entry";
-            } else if (val==2) {
-                return "Every Entry";
-            } else if (val==3) {
-                return "Autosaves Only (Hardcore)";
+            switch(val) {
+            case 0: return "Off";
+            case 1: return "First Entry";
+            case 2: return "Every Entry";
+            case 3: return "Autosaves Only (Hardcore)";
+            case 4: return "Extra Safe";
+            case 5: return "Ironman";
+            case 6: return "Limited Saves";
+            case 7: return "Limited Fixed Saves";
+            case 8: return "Unlimited Fixed Saves";
+            case 9: return "Extreme Limited Fixed Saves";
             }
             break;
 
@@ -773,7 +782,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Randomized";
             }
             break;
-
         case 'Rando_skills_disable_downgrades':
             if (val==0){
                 return "Allowed";

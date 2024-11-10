@@ -84,10 +84,13 @@ function Tick(float deltaTime)
     Super.Tick(deltaTime);
 }
 
-static function bool AimLaserShouldBeOn(#var(PlayerPawn) player)
+static function bool AimLaserShouldBeOn(PlayerPawn p)
 {
     local CCResidentEvilCam reCam;
     local DXRCameraModes cameraModes;
+    local #var(PlayerPawn) player;
+
+    player = #var(PlayerPawn)(p);
 
     reCam = CCResidentEvilCam(player.ViewTarget);
 

@@ -11,6 +11,7 @@ var ToolCheckboxWindow	chkLimitRadius;
 var ToolCheckboxWindow	chkTagEvent;
 var ToolCheckboxWindow	chkTagConns;
 var ToolCheckboxWindow	chkEventConns;
+var ToolCheckboxWindow	chkCollision;
 
 event InitWindow()
 {
@@ -85,6 +86,9 @@ function CreateDXRandoControls()
     chkEventConns  = CreateToolCheckbox(215, y,  "Show Connections to Event (Red)", actorDisplay.IsEventConnsVisible());
     y += 25;
 
+    chkCollision  = CreateToolCheckbox(215, y,  "Show Collision Values", actorDisplay.IsCollisionVisible());
+    y += 25;
+
 }
 
 function SaveSettings()
@@ -101,6 +105,7 @@ function SaveSettings()
     actorDisplay.ShowTagEvent(chkTagEvent.GetToggle());
     actorDisplay.ShowTagConns(chkTagConns.GetToggle());
     actorDisplay.ShowEventConns(chkEventConns.GetToggle());
+    actorDisplay.ShowCollision(chkCollision.GetToggle());
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplay.SetActorRadius(radiusFilter.GetText());
