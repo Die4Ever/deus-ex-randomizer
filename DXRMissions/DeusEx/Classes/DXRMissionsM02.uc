@@ -61,10 +61,8 @@ function int InitGoals(int mission, string map)
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1340, -700, 575), rot(32768, 0, 32768)); //Near the ramp
         //AddGoalLocation("02_NYC_WAREHOUSE", "4th Floor", GOAL_TYPE1, vect(390,-660,832), rot(32768,0,0)); //Among the boxes
 
-        AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
-
-
-        AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        goal = AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        AddGoalActor(goal, 1, 'AmbientSoundTriggered3', PHYS_None);
         AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE2 | VANILLA_GOAL, vect(1002.848999, -897.071167, -136.499573), rot(0, -17064, 0));
@@ -79,7 +77,7 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2, vents_start, jock_sewer, generator_sewer, generator_alley;;
+    local int goal, loc, loc2, shanty_start, jock_sewer, generator_sewer, generator_alley;;
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -90,7 +88,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 4, 'DataLinkTrigger15', PHYS_None);
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
-        vents_start = AddGoalLocation("02_NYC_BATTERYPARK", "Ventilation system", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
+        shanty_start = AddGoalLocation("02_NYC_BATTERYPARK", "Shanty Town", NORMAL_GOAL | START_LOCATION, vect(-2970,1840,348), rot(0, 0, 0));
 
         loc = AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
         AddActorLocation(loc, PLAYER_LOCATION, vect(81.434570, -1123.060547, -384.397644), rot(0, 8000, 0));
@@ -100,9 +98,9 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "By the desk", NORMAL_GOAL, vect(-615.152161, -665.281738, -397.581146), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Walkway by the water", NORMAL_GOAL, vect(-420.000000, -2222.000000, -400), rot(0, 0, 0));
         loc = AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, 0, 0));
-        AddMutualExclusion(loc, vents_start);// don't put ambrosia in the subway if you start right there in the vents, too easy
+        AddMutualExclusion(loc, shanty_start);// don't put ambrosia in the subway if you start right there in the shanty town, too easy
         loc = AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, 0, 0));
-        AddMutualExclusion(loc, vents_start);// don't put ambrosia in the subway if you start right there in the vents, too easy
+        AddMutualExclusion(loc, shanty_start);// don't put ambrosia in the subway if you start right there in the shanty town, too easy
 
         if (dxr.flags.settings.starting_map > 20)
         {
@@ -123,17 +121,22 @@ function int InitGoalsRev(int mission, string map)
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall6', PHYS_None);
-        AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(448,-560,224), rot(32768, -16384, 0));
-        generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-544,1664,16), rot(0,32768,-16384));
+        AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
+        AddGoalActor(goal, 4, 'AmbientSoundTriggered1', PHYS_None);
+
+        AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
+        generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
         AddMutualExclusion(generator_alley, jock_sewer);// too easy
-        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(304,1184,880), rot(0,32768,-16384));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(414.272583,-519.35,-272), rot(0,-16384,-16384));
-        generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1712,912,-112), rot(32768,-32768,0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(396,1130,1000), rot(0,32768,-16384));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
+        generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1695,784,-210), rot(32768,-32768,0));
         AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
         // pawns run into these and break them
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
-        AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+
+        goal=AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        AddGoalActor(goal, 1, 'AmbientSoundTriggered3', PHYS_None);
         AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE2 | VANILLA_GOAL, vect(1002.848999, -897.071167, -136.499573), rot(0, -17064, 0));
@@ -240,15 +243,13 @@ function PreFirstEntryMapFixes()
     if(dxr.localURL=="02_NYC_WAREHOUSE") {
         ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK? maybe better than creating a new subclass for DynamicSoundTriggered and then doing replacements
 
-        if (!RevisionMaps){
-            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Generator'){
-                dxm.SetCollision(false,false,false);
-                RemoveMoverPrePivot(dxm);
-                dxm.PrePivot=vect(-80,0,-50); //This is intentionally not a vectm
-                dxm.BasePos=dxm.BasePos+dxm.PrePivot;
-                dxm.SetLocation(dxm.BasePos);
-                dxm.SetCollision(true,true,true);
-            }
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Generator'){
+            dxm.SetCollision(false,false,false);
+            RemoveMoverPrePivot(dxm);
+            dxm.PrePivot=vect(-80,0,-50); //This is intentionally not a vectm
+            dxm.BasePos=dxm.BasePos+dxm.PrePivot;
+            dxm.SetLocation(dxm.BasePos);
+            dxm.SetCollision(true,true,true);
         }
     }
 }
@@ -274,32 +275,39 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
     local int i,rad,height;
+    local AmbientSoundTriggered ast1,ast2;
     local bool RevisionMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if (g.name=="Generator"){
-        if (!RevisionMaps){
-            if (Loc.Name=="Warehouse" || Loc.Name=="Sewer" || Loc.Name=="3rd Floor" || Loc.Name=="4th Floor"){ //These ones lie horizontal
-                rad=175;
-                height=100;
-            } else { //The rest stand upright
-                rad=120;
-                height=131;
-            }
-            class'DXRHoverHint'.static.Create(self, "NSF Generator", g.actors[0].a.Location, rad, height, g.actors[0].a);
-            a = Spawn(class'DynamicBlockMonsters',,, g.actors[0].a.Location);
-            a.SetBase(g.actors[0].a);
-            a.SetCollisionSize(rad, height);
-        } else {
-            class'DXRHoverHint'.static.Create(self, "NSF Generator", g.actors[0].a.Location, 175, 140, g.actors[0].a);
+        if (Loc.Name=="Warehouse" || Loc.Name=="Sewer" || Loc.Name=="3rd Floor" || Loc.Name=="4th Floor"){ //These ones lie horizontal
+            rad=175;
+            height=100;
+        } else { //The rest stand upright
+            rad=120;
+            height=131;
         }
+        class'DXRHoverHint'.static.Create(self, "NSF Generator", g.actors[0].a.Location, rad, height, g.actors[0].a);
+        a = Spawn(class'DynamicBlockMonsters',,, g.actors[0].a.Location);
+        a.SetBase(g.actors[0].a);
+        a.SetCollisionSize(rad, height);
 
         for(i=0; i<ArrayCount(g.actors); i++) {
             if( AmbientSoundTriggered(g.actors[i].a) != None) {
                 AmbientSoundTriggered(g.actors[i].a).SoundRadius = 1600;
             }
         }
+
+        //Find the original alarm sound
+        foreach AllActors(class'AmbientSoundTriggered',ast1,'WarningSound'){ break; }
+
+        //Spawn an alarm sound at the generator as well (the original one goes with the computer)
+        ast2 = Spawn(class'AmbientSoundTriggered',,'WarningSound', g.actors[0].a.Location);
+        ast2.savedSound=ast1.savedSound; //Revision didn't like referencing the sound by name, so just copy it from the original
+        ast2.bTriggerOnceOnly=True;
+        ast2.bActive=False;
+
     }
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {

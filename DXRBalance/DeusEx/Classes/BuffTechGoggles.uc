@@ -35,7 +35,7 @@ function UpdateHUDDisplay(DeusExPlayer Player)
     local AugmentationDisplayWindow augDisplay;
     local float dist;
 
-    aug = AugVision(Player.AugmentationSystem.GetAug(class'AugVision'));
+    aug = AugVision(Player.AugmentationSystem.FindAugmentation(class'AugVision'));
     dist = CalcDistance(aug);
 
     augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
@@ -69,7 +69,7 @@ function ChargedPickupEnd(DeusExPlayer Player)
         augDisplay.visionBlinder = None;
     } else {
         augDisplay.visionLevel -= 1;
-        aug = AugVision(Player.AugmentationSystem.GetAug(class'AugVision'));
+        aug = AugVision(Player.AugmentationSystem.FindAugmentation(class'AugVision'));
         augDisplay.visionLevelValue -= CalcDistance(aug);
     }
 
