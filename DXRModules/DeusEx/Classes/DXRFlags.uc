@@ -135,6 +135,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 50;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 1;
     difficulty_settings[i].skills_independent_levels = 0;
@@ -211,6 +212,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 10;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 0;
@@ -286,6 +288,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 20;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 0;
@@ -361,6 +364,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 40;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 1;
@@ -436,6 +440,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 50;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 1;
@@ -539,6 +544,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.enemies_nonhumans = 0;
         settings.bot_weapons = 0;
         settings.enemyrespawn = 0;
+        moresettings.reanimation = 0;
         settings.skills_disable_downgrades = 0;
         settings.skills_reroll_missions = 0;
         settings.skills_independent_levels = 0;
@@ -701,7 +707,14 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     if (IsHalloweenMode()){
         clothes_looting = 1;
         settings.speedlevel = 0;// in DXRLoadouts we override level 0 speed to mean lvl 1 run silent
-        settings.enemyrespawn = 20;
+        moresettings.reanimation = 20;
+        switch(difficulty) {
+            case 0: moresettings.reanimation = 25; break;
+            case 1: moresettings.reanimation = 25; break;
+            case 2: moresettings.reanimation = 20; break;// Hard
+            case 3: moresettings.reanimation = 17; break;
+            case 4: moresettings.reanimation = 15; break;
+        }
     } else {
         clothes_looting = 0;
     }
@@ -726,14 +739,16 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
     if(slot--==0) return HalloweenEntranceRando;
-    if(slot--==0) return WaltonWareHalloween;
-    if(slot--==0) return WaltonWareHalloweenEntranceRando;
+
     if(slot--==0) return WaltonWare;
+    if(slot--==0) return WaltonWareHalloween;
     if(slot--==0) return WaltonWareEntranceRando;
+    if(slot--==0) return WaltonWareHalloweenEntranceRando;
     if(!VersionIsStable()) {
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
     }
+
     if(slot--==0) return ZeroRando;
     if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
@@ -906,6 +921,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.bot_weapons = 0;
     settings.bot_stats = 0;
     settings.enemyrespawn = 0;
+    moresettings.reanimation = 0;
 
     settings.turrets_move = 0;
     settings.turrets_add = 0;
@@ -977,6 +993,8 @@ function int ScoreFlags()
     score += ClampFlagValue(settings.bot_stats,0,100);
     if(settings.enemyrespawn > 0 && settings.enemyrespawn < 1000)
         score += 1500 - settings.enemyrespawn;
+    if(moresettings.reanimation > 0 && moresettings.reanimation < 100)
+        score += 5 * (150 - moresettings.reanimation);
     //settings.skills_disable_downgrades = 5;
     //settings.skills_reroll_missions = 5;
     //settings.skills_independent_levels = 1;

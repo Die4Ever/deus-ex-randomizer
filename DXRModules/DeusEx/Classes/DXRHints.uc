@@ -66,6 +66,8 @@ simulated function InitHints()
         if(dxr.flags.settings.enemyrespawn > 0) // TODO: only check for reanimation instead
             AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
     }
+    if(dxr.flags.moresettings.reanimation > 0)
+        AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
     if(dxr.flags.autosave == 3 && !dxr.flags.IsHordeMode()) {
         AddHint("You're not allowed to manually save,", "you only get an autosave when first entering a map.");
     }

@@ -84,6 +84,7 @@ struct MoreFlagsSettings{
     var int camera_mode;
     var int enemies_weapons;
     var int aug_loc_rando;
+    var int reanimation;
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -363,6 +364,10 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
     FlagInt('Rando_doorsmode', settings.doorsmode, mode, str);
     FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
+    if(!FlagInt('Rando_reanimation', moresettings.reanimation, mode, str) && mode==Reading && dxr.flags.IsHalloweenMode()) {
+        moresettings.reanimation = settings.enemyrespawn;
+        settings.enemyrespawn = 0;
+    }
     FlagInt('Rando_removeparismj12', remove_paris_mj12, mode, str);
 
     FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, mode, str);
@@ -503,6 +508,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Doors Mode"; ///////////////Might need adjustment?//////////////////
         case 'Rando_enemyrespawn':
             return "Enemy Respawn Time";
+        case 'Rando_reanimation':
+            return "Reanimation Time";
         case 'Rando_skills_disable_downgrades':
             return "Disallow downgrades on New Game screen";
         case 'Rando_skills_reroll_missions':
@@ -695,6 +702,8 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
         case 'Rando_enemyrespawn':
             return val$" seconds";
+        case 'Rando_reanimation':
+            return "~"$val$" seconds";
 
         //Medbot/Repairbot cooldown and amount options
         case 'Rando_medbotcooldowns':

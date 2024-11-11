@@ -118,11 +118,13 @@ function int InitGoalsRev(int mission, string map)
     case "11_PARIS_CATHEDRAL":
         goal = AddGoal("11_PARIS_CATHEDRAL", "Templar Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'GuntherHermann0', PHYS_Falling);
-        AddGoalActor(goal, 2, 'OrdersTrigger0', PHYS_None);
-        AddGoalActor(goal, 3, 'GoalCompleteTrigger0', PHYS_None);
-        AddGoalActor(goal, 4, 'SkillAwardTrigger3', PHYS_None);
-        AddGoalActor(goal, 5, 'FlagTrigger2', PHYS_None);
-        AddGoalActor(goal, 6, 'DataLinkTrigger8', PHYS_None);
+        //AddGoalActor(goal, 2, 'OrdersTrigger0', PHYS_None);
+        //AddGoalActor(goal, 3, 'GoalCompleteTrigger0', PHYS_None);
+        AddGoalActor(goal, 2, 'SkillAwardTrigger3', PHYS_None);
+        //AddGoalActor(goal, 5, 'FlagTrigger2', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None); // DL_morgan_uplink "I'm getting what I need.  Good work."
+        AddGoalActor(goal, 4, 'DataLinkTrigger14', PHYS_None); // DL_gunthernearcomp
+        AddGoalActor(goal, 5, 'DataLinkTrigger7', PHYS_None); // DL_gunthernearcomp
 
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Barracks", NORMAL_GOAL, vect(4738.159668,-882.423401,247.500351), rot(0, 32768, 0));
         AddActorLocation(loc, 1, vect(4789.892578,-801.263672,241.979095), rot(0,-16392,0));
@@ -334,7 +336,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     if (Loc.name=="Media Store"){
         if ((g.name=="Nicolette") || (g.name=="Jaime" && dxr.flagbase.GetBool('JaimeLeftBehind'))){
             //Spawn a small spotlight just to make it a bit easier to spot them through the window
-            dl = DynamicLight(Spawnm(class'DynamicLight',,,vect(990,1768,300),rot(-16385,0,0)));
+            dl = Spawn(class'DynamicLight',,,g.actors[0].a.Location+vectm(-16,0,113),rot(-16385,0,0));
             dl.LightRadius=6;
             dl.LightCone=1;
             dl.LightBrightness=255;
@@ -342,7 +344,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         }
     }
 
-    if (g.name=="Templar Computer" && VanillaMaps) { // TODO: make this work in Revision too
+    if (g.name=="Templar Computer") {
         g.actors[2].a.SetCollisionSize(160,64);// skillawardtrigger
         g.actors[4].a.SetCollisionSize(1400,180);// DL_gunthernearcomp
     }

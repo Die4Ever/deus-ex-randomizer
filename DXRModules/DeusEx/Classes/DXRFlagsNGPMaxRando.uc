@@ -46,6 +46,7 @@ simulated function InitMaxRandoSettings()
     settings.min_weapon_shottime=difficulty_settings.min_weapon_shottime;
     settings.max_weapon_shottime=difficulty_settings.max_weapon_shottime;
     settings.enemyrespawn = difficulty_settings.enemyrespawn;
+    moresettings.reanimation = more_difficulty_settings.reanimation;
     settings.health = difficulty_settings.health;
     settings.energy = difficulty_settings.energy;
 }
@@ -92,13 +93,17 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
-    if(DXRFlags(self).IsHalloweenMode()) { // this cast is pretty nasty
-        settings.enemyrespawn = rng(10) + 15;
-    }
-    else if(chance_single(33)) {
-        settings.enemyrespawn = rng(120) + 120;
+    if(DXRFlags(self).IsHalloweenMode()) {  // this cast is pretty nasty
+        moresettings.reanimation = rng(10) + 15;
+    } else if (chance_single(33)) {
+        if (chance_single(50)) {
+            settings.enemyrespawn = rng(120) + 120;
+        } else {
+            moresettings.reanimation = rng(15) + 15;
+        }
     } else {
         settings.enemyrespawn = 0;
+        moresettings.reanimation = 0;
     }
 
     if(rngb()) {
