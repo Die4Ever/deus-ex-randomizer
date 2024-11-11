@@ -1965,7 +1965,7 @@ function bool RaiseDead(string viewer)
         if (carc==None){
             break;
         }
-        if (class'DXRHalloween'.static.ResurrectCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
+        if (class'DXRZombies'.static.ReanimateCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
             num++;
         }
     }
@@ -1974,7 +1974,7 @@ function bool RaiseDead(string viewer)
         return False;
     }
 
-    PlayerMessage(viewer@"resurrected "$num$" from the dead!");
+    PlayerMessage(viewer@"rose "$num$" from the dead!");
 
     return True;
 }

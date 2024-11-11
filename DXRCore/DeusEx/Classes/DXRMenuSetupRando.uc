@@ -245,20 +245,23 @@ function BindControls(optional string action)
     NewMenuItem("Enemy Weapons Variety %", "Should enemies be using weapons that normally exist in the map?");
     Slider(f.moresettings.enemies_weapons, 0, 100);
 
+    NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
+    Slider(f.settings.bot_weapons, 0, 100);
+
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);
 
     NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn. Leave blank or 0 to disable.");
-    Slider(f.settings.enemyrespawn, 0, 10000);
+    Slider(f.settings.enemyrespawn, 0, 3600);
+
+    NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies. Leave blank or 0 to disable.");
+    Slider(f.moresettings.reanimation, 0, 3600);
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_add, 0, 10000);
-
-    NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
-    Slider(f.settings.bot_weapons, 0, 100);
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
