@@ -99,7 +99,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
         if (chance_single(50)) {
             settings.enemyrespawn = rng(120) + 120;
         } else {
-            moresettings.reanimation = rng(20) + 30;
+            moresettings.reanimation = rng(15) + 15;
         }
     } else {
         settings.enemyrespawn = 0;

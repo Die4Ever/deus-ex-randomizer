@@ -708,10 +708,17 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         clothes_looting = 1;
         settings.speedlevel = 0;// in DXRLoadouts we override level 0 speed to mean lvl 1 run silent
         moresettings.reanimation = 20;
+        switch(difficulty) {
+            case 0: moresettings.reanimation = 25; break;
+            case 1: moresettings.reanimation = 25; break;
+            case 2: moresettings.reanimation = 20; break;// Hard
+            case 3: moresettings.reanimation = 17; break;
+            case 4: moresettings.reanimation = 15; break;
+        }
     } else {
         clothes_looting = 0;
     }
-    
+
     if(class'MenuChoice_NewGamePlus'.default.value == 0 && !IsWaltonWare())
         moresettings.newgameplus_curve_scalar = -1;
 
