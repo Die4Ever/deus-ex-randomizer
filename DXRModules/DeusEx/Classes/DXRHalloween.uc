@@ -1,4 +1,4 @@
-class DXRHalloween extends DXRActorsBase;
+class DXRHalloween extends DXRActorsBase transient;
 
 function PostFirstEntry()
 {
