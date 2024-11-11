@@ -365,6 +365,9 @@ function BindControls(optional string action)
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
+    NewMenuItem("Aug Slot Rando %", "The chance for each aug to randomize the body part it can be installed into");
+    Slider(f.moresettings.aug_loc_rando, 0, 100);
+
     NewGroup("New Game+");
 
     NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops. Set to -1 to disable. 100% is default.");

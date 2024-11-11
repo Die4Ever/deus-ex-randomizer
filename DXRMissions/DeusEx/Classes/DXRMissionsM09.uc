@@ -189,8 +189,8 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
         AddGoalActor(goal, 2, 'DataLinkTrigger2', PHYS_None);
 
-        //There's a door in Revision where this was in Vanilla
-        //loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
+        //There's a door in Revision where this was in Vanilla, moved it to the left of the door
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-200.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
 
@@ -217,6 +217,15 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(816.000000,-1024.000000,-416.000000), rot(0,16384,0));
+
+
+        goal = AddGoal("09_NYC_SHIPBELOW", "Bilge Pump Computer", GOAL_TYPE1, 'ComputerPersonal0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None);
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pump Room", GOAL_TYPE1 | VANILLA_GOAL, vect(-2447.407959, -689.854431, -456.500488), rot(0, -15815, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helibay Barracks", GOAL_TYPE1, vect(-5505, 175, -432), rot(0, 0, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Room Tower", GOAL_TYPE1, vect(-131.815552,-492.488342,9), rot(0, -15815, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", GOAL_TYPE1, vect(-4799, 1210, -200), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(-4799, 1210, -230), rot(0,0,0));// MAHOGANY desk
 
         return 92;
 

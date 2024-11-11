@@ -498,22 +498,27 @@ simulated function PlayerRespawn(#var(PlayerPawn) p)
     RandoStartingEquipment(p, true);
 }
 
-function bool StartedWithAug(class<Augmentation> a)
+//Single Slot check is useful when trying to determine what augs are viable as aug choices, but not
+//useful when just trying to legitimately see if you started with an aug due to loadout
+function bool StartedWithAug(Augmentation a, optional bool ignoreSingleSlotCheck)
 {
     local class<Augmentation> aclass;
+    local Augmentation otherAug;
     local int i;
 
-    if( a.default.AugmentationLocation == LOC_Default )
+    if( a.AugmentationLocation == LOC_Default )
         return true;
 
     for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
         aclass = __item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
-        if( aclass == a ) return true;
+        if( aclass == a.class ) return true;
+
+        otherAug = player().AugmentationSystem.FindAugmentation(aclass);
 
         //speed, stealth, ninja, muscle...
-        if( aclass.default.AugmentationLocation == a.default.AugmentationLocation ) {
-            if( class'#var(prefix)AugmentationManager'.default.AugLocs[a.default.AugmentationLocation].NumSlots == 1 )
+        if(!ignoreSingleSlotCheck && otherAug!=None && otherAug.AugmentationLocation == a.AugmentationLocation ) {
+            if( class'#var(prefix)AugmentationManager'.default.AugLocs[a.AugmentationLocation].NumSlots == 1 )
                 return true;
         }
     }

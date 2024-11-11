@@ -1173,23 +1173,7 @@ exec function crate(optional string name)
 
 exec function FixAugHotkeys()
 {
-    local AugmentationManager am;
-    local int hotkeynums[7], loc;
-    local Augmentation a;
-
-    am = AugmentationSystem;
-    for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {
-        hotkeynums[loc] = am.AugLocs[loc].KeyBase + 1;
-    }
-    for( a = am.FirstAug; a != None; a = a.next ) {
-        if( !a.bHasIt ) continue;
-        loc = a.AugmentationLocation;
-        if( a.AugmentationLocation == LOC_Default ) continue;
-        ClientMessage(a.AugmentationName$" will bind to F"$hotkeynums[loc]);
-        a.HotKeyNum = hotkeynums[loc]++;
-    }
-
-    am.RefreshAugDisplay();
+    class'DXRAugmentations'.static.FixAugHotkeys(self,true);
 }
 
 exec function ShuffleGoals()
