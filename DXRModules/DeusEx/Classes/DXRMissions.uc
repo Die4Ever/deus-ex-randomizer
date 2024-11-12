@@ -136,6 +136,23 @@ function int AddGoal(string mapName, string goalName, int bitMask, name actorNam
     return num_goals++;
 }
 
+function ReplaceGoalActor(Actor a, Actor n)
+{
+    local int i,j;
+    if (num_goals==0) return;
+
+    for (i=0;i<num_goals;i++)
+    {
+        for (j=0;j<ArrayCount(goals[i].actors);j++){
+            if (goals[i].actors[j].a==a) {
+                goals[i].actors[j].a=n;
+                l("Replacing Goal Actor "$a$" with newly replaced actor "$n);
+                return; //Presumably no actors exist in multiple goals?
+            }
+        }
+    }
+}
+
 function AddActorLocation(int LocID, int index, vector loc, rotator r)
 {
     locations[LocID].positions[index].pos = loc;
