@@ -126,6 +126,8 @@ function PreFirstEntryMapFixes()
 
             FixCmdElevator();
             UnleashingBotsOpenCommsDoor();
+        } else {
+            VandenbergCmdRevisionFixWatchtowerDoor();
         }
 
         foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
@@ -494,6 +496,29 @@ function VandenbergCmdFixTimsDoor()
         key.SkinColor=SC_Level3;
         key.MultiSkins[0] = Texture'NanoKeyTex3';
     }
+}
+
+function VandenbergCmdRevisionFixWatchtowerDoor()
+{
+    local #var(DeusExPrefix)Mover door;
+    local #var(prefix)NanoKey key;
+
+    if(!dxr.flags.IsZeroRando()) {
+        //Add a key to the watch tower
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if (door.Name=='DeusExMover42'){
+                door.KeyIDNeeded='watchtowerkey';
+                door.Tag = 'WatchTowerDoor';
+            }
+        }
+
+        key = Spawn(class'#var(prefix)NanoKey',,,vectm(-2100,5325,-2150)); //Barracks bed
+        key.KeyID='watchtowerkey';
+        key.Description="Watch Tower Key";
+        key.SkinColor=SC_Level3;
+        key.MultiSkins[0] = Texture'NanoKeyTex3';
+    }
+
 }
 
 function UnleashingBotsOpenCommsDoor()

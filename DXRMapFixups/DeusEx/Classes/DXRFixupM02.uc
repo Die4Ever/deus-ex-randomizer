@@ -29,6 +29,7 @@ function PreFirstEntryMapFixes()
     local Teleporter tel;
     local DynamicTeleporter dtel;
     local DynamicLight light;
+    local DeusExDecoration s;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -79,6 +80,11 @@ function PreFirstEntryMapFixes()
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
             fg.ActiveArea=2000;
+        } else {
+            //Revision maps
+            s = AddSwitch( vect(480,-809,-350), rot(0, -16384, 0), 'AmbrosiaGate');  //Switch to open the gate near the vanilla ambrosia location from inside
+            d = DeusExMover(findNearestToActor(class'DeusExMover',s));
+            d.Tag='AmbrosiaGate';
         }
 
         break;

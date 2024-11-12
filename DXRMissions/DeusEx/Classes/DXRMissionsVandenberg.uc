@@ -161,6 +161,11 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
 
+        AddGoalLocation("12_VANDENBERG_CMD", "Watch Tower", NORMAL_GOAL, vect(-444,7588,-1516), rot(0, 32768, 0));  //Revision Only
+        AddGoalLocation("12_VANDENBERG_CMD", "Ammunition Storage", NORMAL_GOAL, vect(2130,6446,-2122), rot(0, -16384, 0));  //Revision Only
+        AddGoalLocation("12_VANDENBERG_CMD", "Barracks", NORMAL_GOAL, vect(-2460,5221,-2120), rot(0, 0, 0));  //Revision Only
+
+
         // Will need handling if backtracking is implemented for Revision, since this uses a JockHelicopter
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'JockHelicopter2', PHYS_None);
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
@@ -183,6 +188,12 @@ function int InitGoalsRev(int mission, string map)
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Sniper Tower", GOAL_TYPE1, vect(-946.215820, 80.315643, -1359.704102), rot(0,32768,0));
         AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Watch Tower", GOAL_TYPE1, vect(-415,6950,-1475), rot(0,0,0));
+        AddActorLocation(loc, 1, vect(-570,7430,-1525), rot(0,0,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Ammunition Storage Roof", GOAL_TYPE1, vect(1100,6175,-1475), rot(0,-16384,0));
+        AddActorLocation(loc, 1, vect(1575,6000,-1550), rot(0,0,0));
 
         if (dxr.flags.settings.starting_map > 120)
         {

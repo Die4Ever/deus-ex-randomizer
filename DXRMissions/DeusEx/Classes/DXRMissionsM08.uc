@@ -63,8 +63,11 @@ function int InitGoalsRev(int mission, string map)
     AddGoalLocation("08_NYC_FreeClinic", "Clinic", NORMAL_GOAL | VANILLA_GOAL, vect(1293.991211,-1226.047852,-239.399506), rot(0,31640,0));
     AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
     AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(316,-3439,111), rot(0,0,0));
-    AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2683.1,-1977.77,-448), rot(0,-16390,0));
-
+    loc = AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2683.1,-1977.77,-448), rot(0,-16390,0));
+    loc2 = AddGoalLocation("08_NYC_Street", "Apartment Over Basketball Court", NORMAL_GOAL , vect(2690,-1750,50), rot(0,-16390,0)); //Revision Only
+    AddGoalLocation("08_NYC_Street", "Garage Roof", NORMAL_GOAL , vect(750,-2875,-250), rot(0,32768,0)); //Revision Only
+    AddGoalLocation("08_NYC_Street", "Smuggler's Front Entrance", NORMAL_GOAL , vect(4780,-3475,-380), rot(0,16384,0)); //Revision Only
+    AddMutualExclusion(loc, loc2); //Can't use both the basketball court and apartment over the court
 
     AddGoal("08_NYC_Street", "Jock", GOAL_TYPE2, 'JockHelicopter0', PHYS_None);
     AddGoalLocation("08_NYC_Street", "Hotel Roof", GOAL_TYPE2 | VANILLA_GOAL, vect(75,965,755), rot(0, 22824, 0));
