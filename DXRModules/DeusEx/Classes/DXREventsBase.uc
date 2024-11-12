@@ -27,7 +27,7 @@ struct ActorWatchItem {
     var Actor a;
     var String BingoEvent;
 };
-var ActorWatchItem actor_watch[100];
+var ActorWatchItem actor_watch[150];
 var int num_watched_actors;
 
 simulated function string tweakBingoDescription(string event, string desc);
@@ -63,6 +63,18 @@ function CheckWatchedActors() {
         num_watched_actors--;
         actor_watch[i] = actor_watch[num_watched_actors];
         i--;// recheck this slot on the next iteration
+    }
+}
+
+function ReplaceWatchedActor(Actor a, Actor n)
+{
+    local int i;
+
+    for (i=0;i<num_watched_actors;i++){
+        if (actor_watch[i].a == a) {
+            actor_watch[i].a=n;
+            return;
+        }
     }
 }
 

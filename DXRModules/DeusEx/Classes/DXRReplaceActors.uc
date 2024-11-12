@@ -526,7 +526,7 @@ function ReplaceTrigger(#var(prefix)Trigger a, #var(prefix)Trigger n)
     n.TriggerActor = a.TriggerActor;
     n.TriggerActor2 = a.TriggerActor2;
 
-    CheckMissionGoals(a,n);
+    UpdateActorReferences(a,n);
 }
 
 function #var(DeusExPrefix)Weapon ReplaceWeapon(#var(DeusExPrefix)Weapon a, #var(DeusExPrefix)Weapon n)
@@ -596,7 +596,7 @@ function ReplaceDecoration(Decoration a, Decoration n)
     n.bPushable = a.bPushable;
     n.EffectWhenDestroyed = a.EffectWhenDestroyed;
 
-    CheckMissionGoals(a,n);
+    UpdateActorReferences(a,n);
     /*
 var() bool bOnlyTriggerable;
 var bool bSplash;
@@ -792,16 +792,22 @@ function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
     n.alarmTimeout=a.alarmTimeout;
     n.CompInUseMsg=a.CompInUseMsg;
 
-    CheckMissionGoals(a,n);
+    UpdateActorReferences(a,n);
 }
 
-function CheckMissionGoals(Actor a, Actor n)
+function UpdateActorReferences(Actor a, Actor n)
 {
     local DXRMissions missions;
+    local DXREvents   events;
 
     missions = DXRMissions(class'DXRMissions'.static.Find());
+    events   = DXREvents(class'DXREvents'.static.Find());
 
     if (missions!=None){
         missions.ReplaceGoalActor(a,n);
+    }
+
+    if (events!=None){
+        events.ReplaceWatchedActor(a,n);
     }
 }
