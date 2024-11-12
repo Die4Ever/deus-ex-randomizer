@@ -287,11 +287,18 @@ function PreFirstEntryMapFixes()
         break;
 
     case "09_NYC_GRAVEYARD":
-        Spawn(class'PlaceholderItem',,, vectm(-509.5,-742.88,-213)); //Tunnels
-        Spawn(class'PlaceholderItem',,, vectm(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
-        Spawn(class'PlaceholderItem',,, vectm(-1433.77,1161.87,-149)); //Escape tunnel
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-509.5,-742.88,-213)); //Tunnels
+            Spawn(class'PlaceholderItem',,, vectm(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
+            Spawn(class'PlaceholderItem',,, vectm(-1433.77,1161.87,-149)); //Escape tunnel
+            Spawn(class'PlaceholderItem',,, vectm(-1499.35,-454.93,-293)); //Tomb stairs
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(-2310,-1165,-155)); //Tunnels
+            Spawn(class'PlaceholderItem',,, vectm(-365,-2125,-290)); //Empty Sarcophogus
+            Spawn(class'PlaceholderItem',,, vectm(-630,-1140,-215)); //Escape tunnel
+            Spawn(class'PlaceholderItem',,, vectm(-835,-2095,-280)); //Tomb stairs
+        }
         Spawn(class'PlaceholderItem',,, vectm(-828.5,-266.1,27)); //Front of tomb
-        Spawn(class'PlaceholderItem',,, vectm(-1499.35,-454.93,-293)); //Tomb stairs
         Spawn(class'PlaceholderItem',,, vectm(1108.85,808.15,71.309769)); //Secret room shelf 1
         Spawn(class'PlaceholderItem',,, vectm(1110,829.5,35.310154)); //Secret room shelf 2
 

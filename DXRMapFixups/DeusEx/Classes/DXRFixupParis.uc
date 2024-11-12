@@ -184,13 +184,19 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(true, true, false, vect(-1821.85, -351.37, -207.11), 200.0); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
 
         Spawn(class'PlaceholderItem',,, vectm(-607.8,-1003.2,59)); //Table near Nicolette Vanilla
-        Spawn(class'PlaceholderItem',,, vectm(-239.927216,499.098633,43)); //Ledge near club owner
-        Spawn(class'PlaceholderItem',,, vectm(-1164.5,1207.85,-133)); //Table near biocell guy
+        if (VanillaMaps) {
+            Spawn(class'PlaceholderItem',,, vectm(-239.927216,499.098633,43)); //Ledge near club owner
+            Spawn(class'PlaceholderItem',,, vectm(-1164.5,1207.85,-133)); //Table near biocell guy
+            Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(-500,570,0)); //Ledge near club owner
+            Spawn(class'PlaceholderItem',,, vectm(-895,1475,-135)); //Table near biocell guy
+            Spawn(class'PlaceholderItem',,, vectm(-1745,-570,-160)); //Club back room
+        }
         Spawn(class'PlaceholderItem',,, vectm(-1046,-1393,-145)); //Bathroom counter 1
         Spawn(class'PlaceholderItem',,, vectm(-1545.5,-1016.7,-145)); //Bathroom counter 2
         Spawn(class'PlaceholderItem',,, vectm(-1464,-1649.6,-197)); //Bathroom stall 1
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
-        Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
 
         break;
     case "11_PARIS_UNDERGROUND":
@@ -199,12 +205,19 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), toby.Location, toby.CollisionRadius+5, toby.CollisionHeight+5);
             hoverHint.SetBaseActor(toby);
         }
-
-        Spawn(class'PlaceholderItem',,, vectm(2268.5,-563.7,-101)); //Near ATM
-        Spawn(class'PlaceholderItem',,, vectm(408.3,768.7,-37)); //Near Mechanic
-        Spawn(class'PlaceholderItem',,, vectm(-729,809.5,-1061)); //Bench at subway
-        Spawn(class'PlaceholderItem',,, vectm(-733,-251,-1061)); //Bench at subway
-        Spawn(class'PlaceholderItem',,, vectm(300.7,491,-1061)); //Opposite side of tracks
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(2268.5,-563.7,-101)); //Near ATM
+            Spawn(class'PlaceholderItem',,, vectm(408.3,768.7,-37)); //Near Mechanic
+            Spawn(class'PlaceholderItem',,, vectm(-729,809.5,-1061)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(-733,-251,-1061)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(300.7,491,-1061)); //Opposite side of tracks
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(-1135,3000,-125)); //Near ATM
+            Spawn(class'PlaceholderItem',,, vectm(-855,2260,-150)); //Benches near ATM
+            Spawn(class'PlaceholderItem',,, vectm(1155,1150,-320)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(1150,430,-320)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(1145,1370,-365)); //Plants near subway
+        }
         break;
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {

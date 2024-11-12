@@ -307,8 +307,14 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
         Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
         Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
-        Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
-        Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+        } else {
+            //Revision Kitchen/Breakroom is in a different location
+            Spawn(class'PlaceholderItem',,, vectm(295,1385,485)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(765,1500,440)); //Kitchen Counter
+        }
         Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
         Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
