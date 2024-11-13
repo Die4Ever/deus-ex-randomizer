@@ -166,22 +166,30 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
-        Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
         Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
         Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
         if (VanillaMaps){
             Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
             Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+
+            Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         } else {
             //Revision Kitchen/Breakroom is in a different location
             Spawn(class'PlaceholderItem',,, vectm(295,1385,485)); //Breakroom table
             Spawn(class'PlaceholderItem',,, vectm(765,1500,440)); //Kitchen Counter
+
+            //Level 4/MJ12 Lab area is blocked off in Revision, these are alternate locations for those placeholders
+            Spawn(class'PlaceholderItem',,, vectm(110,-1050,-20)); //Desk at entrance to jail area
+            Spawn(class'PlaceholderItem',,, vectm(1280,-180,-55)); //Next to couch/plant outside medical
+            Spawn(class'PlaceholderItem',,, vectm(1335,300,-35)); //Under desk near medical beds
+            Spawn(class'PlaceholderContainer',,, vectm(1490,975,-20)); //Near blocked door down to level 4
+
         }
         Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
-        Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;

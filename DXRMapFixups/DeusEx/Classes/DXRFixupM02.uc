@@ -219,7 +219,11 @@ function PreFirstEntryMapFixes()
 
             SetAllLampsState(false, true, true); // the lamp in Paul's apartment
         } else {
-            //TODO: Add equivalent Placeholders for Revision
+            Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(480,-3775,125)); //Bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(550,-3700,120)); //Kitchen counter
+            Spawn(class'PlaceholderItem',,, vectm(-310,-3900,75)); //Crack next to Paul's bed
         }
         break;
 

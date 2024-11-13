@@ -3468,7 +3468,9 @@ defaultproperties
     bingo_options(275)=(event="02_Book06",desc="Learn basic firearm safety",max=1,missions=276)
     bingo_options(276)=(event="15_Email02",desc="The truth is out there",max=1,missions=32768)
     bingo_options(277)=(event="ManderleyMail",desc="Check Manderley's holomail %s times",desc_singular="Check Manderley's holomail 1 time",max=2,missions=58)
+#ifndef revision
     bingo_options(278)=(event="LetMeIn",desc="Let me in!",max=1,missions=26)
+#endif
     bingo_options(279)=(event="08_Bulletin02",desc="Most Wanted",max=1,missions=256)
     bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
