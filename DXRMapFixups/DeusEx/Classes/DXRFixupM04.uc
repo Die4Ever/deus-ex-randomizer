@@ -130,6 +130,8 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
             Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
+        } else {
+            //TODO: Add equivalent Placeholders for Revision
         }
         break;
 

@@ -218,6 +218,8 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
 
             SetAllLampsState(false, true, true); // the lamp in Paul's apartment
+        } else {
+            //TODO: Add equivalent Placeholders for Revision
         }
         break;
 
