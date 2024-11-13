@@ -2517,7 +2517,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "CloneCubes":
             return "Read enough datacubes regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
         case "blast_door_open":
-            return "Open the main blast doors of the Area 51 bunker by finding the security computer somewhere on the surface.";
+            return "Open the main blast doors of the Area 51 bunker by finding the security computer somewhere on the surface or by opening them from inside.";
         case "SpinningRoom":
             return "Pass through the center of the spinning room in the ventilation system of the Brooklyn Naval Yards.";
         case "MolePeopleSlaughtered":
