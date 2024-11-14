@@ -6,10 +6,12 @@ function CheckConfig()
 
     add_datacubes[i].map = "05_NYC_UNATCOMJ12lab";
     add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
+    add_datacubes[i].Location = vect(-50,3540,-140); //Agent Sherman's desk in the back of the greasel lab
     i++;
 
     add_datacubes[i].map = "05_NYC_UNATCOHQ";
     add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
     i++;
 
     Super.CheckConfig();

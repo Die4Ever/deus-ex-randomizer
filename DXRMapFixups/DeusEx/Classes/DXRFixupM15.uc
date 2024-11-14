@@ -9,10 +9,12 @@ function CheckConfig()
     if (class'DXRMapVariants'.static.IsVanillaMaps(player())){
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
+        add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
         i++;
 
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
+        add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
         i++;
     }
 
@@ -22,6 +24,7 @@ function CheckConfig()
         $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
         $ "  The code is 6786.  I love you."
         $ "|n|nJustin";
+    add_datacubes[i].Location = vect(3200,-1400,-150); //First set of boxes down hall with doors
     i++;
 
     add_datacubes[i].map = "15_AREA51_ENTRANCE";
@@ -30,6 +33,7 @@ function CheckConfig()
         $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
         $ "  The code is 3901.  I love you."
         $ "|n|nJohn";
+    add_datacubes[i].Location = vect(4030,-610,-150); //Second set of boxes down the hall with doors
     i++;
 
     add_datacubes[i].map = "15_AREA51_ENTRANCE";
@@ -38,11 +42,13 @@ function CheckConfig()
         $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
         $ "  The code is 4322.  I love you."
         $ "|n|nJim";
+    add_datacubes[i].Location = vect(4008,662,-150); //Fourth set of boxes down the hall with doors
     i++;
 
     add_datacubes[i].map = "15_AREA51_PAGE";
     add_datacubes[i].text =
         "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
+    add_datacubes[i].Location = vect(6330,-7225,-5550);  //Boxes directly under Page
     i++;
 
     Super.CheckConfig();
