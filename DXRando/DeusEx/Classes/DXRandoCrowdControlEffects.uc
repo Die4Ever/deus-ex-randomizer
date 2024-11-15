@@ -1623,7 +1623,11 @@ function int SpawnNastyRat(string viewer)
 
 function int DropPiano(string viewer)
 {
+    #ifdef injections
     local #var(prefix)WHPiano piano;
+    #else
+    local DXRPiano piano;
+    #endif
     local DXRActorsBase tracer;
     local vector loc;
     local float height, leading;
@@ -1652,7 +1656,11 @@ function int DropPiano(string viewer)
         return TempFail;
     }
 
+    #ifdef injections
     piano = Spawn(class'#var(prefix)WHPiano',,, loc);
+    #else
+    piano = Spawn(class'DXRPiano',,, loc);
+    #endif
     //Did it spawn successfully?
     if(piano == None) {
         return TempFail;
