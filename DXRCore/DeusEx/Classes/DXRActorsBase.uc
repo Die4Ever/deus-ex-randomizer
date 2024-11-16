@@ -1137,7 +1137,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
 }
 
 
-function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, string plaintextTag, optional bool dont_move)
 {
     local #var(injectsprefix)InformationDevices dc;
 
@@ -1145,6 +1145,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc
 
     if(dc != None) {
         dc.plaintext = text;
+        dc.plaintextTag=plaintextTag;
     }
     return dc;
 }
@@ -1691,12 +1692,12 @@ function safe_rule FixSafeRule(safe_rule r)
     return r;
 }
 
-function int GetSafeRule(safe_rule rules[16], name item_name, vector newpos)
+function int GetSafeRule(safe_rule rules[16], coerce string item_name, vector newpos)
 {
     local int i;
 
     for(i=0; i<ArrayCount(rules); i++) {
-        if( item_name != rules[i].item_name ) continue;
+        if( !(item_name ~= string(rules[i].item_name) )) continue;
         if( AnyGreater( rules[i].min_pos, newpos ) ) continue;
         if( AnyGreater( newpos, rules[i].max_pos ) ) continue;
         return i;

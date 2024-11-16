@@ -139,6 +139,14 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "03_NYC_UNATCOHQ":
+        datacubes_rules[i].item_name = 'JCCompPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "03_NYC_BatteryPark":
         // Curly's Journal
         datacubes_rules[i].item_name = '03_Book06';
@@ -194,6 +202,14 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].item_name = '03_Datacube13';
         datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
         datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "04_NYC_UNATCOHQ":
+        datacubes_rules[i].item_name = 'JCCompPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
         break;
@@ -288,6 +304,14 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "05_NYC_UNATCOHQ":
+        datacubes_rules[i].item_name = 'JCCompPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_HELIBASE":
         //Security login
         datacubes_rules[i].item_name = '06_Datacube18';
@@ -303,6 +327,13 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = false;
         i++;
+
+        datacubes_rules[i].item_name = 'MarketATMPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
@@ -319,33 +350,71 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].max_pos = vect(-116,-447,2311);
         datacubes_rules[i].allow = true;
         i++;
+
+        //Police Vault entry code (in apartment, nowhere else)
+        datacubes_rules[i].item_name = 'PoliceVaultPassword';
+        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
+        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = 'PoliceVaultPassword';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+
+        datacubes_rules[i].item_name = 'QuickStopATMPassword';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         //Added datacube with security computer login/password (LUCKYMONEY/REDARROW)
 
         //Don't allow in the Quickstop
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-169,254,-305);
         datacubes_rules[i].max_pos = vect(443,650,-170);
         datacubes_rules[i].allow = false;
         i++;
 
         //Don't allow in the Freezer
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-1841,-3203,-360);
         datacubes_rules[i].max_pos = vect(-1393,-2420,-163);
         datacubes_rules[i].allow = false;
         i++;
 
         //Don't allow in the safe
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-1235, 125, -325);
         datacubes_rules[i].max_pos = vect(-1200, 155, -290);
         datacubes_rules[i].allow = false;
         i++;
 
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_VERSALIFE":
+        datacubes_rules[i].item_name = 'VersalifeMainElevatorCode';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_STORAGE":
+        //This code should probably not be allowed in the area after the exit pipe
+        datacubes_rules[i].item_name = 'VersalifeNanotechCode';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
@@ -375,6 +444,14 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
+
+        //Jenny's Number can be anywhere
+        datacubes_rules[i].item_name = 'JennysNumber';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "09_NYC_SHIP":
@@ -535,6 +612,42 @@ function vanilla_datacubes_rules()
 
         break;
 
+    case "15_AREA51_BUNKER":
+        //Both of these have to be above ground
+        datacubes_rules[i].item_name = 'A51VentComputerCode';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -645);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_AREA51_BUNKER';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -645);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "15_AREA51_ENTRANCE":
+        datacubes_rules[i].item_name = 'SleepPodCode1';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = 'SleepPodCode2';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = 'SleepPodCode3';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "15_AREA51_PAGE":
         datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
         datacubes_rules[i].min_pos = vect(4774.132813, -10507.679688, -5294.627441);
@@ -546,6 +659,13 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = false;
+        i++;
+
+        //UC Control Room password can be anywhere
+        datacubes_rules[i].item_name = 'UCControlRoomPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
         i++;
         break;
 
@@ -715,6 +835,14 @@ function revision_datacubes_rules()
         i++;
         break;
 
+    case "03_NYC_UNATCOHQ":
+        datacubes_rules[i].item_name = 'JCCompPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "03_NYC_BatteryPark":
         // Curly's Journal
         datacubes_rules[i].item_name = '03_Book06';
@@ -771,6 +899,14 @@ function revision_datacubes_rules()
         datacubes_rules[i].item_name = '03_Datacube13';
         datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
         datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "04_NYC_UNATCOHQ":
+        datacubes_rules[i].item_name = 'JCCompPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
         break;
@@ -915,6 +1051,14 @@ function revision_datacubes_rules()
         i++;
         break;
 
+    case "05_NYC_UNATCOHQ":
+        datacubes_rules[i].item_name = 'JCCompPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_HELIBASE":
         //Security login
         datacubes_rules[i].item_name = '06_Datacube18';
@@ -930,6 +1074,13 @@ function revision_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = false;
         i++;
+
+        datacubes_rules[i].item_name = 'MarketATMPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
@@ -946,52 +1097,90 @@ function revision_datacubes_rules()
         datacubes_rules[i].max_pos = vect(-116,-447,2311);
         datacubes_rules[i].allow = true;
         i++;
+
+        //Police Vault entry code (in apartment, nowhere else)
+        datacubes_rules[i].item_name = 'PoliceVaultPassword';
+        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
+        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = 'PoliceVaultPassword';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+
+        datacubes_rules[i].item_name = 'QuickStopATMPassword';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         //Added datacube with security computer login/password (LUCKYMONEY/REDARROW)
 
         //Don't allow in the Quickstop
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-169,254,-305);
         datacubes_rules[i].max_pos = vect(443,650,-170);
         datacubes_rules[i].allow = false;
         i++;
 
         //Don't allow in the Freezer
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-1841,-3203,-360);
         datacubes_rules[i].max_pos = vect(-1393,-2420,-163);
         datacubes_rules[i].allow = false;
         i++;
 
         //Don't allow in the safe
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-1235, 125, -325);
         datacubes_rules[i].max_pos = vect(-1200, 155, -290);
         datacubes_rules[i].allow = false;
         i++;
 
         //Don't allow in the locked police room
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(526,-393,-295);
         datacubes_rules[i].max_pos = vect(968,-189,-196);
         datacubes_rules[i].allow = false;
         i++;
 
         //Don't allow in the locked restaurant
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(1332,-1334,-99999);
         datacubes_rules[i].max_pos = vect(2870,-315,99999);
         datacubes_rules[i].allow = false;
         i++;
 
-        datacubes_rules[i].item_name = '06_HONGKONG_WANCHAI_UNDERWORLD_1551934037';
+        datacubes_rules[i].item_name = 'LuckyMoneyPassword';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
 
+        break;
+
+    case "06_HONGKONG_VERSALIFE":
+        datacubes_rules[i].item_name = 'VersalifeMainElevatorCode';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_STORAGE":
+        //This code should probably not be allowed in the area after the exit pipe
+        datacubes_rules[i].item_name = 'VersalifeNanotechCode';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
         break;
 
     case "08_NYC_HOTEL":
@@ -1037,6 +1226,14 @@ function revision_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
+
+        //Jenny's Number can be anywhere
+        datacubes_rules[i].item_name = 'JennysNumber';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "09_NYC_SHIP":
@@ -1241,6 +1438,26 @@ function revision_datacubes_rules()
 
         break;
 
+    case "15_AREA51_ENTRANCE":
+        datacubes_rules[i].item_name = 'SleepPodCode1';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = 'SleepPodCode2';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = 'SleepPodCode3';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "15_AREA51_FINAL":
         //Code for stairwell blastdoor
         //Not in the reactor lab
@@ -1294,6 +1511,13 @@ function revision_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = false;
+        i++;
+
+        //UC Control Room password can be anywhere
+        datacubes_rules[i].item_name = 'UCControlRoomPassword';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
         i++;
 
         break;
@@ -1365,8 +1589,11 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
     local int num, slot, numHasPass, bads, tries;
     local int hasPass[64];
     local Vector newloc;
+    local String TextTag;
 
     InfoDevsHasPass(id, hasPass, numHasPass);
+
+    TextTag = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(id);
 
     num=0;
     foreach AllActors(class'Inventory', inv)
@@ -1377,7 +1604,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
             continue;
         }
 #ifdef locdebug
-        if(id.textTag == '#var(locdebug)') DebugMarkKeyPosition(inv.Location, id.textTag);
+        if(TextTag ~= "#var(locdebug)") DebugMarkKeyPosition(inv.Location, id.textTag);
 #endif
         temp[num++] = inv;
     }
@@ -1392,13 +1619,13 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
             }
             if( HasBased(c) ) continue;
 #ifdef locdebug
-            if(id.textTag == '#var(locdebug)') DebugMarkKeyPosition(c.Location, id.textTag);
+            if(TextTag ~= "#var(locdebug)") DebugMarkKeyPosition(c.Location, id.textTag);
 #endif
             temp[num++] = c;
         }
     }
 
-    l("DatacubePositionCheck datacube "$id$" got num "$num$" with "$bads$" unsafe positions in map "$dxr.localurl);
+    l("DatacubePositionCheck datacube "$id$" ("$TextTag$") got num "$num$" with "$bads$" unsafe positions in map "$dxr.localurl);
     for(tries=0; tries<5; tries++) {
         slot=rng(num+1);//+1 for the vanilla location, since we're not in the list
         if(slot==0) {
@@ -1555,32 +1782,18 @@ function bool InfoPositionGood(#var(prefix)InformationDevices id, vector newpos,
     local #var(prefix)Computers c;
     local #var(prefix)Keypad k;
     local #var(injectsprefix)InformationDevices injectID;
-    local name TextTag;
+    local String TextTag;
     local String mapname;
     local int i;
 
-    if (id.textTag!=''){
-        TextTag = id.textTag;
-    } else {
-        #ifdef injections
-            injectID=id;
-        #else
-            injectID=#var(injectsprefix)InformationDevices(id);
-        #endif
-
-        //Generate a text tag for cubes with plaintext isntead of TextTag
-        if (injectID!=None){
-            mapname = injectID.GetMapNameStripped();
-            TextTag = StringToName(mapname$"_"$ injectID.Crc());
-        }
-    }
+    TextTag = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(id);
 
     i = GetSafeRule( datacubes_rules, TextTag, newpos);
     if( i != -1 ) return datacubes_rules[i].allow;
 
     if( VSize( id.Location - newpos ) > 5000 ) return False;
 
-    if ( TextTag == '' ) {
+    if ( TextTag == "" ) {
         //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, no textTag");
         return True;
     }

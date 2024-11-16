@@ -10,11 +10,13 @@ function CheckConfig()
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
         add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
+        add_datacubes[i].plaintextTag = "A51VentComputerCode";
         i++;
 
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
         add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
+        add_datacubes[i].plaintextTag = "A51VentElevatorCode";
         i++;
     }
 
@@ -25,6 +27,7 @@ function CheckConfig()
         $ "  The code is 6786.  I love you."
         $ "|n|nJustin";
     add_datacubes[i].Location = vect(3200,-1400,-150); //First set of boxes down hall with doors
+    add_datacubes[i].plaintextTag = "SleepPodCode1";
     i++;
 
     add_datacubes[i].map = "15_AREA51_ENTRANCE";
@@ -34,6 +37,7 @@ function CheckConfig()
         $ "  The code is 3901.  I love you."
         $ "|n|nJohn";
     add_datacubes[i].Location = vect(4030,-610,-150); //Second set of boxes down the hall with doors
+    add_datacubes[i].plaintextTag = "SleepPodCode2";
     i++;
 
     add_datacubes[i].map = "15_AREA51_ENTRANCE";
@@ -43,12 +47,14 @@ function CheckConfig()
         $ "  The code is 4322.  I love you."
         $ "|n|nJim";
     add_datacubes[i].Location = vect(4008,662,-150); //Fourth set of boxes down the hall with doors
+    add_datacubes[i].plaintextTag = "SleepPodCode3";
     i++;
 
     add_datacubes[i].map = "15_AREA51_PAGE";
     add_datacubes[i].text =
         "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
     add_datacubes[i].Location = vect(6330,-7225,-5550);  //Boxes directly under Page
+    add_datacubes[i].plaintextTag = "UCControlRoomPassword";
     i++;
 
     Super.CheckConfig();
@@ -513,7 +519,7 @@ function PreFirstEntryMapFixes_Page()
         cloneCubeText[2]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Jacob Queequeg|nBASE GENETIC SAMPLE: STRONGHOWARD52L|nPROFILE: CAAGATA|nVITALS: 52/73/1.01/20/2.2|n|n             [[[[[PENDING]]]]]";
         cloneCubeText[3]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 6/17/54|nASSIGNED BIRTH DATE: 11/30/35|nASSIGNED BIRTH NAME: Jason Frudnick|nBASE GENETIC SAMPLE: GARDNERKANE88J|nPROFILE: BABTAGA|nVITALS: 51/81/1.13/20/2.0|n|n             [[[[[PENDING]]]]]";
         for(i=0;i<4;i++){
-            SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0,0),cloneCubeText[i]);
+            SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0,0),cloneCubeText[i],"CloneCube"$string(i+1));
         }
     }
 

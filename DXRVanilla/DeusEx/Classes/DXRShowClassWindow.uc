@@ -12,12 +12,13 @@ var ToolCheckboxWindow	chkTagEvent;
 var ToolCheckboxWindow	chkTagConns;
 var ToolCheckboxWindow	chkEventConns;
 var ToolCheckboxWindow	chkCollision;
+var ToolCheckboxWindow	chkTextTags;
 
 event InitWindow()
 {
     Super.InitWindow();
 
-    SetSize(420,420); //215,420 normally
+    SetSize(420,445); //215,420 normally
 
     CreateDXRandoControls();
 }
@@ -89,6 +90,9 @@ function CreateDXRandoControls()
     chkCollision  = CreateToolCheckbox(215, y,  "Show Collision Values", actorDisplay.IsCollisionVisible());
     y += 25;
 
+    chkTextTags  = CreateToolCheckbox(215, y,  "Show Text Tags", actorDisplay.AreTextTagsVisible());
+    y += 25;
+
 }
 
 function SaveSettings()
@@ -106,6 +110,7 @@ function SaveSettings()
     actorDisplay.ShowTagConns(chkTagConns.GetToggle());
     actorDisplay.ShowEventConns(chkEventConns.GetToggle());
     actorDisplay.ShowCollision(chkCollision.GetToggle());
+    actorDisplay.ShowTextTags(chkTextTags.GetToggle());
 
     actorDisplay.LimitRadius(chkLimitRadius.GetToggle());
     actorDisplay.SetActorRadius(radiusFilter.GetText());

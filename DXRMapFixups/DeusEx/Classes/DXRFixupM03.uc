@@ -7,6 +7,7 @@ function CheckConfig()
     add_datacubes[i].map = "03_NYC_UNATCOHQ";
     add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
     add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+    add_datacubes[i].plaintextTag = "JCCompPassword";
     i++;
 
     Super.CheckConfig();

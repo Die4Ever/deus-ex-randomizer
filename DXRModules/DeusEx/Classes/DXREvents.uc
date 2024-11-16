@@ -1638,6 +1638,7 @@ simulated function string tweakBingoDescription(string event, string desc)
 function ReadText(name textTag)
 {
     local string eventname;
+    local string flagEvent;
     local PlayerDataItem data;
     local DXRPasswords pws;
 
@@ -1693,6 +1694,10 @@ function ReadText(name textTag)
     case '15_Datacube03':
     case '15_Datacube04':
     case '15_Datacube05':
+    case 'CloneCube1':
+    case 'CloneCube2':
+    case 'CloneCube3':
+    case 'CloneCube4':
         eventname="CloneCubes";
         break;
 
@@ -1707,13 +1712,24 @@ function ReadText(name textTag)
         eventname="UNATCOHandbook";
         break;
 
+    case 'JennysNumber':
+        eventname = "8675309";
+        flagEvent="09_NYC_DOCKYARD--796967769"; //So the web side doesn't need adjustment (yet)
+        break;
+
+
     case '06_Datacube05':// Maggie Chow's bday
-        eventname = "July 18th"; // don't break, fallthrough
+        eventname = "July 18th";
+        flagEvent="06_Datacube05";
+        break;
+
     default:
         // HACK: because names normally can't have hyphens? convert to string and use that instead
         switch(string(textTag)){
             case "09_NYC_DOCKYARD--796967769":
+            case "JennysNumber":
                 eventname = "8675309";
+                flagEvent="09_NYC_DOCKYARD--796967769";
                 break;
             case "15_AREA51_PAGE--32904306":
             case "15_AREA51_PAGE--1066683761":
@@ -1722,16 +1738,18 @@ function ReadText(name textTag)
                 eventname="CloneCubes";
                 break;
         }
-        if(eventname != "") {
-            pws = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
-            if(pws != None)
-                pws.ProcessString(eventname);
-            SendFlagEvent(textTag, false, eventname);
-        } else {
+        if(eventname == "") {
             // it's simple for a bingo event that requires reading just 1 thing
             _MarkBingo(textTag);
             return;
         }
+    }
+
+    if(flagEvent!="" && eventname != "") {
+        pws = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(pws != None)
+            pws.ProcessString(eventname);
+        SendFlagEvent(flagEvent, false, eventname);
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());

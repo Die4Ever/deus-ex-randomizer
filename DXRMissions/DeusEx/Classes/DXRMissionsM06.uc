@@ -264,7 +264,7 @@ function GenerateDTSHintCube(Goal g, GoalLocation Loc)
         }
     }
     SpawnDatacubePlaintext(vectm(-1857.841064, -158.911865, 2051.345459), rotm(0,0,0,0),
-        "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", true);
+        "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", "DTSHintCube", true);
 }
 
 function CreateGoal(out Goal g, GoalLocation Loc)
