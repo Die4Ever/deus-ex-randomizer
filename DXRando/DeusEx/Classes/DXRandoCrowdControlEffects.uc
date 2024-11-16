@@ -2169,7 +2169,7 @@ function bool SpamDatacubes(String viewer)
     local #var(injectsprefix)InformationDevices dc;
 
     for (i=0;i<5;i++){
-        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer));
+        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer),"");
         if (dc!=None){
             ccLink.ccModule.GlowUp(dc);
             num++;

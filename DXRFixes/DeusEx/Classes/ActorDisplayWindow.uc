@@ -17,6 +17,7 @@ var bool         bShowTagEvent;
 var bool         bShowTagConnections;
 var bool         bShowEventConnections;
 var bool         bShowCollision;
+var bool         bShowTextTags;
 
 function SetActorRadius(string newRadius)
 {
@@ -147,6 +148,16 @@ function ShowCollision(bool bShow)
     bShowCollision = bShow;
 }
 
+function bool AreTextTagsVisible()
+{
+    return bShowTextTags;
+}
+
+function ShowTextTags(bool bShow)
+{
+    bShowTextTags = bShow;
+}
+
 function string GetActorName(Actor a)
 {
     local string str;
@@ -160,7 +171,7 @@ function string GetActorName(Actor a)
             str = #var(prefix)Nanokey(a).Description;
         }
         else if(#var(prefix)InformationDevices(a) != None) {
-            str = string(#var(prefix)InformationDevices(a).textTag);
+            str = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(a));
         }
         else if(ScriptedPawn(a) != None) {
             str = ScriptedPawn(a).FamiliarName;
@@ -687,6 +698,14 @@ function DrawWindow(GC gc)
 
             if(bShowCustom && customAttrib != "") {
                 str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
+            }
+
+            if(bShowTextTags || bShowData)
+            {
+                if (#var(prefix)InformationDevices(trackActor)!=None){
+                    str = str $ "|c34d8eb";
+                    str = str $ "TextTag=" $ class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(trackActor)) $ CR();
+                }
             }
 
             if(bShowInventory){
