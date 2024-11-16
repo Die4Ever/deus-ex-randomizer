@@ -413,10 +413,10 @@ function vanilla_datacubes_rules()
         break;
 
     case "06_HONGKONG_STORAGE":
-        //This code should probably not be allowed in the area after the exit pipe
+        //Anywhere below the exit pipe
         datacubes_rules[i].item_name = 'VersalifeNanotechCode';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 1345); //1345 is the top of the pipe
         datacubes_rules[i].allow = true;
         i++;
         break;
@@ -1175,10 +1175,10 @@ function revision_datacubes_rules()
         break;
 
     case "06_HONGKONG_STORAGE":
-        //This code should probably not be allowed in the area after the exit pipe
+        //Anywhere below the exit pipe
         datacubes_rules[i].item_name = 'VersalifeNanotechCode';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 1345); //1345 is the top of the pipe
         datacubes_rules[i].allow = true;
         i++;
         break;
