@@ -11,6 +11,15 @@ function PostPostBeginPlay()
     }
 }
 
+simulated function PreBeginPlay()
+{
+    Super.PreBeginPlay();
+
+#ifdef locdebug
+    if("#var(locdebug)"~="PlaceholderContainer") DXRActorsBase(class'DXRActorsBase'.static.Find()).DebugMarkKeyPosition(Location, Name);
+#endif
+}
+
 defaultproperties
 {
     ItemName="Randomizer Placeholder: REPORT BUG!"

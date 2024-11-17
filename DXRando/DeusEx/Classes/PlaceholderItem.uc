@@ -20,6 +20,10 @@ simulated function PreBeginPlay()
 
     Super.PreBeginPlay();
 
+#ifdef locdebug
+    if("#var(locdebug)"~="PlaceholderItem") DXRActorsBase(class'DXRActorsBase'.static.Find()).DebugMarkKeyPosition(Location, Name);
+#endif
+
     if(!class'DXRVersion'.static.VersionIsStable()) {
         //Make sure placeholders are high enough off the ground so that any swaps can
         //adjust height based on collision size and still stay out of the ground.
