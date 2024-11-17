@@ -24,6 +24,11 @@ static function PlaceholderEnemy Create(DXRBase a, vector loc, optional int yaw,
         e.FollowOrders();
     }
     log("Created "$ class'DXRInfo'.static.ActorToString(e) @ Alliance, 'PlaceholderEnemy');
+
+#ifdef locdebug
+    if("#var(locdebug)"~="PlaceholderEnemy") DXRActorsBase(class'DXRActorsBase'.static.Find()).DebugMarkKeyPosition(e.Location, e.Name);
+#endif
+
     return e;
 }
 
