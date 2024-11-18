@@ -687,6 +687,16 @@ function FixUNATCORetinalScanner()
     }
 }
 
+function MakeTurretsNonHostile()
+{
+    local #var(prefix)AutoTurret at;
+
+    foreach AllActors(class'#var(prefix)AutoTurret',at){
+        at.bTrackPlayersOnly=False;
+        at.bTrackPawnsOnly=True;
+    }
+}
+
 function FixUNATCOCarterCloset()
 {
     local Inventory i;

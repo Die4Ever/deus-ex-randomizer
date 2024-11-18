@@ -284,6 +284,7 @@ function PreFirstEntryMapFixes()
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         FixAlexsEmail();
+        MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
         if(!dxr.flags.IsZeroRando()) {
             key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));

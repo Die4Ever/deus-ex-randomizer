@@ -389,6 +389,7 @@ function PreFirstEntryMapFixes()
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         FixAlexsEmail();
+        MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
         //Move weapon mod out of Manderley's secret (inaccessible) safe
         foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
