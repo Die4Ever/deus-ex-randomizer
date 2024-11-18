@@ -131,6 +131,7 @@ function PreFirstEntryMapFixes()
     case "05_NYC_UNATCOHQ":
         if (VanillaMaps){
             FixAlexsEmail();
+            //MakeTurretsNonHostile(); //Revision has hostile turrets near jail, but they should stay hostile this time
 
             // Anna's dialog depends on this flag
             dxr.flagbase.SetBool('DL_Choice_Played', true,, 6);
