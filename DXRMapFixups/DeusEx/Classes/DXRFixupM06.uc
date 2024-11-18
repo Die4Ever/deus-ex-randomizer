@@ -148,14 +148,14 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay_01'){
                 m.bIsDoor=False;
             }
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
-            class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
-            class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
-            class'PlaceholderEnemy'.static.Create(self,vectm(755,-364,144),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(877,-360,144),,'Shitting');
         }
+        class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
+        class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
+        class'PlaceholderEnemy'.static.Create(self,vectm(755,-364,144),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(877,-360,144),,'Shitting');
+
         break;
 
     case "06_HONGKONG_TONGBASE":

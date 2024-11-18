@@ -180,21 +180,25 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            Spawn(class'PlaceholderItem',,, vectm(-2227,4220,-2519)); //on top of generator
-            Spawn(class'PlaceholderItem',,, vectm(-1421,5119,-2534)); //on top of boxes near start
-            Spawn(class'PlaceholderItem',,, vectm(-1205,5271,-2534)); //on top of boxes near start
-            Spawn(class'PlaceholderItem',,, vectm(-2676,3649,-2599)); //stairwell down to flooded area
             Spawn(class'PlaceholderItem',,, vectm(-3227,3679,-2599)); //floor near stairwell down to flooded area
             Spawn(class'PlaceholderItem',,, vectm(-1590,2796,-2599)); //airlock after spiderbot trap
-
-            Spawn(class'PlaceholderContainer',,, vectm(-2250,4586,-2577)); //across from generator
-            Spawn(class'PlaceholderContainer',,, vectm(-2414,4329,-2577)); //near generator
-            Spawn(class'PlaceholderContainer',,, vectm(-3175,3194,-2577)); //near stairwell to flooded area
-            Spawn(class'PlaceholderContainer',,, vectm(-1399,4950,-2565)); //near boxes near start
-            Spawn(class'PlaceholderContainer',,, vectm(-3083,2798,-2577)); //near corner near spiderbot trap
-            Spawn(class'PlaceholderContainer',,, vectm(-325,1386,-2577)); //after the pit
-
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(-3227,3679,-2520)); //boxes near stairwell down to flooded area
+            Spawn(class'PlaceholderItem',,, vectm(-1640,2796,-2599)); //airlock after spiderbot trap
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(-2227,4220,-2519)); //on top of generator
+        Spawn(class'PlaceholderItem',,, vectm(-1421,5119,-2534)); //on top of boxes near start
+        Spawn(class'PlaceholderItem',,, vectm(-1205,5271,-2534)); //on top of boxes near start
+        Spawn(class'PlaceholderItem',,, vectm(-2676,3649,-2599)); //stairwell down to flooded area
+
+        Spawn(class'PlaceholderContainer',,, vectm(-2250,4586,-2577)); //across from generator
+        Spawn(class'PlaceholderContainer',,, vectm(-2414,4329,-2577)); //near generator
+        Spawn(class'PlaceholderContainer',,, vectm(-3175,3194,-2577)); //near stairwell to flooded area
+        Spawn(class'PlaceholderContainer',,, vectm(-1399,4950,-2565)); //near boxes near start
+        Spawn(class'PlaceholderContainer',,, vectm(-3083,2798,-2577)); //near corner near spiderbot trap
+        Spawn(class'PlaceholderContainer',,, vectm(-325,1386,-2577)); //after the pit
+
         break;
 
     case "14_VANDENBERG_SUB":
@@ -248,6 +252,12 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(718,3913,-355)); //Shed
+            Spawn(class'PlaceholderItem',,, vectm(723,3972,-355)); //Shed
+            Spawn(class'PlaceholderItem',,, vectm(726,4050,-365)); //Shed
+            Spawn(class'PlaceholderItem',,, vectm(740,4203,-420)); //Shed
+            Spawn(class'PlaceholderItem',,, vectm(555,4207,-420)); //Shed
         }
         break;
 
@@ -309,6 +319,19 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderContainer',,, vectm(2999,482,-1503)); //Greasel lab
             Spawn(class'PlaceholderContainer',,, vectm(1780,3725,-2483)); //Crew module bed
             Spawn(class'PlaceholderContainer',,, vectm(1733,3848,-4223)); //Corner in hall to UC
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(217,750,-1570)); //Secretary desk
+            Spawn(class'PlaceholderItem',,, vectm(2722,226.5,-1481)); //Greasel Lab desk
+            Spawn(class'PlaceholderItem',,, vectm(4097.8,395.4,-1533)); //Desk with zappy electricity near construction zone
+            Spawn(class'PlaceholderItem',,, vectm(4202,2552,-1740)); //Electrical box in construction zone
+            Spawn(class'PlaceholderItem',,, vectm(5359.5,3122.3,-1761)); //Construction vehicle tread
+            Spawn(class'PlaceholderItem',,, vectm(3114,3687,-2530)); //Storage room in crew capsule
+
+            Spawn(class'PlaceholderContainer',,, vectm(-165,509,-1590)); //Secretary desk corner
+            Spawn(class'PlaceholderContainer',,, vectm(1740,156,-1599)); //Open storage room
+            Spawn(class'PlaceholderContainer',,, vectm(3000,-108,-1500)); //Greasel lab
+            Spawn(class'PlaceholderContainer',,, vectm(1780,3725,-2483)); //Crew module bed
+            Spawn(class'PlaceholderContainer',,, vectm(1733,3848,-4223)); //Corner in hall to UC
         }
         break;
     case "14_OCEANLAB_UC":
@@ -343,6 +366,11 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(348.9,8484.63,-2913)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(1280.84,8534.17,-2913)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(1892,8754.5,-2901)); //Turret room, opposite from bait computer
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(1084,8200,-2860)); //Over security computer
+            Spawn(class'PlaceholderItem',,, vectm(1780,8587,-2790)); //Turret room
+            Spawn(class'PlaceholderItem',,, vectm(423,8547,-2900)); //Turret room
+            Spawn(class'PlaceholderItem',,, vectm(73,9110,-2910)); //Turret room, opposite from bait computer
         }
 
         foreach AllActors(class'#var(prefix)Fan1',fan){
@@ -397,12 +425,14 @@ function PreFirstEntryMapFixes()
 
             class'FrictionTrigger'.static.CreateIce(self, vectm(28.63,-5129.48,-231.285), 1190, 650);
 
-            class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327));
-            class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1257,-3472,1468));
-            class'PlaceholderEnemy'.static.Create(self,vectm(1021,-3323,1476));
+            class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1257,-3472,1468));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1021,-3323,1476));
+
 
         dxr.flagbase.SetBool('MS_UnhideHelicopter', True,, 15);
         foreach AllActors(class'DataLinkTrigger', dlt, 'klax') {
@@ -430,10 +460,12 @@ function PreFirstEntryMapFixes()
             }
 
 
-            Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
-            Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
-            Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
+        Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
+        Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
+
         break;
 
     case "12_VANDENBERG_GAS":
@@ -469,7 +501,14 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-88,-2087,-1553)); //Collapsed bridge road surface
             Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
             Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
+        } else {
+            class'PlaceholderEnemy'.static.Create(self,vectm(886,1044,-930));
 
+            Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
+            Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar
+            Spawn(class'PlaceholderItem',,, vectm(-88,-2087,-1553)); //Collapsed bridge road surface
+            Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
+            Spawn(class'PlaceholderItem',,, vectm(-2864,-2618,-1490)); //Ledge near original key
         }
         break;
     }
