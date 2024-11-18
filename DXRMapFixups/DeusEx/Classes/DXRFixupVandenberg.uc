@@ -55,6 +55,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Teleporter t;
     local #var(prefix)Fan1 fan;
     local #var(prefix)Fan2 fan2;
+    local DynamicTeleporter dynt;
 
     local bool VanillaMaps;
 
@@ -199,6 +200,26 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-3083,2798,-2577)); //near corner near spiderbot trap
         Spawn(class'PlaceholderContainer',,, vectm(-325,1386,-2577)); //after the pit
 
+        if (!#defined(vanilla)){
+            //Disable collision on the MapExit's before shuffling so that the moving items don't trigger them
+            //For Vanilla, this is fixed in DXRBacktracking, but nothing else uses that module (yet)
+            foreach AllActors(class'#var(prefix)MapExit',exit){
+                exit.Tag='';
+                exit.SetCollision(False,False,False);
+            }
+
+            dynt = Spawn(class'DynamicTeleporter',,,vectm(-1625,5743,-2364)); //Start
+            dynt.SetCollisionSize(30,15);
+            dynt.SetDestination("12_vandenberg_cmd",,"commstat");
+
+            if (VanillaMaps){
+                dynt = Spawn(class'DynamicTeleporter',,,vectm(398,1164,-2356)); //End
+            } else {
+                dynt = Spawn(class'DynamicTeleporter',,,vectm(3366,1164,-2356)); //End
+            }
+            dynt.SetCollisionSize(30,15);
+            dynt.SetDestination("12_vandenberg_cmd",,"storage");
+        }
         break;
 
     case "14_VANDENBERG_SUB":
