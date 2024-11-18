@@ -10,7 +10,7 @@ var bool bDoomMode;
 var bool bAutorun;
 var float autorunTime;
 var bool bBlockAnimations;
-var bool bUpgradeAugs;
+var transient bool bUpgradeAugs;
 
 var Rotator ShakeRotator;
 
@@ -1094,7 +1094,6 @@ exec function CheatsOff()
 {
     bCheatsEnabled = false;
     ClientMessage("Cheats Disabled");
-
 }
 
 //Just a copy of PlayersOnly, but doesn't need cheats and faster to type (In case of lockups after a save)
@@ -1341,6 +1340,16 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 simulated function PreBeginPlay()
 {
     Super.PreBeginPlay();
+}
+
+simulated function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+
+    //Make sure the aug and skill quick menus are closed when you re-enter a map.
+    //bUpgradeAugs is added by Rando so is transient, but bBuySkills is vanilla
+    bUpgradeAugs=False;
+    bBuySkills=False;
 }
 function PlayTakeHitSound(int Damage, name damageType, int Mult)
 {
