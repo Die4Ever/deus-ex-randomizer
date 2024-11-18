@@ -783,6 +783,19 @@ simulated function ApplyClothing(Actor a, int person)
     local int i;
     local Texture overrides[8];
 
+    #ifdef revision
+    //Force appearance back to vanilla
+    if (#var(DeusExPrefix)Carcass(a)!=None){
+        #var(DeusExPrefix)Carcass(a).Facelift(False);
+    } else if (#var(prefix)ScriptedPawn(a)!=None){
+        #var(prefix)ScriptedPawn(a).Facelift(False);
+    } else if (#var(PlayerPawn)(a)!=None){
+        #var(PlayerPawn)(a).Facelift(False);
+        #var(PlayerPawn)(a).bHDTP_JC=False;
+        #var(PlayerPawn)(a).bHDTP_Paul=False;
+    }
+    #endif
+
     ForceCarcassType(a);
 
     a.Mesh=GetCurModelByPerson(person);
