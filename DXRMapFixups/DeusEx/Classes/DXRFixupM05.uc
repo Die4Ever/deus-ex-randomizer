@@ -118,13 +118,13 @@ function PreFirstEntryMapFixes()
                     cigs.Destroy();
                 }
             }
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-3417,1369,208),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(479,3502,-144),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-3417,1369,208),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(479,3502,-144),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
 
         break;
 
@@ -182,17 +182,24 @@ function PreFirstEntryMapFixes()
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 break;
             }
+        }
 
-            class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(229,1828,288),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1451,654,608),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1662,786,608),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-16,-609,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-182,-859,-16),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1153,1024,-16),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1885,-279,-16),,'Sitting');
-
+        class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-16,-609,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-182,-859,-16),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1153,1024,-16),,'Sitting');
+        if (VanillaMaps){
+            class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting'); //Bathroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(229,1828,288),,'Sitting'); //Breakroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1451,654,608),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1662,786,608),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(1885,-279,-16),,'Sitting'); //Alex office seats
+        } else {
+            class'PlaceholderEnemy'.static.Create(self,vectm(220,190,45),,'Shitting'); //Bathroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(256,1429,490),,'Sitting'); //Breakroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1980,1086,610),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1739,915,610),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(1332,-849,-10),,'Sitting'); //Alex office seats
         }
 
         //Spawn some placeholders for new item locations

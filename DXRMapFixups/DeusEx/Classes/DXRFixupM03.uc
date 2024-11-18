@@ -186,19 +186,19 @@ function PreFirstEntryMapFixes()
 
             //Button to extend sewer platform from the other side
             AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(-326,1494,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-422,1393,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(352,1510,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(451,1397,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1154,170,224),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1044,94,224),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
-
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-326,1494,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-422,1393,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(352,1510,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(451,1397,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1154,170,224),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1044,94,224),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
+
         break;
 
     case "03_NYC_AIRFIELD":
@@ -328,20 +328,22 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
-            Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
-            Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
-            Spawn(class'PlaceholderItem',,, vectm(395,830,74)); //Around Pillars
-            Spawn(class'PlaceholderItem',,, vectm(-2,633,74));//More pillars
-            Spawn(class'PlaceholderItem',,, vectm(-465,562,74));//Even more pillars
-            Spawn(class'PlaceholderItem',,, vectm(-659,990,107)); //Pillar stairs
-            Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
-            Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
-            Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
-
             class'PlaceholderEnemy'.static.Create(self,vectm(4030,-2958,112),,'Shitting');
 
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
+        Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
+        Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
+        Spawn(class'PlaceholderItem',,, vectm(395,830,74)); //Around Pillars
+        Spawn(class'PlaceholderItem',,, vectm(-2,633,74));//More pillars
+        Spawn(class'PlaceholderItem',,, vectm(-465,562,74));//Even more pillars
+        Spawn(class'PlaceholderItem',,, vectm(-659,990,107)); //Pillar stairs
+        Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
+        Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
+        Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
+
+
         break;
 
     case "03_NYC_747":

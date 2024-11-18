@@ -67,9 +67,13 @@ function PreFirstEntryMapFixes()
 
             class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
-            class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
+        } else {
+            class'PlaceholderEnemy'.static.Create(self,vectm(-76,-3450,-280));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-748,601,-256));
         }
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
+        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
+
         break;
 
     case "10_PARIS_CHATEAU":

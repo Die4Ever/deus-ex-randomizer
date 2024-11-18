@@ -216,16 +216,6 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
-            class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(-435,9,-208),,,,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(1486,1375,-208),,,,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(-438,1120,544),,,,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
-        }
-
-        if(VanillaMaps) {
             // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
             foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'SendingSignal') {
                 if(dt.datalinkTag == 'DL_PaulGoodJob') {
@@ -259,6 +249,14 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
+        class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-435,9,-208),,,,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1486,1375,-208),,,,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-438,1120,544),,,,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
 
         dxr.flagbase.SetBool('DXRando_NSFHQVisited', true,, 5);
 
