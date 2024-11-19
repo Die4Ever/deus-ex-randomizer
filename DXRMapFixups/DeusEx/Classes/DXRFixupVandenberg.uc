@@ -348,6 +348,13 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(5359.5,3122.3,-1761)); //Construction vehicle tread
             Spawn(class'PlaceholderItem',,, vectm(3114,3687,-2530)); //Storage room in crew capsule
 
+            Spawn(class'PlaceholderItem',,, vectm(-163,732,-2190));
+            Spawn(class'PlaceholderItem',,, vectm(470,678,-1955));
+            Spawn(class'PlaceholderItem',,, vectm(5,815,-1760));
+            Spawn(class'PlaceholderItem',,, vectm(-72,-523,-1570));
+            Spawn(class'PlaceholderItem',,, vectm(258,-539,-1580));
+            Spawn(class'PlaceholderItem',,, vectm(432,-359,-1570));
+
             Spawn(class'PlaceholderContainer',,, vectm(-165,509,-1590)); //Secretary desk corner
             Spawn(class'PlaceholderContainer',,, vectm(1740,156,-1599)); //Open storage room
             Spawn(class'PlaceholderContainer',,, vectm(3000,-108,-1500)); //Greasel lab
