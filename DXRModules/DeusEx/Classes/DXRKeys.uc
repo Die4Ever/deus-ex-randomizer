@@ -1061,12 +1061,21 @@ function revision_keys_rules()
         keys_rules[i].allow = true;
         i++;
 
+        //Exclude the Neo-Carcharod lab (since you need the key to get in, duh)
         keys_rules[i].item_name = 'NeoCarcharod';
-        keys_rules[i].min_pos = vect(-99999, -99999, -2400);
-        keys_rules[i].max_pos = vect(512, 0, 99999);
+        keys_rules[i].min_pos = vect(-235,-4,-1812);
+        keys_rules[i].max_pos = vect(490,904,-1652);
+        keys_rules[i].allow = false;
+        i++;
+
+        //All floors of that main central building with the sub bay
+        keys_rules[i].item_name = 'NeoCarcharod';
+        keys_rules[i].min_pos = vect(-204,-550,-99999);
+        keys_rules[i].max_pos = vect(491,817,99999);
         keys_rules[i].allow = true;
         i++;
 
+        //Explicitly exclude EVERYTHING else for safety
         keys_rules[i].item_name = 'NeoCarcharod';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);

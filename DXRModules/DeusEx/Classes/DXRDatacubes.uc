@@ -1388,26 +1388,13 @@ function revision_datacubes_rules()
 
     case "14_OCEANLAB_LAB":
         //OCEANGUARD code to open sub bay doors.  This is SUPER IMPORTANT.  This needs to not fuck up.
-        //Intent is for it to be able to spawn anywhere from the sub bay up to and including the storage room, but not the locked one
-
-        //Exclude Locked storage room
-        datacubes_rules[i].item_name = '14_Datacube06';
-        datacubes_rules[i].min_pos = vect(595,-170,-1627);
-        datacubes_rules[i].max_pos = vect(970,333,-1467);
-        datacubes_rules[i].allow = false;
-        i++;
-
-        //Between Sub Bay and door to Greasel Lab, top floor
-        datacubes_rules[i].item_name = '14_Datacube06';
-        datacubes_rules[i].min_pos = vect(491,-170,-1627);
-        datacubes_rules[i].max_pos = vect(1786,814,-1468);
-        datacubes_rules[i].allow = true;
-        i++;
+        //Intent is for it to be able to spawn anywhere from the sub bay up to and including the command centre.
+        //Revision has a locked door into the storage room hall which uses that login to access it
 
         //All floors of that main central building with the sub bay
         datacubes_rules[i].item_name = '14_Datacube06';
-        datacubes_rules[i].min_pos = vect(-204,-218,-99999);
-        datacubes_rules[i].max_pos = vect(491,814,99999);
+        datacubes_rules[i].min_pos = vect(-204,-550,-99999);
+        datacubes_rules[i].max_pos = vect(491,817,99999);
         datacubes_rules[i].allow = true;
         i++;
 
