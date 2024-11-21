@@ -8,8 +8,8 @@ function PreFirstEntry()
     local PayPhone invisibleWall;
     local #var(prefix)FlagTrigger ft;
 
-    Super.PreFirstEntry();
     if (!dxr.flags.IsBingoCampaignMode()) return;
+    Super.PreFirstEntry();
 
     foreach AllActors(class'DXREvents', events) {
         switch (dxr.localURL) {
@@ -121,8 +121,8 @@ function PreFirstEntry()
 
 function AnyEntry()
 {
-    Super.AnyEntry();
     if (!dxr.flags.IsBingoCampaignMode()) return;
+    Super.AnyEntry();
 
     switch (dxr.localURL) {
         case "01_NYC_UNATCOISLAND":
@@ -210,6 +210,7 @@ function UpdateChateauInvisibleWall()
 function HandleBingo(int numBingos)
 {
     if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win) return;
+    info("Number of bingos: "$numBingos$" has exceeded the bingo campaign win threshold! "$dxr.flags.settings.bingo_win);
 
     switch (dxr.flags.settings.starting_map / 10) {
         case 1:
