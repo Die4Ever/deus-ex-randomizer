@@ -1,16 +1,14 @@
 class DXRBingoCampaign extends DXRActorsBase transient;
 
-// TODO: clear images when creating a new bingo board (or else some goals are too easy)
 function PreFirstEntry()
 {
     local DXREvents events;
     local BlackHelicopter jock;
-    local Switch1 switch;
+    local Switch1 button;
     local PayPhone invisibleWall;
     local #var(prefix)FlagTrigger ft;
 
     Super.PreFirstEntry();
-
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     foreach AllActors(class'DXREvents', events) {
@@ -99,8 +97,8 @@ function PreFirstEntry()
                 ClearDataVaultImages();
                 break;
             case "15_AREA51_FINAL":
-                foreach AllActors(class'Switch1', switch, 'destroy_generator_switch') {
-                    AddBingoEventBlocker(switch, 'DXRando_Mission15_BingoCompleted');
+                foreach AllActors(class'Switch1', button, 'destroy_generator_switch') {
+                    AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
                     break;
                 }
                 foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
@@ -111,8 +109,8 @@ function PreFirstEntry()
                 }
                 break;
             case "15_AREA51_PAGE":
-                foreach AllActors(class'Switch1', switch, 'kill_page_switch') {
-                    AddBingoEventBlocker(switch, 'DXRando_Mission15_BingoCompleted');
+                foreach AllActors(class'Switch1', button, 'kill_page_switch') {
+                    AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
                     break;
                 }
                 break;
@@ -123,6 +121,7 @@ function PreFirstEntry()
 
 function AnyEntry()
 {
+    Super.AnyEntry();
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     switch (dxr.localURL) {
@@ -210,7 +209,7 @@ function UpdateChateauInvisibleWall()
 
 function HandleBingo(int numBingos)
 {
-    if (!dxr.flags.IsBingoCampaignMode()) return;
+    if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win) return;
 
     switch (dxr.flags.settings.starting_map / 10) {
         case 1:
