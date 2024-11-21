@@ -690,6 +690,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
     }
     else if (IsBingoCampaignMode()) {
+        settings.bingo_win = 1;
         settings.bingo_freespaces = 5;
         settings.banned_skills = 0;
         bingo_duration = 1;

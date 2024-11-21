@@ -1134,36 +1134,3 @@ function SetAllLampsState(optional bool type1, optional bool type2, optional boo
     }
 #endif
 }
-
-static function DXRFixup GetCurrentFixupModule(DXRando dxr)
-{
-    switch (dxr.dxInfo.missionNumber) {
-        case 0:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM00', true));
-        case 1:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM01', true));
-        case 2:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM02', true));
-        case 3:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM03', true));
-        case 4:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM04', true));
-        case 5:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM05', true));
-        case 6:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM06', true));
-        case 8:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM08', true));
-        case 9:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM09', true));
-        case 10:
-        case 11:
-            return DXRFixup(dxr.FindModule(class'DXRFixupParis', true));
-        case 12:
-        case 14:
-            return DXRFixup(dxr.FindModule(class'DXRFixupVandenberg', true));
-        case 15:
-            return DXRFixup(dxr.FindModule(class'DXRFixupM15', true));
-    }
-    return None;
-}

@@ -1286,7 +1286,10 @@ function bool CheckBingoWin(DXRando dxr, int numBingos)
     if(#defined(hx)) return false;
 
     if (dxr.flags.settings.bingo_win > 0){
-        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
+        if (dxr.flags.IsBingoCampaignMode()) {
+            DXRBingoCampaign(dxr.FindModule(class'DXRBingoCampaign', true)).HandleBingo(numBingos);
+            return true;
+        } else if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
             BingoWinScreen();
@@ -1339,8 +1342,6 @@ function _MarkBingo(coerce string eventname)
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
         CheckBingoWin(dxr,nowbingos);
-
-        DXRBingoCampaign(dxr.FindModule(class'DXRBingoCampaign', true)).HandleBingo(nowbingos);
     } else if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
