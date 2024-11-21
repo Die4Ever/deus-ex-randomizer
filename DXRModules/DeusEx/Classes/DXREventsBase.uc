@@ -1339,6 +1339,8 @@ function _MarkBingo(coerce string eventname)
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
         CheckBingoWin(dxr,nowbingos);
+
+        DXRBingoCampaign(dxr.FindModule(class'DXRBingoCampaign', true)).HandleBingo(nowbingos);
     } else if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
