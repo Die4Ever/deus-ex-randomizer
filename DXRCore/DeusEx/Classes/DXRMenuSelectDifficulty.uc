@@ -191,7 +191,7 @@ function EnumListAddButton(DXREnumList list, string title, string val, string pr
 {
     if(title == "Game Mode") {
         if(InStr(prev, "WaltonWare")==-1 && InStr(val, "WaltonWare")!=-1) {
-            list.CreateLabel("WaltonWare modes");
+            list.CreateLabel("Bingo modes");
         }
         else if(InStr(prev, "Zero Rando")==-1 && InStr(val, "Zero Rando")!=-1) {
             list.CreateLabel("Reduced Randomization modes");

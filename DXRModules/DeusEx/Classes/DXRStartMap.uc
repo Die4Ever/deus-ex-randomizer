@@ -586,6 +586,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
         case 5:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
+            flagbase.SetBool('DXRando_Mission04_BingoCompleted', true,, 6);
             break;
         case 6:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
@@ -611,6 +612,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
         case 11:
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
+            flagbase.SetBool('DXRando_Mission10_BingoCompleted', true,, 12);
             break;
         case 12:
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
@@ -620,6 +622,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
             flagbase.SetBool('Heliosborn',true,,-1);//Make sure Daedalus and Icarus have merged
+            flagbase.SetBool('DXRando_Mission12_BingoCompleted', true,, 15);
             break;
         case 15:
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!

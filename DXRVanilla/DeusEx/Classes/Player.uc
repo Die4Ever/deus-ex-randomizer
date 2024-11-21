@@ -2191,6 +2191,24 @@ exec function ActivateBelt(int objectNum)
     }
 }
 
+exec function AllBingos()
+{
+    local PlayerDataItem data;
+    local string event;
+    local int x, y, progress, max;
+
+    data = class'PlayerDataItem'.static.GiveItem(self);
+    for (x = 0; x < 5; x++) {
+        for (y = 0; y < 5; y++) {
+            data.GetBingoSpot(x, y, event,, progress, max);
+            while (progress < max) {
+                class'DXREventsBase'.static.MarkBingo(event);
+                progress++;
+            }
+        }
+    }
+}
+
 state CheatFlying
 {
 ignores SeePlayer, HearNoise, Bump, TakeDamage;
