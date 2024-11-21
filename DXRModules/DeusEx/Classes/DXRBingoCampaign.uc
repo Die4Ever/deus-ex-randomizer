@@ -9,119 +9,120 @@ function PreFirstEntry()
     local #var(prefix)FlagTrigger ft;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
+    foreach AllActors(class'DXREvents', events) break;
+    if (events == None) return;
+
     Super.PreFirstEntry();
 
-    foreach AllActors(class'DXREvents', events) {
-        switch (dxr.localURL) {
-            case "02_NYC_BATTERYPARK":
-                dxr.flags.settings.starting_map = 20;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
+    switch (dxr.localURL) {
+        case "02_NYC_BATTERYPARK":
+            dxr.flags.settings.starting_map = 20;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "03_NYC_UNATCOISLAND":
+            dxr.flags.settings.starting_map = 30;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "03_NYC_AIRFIELD":
+            foreach AllActors(class'BlackHelicopter', jock) {
+                AddBingoEventBlocker(jock, 'DXRando_Mission03_BingoCompleted');
                 break;
-            case "03_NYC_UNATCOISLAND":
-                dxr.flags.settings.starting_map = 30;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
+            }
+            break;
+        case "04_NYC_UNATCOISLAND":
+            dxr.flags.settings.starting_map = 40;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "05_NYC_UNATCOMJ12LAB":
+            if (!dxr.flagbase.GetBool('DXRando_Mission04_BingoCompleted')) {
+                SetTimer(1.0, true);
+            }
+            dxr.flags.settings.starting_map = 50;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "06_HONGKONG_HELIBASE":
+            dxr.flags.settings.starting_map = 60;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "08_NYC_STREET":
+            dxr.flags.settings.starting_map = 80;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "09_NYC_Dockyard":
+            dxr.flags.settings.starting_map = 90;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "10_PARIS_CATACOMBS":
+            dxr.flags.settings.starting_map = 100;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "10_PARIS_CHATEAU":
+            if (class'DXRMapVariants'.static.IsVanillaMaps(player())) {
+                invisibleWall = PayPhone(Spawnm(class'PayPhone',, 'invisible_wall', vect(-999.7, -4484.5, -174.4)));
+                invisibleWall.bHighlight = false;
+                invisibleWall.SetCollisionSize(100.0, 150.0);
+            }
+            break;
+        case "11_PARIS_CATHEDRAL":
+            if (!dxr.flagbase.GetBool('DXRando_Mission10_BingoCompleted')) {
+                SetTimer(1.0, true);
+            }
+            dxr.flags.settings.starting_map = 110;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "12_VANDENBERG_CMD":
+            dxr.flags.settings.starting_map = 120;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "14_VANDENBERG_SUB":
+            if (!dxr.flagbase.GetBool('DXRando_Mission12_BingoCompleted')) {
+                // TODO: remove once Gas Station Jock's event is getting changed after he appears
+                SetTimer(1.0, true);
+            }
+            dxr.flags.settings.starting_map = 140;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "15_AREA51_BUNKER":
+            dxr.flags.settings.starting_map = 150;
+            events.CreateBingoBoard();
+            ClearDataVaultImages();
+            break;
+        case "15_AREA51_FINAL":
+            foreach AllActors(class'Switch1', button, 'destroy_generator_switch') {
+                AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
                 break;
-            case "03_NYC_AIRFIELD":
-                foreach AllActors(class'BlackHelicopter', jock) {
-                    AddBingoEventBlocker(jock, 'DXRando_Mission03_BingoCompleted');
+            }
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
+                if (ft.event == 'Merge_helios_exit') {
+                    AddBingoEventBlocker(ft, 'DXRando_Mission15_BingoCompleted');
                     break;
                 }
+            }
+            break;
+        case "15_AREA51_PAGE":
+            foreach AllActors(class'Switch1', button, 'kill_page_switch') {
+                AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
                 break;
-            case "04_NYC_UNATCOISLAND":
-                dxr.flags.settings.starting_map = 40;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "05_NYC_UNATCOMJ12LAB":
-                if (!dxr.flagbase.GetBool('DXRando_Mission04_BingoCompleted')) {
-                    SetTimer(1.0, true);
-                }
-                dxr.flags.settings.starting_map = 50;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "06_HONGKONG_HELIBASE":
-                dxr.flags.settings.starting_map = 60;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "08_NYC_STREET":
-                dxr.flags.settings.starting_map = 80;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "09_NYC_Dockyard":
-                dxr.flags.settings.starting_map = 90;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "10_PARIS_CATACOMBS":
-                dxr.flags.settings.starting_map = 100;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "10_PARIS_CHATEAU":
-                if (class'DXRMapVariants'.static.IsVanillaMaps(player())) {
-                    invisibleWall = PayPhone(Spawnm(class'PayPhone',, 'invisible_wall', vect(-999.7, -4484.5, -174.4)));
-                    invisibleWall.bHighlight = false;
-                    invisibleWall.SetCollisionSize(100.0, 150.0);
-                }
-                break;
-            case "11_PARIS_CATHEDRAL":
-                if (!dxr.flagbase.GetBool('DXRando_Mission10_BingoCompleted')) {
-                    SetTimer(1.0, true);
-                }
-                dxr.flags.settings.starting_map = 110;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "12_VANDENBERG_CMD":
-                dxr.flags.settings.starting_map = 120;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "14_VANDENBERG_SUB":
-                if (!dxr.flagbase.GetBool('DXRando_Mission12_BingoCompleted')) {
-                    // TODO: remove once Gas Station Jock's event is getting changed after he appears
-                    SetTimer(1.0, true);
-                }
-                dxr.flags.settings.starting_map = 140;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "15_AREA51_BUNKER":
-                dxr.flags.settings.starting_map = 150;
-                events.CreateBingoBoard();
-                ClearDataVaultImages();
-                break;
-            case "15_AREA51_FINAL":
-                foreach AllActors(class'Switch1', button, 'destroy_generator_switch') {
-                    AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
-                    break;
-                }
-                foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
-                    if (ft.event == 'Merge_helios_exit') {
-                        AddBingoEventBlocker(ft, 'DXRando_Mission15_BingoCompleted');
-                        break;
-                    }
-                }
-                break;
-            case "15_AREA51_PAGE":
-                foreach AllActors(class'Switch1', button, 'kill_page_switch') {
-                    AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
-                    break;
-                }
-                break;
-        }
-        break;
+            }
+            break;
     }
 }
 
 function AnyEntry()
 {
     if (!dxr.flags.IsBingoCampaignMode()) return;
+
     Super.AnyEntry();
 
     switch (dxr.localURL) {
