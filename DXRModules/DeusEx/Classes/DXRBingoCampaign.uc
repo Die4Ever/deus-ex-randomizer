@@ -2,28 +2,21 @@ class DXRBingoCampaign extends DXRActorsBase transient;
 
 function PreFirstEntry()
 {
-    local DXREvents events;
     local BlackHelicopter jock;
     local Switch1 button;
     local PayPhone invisibleWall;
     local #var(prefix)FlagTrigger ft;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
-    foreach AllActors(class'DXREvents', events) break;
-    if (events == None) return;
 
     Super.PreFirstEntry();
 
     switch (dxr.localURL) {
         case "02_NYC_BATTERYPARK":
-            dxr.flags.settings.starting_map = 20;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "03_NYC_UNATCOISLAND":
-            dxr.flags.settings.starting_map = 30;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "03_NYC_AIRFIELD":
             foreach AllActors(class'BlackHelicopter', jock) {
@@ -32,37 +25,25 @@ function PreFirstEntry()
             }
             break;
         case "04_NYC_UNATCOISLAND":
-            dxr.flags.settings.starting_map = 40;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "05_NYC_UNATCOMJ12LAB":
             if (!dxr.flagbase.GetBool('DXRando_Mission04_BingoCompleted')) {
                 SetTimer(1.0, true);
             }
-            dxr.flags.settings.starting_map = 50;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "06_HONGKONG_HELIBASE":
-            dxr.flags.settings.starting_map = 60;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "08_NYC_STREET":
-            dxr.flags.settings.starting_map = 80;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "09_NYC_Dockyard":
-            dxr.flags.settings.starting_map = 90;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "10_PARIS_CATACOMBS":
-            dxr.flags.settings.starting_map = 100;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "10_PARIS_CHATEAU":
             if (class'DXRMapVariants'.static.IsVanillaMaps(player())) {
@@ -75,28 +56,20 @@ function PreFirstEntry()
             if (!dxr.flagbase.GetBool('DXRando_Mission10_BingoCompleted')) {
                 SetTimer(1.0, true);
             }
-            dxr.flags.settings.starting_map = 110;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "12_VANDENBERG_CMD":
-            dxr.flags.settings.starting_map = 120;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "14_VANDENBERG_SUB":
             if (!dxr.flagbase.GetBool('DXRando_Mission12_BingoCompleted')) {
                 // TODO: remove once Gas Station Jock's event is getting changed after he appears
                 SetTimer(1.0, true);
             }
-            dxr.flags.settings.starting_map = 140;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "15_AREA51_BUNKER":
-            dxr.flags.settings.starting_map = 150;
-            events.CreateBingoBoard();
-            ClearDataVaultImages();
+            NewBingoBoard();
             break;
         case "15_AREA51_FINAL":
             foreach AllActors(class'Switch1', button, 'destroy_generator_switch') {
@@ -175,6 +148,18 @@ function Timer()
 
     p = player();
     p.TakeDamage(10000, p, p.Location, vect(0,0,0), 'Exploded');
+}
+
+function NewBingoBoard()
+{
+    local DXREvents events;
+
+    foreach AllActors(class'DXREvents', events) break;
+    if (events == None) return;
+
+    dxr.flags.settings.starting_map = dxr.dxInfo.missionNumber * 10;
+    events.CreateBingoBoard();
+    ClearDataVaultImages();
 }
 
 function AddBingoEventBlocker(Actor a, name bingoFlag)
