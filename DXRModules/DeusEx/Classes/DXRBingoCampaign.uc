@@ -28,9 +28,6 @@ function PreFirstEntry()
             NewBingoBoard();
             break;
         case "05_NYC_UNATCOMJ12LAB":
-            if (!dxr.flagbase.GetBool('DXRando_Mission04_BingoCompleted')) {
-                SetTimer(1.0, true);
-            }
             NewBingoBoard();
             break;
         case "06_HONGKONG_HELIBASE":
@@ -215,7 +212,7 @@ function HandleBingo(int numBingos)
             dxr.flagbase.SetBool('DXRando_Mission03_BingoCompleted', true,, 4);
             break;
         case 4:
-            dxr.flagbase.SetBool('DXRando_Mission04_BingoCompleted', true,, 6);
+            dxr.flagbase.SetBool('DXRando_Mission04_BingoCompleted', true,, 5);
             break;
         case 5:
             dxr.flagbase.SetBool('DXRando_Mission05_BingoCompleted', true,, 6);
