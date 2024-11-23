@@ -19,10 +19,7 @@ function PreFirstEntry()
             NewBingoBoard();
             break;
         case "03_NYC_AIRFIELD":
-            foreach AllActors(class'BlackHelicopter', jock) {
-                AddBingoEventBlocker('MoveHelicopter', 'DXRando_Mission03_BingoCompleted');
-                break;
-            }
+            AddBingoEventBlocker('MoveHelicopter', 'DXRando_Mission03_BingoCompleted');
             break;
         case "04_NYC_UNATCOISLAND":
             NewBingoBoard();
