@@ -20,7 +20,7 @@ function PreFirstEntry()
             break;
         case "03_NYC_AIRFIELD":
             foreach AllActors(class'BlackHelicopter', jock) {
-                AddBingoEventBlocker(jock, 'DXRando_Mission03_BingoCompleted');
+                AddBingoEventBlocker('MoveHelicopter', 'DXRando_Mission03_BingoCompleted');
                 break;
             }
             break;
@@ -61,33 +61,26 @@ function PreFirstEntry()
         case "12_VANDENBERG_CMD":
             NewBingoBoard();
             break;
+        case "12_Vandenberg_GAS":
+            AddBingoEventBlocker('UN_BlackHeli', 'DXRando_Mission12_BingoCompleted');
+            break;
         case "14_VANDENBERG_SUB":
-            if (!dxr.flagbase.GetBool('DXRando_Mission12_BingoCompleted')) {
-                // TODO: remove once Gas Station Jock's event is getting changed after he appears
-                SetTimer(1.0, true);
-            }
             NewBingoBoard();
             break;
         case "15_AREA51_BUNKER":
             NewBingoBoard();
             break;
         case "15_AREA51_FINAL":
-            foreach AllActors(class'Switch1', button, 'destroy_generator_switch') {
-                AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
-                break;
-            }
-            foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
+            AddBingoEventBlocker('Merge_helios_exit', 'DXRando_Mission15_BingoCompleted');
+            AddBingoEventBlocker('destroy_generator', 'DXRando_Mission15_BingoCompleted');
+            foreach AllActors(class'FlagTrigger', ft) {
                 if (ft.event == 'Merge_helios_exit') {
-                    AddBingoEventBlocker(ft, 'DXRando_Mission15_BingoCompleted');
-                    break;
+                    ft.bTriggerOnceOnly = false;
                 }
             }
             break;
         case "15_AREA51_PAGE":
-            foreach AllActors(class'Switch1', button, 'kill_page_switch') {
-                AddBingoEventBlocker(button, 'DXRando_Mission15_BingoCompleted');
-                break;
-            }
+            AddBingoEventBlocker('kill_page', 'DXRando_Mission15_BingoCompleted');
             break;
     }
 }
@@ -129,11 +122,10 @@ function AnyEntry()
         case "11_PARIS_EVERETT":
             GetConversation('TakeOff').AddFlagRef('DXRando_Mission11_BingoCompleted', true);
             break;
-        // TODO: uncomment once Jock's event is getting changed after he appears
-        /* case "12_Vandenberg_GAS":
+        case "12_Vandenberg_GAS":
             GetConversation('M12JockFinal').AddFlagRef('DXRando_Mission12_BingoCompleted', true);
             GetConversation('M12JockFinal2').AddFlagRef('DXRando_Mission12_BingoCompleted', true);
-            break; */
+            break;
         case "14_OCEANLAB_SILO":
             GetConversation('JockArea51').AddFlagRef('DXRando_Mission14_BingoCompleted', true);
             break;
@@ -162,23 +154,31 @@ function NewBingoBoard()
     ClearDataVaultImages();
 }
 
-function AddBingoEventBlocker(Actor a, name bingoFlag)
-{
+function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
     local FlagTrigger ft;
+    local Actor blocked;
     local name glue;
 
-    glue = dxr.flagbase.StringToName(a.event $ "_bingoblocker");
+    glue = dxr.flagbase.StringToName(blockedTag $ "_bingoblocked");
 
-    ft = Spawn(class'#var(prefix)FlagTrigger',, glue);
-    ft.flagName = bingoFlag;
-    ft.bSetFlag = false;
-    ft.bTrigger = true;
-    ft.SetCollision(false, false, false);
-    ft.event = a.event;
-    a.event = glue;
-    if (Trigger(a) != None) {
-        Trigger(a).bTriggerOnceOnly = false;
+    foreach AllActors(class'Actor', blocked, blockedTag) {
+        if (
+            MapExit(blocked) != None ||
+            InterpolateTrigger(blocked) != None ||
+            Dispatcher(blocked) != None ||
+            DataLinkTrigger(blocked) != None
+        ) {
+            blocked.tag = glue;
+        }
     }
+
+    ft = Spawn(class'#var(prefix)FlagTrigger',, blockedTag);
+    ft.event = glue;
+    ft.flagName = bingoFlag;
+    ft.bTrigger = true;
+    ft.bTriggerOnceOnly = false;
+    ft.bSetFlag = false;
+    ft.SetCollision(false, false, false);
 }
 
 function UpdateChateauInvisibleWall()
