@@ -104,6 +104,9 @@ function AnyEntry()
         case "03_NYC_AIRFIELD":
             GetConversation('M03JockLeave').AddFlagRef('DXRando_Mission03_BingoCompleted', true);
             break;
+        case "04_NYC_BATTERYPARK":
+            GetConversation('GuntherShowdown').AddFlagRef('DXRando_Mission04_BingoCompleted', true);
+            break;
         case "05_NYC_UNATCOISLAND":
             GetConversation('M05MeetJock').AddFlagRef('DXRando_Mission05_BingoCompleted', true);
             break;
@@ -196,7 +199,10 @@ function UpdateChateauInvisibleWall()
 function HandleBingo(int numBingos)
 {
     if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win) return;
-    info("Number of bingos: "$numBingos$" has exceeded the bingo campaign win threshold! "$dxr.flags.settings.bingo_win);
+
+    if (numBingos == dxr.flags.settings.bingo_win) {
+        player().ClientMessage("You have enough bingos to proceed!");
+    }
 
     switch (dxr.flags.settings.starting_map / 10) {
         case 1:

@@ -5,6 +5,10 @@ function Timer()
     local DXRMapVariants mapvariants;
     local string map;
 
+    if (dxr.flags.IsBingoCampaignMode() && Player.IsInState('Dying') && !dxr.flagbase.GetBool('DXRando_Mission04_BingoCompleted')) {
+        return;
+    }
+
     // do this for every map in this mission
     // if the player is "killed" after a certain flag, he is sent to mission 5
     if (flags != None && !flags.GetBool('MS_PlayerCaptured'))
