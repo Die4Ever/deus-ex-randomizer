@@ -50,9 +50,6 @@ function PreFirstEntry()
             }
             break;
         case "11_PARIS_CATHEDRAL":
-            if (!dxr.flagbase.GetBool('DXRando_Mission10_BingoCompleted')) {
-                SetTimer(1.0, true);
-            }
             NewBingoBoard();
             break;
         case "12_VANDENBERG_CMD":
@@ -130,16 +127,6 @@ function AnyEntry()
             GetConversation('JockArea51').AddFlagRef('DXRando_Mission14_BingoCompleted', true);
             break;
     }
-}
-
-function Timer()
-{
-    local #var(PlayerPawn) p;
-
-    Super.Timer();
-
-    p = player();
-    p.TakeDamage(10000, p, p.Location, vect(0,0,0), 'Exploded');
 }
 
 function NewBingoBoard()
