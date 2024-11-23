@@ -816,7 +816,10 @@ function string GameModeName(int gamemode)
     case OneItemMode:
         return "One Item Mode";
     case BingoCampaign:
-        return "Mr. Page's Mean Bingo Machine";
+        if (#defined(vanilla)) {
+            return "Mr. Page's Mean Bingo Machine";
+        }
+        return "";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
