@@ -154,7 +154,7 @@ function NewBingoBoard()
 
     dxr.flags.settings.starting_map = dxr.dxInfo.missionNumber * 10;
     events.CreateBingoBoard();
-    ClearDataVaultImages();
+    ClearDataVaultImages(player());
 }
 
 function AddBingoEventBlocker(name blockedTag, name bingoFlag) {

@@ -240,7 +240,7 @@ function NewGamePlus()
     p.DeleteAllNotes();
     p.DeleteAllGoals();
     p.ResetConversationHistory();
-    ClearDataVaultImages();
+    class'DXRActorsBase'.static.ClearDataVaultImages(p);
 
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
