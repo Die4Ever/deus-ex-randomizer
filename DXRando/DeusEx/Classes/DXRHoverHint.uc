@@ -3,12 +3,12 @@ class DXRHoverHint extends Info;
 var() string HintText;
 var() int VisibleDistance;
 var Actor target;
-var bool attached;
+var bool attached, addBingoText;
 
 var Actor baseActor;
 var bool bInWorld;
 
-static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad, float height, optional Actor target, optional Name targetName)
+static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad, float height, optional Actor target, optional Name targetName, optional bool _addBingoText)
 {
     local DXRHoverHint hoverHint;
     local Actor act;
@@ -17,6 +17,7 @@ static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad,
     hoverHint = DXRHoverHint(act);
     hoverHint.SetCollisionSize(rad,height);
     hoverHint.HintText = hint;
+    hoverHint.addBingoText = _addBingoText;
 
     if (target != None){
         hoverHint.target = target;

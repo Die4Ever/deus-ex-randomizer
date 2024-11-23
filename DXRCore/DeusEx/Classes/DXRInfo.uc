@@ -502,6 +502,11 @@ simulated static final function string ToAlphaNumeric(coerce string Text, int in
     return "_";
 }
 
+simulated static function String CR()
+{
+    return Chr(13) $ Chr(10);
+}
+
 /*
 ========= TEST FUNCTIONS
 */

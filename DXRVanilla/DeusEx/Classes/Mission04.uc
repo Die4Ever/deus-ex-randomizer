@@ -5,7 +5,7 @@ function Timer()
     local DXRMapVariants mapvariants;
     local string map;
 
-    if (dxr.flags.IsBingoCampaignMode() && Player.IsInState('Dying') && !dxr.flagbase.GetBool('DXRando_Mission04_BingoCompleted')) {
+    if (dxr.flags.IsBingoCampaignMode() && Player.IsInState('Dying') && !dxr.flagbase.GetBool(class'DXRBingoCampaign'.static.GetBingoMissionFlag(4))) {
         return;
     }
 
