@@ -225,7 +225,7 @@ function PreFirstEntryMapFixes()
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'outro_trigger'){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
         if (VanillaMaps){

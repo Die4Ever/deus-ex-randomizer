@@ -68,7 +68,7 @@ function PreFirstEntryMapFixes()
 
         foreach AllActors(class'#var(prefix)MapExit',exit){break;}
         foreach AllActors(class'#var(prefix)NYPoliceBoat',b) {
-            class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit);
+            class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
             break;
         }
 
