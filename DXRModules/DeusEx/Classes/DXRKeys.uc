@@ -636,8 +636,8 @@ function revision_keys_rules()
 
     case "03_NYC_747":
         keys_rules[i].item_name = 'lebedevdoor';
-        keys_rules[i].min_pos = vect(340, -312, 140);//ban the annoying spot behind the crates
-        keys_rules[i].max_pos = vect(380, -280, 185);
+        keys_rules[i].min_pos = vect(340, -312, 100); //ban the annoying spot behind the crates
+        keys_rules[i].max_pos = vect(380, -280, 185); //In Revision it's 353,-296, 133
         keys_rules[i].allow = false;
         i++;
 
