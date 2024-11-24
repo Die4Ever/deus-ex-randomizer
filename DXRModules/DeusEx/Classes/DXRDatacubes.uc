@@ -16,6 +16,7 @@ function CheckConfig()
 
     for(i=0;i<ArrayCount(datacubes_rules);i++) {
         datacubes_rules[i] = FixSafeRule(datacubes_rules[i]);
+        datacubes_rules[i] = ApplyDefaultTextPackage(datacubes_rules[i]);
     }
 
     Super.CheckConfig();
@@ -1049,6 +1050,38 @@ function revision_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
+
+
+        // Datacube with code to get into armoury area (keypad locked door at exit of robotics bay)
+        datacubes_rules[i].item_name = '05_Datacube03';
+        datacubes_rules[i].package_name = "RevisionText";
+        datacubes_rules[i].min_pos = vect(-9453, 180, -99999); //Keep out of the armoury
+        datacubes_rules[i].max_pos = vect(-7367,2273, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        datacubes_rules[i].item_name = '05_Datacube03';
+        datacubes_rules[i].package_name = "RevisionText";
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(-933, 99999, 99999);  //Allow anywhere on the robotics bay side of the map
+        datacubes_rules[i].allow = true;
+        i++;
+
+        // Datacube with code to get into medical wing (Locked door at the command centre)
+        datacubes_rules[i].item_name = '05_Datacube01';
+        datacubes_rules[i].package_name = "RevisionText";
+        datacubes_rules[i].min_pos = vect(-9453, 180, -99999); //Keep out of the armoury
+        datacubes_rules[i].max_pos = vect(-7367,2273, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        datacubes_rules[i].item_name = '05_Datacube01';
+        datacubes_rules[i].package_name = "RevisionText";
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(-933, 99999, 99999);  //Allow anywhere on the robotics bay side of the map
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "05_NYC_UNATCOHQ":
@@ -1512,6 +1545,17 @@ function revision_datacubes_rules()
     }
 }
 
+//I don't want to add the default text package to all the rules manually
+function safe_rule ApplyDefaultTextPackage(safe_rule r)
+{
+    if (r.item_name!='' && r.package_name==""){
+        r.package_name="DeusExText"; //Default text package name
+    }
+
+    return r;
+}
+
+
 function FirstEntry()
 {
     Super.FirstEntry();
@@ -1591,7 +1635,9 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
             continue;
         }
 #ifdef locdebug
-        if(TextTag ~= "#var(locdebug)") DebugMarkKeyPosition(inv.Location, id.textTag);
+        if(TextTag ~= "#var(locdebug)" && ("#var(locpackage)"==id.TextPackage || "#var(locpackage)"~="None" || "#var(locpackage)"=="" )){
+            DebugMarkKeyPosition(inv.Location, id.textTag);
+        }
 #endif
         temp[num++] = inv;
     }
@@ -1606,7 +1652,9 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
             }
             if( HasBased(c) ) continue;
 #ifdef locdebug
-            if(TextTag ~= "#var(locdebug)") DebugMarkKeyPosition(c.Location, id.textTag);
+            if(TextTag ~= "#var(locdebug)" && ("#var(locpackage)"==id.TextPackage || "#var(locpackage)"~="None" || "#var(locpackage)"=="" )){
+                DebugMarkKeyPosition(c.Location, id.textTag);
+            }
 #endif
             temp[num++] = c;
         }
@@ -1775,7 +1823,7 @@ function bool InfoPositionGood(#var(prefix)InformationDevices id, vector newpos,
 
     TextTag = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(id);
 
-    i = GetSafeRule( datacubes_rules, TextTag, newpos);
+    i = GetSafeRule( datacubes_rules, TextTag, id.TextPackage, newpos);
     if( i != -1 ) return datacubes_rules[i].allow;
 
     if( VSize( id.Location - newpos ) > 5000 ) return False;

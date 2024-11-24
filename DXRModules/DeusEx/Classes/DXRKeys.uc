@@ -1261,7 +1261,7 @@ function bool KeyPositionGood(#var(prefix)NanoKey k, vector newpos)
     local float dist;
     local int i;
 
-    i = GetSafeRule( keys_rules, k.KeyID, newpos);
+    i = GetSafeRule( keys_rules, k.KeyID, "", newpos);
     if( i != -1 ) return keys_rules[i].allow;
 
     dist = VSize( k.Location - newpos );
@@ -1365,7 +1365,7 @@ function TestKeyRules(Name KeyID, bool allowed, vector loc, string description)
 {
     local int i;
     description = "key: " $ KeyID $ ", expected allowed: "$allowed$", " $ description $ " ("$loc$")";
-    i = GetSafeRule( keys_rules, KeyID, loc );
+    i = GetSafeRule( keys_rules, KeyID, "", loc );
     if( allowed && i == -1 ) {
         test( true, "without key rule - " $ description );
         return;

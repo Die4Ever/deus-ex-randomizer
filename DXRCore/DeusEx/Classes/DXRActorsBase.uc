@@ -14,6 +14,7 @@ struct FMinMax {
 
 struct safe_rule {
     var name item_name;
+    var string package_name;
     var vector min_pos;
     var vector max_pos;
     var bool allow;
@@ -1692,12 +1693,13 @@ function safe_rule FixSafeRule(safe_rule r)
     return r;
 }
 
-function int GetSafeRule(safe_rule rules[16], coerce string item_name, vector newpos)
+function int GetSafeRule(safe_rule rules[16], coerce string item_name, string package_name, vector newpos)
 {
     local int i;
 
     for(i=0; i<ArrayCount(rules); i++) {
         if( !(item_name ~= string(rules[i].item_name) )) continue;
+        if( !(package_name ~= rules[i].package_name )) continue;
         if( AnyGreater( rules[i].min_pos, newpos ) ) continue;
         if( AnyGreater( newpos, rules[i].max_pos ) ) continue;
         return i;
