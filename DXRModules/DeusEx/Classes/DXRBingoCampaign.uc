@@ -278,7 +278,7 @@ function HandleBingo(int numBingos)
  static function string GetBingoHoverHintText(DXRando dxr, string hintText)
  {
     local string bingoText;
-    local int bingosRemaining, hintLen, bingoLen, i;
+    local int bingosRemaining, hintLen, bingoLen, i, spaces;
 
     if (!dxr.flags.IsBingoCampaignMode()) {
         return hintText;
@@ -299,16 +299,14 @@ function HandleBingo(int numBingos)
         bingoText = "(Complete " $ bingosRemaining $ " more bingo lines!)";
     }
 
-    hintLen = Len(hintText);
-    bingoLen = Len(bingoText);
-    if (hintLen > bingoLen) {
-        for (i = 0; i < (hintLen - bingoLen) / 2; i++) {
-            bingoText = " " $ bingoText;
-        }
-    } else {
-        for (i = 0; i < (bingoLen - hintLen) / 2; i++) {
-            hintText = " " $ hintText;
-        }
+    spaces = (Len(bingoText) - Len(hintText)) >> 1;
+    while (spaces > 1) {
+        hintText = " " $ hintText;
+        spaces--;
+    }
+    while (spaces < 1) {
+        bingoText = " " $ bingoText;
+        spaces++;
     }
 
     return hintText $ class'DXRInfo'.static.CR() $ bingoText;
