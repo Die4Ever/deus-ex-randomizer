@@ -274,6 +274,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        MakeTurretsNonHostile(); //Revision has a turret that is in "attack everything" mode
+
         foreach AllActors(class'#var(prefix)MorganEverett', everett) {
             // Everett's vanilla BarkBindName is "Man"
             everett.BarkBindName = "MorganEverett";
