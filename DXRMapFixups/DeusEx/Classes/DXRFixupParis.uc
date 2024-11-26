@@ -26,6 +26,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NicoletteDuclare nico;
     local #var(prefix)NanoKey k;
     local DXRMoverSequenceTrigger elevatortrig;
+    local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -245,6 +246,18 @@ function PreFirstEntryMapFixes()
                     tele.SetCollisionSize(tele.CollisionRadius,120); //Twice as tall, so you can't crouch under
                 }
 
+            }
+        } else {
+            //Items in an unopenable shop window (Nutella store)
+            foreach RadiusActors(class'Actor',a,100,vect(-4635,-4110,280)){
+                if (Inventory(a)!=None || #var(DeusExPrefix)Decoration(a)!=None){
+                    a.bIsSecretGoal=true;
+                }
+            }
+            foreach RadiusActors(class'Actor',a,100,vect(-5625,-3610,350)){
+                if (Inventory(a)!=None || #var(DeusExPrefix)Decoration(a)!=None){
+                    a.bIsSecretGoal=true;
+                }
             }
         }
         break;
