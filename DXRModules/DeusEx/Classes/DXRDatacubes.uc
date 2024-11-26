@@ -1053,11 +1053,13 @@ function revision_datacubes_rules()
 
 
         // Datacube with code to get into armoury area (keypad locked door at exit of robotics bay)
+
+        //RATS datacube with password to armoury can be in armoury or robotics bay (original location is armoury desk)
         datacubes_rules[i].item_name = '05_Datacube03';
         datacubes_rules[i].package_name = "RevisionText";
-        datacubes_rules[i].min_pos = vect(-9453, 180, -99999); //Keep out of the armoury
+        datacubes_rules[i].min_pos = vect(-9453, 180, -99999); //Allow in the armoury
         datacubes_rules[i].max_pos = vect(-7367,2273, 99999);
-        datacubes_rules[i].allow = false;
+        datacubes_rules[i].allow = true;
         i++;
 
         datacubes_rules[i].item_name = '05_Datacube03';
@@ -1065,6 +1067,28 @@ function revision_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(-933, 99999, 99999);  //Allow anywhere on the robotics bay side of the map
         datacubes_rules[i].allow = true;
+        i++;
+
+        //Datacube with armoury door code - allow only in the robotics bay
+        datacubes_rules[i].item_name = '05_Datacube04';
+        datacubes_rules[i].package_name = "RevisionText";
+        datacubes_rules[i].min_pos = vect(-9453, 180, -99999); //Keep out of the armoury
+        datacubes_rules[i].max_pos = vect(-7367,2273, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        datacubes_rules[i].item_name = '05_Datacube04';
+        datacubes_rules[i].package_name = "RevisionText";
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(-933, 99999, 99999);  //Allow anywhere on the robotics bay side of the map
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '05_Datacube04';
+        datacubes_rules[i].package_name = "RevisionText";
+        datacubes_rules[i].min_pos = vect(-933, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);  //Disallow anywhere on the medlab side of the map
+        datacubes_rules[i].allow = false;
         i++;
 
         // Datacube with code to get into medical wing (Locked door at the command centre)
