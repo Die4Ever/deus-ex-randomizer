@@ -1000,6 +1000,20 @@ function revision_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
+        //disallow storage closet
+        keys_rules[i].item_name = 'crewkey';
+        keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
+        keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow lower storage closet near crew module
+        keys_rules[i].item_name = 'crewkey';
+        keys_rules[i].min_pos = vect(4297,3924,-1900);
+        keys_rules[i].max_pos = vect(3776,4300,-2050);
+        keys_rules[i].allow = false;
+        i++;
+
         //allow anything to the west (smaller X) of the crew quarters, except for the flooded area
         keys_rules[i].item_name = 'crewkey';
         keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
