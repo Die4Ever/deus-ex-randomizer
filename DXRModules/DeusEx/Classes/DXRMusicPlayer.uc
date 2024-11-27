@@ -281,7 +281,7 @@ function GetLevelOggSong(bool setseed, DXOggMusicInfo mi)
 
     OggTrackName = newSong;
 
-    Player().ClientMessage("GetLevelOggSong for music track: "$SongString$"  ambient: "$mi.MusicInfo.AmbientOggFile);
+    //Player().ClientMessage("GetLevelOggSong for music track: "$SongString$"  ambient: "$mi.MusicInfo.AmbientOggFile);
     l("GetLevelOggSong() "$SongString@newSong@mi.MusicInfo.AmbientIntroOggFile@mi.MusicInfo.AmbientOggFile@mi.DeathOggFile@mi.MusicInfo.CombatIntroOggFile@mi.MusicInfo.CombatOggFile@mi.MusicInfo.ConversationIntroOggFile@mi.MusicInfo.ConversationOggFile@mi.MusicInfo.OutroOggFile);
 
 }
