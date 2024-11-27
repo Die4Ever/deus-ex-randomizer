@@ -24,6 +24,8 @@ var config float musicChangeTimer;
 var byte savedSection;
 var byte savedCombatSection;
 var byte savedConvSection;
+var string OggTrackName;
+
 
 var #var(PlayerPawn) p;
 var config Music PrevSong;
@@ -32,6 +34,7 @@ var config byte PrevSongSection;
 var config byte PrevSavedSection;
 var config byte PrevSavedCombatSection;
 var config byte PrevSavedConvSection;
+var config string PrevOggTrackName;
 
 var byte OutroSection;
 var byte DyingSection;
@@ -74,7 +77,7 @@ function RememberMusic()
     // save us writing to the config file
     if(
         PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == savedSection
-        && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection
+        && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection && PrevOggTrackName == OggTrackName
     ) {
         return;
     }
@@ -85,6 +88,7 @@ function RememberMusic()
     PrevSavedSection = savedSection;
     PrevSavedCombatSection = savedCombatSection;
     PrevSavedConvSection = savedConvSection;
+    PrevOggTrackName = OggTrackName;
     SaveConfig();
 }
 
@@ -170,9 +174,27 @@ function AnyEntry()
     PlayRandomSong(true);
 }
 
+function PreFirstEntry()
+{
+    Super.PreFirstEntry();
+    #ifdef revision
+    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) {
+        PlayRandomOggSong(true);
+        return;
+    }
+    #endif
+}
+
 function string GetCurrentSongName()
 {
     local string p, s;
+
+    #ifdef revision
+    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) {
+        return OggTrackName;
+    }
+    #endif
+
     p = string(LevelSong);
     s = string(LevelSong.Name);
     if(p ~= (s$"."$s))
@@ -222,6 +244,73 @@ function GetLevelSong(bool setseed)
     savedConvSection = ConvSection;
 }
 
+#ifdef revision
+
+function GetLevelOggSong(bool setseed, DXOggMusicInfo mi)
+{
+    local string newSong, SongString;
+    local int i;
+    local DXRMusic music;
+
+    if(setseed) {
+        //Revision stores the original song names in flags, but the flags aren't ready by the time we get here...
+        //It gets set in SetMusicPackage, called in FirstFrame of the MissionScript
+        //SongString = dxr.flagbase.GetName('MusicPackageTrack') $"."$ dxr.flagbase.GetName('MusicPackageTrack');
+        SongString = dxr.localURL;
+
+        i = InStr(SongString,"_");
+        if (i!=-1){
+            SongString = Mid(SongString,i);
+        }
+        SetGlobalSeed(SongString);// matching songs will stay matching
+    } else {
+        SongString="Random";
+        SetGlobalSeed(FRand());
+    }
+
+    music = DXRMusic(dxr.FindModule(class'DXRMusic'));
+    if(music == None) {
+        return;
+    }
+    music._GetOggLevelSong(newSong, mi.MusicInfo.AmbientIntroOggFile, mi.MusicInfo.AmbientOggFile, mi.MusicInfo.DeathOggFile, mi.MusicInfo.CombatIntroOggFile, mi.MusicInfo.CombatOggFile, mi.MusicInfo.ConversationIntroOggFile, mi.MusicInfo.ConversationOggFile, mi.MusicInfo.OutroOggFile);
+    mi.MusicInfo.PS2AmbientOggFile=mi.MusicInfo.AmbientOggFile;
+    mi.MusicInfo.PS2CombatOggFile=mi.MusicInfo.CombatOggFile;
+    mi.MusicInfo.PS2ConversationOggFile=mi.MusicInfo.ConversationOggFile;
+    mi.MusicInfo.PS2OutroOggFile=mi.MusicInfo.OutroOggFile;
+    mi.MusicInfo.PS2DeathOggFile=mi.MusicInfo.DeathOggFile;
+
+    OggTrackName = newSong;
+
+    Player().ClientMessage("GetLevelOggSong for music track: "$SongString$"  ambient: "$mi.MusicInfo.AmbientOggFile);
+    l("GetLevelOggSong() "$SongString@newSong@mi.MusicInfo.AmbientIntroOggFile@mi.MusicInfo.AmbientOggFile@mi.DeathOggFile@mi.MusicInfo.CombatIntroOggFile@mi.MusicInfo.CombatOggFile@mi.MusicInfo.ConversationIntroOggFile@mi.MusicInfo.ConversationOggFile@mi.MusicInfo.OutroOggFile);
+
+}
+
+function PlayRandomOggSong(bool setseed)
+{
+    local DXOggMusicManager musicMan;
+    local DXOggMusicInfo    musicInfo;
+
+    if (!class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags)) return;
+
+
+    foreach Player().GetEntryLevel().AllActors(class'DXOggMusicManager',musicMan){break;}
+    foreach AllActors(class'DXOggMusicInfo',musicInfo){break;}
+
+    if (musicMan==None || musicInfo==None){
+        l("Couldn't find one of MusicManager "$musicMan$" or MusicInfo "$musicInfo);
+        return;
+    }
+
+    GetLevelOggSong(setseed,musicInfo);
+
+    musicMan.SetTracks(musicInfo);
+
+    RememberMusic();
+}
+
+#endif
+
 function PlayRandomSong(bool setseed)
 {
     local music NewSong;
@@ -234,7 +323,8 @@ function PlayRandomSong(bool setseed)
     if(p == None) return;
 
 #ifdef revision
-    //Don't play music via the DXRMusicPlayer if Revision soundtrack is enabled
+    //Don't play UMX music via the DXRMusicPlayer if Revision soundtrack is enabled
+    //Randomize the OGG music in the DXOggMusicInfo instead
     if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) return;
 #endif
 
@@ -310,12 +400,26 @@ function PlayRandomSong(bool setseed)
 function SkipSong()
 {
     local DXRMusic music;
+    local bool usingOgg;
 
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
     if(music != None) {
         music.MarkSkippedSong(GetCurrentSongName());
     }
-    PlayRandomSong(true);
+
+#ifdef revision
+    //Don't play UMX music via the DXRMusicPlayer if Revision soundtrack is enabled
+    //Randomize the OGG music in the DXOggMusicInfo instead
+    usingOgg = (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack);
+#endif
+
+    if (usingOgg){
+        #ifdef revision
+        PlayRandomOggSong(true);
+        #endif
+    } else {
+        PlayRandomSong(true);
+    }
 }
 
 // ----------------------------------------------------------------------

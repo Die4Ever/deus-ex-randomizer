@@ -1,5 +1,5 @@
 //=============================================================================
-// MenuChoice_RandomMusic
+// MenuChoice_ThrowMelee
 //=============================================================================
 
 class MenuChoice_ThrowMelee extends DXRMenuUIChoiceBool;
