@@ -69,7 +69,5 @@ defaultproperties
 #else
     HelpText="Disable the current song. You can re-enable it by editing #var(package)Music.ini"
 #endif
-
-     HelpText="Disable the current song. You can re-enable it by editing DXRMusic.ini"
      actionText="Disable Song"
 }
