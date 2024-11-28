@@ -29,6 +29,15 @@ function StandStill()
 }
 #endif
 
+#ifdef revision
+function bool Facelift(bool bOn)
+{
+    if (augsOnly) return False; //Don't facelift augbots (but they might not be augbots yet)
+
+    return Super.Facelift(bOn);
+}
+#endif
+
 function updateName()
 {
     familiarName = baseName $ GetRemainingUsesStr();
@@ -188,6 +197,7 @@ function MakeAugsOnly()
 {
     augsOnly = true;
     MultiSkins[0] = Texture'AugBotTex1';
+    Mesh = Default.Mesh; //No-op unless Revision has already facelifted
 }
 
 function Tick(float delta)
