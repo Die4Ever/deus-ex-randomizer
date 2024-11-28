@@ -633,6 +633,7 @@ function _GetOggLevelSong(out string newSong, out string ambientintro, out strin
     case "ENDGAME3":
     case "ENDGAME4":
     case "ENDGAME4REV":
+    case "06_HONGKONG_ENTERINGSCENE": //Revision cutscene as you fly into Hong Kong
         cutscene=true;
     }
 
