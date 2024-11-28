@@ -14,16 +14,16 @@ const BingoFlagM12 = 'DXRando_Mission12_BingoCompleted';
 const BingoFlagM14 = 'DXRando_Mission14_BingoCompleted';
 const BingoFlagM15 = 'DXRando_Mission15_BingoCompleted';
 
-function PreFirstEntry()
+function FirstEntry()
 {
     local BlackHelicopter jock;
     local Switch1 button;
-    local PayPhone invisibleWall;
     local #var(prefix)FlagTrigger ft;
+    local DeusExMover mover;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
-    Super.PreFirstEntry();
+    Super.FirstEntry();
 
     switch (dxr.localURL) {
         case "02_NYC_BATTERYPARK":
@@ -54,11 +54,12 @@ function PreFirstEntry()
             NewBingoBoard();
             break;
         case "10_PARIS_CHATEAU":
-            if (class'DXRMapVariants'.static.IsVanillaMaps(player())) {
-                invisibleWall = PayPhone(Spawnm(class'PayPhone',, 'invisible_wall', vect(-999.7, -4484.5, -174.4)));
-                invisibleWall.bHighlight = false;
-                invisibleWall.SetCollisionSize(100.0, 150.0);
+            foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
+                mover.bFrobbable = false;
+                mover.bBreakable = false;
+                mover.bPickable = false;
             }
+            AddBingoEventBlocker('everettsignaldoor', BingoFlagM10);
             break;
         case "11_PARIS_CATHEDRAL":
             NewBingoBoard();
@@ -78,7 +79,7 @@ function PreFirstEntry()
         case "15_AREA51_FINAL":
             AddBingoEventBlocker('Merge_helios_exit', BingoFlagM15);
             AddBingoEventBlocker('destroy_generator', BingoFlagM15);
-            foreach AllActors(class'FlagTrigger', ft) {
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
                 if (ft.event == 'Merge_helios_exit') {
                     ft.bTriggerOnceOnly = false;
                 }
@@ -125,7 +126,7 @@ function AnyEntry()
             GetConversation('M09JockLeave').AddFlagRef(BingoFlagM09, true);
             break;
         case "10_PARIS_CHATEAU":
-            UpdateChateauInvisibleWall();
+            UpdateCryptDoors();
             break;
         case "11_PARIS_EVERETT":
             GetConversation('TakeOff').AddFlagRef(BingoFlagM11, true);
@@ -153,7 +154,7 @@ function NewBingoBoard()
 }
 
 function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
-    local FlagTrigger ft;
+    local #var(prefix)FlagTrigger ft;
     local Actor blocked;
     local name glue;
 
@@ -163,8 +164,9 @@ function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
         if (
             MapExit(blocked) != None ||
             InterpolateTrigger(blocked) != None ||
+            DataLinkTrigger(blocked) != None ||
             Dispatcher(blocked) != None ||
-            DataLinkTrigger(blocked) != None
+            DeusExMover(blocked) != None
         ) {
             blocked.tag = glue;
         }
@@ -179,13 +181,13 @@ function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
     ft.SetCollision(false, false, false);
 }
 
-function UpdateChateauInvisibleWall()
+function UpdateCryptDoors()
 {
-    local PayPhone invisibleWall;
+    local #var(prefix)FlagTrigger ft;
 
-    if (dxr.flagbase.GetBool(BingoFlagM10)) {
-        foreach AllActors(class'PayPhone', invisibleWall, 'invisible_wall') {
-            invisibleWall.SetCollision(false, false, false);
+    if (dxr.flagbase.GetBool('everettsignal')) {
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'everettsignaldoor') {
+            ft.Trigger(None, None);
             break;
         }
     }
@@ -258,7 +260,7 @@ function HandleBingo(int numBingos)
             break;
         case 10:
             dxr.flagbase.SetBool(BingoFlagM10, true,, 12);
-            UpdateChateauInvisibleWall();
+            UpdateCryptDoors();
             break;
         case 11:
             dxr.flagbase.SetBool(BingoFlagM11, true,, 12);
