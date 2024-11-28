@@ -57,9 +57,9 @@ function FirstEntry()
         case "10_PARIS_CHATEAU":
             mover2 = None;
             foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
-                mover.bFrobbable = false;
                 mover.bBreakable = false;
                 mover.bPickable = false;
+                mover.bFrobbable = false;
                 if (mover2 != None) {
                     loc = (mover.Location + mover2.Location) * 0.5;
                     loc.z += 120.0;
@@ -68,7 +68,21 @@ function FirstEntry()
                 }
                 mover2 = mover;
             }
+
             AddBingoEventBlocker('everettsignaldoor', BingoFlagM10);
+
+            dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from spawning prematurely
+            ft = Spawn(class'FlagTrigger',, 'everettsignaldoor_bingoblocked');
+            ft.flagName = 'DXRando_CommandosUnhidden';
+            ft.flagValue = true;
+            ft.flagExpiration = 12;
+            ft.SetCollision(false, false, false);
+
+            GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
+
+            class'DXRInWorldTrigger'.static.Create(self, 'MJ12Commando', 'everettsignaldoor_bingoblocked', true);
+            class'DXRSetFrobbableTrigger'.static.Create(self, 'everettsignaldoor_bingoblocked', 'everettsignaldoor_bingoblocked', true);
+
             break;
         case "11_PARIS_CATHEDRAL":
             NewBingoBoard();
@@ -194,7 +208,12 @@ function UpdateCryptDoors()
 {
     local #var(prefix)FlagTrigger ft;
 
-    if (dxr.flagbase.GetBool('everettsignal')) {
+    if (
+        dxr.localURL == "10_PARIS_CHATEAU" &&
+        dxr.flagbase.GetBool('everettsignal') &&
+        dxr.flagbase.GetBool(BingoFlagM10) &&
+        !dxr.flagbase.GetBool('DXRando_CommandosUnhidden')
+    ) {
         foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'everettsignaldoor') {
             ft.Trigger(None, None);
             break;
