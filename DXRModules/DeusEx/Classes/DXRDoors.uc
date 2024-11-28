@@ -251,7 +251,7 @@ function FirstEntry()
 
     // copy to pairs/sets of doors
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
-        if (d.Tag == '' || d.Tag == 'DeusExMover' || d.Tag == 'BreakableGlass' || d.Tag == 'BreakableWall' ) continue;
+        if (d.Tag == '' || d.Tag == d.class.Name ) continue;
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', d2, d.tag) {
             if(d==d2) continue;
