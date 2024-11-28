@@ -1757,7 +1757,8 @@ function RemoveMoverPrePivot(Mover m)
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
     // if `a` is a datacube, spawn a new light instead
-    if (#var(prefix)DataCube(a) != None) {
+    // Weirdly generalized check here, since non-vanilla replaces with InformationDevices
+    if (#var(prefix)InformationDevices(a) != None && a.Mesh == class'#var(prefix)DataCube'.default.Mesh) {
         a = a.Spawn(class'DynamicLight', a,, a.Location + vect(0, 0, 6.0));
         a.SetBase(a.Owner);
         a.LightSaturation = 0;
