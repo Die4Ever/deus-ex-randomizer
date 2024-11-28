@@ -19,7 +19,8 @@ function FirstEntry()
     local BlackHelicopter jock;
     local Switch1 button;
     local #var(prefix)FlagTrigger ft;
-    local DeusExMover mover;
+    local DeusExMover mover, mover2;
+    local Vector loc;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
@@ -54,10 +55,18 @@ function FirstEntry()
             NewBingoBoard();
             break;
         case "10_PARIS_CHATEAU":
+            mover2 = None;
             foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
                 mover.bFrobbable = false;
                 mover.bBreakable = false;
                 mover.bPickable = false;
+                if (mover2 != None) {
+                    loc = (mover.Location + mover2.Location) * 0.5;
+                    loc.z += 120.0;
+                    class'DXRHoverHint'.static.Create(self, "", loc, 50.0, 96.0,,, true);
+                    break;
+                }
+                mover2 = mover;
             }
             AddBingoEventBlocker('everettsignaldoor', BingoFlagM10);
             break;
@@ -292,15 +301,20 @@ function HandleBingo(int numBingos)
     }
 
     if (dxr.flags.settings.bingo_win == 1) {
-        bingoText = "(Complete a bingo line!)";
+        bingoText = "Complete a bingo line!";
     } else if (bingosRemaining == dxr.flags.settings.bingo_win) {
-        bingoText = "(Complete " $ bingosRemaining $ " bingo lines!)";
+        bingoText = "Complete " $ bingosRemaining $ " bingo lines!";
     } else if (bingosRemaining == 1) {
-        bingoText = "(Complete 1 more bingo line!)";
+        bingoText = "Complete 1 more bingo line!";
     } else {
-        bingoText = "(Complete " $ bingosRemaining $ " more bingo lines!)";
+        bingoText = "Complete " $ bingosRemaining $ " more bingo lines!";
     }
 
+    if (hintText == "") {
+        return bingoText;
+    }
+
+    bingoText = "(" $ bingoText $ ")";
     spaces = (Len(bingoText) - Len(hintText)) >> 1;
     while (spaces > 1) {
         hintText = " " $ hintText;
