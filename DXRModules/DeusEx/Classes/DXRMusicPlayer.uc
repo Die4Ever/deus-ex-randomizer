@@ -72,7 +72,13 @@ function Timer()
 
 function RememberMusic()
 {
-    if(p==None || p.Song == None) return;
+    local bool usingOgg;
+
+    #ifdef revision
+    usingOgg = (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack);
+    #endif
+
+    if(p==None || (!usingOgg && p.Song == None)) return;
 
     // save us writing to the config file
     if(
@@ -171,18 +177,15 @@ function AnyEntry()
     if(music != None) {
         allowCombat = music.allowCombat;
     }
-    PlayRandomSong(true);
-}
 
-function PreFirstEntry()
-{
-    Super.PreFirstEntry();
     #ifdef revision
     if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) {
         PlayRandomOggSong(true);
         return;
     }
     #endif
+
+    PlayRandomSong(true);
 }
 
 function string GetCurrentSongName()
@@ -191,7 +194,7 @@ function string GetCurrentSongName()
 
     #ifdef revision
     if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) {
-        return OggTrackName;
+        return PrevOggTrackName;
     }
     #endif
 
@@ -303,6 +306,8 @@ function PlayRandomOggSong(bool setseed)
     }
 
     GetLevelOggSong(setseed,musicInfo);
+
+    if (OggTrackName==PrevOggTrackName) return; //Don't need to reset the music
 
     musicMan.SetTracks(musicInfo);
 
