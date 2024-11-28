@@ -8,7 +8,7 @@ var bool attached, addBingoText;
 var Actor baseActor;
 var bool bInWorld;
 
-static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad, float height, optional Actor target, optional Name targetName, optional bool _addBingoText)
+static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad, float height, optional Actor target, optional Name targetName, optional bool addBingoText)
 {
     local DXRHoverHint hoverHint;
     local Actor act;
@@ -17,7 +17,7 @@ static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad,
     hoverHint = DXRHoverHint(act);
     hoverHint.SetCollisionSize(rad,height);
     hoverHint.HintText = hint;
-    hoverHint.addBingoText = _addBingoText;
+    hoverHint.addBingoText = addBingoText;
 
     if (target != None){
         hoverHint.target = target;
