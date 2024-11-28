@@ -159,6 +159,8 @@ function ReplaceContainerContents(#var(prefix)Containers a)
 function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 {
     local DXRInformationDevices n;
+    local DynamicLight lt;
+
     n = DXRInformationDevices(SpawnReplacement(a, class'DXRInformationDevices'));
     if(n == None)
         return;
@@ -178,6 +180,12 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 #ifdef revision
     n.TextPackage = a.TextPackage;
 #endif
+
+    //Move dynamic lights that might be based on the info device
+    foreach a.BasedActors(class'DynamicLight', lt) {
+        lt.SetBase(n);
+    }
+
     ReplaceDeusExDecoration(a, n);
 
     a.Destroy();
