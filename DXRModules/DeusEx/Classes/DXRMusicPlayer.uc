@@ -249,9 +249,12 @@ function GetLevelSong(bool setseed)
 
 #ifdef revision
 
-function GetLevelOggSong(bool setseed, DXOggMusicInfo mi)
+function GetLevelOggSong(bool setseed, DXOggMusicManager mm)
 {
     local string newSong, SongString;
+    local string AmbientIntroOggFile, AmbientOggFile, CombatIntroOggFile;
+    local string CombatOggFile, ConversationIntroOggFile, ConversationOggFile;
+    local string OutroOggFile, DeathOggFile;
     local int i;
     local DXRMusic music;
 
@@ -275,17 +278,18 @@ function GetLevelOggSong(bool setseed, DXOggMusicInfo mi)
     if(music == None) {
         return;
     }
-    music._GetOggLevelSong(newSong, mi.MusicInfo.AmbientIntroOggFile, mi.MusicInfo.AmbientOggFile, mi.MusicInfo.DeathOggFile, mi.MusicInfo.CombatIntroOggFile, mi.MusicInfo.CombatOggFile, mi.MusicInfo.ConversationIntroOggFile, mi.MusicInfo.ConversationOggFile, mi.MusicInfo.OutroOggFile);
-    mi.MusicInfo.PS2AmbientOggFile=mi.MusicInfo.AmbientOggFile;
-    mi.MusicInfo.PS2CombatOggFile=mi.MusicInfo.CombatOggFile;
-    mi.MusicInfo.PS2ConversationOggFile=mi.MusicInfo.ConversationOggFile;
-    mi.MusicInfo.PS2OutroOggFile=mi.MusicInfo.OutroOggFile;
-    mi.MusicInfo.PS2DeathOggFile=mi.MusicInfo.DeathOggFile;
+
+    music._GetOggLevelSong(newSong,AmbientIntroOggFile,AmbientOggFile,DeathOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile);
+
+    if (newSong==PrevOggTrackName) return; //Don't need to reset the music
+
+    mm.SetTracksManual(AmbientIntroOggFile,AmbientOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile,DeathOggFile);
 
     OggTrackName = newSong;
+    RememberMusic();
 
     //Player().ClientMessage("GetLevelOggSong for music track: "$SongString$"  ambient: "$mi.MusicInfo.AmbientOggFile);
-    l("GetLevelOggSong() "$SongString@newSong@mi.MusicInfo.AmbientIntroOggFile@mi.MusicInfo.AmbientOggFile@mi.DeathOggFile@mi.MusicInfo.CombatIntroOggFile@mi.MusicInfo.CombatOggFile@mi.MusicInfo.ConversationIntroOggFile@mi.MusicInfo.ConversationOggFile@mi.MusicInfo.OutroOggFile);
+    l("GetLevelOggSong() "$SongString@newSong@AmbientIntroOggFile@AmbientOggFile@CombatIntroOggFile@CombatOggFile@ConversationIntroOggFile@ConversationOggFile@OutroOggFile@DeathOggFile);
 
 }
 
@@ -305,13 +309,7 @@ function PlayRandomOggSong(bool setseed)
         return;
     }
 
-    GetLevelOggSong(setseed,musicInfo);
-
-    if (OggTrackName==PrevOggTrackName) return; //Don't need to reset the music
-
-    musicMan.SetTracks(musicInfo);
-
-    RememberMusic();
+    GetLevelOggSong(setseed,musicMan);
 }
 
 #endif

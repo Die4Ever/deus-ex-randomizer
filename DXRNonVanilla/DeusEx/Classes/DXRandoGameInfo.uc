@@ -176,6 +176,21 @@ event Super_PostLogin( playerpawn NewPlayer )
     }
 }
 
+#ifdef revision
+function SetupMusic(DeusExPlayer player)
+{
+    local DXRando dxr;
+
+    dxr = GetDXR();
+
+    if (!class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags)){
+        Super.SetupMusic(player);
+    }
+    //Skip setting up the music if randomization is enabled.  It will happen
+    //at AnyEntry
+}
+#endif
+
 function DeusExLevelInfo SpawnDXLevelInfo()
 {
     local DeusExLevelInfo DeusExLevelInfo;
