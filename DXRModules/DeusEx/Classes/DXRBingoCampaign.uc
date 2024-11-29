@@ -172,6 +172,7 @@ function NewBingoBoard()
     if (events == None) return;
 
     dxr.flags.settings.starting_map = dxr.dxInfo.missionNumber * 10;
+    dxr.flags.bingoBoardRoll = 0;
     events.CreateBingoBoard();
     ClearDataVaultImages(player());
 }
@@ -261,7 +262,7 @@ function HandleBingo(int numBingos)
         player().ClientMessage("You have enough bingo lines to proceed!");
     }
 
-    switch (dxr.flags.settings.starting_map / 10) {
+    switch (dxr.dxInfo.missionNumber) {
         case 1:
             dxr.flagbase.SetBool(BingoFlagM01, true,, 2);
             break;
