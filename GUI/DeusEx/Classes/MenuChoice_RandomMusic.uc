@@ -10,10 +10,19 @@ class MenuChoice_RandomMusic extends DXRMenuUIChoiceInt;
 
 function SaveSetting()
 {
+    local DXRMusicPlayer music;
     Super.SaveSetting();
 
     //If we want it to change music immediately,
     //any call to do so should happen here
+    music = DXRMusicPlayer(class'DXRMusicPlayer'.static.Find());
+#ifdef revision
+    DXRandoGameInfo(player.Level.Game).SetupMusic(player); //Will hit the default Ogg music startup if rando disabled
+    if (music!=None){
+        music.PrevOggTrackName="";
+        music.PlayRandomOggSong(true);
+    }
+#endif
 }
 
 static function bool IsEnabled(DXRFlags f)
