@@ -19,83 +19,118 @@ function FirstEntry()
     local #var(prefix)FlagTrigger ft;
     local DeusExMover mover, mover2;
     local Vector loc;
+    local int bingo_duration;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.FirstEntry();
 
+    bingo_duration = dxr.flags.bingo_duration;
     switch (dxr.localURL) {
+        // case "01_NYC_UNATCOISLAND":
+        //     NewBingoBoard(); // call this in case the player set bingo_duration to something other than 1, which is currently incompatible with this mode
+        //     break;
         case "02_NYC_BATTERYPARK":
-            NewBingoBoard();
+            if (bingo_duration == 1) {
+                NewBingoBoard();
+            }
             break;
         case "03_NYC_UNATCOISLAND":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 2) {
+                NewBingoBoard();
+            }
             break;
         case "03_NYC_AIRFIELD":
-            AddBingoEventBlocker('MoveHelicopter', BingoFlagM03);
+            if (bingo_duration == 1 || bingo_duration == 2) {
+                AddBingoEventBlocker('MoveHelicopter', BingoFlagM03);
+            }
             break;
         case "04_NYC_UNATCOISLAND":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 3) {
+                NewBingoBoard();
+            }
             break;
         case "05_NYC_UNATCOMJ12LAB":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
+                NewBingoBoard();
+            }
             break;
         case "06_HONGKONG_HELIBASE":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 5) {
+                NewBingoBoard();
+            }
             break;
         case "08_NYC_STREET":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3) {
+                NewBingoBoard();
+            }
             break;
         case "09_NYC_Dockyard":
-            NewBingoBoard();
+            if (bingo_duration == 1) {
+                NewBingoBoard();
+            }
             break;
         case "10_PARIS_CATACOMBS":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
+                NewBingoBoard();
+            }
             break;
         case "10_PARIS_CHATEAU":
-            mover2 = None;
-            foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
-                mover.bBreakable = false;
-                mover.bPickable = false;
-                mover.bFrobbable = false;
-                if (mover2 != None) {
-                    loc = (mover.Location + mover2.Location) * 0.5;
-                    loc.z += 120.0;
-                    class'DXRHoverHint'.static.Create(self, "", loc, 50.0, 96.0,,, true);
-                    break;
+            if (bingo_duration == 1 || bingo_duration == 3) {
+                mover2 = None;
+                foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
+                    mover.bBreakable = false;
+                    mover.bPickable = false;
+                    mover.bFrobbable = false;
+                    if (mover2 != None) {
+                        loc = (mover.Location + mover2.Location) * 0.5;
+                        loc.z += 120.0;
+                        class'DXRHoverHint'.static.Create(self, "", loc, 50.0, 96.0,,, true);
+                        break;
+                    }
+                    mover2 = mover;
                 }
-                mover2 = mover;
+
+                AddBingoEventBlocker('everettsignaldoor', BingoFlagM10);
+
+                dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from spawning prematurely
+                ft = Spawn(class'FlagTrigger',, 'everettsignaldoor_bingoblocked');
+                ft.flagName = 'DXRando_CommandosUnhidden';
+                ft.flagValue = true;
+                ft.flagExpiration = 12;
+                ft.SetCollision(false, false, false);
+
+                GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
+
+                class'DXRInWorldTrigger'.static.Create(self, 'MJ12Commando', 'everettsignaldoor_bingoblocked', true);
+                class'DXRSetFrobbableTrigger'.static.Create(self, 'everettsignaldoor_bingoblocked', 'everettsignaldoor_bingoblocked', true);
             }
-
-            AddBingoEventBlocker('everettsignaldoor', BingoFlagM10);
-
-            dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from spawning prematurely
-            ft = Spawn(class'FlagTrigger',, 'everettsignaldoor_bingoblocked');
-            ft.flagName = 'DXRando_CommandosUnhidden';
-            ft.flagValue = true;
-            ft.flagExpiration = 12;
-            ft.SetCollision(false, false, false);
-
-            GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
-
-            class'DXRInWorldTrigger'.static.Create(self, 'MJ12Commando', 'everettsignaldoor_bingoblocked', true);
-            class'DXRSetFrobbableTrigger'.static.Create(self, 'everettsignaldoor_bingoblocked', 'everettsignaldoor_bingoblocked', true);
 
             break;
         case "11_PARIS_CATHEDRAL":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 3) {
+                NewBingoBoard();
+            }
             break;
         case "12_VANDENBERG_CMD":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 5) {
+                NewBingoBoard();
+            }
             break;
         case "12_Vandenberg_GAS":
-            AddBingoEventBlocker('UN_BlackHeli', BingoFlagM12);
+            if (bingo_duration == 1) {
+                AddBingoEventBlocker('UN_BlackHeli', BingoFlagM12);
+            }
             break;
         case "14_VANDENBERG_SUB":
-            NewBingoBoard();
+            if (bingo_duration == 1) {
+                NewBingoBoard();
+            }
             break;
         case "15_AREA51_BUNKER":
-            NewBingoBoard();
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3 || bingo_duration == 4) {
+                NewBingoBoard();
+            }
             break;
         case "15_AREA51_FINAL":
             AddBingoEventBlocker('Merge_helios_exit', BingoFlagM15);
@@ -114,50 +149,79 @@ function FirstEntry()
 
 function AnyEntry()
 {
+    local int bingo_duration;
+
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.AnyEntry();
 
+    bingo_duration = dxr.flags.bingo_duration;
     switch (dxr.localURL) {
         case "01_NYC_UNATCOISLAND":
-            GetConversation('GotoM02').AddFlagRef(BingoFlagM01, true);
+            if (bingo_duration == 1) {
+                GetConversation('GotoM02').AddFlagRef(BingoFlagM01, true);
+            }
             break;
         case "02_NYC_BATTERYPARK":
-            GetConversation('BoatLeaving').AddFlagRef(BingoFlagM02, true);
+            if (bingo_duration == 1 || bingo_duration == 2) {
+                GetConversation('BoatLeaving').AddFlagRef(BingoFlagM02, true);
+            }
             break;
         case "02_NYC_WAREHOUSE":
-            GetConversation('JockExit').AddFlagRef(BingoFlagM02, true);
+            if (bingo_duration == 1 || bingo_duration == 2) {
+                GetConversation('JockExit').AddFlagRef(BingoFlagM02, true);
+            }
             break;
         case "03_NYC_AIRFIELD":
-            GetConversation('M03JockLeave').AddFlagRef(BingoFlagM03, true);
+            if (bingo_duration == 1 || bingo_duration == 3) {
+                GetConversation('M03JockLeave').AddFlagRef(BingoFlagM03, true);
+            }
             break;
         case "04_NYC_BATTERYPARK":
-            GetConversation('GuntherShowdown').AddFlagRef(BingoFlagM04, true);
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
+                GetConversation('GuntherShowdown').AddFlagRef(BingoFlagM04, true);
+            }
             break;
         case "05_NYC_UNATCOISLAND":
-            GetConversation('M05MeetJock').AddFlagRef(BingoFlagM05, true);
+            if (bingo_duration == 1 || bingo_duration == 5) {
+                GetConversation('M05MeetJock').AddFlagRef(BingoFlagM05, true);
+            }
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
-            GetConversation('M06JockExit').AddFlagRef(BingoFlagM06, true);
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3) {
+                GetConversation('M06JockExit').AddFlagRef(BingoFlagM06, true);
+            }
             break;
         case "08_NYC_STREET":
-            GetConversation('M08JockExit').AddFlagRef(BingoFlagM08, true);
+            if (bingo_duration == 1) {
+                GetConversation('M08JockExit').AddFlagRef(BingoFlagM08, true);
+            }
             break;
         case "09_NYC_GRAVEYARD":
-            GetConversation('M09JockLeave').AddFlagRef(BingoFlagM09, true);
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
+                GetConversation('M09JockLeave').AddFlagRef(BingoFlagM09, true);
+            }
             break;
         case "10_PARIS_CHATEAU":
-            UpdateCryptDoors();
+            if (bingo_duration == 1 || bingo_duration == 3) {
+                UpdateCryptDoors();
+            }
             break;
         case "11_PARIS_EVERETT":
-            GetConversation('TakeOff').AddFlagRef(BingoFlagM11, true);
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 5) {
+                GetConversation('TakeOff').AddFlagRef(BingoFlagM11, true);
+            }
             break;
         case "12_Vandenberg_GAS":
-            GetConversation('M12JockFinal').AddFlagRef(BingoFlagM12, true);
-            GetConversation('M12JockFinal2').AddFlagRef(BingoFlagM12, true);
+            if (bingo_duration == 1) {
+                GetConversation('M12JockFinal').AddFlagRef(BingoFlagM12, true);
+                GetConversation('M12JockFinal2').AddFlagRef(BingoFlagM12, true);
+            }
             break;
         case "14_OCEANLAB_SILO":
-            GetConversation('JockArea51').AddFlagRef(BingoFlagM14, true);
+            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3 || bingo_duration == 4) {
+                GetConversation('JockArea51').AddFlagRef(BingoFlagM14, true);
+            }
             break;
     }
 }
@@ -171,6 +235,7 @@ function NewBingoBoard()
 
     dxr.flags.settings.starting_map = dxr.dxInfo.missionNumber * 10;
     dxr.flags.bingoBoardRoll = 0;
+    dxr.flags.bingo_duration = 1;
     events.CreateBingoBoard();
     ClearDataVaultImages(player());
 }
