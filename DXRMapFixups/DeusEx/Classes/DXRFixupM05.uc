@@ -146,12 +146,7 @@ function PreFirstEntryMapFixes()
                     c.UserList[i].password = "scryspc";
                 }
             }
-            foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
-                RemoveFears(alex);
-            }
-            foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-                RemoveFears(j);
-            }
+
             foreach AllActors(class'#var(prefix)Terrorist', miguel){
                 miguel.bHateShot=False;
                 miguel.ResetReactions();
@@ -183,6 +178,13 @@ function PreFirstEntryMapFixes()
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 break;
             }
+        }
+
+        foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
+            RemoveFears(alex);
+        }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
         }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');
