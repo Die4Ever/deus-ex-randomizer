@@ -19,64 +19,59 @@ function FirstEntry()
     local #var(prefix)FlagTrigger ft;
     local DeusExMover mover, mover2;
     local Vector loc;
-    local int bingo_duration;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.FirstEntry();
 
-    bingo_duration = dxr.flags.bingo_duration;
     switch (dxr.localURL) {
-        // case "01_NYC_UNATCOISLAND":
-        //     NewBingoBoard(); // call this in case the player set bingo_duration to something other than 1, which is currently incompatible with this mode
-        //     break;
         case "02_NYC_BATTERYPARK":
-            if (bingo_duration == 1) {
+            if (IsBingoEnd(1, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "03_NYC_UNATCOISLAND":
-            if (bingo_duration == 1 || bingo_duration == 2) {
+            if (IsBingoEnd(2, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "03_NYC_AIRFIELD":
-            if (bingo_duration == 1 || bingo_duration == 2) {
+            if (IsBingoEnd(3, dxr.flags.bingo_duration)) {
                 AddBingoEventBlocker('MoveHelicopter', BingoFlagM03);
             }
             break;
         case "04_NYC_UNATCOISLAND":
-            if (bingo_duration == 1 || bingo_duration == 3) {
+            if (IsBingoEnd(3, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "05_NYC_UNATCOMJ12LAB":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
+            if (IsBingoEnd(4, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "06_HONGKONG_HELIBASE":
-            if (bingo_duration == 1 || bingo_duration == 5) {
+            if (IsBingoEnd(5, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "08_NYC_STREET":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3) {
+            if (IsBingoEnd(6, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "09_NYC_Dockyard":
-            if (bingo_duration == 1) {
+            if (IsBingoEnd(8, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "10_PARIS_CATACOMBS":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
+            if (IsBingoEnd(9, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "10_PARIS_CHATEAU":
-            if (bingo_duration == 1 || bingo_duration == 3) {
+            if (IsBingoEnd(10, dxr.flags.bingo_duration)) {
                 mover2 = None;
                 foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
                     mover.bBreakable = false;
@@ -108,27 +103,27 @@ function FirstEntry()
 
             break;
         case "11_PARIS_CATHEDRAL":
-            if (bingo_duration == 1 || bingo_duration == 3) {
+            if (IsBingoEnd(10, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "12_VANDENBERG_CMD":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 5) {
+            if (IsBingoEnd(11, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "12_Vandenberg_GAS":
-            if (bingo_duration == 1) {
+            if (IsBingoEnd(12, dxr.flags.bingo_duration)) {
                 AddBingoEventBlocker('UN_BlackHeli', BingoFlagM12);
             }
             break;
         case "14_VANDENBERG_SUB":
-            if (bingo_duration == 1) {
+            if (IsBingoEnd(12, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
         case "15_AREA51_BUNKER":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3 || bingo_duration == 4) {
+            if (IsBingoEnd(14, dxr.flags.bingo_duration)) {
                 NewBingoBoard();
             }
             break;
@@ -149,79 +144,52 @@ function FirstEntry()
 
 function AnyEntry()
 {
-    local int bingo_duration;
-
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.AnyEntry();
 
-    bingo_duration = dxr.flags.bingo_duration;
+    if (!IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration)) return;
+
     switch (dxr.localURL) {
         case "01_NYC_UNATCOISLAND":
-            if (bingo_duration == 1) {
-                GetConversation('GotoM02').AddFlagRef(BingoFlagM01, true);
-            }
+            GetConversation('GotoM02').AddFlagRef(BingoFlagM01, true);
             break;
         case "02_NYC_BATTERYPARK":
-            if (bingo_duration == 1 || bingo_duration == 2) {
-                GetConversation('BoatLeaving').AddFlagRef(BingoFlagM02, true);
-            }
+            GetConversation('BoatLeaving').AddFlagRef(BingoFlagM02, true);
             break;
         case "02_NYC_WAREHOUSE":
-            if (bingo_duration == 1 || bingo_duration == 2) {
-                GetConversation('JockExit').AddFlagRef(BingoFlagM02, true);
-            }
+            GetConversation('JockExit').AddFlagRef(BingoFlagM02, true);
             break;
         case "03_NYC_AIRFIELD":
-            if (bingo_duration == 1 || bingo_duration == 3) {
-                GetConversation('M03JockLeave').AddFlagRef(BingoFlagM03, true);
-            }
+            GetConversation('M03JockLeave').AddFlagRef(BingoFlagM03, true);
             break;
         case "04_NYC_BATTERYPARK":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
-                GetConversation('GuntherShowdown').AddFlagRef(BingoFlagM04, true);
-            }
+            GetConversation('GuntherShowdown').AddFlagRef(BingoFlagM04, true);
             break;
         case "05_NYC_UNATCOISLAND":
-            if (bingo_duration == 1 || bingo_duration == 5) {
-                GetConversation('M05MeetJock').AddFlagRef(BingoFlagM05, true);
-            }
+            GetConversation('M05MeetJock').AddFlagRef(BingoFlagM05, true);
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3) {
-                GetConversation('M06JockExit').AddFlagRef(BingoFlagM06, true);
-            }
+            GetConversation('M06JockExit').AddFlagRef(BingoFlagM06, true);
             break;
         case "08_NYC_STREET":
-            if (bingo_duration == 1) {
-                GetConversation('M08JockExit').AddFlagRef(BingoFlagM08, true);
-            }
+            GetConversation('M08JockExit').AddFlagRef(BingoFlagM08, true);
             break;
         case "09_NYC_GRAVEYARD":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 4) {
-                GetConversation('M09JockLeave').AddFlagRef(BingoFlagM09, true);
-            }
+            GetConversation('M09JockLeave').AddFlagRef(BingoFlagM09, true);
             break;
         case "10_PARIS_CHATEAU":
-            if (bingo_duration == 1 || bingo_duration == 3) {
-                UpdateCryptDoors();
-            }
+            UpdateCryptDoors();
             break;
         case "11_PARIS_EVERETT":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 5) {
-                GetConversation('TakeOff').AddFlagRef(BingoFlagM11, true);
-            }
+            GetConversation('TakeOff').AddFlagRef(BingoFlagM11, true);
             break;
         case "12_Vandenberg_GAS":
-            if (bingo_duration == 1) {
-                GetConversation('M12JockFinal').AddFlagRef(BingoFlagM12, true);
-                GetConversation('M12JockFinal2').AddFlagRef(BingoFlagM12, true);
-            }
+            GetConversation('M12JockFinal').AddFlagRef(BingoFlagM12, true);
+            GetConversation('M12JockFinal2').AddFlagRef(BingoFlagM12, true);
             break;
         case "14_OCEANLAB_SILO":
-            if (bingo_duration == 1 || bingo_duration == 2 || bingo_duration == 3 || bingo_duration == 4) {
-                GetConversation('JockArea51').AddFlagRef(BingoFlagM14, true);
-            }
+            GetConversation('JockArea51').AddFlagRef(BingoFlagM14, true);
             break;
     }
 }
@@ -283,6 +251,16 @@ function UpdateCryptDoors()
             break;
         }
     }
+}
+
+static function bool IsBingoEnd(int missionNumber, int bingo_duration)
+{
+    if (missionNumber > 12) {
+        missionNumber -= 2;
+    } else if (missionNumber > 6) {
+        missionNumber -= 1;
+    }
+    return missionNumber % bingo_duration == 0 || missionNumber == 13;
 }
 
 static function name GetBingoMissionFlag(int missionNumber) {
@@ -374,8 +352,8 @@ function HandleBingo(int numBingos)
     local string bingoText;
     local int bingosRemaining, spaces;
 
-    if (!dxr.flags.IsBingoCampaignMode()) {
-        return hintText;
+    if (!dxr.flags.IsBingoCampaignMode() || !IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration)) {
+         return hintText;
     }
 
     bingosRemaining = dxr.flags.settings.bingo_win - class'PlayerDataItem'.static.GiveItem(dxr.player).NumberOfBingos();
