@@ -41,9 +41,8 @@ function String GetHintText()
     if (target==None){
         if (addBingoText) {
             return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, HintText);
-        } else {
-            return HintText;
         }
+        return HintText;
     }
 
     if (#var(prefix)Teleporter(target)!=None){
