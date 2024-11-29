@@ -16,8 +16,6 @@ const BingoFlagM15 = 'DXRando_Mission15_BingoCompleted';
 
 function FirstEntry()
 {
-    local BlackHelicopter jock;
-    local Switch1 button;
     local #var(prefix)FlagTrigger ft;
     local DeusExMover mover, mover2;
     local Vector loc;
@@ -309,7 +307,7 @@ function HandleBingo(int numBingos)
  static function string GetBingoHoverHintText(DXRando dxr, string hintText)
  {
     local string bingoText;
-    local int bingosRemaining, hintLen, bingoLen, i, spaces;
+    local int bingosRemaining, spaces;
 
     if (!dxr.flags.IsBingoCampaignMode()) {
         return hintText;
