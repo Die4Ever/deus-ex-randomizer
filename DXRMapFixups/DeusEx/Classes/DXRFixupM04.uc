@@ -215,22 +215,23 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+        }
 
-            // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
-            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'SendingSignal') {
-                if(dt.datalinkTag == 'DL_PaulGoodJob') {
-                    dt.bTriggerOnceOnly = false;
-                }
+        // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
+        foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'SendingSignal') {
+            if(dt.datalinkTag == 'DL_PaulGoodJob') {
+                dt.bTriggerOnceOnly = false;
             }
+        }
 
-            if(dxr.flags.settings.goals > 0) {
-                foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
-                    if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                    dt.Tag = 'UNATCOHatesPlayer';
-                    break;
-                }
+        if(dxr.flags.settings.goals > 0) {
+            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
+                if(dt.datalinkTag != 'DL_SimonsPissed') continue;
+                dt.Tag = 'UNATCOHatesPlayer';
+                break;
             }
-
+        }
+        if (VanillaMaps){
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
                 if(dxr.flags.settings.goals > 0) {
@@ -248,7 +249,18 @@ function PreFirstEntryMapFixes()
                 ft.Event='SendingSignal2';
                 break;
             }
+        } else { //Revision
+            //After the signal has been sent correctly (SentSignalCorrectly), trigger the WaltonSimons DataLinkTrigger
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SentSignalCorrectly') {
+                if(dxr.flags.settings.goals > 0) {
+                    // immediately change alliances and trigger walt's dialog, but only if the goals are randomized (player won't be near the old triggers)
+                    ft.bTrigger=True; //Make sure it triggers through as well
+                    ft.Event = 'UNATCOHatesPlayer';
+                }
+                break;
+            }
         }
+
 
         Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
         class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
