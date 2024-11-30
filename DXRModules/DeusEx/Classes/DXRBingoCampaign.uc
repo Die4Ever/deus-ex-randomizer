@@ -95,8 +95,6 @@ function FirstEntry()
                 ft.flagExpiration = 12;
                 ft.SetCollision(false, false, false);
 
-                GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
-
                 class'DXRInWorldTrigger'.static.Create(self, 'MJ12Commando', 'everettsignaldoor_bingoblocked', true);
                 class'DXRSetFrobbableTrigger'.static.Create(self, 'everettsignaldoor_bingoblocked', 'everettsignaldoor_bingoblocked', true);
             }
@@ -179,6 +177,7 @@ function AnyEntry()
             GetConversation('M09JockLeave').AddFlagRef(BingoFlagM09, true);
             break;
         case "10_PARIS_CHATEAU":
+            GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
             UpdateCryptDoors();
             break;
         case "11_PARIS_EVERETT":
