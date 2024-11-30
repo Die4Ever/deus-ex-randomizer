@@ -464,7 +464,7 @@ function VandSubAnyEntry()
     local DataLinkTrigger dt;
     local Conversation c;
     local ConEvent e, nextEvent;
-    local MapExit exit;
+    local #var(prefix)MapExit exit;
     local Vehicles chopper,sub;
 
     if(dxr.flags.IsReducedRando()) return;
@@ -550,7 +550,7 @@ function VandSubAnyEntry()
     c = GetConversation('JockArea51');
     c.bDisplayOnce = false;
 
-    foreach AllActors(class'MapExit', exit, 'SiloExit') {
+    foreach AllActors(class'#var(prefix)MapExit', exit, 'SiloExit') {
         if(DynamicMapExit(exit) == None) {
             exit.Tag = '';
             exit.SetCollision(false,false,false);
@@ -836,10 +836,10 @@ function ConversationFrobOnly(Conversation c)
     c.bInvokeRadius = false;
 }
 
-function SetDestination(NavigationPoint p, string destURL, name dest_actor_name, optional string tag)
+function SetDestination(Actor p, string destURL, name dest_actor_name, optional string tag)
 {
     local DXRMapVariants maps;
-    local MapExit m;
+    local #var(prefix)MapExit m;
     local DynamicTeleporter t;
 
     l("SetDestination "$p@p.tag@destURL@dest_actor_name@tag);
@@ -847,7 +847,7 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
     if(maps != None)
         destURL = maps.VaryURL(destURL);
 
-    m = MapExit(p);
+    m = #var(prefix)MapExit(p);
     t = DynamicTeleporter(p);
 #ifdef injections
     if( m != None )
@@ -857,6 +857,6 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
     else
         err("SetDestination failed for "$p);
 
-    class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, p);
+    class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, NavigationPoint(p));
 #endif
 }
