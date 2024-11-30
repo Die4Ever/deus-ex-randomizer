@@ -94,6 +94,66 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     local #var(prefix)Fan1 fan;
     local #var(prefix)WaltonSimons ws;
 
+    //Make it only possible to turn the power on, make it impossible to turn the power off again
+    foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
+        disp.Tag = 'power_dispatcher_real';
+        break;
+    }
+
+    oot = Spawn(class'OnceOnlyTrigger');
+    oot.Event='power_dispatcher_real';
+    oot.Tag='power_dispatcher';
+
+    //Make sure the power turns on if you get to the bottom
+    trig = Spawn(class'Trigger',,,vectm(4414,-1035,-7543));
+    trig.SetCollisionSize(180,40);
+    trig.event = 'power_dispatcher';
+
+    //Make the movers way faster
+    foreach AllActors(class'DeusExMover',d){
+        switch(d.Tag){
+            case 'upper_elevator_sw':
+            case 'upper_elevator_sw_works':
+            case 'lower_elevator_sw':
+            case 'lower_elevator_sw_works':
+                d.MoveTime=0.01; //So fast it just looks like the buttons and stuff swapped instantly, even if you're looking
+                break;
+        }
+    }
+
+
+    //This door can get stuck if a spiderbot gets jammed into the little bot-bay
+    foreach AllActors(class'DeusExMover',d){
+        if (d.Tag=='bot_door'){
+            d.MoverEncroachType=ME_IgnoreWhenEncroach;
+        }
+    }
+
+    //Button to open blast doors from inside
+    AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
+
+
+    //The buttons on the big elevator down to the bunker entrance could be used if you reached around
+    //the invisible panel that is supposed to block them.  Make them actually unusable until the power
+    //is turned on.
+    foreach AllActors(class'#var(prefix)Button1',b){
+        if (b.Event=='level1'){
+            b.Tag='level1_switch';
+            class'DXRTriggerEnable'.static.Create(b,'power','level1_switch');
+        } else if (b.Event=='level2'){
+            b.Tag='level2_switch';
+            class'DXRTriggerEnable'.static.Create(b,'power','level2_switch');
+        }
+    }
+
+    foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
+        fan.bHighlight=True;
+    }
+
+    FixJockExplosion();  //Only actually does anything with injections, but theoretically could work if we replaced the helicopter
+
+
+
     if (isVanilla) {
         // doors_lower is for backtracking
         AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
@@ -111,12 +171,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
                 st.Trigger(Self,player());
             }
         }
-        //This door can get stuck if a spiderbot gets jammed into the little bot-bay
-        foreach AllActors(class'DeusExMover',d){
-            if (d.Tag=='bot_door'){
-                d.MoverEncroachType=ME_IgnoreWhenEncroach;
-            }
-        }
+
         //Swap the button at the top of the elevator to a keypad to make this path a bit more annoying
         foreach AllActors(class'Switch2',s2){
             if (s2.Event=='elevator_mtunnel_up'){
@@ -154,57 +209,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
             }
         }
 
-        //Make it only possible to turn the power on, make it impossible to turn the power off again
-        foreach AllActors(class'Dispatcher',disp,'power_dispatcher'){
-            disp.Tag = 'power_dispatcher_real';
-            break;
-        }
-
-        oot = Spawn(class'OnceOnlyTrigger');
-        oot.Event='power_dispatcher_real';
-        oot.Tag='power_dispatcher';
-
-        //Make sure the power turns on if you get to the bottom
-        trig = Spawn(class'Trigger',,,vectm(4414,-1035,-7543));
-        trig.SetCollisionSize(180,40);
-        trig.event = 'power_dispatcher';
-
-        //Make the movers way faster
-        foreach AllActors(class'DeusExMover',d){
-            switch(d.Tag){
-                case 'upper_elevator_sw':
-                case 'upper_elevator_sw_works':
-                case 'lower_elevator_sw':
-                case 'lower_elevator_sw_works':
-                    d.MoveTime=0.01; //So fast it just looks like the buttons and stuff swapped instantly, even if you're looking
-                    break;
-            }
-        }
-
-        //The buttons on the big elevator down to the bunker entrance could be used if you reached around
-        //the invisible panel that is supposed to block them.  Make them actually unusable until the power
-        //is turned on.
-        foreach AllActors(class'#var(prefix)Button1',b){
-            if (b.Event=='level1'){
-                b.Tag='level1_switch';
-                class'DXRTriggerEnable'.static.Create(b,'power','level1_switch');
-            } else if (b.Event=='level2'){
-                b.Tag='level2_switch';
-                class'DXRTriggerEnable'.static.Create(b,'power','level2_switch');
-            }
-        }
-
-
-        //Button to open blast doors from inside
-        AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
-
-        FixJockExplosion();
-
         Spawn(class'#var(prefix)LiquorBottle',,, vectm(1005.13,2961.26,-480)); //Liquor in a locker, so every mission has alcohol
-
-        foreach AllActors(class'#var(prefix)Fan1',fan,'Fan_vertical_shaft_1'){ //The "jump, you can make it!" fan
-            fan.bHighlight=True;
-        }
 
         foreach AllActors(class'#var(prefix)WaltonSimons',ws){
             ws.MaxProvocations = 0;
@@ -233,6 +238,8 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(4512,3747,-954));//Near generators inside bunker
         rg.MaxCount=1;
     } else {
+        Spawn(class'#var(prefix)LiquorBottle',,, vectm(1165,2540,-280)); //Liquor in a locker, so every mission has alcohol
+
         Spawn(class'PlaceholderItem',,, vectm(-1738,2863,-210)); //Storage building
         Spawn(class'PlaceholderItem',,, vectm(-1816,3048,-210)); //Back of Storage building
         Spawn(class'PlaceholderItem',,, vectm(-1154,178,-560)); //Other storage building basement

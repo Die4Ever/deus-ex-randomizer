@@ -1206,7 +1206,6 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
 
     l("SpawnReplacement("$a$", "$newclass$") " $ newactor);
 
-    newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
     newactor.SetPhysics(a.Physics);
     newactor.SetBase(a.Base);
     newactor.Event = event;
@@ -1232,6 +1231,10 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     if(#defined(hx)){
         newactor.SetPropertyText("PrecessorName", a.GetPropertyText("PrecessorName"));
     }
+
+    //SetBase resets the collision to... defaults?
+    //Do this last for safety
+    newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
 
     return newactor;
 }
