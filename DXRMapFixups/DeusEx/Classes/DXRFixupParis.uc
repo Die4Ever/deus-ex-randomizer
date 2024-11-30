@@ -294,12 +294,38 @@ function PreFirstEntryMapFixes()
     }
 }
 
-function AnyEntryMapFixes()
+function SpawnLeMerchant(vector loc, rotator rot)
 {
     local DXRNPCs npcs;
     local DXREnemies dxre;
     local ScriptedPawn sp;
     local Merchant m;
+
+    if(dxr.flags.settings.swapitems > 0) {
+        // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
+        // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
+        npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
+        if(npcs != None) {
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, class'#var(prefix)HazMatSuit');
+        }
+        // give him weapons to defend himself
+        dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+        if(dxre != None && sp != None) {
+            sp.bKeepWeaponDrawn = true;
+            GiveItem(sp, class'#var(prefix)WineBottle');
+            dxre.RandomizeSP(sp, 100);
+            RemoveFears(sp);
+            sp.ChangeAlly('Player', 0.0, false);
+            sp.MaxProvocations = 0;
+            sp.AgitationSustainTime = 3600;
+            sp.AgitationDecayRate = 0;
+        }
+    }
+
+}
+
+function AnyEntryMapFixes()
+{
     local TobyAtanwe toby;
     local Conversation c;
     local ConEvent ce, cePrev;
@@ -307,29 +333,20 @@ function AnyEntryMapFixes()
     local ConEventSetFlag cesf;
     local ConEventAddSkillPoints ceasp;
     local ConEventTransferObject ceto;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL)
     {
     case "10_PARIS_CATACOMBS":
-        if(dxr.flags.settings.swapitems > 0) {
-            // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
-            // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
-            npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
-            if(npcs != None) {
-                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384), class'#var(prefix)HazMatSuit');
-            }
-            // give him weapons to defend himself
-            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-            if(dxre != None && sp != None) {
-                sp.bKeepWeaponDrawn = true;
-                GiveItem(sp, class'#var(prefix)WineBottle');
-                dxre.RandomizeSP(sp, 100);
-                RemoveFears(sp);
-                sp.ChangeAlly('Player', 0.0, false);
-                sp.MaxProvocations = 0;
-                sp.AgitationSustainTime = 3600;
-                sp.AgitationDecayRate = 0;
-            }
+        if (VanillaMaps){
+            SpawnLeMerchant(vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384));
+        }
+        break;
+    case "10_PARIS_ENTRANCE": //Revision splits Paris into a few more maps.  This is the first one
+        if (!VanillaMaps){
+            SpawnLeMerchant(vectm(-2222,3500,1240), rotm(0, -10000, 0, 16384));
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
