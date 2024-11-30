@@ -621,7 +621,7 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
 
-        datacubes_rules[i].item_name = '15_AREA51_BUNKER';
+        datacubes_rules[i].item_name = 'A51VentElevatorCode';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -645);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
@@ -1476,6 +1476,22 @@ function revision_datacubes_rules()
         //Anywhere else
         datacubes_rules[i].item_name = '14_Datacube03';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "15_AREA51_BUNKER":
+        //Both of these have to be above ground
+        datacubes_rules[i].item_name = 'A51VentComputerCode';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -645);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = 'A51VentElevatorCode';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -645);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
