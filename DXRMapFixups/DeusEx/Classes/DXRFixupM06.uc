@@ -80,6 +80,7 @@ function PreFirstEntryMapFixes()
     local Rotator rot;
     local Male1 male;
     local GordonQuick gordon;
+    local #var(prefix)Trigger t;
     local int i;
 
     local bool VanillaMaps;
@@ -313,6 +314,14 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+        } else {
+            //behind Maggie's DispalyCase (sic), there is a Trigger to open it
+            //That trigger gets hit when an OrdersTrigger in the same spot gets replaced by DXRReplaceActors
+            foreach AllActors(class'#var(prefix)Trigger',t,'Trigger'){
+                if (t.Event=='DispalyCase'){
+                    t.TriggerType=TT_PawnProximity;
+                }
+            }
         }
         break;
 
