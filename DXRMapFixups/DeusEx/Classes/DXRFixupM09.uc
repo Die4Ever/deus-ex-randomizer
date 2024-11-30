@@ -221,7 +221,7 @@ function PreFirstEntryMapFixes()
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit,'ToGraveyard'){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
             AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
@@ -336,7 +336,7 @@ function PreFirstEntryMapFixes()
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'CopterCam'){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
         if (#defined(vanilla) && InStr(dxr.dxInfo.startupMessage[0], "Cemetary") != -1) {
