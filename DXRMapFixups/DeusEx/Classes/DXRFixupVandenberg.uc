@@ -364,19 +364,6 @@ function PreFirstEntryMapFixes()
         break;
     case "14_OCEANLAB_UC":
         if (VanillaMaps){
-            //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
-            foreach AllActors(class'FlagTrigger',ft){
-                if (ft.name=='FlagTrigger0'){
-                    ft.bTrigger = True;
-                    ft.event = 'schematic2';
-                }
-            }
-            foreach AllActors(class'DataLinkTrigger',dlt){
-                if (dlt.name=='DataLinkTrigger2'){
-                    dlt.Tag = 'schematic2';
-                }
-            }
-
             //This door can get stuck if a spiderbot gets jammed into the little bot-bay
             foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'Releasebots') {
                 door.MoverEncroachType=ME_IgnoreWhenEncroach;
@@ -399,6 +386,17 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1780,8587,-2790)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(423,8547,-2900)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(73,9110,-2910)); //Turret room, opposite from bait computer
+        }
+
+        //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
+        foreach AllActors(class'FlagTrigger',ft,'schematic'){
+            ft.bTrigger = True;
+            ft.event = 'schematic2';
+        }
+        foreach AllActors(class'DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='dl_downloaded'){
+                dlt.Tag = 'schematic2';
+            }
         }
 
         foreach AllActors(class'#var(prefix)Fan1',fan){
