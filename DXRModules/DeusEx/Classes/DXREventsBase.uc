@@ -1287,8 +1287,8 @@ function bool CheckBingoWin(DXRando dxr, int numBingos)
 
     if (dxr.flags.settings.bingo_win > 0){
         if (dxr.flags.IsBingoCampaignMode()) {
-            DXRBingoCampaign(dxr.FindModule(class'DXRBingoCampaign', true)).HandleBingo(numBingos);
-            return true;
+            DXRBingoCampaign(class'DXRBingoCampaign'.static.Find()).HandleBingo(numBingos);
+            return numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"/* && dxr.LocalURL!="ENDGAME4REV"*/;
         } else if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
