@@ -85,6 +85,12 @@ function PreFirstEntryMapFixes()
             s = AddSwitch( vect(480,-809,-350), rot(0, -16384, 0), 'AmbrosiaGate');  //Switch to open the gate near the vanilla ambrosia location from inside
             d = DeusExMover(findNearestToActor(class'DeusExMover',s));
             d.Tag='AmbrosiaGate';
+
+            //The Revision map doesn't have the boat MapExit
+            //This will happen before DXREvents, which changes the tag on this MapExit
+            exit = Spawn(class'DynamicMapExit',,'Boat_Exit',vect(-420,-3827,278));
+            exit.SetCollision(false,false,false);
+            exit.DestMap="03_NYC_UNATCOIsland";
         }
 
         break;
