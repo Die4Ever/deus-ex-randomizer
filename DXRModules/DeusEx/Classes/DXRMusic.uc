@@ -152,7 +152,7 @@ function AddRevisionSongs()
     oggChoices[i++] = MakeOggSongChoice("Revision","Versalife","06_Versalife_Ambientintro.ogg","06_Versalife_Ambient.ogg","06_HongKong_Death.ogg","","06_Versalife_Combat.ogg","","06_Versalife_Convo.ogg","",false);
     oggChoices[i++] = MakeOggSongChoice("Revision","HK Canals","06_Canal_AmbientIntro.ogg","06_Canal_Ambient.ogg","06_HongKong_Death.ogg","","06_HongKong_Combat.ogg","","06_Canal_Convo.ogg","",false);
     oggChoices[i++] = MakeOggSongChoice("Revision","Lucky Money Exterior","06_Underworld_AmbientIntro.ogg","06_Underworld_Ambient.ogg","06_HongKong_Death.ogg","","06_Underworld_Combat.ogg","","","",false);
-    oggChoices[i++] = MakeOggSongChoice("Revision","Lucky Money Interior","06_Underworld_AmbientIntro.ogg","06_Underworld_Ambient_Interior.ogg","06_HongKong_Death.ogg","","06_Underworld_Combat.ogg","","","",false);
+    oggChoices[i++] = MakeOggSongChoice("Revision","Lucky Money Interior","","06_Underworld_Ambient_Interior.ogg","06_HongKong_Death.ogg","","06_Underworld_Combat.ogg","","","",false);
     oggChoices[i++] = MakeOggSongChoice("PS2","HK Intro","","PS2_HK_Helibase_Ambient.ogg","","","","","","",true);
     oggChoices[i++] = MakeOggSongChoice("PS2","HK Helibase","","PS2_HK_Helibase_Ambient.ogg","PS2_HK_Helibase_Death.ogg","","PS2_HK_Helibase_Combat.ogg","","PS2_HK_Helibase_Convo.ogg","",false);
     oggChoices[i++] = MakeOggSongChoice("PS2","Wan Chai Market","","PS2_HK_Ambient.ogg","PS2_HK_Death.ogg","","PS2_HK_Combat.ogg","","PS2_HK_Convo.ogg","PS2_HK_Outro.ogg",false);
