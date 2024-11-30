@@ -535,7 +535,10 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, i
     // spawn with large collision to ensure enough space, then slightly shrink after to make them easier to get around
     #var(prefix)Robot(a).SetBasedPawnSize(a.CollisionRadius * 0.8, a.CollisionHeight * 0.7);
 
-    id = SpawnDatacubeTextTag(a.Location, rotm(0,0,0,0), datacubeTag ,False);
+    id = SpawnDatacubeTextTag(GetRandomPositionFine(a.Location,min_datacube_distance, max_datacube_distance),
+                              rotm(0,0,0,0),
+                              datacubeTag,
+                              True);
     if (id==None) return a;
     id.Tag = 'botdatacube';
     id.SetCollision(true,false,false);
