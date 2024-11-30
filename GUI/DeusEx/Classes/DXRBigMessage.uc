@@ -71,10 +71,31 @@ event DestroyWindow()
 event DrawWindow(GC gc)
 {
     local float w, h, cury;
+    local DXRando dxr;
 
     // this prevents DeusExPlayer Dying state PlayerCalcView() from timing out
     if(Player.Level.Timeseconds - player.FrobTime > 7.9) {
         player.FrobTime = Player.Level.Timeseconds - 7.9;
+    }
+
+    dxr = class'DXRando'.default.dxr;
+    if (
+        dxr.flags.IsBingoCampaignMode() &&
+        dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') &&
+        dxr.dxInfo.missionNumber == 4 &&
+        class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration)
+    ) {
+        message = class'DXRBingoCampaign'.static.GetBingoHoverHintText(dxr, "");
+
+        detail = "";
+        line3 = "";
+        hints = None;
+
+        if (dxr.flags.settings.bingo_win == 1) {
+            bottomText = "You must have completed 1 bingo line in order to progress.";
+        } else {
+            bottomText = "You must have completed " $ dxr.flags.settings.bingo_win $ " bingo lines in order to progress.";
+        }
     }
 
     gc.SetTextColor( RedColor );
