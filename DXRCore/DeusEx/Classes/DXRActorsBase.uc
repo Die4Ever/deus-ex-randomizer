@@ -1206,6 +1206,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
 
     l("SpawnReplacement("$a$", "$newclass$") " $ newactor);
 
+    newactor.RotationRate=a.RotationRate;
     newactor.SetPhysics(a.Physics);
     newactor.SetBase(a.Base);
     newactor.Event = event;

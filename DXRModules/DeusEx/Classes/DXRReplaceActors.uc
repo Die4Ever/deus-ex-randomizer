@@ -118,6 +118,9 @@ function ReplaceActors()
         else if( #var(prefix)CigaretteMachine(a) != None ) {
             ReplaceGenericDecoration(a,class'DXRCigaretteMachine');
         }
+        else if( #var(prefix)Earth(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXREarth');
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
