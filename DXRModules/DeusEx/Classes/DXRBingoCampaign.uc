@@ -17,7 +17,7 @@ const BingoFlagM15 = 'DXRando_Mission15_BingoCompleted';
 function FirstEntry()
 {
     local #var(prefix)FlagTrigger ft;
-    local DeusExMover mover, mover2;
+    local DeusExMover mover;
     local Vector loc;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
@@ -72,18 +72,18 @@ function FirstEntry()
             break;
         case "10_PARIS_CHATEAU":
             if (IsBingoEnd(10, dxr.flags.bingo_duration)) {
-                mover2 = None;
+                loc = vect(0, 0, 0);
                 foreach AllActors(class'DeusExMover', mover, 'everettsignaldoor') {
                     mover.bBreakable = false;
                     mover.bPickable = false;
                     mover.bFrobbable = false;
-                    if (mover2 != None) {
-                        loc = (mover.Location + mover2.Location) * 0.5;
+                    if (loc != vect(0, 0, 0)) {
+                        loc = (loc + mover.Location) * 0.5;
                         loc.z += 120.0;
                         class'DXRHoverHint'.static.Create(self, "", loc, 50.0, 96.0,,, true);
                         break;
                     }
-                    mover2 = mover;
+                    loc = mover.Location;
                 }
 
                 AddBingoEventBlocker('everettsignaldoor', BingoFlagM10);
@@ -244,6 +244,7 @@ function UpdateCryptDoors()
         dxr.localURL == "10_PARIS_CHATEAU" &&
         dxr.flagbase.GetBool('everettsignal') &&
         dxr.flagbase.GetBool(BingoFlagM10) &&
+        IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration) &&
         !dxr.flagbase.GetBool('DXRando_CommandosUnhidden')
     ) {
         foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'everettsignaldoor') {
