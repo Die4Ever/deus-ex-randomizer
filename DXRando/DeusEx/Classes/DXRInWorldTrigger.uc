@@ -1,30 +1,45 @@
 class DXRInWorldTrigger extends Trigger;
 
-var name pawnTag;
+var name targetTag;
 var bool enter;
 
-static function DXRInWorldTrigger Create(Actor a, name pawnTag, name tag, bool enter)
+static function DXRInWorldTrigger Create(Actor a, name targetTag, name tag, bool enter)
 {
     local DXRInWorldTrigger iwt;
 
     iwt = a.Spawn(class'DXRInWorldTrigger',, tag);
-    iwt.pawnTag = pawnTag;
+    iwt.targetTag = targetTag;
     iwt.enter = enter;
-    iwt.SetCollision(false, false, false);
 
     return iwt;
 }
 
 function Trigger(Actor other, Pawn instigator)
 {
-    local ScriptedPawn pawn;
+    local Actor a;
 
     Super.Trigger(other, instigator);
-    foreach AllActors(class'ScriptedPawn', pawn, pawnTag) {
-        if (enter) {
-            pawn.EnterWorld();
-        } else {
-            pawn.LeaveWorld();
+    
+    foreach AllActors(class'Actor', a, targetTag) {
+        if (ScriptedPawn(a) != None) {
+            if (enter) {
+                ScriptedPawn(a).EnterWorld();
+            } else {
+                ScriptedPawn(a).LeaveWorld();
+            }
+        } else if (Vehicles(a) != None) {
+            if (enter) {
+                Vehicles(a).EnterWorld();
+            } else {
+                Vehicles(a).LeaveWorld();
+            }
         }
     }
+}
+
+defaultproperties
+{
+    bCollideWorld=false
+    bBlockActors=false
+    bBlockPlayers=false
 }

@@ -10,7 +10,6 @@ static function DXRSetFrobbableTrigger Create(Actor a, name moverTag, name tag, 
     sft = a.Spawn(class'DXRSetFrobbableTrigger',, tag);
     sft.moverTag = moverTag;
     sft.value = value;
-    sft.SetCollision(false, false, false);
 
     return sft;
 }
@@ -24,3 +23,11 @@ function Trigger(Actor other, Pawn instigator)
         mover.bFrobbable = value;
     }
 }
+
+defaultproperties
+{
+    bCollideWorld=false
+    bBlockActors=false
+    bBlockPlayers=false
+}
+
