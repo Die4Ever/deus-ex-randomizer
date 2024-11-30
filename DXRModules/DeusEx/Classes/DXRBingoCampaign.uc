@@ -264,88 +264,71 @@ static function bool IsBingoEnd(int missionNumber, int bingo_duration)
     return missionNumber % bingo_duration == 0 || missionNumber == 13;
 }
 
-static function name GetBingoMissionFlag(int missionNumber) {
+static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {
     switch (missionNumber) {
         case 1:
+            expiration = 2;
             return BingoFlagM01;
         case 2:
+            expiration = 3;
             return BingoFlagM02;
         case 3:
+            expiration = 4;
             return BingoFlagM03;
         case 4:
+            expiration = 5;
             return BingoFlagM04;
         case 5:
+            expiration = 6;
             return BingoFlagM05;
         case 6:
+            expiration = 8;
             return BingoFlagM06;
         case 8:
+            expiration = 9;
             return BingoFlagM08;
         case 9:
+            expiration = 10;
             return BingoFlagM09;
         case 10:
+            expiration = 12;
             return BingoFlagM10;
         case 11:
+            expiration = 12;
             return BingoFlagM11;
         case 12:
+            expiration = 15;
             return BingoFlagM12;
         case 14:
+            expiration = 15;
             return BingoFlagM14;
         case 15:
+            expiration = 999;
             return BingoFlagM15;
+        default:
+            expiration = 0;
+            return '';
     }
-    return '';
 }
 
-function HandleBingo(int numBingos)
+function bool HandleBingo(int numBingos)
 {
-    if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win) return;
+    local name bingoFlag;
+    local int expiration;
+
+    if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win || dxr.LocalURL == "ENDGAME4"/* || dxr.LocalURL == "ENDGAME4REV"*/) {
+        return false;
+    }
 
     if (numBingos == dxr.flags.settings.bingo_win) {
         player().ClientMessage("You have enough bingo lines to proceed!");
     }
 
-    switch (dxr.dxInfo.missionNumber) {
-        case 1:
-            dxr.flagbase.SetBool(BingoFlagM01, true,, 2);
-            break;
-        case 2:
-            dxr.flagbase.SetBool(BingoFlagM02, true,, 3);
-            break;
-        case 3:
-            dxr.flagbase.SetBool(BingoFlagM03, true,, 4);
-            break;
-        case 4:
-            dxr.flagbase.SetBool(BingoFlagM04, true,, 5);
-            break;
-        case 5:
-            dxr.flagbase.SetBool(BingoFlagM05, true,, 6);
-            break;
-        case 6:
-            dxr.flagbase.SetBool(BingoFlagM06, true,, 8);
-            break;
-        case 8:
-            dxr.flagbase.SetBool(BingoFlagM08, true,, 9);
-            break;
-        case 9:
-            dxr.flagbase.SetBool(BingoFlagM09, true,, 10);
-            break;
-        case 10:
-            dxr.flagbase.SetBool(BingoFlagM10, true,, 12);
-            UpdateCryptDoors();
-            break;
-        case 11:
-            dxr.flagbase.SetBool(BingoFlagM11, true,, 12);
-            break;
-        case 12:
-            dxr.flagbase.SetBool(BingoFlagM12, true,, 15);
-            break;
-        case 14:
-            dxr.flagbase.SetBool(BingoFlagM14, true,, 15);
-            break;
-        case 15:
-            dxr.flagbase.SetBool(BingoFlagM15, true);
-            break;
-    }
+    bingoFlag = GetBingoMissionFlag(dxr.dxInfo.missionNumber, expiration);
+    dxr.flagbase.SetBool(bingoFlag, true,, expiration);
+    UpdateCryptDoors();
+
+    return true;
 }
 
  static function string GetBingoHoverHintText(DXRando dxr, string hintText)
