@@ -276,9 +276,6 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local DXRPasswords passwords;
     local int i,rad,height;
     local AmbientSoundTriggered ast1,ast2;
-    local bool RevisionMaps;
-
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if (g.name=="Generator"){
         if (Loc.Name=="Warehouse" || Loc.Name=="Sewer" || Loc.Name=="3rd Floor" || Loc.Name=="4th Floor"){ //These ones lie horizontal

@@ -675,10 +675,8 @@ function AnyEntryMapFixes()
     local Gray g;
     local ElectricityEmitter ee;
     local #var(DeusExPrefix)Mover d;
-    local bool RevisionMaps;
     local bool VanillaMaps;
 
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     if(dxr.localURL != "15_AREA51_BUNKER") {
