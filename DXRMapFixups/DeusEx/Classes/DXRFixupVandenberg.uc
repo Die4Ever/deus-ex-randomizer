@@ -109,15 +109,15 @@ function PreFirstEntryMapFixes()
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2065,2785,-871));//CMD Rooftop
         pg.MaxCount=3;
 
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.name=='DeusExMover15'){
+                door.Tag='CmdBackDoor';
+            }
+        }
+        AddSwitch( vect(-278.854828,657.390503,-1977.144531), rot(0, 16384, 0), 'CmdBackDoor');
+
         if (VanillaMaps){
             VandenbergCmdFixTimsDoor();
-
-            foreach AllActors(class'#var(DeusExPrefix)Mover',door){
-                if(door.name=='DeusExMover15'){
-                    door.Tag='CmdBackDoor';
-                }
-            }
-            AddSwitch( vect(-278.854828,657.390503,-1977.144531), rot(0, 16384, 0), 'CmdBackDoor');
 
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}
@@ -223,13 +223,32 @@ function PreFirstEntryMapFixes()
         break;
 
     case "14_VANDENBERG_SUB":
+        //Door into base from shore (inside)
+        AddSwitch( vect(2279.640137,3638.638184,-398.255676), rot(0, -16384, 0), 'door_base');
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.KeyIDNeeded=='shed'){
+                door.Tag='ShedDoor';
+            }
+            if (door.Tag=='Elevator1'){
+                door.MoverEncroachType=ME_CrushWhenEncroach;
+            }
+            if(door.Tag=='sub_doors'){
+                door.bLocked = true;
+                door.bHighlight = true;
+                door.bFrobbable = true;
+                door.bPickable = false;// make sure DXRDoors sees this as an undefeatable door, also in vanilla this door is obviously not pickable due to not being frobbable
+
+                //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
+                //so that they are centered roughly in the middle of the door
+                RemoveMoverPrePivot(door);
+            }
+        }
+
         if (VanillaMaps){
             //Elevator down to lower level
             AddSwitch( vect(3790.639893, -488.639587, -369.964142), rot(0, 32768, 0), 'Elevator1');
             AddSwitch( vect(3799.953613, -446.640015, -1689.817993), rot(0, 16384, 0), 'Elevator1');
-
-            //Door into base from shore (inside)
-            AddSwitch( vect(2279.640137,3638.638184,-398.255676), rot(0, -16384, 0), 'door_base');
 
             foreach AllActors(class'KarkianBaby',kb) {
                 if(kb.BindName == "tankkarkian"){
@@ -245,24 +264,6 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(462,3986,-421)); //Shed
             Spawn(class'PlaceholderItem',,, vectm(462,3939,-421)); //Shed
 
-            foreach AllActors(class'#var(DeusExPrefix)Mover',door){
-                if(door.KeyIDNeeded=='shed'){
-                    door.Tag='ShedDoor';
-                }
-                if (door.Tag=='Elevator1'){
-                    door.MoverEncroachType=ME_CrushWhenEncroach;
-                }
-                if(door.Tag=='sub_doors'){
-                    door.bLocked = true;
-                    door.bHighlight = true;
-                    door.bFrobbable = true;
-                    door.bPickable = false;// make sure DXRDoors sees this as an undefeatable door, also in vanilla this door is obviously not pickable due to not being frobbable
-
-                    //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
-                    //so that they are centered roughly in the middle of the door
-                    RemoveMoverPrePivot(door);
-                }
-            }
             AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(5657,-1847,-1377));//Near tunnel to sub bay
@@ -274,6 +275,8 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
         } else {
+            AddSwitch( vect(540,3890,-370), rot(0, 16384, 0), 'ShedDoor');
+
             Spawn(class'PlaceholderItem',,, vectm(718,3913,-355)); //Shed
             Spawn(class'PlaceholderItem',,, vectm(723,3972,-355)); //Shed
             Spawn(class'PlaceholderItem',,, vectm(726,4050,-365)); //Shed
@@ -283,6 +286,13 @@ function PreFirstEntryMapFixes()
         break;
 
     case "14_OCEANLAB_LAB":
+
+        // backtracking button for crew module
+        AddSwitch( vect(4888.692871, 3537.360107, -1753.115845), rot(0, 16384, 0), 'crewkey').bCollideWorld = false;
+        // backtracking button for greasel lab
+        AddSwitch( vect(1889.5, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
+
+
         if (VanillaMaps){
             if(!#defined(vmd))// button to open the door heading towards the ladder in the water
                 AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
@@ -295,10 +305,6 @@ function PreFirstEntryMapFixes()
                     door.Tag = 'Glab';
                 }
             }
-            // backtracking button for crew module
-            AddSwitch( vect(4888.692871, 3537.360107, -1753.115845), rot(0, 16384, 0), 'crewkey').bCollideWorld = false;
-            // backtracking button for greasel lab
-            AddSwitch( vect(1889.5, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
 
             foreach AllActors(class'ComputerSecurity', comp) {
                 if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
@@ -382,6 +388,16 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1280.84,8534.17,-2913)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(1892,8754.5,-2901)); //Turret room, opposite from bait computer
         } else {
+            //This door can get stuck if a spiderbot gets jammed into the little bot-bay
+            foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'ALARMS') {
+                door.MoverEncroachType=ME_IgnoreWhenEncroach;
+                door.Tag='AlarmsOnce';
+            }
+
+            oot=Spawn(class'OnceOnlyTrigger');
+            oot.Event='AlarmsOnce';
+            oot.Tag='ALARMS';
+
             Spawn(class'PlaceholderItem',,, vectm(1084,8200,-2860)); //Over security computer
             Spawn(class'PlaceholderItem',,, vectm(1780,8587,-2790)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(423,8547,-2900)); //Turret room
@@ -433,16 +449,6 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            //The door closing behind you when the ambush starts sucks if you came in via the silo.
-            //Just make it not close.
-            foreach AllActors(class'SequenceTrigger', st, 'doorclose') {
-                if (st.Event=='blast_door4' && st.Tag=='doorclose'){
-                    st.Event = '';
-                    st.Tag = 'doorclosejk';
-                    break;
-                }
-            }
-
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit,'ExitPath'){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
@@ -452,6 +458,16 @@ function PreFirstEntryMapFixes()
             class'FrictionTrigger'.static.CreateIce(self, vectm(28.63,-5129.48,-231.285), 1190, 650);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
+        }
+
+        //The door closing behind you when the ambush starts sucks if you came in via the silo.
+        //Just make it not close.
+        foreach AllActors(class'SequenceTrigger', st, 'doorclose') {
+            if (st.Event=='blast_door4' && st.Tag=='doorclose'){
+                st.Event = '';
+                st.Tag = 'doorclosejk';
+                break;
+            }
         }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
@@ -468,24 +484,20 @@ function PreFirstEntryMapFixes()
 
         break;
     case "12_VANDENBERG_COMPUTER":
-        if (VanillaMaps){
-            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'GaryWalksToPosition'){
-                ot.Orders='RunningTo';
-                ot.ordersTag='gary_patrol1';
-            }
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'GaryWalksToPosition'){
+            ot.Orders='RunningTo';
+            ot.ordersTag='gary_patrol1';
+        }
 
-            //Show the strength of the fan grill
-            foreach AllActors(class'#var(DeusExPrefix)Mover',door,'BreakableWall'){
-                door.bHighlight = true;
-                door.bLocked=true;
-                door.bPickable=false;
-            }
+        //Show the strength of the fan grill
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door,'BreakableWall'){
+            door.bHighlight = true;
+            door.bLocked=true;
+            door.bPickable=false;
+        }
 
-            foreach AllActors(class'#var(prefix)Fan2',fan2){
-                fan2.bHighlight=True;
-            }
-
-
+        foreach AllActors(class'#var(prefix)Fan2',fan2){
+            fan2.bHighlight=True;
         }
 
         Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
@@ -495,6 +507,19 @@ function PreFirstEntryMapFixes()
         break;
 
     case "12_VANDENBERG_GAS":
+        //Make Tiffany actually move like a useful human being
+        foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
+            tiffany.GroundSpeed = 180;
+            tiffany.walkAnimMult = 1;
+        }
+
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
+            SetOutsideGuyReactions(sp);
+        }
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'mib_garage'){
+            SetOutsideGuyReactions(sp);
+        }
+
         if (VanillaMaps){
             class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
             class'PlaceholderEnemy'.static.Create(self,vectm(1351,582,-930),,'Shitting');
@@ -509,18 +534,6 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
 
-            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
-                SetOutsideGuyReactions(sp);
-            }
-            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'mib_garage'){
-                SetOutsideGuyReactions(sp);
-            }
-
-            //Make Tiffany actually move like a useful human being
-            foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
-                tiffany.GroundSpeed = 180;
-                tiffany.walkAnimMult = 1;
-            }
 
             Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
             Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar
@@ -770,7 +783,11 @@ function PostFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
             if (#var(prefix)Animal(sp)!=None && alarm==None) {
                 //player().ClientMessage("Spawning doggy alarm for "$sp);
-                alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
+                if (RevisionMaps){
+                    alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(1381.687988,2581.708008,-960),rot(0,-16408,0))); //Dog Height Alarm
+                } else {
+                    alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
+                }
                 alarm.Event='guardattack';
                 alarm.Tag='alarm1'; //Same as the original alarm
 

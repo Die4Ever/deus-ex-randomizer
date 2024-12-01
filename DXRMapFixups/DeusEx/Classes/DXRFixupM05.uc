@@ -118,6 +118,16 @@ function PreFirstEntryMapFixes()
                     cigs.Destroy();
                 }
             }
+        } else {
+            foreach AllActors(class'DeusExMover',dxm){
+                if (dxm.Name=='DeusExMover34'){
+                    //I think this filing cabinet door was supposed to
+                    //be unlockable with Agent Sherman's key as well
+                    dxm.KeyIDNeeded='MiBCabinet';
+                }
+            }
+
+            //Keypad10 fixed in Vanilla above is already fixed in Revision
         }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
@@ -147,10 +157,6 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            foreach AllActors(class'#var(prefix)Terrorist', miguel){
-                miguel.bHateShot=False;
-                miguel.ResetReactions();
-            }
 
             foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
                 anna.MaxProvocations = 0;
@@ -178,6 +184,11 @@ function PreFirstEntryMapFixes()
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 break;
             }
+        }
+
+        foreach AllActors(class'#var(prefix)Terrorist', miguel){
+            miguel.bHateShot=False;
+            miguel.ResetReactions();
         }
 
         foreach AllActors(class'#var(prefix)AlexJacobson', alex) {

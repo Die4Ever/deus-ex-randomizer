@@ -704,6 +704,9 @@ function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
         return;
 
     n.bulletinTag = a.bulletinTag;
+    n.TextPackage = a.TextPackage;
+    n.FamiliarName = a.FamiliarName;
+    n.UnfamiliarName = a.UnfamiliarName;
 
     a.Destroy();
 }

@@ -272,17 +272,19 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+        }
 
-            foreach AllActors(class'#var(prefix)ComputerPublic',cp){
-                //The two public computers in the lobby of the hostel become guest registries
-                if (cp.Name=='ComputerPublic2' || cp.Name=='ComputerPublic3'){
-                    cp.TextPackage = "#var(package)";
-                    cp.bulletinTag='10_HostelBulletinMenu';
-                    cp.FamiliarName="Guest Registry";
-                    cp.UnfamiliarName=cp.FamiliarName;
-                }
+        foreach AllActors(class'#var(prefix)ComputerPublic',cp){
+            //The two public computers in the lobby of the hostel become guest registries
+            if ((VanillaMaps && (cp.Name=='ComputerPublic2' || cp.Name=='ComputerPublic3')) ||
+                (!VanillaMaps && (cp.Name=='ComputerPublic0' || cp.Name=='ComputerPublic1'))){
+                cp.TextPackage = "#var(package)";
+                cp.bulletinTag='10_HostelBulletinMenu';
+                cp.FamiliarName="Guest Registry";
+                cp.UnfamiliarName=cp.FamiliarName;
             }
         }
+
         break;
     }
 }
@@ -294,9 +296,6 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)NanoKey key;
     local string guestName;
     local DynamicLight dl;
-    local bool VanillaMaps;
-
-    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     if (g.name=="Agent Hela"){
         if (Loc.Name=="Back of Bunker" ||   //Vanilla

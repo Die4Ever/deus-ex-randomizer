@@ -51,7 +51,6 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)WIB',wib){
                 wib.UnfamiliarName="Agent Hela";
             }
-            AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
             if(!dxr.flags.IsReducedRando()) {
@@ -69,9 +68,13 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
         } else {
+            AddSwitch( vect(-2174.426758,1208.133789,-6.660000), rot(0,0,0), 'catacombs_blastdoorB' );
+
             class'PlaceholderEnemy'.static.Create(self,vectm(-76,-3450,-280));
             class'PlaceholderEnemy'.static.Create(self,vectm(-748,601,-256));
         }
+        AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
 
@@ -84,21 +87,6 @@ function PreFirstEntryMapFixes()
             d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
             d.OutEvents[0] = 'everettsignaldoor';
             AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
-
-            //speed up the secret door...
-            foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
-                d.OutDelays[1] = 0;
-                d.OutDelays[2] = 0;
-                d.OutDelays[3] = 0;
-                d.OutEvents[2] = '';
-                d.OutEvents[3] = '';
-            }
-            foreach AllActors(class'DeusExMover', m, 'secret_candle') {
-                m.MoveTime = 0.5;
-            }
-            foreach AllActors(class'DeusExMover', m, 'cellar_door') {
-                m.MoveTime = 1;
-            }
 
             SetAllLampsState(false, false, false); // surely Nicolette didn't leave all the lights on when she moved out
 
@@ -127,18 +115,25 @@ function PreFirstEntryMapFixes()
             ft.bTriggerOnceOnly = false;
             ft.FlagName = 'ChateauInCellar';
         }
+
+        //speed up the secret door...
+        foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
+            d.OutDelays[1] = 0;
+            d.OutDelays[2] = 0;
+            d.OutDelays[3] = 0;
+            d.OutEvents[2] = '';
+            d.OutEvents[3] = '';
+        }
+        foreach AllActors(class'DeusExMover', m, 'secret_candle') {
+            m.MoveTime = 0.5;
+        }
+        foreach AllActors(class'DeusExMover', m, 'cellar_door') {
+            m.MoveTime = 1;
+        }
+
         break;
     case "10_PARIS_METRO":
         if (VanillaMaps){
-            //If neither flag is set, JC never talked to Jaime, so he just didn't bother
-            if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
-                //Need to pretend he *was* recruited, so that he doesn't spawn
-                dxr.flagbase.SetBool('JaimeRecruited',True);
-            }
-            foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-                RemoveFears(j);
-            }
-
             //Add a key for the media store
             if(!dxr.flags.IsZeroRando()) {
                 //On the table in the cafe
@@ -168,6 +163,16 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
         }
+
+        //If neither flag is set, JC never talked to Jaime, so he just didn't bother
+        if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
+            //Need to pretend he *was* recruited, so that he doesn't spawn
+            dxr.flagbase.SetBool('JaimeRecruited',True);
+        }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
+        }
+
         break;
 
     case "10_PARIS_CLUB":
