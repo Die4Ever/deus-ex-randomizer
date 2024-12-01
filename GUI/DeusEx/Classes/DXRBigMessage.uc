@@ -92,9 +92,9 @@ event DrawWindow(GC gc)
         hints = None;
 
         if (dxr.flags.settings.bingo_win == 1) {
-            bottomText = "You must have completed 1 bingo line in order to progress.";
+            bottomText = "You must have completed 1 bingo line in order to proceed.";
         } else {
-            bottomText = "You must have completed " $ dxr.flags.settings.bingo_win $ " bingo lines in order to progress.";
+            bottomText = "You must have completed " $ dxr.flags.settings.bingo_win $ " bingo lines in order to proceed.";
         }
     }
 
