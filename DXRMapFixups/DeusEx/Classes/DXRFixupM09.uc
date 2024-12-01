@@ -51,15 +51,17 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL)
     {
     case "09_NYC_SHIP":
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
+            if( m.KeyIdNeeded == 'EngineRoomDoor' ) m.Tag = 'shipbelowdecks_door';
+        }
+        AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+
+        AddSwitch( vect(2673,470,740), rot(0,0,0), 'ArmoryDoor' ); //Hard to get stuck in here, but just in case
+
+        //Button to open the office door
+        AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
+
         if (VanillaMaps){
-            foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
-                if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
-            }
-            AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
-
-            //Button to open the office door
-            AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
-
             foreach AllActors(class'Switch1',s){
                 if (s.Event=='Eledoor01'){
                     s.Event='Elevator01_bottom';
