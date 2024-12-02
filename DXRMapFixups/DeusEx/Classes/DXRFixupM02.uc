@@ -60,7 +60,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'NYPoliceBoat',b) {
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
-                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit);
+                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
             }
             foreach AllActors(class'DeusExMover', d) {
                 if( d.Name == 'DeusExMover19' ) {
@@ -124,7 +124,7 @@ function PreFirstEntryMapFixes()
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
             foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}

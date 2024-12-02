@@ -1859,6 +1859,22 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
     return true;
 }
 
+static function ClearDataVaultImages(#var(PlayerPawn) p)
+{
+    local DataVaultImage image;
+
+    while (p.FirstImage!=None){
+        image = p.FirstImage;
+        p.FirstImage=image.nextImage;
+        //Theoretically if we were being more discriminating with the image deletion,
+        //we'd want to also fix the prevImage value, but since we're just trashing
+        //everything, it's unnecessary
+        image.Destroy();
+    }
+
+    class'DXRActorsBase'.static.RemoveItem(p, class'DataVaultImage');
+}
+
 static function bool IsUsingOggMusic(#var(PlayerPawn) player)
 {
 #ifndef revision

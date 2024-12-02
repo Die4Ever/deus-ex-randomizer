@@ -13,6 +13,7 @@ const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
 const ZeroRandoPlus = 12;
 const OneItemMode = 13;
+const BingoCampaign = 14;
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -688,6 +689,13 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
     }
+    else if (IsBingoCampaignMode()) {
+        settings.bingo_win = 1;
+        settings.bingo_freespaces = 5;
+        settings.banned_skills = 0;
+        bingo_duration = 1;
+        bingo_scale = 0;
+    }
     else if(IsHordeMode()) {
 #ifndef hx
         settings.CombatDifficulty *= 0.75;
@@ -748,6 +756,7 @@ function int GameModeIdForSlot(int slot)
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
     }
+    if(slot--==0) return BingoCampaign;
 
     if(slot--==0) return ZeroRando;
     if(slot--==0) return ZeroRandoPlus;
@@ -806,6 +815,11 @@ function string GameModeName(int gamemode)
         return "Halloween Mode";// maybe needs a better name
     case OneItemMode:
         return "One Item Mode";
+    case BingoCampaign:
+        if (#defined(vanilla)) {
+            return "Mr. Page's Mean Bingo Machine";
+        }
+        return "";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -861,6 +875,11 @@ function bool IsHalloweenMode()
 function bool IsOneItemMode()
 {
     return gamemode == OneItemMode;
+}
+
+function bool IsBingoCampaignMode()
+{
+    return gamemode == BingoCampaign;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

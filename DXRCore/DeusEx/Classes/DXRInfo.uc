@@ -240,9 +240,9 @@ final function int SystemTime()
 /*
 ========= STRING FUNCTIONS
 */
-simulated function name StringToName(string s)
+simulated static function name StringToName(string s)
 {
-    return GetDXR().flagbase.StringToName(s);
+    return class'DXRando'.default.dxr.flagbase.StringToName(s);
 }
 
 simulated static final function string StripMapName(string s)
@@ -500,6 +500,11 @@ simulated static final function string ToAlphaNumeric(coerce string Text, int in
     if( c>=97 && c<=122) // a-z
         return Mid(Text, index, 1);
     return "_";
+}
+
+simulated static function String CR()
+{
+    return Chr(13) $ Chr(10);
 }
 
 /*

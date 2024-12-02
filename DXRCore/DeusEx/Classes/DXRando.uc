@@ -168,7 +168,7 @@ function CheckConfig()
         player.bAskedToTrain = false;
         player.SaveConfig();
     }
-    if( VersionOlderThan(config_version, 3,2,5,1) ) {
+    if( VersionOlderThan(config_version, 3,2,5,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -235,6 +235,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRGrenades";
     modules_to_load[i++] = "DXRCameraModes";
     modules_to_load[i++] = "DXRHalloween";
+    modules_to_load[i++] = "DXRBingoCampaign";
 }
 
 function hx_modules()

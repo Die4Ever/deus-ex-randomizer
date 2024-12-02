@@ -2200,6 +2200,63 @@ exec function ActivateBelt(int objectNum)
     }
 }
 
+function CompleteBingoGoal(PlayerDataItem data, int x, int y)
+{
+    local string event;
+    local int progress, max;
+
+    data.GetBingoSpot(x, y, event,, progress, max);
+    while (progress < max) {
+        class'DXREventsBase'.static.MarkBingo(event);
+        progress++;
+    }
+}
+
+exec function Bingo(int line)
+{
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(self);
+    if (line >= 0 && line < 5) {
+        CompleteBingoGoal(data, line, 0);
+        CompleteBingoGoal(data, line, 1);
+        CompleteBingoGoal(data, line, 2);
+        CompleteBingoGoal(data, line, 3);
+        CompleteBingoGoal(data, line, 4);
+    } else if (line >= 5 && line < 10) {
+        CompleteBingoGoal(data, 0, line);
+        CompleteBingoGoal(data, 1, line);
+        CompleteBingoGoal(data, 2, line);
+        CompleteBingoGoal(data, 3, line);
+        CompleteBingoGoal(data, 4, line);
+    } else if (line == 10) {
+        CompleteBingoGoal(data, 0, 0);
+        CompleteBingoGoal(data, 1, 1);
+        CompleteBingoGoal(data, 2, 2);
+        CompleteBingoGoal(data, 3, 3);
+        CompleteBingoGoal(data, 4, 4);
+    } else if (line == 11) {
+        CompleteBingoGoal(data, 0, 4);
+        CompleteBingoGoal(data, 1, 3);
+        CompleteBingoGoal(data, 2, 2);
+        CompleteBingoGoal(data, 3, 1);
+        CompleteBingoGoal(data, 4, 0);
+    }
+}
+
+exec function AllBingos()
+{
+    local PlayerDataItem data;
+    local int x, y;
+
+    data = class'PlayerDataItem'.static.GiveItem(self);
+    for (x = 0; x < 5; x++) {
+        for (y = 0; y < 5; y++) {
+            CompleteBingoGoal(data, x, y);
+        }
+    }
+}
+
 state CheatFlying
 {
 ignores SeePlayer, HearNoise, Bump, TakeDamage;

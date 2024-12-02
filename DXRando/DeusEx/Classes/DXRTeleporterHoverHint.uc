@@ -36,9 +36,12 @@ function string formatMapName(string mapName)
 function String GetHintText()
 {
     local DynamicTeleporter dynTele;
-    local string teleDest;
+    local string teleDest, text;
 
     if (target==None){
+        if (addBingoText) {
+            return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, HintText);
+        }
         return HintText;
     }
 
@@ -60,7 +63,12 @@ function String GetHintText()
         }
 #endif
     }
-    return "To: "$formatMapName(teleDest);
+
+    text = "To: "$formatMapName(teleDest);
+    if (addBingoText) {
+        text = class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, text);
+    }
+    return text;
 }
 
 function bool ShouldDisplay(float dist)
