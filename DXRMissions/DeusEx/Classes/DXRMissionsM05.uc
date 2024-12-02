@@ -156,9 +156,9 @@ function AfterShuffleGoals(int goalsToLocations[32])
         dctext = dctext $ "|n|nBoth using the DEMIURGE username. JC will never find them!";
 
         if (RevisionMaps){
-            SpawnDatacubePlaintext(vectm(1130.502441,195.451401,321.369446), rotm(0,0,0,0), dctext, true);
+            SpawnDatacubePlaintext(vectm(1130.502441,195.451401,321.369446), rotm(0,0,0,0), dctext, "ManderleyKillphraseHint", true);
         } else {
-            SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0,0), dctext, true);
+            SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0,0), dctext, "ManderleyKillphraseHint", true);
         }
 
     } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){

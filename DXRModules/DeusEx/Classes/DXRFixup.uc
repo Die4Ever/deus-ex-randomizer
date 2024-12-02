@@ -22,6 +22,7 @@ struct AddDatacube {
     var vector location;// 0,0,0 for random
     var class<DataVaultImage> imageClass;
     var rotator rotation;
+    var string plaintextTag;
     // spawned in PreFirstEntry, so if you set a location then it will be moved according to the logic of DXRPasswords
 };
 var AddDatacube add_datacubes[32];
@@ -206,6 +207,8 @@ function PreFirstEntry()
 
     SetSeed( "DXRFixup PreFirstEntry" );
 
+    TriggerDebug();
+
     OverwriteDecorations();
     FixFlagTriggers();
     FixBeamLaserTriggers();
@@ -279,6 +282,15 @@ function AnyEntry()
     } else {
         class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot.";
     }
+}
+
+function TriggerDebug()
+{
+    if ('#var(TriggerDebug)'=='' || '#var(TriggerDebug)'=='None') return;
+
+    Player().ClientMessage("Trigger debug enabled for #var(TriggerDebug)");
+
+    Spawn(class'DXRLogTrigger',,'#var(TriggerDebug)');
 }
 
 function FixFOV()
@@ -686,6 +698,16 @@ function FixUNATCORetinalScanner()
     }
 }
 
+function MakeTurretsNonHostile()
+{
+    local #var(prefix)AutoTurret at;
+
+    foreach AllActors(class'#var(prefix)AutoTurret',at){
+        at.bTrackPlayersOnly=False;
+        at.bTrackPawnsOnly=True;
+    }
+}
+
 function FixUNATCOCarterCloset()
 {
     local Inventory i;
@@ -958,8 +980,12 @@ function SpawnDatacubes()
         if( dxr.localURL != add_datacubes[i].map ) continue;
 
         loc = add_datacubes[i].location * coords_mult;
-        if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
+        if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 ) {
+            if (add_datacubes[i].plaintextTag!=""){
+                warning("Spawning datacube with plaintextTag "$add_datacubes[i].plaintextTag$" but random location.  Safe Rules may not be predictable!");
+            }
             loc = GetRandomPosition();
+        }
         rot = add_datacubes[i].rotation;
         rot = rotm(rot.Pitch, rot.Yaw, rot.Roll, 0.0);
 
@@ -975,7 +1001,8 @@ function SpawnDatacubes()
                 GlowUp(dc);
             dc.plaintext = add_datacubes[i].text;
             dc.imageClass = add_datacubes[i].imageClass;
-            l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", location: "$loc);
+            dc.plaintextTag = add_datacubes[i].plaintextTag;
+            l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", plaintextTag: "$dc.plaintextTag$", location: "$loc);
         }
         else warning("failed to spawn datacube at "$loc$", text: \""$add_datacubes[i].text$"\", image: "$dc.imageClass);
     }

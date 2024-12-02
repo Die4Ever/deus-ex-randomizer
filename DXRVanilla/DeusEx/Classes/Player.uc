@@ -10,7 +10,7 @@ var bool bDoomMode;
 var bool bAutorun;
 var float autorunTime;
 var bool bBlockAnimations;
-var bool bUpgradeAugs;
+var transient bool bUpgradeAugs;
 
 var Rotator ShakeRotator;
 
@@ -1094,7 +1094,6 @@ exec function CheatsOff()
 {
     bCheatsEnabled = false;
     ClientMessage("Cheats Disabled");
-
 }
 
 //Just a copy of PlayersOnly, but doesn't need cheats and faster to type (In case of lockups after a save)
@@ -1173,23 +1172,7 @@ exec function crate(optional string name)
 
 exec function FixAugHotkeys()
 {
-    local AugmentationManager am;
-    local int hotkeynums[7], loc;
-    local Augmentation a;
-
-    am = AugmentationSystem;
-    for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {
-        hotkeynums[loc] = am.AugLocs[loc].KeyBase + 1;
-    }
-    for( a = am.FirstAug; a != None; a = a.next ) {
-        if( !a.bHasIt ) continue;
-        loc = a.AugmentationLocation;
-        if( a.AugmentationLocation == LOC_Default ) continue;
-        ClientMessage(a.AugmentationName$" will bind to F"$hotkeynums[loc]);
-        a.HotKeyNum = hotkeynums[loc]++;
-    }
-
-    am.RefreshAugDisplay();
+    class'DXRAugmentations'.static.FixAugHotkeys(self,true);
 }
 
 exec function ShuffleGoals()
@@ -1357,6 +1340,16 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 simulated function PreBeginPlay()
 {
     Super.PreBeginPlay();
+}
+
+simulated function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+
+    //Make sure the aug and skill quick menus are closed when you re-enter a map.
+    //bUpgradeAugs is added by Rando so is transient, but bBuySkills is vanilla
+    bUpgradeAugs=False;
+    bBuySkills=False;
 }
 function PlayTakeHitSound(int Damage, name damageType, int Mult)
 {
@@ -2204,6 +2197,63 @@ exec function ActivateBelt(int objectNum)
         root = DeusExRootWindow(rootWindow);
         if (root != None)
             root.ActivateObjectInBelt(objectNum);
+    }
+}
+
+function CompleteBingoGoal(PlayerDataItem data, int x, int y)
+{
+    local string event;
+    local int progress, max;
+
+    data.GetBingoSpot(x, y, event,, progress, max);
+    while (progress < max) {
+        class'DXREventsBase'.static.MarkBingo(event);
+        progress++;
+    }
+}
+
+exec function Bingo(int line)
+{
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(self);
+    if (line >= 0 && line < 5) {
+        CompleteBingoGoal(data, line, 0);
+        CompleteBingoGoal(data, line, 1);
+        CompleteBingoGoal(data, line, 2);
+        CompleteBingoGoal(data, line, 3);
+        CompleteBingoGoal(data, line, 4);
+    } else if (line >= 5 && line < 10) {
+        CompleteBingoGoal(data, 0, line);
+        CompleteBingoGoal(data, 1, line);
+        CompleteBingoGoal(data, 2, line);
+        CompleteBingoGoal(data, 3, line);
+        CompleteBingoGoal(data, 4, line);
+    } else if (line == 10) {
+        CompleteBingoGoal(data, 0, 0);
+        CompleteBingoGoal(data, 1, 1);
+        CompleteBingoGoal(data, 2, 2);
+        CompleteBingoGoal(data, 3, 3);
+        CompleteBingoGoal(data, 4, 4);
+    } else if (line == 11) {
+        CompleteBingoGoal(data, 0, 4);
+        CompleteBingoGoal(data, 1, 3);
+        CompleteBingoGoal(data, 2, 2);
+        CompleteBingoGoal(data, 3, 1);
+        CompleteBingoGoal(data, 4, 0);
+    }
+}
+
+exec function AllBingos()
+{
+    local PlayerDataItem data;
+    local int x, y;
+
+    data = class'PlayerDataItem'.static.GiveItem(self);
+    for (x = 0; x < 5; x++) {
+        for (y = 0; y < 5; y++) {
+            CompleteBingoGoal(data, x, y);
+        }
     }
 }
 

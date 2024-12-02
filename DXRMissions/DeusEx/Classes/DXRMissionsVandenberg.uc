@@ -134,8 +134,12 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, howard1, howard2, jock1, jock2;
+    local int goal, loc;
     local int front_gate_start;
+    local int howard_cherry, howard_meeting, howard_radio, howard_computer, howard_machine_shop;
+    local int jock_vanilla, jock_cherry, jock_tower, jock_computer;
+    local int computer_vanilla, computer_radio, computer_meeting, computer_machine_shop;
+
 
     switch(map) {
     case "12_VANDENBERG_CMD":
@@ -156,6 +160,11 @@ function int InitGoalsRev(int mission, string map)
         front_gate_start = AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6436.471680, 7621.873535, -3061.458740), rot(0, 0, 0));
         AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
+
+        AddGoalLocation("12_VANDENBERG_CMD", "Watch Tower", NORMAL_GOAL, vect(-444,7588,-1516), rot(0, 32768, 0));  //Revision Only
+        AddGoalLocation("12_VANDENBERG_CMD", "Ammunition Storage", NORMAL_GOAL, vect(2130,6446,-2122), rot(0, -16384, 0));  //Revision Only
+        AddGoalLocation("12_VANDENBERG_CMD", "Barracks", NORMAL_GOAL, vect(-2460,5221,-2120), rot(0, 0, 0));  //Revision Only
+
 
         // Will need handling if backtracking is implemented for Revision, since this uses a JockHelicopter
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'JockHelicopter2', PHYS_None);
@@ -179,6 +188,12 @@ function int InitGoalsRev(int mission, string map)
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Sniper Tower", GOAL_TYPE1, vect(-946.215820, 80.315643, -1359.704102), rot(0,32768,0));
         AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Watch Tower", GOAL_TYPE1, vect(-415,6950,-1475), rot(0,0,0));
+        AddActorLocation(loc, 1, vect(-570,7430,-1525), rot(0,0,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Ammunition Storage Roof", GOAL_TYPE1, vect(1100,6175,-1475), rot(0,-16384,0));
+        AddActorLocation(loc, 1, vect(1575,6000,-1550), rot(0,0,0));
 
         if (dxr.flags.settings.starting_map > 120)
         {
@@ -213,22 +228,46 @@ function int InitGoalsRev(int mission, string map)
 
 
     case "14_OCEANLAB_SILO":
+        //HOWARD
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
-
-        AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
+        howard_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", NORMAL_GOAL, vect(170,-950,860), rot(0, 38836, 0));
+        howard_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", NORMAL_GOAL, vect(-640,-3589,1472), rot(0, 34388, 0));
+        howard_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", NORMAL_GOAL, vect(-1794,-6147,1662), rot(0, 18000, 0));
+        howard_machine_shop = AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", NORMAL_GOAL, vect(566,-4395,1474), rot(0, 21120, 0));
+        //AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Fourth Floor", NORMAL_GOAL, vect(-259.846710, -6848.406250, 326.598969), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0));
-        howard1 = AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
-        howard2 = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
+        //AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0));
+        //howard1 = AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
+        howard_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
 
+        //JOCK
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
-        jock1 = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554,-5680.769043,1513.223389), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
-        jock2 = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        jock_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554,-5680.769043,1513.223389), rot(0, 0, 0));
+        jock_tower = AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
+        jock_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
+        jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
 
-        AddMutualExclusion(howard1, jock1);
-        AddMutualExclusion(howard2, jock2);
+        //COMPUTER
+        goal = AddGoal("14_OCEANLAB_SILO", "Launch Command Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None); // Launch sequence initiated.  It's gonna be a sunny day at Area 51...
+        computer_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE2 | VANILLA_GOAL, vect(175.973724, -1612.441650, 853.105103), rot(0,16344,0));
+        computer_radio = AddGoalLocation("14_OCEANLAB_SILO", "Radio", GOAL_TYPE2, vect(-1721.988770, -6533.606445, 1665), rot(16384,32768,0));
+        computer_meeting = AddGoalLocation("14_OCEANLAB_SILO", "Surface Meeting Room", GOAL_TYPE2, vect(-691.854248, -3575.400391, 1475), rot(16384,0,0));
+        computer_machine_shop = AddGoalLocation("14_OCEANLAB_SILO", "Machine Shop", GOAL_TYPE2, vect(203,-4326,1513), rot(0,0,0));
+
+        // MUTEXES
+        AddMutualExclusion(howard_radio, computer_radio);
+        AddMutualExclusion(howard_computer, computer_vanilla);
+        AddMutualExclusion(howard_meeting, computer_meeting);
+        AddMutualExclusion(howard_machine_shop, computer_machine_shop);
+
+        AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
+        AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
+        AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
+        AddMutualExclusion(howard_computer, jock_computer); // both in the same room
+
+        AddMutualExclusion(computer_vanilla, jock_computer);
+
 
         return 142;
 
@@ -317,7 +356,23 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         GiveItem(sp,class'WeaponNanoSword');
 
         sp.ConBindEvents();
-        sp.bInWorld=False;
+
+        //We directly set bInWorld here rather than using EnterWorld/LeaveWorld,
+        //because this is running before InitializePawn.  InitializePawn will
+        //set up all the stuff necessary to handle his worldlyness.  The call
+        //in MissionTimer can also hit EnterWorld in between this spawn and
+        //InitializePawn, so it can screw things up too.
+        if (dxr.flagbase.GetBool('schematic_downloaded'))
+        {
+            //Leave him in-world because he's being spawned and should already exist
+            //(Probably a WaltonWare mission start Oceanlab or later)
+            sp.bInWorld=True; //Not explicitly necessary, but here for clarity
+            WaltonAppeared=True; //Prevent the mission timer from triggering to bring him in
+        } else {
+            //Normal playthrough order, he would get spawned in out-of-world, then
+            //EnterWorld later, after you go to Oceanlab and come back
+            sp.bInWorld=False;
+        }
 
         ot.Event='WaltonSimons';
         ot.Orders='Attacking';
@@ -390,7 +445,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             }
         }
         foreach AllActors(class'#var(prefix)Switch1', button) {
-            if(button.name=='Switch4') {
+            if(button.Event=='abort') {
                 button.Destroy();
                 break;
             }

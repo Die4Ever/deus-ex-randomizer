@@ -39,7 +39,6 @@ function PostFirstEntry()
 
     if( dxr.flags.settings.enemyrespawn <= 0 ) return;
     if( dxr.flags.IsHordeMode() ) return;
-    if( dxr.flags.IsHalloweenMode() ) return;
 
     time=0;
     foreach AllActors(class'ScriptedPawn', p) {
@@ -120,15 +119,8 @@ function AnyEntry()
     Super.AnyEntry();
 
     if( dxr.flags.IsHordeMode() ) return;
-    if( dxr.flags.IsHalloweenMode() ) return;
-
     if( dxr.flags.settings.enemyrespawn <= 0 ) return;
 
-    /*for(i=0; i < ArrayCount(enemies); i++) {
-        if( enemies[i].sp == None || enemies[i].sp.health <= 0  ) {
-            Respawn(enemies[i]);
-        }
-    }*/
     SetTimer(1.0, true);
 }
 

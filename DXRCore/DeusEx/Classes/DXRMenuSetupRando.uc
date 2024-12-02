@@ -245,11 +245,17 @@ function BindControls(optional string action)
     NewMenuItem("Enemy Weapons Variety %", "Should enemies be using weapons that normally exist in the map?");
     Slider(f.moresettings.enemies_weapons, 0, 100);
 
+    NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
+    Slider(f.settings.bot_weapons, 0, 100);
+
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);
 
     NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn. Leave blank or 0 to disable.");
-    Slider(f.settings.enemyrespawn, 0, 10000);
+    Slider(f.settings.enemyrespawn, 0, 3600);
+
+    NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies. Leave blank or 0 to disable.");
+    Slider(f.moresettings.reanimation, 0, 3600);
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_move, 0, 100);
@@ -257,14 +263,11 @@ function BindControls(optional string action)
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_add, 0, 10000);
 
-    NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
-    Slider(f.settings.bot_weapons, 0, 100);
-
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
     EnumOption("Random Non-human Stats", 100, f.settings.bot_stats);
 
-    NewMenuItem("Paris Chill %", "Removes MJ12 from the Champs-Elysees.");
+    NewMenuItem("Paris Chill %", "Chance to remove all MJ12 from the Champs-Elysees.");
     Slider(f.remove_paris_mj12, 0, 100);
 
 
@@ -361,6 +364,9 @@ function BindControls(optional string action)
 
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
+
+    NewMenuItem("Aug Slot Rando %", "The chance for each aug to randomize the body part it can be installed into");
+    Slider(f.moresettings.aug_loc_rando, 0, 100);
 
     NewGroup("New Game+");
 

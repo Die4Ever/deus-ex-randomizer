@@ -61,11 +61,12 @@ simulated function InitHints()
         }
     }
 
-    if(dxr.flags.IsHalloweenMode()) {
-        AddHint("Mr. H cannot die, run away!");
-        if(dxr.flags.settings.enemyrespawn > 0)
-            AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
-    }
+    if(dxr.flags.IsHalloweenMode())
+        AddHint("Mr. H cannot die but he will flee for a bit if you hurt him enough.");
+    if(dxr.flags.moresettings.reanimation > 0)
+        AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
+    if(dxr.flags.moresettings.reanimation > 0)
+        AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
     if(dxr.flags.autosave == 3 && !dxr.flags.IsHordeMode()) {
         AddHint("You're not allowed to manually save,", "you only get an autosave when first entering a map.");
     }
@@ -106,11 +107,12 @@ simulated function InitHints()
         AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
         AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
         AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them.");
-        AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
         AddHint("Datacubes and nanokeys give off a glow.", "Keep your eyes open for it!");
 
-        if(!dxr.flags.IsZeroRando())
+        if(!dxr.flags.IsZeroRando()) {
+            AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
+        }
         if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime)
             AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
 

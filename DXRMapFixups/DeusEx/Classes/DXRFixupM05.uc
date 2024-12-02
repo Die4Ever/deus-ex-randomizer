@@ -6,10 +6,14 @@ function CheckConfig()
 
     add_datacubes[i].map = "05_NYC_UNATCOMJ12lab";
     add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
+    add_datacubes[i].Location = vect(-50,3540,-140); //Agent Sherman's desk in the back of the greasel lab
+    add_datacubes[i].plaintextTag = "KillphrasePassword";
     i++;
 
     add_datacubes[i].map = "05_NYC_UNATCOHQ";
     add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+    add_datacubes[i].plaintextTag = "JCCompPassword";
     i++;
 
     Super.CheckConfig();
@@ -114,19 +118,30 @@ function PreFirstEntryMapFixes()
                     cigs.Destroy();
                 }
             }
+        } else {
+            foreach AllActors(class'DeusExMover',dxm){
+                if (dxm.Name=='DeusExMover34'){
+                    //I think this filing cabinet door was supposed to
+                    //be unlockable with Agent Sherman's key as well
+                    dxm.KeyIDNeeded='MiBCabinet';
+                }
+            }
 
-            class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-3417,1369,208),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(479,3502,-144),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
+            //Keypad10 fixed in Vanilla above is already fixed in Revision
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-3417,1369,208),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(479,3502,-144),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
 
         break;
 
     case "05_NYC_UNATCOHQ":
         if (VanillaMaps){
             FixAlexsEmail();
+            //MakeTurretsNonHostile(); //Revision has hostile turrets near jail, but they should stay hostile this time
 
             // Anna's dialog depends on this flag
             dxr.flagbase.SetBool('DL_Choice_Played', true,, 6);
@@ -141,16 +156,7 @@ function PreFirstEntryMapFixes()
                     c.UserList[i].password = "scryspc";
                 }
             }
-            foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
-                RemoveFears(alex);
-            }
-            foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-                RemoveFears(j);
-            }
-            foreach AllActors(class'#var(prefix)Terrorist', miguel){
-                miguel.bHateShot=False;
-                miguel.ResetReactions();
-            }
+
 
             foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
                 anna.MaxProvocations = 0;
@@ -178,35 +184,69 @@ function PreFirstEntryMapFixes()
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 break;
             }
+        }
 
-            //Spawn some placeholders for new item locations
-            Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
-            Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
-            Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
+        foreach AllActors(class'#var(prefix)Terrorist', miguel){
+            miguel.bHateShot=False;
+            miguel.ResetReactions();
+        }
+
+        foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
+            RemoveFears(alex);
+        }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
+        }
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-16,-609,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-182,-859,-16),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1153,1024,-16),,'Sitting');
+        if (VanillaMaps){
+            class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting'); //Bathroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(229,1828,288),,'Sitting'); //Breakroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1451,654,608),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1662,786,608),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(1885,-279,-16),,'Sitting'); //Alex office seats
+        } else {
+            class'PlaceholderEnemy'.static.Create(self,vectm(220,190,45),,'Shitting'); //Bathroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(256,1429,490),,'Sitting'); //Breakroom
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1980,1086,610),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1739,915,610),,'Sitting'); //Lobby Chair
+            class'PlaceholderEnemy'.static.Create(self,vectm(1332,-849,-10),,'Sitting'); //Alex office seats
+        }
+
+        //Spawn some placeholders for new item locations
+        Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
+        Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
+        Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+
             Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
             Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
             Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
-            Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
-            Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
-            Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
-            Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
-            Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
-            Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
-            Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
             Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
-            Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
-            class'PlaceholderEnemy'.static.Create(self,vectm(144,176,40),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(229,1828,288),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1451,654,608),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1662,786,608),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-16,-609,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-182,-859,-16),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1153,1024,-16),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1885,-279,-16),,'Sitting');
+        } else {
+            //Revision Kitchen/Breakroom is in a different location
+            Spawn(class'PlaceholderItem',,, vectm(295,1385,485)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(765,1500,440)); //Kitchen Counter
+
+            //Level 4/MJ12 Lab area is blocked off in Revision, these are alternate locations for those placeholders
+            Spawn(class'PlaceholderItem',,, vectm(110,-1050,-20)); //Desk at entrance to jail area
+            Spawn(class'PlaceholderItem',,, vectm(1280,-180,-55)); //Next to couch/plant outside medical
+            Spawn(class'PlaceholderItem',,, vectm(1335,300,-35)); //Under desk near medical beds
+            Spawn(class'PlaceholderContainer',,, vectm(1490,975,-20)); //Near blocked door down to level 4
 
         }
+        Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
+        Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
+        Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
+        Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
 
@@ -240,7 +280,7 @@ function PreFirstEntryMapFixes()
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
         SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);

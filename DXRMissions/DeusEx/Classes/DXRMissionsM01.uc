@@ -64,33 +64,50 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int leo, unatco, pauldock, harleydock, electric, hut, jail, top, topofbase;
+    local int boat_pauldock, boat_harleydock, boat_top, boat_hut;
 
-    goal = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
-    AddGoalActor(goal, 1, 'DataLinkTrigger12', PHYS_None);
+    leo = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
+    AddGoalActor(leo, 1, 'DataLinkTrigger12', PHYS_None);
+    AddGoalActor(leo, 2, 'SkillAwardTrigger6', PHYS_None);
+
     AddGoal("01_NYC_UNATCOISLAND", "Police Boat", GOAL_TYPE1, 'NYPoliceBoat0', PHYS_None);
 
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6146.002930, 1748.501709, -87.000000), rot(0, 0, 0));
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "South Dock", NORMAL_GOAL | VANILLA_START, vect(-4728.569824, 9358.811523, -280.674988), rot(0, -7040, 0));
-    AddMutualExclusion(loc, loc2);// unatco start vs south dock (paul dock)
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2404,177,-83), rot(0, 30472, 0));
-    AddMutualExclusion(loc, loc2);// unatco start vs hut leo
-
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
-    AddMutualExclusion(loc, loc2);// north dock start vs electric bunker leo
-
-    AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
-
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
-    AddMutualExclusion(loc, loc2);// top of the base leo vs top of the statue start
+    unatco = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6146.002930, 1748.501709, -87.000000), rot(0, 0, 0));
+    pauldock = AddGoalLocation("01_NYC_UNATCOISLAND", "South Dock", NORMAL_GOAL | VANILLA_START, vect(-4728.569824, 9358.811523, -280.674988), rot(0, -7040, 0));
+    hut = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2404,177,-83), rot(0, 30472, 0));
+    electric = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
+    jail=AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
+    topofbase = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
+    top = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
+    harleydock = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", NORMAL_GOAL | START_LOCATION, vect(4205,-9811,-279), rot(0, 0, 0));
+        AddActorLocation(harleydock, PLAYER_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
 
     //Boat locations
-    AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL, vect(-5023.598145,9131.867188,-269.806213), rot(0, 16192, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1, vect(4471, -10046.186523, -269.806213), rot(0, 16192, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1, vect(3682.585449, 231.813477, 2108.193848), rot(0, 16192, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1, vect(-4571,135,24), rot(0, 16192, 0));
+    boat_pauldock = AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL, vect(-5023.598145,9131.867188,-269.806213), rot(0, 16192, 0));
+    boat_harleydock = AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1, vect(4471, -10046.186523, -269.806213), rot(0, 16192, 0));
+    boat_top = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1, vect(3682.585449, 231.813477, 2108.193848), rot(0, 16192, 0));
+    boat_hut = AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1, vect(-4571,135,24), rot(0, 16192, 0));
+
+
+    // Leo vs start location mutual exclusions
+    AddMutualExclusion(unatco, pauldock);
+    AddMutualExclusion(unatco, hut);
+    AddMutualExclusion(harleydock, electric);
+    AddMutualExclusion(jail, topofbase);
+    AddMutualExclusion(jail, hut);
+    AddMutualExclusion(topofbase, top);
+
+    // Leo vs boat mutual exclusions
+    AddMutualExclusion(boat_pauldock, pauldock);
+    AddMutualExclusion(boat_pauldock, unatco);
+    AddMutualExclusion(boat_hut, hut);
+    AddMutualExclusion(boat_hut, unatco);
+    AddMutualExclusion(boat_hut, jail);
+    AddMutualExclusion(boat_harleydock, harleydock);
+    AddMutualExclusion(boat_harleydock, electric);
+    AddMutualExclusion(boat_top, top);
+    AddMutualExclusion(boat_top, topofbase);
 
     return mission;
 }
@@ -183,7 +200,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             $ "|n|nPS: You can see all my possible locations by clicking the Goal Locations button on your Goals screen."
             $ "|nIf you get really stuck then click on Show Spoilers, Show Nanokeys, or Show Datacubes.";
 
-        SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0,0), text, true);
+        SpawnDatacubePlaintext(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0,0), text, "LeoHintCube", true);
 
         if(ScriptedPawn(g.actors[0].a) != None) {
             RemoveFears(ScriptedPawn(g.actors[0].a));

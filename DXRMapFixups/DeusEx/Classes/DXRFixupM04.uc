@@ -8,6 +8,8 @@ function CheckConfig()
 
     add_datacubes[i].map = "04_NYC_UNATCOHQ";
     add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+    add_datacubes[i].plaintextTag = "JCCompPassword";
     i++;
 
     Super.CheckConfig();
@@ -96,6 +98,10 @@ function PreFirstEntryMapFixes()
             break;
         }
 
+        foreach AllActors(class'#var(prefix)JoJoFine',jojo){
+            jojo.BarkBindName="JoJoFine";
+        }
+
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
@@ -121,15 +127,19 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
-            foreach AllActors(class'#var(prefix)JoJoFine',jojo){
-                jojo.BarkBindName="JoJoFine";
-            }
-
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
             Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
+        } else {
+            Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+
+            Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(480,-3775,125)); //Bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(550,-3700,120)); //Kitchen counter
+            Spawn(class'PlaceholderItem',,, vectm(-310,-3900,75)); //Crack next to Paul's bed
         }
         break;
 
@@ -207,32 +217,23 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
-
-            Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
-            class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(-435,9,-208),,,,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(1486,1375,-208),,,,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(-438,1120,544),,,,'UNATCO',1);
-            class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
         }
 
-        if(VanillaMaps) {
-            // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
-            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'SendingSignal') {
-                if(dt.datalinkTag == 'DL_PaulGoodJob') {
-                    dt.bTriggerOnceOnly = false;
-                }
+        // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
+        foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'SendingSignal') {
+            if(dt.datalinkTag == 'DL_PaulGoodJob') {
+                dt.bTriggerOnceOnly = false;
             }
+        }
 
-            if(dxr.flags.settings.goals > 0) {
-                foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
-                    if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                    dt.Tag = 'UNATCOHatesPlayer';
-                    break;
-                }
+        if(dxr.flags.settings.goals > 0) {
+            foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
+                if(dt.datalinkTag != 'DL_SimonsPissed') continue;
+                dt.Tag = 'UNATCOHatesPlayer';
+                break;
             }
-
+        }
+        if (VanillaMaps){
             foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SendingSignal') {
                 ft.Tag = 'SendingSignal2';
                 if(dxr.flags.settings.goals > 0) {
@@ -250,7 +251,26 @@ function PreFirstEntryMapFixes()
                 ft.Event='SendingSignal2';
                 break;
             }
+        } else { //Revision
+            //After the signal has been sent correctly (SentSignalCorrectly), trigger the WaltonSimons DataLinkTrigger
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'SentSignalCorrectly') {
+                if(dxr.flags.settings.goals > 0) {
+                    // immediately change alliances and trigger walt's dialog, but only if the goals are randomized (player won't be near the old triggers)
+                    ft.bTrigger=True; //Make sure it triggers through as well
+                    ft.Event = 'UNATCOHatesPlayer';
+                }
+                break;
+            }
         }
+
+
+        Spawn(class'PlaceholderItem',,, vectm(110.869766, 337.987732, 1034.306885)); // next to vanilla transmitter computer
+        class'PlaceholderEnemy'.static.Create(self,vectm(485,1286,64),,'Shitting',,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(672,1268,64),,'Shitting',,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-435,9,-208),,,,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1486,1375,-208),,,,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-438,1120,544),,,,'UNATCO',1);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
 
         dxr.flagbase.SetBool('DXRando_NSFHQVisited', true,, 5);
 
@@ -278,6 +298,7 @@ function PreFirstEntryMapFixes()
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         FixAlexsEmail();
+        MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
         if(!dxr.flags.IsZeroRando()) {
             key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
@@ -302,17 +323,32 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
-        Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
         Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
         Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
-        Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
-        Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+
+            Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
+
+        } else {
+            //Revision Kitchen/Breakroom is in a different location
+            Spawn(class'PlaceholderItem',,, vectm(295,1385,485)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(765,1500,440)); //Kitchen Counter
+
+            //Level 4/MJ12 Lab area is blocked off in Revision, these are alternate locations for those placeholders
+            Spawn(class'PlaceholderItem',,, vectm(110,-1050,-20)); //Desk at entrance to jail area
+            Spawn(class'PlaceholderItem',,, vectm(1280,-180,-55)); //Next to couch/plant outside medical
+            Spawn(class'PlaceholderItem',,, vectm(1335,300,-35)); //Under desk near medical beds
+            Spawn(class'PlaceholderContainer',,, vectm(1490,975,-20)); //Near blocked door down to level 4
+
+        }
         Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
         Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
-        Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         if(IsAprilFools()) {
@@ -332,7 +368,7 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
         foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""), gunther.Location, gunther.CollisionRadius+5, gunther.CollisionHeight+5);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""), gunther.Location, gunther.CollisionRadius+5, gunther.CollisionHeight+5,,, true);
             hoverHint.SetBaseActor(gunther);
         }
         foreach AllActors(class'#var(prefix)AnnaNavarre',anna){

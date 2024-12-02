@@ -636,8 +636,8 @@ function revision_keys_rules()
 
     case "03_NYC_747":
         keys_rules[i].item_name = 'lebedevdoor';
-        keys_rules[i].min_pos = vect(340, -312, 140);//ban the annoying spot behind the crates
-        keys_rules[i].max_pos = vect(380, -280, 185);
+        keys_rules[i].min_pos = vect(340, -312, 100); //ban the annoying spot behind the crates
+        keys_rules[i].max_pos = vect(380, -280, 185); //In Revision it's 353,-296, 133
         keys_rules[i].allow = false;
         i++;
 
@@ -725,6 +725,27 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "09_NYC_GRAVEYARD":
+        //Make sure the Chapel Key is above ground somewhere, but not in the safe
+        keys_rules[i].item_name = 'ChappelDoor';
+        keys_rules[i].min_pos = vect(-1391,-2032,-292);
+        keys_rules[i].max_pos = vect(-1357,-1995,-255);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'ChappelDoor';
+        keys_rules[i].min_pos = vect(-99999,-99999,-513);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'ChappelDoor';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,-513);
+        keys_rules[i].allow = false;
+        i++;
+        break;
+
     case "10_Paris_Catacombs":
         keys_rules[i].item_name = 'cata_officedoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -778,6 +799,154 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "12_VANDENBERG_CMD":
+        //This key is added in DXRFixupVandenberg
+        //Stairwell Cupboard
+        keys_rules[i].item_name = 'watchtowerkey';
+        keys_rules[i].min_pos = vect(2118, 1431, -99999);
+        keys_rules[i].max_pos = vect(2209, 1483, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Hazard Lab Cupboard
+        keys_rules[i].item_name = 'watchtowerkey';
+        keys_rules[i].min_pos = vect(-2538, 2588, -99999);
+        keys_rules[i].max_pos = vect(-2495, 2685, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Storage/Medical Rooms
+        keys_rules[i].item_name = 'watchtowerkey';
+        keys_rules[i].min_pos = vect(-2030, 861, -99999);
+        keys_rules[i].max_pos = vect(-1053, 1154, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Main building
+        keys_rules[i].item_name = 'watchtowerkey';
+        keys_rules[i].min_pos = vect(-2783, 299, -99999);
+        keys_rules[i].max_pos = vect(2756, 3695, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'watchtowerkey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Hazard Lab Storage Key (Tim's Closet)
+        //Stairwell Cupboard
+        keys_rules[i].item_name = 'monte_key';
+        keys_rules[i].min_pos = vect(2118, 1431, -99999);
+        keys_rules[i].max_pos = vect(2209, 1483, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Hazard Lab Cupboard
+        keys_rules[i].item_name = 'monte_key';
+        keys_rules[i].min_pos = vect(-2538, 2588, -99999);
+        keys_rules[i].max_pos = vect(-2495, 2685, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Storage/Medical Rooms
+        keys_rules[i].item_name = 'monte_key';
+        keys_rules[i].min_pos = vect(-2030, 861, -99999);
+        keys_rules[i].max_pos = vect(-1053, 1154, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Main building
+        keys_rules[i].item_name = 'monte_key';
+        keys_rules[i].min_pos = vect(-2783, 299, -99999);
+        keys_rules[i].max_pos = vect(2756, 3695, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'monte_key';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+
+
+        //Underground Tunnel Key
+        //Stairwell Cupboard
+        keys_rules[i].item_name = 'undergroundtunnels';
+        keys_rules[i].min_pos = vect(2118, 1431, -99999);
+        keys_rules[i].max_pos = vect(2209, 1483, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Hazard Lab Cupboard
+        keys_rules[i].item_name = 'undergroundtunnels';
+        keys_rules[i].min_pos = vect(-2538, 2588, -99999);
+        keys_rules[i].max_pos = vect(-2495, 2685, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Storage/Medical Rooms
+        keys_rules[i].item_name = 'undergroundtunnels';
+        keys_rules[i].min_pos = vect(-2030, 861, -99999);
+        keys_rules[i].max_pos = vect(-1053, 1154, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Main building
+        keys_rules[i].item_name = 'undergroundtunnels';
+        keys_rules[i].min_pos = vect(-2783, 299, -99999);
+        keys_rules[i].max_pos = vect(2756, 3695, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'undergroundtunnels';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+
+        //Comm 01 Gate Key
+        //Stairwell Cupboard
+        keys_rules[i].item_name = 'gate';
+        keys_rules[i].min_pos = vect(2118, 1431, -99999);
+        keys_rules[i].max_pos = vect(2209, 1483, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Hazard Lab Cupboard
+        keys_rules[i].item_name = 'gate';
+        keys_rules[i].min_pos = vect(-2538, 2588, -99999);
+        keys_rules[i].max_pos = vect(-2495, 2685, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Storage/Medical Rooms
+        keys_rules[i].item_name = 'gate';
+        keys_rules[i].min_pos = vect(-2030, 861, -99999);
+        keys_rules[i].max_pos = vect(-1053, 1154, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Main building
+        keys_rules[i].item_name = 'gate';
+        keys_rules[i].min_pos = vect(-2783, 299, -99999);
+        keys_rules[i].max_pos = vect(2756, 3695, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'gate';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+
+
+        break;
+
     case "12_Vandenberg_Tunnels":
         //disallow this weird locked room under water
         keys_rules[i].item_name = 'control_room';
@@ -828,6 +997,20 @@ function revision_keys_rules()
         keys_rules[i].item_name = 'crewkey';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow storage closet
+        keys_rules[i].item_name = 'crewkey';
+        keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
+        keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow lower storage closet near crew module
+        keys_rules[i].item_name = 'crewkey';
+        keys_rules[i].min_pos = vect(4297,3924,-1900);
+        keys_rules[i].max_pos = vect(3776,4300,-2050);
         keys_rules[i].allow = false;
         i++;
 
@@ -892,12 +1075,21 @@ function revision_keys_rules()
         keys_rules[i].allow = true;
         i++;
 
+        //Exclude the Neo-Carcharod lab (since you need the key to get in, duh)
         keys_rules[i].item_name = 'NeoCarcharod';
-        keys_rules[i].min_pos = vect(-99999, -99999, -2400);
-        keys_rules[i].max_pos = vect(512, 0, 99999);
+        keys_rules[i].min_pos = vect(-235,-4,-1812);
+        keys_rules[i].max_pos = vect(490,904,-1652);
+        keys_rules[i].allow = false;
+        i++;
+
+        //All floors of that main central building with the sub bay
+        keys_rules[i].item_name = 'NeoCarcharod';
+        keys_rules[i].min_pos = vect(-204,-550,-99999);
+        keys_rules[i].max_pos = vect(491,817,99999);
         keys_rules[i].allow = true;
         i++;
 
+        //Explicitly exclude EVERYTHING else for safety
         keys_rules[i].item_name = 'NeoCarcharod';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
@@ -1083,7 +1275,7 @@ function bool KeyPositionGood(#var(prefix)NanoKey k, vector newpos)
     local float dist;
     local int i;
 
-    i = GetSafeRule( keys_rules, k.KeyID, newpos);
+    i = GetSafeRule( keys_rules, k.KeyID, "", newpos);
     if( i != -1 ) return keys_rules[i].allow;
 
     dist = VSize( k.Location - newpos );
@@ -1187,7 +1379,7 @@ function TestKeyRules(Name KeyID, bool allowed, vector loc, string description)
 {
     local int i;
     description = "key: " $ KeyID $ ", expected allowed: "$allowed$", " $ description $ " ("$loc$")";
-    i = GetSafeRule( keys_rules, KeyID, loc );
+    i = GetSafeRule( keys_rules, KeyID, "", loc );
     if( allowed && i == -1 ) {
         test( true, "without key rule - " $ description );
         return;

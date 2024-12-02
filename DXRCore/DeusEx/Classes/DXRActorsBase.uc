@@ -14,6 +14,7 @@ struct FMinMax {
 
 struct safe_rule {
     var name item_name;
+    var string package_name;
     var vector min_pos;
     var vector max_pos;
     var bool allow;
@@ -1137,7 +1138,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
 }
 
 
-function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, string plaintextTag, optional bool dont_move)
 {
     local #var(injectsprefix)InformationDevices dc;
 
@@ -1145,6 +1146,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc
 
     if(dc != None) {
         dc.plaintext = text;
+        dc.plaintextTag=plaintextTag;
     }
     return dc;
 }
@@ -1204,7 +1206,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
 
     l("SpawnReplacement("$a$", "$newclass$") " $ newactor);
 
-    newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
+    newactor.RotationRate=a.RotationRate;
     newactor.SetPhysics(a.Physics);
     newactor.SetBase(a.Base);
     newactor.Event = event;
@@ -1230,6 +1232,10 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     if(#defined(hx)){
         newactor.SetPropertyText("PrecessorName", a.GetPropertyText("PrecessorName"));
     }
+
+    //SetBase resets the collision to... defaults?
+    //Do this last for safety
+    newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
 
     return newactor;
 }
@@ -1691,12 +1697,13 @@ function safe_rule FixSafeRule(safe_rule r)
     return r;
 }
 
-function int GetSafeRule(safe_rule rules[16], name item_name, vector newpos)
+function int GetSafeRule(safe_rule rules[16], coerce string item_name, string package_name, vector newpos)
 {
     local int i;
 
     for(i=0; i<ArrayCount(rules); i++) {
-        if( item_name != rules[i].item_name ) continue;
+        if( !(item_name ~= string(rules[i].item_name) )) continue;
+        if( !(package_name ~= rules[i].package_name )) continue;
         if( AnyGreater( rules[i].min_pos, newpos ) ) continue;
         if( AnyGreater( newpos, rules[i].max_pos ) ) continue;
         return i;
@@ -1754,7 +1761,8 @@ function RemoveMoverPrePivot(Mover m)
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
     // if `a` is a datacube, spawn a new light instead
-    if (#var(prefix)DataCube(a) != None) {
+    // Weirdly generalized check here, since non-vanilla replaces with InformationDevices
+    if (#var(prefix)InformationDevices(a) != None && a.Mesh == class'#var(prefix)DataCube'.default.Mesh) {
         a = a.Spawn(class'DynamicLight', a,, a.Location + vect(0, 0, 6.0));
         a.SetBase(a.Owner);
         a.LightSaturation = 0;
@@ -1849,4 +1857,36 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
     pawn.InitialAlliances[i].bPermanent = bPermanent;
 
     return true;
+}
+
+static function ClearDataVaultImages(#var(PlayerPawn) p)
+{
+    local DataVaultImage image;
+
+    while (p.FirstImage!=None){
+        image = p.FirstImage;
+        p.FirstImage=image.nextImage;
+        //Theoretically if we were being more discriminating with the image deletion,
+        //we'd want to also fix the prevImage value, but since we're just trashing
+        //everything, it's unnecessary
+        image.Destroy();
+    }
+
+    class'DXRActorsBase'.static.RemoveItem(p, class'DataVaultImage');
+}
+
+static function bool IsUsingOggMusic(#var(PlayerPawn) player)
+{
+#ifndef revision
+    return False;
+#else
+    if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
+        //Vanilla Maps in Revision only support the original tracker music
+        return False;
+    }else if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack){
+        //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
+        return True;
+    }
+    return False;
+#endif
 }

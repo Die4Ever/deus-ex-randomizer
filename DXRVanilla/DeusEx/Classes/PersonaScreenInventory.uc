@@ -40,6 +40,8 @@ function UpdateWinInfo(Inventory inv)
         winInfo.AppendText(" / " $ anItem.maxCopies);
     }else if (ChargedPickup(anItem)!=None){
         winInfo.AppendText("|n|nDuration: " $ CalcChargedPickupDurations(ChargedPickup(anItem)));
+    }else if (AugmentationCannister(anItem)!=None){
+        UpdateAugCanDescription(AugmentationCannister(anItem));
     }
 
     if (BioElectricCell(anItem)!=None){
@@ -47,6 +49,40 @@ function UpdateWinInfo(Inventory inv)
     }
 }
 
+function UpdateAugCanDescription(AugmentationCannister ac)
+{
+    local string desc,augName,augLoc, augDesc;
+	local Int canIndex;
+	local Augmentation aug;
+
+    //The title doesn't need to show the aug names
+    winInfo.winTitle.SetText(ac.default.itemName);
+
+    //Add the aug location to the short description and include the info about the augs below that
+    desc = winInfo.winText.GetText();
+
+    for(canIndex=0; canIndex<ArrayCount(ac.AddAugs); canIndex++)
+    {
+        if (ac.AddAugs[canIndex] != '')
+        {
+            aug = ac.GetAugmentation(canIndex);
+
+            if (aug != None){
+                augName = aug.default.AugmentationName;
+                augLoc = aug.AugLocsText[aug.AugmentationLocation];
+                desc = class'DXRInfo'.static.ReplaceText(desc, augName, augName$" ("$augLoc$")");
+                augDesc = augDesc $   "-------------------------------------------|n";
+                augDesc = augDesc $    augName$" ("$augLoc$")";
+                augDesc = augDesc $ "|n-------------------------------------------|n";
+                augDesc = augDesc $    aug.Description$"|n|n";
+            }
+        }
+    }
+
+    desc = desc $ "|n|n|n" $ augDesc;
+
+    winInfo.winText.SetText(desc);
+}
 
 function string CalcChargedPickupDurations(ChargedPickup cp)
 {

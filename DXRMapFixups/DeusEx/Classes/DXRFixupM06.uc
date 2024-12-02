@@ -9,18 +9,26 @@ function CheckConfig()
 
     add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
     add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";
+    add_datacubes[i].Location = vect(350,1950,200); //Middle cube on middle floor
+    add_datacubes[i].plaintextTag = "VersalifeMainElevatorCode";
     i++;
 
     add_datacubes[i].map = "06_HONGKONG_STORAGE";
     add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
+    add_datacubes[i].Location = vect(-480,-550,570); //Room with cabinet
+    add_datacubes[i].plaintextTag = "VersalifeNanotechCode";
     i++;
 
     add_datacubes[i].map = "06_HONGKONG_WANCHAI_MARKET";
     add_datacubes[i].text = "This new ATM in the market is in such a convenient location for all my banking needs!|nAccount: 8326942 |nPIN: 7797 ";
+    add_datacubes[i].Location = vect(360,-1120,40); //Pottery shop counter
+    add_datacubes[i].plaintextTag = "MarketATMPassword";
     i++;
 
     add_datacubes[i].map = "06_HONGKONG_WANCHAI_STREET";
     add_datacubes[i].text = "It's so handy being able to quickly grab some cash from the Quick Stop before getting to the club!|nAccount: 2332316 |nPIN: 1608 ";
+    add_datacubes[i].Location = vect(-330,-700,1700); //Under Construction floor
+    add_datacubes[i].plaintextTag = "QuickStopATMPassword";
     i++;
 
     add_datacubes[i].map = "06_HONGKONG_WANCHAI_STREET";
@@ -28,11 +36,13 @@ function CheckConfig()
     add_datacubes[i].Location = vect(-300.4, -1544.0, 1970.4);
     rot.Yaw = -2250.0;
     add_datacubes[i].rotation = rot;
+    add_datacubes[i].plaintextTag = "PoliceVaultPassword";
     i++;
 
     add_datacubes[i].map = "06_HONGKONG_WANCHAI_UNDERWORLD";
     add_datacubes[i].text = "Max,|nIf you need to get into the freezer again, I've connected the door to the security terminal in the meeting room.|n|nLogin: LUCKYMONEY |nPassword: REDARROW |n|nRemember, that's the same account as your own computer.";
     add_datacubes[i].Location = vect(367,-2511,-334);
+    add_datacubes[i].plaintextTag = "LuckyMoneyPassword";
     i++;
 
     Super.CheckConfig();
@@ -70,6 +80,7 @@ function PreFirstEntryMapFixes()
     local Rotator rot;
     local Male1 male;
     local GordonQuick gordon;
+    local #var(prefix)Trigger t;
     local int i;
 
     local bool VanillaMaps;
@@ -131,21 +142,22 @@ function PreFirstEntryMapFixes()
                     button.BeginPlay();
                 }
             }
-
-            foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
-                m.bIsDoor=False;
-            }
-            foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay_01'){
-                m.bIsDoor=False;
-            }
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
-            class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
-            class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
-            class'PlaceholderEnemy'.static.Create(self,vectm(755,-364,144),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(877,-360,144),,'Shitting');
         }
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
+            m.bIsDoor=False;
+        }
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay_01'){
+            m.bIsDoor=False;
+        }
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
+        class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
+        class'PlaceholderEnemy'.static.Create(self,vectm(755,-364,144),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(877,-360,144),,'Shitting');
+
         break;
 
     case "06_HONGKONG_TONGBASE":
@@ -170,6 +182,7 @@ function PreFirstEntryMapFixes()
     case "06_HONGKONG_WANCHAI_MARKET":
         if (VanillaMaps) {
             // button to get out of Tong's base
+            // Revision already has a button in place (In WANCHAI_COMPOUND)
             AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
             foreach AllActors(class'#var(injectsprefix)Button1', button) {
                 if ((button.Event=='elevator_door' || button.Event=='elevator_door01') && button.ButtonType==BT_Blank){ //Helibase and Versalife elevators
@@ -221,7 +234,7 @@ function PreFirstEntryMapFixes()
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'outro_trigger'){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
         if (VanillaMaps){
@@ -304,13 +317,19 @@ function PreFirstEntryMapFixes()
             }
 
         }
+
+        //behind Maggie's DispalyCase (sic), there is a Trigger to open it
+        //That trigger gets hit when an OrdersTrigger in the same spot gets replaced by DXRReplaceActors
+        foreach AllActors(class'#var(prefix)Trigger',t,'Trigger'){
+            if (t.Event=='DispalyCase'){
+                t.TriggerType=TT_PawnProximity;
+            }
+        }
         break;
 
     case "06_HONGKONG_MJ12LAB":
         // alarm in MiB's overlook office
-        if(VanillaMaps) {
-            Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
-        }
+        Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
 
         ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(1.412384, 1658.755614, 190.711304)); // Inside the elvator to 06_HONGKONG_VERSALIFE
         ft.Event='SecurityRevoked';

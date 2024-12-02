@@ -176,6 +176,21 @@ event Super_PostLogin( playerpawn NewPlayer )
     }
 }
 
+#ifdef revision
+function SetupMusic(DeusExPlayer player)
+{
+    local DXRando dxr;
+
+    dxr = GetDXR();
+
+    if (!class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags)){
+        Super.SetupMusic(player);
+    }
+    //Skip setting up the music if randomization is enabled.  It will happen
+    //at AnyEntry
+}
+#endif
+
 function DeusExLevelInfo SpawnDXLevelInfo()
 {
     local DeusExLevelInfo DeusExLevelInfo;
@@ -194,3 +209,39 @@ function DeusExLevelInfo SpawnDXLevelInfo()
 
     return DeusExLevelInfo;
 }
+
+exec function ShuffleGoals()
+{
+    local DXRMissions missions;
+
+    foreach AllActors(class'DXRMissions',missions)
+    {
+        missions.SetGlobalSeed(FRand());
+        missions.ShuffleGoals();
+    }
+}
+
+exec function CheatsOn()
+{
+    SetCheatsState(true);
+}
+
+exec function CheatsOff()
+{
+    SetCheatsState(false);
+}
+
+function SetCheatsState(bool enabled)
+{
+    local #var(PlayerPawn) p;
+
+    foreach AllActors(class'#var(PlayerPawn)',p){
+        p.bCheatsEnabled=enabled;
+        if (enabled){
+            p.ClientMessage("Cheats Enabled");
+        } else {
+            p.ClientMessage("Cheats Disabled");
+        }
+    }
+}
+

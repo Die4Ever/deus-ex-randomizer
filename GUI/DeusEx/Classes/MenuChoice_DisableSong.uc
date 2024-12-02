@@ -18,12 +18,21 @@ function bool GetModules()
 function bool ButtonActivated( Window buttonPressed )
 {
     local string song;
+    local bool useOgg;
 
     if(!GetModules()) return true;
 
+    useOgg = class'DXRActorsBase'.static.IsUsingOggMusic(#var(PlayerPawn)(player));
+
     song = musicplayer.GetCurrentSongName();
     music.SetEnabledSong(song, false);
-    musicplayer.PlayRandomSong(true);
+    if (useOgg){
+        #ifdef revision
+        musicplayer.PlayRandomOggSong(true);
+        #endif
+    } else {
+        musicplayer.PlayRandomSong(true);
+    }
     UpdateText(0,0,0);
     return True;
 }
@@ -53,6 +62,10 @@ function UpdateText(int timerID, int invocations, int clientData)
 defaultproperties
 {
      Action=MA_Custom
-     HelpText="Disable the current song. You can renable it by editing DXRMusic.ini"
+#ifdef injections
+    HelpText="Disable the current song. You can re-enable it by editing DXRMusic.ini"
+#else
+    HelpText="Disable the current song. You can re-enable it by editing #var(package)Music.ini"
+#endif
      actionText="Disable Song"
 }

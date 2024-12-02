@@ -29,6 +29,7 @@ function PreFirstEntryMapFixes()
     local Teleporter tel;
     local DynamicTeleporter dtel;
     local DynamicLight light;
+    local DeusExDecoration s;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -59,7 +60,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'NYPoliceBoat',b) {
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
-                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit);
+                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
             }
             foreach AllActors(class'DeusExMover', d) {
                 if( d.Name == 'DeusExMover19' ) {
@@ -79,10 +80,22 @@ function PreFirstEntryMapFixes()
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
             fg.ActiveArea=2000;
+        } else {
+            //Revision maps
+            s = AddSwitch( vect(480,-809,-350), rot(0, -16384, 0), 'AmbrosiaGate');  //Switch to open the gate near the vanilla ambrosia location from inside
+            d = DeusExMover(findNearestToActor(class'DeusExMover',s));
+            d.Tag='AmbrosiaGate';
+
+            //The Revision map doesn't have the boat MapExit
+            //This will happen before DXREvents, which changes the tag on this MapExit
+            exit = Spawn(class'DynamicMapExit',,'Boat_Exit',vect(-420,-3827,278));
+            exit.SetCollision(false,false,false);
+            exit.DestMap="03_NYC_UNATCOIsland";
         }
 
         break;
     case "02_NYC_WAREHOUSE":
+        //Warehouse is basically the same between Vanilla and Revision (Just some extra hallways and paths)
         if (VanillaMaps){
             // crates for climbing out of the sewer water
             foreach RadiusActors(class'#var(prefix)CrateUnbreakableSmall', crateSmall, 8.0, vectm(-1658.93, 664.61, -358.68)) {
@@ -96,22 +109,6 @@ function PreFirstEntryMapFixes()
                 loc = crateMedium.Location - vectm(0, 123.0, 0);
                 crateMedium.SetLocation(loc);
             }
-
-            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
-            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
-
-            //Remove the small boxes in the sewers near the ladder so that bigger boxes don't shuffle into those spots
-            foreach AllActors(class'DeusExMover',d,'DrainGrate'){break;}
-            foreach d.RadiusActors(class'#var(prefix)BoxSmall',bs,800){bs.Destroy();}
-
-            //A switch in the sewer swimming path to allow backtracking
-            AddSwitch( vect(-1518.989136,278.541260,-439.973816), rot(0, 2768, 0), 'DrainGrate');
-
-            //A keypad in the sewer walking path to allow backtracking
-            kp = #var(prefix)Keypad2(Spawnm(class'#var(prefix)Keypad2',,,vect(-622.685,497.4295,-60.437), rot(0,-49192,0)));
-            kp.validCode="2577";
-            kp.bToggleLock=False;
-            kp.Event='DoorToWarehouse';
 
             //Detach the trigger that opens the basement door when you get near it from inside
             //Add a button instead
@@ -127,7 +124,7 @@ function PreFirstEntryMapFixes()
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
             foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
@@ -162,32 +159,61 @@ function PreFirstEntryMapFixes()
                 if(d.Event == 'BlewFence') break;
             }
             class'FillCollisionHole'.static.CreateLine(self, vectm(-2184, 1266.793335, 79.291428), vectm(-2050, 1266.793335, 79.291428), 10, 80, d);
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
-            class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
-            class'PlaceholderEnemy'.static.Create(self,vectm(1814,-1842,48));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-31,-1485,48));
-            class'PlaceholderEnemy'.static.Create(self,vectm(1121,-1095,-144));
-            class'PlaceholderEnemy'.static.Create(self,vectm(467,-214,-144));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1570,493,1183)); //rooftop
-            class'PlaceholderEnemy'.static.Create(self,vectm(681,1359,1424)); //rooftop window
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1820,1248,1616)); //rooftop tower
-            class'PlaceholderEnemy'.static.Create(self,vectm(-635,1983,1768)); //rooftop chimneys
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1847,1940,1800)); //rooftop building near elevator
-            class'PlaceholderEnemy'.static.Create(self,vectm(-972,765,1184)); //rooftop
-            class'PlaceholderEnemy'.static.Create(self,vectm(110,530,784)); //lower rooftop
-            class'PlaceholderEnemy'.static.Create(self,vectm(423,565,624)); //even lower rooftop
-            class'PlaceholderEnemy'.static.Create(self,vectm(875,712,464)); //lowest rooftop
-            class'PlaceholderEnemy'.static.Create(self,vectm(-5,1415,1192)); //apartment
-            class'PlaceholderEnemy'.static.Create(self,vectm(-2080,812,48)); //alley
-            class'PlaceholderEnemy'.static.Create(self,vectm(13,-718,-96)); //Warehouse sewer entrance
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1555,2756,1584)); //Rooftops near elevator
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1717,2177,2008)); //roof of rooftop building near elevator
-            class'PlaceholderEnemy'.static.Create(self,vectm(843,75,480)); //Warehouse garage roof
-            class'PlaceholderEnemy'.static.Create(self,vectm(1649,-1393,64),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1334,-1404,64),,'Shitting');
         }
+
+        //Both vanilla and Revision:
+
+        //Remove the small boxes in the sewers near the ladder so that bigger boxes don't shuffle into those spots
+        foreach AllActors(class'DeusExMover',d,'DrainGrate'){break;}
+        foreach d.RadiusActors(class'#var(prefix)BoxSmall',bs,800){bs.Destroy();}
+
+        //A switch in the sewer swimming path to allow backtracking
+        AddSwitch( vect(-1518.989136,278.541260,-439.973816), rot(0, 2768, 0), 'DrainGrate');
+
+        //A keypad in the sewer walking path to allow backtracking
+        kp = #var(prefix)Keypad2(Spawnm(class'#var(prefix)Keypad2',,,vect(-622.685,497.4295,-60.437), rot(0,-49192,0)));
+        kp.validCode="2577";
+        kp.bToggleLock=False;
+        kp.Event='DoorToWarehouse';
+
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1814,-1842,48));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-31,-1485,48));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1121,-1095,-144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(467,-214,-144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1570,493,1183)); //rooftop
+        class'PlaceholderEnemy'.static.Create(self,vectm(681,1359,1424)); //rooftop window
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1820,1248,1616)); //rooftop tower
+        class'PlaceholderEnemy'.static.Create(self,vectm(-635,1983,1768)); //rooftop chimneys
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1847,1940,1800)); //rooftop building near elevator
+        class'PlaceholderEnemy'.static.Create(self,vectm(-972,765,1184)); //rooftop
+        class'PlaceholderEnemy'.static.Create(self,vectm(110,530,784)); //lower rooftop
+        class'PlaceholderEnemy'.static.Create(self,vectm(423,565,624)); //even lower rooftop
+        class'PlaceholderEnemy'.static.Create(self,vectm(875,712,464)); //lowest rooftop
+        class'PlaceholderEnemy'.static.Create(self,vectm(-5,1415,1192)); //apartment
+        class'PlaceholderEnemy'.static.Create(self,vectm(-2080,812,48)); //alley
+        class'PlaceholderEnemy'.static.Create(self,vectm(13,-718,-96)); //Warehouse sewer entrance
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1555,2756,1584)); //Rooftops near elevator
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1717,2177,2008)); //roof of rooftop building near elevator
+        class'PlaceholderEnemy'.static.Create(self,vectm(843,75,480)); //Warehouse garage roof
+        class'PlaceholderEnemy'.static.Create(self,vectm(1649,-1393,64),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1334,-1404,64),,'Shitting');
+
+        if(!dxr.flags.IsZeroRando()) {
+            // this map is too hard
+            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(-1890,1840,1775)); //Rooftop apartment hall
+            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(700,850,1175)); //Apartment top floor
+            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-1220,1770,15)); //Next to electrical box
+            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-2150,595,-240)); //Pipe next to sewer ladder
+            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-2190,2230,315)); //Fire Escape near ground entrance
+            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
+        }
+
         break;
     case "02_NYC_HOTEL":
         if (VanillaMaps){
@@ -212,6 +238,14 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
 
             SetAllLampsState(false, true, true); // the lamp in Paul's apartment
+        } else {
+            Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+
+            Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(480,-3775,125)); //Bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(550,-3700,120)); //Kitchen counter
+            Spawn(class'PlaceholderItem',,, vectm(-310,-3900,75)); //Crack next to Paul's bed
         }
         break;
 
@@ -369,16 +403,6 @@ function PostFirstEntryMapFixes()
             AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(183.993530, 926.125000, 1162.103271));// apartment
             AddBox(class'#var(prefix)CrateUnbreakableMed', vectm(-389.361969, 744.039978, 1088.083618));// ladder
             AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-328.287048, 767.875000, 1072.113770));
-        }
-
-        if(!dxr.flags.IsZeroRando()) {
-            // this map is too hard
-            Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
-            Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
-            Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
-            Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
-            Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
-            Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
         }
 
         break;

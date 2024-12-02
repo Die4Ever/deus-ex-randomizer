@@ -388,8 +388,11 @@ function SetWatchFlags() {
 
         break;
     case "02_NYC_STREET":
+        WatchFlag('AlleyBumRescued');
         WatchFlag('M02SallyDone');
         WatchFlag('MeetSandraRenton_Played');
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
+        bt.bingoEvent="MadeBasket";
         break;
     case "02_NYC_HOTEL":
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
@@ -513,6 +516,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_747":
         RewatchFlag('747Ambrosia');
+        WatchFlag('MeetLebedev_Played');
         WatchFlag('PlayerKilledLebedev');
         WatchFlag('AnnaKilledLebedev');
 
@@ -553,18 +557,6 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNDERGROUND":
         class'BingoTrigger'.static.ProxCreate(self,'SewerSurfin',vectm(-50,-125,-1000),750,40,class'#var(prefix)JoeGreeneCarcass');
-        break;
-    case "05_NYC_UNATCOISLAND":
-        bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
-        bt.Tag='SavedMiguel';
-
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
-
-        break;
-    case "02_NYC_STREET":
-        WatchFlag('AlleyBumRescued');
-        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
-        bt.bingoEvent="MadeBasket";
         break;
     case "04_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
@@ -681,6 +673,13 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
         bt.Tag = 'holoswitch';
+
+        break;
+    case "05_NYC_UNATCOISLAND":
+        bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
+        bt.Tag='SavedMiguel';
+
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -1639,6 +1638,7 @@ simulated function string tweakBingoDescription(string event, string desc)
 function ReadText(name textTag)
 {
     local string eventname;
+    local string flagEvent;
     local PlayerDataItem data;
     local DXRPasswords pws;
 
@@ -1694,6 +1694,10 @@ function ReadText(name textTag)
     case '15_Datacube03':
     case '15_Datacube04':
     case '15_Datacube05':
+    case 'CloneCube1':
+    case 'CloneCube2':
+    case 'CloneCube3':
+    case 'CloneCube4':
         eventname="CloneCubes";
         break;
 
@@ -1708,13 +1712,24 @@ function ReadText(name textTag)
         eventname="UNATCOHandbook";
         break;
 
+    case 'JennysNumber':
+        eventname = "8675309";
+        flagEvent="09_NYC_DOCKYARD--796967769"; //So the web side doesn't need adjustment (yet)
+        break;
+
+
     case '06_Datacube05':// Maggie Chow's bday
-        eventname = "July 18th"; // don't break, fallthrough
+        eventname = "July 18th";
+        flagEvent="06_Datacube05";
+        break;
+
     default:
         // HACK: because names normally can't have hyphens? convert to string and use that instead
         switch(string(textTag)){
             case "09_NYC_DOCKYARD--796967769":
+            case "JennysNumber":
                 eventname = "8675309";
+                flagEvent="09_NYC_DOCKYARD--796967769";
                 break;
             case "15_AREA51_PAGE--32904306":
             case "15_AREA51_PAGE--1066683761":
@@ -1723,16 +1738,18 @@ function ReadText(name textTag)
                 eventname="CloneCubes";
                 break;
         }
-        if(eventname != "") {
-            pws = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
-            if(pws != None)
-                pws.ProcessString(eventname);
-            SendFlagEvent(textTag, false, eventname);
-        } else {
+        if(eventname == "") {
             // it's simple for a bingo event that requires reading just 1 thing
             _MarkBingo(textTag);
             return;
         }
+    }
+
+    if(flagEvent!="" && eventname != "") {
+        pws = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(pws != None)
+            pws.ProcessString(eventname);
+        SendFlagEvent(flagEvent, false, eventname);
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -2069,69 +2086,23 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
-        case "JuanLebedev_Dead":
-            failed[num_failed++] = "LebedevLived";
+
+        case "SubHostageFemale_Dead":
+        case "SubHostageMale_Unconscious":
+        case "SubHostageFemale_Dead":
+        case "SubHostageMale_Unconscious":
+            failed[num_failed++] = "SubwayHostagesSaved";
             return num_failed;
-        case "Aimee_Dead":
-        case "LeMerchant_Dead":
-            failed[num_failed++] = "AimeeLeMerchantLived";
-            return num_failed;
-        case "MaggieChow_Dead":
-            failed[num_failed++] = "MaggieLived";
+        case "AlleyBum_Dead":
+        case "AlleyBum_Unconscious":
+            failed[num_failed++] = "AlleyBumRescued";
             return num_failed;
         case "FordSchick_Dead":
             failed[num_failed++] = "FordSchickRescued";
             return num_failed;
-        case "AlleyBum_Dead":
-            failed[num_failed++] = "AlleyBumRescued";
+        case "GeneratorBlown":
+            failed[num_failed++] = "JockSecondStory";
             return num_failed;
-        case "Camille_Dead":
-            failed[num_failed++] = "CamilleConvosDone";
-            return num_failed;
-        case "Miguel_Dead":
-            failed[num_failed++] = "Terrorist_peeptime";
-            failed[num_failed++] = "Terrorist_ClassDead";
-            failed[num_failed++] = "Terrorist_ClassUnconscious";
-            failed[num_failed++] = "nsfwander";
-            failed[num_failed++] = "MiguelLeaving";
-            return num_failed;
-        case "Josh_Dead":
-            failed[num_failed++] = "JoshFed";
-            return num_failed;
-        case "Billy_Dead":
-            failed[num_failed++] = "M02BillyDone";
-            return num_failed;
-        case "Canal_Bartender_Dead":
-            failed[num_failed++] = "Canal_Bartender_Question4";
-            return num_failed;
-        case "ClubBartender_Dead":
-            failed[num_failed++] = "M06BartenderQuestion3";
-            return num_failed;
-        case "Joshua_Dead":
-            failed[num_failed++] = "JoshuaInterrupted_Played";
-            return num_failed;
-        case "Mamasan_Dead":
-        case "Date1_Dead":
-            failed[num_failed++] = "M06JCHasDate";
-            return num_failed;
-
-        case "KnowsAboutNanoSword":
-            failed[num_failed++] = "M06JCHasDate";
-            // fallthrough
-        case "ClubMercedes_Dead":
-        case "ClubTessa_Dead":
-            failed[num_failed++] = "ClubEntryPaid";
-            return num_failed;
-
-        // omg these hostage names
-        case "SubHostageFemale_Dead":
-        case "SubHostageMale_Dead":
-            failed[num_failed++] = "SubwayHostagesSaved";
-            return num_failed;
-        case "JoJoFine_Dead":
-            failed[num_failed++] = "GaveRentonGun";
-            return num_failed;
-
         case "SandraRenton_Dead":
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             return num_failed;
@@ -2140,41 +2111,41 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
                 failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             }
             failed[num_failed++] = "GaveRentonGun";
-            // fallthrough
+        // fallthrough
         case "FemaleHostage_Dead":
         case "MaleHostage_Dead":
             failed[num_failed++] = "HotelHostagesSaved";
             return num_failed;
-
-        case "hostage_female_Dead":
-        case "hostage_Dead":
-            failed[num_failed++] = "SilhouetteHostagesAllRescued";
+        case "Josh_Dead":
+            failed[num_failed++] = "JoshFed";
             return num_failed;
-        case "M06Junkie_Dead":
-            failed[num_failed++] = "M06PaidJunkie";
-            return num_failed;
-        case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
-            failed[num_failed++] = "M06BoughtVersaLife";
-            return num_failed;
-        case "Supervisor01_Dead":
-            failed[num_failed++] = "Supervisor_Paid";
-            return num_failed;
-        case "Joshua_Dead":
-            failed[num_failed++] = "JoshuaInterrupted_Played";
+        case "Billy_Dead":
+            failed[num_failed++] = "M02BillyDone";
             return num_failed;
         case "Don_Dead":
+        case "Don_Unconscious":
         case "Lenny_Dead":
+        case "Lenny_Unconscious":
             failed[num_failed++] = "GiveZyme";
             return num_failed;
-        case "Renault_Dead":
-            failed[num_failed++] = "SoldRenaultZyme";
-            failed[num_failed++] = "MeetRenault_Played";
+        case "MeetLebedev_Played":
+            failed[num_failed++] = "OverhearLebedev_Played";
             return num_failed;
-        case "TimBaker_Dead":
-            failed[num_failed++] = "MeetTimBaker_Played";
+        case "JuanLebedev_Dead":
+            failed[num_failed++] = "LebedevLived";
             return num_failed;
-        case "drbernard_Dead":
-            failed[num_failed++] = "MeetDrBernard_Played";
+        case "JoJoFine_Dead":
+            failed[num_failed++] = "GaveRentonGun";
+            return num_failed;
+        case "NSFSignalSent":
+            failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
+            return num_failed;
+        case "Miguel_Dead":
+            failed[num_failed++] = "Terrorist_peeptime";
+            failed[num_failed++] = "Terrorist_ClassDead";
+            failed[num_failed++] = "Terrorist_ClassUnconscious";
+            failed[num_failed++] = "nsfwander";
+            failed[num_failed++] = "MiguelLeaving";
             return num_failed;
         case "JaimeLeftBehind":
             failed[num_failed++] = "M07MeetJaime_Played";
@@ -2182,11 +2153,58 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
         case "JaimeRecruited":
             failed[num_failed++] = "KnowsGuntherKillphrase";
             return num_failed;
-        case "NSFSignalSent":
-            failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
+        case "M06Junkie_Dead":
+            failed[num_failed++] = "M06PaidJunkie";
             return num_failed;
-        case "GeneratorBlown":
-            failed[num_failed++] = "JockSecondStory";
+        case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
+            failed[num_failed++] = "M06BoughtVersaLife";
+            return num_failed;
+        case "Canal_Bartender_Dead":
+            failed[num_failed++] = "Canal_Bartender_Question4";
+            return num_failed;
+        case "ClubBartender_Dead":
+            failed[num_failed++] = "M06BartenderQuestion3";
+            return num_failed;
+        case "MaggieChow_Dead":
+            failed[num_failed++] = "MaggieLived";
+            return num_failed;
+        case "Mamasan_Dead":
+        case "Date1_Dead":
+            failed[num_failed++] = "M06JCHasDate";
+            return num_failed;
+        case "KnowsAboutNanoSword":
+            failed[num_failed++] = "M06JCHasDate";
+            // fallthrough
+        case "ClubMercedes_Dead":
+        case "ClubTessa_Dead":
+            failed[num_failed++] = "ClubEntryPaid";
+            return num_failed;
+        case "Supervisor01_Dead":
+            failed[num_failed++] = "Supervisor_Paid";
+            return num_failed;
+        case "Aimee_Dead":
+        case "LeMerchant_Dead":
+            failed[num_failed++] = "AimeeLeMerchantLived";
+            return num_failed;
+        case "hostage_female_Dead":
+        case "hostage_Dead":
+            failed[num_failed++] = "SilhouetteHostagesAllRescued";
+            return num_failed;
+        case "Renault_Dead":
+            failed[num_failed++] = "SoldRenaultZyme";
+            failed[num_failed++] = "MeetRenault_Played";
+            return num_failed;
+        case "Joshua_Dead":
+            failed[num_failed++] = "JoshuaInterrupted_Played";
+            return num_failed;
+        case "Camille_Dead":
+            failed[num_failed++] = "CamilleConvosDone";
+            return num_failed;
+        case "drbernard_Dead":
+            failed[num_failed++] = "MeetDrBernard_Played";
+            return num_failed;
+        case "TimBaker_Dead":
+            failed[num_failed++] = "MeetTimBaker_Played";
             return num_failed;
     }
 
@@ -2517,7 +2535,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "CloneCubes":
             return "Read enough datacubes regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
         case "blast_door_open":
-            return "Open the main blast doors of the Area 51 bunker by finding the security computer somewhere on the surface.";
+            return "Open the main blast doors of the Area 51 bunker by finding the security computer somewhere on the surface or by opening them from inside.";
         case "SpinningRoom":
             return "Pass through the center of the spinning room in the ventilation system of the Brooklyn Naval Yards.";
         case "MolePeopleSlaughtered":
@@ -3468,7 +3486,9 @@ defaultproperties
     bingo_options(275)=(event="02_Book06",desc="Learn basic firearm safety",max=1,missions=276)
     bingo_options(276)=(event="15_Email02",desc="The truth is out there",max=1,missions=32768)
     bingo_options(277)=(event="ManderleyMail",desc="Check Manderley's holomail %s times",desc_singular="Check Manderley's holomail 1 time",max=2,missions=58)
+#ifndef revision
     bingo_options(278)=(event="LetMeIn",desc="Let me in!",max=1,missions=26)
+#endif
     bingo_options(279)=(event="08_Bulletin02",desc="Most Wanted",max=1,missions=256)
     bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)

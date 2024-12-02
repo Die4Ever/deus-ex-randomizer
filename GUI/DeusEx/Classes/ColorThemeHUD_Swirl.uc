@@ -34,6 +34,20 @@ function RandomAllAngles()
         rgbAngle[i]=Rand(360);
     }
 }
+
+function BeginPlay()
+{
+    Super.BeginPlay();
+
+    //Offset some starting angles to improve visibility
+    rgbAngle[4]=(rgbAngle[6]+180)%360; //HUDColor_ButtonTextNormal
+    rgbAngle[5]=(rgbAngle[6]+120)%360; //HUDColor_ButtonTextFocus
+    //HUDColor_ButtonTextDisabled (6) stays as the default as it looks more inactive
+    rgbAngle[11]=(rgbAngle[8]+240)%360; //HUDColor_ListHighlight
+    rgbAngle[12]=(rgbAngle[8]+120)%360; //HUDColor_ListFocus
+    UpdateColours();
+}
+
 function int getPositiveAngleDiff(int a, int b)
 {
     if (a<b){

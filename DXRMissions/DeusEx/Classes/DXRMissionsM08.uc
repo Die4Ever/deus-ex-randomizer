@@ -1,6 +1,6 @@
 class DXRMissionsM08 extends DXRMissions;
 
-    var vector assaultLocations[10];
+    var vector assaultLocations[20];
     var int numAssaultLocations;
 
 
@@ -63,7 +63,26 @@ function int InitGoalsRev(int mission, string map)
     AddGoalLocation("08_NYC_FreeClinic", "Clinic", NORMAL_GOAL | VANILLA_GOAL, vect(1293.991211,-1226.047852,-239.399506), rot(0,31640,0));
     AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
     AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(316,-3439,111), rot(0,0,0));
-    AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2683.1,-1977.77,-448), rot(0,-16390,0));
+    loc = AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2683.1,-1977.77,-448), rot(0,-16390,0));
+    loc2 = AddGoalLocation("08_NYC_Street", "Apartment Over Basketball Court", NORMAL_GOAL , vect(2690,-1750,50), rot(0,-16390,0)); //Revision Only
+    AddGoalLocation("08_NYC_Street", "Garage Roof", NORMAL_GOAL , vect(750,-2875,-250), rot(0,32768,0)); //Revision Only
+    AddGoalLocation("08_NYC_Street", "Smuggler's Front Entrance", NORMAL_GOAL , vect(4780,-3475,-380), rot(0,16384,0)); //Revision Only
+    AddMutualExclusion(loc, loc2); //Can't use both the basketball court and apartment over the court
+
+    AddGoal("08_NYC_Street", "Jock", GOAL_TYPE2, 'JockHelicopter0', PHYS_None);
+    AddGoalLocation("08_NYC_Street", "Hotel Roof", GOAL_TYPE2 | VANILLA_GOAL, vect(75,965,755), rot(0, 22824, 0));
+    AddGoalLocation("08_NYC_Street", "Bar Entrance", GOAL_TYPE2, vect(-400,-1675,-325), rot(0, 0, 0));
+    AddGoalLocation("08_NYC_Street", "Smuggler Back Entrance", GOAL_TYPE2, vect(4775,580,-330), rot(0, 0, 0));
+    AddGoalLocation("08_NYC_Street", "Garage Back Lot", GOAL_TYPE2, vect(1940,-3020,-350), rot(0, 8000, 0));
+
+    //The MJ12 assault squads now get randomized as a squad of 8 and a squad of 7
+    AddGoal("08_NYC_Street", "MJ12 Assault Squad 1", GOAL_TYPE3 | ALWAYS_CREATE, 'Van90', PHYS_None);
+    AddGoal("08_NYC_Street", "MJ12 Assault Squad 2", GOAL_TYPE3 | ALWAYS_CREATE, 'Van91', PHYS_None);
+    AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE3 | VANILLA_GOAL, vect(-910,-1230,-445), rot(0, 0, 0));
+    AddGoalLocation("08_NYC_Street", "Road to NSF HQ", GOAL_TYPE3 | VANILLA_GOAL, vect(-744,-3530,-445), rot(0, -8016, 0));
+    AddGoalLocation("08_NYC_Street", "Basketball Court", GOAL_TYPE3, vect(2855,-1965,-430), rot(0, 16325, 0));
+    AddGoalLocation("08_NYC_Street", "Smuggler Front Door", GOAL_TYPE3, vect(4200,-3450,-437), rot(0, 32768, 0));
+    AddGoalLocation("08_NYC_Street", "Hotel", GOAL_TYPE3, vect(1200,420,-445), rot(0, 0, 0));
 
     if (dxr.flags.settings.starting_map >= 81) //Mission 8 Smuggler
     {
@@ -157,8 +176,12 @@ function AnyEntry()
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
     if (g.name=="Jock") {
-        if(Loc.name=="Smuggler Back Entrance" || Loc.name=="Alley") {
+        if((!RevisionMaps && Loc.name=="Smuggler Back Entrance") || Loc.name=="Alley") {
             g.actors[0].a.DrawScale = 0.5;
             g.actors[0].a.SetCollisionSize(200, 50);
         } else {
@@ -182,61 +205,147 @@ function AfterMovePlayerToStartLocation(GoalLocation Loc)
 
 function AfterShuffleGoals(int goalsToLocations[32])
 {
-    local int g;
-    local bool RevisionMaps;
+    local int g, numGuys,perSquad;
 
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    if (dxr.localURL == "08_NYC_STREET"){
+        numGuys=GetTotalNumAssaultSquadTroops();
+        perSquad = Ceil(float(numGuys)/2.0);
 
-    if (dxr.localURL == "08_NYC_STREET" && !RevisionMaps){
+        l("Need to get locations for "$numGuys$" guys, "$perSquad$" in each squad");
+
         numAssaultLocations=0;
         for(g=0; g<num_goals; g++) {
             if((goals[g].name == "MJ12 Assault Squad 1") || (goals[g].name == "MJ12 Assault Squad 2")) {
-                AddAssaultSquadLocations(locations[goalsToLocations[g]].name);
+                AddAssaultSquadLocations(locations[goalsToLocations[g]].name, perSquad);
             }
         }
         MoveAssaultSquads();
     }
 }
 
-
-function AddAssaultSquadLocations(string locName)
+function AddSingleLocation(Vector loc, out int numAdded, int totalNum)
 {
-    switch(locName){
-        case "Alley": //Non-GOTY Squad 1 vanilla location
-            assaultLocations[numAssaultLocations++]=vectm(-2086,-706,-426);
-            assaultLocations[numAssaultLocations++]=vectm(-2041,-761,-426);
-            assaultLocations[numAssaultLocations++]=vectm(-1886,-719,-426);
-            assaultLocations[numAssaultLocations++]=vectm(-1849,-779,-426);
-            assaultLocations[numAssaultLocations++]=vectm(-1692,-695,-426);
-            break;
-        case "Road to NSF HQ": //Non-GOTY Squad 2 vanilla location
-            assaultLocations[numAssaultLocations++]=vectm(-1907,-1534,-434);
-            assaultLocations[numAssaultLocations++]=vectm(-1856,-1584,-434);
-            assaultLocations[numAssaultLocations++]=vectm(-1817,-1497,-441);
-            assaultLocations[numAssaultLocations++]=vectm(-1693,-1494,-452);
-            assaultLocations[numAssaultLocations++]=vectm(-1577,-1585,-438);
-            break;
-        case "Basketball Court":
-            assaultLocations[numAssaultLocations++]=vectm(3008,-2807,-448);
-            assaultLocations[numAssaultLocations++]=vectm(2945,-2773,-448);
-            assaultLocations[numAssaultLocations++]=vectm(3008,-2709,-448);
-            assaultLocations[numAssaultLocations++]=vectm(2958,-2628,-448);
-            assaultLocations[numAssaultLocations++]=vectm(3035,-2560,-448);
-            break;
-        case "Smuggler Front Door":
-            assaultLocations[numAssaultLocations++]=vectm(2552,-1108,-464);
-            assaultLocations[numAssaultLocations++]=vectm(2536,-1038,-464);
-            assaultLocations[numAssaultLocations++]=vectm(2483,-1129,-464);
-            assaultLocations[numAssaultLocations++]=vectm(2491,-1043,-464);
-            assaultLocations[numAssaultLocations++]=vectm(2444,-1094,-464);
-            break;
-        case "Hotel":
-            assaultLocations[numAssaultLocations++]=vectm(1246,453,-464);
-            assaultLocations[numAssaultLocations++]=vectm(1170,398,-464);
-            assaultLocations[numAssaultLocations++]=vectm(1238,340,-464);
-            assaultLocations[numAssaultLocations++]=vectm(1177,289,-464);
-            assaultLocations[numAssaultLocations++]=vectm(1234,229,-464);
-            break;
+    if (numAdded>=totalNum) return;
+
+    if (numAssaultLocations>=ArrayCount(assaultLocations)){
+        l("Trying to add more assault squad locations than available in the array!");
+        return;
+    }
+
+    assaultLocations[numAssaultLocations++]=loc;
+    numAdded++;
+
+    l("Added Assault Squad Location "$loc);
+
+    return;
+}
+
+function AddAssaultSquadLocations(string locName, int numLocs)
+{
+    local bool RevisionMaps;
+    local int numAdded;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    numAdded=0;
+
+    if (!RevisionMaps){
+        switch(locName){
+            case "Alley": //Non-GOTY Squad 1 vanilla location
+                AddSingleLocation(vectm(-2086,-706,-426),numAdded,numLocs);
+                AddSingleLocation(vectm(-2041,-761,-426),numAdded,numLocs);
+                AddSingleLocation(vectm(-1886,-719,-426),numAdded,numLocs);
+                AddSingleLocation(vectm(-1849,-779,-426),numAdded,numLocs);
+                AddSingleLocation(vectm(-1692,-695,-426),numAdded,numLocs);
+                break;
+            case "Road to NSF HQ": //Non-GOTY Squad 2 vanilla location
+                AddSingleLocation(vectm(-1907,-1534,-434),numAdded,numLocs);
+                AddSingleLocation(vectm(-1856,-1584,-434),numAdded,numLocs);
+                AddSingleLocation(vectm(-1817,-1497,-441),numAdded,numLocs);
+                AddSingleLocation(vectm(-1693,-1494,-452),numAdded,numLocs);
+                AddSingleLocation(vectm(-1577,-1585,-438),numAdded,numLocs);
+                break;
+            case "Basketball Court":
+                AddSingleLocation(vectm(3008,-2807,-448),numAdded,numLocs);
+                AddSingleLocation(vectm(2945,-2773,-448),numAdded,numLocs);
+                AddSingleLocation(vectm(3008,-2709,-448),numAdded,numLocs);
+                AddSingleLocation(vectm(2958,-2628,-448),numAdded,numLocs);
+                AddSingleLocation(vectm(3035,-2560,-448),numAdded,numLocs);
+                break;
+            case "Smuggler Front Door":
+                AddSingleLocation(vectm(2552,-1108,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(2536,-1038,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(2483,-1129,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(2491,-1043,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(2444,-1094,-464),numAdded,numLocs);
+                break;
+            case "Hotel":
+                AddSingleLocation(vectm(1246,453,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(1170,398,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(1238,340,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(1177,289,-464),numAdded,numLocs);
+                AddSingleLocation(vectm(1234,229,-464),numAdded,numLocs);
+                break;
+        }
+    } else { //Revision Maps
+        //Revision has 15 guys total, but the number depends on the difficulty
+        //Currently still splitting them into two groups
+        //Difficulty 0: 4 guys
+        //Difficulty 1: 6 guys
+        //Difficulty 2: 11 guys
+        //Difficulty 3: 15 guys
+        switch(locName){
+            case "Alley":
+                AddSingleLocation(vectm(-1650,-650,-450),numAdded,numLocs);
+                AddSingleLocation(vectm(-1650,-700,-450),numAdded,numLocs);
+                AddSingleLocation(vectm(-1650,-750,-450),numAdded,numLocs);
+                AddSingleLocation(vectm(-1650,-800,-450),numAdded,numLocs);
+                AddSingleLocation(vectm(-1600,-750,-450),numAdded,numLocs);
+                AddSingleLocation(vectm(-1600,-800,-450),numAdded,numLocs);
+                AddSingleLocation(vectm(-1550,-750,-450),numAdded,numLocs);
+                AddSingleLocation(vectm(-1550,-800,-450),numAdded,numLocs);
+                break;
+            case "Road to NSF HQ":
+                AddSingleLocation(vectm(-1250,-2750,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(-1250,-2800,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(-1250,-2850,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(-1250,-2900,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(-1250,-2950,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(-1250,-3000,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(-1250,-3050,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(-1250,-3100,-460),numAdded,numLocs);
+                break;
+            case "Basketball Court":
+                AddSingleLocation(vectm(2900,-2350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(2850,-2350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(2800,-2350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(2750,-2350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(2700,-2350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(2650,-2350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(2600,-2350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(2550,-2350,-460),numAdded,numLocs);
+                break;
+            case "Smuggler Front Door":
+                AddSingleLocation(vectm(4300,-3000,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(4300,-2950,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(4300,-2900,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(4300,-2850,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(4300,-2800,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(4200,-2800,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(4200,-2850,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(4200,-2900,-460),numAdded,numLocs);
+                break;
+            case "Hotel":
+                AddSingleLocation(vectm(1400,500,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(1400,450,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(1400,400,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(1400,350,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(1400,300,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(1400,250,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(1400,200,-460),numAdded,numLocs);
+                AddSingleLocation(vectm(1400,150,-460),numAdded,numLocs);
+                break;
+        }
     }
 }
 
@@ -249,5 +358,38 @@ function MoveAssaultSquads()
     foreach AllActors(class'MJ12Troop',t,'MJ12AttackForce'){
         t.WorldPosition = assaultLocations[i];
         t.SetLocation(assaultLocations[i++]+vectm(0,0,20000));
+    }
+}
+
+function int GetTotalNumAssaultSquadTroops()
+{
+    local int i;
+    local MJ12Troop t;
+
+    i=0;
+    foreach AllActors(class'MJ12Troop',t,'MJ12AttackForce'){ i++; }
+
+    return i;
+}
+
+
+function PreFirstEntryMapFixes()
+{
+    local #var(prefix)InterpolateTrigger it;
+    local #var(prefix)Van v;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps && dxr.localURL=="08_NYC_STREET"){
+        foreach AllActors(class'#var(prefix)InterpolateTrigger',it,'FlyInTrigger'){
+            it.Destroy();
+        }
+
+        //Get rid of the existing vans,
+        //we'll spawn new ones to mark the assault squad spawn points
+        foreach AllActors(class'#var(prefix)Van', v){
+            v.Destroy();
+        }
     }
 }

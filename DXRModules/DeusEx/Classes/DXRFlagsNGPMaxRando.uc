@@ -46,6 +46,7 @@ simulated function InitMaxRandoSettings()
     settings.min_weapon_shottime=difficulty_settings.min_weapon_shottime;
     settings.max_weapon_shottime=difficulty_settings.max_weapon_shottime;
     settings.enemyrespawn = difficulty_settings.enemyrespawn;
+    moresettings.reanimation = more_difficulty_settings.reanimation;
     settings.health = difficulty_settings.health;
     settings.energy = difficulty_settings.energy;
 }
@@ -92,13 +93,17 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
-    if(DXRFlags(self).IsHalloweenMode()) {
-        settings.enemyrespawn = rng(10) + 15;
-    }
-    if(chance_single(33)) { // this cast is pretty nasty
-        settings.enemyrespawn = rng(120) + 120;
+    if(DXRFlags(self).IsHalloweenMode()) {  // this cast is pretty nasty
+        moresettings.reanimation = rng(10) + 15;
+    } else if (chance_single(33)) {
+        if (chance_single(50)) {
+            settings.enemyrespawn = rng(120) + 120;
+        } else {
+            moresettings.reanimation = rng(15) + 15;
+        }
     } else {
         settings.enemyrespawn = 0;
+        moresettings.reanimation = 0;
     }
 
     if(rngb()) {
@@ -142,34 +147,17 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     MaxRandoVal(settings.energy);
 }
 
-function ClearDataVaultImages()
-{
-    local DataVaultImage image;
-    local #var(PlayerPawn) p;
-
-    p = player();
-    while (p.FirstImage!=None){
-        image = p.FirstImage;
-        p.FirstImage=image.nextImage;
-        //Theoretically if we were being more discriminating with the image deletion,
-        //we'd want to also fix the prevImage value, but since we're just trashing
-        //everything, it's unnecessary
-        image.Destroy();
-    }
-
-    class'DXRActorsBase'.static.RemoveItem(p, class'DataVaultImage');
-}
-
 function NewGamePlus()
 {
     local #var(PlayerPawn) p;
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, menus_pause;
+    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, menus_pause, aug_loc_rando;
     local float exp;
     local int randomStart;
     local int oldseed;
+    local int augsToRemove,randoSlotAugsRemoved;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -198,12 +186,14 @@ function NewGamePlus()
         bingo_freespaces = settings.bingo_freespaces;
         newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
         menus_pause = settings.menus_pause;
+        aug_loc_rando=moresettings.aug_loc_rando;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
         settings.bingo_freespaces = bingo_freespaces;
         moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
         settings.menus_pause = menus_pause;
+        moresettings.aug_loc_rando=aug_loc_rando;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
@@ -250,7 +240,7 @@ function NewGamePlus()
     p.DeleteAllNotes();
     p.DeleteAllGoals();
     p.ResetConversationHistory();
-    ClearDataVaultImages();
+    class'DXRActorsBase'.static.ClearDataVaultImages(p);
 
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
@@ -264,7 +254,22 @@ function NewGamePlus()
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
-    for (i = 0; i < newgameplus_num_removed_augs; i++)
+
+    augsToRemove = newgameplus_num_removed_augs;
+    if (augs!=None) {
+        oldseed = SetGlobalSeed("CleanupAugSlotRando"); //This seed doesn't really matter, just want to get the current seed
+
+        augs.RandoAllAugs(); //Apply the new aug randomization (so we know what slot the augs will end up in)
+        randoSlotAugsRemoved = augs.CleanUpAugSlots(p); //Remove augs that no longer fit due to the newly assigned slots
+        l("CleanUpAugSlots removed "$randoSlotAugsRemoved$" augs due to new aug slot assignments");
+        augsToRemove = augsToRemove - randoSlotAugsRemoved; //Count those removed augs towards the augs to remove for the new loop
+
+        augs.FixAugHotkeys(p,false); //Hotkeys will have totally changed after randomizing the slots, make sure they're corrected
+
+        ReapplySeed(oldseed);
+    }
+
+    for (i = 0; i < augsToRemove; i++)
         if( augs != None )
             augs.RemoveRandomAug(p);
 

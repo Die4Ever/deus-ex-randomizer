@@ -75,7 +75,7 @@ function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
     local ScriptedPawn a;
-    local name exceptTag, exceptAlliance, keepTagName;
+    local name exceptTag, exceptAlliance, onlyAlliance, keepTagName;
     local bool keepTags;
     local int num, i, slot;
     local Inventory item, nextItem;
@@ -86,6 +86,8 @@ function SwapScriptedPawns(int percent, bool enemies)
     case "04_NYC_NSFHQ":
         if(enemies)
             SwapScriptedPawns(percent, false);
+        else
+            onlyAlliance='UNATCO'; //To prevent civilians being shuffled in Revision
         break;
 
     case "06_HONGKONG_MJ12LAB":
@@ -119,6 +121,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         if( exceptTag != '' && a.Tag == exceptTag ) continue;
         if( exceptAlliance != '' && a.Alliance == exceptAlliance ) continue;
+        if( onlyAlliance != '' && a.Alliance != onlyAlliance ) continue;
         if( #var(prefix)Robot(a) != None && a.Orders == 'Idle' ) continue;
         if( class'DXRMissions'.static.IsCloseToRandomStart(dxr, a.Location) ) continue;
 #ifdef gmdx

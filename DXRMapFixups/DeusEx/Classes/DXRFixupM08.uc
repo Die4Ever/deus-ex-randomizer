@@ -213,7 +213,7 @@ function PreFirstEntryMapFixes()
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
             if (#defined(vanilla)) {
@@ -266,6 +266,14 @@ function PreFirstEntryMapFixes()
                 Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
                 Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
                 Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
+            } else {
+                Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+
+                Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
+                Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
+                Spawn(class'PlaceholderItem',,, vectm(480,-3775,125)); //Bathroom counter
+                Spawn(class'PlaceholderItem',,, vectm(550,-3700,120)); //Kitchen counter
+                Spawn(class'PlaceholderItem',,, vectm(-310,-3900,75)); //Crack next to Paul's bed
             }
             break;
         case "08_NYC_BAR":

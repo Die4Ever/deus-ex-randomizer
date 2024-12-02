@@ -1623,7 +1623,11 @@ function int SpawnNastyRat(string viewer)
 
 function int DropPiano(string viewer)
 {
+    #ifdef injections
     local #var(prefix)WHPiano piano;
+    #else
+    local DXRPiano piano;
+    #endif
     local DXRActorsBase tracer;
     local vector loc;
     local float height, leading;
@@ -1652,7 +1656,11 @@ function int DropPiano(string viewer)
         return TempFail;
     }
 
+    #ifdef injections
     piano = Spawn(class'#var(prefix)WHPiano',,, loc);
+    #else
+    piano = Spawn(class'DXRPiano',,, loc);
+    #endif
     //Did it spawn successfully?
     if(piano == None) {
         return TempFail;
@@ -1965,7 +1973,7 @@ function bool RaiseDead(string viewer)
         if (carc==None){
             break;
         }
-        if (class'DXRHalloween'.static.ResurrectCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
+        if (class'DXRZombies'.static.ReanimateCorpse(ccLink.ccModule, carc, viewer $ "'s Zombie")){
             num++;
         }
     }
@@ -1974,7 +1982,7 @@ function bool RaiseDead(string viewer)
         return False;
     }
 
-    PlayerMessage(viewer@"resurrected "$num$" from the dead!");
+    PlayerMessage(viewer@"rose "$num$" from the dead!");
 
     return True;
 }
@@ -2161,7 +2169,7 @@ function bool SpamDatacubes(String viewer)
     local #var(injectsprefix)InformationDevices dc;
 
     for (i=0;i<5;i++){
-        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer));
+        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer),"");
         if (dc!=None){
             ccLink.ccModule.GlowUp(dc);
             num++;

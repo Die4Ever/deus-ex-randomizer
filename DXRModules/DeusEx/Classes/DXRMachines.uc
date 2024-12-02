@@ -390,7 +390,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector l
     NearestFloor(locnorm, distrange);
 
     d = SpawnDatacubePlaintext(locnorm.loc, Rotator(locnorm.norm),
-        c.UserList[0].userName $ " password is " $ c.UserList[0].Password);
+        c.UserList[0].userName $ " password is " $ c.UserList[0].Password, "");
 
     d.SetCollision(true,false,false);
     d.new_passwords[0] = c.UserList[0].Password;
@@ -527,7 +527,7 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
 function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, int datacubehue)
 {
     local Actor a;
-    local #var(prefix)Datacube d;
+    local #var(prefix)InformationDevices id;
 
     a = SpawnNewActor(c, false);
     if( a == None ) return None;
@@ -535,15 +535,17 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, i
     // spawn with large collision to ensure enough space, then slightly shrink after to make them easier to get around
     #var(prefix)Robot(a).SetBasedPawnSize(a.CollisionRadius * 0.8, a.CollisionHeight * 0.7);
 
-    d = #var(prefix)Datacube(SpawnNewActor(class'#var(prefix)Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
-    if( d == None ) return a;
-    d.Tag = 'botdatacube';
-    d.SetCollision(true,false,false);
-    d.TextPackage = "#var(package)";
-    d.textTag = datacubeTag;
-    d.bAddToVault = false;
-    d.ItemName = datacubename;
-    GlowUp(d, datacubehue);
+    id = SpawnDatacubeTextTag(GetRandomPositionFine(a.Location,min_datacube_distance, max_datacube_distance),
+                              rotm(0,0,0,0),
+                              datacubeTag,
+                              True);
+    if (id==None) return a;
+    id.Tag = 'botdatacube';
+    id.SetCollision(true,false,false);
+    id.TextPackage = "#var(package)";
+    id.bAddToVault = false;
+    id.ItemName = datacubename;
+    GlowUp(id, datacubehue);
 
     return a;
 }

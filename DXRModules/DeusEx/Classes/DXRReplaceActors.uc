@@ -118,6 +118,9 @@ function ReplaceActors()
         else if( #var(prefix)CigaretteMachine(a) != None ) {
             ReplaceGenericDecoration(a,class'DXRCigaretteMachine');
         }
+        else if( #var(prefix)Earth(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXREarth');
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -159,6 +162,8 @@ function ReplaceContainerContents(#var(prefix)Containers a)
 function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 {
     local DXRInformationDevices n;
+    local DynamicLight lt;
+
     n = DXRInformationDevices(SpawnReplacement(a, class'DXRInformationDevices'));
     if(n == None)
         return;
@@ -178,6 +183,12 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 #ifdef revision
     n.TextPackage = a.TextPackage;
 #endif
+
+    //Move dynamic lights that might be based on the info device
+    foreach a.BasedActors(class'DynamicLight', lt) {
+        lt.SetBase(n);
+    }
+
     ReplaceDeusExDecoration(a, n);
 
     a.Destroy();
@@ -525,6 +536,8 @@ function ReplaceTrigger(#var(prefix)Trigger a, #var(prefix)Trigger n)
     n.DamageThreshold = a.DamageThreshold;
     n.TriggerActor = a.TriggerActor;
     n.TriggerActor2 = a.TriggerActor2;
+
+    UpdateActorReferences(a,n);
 }
 
 function #var(DeusExPrefix)Weapon ReplaceWeapon(#var(DeusExPrefix)Weapon a, #var(DeusExPrefix)Weapon n)
@@ -593,6 +606,8 @@ function ReplaceDecoration(Decoration a, Decoration n)
 {
     n.bPushable = a.bPushable;
     n.EffectWhenDestroyed = a.EffectWhenDestroyed;
+
+    UpdateActorReferences(a,n);
     /*
 var() bool bOnlyTriggerable;
 var bool bSplash;
@@ -689,6 +704,9 @@ function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
         return;
 
     n.bulletinTag = a.bulletinTag;
+    n.TextPackage = a.TextPackage;
+    n.FamiliarName = a.FamiliarName;
+    n.UnfamiliarName = a.UnfamiliarName;
 
     a.Destroy();
 }
@@ -787,4 +805,23 @@ function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
     n.lastAlarmTime=a.lastAlarmTime;
     n.alarmTimeout=a.alarmTimeout;
     n.CompInUseMsg=a.CompInUseMsg;
+
+    UpdateActorReferences(a,n);
+}
+
+function UpdateActorReferences(Actor a, Actor n)
+{
+    local DXRMissions missions;
+    local DXREvents   events;
+
+    missions = DXRMissions(class'DXRMissions'.static.Find());
+    events   = DXREvents(class'DXREvents'.static.Find());
+
+    if (missions!=None){
+        missions.ReplaceGoalActor(a,n);
+    }
+
+    if (events!=None){
+        events.ReplaceWatchedActor(a,n);
+    }
 }

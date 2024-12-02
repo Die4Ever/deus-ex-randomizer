@@ -166,6 +166,9 @@ function int InitGoalsRev(int mission, string map)
 
         loc=AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1104.000000,736.000000,48.000000), rot(0,0,-32768));
         AddActorLocation(loc, 7, vect(1127.001465,763.400208,69.272461), rot(0,-32760,0));
+
+        loc=AddGoalLocation("09_NYC_GRAVEYARD", "Chapel", NORMAL_GOAL, vect(-565,995,70), rot(0,16384,-32768));
+        AddActorLocation(loc, 7, vect(-607,930,100), rot(0,0,0));
         return 91;
 
     case "09_NYC_SHIPBELOW":
@@ -189,8 +192,8 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
         AddGoalActor(goal, 2, 'DataLinkTrigger2', PHYS_None);
 
-        //There's a door in Revision where this was in Vanilla
-        //loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
+        //There's a door in Revision where this was in Vanilla, moved it to the left of the door
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-200.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
 
@@ -217,6 +220,25 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(816.000000,-1024.000000,-416.000000), rot(0,16384,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Lower Hallways", NORMAL_GOAL, vect(-2480,384,-571), rot(0,49152,0));  //Revision Only
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Lower Fan Room", NORMAL_GOAL, vect(-2290,-217,-430), rot(0,16384,0)); //Revision Only
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Security Room", NORMAL_GOAL, vect(-1560,-1073,-400), rot(0,49152,0)); //Revision Only
+
+
+        goal = AddGoal("09_NYC_SHIPBELOW", "Bilge Pump Computer", GOAL_TYPE1, 'ComputerPersonal0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None);
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pump Room", GOAL_TYPE1 | VANILLA_GOAL, vect(-2447.407959, -689.854431, -456.500488), rot(0, -15815, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helibay Barracks", GOAL_TYPE1, vect(-5505, 175, -432), rot(0, 0, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Room Tower", GOAL_TYPE1, vect(-131.815552,-492.488342,9), rot(0, -15815, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", GOAL_TYPE1, vect(-4799, 1210, -200), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(-4799, 1210, -230), rot(0,0,0));// MAHOGANY desk
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Server Room", GOAL_TYPE1, vect(-685,1065,-320), rot(0, 32768, 0)); //Revision Only
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Upper Break Room", GOAL_TYPE1, vect(630,1390,-75), rot(0, 0, 0)); //Revision Only
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Lower Engine Room", GOAL_TYPE1, vect(-1150,690,-610), rot(0, 16384, 0)); //Revision Only
+        AddActorLocation(loc, 1, vect(-1150,690,-650), rot(0,-16384,0));// MAHOGANY desk
 
         return 92;
 
@@ -255,7 +277,7 @@ function PreFirstEntryMapFixes()
             barrel.Destroy();
         }
 
-        SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
+        SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ", "EMGeneratorHintCube");
 
         ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK?
     } else if (dxr.localURL=="09_NYC_SHIPBELOW"){
@@ -332,7 +354,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         se.GoToState('DisplayMessage');
     }
 
-    if (g.name=="Bilge Pump Computer" && Loc.name=="Helipad Air Control") {
+    if (g.name=="Bilge Pump Computer" && (Loc.name=="Helipad Air Control" || Loc.name=="Lower Engine Room")) {
         // spawn the MAHOGANY desk (CreateGoal only gets called for different maps)
         g.actors[1].a = Spawnm(class'MahoganyDesk',,,Loc.positions[1].pos, Loc.positions[1].rot);
     }

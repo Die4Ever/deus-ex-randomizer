@@ -8,8 +8,11 @@ function CheckConfig()
 
     add_datacubes[i].map = "09_NYC_Dockyard";
     add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+    add_datacubes[i].Location = vect(3860,3270,300);  //Ammo storage control room
+    add_datacubes[i].plaintextTag = "JennysNumber";
     i++;
     add_datacubes[i] = add_datacubes[i-1];// dupe
+    add_datacubes[i].Location = vect(-145,4775,70); //On boxes in other warehouse
     i++;
 
     Super.CheckConfig();
@@ -48,15 +51,17 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL)
     {
     case "09_NYC_SHIP":
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
+            if( m.KeyIdNeeded == 'EngineRoomDoor' ) m.Tag = 'shipbelowdecks_door';
+        }
+        AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+
+        AddSwitch( vect(2673,470,740), rot(0,0,0), 'ArmoryDoor' ); //Hard to get stuck in here, but just in case
+
+        //Button to open the office door
+        AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
+
         if (VanillaMaps){
-            foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
-                if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
-            }
-            AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
-
-            //Button to open the office door
-            AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
-
             foreach AllActors(class'Switch1',s){
                 if (s.Event=='Eledoor01'){
                     s.Event='Elevator01_bottom';
@@ -91,37 +96,39 @@ function PreFirstEntryMapFixes()
 
             SetAllLampsState(false, true, false); // the lamps in zhao's empty room
 
-            //Add some new locations for containers and items
-            Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
-            Spawn(class'PlaceholderContainer',,, vectm(-3109,-73,305)); //Front of ship
-            Spawn(class'PlaceholderContainer',,, vectm(-2764,186,305)); //Front of ship
-            Spawn(class'PlaceholderItem',,, vectm(-3544.129150,112.244072,330.309601)); //Actual Front of ship
-            Spawn(class'PlaceholderItem',,, vectm(-2538.4,38.5,283)); //Near stuff at front of ship
-            Spawn(class'PlaceholderItem',,, vectm(-2554.4,-247,283)); //Near stuff at front of ship
-            Spawn(class'PlaceholderItem',,, vectm(-254,557.8,302)); //Guard Post in shipping container
-            Spawn(class'PlaceholderItem',,, vectm(3004.5,-453,523)); //Ship kitchen
-            Spawn(class'PlaceholderItem',,, vectm(1788,107,509)); //Ship bathroom table
-            Spawn(class'PlaceholderItem',,, vectm(2152,701,519)); //Ship bunkbed
-            Spawn(class'PlaceholderItem',,, vectm(3000.4,511.28,526.4)); //Ship fume extractor
-            Spawn(class'PlaceholderItem',,, vectm(1243,-2106,-432)); //Shipyard break room table
-            Spawn(class'PlaceholderItem',,, vectm(2517.303467,-1384.390381,-250.690430)); //Shipyard showers locker 1
-            Spawn(class'PlaceholderItem',,, vectm(2474.926270,-1385.917603,-250.689545)); //Shipyard showers locker 2
-            Spawn(class'PlaceholderItem',,, vectm(2431.561279,-1385.172363,-250.690308)); //Shipyard showers locker 3
-            Spawn(class'PlaceholderItem',,, vectm(2354.278809,-1383.854980,-250.689301)); //Shipyard showers locker 5
-            Spawn(class'PlaceholderItem',,, vectm(2354,-1676,-223)); //Shipyard change room bench
-            Spawn(class'PlaceholderItem',,, vectm(2605,-1839,-257)); //Shipyard bathroom stall 1
-            Spawn(class'PlaceholderItem',,, vectm(2816,-1816,-257)); //Shipyard bathroom stall 2
-            Spawn(class'PlaceholderItem',,, vectm(2808,-1511.5,-207)); //Shipyard bathroom sink
-            Spawn(class'PlaceholderItem',,, vectm(1565.7,-994,-433.7)); //Shipyard ramp control panel
-            Spawn(class'PlaceholderItem',,, vectm(3361,-1255.9,1187)); //Shipyard crane control room
-            Spawn(class'PlaceholderContainer',,, vectm(-1248,-1248,-460)); //Shipyard dock near sewer entrance
-            Spawn(class'PlaceholderContainer',,, vectm(-1185,-1175,-460)); //Shipyard dock near sewer entrance
-            Spawn(class'PlaceholderContainer',,, vectm(3172,-1248,-460)); //Shipyard dock near maintenance ladder
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(2639,-1817,-220),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(2805,-1824,-220),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(2005,-68,512),,'Shitting');
         }
+
+        //Add some new locations for containers and items
+        Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
+        Spawn(class'PlaceholderContainer',,, vectm(-3109,-73,305)); //Front of ship
+        Spawn(class'PlaceholderContainer',,, vectm(-2764,186,305)); //Front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-3544.129150,112.244072,330.309601)); //Actual Front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-2538.4,38.5,283)); //Near stuff at front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-2554.4,-247,283)); //Near stuff at front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-254,557.8,302)); //Guard Post in shipping container
+        Spawn(class'PlaceholderItem',,, vectm(3004.5,-453,523)); //Ship kitchen
+        Spawn(class'PlaceholderItem',,, vectm(1788,107,509)); //Ship bathroom table
+        Spawn(class'PlaceholderItem',,, vectm(2152,701,519)); //Ship bunkbed
+        Spawn(class'PlaceholderItem',,, vectm(3000.4,511.28,526.4)); //Ship fume extractor
+        Spawn(class'PlaceholderItem',,, vectm(1243,-2106,-432)); //Shipyard break room table
+        Spawn(class'PlaceholderItem',,, vectm(2517.303467,-1384.390381,-250.690430)); //Shipyard showers locker 1
+        Spawn(class'PlaceholderItem',,, vectm(2474.926270,-1385.917603,-250.689545)); //Shipyard showers locker 2
+        Spawn(class'PlaceholderItem',,, vectm(2431.561279,-1385.172363,-250.690308)); //Shipyard showers locker 3
+        Spawn(class'PlaceholderItem',,, vectm(2354.278809,-1383.854980,-250.689301)); //Shipyard showers locker 5
+        Spawn(class'PlaceholderItem',,, vectm(2354,-1676,-223)); //Shipyard change room bench
+        Spawn(class'PlaceholderItem',,, vectm(2605,-1839,-257)); //Shipyard bathroom stall 1
+        Spawn(class'PlaceholderItem',,, vectm(2816,-1816,-257)); //Shipyard bathroom stall 2
+        Spawn(class'PlaceholderItem',,, vectm(2808,-1511.5,-207)); //Shipyard bathroom sink
+        Spawn(class'PlaceholderItem',,, vectm(1565.7,-994,-433.7)); //Shipyard ramp control panel
+        Spawn(class'PlaceholderItem',,, vectm(3361,-1255.9,1187)); //Shipyard crane control room
+        Spawn(class'PlaceholderContainer',,, vectm(-1248,-1248,-460)); //Shipyard dock near sewer entrance
+        Spawn(class'PlaceholderContainer',,, vectm(-1185,-1175,-460)); //Shipyard dock near sewer entrance
+        Spawn(class'PlaceholderContainer',,, vectm(3172,-1248,-460)); //Shipyard dock near maintenance ladder
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(2639,-1817,-220),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(2805,-1824,-220),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(2005,-68,512),,'Shitting');
+
         break;
 
     case "09_NYC_SHIPBELOW":
@@ -287,11 +294,18 @@ function PreFirstEntryMapFixes()
         break;
 
     case "09_NYC_GRAVEYARD":
-        Spawn(class'PlaceholderItem',,, vectm(-509.5,-742.88,-213)); //Tunnels
-        Spawn(class'PlaceholderItem',,, vectm(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
-        Spawn(class'PlaceholderItem',,, vectm(-1433.77,1161.87,-149)); //Escape tunnel
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-509.5,-742.88,-213)); //Tunnels
+            Spawn(class'PlaceholderItem',,, vectm(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
+            Spawn(class'PlaceholderItem',,, vectm(-1433.77,1161.87,-149)); //Escape tunnel
+            Spawn(class'PlaceholderItem',,, vectm(-1499.35,-454.93,-293)); //Tomb stairs
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(-2310,-1165,-155)); //Tunnels
+            Spawn(class'PlaceholderItem',,, vectm(-365,-2125,-290)); //Empty Sarcophogus
+            Spawn(class'PlaceholderItem',,, vectm(-630,-1140,-215)); //Escape tunnel
+            Spawn(class'PlaceholderItem',,, vectm(-835,-2095,-280)); //Tomb stairs
+        }
         Spawn(class'PlaceholderItem',,, vectm(-828.5,-266.1,27)); //Front of tomb
-        Spawn(class'PlaceholderItem',,, vectm(-1499.35,-454.93,-293)); //Tomb stairs
         Spawn(class'PlaceholderItem',,, vectm(1108.85,808.15,71.309769)); //Secret room shelf 1
         Spawn(class'PlaceholderItem',,, vectm(1110,829.5,35.310154)); //Secret room shelf 2
 
@@ -324,7 +338,7 @@ function PreFirstEntryMapFixes()
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'CopterCam'){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
         if (#defined(vanilla) && InStr(dxr.dxInfo.startupMessage[0], "Cemetary") != -1) {

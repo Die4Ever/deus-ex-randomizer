@@ -38,6 +38,14 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1125.200562,2887.646484,-432.319794), rot(0, 0, 0));
         AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1062.942261,-2496.865723,-443.252533), rot(0, 16384, 0));
         AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
+
+        if (dxr.flags.settings.starting_map > 150)
+        {
+            skip_rando_start = True;
+        }
+
+        return 151;
+
         break;
 
     case "15_AREA51_PAGE":
@@ -92,61 +100,116 @@ function int InitGoals(int mission, string map)
             }
         }
 
+        return 154;
+
         break;
     }
 
-    if (dxr.flags.settings.starting_map > 150)
-    {
-        skip_rando_start = True;
-    }
 
-    return 151;
+    return mission+1000;
 }
 
 function int InitGoalsRev(int mission, string map)
 {
     local int goal, loc;
 
-    AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-6066,618.8,-46.73), rot(0, 199216, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(1528,-2703,-288), rot(0, 24000, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-979.896423,3249.618408,-472.401825), rot(0, 0, 0));
+    switch(map) {
+    case "15_AREA51_BUNKER":
+        AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-6066,618.8,-46.73), rot(0, 199216, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(1528,-2703,-288), rot(0, 24000, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-979.896423,3249.618408,-472.401825), rot(0, 0, 0));
 
 
-    goal = AddGoal("15_AREA51_BUNKER", "Walton Simons", NORMAL_GOAL, 'WaltonSimons1', PHYS_Falling);
-    AddGoalActor(goal, 1, 'Trigger4', PHYS_None); //Triggers WaltonTalks
-    AddGoalActor(goal, 2, 'OrdersTrigger3', PHYS_None); //WaltonTalks -> Conversation triggers WaltonAttacks
-    AddGoalActor(goal, 3, 'AllianceTrigger1', PHYS_None); //WaltonAttacks
+        goal = AddGoal("15_AREA51_BUNKER", "Walton Simons", NORMAL_GOAL, 'WaltonSimons1', PHYS_Falling);
+        AddGoalActor(goal, 1, 'Trigger4', PHYS_None); //Triggers WaltonTalks
+        AddGoalActor(goal, 2, 'OrdersTrigger3', PHYS_None); //WaltonTalks -> Conversation triggers WaltonAttacks
+        AddGoalActor(goal, 3, 'AllianceTrigger1', PHYS_None); //WaltonAttacks
 
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", NORMAL_GOAL | VANILLA_GOAL, vect(1390,2640,-264), rot(0, -33064, 0));
-    AddActorLocation(loc, 1, vect(353,2344,-494), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Supply Shed", NORMAL_GOAL, vect(-782,208,-192), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-1772,210,-178), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Tower", NORMAL_GOAL, vect(-914,2050,-192), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-1598,2045,-178), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Hangar", NORMAL_GOAL, vect(1717,-1750,-480), rot(0, -33064, 0));
-    AddActorLocation(loc, 1, vect(1147,-1129,-494), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Bunker Entrance", NORMAL_GOAL, vect(3802,2388,-848), rot(0, -18224, 0));
-    AddActorLocation(loc, 1, vect(3079,1214,-826), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_ENTRANCE", "Sector 3 Elevator", NORMAL_GOAL, vect(-3969.244385,703.847961,-2168.792725), rot(0, -16568, 0));
-    //AddActorLocation(loc, 1, vect(-20,80,-180), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_FINAL", "Heliowalton", NORMAL_GOAL, vect(-4400,750,-1475), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-3720,730,-1105), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vect(-4358,-3393,-1527), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-3455,-3261,-1560), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", NORMAL_GOAL | VANILLA_GOAL, vect(1390,2640,-264), rot(0, -33064, 0));
+        AddActorLocation(loc, 1, vect(353,2344,-494), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Supply Shed", NORMAL_GOAL, vect(-782,208,-192), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-1772,210,-178), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Tower", NORMAL_GOAL, vect(-914,2050,-192), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-1598,2045,-178), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Hangar", NORMAL_GOAL, vect(1717,-1750,-480), rot(0, -33064, 0));
+        AddActorLocation(loc, 1, vect(1147,-1129,-494), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Bunker Entrance", NORMAL_GOAL, vect(3802,2388,-848), rot(0, -18224, 0));
+        AddActorLocation(loc, 1, vect(3079,1214,-826), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_ENTRANCE", "Sector 3 Elevator", NORMAL_GOAL, vect(-3969.244385,703.847961,-2168.792725), rot(0, -16568, 0));
+        //AddActorLocation(loc, 1, vect(-20,80,-180), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_FINAL", "Heliowalton", NORMAL_GOAL, vect(-4400,750,-1475), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-3720,730,-1105), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vect(-4358,-3393,-1527), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-3455,-3261,-1560), rot(0,0,0));
 
 
-    AddGoal("15_AREA51_BUNKER", "Area 51 Blast Door Computer", GOAL_TYPE1, 'ComputerSecurity4', PHYS_None);
-    AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1108.649414,2037.512451,302.793121), rot(0, 65536, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1363.689941,2460.441895,-235.503601), rot(0, 0, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1397.388672,-2498.310059,-441.741699), rot(0, 16384, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1860.243530,2902.310059,-151.812180), rot(0, -16384, 0));
+        AddGoal("15_AREA51_BUNKER", "Area 51 Blast Door Computer", GOAL_TYPE1, 'ComputerSecurity4', PHYS_None);
+        AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1108.649414,2037.512451,302.793121), rot(0, 65536, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1363.689941,2460.441895,-235.503601), rot(0, 0, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1397.388672,-2498.310059,-441.741699), rot(0, 16384, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1860.243530,2902.310059,-151.812180), rot(0, -16384, 0));
 
-    if (dxr.flags.settings.starting_map > 150)
-    {
-        skip_rando_start = True;
+        if (dxr.flags.settings.starting_map > 150)
+        {
+            skip_rando_start = True;
+        }
+
+        return 151;
+
+        break;
+
+    case "15_AREA51_PAGE":
+        // GOAL_TYPE1 is for the goals that can be in easy locations, aka everything except Aquinas Substation Computer
+        goal = AddGoal("15_AREA51_PAGE", "Aquinas Substation Computer", NORMAL_GOAL, 'ComputerSecurity0', PHYS_None);
+        loc = AddGoalLocation("15_AREA51_PAGE", "Aquinas Substation", NORMAL_GOAL | VANILLA_GOAL, vect(1510.912109,4078.936279,-577.371094), rot(0, -32824, 0));
+
+        goal = AddGoal("15_AREA51_PAGE", "Coolant Deactivation Button", GOAL_TYPE1 | NORMAL_GOAL, 'Switch0', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger2', PHYS_None); // shutting down the coolant, DL_tong3: Good.  Now go to the reactor lab.
+        AddGoalActor(goal, 2, 'DataLinkTrigger12', PHYS_None); // same
+        AddGoalActor(goal, 3, 'DataLinkTrigger37', PHYS_None); // DL_ButtonWarning: You will stay away from the coolant controls.  I will be destroyed if the reactors become unstable, and without me there will be chaos.
+        loc = AddGoalLocation("15_AREA51_PAGE", "Coolant B13", NORMAL_GOAL | VANILLA_GOAL, vect(1362.221191,-1212.041992,-596.846680), rot(11200, -16088, 0));
+
+        goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 3 Control", GOAL_TYPE1 | NORMAL_GOAL, 'Keypad5', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger17', PHYS_None); // DL_Blue_Fusion: That's one of the blue-fusion reactors.  You need to shut down all four.
+        loc = AddGoalLocation("15_AREA51_PAGE", "Ground Floor", NORMAL_GOAL | VANILLA_GOAL, vect(192.212402,2712.242676,-616.736328), rot(0, -45056, 0));
+
+        goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 4 Control", GOAL_TYPE1 | NORMAL_GOAL, 'Keypad6', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger19', PHYS_None); // DL_Blue_Fusion
+        loc = AddGoalLocation("15_AREA51_PAGE", "Radioactive Room", NORMAL_GOAL | VANILLA_GOAL, vect(-1403.303711,3341.983887,-224.736328), rot(0, -61760, 0));
+
+        goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 2 Control", GOAL_TYPE1 | NORMAL_GOAL, 'Keypad1', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger18', PHYS_None); // DL_Blue_Fusion
+        loc = AddGoalLocation("15_AREA51_PAGE", "Under Page", NORMAL_GOAL | VANILLA_GOAL, vect(-14.347168,2478.800781,-224.736328), rot(0, -61568, 0));
+
+        goal = AddGoal("15_AREA51_PAGE", "Blue Fusion Reactor 1 Control", GOAL_TYPE1 | NORMAL_GOAL, 'Keypad0', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger21', PHYS_None); // DL_Blue_Fusion
+        loc = AddGoalLocation("15_AREA51_PAGE", "Observation Deck", NORMAL_GOAL | VANILLA_GOAL, vect(-138.971191,1310.160156,223.263672), rot(0, -36944, 0));
+
+        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+            if (#bool(shuffleucswitches)){
+                //Shuffle the UC switches themselves
+                goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
+                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1 | VANILLA_GOAL, vect(1705,2064,276), rot(0, 16384, 0));
+
+                goal = AddGoal("15_AREA51_PAGE", "Middle UC Shutdown", GOAL_TYPE1| NORMAL_GOAL, 'DeusExMover51', PHYS_MovingBrush);
+                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(-650,968,-168), rot(0, 16384, 0));
+
+                goal = AddGoal("15_AREA51_PAGE", "Bottom UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover49', PHYS_MovingBrush);
+                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(1788,2117,-559), rot(0, 32768, 0));
+            } else {
+                //Only use the rooms as extra locations
+                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1, vect(1820,2210,290), rot(0, 32768, 0));
+                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL, vect(-784,1056,-165), rot(0, 0, 0));
+                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL, vect(1700,1983,-555), rot(0, 16384, 0));
+            }
+        }
+
+        return 154;
+
+        break;
     }
 
-    return 151;
+    return mission+1000;
 }
 
 function PreFirstEntryMapFixes()
@@ -276,7 +339,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             dctext = dctext $ "\"a51\" and the password is \"xx15yz\".|n|n";
             dctext = dctext $ "BTW, be careful -- a squad made it out before I managed to lock the doors: they headed for the warehouse and then I lost contact with them.|n|n--Hawkins";
 
-            dc2 = SpawnDatacubePlaintext(dc1.Location, dc1.Rotation, dctext);
+            dc2 = SpawnDatacubePlaintext(dc1.Location, dc1.Rotation, dctext, "A51BlastDoorComputerHintCube");
             if( dc2 != None ){
                 l("DXRMissions spawned "$ dc2 @ dctext @ dc2.Location);
                 dc1.Destroy();

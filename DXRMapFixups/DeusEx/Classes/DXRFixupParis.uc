@@ -26,6 +26,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NicoletteDuclare nico;
     local #var(prefix)NanoKey k;
     local DXRMoverSequenceTrigger elevatortrig;
+    local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -50,7 +51,6 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)WIB',wib){
                 wib.UnfamiliarName="Agent Hela";
             }
-            AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
             if(!dxr.flags.IsReducedRando()) {
@@ -67,9 +67,17 @@ function PreFirstEntryMapFixes()
 
             class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
-            class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
-            class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
+        } else {
+            AddSwitch( vect(-2174.426758,1208.133789,-6.660000), rot(0,0,0), 'catacombs_blastdoorB' );
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(-76,-3450,-280));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-748,601,-256));
         }
+        AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
+        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
+
         break;
 
     case "10_PARIS_CHATEAU":
@@ -79,21 +87,6 @@ function PreFirstEntryMapFixes()
             d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
             d.OutEvents[0] = 'everettsignaldoor';
             AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
-
-            //speed up the secret door...
-            foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
-                d.OutDelays[1] = 0;
-                d.OutDelays[2] = 0;
-                d.OutDelays[3] = 0;
-                d.OutEvents[2] = '';
-                d.OutEvents[3] = '';
-            }
-            foreach AllActors(class'DeusExMover', m, 'secret_candle') {
-                m.MoveTime = 0.5;
-            }
-            foreach AllActors(class'DeusExMover', m, 'cellar_door') {
-                m.MoveTime = 1;
-            }
 
             SetAllLampsState(false, false, false); // surely Nicolette didn't leave all the lights on when she moved out
 
@@ -122,18 +115,25 @@ function PreFirstEntryMapFixes()
             ft.bTriggerOnceOnly = false;
             ft.FlagName = 'ChateauInCellar';
         }
+
+        //speed up the secret door...
+        foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
+            d.OutDelays[1] = 0;
+            d.OutDelays[2] = 0;
+            d.OutDelays[3] = 0;
+            d.OutEvents[2] = '';
+            d.OutEvents[3] = '';
+        }
+        foreach AllActors(class'DeusExMover', m, 'secret_candle') {
+            m.MoveTime = 0.5;
+        }
+        foreach AllActors(class'DeusExMover', m, 'cellar_door') {
+            m.MoveTime = 1;
+        }
+
         break;
     case "10_PARIS_METRO":
         if (VanillaMaps){
-            //If neither flag is set, JC never talked to Jaime, so he just didn't bother
-            if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
-                //Need to pretend he *was* recruited, so that he doesn't spawn
-                dxr.flagbase.SetBool('JaimeRecruited',True);
-            }
-            foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-                RemoveFears(j);
-            }
-
             //Add a key for the media store
             if(!dxr.flags.IsZeroRando()) {
                 //On the table in the cafe
@@ -163,6 +163,16 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
         }
+
+        //If neither flag is set, JC never talked to Jaime, so he just didn't bother
+        if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
+            //Need to pretend he *was* recruited, so that he doesn't spawn
+            dxr.flagbase.SetBool('JaimeRecruited',True);
+        }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
+        }
+
         break;
 
     case "10_PARIS_CLUB":
@@ -184,13 +194,19 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(true, true, false, vect(-1821.85, -351.37, -207.11), 200.0); // the two Lamp3s on the desks near the back exit, but not the one where the accountant is
 
         Spawn(class'PlaceholderItem',,, vectm(-607.8,-1003.2,59)); //Table near Nicolette Vanilla
-        Spawn(class'PlaceholderItem',,, vectm(-239.927216,499.098633,43)); //Ledge near club owner
-        Spawn(class'PlaceholderItem',,, vectm(-1164.5,1207.85,-133)); //Table near biocell guy
+        if (VanillaMaps) {
+            Spawn(class'PlaceholderItem',,, vectm(-239.927216,499.098633,43)); //Ledge near club owner
+            Spawn(class'PlaceholderItem',,, vectm(-1164.5,1207.85,-133)); //Table near biocell guy
+            Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(-500,570,0)); //Ledge near club owner
+            Spawn(class'PlaceholderItem',,, vectm(-895,1475,-135)); //Table near biocell guy
+            Spawn(class'PlaceholderItem',,, vectm(-1745,-570,-160)); //Club back room
+        }
         Spawn(class'PlaceholderItem',,, vectm(-1046,-1393,-145)); //Bathroom counter 1
         Spawn(class'PlaceholderItem',,, vectm(-1545.5,-1016.7,-145)); //Bathroom counter 2
         Spawn(class'PlaceholderItem',,, vectm(-1464,-1649.6,-197)); //Bathroom stall 1
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
-        Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
 
         break;
     case "11_PARIS_UNDERGROUND":
@@ -199,12 +215,19 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), toby.Location, toby.CollisionRadius+5, toby.CollisionHeight+5);
             hoverHint.SetBaseActor(toby);
         }
-
-        Spawn(class'PlaceholderItem',,, vectm(2268.5,-563.7,-101)); //Near ATM
-        Spawn(class'PlaceholderItem',,, vectm(408.3,768.7,-37)); //Near Mechanic
-        Spawn(class'PlaceholderItem',,, vectm(-729,809.5,-1061)); //Bench at subway
-        Spawn(class'PlaceholderItem',,, vectm(-733,-251,-1061)); //Bench at subway
-        Spawn(class'PlaceholderItem',,, vectm(300.7,491,-1061)); //Opposite side of tracks
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(2268.5,-563.7,-101)); //Near ATM
+            Spawn(class'PlaceholderItem',,, vectm(408.3,768.7,-37)); //Near Mechanic
+            Spawn(class'PlaceholderItem',,, vectm(-729,809.5,-1061)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(-733,-251,-1061)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(300.7,491,-1061)); //Opposite side of tracks
+        } else {
+            Spawn(class'PlaceholderItem',,, vectm(-1135,3000,-125)); //Near ATM
+            Spawn(class'PlaceholderItem',,, vectm(-855,2260,-150)); //Benches near ATM
+            Spawn(class'PlaceholderItem',,, vectm(1155,1150,-320)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(1150,430,-320)); //Bench at subway
+            Spawn(class'PlaceholderItem',,, vectm(1145,1370,-365)); //Plants near subway
+        }
         break;
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
@@ -229,6 +252,18 @@ function PreFirstEntryMapFixes()
                 }
 
             }
+        } else {
+            //Items in an unopenable shop window (Nutella store)
+            foreach RadiusActors(class'Actor',a,100,vectm(-4635,-4110,280)){
+                if (Inventory(a)!=None || #var(DeusExPrefix)Decoration(a)!=None){
+                    a.bIsSecretGoal=true;
+                }
+            }
+            foreach RadiusActors(class'Actor',a,100,vectm(-5625,-3610,350)){
+                if (Inventory(a)!=None || #var(DeusExPrefix)Decoration(a)!=None){
+                    a.bIsSecretGoal=true;
+                }
+            }
         }
         break;
     case "11_PARIS_EVERETT":
@@ -243,6 +278,8 @@ function PreFirstEntryMapFixes()
                 cs.specialOptions[1].TriggerText="";
             }
         }
+
+        MakeTurretsNonHostile(); //Revision has a turret that is in "attack everything" mode
 
         foreach AllActors(class'#var(prefix)MorganEverett', everett) {
             // Everett's vanilla BarkBindName is "Man"
@@ -262,12 +299,38 @@ function PreFirstEntryMapFixes()
     }
 }
 
-function AnyEntryMapFixes()
+function SpawnLeMerchant(vector loc, rotator rot)
 {
     local DXRNPCs npcs;
     local DXREnemies dxre;
     local ScriptedPawn sp;
     local Merchant m;
+
+    if(dxr.flags.settings.swapitems > 0) {
+        // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
+        // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
+        npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
+        if(npcs != None) {
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, class'#var(prefix)HazMatSuit');
+        }
+        // give him weapons to defend himself
+        dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+        if(dxre != None && sp != None) {
+            sp.bKeepWeaponDrawn = true;
+            GiveItem(sp, class'#var(prefix)WineBottle');
+            dxre.RandomizeSP(sp, 100);
+            RemoveFears(sp);
+            sp.ChangeAlly('Player', 0.0, false);
+            sp.MaxProvocations = 0;
+            sp.AgitationSustainTime = 3600;
+            sp.AgitationDecayRate = 0;
+        }
+    }
+
+}
+
+function AnyEntryMapFixes()
+{
     local TobyAtanwe toby;
     local Conversation c;
     local ConEvent ce, cePrev;
@@ -275,29 +338,20 @@ function AnyEntryMapFixes()
     local ConEventSetFlag cesf;
     local ConEventAddSkillPoints ceasp;
     local ConEventTransferObject ceto;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL)
     {
     case "10_PARIS_CATACOMBS":
-        if(dxr.flags.settings.swapitems > 0) {
-            // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
-            // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
-            npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
-            if(npcs != None) {
-                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384), class'#var(prefix)HazMatSuit');
-            }
-            // give him weapons to defend himself
-            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-            if(dxre != None && sp != None) {
-                sp.bKeepWeaponDrawn = true;
-                GiveItem(sp, class'#var(prefix)WineBottle');
-                dxre.RandomizeSP(sp, 100);
-                RemoveFears(sp);
-                sp.ChangeAlly('Player', 0.0, false);
-                sp.MaxProvocations = 0;
-                sp.AgitationSustainTime = 3600;
-                sp.AgitationDecayRate = 0;
-            }
+        if (VanillaMaps){
+            SpawnLeMerchant(vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384));
+        }
+        break;
+    case "10_PARIS_ENTRANCE": //Revision splits Paris into a few more maps.  This is the first one
+        if (!VanillaMaps){
+            SpawnLeMerchant(vectm(-2222,3500,1240), rotm(0, -10000, 0, 16384));
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":

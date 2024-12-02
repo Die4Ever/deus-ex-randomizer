@@ -168,7 +168,7 @@ function CheckConfig()
         player.bAskedToTrain = false;
         player.SaveConfig();
     }
-    if( VersionOlderThan(config_version, 3,2,3,3) ) {
+    if( VersionOlderThan(config_version, 3,2,5,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -215,6 +215,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRHordeMode";
     //modules_to_load[i++] = "DXRKillBobPage";
     modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRZombies";
     modules_to_load[i++] = "DXRLoadouts";
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";
@@ -234,6 +235,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRGrenades";
     modules_to_load[i++] = "DXRCameraModes";
     modules_to_load[i++] = "DXRHalloween";
+    modules_to_load[i++] = "DXRBingoCampaign";
 }
 
 function hx_modules()
@@ -255,6 +257,7 @@ function hx_modules()
     modules_to_load[i++] = "DXREnemies";
     modules_to_load[i++] = "DXRHordeMode";
     modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRZombies";
     modules_to_load[i++] = "DXRLoadouts";
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";
@@ -290,6 +293,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXREnemies";
     modules_to_load[i++] = "DXRHordeMode";
     modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRZombies";
     modules_to_load[i++] = "DXRLoadouts";
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";
@@ -335,6 +339,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXREnemies";
     modules_to_load[i++] = "DXRHordeMode";
     modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRZombies";
     modules_to_load[i++] = "DXRLoadouts";
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";

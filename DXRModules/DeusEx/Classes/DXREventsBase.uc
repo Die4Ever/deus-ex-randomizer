@@ -27,7 +27,7 @@ struct ActorWatchItem {
     var Actor a;
     var String BingoEvent;
 };
-var ActorWatchItem actor_watch[100];
+var ActorWatchItem actor_watch[150];
 var int num_watched_actors;
 
 simulated function string tweakBingoDescription(string event, string desc);
@@ -63,6 +63,18 @@ function CheckWatchedActors() {
         num_watched_actors--;
         actor_watch[i] = actor_watch[num_watched_actors];
         i--;// recheck this slot on the next iteration
+    }
+}
+
+function ReplaceWatchedActor(Actor a, Actor n)
+{
+    local int i;
+
+    for (i=0;i<num_watched_actors;i++){
+        if (actor_watch[i].a == a) {
+            actor_watch[i].a=n;
+            return;
+        }
     }
 }
 
@@ -587,9 +599,12 @@ static function string GetRandomizedName(Actor a)
     return sp.FamiliarName;
 }
 
-static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddPlayerDeath(DXRando dxr, PlayerPawn p, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXREvents ev;
+    local #var(PlayerPawn) player;
+
+    player = #var(PlayerPawn)(p);
     class'DXRStats'.static.AddDeath(player);
 
     if(#defined(injections))
@@ -1271,7 +1286,9 @@ function bool CheckBingoWin(DXRando dxr, int numBingos)
     if(#defined(hx)) return false;
 
     if (dxr.flags.settings.bingo_win > 0){
-        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
+        if (dxr.flags.IsBingoCampaignMode()) {
+            return DXRBingoCampaign(class'DXRBingoCampaign'.static.Find()).HandleBingo(numBingos);
+        } else if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
             BingoWinScreen();

@@ -13,6 +13,7 @@ const WaltonWareHardcore = 10;
 const WaltonWarex3 = 11;
 const ZeroRandoPlus = 12;
 const OneItemMode = 13;
+const BingoCampaign = 14;
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -135,6 +136,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 50;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 1;
     difficulty_settings[i].skills_independent_levels = 0;
@@ -183,6 +185,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 #endif
@@ -210,6 +213,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 10;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 0;
@@ -258,6 +262,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -284,6 +289,7 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 20;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 0;
@@ -332,6 +338,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -358,9 +365,10 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 40;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
-    difficulty_settings[i].skills_independent_levels = 100;
+    difficulty_settings[i].skills_independent_levels = 1;
     difficulty_settings[i].banned_skills = 9;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
@@ -406,6 +414,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -432,9 +441,10 @@ function CheckConfig()
     difficulty_settings[i].bot_weapons = 50;
     difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
+    more_difficulty_settings[i].reanimation = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
-    difficulty_settings[i].skills_independent_levels = 100;
+    difficulty_settings[i].skills_independent_levels = 1;
     difficulty_settings[i].banned_skills = 9;
     difficulty_settings[i].banned_skill_levels = 9;
     difficulty_settings[i].minskill = 50;
@@ -480,6 +490,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
+    more_difficulty_settings[i].aug_loc_rando = 0;
     more_difficulty_settings[i].splits_overlay = 0;
     i++;
 
@@ -534,6 +545,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.enemies_nonhumans = 0;
         settings.bot_weapons = 0;
         settings.enemyrespawn = 0;
+        moresettings.reanimation = 0;
         settings.skills_disable_downgrades = 0;
         settings.skills_reroll_missions = 0;
         settings.skills_independent_levels = 0;
@@ -677,11 +689,19 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
     }
+    else if (IsBingoCampaignMode()) {
+        settings.bingo_win = 1;
+        settings.bingo_freespaces = 5;
+        settings.banned_skills = 0;
+        bingo_duration = 1;
+        bingo_scale = 0;
+    }
     else if(IsHordeMode()) {
 #ifndef hx
         settings.CombatDifficulty *= 0.75;
 #endif
         autosave = 5; // Ironman, autosaves and manual saves disabled
+        settings.merchants = 100;
         // horde mode handles the greenbots itself
         settings.medbots = 0;
         settings.repairbots = 0;
@@ -695,7 +715,14 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     if (IsHalloweenMode()){
         clothes_looting = 1;
         settings.speedlevel = 0;// in DXRLoadouts we override level 0 speed to mean lvl 1 run silent
-        settings.enemyrespawn = 20;
+        moresettings.reanimation = 20;
+        switch(difficulty) {
+            case 0: moresettings.reanimation = 25; break;
+            case 1: moresettings.reanimation = 25; break;
+            case 2: moresettings.reanimation = 20; break;// Hard
+            case 3: moresettings.reanimation = 17; break;
+            case 4: moresettings.reanimation = 15; break;
+        }
     } else {
         clothes_looting = 0;
     }
@@ -720,14 +747,17 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
     if(slot--==0) return HalloweenEntranceRando;
-    if(slot--==0) return WaltonWareHalloween;
-    if(slot--==0) return WaltonWareHalloweenEntranceRando;
+
     if(slot--==0) return WaltonWare;
+    if(slot--==0) return WaltonWareHalloween;
     if(slot--==0) return WaltonWareEntranceRando;
+    if(slot--==0) return WaltonWareHalloweenEntranceRando;
     if(!VersionIsStable()) {
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
     }
+    if(slot--==0) return BingoCampaign;
+
     if(slot--==0) return ZeroRando;
     if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
@@ -736,7 +766,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return SeriousSam;
     if(slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
-    if(!VersionIsStable()) if(slot--==0) return OneItemMode;
+    if(slot--==0) return OneItemMode;
     return 999999;
 }
 
@@ -785,6 +815,11 @@ function string GameModeName(int gamemode)
         return "Halloween Mode";// maybe needs a better name
     case OneItemMode:
         return "One Item Mode";
+    case BingoCampaign:
+        if (#defined(vanilla)) {
+            return "Mr. Page's Mean Bingo Machine";
+        }
+        return "";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -840,6 +875,11 @@ function bool IsHalloweenMode()
 function bool IsOneItemMode()
 {
     return gamemode == OneItemMode;
+}
+
+function bool IsBingoCampaignMode()
+{
+    return gamemode == BingoCampaign;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
@@ -900,6 +940,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.bot_weapons = 0;
     settings.bot_stats = 0;
     settings.enemyrespawn = 0;
+    moresettings.reanimation = 0;
 
     settings.turrets_move = 0;
     settings.turrets_add = 0;
@@ -971,9 +1012,11 @@ function int ScoreFlags()
     score += ClampFlagValue(settings.bot_stats,0,100);
     if(settings.enemyrespawn > 0 && settings.enemyrespawn < 1000)
         score += 1500 - settings.enemyrespawn;
+    if(moresettings.reanimation > 0 && moresettings.reanimation < 100)
+        score += 5 * (150 - moresettings.reanimation);
     //settings.skills_disable_downgrades = 5;
     //settings.skills_reroll_missions = 5;
-    //settings.skills_independent_levels = 100;
+    //settings.skills_independent_levels = 1;
     score += ClampFlagValue(settings.banned_skills,0,100) * 30;
     score += ClampFlagValue(settings.banned_skill_levels,0,100) * 30;
     score += sqrt(settings.minskill) * 60; //Square root so the bonus tapers off as you get more extreme

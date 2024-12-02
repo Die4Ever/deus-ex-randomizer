@@ -24,6 +24,8 @@ var config float musicChangeTimer;
 var byte savedSection;
 var byte savedCombatSection;
 var byte savedConvSection;
+var string OggTrackName;
+
 
 var #var(PlayerPawn) p;
 var config Music PrevSong;
@@ -32,6 +34,7 @@ var config byte PrevSongSection;
 var config byte PrevSavedSection;
 var config byte PrevSavedCombatSection;
 var config byte PrevSavedConvSection;
+var config string PrevOggTrackName;
 
 var byte OutroSection;
 var byte DyingSection;
@@ -69,12 +72,16 @@ function Timer()
 
 function RememberMusic()
 {
-    if(p==None || p.Song == None) return;
+    local bool usingOgg;
+
+    usingOgg = class'DXRActorsBase'.static.IsUsingOggMusic(player());
+
+    if(p==None || (!usingOgg && p.Song == None)) return;
 
     // save us writing to the config file
     if(
         PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == savedSection
-        && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection
+        && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection && PrevOggTrackName == OggTrackName
     ) {
         return;
     }
@@ -85,6 +92,7 @@ function RememberMusic()
     PrevSavedSection = savedSection;
     PrevSavedCombatSection = savedCombatSection;
     PrevSavedConvSection = savedConvSection;
+    PrevOggTrackName = OggTrackName;
     SaveConfig();
 }
 
@@ -126,7 +134,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
         use_random_music = False;
     }
 #ifdef revision
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack){
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())){
         use_random_music = False;
         play_music=False;
     }
@@ -167,12 +175,27 @@ function AnyEntry()
     if(music != None) {
         allowCombat = music.allowCombat;
     }
+
+    #ifdef revision
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) {
+        PlayRandomOggSong(true);
+        return;
+    }
+    #endif
+
     PlayRandomSong(true);
 }
 
 function string GetCurrentSongName()
 {
     local string p, s;
+
+    #ifdef revision
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) {
+        return PrevOggTrackName;
+    }
+    #endif
+
     p = string(LevelSong);
     s = string(LevelSong.Name);
     if(p ~= (s$"."$s))
@@ -222,6 +245,73 @@ function GetLevelSong(bool setseed)
     savedConvSection = ConvSection;
 }
 
+#ifdef revision
+
+function GetLevelOggSong(bool setseed, DXOggMusicManager mm)
+{
+    local string newSong, SongString;
+    local string AmbientIntroOggFile, AmbientOggFile, CombatIntroOggFile;
+    local string CombatOggFile, ConversationIntroOggFile, ConversationOggFile;
+    local string OutroOggFile, DeathOggFile;
+    local int i;
+    local DXRMusic music;
+
+    if(setseed) {
+        //Revision stores the original song names in flags, but the flags aren't ready by the time we get here...
+        //It gets set in SetMusicPackage, called in FirstFrame of the MissionScript
+        //SongString = dxr.flagbase.GetName('MusicPackageTrack') $"."$ dxr.flagbase.GetName('MusicPackageTrack');
+        SongString = dxr.localURL;
+
+        i = InStr(SongString,"_");
+        if (i!=-1){
+            SongString = Mid(SongString,i);
+        }
+        SetGlobalSeed(SongString);// matching songs will stay matching
+    } else {
+        SongString="Random";
+        SetGlobalSeed(FRand());
+    }
+
+    music = DXRMusic(dxr.FindModule(class'DXRMusic'));
+    if(music == None) {
+        return;
+    }
+
+    music._GetOggLevelSong(newSong,AmbientIntroOggFile,AmbientOggFile,DeathOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile);
+
+    if (newSong==PrevOggTrackName) return; //Don't need to reset the music
+
+    mm.SetTracksManual(AmbientIntroOggFile,AmbientOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile,DeathOggFile,OutroOggFile=="");
+
+    OggTrackName = newSong;
+    RememberMusic();
+
+    //Player().ClientMessage("GetLevelOggSong for music track: "$SongString$"  ambient: "$mi.MusicInfo.AmbientOggFile);
+    l("GetLevelOggSong() "$SongString@newSong@AmbientIntroOggFile@AmbientOggFile@CombatIntroOggFile@CombatOggFile@ConversationIntroOggFile@ConversationOggFile@OutroOggFile@DeathOggFile);
+
+}
+
+function PlayRandomOggSong(bool setseed)
+{
+    local DXOggMusicManager musicMan;
+    local DXOggMusicInfo    musicInfo;
+
+    if (!class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags)) return;
+
+
+    foreach Player().GetEntryLevel().AllActors(class'DXOggMusicManager',musicMan){break;}
+    foreach AllActors(class'DXOggMusicInfo',musicInfo){break;}
+
+    if (musicMan==None || musicInfo==None){
+        l("Couldn't find one of MusicManager "$musicMan$" or MusicInfo "$musicInfo);
+        return;
+    }
+
+    GetLevelOggSong(setseed,musicMan);
+}
+
+#endif
+
 function PlayRandomSong(bool setseed)
 {
     local music NewSong;
@@ -233,10 +323,9 @@ function PlayRandomSong(bool setseed)
     l("PlayRandomSong " $ setseed @ p);
     if(p == None) return;
 
-#ifdef revision
-    //Don't play music via the DXRMusicPlayer if Revision soundtrack is enabled
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) return;
-#endif
+    //Don't play UMX music via the DXRMusicPlayer if Revision soundtrack is enabled
+    //Randomize the OGG music in the DXOggMusicInfo instead
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) return;
 
     continuous_setting = class'MenuChoice_ContinuousMusic'.default.value;
     rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
@@ -310,12 +399,24 @@ function PlayRandomSong(bool setseed)
 function SkipSong()
 {
     local DXRMusic music;
+    local bool usingOgg;
 
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
     if(music != None) {
         music.MarkSkippedSong(GetCurrentSongName());
     }
-    PlayRandomSong(true);
+
+    //Don't play UMX music via the DXRMusicPlayer if Revision soundtrack is enabled
+    //Randomize the OGG music in the DXOggMusicInfo instead
+    usingOgg = class'DXRActorsBase'.static.IsUsingOggMusic(player());
+
+    if (usingOgg){
+        #ifdef revision
+        PlayRandomOggSong(true);
+        #endif
+    } else {
+        PlayRandomSong(true);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -338,11 +439,9 @@ simulated event Tick(float deltaTime)
     if(p == None && string(Level.Game.class.name) == "DXRandoTests")
         return;
 
-#ifdef revision
     //Don't do anything with the music player if Revision soundtrack is enabled
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack)
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player()))
         return;
-#endif
 
     // DEUS_EX AMSD In singleplayer, do the old thing.
     // In multiplayer, we can come out of dying.

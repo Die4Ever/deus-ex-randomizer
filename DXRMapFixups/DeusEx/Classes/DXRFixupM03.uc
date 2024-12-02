@@ -6,6 +6,8 @@ function CheckConfig()
 
     add_datacubes[i].map = "03_NYC_UNATCOHQ";
     add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+    add_datacubes[i].plaintextTag = "JCCompPassword";
     i++;
 
     Super.CheckConfig();
@@ -69,6 +71,7 @@ function PreFirstEntryMapFixes()
     local Actor a;
     local Trigger t;
     local Teleporter tele;
+    local DynamicTeleporter dt;
     local #var(prefix)NanoKey k;
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
@@ -83,6 +86,7 @@ function PreFirstEntryMapFixes()
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
+    local #var(DeusExPrefix)Mover dxm;
 
     local bool VanillaMaps;
 
@@ -99,6 +103,7 @@ function PreFirstEntryMapFixes()
         }
 
         if(VanillaMaps) {
+            //Revision already has a switch to call the phonebooth down
             AddSwitch(vect(-4621.640137, 2902.651123, -650.285461), rot(0,0,0), 'ElevatorPhone');
         }
 
@@ -183,19 +188,19 @@ function PreFirstEntryMapFixes()
 
             //Button to extend sewer platform from the other side
             AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
-
-            class'PlaceholderEnemy'.static.Create(self,vectm(-326,1494,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(-422,1393,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(352,1510,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(451,1397,48),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1154,170,224),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(1044,94,224),,'Sitting');
-            class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
-
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(-326,1494,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-422,1393,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(352,1510,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(451,1397,48),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1154,170,224),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(1044,94,224),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
+
         break;
 
     case "03_NYC_AIRFIELD":
@@ -250,10 +255,22 @@ function PreFirstEntryMapFixes()
                     tele.SetCollisionSize(tele.CollisionRadius, tele.CollisionHeight + 10);
                 }
             }
+
+            foreach AllActors(class'Teleporter', tele) {
+                if (tele.event != 'BHElevatorEnt') continue;
+
+                tele.event = '';
+                tele.SetCollision(false, false, false);
+                break;
+            }
+            dt = Spawn(class'DynamicTeleporter',,, vectm(2048.0, -2827.0, 56.1));
+            dt.SetCollisionSize(50.0, 40.0);
+            dt.SetDestination("03_NYC_AirfieldHeliBase",, "BHElevatorEnt");
+
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
@@ -273,15 +290,23 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps){
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
+            //Revision already has a switch here (although it's small and hard to see)
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
         }
         break;
 
     case "03_NYC_MOLEPEOPLE":
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
+            if( dxm.KeyIDNeeded == 'MoleRestroomKey' ) dxm.Tag = 'BathroomDoor';
+        }
+
+        //The Leader can go hostile so easily... just make that not possible
+        foreach AllActors(class'#var(prefix)Terrorist',terror,'MoleTerroristLeader'){
+            terror.ChangeAlly('Player',0,True);//Permanently neutral
+            break;
+        }
+
         if (VanillaMaps){
-            foreach AllActors(class'Mover', m, 'DeusExMover') {
-                if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
-            }
             AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
 
             foreach AllActors(class'Mover', m, 'WaterChanges') {
@@ -305,28 +330,25 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            //The Leader can go hostile so easily... just make that not possible
-            foreach AllActors(class'#var(prefix)Terrorist',terror){
-                if (terror.BindName=="TerroristLeader"){
-                    terror.ChangeAlly('Player',0,True);//Permanently neutral
-                    break;
-                }
-            }
-
-            Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
-            Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
-            Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
-            Spawn(class'PlaceholderItem',,, vectm(395,830,74)); //Around Pillars
-            Spawn(class'PlaceholderItem',,, vectm(-2,633,74));//More pillars
-            Spawn(class'PlaceholderItem',,, vectm(-465,562,74));//Even more pillars
-            Spawn(class'PlaceholderItem',,, vectm(-659,990,107)); //Pillar stairs
-            Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
-            Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
-            Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
-
             class'PlaceholderEnemy'.static.Create(self,vectm(4030,-2958,112),,'Shitting');
 
+        } else {
+            //Revision
+            AddSwitch( vect(3745,-2592,140), rot(0, 0, 0), 'BathroomDoor' );
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
+        Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
+        Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
+        Spawn(class'PlaceholderItem',,, vectm(395,830,74)); //Around Pillars
+        Spawn(class'PlaceholderItem',,, vectm(-2,633,74));//More pillars
+        Spawn(class'PlaceholderItem',,, vectm(-465,562,74));//Even more pillars
+        Spawn(class'PlaceholderItem',,, vectm(-659,990,107)); //Pillar stairs
+        Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
+        Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
+        Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
+
+
         break;
 
     case "03_NYC_747":
@@ -372,6 +394,7 @@ function PreFirstEntryMapFixes()
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         FixAlexsEmail();
+        MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
         //Move weapon mod out of Manderley's secret (inaccessible) safe
         foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
@@ -412,17 +435,32 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
-        Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
         Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
         Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
-        Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
-        Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+        if (VanillaMaps){
+            Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+
+            Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
+            Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
+
+        } else {
+            //Revision Kitchen/Breakroom is in a different location
+            Spawn(class'PlaceholderItem',,, vectm(295,1385,485)); //Breakroom table
+            Spawn(class'PlaceholderItem',,, vectm(765,1500,440)); //Kitchen Counter
+
+            //Level 4/MJ12 Lab area is blocked off in Revision, these are alternate locations for those placeholders
+            Spawn(class'PlaceholderItem',,, vectm(110,-1050,-20)); //Desk at entrance to jail area
+            Spawn(class'PlaceholderItem',,, vectm(1280,-180,-55)); //Next to couch/plant outside medical
+            Spawn(class'PlaceholderItem',,, vectm(1335,300,-35)); //Under desk near medical beds
+            Spawn(class'PlaceholderContainer',,, vectm(1490,975,-20)); //Near blocked door down to level 4
+
+        }
         Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
         Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
         Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
-        Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
