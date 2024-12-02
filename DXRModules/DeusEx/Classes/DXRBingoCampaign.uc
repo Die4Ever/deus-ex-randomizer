@@ -75,7 +75,7 @@ function FirstEntry()
 
                 AddBingoEventBlocker('everettsignaldoor', GetBingoMissionFlag(10));
 
-                dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from spawning prematurely
+                dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from being unhidden prematurely
                 ft = Spawn(class'#var(prefix)FlagTrigger',, 'everettsignaldoor_bingoblocked');
                 ft.flagName = 'DXRando_CommandosUnhidden';
                 ft.flagValue = true;
@@ -192,7 +192,6 @@ function NewBingoBoard()
 
     dxr.flags.settings.starting_map = dxr.dxInfo.missionNumber * 10;
     dxr.flags.bingoBoardRoll = 0;
-    dxr.flags.bingo_duration = 1;
     events.CreateBingoBoard();
     ClearDataVaultImages(player());
 }
