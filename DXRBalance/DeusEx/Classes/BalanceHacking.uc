@@ -150,28 +150,20 @@ function HandleBiocellButton()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-    local bool bHandled;
     local #var(PlayerPawn) p;
 
     p = #var(PlayerPawn)(player);
-
-    bHandled = False;
 
     if (p==None || btnBiocell==None || p.bZeroRando) return Super.ButtonActivated(buttonPressed);
 
     switch( buttonPressed )
     {
         case btnBiocell:
-            bHandled=True;
             HandleBiocellButton();
-            break;
+            return true;
     }
 
-    if (bHandled){
-        return True;
-    } else {
-        return Super.ButtonActivated(buttonPressed);
-    }
+    return Super.ButtonActivated(buttonPressed);
 }
 
 function UpdateEnergyMeterTimer(int timerID, int invocations, int clientData)
