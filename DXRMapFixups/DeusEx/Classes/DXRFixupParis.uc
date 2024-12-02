@@ -254,12 +254,12 @@ function PreFirstEntryMapFixes()
             }
         } else {
             //Items in an unopenable shop window (Nutella store)
-            foreach RadiusActors(class'Actor',a,100,vect(-4635,-4110,280)){
+            foreach RadiusActors(class'Actor',a,100,vectm(-4635,-4110,280)){
                 if (Inventory(a)!=None || #var(DeusExPrefix)Decoration(a)!=None){
                     a.bIsSecretGoal=true;
                 }
             }
-            foreach RadiusActors(class'Actor',a,100,vect(-5625,-3610,350)){
+            foreach RadiusActors(class'Actor',a,100,vectm(-5625,-3610,350)){
                 if (Inventory(a)!=None || #var(DeusExPrefix)Decoration(a)!=None){
                     a.bIsSecretGoal=true;
                 }
