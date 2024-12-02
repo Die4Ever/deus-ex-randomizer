@@ -1,18 +1,5 @@
 class DXRBingoCampaign extends DXRActorsBase transient;
 
-const BingoFlagM01 = 'DXRando_Mission01_BingoCompleted';
-const BingoFlagM02 = 'DXRando_Mission02_BingoCompleted';
-const BingoFlagM03 = 'DXRando_Mission03_BingoCompleted';
-const BingoFlagM04 = 'DXRando_Mission04_BingoCompleted';
-const BingoFlagM05 = 'DXRando_Mission05_BingoCompleted';
-const BingoFlagM06 = 'DXRando_Mission06_BingoCompleted';
-const BingoFlagM08 = 'DXRando_Mission08_BingoCompleted';
-const BingoFlagM09 = 'DXRando_Mission09_BingoCompleted';
-const BingoFlagM10 = 'DXRando_Mission10_BingoCompleted';
-const BingoFlagM11 = 'DXRando_Mission11_BingoCompleted';
-const BingoFlagM12 = 'DXRando_Mission12_BingoCompleted';
-const BingoFlagM14 = 'DXRando_Mission14_BingoCompleted';
-const BingoFlagM15 = 'DXRando_Mission15_BingoCompleted';
 
 function FirstEntry()
 {
@@ -37,7 +24,7 @@ function FirstEntry()
             break;
         case "03_NYC_AIRFIELD":
             if (IsBingoEnd(3, dxr.flags.bingo_duration)) {
-                AddBingoEventBlocker('MoveHelicopter', BingoFlagM03);
+                AddBingoEventBlocker('MoveHelicopter', GetBingoMissionFlag(3));
             }
             break;
         case "04_NYC_UNATCOISLAND":
@@ -86,10 +73,10 @@ function FirstEntry()
                     loc = mover.Location;
                 }
 
-                AddBingoEventBlocker('everettsignaldoor', BingoFlagM10);
+                AddBingoEventBlocker('everettsignaldoor', GetBingoMissionFlag(10));
 
                 dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from spawning prematurely
-                ft = Spawn(class'FlagTrigger',, 'everettsignaldoor_bingoblocked');
+                ft = Spawn(class'#var(prefix)FlagTrigger',, 'everettsignaldoor_bingoblocked');
                 ft.flagName = 'DXRando_CommandosUnhidden';
                 ft.flagValue = true;
                 ft.flagExpiration = 12;
@@ -112,7 +99,7 @@ function FirstEntry()
             break;
         case "12_Vandenberg_GAS":
             if (IsBingoEnd(12, dxr.flags.bingo_duration)) {
-                AddBingoEventBlocker('UN_BlackHeli', BingoFlagM12);
+                AddBingoEventBlocker('UN_BlackHeli', GetBingoMissionFlag(12));
             }
             break;
         case "14_VANDENBERG_SUB":
@@ -126,8 +113,8 @@ function FirstEntry()
             }
             break;
         case "15_AREA51_FINAL":
-            AddBingoEventBlocker('Merge_helios_exit', BingoFlagM15);
-            AddBingoEventBlocker('destroy_generator', BingoFlagM15);
+            AddBingoEventBlocker('Merge_helios_exit', GetBingoMissionFlag(15));
+            AddBingoEventBlocker('destroy_generator', GetBingoMissionFlag(15));
             foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
                 if (ft.event == 'Merge_helios_exit') {
                     ft.bTriggerOnceOnly = false;
@@ -135,60 +122,63 @@ function FirstEntry()
             }
             break;
         case "15_AREA51_PAGE":
-            AddBingoEventBlocker('kill_page', BingoFlagM15);
+            AddBingoEventBlocker('kill_page', GetBingoMissionFlag(15));
             break;
     }
 }
 
 function AnyEntry()
 {
+    local name flagname;
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.AnyEntry();
 
     if (!IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration)) return;
 
+    flagname = GetBingoMissionFlag(dxr.dxInfo.missionNumber);
+
     switch (dxr.localURL) {
         case "01_NYC_UNATCOISLAND":
-            GetConversation('GotoM02').AddFlagRef(BingoFlagM01, true);
+            GetConversation('GotoM02').AddFlagRef(flagname, true);
             break;
         case "02_NYC_BATTERYPARK":
-            GetConversation('BoatLeaving').AddFlagRef(BingoFlagM02, true);
+            GetConversation('BoatLeaving').AddFlagRef(flagname, true);
             break;
         case "02_NYC_WAREHOUSE":
-            GetConversation('JockExit').AddFlagRef(BingoFlagM02, true);
+            GetConversation('JockExit').AddFlagRef(flagname, true);
             break;
         case "03_NYC_AIRFIELD":
-            GetConversation('M03JockLeave').AddFlagRef(BingoFlagM03, true);
+            GetConversation('M03JockLeave').AddFlagRef(flagname, true);
             break;
         case "04_NYC_BATTERYPARK":
-            GetConversation('GuntherShowdown').AddFlagRef(BingoFlagM04, true);
+            GetConversation('GuntherShowdown').AddFlagRef(flagname, true);
             break;
         case "05_NYC_UNATCOISLAND":
-            GetConversation('M05MeetJock').AddFlagRef(BingoFlagM05, true);
+            GetConversation('M05MeetJock').AddFlagRef(flagname, true);
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
-            GetConversation('M06JockExit').AddFlagRef(BingoFlagM06, true);
+            GetConversation('M06JockExit').AddFlagRef(flagname, true);
             break;
         case "08_NYC_STREET":
-            GetConversation('M08JockExit').AddFlagRef(BingoFlagM08, true);
+            GetConversation('M08JockExit').AddFlagRef(flagname, true);
             break;
         case "09_NYC_GRAVEYARD":
-            GetConversation('M09JockLeave').AddFlagRef(BingoFlagM09, true);
+            GetConversation('M09JockLeave').AddFlagRef(flagname, true);
             break;
         case "10_PARIS_CHATEAU":
             GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
             UpdateCryptDoors();
             break;
         case "11_PARIS_EVERETT":
-            GetConversation('TakeOff').AddFlagRef(BingoFlagM11, true);
+            GetConversation('TakeOff').AddFlagRef(flagname, true);
             break;
         case "12_Vandenberg_GAS":
-            GetConversation('M12JockFinal').AddFlagRef(BingoFlagM12, true);
-            GetConversation('M12JockFinal2').AddFlagRef(BingoFlagM12, true);
+            GetConversation('M12JockFinal').AddFlagRef(flagname, true);
+            GetConversation('M12JockFinal2').AddFlagRef(flagname, true);
             break;
         case "14_OCEANLAB_SILO":
-            GetConversation('JockArea51').AddFlagRef(BingoFlagM14, true);
+            GetConversation('JockArea51').AddFlagRef(flagname, true);
             break;
     }
 }
@@ -242,7 +232,7 @@ function UpdateCryptDoors()
     if (
         dxr.localURL == "10_PARIS_CHATEAU" &&
         dxr.flagbase.GetBool('everettsignal') &&
-        dxr.flagbase.GetBool(BingoFlagM10) &&
+        dxr.flagbase.GetBool(GetBingoMissionFlag(10)) &&
         IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration) &&
         !dxr.flagbase.GetBool('DXRando_CommandosUnhidden')
     ) {
@@ -264,50 +254,8 @@ static function bool IsBingoEnd(int missionNumber, int bingo_duration)
 }
 
 static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {
-    switch (missionNumber) {
-        case 1:
-            expiration = 2;
-            return BingoFlagM01;
-        case 2:
-            expiration = 3;
-            return BingoFlagM02;
-        case 3:
-            expiration = 4;
-            return BingoFlagM03;
-        case 4:
-            expiration = 5;
-            return BingoFlagM04;
-        case 5:
-            expiration = 6;
-            return BingoFlagM05;
-        case 6:
-            expiration = 8;
-            return BingoFlagM06;
-        case 8:
-            expiration = 9;
-            return BingoFlagM08;
-        case 9:
-            expiration = 10;
-            return BingoFlagM09;
-        case 10:
-            expiration = 12;
-            return BingoFlagM10;
-        case 11:
-            expiration = 12;
-            return BingoFlagM11;
-        case 12:
-            expiration = 15;
-            return BingoFlagM12;
-        case 14:
-            expiration = 15;
-            return BingoFlagM14;
-        case 15:
-            expiration = 999;
-            return BingoFlagM15;
-        default:
-            expiration = 0;
-            return '';
-    }
+    expiration = missionNumber+1;
+    return class'DXRInfo'.static.StringToName( "DXRando_Mission" $ missionNumber $ "_BingoCompleted");
 }
 
 function bool HandleBingo(int numBingos)

@@ -240,9 +240,9 @@ final function int SystemTime()
 /*
 ========= STRING FUNCTIONS
 */
-simulated function name StringToName(string s)
+simulated static function name StringToName(string s)
 {
-    return GetDXR().flagbase.StringToName(s);
+    return class'DXRando'.default.dxr.flagbase.StringToName(s);
 }
 
 simulated static final function string StripMapName(string s)
