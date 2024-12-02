@@ -8,13 +8,7 @@ function CreateChoices()
 {
     local bool useTracker;
 
-    useTracker = true;
-
-    #ifdef revision
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack){
-            useTracker=False;
-    }
-    #endif
+    useTracker = !class'DXRActorsBase'.static.IsUsingOggMusic(#var(PlayerPawn)(player));
 
     if (useTracker){
         CreateChoice(class'MenuChoice_ContinuousMusic');

@@ -1858,3 +1858,19 @@ static function bool ChangeInitialAlliance(ScriptedPawn pawn, Name allianceName,
 
     return true;
 }
+
+static function bool IsUsingOggMusic(#var(PlayerPawn) player)
+{
+#ifndef revision
+    return False;
+#else
+    if (!class'DXRMapVariants'.static.IsRevisionMaps(player)) {
+        //Vanilla Maps in Revision only support the original tracker music
+        return False;
+    }else if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack){
+        //If it's Revision Maps and we're using the Revision soundtrack, use OGG options
+        return True;
+    }
+    return False;
+#endif
+}

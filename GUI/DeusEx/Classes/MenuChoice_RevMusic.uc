@@ -2,41 +2,13 @@
 // MenuChoice_RevMusic
 //=============================================================================
 
-class MenuChoice_RevMusic extends DXRMenuUIChoiceEnum;
-
-var DXRMusic m;
-var int num_enabled;
-var int total;
+class MenuChoice_RevMusic extends MenuChoice_UTMusic;
 
 // only need to override GetGameSongs in subclasses, and default actionText
 function GetGameSongs(out string songs[100])
 {
     m.GetRevSongs(songs);
 }
-
-function DXRMusic GetDXRMusic()
-{
-    if(m != None) return m;
-    foreach player.AllActors(class'DXRMusic', m) {
-        return m;
-    }
-    return None;
-}
-
-function SetValue(int newValue)
-{
-    Super.SetValue(newValue);
-    _SaveSetting();
-}
-
-function SetNumEnabledText()
-{
-    local string text;
-    //text = enumText[GetValue()];
-    text = num_enabled $ "/" $ total $ " Songs Enabled";
-    btnInfo.SetButtonText(text);
-}
-
 
 function UpdateTextTimer(int timerID, int invocations, int clientData)
 {
@@ -86,30 +58,6 @@ function _SaveSetting()
         SetNumEnabledText();
     }
 }
-
-// ----------------------------------------------------------------------
-// LoadSetting()
-// ----------------------------------------------------------------------
-
-function LoadSetting()
-{
-    log(self$" LoadSetting");
-    SetInitialOption();
-}
-
-// ----------------------------------------------------------------------
-// ResetToDefault
-// ----------------------------------------------------------------------
-
-function ResetToDefault()
-{
-    log(self$" ResetToDefault");
-    SetValue(0);
-    _SaveSetting();
-}
-
-// ----------------------------------------------------------------------
-// ----------------------------------------------------------------------
 
 defaultproperties
 {

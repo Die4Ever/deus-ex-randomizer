@@ -22,9 +22,7 @@ function bool ButtonActivated( Window buttonPressed )
 
     if(!GetModules()) return true;
 
-#ifdef revision
-    useOgg = class'RevJCDentonMale'.Default.bUseRevisionSoundtrack;
-#endif
+    useOgg = class'DXRActorsBase'.static.IsUsingOggMusic(#var(PlayerPawn)(player));
 
     song = musicplayer.GetCurrentSongName();
     music.SetEnabledSong(song, false);
