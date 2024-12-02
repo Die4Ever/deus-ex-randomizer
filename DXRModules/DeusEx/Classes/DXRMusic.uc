@@ -105,6 +105,7 @@ function AddRevisionSongs()
     if (!#defined(revision)) return;
 
     oggChoices[i++] = MakeOggSongChoice("Revision","Intro","","Intro.ogg","","","","","","",true);
+    oggChoices[i++] = MakeOggSongChoice("Revision","Intro (Sax)","","Main_Title_Alternate.ogg","","","","","","",true);
     oggChoices[i++] = MakeOggSongChoice("PS2","Intro","","Intro.ogg","","","","","","",true);
 
     oggChoices[i++] = MakeOggSongChoice("Revision","M01/M03 UNATCO HQ","01_UNATCOHQ_Ambientintro.ogg","01_UNATCOHQ_Ambient.ogg","01_UNATCOHQ_Death.ogg","","01_UNATCOHQ_Combat.ogg","","01_UNATCOHQ_Convo.ogg","",false);
@@ -170,8 +171,8 @@ function AddRevisionSongs()
     oggChoices[i++] = MakeOggSongChoice("Revision","Superfreighter Below Decks","06_Helibase_Ambientintro.ogg","06_Helibase_Ambient.ogg","09_NYC_Death.ogg","","09_Dockyard_Combat.ogg","","","",false);
     oggChoices[i++] = MakeOggSongChoice("PS2","Brooklyn Naval Yard","","PS2_Naval_Ambient.ogg","PS2_Naval_Death.ogg","","PS2_Naval_Combat.ogg","","PS2_Naval_Convo.ogg","",false);
 
-    oggChoices[i++] = MakeOggSongChoice("Revision","Paris Catacombs","10_Metro_AmbientIntro.ogg","10_Metro_Ambient.ogg","10_Paris_Death.ogg","","10_Paris_Combat.ogg","","10_Paris_Convo.ogg","",false);
-    oggChoices[i++] = MakeOggSongChoice("Revision","Paris Metro","10_Metro_AmbientIntro.ogg","10_Metro_Ambient.ogg","10_Paris_Death.ogg","","10_Paris_Combat.ogg","","10_Paris_Convo.ogg","10_Metro_End.ogg",false);
+    oggChoices[i++] = MakeOggSongChoice("Revision","Paris","10_Metro_AmbientIntro.ogg","10_Metro_Ambient.ogg","10_Paris_Death.ogg","","10_Paris_Combat.ogg","","10_Paris_Convo.ogg","10_Metro_End.ogg",false);
+    oggChoices[i++] = MakeOggSongChoice("Revision","Paris (Sax)","10_Metro_Ambientintro_Alternate.ogg","10_Metro_Ambient_Alternate.ogg","10_Paris_Death.ogg","","10_Paris_Combat_Alternate.ogg","","10_Paris_Convo.ogg","10_Metro_End.ogg",false);
     oggChoices[i++] = MakeOggSongChoice("Revision","Catacombs Tunnels","10_Tunnels_AmbientIntro.ogg","10_Tunnels_Ambient.ogg","10_Paris_Death.ogg","","10_Paris_Combat.ogg","","10_Paris_Convo.ogg","",false);
     oggChoices[i++] = MakeOggSongChoice("Revision","Paris Chateau","10_Chateau_Ambientintro.ogg","10_Chateau_Ambient.ogg","10_Paris_Death.ogg","","10_Chateau_Combat.ogg","","10_Chateau_Convo.ogg","",false);
     oggChoices[i++] = MakeOggSongChoice("Revision","Paris Club","10_Club_AmbientIntro.ogg","10_Club_Ambient.ogg","10_Paris_Death.ogg","","10_Paris_Combat.ogg","","","",false);
