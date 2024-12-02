@@ -1,4 +1,4 @@
-class DynamicMapExit extends MapExit;
+class DynamicMapExit extends #var(prefix)MapExit;
 
 defaultproperties
 {

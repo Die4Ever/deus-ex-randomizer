@@ -74,9 +74,7 @@ function RememberMusic()
 {
     local bool usingOgg;
 
-    #ifdef revision
-    usingOgg = (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack);
-    #endif
+    usingOgg = class'DXRActorsBase'.static.IsUsingOggMusic(player());
 
     if(p==None || (!usingOgg && p.Song == None)) return;
 
@@ -136,7 +134,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
         use_random_music = False;
     }
 #ifdef revision
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack){
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())){
         use_random_music = False;
         play_music=False;
     }
@@ -179,7 +177,7 @@ function AnyEntry()
     }
 
     #ifdef revision
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) {
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) {
         PlayRandomOggSong(true);
         return;
     }
@@ -193,7 +191,7 @@ function string GetCurrentSongName()
     local string p, s;
 
     #ifdef revision
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) {
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) {
         return PrevOggTrackName;
     }
     #endif
@@ -325,11 +323,9 @@ function PlayRandomSong(bool setseed)
     l("PlayRandomSong " $ setseed @ p);
     if(p == None) return;
 
-#ifdef revision
     //Don't play UMX music via the DXRMusicPlayer if Revision soundtrack is enabled
     //Randomize the OGG music in the DXOggMusicInfo instead
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack) return;
-#endif
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) return;
 
     continuous_setting = class'MenuChoice_ContinuousMusic'.default.value;
     rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
@@ -410,11 +406,9 @@ function SkipSong()
         music.MarkSkippedSong(GetCurrentSongName());
     }
 
-#ifdef revision
     //Don't play UMX music via the DXRMusicPlayer if Revision soundtrack is enabled
     //Randomize the OGG music in the DXOggMusicInfo instead
-    usingOgg = (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack);
-#endif
+    usingOgg = class'DXRActorsBase'.static.IsUsingOggMusic(player());
 
     if (usingOgg){
         #ifdef revision
@@ -445,11 +439,9 @@ simulated event Tick(float deltaTime)
     if(p == None && string(Level.Game.class.name) == "DXRandoTests")
         return;
 
-#ifdef revision
     //Don't do anything with the music player if Revision soundtrack is enabled
-    if (class'RevJCDentonMale'.Default.bUseRevisionSoundtrack)
+    if (class'DXRActorsBase'.static.IsUsingOggMusic(player()))
         return;
-#endif
 
     // DEUS_EX AMSD In singleplayer, do the old thing.
     // In multiplayer, we can come out of dying.

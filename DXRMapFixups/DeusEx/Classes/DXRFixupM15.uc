@@ -65,7 +65,7 @@ function CheckConfig()
         "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
 
     //Boxes directly under Page
-    if (class'DXRMapVariants'.static.IsVanillaMaps(player())){
+    if (VanillaMaps){
         add_datacubes[i].Location = vect(6330,-7225,-5550);
     } else {
         add_datacubes[i].Location = vect(160,2350,-180);
@@ -675,10 +675,8 @@ function AnyEntryMapFixes()
     local Gray g;
     local ElectricityEmitter ee;
     local #var(DeusExPrefix)Mover d;
-    local bool RevisionMaps;
     local bool VanillaMaps;
 
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     if(dxr.localURL != "15_AREA51_BUNKER") {

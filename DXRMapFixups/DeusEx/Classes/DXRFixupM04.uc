@@ -98,6 +98,10 @@ function PreFirstEntryMapFixes()
             break;
         }
 
+        foreach AllActors(class'#var(prefix)JoJoFine',jojo){
+            jojo.BarkBindName="JoJoFine";
+        }
+
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
@@ -123,16 +127,14 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
-            foreach AllActors(class'#var(prefix)JoJoFine',jojo){
-                jojo.BarkBindName="JoJoFine";
-            }
-
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
             Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
         } else {
+            Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+
             Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(480,-3775,125)); //Bathroom counter

@@ -86,6 +86,7 @@ function PreFirstEntryMapFixes()
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
+    local #var(DeusExPrefix)Mover dxm;
 
     local bool VanillaMaps;
 
@@ -102,6 +103,7 @@ function PreFirstEntryMapFixes()
         }
 
         if(VanillaMaps) {
+            //Revision already has a switch to call the phonebooth down
             AddSwitch(vect(-4621.640137, 2902.651123, -650.285461), rot(0,0,0), 'ElevatorPhone');
         }
 
@@ -288,15 +290,23 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps){
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
+            //Revision already has a switch here (although it's small and hard to see)
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
         }
         break;
 
     case "03_NYC_MOLEPEOPLE":
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
+            if( dxm.KeyIDNeeded == 'MoleRestroomKey' ) dxm.Tag = 'BathroomDoor';
+        }
+
+        //The Leader can go hostile so easily... just make that not possible
+        foreach AllActors(class'#var(prefix)Terrorist',terror,'MoleTerroristLeader'){
+            terror.ChangeAlly('Player',0,True);//Permanently neutral
+            break;
+        }
+
         if (VanillaMaps){
-            foreach AllActors(class'Mover', m, 'DeusExMover') {
-                if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
-            }
             AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
 
             foreach AllActors(class'Mover', m, 'WaterChanges') {
@@ -320,16 +330,11 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            //The Leader can go hostile so easily... just make that not possible
-            foreach AllActors(class'#var(prefix)Terrorist',terror){
-                if (terror.BindName=="TerroristLeader"){
-                    terror.ChangeAlly('Player',0,True);//Permanently neutral
-                    break;
-                }
-            }
-
             class'PlaceholderEnemy'.static.Create(self,vectm(4030,-2958,112),,'Shitting');
 
+        } else {
+            //Revision
+            AddSwitch( vect(3745,-2592,140), rot(0, 0, 0), 'BathroomDoor' );
         }
 
         Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply

@@ -239,6 +239,8 @@ function PreFirstEntryMapFixes()
 
             SetAllLampsState(false, true, true); // the lamp in Paul's apartment
         } else {
+            Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+
             Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(480,-3775,125)); //Bathroom counter

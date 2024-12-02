@@ -206,9 +206,6 @@ function AfterMovePlayerToStartLocation(GoalLocation Loc)
 function AfterShuffleGoals(int goalsToLocations[32])
 {
     local int g, numGuys,perSquad;
-    local bool RevisionMaps;
-
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if (dxr.localURL == "08_NYC_STREET"){
         numGuys=GetTotalNumAssaultSquadTroops();

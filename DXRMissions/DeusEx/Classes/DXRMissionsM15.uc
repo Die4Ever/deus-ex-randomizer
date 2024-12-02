@@ -100,7 +100,7 @@ function int InitGoals(int mission, string map)
             }
         }
 
-        return 152;
+        return 154;
 
         break;
     }
@@ -204,7 +204,7 @@ function int InitGoalsRev(int mission, string map)
             }
         }
 
-        return 152;
+        return 154;
 
         break;
     }

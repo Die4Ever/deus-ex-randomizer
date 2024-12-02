@@ -207,6 +207,8 @@ function PreFirstEntry()
 
     SetSeed( "DXRFixup PreFirstEntry" );
 
+    TriggerDebug();
+
     OverwriteDecorations();
     FixFlagTriggers();
     FixBeamLaserTriggers();
@@ -280,6 +282,15 @@ function AnyEntry()
     } else {
         class'AugmentationCannister'.default.MustBeUsedOn = "Can only be installed with the help of a MedBot.";
     }
+}
+
+function TriggerDebug()
+{
+    if ('#var(TriggerDebug)'=='' || '#var(TriggerDebug)'=='None') return;
+
+    Player().ClientMessage("Trigger debug enabled for #var(TriggerDebug)");
+
+    Spawn(class'DXRLogTrigger',,'#var(TriggerDebug)');
 }
 
 function FixFOV()

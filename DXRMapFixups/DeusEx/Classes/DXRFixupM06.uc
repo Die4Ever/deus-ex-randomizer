@@ -80,6 +80,7 @@ function PreFirstEntryMapFixes()
     local Rotator rot;
     local Male1 male;
     local GordonQuick gordon;
+    local #var(prefix)Trigger t;
     local int i;
 
     local bool VanillaMaps;
@@ -141,14 +142,15 @@ function PreFirstEntryMapFixes()
                     button.BeginPlay();
                 }
             }
-
-            foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
-                m.bIsDoor=False;
-            }
-            foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay_01'){
-                m.bIsDoor=False;
-            }
         }
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay'){
+            m.bIsDoor=False;
+        }
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay_01'){
+            m.bIsDoor=False;
+        }
+
         class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
@@ -180,6 +182,7 @@ function PreFirstEntryMapFixes()
     case "06_HONGKONG_WANCHAI_MARKET":
         if (VanillaMaps) {
             // button to get out of Tong's base
+            // Revision already has a button in place (In WANCHAI_COMPOUND)
             AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
             foreach AllActors(class'#var(injectsprefix)Button1', button) {
                 if ((button.Event=='elevator_door' || button.Event=='elevator_door01') && button.ButtonType==BT_Blank){ //Helibase and Versalife elevators
@@ -314,13 +317,19 @@ function PreFirstEntryMapFixes()
             }
 
         }
+
+        //behind Maggie's DispalyCase (sic), there is a Trigger to open it
+        //That trigger gets hit when an OrdersTrigger in the same spot gets replaced by DXRReplaceActors
+        foreach AllActors(class'#var(prefix)Trigger',t,'Trigger'){
+            if (t.Event=='DispalyCase'){
+                t.TriggerType=TT_PawnProximity;
+            }
+        }
         break;
 
     case "06_HONGKONG_MJ12LAB":
         // alarm in MiB's overlook office
-        if(VanillaMaps) {
-            Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
-        }
+        Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
 
         ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(1.412384, 1658.755614, 190.711304)); // Inside the elvator to 06_HONGKONG_VERSALIFE
         ft.Event='SecurityRevoked';
