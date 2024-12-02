@@ -281,7 +281,7 @@ function GetLevelOggSong(bool setseed, DXOggMusicManager mm)
 
     if (newSong==PrevOggTrackName) return; //Don't need to reset the music
 
-    mm.SetTracksManual(AmbientIntroOggFile,AmbientOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile,DeathOggFile);
+    mm.SetTracksManual(AmbientIntroOggFile,AmbientOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile,DeathOggFile,OutroOggFile=="");
 
     OggTrackName = newSong;
     RememberMusic();
