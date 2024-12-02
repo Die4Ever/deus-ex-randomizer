@@ -316,13 +316,13 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-        } else {
-            //behind Maggie's DispalyCase (sic), there is a Trigger to open it
-            //That trigger gets hit when an OrdersTrigger in the same spot gets replaced by DXRReplaceActors
-            foreach AllActors(class'#var(prefix)Trigger',t,'Trigger'){
-                if (t.Event=='DispalyCase'){
-                    t.TriggerType=TT_PawnProximity;
-                }
+        }
+
+        //behind Maggie's DispalyCase (sic), there is a Trigger to open it
+        //That trigger gets hit when an OrdersTrigger in the same spot gets replaced by DXRReplaceActors
+        foreach AllActors(class'#var(prefix)Trigger',t,'Trigger'){
+            if (t.Event=='DispalyCase'){
+                t.TriggerType=TT_PawnProximity;
             }
         }
         break;
