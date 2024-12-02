@@ -255,6 +255,8 @@ static function bool IsBingoEnd(int missionNumber, int bingo_duration)
 
 static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {
     expiration = missionNumber+1;
+    if(missionNumber==10) expiration++;
+    if(missionNumber==12) expiration=15;
     return class'DXRInfo'.static.StringToName( "DXRando_Mission" $ missionNumber $ "_BingoCompleted");
 }
 
