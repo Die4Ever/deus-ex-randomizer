@@ -867,7 +867,18 @@ function bool IsWaltonWareHardcore()
     return gamemode == WaltonWareHardcore;
 }
 
+function bool IsBingoCampaignMode()
+{
+    return gamemode == BingoCampaign;
+}
+
+function bool IsBingoMode()
+{
+    return IsWaltonWare() || IsBingoCampaignMode();
+}
+
 function bool IsHalloweenMode()
+
 {
     return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
 }
@@ -875,11 +886,6 @@ function bool IsHalloweenMode()
 function bool IsOneItemMode()
 {
     return gamemode == OneItemMode;
-}
-
-function bool IsBingoCampaignMode()
-{
-    return gamemode == BingoCampaign;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
