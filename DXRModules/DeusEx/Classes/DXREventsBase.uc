@@ -10,6 +10,7 @@ var name rewatchflags[8];
 var int num_rewatchflags;
 var float PoolBallHeight;
 var int NumPoolTables, PoolTablesSunk, BallsPerTable;
+var transient float nextBuzzTime;
 
 struct BingoOption {
     var string event, desc, desc_singular;
@@ -1374,8 +1375,13 @@ function _MarkBingoAsFailed(coerce string eventname)
         if (class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags) && dxr.localURL != "DX" && dxr.localURL != "DXONLY") {
             player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
         }
-        if (class'MenuChoice_ShowBingoUpdates'.static.SoundsEnabled(dxr.flags) && dxr.localURL != "DX" && dxr.localURL != "DXONLY") {
-            player().PlaySound(Sound'DeusExSounds.Generic.Buzz1', SLOT_None, 3.0);
+        if (
+            Level.TimeSeconds >= nextBuzzTime &&
+            class'MenuChoice_ShowBingoUpdates'.static.SoundsEnabled(dxr.flags) &&
+            dxr.localURL != "DX" && dxr.localURL != "DXONLY"
+        ) {
+            player().PlaySound(Sound'DeusExSounds.Generic.Buzz1', SLOT_None, 0.4); // volume is hopefully not easy to miss but also not annoying
+            nextBuzzTime = Level.TimeSeconds + 0.1;
         }
     }
 }
