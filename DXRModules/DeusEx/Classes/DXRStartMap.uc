@@ -736,7 +736,9 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
         case 142: // fallthrough
-        case 141:
+            GiveKey(player, 'Glab', "Greasel Laboratory Key");
+            GiveKey(player, 'crewkey', "Crew Module Access");
+        case 141: // fallthrough
             MarkConvPlayed("DL_Underwater", bFemale); // The URV bay is in this module.  You might not hear from me again.
         case 140: // fallthrough
             flagbase.SetBool('TiffanySavage_Dead',true,,15);
@@ -750,16 +752,14 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("MeetHelios", bFemale);              // You will go to Sector 4 and deactivate the uplink locks, yes.
             flagbase.SetBool('MS_TongAppeared',true,,-1);       // We can get you into Sector 3 -- but no further.
             GiveImage(player, class'Image15_Area51_Sector3');
-            // fallthrough
-        case 152:
+        case 152: // fallthrough
             MarkConvPlayed("DL_Final_Page02", bFemale);         // Barely a scratch.
             MarkConvPlayed("DL_elevator", bFemale);             // Bet you didn't know your mom and dad tried to protest when we put you in training.
             MarkConvPlayed("DL_conveyor_room", bFemale);        // Page is further down.  Find the elevator.
             // MarkConvPlayed("M15MeetEverett", bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             flagbase.SetBool('MS_EverettAppeared',true,,-1);
             AddNoteFromConv(player, bEmptyNotes, 'M15MeetEverett', 0); // Crew-complex security code: 8946; TODO: figure out why Everett refuses to appear for this conversation on later starts
-            // fallthrough
-        case 151:
+        case 151: // fallthrough
             MarkConvPlayed("DL_tong1", bFemale);                // Here's a satellite image of the damage from the missile.
             MarkConvPlayed("DL_tong_reached_bunker", bFemale);  // Good work.  You've reached the bunker.
             MarkConvPlayed("DL_JockDeathTongComment", bFemale); // I don't believe it!  JC!  We lost Jock!
