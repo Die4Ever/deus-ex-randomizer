@@ -1043,14 +1043,20 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     }
 }
 
-simulated function CreateBingoBoard()
+simulated function CreateBingoBoard(optional int starting_map)
 {
     local PlayerDataItem data;
+
+    if (starting_map == 0) {
+        starting_map = dxr.flags.settings.starting_map;
+    }
+
     dxr.flags.bingoBoardRoll++;
     dxr.flags.SaveFlags();
     SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
     data = class'PlayerDataItem'.static.GiveItem(player());
-    _CreateBingoBoard(data, dxr.flags.settings.starting_map, dxr.flags.bingo_duration);
+
+    _CreateBingoBoard(data, starting_map, dxr.flags.bingo_duration);
 }
 
 // a nice, convenient function to test some specified goal

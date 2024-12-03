@@ -190,9 +190,8 @@ function NewBingoBoard()
     foreach AllActors(class'DXREvents', events) break;
     if (events == None) return;
 
-    dxr.flags.settings.starting_map = dxr.dxInfo.missionNumber * 10;
     dxr.flags.bingoBoardRoll = 0;
-    events.CreateBingoBoard();
+    events.CreateBingoBoard(dxr.dxInfo.missionNumber * 10);
     ClearDataVaultImages(player());
 }
 
