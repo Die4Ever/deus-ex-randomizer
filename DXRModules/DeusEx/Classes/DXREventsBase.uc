@@ -1,7 +1,6 @@
 class DXREventsBase extends DXRActorsBase;
 
 const FAILED_MISSION_MASK = 1;
-const BINGO_FAIL_SOUND_TICK = 0.1;
 
 var bool died;
 var name watchflags[32];
@@ -11,7 +10,7 @@ var name rewatchflags[8];
 var int num_rewatchflags;
 var float PoolBallHeight;
 var int NumPoolTables, PoolTablesSunk, BallsPerTable;
-var float nextBuzzTime;
+var transient float nextBuzzTime;
 
 struct BingoOption {
     var string event, desc, desc_singular;
@@ -1382,7 +1381,7 @@ function _MarkBingoAsFailed(coerce string eventname)
             dxr.localURL != "DX" && dxr.localURL != "DXONLY"
         ) {
             player().PlaySound(Sound'DeusExSounds.Generic.Buzz1', SLOT_None, 0.4); // volume is hopefully not easy to miss but also not annoying
-            nextBuzzTime = Level.TimeSeconds + BINGO_FAIL_SOUND_TICK;
+            nextBuzzTime = Level.TimeSeconds + 0.1;
         }
     }
 }
