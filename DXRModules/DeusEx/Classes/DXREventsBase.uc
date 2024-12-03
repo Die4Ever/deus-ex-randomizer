@@ -1371,7 +1371,7 @@ function _MarkBingoAsFailed(coerce string eventname)
 
     if (data.MarkBingoAsFailed(eventname)) {
         l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
-        if (class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
+        if (class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags) && dxr.localURL != "DX" && dxr.localURL != "DXONLY") {
             player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
         }
         if (class'MenuChoice_ShowBingoUpdates'.static.SoundsEnabled(dxr.flags) && dxr.localURL != "DX" && dxr.localURL != "DXONLY") {
