@@ -58,6 +58,38 @@ function CloseKnownAccountsWindow()
     }
 }
 
+function CreateHackWindow()
+{
+    local Float hackTime;
+    local Float skillLevelValue;
+
+    //Revision-only for now, until other mods get a bit more love
+    //to make sure passwords are accessible, etc
+    if (!#defined(revision)){
+        Super.CreateHackWindow();
+        return;
+    }
+
+    skillLevelValue = player.SkillSystem.GetSkillLevelValue(class'SkillComputer');
+    skillLevel      = player.SkillSystem.GetSkillLevel(class'SkillComputer');
+
+    // Check to see if the player is skilled in Hacking before
+    // creating the window
+    if ((skillLevel > 0) && (bUsesHackWindow))
+    {
+        // Base the detection and hack time on the skill level
+        hackTime       = detectionTime / (skillLevelValue * 1.5);
+        detectionTime *= skillLevelValue;
+
+        // First create the shadow window
+        winHackShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
+
+        winHack = #var(injectsprefix)ComputerScreenHack(NewChild(Class'#var(injectsprefix)ComputerScreenHack'));
+        winHack.SetNetworkTerminal(Self);
+        winHack.SetDetectionTime(detectionTime, hackTime);
+    }
+}
+
 function LogInAs(String user, String pass)
 {
     local #var(prefix)ComputerScreenLogin login;

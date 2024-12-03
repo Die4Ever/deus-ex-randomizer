@@ -1,4 +1,5 @@
-class BalanceHacking injects ComputerScreenHack;
+//Formerly BalanceHacking
+class DXRComputerScreenHack injects ComputerScreenHack;
 
 var PersonaHeaderTextWindow   hackBackground;
 var TextWindow   energyMeter;
@@ -14,11 +15,15 @@ var int biocellCount;
 function Tick(float deltaTime)
 {
     local Human p;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
     if (bHacking)
     {
         p = Human(winTerm.compOwner.Owner);
         if( p == None ) p = Human(Player);// ATMs don't set the Owner
-        if( p != None && !p.bZeroRando ) {
+        if( p != None && !dxr.flags.IsZeroRando() ) {
             p.Energy -= deltaTime * 5.0;
             if( p.Energy <= 0 ) {
                 p.Energy = 0;
@@ -38,6 +43,9 @@ function Tick(float deltaTime)
 function CreateHackMessageWindow()
 {
     local Human p;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
     p = Human(winTerm.compOwner.Owner);
 
 	hackBackground = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
@@ -59,7 +67,7 @@ function CreateHackMessageWindow()
 	energyMeter.SetSize(168, 47);
 	energyMeter.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 
-    if(p == None || p.bZeroRando) {
+    if(p == None || dxr.flags.IsZeroRando()) {
         energyMeter.Hide();
     }
 
@@ -71,12 +79,15 @@ function CreateHackMessageWindow()
 function CreateHackButton()
 {
     local #var(PlayerPawn) p;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
 
     //Make the hacking button
     Super.CreateHackButton();
 
     p = #var(PlayerPawn)(player);
-    if (p==None || p.bZeroRando) return;
+    if (p==None || dxr.flags.IsZeroRando()) return;
 
     //Make the Biocell button as well
     btnBiocell = PersonaActionButtonWindow(NewChild(Class'DXRPersonaActionButtonWindow'));
@@ -90,10 +101,13 @@ function UpdateBiocellButtonCount()
 {
     local #var(prefix)BioElectricCell bc;
     local #var(PlayerPawn) p;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
 
     p = #var(PlayerPawn)(player);
 
-    if (p==None || btnBiocell==None || p.bZeroRando) return;
+    if (p==None || btnBiocell==None || dxr.flags.IsZeroRando()) return;
 
     biocellCount = 0;
     if (p!=None){
@@ -113,11 +127,14 @@ function UpdateBiocellButtonClickability()
 {
     local bool enable;
     local #var(PlayerPawn) p;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
 
     p = #var(PlayerPawn)(player);
     enable=False;
 
-    if (p==None || btnBiocell==None || p.bZeroRando) return;
+    if (p==None || btnBiocell==None || dxr.flags.IsZeroRando()) return;
 
     if (p!=None && biocellCount!=0){
         if (p.Energy<p.EnergyMax){
@@ -151,10 +168,13 @@ function HandleBiocellButton()
 function bool ButtonActivated( Window buttonPressed )
 {
     local #var(PlayerPawn) p;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
 
     p = #var(PlayerPawn)(player);
 
-    if (p==None || btnBiocell==None || p.bZeroRando) return Super.ButtonActivated(buttonPressed);
+    if (p==None || btnBiocell==None || dxr.flags.IsZeroRando()) return Super.ButtonActivated(buttonPressed);
 
     switch( buttonPressed )
     {
@@ -189,10 +209,13 @@ function UpdateEnergyMeter()
     local int energy,energydec,req,reqdec,maxenergy,maxenergydec;
     local float reqEnergy;
     local string msg;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
 
     p = Human(player);
 
-    if (p==None || p.bZeroRando) return;
+    if (p==None || dxr.flags.IsZeroRando()) return;
 
     //Keep it to one decimal point
     energy = int(p.Energy);
