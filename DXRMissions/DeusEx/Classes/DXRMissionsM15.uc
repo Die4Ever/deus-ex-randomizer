@@ -81,7 +81,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("15_AREA51_PAGE", "Observation Deck", NORMAL_GOAL | VANILLA_GOAL, vect(6029.028809, -8301.839844, -5148.736328), rot(0, -36944, 0));
         AddMapMarker(class'Image15_Area51_Sector4',192,77,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor in the top floor Observation Deck overlooking Bob Page.");
 
-        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
             if (#bool(shuffleucswitches)){
                 //Shuffle the UC switches themselves
                 goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
@@ -185,7 +185,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 1, 'DataLinkTrigger21', PHYS_None); // DL_Blue_Fusion
         loc = AddGoalLocation("15_AREA51_PAGE", "Observation Deck", NORMAL_GOAL | VANILLA_GOAL, vect(-138.971191,1310.160156,223.263672), rot(0, -36944, 0));
 
-        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
             if (#bool(shuffleucswitches)){
                 //Shuffle the UC switches themselves
                 goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
@@ -238,7 +238,7 @@ function PreFirstEntryMapFixes()
             }
         }
     } else if (dxr.localURL=="15_AREA51_PAGE" && !RevisionMaps) {
-        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
             //Remove the insane prepivot on the UC door closers
             foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
                 if (dxm.Event=='UC_shutdoor1' ||
@@ -370,7 +370,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.actors[0].a.Event = 'AquinasDoorComputer';
     }
     else if (g.name=="Upper UC Shutdown" || g.name=="Middle UC Shutdown" || g.name=="Bottom UC Shutdown"){
-        if (FeatureFlag(3,3,0, "Area51EndingBalancePass2")){
+        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
             r = g.actors[0].a.rotation;
             r.Yaw = r.Yaw - 32768;
             if (r.Pitch!=0){ //Adjust the pitch for the coolant control panel location
