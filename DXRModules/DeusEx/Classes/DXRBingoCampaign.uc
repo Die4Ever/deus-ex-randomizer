@@ -315,7 +315,7 @@ static function name GetBingoMissionFlag(int missionNumber, optional out int exp
 function bool HandleBingo(int numBingos)
 {
     local name bingoFlag;
-    local int expiration;
+    local int expiration, nextMission;
 
     if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win || dxr.LocalURL == "ENDGAME4"/* || dxr.LocalURL == "ENDGAME4REV"*/) {
         return false;
@@ -327,6 +327,14 @@ function bool HandleBingo(int numBingos)
 
     bingoFlag = GetBingoMissionFlag(dxr.dxInfo.missionNumber, expiration);
     dxr.flagbase.SetBool(bingoFlag, true,, expiration);
+    if(IsLateStart(dxr.dxInfo.missionNumber)) {
+        nextMission = dxr.dxInfo.missionNumber + 1;
+        if(nextMission==7) nextMission = 8;
+        if(nextMission==13) nextMission = 14;
+
+        bingoFlag = GetBingoMissionFlag(nextMission, expiration);
+        dxr.flagbase.SetBool(bingoFlag, true,, expiration);
+    }
     UpdateCryptDoors();
 
     return true;
