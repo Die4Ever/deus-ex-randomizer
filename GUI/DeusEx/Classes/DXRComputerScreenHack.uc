@@ -1,5 +1,5 @@
 //Formerly BalanceHacking
-class DXRComputerScreenHack injects ComputerScreenHack;
+class DXRComputerScreenHack injects #var(prefix)ComputerScreenHack;
 
 var PersonaHeaderTextWindow   hackBackground;
 var TextWindow   energyMeter;
