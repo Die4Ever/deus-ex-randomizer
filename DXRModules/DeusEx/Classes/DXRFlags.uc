@@ -878,7 +878,6 @@ function bool IsBingoMode()
 }
 
 function bool IsHalloweenMode()
-
 {
     return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
 }
