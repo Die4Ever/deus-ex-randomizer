@@ -10,6 +10,7 @@ var name rewatchflags[8];
 var int num_rewatchflags;
 var float PoolBallHeight;
 var int NumPoolTables, PoolTablesSunk, BallsPerTable;
+var transient float nextBuzzTime;
 
 struct BingoOption {
     var string event, desc, desc_singular;
@@ -92,8 +93,17 @@ function PreFirstEntry()
             SetWatchFlags();
             break;
     }
+}
+
+function PostFirstEntry()
+{
+    Super.PostFirstEntry();
+
     MarkBingoFailedSpecial();
     MarkBingoFailedGeneric();
+
+     //Done here so that items you are carrying over between levels don't get hit by LogPickup
+    InitStatLogShim();
 }
 
 //If a goal naturally expires (due to passing the last mission mask bit), actively mark the goal as failed
@@ -106,14 +116,6 @@ function MarkBingoFailedGeneric()
     if (curMission == 98) return;
     data = class'PlayerDataItem'.static.GiveItem(player());
     data.CheckForExpiredBingoGoals(curMission);
-}
-
-function PostFirstEntry()
-{
-    Super.PostFirstEntry();
-
-     //Done here so that items you are carrying over between levels don't get hit by LogPickup
-    InitStatLogShim();
 }
 
 function InitStatLogShim()
@@ -1332,7 +1334,7 @@ function _MarkBingo(coerce string eventname)
 
     if( nowbingos > previousbingos ) {
         time = class'DXRStats'.static.GetTotalTime(dxr);
-        if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
+        if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
             player().ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
         }
 
@@ -1347,7 +1349,7 @@ function _MarkBingo(coerce string eventname)
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
         CheckBingoWin(dxr,nowbingos);
-    } else if(class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
+    } else if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
@@ -1373,9 +1375,20 @@ function _MarkBingoAsFailed(coerce string eventname)
     } */
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    if (data.MarkBingoAsFailed(eventname) && class'MenuChoice_ShowBingoUpdates'.static.IsEnabled(dxr.flags)) {
+
+    if (data.MarkBingoAsFailed(eventname)) {
         l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
-        player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
+        if (class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags) && dxr.localURL != "DX" && dxr.localURL != "DXONLY") {
+            player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
+        }
+        if (
+            Level.TimeSeconds >= nextBuzzTime &&
+            class'MenuChoice_ShowBingoUpdates'.static.SoundsEnabled(dxr.flags) &&
+            dxr.localURL != "DX" && dxr.localURL != "DXONLY"
+        ) {
+            player().PlaySound(Sound'DeusExSounds.Generic.Buzz1', SLOT_None, 0.4); // volume is hopefully not easy to miss but also not annoying
+            nextBuzzTime = Level.TimeSeconds + 0.1;
+        }
     }
 }
 
