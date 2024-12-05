@@ -61,6 +61,18 @@ function PreFirstEntry()
         }
         break;
 
+    case "03_NYC_BatteryPark":
+        if (dxr.flags.settings.starting_map > 32) {
+            RemoveJock('UNATCOChopper');
+        }
+        break;
+
+    case "04_NYC_STREET":
+        if (dxr.flags.settings.starting_map > 42) {
+            RemoveJock('EntranceCopter');
+        }
+        break;
+
     case "05_NYC_UNATCOMJ12LAB":
         if(dxr.flags.settings.starting_map > 50) {
             foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
@@ -68,6 +80,13 @@ function PreFirstEntry()
             }
         }
         break;
+
+    /* case "06_HONGKONG_HELIBASE": {
+        // TODO: will be more complicated
+        if (something)
+            RemoveJock('');
+        break;
+    } */
 
     case "06_HONGKONG_TONGBASE":
         if (dxr.flags.settings.starting_map > 66) {
@@ -79,6 +98,24 @@ function PreFirstEntry()
         }
         break;
 
+    case "08_NYC_Street":
+        if (dxr.flags.settings.starting_map > 80) {
+            RemoveJock('EntranceCopter');
+        }
+        break;
+
+    case "09_NYC_Dockyard":
+        if (dxr.flags.settings.starting_map > 90) {
+            RemoveJock('EntryCopter');
+        }
+        break;
+
+    case "10_Paris_Catacombs":
+        if (dxr.flags.settings.starting_map > 100) {
+            RemoveJock('UN_BlackHeli');
+        }
+        break;
+
     case "11_PARIS_EVERETT":
         // don't do the conversation from 11_Paris_Underground
         dxr.flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
@@ -86,6 +123,9 @@ function PreFirstEntry()
         break;
 
     case "12_VANDENBERG_CMD":
+        if(dxr.flags.settings.starting_map >= 120) {
+            RemoveJock('UN_BlackHeli');
+        }
         if (dxr.flags.settings.starting_map >= 121) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
                 dxMover.InterpolateTo(1, 0.0);
@@ -155,6 +195,17 @@ function PostFirstEntry()
                 break;
             }
         }
+        break;
+    }
+}
+
+function RemoveJock(name jockTag)
+{
+    local #var(prefix)BlackHelicopter jock;
+
+    foreach AllActors(class'#var(prefix)BlackHelicopter', jock, jockTag) {
+        log("Removing a BlackHelicopter from \"" $ dxr.localURL $ "\" with tag '" $ jock.tag $ "'");
+        jock.LeaveWorld();
         break;
     }
 }
