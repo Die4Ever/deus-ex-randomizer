@@ -38,6 +38,7 @@ function PreFirstEntry()
     local Dispatcher disp;
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)OrdersTrigger ot;
+    local BreakableWall brWall;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
@@ -81,12 +82,15 @@ function PreFirstEntry()
         }
         break;
 
-    /* case "06_HONGKONG_HELIBASE": {
-        // TODO: will be more complicated
-        if (something)
-            RemoveJock('');
-        break;
-    } */
+    case "06_HongKong_Helibase":
+        if (dxr.flags.settings.starting_map > 60) {
+            RemoveJock('chopper');
+            foreach AllActors(class'BreakableWall', brWall, 'Blast_doors') {
+                brWall.BlowItUp(None);
+                break;
+            }
+        }
+    break;
 
     case "06_HONGKONG_TONGBASE":
         if (dxr.flags.settings.starting_map > 66) {
@@ -731,7 +735,16 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Jock_05", bFemale); // Okay, you need to find Tracer Tong
             MarkConvPlayed("DL_Jock_04", bFemale); // You're next to the compound Paul used to visit
             flagbase.SetBool('QuickLetPlayerIn', true);
-            break;
+        case 65: // fallthrough
+        case 64:
+        case 63:
+        case 62:
+        case 61:
+            MarkConvPlayed("DL_Jock_01", bFemale); // I blew it, JC, I'm sorry.  MJ12 must want you bad
+            MarkConvPlayed("DL_Jock_02", bFemale); // Come on down and stay clear of the blast doors to the south
+            MarkConvPlayed("DL_Jock_03", bFemale); // I have to get clear!  Head for the exit, and I'll link up with you when I can.
+            MarkConvPlayed("DL_Jock_Fired", bFemale); // Fire in the hole!
+        break;
 
         case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
             AddNoteFromConv(player, bEmptyNotes, 'M07Briefing'); // Access code to the Versalife nanotech research wing on Level 2: 55655
@@ -787,12 +800,14 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
         case 129:
             MarkConvPlayed("GaryHostageBriefing", bFemale);
+            MarkConvPlayed("DL_no_carla", bFemale); // Majestic 12 is attacking Vandenberg... in 120+ starts, you don't need fing the keypads
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
             break;
         case 122:
             AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
         case 121: // fallthrough
             AddNoteFromConv(player, bEmptyNotes, 'MeetCarlaBrown', 0); // Backup power for the bot security system
+            MarkConvPlayed("DL_no_carla", bFemale);
             break;
 
         case 145:
@@ -802,6 +817,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Underwater", bFemale); // The URV bay is in this module.  You might not hear from me again.
         case 140: // fallthrough
             flagbase.SetBool('TiffanySavage_Dead',true,,15);
+            MarkConvPlayed("DL_no_carla", bFemale);
             break;
 
         case 153:
