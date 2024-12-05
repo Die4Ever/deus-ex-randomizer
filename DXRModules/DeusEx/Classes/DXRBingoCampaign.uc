@@ -193,23 +193,26 @@ function NewBingoBoard()
     events = DXREvents(class'DXREvents'.static.Find());
     if (events == None) return;
 
-    // ban goals
+    // unban old goals
     data = class'PlayerDataItem'.static.GiveItem(player());
+    data.TickUnbanGoals();
+
+    // ban goals
     for(i=0; i<25; i++) {
         s = data.GetBingoEvent(i);
         switch(s) {
         case "SandraRenton_Dead":
         case "GilbertRenton_Dead":
-            data.BanGoal("FamilySquabbleWrapUpGilbertDead_Played");
-            data.BanGoal(s);
+            data.BanGoal("FamilySquabbleWrapUpGilbertDead_Played", 999);
+            data.BanGoal(s, 999);
             break;
 
         case "AnnaNavarre_DeadM3":
         case "AnnaNavarre_DeadM4":
-            data.BanGoal("AnnaNavarre_DeadM3");
-            data.BanGoal("AnnaNavarre_DeadM4");
-            data.BanGoal("AnnaNavarre_DeadM5");
-            data.BanGoal("AnnaKillswitch");
+            data.BanGoal("AnnaNavarre_DeadM3", 999);
+            data.BanGoal("AnnaNavarre_DeadM4", 999);
+            data.BanGoal("AnnaNavarre_DeadM5", 999);
+            data.BanGoal("AnnaKillswitch", 999);
             break;
 
         case "JordanShea_Dead":
@@ -218,12 +221,12 @@ function NewBingoBoard()
         case "JoeGreene_Dead":
         case "MeetSmuggler":
         case "Shannon_Dead":
-            data.BanGoal(s);
+            data.BanGoal(s, 999);
             break;
 
         default: // temporary ban
             tempBans[numTempBans++] = s;
-            data.BanGoal(s);
+            data.BanGoal(s, 2); // if this was on the M01 board (while generating M02 board), it will not be available again until generating M04 board
             break;
         }
     }
@@ -231,11 +234,6 @@ function NewBingoBoard()
     // create new board
     dxr.flags.bingoBoardRoll = 0;
     events.CreateBingoBoard(dxr.dxInfo.missionNumber * 10);
-
-    // unban temp goals
-    for(i=0; i<numTempBans; i++) {
-        data.UnbanGoal(tempBans[i]);
-    }
 
     // mark old images as old, no cheating!
     MarkDataVaultImagesAsViewed(player());

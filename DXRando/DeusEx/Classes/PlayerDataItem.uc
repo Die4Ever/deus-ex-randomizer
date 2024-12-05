@@ -13,6 +13,7 @@ var travel int EntranceRandoMissionNumber;
 var travel int numConns;
 var travel string conns[120];
 var travel string bannedGoals[128];
+var travel int bannedGoalsTimers[128];
 
 struct BingoSpot {
     var travel string event;
@@ -274,15 +275,39 @@ simulated function bool IsBanned(string goal)
     return false;
 }
 
-simulated function int BanGoal(string goal)
+simulated function int BanGoal(string goal, int ticks)
 {
     local int i;
 
     for(i=0; i < ArrayCount(bannedGoals); i++) {
-        if(bannedGoals[i] == goal) return -1; // already banned
-        if(bannedGoals[i] == "") {
+        if(bannedGoals[i] == goal || bannedGoals[i] == "") {
             bannedGoals[i] = goal;
+            bannedGoalsTimers[i] = ticks;
             return i;
+        }
+    }
+}
+
+simulated function TickUnbanGoals()
+{
+    local int i, num;
+
+    num = ArrayCount(bannedGoals);
+    for(i=0; i < ArrayCount(bannedGoals); i++) {
+        if(bannedGoals[i] == "") {
+            num = i;
+            break;
+        }
+    }
+
+    for(i=0; i < num; i++) {
+        if(bannedGoals[i] == "") return;
+        bannedGoalsTimers[i]--;
+        if(bannedGoalsTimers[i] <= 0) {
+            num--;
+            bannedGoalsTimers[i] = bannedGoalsTimers[num];
+            bannedGoals[i] = bannedGoals[num];
+            bannedGoals[num] = "";
         }
     }
 }
