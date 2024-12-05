@@ -12,6 +12,7 @@ var travel int SkillPointsAvail;
 var travel int EntranceRandoMissionNumber;
 var travel int numConns;
 var travel string conns[120];
+var travel string bannedGoals[128];
 
 struct BingoSpot {
     var travel string event;
@@ -255,6 +256,53 @@ simulated function ExportBingoState()
     }
 
     SaveConfig();
+}
+
+simulated function string GetBingoEvent(int i)
+{
+    return bingo[i].event;
+}
+
+simulated function bool IsBanned(string goal)
+{
+    local int i;
+
+    for(i=0; i < ArrayCount(bannedGoals); i++) {
+        if(bannedGoals[i] == "") return false;
+        if(bannedGoals[i] == goal) return true;
+    }
+    return false;
+}
+
+simulated function int BanGoal(string goal)
+{
+    local int i;
+
+    for(i=0; i < ArrayCount(bannedGoals); i++) {
+        if(bannedGoals[i] == goal) return -1; // already banned
+        if(bannedGoals[i] == "") {
+            bannedGoals[i] = goal;
+            return i;
+        }
+    }
+}
+
+simulated function UnbanGoal(string goal)
+{
+    local int i, slot;
+
+    slot = -1;
+
+    for(i=0; i < ArrayCount(bannedGoals); i++) {
+        if(bannedGoals[i] == goal) slot = i;
+        if(bannedGoals[i] == "") {
+            if(slot == -1) return; // goal wasn't banned
+            i--;
+            bannedGoals[slot] = bannedGoals[i];
+            bannedGoals[i] = "";
+            return;
+        }
+    }
 }
 
 defaultproperties

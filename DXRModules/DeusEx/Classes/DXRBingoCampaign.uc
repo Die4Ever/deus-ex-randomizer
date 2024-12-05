@@ -186,13 +186,59 @@ function AnyEntry()
 function NewBingoBoard()
 {
     local DXREvents events;
+    local PlayerDataItem data;
+    local int i, numTempBans;
+    local string s, tempBans[25];
 
-    foreach AllActors(class'DXREvents', events) break;
+    events = DXREvents(class'DXREvents'.static.Find());
     if (events == None) return;
 
+    // ban goals
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    for(i=0; i<25; i++) {
+        s = data.GetBingoEvent(i);
+        switch(s) {
+        case "SandraRenton_Dead":
+        case "GilbertRenton_Dead":
+            data.BanGoal("FamilySquabbleWrapUpGilbertDead_Played");
+            data.BanGoal(s);
+            break;
+
+        case "AnnaNavarre_DeadM3":
+        case "AnnaNavarre_DeadM4":
+            data.BanGoal("AnnaNavarre_DeadM3");
+            data.BanGoal("AnnaNavarre_DeadM4");
+            data.BanGoal("AnnaNavarre_DeadM5");
+            data.BanGoal("AnnaKillswitch");
+            break;
+
+        case "JordanShea_Dead":
+        case "DXRNPCs1_Dead":
+        case "WaltonSimons_Dead":
+        case "JoeGreene_Dead":
+        case "MeetSmuggler":
+        case "Shannon_Dead":
+            data.BanGoal(s);
+            break;
+
+        default: // temporary ban
+            tempBans[numTempBans++] = s;
+            data.BanGoal(s);
+            break;
+        }
+    }
+
+    // create new board
     dxr.flags.bingoBoardRoll = 0;
     events.CreateBingoBoard(dxr.dxInfo.missionNumber * 10);
-    ClearDataVaultImages(player());
+
+    // unban temp goals
+    for(i=0; i<numTempBans; i++) {
+        data.UnbanGoal(tempBans[i]);
+    }
+
+    // mark old images as old, no cheating!
+    MarkDataVaultImagesAsViewed(player());
 }
 
 function AddBingoEventBlocker(name blockedTag, name bingoFlag) {

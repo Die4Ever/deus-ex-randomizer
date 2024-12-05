@@ -1880,6 +1880,15 @@ static function ClearDataVaultImages(#var(PlayerPawn) p)
     class'DXRActorsBase'.static.RemoveItem(p, class'DataVaultImage');
 }
 
+static function MarkDataVaultImagesAsViewed(#var(PlayerPawn) p)
+{
+    local DataVaultImage image;
+
+    for (image=p.FirstImage; image!=None; image=image.nextImage){
+        image.bPlayerViewedImage = true;
+    }
+}
+
 static function bool IsUsingOggMusic(#var(PlayerPawn) player)
 {
 #ifndef revision

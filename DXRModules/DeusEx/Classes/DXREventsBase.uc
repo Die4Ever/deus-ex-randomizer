@@ -1165,6 +1165,9 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             }
             continue;
         }
+        if(data.IsBanned(bingo_options[x].event)) {
+            continue;
+        }
         options[num_options++] = x;
     }
 
@@ -1517,12 +1520,15 @@ function ExtendedTests()
 {
     local int i;
     local string mapName, friendlyName;
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
 
     for(i=0; i<160; i++) {
         mapName = class'DXRStartMap'.static._GetStartMap(i, friendlyName);
         if(friendlyName == "") continue;
         l( "#" $ i @ friendlyName @ mapName $ " bingo goals test:" );
-        _CreateBingoBoard(None, i, 1, true);
+        _CreateBingoBoard(data, i, 1, true);
     }
 }
 
