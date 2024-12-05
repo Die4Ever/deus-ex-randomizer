@@ -188,6 +188,8 @@ function AnyEntry()
 
 function bool IsLateStart(int mission)
 {
+    if(mission==7) mission=6;
+    if(mission==13) mission=12;
     return dxr.flags.settings.starting_map > mission * 10 + 5;
 }
 
@@ -312,32 +314,18 @@ static function name GetBingoMissionFlag(int missionNumber, optional out int exp
     return class'DXRInfo'.static.StringToName( "DXRando_Mission" $ missionNumber $ "_BingoCompleted");
 }
 
-function bool HandleBingo(int numBingos)
+function HandleBingoWin(int numBingos, int oldBingos)
 {
     local name bingoFlag;
     local int expiration, nextMission;
 
-    if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win || dxr.LocalURL == "ENDGAME4"/* || dxr.LocalURL == "ENDGAME4REV"*/) {
-        return false;
-    }
-
-    if (numBingos == dxr.flags.settings.bingo_win) {
+    if (numBingos > oldBingos) {
         player().ClientMessage("You have enough bingo lines to proceed!");
     }
 
     bingoFlag = GetBingoMissionFlag(dxr.dxInfo.missionNumber, expiration);
     dxr.flagbase.SetBool(bingoFlag, true,, expiration);
-    if(IsLateStart(dxr.dxInfo.missionNumber)) {
-        nextMission = dxr.dxInfo.missionNumber + 1;
-        if(nextMission==7) nextMission = 8;
-        if(nextMission==13) nextMission = 14;
-
-        bingoFlag = GetBingoMissionFlag(nextMission, expiration);
-        dxr.flagbase.SetBool(bingoFlag, true,, expiration);
-    }
     UpdateCryptDoors();
-
-    return true;
 }
 
  static function string GetBingoHoverHintText(DXRando dxr, string hintText)

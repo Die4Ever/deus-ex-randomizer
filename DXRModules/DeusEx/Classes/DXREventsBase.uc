@@ -1025,7 +1025,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
     local string event, desc;
-    local int progress, max;
+    local int progress, max, num_bingos;
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
@@ -1037,7 +1037,8 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     if( event != "" ) {
         //Make sure bingo didn't get completed just before leaving a level
         if(dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber != 99) {
-            CheckBingoWin(dxr,data.NumberOfBingos());
+            num_bingos = data.NumberOfBingos();
+            CheckBingoWin(dxr, num_bingos, num_bingos);
         }
     } else {
         SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
@@ -1291,16 +1292,18 @@ simulated function int HandleMutualExclusion(MutualExclusion m, int options[Arra
     }
 }
 
-function bool CheckBingoWin(DXRando dxr, int numBingos)
+function bool CheckBingoWin(DXRando dxr, int numBingos, int oldBingos)
 {
     //Block this in HX for now
     if(#defined(hx)) return false;
+    if(numBingos <= 0) return false;
 
-    if (dxr.flags.settings.bingo_win > 0){
-        if (dxr.flags.IsBingoCampaignMode()) {
-            return DXRBingoCampaign(class'DXRBingoCampaign'.static.Find()).HandleBingo(numBingos);
-        } else if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
-            info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
+    if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
+        info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
+        if(dxr.flags.IsBingoCampaignMode()) {
+            DXRBingoCampaign(class'DXRBingoCampaign'.static.Find()).HandleBingoWin(numBingos, oldBingos);
+            return true;
+        } else {
             bingo_win_countdown = 5;
             BingoWinScreen();
             return true;
@@ -1351,7 +1354,7 @@ function _MarkBingo(coerce string eventname)
 
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
-        CheckBingoWin(dxr,nowbingos);
+        CheckBingoWin(dxr, nowbingos, previousbingos);
     } else if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
