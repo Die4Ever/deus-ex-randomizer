@@ -11,6 +11,8 @@ function FirstEntry()
 
     Super.FirstEntry();
 
+    if(IsLateStart(dxr.dxInfo.missionNumber)) return;
+
     switch (dxr.localURL) {
         case "02_NYC_BATTERYPARK":
             if (IsBingoEnd(1, dxr.flags.bingo_duration)) {
@@ -135,6 +137,7 @@ function AnyEntry()
     Super.AnyEntry();
 
     if (!IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration)) return;
+    if(IsLateStart(dxr.dxInfo.missionNumber)) return;
 
     flagname = GetBingoMissionFlag(dxr.dxInfo.missionNumber);
 
@@ -183,12 +186,19 @@ function AnyEntry()
     }
 }
 
+function bool IsLateStart(int mission)
+{
+    return dxr.flags.settings.starting_map > mission * 10 + 5;
+}
+
 function NewBingoBoard()
 {
     local DXREvents events;
     local PlayerDataItem data;
     local int i, numTempBans;
     local string s, tempBans[25];
+
+    if(IsLateStart(dxr.dxInfo.missionNumber-1)) return;
 
     events = DXREvents(class'DXREvents'.static.Find());
     if (events == None) return;
