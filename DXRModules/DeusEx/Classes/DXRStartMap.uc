@@ -658,6 +658,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 45:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1); // Paul ordinarily tells you the password if you don't know it
             flagbase.SetBool('GatesOpen',true,,5);
+            MarkConvPlayed("DL_JockParkStart", bFemale);
             MarkConvPlayed("PaulInjured", bFemale);
             GiveImage(player, class'Image04_NSFHeadquarters');
             break;
@@ -669,6 +670,16 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("PaulInMedLab", bFemale);
             MarkConvPlayed("DL_Paul", bFemale);
             flagbase.SetBool('MS_InventoryRemoved',true,,6);
+            break;
+
+        case 75:
+        case 70:
+        case 68:
+        case 67:
+        case 66:
+            MarkConvPlayed("DL_Jock_05", bFemale); // Okay, you need to find Tracer Tong
+            MarkConvPlayed("DL_Jock_04", bFemale); // You're next to the compound Paul used to visit
+            flagbase.SetBool('QuickLetPlayerIn', true);
             break;
 
         case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
