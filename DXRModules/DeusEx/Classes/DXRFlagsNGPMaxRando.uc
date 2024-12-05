@@ -153,7 +153,7 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, menus_pause, aug_loc_rando;
+    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -187,6 +187,7 @@ function NewGamePlus()
         newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
         menus_pause = settings.menus_pause;
         aug_loc_rando=moresettings.aug_loc_rando;
+        splits_overlay = moresettings.splits_overlay;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
@@ -194,6 +195,7 @@ function NewGamePlus()
         moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
         settings.menus_pause = menus_pause;
         moresettings.aug_loc_rando=aug_loc_rando;
+        moresettings.splits_overlay = splits_overlay;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;

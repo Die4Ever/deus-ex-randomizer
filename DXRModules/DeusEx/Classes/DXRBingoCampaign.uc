@@ -11,6 +11,8 @@ function FirstEntry()
 
     Super.FirstEntry();
 
+    if(IsLateStart(dxr.dxInfo.missionNumber)) return;
+
     switch (dxr.localURL) {
         case "02_NYC_BATTERYPARK":
             if (IsBingoEnd(1, dxr.flags.bingo_duration)) {
@@ -75,7 +77,7 @@ function FirstEntry()
 
                 AddBingoEventBlocker('everettsignaldoor', GetBingoMissionFlag(10));
 
-                dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from spawning prematurely
+                dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from being unhidden prematurely
                 ft = Spawn(class'#var(prefix)FlagTrigger',, 'everettsignaldoor_bingoblocked');
                 ft.flagName = 'DXRando_CommandosUnhidden';
                 ft.flagValue = true;
@@ -135,6 +137,7 @@ function AnyEntry()
     Super.AnyEntry();
 
     if (!IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration)) return;
+    if(IsLateStart(dxr.dxInfo.missionNumber)) return;
 
     flagname = GetBingoMissionFlag(dxr.dxInfo.missionNumber);
 
@@ -183,18 +186,69 @@ function AnyEntry()
     }
 }
 
+function bool IsLateStart(int mission)
+{
+    if(mission==7) mission=6;
+    if(mission==13) mission=12;
+    return dxr.flags.settings.starting_map > mission * 10 + 5;
+}
+
 function NewBingoBoard()
 {
     local DXREvents events;
+    local PlayerDataItem data;
+    local int i, numTempBans;
+    local string s, tempBans[25];
 
-    foreach AllActors(class'DXREvents', events) break;
+    if(IsLateStart(dxr.dxInfo.missionNumber-1)) return;
+
+    events = DXREvents(class'DXREvents'.static.Find());
     if (events == None) return;
 
-    dxr.flags.settings.starting_map = dxr.dxInfo.missionNumber * 10;
+    // unban old goals
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    data.TickUnbanGoals();
+
+    // ban goals
+    for(i=0; i<25; i++) {
+        s = data.GetBingoEvent(i);
+        switch(s) {
+        case "SandraRenton_Dead":
+        case "GilbertRenton_Dead":
+            data.BanGoal("FamilySquabbleWrapUpGilbertDead_Played", 999);
+            data.BanGoal(s, 999);
+            break;
+
+        case "AnnaNavarre_DeadM3":
+        case "AnnaNavarre_DeadM4":
+            data.BanGoal("AnnaNavarre_DeadM3", 999);
+            data.BanGoal("AnnaNavarre_DeadM4", 999);
+            data.BanGoal("AnnaNavarre_DeadM5", 999);
+            data.BanGoal("AnnaKillswitch", 999);
+            break;
+
+        case "JordanShea_Dead":
+        case "DXRNPCs1_Dead":
+        case "WaltonSimons_Dead":
+        case "JoeGreene_Dead":
+        case "MeetSmuggler":
+        case "Shannon_Dead":
+            data.BanGoal(s, 999);
+            break;
+
+        default: // temporary ban
+            tempBans[numTempBans++] = s;
+            data.BanGoal(s, 2); // if this was on the M01 board (while generating M02 board), it will not be available again until generating M04 board
+            break;
+        }
+    }
+
+    // create new board
     dxr.flags.bingoBoardRoll = 0;
-    dxr.flags.bingo_duration = 1;
-    events.CreateBingoBoard();
-    ClearDataVaultImages(player());
+    events.CreateBingoBoard(dxr.dxInfo.missionNumber * 10);
+
+    // mark old images as old, no cheating!
+    MarkDataVaultImagesAsViewed(player());
 }
 
 function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
@@ -260,24 +314,18 @@ static function name GetBingoMissionFlag(int missionNumber, optional out int exp
     return class'DXRInfo'.static.StringToName( "DXRando_Mission" $ missionNumber $ "_BingoCompleted");
 }
 
-function bool HandleBingo(int numBingos)
+function HandleBingoWin(int numBingos, int oldBingos)
 {
     local name bingoFlag;
-    local int expiration;
+    local int expiration, nextMission;
 
-    if (!dxr.flags.IsBingoCampaignMode() || numBingos < dxr.flags.settings.bingo_win || dxr.LocalURL == "ENDGAME4"/* || dxr.LocalURL == "ENDGAME4REV"*/) {
-        return false;
-    }
-
-    if (numBingos == dxr.flags.settings.bingo_win) {
+    if (numBingos > oldBingos) {
         player().ClientMessage("You have enough bingo lines to proceed!");
     }
 
     bingoFlag = GetBingoMissionFlag(dxr.dxInfo.missionNumber, expiration);
     dxr.flagbase.SetBool(bingoFlag, true,, expiration);
     UpdateCryptDoors();
-
-    return true;
 }
 
  static function string GetBingoHoverHintText(DXRando dxr, string hintText)

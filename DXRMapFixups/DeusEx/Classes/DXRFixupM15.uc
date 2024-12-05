@@ -723,7 +723,7 @@ function PostFirstEntryMapFixes()
 
     switch(dxr.localURL) {
     case "15_area51_final":
-        if(dxr.flags.IsSpeedrunMode() && FeatureFlag(3,3,0, "Area51EndingBalancePass2")) {
+        if(dxr.flags.IsSpeedrunMode() && FeatureFlag(3,5,0, "Area51EndingBalancePass2")) {
             foreach AllActors(class'#var(prefix)Keypad', k) {
                 if(k.Event == 'blastdoor_upper') {
                     k.bHackable = false;
