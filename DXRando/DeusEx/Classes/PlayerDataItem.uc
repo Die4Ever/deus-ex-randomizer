@@ -308,6 +308,7 @@ simulated function TickUnbanGoals()
             bannedGoalsTimers[i] = bannedGoalsTimers[num];
             bannedGoals[i] = bannedGoals[num];
             bannedGoals[num] = "";
+            i--; // repeat this slot
         }
     }
 }
