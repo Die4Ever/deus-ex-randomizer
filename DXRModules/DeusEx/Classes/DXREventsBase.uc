@@ -1338,6 +1338,10 @@ function _MarkBingo(coerce string eventname)
     nowbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") previousbingos: "$previousbingos$", nowbingos: "$nowbingos);
 
+    if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
+        player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
+    }
+
     if( nowbingos > previousbingos ) {
         time = class'DXRStats'.static.GetTotalTime(dxr);
         if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
@@ -1355,8 +1359,6 @@ function _MarkBingo(coerce string eventname)
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
         CheckBingoWin(dxr, nowbingos, previousbingos);
-    } else if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
-        player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
 
