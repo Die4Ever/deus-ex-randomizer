@@ -129,6 +129,46 @@ function FirstEntry()
     }
 }
 
+function PostFirstEntry()
+{
+    switch (dxr.localURL) {
+        case "04_NYC_STREET":
+        case "04_NYC_HOTEL":
+        case "04_NYC_BatteryPark":
+            HandleSpecialPerson("AnnaNavarre", "AnnaNavarre_DeadM5");
+            break;
+        case "14_VANDENBERG_SUB":
+        case "14_OceanLab_Lab":
+        case "14_OceanLab_UC":
+            HandleSpecialPerson("WaltonSimons", "WaltonSimons_Dead");
+            break;
+    }
+}
+
+function HandleSpecialPerson(string bindname, string goal) {
+    local int oldSeed;
+    local ScriptedPawn pawn;
+    local PlayerDataItem data;
+
+    if (IsBoardGoal(goal)) return;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    oldSeed = SetGlobalSeed(dxr.dxInfo.MissionNumber @ dxr.flags.newgameplus_loops $ " HandleSpecialPerson " $ bindname);
+
+    if (chance_single(50)) {
+        foreach AllActors(class'ScriptedPawn', pawn) {
+            if (pawn.bindname == bindname) {
+                pawn.LeaveWorld();
+                break;
+            }
+        }
+    } else {
+        data.BanGoal(goal, 999);
+    }
+
+    ReapplySeed(oldSeed);
+}
+
 function AnyEntry()
 {
     local name flagname;
@@ -191,6 +231,21 @@ function bool IsLateStart(int mission)
     if(mission==7) mission=6;
     if(mission==13) mission=12;
     return dxr.flags.settings.starting_map > mission * 10 + 5;
+}
+
+function bool IsBoardGoal(string s)
+{
+    local PlayerDataItem data;
+    local int i;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+
+    for (i = 0; i < 25; i++) {
+        if (data.GetBingoEvent(i) == s) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function NewBingoBoard()
