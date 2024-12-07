@@ -1511,6 +1511,8 @@ function RunTests()
     testfloat(f, 1, "MissionsMaskAvailability WW M05");
     f = MissionsMaskAvailability(8, (1<<8), (1<<8));
     testfloat(f, 1, "MissionsMaskAvailability WW M08");
+    f = MissionsMaskAvailability(9, (1<<8), (1<<9));
+    testfloat(f, 0, "MissionsMaskAvailability WW M09");
 
     // starting_map but unlimited duration
     f = MissionsMaskAvailability(5, (1<<3)+(1<<5), 0xFFFF);
