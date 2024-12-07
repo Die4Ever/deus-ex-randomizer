@@ -1093,7 +1093,7 @@ function bool AddTestGoal(
     if (max > 1 && InStr(desc, "%s") != -1) {
         f = float(dxr.flags.bingo_scale)/100.0;
         f = rngrange(f, 0.8, 1);// 80% to 100%
-        f *= MissionsMaskAvailability(starting_mission, missions) ** 1.5;
+        f *= MissionsMaskAvailability(starting_mission, missions, missions) ** 1.5;
         max = Ceil(float(max) * f);
         max = self.Max(max, 1);
 
@@ -1240,13 +1240,12 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             event = bingo_options[i].event;
             desc = bingo_options[i].desc;
             missions = bingo_options[i].missions;
-            masked_missions = missions & end_mission_mask; //Pre-mask the bingo endpoint
             max = bingo_options[i].max;
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && InStr(desc, "%s") != -1) {
                 f = float(dxr.flags.bingo_scale)/100.0;
                 f = rngrange(f, 0.8, 1);// 80% to 100%
-                f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
+                f *= MissionsMaskAvailability(starting_mission, missions, end_mission_mask) ** 1.5;
                 max = Ceil(float(max) * f);
                 max = self.Max(max, 1);
 
@@ -1473,26 +1472,30 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     return 0;// 0==false
 }
 
-static function float MissionsMaskAvailability(int currentMission, int missionsMask)
+static function float MissionsMaskAvailability(int currentMission, int goalMissions, int playableMissions)
 {
-    local int num, expired, i, t;
+    local int good, bad, i, t, playable;
 
-    if(missionsMask == 0) return 1.0 - float(currentMission-1) / 15.0;
+    if(goalMissions == 0) return 1.0 - float(currentMission-1) / 15.0;
 
     for(i=1; i<currentMission; i++) {
-        t = (1<<i) & missionsMask;
-        expired += int( t != 0 );
+        t = (1<<i) & goalMissions;
+        bad += int( t != 0 );
     }
     for(i=currentMission; i<=15; i++) {
-        t = (1<<i) & missionsMask;
-        num += int( t != 0 );
+        t = (1<<i) & goalMissions;
+        playable = (1<<i) & playableMissions;
+        if(playable == 0) bad += int( t != 0 );
+        else good += int( t != 0 );
     }
 
-    return float(num)/float(expired+num);
+    return float(good)/float(bad+good);
 }
 
 function RunTests()
 {
+    local float f;
+
     testint(NumBitsSet(0), 0, "NumBitsSet");
     testint(NumBitsSet(1), 1, "NumBitsSet");
     testint(NumBitsSet(2), 1, "NumBitsSet");
@@ -1501,17 +1504,37 @@ function RunTests()
     testint(NumBitsSet(1<<15), 1, "NumBitsSet");
     testint(NumBitsSet((1<<15)+(1<<8)), 2, "NumBitsSet");
 
-    testfloat(MissionsMaskAvailability(1, (1<<3)), 1, "MissionsMaskAvailability");
-    testfloat(MissionsMaskAvailability(5, (1<<5)), 1, "MissionsMaskAvailability");
-    testfloat(MissionsMaskAvailability(5, (1<<8)), 1, "MissionsMaskAvailability");
+    // tests like WW
+    f = MissionsMaskAvailability(3, (1<<3), (1<<3));
+    testfloat(f, 1, "MissionsMaskAvailability WW M03");
+    f = MissionsMaskAvailability(5, (1<<5), (1<<5));
+    testfloat(f, 1, "MissionsMaskAvailability WW M05");
+    f = MissionsMaskAvailability(8, (1<<8), (1<<8));
+    testfloat(f, 1, "MissionsMaskAvailability WW M08");
 
-    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<5)), 0.5, "MissionsMaskAvailability");
-    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)), 0.5, "MissionsMaskAvailability");
-    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)+(1<<10)), 2/3, "MissionsMaskAvailability");
+    // starting_map but unlimited duration
+    f = MissionsMaskAvailability(5, (1<<3)+(1<<5), 0xFFFF);
+    testfloat(f, 0.5, "MissionsMaskAvailability start");
+    f = MissionsMaskAvailability(5, (1<<3)+(1<<7), 0xFFFF);
+    testfloat(f, 0.5, "MissionsMaskAvailability start");
+    f = MissionsMaskAvailability(5, (1<<3)+(1<<7)+(1<<10), 0xFFFF);
+    testfloat(f, 2/3, "MissionsMaskAvailability start");
 
-    testfloat(MissionsMaskAvailability(1, 0), 1, "MissionsMaskAvailability");
-    testfloat(MissionsMaskAvailability(6, 0), 10/15, "MissionsMaskAvailability");
-    testfloat(MissionsMaskAvailability(15, 0), 1/15, "MissionsMaskAvailability");
+    // unmasked goal
+    f = MissionsMaskAvailability(1, 0, 0xFFFF);
+    testfloat(f, 1, "MissionsMaskAvailability unmasked goal 1");
+    f = MissionsMaskAvailability(6, 0, 0xFFFF);
+    testfloat(f, 10/15, "MissionsMaskAvailability unmasked goal 6");
+    f = MissionsMaskAvailability(15, 0, 0xFFFF);
+    testfloat(f, 1/15, "MissionsMaskAvailability unmasked goal 15");
+
+    // limited duration
+    f = MissionsMaskAvailability(3, 0xFFFF, (1<<3));
+    testfloat(f, 1/15, "MissionsMaskAvailability limited duration");
+    f = MissionsMaskAvailability(5, 0xFFFF, (1<<5)+(1<<6));
+    testfloat(f, 2/15, "MissionsMaskAvailability limited duration");
+    f = MissionsMaskAvailability(8, 0xFFFF, (1<<8)+(1<<9)+(1<<10));
+    testfloat(f, 3/15, "MissionsMaskAvailability limited duration");
 
     testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
     testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");
