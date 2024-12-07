@@ -933,14 +933,14 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which)
+static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation conv, optional int which)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
 
-    if (con == None || goalName == '' || which < 0) return None;
+    if (conv == None || goalName == '' || which < 0) return None;
 
-    for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
+    for (ce = conv.eventList; ce != None; ce = ce.nextEvent) {
         ceag = ConEventAddGoal(ce);
         if (ceag != None && ceag.goalName == goalName) {
             if (which == 0) // keep looping until we find the version of the goal we want
@@ -955,6 +955,30 @@ static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversatio
 function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which)
 {
     return GetGoalConEventStatic(goalName, GetConversation(convname), which);
+}
+
+function AddNoteFromNoteEvent(ConEventAddNote event)
+{
+	if (!event.bNoteAdded) {
+		player().AddNote(event.noteText, False, True);
+		event.bNoteAdded = True;
+	}
+}
+
+function ConEventAddNote GetNoteEventFromConv(Conversation conv, optional string substring)
+{
+    local ConEvent ce;
+    local ConEventAddNote noteEvent;
+
+    if (conv == None) return None;
+
+    for (ce = conv.eventList; ce != None; ce = ce.nextEvent) {
+        noteEvent = ConEventAddNote(ce);
+        if (noteEvent != None && InStr(noteEvent.noteText, substring) != -1) {
+            return noteEvent;
+        }
+    }
+    return None;
 }
 
 // Creates or updates a goal with text taken from a Conversation

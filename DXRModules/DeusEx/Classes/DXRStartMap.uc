@@ -127,15 +127,14 @@ function PreFirstEntry()
         break;
 
     case "12_VANDENBERG_CMD":
-        if(dxr.flags.settings.starting_map >= 120) {
-            RemoveJock('UN_BlackHeli');
-        }
         if (dxr.flags.settings.starting_map >= 121) {
+            RemoveJock('UN_BlackHeli');
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
                 dxMover.InterpolateTo(1, 0.0);
                 break;
             }
             dxr.flagbase.SetBool('DL_TonyScared_Played', true,, 15); // You won't find cover in the comm building.
+            AddNoteFromNoteEvent(GetNoteEventFromConv(GetConversation('DL_no_carla')));
         }
         break;
 
@@ -208,7 +207,7 @@ function RemoveJock(name jockTag)
     local #var(prefix)BlackHelicopter jock;
 
     foreach AllActors(class'#var(prefix)BlackHelicopter', jock, jockTag) {
-        log("Removing a BlackHelicopter from \"" $ dxr.localURL $ "\" with tag '" $ jock.tag $ "'");
+        log("Removing a BlackHelicopter from " $ dxr.localURL $ " with tag '" $ jock.tag $ "'");
         jock.LeaveWorld();
         break;
     }
@@ -798,9 +797,10 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             GiveKey(player, 'catacombs_blastdoor02', "Catacombs Sewer Entry Key");
             break;
 
+        //case
         case 129:
             MarkConvPlayed("GaryHostageBriefing", bFemale);
-            MarkConvPlayed("DL_no_carla", bFemale); // Majestic 12 is attacking Vandenberg... in 120+ starts, you don't need fing the keypads
+            MarkConvPlayed("DL_no_carla", bFemale); // Majestic 12 is attacking Vandenberg... in 120+ starts, the base is no longer under lockdown
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
             break;
         case 122:
