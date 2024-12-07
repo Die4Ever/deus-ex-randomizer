@@ -159,6 +159,25 @@ function PostFirstEntry()
     }
 }
 
+// Gives the mission number as if M07 and M15 didn't exist
+static function int GetLogicalMissionNumber(int illogical_mission_number)
+{
+    if (illogical_mission_number >= 13)
+        return illogical_mission_number - 2;
+    if (illogical_mission_number >= 7)
+        return illogical_mission_number - 1;
+    return illogical_mission_number;
+}
+
+static function int GetIllogicalMissionNumber(int logical_mission_number)
+{
+    if (logical_mission_number >= 13)
+        return logical_mission_number + 2;
+    if (logical_mission_number >= 7)
+        return logical_mission_number + 1;
+    return logical_mission_number;
+}
+
 static function int GetStartMapMission(int start_map_val)
 {
     local int mission;
