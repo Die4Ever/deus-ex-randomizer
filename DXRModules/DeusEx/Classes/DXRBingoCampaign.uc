@@ -145,30 +145,6 @@ function PostFirstEntry()
     }
 }
 
-function HandleSpecialPerson(string bindname, string goal) {
-    local int oldSeed;
-    local ScriptedPawn pawn;
-    local PlayerDataItem data;
-
-    if (IsBoardGoal(goal)) return;
-
-    data = class'PlayerDataItem'.static.GiveItem(player());
-    oldSeed = SetGlobalSeed(dxr.dxInfo.MissionNumber @ dxr.flags.newgameplus_loops $ " HandleSpecialPerson " $ bindname);
-
-    if (chance_single(50)) {
-        foreach AllActors(class'ScriptedPawn', pawn) {
-            if (pawn.bindname == bindname) {
-                pawn.LeaveWorld();
-                break;
-            }
-        }
-    } else {
-        data.BanGoal(goal, 999);
-    }
-
-    ReapplySeed(oldSeed);
-}
-
 function AnyEntry()
 {
     local name flagname;
@@ -231,6 +207,31 @@ function bool IsLateStart(int mission)
     if(mission==7) mission=6;
     if(mission==13) mission=12;
     return dxr.flags.settings.starting_map > mission * 10 + 5;
+}
+
+function HandleSpecialPerson(string bindname, string goal) {
+    local int oldSeed;
+    local ScriptedPawn pawn;
+    local PlayerDataItem data;
+
+    if (IsBoardGoal(goal)) return;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    oldSeed = SetGlobalSeed(dxr.dxInfo.MissionNumber @ dxr.flags.newgameplus_loops $ " HandleSpecialPerson " $ bindname);
+
+    if (chance_single(50)) {
+        foreach AllActors(class'ScriptedPawn', pawn) {
+            if (pawn.bindname == bindname) {
+                log("Destroying " $ pawn.FamiliarName $ " in map " $ dxr.localURL);
+                pawn.Destroy();
+                break;
+            }
+        }
+    } else {
+        data.BanGoal(goal, 999);
+    }
+
+    ReapplySeed(oldSeed);
 }
 
 function bool IsBoardGoal(string s)
