@@ -7,7 +7,7 @@
 //        or https://github.com/Die4Ever/deus-ex-randomizer         //
 //////////////////////////////////////////////////////////////////////
 
-class Json extends Object transient;
+class Json extends Info transient;
 // singleton class
 
 // #region Private Members
@@ -47,11 +47,11 @@ var string _buf;
 // #region Json Public Interface
 static function Json parse(LevelInfo parent, string msg) {
     local Json o;
-    foreach parent.AllObjects(class'Json', o) {
+    foreach parent.AllActors(class'Json', o) {
         if(o.singleton) break;
     }
     if(o == None) {
-        o = new(parent) class'Json';
+        o = parent.Spawn(class'Json');
         o.singleton = true;
     }
     o._parse(msg);
