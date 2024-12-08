@@ -61,6 +61,18 @@ function PreFirstEntry()
         }
         break;
 
+    case "03_NYC_BatteryPark":
+        if (dxr.flags.settings.starting_map > 32) {
+            RemoveJock('UNATCOChopper');
+        }
+        break;
+
+    case "04_NYC_STREET":
+        if (dxr.flags.settings.starting_map > 42) {
+            RemoveJock('EntranceCopter');
+        }
+        break;
+
     case "05_NYC_UNATCOMJ12LAB":
         if(dxr.flags.settings.starting_map > 50) {
             foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
@@ -79,8 +91,27 @@ function PreFirstEntry()
         }
         break;
 
+    case "08_NYC_Street":
+        if (dxr.flags.settings.starting_map > 80) {
+            RemoveJock('EntranceCopter');
+        }
+        break;
+
+    case "09_NYC_Dockyard":
+        if (dxr.flags.settings.starting_map > 90) {
+            RemoveJock('EntryCopter');
+        }
+        break;
+
+    case "10_Paris_Catacombs":
+        if (dxr.flags.settings.starting_map > 100) {
+            RemoveJock('UN_BlackHeli');
+        }
+        break;
+
     case "12_VANDENBERG_CMD":
         if (dxr.flags.settings.starting_map >= 121) {
+            RemoveJock('UN_BlackHeli');
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
                 dxMover.InterpolateTo(1, 0.0);
                 break;
@@ -149,6 +180,17 @@ function PostFirstEntry()
                 break;
             }
         }
+        break;
+    }
+}
+
+function RemoveJock(name jockTag)
+{
+    local #var(prefix)BlackHelicopter jock;
+
+    foreach AllActors(class'#var(prefix)BlackHelicopter', jock, jockTag) {
+        log("Removing a BlackHelicopter from " $ dxr.localURL $ " with tag '" $ jock.tag $ "'");
+        jock.LeaveWorld();
         break;
     }
 }
@@ -685,10 +727,19 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('QuickConvinced',true,,-1);
             MarkConvPlayed("Gate_Guard2", bFemale);
             MarkConvPlayed("MeetMaxChen", bFemale);
+            MarkConvPlayed("DL_Jock_05", bFemale); // Okay, you need to find Tracer Tong
+            MarkConvPlayed("DL_Jock_04", bFemale); // You're next to the compound Paul used to visit
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
             MarkConvPlayed("DL_Tong_00", bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
+        case 64:// fallthroughs
+        case 63:
+        case 62:
+        case 61:
+            MarkConvPlayed("DL_Jock_01", bFemale); // I blew it, JC, I'm sorry.  MJ12 must want you bad
+            MarkConvPlayed("DL_Jock_02", bFemale); // Come on down and stay clear of the blast doors to the south
+            MarkConvPlayed("DL_Jock_03", bFemale); // I have to get clear!  Head for the exit, and I'll link up with you when I can.
             break;
 
         case 81:
@@ -725,16 +776,6 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             GiveKey(player, 'catacombs_blastdoor02', "Catacombs Sewer Entry Key");
             break;
 
-        case 129:
-            MarkConvPlayed("GaryHostageBriefing", bFemale);
-            flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
-            break;
-        case 122:
-            AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
-        case 121: // fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'MeetCarlaBrown', 0); // Backup power for the bot security system
-            break;
-
         case 145:
             flagbase.SetBool('schematic_downloaded',true,,-1); //Make sure the oceanlab UC schematics are downloaded
         case 142: // fallthrough
@@ -744,6 +785,15 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Underwater", bFemale); // The URV bay is in this module.  You might not hear from me again.
         case 140: // fallthrough
             flagbase.SetBool('TiffanySavage_Dead',true,,15);
+        // FALLTHROUGH from mission 14 to 12
+        case 129:
+            MarkConvPlayed("GaryHostageBriefing", bFemale);
+            flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
+        case 122: // fallthrough
+            AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
+        case 121: // fallthrough
+            AddNoteFromConv(player, bEmptyNotes, 'MeetCarlaBrown', 0); // Backup power for the bot security system
+            MarkConvPlayed("DL_no_carla", bFemale);
             break;
 
         case 153:
