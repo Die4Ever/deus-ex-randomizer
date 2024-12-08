@@ -79,12 +79,6 @@ function PreFirstEntry()
         }
         break;
 
-    case "11_PARIS_EVERETT":
-        // don't do the conversation from 11_Paris_Underground
-        dxr.flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
-        dxr.flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
-        break;
-
     case "12_VANDENBERG_CMD":
         if (dxr.flags.settings.starting_map >= 121) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
@@ -706,6 +700,14 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             GiveKey(player, 'EngineRoomDoor', "Below Decks key");
             MarkConvPlayed("DL_ShipEntry", bFemale); // find a way to get below decks
             break;
+
+        case 119:
+            // don't do the conversation from 11_Paris_Underground
+            MarkConvPlayed("MeetTobyAtanwe",bFemale);
+
+            //Make sure, if you backtrack, Toby is set up to be there and ready to take you back
+            dxr.flagbase.SetBool('MS_LetTobyTakeYou_Rando',false,,-1);
+            dxr.flagbase.SetBool('MS_PlayerTeleported',true,,-1);
 
         case 115:
             flagbase.SetBool('templar_upload',true,,-1);

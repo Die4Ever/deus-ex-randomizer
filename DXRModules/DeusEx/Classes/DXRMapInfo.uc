@@ -614,6 +614,8 @@ switch(mapname)
             {
                 case "Paris_Underground":
                     return "Paris Metro Interior Entrance";
+                case "PathNode68":
+                    return "Paris Metro Train Tracks";
             }
             break;
         case "12_VANDENBERG_CMD":

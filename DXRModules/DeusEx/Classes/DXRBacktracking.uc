@@ -10,6 +10,8 @@ function PreFirstEntry()
     local FlagTrigger ft;
     local DeusExDecoration button;
     local DXRButtonHoverHint buttonHint;
+    local ZoneInfo zi;
+    local #var(prefix)Keypad3 key;
 
     Super.PreFirstEntry();
 
@@ -56,6 +58,27 @@ function PreFirstEntry()
                         bp.bBlockPlayers=false;
                 }
             }
+            break;
+        case "11_PARIS_UNDERGROUND":
+            foreach AllActors(class'ZoneInfo',zi){
+                if (zi.DamageType!='Shocked') continue;
+                zi.Tag='TrackElectrical';
+            }
+
+            //Spawn keypad for the track electricity
+            key = #var(prefix)Keypad3(Spawnm(class'#var(prefix)Keypad3',,,vect(-500,-1407,-1025),rot(0,16382,0)));
+            key.Event='TrackElectrical';
+            key.bToggleLock=False;
+            key.validCode="147896325";
+            //These don't actually show up, but maybe we could change things to make it show later
+            key.FamiliarName="Track Electricity";
+            key.UnfamiliarName=key.FamiliarName;
+            break;
+
+        case "11_PARIS_EVERETT":
+            dt = Spawn(class'DynamicTeleporter',,'everett_backtrack',vectm(650,1100,350));
+            SetDestination(dt, "11_PARIS_UNDERGROUND", 'PathNode68',,45000);
+            dt.SetCollisionSize(100,100);
             break;
 
         case "12_VANDENBERG_CMD":
@@ -268,7 +291,9 @@ function AnyEntry()
         case "10_PARIS_CHATEAU":
             ParisChateauAnyEntry();
             break;
-
+        case "11_PARIS_UNDERGROUND":
+            ParisUndergroundAnyEntry();
+            break;
         case "12_VANDENBERG_CMD":
             VandCmdAnyEntry();
             break;
@@ -367,6 +392,65 @@ function ParisChateauAnyEntry()
 
     CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vectm(-500,250,0) );
     BacktrackChopper( 'ChopperExit', 'BlackHelicopter', 'UN_BlackHeli_Fly', "Jock", 'Camera1', "10_PARIS_METRO", 'PathNode447', "", vect(-825.793274, 1976.029297, 176.545380), rot(0, -10944, 0) );
+}
+
+function ParisUndergroundAnyEntry()
+{
+    local #var(prefix)TobyAtanwe toby;
+    local #var(prefix)FlagTrigger ft;
+    local #var(prefix)Keypad3 keypad;
+    local DXRHoverHint hoverHint;
+    local DXRMapVariants mapvariants;
+
+    foreach AllActors(class'#var(prefix)FlagTrigger',ft){
+        if (ft.FlagName=='MS_LetTobyTakeYou_Rando'){
+            return;  //Don't do this again if the flag trigger has already been created
+        }
+    }
+    foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
+    if (mapvariants==None) return;
+
+    //Only do this once you've been to Everett
+    if (!dxr.flagbase.GetBool('M11_PARIS_EVERETT_Randomized') && !dxr.flagbase.GetBool('M11_PARIS_EVERETT__1_1_1_Randomized')) return;
+
+    //Need FlagTriggers to set MeetTobyAtanwe_Played and MS_LetTobyTakeYou_Rando
+    ft = #var(prefix)FlagTrigger(Spawnm(class'#var(prefix)FlagTrigger',,,vect(-225,-2200,-1050)));
+    ft.bSetFlag=True;
+    ft.bTrigger=False;
+    ft.flagExpiration=12;
+    ft.FlagName='MeetTobyAtanwe_Played';
+    ft.flagValue=True;
+    ft.SetCollisionSize(250,150);
+
+    ft = #var(prefix)FlagTrigger(Spawnm(class'#var(prefix)FlagTrigger',,,vect(-225,-2200,-1050)));
+    ft.bSetFlag=True;
+    ft.bTrigger=False;
+    ft.flagExpiration=12;
+    ft.FlagName='MS_LetTobyTakeYou_Rando';
+    ft.flagValue=True;
+    ft.SetCollisionSize(250,150);
+
+    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), ft.Location, ft.CollisionRadius+5, ft.CollisionHeight+5);
+    hoverHint.SetBaseActor(ft);
+    hoverHint.VisibleDistance=5000;
+    hoverHint.Texture=Texture'Engine.S_Teleport'; //Fake it to show as a teleporter
+    hoverHint.DrawType=DT_Sprite;
+    hoverHint.bHidden=!class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
+
+    foreach AllActors(class'#var(prefix)Keypad3',keypad){
+        if (keypad.Event!='TrackElectrical') continue;
+        keypad.hackStrength=0;
+    }
+
+
+    //Remove Toby on later visits
+    foreach AllActors(class'#var(prefix)TobyAtanwe',toby){
+        foreach toby.BasedActors(class'DXRHoverHint',hoverHint){
+            hoverHint.Destroy();
+        }
+        toby.destroy();
+    }
+
 }
 
 function VandCmdAnyEntry()
@@ -836,7 +920,7 @@ function ConversationFrobOnly(Conversation c)
     c.bInvokeRadius = false;
 }
 
-function SetDestination(Actor p, string destURL, name dest_actor_name, optional string tag)
+function SetDestination(Actor p, string destURL, name dest_actor_name, optional string tag, optional int yaw)
 {
     local DXRMapVariants maps;
     local #var(prefix)MapExit m;
@@ -853,7 +937,7 @@ function SetDestination(Actor p, string destURL, name dest_actor_name, optional 
     if( m != None )
         m.SetDestination(destURL, dest_actor_name, tag);
     else if( t != None )
-        t.SetDestination(destURL, dest_actor_name, tag);
+        t.SetDestination(destURL, dest_actor_name, tag, yaw);
     else
         err("SetDestination failed for "$p);
 
