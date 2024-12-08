@@ -135,7 +135,7 @@ function PostFirstEntry()
         case "04_NYC_STREET":
         case "04_NYC_HOTEL":
         case "04_NYC_BatteryPark":
-            HandleSpecialPerson("AnnaNavarre", "AnnaNavarre_DeadM5");
+            HandleSpecialPerson("AnnaNavarre", "AnnaNavarre_DeadM4", "AnnaNavarre_DeadM5");
             break;
         case "14_VANDENBERG_SUB":
         case "14_OceanLab_Lab":
@@ -209,15 +209,15 @@ function bool IsLateStart(int mission)
     return dxr.flags.settings.starting_map > mission * 10 + 5;
 }
 
-function HandleSpecialPerson(string bindname, string goal) {
+function HandleSpecialPerson(string bindname, string thisGoal, optional string nextGoal) {
     local int oldSeed;
     local ScriptedPawn pawn;
     local PlayerDataItem data;
 
-    if (IsBoardGoal(goal)) return;
+    if (IsBoardGoal(thisGoal)) return;
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    oldSeed = SetGlobalSeed(dxr.dxInfo.MissionNumber @ dxr.flags.newgameplus_loops $ " HandleSpecialPerson " $ bindname);
+    oldSeed = SetGlobalSeed(dxr.dxInfo.MissionNumber $ " HandleSpecialPerson " $ bindname);
 
     if (chance_single(50)) {
         foreach AllActors(class'ScriptedPawn', pawn) {
@@ -228,7 +228,8 @@ function HandleSpecialPerson(string bindname, string goal) {
             }
         }
     } else {
-        data.BanGoal(goal, 999);
+        if (nextGoal == "") nextGoal = thisGoal;
+        data.BanGoal(nextGoal, 999);
     }
 
     ReapplySeed(oldSeed);
