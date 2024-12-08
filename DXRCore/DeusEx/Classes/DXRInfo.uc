@@ -8,9 +8,12 @@ var transient int passes;
 var transient int fails;
 var config int config_version;
 
-simulated function class<Actor> GetClassFromString(string classstring, class<Actor> c)
+simulated function class<Actor> GetClassFromString(string classstring, class<Actor> c, optional bool silent)
 {
     local class<Actor> a;
+    local int i;
+    local string orig;
+
     if( InStr(classstring, ".") == -1 ) {
 #ifdef hx
         classstring = "HX.HX" $ classstring;
@@ -20,10 +23,14 @@ simulated function class<Actor> GetClassFromString(string classstring, class<Act
     }
     a = class<Actor>(DynamicLoadObject(classstring, class'class'));
     if( a == None ) {
-        err("GetClassFromString: failed to load class "$classstring);
+        if (!silent){
+            err("GetClassFromString: failed to load class "$classstring);
+        }
     }
     else if( ClassIsChildOf(a, c) == false ) {
-        err("GetClassFromString: " $ classstring $ " is not a subclass of " $ c.name);
+        if (!silent){
+            err("GetClassFromString: " $ classstring $ " is not a subclass of " $ c.name);
+        }
         return None;
     }
     //l("GetClassFromString: found " $ classstring);

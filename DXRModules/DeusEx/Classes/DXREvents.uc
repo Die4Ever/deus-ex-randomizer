@@ -722,7 +722,7 @@ function SetWatchFlags() {
         WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
         WatchFlag('M06BartenderQuestion3');
-        WatchFlag('KnowsAboutNanoSword');
+        WatchFlag('Raid_Underway');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -2083,6 +2083,8 @@ function string RemapBingoEvent(string eventname)
 static function int GetBingoFailedEvents(string eventname, out string failed[5])
 {
     local int num_failed;
+    local DXRando dxr;
+    dxr = class'DXRando'.default.dxr;
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
@@ -2172,12 +2174,20 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
         case "Date1_Dead":
             failed[num_failed++] = "M06JCHasDate";
             return num_failed;
-        case "KnowsAboutNanoSword":
+        case "Raid_Underway": //Raid started
             failed[num_failed++] = "M06JCHasDate";
-            // fallthrough
+            failed[num_failed++] = "ClubEntryPaid";
+            return num_failed;
         case "ClubMercedes_Dead":
         case "ClubTessa_Dead":
-            failed[num_failed++] = "ClubEntryPaid";
+            if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+                failed[num_failed++] = "ClubEntryPaid";
+            }
+            return num_failed;
+        case "LDDPRuss_Dead":
+            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+                failed[num_failed++] = "ClubEntryPaid";
+            }
             return num_failed;
         case "Supervisor01_Dead":
             failed[num_failed++] = "Supervisor_Paid";

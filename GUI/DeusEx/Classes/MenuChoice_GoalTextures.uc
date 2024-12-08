@@ -11,7 +11,6 @@ function SaveSetting()
     }
 }
 
-//This will be called from the barrels themselves, who won't have ready access to a DXRFlags
 static function bool IsEnabled(Actor a)
 {
     return default.value==1;

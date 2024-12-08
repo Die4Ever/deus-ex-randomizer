@@ -157,6 +157,7 @@ function bool CheckReanimateCorpse(#var(DeusExPrefix)Carcass carc, float time)
 static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#var(DeusExPrefix)Carcass> carcClass)
 {
     local string livingClassName;
+    local int i;
 
     //For handling special cases that we're too lazy to make unique living classes for
     switch(carcClass){
@@ -172,14 +173,18 @@ static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#
             //At least in vanilla, all carcasses are the original class name + Carcass
             livingClassName = string(carcClass);
             livingClassName = module.ReplaceText(livingClassName,"NametagCarcass","");// for our Aug guys
-            livingClassName = module.ReplaceText(livingClassName,"Carcass","");
+
+            //Strip everything Carcass onwards (Revision has things like MJ12TroopCarcassA, MJ12TroopCarcassB... )
+            i = module.InStr(livingClassName,"Carcass");
+            livingClassName = module.Left(livingClassName,i);
+            //livingClassName = module.ReplaceText(livingClassName,"Carcass","");
             return livingClassName;
     }
 }
 
 static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Carcass carc, optional String pawnname)
 {
-    local string livingClassName;
+    local string livingClassName, origClassName;
     local class<Actor> livingClass;
     local vector respawnLoc;
     local ScriptedPawn sp,otherSP;
@@ -194,9 +199,27 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     if(carc==None || carc.bDeleteMe) return False;
 
     livingClassName = GetPawnClassNameFromCarcass(module, carc.class);
-    livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn');
+    livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn',true);
+
+#ifdef revision
+    if (livingClass == None) {
+        origClassName=livingClassName;
+        i = InStr(livingClassName, ".");
+        if( i != -1 ) {
+            livingClassName = Mid(livingClassName,i+1);
+            livingClassName = "DeusEx."$livingClassName;
+            livingClass = module.GetClassFromString(livingClassName,class'ScriptedPawn',true);
+
+            if (livingClass==None){
+                module.err("failed to load class "$origClassName); //The class we just tried to load will be printed outside ifdef
+            }
+        }
+    }
+#endif
+
 
     if (livingClass==None){
+        module.err("failed to load class "$livingClassName); //GetClassFromString would normally print this
         module.warning("ReanimateCorpse " $ carc $ " failed livingClass==None");
         return False;
     }

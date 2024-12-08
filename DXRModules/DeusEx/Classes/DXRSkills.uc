@@ -104,12 +104,28 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
 simulated function RandoSkills(Skill aSkill)
 {
+    local int mission_group, old_mission_group, mission_num, old_mission_num;
+
     if( dxr == None ) {
         warning("RandoSkills dxr is None");
         return;
     }
 
     l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.settings.minskill$", max: "$dxr.flags.settings.maxskill $", reroll_missions: "$ dxr.flags.settings.skills_reroll_missions $", independent_levels: "$ dxr.flags.settings.skills_independent_levels );
+
+    //Check if the skills are going to be randomized to new values (we've crossed the reroll point)
+    //Don't show the message at the start of the game though
+    if( dxr.dxInfo != None && dxr.dxInfo.missionNumber > 0 ) {
+        mission_num = dxr.dxInfo.missionNumber;
+        old_mission_num = dxr.flagbase.GetInt('Rando_lastmission');
+        if (old_mission_num>0){
+            mission_group = Clamp(mission_num, 1, 1000) / dxr.flags.settings.skills_reroll_missions;
+            old_mission_group = Clamp(old_mission_num, 1, 1000) / dxr.flags.settings.skills_reroll_missions;
+            if (mission_group>old_mission_group){
+                player().ClientMessage("Skill costs have been rerolled!");
+            }
+        }
+    }
 
     if( dxr.flags.settings.minskill > dxr.flags.settings.maxskill ) dxr.flags.settings.maxskill = dxr.flags.settings.minskill;
 

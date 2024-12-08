@@ -150,6 +150,10 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'robobay_01'){
             m.bIsDoor=False;
         }
+        // nonsensical mover blocking jock's tail
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'jockweapons'){
+            m.BlowItUp(None);
+        }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));

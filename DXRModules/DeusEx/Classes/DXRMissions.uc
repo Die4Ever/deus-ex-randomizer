@@ -318,7 +318,7 @@ function DignifyAllGoalActors()
     local int g,a;
     local bool bTextures;
 
-    if(!#defined(vanilla)) return;
+    if(!#defined(vanilla)) return;  //&& !#defined(revision)   eventually, once we fully sort out facelift timing
     if(num_goals == 0 && num_locations == 0) return;
 
     bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled(self);
@@ -336,9 +336,15 @@ function DignifyGoalActor(Actor a, bool enableTextures)
     local bool changed;
 
     if (ComputerSecurity(a)!=None){
+        #ifdef revision
+        ComputerSecurity(a).Facelift(false);
+        #endif
         a.Skin=Texture'GoalSecurityComputerGreen';
         changed=True;
     } else if (ComputerPersonal(a)!=None){
+        #ifdef revision
+        ComputerPersonal(a).Facelift(false);
+        #endif
         a.Skin=Texture'GoalComputerPersonalYellow';
         changed=True;
     }
@@ -350,6 +356,10 @@ function DignifyGoalActor(Actor a, bool enableTextures)
 
     if (!enableTextures && changed){
         a.Skin=a.Default.Skin;
+#ifdef revision
+        //For now, everything being dignified is a decoration, but maybe not in the future?
+        #var(DeusExPrefix)Decoration(a).Facelift(true);
+#endif
     }
 }
 
