@@ -156,6 +156,7 @@ const ValState = 2;
 const ArrayState = 3;
 const ArrayDoneState = 4;
 const EndJsonState = 5;
+const ObjectState = 6;
 
 static function l(coerce string message, string j)
 {
@@ -328,7 +329,7 @@ function int ParseVal(string msg, out int i, out IntPair p, out int inBraces) {
             inBraces++;
             p.idx = Len(_buf);
             p.len = 0;
-            break;
+            return ObjectState;
 
         case "}":
             inBraces--;
@@ -384,7 +385,7 @@ function int ParseArray(string msg, out int i, out IntPair p, out int inBraces) 
             inBraces++;
             p.idx = Len(_buf);
             p.len = 0;
-            break;
+            return ObjectState;
 
         case "}":
             // TODO: arrays of objects
@@ -406,6 +407,32 @@ function int ParseArray(string msg, out int i, out IntPair p, out int inBraces) 
         case "\"": //Quotes
             ParseQuotes(msg, i, p);
             break;
+
+        default:
+            //Build up the buffer
+            _buf = _buf $ c;
+            p.len++;
+            break;
+        }
+    }
+}
+
+function int ParseObject(string msg, out int i, out IntPair p, out int inBraces) {
+    local string c;
+    // TODO: objects, probably store the keys as keys["parentkey.key"] = val
+
+    for(i=i; i < Len(msg); i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        switch (c) {
+        case "{":
+            inBraces++;
+            p.idx = Len(_buf);
+            p.len = 0;
+            return ObjectState;
+
+        case "}":
+            inBraces--;
+            return ArrayDoneState;
 
         default:
             //Build up the buffer
@@ -512,6 +539,9 @@ function bool ParseIter(int num)
             break;
         case ArrayDoneState:
             parsestate = ParseArrayDone(msg, i, p, inBraces);
+            break;
+        case ObjectState:
+            parsestate = ParseObject(msg, i, p, inBraces);
             break;
         case EndJsonState:
             return true;
