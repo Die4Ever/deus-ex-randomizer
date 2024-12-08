@@ -957,30 +957,6 @@ function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional 
     return GetGoalConEventStatic(goalName, GetConversation(convname), which);
 }
 
-function AddNoteFromNoteEvent(ConEventAddNote event)
-{
-	if (!event.bNoteAdded) {
-		player().AddNote(event.noteText, False, True);
-		event.bNoteAdded = True;
-	}
-}
-
-function ConEventAddNote GetNoteEventFromConv(Conversation conv, optional string substring)
-{
-    local ConEvent ce;
-    local ConEventAddNote noteEvent;
-
-    if (conv == None) return None;
-
-    for (ce = conv.eventList; ce != None; ce = ce.nextEvent) {
-        noteEvent = ConEventAddNote(ce);
-        if (noteEvent != None && InStr(noteEvent.noteText, substring) != -1) {
-            return noteEvent;
-        }
-    }
-    return None;
-}
-
 // Creates or updates a goal with text taken from a Conversation
 function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
 {

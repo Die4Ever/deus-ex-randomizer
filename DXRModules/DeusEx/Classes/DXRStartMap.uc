@@ -134,7 +134,7 @@ function PreFirstEntry()
                 break;
             }
             dxr.flagbase.SetBool('DL_TonyScared_Played', true,, 15); // You won't find cover in the comm building.
-            AddNoteFromNoteEvent(GetNoteEventFromConv(GetConversation('DL_no_carla')));
+            AddNoteFromConv('DL_no_carla', true);
         }
         break;
 
@@ -598,25 +598,32 @@ static function AddNote(#var(PlayerPawn) player, bool bEmptyNotes, string text)
     }
 }
 
-function DeusExNote AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, name convname, optional int which)
+function DeusExNote AddNoteFromNoteEvent(ConEventAddNote event)
 {
-    local Conversation con;
+	if (!event.bNoteAdded) {
+		event.bNoteAdded = true;
+		return player().AddNote(event.noteText, false, true);
+	}
+    return None;
+}
+
+function DeusExNote AddNoteFromConv(name convname, bool bEmptyNotes, optional int which)
+{
+    local Conversation conv;
     local ConEvent ce;
     local ConEventAddNote cean;
     local DeusExNote note;
 
-    if (bEmptyNotes == false) {
-        return None;
-    }
-
-    con = GetConversation(convname);
+    if (bEmptyNotes == false) return None;
+    conv = GetConversation(convname);
+    if (conv == None) return None;
 
     // passing a negative value for `which` adds all notes, and returns None
-    for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
+    for (ce = conv.eventList; ce != None; ce = ce.nextEvent) {
         cean = ConEventAddNote(ce);
         if (cean != None) {
             if (which <= 0) {
-                note = player.Addnote(cean.noteText);
+                note = AddNoteFromNoteEvent(cean);
                 if (which == 0) {
                     return note;
                 }
@@ -702,7 +709,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("M03MeetTerroristLeader", bFemale);
         case 34: // fallthrough
         case 33:
-            AddNoteFromConv(player, bEmptyNotes, 'MeetCurly', 0); // 6653 -- Code to the phone-booth entrance
+            AddNoteFromConv('MeetCurly', bEmptyNotes, 0); // 6653 -- Code to the phone-booth entrance
             MarkConvPlayed("dl_batterypark", bFemale); // We're dropping you off in Battery Park
             break;
         case 31:
@@ -718,8 +725,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
 
         case 55:
-            AddNoteFromConv(player, bEmptyNotes, 'PaulInMedLab', 0); // Anna Navarre's killphrase is stored in two pieces on two computers
-            AddNoteFromConv(player, bEmptyNotes, 'DL_paul', 0); // Facility exit: 1125
+            AddNoteFromConv('PaulInMedLab', bEmptyNotes, 0); // Anna Navarre's killphrase is stored in two pieces on two computers
+            AddNoteFromConv('DL_paul', bEmptyNotes, 0); // Facility exit: 1125
             MarkConvPlayed("DL_NoPaul", bFemale);
             MarkConvPlayed("PaulInMedLab", bFemale);
             MarkConvPlayed("DL_Paul", bFemale);
@@ -746,20 +753,20 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         break;
 
         case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
-            AddNoteFromConv(player, bEmptyNotes, 'M07Briefing'); // Access code to the Versalife nanotech research wing on Level 2: 55655
+            AddNoteFromConv('M07Briefing', bEmptyNotes); // Access code to the Versalife nanotech research wing on Level 2: 55655
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
             flagbase.SetBool('Disgruntled_Guy_Dead', true);
             MarkConvPlayed("Meet_MJ12Lab_Supervisor", bFemale);
         case 68://fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'M06SupervisorConvos', 0); // VersaLife elevator code: 6512
+            AddNoteFromConv('M06SupervisorConvos', bEmptyNotes, 0); // VersaLife elevator code: 6512
         case 67://fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'MeetTracerTong2', -1); // VersaLife employee ID: 06288
+            AddNoteFromConv('MeetTracerTong2', bEmptyNotes, -1); // VersaLife employee ID: 06288
             MarkConvPlayed("MeetTracerTong", bFemale);
             MarkConvPlayed("MeetTracerTong2", bFemale);
             flagbase.SetBool('KillswitchFixed',true,,-1);
         case 66://fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'Gate_Guard2', 1); // Luminous Path door-code: 1997
+            AddNoteFromConv('Gate_Guard2', bEmptyNotes, 1); // Luminous Path door-code: 1997
             flagbase.SetBool('MaxChenConvinced',true,,-1);
             flagbase.SetBool('QuickLetPlayerIn',true,,-1);
             flagbase.SetBool('QuickConvinced',true,,-1);
@@ -804,9 +811,9 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
             break;
         case 122:
-            AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
+            AddNoteFromConv('MeetTonyMares', bEmptyNotes, 0); // Gary savage is thought to be in the control room
         case 121: // fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'MeetCarlaBrown', 0); // Backup power for the bot security system
+            AddNoteFromConv('MeetCarlaBrown', bEmptyNotes, 0); // Backup power for the bot security system
             MarkConvPlayed("DL_no_carla", bFemale);
             break;
 
@@ -835,7 +842,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_conveyor_room", bFemale);        // Page is further down.  Find the elevator.
             // MarkConvPlayed("M15MeetEverett", bFemale);          // Not far.  You will reach Page. I just wanted to let you know that Alex hacked the Sector 2 security grid
             flagbase.SetBool('MS_EverettAppeared',true,,-1);
-            AddNoteFromConv(player, bEmptyNotes, 'M15MeetEverett', 0); // Crew-complex security code: 8946; TODO: figure out why Everett refuses to appear for this conversation on later starts
+            AddNoteFromConv('M15MeetEverett', bEmptyNotes, 0); // Crew-complex security code: 8946; TODO: figure out why Everett refuses to appear for this conversation on later starts
             // fallthrough
         case 151:
             MarkConvPlayed("DL_tong1", bFemale);                // Here's a satellite image of the damage from the missile.
