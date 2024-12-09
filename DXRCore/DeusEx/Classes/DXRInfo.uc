@@ -11,8 +11,6 @@ var config int config_version;
 simulated function class<Actor> GetClassFromString(string classstring, class<Actor> c, optional bool silent)
 {
     local class<Actor> a;
-    local int i;
-    local string orig;
 
     if( InStr(classstring, ".") == -1 ) {
 #ifdef hx

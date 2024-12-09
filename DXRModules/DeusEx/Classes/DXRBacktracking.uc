@@ -70,9 +70,7 @@ function PreFirstEntry()
             key.Event='TrackElectrical';
             key.bToggleLock=False;
             key.validCode="147896325";
-            //These don't actually show up, but maybe we could change things to make it show later
-            key.FamiliarName="Track Electricity";
-            key.UnfamiliarName=key.FamiliarName;
+            key.ItemName="Track Electricity";
             break;
 
         case "11_PARIS_EVERETT":
