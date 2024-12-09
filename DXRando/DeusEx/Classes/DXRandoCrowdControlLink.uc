@@ -139,7 +139,7 @@ function int RandomOfflineEffects() {
     viewer = "Simulated Crowd Control";
     param[0] = "1";
 
-    switch(Rand(98)) {
+    switch(Rand(99)) {
     case 0: if(Rand(2)==0){ return 0; } else { return ccEffects.doCrowdControlEvent("poison", param, viewer, 0, 0); }
     case 1: return ccEffects.doCrowdControlEvent("glass_legs", param, viewer, 0, 0);
     case 2: param[0] = string(Rand(20)); return ccEffects.doCrowdControlEvent("give_health", param, viewer, 0, 0);
@@ -294,6 +294,7 @@ function int RandomOfflineEffects() {
 #ifndef vmd
     case 97: return ccEffects.doCrowdControlEvent("random_clothes", param, viewer, 0, 0);
 #endif
+    case 98: return ccEffects.doCrowdControlEvent("drop_dudlam", param, viewer, 0, 0);
     }
 
     return 0;
@@ -626,6 +627,19 @@ function RunTests(DXRCrowdControl m)
 
     TestMsg(m, 123, 1, "drop_grenade", "-(:die[4]ever{dm}:)-", params);
 
+    // test new CC format
+    msg = "{\"code\":\"drop_lam\",\"parameters\":[]";
+    msg = msg $ ",\"targets\":[{\"service\":\"twitch\",\"id\":\"twitch_22313269\",\"name\":\"Die4Ever2011\",\"avatar\":\"\"}]";
+    msg = msg $ ",\"viewer\":\"Die4Ever2011\",\"viewers\":[{\"service\":\"twitch\",\"id\":\"22313269\",\"name\":\"Die4Ever2011\",\"avatar\":\"\"}]";
+    msg = msg $ ",\"cost\":0,\"requestID\":\"0e7bfa8b-da34-4486-af5c-51b1bdc2d00c\",\"sourceDetails\":{\"type\":\"crowd-control-test\"}";
+    msg = msg $ ",\"id\":10,\"type\":1,\"_aFG4\":\"vJT8fB\"}";
+    j = class'Json'.static.parse(Level, msg);
+    TestJsonField(m, j, "code", "drop_lam");
+    TestJsonField(m, j, "viewer", "Die4Ever2011");
+    TestJsonField(m, j, "id", "10");
+    TestJsonField(m, j, "type", "1");
+    TestJsonField(m, j, "_aFG4", "vJT8fB");
+
     //Need to do more work to validate escaped characters
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 
@@ -678,13 +692,13 @@ function RunTests(DXRCrowdControl m)
 function int TestJsonField(DXRCrowdControl m, Json jmsg, string key, coerce string expected)
 {
     local int len;
-    m.test(jmsg.count() < jmsg.max_count(), "jmsg.count() < jmsg.max_count()");
+    m.test(jmsg.count() < jmsg.max_count(), "jmsg.count() < jmsg.max_count() " $ key);
     len = jmsg.get_vals_count(key);
     if(expected == "" && len == 0) {
         m.test(true, "TestJsonField "$key$" correctly missing");
     } else {
-        m.test(len > 0, "je.valCount > 0");
-        m.test(len < jmsg.max_values(), "je.valCount < ArrayCount(je.value)");
+        m.test(len > 0, "je.valCount > 0 " $ key);
+        m.test(len < jmsg.max_values(), "je.valCount < ArrayCount(je.value) " $ key);
         m.teststring(jmsg.get(key, 0), expected, "TestJsonField " $ key);
     }
     return len;

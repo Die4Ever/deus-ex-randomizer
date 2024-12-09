@@ -148,6 +148,7 @@ public class DeusEx : SimpleTCPPack
         //new Effect("Drop a live grenade","dropgrenade",ItemKind.Folder),
 
         new Effect("Drop a Live LAM", "drop_lam") { Category = "Drop Live Grenade",Price = 30,Description = "Drop a LAM on the ground, ready to explode!" },
+        new Effect("Drop a Dud LAM", "drop_dudlam") { Category = "Drop Live Grenade",Price = 3,Description = "Drop a LAM on the ground, except it's not going to explode!" }, //New for SEVENTH Crowd Control batch
         new Effect("Drop a Live EMP Grenade", "drop_empgrenade") { Category = "Drop Live Grenade",Price = 10,Description = "Drop an EMP grenade on the ground, ready to take away your energy!" },
         new Effect("Drop a Live Gas Grenade", "drop_gasgrenade") { Category = "Drop Live Grenade",Price = 5,Description = "Drop a gas grenade on the ground, ready to irritate your mucus membranes!" },
         new Effect("Drop a Live Scrambler Grenade", "drop_nanovirusgrenade") { Category = "Drop Live Grenade",Price = 1,Description = "Drop a scrambler grenade on the ground, ready to take control of bots or scramble the players augs!" },

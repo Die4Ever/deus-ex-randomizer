@@ -45,10 +45,7 @@ function CreateControls()
                 CreateShowSpoilersButton(); //A button makes a confirmation window easier
             }
 
-            //Goals is set in Revision, but not supported there
-#ifndef revision
             CreateGoalLocationsButton();
-#endif
         }
 
         if (dxr.flags.IsEntranceRando()){

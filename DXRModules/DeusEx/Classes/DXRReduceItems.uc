@@ -135,6 +135,7 @@ function OneItemMode()
     local EPhysics phys;
     local Actor base;
     local bool bOwned;
+    local DXRAugmentations dxraugs;
 
     foreach AllActors(class'Inventory', item) {
         if(item.bIsSecretGoal) continue;
@@ -161,6 +162,7 @@ function OneItemMode()
     for(i=0; i<num; i++) {
         if(i==slot) continue;
         item = items[i];
+        if(item.class == newclass) continue;
         loc = item.Location;
         loc.Z -= item.CollisionHeight;
         rot = item.Rotation;
@@ -193,6 +195,9 @@ function OneItemMode()
         d.Content2 = None;
         d.Content3 = None;
     }
+
+    dxraugs = DXRAugmentations(class'DXRAugmentations'.static.Find());
+    dxraugs.RandomizeAugCannisters();
 }
 
 function ReduceItem(Inventory a)

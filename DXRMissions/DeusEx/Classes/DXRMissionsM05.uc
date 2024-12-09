@@ -30,6 +30,9 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
         AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P","Paul", loc,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
 
+        AddGoal("05_NYC_UNATCOMJ12LAB", "Paul Security Monitor", GOAL_TYPE4, 'ComputerSecurity4', PHYS_None); //Making this a goal actor so it gets dignified, but it will always be in the original location
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Command Center", GOAL_TYPE4, vect(-1072.5594,20.1928,-101.3019), rot(0, 16312, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',282,124,"C","Paul Security Monitor", loc,"The Paul Security Monitor is located in the Command Center. Use this computer to see where Paul is on the camera.");
         return 51;
 
     case "05_NYC_UNATCOHQ":
@@ -91,6 +94,8 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
         AddActorLocation(loc, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
 
+        AddGoal("05_NYC_UNATCOMJ12LAB", "Paul Security Monitor", GOAL_TYPE4, 'ComputerSecurity4', PHYS_None); //Making this a goal actor so it gets dignified, but it will always be in the original location
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Command Center", GOAL_TYPE4, vect(-1044.9645,529.963,46.6981), rot(0, 65520, 0));
         return 51;
 
     case "05_NYC_UNATCOHQ":
