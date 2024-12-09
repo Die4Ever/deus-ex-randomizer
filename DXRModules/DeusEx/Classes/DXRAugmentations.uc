@@ -290,11 +290,11 @@ function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCanni
 
     if(!#defined(vmd)) {
         if(augs[0] != None && augs[1] != None)
-            a.ItemName = a.ItemName $": "$ augs[0].default.AugmentationName $ " / " $ augs[1].default.AugmentationName;
+            a.ItemName = a.default.ItemName $": "$ augs[0].default.AugmentationName $ " / " $ augs[1].default.AugmentationName;
         else if(augs[0] != None)
-            a.ItemName = a.ItemName $": "$ augs[0].default.AugmentationName;
+            a.ItemName = a.default.ItemName $": "$ augs[0].default.AugmentationName;
         else if(augs[1] != None)
-            a.ItemName = a.ItemName $": "$ augs[1].default.AugmentationName;
+            a.ItemName = a.default.ItemName $": "$ augs[1].default.AugmentationName;
     }
 
     if( (a.AddAugs[0] == '#var(prefix)AugSpeed' || a.AddAugs[1] == '#var(prefix)AugSpeed') && !dxr.flags.IsReducedRando() ) {
