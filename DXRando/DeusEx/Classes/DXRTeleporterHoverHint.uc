@@ -39,10 +39,7 @@ function String GetHintText()
     local string teleDest, text;
 
     if (target==None){
-        if (addBingoText) {
-            return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, HintText);
-        }
-        return HintText;
+        return Super.GetHintText();
     }
 
     if (#var(prefix)Teleporter(target)!=None){
@@ -68,7 +65,12 @@ function String GetHintText()
     if (addBingoText) {
         text = class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, text);
     }
-    return text;
+
+    if (addBingoText) {
+        return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, text);
+    } else {
+        return text;
+    }
 }
 
 function bool ShouldDisplay(float dist)
