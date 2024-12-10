@@ -131,6 +131,8 @@ function FirstEntry()
 
 function PostFirstEntry()
 {
+    if (!dxr.flags.IsBingoCampaignMode()) return;
+
     switch (dxr.localURL) {
         case "04_NYC_STREET":
         case "04_NYC_HOTEL":
