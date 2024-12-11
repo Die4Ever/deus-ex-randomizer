@@ -734,8 +734,11 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         }
     }
 
-    // note that this treats both kills and knockouts the same
-    MarkBingoFailedEvents(victim.bindName $ "_Dead");
+    if (!dead) {
+        MarkBingoFailedEvents(victim.bindName $ "_Unconscious");
+    } else {
+        MarkBingoFailedEvents(victim.bindName $ "_Dead");
+    }
 
     if(!victim.bImportant)
         return;
