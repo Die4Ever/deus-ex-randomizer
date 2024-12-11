@@ -64,7 +64,6 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-
             class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
         } else {
@@ -74,6 +73,11 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-748,601,-256));
         }
         AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+
+        foreach AllActors(class'ScriptedPawn', sp, 'hostage_female') {
+            sp.GroundSpeed = 200.0; // same speed as the male hostage
+            break;
+        }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
