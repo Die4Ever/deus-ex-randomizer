@@ -311,6 +311,8 @@ function NewBingoBoard()
 
     // clear read items, so you can do new bingo goals with old reading material
     data.ForgetRead();
+
+    player().ClientMessage("Mr. Page's Mean Bingo Machine has generated a new bingo board!");
 }
 
 function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
