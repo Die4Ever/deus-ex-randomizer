@@ -59,6 +59,7 @@ Here's a trailer for WaltonWare mode. WaltonWare mode is focused on quick wins b
     * Takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
 * New game modes! See the [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes) for a full list!
     * WaltonWare mode - A quick option to get into the game without the time commitment of the full game! You start in a random mission and win by completing one bingo. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete!
+    * Mr. Page's Mean Bingo Machine: A new mode where you play through the whole game, but must complete a set number of bingo lines before being allowed to progress to the next mission. Once you get to the next mission, you are given a new bingo board!
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
     * Vanilla Fixer: This one is for the purists. Use our new installer program and it will do compatibility fixes for the vanilla game (Kentie's Launcher, D3D10, DXVK, Engine.dll fix, and more), then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.

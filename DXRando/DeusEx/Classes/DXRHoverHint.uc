@@ -98,7 +98,10 @@ function bool ShouldSelfDestruct()
 
 function String GetHintText()
 {
-    return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, HintText);
+    if (addBingoText) {
+        return class'DXRBingoCampaign'.static.GetBingoHoverHintText(class'DXRando'.default.dxr, HintText);
+    }
+    return HintText;
 }
 
 event Tick(float DeltaTime)

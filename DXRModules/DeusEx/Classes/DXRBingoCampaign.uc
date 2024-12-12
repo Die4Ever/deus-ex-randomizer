@@ -131,6 +131,8 @@ function FirstEntry()
 
 function PostFirstEntry()
 {
+    if (!dxr.flags.IsBingoCampaignMode()) return;
+
     switch (dxr.localURL) {
         case "04_NYC_STREET":
         case "04_NYC_HOTEL":
@@ -306,6 +308,11 @@ function NewBingoBoard()
 
     // mark old images as old, no cheating!
     MarkDataVaultImagesAsViewed(player());
+
+    // clear read items, so you can do new bingo goals with old reading material
+    data.ForgetRead();
+
+    player().ClientMessage("Mr. Page's Mean Bingo Machine has generated a new bingo board!");
 }
 
 function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
