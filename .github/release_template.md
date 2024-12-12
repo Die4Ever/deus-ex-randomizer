@@ -1,8 +1,6 @@
 Download `DXRandoInstaller.exe` in the Assets section under the changelog or download from [Mods4Ever.com](https://mods4ever.com). It is safe to update in the middle of a playthrough.
 
-Use vanilla (optionally with Lay D Denton) to get all of the Randomizer's features, best QoL improvements, and the most polished experience. Our installer has an option to install Lay D Denton for you automatically.
-
-If you're having an issue with the installer program: [Manual Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
+Use vanilla (optionally with Lay D Denton) to get all of the Randomizer's features, best QoL improvements, and the most polished experience. Our installer has an option to install Lay D Denton for you automatically. We also support Revision, GMDX, HX, and Vanilla? Madder.
 
 ## Trailers
 
@@ -14,7 +12,7 @@ If you don't know what Deus Ex Randomizer is, then here's our trailer which show
 <a href="https://www.youtube.com/watch?v=V3mTcG6xeq4&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
 <img src="https://img.youtube.com/vi/V3mTcG6xeq4/maxresdefault.jpg" alt="v3.0 Trailer" width="500"/></a>
 
-Here's the trailer for our new Halloween modes!
+Here's the trailer for our Halloween modes!
 
 <a href="https://www.youtube.com/watch?v=FbzNkWJXZ1o&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
 <img src="https://github.com/user-attachments/assets/d92bea02-55a3-462d-ac5f-45e3d56a7497" alt="Halloween Trailer" width="500"/></a>

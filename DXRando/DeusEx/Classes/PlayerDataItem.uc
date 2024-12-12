@@ -93,6 +93,13 @@ simulated function bool MarkRead(name textTag) {
     return false;
 }
 
+simulated function ForgetRead() {
+    local int i;
+    for(i=0; i<ArrayCount(readTexts); i++) {
+        readTexts[i] = '';
+    }
+}
+
 
 simulated function int GetBingoSpot(
     int x,

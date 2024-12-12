@@ -308,6 +308,9 @@ function NewBingoBoard()
 
     // mark old images as old, no cheating!
     MarkDataVaultImagesAsViewed(player());
+
+    // clear read items, so you can do new bingo goals with old reading material
+    data.ForgetRead();
 }
 
 function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
