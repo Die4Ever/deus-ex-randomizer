@@ -2100,28 +2100,35 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "AlleyBumRescued";
             return num_failed;
         case "FordSchick_Dead":
+        case "FordSchick_Unconscious":
             failed[num_failed++] = "FordSchickRescued";
             return num_failed;
         case "GeneratorBlown":
             failed[num_failed++] = "JockSecondStory";
             return num_failed;
         case "SandraRenton_Dead":
+        case "SandraRenton_Unconscious":
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             return num_failed;
         case "GilbertRenton_Dead":
+        case "GilbertRenton_Unconscious":
             if (class'DXRando'.default.dxr.localURL != "04_NYC_HOTEL") {
                 failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             }
             failed[num_failed++] = "GaveRentonGun";
         // fallthrough
         case "FemaleHostage_Dead":
+        case "FemaleHostage_Unconscious":
         case "MaleHostage_Dead":
+        case "MaleHostage_Unconscious":
             failed[num_failed++] = "HotelHostagesSaved";
             return num_failed;
         case "Josh_Dead":
+        case "Josh_Unconscious":
             failed[num_failed++] = "JoshFed";
             return num_failed;
         case "Billy_Dead":
+        case "Billy_Unconscious":
             failed[num_failed++] = "M02BillyDone";
             return num_failed;
         case "Don_Dead":
@@ -2134,15 +2141,18 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "OverhearLebedev_Played";
             return num_failed;
         case "JuanLebedev_Dead":
+        case "JuanLebedev_Unconscious":
             failed[num_failed++] = "LebedevLived";
             return num_failed;
         case "JoJoFine_Dead":
+        case "JoJoFine_Unconscious":
             failed[num_failed++] = "GaveRentonGun";
             return num_failed;
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
             return num_failed;
         case "Miguel_Dead":
+        case "Miguel_Unconscious":
             failed[num_failed++] = "Terrorist_peeptime";
             failed[num_failed++] = "Terrorist_ClassDead";
             failed[num_failed++] = "Terrorist_ClassUnconscious";
@@ -2156,22 +2166,29 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "KnowsGuntherKillphrase";
             return num_failed;
         case "M06Junkie_Dead":
+        case "M06Junkie_Unconscious":
             failed[num_failed++] = "M06PaidJunkie";
             return num_failed;
         case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
+        case "MarketBum1_Unconscious":
             failed[num_failed++] = "M06BoughtVersaLife";
             return num_failed;
         case "Canal_Bartender_Dead":
+        case "Canal_Bartender_Unconscious":
             failed[num_failed++] = "Canal_Bartender_Question4";
             return num_failed;
         case "ClubBartender_Dead":
+        case "ClubBartender_Unconscious":
             failed[num_failed++] = "M06BartenderQuestion3";
             return num_failed;
         case "MaggieChow_Dead":
+        case "MaggieChow_Unconscious":
             failed[num_failed++] = "MaggieLived";
             return num_failed;
         case "Mamasan_Dead":
+        case "Mamasan_Unconscious":
         case "Date1_Dead":
+        case "Date1_Unconscious":
             failed[num_failed++] = "M06JCHasDate";
             return num_failed;
         case "Raid_Underway": //Raid started
@@ -2179,42 +2196,58 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "ClubEntryPaid";
             return num_failed;
         case "ClubMercedes_Dead":
+        case "ClubMercedes_Unconscious":
         case "ClubTessa_Dead":
+        case "ClubTessa_Unconscious":
             if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 failed[num_failed++] = "ClubEntryPaid";
             }
             return num_failed;
         case "LDDPRuss_Dead":
+        case "LDDPRuss_Unconscious":
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 failed[num_failed++] = "ClubEntryPaid";
             }
             return num_failed;
         case "Supervisor01_Dead":
+        case "Supervisor01_Unconscious":
             failed[num_failed++] = "Supervisor_Paid";
             return num_failed;
         case "Aimee_Dead":
+        case "Aimee_Unconscious":
         case "LeMerchant_Dead":
+        case "LeMerchant_Unconscious":
             failed[num_failed++] = "AimeeLeMerchantLived";
             return num_failed;
         case "hostage_female_Dead":
+        case "hostage_female_Unconscious":
         case "hostage_Dead":
+        case "hostage_Unconscious":
             failed[num_failed++] = "SilhouetteHostagesAllRescued";
             return num_failed;
         case "Renault_Dead":
+        case "Renault_Unconscious":
             failed[num_failed++] = "SoldRenaultZyme";
             failed[num_failed++] = "MeetRenault_Played";
             return num_failed;
         case "Joshua_Dead":
+        case "Joshua_Unconscious":
             failed[num_failed++] = "JoshuaInterrupted_Played";
             return num_failed;
         case "Camille_Dead":
+        case "Camille_Unconscious":
             failed[num_failed++] = "CamilleConvosDone";
             return num_failed;
         case "drbernard_Dead":
+        case "drbernard_Unconscious":
             failed[num_failed++] = "MeetDrBernard_Played";
             return num_failed;
         case "TimBaker_Dead":
+        case "TimBaker_Unconscious":
             failed[num_failed++] = "MeetTimBaker_Played";
+            return num_failed;
+        case "MaySung_Unconscious":
+            failed[num_failed++] = "MaySung_Dead";
             return num_failed;
     }
 
