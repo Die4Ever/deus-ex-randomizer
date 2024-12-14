@@ -968,3 +968,11 @@ state PlayerWalking
 function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
 {
 }
+
+function PickupNanoKey(NanoKey newKey)
+{
+    if (!class'DXRVersion'.static.VersionIsStable() && newKey.keyID==''){
+        ClientMessage("You just picked up a key without a key ID!  Report this to the devs, we're looking for this!  Where did you find me?");
+    }
+    Super.PickupNanoKey(newKey);
+}
