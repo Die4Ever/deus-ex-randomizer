@@ -154,20 +154,23 @@ function PreFirstEntryMapFixes()
         break;
 
     case "12_VANDENBERG_TUNNELS":
+
+        foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
+            e.BumpType = BT_PlayerBump;
+            e.BumpEvent = 'SC_Door3_opened';
+        }
+        //Duplicate the dispatcher for both ends of the radioactive room that sets off the alarms and explosion
+        d = Spawn(class'Dispatcher',, 'SC_Door3_opened' );
+        d.OutEvents[0]='Warning';
+        d.OutDelays[0]=0;
+        d.OutEvents[1]='tnt';
+        d.OutDelays[1]=3;
+        d.OutEvents[2]='Warning';
+        d.OutDelays[2]=2;
+
         if (VanillaMaps){
-            foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
-                e.BumpType = BT_PlayerBump;
-                e.BumpEvent = 'SC_Door3_opened';
-            }
+            //Backtracking button next to security door 3
             AddSwitch( vect(-396.634888, 2295, -2542.310547), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
-            //Duplicate the dispatcher for both ends of the radioactive room that sets off the alarms and explosion
-            d = Spawn(class'Dispatcher',, 'SC_Door3_opened' );
-            d.OutEvents[0]='Warning';
-            d.OutDelays[0]=0;
-            d.OutEvents[1]='tnt';
-            d.OutDelays[1]=3;
-            d.OutEvents[2]='Warning';
-            d.OutDelays[2]=2;
 
             //Swap the beam triggers that set off this turret to LaserTrigger for clarity
             foreach AllActors(class'#var(prefix)BeamTrigger',bt){
@@ -184,6 +187,12 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-3227,3679,-2599)); //floor near stairwell down to flooded area
             Spawn(class'PlaceholderItem',,, vectm(-1590,2796,-2599)); //airlock after spiderbot trap
         } else {
+            //Backtracking button next to security door 3 (Different X location in Revision)
+            AddSwitch( vect(2710, 2295, -2542), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
+
+            //Backtracking button on backside of end-of-tunnels forklift
+            AddSwitch( vect(2778,1371,-2550), rot(0, -10904, 0), 'waataaa');
+
             Spawn(class'PlaceholderItem',,, vectm(-3227,3679,-2520)); //boxes near stairwell down to flooded area
             Spawn(class'PlaceholderItem',,, vectm(-1640,2796,-2599)); //airlock after spiderbot trap
         }
