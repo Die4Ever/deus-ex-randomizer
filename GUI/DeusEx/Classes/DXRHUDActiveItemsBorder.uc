@@ -1,4 +1,4 @@
-class DXRHUDActiveItemsBorderBase injects HUDActiveItemsBorderBase;
+class DXRHUDActiveItemsBorder injects HUDActiveItemsBorder;
 
 //Just adding timer-specific objects
 function AddIcon(Texture newIcon, Object saveObject)

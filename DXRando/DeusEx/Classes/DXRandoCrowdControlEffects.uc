@@ -2617,6 +2617,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "emp_field":
+            if (isTimerActive('cc_EmpTimer')) {
+                return TempFail;
+            }
             player().bWarrenEMPField = true;
             startNewTimer('cc_EmpTimer',duration);
             PlayerMessage(viewer@"made electronics allergic to you");

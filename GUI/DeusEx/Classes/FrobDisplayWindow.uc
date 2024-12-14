@@ -19,11 +19,28 @@ function DrawWindow(GC gc)
     {
         frobTarget = player.FrobTarget;
         if (frobTarget != None)
-            if (!player.IsHighlighted(frobTarget))
+            if (!CheckHighlighted(frobTarget))
                 frobTarget = None;
     }
 
     if( frobTarget != None ) DrawWindowBase(gc, frobTarget);
+}
+
+function bool CheckHighlighted(Actor frobTarget)
+{
+    local bool wasBehind,highlighted;
+    if (player==None) return false;
+
+#ifdef injections
+    highlighted = player.IsHighlighted(frobTarget);
+#else
+    //This is handled in the injected player class normally
+    wasBehind=player.bBehindView;
+    player.bBehindView=False;
+    highlighted=player.IsHighlighted(frobTarget);
+    player.bBehindView=wasBehind;
+#endif
+    return highlighted;
 }
 
 function CheckSettings()
