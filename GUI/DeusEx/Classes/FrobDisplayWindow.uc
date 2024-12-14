@@ -296,6 +296,10 @@ function bool KeyAcquired(Mover m)
         return False;
     }
 
+    if (dxMover.KeyIDNeeded==''){
+        return False;
+    }
+
     if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
         return True;
     }
@@ -389,13 +393,7 @@ function string MoverStrInfo(Mover m, out int numLines)
     dxMover = DeusExMover(m);
     if (dxMover != None && dxMover.bLocked)
     {
-        if (dxMover.KeyIDNeeded != ''){
-            if (keyAcquired(m)){
-                keyAcq = true;
-            } else {
-                keyAcq = false;
-            }
-        }
+        keyAcq=KeyAcquired(m);
         if((BreakableWall(m)!=None || BreakableGlass(m)!=None) && dxMover.KeyIDNeeded == '' && !dxMover.bPickable) {
             strInfo = "Breakable";
         }
@@ -862,7 +860,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         }
     }
 
-    if (GetAutoCodes() && k!=None){
+    if (GetAutoCodes() && k!=None && k.hackStrength != 0.0){
         gc.SetStyle(DSTY_Translucent);
         col.r = 0;
         col.g = 0;
