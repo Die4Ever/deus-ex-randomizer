@@ -3396,9 +3396,7 @@ defaultproperties
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
-#ifdef injections
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)
-#endif
     bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",desc_singular="Use tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use 1 rebreather",max=3,missions=55400)
     bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",desc_singular="Hunt 1 bird",max=10,missions=24446)
