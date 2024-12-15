@@ -195,6 +195,19 @@ function PreFirstEntryMapFixes()
             break;
         }
 
+        foreach AllActors(class'#var(prefix)BeamTrigger',beam){
+            if (beam.Event=='BotDrop'){
+                beam.Tag='TunnelTrigger';
+                beam.Event='BotDropOnce';
+            }
+        }
+
+        oot=Spawn(class'OnceOnlyTrigger');
+        oot.Event='BotDrop';
+        oot.Tag='BotDropOnce';
+
+        AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
+
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)GasGrenade',gasgren) {
                 //This one has falling physics normally, so just fix it
@@ -209,24 +222,11 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            foreach AllActors(class'#var(prefix)BeamTrigger',beam){
-                if (beam.Event=='BotDrop'){
-                    beam.Tag='TunnelTrigger';
-                    beam.Event='BotDropOnce';
-                }
-            }
-
-            oot=Spawn(class'OnceOnlyTrigger');
-            oot.Event='BotDrop';
-            oot.Tag='BotDropOnce';
-
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit,'ToGraveyard'){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
-
-            AddSwitch( vect(4973.640137, 6476.444336, 1423.943848), rot(0,32768,0), 'Crane');
 
             foreach AllActors(class'#var(prefix)Teleporter', t) {
                 // if you hug the wall, you can squeeze past the sewer teleporter

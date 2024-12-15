@@ -234,15 +234,15 @@ function PreFirstEntryMapFixes()
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
                 if(!dxr.flags.IsZeroRando()) {
-                    SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+                    SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
 
-                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
                     k.KeyID = 'CrackRoom';
                     k.Description = "'Ton Hotel, North Room Key";
                     if(dxr.flags.settings.keysrando > 0)
                         GlowUp(k);
 
-                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180)); //Top shelf of Paul's closet
                     k.KeyID = 'Apartment';
                     k.Description = "Apartment key";
                     if(dxr.flags.settings.keysrando > 0)
@@ -268,6 +268,23 @@ function PreFirstEntryMapFixes()
                 Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
             } else {
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+
+                if(!dxr.flags.IsZeroRando()) {
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
+                    k.KeyID = 'Hotelroom1';
+                    k.Description = "'Ton Hotel, South Room Key";
+                    if(dxr.flags.settings.keysrando > 0)
+                        GlowUp(k);
+
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-300,-3630,180)); //Top shelf of Paul's closet
+                    k.KeyID = 'Apartment';
+                    k.Description = "Apartment key";
+                    if(dxr.flags.settings.keysrando > 0)
+                        GlowUp(k);
+
+                    SpawnDatacubeTextTag(vectm(-295,-3655,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
+                }
+
 
                 Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
                 Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet

@@ -152,6 +152,9 @@ function PreFirstEntryMapFixes()
         }
         // nonsensical mover blocking jock's tail
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'jockweapons'){
+            m.NumFragments=0; //So it isn't visible when it's destroyed
+            m.ExplodeSound1=None; //So you don't hear it get broken
+            m.ExplodeSound2=None;
             m.BlowItUp(None);
         }
 

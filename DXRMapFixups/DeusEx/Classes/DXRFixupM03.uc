@@ -396,13 +396,6 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
-        //Move weapon mod out of Manderley's secret (inaccessible) safe
-        foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
-            if (wmr.Name=='WeaponModRecoil0'){
-                wmr.SetLocation(vectm(420.843567,175.866135,261.520447));
-            }
-        }
-
         if(!dxr.flags.IsZeroRando()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             k.KeyID = 'JaimeClosetKey';
@@ -419,6 +412,13 @@ function PreFirstEntryMapFixes()
         }
 
         if (VanillaMaps) {
+            //Move weapon mod out of Manderley's secret (inaccessible) safe
+            foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
+                if (wmr.Name=='WeaponModRecoil0'){
+                    wmr.SetLocation(vectm(420.843567,175.866135,261.520447));
+                }
+            }
+
             foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
                 compublic.bCollideWorld = false;
                 compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
