@@ -121,6 +121,9 @@ function ReplaceActors()
         else if( #var(prefix)Earth(a) != None ) {
             ReplaceGenericDecoration(a,class'DXREarth');
         }
+        else if( #var(prefix)LuciusDeBeers(a) != None ) {
+            ReplaceLucius(#var(prefix)LuciusDeBeers(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -256,6 +259,22 @@ function ReplaceFaucet(#var(prefix)Faucet a)
     a.Destroy();
 }
 
+function ReplaceLucius(#var(prefix)LuciusDeBeers a)
+{
+    local DXRLuciusDeBeers n;
+    if(a.IsA('DXRLuciusDeBeers'))
+        return;
+
+    n = DXRLuciusDeBeers(SpawnReplacement(a, class'DXRLuciusDeBeers'));
+    if(n==None)
+        return;
+    ReplaceDeusExDecoration(a, n);
+    n.minDamageThreshold=n.Default.minDamageThreshold;
+    n.HitPoints=n.Default.HitPoints;
+    n.BindName=a.BindName;
+    n.ConBindEvents();
+    a.Destroy();
+}
 
 function ReplacePiano(#var(prefix)WHPiano a)
 {

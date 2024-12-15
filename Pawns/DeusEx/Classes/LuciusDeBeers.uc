@@ -1,7 +1,7 @@
 //=============================================================================
 // LuciusDeBeers.
 //=============================================================================
-class DXRLuciusDeBeers injects LuciusDeBeers;
+class DXRLuciusDeBeers injects #var(prefix)LuciusDeBeers;
 
 //From DeusExCarcass
 function ChunkUp()
