@@ -342,6 +342,24 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "Makeup";
     _StupidQuestions[numStupidQuestions].answers[1] = "Shoes";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Does a straw have one hole or two?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "One";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Two";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If a cyclops closes its eye, is it winking or blinking?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Winking";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Blinking";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you stack lasagnas on top of each other, do you have one lasagna or two?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "One";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Two";
+    numStupidQuestions++;
 }
 
 
