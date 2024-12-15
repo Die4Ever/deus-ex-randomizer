@@ -61,6 +61,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerPublic compublic;
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
+    local Smuggler smug;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -430,6 +431,11 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+
+        foreach AllActors(class'Smuggler', smug) {
+            smug.bImportant = true;
+            break;
+        }
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);

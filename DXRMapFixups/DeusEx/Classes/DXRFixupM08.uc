@@ -156,6 +156,7 @@ function PreFirstEntryMapFixes()
     local Teleporter tel;
     local DynamicTeleporter dtel;
     local RiotCop rc;
+    local Smuggler smug;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -293,7 +294,15 @@ function PreFirstEntryMapFixes()
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
 
-            SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+            foreach AllActors(class'Smuggler', smug) {
+                smug.bImportant = true;
+                break;
+            }
+
+            if (!dxr.flagbase.GetBool('FordSchickRescued')) {
+                SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is unless Ford was rescued
+            }
+
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
 
             break;
