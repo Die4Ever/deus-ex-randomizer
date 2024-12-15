@@ -301,19 +301,18 @@ function PreFirstEntryMapFixes()
         // backtracking button for greasel lab
         AddSwitch( vect(1889.5, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
 
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.KeyIDNeeded=='crewkey'){
+                door.Tag = 'crewkey';
+            }
+            if(door.KeyIDNeeded=='Glab'){
+                door.Tag = 'Glab';
+            }
+        }
 
         if (VanillaMaps){
             if(!#defined(vmd))// button to open the door heading towards the ladder in the water
                 AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
-
-            foreach AllActors(class'#var(DeusExPrefix)Mover',door){
-                if(door.KeyIDNeeded=='crewkey'){
-                    door.Tag = 'crewkey';
-                }
-                if(door.KeyIDNeeded=='Glab'){
-                    door.Tag = 'Glab';
-                }
-            }
 
             foreach AllActors(class'ComputerSecurity', comp) {
                 if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
