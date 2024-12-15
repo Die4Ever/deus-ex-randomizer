@@ -135,60 +135,60 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_AirfieldHeliBase":
-        if (VanillaMaps){
-            foreach AllActors(class'Mover',m) {
-                // call the elevator at the end of the level when you open the appropriate door
-                if (m.Tag == 'BasementDoorOpen')
-                {
-                    m.Event = 'BasementFloor';
-                }
-                else if (m.Tag == 'GroundDoorOpen')
-                {
-                    m.Event = 'GroundLevel';
-                }
-                // sewer door backtracking so we can make a switch for this
-                else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
-                {
-                    m.Tag = 'Sewerdoor';
-                }
+        foreach AllActors(class'Mover',m) {
+            // call the elevator at the end of the level when you open the appropriate door
+            // Revision uses an ElevatorTrigger with more logic, maybe we can look at it later if needed
+            if (VanillaMaps && m.Tag == 'BasementDoorOpen')
+            {
+                m.Event = 'BasementFloor';
             }
-            if(!dxr.flags.IsZeroRando()) {
-                foreach AllActors(class'Trigger', t) {
-                    //disable the platforms that fall when you step on them
-                    if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
-                        t.Event = '';
-                    }
-                }
+            else if (VanillaMaps && m.Tag == 'GroundDoorOpen')
+            {
+                m.Event = 'GroundLevel';
             }
-            foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
-                unatco.bHateCarcass = false;
-                unatco.bHateDistress = false;
+            // sewer door backtracking so we can make a switch for this
+            else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
+            {
+                m.Tag = 'Sewerdoor';
             }
-
-            // Sewerdoor backtracking
-            AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
-
-            //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
-            AddActor(class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
-            a = AddActor(class'DynamicBlockPlayer', vect(-3105,-385,-210));
-            SetActorScale(a, 1.3);
-
-            AddActor(class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
-            a = AddActor(class'DynamicBlockPlayer', vect(-3080,-395,-170));
-            SetActorScale(a, 1.3);
-
-            AddActor(class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
-            a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
-            SetActorScale(a, 1.3);
-
-            if(!dxr.flags.IsZeroRando()) {
-                //rebreather because of #TOOCEAN connection
-                Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
-            }
-
-            //Button to extend sewer platform from the other side
-            AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
         }
+        if(!dxr.flags.IsZeroRando()) {
+            foreach AllActors(class'Trigger', t) {
+                //disable the platforms that fall when you step on them
+                if( t.Event == 'firstplatform' || t.Event == 'platform2' ) {
+                    t.Event = '';
+                }
+            }
+        }
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+            unatco.bHateCarcass = false;
+            unatco.bHateDistress = false;
+        }
+
+        // Sewerdoor backtracking
+        AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
+
+        //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
+        AddActor(class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
+        a = AddActor(class'DynamicBlockPlayer', vect(-3105,-385,-210));
+        SetActorScale(a, 1.3);
+
+        AddActor(class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
+        a = AddActor(class'DynamicBlockPlayer', vect(-3080,-395,-170));
+        SetActorScale(a, 1.3);
+
+        AddActor(class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
+        a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
+        SetActorScale(a, 1.3);
+
+        if(!dxr.flags.IsZeroRando()) {
+            //rebreather because of #TOOCEAN connection
+            //Bookshelf near pool tables
+            Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
+        }
+
+        //Button to extend sewer platform from the other side
+        AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
         class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
