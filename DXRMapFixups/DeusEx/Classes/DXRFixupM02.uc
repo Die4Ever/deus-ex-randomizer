@@ -49,6 +49,21 @@ function PreFirstEntryMapFixes()
     switch (dxr.localURL)
     {
     case "02_NYC_BATTERYPARK":
+
+        foreach AllActors(class'DeusExMover', d) {
+            if( d.Name == 'DeusExMover19' ) {
+                d.KeyIDNeeded = 'ControlRoomDoor';
+            }
+        }
+
+        if(!dxr.flags.IsZeroRando()) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 342));
+            k.KeyID = 'ControlRoomDoor';
+            k.Description = "Control Room Door Key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'BarrelAmbrosia', ambrosia) {
                 foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {
@@ -62,20 +77,8 @@ function PreFirstEntryMapFixes()
                 b.ConBindEvents();
                 class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
             }
-            foreach AllActors(class'DeusExMover', d) {
-                if( d.Name == 'DeusExMover19' ) {
-                    d.KeyIDNeeded = 'ControlRoomDoor';
-                }
-            }
             foreach AllActors(class'Terrorist',nsf,'ShantyTerrorist'){
                 nsf.Tag = 'ShantyTerrorists';  //Restores voice lines when NSF still alive (still hard to have happen though)
-            }
-            if(!dxr.flags.IsZeroRando()) {
-                k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 339.215179));
-                k.KeyID = 'ControlRoomDoor';
-                k.Description = "Control Room Door Key";
-                if(dxr.flags.settings.keysrando > 0)
-                    GlowUp(k);
             }
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
