@@ -971,8 +971,14 @@ function PlayerPawnProcessMove(float DeltaTime, vector NewAccel, eDodgeDir Dodge
 
 function PickupNanoKey(NanoKey newKey)
 {
-    if (!class'DXRVersion'.static.VersionIsStable() && newKey.keyID==''){
-        ClientMessage("You just picked up a key without a key ID!  Report this to the devs, we're looking for this!  Where did you find me?");
+    local string msg;
+    if (newKey.keyID==''){
+        msg = "You just picked up a key ("$newKey$") without a key ID ("$newKey.Description$")!  Report this to the devs, we're looking for this!  Where did you find me?";
+        if (!class'DXRVersion'.static.VersionIsStable()){
+            ClientMessage(msg);
+        } else {
+            log(msg);
+        }
     }
     Super.PickupNanoKey(newKey);
 }
