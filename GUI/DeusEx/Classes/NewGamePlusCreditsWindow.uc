@@ -1,4 +1,8 @@
+#ifdef revision
+class NewGamePlusCreditsWindow injects RevCreditsWindow;
+#else
 class NewGamePlusCreditsWindow injects CreditsWindow;
+#endif
 
 event DestroyWindow()
 {
