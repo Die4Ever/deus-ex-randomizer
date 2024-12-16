@@ -664,9 +664,11 @@ function AddDXRCredits(CreditsWindow cw)
     if(dxr.dxInfo.missionNumber == 99)
         cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
     cw.PrintText("Flagshash: " $ ToHex(dxr.flags.FlagsHash()));
+#ifdef injections
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
+#endif
     cw.PrintText("Nano Keys: "$player().KeyRing.GetKeyCount());
     cw.PrintText("Skill Points Earned: "$player().SkillPointsTotal);
 
@@ -674,8 +676,10 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("NPCs Knocked Out by JC: "$kos);
     cw.PrintText("Total NPC Deaths: "$(kills + killsByOther));
     cw.PrintText("Total NPCs Knocked Out: "$(kos + kosByOther));
+#ifdef injections
     cw.PrintText("Total NPCs Burned to Death: "$burnkills);
     cw.PrintText("Total NPCs Gibbed: "$gibbedkills);
+#endif
     cw.PrintText("Maps Visited: "$mapcoverage$" (" $ class'DXRInfo'.static.TruncateFloat(mappercent,1) $ "%)");
     cw.PrintText("Deaths: "$deaths);
     cw.PrintText("Saves: "$saves$" ("$autosaves$" Autosaves)");
