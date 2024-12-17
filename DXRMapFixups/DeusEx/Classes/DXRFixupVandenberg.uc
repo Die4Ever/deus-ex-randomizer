@@ -281,7 +281,7 @@ function PreFirstEntryMapFixes()
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
             foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
             hoverHint.SetBaseActor(jock);
         } else {
             AddSwitch( vect(540,3890,-370), rot(0, 16384, 0), 'ShedDoor');
