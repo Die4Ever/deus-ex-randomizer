@@ -1160,7 +1160,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             }
         }
         if(bingo_options[x].missions!=0 && masked_missions == 0) continue;
-        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission)) {
+        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission,dxr.flags.IsBingoCampaignMode())) {
             if(bTest) {
                 l("BingoGoalImpossible " $ bingo_options[x].event @ starting_map @ end_mission);
             }
