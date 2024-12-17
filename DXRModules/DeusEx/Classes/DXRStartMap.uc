@@ -959,7 +959,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
     }
 }
 
-static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
+static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission, bool hardMissionCutoff)
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
     switch(start_map/10)
     {
@@ -1092,11 +1092,18 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     {
         case "LeoToTheBar":
             //Only possible if you started in the first level
-            return start_map>10 || end_mission < 2;
+            return start_map>10 || end_mission < 2 || hardMissionCutoff;
             break;
         case "PaulToTong":
             // This goal is impossible with a 50+ start because he is then always alive
-            return start_map>=50 || end_mission < 6;
+            return start_map>=50 || end_mission < 6 || hardMissionCutoff;
+        case "PresentForManderley":
+            //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
+            return end_mission < 4 || start_map >= 40 || hardMissionCutoff;
+        case "DXREvents_LeftOnBoat":
+        case "LebedevLived":
+        case "MaggieLived":
+            return hardMissionCutoff;
         case "MetSmuggler":
             return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see PreFirstEntryStartMapFixes)
         case "KnowsGuntherKillphrase":
@@ -1140,12 +1147,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             return start_map>=110; //early Paris things
         case "ManWhoWasThursday":// TODO: in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
             return start_map >= 110 && end_mission <= 11;
-        case "PresentForManderley":
-            //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
-            if (end_mission < 4){
-                return True;
-            }
-            return start_map>=40;
         case "SmugglerDied":
             if (end_mission < 9){
                 return True;
