@@ -338,17 +338,13 @@ function PreFirstEntryMapFixes()
         // alarm in MiB's overlook office
         Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
 
-        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(1.412384, 1658.755614, 190.711304)); // Inside the elvator to 06_HONGKONG_VERSALIFE
-        ft.Event='SecurityRevoked';
-        ft.FlagName='Have_ROM';
-        ft.bSetFlag=False;
-        ft.bTrigger=True;
-
-        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(-1432.140991, 860.576238, -87.899834)); // Inside the elvator to 06_HONGKONG_STORAGE
-        ft.Event='SecurityRevoked';
-        ft.FlagName='Have_ROM';
-        ft.bSetFlag=False;
-        ft.bTrigger=True;
+        //Trigger the alarm on first entry if the flag is already set (ie. a late HK start)
+        if (player().flagBase.GetBool('Have_ROM')){
+            foreach AllActors(class'Actor', a,'SecurityRevoked')
+            {
+                a.Trigger(None,player()); //To match as originally triggered by ComputerScreenSpecialOptions
+            }
+        }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'security_doors') {
             m.bBreakable = false;
