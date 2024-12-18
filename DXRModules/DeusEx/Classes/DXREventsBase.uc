@@ -1091,11 +1091,7 @@ function bool AddTestGoal(
 
     desc = bingo_options[bingoIdx].desc;
     if (max > 1 && InStr(desc, "%s") != -1) {
-        f = float(dxr.flags.bingo_scale)/100.0;
-        f = rngrange(f, 0.8, 1);// 80% to 100%
-        f *= MissionsMaskAvailability(starting_mission, missions, missions) ** 1.5;
-        max = Ceil(float(max) * f);
-        max = self.Max(max, 1);
+        max = ScaleBingoGoalMax(max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
 
         if (max == 1 && bingo_options[bingoIdx].desc_singular != "") {
             desc = bingo_options[bingoIdx].desc_singular;
@@ -1243,11 +1239,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             max = bingo_options[i].max;
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && InStr(desc, "%s") != -1) {
-                f = float(dxr.flags.bingo_scale)/100.0;
-                f = rngrange(f, 0.8, 1);// 80% to 100%
-                f *= MissionsMaskAvailability(starting_mission, missions, end_mission_mask) ** 1.5;
-                max = Ceil(float(max) * f);
-                max = self.Max(max, 1);
+                max = ScaleBingoGoalMax(max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,end_mission_mask);
 
                 if (max == 1 && bingo_options[i].desc_singular != "") {
                     desc = bingo_options[i].desc_singular;
@@ -1269,6 +1261,20 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
     // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();
+}
+
+simulated function int ScaleBingoGoalMax(int max, int bingoScale, float randMin, float randMax, int starting_mission, int missions, int end_mission_mask)
+{
+    local float f;
+
+    f = float(bingoScale)/100.0;
+    f = rngrange(f, randMin, randMax);
+    f *= MissionsMaskAvailability(starting_mission, missions, end_mission_mask);
+    f = f ** 1.3;
+    max = Ceil(float(max) * f);
+    max = self.Max(max, 1);
+
+    return max;
 }
 
 simulated function int HandleMutualExclusion(MutualExclusion m, int options[ArrayCount(bingo_options)], int num_options) {
@@ -1476,7 +1482,10 @@ static function float MissionsMaskAvailability(int currentMission, int goalMissi
 {
     local int good, bad, i, t, playable;
 
-    if(goalMissions == 0) return 1.0 - float(currentMission-1) / 15.0;
+    if(goalMissions == 0) {
+        goalMissions = 57214; //All missions except for 7 and 13
+        //Continue onwards with the regular logic otherwise
+    }
 
     for(i=1; i<currentMission; i++) {
         t = (1<<i) & goalMissions;
@@ -1495,6 +1504,7 @@ static function float MissionsMaskAvailability(int currentMission, int goalMissi
 function RunTests()
 {
     local float f;
+    local int max;
 
     testint(NumBitsSet(0), 0, "NumBitsSet");
     testint(NumBitsSet(1), 1, "NumBitsSet");
@@ -1526,9 +1536,9 @@ function RunTests()
     f = MissionsMaskAvailability(1, 0, 0xFFFF);
     testfloat(f, 1, "MissionsMaskAvailability unmasked goal 1");
     f = MissionsMaskAvailability(6, 0, 0xFFFF);
-    testfloat(f, 10/15, "MissionsMaskAvailability unmasked goal 6");
+    testfloat(f, 8/13, "MissionsMaskAvailability unmasked goal 6"); //8/13 = mission 6 through to 15, but excluding 7 and 13
     f = MissionsMaskAvailability(15, 0, 0xFFFF);
-    testfloat(f, 1/15, "MissionsMaskAvailability unmasked goal 15");
+    testfloat(f, 1/13, "MissionsMaskAvailability unmasked goal 15");
 
     // limited duration
     f = MissionsMaskAvailability(3, 0xFFFF, (1<<3));
@@ -1544,6 +1554,28 @@ function RunTests()
     testint(BingoActiveMission(2, FAILED_MISSION_MASK), -1, "BingoActiveMission failed");
     testint(BingoActiveMission(15, (1<<15)), 2, "BingoActiveMission");
     testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
+
+
+    //bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",desc_singular="Burn 1 bag of trash",max=25,missions=57182)
+    max = 100;
+    max = ScaleBingoGoalMax(max,100,1.0,1.0,3,57182,class'DXRStartMap'.static.GetEndMissionMask(3));
+    testint(max, 4, "MissionsMaskAvailability Single Mission End-to-End, 100% Scaling (With mission mask)");
+
+    //bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
+    max = 100;
+    max = ScaleBingoGoalMax(max,100,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(3));
+    testint(max, 4, "MissionsMaskAvailability Single Mission End-to-End, 100% Scaling (No mission mask)");
+
+    //bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
+    max = 100;
+    max = ScaleBingoGoalMax(max,50,1.0,1.0,3,0,class'DXRStartMap'.static.GetEndMissionMask(6));
+    testint(max, 9, "MissionsMaskAvailability Four Mission End-to-End, 50% Scaling (No mission mask)");
+
+    //bingo_options(266)=(event="SuspensionCrate",desc="Open %s Suspension Crates",desc_singular="Open 1 Suspension Crate",max=3,missions=3112)
+    max = 100;
+    max = ScaleBingoGoalMax(max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
+    testint(max, 17, "MissionsMaskAvailability Three Mission End-to-End, 100% Scaling (Mission Mask with 4 possibilites, 1 in range)");
+
 }
 
 function ExtendedTests()
