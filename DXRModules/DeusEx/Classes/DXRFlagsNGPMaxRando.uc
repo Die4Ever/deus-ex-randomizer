@@ -153,7 +153,7 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay;
+    local int i, bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -184,6 +184,8 @@ function NewGamePlus()
         // we only want to do this on maxrando because we want to retain the user's custom choices
         bingo_win = settings.bingo_win;
         bingo_freespaces = settings.bingo_freespaces;
+        old_bingo_scale = bingo_scale;
+        old_bingo_duration = bingo_duration;
         newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
         menus_pause = settings.menus_pause;
         aug_loc_rando=moresettings.aug_loc_rando;
@@ -192,6 +194,8 @@ function NewGamePlus()
         ExecMaxRando();
         settings.bingo_win = bingo_win;
         settings.bingo_freespaces = bingo_freespaces;
+        bingo_scale = old_bingo_scale;
+        bingo_duration = old_bingo_duration;
         moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
         settings.menus_pause = menus_pause;
         moresettings.aug_loc_rando=aug_loc_rando;
