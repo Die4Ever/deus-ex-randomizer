@@ -2322,6 +2322,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Fix the fresh water supply in Brooklyn Bridge Station.  The water valves are behind some collapsed rubble.";
         case "assassinapartment":
             return "Visit the apartment in Paris that has Starr the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building near where Jock picks you up.";
+        case "PetAnimal_BindName_Starr":
+            return "Visit the apartment in Paris and pet Starr, the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building near where Jock picks you up.";
         case "GaveRentonGun":
             return "Give Gilbert Renton a gun when he is trying to protect his daughter from JoJo Fine, before the ambush.";
         case "DXREvents_LeftOnBoat":
@@ -3230,7 +3232,11 @@ defaultproperties
     bingo_options(29)=(event="M10EnteredBakery",desc="Enter the bakery",max=1,missions=1024)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(30)=(event="FreshWaterOpened",desc="Fix the water",max=1,missions=8)
+    #ifdef injections
+    bingo_options(31)=(event="PetAnimal_BindName_Starr",desc="Pet Starr in Paris",max=1,missions=1024)
+    #else
     bingo_options(31)=(event="assassinapartment",desc="Visit Starr in Paris",max=1,missions=1024)
+    #endif
     bingo_options(32)=(event="GaveRentonGun",desc="Give Gilbert a weapon",max=1,missions=16)
     bingo_options(33)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1,missions=4)
     bingo_options(34)=(event="AlleyBumRescued",desc="Rescue the bum on the basketball court",max=1,missions=4)
