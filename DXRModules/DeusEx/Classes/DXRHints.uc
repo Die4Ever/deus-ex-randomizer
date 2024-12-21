@@ -134,6 +134,7 @@ simulated function InitHints()
     if (#defined(vanilla)){
         AddHint("Check out the various options in the Rando Gameplay menu to decide", "how some types of items are looted from dead bodies!");
         AddHint("Use the Trash button in the Inventory menu to stop", "looting that type of item from dead bodies!");
+        AddHint("The aggressive defense system aug can stop not only missiles", "and grenades, but also darts, throwing knives, plasma, and flames!");
     }
 
     if( dxr.flags.settings.skills_reroll_missions == 1 ) {
@@ -147,6 +148,8 @@ simulated function InitHints()
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
     AddHint("Sabot rounds can damage tough objects no matter the damage threshold.","Check the highlight text!");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
+    AddHint("Thermoptic Camo allows you to pass", "through lasers without being detected!");
+    AddHint("Thermoptic Camo makes you invisible to people and bots", "but not to cameras or turrets!");
     if(dxr.flags.settings.energy != 100) {
         AddHint("Your max energy is "$dxr.flags.settings.energy$" points.", "Your energy meter shows percent relative to this value.");
     }
@@ -169,6 +172,10 @@ simulated function InitHints()
         if (!class'MenuChoice_AutoLaser'.default.enabled){
             AddHint("Look for the 'Auto Laser Sight' option in the Rando Gameplay menu", "to automatically activate laser mods when you draw your weapon!");
         }
+        AddHint("The speed enhancement aug now instantly burns 1 energy", "in order to prevent abuse.  Just turn it on and off like normal!");
+        AddHint("You will still pick up ammo from weapons even if you", "are unable to pick them up (or have them marked as trash)!");
+        AddHint("The vision enhancement aug will now show characters, goals,", "items, datacubes, vehicles, crates, and electronic devices through walls!");
+        AddHint("The inventory description of augmentation canisters will show", "the full description of the augs available within!");
     }
 
     if(dxr.flags.IsHalloweenMode()) {
@@ -227,8 +234,10 @@ simulated function InitHints()
             AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         }
-        if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime)
+        if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime) {
             AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
+            AddHint("Each type of weapon will have the same stats", "through the whole game.  They won't change later!");
+        }
 
         if(#defined(injections) || #defined(vmd) || #defined(gmdx)) {
             AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
@@ -261,6 +270,7 @@ simulated function InitHints()
 
         if(dxr.flags.settings.medbots > 0) {
             AddHint("Medbots are randomized.", "Don't expect to find them in the usual locations.");
+            AddHint("Medbots are randomized.", "There will be a datacube nearby saying the delivery has been made.");
         }
         else if(dxr.flags.settings.medbots == 0) {
             AddHint("Medbots are disabled.", "Good luck.");
@@ -273,6 +283,7 @@ simulated function InitHints()
 
         if(dxr.flags.settings.repairbots > 0) {
             AddHint("Repair bots are randomized.", "Don't expect to find them in the usual locations.");
+            AddHint("Repair bots are randomized.", "There will be a datacube nearby saying the delivery has been made.");
         }
         else if(dxr.flags.settings.repairbots == 0) {
             AddHint("Repair bots are disabled.", "Good luck.");
@@ -358,8 +369,10 @@ simulated function InitHints()
                 AddHint("The location of the Ambrosia barrel is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
         else if(map ~= "02_NYC_Warehouse") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0) {
                 AddHint("The locations of the generator, computer, and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The Email Computer contains a hint about the generator location.", "Make sure to read your emails!");
+            }
             AddHint("There are lots of enemies here!", "Look for thermoptic camo to help.");
             AddHint("There are lots of enemies here!", "Look for ballistic armor to help.");
             AddHint("There are lots of enemies here!", "Look for fire extinguishers to stun enemies.");
@@ -546,8 +559,10 @@ simulated function InitHints()
             }
         }
         else if (map ~= "14_OceanLab_UC") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0) {
                 AddHint("The location of the UC schematics computer is randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The Email Computer contains a hint about the UC Computer location.", "Make sure to read your emails!");
+            }
         }
         if (map ~= "14_OCEANLAB_LAB" || map ~= "14_VANDENBERG_SUB" || map ~= "14_OCEANLAB_UC") {
             if(dxr.flags.settings.goals > 0)
