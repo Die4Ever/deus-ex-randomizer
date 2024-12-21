@@ -134,6 +134,10 @@ simulated function InitHints()
         AddHint("Are the flickering lights too much for you?  Disable Flickering", "Lights in the Rando Visuals menu to make them more gentle!");
     }
 
+    if (class'MenuChoice_ShowHints'.static.IsEnabled(dxr.flags)){
+        AddHint("Are the hints annoying when you enter a level?", "You can disable Level Start Hints in the Randomizer settings!");
+    }
+
     if (#defined(vanilla)){
         AddHint("Check out the various options in the Rando Gameplay menu to decide", "how some types of items are looted from dead bodies!");
         AddHint("Use the Trash button in the Inventory menu to stop", "looting that type of item from dead bodies!");
@@ -646,7 +650,7 @@ simulated function AddHint(string hint, optional string detail, optional bool de
 simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local int i;
-    local string msg;
+    local string msg, hint, detail;
 
     Super.PlayerAnyEntry(player);
     _player = player;
@@ -661,6 +665,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
             player.AddNote(msg, false, i==numHints-1);
         }
         player.ClientMessage("Press G or F2 to check your Goals/Notes screen!",, true);
+    }
+
+    if (class'MenuChoice_ShowHints'.static.IsEnabled(dxr.flags)) {
+        GetHint(false,hint,detail);
+        player.ClientMessage("Hint: "$hint@detail);
     }
 }
 
