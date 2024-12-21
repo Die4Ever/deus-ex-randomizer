@@ -3,9 +3,12 @@ class DXRHints extends DXRBase transient;
 var #var(PlayerPawn) _player;
 
 // if this hints array is too long, then no one will ever see the best hints
-var string hints[100];
-var string details[100];
 var int numHints;
+struct GameHint {
+    var string line1, line2;
+    var bool deathOnly;
+};
+var GameHint hintList[100];
 
 simulated function InitHints()
 {
@@ -27,11 +30,11 @@ simulated function InitHints()
 
     if(dxr.flags.crowdcontrol > 0) {
         if (dxr.flags.crowdcontrol!=3){
-            AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.");
-            AddHint("Don't forget you (the viewer!) can", "use Crowd Control to influence the game!");
+            AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.", true);
+            AddHint("Don't forget you (the viewer!) can", "use Crowd Control to influence the game!", true);
         } else {
-            AddHint("RNG did not work in your favour today.", "You have been defeated by a computer.");
-            AddHint("Sometimes a computer can be more cruel than a human.", "(but not always!)");
+            AddHint("RNG did not work in your favour today.", "You have been defeated by a computer.", true);
+            AddHint("Sometimes a computer can be more cruel than a human.", "(but not always!)", true);
         }
     }
 
@@ -500,7 +503,7 @@ simulated function InitHints()
         AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
         if(map ~= "10_Paris_Catacombs" || map~="10_Paris_Entrance") { //Le Merchant is in ENTRANCE in Revision
-            AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.");
+            AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.", true);
             AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
         }
         if(dxr.flags.settings.goals > 0 && (map ~= "10_paris_metro" || map ~= "10_paris_club")) {
@@ -627,13 +630,15 @@ simulated function InitHints()
     }
 }
 
-simulated function AddHint(string hint, optional string detail)
+simulated function AddHint(string hint, optional string detail, optional bool deathOnly)
 {
-    hints[numHints] = hint;
-    details[numHints] = detail;
+    hintList[numHints].line1=hint;
+    hintList[numHints].line2=detail;
+    hintList[numHints].deathOnly=deathOnly;
+
     numHints++;
 
-    if (numHints > ArrayCount(hints)){
+    if (numHints > ArrayCount(hintList)){
         err("Death hint list length exceeded!  Now "$numHints);
     }
 }
@@ -649,9 +654,9 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
     if(dxr.localURL ~= "00_Training") {
         for(i=0;i<numHints;i++) {
-            msg = hints[i];
-            if(Len(details[i]) > 0) {
-                msg = msg $ "|n" $ details[i];
+            msg = hintList[i].line1;
+            if(Len(hintList[i].line2) > 0) {
+                msg = msg $ "|n" $ hintList[i].line2;
             }
             player.AddNote(msg, false, i==numHints-1);
         }
@@ -659,15 +664,31 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     }
 }
 
-simulated function int GetHint()
+simulated function int GetHint(bool isDeath, out string hint, out string detail)
 {
+    local GameHint actList[100];
+    local int numActHints, i, hintNum;
+
+    numActHints=0;
+    for (i=0;i<numHints;i++){
+        if ((!isDeath && hintList[i].deathOnly==false) || isDeath) {
+            actList[numActHints++]=hintList[i];
+        }
+    }
+
     // don't use the stable rng that we use for other things, needs to be different every time
-    return Rand(numHints);
+    hintNum = Rand(numActHints);
+
+    hint = actList[hintNum].line1;
+    detail = actList[hintNum].line2;
+
+    return hintNum;
 }
 
 simulated function ShowHint(optional int recursion)
 {
     local int hint;
+    local string hintStr,hintDetail;
     local DXRBigMessage m;
 #ifdef hx
     // for hx, the DXRBigMessage is bugged, so just disable the timer and PlayerRespawn will enable it again
@@ -679,9 +700,9 @@ simulated function ShowHint(optional int recursion)
         info("ShowHint reached max recursion " $ recursion);
         return;
     }
-    hint = GetHint();
+    hint = GetHint(true,hintStr,hintDetail);
 
-    m = class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]);
+    m = class'DXRBigMessage'.static.CreateBigMessage(_player, self, hintStr, hintDetail);
     if(m == None) {
         ShowHint(++recursion);
         return;
@@ -719,13 +740,13 @@ function RunTests()
     local int i, ln;
     Super.RunTests();
 
-    test(numHints <= arrayCount(hints), "numHints within bounds");
+    test(numHints <= arrayCount(hintList), "numHints within bounds");
 
     for(i=0; i<numHints; i++) {
-        ln = Len(hints[i]);
-        test(ln < 70, "length " $ ln $ " of hint: "$hints[i]);
+        ln = Len(hintList[i].line1);
+        test(ln < 70, "length " $ ln $ " of hint: "$hintList[i].line1);
 
-        ln = Len(details[i]);
-        test(ln < 70, "length " $ ln $ " of hint detail: "$details[i]);
+        ln = Len(hintList[i].line2);
+        test(ln < 70, "length " $ ln $ " of hint detail: "$hintList[i].line2);
     }
 }
