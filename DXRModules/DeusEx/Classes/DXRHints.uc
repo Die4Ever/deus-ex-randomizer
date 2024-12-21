@@ -174,7 +174,7 @@ simulated function InitHints()
         }
         AddHint("The speed enhancement aug now instantly burns 1 energy", "in order to prevent abuse.  Just turn it on and off like normal!");
         AddHint("You will still pick up ammo from weapons even if you", "are unable to pick them up (or have them marked as trash)!");
-        AddHint("The vision enhancement aug will now show characters, goals,", "items, datacubes, vehicles, crates, and electronic devices through walls!");
+        AddHint("The vision enhancement aug will now show characters, goals, items,", "datacubes, vehicles, crates, and electronic devices through walls!");
         AddHint("The inventory description of augmentation canisters will show", "the full description of the augs available within!");
     }
 
