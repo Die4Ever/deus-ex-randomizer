@@ -771,6 +771,13 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers
         Spawn(class'PlaceholderItem',,, vectm(1169,-1490,459)); //Water pool
         Spawn(class'PlaceholderItem',,, vectm(1079.73,-1068.17,842.4)); //Pipes above water
+        Spawn(class'PlaceholderItem',,, vectm(90,-666,1030)); //Under corner mirror
+        Spawn(class'PlaceholderItem',,, vectm(175,-2515,855)); //Pit near security computer
+        Spawn(class'PlaceholderItem',,, vectm(75,-1730,900)); //Lower hallway alcove
+        Spawn(class'PlaceholderItem',,, vectm(-90,-2320,1030)); //Upper Hallway near computer
+        Spawn(class'PlaceholderItem',,, vectm(-800,-650,1030)); //Upper Hallway near elevator
+        Spawn(class'PlaceholderItem',,, vectm(510,-1450,860)); //Lower Hallway near where you drop in
+        Spawn(class'PlaceholderItem',,, vectm(790,-1360,810)); //Another pipe in the water pool area
 
         Spawn(class'PlaceholderContainer',,, vectm(160.7,-1589.4,545)); //Robot alcove
         Spawn(class'PlaceholderContainer',,, vectm(-159.23,-1300.16,544.1)); //Robot alcove
@@ -779,6 +786,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(174,-2862,1057)); //Near upper security computer
 
         Spawn(class'MJ12Clone1',,, vectm(819.992188, -0.852280, -67.399956));
+        class'PlaceholderEnemy'.static.Create(self,vectm(0,0,-75)); //Middle of room with 4 containers
+        class'PlaceholderEnemy'.static.Create(self,vectm(0,0,565)); //Walkway over UC room
+        class'PlaceholderEnemy'.static.Create(self,vectm(75,-1515,1075)); //Upper hallway (to keep it likely for there to be enemies up there)
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":
