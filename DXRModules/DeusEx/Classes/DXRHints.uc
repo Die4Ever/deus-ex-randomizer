@@ -141,7 +141,7 @@ simulated function InitHints()
     if (#defined(vanilla)){
         AddHint("Check out the various options in the Rando Gameplay menu to decide", "how some types of items are looted from dead bodies!");
         AddHint("Use the Trash button in the Inventory menu to stop", "looting that type of item from dead bodies!");
-        AddHint("The aggressive defense system aug can stop not only missiles", "and grenades, but also darts, throwing knives, plasma, and flames!");
+        AddHint("The Aggressive Defense System aug can stop not only missiles", "and grenades, but also darts, throwing knives, plasma, and flames!");
     }
 
     if( dxr.flags.settings.skills_reroll_missions == 1 ) {
@@ -179,9 +179,10 @@ simulated function InitHints()
         if (!class'MenuChoice_AutoLaser'.default.enabled){
             AddHint("Look for the 'Auto Laser Sight' option in the Rando Gameplay menu", "to automatically activate laser mods when you draw your weapon!");
         }
-        AddHint("The speed enhancement aug now instantly burns 1 energy", "in order to prevent abuse.  Just turn it on and off like normal!");
+        AddHint("The Speed Enhancement aug now instantly burns 1 energy", "in order to prevent abuse.  Just turn it on and off like normal!");
         AddHint("You will still pick up ammo from weapons even if you", "are unable to pick them up (or have them marked as trash)!");
-        AddHint("The vision enhancement aug will now show characters, goals, items,", "datacubes, vehicles, crates, and electronic devices through walls!");
+        AddHint("The Vision Enhancement aug will now show characters, goals, items,", "datacubes, vehicles, crates, and electronic devices through walls!");
+        AddHint("The Regeneration aug will no longer bring you to maximum health.", "Upgrade the aug to increase the healing cap!");
         AddHint("The inventory description of augmentation canisters will show", "the full description of the augs available within!");
     }
 
