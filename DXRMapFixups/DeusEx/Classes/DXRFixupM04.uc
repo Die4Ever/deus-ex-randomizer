@@ -210,6 +210,7 @@ function PreFirstEntryMapFixes()
             k.bImportant = true;
             k.ChangeAlly('Player', -1, false);
             k.SetOrders('Standing');
+            k.SetCollisionSize(k.CollisionRadius*0.3,k.CollisionHeight); //Make him more slim so he can squeeze through the doors better
         }
 
         //Button to open basement hatch from inside
