@@ -1391,13 +1391,13 @@ function _MarkBingoAsFailed(coerce string eventname)
 
     if (data.MarkBingoAsFailed(eventname)) {
         l(self$"._MarkBingoAsFailed("$eventname$") data: "$data);
-        if (class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags) && dxr.localURL != "DX" && dxr.localURL != "DXONLY") {
+        if (class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags) && !dxr.OnTitleScreen() && !dxr.OnEndgameMap()) {
             player().ClientMessage("Failed bingo goal: " $ data.GetBingoDescription(eventname));
         }
         if (
             Level.TimeSeconds >= nextBuzzTime &&
             class'MenuChoice_ShowBingoUpdates'.static.SoundsEnabled(dxr.flags) &&
-            dxr.localURL != "DX" && dxr.localURL != "DXONLY"
+            !dxr.OnTitleScreen() && !dxr.OnEndgameMap()
         ) {
             player().PlaySound(Sound'DeusExSounds.Generic.Buzz1', SLOT_None, 0.4); // volume is hopefully not easy to miss but also not annoying
             nextBuzzTime = Level.TimeSeconds + 0.1;
