@@ -785,7 +785,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(691.3,-358.4,-1007.9)); //Near UC
         Spawn(class'PlaceholderContainer',,, vectm(174,-2862,1057)); //Near upper security computer
 
-        p=Spawn(class'MJ12Clone1',,, vectm(635,0,-65)); //Should he just be a PlaceholderEnemy now?
+        p=MJ12Clone1(Spawnm(class'MJ12Clone1',,, vect(635,0,-65),rot(0,32768,0))); //Should he just be a PlaceholderEnemy now?
         p.InitializeAlliances();
         class'PlaceholderEnemy'.static.Create(self,vectm(0,0,-75)); //Middle of room with 4 containers
         class'PlaceholderEnemy'.static.Create(self,vectm(0,0,565)); //Walkway over UC room
