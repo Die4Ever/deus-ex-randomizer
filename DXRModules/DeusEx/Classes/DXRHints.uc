@@ -65,7 +65,7 @@ simulated function InitHints()
             } else if (dxr.flags.bingo_duration>1){
                 AddHint("All of your bingo goals can be", "completed within "$dxr.flags.bingo_duration$" missions!");
             }
-            AddHint("Your health and energy will be refilled when you finish this loop!", "Use them to their fullest!");
+            AddHint("Your health will be refilled when you finish this loop!", "Use it to its fullest!"); //Make sure this is in line with the decision made about NG+ energy refilling in issue #1065
 
             //Technically not "WaltonWare" hints, but only really a concern if you've got bingo win enabled (for faster games):
             if (dxr.flags.newgameplus_num_removed_weapons==1) {
@@ -430,7 +430,7 @@ simulated function InitHints()
         if (map ~= "05_NYC_UnatcoMJ12Lab") {
             if(dxr.flags.settings.goals > 0) {
                 AddHint("Paul's location in the lab is randomized.", "Check the Goal Randomization page on our Wiki.");
-                AddHint("The security computer in the command centre has a", "camera that shows where Paul is located!");
+                AddHint("The security computer in the command center has a", "camera that shows where Paul is located!");
                 AddHint("Your equipment could be in either", "the armory, or the surgery ward.");
                 AddHint("Your equipment will never be in the", "same wing of the lab as Paul!");
                 if(#defined(injections)) {
