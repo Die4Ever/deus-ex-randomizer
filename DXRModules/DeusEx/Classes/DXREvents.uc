@@ -2080,11 +2080,17 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function int GetBingoFailedEvents(string eventname, out string failed[5])
+static function int GetBingoFailedEvents(string eventname, out string failed[6])
 {
     local int num_failed;
     local DXRando dxr;
     dxr = class'DXRando'.default.dxr;
+
+    if (Right(eventname, 12) == "_Unconscious") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 11) $ "Dead";
+    } else if (Right(eventname, 5) == "_Dead") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "Unconscious";
+    }
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
@@ -2246,9 +2252,6 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
         case "TimBaker_Unconscious":
             failed[num_failed++] = "MeetTimBaker_Played";
             return num_failed;
-        case "MaySung_Unconscious":
-            failed[num_failed++] = "MaySung_Dead";
-            return num_failed;
     }
 
     return num_failed;
@@ -2271,13 +2274,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SandraRenton_Dead":
             msg = "Kill Sandra Renton (or let her die).  ";
             if (mission<=2){
-                msg=msg$"  She can be found in an alley next to the Underworld Tavern in New York";
+                msg=msg$"She can be found in an alley next to the Underworld Tavern in New York";
             } else if (mission<=4){
-                msg=msg$"  She can be found inside the hotel";
+                msg=msg$"She can be found inside the hotel";
             } else if (mission<=8){
-                msg=msg$"  She can be found in the Underworld Tavern";
+                msg=msg$"She can be found in the Underworld Tavern";
             } else if (mission<=12){
-                msg=msg$"  She can be found outside the gas station";
+                msg=msg$"She can be found outside the gas station";
             }
             return msg;
         case "GilbertRenton_Dead":
