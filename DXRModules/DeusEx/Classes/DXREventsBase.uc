@@ -1301,6 +1301,7 @@ function bool CheckBingoWin(DXRando dxr, int numBingos, int oldBingos)
 {
     //Block this in HX for now
     if(#defined(hx)) return false;
+    if(dxr.flags.settings.bingo_win == 0) return false;
     if(numBingos <= 0) return false;
 
     if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
