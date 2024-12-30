@@ -14,10 +14,11 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_ShowKeys');
         CreateChoice(class'MenuChoice_Epilepsy');
         CreateChoice(class'MenuChoice_BarrelTextures');
-        CreateChoice(class'MenuChoice_GoalTextures');
         CreateChoice(class'MenuUIChoiceVisionTint');
     }
-
+    if (#defined(vanilla||revision)){
+        CreateChoice(class'MenuChoice_GoalTextures');
+    }
     CreateChoice(class'MenuChoice_ShowTeleporters');
 }
 

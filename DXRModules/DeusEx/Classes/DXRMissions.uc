@@ -139,13 +139,17 @@ function int AddGoal(string mapName, string goalName, int bitMask, name actorNam
 function ReplaceGoalActor(Actor a, Actor n)
 {
     local int i,j;
+    local bool bTextures;
     if (num_goals==0) return;
+
+    bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled(self);
 
     for (i=0;i<num_goals;i++)
     {
         for (j=0;j<ArrayCount(goals[i].actors);j++){
             if (goals[i].actors[j].a==a) {
                 goals[i].actors[j].a=n;
+                DignifyGoalActor(n,bTextures); //Make sure the newly replaced actor has the right skins
                 l("Replacing Goal Actor "$a$" with newly replaced actor "$n);
                 return; //Presumably no actors exist in multiple goals?
             }
@@ -318,13 +322,17 @@ function DignifyAllGoalActors()
     local int g,a;
     local bool bTextures;
 
-    if(!#defined(vanilla)) return;  //&& !#defined(revision)   eventually, once we fully sort out facelift timing
+    if(!#defined(vanilla) && !#defined(revision)) return;
     if(num_goals == 0 && num_locations == 0) return;
 
     bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled(self);
 
     for(g=0;g<num_goals;g++){
         for(a=0;a<ArrayCount(goals[g].actors);a++){
+            //Make sure the cached actor reference is actually populated
+            if (goals[g].actors[a].a==None && goals[g].actors[a].actorName!=''){
+                GetActor(goals[g].actors[a]);
+            }
             DignifyGoalActor(goals[g].actors[a].a, bTextures);
         }
     }
@@ -334,6 +342,7 @@ function DignifyAllGoalActors()
 function DignifyGoalActor(Actor a, bool enableTextures)
 {
     local bool changed;
+
 
     if (ComputerSecurity(a)!=None){
         #ifdef revision
@@ -580,6 +589,8 @@ function ChooseGoalLocations(out int goalsToLocations[32])
 function Actor GetActor(out GoalActor ga)
 {
     local Actor a;
+    local DXRReplacedActors replace;
+
     if( ga.actorName == '' ) return None;
 
     foreach AllActors(class'Actor', a) {
@@ -593,7 +604,15 @@ function Actor GetActor(out GoalActor ga)
             return a;
         }
     }
-    return None;
+
+    //Didn't find an actor with the given name - maybe it was replaced?
+    foreach AllActors(class'DXRReplacedActors',replace){break;} //(This will only exist in non-vanilla, where DXRReplaceActors runs)
+    if (replace==None) return None; //No replaced actors, ignore this logic
+
+    a=replace.FindReplacement(ga.actorName);
+    ga.a = a;
+
+    return a;
 }
 
 function AnyEntry()
