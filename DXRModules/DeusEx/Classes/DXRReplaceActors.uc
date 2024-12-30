@@ -843,8 +843,6 @@ function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
     n.CompInUseMsg=a.CompInUseMsg;
 
     ReplaceDeusExDecoration(a, n);
-
-    UpdateActorReferences(a,n);
 }
 
 function UpdateActorReferences(Actor a, Actor n)
