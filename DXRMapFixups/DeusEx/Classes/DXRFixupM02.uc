@@ -258,6 +258,11 @@ function PreFirstEntryMapFixes()
                 l("hiding " $ c @ c.Tag @ c.Event);
                 c.bHidden = true;// hide it so DXRSwapItems doesn't move it, this is supposed to be inside the plane that flies overhead
             }
+
+            //Another store room with the same key as AugStore in the RevisionMaps
+            foreach AllActors(class'DeusExMover', d, 'SwankyStore') {
+                d.bFrobbable = true;
+            }
         }
         foreach AllActors(class'DeusExMover', d, 'AugStore') {
             d.bFrobbable = true;

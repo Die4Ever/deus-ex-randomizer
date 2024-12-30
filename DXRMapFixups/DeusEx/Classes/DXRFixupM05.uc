@@ -292,6 +292,9 @@ function PreFirstEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local RetinalScanner r;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL) {
     case "05_NYC_UNATCOHQ":
@@ -302,7 +305,11 @@ function PostFirstEntryMapFixes()
                 r.hackStrength = 0;
                 r.msgUsed = "Access De-/.&*% g r a n t e d";
             } else if (r.Event == 'securitytrigger') {
-                r.Event = 'UNblastdoor';
+                if (VanillaMaps){
+                    r.Event = 'UNblastdoor';
+                } else {
+                    r.Event = 'UN_blastdoor'; //Revision changed the tag name on the door
+                }
                 r.bHackable = true;
                 r.hackStrength = 0;
                 r.msgUsed = "Access De-/.&*% g r a n t e d";

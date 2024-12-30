@@ -1537,22 +1537,22 @@ function Bool IsFiring()
 
 function bool IsThemeAdded(Class<ColorTheme> themeClass)
 {
-	local ColorTheme curTheme;
-	local ColorTheme prevTheme;
-	local Bool bDeleted;
+    local ColorTheme curTheme;
+    local ColorTheme prevTheme;
+    local Bool bDeleted;
 
-	bDeleted    = False;
-	curTheme = ThemeManager.FirstColorTheme;
+    bDeleted    = False;
+    curTheme = ThemeManager.FirstColorTheme;
 
-	while(curTheme != None)
-	{
-		if ((curTheme.GetThemeName() == themeClass.default.themeName) && (curTheme.IsSystemTheme() == themeClass.default.bSystemTheme) && curTheme.themeType == themeClass.default.themeType)
-		{
-			return True;
-		}
+    while(curTheme != None)
+    {
+        if ((curTheme.GetThemeName() == themeClass.default.themeName) && (curTheme.IsSystemTheme() == themeClass.default.bSystemTheme) && curTheme.themeType == themeClass.default.themeType)
+        {
+            return True;
+        }
 
-		curTheme = curTheme.next;
-	}
+        curTheme = curTheme.next;
+    }
     return False;
 
 }
@@ -1579,8 +1579,6 @@ function CreateColorThemeManager()
     AddColorTheme(Class'ColorThemeMenu_Swirl');
     AddColorTheme(Class'ColorThemeHUD_Health');
     AddColorTheme(Class'ColorThemeMenu_Health');
-
-
 }
 
 // ----------------------------------------------------------------------

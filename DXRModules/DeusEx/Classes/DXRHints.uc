@@ -455,7 +455,7 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the computer with the ROM Encoding is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HongKong_WanChai_Street") {
-            AddHint("All that time JC spent practicing the piano...", "All wasted because of your choices.");
+            AddHint("All that time JC spent practicing the piano...", "All wasted because of your choices.",true);
             if(dxr.flags.settings.goals > 0)
                 AddHint("The Dragon Tooth Sword is randomized in Hong Kong.","Open the case in Maggie Chow's apartment for a hint.");
         } else if (map ~= "06_HongKong_VersaLife") {

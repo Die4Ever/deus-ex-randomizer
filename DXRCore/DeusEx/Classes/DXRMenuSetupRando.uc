@@ -80,9 +80,9 @@ function BindControls(optional string action)
     NewMenuItem("Camera Mode", "What camera mode should be used");
     EnumOption("First Person", 0, f.moresettings.camera_mode);
     EnumOption("Third Person", 1, f.moresettings.camera_mode);
-#ifdef vanilla
-    EnumOption("Fixed Camera", 2, f.moresettings.camera_mode);
-#endif
+    if(#defined(vanilla || revision)) {
+        EnumOption("Fixed Camera", 2, f.moresettings.camera_mode);
+    }
 
     NewMenuItem("Splits Overlay", "Splits and total game time overlay");
     EnumOption("Don't Show", 0, f.moresettings.splits_overlay);

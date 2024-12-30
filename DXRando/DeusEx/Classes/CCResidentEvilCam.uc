@@ -30,9 +30,9 @@ function bool FindNewCameraPosition()
 
     aimTarget = p;
     if (DeusExRootWindow(p.rootWindow).scopeView.bViewVisible){
-#ifdef vanilla
-        if (Human(p).aimLaser.spot[0]!=None){
-            aimTarget = Human(p).aimLaser.spot[0];
+#ifdef vanilla||revision
+        if (#var(PlayerPawn)(p).aimLaser.spot[0]!=None){
+            aimTarget = #var(PlayerPawn)(p).aimLaser.spot[0];
         }
 #endif
     }
@@ -136,9 +136,9 @@ function CheckPlayerVisibility(DeusExPlayer player)
 
     aimTarget = player;
     if (DeusExRootWindow(player.rootWindow).scopeView.bViewVisible){
-#ifdef vanilla
-        if (Human(player).aimLaser.spot[0]!=None){
-            aimTarget = Human(player).aimLaser.spot[0];
+#ifdef vanilla||revision
+        if (#var(PlayerPawn)(player).aimLaser.spot[0]!=None){
+            aimTarget = #var(PlayerPawn)(player).aimLaser.spot[0];
             player.DesiredFOV = Player.Default.DefaultFOV;
         }
 #endif
