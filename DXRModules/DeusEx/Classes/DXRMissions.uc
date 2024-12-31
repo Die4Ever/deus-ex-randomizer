@@ -329,11 +329,14 @@ function DignifyAllGoalActors()
 
     for(g=0;g<num_goals;g++){
         for(a=0;a<ArrayCount(goals[g].actors);a++){
+            if( dxr.localURL != goals[g].mapName ) continue;
             //Make sure the cached actor reference is actually populated
             if (goals[g].actors[a].a==None && goals[g].actors[a].actorName!=''){
                 GetActor(goals[g].actors[a]);
             }
-            DignifyGoalActor(goals[g].actors[a].a, bTextures);
+            if (goals[g].actors[a].a!=None){
+                DignifyGoalActor(goals[g].actors[a].a, bTextures);
+            }
         }
     }
 }
