@@ -702,6 +702,12 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
                 }
                 continue;
             }
+
+            if (UsingBiomod() || UsingShifter()){
+                //With Biomod or Shifter, you can give weapons to certain characters, like Gunther, Gilbert, and Miguel
+                ShowGiveNPCWeaponDisplay();
+            }
+
             if (IsFrobbable(target) && (target != CarriedDecoration))
             {
                 if (target.IsA('ScriptedPawn'))
@@ -740,8 +746,6 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
         return dm;
     }
 
-    //TODO: There's something in RevJCDentonMale::HighlightCenterObject related to Shifter/Biomod being able to give pawns weapons
-
     return smallestTarget;
 }
 
@@ -770,6 +774,41 @@ function HighlightCenterObjectLaser()
     } else {
         if (aimLaser!=None){
             aimLaser.TurnOff();
+        }
+    }
+}
+
+//Biomod and Shifter only - shows text when you can give a weapon to an NPC (Gunther, Gilbert, Miguel)
+//Duplicated from RevJCDentonMale::HighlightCenterObject
+function ShowGiveNPCWeaponDisplay()
+{
+    local DeusExRootWindow root;
+    root = DeusExRootWindow(rootWindow);
+
+    if(ScriptedPawn(FrobTarget) != None)
+    {
+        if(ScriptedPawn(FrobTarget).bCanGiveWeapon && ScriptedPawn(FrobTarget).CheckPawnAllianceType(Self) != ALLIANCE_Hostile)
+        {
+            if(VSize(FrobTarget.Location - Location) <= 64 &&
+               root != None &&
+               DeusExWeapon(inHand) != None)
+            {
+                if(!root.hud.startDisplay.bTickEnabled)
+                {
+                    root.hud.startDisplay.message = "";
+                    root.hud.startDisplay.charIndex = 0;
+                    root.hud.startDisplay.winText.SetText("");
+                    root.hud.startDisplay.winTextShadow.SetText("");
+
+                    if(DeusExWeapon(inHand) != None)
+                        root.hud.startDisplay.AddMessage(GivePawnString @ ScriptedPawn(FrobTarget).FamiliarName @ TheString @ inHand.ItemName $ ".");
+
+                    if(root.hud.startDisplay.message != "")
+                        root.hud.startDisplay.StartMessage();
+                }
+
+                root.hud.startDisplay.DisplayTime = 0.15;
+            }
         }
     }
 }
