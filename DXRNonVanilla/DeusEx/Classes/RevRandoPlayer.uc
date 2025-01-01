@@ -1058,3 +1058,30 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     //Apply any roll after figuring out (and storing) the current shake state
     ViewRotation.Roll += rollAmount;
 }
+
+exec function ToggleScope()
+{
+    local DeusExWeapon W;
+    local Inventory inv;
+
+    if (RestrictInput())
+        return;
+
+    W = DeusExWeapon(Weapon);
+    if (W != None)
+    {
+        W.ScopeToggle();
+    }
+    else
+    {
+        for(inv = Inventory; inv != None; inv = inv.Inventory)
+        {
+            if ( Binoculars(inv) != None )
+            {
+                PutInHand(inv);
+                inv.Activate();
+                break;
+            }
+        }
+    }
+}
