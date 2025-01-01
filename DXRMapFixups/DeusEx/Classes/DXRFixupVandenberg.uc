@@ -42,6 +42,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FishGenerator fg;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+#ifdef revision
+    local JockHelicopter jockheli;
+#endif
     local DXRHoverHint hoverHint;
     local ScriptedPawn pawn;
     local #var(prefix)ScriptedPawn sp;
@@ -118,17 +121,24 @@ function PreFirstEntryMapFixes()
 
         if (VanillaMaps){
             VandenbergCmdFixTimsDoor();
-
-            //Add teleporter hint text to Jock
-            foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Helicopter'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
-            hoverHint.SetBaseActor(jock);
-
             FixCmdElevator();
             UnleashingBotsOpenCommsDoor();
         } else {
             VandenbergCmdRevisionFixWatchtowerDoor();
+        }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}
+        if (VanillaMaps){
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Helicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+            hoverHint.SetBaseActor(jock);
+        } else {
+        #ifdef revision
+            foreach AllActors(class'JockHelicopter',jockheli){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jockheli);
+        #endif
         }
 
         foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
@@ -285,6 +295,14 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
         } else {
             AddSwitch( vect(540,3890,-370), rot(0, 16384, 0), 'ShedDoor');
+
+            //Add teleporter hint text to Jock
+            #ifdef revision
+            foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
+            foreach AllActors(class'JockHelicopter',jockheli,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jockheli);
+            #endif
 
             Spawn(class'PlaceholderItem',,, vectm(718,3913,-355)); //Shed
             Spawn(class'PlaceholderItem',,, vectm(723,3972,-355)); //Shed
@@ -457,16 +475,16 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            //Add teleporter hint text to Jock
-            foreach AllActors(class'#var(prefix)MapExit',exit,'ExitPath'){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
-            hoverHint.SetBaseActor(jock);
-
             class'FrictionTrigger'.static.CreateIce(self, vectm(28.63,-5129.48,-231.285), 1190, 650);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'ExitPath'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+        hoverHint.SetBaseActor(jock);
 
         //The door closing behind you when the ambush starts sucks if you came in via the silo.
         //Just make it not close.
@@ -549,6 +567,14 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
             Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
         } else {
+            //Add teleporter hint text to Jock
+            #ifdef revision
+            foreach AllActors(class'#var(prefix)MapExit',exit,'exit'){break;}
+            foreach AllActors(class'JockHelicopter',jockheli,'Heli'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jockheli);
+            #endif
+
             class'PlaceholderEnemy'.static.Create(self,vectm(886,1044,-930));
 
             Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge

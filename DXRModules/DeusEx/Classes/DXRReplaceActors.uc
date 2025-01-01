@@ -849,6 +849,7 @@ function UpdateActorReferences(Actor a, Actor n)
 {
     local DXRMissions missions;
     local DXREvents   events;
+    local DXRHoverHint hoverhint;
 
     missions = DXRMissions(class'DXRMissions'.static.Find());
     events   = DXREvents(class'DXREvents'.static.Find());
@@ -859,6 +860,10 @@ function UpdateActorReferences(Actor a, Actor n)
 
     if (events!=None){
         events.ReplaceWatchedActor(a,n);
+    }
+
+    foreach AllActors(class'DXRHoverHint',hoverhint){
+        hoverhint.ReplaceActor(a,n);
     }
 
     PopulateReplacedActors();

@@ -42,6 +42,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+#ifdef revision
+    local JockHelicopter jockheli;
+#endif
     local DXRHoverHint hoverHint;
 
     local bool VanillaMaps;
@@ -222,12 +225,6 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            //Add teleporter hint text to Jock
-            foreach AllActors(class'#var(prefix)MapExit',exit,'ToGraveyard'){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
-            hoverHint.SetBaseActor(jock);
-
             foreach AllActors(class'#var(prefix)Teleporter', t) {
                 // if you hug the wall, you can squeeze past the sewer teleporter
                 if (t.url == "09_NYC_Ship#FromDockyardSewer") {
@@ -236,6 +233,16 @@ function PreFirstEntryMapFixes()
                 }
             }
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'ToGraveyard'){break;}
+        if (VanillaMaps){
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        } else {
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'FakeHelicopter'){break;}
+        }
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
 
         //They put the key ID in the tag for some reason
         foreach AllActors(class'#var(prefix)NanoKey',key,'SupplyRoom'){
@@ -337,9 +344,18 @@ function PreFirstEntryMapFixes()
 
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'CopterCam'){break;}
-        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
-        hoverHint.SetBaseActor(jock);
+        if (VanillaMaps){
+            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jock);
+        } else {
+        #ifdef revision
+            foreach AllActors(class'JockHelicopter',jockheli){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jockheli);
+        #endif
+        }
+
 
         if (#defined(vanilla) && InStr(dxr.dxInfo.startupMessage[0], "Cemetary") != -1) {
             dxr.dxInfo.startupMessage[0] = "New York City, Lower East Side Cemetery"; // fix "cemetery" misspelling

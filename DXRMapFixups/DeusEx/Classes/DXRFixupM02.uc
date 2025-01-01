@@ -30,6 +30,9 @@ function PreFirstEntryMapFixes()
     local DynamicTeleporter dtel;
     local DynamicLight light;
     local DeusExDecoration s;
+#ifdef revision
+    local JockHelicopter jockheli;
+#endif
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -71,12 +74,6 @@ function PreFirstEntryMapFixes()
                         t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
                 }
             }
-            foreach AllActors(class'#var(prefix)MapExit',exit,'Boat_Exit'){break;}
-            foreach AllActors(class'NYPoliceBoat',b) {
-                b.BindName = "NYPoliceBoat";
-                b.ConBindEvents();
-                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
-            }
             foreach AllActors(class'Terrorist',nsf,'ShantyTerrorist'){
                 nsf.Tag = 'ShantyTerrorists';  //Restores voice lines when NSF still alive (still hard to have happen though)
             }
@@ -94,6 +91,13 @@ function PreFirstEntryMapFixes()
             exit = Spawn(class'DynamicMapExit',,'Boat_Exit',vect(-420,-3827,278));
             exit.SetCollision(false,false,false);
             exit.DestMap="03_NYC_UNATCOIsland";
+        }
+
+        foreach AllActors(class'#var(prefix)MapExit',exit,'Boat_Exit'){break;}
+        foreach AllActors(class'NYPoliceBoat',b) {
+            b.BindName = "NYPoliceBoat";
+            b.ConBindEvents();
+            class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
         }
 
         break;
@@ -130,16 +134,6 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
-            foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
-            foreach AllActors(class'#var(prefix)Button1',button){
-                if (button.Event=='ToStreet'){
-                    break;
-                }
-            }
-
-            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
-            buttonHint.SetBaseActor(button);
-
             //add a small light to the lower floor of the apartment.
             //This helps to just put a little bit of light on the generator location
             //in the case of 0 brightness boost
@@ -162,6 +156,17 @@ function PreFirstEntryMapFixes()
                 if(d.Event == 'BlewFence') break;
             }
             class'FillCollisionHole'.static.CreateLine(self, vectm(-2184, 1266.793335, 79.291428), vectm(-2050, 1266.793335, 79.291428), 10, 80, d);
+        } else {
+            //Revision
+
+            //Add teleporter hint text to Jock
+            #ifdef revision
+            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+            foreach AllActors(class'JockHelicopter',jockheli){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jockheli);
+            #endif
+
         }
 
         //Both vanilla and Revision:
@@ -181,6 +186,15 @@ function PreFirstEntryMapFixes()
 
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
+
+        foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='ToStreet'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
 
         class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
         class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));

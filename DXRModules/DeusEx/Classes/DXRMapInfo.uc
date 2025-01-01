@@ -330,6 +330,8 @@ switch(mapname)
                     return "Sewer Exit to Airfield";
                 case "HangarExit":
                     return "Hangar Entrance Exterior";
+                case "HangarExit2":
+                    return "Hangar Back Entrance Exterior";
             }
             break;
         case "03_NYC_AIRFIELDHELIBASE":
@@ -359,6 +361,8 @@ switch(mapname)
                     return "Main Hangar Entrance Interior";
                 case "747PassExit":
                     return "Hangar Door to 747";
+                case "HangarEnt2":
+                    return "Back Hangar Entrance Interior";
             }
             break;
         case "03_NYC_MOLEPEOPLE":
@@ -482,6 +486,8 @@ switch(mapname)
                 case "CompoundFromMarket1":
                 case "CompoundFromMarket2":
                     return "Luminous Path Compound Entrance from Market";
+                case "compound":
+                    return "Luminous Path Compound Entrance from Tong's Lab";
             }
             break;
         case "06_HONGKONG_WANCHAI_STREET":

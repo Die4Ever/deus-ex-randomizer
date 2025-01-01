@@ -147,6 +147,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+#ifdef revision
+    local JockHelicopter jockheli;
+#endif
     local OnceOnlyTrigger oot;
     local #var(DeusExPrefix)Mover d;
     local DXRHoverHint hoverHint;
@@ -212,9 +215,17 @@ function PreFirstEntryMapFixes()
 
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
-            hoverHint.SetBaseActor(jock);
+            if (VanillaMaps){
+                foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+                hoverHint.SetBaseActor(jock);
+            } else {
+            #ifdef revision
+                foreach AllActors(class'JockHelicopter',jockheli){break;}
+                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+                hoverHint.SetBaseActor(jockheli);
+            #endif
+            }
 
             if (#defined(vanilla)) {
                 class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 9);
