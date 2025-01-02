@@ -310,7 +310,9 @@ function PreFirstEntryMapFixes()
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
 
-            SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+            if (!dxr.flagbase.GetBool('FordSchickRescued')) {
+                SetAllLampsState(false, true, true); // smuggler's upstairs lamp. if ford was rescued, he'll be sitting near it
+            }
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
 
             break;
