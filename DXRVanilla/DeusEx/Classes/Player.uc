@@ -2213,6 +2213,11 @@ function CompleteBingoGoal(PlayerDataItem data, int x, int y)
     }
 }
 
+exec function BingoGoal(int x, int y)
+{
+    CompleteBingoGoal(class'PlayerDataItem'.static.GiveItem(self), x, y);
+}
+
 exec function Bingo(int line)
 {
     local PlayerDataItem data;
@@ -2225,11 +2230,11 @@ exec function Bingo(int line)
         CompleteBingoGoal(data, line, 3);
         CompleteBingoGoal(data, line, 4);
     } else if (line >= 5 && line < 10) {
-        CompleteBingoGoal(data, 0, line);
-        CompleteBingoGoal(data, 1, line);
-        CompleteBingoGoal(data, 2, line);
-        CompleteBingoGoal(data, 3, line);
-        CompleteBingoGoal(data, 4, line);
+        CompleteBingoGoal(data, 0, line - 5);
+        CompleteBingoGoal(data, 1, line - 5);
+        CompleteBingoGoal(data, 2, line - 5);
+        CompleteBingoGoal(data, 3, line - 5);
+        CompleteBingoGoal(data, 4, line - 5);
     } else if (line == 10) {
         CompleteBingoGoal(data, 0, 0);
         CompleteBingoGoal(data, 1, 1);
