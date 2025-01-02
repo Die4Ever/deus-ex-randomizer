@@ -6,6 +6,7 @@ function FirstEntry()
     local #var(prefix)FlagTrigger ft;
     local DeusExMover mover;
     local Vector loc;
+    local DXRHoverHint hoverHint;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
@@ -69,7 +70,8 @@ function FirstEntry()
                     if (loc != vect(0, 0, 0)) {
                         loc = (loc + mover.Location) * 0.5;
                         loc.z += 120.0;
-                        class'DXRHoverHint'.static.Create(self, "", loc, 50.0, 96.0,,, true);
+                        hoverHint = class'DXRHoverHint'.static.Create(self, "", loc, 50.0, 96.0,,, true);
+                        hoverHint.tag = 'crypt_hint';
                         break;
                     }
                     loc = mover.Location;
@@ -346,6 +348,7 @@ function AddBingoEventBlocker(name blockedTag, name bingoFlag) {
 function UpdateCryptDoors()
 {
     local #var(prefix)FlagTrigger ft;
+    local DXRHoverHint hoverHint;
 
     if (
         dxr.localURL == "10_PARIS_CHATEAU" &&
@@ -356,6 +359,10 @@ function UpdateCryptDoors()
     ) {
         foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'everettsignaldoor') {
             ft.Trigger(None, None);
+            break;
+        }
+        foreach AllActors(class'DXRHoverHint', hoverHint, 'crypt_hint') {
+            hoverHint.Destroy();
             break;
         }
     }
