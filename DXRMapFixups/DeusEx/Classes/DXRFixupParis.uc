@@ -458,6 +458,9 @@ function PostFirstEntryMapFixes()
     local #var(prefix)WIB wib;
     local #var(prefix)NicoletteDuclare nico;
     local #var(prefix)NanoKey k;
+    local #var(PlayerPawn) p;
+
+    p = player();
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
@@ -468,8 +471,13 @@ function PostFirstEntryMapFixes()
             }
         }
 
-        if (class'DXRMapVariants'.static.IsVanillaMaps(player())) {
+        k = None;
+        if (class'DXRMapVariants'.static.IsVanillaMaps(p)) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(2513.0, 2439.0, 458.0));
+        } else if (class'DXRMapVariants'.static.IsRevisionMaps(p)) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(1225.0, 3005.0, 495.0));
+        }
+        if (k != None) {
             k.Description = "Hotel key";
             k.KeyID = 'hotel_roomdoor';
         }
