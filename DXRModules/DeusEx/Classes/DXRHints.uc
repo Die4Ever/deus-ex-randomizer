@@ -3,13 +3,18 @@ class DXRHints extends DXRBase transient;
 var #var(PlayerPawn) _player;
 
 // if this hints array is too long, then no one will ever see the best hints
-var string hints[100];
-var string details[100];
 var int numHints;
+struct GameHint {
+    var string line1, line2;
+    var bool deathOnly;
+};
+var GameHint hintList[100];
 
 simulated function InitHints()
 {
     local DXRTelemetry telem;
+    local DXRSkills skills;
+    local DXRAugmentations augs;
     local int mission;
     local string map;
 
@@ -24,12 +29,119 @@ simulated function InitHints()
         AddHint("Check out https://mastodon.social/@DXRandoActivity!", "We just shared your death publicly, go retweet it!");
 
     if(dxr.flags.crowdcontrol > 0) {
-        AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.");
-        AddHint("Don't forget you (the viewer!) can", "use Crowd Control to influence the game!");
+        if (dxr.flags.crowdcontrol!=3){
+            AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.", true);
+            AddHint("Don't forget you (the viewer!) can", "use Crowd Control to influence the game!", true);
+        } else {
+            AddHint("RNG did not work in your favour today.", "You have been defeated by a computer.", true);
+            AddHint("Sometimes a computer can be more cruel than a human.", "(but not always!)", true);
+        }
     }
 
     if (dxr.flags.settings.goals > 0) {
         AddHint("Check the Deus Ex Randomizer wiki", "for information about randomized objective locations and more!");
+        AddHint("Try the Goal Locations button on the Goals screen", "for a list of the randomized objective locations!");
+        if (class'MenuChoice_GoalTextures'.static.IsEnabled(dxr.flags)){
+            AddHint("Security Computers associated with randomized goals", "will have a green lid to make them stand out!");
+            AddHint("Personal Computers associated with randomized goals", "will have a yellow screen to make them stand out!");
+        }
+    }
+
+    if (dxr.flags.IsBingoCampaignMode()){
+        if (dxr.flags.settings.bingo_win>1) {
+            AddHint("You need to complete "$dxr.flags.settings.bingo_win$" lines on your bingo board", "in order to progress in the game!");
+        } else if (dxr.flags.settings.bingo_win==1) {
+            AddHint("You need to complete one line on your bingo board", "in order to progress in the game!");
+        }
+    } else {
+        if (dxr.flags.settings.bingo_win>0) {
+            if (dxr.flags.settings.bingo_win>1) {
+                AddHint("You'll finish this loop once you complete "$dxr.flags.settings.bingo_win$" lines", "on your bingo board!");
+            } else {
+                AddHint("You'll finish this loop once you complete one line", "on your bingo board!");
+            }
+            if (dxr.flags.bingo_duration==1){
+                AddHint("All of your bingo goals can be", "completed within this mission!");
+            } else if (dxr.flags.bingo_duration>1){
+                AddHint("All of your bingo goals can be", "completed within "$dxr.flags.bingo_duration$" missions!");
+            }
+            AddHint("Your health will be refilled when you finish this loop!", "Use it to its fullest!"); //Make sure this is in line with the decision made about NG+ energy refilling in issue #1065
+
+            //Technically not "WaltonWare" hints, but only really a concern if you've got bingo win enabled (for faster games):
+            if (dxr.flags.newgameplus_num_removed_weapons==1) {
+                AddHint("One weapon will be taken away when you finish this loop!", "Don't get too attached!");
+            } else if (dxr.flags.newgameplus_num_removed_weapons>1) {
+                AddHint(dxr.flags.newgameplus_num_removed_weapons$" weapons will be taken away when you finish this loop!", "Don't get too attached!");
+            }
+
+            skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
+            if( skills != None ) {
+                if (dxr.flags.newgameplus_num_skill_downgrades==1) {
+                    AddHint("One skill will be downgraded when you finish this loop", "and you'll lose 25% of your unused skill points!");
+                } else if (dxr.flags.newgameplus_num_skill_downgrades>1) {
+                    AddHint(dxr.flags.newgameplus_num_skill_downgrades$" skills will be downgraded when you finish this loop", "and you'll lose 25% of your unused skill points!");
+                }
+            }
+
+            augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
+            if( augs != None ) {
+                if (dxr.flags.newgameplus_num_removed_augs==1) {
+                    AddHint("One aug will be removed when you finish this loop", "but you might get new ones to replace it!");
+                } else if (dxr.flags.newgameplus_num_removed_augs>1) {
+                    AddHint(dxr.flags.newgameplus_num_removed_augs$" augs will be removed when you finish this loop", "but you might get new ones to replace them!");
+                }
+            }
+
+            if (dxr.flags.newgameplus_max_item_carryover==1) {
+                AddHint("You can only carry one copy of non-stackable items between loops!", "Don't hoard too much!");
+            } else if (dxr.flags.newgameplus_max_item_carryover>1) {
+                AddHint("You can only carry "$dxr.flags.newgameplus_max_item_carryover$" copies of non-stackable items between loops!", "Don't hoard too much!");
+            }
+        }
+    }
+
+    if (dxr.flags.moresettings.aug_loc_rando>0){
+        AddHint("The body locations that augs can be installed in might be changed!", "Make sure to read the descriptions to find out!");
+    }
+
+    if (dxr.flags.clothes_looting>0) {
+        AddHint("Your selection of clothes is limited to those you've collected!", "Make sure to check bodies and clothes racks to get more!");
+    }
+
+    if (dxr.flags.moresettings.camera_mode==1) {//Third person
+    } else if (dxr.flags.moresettings.camera_mode==2) { //Fixed cameras
+        AddHint("The camera location will change once you're out of line of sight!", "Use this to your advantage to get better angles!");
+        AddHint("Using a scope will make the camera look where you're aiming!", "Maybe you can actually see something far away like this!");
+        AddHint("Have you tried shooting the camera?", "Maybe you can get a better view!");
+    }
+
+    if (dxr.flags.settings.spoilers>0) {
+        AddHint("Spoiler buttons are available on the Goals screen!", "Give them a shot if you get really stuck!");
+    }
+
+    if (dxr.flags.settings.menus_pause==0) {
+        AddHint("The game won't pause when you enter menus!", "Watch out!");
+    }
+
+    if (class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags)){
+        AddHint("You can skip or disable songs in the Rando Audio menu!", "Customize your vibe!");
+        if (#defined(revision)){
+            AddHint("You can switch between the original and Revision", "soundtracks in the Revision Sound menu!");
+        }
+    }
+
+    if (!class'MenuChoice_Epilepsy'.default.enabled){
+        AddHint("Are the flickering lights too much for you?  Disable Flickering", "Lights in the Rando Visuals menu to make them more gentle!");
+    }
+
+    if (class'MenuChoice_ShowHints'.static.IsEnabled(dxr.flags)){
+        AddHint("Are the hints annoying when you enter a level?", "You can disable Level Start Hints in the Randomizer settings!");
+    }
+
+    if (#defined(vanilla)){
+        AddHint("Check out the various options in the Rando Gameplay menu to decide", "how some types of items are looted from dead bodies!");
+        AddHint("Use the Trash button in the Inventory menu to stop", "looting that type of item from dead bodies!");
+        AddHint("The Aggressive Defense System aug can stop not only missiles", "and grenades, but also darts, throwing knives, plasma, and flames!");
     }
 
     if( dxr.flags.settings.skills_reroll_missions == 1 ) {
@@ -43,6 +155,8 @@ simulated function InitHints()
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
     AddHint("Sabot rounds can damage tough objects no matter the damage threshold.","Check the highlight text!");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
+    AddHint("Thermoptic Camo allows you to pass", "through lasers without being detected!");
+    AddHint("Thermoptic Camo makes you invisible to people and bots", "but not to cameras or turrets!");
     if(dxr.flags.settings.energy != 100) {
         AddHint("Your max energy is "$dxr.flags.settings.energy$" points.", "Your energy meter shows percent relative to this value.");
     }
@@ -59,14 +173,29 @@ simulated function InitHints()
         if (class'MenuChoice_AutoWeaponMods'.default.enabled){
             AddHint("Picking up a weapon mod while holding a weapon", "will automatically apply it to that weapon!");
         }
+        AddHint("Try using the Quick Skill Menu to upgrade skills while moving!", "Look for the 'Activate Multiplayer Skill Menu' key binding!");
+        AddHint("Try using the Quick Aug Menu to upgrade augs while moving!", "Look for the 'Activate Quick Aug Menu' key binding!");
+        AddHint("You can upgrade augs without picking up the upgrade canister!", "Just highlight it before trying to upgrade!");
+        if (!class'MenuChoice_AutoLaser'.default.enabled){
+            AddHint("Look for the 'Auto Laser Sight' option in the Rando Gameplay menu", "to automatically activate laser mods when you draw your weapon!");
+        }
+        AddHint("The Speed Enhancement aug now instantly burns 1 energy", "in order to prevent abuse.  Just turn it on and off like normal!");
+        AddHint("You will still pick up ammo from weapons even if you", "are unable to pick them up (or have them marked as trash)!");
+        AddHint("The Vision Enhancement aug will now show characters, goals, items,", "datacubes, vehicles, crates, and electronic devices through walls!");
+        AddHint("The Regeneration aug will no longer bring you to maximum health.", "Upgrade the aug to increase the healing cap!");
+        AddHint("The inventory description of augmentation canisters will show", "the full description of the augs available within!");
     }
 
-    if(dxr.flags.IsHalloweenMode())
+    if(dxr.flags.IsHalloweenMode()) {
         AddHint("Mr. H cannot die but he will flee for a bit if you hurt him enough.");
-    if(dxr.flags.moresettings.reanimation > 0)
+    }
+    if(dxr.flags.moresettings.reanimation > 0) {
         AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
-    if(dxr.flags.moresettings.reanimation > 0)
-        AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
+        AddHint("Dead bodies will come back as zombies!", "Maybe a non-lethal approach would help?");
+    }
+    if (dxr.flags.settings.enemyrespawn > 0) {
+        AddHint("Enemies will respawn once they've been killed or knocked out!", "Remember that you can leave enemies critically injured!");
+    }
     if(dxr.flags.autosave == 3 && !dxr.flags.IsHordeMode()) {
         AddHint("You're not allowed to manually save,", "you only get an autosave when first entering a map.");
     }
@@ -113,8 +242,10 @@ simulated function InitHints()
             AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         }
-        if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime)
+        if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime) {
             AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
+            AddHint("Each type of weapon will have the same stats", "through the whole game.  They won't change later!");
+        }
 
         if(#defined(injections) || #defined(vmd) || #defined(gmdx)) {
             AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
@@ -147,12 +278,20 @@ simulated function InitHints()
 
         if(dxr.flags.settings.medbots > 0) {
             AddHint("Medbots are randomized.", "Don't expect to find them in the usual locations.");
+            AddHint("Medbots are randomized.", "There will be a datacube nearby saying the delivery has been made.");
         }
         else if(dxr.flags.settings.medbots == 0) {
             AddHint("Medbots are disabled.", "Good luck.");
         }
+
+        if(dxr.flags.moresettings.empty_medbots > 0) {
+            AddHint("You might find an augbot in maps where medbots didn't spawn.", "At least you can still install that aug canister!");
+            AddHint("Augbots are blue.  Medbots are white.", "Know the difference!");
+        }
+
         if(dxr.flags.settings.repairbots > 0) {
             AddHint("Repair bots are randomized.", "Don't expect to find them in the usual locations.");
+            AddHint("Repair bots are randomized.", "There will be a datacube nearby saying the delivery has been made.");
         }
         else if(dxr.flags.settings.repairbots == 0) {
             AddHint("Repair bots are disabled.", "Good luck.");
@@ -224,6 +363,7 @@ simulated function InitHints()
                 AddHint("Passwords have been randomized.", "Don't even try smashthestate!");
             if(dxr.flags.settings.goals > 0){
                 AddHint("The locations of the terrorist commander and boat are randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("Your start location, the terrorist commander, and the boat won't", "be close.  You might be able to skip some locations!");
                 if(#defined(injections)) {
                     AddHint("The map of the island can show possible goal locations.", "Give it a try!");
                 }
@@ -237,8 +377,10 @@ simulated function InitHints()
                 AddHint("The location of the Ambrosia barrel is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
         else if(map ~= "02_NYC_Warehouse") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0) {
                 AddHint("The locations of the generator, computer, and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The Email Computer contains a hint about the generator location.", "Make sure to read your emails!");
+            }
             AddHint("There are lots of enemies here!", "Look for thermoptic camo to help.");
             AddHint("There are lots of enemies here!", "Look for ballistic armor to help.");
             AddHint("There are lots of enemies here!", "Look for fire extinguishers to stun enemies.");
@@ -278,13 +420,19 @@ simulated function InitHints()
         } else if(dxr.flags.settings.goals > 0) {
             AddHint("Anna Navarre's location is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
+
+        if (dxr.flags.settings.prison_pocket > 0) {
+            AddHint("You'll be able to keep your items when going to prison.", "JC has hidden pockets!");
+        }
         break;
 
     case 5:
         if (map ~= "05_NYC_UnatcoMJ12Lab") {
             if(dxr.flags.settings.goals > 0) {
                 AddHint("Paul's location in the lab is randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The security computer in the command center has a", "camera that shows where Paul is located!");
                 AddHint("Your equipment could be in either", "the armory, or the surgery ward.");
+                AddHint("Your equipment will never be in the", "same wing of the lab as Paul!");
                 if(#defined(injections)) {
                     AddHint("The map of the lab can show possible goal locations.", "Give it a try!");
                 }
@@ -307,6 +455,7 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the computer with the ROM Encoding is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HongKong_WanChai_Street") {
+            AddHint("All that time JC spent practicing the piano...", "All wasted because of your choices.",true);
             if(dxr.flags.settings.goals > 0)
                 AddHint("The Dragon Tooth Sword is randomized in Hong Kong.","Open the case in Maggie Chow's apartment for a hint.");
         } else if (map ~= "06_HongKong_VersaLife") {
@@ -319,6 +468,7 @@ simulated function InitHints()
         break;
 
     case 8:
+        AddHint("Osgoode & Sons is the burned out", "building next to the hotel.");
         if(dxr.flags.settings.goals > 0){
             AddHint("The locations of Filben, Greene, and Vinny are randomized.", "Check the Goal Randomization page on our Wiki.");
             AddHint("The start location of the raid has been randomized.", "Look for the black vans!");
@@ -357,8 +507,8 @@ simulated function InitHints()
 #else
         AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
-        if(map ~= "10_Paris_Catacombs") {
-            AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.");
+        if(map ~= "10_Paris_Catacombs" || map~="10_Paris_Entrance") { //Le Merchant is in ENTRANCE in Revision
+            AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.", true);
             AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
         }
         if(dxr.flags.settings.goals > 0 && (map ~= "10_paris_metro" || map ~= "10_paris_club")) {
@@ -382,7 +532,7 @@ simulated function InitHints()
                 AddHint("The location of Gunther and the computer is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
 #ifdef injections
-        if( dxr.FindModule(class'DXRBacktracking') != None && map != "11_PARIS_EVERETT" ) {
+        if( dxr.FindModule(class'DXRBacktracking') != None ) {
             AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to previous Paris levels.");
         }
         AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
@@ -393,9 +543,13 @@ simulated function InitHints()
 
     case 12:
         if (map ~= "12_vandenberg_cmd") {
+            AddHint("The comms building will open once the friendly bots are released", "if you aren't equipped to deal with the bots yourself.");
             if(dxr.flags.settings.goals > 0) {
                 AddHint("The locations of the power generator keypads and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
             }
+        } else if (map ~= "12_vandenberg_tunnels") {
+            AddHint("Looking for the Control Room key?", "Have you checked the flooded reactor room?");
+            AddHint("It's possible to use the overhead pipes to bypass", "the radioactive area while travelling in either direction!");
         }
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
@@ -407,14 +561,16 @@ simulated function InitHints()
     case 14:
         if (map ~= "14_oceanlab_silo") {
             if(dxr.flags.settings.goals > 0) {
-                AddHint("Howard Strong is now on a random floor of the missile silo.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("Howard Strong is now in a random location at the missile silo.", "Check the Goal Randomization page on our Wiki.");
                 AddHint("Howard Strong will only show up if you've done your objectives!", "Been to the Ocean Lab UC and merged Helios?");
                 AddHint("Jock will pick you up at a random location.", "Check the Goal Randomization page on our Wiki.");
             }
         }
         else if (map ~= "14_OceanLab_UC") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0) {
                 AddHint("The location of the UC schematics computer is randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The Email Computer contains a hint about the UC Computer location.", "Make sure to read your emails!");
+            }
         }
         if (map ~= "14_OCEANLAB_LAB" || map ~= "14_VANDENBERG_SUB" || map ~= "14_OCEANLAB_UC") {
             if(dxr.flags.settings.goals > 0)
@@ -447,6 +603,28 @@ simulated function InitHints()
         else if (map ~= "15_Area51_Page") {
             AddHint("You are in Sector 4 with Bob Page. This is where the", "Aquinas Router, Coolant Controls, and Blue Fusion Reactors are.");
             AddHint("You are in Sector 4. The UCs will constantly spawn new enemies,", "but they can be closed off.");
+
+            if(dxr.flagbase.GetBool('DL_Blue4_Played')) {
+                AddHint("All four Blue Fusion Reactors are disabled!", "Go to the Infusion Controls and destroy Bob Page!");
+            } else {
+                AddHint("Look for four keypads to disable the blue fusion reactors", "in order to destroy Bob Page and let the Illuminati take over!");
+            }
+
+            if(dxr.flagbase.GetBool('coolantcut')) {
+                AddHint("The coolant has been cut!", "Go to the Antimatter Reactor room in Sector 3 and blow up Area 51!");
+            } else {
+                AddHint("Look for a switch to deactivate the coolant", "in order to destroy Area 51 and start a new Dark Age!");
+            }
+
+            if(dxr.flagbase.GetBool('HeliosFree')) {
+                AddHint("The uplink locks have been disabled!", "Go see Helios in Sector 3 so you can merge with him!");
+            } else {
+                AddHint("Look for a security computer to open the Aquinas Router Control Room", "in order to merge with Helios!");
+            }
+
+            if (dxr.flagbase.GetBool('DL_Blue4_Played') && dxr.flagbase.GetBool('coolantcut') && dxr.flagbase.GetBool('HeliosFree')) {
+                AddHint("You're doing all three endings?", "It's time to make up your mind!");
+            }
         }
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
@@ -457,17 +635,23 @@ simulated function InitHints()
     }
 }
 
-simulated function AddHint(string hint, optional string detail)
+simulated function AddHint(string hint, optional string detail, optional bool deathOnly)
 {
-    hints[numHints] = hint;
-    details[numHints] = detail;
+    hintList[numHints].line1=hint;
+    hintList[numHints].line2=detail;
+    hintList[numHints].deathOnly=deathOnly;
+
     numHints++;
+
+    if (numHints > ArrayCount(hintList)){
+        err("Death hint list length exceeded!  Now "$numHints);
+    }
 }
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local int i;
-    local string msg;
+    local string msg, hint, detail;
 
     Super.PlayerAnyEntry(player);
     _player = player;
@@ -475,25 +659,46 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
     if(dxr.localURL ~= "00_Training") {
         for(i=0;i<numHints;i++) {
-            msg = hints[i];
-            if(Len(details[i]) > 0) {
-                msg = msg $ "|n" $ details[i];
+            msg = hintList[i].line1;
+            if(Len(hintList[i].line2) > 0) {
+                msg = msg $ "|n" $ hintList[i].line2;
             }
             player.AddNote(msg, false, i==numHints-1);
         }
         player.ClientMessage("Press G or F2 to check your Goals/Notes screen!",, true);
     }
+
+    if (class'MenuChoice_ShowHints'.static.IsEnabled(dxr.flags)) {
+        GetHint(false,hint,detail);
+        player.ClientMessage("Hint: "$hint@detail);
+    }
 }
 
-simulated function int GetHint()
+simulated function int GetHint(bool isDeath, out string hint, out string detail)
 {
+    local GameHint actList[100];
+    local int numActHints, i, hintNum;
+
+    numActHints=0;
+    for (i=0;i<numHints;i++){
+        if ((!isDeath && hintList[i].deathOnly==false) || isDeath) {
+            actList[numActHints++]=hintList[i];
+        }
+    }
+
     // don't use the stable rng that we use for other things, needs to be different every time
-    return Rand(numHints);
+    hintNum = Rand(numActHints);
+
+    hint = actList[hintNum].line1;
+    detail = actList[hintNum].line2;
+
+    return hintNum;
 }
 
 simulated function ShowHint(optional int recursion)
 {
     local int hint;
+    local string hintStr,hintDetail;
     local DXRBigMessage m;
 #ifdef hx
     // for hx, the DXRBigMessage is bugged, so just disable the timer and PlayerRespawn will enable it again
@@ -505,9 +710,9 @@ simulated function ShowHint(optional int recursion)
         info("ShowHint reached max recursion " $ recursion);
         return;
     }
-    hint = GetHint();
+    hint = GetHint(true,hintStr,hintDetail);
 
-    m = class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]);
+    m = class'DXRBigMessage'.static.CreateBigMessage(_player, self, hintStr, hintDetail);
     if(m == None) {
         ShowHint(++recursion);
         return;
@@ -545,13 +750,13 @@ function RunTests()
     local int i, ln;
     Super.RunTests();
 
-    test(numHints <= arrayCount(hints), "numHints within bounds");
+    test(numHints <= arrayCount(hintList), "numHints within bounds");
 
     for(i=0; i<numHints; i++) {
-        ln = Len(hints[i]);
-        test(ln < 70, "length " $ ln $ " of hint: "$hints[i]);
+        ln = Len(hintList[i].line1);
+        test(ln < 70, "length " $ ln $ " of hint: "$hintList[i].line1);
 
-        ln = Len(details[i]);
-        test(ln < 70, "length " $ ln $ " of hint detail: "$details[i]);
+        ln = Len(hintList[i].line2);
+        test(ln < 70, "length " $ ln $ " of hint detail: "$hintList[i].line2);
     }
 }

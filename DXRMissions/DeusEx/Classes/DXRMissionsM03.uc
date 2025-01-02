@@ -214,7 +214,7 @@ function int InitGoalsRev(int mission, string map)
 
         AddGoalLocation("03_NYC_747", "Cargo", NORMAL_GOAL | VANILLA_GOAL, vect(-147.147064,-511.348846,158.870544), rot(0,15760,0));
         AddGoalLocation("03_NYC_747", "Office", NORMAL_GOAL, vect(6,-736,339), rot(0,-32,0));
-        AddGoalLocation("03_NYC_747", "Flight Deck", NORMAL_GOAL, vect(1339,-513,484), rot(0,16480,0));
+        AddGoalLocation("03_NYC_747", "Flight Deck", NORMAL_GOAL, vect(1530,-505,484), rot(0,16480,0));
         AddGoalLocation("03_NYC_747", "Bedroom", NORMAL_GOAL, vect(1594,-710,368), rot(0,0,0));
         AddGoalLocation("03_NYC_HANGAR", "Near Trailers", NORMAL_GOAL, vect(1867,-1318,29), rot(0,0,0));
         AddGoalLocation("03_NYC_HANGAR", "Near Engine", NORMAL_GOAL, vect(4140,-1554,29), rot(0,32776,0));

@@ -49,10 +49,10 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
     local int healedPoints, uses;
     local string msg;
 
-#ifdef injections
+#ifdef injections||revision
     // vanilla HealPlayer but with a different client message
-    if (Human(PlayerToHeal) != None) {
-        healedPoints = Human(PlayerToHeal)._HealPlayer(healAmount);
+    if (#var(PlayerPawn)(PlayerToHeal) != None) {
+        healedPoints = #var(PlayerPawn)(PlayerToHeal)._HealPlayer(healAmount);
         numUses++;
 
         lastHealTime = Level.TimeSeconds;

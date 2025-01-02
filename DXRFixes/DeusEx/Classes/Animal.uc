@@ -30,6 +30,10 @@ function EndPetting(optional bool bInterrupted)
         if (!bHasBeenPet && !bInterrupted){
             bHasBeenPet=True;
             class'DXREvents'.static.MarkBingo("PetAnimal_"$Class.Name);
+
+            if (BindName!=Default.BindName){
+                class'DXREvents'.static.MarkBingo("PetAnimal_BindName_"$BindName);
+            }
         }
         camera.player().bBlockAnimations=False;
         camera.player().AnimEnd(); //Kicks the appropriate normal animations off again

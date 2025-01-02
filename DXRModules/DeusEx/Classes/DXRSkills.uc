@@ -220,7 +220,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         return shortDisplay $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
-#ifdef vanilla
+#ifdef vanilla||revision
         word = "Damage Reduction (Passive/HazMat/Armor)";
         val = FClamp(val, 0, 1.1);
 #else
@@ -235,7 +235,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         case 2: r = "|n    Advanced: "; break;
         case 3: r = "|n    Master: "; break;
         }
-#ifdef vanilla
+#ifdef vanilla||revision
         shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
         r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75

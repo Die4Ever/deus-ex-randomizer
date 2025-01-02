@@ -32,6 +32,26 @@ function DXRando GetDXR()
     return dxr;
 }
 
+//To determine whether the player class is allowed in that mode or not
+//Vanilla forces you to JCDentonMale if this is false
+//Revision forces you to RevJCDentonMale if false
+function bool ApproveClass( class<playerpawn> SpawnClass)
+{
+    log("DXRandoGameInfo ApproveClass "$SpawnClass);
+    #ifdef revision
+    if (SpawnClass==class'#var(PlayerPawn)') return true;
+    #endif
+    return false;
+}
+
+event playerpawn Login(string Portal, string Options, out string Error, class<playerpawn> SpawnClass)
+{
+    #ifdef revision
+    SpawnClass=class'#var(PlayerPawn)'; //Force the player to the rando player class
+    #endif
+
+    return Super.Login(Portal,Options,Error,SpawnClass);
+}
 event InitGame( String Options, out String Error )
 {
     Super.InitGame(Options, Error);

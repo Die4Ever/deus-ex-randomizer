@@ -83,6 +83,7 @@ function Landed(vector HitNormal)
 simulated function Tick(float deltaTime)
 {
     if (bUsing){
+        LastRenderTime = Level.TimeSeconds; //Hack to keep it out of stasis while it's playing (bAlwaysTick doesn't help)
         if (PlayDoneTime<=Level.TimeSeconds) {
 
             if (!PianoIsBroken() && SongPlayed[currentSong]==0){

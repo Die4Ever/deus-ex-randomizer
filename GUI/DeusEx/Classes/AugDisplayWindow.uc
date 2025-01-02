@@ -1,4 +1,9 @@
-class AugDisplayWindow injects AugmentationDisplayWindow;
+#dontcompileif hx
+#ifdef revision
+class DXRAugDisplayWindow injects RevAugmentationDisplayWindow;
+#else
+class DXRAugDisplayWindow injects AugmentationDisplayWindow;
+#endif
 
 var transient bool d3d11;// d3d11 drawing the viewport of targeting aug fills the entire screen, just disable that
 
@@ -45,8 +50,9 @@ function DrawBrush(GC gc, Actor a)
     if( VSize(a.Location - forwards) >= VSize(a.Location - backwards) )
         return;
 
-    class'FrobDisplayWindow'.static.GetActorBoundingBox(a, centerLoc, radius);
-    class'FrobDisplayWindow'.static.BoxToWindowCoords(self, 0, centerLoc, radius, boxTLX, boxTLY, boxBRX, boxBRY);
+    class'#var(injectsprefix)FrobDisplayWindow'.static.GetActorBoundingBox(a, centerLoc, radius);
+    class'#var(injectsprefix)FrobDisplayWindow'.static.BoxToWindowCoords(self, 0, centerLoc, radius, boxTLX, boxTLY, boxBRX, boxBRY);
+
     width = boxBRX - boxTLX;
     height = boxBRY - boxTLY;
     gc.DrawPattern(boxTLX, boxTLY, width, height, 0, 0, Texture'Virus_SFX');
@@ -171,7 +177,8 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
 {
     local Texture oldSkins[9];
     local #var(prefix)Containers c;
-    local class<Inventory> i;
+    local class<Actor> i; //Revision changed "Contents"/"Content2"/"Content3" to Actor instead of Inventory
+    //local class<Inventory> i;
     local Mesh oldMesh;
 
     if(A.Mesh == None) {

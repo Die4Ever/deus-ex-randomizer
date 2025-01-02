@@ -240,8 +240,8 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     switch(action) {
     case "wiki":
         OpenGoalRandoWikiPage();
-        // Destroy the msgbox!
-        root.PopWindow();
+        // Destroy the msgbox (later)!
+        PopLater();
         return true;
 
     case "entspoilers":
@@ -258,6 +258,16 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     }
 
     return Super.BoxOptionSelected(msgBoxWindow,buttonNumber);
+}
+
+function PopLater()
+{
+    AddTimer(0.001,,,'LateWindowPop');
+}
+
+function LateWindowPop(int timerID, int invocations, int clientData)
+{
+    root.PopWindow();
 }
 
 function OpenGoalRandoWikiPage()
