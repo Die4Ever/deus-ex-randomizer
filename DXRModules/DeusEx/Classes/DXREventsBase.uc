@@ -3,7 +3,7 @@ class DXREventsBase extends DXRActorsBase;
 const FAILED_MISSION_MASK = 1;
 
 var bool died;
-var name watchflags[32];
+var() name watchflags[32];
 var int num_watchflags;
 var int bingo_win_countdown;
 var name rewatchflags[8];
@@ -17,12 +17,12 @@ struct BingoOption {
     var int max;
     var int missions;// bit masks
 };
-var BingoOption bingo_options[350];
+var() BingoOption bingo_options[350];
 
 struct MutualExclusion {
     var string e1, e2;
 };
-var MutualExclusion mutually_exclusive[64];
+var() MutualExclusion mutually_exclusive[64];
 
 struct ActorWatchItem {
     var Actor a;
