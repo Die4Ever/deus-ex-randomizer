@@ -187,6 +187,12 @@ function PreFirstEntryMapFixes()
                 gas.Destroy();
             }
         }
+
+        foreach AllActors(class'#var(prefix)BeamTrigger', beam, 'SpiderBotDoorBeam') {
+            beam.bTriggerOnceOnly = true;
+            break;
+        }
+
         break;
 
     case "09_NYC_DOCKYARD":
