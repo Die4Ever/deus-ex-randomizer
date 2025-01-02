@@ -574,6 +574,8 @@ function AnyEntryMapFixes()
         if (ces != None)
             ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
 
+        GetConversation('DL_JockParkStart').AddFlagRef('PaulInjured_Played', false); // disable "Your brother's hurt pretty bad" infolink if you've already talked to him
+
         break;
     }
 }
