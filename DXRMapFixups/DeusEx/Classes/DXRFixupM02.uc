@@ -30,6 +30,7 @@ function PreFirstEntryMapFixes()
     local DynamicTeleporter dtel;
     local DynamicLight light;
     local DeusExDecoration s;
+    local Smuggler smug;
 #ifdef revision
     local JockHelicopter jockheli;
 #endif
@@ -348,6 +349,11 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+
+        foreach AllActors(class'Smuggler', smug) {
+            smug.bImportant = true;
+            break;
+        }
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         if (#defined(vanilla)) {
