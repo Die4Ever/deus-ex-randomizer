@@ -5,6 +5,25 @@ class DXRComputerPersonal extends #var(prefix)ComputerPersonal;
 
 var int knownAccount[8];
 
+#ifdef revision
+function bool Facelift(bool bOn)
+{
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    if (dxr!=None && class'MenuChoice_GoalTextures'.static.IsEnabled(dxr)){
+        mesh = Default.Mesh;
+        return false;
+    } else if (dxr==None && Skin==Texture'GoalComputerPersonalYellow'){
+        mesh = Default.Mesh;
+        return false; //On a load, DXR may not be there yet
+    }
+
+    return Super.Facelift(bOn);
+}
+#endif
+
 function bool GetAccountKnown(int userIndex)
 {
     if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))

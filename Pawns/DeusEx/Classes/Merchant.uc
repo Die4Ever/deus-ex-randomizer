@@ -47,16 +47,8 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 
     if(hints != None) {
         for(i=0; i<100; i++) {
-            newHint = hints.GetHint();
-            hint = hints.hints[newHint];
-            details = hints.details[newHint];
-            if(
-                newHint != lastHint &&
-                hint != "Viewers, you could've prevented this with Crowd Control." &&
-                hint != "Don't forget you (the viewer!) can" &&
-                details != "We just shared your death publicly, go retweet it!" &&
-                !(CarcassType == Class'LeMerchantCarcass' && hint == "If you need a Hazmat suit")
-            ) break;
+            newHint = hints.GetHint(false,hint,details);
+            if(newHint != lastHint) break;
         }
         if(i>=100) hint = "";
     }

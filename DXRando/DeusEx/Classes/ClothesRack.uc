@@ -12,7 +12,7 @@ function Timer()
         break;
 
     if (p!=None && camera!=None) {
-        if(#defined(injections) && camera.GetExpectedCameraMode() == camera.CM_ThirdPerson) {
+        if(#defined(injections||revision) && camera.GetExpectedCameraMode() == camera.CM_ThirdPerson) {
             camera.EnableTempFixedCamera(true);
             SetTimer(0.75,False);
         } else {

@@ -696,6 +696,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('GatesOpen',true,,5);
             MarkConvPlayed("PaulInjured", bFemale);
             GiveImage(player, class'Image04_NSFHeadquarters');
+        case 43: // fallthrough
+            MarkConvPlayed("DL_JockParkStart", bFemale);
             break;
 
         case 55:
@@ -1037,7 +1039,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
         case "M06JCHasDate":
-            return start_map > 65;
+        case "ClubEntryPaid":
+            return start_map > 65; //Impossible after the raid starts
         }
         break;
 

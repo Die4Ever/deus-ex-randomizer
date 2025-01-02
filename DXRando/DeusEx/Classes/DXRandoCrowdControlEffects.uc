@@ -2617,6 +2617,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "emp_field":
+            if (isTimerActive('cc_EmpTimer')) {
+                return TempFail;
+            }
             player().bWarrenEMPField = true;
             startNewTimer('cc_EmpTimer',duration);
             PlayerMessage(viewer@"made electronics allergic to you");
@@ -2883,7 +2886,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "flipped":
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla) && !#defined(revision)){
                 //Changes in player class
                 PlayerMessage("Flipped effect unavailable in this mod");
                 return NotAvail;
@@ -2906,7 +2909,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return Success;
 
         case "limp_neck":
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla) && !#defined(revision)){
                 //Changes in player class
                 PlayerMessage("Limp Neck effect unavailable in this mod");
                 return NotAvail;
@@ -2928,7 +2931,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return Success;
 
         case "barrel_roll":
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla) && !#defined(revision)){
                 //Changes in player class
                 PlayerMessage("Barrel Roll effect unavailable in this mod");
                 return NotAvail;
@@ -3072,7 +3075,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             break;
         case "resident_evil":
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla) && !#defined(revision)){
                 //Changes in player class
                 PlayerMessage("Resident Evil effect unavailable in this mod");
                 return NotAvail;
@@ -3092,7 +3095,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_ResidentEvil')) {
                 return TempFail;
             }
-            //datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
 
             PlayerMessage(viewer@"made your view a little bit more horrific");
             startNewTimer('cc_ResidentEvil',duration);
@@ -3168,7 +3170,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             break;
         case "wine_bullets":
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla) && !#defined(revision)){
                 PlayerMessage("Wine Bullets effect unavailable in this mod");
                 return NotAvail;
             }

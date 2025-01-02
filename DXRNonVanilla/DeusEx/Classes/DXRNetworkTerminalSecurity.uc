@@ -121,3 +121,10 @@ event InitWindow()
     class'DXRNetworkTerminal'.static.InitWindow(self);
 #endif
 }
+
+function ComputerHacked()
+{
+    Super.ComputerHacked();
+
+    class'DXREvents'.static.MarkBingo("ComputerHacked");
+}

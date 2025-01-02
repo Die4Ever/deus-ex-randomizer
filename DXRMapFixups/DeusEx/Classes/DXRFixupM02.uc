@@ -30,6 +30,10 @@ function PreFirstEntryMapFixes()
     local DynamicTeleporter dtel;
     local DynamicLight light;
     local DeusExDecoration s;
+    local Smuggler smug;
+#ifdef revision
+    local JockHelicopter jockheli;
+#endif
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -49,6 +53,21 @@ function PreFirstEntryMapFixes()
     switch (dxr.localURL)
     {
     case "02_NYC_BATTERYPARK":
+
+        foreach AllActors(class'DeusExMover', d) {
+            if( d.Name == 'DeusExMover19' ) {
+                d.KeyIDNeeded = 'ControlRoomDoor';
+            }
+        }
+
+        if(!dxr.flags.IsZeroRando()) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 342));
+            k.KeyID = 'ControlRoomDoor';
+            k.Description = "Control Room Door Key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'BarrelAmbrosia', ambrosia) {
                 foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {
@@ -56,26 +75,8 @@ function PreFirstEntryMapFixes()
                         t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
                 }
             }
-            foreach AllActors(class'#var(prefix)MapExit',exit,'Boat_Exit'){break;}
-            foreach AllActors(class'NYPoliceBoat',b) {
-                b.BindName = "NYPoliceBoat";
-                b.ConBindEvents();
-                class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
-            }
-            foreach AllActors(class'DeusExMover', d) {
-                if( d.Name == 'DeusExMover19' ) {
-                    d.KeyIDNeeded = 'ControlRoomDoor';
-                }
-            }
             foreach AllActors(class'Terrorist',nsf,'ShantyTerrorist'){
                 nsf.Tag = 'ShantyTerrorists';  //Restores voice lines when NSF still alive (still hard to have happen though)
-            }
-            if(!dxr.flags.IsZeroRando()) {
-                k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 339.215179));
-                k.KeyID = 'ControlRoomDoor';
-                k.Description = "Control Room Door Key";
-                if(dxr.flags.settings.keysrando > 0)
-                    GlowUp(k);
             }
 
             fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
@@ -91,6 +92,13 @@ function PreFirstEntryMapFixes()
             exit = Spawn(class'DynamicMapExit',,'Boat_Exit',vect(-420,-3827,278));
             exit.SetCollision(false,false,false);
             exit.DestMap="03_NYC_UNATCOIsland";
+        }
+
+        foreach AllActors(class'#var(prefix)MapExit',exit,'Boat_Exit'){break;}
+        foreach AllActors(class'NYPoliceBoat',b) {
+            b.BindName = "NYPoliceBoat";
+            b.ConBindEvents();
+            class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
         }
 
         break;
@@ -127,16 +135,6 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
-            foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
-            foreach AllActors(class'#var(prefix)Button1',button){
-                if (button.Event=='ToStreet'){
-                    break;
-                }
-            }
-
-            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
-            buttonHint.SetBaseActor(button);
-
             //add a small light to the lower floor of the apartment.
             //This helps to just put a little bit of light on the generator location
             //in the case of 0 brightness boost
@@ -159,6 +157,17 @@ function PreFirstEntryMapFixes()
                 if(d.Event == 'BlewFence') break;
             }
             class'FillCollisionHole'.static.CreateLine(self, vectm(-2184, 1266.793335, 79.291428), vectm(-2050, 1266.793335, 79.291428), 10, 80, d);
+        } else {
+            //Revision
+
+            //Add teleporter hint text to Jock
+            #ifdef revision
+            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+            foreach AllActors(class'JockHelicopter',jockheli){break;}
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jockheli);
+            #endif
+
         }
 
         //Both vanilla and Revision:
@@ -178,6 +187,15 @@ function PreFirstEntryMapFixes()
 
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
+
+        foreach AllActors(class'#var(prefix)MapExit',exit,'ToStreet'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){
+            if (button.Event=='ToStreet'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
 
         class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
         class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
@@ -255,6 +273,11 @@ function PreFirstEntryMapFixes()
                 l("hiding " $ c @ c.Tag @ c.Event);
                 c.bHidden = true;// hide it so DXRSwapItems doesn't move it, this is supposed to be inside the plane that flies overhead
             }
+
+            //Another store room with the same key as AugStore in the RevisionMaps
+            foreach AllActors(class'DeusExMover', d, 'SwankyStore') {
+                d.bFrobbable = true;
+            }
         }
         foreach AllActors(class'DeusExMover', d, 'AugStore') {
             d.bFrobbable = true;
@@ -326,6 +349,11 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+
+        foreach AllActors(class'Smuggler', smug) {
+            smug.bImportant = true;
+            break;
+        }
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         if (#defined(vanilla)) {

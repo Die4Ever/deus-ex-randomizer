@@ -237,6 +237,14 @@ function bool OnTitleScreen()
     return dxr.LocalURL=="DX" || dxr.LocalURL=="DXONLY";
 }
 
+function bool OnEndgameMap()
+{
+    local DXRando dxr;
+    dxr = class'DXRando'.default.dxr;
+    if(dxr == None) return true;
+    return dxr.dxInfo.missionNumber == 99;
+}
+
 final function int SystemTime()
 {
     return _SystemTime(Level);

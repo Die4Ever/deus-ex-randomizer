@@ -19,11 +19,28 @@ function DrawWindow(GC gc)
     {
         frobTarget = player.FrobTarget;
         if (frobTarget != None)
-            if (!player.IsHighlighted(frobTarget))
+            if (!CheckHighlighted(frobTarget))
                 frobTarget = None;
     }
 
     if( frobTarget != None ) DrawWindowBase(gc, frobTarget);
+}
+
+function bool CheckHighlighted(Actor frobTarget)
+{
+    local bool wasBehind,highlighted;
+    if (player==None) return false;
+
+#ifdef injections
+    highlighted = player.IsHighlighted(frobTarget);
+#else
+    //This is handled in the injected player class normally
+    wasBehind=player.bBehindView;
+    player.bBehindView=False;
+    highlighted=player.IsHighlighted(frobTarget);
+    player.bBehindView=wasBehind;
+#endif
+    return highlighted;
 }
 
 function CheckSettings()
@@ -279,6 +296,10 @@ function bool KeyAcquired(Mover m)
         return False;
     }
 
+    if (dxMover.KeyIDNeeded==''){
+        return False;
+    }
+
     if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
         return True;
     }
@@ -372,13 +393,7 @@ function string MoverStrInfo(Mover m, out int numLines)
     dxMover = DeusExMover(m);
     if (dxMover != None && dxMover.bLocked)
     {
-        if (dxMover.KeyIDNeeded != ''){
-            if (keyAcquired(m)){
-                keyAcq = true;
-            } else {
-                keyAcq = false;
-            }
-        }
+        keyAcq=KeyAcquired(m);
         if((BreakableWall(m)!=None || BreakableGlass(m)!=None) && dxMover.KeyIDNeeded == '' && !dxMover.bPickable) {
             strInfo = "Breakable";
         }
@@ -676,10 +691,10 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
         else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).AmmoName != Class'DeusEx.AmmoNone' )
             strInfo = Inventory(frobTarget).itemName $ " (" $ Weapon(frobTarget).PickupAmmoCount $ ")";
-#ifdef injections
-        else if (frobTarget.IsA('ChargedPickup') && Human(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
+#ifdef injections||revision
+        else if (frobTarget.IsA('ChargedPickup') && #var(PlayerPawn)(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ " (Left Click to Activate)";
-        else if (Human(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
+        else if (#var(PlayerPawn)(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ " (Left Click to Consume)";
         else if (WeaponModAutoApply(WeaponMod(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ CR() $ "Auto applies to current weapon";
@@ -688,6 +703,9 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
 #ifdef injections
     else if (frobTarget.IsA('WHPiano'))
         strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ WHPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+#else
+    else if (frobTarget.IsA('DXRPiano'))
+        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ DXRPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
 #endif
     else if (frobTarget.IsA('#var(injectsprefix)ClothesRack'))
         strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Right Click to change clothing " $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
@@ -845,7 +863,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
         }
     }
 
-    if (GetAutoCodes() && k!=None){
+    if (GetAutoCodes() && k!=None && k.hackStrength != 0.0){
         gc.SetStyle(DSTY_Translucent);
         col.r = 0;
         col.g = 0;

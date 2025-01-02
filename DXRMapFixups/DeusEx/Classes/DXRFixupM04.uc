@@ -61,33 +61,35 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerPublic compublic;
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
+    local Smuggler smug;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch (dxr.localURL)
     {
     case "04_NYC_HOTEL":
-#ifdef vanilla
-        foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
-            if( ot.Orders == 'Leaving' )
-                ot.Orders = 'Seeking';
-        }
-        foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
-            if( ft.Event == 'PaulOutaHere' )
-                ft.Destroy();
-        }
-        foreach AllActors(class'SkillAwardTrigger', st) {
-            if( st.Tag == 'StayedWithPaul' ) {
-                st.skillPointsAdded = 100;
-                st.awardMessage = "Stayed with Paul";
-                st.Destroy();// HACK: this trigger is buggy for some reason, just forget about it for now
+        if (#defined(vanilla)){
+            foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
+                if( ot.Orders == 'Leaving' )
+                    ot.Orders = 'Seeking';
             }
-            else if( st.Tag == 'PaulOutaHere' ) {
-                st.skillPointsAdded = 500;
-                st.awardMessage = "Saved Paul";
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
+                if( ft.Event == 'PaulOutaHere' )
+                    ft.Destroy();
+            }
+            foreach AllActors(class'SkillAwardTrigger', st) {
+                if( st.Tag == 'StayedWithPaul' ) {
+                    st.skillPointsAdded = 100;
+                    st.awardMessage = "Stayed with Paul";
+                    st.Destroy();// HACK: this trigger is buggy for some reason, just forget about it for now
+                }
+                else if( st.Tag == 'PaulOutaHere' ) {
+                    st.skillPointsAdded = 500;
+                    st.awardMessage = "Saved Paul";
+                }
             }
         }
-#endif
+
         class'GilbertWeaponMegaChoice'.static.Create(Player());
         foreach AllActors(class'#var(prefix)GilbertRenton',gilbert){
             //Make sure he has ammo for Stealth Pistol(10mm), Pistol (10mm),
@@ -106,19 +108,19 @@ function PreFirstEntryMapFixes()
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
             if(!dxr.flags.IsZeroRando()) {
-                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
+                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
                 key.KeyID = 'CrackRoom';
                 key.Description = "'Ton Hotel, North Room Key";
                 if(dxr.flags.settings.keysrando > 0)
                     GlowUp(key);
 
-                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
+                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180)); //Top shelf of Paul's closet
                 key.KeyID = 'Apartment';
                 key.Description = "Apartment key";
                 if(dxr.flags.settings.keysrando > 0)
                     GlowUp(key);
 
-                SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+                SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
             }
 
             foreach RadiusActors(class'#var(DeusExPrefix)Mover', door, 1.0, vectm(-304.0, -3000.0, 64.0)) {
@@ -134,6 +136,28 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
         } else {
             Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+
+            if(!dxr.flags.IsZeroRando()) {
+                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
+                key.KeyID = 'Hotelroom1'; //CrackRoom doesn't exist in Revision M04 - doesn't hurt to add a key to a different room instead
+                key.Description = "'Ton Hotel, South Room Key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(key);
+
+                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1415,-55)); //In a different mail nook
+                key.KeyID = 'Hotelroom2'; //CrackRoom doesn't exist in Revision M04 - doesn't hurt to add a key to a different room instead
+                key.Description = "'Ton Hotel, Northwest Room Key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(key);
+
+                key = Spawn(class'#var(prefix)NanoKey',,, vectm(-300,-3630,180)); //Top shelf of Paul's closet
+                key.KeyID = 'Apartment';
+                key.Description = "Apartment key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(key);
+
+                SpawnDatacubeTextTag(vectm(-295,-3655,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
@@ -187,6 +211,7 @@ function PreFirstEntryMapFixes()
             k.bImportant = true;
             k.ChangeAlly('Player', -1, false);
             k.SetOrders('Standing');
+            k.SetCollisionSize(k.CollisionRadius*0.3,k.CollisionHeight); //Make him more slim so he can squeeze through the doors better
         }
 
         //Button to open basement hatch from inside
@@ -431,6 +456,11 @@ function PreFirstEntryMapFixes()
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
 
+        foreach AllActors(class'Smuggler', smug) {
+            smug.bImportant = true;
+            break;
+        }
+
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
@@ -549,6 +579,8 @@ function AnyEntryMapFixes()
         ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
         if (ces != None)
             ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
+
+        GetConversation('DL_JockParkStart').AddFlagRef('PaulInjured_Played', false); // disable "Your brother's hurt pretty bad" infolink if you've already talked to him
 
         break;
     }

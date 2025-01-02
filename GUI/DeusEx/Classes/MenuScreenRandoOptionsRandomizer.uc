@@ -17,6 +17,7 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_ToggleMemes');
     CreateChoice(class'MenuChoice_OctoberCosmetics');
+    CreateChoice(class'MenuChoice_ShowHints');
 }
 
 

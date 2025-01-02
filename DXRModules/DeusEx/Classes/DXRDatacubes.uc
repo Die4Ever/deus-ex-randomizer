@@ -420,6 +420,28 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 1345); //1345 is the top of the pipe
         datacubes_rules[i].allow = true;
         i++;
+
+        //The datacube with the code for the door lock
+        //Don't allow in that alcove between the doors
+        datacubes_rules[i].item_name = '06_Datacube30';
+        datacubes_rules[i].min_pos = vect(50, -1700, 875);
+        datacubes_rules[i].max_pos = vect(100, -1800, 925);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Don't allow at the bottom of the stairs
+        datacubes_rules[i].item_name = '06_Datacube30';
+        datacubes_rules[i].min_pos = vect(300, -2050, 450);
+        datacubes_rules[i].max_pos = vect(400, -2150, 550);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Before the doors!
+        datacubes_rules[i].item_name = '06_Datacube30';
+        datacubes_rules[i].min_pos = vect(-99999, -900, 800); //The items in the alcove in the lower hallway
+        datacubes_rules[i].max_pos = vect(99999, 99999, 1345); //1345 is the top of the pipe
+        datacubes_rules[i].allow = true;
+        i++;
         break;
 
     case "08_NYC_HOTEL":

@@ -281,6 +281,58 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local OnceOnlyTrigger oot;
     local int i;
 
+    //Increase the radius of the datalink that opens the sector 4 blast doors
+    foreach AllActors(class'DataLinkTrigger',dlt){
+        if (dlt.datalinkTag=='DL_Helios_Door2'){
+            dlt.SetCollisionSize(900,dlt.CollisionHeight);
+        }
+    }
+
+    // make the Tong ending flag trigger not based on collision
+    foreach AllActors(class'FlagTrigger', ft, 'FlagTrigger') {
+        if(ft.event != 'Generator_overload') continue;
+        ft.Tag = 'Check_Generator_overload';
+        ft.SetCollision(false,false,false);
+    }
+
+    foreach AllActors(class'Dispatcher', disp) {
+        switch(disp.Tag) {
+        case 'button_3':
+            disp.OutEvents[6] = 'Check_Generator_overload';
+            // fallthrough
+        case 'button_1':
+        case 'button_2':
+            if(dxr.flags.moresettings.splits_overlay > 0) {// also make Tong ending a little faster
+                for(i=0; i<ArrayCount(disp.OutDelays); i++) {
+                    disp.OutDelays[i] /= 3;
+                }
+            }
+            break;
+        }
+    }
+
+    // also make Tong ending a little faster
+    if(dxr.flags.moresettings.splits_overlay > 0) {
+        foreach AllActors(class'DeusExMover', d) {
+            switch(d.Tag) {
+            case 'Generator_panel':
+            case 'injector2':
+            case 'injector3':
+            case 'Generator_overload':
+                d.MoveTime /= 2;
+                break;
+            }
+        }
+    }
+
+    //Generator Failsafe buttons should spit out some sort of message if the coolant isn't cut
+    //start_buzz1 and start_buzz2 are the tags that get hit when the coolant isn't cut
+    se = Spawn(class'SpecialEvent',,'start_buzz1');
+    se.Message = "Coolant levels normal - Failsafe cannot be disabled";
+    se = Spawn(class'SpecialEvent',,'start_buzz2');
+    se.Message = "Coolant levels normal - Failsafe cannot be disabled";
+
+
     if (isVanilla) {
         AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
         AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
@@ -323,57 +375,6 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
             }
         }
 
-        // make the Tong ending flag trigger not based on collision
-        foreach AllActors(class'FlagTrigger', ft, 'FlagTrigger') {
-            if(ft.event != 'Generator_overload') continue;
-            ft.Tag = 'Check_Generator_overload';
-            ft.SetCollision(false,false,false);
-        }
-
-        foreach AllActors(class'Dispatcher', disp) {
-            switch(disp.Tag) {
-            case 'button_3':
-                disp.OutEvents[6] = 'Check_Generator_overload';
-                // fallthrough
-            case 'button_1':
-            case 'button_2':
-                if(dxr.flags.moresettings.splits_overlay > 0) {// also make Tong ending a little faster
-                    for(i=0; i<ArrayCount(disp.OutDelays); i++) {
-                        disp.OutDelays[i] /= 3;
-                    }
-                }
-                break;
-            }
-        }
-
-        // also make Tong ending a little faster
-        if(dxr.flags.moresettings.splits_overlay > 0) {
-            foreach AllActors(class'DeusExMover', d) {
-                switch(d.Tag) {
-                case 'Generator_panel':
-                case 'injector2':
-                case 'injector3':
-                case 'Generator_overload':
-                    d.MoveTime /= 2;
-                    break;
-                }
-            }
-        }
-
-        //Generator Failsafe buttons should spit out some sort of message if the coolant isn't cut
-        //start_buzz1 and start_buzz2 are the tags that get hit when the coolant isn't cut
-        se = Spawn(class'SpecialEvent',,'start_buzz1');
-        se.Message = "Coolant levels normal - Failsafe cannot be disabled";
-        se = Spawn(class'SpecialEvent',,'start_buzz2');
-        se.Message = "Coolant levels normal - Failsafe cannot be disabled";
-
-        //Increase the radius of the datalink that opens the sector 4 blast doors
-        foreach AllActors(class'DataLinkTrigger',dlt){
-            if (dlt.datalinkTag=='DL_Helios_Door2'){
-                dlt.SetCollisionSize(900,dlt.CollisionHeight);
-            }
-        }
-
         //There's a trigger for this at the top of the elevator, but it has collide actors false.
         //Easier to just spawn a new one near the elevator so you can actually hear it before
         //the game is over.
@@ -405,6 +406,10 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         class'PlaceholderEnemy'.static.Create(self,vectm(-4795,-1596,-1357));
 
     } else {
+        AddSwitch( vect(-5073,-2432,-1330), rot(0, 32834, 0), 'blastdoor_final');// just in case the dialog fails
+        AddSwitch( vect(-5066,-2497,-1330), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
+        AddSwitch( vect(-3712.5,-1085,-1935), rot(0,0,0), 'Page_Blastdoors' );
+
         Spawn(class'PlaceholderItem',,, vectm(-4151,-173,-1350)); //Helios storage room
         Spawn(class'PlaceholderItem',,, vectm(-4140,-632,-2000)); //Storage room near sector 4 door
         Spawn(class'PlaceholderItem',,, vectm(-5796,-393,-1480)); //Storage room on stairs to sector 4
@@ -431,28 +436,39 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     local ComputerSecurity c;
     local #var(prefix)FlagTrigger ft;
 
-    if (isVanilla) {
-        foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
-            if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
+    //Change break room security computer password so it isn't pre-known
+    //This code isn't written anywhere, so you shouldn't have knowledge of it
+    foreach AllActors(class'ComputerSecurity',c){
+        if (c.UserList[0].UserName=="SECURITY" && c.UserList[0].Password=="SECURITY"){
+            c.UserList[0].Password="TinFoilHat";
         }
+    }
+
+    foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
+        if( d.KeyIDNeeded == 'Factory' ) d.Tag = 'final_door';
+    }
+
+    foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+        d.bLocked = false;
+        d.bHighlight = true;
+        d.bFrobbable = true;
+    }
+
+    //After Bob says "I'm sending up the man who did the job", the elevator call button will also open the doors
+    ft=Spawn(class'#var(prefix)FlagTrigger');
+    ft.SetCollision(False,False,False);
+    ft.bSetFlag=False;
+    ft.bTrigger=True;
+    ft.FlagName='DL_elevator_Played';
+    ft.flagValue=True;
+    ft.Tag='elevator_floor1';
+    ft.Event='elevator_doors';
+
+    if (isVanilla) {
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
 
         //Button to call elevator to bottom of shaft
         AddSwitch( vect(-1715.487427,493.516571,-1980.708008), rot(0, 32768, 0), 'elevator_floor2');
-
-        foreach AllActors(class'DeusExMover', d, 'doors_lower') {
-            d.bLocked = false;
-            d.bHighlight = true;
-            d.bFrobbable = true;
-        }
-
-        //Change break room security computer password so it isn't pre-known
-        //This code isn't written anywhere, so you shouldn't have knowledge of it
-        foreach AllActors(class'ComputerSecurity',c){
-            if (c.UserList[0].UserName=="SECURITY" && c.UserList[0].Password=="SECURITY"){
-                c.UserList[0].Password="TinFoilHat";
-            }
-        }
 
         //Make the floor hatch near Morgan easier to get into
         //If you make this breakable, the explosion right next
@@ -463,16 +479,6 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
                 d.lockStrength=0.25;
             }
         }
-
-        //After Bob says "I'm sending up the man who did the job", the elevator call button will also open the doors
-        ft=Spawn(class'#var(prefix)FlagTrigger');
-        ft.SetCollision(False,False,False);
-        ft.bSetFlag=False;
-        ft.bTrigger=True;
-        ft.FlagName='DL_elevator_Played';
-        ft.flagValue=True;
-        ft.Tag='elevator_floor1';
-        ft.Event='elevator_doors';
 
         Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters
         Spawn(class'#var(prefix)Liquor40oz',,, vectm(4611,27,-174));
@@ -504,6 +510,8 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
         class'PlaceholderEnemy'.static.Create(self,vectm(2977,2306,-176),,'Sitting');
 
     } else {
+        AddSwitch( vect(-3043,180,-145), rot(0, 32768, 0), 'final_door');
+
         Spawn(class'PlaceholderItem',,, vectm(1584,-628,-350)); //Near karkians under Everett
         Spawn(class'PlaceholderItem',,, vectm(4078,-2469,10)); //Boxes right at entrance
         Spawn(class'PlaceholderItem',,, vectm(4022.8,-710.4,-149)); //Boxes near barracks
@@ -547,6 +555,28 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
     local string cloneCubeText[4];
     local AmbientSound as;
     local DXRAmbientSoundTrigger ast;
+
+    if(!dxr.flags.IsZeroRando()) {
+        //Rather than duplicating the existing cubes, add new clone text so there are more possibilities
+        if (isVanilla){
+            cloneCubeLoc[0]=vectm(6197.620117,-8455.201172,-5117.649902); //Weird little window near broken door (on Page side)
+            cloneCubeLoc[1]=vectm(5663.339355,-7955.502441,-5557.624512); //On boxes outside middle level UC door
+            cloneCubeLoc[2]=vectm(6333.112305,-7241.149414,-5557.636719); //On boxes right near middle level blue fusion reactor
+            cloneCubeLoc[3]=vectm(7687.463867,-8845.201172,-5940.627441); //On control panel that has flame button in coolant area
+        } else {
+            cloneCubeLoc[0]=vectm(275,1250,250); //Desk at entrance near page
+            cloneCubeLoc[1]=vectm(-500,1650,-185); //Boxes near middle level UC door
+            cloneCubeLoc[2]=vectm(270,2400,-185); //Boxes near middle level blue fusion reactor
+            cloneCubeLoc[3]=vectm(1440,800,-575); //On coolant area front desk
+        }
+        cloneCubeText[0]="SUBJECT MJID-5493OP2702|nINCEPT DATE: 3/19/65|nASSIGNED BIRTH DATE: 7/20/41|nASSIGNED BIRTH NAME: Stan Carnegie|nBASE GENETIC SAMPLE: SIMONSWALTON32A|nPROFILE: AABCAAB|nVITALS: 45/80/0.89/33/1.2|n|n             [[[[[PENDING]]]]]";
+        cloneCubeText[1]="SUBJECT MJID-2938BU3209|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Greg Pequod|nBASE GENETIC SAMPLE: |nPAGEBOB86G|nPROFILE: BAABACA|nVITALS: 51/72/1.02/20/2.1|n|n             [[[[[PENDING]]]]]";
+        cloneCubeText[2]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Jacob Queequeg|nBASE GENETIC SAMPLE: STRONGHOWARD52L|nPROFILE: CAAGATA|nVITALS: 52/73/1.01/20/2.2|n|n             [[[[[PENDING]]]]]";
+        cloneCubeText[3]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 6/17/54|nASSIGNED BIRTH DATE: 11/30/35|nASSIGNED BIRTH NAME: Jason Frudnick|nBASE GENETIC SAMPLE: GARDNERKANE88J|nPROFILE: BABTAGA|nVITALS: 51/81/1.13/20/2.0|n|n             [[[[[PENDING]]]]]";
+        for(i=0;i<4;i++){
+            SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0,0),cloneCubeText[i],"CloneCube"$string(i+1));
+        }
+    }
 
     if (isVanilla) {
         // fix in-fighting
@@ -592,21 +622,6 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
                 comp_per.Tag = 'router_computer';
                 class'DXRTriggerEnable'.static.Create(comp_per, 'router_door', 'router_computer');
                 break;
-            }
-        }
-
-        if(!dxr.flags.IsZeroRando()) {
-            //Rather than duplicating the existing cubes, add new clone text so there are more possibilities
-            cloneCubeLoc[0]=vectm(6197.620117,-8455.201172,-5117.649902); //Weird little window near broken door (on Page side)
-            cloneCubeLoc[1]=vectm(5663.339355,-7955.502441,-5557.624512); //On boxes outside middle level UC door
-            cloneCubeLoc[2]=vectm(6333.112305,-7241.149414,-5557.636719); //On boxes right near middle level blue fusion reactor
-            cloneCubeLoc[3]=vectm(7687.463867,-8845.201172,-5940.627441); //On control panel that has flame button in coolant area
-            cloneCubeText[0]="SUBJECT MJID-5493OP2702|nINCEPT DATE: 3/19/65|nASSIGNED BIRTH DATE: 7/20/41|nASSIGNED BIRTH NAME: Stan Carnegie|nBASE GENETIC SAMPLE: SIMONSWALTON32A|nPROFILE: AABCAAB|nVITALS: 45/80/0.89/33/1.2|n|n             [[[[[PENDING]]]]]";
-            cloneCubeText[1]="SUBJECT MJID-2938BU3209|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Greg Pequod|nBASE GENETIC SAMPLE: |nPAGEBOB86G|nPROFILE: BAABACA|nVITALS: 51/72/1.02/20/2.1|n|n             [[[[[PENDING]]]]]";
-            cloneCubeText[2]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Jacob Queequeg|nBASE GENETIC SAMPLE: STRONGHOWARD52L|nPROFILE: CAAGATA|nVITALS: 52/73/1.01/20/2.2|n|n             [[[[[PENDING]]]]]";
-            cloneCubeText[3]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 6/17/54|nASSIGNED BIRTH DATE: 11/30/35|nASSIGNED BIRTH NAME: Jason Frudnick|nBASE GENETIC SAMPLE: GARDNERKANE88J|nPROFILE: BABTAGA|nVITALS: 51/81/1.13/20/2.0|n|n             [[[[[PENDING]]]]]";
-            for(i=0;i<4;i++){
-                SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0,0),cloneCubeText[i],"CloneCube"$string(i+1));
             }
         }
 

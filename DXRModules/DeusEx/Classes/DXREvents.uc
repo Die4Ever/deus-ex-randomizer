@@ -1170,6 +1170,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
         break;
     case "12_VANDENBERG_GAS":
+        WatchFlag('TiffanyHeli');
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(1222,1078,-700),150,10);
@@ -2080,11 +2081,17 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static function int GetBingoFailedEvents(string eventname, out string failed[5])
+static function int GetBingoFailedEvents(string eventname, out string failed[6])
 {
     local int num_failed;
     local DXRando dxr;
     dxr = class'DXRando'.default.dxr;
+
+    if (Right(eventname, 12) == "_Unconscious") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 11) $ "Dead";
+    } else if (Right(eventname, 5) == "_Dead") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "Unconscious";
+    }
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
@@ -2100,28 +2107,36 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "AlleyBumRescued";
             return num_failed;
         case "FordSchick_Dead":
+        case "FordSchick_Unconscious":
             failed[num_failed++] = "FordSchickRescued";
             return num_failed;
         case "GeneratorBlown":
             failed[num_failed++] = "JockSecondStory";
             return num_failed;
         case "SandraRenton_Dead":
+        case "SandraRenton_Unconscious":
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
+            failed[num_failed++] = "MeetSandraRenton_Played";
             return num_failed;
         case "GilbertRenton_Dead":
+        case "GilbertRenton_Unconscious":
             if (class'DXRando'.default.dxr.localURL != "04_NYC_HOTEL") {
                 failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             }
             failed[num_failed++] = "GaveRentonGun";
         // fallthrough
         case "FemaleHostage_Dead":
+        case "FemaleHostage_Unconscious":
         case "MaleHostage_Dead":
+        case "MaleHostage_Unconscious":
             failed[num_failed++] = "HotelHostagesSaved";
             return num_failed;
         case "Josh_Dead":
+        case "Josh_Unconscious":
             failed[num_failed++] = "JoshFed";
             return num_failed;
         case "Billy_Dead":
+        case "Billy_Unconscious":
             failed[num_failed++] = "M02BillyDone";
             return num_failed;
         case "Don_Dead":
@@ -2134,15 +2149,18 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "OverhearLebedev_Played";
             return num_failed;
         case "JuanLebedev_Dead":
+        case "JuanLebedev_Unconscious":
             failed[num_failed++] = "LebedevLived";
             return num_failed;
         case "JoJoFine_Dead":
+        case "JoJoFine_Unconscious":
             failed[num_failed++] = "GaveRentonGun";
             return num_failed;
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
             return num_failed;
         case "Miguel_Dead":
+        case "Miguel_Unconscious":
             failed[num_failed++] = "Terrorist_peeptime";
             failed[num_failed++] = "Terrorist_ClassDead";
             failed[num_failed++] = "Terrorist_ClassUnconscious";
@@ -2156,22 +2174,29 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "KnowsGuntherKillphrase";
             return num_failed;
         case "M06Junkie_Dead":
+        case "M06Junkie_Unconscious":
             failed[num_failed++] = "M06PaidJunkie";
             return num_failed;
         case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
+        case "MarketBum1_Unconscious":
             failed[num_failed++] = "M06BoughtVersaLife";
             return num_failed;
         case "Canal_Bartender_Dead":
+        case "Canal_Bartender_Unconscious":
             failed[num_failed++] = "Canal_Bartender_Question4";
             return num_failed;
         case "ClubBartender_Dead":
+        case "ClubBartender_Unconscious":
             failed[num_failed++] = "M06BartenderQuestion3";
             return num_failed;
         case "MaggieChow_Dead":
+        case "MaggieChow_Unconscious":
             failed[num_failed++] = "MaggieLived";
             return num_failed;
         case "Mamasan_Dead":
+        case "Mamasan_Unconscious":
         case "Date1_Dead":
+        case "Date1_Unconscious":
             failed[num_failed++] = "M06JCHasDate";
             return num_failed;
         case "Raid_Underway": //Raid started
@@ -2179,43 +2204,60 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "ClubEntryPaid";
             return num_failed;
         case "ClubMercedes_Dead":
+        case "ClubMercedes_Unconscious":
         case "ClubTessa_Dead":
+        case "ClubTessa_Unconscious":
             if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 failed[num_failed++] = "ClubEntryPaid";
             }
             return num_failed;
         case "LDDPRuss_Dead":
+        case "LDDPRuss_Unconscious":
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 failed[num_failed++] = "ClubEntryPaid";
             }
             return num_failed;
         case "Supervisor01_Dead":
+        case "Supervisor01_Unconscious":
             failed[num_failed++] = "Supervisor_Paid";
             return num_failed;
         case "Aimee_Dead":
+        case "Aimee_Unconscious":
         case "LeMerchant_Dead":
+        case "LeMerchant_Unconscious":
             failed[num_failed++] = "AimeeLeMerchantLived";
             return num_failed;
         case "hostage_female_Dead":
+        case "hostage_female_Unconscious":
         case "hostage_Dead":
+        case "hostage_Unconscious":
             failed[num_failed++] = "SilhouetteHostagesAllRescued";
             return num_failed;
         case "Renault_Dead":
+        case "Renault_Unconscious":
             failed[num_failed++] = "SoldRenaultZyme";
             failed[num_failed++] = "MeetRenault_Played";
             return num_failed;
         case "Joshua_Dead":
+        case "Joshua_Unconscious":
             failed[num_failed++] = "JoshuaInterrupted_Played";
             return num_failed;
         case "Camille_Dead":
+        case "Camille_Unconscious":
             failed[num_failed++] = "CamilleConvosDone";
             return num_failed;
         case "drbernard_Dead":
+        case "drbernard_Unconscious":
             failed[num_failed++] = "MeetDrBernard_Played";
             return num_failed;
         case "TimBaker_Dead":
+        case "TimBaker_Unconscious":
             failed[num_failed++] = "MeetTimBaker_Played";
             return num_failed;
+        case "TiffanySavage_Dead":
+        case "TiffanySavage_Unconscious":
+            failed[num_failed++] = "TiffanyHeli";
+            break;
     }
 
     return num_failed;
@@ -2238,13 +2280,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SandraRenton_Dead":
             msg = "Kill Sandra Renton (or let her die).  ";
             if (mission<=2){
-                msg=msg$"  She can be found in an alley next to the Underworld Tavern in New York";
+                msg=msg$"She can be found in an alley next to the Underworld Tavern in New York";
             } else if (mission<=4){
-                msg=msg$"  She can be found inside the hotel";
+                msg=msg$"She can be found inside the hotel";
             } else if (mission<=8){
-                msg=msg$"  She can be found in the Underworld Tavern";
+                msg=msg$"She can be found in the Underworld Tavern";
             } else if (mission<=12){
-                msg=msg$"  She can be found outside the gas station";
+                msg=msg$"She can be found outside the gas station";
             }
             return msg;
         case "GilbertRenton_Dead":
@@ -2322,6 +2364,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Fix the fresh water supply in Brooklyn Bridge Station.  The water valves are behind some collapsed rubble.";
         case "assassinapartment":
             return "Visit the apartment in Paris that has Starr the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building near where Jock picks you up.";
+        case "PetAnimal_BindName_Starr":
+            return "Visit the apartment in Paris and pet Starr, the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building near where Jock picks you up.";
         case "GaveRentonGun":
             return "Give Gilbert Renton a gun when he is trying to protect his daughter from JoJo Fine, before the ambush.";
         case "DXREvents_LeftOnBoat":
@@ -3166,6 +3210,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
         case "MeetSandraRenton_Played":
             return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld Tavern.";
+        case "TiffanyHeli":
+            return "Rescue Tiffany Savage at the abandoned gas station.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3200,7 +3246,7 @@ defaultproperties
 	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=20)
 	//bingo_options()=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
     bingo_options(6)=(event="WarehouseEntered",desc="Enter the underground warehouse in Paris",max=1,missions=1024)
-	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=3072)
+	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=2048)
 	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1,missions=16)
 	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1,missions=2048)
 	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1,missions=1024)
@@ -3230,7 +3276,11 @@ defaultproperties
     bingo_options(29)=(event="M10EnteredBakery",desc="Enter the bakery",max=1,missions=1024)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(30)=(event="FreshWaterOpened",desc="Fix the water",max=1,missions=8)
+    #ifdef injections
+    bingo_options(31)=(event="PetAnimal_BindName_Starr",desc="Pet Starr in Paris",max=1,missions=1024)
+    #else
     bingo_options(31)=(event="assassinapartment",desc="Visit Starr in Paris",max=1,missions=1024)
+    #endif
     bingo_options(32)=(event="GaveRentonGun",desc="Give Gilbert a weapon",max=1,missions=16)
     bingo_options(33)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1,missions=4)
     bingo_options(34)=(event="AlleyBumRescued",desc="Rescue the bum on the basketball court",max=1,missions=4)
@@ -3396,9 +3446,7 @@ defaultproperties
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
-#ifdef injections
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)
-#endif
     bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",desc_singular="Use tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use 1 rebreather",max=3,missions=55400)
     bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",desc_singular="Hunt 1 bird",max=10,missions=24446)
@@ -3450,7 +3498,7 @@ defaultproperties
     bingo_options(231)=(event="DuClareKeys",desc="Collect 3 different keys around Chateau DuClare",max=3,missions=1024)
     bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",desc_singular="Collect 1 locker key inside the superfreighter",max=2,missions=512)
     bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out! (%s)",max=18,missions=36734)
-    bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=36734)
+    bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=34686)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL 1 DRINK!",max=5,missions=64)
@@ -3564,6 +3612,7 @@ defaultproperties
     bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
     bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4)
     bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
+    bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096);
 
 
 
@@ -3631,4 +3680,5 @@ defaultproperties
     mutually_exclusive(58)=(e1="Karkian_ClassDead",e2="PetKarkians")
     mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
     mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
+    mutually_exclusive(61)=(e1="TiffanySavage_Dead"e2="TiffanyHeli")
 }

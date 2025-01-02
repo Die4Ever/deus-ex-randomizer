@@ -147,6 +147,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+#ifdef revision
+    local JockHelicopter jockheli;
+#endif
     local OnceOnlyTrigger oot;
     local #var(DeusExPrefix)Mover d;
     local DXRHoverHint hoverHint;
@@ -156,6 +159,7 @@ function PreFirstEntryMapFixes()
     local Teleporter tel;
     local DynamicTeleporter dtel;
     local RiotCop rc;
+    local Smuggler smug;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -212,9 +216,17 @@ function PreFirstEntryMapFixes()
 
             //Add teleporter hint text to Jock
             foreach AllActors(class'#var(prefix)MapExit',exit){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
-            hoverHint.SetBaseActor(jock);
+            if (VanillaMaps){
+                foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+                hoverHint.SetBaseActor(jock);
+            } else {
+            #ifdef revision
+                foreach AllActors(class'JockHelicopter',jockheli){break;}
+                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
+                hoverHint.SetBaseActor(jockheli);
+            #endif
+            }
 
             if (#defined(vanilla)) {
                 class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 9);
@@ -234,15 +246,15 @@ function PreFirstEntryMapFixes()
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
                 if(!dxr.flags.IsZeroRando()) {
-                    SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+                    SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
 
-                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
                     k.KeyID = 'CrackRoom';
                     k.Description = "'Ton Hotel, North Room Key";
                     if(dxr.flags.settings.keysrando > 0)
                         GlowUp(k);
 
-                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180)); //Top shelf of Paul's closet
                     k.KeyID = 'Apartment';
                     k.Description = "Apartment key";
                     if(dxr.flags.settings.keysrando > 0)
@@ -269,6 +281,23 @@ function PreFirstEntryMapFixes()
             } else {
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
 
+                if(!dxr.flags.IsZeroRando()) {
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
+                    k.KeyID = 'Hotelroom1';
+                    k.Description = "'Ton Hotel, South Room Key";
+                    if(dxr.flags.settings.keysrando > 0)
+                        GlowUp(k);
+
+                    k = Spawn(class'#var(prefix)NanoKey',,, vectm(-300,-3630,180)); //Top shelf of Paul's closet
+                    k.KeyID = 'Apartment';
+                    k.Description = "Apartment key";
+                    if(dxr.flags.settings.keysrando > 0)
+                        GlowUp(k);
+
+                    SpawnDatacubeTextTag(vectm(-295,-3655,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
+                }
+
+
                 Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
                 Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet
                 Spawn(class'PlaceholderItem',,, vectm(480,-3775,125)); //Bathroom counter
@@ -293,7 +322,15 @@ function PreFirstEntryMapFixes()
             oot.Event='botordertriggerDoor';
             oot.Tag='botordertrigger';
 
-            SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
+            foreach AllActors(class'Smuggler', smug) {
+                smug.bImportant = true;
+                break;
+            }
+
+            if (!dxr.flagbase.GetBool('FordSchickRescued')) {
+                SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is unless Ford was rescued
+            }
+
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
 
             break;

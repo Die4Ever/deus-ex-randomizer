@@ -51,8 +51,12 @@ function PrintEndgameQuote(int num)
                 qMgr.PickRandomQuote(quote, attrib);
             }
 
-            quoteDisplay.AddMessage(quote);
-            quoteDisplay.AddMessage(attrib);
+            //Revision overrides the HUDMissionStartTextDisplay class with a version
+            //that forces all the text onto one line (Why?).  Manually force the message
+            //to multiple lines like in vanilla, since it looks nicer
+            //quoteDisplay.AddMessage(quote);
+            //quoteDisplay.AddMessage(attrib);
+            quoteDisplay.message = quote $ "|n" $ attrib;
 
             quoteDisplay.StartMessage();
         }

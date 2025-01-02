@@ -30,6 +30,17 @@ static function DXRHoverHint Create(Actor a, String hint, vector loc, float rad,
     return hoverHint;
 }
 
+function ReplaceActor(Actor old, Actor newA)
+{
+    if (Base==old){
+        SetBaseActor(newA);
+    }
+
+    if (target==old){
+        target=newA;
+    }
+}
+
 function AttachTarget(name targetName)
 {
     local Actor targetActor;

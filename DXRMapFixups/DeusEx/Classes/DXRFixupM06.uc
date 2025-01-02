@@ -70,7 +70,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TriadRedArrow bouncer;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
-    local #var(injectsprefix)Button1 button;
+    local #var(prefix)Button1 button;
+    local #var(injectsprefix)Button1 injbutton;
     local #var(prefix)BeamTrigger bt;
     local #var(prefix)LaserTrigger lt;
     local DXRButtonHoverHint buttonHint;
@@ -123,23 +124,13 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
-            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-            foreach AllActors(class'#var(injectsprefix)Button1',button){
-                if (button.Event=='change_floors'){
-                    break;
-                }
-            }
-            buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
-            buttonHint.SetBaseActor(button);
-
-
-            foreach AllActors(class'#var(injectsprefix)Button1', button) {
-                if (button.tag == 'Weapons_Lock_broken' || button.tag == 'Weapons_lock' || button.event == 'missile_door') {
-                    button.SetRotation(rotm(14400,16500,0,GetRotationOffset(button.class))); //A similar rotation to original that only rotates in two axes instead of all three
-                } else if (button.Event=='elevator_door' && button.ButtonType==BT_Blank){
+            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+                if (injbutton.tag == 'Weapons_Lock_broken' || injbutton.tag == 'Weapons_lock' || injbutton.event == 'missile_door') {
+                    injbutton.SetRotation(rotm(14400,16500,0,GetRotationOffset(injbutton.class))); //A similar rotation to original that only rotates in two axes instead of all three
+                } else if (injbutton.Event=='elevator_door' && injbutton.ButtonType==BT_Blank){
                     //Both the button inside and outside
-                    button.RandoButtonType=RBT_OpenDoors;
-                    button.BeginPlay();
+                    injbutton.RandoButtonType=RBT_OpenDoors;
+                    injbutton.BeginPlay();
                 }
             }
         }
@@ -152,8 +143,20 @@ function PreFirstEntryMapFixes()
         }
         // nonsensical mover blocking jock's tail
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'jockweapons'){
+            m.NumFragments=0; //So it isn't visible when it's destroyed
+            m.ExplodeSound1=None; //So you don't hear it get broken
+            m.ExplodeSound2=None;
             m.BlowItUp(None);
         }
+
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){ //Button won't be replaced yet in non-vanilla, so just use regular Button1
+            if (button.Event=='change_floors'){
+                break;
+            }
+        }
+        buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
+        buttonHint.SetBaseActor(button);
 
         class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
@@ -188,10 +191,10 @@ function PreFirstEntryMapFixes()
             // button to get out of Tong's base
             // Revision already has a button in place (In WANCHAI_COMPOUND)
             AddSwitch( vect(1433.658936, 273.360352, -167.364777), rot(0, 16384, 0), 'Basement_door' );
-            foreach AllActors(class'#var(injectsprefix)Button1', button) {
-                if ((button.Event=='elevator_door' || button.Event=='elevator_door01') && button.ButtonType==BT_Blank){ //Helibase and Versalife elevators
-                    button.RandoButtonType=RBT_OpenDoors;
-                    button.BeginPlay();
+            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+                if ((injbutton.Event=='elevator_door' || injbutton.Event=='elevator_door01') && injbutton.ButtonType==BT_Blank){ //Helibase and Versalife elevators
+                    injbutton.RandoButtonType=RBT_OpenDoors;
+                    injbutton.BeginPlay();
                 }
             }
         }
@@ -236,29 +239,37 @@ function PreFirstEntryMapFixes()
             }
         }
         //Add teleporter hint text to Jock
-        foreach AllActors(class'#var(prefix)MapExit',exit,'outro_trigger'){break;}
-        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
-        hoverHint.SetBaseActor(jock);
-
         if (VanillaMaps){
-            //Elevator to Versalife
-            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
-            foreach AllActors(class'#var(injectsprefix)Button1',button){
-                if (button.Event=='change_floors01'){
-                    break;
-                }
+            foreach AllActors(class'#var(prefix)MapExit',exit,'outro_trigger'){break;}
+        } else {
+            foreach AllActors(class'#var(prefix)MapExit',exit,'CameraExit'){break;}
+        }
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'chopper'){break;}
+        if (jock!=None){
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+            hoverHint.SetBaseActor(jock);
+        }
+
+        //Elevator to Versalife
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){ //Button won't be replaced yet in non-vanilla, so just use regular Button1
+            if (button.Event=='change_floors01'){
+                break;
             }
+        }
+        if (button!=None){
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
+        }
 
-            //Elevator to Helibase
-            foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-            foreach AllActors(class'#var(injectsprefix)Button1',button){
-                if (button.Event=='change_floors'){
-                    break;
-                }
+        //Elevator to Helibase
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
+        foreach AllActors(class'#var(prefix)Button1',button){ //Button won't be replaced yet in non-vanilla, so just use regular Button1
+            if (button.Event=='change_floors'){
+                break;
             }
+        }
+        if (button!=None){
             buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
             buttonHint.SetBaseActor(button);
         }
@@ -282,7 +293,7 @@ function PreFirstEntryMapFixes()
             dts.bIsSecretGoal = true;// just in case you don't have DXRMissions enabled
         }
         if (VanillaMaps){
-            foreach AllActors(class'#var(injectsprefix)Button1',button)
+            foreach AllActors(class'#var(prefix)Button1',button)
             {
                 if (button.Event=='JockShaftTop')
                 {
@@ -313,10 +324,10 @@ function PreFirstEntryMapFixes()
                     d.bFrobbable=True;
                 }
             }
-            foreach AllActors(class'#var(injectsprefix)Button1', button) {
-                if ((button.Event=='Eledoor01' || button.Event=='eledoor02') && button.ButtonType==BT_Blank){ //Penthouse and renovation elevators
-                    button.RandoButtonType=RBT_OpenDoors;
-                    button.BeginPlay();
+            foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+                if ((injbutton.Event=='Eledoor01' || injbutton.Event=='eledoor02') && injbutton.ButtonType==BT_Blank){ //Penthouse and renovation elevators
+                    injbutton.RandoButtonType=RBT_OpenDoors;
+                    injbutton.BeginPlay();
                 }
             }
 
@@ -335,17 +346,13 @@ function PreFirstEntryMapFixes()
         // alarm in MiB's overlook office
         Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
 
-        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(1.412384, 1658.755614, 190.711304)); // Inside the elvator to 06_HONGKONG_VERSALIFE
-        ft.Event='SecurityRevoked';
-        ft.FlagName='Have_ROM';
-        ft.bSetFlag=False;
-        ft.bTrigger=True;
-
-        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(-1432.140991, 860.576238, -87.899834)); // Inside the elvator to 06_HONGKONG_STORAGE
-        ft.Event='SecurityRevoked';
-        ft.FlagName='Have_ROM';
-        ft.bSetFlag=False;
-        ft.bTrigger=True;
+        //Trigger the alarm on first entry if the flag is already set (ie. a late HK start)
+        if (player().flagBase.GetBool('Have_ROM')){
+            foreach AllActors(class'Actor', a,'SecurityRevoked')
+            {
+                a.Trigger(None,player()); //To match as originally triggered by ComputerScreenSpecialOptions
+            }
+        }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'security_doors') {
             m.bBreakable = false;
@@ -391,7 +398,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to Versalife
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
-        foreach AllActors(class'#var(injectsprefix)Button1',button){
+        foreach AllActors(class'#var(prefix)Button1',button){
             if (button.Event=='change_floors01'){
                 break;
             }
@@ -401,7 +408,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to Level 2
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-        foreach AllActors(class'#var(injectsprefix)Button1',button){
+        foreach AllActors(class'#var(prefix)Button1',button){
             if (button.Event=='change_floors'){
                 break;
             }
@@ -409,10 +416,10 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        foreach AllActors(class'#var(injectsprefix)Button1', button) {
-            if ((button.Event=='elevator_door' || button.Event=='elevator_door01' || button.Event=='eledoor02') && button.ButtonType==BT_Blank){ //Office, Level 2, and balcony elevators
-                button.RandoButtonType=RBT_OpenDoors;
-                button.BeginPlay();
+        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+            if ((injbutton.Event=='elevator_door' || injbutton.Event=='elevator_door01' || injbutton.Event=='eledoor02') && injbutton.ButtonType==BT_Blank){ //Office, Level 2, and balcony elevators
+                injbutton.RandoButtonType=RBT_OpenDoors;
+                injbutton.BeginPlay();
             }
         }
 
@@ -653,7 +660,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to Market
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
-        foreach AllActors(class'#var(injectsprefix)Button1',button){
+        foreach AllActors(class'#var(prefix)Button1',button){
             if (button.Event=='change_floors01'){
                 break;
             }
@@ -663,7 +670,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to MJ12 Lab
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-        foreach AllActors(class'#var(injectsprefix)Button1',button){
+        foreach AllActors(class'#var(prefix)Button1',button){
             if (button.Event=='change_floors'){
                 break;
             }
@@ -671,10 +678,10 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        foreach AllActors(class'#var(injectsprefix)Button1', button) {
-            if ((button.Event=='LobbyDoor' || button.Event=='elevator_door') && button.ButtonType==BT_Blank){ //Market and Level 1 elevators
-                button.RandoButtonType=RBT_OpenDoors;
-                button.BeginPlay();
+        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+            if ((injbutton.Event=='LobbyDoor' || injbutton.Event=='elevator_door') && injbutton.ButtonType==BT_Blank){ //Market and Level 1 elevators
+                injbutton.RandoButtonType=RBT_OpenDoors;
+                injbutton.BeginPlay();
             }
         }
 
@@ -727,7 +734,7 @@ function PreFirstEntryMapFixes()
 
         //Elevator to MJ12 Lab
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
-        foreach AllActors(class'#var(injectsprefix)Button1',button){
+        foreach AllActors(class'#var(prefix)Button1',button){
             if (button.Event=='change_floors'){
                 break;
             }
@@ -735,10 +742,10 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
-        foreach AllActors(class'#var(injectsprefix)Button1', button) {
-            if (button.Event=='elevator_door' && button.ButtonType==BT_Blank){ //Level 1 elevator
-                button.RandoButtonType=RBT_OpenDoors;
-                button.BeginPlay();
+        foreach AllActors(class'#var(injectsprefix)Button1', injbutton) {
+            if (injbutton.Event=='elevator_door' && injbutton.ButtonType==BT_Blank){ //Level 1 elevator
+                injbutton.RandoButtonType=RBT_OpenDoors;
+                injbutton.BeginPlay();
             }
         }
 
@@ -772,6 +779,13 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers
         Spawn(class'PlaceholderItem',,, vectm(1169,-1490,459)); //Water pool
         Spawn(class'PlaceholderItem',,, vectm(1079.73,-1068.17,842.4)); //Pipes above water
+        Spawn(class'PlaceholderItem',,, vectm(90,-666,1030)); //Under corner mirror
+        Spawn(class'PlaceholderItem',,, vectm(175,-2515,855)); //Pit near security computer
+        Spawn(class'PlaceholderItem',,, vectm(75,-1730,900)); //Lower hallway alcove
+        Spawn(class'PlaceholderItem',,, vectm(-90,-2320,1030)); //Upper Hallway near computer
+        Spawn(class'PlaceholderItem',,, vectm(-800,-650,1030)); //Upper Hallway near elevator
+        Spawn(class'PlaceholderItem',,, vectm(510,-1450,860)); //Lower Hallway near where you drop in
+        Spawn(class'PlaceholderItem',,, vectm(790,-1360,810)); //Another pipe in the water pool area
 
         Spawn(class'PlaceholderContainer',,, vectm(160.7,-1589.4,545)); //Robot alcove
         Spawn(class'PlaceholderContainer',,, vectm(-159.23,-1300.16,544.1)); //Robot alcove
@@ -779,7 +793,11 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(691.3,-358.4,-1007.9)); //Near UC
         Spawn(class'PlaceholderContainer',,, vectm(174,-2862,1057)); //Near upper security computer
 
-        Spawn(class'MJ12Clone1',,, vectm(819.992188, -0.852280, -67.399956));
+        p=MJ12Clone1(Spawnm(class'MJ12Clone1',,, vect(635,0,-65),rot(0,32768,0))); //Should he just be a PlaceholderEnemy now?
+        p.InitializeAlliances();
+        class'PlaceholderEnemy'.static.Create(self,vectm(0,0,-75)); //Middle of room with 4 containers
+        class'PlaceholderEnemy'.static.Create(self,vectm(0,0,565)); //Walkway over UC room
+        class'PlaceholderEnemy'.static.Create(self,vectm(75,-1515,1075)); //Upper hallway (to keep it likely for there to be enemies up there)
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":

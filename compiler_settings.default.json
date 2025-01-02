@@ -52,7 +52,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision/",
         "preproc_definitions": {
             "revision":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "RevRandomizer", "injectsprefix": "DXR", "allfeatures": false
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"RevRandoPlayer", "flagvarprefix": "", "package": "RevRandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],
         "packages": [ "RevRandomizer" ],

@@ -135,60 +135,60 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_AirfieldHeliBase":
-        if (VanillaMaps){
-            foreach AllActors(class'Mover',m) {
-                // call the elevator at the end of the level when you open the appropriate door
-                if (m.Tag == 'BasementDoorOpen')
-                {
-                    m.Event = 'BasementFloor';
-                }
-                else if (m.Tag == 'GroundDoorOpen')
-                {
-                    m.Event = 'GroundLevel';
-                }
-                // sewer door backtracking so we can make a switch for this
-                else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
-                {
-                    m.Tag = 'Sewerdoor';
-                }
+        foreach AllActors(class'Mover',m) {
+            // call the elevator at the end of the level when you open the appropriate door
+            // Revision uses an ElevatorTrigger with more logic, maybe we can look at it later if needed
+            if (VanillaMaps && m.Tag == 'BasementDoorOpen')
+            {
+                m.Event = 'BasementFloor';
             }
-            if(!dxr.flags.IsZeroRando()) {
-                foreach AllActors(class'Trigger', t) {
-                    //disable the platforms that fall when you step on them
-                    if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
-                        t.Event = '';
-                    }
-                }
+            else if (VanillaMaps && m.Tag == 'GroundDoorOpen')
+            {
+                m.Event = 'GroundLevel';
             }
-            foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
-                unatco.bHateCarcass = false;
-                unatco.bHateDistress = false;
+            // sewer door backtracking so we can make a switch for this
+            else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
+            {
+                m.Tag = 'Sewerdoor';
             }
-
-            // Sewerdoor backtracking
-            AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
-
-            //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
-            AddActor(class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
-            a = AddActor(class'DynamicBlockPlayer', vect(-3105,-385,-210));
-            SetActorScale(a, 1.3);
-
-            AddActor(class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
-            a = AddActor(class'DynamicBlockPlayer', vect(-3080,-395,-170));
-            SetActorScale(a, 1.3);
-
-            AddActor(class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
-            a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
-            SetActorScale(a, 1.3);
-
-            if(!dxr.flags.IsZeroRando()) {
-                //rebreather because of #TOOCEAN connection
-                Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
-            }
-
-            //Button to extend sewer platform from the other side
-            AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
         }
+        if(!dxr.flags.IsZeroRando()) {
+            foreach AllActors(class'Trigger', t) {
+                //disable the platforms that fall when you step on them
+                if( t.Event == 'firstplatform' || t.Event == 'platform2' ) {
+                    t.Event = '';
+                }
+            }
+        }
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+            unatco.bHateCarcass = false;
+            unatco.bHateDistress = false;
+        }
+
+        // Sewerdoor backtracking
+        AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
+
+        //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
+        AddActor(class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
+        a = AddActor(class'DynamicBlockPlayer', vect(-3105,-385,-210));
+        SetActorScale(a, 1.3);
+
+        AddActor(class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
+        a = AddActor(class'DynamicBlockPlayer', vect(-3080,-395,-170));
+        SetActorScale(a, 1.3);
+
+        AddActor(class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
+        a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
+        SetActorScale(a, 1.3);
+
+        if(!dxr.flags.IsZeroRando()) {
+            //rebreather because of #TOOCEAN connection
+            //Bookshelf near pool tables
+            Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
+        }
+
+        //Button to extend sewer platform from the other side
+        AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
         class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
@@ -208,6 +208,12 @@ function PreFirstEntryMapFixes()
             //rebreather because of #TOOCEAN connection
             Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+        hoverHint.SetBaseActor(jock);
 
         // fix collision with the static crates https://github.com/Die4Ever/deus-ex-randomizer/issues/665
         class'FillCollisionHole'.static.CreateLine(self, vectm(792.113403, -1343.670166, 69), vectm(675, -1343.670166, 69), 32, 90);
@@ -266,12 +272,6 @@ function PreFirstEntryMapFixes()
             dt = Spawn(class'DynamicTeleporter',,, vectm(2048.0, -2827.0, 56.1));
             dt.SetCollisionSize(50.0, 40.0);
             dt.SetDestination("03_NYC_AirfieldHeliBase",, "BHElevatorEnt");
-
-            //Add teleporter hint text to Jock
-            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
-            hoverHint.SetBaseActor(jock);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
             class'PlaceholderEnemy'.static.Create(self,vectm(2887,3410,256),,'Shitting');
@@ -396,13 +396,6 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
-        //Move weapon mod out of Manderley's secret (inaccessible) safe
-        foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
-            if (wmr.Name=='WeaponModRecoil0'){
-                wmr.SetLocation(vectm(420.843567,175.866135,261.520447));
-            }
-        }
-
         if(!dxr.flags.IsZeroRando()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             k.KeyID = 'JaimeClosetKey';
@@ -419,6 +412,13 @@ function PreFirstEntryMapFixes()
         }
 
         if (VanillaMaps) {
+            //Move weapon mod out of Manderley's secret (inaccessible) safe
+            foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
+                if (wmr.Name=='WeaponModRecoil0'){
+                    wmr.SetLocation(vectm(420.843567,175.866135,261.520447));
+                }
+            }
+
             foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
                 compublic.bCollideWorld = false;
                 compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
