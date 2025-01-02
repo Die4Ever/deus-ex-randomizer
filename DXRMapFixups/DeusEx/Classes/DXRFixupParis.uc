@@ -457,6 +457,7 @@ function PostFirstEntryMapFixes()
 {
     local #var(prefix)WIB wib;
     local #var(prefix)NicoletteDuclare nico;
+    local #var(prefix)NanoKey k;
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
@@ -466,6 +467,13 @@ function PostFirstEntryMapFixes()
                 break;
             }
         }
+
+        if (class'DXRMapVariants'.static.IsVanillaMaps(player())) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(2513.0, 2439.0, 458.0));
+            k.Description = "Hotel key";
+            k.KeyID = 'hotel_roomdoor';
+        }
+
         break;
     case "11_PARIS_CATHEDRAL":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-3570.950684, 2238.034668, -783.901367));// right at the start
