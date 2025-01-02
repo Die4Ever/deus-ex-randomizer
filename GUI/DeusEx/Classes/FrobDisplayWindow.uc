@@ -691,10 +691,10 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
         else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).AmmoName != Class'DeusEx.AmmoNone' )
             strInfo = Inventory(frobTarget).itemName $ " (" $ Weapon(frobTarget).PickupAmmoCount $ ")";
-#ifdef injections
-        else if (frobTarget.IsA('ChargedPickup') && Human(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
+#ifdef injections||revision
+        else if (frobTarget.IsA('ChargedPickup') && #var(PlayerPawn)(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ " (Left Click to Activate)";
-        else if (Human(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
+        else if (#var(PlayerPawn)(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ " (Left Click to Consume)";
         else if (WeaponModAutoApply(WeaponMod(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ CR() $ "Auto applies to current weapon";
@@ -703,6 +703,9 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
 #ifdef injections
     else if (frobTarget.IsA('WHPiano'))
         strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ WHPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
+#else
+    else if (frobTarget.IsA('DXRPiano'))
+        strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Songs Played: " $ DXRPiano(frobTarget).numSongsPlayed $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
 #endif
     else if (frobTarget.IsA('#var(injectsprefix)ClothesRack'))
         strInfo = player.GetDisplayName(frobTarget) $ CR() $ "Right Click to change clothing " $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);

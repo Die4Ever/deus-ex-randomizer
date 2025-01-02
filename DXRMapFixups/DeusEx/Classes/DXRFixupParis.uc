@@ -40,8 +40,27 @@ function PreFirstEntryMapFixes()
         elevatortrig = Spawn(class'DXRMoverSequenceTrigger',, 'roof_elevator_call');
         elevatortrig.Event = 'roof_elevator';
 
+        if(!VanillaMaps){
+            //Revision, entrance to closed Metro station (split to a separate map)
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
+            foreach AllActors(class'DeusExMover', m) {
+                if (m.Event=='change_map'){
+                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+                }
+            }
+        }
+
         break;
 
+    case "10_PARIS_CATACOMBS_METRO": //Revision-only map, the little underground mall area
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
+        foreach AllActors(class'DeusExMover', m) {
+            if (m.Event=='change_map'){
+                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+            }
+        }
+
+        break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         if (VanillaMaps){
             foreach AllActors(class'Trigger', t)
@@ -156,13 +175,13 @@ function PreFirstEntryMapFixes()
             // make the apartment stairs less hidden, not safe to have stairs without a light!
             CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
             CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
-
-            //Add teleporter hint text to Jock
-            foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
-            hoverHint.SetBaseActor(jock);
         }
+
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
 
         //If neither flag is set, JC never talked to Jaime, so he just didn't bother
         if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
@@ -290,7 +309,7 @@ function PreFirstEntryMapFixes()
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'CalledByDispatcher'){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
         SetAllLampsState(true, false, true); // Everett's bedroom
@@ -457,6 +476,10 @@ function PostFirstEntryMapFixes()
 {
     local #var(prefix)WIB wib;
     local #var(prefix)NicoletteDuclare nico;
+    local #var(prefix)NanoKey k;
+    local #var(PlayerPawn) p;
+
+    p = player();
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
@@ -466,6 +489,18 @@ function PostFirstEntryMapFixes()
                 break;
             }
         }
+
+        k = None;
+        if (class'DXRMapVariants'.static.IsVanillaMaps(p)) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(2513.0, 2439.0, 458.0));
+        } else if (class'DXRMapVariants'.static.IsRevisionMaps(p)) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(1225.0, 3005.0, 495.0));
+        }
+        if (k != None) {
+            k.Description = "Hotel key";
+            k.KeyID = 'hotel_roomdoor';
+        }
+
         break;
     case "11_PARIS_CATHEDRAL":
         AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-3570.950684, 2238.034668, -783.901367));// right at the start

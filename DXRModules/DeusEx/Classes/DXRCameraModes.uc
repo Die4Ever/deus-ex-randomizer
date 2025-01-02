@@ -116,16 +116,16 @@ function SetThirdPersonCamera()
 
 function SetFixedCamera()
 {
-#ifdef vanilla
-    player().bBehindView=False;
-    player().bCrosshairVisible=False;
-    player().Style= STY_Normal;
-    if (reCam==None || reCam.bDeleteMe){
-        SpawnRECam();
+    if(#defined(vanilla || revision)){
+        player().bBehindView=False;
+        player().bCrosshairVisible=False;
+        player().Style= STY_Normal;
+        if (reCam==None || reCam.bDeleteMe){
+            SpawnRECam();
+        }
+    } else {
+        err("Fixed camera not supported in this mod!");
     }
-#else
-    err("Fixed camera only supported in vanilla!");
-#endif
 }
 
 function SpawnRECam()

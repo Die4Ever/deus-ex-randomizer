@@ -330,6 +330,8 @@ switch(mapname)
                     return "Sewer Exit to Airfield";
                 case "HangarExit":
                     return "Hangar Entrance Exterior";
+                case "HangarExit2":
+                    return "Hangar Back Entrance Exterior";
             }
             break;
         case "03_NYC_AIRFIELDHELIBASE":
@@ -359,6 +361,8 @@ switch(mapname)
                     return "Main Hangar Entrance Interior";
                 case "747PassExit":
                     return "Hangar Door to 747";
+                case "HangarEnt2":
+                    return "Back Hangar Entrance Interior";
             }
             break;
         case "03_NYC_MOLEPEOPLE":
@@ -386,6 +390,7 @@ switch(mapname)
                     return "UNATCO MJ12 Jail Cell";
             }
             break;
+        case "06_HONGKONG_ENTERINGSCENE": //Rev: Flows straight into Helibase anyway, just fall through
         case "06_HONGKONG_HELIBASE":
             switch(teleportername)
             {
@@ -470,6 +475,19 @@ switch(mapname)
                     return "Market Entrance from Old China Hand";
                 case "compound":
                     return "Market Entrance from Tong's Lab";
+                case "MarketFromCompound1": //Rev: Transitions between Market and Compound map
+                case "MarketFromCompound2":
+                    return "Market Entrance from Luminous Path Compound";
+            }
+            break;
+        case "06_HONGKONG_WANCHAI_COMPOUND": //Rev: Map where the Luminous Path Compound is
+            switch(teleportername)
+            {
+                case "CompoundFromMarket1":
+                case "CompoundFromMarket2":
+                    return "Luminous Path Compound Entrance from Market";
+                case "compound":
+                    return "Luminous Path Compound Entrance from Tong's Lab";
             }
             break;
         case "06_HONGKONG_WANCHAI_STREET":
@@ -547,10 +565,31 @@ switch(mapname)
             {
                 case "spiralstair":
                     return "Paris Exterior Spiral Staircase";
+                case "FromEntrance": //Rev: connection from new ENTRANCE map to the "Catacombs" exterior area
+                    return "Paris Exterior from Entrance Building";
+                case "FromMetro"://Rev: connection to 10_PARIS_CATACOMBS_METRO
+                    return "Paris Exterior from Closed Metro Station";
                 case "":
                     return "Paris Denfert-Rochereau";
             }
             break;
+        case "10_PARIS_ENTRANCE": //Rev: 10_PARIS_CATACOMBS is split up, this is the building you start on top of, to just past the greasels
+            switch(teleportername)
+            {
+                case "ToEntrance":
+                    return "Paris Entrance Building from Exterior";
+                case "":
+                    return "Paris Denfert-Rochereau";
+            }
+            break;
+        case "10_PARIS_CATACOMBS_METRO": //Rev: 10_PARIS_CATACOMBS is split up, this is the the little mall area with some MJ12 and a guy selling rockets
+            switch(teleportername)
+            {
+                case "metro":
+                    return "Closed Metro Station from Paris Exterior";
+            }
+            break;
+
         case "10_PARIS_CATACOMBS_TUNNELS":
             switch(teleportername)
             {

@@ -1,5 +1,5 @@
 class DXRAimLaserEmitter extends LaserEmitter;
-#compileif injections
+#compileif injections || revision
 
 //Mostly copied from LaserEmitter, but modified so it doesn't even try to reflect the laser
 function CalcTrace(float deltaTime)
@@ -107,11 +107,15 @@ static function bool AimLaserShouldBeOn(PlayerPawn p)
         return False;
     }
 
+    if (player.bSpyDroneActive){
+        return False;
+    }
+
     if ((player.IsInState('Dying')) || (player.IsInState('Paralyzed')) || (player.IsInState('Interpolating'))){
         return False;
     }
 
-#ifdef injections
+#ifdef injections||revision
     if (player.aimLaser!=None && player.aimLaser.Owner==None){
         return False;
     }

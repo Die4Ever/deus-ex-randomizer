@@ -37,7 +37,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 #endif
 
     Super.PlayerAnyEntry(p);
-#ifdef injections
+#ifdef injections||revision
     p.bZeroRando = IsZeroRandoPure();
     p.bReducedRando = IsReducedRando();
     p.bCrowdControl = (crowdcontrol!=0);

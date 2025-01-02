@@ -61,6 +61,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerPublic compublic;
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
+    local Smuggler smug;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -455,6 +456,11 @@ function PreFirstEntryMapFixes()
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
 
+        foreach AllActors(class'Smuggler', smug) {
+            smug.bImportant = true;
+            break;
+        }
+
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
@@ -573,6 +579,8 @@ function AnyEntryMapFixes()
         ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
         if (ces != None)
             ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
+
+        GetConversation('DL_JockParkStart').AddFlagRef('PaulInjured_Played', false); // disable "Your brother's hurt pretty bad" infolink if you've already talked to him
 
         break;
     }

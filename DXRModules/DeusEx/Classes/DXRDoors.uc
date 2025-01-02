@@ -227,6 +227,14 @@ function CheckConfig()
         door_fixes[i].bHighlight = false;
         i++;
 
+        //This is already the case in vanilla, but align Revision to it.
+        //Make sure the Helios door itself can't be interacted with (keypad is still viable, or computer)
+        door_fixes[i].tag = 'door_helios_room';
+        door_fixes[i].bHighlight = false;
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        i++;
+
         break;
     }
 

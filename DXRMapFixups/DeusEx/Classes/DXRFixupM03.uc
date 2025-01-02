@@ -209,6 +209,12 @@ function PreFirstEntryMapFixes()
             Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
         }
 
+        //Add teleporter hint text to Jock
+        foreach AllActors(class'#var(prefix)MapExit',exit){break;}
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
+        hoverHint.SetBaseActor(jock);
+
         // fix collision with the static crates https://github.com/Die4Ever/deus-ex-randomizer/issues/665
         class'FillCollisionHole'.static.CreateLine(self, vectm(792.113403, -1343.670166, 69), vectm(675, -1343.670166, 69), 32, 90);
         class'FillCollisionHole'.static.CreateLine(self, vectm(675, -1300, 69), vectm(675, -1093.477783, 69), 32, 90);
@@ -266,12 +272,6 @@ function PreFirstEntryMapFixes()
             dt = Spawn(class'DynamicTeleporter',,, vectm(2048.0, -2827.0, 56.1));
             dt.SetCollisionSize(50.0, 40.0);
             dt.SetDestination("03_NYC_AirfieldHeliBase",, "BHElevatorEnt");
-
-            //Add teleporter hint text to Jock
-            foreach AllActors(class'#var(prefix)MapExit',exit){break;}
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
-            hoverHint.SetBaseActor(jock);
 
             class'PlaceholderEnemy'.static.Create(self,vectm(2994,3406,256),,'Shitting');
             class'PlaceholderEnemy'.static.Create(self,vectm(2887,3410,256),,'Shitting');

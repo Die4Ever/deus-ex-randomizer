@@ -1,9 +1,24 @@
 class DXRReplaceActors extends DXRActorsBase transient;
 
+var DXRReplacedActors replacements;
+
 function PostFirstEntry()
 {
     Super.PostFirstEntry();
+
+    PopulateReplacedActors();
+
     ReplaceActors();
+}
+
+function PopulateReplacedActors()
+{
+    if (replacements!=None) return;
+
+    foreach AllActors(class'DXRReplacedActors',replacements){break;}
+    if (replacements==None){
+        replacements=Spawn(class'DXRReplacedActors');
+    }
 }
 
 function ReplaceActors()
@@ -727,6 +742,8 @@ function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
     n.FamiliarName = a.FamiliarName;
     n.UnfamiliarName = a.UnfamiliarName;
 
+    ReplaceDeusExDecoration(a, n);
+
     a.Destroy();
 }
 
@@ -825,13 +842,14 @@ function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
     n.alarmTimeout=a.alarmTimeout;
     n.CompInUseMsg=a.CompInUseMsg;
 
-    UpdateActorReferences(a,n);
+    ReplaceDeusExDecoration(a, n);
 }
 
 function UpdateActorReferences(Actor a, Actor n)
 {
     local DXRMissions missions;
     local DXREvents   events;
+    local DXRHoverHint hoverhint;
 
     missions = DXRMissions(class'DXRMissions'.static.Find());
     events   = DXREvents(class'DXREvents'.static.Find());
@@ -843,4 +861,11 @@ function UpdateActorReferences(Actor a, Actor n)
     if (events!=None){
         events.ReplaceWatchedActor(a,n);
     }
+
+    foreach AllActors(class'DXRHoverHint',hoverhint){
+        hoverhint.ReplaceActor(a,n);
+    }
+
+    PopulateReplacedActors();
+    replacements.AddReplacement(a,n); //Log the replacement
 }
