@@ -40,8 +40,27 @@ function PreFirstEntryMapFixes()
         elevatortrig = Spawn(class'DXRMoverSequenceTrigger',, 'roof_elevator_call');
         elevatortrig.Event = 'roof_elevator';
 
+        if(!VanillaMaps){
+            //Revision, entrance to closed Metro station (split to a separate map)
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
+            foreach AllActors(class'DeusExMover', m) {
+                if (m.Event=='change_map'){
+                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+                }
+            }
+        }
+
         break;
 
+    case "10_PARIS_CATACOMBS_METRO": //Revision-only map, the little underground mall area
+        foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
+        foreach AllActors(class'DeusExMover', m) {
+            if (m.Event=='change_map'){
+                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+            }
+        }
+
+        break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         if (VanillaMaps){
             foreach AllActors(class'Trigger', t)
