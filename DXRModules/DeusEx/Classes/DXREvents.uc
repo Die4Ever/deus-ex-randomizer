@@ -3646,4 +3646,5 @@ defaultproperties
     mutually_exclusive(58)=(e1="Karkian_ClassDead",e2="PetKarkians")
     mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
     mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
+    mutually_exclusive(61)=(e1="TiffanySavage_Dead"e2="TiffanyHeli")
 }
