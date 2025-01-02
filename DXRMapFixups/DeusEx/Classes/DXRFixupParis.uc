@@ -95,6 +95,7 @@ function PreFirstEntryMapFixes()
 
         foreach AllActors(class'ScriptedPawn', sp, 'hostage_female') {
             sp.GroundSpeed = 200.0; // same speed as the male hostage
+            sp.walkAnimMult = 1.11;
             break;
         }
 
