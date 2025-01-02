@@ -1170,6 +1170,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
         break;
     case "12_VANDENBERG_GAS":
+        WatchFlag('TiffanyHeli');
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(1222,1078,-700),150,10);
@@ -2106,9 +2107,12 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
             failed[num_failed++] = "JockSecondStory";
             return num_failed;
         case "SandraRenton_Dead":
+        case "SandraRenton_Unconscious":
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
+            failed[num_failed++] = "MeetSandraRenton_Played";
             return num_failed;
         case "GilbertRenton_Dead":
+        case "GilbertRenton_Unconscious":
             if (class'DXRando'.default.dxr.localURL != "04_NYC_HOTEL") {
                 failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             }
@@ -2216,6 +2220,10 @@ static function int GetBingoFailedEvents(string eventname, out string failed[5])
         case "TimBaker_Dead":
             failed[num_failed++] = "MeetTimBaker_Played";
             return num_failed;
+        case "TiffanySavage_Dead":
+        case "TiffanySavage_Unconscious":
+            failed[num_failed++] = "TiffanyHeli";
+            break;
     }
 
     return num_failed;
@@ -3168,6 +3176,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
         case "MeetSandraRenton_Played":
             return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld Tavern.";
+        case "TiffanyHeli":
+            return "Rescue Tiffany Savage at the abandoned gas station.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3568,6 +3578,7 @@ defaultproperties
     bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
     bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4)
     bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
+    bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096);
 
 
 
