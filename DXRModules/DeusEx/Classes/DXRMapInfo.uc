@@ -289,6 +289,7 @@ switch(mapname)
                     return "Road to NSF HQ";
                 case "PathNode194":
                 case "ToStreet":
+                case "NYCSubway":  //Rev: Backtracking from M04 Battery Park back to Hell's Kitchen
                     return "Hells Kitchen Subway";
                 case "":
                     return "Hells Kitchen Streets";
