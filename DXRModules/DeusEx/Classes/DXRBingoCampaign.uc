@@ -295,6 +295,17 @@ function NewBingoBoard()
             data.BanGoal(s, 999);
             break;
 
+        case "LebedevLived":
+            if (IsBingoEnd(3, dxr.flags.bingo_duration)) {
+                data.BanGoal(s, 999);
+            }
+            break;
+        case "GotHelicopterInfo":
+            if (IsBingoEnd(11, dxr.flags.bingo_duration)) {
+                data.BanGoal(s, 999);
+            }
+            break;
+
         default: // temporary ban
             tempBans[numTempBans++] = s;
             data.BanGoal(s, 2); // if this was on the M01 board (while generating M02 board), it will not be available again until generating M04 board
