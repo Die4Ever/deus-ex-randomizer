@@ -37,7 +37,7 @@ simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
 
 // for goals that can be detected as impossible by an event
-static function int GetBingoFailedEvents(string eventname, out string failed[5]);
+static function int GetBingoFailedEvents(string eventname, out string failed[6]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
 
@@ -734,8 +734,11 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         }
     }
 
-    // note that this treats both kills and knockouts the same
-    MarkBingoFailedEvents(victim.bindName $ "_Dead");
+    if (!dead) {
+        MarkBingoFailedEvents(victim.bindName $ "_Unconscious");
+    } else {
+        MarkBingoFailedEvents(victim.bindName $ "_Dead");
+    }
 
     if(!victim.bImportant)
         return;
@@ -1417,7 +1420,7 @@ static function MarkBingoAsFailed(coerce string eventname)
 
 static function MarkBingoFailedEvents(coerce string eventname)
 {
-    local string failed[5];
+    local string failed[6];
     local int i, num_failed;
 
     num_failed = GetBingoFailedEvents(eventname, failed);
