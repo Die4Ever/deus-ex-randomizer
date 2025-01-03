@@ -917,7 +917,7 @@ function bool CheckForRemainingWeaponAmmo(#var(DeusExPrefix)Weapon W)
 
             w.PickUpAmmoCount = ammoToAdd;
             if (ammoRemaining>0){
-                if(defAmmoClass.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
+                if(defAmmo.Default.Mesh!=LodMesh'DeusExItems.TestBox' && defAmmo.Default.PickupViewMesh!=LodMesh'DeusExItems.TestBox'){
                     //Weapons with normal ammo that exists
                     newAmmo = Spawn(defAmmoClass,,,w.Location,w.Rotation);
                     newAmmo.ammoAmount = ammoRemaining;
