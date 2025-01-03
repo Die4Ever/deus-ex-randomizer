@@ -318,7 +318,9 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 
                 ownAmmo.AddAmmo(ammoToAdd);
                 weap.PickUpAmmoCount=ammoRemaining;
-                ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName,, true);
+                if (ammoToAdd>0){
+                    ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName,, true);
+                }
                 UpdateBeltText(weap);
             }
         }
