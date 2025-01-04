@@ -639,6 +639,7 @@ switch(mapname)
                 case "cathedralstart":
                     return "Cathedral Sewer Entrance";
                 case "Paris_Underground":
+                case "FromMetro": //Revision
                     return "Cathedral Metro Entrance";
             }
             break;
@@ -653,6 +654,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "Paris_Underground":
+                case "metro": //Revision
                     return "Paris Metro Interior Entrance";
                 case "PathNode68":
                     return "Paris Metro Train Tracks";
