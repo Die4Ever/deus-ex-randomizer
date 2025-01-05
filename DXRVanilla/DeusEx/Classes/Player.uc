@@ -2203,6 +2203,16 @@ exec function ActivateBelt(int objectNum)
     }
 }
 
+function GoalCompletedSilent(name goalName)
+{
+    local DeusExGoal goal;
+
+    goal = FindGoal(goalName);
+    if (goal != None) {
+        goal.SetCompleted();
+    }
+}
+
 function CompleteBingoGoal(PlayerDataItem data, int x, int y)
 {
     local string event;

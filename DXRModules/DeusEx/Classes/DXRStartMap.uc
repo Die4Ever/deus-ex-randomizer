@@ -696,6 +696,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('GatesOpen',true,,5);
             MarkConvPlayed("PaulInjured", bFemale);
             GiveImage(player, class'Image04_NSFHeadquarters');
+            AddNoteFromConv(player, bEmptyNotes, 'PaulInjured');
         case 43: // fallthrough
             MarkConvPlayed("DL_JockParkStart", bFemale);
             break;

@@ -62,8 +62,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
     local Smuggler smug;
+    local #var(PlayerPawn) p;
 
-    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    p = player();
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
 
     switch (dxr.localURL)
     {
@@ -90,7 +92,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        class'GilbertWeaponMegaChoice'.static.Create(Player());
+        class'GilbertWeaponMegaChoice'.static.Create(p);
         foreach AllActors(class'#var(prefix)GilbertRenton',gilbert){
             //Make sure he has ammo for Stealth Pistol(10mm), Pistol (10mm),
             //Sawed-off (Buckshot shells), Mini Crossbow (Tranq Darts)
@@ -446,6 +448,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        p.GoalCompletedSilent('TellJaime');
+
         break;
 
     case "04_NYC_SMUG":
@@ -478,18 +482,10 @@ function PreFirstEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
-    local DeusExGoal goal;
-
     switch(dxr.localURL)
     {
         case "04_NYC_UNATCOHQ":
             FixUNATCORetinalScanner();
-            break;
-        case "04_NYC_STREET":
-            goal = player().FindGoal('TellJaime');
-            if (goal != None) {
-                goal.SetCompleted();
-            }
             break;
     }
 }
