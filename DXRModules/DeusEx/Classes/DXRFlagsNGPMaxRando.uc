@@ -287,7 +287,7 @@ function NewGamePlus()
         RemoveRandomWeapon(p);
 
     for (aug = p.AugmentationSystem.FirstAug; aug != None; aug = aug.next) {
-        if (!aug.bAutomatic) {
+        if (!aug.bAutomatic && !aug.bAlwaysActive) {
             aug.Deactivate();
         }
     }
