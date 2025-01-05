@@ -1758,6 +1758,11 @@ function RemoveMoverPrePivot(Mover m)
     m.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
+function Vector GetMoverCenter(Mover m)
+{
+    return m.Location-(m.PrePivot >> m.Rotation);
+}
+
 static function Actor GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
     local DynamicLight dl;
