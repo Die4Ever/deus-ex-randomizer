@@ -75,8 +75,6 @@ function PreFirstEntryMapFixes()
             RemoveReactions(tt);// he looks pretty sick
         }
 
-        class'FillCollisionHole'.static.CreateLine(self, vectm(3081.067383, 1640, -2031.417969), vectm(3081.067383, 6584, -2031.417969), 40, 300);
-
         class'PlaceholderEnemy'.static.Create(self,vectm(-2467,866,-2000));
         class'PlaceholderEnemy'.static.Create(self,vectm(-2689,4765,-2143));
         class'PlaceholderEnemy'.static.Create(self,vectm(-163,7797,-2143));
@@ -120,6 +118,9 @@ function PreFirstEntryMapFixes()
         AddSwitch( vect(-278.854828,657.390503,-1977.144531), rot(0, 16384, 0), 'CmdBackDoor');
 
         if (VanillaMaps){
+            //Patch holes in the wall in the vanilla map
+            class'FillCollisionHole'.static.CreateLine(self, vectm(3081.067383, 1640, -2031.417969), vectm(3081.067383, 6584, -2031.417969), 40, 300);
+
             VandenbergCmdFixTimsDoor();
             FixCmdElevator();
             UnleashingBotsOpenCommsDoor();

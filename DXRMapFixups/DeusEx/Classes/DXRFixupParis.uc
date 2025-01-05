@@ -246,6 +246,14 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-733,-251,-1061)); //Bench at subway
             Spawn(class'PlaceholderItem',,, vectm(300.7,491,-1061)); //Opposite side of tracks
         } else {
+            //Revision, metro station exit to Cathedral
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
+            foreach AllActors(class'DeusExMover', m) {
+                if (m.Event=='change_map'){
+                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+                }
+            }
+
             Spawn(class'PlaceholderItem',,, vectm(-1135,3000,-125)); //Near ATM
             Spawn(class'PlaceholderItem',,, vectm(-855,2260,-150)); //Benches near ATM
             Spawn(class'PlaceholderItem',,, vectm(1155,1150,-320)); //Bench at subway
@@ -288,6 +296,15 @@ function PreFirstEntryMapFixes()
                     a.bIsSecretGoal=true;
                 }
             }
+
+            //Revision, entrance to Metro station
+            foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
+            foreach AllActors(class'DeusExMover', m) {
+                if (m.Event=='change_map'){
+                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-(m.PrePivot * vect(-1,1,1)), 40, 75,exit);
+                }
+            }
+
         }
         break;
     case "11_PARIS_EVERETT":

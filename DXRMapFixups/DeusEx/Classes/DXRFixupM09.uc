@@ -264,6 +264,14 @@ function PreFirstEntryMapFixes()
         foreach RadiusActors(class'BlockPlayer', bp, 725, vectm(3259, 1601, 252)) {
             bp.bBlockPlayers=false;
         }
+
+        // Revision has more along the wall with the grate, get rid of those too
+        if (!VanillaMaps){
+            foreach RadiusActors(class'BlockPlayer', bp, 200, vectm(2506,1380,252)) {
+                bp.bBlockPlayers=false;
+            }
+        }
+
         // 4030.847900 to 4078.623779
         foreach RadiusActors(class'BlockPlayer', bp, 25, vectm(4055, 1602, 252)) {
             dbp = Spawn(class'DynamicBlockPlayer',,, bp.Location + vectm(0,0,200));

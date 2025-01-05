@@ -2857,7 +2857,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         // dmg_double and dmg_half require changes inside the player class
         case "dmg_double":
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla) && !#defined(revision)){
                 PlayerMessage("Double Damage effect unavailable in this mod");
                 return NotAvail;
             }
@@ -2872,7 +2872,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "dmg_half":
-            if (!#defined(vanilla)){
+            if (!#defined(vanilla) && !#defined(revision)){
                 PlayerMessage("Half Damage effect unavailable in this mod");
                 return NotAvail;
             }

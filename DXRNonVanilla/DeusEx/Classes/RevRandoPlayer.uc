@@ -889,6 +889,87 @@ function InstantlyUseItem(DeusExPickup item)
     }
 }
 
+//Similar duplicated logic from DXRVanilla/Weapon.uc::HandlePickupQuery
+function bool CheckForRemainingWeaponAmmo(#var(DeusExPrefix)Weapon W)
+{
+    local class<Ammo> defAmmoClass;
+    local Ammo defAmmo,newAmmo;
+    local int ammoToAdd,ammoRemaining;
+
+    if (W==None) return True; //Don't know what you're looting, but it's apparently not a weapon
+
+    if (!( (w.bWeaponStay && (Level.NetMode == NM_Standalone)) && (!w.bHeldItem || w.bTossedOut)))
+    {
+        if ( w.AmmoNames[0] == None ){
+            defAmmoClass = w.AmmoName;
+        }else{
+            defAmmoClass = w.AmmoNames[0];
+        }
+        defAmmo = Ammo(FindInventoryType(defAmmoClass));
+        if(defAmmo!=None){
+            ammoToAdd = w.PickUpAmmoCount;
+            ammoRemaining=0;
+            if ((ammoToAdd + defAmmo.AmmoAmount) > defAmmo.MaxAmmo){
+                ammoRemaining = (ammoToAdd + defAmmo.AmmoAmount) - defAmmo.MaxAmmo;
+                ammoToAdd = ammoToAdd - ammoRemaining;
+            }
+
+
+            w.PickUpAmmoCount = ammoToAdd;
+            if (ammoRemaining>0){
+                if(defAmmo.Default.Mesh!=LodMesh'DeusExItems.TestBox' && defAmmo.Default.PickupViewMesh!=LodMesh'DeusExItems.TestBox'){
+                    //Weapons with normal ammo that exists
+                    newAmmo = Spawn(defAmmoClass,,,w.Location,w.Rotation);
+                    newAmmo.ammoAmount = ammoRemaining;
+                    newAmmo.Velocity = Velocity + VRand() * 160;
+                    return true;
+                } else {
+                    w.PickUpAmmoCount = ammoRemaining;
+                    defAmmo.AddAmmo(ammoToAdd);
+                    if (ammoToAdd>0){
+                        ClientMessage("Took "$ammoToAdd$" "$defAmmo.ItemName,, true);
+                    } else {
+                        ClientMessage(TooMuchAmmo);
+                    }
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function bool CheckForAmmoToLeaveBehind(Ammo thisAmmo)
+{
+    local Ammo ownedAmmo;
+    local int ammoToAdd,ammoRemaining;
+
+    if (thisAmmo==None) return True; //I don't know how this would happen
+    if (thisAmmo.AmmoAmount<=0) return True; //Ammo is empty, so you can definitely handle it
+
+    ownedAmmo = Ammo(FindInventoryType(thisAmmo.Class));
+    if (ownedAmmo!=None){
+        ammoToAdd = thisAmmo.AmmoAmount;
+        ammoRemaining=0;
+        if ((ammoToAdd + ownedAmmo.AmmoAmount) > ownedAmmo.MaxAmmo){
+            ammoRemaining = (ammoToAdd + ownedAmmo.AmmoAmount) - ownedAmmo.MaxAmmo;
+            ammoToAdd = ammoToAdd - ammoRemaining;
+        }
+
+        if (ammoRemaining>0){
+            thisAmmo.ammoAmount = ammoRemaining;
+            ownedAmmo.AddAmmo(ammoToAdd);
+            if (ammoToAdd>0){
+                ClientMessage("Took "$ammoToAdd$" "$thisAmmo.ItemName,, true);
+            } else {
+                ClientMessage(TooMuchAmmo);
+            }
+            return False; //What ammo can be taken has been taken, but you "can't" pick up the actual item
+        }
+    }
+
+    return True;
+}
 
 
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
@@ -897,7 +978,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     local #var(DeusExPrefix)Weapon weap,ownedWeapon;
     local int ammoAvail,ammoToAdd,ammoRemaining;
     local class<Ammo> defAmmoClass;
-    local #var(DeusExPrefix)Ammo ownAmmo;
+    local #var(DeusExPrefix)Ammo ownAmmo,ammoItem;
     local bool isThrown, isMelee;
     local #var(DeusExPrefix)Pickup pickup,ownedPickup;
     local #var(prefix)WeaponMod mod;
@@ -923,10 +1004,24 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         }
     }
 
+    ammoItem = #var(DeusExPrefix)Ammo(FrobTarget);
+    if (ammoItem!=None){
+        //Ammo not full, but not necessarily able to take *all* the ammo, so check
+        if (False == CheckForAmmoToLeaveBehind(ammoItem)){
+            return false;
+        }
+    }
+
+    weap = #var(DeusExPrefix)Weapon(FrobTarget);
+    if (weap!=None && weap.PickUpAmmoCount!=0){
+        if (False==CheckForRemainingWeaponAmmo(weap)){
+            return false;
+        }
+    }
+
     bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly);
 
     //Ammo Looting
-    weap = #var(DeusExPrefix)Weapon(FrobTarget);
     if (bCanPickup==False && weap!=None && weap.PickUpAmmoCount!=0){
         ownedWeapon=#var(DeusExPrefix)Weapon(FindInventoryType(FrobTarget.Class));
         //You can't pick up the weapon, but let's yoink the ammo
@@ -966,8 +1061,6 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
             }
         }
     }
-
-
 
     //Looting partial stacks of items (eg 1 out of 3 in a stack of multitools)
     pickup = #var(DeusExPrefix)Pickup(FrobTarget);

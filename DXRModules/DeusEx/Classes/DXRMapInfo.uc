@@ -289,6 +289,7 @@ switch(mapname)
                     return "Road to NSF HQ";
                 case "PathNode194":
                 case "ToStreet":
+                case "NYCSubway":  //Rev: Backtracking from M04 Battery Park back to Hell's Kitchen
                     return "Hells Kitchen Subway";
                 case "":
                     return "Hells Kitchen Streets";
@@ -638,6 +639,7 @@ switch(mapname)
                 case "cathedralstart":
                     return "Cathedral Sewer Entrance";
                 case "Paris_Underground":
+                case "FromMetro": //Revision
                     return "Cathedral Metro Entrance";
             }
             break;
@@ -652,6 +654,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "Paris_Underground":
+                case "metro": //Revision
                     return "Paris Metro Interior Entrance";
                 case "PathNode68":
                     return "Paris Metro Train Tracks";
