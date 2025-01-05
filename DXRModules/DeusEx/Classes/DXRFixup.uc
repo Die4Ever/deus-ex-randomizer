@@ -1173,4 +1173,6 @@ function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCom
             cePrev.nextEvent = ceag;
         }
     }
+
+    return ceag;
 }
