@@ -45,7 +45,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
             foreach AllActors(class'DeusExMover', m) {
                 if (m.Event=='change_map'){
-                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", GetMoverCenter(m), 40, 75,exit);
                 }
             }
         }
@@ -56,7 +56,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
         foreach AllActors(class'DeusExMover', m) {
             if (m.Event=='change_map'){
-                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+                hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", GetMoverCenter(m), 40, 75,exit);
             }
         }
 
@@ -250,7 +250,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
             foreach AllActors(class'DeusExMover', m) {
                 if (m.Event=='change_map'){
-                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-m.PrePivot, 40, 75,exit);
+                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", GetMoverCenter(m), 40, 75,exit);
                 }
             }
 
@@ -301,7 +301,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
             foreach AllActors(class'DeusExMover', m) {
                 if (m.Event=='change_map'){
-                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", m.Location-(m.PrePivot * vect(-1,1,1)), 40, 75,exit);
+                    hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", GetMoverCenter(m), 40, 75,exit);
                 }
             }
 
