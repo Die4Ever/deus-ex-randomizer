@@ -43,7 +43,7 @@ public class DeusEx : SimpleTCPPack
         new Effect("Remove Credits (x100)", "remove_credits") { Quantity = 1000,Price = 5,Description = "Take some money away from the player" }, //Updated text for second Crowd Control batch
         new Effect("Upgrade a Flamethrower to a LAMThrower", "lamthrower"){Price = 15,Description = "If the player is currently carrying a flamethrower, it only shoots live LAMs instead of napalm",Duration=60},
 
-        new Effect ("Ask a Question","ask_a_question"){Price = 3,Description = "Make a dialog box appear on screen with a question while the game continues in behind!"}, //New for second Crowd Control batch
+        new Effect ("Ask a Question","ask_a_question"){Price = 3,Description = "Make a dialog box appear on screen with a question while the game continues in the background!"}, //New for second Crowd Control batch
         new Effect ("Nudge","nudge"){Price = 1,Description = "Just ever so slightly... nudge... the player in a random direction"}, //New for second Crowd Control batch
         new Effect ("Swap Player with another human","swap_player_position"){Price = 20,Description = "Finds another human somewhere in the current level and swaps their position with the player!"}, //New for second Crowd Control batch
         new Effect ("Swap all enemies positions","swap_enemies"){Price = 5,Description = "Shuffles all the enemies in the level into each others locations!"}, //New for fifth Crowd Control batch
@@ -105,43 +105,43 @@ public class DeusEx : SimpleTCPPack
         //new Effect("Add/Upgrade Augmentations","addaugs",ItemKind.Folder),
         //new Effect("Remove/Downgrade Augmentations","remaugs",ItemKind.Folder),
 
-        new Effect("Add/Upgrade Aqualung", "add_augaqualung") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the aqualung aug" },
-        new Effect("Add/Upgrade Ballistic Protection", "add_augballistic") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the ballistic protection aug" },
-        new Effect("Add/Upgrade Cloak", "add_augcloak") { Category = "Augmentations",Price = 30,Description = "Add or upgrade the cloak aug" },
-        new Effect("Add/Upgrade Combat Strength", "add_augcombat") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the combat strength aug" },
-        new Effect("Add/Upgrade Aggressive Defense System", "add_augdefense") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the aggressive defense aug" },
-        new Effect("Add/Upgrade Spy Drone", "add_augdrone") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the spy drone aug" },
-        new Effect("Add/Upgrade EMP Shield", "add_augemp") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the EMP shield aug" },
-        new Effect("Add/Upgrade Environmental Resistance", "add_augenviro") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the environmental resistance aug" },
-        new Effect("Add/Upgrade Regeneration", "add_aughealing") { Category = "Augmentations",Price = 30,Description = "Add or upgrade the regeneration aug" },
-        new Effect("Add/Upgrade Synthetic Heart", "add_augheartlung") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the synthetic heart aug" },
-        new Effect("Add/Upgrade Microfibral Muscle", "add_augmuscle") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the microfibral muscle aug" },
-        new Effect("Add/Upgrade Power Recirculator", "add_augpower") { Category = "Augmentations",Price = 30,Description = "Add or upgrade the power recirculator aug" },
-        new Effect("Add/Upgrade Radar Transparancy", "add_augradartrans") { Category = "Augmentations",Price = 30,Description = "Add or upgrade the radar transparency aug" },
-        new Effect("Add/Upgrade Energy Shield", "add_augshield") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the energy shield aug" },
-        new Effect("Add/Upgrade Speed Enhancement", "add_augspeed") { Category = "Augmentations",Price = 30,Description = "Add or upgrade the speed enhancement aug" },
-        new Effect("Add/Upgrade Run Silent", "add_augstealth") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the run silent aug" },
-        new Effect("Add/Upgrade Targeting", "add_augtarget") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the targeting aug" },
-        new Effect("Add/Upgrade Vision Enhancement", "add_augvision") { Category = "Augmentations",Price = 20,Description = "Add or upgrade the vision enhancement aug" },
+        new Effect("Add/Upgrade Aqualung", "add_augaqualung") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the aqualung aug" },
+        new Effect("Add/Upgrade Ballistic Protection", "add_augballistic") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the ballistic protection aug" },
+        new Effect("Add/Upgrade Cloak", "add_augcloak") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the cloak aug" },
+        new Effect("Add/Upgrade Combat Strength", "add_augcombat") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the combat strength aug" },
+        new Effect("Add/Upgrade Aggressive Defense System", "add_augdefense") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the aggressive defense aug" },
+        new Effect("Add/Upgrade Spy Drone", "add_augdrone") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the spy drone aug" },
+        new Effect("Add/Upgrade EMP Shield", "add_augemp") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the EMP shield aug" },
+        new Effect("Add/Upgrade Environmental Resistance", "add_augenviro") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the environmental resistance aug" },
+        new Effect("Add/Upgrade Regeneration", "add_aughealing") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the regeneration aug" },
+        new Effect("Add/Upgrade Synthetic Heart", "add_augheartlung") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the synthetic heart aug" },
+        new Effect("Add/Upgrade Microfibral Muscle", "add_augmuscle") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the microfibral muscle aug" },
+        new Effect("Add/Upgrade Power Recirculator", "add_augpower") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the power recirculator aug" },
+        new Effect("Add/Upgrade Radar Transparancy", "add_augradartrans") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the radar transparency aug" },
+        new Effect("Add/Upgrade Energy Shield", "add_augshield") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the energy shield aug" },
+        new Effect("Add/Upgrade Speed Enhancement", "add_augspeed") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the speed enhancement aug" },
+        new Effect("Add/Upgrade Run Silent", "add_augstealth") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the run silent aug" },
+        new Effect("Add/Upgrade Targeting", "add_augtarget") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the targeting aug" },
+        new Effect("Add/Upgrade Vision Enhancement", "add_augvision") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the vision enhancement aug" },
 
-        new Effect("Remove/Downgrade Aqualung", "rem_augaqualung") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the aqualung aug" },
-        new Effect("Remove/Downgrade Ballistic Protection", "rem_augballistic") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the ballistic protection aug" },
-        new Effect("Remove/Downgrade Cloak", "rem_augcloak") { Category = "Augmentations",Price = 40,Description = "Remove or downgrade the cloak aug" },
-        new Effect("Remove/Downgrade Combat Strength", "rem_augcombat") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the combat strength aug" },
-        new Effect("Remove/Downgrade Aggressive Defense System", "rem_augdefense") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the aggressive defense aug" },
-        new Effect("Remove/Downgrade Spy Drone", "rem_augdrone") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the spy drone aug" },
-        new Effect("Remove/Downgrade EMP Shield", "rem_augemp") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the EMP shield aug" },
-        new Effect("Remove/Downgrade Environmental Resistance", "rem_augenviro") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the environmental resistance aug" },
-        new Effect("Remove/Downgrade Regeneration", "rem_aughealing") { Category = "Augmentations",Price = 40,Description = "Remove or downgrade the regeneration aug" },
-        new Effect("Remove/Downgrade Synthetic Heart", "rem_augheartlung") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the synthetic heart aug" },
-        new Effect("Remove/Downgrade Microfibral Muscle", "rem_augmuscle") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the microfibral muscle aug" },
-        new Effect("Remove/Downgrade Power Recirculator", "rem_augpower") { Category = "Augmentations",Price = 40,Description = "Remove or downgrade the power recirculator aug" },
-        new Effect("Remove/Downgrade Radar Transparancy", "rem_augradartrans") { Category = "Augmentations",Price = 40,Description = "Remove or downgrade the radar transparency aug" },
-        new Effect("Remove/Downgrade Energy Shield", "rem_augshield") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the energy shield aug" },
-        new Effect("Remove/Downgrade Speed Enhancement", "rem_augspeed") { Category = "Augmentations",Price = 40,Description = "Remove or downgrade the speed enhancement aug" },
-        new Effect("Remove/Downgrade Run Silent", "rem_augstealth") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the run silent aug" },
-        new Effect("Remove/Downgrade Targeting", "rem_augtarget") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the targeting aug" },
-        new Effect("Remove/Downgrade Vision Enhancement", "rem_augvision") { Category = "Augmentations",Price = 30,Description = "Remove or downgrade the vision enhancement aug" },
+        new Effect("Remove/Downgrade Aqualung", "rem_augaqualung") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the aqualung aug" },
+        new Effect("Remove/Downgrade Ballistic Protection", "rem_augballistic") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the ballistic protection aug" },
+        new Effect("Remove/Downgrade Cloak", "rem_augcloak") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the cloak aug" },
+        new Effect("Remove/Downgrade Combat Strength", "rem_augcombat") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the combat strength aug" },
+        new Effect("Remove/Downgrade Aggressive Defense System", "rem_augdefense") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the aggressive defense aug" },
+        new Effect("Remove/Downgrade Spy Drone", "rem_augdrone") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the spy drone aug" },
+        new Effect("Remove/Downgrade EMP Shield", "rem_augemp") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the EMP shield aug" },
+        new Effect("Remove/Downgrade Environmental Resistance", "rem_augenviro") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the environmental resistance aug" },
+        new Effect("Remove/Downgrade Regeneration", "rem_aughealing") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the regeneration aug" },
+        new Effect("Remove/Downgrade Synthetic Heart", "rem_augheartlung") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the synthetic heart aug" },
+        new Effect("Remove/Downgrade Microfibral Muscle", "rem_augmuscle") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the microfibral muscle aug" },
+        new Effect("Remove/Downgrade Power Recirculator", "rem_augpower") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the power recirculator aug" },
+        new Effect("Remove/Downgrade Radar Transparancy", "rem_augradartrans") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the radar transparency aug" },
+        new Effect("Remove/Downgrade Energy Shield", "rem_augshield") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the energy shield aug" },
+        new Effect("Remove/Downgrade Speed Enhancement", "rem_augspeed") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the speed enhancement aug" },
+        new Effect("Remove/Downgrade Run Silent", "rem_augstealth") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the run silent aug" },
+        new Effect("Remove/Downgrade Targeting", "rem_augtarget") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the targeting aug" },
+        new Effect("Remove/Downgrade Vision Enhancement", "rem_augvision") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the vision enhancement aug" },
 
 
         //Drop Grenades
@@ -192,11 +192,11 @@ public class DeusEx : SimpleTCPPack
         new Effect("Give 7.62mm Ammo (Assault Rifle)", "give_ammo762mm") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 7.62mm ammo" }, //New for second Crowd Control batch
         new Effect("Give 30.06mm Ammo (Sniper Rifle)", "give_ammo3006") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 30.06mm ammo" }, //New for second Crowd Control batch
         new Effect("Give Prod Charger", "give_ammobattery") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player a prod charger" }, //New for second Crowd Control batch
-        new Effect("Give Darts", "give_ammodart") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some darts" }, //New for second Crowd Control batch
-        new Effect("Give Flare Darts", "give_ammodartflare") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some flare darts" }, //New for second Crowd Control batch
+        new Effect("Give Darts", "give_ammodart") {  Quantity = 100, Category = "Give Ammo",Price = 1,Description = "Give the player some darts" }, //New for second Crowd Control batch
+        new Effect("Give Flare Darts", "give_ammodartflare") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some flare darts" }, //New for second Crowd Control batch
         new Effect("Give Tranq Darts", "give_ammodartpoison") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some tranquilizer darts" }, //New for second Crowd Control batch
         new Effect("Give Napalm", "give_ammonapalm") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some napalm" }, //New for second Crowd Control batch
-        new Effect("Give Pepper Spray Ammo", "give_ammopepper") {  Quantity = 100, Category = "Give Ammo",Price = 1,Description = "Give the player some pepper spray cartridges" }, //New for second Crowd Control batch
+        new Effect("Give Pepper Spray Ammo", "give_ammopepper") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some pepper spray cartridges" }, //New for second Crowd Control batch
         new Effect("Give Plasma", "give_ammoplasma") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some plasma ammo" }, //New for second Crowd Control batch
         new Effect("Give Rockets", "give_ammorocket") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some rockets" }, //New for second Crowd Control batch
         new Effect("Give WP Rockets", "give_ammorocketwp") {  Quantity = 100, Category = "Give Ammo",Price = 10,Description = "Give the player some WP rockets" }, //New for second Crowd Control batch
@@ -211,6 +211,6 @@ public class DeusEx : SimpleTCPPack
         new Effect("Enable Matrix Mode", "matrix"){Category = "Camera Effects",Price = 10,Description = "Make the player see the code behind the game...",Duration=60},
         new Effect ("Set off a Flashbang", "flashbang"){Category = "Camera Effects",Price = 3,Description = "Set off a flashbang in the players face"}, //New for fourth Crowd Control batch
         new Effect ("Resident Evil Mode", "resident_evil"){Category = "Camera Effects",Price = 7,Description = "Switch the game to fixed camera angles!  Very spooky!",Duration=60}, //New for fifth Crowd Control batch
-        new Effect ("Doom Mode", "doom_mode"){Category = "Camera Effects",Price = 3,Description = "Drag the player to hell, a place where there is no looking up or down!",Duration=60} //New for fifth Crowd Control batch
+        new Effect ("Doom Mode", "doom_mode"){Category = "Camera Effects",Price = 5,Description = "Drag the player to hell, a place where there is no looking up or down!",Duration=60} //New for fifth Crowd Control batch
     };
 }
