@@ -26,7 +26,7 @@ simulated function InitHints()
     if(telem == None || telem.enabled == false || mission < 1)
         AddHint("Check out https://mastodon.social/@DXRandoActivity!","Make sure \"Online Features\" are enabled to show up yourself!");
     else
-        AddHint("Check out https://mastodon.social/@DXRandoActivity!", "We just shared your death publicly, go retweet it!");
+        AddHint("Check out https://mastodon.social/@DXRandoActivity!", "We just shared your death publicly, go retweet it!",true);
 
     if(dxr.flags.crowdcontrol > 0) {
         if (dxr.flags.crowdcontrol!=3){
