@@ -15,6 +15,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AutoTurret at;
     local #var(prefix)WIB wib;
     local #var(prefix)MorganEverett everett;
+    local #var(prefix)Chad chad;
     local DXRMapVariants mapvariants;
     local DXRHoverHint hoverHint;
     local #var(prefix)MapExit exit;
@@ -87,6 +88,10 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
         } else {
             AddSwitch( vect(-2174.426758,1208.133789,-6.660000), rot(0,0,0), 'catacombs_blastdoorB' );
+
+            foreach AllActors(class'#var(prefix)Chad', chad){
+                chad.bInvincible=False;
+            }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(-76,-3450,-280));
             class'PlaceholderEnemy'.static.Create(self,vectm(-748,601,-256));
