@@ -234,6 +234,11 @@ function bool OnTitleScreen()
     local DXRando dxr;
     dxr = class'DXRando'.default.dxr;
     if(dxr == None) return true;
+    if (#defined(revision)){
+        if (Left(dxr.LocalURL,9)~="BENCHMARK"){ //The animated main menus are the "BENCHMARK" maps
+            return True;
+        }
+    }
     return dxr.LocalURL=="DX" || dxr.LocalURL=="DXONLY";
 }
 
