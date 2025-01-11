@@ -137,7 +137,10 @@ function CheckPlayerVisibility(DeusExPlayer player)
     aimTarget = player;
     if (DeusExRootWindow(player.rootWindow).scopeView.bViewVisible){
 #ifdef vanilla||revision
-        if (#var(PlayerPawn)(player).aimLaser.spot[0]!=None){
+        if (#var(PlayerPawn)(player).aimLaser.HitActor!=None) {
+            aimTarget = #var(PlayerPawn)(player).aimLaser.HitActor;
+            player.DesiredFOV = Player.Default.DefaultFOV;
+        } else if (#var(PlayerPawn)(player).aimLaser.spot[0]!=None){
             aimTarget = #var(PlayerPawn)(player).aimLaser.spot[0];
             player.DesiredFOV = Player.Default.DefaultFOV;
         }
