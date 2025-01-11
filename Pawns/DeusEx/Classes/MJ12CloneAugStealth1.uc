@@ -44,22 +44,24 @@ function ResetSkinStyle()
 
 function EnableCloak(bool bEnable)  // beware! called from C++
 {
-	if (!bHasCloak || (CloakEMPTimer > 0) || (Health <= 0) || bOnFire)
-		bEnable = false;
+    if (!bHasCloak || (CloakEMPTimer > 0) || (Health <= 0) || bOnFire)
+        bEnable = false;
 
-	if (bEnable && !bCloakOn)
-	{
-		//Negative values like -0.4 look good on DirectX 10, but weird on Software/OpenGL.  Stick with positive values.
-		SetSkinStyle(STY_Translucent, Texture'WhiteStatic', 0.01);
-		KillShadow();
-		bCloakOn = bEnable;
-	}
-	else if (!bEnable && bCloakOn)
-	{
-		ResetSkinStyle();
-		CreateShadow();
-		bCloakOn = bEnable;
-	}
+    if (bEnable && !bCloakOn)
+    {
+        //Negative values like -0.4 look good on DirectX 10, but weird on Software/OpenGL.  Stick with positive values.
+        SetSkinStyle(STY_Translucent, Texture'WhiteStatic', 0.08);
+        KillShadow();
+        bCloakOn = bEnable;
+        bUnlit = True; //Makes the stealth effect consistent, regardless of lighting
+    }
+    else if (!bEnable && bCloakOn)
+    {
+        ResetSkinStyle();
+        CreateShadow();
+        bCloakOn = bEnable;
+        bUnlit = False;
+    }
 }
 
 function bool ShouldBeCloaked()
