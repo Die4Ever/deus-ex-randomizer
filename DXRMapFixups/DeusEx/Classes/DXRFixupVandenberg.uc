@@ -853,6 +853,7 @@ function AnyEntryMapFixes()
     local #var(prefix)ScriptedPawn sp;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
+    local #var(prefix)TiffanySavage tiffany;
     local bool prevMapsDone;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
@@ -875,6 +876,15 @@ function AnyEntryMapFixes()
                 key.Timer();// make sure to fix the ItemName in vanilla
             }
         }
+
+        if (!dxr.flags.IsEntranceRando() && dxr.flagbase.GetBool('DL_Start_Played')) { // DL_Start is "Remember, this is how Tiffany was captured..."
+            dxr.flagbase.SetBool('DL_JockTiffanyDead_Played', true,, 15);
+            foreach AllActors(class'#var(prefix)TiffanySavage', tiffany) {
+                tiffany.LeaveWorld();
+                break;
+            }
+        }
+
         break;
 
     case "14_VANDENBERG_SUB":
