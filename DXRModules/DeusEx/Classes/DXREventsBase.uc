@@ -22,7 +22,7 @@ var() BingoOption bingo_options[350];
 struct MutualExclusion {
     var string e1, e2;
 };
-var() MutualExclusion mutually_exclusive[64];
+var() MutualExclusion mutually_exclusive[75];
 
 struct ActorWatchItem {
     var Actor a;
@@ -526,7 +526,6 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
     }
 
     _MarkBingo(eventname);
-    MarkBingoFailedEvents(eventname);
 
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
@@ -732,12 +731,6 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         } else {
             class'DXRStats'.static.AddKillByOther(player());
         }
-    }
-
-    if (!dead) {
-        MarkBingoFailedEvents(victim.bindName $ "_Unconscious");
-    } else {
-        MarkBingoFailedEvents(victim.bindName $ "_Dead");
     }
 
     if(!victim.bImportant)
@@ -1341,6 +1334,8 @@ function _MarkBingo(coerce string eventname)
 
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
+
+    MarkBingoFailedEvents(eventName); //Making progress on one bingo goal might infer that another has failed
 
     if( ! data.IncrementBingoProgress(eventname)) return;
 

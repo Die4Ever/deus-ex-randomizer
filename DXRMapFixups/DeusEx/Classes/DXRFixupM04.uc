@@ -311,6 +311,22 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        // Make sure Anna is considered to have killed Lebedev if you left him alive with her
+        if (!dxr.flagbase.GetBool('AnnaNavarre_Dead') &&
+            !dxr.flagbase.GetBool('JuanLebedev_Dead')) {
+
+            dxr.flagbase.SetBool('AnnaKilledLebedev',True,,999);
+            dxr.flagbase.SetBool('JuanLebedev_Dead',True,,999);
+        }
+
+        // Make sure you are correctly attributed as having killed Anna if she's dead
+        // (You can skip the infolink that marks this flag if she runs away)
+        if (dxr.flagbase.GetBool('AnnaNavarre_Dead') &&
+            !dxr.flagbase.GetBool('M03PlayerKilledAnna')) {
+
+            dxr.flagbase.SetBool('M03PlayerKilledAnna',True,,5);
+        }
+
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}

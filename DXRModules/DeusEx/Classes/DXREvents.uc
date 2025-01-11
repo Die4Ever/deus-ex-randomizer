@@ -607,8 +607,10 @@ function SetWatchFlags() {
 
         break;
     case "04_NYC_UNATCOISLAND":
+        WatchFlag('AnnaKilledLebedev'); //Fixup will set this if you get back to HQ without killing Anna or Juan
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
-        if (dxr.flagbase.GetBool('M03PlayerKilledAnna')) {
+
+        if (dxr.flagbase.GetBool('M03PlayerKilledAnna') && !dxr.flagbase.GetBool('JuanLebedev_Dead')) {
             MarkBingo("LebedevLived");
         }
         break;
@@ -2258,6 +2260,13 @@ static function int GetBingoFailedEvents(string eventname, out string failed[6])
         case "TiffanySavage_Unconscious":
             failed[num_failed++] = "TiffanyHeli";
             break;
+        case "AnnaNavarre_DeadM3":
+            failed[num_failed++] = "AnnaNavarre_DeadM4";
+            failed[num_failed++] = "AnnaNavarre_DeadM5";
+            break;
+        case "AnnaNavarre_DeadM4":
+            failed[num_failed++] = "AnnaNavarre_DeadM5";
+            break;
     }
 
     return num_failed;
@@ -3681,4 +3690,8 @@ defaultproperties
     mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
     mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
     mutually_exclusive(61)=(e1="TiffanySavage_Dead",e2="TiffanyHeli")
+    mutually_exclusive(62)=(e1="LebedevLived",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(63)=(e1="LebedevLived",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
 }
