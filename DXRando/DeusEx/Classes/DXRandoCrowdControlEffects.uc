@@ -494,6 +494,7 @@ function Fart()
         r.Yaw+=2500;
     }
 
+    player().Velocity += Vector(player().ViewRotation) * 8 * fartDuration; //Fart pushes you in the direction you're looking
 }
 
 function ContinuousUpdates()
