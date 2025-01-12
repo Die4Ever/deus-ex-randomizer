@@ -550,6 +550,7 @@ function PreFirstEntryMapFixes()
         ot = Spawn(class'OrdersTrigger',, 'TiffanyLeaving');
         ot.Orders = 'Leaving';
         ot.Event = '#var(prefix)TiffanySavage';
+        ot.SetCollision(false, false, false);
 
         if (VanillaMaps){
             class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
@@ -858,8 +859,9 @@ function AnyEntryMapFixes()
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
     local bool prevMapsDone;
-    local ConEventTrigger cet;
     local Conversation con;
+    local ConEvent ce;
+    local ConEventTrigger cet;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -882,19 +884,17 @@ function AnyEntryMapFixes()
             }
         }
 
-        con = GetConversation('M12JockFinal');
-        cet = new(con) class'ConEventTrigger';
-        cet.eventType=ET_Trigger;
-        cet.triggerTag = 'TiffanyLeaving';
-        cet.nextEvent = con.eventList;
-        con.eventList = cet;
-
         con = GetConversation('M12JockFinal2');
-        cet = new(con) class'ConEventTrigger';
-        cet.eventType=ET_Trigger;
-        cet.triggerTag = 'TiffanyLeaving';
-        cet.nextEvent = con.eventList;
-        con.eventList = cet;
+        for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
+            if (ConEventCheckFlag(ce) != None && ConEventCheckFlag(ce).setLabel == "Dead") {
+                cet = new(con) class'ConEventTrigger';
+                cet.eventType = ET_Trigger;
+                cet.triggerTag = 'TiffanyLeaving';
+                cet.nextEvent = ce.nextEvent;
+                ce.nextEvent = cet;
+                break;
+            }
+        }
 
         break;
 
