@@ -10,6 +10,7 @@ var DXRPasswords passwords;
 var string plaintext;
 var string new_passwords[16];
 var string plaintextTag;
+var bool bFrobbed;
 
 function string _GetMapName()
 {
@@ -318,7 +319,27 @@ function bool Facelift(bool bOn)
 
 function Frob(actor Frobber, Inventory frobWith)
 {
+    local DXRando dxr;
+    local DataVaultImage image;
+
+    if (imageClass != None && !bFrobbed) {
+        foreach AllActors(class'DXRando', dxr) {
+            if (dxr.flags.IsBingoCampaignMode()) {
+                for (image = dxr.player.FirstImage; image != None; image = image.nextImage) {
+                    if (image.imageDescription == imageClass.default.imageDescription) {
+                        dxr.player.ClientMessage("You found a new copy of " $ imageClass.default.imageDescription $ " to look at");
+                        image.bPlayerViewedImage = false;
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+    }
+    bFrobbed = true;
+
     Super.Frob(Frobber, frobWith);
+
     GlowOff();
 }
 
