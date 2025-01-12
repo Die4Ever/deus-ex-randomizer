@@ -184,6 +184,16 @@ function PostFirstEntry()
     }
 }
 
+function AnyEntry()
+{
+    switch(dxr.localURL) {
+    case "12_VANDENBERG_GAS":
+        if (!dxr.flags.IsEntranceRando() && dxr.flagbase.GetBool('DL_Start_Played')) { // DL_Start is "Remember, this is how Tiffany was captured..."
+            dxr.flagbase.SetBool('DL_JockTiffanyDead_Played', true,, 15);
+        }
+    }
+}
+
 function RemoveJock(name jockTag)
 {
     local #var(prefix)BlackHelicopter jock;
