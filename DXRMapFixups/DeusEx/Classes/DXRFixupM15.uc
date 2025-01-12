@@ -389,6 +389,11 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
             }
         }
 
+        foreach AllActors(class'DeusExMover', d, 'blastdoor_upper') {
+            d.FragmentClass = class'MetalFragment';
+            break;
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(-4185.2,-207.35,-1386)); //Helios storage room
         Spawn(class'PlaceholderItem',,, vectm(-4346.5,-1404.5,-2020)); //Storage room near sector 4 door
         Spawn(class'PlaceholderItem',,, vectm(-5828.7,-412.6,-1514)); //Storage room on stairs to sector 4
