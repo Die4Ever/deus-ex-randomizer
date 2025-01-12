@@ -514,6 +514,40 @@ exec function ActivateAugmentation(int num)
         AugmentationSystem.ActivateAugByKey(num);
 }
 
+
+function Augmentation FindAugByName(string augName)
+{
+    local Augmentation anAug;
+    anAug = AugmentationSystem.FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.bHasIt && InStr(anAug.Class.Name,augName) != -1)
+            break;
+
+        anAug = anAug.next;
+    }
+
+    return anAug;
+}
+
+function ActivateAugByName(string augName)
+{
+    local Augmentation anAug;
+    local bool bFound;
+
+    if (RestrictInput())
+        return;
+
+    anAug = FindAugByName(augName);
+
+    if (anAug == None) {
+        ClientMessage(AugmentationSystem.NoAugInSlot);
+        return;
+    }
+
+    ActivateAugmentation(anAug.HotKeyNum-3);
+}
+
 //
 // If player chose to dual map the F keys, DXRando: don't directly activate the aug, that avoids the energy check
 //
@@ -527,6 +561,28 @@ exec function DualmapF9() { ActivateAugmentation(6); }
 exec function DualmapF10() { ActivateAugmentation(7); }
 exec function DualmapF11() { ActivateAugmentation(8); }
 exec function DualmapF12() { ActivateAugmentation(9); }
+
+exec function ActivateAugSpeed() { ActivateAugByName("AugSpeed"); }
+exec function ActivateAugTarget() { ActivateAugByName("AugTarget"); }
+exec function ActivateAugCloak() { ActivateAugByName("AugCloak"); }
+exec function ActivateAugBallistic() { ActivateAugByName("AugBallistic"); }
+exec function ActivateAugRadarTrans() { ActivateAugByName("AugRadarTrans"); }
+exec function ActivateAugEnergyShield() { ActivateAugByName("AugShield"); }
+exec function ActivateAugEnviro() { ActivateAugByName("AugEnviro"); }
+exec function ActivateAugEMPShield() { ActivateAugByName("AugEMP"); }
+exec function ActivateAugCombat() { ActivateAugByName("AugCombat"); }
+exec function ActivateAugHealing() { ActivateAugByName("AugHealing"); }
+exec function ActivateAugStealth() { ActivateAugByName("AugStealth"); }
+//exec function ActivateAugStealth() { ActivateAugByName("AugIFF"); }  //Obviously not
+//exec function ActivateAugStealth() { ActivateAugByName("AugLight"); } //Always bound to F12, so not needed?
+exec function ActivateAugMuscle() { ActivateAugByName("AugMuscle"); }
+exec function ActivateAugVision() { ActivateAugByName("AugVision"); }
+exec function ActivateAugDrone() { ActivateAugByName("AugDrone"); }
+exec function ActivateAugADS() { ActivateAugByName("AugDefense"); }
+//exec function ActivateAugAqualung() { ActivateAugByName("AugAqualung"); } //Fully passive
+//exec function ActivateAugInfolink() { ActivateAugByName("AugDatalink"); }  //Obviously not
+exec function ActivateAugSynthHeart() { ActivateAugByName("AugHeartLung"); }
+//exec function ActivateAugPowerRecirc() { ActivateAugByName("AugPower"); } //Fully passive
 
 function CreateDrone()
 {
