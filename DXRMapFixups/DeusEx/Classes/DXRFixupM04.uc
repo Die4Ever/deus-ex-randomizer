@@ -448,7 +448,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        p.GoalCompletedSilent('TellJaime');
+        GoalCompletedSilent(p, 'TellJaime');
 
         break;
 

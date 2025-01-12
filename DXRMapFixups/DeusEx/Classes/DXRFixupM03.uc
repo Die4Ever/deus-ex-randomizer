@@ -116,7 +116,7 @@ function PreFirstEntryMapFixes()
             AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
         }
 
-        p.GoalCompletedSilent('SeeCarter');
+        GoalCompletedSilent(p, 'SeeCarter');
 
         //Add some junk around the park so that there are some item locations outside of the shanty town
         AddActor(class'Liquor40oz', vect(933.56,-3554.86,279.04));

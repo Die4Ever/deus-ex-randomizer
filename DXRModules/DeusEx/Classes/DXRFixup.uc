@@ -1146,6 +1146,16 @@ function SetAllLampsState(optional bool type1, optional bool type2, optional boo
 #endif
 }
 
+static function GoalCompletedSilent(#var(PlayerPawn) player, name goalName)
+{
+    local DeusExGoal goal;
+
+    goal = player.FindGoal(goalName);
+    if (goal != None) {
+        goal.SetCompleted();
+    }
+}
+
 function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCompleted, optional string goalText, optional int where)
 {
     local Conversation con;
