@@ -547,6 +547,10 @@ function PreFirstEntryMapFixes()
             SetOutsideGuyReactions(sp);
         }
 
+        ot = Spawn(class'OrdersTrigger',, 'TiffanyLeaving');
+        ot.Orders = 'Leaving';
+        ot.Event = '#var(prefix)TiffanySavage';
+
         if (VanillaMaps){
             class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
             class'PlaceholderEnemy'.static.Create(self,vectm(1351,582,-930),,'Shitting');
@@ -853,8 +857,9 @@ function AnyEntryMapFixes()
     local #var(prefix)ScriptedPawn sp;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
-    local #var(prefix)TiffanySavage tiffany;
     local bool prevMapsDone;
+    local ConEventTrigger cet;
+    local Conversation con;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -877,13 +882,19 @@ function AnyEntryMapFixes()
             }
         }
 
-        if (!dxr.flags.IsEntranceRando() && dxr.flagbase.GetBool('DL_Start_Played')) { // DL_Start is "Remember, this is how Tiffany was captured..."
-            dxr.flagbase.SetBool('DL_JockTiffanyDead_Played', true,, 15);
-            foreach AllActors(class'#var(prefix)TiffanySavage', tiffany) {
-                tiffany.LeaveWorld();
-                break;
-            }
-        }
+        con = GetConversation('M12JockFinal');
+        cet = new(con) class'ConEventTrigger';
+        cet.eventType=ET_Trigger;
+        cet.triggerTag = 'TiffanyLeaving';
+        cet.nextEvent = con.eventList;
+        con.eventList = cet;
+
+        con = GetConversation('M12JockFinal2');
+        cet = new(con) class'ConEventTrigger';
+        cet.eventType=ET_Trigger;
+        cet.triggerTag = 'TiffanyLeaving';
+        cet.nextEvent = con.eventList;
+        con.eventList = cet;
 
         break;
 
