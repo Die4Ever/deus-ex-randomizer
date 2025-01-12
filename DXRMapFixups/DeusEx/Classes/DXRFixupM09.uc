@@ -47,9 +47,11 @@ function PreFirstEntryMapFixes()
 #endif
     local DXRHoverHint hoverHint;
 
+    local #var(PlayerPawn) p;
     local bool VanillaMaps;
 
-    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    p = player();
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
 
     switch(dxr.localURL)
     {
@@ -192,6 +194,8 @@ function PreFirstEntryMapFixes()
             beam.bTriggerOnceOnly = true;
             break;
         }
+
+        p.GoalCompleted('GetBelowDecks');
 
         break;
 

@@ -87,10 +87,11 @@ function PreFirstEntryMapFixes()
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
     local #var(DeusExPrefix)Mover dxm;
-
     local bool VanillaMaps;
+    local #var(PlayerPawn) p;
 
-    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    p = player();
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
 
     switch (dxr.localURL)
     {
@@ -114,6 +115,8 @@ function PreFirstEntryMapFixes()
             //rebreather because of #TOOCEAN connection
             AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
         }
+
+        GoalCompletedSilent(p, 'SeeCarter');
 
         //Add some junk around the park so that there are some item locations outside of the shanty town
         AddActor(class'Liquor40oz', vect(933.56,-3554.86,279.04));
