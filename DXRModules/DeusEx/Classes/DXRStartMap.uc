@@ -167,6 +167,7 @@ function PreFirstEntry()
 function PostFirstEntry()
 {
     local AllianceTrigger at;
+    local #var(prefix)NicoletteDuclare nico;
 
     if(IsStartMap()) {
         PostFirstEntryStartMapFixes(player(), dxr.flagbase, dxr.flags.settings.starting_map);
@@ -178,6 +179,14 @@ function PostFirstEntry()
             foreach AllActors(class'AllianceTrigger', at, 'surrender') {
                 at.Trigger(None, None);
                 break;
+            }
+        }
+        break;
+    case "10_PARIS_METRO":
+    case "10_PARIS_CLUB":
+        if (dxr.flags.settings.starting_map >= 109) {
+            foreach AllActors(class'#var(prefix)NicoletteDuclare', nico) {
+                nico.LeaveWorld();
             }
         }
         break;

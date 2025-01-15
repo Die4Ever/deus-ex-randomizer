@@ -502,7 +502,6 @@ function AnyEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)WIB wib;
-    local #var(prefix)NicoletteDuclare nico;
     local #var(prefix)NanoKey k;
     local #var(PlayerPawn) p;
 
@@ -510,13 +509,6 @@ function PostFirstEntryMapFixes()
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
-        if (dxr.flags.settings.starting_map >= 109) {
-            foreach AllActors(class'#var(prefix)NicoletteDuclare', nico, 'DXRMissions') {
-                nico.LeaveWorld();
-                break;
-            }
-        }
-
         k = None;
         if (class'DXRMapVariants'.static.IsVanillaMaps(p)) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(2513.0, 2439.0, 458.0));
