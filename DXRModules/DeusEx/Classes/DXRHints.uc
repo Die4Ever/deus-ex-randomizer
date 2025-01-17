@@ -252,8 +252,13 @@ simulated function InitHints()
         }
 
         if(#defined(injections)) {
-            AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
-            AddHint("The flashlight (F12) can be used to attract the attention of guards.", "It doesn't cost any energy!");
+            if(!dxr.flags.IsHalloweenMode()) {
+                AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
+                AddHint("The flashlight (F12) can be used to attract the attention of guards.", "It doesn't cost any energy!");
+            } else {
+                AddHint("The flashlight (F12) consumes energy in Halloween Mode!", "Don't waste your energy!");
+                AddHint("The flashlight (F12) can be upgraded in Halloween Mode!", "Level 2 is brighter and doesn't cost energy!");
+            }
             AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken.");
             AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
             AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
