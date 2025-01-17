@@ -69,6 +69,21 @@ function Augmentation GetAugByKey(int keyNum)
     return None;
 }
 
+function Augmentation GetAugByName(string augName)
+{
+    local Augmentation anAug;
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.bHasIt && InStr(anAug.Class.Name,augName) != -1)
+            break;
+
+        anAug = anAug.next;
+    }
+
+    return anAug;
+}
+
 // ----------------------------------------------------------------------
 // GetAugLevelValue()
 //

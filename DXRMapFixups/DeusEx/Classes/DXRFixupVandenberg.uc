@@ -59,6 +59,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Fan1 fan;
     local #var(prefix)Fan2 fan2;
     local DynamicTeleporter dynt;
+    local CrateUnbreakableSmall cus;
 
     local bool VanillaMaps;
 
@@ -477,6 +478,12 @@ function PreFirstEntryMapFixes()
             }
 
             class'FrictionTrigger'.static.CreateIce(self, vectm(28.63,-5129.48,-231.285), 1190, 650);
+
+            // one of the small crates inside the bathroom jail. can otherwise be impossible to get out of it without speed aug
+            foreach RadiusActors(class'CrateUnbreakableSmall', cus, 0.1, vectm(288.01, -1402.41, 488.10)) {
+                cus.bIsSecretGoal = true;
+                break;
+            }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
         }

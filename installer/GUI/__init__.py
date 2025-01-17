@@ -52,6 +52,19 @@ class GUIBase:
         myTip = Hovertip(entry, tooltip)
         return entry
 
+    def newLabeledWidget(self, frame, cls, label:str, tooltip:str, *args, **kargs):
+        frame = Frame(frame)
+        label = Label(frame,text=label, anchor='e', justify='left')
+        label.grid(column=0,row=0, sticky='E')
+        if cls == OptionMenu:
+            entry = cls(frame, *args, **kargs)
+        else:
+            entry = cls(frame, *args, **kargs)
+        entry.grid(column=1,row=0, sticky='W')
+
+        Hovertip(frame, tooltip)
+        return frame
+
     def FixColors(self, w):
         w.config(bg="#eeeeee",fg="black")
 

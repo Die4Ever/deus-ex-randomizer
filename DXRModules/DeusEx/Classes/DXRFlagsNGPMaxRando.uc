@@ -285,6 +285,8 @@ function NewGamePlus()
     for (i = 0; i < newgameplus_num_removed_weapons; i++)
         RemoveRandomWeapon(p);
 
+    p.AugmentationSystem.DeactivateAll();
+
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
     class'DXRStartMap'.static.AddStartingCredits(dxr,p);

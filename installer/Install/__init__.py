@@ -433,12 +433,17 @@ def Copyd3d10drv(source, dest):
     assert num > 0, 'Found '+str(num)+' d3d10drv files in '+str(source)
 
 
-def CopyDXVK(system:Path, install:bool):
+def CopyDXVK(system:Path, install:bool, maxfps=500):
     dir = GetSourcePath() / '3rdParty' / 'dxvk'
     info('CopyDXVK from', dir, ' to ', system)
     num = 0
     # doesn't hurt to always have the dxvk.conf file?
-    CopyTo(GetSourcePath()/'Configs'/'dxvk.conf', system/'dxvk.conf')
+    dxvkconf = (GetSourcePath()/'Configs'/'dxvk.conf').read_text()
+    if maxfps:
+        maxfps = str(int(maxfps))
+        dxvkconf = dxvkconf.replace('dxgi.maxFrameRate = 500', 'dxgi.maxFrameRate = ' + maxfps)
+        dxvkconf = dxvkconf.replace('d3d9.maxFrameRate = 500', 'd3d9.maxFrameRate = ' + maxfps)
+    WriteBytes(system/'dxvk.conf', dxvkconf.encode())
     # loop through all dxvk files and conditionally add or delete them
     for f in dir.glob('*'):
         dest = system / f.name

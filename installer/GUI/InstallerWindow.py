@@ -56,6 +56,8 @@ class InstallerWindow(GUIBase):
         self.scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
         self.frame = self.scroll.frame
 
+        self.root.update()
+
         filetypes = (('DeusEx.exe', 'DeusEx.exe'),)
         initdir = getDefaultPath()
         self.SetShowHiddenFiles()
@@ -238,6 +240,13 @@ class InstallerWindow(GUIBase):
         self.FixColors(self.dxvk)
         self.row+=1
 
+        # DXVK max fps
+        self.globalsettings['dxvkmaxfps'] = IntVar(master=self.frame, value=500)
+        self.dxvkmaxfpsframe = self.newLabeledWidget(self.frame, Spinbox, 'DXVK Max FPS: ', 'Maximum fps when using DXVK, default is 500 fps.', textvariable=self.globalsettings['dxvkmaxfps'], width=5, from_=30, to=500)
+        self.setgrid(self.dxvkmaxfpsframe, True, column=1, row=self.row, sticky='SW', padx=pad*6, pady=pad)
+        self.row+=1
+
+        # Deus_nsf shaders
         self.globalsettings['deus_nsf_d3d10_lighting'] = BooleanVar(master=self.frame, value=False)
         self.deus_nsf_d3d10_lighting = Checkbutton(self.frame, text="Deus_nsf D3D10 vivid lighting", variable=self.globalsettings['deus_nsf_d3d10_lighting'])
         Hovertip(self.deus_nsf_d3d10_lighting, "Tweaked D3D10 shaders for more vivid lighting.\nMay require more powerful hardware.")
@@ -252,6 +261,7 @@ class InstallerWindow(GUIBase):
                 Smooth={ 'text': "D3D10 normal smooth texture filtering", 'hover': "Typical D3D10 shaders for texture filtering." },
         ))
 
+        # OpenGL 2
         self.globalsettings['ogl2'] = BooleanVar(master=self.frame, value=self.ogl2_default)
         self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.globalsettings['ogl2'])
         Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")

@@ -53,6 +53,7 @@ const ResidentEvilTimeDefault = 60;
 const RadiationTimeDefault = 60;
 const DoomModeTimeDefault = 60;
 const WineBulletsTimeDefault = 60;
+const BloodTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -254,6 +255,10 @@ function PeriodicUpdates()
 
     if (decrementTimer('cc_WineBullets')){
         StopCrowdControlEvent("wine_bullets",true);
+    }
+
+    if (decrementTimer('cc_BloodGod')){
+        StopCrowdControlEvent("blood_god",true);
     }
 }
 
@@ -489,6 +494,7 @@ function Fart()
         r.Yaw+=2500;
     }
 
+    player().Velocity += Vector(player().ViewRotation) * 8 * fartDuration; //Fart pushes you in the direction you're looking
 }
 
 function ContinuousUpdates()
@@ -504,6 +510,11 @@ function ContinuousUpdates()
     //Lava floor logic
     if (isTimerActive('cc_floorLavaTimer') && InGame()){
         floorIsLava();
+    }
+
+    //Blood God logic
+    if (isTimerActive('cc_BloodGod') && !InMenu()){
+        BloodForTheBloodGod();
     }
 
     //Camera Spin
@@ -725,6 +736,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return DoomModeTimeDefault;
         case 'cc_WineBullets':
             return WineBulletsTimeDefault;
+        case 'cc_BloodGod':
+            return BloodTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -786,6 +799,8 @@ function string getTimerLabelByName(name timerName) {
             return "Doom";
         case 'cc_WineBullets':
             return "Wine Dmg";
+        case 'cc_BloodGod':
+            return "Blood God";
 
 
         default:
@@ -2194,15 +2209,13 @@ function bool BloodForTheBloodGod()
 
     foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
         if (sp.bCanBleed){
-            sp.bleedRate = 5;
-            SpawnBloodPool(sp);
+            HandleSingleBloodGodSacrifice(sp);
             num++;
         }
     }
 
     foreach AllActors(class'#var(PlayerPawn)',p){
-        p.bleedRate=5;
-        SpawnBloodPool(p);
+        HandleSingleBloodGodSacrifice(p);
         num++;
     }
 
@@ -2225,6 +2238,16 @@ function bool RandomClothes()
 #endif
 }
 
+function HandleSingleBloodGodSacrifice(Actor a)
+{
+    if (Rand(4)==0){
+        SpawnBloodDrop(a);
+    }
+    if (Rand(25)==0){
+        SpawnBloodPool(a);
+    }
+}
+
 //Logic copied from DeusExCarcass HandleLanding()
 function SpawnBloodPool(Actor a)
 {
@@ -2244,6 +2267,18 @@ function SpawnBloodPool(Actor a)
     if (bp!=None){
         bp.maxDrawScale = a.CollisionRadius / 40.0;
     }
+}
+
+//Copied from ScriptedPawn SpurtBlood with slight modification
+function SpawnBloodDrop(Actor a)
+{
+    local vector bloodVector;
+    local float offset;
+
+    offset = (FRand() * 0.5) + 0.25; //Height between 0.25 and 0.75
+
+    bloodVector = vect(0,0,1)*a.CollisionHeight*offset;  // so folks don't bleed from the crotch
+    spawn(Class'BloodDrop',,,bloodVector+a.Location);
 }
 
 function SplitString(string src, string divider, out string parts[8])
@@ -2353,6 +2388,7 @@ function StopAllCrowdControlEvents()
     StopCrowdControlEvent("radioactive");
     StopCrowdControlEvent("doom_mode");
     StopCrowdControlEvent("wine_bullets");
+    StopCrowdControlEvent("blood_god");
 }
 
 function int StopCrowdControlEvent(string code, optional bool bKnownStop)
@@ -2491,6 +2527,13 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
                 disableTimer('cc_WineBullets');
             }
             break;
+        case "blood_god":
+            if (bKnownStop || isTimerActive('cc_BloodGod')){
+                PlayerMessage("The Blood God's thirst has been slaked!");
+                datastorage.SetConfig('cc_BloodGod',0, 3600*12);
+                disableTimer('cc_BloodGod');
+            }
+
 
     }
 
@@ -3192,9 +3235,14 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (!InGame()){
                 return TempFail;
             }
+            if (isTimerActive('cc_BloodGod')) {
+                return TempFail;
+            }
             if (!BloodForTheBloodGod()){
                 return TempFail;
             }
+
+            startNewTimer('cc_BloodGod',duration);
 
             PlayerMessage(viewer@"bestowed an offering to the Blood God!");
 

@@ -62,8 +62,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
     local Smuggler smug;
+    local #var(PlayerPawn) p;
 
-    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+    p = player();
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
 
     switch (dxr.localURL)
     {
@@ -90,7 +92,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        class'GilbertWeaponMegaChoice'.static.Create(Player());
+        class'GilbertWeaponMegaChoice'.static.Create(p);
         foreach AllActors(class'#var(prefix)GilbertRenton',gilbert){
             //Make sure he has ammo for Stealth Pistol(10mm), Pistol (10mm),
             //Sawed-off (Buckshot shells), Mini Crossbow (Tranq Darts)
@@ -311,6 +313,22 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        // Make sure Anna is considered to have killed Lebedev if you left him alive with her
+        if (!dxr.flagbase.GetBool('AnnaNavarre_Dead') &&
+            !dxr.flagbase.GetBool('JuanLebedev_Dead')) {
+
+            dxr.flagbase.SetBool('AnnaKilledLebedev',True,,999);
+            dxr.flagbase.SetBool('JuanLebedev_Dead',True,,999);
+        }
+
+        // Make sure you are correctly attributed as having killed Anna if she's dead
+        // (You can skip the infolink that marks this flag if she runs away)
+        if (dxr.flagbase.GetBool('AnnaNavarre_Dead') &&
+            !dxr.flagbase.GetBool('M03PlayerKilledAnna')) {
+
+            dxr.flagbase.SetBool('M03PlayerKilledAnna',True,,5);
+        }
+
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
@@ -446,6 +464,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        GoalCompletedSilent(p, 'TellJaime');
+
         break;
 
     case "04_NYC_SMUG":
@@ -478,18 +498,10 @@ function PreFirstEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
-    local DeusExGoal goal;
-
     switch(dxr.localURL)
     {
         case "04_NYC_UNATCOHQ":
             FixUNATCORetinalScanner();
-            break;
-        case "04_NYC_STREET":
-            goal = player().FindGoal('TellJaime');
-            if (goal != None) {
-                goal.SetCompleted();
-            }
             break;
     }
 }

@@ -18,10 +18,10 @@ struct S_KeyDisplayItem
 };
 
 //Make sure to update all four of these when you add a new binding
-var localized string	FunctionText[69];
-var string				MenuValues1[69];
-var string				MenuValues2[69];
-var string				AliasNames[69];
+var localized string    FunctionText[85];
+var string              MenuValues1[85];
+var string              MenuValues2[85];
+var string              AliasNames[85];
 
 
 var string				PendingCommands[100];
@@ -635,6 +635,22 @@ defaultproperties
      FunctionText(66)="Remove Item From Belt"
      FunctionText(67)="Load Latest Save"
      FunctionText(68)="Activate Quick Aug Menu"
+     FunctionText(69)="Activate Speed Enhancement"
+     FunctionText(70)="Activate Targeting"
+     FunctionText(71)="Activate Cloak"
+     FunctionText(72)="Activate Ballistic Protection"
+     FunctionText(73)="Activate Radar Transparency"
+     FunctionText(74)="Activate Energy Shield"
+     FunctionText(75)="Activate Environmental Resistance"
+     FunctionText(76)="Activate EMP Shield"
+     FunctionText(77)="Activate Combat Strength"
+     FunctionText(78)="Activate Regeneration"
+     FunctionText(79)="Activate Run Silent"
+     FunctionText(80)="Activate Microfibral Muscle"
+     FunctionText(81)="Activate Vision Enhancement"
+     FunctionText(82)="Activate Spy Drone"
+     FunctionText(83)="Activate Aggressive Defense System"
+     FunctionText(84)="Activate Synthetic Heart"
      AliasNames(0)="ParseLeftClick|Fire"
      AliasNames(1)="ParseRightClick"
      AliasNames(2)="DropItem"
@@ -704,6 +720,22 @@ defaultproperties
      AliasNames(66)="RemoveBeltItem"
      AliasNames(67)="LoadLatest"
      AliasNames(68)="UpgradeAugs"
+     AliasNames(69)="ActivateAugSpeed"
+     AliasNames(70)="ActivateAugTarget"
+     AliasNames(71)="ActivateAugCloak"
+     AliasNames(72)="ActivateAugBallistic"
+     AliasNames(73)="ActivateAugRadarTrans"
+     AliasNames(74)="ActivateAugEnergyShield"
+     AliasNames(75)="ActivateAugEnviro"
+     AliasNames(76)="ActivateAugEMPShield"
+     AliasNames(77)="ActivateAugCombat"
+     AliasNames(78)="ActivateAugHealing"
+     AliasNames(79)="ActivateAugStealth"
+     AliasNames(80)="ActivateAugMuscle"
+     AliasNames(81)="ActivateAugVision"
+     AliasNames(82)="ActivateAugDrone"
+     AliasNames(83)="ActivateAugADS"
+     AliasNames(84)="ActivateAugSynthHeart"
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")
