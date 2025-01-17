@@ -106,7 +106,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
     if globalsettings['speedupfix']:
         EngineDllFix(system)
 
-    CopyDXVK(system, globalsettings['dxvk'])
+    CopyDXVK(system, globalsettings['dxvk'], globalsettings['dxvkmaxfps'])
     CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])
     InstallOGL2(system, globalsettings['ogl2'])
 
