@@ -188,9 +188,6 @@ function MissionTimer()
 
 function AnyEntry()
 {
-    local Conversation con;
-    local ConEventTrigger cet;
-
     Super.AnyEntry();
 
     switch(dxr.localURL) {
@@ -199,14 +196,6 @@ function AnyEntry()
         if(dxr.flags.settings.swapitems > 0) {
             UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.",True);// dependent on swap items, not on goals rando
         }
-
-        con = GetConversation('JockReady');
-        cet = new(con) class'ConEventTrigger';
-        cet.eventType = ET_Trigger;
-        cet.triggerTag = 'NicoLeaving';
-        cet.nextEvent = con.eventList;
-        con.eventList = cet;
-
     case "10_PARIS_CATACOMBS_TUNNELS":
         UpdateGoalWithRandoInfo('FindNicolette', "Nicolette could be anywhere in the city.");
         break;
@@ -255,7 +244,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(DeusExPrefix)Mover m;
     local #var(prefix)ComputerPublic cp;
-    local #var(prefix)OrdersTrigger ot;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -296,11 +284,6 @@ function PreFirstEntryMapFixes()
                 cp.UnfamiliarName=cp.FamiliarName;
             }
         }
-
-        ot = Spawn(class'OrdersTrigger',, 'NicoLeaving');
-        ot.Orders = 'Leaving';
-        ot.Event = '#var(prefix)NicoletteDuClare';
-        ot.SetCollision(false, false, false);
 
         break;
     }

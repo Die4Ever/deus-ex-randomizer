@@ -27,6 +27,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NicoletteDuclare nico;
     local #var(prefix)NanoKey k;
     local DXRMoverSequenceTrigger elevatortrig;
+    local #var(prefix)OrdersTrigger ot;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -201,6 +202,11 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)JaimeReyes', j) {
             RemoveFears(j);
         }
+
+        ot = Spawn(class'OrdersTrigger',, 'NicoLeaving');
+        ot.Orders = 'Leaving';
+        ot.Event = '#var(prefix)NicoletteDuClare';
+        ot.SetCollision(false, false, false);
 
         break;
 
@@ -384,6 +390,7 @@ function AnyEntryMapFixes()
     local ConEventSetFlag cesf;
     local ConEventAddSkillPoints ceasp;
     local ConEventTransferObject ceto;
+    local ConEventTrigger cet;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -440,6 +447,16 @@ function AnyEntryMapFixes()
             c.bInvokeSight = false;
             c.bInvokeRadius = false;
         }
+
+        c = GetConversation('JockReady');
+        if (c != None) {
+            cet = new(c) class'ConEventTrigger';
+            cet.eventType = ET_Trigger;
+            cet.triggerTag = 'NicoLeaving';
+            cet.nextEvent = c.eventList;
+            c.eventList = cet;
+        }
+
         break;
     case "11_PARIS_UNDERGROUND":
         //Add a flag change to Toby's conversation so it sets MS_PlayerTeleported to false if you choose the "take me with you" option
