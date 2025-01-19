@@ -242,7 +242,7 @@ class InstallerWindow(GUIBase):
 
         # DXVK max fps
         self.globalsettings['dxvkmaxfps'] = IntVar(master=self.frame, value=500)
-        self.dxvkmaxfpsframe = self.newLabeledWidget(self.frame, Spinbox, 'DXVK Max FPS: ', 'Maximum fps when using DXVK, default is 500 fps.', textvariable=self.globalsettings['dxvkmaxfps'], width=5, from_=30, to=500)
+        self.dxvkmaxfpsframe = self.newLabeledWidget(self.frame, Spinbox, 'DXVK Max FPS: ', 'Maximum fps when using DXVK, default is 500 fps. There may be issues going over 500.', textvariable=self.globalsettings['dxvkmaxfps'], width=5, from_=30, to=500)
         self.setgrid(self.dxvkmaxfpsframe, True, column=1, row=self.row, sticky='SW', padx=pad*6, pady=pad)
         self.row+=1
 
