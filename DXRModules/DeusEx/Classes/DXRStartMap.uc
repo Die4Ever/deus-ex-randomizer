@@ -120,6 +120,12 @@ function PreFirstEntry()
         }
         break;
 
+    case "12_VANDENBERG_GAS":
+        if (!dxr.flags.IsEntranceRando() && dxr.flags.settings.starting_map > 129) {
+            dxr.flagbase.SetBool('DL_JockTiffanyDead_Played', true,, 15);
+        }
+        break;
+
     case "14_VANDENBERG_SUB":
         if (dxr.flags.settings.starting_map == 141 || dxr.flags.settings.starting_map == 142) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'Elevator1') {
@@ -167,6 +173,7 @@ function PreFirstEntry()
 function PostFirstEntry()
 {
     local AllianceTrigger at;
+    local #var(prefix)NicoletteDuclare nico;
 
     if(IsStartMap()) {
         PostFirstEntryStartMapFixes(player(), dxr.flagbase, dxr.flags.settings.starting_map);
@@ -178,6 +185,14 @@ function PostFirstEntry()
             foreach AllActors(class'AllianceTrigger', at, 'surrender') {
                 at.Trigger(None, None);
                 break;
+            }
+        }
+        break;
+    case "10_PARIS_METRO":
+    case "10_PARIS_CLUB":
+        if (dxr.flags.settings.starting_map >= 109) {
+            foreach AllActors(class'#var(prefix)NicoletteDuclare', nico) {
+                nico.LeaveWorld();
             }
         }
         break;
