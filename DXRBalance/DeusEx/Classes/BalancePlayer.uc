@@ -29,9 +29,13 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
 function PlayTakeHitSound(int Damage, name damageType, int Mult)
 {
-    if(damageType == 'Fell') {
-        if(Damage <= 0) PlaySound(HitSound1, SLOT_Pain, FMax(Mult * TransientSoundVolume * 0.5, Mult * 1.0));
-        else PlaySound(HitSound2, SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0));
+    if ( Level.TimeSeconds - LastPainSound < 0.25 )
+        return;
+
+    if(damageType == 'Fell' && Damage <= 0) {
+        if(flagbase.GetBool('LDDPJCIsFemale')) PlaySound(Sound'FemaleLand', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0));
+        else PlaySound(Sound'MaleLand', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0));
+        LastPainSound = Level.TimeSeconds;
     }
     else {
         Super.PlayTakeHitSound(Damage, damageType, Mult);
