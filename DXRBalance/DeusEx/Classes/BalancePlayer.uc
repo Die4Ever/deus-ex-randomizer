@@ -27,6 +27,17 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 }
 
+function PlayTakeHitSound(int Damage, name damageType, int Mult)
+{
+    if(damageType == 'Fell') {
+        if(Damage <= 0) PlaySound(HitSound1, SLOT_Pain, FMax(Mult * TransientSoundVolume * 0.5, Mult * 1.0));
+        else PlaySound(HitSound2, SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0));
+    }
+    else {
+        Super.PlayTakeHitSound(Damage, damageType, Mult);
+    }
+}
+
 function RandomizeAugStates()
 {
     local Augmentation aug;
