@@ -141,6 +141,24 @@ function FirstEntry()
     }
 }
 
+simulated function AddDXRCredits(CreditsWindow cw)
+{
+    local int i;
+    local DXREnemies e;
+    local class<DeusExWeapon> w;
+    if(dxr.flags.IsZeroRando()) return;
+    cw.PrintHeader( "Weapon Mods" );
+
+    //Should this try to strip the "Weapon Modification (xyz)" name to just "xyz"?
+    for (i=0;i<ArrayCount(randommods);i++){
+        cw.PrintText( randommods[i].Type.default.ItemName $ " : " $ FloatToString(randommods[i].chance, 1) $ "%" );
+    }
+
+    cw.PrintLn();
+    cw.PrintLn();
+}
+
+
 defaultproperties
 {
     min_rate_adjust=0.3
