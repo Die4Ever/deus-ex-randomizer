@@ -131,8 +131,6 @@ function FirstEntry()
 simulated function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
-    local DXREnemies e;
-    local class<DeusExWeapon> w;
     if(dxr.flags.IsZeroRando()) return;
     cw.PrintHeader( "Grenade Types" );
     for (i=0;i<ArrayCount(randomgrens);i++){

@@ -144,8 +144,6 @@ function FirstEntry()
 simulated function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
-    local DXREnemies e;
-    local class<DeusExWeapon> w;
     if(dxr.flags.IsZeroRando()) return;
     cw.PrintHeader( "Weapon Mods" );
 
