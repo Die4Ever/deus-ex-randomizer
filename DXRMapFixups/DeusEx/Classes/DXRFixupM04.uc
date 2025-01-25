@@ -420,6 +420,20 @@ function PreFirstEntryMapFixes()
             anna.AgitationDecayRate = 0;
         }
 
+        //A crate in the water near the dock to let you climb out of the water (there's no ladder)
+        a = Spawnm(class'#var(prefix)CrateUnbreakableMed',,,vect(-515,-3810,210));
+        a.bIsSecretGoal = true; //Don't shuffle
+
+        //Crates blocking the entrance to the empty Castle Clinton
+        a = Spawnm(class'#var(prefix)CrateUnbreakableLarge',,,vect(1070,1175,400));
+        a.bIsSecretGoal = true; //Don't shuffle
+        a = Spawnm(class'#var(prefix)CrateUnbreakableLarge',,,vect(1070,1075,400));
+        a.bIsSecretGoal = true; //Don't shuffle
+        a = Spawnm(class'#var(prefix)CrateUnbreakableLarge',,,vect(1070,975,400));
+        a.bIsSecretGoal = true; //Don't shuffle
+        a = Spawnm(class'#var(prefix)CrateUnbreakableLarge',,,vect(1070,875,400));
+        a.bIsSecretGoal = true; //Don't shuffle
+
         break;
 
     case "04_NYC_BAR":
@@ -517,6 +531,9 @@ function AnyEntryMapFixes()
     local bool VanillaMaps;
     local Mover door;
     local ConEventSpeech ces;
+    local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)BlackHelicopter jock;
+    local bool raidStarted;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -530,6 +547,32 @@ function AnyEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    case "04_NYC_BATTERYPARK":
+        raidStarted = dxr.flagbase.GetBool('M04RaidBegan');
+
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+            switch(sp.Alliance){
+                case 'UNATCO':
+                case 'gunther':
+                case 'bots':
+                    if (raidStarted){
+                        sp.EnterWorld();
+                    } else {
+                        sp.LeaveWorld();
+                    }
+                    break;
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock){
+            if (raidStarted){
+                jock.EnterWorld();
+            } else {
+                jock.LeaveWorld();
+            }
+        }
+
+        break;
     case "04_NYC_NSFHQ":
         // allow Paul dialog to repeat, especially if you try to send the signal without aligning the dishes
         GetConversation('DL_PaulGoodJob').bDisplayOnce = false;
