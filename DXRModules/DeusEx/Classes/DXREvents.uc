@@ -839,7 +839,7 @@ function SetWatchFlags() {
         break;
     case "06_HONGKONG_MJ12LAB":
         foreach AllActors(class'ZoneInfo',zone){
-            if (zone.bFogZone){
+            if (class'DXRStoredZoneInfo'.static.IsFogZone(zone)){
                 zone.ZonePlayerEvent = 'HongKongGrays';
                 break;
             }
