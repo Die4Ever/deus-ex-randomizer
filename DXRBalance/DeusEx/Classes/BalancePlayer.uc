@@ -1,7 +1,5 @@
 class BalancePlayer injects Human;
 
-var travel bool bZeroRando, bReducedRando, bCrowdControl;
-
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
     local float augLevel;
@@ -97,7 +95,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         // narrow the head region
         if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
         {
-            if(!bZeroRando) {
+            if(!class'DXRFlags'.default.bZeroRandoPure) {
                 // do 1.7x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
                 return Damage * 0.85;
             }
@@ -116,7 +114,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         {
             // left arm
         }
-        else if(!bZeroRando)
+        else if(!class'DXRFlags'.default.bZeroRandoPure)
         {
             // and finally, the torso! do 1.4x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
             return Damage * 0.7;
@@ -310,7 +308,7 @@ function float GetDamageMultiplier()
 {
     local DataStorage datastorage;
 
-    if (!bCrowdControl) return 0;
+    if (!class'DXRFlags'.default.bCrowdControl) return 0;
 
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return float(datastorage.GetConfigKey('cc_damageMult'));
@@ -320,7 +318,7 @@ function bool WineBulletsActive()
 {
     local DataStorage datastorage;
 
-    if (!bCrowdControl) return False;
+    if (!class'DXRFlags'.default.bCrowdControl) return False;
 
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return bool(datastorage.GetConfigKey('cc_WineBullets'));

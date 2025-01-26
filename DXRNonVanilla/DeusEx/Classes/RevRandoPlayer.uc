@@ -1,7 +1,6 @@
 #compileif revision
 class RevRandoPlayer extends RevJCDentonMale;
 
-var travel bool bZeroRando, bReducedRando, bCrowdControl;
 var laserEmitter aimLaser;
 var bool bDoomMode;
 var bool bOnLadder;
@@ -58,7 +57,7 @@ function bool WineBulletsActive()
 {
     local DataStorage datastorage;
 
-    if (!bCrowdControl) return False;
+    if (!class'DXRFlags'.default.bCrowdControl) return False;
 
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return bool(datastorage.GetConfigKey('cc_WineBullets'));
@@ -186,7 +185,7 @@ function float GetDamageMultiplier()
 {
     local DataStorage datastorage;
 
-    if (!bCrowdControl) return 0;
+    if (!class'DXRFlags'.default.bCrowdControl) return 0;
 
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return float(datastorage.GetConfigKey('cc_damageMult'));
@@ -225,7 +224,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         // narrow the head region
         if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
         {
-            if(!bZeroRando) {
+            if(!class'DXRFlags'.default.bZeroRandoPure) {
                 // do 1.7x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
                 return Damage * 0.85;
             }
@@ -244,7 +243,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         {
             // left arm
         }
-        else if(!bZeroRando)
+        else if(!class'DXRFlags'.default.bZeroRandoPure)
         {
             // and finally, the torso! do 1.4x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
             return Damage * 0.7;
@@ -414,7 +413,7 @@ function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, opt
     local bool fixLegs;
 
     //Alcohol fixes broken legs, as long as it isn't zero rando
-    if (source=="Forty" || source=="Liquor" || source=="Wine") fixLegs=!bZeroRando;
+    if (source=="Forty" || source=="Liquor" || source=="Wine") fixLegs = ! class'DXRFlags'.default.bZeroRandoPure;
 
     adjustedHealAmount = _HealPlayer(baseHealPoints, bUseMedicineSkill, fixLegs);
 

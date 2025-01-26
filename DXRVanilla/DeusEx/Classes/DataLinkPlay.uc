@@ -10,7 +10,7 @@ function bool bIsFastMode()
     local DXRando dxr;
 
     if(!HaveQueued()) return false;
-    if(Human(player).bZeroRando) return false;
+    if(class'DXRFlags'.default.bReducedRando) return false;
     dxr = Human(player).GetDXR();
     if(dxr != None && dxr.dxInfo.missionNumber == 0) {
         return false;

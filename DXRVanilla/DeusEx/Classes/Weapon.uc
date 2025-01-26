@@ -389,8 +389,7 @@ simulated function bool UpdateInfo(Object winObject)
     if (P == None)
         return False;
 
-    if(Human(P) != None)
-        bZeroRando = Human(P).bZeroRando;
+    bZeroRando = class'DXRFlags'.default.bZeroRandoPure;
 
     winInfo = PersonaInventoryInfoWindow(winObject);
     if (winInfo == None)
