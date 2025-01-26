@@ -248,7 +248,7 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
 
     info(str);
     info(str2);
-    if(p != None){
+    if(p != None && !DXRFlags(self).IsZeroRandoPure()){
         p.ClientMessage(str);
         p.ClientMessage(str2);
     }

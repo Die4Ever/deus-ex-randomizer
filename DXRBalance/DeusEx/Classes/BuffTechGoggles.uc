@@ -11,8 +11,10 @@ function static float CalcDistance(AugVision aug)
 function static string CalcDescription(AugVision aug)
 {
     local string desc;
-    desc = default.Description $ "|n|nSee-through walls distance: ";
-    desc = desc $ int(CalcDistance(aug)/16.0) $ " ft";
+    desc = default.Description;
+    if(!class'DXRFlags'.default.bZeroRandoPure) {
+        desc = desc $ "|n|nSee-through walls distance: " $ int(CalcDistance(aug)/16.0) $ " ft";
+    }
     return desc;
 }
 
@@ -20,6 +22,11 @@ function PostBeginPlay()
 {
     local AugVision aug;
     Super.PostBeginPlay();
+
+    if(class'DXRFlags'.default.bZeroRandoPure) {
+        Charge = class'TechGogglesInjBase'.default.Charge;
+        return;
+    }
 
     foreach AllActors(class'AugVision', aug) {
         Description = CalcDescription(aug);
@@ -34,6 +41,11 @@ function UpdateHUDDisplay(DeusExPlayer Player)
     local AugVision aug;
     local AugmentationDisplayWindow augDisplay;
     local float dist;
+
+    if(class'DXRFlags'.default.bZeroRandoPure) {
+        Super.UpdateHUDDisplay(Player);
+        return;
+    }
 
     aug = AugVision(Player.AugmentationSystem.FindAugmentation(class'AugVision'));
     dist = CalcDistance(aug);
@@ -59,6 +71,11 @@ function ChargedPickupEnd(DeusExPlayer Player)
 {
     local AugVision aug;
     local AugmentationDisplayWindow augDisplay;
+
+    if(class'DXRFlags'.default.bZeroRandoPure) {
+        Super.ChargedPickupEnd(Player);
+        return;
+    }
 
     augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
     if (--augDisplay.activeCount <= 0) {

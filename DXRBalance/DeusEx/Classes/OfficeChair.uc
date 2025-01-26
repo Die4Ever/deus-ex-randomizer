@@ -1,5 +1,14 @@
 class DXROfficeChair injects OfficeChair;
 
+function BeginPlay()
+{
+    if(class'DXRFlags'.default.bZeroRandoPure) {
+        SetCollisionSize(CollisionRadius, class'OfficeChairInjBase'.default.CollisionHeight);
+        PrePivot = class'OfficeChairInjBase'.default.PrePivot;
+        sitPoint[0] = class'OfficeChairInjBase'.default.sitPoint[0];
+    }
+}
+
 defaultproperties
 {
     CollisionHeight=15.549999
