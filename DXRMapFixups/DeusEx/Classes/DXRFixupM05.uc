@@ -466,16 +466,20 @@ function BalanceJailbreak()
 
         switch(rng(4)) {
         case 1:// crate past the desk
-            Spawn(iclass,,, vectm(-1838.230225, 1250.242676, -110.399773));
+            nextItem = Spawn(iclass,,, vectm(-1838.230225, 1250.242676, -110.399773));
+            l("spawned freebie weapon crate past the desk " $ iclass @ nextItem);
             break;
         case 2:// desk
-            Spawn(iclass,,, vectm(-2105.412598, 1232.926758, -134.400101));
+            nextItem = Spawn(iclass,,, vectm(-2105.412598, 1232.926758, -134.400101));
+            l("spawned freebie weapon desk " $ iclass @ nextItem);
             break;
         case 3:// locked jail cell with medbot
-            Spawn(iclass,,, vectm(-3020.846924, 910.062134, -201.399750));
+            nextItem = Spawn(iclass,,, vectm(-3020.846924, 910.062134, -201.399750));
+            l("spawned freebie weapon locked jail cell with medbot " $ iclass @ nextItem);
             break;
         default:// unlocked jail cell
-            Spawn(iclass,,, vectm(-2688.502686, 1424.474731, -158.099915));
+            nextItem = Spawn(iclass,,, vectm(-2688.502686, 1424.474731, -158.099915));
+            l("spawned freebie weapon unlocked jail cell " $ iclass @ nextItem);
             break;
         }
     }

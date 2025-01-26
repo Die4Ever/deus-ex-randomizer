@@ -304,6 +304,10 @@ function NewBingoBoard()
         }
     }
 
+    if(data.IsBanned("JordanShea_Dead") && data.IsBanned("JoeGreene_Dead")) {
+        data.BanGoal("SnitchDowd", 999); // a bit weird because you actually only need one of them to be alive
+    }
+
     // create new board
     dxr.flags.bingoBoardRoll = 0;
     events.CreateBingoBoard(dxr.dxInfo.missionNumber * 10);
