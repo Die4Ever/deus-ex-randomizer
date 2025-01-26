@@ -3,7 +3,7 @@ class DXRMissionsM05 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc, pArm,pSurg,pPit,pRobot,  eArm,eSurg;
 
     switch(map) {
     case "05_NYC_UNATCOMJ12LAB":
@@ -12,23 +12,37 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
         AddGoalActor(goal, 3, 'SecurityCamera0', PHYS_None);
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
-        AddActorLocation(loc, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',33,289,"P","Paul", loc,"Paul can be located on the second floor of the armory.  If Paul is in this location, your equipment will be located in the surgery ward.");
+        pArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
+        AddActorLocation(pArm, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',33,289,"P","Paul", pArm,"Paul can be located on the second floor of the armory.  If Paul is in this location, your equipment will be located in the surgery ward.");
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
-        AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
-        AddActorLocation(loc, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
-        AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',379,96,"P","Paul", loc,"Paul can be located in the surgery ward.  This is the vanilla location.  If Paul is in this location, your equipment will be located in the armory.");
+        pSurg = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
+        AddActorLocation(pSurg, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
+        AddActorLocation(pSurg, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
+        AddActorLocation(pSurg, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',379,96,"P","Paul", pSurg,"Paul can be located in the surgery ward.  This is the vanilla location.  If Paul is in this location, your equipment will be located in the armory.");
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(456,3947,-604), rot(0, 8048, 0));
-        AddActorLocation(loc, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',325,226,"P","Paul", loc,"Paul can be located in the greasel pit accessed through the vent on the back wall of the nanotech lab.  If Paul is in this location, your equipment will be located in the armory.");
+        pPit = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(456,3947,-604), rot(0, 8048, 0));
+        AddActorLocation(pPit, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',325,226,"P","Paul", pPit,"Paul can be located in the greasel pit accessed through the vent on the back wall of the nanotech lab.  If Paul is in this location, your equipment will be located in the armory.");
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
-        AddActorLocation(loc, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P","Paul", loc,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
+        pRobot = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+        AddActorLocation(pRobot, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P","Paul", pRobot,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
+
+        //This is just the concept of the location of your equipment.  BalanceJailbreak in DXRFixup will actually place the items
+        AddGoal("05_NYC_UNATCOMJ12LAB", "Equipment", GOAL_TYPE2, '', PHYS_None);
+
+        eArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", GOAL_TYPE2 | VANILLA_GOAL, vect(-8477.731445,1244.474854,-199.900879), rot(0, 0, 0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',46,299,"E","Equipment", eArm,"Your equipment can be located in the armory.  This is the vanilla location.  If your equipment is in this location, Paul is in either the surgery ward or the greasel pit.");
+
+        eSurg = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", GOAL_TYPE2, vect(1670.443237,-702.527649,-179.660095), rot(0,0,0));
+        AddMapMarker(class'Image05_NYC_MJ12Lab',362,95,"E","Equipment", eSurg,"Your equipment can be located in the surgery ward.  If your equipment is in this location, Paul is in either the armory or the robotics bay office.");
+
+        AddMutualExclusion(eArm, pArm);
+        AddMutualExclusion(eArm, pRobot);
+        AddMutualExclusion(eSurg, pSurg);
+        AddMutualExclusion(eSurg, pPit);
 
         AddGoal("05_NYC_UNATCOMJ12LAB", "Paul Security Monitor", GOAL_TYPE4, 'ComputerSecurity4', PHYS_None); //Making this a goal actor so it gets dignified, but it will always be in the original location
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Command Center", GOAL_TYPE4, vect(-1072.5594,20.1928,-101.3019), rot(0, 16312, 0));
@@ -71,7 +85,7 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc, pArm,pSurg,pPit,pRobot,  eArm,eSurg;
 
     switch(map) {
     case "05_NYC_UNATCOMJ12LAB":
@@ -80,19 +94,29 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
         AddGoalActor(goal, 3, 'SecurityCamera0', PHYS_None);
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
-        AddActorLocation(loc, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
+        pArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
+        AddActorLocation(pArm, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
-        AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
-        AddActorLocation(loc, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
-        AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
+        pSurg = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
+        AddActorLocation(pSurg, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
+        AddActorLocation(pSurg, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
+        AddActorLocation(pSurg, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(456,3947,-604), rot(0, 8048, 0));
-        AddActorLocation(loc, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
+        pPit = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(456,3947,-604), rot(0, 8048, 0));
+        AddActorLocation(pPit, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
 
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
-        AddActorLocation(loc, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
+        pRobot = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+        AddActorLocation(pRobot, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
+
+        //This is just the concept of the location of your equipment.  BalanceJailbreak in DXRFixup will actually place the items
+        AddGoal("05_NYC_UNATCOMJ12LAB", "Equipment", GOAL_TYPE2, '', PHYS_None);
+        eArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", GOAL_TYPE2 | VANILLA_GOAL, vect(-8477.731445,1244.474854,-199.900879), rot(0, 0, 0));
+        eSurg = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", GOAL_TYPE2, vect(1670.443237,-702.527649,-179.660095), rot(0,0,0));
+
+        AddMutualExclusion(eArm, pArm);
+        AddMutualExclusion(eArm, pRobot);
+        AddMutualExclusion(eSurg, pSurg);
+        AddMutualExclusion(eSurg, pPit);
 
         AddGoal("05_NYC_UNATCOMJ12LAB", "Paul Security Monitor", GOAL_TYPE4, 'ComputerSecurity4', PHYS_None); //Making this a goal actor so it gets dignified, but it will always be in the original location
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Command Center", GOAL_TYPE4, vect(-1044.9645,529.963,46.6981), rot(0, 65520, 0));
