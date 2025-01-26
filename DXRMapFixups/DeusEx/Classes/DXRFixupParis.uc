@@ -203,7 +203,7 @@ function PreFirstEntryMapFixes()
             RemoveFears(j);
         }
 
-        ot = Spawn(class'OrdersTrigger',, 'NicoLeaving');
+        ot = Spawn(class'#var(prefix)OrdersTrigger',, 'NicoLeaving');
         ot.Orders = 'Leaving';
         ot.Event = '#var(prefix)NicoletteDuClare';
         ot.SetCollision(false, false, false);

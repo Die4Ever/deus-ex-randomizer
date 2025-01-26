@@ -554,7 +554,7 @@ function PreFirstEntryMapFixes()
             SetOutsideGuyReactions(sp);
         }
 
-        ot = Spawn(class'OrdersTrigger',, 'TiffanyLeaving');
+        ot = Spawn(class'#var(prefix)OrdersTrigger',, 'TiffanyLeaving');
         ot.Orders = 'Leaving';
         ot.Event = '#var(prefix)TiffanySavage';
         ot.SetCollision(false, false, false);
