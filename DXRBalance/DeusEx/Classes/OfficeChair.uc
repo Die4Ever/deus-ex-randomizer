@@ -7,6 +7,7 @@ function BeginPlay()
         PrePivot = class'OfficeChairInjBase'.default.PrePivot;
         sitPoint[0] = class'OfficeChairInjBase'.default.sitPoint[0];
     }
+    Super.BeginPlay();
 }
 
 defaultproperties
