@@ -66,17 +66,21 @@ function PreFirstEntry()
             }
 
             //Spawn keypad for the track electricity
-            key = #var(prefix)Keypad3(Spawnm(class'#var(prefix)Keypad3',,,vect(-500,-1407,-1025),rot(0,16382,0)));
-            key.Event='TrackElectrical';
-            key.bToggleLock=False;
-            key.validCode="147896325";
-            key.ItemName="Track Electricity";
+            if(!dxr.flags.IsReducedRando()) {
+                key = #var(prefix)Keypad3(Spawnm(class'#var(prefix)Keypad3',,,vect(-500,-1407,-1025),rot(0,16382,0)));
+                key.Event='TrackElectrical';
+                key.bToggleLock=False;
+                key.validCode="147896325";
+                key.ItemName="Track Electricity";
+            }
             break;
 
         case "11_PARIS_EVERETT":
-            dt = Spawn(class'DynamicTeleporter',,'everett_backtrack',vectm(650,1100,350));
-            SetDestination(dt, "11_PARIS_UNDERGROUND", 'PathNode68',,45000);
-            dt.SetCollisionSize(100,100);
+            if(bSillyChoppers()) {// not a chopper, but it is a little silly
+                dt = Spawn(class'DynamicTeleporter',,'everett_backtrack',vectm(650,1100,350));
+                SetDestination(dt, "11_PARIS_UNDERGROUND", 'PathNode68',,45000);
+                dt.SetCollisionSize(100,100);
+            }
             break;
 
         case "12_VANDENBERG_CMD":
@@ -346,6 +350,7 @@ function ParisMetroAnyEntry()
             nicolette.Destroy();
     }
 
+    // repeat flights to chateau, not silly, only would be seen if cheating or loading old save
     if( flags.GetBool('JockReady_Played') && !dxr.flags.IsReducedRando() ) {
         flags.SetBool('JockReady_Played', false,, 11);
         flags.SetBool('MS_GuntherUnhidden', false,, 11);
@@ -360,7 +365,6 @@ function ParisMetroAnyEntry()
         chopper=SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vect(3134.682373, 1101.204956, 304.756897), rot(0, -24944, 0) );
 
         RebindChopperHoverHint('ChopperExit',chopper);
-
     }
 
     /*if( flags.GetBool('ClubComplete') ) {
@@ -374,7 +378,7 @@ function ParisChateauAnyEntry()
     local InterpolateTrigger t;
     local FlagBase flags;
 
-    if(dxr.flags.IsReducedRando()) return;
+    if(!bSillyChoppers()) return;
 
     flags = dxr.flagbase;
     flags.SetBool('NicoletteReadyToLeave', true,, 12);
@@ -399,6 +403,8 @@ function ParisUndergroundAnyEntry()
     local #var(prefix)Keypad3 keypad;
     local DXRHoverHint hoverHint;
     local DXRMapVariants mapvariants;
+
+    // not silly, only seen by cheaters and old saves, prevents softlocks
 
     foreach AllActors(class'#var(prefix)FlagTrigger',ft){
         if (ft.FlagName=='MS_LetTobyTakeYou_Rando'){
@@ -458,6 +464,7 @@ function VandCmdAnyEntry()
     local Vehicles chopper;
     local DXRMissions missions;
 
+    // not silly
     if(dxr.flags.IsReducedRando()) return;
 
     foreach AllActors(class'InterpolateTrigger', t, 'mission_done') {
@@ -490,31 +497,30 @@ function VandGasAnyEntry()
     local DeusExMover M;
     local FlagBase flags;
 
-    if(dxr.flags.IsReducedRando()) return;
-
     flags = dxr.flagbase;
 
     ConversationFrobOnly(GetConversation('M12JockFinal'));
     ConversationFrobOnly(GetConversation('M12JockFinal2'));
 
-    // backtracking to CMD, TODO: disable in ReduceRando modes?
-    flags.SetBool('GaryHostageBriefing_Played', true,, 15);
+    if(bSillyChoppers()) {
+        // backtracking to CMD
+        flags.SetBool('GaryHostageBriefing_Played', true,, 15);
 
-    RemoveChoppers('backtrack_chopper');
+        RemoveChoppers('backtrack_chopper');
 
-    foreach AllActors(class'BlackHelicopter', chopper, 'Heli')
-        chopper.Event = 'UN_BlackHeli';
+        foreach AllActors(class'BlackHelicopter', chopper, 'Heli')
+            chopper.Event = 'UN_BlackHeli';
 
-    CreateInterpolationPoints( 'backtrack_exit', vectm(2520.256836, -2489.873535, -1402.078857) );
-    CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vectm(-500,250,0) );
+        CreateInterpolationPoints( 'backtrack_exit', vectm(2520.256836, -2489.873535, -1402.078857) );
+        CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vectm(-500,250,0) );
 
-    if(!dxr.flags.IsZeroRando()) {
-        // I could also give Jock a "Let's go" conversation
-        BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
+        if(!dxr.flags.IsZeroRando()) {
+            // I could also give Jock a "Let's go" conversation
+            BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
+        }
     }
 
-
-    // repeat flights to the sub base
+    // repeat flights to the sub base, not silly
     foreach AllActors(class'InterpolateTrigger', t, 'UN_BlackHeli')
         t.bTriggerOnceOnly = false;
 
@@ -549,21 +555,19 @@ function VandSubAnyEntry()
     local #var(prefix)MapExit exit;
     local Vehicles chopper,sub;
 
-    if(dxr.flags.IsReducedRando()) return;
-
     flags = dxr.flagbase;
 
     // backtracking to gas station
-    flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
+    if(bSillyChoppers()) {
+        flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
 
-    foreach AllActors(class'DataLinkTrigger', dt, 'DataLinkTrigger') {
-        if( dt.datalinkTag == 'dl_start') {
-            dt.CheckFlag = 'dl_start_Played';
-            dt.bCheckFalse = true;
+        foreach AllActors(class'DataLinkTrigger', dt, 'DataLinkTrigger') {
+            if( dt.datalinkTag == 'dl_start') {
+                dt.CheckFlag = 'dl_start_Played';
+                dt.bCheckFalse = true;
+            }
         }
-    }
 
-    if(!dxr.flags.IsZeroRando()) {
         foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger')
             if( t.Event == 'UN_BlackHeli' ) {
                 t.Event = '';
@@ -586,27 +590,28 @@ function VandSubAnyEntry()
     }
 
     // need to backtrack with the sub too
-    foreach AllActors(class'FlagTrigger', ft, 'flag2') {
-        if(ft.Event == 'reallysubexit') {
-            ft.Tag = '';
-            ft.Event = '';
-            ft.Destroy();
-            break;
+    if(!dxr.flags.IsReducedRando()) {
+        foreach AllActors(class'FlagTrigger', ft, 'flag2') {
+            if(ft.Event == 'reallysubexit') {
+                ft.Tag = '';
+                ft.Event = '';
+                ft.Destroy();
+                break;
+            }
         }
-    }
-    foreach AllActors(class'FlagTrigger', ft, 'subexit') {
-        if( ft.Event == 'flag2' ) {
-            ft.Event = 'reallysubexit';
-            break;
+        foreach AllActors(class'FlagTrigger', ft, 'subexit') {
+            if( ft.Event == 'flag2' ) {
+                ft.Event = 'reallysubexit';
+                break;
+            }
         }
+
+        foreach AllActors(class'Vehicles',sub,'MiniSub'){break;} //Actually finding a minisub, but the variable already exists...
+        RebindChopperHoverHint('reallysubexit',sub);
+        // TODO: there are unused InterpolationPoints for the submarine
     }
 
-    foreach AllActors(class'Vehicles',sub,'MiniSub'){break;} //Actually finding a minisub, but the variable already exists...
-    RebindChopperHoverHint('reallysubexit',sub);
-
-    // TODO: there are unused InterpolationPoints for the submarine
-
-    // repeat flights to silo
+    // repeat flights to silo, not silly
     foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit')
         t.bTriggerOnceOnly = false;
 
@@ -617,14 +622,16 @@ function VandSubAnyEntry()
     }
 
     // don't need to talk to Gary
-    c = GetConversation('JockBarks');
-    for(e=c.eventList; e!=None; e=nextEvent) {
-        nextEvent = e.nextEvent;
-        if(e.label == "Go" || ConEventTrigger(e) != None) {
-            c.eventList = e;
-            break;
-        } else {
-            class'DXRFixup'.static.FixConversationDeleteEvent(e, None);
+    if(!dxr.flags.IsReducedRando()) {
+        c = GetConversation('JockBarks');
+        for(e=c.eventList; e!=None; e=nextEvent) {
+            nextEvent = e.nextEvent;
+            if(e.label == "Go" || ConEventTrigger(e) != None) {
+                c.eventList = e;
+                break;
+            } else {
+                class'DXRFixup'.static.FixConversationDeleteEvent(e, None);
+            }
         }
     }
 
@@ -667,7 +674,7 @@ function VandOceanLabAnyEntry()
     local MapExit me;
     local Conversation c;
 
-    if(dxr.flags.IsReducedRando()) return;
+    if(dxr.flags.IsReducedRando()) return; // the mini-sub backtrack is ok for all full rando modes? not silly
 
     // fix shared tags https://github.com/Die4Ever/deus-ex-randomizer/issues/224
     foreach AllActors(class'Actor', a) {
@@ -735,7 +742,11 @@ function VandSiloAnyEntry()
     local Conversation c;
     local Vehicles chopper;
 
-    if(dxr.flags.IsReducedRando()) return;
+    // allow repeat flights, just in case
+    c = GetConversation('JockArea51');
+    c.bDisplayOnce = false;
+
+    if(!bSillyChoppers()) return;
 
     flags = dxr.flagbase;
 
@@ -750,9 +761,6 @@ function VandSiloAnyEntry()
         chopper.FamiliarName = "Backtrack";
         chopper.UnFamiliarName = "Backtrack";
     }
-
-    c = GetConversation('JockArea51');
-    c.bDisplayOnce = false;
 }
 
 function Area51FinalAnyEntry()
@@ -941,4 +949,9 @@ function SetDestination(Actor p, string destURL, name dest_actor_name, optional 
 
     class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, NavigationPoint(p));
 #endif
+}
+
+function bool bSillyChoppers()
+{// used for backtracking to prevent double Jocks, not used for repeat forwardtracking because that would only be seen by cheaters or saves from previous versions, and this function would cause softlocks for them
+    return dxr.flags.IsBingoMode() || dxr.flags.IsEntranceRando();
 }
