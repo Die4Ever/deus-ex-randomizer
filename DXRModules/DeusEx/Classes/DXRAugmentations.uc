@@ -221,6 +221,15 @@ function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
     }
 }
 
+function static class<Augmentation> GetRandomAug(DXRando dxr)
+{
+    local int numAugs;
+    local int banned[50];
+
+    _DefaultAugsMask(dxr, banned, numAugs);
+    return PickRandomAug(dxr, banned, numAugs);
+}
+
 function static bool AugCanBeUpgraded(Augmentation anAug)
 {
     return anAug.bHasIt && anAug.CurrentLevel < anAug.MaxLevel;
@@ -295,10 +304,6 @@ function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCanni
             a.ItemName = a.default.ItemName $": "$ augs[0].default.AugmentationName;
         else if(augs[1] != None)
             a.ItemName = a.default.ItemName $": "$ augs[1].default.AugmentationName;
-    }
-
-    if( (a.AddAugs[0] == '#var(prefix)AugSpeed' || a.AddAugs[1] == '#var(prefix)AugSpeed') && !dxr.flags.IsReducedRando() ) {
-        dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
 

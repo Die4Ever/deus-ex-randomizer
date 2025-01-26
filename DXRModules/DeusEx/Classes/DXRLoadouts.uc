@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,6,2,4) ) {
+    if( ConfigOlderThan(3,3,2,2) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -135,9 +135,9 @@ function CheckConfig()
         item_sets[8].player_message = "No Swords";
         item_sets[8].bans = "WeaponSword,WeaponNanoSword";
 
-        item_sets[9].name = "No Overpowered Weapons";
-        item_sets[9].player_message = "No Overpowered Weapons";
-        item_sets[9].bans = "WeaponSword,WeaponNanoSword,WeaponPistol,WeaponStealthPistol,WeaponGEPGun,WeaponPepperGun";
+        item_sets[9].name = "No Overused Weapons";
+        item_sets[9].player_message = "No Overused Weapons";
+        item_sets[9].bans = "WeaponNanoSword,WeaponPistol,WeaponStealthPistol,WeaponGEPGun";
 
         item_sets[10].name = "By the Book";
         item_sets[10].player_message = "By the Book";
@@ -154,6 +154,12 @@ function CheckConfig()
         item_sets[11].item_spawns =
             "WeaponLAW,75,WeaponLAM,100,WeaponEMPGrenade,75,WeaponGasGrenade,75," $
             "WeaponNanoVirusGrenade,75,#var(package).WeaponRubberBaton,20,AmmoRocket,100,AmmoRocketWP,100,Ammo20mm,100";
+
+        // loadout for random starting aug
+        item_sets[12].name = "Random Starting Aug";
+        item_sets[12].starting_augs = "AugRandom";
+
+        // loadout for borderlands weapons? or gamemode?
 
         i=0;
 
@@ -301,6 +307,11 @@ function AddAug(int s, string type)
 
     for(i=0; i < ArrayCount(__item_sets[s].starting_augs); i++) {
         if( __item_sets[s].starting_augs[i] == None ) {
+            if(type=="AugRandom") {
+                SetGlobalSeed("DXRLoadouts AugRandom " $ i);
+                __item_sets[s].starting_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
+                return;
+            }
             if(dxr.flags.IsHalloweenMode() && type=="AugSpeed" && dxr.flags.settings.speedlevel == 0) {
                 type = "AugStealth";// this is Halloween!
             }

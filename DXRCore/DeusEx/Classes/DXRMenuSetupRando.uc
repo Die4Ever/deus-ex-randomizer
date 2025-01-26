@@ -356,7 +356,7 @@ function BindControls(optional string action)
 
     NewGroup("Augmentations");
 
-    NewMenuItem("Speed Aug Level", "Start the game with the Speed Enhancement augmentation.");
+    NewMenuItem("Starting Aug Level", "What level your starting augs should start at." $ BR $ "Default loadout starts with the Speed Enhancement augmentation.");
     Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
