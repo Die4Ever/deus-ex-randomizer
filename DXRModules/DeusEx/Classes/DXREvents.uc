@@ -3694,4 +3694,5 @@ defaultproperties
     mutually_exclusive(63)=(e1="LebedevLived",e2="AnnaNavarre_DeadM4")
     mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
+    mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_Unconscious")
 }
