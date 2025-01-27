@@ -58,10 +58,8 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     l("starting map is set to "$settings.starting_map);
 }
 
-simulated function AnyEntry()
+simulated function SetGlobals()
 {
-    Super.AnyEntry();
-
     default.bZeroRandoPure = IsZeroRandoPure();
     default.bReducedRando = IsReducedRando();
     default.bCrowdControl = (crowdcontrol!=0);

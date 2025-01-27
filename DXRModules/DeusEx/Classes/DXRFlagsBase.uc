@@ -117,6 +117,7 @@ function FlagsSettings SetDifficulty(int new_difficulty);
 simulated function ExecMaxRando();
 function string DifficultyName(int diff);
 function string GameModeName(int gamemode);
+simulated function SetGlobals();
 
 simulated function _PreTravel()
 {
@@ -266,6 +267,7 @@ simulated function LoadFlags()
     }
 #ifdef noflags
     LoadNoFlags();
+    SetGlobals();
     return;
 #endif
 
@@ -298,6 +300,7 @@ simulated function LoadFlags()
         SaveFlags();
     }
 
+    SetGlobals();
     LogFlags("LoadFlags");
     if( p != None )
         DisplayRandoInfoMessage(p, p.CombatDifficulty);
