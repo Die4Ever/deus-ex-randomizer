@@ -209,7 +209,7 @@ function InitStats(DXRStats newstats)
     if(curMission == 99) {
         CompletedRun(total);
     }
-    if(curMission > 0) {
+    if(curMission > 0 && stats.dxr.flags.newgameplus_loops == 0) {
         last_flagshash = stats.dxr.flags.FlagsHash();
         default.last_flagshash = last_flagshash;
     }
