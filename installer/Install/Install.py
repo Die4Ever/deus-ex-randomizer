@@ -103,8 +103,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
         if ret and settings:
             settings.update(ret)
 
-    if globalsettings['speedupfix']:
-        EngineDllFix(system)
+    EngineDllFix(system, bool(globalsettings['speedupfix']))
 
     CopyDXVK(system, globalsettings['dxvk'], globalsettings['dxvkmaxfps'])
     CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])

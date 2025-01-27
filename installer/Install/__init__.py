@@ -373,21 +373,31 @@ def CopyPackageFiles(modname:str, gameroot:Path, packages:list):
         CopyTo(package_source, package_dest)
 
 
-def EngineDllFix(p:Path) -> bool:
+# thanks to https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175
+def EngineDllFix(p:Path, speedupfix:bool) -> bool:
     dll = p / 'Engine.dll'
     bytes = dll.read_bytes()
     hex = MD5(bytes)
-    if hex == '1f23c5a7e63c79457bd4c24cd14641b0':
-        info('Engine.dll speedup fix already applied')
-        return True
-    if hex != '0af95a7328719b1d4eb26374aad8ae9a':
+    if hex not in ('0af95a7328719b1d4eb26374aad8ae9a', '1f23c5a7e63c79457bd4c24cd14641b0'): # vanilla, fixed
         info('skipping Engine.dll speedup fix, unrecognized md5 sum:', hex)
         return False
-    dllbak = p / 'Engine.dll.bak'
-    WriteBytes(dllbak, bytes)
+
+    if speedupfix and hex == '1f23c5a7e63c79457bd4c24cd14641b0':
+        info('Engine.dll speedup fix already applied')
+        return True
+    if speedupfix==False and hex == '0af95a7328719b1d4eb26374aad8ae9a':
+        info('Engine.dll already vanilla')
+        return True
+
+    if speedupfix:
+        dllbak = p / 'Engine.dll.bak'
+        WriteBytes(dllbak, bytes)
+
     bytes = bytearray(bytes)
-    for i in range(0x12ADCC, 0x12ADCF + 1):
-        bytes[i] = 0
+    if speedupfix:
+        bytes[0x12ADCC:0x12ADD0] = (0,0,0,0)
+    else:
+        bytes[0x12ADCC:0x12ADD0] = (10, 215, 163, 59)
     WriteBytes(dll, bytes)
     return True
 
@@ -435,7 +445,7 @@ def Copyd3d10drv(source, dest):
 
 def CopyDXVK(system:Path, install:bool, maxfps=500):
     dir = GetSourcePath() / '3rdParty' / 'dxvk'
-    info('CopyDXVK from', dir, ' to ', system)
+    info('CopyDXVK with install=', install, 'maxfps=', maxfps, 'from', dir, ' to ', system)
     num = 0
     # doesn't hurt to always have the dxvk.conf file?
     dxvkconf = (GetSourcePath()/'Configs'/'dxvk.conf').read_text()
