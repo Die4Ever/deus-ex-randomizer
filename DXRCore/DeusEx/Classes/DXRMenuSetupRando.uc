@@ -30,6 +30,9 @@ function BindControls(optional string action)
         iDifficulty = int(combatDifficulty * 100.0);
         Slider(iDifficulty, 0, 10000);
         combatDifficulty = float(iDifficulty) / 100.0;
+    #ifndef hx
+        f.settings.CombatDifficulty = combatDifficulty;
+    #endif
     }
 
     //Make sure the starting map values match those in DXRStartMap

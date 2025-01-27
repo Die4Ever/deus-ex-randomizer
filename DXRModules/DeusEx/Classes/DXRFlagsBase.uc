@@ -291,6 +291,9 @@ simulated function LoadFlags()
     }
 
     BindFlags(Reading);
+#ifndef hx
+    settings.CombatDifficulty = p.CombatDifficulty;
+#endif
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
