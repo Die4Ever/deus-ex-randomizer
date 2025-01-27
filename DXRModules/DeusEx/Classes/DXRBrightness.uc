@@ -1,7 +1,7 @@
 class DXRBrightness expands DXRActorsBase transient;
 
 //This struct (and it's corresponding array) won't be actively used anymore
-//To be removed in a future release
+//TODO: To be removed in a future release
 struct ZoneBrightnessData
 {
     var name zonename;
@@ -36,14 +36,14 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
-    MigrateSavedData(); //To be removed when the ZoneBrightnessData is stripped out
+    MigrateSavedData(); //TODO: To be removed when the ZoneBrightnessData is stripped out
     //UpdateStoredData(); //If more is added to DXRStoredZoneInfo or DXRStoredLightFog
 
     IncreaseBrightness(GetSavedBrightnessBoost());
     ApplyFog(class'MenuChoice_Fog'.default.enabled);
 }
 
-//To be removed when the ZoneBrightnessData is stripped out
+//TODO: To be removed when the ZoneBrightnessData is stripped out
 function MigrateSavedData()
 {
     local DXRStoredZoneInfo szi;
@@ -183,7 +183,7 @@ static function AdjustBrightness(DeusExPlayer a, int brightness)
     }
 }
 
-//To be removed when the ZoneBrightnessData is stripped out
+//TODO: To be removed when the ZoneBrightnessData is stripped out
 function ZoneBrightnessData GetDefaultZoneBrightness(ZoneInfo z)
 {
     local ZoneBrightnessData zb;
@@ -195,7 +195,7 @@ function ZoneBrightnessData GetDefaultZoneBrightness(ZoneInfo z)
     return zb;
 }
 
-//DO NOT USE - To be removed when the ZoneBrightnessData is stripped out
+//DO NOT USE - TODO: To be removed when the ZoneBrightnessData is stripped out
 function SaveDefaultZoneBrightness(ZoneInfo z)
 {
     local int i;

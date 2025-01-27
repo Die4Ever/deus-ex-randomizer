@@ -80,10 +80,10 @@ event DrawWindow(GC gc)
 
     dxr = class'DXRando'.default.dxr;
     if (
-        dxr.flags.IsBingoCampaignMode() &&
-        dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') &&
-        dxr.dxInfo.missionNumber == 4 &&
-        class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration)
+        dxr.flags.IsBingoCampaignMode()
+        && dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played')
+        && dxr.dxInfo.missionNumber == 4
+        && class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration)
     ) {
         message = class'DXRBingoCampaign'.static.GetBingoHoverHintText(dxr, "");
 

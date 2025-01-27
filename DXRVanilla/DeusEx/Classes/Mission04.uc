@@ -6,10 +6,10 @@ function Timer()
     local string map;
 
     if (
-        dxr.flags.IsBingoCampaignMode() &&
-        Player.IsInState('Dying') &&
-        class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration) &&
-        !dxr.flagbase.GetBool(class'DXRBingoCampaign'.static.GetBingoMissionFlag(4))
+        dxr.flags.IsBingoCampaignMode()
+        && Player.IsInState('Dying')
+        && class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration)
+        && !dxr.flagbase.GetBool(class'DXRBingoCampaign'.static.GetBingoMissionFlag(4))
     ) {
         return;
     }

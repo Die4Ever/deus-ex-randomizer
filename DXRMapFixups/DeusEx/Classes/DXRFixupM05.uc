@@ -454,7 +454,7 @@ function BalanceJailbreak()
 
     //Freebie Weapon
     //Don't try to move this to DXRMissions
-    //When it's there, it won'tapply with goal rando disabled
+    //When it's there, it won't apply with goal rando disabled
     if(dxr.flags.settings.swapitems > 0 || dxr.flags.loadout != 0) {
         e = DXREnemies(dxr.FindModule(class'DXREnemies'));
         if( e != None ) {

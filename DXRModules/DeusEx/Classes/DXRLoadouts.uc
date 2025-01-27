@@ -159,8 +159,6 @@ function CheckConfig()
         item_sets[12].name = "Random Starting Aug";
         item_sets[12].starting_augs = "AugRandom";
 
-        // loadout for borderlands weapons? or gamemode?
-
         i=0;
 
         randomitems[i].type = "Medkit";
