@@ -8,24 +8,31 @@ function CalcTrace(float deltaTime)
     local actor target;
     local int i, texFlags;
     local name texName, texGroup;
+    local bool vanilla;
 
     StartTrace = Location;
     EndTrace = Location + 5000 * vector(Rotation);
     HitActor = None;
+
+    vanilla = class'DXRFlags'.default.bZeroRandoPure;
 
     // trace the path of the reflected beam and draw points at each hit
     for (i=0; i<ArrayCount(spot); i++)
     {
         foreach TraceTexture(class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, StartTrace)
         {
-            if (   !target.bBlockActors
-                || (DeusExProjectile(target) != None && !DeusExProjectile(target).bStuck)
-            ) {
-                // do nothing - keep on tracing
-            }
-            else if ((target == Level) || target.IsA('Mover'))
+            if ((target == Level) || target.IsA('Mover'))
             {
                 break;
+            }
+            else if (   !target.bBlockActors
+                || (DeusExProjectile(target) != None && !DeusExProjectile(target).bStuck)
+            ) {
+                // do nothing - keep on tracing (except in Zero Rando Pure)
+                if(vanilla && DeathMarker(target)==None && target.DrawType != DT_None && !target.bHidden) {
+                    HitActor = target;
+                    break;
+                }
             }
             else
             {

@@ -30,6 +30,9 @@ var FlagsSettings difficulty_settings[5];
 var MoreFlagsSettings more_difficulty_settings[5];
 #endif
 
+// only access these in defaults, mostly for balance change checks
+var bool bZeroRandoPure, bReducedRando, bCrowdControl;
+
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
 #ifdef injections
@@ -37,11 +40,6 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 #endif
 
     Super.PlayerAnyEntry(p);
-#ifdef injections||revision
-    p.bZeroRando = IsZeroRandoPure();
-    p.bReducedRando = IsReducedRando();
-    p.bCrowdControl = (crowdcontrol!=0);
-#endif
 
     if(!VersionIsStable() || #bool(debug))
         p.bCheatsEnabled = true;
@@ -58,6 +56,13 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     }
 
     l("starting map is set to "$settings.starting_map);
+}
+
+simulated function SetGlobals()
+{
+    default.bZeroRandoPure = IsZeroRandoPure();
+    default.bReducedRando = IsReducedRando();
+    default.bCrowdControl = (crowdcontrol!=0);
 }
 
 function InitAdvancedDefaults()

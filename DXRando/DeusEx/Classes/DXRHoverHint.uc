@@ -66,7 +66,14 @@ function SetBaseActor(Actor base)
 
     //The tick logic is primarily for handling EnterWorld/LeaveWorld,
     //so only activate for things that can do that.
-    if (ScriptedPawn(baseActor)!=None || Vehicles(baseActor)!=None){
+    if (#var(prefix)ScriptedPawn(baseActor)!=None || #var(prefix)Vehicles(baseActor)!=None){
+        //Initialize bInWorld before ticking, in case the base actor changes state before their first tick
+        if (#var(prefix)ScriptedPawn(baseActor)!=None){
+            bInWorld = ScriptedPawn(baseActor).bInWorld;
+        }
+        if (#var(prefix)Vehicles(baseActor)!=None){
+            bInWorld = #var(prefix)Vehicles(baseActor).bInWorld;
+        }
         Enable('Tick');
     }
 }
@@ -78,13 +85,13 @@ function bool ShouldDisplay(float dist)
     }
 
     if (baseActor!=None){
-        if (ScriptedPawn(baseActor)!=None){
-            if ((ScriptedPawn(baseActor).bInWorld==False)){
+        if (#var(prefix)ScriptedPawn(baseActor)!=None){
+            if ((#var(prefix)ScriptedPawn(baseActor).bInWorld==False)){
                 return False;
             }
         }
-        if (Vehicles(baseActor)!=None){
-            if ((Vehicles(baseActor).bInWorld==False)){
+        if (#var(prefix)Vehicles(baseActor)!=None){
+            if ((#var(prefix)Vehicles(baseActor).bInWorld==False)){
                 return False;
             }
         }

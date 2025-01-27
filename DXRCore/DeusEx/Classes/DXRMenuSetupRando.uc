@@ -2,6 +2,14 @@ class DXRMenuSetupRando extends DXRMenuBase;
 
 var float combatDifficulty;
 
+var string SplitsBtnTitle, SplitsBtnMessage;
+
+enum ERandoMessageBoxModes
+{
+    RMB_NewGame,// starting with splits with a different flagshash
+};
+var ERandoMessageBoxModes nextScreenNum;
+
 event InitWindow()
 {
     Super.InitWindow();
@@ -22,6 +30,9 @@ function BindControls(optional string action)
         iDifficulty = int(combatDifficulty * 100.0);
         Slider(iDifficulty, 0, 10000);
         combatDifficulty = float(iDifficulty) / 100.0;
+    #ifndef hx
+        f.settings.CombatDifficulty = combatDifficulty;
+    #endif
     }
 
     //Make sure the starting map values match those in DXRStartMap
@@ -356,7 +367,7 @@ function BindControls(optional string action)
 
     NewGroup("Augmentations");
 
-    NewMenuItem("Speed Aug Level", "Start the game with the Speed Enhancement augmentation.");
+    NewMenuItem("Starting Aug Level", "What level your starting augs should start at." $ BR $ "Default loadout starts with the Speed Enhancement augmentation.");
     Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
@@ -381,7 +392,7 @@ function BindControls(optional string action)
     NewMenuItem("Weapons Removed", "Number of weapons removed per loop.");
     Slider(f.newgameplus_num_removed_weapons, 0, 18);
 
-    if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty);
+    if( action == "NEXT" ) HandleNewGameButton();
     if( action == "RANDOMIZE" ) RandomizeOptions();
 }
 
@@ -407,6 +418,40 @@ function SetDifficulty(float newDifficulty)
     combatDifficulty = newDifficulty;
 }
 
+function HandleNewGameButton()
+{
+    local DXRFlags f;
+    f = GetFlags();
+
+    if(!class'HUDSpeedrunSplits'.static.CheckFlags(f)) {
+        nextScreenNum=RMB_NewGame;
+        root.MessageBox(SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
+    }
+    else {
+        DoNewGameScreen();
+    }
+}
+
+function DoNewGameScreen()
+{
+    _InvokeNewGameScreen(combatDifficulty);
+}
+
+event bool BoxOptionSelected(Window button, int buttonNumber)
+{
+    root.PopWindow();
+
+    switch (nextScreenNum){
+        case RMB_NewGame:
+            if (buttonNumber==0){
+                DoNewGameScreen();
+            }
+            return true;
+    }
+
+    return Super.BoxOptionSelected(button,buttonNumber);
+}
+
 defaultproperties
 {
     num_rows=13
@@ -422,5 +467,6 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
-
+    SplitsBtnTitle="Mismatched Splits!"
+    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.  Are you sure you want to continue?"
 }

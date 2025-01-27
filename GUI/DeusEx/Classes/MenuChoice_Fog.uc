@@ -2,17 +2,18 @@ class MenuChoice_Fog extends DXRMenuUIChoiceBool;
 
 function SaveSetting()
 {
+    local DXRBrightness b;
+
     Super.SaveSetting();
     enabled = bool(GetValue());
-    if(!enabled) {
-        player.ConsoleCommand("set ZoneInfo bFogZone false");
-    }
+    b = DXRBrightness(class'DXRBrightness'.static.Find());
+    b.ApplyFog(enabled);
 }
 
 defaultproperties
 {
     enabled=True
     defaultvalue=True
-    HelpText="You can disable fog effects for additional performance in certain areas. Enabling will not take affect until you get to a new map."
+    HelpText="You can disable fog effects for additional performance in certain areas."
     actionText="Fog Effects"
 }

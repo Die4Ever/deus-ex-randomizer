@@ -36,6 +36,8 @@ var config float x_pos, y_pos;
 var float prevSpeed, avgSpeed, lastTime;
 var int rememberedMission;
 
+var config int last_flagshash;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 // ----------------------------------------------------------------------
@@ -207,6 +209,10 @@ function InitStats(DXRStats newstats)
     if(curMission == 99) {
         CompletedRun(total);
     }
+    if(curMission > 0 && stats.dxr.flags.newgameplus_loops == 0) {
+        last_flagshash = stats.dxr.flags.FlagsHash();
+        default.last_flagshash = last_flagshash;
+    }
     SaveConfig();
 
     if(curMission < 1 || curMission > 15) {
@@ -216,6 +222,16 @@ function InitStats(DXRStats newstats)
 
     Show();
     StyleChanged();
+}
+
+static function bool CheckFlags(DXRFlags f)
+{
+    local int last;
+
+    if(f.moresettings.splits_overlay <= 0) return true;
+    last = class'HUDSpeedrunSplits'.default.last_flagshash;
+    if(last == 0) return true;
+    return f.FlagsHash() == last;
 }
 
 function CompletedRun(int total)

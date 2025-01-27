@@ -103,10 +103,11 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
         if ret and settings:
             settings.update(ret)
 
-    if globalsettings['speedupfix']:
-        EngineDllFix(system)
+    EngineDllFix(system, bool(globalsettings['speedupfix']))
 
-    CopyDXVK(system, globalsettings['dxvk'], globalsettings['dxvkmaxfps'])
+    maxmaxfps = 1000 if globalsettings['speedupfix'] else 120
+    dxvkmaxfps = max(10, min(maxmaxfps, globalsettings['dxvkmaxfps']))
+    CopyDXVK(system, globalsettings['dxvk'], dxvkmaxfps)
     CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])
     InstallOGL2(system, globalsettings['ogl2'])
 
@@ -210,20 +211,22 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
 
     if not globalsettings['dxvk'] and IsWindows():
         changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
+    if 'DeusExe' not in changes:
+        changes['DeusExe'] = {}
 
     if 'D3D10Drv.D3D10RenderDevice' not in changes:
         changes['D3D10Drv.D3D10RenderDevice'] = {}
-    if not globalsettings['speedupfix']:
-        if 'DeusExe' not in changes:
-            changes['DeusExe'] = {}
-        changes['DeusExe'].update({'FPSLimit': '120'})
-        changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'True'})
-    elif exename == 'DeusEx': # ensure we don't retain bad settings from old vanilla configs since we use the same exe file name?
-        if 'DeusExe' not in changes:
-            changes['DeusExe'] = {}
+
+    # FPS stuff
+    deusexeFPSLimit = 0
+    if not globalsettings['speedupfix'] and not globalsettings['dxvk']:
+        changes['DeusExe'].update({'FPSLimit': '0'}) # Kentie's DeusExe is bad at FPS limits, just let the renderer do it
+        changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'False'})
+    else: # if we're using the speedup fix then we don't need to limit fps, if we're using DXVK then that handles the fps limit
         changes['DeusExe'].update({'FPSLimit': '0'})
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
 
+    # D3D10 lighting
     if globalsettings['deus_nsf_d3d10_lighting']:
         changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'False'})
     else:
@@ -278,6 +281,8 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
                  'DeusEx.DXRando', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'DeusEx.DXRMenuScreenNewGame')),
             changes
         )
+        changes['DeusExe']['FPSLimit'] = str(deusexeFPSLimit) # always overwrite this value
+
     if changes:
         c = Config.Config(b)
         c.ModifyConfig(changes, additions={})

@@ -208,9 +208,10 @@ function AnyEntry()
 
 function bool IsLateStart(int mission)
 {
+    if(#bool(neverlate)) return false;
     if(mission==7) mission=6;
     if(mission==13) mission=12;
-    return dxr.flags.settings.starting_map > mission * 10 + 5;
+    return dxr.flags.settings.starting_map >= mission * 10 + 5;
 }
 
 function HandleSpecialPerson(string bindname, string thisGoal, optional string nextGoal) {
@@ -221,7 +222,7 @@ function HandleSpecialPerson(string bindname, string thisGoal, optional string n
     if (IsBoardGoal(thisGoal)) return;
 
     data = class'PlayerDataItem'.static.GiveItem(player());
-    oldSeed = SetGlobalSeed(dxr.dxInfo.MissionNumber $ " HandleSpecialPerson " $ bindname);
+    oldSeed = SetGlobalSeed(dxr.dxInfo.MissionNumber @ "HandleSpecialPerson" @ bindname);
 
     if (chance_single(50)) {
         foreach AllActors(class'ScriptedPawn', pawn) {
@@ -302,6 +303,10 @@ function NewBingoBoard()
             data.BanGoal(s, 2); // if this was on the M01 board (while generating M02 board), it will not be available again until generating M04 board
             break;
         }
+    }
+
+    if(data.IsBanned("JordanShea_Dead") && data.IsBanned("JoeGreene_Dead")) {
+        data.BanGoal("SnitchDowd", 999); // a bit weird because you actually only need one of them to be alive
     }
 
     // create new board

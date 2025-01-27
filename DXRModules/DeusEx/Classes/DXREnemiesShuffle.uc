@@ -60,6 +60,38 @@ function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
     return a.GetAllianceType( b.Alliance ) == ALLIANCE_Friendly && b.GetAllianceType( a.Alliance ) == ALLIANCE_Friendly;
 }
 
+function bool CanSwap(ScriptedPawn a, ScriptedPawn b) {
+    local bool colA, colB; // original collision
+    local bool spaceA, spaceB;
+    local vector loc; // out param
+    local float extraWidth, extraHeight;
+
+    spaceA = #var(prefix)SecurityBot2(a) == None && #var(prefix)MilitaryBot(a) == None && #var(prefix)SpiderBot(a) == None;
+    spaceB = #var(prefix)SecurityBot2(b) == None && #var(prefix)MilitaryBot(b) == None && #var(prefix)SpiderBot(b) == None;
+    if(spaceA && spaceB) return true;
+
+    colA = a.bBlockActors;
+    colB = b.bBlockActors;
+    a.SetCollision(a.bCollideActors, false, a.bBlockPlayers);
+    b.SetCollision(b.bCollideActors, false, b.bBlockPlayers);
+
+    extraWidth = class'#var(PlayerPawn)'.default.CollisionRadius * 2.1;
+    extraHeight = 1;
+
+    loc = b.Location;
+    if(!spaceA) spaceA = CheckFreeSpace(loc, a.CollisionRadius + extraWidth, a.CollisionHeight + extraHeight);
+    //if(!spaceA) DebugMarkKeyPosition(loc, a);
+
+    loc = a.Location;
+    if(!spaceB) spaceB = CheckFreeSpace(loc, b.CollisionRadius + extraWidth, b.CollisionHeight + extraHeight);
+    //if(!spaceB) DebugMarkKeyPosition(loc, b);
+
+    a.SetCollision(a.bCollideActors, colA, a.bBlockPlayers);
+    b.SetCollision(b.bCollideActors, colB, b.bBlockPlayers);
+
+    return spaceA && spaceB;
+}
+
 function bool CanSit(ScriptedPawn sp)
 {
     if (#var(prefix)MJ12Commando(sp) != None) return False;
@@ -140,6 +172,11 @@ function SwapScriptedPawns(int percent, bool enemies)
         }
 
         if( ! ShouldSwap(temp[i], temp[slot]) ) {
+            continue;
+        }
+
+        if( ! CanSwap(temp[i], temp[slot]) ) {
+            l("SwapScriptedPawns not enough space to swap "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
             continue;
         }
 

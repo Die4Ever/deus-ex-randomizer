@@ -335,8 +335,14 @@ function BalanceJailbreak()
     local #var(PlayerPawn) p;
     local vector itemLocations[50];
     local DXRMissions missions;
-    local string PaulLocation;
+    local string EquipLocation;
     local #var(prefix)DataLinkTrigger dlt;
+    local string freebieLocNames[4];
+    local vector freebieLocs[4];
+    local DynamicLight dl;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     SetSeed("BalanceJailbreak");
 
@@ -348,16 +354,16 @@ function BalanceJailbreak()
         if(DeusExWeapon(p.inHand) != None)
             DeusExWeapon(p.inHand).LaserOff();
 
-        PaulLocation = "Surgery Ward";
+        EquipLocation = "Armory";
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
         for(i=0;missions!=None && i<missions.num_goals;i++) {
-            if(missions.GetSpoiler(i).goalName == "Paul") {
-                PaulLocation = missions.GetSpoiler(i).goalLocation;
+            if(missions.GetSpoiler(i).goalName == "Equipment") {
+                EquipLocation = missions.GetSpoiler(i).goalLocation;
             }
         }
         num=0;
-        l("BalanceJailbreak PaulLocation == " $ PaulLocation);
-        if(PaulLocation == "Surgery Ward" || PaulLocation == "Greasel Pit")
+        l("BalanceJailbreak EquipLocation == " $ EquipLocation);
+        if(EquipLocation == "Armory")
             foreach AllActors(class'SpawnPoint', SP, 'player_inv')
                 //Adjust item spawnpoints in armoury - specifically, move things off the top shelf
                 switch(sp.Name){
@@ -384,7 +390,7 @@ function BalanceJailbreak()
                         break;
                 }
 
-        else {
+        else { //EquipLocation == "Surgery Ward"
             // put the items in the surgery ward
             itemLocations[num++] = vectm(2160,-585,-203);// paul's bed
             itemLocations[num++] = vectm(2160,-505,-203);// paul's bed
@@ -446,6 +452,9 @@ function BalanceJailbreak()
         }
     }
 
+    //Freebie Weapon
+    //Don't try to move this to DXRMissions
+    //When it's there, it won't apply with goal rando disabled
     if(dxr.flags.settings.swapitems > 0 || dxr.flags.loadout != 0) {
         e = DXREnemies(dxr.FindModule(class'DXREnemies'));
         if( e != None ) {
@@ -464,20 +473,38 @@ function BalanceJailbreak()
             iclass = loadout.get_starting_item();
         }
 
-        switch(rng(4)) {
-        case 1:// crate past the desk
-            Spawn(iclass,,, vectm(-1838.230225, 1250.242676, -110.399773));
-            break;
-        case 2:// desk
-            Spawn(iclass,,, vectm(-2105.412598, 1232.926758, -134.400101));
-            break;
-        case 3:// locked jail cell with medbot
-            Spawn(iclass,,, vectm(-3020.846924, 910.062134, -201.399750));
-            break;
-        default:// unlocked jail cell
-            Spawn(iclass,,, vectm(-2688.502686, 1424.474731, -158.099915));
-            break;
+        freebieLocNames[0]="Unlocked Jail Cell";
+        freebieLocNames[1]="Crate past the Desk";
+        freebieLocNames[2]="Desk";
+        freebieLocNames[3]="Locked Jail Cell";
+
+        //Define the locations by mod
+        if (VanillaMaps){
+            freebieLocs[0]=vectm(-2688.502686, 1424.474731, -158.099915); //Unlocked Jail Cell
+            freebieLocs[1]=vectm(-1838.230225, 1250.242676, -110.399773); //Crate past the desk
+            freebieLocs[2]=vectm(-2105.412598, 1232.926758, -134.400101); //Desk
+            freebieLocs[3]=vectm(-3020.846924, 910.062134, -201.399750);  //Locked Jail Cell
+        } else { //Revision
+            freebieLocs[0]=vectm(-2690,1420,-190); //Unlocked Jail Cell
+            freebieLocs[1]=vectm(-1893,1184,-110); //Crate past the desk
+            freebieLocs[2]=vectm(-2190,1075,-130); //Desk
+            freebieLocs[3]=vectm(-3024,910,-190);  //Locked Jail Cell
         }
+
+        if (ArrayCount(freebieLocs) != ArrayCount(freebieLocNames)){
+            err("DXRFixupM05 Freebie Weapon - freebieLocs and freebieLocNames sizes don't match!" @ ArrayCount(freebieLocs) @ ArrayCount(freebieLocNames));
+        }
+
+        i=rng(ArrayCount(freebieLocs));
+        nextItem = Spawn(iclass,,, freebieLocs[i]);
+        l("spawned freebie weapon" @ freebieLocNames[i] @ iclass @ nextItem);
+
+        //Give the weapon a light so that it stands out a bit more
+        //The light will disappear when you grab the item
+        dl = Spawn(class'DynamicLight',,,nextItem.Location+vect(0,0,6));
+        dl.LightRadius=6;
+        dl.SetBase(nextItem);
+
     }
 }
 

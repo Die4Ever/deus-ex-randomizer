@@ -78,11 +78,16 @@ function SetdxInfo(DeusExLevelInfo i)
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
 
+    // to test many seeds quickly:
+    // - set the preproc var playersonly, manually enable cheats, use legend to skip to the level you want, quicksave
+    // - change the preproc var to supercut, load your save over and over again to get a new seed each time
 #ifdef playersonly
     Level.bPlayersOnly = true;
+    Level.LevelAction = LEVACT_None;
 #elseif supercut
     Level.bPlayersOnly = false;
 #endif
+
     CrcInit();
     ClearModules();
     LoadFlagsModule();
@@ -108,7 +113,9 @@ function DXRInit()
 #ifdef supercut
     Player.bCheatsEnabled = true;
     Player.Invisible(true);
-    Player.GotoState('Paralyzed');
+    Player.ReducedDamageType = 'All';
+    //Player.GotoState('Paralyzed');// keeps the camera still for recording video
+    Player.GotoState('CheatFlying');
 #endif
 
 #ifdef revision

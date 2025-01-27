@@ -18,7 +18,7 @@ function DoHeal(Human player)
     if (player == None) return;
 
     player.drugEffectTimer += drugEffect;
-    balance = ! player.bZeroRando;
+    balance = ! class'DXRFlags'.default.bZeroRandoPure;
 
     if( health > 0 ) {
         i = player._HealPlayer(health, false, balance);// balance bool used for heal legs

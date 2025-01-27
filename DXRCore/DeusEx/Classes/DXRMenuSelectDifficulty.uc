@@ -4,6 +4,7 @@ var string MaxRandoBtnTitle, MaxRandoBtnMessage;
 var string AdvancedBtnTitle, AdvancedBtnMessage;
 var string ExtremeBtnTitle, ExtremeBtnMessage;
 var string ImpossibleBtnTitle, ImpossibleBtnMessage;
+var string SplitsBtnTitle, SplitsBtnMessage;
 
 var int gamemode_enum, autosave_enum;
 
@@ -11,7 +12,7 @@ enum ERandoMessageBoxModes
 {
     RMB_MaxRando,
     RMB_Advanced,
-    RMB_Difficulty,// choosing Extreme or Impossible
+    RMB_NewGame,// choosing Extreme or Impossible, or starting with splits with a different flagshash
 };
 var ERandoMessageBoxModes nextScreenNum;
 
@@ -207,12 +208,16 @@ function HandleNewGameButton()
     local DXRFlags f;
     f = GetFlags();
 
-    if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Extreme") {
-        nextScreenNum=RMB_Difficulty;
+    if(!class'HUDSpeedrunSplits'.static.CheckFlags(f)) {
+        nextScreenNum=RMB_NewGame;
+        root.MessageBox(SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
+    }
+    else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Extreme") {
+        nextScreenNum=RMB_NewGame;
         root.MessageBox(ExtremeBtnTitle,ExtremeBtnMessage,0,False,Self);
     }
     else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Impossible") {
-        nextScreenNum=RMB_Difficulty;
+        nextScreenNum=RMB_NewGame;
         root.MessageBox(ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
     }
     else {
@@ -283,7 +288,7 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
                 DoAdvancedButtonConfirm();
             }
             return true;
-        case RMB_Difficulty:
+        case RMB_NewGame:
             if (buttonNumber==0){
                 DoNewGameScreen();
             }
@@ -334,4 +339,6 @@ defaultproperties
     ExtremeBtnMessage="It appears you're new to DX Randomizer.  Extreme difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
     ImpossibleBtnTitle="Impossible Difficulty?"
     ImpossibleBtnMessage="It appears you're new to DX Randomizer.  Impossible difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
+    SplitsBtnTitle="Mismatched Splits!"
+    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.  Are you sure you want to continue?"
 }

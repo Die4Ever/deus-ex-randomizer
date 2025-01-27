@@ -117,6 +117,7 @@ function FlagsSettings SetDifficulty(int new_difficulty);
 simulated function ExecMaxRando();
 function string DifficultyName(int diff);
 function string GameModeName(int gamemode);
+simulated function SetGlobals();
 
 simulated function _PreTravel()
 {
@@ -248,7 +249,7 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
 
     info(str);
     info(str2);
-    if(p != None){
+    if(p != None && !DXRFlags(self).IsZeroRandoPure()){
         p.ClientMessage(str);
         p.ClientMessage(str2);
     }
@@ -266,6 +267,7 @@ simulated function LoadFlags()
     }
 #ifdef noflags
     LoadNoFlags();
+    SetGlobals();
     return;
 #endif
 
@@ -289,6 +291,9 @@ simulated function LoadFlags()
     }
 
     BindFlags(Reading);
+#ifndef hx
+    settings.CombatDifficulty = p.CombatDifficulty;
+#endif
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -298,6 +303,7 @@ simulated function LoadFlags()
         SaveFlags();
     }
 
+    SetGlobals();
     LogFlags("LoadFlags");
     if( p != None )
         DisplayRandoInfoMessage(p, p.CombatDifficulty);
@@ -1075,14 +1081,12 @@ simulated function LogFlags(string prefix)
 
 simulated function string StringifyFlags(int mode)
 {
-        local float CombatDifficulty;
-        local #var(PlayerPawn) p;
+    local float CombatDifficulty;
+    local #var(PlayerPawn) p;
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
-    p = player();
-    if( p != None )
-        CombatDifficulty = p.CombatDifficulty;
+    CombatDifficulty = settings.CombatDifficulty;
 #endif
     return BindFlags(mode, "difficulty: " $ TrimTrailingZeros(CombatDifficulty));
 }
