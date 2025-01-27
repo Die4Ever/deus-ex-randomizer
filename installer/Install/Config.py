@@ -89,6 +89,7 @@ class Config:
             key:str = line.get('key', '')
             changename = lowerchanges.get(key.lower())
             if changename:
+                tempchanges.pop(changename, None) # a value could be listed twice?
                 if changes[changename] == line['value']:
                     continue
                 lines.insert(i, { 'text': ';' + line['key'] + '=' + line['value'] })
@@ -96,7 +97,6 @@ class Config:
                 assert isinstance(changes[changename], str)
                 line['key'] = changename # fix casing?
                 line['value'] = changes[changename]
-                tempchanges.pop(changename)
 
         # add the things we wanted to change but didn't exist
         for (change, val) in tempchanges.items():
