@@ -66,8 +66,8 @@ function bool CanSwap(ScriptedPawn a, ScriptedPawn b) {
     local vector loc; // out param
     local float extraWidth, extraHeight;
 
-    spaceA = #var(prefix)Robot(a) == None || #var(prefix)SpiderBot2(a) != None;
-    spaceB = #var(prefix)Robot(b) == None || #var(prefix)SpiderBot2(b) != None;
+    spaceA = #var(prefix)SecurityBot2(a) == None && #var(prefix)MilitaryBot(a) == None && #var(prefix)SpiderBot(a) == None;
+    spaceB = #var(prefix)SecurityBot2(b) == None && #var(prefix)MilitaryBot(b) == None && #var(prefix)SpiderBot(b) == None;
     if(spaceA && spaceB) return true;
 
     colA = a.bBlockActors;
@@ -76,7 +76,7 @@ function bool CanSwap(ScriptedPawn a, ScriptedPawn b) {
     b.SetCollision(b.bCollideActors, false, b.bBlockPlayers);
 
     extraWidth = class'#var(PlayerPawn)'.default.CollisionRadius * 2.1;
-    extraHeight = class'#var(PlayerPawn)'.default.CollisionHeight * 1.1;
+    extraHeight = 1;
 
     loc = b.Location;
     if(!spaceA) spaceA = CheckFreeSpace(loc, a.CollisionRadius + extraWidth, a.CollisionHeight + extraHeight);
