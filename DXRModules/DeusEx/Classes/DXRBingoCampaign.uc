@@ -373,14 +373,42 @@ function UpdateCryptDoors()
     }
 }
 
-static function bool IsBingoEnd(int missionNumber, int bingo_duration)
+static function int GetBingoEnd(int missionNumber, int bingo_duration)
 {
     if (missionNumber > 12) {
         missionNumber -= 2;
     } else if (missionNumber > 6) {
         missionNumber -= 1;
     }
-    return missionNumber % bingo_duration == 0 || missionNumber == 13;
+
+    if (missionNumber % bingo_duration != 0) {
+        missionNumber = (missionNumber / bingo_duration) * bingo_duration + bingo_duration; // set missionNumber to the previous end, then add bingo_duration to it
+        missionNumber = Min(missionNumber, 13);
+    }
+
+    if (missionNumber > 11) {
+        missionNumber += 2;
+    } else if (missionNumber > 6) {
+        missionNumber += 1;
+    }
+
+    return missionNumber;
+}
+
+static function bool IsBingoEnd(int missionNumber, int bingo_duration)
+{
+    return GetBingoEnd(missionNumber, bingo_duration) == missionNumber;
+}
+
+// be sure to keep backtracking in mind when using this function
+static function bool IsGoalFailed(int missionNumber, int bingo_duration, int missionMask)
+{
+    local int mission, bingoMask;
+
+    for (mission = GetBingoEnd(missionNumber, bingo_duration); mission >= missionNumber; mission--) {
+        bingoMask = bingoMask | (1 << mission);
+    }
+    return (bingoMask & missionMask) == 0;
 }
 
 static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {

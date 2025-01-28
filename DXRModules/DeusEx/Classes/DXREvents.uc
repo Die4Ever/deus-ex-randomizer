@@ -1532,6 +1532,35 @@ function MarkBingoFailedSpecial()
     }
 }
 
+function CheckBingoCampaignGoalFailed(string goalName)
+{
+    if (class'DXRBingoCampaign'.static.IsGoalFailed(
+        dxr.dxInfo.missionNumber,
+        dxr.flags.bingo_duration,
+        bingo_options[GetBingoOptionIdx(goalName)].missions
+    )) {
+        MarkBingoAsFailed(goalName);
+    }
+}
+
+function MarkBingoCampaignFailed()
+{
+    if (!dxr.flags.IsBingoCampaignMode()) return;
+    if (dxr.dxInfo.missionNumber > 15) return;
+
+    // it's tempting to just loop through every goal in the array but backtracking would lead to some false positives
+    CheckBingoCampaignGoalFailed("ViewPortraits");
+    CheckBingoCampaignGoalFailed("ViewMaps");
+    CheckBingoCampaignGoalFailed("ChangeClothes");
+    CheckBingoCampaignGoalFailed("Terrorist_peeptime");
+    CheckBingoCampaignGoalFailed("UNATCOTroop_peeptime");
+    CheckBingoCampaignGoalFailed("ViewManderleyMailMaps");
+    CheckBingoCampaignGoalFailed("PetKarkians");
+    CheckBingoCampaignGoalFailed("PetDogs");
+    CheckBingoCampaignGoalFailed("PetBirds");
+    CheckBingoCampaignGoalFailed("PetAnimal_Greasel");
+}
+
 simulated function AnyEntry()
 {
     local Conversation conv;

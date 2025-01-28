@@ -40,6 +40,8 @@ function SetWatchFlags();
 static function int GetBingoFailedEvents(string eventname, out string failed[6]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
+// for goals that can be impossible before the end bingo mission
+function MarkBingoCampaignFailed();
 
 function AddWatchedActor(Actor a,String eventName)
 {
@@ -99,8 +101,9 @@ function PostFirstEntry()
 {
     Super.PostFirstEntry();
 
-    MarkBingoFailedSpecial();
     MarkBingoFailedGeneric();
+    MarkBingoFailedSpecial();
+    MarkBingoCampaignFailed();
 
      //Done here so that items you are carrying over between levels don't get hit by LogPickup
     InitStatLogShim();
@@ -1068,7 +1071,6 @@ function bool AddTestGoal(
     optional int missions
 )
 {
-    local BingoOption option;
     local int bingoIdx;
     local string desc;
     local float f;
@@ -1575,6 +1577,18 @@ function RunTests()
     max = ScaleBingoGoalMax(max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
     testint(max, 17, "MissionsMaskAvailability Three Mission End-to-End, 100% Scaling (Mission Mask with 4 possibilites, 1 in range)");
 
+}
+
+function int GetBingoOptionIdx(string event)
+{
+    local int i;
+
+    for (i = 0; i < ArrayCount(bingo_options); i++) {
+        if (bingo_options[i].event == event) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function ExtendedTests()
