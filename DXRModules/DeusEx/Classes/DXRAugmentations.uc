@@ -167,7 +167,6 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
 {
     local DXRLoadouts loadouts;
     local class<Augmentation> a;
-    local Augmentation anAug;
     local int i;
 
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
@@ -183,8 +182,7 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
             continue;
         }
         if( loadouts != None ) {
-            anAug = loadouts.player().AugmentationSystem.FindAugmentation(a);
-            if( anAug!=None && loadouts.StartedWithAug(anAug) ) {
+            if(loadouts.IsAugBanned(a)) {
                 banned[i] = 1;
                 continue;
             }
@@ -667,7 +665,7 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot,
         if( #var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
             continue;
 
-        if( loadouts != None && loadouts.StartedWithAug(a,true) )
+        if( loadouts != None && loadouts.StartedWithAug(a.class) )
             continue;
 
         augs[numAugs++] = a;
