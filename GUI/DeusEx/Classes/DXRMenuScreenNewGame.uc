@@ -141,6 +141,10 @@ function CopySkills()
     local int i;
     local bool bOldZRP;
 
+    // HACK for skill descriptions, which run in a static function
+    bOldZRP = class'DXRFlags'.default.bZeroRandoPure;
+    class'DXRFlags'.default.bZeroRandoPure = flags.IsZeroRandoPure();
+
     Super.CopySkills();
 
     for(i=1; i<ArrayCount(localSkills); i++) {
@@ -157,12 +161,9 @@ function CopySkills()
     if(dxr!=None)
         dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( dxrs != None ) {
-        // HACK for skill descriptions, which run in a static function
-        bOldZRP = class'DXRFlags'.default.bZeroRandoPure;
-        class'DXRFlags'.default.bZeroRandoPure = flags.IsZeroRandoPure();
         dxrs.RandoSkills(localSkills[0]);
-        class'DXRFlags'.default.bZeroRandoPure = bOldZRP;
     }
+    class'DXRFlags'.default.bZeroRandoPure = bOldZRP;
 }
 
 function SaveSettings()
@@ -251,6 +252,7 @@ function ProcessAction(String actionKey)
 
 function Timer(int timerID, int invocations, int clientData)
 {
+    class'DXRFlags'.default.bZeroRandoPure = flags.IsZeroRandoPure(); // make sure the player and augs created use proper defaults
     player.ShowIntro(True);
 }
 

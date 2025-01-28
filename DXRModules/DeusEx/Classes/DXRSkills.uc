@@ -170,17 +170,17 @@ simulated function RandoSkillLevelValues(Skill a)
     local string add_desc;
     local float skill_value_wet_dry;
 
-    if( #var(prefix)SkillWeaponHeavy(a) != None ) {
+    if( #var(prefix)SkillWeaponHeavy(a) != None && !dxr.flags.IsZeroRandoPure()) {
         add_desc = "Over 100% will allow you to move more quickly while carrying a heavy weapon, up to full speed at 160%.";
     }
 #ifdef injections
-    else if( #var(prefix)SkillDemolition(a) != None ) {
+    else if( #var(prefix)SkillDemolition(a) != None && !dxr.flags.IsZeroRandoPure() ) {
         add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level. For attached greandes, this skill also improves the blast radius and damage slightly.";
     }
     else if( #var(prefix)SkillComputer(a) != None && !dxr.flags.IsZeroRandoPure() ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
-    else if( #var(prefix)SkillEnviro(a)!=None ) {
+    else if( #var(prefix)SkillEnviro(a)!=None && !dxr.flags.IsZeroRandoPure() ) {
         add_desc = "Each level increases the number of fire extinguishers you can carry by 1.";
     }
 #endif

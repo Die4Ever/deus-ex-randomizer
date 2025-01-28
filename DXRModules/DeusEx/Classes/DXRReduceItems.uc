@@ -253,7 +253,9 @@ simulated function SetAllMaxCopies(int scale)
     if( dxr == None ) return;
     SetMaxAmmo( class'Ammo', dxr.flags.settings.ammo*scale/100 );
 
-    SetMaxCopies(class'#var(prefix)FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
+    if(!class'DXRFlags'.default.bZeroRandoPure) {
+        SetMaxCopies(class'#var(prefix)FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
+    }
     SetMaxCopies(class'#var(prefix)Multitool', dxr.flags.settings.multitools*scale/100 );
     SetMaxCopies(class'#var(prefix)Lockpick', dxr.flags.settings.lockpicks*scale/100 );
     SetMaxCopies(class'#var(prefix)BioelectricCell', dxr.flags.settings.biocells*scale/100 );
@@ -479,7 +481,7 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         owner = #var(PlayerPawn)(a.Owner);
         if(owner == None)
             owner = player(true);
-        if( #defined(balance) && owner != None
+        if( #defined(balance) && owner != None && !dxr.flags.IsZeroRandoPure()
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
         ) {
             a.MaxAmmo += owner.SkillSystem.GetSkillLevel(class'#var(prefix)SkillDemolition');

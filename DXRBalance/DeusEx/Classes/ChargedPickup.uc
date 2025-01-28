@@ -117,8 +117,12 @@ function ChargedPickupUpdate(DeusExPlayer Player)
     }
 }
 
-// default Charge was 2000, which is used for hazmats and rebreathers
-defaultproperties
+function BeginPlay()
 {
-    Charge=1500
+    if(!class'DXRFlags'.default.bZeroRandoPure) {
+        if(Hazmat(self)!=None || Rebreather(self)!=None) {
+            Charge = 1500; // vanilla is 2000
+        }
+    }
+    Super.BeginPlay();
 }

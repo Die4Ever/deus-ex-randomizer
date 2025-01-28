@@ -6,6 +6,11 @@ simulated function Tick(float deltaTime)
     local float oldSkillTime;
     local #var(PlayerPawn) player;
 
+    if(class'DXRFlags'.default.bZeroRandoPure) {
+        Super.Tick(deltaTime);
+        return;
+    }
+
     oldSkillTime = skillTime;
     Super.Tick(deltaTime);
     player = #var(PlayerPawn)(Owner);
@@ -31,6 +36,9 @@ simulated function PreBeginPlay()
     local #var(PlayerPawn) player;
 
     Super.PreBeginPlay();
+    if(class'DXRFlags'.default.bZeroRandoPure) {
+        return;
+    }
     player = #var(PlayerPawn)(Owner);
     if(player != None) {
         // high skill gives the player faster arming time for attached grenades, and fuse time for thrown grenades
@@ -139,7 +147,7 @@ auto simulated state Flying
         local float f;
 
         p = DeusExPlayer(Owner);
-        if(bProximityTriggered && p != None) {
+        if(bProximityTriggered && p != None && !class'DXRFlags'.default.bZeroRandoPure) {
             f = p.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * -1;
             f = loge(f + 2.9);// loge(~2.72) == 1
             f = FMax(f, 1.01);

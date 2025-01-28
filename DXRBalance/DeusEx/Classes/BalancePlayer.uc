@@ -787,39 +787,43 @@ state PlayerWalking
 
         // slow the player down if he's carrying something heavy
         // Like a DEAD BODY!  AHHHHHH!!!
-        // old vanilla code commented out
-        /*if (CarriedDecoration != None)
-        {
-            newSpeed -= CarriedDecoration.Mass * 2;
+        // old vanilla code
+        if(class'DXRFlags'.default.bZeroRandoPure) {
+            if (CarriedDecoration != None)
+            {
+                newSpeed -= CarriedDecoration.Mass * 2;
+            }
+            // don't slow the player down if he's skilled at the corresponding weapon skill
+            else if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) && (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25) && (Level.NetMode==NM_Standalone))
+            {
+                bIsWalking = True;
+                newSpeed = defSpeed;
+            }
+            else if ((inHand != None) && inHand.IsA('POVCorpse'))
+            {
+                newSpeed -= inHand.Mass * 3;
+            }
         }
-        // don't slow the player down if he's skilled at the corresponding weapon skill
-        else if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) && (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25) && (Level.NetMode==NM_Standalone))
-        {
-            bIsWalking = True;
-            newSpeed = defSpeed;
-        }
-        else if ((inHand != None) && inHand.IsA('POVCorpse'))
-        {
-            newSpeed -= inHand.Mass * 3;
-        }*/
-        // DXRando: mix it up https://github.com/Die4Ever/deus-ex-randomizer/issues/842
-        // AugMuscle now helps carrying decorations and bodies
-        if (AugmentationSystem != None)
-            augValue = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
-        augValue = FClamp(augValue, 1, 5);
-        if (CarriedDecoration != None)
-            carriedMass = CarriedDecoration.Mass;
-        if(inHand != None && POVCorpse(inHand) != None)
-            carriedMass = inHand.Mass;
-        newSpeed -= (carriedMass * 2) / (augValue ** 2);
-        // adjust player speed according to weapon skill, and AugMuscle
-        if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone && !bIsWalking)
-        {
-            weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
-            weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) gives +50% skill, equivalent to 150% weapon skill (advanced)
-            weapSkill = (weapSkill - 1) / 0.6;// subtract away the lower bound (100%) so it's 0, then divided by the span (upper - lower) so we're on an 0 to 1 scale
-            weapSkill = FClamp(weapSkill, 0, 1);
-            newSpeed = (newSpeed / 3 * (1 - weapSkill)) + (newSpeed * weapSkill);
+        else {
+            // DXRando: mix it up https://github.com/Die4Ever/deus-ex-randomizer/issues/842
+            // AugMuscle now helps carrying decorations and bodies
+            if (AugmentationSystem != None)
+                augValue = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+            augValue = FClamp(augValue, 1, 5);
+            if (CarriedDecoration != None)
+                carriedMass = CarriedDecoration.Mass;
+            if(inHand != None && POVCorpse(inHand) != None)
+                carriedMass = inHand.Mass;
+            newSpeed -= (carriedMass * 2) / (augValue ** 2);
+            // adjust player speed according to weapon skill, and AugMuscle
+            if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone && !bIsWalking)
+            {
+                weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
+                weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) gives +50% skill, equivalent to 150% weapon skill (advanced)
+                weapSkill = (weapSkill - 1) / 0.6;// subtract away the lower bound (100%) so it's 0, then divided by the span (upper - lower) so we're on an 0 to 1 scale
+                weapSkill = FClamp(weapSkill, 0, 1);
+                newSpeed = (newSpeed / 3 * (1 - weapSkill)) + (newSpeed * weapSkill);
+            }
         }
 
         // Multiplayer movement adjusters

@@ -686,8 +686,10 @@ function NYC_04_CheckPaulRaid()
         if( paul.Health <= 0 ) dead++;
         if( ! paul.bInvincible ) continue;
 
-        paul.bInvincible = false;
-        SetPawnHealth(paul, 400);
+        if(!dxr.flags.IsZeroRandoPure()) {
+            paul.bInvincible = false;
+            SetPawnHealth(paul, 400);
+        }
         paul.ChangeAlly('Player', 1, true);
     }
 
