@@ -330,6 +330,14 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if(!dxr.flags.IsZeroRandoPure()) {
+            foreach AllActors(class'#var(prefix)OrdersTrigger', ot) {
+                if(ot.Event == 'muncher') {
+                    ot.Destroy();
+                }
+            }
+        }
+
         if (VanillaMaps){
             if(!#defined(vmd))// button to open the door heading towards the ladder in the water
                 AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
