@@ -119,9 +119,14 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 
 function BeginPlay()
 {
-    if(!class'DXRFlags'.default.bZeroRandoPure) {
-        if(Hazmat(self)!=None || Rebreather(self)!=None) {
-            Charge = 1500; // vanilla is 2000
+    if(HazMatSuit(self)!=None || Rebreather(self)!=None) {
+        if(class'DXRFlags'.default.bZeroRandoPure) {
+            Charge = 2000;
+            default.Charge = 2000;
+        }
+        else {
+            Charge = 1500;
+            default.Charge = 1500;
         }
     }
     Super.BeginPlay();
