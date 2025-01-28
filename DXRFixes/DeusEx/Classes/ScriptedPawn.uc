@@ -495,6 +495,8 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 
 function int HeadDamageMult()
 {
+    if(class'DXRFlags'.default.bZeroRandoPure) return 8;
+
     if(MJ12Commando(self) != None) return 6;// their head is just as armored as the rest of them, don't need much buff?
 
     // check for helmet

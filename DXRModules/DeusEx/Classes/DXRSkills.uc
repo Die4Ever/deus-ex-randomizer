@@ -220,36 +220,43 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         return shortDisplay $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
-#ifdef vanilla||revision
-        word = "Damage Reduction (Passive/HazMat/Armor)";
-        val = FClamp(val, 0, 1.1);
-#else
-        word = "Damage Reduction (HazMat/Armor)";
-#endif
+        if(#bool(vanilla) || #bool(revision)) {
+            if(class'DXRFlags'.default.bZeroRandoPure)
+                word = "Damage Reduction (HazMat/Armor)";
+            else
+                word = "Damage Reduction (Passive/HazMat/Armor)";
+            val = FClamp(val, 0, 1.1);
+        }
+        else {
+            word = "Damage Reduction (HazMat/Armor)";
+        }
 
         f = val;
 
         switch(i) {
-        case 0: r = "Untrained: "; break;
-        case 1: r = "|n    Trained: "; break;
-        case 2: r = "|n    Advanced: "; break;
-        case 3: r = "|n    Master: "; break;
+        case 0: r =       "                Untrained: "; break;
+        case 1: r = "|n                    Trained:   "; break;
+        case 2: r = "|n                    Advanced: "; break;
+        case 3: r = "|n                    Master:    "; break;
         }
-#ifdef vanilla||revision
-        shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
-        r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
-#elseif vmd
-        f = (f + 1) / 2;// VMD nerfed enviro skill
-        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
-        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
-#else
-        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
-        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
-#endif
+
+        if(#bool(vanilla) || #bool(revision)) {
+            if(!class'DXRFlags'.default.bZeroRandoPure) {
+                shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
+                r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
+            }
+            r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
+            r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
+        } else if(#bool(vmd)) {
+            f = (f + 1) / 2;// VMD nerfed enviro skill
+            shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+            r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
+            r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
+        } else {
+            shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+            r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
+            r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
+        }
 
         return r;
     }

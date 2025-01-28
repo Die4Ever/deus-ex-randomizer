@@ -1,5 +1,19 @@
 class StealthPistolBalance injects WeaponStealthPistol;
 
+function BeginPlay()
+{
+    if(class'DXRFlags'.default.bZeroRandoPure) {
+        HitDamage = 8;
+        BaseAccuracy = 0.8;
+    } else {
+        HitDamage = 9;
+        BaseAccuracy = 0.6;
+    }
+    default.HitDamage = HitDamage;
+    default.BaseAccuracy = BaseAccuracy;
+    Super.BeginPlay();
+}
+
 // slightly higher damage, lower range, better accuracy
 defaultproperties
 {

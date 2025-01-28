@@ -6,7 +6,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     if(Level.LevelAction != LEVACT_None) return;
 
-    if(damageType == 'NanoVirus') {
+    if(damageType == 'NanoVirus' && !class'DXRFlags'.default.bZeroRandoPure) {
         augLevel = -1;
         if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
@@ -162,7 +162,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
     {
         damage *= 0.75 * skillLevel;
     }
-    else // passive enviro skill still gives some damage reduction
+    else if(!class'DXRFlags'.default.bZeroRandoPure)// passive enviro skill still gives some damage reduction
     {
         damage *= 1.1 * skillLevel + 0.3;
     }
@@ -271,13 +271,16 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     //
     // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
     // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
-    if ((damageType == 'Shot') || (damageType == 'AutoShot') ||
-        damageType == 'Flamed' || damageType == 'Burned')
+    if (damageType == 'Shot' || damageType == 'AutoShot')
     {
         newDamage *= CombatDifficulty;
         oldDamage *= CombatDifficulty;
     }
-    else if (damageType != 'fell' && damageType != 'Drowned') {
+    else if((damageType == 'Flamed' || damageType == 'Burned') && !class'DXRFlags'.default.bZeroRandoPure) {
+        newDamage *= CombatDifficulty;
+        oldDamage *= CombatDifficulty;
+    }
+    else if (damageType != 'fell' && damageType != 'Drowned' && !class'DXRFlags'.default.bZeroRandoPure) {
         damageMult = CombatDifficultyMultEnviro();
         newDamage *= damageMult;
         oldDamage *= damageMult;
@@ -290,7 +293,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     adjustedDamage = Int(newDamage);// adjustedDamage is our out param
 
-    if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso) {
+    if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso && !class'DXRFlags'.default.bZeroRandoPure) {
         // TearGas can't kill you
         adjustedDamage = 0;
         HealthTorso = 1;

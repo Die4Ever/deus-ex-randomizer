@@ -139,6 +139,7 @@ function CopySkills()
 {
     local DXRSkills dxrs;
     local int i;
+    local bool bOldZRP;
 
     Super.CopySkills();
 
@@ -155,8 +156,13 @@ function CopySkills()
 
     if(dxr!=None)
         dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
-    if( dxrs != None )
+    if( dxrs != None ) {
+        // HACK for skill descriptions, which run in a static function
+        bOldZRP = class'DXRFlags'.default.bZeroRandoPure;
+        class'DXRFlags'.default.bZeroRandoPure = flags.IsZeroRandoPure();
         dxrs.RandoSkills(localSkills[0]);
+        class'DXRFlags'.default.bZeroRandoPure = bOldZRP;
+    }
 }
 
 function SaveSettings()
