@@ -31,6 +31,14 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_FixGlitches');
     CreateChoice(class'MenuChoice_NewGamePlus');
     CreateChoice(class'MenuChoice_ShowNewSeed');
+
+#ifdef vanilla
+    CreateChoice(class'MenuChoice_BalanceAugs');
+    CreateChoice(class'MenuChoice_BalanceSkills');
+    CreateChoice(class'MenuChoice_BalanceItems');
+    //CreateChoice(class'MenuChoice_BalanceMaps');
+    CreateChoice(class'MenuChoice_BalanceEtc');
+#endif
 }
 
 defaultproperties

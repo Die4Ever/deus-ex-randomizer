@@ -6,7 +6,7 @@ simulated function Tick(float deltaTime)
     local float oldSkillTime;
     local #var(PlayerPawn) player;
 
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
         Super.Tick(deltaTime);
         return;
     }
@@ -36,7 +36,7 @@ simulated function PreBeginPlay()
     local #var(PlayerPawn) player;
 
     Super.PreBeginPlay();
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
         return;
     }
     player = #var(PlayerPawn)(Owner);
@@ -147,7 +147,7 @@ auto simulated state Flying
         local float f;
 
         p = DeusExPlayer(Owner);
-        if(bProximityTriggered && p != None && !class'DXRFlags'.default.bZeroRandoPure) {
+        if(bProximityTriggered && p != None && class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
             f = p.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * -1;
             f = loge(f + 2.9);// loge(~2.72) == 1
             f = FMax(f, 1.01);

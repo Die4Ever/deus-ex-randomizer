@@ -934,7 +934,7 @@ function FixBeamLaserTriggers()
     local #var(prefix)BeamTrigger bt;
     local #var(prefix)LaserTrigger lt;
 
-    if(dxr.flags.IsZeroRandoPure()) return;
+    if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) return;
 
     foreach AllActors(class'#var(prefix)BeamTrigger',bt){
         bt.TriggerType=TT_AnyProximity;

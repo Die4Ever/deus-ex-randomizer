@@ -561,7 +561,7 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (item.bDeleteMe) return false;// just in case!
 
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
-    if (class'DXRFlags'.default.bZeroRandoPure && ChargedPickup(item) != None) return false;
+    if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
     return true;
 }
 

@@ -2,7 +2,7 @@ class BuffRifle injects WeaponAssaultGun;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         HitDamage = 3;
     } else {
         HitDamage = 4;

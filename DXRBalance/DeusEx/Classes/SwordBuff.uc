@@ -2,7 +2,7 @@ class SwordBuff injects WeaponSword;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         HitDamage = 10;
         anim_speed = 1;
     } else {

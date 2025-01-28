@@ -2,7 +2,7 @@ class DXRWeaponSawedOffShotgun injects WeaponSawedOffShotgun;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         HitDamage = 5;
         BaseAccuracy = 0.6;
         AccurateRange = 1200;

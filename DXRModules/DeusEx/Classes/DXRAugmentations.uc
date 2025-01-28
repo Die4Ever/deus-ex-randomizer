@@ -40,22 +40,6 @@ simulated function RandoAllAugs()
     CleanUpAugCounts(player()); //Recount the number of augs in each slot
 }
 
-function PostFirstEntry()
-{
-    local TechGoggles goggles;
-    local AugVision aug;
-    local string goggles_desc;
-
-    Super.PostFirstEntry();
-
-#ifdef injections
-    aug = AugVision(player().AugmentationSystem.FindAugmentation(class'AugVision'));
-    foreach AllActors(class'TechGoggles', goggles) {
-        goggles.Description = class'TechGoggles'.static.CalcDescription(aug);
-    }
-#endif
-}
-
 static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int level)
 {
     local Augmentation anAug;

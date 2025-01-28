@@ -4,7 +4,7 @@ function BeginPlay()
 {
     local int i;
 
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
         LevelValues[0] = 1;
         LevelValues[1] = 0.75;
         LevelValues[2] = 0.5;

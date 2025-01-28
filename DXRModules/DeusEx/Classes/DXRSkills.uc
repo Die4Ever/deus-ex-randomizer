@@ -34,7 +34,7 @@ function CheckConfig()
 
 #ifdef balance
     i=0;
-    if(!dxr.flags.IsZeroRandoPure()) {
+    if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
         SkillCostMultipliers[i].type = "SkillDemolition";
         SkillCostMultipliers[i].percent = 80;
         SkillCostMultipliers[i].minLevel = 1;
@@ -170,17 +170,17 @@ simulated function RandoSkillLevelValues(Skill a)
     local string add_desc;
     local float skill_value_wet_dry;
 
-    if( #var(prefix)SkillWeaponHeavy(a) != None && !dxr.flags.IsZeroRandoPure()) {
+    if( #var(prefix)SkillWeaponHeavy(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
         add_desc = "Over 100% will allow you to move more quickly while carrying a heavy weapon, up to full speed at 160%.";
     }
 #ifdef injections
-    else if( #var(prefix)SkillDemolition(a) != None && !dxr.flags.IsZeroRandoPure() ) {
+    else if( #var(prefix)SkillDemolition(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ) {
         add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level. For attached greandes, this skill also improves the blast radius and damage slightly.";
     }
-    else if( #var(prefix)SkillComputer(a) != None && !dxr.flags.IsZeroRandoPure() ) {
+    else if( #var(prefix)SkillComputer(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
-    else if( #var(prefix)SkillEnviro(a)!=None && !dxr.flags.IsZeroRandoPure() ) {
+    else if( #var(prefix)SkillEnviro(a)!=None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ) {
         add_desc = "Each level increases the number of fire extinguishers you can carry by 1.";
     }
 #endif
@@ -221,7 +221,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
         if(#bool(vanilla) || #bool(revision)) {
-            if(class'DXRFlags'.default.bZeroRandoPure)
+            if(class'MenuChoice_BalanceSkills'.static.IsDisabled())
                 word = "Damage Reduction (HazMat/Armor)";
             else
                 word = "Damage Reduction (Passive/HazMat/Armor)";
@@ -241,7 +241,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         }
 
         if(#bool(vanilla) || #bool(revision)) {
-            if(!class'DXRFlags'.default.bZeroRandoPure) {
+            if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
                 shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
                 r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
             }

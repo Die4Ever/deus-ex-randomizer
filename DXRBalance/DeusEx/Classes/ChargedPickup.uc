@@ -120,7 +120,7 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 function BeginPlay()
 {
     if(HazMatSuit(self)!=None || Rebreather(self)!=None) {
-        if(class'DXRFlags'.default.bZeroRandoPure) {
+        if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) {
             Charge = 2000;
             default.Charge = 2000;
         }

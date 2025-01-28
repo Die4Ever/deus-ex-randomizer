@@ -14,7 +14,7 @@ function CalcTrace(float deltaTime)
     EndTrace = Location + 5000 * vector(Rotation);
     HitActor = None;
 
-    vanilla = class'DXRFlags'.default.bZeroRandoPure;
+    vanilla = class'MenuChoice_BalanceEtc'.static.IsDisabled();
 
     // trace the path of the reflected beam and draw points at each hit
     for (i=0; i<ArrayCount(spot); i++)

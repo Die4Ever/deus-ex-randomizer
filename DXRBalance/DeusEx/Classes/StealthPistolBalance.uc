@@ -2,7 +2,7 @@ class StealthPistolBalance injects WeaponStealthPistol;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         HitDamage = 8;
         BaseAccuracy = 0.8;
     } else {

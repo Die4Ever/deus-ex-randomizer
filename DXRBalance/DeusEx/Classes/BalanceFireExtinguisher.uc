@@ -2,7 +2,7 @@ class BalanceFireExtinguisher injects FireExtinguisher;
 
 function Timer()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         Super.Timer();
     } else {
         UseOnce();
@@ -11,7 +11,7 @@ function Timer()
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         maxCopies = 1;
         bCanHaveMultipleCopies = false;
     } else {

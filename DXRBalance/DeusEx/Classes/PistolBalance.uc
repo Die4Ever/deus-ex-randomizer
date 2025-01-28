@@ -2,7 +2,7 @@ class PistolBalance injects WeaponPistol;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         HitDamage = 14;
         BaseAccuracy = 0.7;
     } else {

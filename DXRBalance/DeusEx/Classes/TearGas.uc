@@ -2,7 +2,7 @@ class DXRTearGas injects TearGas;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         Damage = 1;
     } else {
         Damage = 2;

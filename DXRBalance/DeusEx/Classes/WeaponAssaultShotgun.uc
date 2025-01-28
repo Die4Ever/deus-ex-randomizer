@@ -2,7 +2,7 @@ class DXRWeaponAssaultShotgun injects WeaponAssaultShotgun;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         HitDamage = 4;
         BaseAccuracy = 0.8;
         AccurateRange = 1200;

@@ -2,7 +2,7 @@ class DXRWeaponRifle injects WeaponRifle;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         ShotTime = 1.5;
         ReloadCount = 6;
         ReloadTime = 1;

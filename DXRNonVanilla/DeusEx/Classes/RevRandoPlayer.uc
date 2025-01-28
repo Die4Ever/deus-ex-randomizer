@@ -12,7 +12,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     if(Level.LevelAction != LEVACT_None) return;
 
-    if(damageType == 'NanoVirus' && !class'DXRFlags'.default.bZeroRandoPure) {
+    if(damageType == 'NanoVirus' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         augLevel = -1;
         if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
@@ -154,7 +154,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         newDamage *= CombatDifficulty;
         oldDamage *= CombatDifficulty;
     }
-    else if (damageType != 'fell' && damageType != 'Drowned' && !class'DXRFlags'.default.bZeroRandoPure) {
+    else if (damageType != 'fell' && damageType != 'Drowned' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         damageMult = CombatDifficultyMultEnviro();
         newDamage *= damageMult;
         oldDamage *= damageMult;
@@ -167,7 +167,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     adjustedDamage = Int(newDamage);// adjustedDamage is our out param
 
-    if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso && !class'DXRFlags'.default.bZeroRandoPure) {
+    if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         // TearGas can't kill you
         adjustedDamage = 0;
         HealthTorso = 1;
@@ -224,7 +224,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         // narrow the head region
         if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
         {
-            if(!class'DXRFlags'.default.bZeroRandoPure) {
+            if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
                 // do 1.7x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
                 return Damage * 0.85;
             }
@@ -243,7 +243,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         {
             // left arm
         }
-        else if(!class'DXRFlags'.default.bZeroRandoPure)
+        else if(class'MenuChoice_BalanceEtc'.static.IsEnabled())
         {
             // and finally, the torso! do 1.4x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
             return Damage * 0.7;
@@ -301,7 +301,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
 
         }
     }
-    else if(!class'DXRFlags'.default.bZeroRandoPure)// passive enviro skill still gives some damage reduction
+    else if(class'MenuChoice_BalanceSkills'.static.IsEnabled())// passive enviro skill still gives some damage reduction
     {
         damage *= 1.1 * skillLevel + 0.3;
     }
@@ -413,7 +413,7 @@ function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, opt
     local bool fixLegs;
 
     //Alcohol fixes broken legs, as long as it isn't zero rando
-    if (source=="Forty" || source=="Liquor" || source=="Wine") fixLegs = ! class'DXRFlags'.default.bZeroRandoPure;
+    if (source=="Forty" || source=="Liquor" || source=="Wine") fixLegs = class'MenuChoice_BalanceItems'.static.IsEnabled();
 
     adjustedHealAmount = _HealPlayer(baseHealPoints, bUseMedicineSkill, fixLegs);
 
@@ -832,7 +832,7 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (item.bDeleteMe) return false;// just in case!
 
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
-    if (class'DXRFlags'.default.bZeroRandoPure && ChargedPickup(item) != None) return false;
+    if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
     return true;
 }
 
