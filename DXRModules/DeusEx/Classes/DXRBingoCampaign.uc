@@ -373,7 +373,7 @@ function UpdateCryptDoors()
     }
 }
 
-static function int GetBingoEnd(int missionNumber, int bingo_duration)
+static function int GetBingoEnd(int missionNumber, int bingoDuration) // TODO: don't assume an M01 start
 {
     if (missionNumber > 12) {
         missionNumber -= 2;
@@ -381,8 +381,8 @@ static function int GetBingoEnd(int missionNumber, int bingo_duration)
         missionNumber -= 1;
     }
 
-    if (missionNumber % bingo_duration != 0) {
-        missionNumber = (missionNumber / bingo_duration) * bingo_duration + bingo_duration; // set missionNumber to the previous end, then add bingo_duration to it
+    if (missionNumber % bingoDuration != 0) {
+        missionNumber = (missionNumber / bingoDuration) * bingoDuration + bingoDuration; // set missionNumber to the previous end, then add bingoDuration to it
         missionNumber = Min(missionNumber, 13);
     }
 
@@ -395,19 +395,25 @@ static function int GetBingoEnd(int missionNumber, int bingo_duration)
     return missionNumber;
 }
 
-static function bool IsBingoEnd(int missionNumber, int bingo_duration)
+static function bool IsBingoEnd(int missionNumber, int bingoDuration)
 {
-    return GetBingoEnd(missionNumber, bingo_duration) == missionNumber;
+    return GetBingoEnd(missionNumber, bingoDuration) == missionNumber;
 }
 
-// be sure to keep backtracking in mind when using this function
-static function bool IsGoalFailed(int missionNumber, int bingo_duration, int missionMask)
+static function bool IsGoalFailed(int missionNumber, int bingoDuration, int missionMask)
 {
     local int mission, bingoMask;
 
-    for (mission = GetBingoEnd(missionNumber, bingo_duration); mission >= missionNumber; mission--) {
+    for (mission = GetBingoEnd(missionNumber, bingoDuration); mission >= missionNumber; mission--) {
         bingoMask = bingoMask | (1 << mission);
     }
+    if ((bingoMask & (1 << 10)) != 0) {
+        bingoMask = bingoMask | (1 << 11);
+    }
+    if ((bingoMask & (1 << 12)) != 0) {
+        bingoMask = bingoMask | (1 << 14);
+    }
+
     return (bingoMask & missionMask) == 0;
 }
 

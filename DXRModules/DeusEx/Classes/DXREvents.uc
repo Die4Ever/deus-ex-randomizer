@@ -1534,10 +1534,13 @@ function MarkBingoFailedSpecial()
 
 function CheckBingoCampaignGoalFailed(string goalName)
 {
-    if (class'DXRBingoCampaign'.static.IsGoalFailed(
+    local int bingoIdx;
+
+    bingoIdx = GetBingoOptionIdx(goalName);
+    if (bingoIdx != -1 && class'DXRBingoCampaign'.static.IsGoalFailed(
         dxr.dxInfo.missionNumber,
         dxr.flags.bingo_duration,
-        bingo_options[GetBingoOptionIdx(goalName)].missions
+        bingo_options[bingoIdx].missions
     )) {
         MarkBingoAsFailed(goalName);
     }
@@ -1548,17 +1551,86 @@ function MarkBingoCampaignFailed()
     if (!dxr.flags.IsBingoCampaignMode()) return;
     if (dxr.dxInfo.missionNumber > 15) return;
 
-    // it's tempting to just loop through every goal in the array but backtracking would lead to some false positives
-    CheckBingoCampaignGoalFailed("ViewPortraits");
-    CheckBingoCampaignGoalFailed("ViewMaps");
+    CheckBingoCampaignGoalFailed("JordanShea_Dead");
+    CheckBingoCampaignGoalFailed("SandraRenton_Dead");
+    CheckBingoCampaignGoalFailed("GilbertRenton_Dead");
+    CheckBingoCampaignGoalFailed("MadeBasket");
+    CheckBingoCampaignGoalFailed("FlushToilet");
+    CheckBingoCampaignGoalFailed("FlushUrinal");
+    CheckBingoCampaignGoalFailed("SpinShipsWheel");
+    CheckBingoCampaignGoalFailed("Greasel_ClassDead");
+    CheckBingoCampaignGoalFailed("UNATCOTroop_ClassDead");
+    CheckBingoCampaignGoalFailed("Terrorist_ClassDead");
+    CheckBingoCampaignGoalFailed("MJ12Troop_ClassDead");
+    CheckBingoCampaignGoalFailed("MJ12Commando_ClassDead");
+    CheckBingoCampaignGoalFailed("Karkian_ClassDead");
+    CheckBingoCampaignGoalFailed("MilitaryBot_ClassDead");
+    CheckBingoCampaignGoalFailed("SecurityBot2_ClassDead");
+    CheckBingoCampaignGoalFailed("SecurityBotSmall_ClassDead");
+    CheckBingoCampaignGoalFailed("SpiderBot_ClassDead");
+    CheckBingoCampaignGoalFailed("Rat_ClassDead");
+    CheckBingoCampaignGoalFailed("UNATCOTroop_ClassUnconscious");
+    CheckBingoCampaignGoalFailed("Terrorist_ClassUnconscious");
+    CheckBingoCampaignGoalFailed("MJ12Troop_ClassUnconscious");
+    CheckBingoCampaignGoalFailed("MJ12Commando_ClassUnconscious");
+    CheckBingoCampaignGoalFailed("ChugWater");
     CheckBingoCampaignGoalFailed("ChangeClothes");
+    CheckBingoCampaignGoalFailed("LeoToTheBar");
+    CheckBingoCampaignGoalFailed("KnowYourEnemy");
+    CheckBingoCampaignGoalFailed("JacobsShadow");
+    CheckBingoCampaignGoalFailed("ManWhoWasThursday");
+    CheckBingoCampaignGoalFailed("GreeneArticles");
+    CheckBingoCampaignGoalFailed("MoonBaseNews");
+    CheckBingoCampaignGoalFailed("Gray_ClassDead");
+    CheckBingoCampaignGoalFailed("botordertrigger");
+    CheckBingoCampaignGoalFailed("AlexCloset");
+    CheckBingoCampaignGoalFailed("CommsPit");
+    CheckBingoCampaignGoalFailed("BathroomFlags");
+    CheckBingoCampaignGoalFailed("TonThirdFloor");
+    CheckBingoCampaignGoalFailed("HazMatSuit_Activated");
+    CheckBingoCampaignGoalFailed("AdaptiveArmor_Activated");
+    CheckBingoCampaignGoalFailed("TechGoggles_Activated");
+    CheckBingoCampaignGoalFailed("Rebreather_Activated");
+    CheckBingoCampaignGoalFailed("PerformBurder");
+    CheckBingoCampaignGoalFailed("GoneFishing");
+    CheckBingoCampaignGoalFailed("FordSchick_Dead");
+    CheckBingoCampaignGoalFailed("PlayPool");
+    CheckBingoCampaignGoalFailed("PinballWizard");
+    CheckBingoCampaignGoalFailed("BurnTrash");
     CheckBingoCampaignGoalFailed("Terrorist_peeptime");
     CheckBingoCampaignGoalFailed("UNATCOTroop_peeptime");
-    CheckBingoCampaignGoalFailed("ViewManderleyMailMaps");
+    CheckBingoCampaignGoalFailed("MJ12Troop_peeptime");
+    CheckBingoCampaignGoalFailed("MJ12Commando_peeptime");
+    CheckBingoCampaignGoalFailed("PawnAnim_Dance");
+    CheckBingoCampaignGoalFailed("BirdWatching");
+    CheckBingoCampaignGoalFailed("ReadJCEmail");
+    CheckBingoCampaignGoalFailed("VendingMachineEmpty");
+    CheckBingoCampaignGoalFailed("VendingMachineEmpty_Drink");
+    CheckBingoCampaignGoalFailed("VendingMachineDispense_Candy");
+    CheckBingoCampaignGoalFailed("DestroyCapitalism");
+    CheckBingoCampaignGoalFailed("FightSkeletons");
+    CheckBingoCampaignGoalFailed("TrophyHunter");
+    CheckBingoCampaignGoalFailed("Dehydrated");
+    CheckBingoCampaignGoalFailed("WaltonConvos");
+    CheckBingoCampaignGoalFailed("CrackSafe");
+    CheckBingoCampaignGoalFailed("un_PrezMeadPic_peepedtex");
+    CheckBingoCampaignGoalFailed("un_bboard_peepedtex");
+    CheckBingoCampaignGoalFailed("SuspensionCrate");
+    CheckBingoCampaignGoalFailed("MailModels");
+    CheckBingoCampaignGoalFailed("UNATCOHandbook");
+    CheckBingoCampaignGoalFailed("02_Book06");
+    CheckBingoCampaignGoalFailed("ManderleyMail");
+    CheckBingoCampaignGoalFailed("LetMeIn");
+    CheckBingoCampaignGoalFailed("SewerSurfin");
+    CheckBingoCampaignGoalFailed("SmokingKills");
+    CheckBingoCampaignGoalFailed("WatchDogs");
+    CheckBingoCampaignGoalFailed("Cat_peeptime");
     CheckBingoCampaignGoalFailed("PetKarkians");
     CheckBingoCampaignGoalFailed("PetDogs");
-    CheckBingoCampaignGoalFailed("PetBirds");
+    CheckBingoCampaignGoalFailed("PetAnimal_Cat");
     CheckBingoCampaignGoalFailed("PetAnimal_Greasel");
+    CheckBingoCampaignGoalFailed("PetRats");
+    CheckBingoCampaignGoalFailed("NotABigFan");
 }
 
 simulated function AnyEntry()
@@ -3506,7 +3578,7 @@ defaultproperties
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",desc_singular="Watch MJ12 Troopers for 1 second",max=30,missions=57188)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",desc_singular="Watch MJ12 Commandos for 1 second",max=15,missions=56384)
     bingo_options(207)=(event="PawnAnim_Dance",desc="You can dance if you want to",max=1,missions=1364)
-    bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=19806)
+    bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=24446)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
     bingo_options(211)=(event="Supervisor_Paid",desc="Pay for access to the VersaLife labs",max=1,missions=64)
@@ -3641,7 +3713,7 @@ defaultproperties
     bingo_options(330)=(event="PetKarkians",desc="Karkians are just big leather dogs (%s)",max=3,missions=49248)
     bingo_options(331)=(event="PetDogs",desc="You can pet the dog (%s)",max=5,missions=21604)
     bingo_options(332)=(event="PetFish",desc="They feel kind of slimy (%s)",max=5,missions=64)
-    bingo_options(333)=(event="PetBirds",desc="Feel the hollow bones (%s)",max=3,missions=19806)
+    bingo_options(333)=(event="PetBirds",desc="Feel the hollow bones (%s)",max=3,missions=24446)
     bingo_options(334)=(event="PetAnimal_Cat",desc="Here kitty, kitty, kitty! (%s)",max=3,missions=7256)
     bingo_options(335)=(event="PetAnimal_Greasel",desc="Green, Greasy, and very pettable (%s)",max=5,missions=50272)
     bingo_options(336)=(event="PetRats",desc="Pat dat rat (%s)",max=25,missions=53118)
