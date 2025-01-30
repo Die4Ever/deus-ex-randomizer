@@ -120,14 +120,13 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 function BeginPlay()
 {
     if(HazMatSuit(self)!=None || Rebreather(self)!=None) {
-        if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) {
-            Charge = 2000;
-            default.Charge = 2000;
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+            Charge = 1500;
         }
         else {
-            Charge = 1500;
-            default.Charge = 1500;
+            Charge = 2000;
         }
+        default.Charge = Charge;
     }
     Super.BeginPlay();
 }

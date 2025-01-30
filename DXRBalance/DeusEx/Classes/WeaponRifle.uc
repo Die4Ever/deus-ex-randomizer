@@ -2,16 +2,16 @@ class DXRWeaponRifle injects WeaponRifle;
 
 function BeginPlay()
 {
-    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
-        ShotTime = 1.5;
-        ReloadCount = 6;
-        ReloadTime = 1;
-        bCanHaveModReloadCount = true;
-    } else {
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         ShotTime = 1;
         ReloadCount = 1;
         ReloadTime = 1;
         bCanHaveModReloadCount = false;
+    } else {
+        ShotTime = 1.5;
+        ReloadCount = 6;
+        ReloadTime = 1;
+        bCanHaveModReloadCount = true;
     }
     default.ShotTime = ShotTime;
     default.ReloadCount = ReloadCount;

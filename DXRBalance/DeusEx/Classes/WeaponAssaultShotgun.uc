@@ -2,18 +2,18 @@ class DXRWeaponAssaultShotgun injects WeaponAssaultShotgun;
 
 function BeginPlay()
 {
-    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
-        HitDamage = 4;
-        BaseAccuracy = 0.8;
-        AccurateRange = 1200;
-        maxRange = 2400;
-        AIMaxRange = 800;
-    } else {
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 5;
         BaseAccuracy = 0.65;
         AccurateRange = 800;
         maxRange = 1200;
         AIMaxRange = 450;
+    } else {
+        HitDamage = 4;
+        BaseAccuracy = 0.8;
+        AccurateRange = 1200;
+        maxRange = 2400;
+        AIMaxRange = 800;
     }
     default.HitDamage = HitDamage;
     default.BaseAccuracy = BaseAccuracy;

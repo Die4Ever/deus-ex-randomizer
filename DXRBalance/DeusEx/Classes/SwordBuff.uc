@@ -2,12 +2,12 @@ class SwordBuff injects WeaponSword;
 
 function BeginPlay()
 {
-    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
-        HitDamage = 10;
-        anim_speed = 1;
-    } else {
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 12;
         anim_speed = 1.1;
+    } else {
+        HitDamage = 10;
+        anim_speed = 1;
     }
     default.HitDamage = HitDamage;
     default.anim_speed = anim_speed;

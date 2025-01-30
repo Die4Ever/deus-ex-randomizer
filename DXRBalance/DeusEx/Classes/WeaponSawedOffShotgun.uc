@@ -2,18 +2,18 @@ class DXRWeaponSawedOffShotgun injects WeaponSawedOffShotgun;
 
 function BeginPlay()
 {
-    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
-        HitDamage = 5;
-        BaseAccuracy = 0.6;
-        AccurateRange = 1200;
-        maxRange = 2400;
-        AIMaxRange = 800;
-    } else {
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 6;
         BaseAccuracy = 0.7;
         AccurateRange = 700;
         maxRange = 1000;
         AIMaxRange = 450;
+    } else {
+        HitDamage = 5;
+        BaseAccuracy = 0.6;
+        AccurateRange = 1200;
+        maxRange = 2400;
+        AIMaxRange = 800;
     }
     default.HitDamage = HitDamage;
     default.BaseAccuracy = BaseAccuracy;
