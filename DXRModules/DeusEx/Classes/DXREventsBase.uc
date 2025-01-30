@@ -115,7 +115,7 @@ function MarkBingoFailedGeneric()
     curMission = dxr.dxInfo.missionNumber;
     if (curMission == 98) return;
     data = class'PlayerDataItem'.static.GiveItem(player());
-    data.CheckForExpiredBingoGoals(curMission);
+    data.CheckForExpiredBingoGoals(dxr, curMission);
 }
 
 function InitStatLogShim()

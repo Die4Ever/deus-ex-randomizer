@@ -191,16 +191,12 @@ simulated function bool MarkBingoAsFailed(string event)
     return false;
 }
 
-simulated function CheckForExpiredBingoGoals(int missionNum)
+simulated function CheckForExpiredBingoGoals(DXRando dxr, int missionNum)
 {
-    local int i, bingoCampaignMask;
-    local DXRando dxr;
+    local int bingoCampaignMask, i;
 
-    foreach AllActors(class'DXRando', dxr) {
-        if (dxr.flags.IsBingoCampaignMode()) {
-            bingoCampaignMask = class'DXRBingoCampaign'.static.GetBingoMask(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration);
-        }
-        break;
+    if (dxr.flags.IsBingoCampaignMode()) {
+        bingoCampaignMask = class'DXRBingoCampaign'.static.GetBingoMask(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration);
     }
 
     for(i=0; i<ArrayCount(bingo); i++) {
