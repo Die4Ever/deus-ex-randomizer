@@ -14,7 +14,7 @@ function BeginPlay()
     Super.BeginPlay();
 }
 
-// vanilla is 64 range, 10 damage
+// vanilla is 64 range, 10 damage, 64 range (I honestly consider this to be a bug)
 defaultproperties
 {
     maxRange=96

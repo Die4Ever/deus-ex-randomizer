@@ -18,7 +18,7 @@ function Timer()
 
 function BeginPlay()
 {
-    if(!class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceMaps'.static.IsEnabled()) {
         spawnData[1].SpawnTag = 'dummy';
         spawnData[4].SpawnTag = 'dummy';
         spawnData[6].SpawnTag = 'dummy';

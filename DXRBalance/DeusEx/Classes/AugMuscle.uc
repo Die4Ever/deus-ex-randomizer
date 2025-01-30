@@ -5,16 +5,19 @@ function PostPostBeginPlay()
     Super.PostPostBeginPlay();
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         // description gets overwritten by language file, also DXRAugmentations reads from the default.Description
-        default.Description = "Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects."
-                                $ "|n|nTECH ONE: Strength is increased slightly.|n|nTECH TWO: An agent is inhumanly strong.";
+        Description = "Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects."
+                        $ "|n|nTECH ONE: Strength is increased slightly.|n|nTECH TWO: An agent is inhumanly strong.";
     } else {
+        Description = "Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects."
+                        $ "|n|nTECH ONE: Strength is increased slightly.|n|nTECH TWO: Strength is increased moderately."
+                        $ "|n|nTECH THREE: Strength is increased significantly.|n|nTECH FOUR: An agent is inhumanly strong.";
     }
-    Description = default.Description;
+    default.Description = Description;
 }
 
 simulated function int GetClassLevel()
 {
-    if(MaxLevel == 3 && bIsActive) {
+    if(MaxLevel == 3 && bHasIt && bIsActive) {
         return CurrentLevel;
     } else if (bHasIt && bIsActive) {
         // we squished the AugMuscle levels to make it more useful, and some things use the level instead of the strength

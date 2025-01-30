@@ -222,22 +222,22 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
         if(#bool(vanilla) || #bool(revision)) {
             if(class'MenuChoice_BalanceSkills'.static.IsDisabled())
-                word = "Damage Reduction (HazMat/Armor)";
+                word = "Damage Reduction|n            (HazMat/Armor)";
             else
-                word = "Damage Reduction (Passive/HazMat/Armor)";
+                word = "Damage Reduction|n            (Passive/HazMat/Armor)";
             val = FClamp(val, 0, 1.1);
         }
         else {
-            word = "Damage Reduction (HazMat/Armor)";
+            word = "Damage Reduction|n            (HazMat/Armor)";
         }
 
         f = val;
 
         switch(i) {
-        case 0: r =       "    Untrained: "; break;
-        case 1: r = "|n        Trained:   "; break;
-        case 2: r = "|n        Advanced: "; break;
-        case 3: r = "|n        Master:    "; break;
+        case 0: r =       "Untrained: "; break;
+        case 1: r = "|n    Trained:   "; break;
+        case 2: r = "|n    Advanced: "; break;
+        case 3: r = "|n    Master:    "; break;
         }
 
         if(#bool(vanilla) || #bool(revision)) {
