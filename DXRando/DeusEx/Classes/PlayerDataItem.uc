@@ -197,7 +197,9 @@ simulated function CheckForExpiredBingoGoals(int missionNum)
     local DXRando dxr;
 
     foreach AllActors(class'DXRando', dxr) {
-        bingoCampaignMask = class'DXRBingoCampaign'.static.GetBingoMask(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration);
+        if (dxr.flags.IsBingoCampaignMode()) {
+            bingoCampaignMask = class'DXRBingoCampaign'.static.GetBingoMask(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration);
+        }
         break;
     }
 
