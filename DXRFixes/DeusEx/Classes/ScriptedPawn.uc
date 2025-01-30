@@ -261,7 +261,7 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
         return;
 
     // DXRando EmpHealth to disable shields
-    if(damageType=='EMP') EmpHealth -= Damage;
+    if(damageType=='EMP' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) EmpHealth -= Damage;
 
     if(EmpHealth <= 0) bHasCloak = False;
 

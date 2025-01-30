@@ -13,6 +13,26 @@ function PostPostBeginPlay()
     Description = default.Description;
 }
 
+function BeginPlay()
+{
+    local int i;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        LevelValues[0] = 0.7;
+        LevelValues[1] = 0.4;
+        LevelValues[2] = 0.2;
+        LevelValues[3] = 0;
+    } else {
+        LevelValues[0] = 0.75;
+        LevelValues[1] = 0.5;
+        LevelValues[2] = 0.25;
+        LevelValues[3] = 0;
+    }
+    for(i=0; i<ArrayCount(LevelValues); i++) {
+        default.LevelValues[i] = LevelValues[i];
+    }
+    Super.BeginPlay();
+}
+
 defaultproperties
 {
     bAutomatic=true

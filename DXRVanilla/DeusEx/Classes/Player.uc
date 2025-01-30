@@ -459,7 +459,7 @@ function DoJump( optional float F )
     local DeusExWeapon w;
     local float scaleFactor, augLevel;
 
-    augLevel = AugmentationSystem.GetAugLevelValue(class'AugMuscle') * 1.3;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) augLevel = AugmentationSystem.GetAugLevelValue(class'AugMuscle') * 1.3;
     if(augLevel < 1) augLevel = 1;
     if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20.0 * augLevel))
         return;

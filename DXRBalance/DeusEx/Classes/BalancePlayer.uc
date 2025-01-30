@@ -615,14 +615,17 @@ function SetDroneStats()
 {
     if (aDrone != None)
     {
-        //aDrone.Speed = 3 * spyDroneLevelValue;
-        aDrone.Speed = 5 * spyDroneLevelValue;
-        //aDrone.MaxSpeed = 3 * spyDroneLevelValue;
-        aDrone.MaxSpeed = 5 * spyDroneLevelValue;
-        //aDrone.Damage = 5 * spyDroneLevelValue;
-        aDrone.Damage = 2 * spyDroneLevelValue;
-        //aDrone.blastRadius = 8 * spyDroneLevelValue;
-        aDrone.blastRadius = 4 * spyDroneLevelValue;
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+            aDrone.Speed = 5 * spyDroneLevelValue;
+            aDrone.MaxSpeed = 5 * spyDroneLevelValue;
+            aDrone.Damage = 2 * spyDroneLevelValue;
+            aDrone.blastRadius = 4 * spyDroneLevelValue;
+        } else {
+            aDrone.Speed = 3 * spyDroneLevelValue;
+            aDrone.MaxSpeed = 3 * spyDroneLevelValue;
+            aDrone.Damage = 5 * spyDroneLevelValue;
+            aDrone.blastRadius = 8 * spyDroneLevelValue;
+        }
         // window construction now happens in Tick()
     }
 }
@@ -647,7 +650,9 @@ function DroneExplode()
         return;
     }
 
-    if(Energy >= 10) {
+    if(class'MenuChoice_BalanceAugs'.static.IsDisabled()) {
+        Super.DroneExplode();
+    } else if(Energy >= 10) {
         Energy -= 10;
         Super.DroneExplode();
     } else {
