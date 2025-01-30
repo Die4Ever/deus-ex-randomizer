@@ -40,8 +40,6 @@ function SetWatchFlags();
 static function int GetBingoFailedEvents(string eventname, out string failed[6]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
-// for goals that can be impossible before the end bingo mission
-function MarkBingoCampaignFailed();
 
 function AddWatchedActor(Actor a,String eventName)
 {
@@ -101,9 +99,8 @@ function PostFirstEntry()
 {
     Super.PostFirstEntry();
 
-    MarkBingoFailedGeneric();
     MarkBingoFailedSpecial();
-    MarkBingoCampaignFailed();
+    MarkBingoFailedGeneric();
 
      //Done here so that items you are carrying over between levels don't get hit by LogPickup
     InitStatLogShim();
@@ -1441,7 +1438,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-static function int BingoActiveMission(int currentMission, int missionsMask)
+static function int BingoActiveMission(int currentMission, int missionsMask, optional int bingoMask)
 {
     local int missionAnded, minMission;
     if ((missionsMask & FAILED_MISSION_MASK) != 0) return -1; //-1=impossible/failed
@@ -1449,6 +1446,10 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded != 0) return 2;// 2==true
     minMission = currentMission;
+
+    if (bingoMask != 0) {
+        missionsMask = missionsMask & bingoMask;
+    }
 
 #ifdef backtracking
     // check conjoined backtracking missions

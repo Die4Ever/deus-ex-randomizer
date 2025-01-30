@@ -400,21 +400,21 @@ static function bool IsBingoEnd(int missionNumber, int bingoDuration)
     return GetBingoEnd(missionNumber, bingoDuration) == missionNumber;
 }
 
-static function bool IsGoalFailed(int missionNumber, int bingoDuration, int missionMask)
+static function int GetBingoMask(int missionNumber, int bingoDuration)
 {
     local int mission, bingoMask;
 
     for (mission = GetBingoEnd(missionNumber, bingoDuration); mission >= missionNumber; mission--) {
         bingoMask = bingoMask | (1 << mission);
     }
-    if ((bingoMask & (1 << 10)) != 0) {
-        bingoMask = bingoMask | (1 << 11);
+    if ((bingoMask & (1 << 11)) != 0) {
+        bingoMask = bingoMask | (1 << 10);
     }
-    if ((bingoMask & (1 << 12)) != 0) {
-        bingoMask = bingoMask | (1 << 14);
+    if ((bingoMask & (1 << 14)) != 0) {
+        bingoMask = bingoMask | (1 << 12);
     }
 
-    return (bingoMask & missionMask) == 0;
+    return bingoMask;
 }
 
 static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {
