@@ -1438,7 +1438,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-static function int BingoActiveMission(int currentMission, int missionsMask)
+static function int BingoActiveMission(int currentMission, int missionsMask, optional int bingoMask)
 {
     local int missionAnded, minMission;
     if ((missionsMask & FAILED_MISSION_MASK) != 0) return -1; //-1=impossible/failed
@@ -1446,6 +1446,10 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded != 0) return 2;// 2==true
     minMission = currentMission;
+
+    if (bingoMask != 0) {
+        missionsMask = missionsMask & bingoMask;
+    }
 
 #ifdef backtracking
     // check conjoined backtracking missions

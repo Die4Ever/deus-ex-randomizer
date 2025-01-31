@@ -193,16 +193,15 @@ simulated function bool MarkBingoAsFailed(string event)
 
 simulated function CheckForExpiredBingoGoals(DXRando dxr, int missionNum)
 {
-    local int missionMask, i;
+    local int bingoCampaignMask, i;
 
-    missionMask = bingo_missions_masks[i];
     if (dxr.flags.IsBingoCampaignMode()) {
-        missionMask = missionMask & class'DXRBingoCampaign'.static.GetBingoMask(missionNum, dxr.flags.bingo_duration);
+        bingoCampaignMask = class'DXRBingoCampaign'.static.GetBingoMask(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration);
     }
 
     for(i=0; i<ArrayCount(bingo); i++) {
-        if ((missionMask & FAILED_MISSION_MASK)!=0) continue; //Skip some extra looping in MarkBingoAsFailed
-        if (class'DXREvents'.static.BingoActiveMission(missionNum, missionMask)==-1 || missionMask == 0){
+        if ((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) continue; //Skip some extra looping in MarkBingoAsFailed
+        if (class'DXREvents'.static.BingoActiveMission(missionNum, bingo_missions_masks[i], bingoCampaignMask)==-1){
             class'DXREvents'.static.MarkBingoAsFailed(bingo[i].event);
         }
     }
