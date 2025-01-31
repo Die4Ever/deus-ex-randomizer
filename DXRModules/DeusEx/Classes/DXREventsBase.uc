@@ -16,6 +16,7 @@ struct BingoOption {
     var string event, desc, desc_singular;
     var int max;
     var int missions;// bit masks
+    var bool use_item_goal;
 };
 var() BingoOption bingo_options[350];
 
@@ -1102,6 +1103,7 @@ function bool AddTestGoal(
         desc,
         0,
         max,
+        bingo_options[bingoIdx].use_item_goal,
         missions
     );
 
@@ -1192,7 +1194,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     //Clear out the board so it is ready to be repopulated
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            data.SetBingoSpot(x, y, "", "", 0, 0, 0);
+            data.SetBingoSpot(x, y, "", "", 0, 0, false, 0);
         }
     }
 
@@ -1203,15 +1205,15 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     //Prepopulate the board with free spaces
     switch(free_spaces) {
     case 5:// all fall through
-        data.SetBingoSpot(1, 4, "Free Space", "Free Space", 1, 1, 0);// column
+        data.SetBingoSpot(1, 4, "Free Space", "Free Space", 1, 1, false, 0);// column
     case 4:
-        data.SetBingoSpot(4, 1, "Free Space", "Free Space", 1, 1, 0);// row
+        data.SetBingoSpot(4, 1, "Free Space", "Free Space", 1, 1, false, 0);// row
     case 3:
-        data.SetBingoSpot(3, 0, "Free Space", "Free Space", 1, 1, 0);// column
+        data.SetBingoSpot(3, 0, "Free Space", "Free Space", 1, 1, false, 0);// column
     case 2:
-        data.SetBingoSpot(0, 3, "Free Space", "Free Space", 1, 1, 0);// row
+        data.SetBingoSpot(0, 3, "Free Space", "Free Space", 1, 1, false, 0);// row
     case 1:
-        data.SetBingoSpot(2, 2, "Free Space", "Free Space", 1, 1, 0);// center
+        data.SetBingoSpot(2, 2, "Free Space", "Free Space", 1, 1, false, 0);// center
     case 0:
         break;
     }
@@ -1246,7 +1248,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
             num_options--;
             options[slot] = options[num_options];
-            data.SetBingoSpot(x, y, event, desc, 0, max, missions);
+            data.SetBingoSpot(x, y, event, desc, 0, max, bingo_options[i].use_item_goal, missions);
         }
     }
 
