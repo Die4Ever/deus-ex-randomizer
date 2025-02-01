@@ -40,22 +40,6 @@ simulated function RandoAllAugs()
     CleanUpAugCounts(player()); //Recount the number of augs in each slot
 }
 
-function PostFirstEntry()
-{
-    local TechGoggles goggles;
-    local AugVision aug;
-    local string goggles_desc;
-
-    Super.PostFirstEntry();
-
-#ifdef injections
-    aug = AugVision(player().AugmentationSystem.FindAugmentation(class'AugVision'));
-    foreach AllActors(class'TechGoggles', goggles) {
-        goggles.Description = class'TechGoggles'.static.CalcDescription(aug);
-    }
-#endif
-}
-
 static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int level)
 {
     local Augmentation anAug;
@@ -167,7 +151,6 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
 {
     local DXRLoadouts loadouts;
     local class<Augmentation> a;
-    local Augmentation anAug;
     local int i;
 
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
@@ -183,8 +166,7 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
             continue;
         }
         if( loadouts != None ) {
-            anAug = loadouts.player().AugmentationSystem.FindAugmentation(a);
-            if( anAug!=None && loadouts.StartedWithAug(anAug) ) {
+            if(loadouts.IsAugBanned(a)) {
                 banned[i] = 1;
                 continue;
             }
@@ -373,14 +355,16 @@ simulated function RandoAug(Augmentation a)
     }
 
 #ifdef injections
-    if( #var(prefix)AugSpeed(a) != None ) {
+    if( #var(prefix)AugSpeed(a) != None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         add_desc = "DXRando: Activating this aug instantly burns 1 energy in order to prevent abuse. ";
     }
-    else if( #var(prefix)AugVision(a) != None ) {
+    else if( #var(prefix)AugVision(a) != None  && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         add_desc = "DXRando: You can see characters, goals, items, datacubes, vehicles, crates, and electronic devices through walls. ";
     }
-    else if( #var(prefix)AugLight(a) != None ) {
-        if(dxr.flags.IsHalloweenMode()) {
+    else if( #var(prefix)AugLight(a) != None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+            // don't change it
+        } else if(dxr.flags.IsHalloweenMode()) {
             add_desc = "DXRando: The light costs more energy in Halloween modes. Can be upgraded to level 2 which costs no energy and is brighter. ";
         } else {
             if(a.CurrentLevel<1) {
@@ -667,7 +651,7 @@ simulated function RemoveRandomAug(#var(PlayerPawn) p, optional bool singleSlot,
         if( #var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
             continue;
 
-        if( loadouts != None && loadouts.StartedWithAug(a,true) )
+        if( loadouts != None && loadouts.StartedWithAug(a.class) )
             continue;
 
         augs[numAugs++] = a;

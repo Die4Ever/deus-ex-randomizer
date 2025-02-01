@@ -1,54 +1,43 @@
 class BuffTechGoggles injects TechGoggles;
 
-function static float CalcDistance(AugVision aug)
+function static float CalcDistance()
 {
-    if(aug != None) {
-        return aug.LevelValues[1];
-    }
-    return class'AugVision'.default.LevelValues[1];
+    return 320;
 }
 
-function static string CalcDescription(AugVision aug)
+function static string CalcDescription()
 {
     local string desc;
     desc = default.Description;
-    if(!class'DXRFlags'.default.bZeroRandoPure) {
-        desc = desc $ "|n|nSee-through walls distance: " $ int(CalcDistance(aug)/16.0) $ " ft";
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+        desc = desc $ "|n|nSee-through walls distance: " $ int(CalcDistance()/16.0) $ " ft";
     }
     return desc;
 }
 
 function PostBeginPlay()
 {
-    local AugVision aug;
     Super.PostBeginPlay();
 
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         Charge = class'TechGogglesInjBase'.default.Charge;
         return;
     }
 
-    foreach AllActors(class'AugVision', aug) {
-        Description = CalcDescription(aug);
-        return;
-    }
-
-    Description = CalcDescription(None);
+    Description = CalcDescription();
 }
 
 function UpdateHUDDisplay(DeusExPlayer Player)
 {
-    local AugVision aug;
     local AugmentationDisplayWindow augDisplay;
     local float dist;
 
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         Super.UpdateHUDDisplay(Player);
         return;
     }
 
-    aug = AugVision(Player.AugmentationSystem.FindAugmentation(class'AugVision'));
-    dist = CalcDistance(aug);
+    dist = CalcDistance();
 
     augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
     if ((augDisplay.activeCount == 0) && (IsActive())) {
@@ -69,10 +58,9 @@ function UpdateHUDDisplay(DeusExPlayer Player)
 
 function ChargedPickupEnd(DeusExPlayer Player)
 {
-    local AugVision aug;
     local AugmentationDisplayWindow augDisplay;
 
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
         Super.ChargedPickupEnd(Player);
         return;
     }
@@ -86,8 +74,7 @@ function ChargedPickupEnd(DeusExPlayer Player)
         augDisplay.visionBlinder = None;
     } else {
         augDisplay.visionLevel -= 1;
-        aug = AugVision(Player.AugmentationSystem.FindAugmentation(class'AugVision'));
-        augDisplay.visionLevelValue -= CalcDistance(aug);
+        augDisplay.visionLevelValue -= CalcDistance();
     }
 
     Super(ChargedPickup).ChargedPickupEnd(Player);

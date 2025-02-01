@@ -8,6 +8,10 @@ Begin:
 simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
 {
     local AugmentationDisplayWindow augDisplay;
+    local int lvl;
+
+    lvl = Level;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) lvl++;
 
     augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
     if (IsActive)
@@ -15,10 +19,10 @@ simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
         if (++augDisplay.activeCount <= 1) {
             augDisplay.activeCount = 1;
             augDisplay.bVisionActive = True;
-            augDisplay.visionLevel = Level + 1;
+            augDisplay.visionLevel = lvl;
             augDisplay.visionLevelValue = LevelValue;
         } else {
-            augDisplay.visionLevel += Level + 1;
+            augDisplay.visionLevel += lvl;
             augDisplay.visionLevelValue += LevelValue;
         }
     }
@@ -30,11 +34,25 @@ simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
             augDisplay.visionLevel = 0;
             augDisplay.visionLevelValue = 0;
         } else {
-            augDisplay.visionLevel -= Level + 1;
+            augDisplay.visionLevel -= lvl;
             augDisplay.visionLevelValue -= LevelValue;
         }
         augDisplay.visionBlinder = None;
     }
+}
+
+simulated function PreBeginPlay()
+{
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        LevelValues[2]=640;
+        LevelValues[3]=1600;
+    } else {
+        LevelValues[2]=320;
+        LevelValues[3]=800;
+    }
+    default.LevelValues[2]=LevelValues[2];
+    default.LevelValues[3]=LevelValues[3];
+    Super.PreBeginPlay();
 }
 
 // level value is feet*16

@@ -2,7 +2,7 @@ class DXRChair1 injects Chair1;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) {
         SetCollisionSize(CollisionRadius, class'Chair1InjBase'.default.CollisionHeight);
         PrePivot = class'Chair1InjBase'.default.PrePivot;
         sitPoint[0] = class'Chair1InjBase'.default.sitPoint[0];

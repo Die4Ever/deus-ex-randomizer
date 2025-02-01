@@ -330,7 +330,7 @@ function doAutosave()
     bNeedSave = false;
     SetGameSpeed(1);// TODO: figure out what's wrong with using old_game_speed instead of 1
     class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
-    p.SaveGame(saveSlot, saveName);
+    p.SaveGameCmd(saveSlot, saveName);
     Level.LevelAction = LEVACT_Saving;
     SetGameSpeed(0);
 

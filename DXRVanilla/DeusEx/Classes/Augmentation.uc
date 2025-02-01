@@ -119,7 +119,7 @@ simulated function float GetEnergyMult()
         if (AugPower(a) != None && a.bHasIt && a.bIsActive)
             mult *= a.GetAugLevelValue();
 
-        if (bBoosted && AugHeartLung(a) != None && a.bHasIt && a.bIsActive)
+        if (bBoosted && AugHeartLung(a) != None && a.bHasIt && a.bIsActive && a.bAutomatic)
             mult *= a.GetAugLevelValue();
     }
     return mult;

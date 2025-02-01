@@ -194,6 +194,8 @@ function SwapScriptedPawns(int percent, bool enemies)
             temp[i].Tag != '' && temp[slot].Tag != ''){
 
             SwapNames(temp[i].Tag, temp[slot].Tag);
+        } else {
+            l("SwapScriptedPawns not swapping tags. "$temp[i]$","$temp[i].Tag$"  and "$temp[slot]$","$temp[slot].Tag$"     keepTags: "$keepTags$"  keepTagName: "$keepTagName);
         }
         SwapNames(temp[i].Event, temp[slot].Event);
         SwapNames(temp[i].AlarmTag, temp[slot].AlarmTag);

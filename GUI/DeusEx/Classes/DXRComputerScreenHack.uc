@@ -23,7 +23,7 @@ function Tick(float deltaTime)
     {
         p = Human(winTerm.compOwner.Owner);
         if( p == None ) p = Human(Player);// ATMs don't set the Owner
-        if( p != None && !dxr.flags.IsZeroRandoPure() ) {
+        if( p != None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ) {
             p.Energy -= deltaTime * 5.0;
             if( p.Energy <= 0 ) {
                 p.Energy = 0;
@@ -67,7 +67,7 @@ function CreateHackMessageWindow()
 	energyMeter.SetSize(168, 47);
 	energyMeter.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 
-    if(p == None || dxr.flags.IsZeroRandoPure()) {
+    if(p == None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
         energyMeter.Hide();
     }
 
@@ -87,8 +87,7 @@ function CreateHackButton()
     Super.CreateHackButton();
 
     p = #var(PlayerPawn)(player);
-    if (p==None || dxr.flags.IsZeroRandoPure()) return;
-
+    if (p==None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) return;
     //Make the Biocell button as well
     btnBiocell = PersonaActionButtonWindow(NewChild(Class'DXRPersonaActionButtonWindow'));
     btnBioCell.minimumButtonWidth=111;
@@ -107,7 +106,7 @@ function UpdateBiocellButtonCount()
 
     p = #var(PlayerPawn)(player);
 
-    if (p==None || btnBiocell==None || dxr.flags.IsZeroRandoPure()) return;
+    if (p==None || btnBiocell==None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) return;
 
     biocellCount = 0;
     if (p!=None){
@@ -134,7 +133,7 @@ function UpdateBiocellButtonClickability()
     p = #var(PlayerPawn)(player);
     enable=False;
 
-    if (p==None || btnBiocell==None || dxr.flags.IsZeroRandoPure()) return;
+    if (p==None || btnBiocell==None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) return;
 
     if (p!=None && biocellCount!=0){
         if (p.Energy<p.EnergyMax){
@@ -174,7 +173,7 @@ function bool ButtonActivated( Window buttonPressed )
 
     p = #var(PlayerPawn)(player);
 
-    if (p==None || btnBiocell==None || dxr.flags.IsZeroRandoPure()) return Super.ButtonActivated(buttonPressed);
+    if (p==None || btnBiocell==None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) return Super.ButtonActivated(buttonPressed);
 
     switch( buttonPressed )
     {
@@ -215,7 +214,7 @@ function UpdateEnergyMeter()
 
     p = Human(player);
 
-    if (p==None || dxr.flags.IsZeroRandoPure()) return;
+    if (p==None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) return;
 
     //Keep it to one decimal point
     energy = int(p.Energy);

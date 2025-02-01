@@ -31,7 +31,7 @@ var MoreFlagsSettings more_difficulty_settings[5];
 #endif
 
 // only access these in defaults, mostly for balance change checks
-var bool bZeroRandoPure, bReducedRando, bCrowdControl;
+var bool bZeroRandoPure, bZeroRando, bReducedRando, bCrowdControl;
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
@@ -61,6 +61,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 simulated function SetGlobals()
 {
     default.bZeroRandoPure = IsZeroRandoPure();
+    default.bZeroRando = IsZeroRando(); // currently only used for weapon description text
     default.bReducedRando = IsReducedRando();
     default.bCrowdControl = (crowdcontrol!=0);
 }

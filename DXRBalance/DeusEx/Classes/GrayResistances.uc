@@ -3,6 +3,9 @@ class Gray injects Gray;
 function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
                                Vector offset, Name damageType)
 {
+    if(class'MenuChoice_BalanceEtc'.static.IsDisabled())
+        return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
+
     // Grays aren't affected by radiation or fire or gas, except in DXRando!
     if ((damageType == 'Radiation') /*|| (damageType == 'Flamed') || (damageType == 'Burned')*/)
         return false;
@@ -23,6 +26,17 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
         actualDamage *= 0.1;
 
     return actualDamage;
+}
+
+function BeginPlay()
+{
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+        BaseAccuracy=0.1;
+    } else {
+        BaseAccuracy=0;
+    }
+    default.BaseAccuracy=BaseAccuracy;
+    Super.BeginPlay();
 }
 
 defaultproperties

@@ -3,7 +3,7 @@ class BalanceAugLight injects AugLight;
 function SetBeamLocation()
 {
     Super.SetBeamLocation();
-    if(CurrentLevel==0)// quick way to check that we're in a Halloween mode
+    if(CurrentLevel==0)// quick way to check that we're in a Halloween mode, or vanilla balance
         return;
     if( b1 == None || b2 == None )
         return;
@@ -43,6 +43,20 @@ function bool IncLevel()
 {
     Super.IncLevel();
     GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
+}
+
+function BeginPlay()
+{
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        MaxLevel=1;
+        EnergyRate = 0;
+    } else {
+        MaxLevel=0;
+        EnergyRate = 20;
+    }
+    default.MaxLevel=MaxLevel;
+    default.EnergyRate=EnergyRate;
+    Super.BeginPlay();
 }
 
 defaultproperties

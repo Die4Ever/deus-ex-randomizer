@@ -117,8 +117,16 @@ function ChargedPickupUpdate(DeusExPlayer Player)
     }
 }
 
-// default Charge was 2000, which is used for hazmats and rebreathers
-defaultproperties
+function BeginPlay()
 {
-    Charge=1500
+    if(HazMatSuit(self)!=None || Rebreather(self)!=None) {
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+            Charge = 1500;
+        }
+        else {
+            Charge = 2000;
+        }
+        default.Charge = Charge;
+    }
+    Super.BeginPlay();
 }

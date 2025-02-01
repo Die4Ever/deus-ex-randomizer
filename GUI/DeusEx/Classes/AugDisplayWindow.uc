@@ -118,13 +118,19 @@ function bool ShouldDrawActor(Actor A)
     if(A.bHidden)
         return false;
 
-    if( Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None )
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && (Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None))
         return true;
 
     if(!A.bVisionImportant)
         return false;
 
-    return IsHeatSource(A) || AutoTurret(A) != None || AutoTurretGun(A) != None || SecurityCamera(A) != None;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        if(IsHeatSource(A)) return true;
+    } else {
+        if(Super.IsHeatSource(A)) return true;
+    }
+
+    return AutoTurret(A) != None || AutoTurretGun(A) != None || SecurityCamera(A) != None;
 }
 
 function bool ShouldDrawBlinder(Actor A)
@@ -885,7 +891,7 @@ function DrawSpyDroneAugmentation(GC gc)
     if (winDrone!=None){
         //Balanced SpyDrone costs 10 energy to detonate.  Display a message if you don't have enough
         //See "DroneExplode" in DXRBalance/BalancePlayer.uc
-        if (Player.Energy < 10){
+        if (Player.Energy < 10 && class'MenuChoice_BalanceAugs'.static.IsEnabled()){
 
             //Find the useful coords of the drone window
             boxH = height/4;

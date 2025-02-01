@@ -41,7 +41,7 @@ simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
 
     new_damage = w.default.HitDamage;
 #ifdef injections
-    if(!dxr.flags.IsZeroRandoPure() && WeaponHideAGun(w) != None) {
+    if(WeaponHideAGun(w) != None && class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         new_damage = WeaponHideAGun(w).UpgradeToPS40();
     }
 #endif

@@ -31,6 +31,20 @@ auto simulated state Flying
     }
 }
 
+function BeginPlay()
+{
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+        MaxSpeed = 75000;
+        AccurateRange = 2000;
+        maxRange = 4000;
+    } else {
+        MaxSpeed = 750;
+        AccurateRange = 640;
+        maxRange = 1280;
+    }
+    Super.BeginPlay();
+}
+
 defaultproperties
 {
     AccurateRange=2000

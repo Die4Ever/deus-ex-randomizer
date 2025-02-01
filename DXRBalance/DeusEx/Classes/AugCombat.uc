@@ -23,6 +23,17 @@ simulated function TickUse()
     Super.TickUse();
 }
 
+function BeginPlay()
+{
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        Level5Value = 2.25;
+    } else {
+        Level5Value = -1;
+    }
+    default.Level5Value = Level5Value;
+    Super.BeginPlay();
+}
+
 defaultproperties
 {
     bAutomatic=true

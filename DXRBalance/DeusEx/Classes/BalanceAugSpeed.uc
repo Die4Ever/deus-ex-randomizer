@@ -11,7 +11,7 @@ simulated function DoActivate()
     local float useEnergy;
 
     // DXRando: instantly use 1 energy to prevent abuse
-    if(Level.LevelAction == LEVACT_None) {
+    if(Level.LevelAction == LEVACT_None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         useEnergy = 1;
     }
     if(Player.Energy < useEnergy) {
@@ -42,11 +42,33 @@ function Reset()
     }
 }
 
+function BeginPlay()
+{
+    local int i;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        LevelValues[0] = 1.2;
+        LevelValues[1] = 1.35;
+        LevelValues[2] = 1.5;
+        LevelValues[3] = 1.7;
+        Level5Value = 1.8;
+    } else {
+        LevelValues[0] = 1.2;
+        LevelValues[1] = 1.4;
+        LevelValues[2] = 1.6;
+        LevelValues[3] = 1.8;
+        Level5Value = -1;
+    }
+    for(i=0; i<ArrayCount(LevelValues); i++) {
+        default.LevelValues[i] = LevelValues[i];
+    }
+    default.Level5Value = Level5Value;
+    Super.BeginPlay();
+}
+
 //original went from 1.2 up to 1.8, I've thought about nerfing the max speed so you can't just run past all enemies, but I think that would require an unreasonably large nerf
 //original EnergyRate is 40, might nerf it if people use it too much?
 defaultproperties
 {
-    EnergyRate=40
     LevelValues(0)=1.2
     LevelValues(1)=1.35
     LevelValues(2)=1.5

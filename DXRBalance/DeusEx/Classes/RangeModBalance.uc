@@ -18,6 +18,17 @@ simulated function bool CanUpgradeWeapon(DeusExWeapon weapon)
         return False;
 }
 
+function BeginPlay()
+{
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+        WeaponModifier = 0.25;
+    } else {
+        WeaponModifier = 0.1;
+    }
+    default.WeaponModifier = WeaponModifier;
+    Super.BeginPlay();
+}
+
 defaultproperties
 {
     WeaponModifier=0.25

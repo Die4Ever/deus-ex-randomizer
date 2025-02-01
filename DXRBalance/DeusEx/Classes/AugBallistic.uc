@@ -1,5 +1,16 @@
 class DXRAugBallistic injects AugBallistic;
 
+function BeginPlay()
+{
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        Level5Value = 0.15;
+    } else {
+        Level5Value = -1;
+    }
+    default.Level5Value = Level5Value;
+    Super.BeginPlay();
+}
+
 // vanilla level 1 is 0.80 (20%) but rounding causes it to show as 19%
 defaultproperties
 {
