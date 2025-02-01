@@ -2046,10 +2046,10 @@ exec function SaveGameCmd(int saveIndex, optional String saveDesc)
     // saving to slot 0 asks the native code to look for an empty slot, but it doesn't search beyond slot 1000 https://github.com/Die4Ever/deus-ex-randomizer/issues/891
     if(saveIndex == 0) {
         saveDir = GetSaveGameDirectory();
-        for(i=1000; i<999999; i++) {
+        for(i=1; i<999999; i++) {
             saveInfo = saveDir.GetSaveInfo(i);
             if(saveInfo == None) {
-                if(i > 1000) saveIndex = i;
+                saveIndex = i;
                 break;
             }
             saveDir.DeleteSaveInfo(saveInfo);
