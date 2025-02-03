@@ -1,6 +1,8 @@
 class PlayerDataItem extends Inventory config(DXRBingo);
 
 const FAILED_MISSION_MASK = 1;
+const INT_TRUE = 1;
+const INT_FALSE = 0;
 
 var travel bool local_inited;
 var travel int version, initial_version;
@@ -20,10 +22,10 @@ struct BingoSpot {
     var travel string desc;
     var travel int progress;
     var travel int max;
-    var travel bool use_item_goal;
 };
 var travel BingoSpot bingo[25];
 var travel int bingo_missions_masks[25];// can't be inside the travel struct because that breaks compatibility with old saves
+var travel int use_item_goals[25];// can't be inside the struct for the same reason
 
 struct BingoSpotExport {
     var string event;
@@ -141,13 +143,13 @@ function int GetBingoProgress(string event, optional out int max)
     return 0;
  }
 
-simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, bool use_item_goal, int missions)
+simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int use_item_goal, int missions)
 {
     bingo[x*5+y].event = event;
     bingo[x*5+y].desc = desc;
     bingo[x*5+y].progress = progress;
     bingo[x*5+y].max = max;
-    bingo[x*5+y].use_item_goal = use_item_goal;
+    use_item_goals[x*5+y] = use_item_goal;
     bingo_missions_masks[x*5+y] = missions;
 }
 
@@ -203,7 +205,7 @@ simulated function CheckForExpiredBingoGoals(DXRando dxr, int missionNum)
 
     for(i=0; i<ArrayCount(bingo); i++) {
         if ((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) continue; //Skip some extra looping in MarkBingoAsFailed
-        if (bingo[i].use_item_goal) continue; // it's possible to still have an item past the last mission you can aquire it
+        if (use_item_goals[i] == INT_TRUE) continue; // it's possible to still have an item past the last mission you can aquire it
         if (class'DXREvents'.static.BingoActiveMission(missionNum, bingo_missions_masks[i], bingoCampaignMask)==-1){
             class'DXREvents'.static.MarkBingoAsFailed(bingo[i].event);
         }
