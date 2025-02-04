@@ -209,7 +209,7 @@ function Tick(float delta)
         updateName();
     }
 
-    if (EMPHitPoints<=0){
+    if (EMPHitPoints<=0 || class'DXRFlags'.default.bZeroRando){
         LightType=LT_None;
     } else if(CanHeal()){
         LightHue=89;
