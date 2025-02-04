@@ -1662,7 +1662,7 @@ function RandoInfoDevs(int percent)
 
     foreach AllActors(class'#var(prefix)InformationDevices', id)
     {
-        if(!id.bHidden && id.Mesh == class'#var(prefix)DataCube'.default.Mesh)
+        if(!id.bHidden && percent>0 && id.Mesh == class'#var(prefix)DataCube'.default.Mesh)
             GlowUp(id);
         if( id.bIsSecretGoal || !chance_single(percent) ) {
             if( ! id.bAddToVault ) { // Zero Rando books should add to vault too

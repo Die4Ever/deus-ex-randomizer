@@ -3,7 +3,7 @@ class DXRMJ12Commando injects MJ12Commando;
 function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
                             Vector offset, Name damageType)
 {
-    if(damageType == 'Sabot') Damage *= 2;
+    if(damageType == 'Sabot' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) Damage *= 2;
     if(damageType == 'TearGas' || damageType == 'HalonGas') return 0;
 
     return Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);

@@ -459,7 +459,7 @@ function DoJump( optional float F )
     local DeusExWeapon w;
     local float scaleFactor, augLevel;
 
-    augLevel = AugmentationSystem.GetAugLevelValue(class'AugMuscle') * 1.3;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) augLevel = AugmentationSystem.GetAugLevelValue(class'AugMuscle') * 1.3;
     if(augLevel < 1) augLevel = 1;
     if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20.0 * augLevel))
         return;
@@ -561,6 +561,7 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (item.bDeleteMe) return false;// just in case!
 
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
+    if (class'MenuChoice_BalanceItems'.static.IsDisabled() && ChargedPickup(item) != None) return false;
     return true;
 }
 
@@ -2034,6 +2035,28 @@ function GameDirectory GetSaveGameDirectory()
     saveDir.GetGameDirectory();
 
     return saveDir;
+}
+
+exec function SaveGameCmd(int saveIndex, optional String saveDesc)
+{
+    local DeusExSaveInfo saveInfo;
+    local GameDirectory saveDir;
+    local int i;
+
+    // saving to slot 0 asks the native code to look for an empty slot, but it doesn't search beyond slot 1000 https://github.com/Die4Ever/deus-ex-randomizer/issues/891
+    if(saveIndex == 0) {
+        saveDir = GetSaveGameDirectory();
+        for(i=1; i<999999; i++) {
+            saveInfo = saveDir.GetSaveInfo(i);
+            if(saveInfo == None) {
+                saveIndex = i;
+                break;
+            }
+            saveDir.DeleteSaveInfo(saveInfo);
+        }
+        CriticalDelete(saveDir);
+    }
+    SaveGame(saveIndex, saveDesc);
 }
 
 exec function Inv() // INVisible and INVincible

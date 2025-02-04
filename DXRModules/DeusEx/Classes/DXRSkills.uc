@@ -34,7 +34,7 @@ function CheckConfig()
 
 #ifdef balance
     i=0;
-    if(!dxr.flags.IsZeroRandoPure()) {
+    if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
         SkillCostMultipliers[i].type = "SkillDemolition";
         SkillCostMultipliers[i].percent = 80;
         SkillCostMultipliers[i].minLevel = 1;
@@ -170,17 +170,17 @@ simulated function RandoSkillLevelValues(Skill a)
     local string add_desc;
     local float skill_value_wet_dry;
 
-    if( #var(prefix)SkillWeaponHeavy(a) != None ) {
+    if( #var(prefix)SkillWeaponHeavy(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
         add_desc = "Over 100% will allow you to move more quickly while carrying a heavy weapon, up to full speed at 160%.";
     }
 #ifdef injections
-    else if( #var(prefix)SkillDemolition(a) != None ) {
+    else if( #var(prefix)SkillDemolition(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ) {
         add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level. For attached greandes, this skill also improves the blast radius and damage slightly.";
     }
-    else if( #var(prefix)SkillComputer(a) != None && !dxr.flags.IsZeroRandoPure() ) {
+    else if( #var(prefix)SkillComputer(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
-    else if( #var(prefix)SkillEnviro(a)!=None ) {
+    else if( #var(prefix)SkillEnviro(a)!=None && class'MenuChoice_BalanceSkills'.static.IsEnabled() ) {
         add_desc = "Each level increases the number of fire extinguishers you can carry by 1.";
     }
 #endif
@@ -220,36 +220,43 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         return shortDisplay $ p;
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
-#ifdef vanilla||revision
-        word = "Damage Reduction (Passive/HazMat/Armor)";
-        val = FClamp(val, 0, 1.1);
-#else
-        word = "Damage Reduction (HazMat/Armor)";
-#endif
+        if(#bool(vanilla) || #bool(revision)) {
+            if(class'MenuChoice_BalanceSkills'.static.IsDisabled())
+                word = "Damage Reduction|n            (HazMat/Armor)";
+            else
+                word = "Damage Reduction|n            (Passive/HazMat/Armor)";
+            val = FClamp(val, 0, 1.1);
+        }
+        else {
+            word = "Damage Reduction|n            (HazMat/Armor)";
+        }
 
         f = val;
 
         switch(i) {
-        case 0: r = "Untrained: "; break;
-        case 1: r = "|n    Trained: "; break;
+        case 0: r =       "Untrained: "; break;
+        case 1: r = "|n    Trained:   "; break;
         case 2: r = "|n    Advanced: "; break;
-        case 3: r = "|n    Master: "; break;
+        case 3: r = "|n    Master:    "; break;
         }
-#ifdef vanilla||revision
-        shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
-        r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
-#elseif vmd
-        f = (f + 1) / 2;// VMD nerfed enviro skill
-        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
-        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
-#else
-        shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
-        r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
-#endif
+
+        if(#bool(vanilla) || #bool(revision)) {
+            if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
+                shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
+                r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
+            }
+            r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
+            r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
+        } else if(#bool(vmd)) {
+            f = (f + 1) / 2;// VMD nerfed enviro skill
+            shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+            r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
+            r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
+        } else {
+            shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
+            r = r $ shortDisplay $ p $ " / ";// hazmat is * 0.75
+            r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
+        }
 
         return r;
     }

@@ -1,5 +1,19 @@
 class BalanceAmmoShuriken injects AmmoShuriken;
 
+function BeginPlay()
+{
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+        AmmoAmount=10;
+        MaxAmmo=100;
+    } else {
+        AmmoAmount=5;
+        MaxAmmo=25;
+    }
+    default.AmmoAmount = AmmoAmount;
+    default.MaxAmmo = MaxAmmo;
+    Super.BeginPlay();
+}
+
 defaultproperties
 {
     AmmoAmount=10

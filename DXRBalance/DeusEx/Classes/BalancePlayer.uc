@@ -6,7 +6,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     if(Level.LevelAction != LEVACT_None) return;
 
-    if(damageType == 'NanoVirus') {
+    if(damageType == 'NanoVirus' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         augLevel = -1;
         if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
@@ -95,7 +95,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         // narrow the head region
         if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
         {
-            if(!class'DXRFlags'.default.bZeroRandoPure) {
+            if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
                 // do 1.7x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
                 return Damage * 0.85;
             }
@@ -114,7 +114,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         {
             // left arm
         }
-        else if(!class'DXRFlags'.default.bZeroRandoPure)
+        else if(class'MenuChoice_BalanceEtc'.static.IsEnabled())
         {
             // and finally, the torso! do 1.4x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
             return Damage * 0.7;
@@ -135,6 +135,8 @@ function float ReduceEnviroDamage(float damage, name damageType)
         && damageType != 'Flamed' && damageType != 'Burned' && damageType != 'Shocked' ) {
             return damage;
     }
+
+    if(damage==0) return damage;// don't make AugEnviro use energy for 0 damage from fire extinguishers
 
     if (AugmentationSystem != None)
         augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
@@ -162,7 +164,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
     {
         damage *= 0.75 * skillLevel;
     }
-    else // passive enviro skill still gives some damage reduction
+    else if(class'MenuChoice_BalanceSkills'.static.IsEnabled())// passive enviro skill still gives some damage reduction
     {
         damage *= 1.1 * skillLevel + 0.3;
     }
@@ -271,13 +273,16 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     //
     // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
     // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
-    if ((damageType == 'Shot') || (damageType == 'AutoShot') ||
-        damageType == 'Flamed' || damageType == 'Burned')
+    if (damageType == 'Shot' || damageType == 'AutoShot')
     {
         newDamage *= CombatDifficulty;
         oldDamage *= CombatDifficulty;
     }
-    else if (damageType != 'fell' && damageType != 'Drowned') {
+    else if((damageType == 'Flamed' || damageType == 'Burned') && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+        newDamage *= CombatDifficulty;
+        oldDamage *= CombatDifficulty;
+    }
+    else if (damageType != 'fell' && damageType != 'Drowned' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         damageMult = CombatDifficultyMultEnviro();
         newDamage *= damageMult;
         oldDamage *= damageMult;
@@ -290,7 +295,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     adjustedDamage = Int(newDamage);// adjustedDamage is our out param
 
-    if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso) {
+    if(damageType == 'TearGas' && adjustedDamage*2 >= HealthTorso && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         // TearGas can't kill you
         adjustedDamage = 0;
         HealthTorso = 1;
@@ -612,14 +617,17 @@ function SetDroneStats()
 {
     if (aDrone != None)
     {
-        //aDrone.Speed = 3 * spyDroneLevelValue;
-        aDrone.Speed = 5 * spyDroneLevelValue;
-        //aDrone.MaxSpeed = 3 * spyDroneLevelValue;
-        aDrone.MaxSpeed = 5 * spyDroneLevelValue;
-        //aDrone.Damage = 5 * spyDroneLevelValue;
-        aDrone.Damage = 2 * spyDroneLevelValue;
-        //aDrone.blastRadius = 8 * spyDroneLevelValue;
-        aDrone.blastRadius = 4 * spyDroneLevelValue;
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+            aDrone.Speed = 5 * spyDroneLevelValue;
+            aDrone.MaxSpeed = 5 * spyDroneLevelValue;
+            aDrone.Damage = 2 * spyDroneLevelValue;
+            aDrone.blastRadius = 4 * spyDroneLevelValue;
+        } else {
+            aDrone.Speed = 3 * spyDroneLevelValue;
+            aDrone.MaxSpeed = 3 * spyDroneLevelValue;
+            aDrone.Damage = 5 * spyDroneLevelValue;
+            aDrone.blastRadius = 8 * spyDroneLevelValue;
+        }
         // window construction now happens in Tick()
     }
 }
@@ -644,7 +652,9 @@ function DroneExplode()
         return;
     }
 
-    if(Energy >= 10) {
+    if(class'MenuChoice_BalanceAugs'.static.IsDisabled()) {
+        Super.DroneExplode();
+    } else if(Energy >= 10) {
         Energy -= 10;
         Super.DroneExplode();
     } else {
@@ -784,39 +794,43 @@ state PlayerWalking
 
         // slow the player down if he's carrying something heavy
         // Like a DEAD BODY!  AHHHHHH!!!
-        // old vanilla code commented out
-        /*if (CarriedDecoration != None)
-        {
-            newSpeed -= CarriedDecoration.Mass * 2;
+        // old vanilla code
+        if(class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
+            if (CarriedDecoration != None)
+            {
+                newSpeed -= CarriedDecoration.Mass * 2;
+            }
+            // don't slow the player down if he's skilled at the corresponding weapon skill
+            else if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) && (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25) && (Level.NetMode==NM_Standalone))
+            {
+                bIsWalking = True;
+                newSpeed = defSpeed;
+            }
+            else if ((inHand != None) && inHand.IsA('POVCorpse'))
+            {
+                newSpeed -= inHand.Mass * 3;
+            }
         }
-        // don't slow the player down if he's skilled at the corresponding weapon skill
-        else if ((DeusExWeapon(Weapon) != None) && (Weapon.Mass > 30) && (DeusExWeapon(Weapon).GetWeaponSkill() > -0.25) && (Level.NetMode==NM_Standalone))
-        {
-            bIsWalking = True;
-            newSpeed = defSpeed;
-        }
-        else if ((inHand != None) && inHand.IsA('POVCorpse'))
-        {
-            newSpeed -= inHand.Mass * 3;
-        }*/
-        // DXRando: mix it up https://github.com/Die4Ever/deus-ex-randomizer/issues/842
-        // AugMuscle now helps carrying decorations and bodies
-        if (AugmentationSystem != None)
-            augValue = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
-        augValue = FClamp(augValue, 1, 5);
-        if (CarriedDecoration != None)
-            carriedMass = CarriedDecoration.Mass;
-        if(inHand != None && POVCorpse(inHand) != None)
-            carriedMass = inHand.Mass;
-        newSpeed -= (carriedMass * 2) / (augValue ** 2);
-        // adjust player speed according to weapon skill, and AugMuscle
-        if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone && !bIsWalking)
-        {
-            weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
-            weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) gives +50% skill, equivalent to 150% weapon skill (advanced)
-            weapSkill = (weapSkill - 1) / 0.6;// subtract away the lower bound (100%) so it's 0, then divided by the span (upper - lower) so we're on an 0 to 1 scale
-            weapSkill = FClamp(weapSkill, 0, 1);
-            newSpeed = (newSpeed / 3 * (1 - weapSkill)) + (newSpeed * weapSkill);
+        else {
+            // DXRando: mix it up https://github.com/Die4Ever/deus-ex-randomizer/issues/842
+            // AugMuscle now helps carrying decorations and bodies
+            if (AugmentationSystem != None)
+                augValue = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+            augValue = FClamp(augValue, 1, 5);
+            if (CarriedDecoration != None)
+                carriedMass = CarriedDecoration.Mass;
+            if(inHand != None && POVCorpse(inHand) != None)
+                carriedMass = inHand.Mass;
+            newSpeed -= (carriedMass * 2) / (augValue ** 2);
+            // adjust player speed according to weapon skill, and AugMuscle
+            if (DeusExWeapon(Weapon) != None && Weapon.Mass > 30 && Level.NetMode==NM_Standalone && !bIsWalking)
+            {
+                weapSkill = DeusExWeapon(Weapon).GetWeaponSkill() * -2 + 1;// 1.0 == 100%
+                weapSkill += (augValue - 1) * 2; // 125% AugMuscle (level 1) gives +50% skill, equivalent to 150% weapon skill (advanced)
+                weapSkill = (weapSkill - 1) / 0.6;// subtract away the lower bound (100%) so it's 0, then divided by the span (upper - lower) so we're on an 0 to 1 scale
+                weapSkill = FClamp(weapSkill, 0, 1);
+                newSpeed = (newSpeed / 3 * (1 - weapSkill)) + (newSpeed * weapSkill);
+            }
         }
 
         // Multiplayer movement adjusters

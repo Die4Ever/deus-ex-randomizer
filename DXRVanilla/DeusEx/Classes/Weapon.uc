@@ -99,7 +99,7 @@ simulated function Tick(float deltaTime)
 
     Super.Tick(deltaTime);
 
-    if(!IsAnimating()) {
+    if(!IsAnimating() || class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
         return;
     }
 
@@ -389,7 +389,7 @@ simulated function bool UpdateInfo(Object winObject)
     if (P == None)
         return False;
 
-    bZeroRando = class'DXRFlags'.default.bZeroRandoPure;
+    bZeroRando = class'DXRFlags'.default.bZeroRando;
 
     winInfo = PersonaInventoryInfoWindow(winObject);
     if (winInfo == None)
@@ -876,6 +876,7 @@ simulated event RenderOverlays( canvas Canvas )
     local int texLoc;
     Super.RenderOverlays(Canvas);
 
+    if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) return;
     //Draw an indication that the weapon still has a shot in progress
     //if (bFiring && !IsAnimating() && PlayerPawn(Owner)!=None){
     //bPointing seems to be updated basically the same as bFiring, except it works for melee as well

@@ -143,7 +143,7 @@ function CheckConfig()
         break;
 
     case "09_NYC_GRAVEYARD":
-        // don't randomize the EMOff transmitter
+        // don't randomize the EMOff transmitter, or the bookcase
         door_fixes[i].tag = 'BreakableWall';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 1;
@@ -151,6 +151,15 @@ function CheckConfig()
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
+        i++;
+
+        door_fixes[i].tag = 'Bookcase';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 1;
+        door_fixes[i].doorStrength = 0.15;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = false;
         i++;
         break;
 
@@ -282,7 +291,7 @@ function RandomizeDoors()
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
         // vanilla knife does 5 damage, we need to ensure that glass is always easily breakable, especially for Stick With the Prod
         if(d.minDamageThreshold <= 5)
-            d.minDamageThreshold = 0;
+            d.minDamageThreshold = 1;// apparently people thought 0 was weird, 1 is functionally the same
 
         if( d.bPickable && d.lockStrength>0 ) {
             d.lockStrength = rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust);

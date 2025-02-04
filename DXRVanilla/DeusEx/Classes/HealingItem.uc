@@ -5,7 +5,8 @@ class HealingItem extends DeusExPickup;
 // base class, ONLY used for alcohol, I would rename this class but it would break compatibility
 
 var int health;
-var float energy;
+var int vanillaHealth;
+var float energy; // ignored when BalanceItems is disabled
 var float drugEffect;
 
 function DoHeal(Human player)
@@ -18,7 +19,9 @@ function DoHeal(Human player)
     if (player == None) return;
 
     player.drugEffectTimer += drugEffect;
-    balance = ! class'DXRFlags'.default.bZeroRandoPure;
+    balance = class'MenuChoice_BalanceItems'.static.IsEnabled();
+
+    if(!balance) health = vanillaHealth;
 
     if( health > 0 ) {
         i = player._HealPlayer(health, false, balance);// balance bool used for heal legs
@@ -84,6 +87,7 @@ defaultproperties
     Mass=10.000000
     Buoyancy=8.000000
     health=2
+    vanillaHealth=2
     energy=0
     drugEffect=5.0
 }

@@ -60,6 +60,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Fan2 fan2;
     local DynamicTeleporter dynt;
     local CrateUnbreakableSmall cus;
+    local PlaceholderEnemy phe;
 
     local bool VanillaMaps;
 
@@ -330,6 +331,14 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if(!dxr.flags.IsZeroRandoPure()) {
+            foreach AllActors(class'#var(prefix)OrdersTrigger', ot) {
+                if(ot.Event == 'muncher') {
+                    ot.Destroy();
+                }
+            }
+        }
+
         if (VanillaMaps){
             if(!#defined(vmd))// button to open the door heading towards the ladder in the water
                 AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
@@ -560,8 +569,10 @@ function PreFirstEntryMapFixes()
         ot.SetCollision(false, false, false);
 
         if (VanillaMaps){
-            class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
-            class'PlaceholderEnemy'.static.Create(self,vectm(1351,582,-930),,'Shitting');
+            phe = class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
+            if (phe!=None) phe.Tag = 'PlaceholderGas'; //Make sure the placeholder has a tag so that the tags get swapped
+            phe = class'PlaceholderEnemy'.static.Create(self,vectm(1351,582,-930),,'Shitting');
+            if (phe!=None) phe.Tag = 'PlaceholderToilet'; //Make sure the placeholder has a tag so that the tags get swapped
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1000,745,-972));//Gas Station back room
             rg.MaxCount=1;
             rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
@@ -863,7 +874,7 @@ function PostFirstEntryMapFixes()
 function AnyEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
-    local NanoKey key;
+    local #var(prefix)NanoKey key;
     local #var(prefix)HowardStrong hs;
     local bool prevMapsDone;
     local Conversation con;
@@ -877,14 +888,11 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "12_Vandenberg_gas":
-        foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
-            //We switch the tag for mib_garage to guard2 for safety purposes
-            if (sp.Tag== 'mib_garage' || sp.Tag=='guard2'){
-                key = NanoKey(sp.FindInventoryType(class'NanoKey'));
-                if(key == None) continue;
-                l(sp$" has key "$key$", "$key.KeyID$", "$key.Description);
-                if(key.KeyID != '') continue;
-                l("fixing "$key$" to garage_entrance");
+        foreach AllActors(class'#var(prefix)NanoKey',key) {
+            if (key.KeyId!='') continue; //We're looking for a key with no KeyID
+            if (key.Owner==None) continue; //That is carried by someone
+            if (key.Owner.Tag=='mib_garage' || key.Owner.Tag=='guard2') { //Specifically, one of these guys
+                l("fixing "$key$" to garage_entrance, carried by "$key.Owner);
                 key.KeyID = 'garage_entrance';
                 key.Description = "Garage Door";
                 key.Timer();// make sure to fix the ItemName in vanilla

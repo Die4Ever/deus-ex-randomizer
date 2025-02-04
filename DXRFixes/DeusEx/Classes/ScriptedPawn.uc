@@ -261,7 +261,7 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
         return;
 
     // DXRando EmpHealth to disable shields
-    if(damageType=='EMP') EmpHealth -= Damage;
+    if(damageType=='EMP' && class'MenuChoice_BalanceEtc'.static.IsEnabled()) EmpHealth -= Damage;
 
     if(EmpHealth <= 0) bHasCloak = False;
 
@@ -495,6 +495,8 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 
 function int HeadDamageMult()
 {
+    if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) return 8;
+
     if(MJ12Commando(self) != None) return 6;// their head is just as armored as the rest of them, don't need much buff?
 
     // check for helmet

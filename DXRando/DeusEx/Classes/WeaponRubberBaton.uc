@@ -21,7 +21,7 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 
 defaultproperties
 {
-    HitDamage=3
+    HitDamage=4
     FireSound=Sound'DeusExSounds.Weapons.BatonFire'
     Misc1Sound=Sound'DeusExSounds.Weapons.BatonHitFlesh'
     Misc2Sound=Sound'DeusExSounds.Weapons.BatonHitHard'

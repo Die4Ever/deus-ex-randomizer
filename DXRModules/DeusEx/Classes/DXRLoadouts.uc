@@ -312,6 +312,8 @@ function AddAug(int s, string type)
             }
             if(dxr.flags.IsHalloweenMode() && type=="AugSpeed" && dxr.flags.settings.speedlevel == 0) {
                 type = "AugStealth";// this is Halloween!
+            } else if(dxr.flags.settings.speedlevel == 0) {
+                continue;
             }
             a = GetClassFromString(type, class'Augmentation');
             __item_sets[s].starting_augs[i] = class<Augmentation>(a);
@@ -507,30 +509,38 @@ simulated function PlayerRespawn(#var(PlayerPawn) p)
     RandoStartingEquipment(p, true);
 }
 
-//Single Slot check is useful when trying to determine what augs are viable as aug choices, but not
-//useful when just trying to legitimately see if you started with an aug due to loadout
-function bool StartedWithAug(Augmentation a, optional bool ignoreSingleSlotCheck)
+function bool StartedWithAug(class<Augmentation> a)
 {
-    local class<Augmentation> aclass;
-    local Augmentation otherAug;
     local int i;
 
-    if( a.AugmentationLocation == LOC_Default )
+    if( a.default.AugmentationLocation == LOC_Default ) // we don't rando things into default slots anyways
         return true;
 
     for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
-        aclass = __item_sets[loadout].starting_augs[i];
-        if( aclass == None ) continue;
-        if( aclass == a.class ) return true;
-
-        otherAug = player().AugmentationSystem.FindAugmentation(aclass);
-
-        //speed, stealth, ninja, muscle...
-        if(!ignoreSingleSlotCheck && otherAug!=None && otherAug.AugmentationLocation == a.AugmentationLocation ) {
-            if( class'#var(prefix)AugmentationManager'.default.AugLocs[a.AugmentationLocation].NumSlots == 1 )
-                return true;
-        }
+        if( __item_sets[loadout].starting_augs[i] == a ) return true;
     }
+    return false;
+}
+
+// used for determining aug can contents
+function bool IsAugBanned(class<Augmentation> a)
+{
+    if(StartedWithAug(a)) return true;
+
+    if(dxr.flags.IsSpeedrunMode() && dxr.flags.moresettings.aug_loc_rando==0 && class<#var(prefix)AugStealth>(a)!=None) return true;
+
+    switch(loadout) {
+        case 1:// SWTP
+        case 2:
+            if(class<#var(prefix)AugSpeed>(a)!=None) return true;
+            break;
+
+        case 3://ninja
+            if(class<#var(prefix)AugSpeed>(a)!=None) return true;
+            if(class<#var(prefix)AugStealth>(a)!=None) return true;
+            break;
+    }
+
     return false;
 }
 

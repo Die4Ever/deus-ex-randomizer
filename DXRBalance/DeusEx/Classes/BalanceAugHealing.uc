@@ -4,12 +4,18 @@ function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
     // description gets overwritten by language file, also DXRAugmentations reads from the default.Description
-    default.Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent's health over time."
-                            $ "|n|nTECH ONE: Healing only fixes serious injuries."
-                            $ "|n|nTECH TWO: Healing fixes moderate injuries."
-                            $ "|n|nTECH THREE: Healing fixes most injuries."
-                            $ "|n|nTECH FOUR: Healing restores the agent to nearly full health.";
-    Description = default.Description;
+    if(Level5Value > 0) {
+        Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent's health over time."
+                        $ "|n|nTECH ONE: Healing only fixes serious injuries."
+                        $ "|n|nTECH TWO: Healing fixes moderate injuries."
+                        $ "|n|nTECH THREE: Healing fixes most injuries."
+                        $ "|n|nTECH FOUR: Healing restores the agent to nearly full health.";
+    } else {
+        Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent to full health over time."
+                        $ "|n|nTECH ONE: Healing occurs at a normal rate.|n|nTECH TWO: Healing occurs at a slightly faster rate."
+                        $ "|n|nTECH THREE: Healing occurs at a moderately faster rate.|n|nTECH FOUR: Healing occurs at a significantly faster rate.";
+    }
+    default.Description = Description;
 }
 
 //DXRando: put a cap on the health that regen gives you
@@ -19,10 +25,17 @@ Begin:
 Loop:
     Sleep(1.0);
 
-    if (NeedsHeal())
-        HealPlayer(6); // 6 health at a time because 6 body parts
-    else
-        Deactivate();
+    if(Level5Value > 0) {
+        if (NeedsHeal())
+            HealPlayer(6); // 6 health at a time because 6 body parts
+        else
+            Deactivate();
+    } else {
+        if (Player.Health < 100)
+            Player.HealPlayer(Int(LevelValues[CurrentLevel]), False);
+        else
+            Deactivate();
+    }
 
     Player.ClientFlash(0.5, vect(0, 0, 500));
     Goto('Loop');
@@ -96,6 +109,32 @@ function bool NeedsHeal()
         || Player.HealthLegLeft < Min(i, Player.default.HealthLegLeft)
         || Player.HealthArmRight < Min(i, Player.default.HealthArmRight)
         || Player.HealthArmLeft < Min(i, Player.default.HealthArmLeft);
+}
+
+function BeginPlay()
+{
+    local int i;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        EnergyRate = 140;
+        LevelValues[0] = 25;
+        LevelValues[1] = 40;
+        LevelValues[2] = 55;
+        LevelValues[3] = 70;
+        Level5Value = 90;
+    } else {
+        EnergyRate = 120;
+        LevelValues[0] = 5;
+        LevelValues[1] = 15;
+        LevelValues[2] = 25;
+        LevelValues[3] = 40;
+        Level5Value = -1;
+    }
+    for(i=0; i<ArrayCount(LevelValues); i++) {
+        default.LevelValues[i] = LevelValues[i];
+    }
+    default.EnergyRate = EnergyRate;
+    default.Level5Value = Level5Value;
+    Super.BeginPlay();
 }
 
 // original values go from 5 to 40, but those controlled healing rate, EnergyRate of 120

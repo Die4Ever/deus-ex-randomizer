@@ -2,7 +2,7 @@ class DXROfficeChair injects OfficeChair;
 
 function BeginPlay()
 {
-    if(class'DXRFlags'.default.bZeroRandoPure) {
+    if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) {
         SetCollisionSize(CollisionRadius, class'OfficeChairInjBase'.default.CollisionHeight);
         PrePivot = class'OfficeChairInjBase'.default.PrePivot;
         sitPoint[0] = class'OfficeChairInjBase'.default.sitPoint[0];
