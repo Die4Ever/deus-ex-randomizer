@@ -562,6 +562,7 @@ function RemoveReactions(ScriptedPawn p)
 function SetPawnHealth(ScriptedPawn p, int health)
 {
     // we need to set defaults so that GenerateTotalHealth() works properly
+    p.default.Health = health;
     p.default.HealthHead = health;
     p.default.HealthTorso = health;
     p.default.HealthLegLeft = health;
