@@ -1479,9 +1479,6 @@ function MarkBingoFailedSpecial()
     data = class'PlayerDataItem'.static.GiveItem(player());
 
     switch (dxr.localURL) {
-    case "02_NYC_STREET":
-        MarkBingoAsFailed("SubwayHostagesSaved");
-        break;
     case "02_NYC_BATTERYPARK":
     case "03_NYC_UNATCOISLAND":
     case "03_NYC_BATTERYPARK":
