@@ -61,5 +61,6 @@ function Init(Actor o)
 
 defaultproperties
 {
-    bCollideActors=true;
+    bCollideActors=true
+    CollisionRadius=100
 }
