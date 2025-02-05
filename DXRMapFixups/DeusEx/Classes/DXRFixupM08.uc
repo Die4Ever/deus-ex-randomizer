@@ -109,6 +109,66 @@ function RearrangeMJ12ConvergingInfolink()
 
 }
 
+function Name FindCorrespondingCopTag(Name unatcoTag)
+{
+    switch(unatcoTag){
+        case 'troop1':
+        case 'troop1_clone':
+            return 'Cop1';
+        case 'troop2':
+        case 'troop2_clone':
+            return 'Cop2';
+        case 'troop3':
+        case 'troop3_clone':
+            return 'Cop3';
+        case 'troop4':
+        case 'troop4_clone':
+            return 'Cop4';
+        case 'troop5':
+        case 'troop5_clone':
+            return 'Cop5';
+        case 'troop6':
+        case 'troop6_clone':
+            return 'Cop6';
+        default:
+            return '';
+    }
+}
+
+function Name FindReinforcementPointTag(Name copTag)
+{
+    //Intentionally don't apply these to the clone tags, since the mission script only checks non-clones
+    switch(copTag){
+        case 'Cop1':
+            return 'Cop1Reinforcements';
+        case 'Cop2':
+            return 'Cop2Reinforcements';
+        case 'Cop3':
+            return 'Cop3Reinforcements';
+        case 'Cop4':
+            return 'Cop4Reinforcements';
+        case 'Cop5':
+            return 'Cop5Reinforcements';
+        case 'Cop6':
+            return 'Cop6Reinforcements';
+        default:
+            return '';
+    }
+}
+
+function SetUNATCOTargetOrders(#var(prefix)ScriptedPawn troop)
+{
+    local name reinforceTag;
+
+    reinforceTag = FindReinforcementPointTag(FindCorrespondingCopTag(troop.Tag));
+
+    if (reinforceTag=='') return;
+
+    troop.SetOrders('RunningTo',reinforceTag,True);
+    troop.bKeepWeaponDrawn=True;
+}
+
+
 function TimerMapFixes()
 {
     local BlackHelicopter chopper;
@@ -190,6 +250,13 @@ function PreFirstEntryMapFixes()
                     pawn.ChangeAlly('UNATCO', 1, true);
                     pawn.ChangeAlly('MJ12', 1, true);
                     pawn.ChangeAlly('ShadyGuy', 1, true);
+
+                    //InitialAlliances also need to be changed so that clones get the correct alliances
+                    ChangeInitialAlliance(pawn, 'RiotCop', 1, true);
+                    ChangeInitialAlliance(pawn, 'Robot', 1, true);
+                    ChangeInitialAlliance(pawn, 'UNATCO', 1, true);
+                    ChangeInitialAlliance(pawn, 'MJ12', 1, true);
+                    ChangeInitialAlliance(pawn, 'ShadyGuy', 1, true);
                     break;
                 }
             }
@@ -349,5 +416,28 @@ function PreFirstEntryMapFixes()
 
 function PostFirstEntryMapFixes()
 {
+    local #var(prefix)ScriptedPawn sp;
+    local name rpTag;
+    local DXRReinforcementPoint reinforce;
+
     Player().StartDataLinkTransmission("DL_Entry"); // play on any start
+    switch(dxr.localURL)
+    {
+        case "08_NYC_STREET":
+
+            //Place reinforcement points on the cops
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                rpTag = FindReinforcementPointTag(sp.Tag);
+                if (rpTag!=''){
+                    reinforce = sp.Spawn(class'DXRReinforcementPoint',,rpTag,sp.Location);
+                    reinforce.Init(sp);
+                }
+            }
+
+            //Make sure the troopers are running to the reinforcement points
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                SetUNATCOTargetOrders(sp);
+            }
+            break;
+    }
 }
