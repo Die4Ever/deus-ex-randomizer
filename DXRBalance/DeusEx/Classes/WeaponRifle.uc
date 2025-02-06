@@ -1,6 +1,6 @@
 class DXRWeaponRifle injects WeaponRifle;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         ShotTime = 1;
@@ -17,7 +17,6 @@ function BeginPlay()
     default.ReloadCount = ReloadCount;
     default.ReloadTime = ReloadTime;
     default.bCanHaveModReloadCount = bCanHaveModReloadCount;
-    Super.BeginPlay();
 }
 
 // vanilla is shottime=1.5, reloadcount=6, reloadtime=1 (inherited from DeusExWeapon), bCanHaveModReloadCount=True

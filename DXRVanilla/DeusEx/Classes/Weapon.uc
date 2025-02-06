@@ -17,9 +17,13 @@ function PostBeginPlay()
 
     m = DXRWeapons(class'DXRWeapons'.static.Find(true));
     if(m != None) {
-        m.RandoWeapon(self);
+        m.RandoWeapon(self);// RandoWeapon calls UpdateBalance()
+    } else {
+        UpdateBalance();
     }
 }
+
+simulated function UpdateBalance();
 
 function ScopeOn()
 {

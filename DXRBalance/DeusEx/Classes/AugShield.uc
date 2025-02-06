@@ -1,6 +1,6 @@
 class DXRAugShield injects AugShield;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         EnergyRate = 25;
@@ -11,7 +11,6 @@ function BeginPlay()
     }
     default.EnergyRate = EnergyRate;
     default.Level5Value = Level5Value;
-    Super.BeginPlay();
 }
 
 // vanilla level 1 is 0.80 (20%) but rounding causes it to show as 19%, same issue with level 2

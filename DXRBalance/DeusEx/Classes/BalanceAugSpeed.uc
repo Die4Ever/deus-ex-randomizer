@@ -42,7 +42,7 @@ function Reset()
     }
 }
 
-function BeginPlay()
+function UpdateBalance()
 {
     local int i;
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
@@ -62,7 +62,6 @@ function BeginPlay()
         default.LevelValues[i] = LevelValues[i];
     }
     default.Level5Value = Level5Value;
-    Super.BeginPlay();
 }
 
 //original went from 1.2 up to 1.8, I've thought about nerfing the max speed so you can't just run past all enemies, but I think that would require an unreasonably large nerf

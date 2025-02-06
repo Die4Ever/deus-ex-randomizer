@@ -1,11 +1,8 @@
 class DXRAugPower injects AugPower;
 
-simulated function SetAutomatic()
+simulated function UpdateBalance()
 {
-    local DXRAugmentations raugs;
     local int i;
-
-    Super.SetAutomatic();
 
     // HACK: a little wonky if you change the setting mid-game, but otherwise works
     energyRate = default.energyRate;
@@ -21,24 +18,19 @@ simulated function SetAutomatic()
 
     // power recirc is OP when it's free, RandoAug reads from defaults
     if(energyRate == 0) {
-        default.LevelValues[0] = 0.92;
-        default.LevelValues[1] = 0.85;
-        default.LevelValues[2] = 0.75;
-        default.LevelValues[3] = 0.6;
+        LevelValues[0] = 0.92;
+        LevelValues[1] = 0.85;
+        LevelValues[2] = 0.75;
+        LevelValues[3] = 0.6;
     } else {
-        default.LevelValues[0] = 0.9;
-        default.LevelValues[1] = 0.8;
-        default.LevelValues[2] = 0.6;
-        default.LevelValues[3] = 0.4;
+        LevelValues[0] = 0.9;
+        LevelValues[1] = 0.8;
+        LevelValues[2] = 0.6;
+        LevelValues[3] = 0.4;
     }
     for(i=0; i<ArrayCount(LevelValues); i++) {
-        LevelValues[i] = default.LevelValues[i];
+        default.LevelValues[i] = LevelValues[i];
     }
-
-    if(player != None)
-        raugs = DXRAugmentations(Human(player).DXRFindModule(class'DXRAugmentations'));
-    if(raugs != None)
-        raugs.RandoAug(self);
 }
 
 defaultproperties

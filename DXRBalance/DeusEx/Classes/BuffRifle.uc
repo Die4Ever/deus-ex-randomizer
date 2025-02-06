@@ -1,6 +1,6 @@
 class BuffRifle injects WeaponAssaultGun;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 4;
@@ -14,7 +14,6 @@ function BeginPlay()
     default.HitDamage = HitDamage;
     default.maxRange = maxRange;
     default.AccurateRange = AccurateRange;
-    Super.BeginPlay();
 }
 
 // way lower range, 4 damage

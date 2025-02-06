@@ -10,13 +10,14 @@ function PostBeginPlay()
     local DXRAugmentations a;
     Super.PostBeginPlay();
 
-    SetAutomatic();
-
     foreach AllActors(class'DXRAugmentations', a) {
         a.RandoAug(self);
-        break;
+        return; // RandoAug calls SetAutomatic()
     }
+    SetAutomatic();
 }
+
+simulated function UpdateBalance();
 
 simulated function SetAutomatic()
 {
@@ -27,12 +28,14 @@ simulated function SetAutomatic()
 
     if(class'MenuChoice_AutoAugs'.default.enabled) {
         bAutomatic = default.bAutomatic;
+        UpdateBalance(); // make sure energyRate is correct
         if(bAutomatic) {
             energyRate = default.energyRate * AutoEnergyMult;
         }
     }
     else {
         bAutomatic = false;
+        UpdateBalance();
     }
 }
 
