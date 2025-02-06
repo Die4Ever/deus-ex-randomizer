@@ -236,6 +236,22 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL)
     {
         case "08_NYC_STREET":
+
+            //Reinforcements for the sixth cop
+            if(!dxr.flags.IsZeroRandoPure()) {
+                pawn=#var(prefix)UNATCOTroop(Spawnm(class'#var(prefix)UNATCOTroop',,'troop6', vect(-85,80,-460)));
+                pawn.SetAlliance('UNATCO');
+                ChangeInitialAlliance(pawn,'Player',-1,true);
+                pawn.bInWorld=false;
+                pawn.InitializePawn();
+
+                pawn=#var(prefix)UNATCOTroop(Spawnm(class'#var(prefix)UNATCOTroop',,'troop6', vect(-150,80,-460)));
+                pawn.SetAlliance('UNATCO');
+                ChangeInitialAlliance(pawn,'Player',-1,true);
+                pawn.bInWorld=false;
+                pawn.InitializePawn();
+            }
+
             // fix alliances
             foreach AllActors(class'ScriptedPawn', pawn) {
                 switch(pawn.Alliance) {
