@@ -28,6 +28,9 @@ function Tick(float deltaTime)
     if (IsTicked() && EnergyRate==0) {
         player.swimTimer = player.swimDuration;
     }
+    if(bIsActive) {
+        player.swimBubbleTimer = 0;
+    }
 }
 
 defaultproperties
