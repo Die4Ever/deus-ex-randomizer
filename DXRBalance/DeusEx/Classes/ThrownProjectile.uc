@@ -34,6 +34,7 @@ simulated function PreBeginPlay()
 {
     // based on the player's skill: scale arming time for player attached grenades, and fuse length for thrown grenades (fuseLength is used for thrown grenades, but also the SetTimer call for arming attached grenades)
     local #var(PlayerPawn) player;
+    local float f;
 
     Super.PreBeginPlay();
     if(class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
@@ -42,7 +43,11 @@ simulated function PreBeginPlay()
     player = #var(PlayerPawn)(Owner);
     if(player != None) {
         // high skill gives the player faster arming time for attached grenades, and fuse time for thrown grenades
-        fuseLength += 3.0 * player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
+        if(bProximityTriggered) f = 3;
+        else f = 1;
+        f = player.SkillSystem.GetSkillLevelValue(class'SkillDemolition'); // negative numbers
+        if(bProximityTriggered) fuseLength += f * 3.0;
+        else fuseLength += f * 1.5;
         fuseLength = FClamp(fuseLength, 0.2, 6);
     } else if(!bProximityTriggered) {
         // enemy fuses for thrown grenades, a bit quicker than vanilla
