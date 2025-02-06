@@ -164,8 +164,8 @@ function SetUNATCOTargetOrders(#var(prefix)ScriptedPawn troop)
 
     if (reinforceTag=='') return;
 
-    troop.SetOrders('RunningTo',reinforceTag,True);
     troop.bKeepWeaponDrawn=True;
+    troop.SetOrders('RunningTo',reinforceTag,True);
 }
 
 
@@ -438,6 +438,21 @@ function PostFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
                 SetUNATCOTargetOrders(sp);
             }
+
+            //A point for the MJ12 Attack Force to run to (the stairs of Osgoode & Sons)
+            //This location works for both Vanilla maps and Revision
+            reinforce = Spawn(class'DXRReinforcementPoint',,'MJ12AttackForceTarget',vectm(530,1900,-450));
+            reinforce.SetCollisionSize(200,100); //Make it bigger than the other reinforcement points
+
+            //Make the Attack Force run to the reinforcement point instead of directly attacking the player
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                if (sp.Tag!='MJ12AttackForce' && sp.Tag!='MJ12AttackForce_clone') continue;
+
+                sp.bKeepWeaponDrawn=True;
+                sp.SetOrders('RunningTo','MJ12AttackForceTarget',True);
+            }
+
+
             break;
     }
 }

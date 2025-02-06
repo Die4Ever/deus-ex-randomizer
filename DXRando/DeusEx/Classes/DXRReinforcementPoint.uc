@@ -47,7 +47,16 @@ function Touch( actor Other )
     if (sp==None) return;
     if (sp.OrderTag!=Tag) return;
 
+    //Set the reinforcement point as the new home point, so they don't wander away
+    sp.bUseHome = false;
+    sp.InitializeHomeBase();
+
+    sp.ClearNextState();
     sp.SetOrders('Wandering',,True);
+
+    //This is an interesting idea I had to prevent clumping, but I think Touch
+    //doesn't really work if the collision radius is extended through someone?
+    //SetCollisionSize(CollisionRadius+sp.CollisionRadius,CollisionHeight);
 }
 
 function Init(Actor o)
