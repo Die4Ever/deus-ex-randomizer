@@ -67,7 +67,7 @@ function PreFirstEntry()
 
             //Spawn keypad for the track electricity
             if(!dxr.flags.IsReducedRando()) {
-                key = #var(prefix)Keypad3(Spawnm(class'#var(prefix)Keypad3',,,vect(-500,-1407,-1025),rot(0,16382,0)));
+                key = #var(prefix)Keypad3(Spawnm(class'#var(prefix)Keypad3',, 'TrackElectricalKeypad',vect(-500,-1407,-1025),rot(0,16382,0)));
                 key.Event='TrackElectrical';
                 key.bToggleLock=False;
                 key.validCode="147896325";
@@ -76,7 +76,7 @@ function PreFirstEntry()
             break;
 
         case "11_PARIS_EVERETT":
-            if(bSillyChoppers()) {// not a chopper, but it is a little silly
+            if(!dxr.flags.IsReducedRando()) {// not a chopper, only a little silly
                 dt = Spawn(class'DynamicTeleporter',,'everett_backtrack',vectm(650,1100,350));
                 SetDestination(dt, "11_PARIS_UNDERGROUND", 'PathNode68',,45000);
                 dt.SetCollisionSize(100,100);
@@ -415,7 +415,7 @@ function ParisUndergroundAnyEntry()
     if (mapvariants==None) return;
 
     //Only do this once you've been to Everett
-    if (!dxr.flagbase.GetBool('M11_PARIS_EVERETT_Randomized') && !dxr.flagbase.GetBool('M11_PARIS_EVERETT__1_1_1_Randomized')) return;
+    if (!dxr.flagbase.GetBool('M11_PARIS_EVERETT_StartupText')) return;
 
     //Need FlagTriggers to set MeetTobyAtanwe_Played and MS_LetTobyTakeYou_Rando
     ft = #var(prefix)FlagTrigger(Spawnm(class'#var(prefix)FlagTrigger',,,vect(-225,-2200,-1050)));
@@ -441,8 +441,7 @@ function ParisUndergroundAnyEntry()
     hoverHint.DrawType=DT_Sprite;
     hoverHint.bHidden=!class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
-    foreach AllActors(class'#var(prefix)Keypad3',keypad){
-        if (keypad.Event!='TrackElectrical') continue;
+    foreach AllActors(class'#var(prefix)Keypad3',keypad, 'TrackElectricalKeypad'){
         keypad.hackStrength=0;
     }
 

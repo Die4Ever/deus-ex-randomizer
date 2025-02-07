@@ -42,14 +42,15 @@ function UpdateBalance()
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         MaxLevel=1;
         EnergyRate = 0;
+        Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.";
     } else {
         MaxLevel=0;
         EnergyRate = 20;
+        Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.|n|nNO UPGRADES";
     }
     default.MaxLevel=MaxLevel;
     default.EnergyRate=EnergyRate;
-    Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.";
-    default.Description = Description;
+    default.Description=Description;
     GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
 }
 

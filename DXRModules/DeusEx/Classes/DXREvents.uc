@@ -1517,7 +1517,7 @@ function MarkBingoFailedSpecial()
         MarkBingoAsFailed("ChangeClothes");
         break;
     case "11_PARIS_EVERETT":
-        if(!dxr.flags.IsBingoMode() && !dxr.flags.IsEntranceRando()) {
+        if(dxr.flags.IsReducedRando()) {
             FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         }
         break;

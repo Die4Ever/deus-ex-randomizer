@@ -10,11 +10,12 @@ function PostBeginPlay()
     local DXRAugmentations a;
     Super.PostBeginPlay();
 
-    foreach AllActors(class'DXRAugmentations', a) {
-        a.RandoAug(self);
-        return; // RandoAug calls SetAutomatic()
+    a = DXRAugmentations(class'DXRAugmentations'.static.Find(true));
+    if(a!=None) {
+        a.RandoAug(self);// RandoAug calls SetAutomatic()
+    } else {
+        SetAutomatic();
     }
-    SetAutomatic();
 }
 
 simulated function UpdateBalance();
