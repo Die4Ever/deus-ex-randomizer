@@ -1474,6 +1474,8 @@ function MarkBingoFailedSpecial()
     local int progress, maxProgress;
     local PlayerDataItem data;
 
+    if (dxr.flags.IsEntranceRando()) return; // TODO: a couple here would be marked correctly in Entrance Rando modes
+
     data = class'PlayerDataItem'.static.GiveItem(player());
 
     switch (dxr.localURL) {
@@ -1484,7 +1486,6 @@ function MarkBingoFailedSpecial()
         break;
     case "04_NYC_UNATCOISLAND":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
-
         // the last Terrorist left is Miguel
         progress = data.GetBingoProgress("Terrorist_ClassDead", maxProgress);
         if (maxProgress - progress > 1) {
@@ -1516,7 +1517,6 @@ function MarkBingoFailedSpecial()
         MarkBingoAsFailed("ChangeClothes");
         break;
     case "10_PARIS_CATACOMBS":
-    case "11_PARIS_EVERETT":
     case "12_VANDENBERG_CMD":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         break;
