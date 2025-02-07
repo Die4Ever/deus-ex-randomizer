@@ -11,6 +11,17 @@ static function bool IsDisabled()
     return !IsEnabled();
 }
 
+event InitWindow()
+{
+    Super.InitWindow();
+
+    if(!class'DXRInfo'.static.OnTitleScreen()) {
+        SetSensitivity(false);
+        btnInfo.SetSensitivity(false);
+        btnAction.SetSensitivity(false);
+    }
+}
+
 defaultproperties
 {
     value=1
