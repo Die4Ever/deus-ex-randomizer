@@ -115,7 +115,7 @@ function MarkBingoFailedGeneric()
     curMission = dxr.dxInfo.missionNumber;
     if (curMission == 98) return;
     data = class'PlayerDataItem'.static.GiveItem(player());
-    data.CheckForExpiredBingoGoals(curMission);
+    data.CheckForExpiredBingoGoals(dxr, curMission);
 }
 
 function InitStatLogShim()
@@ -1068,7 +1068,6 @@ function bool AddTestGoal(
     optional int missions
 )
 {
-    local BingoOption option;
     local int bingoIdx;
     local string desc;
     local float f;
@@ -1439,7 +1438,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-static function int BingoActiveMission(int currentMission, int missionsMask)
+static function int BingoActiveMission(int currentMission, int missionsMask, optional int bingoMask)
 {
     local int missionAnded, minMission;
     if ((missionsMask & FAILED_MISSION_MASK) != 0) return -1; //-1=impossible/failed
@@ -1447,6 +1446,10 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded != 0) return 2;// 2==true
     minMission = currentMission;
+
+    if (bingoMask != 0) {
+        missionsMask = missionsMask & bingoMask;
+    }
 
 #ifdef backtracking
     // check conjoined backtracking missions
@@ -1575,6 +1578,18 @@ function RunTests()
     max = ScaleBingoGoalMax(max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
     testint(max, 17, "MissionsMaskAvailability Three Mission End-to-End, 100% Scaling (Mission Mask with 4 possibilites, 1 in range)");
 
+}
+
+function int GetBingoOptionIdx(string event)
+{
+    local int i;
+
+    for (i = 0; i < ArrayCount(bingo_options); i++) {
+        if (bingo_options[i].event == event) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function ExtendedTests()
