@@ -1516,6 +1516,11 @@ function MarkBingoFailedSpecial()
         }
         MarkBingoAsFailed("ChangeClothes");
         break;
+    case "11_PARIS_EVERETT":
+        if(!dxr.flags.IsBingoMode() && !dxr.flags.IsEntranceRando()) {
+            FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        }
+        break;
     case "10_PARIS_CATACOMBS":
     case "12_VANDENBERG_CMD":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
