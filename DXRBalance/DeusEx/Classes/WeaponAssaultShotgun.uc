@@ -1,6 +1,6 @@
 class DXRWeaponAssaultShotgun injects WeaponAssaultShotgun;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 5;
@@ -20,7 +20,6 @@ function BeginPlay()
     default.AccurateRange = AccurateRange;
     default.maxRange = maxRange;
     default.AIMaxRange = AIMaxRange;
-    Super.BeginPlay();
 }
 
 // vanilla is 4 damage, 0.8 accuracy, 1200 AccurateRange, 2400 maxRange

@@ -1,6 +1,13 @@
 class DXRSkill merges Skill;
 // merges instead of injects, because: Error, DeusEx.Skill's superclass must be Engine.Actor, not DeusEx.SkillInjBase
 
+function UpdateBalance();
+function BeginPlay()
+{
+    UpdateBalance();
+    Super.BeginPlay();
+}
+
 // IncLevel is mostly vanilla, but with a message when upgrading
 function bool IncLevel(optional DeusExPlayer usePlayer)
 {

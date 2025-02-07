@@ -1,21 +1,6 @@
 class DXRAugEMP injects AugEMP;
 
-function PostPostBeginPlay()
-{
-    Super.PostPostBeginPlay();
-    // DXRando: AugEMP makes you immune to Scramble Grenades
-    Description = "Nanoscale EMP generators partially protect individual nanites and reduce bioelectrical drain by canceling incoming pulses.  ";
-    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
-        Description = Description $ "All levels make you immune to Scramble Grenades.";
-    }
-    Description = Description $ "|n|nTECH ONE: Damage from EMP attacks is reduced slightly."
-        $ "|n|nTECH TWO: Damage from EMP attacks is reduced moderately."
-        $ "|n|nTECH THREE: Damage from EMP attacks is reduced significantly."
-        $ "|n|nTECH FOUR: An agent is nearly invulnerable to damage from EMP attacks.";
-    default.Description = Description;
-}
-
-function BeginPlay()
+function UpdateBalance()
 {
     local int i;
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
@@ -32,7 +17,17 @@ function BeginPlay()
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
-    Super.BeginPlay();
+
+    // DXRando: AugEMP makes you immune to Scramble Grenades
+    Description = "Nanoscale EMP generators partially protect individual nanites and reduce bioelectrical drain by canceling incoming pulses.  ";
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+        Description = Description $ "All levels make you immune to Scramble Grenades.";
+    }
+    Description = Description $ "|n|nTECH ONE: Damage from EMP attacks is reduced slightly."
+        $ "|n|nTECH TWO: Damage from EMP attacks is reduced moderately."
+        $ "|n|nTECH THREE: Damage from EMP attacks is reduced significantly."
+        $ "|n|nTECH FOUR: An agent is nearly invulnerable to damage from EMP attacks.";
+    default.Description = Description;
 }
 
 defaultproperties

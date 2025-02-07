@@ -41,7 +41,7 @@ simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
     }
 }
 
-simulated function PreBeginPlay()
+simulated function UpdateBalance()
 {
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         LevelValues[2]=640;
@@ -52,7 +52,6 @@ simulated function PreBeginPlay()
     }
     default.LevelValues[2]=LevelValues[2];
     default.LevelValues[3]=LevelValues[3];
-    Super.PreBeginPlay();
 }
 
 // level value is feet*16

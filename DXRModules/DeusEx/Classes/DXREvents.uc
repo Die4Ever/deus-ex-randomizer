@@ -1474,6 +1474,8 @@ function MarkBingoFailedSpecial()
     local int progress, maxProgress;
     local PlayerDataItem data;
 
+    if (dxr.flags.IsEntranceRando()) return; // TODO: a couple here would be marked correctly in Entrance Rando modes
+
     data = class'PlayerDataItem'.static.GiveItem(player());
 
     switch (dxr.localURL) {
@@ -1484,7 +1486,6 @@ function MarkBingoFailedSpecial()
         break;
     case "04_NYC_UNATCOISLAND":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
-
         // the last Terrorist left is Miguel
         progress = data.GetBingoProgress("Terrorist_ClassDead", maxProgress);
         if (maxProgress - progress > 1) {
@@ -1515,8 +1516,12 @@ function MarkBingoFailedSpecial()
         }
         MarkBingoAsFailed("ChangeClothes");
         break;
-    case "10_PARIS_CATACOMBS":
     case "11_PARIS_EVERETT":
+        if(dxr.flags.IsReducedRando()) {
+            FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
+        }
+        break;
+    case "10_PARIS_CATACOMBS":
     case "12_VANDENBERG_CMD":
         FailIfCorpseNotHeld(class'#var(prefix)TerroristCommanderCarcass', "LeoToTheBar");
         break;
@@ -3226,6 +3231,23 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
     }
 }
 
+static function bool BingoGoalCanFail(string event)
+{
+    switch(event) {
+        case "Sodacan_Activated":
+        case "BallisticArmor_Activated":
+        case "HazMatSuit_Activated":
+        case "AdaptiveArmor_Activated":
+        case "DrinkAlcohol":
+        case "TechGoggles_Activated":
+        case "Rebreather_Activated":
+        case "FireExtinguisher_Activated":
+            return false;
+        default:
+            return true;
+    }
+}
+
 function ExtendedTests()
 {
     local string helpText;
@@ -3452,7 +3474,7 @@ defaultproperties
     bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=512)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",desc_singular="Use 1 HazMat Suit",max=3,missions=54866)
-    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
+    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=5513)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)
@@ -3477,7 +3499,7 @@ defaultproperties
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",desc_singular="Watch MJ12 Troopers for 1 second",max=30,missions=57188)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",desc_singular="Watch MJ12 Commandos for 1 second",max=15,missions=56384)
     bingo_options(207)=(event="PawnAnim_Dance",desc="You can dance if you want to",max=1,missions=1364)
-    bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=19806)
+    bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=24446)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
     bingo_options(211)=(event="Supervisor_Paid",desc="Pay for access to the VersaLife labs",max=1,missions=64)
@@ -3612,7 +3634,7 @@ defaultproperties
     bingo_options(330)=(event="PetKarkians",desc="Karkians are just big leather dogs (%s)",max=3,missions=49248)
     bingo_options(331)=(event="PetDogs",desc="You can pet the dog (%s)",max=5,missions=21604)
     bingo_options(332)=(event="PetFish",desc="They feel kind of slimy (%s)",max=5,missions=64)
-    bingo_options(333)=(event="PetBirds",desc="Feel the hollow bones (%s)",max=3,missions=19806)
+    bingo_options(333)=(event="PetBirds",desc="Feel the hollow bones (%s)",max=3,missions=24446)
     bingo_options(334)=(event="PetAnimal_Cat",desc="Here kitty, kitty, kitty! (%s)",max=3,missions=7256)
     bingo_options(335)=(event="PetAnimal_Greasel",desc="Green, Greasy, and very pettable (%s)",max=5,missions=50272)
     bingo_options(336)=(event="PetRats",desc="Pat dat rat (%s)",max=25,missions=53118)

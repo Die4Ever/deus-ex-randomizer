@@ -229,7 +229,7 @@ function bool IsChristmasSeason()
     return false;
 }
 
-function bool OnTitleScreen()
+static function bool OnTitleScreen()
 {
     local DXRando dxr;
     dxr = class'DXRando'.default.dxr;
@@ -242,7 +242,7 @@ function bool OnTitleScreen()
     return dxr.LocalURL=="DX" || dxr.LocalURL=="DXONLY";
 }
 
-function bool OnEndgameMap()
+static function bool OnEndgameMap()
 {
     local DXRando dxr;
     dxr = class'DXRando'.default.dxr;

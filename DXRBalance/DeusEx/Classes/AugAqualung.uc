@@ -1,8 +1,7 @@
 class DXRAugAqualung injects AugAqualung;
 
-function PostPostBeginPlay()
+function UpdateBalance()
 {
-    Super.PostPostBeginPlay();
     // description gets overwritten by language file, also DXRAugmentations reads from the default.Description
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         Description = "Soda lime exostructures imbedded in the alveoli of the lungs convert CO2 to O2, allowing an agent to remain underwater indefinitely.";
@@ -28,6 +27,9 @@ function Tick(float deltaTime)
     Super.Tick(deltaTime);
     if (IsTicked() && EnergyRate==0) {
         player.swimTimer = player.swimDuration;
+    }
+    if(bIsActive) {
+        player.swimBubbleTimer = 0;
     }
 }
 

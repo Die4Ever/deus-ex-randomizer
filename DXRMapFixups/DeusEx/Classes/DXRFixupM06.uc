@@ -795,7 +795,9 @@ function PreFirstEntryMapFixes()
 
         if(!dxr.flags.IsZeroRandoPure()) {
             p=MJ12Clone1(Spawnm(class'MJ12Clone1',,, vect(635,0,-65),rot(0,32768,0))); //Should he just be a PlaceholderEnemy now?
-            p.InitializeAlliances();
+            p.SetAlliance('MJ12');
+            ChangeInitialAlliance(p,'Player',-1,true);
+            p.InitializePawn();
         }
         class'PlaceholderEnemy'.static.Create(self,vectm(0,0,-75)); //Middle of room with 4 containers
         class'PlaceholderEnemy'.static.Create(self,vectm(0,0,565)); //Walkway over UC room

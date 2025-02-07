@@ -1,6 +1,6 @@
 class BalanceDTS injects WeaponNanoSword;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 24;
@@ -11,7 +11,6 @@ function BeginPlay()
     }
     default.HitDamage = HitDamage;
     default.AreaOfEffect = AreaOfEffect;
-    Super.BeginPlay();
 }
 
 // original HitDamage was 20, AOE_Cone causes it to be treated as a shotgun with 3 (or 5?) projectiles multiplying the damage, see DeusExWeapon and search for AOE_Cone

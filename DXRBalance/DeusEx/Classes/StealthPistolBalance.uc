@@ -1,6 +1,6 @@
 class StealthPistolBalance injects WeaponStealthPistol;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 9;
@@ -17,7 +17,6 @@ function BeginPlay()
     default.BaseAccuracy = BaseAccuracy;
     default.maxRange=maxRange;
     default.AccurateRange=AccurateRange;
-    Super.BeginPlay();
 }
 
 // slightly higher damage, lower range, better accuracy

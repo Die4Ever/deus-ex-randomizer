@@ -1,6 +1,6 @@
 class DXRWeaponSawedOffShotgun injects WeaponSawedOffShotgun;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 6;
@@ -20,7 +20,6 @@ function BeginPlay()
     default.AccurateRange = AccurateRange;
     default.maxRange = maxRange;
     default.AIMaxRange = AIMaxRange;
-    Super.BeginPlay();
 }
 
 // vanilla is 5 damage, 0.6 accuracy, 1200 AccurateRange, 2400 maxRange

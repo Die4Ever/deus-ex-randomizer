@@ -143,6 +143,10 @@ simulated function RandoSkill(Skill aSkill)
     local bool banned;
     if( dxr == None ) return;
 
+#ifdef vanilla
+    aSkill.UpdateBalance();
+#endif
+
     if( dxr.dxInfo != None && dxr.dxInfo.missionNumber > 0 ) {
         // TODO: new game screen should use the starting mission if it isn't 1, but it needs to work even when doing a new game while already in a game
         i = dxr.dxInfo.missionNumber;

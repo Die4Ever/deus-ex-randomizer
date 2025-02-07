@@ -1,23 +1,5 @@
 class BalanceAugHealing injects AugHealing;
 
-function PostPostBeginPlay()
-{
-    Super.PostPostBeginPlay();
-    // description gets overwritten by language file, also DXRAugmentations reads from the default.Description
-    if(Level5Value > 0) {
-        Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent's health over time."
-                        $ "|n|nTECH ONE: Healing only fixes serious injuries."
-                        $ "|n|nTECH TWO: Healing fixes moderate injuries."
-                        $ "|n|nTECH THREE: Healing fixes most injuries."
-                        $ "|n|nTECH FOUR: Healing restores the agent to nearly full health.";
-    } else {
-        Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent to full health over time."
-                        $ "|n|nTECH ONE: Healing occurs at a normal rate.|n|nTECH TWO: Healing occurs at a slightly faster rate."
-                        $ "|n|nTECH THREE: Healing occurs at a moderately faster rate.|n|nTECH FOUR: Healing occurs at a significantly faster rate.";
-    }
-    default.Description = Description;
-}
-
 //DXRando: put a cap on the health that regen gives you
 state Active
 {
@@ -111,7 +93,7 @@ function bool NeedsHeal()
         || Player.HealthArmLeft < Min(i, Player.default.HealthArmLeft);
 }
 
-function BeginPlay()
+function UpdateBalance()
 {
     local int i;
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
@@ -121,6 +103,11 @@ function BeginPlay()
         LevelValues[2] = 55;
         LevelValues[3] = 70;
         Level5Value = 90;
+        Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent's health over time."
+                        $ "|n|nTECH ONE: Healing only fixes serious injuries."
+                        $ "|n|nTECH TWO: Healing fixes moderate injuries."
+                        $ "|n|nTECH THREE: Healing fixes most injuries."
+                        $ "|n|nTECH FOUR: Healing restores the agent to nearly full health.";
     } else {
         EnergyRate = 120;
         LevelValues[0] = 5;
@@ -128,13 +115,16 @@ function BeginPlay()
         LevelValues[2] = 25;
         LevelValues[3] = 40;
         Level5Value = -1;
+        Description = "Programmable polymerase automatically directs construction of proteins in injured cells, restoring an agent to full health over time."
+                        $ "|n|nTECH ONE: Healing occurs at a normal rate.|n|nTECH TWO: Healing occurs at a slightly faster rate."
+                        $ "|n|nTECH THREE: Healing occurs at a moderately faster rate.|n|nTECH FOUR: Healing occurs at a significantly faster rate.";
     }
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
     default.EnergyRate = EnergyRate;
     default.Level5Value = Level5Value;
-    Super.BeginPlay();
+    default.Description = Description;
 }
 
 // original values go from 5 to 40, but those controlled healing rate, EnergyRate of 120

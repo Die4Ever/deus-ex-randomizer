@@ -345,6 +345,10 @@ simulated function RandoAug(Augmentation a)
     local string add_desc;
     if( dxr == None ) return;
 
+#ifdef vanilla
+    a.SetAutomatic();// fixes descriptions/balance now that we have loaded flags
+#endif
+
     SetGlobalSeed("RandoAugLoc " $ a.class.name);
     if (a.AugmentationLocation!=LOC_Default && chance_single(dxr.flags.moresettings.aug_loc_rando)){
         PickRandomAugLocation(a);
@@ -362,7 +366,7 @@ simulated function RandoAug(Augmentation a)
         add_desc = "DXRando: You can see characters, goals, items, datacubes, vehicles, crates, and electronic devices through walls. ";
     }
     else if( #var(prefix)AugLight(a) != None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
-        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        if(!class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
             // don't change it
         } else if(dxr.flags.IsHalloweenMode()) {
             add_desc = "DXRando: The light costs more energy in Halloween modes. Can be upgraded to level 2 which costs no energy and is brighter. ";
