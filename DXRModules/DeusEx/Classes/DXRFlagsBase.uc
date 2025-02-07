@@ -315,6 +315,8 @@ simulated function LoadFlags()
 
 simulated function string BindFlags(int mode, optional string str)
 {
+    local int i;
+
     if(mode != Hashing) {
         // keep the flagshash more stable for leaderboards
         if( FlagInt('Rando_seed', seed, mode, str) )
@@ -440,6 +442,23 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_clothes_looting',clothes_looting,mode,str);
 
     FlagInt('Rando_aug_loc_rando',moresettings.aug_loc_rando,mode,str);
+
+    if(mode!=Reading && mode!=Writing) {
+        i = int(class'MenuChoice_BalanceAugs'.static.IsEnabled());
+        FlagInt('MenuChoice_BalanceAugs', i, mode, str);
+        i = int(class'MenuChoice_BalanceEtc'.static.IsEnabled());
+        FlagInt('MenuChoice_BalanceEtc', i, mode, str);
+        i = int(class'MenuChoice_BalanceItems'.static.IsEnabled());
+        FlagInt('MenuChoice_BalanceItems', i, mode, str);
+        i = int(class'MenuChoice_BalanceMaps'.static.IsEnabled());
+        FlagInt('MenuChoice_BalanceMaps', i, mode, str);
+        i = int(class'MenuChoice_BalanceSkills'.static.IsEnabled());
+        FlagInt('MenuChoice_BalanceSkills', i, mode, str);
+        i = int(class'MenuChoice_AutoAugs'.default.enabled);
+        FlagInt('MenuChoice_AutoAugs', i, mode, str);
+        i = class'MenuChoice_PasswordAutofill'.static.GetSetting();
+        FlagInt('MenuChoice_PasswordAutofill', i, mode, str);
+    }
 
     return str;
 }
@@ -626,6 +645,20 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy weapons rando";
         case 'Rando_aug_loc_rando':
             return "Aug Slot Randomization";
+        case 'MenuChoice_BalanceAugs':
+            return "Aug Balance Changes";
+        case 'MenuChoice_BalanceEtc':
+            return "Etc Balance Changes";
+        case 'MenuChoice_BalanceItems':
+            return "Items Balance Changes";
+        case 'MenuChoice_BalanceMaps':
+            return "Maps Balance Changes";
+        case 'MenuChoice_BalanceSkills':
+            return "Skills Balance Changes";
+        case 'MenuChoice_PasswordAutofill':
+            return "Password Assistance";
+        case 'MenuChoice_AutoAugs':
+            return "Semi-Automatic Augs";
         default:
             err("flagNameToHumanName: " $ flagname $ " missing human readable name");
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
@@ -766,11 +799,25 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
 
         case 'Rando_maxrando':
+        case 'MenuChoice_BalanceAugs':
+        case 'MenuChoice_BalanceEtc':
+        case 'MenuChoice_BalanceItems':
+        case 'MenuChoice_BalanceMaps':
+        case 'MenuChoice_BalanceSkills':
+        case 'MenuChoice_AutoAugs':
             if (val == 1) {
                 return "Enabled";
             } else {
                 return "Disabled";
             }
+
+        case 'MenuChoice_PasswordAutofill':
+            switch(val) {
+            case 0: return "No Assistance";
+            case 1: return "Mark Known Passwords";
+            case 2: return "Autofill Passwords";
+            }
+            break;
 
         case 'Rando_autosave':
             switch(val) {
