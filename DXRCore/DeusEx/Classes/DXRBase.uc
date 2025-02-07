@@ -307,7 +307,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     }
 
 #ifdef injections
-    if(aug != None && aug.default.Level5Value != -1) {
+    if(aug != None && aug.default.Level5Value != -1 && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         defaultval = aug.default.Level5Value;
         val += defaultval - aug.default.LevelValues[3];// increment past the level 4 strength
         t = DescriptionLevel(a, 4, word, val, defaultval);// DescriptionLevel applies bounds checks

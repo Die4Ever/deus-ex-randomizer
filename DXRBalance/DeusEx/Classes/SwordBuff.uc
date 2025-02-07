@@ -1,6 +1,6 @@
 class SwordBuff injects WeaponSword;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 12;
@@ -11,7 +11,6 @@ function BeginPlay()
     }
     default.HitDamage = HitDamage;
     default.anim_speed = anim_speed;
-    Super.BeginPlay();
 }
 
 // vanilla is 64 range, 10 damage, 64 range (I honestly consider this to be a bug)

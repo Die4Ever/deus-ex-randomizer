@@ -36,7 +36,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_BalanceAugs');
     CreateChoice(class'MenuChoice_BalanceSkills');
     CreateChoice(class'MenuChoice_BalanceItems');
-    //CreateChoice(class'MenuChoice_BalanceMaps');
+    //CreateChoice(class'MenuChoice_BalanceMaps');// TODO: change everything in DXRMapFixups to use this, most can be done with find/replace
     CreateChoice(class'MenuChoice_BalanceEtc');
 #endif
 }

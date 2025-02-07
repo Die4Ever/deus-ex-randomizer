@@ -1,6 +1,6 @@
 class SkillMedicine injects SkillMedicine;
 
-function BeginPlay()
+function UpdateBalance()
 {
     local int i;
     if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
@@ -18,7 +18,6 @@ function BeginPlay()
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
-    Super.BeginPlay();
 }
 
 // LevelValues get multiplied by 30

@@ -291,7 +291,7 @@ function RandomizeDoors()
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
         // vanilla knife does 5 damage, we need to ensure that glass is always easily breakable, especially for Stick With the Prod
         if(d.minDamageThreshold <= 5)
-            d.minDamageThreshold = 0;
+            d.minDamageThreshold = 1;// apparently people thought 0 was weird, 1 is functionally the same
 
         if( d.bPickable && d.lockStrength>0 ) {
             d.lockStrength = rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust);

@@ -1,6 +1,6 @@
 class SkillComputer injects SkillComputer;
 
-function BeginPlay()
+function UpdateBalance()
 {
     local int i;
 
@@ -19,7 +19,6 @@ function BeginPlay()
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
-    Super.BeginPlay();
 }
 
 // vanilla is 1, 1, 2, 4

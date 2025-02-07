@@ -16,9 +16,11 @@ function PostFirstEntryMapFixes()
             m.bIsDoor = false;// this prevents Lloyd from opening the door
         }
 
-        foreach AllActors(class'BlockPlayer', bp) {
-            if(bp.Group == 'waterblock') {
-                bp.bBlockPlayers = false;
+        if(!dxr.flags.IsZeroRando()) {
+            foreach AllActors(class'BlockPlayer', bp) {
+                if(bp.Group == 'waterblock') {
+                    bp.bBlockPlayers = false;
+                }
             }
         }
 

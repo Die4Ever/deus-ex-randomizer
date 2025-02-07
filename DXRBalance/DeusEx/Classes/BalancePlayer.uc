@@ -136,6 +136,8 @@ function float ReduceEnviroDamage(float damage, name damageType)
             return damage;
     }
 
+    if(damage==0) return damage;// don't make AugEnviro use energy for 0 damage from fire extinguishers
+
     if (AugmentationSystem != None)
         augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
 

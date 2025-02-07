@@ -25,14 +25,6 @@ simulated function float GetEnergyRate()
     return EnergyRate;
 }
 
-function PostPostBeginPlay()
-{
-    Super.PostPostBeginPlay();
-    default.Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.";
-    Description = default.Description;
-    GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
-}
-
 function TravelPostAccept()
 {
     Super.TravelPostAccept();
@@ -45,7 +37,7 @@ function bool IncLevel()
     GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
 }
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         MaxLevel=1;
@@ -56,7 +48,9 @@ function BeginPlay()
     }
     default.MaxLevel=MaxLevel;
     default.EnergyRate=EnergyRate;
-    Super.BeginPlay();
+    Description="Bioluminescent cells within the retina provide coherent illumination of the agent's field of view.";
+    default.Description = Description;
+    GetEnergyRate();// HACK: UpdateInfo function is still using the EnergyRate variable not the GetEnergyRate() function
 }
 
 defaultproperties

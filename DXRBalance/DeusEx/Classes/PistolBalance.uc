@@ -1,6 +1,6 @@
 class PistolBalance injects WeaponPistol;
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 12;
@@ -17,7 +17,6 @@ function BeginPlay()
     default.BaseAccuracy = BaseAccuracy;
     default.maxRange=maxRange;
     default.AccurateRange=AccurateRange;
-    Super.BeginPlay();
 }
 
 // lower damage and range, better accuracy

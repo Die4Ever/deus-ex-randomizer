@@ -373,14 +373,49 @@ function UpdateCryptDoors()
     }
 }
 
-static function bool IsBingoEnd(int missionNumber, int bingo_duration)
+static function int GetBingoEnd(int missionNumber, int bingoDuration) // TODO: don't assume an M01 start
 {
     if (missionNumber > 12) {
         missionNumber -= 2;
     } else if (missionNumber > 6) {
         missionNumber -= 1;
     }
-    return missionNumber % bingo_duration == 0 || missionNumber == 13;
+
+    if (missionNumber % bingoDuration != 0) {
+        missionNumber = (missionNumber / bingoDuration) * bingoDuration + bingoDuration; // set missionNumber to the previous end, then add bingoDuration to it
+        missionNumber = Min(missionNumber, 13);
+    }
+
+    if (missionNumber > 11) {
+        missionNumber += 2;
+    } else if (missionNumber > 6) {
+        missionNumber += 1;
+    }
+
+    return missionNumber;
+}
+
+static function bool IsBingoEnd(int missionNumber, int bingoDuration)
+{
+    return GetBingoEnd(missionNumber, bingoDuration) == missionNumber;
+}
+
+static function int GetBingoMask(int missionNumber, int bingoDuration)
+{
+    local int mission, bingoMask;
+
+    for (mission = GetBingoEnd(missionNumber, bingoDuration); mission >= missionNumber; mission--) {
+        bingoMask = bingoMask | (1 << mission);
+    }
+    if ((bingoMask & 2048) != 0) {    // M11
+        bingoMask = bingoMask | 1024; // M10
+    }
+    if ((bingoMask & 16384) != 0) {   // M14
+        bingoMask = bingoMask | 4096; // M12
+    }
+    bingoMask = bingoMask & 57214; // remove M07 and M13
+
+    return bingoMask;
 }
 
 static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {

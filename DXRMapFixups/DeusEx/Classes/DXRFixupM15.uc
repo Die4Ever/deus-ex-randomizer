@@ -325,6 +325,10 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         }
     }
 
+    foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
+        d.MoverEncroachType = ME_IgnoreWhenEncroach;
+    }
+
     //Generator Failsafe buttons should spit out some sort of message if the coolant isn't cut
     //start_buzz1 and start_buzz2 are the tags that get hit when the coolant isn't cut
     se = Spawn(class'SpecialEvent',,'start_buzz1');

@@ -120,7 +120,7 @@ Begin:
     SetTimer(0.1, True);
 }
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         EnergyRate=30;
@@ -128,7 +128,6 @@ function BeginPlay()
         EnergyRate=10;
     }
     default.EnergyRate = EnergyRate;
-    Super.BeginPlay();
 }
 
 // vanilla is EnergyRate=10, vanilla AugBallistic is EnergyRate=60

@@ -702,7 +702,7 @@ function NYC_04_CheckPaulRaid()
     }
 
     if( dead > 0 || dxr.flagbase.GetBool('PaulDenton_Dead') ) {
-        player().ClientMessage("RIP Paul :(",, true);
+        if(!dxr.flags.IsZeroRandoPure()) player().ClientMessage("RIP Paul :(",, true);
         dxr.flagbase.SetBool('PaulDenton_Dead', true,, 999);
         SetTimer(0, False);
     }
@@ -729,12 +729,12 @@ function NYC_04_MarkPaulSafe()
 
     foreach AllActors(class'PaulDenton', paul) {
         paul.GenerateTotalHealth();
-        health = paul.Health * 100 / 400;// as a percentage
-        if(health == 0) health = 1;
+        health = paul.Health * 100 / paul.default.Health;// as a percentage
+        if(health < 1) health = 1;
         paul.SetOrders('Leaving', 'PaulLeaves', True);
     }
 
-    if(health > 0) {
+    if(health > 0 && !dxr.flags.IsZeroRandoPure()) {
         player().ClientMessage("Paul had " $ health $ "% health remaining.");
     }
 

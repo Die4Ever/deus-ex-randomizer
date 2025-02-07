@@ -25,7 +25,7 @@ simulated function SetTargetingAugStatus(int Level, bool IsActive)
     DeusExRootWindow(Player.rootWindow).hud.augDisplay.targetLevel = Level;
 }
 
-function BeginPlay()
+function UpdateBalance()
 {
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         Level5Value=-0.25;
@@ -33,7 +33,6 @@ function BeginPlay()
         Level5Value=-1;
     }
     default.Level5Value = Level5Value;
-    Super.BeginPlay();
 }
 
 defaultproperties
