@@ -1,6 +1,7 @@
 class PlayerDataItem extends Inventory config(DXRBingo);
 
-const FAILED_MISSION_MASK = 1;
+const FAILED_MISSION_MASK = 1; // probably failed
+const ABSOLUTELY_FAILED_MISSION_MASK = 0xFFFFFFFF;
 
 var travel bool local_inited;
 var travel int version, initial_version;
@@ -154,13 +155,17 @@ simulated function int GetBingoMissionMask(int x, int y)
     return bingo_missions_masks[x*5+y];
 }
 
-simulated function bool IncrementBingoProgress(string event)
+simulated function bool IncrementBingoProgress(string event, bool ifNotFailed)
 {
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
         if(!(bingo[i].event ~= event)) continue;
-        if((bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) {
-            log(self$".IncrementBingoProgress("$event$") not incrementing because the goal is already marked as failed");
+        if(bingo_missions_masks[i] == ABSOLUTELY_FAILED_MISSION_MASK) {
+            log(self$".IncrementBingoProgress("$event$") not incrementing because the goal is already marked as absolutely failed");
+            break;
+        }
+        if(ifNotFailed && (bingo_missions_masks[i] & FAILED_MISSION_MASK)!=0) {
+            log(self$".IncrementBingoProgress("$event$") not incrementing because the goal is already marked as probably failed");
             break;
         }
         bingo[i].progress++;

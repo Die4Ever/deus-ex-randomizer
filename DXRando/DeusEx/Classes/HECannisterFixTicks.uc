@@ -19,5 +19,5 @@ Begin:
 // MomentumTransfer vanilla is 40000 for some reason
 defaultproperties
 {
-    MomentumTransfer=10000
+    MomentumTransfer=9001
 }

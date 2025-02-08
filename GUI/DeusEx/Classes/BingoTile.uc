@@ -41,7 +41,7 @@ event DrawWindow(GC gc)
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
     }
-    else if(bActiveMission==-1) {
+    else if(bActiveMission==-1 && progress<max) {
         c.R = 30;
         c.G = 0;
         c.B = 0;
@@ -123,7 +123,7 @@ simulated function string GetHelpText()
     helpmsg=helpmsg$"|n|n"$GenerateMissionString();
 
     //mention that the goal has been failed (bit 0: FAILED_MISSION_MASK)
-    if ((missions & 1)!=0){
+    if ((missions & 1)!=0 && progress<max){
         helpmsg=helpmsg$"|n";
         helpmsg = helpmsg $ "Progress: Failed";
     } else if (max>1){ //Or show actual progress towards the goal

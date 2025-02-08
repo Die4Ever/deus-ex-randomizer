@@ -1,6 +1,7 @@
 class DXREventsBase extends DXRActorsBase;
 
-const FAILED_MISSION_MASK = 1;
+const FAILED_MISSION_MASK = 1; // probably failed
+const ABSOLUTELY_FAILED_MISSION_MASK = 0xFFFFFFFF;
 
 var bool died;
 var() name watchflags[32];
@@ -1313,7 +1314,7 @@ function bool CheckBingoWin(DXRando dxr, int numBingos, int oldBingos)
     return false;
 }
 
-function _MarkBingo(coerce string eventname)
+function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
 {
     local int previousbingos, nowbingos, time;
     local PlayerDataItem data;
@@ -1336,7 +1337,7 @@ function _MarkBingo(coerce string eventname)
 
     MarkBingoFailedEvents(eventName); //Making progress on one bingo goal might infer that another has failed
 
-    if( ! data.IncrementBingoProgress(eventname)) return;
+    if( ! data.IncrementBingoProgress(eventname, ifNotFailed)) return;
 
     nowbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") previousbingos: "$previousbingos$", nowbingos: "$nowbingos);
@@ -1365,13 +1366,13 @@ function _MarkBingo(coerce string eventname)
     }
 }
 
-static function MarkBingo(coerce string eventname)
+static function MarkBingo(coerce string eventname, optional bool ifNotFailed)
 {
     local DXREvents e;
     e = DXREvents(Find());
     log(e$".MarkBingo "$eventname);
     if(e != None) {
-        e._MarkBingo(eventname);
+        e._MarkBingo(eventname, ifNotFailed);
     }
 }
 

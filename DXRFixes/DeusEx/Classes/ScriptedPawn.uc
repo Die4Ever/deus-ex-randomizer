@@ -35,6 +35,8 @@ function ThrowInventory(bool gibbed)
     local Inventory item, nextItem;
     local bool drop, melee;
 
+    if(gibbed && class'MenuChoice_BalanceEtc'.static.IsDisabled()) return; // don't give items when gibbed
+
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
@@ -284,22 +286,25 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
             DrawShield();
     }
 
-    if(!bInvincible && damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas' &&
-            damageType != 'PoisonGas' && damageType != 'Radiation' && damageType != 'EMP' &&
-            damageType != 'NanoVirus' && damageType != 'Drowned' &&
-            damageType != 'Poison' && damageType != 'PoisonEffect')
+    if(!bInvincible && class'MenuChoice_BalanceEtc'.static.IsEnabled()
+        && damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas'
+        && damageType != 'PoisonGas' && damageType != 'Radiation' && damageType != 'EMP'
+        && damageType != 'NanoVirus' && damageType != 'Drowned'
+        && damageType != 'Poison' && damageType != 'PoisonEffect')
     {
         // Impart momentum, DXRando multiply momentum by damage
         // pick the smaller between Damage and actualDamage so that stealth hits don't do insane knockback
         // and hits absorbed by shields do less knockback
         mult = FMin(Damage, actualDamage);
         mult += loge(mult);
-        mult *= 0.3;
+        mult *= 0.2;
         if(mult > 0) {
             momentum *= mult;
-            SetPhysics(PHYS_Falling);
-            // need to lift off the ground cause once they land and start walking that overrides their velocity
-            momentum.Z = FMax(momentum.Z, 0.4 * VSize(momentum));
+            if(!Region.Zone.bWaterZone) {
+                SetPhysics(PHYS_Falling);
+                // need to lift off the ground cause once they land and start walking that overrides their velocity
+                momentum.Z = FMax(momentum.Z, 0.4 * VSize(momentum));
+            }
             Velocity += momentum / Mass;
         }
     }
