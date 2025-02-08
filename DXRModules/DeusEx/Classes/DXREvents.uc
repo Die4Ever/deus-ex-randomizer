@@ -3242,6 +3242,12 @@ static function bool BingoGoalCanFail(string event)
         case "TechGoggles_Activated":
         case "Rebreather_Activated":
         case "FireExtinguisher_Activated":
+        case "ViewPortraits":
+        case "ViewSchematics":
+        case "ViewMaps":
+        case "ImageOpened_WaltonSimons":
+        case "ViewDissection":
+        case "ViewTouristPics":
             return false;
         default:
             return true;
