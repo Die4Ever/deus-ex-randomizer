@@ -23,6 +23,7 @@ function FacePlayer()
 {
     local #var(prefix)ScriptedPawn sp;
     local #var(PlayerPawn) player;
+    local name cloneevent;
 
     if (Event != '') {
         foreach AllActors(class'#var(PlayerPawn)',player){break;}
@@ -31,15 +32,21 @@ function FacePlayer()
         foreach AllActors(class '#var(prefix)ScriptedPawn', sp, Event) {
             sp.LookAtActor(player,true,true,true);
         }
+
+        //Also apply to any clones
+        cloneevent = class'DXRInfo'.static.StringToName(Event $ "_clone");
+        foreach AllActors(class '#var(prefix)ScriptedPawn', sp, cloneevent) {
+            sp.LookAtActor(player,true,true,true);
+        }
     }
 
 }
 
-static function FacePlayerTrigger Create(Actor a, Name event, vector loc, optional float rad, optional float height)
+static function FacePlayerTrigger Create(Actor a, name Tag, Name event, vector loc, optional float rad, optional float height)
 {
     local FacePlayerTrigger fpt;
 
-    fpt = a.Spawn(class'FacePlayerTrigger',,,loc);
+    fpt = a.Spawn(class'FacePlayerTrigger',,Tag,loc);
     fpt.event = event;
 
     if (rad!=0 && height!=0){

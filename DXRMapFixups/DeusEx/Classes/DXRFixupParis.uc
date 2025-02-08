@@ -342,7 +342,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)OrdersTrigger',ot) {
             if (ot.Event=='MorganEverett' && ot.Orders=='WaitingFor'){
                 //Make Morgan also face towards the door as you enter
-                class'FacePlayerTrigger'.static.Create(self,'MorganEverett',ot.Location,ot.CollisionRadius,ot.CollisionHeight);
+                class'FacePlayerTrigger'.static.Create(self,'EverettFacesPlayer','MorganEverett',ot.Location,ot.CollisionRadius,ot.CollisionHeight);
                 break;
             }
         }
