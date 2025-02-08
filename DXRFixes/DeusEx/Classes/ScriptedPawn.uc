@@ -297,12 +297,14 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
         // and hits absorbed by shields do less knockback
         mult = FMin(Damage, actualDamage);
         mult += loge(mult);
-        mult *= 0.3;
+        mult *= 0.2;
         if(mult > 0) {
             momentum *= mult;
-            SetPhysics(PHYS_Falling);
-            // need to lift off the ground cause once they land and start walking that overrides their velocity
-            momentum.Z = FMax(momentum.Z, 0.4 * VSize(momentum));
+            if(!Region.Zone.bWaterZone) {
+                SetPhysics(PHYS_Falling);
+                // need to lift off the ground cause once they land and start walking that overrides their velocity
+                momentum.Z = FMax(momentum.Z, 0.4 * VSize(momentum));
+            }
             Velocity += momentum / Mass;
         }
     }
