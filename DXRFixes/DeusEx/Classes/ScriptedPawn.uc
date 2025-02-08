@@ -35,6 +35,8 @@ function ThrowInventory(bool gibbed)
     local Inventory item, nextItem;
     local bool drop, melee;
 
+    if(gibbed && class'MenuChoice_BalanceEtc'.static.IsDisabled()) return; // don't give items when gibbed
+
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
@@ -284,10 +286,11 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
             DrawShield();
     }
 
-    if(!bInvincible && damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas' &&
-            damageType != 'PoisonGas' && damageType != 'Radiation' && damageType != 'EMP' &&
-            damageType != 'NanoVirus' && damageType != 'Drowned' &&
-            damageType != 'Poison' && damageType != 'PoisonEffect')
+    if(!bInvincible && class'MenuChoice_BalanceEtc'.static.IsEnabled()
+        && damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas'
+        && damageType != 'PoisonGas' && damageType != 'Radiation' && damageType != 'EMP'
+        && damageType != 'NanoVirus' && damageType != 'Drowned'
+        && damageType != 'Poison' && damageType != 'PoisonEffect')
     {
         // Impart momentum, DXRando multiply momentum by damage
         // pick the smaller between Damage and actualDamage so that stealth hits don't do insane knockback
