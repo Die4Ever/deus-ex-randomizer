@@ -339,6 +339,14 @@ function PreFirstEntryMapFixes()
             break;
         }
 
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot) {
+            if (ot.Event=='MorganEverett' && ot.Orders=='WaitingFor'){
+                //Make Morgan also face towards the door as you enter
+                class'FacePlayerTrigger'.static.Create(self,'MorganEverett',ot.Location,ot.CollisionRadius,ot.CollisionHeight);
+                break;
+            }
+        }
+
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'CalledByDispatcher'){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
