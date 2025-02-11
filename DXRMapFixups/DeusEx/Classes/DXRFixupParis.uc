@@ -195,7 +195,7 @@ function PreFirstEntryMapFixes()
         hoverHint.SetBaseActor(jock);
 
         //If neither flag is set, JC never talked to Jaime, so he just didn't bother
-        if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
+        if (!dxr.flags.IsZeroRandoPure() && !dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
             //Need to pretend he *was* recruited, so that he doesn't spawn
             dxr.flagbase.SetBool('JaimeRecruited',True);
         }
