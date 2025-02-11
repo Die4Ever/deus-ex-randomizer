@@ -474,23 +474,26 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     // build list of availLocs based on flags, also count _num_starts
     _num_locs = 0;
     _num_starts = 0;
+    goalsToLocations[num_goals] = -1;
     for(i=0; i<num_locations; i++) {
         // exclude the vanilla start locations if randomized starting locations are disabled
-        if( dxr.flags.settings.startinglocations <= 0 && (VANILLA_START & locations[i].bitMask) != 0 )
+        if( dxr.flags.settings.startinglocations <= 0 && (VANILLA_START & locations[i].bitMask) != 0 ) {
+            goalsToLocations[num_goals] = i; // write this as the start location so mutual exclusions work
             continue;
+        }
         // exclude the vanilla goal locations if randomized goal locations are disabled
         if( dxr.flags.settings.goals <= 0 && (VANILLA_GOAL & locations[i].bitMask) != 0 )
             continue;
 
         if( (START_LOCATION & locations[i].bitMask) != 0) {
-            goalLocs[_num_starts++] = _num_locs;
+            goalLocs[_num_starts++] = _num_locs;// build temporary goalLocs
         }
         availLocs[_num_locs++] = i;
     }
 
     // choose a starting location
     goalsToLocations[num_goals] = -1;
-    if(_num_starts > 0) {
+    if(_num_starts > 0 && goalsToLocations[num_goals] == -1) {
         _num_goal_locs = _num_starts;
         r = rng(_num_goal_locs);
         a = goalLocs[r];
@@ -510,6 +513,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     }
 
     if(num_goals == 0) return true;
+    if(dxr.flags.settings.goals <= 0) return true;
 
     // do the goals in a random order
     for(i=0; i<num_goals; i++) {
