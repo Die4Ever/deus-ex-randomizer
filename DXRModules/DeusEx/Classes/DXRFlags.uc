@@ -1,5 +1,6 @@
 class DXRFlags extends DXRFlagsNGPMaxRando transient;
 
+const FullRando = 0;
 const EntranceRando = 1;
 const HordeMode = 2;
 const RandoLite = 3;
@@ -14,6 +15,7 @@ const WaltonWarex3 = 11;
 const ZeroRandoPlus = 12;
 const OneItemMode = 13;
 const BingoCampaign = 14;
+const NormalRandomizer = 15;
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -528,12 +530,13 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)) settings.dancingpercent = 0;
 
-    if(gamemode == RandoMedium) {
+    if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;
         settings.goals = 0;
         settings.dancingpercent = 0;
         settings.enemiesrandomized *= 0.8;
-        moresettings.enemies_weapons *= 0.8;
+        settings.ammo = (settings.ammo+100) / 2;
+        moresettings.enemies_weapons *= 0.5;
     }
     else if(IsReducedRando()) {
         settings.doorsmode = 0;
@@ -749,7 +752,8 @@ function string DifficultyName(int diff)
 
 function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
-    if(slot--==0) return 0;
+    if(slot--==0) return NormalRandomizer;
+    if(slot--==0) return FullRando;
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
     if(slot--==0) return HalloweenEntranceRando;
@@ -779,7 +783,9 @@ function int GameModeIdForSlot(int slot)
 function string GameModeName(int gamemode)
 {
     switch(gamemode) {
-    case 0:
+    case FullRando:
+        return "Full Randomizer";
+    case NormalRandomizer:
         return "Normal Randomizer";
 #ifdef injections
     case EntranceRando:
@@ -1102,6 +1108,7 @@ function ExtendedTests()
 
 defaultproperties
 {
+    gamemode=15// Normal Randomizer
     difficulty=2
     autosave=2
     loadout=0
