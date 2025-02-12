@@ -38,55 +38,57 @@ function CheckConfig()
         mission_scaling[i] = 100;
     }
 
-    i=0;
-    _item_reductions[i].type = class'#var(prefix)Ammo10mm';
-    _item_reductions[i].percent = 85;
-    i++;
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+        i=0;
+        _item_reductions[i].type = class'#var(prefix)Ammo10mm';
+        _item_reductions[i].percent = 85;
+        i++;
 
-    _item_reductions[i].type = class'#var(prefix)AmmoPlasma';
-    _item_reductions[i].percent = 130;
-    i++;
+        _item_reductions[i].type = class'#var(prefix)AmmoPlasma';
+        _item_reductions[i].percent = 130;
+        i++;
 
-    _item_reductions[i].type = class'#var(prefix)Ammo762mm';
-    _item_reductions[i].percent = 85;
-    i++;
+        _item_reductions[i].type = class'#var(prefix)Ammo762mm';
+        _item_reductions[i].percent = 85;
+        i++;
 
-    _item_reductions[i].type = class'#var(prefix)AmmoShell';
-    _item_reductions[i].percent = 85;
-    i++;
+        _item_reductions[i].type = class'#var(prefix)AmmoShell';
+        _item_reductions[i].percent = 85;
+        i++;
 
-    _item_reductions[i].type = class'#var(prefix)AmmoDart';
-    _item_reductions[i].percent = 120;
-    i++;
+        _item_reductions[i].type = class'#var(prefix)AmmoDart';
+        _item_reductions[i].percent = 120;
+        i++;
 
-    _item_reductions[i].type = class'#var(prefix)AmmoDartFlare';
-    _item_reductions[i].percent = 120;
-    i++;
+        _item_reductions[i].type = class'#var(prefix)AmmoDartFlare';
+        _item_reductions[i].percent = 120;
+        i++;
 
-    i=0;
-    _max_ammo[i].type = class'#var(prefix)Ammo10mm';
-    _max_ammo[i].percent = 60;
-    i++;
+        i=0;
+        _max_ammo[i].type = class'#var(prefix)Ammo10mm';
+        _max_ammo[i].percent = 60;
+        i++;
 
-    _max_ammo[i].type = class'#var(prefix)AmmoPlasma';
-    _max_ammo[i].percent = 130;
-    i++;
+        _max_ammo[i].type = class'#var(prefix)AmmoPlasma';
+        _max_ammo[i].percent = 130;
+        i++;
 
-    _max_ammo[i].type = class'#var(prefix)Ammo762mm';
-    _max_ammo[i].percent = 85;
-    i++;
+        _max_ammo[i].type = class'#var(prefix)Ammo762mm';
+        _max_ammo[i].percent = 85;
+        i++;
 
-    _max_ammo[i].type = class'#var(prefix)AmmoShell';
-    _max_ammo[i].percent = 85;
-    i++;
+        _max_ammo[i].type = class'#var(prefix)AmmoShell';
+        _max_ammo[i].percent = 85;
+        i++;
 
-    _max_ammo[i].type = class'#var(prefix)AmmoDart';
-    _max_ammo[i].percent = 130;
-    i++;
+        _max_ammo[i].type = class'#var(prefix)AmmoDart';
+        _max_ammo[i].percent = 130;
+        i++;
 
-    _max_ammo[i].type = class'#var(prefix)AmmoDartFlare';
-    _max_ammo[i].percent = 130;
-    i++;
+        _max_ammo[i].type = class'#var(prefix)AmmoDartFlare';
+        _max_ammo[i].percent = 130;
+        i++;
+    }
 
     Super.CheckConfig();
 }
@@ -441,9 +443,11 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
 
         f = float(percent) / 100.0;
         f *= _GetItemMult(_item_reductions, p.class);
-        f *= rngrangeseeded(1, 0.8, 1.2, p.class.name);
-        p.maxCopies = float(p.default.maxCopies) * f * 0.8;
-        p.maxCopies = Clamp(p.maxCopies, 1, p.default.maxCopies*10);
+        f *= float(p.default.maxCopies);
+        if(percent < 100) {
+            f *= rngrangeseeded(1, 0.8, 1.2, p.class.name) * 0.8;
+        }
+        p.maxCopies = Clamp(f, 1, p.default.maxCopies*10);
         owner = #var(PlayerPawn)(p.Owner);
         if(owner == None)
             owner = player(true);
@@ -474,9 +478,11 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
 
         f = float(percent) / 100.0;
         f *= _GetItemMult(_max_ammo, a.class);
-        f *= rngrangeseeded(1, 0.8, 1.2, a.class.name);
-        a.MaxAmmo = float(a.default.MaxAmmo) * f * 0.8;
-        a.MaxAmmo = Clamp(a.MaxAmmo, 1, a.default.MaxAmmo*10);
+        f *= float(a.default.MaxAmmo);
+        if(percent < 100) {
+            f *= rngrangeseeded(1, 0.8, 1.2, a.class.name) * 0.8;
+        }
+        a.MaxAmmo = Clamp(f, 1, a.default.MaxAmmo*10);
 
         owner = #var(PlayerPawn)(a.Owner);
         if(owner == None)
