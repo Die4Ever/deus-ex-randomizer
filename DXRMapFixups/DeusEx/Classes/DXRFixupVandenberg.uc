@@ -331,9 +331,11 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if(!dxr.flags.IsZeroRandoPure()) {
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot) {
                 if(ot.Event == 'muncher') {
+                    class'FacePlayerTrigger'.static.Create(self,'MuncherTurnsToFace','muncher',ot.Location,ot.CollisionRadius,ot.CollisionHeight);
+                    //Muncher is already hostile to the player, so just need to make them turn to face the player
                     ot.Destroy();
                 }
             }

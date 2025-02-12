@@ -47,6 +47,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Keypad3 kp;
     local #var(prefix)Cigarettes cigs;
     local #var(prefix)ComputerPublic compublic;
+    local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)AllianceTrigger at;
 
     local DXREnemies dxre;
     local int i;
@@ -196,6 +198,40 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'#var(prefix)JaimeReyes', j) {
             RemoveFears(j);
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Manderley becomes hostile, rather than being ordered to Attack (which breaks stealth)
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'killjc'){
+                class'FacePlayerTrigger'.static.Create(self,'killjc','JosephManderley',ot.Location);
+
+                at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'killjc',ot.Location);
+                at.SetCollision(False,False,False);
+                at.Event='JosephManderley';
+                at.Alliance='UNATCO';
+                at.Alliances[0].allianceName='Player';
+                at.Alliances[0].allianceLevel=-1.0;
+                at.Alliances[0].bPermanent=true;
+
+                ot.Destroy();
+                break;
+            }
+
+            //Anna becomes hostile, rather than being ordered to Attack (which breaks stealth)
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'annahate'){
+                class'FacePlayerTrigger'.static.Create(self,'annahate','AnnaNavarre',ot.Location);
+
+                at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'annahate',ot.Location);
+                at.SetCollision(False,False,False);
+                at.Event='AnnaNavarre';
+                at.Alliance='UNATCO';
+                at.Alliances[0].allianceName='Player';
+                at.Alliances[0].allianceLevel=-1.0;
+                at.Alliances[0].bPermanent=true;
+
+                ot.Destroy();
+                break;
+            }
         }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(164,-424,48),,'Sitting');

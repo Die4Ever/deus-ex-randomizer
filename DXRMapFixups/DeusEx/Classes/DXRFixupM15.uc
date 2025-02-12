@@ -338,21 +338,23 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     se = Spawn(class'SpecialEvent',,'start_buzz2');
     se.Message = "Coolant levels normal - Failsafe cannot be disabled";
 
-    //The mechanic in the Reactor Room is no longer directly ordered to attack you (which breaks your stealth)
-    //Instead, he is set to be hostile to the player and turns to face you
-    foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'power_guy_attacks'){
-        class'FacePlayertrigger'.static.Create(self,'power_guy_attacks','PowerMech',ot.Location);
+    if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+        //The mechanic in the Reactor Room is no longer directly ordered to attack you (which breaks your stealth)
+        //Instead, he is set to be hostile to the player and turns to face you
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'power_guy_attacks'){
+            class'FacePlayerTrigger'.static.Create(self,'power_guy_attacks','PowerMech',ot.Location);
 
-        at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'power_guy_attacks',ot.Location);
-        at.SetCollision(False,False,False);
-        at.Event='PowerMech';
-        at.Alliance='Mechanic';
-        at.Alliances[0].allianceName='Player';
-        at.Alliances[0].allianceLevel=-1.0;
-        at.Alliances[0].bPermanent=true;
+            at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'power_guy_attacks',ot.Location);
+            at.SetCollision(False,False,False);
+            at.Event='PowerMech';
+            at.Alliance='Mechanic';
+            at.Alliances[0].allianceName='Player';
+            at.Alliances[0].allianceLevel=-1.0;
+            at.Alliances[0].bPermanent=true;
 
-        ot.Destroy();
-        break;
+            ot.Destroy();
+            break;
+        }
     }
 
 
