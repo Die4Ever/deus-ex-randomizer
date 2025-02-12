@@ -1114,7 +1114,7 @@ function SetAllLampsState(optional bool type1, optional bool type2, optional boo
 #ifdef vanilla
     local #var(prefix)Lamp lmp;
 
-    if (class'MenuChoice_AutoLamps'.default.enabled == false)
+    if (!class'MenuChoice_AutoLamps'.static.IsEnabled())
         return;
 
     if (rad == 0.0) {
