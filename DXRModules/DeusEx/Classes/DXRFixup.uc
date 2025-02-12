@@ -859,6 +859,8 @@ function ScaleZoneDamage()
     local ZoneInfo z;
     local float f;
 
+    if(class'MenuChoice_BalanceEtc'.static.IsDisabled()) return;
+
 #ifdef injections
     foreach AllActors(class'ZoneInfo',z){
         if (z.bPainZone){
