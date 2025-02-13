@@ -254,6 +254,17 @@ function CheckConfig()
     min_mindmg_adjust=0.3;
     max_mindmg_adjust=1.2;
 
+    if(dxr.flags.settings.doorspickable <= 0 && dxr.flags.IsZeroRando()) {
+        min_lock_adjust=1;
+        max_lock_adjust=1;
+    }
+    if(dxr.flags.settings.doorsdestructible <= 0 && dxr.flags.IsZeroRando()) {
+        min_door_adjust=1;
+        max_door_adjust=1;
+        min_mindmg_adjust=1;
+        max_mindmg_adjust=1;
+    }
+
     Super.CheckConfig();
 }
 

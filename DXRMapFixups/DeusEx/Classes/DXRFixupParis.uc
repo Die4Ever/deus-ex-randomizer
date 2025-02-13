@@ -12,7 +12,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)ComputerSecurity cs;
-    local #var(prefix)AutoTurret at;
     local #var(prefix)WIB wib;
     local #var(prefix)MorganEverett everett;
     local #var(prefix)Chad chad;

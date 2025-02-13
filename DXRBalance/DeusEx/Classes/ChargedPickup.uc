@@ -31,7 +31,7 @@ simulated function Float GetCurrentCharge()
 function ChargedPickupBegin(DeusExPlayer Player)
 {
     local Human p;
-    if(bOneUseOnly) {
+    if(bOneUseOnly && class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         p = Human(Owner);
         if( p != None ) {
             if(p.InHand == self) {

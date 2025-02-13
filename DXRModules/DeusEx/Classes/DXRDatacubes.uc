@@ -1631,6 +1631,7 @@ function RandoHacks()
 {
     local #var(prefix)HackableDevices h;
 
+    if(dxr.flags.settings.deviceshackable <=0 && dxr.flags.IsZeroRando()) return;
     SetSeed( "RandoHacks" );
 
     foreach AllActors(class'#var(prefix)HackableDevices', h) {

@@ -178,6 +178,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 
     //Swap the button at the top of the elevator to a keypad to make this path a bit more annoying
     foreach AllActors(class'Switch2',s2){
+        if( ! class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ) break;
         if (s2.Event=='elevator_mtunnel_up'){
             k = Spawn(class'Keypad2',,,s2.Location,s2.Rotation);
             k.validCode="17092019"; //September 17th, 2019 - First day of "Storm Area 51"

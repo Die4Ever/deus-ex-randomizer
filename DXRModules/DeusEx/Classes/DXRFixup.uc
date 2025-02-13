@@ -877,9 +877,11 @@ function OverwriteDecorations()
     local #var(prefix)Barrel1 b;
     local int i;
     foreach AllActors(class'DeusExDecoration', d) {
-        if( d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical') ) {
+        if( class'MenuChoice_BalanceEtc'.static.IsEnabled()
+            && (d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical')) ) {
             d.Mass = 35;
             d.HitPoints = 1;
+            d.default.HitPoints = 1;
         }
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             if(DecorationsOverwritesClasses[i] == None) continue;
@@ -887,6 +889,7 @@ function OverwriteDecorations()
             if( d.bIsSecretGoal == True) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
             d.HitPoints = DecorationsOverwrites[i].HitPoints;
+            d.default.HitPoints = DecorationsOverwrites[i].HitPoints; // fixes the ScaleGlow
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;
             d.bFlammable = DecorationsOverwrites[i].bFlammable;
             d.Flammability = DecorationsOverwrites[i].Flammability;
@@ -938,6 +941,9 @@ function FixAutoTurrets()
 {
 #ifdef fixes
     local #var(prefix)AutoTurret at;
+
+    if(!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
+
     foreach AllActors(class'#var(prefix)AutoTurret',at){
         at.gunDamage=at.Default.gunDamage; //One turret in Cathedral has non-standard damage
         at.fireRate=at.Default.fireRate; //Make sure large and small turrets use their appropriate firerates

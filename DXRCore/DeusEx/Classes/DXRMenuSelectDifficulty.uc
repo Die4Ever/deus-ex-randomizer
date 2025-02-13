@@ -6,7 +6,7 @@ var string ExtremeBtnTitle, ExtremeBtnMessage;
 var string ImpossibleBtnTitle, ImpossibleBtnMessage;
 var string SplitsBtnTitle, SplitsBtnMessage;
 
-var int gamemode_enum, autosave_enum;
+var int gamemode_enum, autosave_enum, difficulty_enum;
 
 enum ERandoMessageBoxModes
 {
@@ -65,13 +65,13 @@ function BindControls(optional string action)
     }
 
     if( #defined(vmd) )
-        NewMenuItem("Randomizer Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
+        difficulty_enum = NewMenuItem("Randomizer Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
     else
-        NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
+        difficulty_enum = NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
 
-    if( f.VersionIsStable() ) {
+    if( f.VersionIsStable() && !#bool(hx) ) {
         i=1;
-        if(f.difficulty == 0) {
+        if(f.difficulty <= 0) {
             f.difficulty = 1;
         }
     }
@@ -80,8 +80,7 @@ function BindControls(optional string action)
     }
 
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
-        if( f.difficulty_names[i] == "" ) continue;
-        EnumOption(f.difficulty_names[i], i, f.difficulty);
+        EnumOption(f.DifficultyName(i), i, f.difficulty);
     }// we write the difficulty and gamemode after setting the seed...
 
 #ifdef injections
@@ -174,8 +173,12 @@ function BindControls(optional string action)
 
 function string SetEnumValue(int e, string text)
 {
+    local int i, temp;
+    local string old;
+    local DXRFlags f;
+
     // HACK: this allows you to override the autosave option instead of SetDifficulty forcing it by game mode
-    Super.SetEnumValue(e, text);
+    old = Super.SetEnumValue(e, text);
     if(e == gamemode_enum && #defined(injections)) {
         if(InStr(text, "Halloween")!=-1)
         {
@@ -184,6 +187,26 @@ function string SetEnumValue(int e, string text)
         else if(InStr(text, "Hardcore")==-1 && InStr(text, "Horde")==-1)
         {
             Super.SetEnumValue(autosave_enum, "Autosave Every Entry");
+        }
+    }
+    if(e == gamemode_enum) {
+        f = GetFlags();
+        for(i=0; i<20; i++) {
+            temp = f.GameModeIdForSlot(i);
+            if(temp==999999) continue;
+            if(f.GameModeName(temp) == text) {
+                f.gamemode = temp;
+            }
+        }
+        if(InStr(text, "Zero Rando") != InStr(old, "Zero Rando")) {
+            i = 0;
+            if( f.VersionIsStable() && !#bool(hx)) {
+                i = 1;
+            }
+            for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
+                enums[difficulty_enum].values[i] = f.DifficultyName(i);
+            }
+            Super.SetEnumValue(difficulty_enum, f.DifficultyName(1));
         }
     }
 }

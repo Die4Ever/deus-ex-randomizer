@@ -289,6 +289,7 @@ function PreFirstEntryMapFixes()
     case "05_NYC_UNATCOISLAND":
         foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
             if(lloyd.BindName != "PrivateLloyd") continue;
+            if( ! class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) continue;
             RemoveFears(lloyd);
             lloyd.MinHealth = 0;
             lloyd.BaseAccuracy *= 0.1;

@@ -952,11 +952,8 @@ function AnyEntryMapFixes()
         SetTimer(1, true);
         break;
     case "12_VANDENBERG_CMD":
-        Player().StartDataLinkTransmission("DL_no_carla");
-
         // timer to count the MJ12 Bots
         SetTimer(1, True);
-
         break;
 
     case "14_OCEANLAB_LAB":

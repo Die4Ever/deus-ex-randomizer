@@ -119,6 +119,10 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         d = p;
         p.default.Damage = ratio * f;
         w.HitDamage = ratio * f;// write back the weapon damage
+        if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
+            p = class'#var(prefix)PlasmaBolt';
+            d = p;
+        }
         break;
 
     case class'#var(prefix)Rocket':
@@ -128,6 +132,10 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         d = p;
     case class'RocketFixTicks':// no break
         p.default.Damage = ratio * 300.0;
+        if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
+            p = class'#var(prefix)Rocket';
+            d = p;
+        }
         break;
 
     case class'#var(prefix)RocketWP':
@@ -135,12 +143,16 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         break;
 
     case class'#var(prefix)HECannister20mm':
-        // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
-        p.default.Damage = ratio * 180.0;
+        p.default.Damage = ratio * 150.0;
         p = class'HECannisterFixTicks';
         d = p;
     case class'HECannisterFixTicks':// no break
+        // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
         p.default.Damage = ratio * 180.0;
+        if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
+            p = class'#var(prefix)HECannister20mm';
+            d = p;
+        }
         break;
 
     case class'#var(prefix)Shuriken':
