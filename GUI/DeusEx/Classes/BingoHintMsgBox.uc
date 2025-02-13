@@ -5,16 +5,6 @@ class BingoHintMsgBox extends MenuUIMessageBoxWindow;
 
 var PersonaScrollAreaWindow winScroll;
 
-event InitWindow()
-{
-	Super.InitWindow();
-
-	btnOK = winButtonBar.AddButton(btnLabelOK, HALIGN_Right);
-
-	numButtons = 1;
-	SetFocusWindow(btnOK);
-}
-
 function CreateTextWindow()
 {
     winScroll = PersonaScrollAreaWindow(winClient.NewChild(Class'PersonaScrollAreaWindow'));
@@ -24,8 +14,27 @@ function CreateTextWindow()
     winScroll.SetSize(490,95);
 
     winText.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winText.SetFont(Font'FontMenuHeaders_DS');
-	winText.SetWindowAlignments(HALIGN_Full, VALIGN_Full, textBorderX, textBorderY);
+    winText.SetFont(Font'FontMenuHeaders_DS');
+    winText.SetWindowAlignments(HALIGN_Full, VALIGN_Full, textBorderX, textBorderY);
+}
+
+static function BingoHintMsgBox Create
+    (
+    DeusExRootWindow root,
+    String msgTitle,
+    String msgText,
+    int msgBoxMode,
+    bool hideCurrentScreen,
+    Window winParent
+    )
+{
+    local BingoHintMsgBox msgbox;
+    msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox', hideCurrentScreen));
+    msgbox.SetTitle(msgTitle);
+    msgbox.SetMessageText(msgText);
+    msgBox.SetMode(msgBoxMode);
+    msgbox.SetNotifyWindow(winParent);
+    return msgbox;
 }
 
 defaultproperties

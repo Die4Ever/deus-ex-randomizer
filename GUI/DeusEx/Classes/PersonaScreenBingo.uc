@@ -105,7 +105,6 @@ function bool ResetBingoBoard()
 function ShowBingoGoalHelp( Window bingoTile )
 {
     local BingoTile bt;
-    local BingoHintMsgBox msgbox;
 
     bt=BingoTile(bingoTile);
 
@@ -114,33 +113,23 @@ function ShowBingoGoalHelp( Window bingoTile )
         return;
     }
 
-    msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox',False));
+    class'BingoHintMsgBox'.static.Create(root, bt.GetText(), bt.GetHelpText(), 1, False, self);
     if(#defined(bingocheat)) {
         class'DXREvents'.static.MarkBingo(bt.event);
         bt.progress++;
     }
-    msgbox.SetTitle(bt.GetText());
-    msgbox.SetMessageText(bt.GetHelpText());
-    msgbox.SetNotifyWindow(Self);
 }
 
 function bool ButtonActivated( Window buttonPressed )
 {
     local int val;
-    local BingoHintMsgBox msgbox;
 
     if(buttonPressed == btnReset) {
         root.MessageBox(ResetWindowHeader,ResetWindowText,0,False,Self);
-
         return true;
     }
     else if(buttonPressed == btnBingoInfo) {
-        //root.MessageBox(InfoWindowHeader,InfoWindowText,0,False,Self);
-        msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox',False));
-        msgbox.SetTitle(InfoWindowHeader);
-        msgbox.SetMessageText(InfoWindowText);
-        msgbox.SetNotifyWindow(Self);
-
+        class'BingoHintMsgBox'.static.Create(root, InfoWindowHeader, InfoWindowText, 1, False, self);
         return true;
     }
     else if(BingoTile(buttonPressed)!=None){

@@ -4,6 +4,8 @@ var string MaxRandoBtnTitle, MaxRandoBtnMessage;
 var string AdvancedBtnTitle, AdvancedBtnMessage;
 var string ExtremeBtnTitle, ExtremeBtnMessage;
 var string ImpossibleBtnTitle, ImpossibleBtnMessage;
+var string GameModeBtnTitle, GameModeBtnMessage;
+var string AutosaveBtnTitle, AutosaveBtnMessage;
 var string SplitsBtnTitle, SplitsBtnMessage;
 
 var int gamemode_enum, autosave_enum, difficulty_enum, mirroredmaps_wnd;
@@ -236,6 +238,7 @@ function EnumListAddButton(DXREnumList list, string title, string val, string pr
 
 function HandleNewGameButton()
 {
+    local string s;
     local DXRFlags f;
     f = GetFlags();
 
@@ -250,6 +253,16 @@ function HandleNewGameButton()
     else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Impossible") {
         nextScreenNum=RMB_NewGame;
         root.MessageBox(ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
+    }
+    else if(dxr.rando_beaten == 0 && f.GameModeName(f.gamemode) != "Normal Randomizer" && !f.IsReducedRando()) {
+        nextScreenNum=RMB_NewGame;
+        s = Sprintf(GameModeBtnMessage, f.GameModeName(f.gamemode));
+        class'BingoHintMsgBox'.static.Create(root, GameModeBtnTitle, s, 0, False, self);
+    }
+    else if(dxr.rando_beaten == 0 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosave Every Entry" && GetEnumValue(autosave_enum)!="Extra Safe (1+GB per playthrough)") {
+        nextScreenNum=RMB_NewGame;
+        s = Sprintf(AutosaveBtnMessage, GetEnumValue(autosave_enum));
+        class'BingoHintMsgBox'.static.Create(root, AutosaveBtnTitle, s, 0, False, self);
     }
     else {
         DoNewGameScreen();
@@ -370,6 +383,10 @@ defaultproperties
     ExtremeBtnMessage="It appears you're new to DX Randomizer.  Extreme difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
     ImpossibleBtnTitle="Impossible Difficulty?"
     ImpossibleBtnMessage="It appears you're new to DX Randomizer.  Impossible difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
+    GameModeBtnTitle="Advanced Game Mode?"
+    GameModeBtnMessage="It appears you're new to DX Randomizer.  This game mode is confusing and difficult for new DXRando players. We suggest starting with Normal Randomizer or one of the Reduced Randomization modes instead.|n|nAre you sure you want to continue with %s?"
+    AutosaveBtnTitle="Autosave?"
+    AutosaveBtnMessage="It appears you're new to DX Randomizer.|n|nWe suggest starting with the default option for Autosave Every Entry.|n|nAre you sure you want to continue with %s?"
     SplitsBtnTitle="Mismatched Splits!"
     SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.  Are you sure you want to continue?"
 }
