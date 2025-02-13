@@ -17,6 +17,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)OrdersTrigger ot;
     local DXRHoverHint hoverHint;
     local DXRButtonHoverHint buttonHint;
     local #var(prefix)Button1 button;
@@ -234,6 +235,18 @@ function PreFirstEntryMapFixes()
 
         break;
     case "02_NYC_HOTEL":
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //The terrorist guarding Gilbert will no longer be ordered to attack the player
+            //There is already an AllianceTrigger ready to swap his alliances, and he is always
+            //facing the right way anyway.  Just delete the OrdersTrigger
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
+                if (ot.Event!='GilbertTerrorist' && ot.Orders!='Attacking') continue;
+                ot.Destroy();
+                break;
+            }
+        }
+
+
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 

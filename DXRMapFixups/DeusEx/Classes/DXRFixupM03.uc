@@ -83,6 +83,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)AllianceTrigger at;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -290,6 +291,26 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //El Rey will no longer directly be ordered to attack the player, he will just go hostile and face them
+            //This prevents him from breaking stealth
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'elreyattacks'){
+                class'FacePlayerTrigger'.static.Create(self,'elreyattacks','Elrey',ot.Location);
+
+                at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'elreyattacks',ot.Location);
+                at.SetCollision(False,False,False);
+                at.Event='Elrey';
+                at.Alliance='ThugGang';
+                at.Alliances[0].allianceName='Player';
+                at.Alliances[0].allianceLevel=-1.0;
+                at.Alliances[0].bPermanent=true;
+
+                ot.Destroy();
+                break;
+            }
+        }
+
         if (VanillaMaps){
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
