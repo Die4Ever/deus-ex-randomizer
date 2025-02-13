@@ -6,7 +6,7 @@ var string ExtremeBtnTitle, ExtremeBtnMessage;
 var string ImpossibleBtnTitle, ImpossibleBtnMessage;
 var string SplitsBtnTitle, SplitsBtnMessage;
 
-var int gamemode_enum, autosave_enum, difficulty_enum;
+var int gamemode_enum, autosave_enum, difficulty_enum, mirroredmaps_wnd;
 
 enum ERandoMessageBoxModes
 {
@@ -128,7 +128,7 @@ function BindControls(optional string action)
     mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
 
     if(mirrored_maps_files_found) {
-        NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
+        mirroredmaps_wnd = NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
         if(f.mirroredmaps == -1 && f.IsZeroRando()) {
             f.mirroredmaps = 0; // default to 0% because of Zero Rando
         } else if(f.mirroredmaps == -1) {
@@ -179,6 +179,8 @@ function string SetEnumValue(int e, string text)
 
     // HACK: this allows you to override the autosave option instead of SetDifficulty forcing it by game mode
     old = Super.SetEnumValue(e, text);
+    if(text == old) return old;
+
     if(e == gamemode_enum && #defined(injections)) {
         if(InStr(text, "Halloween")!=-1)
         {
@@ -207,8 +209,14 @@ function string SetEnumValue(int e, string text)
                 enums[difficulty_enum].values[i] = f.DifficultyName(i);
             }
             Super.SetEnumValue(difficulty_enum, f.DifficultyName(1));
+
+            if(InStr(text, "Zero Rando")!=-1 && mirroredmaps_wnd>0) {
+                MenuUIEditWindow(wnds[mirroredmaps_wnd]).SetText("0");
+            }
         }
     }
+
+    return old;
 }
 
 function EnumListAddButton(DXREnumList list, string title, string val, string prev)
