@@ -387,7 +387,7 @@ function PreFirstEntryMapFixes()
             //The other ones are tagged as Dogs
             if (g.Tag=='Greasel'){
                 g.BindName="JerryTheVentGreasel";
-                if(!dxr.flags.IsReducedRando()) {
+                if(dxr.flags.IsBingoMode() || class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
                     g.FamiliarName = "Jerry the Vent Greasel";
                     g.UnfamiliarName = "Jerry the Vent Greasel";
                 }
@@ -695,20 +695,6 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if (dxr.flags.IsZeroRando() == false) {
-            // give nervous worker some new threads so he stands out
-            foreach AllActors(class'Male1', male) {
-                if (male.BindName == "Disgruntled_Guy") {
-                    male.MultiSkins[3] = Texture'NervousWorkerPants';
-                    male.MultiSkins[5] = Texture'NervousWorkerBody';
-                    male.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex1';
-                    male.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex1';
-                    male.CarcassType = class'NervousWorkerCarcass';
-                    break;
-                }
-            }
-        }
-
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
         Spawn(class'PlaceholderItem',,, vectm(210.94,2062.23,204.3)); //2nd floor front cube
@@ -793,7 +779,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(691.3,-358.4,-1007.9)); //Near UC
         Spawn(class'PlaceholderContainer',,, vectm(174,-2862,1057)); //Near upper security computer
 
-        if(!dxr.flags.IsZeroRandoPure()) {
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             p=MJ12Clone1(Spawnm(class'MJ12Clone1',,, vect(635,0,-65),rot(0,32768,0))); //Should he just be a PlaceholderEnemy now?
             p.SetAlliance('MJ12');
             ChangeInitialAlliance(p,'Player',-1,true);
@@ -1037,7 +1023,7 @@ function AnyEntryMapFixes()
         HandleJohnSmithDeath();
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
             foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body') {
-                if (dxr.flags.IsZeroRando()) {
+                if (dxr.flags.settings.goals > 0) {
                     if (carc.bHidden) {
                         carc.bHidden = false;
                         carc.ItemName = "John Smith (Dead)";

@@ -61,7 +61,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 342));
             k.KeyID = 'ControlRoomDoor';
             k.Description = "Control Room Door Key";
@@ -223,7 +223,7 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1334,-1404,64),,'Shitting');
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             // this map is too hard
             Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(-1890,1840,1775)); //Rooftop apartment hall
             Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(700,850,1175)); //Apartment top floor

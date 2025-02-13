@@ -582,7 +582,7 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
     local AmbientSound as;
     local DXRAmbientSoundTrigger ast;
 
-    if(!dxr.flags.IsZeroRando()) {
+    if(dxr.flags.settings.infodevices > 0) {
         //Rather than duplicating the existing cubes, add new clone text so there are more possibilities
         if (isVanilla){
             cloneCubeLoc[0]=vectm(6197.620117,-8455.201172,-5117.649902); //Weird little window near broken door (on Page side)
@@ -651,7 +651,7 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
             }
         }
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             //Add a switch to manually trigger the infolink that gives you the Helios computer password
             AddSwitch( vect(5635.609375,-5352.036133,-5240.890625), rot(0, 0, 0), 'PasswordCallReset', "Forgot your Password?");
         }

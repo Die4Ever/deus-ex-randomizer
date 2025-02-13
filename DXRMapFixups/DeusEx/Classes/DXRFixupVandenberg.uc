@@ -462,29 +462,30 @@ function PreFirstEntryMapFixes()
 
     case "14_Oceanlab_silo":
         if (VanillaMaps){
-            if(!dxr.flags.IsReducedRando()) {
-                foreach AllActors(class'#var(prefix)HowardStrong', hs) {
-                    hs.ChangeAlly('', 1, true);
-                    hs.ChangeAlly('mj12', 1, true);
-                    hs.ChangeAlly('spider', 1, true);
+            foreach AllActors(class'#var(prefix)HowardStrong', hs) {
+                hs.ChangeAlly('', 1, true);
+                hs.ChangeAlly('mj12', 1, true);
+                hs.ChangeAlly('spider', 1, true);
+                if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
                     RemoveFears(hs);
                     hs.MinHealth = 0;
                     hs.BaseAccuracy *= 0.1;
-
                     GiveItem(hs, class'#var(prefix)BallisticArmor');
+                    if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
+                        SetPawnHealth(hs, 200);
+                    }
+                    hs.LeaveWorld();
+                }
+                if(!dxr.flags.IsReducedRando()) {
                     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
                     if(dxre != None) {
                         dxre.GiveRandomWeapon(hs, false, 2);
                         dxre.GiveRandomMeleeWeapon(hs);
                     }
+                }
+                if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags) && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
                     hs.FamiliarName = "Howard Stronger";
                     hs.UnfamiliarName = "Howard Stronger";
-
-                    if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
-                        SetPawnHealth(hs, 200);
-                    }
-
-                    hs.LeaveWorld();
                 }
             }
 
@@ -520,11 +521,12 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-1257,-3472,1468));
         class'PlaceholderEnemy'.static.Create(self,vectm(1021,-3323,1476));
 
-
-        dxr.flagbase.SetBool('MS_UnhideHelicopter', True,, 15);
-        foreach AllActors(class'DataLinkTrigger', dlt, 'klax') {
-            dlt.Destroy();
-            break;
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            dxr.flagbase.SetBool('MS_UnhideHelicopter', True,, 15);
+            foreach AllActors(class'DataLinkTrigger', dlt, 'klax') {
+                dlt.Destroy();
+                break;
+            }
         }
 
         break;
@@ -618,7 +620,7 @@ function VandenbergCmdFixTimsDoor()
     local #var(DeusExPrefix)Mover door;
     local #var(prefix)NanoKey key;
 
-    if(!dxr.flags.IsZeroRando()) {
+    if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
         //Add a key to Tim's closet
         foreach AllActors(class'#var(DeusExPrefix)Mover',door){
             if (door.Name=='DeusExMover28'){
@@ -641,7 +643,7 @@ function VandenbergCmdRevisionFixWatchtowerDoor()
     local #var(DeusExPrefix)Mover door;
     local #var(prefix)NanoKey key;
 
-    if(!dxr.flags.IsZeroRando()) {
+    if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
         //Add a key to the watch tower
         foreach AllActors(class'#var(DeusExPrefix)Mover',door){
             if (door.Name=='DeusExMover42'){
@@ -666,7 +668,7 @@ function UnleashingBotsOpenCommsDoor()
     local #var(prefix)DataLinkTrigger dt;
     local #var(prefix)FlagTrigger ft;
 
-    if(dxr.flags.IsZeroRandoPure()) return;
+    if(dxr.flags.settings.enemiesshuffled==0 && dxr.flags.loadout==0) return;
 
     // releasing the bots should be enough to get into the comms building, especially for Stick With the Prod players
 
@@ -928,8 +930,10 @@ function AnyEntryMapFixes()
             hs.ChangeAlly('', 1, true);
             hs.ChangeAlly('mj12', 1, true);
             hs.ChangeAlly('spider', 1, true);
-            RemoveFears(hs);
-            hs.MinHealth = 0;
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                RemoveFears(hs);
+                hs.MinHealth = 0;
+            }
         }
 
         Player().StartDataLinkTransmission("DL_FrontGate");
@@ -1025,6 +1029,8 @@ function TimerMapFixes()
 
 function private _SiloGoalChecks() {
     local BlackHelicopter chopper;
+
+    if(!class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) return;
 
     // by design, no infolink plays after killing Howard Strong if the missile hasn't been redirected
     if (dxr.flagbase.GetBool('DXR_SiloEscapeHelicopterUnhidden') || !dxr.flagbase.GetBool('missile_launched')) {

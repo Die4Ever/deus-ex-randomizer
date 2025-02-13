@@ -112,7 +112,7 @@ function PreFirstEntryMapFixes()
         fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
         fg.ActiveArea=2000;
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
             AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
         }
@@ -156,7 +156,7 @@ function PreFirstEntryMapFixes()
                 m.Tag = 'Sewerdoor';
             }
         }
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             foreach AllActors(class'Trigger', t) {
                 //disable the platforms that fall when you step on them
                 if( t.Event == 'firstplatform' || t.Event == 'platform2' ) {
@@ -185,7 +185,7 @@ function PreFirstEntryMapFixes()
         a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
         SetActorScale(a, 1.3);
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
             //Bookshelf near pool tables
             Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
@@ -208,7 +208,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_AIRFIELD":
-        if(!dxr.flags.IsZeroRando()) {
+        if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
             Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
         }
@@ -399,7 +399,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_UNATCOISLAND":
-        if(!dxr.flags.IsReducedRando()) {
+        if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
                 if(unatco.BindName != "PrivateLloyd") continue;
                 unatco.FamiliarName = "Corporal Lloyd";
@@ -420,7 +420,7 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             k.KeyID = 'JaimeClosetKey';
             k.Description = "MedLab Closet Key Code";
@@ -577,7 +577,7 @@ function FixAnnaAmbush()
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)ThrownProjectile p;
 
-    if(dxr.flags.IsZeroRando()) return;
+    if(!class'MenuChoice_BalanceMaps'.static.MajorEnabled()) return;
 
     foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {break;}
 
