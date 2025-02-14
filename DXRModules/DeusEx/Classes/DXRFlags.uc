@@ -753,9 +753,11 @@ function string DifficultyName(int diff)
     if (diff>=ArrayCount(difficulty_names)){
         return "INVALID DIFFICULTY "$diff;
     }
-    if(IsZeroRando() && !#bool(hx)) {
+#ifndef hx
+    if(IsZeroRando()) {
         return vanilla_difficulty_names[diff];
     }
+#endif
     return difficulty_names[diff];
 }
 
