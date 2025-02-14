@@ -664,12 +664,18 @@ function string LaserStrInfo(Actor a, out int numLines)
 }
 
 function string AugCanStrInfo(#var(prefix)AugmentationCannister augCan) {
-    local Augmentation aug0, aug1;
+    local Augmentation anAug, aug0, aug1;
     local string strInfo;
 
-    augCan.SetOwner(player);
-    aug0 = augCan.GetAugmentation(0);
-    aug1 = augCan.GetAugmentation(1);
+    if (player == None)
+        return augCan.ItemName;
+
+    for (anAug = player.AugmentationSystem.FirstAug; anAug != None; anAug = anAug.next) {
+        if (augCan.addAugs[0] == anAug.Class.Name)
+            aug0 = anAug;
+        if (augCan.addAugs[1] == anAug.Class.Name)
+            aug1 = anAug;
+    }
 
     strInfo = augCan.ItemName;
     if (aug0 != None)
