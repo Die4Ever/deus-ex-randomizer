@@ -278,15 +278,6 @@ function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCanni
 
     a.AddAugs[0] = augs[0].Name;
     a.AddAugs[1] = augs[1].Name;
-
-    if(!#defined(vmd)) {
-        if(augs[0] != None && augs[1] != None)
-            a.ItemName = a.default.ItemName $": "$ augs[0].default.AugmentationName $ " / " $ augs[1].default.AugmentationName;
-        else if(augs[0] != None)
-            a.ItemName = a.default.ItemName $": "$ augs[0].default.AugmentationName;
-        else if(augs[1] != None)
-            a.ItemName = a.default.ItemName $": "$ augs[1].default.AugmentationName;
-    }
 }
 
 // HX uses the regular Augmentation base class
