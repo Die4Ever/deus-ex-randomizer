@@ -244,25 +244,25 @@ function HandleNewGameButton()
 
     if(!class'HUDSpeedrunSplits'.static.CheckFlags(f)) {
         nextScreenNum=RMB_NewGame;
-        root.MessageBox(SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
+        class'BingoHintMsgBox'.static.Create(root, SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
     }
     else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Extreme") {
         nextScreenNum=RMB_NewGame;
-        root.MessageBox(ExtremeBtnTitle,ExtremeBtnMessage,0,False,Self);
+        class'BingoHintMsgBox'.static.Create(root, ExtremeBtnTitle,ExtremeBtnMessage,0,False,Self);
     }
     else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Impossible") {
         nextScreenNum=RMB_NewGame;
-        root.MessageBox(ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
-    }
-    else if(dxr.rando_beaten == 0 && f.GameModeName(f.gamemode) != "Normal Randomizer" && !f.IsReducedRando()) {
-        nextScreenNum=RMB_NewGame;
-        s = Sprintf(GameModeBtnMessage, f.GameModeName(f.gamemode));
-        class'BingoHintMsgBox'.static.Create(root, GameModeBtnTitle, s, 0, False, self);
+        class'BingoHintMsgBox'.static.Create(root, ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
     }
     else if(dxr.rando_beaten == 0 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosave Every Entry" && GetEnumValue(autosave_enum)!="Extra Safe (1+GB per playthrough)") {
         nextScreenNum=RMB_NewGame;
         s = Sprintf(AutosaveBtnMessage, GetEnumValue(autosave_enum));
         class'BingoHintMsgBox'.static.Create(root, AutosaveBtnTitle, s, 0, False, self);
+    }
+    else if(dxr.rando_beaten == 0 && f.GameModeName(f.gamemode) != "Normal Randomizer" && !f.IsReducedRando()) {
+        nextScreenNum=RMB_NewGame;
+        s = Sprintf(GameModeBtnMessage, f.GameModeName(f.gamemode));
+        class'BingoHintMsgBox'.static.Create(root, GameModeBtnTitle, s, 0, False, self);
     }
     else {
         DoNewGameScreen();
@@ -284,11 +284,11 @@ function DoNewGameScreen()
 
 function HandleMaxRandoButton()
 {
-    if (dxr.rando_beaten != 0){
+    if (false && dxr.rando_beaten != 0){
         DoMaxRandoButtonConfirm();
     } else {
         nextScreenNum=RMB_MaxRando;
-        root.MessageBox(MaxRandoBtnTitle,MaxRandoBtnMessage,0,False,Self);
+        class'BingoHintMsgBox'.static.Create(root, MaxRandoBtnTitle,MaxRandoBtnMessage,0,False,Self);
     }
 }
 
@@ -376,17 +376,17 @@ defaultproperties
     padding_width=20
     padding_height=10
     MaxRandoBtnTitle="Are you sure?"
-    MaxRandoBtnMessage="It appears you're new to DX Randomizer.  Max Rando will randomize all the settings, which will likely result in a bad first time experience.  Are you sure you want to proceed?"
+    MaxRandoBtnMessage="It appears you're new to DX Randomizer.|n|nMax Rando will randomize all the settings, including ammo and equipment scarcity, which will likely result in a bad first time experience.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to proceed?"
     AdvancedBtnTitle="Advanced Settings?"
-    AdvancedBtnMessage="It appears you're new to DX Randomizer.  We recommend playing with default settings for a better first time experience.  Are you sure you want to adjust advanced settings?"
+    AdvancedBtnMessage="It appears you're new to DX Randomizer.|n|nWe recommend playing with default settings for a better first time experience.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to adjust advanced settings?"
     ExtremeBtnTitle="Extreme Difficulty?"
-    ExtremeBtnMessage="It appears you're new to DX Randomizer.  Extreme difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
+    ExtremeBtnMessage="It appears you're new to DX Randomizer.|n|nExtreme difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to play Extreme difficulty?"
     ImpossibleBtnTitle="Impossible Difficulty?"
-    ImpossibleBtnMessage="It appears you're new to DX Randomizer.  Impossible difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.  Are you sure?"
+    ImpossibleBtnMessage="It appears you're new to DX Randomizer.|n|nImpossible difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to play Impossible difficulty?"
     GameModeBtnTitle="Advanced Game Mode?"
-    GameModeBtnMessage="It appears you're new to DX Randomizer.  This game mode is confusing and difficult for new DXRando players. We suggest starting with Normal Randomizer or one of the Reduced Randomization modes instead.|n|nAre you sure you want to continue with %s?"
+    GameModeBtnMessage="It appears you're new to DX Randomizer.|n|nThis game mode is confusing and difficult for new DXRando players. We suggest starting with Normal Randomizer or one of the Reduced Randomization modes instead.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
     AutosaveBtnTitle="Autosave?"
-    AutosaveBtnMessage="It appears you're new to DX Randomizer.|n|nWe suggest starting with the default option for Autosave Every Entry.|n|nAre you sure you want to continue with %s?"
+    AutosaveBtnMessage="It appears you're new to DX Randomizer.|n|nWe suggest starting with the default option for Autosave Every Entry.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
     SplitsBtnTitle="Mismatched Splits!"
-    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.  Are you sure you want to continue?"
+    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nAre you sure you want to continue?"
 }
