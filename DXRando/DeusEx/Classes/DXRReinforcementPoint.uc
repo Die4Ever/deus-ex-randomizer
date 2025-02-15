@@ -2,6 +2,8 @@
 //directly ordering them to attack the player (which breaks stealth)
 class DXRReinforcementPoint extends Info;
 
+var bool bSetAsHomeBase;
+
 event BaseChange()
 {
     if (Base==None && Owner!=None){
@@ -48,8 +50,10 @@ function Touch( actor Other )
     if (sp.OrderTag!=Tag) return;
 
     //Set the reinforcement point as the new home point, so they don't wander away
-    sp.bUseHome = false;
-    sp.InitializeHomeBase();
+    if (bSetAsHomeBase){
+        sp.bUseHome = false;
+        sp.InitializeHomeBase();
+    }
 
     sp.ClearNextState();
     sp.SetOrders('Wandering',,True);
@@ -57,6 +61,11 @@ function Touch( actor Other )
     //This is an interesting idea I had to prevent clumping, but I think Touch
     //doesn't really work if the collision radius is extended through someone?
     //SetCollisionSize(CollisionRadius+sp.CollisionRadius,CollisionHeight);
+}
+
+function SetAsHomeBase(bool b)
+{
+    bSetAsHomeBase=b;
 }
 
 function Init(Actor o)
@@ -71,5 +80,6 @@ function Init(Actor o)
 defaultproperties
 {
     bCollideActors=true
+    bSetAsHomeBase=true
     CollisionRadius=100
 }
