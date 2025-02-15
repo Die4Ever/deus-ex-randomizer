@@ -454,7 +454,7 @@ simulated function string BindFlags(int mode, optional string str)
         FlagInt('MenuChoice_BalanceMaps', i, mode, str);
         i = int(class'MenuChoice_BalanceSkills'.static.IsEnabled());
         FlagInt('MenuChoice_BalanceSkills', i, mode, str);
-        i = int(class'MenuChoice_AutoAugs'.default.enabled);
+        i = int(class'MenuChoice_AutoAugs'.static.IsEnabled());
         FlagInt('MenuChoice_AutoAugs', i, mode, str);
         i = class'MenuChoice_PasswordAutofill'.static.GetSetting();
         FlagInt('MenuChoice_PasswordAutofill', i, mode, str);

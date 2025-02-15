@@ -238,7 +238,7 @@ function PreFirstEntryMapFixes()
         case "08_NYC_STREET":
 
             //Reinforcements for the sixth cop
-            if(!dxr.flags.IsZeroRandoPure()) {
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
                 pawn=#var(prefix)UNATCOTroop(Spawnm(class'#var(prefix)UNATCOTroop',,'troop6', vect(-85,80,-460)));
                 pawn.SetAlliance('UNATCO');
                 ChangeInitialAlliance(pawn,'Player',-1,true);
@@ -328,7 +328,7 @@ function PreFirstEntryMapFixes()
             if (VanillaMaps){
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
-                if(!dxr.flags.IsZeroRando()) {
+                if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
                     SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
 
                     k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
@@ -364,7 +364,7 @@ function PreFirstEntryMapFixes()
             } else {
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
 
-                if(!dxr.flags.IsZeroRando()) {
+                if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
                     k = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
                     k.KeyID = 'Hotelroom1';
                     k.Description = "'Ton Hotel, South Room Key";
@@ -441,33 +441,34 @@ function PostFirstEntryMapFixes()
     {
         case "08_NYC_STREET":
 
-            //Place reinforcement points on the cops
-            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
-                rpTag = FindReinforcementPointTag(sp.Tag);
-                if (rpTag!=''){
-                    reinforce = sp.Spawn(class'DXRReinforcementPoint',,rpTag,sp.Location);
-                    reinforce.Init(sp);
+            if (class'MenuChoice_BalanceMaps'.static.MinorEnabled()){
+                //Place reinforcement points on the cops
+                foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                    rpTag = FindReinforcementPointTag(sp.Tag);
+                    if (rpTag!=''){
+                        reinforce = sp.Spawn(class'DXRReinforcementPoint',,rpTag,sp.Location);
+                        reinforce.Init(sp);
+                    }
+                }
+
+                //Make sure the troopers are running to the reinforcement points
+                foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                    SetUNATCOTargetOrders(sp);
+                }
+
+                //A point for the MJ12 Attack Force to run to (the stairs of Osgoode & Sons)
+                //This location works for both Vanilla maps and Revision
+                reinforce = Spawn(class'DXRReinforcementPoint',,'MJ12AttackForceTarget',vectm(530,1900,-450));
+                reinforce.SetCollisionSize(200,100); //Make it bigger than the other reinforcement points
+
+                //Make the Attack Force run to the reinforcement point instead of directly attacking the player
+                foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                    if (sp.Tag!='MJ12AttackForce' && sp.Tag!='MJ12AttackForce_clone') continue;
+
+                    sp.bKeepWeaponDrawn=True;
+                    sp.SetOrders('RunningTo','MJ12AttackForceTarget',True);
                 }
             }
-
-            //Make sure the troopers are running to the reinforcement points
-            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
-                SetUNATCOTargetOrders(sp);
-            }
-
-            //A point for the MJ12 Attack Force to run to (the stairs of Osgoode & Sons)
-            //This location works for both Vanilla maps and Revision
-            reinforce = Spawn(class'DXRReinforcementPoint',,'MJ12AttackForceTarget',vectm(530,1900,-450));
-            reinforce.SetCollisionSize(200,100); //Make it bigger than the other reinforcement points
-
-            //Make the Attack Force run to the reinforcement point instead of directly attacking the player
-            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
-                if (sp.Tag!='MJ12AttackForce' && sp.Tag!='MJ12AttackForce_clone') continue;
-
-                sp.bKeepWeaponDrawn=True;
-                sp.SetOrders('RunningTo','MJ12AttackForceTarget',True);
-            }
-
 
             break;
     }

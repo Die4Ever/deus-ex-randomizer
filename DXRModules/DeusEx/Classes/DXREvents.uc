@@ -864,7 +864,7 @@ function SetWatchFlags() {
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         WatchFlag('GreenKnowsAboutDowd');
-        MarkBingo("MaggieLived");
+        MarkBingo("MaggieLived", true);
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -1024,7 +1024,7 @@ function SetWatchFlags() {
                 wib.bImportant = true;
         }
         WatchFlag('SilhouetteHostagesAllRescued');
-        MarkBingo("AimeeLeMerchantLived");
+        MarkBingo("AimeeLeMerchantLived", true);
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
@@ -3242,6 +3242,12 @@ static function bool BingoGoalCanFail(string event)
         case "TechGoggles_Activated":
         case "Rebreather_Activated":
         case "FireExtinguisher_Activated":
+        case "ViewPortraits":
+        case "ViewSchematics":
+        case "ViewMaps":
+        case "ImageOpened_WaltonSimons":
+        case "ViewDissection":
+        case "ViewTouristPics":
             return false;
         default:
             return true;

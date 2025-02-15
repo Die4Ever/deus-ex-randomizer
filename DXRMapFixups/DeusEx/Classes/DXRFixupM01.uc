@@ -16,7 +16,7 @@ function PostFirstEntryMapFixes()
             m.bIsDoor = false;// this prevents Lloyd from opening the door
         }
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             foreach AllActors(class'BlockPlayer', bp) {
                 if(bp.Group == 'waterblock') {
                     bp.bBlockPlayers = false;
@@ -43,6 +43,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)GuntherHermann gunther;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)AllianceTrigger at;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)ComputerPublic compublic;
     local bool VanillaMaps;
@@ -99,6 +100,26 @@ function PreFirstEntryMapFixes()
                 ft.flagValue=False;
             }
         }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Leo will no longer directly be ordered to attack the player, he will just go hostile and face them
+            //This prevents him from breaking stealth
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'TerroristCommanderAttacks'){
+                class'FacePlayerTrigger'.static.Create(self,'TerroristCommanderAttacks','TerroristCommander',ot.Location);
+
+                at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'TerroristCommanderAttacks',ot.Location);
+                at.SetCollision(False,False,False);
+                at.Event='TerroristCommander';
+                at.Alliance='Leader';
+                at.Alliances[0].allianceName='Player';
+                at.Alliances[0].allianceLevel=-1.0;
+                at.Alliances[0].bPermanent=true;
+
+                ot.Destroy();
+                break;
+            }
+        }
+
 
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship

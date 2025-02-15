@@ -12,7 +12,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)ComputerSecurity cs;
-    local #var(prefix)AutoTurret at;
     local #var(prefix)WIB wib;
     local #var(prefix)MorganEverett everett;
     local #var(prefix)Chad chad;
@@ -74,7 +73,7 @@ function PreFirstEntryMapFixes()
             }
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
-            if(!dxr.flags.IsReducedRando()) {
+            if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
                 foreach AllActors(class'ScriptedPawn',sp){
                     if(sp.BindName=="bums"){
                         sp.bImportant=True;
@@ -165,7 +164,7 @@ function PreFirstEntryMapFixes()
     case "10_PARIS_METRO":
         if (VanillaMaps){
             //Add a key for the media store
-            if(!dxr.flags.IsZeroRando()) {
+            if(dxr.flags.settings.goals > 0) {
                 //On the table in the cafe
                 k = Spawn(class'#var(prefix)NanoKey',,, vectm(-2020,1115,340));
                 k.KeyID = 'mediastore_door';
@@ -181,8 +180,6 @@ function PreFirstEntryMapFixes()
                 m.KeyIDNeeded='mediastore_door';
             }
 
-
-
             // make the apartment stairs less hidden, not safe to have stairs without a light!
             CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
             CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
@@ -195,7 +192,7 @@ function PreFirstEntryMapFixes()
         hoverHint.SetBaseActor(jock);
 
         //If neither flag is set, JC never talked to Jaime, so he just didn't bother
-        if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled() && !dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
             //Need to pretend he *was* recruited, so that he doesn't spawn
             dxr.flagbase.SetBool('JaimeRecruited',True);
         }
@@ -337,6 +334,16 @@ function PreFirstEntryMapFixes()
             // Everett's vanilla BarkBindName is "Man"
             everett.BarkBindName = "MorganEverett";
             break;
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.MinorEnabled()){
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot) {
+                if (ot.Event=='MorganEverett' && ot.Orders=='WaitingFor'){
+                    //Make Morgan also face towards the door as you enter
+                    class'FacePlayerTrigger'.static.Create(self,'EverettFacesPlayer','MorganEverett',ot.Location,ot.CollisionRadius,ot.CollisionHeight);
+                    break;
+                }
+            }
         }
 
         //Add teleporter hint text to Jock

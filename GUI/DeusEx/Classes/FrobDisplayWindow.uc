@@ -282,6 +282,8 @@ function string GetStrInfo(Actor a, out int numLines)
         return WeaponStrInfo(#var(DeusExPrefix)Weapon(a),numLines);
     else if ( #var(prefix)BeamTrigger(a)!=None || #var(prefix)LaserTrigger(a)!=None)
         return LaserStrInfo(a,numLines);
+    else if ( #var(prefix)AugmentationCannister(a) != None )
+        return AugCanStrInfo(#var(prefix)AugmentationCannister(a));
     else if (!a.bStatic && player.bObjectNames)
         return OtherStrInfo(a, numLines);
 
@@ -661,6 +663,28 @@ function string LaserStrInfo(Actor a, out int numLines)
     return strInfo;
 }
 
+function string AugCanStrInfo(#var(prefix)AugmentationCannister augCan) {
+    local Augmentation anAug, aug0, aug1;
+    local string strInfo;
+
+    if (player == None)
+        return augCan.ItemName;
+
+    for (anAug = player.AugmentationSystem.FirstAug; anAug != None; anAug = anAug.next) {
+        if (augCan.addAugs[0] == anAug.Class.Name)
+            aug0 = anAug;
+        if (augCan.addAugs[1] == anAug.Class.Name)
+            aug1 = anAug;
+    }
+
+    strInfo = augCan.ItemName;
+    if (aug0 != None)
+        strInfo = strInfo $ CR() $ "  " $ aug0.AugmentationName $ " (" $ aug0.AugLocsText[aug0.AugmentationLocation] $ ")";
+    if (aug1 != None)
+        strInfo = strInfo $ CR() $ "  " $ aug1.AugmentationName $ " (" $ aug1.AugLocsText[aug1.AugmentationLocation] $ ")";
+
+    return strInfo;
+}
 
 function bool WeaponModAutoApply(WeaponMod wm)
 {
@@ -672,7 +696,6 @@ function bool WeaponModAutoApply(WeaponMod wm)
     return True;
 
 }
-
 
 function string OtherStrInfo(Actor frobTarget, out int numLines)
 {

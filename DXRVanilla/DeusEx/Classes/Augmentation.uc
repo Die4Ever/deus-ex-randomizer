@@ -27,7 +27,7 @@ simulated function SetAutomatic()
         energyRate = default.energyRate;
     }
 
-    if(class'MenuChoice_AutoAugs'.default.enabled) {
+    if(class'MenuChoice_AutoAugs'.static.IsEnabled()) {
         bAutomatic = default.bAutomatic;
         UpdateBalance(); // make sure energyRate is correct
         if(bAutomatic) {

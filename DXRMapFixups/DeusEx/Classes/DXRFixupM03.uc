@@ -83,6 +83,7 @@ function PreFirstEntryMapFixes()
     local DXRHoverHint hoverHint;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)AllianceTrigger at;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -111,7 +112,7 @@ function PreFirstEntryMapFixes()
         fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
         fg.ActiveArea=2000;
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
             AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
         }
@@ -155,7 +156,7 @@ function PreFirstEntryMapFixes()
                 m.Tag = 'Sewerdoor';
             }
         }
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             foreach AllActors(class'Trigger', t) {
                 //disable the platforms that fall when you step on them
                 if( t.Event == 'firstplatform' || t.Event == 'platform2' ) {
@@ -184,7 +185,7 @@ function PreFirstEntryMapFixes()
         a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
         SetActorScale(a, 1.3);
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
             //Bookshelf near pool tables
             Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
@@ -207,7 +208,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_AIRFIELD":
-        if(!dxr.flags.IsZeroRando()) {
+        if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
             Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
         }
@@ -290,6 +291,26 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //El Rey will no longer directly be ordered to attack the player, he will just go hostile and face them
+            //This prevents him from breaking stealth
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'elreyattacks'){
+                class'FacePlayerTrigger'.static.Create(self,'elreyattacks','Elrey',ot.Location);
+
+                at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'elreyattacks',ot.Location);
+                at.SetCollision(False,False,False);
+                at.Event='Elrey';
+                at.Alliance='ThugGang';
+                at.Alliances[0].allianceName='Player';
+                at.Alliances[0].allianceLevel=-1.0;
+                at.Alliances[0].bPermanent=true;
+
+                ot.Destroy();
+                break;
+            }
+        }
+
         if (VanillaMaps){
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
@@ -378,7 +399,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_UNATCOISLAND":
-        if(!dxr.flags.IsReducedRando()) {
+        if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
                 if(unatco.BindName != "PrivateLloyd") continue;
                 unatco.FamiliarName = "Corporal Lloyd";
@@ -399,7 +420,7 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             k.KeyID = 'JaimeClosetKey';
             k.Description = "MedLab Closet Key Code";
@@ -556,7 +577,7 @@ function FixAnnaAmbush()
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)ThrownProjectile p;
 
-    if(dxr.flags.IsZeroRando()) return;
+    if(!class'MenuChoice_BalanceMaps'.static.MajorEnabled()) return;
 
     foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {break;}
 

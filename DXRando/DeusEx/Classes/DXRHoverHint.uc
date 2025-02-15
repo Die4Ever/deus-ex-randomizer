@@ -78,7 +78,7 @@ function SetBaseActor(Actor base)
     }
 }
 
-function bool ShouldDisplay(float dist)
+function bool _ShouldDisplay(float dist)
 {
     if (dist > VisibleDistance){
         return False;
@@ -98,6 +98,15 @@ function bool ShouldDisplay(float dist)
     }
 
     return True;
+}
+
+function bool ShouldDisplay(float dist)
+{
+    if (_ShouldDisplay(dist)==False){
+        return False;
+    }
+
+    return !class'DXRFlags'.default.bZeroRando;
 }
 
 function bool ShouldSelfDestruct()

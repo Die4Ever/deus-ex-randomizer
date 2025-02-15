@@ -513,10 +513,8 @@ function VandGasAnyEntry()
         CreateInterpolationPoints( 'backtrack_exit', vectm(2520.256836, -2489.873535, -1402.078857) );
         CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vectm(-500,250,0) );
 
-        if(!dxr.flags.IsZeroRando()) {
-            // I could also give Jock a "Let's go" conversation
-            BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
-        }
+        // I could also give Jock a "Let's go" conversation
+        BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
     }
 
     // repeat flights to the sub base, not silly

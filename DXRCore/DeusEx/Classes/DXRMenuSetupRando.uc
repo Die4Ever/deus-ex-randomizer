@@ -425,7 +425,7 @@ function HandleNewGameButton()
 
     if(!class'HUDSpeedrunSplits'.static.CheckFlags(f)) {
         nextScreenNum=RMB_NewGame;
-        root.MessageBox(SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
+        class'BingoHintMsgBox'.static.Create(root, SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
     }
     else {
         DoNewGameScreen();
@@ -468,5 +468,5 @@ defaultproperties
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
     SplitsBtnTitle="Mismatched Splits!"
-    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.  Are you sure you want to continue?"
+    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nAre you sure you want to continue?"
 }

@@ -1,5 +1,6 @@
 class DXRFlags extends DXRFlagsNGPMaxRando transient;
 
+const FullRando = 0;
 const EntranceRando = 1;
 const HordeMode = 2;
 const RandoLite = 3;
@@ -14,6 +15,7 @@ const WaltonWarex3 = 11;
 const ZeroRandoPlus = 12;
 const OneItemMode = 13;
 const BingoCampaign = 14;
+const NormalRandomizer = 15;
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -25,7 +27,8 @@ var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
 var FlagsSettings difficulty_settings[4];
 var MoreFlagsSettings more_difficulty_settings[4];
 #else
-var string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extreme
+var string vanilla_difficulty_names[5];// Super Easy QA, Easy, Medium, Hard, Realistic
+var string difficulty_names[5];// Super Easy QA, Normal, Hard, Extreme, Impossible
 var FlagsSettings difficulty_settings[5];
 var MoreFlagsSettings more_difficulty_settings[5];
 #endif
@@ -124,6 +127,7 @@ function CheckConfig()
     i=0;
 #ifndef hx
     difficulty_names[i] = "Super Easy QA";
+    vanilla_difficulty_names[i] = "Super Easy QA";
     difficulty_settings[i].CombatDifficulty = 0;
     difficulty_settings[i].doorsmode = alldoors + doormutuallyinclusive;
     difficulty_settings[i].doorsdestructible = 100;
@@ -200,6 +204,7 @@ function CheckConfig()
     difficulty_names[i] = "Easy";
 #else
     difficulty_names[i] = "Normal";
+    vanilla_difficulty_names[i] = "Easy";
     difficulty_settings[i].CombatDifficulty = 1.3;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
@@ -276,6 +281,7 @@ function CheckConfig()
     difficulty_names[i] = "Medium";
 #else
     difficulty_names[i] = "Hard";
+    vanilla_difficulty_names[i] = "Medium";
     difficulty_settings[i].CombatDifficulty = 2;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
@@ -352,6 +358,7 @@ function CheckConfig()
     difficulty_names[i] = "Hard";
 #else
     difficulty_names[i] = "Extreme";
+    vanilla_difficulty_names[i] = "Hard";
     difficulty_settings[i].CombatDifficulty = 3;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
@@ -428,6 +435,7 @@ function CheckConfig()
     difficulty_names[i] = "DeusEx";
 #else
     difficulty_names[i] = "Impossible";
+    vanilla_difficulty_names[i] = "Realistic";
     difficulty_settings[i].CombatDifficulty = 4;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
@@ -528,12 +536,13 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)) settings.dancingpercent = 0;
 
-    if(gamemode == RandoMedium) {
+    if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;
         settings.goals = 0;
         settings.dancingpercent = 0;
         settings.enemiesrandomized *= 0.8;
-        moresettings.enemies_weapons *= 0.8;
+        settings.ammo = (settings.ammo+100) / 2;
+        moresettings.enemies_weapons *= 0.5;
     }
     else if(IsReducedRando()) {
         settings.doorsmode = 0;
@@ -744,12 +753,18 @@ function string DifficultyName(int diff)
     if (diff>=ArrayCount(difficulty_names)){
         return "INVALID DIFFICULTY "$diff;
     }
+#ifndef hx
+    if(IsZeroRando()) {
+        return vanilla_difficulty_names[diff];
+    }
+#endif
     return difficulty_names[diff];
 }
 
 function int GameModeIdForSlot(int slot)
 {// allow us to reorder in the menu, similar to DXRLoadouts::GetIdForSlot
-    if(slot--==0) return 0;
+    if(slot--==0) return NormalRandomizer;
+    if(slot--==0) return FullRando;
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
     if(slot--==0) return HalloweenEntranceRando;
@@ -779,7 +794,9 @@ function int GameModeIdForSlot(int slot)
 function string GameModeName(int gamemode)
 {
     switch(gamemode) {
-    case 0:
+    case FullRando:
+        return "Full Randomizer";
+    case NormalRandomizer:
         return "Normal Randomizer";
 #ifdef injections
     case EntranceRando:
@@ -1102,7 +1119,8 @@ function ExtendedTests()
 
 defaultproperties
 {
-    difficulty=2
+    gamemode=15// Normal Randomizer
+    difficulty=1
     autosave=2
     loadout=0
     crowdcontrol=0

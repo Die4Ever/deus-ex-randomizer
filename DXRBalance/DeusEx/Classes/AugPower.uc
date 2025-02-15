@@ -6,7 +6,7 @@ simulated function UpdateBalance()
 
     // HACK: a little wonky if you change the setting mid-game, but otherwise works
     energyRate = default.energyRate;
-    if(class'MenuChoice_AutoAugs'.default.enabled) {
+    if(class'MenuChoice_AutoAugs'.static.IsEnabled()) {
         bAlwaysActive = default.bAlwaysActive;
         if(bAlwaysActive) {
             energyRate = 0;

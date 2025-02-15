@@ -206,7 +206,7 @@ function RandoEnemies(int percent, int hidden_percent)
     for(e=0; e<num_enemies; e++)
     {
         p = enemies[e];
-        if(p.bHasCloak) p.CloakThreshold = p.Health - 10;// make Anna and Walt cloak quickly
+        if(p.bHasCloak && class'MenuChoice_BalanceEtc'.static.IsEnabled()) p.CloakThreshold = p.Health - 10;// make Anna and Walt cloak quickly
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
 

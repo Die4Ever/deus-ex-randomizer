@@ -407,12 +407,6 @@ static function int GetBingoMask(int missionNumber, int bingoDuration)
     for (mission = GetBingoEnd(missionNumber, bingoDuration); mission >= missionNumber; mission--) {
         bingoMask = bingoMask | (1 << mission);
     }
-    if ((bingoMask & 2048) != 0) {    // M11
-        bingoMask = bingoMask | 1024; // M10
-    }
-    if ((bingoMask & 16384) != 0) {   // M14
-        bingoMask = bingoMask | 4096; // M12
-    }
     bingoMask = bingoMask & 57214; // remove M07 and M13
 
     return bingoMask;

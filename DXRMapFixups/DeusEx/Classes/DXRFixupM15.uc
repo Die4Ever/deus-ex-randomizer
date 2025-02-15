@@ -178,6 +178,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 
     //Swap the button at the top of the elevator to a keypad to make this path a bit more annoying
     foreach AllActors(class'Switch2',s2){
+        if( ! class'MenuChoice_BalanceMaps'.static.ModerateEnabled() ) break;
         if (s2.Event=='elevator_mtunnel_up'){
             k = Spawn(class'Keypad2',,,s2.Location,s2.Rotation);
             k.validCode="17092019"; //September 17th, 2019 - First day of "Storm Area 51"
@@ -279,6 +280,8 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local Dispatcher disp;
     local FlagTrigger ft;
     local OnceOnlyTrigger oot;
+    local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)AllianceTrigger at;
     local int i;
 
     //Increase the radius of the datalink that opens the sector 4 blast doors
@@ -335,6 +338,25 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     se.Message = "Coolant levels normal - Failsafe cannot be disabled";
     se = Spawn(class'SpecialEvent',,'start_buzz2');
     se.Message = "Coolant levels normal - Failsafe cannot be disabled";
+
+    if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+        //The mechanic in the Reactor Room is no longer directly ordered to attack you (which breaks your stealth)
+        //Instead, he is set to be hostile to the player and turns to face you
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'power_guy_attacks'){
+            class'FacePlayerTrigger'.static.Create(self,'power_guy_attacks','PowerMech',ot.Location);
+
+            at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'power_guy_attacks',ot.Location);
+            at.SetCollision(False,False,False);
+            at.Event='PowerMech';
+            at.Alliance='Mechanic';
+            at.Alliances[0].allianceName='Player';
+            at.Alliances[0].allianceLevel=-1.0;
+            at.Alliances[0].bPermanent=true;
+
+            ot.Destroy();
+            break;
+        }
+    }
 
 
     if (isVanilla) {
@@ -560,7 +582,7 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
     local AmbientSound as;
     local DXRAmbientSoundTrigger ast;
 
-    if(!dxr.flags.IsZeroRando()) {
+    if(dxr.flags.settings.infodevices > 0) {
         //Rather than duplicating the existing cubes, add new clone text so there are more possibilities
         if (isVanilla){
             cloneCubeLoc[0]=vectm(6197.620117,-8455.201172,-5117.649902); //Weird little window near broken door (on Page side)
@@ -629,7 +651,7 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
             }
         }
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             //Add a switch to manually trigger the infolink that gives you the Helios computer password
             AddSwitch( vect(5635.609375,-5352.036133,-5240.890625), rot(0, 0, 0), 'PasswordCallReset', "Forgot your Password?");
         }

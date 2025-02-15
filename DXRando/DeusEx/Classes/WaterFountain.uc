@@ -8,6 +8,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     local bool oldUsing, newUsing;
     local int oldNumUses;
     local bool chugged;
+    local float cooldown;
 
 #ifdef hx
     oldUsing = BubbleTime > 0.0;
@@ -24,12 +25,18 @@ function Frob(Actor Frobber, Inventory frobWith)
 #endif
 
     if (newUsing && !oldUsing) {
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled() || #defined(vmd)) {
+            cooldown = 0.4;
+        } else {
+            cooldown = 2;
+        }
+
         if(!#defined(vmd))
-            SetTimer(0.4, False);
+            SetTimer(cooldown, False);
         if( oldNumUses == default.numUses || (#defined(vmd) && timesUsed==0) )
             firstUse = Level.TimeSeconds;
         timesUsed++;
-        chugged = numUses <= 0 && oldNumUses > 0 && firstUse > 0 && Level.TimeSeconds - firstUse < 6;
+        chugged = numUses <= 0 && oldNumUses > 0 && firstUse > 0 && Level.TimeSeconds - firstUse < cooldown*15;
         if(#defined(vmd)) {
             chugged = timesUsed == 5 && firstUse > 0 && Level.TimeSeconds - firstUse < 15;
         }

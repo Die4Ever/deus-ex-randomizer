@@ -173,10 +173,16 @@ simulated function bool NearWallCheck()
 
     // trace out one foot in front of the pawn
     StartTrace = Owner.Location;
-    EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 50;
-
-    StartTrace.Z += Pawn(Owner).EyeHeight;
-    EndTrace.Z += Pawn(Owner).EyeHeight;
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+        EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 50;
+        StartTrace.Z += Pawn(Owner).EyeHeight;
+        EndTrace.Z += Pawn(Owner).EyeHeight;
+    }
+    else {
+        EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 32;
+        StartTrace.Z += Pawn(Owner).BaseEyeHeight;
+        EndTrace.Z += Pawn(Owner).BaseEyeHeight;
+    }
 
     HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
     if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')))

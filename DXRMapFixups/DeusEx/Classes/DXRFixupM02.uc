@@ -17,6 +17,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)OrdersTrigger ot;
     local DXRHoverHint hoverHint;
     local DXRButtonHoverHint buttonHint;
     local #var(prefix)Button1 button;
@@ -60,7 +61,7 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(1574.209839, -238.380142, 342));
             k.KeyID = 'ControlRoomDoor';
             k.Description = "Control Room Door Key";
@@ -222,7 +223,7 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(1676,-1535,64),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1334,-1404,64),,'Shitting');
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             // this map is too hard
             Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(-1890,1840,1775)); //Rooftop apartment hall
             Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(700,850,1175)); //Apartment top floor
@@ -234,6 +235,18 @@ function PreFirstEntryMapFixes()
 
         break;
     case "02_NYC_HOTEL":
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //The terrorist guarding Gilbert will no longer be ordered to attack the player
+            //There is already an AllianceTrigger ready to swap his alliances, and he is always
+            //facing the right way anyway.  Just delete the OrdersTrigger
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
+                if (ot.Event!='GilbertTerrorist' && ot.Orders!='Attacking') continue;
+                ot.Destroy();
+                break;
+            }
+        }
+
+
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 

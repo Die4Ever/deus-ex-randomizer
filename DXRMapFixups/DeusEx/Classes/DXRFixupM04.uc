@@ -109,7 +109,7 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
-            if(!dxr.flags.IsZeroRando()) {
+            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
                 key.KeyID = 'CrackRoom';
                 key.Description = "'Ton Hotel, North Room Key";
@@ -139,7 +139,7 @@ function PreFirstEntryMapFixes()
         } else {
             Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
 
-            if(!dxr.flags.IsZeroRando()) {
+            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
                 key.KeyID = 'Hotelroom1'; //CrackRoom doesn't exist in Revision M04 - doesn't hurt to add a key to a different room instead
                 key.Description = "'Ton Hotel, South Room Key";
@@ -170,7 +170,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "04_NYC_NSFHQ":
-        if(!dxr.flags.IsReducedRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             foreach AllActors(class'#var(prefix)AutoTurret', turret) {
                 turret.Event = '';
                 turret.Destroy();
@@ -207,7 +207,7 @@ function PreFirstEntryMapFixes()
             door.KeyIDNeeded='BasementDoor';
         }
 
-        if(!dxr.flags.IsReducedRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             k = #var(prefix)Karkian(Spawnm(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0)));
             k.BindName="NSFMinotaur";
             k.bImportant = true;
@@ -299,12 +299,14 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-438,1120,544),,,,'UNATCO',1);
         class'PlaceholderEnemy'.static.Create(self,vectm(-89,1261,304),,,,'UNATCO',1);
 
-        dxr.flagbase.SetBool('DXRando_NSFHQVisited', true,, 5);
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            dxr.flagbase.SetBool('DXRando_NSFHQVisited', true,, 5);
+        }
 
         break;
 
     case "04_NYC_UNATCOISLAND":
-        if(!dxr.flags.IsReducedRando()) {
+        if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
                 if(lloyd.BindName != "PrivateLloyd") continue;
                 lloyd.FamiliarName = "Sergeant Lloyd";
@@ -343,7 +345,7 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
 
-        if(!dxr.flags.IsZeroRando()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
             key.KeyID = 'JaimeClosetKey';
             key.Description = "MedLab Closet Key Code";
@@ -686,7 +688,7 @@ function NYC_04_CheckPaulRaid()
         if( paul.Health <= 0 ) dead++;
         if( ! paul.bInvincible ) continue;
 
-        if(!dxr.flags.IsZeroRandoPure()) {
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             paul.bInvincible = false;
             SetPawnHealth(paul, 400);
         }
@@ -702,7 +704,7 @@ function NYC_04_CheckPaulRaid()
     }
 
     if( dead > 0 || dxr.flagbase.GetBool('PaulDenton_Dead') ) {
-        if(!dxr.flags.IsZeroRandoPure()) player().ClientMessage("RIP Paul :(",, true);
+        if(!dxr.flags.IsZeroRando()) player().ClientMessage("RIP Paul :(",, true);
         dxr.flagbase.SetBool('PaulDenton_Dead', true,, 999);
         SetTimer(0, False);
     }
@@ -734,7 +736,7 @@ function NYC_04_MarkPaulSafe()
         paul.SetOrders('Leaving', 'PaulLeaves', True);
     }
 
-    if(health > 0 && !dxr.flags.IsZeroRandoPure()) {
+    if(health > 0 && !dxr.flags.IsZeroRando() && !paul.bInvincible) {
         player().ClientMessage("Paul had " $ health $ "% health remaining.");
     }
 

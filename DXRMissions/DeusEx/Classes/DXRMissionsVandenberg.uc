@@ -460,6 +460,15 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 }
 
+function AfterMovePlayerToStartLocation(GoalLocation Loc)
+{
+    local #var(prefix)InterpolateTrigger it;
+
+    if(dxr.localURL=="12_VANDENBERG_CMD" && Loc.name!="Roof") {
+        Player().StartDataLinkTransmission("DL_no_carla");
+    }
+}
+
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;

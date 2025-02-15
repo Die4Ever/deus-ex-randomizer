@@ -71,7 +71,7 @@ function String GetHintText()
 
 function bool ShouldDisplay(float dist)
 {
-    if (Super.ShouldDisplay(dist)==False){
+    if (_ShouldDisplay(dist)==False){
         return False;
     }
 

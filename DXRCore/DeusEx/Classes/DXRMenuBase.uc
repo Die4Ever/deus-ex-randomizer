@@ -676,13 +676,15 @@ function string GetEnumValue(int e)
 
 function string SetEnumValue(int e, string text)
 {
-    local int i;
+    local int i, old;
+    old = enums[e].value;
     for(i=0; i<ArrayCount(enums[e].values); i++) {
         if(enums[e].values[i] == text) {
             enums[e].value = i;
             enums[e].btn.SetButtonText(text);
         }
     }
+    return enums[e].values[old];
 }
 
 event StyleChanged()
