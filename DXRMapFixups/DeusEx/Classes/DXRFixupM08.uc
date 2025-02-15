@@ -221,7 +221,6 @@ function PreFirstEntryMapFixes()
     local RiotCop rc;
     local Smuggler smug;
     local #var(prefix)OrdersTrigger ot;
-    local HomeBase hb;
     local DXRReinforcementPoint reinforce;
 
 

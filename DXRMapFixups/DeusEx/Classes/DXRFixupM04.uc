@@ -62,7 +62,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
     local Smuggler smug;
-    local HomeBase hb;
     local DXRReinforcementPoint reinforce;
     local #var(PlayerPawn) p;
 
