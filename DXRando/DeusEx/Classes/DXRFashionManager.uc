@@ -904,6 +904,18 @@ simulated function ModifyClothingTextures(EGender gender, EClothesType type, out
     }
 }
 
+simulated function bool IsMaskTex(string texName)
+{
+    switch(texName){
+        case "DeusExItems.Skins.GrayMaskTex":
+        case "DeusExItems.Skins.BlackMaskTex":
+        case "DeusExItems.Skins.PinkMaskTex":
+            return true;
+        default:
+            return false;
+    }
+}
+
 simulated function int AddClothing(EGender gender, EClothesType type, Texture tex1, Texture tex2)
 {
     local int i;
@@ -921,7 +933,7 @@ simulated function int AddClothing(EGender gender, EClothesType type, Texture te
     ModifyClothingTextures(gender,type,tex1s,tex2s);
 
     //We don't allow ingesting "no glasses"
-    if ((type==CT_Glasses) && (tex1s=="DeusExItems.Skins.GrayMaskTex") && (tex2s=="DeusExItems.Skins.BlackMaskTex")) return 0;
+    if ((type==CT_Glasses) && IsMaskTex(tex1s) && IsMaskTex(tex2s)) return 0;
 
     //Check for a dupe
     for (i=0;i<numClothes;i++){
