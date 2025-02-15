@@ -12,7 +12,7 @@ struct stupidQuestion {
 };
 
 var int numStupidQuestions;
-var        stupidQuestion    _StupidQuestions[50];
+var        stupidQuestion    _StupidQuestions[56];
 var int curStupidQuestion;
 var DataStorage datastorage;
 
@@ -359,6 +359,62 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "One";
     _StupidQuestions[numStupidQuestions].answers[1] = "Two";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you forget a secret only you know, is it still a secret?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If you replace every part of a car, is it still the same car?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Ask chat a stupid question";
+    _StupidQuestions[numStupidQuestions].numAnswers = 1;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Hmm...";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Do Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are grays aliens?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Are the Triads good or a necessary evil?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Good";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Evil";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Would Bob Page have been a mostly benevolent dictator?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
+
+    if (dxr != None && !dxr.flags.IsReducedRando()) {
+        _StupidQuestions[numStupidQuestions].Question = "What if Manderley wanted you to pick a weapon?";
+        _StupidQuestions[numStupidQuestions].numAnswers = 3;
+        _StupidQuestions[numStupidQuestions].answers[0] = "Sniper rifle";
+        _StupidQuestions[numStupidQuestions].answers[1] = "GEP gun";
+        _StupidQuestions[numStupidQuestions].answers[2] = "Minicrossbow";
+        numStupidQuestions++;
+    }
+
+    _StupidQuestions[numStupidQuestions].Question = "Why make greasels and karkians?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Gonzo science";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Key to taking over the world";
     numStupidQuestions++;
 }
 
