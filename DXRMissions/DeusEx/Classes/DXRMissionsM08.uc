@@ -266,11 +266,11 @@ function AddAssaultSquadLocations(string locName, int numLocs)
                 AddSingleLocation(vectm(-1577,-1585,-438),numAdded,numLocs);
                 break;
             case "Basketball Court":
-                AddSingleLocation(vectm(3008,-2807,-448),numAdded,numLocs);
-                AddSingleLocation(vectm(2945,-2773,-448),numAdded,numLocs);
-                AddSingleLocation(vectm(3008,-2709,-448),numAdded,numLocs);
-                AddSingleLocation(vectm(2958,-2628,-448),numAdded,numLocs);
-                AddSingleLocation(vectm(3035,-2560,-448),numAdded,numLocs);
+                AddSingleLocation(vectm(2450, -2400, -448),numAdded,numLocs);
+                AddSingleLocation(vectm(2550, -2400, -448),numAdded,numLocs);
+                AddSingleLocation(vectm(2650, -2400, -448),numAdded,numLocs);
+                AddSingleLocation(vectm(2490, -2500, -448),numAdded,numLocs);
+                AddSingleLocation(vectm(2600, -2500, -448),numAdded,numLocs);
                 break;
             case "Smuggler Front Door":
                 AddSingleLocation(vectm(2552,-1108,-464),numAdded,numLocs);
