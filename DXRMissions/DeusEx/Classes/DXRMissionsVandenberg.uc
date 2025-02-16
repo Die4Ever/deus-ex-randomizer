@@ -326,14 +326,14 @@ function AnyEntry()
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local #var(prefix)ScriptedPawn sp;
-    local OrdersTrigger ot;
+    local #var(injectsprefix)OrdersTrigger ot;
+    local #var(injectsprefix)AllianceTrigger at;
+    local FacePlayerTrigger fpt;
 
     switch(g.name) {
     case "Walton Simons":
         sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos));
-        ot = OrdersTrigger(Spawnm(class'OrdersTrigger',,'simonsattacks',Loc.positions[0].pos));
         g.actors[0].a = sp;
-        g.actors[1].a = ot;
 
         sp.BarkBindName = "WaltonSimons";
         sp.Tag='WaltonSimons';
@@ -374,9 +374,28 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             sp.bInWorld=False;
         }
 
-        ot.Event='WaltonSimons';
-        ot.Orders='Attacking';
-        ot.SetCollision(False,False,False);
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Make him face the player and go hostile, rather than being ordered to attack
+            //so that he doesn't break stealth
+            fpt = class'FacePlayerTrigger'.static.Create(self,'simonsattacks','WaltonSimons',ot.Location);
+            g.actors[1].a = fpt;
+
+            at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'simonsattacks',ot.Location);
+            at.SetCollision(False,False,False);
+            at.Event='WaltonSimons';
+            at.Alliance=sp.Alliance;
+            at.Alliances[0].allianceName='Player';
+            at.Alliances[0].allianceLevel=-1.0;
+            at.Alliances[0].bPermanent=true;
+            g.actors[2].a = at;
+
+        } else {
+            ot = #var(injectsprefix)OrdersTrigger(Spawnm(class'#var(injectsprefix)OrdersTrigger',,'simonsattacks',Loc.positions[0].pos));
+            g.actors[1].a = ot;
+            ot.Event='WaltonSimons';
+            ot.Orders='Attacking';
+            ot.SetCollision(False,False,False);
+        }
 
         break;
     }
