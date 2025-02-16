@@ -74,6 +74,7 @@ function PreFirstEntryMapFixes()
     local #var(injectsprefix)Button1 injbutton;
     local #var(prefix)BeamTrigger bt;
     local #var(prefix)LaserTrigger lt;
+    local #var(prefix)SpiderBot2 sb;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
     local #var(prefix)MJ12Commando commando;
@@ -81,6 +82,8 @@ function PreFirstEntryMapFixes()
     local Rotator rot;
     local Male1 male;
     local GordonQuick gordon;
+    local DXRReinforcementPoint reinforce;
+    local Dispatcher disp;
     local #var(prefix)Trigger t;
     local int i;
 
@@ -759,6 +762,38 @@ function PreFirstEntryMapFixes()
             m.bIsDoor=False;
             m.bLocked=False;
             m.bBreakable=False;
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //The sleeping bots are already hostile, but are sitting in Idle state.
+            //The existing orders trigger can just change them to Wandering instead of Attacking
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'WakeTheSleepingBots'){
+                ot.Orders='Wandering';
+                break;
+            }
+
+            /*
+            //The spiderbots normally have Attacking orders.  Make them move to the keypad instead.
+            //The pathing on these guys is totally hosed and needs more investigation
+            reinforce=Spawn(class'DXRReinforcementPoint',,'SpiderBotDest',vectm(0,700,-1000));
+
+            foreach AllActors(class'#var(prefix)SpiderBot2', sb){
+                sb.SetOrders('Standing','',True);
+                sb.Tag='SelfDestructSpiders';
+                sb.SetHomeBase(reinforce.Location,,200);
+            }
+
+            disp = Spawn(class'Dispatcher',, 'Self_Destruct' );
+            disp.OutEvents[0]='Self_Destruct_After';
+            disp.OutDelays[0]=3;
+
+            ot = Spawn(class'#var(prefix)OrdersTrigger',,'Self_Destruct_After');
+            ot.SetCollision(False,False,False);
+            ot.Orders='GoingTo';
+            ot.ordersTag='SpiderBotDest';
+            ot.Event='SelfDestructSpiders';
+            */
+
         }
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
