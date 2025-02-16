@@ -539,10 +539,20 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;
         settings.goals = 0;
-        settings.dancingpercent = 0;
         settings.enemiesrandomized *= 0.8;
         settings.ammo = (settings.ammo+100) / 2;
         moresettings.enemies_weapons *= 0.5;
+        settings.bot_weapons = 0;
+        settings.skills_disable_downgrades = 0;
+        settings.skills_independent_levels = 0;
+        settings.banned_skills = 0;
+        //settings.banned_skill_levels = 0;
+        settings.turrets_move = 0;
+        settings.turrets_add = 0;
+        settings.health = 100;
+        if(gamemode == RandoMedium) {
+            settings.dancingpercent = 0;
+        }
     }
     else if(IsReducedRando()) {
         settings.doorsmode = 0;
