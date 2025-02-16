@@ -196,7 +196,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
             //Lock the fan entrance top door
             d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
             if(d == None) break;
-            d.bLocked=True;
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) d.bLocked=True;
             d.bBreakable=True;
             d.FragmentClass=Class'DeusEx.MetalFragment';
             d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
