@@ -564,6 +564,7 @@ function AnyEntryMapFixes()
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     DeleteConversationFlag(GetConversation('AnnaBadMama'), 'TalkedToPaulAfterMessage_Played', true);
+    FixConversationFlag(GetConversation('PaulAfterBadMama'), 'AnnaBadMama_Played', true, 'dummy', true);// these lines would've been intended for Paul at Battery Park?
     if(dxr.flagbase.GetBool('NSFSignalSent')) {
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
             anna.EnterWorld();
