@@ -82,6 +82,11 @@ function Landed(vector HitNormal)
 
 simulated function Tick(float deltaTime)
 {
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(class'DXRando'.default.dxr.flags)) {
+        Super.Tick(deltaTime);
+        return;
+    }
+
     if (bUsing){
         LastRenderTime = Level.TimeSeconds; //Hack to keep it out of stasis while it's playing (bAlwaysTick doesn't help)
         if (PlayDoneTime<=Level.TimeSeconds) {
@@ -132,6 +137,11 @@ function Frob(actor Frobber, Inventory frobWith)
     local int rnd;
     local float duration;
     local Sound SelectedSound;
+
+    if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(class'DXRando'.default.dxr.flags)) {
+        Super.Frob(Frobber, frobWith);
+        return;
+    }
 
     Super(WashingtonDecoration).Frob(Frobber, frobWith);
 #ifdef hx
