@@ -38,6 +38,6 @@ function UpdateBalance()
 defaultproperties
 {
     bAutomatic=true
-    AutoLength=1.2
+    AutoLength=1
     Level5Value=-0.25
 }
