@@ -341,6 +341,7 @@ function PreFirstEntryMapFixes()
                     ot.Destroy();
                 } else if(ot.Tag=='simonsattacks') {
                     fpt = class'FacePlayerTrigger'.static.Create(self,'simonsattacks','WaltonSimons',ot.Location);
+                    class'DrawWeaponTrigger'.static.Create(self,'simonsattacks','WaltonSimons',ot.Location,true);
 
                     at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'simonsattacks',ot.Location);
                     at.SetCollision(False,False,False);

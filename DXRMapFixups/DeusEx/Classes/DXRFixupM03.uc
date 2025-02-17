@@ -297,6 +297,7 @@ function PreFirstEntryMapFixes()
             //This prevents him from breaking stealth
             foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'elreyattacks'){
                 class'FacePlayerTrigger'.static.Create(self,'elreyattacks','Elrey',ot.Location);
+                class'DrawWeaponTrigger'.static.Create(self,'elreyattacks','Elrey',ot.Location,true);
 
                 at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'elreyattacks',ot.Location);
                 at.SetCollision(False,False,False);

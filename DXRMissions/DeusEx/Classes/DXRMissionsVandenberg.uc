@@ -329,6 +329,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local #var(injectsprefix)OrdersTrigger ot;
     local #var(injectsprefix)AllianceTrigger at;
     local FacePlayerTrigger fpt;
+    local DrawWeaponTrigger dwt;
 
     switch(g.name) {
     case "Walton Simons":
@@ -388,6 +389,9 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             at.Alliances[0].allianceLevel=-1.0;
             at.Alliances[0].bPermanent=true;
             g.actors[2].a = at;
+
+            dwt = class'DrawWeaponTrigger'.static.Create(self,'simonsattacks','WaltonSimons',ot.Location,true);
+            g.actors[3].a = dwt;
 
         } else {
             ot = #var(injectsprefix)OrdersTrigger(Spawnm(class'#var(injectsprefix)OrdersTrigger',,'simonsattacks',Loc.positions[0].pos));
