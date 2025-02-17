@@ -139,6 +139,9 @@ function ReplaceActors()
         else if( #var(prefix)LuciusDeBeers(a) != None ) {
             ReplaceLucius(#var(prefix)LuciusDeBeers(a));
         }
+        else if( #var(prefix)AlarmUnit(a) != None ) {
+            ReplaceAlarmUnit(#var(prefix)AlarmUnit(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -215,6 +218,7 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 function ReplaceKeypad(#var(prefix)Keypad a)
 {
     local DXRKeypad n;
+    local int i;
 #ifndef hx
     if(a.IsA('DXRKeypad'))
         return;
@@ -230,10 +234,41 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     n.hackStrength = a.hackStrength;
     n.initialhackStrength = a.initialhackStrength;
     n.bHackable = a.bHackable;
+    for (i=0;i<ArrayCount(a.UnTriggerEvent);i++){
+        n.UnTriggerEvent[i]=a.UnTriggerEvent[i];
+    }
 
     //Make it look like the right kind of keypad
     n.Mesh = a.Mesh;
     n.SetCollisionSize(a.CollisionRadius,a.CollisionHeight);
+
+    ReplaceDeusExDecoration(a, n);
+    a.Destroy();
+#endif
+}
+
+function ReplaceAlarmUnit(#var(prefix)AlarmUnit a)
+{
+    local DXRAlarmUnit n;
+    local int i;
+
+#ifndef hx
+    if(a.IsA('DXRAlarmUnit'))
+        return;
+
+    n = DXRAlarmUnit(SpawnReplacement(a, class'DXRAlarmUnit'));
+    if(n==None)
+        return;
+    n.alarmTimeout = a.alarmTimeout;
+    n.Alliance = a.Alliance;
+    n.confusionTimer = a.confusionTimer;
+    n.confusionDuration = a.confusionDuration;
+    n.hackStrength = a.hackStrength;
+    n.initialhackStrength = a.initialhackStrength;
+    n.bHackable = a.bHackable;
+    for (i=0;i<ArrayCount(a.UnTriggerEvent);i++){
+        n.UnTriggerEvent[i]=a.UnTriggerEvent[i];
+    }
 
     ReplaceDeusExDecoration(a, n);
     a.Destroy();

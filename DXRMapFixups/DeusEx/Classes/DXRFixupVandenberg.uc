@@ -826,7 +826,7 @@ function PostFirstEntryMapFixes()
     local #var(prefix)CrateUnbreakableLarge c;
     local Actor a;
     local #var(prefix)ScriptedPawn sp;
-    local #var(prefix)AlarmUnit alarm;
+    local #var(injectsprefix)AlarmUnit alarm;
     local #var(DeusExPrefix)Mover door;
     local bool RevisionMaps;
 
@@ -860,9 +860,9 @@ function PostFirstEntryMapFixes()
             if (#var(prefix)Animal(sp)!=None && alarm==None) {
                 //player().ClientMessage("Spawning doggy alarm for "$sp);
                 if (RevisionMaps){
-                    alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(1381.687988,2581.708008,-960),rot(0,-16408,0))); //Dog Height Alarm
+                    alarm=#var(injectsprefix)AlarmUnit(Spawnm(class'#var(injectsprefix)AlarmUnit',,, vect(1381.687988,2581.708008,-960),rot(0,-16408,0))); //Dog Height Alarm
                 } else {
-                    alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
+                    alarm=#var(injectsprefix)AlarmUnit(Spawnm(class'#var(injectsprefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
                 }
                 alarm.Event='guardattack';
                 alarm.Tag='alarm1'; //Same as the original alarm

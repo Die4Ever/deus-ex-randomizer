@@ -1578,13 +1578,13 @@ function int Earthquake(String viewer) {
 
 function int TriggerAllAlarms(String viewer) {
     local int numAlarms;
-    local AlarmUnit au;
+    local #var(prefix)AlarmUnit au;
     local SecurityCamera sc;
     local LaserTrigger lt;
 
     numAlarms = 0;
 
-    foreach AllActors(class'AlarmUnit',au){
+    foreach AllActors(class'#var(prefix)AlarmUnit',au){
         numAlarms+=1;
         au.Trigger(self,player());
     }

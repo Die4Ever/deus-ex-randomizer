@@ -347,7 +347,7 @@ function PreFirstEntryMapFixes()
 
     case "06_HONGKONG_MJ12LAB":
         // alarm in MiB's overlook office
-        Spawnm(class'#var(prefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
+        Spawnm(class'#var(injectsprefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
 
         //Trigger the alarm on first entry if the flag is already set (ie. a late HK start)
         if (player().flagBase.GetBool('Have_ROM')){
