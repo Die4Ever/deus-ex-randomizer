@@ -104,6 +104,24 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+function PreFirstEntryMapFixes()
+{
+    local #var(prefix)UnTrigger ut;
+
+    switch(dxr.localURL) {
+    case "00_TrainingFinal":
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            //Turn the alarm units off when the door is opened in the stealth maze
+            ut = Spawn(class'#var(prefix)UnTrigger');
+            ut.Tag = 'OpenDoor';
+            ut.Event = 'StealthMazeAlarmUnit';
+            ut.SetCollision(false,false,false);
+        }
+        break;
+    }
+
+}
+
 function PostFirstEntryMapFixes()
 {
     local Actor a;
