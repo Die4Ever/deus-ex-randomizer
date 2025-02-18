@@ -276,7 +276,10 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
     }
 
     if(get_default) {
-        if(#var(prefix)WeaponHideAGun(self) != None) return 100 * mult;
+        if(#var(prefix)WeaponHideAGun(self) != None) {
+            if(class'MenuChoice_BalanceItems'.static.IsEnabled()) return 100 * mult; // PS40
+            else return 15 * mult; // PS20
+        }
         // mostly copied from DXRWeapons module
         switch(ProjectileClass) {
         case class'#var(prefix)Dart':
