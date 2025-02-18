@@ -279,7 +279,7 @@ function PreFirstEntryMapFixes()
         }
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
-            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'CathedralGuntherAttacks'){
+            foreach AllActors(class'#var(injectsprefix)OrdersTrigger',ot,'CathedralGuntherAttacks'){
                 class'FacePlayerTrigger'.static.Create(self,'CathedralGuntherAttacks','GuntherHermann',ot.Location);
                 class'DrawWeaponTrigger'.static.Create(self,'CathedralGuntherAttacks','GuntherHermann',ot.Location,true);
 
