@@ -936,7 +936,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     }
 
     // a little bit of safe rando just to get a taste?
-    if(enableSomeRando) {
+    if(enableSomeRando && !IsReducedRando()) {
         // training final
         settings.medbots = 100;
         settings.repairbots = 100;
@@ -961,7 +961,9 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.goals = 0;
     settings.infodevices = 0;
 
-    settings.dancingpercent = 50;
+    if(!IsReducedRando()) {
+        settings.dancingpercent = 50;
+    }
 
     /*settings.medbotuses = 20;
     settings.repairbotuses = 20;
