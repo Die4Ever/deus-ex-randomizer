@@ -41,9 +41,9 @@ function CheckConfig()
     AddRandomWeapon(class'#var(prefix)WeaponProd', 3);
 
     AddRandomMelee(class'#var(prefix)WeaponBaton', 20);
-    AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 60);
-    AddRandomMelee(class'#var(prefix)WeaponCrowbar', 15);
-    AddRandomMelee(class'#var(prefix)WeaponSword', 5);
+    AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 57);
+    AddRandomMelee(class'#var(prefix)WeaponCrowbar', 17);
+    AddRandomMelee(class'#var(prefix)WeaponSword', 6);
 
     AddRandomBotWeapon(class'#var(prefix)WeaponRobotMachinegun', 60);
     AddRandomBotWeapon(class'#var(prefix)WeaponRobotRocket', 10);
