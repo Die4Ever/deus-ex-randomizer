@@ -93,12 +93,12 @@ function float GetValue()
 
 defaultproperties
 {
-     numTicks=256
-     startValue=0
-     endValue=256
-     defaultValue=5
-     BrightnessBoost=5
-     choiceControlPosX=203
-     actionText="Brightness Boost"
-     HelpText="Generally increases brightness for ease of play. Last-ditch effort since it can affect AI too."
+    numTicks=101
+    startValue=0
+    endValue=100
+    defaultValue=2
+    BrightnessBoost=2
+    choiceControlPosX=203
+    actionText="Brightness Boost"
+    HelpText="Generally increases brightness for ease of play."
 }
