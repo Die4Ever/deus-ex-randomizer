@@ -388,7 +388,7 @@ function CheckConfig()
     difficulty_settings[i].maxskill = 250;
     difficulty_settings[i].ammo = 65;
     difficulty_settings[i].medkits = 60;
-    difficulty_settings[i].biocells = 50;
+    difficulty_settings[i].biocells = 60;
     difficulty_settings[i].lockpicks = 60;
     difficulty_settings[i].multitools = 60;
     difficulty_settings[i].speedlevel = 1;
@@ -465,7 +465,7 @@ function CheckConfig()
     difficulty_settings[i].maxskill = 300;
     difficulty_settings[i].ammo = 50;
     difficulty_settings[i].medkits = 50;
-    difficulty_settings[i].biocells = 40;
+    difficulty_settings[i].biocells = 50;
     difficulty_settings[i].lockpicks = 50;
     difficulty_settings[i].multitools = 50;
     difficulty_settings[i].speedlevel = 1;
