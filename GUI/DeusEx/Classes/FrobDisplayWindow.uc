@@ -720,7 +720,7 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
         else if (#var(PlayerPawn)(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ " (Left Click to Consume)";
         else if (WeaponModAutoApply(WeaponMod(frobTarget)))
-            strInfo = Inventory(frobTarget).itemName $ CR() $ "Auto applies to current weapon";
+            strInfo = Inventory(frobTarget).itemName $ CR() $ "Right click to apply to current weapon";
 #endif
     }
 #ifdef injections
