@@ -1058,7 +1058,7 @@ function AnyEntryMapFixes()
         HandleJohnSmithDeath();
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
             foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body') {
-                if (dxr.flags.settings.goals > 0) {
+                if (dxr.flags.settings.goals <= 0) {
                     if (carc.bHidden) {
                         carc.bHidden = false;
                         carc.ItemName = "John Smith (Dead)";
