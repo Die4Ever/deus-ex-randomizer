@@ -284,7 +284,7 @@ function DoNewGameScreen()
 
 function HandleMaxRandoButton()
 {
-    if (false && dxr.rando_beaten != 0){
+    if (dxr.rando_beaten != 0){
         DoMaxRandoButtonConfirm();
     } else {
         nextScreenNum=RMB_MaxRando;

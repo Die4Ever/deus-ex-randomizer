@@ -388,7 +388,7 @@ function CheckConfig()
     difficulty_settings[i].maxskill = 250;
     difficulty_settings[i].ammo = 65;
     difficulty_settings[i].medkits = 60;
-    difficulty_settings[i].biocells = 50;
+    difficulty_settings[i].biocells = 60;
     difficulty_settings[i].lockpicks = 60;
     difficulty_settings[i].multitools = 60;
     difficulty_settings[i].speedlevel = 1;
@@ -465,7 +465,7 @@ function CheckConfig()
     difficulty_settings[i].maxskill = 300;
     difficulty_settings[i].ammo = 50;
     difficulty_settings[i].medkits = 50;
-    difficulty_settings[i].biocells = 40;
+    difficulty_settings[i].biocells = 50;
     difficulty_settings[i].lockpicks = 50;
     difficulty_settings[i].multitools = 50;
     difficulty_settings[i].speedlevel = 1;
@@ -539,10 +539,20 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;
         settings.goals = 0;
-        settings.dancingpercent = 0;
         settings.enemiesrandomized *= 0.8;
         settings.ammo = (settings.ammo+100) / 2;
         moresettings.enemies_weapons *= 0.5;
+        settings.bot_weapons = 0;
+        settings.skills_disable_downgrades = 0;
+        settings.skills_independent_levels = 0;
+        settings.banned_skills = 0;
+        //settings.banned_skill_levels = 0;
+        settings.turrets_move = 0;
+        settings.turrets_add = 0;
+        settings.health = 100;
+        if(gamemode == RandoMedium) {
+            settings.dancingpercent = 0;
+        }
     }
     else if(IsReducedRando()) {
         settings.doorsmode = 0;
@@ -926,7 +936,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     }
 
     // a little bit of safe rando just to get a taste?
-    if(enableSomeRando) {
+    if(enableSomeRando && !IsReducedRando()) {
         // training final
         settings.medbots = 100;
         settings.repairbots = 100;
@@ -951,7 +961,9 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.goals = 0;
     settings.infodevices = 0;
 
-    settings.dancingpercent = 50;
+    if(!IsReducedRando()) {
+        settings.dancingpercent = 50;
+    }
 
     /*settings.medbotuses = 20;
     settings.repairbotuses = 20;

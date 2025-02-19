@@ -26,7 +26,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NicoletteDuclare nico;
     local #var(prefix)NanoKey k;
     local DXRMoverSequenceTrigger elevatortrig;
-    local #var(prefix)OrdersTrigger ot;
+    local #var(injectsprefix)OrdersTrigger ot;
+    local #var(injectsprefix)AllianceTrigger at;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -200,7 +201,7 @@ function PreFirstEntryMapFixes()
             RemoveFears(j);
         }
 
-        ot = Spawn(class'#var(prefix)OrdersTrigger',, 'NicoLeaving');
+        ot = Spawn(class'#var(injectsprefix)OrdersTrigger',, 'NicoLeaving');
         ot.Orders = 'Leaving';
         ot.Event = '#var(prefix)NicoletteDuClare';
         ot.SetCollision(false, false, false);
@@ -276,6 +277,25 @@ function PreFirstEntryMapFixes()
             g.AgitationSustainTime = 3600;
             g.AgitationDecayRate = 0;
         }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            foreach AllActors(class'#var(injectsprefix)OrdersTrigger',ot,'CathedralGuntherAttacks'){
+                class'FacePlayerTrigger'.static.Create(self,'CathedralGuntherAttacks','GuntherHermann',ot.Location);
+                class'DrawWeaponTrigger'.static.Create(self,'CathedralGuntherAttacks','GuntherHermann',ot.Location,true);
+
+                at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'CathedralGuntherAttacks',ot.Location);
+                at.SetCollision(False,False,False);
+                at.Event='GuntherHermann';
+                at.Alliance='gunther';
+                at.Alliances[0].allianceName='Player';
+                at.Alliances[0].allianceLevel=-1.0;
+                at.Alliances[0].bPermanent=true;
+
+                ot.Destroy();
+                break;
+            }
+        }
+
         foreach AllActors(class'#var(prefix)DamageTrigger',dt){
             //There should only be two damage triggers in the map,
             //but check the damage type anyway for safety
@@ -337,7 +357,7 @@ function PreFirstEntryMapFixes()
         }
 
         if (class'MenuChoice_BalanceMaps'.static.MinorEnabled()){
-            foreach AllActors(class'#var(prefix)OrdersTrigger',ot) {
+            foreach AllActors(class'#var(injectsprefix)OrdersTrigger',ot) {
                 if (ot.Event=='MorganEverett' && ot.Orders=='WaitingFor'){
                     //Make Morgan also face towards the door as you enter
                     class'FacePlayerTrigger'.static.Create(self,'EverettFacesPlayer','MorganEverett',ot.Location,ot.CollisionRadius,ot.CollisionHeight);

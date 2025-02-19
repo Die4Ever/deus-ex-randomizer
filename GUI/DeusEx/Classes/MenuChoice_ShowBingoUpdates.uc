@@ -22,8 +22,8 @@ defaultproperties
 {
     value=1
     defaultvalue=1
-    HelpText="Should you be notified when a bingo goal has been failed?"
-    actionText="Bingo Failure Notification"
+    HelpText="Should you be notified when a bingo goal has been failed or completed?"
+    actionText="Bingo Notifications"
     enumText(0)="Bingo Messages & Sounds Disabled"
     enumText(1)="According to Game Mode"
     enumText(2)="Bingo Messages & Sounds Enabled"

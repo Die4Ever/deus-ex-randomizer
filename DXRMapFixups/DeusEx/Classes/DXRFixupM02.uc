@@ -32,6 +32,8 @@ function PreFirstEntryMapFixes()
     local DynamicLight light;
     local DeusExDecoration s;
     local Smuggler smug;
+    local HomeBase hb;
+    local DXRReinforcementPoint reinforce;
 #ifdef revision
     local JockHelicopter jockheli;
 #endif
@@ -362,6 +364,27 @@ function PreFirstEntryMapFixes()
         oot = Spawn(class'OnceOnlyTrigger');
         oot.Event='botordertriggerDoor';
         oot.Tag='botordertrigger';
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //The bot will no longer directly be ordered to attack the player
+            //This prevents him from breaking stealth
+            //There is already an AllianceTrigger and he will move to where his home base is outside the door
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'InitiateOrder'){
+                ot.Destroy();
+
+                ot = #var(prefix)OrdersTrigger(Spawnm(class'#var(prefix)OrdersTrigger',,'InitiateOrder'));
+                ot.Event='smugglerbots';
+                ot.SetCollision(false,false,false);
+                ot.Orders='GoingTo';
+                ot.ordersTag='SmugBotDest';
+
+                break;
+            }
+
+            reinforce=Spawn(class'DXRReinforcementPoint',,'SmugBotDest',vectm(0,-400,-10));
+            reinforce.SetCollisionSize(16,32);
+            reinforce.SetAsHomeBase(false);
+        }
 
         foreach AllActors(class'Smuggler', smug) {
             smug.bImportant = true;

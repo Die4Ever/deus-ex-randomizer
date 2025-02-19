@@ -200,6 +200,7 @@ function PreFirstEntry()
     FixFlagTriggers();
     FixBeamLaserTriggers();
     FixAutoTurrets();
+    FixAlarmUnits();
     SpawnDatacubes();
     AntiEpilepsy();
     FixHolograms();
@@ -947,6 +948,31 @@ function FixAutoTurrets()
     foreach AllActors(class'#var(prefix)AutoTurret',at){
         at.gunDamage=at.Default.gunDamage; //One turret in Cathedral has non-standard damage
         at.fireRate=at.Default.fireRate; //Make sure large and small turrets use their appropriate firerates
+    }
+#endif
+}
+
+function FixAlarmUnits()
+{
+#ifdef fixes
+    local #var(prefix)AlarmUnit au;
+
+    if(!class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) return;
+
+    foreach AllActors(class'#var(prefix)AlarmUnit',au){
+        au.hackStrength = 0.05;
+        //Make alarm units universally more hackable (they're low value)
+        //Only a few in vanilla don't match the default 0.2 value:
+        // - M03 Airfield, in the boat house, hackStrength=0.8
+        // - M05 UNATCO Island, at the statue, out of bounds, so doesn't even matter, hackStrength=0.25
+        // - M09 Dockyard, all alarm units are hackstrength=0.4
+
+        au.alarmTimeout = au.Default.alarmTimeout;
+        //Default alarm timeout is 30 seconds
+        //A few vanilla alarm units have non-standard timeouts
+        // - The four units in stealth training have 10 seconds
+        // - M03 Airfield Helibase, two units (out of four) have 120 seconds
+        // - M06 Wan Chai Street, all five units have 120 seconds (I guess to make Maggie's apartment more unbearable?)
     }
 #endif
 }

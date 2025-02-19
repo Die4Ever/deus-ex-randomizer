@@ -227,27 +227,6 @@ exec function ShowMainMenu()
     Super.ShowMainMenu();
 }
 
-exec function QuickSave()
-{
-    local DeusExLevelInfo info;
-
-    if( !class'DXRAutosave'.static.AllowManualSaves(self) ) return;
-
-    info = GetLevelInfo();
-
-    //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
-    if (((info != None) && (info.MissionNumber < 0)) ||
-        ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
-        (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
-    {
-        ClientMessage("Cannot quick save during infolink!",, true);
-    } else {
-        class'DXRAutosave'.static.UseSaveItem(self);
-        Super.QuickSave();
-        ClientMessage("Quick Saved",, true);
-    }
-}
-
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 {
     local bool bCanPickup;
@@ -1963,6 +1942,29 @@ exec function AllSkillPoints()
     SkillPointsAvail = 999999;
 }
 
+exec function QuickSave()
+{
+    local DeusExLevelInfo info;
+    local int slot;
+
+    if( !class'DXRAutosave'.static.AllowManualSaves(self) ) return;
+
+    info = GetLevelInfo();
+
+    //Same logic from DeusExPlayer, so we can add a log message if the quick save succeeded or not
+    if (((info != None) && (info.MissionNumber < 0)) ||
+        ((IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) ||
+        (dataLinkPlay != None) || (Level.Netmode != NM_Standalone))
+    {
+        ClientMessage("Cannot quick save during infolink!",, true);
+    } else {
+        class'DXRAutosave'.static.UseSaveItem(self);
+        slot = GetQuickSave(true);
+        if(info==None) SaveGame(slot, QuickSaveGameTitle);
+        else SaveGame(slot, QuickSaveGameTitle @ info.MissionLocation);
+        ClientMessage("Quick Saved",, true);
+    }
+}
 
 function QuickLoadConfirmed()
 {
@@ -1971,7 +1973,7 @@ function QuickLoadConfirmed()
     if(class'MenuChoice_LoadLatest'.default.enabled) {
         LoadLatestConfirmed();
     } else {
-        LoadGame(-1);
+        LoadGame(GetQuickSave(false));
     }
 }
 
@@ -1985,23 +1987,45 @@ exec function LoadLatest()
         DeusExRootWindow(rootWindow).ConfirmLoadLatest();
 }
 
+function int GetQuickSave(bool oldest)
+{
+    local int i;
+    i = GetSaveSlotByTimestamp(oldest, -5, 0, oldest);
+    if(i==-9999) i = -1;
+    return i;
+}
+
 function LoadLatestConfirmed()
 {
     local int saveIndex;
-    local DeusExSaveInfo saveInfo;
-    local GameDirectory saveDir;
-    local int latestYear, latestTime, latestSave, time; // split the year into its own int so we don't have to worry about integer overflow
 
     if (Level.Netmode != NM_Standalone)
         return;
 
-    saveDir = GetSaveGameDirectory();
-    latestSave = -9999;
+    saveIndex = GetSaveSlotByTimestamp(false, -6, 9999999);
+    if(saveIndex != -9999) {
+        LoadGame(saveIndex);
+    }
+}
 
-    for( saveIndex=-1; saveIndex<saveDir.GetDirCount(); saveIndex++)
+function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bool getEmpty)
+{
+    local int saveIndex;
+    local DeusExSaveInfo saveInfo;
+    local GameDirectory saveDir;
+    local int winningYear, winningTime, winningSave, time; // split the year into its own int so we don't have to worry about integer overflow
+    local bool isWinner;
+
+    saveDir = GetSaveGameDirectory();
+    winningSave = -9999;
+    if(oldest) winningYear = 999999999; // shout-outs to anyone still playing in the year 999999999
+
+    for(saveIndex=start; saveIndex<saveDir.GetDirCount() && saveIndex<end; saveIndex++)
     {
+        if(saveIndex == -2 || saveIndex == -4 || saveIndex == 0) continue; // slots -2 and -4 are broken for some reason
         if(saveIndex < 0) {
             saveInfo = saveDir.GetSaveInfo(saveIndex);
+            if (saveInfo == None && getEmpty) return saveIndex; // this only works if saveIndex < 0
         } else {
             saveInfo = saveDir.GetSaveInfoFromDirectoryIndex(saveIndex);
         }
@@ -2009,10 +2033,13 @@ function LoadLatestConfirmed()
 
         time = saveInfo.Second + saveInfo.Minute*60 + saveInfo.Hour*3600 + saveInfo.Day*86400 + saveInfo.Month*2678400;
 
-        if(saveInfo.Year > latestYear || (saveInfo.Year == latestYear && time > latestTime)) {
-            latestYear = saveInfo.Year;
-            latestTime = time;
-            latestSave = saveInfo.DirectoryIndex;
+        if(oldest) isWinner = saveInfo.Year < winningYear || (saveInfo.Year == winningYear && time < winningTime);
+        else isWinner = saveInfo.Year > winningYear || (saveInfo.Year == winningYear && time > winningTime);
+
+        if(isWinner) {
+            winningYear = saveInfo.Year;
+            winningTime = time;
+            winningSave = saveInfo.DirectoryIndex;
         }
 
         saveDir.DeleteSaveInfo(saveInfo);
@@ -2020,9 +2047,7 @@ function LoadLatestConfirmed()
 
     CriticalDelete(saveDir);
 
-    if(latestSave != -9999) {
-        LoadGame(latestSave);
-    }
+    return winningSave;
 }
 
 function GameDirectory GetSaveGameDirectory()

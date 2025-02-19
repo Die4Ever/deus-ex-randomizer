@@ -36,6 +36,6 @@ function int UpgradeToPS40()
 
 defaultproperties
 {
-    HitDamage=15// in between the 8 damage bugged vanilla, and the 25 or 40 damage the code implies vanilla intended
+    HitDamage=25// GOTY is 8 damage, the description says 25, the original release did 40, the first multiplayer patch did 12
     ProjectileClass=Class'PlasmaBoltFixTicks'
 }

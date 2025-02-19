@@ -106,6 +106,7 @@ function PreFirstEntryMapFixes()
             //This prevents him from breaking stealth
             foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'TerroristCommanderAttacks'){
                 class'FacePlayerTrigger'.static.Create(self,'TerroristCommanderAttacks','TerroristCommander',ot.Location);
+                class'DrawWeaponTrigger'.static.Create(self,'TerroristCommanderAttacks','TerroristCommander',ot.Location,true);
 
                 at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'TerroristCommanderAttacks',ot.Location);
                 at.SetCollision(False,False,False);

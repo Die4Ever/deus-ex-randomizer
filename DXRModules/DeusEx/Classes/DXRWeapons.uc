@@ -119,10 +119,6 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         d = p;
         p.default.Damage = ratio * f;
         w.HitDamage = ratio * f;// write back the weapon damage
-        if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
-            p = class'#var(prefix)PlasmaBolt';
-            d = p;
-        }
         break;
 
     case class'#var(prefix)Rocket':

@@ -36,6 +36,6 @@ function UpdateBalance()
 defaultproperties
 {
     bAutomatic=true
-    AutoLength=2.2// combat aug specifically makes sense to only use energy while active? a little extra so it doesn't fall in between ticks?
+    AutoLength=2
     Level5Value=2.25
 }

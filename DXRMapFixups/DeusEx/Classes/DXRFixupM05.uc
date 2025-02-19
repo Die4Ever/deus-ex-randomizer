@@ -204,6 +204,7 @@ function PreFirstEntryMapFixes()
             //Manderley becomes hostile, rather than being ordered to Attack (which breaks stealth)
             foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'killjc'){
                 class'FacePlayerTrigger'.static.Create(self,'killjc','JosephManderley',ot.Location);
+                class'DrawWeaponTrigger'.static.Create(self,'killjc','JosephManderley',ot.Location,true);
 
                 at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'killjc',ot.Location);
                 at.SetCollision(False,False,False);
@@ -220,6 +221,7 @@ function PreFirstEntryMapFixes()
             //Anna becomes hostile, rather than being ordered to Attack (which breaks stealth)
             foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'annahate'){
                 class'FacePlayerTrigger'.static.Create(self,'annahate','AnnaNavarre',ot.Location);
+                class'DrawWeaponTrigger'.static.Create(self,'annahate','AnnaNavarre',ot.Location,true);
 
                 at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'annahate',ot.Location);
                 at.SetCollision(False,False,False);

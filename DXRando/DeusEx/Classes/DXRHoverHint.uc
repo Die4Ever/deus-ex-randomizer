@@ -3,7 +3,7 @@ class DXRHoverHint extends Info;
 var() string HintText;
 var() int VisibleDistance;
 var Actor target;
-var bool attached, addBingoText;
+var bool attached, based, addBingoText;
 
 var Actor baseActor;
 var bool bInWorld;
@@ -63,6 +63,7 @@ function SetBaseActor(Actor base)
     baseActor = base;
     SetLocation(baseActor.Location);
     SetBase(baseActor);
+    based=true;
 
     //The tick logic is primarily for handling EnterWorld/LeaveWorld,
     //so only activate for things that can do that.
@@ -120,6 +121,11 @@ function bool ShouldSelfDestruct()
         }
     }
 
+    //Sometimes it takes a moment for the target reference to go away
+    if (based){
+        return Base==None;
+    }
+
     return False;
 }
 
@@ -146,7 +152,7 @@ event Tick(float DeltaTime)
         return;
     }
 
-    if (nowInWorld!=bInWorld){
+    if (nowInWorld!=bInWorld || Location!=baseActor.Location){
         SetLocation(baseActor.Location);
         bInWorld = nowInWorld;
         SetBase(baseActor);

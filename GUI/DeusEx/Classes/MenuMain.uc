@@ -83,7 +83,11 @@ function CreateMenuButtons()
 {
     local int newsWidth;
 
-    ButtonNames[4] = "Rando Training";
+    if(!class'DXRFlags'.default.bReducedRando) {
+        ButtonNames[4] = "Rando Training";
+        AskToTrainTitle = "Rando Training Mission";
+        AskToTrainMessage = "Before starting DX Randomizer for the first time, we suggest running through the Rando Training Mission.  Would you like to do this now?";
+    }
     Super.CreateMenuButtons();
 
     winButtons[3].SetWidth((buttonWidth/2)+3); //Make settings half-width
@@ -162,8 +166,6 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 
 defaultproperties
 {
-    AskToTrainTitle="Rando Training Mission"
-    AskToTrainMessage="Before starting DX Randomizer for the first time, we suggest running through the Rando Training Mission.  Would you like to do this now?"
     buttonDefaults(1)=(Y=49,Action=MA_Custom,Key="SAVEGAME")
     NoSavingTitle="Can't Save!"
 }

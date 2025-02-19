@@ -268,15 +268,16 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
     if(ignore_skill)// also ignores aug
         mult = 1.0;
 
-    if( ProjectileClass != None ) {
-        // ProjectileClass is the currently loaded ammo
-        if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes ) {
-            mult *= 2.0 / float(GetNumHits());
-        }
+    // ProjectileClass is the currently loaded ammo
+    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes ) {
+        mult *= 2.0 / float(GetNumDamageTicks());
     }
 
     if(get_default) {
-        if(#var(prefix)WeaponHideAGun(self) != None) return 100 * mult;
+        if(#var(prefix)WeaponHideAGun(self) != None) {
+            if(class'MenuChoice_BalanceItems'.static.IsEnabled()) return 100 * mult; // PS40
+            else return 25 * mult; // PS20
+        }
         // mostly copied from DXRWeapons module
         switch(ProjectileClass) {
         case class'#var(prefix)Dart':
@@ -332,27 +333,31 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
     return HitDamage * mult;
 }
 
-function int GetNumHits()
+function int GetNumDamageTicks()
 {
-    local int i;
-
     if( ProjectileClass == class'RocketFixTicks' )
-        i = 4;
+        return 4;
     else if( ProjectileClass == class'HECannisterFixTicks' )
-        i = 3;
+        return 3;
     else if( ProjectileClass == class'PlasmaBoltFixTicks' )
-        i = 2;
+        return 2;
     else if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes )
-        i = 5;
-    else
-        i = 1;
+        return 5;
+    return 1;
+}
 
+function int GetTotalNumHits()
+{
+    return GetNumDamageTicks() * GetNumShots();
+}
+
+function int GetNumShots()
+{
     if( bInstantHit && AreaOfEffect == AOE_Cone)
-        i *= 5;
+        return 5;
     if( ! bInstantHit && AreaOfEffect == AOE_Cone)
-        i *= 3;
-
-    return i;
+        return 3;
+    return 1;
 }
 
 function Fire(float value)
@@ -499,8 +504,6 @@ simulated function bool UpdateInfo(Object winObject)
 
     // base damage
     dmg = GetDamage(true);
-    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
-        dmg /= float(GetNumHits());
 
     str = String(dmg);
     mod = 1.0 - GetWeaponSkill() * 2.0;
@@ -515,13 +518,11 @@ simulated function bool UpdateInfo(Object winObject)
     // default damage
     if(!bZeroRando) {
         dmg = GetDamage(true, true);
-        if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
-            dmg /= float(GetNumHits());
         str = "  (Default: " $ dmg $ ")";
         winInfo.AddInfoItem("", str);
     }
 
-    winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), true);
+    winInfo.AddInfoItem("Number of Hits:", string(GetTotalNumHits()), true);
 
     // clip size
     if ((Default.ReloadCount == 0) || bHandToHand)

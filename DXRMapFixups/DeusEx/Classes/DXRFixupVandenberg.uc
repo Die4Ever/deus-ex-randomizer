@@ -61,6 +61,8 @@ function PreFirstEntryMapFixes()
     local DynamicTeleporter dynt;
     local CrateUnbreakableSmall cus;
     local PlaceholderEnemy phe;
+    local FacePlayerTrigger fpt;
+    local #var(injectsprefix)AllianceTrigger at;
 
     local bool VanillaMaps;
 
@@ -336,6 +338,19 @@ function PreFirstEntryMapFixes()
                 if(ot.Event == 'muncher') {
                     class'FacePlayerTrigger'.static.Create(self,'MuncherTurnsToFace','muncher',ot.Location,ot.CollisionRadius,ot.CollisionHeight);
                     //Muncher is already hostile to the player, so just need to make them turn to face the player
+                    ot.Destroy();
+                } else if(ot.Tag=='simonsattacks') {
+                    fpt = class'FacePlayerTrigger'.static.Create(self,'simonsattacks','WaltonSimons',ot.Location);
+                    class'DrawWeaponTrigger'.static.Create(self,'simonsattacks','WaltonSimons',ot.Location,true);
+
+                    at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'simonsattacks',ot.Location);
+                    at.SetCollision(False,False,False);
+                    at.Event='WaltonSimons';
+                    at.Alliance='scuba'; //Walt will always be allied with the scuba guys in Ocean Lab
+                    at.Alliances[0].allianceName='Player';
+                    at.Alliances[0].allianceLevel=-1.0;
+                    at.Alliances[0].bPermanent=true;
+
                     ot.Destroy();
                 }
             }
@@ -812,7 +827,7 @@ function PostFirstEntryMapFixes()
     local #var(prefix)CrateUnbreakableLarge c;
     local Actor a;
     local #var(prefix)ScriptedPawn sp;
-    local #var(prefix)AlarmUnit alarm;
+    local #var(injectsprefix)AlarmUnit alarm;
     local #var(DeusExPrefix)Mover door;
     local bool RevisionMaps;
 
@@ -846,9 +861,9 @@ function PostFirstEntryMapFixes()
             if (#var(prefix)Animal(sp)!=None && alarm==None) {
                 //player().ClientMessage("Spawning doggy alarm for "$sp);
                 if (RevisionMaps){
-                    alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(1381.687988,2581.708008,-960),rot(0,-16408,0))); //Dog Height Alarm
+                    alarm=#var(injectsprefix)AlarmUnit(Spawnm(class'#var(injectsprefix)AlarmUnit',,, vect(1381.687988,2581.708008,-960),rot(0,-16408,0))); //Dog Height Alarm
                 } else {
-                    alarm=#var(prefix)AlarmUnit(Spawnm(class'#var(prefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
+                    alarm=#var(injectsprefix)AlarmUnit(Spawnm(class'#var(injectsprefix)AlarmUnit',,, vect(-7.312059,933.707886,-985),rot(0,-16408,0))); //Dog Height Alarm
                 }
                 alarm.Event='guardattack';
                 alarm.Tag='alarm1'; //Same as the original alarm

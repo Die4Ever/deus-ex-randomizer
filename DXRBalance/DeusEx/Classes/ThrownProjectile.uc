@@ -164,7 +164,7 @@ auto simulated state Flying
 
     simulated function ProcessTouch (Actor Other, Vector HitLocation)
     {
-        if (DeusExCarcass(Other)!=None){
+        if (!Other.bBlockPlayers){
             return;
         } else {
             Super.ProcessTouch(Other,HitLocation);

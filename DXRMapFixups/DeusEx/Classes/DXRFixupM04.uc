@@ -30,7 +30,7 @@ function PreFirstEntryMapFixes()
     local Actor a;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)DatalinkTrigger dt;
-    local OrdersTrigger ot;
+    local #var(prefix)OrdersTrigger ot;
     local SkillAwardTrigger st;
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
@@ -62,6 +62,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)Datacube dc;
     local Smuggler smug;
+    local DXRReinforcementPoint reinforce;
     local #var(PlayerPawn) p;
 
     p = player();
@@ -71,7 +72,7 @@ function PreFirstEntryMapFixes()
     {
     case "04_NYC_HOTEL":
         if (#defined(vanilla)){
-            foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
+            foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'PaulSafe') {
                 if( ot.Orders == 'Leaving' )
                     ot.Orders = 'Seeking';
             }
@@ -497,6 +498,28 @@ function PreFirstEntryMapFixes()
             break;
         }
 
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //The bot will no longer directly be ordered to attack the player
+            //This prevents him from breaking stealth
+            //There is already an AllianceTrigger and he will move to where his home base is outside the door
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'InitiateOrder'){
+                ot.Destroy();
+
+                ot = #var(prefix)OrdersTrigger(Spawnm(class'#var(prefix)OrdersTrigger',,'InitiateOrder'));
+                ot.Event='smugglerbots';
+                ot.SetCollision(false,false,false);
+                ot.Orders='GoingTo';
+                ot.ordersTag='SmugBotDest';
+
+                break;
+            }
+
+            reinforce=Spawn(class'DXRReinforcementPoint',,'SmugBotDest',vectm(0,-400,-10));
+            reinforce.SetCollisionSize(16,32);
+            reinforce.SetAsHomeBase(false);
+
+        }
+
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
@@ -541,6 +564,7 @@ function AnyEntryMapFixes()
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     DeleteConversationFlag(GetConversation('AnnaBadMama'), 'TalkedToPaulAfterMessage_Played', true);
+    FixConversationFlag(GetConversation('PaulAfterBadMama'), 'AnnaBadMama_Played', true, 'dummy', true);// these lines would've been intended for Paul at Battery Park?
     if(dxr.flagbase.GetBool('NSFSignalSent')) {
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
             anna.EnterWorld();

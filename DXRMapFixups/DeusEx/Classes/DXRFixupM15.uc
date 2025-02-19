@@ -196,7 +196,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
             //Lock the fan entrance top door
             d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
             if(d == None) break;
-            d.bLocked=True;
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) d.bLocked=True;
             d.bBreakable=True;
             d.FragmentClass=Class'DeusEx.MetalFragment';
             d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
@@ -344,6 +344,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         //Instead, he is set to be hostile to the player and turns to face you
         foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'power_guy_attacks'){
             class'FacePlayerTrigger'.static.Create(self,'power_guy_attacks','PowerMech',ot.Location);
+            class'DrawWeaponTrigger'.static.Create(self,'power_guy_attacks','PowerMech',ot.Location,true);
 
             at = Spawn(class'#var(injectsprefix)AllianceTrigger',,'power_guy_attacks',ot.Location);
             at.SetCollision(False,False,False);

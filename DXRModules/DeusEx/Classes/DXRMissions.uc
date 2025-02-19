@@ -492,7 +492,6 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     }
 
     // choose a starting location
-    goalsToLocations[num_goals] = -1;
     if(_num_starts > 0 && goalsToLocations[num_goals] == -1) {
         _num_goal_locs = _num_starts;
         r = rng(_num_goal_locs);
