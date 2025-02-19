@@ -362,7 +362,7 @@ function string DXDecoStrInfo(#var(DeusExPrefix)Decoration deco, out int numLine
 #ifdef vanilla
         w = DXRWeapon(player.inHand);
         if( w != None ) {
-            damage = CalcDecoDamage(w.GetDamage(), w.WeaponDamageType() ,deco)* float(w.GetNumHits());
+            damage = CalcDecoDamage(w.GetDamage(), w.WeaponDamageType() ,deco)* float(w.GetTotalNumHits());
             if( damage > 0 ) {
                 numshots = deco.HitPoints/damage;
                 if (deco.HitPoints % damage != 0){
@@ -635,7 +635,7 @@ function string LaserStrInfo(Actor a, out int numLines)
                 }
             }
 
-            damage = damage * float(w.GetNumHits());
+            damage = damage * float(w.GetTotalNumHits());
         }
 
         if( damage > 0 ) {
@@ -809,7 +809,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     {
         w = DXRWeapon(player.inHand);
         if( w != None ) {
-            damage = dxMover.CalcDamage(w.GetDamage(), w.WeaponDamageType()) * float(w.GetNumHits());
+            damage = dxMover.CalcDamage(w.GetDamage(), w.WeaponDamageType()) * float(w.GetTotalNumHits());
             if( damage > 0 ) {
                 numshots = GetNumHits(dxMover.doorStrength, damage);
                 if( numshots == 1 )
