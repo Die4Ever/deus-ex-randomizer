@@ -316,7 +316,7 @@ function doAutosave()
         p.dataLinkPlay = None;
     }
 
-    saveSlot = -3;
+    saveSlot = -6;
     saveName = "DXR " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flagbase.GetInt('Rando_lastmission');
 
