@@ -1139,6 +1139,8 @@ function SetWatchFlags() {
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
+        WatchFlag('Ray_Dead');
+        WatchFlag('Ray_Unconscious');
 
         foreach AllActors(class'WaterZone',water){
             water.ZonePlayerEvent = 'EverettAquarium';
@@ -2081,6 +2083,9 @@ function string RemapBingoEvent(string eventname)
         case "M04MeetSmuggler_Played":
         case "M08SmugglerConvos_Played":
             return "MeetSmuggler";
+        case "Ray_Dead":
+        case "Ray_Unconscious":
+            return "GotHelicopterInfo";
         default:
             return eventname;
     }

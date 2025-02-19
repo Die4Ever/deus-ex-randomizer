@@ -413,10 +413,39 @@ static function int GetBingoMask(int missionNumber, int bingoDuration)
 }
 
 static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {
-    expiration = missionNumber+1;
-    if(missionNumber==10) expiration++;
-    if(missionNumber==12) expiration=15;
-    return class'DXRInfo'.static.StringToName( "DXRando_Mission" $ missionNumber $ "_BingoCompleted");
+    if (missionNumber == 10) {
+        expiration = 12;
+    } else if (missionNumber == 12) {
+        expiration = 15;
+    } else {
+        expiration = missionNumber + 1;
+    }
+    return class'DXRInfo'.static.StringToName("DXRando_Mission" $ missionNumber $ "_BingoCompleted");
+}
+
+function UnblockEarly(coerce string event)
+{
+    local int expiration;
+
+    if (class'PlayerDataItem'.static.GiveItem(dxr.player).AugmentedNumberOfBingos(event) >= dxr.flags.settings.bingo_win) {
+        dxr.flagbase.SetBool(GetBingoMissionFlag(dxr.dxInfo.missionNumber, expiration), true,, expiration);
+    }
+}
+
+// there's currently no reason to care what the goal is
+function HandleBingoGoal()
+{
+    switch (dxr.dxInfo.missionNumber) {
+        case 2:
+            UnblockEarly('DXREvents_LeftOnBoat');
+            break;
+        case 3:
+            UnblockEarly('LebedevLived');
+            break;
+        case 6:
+            UnblockEarly('MaggieLived');
+            break;
+    }
 }
 
 function HandleBingoWin(int numBingos, int oldBingos)
