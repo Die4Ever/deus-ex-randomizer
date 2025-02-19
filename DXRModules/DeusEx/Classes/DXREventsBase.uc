@@ -1319,6 +1319,7 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
     local int previousbingos, nowbingos, time;
     local PlayerDataItem data;
     local string j;
+    local #var(PlayerPawn) p;
     local class<Json> js;
     js = class'Json';
 
@@ -1330,7 +1331,8 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
         return;
     }
 
-    data = class'PlayerDataItem'.static.GiveItem(player());
+    p = player();
+    data = class'PlayerDataItem'.static.GiveItem(p);
 
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
@@ -1343,24 +1345,27 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
     l(self$"._MarkBingo("$eventname$") previousbingos: "$previousbingos$", nowbingos: "$nowbingos);
 
     if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
-        player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
+        p.ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
+    }
+    if (nowbingos > previousbingos && class'MenuChoice_ShowBingoUpdates'.static.SoundsEnabled(dxr.flags)) {
+        p.PlaySound(Sound'Beep2', SLOT_None, 0.4);
     }
 
     if( nowbingos > previousbingos ) {
         time = class'DXRStats'.static.GetTotalTime(dxr);
         if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
-            player().ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
+            p.ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
         }
 
         j = js.static.Start("Bingo");
         js.static.Add(j, "newevent", eventname);
-        js.static.Add(j, "location", vectclean(player().Location));
+        js.static.Add(j, "location", vectclean(p.Location));
         GeneralEventData(dxr, j);
         BingoEventData(dxr, j);
         GameTimeEventData(dxr, j);
         js.static.End(j);
 
-        class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
+        class'DXRTelemetry'.static.SendEvent(dxr, p, j);
 
         CheckBingoWin(dxr, nowbingos, previousbingos);
     }
@@ -1398,7 +1403,7 @@ function _MarkBingoAsFailed(coerce string eventname)
             class'MenuChoice_ShowBingoUpdates'.static.SoundsEnabled(dxr.flags) &&
             !dxr.OnTitleScreen() && !dxr.OnEndgameMap()
         ) {
-            player().PlaySound(Sound'DeusExSounds.Generic.Buzz1', SLOT_None, 0.4); // volume is hopefully not easy to miss but also not annoying
+            player().PlaySound(Sound'Buzz1', SLOT_None, 0.4); // volume is hopefully not easy to miss but also not annoying
             nextBuzzTime = Level.TimeSeconds + 0.1;
         }
     }
