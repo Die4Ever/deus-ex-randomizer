@@ -1960,7 +1960,8 @@ exec function QuickSave()
     } else {
         class'DXRAutosave'.static.UseSaveItem(self);
         slot = GetQuickSave(true);
-        SaveGame(slot, QuickSaveGameTitle);
+        if(info==None) SaveGame(slot, QuickSaveGameTitle);
+        else SaveGame(slot, QuickSaveGameTitle @ info.MissionLocation);
         ClientMessage("Quick Saved",, true);
     }
 }
@@ -2021,7 +2022,7 @@ function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bo
 
     for(saveIndex=start; saveIndex<saveDir.GetDirCount() && saveIndex<end; saveIndex++)
     {
-        if(saveIndex == -2 || saveIndex == -4) continue; // slots -2 and -4 are broken for some reason
+        if(saveIndex == -2 || saveIndex == -4 || saveIndex == 0) continue; // slots -2 and -4 are broken for some reason
         if(saveIndex < 0) {
             saveInfo = saveDir.GetSaveInfo(saveIndex);
             if (saveInfo == None && getEmpty) return saveIndex; // this only works if saveIndex < 0
