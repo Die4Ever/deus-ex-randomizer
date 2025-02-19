@@ -465,7 +465,7 @@ function PostFirstEntryMapFixes()
     {
         case "08_NYC_STREET":
 
-            if (class'MenuChoice_BalanceMaps'.static.MinorEnabled()){
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
                 //Place reinforcement points on the cops
                 foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
                     rpTag = FindReinforcementPointTag(sp.Tag);
