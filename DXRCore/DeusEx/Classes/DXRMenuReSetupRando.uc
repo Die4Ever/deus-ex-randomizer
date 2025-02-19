@@ -20,7 +20,7 @@ function BindControls(optional string action)
 {
     if(action=="BACK") return;
 
-    //NewGroup("Test"); // TODO: clean way to replicate options from basic new game screen: loadout, difficulty, autosave, crowd control, and mirrored maps
+    //NewGroup("Test"); // TODO: clean way to replicate options from basic new game screen: loadout, autosave, crowd control, and mirrored maps
 
     Super.BindControls(action);
 
