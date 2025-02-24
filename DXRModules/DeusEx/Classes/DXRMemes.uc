@@ -252,11 +252,14 @@ function RandomHotelDoorSounds()
 
     foreach AllActors(class'AmbientSound',as) {
         doorSound = false;
-        switch(as.AmbientSound){
-            case Sound'Ambient.Ambient.TVSports':
-            case Sound'Ambient.Ambient.TVWestern':
-            case Sound'Ambient.Ambient.BabyCrying':
-            case Sound'Ambient.Ambient.Sex':
+
+        switch(String(as.AmbientSound)){
+            case "Ambient.Ambient.TVSports":
+            case "Ambient.Ambient.TVWestern":
+            case "Ambient.Ambient.BabyCrying":
+            case "Ambient.Ambient.Sex":
+            case "RSounds.Environment.Dodgy": //Revision
+            case "Ambient.Ambient.LightWind": //Used on one M08 door in Revision?  Weird choice
                 if ( rng(3)==0 || IsAprilFools() ) doorSound=true; //33% chance of getting a random door sound
                 break;
         }
