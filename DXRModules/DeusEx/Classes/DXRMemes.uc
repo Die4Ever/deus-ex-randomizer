@@ -242,6 +242,88 @@ function RandomMJ12Globe()
     }
 }
 
+function RandomHotelDoorSounds()
+{
+    local AmbientSound as;
+    local string soundName;
+    local bool doorSound;
+
+    SetGlobalSeed("RandomHotelSounds "$dxr.localURL);
+
+    foreach AllActors(class'AmbientSound',as) {
+        doorSound = false;
+        switch(as.AmbientSound){
+            case Sound'Ambient.Ambient.TVSports':
+            case Sound'Ambient.Ambient.TVWestern':
+            case Sound'Ambient.Ambient.BabyCrying':
+            case Sound'Ambient.Ambient.Sex':
+                if ( rng(3)==0 || IsAprilFools() ) doorSound=true; //33% chance of getting a random door sound
+                break;
+        }
+
+        if (!doorSound) continue;
+
+        soundName="";
+        switch(rng(16)){
+            case 0:
+                soundName="Ambient.Ambient.TVSports";
+                break;
+            case 1:
+                soundName="Ambient.Ambient.TVWestern";
+                break;
+            case 2:
+                soundName="Ambient.Ambient.BabyCrying";
+                break;
+            case 3:
+                soundName="Ambient.Ambient.Sex";
+                break;
+            case 4:
+                soundName="Ambient.Ambient.Helicopter2";
+                break;
+            case 5:
+                soundName="Ambient.Ambient.Klaxon";
+                break;
+            case 6:
+                soundName="Ambient.Ambient.Klaxon4";
+                break;
+            case 7:
+                soundName="Ambient.Ambient.DogsBarking";
+                break;
+            case 8:
+                soundName="Ambient.Ambient.Electricity3";
+                break;
+            case 9:
+                soundName="Ambient.Ambient.FireLarge";
+                break;
+            case 10:
+                soundName="Ambient.Ambient.HumTurbine2";
+                break;
+            case 11:
+                soundName="Ambient.Ambient.TonalLoop2";
+                break;
+            case 12:
+                soundName="Ambient.Ambient.TVNewsNeutral";
+                break;
+            case 13:
+                soundName="Ambient.Ambient.TVNewsMale";
+                break;
+            case 14:
+                soundName="Ambient.Ambient.TVNewsFemale";
+                break;
+            case 15:
+                soundName="Ambient.Ambient.WaterTrickle2";
+                break;
+        }
+
+        if (soundName!=""){
+            as.AmbientSound = Sound(DynamicLoadObject(soundName, class'Sound'));
+        }
+
+        l("HotelDoor "$as$" sound to "$soundName$" ("$as.AmbientSound$")");
+    }
+
+}
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -259,8 +341,13 @@ function PreFirstEntry()
             RandomLiberty();
             break;
         case "04_NYC_HOTEL":
+            RandomHotelDoorSounds();
             if(IsAprilFools())
                 PaulToilet();
+            break;
+        case "02_NYC_HOTEL":
+        case "08_NYC_HOTEL":
+            RandomHotelDoorSounds();
             break;
         case "06_HONGKONG_MJ12LAB":
             RandomMJ12Globe();
