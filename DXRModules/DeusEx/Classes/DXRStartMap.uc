@@ -627,6 +627,7 @@ function DeusExNote AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, n
 function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local bool bEmptyNotes, bFemale;
+    local name blockerFlag;
 
     bEmptyNotes = player.FirstNote == None;
     bFemale = flagbase.GetBool('LDDPJCIsFemale');
@@ -637,7 +638,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
         case 5:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
-            flagbase.SetBool(class'DXRBingoCampaign'.static.GetBingoMissionFlag(4), true,, 6);
+            class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(4, blockerFlag);
+            flagbase.SetBool(blockerFlag, true,, 6);
             break;
         case 6:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
@@ -663,7 +665,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
         case 11:
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
-            flagbase.SetBool(class'DXRBingoCampaign'.static.GetBingoMissionFlag(10), true,, 12);
+            class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(10, blockerFlag);
+            flagbase.SetBool(blockerFlag, true,, 12);
             break;
         case 12:
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
@@ -673,7 +676,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);//Make sure Sandra spawns at the gas station
             flagbase.SetBool('Heliosborn',true,,-1);//Make sure Daedalus and Icarus have merged
-            flagbase.SetBool(class'DXRBingoCampaign'.static.GetBingoMissionFlag(12), true,, 15);
+            class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(12, blockerFlag);
+            flagbase.SetBool(blockerFlag, true,, 15);
             break;
         case 15:
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!

@@ -257,7 +257,7 @@ simulated function int NumberOfBingos()
 }
 
 // returns the number of bingos if the passed goal was succeeded
-simulated function int AugmentedNumberOfBingos(coerce string event)
+simulated function int PreviewNumberOfBingos(coerce string event)
 {
     local int realProgress[25], augmentedNum, i;
 

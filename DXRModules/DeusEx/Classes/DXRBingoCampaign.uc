@@ -1,16 +1,18 @@
 class DXRBingoCampaign extends DXRActorsBase transient;
 
-
 function FirstEntry()
 {
     local #var(prefix)FlagTrigger ft;
     local DeusExMover mover;
     local Vector loc;
     local DXRHoverHint hoverHint;
+    local name blockerFlag;
 
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.FirstEntry();
+
+    GetBingoMissionBlockerFlags(dxr.dxInfo.missionNumber, blockerFlag);
 
     if(IsLateStart(dxr.dxInfo.missionNumber)) return;
 
@@ -27,7 +29,7 @@ function FirstEntry()
             break;
         case "03_NYC_AIRFIELD":
             if (IsBingoEnd(3, dxr.flags.bingo_duration)) {
-                AddBingoEventBlocker('MoveHelicopter', GetBingoMissionFlag(3));
+                AddBingoEventBlocker('MoveHelicopter', blockerFlag);
             }
             break;
         case "04_NYC_UNATCOISLAND":
@@ -77,7 +79,7 @@ function FirstEntry()
                     loc = mover.Location;
                 }
 
-                AddBingoEventBlocker('everettsignaldoor', GetBingoMissionFlag(10));
+                AddBingoEventBlocker('everettsignaldoor', blockerFlag);
 
                 dxr.flagbase.SetBool('MS_CommandosUnhidden', true,, 12); // keep commandos from being unhidden prematurely
                 ft = Spawn(class'#var(prefix)FlagTrigger',, 'everettsignaldoor_bingoblocked');
@@ -103,7 +105,7 @@ function FirstEntry()
             break;
         case "12_Vandenberg_GAS":
             if (IsBingoEnd(12, dxr.flags.bingo_duration)) {
-                AddBingoEventBlocker('UN_BlackHeli', GetBingoMissionFlag(12));
+                AddBingoEventBlocker('UN_BlackHeli', blockerFlag);
             }
             break;
         case "14_VANDENBERG_SUB":
@@ -117,8 +119,8 @@ function FirstEntry()
             }
             break;
         case "15_AREA51_FINAL":
-            AddBingoEventBlocker('Merge_helios_exit', GetBingoMissionFlag(15));
-            AddBingoEventBlocker('destroy_generator', GetBingoMissionFlag(15));
+            AddBingoEventBlocker('Merge_helios_exit', blockerFlag);
+            AddBingoEventBlocker('destroy_generator', blockerFlag);
             foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
                 if (ft.event == 'Merge_helios_exit') {
                     ft.bTriggerOnceOnly = false;
@@ -126,7 +128,7 @@ function FirstEntry()
             }
             break;
         case "15_AREA51_PAGE":
-            AddBingoEventBlocker('kill_page', GetBingoMissionFlag(15));
+            AddBingoEventBlocker('kill_page',blockerFlag);
             break;
     }
 }
@@ -151,7 +153,8 @@ function PostFirstEntry()
 
 function AnyEntry()
 {
-    local name flagname;
+    local name blockerFlag1, blockerFlag2;
+
     if (!dxr.flags.IsBingoCampaignMode()) return;
 
     Super.AnyEntry();
@@ -159,49 +162,49 @@ function AnyEntry()
     if (!IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration)) return;
     if(IsLateStart(dxr.dxInfo.missionNumber)) return;
 
-    flagname = GetBingoMissionFlag(dxr.dxInfo.missionNumber);
+    GetBingoMissionBlockerFlags(dxr.dxInfo.missionNumber, blockerFlag1, blockerFlag2);
 
     switch (dxr.localURL) {
         case "01_NYC_UNATCOISLAND":
-            GetConversation('GotoM02').AddFlagRef(flagname, true);
+            GetConversation('GotoM02').AddFlagRef(blockerFlag1, true);
             break;
         case "02_NYC_BATTERYPARK":
-            GetConversation('BoatLeaving').AddFlagRef(flagname, true);
+            GetConversation('BoatLeaving').AddFlagRef(blockerFlag2, true);
             break;
         case "02_NYC_WAREHOUSE":
-            GetConversation('JockExit').AddFlagRef(flagname, true);
+            GetConversation('JockExit').AddFlagRef(blockerFlag1, true);
             break;
         case "03_NYC_AIRFIELD":
-            GetConversation('M03JockLeave').AddFlagRef(flagname, true);
+            GetConversation('M03JockLeave').AddFlagRef(blockerFlag1, true);
             break;
         case "04_NYC_BATTERYPARK":
-            GetConversation('GuntherShowdown').AddFlagRef(flagname, true);
+            GetConversation('GuntherShowdown').AddFlagRef(blockerFlag1, true);
             break;
         case "05_NYC_UNATCOISLAND":
-            GetConversation('M05MeetJock').AddFlagRef(flagname, true);
+            GetConversation('M05MeetJock').AddFlagRef(blockerFlag1, true);
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
-            GetConversation('M06JockExit').AddFlagRef(flagname, true);
+            GetConversation('M06JockExit').AddFlagRef(blockerFlag1, true);
             break;
         case "08_NYC_STREET":
-            GetConversation('M08JockExit').AddFlagRef(flagname, true);
+            GetConversation('M08JockExit').AddFlagRef(blockerFlag1, true);
             break;
         case "09_NYC_GRAVEYARD":
-            GetConversation('M09JockLeave').AddFlagRef(flagname, true);
+            GetConversation('M09JockLeave').AddFlagRef(blockerFlag1, true);
             break;
         case "10_PARIS_CHATEAU":
             GetConversation('DL_graveyard_ambush').AddFlagRef('DXRando_CommandosUnhidden', true);
             UpdateCryptDoors();
             break;
         case "11_PARIS_EVERETT":
-            GetConversation('TakeOff').AddFlagRef(flagname, true);
+            GetConversation('TakeOff').AddFlagRef(blockerFlag1, true);
             break;
         case "12_Vandenberg_GAS":
-            GetConversation('M12JockFinal').AddFlagRef(flagname, true);
-            GetConversation('M12JockFinal2').AddFlagRef(flagname, true);
+            GetConversation('M12JockFinal').AddFlagRef(blockerFlag1, true);
+            GetConversation('M12JockFinal2').AddFlagRef(blockerFlag1, true);
             break;
         case "14_OCEANLAB_SILO":
-            GetConversation('JockArea51').AddFlagRef(flagname, true);
+            GetConversation('JockArea51').AddFlagRef(blockerFlag1, true);
             break;
     }
 }
@@ -354,11 +357,13 @@ function UpdateCryptDoors()
 {
     local #var(prefix)FlagTrigger ft;
     local DXRHoverHint hoverHint;
+    local name blockerFlag;
 
+    GetBingoMissionBlockerFlags(10, blockerFlag);
     if (
         dxr.localURL == "10_PARIS_CHATEAU" &&
         dxr.flagbase.GetBool('everettsignal') &&
-        dxr.flagbase.GetBool(GetBingoMissionFlag(10)) &&
+        dxr.flagbase.GetBool(blockerFlag) &&
         IsBingoEnd(dxr.dxInfo.missionNumber, dxr.flags.bingo_duration) &&
         !dxr.flagbase.GetBool('DXRando_CommandosUnhidden')
     ) {
@@ -412,7 +417,7 @@ static function int GetBingoMask(int missionNumber, int bingoDuration)
     return bingoMask;
 }
 
-static function name GetBingoMissionFlag(int missionNumber, optional out int expiration) {
+static function GetBingoMissionBlockerFlags(int missionNumber, optional out name flag1, optional out name flag2, optional out int expiration) {
     if (missionNumber == 10) {
         expiration = 12;
     } else if (missionNumber == 12) {
@@ -420,45 +425,51 @@ static function name GetBingoMissionFlag(int missionNumber, optional out int exp
     } else {
         expiration = missionNumber + 1;
     }
-    return class'DXRInfo'.static.StringToName("DXRando_Mission" $ missionNumber $ "_BingoCompleted");
+    flag1 = class'DXRInfo'.static.StringToName("DXRando_Mission" $ missionNumber $ "_BingoCompleted"); // no number so as to not break existing playthroughs :(
+    flag2 = class'DXRInfo'.static.StringToName("DXRando_Mission" $ missionNumber $ "_BingoCompleted_2");
 }
 
-function UnblockEarly(coerce string event)
+function UnblockEarly(coerce string event, name blockerFlag, int expiration)
 {
-    local int expiration;
-
-    if (class'PlayerDataItem'.static.GiveItem(dxr.player).AugmentedNumberOfBingos(event) >= dxr.flags.settings.bingo_win) {
-        dxr.flagbase.SetBool(GetBingoMissionFlag(dxr.dxInfo.missionNumber, expiration), true,, expiration);
+    if (class'PlayerDataItem'.static.GiveItem(dxr.player).PreviewNumberOfBingos(event) >= dxr.flags.settings.bingo_win) {
+        dxr.flagbase.SetBool(blockerFlag, true,, expiration);
     }
 }
 
 // there's currently no reason to care what the goal is
 function HandleBingoGoal()
 {
+    local name blockerFlag;
+    local int expiration;
+
     switch (dxr.dxInfo.missionNumber) {
         case 2:
-            UnblockEarly('DXREvents_LeftOnBoat');
+            GetBingoMissionBlockerFlags(2,, blockerFlag, expiration);
+            UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
             break;
         case 3:
-            UnblockEarly('LebedevLived');
+            GetBingoMissionBlockerFlags(3, blockerFlag,, expiration);
+            UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
             break;
         case 6:
-            UnblockEarly('MaggieLived');
+            GetBingoMissionBlockerFlags(6, blockerFlag,, expiration);
+            UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
             break;
     }
 }
 
 function HandleBingoWin(int numBingos, int oldBingos)
 {
-    local name bingoFlag;
+    local name blockerFlag1, blockerFlag2;
     local int expiration, nextMission;
 
     if (numBingos > oldBingos) {
         player().ClientMessage("You have enough bingo lines to proceed!");
     }
 
-    bingoFlag = GetBingoMissionFlag(dxr.dxInfo.missionNumber, expiration);
-    dxr.flagbase.SetBool(bingoFlag, true,, expiration);
+    GetBingoMissionBlockerFlags(dxr.dxInfo.missionNumber, blockerFlag1, blockerFlag2, expiration);
+    dxr.flagbase.SetBool(blockerFlag1, true,, expiration);
+    dxr.flagbase.SetBool(blockerFlag2, true,, expiration);
     UpdateCryptDoors();
 }
 
