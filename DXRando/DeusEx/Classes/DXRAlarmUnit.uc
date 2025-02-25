@@ -13,3 +13,8 @@ function HackAction(Actor Hacker, bool bHacked)
         bDisabled = True;
     }
 }
+
+auto state Active
+{
+
+}
