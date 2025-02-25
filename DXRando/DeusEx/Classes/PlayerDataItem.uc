@@ -256,6 +256,27 @@ simulated function int NumberOfBingos()
     return num;
 }
 
+// returns the number of bingos if the passed goal was succeeded
+simulated function int PreviewNumberOfBingos(coerce string event)
+{
+    local int realProgress[25], augmentedNum, i;
+
+    for (i = 0; i < 25; i++) {
+        realProgress[i] = bingo[i].progress;
+        if (bingo_missions_masks[i] != ABSOLUTELY_FAILED_MISSION_MASK && bingo[i].event == event) {
+            bingo[i].progress = bingo[i].max;
+        }
+    }
+
+    augmentedNum = NumberOfBingos();
+
+    for (i = 0; i < 25; i++) {
+        bingo[i].progress = realProgress[i];
+    }
+
+    return augmentedNum;
+}
+
 simulated function ExportBingoState()
 {
     local DXRando dxr;
