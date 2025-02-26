@@ -3226,6 +3226,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld Tavern.";
         case "TiffanyHeli":
             return "Rescue Tiffany Savage at the abandoned gas station.";
+        case "AlarmUnitHacked":
+            return "Hack enough Alarm Sounder Panels.  These are the big red wall buttons that set off alarms.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3650,6 +3652,7 @@ defaultproperties
     bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4)
     bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
     bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096);
+    bingo_options(342)=(event="AlarmUnitHacked",desc="Hack %s Alarm Sounder Panels",desc_singular="Hack 1 Alarm Sounder Panel",max=10);
 
 
 
