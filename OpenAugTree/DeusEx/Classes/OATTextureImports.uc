@@ -13,6 +13,7 @@ class OATTextureImports extends Actor
 #exec TEXTURE IMPORT NAME="OATNextAugPageIcon" FILE="Textures\NextAugPageIcon.pcx" GROUP=UI
 #exec TEXTURE IMPORT NAME="OATPrevAugPageIcon" FILE="Textures\PrevAugPageIcon.pcx" GROUP=UI
 #exec TEXTURE IMPORT NAME="OATCloseAugPageIcon" FILE="Textures\CloseAugPageIcon.pcx" GROUP=UI
+#exec TEXTURE IMPORT NAME="OATAugControllerMenuEnergyCase" FILE="Textures\AugControllerMenuEnergyCase.pcx" GROUP=UI FLAGS=2
 
 defaultproperties
 {

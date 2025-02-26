@@ -2265,14 +2265,14 @@ function CompleteBingoGoal(PlayerDataItem data, int x, int y)
 
 exec function BingoGoal(int x, int y)
 {
-    CompleteBingoGoal(class'PlayerDataItem'.static.GiveItem(Human(self)), x, y);
+    CompleteBingoGoal(class'PlayerDataItem'.static.GiveItem(self), x, y);
 }
 
 exec function Bingo(int line)
 {
     local PlayerDataItem data;
 
-    data = class'PlayerDataItem'.static.GiveItem(Human(self));
+    data = class'PlayerDataItem'.static.GiveItem(self);
     if (line >= 0 && line < 5) {
         CompleteBingoGoal(data, line, 0);
         CompleteBingoGoal(data, line, 1);
@@ -2305,7 +2305,7 @@ exec function AllBingos()
     local PlayerDataItem data;
     local int x, y;
 
-    data = class'PlayerDataItem'.static.GiveItem(Human(self));
+    data = class'PlayerDataItem'.static.GiveItem(self);
     for (x = 0; x < 5; x++) {
         for (y = 0; y < 5; y++) {
             CompleteBingoGoal(data, x, y);
