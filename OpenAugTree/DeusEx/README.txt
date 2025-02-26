@@ -1,5 +1,3 @@
-// Thanks to WCCC https://www.moddb.com/members/wccc/downloads
-
 //1. Intro
 //==========================
 Howdy gang. WCCC here.
@@ -93,3 +91,8 @@ Check it out at: https://discord.gg/jCFJ3A6
 ++++++
 -Added a pixel size definition for periods, such as in "Prev. Page". This fixes centering being wrong on it by 5 pixels.
 -Fixed some debug log crap being left in, giving a healthy amount of log spam when using the tree.
+
+1.9:
+++++++
+-Added in-built energy bar, bio cells readout, and bio cell use hotkey. This addresses the #1 reason people still used the aug menu... To recharge/check bio.
+-Updated notation to be more consistent in labeling.

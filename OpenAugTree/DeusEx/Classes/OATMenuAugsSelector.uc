@@ -3,13 +3,13 @@
 //=============================================================================
 class OATMenuAugsSelector expands MenuUIWindow;
 
-//MADDERS, 8/26/23: I get really damn tired of having to define 2x as many default properties.
+//OAT, 8/26/23: I get really damn tired of having to define 2x as many default properties.
 struct OATButtonPos {
 	var int X;
 	var int Y;
 };
 
-//MADDERS, 8/26/23: Aug tree time!
+//OAT, 8/26/23: Aug tree time!
 //
 //Here's the rundown:
 //-We have 2 pages, 5 augs each, for 10 augs total.
@@ -25,30 +25,60 @@ var string CurAugName;
 var OATButtonPos AugNameLabelPos, AugNameLabelSize;
 var MenuUILabelWindow AugNameLabel;
 
+var localized string StrReload;
+var OATButtonPos EnergyBarPos, EnergyBarMaxSize, EnergyCasePos, EnergyCaseSize, BiocellPos,
+			BioEnergyLabelPos, BioEnergyLabelSize, BioCellCountLabelPos, BioCellCountLabelSize, ReloadTipLabelPos, ReloadTipLabelSize;
+var Window EnergyBar, EnergyCase;
+var OATAugSelectorCellIcon CellIcon;
+var MenuUILabelWindow BioEnergyLabel, BioCellCountLabel, ReloadTipLabel;
+var Color ColBioBar, ColNoCells, ColHasCells;
+
 var Augmentation Augs[10];
+var BioelectricCell BioCell;
 var MenuUIHeaderWindow PageLabels[2];
 var OATAugSelectorButton AugButtons[5];
 var OATAugSelectorPageButton AugPage, ExitButton;
 var OATAugSelectorHighlight Highlighter;
 
-//MADDERS, 8/27/23: We can now read all our inputs dynamically. Yay. Good suggestion from HawkBird.
-var EInputKey MenuValues1[8], MenuValues2[8], MenuValues3[8], HackKey,
-		LeftKey[3], RightKey[3], UpKey[3], DownKey[3], FireKey[6], JumpKey[3], AugMenuKey[4];
+//OAT, 8/27/23: We can now read all our inputs dynamically. Yay. Good suggestion from HawkBird.
+var EInputKey MenuValues1[9], MenuValues2[9], MenuValues3[9], HackKey,
+		LeftKey[3], RightKey[3], UpKey[3], DownKey[3], FireKey[6], JumpKey[3], AugMenuKey[4],
+		RechargeKey[3];
 
-var string AliasNames[8];
+var string AliasNames[9];
 
 var Mutator LastMutator; //OAT, 1/12/24: Not always useful, depending which method you used.
 
 event StyleChanged()
 {
 	local ColorTheme theme;
-	
+    local bool bTranslucent;
+
 	Super.StyleChanged();
-	
+
 	theme = player.ThemeManager.GetCurrentHUDColorTheme();
-	
+
 	AugNameLabel.ColLabel = theme.GetColorFromName('HUDColor_ButtonTextNormal');
 	AugNameLabel.SetTextColor(AugNameLabel.ColLabel);
+
+	BioEnergyLabel.ColLabel = theme.GetColorFromName('HUDColor_ButtonTextNormal');
+	BioEnergyLabel.SetTextColor(BioEnergyLabel.ColLabel);
+
+	ReloadTipLabel.ColLabel = theme.GetColorFromName('HUDColor_ButtonTextNormal');
+	ReloadTipLabel.SetTextColor(ReloadTipLabel.ColLabel);
+
+	//bTranslucent = player.GetMenuTranslucency();
+	bTranslucent = False; //This is a case. It shouldn't be transparent, due to the corners of the bar.
+
+	if (bTranslucent)
+	{
+		EnergyCase.SetBackgroundStyle(DSTY_Translucent);
+	}
+	else
+	{
+		EnergyCase.SetBackgroundStyle(DSTY_Masked);
+	}
+	EnergyCase.SetTileColor(Theme.GetColorFromName('HUDColor_Background'));
 }
 
 //OAT, 8/4/24: So this is bullshit. There's a native function for this, but it's often inherently unreliable.
@@ -56,12 +86,12 @@ event StyleChanged()
 function int GetCharacterWidth(string TestChar)
 {
 	local int Ret;
-	
+
 	//OAT, 8/4/24: Hack for non-english characters being presumed to be chunky. This WILL be slightly wrong.
 	//If you're making a localization support for this, you can do TestChar == Chr(X), with X as the numerical ID of the non-english character...
 	//Then just pop in the proper value you've deduced from screenshots of the characters, minus the spacing between them and neighboring characters.
 	Ret = 7;
-	
+
 	if (TestChar == "A") Ret = 8;
 	else if (TestChar == "B") Ret = 8;
 	else if (TestChar == "C") Ret = 8;
@@ -88,7 +118,7 @@ function int GetCharacterWidth(string TestChar)
 	else if (TestChar == "X") Ret = 8;
 	else if (TestChar == "Y") Ret = 8;
 	else if (TestChar == "Z") Ret = 8;
-	
+
 	else if (TestChar == "a") Ret = 7;
 	else if (TestChar == "b") Ret = 7;
 	else if (TestChar == "c") Ret = 6;
@@ -115,7 +145,7 @@ function int GetCharacterWidth(string TestChar)
 	else if (TestChar == "x") Ret = 7;
 	else if (TestChar == "y") Ret = 7;
 	else if (TestChar == "z") Ret = 7;
-	
+
 	else if (TestChar == " ") Ret = 5;
 	else if (TestChar == "-") Ret = 6;
 	else if (TestChar == "_") Ret = 7;
@@ -130,7 +160,7 @@ function int GetCharacterWidth(string TestChar)
 	else if (TestChar == "7") Ret = 9;
 	else if (TestChar == "8") Ret = 9;
 	else if (TestChar == "9") Ret = 8;
-	
+
 	return Ret;
 }
 
@@ -138,37 +168,37 @@ function int GetStringWidth(string TestString)
 {
 	local int i, Ret;
 	local string TSnippet;
-	
+
 	for(i=0; i<Len(TestString); i++)
 	{
 		TSnippet = Mid(TestString, i, 1);
 		Ret += GetCharacterWidth(TSnippet);
 	}
-	
+
 	Ret += Len(TestString)-1;
-	
+
 	return Ret;
 }
 
-//MADDERS, 8/26/23: One last hack from beyond the grave: Update our colors to menu type. Thanks.
+//OAT, 8/26/23: One last hack from beyond the grave: Update our colors to menu type. Thanks.
 function CreateClientWindow()
 {
 	local int clientIndex, titleOffsetX, titleOffsetY;
 	local ColorTheme theme;
-	
+
 	winClient = MenuUIClientWindow(NewChild(class'MenuUIClientWindow'));
-	
+
 	winTitle.GetOffsetWidths(titleOffsetX, titleOffsetY);
-	
+
 	winClient.SetSize(clientWidth, clientHeight);
 	winClient.SetTextureLayout(textureCols, textureRows);
-	
+
 	// Set background textures
 	for(clientIndex=0; clientIndex<arrayCount(clientTextures); clientIndex++)
 	{
 		winClient.SetClientTexture(clientIndex, clientTextures[clientIndex]);
 	}
-	
+
 	// Translucency
 	if (Player.GetHUDBackgroundTranslucency())
 	{
@@ -178,7 +208,7 @@ function CreateClientWindow()
 	{
 		WinClient.BackgroundDrawStyle = DSTY_Masked;
 	}
-	
+
 	Theme = Player.ThemeManager.GetCurrentHUDColorTheme();
 	WinClient.ColBackground = Theme.GetColorFromName('HUDColor_Background');
 }
@@ -186,7 +216,7 @@ function CreateClientWindow()
 function ActivateAugmentation(Augmentation TargetAug)
 {
 	local int i;
-	
+
 	if ((TargetAug != None) && (Player != None) && (Player.AugmentationSystem != None))
 	{
 		Player.AugmentationSystem.ActivateAugByKey(TargetAug.HotkeyNum - 3);
@@ -200,32 +230,32 @@ function ActivateAugmentation(Augmentation TargetAug)
 function LoadAugPage(int PageNum)
 {
 	local int i, HackAdd;
-	
-	//MADDERS: Default to cycling page again.
+
+	//OAT: Default to cycling page again.
 	SelectedAug = 5;
-	
+
 	CurPage = PageNum;
-	
-	//MADDERS, 8/26/23: WARNING! EVIL, EVIL HACK! Line up our 1 as close to the slash as our 2.
+
+	//OAT, 8/26/23: WARNING! EVIL, EVIL HACK! Line up our 1 as close to the slash as our 2.
 	//Not sure why alignments didn't work, so aight, fuck it. Negotiations failed.
 	if (CurPage == 0) HackAdd = 4;
 	PageLabels[0].SetText( string(CurPage+1) );
 	PageLabels[0].SetPos(PageLabelPos[0].X+HackAdd, PageLabelPos[0].Y);
-	
+
 	for (i=0; i<ArrayCount(AugButtons); i++)
 	{
 		AugButtons[i].SetAugmentation( Augs[i+(CurPage*5)] );
 	}
 	AugPage.SetFakeIcon(PageIcons[CurPage]);
 	PlaySound(Sound'Menu_OK', 1.0);
-	
+
 	UpdateHighlighterPos();
 }
 
 function UpdateHighlighterPos()
 {
 	Highlighter.SetPos(AugButtonPos[SelectedAug].X + HighlighterOffset.X, AugButtonPos[SelectedAug].Y + HighlighterOffset.Y);
-	
+
 	CurAugName = "";
 	switch(SelectedAug)
 	{
@@ -323,12 +353,12 @@ function UpdateHighlighterPos()
 			CurAugName = StrCloseWindow;
 		break;
 	}
-	
+
 	AugNameLabel.SetPos(AugNameLabelPos.X  + (GetStringWidth(CurAugName) * -0.5), AugNameLabelPos.Y);
 	AugNameLabel.SetText(CurAugName);
 }
 
-//MADDERS, 8/26/23: If you're wondering why not just pop window, it's because sometimes code
+//OAT, 8/26/23: If you're wondering why not just pop window, it's because sometimes code
 //is still executing by the time we do, which crashes the game. This offsets these by at least a frame,
 //even with god awful PC FPS.
 //----------------------------
@@ -341,14 +371,17 @@ function ForcePopWindow()
 
 function InitWindow()
 {
-	Super.InitWindow();	
-	
-	//MADDERS, 8/26/23: Hide our title bar. We are very cool and minimalist UI. We're hip.
+	Super.InitWindow();
+
+	//OAT, 8/26/23: Hide our title bar. We are very cool and minimalist UI. We're hip.
 	if (WinTitle != None)
 	{
 	 	WinTitle.Show(False);
 	 	WinTitle = None;
 	}
+
+	//OAT, 2/25/25: Small patch for real time UI support.
+	AddTimer(0.1, True,, 'UpdateInfo');
 }
 
 function CreateControls()
@@ -357,11 +390,14 @@ function CreateControls()
 	local int i;
 	local Augmentation TAug;
 	local ColorTheme Theme;
-	
+
 	Super.CreateControls();
-	
+
 	BuildKeyBindings(); //8/27/23: We can now read inputs as they are mapped in real time. Yay.
-	
+
+	//OAT, 2/25/25: For later reference and use.
+	BioCell = BioelectricCell(Player.FindInventoryType(Class'BioelectricCell'));
+
 	if ((Player != None) && (Player.AugmentationSystem != None))
 	{
 		for(TAug = Player.AugmentationSystem.FirstAug; TAug != None; TAug = TAug.Next)
@@ -369,11 +405,11 @@ function CreateControls()
 			if ((TAug.bHasIt) && (!TAug.bAlwaysActive) && (TAug.HotkeyNum > 2) && (TAug.HotkeyNum < 13))
 			{
 				if (TAug.HotkeyNum < 8) bHadFirstFive = true;
-				
+
 				Augs[TAug.HotKeyNum-3] = TAug;
 			}
 		}
-		
+
 		Theme = Player.ThemeManager.GetCurrentHUDColorTheme();
 		for (i=0; i<ArrayCount(PageLabels); i++)
 		{
@@ -383,41 +419,69 @@ function CreateControls()
  			PageLabels[i].SetTextAlignments(HALIGN_Left, VALIGN_Top);
  			PageLabels[i].SetWindowAlignments(HALIGN_Right, VALIGN_Full, 0, 0, 0, 0);
 			PageLabels[i].SetPos(PageLabelPos[i].X, PageLabelPos[i].Y);
-			
+
 			// Title colors
 			PageLabels[i].ColLabel = Theme.GetColorFromName('HUDColor_ListText');
 			PageLabels[i].SetTextColor(PageLabels[i].ColLabel);
 		}
-		
+
 		for (i=0; i<ArrayCount(AugButtons); i++)
 		{
 			AugButtons[i] = OATAugSelectorButton(NewChild(class'OATAugSelectorButton'));
 			AugButtons[i].SetPos(AugButtonPos[i].X, AugButtonPos[i].Y);
 			AugButtons[i].SetSensitivity(False);
-			
-			//MADDERS: Don't bother setting augs here. We'll load the page later.
+
+			//OAT: Don't bother setting augs here. We'll load the page later.
 		}
-		
+
 		AugPage = OATAugSelectorPageButton(NewChild(class'OATAugSelectorPageButton'));
 		AugPage.SetPos(AugButtonPos[5].X, AugButtonPos[5].Y);
 		AugPage.SetSensitivity(False);
-		
-		//MADDERS: Adding this a bit late, but it's fine. We can just reuse it with no issues.
+
+		//OAT: Adding this a bit late, but it's fine. We can just reuse it with no issues.
 		ExitButton = OATAugSelectorPageButton(NewChild(class'OATAugSelectorPageButton'));
 		ExitButton.SetPos(AugButtonPos[6].X, AugButtonPos[6].Y);
 		ExitButton.SetFakeIcon(Texture'OATCloseAugPageIcon');
 		ExitButton.SetSensitivity(False);
-		
-		//MADDERS: Select down button for fast cycling.
+
+		//OAT: Select down button for fast cycling.
 		Highlighter = OATAugSelectorHighlight(NewChild(class'OATAugSelectorHighlight'));
 		Highlighter.SetSensitivity(False);
-		
+
 		AugNameLabel = CreateMenuLabel(AugNameLabelPos.X, AugNameLabelPos.Y, "", winClient);
 		AugNameLabel.SetSize(AugNameLabelSize.X, AugNameLabelSize.Y);
 		AugNameLabel.SetPos(AugNameLabelPos.X, AugNameLabelPos.Y);
-		
-		//MADDERS: If we don't have any augs except flashlight or some bullshit, start on page 2, of course.
+
+		//OAT: If we don't have any augs except flashlight or some bullshit, start on page 2, of course.
 		LoadAugPage(1 - int(bHadFirstFive));
+
+		CellIcon = OATAugSelectorCellIcon(NewChild(class'OATAugSelectorCellIcon'));
+		CellIcon.SetPos(BiocellPos.X, BiocellPos.Y);
+
+		EnergyBar = NewChild(class'Window');
+		EnergyBar.SetBackground(Texture'Nano_SFX_A');
+		EnergyBar.SetTileColor(ColBioBar);
+
+		EnergyCase = NewChild(class'Window');
+		EnergyCase.SetSize(EnergyCaseSize.X, EnergyCaseSize.Y);
+		EnergyCase.SetPos(EnergyCasePos.X, EnergyCasePos.Y);
+		EnergyCase.SetBackground(Texture'OATAugControllerMenuEnergyCase');
+
+		BioEnergyLabel = CreateMenuLabel(BioEnergyLabelPos.X, BioEnergyLabelPos.Y, "", Self);
+		BioEnergyLabel.SetSize(BioEnergyLabelSize.X, BioEnergyLabelSize.Y);
+		BioEnergyLabel.SetPos(BioEnergyLabelPos.X, BioEnergyLabelPos.Y);
+		BioEnergyLabel.SetTextAlignments(HALIGN_Right, BioEnergyLabel.VAlign);
+
+		BioCellCountLabel = CreateMenuLabel(BioCellCountLabelPos.X, BioCellCountLabelPos.Y, "", Self);
+		BioCellCountLabel.SetSize(BioCellCountLabelSize.X, BioCellCountLabelSize.Y);
+		BioCellCountLabel.SetPos(BioCellCountLabelPos.X, BioCellCountLabelPos.Y);
+		BioCellCountLabel.SetTextAlignments(HALIGN_Right, BioEnergyLabel.VAlign);
+
+		ReloadTipLabel = CreateMenuLabel(ReloadTipLabelPos.X, ReloadTipLabelPos.Y, StrReload, Self);
+		ReloadTipLabel.SetSize(ReloadTipLabelSize.X, ReloadTipLabelSize.Y);
+		ReloadTipLabel.SetPos(ReloadTipLabelPos.X, ReloadTipLabelPos.Y);
+
+		UpdateEnergyBar();
 	}
 	else
 	{
@@ -425,12 +489,51 @@ function CreateControls()
 	}
 }
 
+function UpdateInfo()
+{
+	local int i;
+
+	//OAT, 2/25/25: Update for real time UI in case augs go out.
+	for (i=0; i<ArrayCount(AugButtons); i++)
+	{
+		AugButtons[i].UpdateAugColor();
+	}
+
+	UpdateEnergyBar();
+}
+
+function UpdateEnergyBar()
+{
+	local int IPer;
+	local float GetEn, MaxEn, FFull, FPer;
+
+	GetEn = Player.Energy;
+	MaxEn = Player.EnergyMax;
+
+	FFull = GetEn / MaxEn;
+	FPer = (FFull * 100.0) + 0.99;
+	IPer = int(FPer);
+
+	BioEnergyLabel.SetText(IPer$"%");
+
+	EnergyBar.SetSize(EnergyBarMaxSize.X, (EnergyBarMaxSize.Y * FFull) + 1);
+	EnergyBar.SetPos(EnergyBarPos.X, EnergyBarPos.Y + (EnergyBarMaxSize.Y * (1.0 - FFull)));
+
+	BioCellCountLabel.SetText("x0");
+	CellIcon.SetTileColor(ColNoCells);
+	if ((BioCell != None) && (!BioCell.bDeleteMe) && (BioCell.NumCopies > 0))
+	{
+		BioCellCountLabel.SetText("x"$BioCell.NumCopies);
+		CellIcon.SetTileColor(ColHasCells);
+	}
+}
+
 function BuildKeyBindings()
 {
 	local int i, j, UsePos, Pos, Pos2;
 	local string KeyName, Alias;
-	
-	// First, clear all the existing keybinding display 
+
+	// First, clear all the existing keybinding display
 	// strings in the MenuValues[1|2|3] arrays
 	for(i=0; i<arrayCount(MenuValues1); i++)
 	{
@@ -438,7 +541,7 @@ function BuildKeyBindings()
 		MenuValues2[i] = IK_None;
 		MenuValues3[i] = IK_None;
 	}
-	
+
 	// Now loop through all the keynames and generate
 	// human-readable versions of keys that are mapped.
 	for ( i=0; i<255; i++ )
@@ -458,8 +561,8 @@ function BuildKeyBindings()
 				{
 					Pos = -1;
 				}
-				Pos2 = InStr(Alias, "|"); //MADDERS, read muticommands' primary purpose.
-				
+				Pos2 = InStr(Alias, "|"); //OAT, read muticommands' primary purpose.
+
 				UsePos = Pos;
 				if (Pos == -1 || (Pos2 > -1 && Pos2 < Pos))
 				{
@@ -469,15 +572,15 @@ function BuildKeyBindings()
 				{
 					Alias = Left(Alias, UsePos);
 				}
-				
+
 				for ( j=0; j<arrayCount(AliasNames); j++ )
 				{
 					if ( AliasNames[j] ~= Alias )
 					{
-						//MADDERS, 8/27/23: Both int and GetEnum tell me type mismatch.
+						//OAT, 8/27/23: Both int and GetEnum tell me type mismatch.
 						//Suck on my SetPropertyText, nerd.
 						SetPropertyText( "HackKey", string(GetEnum(enum'EInputKey', i)) );
-						
+
 						if (MenuValues1[j] == IK_None)
 						{
 							MenuValues1[j] = HackKey;
@@ -495,8 +598,8 @@ function BuildKeyBindings()
 			}
 		}
 	}
-	
-	//MADDERS: Plug in all our values now.
+
+	//OAT: Plug in all our values now.
 	LeftKey[0] = MenuValues1[4];
 	LeftKey[1] = MenuValues2[4];
 	LeftKey[2] = MenuValues3[4];
@@ -521,24 +624,27 @@ function BuildKeyBindings()
 	AugMenuKey[0] = MenuValues1[7];
 	AugMenuKey[1] = MenuValues2[7];
 	AugMenuKey[2] = MenuValues3[7];
+	RechargeKey[0] = MenuValues1[8];
+	RechargeKey[1] = MenuValues2[8];
+	RechargeKey[2] = MenuValues3[8];
 }
 
 function bool ButtonActivated( Window buttonPressed )
 {
 	local bool bHandled;
 	local int i;
-	
+
 	bHandled = True;
-	
+
 	Super.ButtonActivated(buttonPressed);
-	
+
 	switch(ButtonPressed)
 	{
 		default:
 			bHandled = False;
 		break;
 	}
-	
+
 	for (i=0; i<ArrayCount(AugButtons); i++)
 	{
 		if (ButtonPressed == AugButtons[i])
@@ -549,14 +655,14 @@ function bool ButtonActivated( Window buttonPressed )
 			break;
 		}
 	}
-	
+
 	return bHandled;
 }
 
 event bool VirtualKeyPressed(EInputKey Key, bool bRepeat)
 {
 	local int IdealMove, LastSelectedAug;
-	
+
 	LastSelectedAug = SelectedAug;
 	IdealMove = -1;
 	switch(Key)
@@ -629,18 +735,24 @@ event bool VirtualKeyPressed(EInputKey Key, bool bRepeat)
 				Player.SetPropertyText("LastBrowsedAugPage", string(CurPage));
 				Player.SetPropertyText("LastBrowsedAug", string(SelectedAug));
 			}
-			
+
 			PlaySound(Sound'Menu_OK', 1.0);
 			AddTimer(0.1, False,, 'ForcePopWindow');
 			return true;
 		break;
+		case RechargeKey[0]:
+		case RechargeKey[1]:
+		case RechargeKey[2]:
+			UseCell();
+			return true;
+		break;
 	}
-	
+
 	if (IdealMove > -1)
 	{
 		switch(IdealMove)
 		{
-			case 0: //MADDERS: Left. If we have up selected, go to upper left instead.
+			case 0: //OAT: Left. If we have up selected, go to upper left instead.
 				if (SelectedAug == 2)
 				{
 					SelectedAug = 1;
@@ -650,7 +762,7 @@ event bool VirtualKeyPressed(EInputKey Key, bool bRepeat)
 					SelectedAug = IdealMove;
 				}
 			break;
-			case 2: //MADDERS: Up. If we have left or right selected, go to a diagonal instead.
+			case 2: //OAT: Up. If we have left or right selected, go to a diagonal instead.
 				if (SelectedAug == 0)
 				{
 					SelectedAug = 1;
@@ -664,7 +776,7 @@ event bool VirtualKeyPressed(EInputKey Key, bool bRepeat)
 					SelectedAug = IdealMove;
 				}
 			break;
-			case 4: //MADDERS: Right. If we have up selected, go to upper right instead.
+			case 4: //OAT: Right. If we have up selected, go to upper right instead.
 				if (SelectedAug == 2)
 				{
 					SelectedAug = 3;
@@ -674,7 +786,7 @@ event bool VirtualKeyPressed(EInputKey Key, bool bRepeat)
 					SelectedAug = IdealMove;
 				}
 			break;
-			case 5: //MADDERS: Down. If already down, go down further. Otherwise go to the first down slot.
+			case 5: //OAT: Down. If already down, go down further. Otherwise go to the first down slot.
 				if (SelectedAug == 5)
 				{
 					SelectedAug = 6;
@@ -687,13 +799,23 @@ event bool VirtualKeyPressed(EInputKey Key, bool bRepeat)
 		}
 		UpdateHighlighterPos();
 	}
-	
+
 	if (LastSelectedAug != SelectedAug)
 	{
 		PlaySound(Sound'Menu_Press', 1.0);
 	}
-	
+
  	return True;
+}
+
+function UseCell()
+{
+	if ((BioCell != None) && (!BioCell.bDeleteMe) && (BioCell.NumCopies > 0))
+	{
+		BioCell.Activate();
+	}
+
+	UpdateEnergyBar();
 }
 
 event bool RawKeyPressed(EInputKey key, EInputState iState, bool bRepeat)
@@ -703,8 +825,8 @@ event bool RawKeyPressed(EInputKey key, EInputState iState, bool bRepeat)
 
 event bool MouseButtonPressed(float pointX, float pointY, EInputKey button, int numClicks)
 {
-	VirtualKeyPressed(Button, false); //MADDERS: Massive hack. Check mouse buttons how we check all buttons.
-	
+	VirtualKeyPressed(Button, false); //OAT: Massive hack. Check mouse buttons how we check all buttons.
+
 	return false;
 }
 
@@ -730,7 +852,7 @@ defaultproperties
      StrNextPage="Next Page"
      StrLastPage="Prev. Page"
      StrCloseWindow="Close menu"
-     
+
      PageIcons(0)=Texture'OATNextAugPageIcon'
      PageIcons(1)=Texture'OATPrevAugPageIcon'
      HighlighterOffset=(X=-3,Y=-3)
@@ -743,10 +865,26 @@ defaultproperties
      AugButtonPos(4)=(X=147,Y=75)
      AugButtonPos(5)=(X=75,Y=147)
      AugButtonPos(6)=(X=75,Y=195)
-     
+
+     StrReload="Reload"
+     EnergyBarPos=(X=217,Y=54)
+     EnergyBarMaxSize=(X=12,Y=78)
+     EnergyCasePos=(X=212,Y=49)
+     EnergyCaseSize=(X=22,Y=88)
+     BiocellPos=(X=206,Y=145)
+     BioEnergyLabelPos=(X=192,Y=30)
+     BioEnergyLabelSize=(X=48,Y=24)
+     BioCellCountLabelPos=(X=191,Y=170)
+     BioCellCountLabelSize=(X=48,Y=24)
+     ReloadTipLabelPos=(X=202,Y=189)
+     ReloadTipLabelSize=(X=48,Y=24)
+     ColBioBar=(R=255,G=255,B=255)
+     ColNoCells=(R=96,G=96,B=96)
+     ColHasCells=(R=255,G=255,B=255)
+
      ClientWidth=256
      ClientHeight=258
-     
+
      clientTextures(0)=Texture'OATAugControllerMenu'
      clientTextures(1)=None
      clientTextures(2)=None
@@ -756,7 +894,7 @@ defaultproperties
      ScreenType=ST_Persona
      TextureRows=1
      TextureCols=1
-     
+
      AugMenuKey(3)=IK_Escape //Hack.
      AliasNames(0)="ParseLeftClick"
      AliasNames(1)="Fire"
@@ -766,4 +904,5 @@ defaultproperties
      AliasNames(5)="StrafeRight"
      AliasNames(6)="Jump"
      AliasNames(7)="OpenControllerAugWindow" //OAT: UPDATE ME TO WHAT CONSOLE COMMAND YOU USE TO OPEN THE MENU!
+     AliasNames(8)="ReloadWeapon"
 }
