@@ -33,6 +33,8 @@ var OATAugSelectorCellIcon CellIcon;
 var MenuUILabelWindow BioEnergyLabel, BioCellCountLabel, ReloadTipLabel;
 var Color ColBioBar, ColNoCells, ColHasCells;
 
+var bool bShowPercent;
+
 var Augmentation Augs[10];
 var BioelectricCell BioCell;
 var MenuUIHeaderWindow PageLabels[2];
@@ -470,7 +472,7 @@ function CreateControls()
 		BioEnergyLabel = CreateMenuLabel(BioEnergyLabelPos.X, BioEnergyLabelPos.Y, "", Self);
 		BioEnergyLabel.SetSize(BioEnergyLabelSize.X, BioEnergyLabelSize.Y);
 		BioEnergyLabel.SetPos(BioEnergyLabelPos.X, BioEnergyLabelPos.Y);
-		BioEnergyLabel.SetTextAlignments(HALIGN_Right, BioEnergyLabel.VAlign);
+		BioEnergyLabel.SetTextAlignments(HALIGN_Center, BioEnergyLabel.VAlign);
 
 		BioCellCountLabel = CreateMenuLabel(BioCellCountLabelPos.X, BioCellCountLabelPos.Y, "", Self);
 		BioCellCountLabel.SetSize(BioCellCountLabelSize.X, BioCellCountLabelSize.Y);
@@ -514,7 +516,11 @@ function UpdateEnergyBar()
 	FPer = (FFull * 100.0) + 0.99;
 	IPer = int(FPer);
 
-	BioEnergyLabel.SetText(IPer$"%");
+    if(bShowPercent) {
+        BioEnergyLabel.SetText(IPer$"%");
+    } else {
+        BioEnergyLabel.SetText(int(GetEn) $ "/" $ int(MaxEn));
+    }
 
 	EnergyBar.SetSize(EnergyBarMaxSize.X, (EnergyBarMaxSize.Y * FFull) + 1);
 	EnergyBar.SetPos(EnergyBarPos.X, EnergyBarPos.Y + (EnergyBarMaxSize.Y * (1.0 - FFull)));
@@ -872,8 +878,8 @@ defaultproperties
      EnergyCasePos=(X=212,Y=49)
      EnergyCaseSize=(X=22,Y=88)
      BiocellPos=(X=206,Y=145)
-     BioEnergyLabelPos=(X=192,Y=30)
-     BioEnergyLabelSize=(X=48,Y=24)
+     BioEnergyLabelPos=(X=188,Y=30)
+     BioEnergyLabelSize=(X=72,Y=24)
      BioCellCountLabelPos=(X=191,Y=170)
      BioCellCountLabelSize=(X=48,Y=24)
      ReloadTipLabelPos=(X=202,Y=189)
@@ -881,6 +887,8 @@ defaultproperties
      ColBioBar=(R=255,G=255,B=255)
      ColNoCells=(R=96,G=96,B=96)
      ColHasCells=(R=255,G=255,B=255)
+
+     bShowPercent=False
 
      ClientWidth=256
      ClientHeight=258
