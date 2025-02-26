@@ -21,8 +21,10 @@ function Init(DXRando tdxr)
 {
     //l(Self$".Init()");
     dxr = tdxr;
+    if(!inited) {
     InitCoordsMult();
     CheckConfig();
+    }
     inited = true;
 }
 
@@ -93,7 +95,6 @@ simulated event PreTravel()
     if(dxr != None) {
         _PreTravel();
     }
-    dxr = None;
 }
 
 simulated function _PreTravel();
