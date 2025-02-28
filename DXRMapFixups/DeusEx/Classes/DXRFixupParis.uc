@@ -27,6 +27,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey k;
     local DXRMoverSequenceTrigger elevatortrig;
     local #var(injectsprefix)OrdersTrigger ot;
+    local DestroyTrigger desTrig;
     local #var(injectsprefix)AllianceTrigger at;
     local Actor a;
 
@@ -201,10 +202,9 @@ function PreFirstEntryMapFixes()
             RemoveFears(j);
         }
 
-        ot = Spawn(class'#var(injectsprefix)OrdersTrigger',, 'NicoLeaving');
-        ot.Orders = 'Leaving';
-        ot.Event = '#var(prefix)NicoletteDuClare';
-        ot.SetCollision(false, false, false);
+        desTrig = Spawn(class'DestroyTrigger',, 'NicoLeaving');
+        desTrig.Event = 'NicoletteDuClare';
+        desTrig.SetCollision(false, false, false);
 
         break;
 
