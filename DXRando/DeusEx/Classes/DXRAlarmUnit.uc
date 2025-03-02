@@ -17,6 +17,7 @@ function HackAction(Actor Hacker, bool bHacked)
         //the panel won't be Untrigger'd, so it will
         //keep alarming after being hacked while active.
         bDisabled = True;
+        MultiSkins[1] = Texture'PinkMaskTex'; //Hacking an active panel leaves it with a black texture for some reason
     }
 }
 
