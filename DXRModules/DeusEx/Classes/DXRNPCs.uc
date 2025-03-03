@@ -51,51 +51,85 @@ function LogAll(name conName)
     }
 }
 
+function AddItemPurchaseChoice(out ItemPurchase choices[50], out int numChoices, class<Inventory> choiceClass, int basePrice, int weight)
+{
+    local int i;
+
+    for (i=0;i<weight;i++){
+        if (numChoices==ArrayCount(choices)){
+            l("No more room to add item purchase choices! "$choiceClass);
+            continue;
+        }
+        choices[numChoices].item=choiceClass;
+        choices[numChoices].price=basePrice;
+        numChoices++;
+    }
+}
+
+//This could theoretically take in the list of items so that it just wouldn't even add choices
+//that have already been forced into the list?
+function ItemPurchase SelectRandomPurchaseChoice(out ItemPurchase choices[50], out int numChoices)
+{
+    local ItemPurchase selected;
+    local ItemPurchase newChoices[50]; //Make sure this is at least as big as choices
+    local int i, numNewChoices;
+
+    //Pick a random choice
+    selected = choices[rng(numChoices)];
+
+    //Remove any duplicates in the choices list
+    for (i=0;i<numChoices;i++){
+        if (choices[i].item!=selected.item){
+            newChoices[numNewChoices++]=choices[i];
+        }
+    }
+
+    //Copy the choices back to the original list
+    for(i=0;i<ArrayCount(choices);i++){
+        choices[i] = newChoices[i];
+    }
+    numChoices = numNewChoices;
+    return selected;
+}
+
 function RandomizeItems(out ItemPurchase items[8], optional int forced)
 {
     local float r;
-    local int i, k, num;
+    local int i, k, num, numChoices;
     local class<Inventory> iclass;
-    local class<Inventory> classes[16];
+    local ItemPurchase choices[50];
 
-    i=0;
-    classes[i++] = class'#var(prefix)Medkit';
-    classes[i++] = class'#var(prefix)Lockpick';
-    classes[i++] = class'#var(prefix)Multitool';
-    classes[i++] = class'#var(prefix)BioelectricCell';
-    classes[i++] = class'#var(prefix)BallisticArmor';
-    classes[i++] = class'#var(prefix)Ammo10mm';
-    classes[i++] = class'#var(prefix)AmmoBattery';
-    classes[i++] = class'#var(prefix)AmmoDartPoison';
-    classes[i++] = class'#var(prefix)AmmoRocket';
-    classes[i++] = class'#var(prefix)WeaponShuriken';
-    classes[i++] = class'#var(prefix)HazMatSuit';
-    classes[i++] = class'#var(prefix)Rebreather';
-    num=i;
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Lockpick',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Multitool',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BallisticArmor',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Ammo10mm',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoBattery',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoDartPoison',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoRocket',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponShuriken',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)HazMatSuit',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Rebreather',1000,1);
 
-    if(chance_single(30)) items[forced++].item = class'#var(prefix)Medkit';
-    if(chance_single(30)) items[forced++].item = class'#var(prefix)BioelectricCell';
-
-    // randomize cost for forced items
-    for(i=0; i<forced; i++) {
-        items[i].price = rngrange(1000, 0.3, 2);
+    //These are basically just increased odds?  This can probably be replaced with good weighting
+    if(chance_single(30)){
+        items[forced].item = class'#var(prefix)Medkit';
+        items[forced].price = 1000;
+        forced++;
+    }
+    if(chance_single(30)){
+        items[forced].item = class'#var(prefix)BioelectricCell';
+        items[forced].price = 1000;
+        forced++;
     }
 
-    // randomize list
+    // Fill the rest of the item choices
     for(i=forced; i<ArrayCount(items); i++) {
-        iclass = classes[0];
-        r = initchance();
-        for(k=0; k < num; k++ ) {
-            if( classes[k] == None ) continue;
-            if( chance( 100/num, r ) ) iclass = classes[k];
-        }
-        chance_remaining(r);
-
-        items[i].item = iclass;
-        items[i].price = rngrange(1000, 0.3, 2);
+        items[i] = SelectRandomPurchaseChoice(choices,numChoices);
     }
 
-    // remove duplicates
+    // remove duplicates (Should only be from forced items at the moment)
     for(i=0; i+1<ArrayCount(items); i++) {
         for(k=i+1; k<ArrayCount(items); k++) {
             if( items[i].item == items[k].item ) items[k].item = None;
@@ -116,6 +150,13 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     for(i=4; i<ArrayCount(items) ; i++) {
         items[i].item = None;
     }
+
+    //Randomize the item prices
+    for (i=0;i<ArrayCount(items);i++){
+        if (items[i].item==None) continue;
+        if (items[i].price==0) items[i].price=1000; //Just in case - all items SHOULD have prices defined
+        items[i].price = rngrange(items[i].price, 0.3, 2);
+    }
 }
 
 function CreateRandomMerchant()
@@ -135,7 +176,7 @@ function CreateRandomMerchant()
     CreateMerchant("The Merchant", 'DXRNPCs1', class'Merchant', items, GetRandomMerchantPosition());
 }
 
-function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Merchant> mClass, vector loc, rotator rot, optional class<Inventory> forcedItem)
+function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Merchant> mClass, vector loc, rotator rot, optional class<Inventory> forcedItem, optional int forcedItemPrice)
 {
     local ItemPurchase items[8];
     local int forced;
@@ -147,6 +188,7 @@ function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Mer
 
     if(forcedItem != None) {
         items[0].item = forcedItem;
+        items[0].price = forcedItemPrice;
         forced++;
     }
     RandomizeItems(items, forced);
