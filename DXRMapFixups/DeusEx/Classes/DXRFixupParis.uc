@@ -390,7 +390,7 @@ function SpawnLeMerchant(vector loc, rotator rot)
         // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
-            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, class'#var(prefix)HazMatSuit', 1000); //TODO: This hazmat should probably be cheaper than 1000?
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, class'#var(prefix)HazMatSuit', 150);
         }
         // give him weapons to defend himself
         dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));

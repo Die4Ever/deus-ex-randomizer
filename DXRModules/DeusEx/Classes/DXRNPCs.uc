@@ -51,7 +51,7 @@ function LogAll(name conName)
     }
 }
 
-function AddItemPurchaseChoice(out ItemPurchase choices[50], out int numChoices, class<Inventory> choiceClass, int basePrice, int weight)
+function AddItemPurchaseChoice(out ItemPurchase choices[75], out int numChoices, class<Inventory> choiceClass, int basePrice, int weight)
 {
     local int i;
 
@@ -68,10 +68,10 @@ function AddItemPurchaseChoice(out ItemPurchase choices[50], out int numChoices,
 
 //This could theoretically take in the list of items so that it just wouldn't even add choices
 //that have already been forced into the list?
-function ItemPurchase SelectRandomPurchaseChoice(out ItemPurchase choices[50], out int numChoices)
+function ItemPurchase SelectRandomPurchaseChoice(out ItemPurchase choices[75], out int numChoices)
 {
     local ItemPurchase selected;
-    local ItemPurchase newChoices[50]; //Make sure this is at least as big as choices
+    local ItemPurchase newChoices[75]; //Make sure this is at least as big as choices
     local int i, numNewChoices;
 
     //Pick a random choice
@@ -97,22 +97,31 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     local float r;
     local int i, k, num, numChoices;
     local class<Inventory> iclass;
-    local ItemPurchase choices[50];
+    local ItemPurchase choices[75];
 
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Lockpick',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Multitool',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BallisticArmor',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Ammo10mm',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoBattery',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoDartPoison',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoRocket',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponShuriken',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)HazMatSuit',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Rebreather',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',1000,8);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',600,2);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Lockpick',600,4);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Multitool',600,4);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',1000,8);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',600,2);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BallisticArmor',400,3);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Ammo10mm',250,3);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoBattery',250,3);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoDartPoison',250,3);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoRocket',300,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponShuriken',4000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)HazMatSuit',400,3);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Rebreather',300,3);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AdaptiveArmor',2000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponLAM',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponEMPGrenade',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponGasGrenade',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponNanoVirusGrenade',1000,1);
 
-    //These are basically just increased odds?  This can probably be replaced with good weighting
+    //These are basically just increased odds?  In theory this is replaced by the increased weighting above
+    //Is it actually equivalent?  ¯\_(ツ)_/¯
+    /*
     if(chance_single(30)){
         items[forced].item = class'#var(prefix)Medkit';
         items[forced].price = 1000;
@@ -122,7 +131,7 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
         items[forced].item = class'#var(prefix)BioelectricCell';
         items[forced].price = 1000;
         forced++;
-    }
+    }*/
 
     // Fill the rest of the item choices
     for(i=forced; i<ArrayCount(items); i++) {
@@ -155,7 +164,7 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     for (i=0;i<ArrayCount(items);i++){
         if (items[i].item==None) continue;
         if (items[i].price==0) items[i].price=1000; //Just in case - all items SHOULD have prices defined
-        items[i].price = rngrange(items[i].price, 0.3, 2);
+        items[i].price = rngrange(items[i].price, 0.5, 1.5);  //Range was previously 0.3 to 2.0
     }
 }
 
