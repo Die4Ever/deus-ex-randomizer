@@ -366,11 +366,6 @@ function ParisMetroAnyEntry()
 
         RebindChopperHoverHint('ChopperExit',chopper);
     }
-
-    /*if( flags.GetBool('ClubComplete') ) {
-        // switch back to her dialog when she's ready to get in the chopper
-        flags.SetBool('ClubComplete', false,, 12);
-    }*/
 }
 
 function ParisChateauAnyEntry()
