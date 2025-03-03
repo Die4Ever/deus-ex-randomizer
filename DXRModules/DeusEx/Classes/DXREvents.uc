@@ -332,7 +332,6 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
-        WatchFlag('Shannon_Dead');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
@@ -462,7 +461,6 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
-        WatchFlag('Shannon_Dead');
         WatchFlag('MeetWalton_Played');
         WatchFlag('MeetInjuredTrooper2_Played');
         if(RevisionMaps){
@@ -578,7 +576,6 @@ function SetWatchFlags() {
         WatchFlag('MostWarehouseTroopsDead');
         break;
     case "04_NYC_UNATCOHQ":
-        WatchFlag('Shannon_Dead');
         WatchFlag('M04MeetWalton_Played');
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
@@ -635,7 +632,6 @@ function SetWatchFlags() {
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
         WatchFlag('KnowsAnnasKillphrase2');
-        WatchFlag('Shannon_Dead');
         WatchFlag('M05WaltonAlone_Played');
         WatchFlag('M05MeetManderley_Played');
         WatchFlag('M05MeetJaime_Played');
