@@ -27,12 +27,12 @@ function Untrigger(Actor Other, Pawn Instigator)
 
 function Touch(Actor Other)
 {
-	Super.Touch(Other);
 
-	if (TriggerType!=TT_Shoot && !bPeepable && IsRelevant(Other))
-	{
-		DoBingoThing();
-	}
+    if (TriggerType!=TT_Shoot && !bPeepable && IsRelevant(Other))
+    {
+        Super.Touch(Other);
+        DoBingoThing();
+    }
 }
 
 function Peep()
