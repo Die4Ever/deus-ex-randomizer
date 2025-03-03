@@ -1024,7 +1024,7 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
-        WatchFlag('AlleyCopSeesPlayer_Played');
+        //WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
         WatchFlag('MeetRenault_Played');
         WatchFlag('JoshuaInterrupted_Played');
