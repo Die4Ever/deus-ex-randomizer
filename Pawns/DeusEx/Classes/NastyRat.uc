@@ -178,4 +178,5 @@ defaultproperties
      FamiliarName="Nasty Rat"
      UnfamiliarName="Nasty Rat"
      AttitudeToPlayer=ATTITUDE_Follow
+     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1.000000,bPermanent=True)
 }
