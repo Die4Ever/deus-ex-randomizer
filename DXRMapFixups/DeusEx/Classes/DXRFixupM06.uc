@@ -207,6 +207,34 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+        if (VanillaMaps && class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            foreach AllActors(class'OrdersTrigger', ot, 'LumpathPissed') {
+                ot.Destroy();
+                break;
+            }
+
+            ft = Spawn(class'#var(prefix)FlagTrigger',,, vectm(600.0, 625.0, -240.0));
+            ft.SetCollision(true, false, false);
+            ft.SetCollisionSize(1000.0, 150.0);
+            ft.bSetFlag = false;
+            ft.bTrigger = true;
+            ft.FlagName = 'QuickLetPlayerIn';
+            ft.FlagValue = false;
+            ft.Tag = 'Breakintocompound';
+            ft.Event = 'LumpathPissed';
+
+            ft = Spawn(class'#var(prefix)FlagTrigger',,, vectm(1700.0, 700.0, 100.0));
+            ft.SetCollision(true, false, false);
+            ft.SetCollisionSize(325.0, 200.0);
+            ft.bSetFlag = false;
+            ft.bTrigger = true;
+            ft.FlagName = 'QuickLetPlayerIn';
+            ft.FlagValue = false;
+            ft.Tag = 'Breakintocompound';
+            ft.Event = 'LumpathPissed';
+        }
+
         // fallthrough
     case "06_HONGKONG_WANCHAI_COMPOUND":
         foreach AllActors(class'Actor', a)
