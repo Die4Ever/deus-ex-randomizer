@@ -48,6 +48,22 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+function MakeLumpathPissedTrigger(Vector loc)
+{
+    local #var(prefix)FlagTrigger ft;
+
+    ft = Spawn(class'#var(prefix)FlagTrigger',,, loc);
+    ft.SetCollision(true, false, false);
+    ft.SetCollisionSize(600.0, 100.0);
+    ft.bSetFlag = false;
+    ft.bTrigger = true;
+    ft.FlagName = 'QuickLetPlayerIn';
+    ft.FlagValue = false;
+    ft.Tag = 'Breakintocompound';
+    ft.Event = 'LumpathPissed';
+    ft.bTriggerOnceOnly = false;
+}
+
 function PreFirstEntryMapFixes()
 {
     local Actor a;
@@ -214,25 +230,10 @@ function PreFirstEntryMapFixes()
                 break;
             }
 
-            ft = Spawn(class'#var(prefix)FlagTrigger',,, vectm(600.0, 625.0, -240.0));
-            ft.SetCollision(true, false, false);
-            ft.SetCollisionSize(1000.0, 150.0);
-            ft.bSetFlag = false;
-            ft.bTrigger = true;
-            ft.FlagName = 'QuickLetPlayerIn';
-            ft.FlagValue = false;
-            ft.Tag = 'Breakintocompound';
-            ft.Event = 'LumpathPissed';
-
-            ft = Spawn(class'#var(prefix)FlagTrigger',,, vectm(1700.0, 700.0, 100.0));
-            ft.SetCollision(true, false, false);
-            ft.SetCollisionSize(325.0, 200.0);
-            ft.bSetFlag = false;
-            ft.bTrigger = true;
-            ft.FlagName = 'QuickLetPlayerIn';
-            ft.FlagValue = false;
-            ft.Tag = 'Breakintocompound';
-            ft.Event = 'LumpathPissed';
+            MakeLumpathPissedTrigger(vectm(750.0, 1130.0, -240.0));
+            MakeLumpathPissedTrigger(vectm(1650.0, 1130.0, -240.0));
+            MakeLumpathPissedTrigger(vectm(750.0, 230.0, -240.0));
+            MakeLumpathPissedTrigger(vectm(1650.0, 230.0, -240.0));
         }
 
         // fallthrough
