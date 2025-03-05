@@ -203,7 +203,7 @@ function PreFirstEntryMapFixes()
         }
 
         desTrig = Spawn(class'DestroyTrigger',, 'NicoLeaving');
-        desTrig.Event = 'NicoletteDuClare';
+        desTrig.Event = '#var(prefix)NicoletteDuClare';
         desTrig.SetCollision(false, false, false);
 
         break;
