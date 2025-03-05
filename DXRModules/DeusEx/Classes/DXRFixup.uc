@@ -686,6 +686,23 @@ function FixUNATCORetinalScanner()
     }
 }
 
+//Or whatever it's supposed to be.  Electrical distribution panel?  The thing in the closet.
+function SpeedUpUNATCOFurnaceVent()
+{
+    local #var(DeusExPrefix)Mover dxm;
+
+    if (!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
+
+    foreach AllActors(class'#var(DeusExPrefix)Mover',dxm) {
+        //Only that vent door has 3 keyframes in HQ (This is true in both vanilla and Revision)
+        if (dxm.NumKeys==3) {
+            dxm.MoveTime=1.5; //Default is 3.0, make it open a bit faster (The move time is between each keyframe)
+            break;
+        }
+    }
+
+}
+
 function MakeTurretsNonHostile()
 {
     local #var(prefix)AutoTurret at;
