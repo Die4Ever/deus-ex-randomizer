@@ -308,7 +308,7 @@ function PreFirstEntryMapFixes()
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             if (VanillaMaps){
-                foreach AllActors(class'OrdersTrigger', ot, 'LumpathPissed') {
+                foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'LumpathPissed') {
                     ot.Destroy();
                     break;
                 }
