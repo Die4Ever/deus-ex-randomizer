@@ -4,12 +4,14 @@ function Timer()
 {
     local DXRMapVariants mapvariants;
     local string map;
+    local name blockerFlag;
 
+    class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(4, blockerFlag);
     if (
         dxr.flags.IsBingoCampaignMode()
         && Player.IsInState('Dying')
         && class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration)
-        && !dxr.flagbase.GetBool(class'DXRBingoCampaign'.static.GetBingoMissionFlag(4))
+        && !dxr.flagbase.GetBool(blockerFlag)
     ) {
         return;
     }
