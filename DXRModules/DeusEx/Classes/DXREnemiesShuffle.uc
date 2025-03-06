@@ -66,8 +66,8 @@ function bool CanSwap(ScriptedPawn a, ScriptedPawn b) {
     local vector loc; // out param
     local float extraWidth, extraHeight;
 
-    spaceA = #var(prefix)SecurityBot2(a) == None && #var(prefix)MilitaryBot(a) == None && #var(prefix)SpiderBot(a) == None;
-    spaceB = #var(prefix)SecurityBot2(b) == None && #var(prefix)MilitaryBot(b) == None && #var(prefix)SpiderBot(b) == None;
+    spaceA = #var(prefix)SecurityBot2(a) == None && #var(prefix)MilitaryBot(a) == None && #var(prefix)SpiderBot(a) == None && a.class!=class'#var(prefix)Karkian';
+    spaceB = #var(prefix)SecurityBot2(b) == None && #var(prefix)MilitaryBot(b) == None && #var(prefix)SpiderBot(b) == None && b.class!=class'#var(prefix)Karkian';
     if(spaceA && spaceB) return true;
 
     colA = a.bBlockActors;
