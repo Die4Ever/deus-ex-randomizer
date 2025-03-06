@@ -442,17 +442,9 @@ function HandleBingoGoal()
     local name blockerFlag;
     local int expiration;
 
-    switch (dxr.dxInfo.missionNumber) {
-        case 2:
-            GetBingoMissionBlockerFlags(2,, blockerFlag, expiration);
-            UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
-            break;
-        case 3:
-            GetBingoMissionBlockerFlags(3, blockerFlag,, expiration);
-            break;
-        case 6:
-            GetBingoMissionBlockerFlags(6, blockerFlag,, expiration);
-            break;
+    if (dxr.dxInfo.missionNumber == 2) {
+        GetBingoMissionBlockerFlags(2,, blockerFlag, expiration);
+        UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
     }
 }
 
