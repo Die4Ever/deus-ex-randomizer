@@ -209,7 +209,7 @@ function PreFirstEntry()
 
     TriggerDebug();
 
-    OverwriteDecorations();
+    OverwriteDecorations(true);
     FixFlagTriggers();
     FixBeamLaserTriggers();
     FixAutoTurrets();
@@ -228,6 +228,12 @@ function PreFirstEntry()
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
         PreFirstEntryMapFixes();
+}
+
+function ReEntry(bool IsTravel)
+{
+    Super.ReEntry(IsTravel);
+    OverwriteDecorations(false);
 }
 
 function PostFirstEntry()
@@ -902,7 +908,7 @@ function ScaleZoneDamage()
 #endif
 }
 
-function OverwriteDecorations()
+function OverwriteDecorations(bool bFirstEntry)
 {
     local DeusExDecoration d;
     local #var(prefix)Barrel1 b;
@@ -919,8 +925,9 @@ function OverwriteDecorations()
             if( d.IsA(DecorationsOverwritesClasses[i].name) == false ) continue;
             if( d.bIsSecretGoal == True) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
-            d.HitPoints = DecorationsOverwrites[i].HitPoints;
-            d.default.HitPoints = DecorationsOverwrites[i].HitPoints; // fixes the ScaleGlow
+            if(d.HitPoints == d.default.HitPoints || bFirstEntry) {
+                d.HitPoints = DecorationsOverwrites[i].HitPoints;
+            }
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;
             d.bFlammable = DecorationsOverwrites[i].bFlammable;
             d.Flammability = DecorationsOverwrites[i].Flammability;
@@ -929,6 +936,10 @@ function OverwriteDecorations()
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
             d.bPushable = DecorationsOverwrites[i].bPushable;
         }
+    }
+    for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
+        if(DecorationsOverwritesClasses[i] == None) continue;
+        DecorationsOverwritesClasses[i].default.HitPoints = DecorationsOverwrites[i].HitPoints; // fixes the ScaleGlow
     }
 
     // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;
