@@ -449,11 +449,9 @@ function HandleBingoGoal()
             break;
         case 3:
             GetBingoMissionBlockerFlags(3, blockerFlag,, expiration);
-            UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
             break;
         case 6:
             GetBingoMissionBlockerFlags(6, blockerFlag,, expiration);
-            UnblockEarly('DXREvents_LeftOnBoat', blockerFlag, expiration);
             break;
     }
 }
