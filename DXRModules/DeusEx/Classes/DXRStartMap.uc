@@ -638,8 +638,6 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
         case 5:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
-            class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(5, blockerFlag);
-            flagbase.SetBool(blockerFlag, true,, 6);
             break;
         case 6:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
