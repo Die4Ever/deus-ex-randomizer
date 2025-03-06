@@ -174,6 +174,19 @@ function CheckConfig()
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
     i++;
 
+    DecorationsOverwrites[i].type = "Buoy";
+    DecorationsOverwrites[i].bInvincible = false;
+    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    DecorationsOverwrites[i].HitPoints = c.default.HitPoints;
+    DecorationsOverwrites[i].minDamageThreshold = c.default.minDamageThreshold;
+    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+    DecorationsOverwrites[i].Flammability = c.default.Flammability;
+    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+    DecorationsOverwrites[i].bPushable = c.default.bPushable;
+    i++;
+
     Super.CheckConfig();
 
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {

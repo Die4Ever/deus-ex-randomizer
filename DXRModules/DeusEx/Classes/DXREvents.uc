@@ -43,6 +43,10 @@ function WatchActors()
         {
             AddWatchedActor(d,"SmokingKills");
         }
+        else if(#var(prefix)Buoy(d) != None)
+        {
+            AddWatchedActor(d,"BuoyOhBuoy");
+        }
     }
 }
 
@@ -3224,6 +3228,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Rescue Tiffany Savage at the abandoned gas station.";
         case "AlarmUnitHacked":
             return "Hack enough Alarm Sounder Panels.  These are the big red wall buttons that set off alarms.";
+        case "BuoyOhBuoy":
+            return "Destroy enough buoys through the game.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3649,6 +3655,7 @@ defaultproperties
     bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
     bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096)
     bingo_options(342)=(event="AlarmUnitHacked",desc="Hack %s Alarm Sounder Panels",desc_singular="Hack 1 Alarm Sounder Panel",max=10)
+    bingo_options(343)=(event="BuoyOhBuoy",desc="Buoy Oh Buoy (%s)",max=10,missions=94)
 
 
 
