@@ -149,7 +149,7 @@ simulated event PreTravel()
     Level.LevelAction = LEVACT_Loading;
     l("PreTravel()");
     for(i=0; i<num_modules; i++) {
-        modules[i].PreTravel();
+        modules[i].DXRPreTravel();
     }
     for(i=0; i<num_modules; i++) {
         modules[i].dxr = None;

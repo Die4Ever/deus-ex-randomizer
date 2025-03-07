@@ -87,7 +87,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     l("PlayerAnyEntry("$player$")");
 }
 
-simulated event PreTravel()
+simulated event DXRPreTravel()
 {
     if(dxr != None && dxr.bIsOpeningURL) return;
 
