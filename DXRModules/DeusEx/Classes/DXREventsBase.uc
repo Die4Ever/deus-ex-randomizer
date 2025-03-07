@@ -1337,7 +1337,7 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
 
-    MarkBingoFailedEvents(eventName); //Making progress on one bingo goal might infer that another has failed
+    MarkBingoFailedEvents(eventName); //Making progress on one bingo goal might imply that another has failed
 
     if( ! data.IncrementBingoProgress(eventname, ifNotFailed)) return;
 
@@ -1368,6 +1368,10 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
         class'DXRTelemetry'.static.SendEvent(dxr, p, j);
 
         CheckBingoWin(dxr, nowbingos, previousbingos);
+    }
+
+    if (dxr.flags.IsBingoCampaignMode()) {
+        DXRBingoCampaign(class'DXRBingoCampaign'.static.Find()).HandleBingoGoal();
     }
 }
 

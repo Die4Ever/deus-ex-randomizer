@@ -27,6 +27,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey k;
     local DXRMoverSequenceTrigger elevatortrig;
     local #var(injectsprefix)OrdersTrigger ot;
+    local DestroyTrigger desTrig;
     local #var(injectsprefix)AllianceTrigger at;
     local Actor a;
 
@@ -201,10 +202,9 @@ function PreFirstEntryMapFixes()
             RemoveFears(j);
         }
 
-        ot = Spawn(class'#var(injectsprefix)OrdersTrigger',, 'NicoLeaving');
-        ot.Orders = 'Leaving';
-        ot.Event = '#var(prefix)NicoletteDuClare';
-        ot.SetCollision(false, false, false);
+        desTrig = Spawn(class'DestroyTrigger',, 'NicoLeaving');
+        desTrig.Event = '#var(prefix)NicoletteDuClare';
+        desTrig.SetCollision(false, false, false);
 
         break;
 
@@ -390,7 +390,7 @@ function SpawnLeMerchant(vector loc, rotator rot)
         // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
-            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, class'#var(prefix)HazMatSuit');
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, class'#var(prefix)HazMatSuit', 150);
         }
         // give him weapons to defend himself
         dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));

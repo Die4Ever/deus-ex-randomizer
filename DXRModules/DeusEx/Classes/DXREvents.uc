@@ -43,6 +43,10 @@ function WatchActors()
         {
             AddWatchedActor(d,"SmokingKills");
         }
+        else if(#var(prefix)Buoy(d) != None)
+        {
+            AddWatchedActor(d,"BuoyOhBuoy");
+        }
     }
 }
 
@@ -332,7 +336,6 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
-        WatchFlag('Shannon_Dead');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
@@ -462,7 +465,6 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
-        WatchFlag('Shannon_Dead');
         WatchFlag('MeetWalton_Played');
         WatchFlag('MeetInjuredTrooper2_Played');
         if(RevisionMaps){
@@ -578,7 +580,6 @@ function SetWatchFlags() {
         WatchFlag('MostWarehouseTroopsDead');
         break;
     case "04_NYC_UNATCOHQ":
-        WatchFlag('Shannon_Dead');
         WatchFlag('M04MeetWalton_Played');
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
@@ -635,7 +636,6 @@ function SetWatchFlags() {
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
         WatchFlag('KnowsAnnasKillphrase2');
-        WatchFlag('Shannon_Dead');
         WatchFlag('M05WaltonAlone_Played');
         WatchFlag('M05MeetManderley_Played');
         WatchFlag('M05MeetJaime_Played');
@@ -1139,6 +1139,8 @@ function SetWatchFlags() {
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
+        WatchFlag('Ray_Dead');
+        WatchFlag('Ray_Unconscious');
 
         foreach AllActors(class'WaterZone',water){
             water.ZonePlayerEvent = 'EverettAquarium';
@@ -2081,6 +2083,9 @@ function string RemapBingoEvent(string eventname)
         case "M04MeetSmuggler_Played":
         case "M08SmugglerConvos_Played":
             return "MeetSmuggler";
+        case "Ray_Dead":
+        case "Ray_Unconscious":
+            return "GotHelicopterInfo";
         default:
             return eventname;
     }
@@ -3226,6 +3231,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld Tavern.";
         case "TiffanyHeli":
             return "Rescue Tiffany Savage at the abandoned gas station.";
+        case "AlarmUnitHacked":
+            return "Hack enough Alarm Sounder Panels.  These are the big red wall buttons that set off alarms.";
+        case "BuoyOhBuoy":
+            return "Destroy enough buoys through the game.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3480,7 +3489,7 @@ defaultproperties
     bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=512)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",desc_singular="Use 1 HazMat Suit",max=3,missions=54866)
-    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=5513)
+    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink 1 bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack 1 computer",max=10)
@@ -3649,7 +3658,9 @@ defaultproperties
     bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
     bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4)
     bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
-    bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096);
+    bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096)
+    bingo_options(342)=(event="AlarmUnitHacked",desc="Hack %s Alarm Sounder Panels",desc_singular="Hack 1 Alarm Sounder Panel",max=10)
+    bingo_options(343)=(event="BuoyOhBuoy",desc="Buoy Oh Buoy (%s)",max=10,missions=94)
 
 
 

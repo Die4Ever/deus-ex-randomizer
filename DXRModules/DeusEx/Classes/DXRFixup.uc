@@ -174,6 +174,19 @@ function CheckConfig()
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
     i++;
 
+    DecorationsOverwrites[i].type = "Buoy";
+    DecorationsOverwrites[i].bInvincible = false;
+    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    DecorationsOverwrites[i].HitPoints = c.default.HitPoints;
+    DecorationsOverwrites[i].minDamageThreshold = c.default.minDamageThreshold;
+    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+    DecorationsOverwrites[i].Flammability = c.default.Flammability;
+    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+    DecorationsOverwrites[i].bPushable = c.default.bPushable;
+    i++;
+
     Super.CheckConfig();
 
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
@@ -196,7 +209,7 @@ function PreFirstEntry()
 
     TriggerDebug();
 
-    OverwriteDecorations();
+    OverwriteDecorations(true);
     FixFlagTriggers();
     FixBeamLaserTriggers();
     FixAutoTurrets();
@@ -215,6 +228,12 @@ function PreFirstEntry()
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
         PreFirstEntryMapFixes();
+}
+
+function ReEntry(bool IsTravel)
+{
+    Super.ReEntry(IsTravel);
+    OverwriteDecorations(false);
 }
 
 function PostFirstEntry()
@@ -686,6 +705,23 @@ function FixUNATCORetinalScanner()
     }
 }
 
+//Or whatever it's supposed to be.  Electrical distribution panel?  The thing in the closet.
+function SpeedUpUNATCOFurnaceVent()
+{
+    local #var(DeusExPrefix)Mover dxm;
+
+    if (!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
+
+    foreach AllActors(class'#var(DeusExPrefix)Mover',dxm) {
+        //Only that vent door has 3 keyframes in HQ (This is true in both vanilla and Revision)
+        if (dxm.NumKeys==3) {
+            dxm.MoveTime=1.5; //Default is 3.0, make it open a bit faster (The move time is between each keyframe)
+            break;
+        }
+    }
+
+}
+
 function MakeTurretsNonHostile()
 {
     local #var(prefix)AutoTurret at;
@@ -872,7 +908,7 @@ function ScaleZoneDamage()
 #endif
 }
 
-function OverwriteDecorations()
+function OverwriteDecorations(bool bFirstEntry)
 {
     local DeusExDecoration d;
     local #var(prefix)Barrel1 b;
@@ -889,8 +925,9 @@ function OverwriteDecorations()
             if( d.IsA(DecorationsOverwritesClasses[i].name) == false ) continue;
             if( d.bIsSecretGoal == True) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
-            d.HitPoints = DecorationsOverwrites[i].HitPoints;
-            d.default.HitPoints = DecorationsOverwrites[i].HitPoints; // fixes the ScaleGlow
+            if(d.HitPoints == d.default.HitPoints || bFirstEntry) {
+                d.HitPoints = DecorationsOverwrites[i].HitPoints;
+            }
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;
             d.bFlammable = DecorationsOverwrites[i].bFlammable;
             d.Flammability = DecorationsOverwrites[i].Flammability;
@@ -899,6 +936,10 @@ function OverwriteDecorations()
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
             d.bPushable = DecorationsOverwrites[i].bPushable;
         }
+    }
+    for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
+        if(DecorationsOverwritesClasses[i] == None) continue;
+        DecorationsOverwritesClasses[i].default.HitPoints = DecorationsOverwrites[i].HitPoints; // fixes the ScaleGlow
     }
 
     // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;

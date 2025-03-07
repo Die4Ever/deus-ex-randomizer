@@ -740,9 +740,13 @@ simulated function string flagValToHumanVal(name flagname, int val){
             return val$"%";
 
         case 'Rando_enemyrespawn':
-            return val$" seconds";
         case 'Rando_reanimation':
-            return "~"$val$" seconds";
+            if (val<=0){
+                return "Disabled";
+            } else {
+                return val$" seconds";
+            }
+            break;
 
         //Medbot/Repairbot cooldown and amount options
         case 'Rando_medbotcooldowns':

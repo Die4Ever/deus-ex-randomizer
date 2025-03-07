@@ -65,6 +65,8 @@ function SpecialOptionTriggerAdjustPassword(int specialIndex)
         text = Computers(compOwner).specialOptions[specialIndex].TriggerText;
 #endif
 
+    if(Len(text)==0) return;
+
     passwords.ProcessString(text, new_passwords);
 
 #ifdef hx
@@ -73,7 +75,6 @@ function SpecialOptionTriggerAdjustPassword(int specialIndex)
 #else
     Computers(compOwner).specialOptions[specialIndex].TriggerText = text;
     note = DeusExPlayer(pp).AddNote(text,, True);
-
 #endif
 
 

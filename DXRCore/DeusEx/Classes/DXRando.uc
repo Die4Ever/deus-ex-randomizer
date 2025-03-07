@@ -147,9 +147,12 @@ simulated event PreTravel()
     local int i;
     if(bIsOpeningURL) return;
     Level.LevelAction = LEVACT_Loading;
-    log("PreTravel()");
+    l("PreTravel()");
     for(i=0; i<num_modules; i++) {
-        modules[i].PreTravel();
+        modules[i].DXRPreTravel();
+    }
+    for(i=0; i<num_modules; i++) {
+        modules[i].dxr = None;
         modules[i] = None;
     }
     num_modules = 0;
@@ -437,9 +440,9 @@ simulated final function DXRBase FindModule(class<DXRBase> moduleclass, optional
         if( ClassIsChildOf(m.Class, moduleclass) ) {
             if(!bSilent)
                 l("FindModule("$moduleclass$") found "$m);
-            m.Init(Self);
             modules[num_modules] = m;
             num_modules++;
+            m.Init(Self);
             return m;
         }
     }

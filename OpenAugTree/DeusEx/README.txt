@@ -96,3 +96,9 @@ Check it out at: https://discord.gg/jCFJ3A6
 ++++++
 -Added in-built energy bar, bio cells readout, and bio cell use hotkey. This addresses the #1 reason people still used the aug menu... To recharge/check bio.
 -Updated notation to be more consistent in labeling.
+
+2.0:
+++++++
+-Added centering/text improvements from DX rando gang's fork of OAT. Thank you again, crew.
+-Added an option from DX rando fork of OAT for displaying raw points instead of percent. Most useful for heavily modded gameplay.
+-Fixed an outdated texture being bundled for BG. Oops.

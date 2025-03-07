@@ -160,6 +160,7 @@ function PreFirstEntryMapFixes()
     case "01_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
+        SpeedUpUNATCOFurnaceVent();
 
 #ifdef injections
         foreach AllActors(class'#var(prefix)Newspaper',np)

@@ -53,6 +53,7 @@ function BindControls(optional string action)
             EnumOption(ts, temp, f.gamemode);
     }
 
+    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
     NewMenuItem("Loadout", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
     if( loadout == None )
@@ -86,6 +87,7 @@ function BindControls(optional string action)
     }// we write the difficulty and gamemode after setting the seed...
 
 #ifdef injections
+    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
     autosave_enum = NewMenuItem("Save Behavior", "Saves the game in case you die!");
     EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave);
@@ -99,6 +101,7 @@ function BindControls(optional string action)
     EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave);
 #endif
 
+    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
     NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $BR$ "See their website crowdcontrol.live");
     //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
     EnumOption("Enabled (Streaming)", 1, f.crowdcontrol);
@@ -127,6 +130,7 @@ function BindControls(optional string action)
     }
 
 #ifdef injections
+    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
     mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
 
     if(mirrored_maps_files_found) {

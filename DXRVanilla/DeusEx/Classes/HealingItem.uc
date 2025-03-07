@@ -26,7 +26,7 @@ function DoHeal(Human player)
     if( health > 0 ) {
         i = player._HealPlayer(health, false, balance);// balance bool used for heal legs
         message = "Healed "$ i $" point";
-        if(i > 1)
+        if(i != 1)
             message = message $ "s";
     }
 
@@ -39,7 +39,7 @@ function DoHeal(Human player)
 
         player.Energy += f;
         message = message $ int(f) $ " point";
-        if( int(f) > 1 )
+        if( int(f) != 1 )
             message = message $"s";
     }
 

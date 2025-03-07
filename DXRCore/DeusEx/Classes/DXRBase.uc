@@ -21,8 +21,10 @@ function Init(DXRando tdxr)
 {
     //l(Self$".Init()");
     dxr = tdxr;
+    if(!inited) {
     InitCoordsMult();
     CheckConfig();
+    }
     inited = true;
 }
 
@@ -85,7 +87,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     l("PlayerAnyEntry("$player$")");
 }
 
-simulated event PreTravel()
+simulated event DXRPreTravel()
 {
     if(dxr != None && dxr.bIsOpeningURL) return;
 
@@ -93,7 +95,6 @@ simulated event PreTravel()
     if(dxr != None) {
         _PreTravel();
     }
-    dxr = None;
 }
 
 simulated function _PreTravel();

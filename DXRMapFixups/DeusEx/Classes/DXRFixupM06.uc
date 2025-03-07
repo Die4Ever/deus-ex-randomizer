@@ -48,6 +48,23 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+function MakeLumpathPissedTrigger(Vector loc, float rad, float height)
+{
+    local #var(prefix)FlagTrigger ft;
+
+    ft = Spawn(class'#var(prefix)FlagTrigger',,, loc);
+    ft.SetCollision(true, false, false);
+    ft.SetCollisionSize(rad, height);
+    ft.bSetFlag = false;
+    ft.bTrigger = true;
+    ft.FlagName = 'QuickLetPlayerIn';
+    ft.FlagValue = false;
+    ft.Tag = 'Breakintocompound';
+    ft.Event = 'LumpathPissed';
+    ft.bTriggerOnceOnly = false;
+}
+
+
 function PreFirstEntryMapFixes()
 {
     local Actor a;
@@ -286,6 +303,34 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)OrdersTrigger',ot){
             if (ot.Tag=='KidWanders' || ot.Tag=='KidGoesToNewsStand' || ot.Tag=='KidGoesToLumPath'){
                 ot.Event='MarketKid';
+            }
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            if (VanillaMaps){
+                foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'LumpathPissed') {
+                    ot.Destroy();
+                    break;
+                }
+
+                //Make sure they turn and face you so that they engage immediately if you are uncloaked (like if ordered to Attack)
+                class'FacePlayerTrigger'.static.Create(self,'LumpathPissed','TriadLumPath',vect(0,0,0));
+                class'FacePlayerTrigger'.static.Create(self,'LumpathPissed','TriadLumPath1',vect(0,0,0));
+                class'FacePlayerTrigger'.static.Create(self,'LumpathPissed','TriadLumPath2',vect(0,0,0));
+                class'FacePlayerTrigger'.static.Create(self,'LumpathPissed','TriadLumPath3',vect(0,0,0));
+                class'FacePlayerTrigger'.static.Create(self,'LumpathPissed','TriadLumPath4',vect(0,0,0));
+                class'FacePlayerTrigger'.static.Create(self,'LumpathPissed','TriadLumPath5',vect(0,0,0));
+                class'FacePlayerTrigger'.static.Create(self,'LumpathPissed','GordonQuick',vect(0,0,0));
+
+                //Make sure you have plenty of places for them to become hostile
+                MakeLumpathPissedTrigger(vectm(750.0, 1130.0, -240.0),600.0, 100.0); //Basement area
+                MakeLumpathPissedTrigger(vectm(1650.0, 1130.0, -240.0),600.0, 100.0); //Basement area
+                MakeLumpathPissedTrigger(vectm(750.0, 230.0, -240.0),600.0, 100.0); //Basement area
+                MakeLumpathPissedTrigger(vectm(1650.0, 230.0, -240.0),600.0, 100.0); //Basement area
+                MakeLumpathPissedTrigger(vectm(1365,315,-215),96,150); //Tong's Lab painting
+                MakeLumpathPissedTrigger(vectm(-16,825,-120),96,250); //Staircase to basement area
+                MakeLumpathPissedTrigger(vectm(1660,1140,90),96,100); //Door from kitchen to hallway
+                MakeLumpathPissedTrigger(vectm(1840,680,200),150,100); //Top of stairs down to kitchen
             }
         }
         break;
@@ -1005,6 +1050,12 @@ function AnyEntryMapFixes()
                 case "TriadLumPath3":
                 case "TriadLumPath4":
                 case "TriadLumPath5":
+                case "TriadLumPath_clone":
+                case "TriadLumPath1_clone":
+                case "TriadLumPath2_clone":
+                case "TriadLumPath3_clone":
+                case "TriadLumPath4_clone":
+                case "TriadLumPath5_clone":
                 case "GordonQuick":
 
                     ScriptedPawn(a).ChangeAlly('Player',1,False);

@@ -107,7 +107,7 @@ function BindControls(optional string action)
 
     NewGroup("Bingo");
 
-    NewMenuItem("Bingo Win", "How many completed lines to instantly win.");
+    NewMenuItem("Bingo Win", "How many completed lines to win in WaltonWare mode or progress in Mean Bingo Machine mode.");
     Slider(f.settings.bingo_win, 0, 12);
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");

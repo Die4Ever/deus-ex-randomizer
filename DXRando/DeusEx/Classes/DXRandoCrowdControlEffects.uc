@@ -113,6 +113,7 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
     mostRecentCcPawn = 0;
 
     effectSelectInit=False;
+    quickLoadTriggered=False; //Disable the quick load effect, in case you managed to save with the quick load effect pending
 }
 
 function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
@@ -3080,6 +3081,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (player().dataLinkPlay!=None) {
+                return TempFail;
+            }
+            if (quickLoadTriggered) {
                 return TempFail;
             }
             PlayerMessage(viewer@"is about to Quick Save!");
