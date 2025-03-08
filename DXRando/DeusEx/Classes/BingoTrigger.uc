@@ -7,6 +7,7 @@ var() String bingoEvent;
 var() bool bDestroyOthers;
 var() bool bUntrigger;
 var() bool bPeepable;
+var() bool bCrouchCheck;
 
 var name FinishedFlag;
 var int FinishedMax;
@@ -28,7 +29,7 @@ function Untrigger(Actor Other, Pawn Instigator)
 function Touch(Actor Other)
 {
 
-    if (TriggerType!=TT_Shoot && !bPeepable && IsRelevant(Other))
+    if (TriggerType!=TT_Shoot && !bPeepable && !bCrouchCheck && IsRelevant(Other))
     {
         Super.Touch(Other);
         DoBingoThing();
@@ -39,6 +40,19 @@ function Peep()
 {
     if (bPeepable){
         DoBingoThing();
+    }
+}
+
+function Timer()
+{
+    local #var(PlayerPawn) p;
+
+    if (bCrouchCheck){
+        foreach TouchingActors(class'#var(PlayerPawn)',p){
+            if (p.bIsCrouching){
+                DoBingoThing();
+            }
+        }
     }
 }
 
@@ -105,6 +119,12 @@ function MakePeepable()
     SetCollision(True,False,False);
 }
 
+function MakeCrouchChecker()
+{
+    bCrouchCheck=True; //bIsCrouching
+    SetTimer(0.25,True);
+}
+
 function SetFinishedFlag(name NewFinishedFlag, int NewFinishedMax)
 {
     FinishedFlag = NewFinishedFlag;
@@ -158,6 +178,16 @@ static function BingoTrigger ShootCreate(Actor a, Name bingoEvent, vector loc, f
     return bt;
 }
 
+static function BingoTrigger CrouchCreate(Actor a, Name bingoEvent, vector loc, float rad, float height)
+{
+    local BingoTrigger bt;
+
+    bt = Create(a,bingoEvent,loc,rad,height);
+    bt.MakeCrouchChecker();
+
+    return bt;
+}
+
 
 defaultproperties
 {
@@ -166,4 +196,5 @@ defaultproperties
      bDestroyOthers=True
      bUntrigger=False
      bPeepable=False
+     bCrouchCheck=False
 }

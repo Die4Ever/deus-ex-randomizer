@@ -457,7 +457,7 @@ function SetWatchFlags() {
     case "03_NYC_MOLEPEOPLE":
         WatchFlag('MolePeopleSlaughtered');
         bt = class'BingoTrigger'.static.Create(self,'surrender',vectm(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'MolePeopleWater',vectm(0,-528,48),60,40);
+        bt = class'BingoTrigger'.static.CrouchCreate(self,'MolePeopleWater',vectm(0,-528,48),60,40);
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
@@ -1116,11 +1116,15 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3869,-4256,-64),20,15,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(3387,-3233,-7.9),50,40,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(4100,-3469,-6.9),50,40,class'#var(prefix)ChefCarcass');
+
+            class'BingoTrigger'.static.CrouchCreate(self,'IOnceKnelt',vectm(3650,-1090,265),450,40);
         } else {
             class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(2019,-2256,-704),20,15,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15,class'#var(prefix)ChefCarcass');
             class'BingoTrigger'.static.ProxCreate(self,'Cremation',vectm(1578,-2286,-647),50,40,class'#var(prefix)ChefCarcass');
+
+            class'BingoTrigger'.static.CrouchCreate(self,'IOnceKnelt',vectm(1830,-140,-375),450,40);
         }
         bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
 
@@ -2753,7 +2757,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "mirrordoor":
             return "Open (or destroy) the mirror acting as the door to the secret stash in Smuggler's hideout.";
         case "MolePeopleWater":
-            return "Find the pool of water in the Mole People tunnels and jump into it.";
+            return "Find the pool of water in the Mole People tunnels and jump into it.  You need to crouch to get yourself fully immersed.";
         case "botorders2":
             return "Use the security computer in the upper floor of the MJ12 Robot Maintenance facility to alter the AI of the security bots.";
         case "BathroomFlags":
@@ -3276,6 +3280,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough buoys through the game.";
         case "PlayerPeeped":
             return "Observe yourself in a mirror through binoculars or a scope.";
+        case "DangUnstabCond_peepedtex":
+            return "Carefully inspect the wording on the Area Condemned signs near the top of the Statue of Liberty using binoculars or a scope.";
+        case "pa_TrainSign_D_peepedtex":
+            return "Take a close look at the map of the Paris metro lines using binoculars or a scope.";
+        case "IOnceKnelt":
+            return "Yeah, I can do that too, buddy.  Crouch inside the chapel at the Paris Cathedral.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3703,6 +3713,9 @@ defaultproperties
     bingo_options(342)=(event="AlarmUnitHacked",desc="Hack %s Alarm Sounder Panels",desc_singular="Hack 1 Alarm Sounder Panel",max=10)
     bingo_options(343)=(event="BuoyOhBuoy",desc="Buoy Oh Buoy (%s)",max=10,missions=94)
     bingo_options(344)=(event="PlayerPeeped",desc="Despite everything, it's still you",max=1,missions=24446)
+    bingo_options(345)=(event="DangUnstabCond_peepedtex",desc="Condemned!",max=1,missions=2)
+    bingo_options(346)=(event="pa_TrainSign_D_peepedtex",desc="Closely inspect the Paris metro map",max=1,missions=2048)
+    bingo_options(347)=(event="IOnceKnelt",desc="I once knelt in this chapel",max=1,missions=2048)
 
 
 
