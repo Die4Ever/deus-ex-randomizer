@@ -2090,45 +2090,6 @@ function string RemapBingoEvent(string eventname)
         case "Ray_Dead":
         case "Ray_Unconscious":
             return "GotHelicopterInfo";
-        case "JCDentonMale_peeped": //Vanilla player
-        case "RevRandoPlayer_peeped": //Revision Player
-        //GMDX player class?
-        //In theory this is all the HX player classes...
-        case "HXJCDentonPlayer_peeped":
-        case "HXJCDenton2Player_peeped":
-        case "HXJCDenton3Player_peeped":
-        case "HXJCDenton4Player_peeped":
-        case "HXJCDenton5Player_peeped":
-        case "HXBumMale2Player_peeped":
-        case "HXBumMalePlayer_peeped":
-        case "HXDoctorPlayer_peeped":
-        case "HXFordSchickPlayer_peeped":
-        case "HXGarySavagePlayer_peeped":
-        case "HXGordonQuickPlayer_peeped":
-        case "HXJosephManderleyPlayer_peeped":
-        case "HXJuanLebedevPlayer_peeped":
-        case "HXPaulDentonPlayer_peeped":
-        case "HXPaulDenton2Player_peeped":
-        case "HXPaulDenton3Player_peeped":
-        case "HXPaulDenton4Player_peeped":
-        case "HXPaulDenton5Player_peeped":
-        case "HXScientistMalePlayer_peeped":
-        case "HXSmugglerPlayer_peeped":
-        case "HXThugMalePlayer_peeped":
-        case "HXTriadRedArrowPlayer_peeped":
-        case "HXWaltonSimonsPlayer_peeped":
-        case "HXHKMilitaryPlayer_peeped":
-        case "HXJanitorPlayer_peeped":
-        case "HXMale4Player_peeped":
-        case "HXMechanicPlayer_peeped":
-        case "HXMJ12TroopPlayer_peeped":
-        case "HXRiotCopPlayer_peeped":
-        case "HXSamCarterPlayer_peeped":
-        case "HXSoldierPlayer_peeped":
-        case "HXTerroristPlayer_peeped":
-        case "HXTracerTongPlayer_peeped":
-        case "HXUNATCOTroopPlayer_peeped":
-            return "PlayerPeeped";
         default:
             return eventname;
     }
