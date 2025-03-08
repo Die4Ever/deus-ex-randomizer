@@ -2086,6 +2086,45 @@ function string RemapBingoEvent(string eventname)
         case "Ray_Dead":
         case "Ray_Unconscious":
             return "GotHelicopterInfo";
+        case "JCDentonMale_peeped": //Vanilla player
+        case "RevRandoPlayer_peeped": //Revision Player
+        //GMDX player class?
+        //In theory this is all the HX player classes...
+        case "HXJCDentonPlayer_peeped":
+        case "HXJCDenton2Player_peeped":
+        case "HXJCDenton3Player_peeped":
+        case "HXJCDenton4Player_peeped":
+        case "HXJCDenton5Player_peeped":
+        case "HXBumMale2Player_peeped":
+        case "HXBumMalePlayer_peeped":
+        case "HXDoctorPlayer_peeped":
+        case "HXFordSchickPlayer_peeped":
+        case "HXGarySavagePlayer_peeped":
+        case "HXGordonQuickPlayer_peeped":
+        case "HXJosephManderleyPlayer_peeped":
+        case "HXJuanLebedevPlayer_peeped":
+        case "HXPaulDentonPlayer_peeped":
+        case "HXPaulDenton2Player_peeped":
+        case "HXPaulDenton3Player_peeped":
+        case "HXPaulDenton4Player_peeped":
+        case "HXPaulDenton5Player_peeped":
+        case "HXScientistMalePlayer_peeped":
+        case "HXSmugglerPlayer_peeped":
+        case "HXThugMalePlayer_peeped":
+        case "HXTriadRedArrowPlayer_peeped":
+        case "HXWaltonSimonsPlayer_peeped":
+        case "HXHKMilitaryPlayer_peeped":
+        case "HXJanitorPlayer_peeped":
+        case "HXMale4Player_peeped":
+        case "HXMechanicPlayer_peeped":
+        case "HXMJ12TroopPlayer_peeped":
+        case "HXRiotCopPlayer_peeped":
+        case "HXSamCarterPlayer_peeped":
+        case "HXSoldierPlayer_peeped":
+        case "HXTerroristPlayer_peeped":
+        case "HXTracerTongPlayer_peeped":
+        case "HXUNATCOTroopPlayer_peeped":
+            return "PlayerPeeped";
         default:
             return eventname;
     }
@@ -3235,6 +3274,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Hack enough Alarm Sounder Panels.  These are the big red wall buttons that set off alarms.";
         case "BuoyOhBuoy":
             return "Destroy enough buoys through the game.";
+        case "PlayerPeeped":
+            return "Observe yourself in a mirror through binoculars or a scope.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3661,6 +3702,7 @@ defaultproperties
     bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096)
     bingo_options(342)=(event="AlarmUnitHacked",desc="Hack %s Alarm Sounder Panels",desc_singular="Hack 1 Alarm Sounder Panel",max=10)
     bingo_options(343)=(event="BuoyOhBuoy",desc="Buoy Oh Buoy (%s)",max=10,missions=94)
+    bingo_options(344)=(event="PlayerPeeped",desc="Despite everything, it's still you",max=1,missions=24446)
 
 
 
