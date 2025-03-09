@@ -1158,14 +1158,12 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'nico_fireplace',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'dumbwaiter',vectm(0,0,0));
 
-#ifdef vanilla
         bt = class'BingoTrigger'.static.Create(self,'BethsPainting',vectm(0,0,0));
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
             if (dxm.Name=='DeusExMover8'){
                 dxm.Event='BethsPainting';
             }
         }
-#endif
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'field002'){
             dxm.Event='SuspensionCrate';
@@ -3648,9 +3646,7 @@ defaultproperties
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
     bingo_options(211)=(event="Supervisor_Paid",desc="Pay for access to the VersaLife labs",max=1,missions=64)
     bingo_options(212)=(event="ImageOpened_WaltonSimons",desc="Look at Walton Simons' nudes",max=1,missions=544)
-#ifdef vanilla
     bingo_options(213)=(event="BethsPainting",desc="Admire Beth DuClare's favourite painting",max=1,missions=1024)
-#endif
 #ifndef hx
     bingo_options(214)=(event="ViewPortraits",desc="Look at %s portraits",desc_singular="Look at 1 portrait",max=2,missions=4890)
     bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
