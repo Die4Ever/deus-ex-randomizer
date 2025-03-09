@@ -1143,8 +1143,6 @@ function SetWatchFlags() {
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
-        WatchFlag('Ray_Dead');
-        WatchFlag('Ray_Unconscious');
 
         foreach AllActors(class'WaterZone',water){
             water.ZonePlayerEvent = 'EverettAquarium';
