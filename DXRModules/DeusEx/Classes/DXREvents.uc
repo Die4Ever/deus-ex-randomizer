@@ -358,6 +358,9 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(275,2640,570),500,100);
         bt.bDestroyOthers=False;
 
+        bt = class'BingoTrigger'.static.Create(self,'fork',vectm(0,0,0));
+        bt.bingoEvent="ForkliftCertified";
+
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
@@ -543,6 +546,9 @@ function SetWatchFlags() {
         break;
     case "03_NYC_HANGAR":
         RewatchFlag('747Ambrosia');
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'CherryPickerSeat',vectm(5300,815,140),20,20);
+        }
         break;
     case "03_NYC_747":
         RewatchFlag('747Ambrosia');
@@ -1263,6 +1269,11 @@ function SetWatchFlags() {
     case "12_VANDENBERG_TUNNELS":
         WatchFlag('WatchKeys_maintenancekey');
         bt = class'BingoTrigger'.static.Create(self,'VandenbergReactorRoom',vectm(-1427,3287,-2985),500,100);
+
+        if(RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'waataaa',vectm(0,0,0));
+            bt.bingoEvent="ForkliftCertified";
+        }
         break;
     case "12_VANDENBERG_COMPUTER":
         bt = class'BingoTrigger'.static.Create(self,'VandenbergServerRoom',vectm(940,2635,-1320),200,40);
@@ -1287,6 +1298,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vectm(25,-4350,165),40,40);
         bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vectm(-1212,-3427,1992),240,40);
         bt = class'BingoTrigger'.static.Create(self,'SiloAttic',vectm(-2060,-6270,1825),200,40);
+
+        bt = class'BingoTrigger'.static.CrouchCreate(self,'CherryPickerSeat',vectm(-17,-6461,-500),20,20);
 
         break;
     case "14_OCEANLAB_LAB":
@@ -1420,6 +1433,12 @@ function SetWatchFlags() {
         bt.bingoEvent = "Area51SteamValve";
         bt.bDestroyOthers=False;
 
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'CherryPickerSeat',vectm(-625,15,-135),20,20);
+        } else {
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'CherryPickerSeat',vectm(-72,1392,-123),20,20);
+        }
+
         break;
     case "15_AREA51_FINAL":
         RewatchFlag('WaltonBadass_Played');
@@ -1446,6 +1465,9 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'A51SeparationSwim',vectm(0,0,0));
+
+        bt = class'BingoTrigger'.static.Create(self,'forks',vectm(0,0,0));
+        bt.bingoEvent="ForkliftCertified";
 
         break;
     case "15_AREA51_PAGE":
@@ -3282,6 +3304,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Find the cash register in the gas station and check if there's anything left behind.";
         case "LibertyPoints":
             return "Walk around on the foundation of the statue and visit each of the 11 points.";
+        case "CherryPickerSeat":
+            return "Take a knee in the seat of a cherry picker.";
+        case "ForkliftCertified":
+            return "Demonstrate your certification and operate a functional forklift.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3714,6 +3740,10 @@ defaultproperties
     bingo_options(347)=(event="IOnceKnelt",desc="I once knelt in this chapel",max=1,missions=2048)
     bingo_options(348)=(event="GasCashRegister",desc="Check the cash register at the gas station",max=1,missions=4096)
     bingo_options(349)=(event="LibertyPoints",desc="Visit the 11 points of the statue foundation",max=11,missions=2)
+    bingo_options(350)=(event="CherryPickerSeat",desc="Sit in the seat of a cherry picker",max=1,missions=49152)
+    bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
+
+    //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 
 
 

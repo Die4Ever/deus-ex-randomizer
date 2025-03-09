@@ -18,7 +18,7 @@ struct BingoOption {
     var int max;
     var int missions;// bit masks
 };
-var() BingoOption bingo_options[350];
+var() BingoOption bingo_options[400]; //Update the comment at the bottom of the defaultproperties in DXREvents when this gets bigger
 
 struct MutualExclusion {
     var string e1, e2;
