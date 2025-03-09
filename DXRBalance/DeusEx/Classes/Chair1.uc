@@ -1,4 +1,4 @@
-class DXRChair1 injects Chair1;
+class DXRChair1 injects #var(prefix)Chair1;
 
 function BeginPlay()
 {

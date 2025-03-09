@@ -1,4 +1,4 @@
-class DXROfficeChair injects OfficeChair;
+class DXROfficeChair injects #var(prefix)OfficeChair;
 
 function BeginPlay()
 {

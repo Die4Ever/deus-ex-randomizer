@@ -1,4 +1,4 @@
-class DXREarth injects Earth;
+class DXREarth injects #var(prefix)Earth;
 
 #ifdef revision
 //This class basically only exists to disable Revision Facelift,
