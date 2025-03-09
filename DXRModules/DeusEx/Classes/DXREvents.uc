@@ -333,6 +333,21 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'StatueHead',vectm(6250,109,504),800,40);
 
+        bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(7400,120,570),500,100);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(4100,-3650,570),500,100);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(1850,-3650,570),500,100);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(-920,-1135,570),500,100);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(-920,1390,570),500,100);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(1850,3900,570),500,100);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'LibertyPoints',vectm(4100,3900,570),500,100);
+        bt.bDestroyOthers=False;
+
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
@@ -3255,6 +3270,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Yeah, I can do that too, buddy.  Crouch inside the chapel at the Paris Cathedral.";
         case "GasCashRegister":
             return "Find the cash register in the gas station and check if there's anything left behind.";
+        case "LibertyPoints":
+            return "Walk around on the base of the statue and visit the tip of the 7 triangular points.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3686,6 +3703,7 @@ defaultproperties
     bingo_options(346)=(event="pa_TrainSign_D_peepedtex",desc="Closely inspect the Paris metro map",max=1,missions=2048)
     bingo_options(347)=(event="IOnceKnelt",desc="I once knelt in this chapel",max=1,missions=2048)
     bingo_options(348)=(event="GasCashRegister",desc="Check the cash register at the gas station",max=1,missions=4096)
+    bingo_options(349)=(event="LibertyPoints",desc="Visit the 7 points of the statue base",max=7,missions=2)
 
 
 
