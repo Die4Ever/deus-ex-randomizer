@@ -1516,7 +1516,7 @@ static function float MissionsMaskAvailability(int currentMission, int goalMissi
 function RunTests()
 {
     local float f;
-    local int max;
+    local int max, i;
 
     testint(NumBitsSet(0), 0, "NumBitsSet");
     testint(NumBitsSet(1), 1, "NumBitsSet");
@@ -1588,6 +1588,15 @@ function RunTests()
     max = ScaleBingoGoalMax(max,100,1.0,1.0,1,3112,class'DXRStartMap'.static.GetEndMissionMask(3)); //This covers 1 of 4 possible missions where this is possible
     testint(max, 17, "MissionsMaskAvailability Three Mission End-to-End, 100% Scaling (Mission Mask with 4 possibilites, 1 in range)");
 
+    //WatchFlag does not need to be used for _Dead and _Unconscious flags.
+    //These will automatically come through the AddPawnDeath codepath and
+    //differentiates between dead and unconscious characters correctly.
+    if (!class'DXRVersion'.static.VersionIsStable()){
+        for (i=0;i<num_watchflags;i++){
+            test(Right(watchflags[i], 5) != "_Dead","WatchFlag not needed for flag "$watchflags[i]);
+            test(Right(watchflags[i], 12) != "_Unconscious","WatchFlag not needed for flag "$watchflags[i]);
+        }
+    }
 }
 
 function int GetBingoOptionIdx(string event)
