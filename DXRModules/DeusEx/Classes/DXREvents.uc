@@ -328,7 +328,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vectm(2503.605469,354.826355,2072.113037),40,40);
         bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vectm(2507.357178,-83.523094,2072.113037),40,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
 
         bt = class'BingoTrigger'.static.Create(self,'StatueHead',vectm(6250,109,504),800,40);
 
@@ -461,7 +462,9 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
+
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
@@ -609,7 +612,9 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNATCOISLAND":
         WatchFlag('AnnaKilledLebedev'); //Fixup will set this if you get back to HQ without killing Anna or Juan
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
+
 
         if (dxr.flagbase.GetBool('M03PlayerKilledAnna') && !dxr.flagbase.GetBool('JuanLebedev_Dead')) {
             MarkBingo("LebedevLived");
@@ -681,7 +686,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
         bt.Tag='SavedMiguel';
 
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
+        class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -1180,8 +1186,10 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(1222,1078,-700),150,10);
+            class'BingoFrobber'.static.Create(self,"Cash Register",'GasCashRegister',vectm(992.049377,922.186157,-905.889954),18,16,"You checked the cash register");
         } else {
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(984,528,-700),150,10);
+            class'BingoFrobber'.static.Create(self,"Cash Register",'GasCashRegister',vectm(751.841187,370.094513,-903.900024),18,16,"You checked the cash register");
         }
         break;
     case "12_VANDENBERG_CMD":
@@ -2674,7 +2682,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "BackOfStatue":
             return "Climb out along the balcony ledges of the Statue of Liberty and go around to the side facing UNATCO HQ.";
         case "CommsPit":
-            return "Enter the pit outside of UNATCO HQ enough times.";
+            return "Inspect the wiring in the pit outside of UNATCO HQ enough times.";
         case "StatueHead":
             return "Walk up to where the head of the Statue of Liberty is being displayed.";
         case "CraneControls":
@@ -3245,6 +3253,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Take a close look at the map of the Paris metro lines using binoculars or a scope.";
         case "IOnceKnelt":
             return "Yeah, I can do that too, buddy.  Crouch inside the chapel at the Paris Cathedral.";
+        case "GasCashRegister":
+            return "Find the cash register in the gas station and check if there's anything left behind.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3675,6 +3685,7 @@ defaultproperties
     bingo_options(345)=(event="DangUnstabCond_peepedtex",desc="Condemned!",max=1,missions=2)
     bingo_options(346)=(event="pa_TrainSign_D_peepedtex",desc="Closely inspect the Paris metro map",max=1,missions=2048)
     bingo_options(347)=(event="IOnceKnelt",desc="I once knelt in this chapel",max=1,missions=2048)
+    bingo_options(348)=(event="GasCashRegister",desc="Check the cash register at the gas station",max=1,missions=4096)
 
 
 
