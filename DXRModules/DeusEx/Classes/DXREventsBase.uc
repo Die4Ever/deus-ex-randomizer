@@ -683,6 +683,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 
     dead = !CanKnockUnconscious(victim, damageType);
 
+    //These are always marked when the pawn dies, regardles of killer
     if (dead){
         _MarkBingo(victim.BindName$"_Dead");
         _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
@@ -704,13 +705,13 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             _MarkBingo(classname$"_ClassUnconscious");
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.alliance$"_AllianceUnconscious");
-            _MarkBingo(victim.bindName$"_BindNameUnconscious");
+            _MarkBingo(victim.bindName$"_PlayerUnconscious"); //Only when the player knocks the person out
             class'DXRStats'.static.AddKnockOut(player());
         } else {
             _MarkBingo(classname$"_ClassDead");
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.alliance$"_AllianceDead");
-            _MarkBingo(victim.bindName$"_BindNameDead");
+            _MarkBingo(victim.bindName$"_PlayerDead"); //Only when the player kills the person
             class'DXRStats'.static.AddKill(player());
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait

@@ -1543,7 +1543,7 @@ function MarkBingoFailedSpecial()
     case 6:
         if (dxr.flagbase.GetBool('Have_ROM')) {
             MarkBingoAsFailed("MarketKid_Dead");
-            MarkBingoAsFailed("MarketKid_BindNameUnconscious");
+            MarkBingoAsFailed("MarketKid_PlayerUnconscious");
         }
         break;
     }
@@ -3213,7 +3213,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Slaughter most of the Rooks in the Brooklyn Bridge Station.";
         case "GiveZyme":
             return "Give zyme to the two junkies in the Brooklyn Bridge Station.";
-        case "MarketKid_BindNameUnconscious":
+        case "MarketKid_PlayerUnconscious":
             return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  Crime (sometimes) doesn't pay.";
         case "MaggieLived":
             return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
@@ -3662,7 +3662,7 @@ defaultproperties
     bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitored",max=1,missions=8)
     bingo_options(326)=(event="ThugGang_AllianceDead",desc="Slaughter the Rooks",max=10,missions=8) // there are ordinarily 11 Rooks
     bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
-    // bingo_options()=(event="MarketKid_BindNameUnconscious",desc="Crime doesn't pay",max=1,missions=64)
+    // bingo_options()=(event="MarketKid_PlayerUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
     bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=1024)
 #ifdef vanilla
