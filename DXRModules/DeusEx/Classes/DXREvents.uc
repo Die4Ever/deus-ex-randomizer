@@ -1,6 +1,7 @@
 class DXREvents extends DXREventsBase;
 
 
+//#region WatchActors
 function WatchActors()
 {
     local #var(DeusExPrefix)Decoration d;
@@ -49,7 +50,9 @@ function WatchActors()
         }
     }
 }
+//#endregion
 
+//#region Phone Triggers
 function AddPhoneTriggers(bool isRevision)
 {
     local #var(prefix)Phone p;
@@ -260,7 +263,9 @@ function CreatePhoneTrigger(Actor phone, int num)
     bt.tag=StringToName("PhoneCall"$num);
     phone.event=StringToName("PhoneCall"$num);
 }
+//#endregion
 
+//#region SetWatchFlags
 function SetWatchFlags() {
     local #var(prefix)MapExit m;
     local #var(prefix)ChildMale child;
@@ -309,10 +314,13 @@ function SetWatchFlags() {
     AddPhoneTriggers(RevisionMaps);
 
     switch(dxr.localURL) {
+    //#region Training
     case "00_TrainingFinal":
         WatchFlag('m00meetpage_Played');
         break;
+    //#endregion
 
+    //#region Mission 1
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
@@ -389,6 +397,9 @@ function SetWatchFlags() {
         bt.Tag = 'retinal_msg_trigger';
 
         break;
+    //#endregion
+
+    //#region Mission 2
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
@@ -476,6 +487,9 @@ function SetWatchFlags() {
         bt.bDestroyOthers = false;
 
         break;
+    //#endregion
+
+    //#region Mission 3
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'#var(prefix)JunkieMale',jm) {
             if(jm.BindName == "SickMan"){
@@ -580,6 +594,9 @@ function SetWatchFlags() {
                 mechanic.bImportant = true;
         }
         break;
+    //#endregion
+
+    //#region Mission 4
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
@@ -651,6 +668,9 @@ function SetWatchFlags() {
             MarkBingo("LebedevLived");
         }
         break;
+    //#endregion
+
+    //#region Mission 5
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
         WatchFlag('WatchKeys_cabinet');
@@ -721,6 +741,9 @@ function SetWatchFlags() {
         class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
 
         break;
+    //#endregion
+
+    //#region Mission 6
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
@@ -895,7 +918,9 @@ function SetWatchFlags() {
     case "06_HONGKONG_VERSALIFE":
         WatchFlag('Supervisor_Paid');
         break;
+    //#endregion
 
+    //#region Mission 8
     case "08_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
@@ -931,6 +956,9 @@ function SetWatchFlags() {
     case "08_NYC_FREECLINIC":
         WatchFlag('GreenKnowsAboutDowd');
         break;
+    //#endregion
+
+    //#region Mission 9
     case "09_NYC_DOCKYARD":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
 
@@ -1036,6 +1064,9 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
         break;
+    //#endregion
+
+    //#region Mission 10
     case "10_PARIS_ENTRANCE": //A Revision-only map that covers where you start in Paris and ends after the radioactive room (and the underground section right after it)
         foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
             if(jf.BindName == "aimee")
@@ -1142,6 +1173,9 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
 
         break;
+    //#endregion
+
+    //#region Mission 11
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
         WatchFlag('DL_gold_found_Played');
@@ -1212,6 +1246,9 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
         break;
+    //#endregion
+
+    //#region Mission 12
     case "12_VANDENBERG_GAS":
         WatchFlag('TiffanyHeli');
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
@@ -1288,6 +1325,9 @@ function SetWatchFlags() {
         }
 
         break;
+    //#endregion
+
+    //#region Mission 14
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
         foreach AllActors(class'#var(prefix)ScientistMale', sm) {
@@ -1349,6 +1389,9 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3771,1571),100,100);
         class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3965,1839),100,100);
         break;
+    //#endregion
+
+    //#region Mission 15
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
         WatchFlag('blast_door_open');
@@ -1513,6 +1556,7 @@ function SetWatchFlags() {
         bt.bDestroyOthers=False;
 
         break;
+    //#endregion
     }
 }
 
@@ -1528,6 +1572,7 @@ function bool FailIfCorpseNotHeld(class<#var(DeusExPrefix)Carcass> carcClass, st
     return false;
 }
 
+//#region Special Bingo Failures
 function MarkBingoFailedSpecial()
 {
     local int progress, maxProgress;
@@ -1595,6 +1640,7 @@ function MarkBingoFailedSpecial()
         break;
     }
 }
+//#endregion
 
 simulated function AnyEntry()
 {
@@ -1669,6 +1715,7 @@ simulated function bool WatchGuntherKillSwitch()
     return False;
 }
 
+//#region TweakBingoDescription
 //If there are any situational changes (Eg. Male/Female), adjust the description here
 simulated function string tweakBingoDescription(string event, string desc)
 {
@@ -1701,7 +1748,9 @@ simulated function string tweakBingoDescription(string event, string desc)
             break;
     }
 }
+//#endregion
 
+//#region ReadText
 function ReadText(name textTag)
 {
     local string eventname;
@@ -1825,7 +1874,9 @@ function ReadText(name textTag)
         _MarkBingo(eventname);
     }
 }
+//#endregion
 
+//#region RemapBingoEvent
 function string RemapBingoEvent(string eventname)
 {
     ///////////////////////////////////////////////////////
@@ -2147,9 +2198,10 @@ function string RemapBingoEvent(string eventname)
             return eventname;
     }
     return eventname;
-
 }
+//#endregion
 
+//#region Bingo Failure
 static function int GetBingoFailedEvents(string eventname, out string failed[6])
 {
     local int num_failed;
@@ -2338,7 +2390,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[6])
 
     return num_failed;
 }
+//#endregion
 
+//#region Bingo Help Text
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string msg;
@@ -3312,6 +3366,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
 }
+//#endregion
 
 static function bool BingoGoalCanFail(string event)
 {
@@ -3357,6 +3412,7 @@ function ExtendedTests()
 // calculate missions masks with https://jsfiddle.net/2sh7xej0/1/
 defaultproperties
 {
+//#region Bingo Options
     bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1,missions=2)
 	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1,missions=4096)
 	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1,missions=16)
@@ -3744,11 +3800,11 @@ defaultproperties
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
+//#endregion
 
 
 
-
-
+//#region Mutual Exclusions
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
     mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
@@ -3817,4 +3873,5 @@ defaultproperties
     mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_Unconscious")
+//#endregion
 }

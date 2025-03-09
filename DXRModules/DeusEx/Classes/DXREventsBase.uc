@@ -42,6 +42,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[6])
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
 
+//#region Watched Actors
 function AddWatchedActor(Actor a,String eventName)
 {
     if (num_watched_actors>=ArrayCount(actor_watch)){
@@ -79,6 +80,7 @@ function ReplaceWatchedActor(Actor a, Actor n)
         }
     }
 }
+//#endregion
 
 function PreFirstEntry()
 {
@@ -237,6 +239,7 @@ simulated function bool ClassInLevel(class<Actor> className)
     return False;
 }
 
+//#region Pool Balls
 simulated function int PoolBallsSunk()
 {
     local #var(injectsprefix)Poolball cue,ball;
@@ -299,6 +302,7 @@ simulated function InitPoolBalls()
 
     PoolBallHeight -= 1;
 }
+//#endregion
 
 simulated function bool CheckForNanoKey(String keyID)
 {
@@ -318,6 +322,7 @@ simulated function bool CheckForNanoKey(String keyID)
     return player().KeyRing.HasKey(keyName);
 }
 
+//#region Timer
 simulated function Timer()
 {
     local int i,j,num;
@@ -400,7 +405,10 @@ simulated function Timer()
         HandleBingoWinCountdown();
     }
 }
+//#endregion
 
+
+//#region Bingo Win
 function BingoWinScreen()
 {
     local #var(PlayerPawn) p;
@@ -462,6 +470,7 @@ function HandleBingoWinCountdown()
         Level.Game.SendPlayer(dxr.player,"99_EndGame4");
     }
 }
+//#endregion
 
 function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
 {
@@ -565,6 +574,7 @@ function BatteryParkHostages()
     }
 }
 
+//#region Death Event
 static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce string damageType, vector HitLocation, string type)
 {
     local string j;
@@ -600,7 +610,9 @@ static function string GetRandomizedName(Actor a)
     if(sp == None || sp.bImportant) return "";
     return sp.FamiliarName;
 }
+//#endregion
 
+//#region Player Death
 static function AddPlayerDeath(DXRando dxr, PlayerPawn p, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXREvents ev;
@@ -641,6 +653,7 @@ static function AddPlayerDeath(DXRando dxr, PlayerPawn p, optional Actor Killer,
 
     _DeathEvent(dxr, player, Killer, damageType, HitLocation, "DEATH");
 }
+//#endregion
 
 static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
@@ -675,6 +688,7 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
     return checkInitialAlliance(p,'Player',-1.0);
 }
 
+//#region Pawn Death
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local string classname;
@@ -752,6 +766,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
+//#endregion
 
 static function AddDeath(Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
@@ -768,6 +783,7 @@ static function AddDeath(Pawn victim, optional Actor Killer, optional coerce str
         AddPawnDeath(sp, Killer, damageType, HitLocation);
 }
 
+//#region Paul
 static function PaulDied(DXRando dxr)
 {
     local string j;
@@ -801,7 +817,9 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
     MarkBingo("SavedPaul");
 }
+//#endregion
 
+//#region Beat Game
 static function BeatGame(DXRando dxr, int ending)
 {
     local PlayerDataItem data;
@@ -849,6 +867,7 @@ static function BeatGame(DXRando dxr, int ending)
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
 }
+//#endregion
 
 static function ExtinguishFire(string extinguisher, DeusExPlayer player)
 {
@@ -1110,6 +1129,7 @@ function bool AddTestGoal(
     return true;
 }
 
+//#region Create Bingo Board
 simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
 {
     local int x, y, i;
@@ -1259,6 +1279,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();
 }
+//#endregion
 
 simulated function int ScaleBingoGoalMax(int max, int bingoScale, float randMin, float randMax, int starting_mission, int missions, int end_mission_mask)
 {
@@ -1315,6 +1336,7 @@ function bool CheckBingoWin(DXRando dxr, int numBingos, int oldBingos)
     return false;
 }
 
+//#region MarkBingo
 function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
 {
     local int previousbingos, nowbingos, time;
@@ -1385,6 +1407,7 @@ static function MarkBingo(coerce string eventname, optional bool ifNotFailed)
         e._MarkBingo(eventname, ifNotFailed);
     }
 }
+//#endregion
 
 function _MarkBingoAsFailed(coerce string eventname)
 {
@@ -1514,6 +1537,7 @@ static function float MissionsMaskAvailability(int currentMission, int goalMissi
     return float(good)/float(bad+good);
 }
 
+//#region RunTests
 function RunTests()
 {
     local float f;
@@ -1599,6 +1623,7 @@ function RunTests()
         }
     }
 }
+//#endregion
 
 function int GetBingoOptionIdx(string event)
 {
@@ -1612,6 +1637,7 @@ function int GetBingoOptionIdx(string event)
     return -1;
 }
 
+//#region ExtendedTests
 function ExtendedTests()
 {
     local int i;
@@ -1627,6 +1653,7 @@ function ExtendedTests()
         _CreateBingoBoard(data, i, 1, true);
     }
 }
+//#endregion
 
 defaultproperties
 {
