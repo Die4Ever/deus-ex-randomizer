@@ -754,12 +754,7 @@ function SetWatchFlags() {
             fTrigger.SetCollisionSize(500, 160);
         }
 
-        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'SecretHold'){
-            break;
-        }
-        skillAward = #var(prefix)SkillAwardTrigger(findNearestToActor(class'#var(prefix)SkillAwardTrigger',dxm));
-        skillAward.Event='BoatEngineRoom';
-        bt = class'BingoTrigger'.static.Create(self,'BoatEngineRoom',skillAward.Location);
+        class'BingoFrobber'.static.Create(self,"Boat Equipment",'BoatEngineRoom',vectm(2304.4,3154.4,-365),30,35,"You checked the power levels");
 
         foreach AllActors(class'#var(prefix)LowerClassMale',lcm,'CanalDrugDealer'){
             break;
@@ -2617,7 +2612,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "VandenbergToilet":
             return "Use the one toilet in Vandenberg.  It is located inside the Comm building outside.";
         case "BoatEngineRoom":
-            return "Enter the small room at the back of the smuggler's boat in the Hong Kong canals.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
+            return "Enter the small room at the back of the smuggler's boat in the Hong Kong canals and check the power levels on the equipment inside.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
         case "SecurityBot2_ClassDead":
             return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SecurityBotSmall_ClassDead":
@@ -3507,7 +3502,7 @@ defaultproperties
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",desc_singular="Kill 1 Karkian",max=5,missions=49248)
     bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy %s Military Bots",desc_singular="Destroy 1 Military Bot",max=5,missions=24176)
     bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1,missions=4096)
-    bingo_options(85)=(event="BoatEngineRoom",desc="Access the engine room on the boat in the Hong Kong canals",max=1,missions=64)
+    bingo_options(85)=(event="BoatEngineRoom",desc="Check the power levels on the canal boat",max=1,missions=64)
     bingo_options(86)=(event="SecurityBot2_ClassDead",desc="Destroy %s Walking Security Bots",desc_singular="Destroy 1 Walking Security Bot",max=5,missions=57202)
     bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy %s commercial grade Security Bots",desc_singular="Destroy 1 commercial grade Security Bot",max=10,missions=35102)
     bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy %s Spider Bots",desc_singular="Destroy 1 Spider Bot",max=15,missions=53824)
