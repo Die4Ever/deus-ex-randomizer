@@ -905,8 +905,6 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
 
-        WatchFlag('JerryTheVentGreasel_Dead');
-
         WatchFlag('FlowersForTheLab');
         break;
 

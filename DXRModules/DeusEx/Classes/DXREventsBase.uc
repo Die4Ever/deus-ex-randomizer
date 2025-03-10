@@ -1618,11 +1618,27 @@ function RunTests()
     //differentiates between dead and unconscious characters correctly.
     if (!class'DXRVersion'.static.VersionIsStable()){
         for (i=0;i<num_watchflags;i++){
+            //Skip any exceptions
+            if (WatchFlagTestExceptions(watchflags[i])) continue;
+
             test(Right(watchflags[i], 5) != "_Dead","WatchFlag not needed for flag "$watchflags[i]);
             test(Right(watchflags[i], 12) != "_Unconscious","WatchFlag not needed for flag "$watchflags[i]);
         }
     }
 }
+
+//Don't just go adding exceptions here just because the test shows a failure.
+//Make sure there is a good reason for it to actually have an exception.
+function bool WatchFlagTestExceptions(Name flagName)
+{
+    //Allow any flag names that return true
+    switch (flagName){
+        case 'NiceTerrorist_Dead':  //Needed for a mods4ever-web FlagEvent message
+            return True;
+    }
+    return False;
+}
+
 //#endregion
 
 function int GetBingoOptionIdx(string event)
