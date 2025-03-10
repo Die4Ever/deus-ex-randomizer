@@ -48,6 +48,10 @@ function WatchActors()
         {
             AddWatchedActor(d,"BuoyOhBuoy");
         }
+        else if(#var(prefix)Flask(d) != None)
+        {
+            AddWatchedActor(d,"ASingleFlask");
+        }
     }
 }
 //#endregion
@@ -3133,7 +3137,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "VandenbergShaft":
             return "Jump down the shaft leading from the third floor to the first floor, down to near the indoor generator.";
         case "ScienceIsForNerds":
-            return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill enough of those nerds.";
+            return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill enough of those nerds in lab coats.";
         case "Chef_ClassDead":
             return "Do what needs to be done and kill a chef.";
         case "un_PrezMeadPic_peepedtex":
@@ -3355,6 +3359,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Take a knee in the seat of a cherry picker.";
         case "ForkliftCertified":
             return "Demonstrate your certification and operate a functional forklift.";
+        case "ASingleFlask":
+            return "Destroy enough flasks through the game.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3789,6 +3795,7 @@ defaultproperties
     bingo_options(349)=(event="LibertyPoints",desc="Visit the 11 points of the statue foundation",max=11,missions=2)
     bingo_options(350)=(event="CherryPickerSeat",desc="Sit in the seat of a cherry picker",max=1,missions=49152)
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
+    bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up? (%s)",max=10,missions=24190)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
