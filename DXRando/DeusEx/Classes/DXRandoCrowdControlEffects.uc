@@ -1618,6 +1618,14 @@ function int SpawnNastyRat(string viewer)
 {
     local vector spawnLoc;
     local NastyRat nr;
+    local int num;
+
+    //Only allow a certain number of nasty rats in each level
+    foreach AllActors(class'NastyRat',nr){
+        if (++num>=3) {
+            return TempFail;
+        }
+    }
 
     spawnLoc = ccLink.ccModule.GetRandomPositionFine(,2000,10000);
 
