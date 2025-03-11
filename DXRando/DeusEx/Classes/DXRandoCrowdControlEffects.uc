@@ -2569,6 +2569,10 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "kill":
+            if (!InGame()) {
+                return TempFail;
+            }
+
             player().Died(GetCrowdControlPawn(viewer),'CrowdControl',player().Location);
             PlayerMessage(viewer@"set off your killswitch!");
             class'DXRBigMessage'.static.CreateBigMessage(player(), None, viewer$" triggered your kill switch!", "");
@@ -3208,7 +3212,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "drop_marbles":
-            if (!InGame()) {
+            if (InMenu()) {
                 return TempFail;
             }
             if (!DropMarbles(viewer)){
