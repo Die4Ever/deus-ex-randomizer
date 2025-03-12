@@ -1,4 +1,4 @@
-class DXRRiotCopy injects RiotCop;
+class DXRRiotCop injects #var(prefix)RiotCop;
 
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {

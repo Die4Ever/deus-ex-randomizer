@@ -41,51 +41,74 @@ simulated function PreTravel()
 simulated function Timer()
 {
     local #var(PlayerPawn) peeper;
-    local Vector HitNormal, HitLocation, StartTrace, EndTrace;
+    local Vector HitNormal, HitLocation, StartTrace, EndTrace, Reflection;
     local Actor peepee;// pronounced peep-ee, not pee-pee
     local Actor target;
     local bool newPeepee, newPeepTex;
     local name texName,texGroup;
-    local int flags, i;
+    local int flags, i, distRemaining;
 
 
     peeper = #var(PlayerPawn)(Owner);
 
     //Peeping logic happens here
-    StartTrace = peeper.Location;
-    StartTrace.Z += peeper.BaseEyeHeight;
-
     //A distance of 20000 is more than sufficient for Liberty Island,
     //which is basically the worst case scenario
-    EndTrace = StartTrace + 20000 * Vector(peeper.ViewRotation);
+    StartTrace = peeper.Location;
+    StartTrace.Z += peeper.BaseEyeHeight;
+    distRemaining=20000;
+    EndTrace = StartTrace + distRemaining * Vector(peeper.ViewRotation);
 
-    target=None;
+    while (distRemaining>0){
+        //peeper.ClientMessage("Distance Remaining: "$distRemaining);
 
-    //peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
-    foreach TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
-        if (BingoTrigger(target)!=None && BingoTrigger(target).bPeepable){
-            peepee = target;
+        target=None;
+
+        //peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
+        foreach TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
+            //if (target==Level){
+            //    peeper.ClientMessage("Hit level tex "$texName$" with flags "$flags);
+            //}
+            if (BingoTrigger(target)!=None && BingoTrigger(target).bPeepable){
+                peepee = target;
+                break;
+            }
+            else if (((target.DrawType == DT_None) || target.bHidden) && target!=Level)
+            {
+                // Keep tracing past invisible things
+            }
+            else if (target==Level && ((flags & 0x08000000) != 0))
+            {
+                break;
+            }
+            else if (target==Level && (((flags&0x00000004)!=0) || ((flags&0x00000001)!=0)))
+            {
+                //Skip invisible or translucent masked textures, as long as they aren't also mirrors
+                //It won't actually trace beyond the level, it seems, so this doesn't actually help
+            }
+            else
+            {
+                peepee = target;
+                break;
+            }
+        }
+
+        distRemaining=distRemaining-VSize(HitLocation-StartTrace);
+
+        //If it didn't hit a mirror, stop immediately, otherwise keep trying to trace
+        if ((flags & 0x08000000) == 0) {
             break;
         }
-        else if (((target.DrawType == DT_None) || target.bHidden) && target!=Level)
-        {
-            // Keep tracing past invisible things
-        }
-        else if (target==Level && (((flags&0x00000004)!=0) || ((flags&0x00000001)!=0)))
-        {
-            //Skip invisible or translucent masked textures
-            //It won't actually trace beyond the level, it seems, so this doesn't actually help
-        }
-        else
-        {
-            peepee = target;
-            break;
-        }
+
+        //peeper.ClientMessage("Hit a reflective surface, continuing");
+
+        Reflection = MirrorVectorByNormal(Normal(HitLocation - StartTrace), HitNormal);
+        StartTrace=HitLocation+HitNormal;
+        EndTrace=Reflection * distRemaining;
     }
 
 
     //peeper.ClientMessage("Peeping "$peepee.Name$" in state "$peepee.GetStateName());
-
 
     if(peepee.IsA('LevelInfo')){
         peepee=None;
@@ -123,6 +146,8 @@ simulated function Timer()
         if (ScriptedPawn(peepee)!=None){
             class'DXREvents'.static.MarkBingo("PawnState_"$peepee.GetStateName());
             class'DXREvents'.static.MarkBingo("PawnAnim_"$peepee.AnimSequence);
+        } else if (#var(PlayerPawn)(peepee)!=None){
+            class'DXREvents'.static.MarkBingo("PlayerPeeped");
         }
 
         if (BingoTrigger(peepee)!=None){
@@ -138,6 +163,7 @@ simulated function Timer()
             class'DXREvents'.static.MarkBingo(peepee.Class.Name$"_peeptime");
         }
     }
+
 }
 
 function PostPostBeginPlay()

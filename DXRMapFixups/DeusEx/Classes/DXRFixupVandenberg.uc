@@ -8,14 +8,17 @@ function CheckConfig()
 {
     local int i;
 
+    //#region Add Datacubes
     add_datacubes[i].map = "12_VANDENBERG_GAS";
     add_datacubes[i].imageClass = class'Image12_Tiffany_HostagePic';
     add_datacubes[i].location = vect(-107.1, 901.3, -939.4);
     i++;
+    //#endregion
 
     Super.CheckConfig();
 }
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
@@ -70,6 +73,7 @@ function PreFirstEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    //#region CMD
     case "12_VANDENBERG_CMD":
         // add goals and keypad code
         // you've definitely met Jock at Everett's helipad
@@ -167,7 +171,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region Tunnels
     case "12_VANDENBERG_TUNNELS":
 
         foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
@@ -245,7 +251,9 @@ function PreFirstEntryMapFixes()
             dynt.SetDestination("12_vandenberg_cmd",,"storage");
         }
         break;
+    //#endregion
 
+    //#region Sub Base
     case "14_VANDENBERG_SUB":
         //Door into base from shore (inside)
         AddSwitch( vect(2279.640137,3638.638184,-398.255676), rot(0, -16384, 0), 'door_base');
@@ -316,7 +324,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(555,4207,-420)); //Shed
         }
         break;
+    //#endregion
 
+    //#region OceanLab
     case "14_OCEANLAB_LAB":
 
         // backtracking button for crew module
@@ -422,6 +432,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderContainer',,, vectm(1733,3848,-4223)); //Corner in hall to UC
         }
         break;
+    //#endregion
+
+    //#region OceanLab UC
     case "14_OCEANLAB_UC":
         if (VanillaMaps){
             //This door can get stuck if a spiderbot gets jammed into the little bot-bay
@@ -474,7 +487,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region Silo
     case "14_Oceanlab_silo":
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)HowardStrong', hs) {
@@ -545,6 +560,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
+
+    //#region Vandenberg Computer
     case "12_VANDENBERG_COMPUTER":
         foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'GaryWalksToPosition'){
             ot.Orders='RunningTo';
@@ -567,7 +585,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
 
         break;
+    //#endregion
 
+    //#region Gas Station
     case "12_VANDENBERG_GAS":
         //Make Tiffany actually move like a useful human being
         foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
@@ -629,7 +649,9 @@ function PreFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Fix Doors
 function VandenbergCmdFixTimsDoor()
 {
     local #var(DeusExPrefix)Mover door;
@@ -777,7 +799,9 @@ function FixCmdElevator()
         }
     }
 }
+//#endregion
 
+//#region Gas Station Reactions
 function SetGarageGuyReactions(#var(prefix)ScriptedPawn sp)
 {
     sp.RaiseAlarm=RAISEALARM_BeforeAttacking;
@@ -821,7 +845,9 @@ function SetOutsideGuyReactions(#var(prefix)ScriptedPawn sp)
     sp.MaxProvocations=1;
     sp.ResetReactions();
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)CrateUnbreakableLarge c;
@@ -889,7 +915,9 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
@@ -981,6 +1009,7 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion
 
 function FixSavageSkillPointsDupe()
 {
@@ -1007,6 +1036,7 @@ function FixSavageSkillPointsDupe()
     }
 }
 
+//#region Timer
 function TimerMapFixes()
 {
     local #var(prefix)GarySavage gary;
@@ -1041,6 +1071,7 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
 function private _SiloGoalChecks() {
     local BlackHelicopter chopper;
@@ -1088,6 +1119,7 @@ function private _SiloRedirectedMissileWithHowardDead() {
     player().StartDataLinkTransmission("DL_Savage3");
 }
 
+//#region Count Cmd Bots
 function CountMJ12Bots()
 {
     local int newCount;
@@ -1135,4 +1167,5 @@ function bool UpdateBotGoal(int count)
     }
     return False;
 }
+//#endregion
 

@@ -1,4 +1,4 @@
-class DXRBeamTrigger injects BeamTrigger;
+class DXRBeamTrigger injects #var(prefix)BeamTrigger;
 // the blue one with no alarm
 
 function bool IsRelevant( actor Other )

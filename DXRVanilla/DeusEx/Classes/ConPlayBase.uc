@@ -176,6 +176,18 @@ log("  event.toActor    = " $ event.toActor );
 		// one of the given item
 		else
 		{
+            //If it's a non-stackable
+            if ((invItemTo.IsA('DeusExPickup')) && (DeusExPickup(invItemTo).bCanHaveMultipleCopies==False) && (DeusExPlayer(event.toActor) != None)) {
+                //make sure the player has somewhere to put it
+                if (DeusExPlayer(event.toActor).FindInventorySlot(invItemTo, True) == False) {
+                    // First destroy the object if we previously Spawned it
+                    if (bSpawnedItem)
+                        invItemFrom.Destroy();
+
+                    return nextAction;
+                }
+            }
+
 			itemsTransferred = AddTransferCount(invItemFrom, invItemTo, event, Pawn(event.toActor), False);
 
 			// If no items were transferred, then the player's inventory is full or

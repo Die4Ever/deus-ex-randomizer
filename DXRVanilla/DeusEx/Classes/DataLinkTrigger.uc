@@ -1,4 +1,4 @@
-class DXRDataLinkTrigger injects DataLinkTrigger;
+class DXRDataLinkTrigger injects #var(prefix)DataLinkTrigger;
 
 var bool bImportant;// currently only marked by DXRMissions, maybe later also by DXRFixups
 var transient Conversation conv;

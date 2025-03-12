@@ -3,7 +3,7 @@ class DXRFixupM05 extends DXRFixup;
 function CheckConfig()
 {
     local int i;
-
+    //#region Add Datacubes
     add_datacubes[i].map = "05_NYC_UNATCOMJ12lab";
     add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
     add_datacubes[i].Location = vect(-50,3540,-140); //Agent Sherman's desk in the back of the greasel lab
@@ -15,6 +15,7 @@ function CheckConfig()
     add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
     add_datacubes[i].plaintextTag = "JCCompPassword";
     i++;
+    //#endregion
 
     Super.CheckConfig();
 }
@@ -24,6 +25,7 @@ function PartialHeal(out int health, int d)
     health = Clamp(health, d/2, d);
 }
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local #var(PlayerPawn) p;
@@ -58,6 +60,7 @@ function PreFirstEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    //#region UNATCO MJ12 Lab
     case "05_NYC_UNATCOMJ12LAB":
         if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
@@ -139,7 +142,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(1439,1162,-144),,'Sitting');
 
         break;
+    //#endregion
 
+    //#region UNATCO HQ
     case "05_NYC_UNATCOHQ":
         if (VanillaMaps){
             FixAlexsEmail();
@@ -288,7 +293,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
+    //#endregion
 
+    //#region UNATCO Island
     case "05_NYC_UNATCOISLAND":
         foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
             if(lloyd.BindName != "PrivateLloyd") continue;
@@ -328,9 +335,12 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
 
         break;
+    //#endregion
     }
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local RetinalScanner r;
@@ -364,7 +374,9 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Balance Jailbreak
 function BalanceJailbreak()
 {
     local class<Inventory> iclass;
@@ -549,4 +561,4 @@ function BalanceJailbreak()
 
     }
 }
-
+//#endregion

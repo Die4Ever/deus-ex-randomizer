@@ -1,5 +1,6 @@
 class DXRFixupM02 extends DXRFixup;
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local BarrelAmbrosia ambrosia;
@@ -18,6 +19,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)FordSchick ford;
+    local #var(prefix)MJ12Troop troop;
     local DXRHoverHint hoverHint;
     local DXRButtonHoverHint buttonHint;
     local #var(prefix)Button1 button;
@@ -55,6 +58,7 @@ function PreFirstEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    //#region Battery Park
     case "02_NYC_BATTERYPARK":
 
         foreach AllActors(class'DeusExMover', d) {
@@ -105,6 +109,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
+
+    //#region Warehouse
     case "02_NYC_WAREHOUSE":
         //Warehouse is basically the same between Vanilla and Revision (Just some extra hallways and paths)
         if (VanillaMaps){
@@ -236,6 +243,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
+
+    //#region Hotel
     case "02_NYC_HOTEL":
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //The terrorist guarding Gilbert will no longer be ordered to attack the player
@@ -281,7 +291,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-310,-3900,75)); //Crack next to Paul's bed
         }
         break;
+    //#endregion
 
+    //#region Street
     case "02_NYC_STREET":
         if (RevisionMaps){
             foreach AllActors(class'CrateExplosiveSmall', c) {
@@ -323,6 +335,9 @@ function PreFirstEntryMapFixes()
             }
 
         break;
+    //#endregion
+
+    //#region Bar
     case "02_NYC_BAR":
         if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
             Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
@@ -330,7 +345,9 @@ function PreFirstEntryMapFixes()
             Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
         }
         break;
+    //#endregion
 
+    //#region Underground (Sewers)
     case "02_NYC_UNDERGROUND":
 #ifdef injections
         foreach AllActors(class'#var(prefix)Datacube',dc){
@@ -341,6 +358,25 @@ function PreFirstEntryMapFixes()
                 dc.SetLocation(vectm(2026.021118,-572.896851,-506.561584)); //On top of keypad lockbox
                 break;
             }
+        }
+
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            //Ford Schick has no alliance set
+            foreach AllActors(class'#var(prefix)FordSchick',ford){
+                ford.SetAlliance('FordSchick');
+            }
+
+            //The troops (for the most part) start hostile to Ford - keep them friendly to him initially
+            foreach AllActors(class'#var(prefix)MJ12Troop',troop){
+                ChangeInitialAlliance(troop,'FordSchick',1,false);
+                troop.ChangeAlly('FordSchick',1,false);
+            }
+
+            //AllianceTriggers to make MJ12 Troops hostile to Ford when he escapes
+            //These go off when you tell him to make a break for it
+            MakeFordHateTrigger('MJ12Troop');
+            MakeFordHateTrigger('FordsGuard');
+            MakeFordHateTrigger('AlarmTroop');
         }
 
         Spawn(class'PlaceholderItem',,, vectm(2644,-630,-405)); //Weird little ledge near pipe and bodies
@@ -356,6 +392,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-4059,976,-976),,'Sitting');
 
         break;
+    //#endregion
+
+    //#region Smuggler
     case "02_NYC_SMUG":
         foreach AllActors(class'DeusExMover', d,'botordertrigger') {
             d.tag = 'botordertriggerDoor';
@@ -397,12 +436,16 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region Free Clinic
     case "02_NYC_FREECLINIC":
         SetAllLampsState(true, true, false); // the free clinic has one desk lamp, at a desk no one is using
         break;
+    //#endregion
     }
 }
+//#endregion
 
 function CreateAnsweringMachineConversation(Actor tad)
 {
@@ -454,6 +497,21 @@ function CreateAnsweringMachineConversation(Actor tad)
 
 }
 
+function MakeFordHateTrigger(name pawnEvent)
+{
+    local #var(prefix)AllianceTrigger at;
+
+    at = Spawn(class'#var(prefix)AllianceTrigger');
+    at.Tag='FordExit';
+    at.Event=pawnEvent;
+    at.SetCollision(False,False,False);
+    at.Alliance='MJ12';
+    at.Alliances[0].AllianceLevel=-1;
+    at.Alliances[0].AllianceName='FordSchick';
+    at.Alliances[0].bPermanent=True;
+}
+
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local bool RevisionMaps;
@@ -480,7 +538,9 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local ConEventSpeech ces;
@@ -509,3 +569,4 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion

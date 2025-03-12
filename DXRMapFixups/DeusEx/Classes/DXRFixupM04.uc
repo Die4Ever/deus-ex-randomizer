@@ -15,6 +15,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+//#region PreTravel
 function PreTravelMapFixes()
 {
     switch(dxr.localURL) {
@@ -24,7 +25,9 @@ function PreTravelMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local Actor a;
@@ -70,6 +73,7 @@ function PreFirstEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    //#region Hotel
     case "04_NYC_HOTEL":
         if (#defined(vanilla)){
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'PaulSafe') {
@@ -169,7 +173,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(-310,-3900,75)); //Crack next to Paul's bed
         }
         break;
+    //#endregion
 
+    //#region NSF HQ
     case "04_NYC_NSFHQ":
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             foreach AllActors(class'#var(prefix)AutoTurret', turret) {
@@ -305,7 +311,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region UNATCO Island
     case "04_NYC_UNATCOISLAND":
         if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
@@ -341,6 +349,9 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(,, false, vect(-5723.258798, 1437.040527, -79.614632), 0.01);
 
         break;
+    //#endregion
+
+    //#region UNATCO HQ
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         FixAlexsEmail();
@@ -403,7 +414,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region Battery Park
     case "04_NYC_BATTERYPARK":
         foreach AllActors(class'AllianceTrigger',at,'GuntherAttacksJC'){
             //These default to colliding with actors, which means you can walk into them.  Oops.
@@ -439,7 +452,9 @@ function PreFirstEntryMapFixes()
         a.bIsSecretGoal = true; //Don't shuffle
 
         break;
+    //#endregion
 
+    //#region Bar
     case "04_NYC_BAR":
         if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
             Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
@@ -447,7 +462,9 @@ function PreFirstEntryMapFixes()
             Spawnm(class'BarDancerBoring',,,vect(-1440,340,48),rot(0,-16348,0));
         }
         break;
+    //#endregion
 
+    //#region Street
     case "04_NYC_STREET":
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-1849,286,-487));//Near free clinic
         pg.MaxCount=3;
@@ -485,7 +502,9 @@ function PreFirstEntryMapFixes()
         GoalCompletedSilent(p, 'TellJaime');
 
         break;
+    //#endregion
 
+    //#region Smuggler
     case "04_NYC_SMUG":
         foreach AllActors(class'#var(DeusExPrefix)Mover', door,'botordertrigger') {
             door.tag = 'botordertriggerDoor';
@@ -525,7 +544,9 @@ function PreFirstEntryMapFixes()
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
         break;
+    //#endregion
 
+    //#region Underground (Sewers)
     case "04_NYC_UNDERGROUND":
         foreach AllActors(class'#var(prefix)LaserTrigger',lt){
             if (lt.Location.Z < -574 && lt.Location.Z > -575){
@@ -533,9 +554,12 @@ function PreFirstEntryMapFixes()
             }
         }
         break;
+    //#endregion
     }
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     switch(dxr.localURL)
@@ -545,7 +569,9 @@ function PostFirstEntryMapFixes()
             break;
     }
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local FordSchick ford;
@@ -667,7 +693,9 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Timer
 function TimerMapFixes()
 {
     switch(dxr.localURL)
@@ -678,7 +706,9 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Paul Logic
 // if you bail on Paul but then have a change of heart and re-enter to come back and save him
 function NYC_04_CheckPaulUndead()
 {
@@ -797,3 +827,4 @@ function NYC_04_LeaveHotel()
         }
     }
 }
+//#endregion

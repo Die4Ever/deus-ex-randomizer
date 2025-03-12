@@ -1,4 +1,4 @@
-class DXRLaserTrigger injects LaserTrigger;
+class DXRLaserTrigger injects #var(prefix)LaserTrigger;
 // the red one with the alarm built-in
 
 function bool IsRelevant( actor Other )

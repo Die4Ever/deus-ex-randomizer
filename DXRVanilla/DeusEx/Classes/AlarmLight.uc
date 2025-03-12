@@ -1,4 +1,4 @@
-class DXRAlarmLight injects AlarmLight;
+class DXRAlarmLight injects #var(prefix)AlarmLight;
 
 var bool kludged;
 

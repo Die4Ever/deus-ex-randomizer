@@ -8,7 +8,7 @@ function CheckConfig()
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
-
+    //#region Add Datacubes
     add_datacubes[i].map = "15_AREA51_BUNKER";
     add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
     if (VanillaMaps){
@@ -72,6 +72,7 @@ function CheckConfig()
     }
     add_datacubes[i].plaintextTag = "UCControlRoomPassword";
     i++;
+    //#endregion
 
     Super.CheckConfig();
 }
@@ -87,6 +88,7 @@ function FixJockExplosion()
 #endif
 }
 
+//#region PreFirst Bunker
 function PreFirstEntryMapFixes_Bunker(bool isVanilla)
 {
     local DeusExMover d;
@@ -268,7 +270,9 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     }
 
 }
+//#endregion
 
+//#region PreFirst Final
 function PreFirstEntryMapFixes_Final(bool isVanilla)
 {
     local DeusExMover d;
@@ -455,8 +459,9 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         class'PlaceholderEnemy'.static.Create(self,vectm(-4795,-1596,-1357));
     }
 }
+//#endregion
 
-
+//#region PreFirst Entrance
 function PreFirstEntryMapFixes_Entrance(bool isVanilla)
 {
     local DeusExMover d;
@@ -566,8 +571,9 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
 
     }
 }
+//#endregion
 
-
+//#region PreFirst Page
 function PreFirstEntryMapFixes_Page(bool isVanilla)
 {
     local ComputerSecurity c;
@@ -684,7 +690,9 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
         }
     }
 }
+//#endregion
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local bool isVanilla;
@@ -711,7 +719,9 @@ function PreFirstEntryMapFixes()
     }
 
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local Gray g;
@@ -757,8 +767,9 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion
 
-
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)Keypad k;
@@ -776,7 +787,9 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Timer
 function TimerMapFixes()
 {
     switch(dxr.localURL)
@@ -791,7 +804,9 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Count Blue Fusions
 function Area51_CountBlueFusion()
 {
     local int remaining;
@@ -877,6 +892,7 @@ function bool UpdateReactorGoal(int count, int required)
     }
     return false;
 }
+//#endregion
 
 defaultproperties
 {

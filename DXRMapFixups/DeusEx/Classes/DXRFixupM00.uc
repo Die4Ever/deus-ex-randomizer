@@ -3,7 +3,7 @@ class DXRFixupM00 extends DXRFixup;
 function CheckConfig()
 {
     local int i;
-
+//#region Add Datacubes
     add_datacubes[i].map = "00_Training";
     add_datacubes[i].text = "In the real game, the locations of nanokeys will be randomized.";
     add_datacubes[i].location = vect(362.768005, 1083.160889, -146.629639);
@@ -100,10 +100,11 @@ function CheckConfig()
                             $ "|n|nIn order to be prepared, check out our README and Wiki on the Deus Ex Randomizer GitHub.";
     add_datacubes[i].location = vect(6577.697266, -3884.925049, 33.369633);
     i++;
-
+//#endregion
     Super.CheckConfig();
 }
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)UnTrigger ut;
@@ -121,7 +122,9 @@ function PreFirstEntryMapFixes()
     }
 
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local Actor a;
@@ -149,3 +152,4 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion

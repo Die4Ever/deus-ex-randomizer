@@ -1,4 +1,4 @@
-class SkillAwardTrigger injects SkillAwardTrigger;
+class SkillAwardTrigger injects #var(prefix)SkillAwardTrigger;
 
 function Trigger(Actor Other, Pawn Instigator)
 {

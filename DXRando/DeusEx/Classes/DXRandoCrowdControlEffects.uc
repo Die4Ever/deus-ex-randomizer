@@ -1618,6 +1618,14 @@ function int SpawnNastyRat(string viewer)
 {
     local vector spawnLoc;
     local NastyRat nr;
+    local int num;
+
+    //Only allow a certain number of nasty rats in each level
+    foreach AllActors(class'NastyRat',nr){
+        if (++num>=3) {
+            return TempFail;
+        }
+    }
 
     spawnLoc = ccLink.ccModule.GetRandomPositionFine(,2000,10000);
 
@@ -2239,6 +2247,90 @@ function bool RandomClothes()
 #endif
 }
 
+function int ShuffleBelt(String viewer)
+{
+    local int i,slot;
+    local #var(PlayerPawn) p;
+    local DeusExRootWindow root;
+    local Inventory beltItems[9],origBelt[9];
+    local Inventory invTemp;
+    local bool worked;
+
+    p = Player();
+
+    if (p==None){
+        return TempFail;
+    }
+
+    root = DeusExRootWindow(p.rootWindow);
+
+    if (root==None){
+        return TempFail;
+    }
+
+    //Items are in slots 1-9, Keyring is in 0
+    for(i=0;i<9;i++){
+        beltItems[i]=root.hud.belt.GetObjectFromBelt(i+1);
+        origBelt[i]=beltItems[i];
+        //p.ClientMessage("Belt "$(i+1)$": "$beltItems[i]);
+        worked=True;
+    }
+
+    //Don't continue unless the player has *something* in their belt
+    if (!worked){
+        return TempFail;
+    }
+
+    //Shuffle the items
+    worked=False;
+    for(i=0;i<9;i++){
+        slot=Rand(9);
+
+        if (slot==i) continue; //Don't swap with self
+        if (beltItems[i]==None && beltItems[slot]==None) continue; //Don't swap if both are empty
+
+        invTemp=beltItems[i];
+        beltItems[i]=beltItems[slot];
+        beltItems[slot]=invTemp;
+
+        worked=True;
+
+    }
+
+    //Don't continue if it didn't actually shuffle anything
+    if (!worked){
+        return TempFail;
+    }
+
+    //Compare new shuffled belt to original belt
+    worked=False;
+    for (i=0;i<9;i++){
+        if (beltItems[i]!=origBelt[i]) {
+            worked=True;
+            break;
+        }
+    }
+
+    //Don't continue if the shuffling ended with the same layout as before shuffling (really bad luck)
+    if (!worked){
+        return TempFail;
+    }
+
+    //Success!
+    //Assign the items to their new slots
+    for(i=0;i<9;i++){
+        if (beltItems[i]!=None){
+            root.hud.belt.RemoveObjectFromBelt(beltItems[i]);
+            root.hud.belt.AddObjectToBelt(beltItems[i],i+1,True);
+        }
+    }
+    root.hud.belt.PopulateBelt();
+
+    PlayerMessage(viewer@"shuffled your item belt!");
+
+    return Success;
+}
+
 function HandleSingleBloodGodSacrifice(Actor a)
 {
     if (Rand(4)==0){
@@ -2561,6 +2653,10 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "kill":
+            if (!InGame()) {
+                return TempFail;
+            }
+
             player().Died(GetCrowdControlPawn(viewer),'CrowdControl',player().Location);
             PlayerMessage(viewer@"set off your killswitch!");
             class'DXRBigMessage'.static.CreateBigMessage(player(), None, viewer$" triggered your kill switch!", "");
@@ -3200,7 +3296,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "drop_marbles":
-            if (!InGame()) {
+            if (InMenu()) {
                 return TempFail;
             }
             if (!DropMarbles(viewer)){
@@ -3268,6 +3364,14 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"gave you a fresh new outfit!");
 
             return Success;
+
+        case "shuffle_belt":
+            if (!InGame()){
+                return TempFail;
+            }
+
+            return ShuffleBelt(viewer);
+
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
