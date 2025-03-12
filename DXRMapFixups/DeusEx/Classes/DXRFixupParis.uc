@@ -1,5 +1,6 @@
 class DXRFixupParis extends DXRFixup;
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local GuntherHermann g;
@@ -35,6 +36,7 @@ function PreFirstEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    //#region Pre-Catacombs
     case "10_PARIS_CATACOMBS":
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
         SetAllLampsState(true, false, true); // lamps in the building next to the metro station
@@ -54,7 +56,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region Catacombs Metro
     case "10_PARIS_CATACOMBS_METRO": //Revision-only map, the little underground mall area
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_map'){break;}
         foreach AllActors(class'DeusExMover', m) {
@@ -64,6 +68,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
+
+    //#region Catacombs Tunnels
     case "10_PARIS_CATACOMBS_TUNNELS":
         if (VanillaMaps){
             foreach AllActors(class'Trigger', t)
@@ -110,7 +117,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
 
         break;
+    //#endregion
 
+    //#region Chateau
     case "10_PARIS_CHATEAU":
         if (VanillaMaps){
             foreach AllActors(class'DeusExMover', m, 'everettsignal')
@@ -163,6 +172,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
+
+    //#region Paris Streets
     case "10_PARIS_METRO":
         if (VanillaMaps){
             //Add a key for the media store
@@ -207,7 +219,9 @@ function PreFirstEntryMapFixes()
         desTrig.SetCollision(false, false, false);
 
         break;
+    //#endregion
 
+    //#region Club
     case "10_PARIS_CLUB":
         foreach AllActors(class'ScriptedPawn',sp){
             if (sp.BindName=="LDDPAchille" || sp.BindName=="Camille"){
@@ -242,6 +256,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
 
         break;
+    //#endregion
+
+    //#region Metro Station
     case "11_PARIS_UNDERGROUND":
         foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
         foreach AllActors(class'#var(prefix)TobyAtanwe', toby) {
@@ -270,6 +287,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1145,1370,-365)); //Plants near subway
         }
         break;
+    //#endregion
+
+    //#region Cathedral
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);
@@ -335,6 +355,9 @@ function PreFirstEntryMapFixes()
 
         }
         break;
+    //#endregion
+
+    //#region Everett
     case "11_PARIS_EVERETT":
         foreach AllActors(class'#var(prefix)ComputerSecurity',cs){
             if (cs.specialOptions[1].Text=="Nanotech Containment Field 002"){
@@ -375,9 +398,12 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(true, false, true); // Everett's bedroom
 
         break;
+    //#endregion
     }
 }
+//#endregion
 
+//#region Le Merchant
 function SpawnLeMerchant(vector loc, rotator rot)
 {
     local DXRNPCs npcs;
@@ -405,9 +431,10 @@ function SpawnLeMerchant(vector loc, rotator rot)
             sp.AgitationDecayRate = 0;
         }
     }
-
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local TobyAtanwe toby;
@@ -542,7 +569,9 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)WIB wib;
@@ -577,3 +606,4 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion

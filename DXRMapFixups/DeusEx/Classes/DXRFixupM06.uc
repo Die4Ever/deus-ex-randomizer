@@ -7,6 +7,7 @@ function CheckConfig()
     local Rotator rot;
     local int i;
 
+    //#region Add Datacubes
     add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
     add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";
     add_datacubes[i].Location = vect(350,1950,200); //Middle cube on middle floor
@@ -44,6 +45,7 @@ function CheckConfig()
     add_datacubes[i].Location = vect(367,-2511,-334);
     add_datacubes[i].plaintextTag = "LuckyMoneyPassword";
     i++;
+    //#endregion
 
     Super.CheckConfig();
 }
@@ -64,7 +66,7 @@ function MakeLumpathPissedTrigger(Vector loc, float rad, float height)
     ft.bTriggerOnceOnly = false;
 }
 
-
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local Actor a;
@@ -116,6 +118,7 @@ function PreFirstEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    //#region Helibase
     case "06_HONGKONG_HELIBASE":
         if (VanillaMaps){
             foreach AllActors(class'ProjectileGenerator', pg, 'purge') {
@@ -186,7 +189,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(877,-360,144),,'Shitting');
 
         break;
+    //#endregion
 
+    //#region Tong Base
     case "06_HONGKONG_TONGBASE":
         foreach AllActors(class'Actor', a)
         {
@@ -206,6 +211,9 @@ function PreFirstEntryMapFixes()
             }
         }
         break;
+    //#endregion
+
+    //#region Wan Chai Market
     case "06_HONGKONG_WANCHAI_MARKET":
         if (VanillaMaps) {
             // button to get out of Tong's base
@@ -334,7 +342,9 @@ function PreFirstEntryMapFixes()
             }
         }
         break;
+    //#endregion
 
+    //#region Tonnochi Road
     case "06_HONGKONG_WANCHAI_STREET":
         SetupMaggieGuardBarkFix();
         foreach AllActors(class'#var(prefix)WeaponNanoSword', dts) {
@@ -389,7 +399,9 @@ function PreFirstEntryMapFixes()
             }
         }
         break;
+    //#endregion
 
+    //#region Level 1 Labs
     case "06_HONGKONG_MJ12LAB":
         // alarm in MiB's overlook office
         Spawnm(class'#var(injectsprefix)AlarmUnit',, 'SecurityRevoked', vect(253.179993,1055.714844,825.220764), rot(0,32768,0));
@@ -533,6 +545,9 @@ function PreFirstEntryMapFixes()
 
 
         break;
+    //#endregion
+
+    //#region Lucky Money
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
 #ifdef injections
         foreach AllActors(class'#var(prefix)AllianceTrigger',at,'StoreSafe') {
@@ -671,7 +686,9 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region Canal Road
     case "06_HONGKONG_WANCHAI_GARAGE":
         foreach AllActors(class'DeusExMover',d,'secret_door'){
             d.bFrobbable=False;
@@ -682,6 +699,9 @@ function PreFirstEntryMapFixes()
             }
         }
         break;
+    //#endregion
+
+    //#region Versalife
     case "06_HONGKONG_VERSALIFE":
 
         ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(128.850372,635.855957,-123)); //In front of lower elevator
@@ -753,7 +773,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-836.9,850.3,-9.7)); //Reception desk back
 
         break;
+    //#endregion
 
+    //#region Level 2 Labs
     case "06_HONGKONG_STORAGE":
         //Make sure Maggie always has her MaggieChowShowdown conversation with you if she's here.
         //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing)
@@ -869,7 +891,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(0,0,565)); //Walkway over UC room
         class'PlaceholderEnemy'.static.Create(self,vectm(75,-1515,1075)); //Upper hallway (to keep it likely for there to be enemies up there)
         break;
+    //#endregion
 
+    //#region Canal
     case "06_HONGKONG_WANCHAI_CANAL":
 
         //Give the drug dealer and pusher 100 credits each, and make them defend each other if attacked
@@ -890,11 +914,14 @@ function PreFirstEntryMapFixes()
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(3237,3217,-506));//Lower garage storage area
         rg.MaxCount=3;
         break;
+    //#endregion
     default:
         break;
     }
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local Actor a;
@@ -917,6 +944,7 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
 function SetupMaggieGuardBarkFix()
 {
@@ -952,6 +980,7 @@ function FixMaggieMoveSpeed()
     }
 }
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local Actor a;
@@ -980,6 +1009,7 @@ function AnyEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    //#region Tong Base
     case "06_HONGKONG_TONGBASE":
         c = GetConversation('M08Briefing');
         c.AddFlagRef('TriadCeremony_Played', true);
@@ -1039,6 +1069,9 @@ function AnyEntryMapFixes()
             }
         }
         break;
+    //#endregion
+
+    //#region Wan Chai Market
     case "06_HONGKONG_WANCHAI_MARKET":
         foreach AllActors(class'Actor', a)
         {
@@ -1074,13 +1107,17 @@ function AnyEntryMapFixes()
         HandleJohnSmithDeath();
         SetTimer(1.0, True); //To handle updating the DTS goal description
         break;
+    //#endregion
 
+    //#region Versalife
     case "06_HONGKONG_VERSALIFE":
         // allow you to get the code from him even if you've been to the labs, to fix backtracking
         DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
         GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
         break;
+    //#endregion
 
+    //#region Tonnochi Road
     case "06_HONGKONG_WANCHAI_STREET":
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'JockShaftTop') {
             m.bLocked = false;
@@ -1104,7 +1141,9 @@ function AnyEntryMapFixes()
         }
 
         break;
+    //#endregion
 
+    //#region Canals
     case "06_HONGKONG_WANCHAI_CANAL":
         HandleJohnSmithDeath();
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
@@ -1134,6 +1173,9 @@ function AnyEntryMapFixes()
             }
         }
         break;
+    //#endregion
+
+    //#region Level 1 Labs
     case "06_HONGKONG_MJ12LAB":
         c = GetConversation('MJ12Lab_BioWeapons_Overheard');
         ce = c.eventList;
@@ -1148,6 +1190,9 @@ function AnyEntryMapFixes()
             ce = ce.nextEvent;
         }
         break;
+    //#endregion
+
+    //#region Lucky Money
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
 
         //Let FemJC pay for a date if she wants
@@ -1187,6 +1232,9 @@ function AnyEntryMapFixes()
         }
 
         break;
+    //#endregion
+
+    //#region level 2 Labs
     case "06_HONGKONG_STORAGE":
         //Make sure Maggie always has her MaggieChowShowdown conversation with you if she's here.
         //Mark her as having Fled as you enter the lower section of the UC (This prevents her conversations from the apartment from playing) - Done in PreFirstEntry
@@ -1194,11 +1242,14 @@ function AnyEntryMapFixes()
         DeleteConversationFlag(GetConversation('MaggieChowShowdown'), 'M07Briefing_Played', true);
         FixMaggieMoveSpeed();
         break;
+    //#endregion
     default:
         break;
     }
 }
+//#endregion
 
+//#region Timer
 function TimerMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
@@ -1217,6 +1268,7 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
 
 function HandleJohnSmithDeath()

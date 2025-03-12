@@ -1,5 +1,6 @@
 class DXRFixupM08 extends DXRFixup;
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local StantonDowd s;
@@ -39,7 +40,9 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Adjust Infolinks
 function RearrangeJockExitDialog()
 {
     local Conversation c;
@@ -109,6 +112,8 @@ function RearrangeMJ12ConvergingInfolink()
 
 }
 
+//#endregion
+
 function Name FindCorrespondingCopTag(Name unatcoTag)
 {
     switch(unatcoTag){
@@ -169,6 +174,7 @@ function SetUNATCOTargetOrders(#var(prefix)ScriptedPawn troop)
 }
 
 
+//#region Timer
 function TimerMapFixes()
 {
     local BlackHelicopter chopper;
@@ -199,7 +205,9 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local DataLinkTrigger dlt;
@@ -238,6 +246,7 @@ function PreFirstEntryMapFixes()
 
     switch(dxr.localURL)
     {
+        //#region Street
         case "08_NYC_STREET":
 
             //Reinforcements for the sixth cop
@@ -327,6 +336,9 @@ function PreFirstEntryMapFixes()
             }
 
             break;
+    //#endregion
+
+    //#region Hotel
         case "08_NYC_HOTEL":
             if (VanillaMaps){
                 Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
@@ -391,6 +403,9 @@ function PreFirstEntryMapFixes()
                 Spawn(class'PlaceholderItem',,, vectm(-310,-3900,75)); //Crack next to Paul's bed
             }
             break;
+    //#endregion
+
+    //#region Bar
         case "08_NYC_BAR":
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
             if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
@@ -400,6 +415,9 @@ function PreFirstEntryMapFixes()
             }
 
             break;
+    //#endregion
+
+    //#region Smuggler
         case "08_NYC_SMUG":
             foreach AllActors(class'#var(DeusExPrefix)Mover', d,'botordertrigger') {
                 d.tag = 'botordertriggerDoor';
@@ -441,19 +459,28 @@ function PreFirstEntryMapFixes()
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
 
             break;
+    //#endregion
 
+    //#region Free Clinic
         case "08_NYC_FREECLINIC":
             SetAllLampsState(true, true, false); // the free clinic has one desk lamp, at a desk no one is using
             break;
+    //#endregion
+
+    //#region Underground (Sewers)
         case "08_NYC_UNDERGROUND":
             foreach AllActors(class'#var(prefix)LaserTrigger',lt){
                 if (lt.Location.Z < -574 && lt.Location.Z > -575){
                     lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
                 }
             }
+            break;
+    //#endregion
     }
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
@@ -497,3 +524,4 @@ function PostFirstEntryMapFixes()
             break;
     }
 }
+//#endregion

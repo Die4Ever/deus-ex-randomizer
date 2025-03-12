@@ -5,7 +5,7 @@ var int storedWeldCount;// ship weld points
 function CheckConfig()
 {
     local int i;
-
+    //#region Add Datacubes
     add_datacubes[i].map = "09_NYC_Dockyard";
     add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
     add_datacubes[i].Location = vect(3860,3270,300);  //Ammo storage control room
@@ -14,10 +14,12 @@ function CheckConfig()
     add_datacubes[i] = add_datacubes[i-1];// dupe
     add_datacubes[i].Location = vect(-145,4775,70); //On boxes in other warehouse
     i++;
+    //#endregion
 
     Super.CheckConfig();
 }
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local #var(DeusExPrefix)Mover m;
@@ -55,6 +57,7 @@ function PreFirstEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    //#region Ship Upper Decks
     case "09_NYC_SHIP":
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
             if( m.KeyIdNeeded == 'EngineRoomDoor' ) m.Tag = 'shipbelowdecks_door';
@@ -135,7 +138,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(2005,-68,512),,'Shitting');
 
         break;
+    //#endregion
 
+    //#region Ship Below Decks
     case "09_NYC_SHIPBELOW":
         // make the weld points highlightable
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'ShipBreech') {
@@ -198,7 +203,9 @@ function PreFirstEntryMapFixes()
         p.GoalCompleted('GetBelowDecks');
 
         break;
+    //#endregion
 
+    //#region Dockyard
     case "09_NYC_DOCKYARD":
         foreach AllActors(class'#var(prefix)LAM', lam) {
             if(lam.name != 'LAM2') continue;
@@ -305,7 +312,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(1038,3391,48),,'Sitting');
 
         break;
+    //#endregion
 
+    //#region Dockyards Ventilation
     case "09_NYC_SHIPFAN":
         if (VanillaMaps){
             foreach AllActors(class'ComputerSecurity',cs){
@@ -317,7 +326,9 @@ function PreFirstEntryMapFixes()
             }
         }
         break;
+    //#endregion
 
+    //#region Graveyard
     case "09_NYC_GRAVEYARD":
         if (VanillaMaps){
             Spawn(class'PlaceholderItem',,, vectm(-509.5,-742.88,-213)); //Tunnels
@@ -380,9 +391,12 @@ function PreFirstEntryMapFixes()
         }
 
         break;
+    //#endregion
     }
 }
+//#endregion
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local #var(prefix)CrateUnbreakableLarge c;
@@ -420,7 +434,9 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local #var(DeusExPrefix)Mover m;
@@ -475,7 +491,9 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Timer
 function TimerMapFixes()
 {
     switch(dxr.localURL)
@@ -485,7 +503,9 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Weld Point Logic
 function UpdateWeldPointGoal(int count)
 {
     local string goalText;
@@ -541,8 +561,9 @@ function NYC_09_CountWeldPoints()
         UpdateWeldPointGoal(newWeldCount);
     }
 }
+//#endregion
 
-
+//#region Fan Controls
 function Trigger(Actor Other, Pawn Instigator)
 {
     if (Tag=='FanToggle' && class'DXRMapVariants'.static.IsVanillaMaps(player())){
@@ -678,6 +699,7 @@ function ToggleFan()
         }
     }
 }
+//#endregion
 
 defaultproperties
 {

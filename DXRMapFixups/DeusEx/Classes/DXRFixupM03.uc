@@ -13,6 +13,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local Actor a;
@@ -54,7 +55,9 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Timer
 function TimerMapFixes()
 {
     switch(dxr.localURL)
@@ -64,7 +67,9 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local Mover m;
@@ -96,6 +101,7 @@ function PreFirstEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    //#region Battery Park
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'#var(prefix)NanoKey', k) {
             // unnamed key normally unreachable
@@ -137,7 +143,9 @@ function PreFirstEntryMapFixes()
         AddActor(class'Sodacan', vect(-2132.21,1838.89,326.25));
 
         break;
+    //#endregion
 
+    //#region Airfield Heli Base
     case "03_NYC_AirfieldHeliBase":
         foreach AllActors(class'Mover',m) {
             // call the elevator at the end of the level when you open the appropriate door
@@ -206,7 +214,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(928,546,224),,'Sitting');
 
         break;
+    //#endregion
 
+    //#region Airfield
     case "03_NYC_AIRFIELD":
         if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
@@ -289,7 +299,9 @@ function PreFirstEntryMapFixes()
             }
         }
         break;
+    //#endregion
 
+    //#region Brooklyn Bridge Station
     case "03_NYC_BROOKLYNBRIDGESTATION":
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
@@ -319,7 +331,9 @@ function PreFirstEntryMapFixes()
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
         }
         break;
+    //#endregion
 
+    //#region Mole People
     case "03_NYC_MOLEPEOPLE":
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
             if( dxm.KeyIDNeeded == 'MoleRestroomKey' ) dxm.Tag = 'BathroomDoor';
@@ -375,7 +389,9 @@ function PreFirstEntryMapFixes()
 
 
         break;
+    //#endregion
 
+    //#region 747
     case "03_NYC_747":
         // fix Jock's conversation state so he doesn't play the dialog for unatco->battery park but now plays dialog for airfield->unatco
         // DL_Airfield is "You're entering a helibase terminal below a private section of LaGuardia."
@@ -398,7 +414,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(342.4,-730.14,196.3)); //Shelf in cargo area
         Spawn(class'PlaceholderItem',,, vectm(495.4,-733.96,196.3)); //Shelf in cargo area
         break;
+    //#endregion
 
+    //#region UNATCO Island
     case "03_NYC_UNATCOISLAND":
         if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
@@ -416,6 +434,9 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
 
         break;
+    //#endregion
+
+    //#region UNATCO HQ
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         FixAlexsEmail();
@@ -490,9 +511,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
+    //#endregion
     }
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local #var(prefix)Phone phone;
@@ -573,7 +597,9 @@ function AnyEntryMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Fix Anna Ambush
 function FixAnnaAmbush()
 {
     local #var(prefix)AnnaNavarre anna;
@@ -594,3 +620,4 @@ function FixAnnaAmbush()
         if(anna == None && p.Owner!=player()) p.SetOwner(player());
     }
 }
+//#endregion

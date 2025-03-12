@@ -1,6 +1,6 @@
 class DXRFixupM01 extends DXRFixup;
 
-
+//#region Post First Entry
 function PostFirstEntryMapFixes()
 {
     local DeusExMover m;
@@ -33,8 +33,10 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+//#endregion
 
 
+//#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)MapExit exit;
@@ -61,6 +63,7 @@ function PreFirstEntryMapFixes()
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL) {
+    //#region UNATCO Island
     case "01_NYC_UNATCOISLAND":
         foreach AllActors(class'#var(prefix)HarleyFilben', harley) {
             harley.bImportant = true;
@@ -156,7 +159,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-229,1438,512));
         class'PlaceholderEnemy'.static.Create(self,vectm(2766,317,2528), 0, 'Standing');
         break;
+    //#endregion
 
+    //#region UNATCO HQ
     case "01_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
@@ -219,9 +224,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
+        //#endregion
     }
 }
+//#endregion
 
+//#region Timer
 function TimerMapFixes()
 {
     switch(dxr.localURL)
@@ -234,7 +242,9 @@ function TimerMapFixes()
         break;
     }
 }
+//#endregion
 
+//#region Any Entry
 function AnyEntryMapFixes()
 {
     local Conversation c;
@@ -289,3 +299,4 @@ function AnyEntryMapFixes()
         before.nextEvent = after;
     }
 }
+//#endregion
