@@ -18,6 +18,7 @@ var bool         bShowTagConnections;
 var bool         bShowEventConnections;
 var bool         bShowCollision;
 var bool         bShowTextTags;
+var bool         bShowAlliances;
 
 function SetActorRadius(string newRadius)
 {
@@ -158,6 +159,17 @@ function ShowTextTags(bool bShow)
     bShowTextTags = bShow;
 }
 
+function bool AreAlliancesVisible()
+{
+    return bShowAlliances;
+}
+
+function ShowAlliances(bool bShow)
+{
+    bShowAlliances = bShow;
+}
+
+
 function string GetActorName(Actor a)
 {
     local string str;
@@ -205,6 +217,7 @@ function DrawColourLine(GC gc, vector point1, vector point2, int r, int g, int b
     }
 }
 
+//#region DrawWindow
 //I just want to change the font :(
 function DrawWindow(GC gc)
 {
@@ -383,6 +396,7 @@ function DrawWindow(GC gc)
                 mainColor.B = 0;
             }
             gc.SetTileColor(mainColor);
+            //#region Show Mesh
             if (bShowMesh)
             {
                 SetSkins(trackActor, skins);
@@ -408,6 +422,7 @@ function DrawWindow(GC gc)
                 gc.SetTileColorRGB(mainColor.R/8, mainColor.G/8, mainColor.B/8);
                 gc.DrawBox(leftX, topY, 1+rightX-leftX, 1+bottomY-topY, 0, 0, 1, Texture'Solid');
             }
+            //#endregion
 
             gc.SetStyle(DSTY_Normal);
 
@@ -428,6 +443,7 @@ function DrawWindow(GC gc)
             }
 
             str = "";
+            //#region Show Tag and Event
             if (bShowTagEvent || bShowData)
             {
                 str = str $ "|cf50aff";
@@ -452,6 +468,9 @@ function DrawWindow(GC gc)
                     str = str $ logic.in1 @ logic.in2 $ CR();
                 }
             }
+            //#endregion
+
+            //#region Show Event Conns
             if (bShowEventConnections)
             {
                 if (trackActor.Event!=''){
@@ -470,6 +489,9 @@ function DrawWindow(GC gc)
                     }
                 }
             }
+            //#endregion
+
+            //#region Show Tag Conns
             if (bShowTagConnections)
             {
                 if (trackActor.Tag!=''){
@@ -487,6 +509,9 @@ function DrawWindow(GC gc)
                     }
                 }
             }
+            //#endregion
+
+            //#region Show State
             if (bShowState || bShowData)
             {
                 stateName = trackActor.GetStateName();
@@ -496,6 +521,9 @@ function DrawWindow(GC gc)
                     str = str $ "Enemy: " $ trackPawn.Enemy.name $ CR();
                 }
             }
+            //#endregion
+
+            //#region Show Physics
             if (bShowPhysics || bShowData)
             {
                 str = str $ "|c80ff80P=";
@@ -543,11 +571,17 @@ function DrawWindow(GC gc)
                 }
                 str = str $ CR();
             }
+            //#endregion
+
+            //#region Show Mass
             if (bShowMass || bShowData)
             {
                 str = str $ "|cff80ffM=";
                 str = str $ trackActor.Mass $ CR();
             }
+            //#endregion
+
+            //#region Show Enemy
             if (bShowEnemy || bShowData)
             {
                 str = str $ "|cff8000E=";
@@ -556,41 +590,65 @@ function DrawWindow(GC gc)
                 else
                     str = str $ "n/a" $ CR();
             }
+            //#endregion
+
+            //#region Show Instigator
             if (bShowInstigator || bShowData)
             {
                 str = str $ "|c0080ffI=";
                 str = str $ "'" $ trackActor.Instigator $ "'" $ CR();
             }
+            //#endregion
+
+            //#region Show Owner
             if (bShowOwner || bShowData)
             {
                 str = str $ "|c80ffffO=";
                 str = str $ "'" $ trackActor.Owner $ "'" $ CR();
             }
+            //#endregion
+
+            //#region Show Bind Name
             if (bShowBindName || bShowData)
             {
                 str = str $ "|c80b0b0N=";
                 str = str $ "'" $ trackActor.BindName $ "'" $ CR();
             }
+            //#endregion
+
+            //#region Show Base
             if (bShowBase || bShowData)
             {
                 str = str $ "|c808080B=";
                 str = str $ "'" $ trackActor.Base $ "'" $ CR();
             }
+            //#endregion
+
+            //#region Show Last Rendered
             if (bShowLastRendered || bShowData)
             {
                 str = str $ "|cffffffR=";
                 str = str $ "'" $ trackActor.LastRendered() $ "'" $ CR();
             }
+            //#endregion
+
+            //#region Show Light Level
             if (bShowLightLevel || bShowData)
             {
                 visibility = trackActor.AIVisibility(false);
                 str = str $ "|p4L=" $ visibility*100 $ CR();
             }
+            //#endregion
+
+            //#region Show Visibility
             if (bShowVisibility || bShowData)
             {
                 visibility = player.AICanSee(trackActor, 1.0, true, true, true);
                 str = str $ "|p7V=" $ visibility*100 $ CR();
             }
+            //#endregion
+
+            //#region Show Distance
             if (bShowDist || bShowData)
             {
                 // It would be soooo much easier to call
@@ -606,6 +664,9 @@ function DrawWindow(GC gc)
                 dist = sqrt(dist);
                 str = str $ "|p3D=" $ dist $ CR();
             }
+            //#endregion
+
+            //#region Show Position
             if (bShowPos || bShowData)
             {
                 str = str $ "|p2";
@@ -613,6 +674,9 @@ function DrawWindow(GC gc)
                             "Y=" $ trackActor.Location.Y $ CR() $
                             "Z=" $ trackActor.Location.Z $ CR();
             }
+            //#endregion
+
+            //#region Show Velocity
             if (bShowVelocity || bShowData)
             {
                 speed  = trackActor.Velocity.X*trackActor.Velocity.X;
@@ -626,6 +690,9 @@ function DrawWindow(GC gc)
                             "vY=" $ trackActor.Velocity.Y $ CR() $
                             "vZ=" $ trackActor.Velocity.Z $ CR();
             }
+            //#endregion
+
+            //#region Show Acceleration
             if (bShowAcceleration || bShowData)
             {
                 speed  = trackActor.Acceleration.X*trackActor.Acceleration.X;
@@ -639,6 +706,9 @@ function DrawWindow(GC gc)
                             "aY=" $ trackActor.Acceleration.Y $ CR() $
                             "aZ=" $ trackActor.Acceleration.Z $ CR();
             }
+            //#endregion
+
+            //#region Show Health
             if (bShowHealth || bShowData)
             {
                 str = str $ "|p6H=";
@@ -655,8 +725,10 @@ function DrawWindow(GC gc)
                 else
                     str = str $ "n/a" $ CR();
             }
+            //#endregion
 
             barOffset = 0;
+            //#region Show Enemy Response
             if (bShowEnemyResponse || bShowData)
             {
                 trackPawn = ScriptedPawn(trackActor);
@@ -685,6 +757,9 @@ function DrawWindow(GC gc)
                     barOffset += 5;
                 }
             }
+            //#endregion
+
+            //#region Show Collision
             if (bShowCollision || bShowData)
             {
                 str = str $ "|c8080ff";
@@ -695,11 +770,15 @@ function DrawWindow(GC gc)
                             "bBlockActors=" $ trackActor.bBlockActors $ CR() $
                             "bBlockPlayers=" $ trackActor.bBlockPlayers $ CR();
             }
+            //#endregion
 
+            //#region Show Custom Value
             if(bShowCustom && customAttrib != "") {
                 str = str $ customAttrib $ ": " $ trackActor.GetPropertyText(customAttrib) $ CR();
             }
+            //#endregion
 
+            //#region Show Text Tags
             if(bShowTextTags || bShowData)
             {
                 if (#var(prefix)InformationDevices(trackActor)!=None){
@@ -707,7 +786,9 @@ function DrawWindow(GC gc)
                     str = str $ "TextTag=" $ class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(trackActor)) $ CR();
                 }
             }
+            //#endregion
 
+            //#region Show Inventory
             if(bShowInventory){
                 item = None;
                 bValid=False;
@@ -730,6 +811,47 @@ function DrawWindow(GC gc)
                     }
                 }
             }
+            //#endregion
+
+            //#region Show Alliances
+            if(bShowAlliances){
+                trackPawn = ScriptedPawn(trackActor);
+                if (trackPawn != None){
+                    str = str $ "|c5b4ce6";
+                    str = str $ "Alliance:" $ trackPawn.Alliance $ CR();
+                    str = str $ "Alliances:" $ CR();
+                    for(i=0;i<ArrayCount(trackPawn.InitialAlliances);i++) {
+                        if (trackPawn.InitialAlliances[i].AllianceName!=''){
+                            str = str $ trackPawn.InitialAlliances[i].AllianceName$": ";
+                            switch(trackPawn.GetAllianceType(trackPawn.InitialAlliances[i].AllianceName)){
+                                case ALLIANCE_Friendly:
+                                    str = str $ "Frnd";
+                                    break;
+                                case ALLIANCE_Neutral:
+                                    str = str $ "Neut";
+                                    break;
+                                case ALLIANCE_Hostile:
+                                    str = str $ "Host";
+                                    break;
+                            }
+                            str = str $ "  I: ";
+                            switch(trackPawn.InitialAlliances[i].AllianceLevel){
+                                case 1.0:
+                                    str = str $ "Frnd";
+                                    break;
+                                case 0.0:
+                                    str = str $ "Neut";
+                                    break;
+                                case -1.0:
+                                    str = str $ "Host";
+                                    break;
+                            }
+                            str = str $ CR();
+                        }
+                    }
+                }
+            }
+            //#endregion
 
             if (str != "")
             {
@@ -770,6 +892,7 @@ function DrawWindow(GC gc)
     str = "maxpos: ("$maxpos$")";
     gc.DrawText(5, 170, 500, 20, str);*/
 }
+//#endregion
 
 defaultproperties
 {

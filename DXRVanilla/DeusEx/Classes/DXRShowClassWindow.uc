@@ -13,12 +13,13 @@ var ToolCheckboxWindow	chkTagConns;
 var ToolCheckboxWindow	chkEventConns;
 var ToolCheckboxWindow	chkCollision;
 var ToolCheckboxWindow	chkTextTags;
+var ToolCheckboxWindow	chkAlliances;
 
 event InitWindow()
 {
     Super.InitWindow();
 
-    SetSize(420,445); //215,420 normally
+    SetSize(420,470); //215,420 normally
 
     CreateDXRandoControls();
 }
@@ -67,6 +68,9 @@ function CreateDXRandoControls()
     chkInventory = CreateToolCheckbox(215, y,  "Show Inventory", actorDisplay.IsInventoryVisible());
     y += 25;
 
+    chkAlliances  = CreateToolCheckbox(215, y,  "Show Alliances", actorDisplay.AreAlliancesVisible());
+    y += 25;
+
     //Limit the actors shown to a radius?
     chkLimitRadius = CreateToolCheckbox(215, y,  "Limit to Radius", actorDisplay.IsRadiusLimited());
     y += 15;
@@ -106,6 +110,7 @@ function SaveSettings()
     actorDisplay.ShowCustom(chkCustom.GetToggle());
 
     actorDisplay.ShowInventory(chkInventory.GetToggle());
+    actorDisplay.ShowAlliances(chkAlliances.GetToggle());
     actorDisplay.ShowTagEvent(chkTagEvent.GetToggle());
     actorDisplay.ShowTagConns(chkTagConns.GetToggle());
     actorDisplay.ShowEventConns(chkEventConns.GetToggle());
