@@ -2858,7 +2858,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Flare_Activated":
             return "Light enough flares.";
         case "VialAmbrosia_Activated":
-            return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.";
+            return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.|n|nThere is also a vial of ambrosia in a small box in the Ocean Lab.";
         case "Binoculars_Activated":
             return "Find and use a pair of binoculars.";
         case "HazMatSuit_Activated":
@@ -3355,6 +3355,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Demonstrate your certification and operate a functional forklift.";
         case "ASingleFlask":
             return "Destroy enough flasks through the game.";
+        case "FC_EyeTest_peepedtex":
+            return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3608,7 +3610,7 @@ defaultproperties
     bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",desc_singular="Drink 1 can of soda",max=75)
     bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s Ballistic Armors",desc_singular="Use 1 Ballistic Armor",max=3,missions=57212)
     bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",desc_singular="Light 1 flare",max=15)
-    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=512)
+    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=16896)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",desc_singular="Use 1 HazMat Suit",max=3,missions=54866)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
@@ -3790,6 +3792,7 @@ defaultproperties
     bingo_options(350)=(event="CherryPickerSeat",desc="Sit in the seat of a cherry picker",max=1,missions=49152)
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
     bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up? (%s)",max=10,missions=24190)
+    bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
