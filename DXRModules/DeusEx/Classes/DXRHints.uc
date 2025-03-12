@@ -144,10 +144,12 @@ simulated function InitHints()
         AddHint("The Aggressive Defense System aug can stop not only missiles", "and grenades, but also darts, throwing knives, plasma, and flames!");
     }
 
-    if( dxr.flags.settings.skills_reroll_missions == 1 ) {
-        AddHint("Skill costs reroll every mission.", "Check them often, especially the BANNED skills.");
-    } else if( dxr.flags.settings.skills_reroll_missions > 0 ) {
-        AddHint("Skill costs reroll every "$ dxr.flags.settings.skills_reroll_missions $" missions.", "You're currently in mission "$mission$".");
+    if(dxr.flags.settings.minskill != dxr.flags.settings.maxskill) {
+        if( dxr.flags.settings.skills_reroll_missions == 1 ) {
+            AddHint("Skill costs reroll every mission.", "Check them often, especially the BANNED skills.");
+        } else if( dxr.flags.settings.skills_reroll_missions > 0 ) {
+            AddHint("Skill costs reroll every "$ dxr.flags.settings.skills_reroll_missions $" missions.", "You're currently in mission "$mission$".");
+        }
     }
 
     AddHint("Attaching a LAM or Gas Grenade to a wall can be very strong!", "Also try to lure enemies into them.");
@@ -161,15 +163,16 @@ simulated function InitHints()
         AddHint("Your max energy is "$dxr.flags.settings.energy$" points.", "Your energy meter shows percent relative to this value.");
     }
     if(#defined(injections)) {
-        AddHint("Grays have strong resistance to fire and plasma,", "but it will eventually kill them!");
-        AddHint("Weapon animation speeds now improve with skills,", "especially grenades with Demolition skill.");
-        AddHint("Grenades can now be attached to the floor", "or even on a door!");
-        AddHint("Attaching a grenade to a wall increases its", "blast radius and damage, especially with high skill.");
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Grays have strong resistance to fire and plasma,", "but it will eventually kill them!");
+        else AddHint("Grays are immune to fire and plasma!");
+        if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) AddHint("Weapon animation speeds now improve with skills,", "especially grenades with Demolition skill.");
+        if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("Grenades can now be attached to the floor", "or even on a door!");
+        if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) AddHint("Attaching a grenade to a wall increases its", "blast radius and damage, especially with high skill.");
         AddHint("You can safely save during infolinks!", "Give it a shot, Tong won't mind!");
-        AddHint("Red lasers will always set off an alarm", "Blue lasers won't, but will trigger something else!");
-        AddHint("Everything except an NPC will set off a laser!", "Better be careful around them!");
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Red lasers will always set off an alarm", "Blue lasers won't, but will trigger something else!");
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Everything except an NPC will set off a laser!", "Better be careful around them!");
         AddHint("Enemies with gold visors are resistant to gas", "so you might need to deal with them differently!");
-        AddHint("Enemies with helmets take less damage from headshots", "so you might need to be more careful!");
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Enemies with helmets take less damage from headshots", "so you might need to be more careful!");
         if (class'MenuChoice_AutoWeaponMods'.default.enabled){
             AddHint("Picking up a weapon mod while holding a weapon", "will automatically apply it to that weapon!");
         }
@@ -179,10 +182,10 @@ simulated function InitHints()
         if (!class'MenuChoice_AutoLaser'.default.enabled){
             AddHint("Look for the 'Auto Laser Sight' option in the Rando Gameplay menu", "to automatically activate laser mods when you draw your weapon!");
         }
-        AddHint("The Speed Enhancement aug now instantly burns 1 energy", "in order to prevent abuse.  Just turn it on and off like normal!");
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) AddHint("The Speed Enhancement aug now instantly burns 1 energy", "in order to prevent abuse.  Just turn it on and off like normal!");
         AddHint("You will still pick up ammo from weapons even if you", "are unable to pick them up (or have them marked as trash)!");
-        AddHint("The Vision Enhancement aug will now show characters, goals, items,", "datacubes, vehicles, crates, and electronic devices through walls!");
-        AddHint("The Regeneration aug will no longer bring you to maximum health.", "Upgrade the aug to increase the healing cap!");
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) AddHint("The Vision Enhancement aug will now show characters, goals, items,", "datacubes, vehicles, crates, and electronic devices through walls!");
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) AddHint("The Regeneration aug will no longer bring you to maximum health.", "Upgrade the aug to increase the healing cap!");
         AddHint("The inventory description of augmentation canisters will show", "the full description of the augs available within!");
     }
 
@@ -233,10 +236,12 @@ simulated function InitHints()
         AddHint("Don't hoard items.", "You'll find more!");
         AddHint("Have you looked at your Bingo Board?", "Find it in the middle bar of your Goals/Notes screen.");
 
-        AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
+        if(!dxr.flags.IsZeroRando()) AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
         AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
         AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them.");
-        AddHint("Datacubes and nanokeys give off a glow.", "Keep your eyes open for it!");
+        if(dxr.flags.settings.keysrando>0 && dxr.flags.settings.infodevices>0) AddHint("Datacubes and nanokeys give off a glow.", "Keep your eyes open for it!");
+        else if(dxr.flags.settings.keysrando>0) AddHint("Nanokeys give off a glow.", "Keep your eyes open for it!");
+        else if(dxr.flags.settings.infodevices>0) AddHint("Datacubes give off a glow.", "Keep your eyes open for it!");
 
         if(!dxr.flags.IsZeroRando()) {
             AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
@@ -259,20 +264,26 @@ simulated function InitHints()
                 AddHint("The flashlight (F12) consumes energy in Halloween Mode!", "Don't waste your energy!");
                 AddHint("The flashlight (F12) can be upgraded in Halloween Mode!", "Level 2 is brighter and doesn't cost energy!");
             }
-            AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken.");
-            AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
+            if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+                AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken.");
+                AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
+                AddHint("Items like ballistic armor and rebreathers now free up", "the inventory space immediately when you equip them.");
+                AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
+                AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
+                AddHint("Flare darts now set enemies on fire for 3 seconds.");
+                if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
+                else AddHint("Thowing knives deal more damage.");
+            }
             AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
-            AddHint("Items like ballistic armor and rebreathers now free up", "the inventory space immediately when you equip them.");
-            AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
             AddHint("Try using a hazmat suit", "against plasma, fire, and gas attacks.");
-            AddHint("Hacking computers now uses 5 bioelectric energy per second.");
-            AddHint("Spy Drone aug has improved speed", "and it's easier to control.");
-            AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
-            AddHint("Flare darts now set enemies on fire for 3 seconds.");
-            AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
+            if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) AddHint("Hacking computers now uses 5 bioelectric energy per second.");
+            if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+                AddHint("Spy Drone aug has improved speed", "and it's easier to control.");
+                if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
+                else AddHint("Vision Enhancement Aug can now see through walls", "even at level 1.");
+                AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
+            }
             AddHint("Read the pop-up text on doors to see how many", "hits from your equipped weapon it takes to break it.");
-            AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
-            AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
         } else {
             AddHint("The flashlight (F12) can be used to attract the attention of guards.");
         }
@@ -345,9 +356,13 @@ simulated function InitHints()
         if(!dxr.flags.IsZeroRando())
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         if(#defined(injections)) {
-            AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
-            AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
-            AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
+            if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+                if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
+                else AddHint("Vision Enhancement Aug can now see through walls", "even at level 1.");
+                AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
+            }
+            if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
+            else AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health!");
         }
     }
     else if(mission <= 14) {
@@ -386,9 +401,11 @@ simulated function InitHints()
                 AddHint("The locations of the generator, computer, and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
                 AddHint("The Email Computer contains a hint about the generator location.", "Make sure to read your emails!");
             }
-            AddHint("There are lots of enemies here!", "Look for thermoptic camo to help.");
-            AddHint("There are lots of enemies here!", "Look for ballistic armor to help.");
-            AddHint("There are lots of enemies here!", "Look for fire extinguishers to stun enemies.");
+            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+                AddHint("There are lots of enemies here!", "Look for thermoptic camo to help.");
+                AddHint("There are lots of enemies here!", "Look for ballistic armor to help.");
+                AddHint("There are lots of enemies here!", "Look for fire extinguishers to stun enemies.");
+            }
         }
         break;
 
@@ -411,7 +428,7 @@ simulated function InitHints()
             }
             break;
         case "03_NYC_747":
-            AddHint("Anna will no longer trigger a LAM", "while she's allied to you!");
+            if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) AddHint("Anna will no longer trigger a LAM", "while she's allied to you!");
             break;
         }
         break;
@@ -449,7 +466,7 @@ simulated function InitHints()
                 AddHint("Jaime Reyes's location in UNATCO HQ is randomized.", "Check the Goal Randomization page on our Wiki.");
             }
         } else if (map ~= "05_NYC_UNATCOISLAND") {
-            if(!dxr.flags.IsReducedRando()) {
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled() && class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
                 AddHint("Private Lloyd has been promoted to Master Sergeant!", "Be careful!");
             }
         }
@@ -460,7 +477,7 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the computer with the ROM Encoding is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HongKong_WanChai_Street") {
-            AddHint("All that time JC spent practicing the piano...", "All wasted because of your choices.",true);
+            if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) AddHint("All that time JC spent practicing the piano...", "All wasted because of your choices.",true);
             if(dxr.flags.settings.goals > 0)
                 AddHint("The Dragon Tooth Sword is randomized in Hong Kong.","Open the case in Maggie Chow's apartment for a hint.");
         } else if (map ~= "06_HongKong_VersaLife") {
@@ -508,23 +525,24 @@ simulated function InitHints()
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
             AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
         }
-        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
-#else
-        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
+        if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
+        else AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
         if(map ~= "10_Paris_Catacombs" || map~="10_Paris_Entrance") { //Le Merchant is in ENTRANCE in Revision
-            AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.", true);
-            AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
+            if(dxr.flags.settings.swapitems > 0) {
+                AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.", true);
+                AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
+            }
         }
         if(dxr.flags.settings.goals > 0 && (map ~= "10_paris_metro" || map ~= "10_paris_club")) {
             AddHint("The location of Nicolette DuClare is randomized.", "Check the Goal Randomization page on our Wiki.");
             if(#defined(injections)) {
-                    AddHint("The street map can show possible goal locations.", "Give it a try!");
+                AddHint("The street map can show possible goal locations.", "Give it a try!");
             }
         }
         if(dxr.flags.settings.goals > 0 && (map ~= "10_Paris_Catacombs_Tunnels")) {
             if(#defined(injections)) {
-                    AddHint("The map of the catacombs can show possible goal locations.", "Give it a try!");
+                AddHint("The map of the catacombs can show possible goal locations.", "Give it a try!");
             }
             AddHint("Agent Hela will always have two copies of the sewer key.", "She will be carrying one and keep another nearby.");
             AddHint("The location of Agent Hela is randomized.", "Check the Goal Randomization page on our Wiki.");
@@ -540,10 +558,9 @@ simulated function InitHints()
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
             AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to previous Paris levels.");
         }
-        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
-#else
-        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
+        if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
+        else AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
         break;
 
     case 12:
@@ -596,7 +613,7 @@ simulated function InitHints()
                 AddHint("The location of blast doors computer is randomized.", "Check the Goal Randomization page on our Wiki.");
             }
 
-            AddHint("The path jumping down past the fan has been made more difficult", "than in vanilla. Be warned.");
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) AddHint("The path jumping down past the fan has been made more difficult", "than in vanilla. Be warned.");
         }
         else if (map ~= "15_Area51_Entrance") {
             AddHint("You are in Sector 2.", "Find the key so that you can make your way to Sector 3.");
