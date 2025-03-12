@@ -338,13 +338,30 @@ function GrabDecoration()
 
 function bool AddInventory( inventory NewItem )
 {
+    local bool retval,allowInBelt;
+    local DeusExRootWindow root;
+
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
     if ( loadout != None && loadout.ban(self, NewItem) ) {
         NewItem.Destroy();
         return true;
     }
 
-    return Super.AddInventory(NewItem);
+    retval = Super.AddInventory(NewItem);
+
+    if (NewItem.bInObjectBelt){
+        allowInBelt = ((Weapon(NewItem)!=None && class'MenuChoice_LockBelt'.static.AddWeapons()) ||
+                       (Weapon(NewItem)==None && class'MenuChoice_LockBelt'.static.AddNonWeapons()));
+
+        if (!allowInBelt) {
+            root = DeusExRootWindow(rootWindow);
+            if (root!=None){
+                root.hud.belt.RemoveObjectFromBelt(NewItem);
+            }
+        }
+    }
+
+    return retval;
 }
 
 // copied a lot from DeusExPlayer DeleteInventory

@@ -24,6 +24,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_LootActionAlcohol');
     CreateChoice(class'MenuChoice_LootActionMelee');
     CreateChoice(class'MenuChoice_LootActionMisc');
+    CreateChoice(class'MenuChoice_LockBelt');
 #endif
 
     CreateChoice(class'MenuChoice_PasswordAutofill');
