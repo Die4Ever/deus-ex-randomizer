@@ -338,7 +338,7 @@ function GrabDecoration()
 
 function bool AddInventory( inventory NewItem )
 {
-    local bool retval,allowInBelt;
+    local bool retval;
     local DeusExRootWindow root;
 
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
@@ -350,10 +350,7 @@ function bool AddInventory( inventory NewItem )
     retval = Super.AddInventory(NewItem);
 
     if (NewItem.bInObjectBelt){
-        allowInBelt = ((Weapon(NewItem)!=None && class'MenuChoice_LockBelt'.static.AddWeapons()) ||
-                       (Weapon(NewItem)==None && class'MenuChoice_LockBelt'.static.AddNonWeapons()));
-
-        if (!allowInBelt) {
+        if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) {
             root = DeusExRootWindow(rootWindow);
             if (root!=None){
                 root.hud.belt.RemoveObjectFromBelt(NewItem);

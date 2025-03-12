@@ -1082,6 +1082,31 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     return bCanPickup;
 }
 
+function bool AddInventory( inventory NewItem )
+{
+    local bool retval;
+    local DeusExRootWindow root;
+/*
+    if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
+    if ( loadout != None && loadout.ban(self, NewItem) ) {
+        NewItem.Destroy();
+        return true;
+    }
+*/
+    retval = Super.AddInventory(NewItem);
+
+    if (NewItem.bInObjectBelt){
+        if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) {
+            root = DeusExRootWindow(rootWindow);
+            if (root!=None){
+                root.hud.belt.RemoveObjectFromBelt(NewItem);
+            }
+        }
+    }
+
+    return retval;
+}
+
 function bool IsThemeAdded(Class<ColorTheme> themeClass)
 {
     local ColorTheme curTheme;
