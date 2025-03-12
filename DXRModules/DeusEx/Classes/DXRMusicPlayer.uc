@@ -523,6 +523,7 @@ function SaveSection()
 
 function EnterOutro()
 {
+    if(OutroSection == LevelSongSection) return;
     l("EnterOutro");
     SaveSection();
     musicMode = MUS_Outro;
@@ -539,6 +540,7 @@ function byte FixSavedSection(byte section, byte start)
 function EnterConversation()
 {
     if(dxr.flags.moresettings.splits_overlay > 0) return;
+    if(ConvSection == LevelSongSection) return;
 
     l("EnterConversation");
     SaveSection();
@@ -549,6 +551,7 @@ function EnterConversation()
 
 function EnterDying()
 {
+    if(DyingSection == LevelSongSection) return;
     l("EnterDying");
     SaveSection();
     musicMode = MUS_Dying;
@@ -557,6 +560,7 @@ function EnterDying()
 
 function EnterCombat()
 {
+    if(CombatSection == LevelSongSection) return;
     l("EnterCombat");
     SaveSection();
     musicMode = MUS_Combat;
@@ -589,6 +593,7 @@ function bool InCombat()
     local Pawn CurPawn;
 
     if(!allowCombat) return false;
+    if(CombatSection == LevelSongSection) return false;
 
     return class'DXRActorsBase'.static.PawnIsInCombat(p);
 }
