@@ -340,7 +340,6 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vectm(2503.605469,354.826355,2072.113037),40,40);
         bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vectm(2507.357178,-83.523094,2072.113037),40,40);
 
-        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
 
         bt = class'BingoTrigger'.static.Create(self,'StatueHead',vectm(6250,109,504),800,40);
@@ -508,7 +507,6 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
-        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
 
         break;
@@ -664,7 +662,6 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNATCOISLAND":
         WatchFlag('AnnaKilledLebedev'); //Fixup will set this if you get back to HQ without killing Anna or Juan
-        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
 
 
@@ -741,7 +738,6 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
         bt.Tag='SavedMiguel';
 
-        //bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         class'BingoFrobber'.static.Create(self,"SATCOM Wiring",'CommsPit',vectm(-6467.026855,1464.081787,-208.328873),22,30,"You checked the SATCOM wiring");
 
         break;
