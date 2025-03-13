@@ -217,6 +217,7 @@ function PreFirstEntry()
     SpawnDatacubes();
     AntiEpilepsy();
     FixHolograms();
+    FixShowers();
 
 #ifdef vanilla
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
@@ -810,6 +811,55 @@ function FixHolograms()
     }
 }
 
+function FixShowers()
+{
+    local #var(prefix)ShowerFaucet faucet;
+    local #var(prefix)ShowerHead head,closestHead;
+    local int i;
+
+    foreach AllActors(class'#var(prefix)ShowerFaucet', faucet) {
+        head=None;
+        if (faucet.Tag != ''){
+            foreach AllActors(class'#var(prefix)ShowerHead', head, faucet.Tag){ break; }
+        }
+
+        //Found a matching head based on the tag, no need to change
+        if (head!=None){
+            continue;
+        }
+
+        //If there are no matching shower heads, look for one nearby instead
+        foreach faucet.RadiusActors(class'#var(prefix)ShowerHead',head,100){
+            if (closestHead==None){
+                closestHead = head;
+            } else {
+                if (VSize(head.Location-faucet.Location) < VSize(closestHead.Location-faucet.Location)){
+                    closestHead = head;
+                }
+            }
+        }
+
+        //No shower heads nearby, give up on this one
+        if (closestHead==None){
+            continue;
+        }
+
+        //player().ClientMessage("Fixing Shower Faucet "$faucet);
+
+        closestHead.Tag=closestHead.Name;
+        faucet.Tag = closestHead.Tag;
+        faucet.PostBeginPlay();
+
+        //Make sure the water generators are in the right mode
+        //They seem to always start turned on
+        for(i=0; i<ArrayCount(faucet.waterGen); i++) {
+            if (faucet.bOpen != faucet.waterGen[i].bSpewing) {
+                faucet.waterGen[i].Trigger(None,None);
+            }
+        }
+
+    }
+}
 
 simulated function FixAmmoShurikenName()
 {
