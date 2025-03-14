@@ -384,6 +384,7 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -457,6 +458,14 @@ function SetWatchFlags() {
         InitPoolBalls();
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
+        if (RevisionMaps) {
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt.bDestroyOthers = false;
+        }
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
@@ -522,6 +531,7 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -559,6 +569,12 @@ function SetWatchFlags() {
         WatchFlag('PlayPool');
         WatchFlag('OverhearLebedev_Played');
         InitPoolBalls();
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
+        }
+
         break;
     case "03_NYC_HANGAR":
         RewatchFlag('747Ambrosia');
@@ -603,6 +619,14 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
         InitPoolBalls();
+        if (RevisionMaps) {
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt.bDestroyOthers = false;
+        }
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -644,6 +668,7 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(220,4,280),300,40,class'#var(prefix)JuanLebedevCarcass');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -721,6 +746,7 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -768,6 +794,14 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2060,-305),20,10); //Front Door
+            bt.bDestroyOthers=false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2553,-305),20,10); //Kitchen Door
+            bt.bDestroyOthers=false;
+        }
 
 
         break;
@@ -805,6 +839,12 @@ function SetWatchFlags() {
         InitPoolBalls();
         BallsPerTable=14; //This table is missing some balls
 
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1024,-790,-231),20,10);
+        }
+
         break;
     case "06_HONGKONG_WANCHAI_STREET":
         WatchFlag('M06PaidJunkie');
@@ -830,6 +870,14 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
         class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-100,-1215,147),20,10); //Main Floor
+            bt.bDestroyOthers=false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
+            bt.bDestroyOthers=false;
+        }
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
@@ -891,6 +939,12 @@ function SetWatchFlags() {
             }
         }
         class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1832,-81,536),20,10);
+        }
+
         break;
     case "06_HONGKONG_MJ12LAB":
         foreach AllActors(class'ZoneInfo',zone){
@@ -910,6 +964,18 @@ function SetWatchFlags() {
 
     case "06_HONGKONG_VERSALIFE":
         WatchFlag('Supervisor_Paid');
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(207,575,-15),20,10);
+        }
+        break;
+    case "06_HONGKONG_WANCHAI_GARAGE":
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-335,-23),20,10);
+        }
         break;
     //#endregion
 
@@ -937,6 +1003,15 @@ function SetWatchFlags() {
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
         InitPoolBalls();
+        if (RevisionMaps) {
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt.bDestroyOthers = false;
+        }
+
         break;
     case "08_NYC_HOTEL":
         class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
@@ -1044,6 +1119,12 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker2');
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-993,-60,-80),40,20);
+        }
+        break;
 
         break;
     case "09_NYC_GRAVEYARD":
@@ -1126,6 +1207,14 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
+        if (RevisionMaps){
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(290,-32,128),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-72),20,10);  //Back Door
+            bt.bDestroyOthers = false;
+        }
 
         break;
     case "10_PARIS_CHATEAU":
@@ -3357,6 +3446,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough flasks through the game.";
         case "FC_EyeTest_peepedtex":
             return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
+        case "EmergencyExit":
+            return "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3793,7 +3884,9 @@ defaultproperties
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
     bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up? (%s)",max=10,missions=24190)
     bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
-
+#ifdef vanilla
+    bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate 1 emergency exit",max=8,missions=1918)
+#endif
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
