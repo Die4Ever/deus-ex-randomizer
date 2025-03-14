@@ -379,6 +379,7 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
@@ -459,7 +460,7 @@ function SetWatchFlags() {
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
         if (RevisionMaps) {
-
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
@@ -497,7 +498,9 @@ function SetWatchFlags() {
         bt.bDestroyOthers = false;
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-19.620102, -866.462830, -403.896912),60,40);
         bt.bDestroyOthers = false;
-
+        if (RevisionMaps) {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2048,1111,680),30,10);  //Only one in Revision
+        }
         break;
     //#endregion
 
@@ -526,6 +529,7 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
@@ -569,11 +573,7 @@ function SetWatchFlags() {
         WatchFlag('PlayPool');
         WatchFlag('OverhearLebedev_Played');
         InitPoolBalls();
-        if (RevisionMaps){
-
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
-        }
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
 
         break;
     case "03_NYC_HANGAR":
@@ -620,7 +620,7 @@ function SetWatchFlags() {
         WatchFlag('PlayPool');
         InitPoolBalls();
         if (RevisionMaps) {
-
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
@@ -662,6 +662,7 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(960,234,297),350,60,class'#var(prefix)JuanLebedevCarcass');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
@@ -741,6 +742,7 @@ function SetWatchFlags() {
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
@@ -794,14 +796,11 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
-        if (RevisionMaps){
 
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2060,-305),20,10); //Front Door
-            bt.bDestroyOthers=false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2553,-305),20,10); //Kitchen Door
-            bt.bDestroyOthers=false;
-        }
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2060,-305),20,10); //Front Door
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2553,-305),20,10); //Kitchen Door
+        bt.bDestroyOthers=false;
 
 
         break;
@@ -829,6 +828,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),180,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1024,-790,-231),20,10);
 
         foreach AllActors(class'#var(prefix)Poolball',ball){
             if (ball.Region.Zone.ZoneGroundFriction>1){
@@ -838,12 +838,6 @@ function SetWatchFlags() {
 
         InitPoolBalls();
         BallsPerTable=14; //This table is missing some balls
-
-        if (RevisionMaps){
-
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1024,-790,-231),20,10);
-        }
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
@@ -870,14 +864,15 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
         class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
-        if (RevisionMaps){
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-100,-1215,147),20,10); //Main Floor
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(927,-958,1295),20,10); //Over Jock's elevator
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(830,-1020,1270),20,10); //Next to Jock's elevator
+        bt.bDestroyOthers=false;
 
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-100,-1215,147),20,10); //Main Floor
-            bt.bDestroyOthers=false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
-            bt.bDestroyOthers=false;
-        }
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
@@ -939,11 +934,7 @@ function SetWatchFlags() {
             }
         }
         class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
-        if (RevisionMaps){
-
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1832,-81,536),20,10);
-        }
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1832,-81,536),20,10);
 
         break;
     case "06_HONGKONG_MJ12LAB":
@@ -964,15 +955,11 @@ function SetWatchFlags() {
 
     case "06_HONGKONG_VERSALIFE":
         WatchFlag('Supervisor_Paid');
-        if (RevisionMaps){
-
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(207,575,-15),20,10);
-        }
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(207,575,-15),20,10);
         break;
     case "06_HONGKONG_WANCHAI_GARAGE":
         if (RevisionMaps){
-
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-463,-23),20,10);
         } else {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-335,-23),20,10);
         }
@@ -1004,7 +991,7 @@ function SetWatchFlags() {
         WatchFlag('SheaKnowsAboutDowd');
         InitPoolBalls();
         if (RevisionMaps) {
-
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
@@ -1119,11 +1106,7 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker2');
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
-        if (RevisionMaps){
-
-        } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-993,-60,-80),40,20);
-        }
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-993,-60,-80),40,20);
         break;
 
         break;
@@ -1208,6 +1191,10 @@ function SetWatchFlags() {
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
         if (RevisionMaps){
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(255,-305,80),40,10);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-56),20,10);  //Back Door
+            bt.bDestroyOthers = false;
 
         } else {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(290,-32,128),40,20);  //Front Door
