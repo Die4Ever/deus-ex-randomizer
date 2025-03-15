@@ -160,9 +160,14 @@ simulated function RandoSkill(Skill aSkill)
     percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
     banned = chance_single(dxr.flags.settings.banned_skills);
     l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
-    if (loadout!=None && loadout.is_skill_banned(dxr.flags.loadout,aSkill.Class)){
-        banned = True;
-        l( aSkill.Class.Name $ " banned by loadout");
+    if (loadout!=None) {
+        if (!loadout.allow_skill_ban(dxr.flags.loadout,aSkill.Class)) {
+            banned = False;
+            l( aSkill.Class.Name $ " not allowed to be banned by loadout");
+        } else if (loadout.is_skill_banned(dxr.flags.loadout,aSkill.Class)){
+            banned = True;
+            l( aSkill.Class.Name $ " banned by loadout");
+        }
     }
     for(i=0; i<arrayCount(aSkill.Cost); i++)
     {
@@ -311,8 +316,17 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local int m;
     local float f, perk;
     local SkillCostMultiplier scm;
+    local bool banAllowed;
+    local DXRLoadouts loadout;
 
-    if( i>0 && chance_single(dxr.flags.settings.banned_skill_levels) ) {
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+
+    banAllowed = true;
+    if (loadout!=None){
+        banAllowed = loadout.allow_skill_ban(dxr.flags.loadout,aSkill.Class);
+    }
+
+    if( i>0 && chance_single(dxr.flags.settings.banned_skill_levels) && banAllowed) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
         return;

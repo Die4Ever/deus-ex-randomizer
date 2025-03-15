@@ -12,6 +12,7 @@ struct loadouts
     var class<Skill>        ban_skills[10];
     var class<Inventory>    allow_types[25];
     var class<Skill>        allow_skills[10];
+    var class<Skill>        never_ban_skills[10];
     var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
     var class<Actor>        item_spawns[10];
@@ -72,6 +73,7 @@ function CheckConfig()
     AddSkillBan(1,class'#var(prefix)SkillWeaponHeavy');
     AddSkillBan(1,class'#var(prefix)SkillWeaponRifle');
     AddSkillBan(1,class'#var(prefix)SkillWeaponPistol');
+    NeverBanSkill(1,class'#var(prefix)SkillWeaponLowTech');
     AddInvAllow(1,class'#var(prefix)WeaponProd');
     AddInvAllow(1,class'#var(prefix)AmmoBattery');
     AddInvAllow(1,class'#var(package).WeaponRubberBaton');
@@ -92,6 +94,8 @@ function CheckConfig()
     AddInvBan(2,class'Engine.Ammo');
     AddSkillBan(2,class'#var(prefix)SkillWeaponHeavy');
     AddSkillBan(2,class'#var(prefix)SkillWeaponRifle');
+    NeverBanSkill(2,class'#var(prefix)SkillWeaponLowTech');
+    NeverBanSkill(2,class'#var(prefix)SkillWeaponPistol');
     AddInvAllow(2,class'#var(prefix)WeaponProd');
     AddInvAllow(2,class'#var(prefix)AmmoBattery');
     AddInvAllow(2,class'#var(prefix)WeaponEMPGrenade');
@@ -122,6 +126,7 @@ function CheckConfig()
     AddInvBan(3,class'Engine.Ammo');
     AddSkillBan(3,class'#var(prefix)SkillWeaponHeavy');
     AddSkillBan(3,class'#var(prefix)SkillWeaponRifle');
+    NeverBanSkill(3,class'#var(prefix)SkillWeaponLowTech');
     AddInvAllow(3,class'#var(prefix)WeaponSword');
     AddInvAllow(3,class'#var(prefix)WeaponNanoSword');
     AddInvAllow(3,class'#var(prefix)WeaponShuriken');
@@ -166,6 +171,7 @@ function CheckConfig()
     AddSkillBan(5,class'#var(prefix)SkillWeaponHeavy');
     AddSkillBan(5,class'#var(prefix)SkillWeaponPistol');
     AddSkillBan(5,class'#var(prefix)SkillWeaponRifle');
+    NeverBanSkill(5,class'#var(prefix)SkillWeaponLowTech');
     AddInvAllow(5,class'#var(prefix)WeaponCrowbar');
     AddStart(5,class'#var(prefix)WeaponCrowbar');
     AddAug(5,class'#var(prefix)AugSpeed');
@@ -180,6 +186,7 @@ function CheckConfig()
     AddSkillBan(6,class'#var(prefix)SkillWeaponRifle');
     AddSkillBan(6,class'#var(prefix)SkillWeaponPistol');
     AddSkillBan(6,class'#var(prefix)SkillWeaponLowTech');
+    NeverBanSkill(6,class'#var(prefix)SkillDemolition');
     AddInvAllow(6,class'#var(prefix)WeaponLAM');
     AddInvAllow(6,class'#var(prefix)AmmoLAM');
     AddInvAllow(6,class'#var(prefix)WeaponGasGrenade');
@@ -250,6 +257,8 @@ function CheckConfig()
     AddInvBan(11,class'Engine.Ammo');
     AddSkillBan(11,class'#var(prefix)SkillWeaponPistol');
     AddSkillBan(11,class'#var(prefix)SkillWeaponLowTech');
+    NeverBanSkill(11,class'#var(prefix)SkillDemolition');
+    NeverBanSkill(11,class'#var(prefix)SkillWeaponHeavy');
     AddInvAllow(11,class'#var(prefix)WeaponGEPGun');
     AddInvAllow(11,class'#var(prefix)AmmoRocket');
     AddInvAllow(11,class'#var(prefix)AmmoRocketWP');
@@ -404,6 +413,20 @@ function AddSkillAllow(int s, class<Skill> skill)
     }
 }
 
+function NeverBanSkill(int s, class<Skill> skill)
+{
+    local int i;
+
+    if( skill == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].never_ban_skills); i++) {
+        if( item_sets[s].never_ban_skills[i] == None ) {
+            item_sets[s].never_ban_skills[i] = skill;
+            return;
+        }
+    }
+}
+
 function AddStart(int s, class<Inventory> inv)
 {
     local int i;
@@ -547,6 +570,24 @@ function bool _is_skill_banned(loadouts b, class<Skill> skill)
 function bool is_skill_banned(int loadoutNum, class<Skill> skill)
 {
     return _is_skill_banned( item_sets[loadoutNum], skill);
+}
+
+function bool _allow_skill_ban(loadouts b, class<Skill> skill)
+{
+    local int i;
+
+    for(i=0; i < ArrayCount(b.never_ban_skills); i++ ) {
+        if( b.never_ban_skills[i] != None && ClassIsChildOf(skill, b.never_ban_skills[i]) ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function bool allow_skill_ban(int loadoutNum, class<Skill> skill)
+{
+    return _allow_skill_ban( item_sets[loadoutNum], skill);
 }
 
 function class<Inventory> get_starting_item()
