@@ -19,9 +19,9 @@ var config int loadouts_order[20];
 struct _loadouts
 {
     var class<Inventory>    ban_types[10];
-    var class<Skill> ban_skills[10];
+    var class<Skill>        ban_skills[10];
     var class<Inventory>    allow_types[25];
-    var class<Skill> allow_skills[10];
+    var class<Skill>        allow_skills[10];
     var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
     var class<Actor>        item_spawns[10];
