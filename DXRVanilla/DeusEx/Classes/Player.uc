@@ -229,7 +229,7 @@ exec function ShowMainMenu()
 
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 {
-    local bool bCanPickup;
+    local bool bCanPickup,banned;
     local #var(DeusExPrefix)Weapon weap,ownedWeapon;
     local int ammoAvail,ammoToAdd,ammoRemaining;
     local class<Ammo> defAmmoClass;
@@ -261,9 +261,28 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         }
     }
 
+    //Preemptively remove default ammo from gun if that's banned (but the gun is not)
+    weap = #var(DeusExPrefix)Weapon(FrobTarget);
+    if (weapon!=None && weap.PickUpAmmoCount!=0){
+        if (weap.AmmoNames[0]==None){
+            defAmmoClass=weap.AmmoName;
+        } else {
+            defAmmoClass=weap.AmmoNames[0];
+        }
+
+        if (defAmmoClass!=class'#var(prefix)AmmoNone'){
+            banned=False;
+            if (loadout!=None){
+                banned = loadout.is_banned(defAmmoClass);
+            }
+            if (banned){
+                weap.PickUpAmmoCount=0; //Remove the ammo from the gun
+            }
+        }
+    }
+
     bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly);
 
-    weap = #var(DeusExPrefix)Weapon(FrobTarget);
     if (bCanPickup==False && weap!=None && weap.PickUpAmmoCount!=0){
         ownedWeapon=#var(DeusExPrefix)Weapon(FindInventoryType(FrobTarget.Class));
         //You can't pick up the weapon, but let's yoink the ammo
@@ -280,27 +299,36 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
             if (defAmmoClass!=class'#var(prefix)AmmoNone' && !isThrown){
                 ownAmmo = #var(DeusExPrefix)Ammo(FindInventoryType(defAmmoClass));
 
-                if (ownAmmo==None){
-                    ownAmmo = #var(DeusExPrefix)Ammo(Spawn(defAmmoClass));
-                    AddInventory(ownAmmo);
-                    ownAmmo.BecomeItem();
-                    ownAmmo.AmmoAmount=0;
-                    ownAmmo.GotoState('Idle2');
+                banned=False;
+                if (loadout!=None){
+                    banned = loadout.is_banned(defAmmoClass);
                 }
 
-                ammoRemaining=0;
-                ammoToAdd = ammoAvail;
-                if (ownAmmo.AmmoAmount+ammoAvail > ownAmmo.MaxAmmo) {
-                    ammoToAdd = ownAmmo.MaxAmmo - ownAmmo.AmmoAmount;
-                    ammoRemaining = ammoAvail - ammoToAdd;
-                }
+                if (!banned){
+                    if (ownAmmo==None){
+                        ownAmmo = #var(DeusExPrefix)Ammo(Spawn(defAmmoClass));
+                        AddInventory(ownAmmo);
+                        ownAmmo.BecomeItem();
+                        ownAmmo.AmmoAmount=0;
+                        ownAmmo.GotoState('Idle2');
+                    }
 
-                ownAmmo.AddAmmo(ammoToAdd);
-                weap.PickUpAmmoCount=ammoRemaining;
-                if (ammoToAdd>0){
-                    ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName,, true);
+                    ammoRemaining=0;
+                    ammoToAdd = ammoAvail;
+                    if (ownAmmo.AmmoAmount+ammoAvail > ownAmmo.MaxAmmo) {
+                        ammoToAdd = ownAmmo.MaxAmmo - ownAmmo.AmmoAmount;
+                        ammoRemaining = ammoAvail - ammoToAdd;
+                    }
+
+                    ownAmmo.AddAmmo(ammoToAdd);
+                    weap.PickUpAmmoCount=ammoRemaining;
+                    if (ammoToAdd>0){
+                        ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName,, true);
+                    }
+                    UpdateBeltText(weap);
+                } else {
+                    weap.PickUpAmmoCount=0; //Remove the ammo from the gun
                 }
-                UpdateBeltText(weap);
             }
         }
     }
@@ -308,14 +336,21 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     pickup = #var(DeusExPrefix)Pickup(FrobTarget);
     if (pickup!=None && pickup.Owner!=Self && pickup.maxCopies>1){
         //Pickup failed
-        ownedPickup=#var(DeusExPrefix)Pickup(FindInventoryType(FrobTarget.Class));
-        if (ownedPickup!=None && (ownedPickup.NumCopies+pickup.NumCopies)>ownedPickup.maxCopies){
-            ammoToAdd=ownedPickup.maxCopies - ownedPickup.NumCopies;
-            if (ammoToAdd!=0){
-                pickup.NumCopies = (ownedPickup.NumCopies+pickup.NumCopies)-ownedPickup.maxCopies;
-                ownedPickup.NumCopies = ownedPickup.maxCopies;
-                UpdateBeltText(ownedPickup);
-                ClientMessage("Picked up "$ammoToAdd$" of the "$pickup.ItemName,, true);
+        banned=False;
+        if (loadout!=None){
+            banned = loadout.is_banned(class<#var(DeusExPrefix)Pickup>(FrobTarget.Class));
+        }
+
+        if (!banned){
+            ownedPickup=#var(DeusExPrefix)Pickup(FindInventoryType(FrobTarget.Class));
+            if (ownedPickup!=None && (ownedPickup.NumCopies+pickup.NumCopies)>ownedPickup.maxCopies){
+                ammoToAdd=ownedPickup.maxCopies - ownedPickup.NumCopies;
+                if (ammoToAdd!=0){
+                    pickup.NumCopies = (ownedPickup.NumCopies+pickup.NumCopies)-ownedPickup.maxCopies;
+                    ownedPickup.NumCopies = ownedPickup.maxCopies;
+                    UpdateBeltText(ownedPickup);
+                    ClientMessage("Picked up "$ammoToAdd$" of the "$pickup.ItemName,, true);
+                }
             }
         }
 

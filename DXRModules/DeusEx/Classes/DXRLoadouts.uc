@@ -157,7 +157,7 @@ function CheckConfig()
         item_sets[11].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponPistol,#var(prefix)SkillWeaponLowTech";
         item_sets[11].allows =
             "WeaponGEPGun,AmmoRocket,AmmoRocketWP,WeaponLAW,WeaponLAM,AmmoLAM,WeaponEMPGrenade,AmmoEMPGrenade,WeaponGasGrenade,AmmoGasGrenade," $
-            "WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponAssaultGun,Ammo762mm,#var(package).WeaponRubberBaton";
+            "WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponAssaultGun,Ammo20mm,#var(package).WeaponRubberBaton";
         item_sets[11].starting_equipments = "WeaponGEPGun,#var(package).WeaponRubberBaton";
         item_sets[11].item_spawns =
             "WeaponLAW,75,WeaponLAM,100,WeaponEMPGrenade,75,WeaponGasGrenade,75," $

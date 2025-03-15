@@ -920,6 +920,8 @@ function bool HandlePickupQuery(Inventory Item)
     local class<Ammo> defAmmoClass;
     local Ammo defAmmo,newAmmo;
     local int ammoToAdd,ammoRemaining;
+    local bool ammoBanned;
+    local DXRLoadouts loadout;
 
     W = DeusExWeapon(Item);
     player = DeusExPlayer(Owner);
@@ -935,28 +937,39 @@ function bool HandlePickupQuery(Inventory Item)
                 }else{
                     defAmmoClass = AmmoNames[0];
                 }
-                defAmmo = Ammo(player.FindInventoryType(defAmmoClass));
-                if(defAmmo!=None){
-                    ammoToAdd = w.PickUpAmmoCount;
-                    ammoRemaining=0;
-                    if ((ammoToAdd + defAmmo.AmmoAmount) > defAmmo.MaxAmmo){
-                        ammoRemaining = (ammoToAdd + defAmmo.AmmoAmount) - defAmmo.MaxAmmo;
-                        ammoToAdd = ammoToAdd - ammoRemaining;
-                    }
 
-                    w.PickUpAmmoCount = ammoToAdd;
-                    if (ammoRemaining>0){
-                        if(defAmmoClass.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
-                            //Weapons with normal ammo that exists
-                            newAmmo = Spawn(defAmmoClass,,,w.Location,w.Rotation);
-                            newAmmo.ammoAmount = ammoRemaining;
-                            newAmmo.Velocity = Velocity + VRand() * 160;
-                        } else {
-                            w.PickUpAmmoCount = ammoRemaining;
-                            defAmmo.AddAmmo(ammoToAdd);
-                            return True;
+                loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+                ammoBanned=False;
+                if (loadout!=None){
+                    ammoBanned = loadout.is_banned(defAmmoClass);
+                }
+
+                if (!ammoBanned){
+                    defAmmo = Ammo(player.FindInventoryType(defAmmoClass));
+                    if(defAmmo!=None){
+                        ammoToAdd = w.PickUpAmmoCount;
+                        ammoRemaining=0;
+                        if ((ammoToAdd + defAmmo.AmmoAmount) > defAmmo.MaxAmmo){
+                            ammoRemaining = (ammoToAdd + defAmmo.AmmoAmount) - defAmmo.MaxAmmo;
+                            ammoToAdd = ammoToAdd - ammoRemaining;
+                        }
+
+                        w.PickUpAmmoCount = ammoToAdd;
+                        if (ammoRemaining>0){
+                            if(defAmmoClass.Default.Mesh!=LodMesh'DeusExItems.TestBox'){
+                                //Weapons with normal ammo that exists
+                                newAmmo = Spawn(defAmmoClass,,,w.Location,w.Rotation);
+                                newAmmo.ammoAmount = ammoRemaining;
+                                newAmmo.Velocity = Velocity + VRand() * 160;
+                            } else {
+                                w.PickUpAmmoCount = ammoRemaining;
+                                defAmmo.AddAmmo(ammoToAdd);
+                                return True;
+                            }
                         }
                     }
+                } else {
+                    w.PickUpAmmoCount = 0; //Remove all the ammo
                 }
             }
         }
