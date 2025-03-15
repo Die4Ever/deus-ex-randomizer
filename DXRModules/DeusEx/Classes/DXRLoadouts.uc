@@ -41,6 +41,7 @@ replication
         loadout, mult_items_per_level;
 }
 
+//#region CheckConfig
 function CheckConfig()
 {
     local string temp;
@@ -80,6 +81,7 @@ function CheckConfig()
             randomitems[i].chance = 0;
         }
 
+        //#region Loadout Defs
         item_sets[0].name = "All Items Allowed";
 
         item_sets[1].name = "Stick With the Prod Pure";
@@ -159,6 +161,7 @@ function CheckConfig()
         item_sets[12].name = "Random Starting Aug";
         item_sets[12].starting_augs = "AugRandom";
 
+        //#endregion
         i=0;
 
         randomitems[i].type = "Medkit";
@@ -248,6 +251,7 @@ function CheckConfig()
     loadout = dxr.flags.loadout;
 }
 
+//#region Struct Setup
 function AddBan(int s, string type)
 {
     local class<Actor> a;
@@ -338,6 +342,7 @@ function AddItemSpawn(int s, string type, int chances)
         }
     }
 }
+//#endregion
 
 function int GetIdForSlot(int i)
 {
@@ -351,6 +356,7 @@ function string GetName(int i)
     return item_sets[i].name;
 }
 
+//#region AnyEntry
 function AnyEntry()
 {
     local ConEventTransferObject c;
@@ -371,6 +377,7 @@ function AnyEntry()
     }*/
 #endif
 }
+//#endregion
 
 function bool _is_banned(_loadouts b, class<Inventory> item)
 {
@@ -479,6 +486,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
 #endif
 }
 
+//#region FirstEntry
 function FirstEntry()
 {
     Super.FirstEntry();
@@ -495,6 +503,7 @@ function FirstEntry()
     }
     #endif
 }
+//#endregion
 
 simulated function PlayerLogin(#var(PlayerPawn) p)
 {
@@ -544,6 +553,7 @@ function bool IsAugBanned(class<Augmentation> a)
     return false;
 }
 
+//#region Starting Equipmt
 function AddStartingEquipment(DeusExPlayer p, bool bFrob)
 {
     local class<Inventory> iclass;
@@ -697,6 +707,7 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
         if(item != None) break;
     }
 }
+//#endregion
 
 function SpawnItems()
 {
@@ -772,6 +783,16 @@ static function SetLootAction(class<Inventory> itemClass, int action, optional D
         lootActions = leftPart $ action $ rightPart;
     }
     storage.SetConfig("loot_actions", lootActions, 3600*24*366);
+}
+
+function GetItemSpawns(out class<Actor> spawns[10], out int chances[10])
+{
+    local int i;
+
+    for (i=0;i<ArrayCount(spawns);i++) {
+        spawns[i]=__item_sets[loadout].item_spawns[i];
+        chances[i]=__item_sets[loadout].item_spawns_chances[i];
+    }
 }
 
 function RunTests()

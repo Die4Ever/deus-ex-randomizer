@@ -51,9 +51,45 @@ function LogAll(name conName)
     }
 }
 
+//#region Generate Choices
+function AddLoadoutPurchaseChoices(out ItemPurchase choices[75], out int numChoices)
+{
+    local DXRLoadouts loadout;
+    local class<Actor> spawns[10];
+    local int chances[10];
+    local int i, basePrice;
+
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+
+    if (loadout==None) return; //No loadouts, no need to add anything special
+
+    loadout.GetItemSpawns(spawns,chances);
+
+    for (i=0;i<ArrayCount(spawns);i++){
+        if (spawns[i]==None) continue;
+        if (!ClassIsChildOf(spawns[i],class'Inventory')) continue; //Just in case
+
+        //Scale the prices automatically based on the specified chances
+        //This makes 10% = 1000, 30% = 600,  45% = 300 (and clamped between 300 and 1500)
+        basePrice = FClamp((-20 * chances[i]) + 1200,300,1500);
+
+        //1 extra chance for every 10% seems reasonable?  Most things are around 30%, so 3 entries
+        AddItemPurchaseChoice(choices,numChoices,class<Inventory>(spawns[i]),300,chances[i]/10);
+    }
+
+}
+
 function AddItemPurchaseChoice(out ItemPurchase choices[75], out int numChoices, class<Inventory> choiceClass, int basePrice, int weight)
 {
     local int i;
+    local DXRLoadouts loadout;
+
+    //Don't make banned items available to purchase
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    if (loadout!=None && loadout.is_banned(choiceClass)) {
+        l("Merchant rejected item choice "$choiceClass$" due to loadout");
+        return;
+    }
 
     for (i=0;i<weight;i++){
         if (numChoices==ArrayCount(choices)){
@@ -119,6 +155,9 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponGasGrenade',1000,1);
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponNanoVirusGrenade',1000,1);
 
+    //The merchant can also sell items you might find randomly spawned on the ground, based on your loadout
+    AddLoadoutPurchaseChoices(choices,numChoices);
+
     //These are basically just increased odds?  In theory this is replaced by the increased weighting above
     //Is it actually equivalent?  ¯\_(ツ)_/¯
     /*
@@ -167,7 +206,9 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
         items[i].price = rngrange(items[i].price, 0.5, 1.5);  //Range was previously 0.3 to 2.0
     }
 }
+//#endregion
 
+//#region Create Merchants
 function CreateRandomMerchant()
 {
     local ItemPurchase items[8];
@@ -281,6 +322,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant>
     npc.ConBindEvents();
     return npc;
 }
+//#endregion
 
 function vector GetRandomMerchantPosition()
 {
@@ -303,6 +345,7 @@ function vector GetRandomMerchantPosition()
     return loc;
 }
 
+//#region Generate Convo
 function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, optional string label)
 {
     local ConEventSpeech e;
@@ -553,3 +596,4 @@ function ConEventJump AddJump(Conversation c, ConEvent prev, string after_label)
     AddConEvent(c, prev, j);
     return j;
 }
+//#endregion
