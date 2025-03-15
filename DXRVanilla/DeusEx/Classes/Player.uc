@@ -611,8 +611,16 @@ function InstantlyUseItem(DeusExPickup item)
     local Actor A;
     local DeusExPickup p;
     local int i;
+    local DXRLoadouts loadout;
 
     if(item == None) return;
+
+    //Check if it's banned
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    if ( loadout != None && loadout.ban(self, item) ) {
+        item.Destroy();
+        return;
+    }
 
     //Only consume one of the things if it's in a stack.
     //Spawn an individual one to split it from the stack before using it.

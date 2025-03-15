@@ -1,23 +1,13 @@
 class DXRLoadouts extends DXRActorsBase transient;
 
 var int loadout;//copy locally so we don't need to make this class transient and don't need to worry about re-entering and picking up an item before DXRando loads
+var config int loadouts_order[20];
 
 struct loadouts
 {
     var string name;
     var string player_message;
 
-    var string bans;
-    var string allows;
-    var string starting_equipments;
-    var string starting_augs;
-    var string item_spawns;
-};
-var config loadouts item_sets[20];
-var config int loadouts_order[20];
-
-struct _loadouts
-{
     var class<Inventory>    ban_types[10];
     var class<Skill>        ban_skills[10];
     var class<Inventory>    allow_types[25];
@@ -28,12 +18,10 @@ struct _loadouts
     var int                 item_spawns_chances[10];// the % spawned in each map, max of 300%
 };
 
-var _loadouts __item_sets[20];
+var loadouts item_sets[20];
 
-struct RandomItemStruct { var string type; var int chance; };
-struct _RandomItemStruct { var class<Inventory> type; var int chance; };
-var config RandomItemStruct randomitems[16];
-var _RandomItemStruct _randomitems[16];
+struct RandomItemStruct { var class<Inventory> type; var int chance; };
+var RandomItemStruct randomitems[16];
 
 var config int mult_items_per_level;
 
@@ -46,330 +34,432 @@ replication
 //#region CheckConfig
 function CheckConfig()
 {
-    local string temp;
-    local int i, s;
-    local class<Actor> a;
-    if( ConfigOlderThan(3,4,0,5) ) {
-        mult_items_per_level = 1;
+    local int i;
 
-        for(i=0; i < ArrayCount(loadouts_order); i++) {
-            loadouts_order[i] = i;
-        }
-        i=0;
-        loadouts_order[i++] = 0;
-        loadouts_order[i++] = 2;
-        loadouts_order[i++] = 1;
-        loadouts_order[i++] = 3;
-        loadouts_order[i++] = 10;
-        loadouts_order[i++] = 9;
-        loadouts_order[i++] = 4;
-        loadouts_order[i++] = 7;
-        loadouts_order[i++] = 8;
-        loadouts_order[i++] = 6;
-        loadouts_order[i++] = 5;
+    mult_items_per_level = 1;
 
-        for(i=0; i < ArrayCount(item_sets); i++) {
-            item_sets[i].name = "";
-            item_sets[i].player_message = "";
-
-            item_sets[i].bans = "";
-            item_sets[i].allows = "";
-            item_sets[i].starting_equipments = "";
-            item_sets[i].starting_augs = "AugSpeed";
-            item_sets[i].item_spawns = "";
-        }
-        for(i=0; i < ArrayCount(randomitems); i++ ) {
-            randomitems[i].type = "";
-            randomitems[i].chance = 0;
-        }
-
-        //#region Loadout Defs
-        item_sets[0].name = "All Items Allowed";
-
-        item_sets[1].name = "Stick With the Prod Pure";
-        item_sets[1].player_message = "Stick with the prod!";
-        item_sets[1].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle,#var(prefix)SkillWeaponPistol";
-        item_sets[1].allows = "WeaponProd,AmmoBattery,#var(package).WeaponRubberBaton";
-        item_sets[1].starting_equipments = "WeaponProd,AmmoBattery,AmmoBattery,#var(package).WeaponRubberBaton";
-        item_sets[1].starting_augs = "AugStealth,AugMuscle";
-        item_sets[1].item_spawns = "WeaponProd,30,#var(package).WeaponRubberBaton,20";
-
-        item_sets[2].name = "Stick With the Prod Plus";
-        item_sets[2].player_message = "Stick with the prod!";
-        item_sets[2].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle";
-        item_sets[2].allows = "WeaponProd,AmmoBattery,WeaponEMPGrenade,AmmoEMPGrenade,WeaponGasGrenade,AmmoGasGrenade,WeaponMiniCrossbow,"$
-                              "AmmoDartPoison,WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponPepperGun,AmmoPepper,#var(package).WeaponRubberBaton";
-        item_sets[2].starting_equipments = "WeaponProd,AmmoBattery,#var(package).WeaponRubberBaton";
-        item_sets[2].starting_augs = "AugStealth,AugMuscle";
-        item_sets[2].item_spawns = "WeaponProd,30,WeaponMiniCrossbow,30,#var(package).WeaponRubberBaton,20";
-
-        item_sets[3].name = "Ninja JC";
-        item_sets[3].player_message = "I am Ninja!";
-        item_sets[3].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle";
-        item_sets[3].allows = "WeaponSword,WeaponNanoSword,WeaponShuriken,AmmoShuriken,WeaponEMPGrenade,AmmoEMPGrenade,WeaponGasGrenade,"$
-                              "AmmoGasGrenade,WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponPepperGun,AmmoPepper,WeaponLAM,AmmoLAM,"$
-                              "WeaponMiniCrossbow,AmmoDart,AmmoDartFlare,AmmoDartPoison,WeaponCombatKnife";
-        item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
-#ifdef vanilla
-        item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
-#else
-        item_sets[3].starting_augs = "#var(package).AugNinja";//combines AugStealth and active AugSpeed
-#endif
-        item_sets[3].item_spawns = "WeaponShuriken,150,BioelectricCell,100";
-
-        item_sets[4].name = "Don't Give Me the GEP Gun";
-        item_sets[4].player_message = "Don't Give Me the GEP Gun";
-        item_sets[4].bans = "WeaponGEPGun,AmmoRocket,AmmoRocketWP";
-
-        item_sets[5].name = "Freeman Mode";
-        item_sets[5].player_message = "Rather than offer you the illusion of free choice, I will take the liberty of choosing for you...";
-        item_sets[5].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponPistol,#var(prefix)SkillWeaponRifle";
-        item_sets[5].allows = "WeaponCrowbar";
-        item_sets[5].starting_equipments = "WeaponCrowbar";
-
-        item_sets[6].name = "Grenades Only";
-        item_sets[6].player_message = "Grenades Only!";
-        item_sets[6].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle,#var(prefix)SkillWeaponPistol,#var(prefix)SkillWeaponLowTech";
-        item_sets[6].allows = "WeaponLAM,AmmoLAM,WeaponGasGrenade,AmmoGasGrenade,WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,"$
-                              "WeaponEMPGrenade,AmmoEMPGrenade,#var(package).WeaponRubberBaton";
-        item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade,#var(package).WeaponRubberBaton";
-        item_sets[6].item_spawns = "WeaponLAM,50,WeaponGasGrenade,50,WeaponNanoVirusGrenade,50,WeaponEMPGrenade,50,#var(package).WeaponRubberBaton,20";
-
-        item_sets[7].name = "No Pistols";
-        item_sets[7].player_message = "No Pistols";
-        item_sets[7].bans = "WeaponPistol,WeaponStealthPistol,Ammo10mm";
-
-        item_sets[8].name = "No Swords";
-        item_sets[8].player_message = "No Swords";
-        item_sets[8].bans = "WeaponSword,WeaponNanoSword";
-
-        item_sets[9].name = "No Overused Weapons";
-        item_sets[9].player_message = "No Overused Weapons";
-        item_sets[9].bans = "WeaponNanoSword,WeaponPistol,WeaponStealthPistol,Ammo10mm,WeaponGEPGun,AmmoRocket,AmmoRocketWP";
-
-        item_sets[10].name = "By the Book";
-        item_sets[10].player_message = "By the Book";
-        item_sets[10].bans = "Lockpick,Multitool,#var(prefix)SkillComputer,#var(prefix)SkillLockpicking,#var(prefix)SkillTech";
-        item_sets[10].starting_augs = "AugStealth";
-
-        item_sets[11].name = "Explosives Only";
-        item_sets[11].player_message = "Explosives Only!";
-        item_sets[11].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponPistol,#var(prefix)SkillWeaponLowTech";
-        item_sets[11].allows =
-            "WeaponGEPGun,AmmoRocket,AmmoRocketWP,WeaponLAW,WeaponLAM,AmmoLAM,WeaponEMPGrenade,AmmoEMPGrenade,WeaponGasGrenade,AmmoGasGrenade," $
-            "WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponAssaultGun,Ammo20mm,#var(package).WeaponRubberBaton";
-        item_sets[11].starting_equipments = "WeaponGEPGun,#var(package).WeaponRubberBaton";
-        item_sets[11].item_spawns =
-            "WeaponLAW,75,WeaponLAM,100,WeaponEMPGrenade,75,WeaponGasGrenade,75," $
-            "WeaponNanoVirusGrenade,75,#var(package).WeaponRubberBaton,20,AmmoRocket,100,AmmoRocketWP,100,Ammo20mm,100";
-
-        // loadout for random starting aug
-        item_sets[12].name = "Random Starting Aug";
-        item_sets[12].starting_augs = "AugRandom";
-
-        //#endregion
-        i=0;
-
-        randomitems[i].type = "Medkit";
-        randomitems[i].chance = 10;
-        i++;
-
-        randomitems[i].type = "Lockpick";
-        randomitems[i].chance = 11;
-        i++;
-
-        randomitems[i].type = "Multitool";
-        randomitems[i].chance = 11;
-        i++;
-
-        randomitems[i].type = "Flare";
-        randomitems[i].chance = 7;
-        i++;
-
-        randomitems[i].type = "FireExtinguisher";
-        randomitems[i].chance = 8;
-        i++;
-
-        randomitems[i].type = "SoyFood";
-        randomitems[i].chance = 7;
-        i++;
-
-        randomitems[i].type = "TechGoggles";
-        randomitems[i].chance = 9;
-        i++;
-
-        if(#defined(hx))
-            randomitems[i].type = "#var(injectsprefix)Binoculars";
-        else
-            randomitems[i].type = "Binoculars";
-        randomitems[i].chance = 10;
-        i++;
-
-        randomitems[i].type = "BioelectricCell";
-        randomitems[i].chance = 11;
-        i++;
-
-        randomitems[i].type = "BallisticArmor";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "WineBottle";
-        randomitems[i].chance = 7;
-        i++;
+    for(i=0; i < ArrayCount(loadouts_order); i++) {
+        loadouts_order[i] = i;
     }
+    i=0;
+    loadouts_order[i++] = 0;
+    loadouts_order[i++] = 2;
+    loadouts_order[i++] = 1;
+    loadouts_order[i++] = 3;
+    loadouts_order[i++] = 10;
+    loadouts_order[i++] = 9;
+    loadouts_order[i++] = 4;
+    loadouts_order[i++] = 7;
+    loadouts_order[i++] = 8;
+    loadouts_order[i++] = 6;
+    loadouts_order[i++] = 5;
+    loadouts_order[i++] = 11;
+    loadouts_order[i++] = 13;
+    loadouts_order[i++] = 12;
+
+    //#region Loadout Defs
+/////////////////////////////////////////////////////////////////
+    //#region All Items
+    AddLoadoutName(0,"All Items Allowed");
+    AddAug(0,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region SWTP Pure
+    AddLoadoutName(1,"Stick With the Prod Pure");
+    AddLoadoutPlayerMsg(1,"Stick with the prod!");
+    AddInvBan(1,class'Engine.Weapon');
+    AddInvBan(1,class'Engine.Ammo');
+    AddSkillBan(1,class'#var(prefix)SkillWeaponHeavy');
+    AddSkillBan(1,class'#var(prefix)SkillWeaponRifle');
+    AddSkillBan(1,class'#var(prefix)SkillWeaponPistol');
+    AddInvAllow(1,class'#var(prefix)WeaponProd');
+    AddInvAllow(1,class'#var(prefix)AmmoBattery');
+    AddInvAllow(1,class'#var(package).WeaponRubberBaton');
+    AddStart(1,class'#var(prefix)WeaponProd');
+    AddStart(1,class'#var(prefix)AmmoBattery');
+    AddStart(1,class'#var(prefix)AmmoBattery');
+    AddStart(1,class'#var(package).WeaponRubberBaton');
+    AddItemSpawn(1,class'#var(prefix)WeaponProd',30);
+    AddItemSpawn(1,class'#var(package).WeaponRubberBaton',20);
+    AddAug(1,class'#var(prefix)AugStealth');
+    AddAug(1,class'#var(prefix)AugMuscle');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region SWTP Plus
+    AddLoadoutName(2,"Stick With the Prod Plus");
+    AddLoadoutPlayerMsg(2,"Stick with the prod!");
+    AddInvBan(2,class'Engine.Weapon');
+    AddInvBan(2,class'Engine.Ammo');
+    AddSkillBan(2,class'#var(prefix)SkillWeaponHeavy');
+    AddSkillBan(2,class'#var(prefix)SkillWeaponRifle');
+    AddInvAllow(2,class'#var(prefix)WeaponProd');
+    AddInvAllow(2,class'#var(prefix)AmmoBattery');
+    AddInvAllow(2,class'#var(prefix)WeaponEMPGrenade');
+    AddInvAllow(2,class'#var(prefix)AmmoEMPGrenade');
+    AddInvAllow(2,class'#var(prefix)WeaponGasGrenade');
+    AddInvAllow(2,class'#var(prefix)AmmoGasGrenade');
+    AddInvAllow(2,class'#var(prefix)WeaponMiniCrossbow');
+    AddInvAllow(2,class'#var(prefix)AmmoDartPoison');
+    AddInvAllow(2,class'#var(prefix)WeaponNanoVirusGrenade');
+    AddInvAllow(2,class'#var(prefix)AmmoNanoVirusGrenade');
+    AddInvAllow(2,class'#var(prefix)WeaponPepperGun');
+    AddInvAllow(2,class'#var(prefix)AmmoPepper');
+    AddInvAllow(2,class'#var(package).WeaponRubberBaton');
+    AddStart(2,class'#var(prefix)WeaponProd');
+    AddStart(2,class'#var(prefix)AmmoBattery');
+    AddStart(2,class'#var(package).WeaponRubberBaton');
+    AddItemSpawn(2,class'#var(prefix)WeaponProd',30);
+    AddItemSpawn(2,class'#var(prefix)WeaponMiniCrossbow',30);
+    AddItemSpawn(2,class'#var(package).WeaponRubberBaton',20);
+    AddAug(2,class'#var(prefix)AugStealth');
+    AddAug(2,class'#var(prefix)AugMuscle');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Ninja JC
+    AddLoadoutName(3,"Ninja JC");
+    AddLoadoutPlayerMsg(3,"I am Ninja!");
+    AddInvBan(3,class'Engine.Weapon');
+    AddInvBan(3,class'Engine.Ammo');
+    AddSkillBan(3,class'#var(prefix)SkillWeaponHeavy');
+    AddSkillBan(3,class'#var(prefix)SkillWeaponRifle');
+    AddInvAllow(3,class'#var(prefix)WeaponSword');
+    AddInvAllow(3,class'#var(prefix)WeaponNanoSword');
+    AddInvAllow(3,class'#var(prefix)WeaponShuriken');
+    AddInvAllow(3,class'#var(prefix)AmmoShuriken');
+    AddInvAllow(3,class'#var(prefix)WeaponEMPGrenade');
+    AddInvAllow(3,class'#var(prefix)AmmoEMPGrenade');
+    AddInvAllow(3,class'#var(prefix)WeaponGasGrenade');
+    AddInvAllow(3,class'#var(prefix)AmmoGasGrenade');
+    AddInvAllow(3,class'#var(prefix)WeaponNanoVirusGrenade');
+    AddInvAllow(3,class'#var(prefix)AmmoNanoVirusGrenade');
+    AddInvAllow(3,class'#var(prefix)WeaponPepperGun');
+    AddInvAllow(3,class'#var(prefix)AmmoPepper');
+    AddInvAllow(3,class'#var(prefix)WeaponLAM');
+    AddInvAllow(3,class'#var(prefix)AmmoLAM');
+    AddInvAllow(3,class'#var(prefix)WeaponMiniCrossbow');
+    AddInvAllow(3,class'#var(prefix)AmmoDart');
+    AddInvAllow(3,class'#var(prefix)AmmoDartFlare');
+    AddInvAllow(3,class'#var(prefix)AmmoDartPoison');
+    AddInvAllow(3,class'#var(prefix)WeaponCombatKnife');
+    AddStart(3,class'#var(prefix)WeaponShuriken');
+    AddStart(3,class'#var(prefix)WeaponSword');
+    AddStart(3,class'#var(prefix)AmmoShuriken');
+    AddItemSpawn(3,class'#var(prefix)WeaponShuriken',150);
+    AddItemSpawn(3,class'#var(prefix)BioelectricCell',100);
+    AddAug(3,class'#var(package).AugNinja'); //combines AugStealth and active AugSpeed
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Don't Give GEP
+    AddLoadoutName(4,"Don't Give Me the GEP Gun");
+    AddLoadoutPlayerMsg(4,"Don't Give Me the GEP Gun");
+    AddInvBan(4,class'#var(prefix)WeaponGEPGun');
+    AddInvBan(4,class'#var(prefix)AmmoRocket');
+    AddInvBan(4,class'#var(prefix)AmmoRocketWP');
+    AddAug(4,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Freeman Mode
+    AddLoadoutName(5,"Freeman Mode");
+    AddLoadoutPlayerMsg(5,"Rather than offer you the illusion of free choice, I will take the liberty of choosing for you...");
+    AddInvBan(5,class'Engine.Weapon');
+    AddInvBan(5,class'Engine.Ammo');
+    AddSkillBan(5,class'#var(prefix)SkillWeaponHeavy');
+    AddSkillBan(5,class'#var(prefix)SkillWeaponPistol');
+    AddSkillBan(5,class'#var(prefix)SkillWeaponRifle');
+    AddInvAllow(5,class'#var(prefix)WeaponCrowbar');
+    AddStart(5,class'#var(prefix)WeaponCrowbar');
+    AddAug(5,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Grenades Only
+    AddLoadoutName(6,"Grenades Only");
+    AddLoadoutPlayerMsg(6,"Grenades Only!");
+    AddInvBan(6,class'Engine.Weapon');
+    AddInvBan(6,class'Engine.Ammo');
+    AddSkillBan(6,class'#var(prefix)SkillWeaponHeavy');
+    AddSkillBan(6,class'#var(prefix)SkillWeaponRifle');
+    AddSkillBan(6,class'#var(prefix)SkillWeaponPistol');
+    AddSkillBan(6,class'#var(prefix)SkillWeaponLowTech');
+    AddInvAllow(6,class'#var(prefix)WeaponLAM');
+    AddInvAllow(6,class'#var(prefix)AmmoLAM');
+    AddInvAllow(6,class'#var(prefix)WeaponGasGrenade');
+    AddInvAllow(6,class'#var(prefix)AmmoGasGrenade');
+    AddInvAllow(6,class'#var(prefix)WeaponNanoVirusGrenade');
+    AddInvAllow(6,class'#var(prefix)AmmoNanoVirusGrenade');
+    AddInvAllow(6,class'#var(prefix)WeaponEMPGrenade');
+    AddInvAllow(6,class'#var(prefix)AmmoEMPGrenade');
+    AddInvAllow(6,class'#var(package).WeaponRubberBaton');
+    AddStart(6,class'#var(prefix)WeaponLAM');
+    AddStart(6,class'#var(prefix)WeaponGasGrenade');
+    AddStart(6,class'#var(prefix)WeaponNanoVirusGrenade');
+    AddStart(6,class'#var(prefix)WeaponEMPGrenade');
+    AddStart(6,class'#var(package).WeaponRubberBaton');
+    AddItemSpawn(6,class'#var(prefix)WeaponLAM',50);
+    AddItemSpawn(6,class'#var(prefix)WeaponGasGrenade',50);
+    AddItemSpawn(6,class'#var(prefix)WeaponNanoVirusGrenade',50);
+    AddItemSpawn(6,class'#var(prefix)WeaponEMPGrenade',50);
+    AddItemSpawn(6,class'#var(package).WeaponRubberBaton',20);
+    AddAug(6,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region No Pistols
+    AddLoadoutName(7,"No Pistols");
+    AddLoadoutPlayerMsg(7,"No Pistols");
+    AddInvBan(7,class'#var(prefix)WeaponPistol');
+    AddInvBan(7,class'#var(prefix)WeaponStealthPistol');
+    AddInvBan(7,class'#var(prefix)Ammo10mm');
+    AddAug(7,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region No Swords
+    AddLoadoutName(8,"No Swords");
+    AddLoadoutPlayerMsg(8,"No Swords");
+    AddInvBan(8,class'#var(prefix)WeaponSword');
+    AddInvBan(8,class'#var(prefix)WeaponNanoSword');
+    AddAug(8,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region No Overused
+    AddLoadoutName(9,"No Overused Weapons");
+    AddLoadoutPlayerMsg(9,"No Overused Weapons");
+    AddInvBan(9,class'#var(prefix)WeaponNanoSword');
+    AddInvBan(9,class'#var(prefix)WeaponPistol');
+    AddInvBan(9,class'#var(prefix)WeaponStealthPistol');
+    AddInvBan(9,class'#var(prefix)Ammo10mm');
+    AddInvBan(9,class'#var(prefix)WeaponGEPGun');
+    AddInvBan(9,class'#var(prefix)AmmoRocket');
+    AddInvBan(9,class'#var(prefix)AmmoRocketWP');
+    AddAug(9,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region By The Book
+    AddLoadoutName(10,"By the Book");
+    AddLoadoutPlayerMsg(10,"By the Book");
+    AddInvBan(10,class'#var(prefix)Lockpick');
+    AddInvBan(10,class'#var(prefix)Multitool');
+    AddSkillBan(10,class'#var(prefix)SkillComputer');
+    AddSkillBan(10,class'#var(prefix)SkillLockpicking');
+    AddSkillBan(10,class'#var(prefix)SkillTech');
+    AddAug(10,class'#var(prefix)AugStealth');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Explosives Only
+    AddLoadoutName(11,"Explosives Only");
+    AddLoadoutPlayerMsg(11,"Explosives Only!");
+    AddInvBan(11,class'Engine.Weapon');
+    AddInvBan(11,class'Engine.Ammo');
+    AddSkillBan(11,class'#var(prefix)SkillWeaponPistol');
+    AddSkillBan(11,class'#var(prefix)SkillWeaponLowTech');
+    AddInvAllow(11,class'#var(prefix)WeaponGEPGun');
+    AddInvAllow(11,class'#var(prefix)AmmoRocket');
+    AddInvAllow(11,class'#var(prefix)AmmoRocketWP');
+    AddInvAllow(11,class'#var(prefix)WeaponLAW');
+    AddInvAllow(11,class'#var(prefix)WeaponLAM');
+    AddInvAllow(11,class'#var(prefix)AmmoLAM');
+    AddInvAllow(11,class'#var(prefix)WeaponEMPGrenade');
+    AddInvAllow(11,class'#var(prefix)AmmoEMPGrenade');
+    AddInvAllow(11,class'#var(prefix)WeaponGasGrenade');
+    AddInvAllow(11,class'#var(prefix)AmmoGasGrenade');
+    AddInvAllow(11,class'#var(prefix)WeaponNanoVirusGrenade');
+    AddInvAllow(11,class'#var(prefix)AmmoNanoVirusGrenade');
+    AddInvAllow(11,class'#var(prefix)WeaponAssaultGun');
+    AddInvAllow(11,class'#var(prefix)Ammo20mm');
+    AddInvAllow(11,class'#var(package).WeaponRubberBaton');
+    AddStart(11,class'#var(prefix)WeaponGEPGun');
+    AddStart(11,class'#var(package).WeaponRubberBaton');
+    AddItemSpawn(11,class'#var(prefix)WeaponLAW',75);
+    AddItemSpawn(11,class'#var(prefix)WeaponLAM',100);
+    AddItemSpawn(11,class'#var(prefix)WeaponEMPGrenade',75);
+    AddItemSpawn(11,class'#var(prefix)WeaponGasGrenade',75);
+    AddItemSpawn(11,class'#var(prefix)WeaponNanoVirusGrenade',75);
+    AddItemSpawn(11,class'#var(package).WeaponRubberBaton',20);
+    AddItemSpawn(11,class'#var(prefix)AmmoRocket',100);
+    AddItemSpawn(11,class'#var(prefix)AmmoRocketWP',100);
+    AddItemSpawn(11,class'#var(prefix)Ammo20mm',100);
+    AddAug(11,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Random Aug
+    // loadout for random starting aug
+    AddLoadoutName(12,"Random Starting Aug");
+    AddRandomAug(12);
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Straight Edge
+    AddLoadoutName(13,"Straight Edge");
+    AddLoadoutPlayerMsg(13,"Keep it on the straight and narrow!");
+    AddInvBan(13,class'#var(prefix)Liquor40oz');
+    AddInvBan(13,class'#var(prefix)LiquorBottle');
+    AddInvBan(13,class'#var(prefix)WineBottle');
+    AddInvBan(13,class'#var(prefix)Cigarettes');
+    AddInvBan(13,class'#var(prefix)VialCrack');
+    AddAug(13,class'#var(prefix)AugSpeed');
+    //#endregion
+/////////////////////////////////////////////////////////////////
+
+    //#endregion
+
+    //#region Rand Start Items
+    //Random items that can be given at game start
+    AddRandomItem("Medkit",10);
+    AddRandomItem("Lockpick",11);
+    AddRandomItem("Multitool",11);
+    AddRandomItem("Flare",7);
+    AddRandomItem("FireExtinguisher",8);
+    AddRandomItem("SoyFood",7);
+    AddRandomItem("TechGoggles",9);
+    if(#defined(hx))
+        AddRandomItem("#var(injectsprefix)Binoculars",10);
+    else
+        AddRandomItem("Binoculars",10);
+    AddRandomItem("BioelectricCell",11);
+    AddRandomItem("BallisticArmor",9);
+    AddRandomItem("WineBottle",7);
+    //#endregion
+
     Super.CheckConfig();
-
-    for(s=0; s < ArrayCount(item_sets); s++) {
-        temp = item_sets[s].bans;
-        while( temp != "" ) {
-            AddBan(s, UnpackString(temp) );
-        }
-
-        temp = item_sets[s].allows;
-        while( temp != "" ) {
-            AddAllow(s, UnpackString(temp) );
-        }
-
-        temp = item_sets[s].starting_equipments;
-        while( temp != "" ) {
-            AddStart(s, UnpackString(temp) );
-        }
-
-        temp = item_sets[s].starting_augs;
-        while( temp != "" ) {
-            AddAug(s, UnpackString(temp) );
-        }
-
-        temp = item_sets[s].item_spawns;
-        while( temp != "" ) {
-            AddItemSpawn(s, UnpackString(temp), int(UnpackString(temp)));
-        }
-    }
-
-    for(i=0; i < ArrayCount(randomitems); i++) {
-        if( randomitems[i].type != "" ) {
-            a = GetClassFromString(randomitems[i].type, class'Inventory');
-            _randomitems[i].type = class<Inventory>(a);
-            _randomitems[i].chance = randomitems[i].chance;
-        }
-    }
 
     loadout = dxr.flags.loadout;
 }
 
 //#region Struct Setup
-function AddBan(int s, string type)
-{
-    local class<Actor> inv,skill;
-    local int i;
-
-    if( type == "" ) return;
-
-    inv = GetClassFromString(type, class'Inventory', true);
-    if (inv!=None){
-        for(i=0; i < ArrayCount(__item_sets[s].ban_types); i++) {
-            if( __item_sets[s].ban_types[i] == None ) {
-                __item_sets[s].ban_types[i] = class<Inventory>(inv);
-                return;
-            }
-        }
-    }
-
-    skill = GetClassFromString(type, class'#var(prefix)Skill', true);
-    l("Is "$type$" a skill? "$skill);
-    if (skill!=None){
-        for(i=0; i < ArrayCount(__item_sets[s].ban_skills); i++) {
-            if( __item_sets[s].ban_skills[i] == None ) {
-                l("Adding banned skill to banned skill slot "$i$" of loadout "$s);
-                __item_sets[s].ban_skills[i] = class<#var(prefix)Skill>(skill);
-                return;
-            }
-        }
-    }
-}
-
-function AddAllow(int s, string type)
-{
-    local class<Actor> inv,skill;
-    local int i;
-
-    if( type == "" ) return;
-
-    inv = GetClassFromString(type, class'Inventory', true);
-    if (inv!=None){
-        for(i=0; i < ArrayCount(__item_sets[s].allow_types); i++) {
-            if( __item_sets[s].allow_types[i] == None ) {
-                __item_sets[s].allow_types[i] = class<Inventory>(inv);
-                return;
-            }
-        }
-    }
-
-    skill = GetClassFromString(type, class'#var(prefix)Skill', true);
-    if (skill!=None){
-        for(i=0; i < ArrayCount(__item_sets[s].allow_skills); i++) {
-            if( __item_sets[s].allow_skills[i] == None ) {
-                __item_sets[s].allow_skills[i] = class<#var(prefix)Skill>(skill);
-                return;
-            }
-        }
-    }
-}
-
-function AddStart(int s, string type)
+function AddRandomItem(string rtype, int chance)
 {
     local class<Actor> a;
     local int i;
 
-    if( type == "" ) return;
+    for(i=0; i < ArrayCount(randomitems); i++) {
+        if( randomitems[i].type == None ) {
+            a = GetClassFromString(rtype, class'Inventory');
+            randomitems[i].type = class<Inventory>(a);
+            randomitems[i].chance = chance;
+            break;
+        }
+    }
+}
 
-    for(i=0; i < ArrayCount(__item_sets[s].starting_equipment); i++) {
-        if( __item_sets[s].starting_equipment[i] == None ) {
-            a = GetClassFromString(type, class'Inventory');
-            __item_sets[s].starting_equipment[i] = class<Inventory>(a);
+function AddLoadoutName(int s, string name)
+{
+    item_sets[s].name=name;
+}
+
+function AddLoadoutPlayerMsg(int s, string msg)
+{
+    item_sets[s].player_message=msg;
+}
+
+function AddInvBan(int s, class<Inventory> inv)
+{
+    local int i;
+
+    if( inv == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].ban_types); i++) {
+        if( item_sets[s].ban_types[i] == None ) {
+            item_sets[s].ban_types[i] = inv;
             return;
         }
     }
 }
 
-function AddAug(int s, string type)
+function AddSkillBan(int s, class<Skill> skill)
 {
-    local class<Actor> a;
     local int i;
 
-    if( type == "" ) return;
+    if( skill == None ) return;
 
-    for(i=0; i < ArrayCount(__item_sets[s].starting_augs); i++) {
-        if( __item_sets[s].starting_augs[i] == None ) {
-            if(type=="AugRandom") {
-                SetGlobalSeed("DXRLoadouts AugRandom " $ i);
-                __item_sets[s].starting_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
-                return;
-            }
-            if(dxr.flags.IsHalloweenMode() && type=="AugSpeed" && dxr.flags.settings.speedlevel == 0) {
-                type = "AugStealth";// this is Halloween!
+    for(i=0; i < ArrayCount(item_sets[s].ban_skills); i++) {
+        if( item_sets[s].ban_skills[i] == None ) {
+            item_sets[s].ban_skills[i] = skill;
+            return;
+        }
+    }
+}
+
+function AddInvAllow(int s, class<Inventory> inv)
+{
+    local int i;
+
+    if( inv == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].allow_types); i++) {
+        if( item_sets[s].allow_types[i] == None ) {
+            item_sets[s].allow_types[i] = inv;
+            return;
+        }
+    }
+}
+
+function AddSkillAllow(int s, class<Skill> skill)
+{
+    local int i;
+
+    if( skill == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].allow_skills); i++) {
+        if( item_sets[s].allow_skills[i] == None ) {
+            item_sets[s].allow_skills[i] = skill;
+            return;
+        }
+    }
+}
+
+function AddStart(int s, class<Inventory> inv)
+{
+    local int i;
+
+    if( inv == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].starting_equipment); i++) {
+        if( item_sets[s].starting_equipment[i] == None ) {
+            item_sets[s].starting_equipment[i] = inv;
+            return;
+        }
+    }
+}
+
+function AddAug(int s, class<Augmentation> aug)
+{
+    local int i;
+
+    if( aug == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].starting_augs); i++) {
+        if( item_sets[s].starting_augs[i] == None ) {
+            if(dxr.flags.IsHalloweenMode() && aug==class'#var(prefix)AugSpeed' && dxr.flags.settings.speedlevel == 0) {
+                aug = class'#var(prefix)AugStealth';// this is Halloween!
             } else if(dxr.flags.settings.speedlevel == 0) {
                 continue;
             }
-            a = GetClassFromString(type, class'Augmentation');
-            __item_sets[s].starting_augs[i] = class<Augmentation>(a);
+            item_sets[s].starting_augs[i] = aug;
             return;
         }
     }
 }
 
-function AddItemSpawn(int s, string type, int chances)
+function AddRandomAug(int s)
 {
-    local class<Actor> a;
     local int i;
 
-    if( type == "" ) return;
+    for(i=0; i < ArrayCount(item_sets[s].starting_augs); i++) {
+        if( item_sets[s].starting_augs[i] == None ) {
+            SetGlobalSeed("DXRLoadouts AugRandom " $ i);
+            item_sets[s].starting_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
+            return;
+        }
+    }
+}
 
-    for(i=0; i < ArrayCount(__item_sets[s].item_spawns); i++) {
-        if( __item_sets[s].item_spawns[i] == None ) {
-            a = GetClassFromString(type, class'Actor');
-            __item_sets[s].item_spawns[i] = a;
-            __item_sets[s].item_spawns_chances[i] = chances;
+function AddItemSpawn(int s, class<Inventory> inv, int chances)
+{
+    local int i;
+
+    if( inv == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].item_spawns); i++) {
+        if( item_sets[s].item_spawns[i] == None ) {
+            item_sets[s].item_spawns[i] = inv;
+            item_sets[s].item_spawns_chances[i] = chances;
             return;
         }
     }
@@ -400,7 +490,7 @@ function AnyEntry()
     // TODO: fix being given items from conversations for other mods
     /*foreach AllObjects(class'ConEventTransferObject', c) {
         l(c.objectName @ c.giveObject @ c.toName);
-        if( c.toName == "JCDenton" && is_banned(__item_sets[loadout], c.giveObject) ) {
+        if( c.toName == "JCDenton" && is_banned(item_sets[loadout], c.giveObject) ) {
             l(c.objectName @ c.giveObject @ c.toName $ ", clearing");
             c.toName = "";
             c.toActor = None;
@@ -411,7 +501,7 @@ function AnyEntry()
 }
 //#endregion
 
-function bool _is_banned(_loadouts b, class<Inventory> item)
+function bool _is_banned(loadouts b, class<Inventory> item)
 {
     local int i;
 
@@ -432,10 +522,10 @@ function bool _is_banned(_loadouts b, class<Inventory> item)
 
 function bool is_banned(class<Inventory> item)
 {
-    return _is_banned( __item_sets[loadout], item);
+    return _is_banned( item_sets[loadout], item);
 }
 
-function bool _is_skill_banned(_loadouts b, class<Skill> skill)
+function bool _is_skill_banned(loadouts b, class<Skill> skill)
 {
     local int i;
 
@@ -456,12 +546,12 @@ function bool _is_skill_banned(_loadouts b, class<Skill> skill)
 
 function bool is_skill_banned(int loadoutNum, class<Skill> skill)
 {
-    return _is_skill_banned( __item_sets[loadoutNum], skill);
+    return _is_skill_banned( item_sets[loadoutNum], skill);
 }
 
 function class<Inventory> get_starting_item()
 {
-    return __item_sets[loadout].starting_equipment[0];
+    return item_sets[loadout].starting_equipment[0];
 }
 
 function bool ban(DeusExPlayer player, Inventory item)
@@ -470,7 +560,7 @@ function bool ban(DeusExPlayer player, Inventory item)
 
     if(IsMeleeWeapon(item) && Carcass(item.Owner) != None && player.FindInventoryType(item.class) != None) {
         return true;
-    } else if ( _is_banned( __item_sets[loadout], item.class) ) {
+    } else if ( _is_banned( item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
             player.ClientMessage(item_sets[loadout].player_message, 'Pickup', true);
@@ -491,6 +581,7 @@ function bool ban(DeusExPlayer player, Inventory item)
     return false;
 }
 
+//#region Adjust Weapons
 function AdjustWeapon(DeusExWeapon w)
 {
     switch( item_sets[loadout].name ) {
@@ -541,6 +632,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
     }
 #endif
 }
+//#endregion
 
 //#region FirstEntry
 function FirstEntry()
@@ -581,8 +673,8 @@ function bool StartedWithAug(class<Augmentation> a)
     if( a.default.AugmentationLocation == LOC_Default ) // we don't rando things into default slots anyways
         return true;
 
-    for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
-        if( __item_sets[loadout].starting_augs[i] == a ) return true;
+    for(i=0; i < ArrayCount(item_sets[loadout].starting_augs); i++) {
+        if( item_sets[loadout].starting_augs[i] == a ) return true;
     }
     return false;
 }
@@ -619,8 +711,8 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
     local DeusExWeapon w;
     local int i, k, auglevel;
 
-    for(i=0; i < ArrayCount(__item_sets[loadout].starting_equipment); i++) {
-        iclass = __item_sets[loadout].starting_equipment[i];
+    for(i=0; i < ArrayCount(item_sets[loadout].starting_equipment); i++) {
+        iclass = item_sets[loadout].starting_equipment[i];
         if( iclass == None ) continue;
 
         if( class<DeusExAmmo>(iclass) == None && class'DXRActorsBase'.static.HasItem(p, iclass) )
@@ -636,8 +728,8 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
             auglevel = 1;
         }
     }
-    for(i=0; i < ArrayCount(__item_sets[loadout].starting_augs); i++) {
-        aclass = __item_sets[loadout].starting_augs[i];
+    for(i=0; i < ArrayCount(item_sets[loadout].starting_augs); i++) {
+        aclass = item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
         class'DXRAugmentations'.static.AddAug( p, aclass, auglevel );
     }
@@ -722,9 +814,9 @@ function class<Inventory> _GetRandomUtilityItem()
     local class<Inventory> iclass;
 
     r = initchance();
-    for(i=0; i < ArrayCount(_randomitems); i++ ) {
-        if( _randomitems[i].type == None ) continue;
-        if( chance( _randomitems[i].chance, r ) ) iclass = _randomitems[i].type;
+    for(i=0; i < ArrayCount(randomitems); i++ ) {
+        if( randomitems[i].type == None ) continue;
+        if( chance( randomitems[i].chance, r ) ) iclass = randomitems[i].type;
     }
     chance_remaining(r);
     return iclass;
@@ -777,10 +869,10 @@ function SpawnItems()
 
     reducer = DXRReduceItems(dxr.FindModule(class'DXRReduceItems'));
 
-    for(i=0;i<ArrayCount(__item_sets[loadout].item_spawns);i++) {
-        aclass = __item_sets[loadout].item_spawns[i];
+    for(i=0;i<ArrayCount(item_sets[loadout].item_spawns);i++) {
+        aclass = item_sets[loadout].item_spawns[i];
         if( aclass == None ) continue;
-        chance = __item_sets[loadout].item_spawns_chances[i];
+        chance = item_sets[loadout].item_spawns_chances[i];
         if( chance <= 0 ) continue;
 
         chance /= 3;
@@ -846,8 +938,8 @@ function GetItemSpawns(out class<Actor> spawns[10], out int chances[10])
     local int i;
 
     for (i=0;i<ArrayCount(spawns);i++) {
-        spawns[i]=__item_sets[loadout].item_spawns[i];
-        chances[i]=__item_sets[loadout].item_spawns_chances[i];
+        spawns[i]=item_sets[loadout].item_spawns[i];
+        chances[i]=item_sets[loadout].item_spawns_chances[i];
     }
 }
 
@@ -860,5 +952,5 @@ function RunTests()
     for(i=0; i < ArrayCount(randomitems); i++ ) {
         total += randomitems[i].chance;
     }
-    test( total <= 100, "config randomitems chances, check total "$total);
+    test( total <= 100, "randomitems chances, check total "$total);
 }

@@ -857,6 +857,8 @@ function InstantlyUseItem(DeusExPickup item)
 
     if(item == None) return;
 
+    //TODO: Check loadout for ban
+
     //Only consume one of the things if it's in a stack.
     //Spawn an individual one to split it from the stack before using it.
     if (item.NumCopies>1){
