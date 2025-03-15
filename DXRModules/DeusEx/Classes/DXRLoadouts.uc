@@ -19,7 +19,9 @@ var config int loadouts_order[20];
 struct _loadouts
 {
     var class<Inventory>    ban_types[10];
-    var class<Inventory>    allow_types[10];
+    var class<Skill> ban_skills[10];
+    var class<Inventory>    allow_types[25];
+    var class<Skill> allow_skills[10];
     var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
     var class<Actor>        item_spawns[10];
@@ -47,7 +49,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(3,4,0,4) ) {
+    if( ConfigOlderThan(3,4,0,5) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -86,24 +88,27 @@ function CheckConfig()
 
         item_sets[1].name = "Stick With the Prod Pure";
         item_sets[1].player_message = "Stick with the prod!";
-        item_sets[1].bans = "Engine.Weapon";
-        item_sets[1].allows = "WeaponProd,#var(package).WeaponRubberBaton";
+        item_sets[1].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle,#var(prefix)SkillWeaponPistol";
+        item_sets[1].allows = "WeaponProd,AmmoBattery,#var(package).WeaponRubberBaton";
         item_sets[1].starting_equipments = "WeaponProd,AmmoBattery,AmmoBattery,#var(package).WeaponRubberBaton";
         item_sets[1].starting_augs = "AugStealth,AugMuscle";
         item_sets[1].item_spawns = "WeaponProd,30,#var(package).WeaponRubberBaton,20";
 
         item_sets[2].name = "Stick With the Prod Plus";
         item_sets[2].player_message = "Stick with the prod!";
-        item_sets[2].bans = "Engine.Weapon,AmmoDart";
-        item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun,#var(package).WeaponRubberBaton";
+        item_sets[2].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle";
+        item_sets[2].allows = "WeaponProd,AmmoBattery,WeaponEMPGrenade,AmmoEMPGrenade,WeaponGasGrenade,AmmoGasGrenade,WeaponMiniCrossbow,"$
+                              "AmmoDartPoison,WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponPepperGun,AmmoPepper,#var(package).WeaponRubberBaton";
         item_sets[2].starting_equipments = "WeaponProd,AmmoBattery,#var(package).WeaponRubberBaton";
         item_sets[2].starting_augs = "AugStealth,AugMuscle";
         item_sets[2].item_spawns = "WeaponProd,30,WeaponMiniCrossbow,30,#var(package).WeaponRubberBaton,20";
 
         item_sets[3].name = "Ninja JC";
         item_sets[3].player_message = "I am Ninja!";
-        item_sets[3].bans = "Engine.Weapon";
-        item_sets[3].allows = "WeaponSword,WeaponNanoSword,WeaponShuriken,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponPepperGun,WeaponLAM,WeaponMiniCrossbow,WeaponCombatKnife";
+        item_sets[3].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle";
+        item_sets[3].allows = "WeaponSword,WeaponNanoSword,WeaponShuriken,AmmoShuriken,WeaponEMPGrenade,AmmoEMPGrenade,WeaponGasGrenade,"$
+                              "AmmoGasGrenade,WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponPepperGun,AmmoPepper,WeaponLAM,AmmoLAM,"$
+                              "WeaponMiniCrossbow,AmmoDart,AmmoDartFlare,AmmoDartPoison,WeaponCombatKnife";
         item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
 #ifdef vanilla
         item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
@@ -114,24 +119,25 @@ function CheckConfig()
 
         item_sets[4].name = "Don't Give Me the GEP Gun";
         item_sets[4].player_message = "Don't Give Me the GEP Gun";
-        item_sets[4].bans = "WeaponGEPGun";
+        item_sets[4].bans = "WeaponGEPGun,AmmoRocket,AmmoRocketWP";
 
         item_sets[5].name = "Freeman Mode";
         item_sets[5].player_message = "Rather than offer you the illusion of free choice, I will take the liberty of choosing for you...";
-        item_sets[5].bans = "Engine.Weapon";
+        item_sets[5].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponPistol,#var(prefix)SkillWeaponRifle";
         item_sets[5].allows = "WeaponCrowbar";
         item_sets[5].starting_equipments = "WeaponCrowbar";
 
         item_sets[6].name = "Grenades Only";
         item_sets[6].player_message = "Grenades Only!";
-        item_sets[6].bans = "Engine.Weapon";
-        item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade,#var(package).WeaponRubberBaton";
+        item_sets[6].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponHeavy,#var(prefix)SkillWeaponRifle,#var(prefix)SkillWeaponPistol,#var(prefix)SkillWeaponLowTech";
+        item_sets[6].allows = "WeaponLAM,AmmoLAM,WeaponGasGrenade,AmmoGasGrenade,WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,"$
+                              "WeaponEMPGrenade,AmmoEMPGrenade,#var(package).WeaponRubberBaton";
         item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade,#var(package).WeaponRubberBaton";
         item_sets[6].item_spawns = "WeaponLAM,50,WeaponGasGrenade,50,WeaponNanoVirusGrenade,50,WeaponEMPGrenade,50,#var(package).WeaponRubberBaton,20";
 
         item_sets[7].name = "No Pistols";
         item_sets[7].player_message = "No Pistols";
-        item_sets[7].bans = "WeaponPistol,WeaponStealthPistol";
+        item_sets[7].bans = "WeaponPistol,WeaponStealthPistol,Ammo10mm";
 
         item_sets[8].name = "No Swords";
         item_sets[8].player_message = "No Swords";
@@ -139,19 +145,19 @@ function CheckConfig()
 
         item_sets[9].name = "No Overused Weapons";
         item_sets[9].player_message = "No Overused Weapons";
-        item_sets[9].bans = "WeaponNanoSword,WeaponPistol,WeaponStealthPistol,WeaponGEPGun";
+        item_sets[9].bans = "WeaponNanoSword,WeaponPistol,WeaponStealthPistol,Ammo10mm,WeaponGEPGun,AmmoRocket,AmmoRocketWP";
 
         item_sets[10].name = "By the Book";
         item_sets[10].player_message = "By the Book";
-        item_sets[10].bans = "Lockpick,Multitool";
+        item_sets[10].bans = "Lockpick,Multitool,#var(prefix)SkillComputer,#var(prefix)SkillLockpicking,#var(prefix)SkillTech";
         item_sets[10].starting_augs = "AugStealth";
 
         item_sets[11].name = "Explosives Only";
         item_sets[11].player_message = "Explosives Only!";
-        item_sets[11].bans = "Engine.Weapon,Ammo762mm";
+        item_sets[11].bans = "Engine.Weapon,Engine.Ammo,#var(prefix)SkillWeaponPistol,#var(prefix)SkillWeaponLowTech";
         item_sets[11].allows =
-            "WeaponGEPGun,WeaponLAW,WeaponLAM,WeaponEMPGrenade,WeaponGasGrenade," $
-            "WeaponNanoVirusGrenade,WeaponAssaultGun,#var(package).WeaponRubberBaton";
+            "WeaponGEPGun,AmmoRocket,AmmoRocketWP,WeaponLAW,WeaponLAM,AmmoLAM,WeaponEMPGrenade,AmmoEMPGrenade,WeaponGasGrenade,AmmoGasGrenade," $
+            "WeaponNanoVirusGrenade,AmmoNanoVirusGrenade,WeaponAssaultGun,Ammo762mm,#var(package).WeaponRubberBaton";
         item_sets[11].starting_equipments = "WeaponGEPGun,#var(package).WeaponRubberBaton";
         item_sets[11].item_spawns =
             "WeaponLAW,75,WeaponLAM,100,WeaponEMPGrenade,75,WeaponGasGrenade,75," $
@@ -254,32 +260,58 @@ function CheckConfig()
 //#region Struct Setup
 function AddBan(int s, string type)
 {
-    local class<Actor> a;
+    local class<Actor> inv,skill;
     local int i;
 
     if( type == "" ) return;
 
-    for(i=0; i < ArrayCount(__item_sets[s].ban_types); i++) {
-        if( __item_sets[s].ban_types[i] == None ) {
-            a = GetClassFromString(type, class'Inventory');
-            __item_sets[s].ban_types[i] = class<Inventory>(a);
-            return;
+    inv = GetClassFromString(type, class'Inventory', true);
+    if (inv!=None){
+        for(i=0; i < ArrayCount(__item_sets[s].ban_types); i++) {
+            if( __item_sets[s].ban_types[i] == None ) {
+                __item_sets[s].ban_types[i] = class<Inventory>(inv);
+                return;
+            }
+        }
+    }
+
+    skill = GetClassFromString(type, class'#var(prefix)Skill', true);
+    l("Is "$type$" a skill? "$skill);
+    if (skill!=None){
+        for(i=0; i < ArrayCount(__item_sets[s].ban_skills); i++) {
+            if( __item_sets[s].ban_skills[i] == None ) {
+                l("Adding banned skill to banned skill slot "$i$" of loadout "$s);
+                __item_sets[s].ban_skills[i] = class<#var(prefix)Skill>(skill);
+                return;
+            }
         }
     }
 }
 
 function AddAllow(int s, string type)
 {
-    local class<Actor> a;
+    local class<Actor> inv,skill;
     local int i;
 
     if( type == "" ) return;
 
-    for(i=0; i < ArrayCount(__item_sets[s].allow_types); i++) {
-        if( __item_sets[s].allow_types[i] == None ) {
-            a = GetClassFromString(type, class'Inventory');
-            __item_sets[s].allow_types[i] = class<Inventory>(a);
-            return;
+    inv = GetClassFromString(type, class'Inventory', true);
+    if (inv!=None){
+        for(i=0; i < ArrayCount(__item_sets[s].allow_types); i++) {
+            if( __item_sets[s].allow_types[i] == None ) {
+                __item_sets[s].allow_types[i] = class<Inventory>(inv);
+                return;
+            }
+        }
+    }
+
+    skill = GetClassFromString(type, class'#var(prefix)Skill', true);
+    if (skill!=None){
+        for(i=0; i < ArrayCount(__item_sets[s].allow_skills); i++) {
+            if( __item_sets[s].allow_skills[i] == None ) {
+                __item_sets[s].allow_skills[i] = class<#var(prefix)Skill>(skill);
+                return;
+            }
         }
     }
 }
@@ -401,6 +433,30 @@ function bool _is_banned(_loadouts b, class<Inventory> item)
 function bool is_banned(class<Inventory> item)
 {
     return _is_banned( __item_sets[loadout], item);
+}
+
+function bool _is_skill_banned(_loadouts b, class<Skill> skill)
+{
+    local int i;
+
+    for(i=0; i < ArrayCount(b.allow_skills); i++ ) {
+        if( b.allow_skills[i] != None && ClassIsChildOf(skill, b.allow_skills[i]) ) {
+            return false;
+        }
+    }
+
+    for(i=0; i < ArrayCount(b.ban_skills); i++ ) {
+        if( b.ban_skills[i] != None && ClassIsChildOf(skill, b.ban_skills[i]) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function bool is_skill_banned(int loadoutNum, class<Skill> skill)
+{
+    return _is_skill_banned( __item_sets[loadoutNum], skill);
 }
 
 function class<Inventory> get_starting_item()

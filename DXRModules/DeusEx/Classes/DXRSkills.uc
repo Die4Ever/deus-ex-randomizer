@@ -140,12 +140,15 @@ simulated function RandoSkill(Skill aSkill)
 {
     local float percent;
     local int i, mission_group;
+    local DXRLoadouts loadout;
     local bool banned;
     if( dxr == None ) return;
 
 #ifdef vanilla
     aSkill.UpdateBalance();
 #endif
+
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
 
     if( dxr.dxInfo != None && dxr.dxInfo.missionNumber > 0 ) {
         // TODO: new game screen should use the starting mission if it isn't 1, but it needs to work even when doing a new game while already in a game
@@ -157,6 +160,10 @@ simulated function RandoSkill(Skill aSkill)
     percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
     banned = chance_single(dxr.flags.settings.banned_skills);
     l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
+    if (loadout!=None && loadout.is_skill_banned(dxr.flags.loadout,aSkill.Class)){
+        banned = True;
+        l( aSkill.Class.Name $ " banned by loadout");
+    }
     for(i=0; i<arrayCount(aSkill.Cost); i++)
     {
         if( banned ) {
