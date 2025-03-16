@@ -1,5 +1,13 @@
 class MenuScreenRandoOptChoices expands MenuUIMenuWindow;
 
+function CreateMenuButtons()
+{
+    Super.CreateMenuButtons();
+    if(class'DXRInfo'.static.OnTitleScreen()) {
+        winButtons[4].SetSensitivity(false);
+    }
+}
+
 defaultproperties
 {
      ButtonNames(0)="Randomizer"
@@ -7,7 +15,7 @@ defaultproperties
      ButtonNames(2)="Audio"
      ButtonNames(3)="Gameplay"
      //ButtonNames(4)="Previous Menu" //Four Choice menu
-     ButtonNames(4)="Flags" //five Choice menu, TODO: needs better name
+     ButtonNames(4)="In-Game Settings" //five Choice menu
      ButtonNames(5)="Previous Menu" //five Choice menu
      buttonXPos=7
      buttonWidth=282
