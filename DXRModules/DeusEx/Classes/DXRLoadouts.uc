@@ -10,7 +10,7 @@ struct loadouts
 
     var class<Inventory>    ban_types[10];
     var class<Skill>        ban_skills[10];
-    var class<Augmentation> ban_augs[5];
+    var class<Augmentation> ban_augs[10];
     var class<Inventory>    allow_types[25];
     var class<Skill>        allow_skills[10];
     var class<Augmentation> allow_augs[10];
@@ -58,6 +58,7 @@ function CheckConfig()
     loadouts_order[i++] = 5;
     loadouts_order[i++] = 11;
     loadouts_order[i++] = 13;
+    loadouts_order[i++] = 14;
     loadouts_order[i++] = 12;
 
     //#region Loadout Defs
@@ -317,6 +318,17 @@ function CheckConfig()
     AddStartAug(13,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
+    //#region Reduced Aug Set
+    AddLoadoutName(14,"Reduced Aug Set");
+    BanRandomAug(14); //18 augs total, ban a third of them
+    BanRandomAug(14);
+    BanRandomAug(14);
+    BanRandomAug(14);
+    BanRandomAug(14);
+    BanRandomAug(14);
+    AddRandomAug(14); //and get a random aug to start
+    //#endregion
+/////////////////////////////////////////////////////////////////
 
     //#endregion
 
@@ -509,6 +521,19 @@ function AddRandomAug(int s)
         if( item_sets[s].starting_augs[i] == None ) {
             SetGlobalSeed("DXRLoadouts AugRandom " $ i);
             item_sets[s].starting_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
+            return;
+        }
+    }
+}
+
+function BanRandomAug(int s)
+{
+    local int i;
+
+    for(i=0; i < ArrayCount(item_sets[s].ban_augs); i++) {
+        if( item_sets[s].ban_augs[i] == None ) {
+            SetGlobalSeed("DXRLoadouts BanAugRandom " $ i);
+            item_sets[s].ban_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
             return;
         }
     }
