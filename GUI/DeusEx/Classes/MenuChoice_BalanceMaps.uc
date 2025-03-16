@@ -15,6 +15,14 @@ static function bool MajorEnabled()
     return (default.value>3) || (default.value==1 && !class'DXRFlags'.default.bReducedRando);
 }
 
+static function int EnabledLevel()
+{
+    if(default.value != 1) return default.value;
+    if(class'DXRFlags'.default.bZeroRando) return 2;
+    if(class'DXRFlags'.default.bReducedRando) return 3;
+    return 4;
+}
+
 defaultproperties
 {
     HelpText="Balance changes for maps."

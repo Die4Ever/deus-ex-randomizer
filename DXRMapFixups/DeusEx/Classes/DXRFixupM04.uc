@@ -481,7 +481,7 @@ function PreFirstEntryMapFixes()
             troop.ChangeAlly('Player', 1.0, false);
             ChangeInitialAlliance(troop, 'Player', 1.0, false);
         }
-        if (#defined(vanilla))
+        if (#defined(vanilla)){
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 5);
             foreach AllActors(class'Teleporter', tel) {
                 if (tel.URL == "04_NYC_Smug#ToSmugFrontDoor") {
@@ -491,6 +491,7 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+        }
 
         foreach AllActors(class'#var(prefix)Datacube', dc) {
             if (dc.textTag == '04_Datacube03') {

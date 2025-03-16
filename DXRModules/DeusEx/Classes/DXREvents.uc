@@ -379,11 +379,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -457,6 +459,14 @@ function SetWatchFlags() {
         InitPoolBalls();
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
+        if (RevisionMaps) {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt.bDestroyOthers = false;
+        }
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
@@ -488,7 +498,9 @@ function SetWatchFlags() {
         bt.bDestroyOthers = false;
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-19.620102, -866.462830, -403.896912),60,40);
         bt.bDestroyOthers = false;
-
+        if (RevisionMaps) {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2048,1111,680),30,10);  //Only one in Revision
+        }
         break;
     //#endregion
 
@@ -517,11 +529,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -559,6 +573,8 @@ function SetWatchFlags() {
         WatchFlag('PlayPool');
         WatchFlag('OverhearLebedev_Played');
         InitPoolBalls();
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
+
         break;
     case "03_NYC_HANGAR":
         RewatchFlag('747Ambrosia');
@@ -603,6 +619,14 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
         InitPoolBalls();
+        if (RevisionMaps) {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt.bDestroyOthers = false;
+        }
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -638,12 +662,14 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(960,234,297),350,60,class'#var(prefix)JuanLebedevCarcass');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(220,4,280),300,40,class'#var(prefix)JuanLebedevCarcass');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -716,11 +742,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -769,6 +797,11 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
 
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2060,-305),20,10); //Front Door
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2553,-305),20,10); //Kitchen Door
+        bt.bDestroyOthers=false;
+
 
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
@@ -795,6 +828,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),180,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1024,-790,-231),20,10);
 
         foreach AllActors(class'#var(prefix)Poolball',ball){
             if (ball.Region.Zone.ZoneGroundFriction>1){
@@ -830,6 +864,15 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
         class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-100,-1215,147),20,10); //Main Floor
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(927,-958,1295),20,10); //Over Jock's elevator
+        bt.bDestroyOthers=false;
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(830,-1020,1270),20,10); //Next to Jock's elevator
+        bt.bDestroyOthers=false;
+
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
@@ -891,6 +934,8 @@ function SetWatchFlags() {
             }
         }
         class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1832,-81,536),20,10);
+
         break;
     case "06_HONGKONG_MJ12LAB":
         foreach AllActors(class'ZoneInfo',zone){
@@ -910,6 +955,14 @@ function SetWatchFlags() {
 
     case "06_HONGKONG_VERSALIFE":
         WatchFlag('Supervisor_Paid');
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(207,575,-15),20,10);
+        break;
+    case "06_HONGKONG_WANCHAI_GARAGE":
+        if (RevisionMaps){
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-463,-23),20,10);
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-335,-23),20,10);
+        }
         break;
     //#endregion
 
@@ -937,6 +990,15 @@ function SetWatchFlags() {
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
         InitPoolBalls();
+        if (RevisionMaps) {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt.bDestroyOthers = false;
+        }
+
         break;
     case "08_NYC_HOTEL":
         class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
@@ -1044,6 +1106,8 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker2');
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-993,-60,-80),40,20);
+        break;
 
         break;
     case "09_NYC_GRAVEYARD":
@@ -1126,6 +1190,18 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
+        if (RevisionMaps){
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(255,-305,80),40,10);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-56),20,10);  //Back Door
+            bt.bDestroyOthers = false;
+
+        } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(290,-32,128),40,20);  //Front Door
+            bt.bDestroyOthers = false;
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-72),20,10);  //Back Door
+            bt.bDestroyOthers = false;
+        }
 
         break;
     case "10_PARIS_CHATEAU":
@@ -2858,7 +2934,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Flare_Activated":
             return "Light enough flares.";
         case "VialAmbrosia_Activated":
-            return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.";
+            return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.|n|nThere is also a vial of ambrosia in a small box in the Ocean Lab.";
         case "Binoculars_Activated":
             return "Find and use a pair of binoculars.";
         case "HazMatSuit_Activated":
@@ -2960,7 +3036,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ViewDissection":
             return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
         case "ViewTouristPics":
-            return "Find and view enough tourist pictures of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
+            return "Find and view enough tourist photos of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
         case "CathedralUnderwater":
             return "Swim through the underwater tunnel that leads to the Paris cathedral.";
         case "DL_gold_found_Played":
@@ -3355,6 +3431,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Demonstrate your certification and operate a functional forklift.";
         case "ASingleFlask":
             return "Destroy enough flasks through the game.";
+        case "FC_EyeTest_peepedtex":
+            return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
+        case "EmergencyExit":
+            return "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3608,7 +3688,7 @@ defaultproperties
     bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",desc_singular="Drink 1 can of soda",max=75)
     bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s Ballistic Armors",desc_singular="Use 1 Ballistic Armor",max=3,missions=57212)
     bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",desc_singular="Light 1 flare",max=15)
-    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=512)
+    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=16896)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",desc_singular="Use 1 HazMat Suit",max=3,missions=54866)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",desc_singular="Use 1 Thermoptic Camo",max=3,missions=55132)
@@ -3647,7 +3727,7 @@ defaultproperties
     bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
     bingo_options(216)=(event="ViewMaps",desc="View %s maps",desc_singular="View 1 map",max=6,missions=56686)
     bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
-    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist picture",max=1,missions=2576)
+    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist photo",max=1,missions=2576)
 #endif
     bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
     bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
@@ -3790,7 +3870,8 @@ defaultproperties
     bingo_options(350)=(event="CherryPickerSeat",desc="Sit in the seat of a cherry picker",max=1,missions=49152)
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
     bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up? (%s)",max=10,missions=24190)
-
+    bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
+    bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate 1 emergency exit",max=8,missions=1918)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 

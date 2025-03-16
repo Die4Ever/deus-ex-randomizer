@@ -24,7 +24,6 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_LootActionAlcohol');
     CreateChoice(class'MenuChoice_LootActionMelee');
     CreateChoice(class'MenuChoice_LootActionMisc');
-    CreateChoice(class'MenuChoice_LockBelt');
 #endif
 
     CreateChoice(class'MenuChoice_PasswordAutofill');
@@ -32,6 +31,9 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_FixGlitches');
     CreateChoice(class'MenuChoice_NewGamePlus');
     CreateChoice(class'MenuChoice_ShowNewSeed');
+#ifdef vanilla||revision
+    CreateChoice(class'MenuChoice_LockBelt');
+#endif
 
 #ifdef vanilla
     CreateChoice(class'MenuChoice_BalanceAugs');

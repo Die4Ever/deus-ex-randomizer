@@ -509,12 +509,12 @@ function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
 
     n = SpawnReplacement(a, newClass);
 
-    if (#var(DeusExPrefix)Decoration(a)!=None){
-        ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration(a),#var(DeusExPrefix)Decoration(n));
-    }
-
     if(n == None)
         return;
+
+    if (#var(DeusExPrefix)Decoration(n)!=None){
+        ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration(a),#var(DeusExPrefix)Decoration(n));
+    }
 
     a.Destroy();
 }
@@ -555,20 +555,27 @@ function ReplaceShowerFaucet(#var(prefix)ShowerFaucet a)
 {
     local DXRShowerFaucet n;
     local int i;
+
+    if(a.IsA('DXRShowerFaucet'))
+        return;
+
     n = DXRShowerFaucet(SpawnReplacement(a, class'DXRShowerFaucet'));
     if(n == None)
         return;
 
     n.Skin = a.Skin;
+    n.bOpen = a.bOpen;
+
+    ReplaceDecoration(a, n);
+    n.PostBeginPlay();
+
+    //Make sure the water generators are in the right mode
+    //They seem to always start turned on
     for(i=0; i<ArrayCount(n.waterGen); i++) {
-        n.waterGen[i] = a.waterGen[i];
-        a.waterGen[i] = None;
+        if (n.bOpen != n.waterGen[i].bSpewing) {
+            n.waterGen[i].Trigger(None,None);
+        }
     }
-    for(i=0; i<ArrayCount(n.sprayOffsets); i++) {
-        n.sprayOffsets[i] = a.sprayOffsets[i];
-    }
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
 #ifdef hx
     n.PrecessorName = a.PrecessorName;
 #endif

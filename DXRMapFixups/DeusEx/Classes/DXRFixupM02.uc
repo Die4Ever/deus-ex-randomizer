@@ -323,7 +323,7 @@ function PreFirstEntryMapFixes()
         buttonHint.SetBaseActor(button);
 
         SetAllLampsState(false, true, true); // the lamp in Paul's apartment, seen through the window
-        if (#defined(vanilla))
+        if (#defined(vanilla)) {
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 0, 1, 0.0, 3);
             foreach AllActors(class'Teleporter', tel) {
                 if (tel.URL == "02_NYC_Smug#ToSmugFrontDoor") {
@@ -333,6 +333,7 @@ function PreFirstEntryMapFixes()
                     break;
                 }
             }
+        }
 
         break;
     //#endregion

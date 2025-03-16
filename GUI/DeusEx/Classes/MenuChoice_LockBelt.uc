@@ -10,6 +10,14 @@ static function bool AddNonWeapons()
     return (default.value==0) || (default.value==2);
 }
 
+static function bool AddToBelt(inventory item)
+{
+    if (Weapon(item)!=None && AddWeapons()) return true;
+    if (Weapon(item)==None && AddNonWeapons()) return true;
+
+    return false;
+}
+
 defaultproperties
 {
     value=0

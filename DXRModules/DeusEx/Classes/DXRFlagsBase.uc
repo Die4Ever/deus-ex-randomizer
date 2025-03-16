@@ -450,7 +450,7 @@ simulated function string BindFlags(int mode, optional string str)
         FlagInt('MenuChoice_BalanceEtc', i, mode, str);
         i = int(class'MenuChoice_BalanceItems'.static.IsEnabled());
         FlagInt('MenuChoice_BalanceItems', i, mode, str);
-        i = int(class'MenuChoice_BalanceMaps'.static.IsEnabled());
+        i = class'MenuChoice_BalanceMaps'.static.EnabledLevel();
         FlagInt('MenuChoice_BalanceMaps', i, mode, str);
         i = int(class'MenuChoice_BalanceSkills'.static.IsEnabled());
         FlagInt('MenuChoice_BalanceSkills', i, mode, str);
@@ -806,7 +806,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'MenuChoice_BalanceAugs':
         case 'MenuChoice_BalanceEtc':
         case 'MenuChoice_BalanceItems':
-        case 'MenuChoice_BalanceMaps':
         case 'MenuChoice_BalanceSkills':
         case 'MenuChoice_AutoAugs':
             if (val == 1) {
@@ -814,6 +813,9 @@ simulated function string flagValToHumanVal(name flagname, int val){
             } else {
                 return "Disabled";
             }
+
+        case 'MenuChoice_BalanceMaps':
+            return class'MenuChoice_BalanceMaps'.default.enumText[val];
 
         case 'MenuChoice_PasswordAutofill':
             switch(val) {
