@@ -3747,7 +3747,7 @@ defaultproperties
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=34686)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
-    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL 1 DRINK!",max=5,missions=64)
+    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=5,missions=64)
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
     bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",desc_singular="MUST. CRUSH. 1 CAPITALIST.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
