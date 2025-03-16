@@ -10,8 +10,10 @@ struct loadouts
 
     var class<Inventory>    ban_types[10];
     var class<Skill>        ban_skills[10];
+    var class<Augmentation> ban_augs[5];
     var class<Inventory>    allow_types[25];
     var class<Skill>        allow_skills[10];
+    var class<Augmentation> allow_augs[10];
     var class<Skill>        never_ban_skills[10];
     var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
@@ -85,6 +87,7 @@ function CheckConfig()
     AddItemSpawn(1,class'#var(package).WeaponRubberBaton',20);
     AddAug(1,class'#var(prefix)AugStealth');
     AddAug(1,class'#var(prefix)AugMuscle');
+    AddAugBan(1,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region SWTP Plus
@@ -117,6 +120,7 @@ function CheckConfig()
     AddItemSpawn(2,class'#var(package).WeaponRubberBaton',20);
     AddAug(2,class'#var(prefix)AugStealth');
     AddAug(2,class'#var(prefix)AugMuscle');
+    AddAugBan(2,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Ninja JC
@@ -152,6 +156,8 @@ function CheckConfig()
     AddItemSpawn(3,class'#var(prefix)WeaponShuriken',150);
     AddItemSpawn(3,class'#var(prefix)BioelectricCell',100);
     AddAug(3,class'#var(package).AugNinja'); //combines AugStealth and active AugSpeed
+    AddAugBan(3,class'#var(prefix)AugSpeed');
+    AddAugBan(3,class'#var(prefix)AugStealth');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Don't Give GEP
@@ -385,6 +391,20 @@ function AddSkillBan(int s, class<Skill> skill)
     }
 }
 
+function AddAugBan(int s, class<Augmentation> aug)
+{
+    local int i;
+
+    if( aug == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].ban_augs); i++) {
+        if( item_sets[s].ban_augs[i] == None ) {
+            item_sets[s].ban_augs[i] = aug;
+            return;
+        }
+    }
+}
+
 function AddInvAllow(int s, class<Inventory> inv)
 {
     local int i;
@@ -412,6 +432,21 @@ function AddSkillAllow(int s, class<Skill> skill)
         }
     }
 }
+
+function AddAugAllow(int s, class<Augmentation> aug)
+{
+    local int i;
+
+    if( aug == None ) return;
+
+    for(i=0; i < ArrayCount(item_sets[s].allow_augs); i++) {
+        if( item_sets[s].allow_augs[i] == None ) {
+            item_sets[s].allow_augs[i] = aug;
+            return;
+        }
+    }
+}
+
 
 function NeverBanSkill(int s, class<Skill> skill)
 {
@@ -572,6 +607,30 @@ function bool is_skill_banned(int loadoutNum, class<Skill> skill)
     return _is_skill_banned( item_sets[loadoutNum], skill);
 }
 
+function bool _is_aug_banned(loadouts b, class<Augmentation> aug)
+{
+    local int i;
+
+    for(i=0; i < ArrayCount(b.allow_augs); i++ ) {
+        if( b.allow_augs[i] != None && ClassIsChildOf(aug, b.allow_augs[i]) ) {
+            return false;
+        }
+    }
+
+    for(i=0; i < ArrayCount(b.ban_augs); i++ ) {
+        if( b.ban_augs[i] != None && ClassIsChildOf(aug, b.ban_augs[i]) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function bool is_aug_banned(int loadoutNum, class<Augmentation> aug)
+{
+    return _is_aug_banned( item_sets[loadoutNum], aug);
+}
+
 function bool _allow_skill_ban(loadouts b, class<Skill> skill)
 {
     local int i;
@@ -723,23 +782,14 @@ function bool StartedWithAug(class<Augmentation> a)
 // used for determining aug can contents
 function bool IsAugBanned(class<Augmentation> a)
 {
+    //Always allow augs you started with
     if(StartedWithAug(a)) return true;
 
+    //Ban Run Silent aug in speedruns with aug slot rando disabled
     if(dxr.flags.IsSpeedrunMode() && dxr.flags.moresettings.aug_loc_rando==0 && class<#var(prefix)AugStealth>(a)!=None) return true;
 
-    switch(loadout) {
-        case 1:// SWTP
-        case 2:
-            if(class<#var(prefix)AugSpeed>(a)!=None) return true;
-            break;
-
-        case 3://ninja
-            if(class<#var(prefix)AugSpeed>(a)!=None) return true;
-            if(class<#var(prefix)AugStealth>(a)!=None) return true;
-            break;
-    }
-
-    return false;
+    //Otherwise rely on aug ban/allow rules per loadout
+    return is_aug_banned(loadout,a);
 }
 
 //#region Starting Equipmt
