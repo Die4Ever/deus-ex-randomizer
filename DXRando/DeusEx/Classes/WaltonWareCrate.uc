@@ -1,5 +1,55 @@
 class WaltonWareCrate extends Containers;
 
+struct Content
+{
+    var class<Pickup> type;
+    var int numCopies;
+};
+
+var Content wwContents[8];
+var int numContents;
+
+function bool AddContent(class<Pickup> type, int numCopies)
+{
+    if (numContents < ArrayCount(wwContents)) {
+        wwContents[numContents].type = type;
+        wwContents[numContents].numCopies = numCopies;
+        numContents++;
+        return true;
+    }
+    return false;
+}
+
+function Destroyed()
+{
+    local int i;
+	local Rotator rot;
+	local Vector loc;
+    local Pickup dropped;
+
+    if ((Pawn(Base) != None) && (Pawn(Base).CarriedDecoration == self)) {
+        Pawn(Base).DropDecoration();
+    }
+
+    for (i = 0; i < numContents; i++) {
+        loc = Location + VRand()*CollisionRadius;
+        loc.Z = Location.Z;
+        rot = rot(0,0,0);
+        rot.Yaw = FRand() * 65535;
+        dropped = Spawn(wwContents[i].type,,, loc, rot);
+        if (dropped != None) {
+            dropped.NumCopies = wwContents[i].numCopies;
+            dropped.RemoteRole = ROLE_DumbProxy;
+            dropped.SetPhysics(PHYS_Falling);
+            dropped.bCollideWorld = true;
+            dropped.Velocity = VRand() * 50;
+            dropped.GotoState('Pickup', 'Dropped');
+        }
+    }
+
+    Super(DeusExDecoration).Destroyed();
+}
+
 defaultproperties
 {
      HitPoints=1

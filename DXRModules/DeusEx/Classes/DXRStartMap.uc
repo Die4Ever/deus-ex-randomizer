@@ -852,6 +852,14 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
+    local WaltonWareCrate waltonCrate;
+
+    if (flagbase.GetInt('Rando_newgameplus_loops') >= 0) {
+        waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(player, class'WaltonWareCrate', 80.0, MakeRotator(0, rng(16384), 0)));
+        waltonCrate.AddContent(class'BioelectricCell', 2);
+        waltonCrate.AddContent(class'MedKit', 3);
+        waltonCrate.AddContent(class'BioelectricCell', 4);
+    }
 
     switch(start_flag) {
         case 21:
