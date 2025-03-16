@@ -3036,7 +3036,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ViewDissection":
             return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
         case "ViewTouristPics":
-            return "Find and view enough tourist pictures of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
+            return "Find and view enough tourist photos of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
         case "CathedralUnderwater":
             return "Swim through the underwater tunnel that leads to the Paris cathedral.";
         case "DL_gold_found_Played":
@@ -3727,7 +3727,7 @@ defaultproperties
     bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
     bingo_options(216)=(event="ViewMaps",desc="View %s maps",desc_singular="View 1 map",max=6,missions=56686)
     bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
-    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist picture",max=1,missions=2576)
+    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist photo",max=1,missions=2576)
 #endif
     bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
     bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
