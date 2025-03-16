@@ -518,7 +518,7 @@ simulated function bool UpdateInfo(Object winObject)
     // default damage
     if(!bZeroRando) {
         dmg = GetDamage(true, true);
-        str = "  (Default: " $ dmg $ ")";
+        str = " (Default: " $ dmg $ ")";
         winInfo.AddInfoItem("", str);
     }
 
@@ -565,7 +565,7 @@ simulated function bool UpdateInfo(Object winObject)
     if (!bZeroRando && Default.ReloadCount != 0 && !bHandToHand)
     {
         str = FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
-        winInfo.AddInfoItem("", "  (Default: " $ str);
+        winInfo.AddInfoItem("", " (Default: " $ str);
     }
 
     // reload time
