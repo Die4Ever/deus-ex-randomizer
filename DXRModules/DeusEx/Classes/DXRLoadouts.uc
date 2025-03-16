@@ -64,7 +64,7 @@ function CheckConfig()
 /////////////////////////////////////////////////////////////////
     //#region All Items
     AddLoadoutName(0,"All Items Allowed");
-    AddAug(0,class'#var(prefix)AugSpeed');
+    AddStartAug(0,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region SWTP Pure
@@ -79,14 +79,14 @@ function CheckConfig()
     AddInvAllow(1,class'#var(prefix)WeaponProd');
     AddInvAllow(1,class'#var(prefix)AmmoBattery');
     AddInvAllow(1,class'#var(package).WeaponRubberBaton');
-    AddStart(1,class'#var(prefix)WeaponProd');
-    AddStart(1,class'#var(prefix)AmmoBattery');
-    AddStart(1,class'#var(prefix)AmmoBattery');
-    AddStart(1,class'#var(package).WeaponRubberBaton');
+    AddStartInv(1,class'#var(prefix)WeaponProd');
+    AddStartInv(1,class'#var(prefix)AmmoBattery');
+    AddStartInv(1,class'#var(prefix)AmmoBattery');
+    AddStartInv(1,class'#var(package).WeaponRubberBaton');
     AddItemSpawn(1,class'#var(prefix)WeaponProd',30);
     AddItemSpawn(1,class'#var(package).WeaponRubberBaton',20);
-    AddAug(1,class'#var(prefix)AugStealth');
-    AddAug(1,class'#var(prefix)AugMuscle');
+    AddStartAug(1,class'#var(prefix)AugStealth');
+    AddStartAug(1,class'#var(prefix)AugMuscle');
     AddAugBan(1,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -112,14 +112,14 @@ function CheckConfig()
     AddInvAllow(2,class'#var(prefix)WeaponPepperGun');
     AddInvAllow(2,class'#var(prefix)AmmoPepper');
     AddInvAllow(2,class'#var(package).WeaponRubberBaton');
-    AddStart(2,class'#var(prefix)WeaponProd');
-    AddStart(2,class'#var(prefix)AmmoBattery');
-    AddStart(2,class'#var(package).WeaponRubberBaton');
+    AddStartInv(2,class'#var(prefix)WeaponProd');
+    AddStartInv(2,class'#var(prefix)AmmoBattery');
+    AddStartInv(2,class'#var(package).WeaponRubberBaton');
     AddItemSpawn(2,class'#var(prefix)WeaponProd',30);
     AddItemSpawn(2,class'#var(prefix)WeaponMiniCrossbow',30);
     AddItemSpawn(2,class'#var(package).WeaponRubberBaton',20);
-    AddAug(2,class'#var(prefix)AugStealth');
-    AddAug(2,class'#var(prefix)AugMuscle');
+    AddStartAug(2,class'#var(prefix)AugStealth');
+    AddStartAug(2,class'#var(prefix)AugMuscle');
     AddAugBan(2,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -150,12 +150,12 @@ function CheckConfig()
     AddInvAllow(3,class'#var(prefix)AmmoDartFlare');
     AddInvAllow(3,class'#var(prefix)AmmoDartPoison');
     AddInvAllow(3,class'#var(prefix)WeaponCombatKnife');
-    AddStart(3,class'#var(prefix)WeaponShuriken');
-    AddStart(3,class'#var(prefix)WeaponSword');
-    AddStart(3,class'#var(prefix)AmmoShuriken');
+    AddStartInv(3,class'#var(prefix)WeaponShuriken');
+    AddStartInv(3,class'#var(prefix)WeaponSword');
+    AddStartInv(3,class'#var(prefix)AmmoShuriken');
     AddItemSpawn(3,class'#var(prefix)WeaponShuriken',150);
     AddItemSpawn(3,class'#var(prefix)BioelectricCell',100);
-    AddAug(3,class'#var(package).AugNinja'); //combines AugStealth and active AugSpeed
+    AddStartAug(3,class'#var(package).AugNinja'); //combines AugStealth and active AugSpeed
     AddAugBan(3,class'#var(prefix)AugSpeed');
     AddAugBan(3,class'#var(prefix)AugStealth');
     //#endregion
@@ -166,7 +166,7 @@ function CheckConfig()
     AddInvBan(4,class'#var(prefix)WeaponGEPGun');
     AddInvBan(4,class'#var(prefix)AmmoRocket');
     AddInvBan(4,class'#var(prefix)AmmoRocketWP');
-    AddAug(4,class'#var(prefix)AugSpeed');
+    AddStartAug(4,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Freeman Mode
@@ -179,8 +179,8 @@ function CheckConfig()
     AddSkillBan(5,class'#var(prefix)SkillWeaponRifle');
     NeverBanSkill(5,class'#var(prefix)SkillWeaponLowTech');
     AddInvAllow(5,class'#var(prefix)WeaponCrowbar');
-    AddStart(5,class'#var(prefix)WeaponCrowbar');
-    AddAug(5,class'#var(prefix)AugSpeed');
+    AddStartInv(5,class'#var(prefix)WeaponCrowbar');
+    AddStartAug(5,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Grenades Only
@@ -202,17 +202,17 @@ function CheckConfig()
     AddInvAllow(6,class'#var(prefix)WeaponEMPGrenade');
     AddInvAllow(6,class'#var(prefix)AmmoEMPGrenade');
     AddInvAllow(6,class'#var(package).WeaponRubberBaton');
-    AddStart(6,class'#var(prefix)WeaponLAM');
-    AddStart(6,class'#var(prefix)WeaponGasGrenade');
-    AddStart(6,class'#var(prefix)WeaponNanoVirusGrenade');
-    AddStart(6,class'#var(prefix)WeaponEMPGrenade');
-    AddStart(6,class'#var(package).WeaponRubberBaton');
+    AddStartInv(6,class'#var(prefix)WeaponLAM');
+    AddStartInv(6,class'#var(prefix)WeaponGasGrenade');
+    AddStartInv(6,class'#var(prefix)WeaponNanoVirusGrenade');
+    AddStartInv(6,class'#var(prefix)WeaponEMPGrenade');
+    AddStartInv(6,class'#var(package).WeaponRubberBaton');
     AddItemSpawn(6,class'#var(prefix)WeaponLAM',50);
     AddItemSpawn(6,class'#var(prefix)WeaponGasGrenade',50);
     AddItemSpawn(6,class'#var(prefix)WeaponNanoVirusGrenade',50);
     AddItemSpawn(6,class'#var(prefix)WeaponEMPGrenade',50);
     AddItemSpawn(6,class'#var(package).WeaponRubberBaton',20);
-    AddAug(6,class'#var(prefix)AugSpeed');
+    AddStartAug(6,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region No Pistols
@@ -221,7 +221,7 @@ function CheckConfig()
     AddInvBan(7,class'#var(prefix)WeaponPistol');
     AddInvBan(7,class'#var(prefix)WeaponStealthPistol');
     AddInvBan(7,class'#var(prefix)Ammo10mm');
-    AddAug(7,class'#var(prefix)AugSpeed');
+    AddStartAug(7,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region No Swords
@@ -229,12 +229,12 @@ function CheckConfig()
     AddLoadoutPlayerMsg(8,"No Swords");
     AddInvBan(8,class'#var(prefix)WeaponSword');
     AddInvBan(8,class'#var(prefix)WeaponNanoSword');
-    AddAug(8,class'#var(prefix)AugSpeed');
+    AddStartAug(8,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
-    //#region No Overused
-    AddLoadoutName(9,"No Overused Weapons");
-    AddLoadoutPlayerMsg(9,"No Overused Weapons");
+    //#region Hipster JC
+    AddLoadoutName(9,"Hipster JC");
+    AddLoadoutPlayerMsg(9,"That's too mainstream");
     AddInvBan(9,class'#var(prefix)WeaponNanoSword');
     AddInvBan(9,class'#var(prefix)WeaponPistol');
     AddInvBan(9,class'#var(prefix)WeaponStealthPistol');
@@ -242,7 +242,12 @@ function CheckConfig()
     AddInvBan(9,class'#var(prefix)WeaponGEPGun');
     AddInvBan(9,class'#var(prefix)AmmoRocket');
     AddInvBan(9,class'#var(prefix)AmmoRocketWP');
-    AddAug(9,class'#var(prefix)AugSpeed');
+    AddInvBan(9,class'#var(prefix)WeaponModLaser');
+    //AddStartAug(9,class'#var(prefix)AugSpeed'); //Speed is overused!
+    AddAugBan(9,class'#var(prefix)AugSpeed');
+    AddAugBan(9,class'#var(prefix)AugPower');
+    AddAugBan(9,class'#var(prefix)AugHealing');
+
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region By The Book
@@ -253,7 +258,7 @@ function CheckConfig()
     AddSkillBan(10,class'#var(prefix)SkillComputer');
     AddSkillBan(10,class'#var(prefix)SkillLockpicking');
     AddSkillBan(10,class'#var(prefix)SkillTech');
-    AddAug(10,class'#var(prefix)AugStealth');
+    AddStartAug(10,class'#var(prefix)AugStealth');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Explosives Only
@@ -280,8 +285,8 @@ function CheckConfig()
     AddInvAllow(11,class'#var(prefix)WeaponAssaultGun');
     AddInvAllow(11,class'#var(prefix)Ammo20mm');
     AddInvAllow(11,class'#var(package).WeaponRubberBaton');
-    AddStart(11,class'#var(prefix)WeaponGEPGun');
-    AddStart(11,class'#var(package).WeaponRubberBaton');
+    AddStartInv(11,class'#var(prefix)WeaponGEPGun');
+    AddStartInv(11,class'#var(package).WeaponRubberBaton');
     AddItemSpawn(11,class'#var(prefix)WeaponLAW',75);
     AddItemSpawn(11,class'#var(prefix)WeaponLAM',100);
     AddItemSpawn(11,class'#var(prefix)WeaponEMPGrenade',75);
@@ -291,7 +296,7 @@ function CheckConfig()
     AddItemSpawn(11,class'#var(prefix)AmmoRocket',100);
     AddItemSpawn(11,class'#var(prefix)AmmoRocketWP',100);
     AddItemSpawn(11,class'#var(prefix)Ammo20mm',100);
-    AddAug(11,class'#var(prefix)AugSpeed');
+    AddStartAug(11,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Random Aug
@@ -308,7 +313,7 @@ function CheckConfig()
     AddInvBan(13,class'#var(prefix)WineBottle');
     AddInvBan(13,class'#var(prefix)Cigarettes');
     AddInvBan(13,class'#var(prefix)VialCrack');
-    AddAug(13,class'#var(prefix)AugSpeed');
+    AddStartAug(13,class'#var(prefix)AugSpeed');
     //#endregion
 /////////////////////////////////////////////////////////////////
 
@@ -462,7 +467,7 @@ function NeverBanSkill(int s, class<Skill> skill)
     }
 }
 
-function AddStart(int s, class<Inventory> inv)
+function AddStartInv(int s, class<Inventory> inv)
 {
     local int i;
 
@@ -476,7 +481,7 @@ function AddStart(int s, class<Inventory> inv)
     }
 }
 
-function AddAug(int s, class<Augmentation> aug)
+function AddStartAug(int s, class<Augmentation> aug)
 {
     local int i;
 
