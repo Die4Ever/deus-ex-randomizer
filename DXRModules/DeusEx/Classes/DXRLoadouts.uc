@@ -244,6 +244,7 @@ function CheckConfig()
     AddInvBan(9,class'#var(prefix)AmmoRocketWP');
     AddInvBan(9,class'#var(prefix)WeaponModLaser');
     //AddStartAug(9,class'#var(prefix)AugSpeed'); //Speed is overused!
+    AddStartAug(9,class'#var(prefix)AugEMP'); //It's actually a really good aug, guys
     AddAugBan(9,class'#var(prefix)AugSpeed');
     AddAugBan(9,class'#var(prefix)AugPower');
     AddAugBan(9,class'#var(prefix)AugHealing');
