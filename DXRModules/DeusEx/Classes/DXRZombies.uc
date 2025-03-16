@@ -172,7 +172,7 @@ static function string GetPawnClassNameFromCarcass(DXRActorsBase module, class<#
             //(We should probably strive for this to be the norm)
             //At least in vanilla, all carcasses are the original class name + Carcass
             livingClassName = string(carcClass);
-            livingClassName = module.ReplaceText(livingClassName,"NametagCarcass","");// for our Aug guys
+            livingClassName = module.ReplaceText(livingClassName,"NametagCarcass","Carcass");// for our Aug guys
 
             //Strip everything Carcass onwards (Revision has things like MJ12TroopCarcassA, MJ12TroopCarcassB... )
             i = module.InStr(livingClassName,"Carcass");
