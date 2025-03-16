@@ -6,6 +6,8 @@
 
 class DXRStartMap extends DXRActorsBase;
 
+var class<Pickup> CarePackageOptions[4];
+
 function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
@@ -854,11 +856,15 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
     local DeusExGoal goal;
     local WaltonWareCrate waltonCrate;
 
-    if (flagbase.GetInt('Rando_newgameplus_loops') >= 0) {
-        waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(player, class'WaltonWareCrate', 80.0, MakeRotator(0, rng(16384), 0)));
-        waltonCrate.AddContent(class'BioelectricCell', 2);
-        waltonCrate.AddContent(class'MedKit', 3);
-        waltonCrate.AddContent(class'BioelectricCell', 4);
+    if (flagbase.GetInt('Rando_newgameplus_loops') > 0) {
+        waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
+            player,
+            class'WaltonWareCrate',
+            80.0,
+            MakeRotator(0, (4096 - rng(8192)), 0)
+        ));
+        waltonCrate.AddContent(class'BioelectricCell', 1);
+        waltonCrate.AddContent(CarePackageOptions[rng(ArrayCount(CarePackageOptions))], 1);
     }
 
     switch(start_flag) {
@@ -1377,4 +1383,12 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
     //These starting points are free, so don't count them towards your score
     //p.SkillPointsTotal += startBonus;
+}
+
+defaultproperties
+{
+    CarePackageOptions(0)=class'MedKit'
+    CarePackageOptions(1)=class'BioelectricCell'
+    CarePackageOptions(2)=class'Lockpick'
+    CarePackageOptions(3)=class'Multitool'
 }
