@@ -55,6 +55,14 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        if(VanillaMaps) {
+            foreach AllActors(class'#var(prefix)DamageTrigger',dt){
+                if(dt.DamageType=='Burned' && dt.DamageAmount==500){
+                    dt.DamageType='Fell';
+                }
+            }
+        }
+
         break;
     //#endregion
 
