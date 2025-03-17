@@ -269,7 +269,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant>
 
     c = new(Level) class'Conversation';
     c.conName = bindname;
-    c.CreatedBy = String(bindname);
+    c.CreatedBy = name;
     c.conOwnerName = String(bindname);
     c.bGenerateAudioNames = false;
     c.bInvokeFrob = true;
@@ -462,6 +462,7 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
             tagName="MerchantPurchaseError";
         }
     }
+    tagName=tagName$c.conName; //Append the bindname to the end
 
     e = new(c) class'ConEventTrigger';
     e.eventType=ET_Trigger;
@@ -477,6 +478,8 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
 
         j = js.static.Start("MerchantInfo");
         js.static.Add(j,"Credits","__CURPLAYERCREDITS__"); //This will be replaced in the Merchant Telemetry Trigger
+        js.static.Add(j,"MerchantBindName",c.conName);
+        js.static.Add(j,"MerchantName",c.CreatedBy);
         if (i>=0){
             js.static.Add(j,"Purchase",items[i].item.name);
             js.static.Add(j,"PurchaseName",items[i].item.default.ItemName);
