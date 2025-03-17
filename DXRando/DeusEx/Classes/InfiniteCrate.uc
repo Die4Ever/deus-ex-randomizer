@@ -1,45 +1,45 @@
-class WaltonWareCrate extends Containers;
+class InfiniteCrate extends Containers;
 
-struct Content
-{
-    var class<Inventory> type;
-    var int numCopies;
-};
-
-var Content wwContents[8];
-var int numContents;
+var CrateContent icContents;
 
 function bool AddContent(class<Inventory> type, int numCopies)
 {
-    if (numContents < ArrayCount(wwContents)) {
-        wwContents[numContents].type = type;
-        wwContents[numContents].numCopies = numCopies;
-        numContents++;
-        return true;
+    local CrateContent cc;
+
+    if (numCopies < 1) {
+        return false;
     }
-    return false;
+
+    if (icContents == None) {
+        icContents = Spawn(class'CrateContent');
+        icContents.type = type;
+        icContents.numCopies = numCopies;
+    } else {
+        for (cc = icContents; cc.next != None; cc = cc.next);
+        cc.next = Spawn(class'CrateContent');
+        cc.next.type = type;
+        cc.next.numCopies = numCopies;
+    }
+
+    return true;
 }
 
 function Destroyed()
 {
-    local int i;
+    local CrateContent cc;
 	local Rotator rot;
 	local Vector loc;
     local Inventory dropped;
 
-    if ((Pawn(Base) != None) && (Pawn(Base).CarriedDecoration == self)) {
-        Pawn(Base).DropDecoration();
-    }
-
-    for (i = 0; i < numContents; i++) {
+    for (cc = icContents; cc != None; cc = cc.next) {
         loc = Location + VRand()*CollisionRadius;
         loc.Z = Location.Z;
         rot = rot(0,0,0);
         rot.Yaw = FRand() * 65535;
-        dropped = Spawn(wwContents[i].type,,, loc, rot);
+        dropped = Spawn(cc.type,,, loc, rot);
         if (dropped != None) {
             if (Pickup(dropped) != None) {
-                Pickup(dropped).NumCopies = wwContents[i].numCopies;
+                Pickup(dropped).NumCopies = cc.NumCopies;
             }
             dropped.RemoteRole = ROLE_DumbProxy;
             dropped.SetPhysics(PHYS_Falling);
@@ -56,10 +56,9 @@ defaultproperties
 {
      HitPoints=1
      FragType=Class'DeusEx.WoodFragment'
-     ItemName="WaltonWare Supply Crate"
-     contents=Class'VialPoo'
+     ItemName="Crate"
      bBlockSight=True
-     Skin=Texture'WaltonWareCrate'
+     Skin=Texture'BlankWoodenCrate'
      Mesh=LodMesh'DeusExDeco.CrateBreakableMed'
      CollisionRadius=34.000000
      CollisionHeight=24.000000

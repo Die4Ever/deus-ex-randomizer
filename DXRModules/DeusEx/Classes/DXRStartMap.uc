@@ -6,13 +6,13 @@
 
 class DXRStartMap extends DXRActorsBase;
 
-struct CrateContent
+struct CrateContentOption
 {
     var class<Inventory> type;
     var int numCopies;
 };
 
-var CrateContent CrateOptions[5];
+var CrateContentOption CrateOptions[5];
 
 function PlayerLogin(#var(PlayerPawn) p)
 {
@@ -860,16 +860,19 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
-    local WaltonWareCrate waltonCrate;
-    local CrateContent cc;
+    local InfiniteCrate waltonCrate;
+    local CrateContentOption cc;
 
     if (flagbase.GetInt('Rando_newgameplus_loops') >= 0) {
-        waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
+        waltonCrate = InfiniteCrate(SpawnInFrontOnFloor(
             player,
-            class'WaltonWareCrate',
+            class'InfiniteCrate',
             80.0,
             MakeRotator(0, (4096 - rng(8192)), 0)
         ));
+        waltonCrate.Skin = Texture'WaltonWareCrate';
+        waltonCrate.ItemName = "Walton's Care Package";
+
         waltonCrate.AddContent(class'BioelectricCell', 1);
         cc = CrateOptions[rng(ArrayCount(CrateOptions))];
         waltonCrate.AddContent(cc.type, cc.numCopies);
