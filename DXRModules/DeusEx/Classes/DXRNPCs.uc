@@ -480,18 +480,20 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
         if (i>=0){
             js.static.Add(j,"Purchase",items[i].item.name);
             js.static.Add(j,"PurchaseName",items[i].item.default.ItemName);
+            js.static.Add(j,"PurchaseArticle",items[i].item.default.ItemArticle);
             js.static.Add(j,"PurchasePrice",items[i].price);
         } else if (i==MERCH_TELEM_NO_BUY) {
-            js.static.Add(j,"Purchase","NoPurchase");
+            js.static.Add(j,"Failure","NoPurchase");
         } else if (i==MERCH_TELEM_NO_ROOM) {
-            js.static.Add(j,"Purchase","NoRoom");
+            js.static.Add(j,"Failure","NoRoom");
         } else if (i==MERCH_TELEM_NO_MONEY) {
-            js.static.Add(j,"Purchase","NoCash");
+            js.static.Add(j,"Failure","NoCash");
         }
         for (k=0;k<ArrayCount(items);k++) {
             if (items[k].item!=None){
                 js.static.Add(j,"Option"$k$"Type",items[k].item.name);
                 js.static.Add(j,"Option"$k$"Name",items[k].item.default.ItemName);
+                js.static.Add(j,"Option"$k$"Article",items[k].item.default.ItemArticle);
                 js.static.Add(j,"Option"$k$"Price",items[k].price);
             }
         }
