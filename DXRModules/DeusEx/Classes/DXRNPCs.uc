@@ -479,6 +479,7 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
         js.static.Add(j,"Credits","__CURPLAYERCREDITS__"); //This will be replaced in the Merchant Telemetry Trigger
         if (i>=0){
             js.static.Add(j,"Purchase",items[i].item.name);
+            js.static.Add(j,"PurchaseName",items[i].item.default.ItemName);
             js.static.Add(j,"PurchasePrice",items[i].price);
         } else if (i==MERCH_TELEM_NO_BUY) {
             js.static.Add(j,"Purchase","NoPurchase");
@@ -490,6 +491,7 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
         for (k=0;k<ArrayCount(items);k++) {
             if (items[k].item!=None){
                 js.static.Add(j,"Option"$k$"Type",items[k].item.name);
+                js.static.Add(j,"Option"$k$"Name",items[k].item.default.ItemName);
                 js.static.Add(j,"Option"$k$"Price",items[k].price);
             }
         }
