@@ -2,14 +2,14 @@ class WaltonWareCrate extends Containers;
 
 struct Content
 {
-    var class<Pickup> type;
+    var class<Inventory> type;
     var int numCopies;
 };
 
 var Content wwContents[8];
 var int numContents;
 
-function bool AddContent(class<Pickup> type, int numCopies)
+function bool AddContent(class<Inventory> type, int numCopies)
 {
     if (numContents < ArrayCount(wwContents)) {
         wwContents[numContents].type = type;
@@ -25,7 +25,7 @@ function Destroyed()
     local int i;
 	local Rotator rot;
 	local Vector loc;
-    local Pickup dropped;
+    local Inventory dropped;
 
     if ((Pawn(Base) != None) && (Pawn(Base).CarriedDecoration == self)) {
         Pawn(Base).DropDecoration();
@@ -38,7 +38,9 @@ function Destroyed()
         rot.Yaw = FRand() * 65535;
         dropped = Spawn(wwContents[i].type,,, loc, rot);
         if (dropped != None) {
-            dropped.NumCopies = wwContents[i].numCopies;
+            if (Pickup(dropped) != None) {
+                Pickup(dropped).NumCopies = wwContents[i].numCopies;
+            }
             dropped.RemoteRole = ROLE_DumbProxy;
             dropped.SetPhysics(PHYS_Falling);
             dropped.bCollideWorld = true;

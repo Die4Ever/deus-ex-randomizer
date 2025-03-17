@@ -6,7 +6,13 @@
 
 class DXRStartMap extends DXRActorsBase;
 
-var class<Pickup> CarePackageOptions[4];
+struct CrateContent
+{
+    var class<Inventory> type;
+    var int numCopies;
+};
+
+var CrateContent CrateOptions[5];
 
 function PlayerLogin(#var(PlayerPawn) p)
 {
@@ -855,8 +861,9 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 {
     local DeusExGoal goal;
     local WaltonWareCrate waltonCrate;
+    local CrateContent cc;
 
-    if (flagbase.GetInt('Rando_newgameplus_loops') > 0) {
+    if (flagbase.GetInt('Rando_newgameplus_loops') >= 0) {
         waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
             player,
             class'WaltonWareCrate',
@@ -864,7 +871,8 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             MakeRotator(0, (4096 - rng(8192)), 0)
         ));
         waltonCrate.AddContent(class'BioelectricCell', 1);
-        waltonCrate.AddContent(CarePackageOptions[rng(ArrayCount(CarePackageOptions))], 1);
+        cc = CrateOptions[rng(ArrayCount(CrateOptions))];
+        waltonCrate.AddContent(cc.type, cc.numCopies);
     }
 
     switch(start_flag) {
@@ -1387,8 +1395,9 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
 
 defaultproperties
 {
-    CarePackageOptions(0)=class'MedKit'
-    CarePackageOptions(1)=class'BioelectricCell'
-    CarePackageOptions(2)=class'Lockpick'
-    CarePackageOptions(3)=class'Multitool'
+    CrateOptions(0)=(type=class'MedKit',numCopies=1)
+    CrateOptions(1)=(type=class'BioelectricCell',numCopies=1)
+    CrateOptions(2)=(type=class'Lockpick',numCopies=1)
+    CrateOptions(3)=(type=class'Multitool',numCopies=1)
+    CrateOptions(4)=(type=class'DeusExAmmo',numCopies=1)
 }
