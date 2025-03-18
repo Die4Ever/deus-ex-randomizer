@@ -922,6 +922,21 @@ function bool IsOneItemMode()
 
 simulated function AddDXRCredits(CreditsWindow cw)
 {
+    if(dxr.rando_beaten > 0 && OnEndgameMap()) {
+        if(IsReducedRando()) {
+            cw.PrintText("Now that you've beaten "$ GameModeName(gamemode) $",");
+            cw.PrintText("maybe you're ready for the Normal Randomizer game mode,");
+            cw.PrintText("or one of our other crazy game modes!");
+            cw.PrintLn();
+        }
+        else if(gamemode == NormalRandomizer) {
+            cw.PrintText("Now that you've beaten "$ GameModeName(gamemode) $",");
+            cw.PrintText("maybe you're ready for the Full Randomizer game mode,");
+            cw.PrintText("or one of our other crazy game modes!");
+            cw.PrintLn();
+        }
+    }
+
     cw.PrintHeader("DXRFlags");
 
     cw.PrintText(VersionString() $ ", flagshash: " $ ToHex(FlagsHash()));
