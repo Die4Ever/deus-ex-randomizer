@@ -1,6 +1,6 @@
 Download `DXRandoInstaller.exe` in the Assets section under the changelog or download from [Mods4Ever.com](https://mods4ever.com). It is safe to update in the middle of a playthrough.
 
-Use vanilla (optionally with Lay D Denton) to get all of the Randomizer's features, best QoL improvements, and the most polished experience. Our installer has an option to install Lay D Denton for you automatically. We also support Revision, GMDX, HX, and Vanilla? Madder.
+Use vanilla/GOTY (optionally with Lay D Denton) to get all of the Randomizer's features, best QoL improvements, and the most polished experience. Our installer has an option to install Lay D Denton for you automatically. We also support Revision, GMDX, HX, and Vanilla? Madder.
 
 ## Trailers
 

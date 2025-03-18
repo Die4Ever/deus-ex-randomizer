@@ -9,16 +9,16 @@ We also offer **Vanilla Fixer**: This one is for the purists. Use our installer 
 ## Deus Ex Randomizer Game Modes
   - **Normal Randomizer**: Randomizes the costs and strengths of skills, and the strengths of augmentations. Shuffles locations of items/datacubes/nanokeys/crates/enemies. Randomizes passwords. Also randomizes which maps medical bots and repair bots are in, and much more!
     - **Full Randomizer**: The next step after completing Normal Randomizer. Also adds randomized goal locations and start locations, randomized auto turrets, and more randomization in general.
-  - **Zero Rando**: Great for first-time Deus Ex players and veterans alike. Benefit from our bug fixes and QoL improvements, without any randomization.
+  - **Zero Rando**: Great for first-time Deus Ex players and veterans alike. Benefit from our bug fixes and optional QoL improvements, without any randomization.
     - **Zero Rando Plus**: Same as Zero Rando, but also enables our balance changes.
     - See the Rando ➜ Gameplay menu for more customization of balance changes and QoL features.
-  - **WaltonWare**: A quick option to get into the game without the time commitment of the full game. You start in a random mission and win by completing **one bingo line**. All bingo goals will be completable within just a few maps. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete! Also check out the full game variant of this: Mr. Page's Mean Bingo Machine.
+  - **WaltonWare**: A quick option to get into the game without the time commitment of the full game. You start in a random mission and **win by completing one bingo line**. All bingo goals will be completable within just a few maps. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete! Also check out the full game variant of this: Mr. Page's Mean Bingo Machine.
   - Various [**Halloween modes**](https://www.youtube.com/watch?v=FbzNkWJXZ1o) that add survival horror mechanics, such as zombies, limited saves, and an invincible stalker!
   - See the [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes) for a full list of our game modes.
 
 # [DOWNLOAD HERE](https://mods4ever.com/)
 
-* [Compatible with vanilla Deus Ex, GOTY, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://mods4ever.com/)
+[Compatible with vanilla Deus Ex, GOTY, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://mods4ever.com/)
 
 ## Trailers
 
@@ -50,7 +50,7 @@ Here are trailers for our **Halloween modes**, **WaltonWare**, and **Vanilla Fix
 - **Integrated Bingo Board**: On the Goals screen there's a Bingo button in the middle bar.
   - Also an external BingoDisplay program you can download from the Github [Releases page](https://github.com/Die4Ever/deus-ex-randomizer/releases/latest). Great for streamers who want to show their bingo progress live to viewers.
 - Reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells.
-- Starting the game with the running speed augmentation.
+- Starting the game with the Speed Enhancement augmentation.
 - Assistance options like autofill for passwords and keypad codes.
 - The ability to reveal where Nanokeys/Datacubes/goals are located (using buttons on the Goals screen).
 - On the main menu there's also a Rando button for a bunch of global settings, like music controls, online features, an extra brightness boost option, balance change options, and some QoL options.
