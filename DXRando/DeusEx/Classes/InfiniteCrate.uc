@@ -6,10 +6,6 @@ function bool AddContent(class<Inventory> type, int numCopies)
 {
     local InfiniteCrateContent icc;
 
-    if (numCopies < 1) {
-        return false;
-    }
-
     if (icContents == None) {
         icContents = Spawn(class'InfiniteCrateContent');
         icContents.type = type;
@@ -28,16 +24,17 @@ function bool AddContent(class<Inventory> type, int numCopies)
 
 function Destroyed()
 {
-    local InfiniteCrateContent icc;
+    local InfiniteCrateContent icc, iccPrev;
 	local Rotator rot;
 	local Vector loc;
     local Inventory dropped;
 
-    for (icc = icContents; icc != None; icc = icc.next) {
+    icc = icContents;
+    while (icc != None) {
         loc = Location + VRand()*CollisionRadius;
         loc.Z = Location.Z;
         rot = rot(0,0,0);
-        rot.Yaw = FRand() * 65535;
+        rot.Yaw = Rand(65535);
         dropped = Spawn(icc.type,,, loc, rot);
         if (dropped != None) {
             if (Pickup(dropped) != None) {
@@ -49,6 +46,10 @@ function Destroyed()
             dropped.Velocity = VRand() * 50;
             dropped.GotoState('Pickup', 'Dropped');
         }
+
+        iccPrev = icc;
+        icc = icc.next;
+        iccPrev.Destroy();
     }
 
     Super(DeusExDecoration).Destroyed();
