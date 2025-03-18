@@ -1,20 +1,57 @@
 class AugNinja extends Augmentation;
-//both speed and stealth!
-//will need to modify function GetCurrentGroundSpeed() in DeusExPlayer and probably some other things, just ctrl+f for AugSpeed...
+// both speed and stealth!
+// needed to modify function GetCurrentGroundSpeed() in DeusExPlayer
+
+#ifndef injections
+var float Level5Value; // does nothing outside of vanilla, just a placeholder
+simulated function float GetAugLevelValue()
+{
+    return LevelValues[CurrentLevel];
+}
+#endif
 
 state Active
 {
 Begin:
-    log(Self$" Active state! CurrentLevel: "$CurrentLevel$", LevelValue: "$LevelValues[CurrentLevel]);
-    Player.GroundSpeed *= LevelValues[CurrentLevel];
-    Player.JumpZ *= LevelValues[CurrentLevel];
+    DoActivate();
+}
+
+simulated function DoActivate()
+{
+    local float useEnergy;
+
+    // DXRando: instantly use 1 energy to prevent abuse
+    if(Level.LevelAction == LEVACT_None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        useEnergy = 1;
+    }
+    if(Player.Energy < useEnergy) {
+        Deactivate();
+    } else {
+        Player.Energy -= useEnergy;
+        Reset();
+    }
+}
+
+function Reset()
+{
+    //Don't actually reset if the aug is already inactive
+    if (!bIsActive) return;
+
+    // reset without burning 1 energy
+    if(class'MenuChoice_FixGlitches'.default.enabled) {
+        Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
+        Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
+    } else {
+        Player.GroundSpeed *= GetAugLevelValue();
+        Player.JumpZ *= GetAugLevelValue();
+    }
     if ( Level.NetMode != NM_Standalone )
     {
         if ( Human(Player) != None )
-            Human(Player).UpdateAnimRate( LevelValues[CurrentLevel] );
+            Human(Player).UpdateAnimRate( GetAugLevelValue() );
     }
 
-    Player.RunSilentValue = 1.0 / (LevelValues[CurrentLevel] * LevelValues[CurrentLevel]);
+    Player.RunSilentValue = 1.0 / (GetAugLevelValue() ** 2);
     if ( Player.RunSilentValue == -1.0 )
         Player.RunSilentValue = 1.0;
 }
@@ -37,9 +74,6 @@ function Deactivate()
     }
 
     Player.RunSilentValue = 1.0;
-    /*Player.RunSilentValue = 1.0 / (LevelValues[CurrentLevel] * LevelValues[CurrentLevel]);
-    if ( Player.RunSilentValue == -1.0 )
-        Player.RunSilentValue = 1.0;*/
 }
 
 defaultproperties
@@ -54,6 +88,7 @@ defaultproperties
     LevelValues(1)=1.5
     LevelValues(2)=1.6
     LevelValues(3)=1.7
+    Level5Value=1.8
     AugmentationLocation=LOC_Leg
     MPConflictSlot=5
 }

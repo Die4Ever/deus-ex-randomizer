@@ -6,6 +6,10 @@ struct ItemPurchase
     var int price;
 };
 
+const MERCH_TELEM_NO_BUY = -1;
+const MERCH_TELEM_NO_ROOM = -2;
+const MERCH_TELEM_NO_MONEY = -3;
+
 function AnyEntry()
 {
     Super.AnyEntry();
@@ -265,7 +269,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant>
 
     c = new(Level) class'Conversation';
     c.conName = bindname;
-    c.CreatedBy = String(bindname);
+    c.CreatedBy = name;
     c.conOwnerName = String(bindname);
     c.bGenerateAudioNames = false;
     c.bInvokeFrob = true;
@@ -278,12 +282,15 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant>
     e = AddSpeech(c, e, "Whaddaya buyin'?", false, "BuyCommon");
     e = AddPurchaseChoices(c, e, items);
     e = AddSpeech(c, e, "Come back anytime.", false, "leave");
+    e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_BUY);
     e = AddJump(c, e, "bye");
     e = AddSpeech(c, e, "Hehehehe, thank you.", false, "bought");
     e = AddJump(c, e, "bye");
     e = AddSpeech(c, e, "Hold on, I can't carry any more right now.", true, "noRoom");
+    e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_ROOM);
     e = AddJump(c, e, "leave");
     e = AddSpeech(c, e, "Not enough cash, stranger.", false, "failBuy");
+    e = AddMerchantTelem(c, e, items, MERCH_TELEM_NO_MONEY);
     e = AddEnd(c, e);
 
     conItem = new(Level) class'ConItem';
@@ -425,12 +432,82 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
         prev = AddTransfer(c, prev, items[i].item);
 
         //set flag for bought item, give negative credits, jump to bought
+        prev = AddMerchantTelem(c, prev, items, i);
         prev = AddSetFlag(c, prev, "", "bought"$items[i].item.name, true);
         prev = AddGiveCredits(c, prev, -items[i].price );
         prev = AddJump(c, prev, "bought");
     }
 
     return prev;
+}
+
+function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPurchase items[8], int i)
+{
+    local ConEventTrigger e;
+    local DXRMerchantTelemetryTrigger tt; //telemMessage
+    local string tagName, j;
+    local class<Json> js;
+    local int k;
+
+    if (i==MERCH_TELEM_NO_BUY){
+        tagName="MerchantBoughtNothing";
+    } else if (i==MERCH_TELEM_NO_ROOM) {
+        tagName="MerchantNoRoom";
+    } else if (i==MERCH_TELEM_NO_MONEY) {
+        tagName="MerchantNoMoney";
+    } else {
+        if (items[i].item!=None){
+            tagName="MerchantBought"$items[i].item.name;
+        } else {
+            tagName="MerchantPurchaseError";
+        }
+    }
+    tagName=tagName$c.conName; //Append the bindname to the end
+
+    e = new(c) class'ConEventTrigger';
+    e.eventType=ET_Trigger;
+    e.triggerTag = StringToName(tagName);
+    AddConEvent(c, prev, e);
+
+    //Make sure the Telemetry Triggers actually exist
+    foreach AllActors(class'DXRMerchantTelemetryTrigger',tt,e.triggerTag){break;}
+    if (tt==None){
+        tt=Spawn(class'DXRMerchantTelemetryTrigger',,e.triggerTag);
+
+        js = class'Json';
+
+        j = js.static.Start("MerchantInfo");
+        js.static.Add(j,"Credits","__CURPLAYERCREDITS__"); //This will be replaced in the Merchant Telemetry Trigger
+        js.static.Add(j,"MerchantBindName",c.conName);
+        js.static.Add(j,"MerchantName",c.CreatedBy);
+        if (i>=0){
+            js.static.Add(j,"Purchase",items[i].item.name);
+            js.static.Add(j,"PurchaseName",items[i].item.default.ItemName);
+            js.static.Add(j,"PurchaseArticle",items[i].item.default.ItemArticle);
+            js.static.Add(j,"PurchasePrice",items[i].price);
+        } else if (i==MERCH_TELEM_NO_BUY) {
+            js.static.Add(j,"Failure","NoPurchase");
+        } else if (i==MERCH_TELEM_NO_ROOM) {
+            js.static.Add(j,"Failure","NoRoom");
+        } else if (i==MERCH_TELEM_NO_MONEY) {
+            js.static.Add(j,"Failure","NoCash");
+        }
+        for (k=0;k<ArrayCount(items);k++) {
+            if (items[k].item!=None){
+                js.static.Add(j,"Option"$k$"Type",items[k].item.name);
+                js.static.Add(j,"Option"$k$"Name",items[k].item.default.ItemName);
+                js.static.Add(j,"Option"$k$"Article",items[k].item.default.ItemArticle);
+                js.static.Add(j,"Option"$k$"Price",items[k].price);
+            }
+        }
+        class'DXREventsBase'.static.GeneralEventData(dxr,j);
+        js.static.End(j);
+
+        tt.telemMsg=j;
+    }
+
+    return e;
+
 }
 
 function ConEventTransferObject AddTransfer(Conversation c, ConEvent prev, class<Inventory> item)

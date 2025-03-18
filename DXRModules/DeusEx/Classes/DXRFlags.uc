@@ -692,7 +692,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         moresettings.empty_medbots *= 1.5; // WW gets lower medbots chances pretty quickly
         bingo_duration = 1;
         bingo_scale = 0;
-        moresettings.newgameplus_curve_scalar = 35;
+        moresettings.newgameplus_curve_scalar = 40;
 
         if(gamemode == WaltonWareHardcore) {
 #ifndef hx
@@ -708,7 +708,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.bingo_freespaces = 1;
             bingo_duration = 3;
             bingo_scale = 33;
-            moresettings.newgameplus_curve_scalar = 60;
+            moresettings.newgameplus_curve_scalar = 65;
         }
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
