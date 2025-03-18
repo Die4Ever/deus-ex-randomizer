@@ -12,7 +12,7 @@ struct CrateContentOption
     var int numCopies;
 };
 
-var CrateContentOption CrateOptions[5];
+var CrateContentOption CrateOptions[7];
 
 function PlayerLogin(#var(PlayerPawn) p)
 {
@@ -857,11 +857,81 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 }
 
+function bool _HasAmmoType(class<Ammo> type, class<Ammo> ammoTypes[32])
+{
+    local int i;
+
+    for (i = 0; i < ArrayCount(ammoTypes) && ammoTypes[i] != None; i++) {
+        if (type == ammoTypes[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function CrateContentOption ChooseRandomCrateContent(#var(PlayerPawn) player)
+{
+    local class<Ammo> ammoTypes[32]; // probably high enough for mods that add new ammo types
+    local int numAmmoTypes;
+    local Inventory inv;
+    local class<DeusExWeapon> weap;
+    local CrateContentOption cco, newCco;
+    local bool bFoundAmmo;
+    local string tooManyErrString;
+    local int i;
+
+    cco = CrateOptions[rng(ArrayCount(CrateOptions))];
+
+    if (cco.type == class'Ammo') {
+        // choose a random ammo type from the weapons in JC's inventory
+
+        tooManyErrString = "Your mods add too many ammo types for Walton to handle.  Report this to the devs!";
+
+        for (inv = player.Inventory; inv != None; inv = inv.Inventory) {
+            if (DeusExWeapon(inv) != None) {
+                weap = class<DeusExWeapon>(inv.class);
+                if (weap.default.AmmoName == Class'AmmoNone') {
+                    continue;
+                }
+
+                bFoundAmmo = false;
+                for (i = 0; i < ArrayCount(weap.default.AmmoNames); i++) {
+                    if (weap.default.AmmoNames[i] == None || weap.default.AmmoNames[i] == Class'AmmoNone') {
+                        continue;
+                    }
+                    bFoundAmmo = true;
+                    if (!_HasAmmoType(weap.default.AmmoNames[i], ammoTypes)) {
+                        if (numAmmoTypes == ArrayCount(ammoTypes)) {
+                            player.ClientMessage(tooManyErrString);
+                            break;
+                        }
+                        log("Adding " $ weap.default.AmmoNames[i] $ " to the list of ammo choices");
+                        ammoTypes[numAmmoTypes++] = weap.default.AmmoNames[i];
+                    }
+                }
+                if (!bFoundAmmo && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
+                    if (numAmmoTypes == ArrayCount(ammoTypes)) {
+                        player.ClientMessage(tooManyErrString);
+                        break;
+                    }
+                    log("Adding " $ weap.default.AmmoName $ " to the list of ammo choices");
+                    ammoTypes[numAmmoTypes++] = weap.default.AmmoName;
+                }
+            }
+        }
+
+        newCco.type = ammoTypes[rng(numAmmoTypes)];
+        newCco.numCopies = cco.numCopies; // doesn't currently do anything
+        return newCco;
+    }
+    return cco;
+}
+
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
     local InfiniteCrate waltonCrate;
-    local CrateContentOption cc;
+    local CrateContentOption cco;
 
     if (flagbase.GetInt('Rando_newgameplus_loops') >= 0) {
         waltonCrate = InfiniteCrate(SpawnInFrontOnFloor(
@@ -874,8 +944,10 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         waltonCrate.ItemName = "Walton's Care Package";
 
         waltonCrate.AddContent(class'BioelectricCell', 1);
-        cc = CrateOptions[rng(ArrayCount(CrateOptions))];
-        waltonCrate.AddContent(cc.type, cc.numCopies);
+        cco = ChooseRandomCrateContent(player);
+        waltonCrate.AddContent(cco.type, cco.numCopies);
+        cco = ChooseRandomCrateContent(player);
+        waltonCrate.AddContent(cco.type, cco.numCopies);
     }
 
     switch(start_flag) {
@@ -1402,5 +1474,7 @@ defaultproperties
     CrateOptions(1)=(type=class'BioelectricCell',numCopies=1)
     CrateOptions(2)=(type=class'Lockpick',numCopies=1)
     CrateOptions(3)=(type=class'Multitool',numCopies=1)
-    CrateOptions(4)=(type=class'DeusExAmmo',numCopies=1)
+    CrateOptions(4)=(type=class'Ammo',numCopies=1)
+    CrateOptions(5)=(type=class'Ammo',numCopies=1)
+    CrateOptions(6)=(type=class'Ammo',numCopies=1)
 }
