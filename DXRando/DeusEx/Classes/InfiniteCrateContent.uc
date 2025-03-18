@@ -1,8 +1,8 @@
-class CrateContent extends Actor;
+class InfiniteCrateContent extends Actor;
 
 var class<Inventory> Type;
 var int NumCopies;
-var CrateContent Next;
+var InfiniteCrateContent Next;
 
 defaultproperties
 {

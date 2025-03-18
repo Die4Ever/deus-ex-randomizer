@@ -955,10 +955,6 @@ function StopMatrixMode(optional bool silent) {
 
 }
 
-function bool IsGrenade(inventory i) {
-    return (i.IsA('WeaponLAM') || i.IsA('WeaponGasGrenade') || i.IsA ('WeaponEMPGrenade') || i.IsA('WeaponNanoVirusGrenade'));
-}
-
 function SkillPointsRemove(int numPoints) {
     player().SkillPointsAvail -= numPoints;
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.

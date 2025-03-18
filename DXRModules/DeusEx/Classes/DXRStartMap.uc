@@ -12,7 +12,7 @@ struct CrateContentOption
     var int numCopies;
 };
 
-var CrateContentOption CrateOptions[7];
+var CrateContentOption CrateOptions[8];
 
 function PlayerLogin(#var(PlayerPawn) p)
 {
@@ -888,32 +888,35 @@ function CrateContentOption ChooseRandomCrateContent(#var(PlayerPawn) player)
         tooManyErrString = "Your mods add too many ammo types for Walton to handle.  Report this to the devs!";
 
         for (inv = player.Inventory; inv != None; inv = inv.Inventory) {
+            if (IsGrenade(inv.class)) {
+                continue;
+            }
+
             if (DeusExWeapon(inv) != None) {
                 weap = class<DeusExWeapon>(inv.class);
-                if (weap.default.AmmoName == Class'AmmoNone') {
-                    continue;
-                }
-
                 bFoundAmmo = false;
                 for (i = 0; i < ArrayCount(weap.default.AmmoNames); i++) {
-                    if (weap.default.AmmoNames[i] == None || weap.default.AmmoNames[i] == Class'AmmoNone') {
+                    if (weap.default.AmmoNames[i] == None) {
                         continue;
                     }
+
                     bFoundAmmo = true;
                     if (!_HasAmmoType(weap.default.AmmoNames[i], ammoTypes)) {
                         if (numAmmoTypes == ArrayCount(ammoTypes)) {
                             player.ClientMessage(tooManyErrString);
                             break;
                         }
+
                         log("Adding " $ weap.default.AmmoNames[i] $ " to the list of ammo choices");
                         ammoTypes[numAmmoTypes++] = weap.default.AmmoNames[i];
                     }
                 }
-                if (!bFoundAmmo && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
+                if (!bFoundAmmo && weap.default.AmmoName != None && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
                     if (numAmmoTypes == ArrayCount(ammoTypes)) {
                         player.ClientMessage(tooManyErrString);
                         break;
                     }
+
                     log("Adding " $ weap.default.AmmoName $ " to the list of ammo choices");
                     ammoTypes[numAmmoTypes++] = weap.default.AmmoName;
                 }
@@ -933,7 +936,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
     local InfiniteCrate waltonCrate;
     local CrateContentOption cco;
 
-    if (flagbase.GetInt('Rando_newgameplus_loops') >= 0) {
+    if (flagbase.GetInt('Rando_newgameplus_loops') > 0) {
         waltonCrate = InfiniteCrate(SpawnInFrontOnFloor(
             player,
             class'InfiniteCrate',
@@ -1468,6 +1471,7 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
     //p.SkillPointsTotal += startBonus;
 }
 
+// make sure to increase the size of CrateOptions when adding an option!
 defaultproperties
 {
     CrateOptions(0)=(type=class'MedKit',numCopies=1)
@@ -1477,4 +1481,5 @@ defaultproperties
     CrateOptions(4)=(type=class'Ammo',numCopies=1)
     CrateOptions(5)=(type=class'Ammo',numCopies=1)
     CrateOptions(6)=(type=class'Ammo',numCopies=1)
+    CrateOptions(7)=(type=class'Ammo',numCopies=1)
 }

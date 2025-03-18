@@ -129,11 +129,15 @@ static function bool IsRelevantPawn(class<Actor> a)
     return IsCombatPawn(a) && !ClassIsChildOf(a, class'Merchant');
 }
 
-function bool IsInitialEnemy(ScriptedPawn p)
+static function bool IsInitialEnemy(ScriptedPawn p)
 {
     local int i;
 
     return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
+}
+
+static function bool IsGrenade(class<Inventory> i) {
+    return i == class'WeaponLAM' || i == class'WeaponGasGrenade' || i == class'WeaponEMPGrenade' || i == class'WeaponNanoVirusGrenade';
 }
 
 static function bool RemoveItem(Pawn p, class c)

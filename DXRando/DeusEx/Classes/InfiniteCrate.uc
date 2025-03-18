@@ -1,24 +1,24 @@
 class InfiniteCrate extends Containers;
 
-var CrateContent icContents;
+var InfiniteCrateContent icContents;
 
 function bool AddContent(class<Inventory> type, int numCopies)
 {
-    local CrateContent cc;
+    local InfiniteCrateContent icc;
 
     if (numCopies < 1) {
         return false;
     }
 
     if (icContents == None) {
-        icContents = Spawn(class'CrateContent');
+        icContents = Spawn(class'InfiniteCrateContent');
         icContents.type = type;
         icContents.numCopies = numCopies;
     } else {
-        for (cc = icContents; cc.next != None; cc = cc.next);
-        cc.next = Spawn(class'CrateContent');
-        cc.next.type = type;
-        cc.next.numCopies = numCopies;
+        for (icc = icContents; icc.next != None; icc = icc.next);
+        icc.next = Spawn(class'InfiniteCrateContent');
+        icc.next.type = type;
+        icc.next.numCopies = numCopies;
     }
 
     return true;
@@ -26,20 +26,20 @@ function bool AddContent(class<Inventory> type, int numCopies)
 
 function Destroyed()
 {
-    local CrateContent cc;
+    local InfiniteCrateContent icc;
 	local Rotator rot;
 	local Vector loc;
     local Inventory dropped;
 
-    for (cc = icContents; cc != None; cc = cc.next) {
+    for (icc = icContents; icc != None; icc = icc.next) {
         loc = Location + VRand()*CollisionRadius;
         loc.Z = Location.Z;
         rot = rot(0,0,0);
         rot.Yaw = FRand() * 65535;
-        dropped = Spawn(cc.type,,, loc, rot);
+        dropped = Spawn(icc.type,,, loc, rot);
         if (dropped != None) {
             if (Pickup(dropped) != None) {
-                Pickup(dropped).NumCopies = cc.NumCopies;
+                Pickup(dropped).NumCopies = icc.NumCopies;
             }
             dropped.RemoteRole = ROLE_DumbProxy;
             dropped.SetPhysics(PHYS_Falling);
