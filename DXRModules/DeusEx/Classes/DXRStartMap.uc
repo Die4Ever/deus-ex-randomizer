@@ -881,7 +881,7 @@ function class<Ammo> ChooseRandomAmmo(#var(PlayerPawn) player)
     local string tooManyErrString;
     local int i;
 
-    tooManyErrString = "Your mods add too many ammo types for Walton to handle.  Report this to the devs!";
+    tooManyErrString = "Your mods add too many ammo types for WaltonWare care packages to handle.  Report this to the devs!";
 
     for (inv = player.Inventory; inv != None; inv = inv.Inventory) {
         if (IsGrenade(inv.class)) {
@@ -890,9 +890,13 @@ function class<Ammo> ChooseRandomAmmo(#var(PlayerPawn) player)
 
         if (DeusExWeapon(inv) != None) {
             weap = class<DeusExWeapon>(inv.class);
+            if (weap.default.AmmoName == None || weap.default.AmmoName == class'AmmoNone') {
+                continue;
+            }
+
             bFoundAmmo = false;
             for (i = 0; i < ArrayCount(weap.default.AmmoNames); i++) {
-                if (weap.default.AmmoNames[i] == None) {
+                if (weap.default.AmmoNames[i] == None || weap.default.AmmoNames[i] == class'AmmoNone') {
                     continue;
                 }
 
@@ -907,7 +911,7 @@ function class<Ammo> ChooseRandomAmmo(#var(PlayerPawn) player)
                     ammoTypes[numAmmoTypes++] = weap.default.AmmoNames[i];
                 }
             }
-            if (!bFoundAmmo && weap.default.AmmoName != None && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
+            if (!bFoundAmmo && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
                 if (numAmmoTypes == ArrayCount(ammoTypes)) {
                     player.ClientMessage(tooManyErrString);
                     break;
@@ -958,14 +962,12 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
     local CrateContentOption cco;
 
     if (flagbase.GetInt('Rando_newgameplus_loops') > 0) {
-        waltonCrate = InfiniteCrate(SpawnInFrontOnFloor(
+        waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
             player,
-            class'InfiniteCrate',
+            class'WaltonWareCrate',
             80.0,
             MakeRotator(0, (4096 - rng(8192)), 0)
         ));
-        waltonCrate.Skin = Texture'WaltonWareCrate';
-        waltonCrate.ItemName = "Walton's Care Package";
 
         waltonCrate.AddContent(class'BioelectricCell', 1);
         cco = ChooseRandomCrateContent(player);
