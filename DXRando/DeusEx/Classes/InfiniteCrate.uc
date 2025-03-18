@@ -21,6 +21,8 @@ function bool AddContent(class<Inventory> type, int numCopies)
         icc.next.numCopies = numCopies;
     }
 
+    log("InfiniteCrate added " $ numCopies $ " " $ type);
+
     return true;
 }
 

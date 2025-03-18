@@ -12,7 +12,8 @@ struct CrateContentOption
     var int numCopies;
 };
 
-var CrateContentOption CrateOptions[8];
+var CrateContentOption CrateOptions[9];
+var class<DeusExWeapon> WeaponOptions[21];
 
 function PlayerLogin(#var(PlayerPawn) p)
 {
@@ -869,62 +870,82 @@ function bool _HasAmmoType(class<Ammo> type, class<Ammo> ammoTypes[32])
     return false;
 }
 
-function CrateContentOption ChooseRandomCrateContent(#var(PlayerPawn) player)
+// choose a random ammo type from the weapons in player's inventory
+function class<Ammo> ChooseRandomAmmo(#var(PlayerPawn) player)
 {
     local class<Ammo> ammoTypes[32]; // probably high enough for mods that add new ammo types
-    local int numAmmoTypes;
     local Inventory inv;
     local class<DeusExWeapon> weap;
-    local CrateContentOption cco, newCco;
+    local int numAmmoTypes;
     local bool bFoundAmmo;
     local string tooManyErrString;
     local int i;
 
-    cco = CrateOptions[rng(ArrayCount(CrateOptions))];
+    tooManyErrString = "Your mods add too many ammo types for Walton to handle.  Report this to the devs!";
 
-    if (cco.type == class'Ammo') {
-        // choose a random ammo type from the weapons in JC's inventory
+    for (inv = player.Inventory; inv != None; inv = inv.Inventory) {
+        if (IsGrenade(inv.class)) {
+            continue;
+        }
 
-        tooManyErrString = "Your mods add too many ammo types for Walton to handle.  Report this to the devs!";
-
-        for (inv = player.Inventory; inv != None; inv = inv.Inventory) {
-            if (IsGrenade(inv.class)) {
-                continue;
-            }
-
-            if (DeusExWeapon(inv) != None) {
-                weap = class<DeusExWeapon>(inv.class);
-                bFoundAmmo = false;
-                for (i = 0; i < ArrayCount(weap.default.AmmoNames); i++) {
-                    if (weap.default.AmmoNames[i] == None) {
-                        continue;
-                    }
-
-                    bFoundAmmo = true;
-                    if (!_HasAmmoType(weap.default.AmmoNames[i], ammoTypes)) {
-                        if (numAmmoTypes == ArrayCount(ammoTypes)) {
-                            player.ClientMessage(tooManyErrString);
-                            break;
-                        }
-
-                        log("Adding " $ weap.default.AmmoNames[i] $ " to the list of ammo choices");
-                        ammoTypes[numAmmoTypes++] = weap.default.AmmoNames[i];
-                    }
+        if (DeusExWeapon(inv) != None) {
+            weap = class<DeusExWeapon>(inv.class);
+            bFoundAmmo = false;
+            for (i = 0; i < ArrayCount(weap.default.AmmoNames); i++) {
+                if (weap.default.AmmoNames[i] == None) {
+                    continue;
                 }
-                if (!bFoundAmmo && weap.default.AmmoName != None && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
+
+                bFoundAmmo = true;
+                if (!_HasAmmoType(weap.default.AmmoNames[i], ammoTypes)) {
                     if (numAmmoTypes == ArrayCount(ammoTypes)) {
                         player.ClientMessage(tooManyErrString);
                         break;
                     }
 
-                    log("Adding " $ weap.default.AmmoName $ " to the list of ammo choices");
-                    ammoTypes[numAmmoTypes++] = weap.default.AmmoName;
+                    log("Adding " $ weap.default.AmmoNames[i] $ " to the list of ammo choices");
+                    ammoTypes[numAmmoTypes++] = weap.default.AmmoNames[i];
                 }
             }
-        }
+            if (!bFoundAmmo && weap.default.AmmoName != None && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
+                if (numAmmoTypes == ArrayCount(ammoTypes)) {
+                    player.ClientMessage(tooManyErrString);
+                    break;
+                }
 
-        newCco.type = ammoTypes[rng(numAmmoTypes)];
-        newCco.numCopies = cco.numCopies; // doesn't currently do anything
+                log("Adding " $ weap.default.AmmoName $ " to the list of ammo choices");
+                ammoTypes[numAmmoTypes++] = weap.default.AmmoName;
+            }
+        }
+    }
+
+    return ammoTypes[rng(numAmmoTypes)];
+}
+
+function class<DeusExWeapon> ChooseRandomWeapon(#var(PlayerPawn) player)
+{
+    local class<DeusExWeapon> weap;
+
+    do {
+        weap = WeaponOptions[rng(ArrayCount(WeaponOptions))];
+    } until (player.FindInventoryType(weap) == None); // O(inf)
+
+    return weap;
+}
+
+function CrateContentOption ChooseRandomCrateContent(#var(PlayerPawn) player)
+{
+    local CrateContentOption cco, newCco;
+
+    cco = CrateOptions[rng(ArrayCount(CrateOptions))];
+
+    if (cco.type == class'Ammo') {
+        newCco.type = ChooseRandomAmmo(player);
+        newCco.numCopies = cco.numCopies;
+        return newCco;
+    } else if (cco.type == class'Weapon') {
+        newCco.type = ChooseRandomWeapon(player);
+        newCco.numCopies = cco.numCopies;
         return newCco;
     }
     return cco;
@@ -1471,7 +1492,7 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
     //p.SkillPointsTotal += startBonus;
 }
 
-// make sure to increase the size of CrateOptions when adding an option!
+// make sure to adjust the size of array when changing options!
 defaultproperties
 {
     CrateOptions(0)=(type=class'MedKit',numCopies=1)
@@ -1482,4 +1503,26 @@ defaultproperties
     CrateOptions(5)=(type=class'Ammo',numCopies=1)
     CrateOptions(6)=(type=class'Ammo',numCopies=1)
     CrateOptions(7)=(type=class'Ammo',numCopies=1)
+    CrateOptions(8)=(type=class'Weapon',numCopies=1)
+    WeaponOptions(0)=class'WeaponSword';
+    WeaponOptions(1)=class'WeaponNanoSword';
+    WeaponOptions(2)=class'WeaponShuriken';
+    WeaponOptions(3)=class'WeaponPistol';
+    WeaponOptions(4)=class'WeaponStealthPistol';
+    WeaponOptions(5)=class'WeaponMiniCrossbow';
+    WeaponOptions(6)=class'WeaponHideAGun';
+    WeaponOptions(7)=class'WeaponAssaultGun';
+    WeaponOptions(8)=class'WeaponRifle';
+    WeaponOptions(9)=class'WeaponAssaultShotgun';
+    WeaponOptions(10)=class'WeaponSawedOffShotgun';
+    WeaponOptions(11)=class'WeaponGEPGun';
+    WeaponOptions(12)=class'WeaponFlamethrower';
+    WeaponOptions(13)=class'WeaponPlasmaRifle';
+    WeaponOptions(14)=class'WeaponLAW';
+    WeaponOptions(15)=class'WeaponEMPGrenade';
+    WeaponOptions(16)=class'WeaponGasGrenade';
+    WeaponOptions(17)=class'WeaponNanoVirusGrenade';
+    WeaponOptions(18)=class'WeaponLAM';
+    WeaponOptions(19)=class'WeaponPepperGun';
+    WeaponOptions(20)=class'WeaponProd';
 }
