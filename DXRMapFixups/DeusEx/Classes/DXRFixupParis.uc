@@ -115,10 +115,12 @@ function PreFirstEntryMapFixes()
         }
         AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
 
-        foreach AllActors(class'ScriptedPawn', sp, 'hostage_female') {
-            sp.GroundSpeed = 200.0; // same speed as the male hostage
-            sp.walkAnimMult = 1.11;
-            break;
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            foreach AllActors(class'ScriptedPawn', sp, 'hostage_female') {
+                sp.GroundSpeed = 200.0; // same speed as the male hostage
+                sp.walkAnimMult = 1.11;
+                break;
+            }
         }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
