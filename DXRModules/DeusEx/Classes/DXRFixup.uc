@@ -223,6 +223,8 @@ function PreFirstEntry()
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
         lmp.InitLight();
     }
+    SetAllLampsState(true, true, true,,, true);
+    SetAllLampsState(false, false, false,,, true);
     SetAllLampsState(true, true, true);
 #endif
 
@@ -1232,12 +1234,12 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetAllLampsState(optional bool type1, optional bool type2, optional bool type3, optional Vector loc, optional float rad)
+function SetAllLampsState(optional bool type1, optional bool type2, optional bool type3, optional Vector loc, optional float rad, optional bool force)
 {
 #ifdef vanilla
     local #var(prefix)Lamp lmp;
 
-    if (!class'MenuChoice_AutoLamps'.static.IsEnabled())
+    if (!class'MenuChoice_AutoLamps'.static.IsEnabled() && !force)
         return;
 
     if (rad == 0.0) {
