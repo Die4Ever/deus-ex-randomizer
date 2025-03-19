@@ -937,22 +937,19 @@ function class<DeusExWeapon> ChooseRandomWeapon(#var(PlayerPawn) player)
     return weap;
 }
 
-function CrateContentOption ChooseRandomCrateContent(#var(PlayerPawn) player)
+function AddRandomCrateContent(#var(PlayerPawn) player, InfiniteCrate crate)
 {
-    local CrateContentOption cco, newCco;
+    local CrateContentOption cco;
 
     cco = CrateOptions[rng(ArrayCount(CrateOptions))];
 
     if (cco.type == class'Ammo') {
-        newCco.type = ChooseRandomAmmo(player);
-        newCco.numCopies = cco.numCopies;
-        return newCco;
+        crate.AddContent(ChooseRandomAmmo(player), cco.numCopies);
     } else if (cco.type == class'Weapon') {
-        newCco.type = ChooseRandomWeapon(player);
-        newCco.numCopies = cco.numCopies;
-        return newCco;
+        crate.AddContent(ChooseRandomWeapon(player), cco.numCopies);
+    } else {
+        crate.AddContent(cco.type, cco.numCopies);
     }
-    return cco;
 }
 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
@@ -966,14 +963,12 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             player,
             class'WaltonWareCrate',
             80.0,
-            MakeRotator(0, (4096 - rng(8192)), 0)
+            MakeRotator(0, (2048 - rng(4096)), 0)
         ));
 
         waltonCrate.AddContent(class'BioelectricCell', 1);
-        cco = ChooseRandomCrateContent(player);
-        waltonCrate.AddContent(cco.type, cco.numCopies);
-        cco = ChooseRandomCrateContent(player);
-        waltonCrate.AddContent(cco.type, cco.numCopies);
+        AddRandomCrateContent(player, waltonCrate);
+        AddRandomCrateContent(player, waltonCrate);
     }
 
     switch(start_flag) {
