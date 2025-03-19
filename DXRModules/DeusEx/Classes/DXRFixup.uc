@@ -223,9 +223,15 @@ function PreFirstEntry()
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
         lmp.InitLight();
     }
-    SetAllLampsState(true, true, true,,, true);
-    SetAllLampsState(false, false, false,,, true);
-    SetAllLampsState(true, true, true);
+    if (class'MenuChoice_AutoLamps'.static.IsEnabled()) {
+        SetAllLampsState(true, true, true);
+    } else {
+        // fix the half-on state that some lamps start in
+        foreach AllActors(class'Lamp', lmp) {
+            lmp.SetState(!lmp.bOn);
+            lmp.SetState(!lmp.bOn);
+        }
+    }
 #endif
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
@@ -1234,12 +1240,12 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-function SetAllLampsState(optional bool type1, optional bool type2, optional bool type3, optional Vector loc, optional float rad, optional bool force)
+function SetAllLampsState(optional bool type1, optional bool type2, optional bool type3, optional Vector loc, optional float rad)
 {
 #ifdef vanilla
     local #var(prefix)Lamp lmp;
 
-    if (!class'MenuChoice_AutoLamps'.static.IsEnabled() && !force)
+    if (!class'MenuChoice_AutoLamps'.static.IsEnabled())
         return;
 
     if (rad == 0.0) {
