@@ -2261,6 +2261,15 @@ function string RemapBingoEvent(string eventname)
         case "Ray_Dead":
         case "Ray_Unconscious":
             return "GotHelicopterInfo";
+        case "CarlaBrown_PlayerDead":
+        case "StacyWebber_PlayerDead":
+        case "TimBaker_PlayerDead":
+        case "StephanieMaxwell_PlayerDead":
+        case "TonyMares_PlayerDead":
+        case "Savage_assistant_M_PlayerDead":
+        case "Savage_assistant_F_PlayerDead":
+        case "LDDPVanSci_PlayerDead":
+            return "Ex51";
         default:
             return eventname;
     }
@@ -3435,6 +3444,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
         case "EmergencyExit":
             return "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
+        case "Ex51":
+            return "Kill enough of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3872,6 +3883,7 @@ defaultproperties
     bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up? (%s)",max=10,missions=24190)
     bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
     bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate 1 emergency exit",max=8,missions=1918)
+    bingo_options(355)=(event="Ex51",desc="Ex-51 (%s)",desc_singular="Ex-51",max=6,missions=4096)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -3946,5 +3958,6 @@ defaultproperties
     mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_Unconscious")
+    mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
 //#endregion
 }
