@@ -260,6 +260,8 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
             if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
                 shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
                 r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
+            } else {
+                shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
             }
             r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
             r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5

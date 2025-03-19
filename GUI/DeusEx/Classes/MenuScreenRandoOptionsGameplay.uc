@@ -18,7 +18,6 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_AutoWeaponMods');
     CreateChoice(class'MenuChoice_AutoLaser');
     CreateChoice(class'MenuChoice_DecoPickupBehaviour');
-    CreateChoice(class'MenuChoice_AutoLamps');
     CreateChoice(class'MenuChoice_LootActionUseless');
     CreateChoice(class'MenuChoice_LootActionFoodSoda');
     CreateChoice(class'MenuChoice_LootActionAlcohol');

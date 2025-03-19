@@ -589,10 +589,12 @@ function PreFirstEntryMapFixes()
 
     //#region Gas Station
     case "12_VANDENBERG_GAS":
-        //Make Tiffany actually move like a useful human being
-        foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
-            tiffany.GroundSpeed = 180;
-            tiffany.walkAnimMult = 1;
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            //Make Tiffany actually move like a useful human being
+            foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
+                tiffany.GroundSpeed = 180;
+                tiffany.walkAnimMult = 1;
+            }
         }
 
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
