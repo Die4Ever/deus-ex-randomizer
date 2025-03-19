@@ -20,6 +20,9 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_GoalTextures');
     }
     CreateChoice(class'MenuChoice_ShowTeleporters');
+    if (#defined(vanilla)) {
+        CreateChoice(class'MenuChoice_AutoLamps');
+    }
 }
 
 defaultproperties
