@@ -10,9 +10,10 @@ struct CrateContentOption
 {
     var class<Inventory> type;
     var int numCopies;
+    var int weight;
 };
 
-var CrateContentOption CrateOptions[9];
+var CrateContentOption CrateOptions[6];
 var class<DeusExWeapon> WeaponOptions[21];
 
 function PlayerLogin(#var(PlayerPawn) p)
@@ -939,9 +940,17 @@ function class<DeusExWeapon> ChooseRandomWeapon(#var(PlayerPawn) player)
 
 function AddRandomCrateContent(#var(PlayerPawn) player, InfiniteCrate crate)
 {
-    local CrateContentOption cco;
+    local CrateContentOption cco, expandedOptions[64];
+    local int i, j, numExpandedOptions;
 
-    cco = CrateOptions[rng(ArrayCount(CrateOptions))];
+    for (i = 0; i < ArrayCount(CrateOptions); i++) {
+        for (j = 0; j < CrateOptions[i].weight; j++) {
+            expandedOptions[numExpandedOptions++] = CrateOptions[i];
+        }
+    }
+    log("Number of expanded crate options: " $ numExpandedOptions);
+
+    cco = expandedOptions[rng(numExpandedOptions)];
 
     if (cco.type == class'Ammo') {
         crate.AddContent(ChooseRandomAmmo(player), cco.numCopies);
@@ -1492,15 +1501,12 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
 // make sure to adjust the size of array when changing options!
 defaultproperties
 {
-    CrateOptions(0)=(type=class'MedKit',numCopies=1)
-    CrateOptions(1)=(type=class'BioelectricCell',numCopies=1)
-    CrateOptions(2)=(type=class'Lockpick',numCopies=1)
-    CrateOptions(3)=(type=class'Multitool',numCopies=1)
-    CrateOptions(4)=(type=class'Ammo',numCopies=1)
-    CrateOptions(5)=(type=class'Ammo',numCopies=1)
-    CrateOptions(6)=(type=class'Ammo',numCopies=1)
-    CrateOptions(7)=(type=class'Ammo',numCopies=1)
-    CrateOptions(8)=(type=class'Weapon',numCopies=1)
+    CrateOptions(0)=(type=class'MedKit',numCopies=1,weight=2)
+    CrateOptions(1)=(type=class'BioelectricCell',numCopies=1,weight=2)
+    CrateOptions(2)=(type=class'Lockpick',numCopies=1,weight=2)
+    CrateOptions(3)=(type=class'Multitool',numCopies=1,weight=2)
+    CrateOptions(4)=(type=class'Ammo',numCopies=1,weight=6)
+    CrateOptions(5)=(type=class'Weapon',numCopies=1,weight=1)
     WeaponOptions(0)=class'WeaponSword';
     WeaponOptions(1)=class'WeaponNanoSword';
     WeaponOptions(2)=class'WeaponShuriken';
