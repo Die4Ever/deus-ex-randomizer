@@ -6,6 +6,10 @@ Our installer also properly configures **compatibility and performance fixes** l
 
 We also offer **Vanilla Fixer**: This one is for the purists. Use our installer program and it will do all of **our compatibility fixes for the vanilla game**. Then just run DeusEx.exe as normal and the gameplay will be unchanged but with high frame rates and resolutions!
 
+# [DOWNLOAD HERE](https://mods4ever.com/)
+
+[Compatible with vanilla Deus Ex, GOTY, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://mods4ever.com/)
+
 ## Deus Ex Randomizer Game Modes
   - **Normal Randomizer**: Randomizes the costs and strengths of skills, and the strengths of augmentations. Shuffles locations of items/datacubes/nanokeys/crates/enemies. Randomizes passwords. Also randomizes which maps medical bots and repair bots are in, and much more!
     - **Full Randomizer**: The next step after completing Normal Randomizer. Also adds randomized goal locations and start locations, randomized auto turrets, and more randomization in general.
@@ -15,10 +19,6 @@ We also offer **Vanilla Fixer**: This one is for the purists. Use our installer 
   - **WaltonWare**: A quick option to get into the game without the time commitment of the full game. You start in a random mission and **win by completing one bingo line**. All bingo goals will be completable within just a few maps. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete! Also check out the full game variant of this: Mr. Page's Mean Bingo Machine.
   - Various [**Halloween modes**](https://www.youtube.com/watch?v=FbzNkWJXZ1o) that add survival horror mechanics, such as zombies, limited saves, and an invincible stalker!
   - See the [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes) for a full list of our game modes.
-
-# [DOWNLOAD HERE](https://mods4ever.com/)
-
-[Compatible with vanilla Deus Ex, GOTY, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://mods4ever.com/)
 
 ## Trailers
 
