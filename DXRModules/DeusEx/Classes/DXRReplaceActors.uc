@@ -675,6 +675,15 @@ function ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration a, #var(DeusExPref
     n.bGenerateFlies = a.bGenerateFlies;
     n.pushSoundId = a.pushSoundId;
 
+    //Duplicate any conversation information across (This is all in Actor)
+    //Note that ConBindEvents only exists at the DeusExDecoration level,
+    //so this can't be moved down to ReplaceDecoration
+    n.BindName = a.BindName;
+    n.BarkBindName = a.BarkBindName;
+    n.FamiliarName = a.FamiliarName;
+    n.UnfamiliarName = a.UnfamiliarName;
+    n.ConBindEvents();
+
     ReplaceDecoration(a, n);
 }
 
