@@ -89,6 +89,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
+    local #var(prefix)WeaponShuriken tk;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -472,6 +473,10 @@ function PreFirstEntryMapFixes()
                 compublic.TextPackage = "#var(package)";
                 compublic.BulletinTag = '03_BulletinMenu';
                 break;
+            }
+        } else {
+            foreach AllActors(class'#var(prefix)WeaponShuriken',tk){
+                tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
         }
 
