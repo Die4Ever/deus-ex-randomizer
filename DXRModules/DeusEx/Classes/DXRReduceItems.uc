@@ -233,6 +233,36 @@ function ReduceItem(Inventory a)
     }
 }
 
+function ReduceItemInContainer(#var(prefix)Containers c, class<Inventory> a)
+{
+    local int mission, scale;
+
+    if(c.bIsSecretGoal) return;
+
+    mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
+    scale = mission_scaling[mission];
+
+
+    if( ClassIsChildOf(a,class'Ammo') ) {
+        ReduceSpawnsInContainers(a, float(dxr.flags.settings.ammo*scale)/100.0/100.0, true);
+    }
+    else if( ClassIsChildOf(a,class'#var(prefix)Multitool') ) {
+        ReduceSpawnsInContainers(a, dxr.flags.settings.multitools*scale/100, true);
+    }
+    else if( ClassIsChildOf(a,class'#var(prefix)Lockpick') ) {
+        ReduceSpawnsInContainers(a, dxr.flags.settings.lockpicks*scale/100, true);
+    }
+    else if( ClassIsChildOf(a,class'#var(prefix)BioelectricCell') ) {
+        ReduceSpawnsInContainers(a, dxr.flags.settings.biocells*scale/100, true);
+    }
+    else if( ClassIsChildOf(a,class'#var(prefix)Medkit') ) {
+        ReduceSpawnsInContainers(a, dxr.flags.settings.medkits*scale/100, true);
+    }
+    else if( _GetItemMult(_item_reductions, a) != 1.0 ) {
+        ReduceSpawnsInContainers(a, 1.0, true);
+    }
+}
+
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
@@ -390,7 +420,7 @@ function bool _ReduceSpawnInContainer(#var(prefix)Containers d, class<Inventory>
     return false;
 }
 
-function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
+function ReduceSpawnsInContainers(class<Inventory> classname, float percent, optional bool deleteWhenEmpty)
 {
     local #var(prefix)Containers d;
 
@@ -421,8 +451,12 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
             d.Contents = d.Content2;
 
         if(d.Contents == None) {
-            l("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
-            SpawnReplacement(d, class'#var(prefix)BoxMedium', true);// we don't care if this succeeds or not
+            if (!deleteWhenEmpty) {
+                l("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
+                SpawnReplacement(d, class'#var(prefix)BoxMedium', true);// we don't care if this succeeds or not
+            } else {
+                l("ReduceSpawnsInContainers destroying "$d$" since it will be empty.");
+            }
             d.Event = '';
             d.Destroy();
         }

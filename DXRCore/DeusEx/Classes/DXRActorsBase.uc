@@ -1241,6 +1241,33 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     return newactor;
 }
 
+static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inventory> contents, vector loc, optional rotator rot, optional float scale, optional class<#var(prefix)Containers> forcedContainerType)
+{
+    local class<#var(prefix)Containers> contClass;
+    local #var(prefix)Containers box;
+
+    if (forcedContainerType!=None){
+        contClass = forcedContainerType;
+    } else if (a.ClassIsChildOf(contents,class'Weapon') || a.ClassIsChildOf(contents,class'Ammo')){
+        contClass=class'#var(prefix)CrateBreakableMedCombat';
+    } else if (a.ClassIsChildOf(contents,class'#var(prefix)Medkit')) { //Medkit or any subclass
+        contClass=class'#var(prefix)CrateBreakableMedMedical';
+    } else {
+        contClass=class'#var(prefix)CrateBreakableMedGeneral';
+    }
+
+    box = #var(prefix)Containers(_AddActor(a, contClass, loc, rot));
+    box.contents = contents;
+
+    if (scale!=0){
+        box.DrawScale = box.Default.DrawScale * scale;
+        box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
+        box.Mass = box.Default.Mass * scale;
+    }
+
+    return box;
+}
+
 static function DestroyMover(#var(DeusExPrefix)Mover m)
 {
     local DeusExDecal D;

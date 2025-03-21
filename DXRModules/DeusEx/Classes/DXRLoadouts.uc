@@ -1002,10 +1002,21 @@ function SpawnItems()
         for(j=0;j<mult_items_per_level*3;j++) {
             if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
-                a = Spawn(aclass,,, loc);
-                l("SpawnItems() spawned "$a$" at "$loc);
-                if( reducer != None && Inventory(a) != None )
-                    reducer.ReduceItem(Inventory(a));
+                if (ClassIsChildOf(aclass,class'Inventory')){
+                    a = SpawnItemInContainer(self,class<Inventory>(aclass),loc,,0.5);
+                    l("SpawnItems() spawned "$a$" at "$loc$" with "$aclass$" inside");
+                } else {
+                    a = Spawn(aclass,,, loc);
+                    l("SpawnItems() spawned "$a$" at "$loc);
+                }
+
+                if( reducer != None ) {
+                    if (Inventory(a) != None) {
+                        reducer.ReduceItem(Inventory(a));
+                    } else if (#var(prefix)Containers(a) != None) {
+                        reducer.ReduceItemInContainer(#var(prefix)Containers(a),class<Inventory>(aclass));
+                    }
+                }
             }
         }
     }
