@@ -451,6 +451,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
     local #var(prefix)MedicalBot m;
 
     if (mbcooldown!=0 || mbamount!=0) {
+        SetSeed( "RandoMedBots stats" );
          foreach AllActors(class'#var(prefix)MedicalBot', m) {
             RandoMedBot(m, mbamount, mbcooldown);
         }
@@ -458,6 +459,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
     }
 
     if (rbcooldown!=0 || rbamount!=0) {
+        SetSeed( "RandoRepairBots stats" );
         foreach AllActors(class'#var(prefix)RepairBot', r) {
              RandoRepairBot(r, rbamount, rbcooldown);
         }
@@ -469,9 +471,7 @@ simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcoo
     local float scale;
 
     if (mbcooldown!=0){
-        if (mbcooldown == 1) { //Individual
-            SetSeed("MedBotCooldown"$m.name); //Seed includes level name and the unique bot name
-        } else if (mbcooldown == 2) { //Global
+        if (mbcooldown == 2) { //Global
             SetGlobalSeed("MedBotCooldown"); //Don't include the level name, or anything unique
         }
 
@@ -481,9 +481,7 @@ simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcoo
     }
 
     if (mbamount!=0){
-        if (mbamount == 1) { //Individual
-            SetSeed("MedBotAmount"$m.name); //Seed includes level name and the unique bot name
-        } else if (mbamount == 2) { //Global
+        if (mbamount == 2) { //Global
             SetGlobalSeed("MedBotAmount"); //Don't include the level name, or anything unique
         }
 
@@ -499,9 +497,7 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
     local float scale;
 
     if (rbcooldown!=0){
-        if (rbcooldown == 1) { //Individual
-            SetSeed("RepairBotCooldown"$r.name); //Seed includes level name and the unique bot name
-        } else if (rbcooldown == 2) { //Global
+        if (rbcooldown == 2) { //Global
             SetGlobalSeed("RepairBotCooldown"); //Don't include the level name, or anything unique
         }
 
@@ -511,9 +507,7 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
     }
 
     if (rbamount!=0){
-        if (rbamount == 1) { //Individual
-            SetSeed("RepairBotAmount"$r.name); //Seed includes level name and the unique bot name
-        } else if (rbamount == 2) { //Global
+        if (rbamount == 2) { //Global
             SetGlobalSeed("RepairBotAmount"); //Don't include the level name, or anything unique
         }
 
