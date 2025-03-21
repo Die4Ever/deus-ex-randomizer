@@ -1257,12 +1257,14 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
     }
 
     box = #var(prefix)Containers(_AddActor(a, contClass, loc, rot));
-    box.contents = contents;
+    if (box!=None){
+        box.contents = contents;
 
-    if (scale!=0){
-        box.DrawScale = box.Default.DrawScale * scale;
-        box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
-        box.Mass = box.Default.Mass * scale;
+        if (scale!=0){
+            box.DrawScale = box.Default.DrawScale * scale;
+            box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
+            box.Mass = box.Default.Mass * scale;
+        }
     }
 
     return box;
