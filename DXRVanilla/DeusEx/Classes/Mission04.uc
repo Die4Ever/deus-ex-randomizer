@@ -8,7 +8,8 @@ function Timer()
 
     class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(4, blockerFlag);
     if (
-        dxr.flags.IsBingoCampaignMode()
+        flags != None
+        && dxr.flags.IsBingoCampaignMode()
         && Player.IsInState('Dying')
         && class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration)
         && !dxr.flagbase.GetBool(blockerFlag)
