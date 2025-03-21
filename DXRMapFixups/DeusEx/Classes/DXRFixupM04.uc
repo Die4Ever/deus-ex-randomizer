@@ -587,6 +587,7 @@ function AnyEntryMapFixes()
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)BlackHelicopter jock;
     local bool raidStarted;
+    local JoJoFine jojo;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -650,6 +651,13 @@ function AnyEntryMapFixes()
 
         if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
             DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
+        }
+
+        if (dxr.flagbase.GetBool('MS_JoJoUnhidden')) {
+            foreach AllActors(class'JoJoFine', jojo, 'JoJoInLobby') {
+                jojo.Destroy();
+                break;
+            }
         }
 
         break;
