@@ -66,6 +66,7 @@ function PreFirstEntryMapFixes()
     local PlaceholderEnemy phe;
     local FacePlayerTrigger fpt;
     local DXRReinforcementPoint reinforce;
+    local DXRIntermediatePoint intermediate;
     local #var(injectsprefix)AllianceTrigger at;
 
     local bool VanillaMaps;
@@ -547,6 +548,18 @@ function PreFirstEntryMapFixes()
             }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'Attack'){
+                ot.Orders='RunningTo';
+                ot.ordersTag='TunnelEndInt';
+                break;
+            }
+
+            intermediate = Spawn(class'DXRIntermediatePoint',,'TunnelEndInt',vectm(25,-3865,495)); //To the end of the tunnel
+            intermediate.nextPoint='TunnelEndFinal';
+            reinforce = Spawn(class'DXRReinforcementPoint',,'TunnelEndFinal',ot.Location); //and back to where they started
         }
 
         //Add teleporter hint text to Jock
