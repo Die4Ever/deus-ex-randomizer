@@ -75,6 +75,11 @@ function PreFirstEntryMapFixes()
                 GlowUp(k);
         }
 
+        //Prevent TNT crates in subway from being shuffled (in case Goal Rando is disabled)
+        foreach AllActors(class'CrateExplosiveSmall', c) {
+            c.bIsSecretGoal = true;
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'BarrelAmbrosia', ambrosia) {
                 foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {

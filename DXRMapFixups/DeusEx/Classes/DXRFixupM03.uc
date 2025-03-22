@@ -223,6 +223,10 @@ function PreFirstEntryMapFixes()
             SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(-2030,995,100)); //Truck near docks
         }
 
+        foreach AllActors(class'#var(prefix)Terrorist', terror,'boatguard'){
+            terror.bIsSecretGoal=true;
+        }
+
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
