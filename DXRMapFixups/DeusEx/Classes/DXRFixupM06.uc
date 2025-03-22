@@ -86,6 +86,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Greasel g;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)OrdersTrigger ot;
+    local OnceOnlyTrigger oot;
     local #var(prefix)TriadRedArrow bouncer;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
@@ -830,6 +831,14 @@ function PreFirstEntryMapFixes()
             m.bLocked=False;
             m.bBreakable=False;
         }
+
+        //Make sure the spider bot doors can't be closed again
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'Self_Destruct'){
+            m.Tag='Self_Destruct_Once';
+        }
+        oot = Spawn(class'OnceOnlyTrigger');
+        oot.Event='Self_Destruct_Once';
+        oot.Tag='Self_Destruct';
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //The sleeping bots are already hostile, but are sitting in Idle state.
