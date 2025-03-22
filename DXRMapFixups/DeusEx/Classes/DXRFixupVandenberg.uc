@@ -636,6 +636,9 @@ function PreFirstEntryMapFixes()
             SetOutsideGuyReactions(sp);
         }
 
+        //Try fixing the garage key early
+        FixGasStationGarageKey();
+
         ot = Spawn(class'#var(prefix)OrdersTrigger',, 'TiffanyLeaving');
         ot.Orders = 'Leaving';
         ot.Event = '#var(prefix)TiffanySavage';
@@ -951,11 +954,42 @@ function PostFirstEntryMapFixes()
 }
 //#endregion
 
+// Fix the garage entrance key and the pickup distributor
+// If a PlaceholderEnemy ends up being the one to hold the key,
+// they will have been given the key but deleted (in DXREnemies
+// First Entry) by the time AnyEntry runs here (so the check for
+// owner will fail, since they're gone).
+function FixGasStationGarageKey()
+{
+    local #var(prefix)NanoKey key;
+    local #var(prefix)PickupDistributor pd;
+
+    foreach AllActors(class'#var(prefix)NanoKey',key) {
+        if (key.KeyId!='') continue; //We're looking for a key with no KeyID
+        if (key.Owner==None) continue; //That is carried by someone
+        if (key.Owner.Tag=='mib_garage' || key.Owner.Tag=='guard2') { //Specifically, one of these guys
+            l("fixing "$key$" to garage_entrance, carried by "$key.Owner);
+            key.KeyID = 'garage_entrance';
+            key.Description = "Garage Door";
+            key.Timer();// make sure to fix the ItemName in vanilla
+        }
+    }
+
+    //Just to be safe - I don't think we ever get through here before the pickup
+    //distributors do their thing, but it doesn't hurt to try
+    foreach AllActors(class'#var(prefix)PickupDistributor',pd) {
+        if (pd.NanoKeyData[1].ScriptedPawnTag=='mib_garage' &&
+            pd.NanoKeyData[1].KeyID==''){
+            pd.NanoKeyData[1].KeyID=pd.NanoKeyData[0].KeyID;
+            pd.NanoKeyData[1].Description=pd.NanoKeyData[0].Description;
+        }
+    }
+}
+
 //#region Any Entry
 function AnyEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
-    local #var(prefix)NanoKey key;
     local #var(prefix)HowardStrong hs;
     local bool prevMapsDone;
     local Conversation con;
@@ -969,16 +1003,8 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "12_Vandenberg_gas":
-        foreach AllActors(class'#var(prefix)NanoKey',key) {
-            if (key.KeyId!='') continue; //We're looking for a key with no KeyID
-            if (key.Owner==None) continue; //That is carried by someone
-            if (key.Owner.Tag=='mib_garage' || key.Owner.Tag=='guard2') { //Specifically, one of these guys
-                l("fixing "$key$" to garage_entrance, carried by "$key.Owner);
-                key.KeyID = 'garage_entrance';
-                key.Description = "Garage Door";
-                key.Timer();// make sure to fix the ItemName in vanilla
-            }
-        }
+        //Try fixing the keys on any entry as well, just to go overkill
+        FixGasStationGarageKey();
 
         con = GetConversation('M12JockFinal2');
         for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
