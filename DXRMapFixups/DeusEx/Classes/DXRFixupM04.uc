@@ -583,6 +583,9 @@ function AnyEntryMapFixes()
     local bool RevisionMaps;
     local bool VanillaMaps;
     local Mover door;
+    local Conversation con;
+    local ConEvent ce;
+    local ConEventTrigger cet;
     local ConEventSpeech ces;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)BlackHelicopter jock;
@@ -650,6 +653,19 @@ function AnyEntryMapFixes()
 
         if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
             DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
+        }
+
+        //Make TalkedToPaulAfterMessage trigger the TNT crate (BlowDoor) at the door before ending the conversation
+        con = GetConversation('TalkedToPaulAfterMessage');
+        for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
+            if (ce.NextEvent!=None && ConEventEnd(ce.NextEvent)!=None){ //Insert the trigger just before the end of the conversation
+                cet = new(con) class'ConEventTrigger';
+                cet.eventType = ET_Trigger;
+                cet.triggerTag = 'BlowDoor';
+                cet.nextEvent = ce.nextEvent;
+                ce.nextEvent = cet;
+                break;
+            }
         }
 
         break;
