@@ -464,16 +464,21 @@ function bool SkipActor(Actor a)
 function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrders)
 {
     local ScriptedPawn p;
-    local #var(prefix)Barrel1 b;
-    local Effects gen;
+    local #var(DeusExPrefix)Decoration dec;
+    local Effects gen,gens[5]; //I don't expect there to be 5, but to be careful
+    local int numGens,i;
 
-    b = #var(prefix)Barrel1(a);
-    if (b!=None){
-        //Look for any ParticleGenerator or ProjectileGenerator that might be associated with the barrel
-        foreach b.BasedActors(class'Effects', gen){
-            if (ParticleGenerator(gen)!=None || ProjectileGenerator(gen)!=None){
+    dec = #var(DeusExPrefix)Decoration(a);
+    if (dec!=None){
+        //Look for any generators that might be associated with the decoration
+        if(dec.flyGen!=None){
+            gens[numGens++]=dec.flyGen;
+        }
+        foreach dec.BasedActors(class'Effects', gen){
+            if (numGens>=ArrayCount(gens)){
                 break;
             }
+            gens[numGens++]=gen;
         }
     }
 
@@ -502,11 +507,19 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         p.HomeLoc = p.Location;
     }
 
-    //Move the generator as well, and make sure it's based on the barrel again
-    //(They get detached when the barrel is moved)
-    if (b!=None && gen!=None){
-        gen.SetLocation(b.Location);
-        gen.SetBase(b);
+    //Move any effects to the new location of the decoration
+    if (dec!=None && numGens>0){
+        for (i=0;i<numGens;i++){
+            gens[i].SetLocation(dec.Location);
+
+            //Don't base a fly generator onto the decoration since it
+            //will make the object too heavy to pick up (and there's
+            //already hack logic in DeusExDecoration to make it follow
+            //the location of the decoration without being based)
+            if (gens[i]!=dec.flyGen){
+                gens[i].SetBase(dec);
+            }
+        }
     }
 
     if (a.Mesh == class'#var(prefix)DataCube'.default.Mesh) {
