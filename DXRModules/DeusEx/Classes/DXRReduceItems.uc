@@ -242,24 +242,23 @@ function ReduceItemInContainer(#var(prefix)Containers c, class<Inventory> a)
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
 
-
     if( ClassIsChildOf(a,class'Ammo') ) {
-        ReduceSpawnsInContainers(a, float(dxr.flags.settings.ammo*scale)/100.0/100.0, true);
+        ReduceSpawnInSingleContainer(c, a, float(dxr.flags.settings.ammo*scale)/100.0/100.0, true);
     }
     else if( ClassIsChildOf(a,class'#var(prefix)Multitool') ) {
-        ReduceSpawnsInContainers(a, dxr.flags.settings.multitools*scale/100, true);
+        ReduceSpawnInSingleContainer(c, a, dxr.flags.settings.multitools*scale/100, true);
     }
     else if( ClassIsChildOf(a,class'#var(prefix)Lockpick') ) {
-        ReduceSpawnsInContainers(a, dxr.flags.settings.lockpicks*scale/100, true);
+        ReduceSpawnInSingleContainer(c, a, dxr.flags.settings.lockpicks*scale/100, true);
     }
     else if( ClassIsChildOf(a,class'#var(prefix)BioelectricCell') ) {
-        ReduceSpawnsInContainers(a, dxr.flags.settings.biocells*scale/100, true);
+        ReduceSpawnInSingleContainer(c, a, dxr.flags.settings.biocells*scale/100, true);
     }
     else if( ClassIsChildOf(a,class'#var(prefix)Medkit') ) {
-        ReduceSpawnsInContainers(a, dxr.flags.settings.medkits*scale/100, true);
+        ReduceSpawnInSingleContainer(c, a, dxr.flags.settings.medkits*scale/100, true);
     }
     else if( _GetItemMult(_item_reductions, a) != 1.0 ) {
-        ReduceSpawnsInContainers(a, 1.0, true);
+        ReduceSpawnInSingleContainer(c, a, 1.0, true);
     }
 }
 
@@ -420,6 +419,41 @@ function bool _ReduceSpawnInContainer(#var(prefix)Containers d, class<Inventory>
     return false;
 }
 
+function ReduceSpawnInSingleContainer(#var(prefix)Containers d, class<Inventory> classname, float percent, optional bool deleteWhenEmpty)
+{
+    if (#var(PlayerPawn)(d.base)!=None){
+        return; //Skip boxes the player might have carried across levels
+    }
+
+    if(d.Content3 == None && d.Content2 == None && d.Contents == None)
+        return;
+
+    if( d.Content3 != None && _ReduceSpawnInContainer(d, classname, percent, d.Content3) )
+        d.Content3 = None;
+
+    if( d.Content2 != None && _ReduceSpawnInContainer(d, classname, percent, d.Content2) )
+        d.Content2 = None;
+
+    if( d.Contents != None && _ReduceSpawnInContainer(d, classname, percent, d.Contents) )
+        d.Contents = None;
+
+    if(d.Content2 == None)
+        d.Content2 = d.Content3;
+    if(d.Contents == None)
+        d.Contents = d.Content2;
+
+    if(d.Contents == None) {
+        if (!deleteWhenEmpty) {
+            l("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
+            SpawnReplacement(d, class'#var(prefix)BoxMedium', true);// we don't care if this succeeds or not
+        } else {
+            l("ReduceSpawnsInContainers destroying "$d$" since it will be empty.");
+        }
+        d.Event = '';
+        d.Destroy();
+    }
+}
+
 function ReduceSpawnsInContainers(class<Inventory> classname, float percent, optional bool deleteWhenEmpty)
 {
     local #var(prefix)Containers d;
@@ -428,38 +462,7 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent, opt
 
     foreach AllActors(class'#var(prefix)Containers', d)
     {
-
-        if (#var(PlayerPawn)(d.base)!=None){
-            continue; //Skip boxes the player might have carried across levels
-        }
-
-        if(d.Content3 == None && d.Content2 == None && d.Contents == None)
-            continue;
-
-        if( d.Content3 != None && _ReduceSpawnInContainer(d, classname, percent, d.Content3) )
-            d.Content3 = None;
-
-        if( d.Content2 != None && _ReduceSpawnInContainer(d, classname, percent, d.Content2) )
-            d.Content2 = None;
-
-        if( d.Contents != None && _ReduceSpawnInContainer(d, classname, percent, d.Contents) )
-            d.Contents = None;
-
-        if(d.Content2 == None)
-            d.Content2 = d.Content3;
-        if(d.Contents == None)
-            d.Contents = d.Content2;
-
-        if(d.Contents == None) {
-            if (!deleteWhenEmpty) {
-                l("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
-                SpawnReplacement(d, class'#var(prefix)BoxMedium', true);// we don't care if this succeeds or not
-            } else {
-                l("ReduceSpawnsInContainers destroying "$d$" since it will be empty.");
-            }
-            d.Event = '';
-            d.Destroy();
-        }
+        ReduceSpawnInSingleContainer(d, classname, percent, deleteWhenEmpty);
     }
 }
 
