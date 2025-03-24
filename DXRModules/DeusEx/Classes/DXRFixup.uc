@@ -200,78 +200,61 @@ function CheckConfig()
 
 static function class<Fragment> GuessFragmentClass(DeusExMover mov)
 {
-    switch(mov.ClosedSound) {
-        case Sound'MoverSFX.door.WoodDoor2Close':
-        case Sound'MoverSFX.door.WoodDoorClose':
-        case Sound'MoverSFX.Other.WoodDrawerClose':
-        case Sound'MoverSFX.door.WoodDoorOpen':
-        case Sound'MoverSFX.Other.MetalDrawerClos':
-        case Sound'MoverSFX.door.WoodSlide2Close':
-            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
-            return class'WoodFragment';
-        case Sound'MoverSFX.door.MetalDoorClose':
-        case Sound'MoverSFX.door.SlideDoorClose':
-        case Sound'MoverSFX.door.GarageDoorClose':
-        case Sound'MoverSFX.Elevator.LargeElevStop':
-        case Sound'MoverSFX.door.SlideDoorOpen':
-            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
-            return class'MetalFragment';
-        case Sound'MoverSFX.Other.MetalLockerClos':
-            log("Guessing that " $ mov.name $ " FragmentClass should be GlassFragment");
-            return class'GlassFragment';
-    }
-    switch(mov.OpeningSound) {
-        case Sound'MoverSFX.door.WoodDoor2Open':
-        case Sound'MoverSFX.door.WoodDoorOpen':
-        case Sound'MoverSFX.Other.WoodDrawerOpen':
-        case Sound'MoverSFX.door.WoodDoor2Move':
-        case Sound'MoverSFX.door.WoodDoorClose':
-        case Sound'MoverSFX.door.WoodSlide2Open':
-        case Sound'MoverSFX.door.WoodSlide1Close':
-        case Sound'MoverSFX.Other.WoodDrawerMove':
-        case Sound'MoverSFX.door.StoneSlide2Clos':
-            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
-            return class'WoodFragment';
-        case Sound'MoverSFX.door.MetalDoorOpen':
-        case Sound'MoverSFX.door.GarageDoorOpen':
-        case Sound'MoverSFX.Elevator.LargeElevStop':
-        case Sound'MoverSFX.door.StoneSlide2Open':
-        case Sound'MoverSFX.door.MetalDoorClose':
-            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
-            return class'MetalFragment';
-        case Sound'MoverSFX.Other.MetalLockerOpen':
-            log("Guessing that " $ mov.name $ " FragmentClass should be GlassFragment");
-            return class'GlassFragment';
-    }
-    switch(mov.MoveAmbientSound) {
-        case Sound'MoverSFX.Other.WoodDrawerMove':
-        case Sound'MoverSFX.door.StallDoorOpen':
-        case Sound'MoverSFX.door.WoodSlide2Move':
-        case Sound'MoverSFX.Elevator.SmallElevMove':
-            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
-            return class'WoodFragment';
-        case Sound'MoverSFX.door.MetalDoorMove':
-        case Sound'MoverSFX.door.SlideDoorMove':
-        case Sound'MoverSFX.Elevator.LargeElevMove':
-        case Sound'MoverSFX.door.GarageDoorMove':
-        case Sound'MoverSFX.door.MetalDoorClose':
-        case Sound'MoverSFX.door.WoodSlide1Move':
-        case Sound'MoverSFX.Elevator.SmallElevStop':
-            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
-            return class'MetalFragment';
-    }
-    switch(mov.ClosingSound) {
-        case Sound'MoverSFX.door.WoodDoor2Move':
-        case Sound'MoverSFX.door.SlideDoorOpen':
-        case Sound'MoverSFX.Other.WoodDrawerMove':
-            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
-            return class'WoodFragment';
-        case Sound'MoverSFX.door.MetalDoorClose':
-            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
-            return class'MetalFragment';
-        case Sound'MoverSFX.door.WoodDoorOpen':
-            log("Guessing that " $ mov.name $ " FragmentClass should be GlassFragment");
-            return class'GlassFragment';
+    local class<Fragment> fragmentClass;
+    local string logStr;
+
+    // in order of probability and number of occurances. sounds that did not have the same fragment type at least 70% of the time aren't included
+    if (mov.MoveAmbientSound == Sound'WoodDrawerMove') fragmentClass = class'WoodFragment';       // 100.00% (11 / 11)
+    else if (mov.MoveAmbientSound == Sound'LargeElevMove') fragmentClass = class'MetalFragment';  // 100.00% (8 / 8)
+    else if (mov.ClosingSound == Sound'WoodDoor2Move') fragmentClass = class'WoodFragment';       // 100.00% (8 / 8)
+    else if (mov.MoveAmbientSound == Sound'GarageDoorMove') fragmentClass = class'MetalFragment'; // 100.00% (7 / 7)
+    else if (mov.OpeningSound == Sound'LargeElevStop') fragmentClass = class'MetalFragment';      // 100.00% (7 / 7)
+    else if (mov.ClosedSound == Sound'LargeElevStop') fragmentClass = class'MetalFragment';       // 100.00% (7 / 7)
+    else if (mov.MoveAmbientSound == Sound'MetalDoorClose') fragmentClass = class'MetalFragment'; // 100.00% (6 / 6)
+    else if (mov.OpeningSound == Sound'WoodDrawerOpen') fragmentClass = class'WoodFragment';      // 100.00% (6 / 6)
+    else if (mov.OpeningSound == Sound'WoodDoor2Move') fragmentClass = class'WoodFragment';       // 100.00% (5 / 5)
+    else if (mov.ClosingSound == Sound'SlideDoorOpen') fragmentClass = class'WoodFragment';       // 100.00% (4 / 4)
+    else if (mov.OpeningSound == Sound'WoodDoorClose') fragmentClass = class'WoodFragment';       // 100.00% (3 / 3)
+    else if (mov.OpeningSound == Sound'WoodSlide2Open') fragmentClass = class'WoodFragment';      // 100.00% (3 / 3)
+    else if (mov.OpeningSound == Sound'WoodSlide1Close') fragmentClass = class'WoodFragment';     // 100.00% (3 / 3)
+    else if (mov.MoveAmbientSound == Sound'StallDoorOpen') fragmentClass = class'WoodFragment';   // 100.00% (2 / 2)
+    else if (mov.ClosedSound == Sound'MetalDrawerClos') fragmentClass = class'WoodFragment';      // 100.00% (2 / 2)
+    else if (mov.ClosingSound == Sound'WoodDoorOpen') fragmentClass = class'GlassFragment';       // 100.00% (2 / 2)
+    else if (mov.OpeningSound == Sound'WoodDrawerMove') fragmentClass = class'WoodFragment';      // 100.00% (2 / 2)
+    else if (mov.ClosingSound == Sound'WoodDrawerMove') fragmentClass = class'WoodFragment';      // 100.00% (2 / 2)
+    else if (mov.ClosedSound == Sound'WoodSlide2Close') fragmentClass = class'WoodFragment';      // 100.00% (2 / 2)
+    else if (mov.MoveAmbientSound == Sound'WoodSlide2Move') fragmentClass = class'WoodFragment';  // 100.00% (2 / 2)
+    else if (mov.OpeningSound == Sound'MetalDoorClose') fragmentClass = class'MetalFragment';     // 100.00% (1 / 1)
+    else if (mov.ClosingSound == Sound'MetalDoorClose') fragmentClass = class'MetalFragment';     // 100.00% (1 / 1)
+    else if (mov.MoveAmbientSound == Sound'SmallElevMove') fragmentClass = class'WoodFragment';   // 100.00% (1 / 1)
+    else if (mov.ClosedSound == Sound'SlideDoorOpen') fragmentClass = class'MetalFragment';       // 100.00% (1 / 1)
+    else if (mov.OpeningSound == Sound'StoneSlide2Clos') fragmentClass = class'WoodFragment';     // 100.00% (1 / 1)
+    else if (mov.MoveAmbientSound == Sound'SmallElevStop') fragmentClass = class'MetalFragment';  // 100.00% (1 / 1)
+    else if (mov.ClosedSound == Sound'WoodDrawerClose') fragmentClass = class'WoodFragment';      //  86.67% (26 / 30)
+    else if (mov.MoveAmbientSound == Sound'MetalDoorMove') fragmentClass = class'MetalFragment';  //  85.11% (80 / 94)
+    else if (mov.ClosedSound == Sound'WoodDoorOpen') fragmentClass = class'WoodFragment';         //  83.33% (20 / 24)
+    else if (mov.OpeningSound == Sound'WoodDoorOpen') fragmentClass = class'WoodFragment';        //  82.35% (56 / 68)
+    else if (mov.OpeningSound == Sound'MetalDoorOpen') fragmentClass = class'MetalFragment';      //  81.25% (65 / 80)
+    else if (mov.MoveAmbientSound == Sound'SlideDoorMove') fragmentClass = class'MetalFragment';  //  81.25% (13 / 16)
+    else if (mov.OpeningSound == Sound'MetalLockerOpen') fragmentClass = class'GlassFragment';    //  80.00% (4 / 5)
+    else if (mov.ClosedSound == Sound'MetalLockerClos') fragmentClass = class'GlassFragment';     //  80.00% (4 / 5)
+    else if (mov.ClosedSound == Sound'MetalDoorClose') fragmentClass = class'MetalFragment';      //  77.78% (105 / 135)
+    else if (mov.OpeningSound == Sound'GarageDoorOpen') fragmentClass = class'MetalFragment';     //  77.78% (7 / 9)
+    else if (mov.ClosedSound == Sound'GarageDoorClose') fragmentClass = class'MetalFragment';     //  77.78% (7 / 9)
+    else if (mov.OpeningSound == Sound'StoneSlide2Open') fragmentClass = class'MetalFragment';    //  75.00% (3 / 4)
+    else if (mov.MoveAmbientSound == Sound'WoodSlide1Move') fragmentClass = class'MetalFragment'; //  75.00% (3 / 4)
+    else if (mov.ClosedSound == Sound'WoodDoorClose') fragmentClass = class'WoodFragment';        //  73.08% (38 / 52)
+
+    if (fragmentClass != None) {
+        logStr = "Guessing that " $ mov.name $ " should have FragmentClass " $ fragmentClass $ ", which is ";
+        if (fragmentClass == mov.FragmentClass) {
+            logStr = logStr $ "not a change";
+        } else {
+            logStr = logStr $ "a change";
+        }
+
+        log(logStr);
+        return fragmentClass;
     }
 
     log("Not guessing about " $ mov.name $ " FragmentClass");
