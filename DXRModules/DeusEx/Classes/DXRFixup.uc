@@ -198,9 +198,90 @@ function CheckConfig()
     }
 }
 
+static function class<Fragment> GuessFragmentClass(DeusExMover mov)
+{
+    switch(mov.ClosedSound) {
+        case Sound'MoverSFX.door.WoodDoor2Close':
+        case Sound'MoverSFX.door.WoodDoorClose':
+        case Sound'MoverSFX.Other.WoodDrawerClose':
+        case Sound'MoverSFX.door.WoodDoorOpen':
+        case Sound'MoverSFX.Other.MetalDrawerClos':
+        case Sound'MoverSFX.door.WoodSlide2Close':
+            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
+            return class'WoodFragment';
+        case Sound'MoverSFX.door.MetalDoorClose':
+        case Sound'MoverSFX.door.SlideDoorClose':
+        case Sound'MoverSFX.door.GarageDoorClose':
+        case Sound'MoverSFX.Elevator.LargeElevStop':
+        case Sound'MoverSFX.door.SlideDoorOpen':
+            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
+            return class'MetalFragment';
+        case Sound'MoverSFX.Other.MetalLockerClos':
+            log("Guessing that " $ mov.name $ " FragmentClass should be GlassFragment");
+            return class'GlassFragment';
+    }
+    switch(mov.OpeningSound) {
+        case Sound'MoverSFX.door.WoodDoor2Open':
+        case Sound'MoverSFX.door.WoodDoorOpen':
+        case Sound'MoverSFX.Other.WoodDrawerOpen':
+        case Sound'MoverSFX.door.WoodDoor2Move':
+        case Sound'MoverSFX.door.WoodDoorClose':
+        case Sound'MoverSFX.door.WoodSlide2Open':
+        case Sound'MoverSFX.door.WoodSlide1Close':
+        case Sound'MoverSFX.Other.WoodDrawerMove':
+        case Sound'MoverSFX.door.StoneSlide2Clos':
+            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
+            return class'WoodFragment';
+        case Sound'MoverSFX.door.MetalDoorOpen':
+        case Sound'MoverSFX.door.GarageDoorOpen':
+        case Sound'MoverSFX.Elevator.LargeElevStop':
+        case Sound'MoverSFX.door.StoneSlide2Open':
+        case Sound'MoverSFX.door.MetalDoorClose':
+            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
+            return class'MetalFragment';
+        case Sound'MoverSFX.Other.MetalLockerOpen':
+            log("Guessing that " $ mov.name $ " FragmentClass should be GlassFragment");
+            return class'GlassFragment';
+    }
+    switch(mov.MoveAmbientSound) {
+        case Sound'MoverSFX.Other.WoodDrawerMove':
+        case Sound'MoverSFX.door.StallDoorOpen':
+        case Sound'MoverSFX.door.WoodSlide2Move':
+        case Sound'MoverSFX.Elevator.SmallElevMove':
+            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
+            return class'WoodFragment';
+        case Sound'MoverSFX.door.MetalDoorMove':
+        case Sound'MoverSFX.door.SlideDoorMove':
+        case Sound'MoverSFX.Elevator.LargeElevMove':
+        case Sound'MoverSFX.door.GarageDoorMove':
+        case Sound'MoverSFX.door.MetalDoorClose':
+        case Sound'MoverSFX.door.WoodSlide1Move':
+        case Sound'MoverSFX.Elevator.SmallElevStop':
+            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
+            return class'MetalFragment';
+    }
+    switch(mov.ClosingSound) {
+        case Sound'MoverSFX.door.WoodDoor2Move':
+        case Sound'MoverSFX.door.SlideDoorOpen':
+        case Sound'MoverSFX.Other.WoodDrawerMove':
+            log("Guessing that " $ mov.name $ " FragmentClass should be WoodFragment");
+            return class'WoodFragment';
+        case Sound'MoverSFX.door.MetalDoorClose':
+            log("Guessing that " $ mov.name $ " FragmentClass should be MetalFragment");
+            return class'MetalFragment';
+        case Sound'MoverSFX.door.WoodDoorOpen':
+            log("Guessing that " $ mov.name $ " FragmentClass should be GlassFragment");
+            return class'GlassFragment';
+    }
+
+    log("Not guessing about " $ mov.name $ " FragmentClass");
+    return mov.FragmentClass;
+}
+
 function PreFirstEntry()
 {
     local #var(prefix)Lamp lmp;
+    local DeusExMover mov;
 
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
@@ -219,12 +300,24 @@ function PreFirstEntry()
     FixHolograms();
     FixShowers();
 
-#ifdef vanilla
-    foreach AllActors(class'#var(prefix)Lamp', lmp) {
-        lmp.InitLight();
+    foreach AllActors(class'DeusExMover', mov) {
+        log("debug " $ mov $ " " $ mov.OpeningSound $ " " $ mov.OpenedSound $ " " $ mov.ClosingSound $ " " $ mov.ClosedSound $ " " $ mov.MoveAmbientSound);
     }
-    SetAllLampsState(true, true, true);
-#endif
+
+    if (#defined(vanilla)) {
+        foreach AllActors(class'#var(prefix)Lamp', lmp) {
+            lmp.InitLight();
+        }
+        SetAllLampsState(true, true, true);
+
+        if (dxr.flags.settings.doorsdestructible > 0) {
+            foreach AllActors(class'DeusExMover', mov) {
+                if (!mov.bBreakable) {
+                    mov.FragmentClass = GuessFragmentClass(mov);
+                }
+            }
+        }
+    }
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
