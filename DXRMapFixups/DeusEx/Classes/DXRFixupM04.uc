@@ -66,6 +66,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Datacube dc;
     local Smuggler smug;
     local DXRReinforcementPoint reinforce;
+    local #var(prefix)CrateExplosiveSmall boom;
+    local #var(prefix)Trigger trig;
     local #var(PlayerPawn) p;
 
     p = player();
@@ -95,6 +97,23 @@ function PreFirstEntryMapFixes()
                     st.awardMessage = "Saved Paul";
                 }
             }
+        }
+
+        foreach AllActors(class'#var(prefix)CrateExplosiveSmall',boom,'BlowDoor'){
+            //TNT crate explodes when the MIBs are ordered to move in, instead of
+            //when the MIB actually starts moving (in case he's gassed or something)
+            boom.Tag='RaidBegin';
+
+            //Put a trigger on the crate as well with big radius, just in case someone else tries to run in first
+            //This can happen if you, for example, gas the big group on the upper floor, but not the single MIB
+            //near the elevator (he gets aggroed by the grenade, but locked in place until the conversation is over,
+            //since he's involved in it).
+            trig = Spawn(class'#var(prefix)Trigger',,,boom.Location);
+            trig.TriggerType=TT_ClassProximity;
+            trig.SetCollisionSize(300,40); //Basically as big as it can be without hitting the MIB near the elevator
+            //trig.ClassProximityType=class'#var(prefix)MIB';
+            trig.ClassProximityType=class'#var(prefix)HumanMilitary';
+            trig.event = boom.Tag;
         }
 
         class'GilbertWeaponMegaChoice'.static.Create(p);
@@ -583,9 +602,6 @@ function AnyEntryMapFixes()
     local bool RevisionMaps;
     local bool VanillaMaps;
     local Mover door;
-    local Conversation con;
-    local ConEvent ce;
-    local ConEventTrigger cet;
     local ConEventSpeech ces;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)BlackHelicopter jock;
@@ -653,19 +669,6 @@ function AnyEntryMapFixes()
 
         if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
             DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
-        }
-
-        //Make TalkedToPaulAfterMessage trigger the TNT crate (BlowDoor) at the door before ending the conversation
-        con = GetConversation('TalkedToPaulAfterMessage');
-        for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
-            if (ce.NextEvent!=None && ConEventEnd(ce.NextEvent)!=None){ //Insert the trigger just before the end of the conversation
-                cet = new(con) class'ConEventTrigger';
-                cet.eventType = ET_Trigger;
-                cet.triggerTag = 'BlowDoor';
-                cet.nextEvent = ce.nextEvent;
-                ce.nextEvent = cet;
-                break;
-            }
         }
 
         break;
