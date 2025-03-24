@@ -108,12 +108,17 @@ function PreFirstEntryMapFixes()
             //This can happen if you, for example, gas the big group on the upper floor, but not the single MIB
             //near the elevator (he gets aggroed by the grenade, but locked in place until the conversation is over,
             //since he's involved in it).
-            trig = Spawn(class'#var(prefix)Trigger',,,boom.Location);
-            trig.TriggerType=TT_ClassProximity;
-            trig.SetCollisionSize(300,40); //Basically as big as it can be without hitting the MIB near the elevator
-            //trig.ClassProximityType=class'#var(prefix)MIB';
-            trig.ClassProximityType=class'#var(prefix)HumanMilitary';
-            trig.event = boom.Tag;
+            ft = Spawn(class'#var(prefix)FlagTrigger',,,boom.Location);
+            ft.TriggerType=TT_ClassProximity;
+            ft.SetCollisionSize(300,40); //Basically as big as it can be without hitting the MIB near the elevator
+            //ft.ClassProximityType=class'#var(prefix)MIB';
+            ft.ClassProximityType=class'#var(prefix)HumanMilitary';
+            ft.event = boom.Tag;
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.FlagName='M04RaidTeleportDone'; //Don't trigger as extra enemies spawn in on first entry (particularly Serious Sam mode)
+            ft.flagValue=True;
+
         }
 
         class'GilbertWeaponMegaChoice'.static.Create(p);
