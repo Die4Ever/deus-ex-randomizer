@@ -6,14 +6,17 @@ function Timer()
     local string map;
     local name blockerFlag;
 
-    class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(4, blockerFlag);
     if (
-        dxr.flags.IsBingoCampaignMode()
+        flags != None
+        && dxr != None
         && Player.IsInState('Dying')
+        && dxr.flags.IsBingoCampaignMode()
         && class'DXRBingoCampaign'.static.IsBingoEnd(4, dxr.flags.bingo_duration)
-        && !dxr.flagbase.GetBool(blockerFlag)
     ) {
-        return;
+        class'DXRBingoCampaign'.static.GetBingoMissionBlockerFlags(4, blockerFlag);
+        if(!dxr.flagbase.GetBool(blockerFlag)) {
+            return;
+        }
     }
 
     // do this for every map in this mission

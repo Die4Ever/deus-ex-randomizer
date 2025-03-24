@@ -2462,6 +2462,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[6])
         case "AnnaNavarre_DeadM4":
             failed[num_failed++] = "AnnaNavarre_DeadM5";
             break;
+        case "SavedPaul":
+            failed[num_failed++] = "PaulToTong";
+            break;
     }
 
     return num_failed;

@@ -296,18 +296,19 @@ function RandomizeSP(ScriptedPawn p, int percent)
         p.SetupWeapon(false);
     } else if (IsRobot(p.Class) && chance_single(dxr.flags.settings.bot_weapons)) {
         numWeapons = GetWeaponCount(p);
+        if (numWeapons>0){ //Only randomize weapons on bots that start with weapons
+            //Maybe it would be better if the bots *didn't* get their baseline weapons removed?
+            RemoveItem(p, class'Weapon');
+            RemoveItem(p, class'Ammo');
 
-        //Maybe it would be better if the bots *didn't* get their baseline weapons removed?
-        RemoveItem(p, class'Weapon');
-        RemoveItem(p, class'Ammo');
-
-        //Since bots don't have melee weapons, they should get more ammo to compensate
-        for (i=0;i<numWeapons;i++){
-            GiveRandomBotWeapon(p, false, 6); //Give as many weapons as the bot defaults with
+            //Since bots don't have melee weapons, they should get more ammo to compensate
+            for (i=0;i<numWeapons;i++){
+                GiveRandomBotWeapon(p, false, 6); //Give as many weapons as the bot defaults with
+            }
+            if( chance_single(50) ) //Give a chance for a bonus weapon
+                GiveRandomBotWeapon(p, false, 6);
+            p.SetupWeapon(false);
         }
-        if( chance_single(50) ) //Give a chance for a bonus weapon
-            GiveRandomBotWeapon(p, false, 6);
-        p.SetupWeapon(false);
     }
 }
 

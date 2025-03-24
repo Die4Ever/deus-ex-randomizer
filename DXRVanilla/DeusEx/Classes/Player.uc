@@ -2245,7 +2245,7 @@ function PreTravel()
     root = DeusExRootWindow(rootWindow);
 
     //Opening URLs triggers pretravel, but we aren't actually traveling, so don't
-    if (class'DXRando'.default.dxr.bIsOpeningURL) return;
+    if (class'DXRando'.default.dxr!=None && class'DXRando'.default.dxr.bIsOpeningURL) return;
 
     //Don't clear the stack if the top of the stack is the Credits.
     //We're pretraveling as part of the DestroyWindow call chain

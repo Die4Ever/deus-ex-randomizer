@@ -150,7 +150,7 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoBattery',250,3);
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoDartPoison',250,3);
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoRocket',300,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponShuriken',4000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponShuriken',1000,1);
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)HazMatSuit',400,3);
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Rebreather',300,3);
     AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AdaptiveArmor',2000,1);

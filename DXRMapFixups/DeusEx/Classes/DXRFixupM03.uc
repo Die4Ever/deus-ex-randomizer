@@ -223,6 +223,10 @@ function PreFirstEntryMapFixes()
             Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
         }
 
+        foreach AllActors(class'#var(prefix)Terrorist', terror,'boatguard'){
+            terror.bIsSecretGoal=true;
+        }
+
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}

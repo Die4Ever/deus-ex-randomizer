@@ -13,7 +13,7 @@ struct EnumBtn {
 
     var int value;
 };
-var EnumBtn enums[128];
+var EnumBtn enums[150];
 
 var MenuUIScrollAreaWindow winScroll;
 var Window controlsParent;
@@ -23,10 +23,10 @@ var bool bHelpAlwaysOn;
 var int id;
 var bool writing;
 
-var Window wnds[128];
-var String labels[128];
-var int hide_labels[128];
-var String helptexts[128];
+var Window wnds[150];
+var String labels[150];
+var int hide_labels[150];
+var String helptexts[150];
 
 var DXRando dxr;
 var DXRFlags flags;

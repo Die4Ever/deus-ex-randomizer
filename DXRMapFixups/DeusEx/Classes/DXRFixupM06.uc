@@ -869,7 +869,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(1079.73,-1068.17,842.4)); //Pipes above water
         Spawn(class'PlaceholderItem',,, vectm(90,-666,1030)); //Under corner mirror
         Spawn(class'PlaceholderItem',,, vectm(175,-2515,855)); //Pit near security computer
-        Spawn(class'PlaceholderItem',,, vectm(75,-1730,900)); //Lower hallway alcove
+        Spawn(class'PlaceholderItem',,, vectm(75,-1730,905)); //Lower hallway alcove
         Spawn(class'PlaceholderItem',,, vectm(-90,-2320,1030)); //Upper Hallway near computer
         Spawn(class'PlaceholderItem',,, vectm(-800,-650,1030)); //Upper Hallway near elevator
         Spawn(class'PlaceholderItem',,, vectm(510,-1450,860)); //Lower Hallway near where you drop in
