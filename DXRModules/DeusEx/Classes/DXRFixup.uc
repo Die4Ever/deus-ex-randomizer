@@ -28,11 +28,10 @@ struct AddDatacube {
 var AddDatacube add_datacubes[32];
 
 struct FragmentGuess {
-    var name soundVar;
     var Sound sound;
     var class<Fragment> fragmentClass;
 };
-var FragmentGuess fragmentGuesses[40];
+var FragmentGuess fragmentGuesses[24];
 
 static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> request)
 {
@@ -210,47 +209,24 @@ static function class<Fragment> GuessFragmentClass(DeusExMover mov)
     local class<Fragment> fragmentClass;
     local Sound movSound;
     local string logStr;
+    local FragmentGuess guess;
     local int i;
 
     for (i = 0; i < ArrayCount(default.fragmentGuesses); i++) {
-        switch (default.fragmentGuesses[i].soundVar) {
-            case 'OpeningSound':
-                movSound = mov.OpeningSound;
-                break;
-            case 'ClosingSound':
-                movSound = mov.ClosingSound;
-                break;
-            case 'ClosedSound':
-                movSound = mov.ClosedSound;
-                break;
-            case 'MoveAmbientSound':
-                movSound = mov.MoveAmbientSound;
-                break;
-            default:
-                log("Invalid FragmentGuess soundVar value: '" $ default.fragmentGuesses[i].soundVar $ "'");
-                movSound = None;
-                break;
-        }
-
-        if (movSound == default.fragmentGuesses[i].sound) {
-            fragmentClass = default.fragmentGuesses[i].fragmentClass;
+        guess = default.fragmentGuesses[i];
+        if (mov.OpeningSound == guess.sound || mov.ClosingSound == guess.sound || mov.ClosedSound == guess.sound || mov.MoveAmbientSound == guess.sound) {
+            fragmentClass = guess.fragmentClass;
             break;
         }
     }
 
     if (fragmentClass != None) {
-        logStr = "Guessing that " $ mov.name $ " should have FragmentClass " $ fragmentClass $ ", which is ";
-        if (fragmentClass == mov.FragmentClass) {
-            logStr = logStr $ "not a change";
-        } else {
-            logStr = logStr $ "a change";
+        if (fragmentClass != mov.fragmentClass) {
+            log("Guessing that " $ mov $ " fragmentClass should be '" $ fragmentClass $ "' instead of '" $ mov.fragmentClass $ "'");
         }
-
-        log(logStr);
         return fragmentClass;
     }
 
-    log("Not guessing about " $ mov.name $ " FragmentClass");
     return mov.FragmentClass;
 }
 
@@ -275,10 +251,6 @@ function PreFirstEntry()
     AntiEpilepsy();
     FixHolograms();
     FixShowers();
-
-    foreach AllActors(class'DeusExMover', mov) {
-        log("debug " $ mov $ " " $ mov.OpeningSound $ " " $ mov.OpenedSound $ " " $ mov.ClosingSound $ " " $ mov.ClosedSound $ " " $ mov.MoveAmbientSound);
-    }
 
     if (#defined(vanilla)) {
         foreach AllActors(class'#var(prefix)Lamp', lmp) {
@@ -1373,44 +1345,28 @@ function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCom
 defaultproperties
 {
     // in order of proportion, then number of occurances. sounds that did not have the same fragment type at least 70% of the time aren't included
-    fragmentGuesses(0)=(soundVar=MoveAmbientSound,sound=Sound'WoodDrawerMove',fragmentClass=class'DeusEx.WoodFragment')   // 100.00% (11 / 11)
-    fragmentGuesses(1)=(soundVar=MoveAmbientSound,sound=Sound'LargeElevMove',fragmentClass=class'DeusEx.MetalFragment')   // 100.00% (8 / 8)
-    fragmentGuesses(2)=(soundVar=ClosingSound,sound=Sound'WoodDoor2Move',fragmentClass=class'DeusEx.WoodFragment')        // 100.00% (8 / 8)
-    fragmentGuesses(3)=(soundVar=MoveAmbientSound,sound=Sound'GarageDoorMove',fragmentClass=class'DeusEx.MetalFragment')  // 100.00% (7 / 7)
-    fragmentGuesses(4)=(soundVar=OpeningSound,sound=Sound'LargeElevStop',fragmentClass=class'DeusEx.MetalFragment')       // 100.00% (7 / 7)
-    fragmentGuesses(5)=(soundVar=ClosedSound,sound=Sound'LargeElevStop',fragmentClass=class'DeusEx.MetalFragment')        // 100.00% (7 / 7)
-    fragmentGuesses(6)=(soundVar=MoveAmbientSound,sound=Sound'MetalDoorClose',fragmentClass=class'DeusEx.MetalFragment')  // 100.00% (6 / 6)
-    fragmentGuesses(7)=(soundVar=OpeningSound,sound=Sound'WoodDrawerOpen',fragmentClass=class'DeusEx.WoodFragment')       // 100.00% (6 / 6)
-    fragmentGuesses(8)=(soundVar=OpeningSound,sound=Sound'WoodDoor2Move',fragmentClass=class'DeusEx.WoodFragment')        // 100.00% (5 / 5)
-    fragmentGuesses(9)=(soundVar=ClosingSound,sound=Sound'SlideDoorOpen',fragmentClass=class'DeusEx.WoodFragment')        // 100.00% (4 / 4)
-    fragmentGuesses(10)=(soundVar=OpeningSound,sound=Sound'WoodDoorClose',fragmentClass=class'DeusEx.WoodFragment')       // 100.00% (3 / 3)
-    fragmentGuesses(11)=(soundVar=OpeningSound,sound=Sound'WoodSlide2Open',fragmentClass=class'DeusEx.WoodFragment')      // 100.00% (3 / 3)
-    fragmentGuesses(12)=(soundVar=OpeningSound,sound=Sound'WoodSlide1Close',fragmentClass=class'DeusEx.WoodFragment')     // 100.00% (3 / 3)
-    fragmentGuesses(13)=(soundVar=MoveAmbientSound,sound=Sound'StallDoorOpen',fragmentClass=class'DeusEx.WoodFragment')   // 100.00% (2 / 2)
-    fragmentGuesses(14)=(soundVar=ClosedSound,sound=Sound'MetalDrawerClos',fragmentClass=class'DeusEx.WoodFragment')      // 100.00% (2 / 2)
-    fragmentGuesses(15)=(soundVar=ClosingSound,sound=Sound'WoodDoorOpen',fragmentClass=class'DeusEx.GlassFragment')       // 100.00% (2 / 2)
-    fragmentGuesses(16)=(soundVar=OpeningSound,sound=Sound'WoodDrawerMove',fragmentClass=class'DeusEx.WoodFragment')      // 100.00% (2 / 2)
-    fragmentGuesses(17)=(soundVar=ClosingSound,sound=Sound'WoodDrawerMove',fragmentClass=class'DeusEx.WoodFragment')      // 100.00% (2 / 2)
-    fragmentGuesses(18)=(soundVar=ClosedSound,sound=Sound'WoodSlide2Close',fragmentClass=class'DeusEx.WoodFragment')      // 100.00% (2 / 2)
-    fragmentGuesses(19)=(soundVar=MoveAmbientSound,sound=Sound'WoodSlide2Move',fragmentClass=class'DeusEx.WoodFragment')  // 100.00% (2 / 2)
-    fragmentGuesses(20)=(soundVar=OpeningSound,sound=Sound'MetalDoorClose',fragmentClass=class'DeusEx.MetalFragment')     // 100.00% (1 / 1)
-    fragmentGuesses(21)=(soundVar=ClosingSound,sound=Sound'MetalDoorClose',fragmentClass=class'DeusEx.MetalFragment')     // 100.00% (1 / 1)
-    fragmentGuesses(22)=(soundVar=MoveAmbientSound,sound=Sound'SmallElevMove',fragmentClass=class'DeusEx.WoodFragment')   // 100.00% (1 / 1)
-    fragmentGuesses(23)=(soundVar=ClosedSound,sound=Sound'SlideDoorOpen',fragmentClass=class'DeusEx.MetalFragment')       // 100.00% (1 / 1)
-    fragmentGuesses(24)=(soundVar=OpeningSound,sound=Sound'StoneSlide2Clos',fragmentClass=class'DeusEx.WoodFragment')     // 100.00% (1 / 1)
-    fragmentGuesses(25)=(soundVar=MoveAmbientSound,sound=Sound'SmallElevStop',fragmentClass=class'DeusEx.MetalFragment')  // 100.00% (1 / 1)
-    fragmentGuesses(26)=(soundVar=ClosedSound,sound=Sound'WoodDrawerClose',fragmentClass=class'DeusEx.WoodFragment')      //  86.67% (26 / 30)
-    fragmentGuesses(27)=(soundVar=MoveAmbientSound,sound=Sound'MetalDoorMove',fragmentClass=class'DeusEx.MetalFragment')  //  85.11% (80 / 94)
-    fragmentGuesses(28)=(soundVar=ClosedSound,sound=Sound'WoodDoorOpen',fragmentClass=class'DeusEx.WoodFragment')         //  83.33% (20 / 24)
-    fragmentGuesses(29)=(soundVar=OpeningSound,sound=Sound'WoodDoorOpen',fragmentClass=class'DeusEx.WoodFragment')        //  82.35% (56 / 68)
-    fragmentGuesses(30)=(soundVar=OpeningSound,sound=Sound'MetalDoorOpen',fragmentClass=class'DeusEx.MetalFragment')      //  81.25% (65 / 80)
-    fragmentGuesses(31)=(soundVar=MoveAmbientSound,sound=Sound'SlideDoorMove',fragmentClass=class'DeusEx.MetalFragment')  //  81.25% (13 / 16)
-    fragmentGuesses(32)=(soundVar=OpeningSound,sound=Sound'MetalLockerOpen',fragmentClass=class'DeusEx.GlassFragment')    //  80.00% (4 / 5)
-    fragmentGuesses(33)=(soundVar=ClosedSound,sound=Sound'MetalLockerClos',fragmentClass=class'DeusEx.GlassFragment')     //  80.00% (4 / 5)
-    fragmentGuesses(34)=(soundVar=ClosedSound,sound=Sound'MetalDoorClose',fragmentClass=class'DeusEx.MetalFragment')      //  77.78% (105 / 135)
-    fragmentGuesses(35)=(soundVar=OpeningSound,sound=Sound'GarageDoorOpen',fragmentClass=class'DeusEx.MetalFragment')     //  77.78% (7 / 9)
-    fragmentGuesses(36)=(soundVar=ClosedSound,sound=Sound'GarageDoorClose',fragmentClass=class'DeusEx.MetalFragment')     //  77.78% (7 / 9)
-    fragmentGuesses(37)=(soundVar=OpeningSound,sound=Sound'StoneSlide2Open',fragmentClass=class'DeusEx.MetalFragment')    //  75.00% (3 / 4)
-    fragmentGuesses(38)=(soundVar=MoveAmbientSound,sound=Sound'WoodSlide1Move',fragmentClass=class'DeusEx.MetalFragment') //  75.00% (3 / 4)
-    fragmentGuesses(39)=(soundVar=ClosedSound,sound=Sound'WoodDoorClose',fragmentClass=class'DeusEx.WoodFragment')        //  73.08% (38 / 52)
+    fragmentGuesses(0)=(sound=Sound'WoodDoor2Close',fragmentClass=class'WoodFragment')    // 100.00% (67 / 67)
+    fragmentGuesses(1)=(sound=Sound'WoodDrawerMove',fragmentClass=class'WoodFragment')    // 100.00% (15 / 15)
+    fragmentGuesses(2)=(sound=Sound'LargeElevStop',fragmentClass=class'MetalFragment')    // 100.00% (14 / 14)
+    fragmentGuesses(3)=(sound=Sound'LargeElevMove',fragmentClass=class'MetalFragment')    // 100.00% (8 / 8)
+    fragmentGuesses(4)=(sound=Sound'GarageDoorMove',fragmentClass=class'MetalFragment')   // 100.00% (7 / 7)
+    fragmentGuesses(5)=(sound=Sound'WoodDrawerOpen',fragmentClass=class'WoodFragment')    // 100.00% (6 / 6)
+    fragmentGuesses(6)=(sound=Sound'WoodSlide2Open',fragmentClass=class'WoodFragment')    // 100.00% (3 / 3)
+    fragmentGuesses(7)=(sound=Sound'MetalDrawerClos',fragmentClass=class'WoodFragment')   // 100.00% (2 / 2)
+    fragmentGuesses(8)=(sound=Sound'WoodSlide2Close',fragmentClass=class'WoodFragment')   // 100.00% (2 / 2)
+    fragmentGuesses(9)=(sound=Sound'WoodSlide2Move',fragmentClass=class'WoodFragment')    // 100.00% (2 / 2)
+    fragmentGuesses(10)=(sound=Sound'SmallElevMove',fragmentClass=class'WoodFragment')    // 100.00% (1 / 1)
+    fragmentGuesses(11)=(sound=Sound'SmallElevStop',fragmentClass=class'MetalFragment')   // 100.00% (1 / 1)
+    fragmentGuesses(12)=(sound=Sound'WoodDoor2Open',fragmentClass=class'WoodFragment')    //  88.57% (62 / 70)
+    fragmentGuesses(13)=(sound=Sound'WoodDrawerClose',fragmentClass=class'WoodFragment')  //  86.67% (26 / 30)
+    fragmentGuesses(14)=(sound=Sound'SlideDoorMove',fragmentClass=class'MetalFragment')   //  81.25% (13 / 16)
+    fragmentGuesses(15)=(sound=Sound'WoodDoorOpen',fragmentClass=class'WoodFragment')     //  80.85% (76 / 94)
+    fragmentGuesses(16)=(sound=Sound'MetalLockerClos',fragmentClass=class'GlassFragment') //  80.00% (4 / 5)
+    fragmentGuesses(17)=(sound=Sound'MetalLockerOpen',fragmentClass=class'GlassFragment') //  80.00% (4 / 5)
+    fragmentGuesses(18)=(sound=Sound'GarageDoorClose',fragmentClass=class'MetalFragment') //  77.78% (7 / 9)
+    fragmentGuesses(19)=(sound=Sound'GarageDoorOpen',fragmentClass=class'MetalFragment')  //  77.78% (7 / 9)
+    fragmentGuesses(20)=(sound=Sound'MetalDoorMove',fragmentClass=class'MetalFragment')   //  76.84% (136 / 177)
+    fragmentGuesses(21)=(sound=Sound'WoodDoor2Move',fragmentClass=class'WoodFragment')    //  75.00% (24 / 32)
+    fragmentGuesses(22)=(sound=Sound'WoodDoorClose',fragmentClass=class'WoodFragment')    //  74.55% (41 / 55)
+    fragmentGuesses(23)=(sound=Sound'WoodSlide1Close',fragmentClass=class'WoodFragment')  //  72.73% (16 / 22)
 }
