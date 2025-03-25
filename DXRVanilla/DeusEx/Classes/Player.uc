@@ -468,8 +468,8 @@ function float GetCurrentGroundSpeed()
         return 0;
 
     augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-    if (augValue == -1.0)
-        augValue = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
+    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugOnlySpeed'));
 
     if (augValue == -1.0)
         augValue = 1.0;
@@ -506,12 +506,13 @@ function DoJump( optional float F )
 
         if ( Level.NetMode != NM_Standalone )
         {
-         if (AugmentationSystem == None)
-            augLevel = -1.0;
-         else
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-            if( augLevel == -1.0 )
-                augLevel = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+            if (AugmentationSystem == None)
+                augLevel = -1.0;
+            else {
+                augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+                augLevel = FMax(augLevel, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
+                augLevel = FMax(augLevel, AugmentationSystem.GetAugLevelValue(class'AugJump'));
+            }
             w = DeusExWeapon(InHand);
             if ((augLevel != -1.0) && ( w != None ) && ( w.Mass > 30.0))
             {
@@ -534,18 +535,20 @@ function DoJump( optional float F )
     }
 }
 
+// MakeNoise does nothing
 function Landed(vector HitNormal)
 {
     local vector legLocation;
     local int augLevel;
-    local float augReduce, dmg;
+    local float augReduce, dmg, softener;
 
+    softener = RunSilentValue/4 + 0.75;
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);
     if (Velocity.Z < -1.4 * JumpZ)
     {
-        MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
-        if ((Velocity.Z < -700) && (ReducedDamageType != 'All'))
+        //MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
+        if ((Velocity.Z * softener < -700) && (ReducedDamageType != 'All'))
             if ( Role == ROLE_Authority )
             {
                 // check our jump augmentation and reduce falling damage if we have it
@@ -555,13 +558,14 @@ function Landed(vector HitNormal)
                 if (AugmentationSystem != None)
                 {
                     augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
-                    if( augLevel == -1.0 )
-                        augLevel = AugmentationSystem.GetClassLevel(class'AugNinja');
+                    augLevel = Max(augLevel, AugmentationSystem.GetClassLevel(class'AugJump'));
+                    augLevel = Max(augLevel, AugmentationSystem.GetClassLevel(class'AugNinja'));
                     if (augLevel >= 0)
                         augReduce = 15 * (augLevel+1);
                 }
 
                 dmg = FMax((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg *= softener;
                 legLocation = Location + vect(-1,0,-1);			// damage left leg
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
@@ -569,12 +573,13 @@ function Landed(vector HitNormal)
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
                 dmg = FMax((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg *= softener;
                 legLocation = Location + vect(0,0,1);			// damage torso
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
             }
     }
-    else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
-        MakeNoise(0.1 * Level.Game.Difficulty);
+    //else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
+        //MakeNoise(0.1 * Level.Game.Difficulty);
     bJustLanded = true;
 }
 
@@ -2280,6 +2285,13 @@ exec function UpgradeAugs()
         bBuySkills=False;
     }
     BuySkillSound( 2 );
+}
+
+exec function AugAdd(class<Augmentation> aWantedAug)
+{ // this works better than vanilla's for augs that aren't part of the default set
+    if (!bCheatsEnabled)
+        return;
+    class'DXRAugmentations'.static.AddAug(self, aWantedAug, 1);
 }
 
 //Copied from vanilla

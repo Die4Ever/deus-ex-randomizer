@@ -1,4 +1,4 @@
-class BalanceAugSpeed injects AugSpeed;
+class AugJump extends Augmentation;
 
 state Active
 {
@@ -18,16 +18,11 @@ function Reset()
 
     // reset without burning 1 energy
     if(class'MenuChoice_FixGlitches'.default.enabled) {
-        Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
+        //Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
         Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
     } else {
-        Player.GroundSpeed *= GetAugLevelValue();
+        //Player.GroundSpeed *= GetAugLevelValue();
         Player.JumpZ *= GetAugLevelValue();
-    }
-    if ( Level.NetMode != NM_Standalone )
-    {
-        if ( Human(Player) != None )
-            Human(Player).UpdateAnimRate( GetAugLevelValue() );
     }
 }
 
@@ -40,20 +35,17 @@ function UpdateBalance()
         LevelValues[2] = 1.5;
         LevelValues[3] = 1.7;
         Level5Value = 1.8;
-        activationCost = 1;
     } else {
         LevelValues[0] = 1.2;
         LevelValues[1] = 1.4;
         LevelValues[2] = 1.6;
         LevelValues[3] = 1.8;
         Level5Value = -1;
-        activationCost = 0;
     }
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
     default.Level5Value = Level5Value;
-    default.activationCost = activationCost;
 }
 
 //original went from 1.2 up to 1.8, I've thought about nerfing the max speed so you can't just run past all enemies, but I think that would require an unreasonably large nerf
@@ -65,5 +57,13 @@ defaultproperties
     LevelValues(2)=1.5
     LevelValues(3)=1.7
     Level5Value=1.8
-    activationCost=1
+    EnergyRate=30
+
+    Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
+    smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
+    AugmentationName="Jump Enhancement"
+    Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the height they can jump, and reducing the damage they receive from falls.|n|nTECH ONE: Jumping is increased slightly, while falling damage is reduced.|n|nTECH TWO: Jumping is increased moderately, while falling damage is further reduced.|n|nTECH THREE: Jumping is increased significantly, while falling damage is substantially reduced.|n|nTECH FOUR: An agent can leap from the tallest building."
+    MPInfo="When active, you jump higher.  Energy Drain: Very High"
+    AugmentationLocation=LOC_Leg
+    MPConflictSlot=5
 }

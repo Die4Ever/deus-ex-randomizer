@@ -1,4 +1,4 @@
-class BalanceAugSpeed injects AugSpeed;
+class AugOnlySpeed extends Augmentation;
 
 state Active
 {
@@ -19,10 +19,10 @@ function Reset()
     // reset without burning 1 energy
     if(class'MenuChoice_FixGlitches'.default.enabled) {
         Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
-        Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
+        //Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
     } else {
         Player.GroundSpeed *= GetAugLevelValue();
-        Player.JumpZ *= GetAugLevelValue();
+        //Player.JumpZ *= GetAugLevelValue();
     }
     if ( Level.NetMode != NM_Standalone )
     {
@@ -66,4 +66,13 @@ defaultproperties
     LevelValues(3)=1.7
     Level5Value=1.8
     activationCost=1
+    EnergyRate=30
+
+    Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
+    smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
+    AugmentationName="Speed Enhancement"
+    Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the speed at which an agent can run.|n|nTECH ONE: Speed is increased slightly.|n|nTECH TWO: Speed is increased moderately.|n|nTECH THREE: Speed is increased significantly.|n|nTECH FOUR: An agent can run like the wind."
+    MPInfo="When active, you run faster.  Energy Drain: Very High"
+    AugmentationLocation=LOC_Leg
+    MPConflictSlot=5
 }

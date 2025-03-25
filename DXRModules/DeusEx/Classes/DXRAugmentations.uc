@@ -480,7 +480,9 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
             return shortDisplay;
         }
         word = "Noise";
-        shortDisplay=Max(int(val * 100.0), 0) $ "%";
+        val = FMax(val, 0);
+        if(#defined(injections) && i==3) val = 0; // max level always 0% noise
+        shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
     }
     else if( a.Class == class'#var(prefix)AugTarget') {
