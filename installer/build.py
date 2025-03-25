@@ -63,6 +63,8 @@ for (url, dest) in downloads.items():
 #region D3D10 needs this DLL
 DownloadFile('https://mods4ever.com/public/msvcp100.dll', basedest/'msvcp100.dll')
 assert MD5((basedest/'msvcp100.dll').read_bytes()) == 'bc83108b18756547013ed443b8cdb31b'
+DownloadFile('https://mods4ever.com/public/msvcr100.dll', basedest/'msvcr100.dll')
+assert MD5((basedest/'msvcr100.dll').read_bytes()) == '0e37fbfa79d349d672456923ec5fbbe3'
 
 #region extract OpenGL 2
 zip = ZipFile(basedest/'dxglr21.zip', 'r')
