@@ -2,26 +2,26 @@
 from pathlib import Path
 import re
 import os
-from Install import DownloadFile, WriteBytes
+from Install import DownloadFile, WriteBytes, MD5
 from zipfile import ZipFile
 import tarfile
 import PyInstaller.__main__
 
 Community_Update_url = "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/a662f6ed177dba52ad3a0d8141fa2ac72f8af034/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/"
 downloads = {
-    # Launchers
+    #region Launchers
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Kentie's%20DeusExe.exe": "KentieDeusExe.exe",
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/DeusExe.u": "DeusExe.u",
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Launch.exe": "Launch.exe",
 
-    # Renderers
+    #region Renderers
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.dll": "D3D9Drv.dll",
     # "DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.hut": "D3D9Drv.hut",
     # "DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.int": "D3D9Drv.int",
 
     "CommunityUpdateFileArchiveDXPC/OpenGL/dxglr21.zip": "dxglr21.zip",
 
-    # D3D10
+    #region D3D10
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D10Drv.int": "D3D10Drv.int",
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv.dll": "d3d10drv.dll",
     "DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/common.fxh": "d3d10drv/common.fxh",
@@ -60,15 +60,20 @@ for (url, dest) in downloads.items():
     if not p.exists():
         DownloadFile(Community_Update_url + url, basedest/dest)
 
-# extract OpenGL 2
+#region D3D10 needs this DLL
+DownloadFile('https://mods4ever.com/public/msvcp100.dll', basedest/'msvcp100.dll')
+assert MD5((basedest/'msvcp100.dll').read_bytes()) == 'bc83108b18756547013ed443b8cdb31b'
+
+#region extract OpenGL 2
 zip = ZipFile(basedest/'dxglr21.zip', 'r')
 zip.extractall(basedest)
 zip.close()
 (basedest/'dxglr21.zip').unlink()
 
-# Deus_nsf tweaked D3D10 shaders
+#region Deus_nsf tweaked D3D10 shaders
 if not (basedest/'d3d10drv_deus_nsf.zip').exists():
     DownloadFile('https://mods4ever.com/public/d3d10drv_deus_nsf.zip', basedest/'d3d10drv_deus_nsf.zip')
+assert MD5((basedest/'d3d10drv_deus_nsf.zip').read_bytes()) == '3bef7d2e4f4c0091f39ebf8027e680e0'
 zip = ZipFile(basedest/'d3d10drv_deus_nsf.zip', 'r')
 (basedest/'d3d10drv_deus_nsf').mkdir(exist_ok=True)
 for name in zip.namelist():
@@ -77,11 +82,11 @@ for name in zip.namelist():
 zip.close()
 (basedest/'d3d10drv_deus_nsf.zip').unlink()
 
-# # LDDP minimal install
+#region LDDP minimal install
 if not (basedest/'FemJC.u').exists():
     DownloadFile('https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/FemJC.u', basedest/'FemJC.u')
 
-# DXVK 32bit
+#region DXVK 32bit
 if not (basedest/'dxvk.tar.gz').exists():
     DownloadFile('https://github.com/doitsujin/dxvk/releases/download/v2.5.3/dxvk-2.5.3.tar.gz', basedest/'dxvk.tar.gz')
 tar = tarfile.open(basedest/'dxvk.tar.gz')
@@ -94,6 +99,7 @@ for f in tar.getmembers():
 tar.close()
 (basedest/'dxvk.tar.gz').unlink()
 
+#region build
 spec = base/'installer.spec'
 print("building spec file:", spec)
 (base/'dist').mkdir(exist_ok=True)
