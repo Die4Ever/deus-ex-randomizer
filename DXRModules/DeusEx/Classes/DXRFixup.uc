@@ -225,12 +225,6 @@ function PreFirstEntry()
     }
     if (class'MenuChoice_AutoLamps'.static.IsEnabled()) {
         SetAllLampsState(true, true, true);
-    } else {
-        // fix the half-on state that some lamps start in
-        foreach AllActors(class'Lamp', lmp) {
-            lmp.SetState(!lmp.bOn);
-            lmp.SetState(!lmp.bOn);
-        }
     }
 #endif
 
