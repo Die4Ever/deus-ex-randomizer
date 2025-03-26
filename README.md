@@ -57,6 +57,8 @@ Here are trailers for our **Halloween modes**, **WaltonWare**, and **Vanilla Fix
 
 [See the full list of balance changes here in the wiki so you may be better able to adapt to the unique challenges DXRando generates.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Balance-Changes)
 
+If you're having trouble with D3D10 on Windows (typically it will revert to software rendering, which limits your resolution and performance, and causes objects to warp and draw on top of each other incorrectly), you probably need to install [vc_redist 17](https://aka.ms/vs/17/release/vc_redist.x64.exe) or [vc_redist 10](http://download.microsoft.com/download/C/6/D/C6D0FD4E-9E53-4897-9B91-836EBA2AACD3/vcredist_x86.exe). Otherwise use D3D9 or OpenGL (and check the Rando ➜ Visuals menu for Brightness Boost).
+
 ---
 
 Join the [Discord channel for discussion](https://discord.gg/daQVyAp2ds). Follow [me on Mastodon](https://mastodon.gamedev.place/@Die4ever) or [on Bluesky](https://bsky.app/profile/Die4ever.mastodon.gamedev.place.ap.brid.gy). Follow [TheAstropath on Mastodon](https://mstdn.ca/@theastropath) or [on Bluesky](https://bsky.app/profile/theastropath.mstdn.ca.ap.brid.gy). Also check out [Mods4Ever.com](https://mods4ever.com)
