@@ -2908,7 +2908,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "botorders2":
             return "Use the security computer in the upper floor of the MJ12 Robot Maintenance facility to alter the AI of the security bots.";
         case "BathroomFlags":
-            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit. I'm sure this is how you get to the secret ending!";
+            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit.  I'm sure this is how you get to the secret ending!";
         case "SiloSlide":
             return "When entering the missile silo, open the vent in the floor and go down the slide that drops you into the water underneath the missile.";
         case "SiloWaterTower":
@@ -3763,7 +3763,7 @@ defaultproperties
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=5,missions=64)
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
-    bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",desc_singular="MUST. CRUSH. 1 CAPITALIST.",max=10,missions=7550)
+    bingo_options(239)=(event="DestroyCapitalism",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  1 CAPITALIST.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
     bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",desc_singular="Perform 1 act of light vandalism",max=40,missions=57214)
     bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",desc_singular="Destroy 1 skeleton part",max=10,missions=19536)

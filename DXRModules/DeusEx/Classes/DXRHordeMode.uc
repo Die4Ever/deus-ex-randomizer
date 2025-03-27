@@ -464,7 +464,7 @@ function InWaveTick()
 
     if( numScriptedPawns == 0 || ( time_in_wave > early_end_wave_timer && numScriptedPawns <= early_end_wave_enemies ) ) {
         if( numScriptedPawns > 0 ) {
-            player().ClientMessage("Moving on. Warning: there are still "$numScriptedPawns$" enemies!",, true);
+            player().ClientMessage("Moving on.  Warning: there are still "$numScriptedPawns$" enemies!",, true);
         }
         EndWave();
         return;

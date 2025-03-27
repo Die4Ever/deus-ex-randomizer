@@ -9,7 +9,7 @@ defaultproperties
 {
     value=1
     defaultvalue=1
-    HelpText="Enable or Disable spiderwebs and jack-o'-lanterns. This is automatically disabled for Zero Rando and Rando Lite modes."
+    HelpText="Enable or Disable spiderwebs and jack-o'-lanterns.  This is automatically disabled for Zero Rando and Rando Lite modes."
     actionText="October Cosmetics"
     enumText(0)="Spooks Disabled"
     enumText(1)="According to Game Mode"

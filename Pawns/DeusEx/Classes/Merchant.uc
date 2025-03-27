@@ -47,7 +47,7 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 
     if(hints != None) {
         for(i=0; i<100; i++) {
-            newHint = hints.GetHint(false,hint,details);
+            newHint = hints.GetHint(false,hint,details,true);
             if(newHint != lastHint) break;
         }
         if(i>=100) hint = "";
@@ -55,11 +55,11 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 
     if(hint!="") {
         ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Hehehehe");
-        ces.conSpeech.speech = "Hehehehe, thank you. Here's a tip: " $ hint @ details;
+        ces.conSpeech.speech = "Hehehehe, thank you.  Here's a tip: " $ hint @ details;
         ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Come back");
-        ces.conSpeech.speech = "Come back anytime. Here's a tip: " $ hint @ details;
+        ces.conSpeech.speech = "Come back anytime.  Here's a tip: " $ hint @ details;
         ces = class'DXRActorsBase'.static.GetSpeechEvent(con.eventList, "Not enough cash");
-        ces.conSpeech.speech = "Not enough cash, stranger. Here's a tip: " $ hint @ details;
+        ces.conSpeech.speech = "Not enough cash, stranger.  Here's a tip: " $ hint @ details;
     }
 
     lastHint = newHint;

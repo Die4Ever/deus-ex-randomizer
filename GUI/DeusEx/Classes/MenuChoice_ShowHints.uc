@@ -20,7 +20,7 @@ defaultproperties
     defaultvalue=1
     defaultInfoWidth=243
     defaultInfoPosX=203
-    HelpText="Show hints when a level loads. This is automatically disabled for Zero Rando."
+    HelpText="Show hints when a level loads.  This is automatically disabled for Zero Rando."
     actionText="Level Start Hints"
     enumText(0)="No Hints Shown"
     enumText(1)="According to Game Mode"

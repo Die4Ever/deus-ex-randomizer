@@ -63,9 +63,9 @@ defaultproperties
 {
      Action=MA_Custom
 #ifdef injections
-    HelpText="Disable the current song. You can re-enable it by editing DXRMusic.ini"
+    HelpText="Disable the current song.  You can re-enable it by editing DXRMusic.ini"
 #else
-    HelpText="Disable the current song. You can re-enable it by editing #var(package)Music.ini"
+    HelpText="Disable the current song.  You can re-enable it by editing #var(package)Music.ini"
 #endif
      actionText="Disable Song"
 }
