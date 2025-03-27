@@ -329,10 +329,10 @@ function CheckConfig()
     AddRandomAug(14); //and get a random aug to start
     //#endregion
 /////////////////////////////////////////////////////////////////
-    //#region The Three Leg Augs, might work on other mods if we move the files
+    //#region The Three Leg Augs
     AddLoadoutName(15, "The Three Leg Augs");
     AddAugBan(15, class'#var(prefix)AugSpeed');
-    BanRandomAug(14); // set bans before adding new augs
+    BanRandomAug(14); // set bans before adding new augs, focus on the new leg augs
     BanRandomAug(14);
     BanRandomAug(14);
     BanRandomAug(14);
