@@ -354,8 +354,8 @@ simulated function RandoAug(Augmentation a)
     }
 
 #ifdef injections
-    if(a.activationCost > 0) {
-        add_desc = "DXRando: Activating this aug instantly burns " $ a.activationCost $ " energy in order to prevent abuse. ";
+    if(a.activationCost >= 1) {
+        add_desc = "DXRando: Activating this aug instantly burns " $ int(a.activationCost) $ " energy in order to prevent abuse. ";
     }
     else if( #var(prefix)AugVision(a) != None  && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         add_desc = "DXRando: You can see characters, goals, items, datacubes, vehicles, crates, and electronic devices through walls. ";

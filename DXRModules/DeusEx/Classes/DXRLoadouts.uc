@@ -343,6 +343,12 @@ function CheckConfig()
     AddAugAllow(15, class'AugOnlySpeed');
     AddAugAllow(15, class'AugJump');
     AddAugAllow(15, class'AugOnlySpeed');
+
+    SetGlobalSeed("DXRLoadouts random leg aug");
+    i = rng(100);
+    if(i<33) AddStartAug(15, class'AugOnlySpeed');
+    else if(i<67) AddStartAug(15, class'AugJump');
+    else AddStartAug(15, class'AugStealth');
     //#endregion
 /////////////////////////////////////////////////////////////////
 
