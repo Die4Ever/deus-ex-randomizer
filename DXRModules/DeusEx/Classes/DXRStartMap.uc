@@ -938,7 +938,7 @@ function class<DeusExWeapon> ChooseRandomWeapon(#var(PlayerPawn) player)
     return weap;
 }
 
-function AddRandomCrateContent(#var(PlayerPawn) player, InfiniteCrate crate)
+function AddRandomCrateContent(#var(PlayerPawn) player, DXRInfiniteCrate crate)
 {
     local CrateContentOption cco, expandedOptions[64];
     local int i, j, numExpandedOptions;
@@ -964,8 +964,9 @@ function AddRandomCrateContent(#var(PlayerPawn) player, InfiniteCrate crate)
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
-    local InfiniteCrate waltonCrate;
+    local DXRInfiniteCrate waltonCrate;
     local CrateContentOption cco;
+    local int numAugUpgrades, i;
 
     if (flagbase.GetInt('Rando_newgameplus_loops') > 0) {
         waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
@@ -976,8 +977,14 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         ));
 
         waltonCrate.AddContent(class'BioelectricCell', 1);
-        AddRandomCrateContent(player, waltonCrate);
-        AddRandomCrateContent(player, waltonCrate);
+        numAugUpgrades = GetStartMapAugBonus(dxr);
+        for (i = 0; i < numAugUpgrades; i++) {
+            waltonCrate.AddContent(class'AugmentationUpgradeCannister', 1);
+        }
+        waltonCrate.AddContent(class'Credits', GetStartMapCreditsBonus(dxr));
+        waltonCrate.AddContent(class'DXRSkillPointsDataCube', GetStartMapSkillBonus(dxr.flags.settings.starting_map));
+        // AddRandomCrateContent(player, waltonCrate);
+        // AddRandomCrateContent(player, waltonCrate);
     }
 
     switch(start_flag) {
@@ -1459,22 +1466,34 @@ static function int _ChooseRandomStartMap(DXRBase m)
     return 0; //Fall back on Liberty Island
 }
 
+static function int GetStartMapCreditsBonus(DXRando dxr)
+{
+    local int startMapMission, numCredits, i;
+
+    startMapMission = GetStartMapMission(dxr.flags.settings.starting_map);
+    for(i = 0; i < startMapMission; i++) {
+        numCredits += 100 + dxr.rng(100);
+    }
+
+    return numCredits;
+}
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
-    local int i;
-    for(i=0;i<GetStartMapMission(dxr.flags.settings.starting_map);i++){
-        p.Credits += 100 + dxr.rng(100);
-    }
+    p.Credits += GetStartMapCreditsBonus(dxr);
+}
+
+static function int GetStartMapAugBonus(DXRando dxr)
+{
+    return GetStartMapMission(dxr.flags.settings.starting_map) * 0.4;
 }
 
 static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
 {
-    local int i, startMission, numAugs;
+    local int i, numAugs;
 
     if (dxr.flags.settings.starting_map !=0 ){
-        startMission=GetStartMapMission(dxr.flags.settings.starting_map);
-        numAugs = startMission * 0.4;
+        numAugs = GetStartMapAugBonus(dxr);
         class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
 
         for (i=0; i<numAugs; i++){

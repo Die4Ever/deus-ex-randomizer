@@ -1,7 +1,7 @@
-class WaltonWareCrate extends InfiniteCrate;
+class WaltonWareCrate extends DXRInfiniteCrate;
 
 defaultproperties
 {
-     ItemName="Walton's' Care Package"
+     ItemName="Walton's Care Package"
      Skin=Texture'WaltonWareCrate'
 }

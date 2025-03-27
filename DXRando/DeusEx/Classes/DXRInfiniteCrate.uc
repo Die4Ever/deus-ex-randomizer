@@ -1,33 +1,28 @@
-class InfiniteCrate extends Containers;
+class DXRInfiniteCrate extends Containers;
 
-var InfiniteCrateContent icContents;
+var DXRInfiniteCrateContent icContents;
 
-function bool AddContent(class<Inventory> type, int numCopies)
+function bool AddContent(class<Actor> type, int numCopies)
 {
-    local InfiniteCrateContent icc;
+    local DXRInfiniteCrateContent icc;
 
-    if (icContents == None) {
-        icContents = Spawn(class'InfiniteCrateContent');
-        icContents.type = type;
-        icContents.numCopies = numCopies;
-    } else {
-        for (icc = icContents; icc.next != None; icc = icc.next);
-        icc.next = Spawn(class'InfiniteCrateContent');
-        icc.next.type = type;
-        icc.next.numCopies = numCopies;
-    }
+    icc = Spawn(class'DXRInfiniteCrateContent');
+    icc.type = type;
+    icc.numCopies = numCopies;
+    icc.next = icContents;
+    icContents = icc;
 
-    log("InfiniteCrate added " $ numCopies $ " " $ type);
+    log("DXRInfiniteCrate added " $ numCopies $ " " $ type);
 
     return true;
 }
 
 function Destroyed()
 {
-    local InfiniteCrateContent icc, iccPrev;
+    local DXRInfiniteCrateContent icc, iccPrev;
 	local Rotator rot;
 	local Vector loc;
-    local Inventory dropped;
+    local Actor dropped;
 
     icc = icContents;
     while (icc != None) {
@@ -37,7 +32,12 @@ function Destroyed()
         rot.Yaw = Rand(65535);
         dropped = Spawn(icc.type,,, loc, rot);
         if (dropped != None) {
-            if (Pickup(dropped) != None) {
+            if (Credits(dropped) != None) {
+                Credits(dropped).numCredits = icc.NumCopies;
+            } else if (DXRSkillPointsDataCube(dropped) != None) {
+                DXRSkillPointsDataCube(dropped).NumSkillPoints = icc.NumCopies;
+                class'DXRActorsBase'.static.GlowUp(dropped);
+            } else if (Pickup(dropped) != None) {
                 Pickup(dropped).NumCopies = icc.NumCopies;
             }
             dropped.RemoteRole = ROLE_DumbProxy;
