@@ -53,3 +53,6 @@ class DXRandoImageTextures extends Object abstract;
 
 #exec TEXTURE IMPORT FILE="Textures\BlankWoodenCrate.pcx"                   NAME="BlankWoodenCrate"                 GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\WaltonWareCrate.pcx"                    NAME="WaltonWareCrate"                  GROUP="DXRandoImages"
+
+#exec TEXTURE IMPORT FILE="Textures\AugIconJumpOnly.pcx"                    NAME="AugIconJumpOnly"                  GROUP="DXRandoImages" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconJumpOnly_Small.pcx"              NAME="AugIconJumpOnly_Small"            GROUP="DXRandoImages" MIPS=Off

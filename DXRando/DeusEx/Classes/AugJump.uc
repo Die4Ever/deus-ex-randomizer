@@ -67,8 +67,8 @@ defaultproperties
     Level5Value=1.8
     EnergyRate=30
 
-    Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
-    smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
+    Icon=Texture'AugIconJumpOnly'
+    smallIcon=Texture'AugIconJumpOnly_Small'
     AugmentationName="Jump Enhancement"
     Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the height they can jump, and reducing the damage they receive from falls.|n|nTECH ONE: Jumping is increased slightly, while falling damage is reduced.|n|nTECH TWO: Jumping is increased moderately, while falling damage is further reduced.|n|nTECH THREE: Jumping is increased significantly, while falling damage is substantially reduced.|n|nTECH FOUR: An agent can leap from the tallest building."
     MPInfo="When active, you jump higher.  Energy Drain: Very High"
