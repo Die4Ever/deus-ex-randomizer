@@ -4,6 +4,7 @@ class AugNinja extends Augmentation;
 
 #ifndef injections
 var float Level5Value; // does nothing outside of vanilla, just a placeholder
+var float activationCost;
 simulated function float GetAugLevelValue()
 {
     return LevelValues[CurrentLevel];
@@ -89,6 +90,7 @@ defaultproperties
     LevelValues(2)=1.6
     LevelValues(3)=1.7
     Level5Value=1.8
+    activationCost=1
     AugmentationLocation=LOC_Leg
     MPConflictSlot=5
 }

@@ -1,5 +1,14 @@
 class AugOnlySpeed extends Augmentation;
 
+#ifndef injections
+var float Level5Value; // does nothing outside of vanilla, just a placeholder
+var float activationCost;
+simulated function float GetAugLevelValue()
+{
+    return LevelValues[CurrentLevel];
+}
+#endif
+
 state Active
 {
 Begin:

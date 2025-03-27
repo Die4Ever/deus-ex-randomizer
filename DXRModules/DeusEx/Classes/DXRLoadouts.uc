@@ -329,8 +329,22 @@ function CheckConfig()
     AddRandomAug(14); //and get a random aug to start
     //#endregion
 /////////////////////////////////////////////////////////////////
+    //#region The Three Leg Augs, might work on other mods if we move the files
+    AddLoadoutName(15, "The Three Leg Augs");
+    AddAugBan(15, class'#var(prefix)AugSpeed');
+    BanRandomAug(14); // set bans before adding new augs
+    BanRandomAug(14);
+    BanRandomAug(14);
+    BanRandomAug(14);
+    BanRandomAug(14);
+    BanRandomAug(14);
 
+    AddAugAllow(15, class'AugStealth');
+    AddAugAllow(15, class'AugOnlySpeed');
+    AddAugAllow(15, class'AugJump');
+    AddAugAllow(15, class'AugOnlySpeed');
     //#endregion
+/////////////////////////////////////////////////////////////////
 
     //#region Rand Start Items
     //Random items that can be given at game start
@@ -462,6 +476,46 @@ function AddAugAllow(int s, class<Augmentation> aug)
             item_sets[s].allow_augs[i] = aug;
             return;
         }
+    }
+}
+
+function CreateAugmentations(#var(PlayerPawn) p)
+{ // needed for pulling augmentation descriptions
+    local int i;
+
+    for(i=0; i < ArrayCount(item_sets[loadout].allow_augs); i++) {
+        if( item_sets[loadout].allow_augs[i] == None ) continue;
+        CreateAugmentation(p, item_sets[loadout].allow_augs[i]);
+    }
+}
+
+function CreateAugmentation(DeusExPlayer player, class<Augmentation> AddAug)
+{
+    local int augIndex;
+    local Augmentation anAug;
+    local Augmentation LastAug;
+    local AugmentationManager augman;
+
+    augman = player.AugmentationSystem;
+    for(LastAug = augman.FirstAug; LastAug.next != None; LastAug = LastAug.next) {
+        if(LastAug.class == AddAug) return;
+    }
+
+    anAug = Spawn(AddAug, augman);
+    anAug.Player = player;
+
+    if (anAug != None)
+    {
+        if (augman.FirstAug == None)
+        {
+            augman.FirstAug = anAug;
+        }
+        else
+        {
+            LastAug.next = anAug;
+        }
+
+        LastAug  = anAug;
     }
 }
 
@@ -789,6 +843,7 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     Super.PlayerLogin(p);
 
     RandoStartingEquipment(p, false);
+    CreateAugmentations(p);
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)
@@ -821,6 +876,12 @@ function bool IsAugBanned(class<Augmentation> a)
 
     //Otherwise rely on aug ban/allow rules per loadout
     return is_aug_banned(loadout,a);
+}
+
+function class<Augmentation> GetExtraAug(int i)
+{ // we add augs to the AugmentationManager, but not its default list
+    if(i >= ArrayCount(item_sets[loadout].allow_augs)) return None;
+    return item_sets[loadout].allow_augs[i];
 }
 
 //#region Starting Equipmt
