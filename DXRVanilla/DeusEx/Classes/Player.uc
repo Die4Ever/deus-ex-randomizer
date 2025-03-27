@@ -543,6 +543,7 @@ function Landed(vector HitNormal)
     local float augReduce, dmg, softener;
 
     softener = RunSilentValue/4 + 0.75;
+    if(class'MenuChoice_BalanceAugs'.static.IsDisabled()) softener = 1;
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);
     if (Velocity.Z < -1.4 * JumpZ)
