@@ -34,6 +34,13 @@ function Reset()
     }
 }
 
+function Deactivate()
+{
+    Super.Deactivate();
+
+    Player.JumpZ = Player.Default.JumpZ;
+}
+
 function UpdateBalance()
 {
     local int i;
