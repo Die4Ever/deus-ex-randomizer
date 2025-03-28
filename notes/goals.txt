@@ -400,7 +400,7 @@ M_09_Mission09_Infolink.ext:
 
   200
   201: [GOAL: GetIntoSubPen (Primary)]
-  202  Enter Main building on north side of Dockyard.  There may be more than one entry point.
+  202  Enter Main building on north side of Dockyard. There may be more than one entry point.
   203
   204: [GOAL: GetAmmo]
   205  Find Ammo Storage warehouse and raid ammo bunkers for more LAMs or Rockets.
