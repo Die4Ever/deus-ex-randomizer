@@ -345,6 +345,7 @@ function PostFirstEntryMapFixes()
 {
     local RetinalScanner r;
     local bool VanillaMaps;
+    local UNATCOTroop troop;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -367,6 +368,23 @@ function PostFirstEntryMapFixes()
                 r.msgUsed = "Access De-/.&*% g r a n t e d";
             }
         }
+
+        if (class'DXRMapVariants'.static.IsVanillaMaps(player()) && class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
+            foreach AllActors(class'UNATCOTroop', troop) {
+                if (troop.FamiliarName == "Scott") {
+                    if (troop.name == 'UNATCOTroop4') {
+                        // so he doesn't remain "UNATCO Trooper" forever, even with memes turned on
+                        // this is the Scott that is ordinarily in the room by the entrance retinal scanner
+                        troop.UnfamiliarName = "Scott";
+                    } else {
+                        // some other character named Scott for some reason, though you'd never see it
+                        troop.FamiliarName = class'DXRNames'.static.RandomName(dxr);
+                        troop.UnfamiliarName = troop.FamiliarName;
+                    }
+                }
+            }
+        }
+
         break;
 
     case "05_NYC_UNATCOMJ12LAB":
