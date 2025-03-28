@@ -332,12 +332,12 @@ function CheckConfig()
     //#region The Three Leg Augs
     AddLoadoutName(15, "The Three Leg Augs");
     AddAugBan(15, class'#var(prefix)AugSpeed');
-    BanRandomAug(14); // set bans before adding new augs, focus on the new leg augs
-    BanRandomAug(14);
-    BanRandomAug(14);
-    BanRandomAug(14);
-    BanRandomAug(14);
-    BanRandomAug(14);
+    BanRandomAug(15); // set bans before adding new augs, focus on the new leg augs
+    BanRandomAug(15);
+    BanRandomAug(15);
+    BanRandomAug(15);
+    BanRandomAug(15);
+    BanRandomAug(15);
 
     AddAugAllow(15, class'AugStealth');
     AddAugAllow(15, class'AugOnlySpeed');
