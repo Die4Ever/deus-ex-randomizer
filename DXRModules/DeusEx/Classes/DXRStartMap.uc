@@ -13,9 +13,6 @@ struct CrateContentOption
     var int weight;
 };
 
-var CrateContentOption CrateOptions[6];
-var class<DeusExWeapon> WeaponOptions[21];
-
 function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
@@ -859,132 +856,27 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 }
 
-function bool _HasAmmoType(class<Ammo> type, class<Ammo> ammoTypes[32])
-{
-    local int i;
-
-    for (i = 0; i < ArrayCount(ammoTypes) && ammoTypes[i] != None; i++) {
-        if (type == ammoTypes[i]) {
-            return true;
-        }
-    }
-    return false;
-}
-
-// choose a random ammo type from the weapons in player's inventory
-function class<Ammo> ChooseRandomAmmo(#var(PlayerPawn) player)
-{
-    local class<Ammo> ammoTypes[32]; // probably high enough for mods that add new ammo types
-    local Inventory inv;
-    local class<DeusExWeapon> weap;
-    local int numAmmoTypes;
-    local bool bFoundAmmo;
-    local string tooManyErrString;
-    local int i;
-
-    tooManyErrString = "Your mods add too many ammo types for WaltonWare care packages to handle.  Report this to the devs!";
-
-    for (inv = player.Inventory; inv != None; inv = inv.Inventory) {
-        if (IsGrenade(inv.class)) {
-            continue;
-        }
-
-        if (DeusExWeapon(inv) != None) {
-            weap = class<DeusExWeapon>(inv.class);
-            if (weap.default.AmmoName == None || weap.default.AmmoName == class'AmmoNone') {
-                continue;
-            }
-
-            bFoundAmmo = false;
-            for (i = 0; i < ArrayCount(weap.default.AmmoNames); i++) {
-                if (weap.default.AmmoNames[i] == None || weap.default.AmmoNames[i] == class'AmmoNone') {
-                    continue;
-                }
-
-                bFoundAmmo = true;
-                if (!_HasAmmoType(weap.default.AmmoNames[i], ammoTypes)) {
-                    if (numAmmoTypes == ArrayCount(ammoTypes)) {
-                        player.ClientMessage(tooManyErrString);
-                        break;
-                    }
-
-                    log("Adding " $ weap.default.AmmoNames[i] $ " to the list of ammo choices");
-                    ammoTypes[numAmmoTypes++] = weap.default.AmmoNames[i];
-                }
-            }
-            if (!bFoundAmmo && !_HasAmmoType(weap.default.AmmoName, ammoTypes)) {
-                if (numAmmoTypes == ArrayCount(ammoTypes)) {
-                    player.ClientMessage(tooManyErrString);
-                    break;
-                }
-
-                log("Adding " $ weap.default.AmmoName $ " to the list of ammo choices");
-                ammoTypes[numAmmoTypes++] = weap.default.AmmoName;
-            }
-        }
-    }
-
-    return ammoTypes[rng(numAmmoTypes)];
-}
-
-function class<DeusExWeapon> ChooseRandomWeapon(#var(PlayerPawn) player)
-{
-    local class<DeusExWeapon> weap;
-
-    do {
-        weap = WeaponOptions[rng(ArrayCount(WeaponOptions))];
-    } until (player.FindInventoryType(weap) == None); // O(inf)
-
-    return weap;
-}
-
-function AddRandomCrateContent(#var(PlayerPawn) player, DXRInfiniteCrate crate)
-{
-    local CrateContentOption cco, expandedOptions[64];
-    local int i, j, numExpandedOptions;
-
-    for (i = 0; i < ArrayCount(CrateOptions); i++) {
-        for (j = 0; j < CrateOptions[i].weight; j++) {
-            expandedOptions[numExpandedOptions++] = CrateOptions[i];
-        }
-    }
-    log("Number of expanded crate options: " $ numExpandedOptions);
-
-    cco = expandedOptions[rng(numExpandedOptions)];
-
-    if (cco.type == class'Ammo') {
-        crate.AddContent(ChooseRandomAmmo(player), cco.numCopies);
-    } else if (cco.type == class'Weapon') {
-        crate.AddContent(ChooseRandomWeapon(player), cco.numCopies);
-    } else {
-        crate.AddContent(cco.type, cco.numCopies);
-    }
-}
-
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
-    local DXRInfiniteCrate waltonCrate;
-    local CrateContentOption cco;
-    local int numAugUpgrades, i;
+    local WaltonWareCrate waltonCrate;
+    local SkillAwardTrigger sat;
+    local int numAugUpgrades;
 
-    if (flagbase.GetInt('Rando_newgameplus_loops') > 0) {
+    if (flagbase.GetInt('Rando_newgameplus_loops') > 0) { // make a WaltonWareCrate
         waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
             player,
             class'WaltonWareCrate',
             80.0,
-            MakeRotator(0, (2048 - rng(4096)), 0)
+            MakeRotator(0, (2047 - rng(4095)), 0)
         ));
 
         waltonCrate.AddContent(class'BioelectricCell', 1);
-        numAugUpgrades = GetStartMapAugBonus(dxr);
-        for (i = 0; i < numAugUpgrades; i++) {
+        for (numAugUpgrades = GetStartMapAugBonus(dxr); numAugUpgrades > 0; numAugUpgrades--) {
             waltonCrate.AddContent(class'AugmentationUpgradeCannister', 1);
         }
         waltonCrate.AddContent(class'Credits', GetStartMapCreditsBonus(dxr));
-        waltonCrate.AddContent(class'DXRSkillPointsDataCube', GetStartMapSkillBonus(dxr.flags.settings.starting_map));
-        // AddRandomCrateContent(player, waltonCrate);
-        // AddRandomCrateContent(player, waltonCrate);
+        waltonCrate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
     }
 
     switch(start_flag) {
@@ -1515,36 +1407,4 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
     //These starting points are free, so don't count them towards your score
     //p.SkillPointsTotal += startBonus;
-}
-
-// make sure to adjust the size of array when changing options!
-defaultproperties
-{
-    CrateOptions(0)=(type=class'MedKit',numCopies=1,weight=2)
-    CrateOptions(1)=(type=class'BioelectricCell',numCopies=1,weight=2)
-    CrateOptions(2)=(type=class'Lockpick',numCopies=1,weight=2)
-    CrateOptions(3)=(type=class'Multitool',numCopies=1,weight=2)
-    CrateOptions(4)=(type=class'Ammo',numCopies=1,weight=6)
-    CrateOptions(5)=(type=class'Weapon',numCopies=1,weight=1)
-    WeaponOptions(0)=class'WeaponSword';
-    WeaponOptions(1)=class'WeaponNanoSword';
-    WeaponOptions(2)=class'WeaponShuriken';
-    WeaponOptions(3)=class'WeaponPistol';
-    WeaponOptions(4)=class'WeaponStealthPistol';
-    WeaponOptions(5)=class'WeaponMiniCrossbow';
-    WeaponOptions(6)=class'WeaponHideAGun';
-    WeaponOptions(7)=class'WeaponAssaultGun';
-    WeaponOptions(8)=class'WeaponRifle';
-    WeaponOptions(9)=class'WeaponAssaultShotgun';
-    WeaponOptions(10)=class'WeaponSawedOffShotgun';
-    WeaponOptions(11)=class'WeaponGEPGun';
-    WeaponOptions(12)=class'WeaponFlamethrower';
-    WeaponOptions(13)=class'WeaponPlasmaRifle';
-    WeaponOptions(14)=class'WeaponLAW';
-    WeaponOptions(15)=class'WeaponEMPGrenade';
-    WeaponOptions(16)=class'WeaponGasGrenade';
-    WeaponOptions(17)=class'WeaponNanoVirusGrenade';
-    WeaponOptions(18)=class'WeaponLAM';
-    WeaponOptions(19)=class'WeaponPepperGun';
-    WeaponOptions(20)=class'WeaponProd';
 }
