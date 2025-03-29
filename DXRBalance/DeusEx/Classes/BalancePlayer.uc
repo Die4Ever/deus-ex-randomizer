@@ -306,7 +306,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 function float CombatDifficultyMultEnviro()
 {
-    return (CombatDifficulty*0.25) + 0.75;// 25% wet / 75% dry
+    return (CombatDifficulty*0.2) + 0.8;// 20% wet / 80% dry
 }
 
 function float GetDamageMultiplier()
