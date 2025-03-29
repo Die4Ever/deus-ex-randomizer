@@ -56,9 +56,9 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
         msg = msg $ " (max " $ chargeAmount $ ")";
 
     if (uses == 0) {
-        msg = msg $ ". No charges left.";
+        msg = msg $ ".  No charges left.";
     } else {
-        msg = msg $ ". " $ chargeRefreshTime $ "s until recharged. ";
+        msg = msg $ ".  " $ chargeRefreshTime $ "s until recharged.  ";
         if (uses == 1)
             msg = msg $ "1 charge left.";
         else if (uses > 0)

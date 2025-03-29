@@ -1124,7 +1124,7 @@
   {
     "missionNumber": 9,
     "goalName": "GetIntoSubPen",
-    "goalText": "Enter Main building on north side of Dockyard. There may be more than one entry point.",
+    "goalText": "Enter Main building on north side of Dockyard.  There may be more than one entry point.",
     "bPrimaryGoal": true,
     "label": "",
     "conName": "DL_Insertion",

@@ -9,7 +9,7 @@ static function bool IsEnabled(DXRFlags f)
 
 defaultproperties
 {
-    HelpText="Should New Game+ be enabled by default? Also adjustable inside Advanced settings via New Game+ Scaling %."
+    HelpText="Should New Game+ be enabled by default?  Also adjustable inside Advanced settings via New Game+ Scaling %."
     actionText="New Game+"
     enumText(0)="Disabled"
     enumText(2)="Enabled"
