@@ -59,3 +59,6 @@ class DXRandoImageTextures extends Object abstract;
 
 #exec TEXTURE IMPORT FILE="Textures\AugIconSpeedOnly.pcx"                   NAME="AugIconSpeedOnly"                 GROUP="DXRandoImages" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconSpeedOnly_Small.pcx"             NAME="AugIconSpeedOnly_Small"           GROUP="DXRandoImages" MIPS=Off
+
+#exec TEXTURE IMPORT FILE="Textures\AugIconNinjaNaruto.pcx"                 NAME="AugIconNinja"                     GROUP="DXRandoImages" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconNinjaNaruto_Small.pcx"           NAME="AugIconNinja_Small"               GROUP="DXRandoImages" MIPS=Off

@@ -80,8 +80,8 @@ function Deactivate()
 defaultproperties
 {
     EnergyRate=40.000000
-    Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
-    smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
+    Icon=Texture'AugIconNinja'
+    smallIcon=Texture'AugIconNinja_Small'
     AugmentationName="Ninja"
     Description="I AM NINJA!"
     MPInfo="I AM NINJA!"
