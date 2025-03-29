@@ -30,16 +30,44 @@ function SetNetworkTerminal(#var(prefix)NetworkTerminal newTerm)
 //to try again if you mistype a password or something (or the ATM in
 //the Paris metro station where the password is incomplete...).  Reset
 //the cursor in the password box after failed login.
+//(Copied vanilla function, but don't clear the account field)
 function ProcessLogin()
 {
-    local string acctNum;
+    local bool bSuccessfulLogin;
+    local int  accountIndex;
+    local int  userIndex;
 
-    acctNum=editAccount.GetText();
-    Super.ProcessLogin();
-    if (winLoginError.GetText()==InvalidLoginMessage){
-        //If the login succeeds, this ends up populating the
-        //withdraw field with the account number
-        editAccount.SetText(acctNum);
+    bSuccessfulLogin = False;
+
+    for (accountIndex=0; accountIndex<atmOwner.NumUsers(); accountIndex++)
+    {
+        if (Caps(editAccount.GetText()) == atmOwner.GetAccountNumber(accountIndex))
+        {
+            userIndex = accountIndex;
+            break;
+        }
+    }
+
+    if (userIndex != -1)
+    {
+        if (Caps(editPIN.GetText()) == atmOwner.GetPIN(userIndex))
+            bSuccessfulLogin = True;
+    }
+
+    if (bSuccessfulLogin)
+    {
+        winTerm.SetLoginInfo("", userIndex);
+        CloseScreen("LOGIN");
+    }
+    else
+    {
+        // Print a message about invalid login
+        winLoginError.SetText(InvalidLoginMessage);
+
+        // Clear PIN field and focus on it
+        //editAccount.SetText("");
+        editPIN.SetText("");
         SetFocusWindow(editPIN);
     }
 }
+
