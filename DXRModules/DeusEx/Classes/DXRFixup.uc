@@ -223,7 +223,9 @@ function PreFirstEntry()
     foreach AllActors(class'#var(prefix)Lamp', lmp) {
         lmp.InitLight();
     }
-    SetAllLampsState(true, true, true);
+    if (class'MenuChoice_AutoLamps'.static.IsEnabled()) {
+        SetAllLampsState(true, true, true);
+    }
 #endif
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
