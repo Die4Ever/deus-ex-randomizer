@@ -601,6 +601,9 @@ exec function ActivateAugADS() { ActivateAugByName("AugDefense"); }
 //exec function ActivateAugInfolink() { ActivateAugByName("AugDatalink"); }  //Obviously not
 exec function ActivateAugSynthHeart() { ActivateAugByName("AugHeartLung"); }
 //exec function ActivateAugPowerRecirc() { ActivateAugByName("AugPower"); } //Fully passive
+exec function ActivateAugOnlySpeed() { ActivateAugByName("AugOnlySpeed"); }
+exec function ActivateAugJump() { ActivateAugByName("AugJump"); }
+exec function ActivateAugNinja() { ActivateAugByName("AugNinja"); }
 
 function CreateDrone()
 {
