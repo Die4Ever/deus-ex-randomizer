@@ -7,6 +7,7 @@ class DXRAugDisplayWindow injects AugmentationDisplayWindow;
 
 var transient bool d3d11;// d3d11 drawing the viewport of targeting aug fills the entire screen, just disable that
 var bool bThermalVision;
+var bool bMotionSensor;
 
 function ConfigurationChanged()
 {
@@ -121,6 +122,9 @@ function bool ShouldDrawActor(Actor A)
 
     if(bThermalVision && activeCount==1) {
         return IsHeatSource(A);
+    }
+    if(bMotionSensor) {
+        return !A.bHidden && A != Player && VSize(A.Velocity)>1;
     }
 
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
