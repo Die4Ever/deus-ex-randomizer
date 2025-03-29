@@ -360,6 +360,25 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[0] = "One";
     _StupidQuestions[numStupidQuestions].answers[1] = "Two";
     numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Is a loveseat a small couch or a big chair?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Big Chair";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Small Couch";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "If a dog wore pants, would it wear them on all four legs, or just the hind legs?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Hind Legs";
+    _StupidQuestions[numStupidQuestions].answers[1] = "All Legs";
+    numStupidQuestions++;
+
+    _StupidQuestions[numStupidQuestions].Question = "Skill Testing Question|n|n(16 x 5) - (12 / 4)";
+    _StupidQuestions[numStupidQuestions].numAnswers = 3;
+    _StupidQuestions[numStupidQuestions].answers[0] = "77";
+    _StupidQuestions[numStupidQuestions].answers[1] = "80";
+    _StupidQuestions[numStupidQuestions].answers[2] = "83";
+    numStupidQuestions++;
 }
 
 
@@ -402,6 +421,21 @@ function AddDXRCredits(CreditsWindow cw)
     }
 }
 
+function RunTests()
+{
+    local int i,j,count;
+    Super.RunTests();
+
+    test(numStupidQuestions <= arrayCount(_StupidQuestions), "numStupidQuestions within bounds");
+
+    for(i=0; i<numStupidQuestions; i++) {
+        count=0;
+        for (j=0;j<ArrayCount(_StupidQuestions[i].answers);j++){
+            if (_StupidQuestions[i].answers[j]!=""){ count++; }
+        }
+        test(count==_StupidQuestions[i].numAnswers, "_StupidQuestions["$i$"] ("$_StupidQuestions[i].question$") numAnswers matches actual answers");
+    }
+}
 
 function ExtendedTests()
 {
