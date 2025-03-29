@@ -101,6 +101,12 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            //Make the triggers for rescuing the hostages bigger, so they can't miss them
+            foreach AllActors(class'FlagTrigger',ft){
+                if (ft.Event!='hostagelogictrigger') continue;
+                ft.SetCollisionSize(500,40); //Originally radius 96
+            }
+
             class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
         } else {
