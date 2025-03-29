@@ -4,7 +4,7 @@ class AugVisionShort extends AugVision;
 defaultproperties
 {
     LevelValues(0)=128
-    maxLevel=1
+    maxLevel=0
     energyRate=0
     AugmentationName="Vision Enhancement"
     Description="Close range, low power, sonar-resonance imaging."

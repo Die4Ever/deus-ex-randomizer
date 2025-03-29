@@ -21,7 +21,7 @@ simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
 defaultproperties
 {
     LevelValues(0)=240
-    maxLevel=1
+    maxLevel=0
     energyRate=0
     AugmentationName="Infravision"
     Description="Infravision allows an agent to see people, robots, and computers through walls."

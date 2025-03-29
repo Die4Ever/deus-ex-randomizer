@@ -4,6 +4,7 @@ class AugJump extends Augmentation;
 var float Level5Value; // does nothing outside of vanilla, just a placeholder
 simulated function float GetAugLevelValue()
 {
+    if(!bIsActive) return -1;
     return LevelValues[CurrentLevel];
 }
 #endif
