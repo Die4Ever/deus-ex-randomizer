@@ -240,7 +240,7 @@ function DrawActor(GC gc, Actor A, vector loc)
     {
         //DEUS_EX AMSD In multiplayer, if looking at a cloaked enemy player within range (greater than see through walls)
         //(If within walls radius he'd already have been seen.
-        if (dist <= visionLevelvalue && LOS)
+        if (dist <= visionLevelvalue && bLOS)
         {
             VisionTargetStatus = GetVisionTargetStatus(A);
             _DrawActor(gc, A, DrawGlow);
