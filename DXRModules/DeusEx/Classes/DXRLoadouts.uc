@@ -93,7 +93,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     case 0:
         name = "All Items Allowed";
         if(get_name) return name;
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddInvBan(class'#var(prefix)WeaponGEPGun');
         AddInvBan(class'#var(prefix)AmmoRocket');
         AddInvBan(class'#var(prefix)AmmoRocketWP');
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -224,7 +224,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         NeverBanSkill(class'#var(prefix)SkillWeaponLowTech');
         AddInvAllow(class'#var(prefix)WeaponCrowbar');
         AddStartInv(class'#var(prefix)WeaponCrowbar');
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -259,7 +259,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponNanoVirusGrenade',50);
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',50);
         AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -271,7 +271,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddInvBan(class'#var(prefix)WeaponPistol');
         AddInvBan(class'#var(prefix)WeaponStealthPistol');
         AddInvBan(class'#var(prefix)Ammo10mm');
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("No Swords");
         AddInvBan(class'#var(prefix)WeaponSword');
         AddInvBan(class'#var(prefix)WeaponNanoSword');
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -358,7 +358,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)AmmoRocket',100);
         AddItemSpawn(class'#var(prefix)AmmoRocketWP',100);
         AddItemSpawn(class'#var(prefix)Ammo20mm',100);
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -381,7 +381,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddInvBan(class'#var(prefix)WineBottle');
         AddInvBan(class'#var(prefix)Cigarettes');
         AddInvBan(class'#var(prefix)VialCrack');
-        AddStartAug(class'#var(prefix)AugSpeed');
+        AddStandardAugSet();
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -414,8 +414,25 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
+    //#region Speedrun
+    case 16:
+        name = "Speedrun";
+        if(get_name) return name;
+        AddStartAug(class'#var(prefix)AugSpeed');
+        return name;
+    //#endregion
+/////////////////////////////////////////////////////////////////
     }
     return "";
+}
+
+function AddStandardAugSet()
+{
+    AddStartAug(class'AugOnlySpeed');
+    AddAugAllow(class'AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
+    AddAugAllow(class'AugOnlySpeed');
+    AddAugAllow(class'AugJump');
+    AddAugAllow(class'#var(prefix)AugSpeed');
 }
 
 //#region Struct Setup

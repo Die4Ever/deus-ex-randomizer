@@ -151,7 +151,8 @@ function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50
 {
     local DXRLoadouts loadouts;
     local class<Augmentation> a;
-    local int i;
+    local int i, k;
+    local bool exists;
 
     numAugs = 0;
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
@@ -174,6 +175,14 @@ function static _DefaultAugsMask(DXRando dxr, out class<Augmentation> allowed[50
         for(i=0; true; i++) {
             a = loadouts.GetExtraAug(i);
             if(a==None) break;
+            exists = false;
+            for(k=0; k<numAugs; k++) {
+                if(allowed[k] == a) {
+                    exists = true;
+                    break;
+                }
+            }
+            if(exists) continue;
             allowed[numAugs++] = a;
         }
     }
@@ -681,7 +690,7 @@ function ExtendedTests()
 
     a = Spawn(class'#var(prefix)AugmentationCannister');
     SetSeed( self );
-    for(i=0;i<50;i++) {
+    for(i=0;i<100;i++) {
         RandomizeAugCannister(dxr, a);
         test( a.AddAugs[0] != '', "a.AddAugs[0] == "$a.AddAugs[0] );
         test( a.AddAugs[1] != '', "a.AddAugs[1] == "$a.AddAugs[1] );
