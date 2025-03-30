@@ -408,9 +408,9 @@ function string LoadoutInfo(int loadout, optional bool get_name)
 
         SetGlobalSeed("DXRLoadouts random leg aug");
         switch(rng(3)) {
-            case 0: AddStartAug(class'AugOnlySpeed');
-            case 1: AddStartAug(class'AugJump');
-            case 2: AddStartAug(class'AugStealth');
+        case 0: AddStartAug(class'AugOnlySpeed'); break;
+        case 1: AddStartAug(class'AugJump'); break;
+        case 2: AddStartAug(class'AugStealth'); break;
         }
         return name;
     //#endregion
@@ -436,9 +436,9 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddAugAllow(class'AugMotionSensor');
         SetGlobalSeed("DXRLoadouts my vision is augmented");
         switch(rng(3)) {
-            case 0: AddStartAug(class'AugVisionShort');
-            case 1: AddStartAug(class'AugInfraVision');
-            case 2: AddStartAug(class'AugMotionSensor');
+        case 0: AddStartAug(class'AugVisionShort'); break;
+        case 1: AddStartAug(class'AugInfraVision'); break;
+        case 2: AddStartAug(class'AugMotionSensor'); break;
         }
         return name;
     #endif
