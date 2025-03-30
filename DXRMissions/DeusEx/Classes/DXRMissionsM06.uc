@@ -5,7 +5,7 @@ var bool M08Briefing;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, dts, dtsloc, gordon, gloc, gloc2;
+    local int goal, loc, dts, dtsloc, dts_vanilla_loc, gordon, gloc, gloc2;
 
     switch(map) {
     case "06_HONGKONG_VERSALIFE":
@@ -60,9 +60,9 @@ function int InitGoals(int mission, string map)
         // street
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Tonnochi Road", GOAL_TYPE2, vect(49.394917, -2455.783447, 47.599495), rot(0, -16384, 0));
         gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Balcony", GOAL_TYPE2, vect(194.915375, -1599.530884, 1711.607910), rot(0, 32768, 0));
-        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
+        dts_vanilla_loc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
+        AddMutualExclusion(gloc, dts_vanilla_loc);
+        AddMutualExclusion(gloc2, dts_vanilla_loc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
         AddMutualExclusion(gloc, dtsloc);
         AddMutualExclusion(gloc2, dtsloc);
@@ -90,7 +90,7 @@ function int InitGoals(int mission, string map)
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Gordon at Market", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
-        AddMutualExclusion(gloc, dtsloc);
+        AddMutualInclusion(gloc, dts_vanilla_loc);
 
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"

@@ -416,7 +416,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
 /////////////////////////////////////////////////////////////////
     //#region Speedrun
     case 16:
-        name = "Speedrun";
+        name = "Speed Enhancement";
         if(get_name) return name;
         AddStartAug(class'#var(prefix)AugSpeed');
         return name;

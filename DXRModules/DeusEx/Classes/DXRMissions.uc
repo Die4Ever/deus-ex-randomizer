@@ -65,7 +65,7 @@ struct Spoiler {
 var Goal goals[32];
 var Spoiler spoilers[32];
 var GoalLocation locations[64];
-var MutualExclusion mutually_exclusive[20];
+var MutualExclusion mutually_exclusive[32];
 var int num_goals, num_locations, num_mututally_exclusives;
 
 var vector rando_start_loc;
@@ -277,10 +277,39 @@ function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataV
 
 function AddMutualExclusion(int L1, int L2)
 {
+    local int i;
+
+    for(i=0; i<num_mututally_exclusives; i++) {
+        if(mutually_exclusive[i].L1 == L1 && mutually_exclusive[i].L2 == L2) {
+            l("AddMutualExclusion: " $ locations[L1].name $ " and "$ locations[L2].name $ " are already mutually exclusive");
+            return;
+        }
+    }
     l("AddMutualExclusion: " $ locations[L1].name $ " and "$ locations[L2].name $ " are mutually exclusive");
     mutually_exclusive[num_mututally_exclusives].L1 = L1;
     mutually_exclusive[num_mututally_exclusives].L2 = L2;
     num_mututally_exclusives++;
+}
+
+function AddMutualInclusion(int L1, int L2)
+{// might be more generally useful with more arguments for allowances, make sure to call after adding all the goal locations
+    local int i, k;
+    local int G1, G2;
+
+    G1 = locations[L1].bitMask & 0xFFFF;
+    G2 = locations[L2].bitMask & 0xFFFF;
+
+    l("AddMutualInclusion: " $ locations[L1].name $ " and " $ locations[L2].name);
+
+    for(i=0; i<num_locations; i++) {
+        if((locations[i].bitMask & G1) != G1) continue;
+        for(k=0; k<num_locations; k++) {
+            if(i == k) continue;
+            if((locations[k].bitMask & G2) != G2) continue;
+            if(i==L1 || k==L2) AddMutualExclusion(i, k);
+        }
+    }
+    l("AddMutualInclusion: end");
 }
 
 function int InitGoalsByMod(int mission, string map)
