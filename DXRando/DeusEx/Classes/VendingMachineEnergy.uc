@@ -1,5 +1,6 @@
 class VendingMachineEnergy extends #var(injectsprefix)VendingMachine;
 
+#ifndef hx
 function class<Pickup> GetSpawnClass()
 {
     return class'EnergyDrinkCan';
@@ -53,10 +54,16 @@ function DoSpawn(actor Frobber, Inventory frobWith)
             player.ClientMessage(msgNoCredits);
     }
 }
+#endif
 
 defaultproperties
 {
+    numUses=5
+#ifdef hx
+    ProductClass=Class'EnergyDrinkCan';
+    cost=5
+#else
     msgDispensed="5 credits deducted from your account"
     msgNoCredits="Costs 5 credits..."
-    numUses=5
+#endif
 }
