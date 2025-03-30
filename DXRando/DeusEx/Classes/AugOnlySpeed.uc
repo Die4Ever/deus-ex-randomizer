@@ -80,7 +80,7 @@ defaultproperties
 
     Icon=Texture'AugIconSpeedOnly'
     smallIcon=Texture'AugIconSpeedOnly_Small'
-    AugmentationName="Speed Enhancement"
+    AugmentationName="Running Enhancement"
     Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the speed at which an agent can run.|n|nTECH ONE: Speed is increased slightly.|n|nTECH TWO: Speed is increased moderately.|n|nTECH THREE: Speed is increased significantly.|n|nTECH FOUR: An agent can run like the wind."
     MPInfo="When active, you run faster.  Energy Drain: Very High"
     AugmentationLocation=LOC_Leg
