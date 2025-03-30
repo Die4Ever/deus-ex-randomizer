@@ -369,7 +369,7 @@ function PostFirstEntryMapFixes()
             }
         }
 
-        if (class'DXRMapVariants'.static.IsVanillaMaps(player()) && class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
+        if (VanillaMaps && class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'UNATCOTroop', troop) {
                 if (troop.FamiliarName == "Scott") {
                     if (troop.name == 'UNATCOTroop4') {
