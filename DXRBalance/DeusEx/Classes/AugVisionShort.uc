@@ -6,6 +6,6 @@ defaultproperties
     LevelValues(0)=128
     maxLevel=0
     energyRate=0
-    AugmentationName="Vision Enhancement"
+    AugmentationName="Short-Range Vision Enhancement"
     Description="Close range, low power, sonar-resonance imaging."
 }

@@ -407,10 +407,11 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddAugAllow(class'AugOnlySpeed');
 
         SetGlobalSeed("DXRLoadouts random leg aug");
-        i = rng(100);
-        if(i<33) AddStartAug(class'AugOnlySpeed');
-        else if(i<67) AddStartAug(class'AugJump');
-        else AddStartAug(class'AugStealth');
+        switch(rng(3)) {
+            case 0: AddStartAug(class'AugOnlySpeed');
+            case 1: AddStartAug(class'AugJump');
+            case 2: AddStartAug(class'AugStealth');
+        }
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -420,6 +421,27 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         if(get_name) return name;
         AddStartAug(class'#var(prefix)AugSpeed');
         return name;
+    //#endregion
+/////////////////////////////////////////////////////////////////
+    //#region Vision
+    #ifdef injections
+    case 17:
+        name = "My Vision Is Augmented";
+        if(get_name) return name;
+        BanRandomAugs(6);
+        AddStandardAugSet();
+        AddAugAllow(class'#var(prefix)AugVision');
+        AddAugAllow(class'AugVisionShort');
+        AddAugAllow(class'AugInfraVision');
+        AddAugAllow(class'AugMotionSensor');
+        SetGlobalSeed("DXRLoadouts my vision is augmented");
+        switch(rng(3)) {
+            case 0: AddStartAug(class'AugVisionShort');
+            case 1: AddStartAug(class'AugInfraVision');
+            case 2: AddStartAug(class'AugMotionSensor');
+        }
+        return name;
+    #endif
     //#endregion
 /////////////////////////////////////////////////////////////////
     }

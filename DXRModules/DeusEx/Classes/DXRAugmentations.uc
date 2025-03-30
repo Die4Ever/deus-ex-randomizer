@@ -366,7 +366,7 @@ simulated function RandoAug(Augmentation a)
     if(a.activationCost >= 1) {
         add_desc = "DXRando: Activating this aug instantly burns " $ int(a.activationCost) $ " energy in order to prevent abuse. ";
     }
-    else if( #var(prefix)AugVision(a) != None  && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+    else if( a.class==class'#var(prefix)AugVision' && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         add_desc = "DXRando: You can see characters, goals, items, datacubes, vehicles, crates, and electronic devices through walls. ";
     }
     else if( #var(prefix)AugLight(a) != None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
@@ -509,7 +509,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         shortDisplay=int(f * 100.0) $ "%";
         return shortDisplay;
     }
-    else if( a.Class == class'#var(prefix)AugVision') {
+    else if(#var(prefix)AugVision(a) != None) { // allow subclasses
         word = "See-through walls distance";
         if(!#defined(balance) && i<2) return "--";
         if(val < 0)
