@@ -56,10 +56,10 @@ defaultproperties
 {
     ItemName="Energy Drink"
     ItemArticle="an"
-    Description="The can is blank except for the phrase 'PRODUCT PLACEMENT HERE.' It is unclear whether this is a name or an invitation."
-    beltDescription="ENRG"
+    Description="Hits the tongue with a sharp burning flavor.  Almost electrical.  Keep yourself at a hundred percent with ENERGY!"
+    beltDescription="ENERGY"
     Mesh=LodMesh'DeusExItems.Sodacan'
-    Skin=Texture'DeusExItems.Skins.SodacanTex2'
+    Skin=Texture'EnergyDrinkTex1'
     maxCopies=10
     bCanHaveMultipleCopies=True
     bActivatable=True
@@ -68,8 +68,8 @@ defaultproperties
     PickupViewMesh=LodMesh'DeusExItems.Sodacan'
     ThirdPersonMesh=LodMesh'DeusExItems.Sodacan'
     LandSound=Sound'DeusExSounds.Generic.MetalHit1'
-    Icon=Texture'DeusExUI.Icons.BeltIconSodaCan'
-    largeIcon=Texture'DeusExUI.Icons.LargeIconSodaCan'
+    Icon=Texture'BeltIconEnergyDrinkCan'
+    largeIcon=Texture'LargeIconEnergyDrinkCan'
     largeIconWidth=24
     largeIconHeight=45
     Mesh=LodMesh'DeusExItems.Sodacan'
