@@ -164,7 +164,7 @@ simulated function RandoSkill(Skill aSkill)
         if (!loadout.allow_skill_ban(dxr.flags.loadout,aSkill.Class)) {
             banned = False;
             l( aSkill.Class.Name $ " not allowed to be banned by loadout");
-        } else if (loadout.is_skill_banned(dxr.flags.loadout,aSkill.Class)){
+        } else if (loadout.is_skill_banned(aSkill.Class)) {
             banned = True;
             l( aSkill.Class.Name $ " banned by loadout");
         }
