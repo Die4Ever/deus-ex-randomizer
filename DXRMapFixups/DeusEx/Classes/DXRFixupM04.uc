@@ -403,7 +403,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'UNATCOTroop', troop) {
                 if (troop.FamiliarName == "Scott") {
                      // this matches the other two friendly times you see him, and keeps his name from getting randomized
-                     // alternatively, we could make him bImportant and his FamiliarName "Scott" in M03 and M04, since you've definitely learned his name by then
+                     // alternatively, we could make him bImportant and his UnfamiliarName "Scott" in M03 and M04, since you've definitely learned his name by then
                     troop.UnfamiliarName = "UNATCO Trooper";
                 }
             }
