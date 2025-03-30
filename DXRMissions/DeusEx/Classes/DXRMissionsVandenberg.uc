@@ -505,4 +505,11 @@ function PreFirstEntryMapFixes()
             sp.SetOrders('Standing');
         }
     }
+    if (!RevisionMaps && dxr.localURL=="12_VANDENBERG_CMD") {
+        if(dxr.flags.IsSpeedrunMode()) {
+            Spawnm(class'VendingMachineEnergy',,, vect(6360, 7975, -3055), rot(0,32762,0));
+        } else {
+            Spawnm(class'VendingMachine',,, vect(6360, 7975, -3055), rot(0,32762,0));
+        }
+    }
 }
