@@ -617,7 +617,7 @@ function AddStartAug(class<Augmentation> aug)
 
     for(i=0; i < ArrayCount(item_set.starting_augs); i++) {
         if( item_set.starting_augs[i] == None ) {
-            if(dxr.flags.IsHalloweenMode() && aug==class'#var(prefix)AugSpeed' && dxr.flags.settings.speedlevel == 0) {
+            if(dxr.flags.IsHalloweenMode() && (aug==class'AugOnlySpeed' || aug==class'#var(prefix)AugSpeed') && dxr.flags.settings.speedlevel == 0) {
                 aug = class'#var(prefix)AugStealth';// this is Halloween!
             } else if(dxr.flags.settings.speedlevel == 0) {
                 continue;
