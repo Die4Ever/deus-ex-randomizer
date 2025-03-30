@@ -106,7 +106,6 @@ static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> reque
 function int InitGoals(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
 function int InitGoalsRev(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
 function CreateGoal(out Goal g, GoalLocation Loc);
-function DeleteGoal(Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
 function AfterMovePlayerToStartLocation(GoalLocation Loc);
 function PreFirstEntryMapFixes();
@@ -696,6 +695,19 @@ function int _UpdateLocation(Actor a, string goalName)
     return g;
 }
 
+function DeleteGoal(Goal g, GoalLocation Loc)
+{
+    local int i;
+    local Actor a;
+    // delete from map
+    for(i=0; i<ArrayCount(g.actors); i++) {
+        a = g.actors[i].a;
+        if(a == None) continue;
+        a.Event = '';
+        a.Destroy();
+    }
+}
+
 function MoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
@@ -709,14 +721,6 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
 
     if(g.mapName == dxr.localURL && Loc.mapName != dxr.localURL) {
-        // delete from map
-        for(i=0; i<ArrayCount(g.actors); i++) {
-            a = g.actors[i].a;
-            if(a == None) continue;
-            a.Event = '';
-            a.Destroy();
-        }
-
         DeleteGoal(g, Loc);
         return;
     }
