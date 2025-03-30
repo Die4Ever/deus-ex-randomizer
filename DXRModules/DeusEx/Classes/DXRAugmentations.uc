@@ -409,13 +409,21 @@ simulated function RandoAug(Augmentation a)
         aug_value_wet_dry = 0;
         add_desc = add_desc $ "Energy Rate: "$int(a.energyRate)$" Units/Minute";
     }
-    RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
+    if(dxr.flags.IsStrongAugsMode())
+        RandoLevelValues(a, -2, 3, aug_value_wet_dry, a.Description, add_desc);
+    else
+        RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
 }
 
 static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local Augmentation a;
     local float f;
+
+    if(val==-1) { // -1 is reserved for no aug
+        if(val < defaultval) val=-1.01;
+        else val=0.99;
+    }
 
     a = Augmentation(act);
     if( a == None ) {
