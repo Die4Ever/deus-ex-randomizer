@@ -59,7 +59,7 @@ defaultproperties
     Description="The can is blank except for the phrase 'PRODUCT PLACEMENT HERE.' It is unclear whether this is a name or an invitation."
     beltDescription="ENRG"
     Mesh=LodMesh'DeusExItems.Sodacan'
-
+    Skin=Texture'DeusExItems.Skins.SodacanTex2'
     maxCopies=10
     bCanHaveMultipleCopies=True
     bActivatable=True
