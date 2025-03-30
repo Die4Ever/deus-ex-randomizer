@@ -51,6 +51,7 @@ function SetNetworkTerminal(#var(prefix)NetworkTerminal newTerm)
 //the Paris metro station where the password is incomplete...).  Reset
 //the cursor in the password box after failed login.
 //(Copied vanilla function, but don't clear the username field)
+#ifndef hx
 function ProcessLogin()
 {
     local string userName;
@@ -106,4 +107,5 @@ function ProcessLogin()
         SetFocusWindow(editPassword);
     }
 }
+#endif
 
