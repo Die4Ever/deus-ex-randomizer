@@ -658,7 +658,7 @@ function _PreTravel()
         PreTravelMapFixes();
     }
 
-    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && class'MenuChoice_FixGlitches'.default.enabled) {
         RemoveProjectilesInFlight();
     }
 }
