@@ -1,6 +1,14 @@
 class VendingMachineEnergy extends #var(injectsprefix)VendingMachine;
 
 #ifndef hx
+
+function BeginPlay()
+{
+    Super.BeginPlay();
+
+    Skin = Default.Skin;
+}
+
 function class<Pickup> GetSpawnClass()
 {
     return class'EnergyDrinkCan';
@@ -66,4 +74,5 @@ defaultproperties
     msgDispensed="5 credits deducted from your account"
     msgNoCredits="Costs 5 credits..."
 #endif
+    Skin=Texture'EnergyVendingMachineTex1'
 }
