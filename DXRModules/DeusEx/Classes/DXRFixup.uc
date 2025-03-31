@@ -583,6 +583,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     FixAmmoShurikenName();
     FixInventory(p);
     GarbageCollection(p);
+
+    if(p.InHand!=None && p.InHand.GetStateName()=='Idle2') {
+        warning("p.InHand: " $ p.InHand $ " is in state Idle2");
+        p.SetInHand(None);
+    }
 }
 
 function GarbageCollection(#var(PlayerPawn) p)
