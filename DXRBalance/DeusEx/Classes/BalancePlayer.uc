@@ -559,7 +559,6 @@ function ActivateAugByName(string augName)
     anAug = FindAugByName(augName);
 
     if (anAug == None) {
-        ClientMessage(AugmentationSystem.NoAugInSlot);
         return;
     }
 

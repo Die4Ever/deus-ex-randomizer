@@ -13,8 +13,8 @@ var MenuUIScrollAreaWindow		 winScroll;
 
 struct S_KeyDisplayItem
 {
-	var EInputKey inputKey;
-	var localized String DisplayName;
+    var EInputKey inputKey;
+    var localized String DisplayName;
 };
 
 //Make sure to update all four of these when you add a new binding
@@ -37,6 +37,11 @@ var localized string WaitingHelpText;
 var localized string InputHelpText;
 var localized string ReassignedFromLabel;
 
+// used for message box callback
+var int lastKeyNo;
+var string lastKeyName;
+var string lastKeyDisplayName;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 //
@@ -45,17 +50,17 @@ var localized string ReassignedFromLabel;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	Pending = 0;
-	Selection = -1;
-	bWaitingForInput = False;
-	BuildKeyBindings();
+    Pending = 0;
+    Selection = -1;
+    bWaitingForInput = False;
+    BuildKeyBindings();
 
-	CreateKeyList();
-	CreateHeaderButtons();
-	PopulateKeyList();
-	ShowHelp(WaitingHelpText);
+    CreateKeyList();
+    CreateHeaderButtons();
+    PopulateKeyList();
+    ShowHelp(WaitingHelpText);
 }
 
 // ----------------------------------------------------------------------
@@ -64,28 +69,28 @@ event InitWindow()
 
 event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 {
-	if ( !bWaitingForInput )
-	{
-		// If the user presses [Delete] or [Backspace], then
-		// clear this setting
-		if ((key == IK_Delete) || (key == IK_Backspace))
-		{
-			ClearFunction();
-			return True;
-		}
-		else
-		{
-			return Super.VirtualKeyPressed(key, bRepeat);
-		}
-	}
+    if ( !bWaitingForInput )
+    {
+        // If the user presses [Delete] or [Backspace], then
+        // clear this setting
+        if ((key == IK_Delete) || (key == IK_Backspace))
+        {
+            ClearFunction();
+            return True;
+        }
+        else
+        {
+            return Super.VirtualKeyPressed(key, bRepeat);
+        }
+    }
 
-	// First check to see if we're waiting for the user to select a
-	// keyboard or mouse/joystick button to override.
-	WaitingForInput(False);
+    // First check to see if we're waiting for the user to select a
+    // keyboard or mouse/joystick button to override.
+    WaitingForInput(False);
 
-	ProcessKeySelection( key, mid(string(GetEnum(enum'EInputKey',key)),3), GetKeyDisplayName(key) );
+    ProcessKeySelection( key, mid(string(GetEnum(enum'EInputKey',key)),3), GetKeyDisplayName(key) );
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -95,29 +100,29 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 event bool RawMouseButtonPressed(float pointX, float pointY,
                                  EInputKey button, EInputState iState)
 {
-	if ( !bWaitingForInput )
-		return False;
+    if ( !bWaitingForInput )
+        return False;
 
-	if ( iState != IST_Release )
-		return True;
+    if ( iState != IST_Release )
+        return True;
 
-	// First check to see if we're waiting for the user to select a
-	// keyboard or mouse/joystick button to override.
-	//
-	// Ignore everything but mouse button and wheel presses
-	switch( button )
-	{
-		case IK_MouseWheelUp:
-		case IK_MouseWheelDown:
-		case IK_LeftMouse:
-		case IK_RightMouse:
-		case IK_MiddleMouse:
-			ProcessKeySelection( button, mid(string(GetEnum(enum'EInputKey',button)),3), GetKeyDisplayName(button ));
-			WaitingForInput(False);
-			break;
-	}
+    // First check to see if we're waiting for the user to select a
+    // keyboard or mouse/joystick button to override.
+    //
+    // Ignore everything but mouse button and wheel presses
+    switch( button )
+    {
+        case IK_MouseWheelUp:
+        case IK_MouseWheelDown:
+        case IK_LeftMouse:
+        case IK_RightMouse:
+        case IK_MiddleMouse:
+            ProcessKeySelection( button, mid(string(GetEnum(enum'EInputKey',button)),3), GetKeyDisplayName(button ));
+            WaitingForInput(False);
+            break;
+    }
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -129,14 +134,14 @@ event bool RawMouseButtonPressed(float pointX, float pointY,
 
 event bool ListRowActivated(window list, int rowId)
 {
-	// Show help
-	ShowHelp(InputHelpText);
+    // Show help
+    ShowHelp(InputHelpText);
 
-	selection = lstKeys.RowIdToIndex(rowId);
+    selection = lstKeys.RowIdToIndex(rowId);
 
-	WaitingForInput(True);
+    WaitingForInput(True);
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -145,32 +150,32 @@ event bool ListRowActivated(window list, int rowId)
 
 function WaitingForInput(bool bWaiting)
 {
- 	if ( bWaiting )
-	{
-		ShowHelp(InputHelpText);
+     if ( bWaiting )
+    {
+        ShowHelp(InputHelpText);
 
-		SetSelectability(True);
-		SetFocusWindow(Self);
-		GrabMouse();
+        SetSelectability(True);
+        SetFocusWindow(Self);
+        GrabMouse();
 
-		root.LockMouse(True, False);
-		root.ShowCursor(False);
-	}
-	else
-	{
-		ShowHelp(WaitingHelpText);
+        root.LockMouse(True, False);
+        root.ShowCursor(False);
+    }
+    else
+    {
+        ShowHelp(WaitingHelpText);
 
-		SetSelectability(False);
-		UngrabMouse();
+        SetSelectability(False);
+        UngrabMouse();
 
-		root.LockMouse(False, False);
-		root.ShowCursor(True);
+        root.LockMouse(False, False);
+        root.ShowCursor(True);
 
-		// Set the focus back to the list
-		SetFocusWindow(lstKeys);
-	}
+        // Set the focus back to the list
+        SetFocusWindow(lstKeys);
+    }
 
-	bWaitingForInput = bWaiting;
+    bWaitingForInput = bWaiting;
 }
 
 // ----------------------------------------------------------------------
@@ -179,7 +184,7 @@ function WaitingForInput(bool bWaiting)
 
 function SaveSettings()
 {
-	ProcessPending();
+    ProcessPending();
 }
 
 // ----------------------------------------------------------------------
@@ -188,37 +193,56 @@ function SaveSettings()
 
 function ClearFunction()
 {
-	local int rowID;
-	local int rowIndex;
+    local int rowID;
+    local int rowIndex;
+    local string keyDisplayName;
 
-	rowID = lstKeys.GetSelectedRow();
+    rowID = lstKeys.GetSelectedRow();
 
-	if (rowID != 0)
-	{
-		rowIndex = lstKeys.RowIdToIndex(rowID);
+    if (rowID != 0)
+    {
+        rowIndex = lstKeys.RowIdToIndex(rowID);
 
-		if (MenuValues2[rowIndex] != "")
-		{
-			if (CanRemapKey(MenuValues2[rowIndex]))
-			{
-				AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[rowIndex]));
-				MenuValues2[rowIndex] = "";
-			}
-		}
+        if (MenuValues2[rowIndex] != "")
+        {
+            if (CanRemapKey(MenuValues2[rowIndex]))
+            {
+                keyDisplayName = MenuValues2[rowIndex];
+                MenuValues2[rowIndex] = "";
+                _ReassignKeyActions(GetKeyFromDisplayName(keyDisplayName), keyDisplayName);
+            }
+        }
 
-		if (MenuValues1[rowIndex] != "")
-		{
-			if (CanRemapKey(MenuValues1[rowIndex]))
-			{
-				AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[rowIndex]));
-				MenuValues1[rowIndex] = MenuValues2[rowIndex];
-				MenuValues2[rowIndex] = "";
-			}
-		}
+        if (MenuValues1[rowIndex] != "")
+        {
+            if (CanRemapKey(MenuValues1[rowIndex]))
+            {
+                keyDisplayName = MenuValues1[rowIndex];
+                MenuValues1[rowIndex] = MenuValues2[rowIndex];
+                MenuValues2[rowIndex] = "";
+                _ReassignKeyActions(GetKeyFromDisplayName(keyDisplayName), keyDisplayName);
+            }
+        }
 
-		// Update the buttons
-		RefreshKeyBindings();
-	}
+        // Update the buttons
+        RefreshKeyBindings();
+    }
+}
+
+function bool IsAliasInCommands(string alias, string commands)
+{
+    local int pos;
+    local string prev, next;
+
+    if(commands == alias) return true;
+    pos = InStr(commands, alias);
+    if(pos==-1) return false;
+
+    prev = Mid(commands, pos-1, 1);
+    next = Mid(commands, pos+Len(alias), 1);
+    if(prev!="" && prev!=" " &&  prev!="|") return false;
+    if(next!="" && next!=" " &&  next!="|") return false;
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -227,48 +251,40 @@ function ClearFunction()
 
 function BuildKeyBindings()
 {
-	local int i, j, pos;
-	local string KeyName;
-	local string Alias;
+    local int i, j;
+    local string KeyName;
+    local string commands;
 
-	// First, clear all the existing keybinding display
-	// strings in the MenuValues[1|2] arrays
+    // First, clear all the existing keybinding display
+    // strings in the MenuValues[1|2] arrays
 
-	for(i=0; i<arrayCount(MenuValues1); i++)
-	{
-		MenuValues1[i] = "";
-		MenuValues2[i] = "";
-	}
+    for(i=0; i<arrayCount(MenuValues1); i++)
+    {
+        MenuValues1[i] = "";
+        MenuValues2[i] = "";
+    }
 
-	// Now loop through all the keynames and generate
-	// human-readable versions of keys that are mapped.
+    // Now loop through all the keynames and generate
+    // human-readable versions of keys that are mapped.
 
-	for ( i=0; i<255; i++ )
-	{
-		KeyName = player.ConsoleCommand ( "KEYNAME "$i );
-		if ( KeyName != "" )
-		{
-			Alias = player.ConsoleCommand( "KEYBINDING "$KeyName );
+    for ( i=0; i<255; i++ )
+    {
+        KeyName = player.ConsoleCommand ( "KEYNAME "$i );
+        if ( KeyName == "" ) continue;
+        commands = player.ConsoleCommand( "KEYBINDING "$KeyName );
+        if ( commands == "" ) continue;
 
-			if ( Alias != "" )
-			{
-				pos = InStr(Alias, " " );
-				if ( pos != -1 )
-					Alias = Left(Alias, pos);
-
-				for ( j=0; j<arrayCount(AliasNames); j++ )
-				{
-					if ( AliasNames[j] == Alias )
-					{
-						if ( MenuValues1[j] == "" )
-							MenuValues1[j] = GetKeyDisplayNameFromKeyName(KeyName);
-						else if ( MenuValues2[j] == "" )
-							MenuValues2[j] = GetKeyDisplayNameFromKeyName(KeyName);
-					}
-				}
-			}
-		}
-	}
+        for ( j=0; j<arrayCount(AliasNames); j++ )
+        {
+            if ( IsAliasInCommands(AliasNames[j], commands) )
+            {
+                if ( MenuValues1[j] == "" )
+                    MenuValues1[j] = GetKeyDisplayNameFromKeyName(KeyName);
+                else if ( MenuValues2[j] == "" )
+                    MenuValues2[j] = GetKeyDisplayNameFromKeyName(KeyName);
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -277,12 +293,12 @@ function BuildKeyBindings()
 
 function ProcessPending()
 {
-	local int i;
+    local int i;
 
-	for ( i=0; i<Pending; i++ )
-		player.ConsoleCommand(PendingCommands[i]);
+    for ( i=0; i<Pending; i++ )
+        player.ConsoleCommand(PendingCommands[i]);
 
-	Pending = 0;
+    Pending = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -291,10 +307,10 @@ function ProcessPending()
 
 function AddPending(string newCommand)
 {
-	PendingCommands[Pending] = newCommand;
-	Pending++;
-	if ( Pending == 100 )
-		ProcessPending();
+    PendingCommands[Pending] = newCommand;
+    Pending++;
+    if ( Pending == 100 )
+        ProcessPending();
 }
 
 // ----------------------------------------------------------------------
@@ -303,18 +319,18 @@ function AddPending(string newCommand)
 
 function String GetKeyFromDisplayName(String displayName)
 {
-	local int keyIndex;
+    local int keyIndex;
 
-	for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
-	{
-		if (displayName == keyDisplayNames[keyIndex].displayName)
-		{
-			return mid(String(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3);
-			break;
-		}
-	}
+    for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
+    {
+        if (displayName == keyDisplayNames[keyIndex].displayName)
+        {
+            return mid(String(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3);
+            break;
+        }
+    }
 
-	return displayName;
+    return displayName;
 }
 
 // ----------------------------------------------------------------------
@@ -323,18 +339,18 @@ function String GetKeyFromDisplayName(String displayName)
 
 function String GetKeyDisplayName(EInputKey inputKey)
 {
-	local int keyIndex;
+    local int keyIndex;
 
-	for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
-	{
-		if (inputKey == keyDisplayNames[keyIndex].inputKey)
-		{
-			return keyDisplayNames[keyIndex].DisplayName;
-			break;
-		}
-	}
+    for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
+    {
+        if (inputKey == keyDisplayNames[keyIndex].inputKey)
+        {
+            return keyDisplayNames[keyIndex].DisplayName;
+            break;
+        }
+    }
 
-	return mid(string(GetEnum(enum'EInputKey',inputKey)),3);
+    return mid(string(GetEnum(enum'EInputKey',inputKey)),3);
 }
 
 // ----------------------------------------------------------------------
@@ -343,18 +359,18 @@ function String GetKeyDisplayName(EInputKey inputKey)
 
 function String GetKeyDisplayNameFromKeyName(string keyName)
 {
-	local int keyIndex;
+    local int keyIndex;
 
-	for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
-	{
-		if (mid(string(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3) == keyName)
-		{
-			return keyDisplayNames[keyIndex].DisplayName;
-			break;
-		}
-	}
+    for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
+    {
+        if (mid(string(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3) == keyName)
+        {
+            return keyDisplayNames[keyIndex].DisplayName;
+            break;
+        }
+    }
 
-	return keyName;
+    return keyName;
 }
 
 // ----------------------------------------------------------------------
@@ -363,10 +379,10 @@ function String GetKeyDisplayNameFromKeyName(string keyName)
 
 function bool CanRemapKey(string KeyName)
 {
-	if ((KeyName == "F1") || (KeyName == "F2"))  // hack - DEUS_EX STM
-		return false;
-	else
-		return true;
+    if ((KeyName == "F1") || (KeyName == "F2"))  // hack - DEUS_EX STM
+        return false;
+    else
+        return true;
 }
 
 // ----------------------------------------------------------------------
@@ -375,92 +391,175 @@ function bool CanRemapKey(string KeyName)
 
 function ProcessKeySelection(int KeyNo, string KeyName, string keyDisplayName)
 {
-	local int i;
+    local string used;
+    local BingoHintMsgBox msgbox;
+    // Some keys CANNOT be assigned:
+    //
+    // 1.  Escape
+    // 2.  Function keys (used by Augs)
+    // 3.  Number keys (used by Object Belt)
+    // 4.  Tilde (used for console)
+    // 5.  Pause (used to pause game)
+    // 6.  Print Screen (Well, duh)
 
-	// Some keys CANNOT be assigned:
-	//
-	// 1.  Escape
-	// 2.  Function keys (used by Augs)
-	// 3.  Number keys (used by Object Belt)
-	// 4.  Tilde (used for console)
-	// 5.  Pause (used to pause game)
-	// 6.  Print Screen (Well, duh)
+    // Make sure the user enters a valid key (Escape and function
+    // keys can't be assigned)
+    if ( (KeyName == "") || (KeyName == "Escape") ||        // Escape
+            ((KeyNo >= 0x70 ) && (KeyNo <= 0x81)) ||        // Function keys
+            ((KeyNo >= 48) && (KeyNo <= 57)) ||             // 0 - 9
+            (KeyName == "Tilde") ||                         // Tilde
+            (KeyName == "PrintScrn") ||                     // Print Screen
+            (KeyName == "Pause") )                          // Pause
+    {
+        return;
+    }
 
-	// Make sure the user enters a valid key (Escape and function
-	// keys can't be assigned)
-	if ( (KeyName == "") || (KeyName == "Escape") ||		// Escape
-		 ((KeyNo >= 0x70 ) && (KeyNo <= 0x81)) || 			// Function keys
-		 ((KeyNo >= 48) && (KeyNo <= 57)) ||				// 0 - 9
-		 (KeyName == "Tilde") ||							// Tilde
-		 (KeyName == "PrintScrn") ||						// Print Screen
-		 (KeyName == "Pause") )                     // Pause
-	{
-		return;
-	}
+    // Don't waste our time if this key is already assigned here
+    if (MenuValues1[Selection] == keyDisplayName || MenuValues2[Selection] == keyDisplayName)
+        return;
 
-	// Don't waste our time if this key is already assigned here
-	if (( MenuValues1[Selection] == keyDisplayName ) ||
-	   ( MenuValues2[Selection] == keyDisplayName ))
-	   return;
+    used = CheckHotkeyUsedBy(keyDisplayName, Selection);
+    if(Len(used) > 0) {
+        msgbox = class'BingoHintMsgBox'.static.Create(root, keyDisplayName $ " in use", keyDisplayName $ " used by: " $ used, 2, False, Self);
+        msgbox.SetButtonTexts("|&Add", "|&Overwrite", "|&Cancel");
+        lastKeyNo = KeyNo;
+        lastKeyName = KeyName;
+        lastKeyDisplayName = keyDisplayName;
+        return;
+    }
 
-	// Now check to make sure there are no overlapping
-	// assignments.
+    AddHotkey(KeyNo, KeyName, keyDisplayName);
+}
 
-	for ( i=0; i<arrayCount(AliasNames); i++ )
-	{
-		if ( MenuValues2[i] == keyDisplayName )
-		{
-			ShowHelp(Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
-			AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[i]));
-			MenuValues2[i] = "";
-		}
+event bool BoxOptionSelected(Window msgbox, int buttonNumber)
+{
+    root.PopWindow();
 
-		if ( MenuValues1[i] == keyDisplayName )
-		{
-			ShowHelp(Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
-			AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[i]));
-			MenuValues1[i] = MenuValues2[i];
-			MenuValues2[i] = "";
-		}
-	}
+    switch (buttonNumber){
+        case 0://add
+            AddHotkey(lastKeyNo, lastKeyName, lastKeyDisplayName);
+            return true;
+        case 1://overwrite
+            OverwriteHotkey(lastKeyNo, lastKeyName, lastKeyDisplayName);
+            return true;
+        case 2://cancel
+            return true;
+    }
+    return false;
+}
 
-	// Now assign the key, trying the first space if it's empty,
-	// but using the second space if necessary.  If both slots
-	// are filled, then move the second entry into the first
-	// and put the new assignment in the second slot.
+function string CheckHotkeyUsedBy(string keyDisplayName, int exclude)
+{
+    local int i;
+    local string s;
 
-	if ( MenuValues1[Selection] == "" )
-	{
-		MenuValues1[Selection] = keyDisplayName;
-	}
-	else if ( MenuValues2[Selection] == "" )
-	{
-		MenuValues2[Selection] = keyDisplayName;
-	}
-	else
-	{
-  		if (CanRemapKey(MenuValues1[Selection]))
-		{
-			// Undo first key assignment
-			AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[Selection]));
+    for ( i=0; i<arrayCount(AliasNames); i++ )
+    {
+        if(i == exclude) continue;
+        if ( MenuValues1[i] == keyDisplayName || MenuValues2[i] == keyDisplayName )
+        {
+            s = s $ ", " $ FunctionText[i];
+        }
+    }
 
-			MenuValues1[Selection] = MenuValues2[Selection];
-			MenuValues2[Selection] = keyDisplayName;
-		}
-		else if (CanRemapKey(MenuValues2[Selection]))
-		{
-			// Undo second key assignment
-			AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[Selection]));
+    s = Mid(s, 2);
+    return s;
+}
 
-			MenuValues2[Selection] = keyDisplayName;
-		}
+function _ClearKeyDisplayNameUsage(string keyDisplayName)
+{
+    local int i;
 
-	}
+    // Now check to make sure there are no overlapping
+    // assignments.
 
-	AddPending("SET InputExt "$KeyName$" "$AliasNames[Selection]);
+    for ( i=0; i<arrayCount(AliasNames); i++ )
+    {
+        if ( MenuValues2[i] == keyDisplayName )
+        {
+            ShowHelp(Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
+            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[i]));
+            MenuValues2[i] = "";
+        }
 
-	// Update the buttons
-	RefreshKeyBindings();
+        if ( MenuValues1[i] == keyDisplayName )
+        {
+            ShowHelp(Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
+            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[i]));
+            MenuValues1[i] = MenuValues2[i];
+            MenuValues2[i] = "";
+        }
+    }
+}
+
+function _AssignHotkeyAction(string KeyName, string keyDisplayName)
+{
+    // Now assign the key, trying the first space if it's empty,
+    // but using the second space if necessary.  If both slots
+    // are filled, then move the second entry into the first
+    // and put the new assignment in the second slot.
+
+    if ( MenuValues1[Selection] == "" )
+    {
+        MenuValues1[Selection] = keyDisplayName;
+    }
+    else if ( MenuValues2[Selection] == "" )
+    {
+        MenuValues2[Selection] = keyDisplayName;
+    }
+    else
+    {
+        if (CanRemapKey(MenuValues1[Selection]))
+        {
+            // Undo first key assignment
+            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues1[Selection]));
+
+            MenuValues1[Selection] = MenuValues2[Selection];
+            MenuValues2[Selection] = keyDisplayName;
+        }
+        else if (CanRemapKey(MenuValues2[Selection]))
+        {
+            // Undo second key assignment
+            AddPending("SET InputExt " $ GetKeyFromDisplayName(MenuValues2[Selection]));
+
+            MenuValues2[Selection] = keyDisplayName;
+        }
+    }
+
+    _ReassignKeyActions(KeyName, keyDisplayName);
+}
+
+function _ReassignKeyActions(string KeyName, string keyDisplayName)
+{
+    local int i;
+    local string s;
+
+    for ( i=0; i<arrayCount(AliasNames); i++ )
+    {
+        if (MenuValues1[i] == keyDisplayName || MenuValues2[i] == keyDisplayName)
+        {
+            s = s $ "|" $ AliasNames[i];
+        }
+    }
+
+    s = Mid(s, 1);
+    log("ReassignKeyActions(" $ KeyName $ ", " $ keyDisplayName $ "): " $ s);
+    AddPending("SET InputExt "$KeyName$" "$ s);
+}
+
+function OverwriteHotkey(int KeyNo, string KeyName, string keyDisplayName)
+{
+    _ClearKeyDisplayNameUsage(keyDisplayName);
+    _AssignHotkeyAction(KeyName, keyDisplayName);
+    // Update the buttons
+    RefreshKeyBindings();
+}
+
+function AddHotkey(int KeyNo, string KeyName, string keyDisplayName)
+{
+    _AssignHotkeyAction(KeyName, keyDisplayName);
+    // Update the buttons
+    RefreshKeyBindings();
 }
 
 // ----------------------------------------------------------------------
@@ -471,22 +570,22 @@ function ProcessKeySelection(int KeyNo, string KeyName, string keyDisplayName)
 
 function CreateKeyList()
 {
-	winScroll = CreateScrollAreaWindow(winClient);
+    winScroll = CreateScrollAreaWindow(winClient);
 
-	winScroll.SetPos(11, 23);
-	winScroll.SetSize(369, 268);
+    winScroll.SetPos(11, 23);
+    winScroll.SetSize(369, 268);
 
-	lstKeys = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
-	lstKeys.EnableMultiSelect(False);
-	lstKeys.EnableAutoExpandColumns(False);
-	lstKeys.EnableHotKeys(False);
+    lstKeys = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+    lstKeys.EnableMultiSelect(False);
+    lstKeys.EnableAutoExpandColumns(False);
+    lstKeys.EnableHotKeys(False);
 
-	lstKeys.SetNumColumns(2);
+    lstKeys.SetNumColumns(2);
 
-	lstKeys.SetColumnWidth(0, 164);
-	lstKeys.SetColumnType(0, COLTYPE_String);
-	lstKeys.SetColumnWidth(1, 205);
-	lstKeys.SetColumnType(1, COLTYPE_String);
+    lstKeys.SetColumnWidth(0, 164);
+    lstKeys.SetColumnType(0, COLTYPE_String);
+    lstKeys.SetColumnWidth(1, 205);
+    lstKeys.SetColumnType(1, COLTYPE_String);
 }
 
 // ----------------------------------------------------------------------
@@ -495,13 +594,13 @@ function CreateKeyList()
 
 function PopulateKeyList()
 {
-	local int keyIndex;
+    local int keyIndex;
 
-	// First erase the old list
-	lstKeys.DeleteAllRows();
+    // First erase the old list
+    lstKeys.DeleteAllRows();
 
-	for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
-		lstKeys.AddRow(FunctionText[keyIndex] $ ";" $ GetInputDisplayText(keyIndex));
+    for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
+        lstKeys.AddRow(FunctionText[keyIndex] $ ";" $ GetInputDisplayText(keyIndex));
 }
 
 // ----------------------------------------------------------------------
@@ -510,11 +609,11 @@ function PopulateKeyList()
 
 function CreateHeaderButtons()
 {
-	btnHeaderAction   = CreateHeaderButton(10,  3, 162, strHeaderActionLabel,   winClient);
-	btnHeaderAssigned = CreateHeaderButton(175, 3, 157, strHeaderAssignedLabel, winClient);
+    btnHeaderAction   = CreateHeaderButton(10,  3, 162, strHeaderActionLabel,   winClient);
+    btnHeaderAssigned = CreateHeaderButton(175, 3, 157, strHeaderAssignedLabel, winClient);
 
-	btnHeaderAction.SetSensitivity(False);
-	btnHeaderAssigned.SetSensitivity(False);
+    btnHeaderAction.SetSensitivity(False);
+    btnHeaderAssigned.SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -523,12 +622,12 @@ function CreateHeaderButtons()
 
 function String GetInputDisplayText(int keyIndex)
 {
-	if ( MenuValues1[keyIndex] == "" )
-		return NoneText;
-	else if ( MenuValues2[keyIndex] != "" )
-		return MenuValues1[keyIndex] $ "," @ MenuValues2[keyIndex];
-	else
-		return MenuValues1[keyIndex];
+    if ( MenuValues1[keyIndex] == "" )
+        return NoneText;
+    else if ( MenuValues2[keyIndex] != "" )
+        return MenuValues1[keyIndex] $ "," @ MenuValues2[keyIndex];
+    else
+        return MenuValues1[keyIndex];
 }
 
 // ----------------------------------------------------------------------
@@ -537,14 +636,14 @@ function String GetInputDisplayText(int keyIndex)
 
 function RefreshKeyBindings()
 {
-	local int keyIndex;
-	local int rowId;
+    local int keyIndex;
+    local int rowId;
 
-	for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
-	{
-		rowId = lstKeys.IndexToRowId(keyIndex);
-		lstKeys.SetField(rowId, 1, GetInputDisplayText(keyIndex));
-	}
+    for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
+    {
+        rowId = lstKeys.IndexToRowId(keyIndex);
+        lstKeys.SetField(rowId, 1, GetInputDisplayText(keyIndex));
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -553,12 +652,12 @@ function RefreshKeyBindings()
 
 function ResetToDefaults()
 {
-	Pending = 0;
-	Selection = -1;
-	bWaitingForInput = False;
-	BuildKeyBindings();
-	PopulateKeyList();
-	ShowHelp(WaitingHelpText);
+    Pending = 0;
+    Selection = -1;
+    bWaitingForInput = False;
+    BuildKeyBindings();
+    PopulateKeyList();
+    ShowHelp(WaitingHelpText);
 }
 
 // ----------------------------------------------------------------------
