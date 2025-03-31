@@ -169,7 +169,7 @@ simulated function InitHints()
         if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("Grenades can now be attached to the floor", "or even on a door!");
         if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) AddHint("Attaching a grenade to a wall increases its", "blast radius and damage, especially with high skill.");
         AddHint("You can safely save during infolinks!", "Give it a shot, Tong won't mind!");
-        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Red lasers will always set off an alarm", "Blue lasers won't, but will trigger something else!");
+        if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Red lasers will always set off an alarm.", "Blue lasers won't, but will trigger something else!");
         if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Everything except an NPC will set off a laser!", "Better be careful around them!");
         AddHint("Enemies with gold visors are resistant to gas", "so you might need to deal with them differently!");
         if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Enemies with helmets take less damage from headshots", "so you might need to be more careful!");
@@ -330,7 +330,7 @@ simulated function InitHints()
         if (dxr.flags.settings.medbotcooldowns == 1) { //Individual
             AddHint("Medbots have a randomized cooldown.", "Each one is different, so pay attention!");
         } else if (dxr.flags.settings.medbotcooldowns == 2) { //Global
-            AddHint("Medbots have a randomized cooldown", "The cooldown is the same for all of them!");
+            AddHint("Medbots have a randomized cooldown.", "The cooldown is the same for all of them!");
         }
 
         if (dxr.flags.settings.repairbotcooldowns == 1) { //Individual
@@ -342,13 +342,13 @@ simulated function InitHints()
         if (dxr.flags.settings.medbotamount == 1) { //Individual
             AddHint("Medbots have a randomized heal amount.", "Each one is different, so pay attention!");
         } else if (dxr.flags.settings.medbotamount == 2) { //Global
-            AddHint("Medbots have a randomized heal amount", "The amount is the same for all of them!");
+            AddHint("Medbots have a randomized heal amount.", "The amount is the same for all of them!");
         }
 
         if (dxr.flags.settings.repairbotamount == 1) { //Individual
             AddHint("Repair bots have a randomized recharge amount.", "Each one is different, so pay attention!");
         } else if (dxr.flags.settings.repairbotamount == 2) { //Global
-            AddHint("Repair bots have a randomized recharge amount", "The amount is the same for all of them!");
+            AddHint("Repair bots have a randomized recharge amount.", "The amount is the same for all of them!");
         }
     }
     else if(mission <= 11) {
@@ -530,7 +530,7 @@ simulated function InitHints()
         else AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
         if(map ~= "10_Paris_Catacombs" || map~="10_Paris_Entrance") { //Le Merchant is in ENTRANCE in Revision
             if(dxr.flags.settings.swapitems > 0) {
-                AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.", true);
+                AddHint("If you need a Hazmat suit,", "Le Merchant has one for sale.", true);
                 AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
             }
         }
@@ -613,7 +613,7 @@ simulated function InitHints()
                 AddHint("The location of blast doors computer is randomized.", "Check the Goal Randomization page on our Wiki.");
             }
 
-            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) AddHint("The path jumping down past the fan has been made more difficult", "than in vanilla. Be warned.");
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) AddHint("The path jumping down past the fan has been made more difficult", "than in vanilla.  Be warned.");
         }
         else if (map ~= "15_Area51_Entrance") {
             AddHint("You are in Sector 2.", "Find the key so that you can make your way to Sector 3.");
@@ -623,8 +623,8 @@ simulated function InitHints()
             AddHint("There's a datacube with the code for the Reactor Lab.", "The mechanic there will give you the code for the Aquinas Hub.");
         }
         else if (map ~= "15_Area51_Page") {
-            AddHint("You are in Sector 4 with Bob Page. This is where the", "Aquinas Router, Coolant Controls, and Blue Fusion Reactors are.");
-            AddHint("You are in Sector 4. The UCs will constantly spawn new enemies,", "but they can be closed off.");
+            AddHint("You are in Sector 4 with Bob Page.  This is where the", "Aquinas Router, Coolant Controls, and Blue Fusion Reactors are.");
+            AddHint("You are in Sector 4.  The UCs will constantly spawn new enemies,", "but they can be closed off.");
 
             if(dxr.flagbase.GetBool('DL_Blue4_Played')) {
                 AddHint("All four Blue Fusion Reactors are disabled!", "Go to the Infusion Controls and destroy Bob Page!");
@@ -696,10 +696,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     }
 }
 
-simulated function int GetHint(bool isDeath, out string hint, out string detail)
+simulated function int GetHint(bool isDeath, out string hint, out string detail, optional bool addSpace)
 {
     local GameHint actList[100];
     local int numActHints, i, hintNum;
+    local string lastChar;
 
     numActHints=0;
     for (i=0;i<numHints;i++){
@@ -713,6 +714,13 @@ simulated function int GetHint(bool isDeath, out string hint, out string detail)
 
     hint = actList[hintNum].line1;
     detail = actList[hintNum].line2;
+
+    if (addSpace) {
+        lastChar = Right(hint, 1);
+        if (lastChar == "." || lastChar == "!" || lastChar == "?") {
+            hint = hint $ " ";
+        }
+    }
 
     return hintNum;
 }

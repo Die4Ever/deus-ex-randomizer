@@ -26,7 +26,7 @@ function BindControls(optional string action)
     NewGroup("General");
 
     if( ! #defined(vmd) ) {
-        NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
+        NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes.  The original game uses 400% for realistic.");
         iDifficulty = int(combatDifficulty * 100.0);
         Slider(iDifficulty, 0, 10000);
         combatDifficulty = float(iDifficulty) / 100.0;
@@ -262,10 +262,10 @@ function BindControls(optional string action)
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);
 
-    NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn. Leave blank or 0 to disable.");
+    NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn.  Leave blank or 0 to disable.");
     Slider(f.settings.enemyrespawn, 0, 3600);
 
-    NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies. Leave blank or 0 to disable.");
+    NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies.  Leave blank or 0 to disable.");
     Slider(f.moresettings.reanimation, 0, 3600);
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
@@ -381,7 +381,7 @@ function BindControls(optional string action)
 
     NewGroup("New Game+");
 
-    NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops. Set to -1 to disable. 100% is default.");
+    NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops.  Set to -1 to disable.  100% is default.");
     Slider(f.moresettings.newgameplus_curve_scalar, -1, 200);
     NewMenuItem("Max Item Carryover", "Maximum number of the same item that can carry over between loops, not including stackable items.");
     Slider(f.newgameplus_max_item_carryover, 0, 30);

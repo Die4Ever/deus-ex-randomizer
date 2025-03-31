@@ -66,9 +66,9 @@ function int HealPlayer(DeusExPlayer PlayerToHeal)
             msg = msg $ " (max " $ healAmount $ ")";
 
         if (uses == 0) {
-            msg = msg $ ". No heals left.";
+            msg = msg $ ".  No heals left.";
         } else {
-            msg = msg $ ". " $ healRefreshTime $ "s until recharged. ";
+            msg = msg $ ".  " $ healRefreshTime $ "s until recharged.  ";
             if (uses == 1)
                 msg = msg $ "1 heal left.";
             else if (uses > 0)

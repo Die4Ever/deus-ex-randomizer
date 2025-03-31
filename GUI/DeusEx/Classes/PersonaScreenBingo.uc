@@ -163,6 +163,6 @@ defaultproperties
      ResetWindowHeader="Are you sure?"
      ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
      InfoWindowHeader="Bingo Info"
-     InfoWindowText="Complete specific tasks to mark off bingo squares!|n|nSquares marked gray can be completed this mission. Black squares cannot be completed in this mission.  Green squares have been completed.  Red squares can no longer be completed.|n|nClick on the squares to get more info about the specific task in each one!"
+     InfoWindowText="Complete specific tasks to mark off bingo squares!|n|nSquares marked gray can be completed this mission.  Black squares cannot be completed in this mission.  Green squares have been completed.  Red squares can no longer be completed.|n|nClick on the squares to get more info about the specific task in each one!"
      bingoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Bingo-Goals"
 }

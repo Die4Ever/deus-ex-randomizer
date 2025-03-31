@@ -114,9 +114,9 @@ function ResetToDefault()
 defaultproperties
 {
 #ifdef injections
-    HelpText="BRING YOUR OWN FILES. Ensure the UMX files are in the right place.|nYou can also edit DXRMusic.ini for further customization."
+    HelpText="BRING YOUR OWN FILES.  Ensure the UMX files are in the right place.|nYou can also edit DXRMusic.ini for further customization."
 #else
-    HelpText="BRING YOUR OWN FILES. Ensure the UMX files are in the right place.|nYou can also edit #var(package)Music.ini for further customization."
+    HelpText="BRING YOUR OWN FILES.  Ensure the UMX files are in the right place.|nYou can also edit #var(package)Music.ini for further customization."
 #endif
     actionText="Unreal Tournament Music"
     enumText(0)="Disabled"
