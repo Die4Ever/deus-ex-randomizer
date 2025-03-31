@@ -1676,6 +1676,10 @@ static function RandoHackable(DXRando dxr, #var(prefix)HackableDevices h)
 function RandoInfoDevs(int percent)
 {
     local #var(prefix)InformationDevices id;
+    local bool totallyEmpty;
+#ifndef injections
+    local #var(injectsprefix)InformationDevices dxrid;
+#endif
 
     foreach AllActors(class'#var(prefix)InformationDevices', id)
     {
@@ -1686,6 +1690,21 @@ function RandoInfoDevs(int percent)
                 InfoDevsHasPass(id);
             }
             continue;
+        }
+        if (id.textTag=='' && id.imageClass==None){
+            //Don't shuffle completely empty information devices
+            //This isn't an issue (afaik) in vanilla, but mods sometimes
+            //put empty datacubes/newspapers in inaccessible areas as decoration
+            totallyEmpty=True;
+#ifdef injections
+            if (id.plaintext!="") totallyEmpty=False;
+#else
+            dxrid = #var(injectsprefix)InformationDevices(id);
+            if (dxrid!=None){
+                if (dxrid.plaintext!="") totallyEmpty=False;
+            }
+#endif
+            if (totallyEmpty) continue;
         }
         _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
     }
