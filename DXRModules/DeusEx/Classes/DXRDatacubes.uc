@@ -652,22 +652,38 @@ function vanilla_datacubes_rules()
         break;
 
     case "15_AREA51_ENTRANCE":
+        // allow between barracks and sector 3 access door
+        datacubes_rules[i].item_name = 'SleepPodCode1';
+        datacubes_rules[i].min_pos = vect(-580, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(4280, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
         datacubes_rules[i].item_name = 'SleepPodCode1';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
+        datacubes_rules[i].allow = false;
         i++;
 
         datacubes_rules[i].item_name = 'SleepPodCode2';
+        datacubes_rules[i].min_pos = vect(-580, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(4280, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        datacubes_rules[i].item_name = 'SleepPodCode2';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
+        datacubes_rules[i].allow = false;
         i++;
 
         datacubes_rules[i].item_name = 'SleepPodCode3';
+        datacubes_rules[i].min_pos = vect(-580, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(4280, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        datacubes_rules[i].item_name = 'SleepPodCode3';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
+        datacubes_rules[i].allow = false;
         i++;
         break;
 

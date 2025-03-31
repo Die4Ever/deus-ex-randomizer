@@ -552,6 +552,25 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        // allow between barracks and sector 3 access door
+        keys_rules[i].item_name = 'a51entr_vent';
+        keys_rules[i].min_pos = vect(-580, -99999, -240);
+        keys_rules[i].max_pos = vect(4280, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        // allow on the unlocked side of the vents, past the steam
+        keys_rules[i].item_name = 'a51entr_vent';
+        keys_rules[i].min_pos = vect(-580, -99999, -99999);
+        keys_rules[i].max_pos = vect(650, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        keys_rules[i].item_name = 'a51entr_vent';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
         break;
 
     case "15_area51_final":
