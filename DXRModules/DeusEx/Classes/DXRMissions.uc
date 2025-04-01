@@ -530,6 +530,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
 
+        // remove locations that are no longer valid
         for(a=0; a<_num_locs; a++) {
             if(!IsComboAllowed(loc, availLocs[a])) {
                 _num_locs--;
@@ -581,6 +582,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
 
+        // remove locations that are no longer valid
         for(a=0; a<_num_locs; a++) {
             if(!IsComboAllowed(loc, availLocs[a])) {
                 _num_locs--;
@@ -606,11 +608,17 @@ function bool IsComboAllowed(int loc1, int loc2)
     return true;
 }
 
+function bool IsLayoutAllowed(int goalsToLocations[32])
+{
+    return true;
+}
+
 function ChooseGoalLocations(out int goalsToLocations[32])
 {
     local int attempts;
     for(attempts=0; attempts<1000; attempts++) {
         if(_ChooseGoalLocations(goalsToLocations)) {
+            if(!IsLayoutAllowed(goalsToLocations)) continue;
             if(attempts > 100) {
                 warning("ChooseGoalLocations took " $ (attempts+1) $ " attempts!");
             }
