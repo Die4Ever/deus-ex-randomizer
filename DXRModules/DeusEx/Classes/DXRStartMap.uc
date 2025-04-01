@@ -6,13 +6,6 @@
 
 class DXRStartMap extends DXRActorsBase;
 
-struct CrateContentOption
-{
-    var class<Inventory> type;
-    var int numCopies;
-    var int weight;
-};
-
 function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
