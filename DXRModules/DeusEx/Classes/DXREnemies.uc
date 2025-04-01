@@ -315,6 +315,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
 function CheckHelmet(ScriptedPawn p)
 {
     local int helmet_chance, visor_chance;
+    if(dxr.flags.settings.enemystats <= 0) return;
     if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit') return;
     // tough augs don't need helmets
     if(NSFCloneAugTough1(p) != None || UNATCOCloneAugTough1(p) != None || MJ12CloneAugTough1(p) != None) return;
@@ -322,8 +323,13 @@ function CheckHelmet(ScriptedPawn p)
     // divide chances by 2 to lean towards vanilla
     // that way the game gets harder as you progress to enemies that typically have helmets
 
-    if(#defined(injections)) // visors only work in vanilla due to our change in ScriptedPawn, so leave the chance to 0 for other mods
-        visor_chance = dxr.flags.settings.enemystats / 3;
+    helmet_chance = dxr.flags.settings.enemystats / 2;
+    if(#defined(injections)) {// visors only work in vanilla due to our change in ScriptedPawn, so leave the chance to 0 for other mods
+        visor_chance = max(dxr.flags.settings.enemystats * 0.3, 1);
+        if(HasItem(p, class'#var(prefix)WeaponPepperGun') || HasItem(p, class'#var(prefix)WeaponGasGrenade')) {
+            visor_chance = 100;
+        }
+    }
 
     // augs shouldn't get visors that cover their face
     if(NSFCloneAugStealth1(p) != None || NSFCloneAugTough1(p) != None || NSFCloneAugShield1(p) != None
@@ -333,11 +339,14 @@ function CheckHelmet(ScriptedPawn p)
         visor_chance = 0;
     }
 
+    if(visor_chance == 100) {
+        helmet_chance = 100;
+    }
+
     switch(p.MultiSkins[6]) {
     case Texture'DeusExItems.Skins.PinkMaskTex':
     case Texture'DeusExCharacters.Skins.GogglesTex1':
         // add helmet
-        helmet_chance = dxr.flags.settings.enemystats / 2;
         if(chance_single(helmet_chance)) {
             if(rngb())
                 p.MultiSkins[6] = Texture'#var(package).DXRandoPawns.NSFHelmet';
@@ -349,9 +358,9 @@ function CheckHelmet(ScriptedPawn p)
         }
         break;
     default:
-        // remove helmet, enemystats of 0 means 50% chance to remove helmet, enemystats of 100 means 0% chance to remove helmet
-        helmet_chance = (100 - dxr.flags.settings.enemystats) / 2;
-        if(chance_single(helmet_chance)) {
+        helmet_chance = (helmet_chance+100) / 2; // enemies that normally have helmets are more likely to keep their helmet than lose it
+        // remove helmet
+        if(!chance_single(helmet_chance)) {
             p.MultiSkins[5] = Texture'DeusExItems.Skins.GrayMaskTex';
             p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
             p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
