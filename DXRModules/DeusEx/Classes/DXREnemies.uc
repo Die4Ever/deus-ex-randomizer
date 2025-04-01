@@ -20,7 +20,7 @@ function CheckConfig()
     AddRandomWeapon(class'#var(prefix)WeaponPistol', 8);
     AddRandomWeapon(class'#var(prefix)WeaponStealthPistol', 6);
     AddRandomWeapon(class'#var(prefix)WeaponAssaultGun', 11);
-    AddRandomWeapon(class'#var(prefix)WeaponMiniCrossbow', 6);
+    AddRandomWeapon(class'#var(prefix)WeaponMiniCrossbow', 5);
 #ifdef gmdx
     AddRandomWeapon(class'#var(prefix)#var(package).GMDXGepGun', 4);
 #else
@@ -39,6 +39,10 @@ function CheckConfig()
     AddRandomWeapon(class'#var(prefix)WeaponRifle', 6);
     AddRandomWeapon(class'#var(prefix)WeaponSawedOffShotgun', 7);
     AddRandomWeapon(class'#var(prefix)WeaponProd', 3);
+
+    AddRandomSidearm(class'#var(prefix)WeaponPistol', 8);
+    AddRandomSidearm(class'#var(prefix)WeaponStealthPistol', 7);
+    AddRandomSidearm(class'#var(prefix)WeaponMiniCrossbow', 3);
 
     AddRandomMelee(class'#var(prefix)WeaponBaton', 20);
     AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 57);
@@ -290,8 +294,10 @@ function RandomizeSP(ScriptedPawn p, int percent)
         }
 
         GiveRandomWeapon(p, false, 2);
-        if( chance_single(50) )
+        if( chance_single(30) )
             GiveRandomWeapon(p, false, 2);
+        else if( chance_single(75) )
+            GiveRandomSidearm(p, false, 2);
         GiveRandomMeleeWeapon(p);
         p.SetupWeapon(false);
     } else if (IsRobot(p.Class) && chance_single(dxr.flags.settings.bot_weapons)) {

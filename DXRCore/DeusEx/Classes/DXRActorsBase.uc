@@ -235,11 +235,23 @@ static function Ammo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
     if( w == None || add_ammo <= 0 )
         return None;
 
+    // check if the pawn already has one of the alternate ammo types, really only useful for crossbow
+    // sabot doesn't do anything different to players, 20mm and WP rockets are both pretty mean
+    for(i=0; i<ArrayCount(w.AmmoNames); i++) {
+        if(w.AmmoNames[i]==None || w.AmmoNames[i]==class'AmmoNone') continue;
+        if(P.FindInventoryType(w.AmmoNames[i]) == None) continue;
+        w.AmmoName = w.AmmoNames[i];
+        break;
+    }
+
     if ( w.AmmoName == None || w.AmmoName == Class'AmmoNone' )
         return None;
 
     for(i=0; i<add_ammo; i++)
         w.AmmoType = Ammo(GiveItem(p, w.AmmoName));
+
+    w.AmmoName = None;
+    w.LoadAmmoType(w.AmmoType);
     return w.AmmoType;
 }
 
@@ -258,13 +270,16 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
         a = Ammo(p.FindInventoryType(item.class));
         if( a != None ) {
             a.AmmoAmount += a.default.AmmoAmount + add_ammo;
+            a.AmmoAmount = min(a.AmmoAmount, a.MaxAmmo);
             if( player != None )
                 player.UpdateAmmoBeltText(a);
             item.Destroy();
             return a;
         } else {
             //Make sure the extra ammo is included even if the pawn doesn't have it already
-            Ammo(item).AmmoAmount += add_ammo;
+            a = Ammo(item);
+            a.AmmoAmount += add_ammo;
+            a.AmmoAmount = min(a.AmmoAmount, a.MaxAmmo);
         }
     }
 
