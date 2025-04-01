@@ -182,6 +182,16 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
+        Spawn(class'PlaceholderItem',,, vectm(1975,-500,845)); //Crate on rooftop
+        Spawn(class'PlaceholderItem',,, vectm(1915,395,845)); //Lighter Crate on rooftop
+        Spawn(class'PlaceholderItem',,, vectm(-875,125,815)); //Satellites on rooftop
+        Spawn(class'PlaceholderItem',,, vectm(1290,-600,155)); //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(805,-615,185)); //Urinal divider
+        Spawn(class'PlaceholderItem',,, vectm(1215,-370,140)); //Bench near shower lockers
+        Spawn(class'PlaceholderItem',,, vectm(1640,185,140)); //Barracks first floor bed
+        Spawn(class'PlaceholderItem',,, vectm(-215,-865,185)); //Near Gas Purge Keypad
+        Spawn(class'PlaceholderItem',,, vectm(460,610,775)); //Behind Basketball Net
+
         class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
