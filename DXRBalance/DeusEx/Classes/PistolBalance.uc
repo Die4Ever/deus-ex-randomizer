@@ -5,8 +5,8 @@ function UpdateBalance()
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 12;
         BaseAccuracy = 0.6;
-        maxRange=2000;
-        AccurateRange=1000;
+        maxRange=1920;
+        AccurateRange=960;
     } else {
         HitDamage = 14;
         BaseAccuracy = 0.7;
@@ -23,7 +23,7 @@ function UpdateBalance()
 defaultproperties
 {
     HitDamage=12
-    maxRange=2000
-    AccurateRange=1000
+    maxRange=1920
+    AccurateRange=960
     BaseAccuracy=0.6
 }
