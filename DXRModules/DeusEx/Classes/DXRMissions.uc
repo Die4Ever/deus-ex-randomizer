@@ -638,10 +638,11 @@ function Actor GetActor(out GoalActor ga)
     foreach AllActors(class'Actor', a) {
 #ifdef hx
         if( (HXMover(a) != None && a.Name == ga.actorName)
-            || a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
+            || a.GetPropertyText("PrecessorName") == string(ga.actorName))
 #else
-        if(a.name == ga.actorName) {
+        if(a.name == ga.actorName)
 #endif
+        {
             ga.a = a;
             return a;
         }
