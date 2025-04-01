@@ -865,9 +865,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         ));
 
         waltonCrate.AddContent(class'BioelectricCell', 1);
-        for (numAugUpgrades = GetStartMapAugBonus(dxr); numAugUpgrades > 0; numAugUpgrades--) {
-            waltonCrate.AddContent(class'AugmentationUpgradeCannister', 1);
-        }
+        waltonCrate.AddContent(class'AugmentationUpgradeCannister', GetStartMapAugBonus(dxr));
         waltonCrate.AddContent(class'Credits', GetStartMapCreditsBonus(dxr));
         waltonCrate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
     }

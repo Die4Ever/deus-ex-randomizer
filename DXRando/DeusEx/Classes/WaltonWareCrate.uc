@@ -1,11 +1,19 @@
 class WaltonWareCrate extends DXRInfiniteCrate;
 
-var int NumSkillPoints;
+var travel int NumSkillPoints;
 
 function Destroyed()
 {
-    if (class'DXRando'.default.dxr != None && class'DXRando'.default.dxr.player != None) {
-        class'DXRando'.default.dxr.player.SkillPointsAdd(NumSkillPoints);
+    local DeusExPlayer player;
+
+    if (DeusExPlayer(Instigator) != None) {
+        player = DeusExPlayer(Instigator);
+    } else {
+        player = DeusExPlayer(GetPlayerPawn());
+    }
+
+    if (player != None) {
+        player.SkillPointsAdd(NumSkillPoints);
     }
 
     Super.Destroyed();
