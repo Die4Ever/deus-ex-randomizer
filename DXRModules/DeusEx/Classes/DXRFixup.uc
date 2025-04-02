@@ -207,8 +207,6 @@ function CheckConfig()
 static function class<Fragment> GuessFragmentClass(DeusExMover mov)
 {
     local class<Fragment> fragmentClass;
-    local Sound movSound;
-    local string logStr;
     local FragmentGuess guess;
     local int i;
 
