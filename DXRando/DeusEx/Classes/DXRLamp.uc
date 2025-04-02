@@ -18,7 +18,7 @@ function SetState(bool turnOn)
         LightType = LT_Steady;
         bUnlit = True;
         ScaleGlow = 2.5;
-    } else if (bOn) {
+    } else {
         bOn = False;
         LightType = LT_None;
         bUnlit = False;
