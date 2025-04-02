@@ -204,7 +204,7 @@ function CheckConfig()
     }
 }
 
-static function class<Fragment> GuessFragmentClass(DeusExMover mov)
+static function class<Fragment> GuessFragmentClass(#var(DeusExPrefix)Mover mov)
 {
     local class<Fragment> fragmentClass;
     local FragmentGuess guess;
@@ -231,7 +231,7 @@ static function class<Fragment> GuessFragmentClass(DeusExMover mov)
 function PreFirstEntry()
 {
     local #var(prefix)Lamp lmp;
-    local DeusExMover mov;
+    local #var(DeusExPrefix)Mover mov;
 
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
@@ -250,20 +250,20 @@ function PreFirstEntry()
     FixHolograms();
     FixShowers();
 
-    if (#defined(vanilla)) {
+    if (dxr.flags.settings.doorsdestructible > 0) {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', mov) {
+            if (!mov.bBreakable) {
+                mov.FragmentClass = GuessFragmentClass(mov);
+            }
+        }
+    }
+
+#ifdef vanilla
         foreach AllActors(class'#var(prefix)Lamp', lmp) {
             lmp.InitLight();
         }
         SetAllLampsState(true, true, true);
-
-        if (dxr.flags.settings.doorsdestructible > 0) {
-            foreach AllActors(class'DeusExMover', mov) {
-                if (!mov.bBreakable) {
-                    mov.FragmentClass = GuessFragmentClass(mov);
-                }
-            }
-        }
-    }
+#endif
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
