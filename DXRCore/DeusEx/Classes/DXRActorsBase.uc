@@ -231,10 +231,12 @@ static function bool IsMeleeWeapon(Inventory item)
 static function Ammo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
 {
     local int i;
+    local class<Ammo> origAmmoClass;
 
     if( w == None || add_ammo <= 0 )
         return None;
 
+    origAmmoClass = w.AmmoName;
     // check if the pawn already has one of the alternate ammo types, really only useful for crossbow
     // sabot doesn't do anything different to players, 20mm and WP rockets are both pretty mean
     for(i=0; i<ArrayCount(w.AmmoNames); i++) {
@@ -250,8 +252,11 @@ static function Ammo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
     for(i=0; i<add_ammo; i++)
         w.AmmoType = Ammo(GiveItem(p, w.AmmoName));
 
-    w.AmmoName = None;
-    w.LoadAmmoType(w.AmmoType);
+    if (w.AmmoName!=origAmmoClass) {
+        w.AmmoName = None;
+        w.LoadAmmoType(w.AmmoType);
+        if (w.AmmoName == None) w.AmmoName = w.AmmoType.class;
+    }
     return w.AmmoType;
 }
 
@@ -1106,6 +1111,8 @@ static function int GetRotationOffset(class<Actor> c)
     if(ClassIsChildOf(c, class'#var(prefix)Switch1'))
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)Switch2'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)VendingMachine'))
         return 16384;
     //ComputerPersonal is fine without this, so just leave it commented out
     //if(ClassIsChildOf(c, class'#var(prefix)ComputerPersonal'))
