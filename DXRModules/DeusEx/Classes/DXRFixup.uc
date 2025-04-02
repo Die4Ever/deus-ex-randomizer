@@ -224,8 +224,6 @@ function PreFirstEntry()
         foreach AllActors(class'#var(prefix)Lamp', lmp) {
             lmp.InitLight();
         }
-    }
-    if (class'MenuChoice_AutoLamps'.static.IsEnabled()) {
         SetAllLampsState(true, true, true);
     }
 #endif
