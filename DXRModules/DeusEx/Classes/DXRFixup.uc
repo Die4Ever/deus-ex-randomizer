@@ -622,6 +622,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     FixAmmoShurikenName();
     FixInventory(p);
     GarbageCollection(p);
+
+    if(p.InHand!=None && p.InHand.GetStateName()=='Idle2') {
+        warning("p.InHand: " $ p.InHand $ " is in state Idle2");
+        p.SetInHand(None);
+    }
 }
 
 function GarbageCollection(#var(PlayerPawn) p)
@@ -695,6 +700,26 @@ function _PreTravel()
 {
     if(#defined(mapfixes)) {
         PreTravelMapFixes();
+    }
+
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && class'MenuChoice_FixGlitches'.default.enabled) {
+        RemoveProjectilesInFlight();
+    }
+}
+
+//This is a safety mechanism so that if you leave a map with a bunch of projectiles
+//flying at you, you can at least somewhat more safely re-enter the map later (No more
+//re-entering a map to an about-to-explode LAM)
+function RemoveProjectilesInFlight()
+{
+    local #var(DeusExPrefix)Projectile p;
+
+    foreach AllActors(class'#var(DeusExPrefix)Projectile',p)
+    {
+        if (p.bStuck) continue; //darts/throwing knives stuck in the wall, planted grenades
+
+        //Destroy any in-flight projectiles
+        p.Destroy();
     }
 }
 

@@ -84,6 +84,7 @@ function vanilla_keys_rules()
         i++;
         break;
     case "03_NYC_AIRFIELD":
+        //East Gate Key (The one not held by the guard)
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
         keys_rules[i].max_pos = vect(5579, 4031, 999999);
@@ -100,6 +101,35 @@ function vanilla_keys_rules()
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Barracks Dormitory key
+        // disallow in security tower
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(5100, 3600, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = false;
+        i++;
+
+        // disallow below ground level, like the sewers or water area
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, -55);
+        keys_rules[i].allow = false;
+        i++;
+
+        // disallow in the actual dormitory
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(2837,2668,187);
+        keys_rules[i].max_pos = vect(3306,3138,380);
+        keys_rules[i].allow = false;
+        i++;
+
+        // allow anywhere else past the gate
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(1700, 2400, -999999);
+        keys_rules[i].max_pos = vect(5000, 3600, 999999);
         keys_rules[i].allow = true;
         i++;
         break;
@@ -522,6 +552,25 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        // allow between barracks and sector 3 access door
+        keys_rules[i].item_name = 'a51entr_vent';
+        keys_rules[i].min_pos = vect(-580, -99999, -240);
+        keys_rules[i].max_pos = vect(4280, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        // allow on the unlocked side of the vents, past the steam
+        keys_rules[i].item_name = 'a51entr_vent';
+        keys_rules[i].min_pos = vect(-580, -99999, -99999);
+        keys_rules[i].max_pos = vect(650, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        keys_rules[i].item_name = 'a51entr_vent';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
         break;
 
     case "15_area51_final":
@@ -621,6 +670,7 @@ function revision_keys_rules()
         break;
 
     case "03_NYC_AIRFIELD":
+        //East Gate Key (The one not held by the guard)
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
         keys_rules[i].max_pos = vect(5579, 4031, 999999);
@@ -632,6 +682,36 @@ function revision_keys_rules()
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
         keys_rules[i].allow = true;
         i++;
+
+        //Barracks Dormitory key
+        // disallow in security tower
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(5100, 3600, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = false;
+        i++;
+
+        // disallow below ground level, like the sewers or water area
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, -55);
+        keys_rules[i].allow = false;
+        i++;
+
+        // disallow in the actual dormitory
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(2837,2668,187);
+        keys_rules[i].max_pos = vect(3306,3138,380);
+        keys_rules[i].allow = false;
+        i++;
+
+        // allow anywhere else past the gate
+        keys_rules[i].item_name = 'Dormitory';
+        keys_rules[i].min_pos = vect(1700, 2400, -999999);
+        keys_rules[i].max_pos = vect(5000, 3600, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "03_NYC_747":

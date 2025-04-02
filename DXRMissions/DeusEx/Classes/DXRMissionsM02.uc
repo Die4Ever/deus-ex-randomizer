@@ -3,7 +3,7 @@ class DXRMissionsM02 extends DXRMissions;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2, shanty_start, jock_sewer, generator_sewer, generator_alley;
+    local int goal, loc, loc2, shanty_start, jock_holy_smokes, jock_sewer, generator_sewer, generator_alley;
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -39,7 +39,7 @@ function int InitGoals(int mission, string map)
         // NORMAL_GOAL is Jock, GOAL_TYPE1 is the generator, GOAL_TYPE2 is the computers
         AddGoal("02_NYC_WAREHOUSE", "Jock", NORMAL_GOAL, 'BlackHelicopter1', PHYS_None);
         AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
+        jock_holy_smokes = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
         jock_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
@@ -53,22 +53,33 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
         generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
         AddMutualExclusion(generator_alley, jock_sewer);// too easy
-        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(460,1130,1000), rot(0,32768,-16384));
+        AddMutualExclusion(generator_alley, jock_holy_smokes);
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(460,1130,1000), rot(0,32768,-16384));
+        AddMutualExclusion(loc, jock_holy_smokes);
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
         generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1695,784,-210), rot(32768,-32768,0));
         AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
-        //This location works now (with the rework), but we can wait on enabling it until we feel like we want to ruin runs
-        //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1340, -700, 575), rot(32768, 0, 32768)); //Near the ramp
-        //AddGoalLocation("02_NYC_WAREHOUSE", "4th Floor", GOAL_TYPE1, vect(390,-660,832), rot(32768,0,0)); //Among the boxes
+        AddMutualExclusion(generator_sewer, jock_holy_smokes);
+        AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1340, -700, 575), rot(32768, 0, 32768)); //Near the ramp
+        AddGoalLocation("02_NYC_WAREHOUSE", "4th Floor", GOAL_TYPE1, vect(390,-660,832), rot(32768,0,0)); //Among the boxes
 
-        goal = AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        goal = AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2 | GOAL_TYPE3, 'ComputerPersonal5', PHYS_Falling);
         AddGoalActor(goal, 1, 'AmbientSoundTriggered3', PHYS_None);
-        AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
+        AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2 | GOAL_TYPE4, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE2 | VANILLA_GOAL, vect(1002.848999, -897.071167, -136.499573), rot(0, -17064, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Break room", GOAL_TYPE2, vect(1484.731934, -917.463257, 73.499916), rot(0,-16384,0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE2, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE2, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
+
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE3, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
+        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE4, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
+        AddMutualExclusion(loc, loc2);
+        AddMutualExclusion(loc, jock_holy_smokes);
+
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE3, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
+        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE4, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
+        AddMutualExclusion(loc, loc2);
+        AddMutualExclusion(loc, jock_holy_smokes);
+
         return 22;
     }
 
@@ -77,7 +88,7 @@ function int InitGoals(int mission, string map)
 
 function int InitGoalsRev(int mission, string map)
 {
-    local int goal, loc, loc2, shanty_start, jock_sewer, generator_sewer, generator_alley;;
+    local int goal, loc, loc2, shanty_start, jock_holy_smokes, jock_sewer, generator_sewer, generator_alley;
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -113,7 +124,7 @@ function int InitGoalsRev(int mission, string map)
         // NORMAL_GOAL is Jock, GOAL_TYPE1 is the generator, GOAL_TYPE2 is the computers
         AddGoal("02_NYC_WAREHOUSE", "Jock", NORMAL_GOAL, 'JockHelicopter0', PHYS_None);
         AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
+        jock_holy_smokes = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
         jock_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
@@ -127,22 +138,32 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
         generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
         AddMutualExclusion(generator_alley, jock_sewer);// too easy
-        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(396,1130,1000), rot(0,32768,-16384));
+        AddMutualExclusion(generator_alley, jock_holy_smokes);
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(396,1130,1000), rot(0,32768,-16384));
+        AddMutualExclusion(loc, jock_holy_smokes);
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
         generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1695,784,-210), rot(32768,-32768,0));
         AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
-        // pawns run into these and break them
-        //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
-        //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
+        AddMutualExclusion(generator_sewer, jock_holy_smokes);
+        AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
 
-        goal=AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        goal=AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2 | GOAL_TYPE3, 'ComputerPersonal5', PHYS_Falling);
         AddGoalActor(goal, 1, 'AmbientSoundTriggered3', PHYS_None);
-        AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
+        AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2 | GOAL_TYPE4, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE2 | VANILLA_GOAL, vect(1002.848999, -897.071167, -136.499573), rot(0, -17064, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Break room", GOAL_TYPE2, vect(1484.731934, -917.463257, 73.499916), rot(0,-16384,0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE2, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE2, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
+
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE3, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
+        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE4, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
+        AddMutualExclusion(loc, loc2);
+        AddMutualExclusion(loc, jock_holy_smokes);
+
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE3, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
+        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE4, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
+        AddMutualExclusion(loc, loc2);
+        AddMutualExclusion(loc, jock_holy_smokes);
 
         return 22;
 

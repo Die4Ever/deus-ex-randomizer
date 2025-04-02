@@ -242,6 +242,36 @@ function RandomMJ12Globe()
     }
 }
 
+function RandomAnnaMannequin()
+{
+    local Cactus2 man;
+
+    //Anna only has this mannequin in Revision maps
+    if (!class'DXRMapVariants'.static.IsRevisionMaps(player())) return;
+
+    SetGlobalSeed("RandomAnnaMannequin");
+
+    foreach AllActors(class'Cactus2',man){break;}
+    if (man==None) return; //If for some reason it can't be found...
+
+    if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random mannequin
+
+    switch(rng(11)){
+        case 0:  PlayDressUp(man,class'JuanLebedev',9752); return;
+        case 1:  PlayDressUp(man,class'TerroristCommander',9752); return;
+        case 2:  PlayDressUp(man,class'JoJoFine',9752); return;
+        case 3:  PlayDressUp(man,class'JunkieMale',9752); return;
+        case 4:  PlayDressUp(man,class'BumMale',9752); return;
+        case 5:  PlayDressUp(man,class'BumMale2',9752); return;
+        case 6:  PlayDressUp(man,class'BumMale3',9752); return;
+        case 7:  PlayDressUp(man,class'StantonDowd',9752); return;
+        case 8:  PlayDressUp(man,class'ThugMale',9752); return;
+        case 9:  PlayDressUp(man,class'ThugMale2',9752); return;
+        case 10: PlayDressUp(man,class'ThugMale3',9752); return;
+    }
+
+}
+
 function RandomHotelDoorSounds()
 {
     local AmbientSound as;
@@ -342,6 +372,10 @@ function PreFirstEntry()
         case "04_NYC_UNATCOIsland":
         case "05_NYC_UNATCOIsland":
             RandomLiberty();
+            break;
+        case "01_NYC_UNATCOHQ":
+        case "03_NYC_UNATCOHQ":
+            RandomAnnaMannequin();
             break;
         case "04_NYC_HOTEL":
             RandomHotelDoorSounds();

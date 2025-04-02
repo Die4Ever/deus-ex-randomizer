@@ -4,6 +4,7 @@ var float LastUsed;
 var float AutoLength;
 var float AutoEnergyMult;
 var float Level5Value;
+var float activationCost;
 
 function PostBeginPlay()
 {
@@ -147,6 +148,15 @@ function Activate()
     local Sound oldAmbient;
 
     oldAmbient = Player.AmbientSound;
+
+    if(activationCost > 0 && Level.LevelAction == LEVACT_None) {
+        if(Player.Energy < activationCost) {
+            Deactivate();
+            return;
+        } else {
+            Player.Energy -= activationCost;
+        }
+    }
 
     _Activate();// call the super, but this is merges
 

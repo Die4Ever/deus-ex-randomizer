@@ -86,6 +86,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Greasel g;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)OrdersTrigger ot;
+    local OnceOnlyTrigger oot;
     local #var(prefix)TriadRedArrow bouncer;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
@@ -180,6 +181,16 @@ function PreFirstEntryMapFixes()
         }
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
+
+        Spawn(class'PlaceholderItem',,, vectm(1975,-500,845)); //Crate on rooftop
+        Spawn(class'PlaceholderItem',,, vectm(1915,395,845)); //Lighter Crate on rooftop
+        Spawn(class'PlaceholderItem',,, vectm(-875,125,815)); //Satellites on rooftop
+        Spawn(class'PlaceholderItem',,, vectm(1290,-600,155)); //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(805,-615,185)); //Urinal divider
+        Spawn(class'PlaceholderItem',,, vectm(1215,-370,140)); //Bench near shower lockers
+        Spawn(class'PlaceholderItem',,, vectm(1640,185,140)); //Barracks first floor bed
+        Spawn(class'PlaceholderItem',,, vectm(-215,-865,185)); //Near Gas Purge Keypad
+        Spawn(class'PlaceholderItem',,, vectm(460,610,775)); //Behind Basketball Net
 
         class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
@@ -831,6 +842,14 @@ function PreFirstEntryMapFixes()
             m.bBreakable=False;
         }
 
+        //Make sure the spider bot doors can't be closed again
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'Self_Destruct'){
+            m.Tag='Self_Destruct_Once';
+        }
+        oot = Spawn(class'OnceOnlyTrigger');
+        oot.Event='Self_Destruct_Once';
+        oot.Tag='Self_Destruct';
+
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //The sleeping bots are already hostile, but are sitting in Idle state.
             //The existing orders trigger can just change them to Wandering instead of Attacking
@@ -869,7 +888,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(1079.73,-1068.17,842.4)); //Pipes above water
         Spawn(class'PlaceholderItem',,, vectm(90,-666,1030)); //Under corner mirror
         Spawn(class'PlaceholderItem',,, vectm(175,-2515,855)); //Pit near security computer
-        Spawn(class'PlaceholderItem',,, vectm(75,-1730,900)); //Lower hallway alcove
+        Spawn(class'PlaceholderItem',,, vectm(75,-1730,905)); //Lower hallway alcove
         Spawn(class'PlaceholderItem',,, vectm(-90,-2320,1030)); //Upper Hallway near computer
         Spawn(class'PlaceholderItem',,, vectm(-800,-650,1030)); //Upper Hallway near elevator
         Spawn(class'PlaceholderItem',,, vectm(510,-1450,860)); //Lower Hallway near where you drop in

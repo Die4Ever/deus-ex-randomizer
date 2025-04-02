@@ -4,8 +4,10 @@ class AugNinja extends Augmentation;
 
 #ifndef injections
 var float Level5Value; // does nothing outside of vanilla, just a placeholder
+var float activationCost;
 simulated function float GetAugLevelValue()
 {
+    if(!bIsActive) return -1;
     return LevelValues[CurrentLevel];
 }
 #endif
@@ -79,8 +81,8 @@ function Deactivate()
 defaultproperties
 {
     EnergyRate=40.000000
-    Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
-    smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
+    Icon=Texture'AugIconNinja'
+    smallIcon=Texture'AugIconNinja_Small'
     AugmentationName="Ninja"
     Description="I AM NINJA!"
     MPInfo="I AM NINJA!"
@@ -89,6 +91,7 @@ defaultproperties
     LevelValues(2)=1.6
     LevelValues(3)=1.7
     Level5Value=1.8
+    activationCost=1
     AugmentationLocation=LOC_Leg
     MPConflictSlot=5
 }

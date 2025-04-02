@@ -1,16 +1,17 @@
 class DXRVersion extends Info;
 
+//#region version info
 simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
 {
     major=3;
     minor=4;
-    patch=0;
-    build=8;//build can't be higher than 99
+    patch=2;
+    build=0;//build can't be higher than 99
 }
 
 simulated static function bool VersionIsStable()
 {
-    return true;
+    return false;
 }
 
 simulated static function string VersionString(optional bool full)
@@ -18,8 +19,13 @@ simulated static function string VersionString(optional bool full)
     local int major,minor,patch,build;
     local string status;
 
-    status = "";
+    status = "Alpha";
 
+//#endregion
+//////
+////// you probably don't need to touch anything below here
+//////
+//#region utility functions
     if(status!="") {
         status = " " $ status;
         full = true;
@@ -27,10 +33,6 @@ simulated static function string VersionString(optional bool full)
     CurrentVersion(major,minor,patch,build);
     return VersionToString(major, minor, patch, build, full) $ status;
 }
-
-//////
-////// you probably don't need to touch the stuff below
-//////
 
 simulated static function int VersionToInt(int major, int minor, int patch, int build)
 {
@@ -78,3 +80,4 @@ simulated static function bool VersionOlderThan(int config_version, int major, i
 {
     return config_version < VersionToInt(major, minor, patch, build);
 }
+//#endregion

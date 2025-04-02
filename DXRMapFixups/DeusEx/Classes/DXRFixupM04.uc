@@ -66,6 +66,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Datacube dc;
     local Smuggler smug;
     local DXRReinforcementPoint reinforce;
+    local #var(prefix)CrateExplosiveSmall boom;
+    local #var(prefix)Trigger trig;
     local #var(PlayerPawn) p;
 
     p = player();
@@ -95,6 +97,28 @@ function PreFirstEntryMapFixes()
                     st.awardMessage = "Saved Paul";
                 }
             }
+        }
+
+        foreach AllActors(class'#var(prefix)CrateExplosiveSmall',boom,'BlowDoor'){
+            //TNT crate explodes when the MIBs are ordered to move in, instead of
+            //when the MIB actually starts moving (in case he's gassed or something)
+            boom.Tag='RaidBegin';
+
+            //Put a trigger on the crate as well with big radius, just in case someone else tries to run in first
+            //This can happen if you, for example, gas the big group on the upper floor, but not the single MIB
+            //near the elevator (he gets aggroed by the grenade, but locked in place until the conversation is over,
+            //since he's involved in it).
+            ft = Spawn(class'#var(prefix)FlagTrigger',,,boom.Location);
+            ft.TriggerType=TT_ClassProximity;
+            ft.SetCollisionSize(300,40); //Basically as big as it can be without hitting the MIB near the elevator
+            //ft.ClassProximityType=class'#var(prefix)MIB';
+            ft.ClassProximityType=class'#var(prefix)HumanMilitary';
+            ft.event = boom.Tag;
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.FlagName='M04RaidTeleportDone'; //Don't trigger as extra enemies spawn in on first entry (particularly Serious Sam mode)
+            ft.flagValue=True;
+
         }
 
         class'GilbertWeaponMegaChoice'.static.Create(p);
@@ -587,6 +611,7 @@ function AnyEntryMapFixes()
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)BlackHelicopter jock;
     local bool raidStarted;
+    local JoJoFine jojo;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -650,6 +675,13 @@ function AnyEntryMapFixes()
 
         if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
             DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
+        }
+
+        if (dxr.flagbase.GetBool('MS_JoJoUnhidden')) {
+            foreach AllActors(class'JoJoFine', jojo, 'JoJoInLobby') {
+                jojo.Destroy();
+                break;
+            }
         }
 
         break;

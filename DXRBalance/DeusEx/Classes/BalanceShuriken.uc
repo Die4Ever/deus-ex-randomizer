@@ -35,8 +35,8 @@ function BeginPlay()
 {
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         MaxSpeed = 75000;
-        AccurateRange = 2000;
-        maxRange = 4000;
+        AccurateRange = 1920;
+        maxRange = 3840;
     } else {
         MaxSpeed = 750;
         AccurateRange = 640;
@@ -47,8 +47,8 @@ function BeginPlay()
 
 defaultproperties
 {
-    AccurateRange=2000
-    maxRange=4000
+    AccurateRange=1920
+    maxRange=3840
     Speed=750.000000
     MaxSpeed=75000.000000
 }

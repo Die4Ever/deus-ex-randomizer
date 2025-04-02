@@ -276,6 +276,38 @@ function int InitGoalsRev(int mission, string map)
     return mission+1000;
 }
 
+function bool IsLayoutAllowed(int goalsToLocations[32])
+{
+    local int i, above, below;
+    local string loc;
+
+    switch(dxr.localURL) {
+    case "14_OCEANLAB_SILO":
+        for(i=0; i < num_goals; i++) {
+            loc = locations[goalsToLocations[i]].name;
+            switch(loc) {
+                case "Surface Meeting Room":
+                case "Radio":
+                case "Machine Shop":
+                case "Vanilla Escape":
+                case "Sniper Tower":
+                    above++;
+                    break;
+                case "Launch Command":
+                case "Fourth Floor":
+                case "Cherry Picker":
+                    below++;
+                    break;
+                default:
+                    err("IsLayoutAllowed unknown location name: " $ goals[i].name @ loc);
+            }
+        }
+        if(above==0 || below==0) return false;
+        break;
+    }
+    return true;
+}
+
 function UpdateLocation(Actor a)
 {
     _UpdateLocation(a, "Jock and Tong");
@@ -503,6 +535,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
             //Jock starts in the Wandering state for some reason
             sp.SetOrders('Standing');
+        }
+    }
+    if (!RevisionMaps && dxr.localURL=="12_VANDENBERG_CMD") {
+        if(dxr.flags.IsSpeedrunMode()) {
+            Spawnm(class'VendingMachineEnergy',,, vect(6360, 7975, -3055), rot(0,32762,0));
+        } else {
+            Spawnm(class'VendingMachine',,, vect(6360, 7975, -3055), rot(0,32762,0));
         }
     }
 }

@@ -255,6 +255,48 @@ function int InitGoalsRev(int mission, string map)
     return mission+1000;
 }
 
+function bool IsLayoutAllowed(int goalsToLocations[32])
+{
+    local int i, engine_room, helipad, pumps_room;
+    local string loc;
+
+    switch(dxr.localURL) {
+    case "09_NYC_SHIPBELOW":
+        for(i=0; i < num_goals; i++) {
+            loc = locations[goalsToLocations[i]].name;
+            switch(loc) {
+                case "North Engine Room":
+                case "Engine Control Room":
+                case "NW Engine Room":
+                case "SW Engine Room":
+                case "Engine Room Tower":
+                case "Engine Server Room": // Revision
+                case "Lower Engine Room": // Revision
+                    engine_room++;
+                    break;
+
+                case "South Helipad":
+                case "Helipad Air Control":
+                case "East Helipad":
+                case "Helibay Barracks":
+                case "Helipad Air Control":
+                    helipad++;
+                    break;
+
+                case "Bilge Pumps Balcony":
+                case "Bilge Pumps Hallway": // maybe?
+                case "Bilge Pumps":
+                case "Bilge Pump Room":
+                    pumps_room++;
+                    break;
+            }
+        }
+        if(engine_room > 3 || helipad == 0 || pumps_room > 2) return false;
+        break;
+    }
+    return true;
+}
+
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)Barrel1 barrel;

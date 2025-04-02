@@ -1084,6 +1084,63 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     return bCanPickup;
 }
 
+function float GetCurrentGroundSpeed()
+{
+    local float augValue, speed;
+
+    // Remove this later and find who's causing this to Access None MB
+    if ( AugmentationSystem == None )
+        return 0;
+
+    augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
+    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugOnlySpeed'));
+
+    if (augValue == -1.0)
+        augValue = 1.0;
+
+    if ( Level.NetMode != NM_Standalone )
+        speed = Self.mpGroundSpeed * augValue;
+    else
+        speed = Default.GroundSpeed * augValue;
+
+    if (UsingBiomod()){
+        //Swimming is athletics in Biomod, which modifies movespeed
+        if(!bIsCrouching && !bForceDuck)
+        {
+            augValue = SkillSystem.getSkillLevel(class'SkillSwimming');
+
+            switch(augValue)
+            {
+                case 1.0:
+                    augValue = 1.0;
+                    break;
+
+                case 2.0:
+                    augValue = 1.1;
+                    break;
+
+                case 3.0:
+                    augValue = 1.2;
+                    break;
+
+                default:
+                    augValue = 0.8;
+                    break;
+            }
+
+            speed *= augValue;
+        }
+    }
+    if (UsingBiomod() || UsingShifter()){
+        if(drugEffectTimer < 0) //(FindInventoryType(Class'DeusEx.ZymeCharged') != None)
+            speed += Default.GroundSpeed * 0.2;
+    }
+
+
+    return speed;
+}
+
 function bool AddInventory( inventory NewItem )
 {
     local bool retval;

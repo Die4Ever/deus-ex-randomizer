@@ -8,6 +8,11 @@ function InitStateMachine()
 {
     local DeusExLevelInfo info;
 
+    // ensure DXRFlags can load flags before we start
+    if( dxr == None ) dxr = class'DXRando'.default.dxr;
+    if( dxr == None ) return;
+    if( dxr.flagbase == None ) return;
+
     Player = DeusExPlayer(GetPlayerPawn());
 
     foreach AllActors(class'DeusExLevelInfo', info)
@@ -58,14 +63,4 @@ function FirstFrame()
 
     Super.FirstFrame();
     dxInfo.mapName = mapName;
-}
-
-function Timer()
-{
-    // ensure DXRFlags can load flags before we start
-    if( dxr == None ) dxr = class'DXRando'.default.dxr;
-    if( dxr == None ) return;
-    if( dxr.flagbase == None ) return;
-
-    Super.Timer();
 }
