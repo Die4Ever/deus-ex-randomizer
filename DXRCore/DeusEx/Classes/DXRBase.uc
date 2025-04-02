@@ -326,13 +326,14 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     }
 #endif
 
-    if((aug!=None && class'MenuChoice_BalanceAugs'.static.IsDisabled())
-        || (sk!=None && class'MenuChoice_BalanceSkills'.static.IsDisabled())) {
-        // TODO: descriptions for balance disabled
-        s = "";
-    }
-    else if(wet == 0) {
-        s = "(Strength) " $ word $ ":|n    " $ s;
+    if(wet == 0) {
+        if(aug!=None && class'MenuChoice_BalanceAugs'.static.IsDisabled()) {
+            s = "";
+        } else if(sk!=None && class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
+            s = "";
+        } else {
+            s = "(Strength) " $ word $ ":|n    " $ s;
+        }
     } else {
         s = "(DXRando) " $ word $ ":|n    " $ s;
         s = s $ "|n(Defaults) " $ word $ ":|n    " $ s_defaults;

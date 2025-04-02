@@ -20,7 +20,7 @@ var int CurPage, SelectedAug;
 var Texture PageIcons[2];
 var OATButtonPos HighlighterOffset, PageLabelPos[2], AugButtonPos[7];
 
-var localized string StrNextPage, StrLastPage, StrCloseWindow;
+var localized string StrNextPage, StrLastPage, StrCloseWindow, StrAugLevel;
 var string CurAugName;
 var OATButtonPos AugNameLabelPos, AugNameLabelSize;
 var MenuUILabelWindow AugNameLabel;
@@ -81,105 +81,6 @@ event StyleChanged()
 		EnergyCase.SetBackgroundStyle(DSTY_Masked);
 	}
 	EnergyCase.SetTileColor(Theme.GetColorFromName('HUDColor_Background'));
-}
-
-//OAT, 8/4/24: So this is bullshit. There's a native function for this, but it's often inherently unreliable.
-//We're going to brute force this instead, because text centering ALSO doesn't work. Never trust native functionality, I swear to god.
-function int GetCharacterWidth(string TestChar)
-{
-	local int Ret;
-	
-	//OAT, 8/4/24: Hack for non-english characters being presumed to be chunky. This WILL be slightly wrong.
-	//If you're making a localization support for this, you can do TestChar == Chr(X), with X as the numerical ID of the non-english character...
-	//Then just pop in the proper value you've deduced from screenshots of the characters, minus the spacing between them and neighboring characters.
-	Ret = 7;
-	
-	if (TestChar == "A") Ret = 8;
-	else if (TestChar == "B") Ret = 8;
-	else if (TestChar == "C") Ret = 8;
-	else if (TestChar == "D") Ret = 8;
-	else if (TestChar == "E") Ret = 8;
-	else if (TestChar == "F") Ret = 8;
-	else if (TestChar == "G") Ret = 8;
-	else if (TestChar == "H") Ret = 8;
-	else if (TestChar == "I") Ret = 2;
-	else if (TestChar == "J") Ret = 7;
-	else if (TestChar == "K") Ret = 8;
-	else if (TestChar == "L") Ret = 7;
-	else if (TestChar == "M") Ret = 10;
-	else if (TestChar == "N") Ret = 8;
-	else if (TestChar == "O") Ret = 9;
-	else if (TestChar == "P") Ret = 8;
-	else if (TestChar == "Q") Ret = 10;
-	else if (TestChar == "R") Ret = 8;
-	else if (TestChar == "S") Ret = 8;
-	else if (TestChar == "T") Ret = 8;
-	else if (TestChar == "U") Ret = 8;
-	else if (TestChar == "V") Ret = 8;
-	else if (TestChar == "W") Ret = 13;
-	else if (TestChar == "X") Ret = 8;
-	else if (TestChar == "Y") Ret = 8;
-	else if (TestChar == "Z") Ret = 8;
-	
-	else if (TestChar == "a") Ret = 7;
-	else if (TestChar == "b") Ret = 7;
-	else if (TestChar == "c") Ret = 6;
-	else if (TestChar == "d") Ret = 7;
-	else if (TestChar == "e") Ret = 6;
-	else if (TestChar == "f") Ret = 5;
-	else if (TestChar == "g") Ret = 7;
-	else if (TestChar == "h") Ret = 7;
-	else if (TestChar == "i") Ret = 2;
-	else if (TestChar == "j") Ret = 3;
-	else if (TestChar == "k") Ret = 7;
-	else if (TestChar == "l") Ret = 2;
-	else if (TestChar == "m") Ret = 8;
-	else if (TestChar == "n") Ret = 6;
-	else if (TestChar == "o") Ret = 7;
-	else if (TestChar == "p") Ret = 7;
-	else if (TestChar == "q") Ret = 7;
-	else if (TestChar == "r") Ret = 5;
-	else if (TestChar == "s") Ret = 7;
-	else if (TestChar == "t") Ret = 5;
-	else if (TestChar == "u") Ret = 7;
-	else if (TestChar == "v") Ret = 7;
-	else if (TestChar == "w") Ret = 10;
-	else if (TestChar == "x") Ret = 7;
-	else if (TestChar == "y") Ret = 7;
-	else if (TestChar == "z") Ret = 7;
-	
-	else if (TestChar == " ") Ret = 5;
-	else if (TestChar == "-") Ret = 6;
-	else if (TestChar == "_") Ret = 7;
-	else if (TestChar == ".") Ret = 2;
-	else if (TestChar == "0") Ret = 9;
-	else if (TestChar == "1") Ret = 2;
-	else if (TestChar == "2") Ret = 8;
-	else if (TestChar == "3") Ret = 8;
-	else if (TestChar == "4") Ret = 9;
-	else if (TestChar == "5") Ret = 8;
-	else if (TestChar == "6") Ret = 8;
-	else if (TestChar == "7") Ret = 9;
-	else if (TestChar == "8") Ret = 9;
-	else if (TestChar == "9") Ret = 8;
-	
-	return Ret;
-}
-
-function int GetStringWidth(string TestString)
-{
-	local int i, Ret;
-	local string TSnippet;
-	
-	for(i=0; i<Len(TestString); i++)
-	{
-		TSnippet = Mid(TestString, i, 1);
-		Ret += GetCharacterWidth(TSnippet);
-	}
-	
-	Ret += Len(TestString)-1;
-	
-	return Ret;
 }
 
 //OAT, 8/26/23: One last hack from beyond the grave: Update our colors to menu type. Thanks.
@@ -266,14 +167,14 @@ function UpdateHighlighterPos()
 			{
 				if (Augs[0] != None)
 				{
-					CurAugName = Augs[0].AugmentationName;
+					CurAugName = Augs[0].AugmentationName$CR()$SprintF(StrAugLevel, Augs[0].CurrentLevel+1);
 				}
 			}
 			else
 			{
 				if (Augs[5] != None)
 				{
-					CurAugName = Augs[5].AugmentationName;
+					CurAugName = Augs[5].AugmentationName$CR()$SprintF(StrAugLevel, Augs[5].CurrentLevel+1);
 				}
 			}
 		break;
@@ -282,14 +183,14 @@ function UpdateHighlighterPos()
 			{
 				if (Augs[1] != None)
 				{
-					CurAugName = Augs[1].AugmentationName;
+					CurAugName = Augs[1].AugmentationName$CR()$SprintF(StrAugLevel, Augs[1].CurrentLevel+1);
 				}
 			}
 			else
 			{
 				if (Augs[6] != None)
 				{
-					CurAugName = Augs[6].AugmentationName;
+					CurAugName = Augs[6].AugmentationName$CR()$SprintF(StrAugLevel, Augs[6].CurrentLevel+1);
 				}
 			}
 		break;
@@ -298,14 +199,14 @@ function UpdateHighlighterPos()
 			{
 				if (Augs[2] != None)
 				{
-					CurAugName = Augs[2].AugmentationName;
+					CurAugName = Augs[2].AugmentationName$CR()$SprintF(StrAugLevel, Augs[2].CurrentLevel+1);
 				}
 			}
 			else
 			{
 				if (Augs[7] != None)
 				{
-					CurAugName = Augs[7].AugmentationName;
+					CurAugName = Augs[7].AugmentationName$CR()$SprintF(StrAugLevel, Augs[7].CurrentLevel+1);
 				}
 			}
 		break;
@@ -314,14 +215,14 @@ function UpdateHighlighterPos()
 			{
 				if (Augs[3] != None)
 				{
-					CurAugName = Augs[3].AugmentationName;
+					CurAugName = Augs[3].AugmentationName$CR()$SprintF(StrAugLevel, Augs[3].CurrentLevel+1);
 				}
 			}
 			else
 			{
 				if (Augs[8] != None)
 				{
-					CurAugName = Augs[8].AugmentationName;
+					CurAugName = Augs[8].AugmentationName$CR()$SprintF(StrAugLevel, Augs[8].CurrentLevel+1);
 				}
 			}
 		break;
@@ -330,14 +231,14 @@ function UpdateHighlighterPos()
 			{
 				if (Augs[4] != None)
 				{
-					CurAugName = Augs[4].AugmentationName;
+					CurAugName = Augs[4].AugmentationName$CR()$SprintF(StrAugLevel, Augs[4].CurrentLevel+1);
 				}
 			}
 			else
 			{
 				if (Augs[9] != None)
 				{
-					CurAugName = Augs[9].AugmentationName;
+					CurAugName = Augs[9].AugmentationName$CR()$SprintF(StrAugLevel, Augs[9].CurrentLevel+1);
 				}
 			}
 		break;
@@ -356,7 +257,6 @@ function UpdateHighlighterPos()
 		break;
 	}
 	
-	AugNameLabel.SetPos(AugNameLabelPos.X  + (GetStringWidth(CurAugName) * -0.5), AugNameLabelPos.Y);
 	AugNameLabel.SetText(CurAugName);
 }
 
@@ -450,9 +350,11 @@ function CreateControls()
 		Highlighter = OATAugSelectorHighlight(NewChild(class'OATAugSelectorHighlight'));
 		Highlighter.SetSensitivity(False);
 		
-		AugNameLabel = CreateMenuLabel(AugNameLabelPos.X, AugNameLabelPos.Y, "", winClient);
+		//OAT, 3/12/25: Turns out anchoring to self instead of WinClient fixes centering. My god. What treason.
+		AugNameLabel = CreateMenuLabel(AugNameLabelPos.X, AugNameLabelPos.Y, "", Self);
 		AugNameLabel.SetSize(AugNameLabelSize.X, AugNameLabelSize.Y);
 		AugNameLabel.SetPos(AugNameLabelPos.X, AugNameLabelPos.Y);
+		AugNameLabel.SetTextAlignments(HALIGN_Center, AugNameLabel.VAlign);
 		
 		//OAT: If we don't have any augs except flashlight or some bullshit, start on page 2, of course.
 		LoadAugPage(1 - int(bHadFirstFive));
@@ -856,11 +758,12 @@ function bool CanStack()
 
 defaultproperties
 {
-     AugNameLabelPos=(X=93,Y=246)
+     AugNameLabelPos=(X=0,Y=246)
      AugNameLabelSize=(X=186,Y=24)
      StrNextPage="Next Page"
      StrLastPage="Prev. Page"
      StrCloseWindow="Close menu"
+     StrAugLevel="(Lvl %d)"
      
      PageIcons(0)=Texture'OATNextAugPageIcon'
      PageIcons(1)=Texture'OATPrevAugPageIcon'

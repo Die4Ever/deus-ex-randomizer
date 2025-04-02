@@ -75,6 +75,11 @@ function PreFirstEntryMapFixes()
                 GlowUp(k);
         }
 
+        //Prevent TNT crates in subway from being shuffled (in case Goal Rando is disabled)
+        foreach AllActors(class'CrateExplosiveSmall', c) {
+            c.bIsSecretGoal = true;
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'BarrelAmbrosia', ambrosia) {
                 foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {
@@ -234,12 +239,12 @@ function PreFirstEntryMapFixes()
 
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             // this map is too hard
-            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(-1890,1840,1775)); //Rooftop apartment hall
-            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(700,850,1175)); //Apartment top floor
-            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-1220,1770,15)); //Next to electrical box
-            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-2150,595,-240)); //Pipe next to sewer ladder
-            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-2190,2230,315)); //Fire Escape near ground entrance
-            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
+            SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(-1890,1840,1775)); //Rooftop apartment hall
+            SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(700,850,1175)); //Apartment top floor
+            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-1220,1770,15)); //Next to electrical box
+            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-2150,595,-240)); //Pipe next to sewer ladder
+            SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-2190,2230,315)); //Fire Escape near ground entrance
+            SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
         }
 
         break;

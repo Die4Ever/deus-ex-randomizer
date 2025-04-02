@@ -20,8 +20,12 @@ function PostBeginPlay()
     Super.PostBeginPlay();
 
     if(class'MenuChoice_BalanceItems'.static.IsDisabled()) {
-        Charge = class'TechGogglesInjBase'.default.Charge;
+        default.Charge = 500;
+        Charge = default.Charge;
         return;
+    } else {
+        default.Charge = 1000;
+        Charge = default.Charge;
     }
 
     Description = CalcDescription();

@@ -61,10 +61,15 @@ function CheckOfflineUpdates()
         newsheaders[0] = "Is Deus Ex Real Life Yet?";
         newstexts[0] = "Thank you for still playing this mod in the year " $ Level.Year $ ", but you're probably extremely behind on updates. The project is open source, so even if we have moved on, maybe someone else has taken over?";
     }
-    else if(DateAtLeast(2025, 6, 23)) {// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler
-        newsdates[0] = "2025-06-22";
+    else if(DateAtLeast(2026, 6, 23)) {// day after Deus Ex anniversary, especially with timezones, TODO: make this dynamic from the compiler?
+        newsdates[0] = "2026-06-22";
         newsheaders[0] = "Anniversary Update!";
         newstexts[0] = "You have Online Features disabled or the server is down, so we can't know for sure, but there's a good chance that you are behind many updates!|n|nAlso happy anniversary to Deus Ex and Randomizer!";
+    }
+    else if(DateAtLeast(2025, 10, 13)) {
+        newsdates[0] = "2025-10-13";
+        newsheaders[0] = "Halloween Update!";
+        newstexts[0] = "You have Online Features disabled or the server is down, so we can't know for sure, but there's a good chance that a new Halloween Update has been released!";
     } else {
         return;
     }

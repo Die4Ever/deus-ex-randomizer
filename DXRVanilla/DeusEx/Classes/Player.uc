@@ -229,7 +229,7 @@ exec function ShowMainMenu()
 
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 {
-    local bool bCanPickup;
+    local bool bCanPickup,banned;
     local #var(DeusExPrefix)Weapon weap,ownedWeapon;
     local int ammoAvail,ammoToAdd,ammoRemaining;
     local class<Ammo> defAmmoClass;
@@ -261,9 +261,28 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
         }
     }
 
+    //Preemptively remove default ammo from gun if that's banned (but the gun is not)
+    weap = #var(DeusExPrefix)Weapon(FrobTarget);
+    if (weapon!=None && weap.PickUpAmmoCount!=0){
+        if (weap.AmmoNames[0]==None){
+            defAmmoClass=weap.AmmoName;
+        } else {
+            defAmmoClass=weap.AmmoNames[0];
+        }
+
+        if (defAmmoClass!=class'#var(prefix)AmmoNone'){
+            banned=False;
+            if (loadout!=None){
+                banned = loadout.is_banned(defAmmoClass);
+            }
+            if (banned){
+                weap.PickUpAmmoCount=0; //Remove the ammo from the gun
+            }
+        }
+    }
+
     bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly);
 
-    weap = #var(DeusExPrefix)Weapon(FrobTarget);
     if (bCanPickup==False && weap!=None && weap.PickUpAmmoCount!=0){
         ownedWeapon=#var(DeusExPrefix)Weapon(FindInventoryType(FrobTarget.Class));
         //You can't pick up the weapon, but let's yoink the ammo
@@ -280,27 +299,36 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
             if (defAmmoClass!=class'#var(prefix)AmmoNone' && !isThrown){
                 ownAmmo = #var(DeusExPrefix)Ammo(FindInventoryType(defAmmoClass));
 
-                if (ownAmmo==None){
-                    ownAmmo = #var(DeusExPrefix)Ammo(Spawn(defAmmoClass));
-                    AddInventory(ownAmmo);
-                    ownAmmo.BecomeItem();
-                    ownAmmo.AmmoAmount=0;
-                    ownAmmo.GotoState('Idle2');
+                banned=False;
+                if (loadout!=None){
+                    banned = loadout.is_banned(defAmmoClass);
                 }
 
-                ammoRemaining=0;
-                ammoToAdd = ammoAvail;
-                if (ownAmmo.AmmoAmount+ammoAvail > ownAmmo.MaxAmmo) {
-                    ammoToAdd = ownAmmo.MaxAmmo - ownAmmo.AmmoAmount;
-                    ammoRemaining = ammoAvail - ammoToAdd;
-                }
+                if (!banned){
+                    if (ownAmmo==None){
+                        ownAmmo = #var(DeusExPrefix)Ammo(Spawn(defAmmoClass));
+                        AddInventory(ownAmmo);
+                        ownAmmo.BecomeItem();
+                        ownAmmo.AmmoAmount=0;
+                        ownAmmo.GotoState('Idle2');
+                    }
 
-                ownAmmo.AddAmmo(ammoToAdd);
-                weap.PickUpAmmoCount=ammoRemaining;
-                if (ammoToAdd>0){
-                    ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName,, true);
+                    ammoRemaining=0;
+                    ammoToAdd = ammoAvail;
+                    if (ownAmmo.AmmoAmount+ammoAvail > ownAmmo.MaxAmmo) {
+                        ammoToAdd = ownAmmo.MaxAmmo - ownAmmo.AmmoAmount;
+                        ammoRemaining = ammoAvail - ammoToAdd;
+                    }
+
+                    ownAmmo.AddAmmo(ammoToAdd);
+                    weap.PickUpAmmoCount=ammoRemaining;
+                    if (ammoToAdd>0){
+                        ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName,, true);
+                    }
+                    UpdateBeltText(weap);
+                } else {
+                    weap.PickUpAmmoCount=0; //Remove the ammo from the gun
                 }
-                UpdateBeltText(weap);
             }
         }
     }
@@ -308,14 +336,21 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     pickup = #var(DeusExPrefix)Pickup(FrobTarget);
     if (pickup!=None && pickup.Owner!=Self && pickup.maxCopies>1){
         //Pickup failed
-        ownedPickup=#var(DeusExPrefix)Pickup(FindInventoryType(FrobTarget.Class));
-        if (ownedPickup!=None && (ownedPickup.NumCopies+pickup.NumCopies)>ownedPickup.maxCopies){
-            ammoToAdd=ownedPickup.maxCopies - ownedPickup.NumCopies;
-            if (ammoToAdd!=0){
-                pickup.NumCopies = (ownedPickup.NumCopies+pickup.NumCopies)-ownedPickup.maxCopies;
-                ownedPickup.NumCopies = ownedPickup.maxCopies;
-                UpdateBeltText(ownedPickup);
-                ClientMessage("Picked up "$ammoToAdd$" of the "$pickup.ItemName,, true);
+        banned=False;
+        if (loadout!=None){
+            banned = loadout.is_banned(class<#var(DeusExPrefix)Pickup>(FrobTarget.Class));
+        }
+
+        if (!banned){
+            ownedPickup=#var(DeusExPrefix)Pickup(FindInventoryType(FrobTarget.Class));
+            if (ownedPickup!=None && (ownedPickup.NumCopies+pickup.NumCopies)>ownedPickup.maxCopies){
+                ammoToAdd=ownedPickup.maxCopies - ownedPickup.NumCopies;
+                if (ammoToAdd!=0){
+                    pickup.NumCopies = (ownedPickup.NumCopies+pickup.NumCopies)-ownedPickup.maxCopies;
+                    ownedPickup.NumCopies = ownedPickup.maxCopies;
+                    UpdateBeltText(ownedPickup);
+                    ClientMessage("Picked up "$ammoToAdd$" of the "$pickup.ItemName,, true);
+                }
             }
         }
 
@@ -433,8 +468,8 @@ function float GetCurrentGroundSpeed()
         return 0;
 
     augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-    if (augValue == -1.0)
-        augValue = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
+    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugOnlySpeed'));
 
     if (augValue == -1.0)
         augValue = 1.0;
@@ -471,12 +506,13 @@ function DoJump( optional float F )
 
         if ( Level.NetMode != NM_Standalone )
         {
-         if (AugmentationSystem == None)
-            augLevel = -1.0;
-         else
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-            if( augLevel == -1.0 )
-                augLevel = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+            if (AugmentationSystem == None)
+                augLevel = -1.0;
+            else {
+                augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+                augLevel = FMax(augLevel, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
+                augLevel = FMax(augLevel, AugmentationSystem.GetAugLevelValue(class'AugJump'));
+            }
             w = DeusExWeapon(InHand);
             if ((augLevel != -1.0) && ( w != None ) && ( w.Mass > 30.0))
             {
@@ -499,18 +535,21 @@ function DoJump( optional float F )
     }
 }
 
+// MakeNoise does nothing
 function Landed(vector HitNormal)
 {
     local vector legLocation;
     local int augLevel;
-    local float augReduce, dmg;
+    local float augReduce, dmg, softener;
 
+    softener = RunSilentValue/4 + 0.75;
+    if(class'MenuChoice_BalanceAugs'.static.IsDisabled()) softener = 1;
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);
     if (Velocity.Z < -1.4 * JumpZ)
     {
-        MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
-        if ((Velocity.Z < -700) && (ReducedDamageType != 'All'))
+        //MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
+        if ((Velocity.Z * softener < -700) && (ReducedDamageType != 'All'))
             if ( Role == ROLE_Authority )
             {
                 // check our jump augmentation and reduce falling damage if we have it
@@ -520,13 +559,14 @@ function Landed(vector HitNormal)
                 if (AugmentationSystem != None)
                 {
                     augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
-                    if( augLevel == -1.0 )
-                        augLevel = AugmentationSystem.GetClassLevel(class'AugNinja');
+                    augLevel = Max(augLevel, AugmentationSystem.GetClassLevel(class'AugJump'));
+                    augLevel = Max(augLevel, AugmentationSystem.GetClassLevel(class'AugNinja'));
                     if (augLevel >= 0)
                         augReduce = 15 * (augLevel+1);
                 }
 
                 dmg = FMax((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg *= softener;
                 legLocation = Location + vect(-1,0,-1);			// damage left leg
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
@@ -534,12 +574,13 @@ function Landed(vector HitNormal)
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
                 dmg = FMax((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg *= softener;
                 legLocation = Location + vect(0,0,1);			// damage torso
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
             }
     }
-    else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
-        MakeNoise(0.1 * Level.Game.Difficulty);
+    //else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
+        //MakeNoise(0.1 * Level.Game.Difficulty);
     bJustLanded = true;
 }
 
@@ -576,8 +617,16 @@ function InstantlyUseItem(DeusExPickup item)
     local Actor A;
     local DeusExPickup p;
     local int i;
+    local DXRLoadouts loadout;
 
     if(item == None) return;
+
+    //Check if it's banned
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    if ( loadout != None && loadout.ban(self, item) ) {
+        item.Destroy();
+        return;
+    }
 
     //Only consume one of the things if it's in a stack.
     //Spawn an individual one to split it from the stack before using it.
@@ -2202,7 +2251,7 @@ function PreTravel()
     root = DeusExRootWindow(rootWindow);
 
     //Opening URLs triggers pretravel, but we aren't actually traveling, so don't
-    if (class'DXRando'.default.dxr.bIsOpeningURL) return;
+    if (class'DXRando'.default.dxr!=None && class'DXRando'.default.dxr.bIsOpeningURL) return;
 
     //Don't clear the stack if the top of the stack is the Credits.
     //We're pretraveling as part of the DestroyWindow call chain
@@ -2237,6 +2286,13 @@ exec function UpgradeAugs()
         bBuySkills=False;
     }
     BuySkillSound( 2 );
+}
+
+exec function AugAdd(class<Augmentation> aWantedAug)
+{ // this works better than vanilla's for augs that aren't part of the default set
+    if (!bCheatsEnabled)
+        return;
+    class'DXRAugmentations'.static.AddAug(self, aWantedAug, 1);
 }
 
 //Copied from vanilla

@@ -306,7 +306,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 function float CombatDifficultyMultEnviro()
 {
-    return (CombatDifficulty*0.25) + 0.75;// 25% wet / 75% dry
+    return (CombatDifficulty*0.2) + 0.8;// 20% wet / 80% dry
 }
 
 function float GetDamageMultiplier()
@@ -559,7 +559,6 @@ function ActivateAugByName(string augName)
     anAug = FindAugByName(augName);
 
     if (anAug == None) {
-        ClientMessage(AugmentationSystem.NoAugInSlot);
         return;
     }
 
@@ -601,6 +600,9 @@ exec function ActivateAugADS() { ActivateAugByName("AugDefense"); }
 //exec function ActivateAugInfolink() { ActivateAugByName("AugDatalink"); }  //Obviously not
 exec function ActivateAugSynthHeart() { ActivateAugByName("AugHeartLung"); }
 //exec function ActivateAugPowerRecirc() { ActivateAugByName("AugPower"); } //Fully passive
+exec function ActivateAugOnlySpeed() { ActivateAugByName("AugOnlySpeed"); }
+exec function ActivateAugJump() { ActivateAugByName("AugJump"); }
+exec function ActivateAugNinja() { ActivateAugByName("AugNinja"); }
 
 function CreateDrone()
 {

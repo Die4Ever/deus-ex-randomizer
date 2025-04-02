@@ -30,6 +30,7 @@ function PreFirstEntryMapFixes()
     local #var(injectsprefix)OrdersTrigger ot;
     local DestroyTrigger desTrig;
     local #var(injectsprefix)AllianceTrigger at;
+    local #var(prefix)ControlPanel cp;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -51,6 +52,14 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'DeusExMover', m) {
                 if (m.Event=='change_map'){
                     hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", GetMoverCenter(m), 40, 75,exit);
+                }
+            }
+        }
+
+        if(VanillaMaps) {
+            foreach AllActors(class'#var(prefix)DamageTrigger',dt){
+                if(dt.DamageType=='Burned' && dt.DamageAmount==500){
+                    dt.DamageType='Fell';
                 }
             }
         }
@@ -93,6 +102,19 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            //Make the triggers for rescuing the hostages bigger, so they can't miss them
+            foreach AllActors(class'FlagTrigger',ft){
+                if (ft.Event!='hostagelogictrigger') continue;
+                ft.SetCollisionSize(500,40); //Originally radius 96
+            }
+
+            //Add an electrical panel to disable the electricity
+            //in the upper area if repairbots are randomized
+            if(dxr.flags.settings.repairbots > 0) {
+                cp=#var(prefix)ControlPanel(Spawnm(class'#var(prefix)ControlPanel',,,vect(-580,-820,135),rot(0,32768,0)));
+                cp.Event='DispatcherLibElectric';
+            }
+
             class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
             class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
         } else {
@@ -107,10 +129,12 @@ function PreFirstEntryMapFixes()
         }
         AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
 
-        foreach AllActors(class'ScriptedPawn', sp, 'hostage_female') {
-            sp.GroundSpeed = 200.0; // same speed as the male hostage
-            sp.walkAnimMult = 1.11;
-            break;
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            foreach AllActors(class'ScriptedPawn', sp, 'hostage_female') {
+                sp.GroundSpeed = 200.0; // same speed as the male hostage
+                sp.walkAnimMult = 1.11;
+                break;
+            }
         }
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));

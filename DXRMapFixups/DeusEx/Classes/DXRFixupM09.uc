@@ -44,6 +44,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local AIEventTrigger ait;
 #ifdef revision
     local JockHelicopter jockheli;
 #endif
@@ -68,6 +69,21 @@ function PreFirstEntryMapFixes()
 
         //Button to open the office door
         AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Disable FlagTrigger setting attacking orders as you leave the lower decks - Attacking orders break stealth
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft){
+                if (ft.Event=='Attack' && ft.FlagName=='MS_ShipBreeched'){
+                    ft.Event='AttackMakeNoise';
+                    //Make an unbelievably loud sound to the AI to make
+                    //them investigate, but follow normal seeking logic
+                    ait=Spawn(class'AIEventTrigger',,'AttackMakeNoise', ft.Location);
+                    ait.radius=50000;
+                    ait.volume=100;
+                    ait.bTriggerOnceOnly=False;
+                }
+            }
+        }
 
         if (VanillaMaps){
             foreach AllActors(class'Switch1',s){

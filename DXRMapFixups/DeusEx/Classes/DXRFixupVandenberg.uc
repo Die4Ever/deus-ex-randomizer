@@ -65,6 +65,8 @@ function PreFirstEntryMapFixes()
     local CrateUnbreakableSmall cus;
     local PlaceholderEnemy phe;
     local FacePlayerTrigger fpt;
+    local DXRReinforcementPoint reinforce;
+    local DXRIntermediatePoint intermediate;
     local #var(injectsprefix)AllianceTrigger at;
 
     local bool VanillaMaps;
@@ -445,6 +447,12 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)BeamTrigger',bt,'Lasertrip'){
                 bt.Event='ReleasebotsOnce';
             }
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+                foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'Releasebots'){
+                    ot.Orders='GoingTo';
+                    ot.ordersTag='SpiderDest';
+                }
+            }
 
             oot=Spawn(class'OnceOnlyTrigger');
             oot.Event='Releasebots';
@@ -461,6 +469,13 @@ function PreFirstEntryMapFixes()
                 door.Tag='AlarmsOnce';
             }
 
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+                foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'ALARMS'){
+                    ot.Orders='GoingTo';
+                    ot.ordersTag='SpiderDest';
+                }
+            }
+
             oot=Spawn(class'OnceOnlyTrigger');
             oot.Event='AlarmsOnce';
             oot.Tag='ALARMS';
@@ -469,6 +484,11 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1780,8587,-2790)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(423,8547,-2900)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(73,9110,-2910)); //Turret room, opposite from bait computer
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Spiders should go to where the lasers are
+            reinforce = Spawn(class'DXRReinforcementPoint',,'SpiderDest',vectm(475,4290,-4195));
         }
 
         //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
@@ -530,6 +550,18 @@ function PreFirstEntryMapFixes()
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
         }
 
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'Attack'){
+                ot.Orders='RunningTo';
+                ot.ordersTag='TunnelEndInt';
+                break;
+            }
+
+            intermediate = Spawn(class'DXRIntermediatePoint',,'TunnelEndInt',vectm(25,-3865,495)); //To the end of the tunnel
+            intermediate.nextPoint='TunnelEndFinal';
+            reinforce = Spawn(class'DXRReinforcementPoint',,'TunnelEndFinal',ot.Location); //and back to where they started
+        }
+
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'ExitPath'){break;}
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
@@ -589,10 +621,12 @@ function PreFirstEntryMapFixes()
 
     //#region Gas Station
     case "12_VANDENBERG_GAS":
-        //Make Tiffany actually move like a useful human being
-        foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
-            tiffany.GroundSpeed = 180;
-            tiffany.walkAnimMult = 1;
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            //Make Tiffany actually move like a useful human being
+            foreach AllActors(class'#var(prefix)TiffanySavage',tiffany){
+                tiffany.GroundSpeed = 180;
+                tiffany.walkAnimMult = 1;
+            }
         }
 
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'guard2'){
@@ -601,6 +635,9 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'mib_garage'){
             SetOutsideGuyReactions(sp);
         }
+
+        //Try fixing the garage key early
+        FixGasStationGarageKey();
 
         ot = Spawn(class'#var(prefix)OrdersTrigger',, 'TiffanyLeaving');
         ot.Orders = 'Leaving';
@@ -917,11 +954,42 @@ function PostFirstEntryMapFixes()
 }
 //#endregion
 
+// Fix the garage entrance key and the pickup distributor
+// If a PlaceholderEnemy ends up being the one to hold the key,
+// they will have been given the key but deleted (in DXREnemies
+// First Entry) by the time AnyEntry runs here (so the check for
+// owner will fail, since they're gone).
+function FixGasStationGarageKey()
+{
+    local #var(prefix)NanoKey key;
+    local #var(prefix)PickupDistributor pd;
+
+    foreach AllActors(class'#var(prefix)NanoKey',key) {
+        if (key.KeyId!='') continue; //We're looking for a key with no KeyID
+        if (key.Owner==None) continue; //That is carried by someone
+        if (key.Owner.Tag=='mib_garage' || key.Owner.Tag=='guard2') { //Specifically, one of these guys
+            l("fixing "$key$" to garage_entrance, carried by "$key.Owner);
+            key.KeyID = 'garage_entrance';
+            key.Description = "Garage Door";
+            key.Timer();// make sure to fix the ItemName in vanilla
+        }
+    }
+
+    //Just to be safe - I don't think we ever get through here before the pickup
+    //distributors do their thing, but it doesn't hurt to try
+    foreach AllActors(class'#var(prefix)PickupDistributor',pd) {
+        if (pd.NanoKeyData[1].ScriptedPawnTag=='mib_garage' &&
+            pd.NanoKeyData[1].KeyID==''){
+            pd.NanoKeyData[1].KeyID=pd.NanoKeyData[0].KeyID;
+            pd.NanoKeyData[1].Description=pd.NanoKeyData[0].Description;
+        }
+    }
+}
+
 //#region Any Entry
 function AnyEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
-    local #var(prefix)NanoKey key;
     local #var(prefix)HowardStrong hs;
     local bool prevMapsDone;
     local Conversation con;
@@ -935,16 +1003,8 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "12_Vandenberg_gas":
-        foreach AllActors(class'#var(prefix)NanoKey',key) {
-            if (key.KeyId!='') continue; //We're looking for a key with no KeyID
-            if (key.Owner==None) continue; //That is carried by someone
-            if (key.Owner.Tag=='mib_garage' || key.Owner.Tag=='guard2') { //Specifically, one of these guys
-                l("fixing "$key$" to garage_entrance, carried by "$key.Owner);
-                key.KeyID = 'garage_entrance';
-                key.Description = "Garage Door";
-                key.Timer();// make sure to fix the ItemName in vanilla
-            }
-        }
+        //Try fixing the keys on any entry as well, just to go overkill
+        FixGasStationGarageKey();
 
         con = GetConversation('M12JockFinal2');
         for (ce = con.eventList; ce != None; ce = ce.nextEvent) {

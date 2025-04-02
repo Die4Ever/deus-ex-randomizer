@@ -89,6 +89,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
+    local #var(prefix)WeaponShuriken tk;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -120,7 +121,7 @@ function PreFirstEntryMapFixes()
 
         if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
-            AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
+            SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(-485,-3525,265)); //Dock near picnic table
         }
 
         GoalCompletedSilent(p, 'SeeCarter');
@@ -195,8 +196,7 @@ function PreFirstEntryMapFixes()
 
         if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
-            //Bookshelf near pool tables
-            Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
+            SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(1020,1015,215)); //Near pool tables
         }
 
         //Button to extend sewer platform from the other side
@@ -220,7 +220,15 @@ function PreFirstEntryMapFixes()
     case "03_NYC_AIRFIELD":
         if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
-            Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
+            SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(-2030,995,100)); //Truck near docks
+        }
+
+        foreach AllActors(class'#var(prefix)Terrorist', terror,'boatguard'){
+            terror.bIsSecretGoal=true;
+        }
+
+        foreach AllActors(class'#var(prefix)Terrorist', terror,'boatguard'){
+            terror.bIsSecretGoal=true;
         }
 
         //Add teleporter hint text to Jock
@@ -473,6 +481,10 @@ function PreFirstEntryMapFixes()
                 compublic.TextPackage = "#var(package)";
                 compublic.BulletinTag = '03_BulletinMenu';
                 break;
+            }
+        } else {
+            foreach AllActors(class'#var(prefix)WeaponShuriken',tk){
+                tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
         }
 

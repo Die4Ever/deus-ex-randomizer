@@ -102,3 +102,8 @@ Check it out at: https://discord.gg/jCFJ3A6
 -Added centering/text improvements from DX rando gang's fork of OAT. Thank you again, crew.
 -Added an option from DX rando fork of OAT for displaying raw points instead of percent. Most useful for heavily modded gameplay.
 -Fixed an outdated texture being bundled for BG. Oops.
+
+2.1:
+++++++
+-Improved centering logic to be more efficient, by properly rooting the aug label's parent.
+-Added a current level display, useful for synthetic heart use cases.

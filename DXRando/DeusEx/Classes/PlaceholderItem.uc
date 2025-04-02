@@ -32,7 +32,7 @@ simulated function PreBeginPlay()
         HitActor=Trace(HitLocation,HitNormal,botLoc);
         if (HitActor!=None){
             foreach AllActors(class'#var(PlayerPawn)',player){
-                player.ClientMessage(self$" is not high enough off the ground!  Distance="$VSize(Location-HitLocation));
+                player.ClientMessage(self$" is not high enough off the ground!  Distance="$VSize(Location-HitLocation)$"  Location: "$Location);
             }
         }
     }

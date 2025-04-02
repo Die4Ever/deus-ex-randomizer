@@ -1,65 +1,21 @@
 class DXRSkills extends DXRBase transient;
 
-struct SkillCostMultiplier {
-    var string type;//you can use "Skill" to make it apply to all skills
-    var int percent;//percent to multiply, stacks
-    var int minLevel;//the first skill level this adjustment will apply to
-    var int maxLevel;//the highest skill level this adjustment will apply to
-};
-
-var SkillCostMultiplier SkillCostMultipliers[12];
-
 var float min_skill_weaken, max_skill_str;
 var float skill_cost_curve;
 
 replication
 {
     reliable if( Role==ROLE_Authority )
-        SkillCostMultipliers, min_skill_weaken, max_skill_str, skill_cost_curve;
+        min_skill_weaken, max_skill_str, skill_cost_curve;
 }
 
 function CheckConfig()
 {
     local int i;
 
-        for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
-            SkillCostMultipliers[i].type = "";
-            SkillCostMultipliers[i].percent = 100;
-            SkillCostMultipliers[i].minLevel = 1;
-            SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        }
-        min_skill_weaken = 0.3;
-        max_skill_str = 1.0;
-        skill_cost_curve = 2;
-
-#ifdef balance
-    i=0;
-    if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
-        SkillCostMultipliers[i].type = "SkillDemolition";
-        SkillCostMultipliers[i].percent = 80;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        i++;
-
-        SkillCostMultipliers[i].type = "SkillSwimming";
-        SkillCostMultipliers[i].percent = 80;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        i++;
-
-        SkillCostMultipliers[i].type = "SkillEnviro";
-        SkillCostMultipliers[i].percent = 90;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        i++;
-
-        SkillCostMultipliers[i].type = "SkillComputer";
-        SkillCostMultipliers[i].percent = 140;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = 1;
-        i++;
-    }
-#endif
+    min_skill_weaken = 0.3;
+    max_skill_str = 1.0;
+    skill_cost_curve = 2;
 
     Super.CheckConfig();
 }
@@ -140,12 +96,15 @@ simulated function RandoSkill(Skill aSkill)
 {
     local float percent;
     local int i, mission_group;
+    local DXRLoadouts loadout;
     local bool banned;
     if( dxr == None ) return;
 
 #ifdef vanilla
     aSkill.UpdateBalance();
 #endif
+
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
 
     if( dxr.dxInfo != None && dxr.dxInfo.missionNumber > 0 ) {
         // TODO: new game screen should use the starting mission if it isn't 1, but it needs to work even when doing a new game while already in a game
@@ -157,6 +116,15 @@ simulated function RandoSkill(Skill aSkill)
     percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
     banned = chance_single(dxr.flags.settings.banned_skills);
     l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
+    if (loadout!=None) {
+        if (!loadout.allow_skill_ban(dxr.flags.loadout,aSkill.Class)) {
+            banned = False;
+            l( aSkill.Class.Name $ " not allowed to be banned by loadout");
+        } else if (loadout.is_skill_banned(aSkill.Class)) {
+            banned = True;
+            l( aSkill.Class.Name $ " banned by loadout");
+        }
+    }
     for(i=0; i<arrayCount(aSkill.Cost); i++)
     {
         if( banned ) {
@@ -171,7 +139,7 @@ simulated function RandoSkill(Skill aSkill)
 
 simulated function RandoSkillLevelValues(Skill a)
 {
-    local string add_desc;
+    local string add_desc, s;
     local float skill_value_wet_dry;
 
     if( #var(prefix)SkillWeaponHeavy(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
@@ -188,6 +156,12 @@ simulated function RandoSkillLevelValues(Skill a)
         add_desc = "Each level increases the number of fire extinguishers you can carry by 1.";
     }
 #endif
+
+    if(dxr.flags.settings.minskill!=100 || dxr.flags.settings.maxskill!=100) {
+        s = "Default costs: " $ a.default.cost[0] $ ", " $ a.default.cost[1] $ ", " $ a.default.cost[2];
+        if(add_desc!="") add_desc = s $ "|n|n" $ add_desc;
+        else add_desc = s;
+    }
 
     skill_value_wet_dry = float(dxr.flags.settings.skill_value_rando) / 100.0;
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
@@ -248,6 +222,8 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
             if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
                 shortDisplay = string(int( (1 - (f * 1.1 + 0.3)) * 100.0 ));
                 r = r $ shortDisplay $ p $ " / "; // passive is * 1.1 + 0.3
+            } else {
+                shortDisplay = string(int( (1 - f * 0.75) * 100.0 ));
             }
             r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
             r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
@@ -303,9 +279,17 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local float percent;
     local int m;
     local float f, perk;
-    local SkillCostMultiplier scm;
+    local bool banAllowed;
+    local DXRLoadouts loadout;
 
-    if( i>0 && chance_single(dxr.flags.settings.banned_skill_levels) ) {
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+
+    banAllowed = true;
+    if (loadout!=None){
+        banAllowed = loadout.allow_skill_ban(dxr.flags.loadout,aSkill.Class);
+    }
+
+    if( i>0 && chance_single(dxr.flags.settings.banned_skill_levels) && banAllowed) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
         return;
@@ -324,14 +308,6 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     l( aSkill.Class.Name $ " lvl: "$(i+1)$", perk percent: "$perk$"%");
     perk = float(aSkill.default.PerkCost[i]) * perk / 100.0;
 #endif
-    for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
-        scm = SkillCostMultipliers[m];
-        if( scm.type != string(aSkill.class.name) ) continue;
-        if( i+1 >= scm.minLevel && i < scm.maxLevel ) {
-            f *= float(scm.percent) / 100.0;
-            perk *= float(scm.percent) / 100.0;
-        }
-    }
 
     f = Clamp(f, 0, 99999);
     perk = Clamp(perk, 0, 99999);

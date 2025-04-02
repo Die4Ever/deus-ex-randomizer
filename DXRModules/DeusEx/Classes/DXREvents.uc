@@ -2261,6 +2261,15 @@ function string RemapBingoEvent(string eventname)
         case "Ray_Dead":
         case "Ray_Unconscious":
             return "GotHelicopterInfo";
+        case "CarlaBrown_PlayerDead":
+        case "StacyWebber_PlayerDead":
+        case "TimBaker_PlayerDead":
+        case "StephanieMaxwell_PlayerDead":
+        case "TonyMares_PlayerDead":
+        case "Savage_assistant_M_PlayerDead":
+        case "Savage_assistant_F_PlayerDead":
+        case "LDDPVanSci_PlayerDead":
+            return "Ex51";
         default:
             return eventname;
     }
@@ -2452,6 +2461,9 @@ static function int GetBingoFailedEvents(string eventname, out string failed[6])
             break;
         case "AnnaNavarre_DeadM4":
             failed[num_failed++] = "AnnaNavarre_DeadM5";
+            break;
+        case "SavedPaul":
+            failed[num_failed++] = "PaulToTong";
             break;
     }
 
@@ -3036,7 +3048,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ViewDissection":
             return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
         case "ViewTouristPics":
-            return "Find and view enough tourist pictures of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
+            return "Find and view enough tourist photos of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
         case "CathedralUnderwater":
             return "Swim through the underwater tunnel that leads to the Paris cathedral.";
         case "DL_gold_found_Played":
@@ -3435,6 +3447,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
         case "EmergencyExit":
             return "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
+        case "Ex51":
+            return "Kill enough of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3727,7 +3741,7 @@ defaultproperties
     bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
     bingo_options(216)=(event="ViewMaps",desc="View %s maps",desc_singular="View 1 map",max=6,missions=56686)
     bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
-    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist picture",max=1,missions=2576)
+    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist photo",max=1,missions=2576)
 #endif
     bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
     bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
@@ -3747,7 +3761,7 @@ defaultproperties
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=34686)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
-    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL 1 DRINK!",max=5,missions=64)
+    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=5,missions=64)
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
     bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",desc_singular="MUST. CRUSH. 1 CAPITALIST.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
@@ -3872,6 +3886,7 @@ defaultproperties
     bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up? (%s)",max=10,missions=24190)
     bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
     bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate 1 emergency exit",max=8,missions=1918)
+    bingo_options(355)=(event="Ex51",desc="Ex-51 (%s)",desc_singular="Ex-51",max=6,missions=4096)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -3946,5 +3961,6 @@ defaultproperties
     mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_Unconscious")
+    mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
 //#endregion
 }

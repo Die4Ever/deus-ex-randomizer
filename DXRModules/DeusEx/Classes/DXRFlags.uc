@@ -16,6 +16,8 @@ const ZeroRandoPlus = 12;
 const OneItemMode = 13;
 const BingoCampaign = 14;
 const NormalRandomizer = 15;
+const StrongAugsMode = 16;
+
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -692,7 +694,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         moresettings.empty_medbots *= 1.5; // WW gets lower medbots chances pretty quickly
         bingo_duration = 1;
         bingo_scale = 0;
-        moresettings.newgameplus_curve_scalar = 50;
+        moresettings.newgameplus_curve_scalar = 40;
 
         if(gamemode == WaltonWareHardcore) {
 #ifndef hx
@@ -708,7 +710,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.bingo_freespaces = 1;
             bingo_duration = 3;
             bingo_scale = 33;
-            moresettings.newgameplus_curve_scalar = 75;
+            moresettings.newgameplus_curve_scalar = 65;
         }
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
@@ -798,6 +800,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
     if(slot--==0) return OneItemMode;
+    if(slot--==0) return StrongAugsMode;
     return 999999;
 }
 
@@ -853,6 +856,8 @@ function string GameModeName(int gamemode)
             return "Mr. Page's Mean Bingo Machine";
         }
         return "";
+    case StrongAugsMode:
+        return "Strong Augs Mode";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -920,8 +925,28 @@ function bool IsOneItemMode()
     return gamemode == OneItemMode;
 }
 
+function bool IsStrongAugsMode()
+{
+    return gamemode == StrongAugsMode;
+}
+
 simulated function AddDXRCredits(CreditsWindow cw)
 {
+    if(dxr.rando_beaten > 0 && OnEndgameMap()) {
+        if(IsReducedRando()) {
+            cw.PrintText("Now that you've beaten "$ GameModeName(gamemode) $",");
+            cw.PrintText("maybe you're ready for the Normal Randomizer game mode,");
+            cw.PrintText("or one of our other crazy game modes!");
+            cw.PrintLn();
+        }
+        else if(gamemode == NormalRandomizer) {
+            cw.PrintText("Now that you've beaten "$ GameModeName(gamemode) $",");
+            cw.PrintText("maybe you're ready for the Full Randomizer game mode,");
+            cw.PrintText("or one of our other crazy game modes!");
+            cw.PrintLn();
+        }
+    }
+
     cw.PrintHeader("DXRFlags");
 
     cw.PrintText(VersionString() $ ", flagshash: " $ ToHex(FlagsHash()));
