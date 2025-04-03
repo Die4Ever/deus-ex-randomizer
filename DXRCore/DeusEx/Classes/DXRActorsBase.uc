@@ -54,6 +54,14 @@ function SwapAll(string classname, float percent_chance)
         return;
     }
 
+    for(i=num-1; i>=0; i--) { // Fisher-Yates shuffle the array before swapping the actor locations (swapping actor locations can fail, shuffling the array cannot fail, Fisher-Yates works better for unfailable shuffles)
+        slot = rng(i+1);
+        Swap(temp[i], temp[slot]);
+        a = temp[i];
+        temp[i] = temp[slot];
+        temp[slot] = a;
+    }
+
     for(i=0; i<num; i++) {
         if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself
