@@ -131,6 +131,7 @@ function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
     return CrowdControlPawns[mostRecentCcPawn];
 }
 
+//#region Periodic Updates
 function PeriodicUpdates()
 {
 
@@ -262,7 +263,9 @@ function PeriodicUpdates()
         StopCrowdControlEvent("blood_god",true);
     }
 }
+//#endregion
 
+//#region Effect Select
 function HandleEffectSelectability()
 {
     local Inventory anItem;
@@ -440,6 +443,7 @@ function HandleAugEffectSelectability(string augName)
         AugEffectStates[augIndex].canDowngrade=canDowngrade;
     }
 }
+//#endregion
 
 function int getAugManagerIndex(class<Augmentation> augClass)
 {
@@ -502,6 +506,7 @@ function Fart()
     player().Velocity += Vector(player().ViewRotation) * 8 * fartDuration; //Fart pushes you in the direction you're looking
 }
 
+//#region Continuous Updates
 function ContinuousUpdates()
 {
     local int roll;
@@ -542,9 +547,11 @@ function ContinuousUpdates()
 
 
 }
+//#endregion
 
 
 
+//#region Enter/Exit
 //Gets called on every level entry
 //Some effects need to be reapplied on each level entry (eg. ice physics)
 //Make sure to do that here
@@ -644,13 +651,13 @@ function CleanupOnExit() {
         invertMovementControls();
     }
 }
-
+//#endregion
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                   TIMER DISPLAY HANDLING                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//#region Timer Displays
 function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
     local int i;
 
@@ -696,11 +703,13 @@ function bool checkForTimerDisplay(name timerName) {
 
     return False;
 }
+//#endregion
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                   TIMER COUNTER HANDLING                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//#region Def Timer Times
 function int getDefaultTimerTimeByName(name timerName) {
     switch(timerName) {
         case 'cc_MatrixModeTimer':
@@ -749,7 +758,9 @@ function int getDefaultTimerTimeByName(name timerName) {
             return 0;
     }
 }
+//#endregion
 
+//#region Timer Labels
 function string getTimerLabelByName(name timerName) {
     local float val;
 
@@ -813,6 +824,7 @@ function string getTimerLabelByName(name timerName) {
             return "???";
     }
 }
+//#endregion
 
 function setFloorIsLavaName(string lavaName)
 {
@@ -904,8 +916,7 @@ function startNewTimer(name timerName, int duration) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                        UTILITY FUNCTIONS                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+//#region Utility Functs
 
 function float retrieveFloatValue(name valName) {
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
@@ -2424,23 +2435,14 @@ simulated final function #var(PlayerPawn) player()
     return dxr.flags.player();
 }
 
-
-
-
-
-
-
-
-
-
-
+//#endregion
 
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL EFFECT MAPPING                                       ////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//#region Msg Type Split
 function int BranchCrowdControlType(string code, string param[5], string viewer, int type, int duration) {
     local int result;
 
@@ -2468,7 +2470,9 @@ function int BranchCrowdControlType(string code, string param[5], string viewer,
 
     return result;
 }
+//#endregion
 
+//#region Stop All Events
 //Make sure to add any timed effects into this list
 function StopAllCrowdControlEvents()
 {
@@ -2493,7 +2497,9 @@ function StopAllCrowdControlEvents()
     StopCrowdControlEvent("wine_bullets");
     StopCrowdControlEvent("blood_god");
 }
+//#endregion
 
+//#region Stop CC Event
 function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 {
     switch(code) {
@@ -2642,7 +2648,9 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 
     return Success;
 }
+//#endregion
 
+//#region Handle Event
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
     local ColorTheme theme;
@@ -3389,7 +3397,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
     return Success;
 }
+//#endregion
 
+//#region Prefix Events
 function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type, int duration) {
     local string words[8];
 
@@ -3417,6 +3427,7 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
 
     return Success;
 }
+//#endregion
 
 defaultproperties
 {
