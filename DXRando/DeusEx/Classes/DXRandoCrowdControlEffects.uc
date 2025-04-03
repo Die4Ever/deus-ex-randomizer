@@ -55,6 +55,7 @@ const DoomModeTimeDefault = 60;
 const WineBulletsTimeDefault = 60;
 const BloodTimeDefault = 60;
 
+//OBSOLETE - Remove eventually
 struct ZoneFriction
 {
     var name zonename;
@@ -62,19 +63,20 @@ struct ZoneFriction
 };
 var ZoneFriction zone_frictions[32];
 
+//OBSOLETE - Remove eventually
 struct ZoneGravity
 {
     var name zonename;
     var vector gravity;
 };
+var ZoneGravity zone_gravities[32];
+
 
 struct AugEffectState
 {
     var bool canUpgrade;
     var bool canDowngrade;
 };
-
-var ZoneGravity zone_gravities[32];
 
 var DXRandoCrowdControlTimer timerDisplays[32];
 
@@ -1164,54 +1166,20 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
 
 function float GetDefaultZoneFriction(ZoneInfo z)
 {
-    local int i;
-    for(i=0; i<ArrayCount(zone_frictions); i++) {
-        if( z.name == zone_frictions[i].zonename )
-            return zone_frictions[i].friction;
-    }
-    return NormalFriction;
-}
+    local DXRStoredZoneInfo szi;
 
-function SaveDefaultZoneFriction(ZoneInfo z)
-{
-    local int i;
-    if( z.ZoneGroundFriction ~= NormalFriction ) return;
-    for(i=0; i<ArrayCount(zone_frictions); i++) {
-        if( zone_frictions[i].zonename == '' || z.name == zone_frictions[i].zonename ) {
-            zone_frictions[i].zonename = z.name;
-            zone_frictions[i].friction = z.ZoneGroundFriction;
-            return;
-        }
-    }
+    szi = class'DXRStoredZoneInfo'.static.Find(z);
+    if (szi==None) return NormalFriction;
+    return szi.ZoneGroundFriction;
 }
 
 function vector GetDefaultZoneGravity(ZoneInfo z)
 {
-    local int i;
-    for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ) {
-            return zone_gravities[i].gravity;
-        }
-        if( zone_gravities[i].zonename == '' )
-            break;
-    }
-    return NormalGravity;
-}
+    local DXRStoredZoneInfo szi;
 
-function SaveDefaultZoneGravity(ZoneInfo z)
-{
-    local int i;
-    if( z.ZoneGravity.X ~= NormalGravity.X && z.ZoneGravity.Y ~= NormalGravity.Y && z.ZoneGravity.Z ~= NormalGravity.Z ) return;
-    for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ) {
-            return;
-        }
-        if( zone_gravities[i].zonename == '' ) {
-            zone_gravities[i].zonename = z.name;
-            zone_gravities[i].gravity = z.ZoneGravity;
-            return;
-        }
-    }
+    szi = class'DXRStoredZoneInfo'.static.Find(z);
+    if (szi==None) return NormalGravity;
+    return szi.ZoneGravity;
 }
 
 function SetFloatyPhysics(bool enabled) {
@@ -1224,7 +1192,6 @@ function SetFloatyPhysics(bool enabled) {
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
         if (enabled && Z.ZoneGravity != FloatGrav ) {
-            SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = FloatGrav;
         }
         else if ( (!enabled) && Z.ZoneGravity == FloatGrav ) {
@@ -1284,7 +1251,6 @@ function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
     ForEach AllActors(class'ZoneInfo', Z) {
         if (enabled && Z.ZoneGroundFriction != IceFriction ) {
-            SaveDefaultZoneFriction(Z);
             Z.ZoneGroundFriction = IceFriction;
         }
         else if ( (!enabled) && Z.ZoneGroundFriction == IceFriction ) {

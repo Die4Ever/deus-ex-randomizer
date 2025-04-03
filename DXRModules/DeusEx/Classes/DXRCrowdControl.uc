@@ -66,6 +66,18 @@ function _PreTravel() {
     }
 }
 
+function PreFirstEntry()
+{
+    local ZoneInfo Z;
+
+    Super.PreFirstEntry();
+
+    //Save default zone info, since some effects use this
+    foreach AllActors(class'ZoneInfo',Z){
+        class'DXRStoredZoneInfo'.static.Init(Z);
+    }
+}
+
 function CheckConfig()
 {
     if ( crowd_control_addr=="" ) {
