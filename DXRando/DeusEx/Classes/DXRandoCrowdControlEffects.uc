@@ -1530,19 +1530,25 @@ function bool swapPlayer(string viewer) {
 }
 
 function doNudge(string viewer) {
-    local Rotator r;
-    local vector newAccel;
+    local Vector bobble,randVect;
+    local float size;
 
-    newAccel.X = (Rand(201)-100) * 3;
-    newAccel.Y = (Rand(201)-100) * 3;
-    //newAccel.Z = Rand(31);
+    size = FRand() + 0.3;
+    randVect=VRand();
+    if (randVect.Z<0) randVect.Z*=-1; //Never bump downwards, only up
+    randVect.Z*=0.5; //Don't get too vertically extreme
 
-    //Not super happy with how this looks,
-    //Since you sort of just teleport to the new position
-    player().MoveSmooth(newAccel);
+    bobble = vect(300.0,300.0,200.0) + 300.0 * size * randVect;
+
+    //Peeling the player off the ground makes this much more potent
+    if ( player().Physics == PHYS_Walking ){
+        player().SetPhysics(PHYS_Falling);
+    }
+
+    player().Velocity += bobble;
 
     //Play an oof sound
-    player().PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
+    player().PlaySound(player().HitSound1);
 
     PlayerMessage(viewer@"nudged you a little bit");
 
