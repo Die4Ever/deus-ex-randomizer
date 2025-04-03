@@ -487,10 +487,14 @@ function Fart()
     player().AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, 512);
 
     for (i=0;i<5;i++){
-        if (Rand(2)==0){
-            Spawn(class'TearGas', player(),,player().Location,r);
+        if (player().bOnFire){
+            Spawn(class'Fireball', player(),,player().Location,r);
         } else {
-            Spawn(class'PoisonGas', player(),,player().Location,r);
+            if (Rand(2)==0){
+                Spawn(class'TearGas', player(),,player().Location,r);
+            } else {
+                Spawn(class'PoisonGas', player(),,player().Location,r);
+            }
         }
         r.Yaw+=2500;
     }
