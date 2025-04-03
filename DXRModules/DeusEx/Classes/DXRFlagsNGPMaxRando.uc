@@ -288,8 +288,6 @@ function NewGamePlus()
     p.AugmentationSystem.DeactivateAll();
 
     if (!dxr.flags.IsWaltonWare()) { // replaced by a WaltonWareCrate in WW modes
-        //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
-        //Technically it should make up for levels you skipped past, so maybe?
         class'DXRStartMap'.static.AddStartingCredits(dxr,p);
         class'DXRStartMap'.static.AddStartingAugs(dxr,p);
         class'DXRStartMap'.static.AddStartingSkillPoints(dxr,p);

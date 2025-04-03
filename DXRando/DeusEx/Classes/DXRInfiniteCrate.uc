@@ -1,73 +1,94 @@
 class DXRInfiniteCrate extends Containers;
 
-var travel DXRInfiniteCrateContent icContents;
+var travel string icContents;
 
 function bool AddContent(class<Actor> type, int numCopies)
 {
-    local DXRInfiniteCrateContent icc;
+    if (type == None) { // needed?
+        log("Tried to add class'None' to DXRInfiniteCrate");
+        return false;
+    }
 
-    icc = Spawn(class'DXRInfiniteCrateContent');
-    icc.type = type;
-    icc.numCopies = numCopies;
-
-    icc.next = icContents;
-    icContents = icc;
-
+    icContents = icContents $ type $ "," $ numCopies $ ";";
     log("DXRInfiniteCrate added " $ numCopies @ type);
-
     return true;
 }
 
 function DropItem(Actor dropped)
 {
+	local Vector loc;
+	local Rotator rt;
+
+    loc = Location + VRand()*CollisionRadius;
+    loc.Z = Location.Z;
+    rt = rot(0, 0, 0);
+    rt.Yaw = Rand(65535);
+
     dropped.RemoteRole = ROLE_DumbProxy;
     dropped.SetPhysics(PHYS_Falling);
     dropped.bCollideWorld = true;
     dropped.Velocity = VRand() * 50;
     dropped.GotoState('Pickup', 'Dropped');
+    dropped.SetLocation(loc);
+    dropped.SetRotation(rt);
 }
 
 function Destroyed()
 {
-    local DXRInfiniteCrateContent icc, iccPrev;
-	local Rotator rt;
-	local Vector loc;
-    local Actor dropped;
-    local Pickup pu;
+    local class<Actor> type;
+    local int numCopies, maxCopies;
+    local string typeStr, numCopiesStr;
+    local DXRando dxr;
     local class<DeusExPickup> pickupType;
-    local int i;
+    local Pickup pu;
+    local Actor dropped;
 
-    icc = icContents;
-    while (icc != None) {
-        loc = Location + VRand()*CollisionRadius;
-        loc.Z = Location.Z;
-        rt = rot(0,0,0);
-        rt.Yaw = Rand(65535);
+    while (icContents != "") {
+        typeStr = Left(icContents, InStr(icContents, ","));
+        type = class<Actor>(DynamicLoadObject(typeStr, class'Class'));
+        icContents = Right(icContents, Len(icContents) - Len(typeStr) - 1);
 
-        if (icc.type == class'Credits') {
-            dropped = Spawn(class'Credits',,, loc, rt);
-            Credits(dropped).numCredits = icc.NumCopies;
+        numCopiesStr = Left(icContents, InStr(icContents, ";"));
+        numCopies = Int(numCopiesStr);
+        icContents = Right(icContents, Len(icContents) - Len(numCopiesStr) - 1);
+
+        log("DXRInfiniteCrate dropping " $ numCopies @ type);
+
+        if (type == class'Credits') {
+            dropped = Spawn(class'Credits');
+            Credits(dropped).numCredits = numCopies;
             DropItem(dropped);
-        } else if (ClassIsChildOf(icc.class, class'DeusExPickup') && class<DeusExPickup>(icc.type).default.bCanHaveMultipleCopies) {
-            pickupType = class<DeusExPickup>(icc.type);
-            while (icc.numCopies > pickupType.default.maxCopies) {
-                pu = Spawn(pickupType,,, loc, rt);
+        } else if (ClassIsChildOf(type, class'DeusExPickup') && class<DeusExPickup>(type).default.bCanHaveMultipleCopies) {
+            pickupType = class<DeusExPickup>(type);
+            dxr = class'DXRando'.default.dxr;
+
+            if (pickupType == class'Medkit') {
+                maxCopies = dxr.flags.settings.medkits;
+            } else if (pickupType == class'Multitool') {
+                maxCopies = dxr.flags.settings.multitools;
+            } else if (pickupType == class'Lockpick') {
+                maxCopies = dxr.flags.settings.lockpicks;
+            } else if (pickupType == class'BioelectricCell') {
+                maxCopies = dxr.flags.settings.biocells;
+            } else {
+                maxCopies = pickupType.default.maxCopies;
+            }
+
+            while (numCopies > pickupType.default.maxCopies) {
+                pu = Spawn(pickupType);
                 pu.numCopies = pickupType.default.maxCopies;
                 DropItem(pu);
-                icc.numCopies -= pickupType.default.maxCopies;
+                numCopies -= pickupType.default.maxCopies;
             }
-            pu = Spawn(pickupType,,, loc, rt);
-            pu.numCopies = icc.numCopies;
+            pu = Spawn(pickupType);
+            pu.numCopies = numCopies;
             DropItem(pu);
         } else {
-            for (i = 0; i < icc.numCopies; i++) {
-                DropItem(Spawn(icc.type,,, loc, rt));
+            while (numCopies > 0) {
+                DropItem(Spawn(type));
+                numCopies--;
             }
         }
-
-        iccPrev = icc;
-        icc = icc.next;
-        iccPrev.Destroy();
     }
 
     Super(DeusExDecoration).Destroyed();

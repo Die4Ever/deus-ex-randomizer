@@ -849,25 +849,35 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 }
 
+function WaltonWareCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
+{
+    local WaltonWareCrate waltonCrate;
+
+    waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
+        player,
+        class'WaltonWareCrate',
+        80.0,
+        MakeRotator(0, (2047 - rng(4095)), 0)
+    ));
+
+    if (waltonCrate == None) {
+        return None;
+    }
+
+    waltonCrate.AddContent(class'BioelectricCell', 1);
+    waltonCrate.AddContent(class'AugmentationUpgradeCannister', GetStartMapAugBonus(dxr));
+    waltonCrate.AddContent(class'Credits', GetStartMapCreditsBonus(dxr));
+    waltonCrate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+
+    return waltonCrate;
+}
+
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
-    local WaltonWareCrate waltonCrate;
-    local SkillAwardTrigger sat;
-    local int numAugUpgrades;
 
-    if (flagbase.GetInt('Rando_newgameplus_loops') > 0) { // make a WaltonWareCrate
-        waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
-            player,
-            class'WaltonWareCrate',
-            80.0,
-            MakeRotator(0, (2047 - rng(4095)), 0)
-        ));
-
-        waltonCrate.AddContent(class'BioelectricCell', 1);
-        waltonCrate.AddContent(class'AugmentationUpgradeCannister', GetStartMapAugBonus(dxr));
-        waltonCrate.AddContent(class'Credits', GetStartMapCreditsBonus(dxr));
-        waltonCrate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    if (dxr.flags.IsWaltonWare() && flagbase.GetInt('Rando_newgameplus_loops') > 0) {
+        SpawnWaltonWareCrate(player);
     }
 
     switch(start_flag) {
