@@ -158,7 +158,7 @@ simulated function RandoSkillLevelValues(Skill a)
 #endif
 
     if(dxr.flags.settings.minskill!=100 || dxr.flags.settings.maxskill!=100) {
-        s = "Default costs: " $ a.default.cost[0] $ ", " $ a.default.cost[1] $ ", " $ a.default.cost[2];
+        s = "Default costs: --, " $ a.default.cost[0] $ ", " $ a.default.cost[1] $ ", " $ a.default.cost[2];
         if(add_desc!="") add_desc = s $ "|n|n" $ add_desc;
         else add_desc = s;
     }
