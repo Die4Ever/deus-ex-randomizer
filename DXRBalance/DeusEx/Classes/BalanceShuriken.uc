@@ -1,11 +1,33 @@
 class BalanceShuriken injects Shuriken;
 
 var float blood_mult;
+var int rotAmount;
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
     Super.SpawnBlood(HitLocation, HitNormal);
     class'WeaponShuriken'.static.SpawnExtraBlood(Self, HitLocation, HitNormal, blood_mult);
+}
+
+simulated function Tick(float deltaTime)
+{
+    local Rotator rot;
+
+    if (bStuck)
+        return;
+
+    Super(DeusExProjectile).Tick(deltaTime);
+    if (Level.Netmode != NM_DedicatedServer)
+    {
+        //DeusExProjectile tick resets the rotation every time, so we need to track the rotation
+        rotAmount+=deltaTime*65536*5; //Five rotations per second
+        rotAmount=rotAmount % 65536;
+        rot = Rotation;
+        rot.Roll += 16384; //To get it aligned the right direction
+        rot.Pitch -= 16384; //To get it aligned the right direction
+        rot.Pitch -= rotAmount; //to actually do the end over end rotation
+        SetRotation(rot);
+    }
 }
 
 auto simulated state Flying
@@ -26,7 +48,19 @@ auto simulated state Flying
 
     simulated function HitWall(vector HitNormal, actor Wall)
     {
-        Super.HitWall(HitNormal, Wall);
+        local Rotator rot;
+
+        //Only hit the wall once
+        if (!bStuck){
+            //Undo any spin before actually hitting the wall
+            //This makes it so it's actually stuck in the wall
+            //in the right direction
+            rot = Rotation;
+            rot.Pitch += rotAmount;
+            SetRotation(rot);
+
+            Super.HitWall(HitNormal, Wall);
+        }
         SetCollisionSize(16, 16);
     }
 }
