@@ -1238,7 +1238,6 @@ function SetMoonPhysics(bool enabled) {
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
         if (enabled && Z.ZoneGravity != MoonGrav ) {
-            SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = MoonGrav;
         }
         else if ( (!enabled) && Z.ZoneGravity == MoonGrav ) {
@@ -1554,9 +1553,9 @@ function startEarthquake(float time) {
 
 }
 
-function int Earthquake(String viewer) {
+function int Earthquake(String viewer, int duration) {
 
-    startEarthquake(EarthquakeTimeDefault);
+    startEarthquake(duration);
 
     PlayerMessage(viewer@"set off an earthquake!");
 
@@ -2959,7 +2958,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             startnewTimer('cc_Earthquake',duration);
 
-            return Earthquake(viewer);
+            return Earthquake(viewer,duration);
 
         case "trigger_alarms":
             if (!InGame()) {

@@ -145,9 +145,20 @@ static function bool IsFogZone(ZoneInfo z)
 static function DXRStoredZoneInfo Find(ZoneInfo z)
 {
     local DXRStoredZoneInfo szi;
+    local bool isLevelInfo;
+
+    isLevelInfo = (LevelInfo(z)!=None);
 
     foreach z.ZoneActors(class'DXRStoredZoneInfo',szi){
-        return szi;
+        if (isLevelInfo){
+            if (szi.bLevelInfo){
+                return szi;
+            }
+        } else {
+            if (!szi.bLevelInfo){
+                return szi;
+            }
+        }
     }
 
     return None;
