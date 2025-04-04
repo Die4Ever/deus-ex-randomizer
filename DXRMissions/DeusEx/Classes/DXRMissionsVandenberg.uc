@@ -120,8 +120,8 @@ function int InitGoals(int mission, string map)
         AddMutualExclusion(howard_machine_shop, computer_machine_shop);
 
         AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
-        AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
-        AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
+        //AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
+        //AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
         AddMutualExclusion(howard_computer, jock_computer); // both in the same room
 
         AddMutualExclusion(computer_vanilla, jock_computer);
@@ -262,8 +262,8 @@ function int InitGoalsRev(int mission, string map)
         AddMutualExclusion(howard_machine_shop, computer_machine_shop);
 
         AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
-        AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
-        AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
+        //AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
+        //AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
         AddMutualExclusion(howard_computer, jock_computer); // both in the same room
 
         AddMutualExclusion(computer_vanilla, jock_computer);
@@ -278,7 +278,7 @@ function int InitGoalsRev(int mission, string map)
 
 function bool IsLayoutAllowed(int goalsToLocations[32])
 {
-    local int i, above, below;
+    local int i, outside, courtyard, silo, launch_command;
     local string loc;
 
     switch(dxr.localURL) {
@@ -286,23 +286,27 @@ function bool IsLayoutAllowed(int goalsToLocations[32])
         for(i=0; i < num_goals; i++) {
             loc = locations[goalsToLocations[i]].name;
             switch(loc) {
-                case "Surface Meeting Room":
                 case "Radio":
-                case "Machine Shop":
                 case "Vanilla Escape":
-                case "Sniper Tower":
-                    above++;
+                    outside++;
                     break;
-                case "Launch Command":
+                case "Surface Meeting Room":
+                case "Machine Shop":
+                case "Sniper Tower":
+                    courtyard++;
+                    break;
                 case "Fourth Floor":
                 case "Cherry Picker":
-                    below++;
+                    silo++;
+                    break;
+                case "Launch Command":
+                    launch_command++;
                     break;
                 default:
                     err("IsLayoutAllowed unknown location name: " $ goals[i].name @ loc);
             }
         }
-        if(above==0 || below==0) return false;
+        if(outside>1 || courtyard>1 || silo>1 || launch_command>1) return false;
         break;
     }
     return true;
