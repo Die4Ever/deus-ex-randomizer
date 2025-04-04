@@ -371,6 +371,31 @@ function GrabDecoration()
     Super.GrabDecoration();
 }
 
+function bool ShouldAddToBelt(inventory NewItem)
+{
+    local DeusExRootWindow root;
+    local #var(prefix)HUDObjectBelt belt;
+    local Inventory beltItem;
+    local int i;
+
+    //Belt is locked, don't add anything
+    if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) return False;
+
+    root = DeusExRootWindow(rootWindow);
+    belt = root.hud.belt;
+
+    //Don't add an item to the belt if you have another one
+    //of the same item on the belt already
+    for (i=0;i<ArrayCount(belt.objects);i++){
+        beltItem = belt.objects[i].GetItem();
+        if (beltItem==None) continue;
+        if (beltItem==NewItem) continue; //The new item will have already been added to the belt by the time we get here, so ignore ourself
+        if (beltItem.class==NewItem.class) return False; //There's another of the same class already on the belt, get outta here!
+    }
+
+    return True;
+}
+
 function bool AddInventory( inventory NewItem )
 {
     local bool retval;
@@ -384,11 +409,11 @@ function bool AddInventory( inventory NewItem )
 
     retval = Super.AddInventory(NewItem);
 
-    if (NewItem.bInObjectBelt){
-        if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) {
+    if (NewItem.bInObjectBelt){ //Item was added to the belt automatically
+        if (!ShouldAddToBelt(NewItem)) { //Do we actually want it on the belt?
             root = DeusExRootWindow(rootWindow);
             if (root!=None){
-                root.hud.belt.RemoveObjectFromBelt(NewItem);
+                root.hud.belt.RemoveObjectFromBelt(NewItem); //Get that thing off my belt!
             }
         }
     }
