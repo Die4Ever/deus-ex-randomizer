@@ -1,6 +1,6 @@
 class BalanceShuriken injects Shuriken;
 
-var float blood_mult;
+var float blood_mult, rot_per_sec;
 var int rotAmount;
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
@@ -20,7 +20,7 @@ simulated function Tick(float deltaTime)
     if (Level.Netmode != NM_DedicatedServer)
     {
         //DeusExProjectile tick resets the rotation every time, so we need to track the rotation
-        rotAmount+=deltaTime*65536*5; //Five rotations per second
+        rotAmount+=deltaTime*65536*rot_per_sec;
         rotAmount=rotAmount % 65536;
         rot = Rotation;
         rot.Roll += 16384; //To get it aligned the right direction
@@ -71,10 +71,16 @@ function BeginPlay()
         MaxSpeed = 75000;
         AccurateRange = 1920;
         maxRange = 3840;
+
+        //According to this paper: http://www.knifethrower.com/speed.pdf
+        //the average throwing knife spins 5.46 revolutions per second.
+        //Randomize speed between 5 and 6 revolutions per second.
+        rot_per_sec = 5.0 + FRand();
     } else {
         MaxSpeed = 750;
         AccurateRange = 640;
         maxRange = 1280;
+        rot_per_sec=0; //Don't spin
     }
     Super.BeginPlay();
 }
