@@ -119,7 +119,12 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
+        #ifdef injections
+            AddStartAug(class'AugInfraVision');
+            AddAugAllow(class'AugVision');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
+        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -155,7 +160,12 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
+        #ifdef injections
+            AddStartAug(class'AugInfraVision');
+            AddAugAllow(class'AugVision');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
+        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
