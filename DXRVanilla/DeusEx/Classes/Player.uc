@@ -371,6 +371,31 @@ function GrabDecoration()
     Super.GrabDecoration();
 }
 
+function bool ShouldAddToBelt(inventory NewItem)
+{
+    local DeusExRootWindow root;
+    local #var(prefix)HUDObjectBelt belt;
+    local Inventory beltItem;
+    local int i;
+
+    //Belt is locked, don't add anything
+    if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) return False;
+
+    root = DeusExRootWindow(rootWindow);
+    belt = root.hud.belt;
+
+    //Don't add an item to the belt if you have another one
+    //of the same item on the belt already
+    for (i=0;i<ArrayCount(belt.objects);i++){
+        beltItem = belt.objects[i].GetItem();
+        if (beltItem==None) continue;
+        if (beltItem==NewItem) continue; //The new item will have already been added to the belt by the time we get here, so ignore ourself
+        if (beltItem.class==NewItem.class) return False; //There's another of the same class already on the belt, get outta here!
+    }
+
+    return True;
+}
+
 function bool AddInventory( inventory NewItem )
 {
     local bool retval;
@@ -384,11 +409,11 @@ function bool AddInventory( inventory NewItem )
 
     retval = Super.AddInventory(NewItem);
 
-    if (NewItem.bInObjectBelt){
-        if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) {
+    if (NewItem.bInObjectBelt){ //Item was added to the belt automatically
+        if (!ShouldAddToBelt(NewItem)) { //Do we actually want it on the belt?
             root = DeusExRootWindow(rootWindow);
             if (root!=None){
-                root.hud.belt.RemoveObjectFromBelt(NewItem);
+                root.hud.belt.RemoveObjectFromBelt(NewItem); //Get that thing off my belt!
             }
         }
     }
@@ -459,29 +484,6 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
     return newNote;
 }
 
-function float GetCurrentGroundSpeed()
-{
-    local float augValue, speed;
-
-    // Remove this later and find who's causing this to Access None MB
-    if ( AugmentationSystem == None )
-        return 0;
-
-    augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
-    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugOnlySpeed'));
-
-    if (augValue == -1.0)
-        augValue = 1.0;
-
-    if ( Level.NetMode != NM_Standalone )
-        speed = Self.mpGroundSpeed * augValue;
-    else
-        speed = Default.GroundSpeed * augValue;
-
-    return speed;
-}
-
 function DoJump( optional float F )
 {
     local DeusExWeapon w;
@@ -542,7 +544,13 @@ function Landed(vector HitNormal)
     local int augLevel;
     local float augReduce, dmg, softener;
 
-    softener = RunSilentValue/4 + 0.75;
+    softener = 1;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && AugmentationSystem != None)
+    {
+        augLevel = AugmentationSystem.GetClassLevel(class'AugStealth');
+        if(augLevel != -1) softener = (1-augLevel)/4 + 0.75;
+    }
+
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);
     if (Velocity.Z < -1.4 * JumpZ)

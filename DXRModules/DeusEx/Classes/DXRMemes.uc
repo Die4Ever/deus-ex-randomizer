@@ -2,6 +2,11 @@ class DXRMemes extends DXRActorsBase transient;
 // make sure none of this affects speed or score, because it can be easily disabled
 var Actor rotating;
 
+struct camera_scene {
+    var CameraPoint cams[20];
+    var int numCams;
+};
+
 function RandomDancing(Actor a)
 {
     if (IsHuman(a.class)) {
@@ -764,6 +769,153 @@ state() JumpInTheLine {
     }
 }
 
+//Find the next camera point, relative to the given sequence number
+function CameraPoint GetNextCameraPoint(int seqNum)
+{
+    local CameraPoint c,lowest;
+
+    foreach AllActors(class'CameraPoint',c){
+        if (c.sequenceNum>seqNum){
+            if (lowest==None){
+                lowest = c;
+            } else {
+                if (c.sequenceNum<lowest.sequenceNum){
+                    lowest=c;
+                }
+            }
+        }
+    }
+    return lowest;
+}
+
+function RandomizeCutsceneOrder()
+{
+    local CameraPoint c,firstCam,prevCam;
+    local camera_scene scenes[30];
+    local int numScenes,i,j,slot,temp,scenesToSkip;
+    local int sceneList[30];
+
+    switch(dxr.localURL)
+    {
+        case "INTRO":
+            if (#defined(revision)) {
+                scenesToSkip=2; //Revision has two final scenes to leave in place (an extra "REVISION" screen after the black)
+            } else {
+                scenesToSkip=1; //Only skip the final black room scene
+            }
+            break;
+        case "ENDGAME1":
+            scenesToSkip=2; //Skip the MJ12 Hand and the black room scenes
+            break;
+        case "ENDGAME2":
+        case "ENDGAME3":
+            if (#defined(revision)) {
+                scenesToSkip=1; //Revision doesn't have a black room scene at the end
+            } else {
+                scenesToSkip=2; //Skip the MJ12 Hand and the black room scenes
+            }
+            break;
+        case "ENDGAME4":
+        case "ENDGAME4REV":
+        default:
+            return; //Don't try to randomize the dance party (or anything else), it's already crazy
+
+    }
+
+    SetSeed("RandomizeCutsceneOrder");
+
+    //Gather the camera points in order and group them into scenes
+    c = GetNextCameraPoint(-1); //first sequence point;
+    while(c!=None)
+    {
+        if (c==None)continue;
+        if (c.cmd==CAMCMD_MOVE && c.timeSmooth<=0){
+            if (scenes[numScenes].numCams>0){
+                numScenes++;
+            }
+        }
+        scenes[numScenes].cams[scenes[numScenes].numCams++]=c;
+        if (c.IsInState('Running')){
+            c.GoToSleep(); //Take the active camera point out of action
+        }
+        c = GetNextCameraPoint(c.sequenceNum);
+    }
+
+    //This is purely for debug purposes
+    //Dump all the CameraPoint's in sequence num order, grouped by scene
+    /*
+    for (i=0;i<ArrayCount(scenes);i++)
+    {
+        if (scenes[i].numCams==0) continue;
+        l("Scene "$i);
+        for(j=0;j<ArrayCount(scenes[i].cams);j++){
+            if (scenes[i].cams[j]==None) continue;
+            c=scenes[i].cams[j];
+            l("    CameraPoint "$c$"  SequenceNum "$c.sequenceNum$"  Cmd: "$string(GetEnum(enum'ECameraCommand',c.cmd))$"  timeSmooth: "$c.timeSmooth$"  timeWaitPost: "$c.timeWaitPost);
+        }
+        l("    ");
+    }
+    */
+    //End of debug
+
+    //Put the scene numbers in a list
+    for (i=0;i<ArrayCount(scenes);i++){
+        if (scenes[i].numCams>0){
+            sceneList[i]=i;
+        } else {
+            sceneList[i]=-1;
+        }
+    }
+
+    //Shuffle the scene order (Skip the final scenes, as appropriate)
+    for (i=numScenes-scenesToSkip;i>=0;i--){
+        if(IsAprilFools() || chance_single(20)) {
+            slot = rng(i+1);
+            temp = sceneList[i];
+            sceneList[i] = sceneList[slot];
+            sceneList[slot] = temp;
+        }
+    }
+
+    //Debug info
+    //Dump the newly randomized order of the scenes
+    /*
+    l("Scene order:");
+    for (i=0;i<ArrayCount(sceneList);i++){
+        if (sceneList[i]>=0){
+            l("Scene "$i$":  "$sceneList[i]);
+        }
+    }
+    */
+    //End of debug
+
+    //Actually connect the camera points in the new order
+    //Sadly, SequenceNum is a const, so we have to manually construct the links
+    //ourselves so that it's linked the right way.
+    for (i=0;i<ArrayCount(sceneList);i++){
+        if (sceneList[i]<0) continue;
+        if (scenes[sceneList[i]].numCams<=0) continue;
+        for (j=0;j<ArrayCount(scenes[sceneList[i]].cams);j++){
+            c = scenes[sceneList[i]].cams[j];
+            if (c==None) continue;
+            if (firstCam==None) firstCam = c;
+
+            //Rig the camera list together (Typically this would be done by sequenceNum, but that's a const)
+            if (prevCam!=None){
+                prevCam.nextPoint=c;
+            }
+            prevCam = c;
+            //l("CameraPoint "$c$"  SequenceNum "$c.sequenceNum$"  Cmd: "$string(GetEnum(enum'ECameraCommand',c.cmd))$"  timeSmooth: "$c.timeSmooth$"  timeWaitPost: "$c.timeWaitPost);
+        }
+    }
+    if (c!=None){
+        c.nextPoint=None; //Remove the link to the next camera on the final camera point
+    }
+
+    //Send the first cam straight to running, under the assumption that the player has already been initialized
+    firstCam.GoToState('Running');
+}
+
 function RandomizeCutscene()
 {
     local Actor a;
@@ -836,6 +988,8 @@ function RandomizeCutscene()
     RandomMJ12Globe();
 
     RandomizeDialog();
+
+    RandomizeCutsceneOrder();
 }
 
 function MakeAllGhosts()

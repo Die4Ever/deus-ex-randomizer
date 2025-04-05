@@ -54,6 +54,14 @@ function SwapAll(string classname, float percent_chance)
         return;
     }
 
+    for(i=num-1; i>=0; i--) { // Fisher-Yates shuffle the array before swapping the actor locations (swapping actor locations can fail, shuffling the array cannot fail, Fisher-Yates works better for unfailable shuffles)
+        slot = rng(i+1);
+        Swap(temp[i], temp[slot]);
+        a = temp[i];
+        temp[i] = temp[slot];
+        temp[slot] = a;
+    }
+
     for(i=0; i<num; i++) {
         if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself
@@ -231,15 +239,32 @@ static function bool IsMeleeWeapon(Inventory item)
 static function Ammo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
 {
     local int i;
+    local class<Ammo> origAmmoClass;
 
     if( w == None || add_ammo <= 0 )
         return None;
+
+    origAmmoClass = w.AmmoName;
+    // check if the pawn already has one of the alternate ammo types, really only useful for crossbow
+    // sabot doesn't do anything different to players, 20mm and WP rockets are both pretty mean
+    for(i=0; i<ArrayCount(w.AmmoNames); i++) {
+        if(w.AmmoNames[i]==None || w.AmmoNames[i]==class'AmmoNone') continue;
+        if(P.FindInventoryType(w.AmmoNames[i]) == None) continue;
+        w.AmmoName = w.AmmoNames[i];
+        break;
+    }
 
     if ( w.AmmoName == None || w.AmmoName == Class'AmmoNone' )
         return None;
 
     for(i=0; i<add_ammo; i++)
         w.AmmoType = Ammo(GiveItem(p, w.AmmoName));
+
+    if (w.AmmoName!=origAmmoClass) {
+        w.AmmoName = None;
+        w.LoadAmmoType(w.AmmoType);
+        if (w.AmmoName == None) w.AmmoName = w.AmmoType.class;
+    }
     return w.AmmoType;
 }
 
@@ -258,13 +283,16 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
         a = Ammo(p.FindInventoryType(item.class));
         if( a != None ) {
             a.AmmoAmount += a.default.AmmoAmount + add_ammo;
+            a.AmmoAmount = min(a.AmmoAmount, a.MaxAmmo);
             if( player != None )
                 player.UpdateAmmoBeltText(a);
             item.Destroy();
             return a;
         } else {
             //Make sure the extra ammo is included even if the pawn doesn't have it already
-            Ammo(item).AmmoAmount += add_ammo;
+            a = Ammo(item);
+            a.AmmoAmount += add_ammo;
+            a.AmmoAmount = min(a.AmmoAmount, a.MaxAmmo);
         }
     }
 
@@ -1091,6 +1119,8 @@ static function int GetRotationOffset(class<Actor> c)
     if(ClassIsChildOf(c, class'#var(prefix)Switch1'))
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)Switch2'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)VendingMachine'))
         return 16384;
     //ComputerPersonal is fine without this, so just leave it commented out
     //if(ClassIsChildOf(c, class'#var(prefix)ComputerPersonal'))

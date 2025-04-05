@@ -1,4 +1,14 @@
-class AugJump extends Augmentation;
+class AugOnlySpeed extends Augmentation;
+
+#ifndef injections
+var float Level5Value; // does nothing outside of vanilla, just a placeholder
+var float activationCost;
+simulated function float GetAugLevelValue()
+{
+    if(!bIsActive) return -1;
+    return LevelValues[CurrentLevel];
+}
+#endif
 
 state Active
 {
@@ -18,11 +28,16 @@ function Reset()
 
     // reset without burning 1 energy
     if(class'MenuChoice_FixGlitches'.default.enabled) {
-        //Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
-        Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
+        Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
+        //Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
     } else {
-        //Player.GroundSpeed *= GetAugLevelValue();
-        Player.JumpZ *= GetAugLevelValue();
+        Player.GroundSpeed *= GetAugLevelValue();
+        //Player.JumpZ *= GetAugLevelValue();
+    }
+    if ( Level.NetMode != NM_Standalone )
+    {
+        if ( Human(Player) != None )
+            Human(Player).UpdateAnimRate( GetAugLevelValue() );
     }
 }
 
@@ -35,17 +50,20 @@ function UpdateBalance()
         LevelValues[2] = 1.5;
         LevelValues[3] = 1.7;
         Level5Value = 1.8;
+        activationCost = 1;
     } else {
         LevelValues[0] = 1.2;
         LevelValues[1] = 1.4;
         LevelValues[2] = 1.6;
         LevelValues[3] = 1.8;
         Level5Value = -1;
+        activationCost = 0;
     }
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
     default.Level5Value = Level5Value;
+    default.activationCost = activationCost;
 }
 
 //original went from 1.2 up to 1.8, I've thought about nerfing the max speed so you can't just run past all enemies, but I think that would require an unreasonably large nerf
@@ -57,13 +75,14 @@ defaultproperties
     LevelValues(2)=1.5
     LevelValues(3)=1.7
     Level5Value=1.8
+    activationCost=1
     EnergyRate=30
 
-    Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
-    smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
-    AugmentationName="Jump Enhancement"
-    Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the height they can jump, and reducing the damage they receive from falls.|n|nTECH ONE: Jumping is increased slightly, while falling damage is reduced.|n|nTECH TWO: Jumping is increased moderately, while falling damage is further reduced.|n|nTECH THREE: Jumping is increased significantly, while falling damage is substantially reduced.|n|nTECH FOUR: An agent can leap from the tallest building."
-    MPInfo="When active, you jump higher.  Energy Drain: Very High"
+    Icon=Texture'AugIconSpeedOnly'
+    smallIcon=Texture'AugIconSpeedOnly_Small'
+    AugmentationName="Running Enhancement"
+    Description="Ionic polymeric gel myofibrils are woven into the leg muscles, increasing the speed at which an agent can run.|n|nTECH ONE: Speed is increased slightly.|n|nTECH TWO: Speed is increased moderately.|n|nTECH THREE: Speed is increased significantly.|n|nTECH FOUR: An agent can run like the wind."
+    MPInfo="When active, you run faster.  Energy Drain: Very High"
     AugmentationLocation=LOC_Leg
     MPConflictSlot=5
 }

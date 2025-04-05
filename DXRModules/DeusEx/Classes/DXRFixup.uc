@@ -220,10 +220,12 @@ function PreFirstEntry()
     FixShowers();
 
 #ifdef vanilla
-    foreach AllActors(class'#var(prefix)Lamp', lmp) {
-        lmp.InitLight();
+    if (class'MenuChoice_AutoLamps'.static.IsEnabled()) {
+        foreach AllActors(class'#var(prefix)Lamp', lmp) {
+            lmp.InitLight();
+        }
+        SetAllLampsState(true, true, true);
     }
-    SetAllLampsState(true, true, true);
 #endif
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
@@ -583,6 +585,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     FixAmmoShurikenName();
     FixInventory(p);
     GarbageCollection(p);
+
+    if(p.InHand!=None && p.InHand.GetStateName()=='Idle2') {
+        warning("p.InHand: " $ p.InHand $ " is in state Idle2");
+        p.SetInHand(None);
+    }
 }
 
 function GarbageCollection(#var(PlayerPawn) p)
@@ -658,7 +665,7 @@ function _PreTravel()
         PreTravelMapFixes();
     }
 
-    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && class'MenuChoice_FixGlitches'.default.enabled) {
         RemoveProjectilesInFlight();
     }
 }

@@ -63,7 +63,8 @@ function PreFirstEntryMapFixes()
 
         foreach AllActors(class'DeusExMover', d) {
             if( d.Name == 'DeusExMover19' ) {
-                d.KeyIDNeeded = 'ControlRoomDoor';
+                d.Tag = 'ControlRoomDoor';
+                if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) d.KeyIDNeeded = 'ControlRoomDoor'; // if we aren't spawning the key, don't make it show the "Key Unacquired" text
             }
         }
 
@@ -73,6 +74,15 @@ function PreFirstEntryMapFixes()
             k.Description = "Control Room Door Key";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(k);
+        }
+
+        if(dxr.flags.settings.goals>0 || class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(636.035339, -1050.083496, -135.789780));
+            k.KeyID = 'KioskDoors';
+            k.Description = "Kiosk door key";
+            k.bIsSecretGoal = true;
+
+            AddSwitch(vect(794.640015, -841.168518, -158.871399), rot(0, 32768, 0), 'ControlRoomDoor');
         }
 
         //Prevent TNT crates in subway from being shuffled (in case Goal Rando is disabled)
