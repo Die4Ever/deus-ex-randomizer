@@ -87,6 +87,10 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     local string name;
 
     //#region Loadout Defs
+
+    //ALWAYS allow AmmoNone, it gets looted from Melee weapons and stuff
+    AddInvAllow(class'#var(prefix)AmmoNone');
+
     switch(loadout) {
 /////////////////////////////////////////////////////////////////
     //#region All Items
