@@ -467,6 +467,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     local DeusExMover d;
     local ComputerSecurity c;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)Nanokey key;
 
     //Change break room security computer password so it isn't pre-known
     //This code isn't written anywhere, so you shouldn't have knowledge of it
@@ -506,10 +507,19 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
         //If you make this breakable, the explosion right next
         //to it will destroy it every time.  Maybe it could
         //only become breakable after the explosion happens?
-        foreach AllActors(class'DeusExMover', d) {
-            if (d.name=='DeusExMover13'){
-                d.lockStrength=0.25;
+        if(dxr.flags.settings.keysrando > 0 || dxr.flags.settings.infodevices > 0) {
+            foreach AllActors(class'DeusExMover', d) {
+                if (d.name=='DeusExMover13'){
+                    d.lockStrength = 0.25;
+                    d.KeyIDNeeded = 'a51entr_vent';
+                }
             }
+
+            key = #var(prefix)Nanokey(Spawnm(class'#var(prefix)Nanokey',,, vect(97.088776, 1328.260376, -156.789841)));
+            key.KeyID = 'a51entr_vent';
+            key.Description = "Station 5 Hatch Key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(key);
         }
 
         Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters
@@ -524,6 +534,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
         Spawn(class'PlaceholderItem',,, vectm(-404.7,1624.6,-349)); //Near corpse under cherry picker
         Spawn(class'PlaceholderItem',,, vectm(18.6,1220.4,-149)); //Boxes near cherry picker
         Spawn(class'PlaceholderItem',,, vectm(-1712.9,191.25,26)); //In front of ambush elevator
+        Spawn(class'PlaceholderItem',,, vectm(148.108002, -594.593994, -308.401001)); //In vents on the bend in the pipe after the steam, on the unlocked side
 
         class'PlaceholderEnemy'.static.Create(self,vectm(4623,210,-176));
         class'PlaceholderEnemy'.static.Create(self,vectm(3314,2276,-176));
@@ -776,12 +787,10 @@ function PostFirstEntryMapFixes()
 
     switch(dxr.localURL) {
     case "15_area51_final":
-        if(dxr.flags.IsSpeedrunMode() && FeatureFlag(3,5,0, "Area51EndingBalancePass2")) {
-            foreach AllActors(class'#var(prefix)Keypad', k) {
-                if(k.Event == 'blastdoor_upper') {
-                    k.bHackable = false;
-                    break;
-                }
+        foreach AllActors(class'#var(prefix)Keypad', k) {
+            if(k.Event == 'blastdoor_upper') {
+                k.bHackable = false;
+                break;
             }
         }
         break;

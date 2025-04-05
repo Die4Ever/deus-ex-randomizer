@@ -244,7 +244,7 @@ simulated function InitHints()
         else if(dxr.flags.settings.infodevices>0) AddHint("Datacubes give off a glow.", "Keep your eyes open for it!");
 
         if(!dxr.flags.IsZeroRando()) {
-            AddHint("The medium and large metal crates are now destructible.", "They have 500 hp.");
+            AddHint("The medium and large metal crates are now destructible.", "They have 500 HP.");
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         }
         if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime) {

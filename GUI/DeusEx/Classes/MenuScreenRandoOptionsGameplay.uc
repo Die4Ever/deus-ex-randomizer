@@ -34,13 +34,13 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_LockBelt');
 #endif
 
-#ifdef vanilla
-    CreateChoice(class'MenuChoice_BalanceAugs');
-    CreateChoice(class'MenuChoice_BalanceSkills');
-    CreateChoice(class'MenuChoice_BalanceItems');
-    CreateChoice(class'MenuChoice_BalanceMaps');
-    CreateChoice(class'MenuChoice_BalanceEtc');
-#endif
+    if(#bool(vanilla)) {
+        CreateChoice(class'MenuChoice_BalanceAugs');
+        CreateChoice(class'MenuChoice_BalanceSkills');
+        CreateChoice(class'MenuChoice_BalanceItems');
+        CreateChoice(class'MenuChoice_BalanceMaps');
+        CreateChoice(class'MenuChoice_BalanceEtc');
+    }
 }
 
 defaultproperties

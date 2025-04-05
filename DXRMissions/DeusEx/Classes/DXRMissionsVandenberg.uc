@@ -120,8 +120,8 @@ function int InitGoals(int mission, string map)
         AddMutualExclusion(howard_machine_shop, computer_machine_shop);
 
         AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
-        AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
-        AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
+        //AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
+        //AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
         AddMutualExclusion(howard_computer, jock_computer); // both in the same room
 
         AddMutualExclusion(computer_vanilla, jock_computer);
@@ -262,8 +262,8 @@ function int InitGoalsRev(int mission, string map)
         AddMutualExclusion(howard_machine_shop, computer_machine_shop);
 
         AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
-        AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
-        AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
+        //AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
+        //AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
         AddMutualExclusion(howard_computer, jock_computer); // both in the same room
 
         AddMutualExclusion(computer_vanilla, jock_computer);
@@ -274,6 +274,42 @@ function int InitGoalsRev(int mission, string map)
     }
 
     return mission+1000;
+}
+
+function bool IsLayoutAllowed(int goalsToLocations[32])
+{
+    local int i, outside, courtyard, silo, launch_command;
+    local string loc;
+
+    switch(dxr.localURL) {
+    case "14_OCEANLAB_SILO":
+        for(i=0; i < num_goals; i++) {
+            loc = locations[goalsToLocations[i]].name;
+            switch(loc) {
+                case "Radio":
+                case "Vanilla Escape":
+                    outside++;
+                    break;
+                case "Surface Meeting Room":
+                case "Machine Shop":
+                case "Sniper Tower":
+                    courtyard++;
+                    break;
+                case "Fourth Floor":
+                case "Cherry Picker":
+                    silo++;
+                    break;
+                case "Launch Command":
+                    launch_command++;
+                    break;
+                default:
+                    err("IsLayoutAllowed unknown location name: " $ goals[i].name @ loc);
+            }
+        }
+        if(outside>1 || courtyard>1 || silo>1 || launch_command>1) return false;
+        break;
+    }
+    return true;
 }
 
 function UpdateLocation(Actor a)
@@ -503,6 +539,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
             //Jock starts in the Wandering state for some reason
             sp.SetOrders('Standing');
+        }
+    }
+    if (!RevisionMaps && dxr.localURL=="12_VANDENBERG_CMD") {
+        if(dxr.flags.IsSpeedrunMode()) {
+            Spawnm(class'VendingMachineEnergy',,, vect(6360, 7975, -3055), rot(0,32762,0));
+        } else {
+            Spawnm(class'VendingMachine',,, vect(6360, 7975, -3055), rot(0,32762,0));
         }
     }
 }

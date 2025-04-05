@@ -5,9 +5,9 @@ function UpdateBalance()
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         HitDamage = 6;
         BaseAccuracy = 0.7;
-        AccurateRange = 700;
-        maxRange = 1000;
-        AIMaxRange = 450;
+        AccurateRange = 688;
+        maxRange = 960;
+        AIMaxRange = 448;
     } else {
         HitDamage = 5;
         BaseAccuracy = 0.6;
@@ -27,8 +27,8 @@ defaultproperties
 {
     HitDamage=6
     BaseAccuracy=0.7
-    maxRange=1000
-    AccurateRange=700
+    maxRange=960
+    AccurateRange=688
     MinSpreadAcc=0.25
-    AIMaxRange=450
+    AIMaxRange=448
 }

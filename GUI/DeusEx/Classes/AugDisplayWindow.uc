@@ -6,6 +6,8 @@ class DXRAugDisplayWindow injects AugmentationDisplayWindow;
 #endif
 
 var transient bool d3d11;// d3d11 drawing the viewport of targeting aug fills the entire screen, just disable that
+var bool bThermalVision;
+var bool bMotionSensor;
 
 function ConfigurationChanged()
 {
@@ -31,8 +33,8 @@ function bool IsHeatSource(Actor A)
         return True;
     else if (A.IsA('FleshFragment'))
         return True;
-    else if ( (A.IsA('Mover') || A.IsA('Decoration')) && A.bVisionImportant && !A.bHidden)
-        return true;
+    else if (A.IsA('Computers'))
+        return True;
     else
         return False;
 }
@@ -118,14 +120,27 @@ function bool ShouldDrawActor(Actor A)
     if(A.bHidden)
         return false;
 
-    if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && (Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None))
-        return true;
+    if(bThermalVision && activeCount==1) {
+        return IsHeatSource(A);
+    }
+    if(bMotionSensor) {
+        return !A.bHidden && A != Player && VSize(A.Velocity)>1;
+    }
+
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+        if(Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None)
+           return true;
+        if(DeusExProjectile(A) != None)
+            return true;
+    }
 
     if(!A.bVisionImportant)
         return false;
 
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         if(IsHeatSource(A)) return true;
+        if ( (A.IsA('Mover') || A.IsA('Decoration')) && A.bVisionImportant && !A.bHidden)
+            return true;
     } else {
         if(Super.IsHeatSource(A)) return true;
     }
@@ -184,8 +199,9 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
     local Texture oldSkins[9];
     local #var(prefix)Containers c;
     local class<Actor> i; //Revision changed "Contents"/"Content2"/"Content3" to Actor instead of Inventory
-    //local class<Inventory> i;
     local Mesh oldMesh;
+
+    if(DrawGlow <= 0) return;
 
     if(A.Mesh == None) {
         DrawBrush(gc, A);
@@ -213,31 +229,34 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
 function DrawActor(GC gc, Actor A, vector loc)
 {
     local float dist, DrawGlow;
+    local bool bLOS;
 
     dist = VSize(A.Location - loc);
+    DrawGlow = FClamp((VisionLevelValue-dist)/8.0, 0, 2);
+    bLOS = Player.LineOfSightTo(A,true);
     //If within range of vision aug bit
-    if ( ShouldDrawActorDist(A, dist) )
+    if ( !bLOS && ShouldDrawActorDist(A, dist) )
     {
         VisionTargetStatus = GetVisionTargetStatus(A);
-        _DrawActor(gc, A, 2.0);
+        _DrawActor(gc, A, DrawGlow);
     }
     else if ((Player.Level.Netmode != NM_Standalone) && (GetVisionTargetStatus(A) == VISIONENEMY) && (A.Style == STY_Translucent))
     {
         //DEUS_EX AMSD In multiplayer, if looking at a cloaked enemy player within range (greater than see through walls)
         //(If within walls radius he'd already have been seen.
-        if ( (dist <= (visionLevelvalue)) && (Player.LineOfSightTo(A,true)) )
+        if (dist <= visionLevelvalue && bLOS)
         {
             VisionTargetStatus = GetVisionTargetStatus(A);
-            _DrawActor(gc, A, 2.0);
+            _DrawActor(gc, A, DrawGlow);
         }
     }
-    else if (Player.LineOfSightTo(A,true))
+    else if (bLOS)
     {
         VisionTargetStatus = GetVisionTargetStatus(A);
 
         if ((Player.Level.NetMode == NM_Standalone) || (dist < VisionLevelValue * 1.5) || (VisionTargetStatus != VISIONENEMY))
         {
-            DrawGlow = 2.0;
+            DrawGlow = FClamp((VisionLevelValue-dist/2.0)/8.0, 0, 2);
         }
         else
         {

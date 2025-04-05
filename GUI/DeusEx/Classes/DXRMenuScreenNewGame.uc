@@ -8,6 +8,7 @@ var DXRando dxr;
 var DXRFlags flags;
 var config string last_player_name;
 var bool hasCheckedLDDP;
+var MenuUIActionButtonWindow btnRandomPortrait;
 #ifndef injections
 var bool bFemaleEnabled;
 #endif
@@ -16,6 +17,8 @@ static function bool HasLDDPInstalled()
 {
     local DeusExTextParser parser;
     local bool opened;
+
+    if(#defined(revision)) return true; //Revision always has LDDP available
 
     if(!#defined(injections)) return false;// just to be safe if you have a lot of mods installed in the same folder, Revision and VMD still allow selecting FemJC
 
@@ -44,7 +47,7 @@ event InitWindow()
 
     Super(MenuUIScreenWindow).InitWindow();
 
-    if (bFemaleEnabled)
+    if (bFemaleEnabled && !#defined(revision)) //Revision has all male, then all female ordering instead of interleaved
     {
         TexPortraits[0] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_1", class'Texture', false));
         TexPortraits[1] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_1", class'Texture', false));
@@ -260,6 +263,39 @@ function CreateActionButtons()
 {
     Super.CreateActionButtons();
     actionButtons[3].btn.Hide();
+
+    btnRandomPortrait = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
+    btnRandomPortrait.SetButtonText("Random");
+    btnRandomPortrait.SetPos(20,316);
+    btnRandomPortrait.SetWidth(65);
+}
+
+function bool ButtonActivated( Window buttonPressed )
+{
+    if (buttonPressed==btnRandomPortrait){
+        SelectRandomPortrait();
+        return true;
+    }
+    return Super.ButtonActivated(buttonPressed);
+}
+
+function SelectRandomPortrait()
+{
+    local int numPortraits;
+
+    //We could use the size of the array, but Revision has a whole bunch
+    //of other options available that I don't think we really want to
+    //include in the random pool.
+    if (bFemaleEnabled){
+        numPortraits=10;
+    } else {
+        numPortraits=5;
+    }
+
+    //This shouldn't ever pick the same portrait twice in a row,
+    //since it can't roll *all* the way around
+    portraitIndex=(portraitIndex+Rand(numPortraits-1)+1) % numPortraits;
+    btnPortrait.SetBackground(texPortraits[portraitIndex]);
 }
 
 function GiveTip()

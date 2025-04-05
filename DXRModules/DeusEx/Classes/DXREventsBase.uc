@@ -1034,7 +1034,7 @@ static function string GetLoadoutName(DXRando dxr)
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
     if( loadout == None )
         return "";
-    return loadout.GetName(loadout.loadout);
+    return loadout.GetName(dxr.flags.loadout);
 }
 
 // BINGO STUFF

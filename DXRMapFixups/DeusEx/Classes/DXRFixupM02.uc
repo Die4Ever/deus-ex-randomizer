@@ -63,7 +63,8 @@ function PreFirstEntryMapFixes()
 
         foreach AllActors(class'DeusExMover', d) {
             if( d.Name == 'DeusExMover19' ) {
-                d.KeyIDNeeded = 'ControlRoomDoor';
+                d.Tag = 'ControlRoomDoor';
+                if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) d.KeyIDNeeded = 'ControlRoomDoor'; // if we aren't spawning the key, don't make it show the "Key Unacquired" text
             }
         }
 
@@ -73,6 +74,15 @@ function PreFirstEntryMapFixes()
             k.Description = "Control Room Door Key";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(k);
+        }
+
+        if(dxr.flags.settings.goals>0 || class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(636.035339, -1050.083496, -135.789780));
+            k.KeyID = 'KioskDoors';
+            k.Description = "Kiosk door key";
+            k.bIsSecretGoal = true;
+
+            AddSwitch(vect(794.640015, -841.168518, -158.871399), rot(0, 32768, 0), 'ControlRoomDoor');
         }
 
         //Prevent TNT crates in subway from being shuffled (in case Goal Rando is disabled)
@@ -239,12 +249,12 @@ function PreFirstEntryMapFixes()
 
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             // this map is too hard
-            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(-1890,1840,1775)); //Rooftop apartment hall
-            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(700,850,1175)); //Apartment top floor
-            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-1220,1770,15)); //Next to electrical box
-            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-2150,595,-240)); //Pipe next to sewer ladder
-            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-2190,2230,315)); //Fire Escape near ground entrance
-            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
+            SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(-1890,1840,1775)); //Rooftop apartment hall
+            SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(700,850,1175)); //Apartment top floor
+            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-1220,1770,15)); //Next to electrical box
+            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-2150,595,-240)); //Pipe next to sewer ladder
+            SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-2190,2230,315)); //Fire Escape near ground entrance
+            SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
         }
 
         break;

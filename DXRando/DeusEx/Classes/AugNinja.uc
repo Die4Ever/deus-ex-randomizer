@@ -4,8 +4,10 @@ class AugNinja extends Augmentation;
 
 #ifndef injections
 var float Level5Value; // does nothing outside of vanilla, just a placeholder
+var float activationCost;
 simulated function float GetAugLevelValue()
 {
+    if(!bIsActive) return -1;
     return LevelValues[CurrentLevel];
 }
 #endif
@@ -18,18 +20,7 @@ Begin:
 
 simulated function DoActivate()
 {
-    local float useEnergy;
-
-    // DXRando: instantly use 1 energy to prevent abuse
-    if(Level.LevelAction == LEVACT_None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
-        useEnergy = 1;
-    }
-    if(Player.Energy < useEnergy) {
-        Deactivate();
-    } else {
-        Player.Energy -= useEnergy;
-        Reset();
-    }
+    Reset();
 }
 
 function Reset()
@@ -51,9 +42,7 @@ function Reset()
             Human(Player).UpdateAnimRate( GetAugLevelValue() );
     }
 
-    Player.RunSilentValue = 1.0 / (GetAugLevelValue() ** 2);
-    if ( Player.RunSilentValue == -1.0 )
-        Player.RunSilentValue = 1.0;
+    Player.RunSilentValue = 0;
 }
 
 function Deactivate()
@@ -79,8 +68,8 @@ function Deactivate()
 defaultproperties
 {
     EnergyRate=40.000000
-    Icon=Texture'DeusExUI.UserInterface.AugIconSpeedJump'
-    smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
+    Icon=Texture'AugIconNinja'
+    smallIcon=Texture'AugIconNinja_Small'
     AugmentationName="Ninja"
     Description="I AM NINJA!"
     MPInfo="I AM NINJA!"
@@ -89,6 +78,7 @@ defaultproperties
     LevelValues(2)=1.6
     LevelValues(3)=1.7
     Level5Value=1.8
+    activationCost=1
     AugmentationLocation=LOC_Leg
     MPConflictSlot=5
 }

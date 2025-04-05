@@ -1,5 +1,10 @@
 class DXRVendingMachine injects #var(prefix)VendingMachine;
 
+function DoSpawn(actor Frobber, Inventory frobWith)
+{
+    Super.Frob(Frobber, frobWith);
+}
+
 function Frob(actor Frobber, Inventory frobWith)
 {
     local int usesBefore;
@@ -7,7 +12,7 @@ function Frob(actor Frobber, Inventory frobWith)
 
     usesBefore = numUses;
 
-    Super.Frob(Frobber,frobWith);
+    DoSpawn(Frobber,frobWith);
 
     if (usesBefore==0){
         return;

@@ -16,6 +16,8 @@ const ZeroRandoPlus = 12;
 const OneItemMode = 13;
 const BingoCampaign = 14;
 const NormalRandomizer = 15;
+const StrongAugsMode = 16;
+
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
@@ -798,6 +800,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
     if(slot--==0) return OneItemMode;
+    if(slot--==0) return StrongAugsMode;
     return 999999;
 }
 
@@ -853,6 +856,8 @@ function string GameModeName(int gamemode)
             return "Mr. Page's Mean Bingo Machine";
         }
         return "";
+    case StrongAugsMode:
+        return "Strong Augs Mode";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -918,6 +923,11 @@ function bool IsHalloweenMode()
 function bool IsOneItemMode()
 {
     return gamemode == OneItemMode;
+}
+
+function bool IsStrongAugsMode()
+{
+    return gamemode == StrongAugsMode;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

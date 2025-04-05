@@ -306,7 +306,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 function float CombatDifficultyMultEnviro()
 {
-    return (CombatDifficulty*0.25) + 0.75;// 25% wet / 75% dry
+    return (CombatDifficulty*0.2) + 0.8;// 20% wet / 80% dry
 }
 
 function float GetDamageMultiplier()
@@ -559,7 +559,6 @@ function ActivateAugByName(string augName)
     anAug = FindAugByName(augName);
 
     if (anAug == None) {
-        ClientMessage(AugmentationSystem.NoAugInSlot);
         return;
     }
 
@@ -601,6 +600,9 @@ exec function ActivateAugADS() { ActivateAugByName("AugDefense"); }
 //exec function ActivateAugInfolink() { ActivateAugByName("AugDatalink"); }  //Obviously not
 exec function ActivateAugSynthHeart() { ActivateAugByName("AugHeartLung"); }
 //exec function ActivateAugPowerRecirc() { ActivateAugByName("AugPower"); } //Fully passive
+exec function ActivateAugOnlySpeed() { ActivateAugByName("AugOnlySpeed"); }
+exec function ActivateAugJump() { ActivateAugByName("AugJump"); }
+exec function ActivateAugNinja() { ActivateAugByName("AugNinja"); }
 
 function CreateDrone()
 {
@@ -660,6 +662,49 @@ function DroneExplode()
     } else {
         ClientMessage("You need 10 bio-electric energy to detonate the spy drone.");
     }
+}
+
+function float GetCurrentGroundSpeed()
+{
+    local float augValue, stealthValue, speed, f;
+    local Augmentation aug;
+
+    // Remove this later and find who's causing this to Access None MB
+    if ( AugmentationSystem == None )
+        return 0;
+
+    augValue = -1;
+    stealthValue = 1; // the speed mult from stealth, 100% speed for disabled
+    for(aug=AugmentationSystem.FirstAug; aug!=None; aug=aug.next) {
+        switch(aug.class) {
+        case class'AugSpeed':
+        case class'AugNinja':
+        case class'AugOnlySpeed':
+            augValue = FMax(augValue, aug.GetAugLevelValue());
+            break;
+
+        case class'AugStealth':
+            if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && !bIsWalking) {
+                f = aug.GetAugLevelValue();
+                if(f != -1) {
+                    stealthValue = f;
+                }
+            }
+            break;
+        }
+    }
+
+    if (augValue == -1.0)
+        augValue = 1.0;
+
+    augValue *= stealthValue;
+
+    if ( Level.NetMode != NM_Standalone )
+        speed = Self.mpGroundSpeed * augValue;
+    else
+        speed = Default.GroundSpeed * augValue;
+
+    return speed;
 }
 
 state PlayerWalking

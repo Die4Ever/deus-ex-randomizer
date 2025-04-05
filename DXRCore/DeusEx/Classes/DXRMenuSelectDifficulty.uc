@@ -45,7 +45,7 @@ function BindControls(optional string action)
     }
 
     gamemode_enum = NewMenuItem("Game Mode", "Choose a game mode!");
-    for(i=0; i<20; i++) {
+    for(i=0; i<50; i++) {
         temp = f.GameModeIdForSlot(i);
         if(temp==999999) continue;
         ts = f.GameModeName(temp);
@@ -199,7 +199,7 @@ function string SetEnumValue(int e, string text)
     }
     if(e == gamemode_enum) {
         f = GetFlags();
-        for(i=0; i<20; i++) {
+        for(i=0; i<50; i++) {
             temp = f.GameModeIdForSlot(i);
             if(temp==999999) continue;
             if(f.GameModeName(temp) == text) {

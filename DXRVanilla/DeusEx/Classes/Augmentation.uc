@@ -4,6 +4,7 @@ var float LastUsed;
 var float AutoLength;
 var float AutoEnergyMult;
 var float Level5Value;
+var float activationCost;
 
 function PostBeginPlay()
 {
@@ -75,6 +76,7 @@ function BoostAug(bool bBoostEnabled)
 
         if (bIsActive && !bBoosted && CurrentLevel < maxBoostLevel)
         {
+            MaxLevel = maxBoostLevel;
             CurrentLevel++;
             bBoosted = True;
             Reset();
@@ -83,6 +85,7 @@ function BoostAug(bool bBoostEnabled)
     else if (bBoosted && !bBoostEnabled)
     {
         CurrentLevel--;
+        if(Level5Value != -1 && MaxLevel>default.MaxLevel) MaxLevel--;
         bBoosted = False;
         Reset();
     }
@@ -147,6 +150,15 @@ function Activate()
     local Sound oldAmbient;
 
     oldAmbient = Player.AmbientSound;
+
+    if(activationCost > 0 && Level.LevelAction == LEVACT_None) {
+        if(Player.Energy < activationCost) {
+            Deactivate();
+            return;
+        } else {
+            Player.Energy -= activationCost;
+        }
+    }
 
     _Activate();// call the super, but this is merges
 

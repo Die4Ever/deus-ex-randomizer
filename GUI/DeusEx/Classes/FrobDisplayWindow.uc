@@ -544,9 +544,24 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
     local string strInfo;
     local int dmg,compDmg;
     local float mod,fireRate,compFireRate;
+    local bool modded;
+
+    //Is weapon modded?
+    modded=False;
+    if (w.bHasScope!=w.Default.bHasScope){modded=True;} //Scope
+    if (w.bHasLaser!=w.Default.bHasLaser){modded=True;} //Laser
+    if (w.bHasSilencer!=w.Default.bHasSilencer){modded=True;} //Silencer
+    if (w.ModBaseAccuracy!=w.Default.ModBaseAccuracy){modded=True;} //Accuracy
+    if (w.ModReloadCount!=w.Default.ModReloadCount){modded=True;} //Clip
+    if (w.ModAccurateRange!=w.Default.ModAccurateRange){modded=True;} //Range
+    if (w.ModRecoilStrength!=w.Default.ModRecoilStrength){modded=True;} //Recoil
+    if (w.ModReloadTime!=w.Default.ModReloadTime){modded=True;} //Reload
 
     numLines=1;
-    strInfo = w.itemName;
+    if (modded){
+        strInfo = strInfo$"Modified ";
+    }
+    strInfo = strInfo $ w.itemName;
     if (w.AmmoName != Class'DeusEx.AmmoNone' )
         strInfo = strInfo $ " (" $ w.PickupAmmoCount $ ")";
 

@@ -413,10 +413,9 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     local float f;
 
     log("WARNING: DXRBase DescriptionLevel failed for " $ act);
-    word = "% of Normal";
-    f = val / defaultval;
-    shortDisplay = string(int(f * 100.0));
-    return shortDisplay $ "%";
+    word = "Values";
+    shortDisplay=string(val);
+    return shortDisplay;
 }
 
 simulated function static int staticrng(DXRando dxr, int max)

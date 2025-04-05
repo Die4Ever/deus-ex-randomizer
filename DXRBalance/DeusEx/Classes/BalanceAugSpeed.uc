@@ -8,18 +8,7 @@ Begin:
 
 simulated function DoActivate()
 {
-    local float useEnergy;
-
-    // DXRando: instantly use 1 energy to prevent abuse
-    if(Level.LevelAction == LEVACT_None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
-        useEnergy = 1;
-    }
-    if(Player.Energy < useEnergy) {
-        Deactivate();
-    } else {
-        Player.Energy -= useEnergy;
-        Reset();
-    }
+    Reset();
 }
 
 function Reset()
@@ -51,17 +40,20 @@ function UpdateBalance()
         LevelValues[2] = 1.5;
         LevelValues[3] = 1.7;
         Level5Value = 1.8;
+        activationCost = 1;
     } else {
         LevelValues[0] = 1.2;
         LevelValues[1] = 1.4;
         LevelValues[2] = 1.6;
         LevelValues[3] = 1.8;
         Level5Value = -1;
+        activationCost = 0;
     }
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
     default.Level5Value = Level5Value;
+    default.activationCost = activationCost;
 }
 
 //original went from 1.2 up to 1.8, I've thought about nerfing the max speed so you can't just run past all enemies, but I think that would require an unreasonably large nerf
@@ -73,4 +65,5 @@ defaultproperties
     LevelValues(2)=1.5
     LevelValues(3)=1.7
     Level5Value=1.8
+    activationCost=1
 }

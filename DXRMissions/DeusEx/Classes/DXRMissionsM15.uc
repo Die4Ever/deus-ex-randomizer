@@ -81,23 +81,21 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("15_AREA51_PAGE", "Observation Deck", NORMAL_GOAL | VANILLA_GOAL, vect(6029.028809, -8301.839844, -5148.736328), rot(0, -36944, 0));
         AddMapMarker(class'Image15_Area51_Sector4',192,77,"E","Ending", loc,"One of the end game goals can be located on the base of the Blue Fusion Reactor in the top floor Observation Deck overlooking Bob Page.");
 
-        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
-            if (#bool(shuffleucswitches)){
-                //Shuffle the UC switches themselves
-                goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
-                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1 | VANILLA_GOAL, vect(7873,-7548,-5096), rot(0, 16384, 0));
+        if (#bool(shuffleucswitches)){
+            //Shuffle the UC switches themselves
+            goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
+            loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1 | VANILLA_GOAL, vect(7873,-7548,-5096), rot(0, 16384, 0));
 
-                goal = AddGoal("15_AREA51_PAGE", "Middle UC Shutdown", GOAL_TYPE1| NORMAL_GOAL, 'DeusExMover51', PHYS_MovingBrush);
-                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(5518,-8644,-5540), rot(0, 16384, 0));
+            goal = AddGoal("15_AREA51_PAGE", "Middle UC Shutdown", GOAL_TYPE1| NORMAL_GOAL, 'DeusExMover51', PHYS_MovingBrush);
+            loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(5518,-8644,-5540), rot(0, 16384, 0));
 
-                goal = AddGoal("15_AREA51_PAGE", "Bottom UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover49', PHYS_MovingBrush);
-                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(7956,-7495,-5931), rot(0, 32768, 0));
-            } else {
-                //Only use the rooms as extra locations
-                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1, vect(7991,-7395,-5096), rot(0, 32768, 0));
-                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL, vect(5382,-8556,-5540), rot(0, 0, 0));
-                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL, vect(7868,-7631,-5931), rot(0, 16384, 0));
-            }
+            goal = AddGoal("15_AREA51_PAGE", "Bottom UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover49', PHYS_MovingBrush);
+            loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(7956,-7495,-5931), rot(0, 32768, 0));
+        } else {
+            //Only use the rooms as extra locations
+            loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1, vect(7991,-7395,-5096), rot(0, 32768, 0));
+            loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL, vect(5382,-8556,-5540), rot(0, 0, 0));
+            loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL, vect(7868,-7631,-5931), rot(0, 16384, 0));
         }
 
         return 154;
@@ -185,23 +183,21 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 1, 'DataLinkTrigger21', PHYS_None); // DL_Blue_Fusion
         loc = AddGoalLocation("15_AREA51_PAGE", "Observation Deck", NORMAL_GOAL | VANILLA_GOAL, vect(-138.971191,1310.160156,223.263672), rot(0, -36944, 0));
 
-        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
-            if (#bool(shuffleucswitches)){
-                //Shuffle the UC switches themselves
-                goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
-                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1 | VANILLA_GOAL, vect(1705,2064,276), rot(0, 16384, 0));
+        if (#bool(shuffleucswitches)){
+            //Shuffle the UC switches themselves
+            goal = AddGoal("15_AREA51_PAGE", "Upper UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover72', PHYS_MovingBrush);
+            loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1 | VANILLA_GOAL, vect(1705,2064,276), rot(0, 16384, 0));
 
-                goal = AddGoal("15_AREA51_PAGE", "Middle UC Shutdown", GOAL_TYPE1| NORMAL_GOAL, 'DeusExMover51', PHYS_MovingBrush);
-                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(-650,968,-168), rot(0, 16384, 0));
+            goal = AddGoal("15_AREA51_PAGE", "Middle UC Shutdown", GOAL_TYPE1| NORMAL_GOAL, 'DeusExMover51', PHYS_MovingBrush);
+            loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(-650,968,-168), rot(0, 16384, 0));
 
-                goal = AddGoal("15_AREA51_PAGE", "Bottom UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover49', PHYS_MovingBrush);
-                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(1788,2117,-559), rot(0, 32768, 0));
-            } else {
-                //Only use the rooms as extra locations
-                loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1, vect(1820,2210,290), rot(0, 32768, 0));
-                loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL, vect(-784,1056,-165), rot(0, 0, 0));
-                loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL, vect(1700,1983,-555), rot(0, 16384, 0));
-            }
+            goal = AddGoal("15_AREA51_PAGE", "Bottom UC Shutdown", GOAL_TYPE1 | NORMAL_GOAL, 'DeusExMover49', PHYS_MovingBrush);
+            loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL | VANILLA_GOAL, vect(1788,2117,-559), rot(0, 32768, 0));
+        } else {
+            //Only use the rooms as extra locations
+            loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1, vect(1820,2210,290), rot(0, 32768, 0));
+            loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL, vect(-784,1056,-165), rot(0, 0, 0));
+            loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL, vect(1700,1983,-555), rot(0, 16384, 0));
         }
 
         return 154;
@@ -238,22 +234,20 @@ function PreFirstEntryMapFixes()
             }
         }
     } else if (dxr.localURL=="15_AREA51_PAGE" && !RevisionMaps) {
-        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
-            //Remove the insane prepivot on the UC door closers
-            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
-                if (dxm.Event=='UC_shutdoor1' ||
-                    dxm.Event=='UC_shutdoor2' ||
-                    dxm.Event=='UC_shutdoor3'){
+        //Remove the insane prepivot on the UC door closers
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+            if (dxm.Event=='UC_shutdoor1' ||
+                dxm.Event=='UC_shutdoor2' ||
+                dxm.Event=='UC_shutdoor3'){
 
-                    v=vectm(0,0,dxm.PrePivot.Z);
+                v=vectm(0,0,dxm.PrePivot.Z);
 
-                    RemoveMoverPrePivot(dxm);
+                RemoveMoverPrePivot(dxm);
 
-                    //Return the Z component of the prepivot so the switches rotate on center
-                    dxm.PrePivot=v;
-                    dxm.BasePos=dxm.BasePos+v;
-                    dxm.SetLocation(dxm.BasePos);
-                }
+                //Return the Z component of the prepivot so the switches rotate on center
+                dxm.PrePivot=v;
+                dxm.BasePos=dxm.BasePos+v;
+                dxm.SetLocation(dxm.BasePos);
             }
         }
     }
@@ -370,17 +364,15 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.actors[0].a.Event = 'AquinasDoorComputer';
     }
     else if (g.name=="Upper UC Shutdown" || g.name=="Middle UC Shutdown" || g.name=="Bottom UC Shutdown"){
-        if (FeatureFlag(3,5,0, "Area51EndingBalancePass2")){
-            r = g.actors[0].a.rotation;
-            r.Yaw = r.Yaw - 32768;
-            if (r.Pitch!=0){ //Adjust the pitch for the coolant control panel location
-                r.Pitch = -r.Pitch;
-            }
-            g.actors[0].a.SetRotation(r);
-            #var(DeusExPrefix)Mover(g.actors[0].a).BaseRot=r;
-
-            class'DXRHoverHint'.static.Create(self, g.name, g.actors[0].a.Location, 15, 10, g.actors[0].a);
+        r = g.actors[0].a.rotation;
+        r.Yaw = r.Yaw - 32768;
+        if (r.Pitch!=0){ //Adjust the pitch for the coolant control panel location
+            r.Pitch = -r.Pitch;
         }
+        g.actors[0].a.SetRotation(r);
+        #var(DeusExPrefix)Mover(g.actors[0].a).BaseRot=r;
+
+        class'DXRHoverHint'.static.Create(self, g.name, g.actors[0].a.Location, 15, 10, g.actors[0].a);
     }
 
     if(Loc.name=="Observation Deck") {// for releasing the bots behind you
