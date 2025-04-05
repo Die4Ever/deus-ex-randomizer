@@ -664,6 +664,49 @@ function DroneExplode()
     }
 }
 
+function float GetCurrentGroundSpeed()
+{
+    local float augValue, stealthValue, speed, f;
+    local Augmentation aug;
+
+    // Remove this later and find who's causing this to Access None MB
+    if ( AugmentationSystem == None )
+        return 0;
+
+    augValue = -1;
+    stealthValue = 1; // the speed mult from stealth, 100% speed for disabled
+    for(aug=AugmentationSystem.FirstAug; aug!=None; aug=aug.next) {
+        switch(aug.class) {
+        case class'AugSpeed':
+        case class'AugNinja':
+        case class'AugOnlySpeed':
+            augValue = FMax(augValue, aug.GetAugLevelValue());
+            break;
+
+        case class'AugStealth':
+            if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && !bIsWalking) {
+                f = aug.GetAugLevelValue();
+                if(f != -1) {
+                    stealthValue = f;
+                }
+            }
+            break;
+        }
+    }
+
+    if (augValue == -1.0)
+        augValue = 1.0;
+
+    augValue *= stealthValue;
+
+    if ( Level.NetMode != NM_Standalone )
+        speed = Self.mpGroundSpeed * augValue;
+    else
+        speed = Default.GroundSpeed * augValue;
+
+    return speed;
+}
+
 state PlayerWalking
 {
     // lets us affect the player's movement

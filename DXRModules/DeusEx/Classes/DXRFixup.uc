@@ -220,10 +220,12 @@ function PreFirstEntry()
     FixShowers();
 
 #ifdef vanilla
-    foreach AllActors(class'#var(prefix)Lamp', lmp) {
-        lmp.InitLight();
+    if (class'MenuChoice_AutoLamps'.static.IsEnabled()) {
+        foreach AllActors(class'#var(prefix)Lamp', lmp) {
+            lmp.InitLight();
+        }
+        SetAllLampsState(true, true, true);
     }
-    SetAllLampsState(true, true, true);
 #endif
 
     SetSeed( "DXRFixup PreFirstEntry missions" );

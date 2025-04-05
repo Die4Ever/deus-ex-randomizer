@@ -448,6 +448,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
     else if( a.Class == class'#var(prefix)AugBallistic' || a.Class == class'#var(prefix)AugEMP' || a.Class == class'#var(prefix)AugEnviro' || a.Class == class'#var(prefix)AugShield') {
         word = "Damage Reduction";
+        if(#defined(injections) && #var(prefix)AugEMP(a)!=None && i==3) val = 0; // max level always 0%
         if(val < 0) {
             val = 0;
         }
@@ -505,9 +506,13 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
             shortDisplay=string(int(a.energyRate * val + 0.5));
             return shortDisplay;
         }
-        word = "Noise";
-        val = FMax(val, 0);
-        if(#defined(injections) && i==3) val = 0; // max level always 0% noise
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+            word = "Speed";
+        } else {
+            word = "Noise";
+            val = FMax(val, 0);
+            if(#defined(injections) && i==3) val = 0; // max level always 0% noise
+        }
         shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
     }
@@ -569,9 +574,8 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         || a.Class.Name == 'AugDefenseNPC'
         || a.Class.Name == 'AugDefenseHeli'
     ) {
-        word = "% of Normal";
-        f = val / defaultval;
-        shortDisplay=int(f * 100.0) $ "%";
+        word = "Values";
+        shortDisplay=string(val);
         return shortDisplay;
     }
 #endif

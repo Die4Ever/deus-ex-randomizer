@@ -55,6 +55,7 @@ const DoomModeTimeDefault = 60;
 const WineBulletsTimeDefault = 60;
 const BloodTimeDefault = 60;
 
+//OBSOLETE - Remove eventually
 struct ZoneFriction
 {
     var name zonename;
@@ -62,19 +63,20 @@ struct ZoneFriction
 };
 var ZoneFriction zone_frictions[32];
 
+//OBSOLETE - Remove eventually
 struct ZoneGravity
 {
     var name zonename;
     var vector gravity;
 };
+var ZoneGravity zone_gravities[32];
+
 
 struct AugEffectState
 {
     var bool canUpgrade;
     var bool canDowngrade;
 };
-
-var ZoneGravity zone_gravities[32];
 
 var DXRandoCrowdControlTimer timerDisplays[32];
 
@@ -131,6 +133,7 @@ function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
     return CrowdControlPawns[mostRecentCcPawn];
 }
 
+//#region Periodic Updates
 function PeriodicUpdates()
 {
 
@@ -262,7 +265,9 @@ function PeriodicUpdates()
         StopCrowdControlEvent("blood_god",true);
     }
 }
+//#endregion
 
+//#region Effect Select
 function HandleEffectSelectability()
 {
     local Inventory anItem;
@@ -440,6 +445,7 @@ function HandleAugEffectSelectability(string augName)
         AugEffectStates[augIndex].canDowngrade=canDowngrade;
     }
 }
+//#endregion
 
 function int getAugManagerIndex(class<Augmentation> augClass)
 {
@@ -487,10 +493,14 @@ function Fart()
     player().AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, 512);
 
     for (i=0;i<5;i++){
-        if (Rand(2)==0){
-            Spawn(class'TearGas', player(),,player().Location,r);
+        if (player().bOnFire){
+            Spawn(class'Fireball', player(),,player().Location,r);
         } else {
-            Spawn(class'PoisonGas', player(),,player().Location,r);
+            if (Rand(2)==0){
+                Spawn(class'TearGas', player(),,player().Location,r);
+            } else {
+                Spawn(class'PoisonGas', player(),,player().Location,r);
+            }
         }
         r.Yaw+=2500;
     }
@@ -498,6 +508,7 @@ function Fart()
     player().Velocity += Vector(player().ViewRotation) * 8 * fartDuration; //Fart pushes you in the direction you're looking
 }
 
+//#region Continuous Updates
 function ContinuousUpdates()
 {
     local int roll;
@@ -538,9 +549,11 @@ function ContinuousUpdates()
 
 
 }
+//#endregion
 
 
 
+//#region Enter/Exit
 //Gets called on every level entry
 //Some effects need to be reapplied on each level entry (eg. ice physics)
 //Make sure to do that here
@@ -640,13 +653,13 @@ function CleanupOnExit() {
         invertMovementControls();
     }
 }
-
+//#endregion
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                   TIMER DISPLAY HANDLING                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//#region Timer Displays
 function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
     local int i;
 
@@ -692,11 +705,13 @@ function bool checkForTimerDisplay(name timerName) {
 
     return False;
 }
+//#endregion
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                   TIMER COUNTER HANDLING                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//#region Def Timer Times
 function int getDefaultTimerTimeByName(name timerName) {
     switch(timerName) {
         case 'cc_MatrixModeTimer':
@@ -745,7 +760,9 @@ function int getDefaultTimerTimeByName(name timerName) {
             return 0;
     }
 }
+//#endregion
 
+//#region Timer Labels
 function string getTimerLabelByName(name timerName) {
     local float val;
 
@@ -809,6 +826,7 @@ function string getTimerLabelByName(name timerName) {
             return "???";
     }
 }
+//#endregion
 
 function setFloorIsLavaName(string lavaName)
 {
@@ -900,8 +918,7 @@ function startNewTimer(name timerName, int duration) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                        UTILITY FUNCTIONS                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+//#region Utility Functs
 
 function float retrieveFloatValue(name valName) {
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
@@ -1145,54 +1162,20 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
 
 function float GetDefaultZoneFriction(ZoneInfo z)
 {
-    local int i;
-    for(i=0; i<ArrayCount(zone_frictions); i++) {
-        if( z.name == zone_frictions[i].zonename )
-            return zone_frictions[i].friction;
-    }
-    return NormalFriction;
-}
+    local DXRStoredZoneInfo szi;
 
-function SaveDefaultZoneFriction(ZoneInfo z)
-{
-    local int i;
-    if( z.ZoneGroundFriction ~= NormalFriction ) return;
-    for(i=0; i<ArrayCount(zone_frictions); i++) {
-        if( zone_frictions[i].zonename == '' || z.name == zone_frictions[i].zonename ) {
-            zone_frictions[i].zonename = z.name;
-            zone_frictions[i].friction = z.ZoneGroundFriction;
-            return;
-        }
-    }
+    szi = class'DXRStoredZoneInfo'.static.Find(z);
+    if (szi==None) return NormalFriction;
+    return szi.ZoneGroundFriction;
 }
 
 function vector GetDefaultZoneGravity(ZoneInfo z)
 {
-    local int i;
-    for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ) {
-            return zone_gravities[i].gravity;
-        }
-        if( zone_gravities[i].zonename == '' )
-            break;
-    }
-    return NormalGravity;
-}
+    local DXRStoredZoneInfo szi;
 
-function SaveDefaultZoneGravity(ZoneInfo z)
-{
-    local int i;
-    if( z.ZoneGravity.X ~= NormalGravity.X && z.ZoneGravity.Y ~= NormalGravity.Y && z.ZoneGravity.Z ~= NormalGravity.Z ) return;
-    for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ) {
-            return;
-        }
-        if( zone_gravities[i].zonename == '' ) {
-            zone_gravities[i].zonename = z.name;
-            zone_gravities[i].gravity = z.ZoneGravity;
-            return;
-        }
-    }
+    szi = class'DXRStoredZoneInfo'.static.Find(z);
+    if (szi==None) return NormalGravity;
+    return szi.ZoneGravity;
 }
 
 function SetFloatyPhysics(bool enabled) {
@@ -1205,7 +1188,6 @@ function SetFloatyPhysics(bool enabled) {
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
         if (enabled && Z.ZoneGravity != FloatGrav ) {
-            SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = FloatGrav;
         }
         else if ( (!enabled) && Z.ZoneGravity == FloatGrav ) {
@@ -1252,7 +1234,6 @@ function SetMoonPhysics(bool enabled) {
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
         if (enabled && Z.ZoneGravity != MoonGrav ) {
-            SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = MoonGrav;
         }
         else if ( (!enabled) && Z.ZoneGravity == MoonGrav ) {
@@ -1265,7 +1246,6 @@ function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
     ForEach AllActors(class'ZoneInfo', Z) {
         if (enabled && Z.ZoneGroundFriction != IceFriction ) {
-            SaveDefaultZoneFriction(Z);
             Z.ZoneGroundFriction = IceFriction;
         }
         else if ( (!enabled) && Z.ZoneGroundFriction == IceFriction ) {
@@ -1522,19 +1502,25 @@ function bool swapPlayer(string viewer) {
 }
 
 function doNudge(string viewer) {
-    local Rotator r;
-    local vector newAccel;
+    local Vector bobble,randVect;
+    local float size;
 
-    newAccel.X = (Rand(201)-100) * 3;
-    newAccel.Y = (Rand(201)-100) * 3;
-    //newAccel.Z = Rand(31);
+    size = FRand() + 0.3;
+    randVect=VRand();
+    if (randVect.Z<0) randVect.Z*=-1; //Never bump downwards, only up
+    randVect.Z*=0.5; //Don't get too vertically extreme
 
-    //Not super happy with how this looks,
-    //Since you sort of just teleport to the new position
-    player().MoveSmooth(newAccel);
+    bobble = vect(300.0,300.0,200.0) + 300.0 * size * randVect;
+
+    //Peeling the player off the ground makes this much more potent
+    if ( player().Physics == PHYS_Walking ){
+        player().SetPhysics(PHYS_Falling);
+    }
+
+    player().Velocity += bobble;
 
     //Play an oof sound
-    player().PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
+    player().PlaySound(player().HitSound1);
 
     PlayerMessage(viewer@"nudged you a little bit");
 
@@ -1563,9 +1549,9 @@ function startEarthquake(float time) {
 
 }
 
-function int Earthquake(String viewer) {
+function int Earthquake(String viewer, int duration) {
 
-    startEarthquake(EarthquakeTimeDefault);
+    startEarthquake(duration);
 
     PlayerMessage(viewer@"set off an earthquake!");
 
@@ -2410,23 +2396,14 @@ simulated final function #var(PlayerPawn) player()
     return dxr.flags.player();
 }
 
-
-
-
-
-
-
-
-
-
-
+//#endregion
 
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL EFFECT MAPPING                                       ////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//#region Msg Type Split
 function int BranchCrowdControlType(string code, string param[5], string viewer, int type, int duration) {
     local int result;
 
@@ -2454,7 +2431,9 @@ function int BranchCrowdControlType(string code, string param[5], string viewer,
 
     return result;
 }
+//#endregion
 
+//#region Stop All Events
 //Make sure to add any timed effects into this list
 function StopAllCrowdControlEvents()
 {
@@ -2479,7 +2458,9 @@ function StopAllCrowdControlEvents()
     StopCrowdControlEvent("wine_bullets");
     StopCrowdControlEvent("blood_god");
 }
+//#endregion
 
+//#region Stop CC Event
 function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 {
     switch(code) {
@@ -2628,7 +2609,9 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 
     return Success;
 }
+//#endregion
 
+//#region Handle Event
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
     local ColorTheme theme;
@@ -2971,7 +2954,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             startnewTimer('cc_Earthquake',duration);
 
-            return Earthquake(viewer);
+            return Earthquake(viewer,duration);
 
         case "trigger_alarms":
             if (!InGame()) {
@@ -3375,7 +3358,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
     return Success;
 }
+//#endregion
 
+//#region Prefix Events
 function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type, int duration) {
     local string words[8];
 
@@ -3403,6 +3388,7 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
 
     return Success;
 }
+//#endregion
 
 defaultproperties
 {

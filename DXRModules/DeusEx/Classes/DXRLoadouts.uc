@@ -87,6 +87,10 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     local string name;
 
     //#region Loadout Defs
+
+    //ALWAYS allow AmmoNone, it gets looted from Melee weapons and stuff
+    AddInvAllow(class'#var(prefix)AmmoNone');
+
     switch(loadout) {
 /////////////////////////////////////////////////////////////////
     //#region All Items
@@ -119,7 +123,12 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
+        #ifdef injections
+            AddStartAug(class'AugInfraVision');
+            AddAugAllow(class'AugVision');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
+        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -155,7 +164,12 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
+        #ifdef injections
+            AddStartAug(class'AugInfraVision');
+            AddAugAllow(class'AugVision');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
+        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////

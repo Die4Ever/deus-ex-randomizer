@@ -530,6 +530,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
 
+        // remove locations that are no longer valid
         for(a=0; a<_num_locs; a++) {
             if(!IsComboAllowed(loc, availLocs[a])) {
                 _num_locs--;
@@ -546,8 +547,8 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     for(i=0; i<num_goals; i++) {
         goalsOrder[i] = i;
     }
-    for(i=0; i<num_goals; i++) {
-        r = rng(num_goals);
+    for(i=num_goals-1; i>=0; i--) {
+        r = rng(i+1);
         g1 = goalsOrder[i];
         goalsOrder[i] = goalsOrder[r];
         goalsOrder[r] = g1;
@@ -581,6 +582,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
 
+        // remove locations that are no longer valid
         for(a=0; a<_num_locs; a++) {
             if(!IsComboAllowed(loc, availLocs[a])) {
                 _num_locs--;
@@ -606,11 +608,17 @@ function bool IsComboAllowed(int loc1, int loc2)
     return true;
 }
 
+function bool IsLayoutAllowed(int goalsToLocations[32])
+{
+    return true;
+}
+
 function ChooseGoalLocations(out int goalsToLocations[32])
 {
     local int attempts;
     for(attempts=0; attempts<1000; attempts++) {
         if(_ChooseGoalLocations(goalsToLocations)) {
+            if(!IsLayoutAllowed(goalsToLocations)) continue;
             if(attempts > 100) {
                 warning("ChooseGoalLocations took " $ (attempts+1) $ " attempts!");
             }
@@ -630,10 +638,11 @@ function Actor GetActor(out GoalActor ga)
     foreach AllActors(class'Actor', a) {
 #ifdef hx
         if( (HXMover(a) != None && a.Name == ga.actorName)
-            || a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
+            || a.GetPropertyText("PrecessorName") == string(ga.actorName))
 #else
-        if(a.name == ga.actorName) {
+        if(a.name == ga.actorName)
 #endif
+        {
             ga.a = a;
             return a;
         }

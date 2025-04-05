@@ -1,65 +1,21 @@
 class DXRSkills extends DXRBase transient;
 
-struct SkillCostMultiplier {
-    var string type;//you can use "Skill" to make it apply to all skills
-    var int percent;//percent to multiply, stacks
-    var int minLevel;//the first skill level this adjustment will apply to
-    var int maxLevel;//the highest skill level this adjustment will apply to
-};
-
-var SkillCostMultiplier SkillCostMultipliers[12];
-
 var float min_skill_weaken, max_skill_str;
 var float skill_cost_curve;
 
 replication
 {
     reliable if( Role==ROLE_Authority )
-        SkillCostMultipliers, min_skill_weaken, max_skill_str, skill_cost_curve;
+        min_skill_weaken, max_skill_str, skill_cost_curve;
 }
 
 function CheckConfig()
 {
     local int i;
 
-        for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
-            SkillCostMultipliers[i].type = "";
-            SkillCostMultipliers[i].percent = 100;
-            SkillCostMultipliers[i].minLevel = 1;
-            SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        }
-        min_skill_weaken = 0.3;
-        max_skill_str = 1.0;
-        skill_cost_curve = 2;
-
-#ifdef balance
-    i=0;
-    if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
-        SkillCostMultipliers[i].type = "SkillDemolition";
-        SkillCostMultipliers[i].percent = 80;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        i++;
-
-        SkillCostMultipliers[i].type = "SkillSwimming";
-        SkillCostMultipliers[i].percent = 80;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        i++;
-
-        SkillCostMultipliers[i].type = "SkillEnviro";
-        SkillCostMultipliers[i].percent = 90;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
-        i++;
-
-        SkillCostMultipliers[i].type = "SkillComputer";
-        SkillCostMultipliers[i].percent = 140;
-        SkillCostMultipliers[i].minLevel = 1;
-        SkillCostMultipliers[i].maxLevel = 1;
-        i++;
-    }
-#endif
+    min_skill_weaken = 0.3;
+    max_skill_str = 1.0;
+    skill_cost_curve = 2;
 
     Super.CheckConfig();
 }
@@ -183,7 +139,7 @@ simulated function RandoSkill(Skill aSkill)
 
 simulated function RandoSkillLevelValues(Skill a)
 {
-    local string add_desc;
+    local string add_desc, s;
     local float skill_value_wet_dry;
 
     if( #var(prefix)SkillWeaponHeavy(a) != None && class'MenuChoice_BalanceSkills'.static.IsEnabled()) {
@@ -200,6 +156,12 @@ simulated function RandoSkillLevelValues(Skill a)
         add_desc = "Each level increases the number of fire extinguishers you can carry by 1.";
     }
 #endif
+
+    if(dxr.flags.settings.minskill!=100 || dxr.flags.settings.maxskill!=100) {
+        s = "Default costs: --, " $ a.default.cost[0] $ ", " $ a.default.cost[1] $ ", " $ a.default.cost[2];
+        if(add_desc!="") add_desc = s $ "|n|n" $ add_desc;
+        else add_desc = s;
+    }
 
     skill_value_wet_dry = float(dxr.flags.settings.skill_value_rando) / 100.0;
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description, add_desc);
@@ -317,7 +279,6 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local float percent;
     local int m;
     local float f, perk;
-    local SkillCostMultiplier scm;
     local bool banAllowed;
     local DXRLoadouts loadout;
 
@@ -347,14 +308,6 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     l( aSkill.Class.Name $ " lvl: "$(i+1)$", perk percent: "$perk$"%");
     perk = float(aSkill.default.PerkCost[i]) * perk / 100.0;
 #endif
-    for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
-        scm = SkillCostMultipliers[m];
-        if( scm.type != string(aSkill.class.name) ) continue;
-        if( i+1 >= scm.minLevel && i < scm.maxLevel ) {
-            f *= float(scm.percent) / 100.0;
-            perk *= float(scm.percent) / 100.0;
-        }
-    }
 
     f = Clamp(f, 0, 99999);
     perk = Clamp(perk, 0, 99999);

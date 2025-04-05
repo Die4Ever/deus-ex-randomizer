@@ -76,6 +76,7 @@ function BoostAug(bool bBoostEnabled)
 
         if (bIsActive && !bBoosted && CurrentLevel < maxBoostLevel)
         {
+            MaxLevel = maxBoostLevel;
             CurrentLevel++;
             bBoosted = True;
             Reset();
@@ -84,6 +85,7 @@ function BoostAug(bool bBoostEnabled)
     else if (bBoosted && !bBoostEnabled)
     {
         CurrentLevel--;
+        if(Level5Value != -1 && MaxLevel>default.MaxLevel) MaxLevel--;
         bBoosted = False;
         Reset();
     }
