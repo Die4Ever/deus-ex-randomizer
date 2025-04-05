@@ -547,7 +547,7 @@ function Landed(vector HitNormal)
     softener = 1;
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && AugmentationSystem != None)
     {
-        augLevel = AugmentationSystem.GetClassLevel(class'AugStealth');
+        augLevel = AugmentationSystem.GetAugLevelValue(class'AugStealth');
         if(augLevel != -1) softener = (1-augLevel)/4 + 0.75;
     }
 
