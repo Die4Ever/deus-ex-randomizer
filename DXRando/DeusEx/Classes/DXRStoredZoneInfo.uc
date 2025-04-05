@@ -61,6 +61,10 @@ static function DXRStoredZoneInfo Init(ZoneInfo z)
     local int i;
     local DXRStoredZoneInfo szi;
 
+    //Don't create a second stored zone info if one already exists
+    szi=Find(z);
+    if (szi!=None) return szi;
+
     szi = z.Spawn(class'DXRStoredZoneInfo',,,z.Location);
 
     szi.bLevelInfo = (LevelInfo(z)!=None);
@@ -136,6 +140,28 @@ static function bool IsFogZone(ZoneInfo z)
     }
 
     return False;
+}
+
+static function DXRStoredZoneInfo Find(ZoneInfo z)
+{
+    local DXRStoredZoneInfo szi;
+    local bool isLevelInfo;
+
+    isLevelInfo = (LevelInfo(z)!=None);
+
+    foreach z.ZoneActors(class'DXRStoredZoneInfo',szi){
+        if (isLevelInfo){
+            if (szi.bLevelInfo){
+                return szi;
+            }
+        } else {
+            if (!szi.bLevelInfo){
+                return szi;
+            }
+        }
+    }
+
+    return None;
 }
 
 defaultproperties

@@ -547,8 +547,8 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     for(i=0; i<num_goals; i++) {
         goalsOrder[i] = i;
     }
-    for(i=0; i<num_goals; i++) {
-        r = rng(num_goals);
+    for(i=num_goals-1; i>=0; i--) {
+        r = rng(i+1);
         g1 = goalsOrder[i];
         goalsOrder[i] = goalsOrder[r];
         goalsOrder[r] = g1;

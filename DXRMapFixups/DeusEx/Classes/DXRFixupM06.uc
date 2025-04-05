@@ -842,6 +842,7 @@ function PreFirstEntryMapFixes()
             m.bBreakable=False;
         }
 
+
         //Make sure the spider bot doors can't be closed again
         foreach AllActors(class'#var(DeusExPrefix)Mover',m,'Self_Destruct'){
             m.Tag='Self_Destruct_Once';
@@ -851,6 +852,17 @@ function PreFirstEntryMapFixes()
         oot.Tag='Self_Destruct';
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+
+            //The lockdown door should only close once the UC has been destroyed,
+            //so that there's always an exit available.
+            foreach AllActors(class'#var(DeusExPrefix)Mover',m,'VirusUploaded'){
+                m.Tag='LockdownDoorClosing';
+                break;
+            }
+            oot = Spawn(class'OnceOnlyTrigger');
+            oot.Event='LockdownDoorClosing';
+            oot.Tag='Self_Destruct';
+
             //The sleeping bots are already hostile, but are sitting in Idle state.
             //The existing orders trigger can just change them to Wandering instead of Attacking
             foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'WakeTheSleepingBots'){

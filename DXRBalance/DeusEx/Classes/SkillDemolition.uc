@@ -14,9 +14,6 @@ function UpdateBalance()
         cost[2] = 3000;
     }
 
-    for(i=0; i<ArrayCount(LevelValues); i++) {
-        default.LevelValues[i] = LevelValues[i];
-    }
     for(i=0; i<ArrayCount(cost); i++) {
         default.cost[i] = cost[i];
     }
