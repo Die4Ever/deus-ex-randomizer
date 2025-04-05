@@ -1,16 +1,18 @@
-class WaltonWareCrate extends Containers;
+class WaltonWareCrate extends DXRInfiniteCrate;
+
+var int NumSkillPoints;
+
+function Destroyed()
+{
+    if (class'DXRando'.default.dxr != None && class'DXRando'.default.dxr.player != None) {
+        class'DXRando'.default.dxr.player.SkillPointsAdd(NumSkillPoints);
+    }
+
+    Super.Destroyed();
+}
 
 defaultproperties
 {
-     HitPoints=1
-     FragType=Class'DeusEx.WoodFragment'
-     ItemName="WaltonWare Supply Crate"
-     contents=Class'VialPoo'
-     bBlockSight=True
+     ItemName="Walton's Care Package"
      Skin=Texture'WaltonWareCrate'
-     Mesh=LodMesh'DeusExDeco.CrateBreakableMed'
-     CollisionRadius=34.000000
-     CollisionHeight=24.000000
-     Mass=50.000000
-     Buoyancy=60.000000
 }

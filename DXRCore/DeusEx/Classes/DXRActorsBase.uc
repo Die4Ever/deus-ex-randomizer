@@ -137,11 +137,15 @@ static function bool IsRelevantPawn(class<Actor> a)
     return IsCombatPawn(a) && !ClassIsChildOf(a, class'Merchant');
 }
 
-function bool IsInitialEnemy(ScriptedPawn p)
+static function bool IsInitialEnemy(ScriptedPawn p)
 {
     local int i;
 
     return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
+}
+
+static function bool IsGrenade(class<Inventory> i) {
+    return i == class'WeaponLAM' || i == class'WeaponGasGrenade' || i == class'WeaponEMPGrenade' || i == class'WeaponNanoVirusGrenade';
 }
 
 static function bool RemoveItem(Pawn p, class c)
@@ -1981,4 +1985,30 @@ static function bool IsUsingOggMusic(#var(PlayerPawn) player)
     }
     return False;
 #endif
+}
+
+// spawns a `what` in front of `who` but on the floor
+// assumes the Z position of the class is halfway up and that the spawned location is above the floor
+function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance, optional Rotator spawnedRot)
+{
+    local Vector loc;
+    local LocationNormal ln;
+    local FMinMax mm;
+    local Actor act;
+    local Rotator forwardRot;
+
+    // pick a location for the spawned Actor in front of `who`
+    forwardRot.Yaw = who.Rotation.Yaw;
+    loc = vector(forwardRot) * distance;
+    loc += who.Location;
+
+    // move it down to the floor
+    ln.loc = loc;
+    mm.min = 0.1;
+    mm.max = who.CollisionHeight * 2.0; // maybe worth increasing, for things in the air?
+    if (NearestFloor(ln, mm)) {
+        loc.z = ln.loc.Z + (what.default.CollisionHeight / 2.0);
+    }
+
+    return Spawn(what,,, loc, spawnedRot);
 }

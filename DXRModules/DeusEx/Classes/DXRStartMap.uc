@@ -852,6 +852,25 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
+    local WaltonWareCrate waltonCrate;
+    local SkillAwardTrigger sat;
+    local int numAugUpgrades;
+
+    if (flagbase.GetInt('Rando_newgameplus_loops') > 0) { // make a WaltonWareCrate
+        waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
+            player,
+            class'WaltonWareCrate',
+            80.0,
+            MakeRotator(0, (2047 - rng(4095)), 0)
+        ));
+
+        waltonCrate.AddContent(class'BioelectricCell', 1);
+        for (numAugUpgrades = GetStartMapAugBonus(dxr); numAugUpgrades > 0; numAugUpgrades--) {
+            waltonCrate.AddContent(class'AugmentationUpgradeCannister', 1);
+        }
+        waltonCrate.AddContent(class'Credits', GetStartMapCreditsBonus(dxr));
+        waltonCrate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    }
 
     switch(start_flag) {
         case 21:
@@ -1332,22 +1351,34 @@ static function int _ChooseRandomStartMap(DXRBase m)
     return 0; //Fall back on Liberty Island
 }
 
+static function int GetStartMapCreditsBonus(DXRando dxr)
+{
+    local int startMapMission, numCredits, i;
+
+    startMapMission = GetStartMapMission(dxr.flags.settings.starting_map);
+    for(i = 0; i < startMapMission; i++) {
+        numCredits += 100 + dxr.rng(100);
+    }
+
+    return numCredits;
+}
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
-    local int i;
-    for(i=0;i<GetStartMapMission(dxr.flags.settings.starting_map);i++){
-        p.Credits += 100 + dxr.rng(100);
-    }
+    p.Credits += GetStartMapCreditsBonus(dxr);
+}
+
+static function int GetStartMapAugBonus(DXRando dxr)
+{
+    return GetStartMapMission(dxr.flags.settings.starting_map) * 0.4;
 }
 
 static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
 {
-    local int i, startMission, numAugs;
+    local int i, numAugs;
 
     if (dxr.flags.settings.starting_map !=0 ){
-        startMission=GetStartMapMission(dxr.flags.settings.starting_map);
-        numAugs = startMission * 0.4;
+        numAugs = GetStartMapAugBonus(dxr);
         class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
 
         for (i=0; i<numAugs; i++){
