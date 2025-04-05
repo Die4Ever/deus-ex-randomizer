@@ -195,11 +195,18 @@ function vanilla_keys_rules()
         break;
 
     case "06_HONGKONG_HELIBASE":
-        // Not allowed on the rooftop
+        // Allowed on the rooftop
+        keys_rules[i].item_name = 'control_door01'; //Flight Deck key
+        keys_rules[i].min_pos = vect(-99999, -99999, 760);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        // Allowed on the rooftop
         keys_rules[i].item_name = 'LockerMasterKey';
         keys_rules[i].min_pos = vect(-99999, -99999, 760);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
-        keys_rules[i].allow = false;
+        keys_rules[i].allow = true;
         i++;
 
         //Not allowed in the barracks
