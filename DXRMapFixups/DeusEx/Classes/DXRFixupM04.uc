@@ -118,7 +118,6 @@ function PreFirstEntryMapFixes()
             ft.bTrigger=True;
             ft.FlagName='M04RaidTeleportDone'; //Don't trigger as extra enemies spawn in on first entry (particularly Serious Sam mode)
             ft.flagValue=True;
-
         }
 
         class'GilbertWeaponMegaChoice'.static.Create(p);
