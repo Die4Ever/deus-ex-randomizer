@@ -1291,7 +1291,7 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
 
     if (forcedContainerType!=None){
         contClass = forcedContainerType;
-    } else if (a.ClassIsChildOf(contents,class'Weapon') || a.ClassIsChildOf(contents,class'Ammo')){
+    } else if (a.ClassIsChildOf(contents,class'Weapon') || a.ClassIsChildOf(contents,class'Ammo') || a.ClassIsChildOf(contents,class'#var(prefix)WeaponMod')){
         contClass=class'#var(prefix)CrateBreakableMedCombat';
     } else if (a.ClassIsChildOf(contents,class'#var(prefix)Medkit')) { //Medkit or any subclass
         contClass=class'#var(prefix)CrateBreakableMedMedical';
