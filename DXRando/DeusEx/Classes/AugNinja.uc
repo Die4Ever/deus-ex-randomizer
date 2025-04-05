@@ -20,18 +20,7 @@ Begin:
 
 simulated function DoActivate()
 {
-    local float useEnergy;
-
-    // DXRando: instantly use 1 energy to prevent abuse
-    if(Level.LevelAction == LEVACT_None && class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
-        useEnergy = 1;
-    }
-    if(Player.Energy < useEnergy) {
-        Deactivate();
-    } else {
-        Player.Energy -= useEnergy;
-        Reset();
-    }
+    Reset();
 }
 
 function Reset()
@@ -53,9 +42,7 @@ function Reset()
             Human(Player).UpdateAnimRate( GetAugLevelValue() );
     }
 
-    Player.RunSilentValue = 1.0 / (GetAugLevelValue() ** 2);
-    if ( Player.RunSilentValue == -1.0 )
-        Player.RunSilentValue = 1.0;
+    Player.RunSilentValue = 0;
 }
 
 function Deactivate()

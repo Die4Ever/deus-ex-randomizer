@@ -484,29 +484,6 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
     return newNote;
 }
 
-function float GetCurrentGroundSpeed()
-{
-    local float augValue, speed;
-
-    // Remove this later and find who's causing this to Access None MB
-    if ( AugmentationSystem == None )
-        return 0;
-
-    augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
-    augValue = FMax(augValue, AugmentationSystem.GetAugLevelValue(class'AugOnlySpeed'));
-
-    if (augValue == -1.0)
-        augValue = 1.0;
-
-    if ( Level.NetMode != NM_Standalone )
-        speed = Self.mpGroundSpeed * augValue;
-    else
-        speed = Default.GroundSpeed * augValue;
-
-    return speed;
-}
-
 function DoJump( optional float F )
 {
     local DeusExWeapon w;
@@ -567,8 +544,13 @@ function Landed(vector HitNormal)
     local int augLevel;
     local float augReduce, dmg, softener;
 
-    softener = RunSilentValue/4 + 0.75;
-    if(class'MenuChoice_BalanceAugs'.static.IsDisabled()) softener = 1;
+    softener = 1;
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && AugmentationSystem != None)
+    {
+        augLevel = AugmentationSystem.GetClassLevel(class'AugStealth');
+        if(augLevel != -1) softener = augLevel/4 + 0.75;
+    }
+
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);
     if (Velocity.Z < -1.4 * JumpZ)

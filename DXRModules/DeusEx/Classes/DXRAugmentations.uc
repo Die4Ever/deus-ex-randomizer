@@ -506,9 +506,13 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
             shortDisplay=string(int(a.energyRate * val + 0.5));
             return shortDisplay;
         }
-        word = "Noise";
-        val = FMax(val, 0);
-        if(#defined(injections) && i==3) val = 0; // max level always 0% noise
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+            word = "Speed";
+        } else {
+            word = "Noise";
+            val = FMax(val, 0);
+            if(#defined(injections) && i==3) val = 0; // max level always 0% noise
+        }
         shortDisplay=int(val * 100.0) $ "%";
         return shortDisplay;
     }
