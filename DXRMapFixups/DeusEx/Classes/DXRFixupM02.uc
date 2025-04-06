@@ -285,19 +285,19 @@ function PreFirstEntryMapFixes()
             }
 
             //The terrorists on the upper floor will now go hostile to the hostages
-            //if either of them emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
+            //if either of them emits distress or hears weaponfire, or if the player makes a loud noise, creates a carcass, or fires a weapon
             //Triggers need to be above the terrorists so that the WeaponFire event from the prod isn't caught
             foreach AllActors(class'#var(prefix)Terrorist', nsf, 'SecondFloorTerrorist'){
-                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',true,false,'SecondFloorTerrorist',,,,,,,,true,); //Distress
-                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',false,true,'',,,,true,true,true,,,).debugMessages=true; //WeaponFire, Carcass, and LoudNoise
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',true,false,'SecondFloorTerrorist',,,,true,,,,true,); //WeaponFire, Distress
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
             }
 
             //The terrorist watching Gilbert will now go hostile
-            //if he emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
+            //if he emits distress or hears weaponfire, or if the player makes a loud noise, creates a carcass, or fires a weapon
             //Triggers need to be above the terrorists so that the WeaponFire event from the prod isn't caught
             foreach AllActors(class'#var(prefix)Terrorist', nsf, 'GilbertTerrorist'){
-                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,,,,,true,); //Distress
-                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,).debugMessages=true; //WeaponFire, Carcass, and LoudNoise
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,true,,,,true,); //WeaponFire, Distress
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
             }
 
             //The terrorist guarding Gilbert will no longer be ordered to attack the player
