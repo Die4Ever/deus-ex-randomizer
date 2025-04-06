@@ -4,7 +4,7 @@ var travel int NumSkillPoints;
 
 function Destroyed()
 {
-    local DeusExPlayer player;
+    local #var(PlayerPawn) player;
 
     if (HitPoints > 0) {
         Super.Destroyed();
@@ -20,7 +20,7 @@ function Destroyed()
     if (player != None) {
         player.SkillPointsAvail += NumSkillPoints; // don't call SkillPointsAdd() to avoid increasing SkillPointsTotal
         player.ClientMessage(NumSkillPoints $ " skill points awarded");
-        player.ClientMessage("Mission " $ #var(PlayerPawn)(player).dxr.dxInfo.missionNumber $ " New Loop Bonus");
+        player.ClientMessage("Mission " $ player.dxr.dxInfo.missionNumber $ " New Loop Bonus");
     }
 
     Super.Destroyed();
