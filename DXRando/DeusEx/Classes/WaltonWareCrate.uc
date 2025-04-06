@@ -18,7 +18,9 @@ function Destroyed()
     }
 
     if (player != None) {
-        player.SkillPointsAdd(NumSkillPoints);
+        player.SkillPointsAvail += NumSkillPoints;
+        //player.ClientMessage(NumSkillPoints $ " mission " $ class'DXRando'.default.dxr.dxInfo.missionNumber $ " new loop skill point bonus");
+        player.ClientMessage(NumSkillPoints $ " mission " $ #var(PlayerPawn)(player).dxr.dxInfo.missionNumber $ " new loop skill point bonus");
     }
 
     Super.Destroyed();
