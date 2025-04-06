@@ -6,7 +6,7 @@ struct Content
     var int numCopies;
 };
 
-var travel Content bcContents[30];
+var travel Content bcContents[32];
 var travel int numContents;
 
 function bool AddContent(class<Actor> type, int numCopies)
