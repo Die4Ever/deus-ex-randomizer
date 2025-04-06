@@ -21,6 +21,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)FordSchick ford;
     local #var(prefix)MJ12Troop troop;
+    local #var(prefix)AllianceTrigger at;
     local DXRHoverHint hoverHint;
     local DXRButtonHoverHint buttonHint;
     local #var(prefix)Button1 button;
@@ -37,6 +38,7 @@ function PreFirstEntryMapFixes()
     local Smuggler smug;
     local HomeBase hb;
     local DXRReinforcementPoint reinforce;
+    local int i;
 #ifdef revision
     local JockHelicopter jockheli;
 #endif
@@ -263,6 +265,37 @@ function PreFirstEntryMapFixes()
     //#region Hotel
     case "02_NYC_HOTEL":
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //For this first pass, this is vanilla only, but should be possible to pick out locations for Revision as well
+            if (VanillaMaps){
+                //Make sure the alliance triggers have unique tags
+                foreach AllActors(class'#var(prefix)AllianceTrigger',at){
+                    if (at.Event=='SecondFloorTerrorist'){
+                        at.Tag='SecondFloorHostageAlliance';
+                        at.SetCollision(False,False,False);
+                    }
+                    if (at.Event=='GilbertTerrorist'){
+                        at.Tag='GilbertHostageAlliance';
+                        at.SetCollision(False,False,False);
+                        at.Alliance='NSF';
+                        for(i=0;i<ArrayCount(at.Alliances);i++){
+                            if (at.Alliances[i].allianceName=='Hostages'){
+                                at.Alliances[i].allianceLevel=-1; //These triggers normally only set the alliance to 0...
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //The terrorists on the upper floor will now go hostile to the hostages
+                //if either of them emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
+                class'ListenAIEventTrigger'.static.Create(self,vectm(475,-2000,215),'SecondFloorHostageAlliance',true,false,'SecondFloorTerrorist',,,,,,,,true,); //Distress
+                class'ListenAIEventTrigger'.static.Create(self,vectm(475,-2000,215),'SecondFloorHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
+
+                //The terrorist watching Gilbert will now go hostile
+                //if he emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
+                class'ListenAIEventTrigger'.static.Create(self,vectm(-700,-1000,-40),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,,,,,true,); //Distress
+                class'ListenAIEventTrigger'.static.Create(self,vectm(-700,-1000,-40),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
+            }
             //The terrorist guarding Gilbert will no longer be ordered to attack the player
             //There is already an AllianceTrigger ready to swap his alliances, and he is always
             //facing the right way anyway.  Just delete the OrdersTrigger
