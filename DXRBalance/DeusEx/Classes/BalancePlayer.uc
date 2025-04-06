@@ -603,6 +603,9 @@ exec function ActivateAugSynthHeart() { ActivateAugByName("AugHeartLung"); }
 exec function ActivateAugOnlySpeed() { ActivateAugByName("AugOnlySpeed"); }
 exec function ActivateAugJump() { ActivateAugByName("AugJump"); }
 exec function ActivateAugNinja() { ActivateAugByName("AugNinja"); }
+exec function ActivateAugVisionShort() { ActivateAugByName("AugVisionShort"); }
+exec function ActivateAugInfraVision() { ActivateAugByName("AugInfraVision"); }
+exec function ActivateAugMotionSensor() { ActivateAugByName("AugMotionSensor"); }
 
 function CreateDrone()
 {
