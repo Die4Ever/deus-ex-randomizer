@@ -9,7 +9,7 @@ function PreFirstEntryMapFixes()
     local DeusExMover d;
     local #var(prefix)NanoKey k;
     local CrateExplosiveSmall c;
-    local Terrorist nsf;
+    local #var(prefix)Terrorist nsf;
     local #var(prefix)BoxSmall bs;
     local #var(prefix)Keypad2 kp;
     local #var(prefix)TAD tad;
@@ -99,7 +99,7 @@ function PreFirstEntryMapFixes()
                         t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
                 }
             }
-            foreach AllActors(class'Terrorist',nsf,'ShantyTerrorist'){
+            foreach AllActors(class'#var(prefix)Terrorist',nsf,'ShantyTerrorist'){
                 nsf.Tag = 'ShantyTerrorists';  //Restores voice lines when NSF still alive (still hard to have happen though)
             }
 
@@ -265,37 +265,41 @@ function PreFirstEntryMapFixes()
     //#region Hotel
     case "02_NYC_HOTEL":
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
-            //For this first pass, this is vanilla only, but should be possible to pick out locations for Revision as well
-            if (VanillaMaps){
-                //Make sure the alliance triggers have unique tags
-                foreach AllActors(class'#var(prefix)AllianceTrigger',at){
-                    if (at.Event=='SecondFloorTerrorist'){
-                        at.Tag='SecondFloorHostageAlliance';
-                        at.SetCollision(False,False,False);
-                    }
-                    if (at.Event=='GilbertTerrorist'){
-                        at.Tag='GilbertHostageAlliance';
-                        at.SetCollision(False,False,False);
-                        at.Alliance='NSF';
-                        for(i=0;i<ArrayCount(at.Alliances);i++){
-                            if (at.Alliances[i].allianceName=='Hostages'){
-                                at.Alliances[i].allianceLevel=-1; //These triggers normally only set the alliance to 0...
-                                break;
-                            }
+            //Make sure the alliance triggers have unique tags
+            foreach AllActors(class'#var(prefix)AllianceTrigger',at){
+                if (at.Event=='SecondFloorTerrorist'){
+                    at.Tag='SecondFloorHostageAlliance';
+                    at.SetCollision(False,False,False);
+                }
+                if (at.Event=='GilbertTerrorist'){
+                    at.Tag='GilbertHostageAlliance';
+                    at.SetCollision(False,False,False);
+                    at.Alliance='NSF';
+                    for(i=0;i<ArrayCount(at.Alliances);i++){
+                        if (at.Alliances[i].allianceName=='Hostages'){
+                            at.Alliances[i].allianceLevel=-1; //These triggers normally only set the alliance to 0...
+                            break;
                         }
                     }
                 }
-
-                //The terrorists on the upper floor will now go hostile to the hostages
-                //if either of them emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
-                class'ListenAIEventTrigger'.static.Create(self,vectm(475,-2000,215),'SecondFloorHostageAlliance',true,false,'SecondFloorTerrorist',,,,,,,,true,); //Distress
-                class'ListenAIEventTrigger'.static.Create(self,vectm(475,-2000,215),'SecondFloorHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
-
-                //The terrorist watching Gilbert will now go hostile
-                //if he emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
-                class'ListenAIEventTrigger'.static.Create(self,vectm(-700,-1000,-40),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,,,,,true,); //Distress
-                class'ListenAIEventTrigger'.static.Create(self,vectm(-700,-1000,-40),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
             }
+
+            //The terrorists on the upper floor will now go hostile to the hostages
+            //if either of them emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
+            //Triggers need to be above the terrorists so that the WeaponFire event from the prod isn't caught
+            foreach AllActors(class'#var(prefix)Terrorist', nsf, 'SecondFloorTerrorist'){
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',true,false,'SecondFloorTerrorist',,,,,,,,true,); //Distress
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',false,true,'',,,,true,true,true,,,).debugMessages=true; //WeaponFire, Carcass, and LoudNoise
+            }
+
+            //The terrorist watching Gilbert will now go hostile
+            //if he emits distress, or if the player makes a loud noise, creates a carcass, or fires a weapon
+            //Triggers need to be above the terrorists so that the WeaponFire event from the prod isn't caught
+            foreach AllActors(class'#var(prefix)Terrorist', nsf, 'GilbertTerrorist'){
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,,,,,true,); //Distress
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,).debugMessages=true; //WeaponFire, Carcass, and LoudNoise
+            }
+
             //The terrorist guarding Gilbert will no longer be ordered to attack the player
             //There is already an AllianceTrigger ready to swap his alliances, and he is always
             //facing the right way anyway.  Just delete the OrdersTrigger
