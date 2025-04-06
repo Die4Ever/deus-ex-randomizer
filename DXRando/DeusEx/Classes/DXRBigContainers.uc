@@ -68,7 +68,7 @@ function Destroyed()
             ClassIsChildOf(bcContents[i].type, class'DeusExPickup')
             && class<DeusExPickup>(bcContents[i].type).default.bCanHaveMultipleCopies
         ) {
-            // TODO: take into account type.maxCopies
+            // TODO: take into account type's reduced maxCopies
             dropped = Spawn(bcContents[i].type);
             DeusExPickup(dropped).numCopies = bcContents[i].numcopies;
             DropItem(dropped);
