@@ -11,10 +11,10 @@ function Destroyed()
         return;
     }
 
-    if (DeusExPlayer(Instigator) != None) {
-        player = DeusExPlayer(Instigator);
+    if (#var(PlayerPawn)(Instigator) != None) {
+        player = #var(PlayerPawn)(Instigator);
     } else {
-        player = DeusExPlayer(GetPlayerPawn());
+        player = #var(PlayerPawn)(GetPlayerPawn());
     }
 
     if (player != None) {
