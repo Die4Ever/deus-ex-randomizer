@@ -699,6 +699,28 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
                 break;
             }
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(6103, -6549, -5105));  //Infusion Control Panel
+        Spawn(class'PlaceholderItem',,, vectm(5778, -7945, -5554));  //Boxes in front of middle UC
+        Spawn(class'PlaceholderItem',,, vectm(5571, -6563, -5554));  //Boxes in front of radiation room
+        Spawn(class'PlaceholderItem',,, vectm(5986, -6489, -5619));  //Near boxes under Infusion Control
+        Spawn(class'PlaceholderItem',,, vectm(6434, -7162, -5554));  //Boxes under Page
+        Spawn(class'PlaceholderItem',,, vectm(7284, -9568, -6043));  //Top of cabinet in coolant area
+        Spawn(class'PlaceholderItem',,, vectm(6503, -7498, -6107));  //Near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(5999, -7005, -6059));  //Also near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(5720, -7129, -6011));  //Basically middle of bottom floor
+        Spawn(class'PlaceholderItem',,, vectm(7877, -9077, -6155));  //Under the grating in coolant area
+    } else {
+        Spawn(class'PlaceholderItem',,, vectm(-65,3062,266));  //Infusion Control Panel
+        Spawn(class'PlaceholderItem',,, vectm(-393,1666,-182));  //Boxes in front of middle UC
+        Spawn(class'PlaceholderItem',,, vectm(-602,3057,-182));  //Boxes in front of radiation room
+        Spawn(class'PlaceholderItem',,, vectm(-115,3074,-247));  //Near boxes under Infusion Control
+        Spawn(class'PlaceholderItem',,, vectm(262,2463,-182));  //Boxes under Page
+        Spawn(class'PlaceholderItem',,, vectm(1116,42,-671));  //Top of cabinet in coolant area
+        Spawn(class'PlaceholderItem',,, vectm(394,2103,-735));  //Near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(-164,2601,-687));  //Also near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(-437,2461,-639));  //Basically middle of bottom floor
+        Spawn(class'PlaceholderItem',,, vectm(1715,529,-783));  //Under the grating in coolant area
     }
 }
 //#endregion

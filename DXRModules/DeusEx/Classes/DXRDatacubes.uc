@@ -700,6 +700,19 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        //Aquinas Substation and Router Control Room code
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(7158, -6119, -6115);
+        datacubes_rules[i].max_pos = vect(4620, -8039, -5371);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
         //UC Control Room password can be anywhere
         datacubes_rules[i].item_name = 'UCControlRoomPassword';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -1617,6 +1630,20 @@ function revision_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
+
+        //Aquinas Substation and Router Control Room code
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1546,1643,0);
+        datacubes_rules[i].max_pos = vect(967,3487,-762);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
 
         break;
 
