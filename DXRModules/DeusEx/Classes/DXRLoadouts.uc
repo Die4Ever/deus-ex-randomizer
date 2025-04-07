@@ -1138,6 +1138,9 @@ function SpawnItems()
     local class<Actor> aclass;
     local DXRReduceItems reducer;
     local int i, j, chance, max;
+
+    if(dxr.dxInfo.MissionNumber < 0) return;
+
     l("SpawnItems()");
     SetSeed("SpawnItems()");
 
