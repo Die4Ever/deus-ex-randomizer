@@ -6,8 +6,8 @@ class DXRAugDisplayWindow injects AugmentationDisplayWindow;
 #endif
 
 var transient bool d3d11;// d3d11 drawing the viewport of targeting aug fills the entire screen, just disable that
-var bool bThermalVision;
-var bool bMotionSensor;
+var transient bool bThermalVision;
+var transient bool bMotionSensor;
 
 function ConfigurationChanged()
 {
@@ -25,7 +25,7 @@ function bool IsHeatSource(Actor A)
     {
         if (A.IsA('ScriptedPawn'))
             return True;
-        else if ( (A.IsA('DeusExPlayer')) && (A != Player) )//DEUS_EX AMSD For multiplayer.
+        else if (A.IsA('DeusExPlayer') && A != Player)//DEUS_EX AMSD For multiplayer.
             return True;
         return False;
     }
@@ -200,8 +200,22 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
     local #var(prefix)Containers c;
     local class<Actor> i; //Revision changed "Contents"/"Content2"/"Content3" to Actor instead of Inventory
     local Mesh oldMesh;
+    local DeusExCarcass carc;
 
     if(DrawGlow <= 0) return;
+    if(bThermalVision) {
+        carc = DeusExCarcass(A);
+        if(carc != None && !carc.bNotDead) {
+            if(carc.TimerRate <= 0 || carc.Group=='coldbody' || carc.Alliance=='Resurrected') return;
+            DrawGlow *= (carc.TimerRate - carc.TimerCounter) / carc.TimerRate;
+        }
+        if(ScriptedPawn(A) != None && ScriptedPawn(A).Alliance=='Resurrected') {
+            DrawGlow *= 0.1;
+        }
+        if(FleshFragment(A) != None) {
+            DrawGlow *= FMin(A.LifeSpan / 10, 1);
+        }
+    }
 
     if(A.Mesh == None) {
         DrawBrush(gc, A);

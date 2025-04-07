@@ -2,7 +2,13 @@ class BuffAugVision injects AugVision;
 
 state Active
 {
-Begin:
+Begin: // make sure we refresh the status on loading saves
+    SetVisionAugStatus(CurrentLevel, LevelValues[CurrentLevel], bIsActive);
+}
+
+function Activate()
+{
+    Super(Augmentation).Activate();
 }
 
 simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)

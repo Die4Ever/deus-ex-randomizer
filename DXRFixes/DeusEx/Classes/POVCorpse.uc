@@ -60,6 +60,7 @@ function DeusExCarcass Drop(vector dropVect)
     carc.itemName = CorpseItemName;
     carc.CarcassName = CarcassName;
     carc.Velocity = Velocity * 0.5;
+    carc.Group = 'coldbody';
     Velocity = vect(0,0,0);
     carc.bHidden = False;
     carc.SetPhysics(PHYS_Falling);
