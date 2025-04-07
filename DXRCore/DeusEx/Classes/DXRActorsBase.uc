@@ -1,4 +1,4 @@
-class DXRActorsBase extends DXRBase;
+class DXRActorsBase extends DXRBase abstract;
 
 var class<Actor> _skipactor_types[6];
 

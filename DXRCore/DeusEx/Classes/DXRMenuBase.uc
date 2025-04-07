@@ -1,4 +1,4 @@
-class DXRMenuBase extends MenuUIScreenWindow;
+class DXRMenuBase extends MenuUIScreenWindow abstract;
 
 var MenuUIInfoButtonWindow winNameBorder;
 

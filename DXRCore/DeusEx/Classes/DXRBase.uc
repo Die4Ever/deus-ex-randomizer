@@ -1,4 +1,4 @@
-class DXRBase extends DXRInfo;
+class DXRBase extends DXRInfo abstract;
 
 var transient DXRando dxr;
 var transient float overallchances;

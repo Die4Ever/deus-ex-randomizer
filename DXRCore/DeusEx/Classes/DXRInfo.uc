@@ -1,7 +1,7 @@
 #ifdef injections
-class DXRInfo extends DXRVersion config(DXRando);
+class DXRInfo extends DXRVersion config(DXRando) abstract;
 #else
-class DXRInfo extends DXRVersion config(#var(package));
+class DXRInfo extends DXRVersion config(#var(package)) abstract;
 #endif
 
 var transient int passes;
