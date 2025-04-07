@@ -56,6 +56,21 @@ simulated function float GetAugLevelValue()
         return -1.0;
 }
 
+simulated function float PreviewAugLevelValue()
+{
+    if (bHasIt && bIsActive) {
+        // TickUse(); // no tick
+        if(Player.Energy <= 0 && bAutomatic) {
+            return -1.0;
+        } else {
+            if(CurrentLevel >= 4) return Level5Value;
+            return LevelValues[CurrentLevel];
+        }
+    }
+    else
+        return -1.0;
+}
+
 simulated function int GetClassLevel()
 {
     if (bHasIt && bIsActive)

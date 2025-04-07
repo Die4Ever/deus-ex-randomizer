@@ -484,6 +484,34 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
     return newNote;
 }
 
+function float GetJumpZ()
+{
+    local float f, jump;
+    local Augmentation aug, jumpAug;
+
+    f = 1;
+    for(aug=AugmentationSystem.FirstAug; aug!=None; aug=aug.next) {
+        switch(aug.class) {
+        case class'AugSpeed':
+            f = FMax(f, aug.GetAugLevelValue());
+            break;
+        case class'AugNinja':
+            f = FMax(f, aug.GetAugLevelValue());
+            break;
+        case class'AugJump':
+            jumpAug = aug;
+            jump = aug.PreviewAugLevelValue(); // don't tick it unless this is our best choice, don't waste the player's energy
+            break;
+        }
+    }
+
+    if(jump > f) {
+        jumpAug.TickUse();
+        f = jump;
+    }
+    return default.JumpZ * f;
+}
+
 function DoJump( optional float F )
 {
     local DeusExWeapon w;
@@ -504,19 +532,14 @@ function DoJump( optional float F )
             MakeNoise(0.1 * Level.Game.Difficulty);
         PlayInAir();
 
+        JumpZ = GetJumpZ();
         Velocity.Z = JumpZ;
 
         if ( Level.NetMode != NM_Standalone )
         {
-            if (AugmentationSystem == None)
-                augLevel = -1.0;
-            else {
-                augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-                augLevel = FMax(augLevel, AugmentationSystem.GetAugLevelValue(class'AugNinja'));
-                augLevel = FMax(augLevel, AugmentationSystem.GetAugLevelValue(class'AugJump'));
-            }
+            augLevel = JumpZ / default.JumpZ;
             w = DeusExWeapon(InHand);
-            if ((augLevel != -1.0) && ( w != None ) && ( w.Mass > 30.0))
+            if (augLevel > 1 && w != None && w.Mass > 30.0)
             {
                 scaleFactor = 1.0 - FClamp( ((w.Mass - 30.0)/55.0), 0.0, 0.5 );
                 Velocity.Z *= scaleFactor;
@@ -541,6 +564,7 @@ function DoJump( optional float F )
 function Landed(vector HitNormal)
 {
     local vector legLocation;
+    local Augmentation aug;
     local int augLevel;
     local float augReduce, dmg, softener;
 
@@ -553,6 +577,9 @@ function Landed(vector HitNormal)
 
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);
+    if (Velocity.Z < -1.4 * default.JumpZ && (Velocity.Z * softener < -700) && (ReducedDamageType != 'All')) {
+        JumpZ = GetJumpZ();
+    }
     if (Velocity.Z < -1.4 * JumpZ)
     {
         //MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
@@ -566,7 +593,10 @@ function Landed(vector HitNormal)
                 if (AugmentationSystem != None)
                 {
                     augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
-                    augLevel = Max(augLevel, AugmentationSystem.GetClassLevel(class'AugJump'));
+                    aug = AugmentationSystem.FindAugmentation(class'AugJump');
+                    if(aug != None && aug.IsTicked()) { // this will be IsTicked if GetJumpZ() determined this was our best pick
+                        augLevel = Max(augLevel, aug.GetClassLevel());
+                    }
                     augLevel = Max(augLevel, AugmentationSystem.GetClassLevel(class'AugNinja'));
                     if (augLevel >= 0)
                         augReduce = 15 * (augLevel+1);

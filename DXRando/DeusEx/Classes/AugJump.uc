@@ -7,6 +7,10 @@ simulated function float GetAugLevelValue()
     if(!bIsActive) return -1;
     return LevelValues[CurrentLevel];
 }
+simulated function float PreviewAugLevelValue()
+{
+    return GetAugLevelValue();
+}
 #endif
 
 state Active
@@ -27,11 +31,9 @@ function Reset()
 
     // reset without burning 1 energy
     if(class'MenuChoice_FixGlitches'.default.enabled) {
-        //Player.GroundSpeed = Player.default.GroundSpeed * GetAugLevelValue();
-        Player.JumpZ = Player.default.JumpZ * GetAugLevelValue();
+        Player.JumpZ = Player.default.JumpZ * PreviewAugLevelValue();
     } else {
-        //Player.GroundSpeed *= GetAugLevelValue();
-        Player.JumpZ *= GetAugLevelValue();
+        Player.JumpZ *= PreviewAugLevelValue();
     }
 }
 
@@ -64,8 +66,6 @@ function UpdateBalance()
     default.Level5Value = Level5Value;
 }
 
-//original went from 1.2 up to 1.8, I've thought about nerfing the max speed so you can't just run past all enemies, but I think that would require an unreasonably large nerf
-//original EnergyRate is 40, might nerf it if people use it too much?
 defaultproperties
 {
     LevelValues(0)=1.2
@@ -74,6 +74,11 @@ defaultproperties
     LevelValues(3)=1.7
     Level5Value=1.8
     EnergyRate=30
+#ifdef injections
+    bAutomatic=true
+    AutoLength=2
+    AutoEnergyMult=2
+#endif
 
     Icon=Texture'AugIconJumpOnly'
     smallIcon=Texture'AugIconJumpOnly_Small'
