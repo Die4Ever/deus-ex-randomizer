@@ -1158,7 +1158,8 @@ function SpawnItems()
             if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
                 if (ClassIsChildOf(aclass,class'Inventory')){
-                    a = SpawnItemInContainer(self,class<Inventory>(aclass),loc,,0.5);
+                    //75% is pretty close to the size of a CrateUnbreakableSmall
+                    a = SpawnItemInContainer(self,class<Inventory>(aclass),loc,,0.75);
                     l("SpawnItems() spawned "$a$" at "$loc$" with "$aclass$" inside");
                 } else {
                     a = Spawn(aclass,,, loc);
