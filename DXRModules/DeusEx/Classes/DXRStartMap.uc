@@ -853,7 +853,6 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 {
     local SkillAwardCrate crate;
     local int credits;
-    local int sp;
 
     crate = SkillAwardCrate(SpawnInFrontOnFloor(
         player,
@@ -874,6 +873,8 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
         crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Game Plus Bonus";
     }
 
+    crate.Skin = Texture'WaltonWareCrate';
+
     credits = GetStartMapCreditsBonus(dxr);
     if (credits > 0) {
         crate.AddContent(class'Credits', credits);
@@ -893,7 +894,6 @@ function SkillAwardCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
     if (crate != None) {
         crate.ItemName = "Walton's Care Package";
         crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Loop Bonus";
-        crate.Skin = Texture'WaltonWareCrate';
     }
 
     return crate;

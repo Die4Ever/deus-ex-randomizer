@@ -32,7 +32,6 @@ defaultproperties
     ItemName="Skill Award Crate"
     SkillAwardMessage="Skill Award Crate Bonus"
     Skin=Texture'BlankWoodenCrate'
-    DrawScale=1.15
     HitPoints=1
     FragType=Class'DeusEx.WoodFragment'
     bBlockSight=True
