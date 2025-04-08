@@ -1050,8 +1050,6 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     for(i=0; i < start_amount; i++) {
         _RandoStartingEquipment(player, dxre, respawn);
     }
-
-    class'DXRStartMap'.static.AddStartingAugs(dxr,player);
 }
 
 function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory item, bool bFrob)

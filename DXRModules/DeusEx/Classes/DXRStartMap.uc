@@ -849,36 +849,69 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 }
 
-function WaltonWareCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
+function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 {
-    local WaltonWareCrate waltonCrate;
+    local SkillAwardCrate crate;
+    local int credits;
+    local int sp;
 
-    waltonCrate = WaltonWareCrate(SpawnInFrontOnFloor(
+    crate = SkillAwardCrate(SpawnInFrontOnFloor(
         player,
-        class'WaltonWareCrate',
+        class'SkillAwardCrate',
         80.0,
         MakeRotator(0, (2047 - rng(4095)), 0)
     ));
 
-    if (waltonCrate == None) {
+    if (crate == None) {
         return None;
     }
 
-    waltonCrate.AddContent(class'BioelectricCell', 1);
-    waltonCrate.AddContent(class'AugmentationUpgradeCannister', GetStartMapAugBonus(dxr));
-    waltonCrate.AddContent(class'Credits', GetStartMapCreditsBonus(dxr));
-    waltonCrate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    if (dxr.flagbase.GetInt('Rando_newgameplus_loops') == 0) {
+        crate.ItemName = "Later Start Supply Crate";
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
+    } else  {
+        crate.ItemName = "New Game Plus Supply Crate";
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Game Plus Bonus";
+    }
 
-    return waltonCrate;
+    credits = GetStartMapCreditsBonus(dxr);
+    if (credits > 0) {
+        crate.AddContent(class'Credits', credits);
+    }
+    crate.AddContent(class'BioelectricCell', 1);
+    crate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+
+    return crate;
+}
+
+function SkillAwardCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
+{
+    local SkillAwardCrate crate;
+
+    crate = SpawnSkillAwardCrate(player);
+
+    if (crate != None) {
+        crate.ItemName = "Walton's Care Package";
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Loop Bonus";
+        crate.Skin = Texture'WaltonWareCrate';
+    }
+
+    return crate;
 }
 
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
 
-    if (dxr.flags.IsWaltonWare() && flagbase.GetInt('Rando_newgameplus_loops') > 0) {
+    if (dxr.flags.IsWaltonWare()) {
         SpawnWaltonWareCrate(player);
+    } else if (dxr.flags.settings.starting_map > 10 || flagbase.GetInt('Rando_newgameplus_loops') > 0) {
+        SpawnSkillAwardCrate(player);
+    } else {
+        AddStartingCredits(dxr, player);
+        AddStartingSkillPoints(dxr, player);
     }
+    AddStartingAugs(dxr, player);
 
     switch(start_flag) {
         case 21:

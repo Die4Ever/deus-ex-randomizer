@@ -287,12 +287,6 @@ function NewGamePlus()
 
     p.AugmentationSystem.DeactivateAll();
 
-    if (!dxr.flags.IsWaltonWare()) { // replaced by a WaltonWareCrate in WW modes
-        class'DXRStartMap'.static.AddStartingCredits(dxr,p);
-        class'DXRStartMap'.static.AddStartingAugs(dxr,p);
-        class'DXRStartMap'.static.AddStartingSkillPoints(dxr,p);
-    }
-
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();
     DeusExRootWindow(p.rootWindow).ResetFlags();

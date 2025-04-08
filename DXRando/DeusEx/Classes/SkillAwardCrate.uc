@@ -1,6 +1,7 @@
-class WaltonWareCrate extends DXRBigContainers;
+class SkillAwardCrate extends DXRBigContainers;
 
 var travel int NumSkillPoints;
+var string SkillAwardMessage;
 
 function Destroyed()
 {
@@ -17,10 +18,10 @@ function Destroyed()
         player = #var(PlayerPawn)(GetPlayerPawn());
     }
 
-    if (player != None) {
+    if (NumSkillPoints > 0 && player != None) {
         player.SkillPointsAvail += NumSkillPoints; // don't call SkillPointsAdd() to avoid increasing SkillPointsTotal
         player.ClientMessage(NumSkillPoints $ " skill points awarded");
-        player.ClientMessage("Mission " $ player.dxr.dxInfo.missionNumber $ " New Loop Bonus");
+        player.ClientMessage(SkillAwardMessage);
     }
 
     Super.Destroyed();
@@ -28,14 +29,16 @@ function Destroyed()
 
 defaultproperties
 {
-     ItemName="Walton's Care Package"
-     Skin=Texture'WaltonWareCrate'
-     HitPoints=1
-     FragType=Class'DeusEx.WoodFragment'
-     bBlockSight=True
-     Mesh=LodMesh'DeusExDeco.CrateBreakableMed'
-     CollisionRadius=34.000000
-     CollisionHeight=24.000000
-     Mass=50.000000
-     Buoyancy=60.000000
+    ItemName="Skill Award Crate"
+    SkillAwardMessage="Skill Award Crate Bonus"
+    Skin=Texture'BlankWoodenCrate'
+    DrawScale=1.15
+    HitPoints=1
+    FragType=Class'DeusEx.WoodFragment'
+    bBlockSight=True
+    Mesh=LodMesh'DeusExDeco.CrateBreakableMed'
+    CollisionRadius=34.000000
+    CollisionHeight=24.000000
+    Mass=50.000000
+    Buoyancy=60.000000
 }
