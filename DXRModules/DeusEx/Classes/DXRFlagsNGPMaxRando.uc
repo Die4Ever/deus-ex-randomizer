@@ -287,12 +287,6 @@ function NewGamePlus()
 
     p.AugmentationSystem.DeactivateAll();
 
-    //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
-    //Technically it should make up for levels you skipped past, so maybe?
-    class'DXRStartMap'.static.AddStartingCredits(dxr,p);
-    class'DXRStartMap'.static.AddStartingAugs(dxr,p);
-    class'DXRStartMap'.static.AddStartingSkillPoints(dxr,p);
-
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();
     DeusExRootWindow(p.rootWindow).ResetFlags();
