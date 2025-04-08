@@ -388,6 +388,8 @@ simulated function InitHints()
                     AddHint("The map of the island can show possible goal locations.", "Give it a try!");
                 }
             }
+            AddHint("Harley Filben has the key that opens doors in the statue.", "Be nice to him!");
+            AddHint("The key that opens the front doors of the statue also opens", "the cell Gunther is being held in.  Walk right in!");
         }
         break;
 
