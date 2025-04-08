@@ -65,7 +65,7 @@ struct Spoiler {
 var Goal goals[32];
 var Spoiler spoilers[32];
 var GoalLocation locations[64];
-var MutualExclusion mutually_exclusive[20];
+var MutualExclusion mutually_exclusive[32];
 var int num_goals, num_locations, num_mututally_exclusives;
 
 var vector rando_start_loc;
@@ -106,7 +106,6 @@ static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> reque
 function int InitGoals(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
 function int InitGoalsRev(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
 function CreateGoal(out Goal g, GoalLocation Loc);
-function DeleteGoal(Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
 function AfterMovePlayerToStartLocation(GoalLocation Loc);
 function PreFirstEntryMapFixes();
@@ -278,10 +277,39 @@ function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataV
 
 function AddMutualExclusion(int L1, int L2)
 {
+    local int i;
+
+    for(i=0; i<num_mututally_exclusives; i++) {
+        if(mutually_exclusive[i].L1 == L1 && mutually_exclusive[i].L2 == L2) {
+            l("AddMutualExclusion: " $ locations[L1].name $ " and "$ locations[L2].name $ " are already mutually exclusive");
+            return;
+        }
+    }
     l("AddMutualExclusion: " $ locations[L1].name $ " and "$ locations[L2].name $ " are mutually exclusive");
     mutually_exclusive[num_mututally_exclusives].L1 = L1;
     mutually_exclusive[num_mututally_exclusives].L2 = L2;
     num_mututally_exclusives++;
+}
+
+function AddMutualInclusion(int L1, int L2)
+{// might be more generally useful with more arguments for allowances, make sure to call after adding all the goal locations
+    local int i, k;
+    local int G1, G2;
+
+    G1 = locations[L1].bitMask & 0xFFFF;
+    G2 = locations[L2].bitMask & 0xFFFF;
+
+    l("AddMutualInclusion: " $ locations[L1].name $ " and " $ locations[L2].name);
+
+    for(i=0; i<num_locations; i++) {
+        if((locations[i].bitMask & G1) != G1) continue;
+        for(k=0; k<num_locations; k++) {
+            if(i == k) continue;
+            if((locations[k].bitMask & G2) != G2) continue;
+            if(i==L1 || k==L2) AddMutualExclusion(i, k);
+        }
+    }
+    l("AddMutualInclusion: end");
 }
 
 function int InitGoalsByMod(int mission, string map)
@@ -502,6 +530,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
 
+        // remove locations that are no longer valid
         for(a=0; a<_num_locs; a++) {
             if(!IsComboAllowed(loc, availLocs[a])) {
                 _num_locs--;
@@ -518,8 +547,8 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     for(i=0; i<num_goals; i++) {
         goalsOrder[i] = i;
     }
-    for(i=0; i<num_goals; i++) {
-        r = rng(num_goals);
+    for(i=num_goals-1; i>=0; i--) {
+        r = rng(i+1);
         g1 = goalsOrder[i];
         goalsOrder[i] = goalsOrder[r];
         goalsOrder[r] = g1;
@@ -553,6 +582,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         _num_locs--;
         availLocs[a] = availLocs[_num_locs];
 
+        // remove locations that are no longer valid
         for(a=0; a<_num_locs; a++) {
             if(!IsComboAllowed(loc, availLocs[a])) {
                 _num_locs--;
@@ -578,11 +608,17 @@ function bool IsComboAllowed(int loc1, int loc2)
     return true;
 }
 
+function bool IsLayoutAllowed(int goalsToLocations[32])
+{
+    return true;
+}
+
 function ChooseGoalLocations(out int goalsToLocations[32])
 {
     local int attempts;
     for(attempts=0; attempts<1000; attempts++) {
         if(_ChooseGoalLocations(goalsToLocations)) {
+            if(!IsLayoutAllowed(goalsToLocations)) continue;
             if(attempts > 100) {
                 warning("ChooseGoalLocations took " $ (attempts+1) $ " attempts!");
             }
@@ -602,10 +638,11 @@ function Actor GetActor(out GoalActor ga)
     foreach AllActors(class'Actor', a) {
 #ifdef hx
         if( (HXMover(a) != None && a.Name == ga.actorName)
-            || a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
+            || a.GetPropertyText("PrecessorName") == string(ga.actorName))
 #else
-        if(a.name == ga.actorName) {
+        if(a.name == ga.actorName)
 #endif
+        {
             ga.a = a;
             return a;
         }
@@ -696,6 +733,19 @@ function int _UpdateLocation(Actor a, string goalName)
     return g;
 }
 
+function DeleteGoal(Goal g, GoalLocation Loc)
+{
+    local int i;
+    local Actor a;
+    // delete from map
+    for(i=0; i<ArrayCount(g.actors); i++) {
+        a = g.actors[i].a;
+        if(a == None) continue;
+        a.Event = '';
+        a.Destroy();
+    }
+}
+
 function MoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
@@ -709,14 +759,6 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
 
     if(g.mapName == dxr.localURL && Loc.mapName != dxr.localURL) {
-        // delete from map
-        for(i=0; i<ArrayCount(g.actors); i++) {
-            a = g.actors[i].a;
-            if(a == None) continue;
-            a.Event = '';
-            a.Destroy();
-        }
-
         DeleteGoal(g, Loc);
         return;
     }

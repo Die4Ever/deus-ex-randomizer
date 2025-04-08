@@ -652,22 +652,38 @@ function vanilla_datacubes_rules()
         break;
 
     case "15_AREA51_ENTRANCE":
+        // allow between barracks and sector 3 access door
+        datacubes_rules[i].item_name = 'SleepPodCode1';
+        datacubes_rules[i].min_pos = vect(-580, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(4280, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
         datacubes_rules[i].item_name = 'SleepPodCode1';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
+        datacubes_rules[i].allow = false;
         i++;
 
         datacubes_rules[i].item_name = 'SleepPodCode2';
+        datacubes_rules[i].min_pos = vect(-580, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(4280, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        datacubes_rules[i].item_name = 'SleepPodCode2';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
+        datacubes_rules[i].allow = false;
         i++;
 
         datacubes_rules[i].item_name = 'SleepPodCode3';
+        datacubes_rules[i].min_pos = vect(-580, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(4280, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        datacubes_rules[i].item_name = 'SleepPodCode3';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
+        datacubes_rules[i].allow = false;
         i++;
         break;
 
@@ -679,6 +695,19 @@ function vanilla_datacubes_rules()
         i++;
 
         datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Aquinas Substation and Router Control Room code
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(7158, -6119, -6115);
+        datacubes_rules[i].max_pos = vect(4620, -8039, -5371);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = false;
@@ -1602,6 +1631,20 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
 
+        //Aquinas Substation and Router Control Room code
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1546,1643,0);
+        datacubes_rules[i].max_pos = vect(967,3487,-762);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].item_name = '15_Datacube11';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+
         break;
 
     }
@@ -1660,6 +1703,10 @@ static function RandoHackable(DXRando dxr, #var(prefix)HackableDevices h)
 function RandoInfoDevs(int percent)
 {
     local #var(prefix)InformationDevices id;
+    local bool totallyEmpty;
+#ifndef injections
+    local #var(injectsprefix)InformationDevices dxrid;
+#endif
 
     foreach AllActors(class'#var(prefix)InformationDevices', id)
     {
@@ -1670,6 +1717,21 @@ function RandoInfoDevs(int percent)
                 InfoDevsHasPass(id);
             }
             continue;
+        }
+        if (id.textTag=='' && id.imageClass==None){
+            //Don't shuffle completely empty information devices
+            //This isn't an issue (afaik) in vanilla, but mods sometimes
+            //put empty datacubes/newspapers in inaccessible areas as decoration
+            totallyEmpty=True;
+#ifdef injections
+            if (id.plaintext!="") totallyEmpty=False;
+#else
+            dxrid = #var(injectsprefix)InformationDevices(id);
+            if (dxrid!=None){
+                if (dxrid.plaintext!="") totallyEmpty=False;
+            }
+#endif
+            if (totallyEmpty) continue;
         }
         _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
     }

@@ -9,7 +9,7 @@ function PreFirstEntryMapFixes()
     local DeusExMover d;
     local #var(prefix)NanoKey k;
     local CrateExplosiveSmall c;
-    local Terrorist nsf;
+    local #var(prefix)Terrorist nsf;
     local #var(prefix)BoxSmall bs;
     local #var(prefix)Keypad2 kp;
     local #var(prefix)TAD tad;
@@ -21,6 +21,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)FordSchick ford;
     local #var(prefix)MJ12Troop troop;
+    local #var(prefix)AllianceTrigger at;
     local DXRHoverHint hoverHint;
     local DXRButtonHoverHint buttonHint;
     local #var(prefix)Button1 button;
@@ -37,6 +38,7 @@ function PreFirstEntryMapFixes()
     local Smuggler smug;
     local HomeBase hb;
     local DXRReinforcementPoint reinforce;
+    local int i;
 #ifdef revision
     local JockHelicopter jockheli;
 #endif
@@ -63,7 +65,8 @@ function PreFirstEntryMapFixes()
 
         foreach AllActors(class'DeusExMover', d) {
             if( d.Name == 'DeusExMover19' ) {
-                d.KeyIDNeeded = 'ControlRoomDoor';
+                d.Tag = 'ControlRoomDoor';
+                if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) d.KeyIDNeeded = 'ControlRoomDoor'; // if we aren't spawning the key, don't make it show the "Key Unacquired" text
             }
         }
 
@@ -73,6 +76,15 @@ function PreFirstEntryMapFixes()
             k.Description = "Control Room Door Key";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(k);
+        }
+
+        if(dxr.flags.settings.goals>0 || class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(636.035339, -1050.083496, -135.789780));
+            k.KeyID = 'KioskDoors';
+            k.Description = "Kiosk door key";
+            k.bIsSecretGoal = true;
+
+            AddSwitch(vect(794.640015, -841.168518, -158.871399), rot(0, 32768, 0), 'ControlRoomDoor');
         }
 
         //Prevent TNT crates in subway from being shuffled (in case Goal Rando is disabled)
@@ -87,7 +99,7 @@ function PreFirstEntryMapFixes()
                         t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
                 }
             }
-            foreach AllActors(class'Terrorist',nsf,'ShantyTerrorist'){
+            foreach AllActors(class'#var(prefix)Terrorist',nsf,'ShantyTerrorist'){
                 nsf.Tag = 'ShantyTerrorists';  //Restores voice lines when NSF still alive (still hard to have happen though)
             }
 
@@ -239,12 +251,12 @@ function PreFirstEntryMapFixes()
 
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             // this map is too hard
-            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(-1890,1840,1775)); //Rooftop apartment hall
-            Spawn(class'#var(prefix)AdaptiveArmor',,, vectm(700,850,1175)); //Apartment top floor
-            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-1220,1770,15)); //Next to electrical box
-            Spawn(class'#var(prefix)BallisticArmor',,, vectm(-2150,595,-240)); //Pipe next to sewer ladder
-            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-2190,2230,315)); //Fire Escape near ground entrance
-            Spawn(class'#var(prefix)FireExtinguisher',,, vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
+            SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(-1890,1840,1775)); //Rooftop apartment hall
+            SpawnItemInContainer(self,class'#var(prefix)AdaptiveArmor',vectm(700,850,1175)); //Apartment top floor
+            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-1220,1770,15)); //Next to electrical box
+            SpawnItemInContainer(self,class'#var(prefix)BallisticArmor',vectm(-2150,595,-240)); //Pipe next to sewer ladder
+            SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-2190,2230,315)); //Fire Escape near ground entrance
+            SpawnItemInContainer(self,class'#var(prefix)FireExtinguisher',vectm(-650,1030,15)); //Final ground hall to warehouse (without grenades)
         }
 
         break;
@@ -253,6 +265,41 @@ function PreFirstEntryMapFixes()
     //#region Hotel
     case "02_NYC_HOTEL":
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Make sure the alliance triggers have unique tags
+            foreach AllActors(class'#var(prefix)AllianceTrigger',at){
+                if (at.Event=='SecondFloorTerrorist'){
+                    at.Tag='SecondFloorHostageAlliance';
+                    at.SetCollision(False,False,False);
+                }
+                if (at.Event=='GilbertTerrorist'){
+                    at.Tag='GilbertHostageAlliance';
+                    at.SetCollision(False,False,False);
+                    at.Alliance='NSF';
+                    for(i=0;i<ArrayCount(at.Alliances);i++){
+                        if (at.Alliances[i].allianceName=='Hostages'){
+                            at.Alliances[i].allianceLevel=-1; //These triggers normally only set the alliance to 0...
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //The terrorists on the upper floor will now go hostile to the hostages
+            //if either of them emits distress or hears weaponfire, or if the player makes a loud noise, creates a carcass, or fires a weapon
+            //Triggers need to be above the terrorists so that the WeaponFire event from the prod isn't caught
+            foreach AllActors(class'#var(prefix)Terrorist', nsf, 'SecondFloorTerrorist'){
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',true,false,'SecondFloorTerrorist',,,,true,,,,true,); //WeaponFire, Distress
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'SecondFloorHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
+            }
+
+            //The terrorist watching Gilbert will now go hostile
+            //if he emits distress or hears weaponfire, or if the player makes a loud noise, creates a carcass, or fires a weapon
+            //Triggers need to be above the terrorists so that the WeaponFire event from the prod isn't caught
+            foreach AllActors(class'#var(prefix)Terrorist', nsf, 'GilbertTerrorist'){
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,true,,,,true,); //WeaponFire, Distress
+                class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
+            }
+
             //The terrorist guarding Gilbert will no longer be ordered to attack the player
             //There is already an AllianceTrigger ready to swap his alliances, and he is always
             //facing the right way anyway.  Just delete the OrdersTrigger

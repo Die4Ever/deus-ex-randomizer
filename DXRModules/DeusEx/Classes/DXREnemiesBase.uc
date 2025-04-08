@@ -5,6 +5,7 @@ var int enemy_multiplier;
 struct _RandomWeaponStruct { var class<DeusExWeapon> type; var float chance; };
 var transient _RandomWeaponStruct _randommelees[8];
 var transient _RandomWeaponStruct _randomweapons[32];
+var transient _RandomWeaponStruct _randomsidearms[8];
 var transient _RandomWeaponStruct _randombotweapons[32];
 
 struct _RandomEnemyStruct { var class<ScriptedPawn> type; var float chance; var int faction; };
@@ -24,7 +25,7 @@ var int num_watches;
 replication
 {
     reliable if( Role == ROLE_Authority )
-        _randommelees, _randomweapons, _randombotweapons;
+        _randommelees, _randomweapons, _randomsidearms, _randombotweapons;
 }
 
 const FactionAny = 0;
@@ -52,6 +53,18 @@ function AddRandomWeapon(class<DeusExWeapon> t, int c)
         if( _randomweapons[i].type == None ) {
             _randomweapons[i].type = t;
             _randomweapons[i].chance = c;
+            return;
+        }
+    }
+}
+
+function AddRandomSidearm(class<DeusExWeapon> t, int c)
+{
+    local int i;
+    for(i=0; i < ArrayCount(_randomsidearms); i++) {
+        if( _randomsidearms[i].type == None ) {
+            _randomsidearms[i].type = t;
+            _randomsidearms[i].chance = c;
             return;
         }
     }
@@ -90,7 +103,7 @@ function AddRandomEnemyType(class<ScriptedPawn> t, float c, int faction)
 
 function ReadConfig()
 {
-    local int i, nums[32], nummelees[8], totalweaps, totalmelees;
+    local int i, nums[32], nummelees[8], numsides[8], totalweaps, totalmelees, totalsides;
     local float total, f, c, totals[16];
     local class<Actor> a;
     local DeusExWeapon w;
@@ -111,6 +124,12 @@ function ReadConfig()
                 totalweaps++;
             }
         }
+        for(i=0; i < ArrayCount(_randomsidearms); i++) {
+            if(_randomsidearms[i].type == w.class) {
+                numsides[i]++;
+                totalsides++;
+            }
+        }
     }
 
     if(totalmelees==0) {
@@ -127,6 +146,15 @@ function ReadConfig()
             if(_randomweapons[i].type == class'#var(prefix)WeaponPistol') {
                 nums[i]++;
                 totalweaps++;
+                break;
+            }
+        }
+    }
+    if(totalsides==0) {
+        for(i=0; i < ArrayCount(_randomsidearms); i++) {
+            if(_randomsidearms[i].type == class'#var(prefix)WeaponPistol') {
+                numsides[i]++;
+                totalsides++;
                 break;
             }
         }
@@ -162,6 +190,22 @@ function ReadConfig()
     for(i=0; i < ArrayCount(_randomweapons); i++) {
         if(_randomweapons[i].type != None) {
             _randomweapons[i].chance *= 100.0 / total;
+        }
+    }
+
+    total=0;
+    for(i=0; i < ArrayCount(_randomsidearms); i++) {
+        if( _randomsidearms[i].type != None ) {
+            _randomsidearms[i].chance = rngrangeseeded(_randomsidearms[i].chance, min_rate_adjust, max_rate_adjust, _randomsidearms[i].type.name) ** 2;
+            c = _randomsidearms[i].chance * f;
+            c += float(nums[i]) / float(totalweaps) * (1.0-f) * 100.0;
+            _randomsidearms[i].chance = c;
+            total += c;
+        }
+    }
+    for(i=0; i < ArrayCount(_randomsidearms); i++) {
+        if(_randomsidearms[i].type != None) {
+            _randomsidearms[i].chance *= 100.0 / total;
         }
     }
 
@@ -530,9 +574,48 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
     if(wclass == None) return None;
 
     l("GiveRandomWeapon "$p$", "$wclass.Name$", "$add_ammo);
-    if(p!=None)
+    if(p!=None) {
+        if(wclass==class'#var(prefix)WeaponMiniCrossbow' && rngb()) GiveItem(p, class'AmmoDart', 0);
         return GiveItem( p, wclass, add_ammo );
-    else
+    } else
+        return Spawn(wclass);
+}
+
+function class<Weapon> GiveRandomSidearmClass(Pawn p, optional bool allow_dupes)
+{
+    local class<Weapon> wclass;
+    local int i;
+    local float r;
+    r = initchance();
+    for(i=0; i < ArrayCount(_randomsidearms); i++ ) {
+        if( _randomsidearms[i].type == None ) break;
+        if( chance( _randomsidearms[i].chance, r ) ) wclass = _randomsidearms[i].type;
+    }
+    chance_remaining(r);
+
+    if( (!allow_dupes) && p!=None && HasItem(p, wclass) )
+        return None;
+
+    if( wclass == None ) {
+        warning("not giving a random sidearm to "$p);
+        return None;
+    }
+
+    return wclass;
+}
+
+function inventory GiveRandomSidearm(Pawn p, optional bool allow_dupes, optional int add_ammo)
+{
+    local class<Weapon> wclass;
+
+    wclass = GiveRandomSidearmClass(p, allow_dupes);
+    if(wclass == None) return None;
+
+    l("GiveRandomSidearm "$p$", "$wclass.Name$", "$add_ammo);
+    if(p!=None) {
+        if(wclass==class'#var(prefix)WeaponMiniCrossbow' && rngb()) GiveItem(p, class'AmmoDart', 0);
+        return GiveItem( p, wclass, add_ammo );
+    } else
         return Spawn(wclass);
 }
 

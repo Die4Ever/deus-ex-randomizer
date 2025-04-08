@@ -1,4 +1,4 @@
-class DXRBase extends DXRInfo;
+class DXRBase extends DXRInfo abstract;
 
 var transient DXRando dxr;
 var transient float overallchances;
@@ -413,10 +413,9 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     local float f;
 
     log("WARNING: DXRBase DescriptionLevel failed for " $ act);
-    word = "% of Normal";
-    f = val / defaultval;
-    shortDisplay = string(int(f * 100.0));
-    return shortDisplay $ "%";
+    word = "Values";
+    shortDisplay=string(val);
+    return shortDisplay;
 }
 
 simulated function static int staticrng(DXRando dxr, int max)
@@ -498,6 +497,30 @@ static simulated function rotator rotm_static(int p, int y, int roll, int offset
     r.Yaw = y;
     r.Roll = roll;
     return r;
+}
+
+// convenience function for creating a Vector with non-literal values
+final static function Vector MakeVector(float x, float y, float z)
+{
+    local Vector vec;
+
+    vec.x = x;
+    vec.y = y;
+    vec.z = z;
+
+    return vec;
+}
+
+// convenience function for creating a Rotator with non-literal values
+final static function Rotator MakeRotator(int pitch, int yaw, int roll)
+{
+    local Rotator ro;
+
+    ro.Pitch = pitch;
+    ro.Yaw = yaw;
+    ro.Roll = roll;
+
+    return ro;
 }
 
 final function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )

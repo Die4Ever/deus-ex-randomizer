@@ -65,6 +65,8 @@ function PreFirstEntryMapFixes()
     local CrateUnbreakableSmall cus;
     local PlaceholderEnemy phe;
     local FacePlayerTrigger fpt;
+    local DXRReinforcementPoint reinforce;
+    local DXRIntermediatePoint intermediate;
     local #var(injectsprefix)AllianceTrigger at;
 
     local bool VanillaMaps;
@@ -445,6 +447,12 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)BeamTrigger',bt,'Lasertrip'){
                 bt.Event='ReleasebotsOnce';
             }
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+                foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'Releasebots'){
+                    ot.Orders='GoingTo';
+                    ot.ordersTag='SpiderDest';
+                }
+            }
 
             oot=Spawn(class'OnceOnlyTrigger');
             oot.Event='Releasebots';
@@ -461,6 +469,13 @@ function PreFirstEntryMapFixes()
                 door.Tag='AlarmsOnce';
             }
 
+            if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+                foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'ALARMS'){
+                    ot.Orders='GoingTo';
+                    ot.ordersTag='SpiderDest';
+                }
+            }
+
             oot=Spawn(class'OnceOnlyTrigger');
             oot.Event='AlarmsOnce';
             oot.Tag='ALARMS';
@@ -469,6 +484,11 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1780,8587,-2790)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(423,8547,-2900)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(73,9110,-2910)); //Turret room, opposite from bait computer
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            //Spiders should go to where the lasers are
+            reinforce = Spawn(class'DXRReinforcementPoint',,'SpiderDest',vectm(475,4290,-4195));
         }
 
         //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
@@ -528,6 +548,18 @@ function PreFirstEntryMapFixes()
             }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500)); //This one is locked inside a fence in Revision, so only use it in Vanilla
+        }
+
+        if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'Attack'){
+                ot.Orders='RunningTo';
+                ot.ordersTag='TunnelEndInt';
+                break;
+            }
+
+            intermediate = Spawn(class'DXRIntermediatePoint',,'TunnelEndInt',vectm(25,-3865,495)); //To the end of the tunnel
+            intermediate.nextPoint='TunnelEndFinal';
+            reinforce = Spawn(class'DXRReinforcementPoint',,'TunnelEndFinal',ot.Location); //and back to where they started
         }
 
         //Add teleporter hint text to Jock

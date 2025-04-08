@@ -89,10 +89,12 @@ function PreFirstEntryMapFixes()
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
+    local #var(prefix)WeaponShuriken tk;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
     local #var(DeusExPrefix)Mover dxm;
+    local DXRSimpleTrigger st;
     local bool VanillaMaps;
     local #var(PlayerPawn) p;
 
@@ -120,7 +122,7 @@ function PreFirstEntryMapFixes()
 
         if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
-            AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
+            SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(-485,-3525,265)); //Dock near picnic table
         }
 
         GoalCompletedSilent(p, 'SeeCarter');
@@ -147,23 +149,28 @@ function PreFirstEntryMapFixes()
 
     //#region Airfield Heli Base
     case "03_NYC_AirfieldHeliBase":
+        // call the elevator at the end of the level when you open the appropriate door
+        // Revision uses an ElevatorTrigger with more logic, maybe we can look at it later if needed
+        if (VanillaMaps){
+            //Bottom button hits Event BasementDoorOpen, which then should trigger Event BasementFloor
+            st = spawn(class'DXRSimpleTrigger',, 'BasementDoorOpen');
+            st.bTriggerOnceOnly=false;
+            st.Event = 'BasementFloor';
+
+            //Top button hits Event GroundDoorOpen, which then should trigger Event GroundLevel
+            st = spawn(class'DXRSimpleTrigger',, 'GroundDoorOpen');
+            st.bTriggerOnceOnly=false;
+            st.Event = 'GroundLevel';
+        }
+
         foreach AllActors(class'Mover',m) {
-            // call the elevator at the end of the level when you open the appropriate door
-            // Revision uses an ElevatorTrigger with more logic, maybe we can look at it later if needed
-            if (VanillaMaps && m.Tag == 'BasementDoorOpen')
-            {
-                m.Event = 'BasementFloor';
-            }
-            else if (VanillaMaps && m.Tag == 'GroundDoorOpen')
-            {
-                m.Event = 'GroundLevel';
-            }
             // sewer door backtracking so we can make a switch for this
-            else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
+            if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
             {
                 m.Tag = 'Sewerdoor';
             }
         }
+
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             foreach AllActors(class'Trigger', t) {
                 //disable the platforms that fall when you step on them
@@ -195,8 +202,7 @@ function PreFirstEntryMapFixes()
 
         if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
-            //Bookshelf near pool tables
-            Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
+            SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(1020,1015,215)); //Near pool tables
         }
 
         //Button to extend sewer platform from the other side
@@ -220,7 +226,7 @@ function PreFirstEntryMapFixes()
     case "03_NYC_AIRFIELD":
         if(dxr.flags.IsEntranceRando()) {
             //rebreather because of #TOOCEAN connection
-            Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
+            SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(-2030,995,100)); //Truck near docks
         }
 
         foreach AllActors(class'#var(prefix)Terrorist', terror,'boatguard'){
@@ -477,6 +483,10 @@ function PreFirstEntryMapFixes()
                 compublic.TextPackage = "#var(package)";
                 compublic.BulletinTag = '03_BulletinMenu';
                 break;
+            }
+        } else {
+            foreach AllActors(class'#var(prefix)WeaponShuriken',tk){
+                tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
         }
 

@@ -4,14 +4,14 @@ class DXRVersion extends Info;
 simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
 {
     major=3;
-    minor=4;
-    patch=1;
-    build=2;//build can't be higher than 99
+    minor=5;
+    patch=0;
+    build=0;//build can't be higher than 99
 }
 
 simulated static function bool VersionIsStable()
 {
-    return true;
+    return false;
 }
 
 simulated static function string VersionString(optional bool full)
@@ -19,7 +19,7 @@ simulated static function string VersionString(optional bool full)
     local int major,minor,patch,build;
     local string status;
 
-    status = "";
+    status = "Alpha";
 
 //#endregion
 //////

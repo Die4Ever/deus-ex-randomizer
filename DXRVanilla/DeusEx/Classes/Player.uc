@@ -371,6 +371,31 @@ function GrabDecoration()
     Super.GrabDecoration();
 }
 
+function bool ShouldAddToBelt(inventory NewItem)
+{
+    local DeusExRootWindow root;
+    local #var(prefix)HUDObjectBelt belt;
+    local Inventory beltItem;
+    local int i;
+
+    //Belt is locked, don't add anything
+    if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) return False;
+
+    root = DeusExRootWindow(rootWindow);
+    belt = root.hud.belt;
+
+    //Don't add an item to the belt if you have another one
+    //of the same item on the belt already
+    for (i=0;i<ArrayCount(belt.objects);i++){
+        beltItem = belt.objects[i].GetItem();
+        if (beltItem==None) continue;
+        if (beltItem==NewItem) continue; //The new item will have already been added to the belt by the time we get here, so ignore ourself
+        if (beltItem.class==NewItem.class) return False; //There's another of the same class already on the belt, get outta here!
+    }
+
+    return True;
+}
+
 function bool AddInventory( inventory NewItem )
 {
     local bool retval;
@@ -384,11 +409,11 @@ function bool AddInventory( inventory NewItem )
 
     retval = Super.AddInventory(NewItem);
 
-    if (NewItem.bInObjectBelt){
-        if (!class'MenuChoice_LockBelt'.static.AddToBelt(NewItem)) {
+    if (NewItem.bInObjectBelt){ //Item was added to the belt automatically
+        if (!ShouldAddToBelt(NewItem)) { //Do we actually want it on the belt?
             root = DeusExRootWindow(rootWindow);
             if (root!=None){
-                root.hud.belt.RemoveObjectFromBelt(NewItem);
+                root.hud.belt.RemoveObjectFromBelt(NewItem); //Get that thing off my belt!
             }
         }
     }
@@ -459,27 +484,32 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
     return newNote;
 }
 
-function float GetCurrentGroundSpeed()
+function float GetJumpZ()
 {
-    local float augValue, speed;
+    local float f, jump;
+    local Augmentation aug, jumpAug;
 
-    // Remove this later and find who's causing this to Access None MB
-    if ( AugmentationSystem == None )
-        return 0;
+    f = 1;
+    for(aug=AugmentationSystem.FirstAug; aug!=None; aug=aug.next) {
+        switch(aug.class) {
+        case class'AugSpeed':
+            f = FMax(f, aug.GetAugLevelValue());
+            break;
+        case class'AugNinja':
+            f = FMax(f, aug.GetAugLevelValue());
+            break;
+        case class'AugJump':
+            jumpAug = aug;
+            jump = aug.PreviewAugLevelValue(); // don't tick it unless this is our best choice, don't waste the player's energy
+            break;
+        }
+    }
 
-    augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-    if (augValue == -1.0)
-        augValue = AugmentationSystem.GetAugLevelValue(class'AugNinja');
-
-    if (augValue == -1.0)
-        augValue = 1.0;
-
-    if ( Level.NetMode != NM_Standalone )
-        speed = Self.mpGroundSpeed * augValue;
-    else
-        speed = Default.GroundSpeed * augValue;
-
-    return speed;
+    if(jump > f) {
+        jumpAug.TickUse();
+        f = jump;
+    }
+    return default.JumpZ * f;
 }
 
 function DoJump( optional float F )
@@ -502,18 +532,14 @@ function DoJump( optional float F )
             MakeNoise(0.1 * Level.Game.Difficulty);
         PlayInAir();
 
+        JumpZ = GetJumpZ();
         Velocity.Z = JumpZ;
 
         if ( Level.NetMode != NM_Standalone )
         {
-         if (AugmentationSystem == None)
-            augLevel = -1.0;
-         else
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
-            if( augLevel == -1.0 )
-                augLevel = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+            augLevel = JumpZ / default.JumpZ;
             w = DeusExWeapon(InHand);
-            if ((augLevel != -1.0) && ( w != None ) && ( w.Mass > 30.0))
+            if (augLevel > 1 && w != None && w.Mass > 30.0)
             {
                 scaleFactor = 1.0 - FClamp( ((w.Mass - 30.0)/55.0), 0.0, 0.5 );
                 Velocity.Z *= scaleFactor;
@@ -534,18 +560,30 @@ function DoJump( optional float F )
     }
 }
 
+// MakeNoise does nothing
 function Landed(vector HitNormal)
 {
     local vector legLocation;
+    local Augmentation aug;
     local int augLevel;
-    local float augReduce, dmg;
+    local float augReduce, dmg, softener;
+
+    softener = 1;
+    /*if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && AugmentationSystem != None)
+    {
+        augReduce = AugmentationSystem.GetAugLevelValue(class'AugStealth');
+        if(augReduce != -1) softener = (1-augReduce)/4 + 0.75;
+    }*/
 
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);
+    if (Velocity.Z < -1.4 * default.JumpZ && (Velocity.Z * softener < -700) && (ReducedDamageType != 'All')) {
+        JumpZ = GetJumpZ();
+    }
     if (Velocity.Z < -1.4 * JumpZ)
     {
-        MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
-        if ((Velocity.Z < -700) && (ReducedDamageType != 'All'))
+        //MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
+        if ((Velocity.Z * softener < -700) && (ReducedDamageType != 'All'))
             if ( Role == ROLE_Authority )
             {
                 // check our jump augmentation and reduce falling damage if we have it
@@ -555,13 +593,17 @@ function Landed(vector HitNormal)
                 if (AugmentationSystem != None)
                 {
                     augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
-                    if( augLevel == -1.0 )
-                        augLevel = AugmentationSystem.GetClassLevel(class'AugNinja');
+                    aug = AugmentationSystem.FindAugmentation(class'AugJump');
+                    if(aug != None && aug.IsTicked()) { // this will be IsTicked if GetJumpZ() determined this was our best pick
+                        augLevel = Max(augLevel, aug.GetClassLevel());
+                    }
+                    augLevel = Max(augLevel, AugmentationSystem.GetClassLevel(class'AugNinja'));
                     if (augLevel >= 0)
                         augReduce = 15 * (augLevel+1);
                 }
 
                 dmg = FMax((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg *= softener;
                 legLocation = Location + vect(-1,0,-1);			// damage left leg
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
@@ -569,12 +611,13 @@ function Landed(vector HitNormal)
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
                 dmg = FMax((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg *= softener;
                 legLocation = Location + vect(0,0,1);			// damage torso
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
             }
     }
-    else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
-        MakeNoise(0.1 * Level.Game.Difficulty);
+    //else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
+        //MakeNoise(0.1 * Level.Game.Difficulty);
     bJustLanded = true;
 }
 
@@ -2280,6 +2323,13 @@ exec function UpgradeAugs()
         bBuySkills=False;
     }
     BuySkillSound( 2 );
+}
+
+exec function AugAdd(class<Augmentation> aWantedAug)
+{ // this works better than vanilla's for augs that aren't part of the default set
+    if (!bCheatsEnabled)
+        return;
+    class'DXRAugmentations'.static.AddAug(self, aWantedAug, 1);
 }
 
 //Copied from vanilla

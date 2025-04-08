@@ -1,4 +1,4 @@
-class DXRActorsBase extends DXRBase;
+class DXRActorsBase extends DXRBase abstract;
 
 var class<Actor> _skipactor_types[6];
 
@@ -52,6 +52,14 @@ function SwapAll(string classname, float percent_chance)
     if(num<2) {
         l("SwapAll(" $ classname $ ", " $ percent_chance $ ") only found " $ num);
         return;
+    }
+
+    for(i=num-1; i>=0; i--) { // Fisher-Yates shuffle the array before swapping the actor locations (swapping actor locations can fail, shuffling the array cannot fail, Fisher-Yates works better for unfailable shuffles)
+        slot = rng(i+1);
+        Swap(temp[i], temp[slot]);
+        a = temp[i];
+        temp[i] = temp[slot];
+        temp[slot] = a;
     }
 
     for(i=0; i<num; i++) {
@@ -129,11 +137,15 @@ static function bool IsRelevantPawn(class<Actor> a)
     return IsCombatPawn(a) && !ClassIsChildOf(a, class'Merchant');
 }
 
-function bool IsInitialEnemy(ScriptedPawn p)
+static function bool IsInitialEnemy(ScriptedPawn p)
 {
     local int i;
 
     return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
+}
+
+static function bool IsGrenade(class<Inventory> i) {
+    return i == class'WeaponLAM' || i == class'WeaponGasGrenade' || i == class'WeaponEMPGrenade' || i == class'WeaponNanoVirusGrenade';
 }
 
 static function bool RemoveItem(Pawn p, class c)
@@ -231,15 +243,32 @@ static function bool IsMeleeWeapon(Inventory item)
 static function Ammo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
 {
     local int i;
+    local class<Ammo> origAmmoClass;
 
     if( w == None || add_ammo <= 0 )
         return None;
+
+    origAmmoClass = w.AmmoName;
+    // check if the pawn already has one of the alternate ammo types, really only useful for crossbow
+    // sabot doesn't do anything different to players, 20mm and WP rockets are both pretty mean
+    for(i=0; i<ArrayCount(w.AmmoNames); i++) {
+        if(w.AmmoNames[i]==None || w.AmmoNames[i]==class'AmmoNone') continue;
+        if(P.FindInventoryType(w.AmmoNames[i]) == None) continue;
+        w.AmmoName = w.AmmoNames[i];
+        break;
+    }
 
     if ( w.AmmoName == None || w.AmmoName == Class'AmmoNone' )
         return None;
 
     for(i=0; i<add_ammo; i++)
         w.AmmoType = Ammo(GiveItem(p, w.AmmoName));
+
+    if (w.AmmoName!=origAmmoClass) {
+        w.AmmoName = None;
+        w.LoadAmmoType(w.AmmoType);
+        if (w.AmmoName == None) w.AmmoName = w.AmmoType.class;
+    }
     return w.AmmoType;
 }
 
@@ -258,13 +287,16 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
         a = Ammo(p.FindInventoryType(item.class));
         if( a != None ) {
             a.AmmoAmount += a.default.AmmoAmount + add_ammo;
+            a.AmmoAmount = min(a.AmmoAmount, a.MaxAmmo);
             if( player != None )
                 player.UpdateAmmoBeltText(a);
             item.Destroy();
             return a;
         } else {
             //Make sure the extra ammo is included even if the pawn doesn't have it already
-            Ammo(item).AmmoAmount += add_ammo;
+            a = Ammo(item);
+            a.AmmoAmount += add_ammo;
+            a.AmmoAmount = min(a.AmmoAmount, a.MaxAmmo);
         }
     }
 
@@ -464,16 +496,21 @@ function bool SkipActor(Actor a)
 function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrders)
 {
     local ScriptedPawn p;
-    local #var(prefix)Barrel1 b;
-    local Effects gen;
+    local #var(DeusExPrefix)Decoration dec;
+    local Effects gen,gens[5]; //I don't expect there to be 5, but to be careful
+    local int numGens,i;
 
-    b = #var(prefix)Barrel1(a);
-    if (b!=None){
-        //Look for any ParticleGenerator or ProjectileGenerator that might be associated with the barrel
-        foreach b.BasedActors(class'Effects', gen){
-            if (ParticleGenerator(gen)!=None || ProjectileGenerator(gen)!=None){
+    dec = #var(DeusExPrefix)Decoration(a);
+    if (dec!=None){
+        //Look for any generators that might be associated with the decoration
+        if(dec.flyGen!=None){
+            gens[numGens++]=dec.flyGen;
+        }
+        foreach dec.BasedActors(class'Effects', gen){
+            if (numGens>=ArrayCount(gens)){
                 break;
             }
+            gens[numGens++]=gen;
         }
     }
 
@@ -502,11 +539,19 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
         p.HomeLoc = p.Location;
     }
 
-    //Move the generator as well, and make sure it's based on the barrel again
-    //(They get detached when the barrel is moved)
-    if (b!=None && gen!=None){
-        gen.SetLocation(b.Location);
-        gen.SetBase(b);
+    //Move any effects to the new location of the decoration
+    if (dec!=None && numGens>0){
+        for (i=0;i<numGens;i++){
+            gens[i].SetLocation(dec.Location);
+
+            //Don't base a fly generator onto the decoration since it
+            //will make the object too heavy to pick up (and there's
+            //already hack logic in DeusExDecoration to make it follow
+            //the location of the decoration without being based)
+            if (gens[i]!=dec.flyGen){
+                gens[i].SetBase(dec);
+            }
+        }
     }
 
     if (a.Mesh == class'#var(prefix)DataCube'.default.Mesh) {
@@ -1079,6 +1124,8 @@ static function int GetRotationOffset(class<Actor> c)
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)Switch2'))
         return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)VendingMachine'))
+        return 16384;
     //ComputerPersonal is fine without this, so just leave it commented out
     //if(ClassIsChildOf(c, class'#var(prefix)ComputerPersonal'))
     //    return 32768;
@@ -1239,6 +1286,35 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
     newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
 
     return newactor;
+}
+
+static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inventory> contents, vector loc, optional rotator rot, optional float scale, optional class<#var(prefix)Containers> forcedContainerType)
+{
+    local class<#var(prefix)Containers> contClass;
+    local #var(prefix)Containers box;
+
+    if (forcedContainerType!=None){
+        contClass = forcedContainerType;
+    } else if (a.ClassIsChildOf(contents,class'Weapon') || a.ClassIsChildOf(contents,class'Ammo') || a.ClassIsChildOf(contents,class'#var(prefix)WeaponMod')){
+        contClass=class'#var(prefix)CrateBreakableMedCombat';
+    } else if (a.ClassIsChildOf(contents,class'#var(prefix)Medkit')) { //Medkit or any subclass
+        contClass=class'#var(prefix)CrateBreakableMedMedical';
+    } else {
+        contClass=class'#var(prefix)CrateBreakableMedGeneral';
+    }
+
+    box = #var(prefix)Containers(_AddActor(a, contClass, loc, rot));
+    if (box!=None){
+        box.contents = contents;
+
+        if (scale!=0){
+            box.DrawScale = box.Default.DrawScale * scale;
+            box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
+            box.Mass = box.Default.Mass * scale;
+        }
+    }
+
+    return box;
 }
 
 static function DestroyMover(#var(DeusExPrefix)Mover m)
@@ -1909,4 +1985,30 @@ static function bool IsUsingOggMusic(#var(PlayerPawn) player)
     }
     return False;
 #endif
+}
+
+// spawns a `what` in front of `who` but on the floor
+// assumes the Z position of the class is halfway up and that the spawned location is above the floor
+function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance, optional Rotator spawnedRot)
+{
+    local Vector loc;
+    local LocationNormal ln;
+    local FMinMax mm;
+    local Actor act;
+    local Rotator forwardRot;
+
+    // pick a location for the spawned Actor in front of `who`
+    forwardRot.Yaw = who.Rotation.Yaw;
+    loc = vector(forwardRot) * distance;
+    loc += who.Location;
+
+    // move it down to the floor
+    ln.loc = loc;
+    mm.min = 0.1;
+    mm.max = who.CollisionHeight * 2.0; // maybe worth increasing, for things in the air?
+    if (NearestFloor(ln, mm)) {
+        loc.z = ln.loc.Z + (what.default.CollisionHeight / 2.0);
+    }
+
+    return Spawn(what,,, loc, spawnedRot);
 }

@@ -7,7 +7,7 @@ function UpdateBalance()
         BaseAccuracy = 0.65;
         AccurateRange = 800;
         maxRange = 1200;
-        AIMaxRange = 450;
+        AIMaxRange = 448;
     } else {
         HitDamage = 4;
         BaseAccuracy = 0.8;
@@ -30,5 +30,5 @@ defaultproperties
     maxRange=1200
     AccurateRange=800
     MinSpreadAcc=0.2
-    AIMaxRange=450
+    AIMaxRange=448
 }

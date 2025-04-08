@@ -66,6 +66,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Datacube dc;
     local Smuggler smug;
     local DXRReinforcementPoint reinforce;
+    local #var(prefix)CrateExplosiveSmall boom;
+    local #var(prefix)Trigger trig;
     local #var(PlayerPawn) p;
 
     p = player();
@@ -95,6 +97,27 @@ function PreFirstEntryMapFixes()
                     st.awardMessage = "Saved Paul";
                 }
             }
+        }
+
+        foreach AllActors(class'#var(prefix)CrateExplosiveSmall',boom,'BlowDoor'){
+            //TNT crate explodes when the MIBs are ordered to move in, instead of
+            //when the MIB actually starts moving (in case he's gassed or something)
+            boom.Tag='RaidBegin';
+
+            //Put a trigger on the crate as well with big radius, just in case someone else tries to run in first
+            //This can happen if you, for example, gas the big group on the upper floor, but not the single MIB
+            //near the elevator (he gets aggroed by the grenade, but locked in place until the conversation is over,
+            //since he's involved in it).
+            ft = Spawn(class'#var(prefix)FlagTrigger',,,boom.Location);
+            ft.TriggerType=TT_ClassProximity;
+            ft.SetCollisionSize(300,40); //Basically as big as it can be without hitting the MIB near the elevator
+            //ft.ClassProximityType=class'#var(prefix)MIB';
+            ft.ClassProximityType=class'#var(prefix)HumanMilitary';
+            ft.event = boom.Tag;
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.FlagName='M04RaidTeleportDone'; //Don't trigger as extra enemies spawn in on first entry (particularly Serious Sam mode)
+            ft.flagValue=True;
         }
 
         class'GilbertWeaponMegaChoice'.static.Create(p);
@@ -375,6 +398,14 @@ function PreFirstEntryMapFixes()
             ));
             compublic.TextPackage = "#var(package)";
             compublic.BulletinTag = '04_BulletinMenuUnatco';
+
+            foreach AllActors(class'#var(prefix)UNATCOTroop', troop) {
+                if (troop.FamiliarName == "Scott") {
+                     // this matches the other two friendly times you see him, and keeps his name from getting randomized
+                     // alternatively, we could make him bImportant and his UnfamiliarName "Scott" in M03 and M04, since you've definitely learned his name by then
+                    troop.UnfamiliarName = "UNATCO Trooper";
+                }
+            }
         }
 
         //Spawn some placeholders for new item locations
@@ -583,13 +614,11 @@ function AnyEntryMapFixes()
     local bool RevisionMaps;
     local bool VanillaMaps;
     local Mover door;
-    local Conversation con;
-    local ConEvent ce;
-    local ConEventTrigger cet;
     local ConEventSpeech ces;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)BlackHelicopter jock;
     local bool raidStarted;
+    local JoJoFine jojo;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -655,15 +684,9 @@ function AnyEntryMapFixes()
             DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
         }
 
-        //Make TalkedToPaulAfterMessage trigger the TNT crate (BlowDoor) at the door before ending the conversation
-        con = GetConversation('TalkedToPaulAfterMessage');
-        for (ce = con.eventList; ce != None; ce = ce.nextEvent) {
-            if (ce.NextEvent!=None && ConEventEnd(ce.NextEvent)!=None){ //Insert the trigger just before the end of the conversation
-                cet = new(con) class'ConEventTrigger';
-                cet.eventType = ET_Trigger;
-                cet.triggerTag = 'BlowDoor';
-                cet.nextEvent = ce.nextEvent;
-                ce.nextEvent = cet;
+        if (dxr.flagbase.GetBool('MS_JoJoUnhidden')) {
+            foreach AllActors(class'JoJoFine', jojo, 'JoJoInLobby') {
+                jojo.Destroy();
                 break;
             }
         }
@@ -753,7 +776,11 @@ function NYC_04_CheckPaulRaid()
     foreach AllActors(class'PaulDenton', paul) {
         // fix a softlock if you jump while approaching Paul
         if( ! dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') ) {
-            player().StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
+            if (dxr.FlagBase.GetBool('LDDPJCIsFemale')){
+                player().StartConversationByName('FemJCTalkedToPaulAfterMessage', paul, False, False);
+            } else {
+                player().StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
+            }
         }
 
         count++;

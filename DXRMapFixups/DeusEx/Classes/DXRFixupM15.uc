@@ -467,6 +467,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     local DeusExMover d;
     local ComputerSecurity c;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)Nanokey key;
 
     //Change break room security computer password so it isn't pre-known
     //This code isn't written anywhere, so you shouldn't have knowledge of it
@@ -506,10 +507,19 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
         //If you make this breakable, the explosion right next
         //to it will destroy it every time.  Maybe it could
         //only become breakable after the explosion happens?
-        foreach AllActors(class'DeusExMover', d) {
-            if (d.name=='DeusExMover13'){
-                d.lockStrength=0.25;
+        if(dxr.flags.settings.keysrando > 0 || dxr.flags.settings.infodevices > 0) {
+            foreach AllActors(class'DeusExMover', d) {
+                if (d.name=='DeusExMover13'){
+                    d.lockStrength = 0.25;
+                    d.KeyIDNeeded = 'a51entr_vent';
+                }
             }
+
+            key = #var(prefix)Nanokey(Spawnm(class'#var(prefix)Nanokey',,, vect(97.088776, 1328.260376, -156.789841)));
+            key.KeyID = 'a51entr_vent';
+            key.Description = "Station 5 Hatch Key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(key);
         }
 
         Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters
@@ -524,6 +534,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
         Spawn(class'PlaceholderItem',,, vectm(-404.7,1624.6,-349)); //Near corpse under cherry picker
         Spawn(class'PlaceholderItem',,, vectm(18.6,1220.4,-149)); //Boxes near cherry picker
         Spawn(class'PlaceholderItem',,, vectm(-1712.9,191.25,26)); //In front of ambush elevator
+        Spawn(class'PlaceholderItem',,, vectm(148.108002, -594.593994, -308.401001)); //In vents on the bend in the pipe after the steam, on the unlocked side
 
         class'PlaceholderEnemy'.static.Create(self,vectm(4623,210,-176));
         class'PlaceholderEnemy'.static.Create(self,vectm(3314,2276,-176));
@@ -688,6 +699,28 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
                 break;
             }
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(6103, -6549, -5105));  //Infusion Control Panel
+        Spawn(class'PlaceholderItem',,, vectm(5778, -7945, -5554));  //Boxes in front of middle UC
+        Spawn(class'PlaceholderItem',,, vectm(5571, -6563, -5554));  //Boxes in front of radiation room
+        Spawn(class'PlaceholderItem',,, vectm(5986, -6489, -5619));  //Near boxes under Infusion Control
+        Spawn(class'PlaceholderItem',,, vectm(6434, -7162, -5554));  //Boxes under Page
+        Spawn(class'PlaceholderItem',,, vectm(7284, -9568, -6043));  //Top of cabinet in coolant area
+        Spawn(class'PlaceholderItem',,, vectm(6503, -7498, -6107));  //Near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(5999, -7005, -6059));  //Also near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(5720, -7129, -6011));  //Basically middle of bottom floor
+        Spawn(class'PlaceholderItem',,, vectm(7877, -9077, -6155));  //Under the grating in coolant area
+    } else {
+        Spawn(class'PlaceholderItem',,, vectm(-65,3062,266));  //Infusion Control Panel
+        Spawn(class'PlaceholderItem',,, vectm(-393,1666,-182));  //Boxes in front of middle UC
+        Spawn(class'PlaceholderItem',,, vectm(-602,3057,-182));  //Boxes in front of radiation room
+        Spawn(class'PlaceholderItem',,, vectm(-115,3074,-247));  //Near boxes under Infusion Control
+        Spawn(class'PlaceholderItem',,, vectm(262,2463,-182));  //Boxes under Page
+        Spawn(class'PlaceholderItem',,, vectm(1116,42,-671));  //Top of cabinet in coolant area
+        Spawn(class'PlaceholderItem',,, vectm(394,2103,-735));  //Near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(-164,2601,-687));  //Also near water hatch under Page
+        Spawn(class'PlaceholderItem',,, vectm(-437,2461,-639));  //Basically middle of bottom floor
+        Spawn(class'PlaceholderItem',,, vectm(1715,529,-783));  //Under the grating in coolant area
     }
 }
 //#endregion
@@ -776,12 +809,10 @@ function PostFirstEntryMapFixes()
 
     switch(dxr.localURL) {
     case "15_area51_final":
-        if(dxr.flags.IsSpeedrunMode() && FeatureFlag(3,5,0, "Area51EndingBalancePass2")) {
-            foreach AllActors(class'#var(prefix)Keypad', k) {
-                if(k.Event == 'blastdoor_upper') {
-                    k.bHackable = false;
-                    break;
-                }
+        foreach AllActors(class'#var(prefix)Keypad', k) {
+            if(k.Event == 'blastdoor_upper') {
+                k.bHackable = false;
+                break;
             }
         }
         break;

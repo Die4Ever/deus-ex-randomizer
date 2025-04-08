@@ -849,9 +849,70 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 }
 
+function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
+{
+    local SkillAwardCrate crate;
+    local int credits;
+
+    crate = SkillAwardCrate(SpawnInFrontOnFloor(
+        player,
+        class'SkillAwardCrate',
+        80.0,
+        MakeRotator(0, (2047 - rng(4095)), 0)
+    ));
+
+    if (crate == None) {
+        return None;
+    }
+
+    if (dxr.flags.newgameplus_loops == 0) {
+        crate.ItemName = "Later Start Supply Crate";
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
+    } else  {
+        crate.ItemName = "New Game Plus Supply Crate";
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Game Plus Bonus";
+    }
+
+    crate.Skin = Texture'WaltonWareCrate';
+
+    credits = GetStartMapCreditsBonus(dxr);
+    if (credits > 0) {
+        crate.AddContent(class'Credits', credits);
+    }
+    crate.AddContent(class'BioelectricCell', 1);
+    crate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+
+    return crate;
+}
+
+function SkillAwardCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
+{
+    local SkillAwardCrate crate;
+
+    crate = SpawnSkillAwardCrate(player);
+
+    if (crate != None) {
+        crate.ItemName = "Walton's Care Package";
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Loop Bonus";
+    }
+
+    return crate;
+}
+
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
+    local SkillAwardCrate crate;
+
+    if (dxr.flags.IsWaltonWare()) {
+        crate = SpawnWaltonWareCrate(player);
+    } else if (dxr.flags.settings.starting_map > 10 || dxr.flags.newgameplus_loops > 0) {
+        crate = SpawnSkillAwardCrate(player);
+    } else {
+        AddStartingCredits(dxr, player);
+        AddStartingSkillPoints(dxr, player);
+    }
+    AddStartingAugs(dxr, player, crate);
 
     switch(start_flag) {
         case 21:
@@ -1332,30 +1393,47 @@ static function int _ChooseRandomStartMap(DXRBase m)
     return 0; //Fall back on Liberty Island
 }
 
+static function int GetStartMapCreditsBonus(DXRando dxr)
+{
+    local int startMapMission, numCredits, i;
+
+    startMapMission = GetStartMapMission(dxr.flags.settings.starting_map);
+    for(i = 0; i < startMapMission; i++) {
+        numCredits += 100 + dxr.rng(100);
+    }
+
+    return numCredits;
+}
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
-    local int i;
-    for(i=0;i<GetStartMapMission(dxr.flags.settings.starting_map);i++){
-        p.Credits += 100 + dxr.rng(100);
-    }
+    p.Credits += GetStartMapCreditsBonus(dxr);
 }
 
-static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
+static function int GetStartMapAugBonus(DXRando dxr)
 {
-    local int i, startMission, numAugs;
+    return GetStartMapMission(dxr.flags.settings.starting_map) * 0.4;
+}
+
+static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player, SkillAwardCrate crate)
+{
+    local int i, numAugs, numUpgrades;
 
     if (dxr.flags.settings.starting_map !=0 ){
-        startMission=GetStartMapMission(dxr.flags.settings.starting_map);
-        numAugs = startMission * 0.4;
+        numAugs = GetStartMapAugBonus(dxr);
         class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
 
         for (i=0; i<numAugs; i++){
             if(i%4==0){
-                GiveItem( player, class'AugmentationUpgradeCannister' );
+                if(crate != None) numUpgrades++;
+                else GiveItem( player, class'#var(prefix)AugmentationUpgradeCannister' );
             } else {
                 class'DXRAugmentations'.static.UpgradeRandomAug(dxr,player);
             }
+        }
+
+        if(numUpgrades > 0 && crate != None) {
+            crate.AddContent(class'#var(prefix)AugmentationUpgradeCannister', numUpgrades);
         }
     }
 }

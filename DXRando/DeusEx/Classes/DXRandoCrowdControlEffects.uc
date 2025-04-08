@@ -55,6 +55,7 @@ const DoomModeTimeDefault = 60;
 const WineBulletsTimeDefault = 60;
 const BloodTimeDefault = 60;
 
+//OBSOLETE - Remove eventually
 struct ZoneFriction
 {
     var name zonename;
@@ -62,19 +63,20 @@ struct ZoneFriction
 };
 var ZoneFriction zone_frictions[32];
 
+//OBSOLETE - Remove eventually
 struct ZoneGravity
 {
     var name zonename;
     var vector gravity;
 };
+var ZoneGravity zone_gravities[32];
+
 
 struct AugEffectState
 {
     var bool canUpgrade;
     var bool canDowngrade;
 };
-
-var ZoneGravity zone_gravities[32];
 
 var DXRandoCrowdControlTimer timerDisplays[32];
 
@@ -131,6 +133,7 @@ function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
     return CrowdControlPawns[mostRecentCcPawn];
 }
 
+//#region Periodic Updates
 function PeriodicUpdates()
 {
 
@@ -262,7 +265,9 @@ function PeriodicUpdates()
         StopCrowdControlEvent("blood_god",true);
     }
 }
+//#endregion
 
+//#region Effect Select
 function HandleEffectSelectability()
 {
     local Inventory anItem;
@@ -440,6 +445,7 @@ function HandleAugEffectSelectability(string augName)
         AugEffectStates[augIndex].canDowngrade=canDowngrade;
     }
 }
+//#endregion
 
 function int getAugManagerIndex(class<Augmentation> augClass)
 {
@@ -487,10 +493,14 @@ function Fart()
     player().AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, 512);
 
     for (i=0;i<5;i++){
-        if (Rand(2)==0){
-            Spawn(class'TearGas', player(),,player().Location,r);
+        if (player().bOnFire){
+            Spawn(class'Fireball', player(),,player().Location,r);
         } else {
-            Spawn(class'PoisonGas', player(),,player().Location,r);
+            if (Rand(2)==0){
+                Spawn(class'TearGas', player(),,player().Location,r);
+            } else {
+                Spawn(class'PoisonGas', player(),,player().Location,r);
+            }
         }
         r.Yaw+=2500;
     }
@@ -498,6 +508,7 @@ function Fart()
     player().Velocity += Vector(player().ViewRotation) * 8 * fartDuration; //Fart pushes you in the direction you're looking
 }
 
+//#region Continuous Updates
 function ContinuousUpdates()
 {
     local int roll;
@@ -538,9 +549,11 @@ function ContinuousUpdates()
 
 
 }
+//#endregion
 
 
 
+//#region Enter/Exit
 //Gets called on every level entry
 //Some effects need to be reapplied on each level entry (eg. ice physics)
 //Make sure to do that here
@@ -640,13 +653,13 @@ function CleanupOnExit() {
         invertMovementControls();
     }
 }
-
+//#endregion
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                   TIMER DISPLAY HANDLING                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//#region Timer Displays
 function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
     local int i;
 
@@ -692,11 +705,13 @@ function bool checkForTimerDisplay(name timerName) {
 
     return False;
 }
+//#endregion
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                   TIMER COUNTER HANDLING                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//#region Def Timer Times
 function int getDefaultTimerTimeByName(name timerName) {
     switch(timerName) {
         case 'cc_MatrixModeTimer':
@@ -745,7 +760,9 @@ function int getDefaultTimerTimeByName(name timerName) {
             return 0;
     }
 }
+//#endregion
 
+//#region Timer Labels
 function string getTimerLabelByName(name timerName) {
     local float val;
 
@@ -809,6 +826,7 @@ function string getTimerLabelByName(name timerName) {
             return "???";
     }
 }
+//#endregion
 
 function setFloorIsLavaName(string lavaName)
 {
@@ -900,8 +918,7 @@ function startNewTimer(name timerName, int duration) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                        UTILITY FUNCTIONS                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+//#region Utility Functs
 
 function float retrieveFloatValue(name valName) {
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
@@ -953,10 +970,6 @@ function StopMatrixMode(optional bool silent) {
         PlayerMessage("Your powers fade...");
     }
 
-}
-
-function bool IsGrenade(inventory i) {
-    return (i.IsA('WeaponLAM') || i.IsA('WeaponGasGrenade') || i.IsA ('WeaponEMPGrenade') || i.IsA('WeaponNanoVirusGrenade'));
 }
 
 function SkillPointsRemove(int numPoints) {
@@ -1149,54 +1162,20 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
 
 function float GetDefaultZoneFriction(ZoneInfo z)
 {
-    local int i;
-    for(i=0; i<ArrayCount(zone_frictions); i++) {
-        if( z.name == zone_frictions[i].zonename )
-            return zone_frictions[i].friction;
-    }
-    return NormalFriction;
-}
+    local DXRStoredZoneInfo szi;
 
-function SaveDefaultZoneFriction(ZoneInfo z)
-{
-    local int i;
-    if( z.ZoneGroundFriction ~= NormalFriction ) return;
-    for(i=0; i<ArrayCount(zone_frictions); i++) {
-        if( zone_frictions[i].zonename == '' || z.name == zone_frictions[i].zonename ) {
-            zone_frictions[i].zonename = z.name;
-            zone_frictions[i].friction = z.ZoneGroundFriction;
-            return;
-        }
-    }
+    szi = class'DXRStoredZoneInfo'.static.Find(z);
+    if (szi==None) return NormalFriction;
+    return szi.ZoneGroundFriction;
 }
 
 function vector GetDefaultZoneGravity(ZoneInfo z)
 {
-    local int i;
-    for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ) {
-            return zone_gravities[i].gravity;
-        }
-        if( zone_gravities[i].zonename == '' )
-            break;
-    }
-    return NormalGravity;
-}
+    local DXRStoredZoneInfo szi;
 
-function SaveDefaultZoneGravity(ZoneInfo z)
-{
-    local int i;
-    if( z.ZoneGravity.X ~= NormalGravity.X && z.ZoneGravity.Y ~= NormalGravity.Y && z.ZoneGravity.Z ~= NormalGravity.Z ) return;
-    for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ) {
-            return;
-        }
-        if( zone_gravities[i].zonename == '' ) {
-            zone_gravities[i].zonename = z.name;
-            zone_gravities[i].gravity = z.ZoneGravity;
-            return;
-        }
-    }
+    szi = class'DXRStoredZoneInfo'.static.Find(z);
+    if (szi==None) return NormalGravity;
+    return szi.ZoneGravity;
 }
 
 function SetFloatyPhysics(bool enabled) {
@@ -1209,7 +1188,6 @@ function SetFloatyPhysics(bool enabled) {
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
         if (enabled && Z.ZoneGravity != FloatGrav ) {
-            SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = FloatGrav;
         }
         else if ( (!enabled) && Z.ZoneGravity == FloatGrav ) {
@@ -1256,7 +1234,6 @@ function SetMoonPhysics(bool enabled) {
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
         if (enabled && Z.ZoneGravity != MoonGrav ) {
-            SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = MoonGrav;
         }
         else if ( (!enabled) && Z.ZoneGravity == MoonGrav ) {
@@ -1269,7 +1246,6 @@ function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
     ForEach AllActors(class'ZoneInfo', Z) {
         if (enabled && Z.ZoneGroundFriction != IceFriction ) {
-            SaveDefaultZoneFriction(Z);
             Z.ZoneGroundFriction = IceFriction;
         }
         else if ( (!enabled) && Z.ZoneGroundFriction == IceFriction ) {
@@ -1526,19 +1502,25 @@ function bool swapPlayer(string viewer) {
 }
 
 function doNudge(string viewer) {
-    local Rotator r;
-    local vector newAccel;
+    local Vector bobble,randVect;
+    local float size;
 
-    newAccel.X = (Rand(201)-100) * 3;
-    newAccel.Y = (Rand(201)-100) * 3;
-    //newAccel.Z = Rand(31);
+    size = FRand() + 0.3;
+    randVect=VRand();
+    if (randVect.Z<0) randVect.Z*=-1; //Never bump downwards, only up
+    randVect.Z*=0.5; //Don't get too vertically extreme
 
-    //Not super happy with how this looks,
-    //Since you sort of just teleport to the new position
-    player().MoveSmooth(newAccel);
+    bobble = vect(300.0,300.0,200.0) + 300.0 * size * randVect;
+
+    //Peeling the player off the ground makes this much more potent
+    if ( player().Physics == PHYS_Walking ){
+        player().SetPhysics(PHYS_Falling);
+    }
+
+    player().Velocity += bobble;
 
     //Play an oof sound
-    player().PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
+    player().PlaySound(player().HitSound1);
 
     PlayerMessage(viewer@"nudged you a little bit");
 
@@ -1567,9 +1549,9 @@ function startEarthquake(float time) {
 
 }
 
-function int Earthquake(String viewer) {
+function int Earthquake(String viewer, int duration) {
 
-    startEarthquake(EarthquakeTimeDefault);
+    startEarthquake(duration);
 
     PlayerMessage(viewer@"set off an earthquake!");
 
@@ -2175,7 +2157,7 @@ function string RandomSpamDatacubeText(String viewer)
         case 16:  return "Hi.  I want to offer promotion of your channel, viewers, followers, views, chat bots.  The price is lower than any competitor, the quality is guaranteed to be the best."$"  Auto-in.  Incredibly flexible and convenient order management panel, everything is in your hands, turn it on/off/customize.  Go to "$viewer$" dot com";
         case 17:  return "Hi, this is "$viewer$".  It seems you are a beginner.  I can improve the appearance of your channel with awesome ideas that would give your channel a professional look."$"  I have been a professional artist and graphic designer for over a decade, and designed my own graphics for said stream";
         case 18:  return "We've been trying to reach you concerning your vehicle's extended warranty.  You should've received a notice in the mail about your car's extended warranty eligibility."$"  Since we've not gotten a response, we're giving you a final courtesy datacube before we close out your file.  Please contact "$viewer$" to learn more about possibly extending or reinstating your vehicle's warranty.";
-        case 19:  return "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,"$" quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate"$" velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non"$" proident, sunt in culpa qui officia deserunt mollit anim id est laborum.|n|n  -"$viewer;
+        case 19:  return "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  Ut enim ad minim veniam,"$" quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  Duis aute irure dolor in reprehenderit in voluptate"$" velit esse cillum dolore eu fugiat nulla pariatur.  Excepteur sint occaecat cupidatat non"$" proident, sunt in culpa qui officia deserunt mollit anim id est laborum.|n|n  -"$viewer;
         case 20:  return "hi every1 im new!!!!!!! *holds up spork* my name is "$viewer$" but u can call me t3h PeNgU1N oF d00m!!!!!!!! lol...as u can see im very random!!!!"$" thats why i came here, 2 meet random ppl like me ^_^... im 13 years old (im mature 4 my age tho!!) i like 2 watch invader zim w/ my girlfreind"$" (im bi if u dont like it deal w/it) its our favorite tv show!!! bcuz its SOOOO random!!!! shes random 2 of course but i want 2 meet more random ppl =) "$"like they say the more the merrier!!!! lol...neways i hope 2 make alot of freinds here "$"so give me lots of commentses!!!!|nDOOOOOMMMM!!!!!!!!!!!!!!!! <--- me bein random again ^_^ hehe...toodles!!!!!"$"|n|nlove and waffles,|n|nt3h PeNgU1N oF d00m";
         case 21:  return viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer$" "$viewer;
         case 22:  return viewer$" has a document for your review|n------------------------------------------------------|n|n  "$viewer$" has shared a document with you:|n|n        <invoice.pdf>|n|n|nClick here to open";
@@ -2414,23 +2396,14 @@ simulated final function #var(PlayerPawn) player()
     return dxr.flags.player();
 }
 
-
-
-
-
-
-
-
-
-
-
+//#endregion
 
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL EFFECT MAPPING                                       ////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+//#region Msg Type Split
 function int BranchCrowdControlType(string code, string param[5], string viewer, int type, int duration) {
     local int result;
 
@@ -2458,7 +2431,9 @@ function int BranchCrowdControlType(string code, string param[5], string viewer,
 
     return result;
 }
+//#endregion
 
+//#region Stop All Events
 //Make sure to add any timed effects into this list
 function StopAllCrowdControlEvents()
 {
@@ -2483,7 +2458,9 @@ function StopAllCrowdControlEvents()
     StopCrowdControlEvent("wine_bullets");
     StopCrowdControlEvent("blood_god");
 }
+//#endregion
 
+//#region Stop CC Event
 function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 {
     switch(code) {
@@ -2632,7 +2609,9 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
 
     return Success;
 }
+//#endregion
 
+//#region Handle Event
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
     local ColorTheme theme;
@@ -2975,7 +2954,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             startnewTimer('cc_Earthquake',duration);
 
-            return Earthquake(viewer);
+            return Earthquake(viewer,duration);
 
         case "trigger_alarms":
             if (!InGame()) {
@@ -3379,7 +3358,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
     return Success;
 }
+//#endregion
 
+//#region Prefix Events
 function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type, int duration) {
     local string words[8];
 
@@ -3407,6 +3388,7 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
 
     return Success;
 }
+//#endregion
 
 defaultproperties
 {

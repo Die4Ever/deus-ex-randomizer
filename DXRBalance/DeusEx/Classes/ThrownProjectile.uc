@@ -101,7 +101,11 @@ function SpawnCloud(class<Cloud> type, Name DamageType)
     gas.Velocity = vect(0,0,0);
     gas.Acceleration = vect(0,0,0);
     gas.DrawScale = FRand() * 0.5 + 2.0;
-    gas.LifeSpan = FRand() * 10 + 30;
+    if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+        gas.LifeSpan = FRand() * 5 + 22;
+    } else {
+        gas.LifeSpan = FRand() * 10 + 30;
+    }
     if ( Level.NetMode != NM_Standalone )
         gas.bFloating = False;
     else

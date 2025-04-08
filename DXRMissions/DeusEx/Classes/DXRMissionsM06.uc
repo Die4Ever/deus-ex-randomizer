@@ -5,7 +5,7 @@ var bool M08Briefing;
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc, loc2;
+    local int goal, loc, dts, dtsloc, dts_vanilla_loc, gordon, gloc, gloc2;
 
     switch(map) {
     case "06_HONGKONG_VERSALIFE":
@@ -47,22 +47,50 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 1, vect(3, 886, 789.101990), rot(0,0,0));// MAHOGANY desk
         return 62;
 
+    //#region DTS, Gordon, Max
     case "06_HONGKONG_WANCHAI_STREET":
     case "06_HONGKONG_WANCHAI_CANAL":
     case "06_HONGKONG_WANCHAI_MARKET":
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
-        goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "Dragon's Tooth Sword", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
-        AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
+        gordon = AddGoal("06_HONGKONG_WANCHAI_MARKET", "Gordon Quick", GOAL_TYPE2, 'GordonQuick0', PHYS_FALLING);
 
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vect(342.584808, -1802.576172, 1713.509521), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(204.923828, -195.652588, 1795), rot(0, 40000, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Canal Waterside Apartment", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
+        dts = AddGoal("06_HONGKONG_WANCHAI_STREET", "Dragon's Tooth Sword", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
+        AddGoalActor(dts, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
+
+        // street
+        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Tonnochi Road", GOAL_TYPE2, vect(49.394917, -2455.783447, 47.599495), rot(0, -16384, 0));
+        gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Balcony", GOAL_TYPE2, vect(194.915375, -1599.530884, 1711.607910), rot(0, 32768, 0));
+        dts_vanilla_loc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
+        AddMutualExclusion(gloc, dts_vanilla_loc);
+        AddMutualExclusion(gloc2, dts_vanilla_loc);
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
+        AddMutualExclusion(gloc, dtsloc);
+        AddMutualExclusion(gloc2, dtsloc);
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vect(342.584808, -1802.576172, 1713.509521), rot(0, 0, 0));
+        AddMutualExclusion(gloc, dtsloc);
+        AddMutualExclusion(gloc2, dtsloc);
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(204.923828, -195.652588, 1795), rot(0, 40000, 0));
+        AddMutualExclusion(gloc, dtsloc);
+        AddMutualExclusion(gloc2, dtsloc);
+
+        // canal
+        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "Flat Boat", GOAL_TYPE2, vect(2387.060303, -36.084198, -368.401581), rot(0, 16384, 0));
+        gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "Old China Hand", GOAL_TYPE2, vect(-2151.656006, 2252.040771, -320.398102), rot(0, 32768, 0));
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
+        AddMutualExclusion(gloc, dtsloc);
+        AddMutualExclusion(gloc2, dtsloc);
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Canal Waterside Apartment", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
+        AddMutualExclusion(gloc, dtsloc);
+        AddMutualExclusion(gloc2, dtsloc);
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
+        AddMutualExclusion(gloc, dtsloc);
+        AddMutualExclusion(gloc2, dtsloc);
+
+        // lucky money and market
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
+        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Gordon at Market", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
+        AddMutualInclusion(gloc, dts_vanilla_loc);
 
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
@@ -89,6 +117,7 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 2, vect(-1204,-2758,21), rot(0,23892,0));
 
         return 63;
+        //#endregion
     }
 
     return mission+1000;
@@ -213,6 +242,7 @@ function MissionTimer()
 
 function AnyEntry()
 {
+    local #var(prefix)GordonQuick gordon;
     Super.AnyEntry();
 
     switch(dxr.localURL) {
@@ -224,6 +254,18 @@ function AnyEntry()
         break;
     }
 
+    UpdateGoalWithRandoInfo('DeliverChensResponse', "Gordon Quick may not be at the Luminous Path compound.");
+
+    if(dxr.localURL != "06_HONGKONG_WANCHAI_MARKET" && dxr.localURL != "06_HONGKONG_WANCHAI_UNDERWORLD") {
+        if( dxr.flagbase.GetBool('DragonHeadsInLuckyMoney')
+            || (dxr.flagbase.GetBool('Have_ROM') && dxr.flagbase.GetBool('MeetTracerTong_Played'))
+        ) {
+            foreach AllActors(class'#var(prefix)GordonQuick', gordon) {
+                gordon.Destroy();
+            }
+        }
+    }
+
     //Rando can give you this goal in a bunch of maps (Tonnochi Road, Canal, Market, Lucky Money)
     UpdateGoalWithRandoInfo('ConvinceRedArrow', "Max Chen could be anywhere in the Lucky Money.");
 }
@@ -232,7 +274,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)Male1 male;
 
-    Super.AnyEntry();
+    Super.AnyEntry(); // make sure locations have been chosen
 
     switch(dxr.localURL) {
     case "06_HONGKONG_VERSALIFE":
@@ -253,6 +295,11 @@ function DeleteGoal(Goal g, GoalLocation Loc)
     if (g.name=="Dragon's Tooth Sword"){
         GenerateDTSHintCube(g, Loc);
     }
+    else if (g.name=="Gordon Quick"){
+        g.actors[0].a.SetLocation(vectm(-1418.708130, 2.011429, 2095.588867)); // next to Max Chen on top of the building
+        return; // don't call Super
+    }
+    Super.DeleteGoal(g, Loc);
 }
 
 function GenerateDTSHintCube(Goal g, GoalLocation Loc)
@@ -272,6 +319,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local WeaponNanoSword dts;
     local DataLinkTrigger dlt;
     local NervousWorker   nw;
+    local #var(prefix)GordonQuick gordon;
 
     switch(g.name) {
     case "Dragon's Tooth Sword":
@@ -290,6 +338,15 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         nw = NervousWorker(Spawnm(class'NervousWorker',,,Loc.positions[0].pos,Loc.positions[0].rot));
         g.actors[0].a=nw;
         nw.ConBindEvents();
+        break;
+
+    case "Gordon Quick":
+        gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', Loc.positions[0].pos));
+        g.actors[0].a = gordon;
+        gordon.SetOrders('Standing');
+        gordon.BarkBindName = "TriadLumPath";
+        gordon.ConBindEvents();
+        gordon.bKeepWeaponDrawn = True;
         break;
     }
 }

@@ -1034,7 +1034,7 @@ static function string GetLoadoutName(DXRando dxr)
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
     if( loadout == None )
         return "";
-    return loadout.GetName(loadout.loadout);
+    return loadout.GetName(dxr.flags.loadout);
 }
 
 // BINGO STUFF
@@ -1323,7 +1323,7 @@ function bool CheckBingoWin(DXRando dxr, int numBingos, int oldBingos)
     if(numBingos <= 0) return false;
 
     if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
-        info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
+        info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold!  "$dxr.flags.settings.bingo_win);
         if(dxr.flags.IsBingoCampaignMode()) {
             DXRBingoCampaign(class'DXRBingoCampaign'.static.Find()).HandleBingoWin(numBingos, oldBingos);
             return true;
@@ -1377,7 +1377,7 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
     if( nowbingos > previousbingos ) {
         time = class'DXRStats'.static.GetTotalTime(dxr);
         if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(dxr.flags)) {
-            p.ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
+            p.ClientMessage("That's a bingo!  Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
         }
 
         j = js.static.Start("Bingo");

@@ -214,13 +214,11 @@ function CheckConfig()
 
     case "15_area51_final":
         // aquinas hub access, makes tong ending somewhat more viable
-        if(dxr.flags.IsSpeedrunMode() && FeatureFlag(3,5,0, "Area51EndingBalancePass2")) {
-            door_fixes[i].tag = 'blastdoor_upper';
-            door_fixes[i].bBreakable = false;
-            door_fixes[i].bPickable = false;
-            door_fixes[i].bHighlight = true;
-            i++;
-        }
+        door_fixes[i].tag = 'blastdoor_upper';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = true;
+        i++;
         break;
 
     case "15_area51_page":

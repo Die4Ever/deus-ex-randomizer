@@ -163,6 +163,13 @@ function SwapScriptedPawns(int percent, bool enemies)
         temp[num++] = a;
     }
 
+    for(i=num-1; i>=0; i--) {
+        slot = rng(i+1);
+        a = temp[i];
+        temp[i] = temp[slot];
+        temp[slot] = a;
+    }
+
     l("SwapScriptedPawns num: "$num);
     for(i=0; i<num; i++) {
         slot=rng(num);
