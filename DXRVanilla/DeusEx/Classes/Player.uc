@@ -569,11 +569,11 @@ function Landed(vector HitNormal)
     local float augReduce, dmg, softener;
 
     softener = 1;
-    if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && AugmentationSystem != None)
+    /*if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && AugmentationSystem != None)
     {
-        augLevel = AugmentationSystem.GetAugLevelValue(class'AugStealth');
-        if(augLevel != -1) softener = (1-augLevel)/4 + 0.75;
-    }
+        augReduce = AugmentationSystem.GetAugLevelValue(class'AugStealth');
+        if(augReduce != -1) softener = (1-augReduce)/4 + 0.75;
+    }*/
 
     //Note - physics changes type to PHYS_Walking by default for landed pawns
     PlayLanded(Velocity.Z);

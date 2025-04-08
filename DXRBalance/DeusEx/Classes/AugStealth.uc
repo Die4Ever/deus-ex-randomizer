@@ -28,17 +28,20 @@ function UpdateBalance()
         LevelValues[2] = 0.83;
         LevelValues[3] = 1;
         Level5Value = 1.2;
+        EnergyRate = 50;
     } else {
         LevelValues[0] = 0.75;
         LevelValues[1] = 0.5;
         LevelValues[2] = 0.25;
         LevelValues[3] = 0;
         Level5Value = -1;
+        EnergyRate = 40;
     }
     for(i=0; i<ArrayCount(LevelValues); i++) {
         default.LevelValues[i] = LevelValues[i];
     }
     default.Level5Value = Level5Value;
+    default.EnergyRate = EnergyRate;
 
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         Description = "The necessary muscle movements for complete silence when walking or running are determined continuously with reactive kinematics equations produced by embedded nanocomputers.";
