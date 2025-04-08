@@ -865,7 +865,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
         return None;
     }
 
-    if (dxr.flagbase.GetInt('Rando_newgameplus_loops') == 0) {
+    if (dxr.flags.newgameplus_loops == 0) {
         crate.ItemName = "Later Start Supply Crate";
         crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
     } else  {
@@ -902,16 +902,17 @@ function SkillAwardCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
+    local SkillAwardCrate crate;
 
     if (dxr.flags.IsWaltonWare()) {
-        SpawnWaltonWareCrate(player);
-    } else if (dxr.flags.settings.starting_map > 10 || flagbase.GetInt('Rando_newgameplus_loops') > 0) {
-        SpawnSkillAwardCrate(player);
+        crate = SpawnWaltonWareCrate(player);
+    } else if (dxr.flags.settings.starting_map > 10 || dxr.flags.newgameplus_loops > 0) {
+        crate = SpawnSkillAwardCrate(player);
     } else {
         AddStartingCredits(dxr, player);
         AddStartingSkillPoints(dxr, player);
     }
-    AddStartingAugs(dxr, player);
+    AddStartingAugs(dxr, player, crate);
 
     switch(start_flag) {
         case 21:
@@ -1414,9 +1415,9 @@ static function int GetStartMapAugBonus(DXRando dxr)
     return GetStartMapMission(dxr.flags.settings.starting_map) * 0.4;
 }
 
-static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
+static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player, SkillAwardCrate crate)
 {
-    local int i, numAugs;
+    local int i, numAugs, numUpgrades;
 
     if (dxr.flags.settings.starting_map !=0 ){
         numAugs = GetStartMapAugBonus(dxr);
@@ -1424,10 +1425,15 @@ static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
 
         for (i=0; i<numAugs; i++){
             if(i%4==0){
-                GiveItem( player, class'AugmentationUpgradeCannister' );
+                if(crate != None) numUpgrades++;
+                else GiveItem( player, class'#var(prefix)AugmentationUpgradeCannister' );
             } else {
                 class'DXRAugmentations'.static.UpgradeRandomAug(dxr,player);
             }
+        }
+
+        if(numUpgrades > 0 && crate != None) {
+            crate.AddContent(class'#var(prefix)AugmentationUpgradeCannister', numUpgrades);
         }
     }
 }
