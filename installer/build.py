@@ -84,7 +84,7 @@ if not (basedest/'FemJC.u').exists():
 
 #region DXVK 32bit
 if not (basedest/'dxvk.tar.gz').exists():
-    DownloadFile('https://github.com/doitsujin/dxvk/releases/download/v2.5.3/dxvk-2.5.3.tar.gz', basedest/'dxvk.tar.gz')
+    DownloadFile('https://github.com/doitsujin/dxvk/releases/download/v2.6.1/dxvk-2.6.1.tar.gz', basedest/'dxvk.tar.gz')
 tar = tarfile.open(basedest/'dxvk.tar.gz')
 for f in tar.getmembers():
     if '/x32/' in f.path and f.isfile():
