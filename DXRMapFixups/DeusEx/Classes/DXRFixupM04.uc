@@ -776,7 +776,11 @@ function NYC_04_CheckPaulRaid()
     foreach AllActors(class'PaulDenton', paul) {
         // fix a softlock if you jump while approaching Paul
         if( ! dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') ) {
-            player().StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
+            if (dxr.FlagBase.GetBool('LDDPJCIsFemale')){
+                player().StartConversationByName('FemJCTalkedToPaulAfterMessage', paul, False, False);
+            } else {
+                player().StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
+            }
         }
 
         count++;
