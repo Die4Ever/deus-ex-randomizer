@@ -178,24 +178,24 @@ static function string GetSaveFailReason(DeusExPlayer player)
     f = m.dxr.flags;
 
     if( f.autosave == Hardcore || f.autosave == Ironman ) {
-        return "Manual saving is not allowed in this game mode! Good Luck!";
+        return "Manual saving is not allowed in this game mode!  Good Luck!";
     }
 
     if( f.autosave == FixedSavesExtreme ) {
         item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
         if(item == None || item.NumCopies <= 1) {
-            return "You need 2 Memory Containment Units to save! Good Luck!";
+            return "You need 2 Memory Containment Units to save!  Good Luck!";
         }
     }
     else if( m.IsLimitedSaves() ) {
         item = DeusExPickup(player.FindInventoryType(class'MemConUnit'));
         if(item == None || item.NumCopies <= 0) {
-            return "You need a Memory Containment Unit to save! Good Luck!";
+            return "You need a Memory Containment Unit to save!  Good Luck!";
         }
     }
     if( m.IsFixedSaves() ) {
         if(Computers(player.FrobTarget) == None && ATM(player.FrobTarget) == None) {
-            return "Saving is only allowed when a computer is highlighted! Good Luck!";
+            return "Saving is only allowed when a computer is highlighted!  Good Luck!";
         }
     }
 

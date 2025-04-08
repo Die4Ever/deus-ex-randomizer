@@ -152,7 +152,7 @@ function BindControls(optional string action)
     f.mirroredmaps=-1;
 #endif
 
-    NewMenuItem("Seed", "Enter a seed if you want to play the same game again. Leave it blank for a random seed.");
+    NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
     sseed = EditBox("", "1234567890");
     if( sseed != "" ) {
         f.seed = int(sseed);
@@ -388,7 +388,7 @@ defaultproperties
     ImpossibleBtnTitle="Impossible Difficulty?"
     ImpossibleBtnMessage="It appears you're new to DX Randomizer.|n|nImpossible difficulty means fewer items, less ammo, more enemies, higher skill costs, fewer medbots, and many other challenges.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to play Impossible difficulty?"
     GameModeBtnTitle="Advanced Game Mode?"
-    GameModeBtnMessage="It appears you're new to DX Randomizer.|n|nThis game mode is confusing and difficult for new DXRando players. We suggest starting with Normal Randomizer or one of the Reduced Randomization modes instead.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
+    GameModeBtnMessage="It appears you're new to DX Randomizer.|n|nThis game mode is confusing and difficult for new DXRando players.  We suggest starting with Normal Randomizer or one of the Reduced Randomization modes instead.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
     AutosaveBtnTitle="Autosave?"
     AutosaveBtnMessage="It appears you're new to DX Randomizer.|n|nWe suggest starting with the default option for Autosave Every Entry.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
     SplitsBtnTitle="Mismatched Splits!"
