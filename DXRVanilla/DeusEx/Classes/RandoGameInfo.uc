@@ -1,2 +1,0 @@
-class RandoGameInfo merges DeusExGameInfo;
-

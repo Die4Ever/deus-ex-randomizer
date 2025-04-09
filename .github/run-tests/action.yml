@@ -13,28 +13,28 @@ runs:
     # check syntax and run tests
     - run: python3 -m compileall -q . 2>&1
       shell: bash
-    - run: python3 installer/tests.py 2>&1
+    - run: python3 src/installer/tests.py 2>&1
       shell: bash
 
     - name: Build
-      run: python3 installer/build.py
+      run: python3 src/installer/build.py
       shell: bash
-    - run: du -ha installer/dist
+    - run: du -ha src/installer/dist
       shell: bash
 
-    - run: cat installer/build/installer/warn-installer.txt
+    - run: cat src/installer/build/installer/warn-installer.txt
       shell: bash
 
     # small test, use timeouts because on windows the GUI can catch errors and a dialog box will freeze the program
-    - run: timeout 30 ./installer/dist/DXRandoInstaller --version --verbose 2>&1
+    - run: timeout 30 ./src/installer/dist/DXRandoInstaller --version --verbose 2>&1
       shell: bash
-    - run: timeout 30 ./installer/dist/BingoViewer --version 2>&1
+    - run: timeout 30 ./src/installer/dist/BingoViewer --version 2>&1
       shell: bash
 
     # make sure we got everything
-    - run: find installer/3rdParty/
+    - run: find src/installer/3rdParty/
       shell: bash
-    - run: find installer/dist/
+    - run: find src/installer/dist/
       shell: bash
-    - run: ls -lah installer/dist/
+    - run: ls -lah src/installer/dist/
       shell: bash
