@@ -66,15 +66,15 @@ function BindControls(optional string action)
     // KEEP IN SYNC WITH DXRMenuSelectDifficulty.uc
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
     NewMenuItem("Save Behavior", "Saves the game in case you die!");
-    EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.EveryEntry));
-    EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.FirstEntry));
-    EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.Hardcore));
-    EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.ExtraSafe));
-    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.LimitedSaves));
-    EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.FixedSaves));
-    EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.UnlimitedFixedSaves));
-    EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.FixedSavesExtreme));
-    EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, class'DXRMenuSelectDifficulty'.static.GetAutoSaveHelpText(autosave,autosave.Disabled));
+    EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
+    EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.FirstEntry));
+    EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
+    EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave, autosave.GetAutoSaveHelpText(autosave.ExtraSafe));
+    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.LimitedSaves));
+    EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSaves));
+    EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
+    EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
+    EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
 #endif
 
     // KEEP IN SYNC WITH DXRMenuSelectDifficulty.uc
