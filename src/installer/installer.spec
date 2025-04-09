@@ -29,8 +29,8 @@ a_installer = Analysis(
     datas=[
         ('../*.u', 'System'),
         ('../*.int', 'System'),
-        ('../README.md', '.'),
-        ('../LICENSE', '.'),
+        ('../../README.md', '.'),
+        ('../../LICENSE', '.'),
         ('Configs/*', 'Configs'),
         ('3rdParty/*.*', '3rdParty'),
         ('3rdParty/d3d10drv/*', '3rdParty/d3d10drv'),

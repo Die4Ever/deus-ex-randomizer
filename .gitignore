@@ -1,8 +1,8 @@
 # pyinstaller stuff
 dist
 build
-installer/3rdParty
-installer/log.txt
+src/installer/3rdParty
+src/installer/log.txt
 
 # Visual Studio 2015 user specific files
 .vs/
