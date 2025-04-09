@@ -7,6 +7,7 @@ class DXRMenuScreenNewGame extends MenuScreenNewGame;
 var DXRando dxr;
 var DXRFlags flags;
 var config string last_player_name;
+var config int last_portrait;
 var bool hasCheckedLDDP;
 var MenuUIActionButtonWindow btnRandomPortrait;
 #ifndef injections
@@ -63,6 +64,13 @@ event InitWindow()
 
     SaveSkillPoints();
     ResetToDefaults();
+
+    //Pick a random portrait
+    if (class'MenuChoice_JCGenderSkin'.static.IsRandom()){
+        SelectRandomPortrait(false); //Randomly select one of the portraits
+    } else if (class'MenuChoice_JCGenderSkin'.static.IsRemember()) {
+        SelectPortrait(last_portrait); //Select the last portrait used
+    }
 
     // Need to do this because of the edit control used for
     // saving games.
@@ -190,6 +198,7 @@ function SaveSettings()
         dxr.Destroy();
     player.ServerSetSloMo(1);//reset game speed to prevent crashes
     last_player_name = player.TruePlayerName;
+    last_portrait = portraitIndex;
     SaveConfig();
 }
 
@@ -273,13 +282,19 @@ function CreateActionButtons()
 function bool ButtonActivated( Window buttonPressed )
 {
     if (buttonPressed==btnRandomPortrait){
-        SelectRandomPortrait();
+        SelectRandomPortrait(true);
         return true;
     }
     return Super.ButtonActivated(buttonPressed);
 }
 
-function SelectRandomPortrait()
+function SelectPortrait(int portraitNum)
+{
+    portraitIndex=portraitNum;
+    btnPortrait.SetBackground(texPortraits[portraitIndex]);
+}
+
+function SelectRandomPortrait(bool noRepeat)
 {
     local int numPortraits;
 
@@ -292,9 +307,13 @@ function SelectRandomPortrait()
         numPortraits=5;
     }
 
-    //This shouldn't ever pick the same portrait twice in a row,
-    //since it can't roll *all* the way around
-    portraitIndex=(portraitIndex+Rand(numPortraits-1)+1) % numPortraits;
+    if (noRepeat){
+        //This shouldn't ever pick the same portrait twice in a row,
+        //since it can't roll *all* the way around
+        portraitIndex=(portraitIndex+Rand(numPortraits-1)+1) % numPortraits;
+    } else {
+        portraitIndex=(portraitIndex+Rand(numPortraits)) % numPortraits;
+    }
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 }
 
