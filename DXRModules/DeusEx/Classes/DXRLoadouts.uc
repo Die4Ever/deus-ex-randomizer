@@ -462,6 +462,24 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     return "";
 }
 
+//#region AdjustFlags
+
+static function AdjustFlags(DXRFlags flags, int loadout)
+{
+    switch(loadout) {
+    case 15:
+        //The Three Leg Augs
+        flags.moresettings.aug_loc_rando = 100;
+        break;
+    case 17:
+        //My Vision Is Augmented
+        flags.moresettings.aug_loc_rando = 100;
+        break;
+    }
+}
+
+//#endregion
+
 //#region Loadout Help
 function string LoadoutHelpText(int loadout)
 {
@@ -534,14 +552,14 @@ function string LoadoutHelpText(int loadout)
         return "All items are allowed.  Six randomly selected augs are banned, and you start with a randomly selected augmentation.";
     case 15:
         //The Three Leg Augs
-        return "All items are allowed.  Speed Enhancement and six randomly selected augs are banned.  You start with one of the Running Enhancement, Jump Enhancement, or Run Silent augmentations.";
+        return "All items are allowed.  Speed Enhancement and six randomly selected augs are banned.  You start with one of the Running Enhancement, Jump Enhancement, or Run Silent augmentations." $ CR() $ CR() $ "Enables Aug Slot Rando by default.";
     case 16:
         //Speed Enhancement
         return "The old-fashioned DXRando experience!  All items and augs are allowed.  You start with the Speed Enhancement augmentation.";
     #ifdef injections
     case 17:
         //My Vision Is Augmented
-        return "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  "$"Running Enhancement and Jump Enhancement augs are also available.";
+        return "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  "$"Running Enhancement and Jump Enhancement augs are also available." $ CR() $ CR() $ "Enables Aug Slot Rando by default.";
     #endif
     }
 
