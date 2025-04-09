@@ -757,6 +757,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     if(class'MenuChoice_NewGamePlus'.default.value == 0 && !IsWaltonWare())
         moresettings.newgameplus_curve_scalar = -1;
 
+    class'DXRLoadouts'.static.AdjustFlags(self, loadout); // new game menu doesn't initialize its own DXRLoadouts
+
     return settings;
 }
 

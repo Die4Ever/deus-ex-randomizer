@@ -125,6 +125,9 @@ function bool ShouldDrawActor(Actor A)
     }
     if(bMotionSensor) {
         return !A.bHidden && A != Player && VSize(A.Velocity)>1;
+        if(Mover(A) != None) return false;
+        if(Cloud(A) != None) return false;
+        if(A.Mesh == None) return false;
     }
 
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
@@ -217,15 +220,12 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
         }
     }
 
-    if(A.Mesh == None) {
-        DrawBrush(gc, A);
-    }
-    else {
+    if(A.Mesh != None) {
         SetSkins(A, oldSkins);
         gc.DrawActor(A, False, False, True, 1.0, DrawGlow/4, None);
 
         c = #var(prefix)Containers(A);
-        if(c != None) {
+        if(c != None && !bThermalVision && !bMotionSensor) {
             i = c.Contents;
             if(i == None) i = c.Content2;
             if(i == None) i = c.Content3;
@@ -237,6 +237,8 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
             }
         }
         ResetSkins(A, oldSkins);
+    } else if(Brush(A) != None) {
+        DrawBrush(gc, A);
     }
 }
 

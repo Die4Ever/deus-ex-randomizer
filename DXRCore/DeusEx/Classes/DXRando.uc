@@ -165,7 +165,9 @@ simulated event PreTravel()
 
 simulated event Destroyed()
 {
-    default.dxr = None;// clear the singleton reference
+    if(default.dxr == self) {
+        default.dxr = None;// clear the singleton reference
+    }
 }
 
 function CheckConfig()

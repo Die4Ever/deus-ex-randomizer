@@ -7,8 +7,10 @@ struct EnumBtn {
 
 #ifdef allstarts
     var string values[64];
+    var string helpTexts[64];
 #else
     var string values[32];
+    var string helpTexts[32];
 #endif
 
     var int value;
@@ -201,7 +203,7 @@ function NewGroup(string text)
     BreakLine();
 }
 
-function bool EnumOption(string label, int value, optional out int output)
+function bool EnumOption(string label, int value, optional out int output, optional string helpText)
 {
     local int i;
     local string s;
@@ -219,6 +221,7 @@ function bool EnumOption(string label, int value, optional out int output)
                 break;
             } else if( enums[id].values[i] == "" ) {
                 enums[id].values[i] = label;
+                enums[id].helpTexts[i] = helpText;
                 break;
             }
         }
@@ -652,16 +655,16 @@ function OpenEnumList(int iEnum)
     list.Init(self, iEnum, labels[iEnum], helptexts[iEnum], e.values[e.value]);
     for(i=0; i<ArrayCount(e.values); i++) {
         if(e.values[i] != "") {
-            EnumListAddButton(list, labels[iEnum], e.values[i], prev);
+            EnumListAddButton(list, labels[iEnum], e.values[i], e.helpTexts[i], prev);
             prev = e.values[i];
         }
     }
     list.Finalize();
 }
 
-function EnumListAddButton(DXREnumList list, string title, string val, string prev)
+function EnumListAddButton(DXREnumList list, string title, string val, string help, string prev)
 {
-    list.AddButton(val);
+    list.AddButton(val,help);
 }
 
 function int GetSliderValue(MenuUIEditWindow w)

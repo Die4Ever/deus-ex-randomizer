@@ -391,9 +391,8 @@ simulated function RandoAug(Augmentation a)
         a.Description = add_desc $ "|n|n" $ a.Description;
     }
 
-    if( #var(prefix)AugSpeed(a) != None || #var(prefix)AugLight(a) != None
-    || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None || AugNinja(a) != None )
-        return;
+    if(#var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
+        return; // default augs
 
     aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
     if(( aug_value_wet_dry > 0
@@ -409,10 +408,15 @@ simulated function RandoAug(Augmentation a)
         aug_value_wet_dry = 0;
         add_desc = add_desc $ "Energy Rate: "$int(a.energyRate)$" Units/Minute";
     }
-    if(dxr.flags.IsStrongAugsMode())
+
+    if(dxr.flags.IsStrongAugsMode()) {
         RandoLevelValues(a, -2, 3, aug_value_wet_dry, a.Description, add_desc);
-    else
+    } else {
+        if(#var(prefix)AugSpeed(a) != None || AugNinja(a) != None || AugOnlySpeed(a) != None || AugJump(a) != None) {
+            aug_value_wet_dry = 0;
+        }
         RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
+    }
 }
 
 static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)

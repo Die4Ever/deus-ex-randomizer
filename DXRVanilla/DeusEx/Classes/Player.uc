@@ -2296,6 +2296,16 @@ function PreTravel()
         root.ClearWindowStack();
     }
 
+    if (inHand!=None && inHand.IsA('DeusExWeapon'))
+    {
+        //Turn the laser off to prevent the laser spot from sticking around
+        //when you come back.  Maybe it would be better to just directly
+        //remove the LaserSpot's, but this is a simple solution for now.
+        if (class'MenuChoice_AutoLaser'.default.enabled){
+            DeusExWeapon(inHand).LaserOff();
+        }
+    }
+
     Super.PreTravel();
 }
 
