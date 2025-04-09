@@ -219,6 +219,9 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
             DrawGlow *= FMin(A.LifeSpan / 10, 1);
         }
     }
+    if(bMotionSensor) {
+        DrawGlow *= FClamp(VSize(A.Velocity)/100.0, 0, 1);
+    }
 
     if(A.Mesh != None) {
         SetSkins(A, oldSkins);
