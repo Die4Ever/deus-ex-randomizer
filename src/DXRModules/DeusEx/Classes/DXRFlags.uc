@@ -867,6 +867,87 @@ function string GameModeName(int gamemode)
     return "";
 }
 
+function string GameModeHelpText(int gamemode)
+{
+    switch(gamemode) {
+    case FullRando:
+        return "The FULL Randomizer experience.  Randomizes the costs and strengths of skills, and the strengths of augmentations.  "$"Shuffles locations of items, datacubes, nanokeys, crates, and enemies.  Randomizes passwords, as well as which maps medical bots and repair bots are in.|n|n" $
+               "Full Randomizer also randomizes start locations in some maps, goal locations, and the location of auto turrets.  Ammo is also reduced to encourage using more types of weapons.";
+    case NormalRandomizer:
+        return "The totally normal Randomizer experience.  Randomizes the costs and strengths of skills, and the strengths of augmentations.  "$"Shuffles locations of items, datacubes, nanokeys, crates, and enemies.  Randomizes passwords, as well as which maps medical bots and repair bots are in.";
+#ifdef injections
+    case EntranceRando:
+        return "The FULL Randomizer experience.  Randomizes the costs and strengths of skills, and the strengths of augmentations.  "$"Shuffles locations of items, datacubes, nanokeys, crates, and enemies.  Randomizes passwords, as well as which maps medical bots and repair bots are in.|n|n" $
+               "Full Randomizer also randomizes start locations in some maps, goal locations, and the location of auto turrets.  Ammo is also reduced to encourage using more types of weapons.|n|n" $
+               "Level transitions are also randomized, so they will take you to a different place than usual (within the same mission).";
+    case HalloweenEntranceRando:
+        return "The FULL Randomizer experience.  Randomizes the costs and strengths of skills, and the strengths of augmentations.  "$"Shuffles locations of items, datacubes, nanokeys, crates, and enemies.  Randomizes passwords, as well as which maps medical bots and repair bots are in.|n|n" $
+               "Full Randomizer also randomizes start locations in some maps, goal locations, and the location of auto turrets.  Ammo is also reduced to encourage using more types of weapons.|n|n" $
+               "Level transitions are also randomized, so they will take you to a different place than usual (within the same mission).|n|n" $
+               "In addition, dead bodies will rise as zombies after a period of time, and Mr. H will stalk you around the world.";
+    case HordeMode:
+        return "Try to survive against waves of enemies in the Cathedral, with items spawning between waves.";
+    case HordeZombies:
+        return "Try to survive against waves of enemies in the Cathedral, with items spawning between waves.  Dead bodies rise as zombies after a period of time.  Mr. H will also stalk you while you try to survive.";// maybe a full-time replacement for original horde mode?
+#endif
+    case RandoLite:
+        return "The randomizer, except not as much stuff has been randomized. Mostly retains immersion and objects are where you would expect them to be.";
+    case ZeroRando:
+        return "As close to vanilla as possible, with Randomizer quality of life improvements and extra functionality (like Bingo or Crowd Control).";
+    case ZeroRandoPlus:
+        return "No randomization, but with more of the balance changes introduced in the Randomizer, such as computer hacking costing energy";
+    case RandoMedium:
+        return "Similar to Randomizer Lite but with many more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.";
+    case SeriousSam:
+        return "The Randomizer experience, except enemy quantities have been cranked up, damage multipliers are decreased, and maximum health has been increased.";
+    case SpeedrunMode:
+        return "Full Randomizer, but with optimizations to ensure a more consistent speedrunning experience!  This also enables the built-in speedrun timer.";
+    case WaltonWareHalloween:
+        return "A bingo-focused game mode where you start on a random map and must complete a line on your bingo board to win!  All bingo goals will be able to be completed within one mission, and the numbers on bingo goals will be scaled down.  "$
+               "The board will have 5 free spaces, meaning only 4 goals need to be finished to complete any line.  Once a line is completed you'll be taken to another randomly selected map, and the difficulty will increase!  How long can you last?"$"|n|n"$
+               "In addition, dead bodies will rise as zombies after a period of time, and Mr. H will stalk you around the world.";
+    case WaltonWare:
+        return "A bingo-focused game mode where you start on a random map and must complete a line on your bingo board to win!  All bingo goals will be able to be completed within one mission, and the numbers on bingo goals will be scaled down.  "$
+               "The board will have 5 free spaces, meaning only 4 goals need to be finished to complete any line.  Once a line is completed you'll be taken to another randomly selected map, and the difficulty will increase!  How long can you last?";
+#ifdef injections
+    case WaltonWareEntranceRando:
+        return "A bingo-focused game mode where you start on a random map and must complete a line on your bingo board to win!  All bingo goals will be able to be completed within one mission, and the numbers on bingo goals will be scaled down.  "$
+               "The board will have 5 free spaces, meaning only 4 goals need to be finished to complete any line.  Once a line is completed you'll be taken to another randomly selected map, and the difficulty will increase!  How long can you last?"$"|n|n"$
+               "Level transitions are also randomized, so they will take you to a different place than usual (within the same mission).";
+    case WaltonWareHalloweenEntranceRando:
+        return "A bingo-focused game mode where you start on a random map and must complete a line on your bingo board to win!  All bingo goals will be able to be completed within one mission, and the numbers on bingo goals will be scaled down.  "$
+               "The board will have 5 free spaces, meaning only 4 goals need to be finished to complete any line.  Once a line is completed you'll be taken to another randomly selected map, and the difficulty will increase!  How long can you last?"$"|n|n"$
+               "Level transitions are also randomized, so they will take you to a different place than usual (within the same mission)." $ "|n|n" $
+               "In addition, dead bodies will rise as zombies after a period of time, and Mr. H will stalk you around the world.";
+#endif
+    case WaltonWareHardcore:
+        return "A bingo-focused game mode where you start on a random map and must complete a line on your bingo board to win!  All bingo goals will be able to be completed within one mission, and the numbers on bingo goals will be scaled down.  "$
+               "The board will have 5 free spaces, meaning only 4 goals need to be finished to complete any line.  Once a line is completed you'll be taken to another randomly selected map, and the difficulty will increase!  "$"ALL saving is disabled!  How long can you last?";
+    case WaltonWarex3:
+        return "A bingo-focused game mode where you start on a random map and must complete a line on your bingo board to win!  All bingo goals will be able to be completed within three missions, and the numbers on bingo goals will be scaled down.  "$
+               "The board will have 5 free spaces, meaning only 4 goals need to be finished to complete any line.  Once a line is completed you'll be taken to another randomly selected map, and the difficulty will increase!  How long can you last?";
+    case HalloweenMode:
+        return "The FULL Randomizer experience.  Randomizes the costs and strengths of skills, and the strengths of augmentations.  "$"Shuffles locations of items, datacubes, nanokeys, crates, and enemies.  Randomizes passwords, as well as which maps medical bots and repair bots are in.|n|n" $
+               "Full Randomizer also randomizes start locations in some maps, goal locations, and the location of auto turrets.  Ammo is also reduced to encourage using more types of weapons.|n|n"$
+               "In addition, dead bodies will rise as zombies after a period of time, and Mr. H will stalk you around the world.";
+    case OneItemMode:
+        return "The FULL Randomizer experience, except... For some reason, all items in each level are replaced by a single type of item?";
+    case BingoCampaign:
+        if (#defined(vanilla)) {
+            return "Play through the entire randomized game, but you must complete a line of bingo in each mission before being able to progress.  "$"Bingo goals will always be completable within the single mission, and the quantities on goals will be reduced to be possible.  Can YOU outsmart the Mean Bingo Machine?";
+        }
+        return "";
+    case StrongAugsMode:
+        return "The FULL Randomizer experience.  Randomizes the costs and strengths of skills, and the strengths of augmentations.  "$"Shuffles locations of items, datacubes, nanokeys, crates, and enemies.  Randomizes passwords, as well as which maps medical bots and repair bots are in.|n|n" $
+               "Full Randomizer also randomizes start locations in some maps, goal locations, and the location of auto turrets.  Ammo is also reduced to encourage using more types of weapons.|n|n" $
+               "Augs are generally randomized to be stronger than in the typical randomizer.";
+    }
+    //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
+    //EnumOption("How About Some Soy Food?", 6, f.gamemode);
+    //EnumOption("Max Rando", 7, f.gamemode);
+    return "";
+}
+
 function bool IsEntranceRando()
 {
     return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;

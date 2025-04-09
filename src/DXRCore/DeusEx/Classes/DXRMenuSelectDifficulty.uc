@@ -49,8 +49,9 @@ function BindControls(optional string action)
         temp = f.GameModeIdForSlot(i);
         if(temp==999999) continue;
         ts = f.GameModeName(temp);
+        tht = f.GameModeHelpText(temp);
         if(ts != "")
-            EnumOption(ts, temp, f.gamemode);
+            EnumOption(ts, temp, f.gamemode, tht);
     }
 
     // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
