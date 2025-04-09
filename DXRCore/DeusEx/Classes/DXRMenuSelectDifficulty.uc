@@ -360,6 +360,18 @@ event DestroyWindow()
     }
 }
 
+function CancelScreen()
+{
+    log(self $ " CancelScreen() " $ dxr);
+    if(dxr != None) {
+        GetFlags().Destroy();
+        flags = None;
+        dxr.Destroy();
+        dxr = None;
+    }
+    Super.CancelScreen();
+}
+
 function NewGameSetup(float difficulty)
 {
     local DXRMenuSetupRando newGame;

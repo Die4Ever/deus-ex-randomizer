@@ -15,6 +15,19 @@ function DXRando GetDxr()
     return dxr;
 }
 
+// just in case, make sure DXR is never cleaned up
+event DestroyWindow()
+{
+    dxr = None;
+    Super.DestroyWindow();
+}
+
+function CancelScreen()
+{
+    dxr = None;
+    Super.CancelScreen();
+}
+
 //If changing ranges in this menu, make sure to update any clamped ranges in DXRFlags ScoreFlags function to match
 function BindControls(optional string action)
 {
