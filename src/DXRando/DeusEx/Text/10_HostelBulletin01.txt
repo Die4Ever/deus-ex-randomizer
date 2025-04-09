@@ -1,0 +1,4 @@
+<COMMENT>Hostel Room 1 occupancy</COMMENT>
+<DC=255,255,255>
+<P><B>Hostel Room 1
+<P><B>   Room 1 is currently unoccupied
