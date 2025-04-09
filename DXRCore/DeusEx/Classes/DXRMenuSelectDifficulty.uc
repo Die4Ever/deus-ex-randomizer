@@ -8,7 +8,7 @@ var string GameModeBtnTitle, GameModeBtnMessage;
 var string AutosaveBtnTitle, AutosaveBtnMessage;
 var string SplitsBtnTitle, SplitsBtnMessage;
 
-var int gamemode_enum, autosave_enum, difficulty_enum, mirroredmaps_wnd;
+var int gamemode_enum, loadout_enum, autosave_enum, difficulty_enum, mirroredmaps_wnd;
 
 enum ERandoMessageBoxModes
 {
@@ -54,7 +54,7 @@ function BindControls(optional string action)
     }
 
     // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
-    NewMenuItem("Loadout", "Which items and augs you start with and which are banned.");
+    loadout_enum = NewMenuItem("Loadout", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
     if( loadout == None )
         EnumOption("All Items Allowed", 0, f.loadout);
@@ -181,14 +181,15 @@ function BindControls(optional string action)
 function string SetEnumValue(int e, string text)
 {
     local int i, temp;
-    local string old;
+    local string old, s;
     local DXRFlags f;
+    local bool oldZeroRando;
 
     // HACK: this allows you to override the autosave option instead of SetDifficulty forcing it by game mode
     old = Super.SetEnumValue(e, text);
     if(text == old) return old;
 
-    if(e == gamemode_enum && #defined(injections)) {
+    if(e == gamemode_enum && autosave_enum != 0) {
         if(InStr(text, "Halloween")!=-1)
         {
             Super.SetEnumValue(autosave_enum, "Limited Fixed Saves");
@@ -200,6 +201,7 @@ function string SetEnumValue(int e, string text)
     }
     if(e == gamemode_enum) {
         f = GetFlags();
+        oldZeroRando = f.IsZeroRando();
         for(i=0; i<50; i++) {
             temp = f.GameModeIdForSlot(i);
             if(temp==999999) continue;
@@ -207,7 +209,7 @@ function string SetEnumValue(int e, string text)
                 f.gamemode = temp;
             }
         }
-        if(InStr(text, "Zero Rando") != InStr(old, "Zero Rando")) {
+        if(f.IsZeroRando() != oldZeroRando) {
             i = 0;
             if( f.VersionIsStable() && !#bool(hx)) {
                 i = 1;
@@ -217,9 +219,13 @@ function string SetEnumValue(int e, string text)
             }
             Super.SetEnumValue(difficulty_enum, f.DifficultyName(1));
 
-            if(InStr(text, "Zero Rando")!=-1 && mirroredmaps_wnd>0) {
+            if(f.IsZeroRando() && mirroredmaps_wnd>0) {
                 MenuUIEditWindow(wnds[mirroredmaps_wnd]).SetText("0");
             }
+        }
+        if(f.IsSpeedrunMode() && InStr(GetEnumValue(loadout_enum), "All Items Allowed")!=-1)
+        {
+            Super.SetEnumValue(loadout_enum, "Speed Enhancement");
         }
     }
 
