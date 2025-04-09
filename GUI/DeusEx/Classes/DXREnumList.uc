@@ -5,7 +5,7 @@ var MenuUIScrollAreaWindow winScroll;
 var Window controlsParent;
 
 var int iEnum;
-var int button_y_pos, x_pad, y_pad;
+var int button_y_pos, x_pad, y_pad, help_pad;
 
 function CreateControls()
 {
@@ -56,15 +56,38 @@ function MenuUILabelWindow CreateLabel(string label)
     return winLabel;
 }
 
-function AddButton(string text)
+function AddButton(string text, optional string help)
 {
-    local MenuUIActionButtonWindow btn;
+    local MenuUIActionButtonWindow mainBtn;
+    local DXRMenuUIHelpButtonWindow helpBtn;
+    local int mainBtnWidth, helpBtnWidth;
+    local int main_x_pos,help_x_pos;
 
-    btn = MenuUIActionButtonWindow(controlsParent.NewChild(Class'MenuUIActionButtonWindow'));
-    btn.SetButtonText(text);
-    btn.SetPos(x_pad, button_y_pos);
-    button_y_pos += btn.height + y_pad;
-    btn.SetWidth(controlsParent.width - x_pad*2);
+    main_x_pos = x_pad;
+    if (help=="") {
+        helpBtnWidth=0;
+        mainBtnWidth=controlsParent.width - x_pad*2;
+    } else {
+        helpBtnWidth=25;
+        mainBtnWidth=controlsParent.width - helpBtnWidth - help_pad - x_pad*2;
+        help_x_pos = main_x_pos + mainBtnWidth + help_pad;
+    }
+
+    mainBtn = MenuUIActionButtonWindow(controlsParent.NewChild(Class'MenuUIActionButtonWindow'));
+    mainBtn.SetButtonText(text);
+    mainBtn.SetPos(x_pad, button_y_pos);
+    mainBtn.SetWidth(mainBtnWidth);
+
+    if (helpBtnWidth>0) {
+        helpBtn = DXRMenuUIHelpButtonWindow(controlsParent.NewChild(Class'DXRMenuUIHelpButtonWindow'));
+        helpBtn.SetButtonText("?");
+        helpBtn.SetPos(help_x_pos, button_y_pos);
+        helpBtn.SetWidth(helpBtnWidth);
+        helpBtn.SetHelpTitle(text);
+        helpBtn.SetHelpText(help);
+    }
+
+    button_y_pos += mainBtn.height + y_pad;
 
     if(button_y_pos > controlsParent.height) {
         controlsParent.SetHeight(button_y_pos);
@@ -76,17 +99,34 @@ function AddButton(string text)
 function bool ButtonActivated( Window buttonPressed )
 {
     local MenuUIActionButtonWindow button;
+    local DXRMenuUIHelpButtonWindow helpButton;
 
     button = MenuUIActionButtonWindow(buttonPressed);
-    if(button == None) {
+    helpButton = DXRMenuUIHelpButtonWindow(buttonPressed);
+    if(button == None && helpButton == None) {
         return Super.ButtonActivated(buttonPressed);
     }
 
-    //SetTitle(button.buttonText);
-    parent.SetEnumValue(iEnum, button.buttonText);
-    root.PopWindow();
-    return true;
+    if (helpButton!=None) {
+        class'BingoHintMsgBox'.static.Create(root, helpButton.GetHelpTitle(), helpButton.GetHelpText(), 1, False, self);
+        return true;
+    } else {
+        //SetTitle(button.buttonText);
+        parent.SetEnumValue(iEnum, button.buttonText);
+        root.PopWindow();
+        return true;
+    }
 }
+
+//So that the BingoHintMsgBox button can be handled
+event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
+{
+    // Destroy the msgbox!
+    DeusExRootWindow(player.rootWindow).PopWindow();
+
+    return True;
+}
+
 
 defaultproperties
 {
@@ -98,4 +138,5 @@ defaultproperties
     button_y_pos=20
     x_pad=20
     y_pad=10
+    help_pad=10
 }

@@ -29,7 +29,7 @@ function BindControls(optional string action)
 {
     local float difficulty;
     local DXRFlags f;
-    local string sseed, ts;
+    local string sseed, ts, tht;
     local DXRLoadouts loadout;
     local DXRTelemetry t;
     local DXRCrowdControl cc;
@@ -62,8 +62,9 @@ function BindControls(optional string action)
         for(i=0; i < 20; i++) {
             temp = loadout.GetIdForSlot(i);
             ts = loadout.GetName(temp);
+            tht = loadout.LoadoutHelpText(temp);
             if( ts == "" ) continue;
-            EnumOption(ts, temp, f.loadout);
+            EnumOption(ts, temp, f.loadout, tht);
         }
     }
 
@@ -90,15 +91,15 @@ function BindControls(optional string action)
     // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
     autosave_enum = NewMenuItem("Save Behavior", "Saves the game in case you die!");
-    EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave);
-    EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave);
-    EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave);
-    EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave);
-    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave);
-    EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave);
-    EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave);
-    EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave);
-    EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave);
+    EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, GetAutoSaveHelpText(autosave,autosave.EveryEntry));
+    EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, GetAutoSaveHelpText(autosave,autosave.FirstEntry));
+    EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, GetAutoSaveHelpText(autosave,autosave.Hardcore));
+    EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave, GetAutoSaveHelpText(autosave,autosave.ExtraSafe));
+    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave, GetAutoSaveHelpText(autosave,autosave.LimitedSaves));
+    EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave, GetAutoSaveHelpText(autosave,autosave.FixedSaves));
+    EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, GetAutoSaveHelpText(autosave,autosave.UnlimitedFixedSaves));
+    EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, GetAutoSaveHelpText(autosave,autosave.FixedSavesExtreme));
+    EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, GetAutoSaveHelpText(autosave,autosave.Disabled));
 #endif
 
     // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
@@ -225,7 +226,7 @@ function string SetEnumValue(int e, string text)
     return old;
 }
 
-function EnumListAddButton(DXREnumList list, string title, string val, string prev)
+function EnumListAddButton(DXREnumList list, string title, string val, string help, string prev)
 {
     if(title == "Game Mode") {
         if(InStr(prev, "WaltonWare")==-1 && InStr(val, "WaltonWare")!=-1) {
@@ -237,7 +238,7 @@ function EnumListAddButton(DXREnumList list, string title, string val, string pr
             list.CreateLabel("Other game modes");
         }
     }
-    list.AddButton(val);
+    list.AddButton(val, help);
 }
 
 function HandleNewGameButton()
@@ -364,6 +365,35 @@ function NewGameSetup(float difficulty)
         newGame.Init(dxr);
     }
 }
+
+#ifdef injections
+static function string GetAutoSaveHelpText(DXRAutosave autosave, coerce int choice)
+{
+    switch (choice)
+    {
+        case autosave.EveryEntry:
+            return "The game will automatically save after every level transition.  You are allowed to save manually whenever you would like.  Autosaves are cleared when you progress to the next mission.";
+        case autosave.FirstEntry:
+            return "The game will only automatically save the first time you enter a new level.  You are allowed to save manually whenever you would like.  Autosaves are cleared when you progress to the next mission.";
+        case autosave.Hardcore:
+            return "The game will automatically save the first time you enter a level.  No manual saves are allowed.  Autosaves are cleared when you progress to the next mission.";
+        case autosave.ExtraSafe:
+            return "The game will automatically save after every level transition.  You are allowed to save manually whenever you would like.  Autosaves are never cleared.";
+        case autosave.LimitedSaves:
+            return "The game will only autosave once at the start of the game.  Manual saves are allowed at any time, but require a Memory Containment Unit.  Memory Containment Units can be found randomly placed around levels.";
+        case autosave.FixedSaves:
+            return "The game will only autosave once at the start of the game.  Manual saves are only allowed when looking at a computer and require a Memory Containment Unit.  Memory Containment Units can be found randomly placed around levels.";
+        case autosave.UnlimitedFixedSaves:
+            return "The game will only autosave once at the start of the game.  Manual saves are only allowed when looking at a computer, but you are allowed to save as much as you would like.";
+        case autosave.FixedSavesExtreme:
+            return "The game will only autosave once at the start of the game.  Manual saves are only allowed when looking at a computer and require two(?) Memory Containment Units.  Memory Containment Units can be found randomly placed around levels.";
+        case autosave.Disabled:
+            return "The game will not automatically save.  You are allowed to save manually whenever you would like.";
+        default:
+            return ""; //This will mean the help button won't appear
+    }
+}
+#endif
 
 defaultproperties
 {
