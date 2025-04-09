@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: DXRando-linux
-          path: installer/dist/DXRandoInstaller
+          path: src/installer/dist/DXRandoInstaller
 
       - name: Upload installer warnings
         uses: actions/upload-artifact@v4
