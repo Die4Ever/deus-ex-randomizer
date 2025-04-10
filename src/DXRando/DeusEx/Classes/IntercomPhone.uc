@@ -20,7 +20,7 @@ function Timer()
 function Frob(actor Frobber, Inventory frobWith)
 {
     local float rnd;
-    local #var(prefix)Pawn p;
+    local Pawn p;
 
     Super(#var(prefix)ElectronicDevices).Frob(Frobber, frobWith);
 
@@ -32,7 +32,7 @@ function Frob(actor Frobber, Inventory frobWith)
 
     soundId=PlaySound(sound'PhoneBusy', SLOT_Misc,,, 256);
 
-    p = #var(prefix)Pawn(Frobber);
+    p = Pawn(Frobber);
     if(p!=None){
         p.ClientMessage(message);
     }
