@@ -496,7 +496,8 @@ function string LoadoutHelpText(int loadout)
         return "All items and augs are allowed.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 1:
         //SWTP Pure
-        helpText = "The only weapon allowed is the Riot Prod and the Rubber Baton (which is unable to deal damage to anything but the environment).  ";
+        helpText = "For when you want to have a truly miserable time!|n|n";
+        helpText = helpText $ "The only weapon allowed is the Riot Prod and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|n";
         #ifdef injections
         helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
         #else
@@ -506,7 +507,7 @@ function string LoadoutHelpText(int loadout)
         return helpText;
     case 2:
         //SWTP Plus
-        helpText = "The only weapons allowed are the Riot Prod, mini-crossbow (with tranquilizer darts), EMP Grenades, Gas Grenades, Scrambler Grenades, Pepper Spray, and the Rubber Baton (which is unable to deal damage to anything but the environment).  ";
+        helpText = "The only weapons allowed are the Riot Prod, Mini-Crossbow (with Tranquilizer Darts), EMP Grenades, Gas Grenades, Scrambler Grenades, Pepper Spray, and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|n";
         #ifdef injections
         helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
         #else
@@ -516,7 +517,7 @@ function string LoadoutHelpText(int loadout)
         return helpText;
     case 3:
         //Ninja JC
-        helpText = "Become the ninja!  Use throwing knives, swords, mini-crossbows, and grenades to bypass and eliminate your enemies!  ";
+        helpText = "Become the ninja!|n|nUse Throwing Knives, Swords, Mini-Crossbows, and Grenades to bypass and eliminate your enemies!|n|n";
         helpText = helpText $ "Speed Enhancement and Run Silent augmentations are banned, but you start with the Ninja augmentation instead, which combines the functionality of both!";
         return helpText;
     case 4:
@@ -524,47 +525,48 @@ function string LoadoutHelpText(int loadout)
         return "All items and augs are allowed except for the GEP Gun.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 5:
         //Freeman Mode
-        return "The only weapon allowed is the Crowbar.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapon allowed is the Crowbar.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 6:
         //Grenades Only
-        return "The only weapons allowed are grenades and the Rubber Baton (which is unable to deal damage to anything but the environment).  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 7:
         //No Pistols
-        return "All items and augs are allowed except for the Pistol and Stealth Pistol.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the Pistol and Stealth Pistol.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 8:
         //No Swords
-        return "All items and augs are allowed except for the Sword and Dragon Tooth Sword.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the Sword and Dragon Tooth Sword.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 9:
         //Hipster JC
-        helpText = "JC used things before they were cool, so he doesn't want to use them any more.  In terms of weapons, JC won't use the Dragon Tooth Sword, Pistol, Stealth Pistol, GEP Gun, or Laser Modifications.  ";
+        helpText = "JC used things before they were cool, so he doesn't want to use them any more.|n|n";
+        helpText = helpText $ "In terms of weapons, JC won't use the Dragon Tooth Sword, Pistol, Stealth Pistol, GEP Gun, or Laser Modifications.  ";
         helpText = helpText $ "JC also won't use the Speed Enhancement, Power Recirculator, or Regeneration augmentations.  ";
         helpText = helpText $ "You start with the EMP Shield augmentation (JC is using it before it gets cool).";
         return helpText;
     case 10:
         //By the Book
-        return "Follow UNATCO protocol!  All items and augs are allowed except for the Lockpick and Multitool.  The Computers skill is banned to prevent hacking.  You start with the Run Silent augmentation.";
+        return "Follow UNATCO protocol!|n|nAll items and augs are allowed except for Lockpicks and Multitools.  The Computers skill is banned to prevent hacking.|n|nYou start with the Run Silent augmentation.";
     case 11:
         //Explosives Only
-        return "The only weapons allowed are grenades, GEP Gun, Assault Rifle with 20mm ammo, and the Rubber Baton (which is unable to deal damage to anything but the environment).  "$"You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades, GEP Guns, Assault Rifles with 20mm ammo, and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|n"$"You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 12:
         //Random Starting Aug
         return "All items and augs are allowed.  You start with a randomly selected augmentation.";
     case 13:
         //Straight Edge
-        return "All items and augs are allowed except for alcohol, cigarettes, and zyme.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for Alcohol, Cigarettes, and Zyme.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 14:
         //Reduced Aug Set
         return "All items are allowed.  Six randomly selected augs are banned, and you start with a randomly selected augmentation.";
     case 15:
         //The Three Leg Augs
-        return "All items are allowed.  Speed Enhancement and six randomly selected augs are banned.  You start with one of the Running Enhancement, Jump Enhancement, or Run Silent augmentations." $ CR() $ CR() $ "Enables Aug Slot Rando by default.";
+        return "All items are allowed.  Speed Enhancement and six randomly selected augs are banned.  You start with one of the Running Enhancement, Jump Enhancement, or Run Silent augmentations.|n|n"$"Enables Aug Slot Rando by default.";
     case 16:
         //Speed Enhancement
         return "The old-fashioned DXRando experience!  All items and augs are allowed.  You start with the Speed Enhancement augmentation.";
     #ifdef injections
     case 17:
         //My Vision Is Augmented
-        return "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  "$"Running Enhancement and Jump Enhancement augs are also available." $ CR() $ CR() $ "Enables Aug Slot Rando by default.";
+        return "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  "$"Running Enhancement and Jump Enhancement augs are also available.|n|n" $ "Enables Aug Slot Rando by default.";
     #endif
     }
 
