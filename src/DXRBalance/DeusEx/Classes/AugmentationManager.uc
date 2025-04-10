@@ -69,19 +69,16 @@ function Augmentation GetAugByKey(int keyNum)
     return None;
 }
 
-function Augmentation GetAugByName(string augName)
+function Augmentation GetAugByName(coerce string augName)
 {
     local Augmentation anAug;
-    anAug = FirstAug;
-    while(anAug != None)
+    for(anAug = FirstAug; anAug != None; anAug = anAug.next)
     {
-        if (anAug.bHasIt && InStr(anAug.Class.Name,augName) != -1)
-            break;
-
-        anAug = anAug.next;
+        if (anAug.bHasIt && string(anAug.Class.Name) == augName)
+            return anAug;
     }
 
-    return anAug;
+    return None;
 }
 
 // ----------------------------------------------------------------------

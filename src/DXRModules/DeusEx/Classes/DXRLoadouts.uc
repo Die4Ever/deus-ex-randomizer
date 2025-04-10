@@ -681,47 +681,6 @@ function AddAugAllow(class<Augmentation> aug)
     }
 }
 
-function CreateAugmentations(#var(PlayerPawn) p)
-{ // needed for pulling augmentation descriptions
-    local int i;
-
-    for(i=0; i < ArrayCount(item_set.allow_augs); i++) {
-        if( item_set.allow_augs[i] == None ) continue;
-        CreateAugmentation(p, item_set.allow_augs[i]);
-    }
-}
-
-function CreateAugmentation(DeusExPlayer player, class<Augmentation> AddAug)
-{
-    local int augIndex;
-    local Augmentation anAug;
-    local Augmentation LastAug;
-    local AugmentationManager augman;
-
-    augman = player.AugmentationSystem;
-    for(LastAug = augman.FirstAug; LastAug.next != None; LastAug = LastAug.next) {
-        if(LastAug.class == AddAug) return;
-    }
-
-    anAug = Spawn(AddAug, augman);
-    anAug.Player = player;
-
-    if (anAug != None)
-    {
-        if (augman.FirstAug == None)
-        {
-            augman.FirstAug = anAug;
-        }
-        else
-        {
-            LastAug.next = anAug;
-        }
-
-        LastAug  = anAug;
-    }
-}
-
-
 function NeverBanSkill(class<Skill> skill)
 {
     local int i;
@@ -1039,7 +998,6 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     Super.PlayerLogin(p);
 
     RandoStartingEquipment(p, false);
-    CreateAugmentations(p);
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)
