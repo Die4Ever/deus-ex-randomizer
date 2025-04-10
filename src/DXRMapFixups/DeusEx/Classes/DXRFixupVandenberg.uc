@@ -172,6 +172,11 @@ function PreFirstEntryMapFixes()
             sc.memoryTime = sc.Default.memoryTime;
         }
 
+        // mechanics in the comms building shouldn't be cloned
+        foreach AllActors(class'#var(prefix)ScriptedPawn', sp, 'Mechanic') {
+            sp.bImportant = true;
+        }
+
         break;
     //#endregion
 
