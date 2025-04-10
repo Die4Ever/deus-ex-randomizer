@@ -306,7 +306,7 @@ function AddMutualInclusion(int L1, int L2)
         for(k=0; k<num_locations; k++) {
             if(i == k) continue;
             if((locations[k].bitMask & G2) != G2) continue;
-            if(i==L1 || k==L2) AddMutualExclusion(i, k);
+            if(i==L1 ^^ k==L2) AddMutualExclusion(i, k);
         }
     }
     l("AddMutualInclusion: end");
