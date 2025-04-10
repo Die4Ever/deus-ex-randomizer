@@ -403,8 +403,8 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     case 14:
         name = "Reduced Aug Set";
         if(get_name) return name;
+        AddRandomAug(); //get a random aug to start
         BanRandomAugs(6); //18 augs total, ban a third of them
-        AddRandomAug(); //and get a random aug to start
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -420,7 +420,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddAugAllow(class'AugJump');
         AddAugAllow(class'AugOnlySpeed');
 
-        SetGlobalSeed("DXRLoadouts random leg aug");
+        SetGlobalNGPSeed("DXRLoadouts random leg aug");
         switch(rng(3)) {
         case 0: AddStartAug(class'AugOnlySpeed'); break;
         case 1: AddStartAug(class'AugJump'); break;
@@ -448,7 +448,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddAugAllow(class'AugVisionShort');
         AddAugAllow(class'AugInfraVision');
         AddAugAllow(class'AugMotionSensor');
-        SetGlobalSeed("DXRLoadouts my vision is augmented");
+        SetGlobalNGPSeed("DXRLoadouts my vision is augmented");
         switch(rng(3)) {
         case 0: AddStartAug(class'AugVisionShort'); break;
         case 1: AddStartAug(class'AugInfraVision'); break;
@@ -734,7 +734,7 @@ function AddRandomAug()
 
     for(i=0; i < ArrayCount(item_set.starting_augs); i++) {
         if( item_set.starting_augs[i] == None ) {
-            SetGlobalSeed("DXRLoadouts AugRandom " $ i);
+            SetGlobalNGPSeed("DXRLoadouts AugRandom " $ i);
             item_set.starting_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
             return;
         }
@@ -1042,11 +1042,10 @@ function class<Augmentation> GetExtraAug(int i)
 function AddStartingEquipment(DeusExPlayer p, bool bFrob)
 {
     local class<Inventory> iclass;
-    local class<Augmentation> aclass;
     local Inventory item;
-    local Ammo a;
-    local DeusExWeapon w;
-    local int i, k, auglevel;
+    //local Ammo a;
+    //local DeusExWeapon w;
+    local int i;
 
     for(i=0; i < ArrayCount(item_set.starting_equipment); i++) {
         iclass = item_set.starting_equipment[i];
@@ -1058,6 +1057,14 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
         item = GiveItem( p, iclass );
         if( bFrob && item != None ) item.Frob( p, None );
     }
+
+    AddStartingAugs(p);
+}
+
+function AddStartingAugs(DeusExPlayer p)
+{
+    local int i, auglevel;
+    local class<Augmentation> aclass;
 
     auglevel = dxr.flags.settings.speedlevel;
     if(dxr.flags.IsHalloweenMode()) {

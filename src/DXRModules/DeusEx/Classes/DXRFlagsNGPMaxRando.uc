@@ -153,6 +153,7 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
+    local DXRLoadouts loadouts;
     local int i, bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay;
     local float exp;
     local int randomStart;
@@ -278,6 +279,10 @@ function NewGamePlus()
     for (i = 0; i < augsToRemove; i++)
         if( augs != None )
             augs.RemoveRandomAug(p);
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if(loadouts != None) {// maybe the player uninstalled Running Enhancement in favor of Speed Enhancement, but it just got taken away
+        loadouts.AddStartingAugs(p);
+    }
 
     MaxMultipleItems(p, newgameplus_max_item_carryover);
 
