@@ -88,7 +88,7 @@ function int InitGoals(int mission, string map)
 
         // lucky money and market
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
-        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Gordon at Market", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
+        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Compound Doors", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
         AddMutualInclusion(gloc, dts_vanilla_loc);
 
@@ -248,6 +248,7 @@ function AnyEntry()
     switch(dxr.localURL) {
     case "06_HONGKONG_WANCHAI_MARKET":
         UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
+        MoveGordonLouisConvosToPhone();
         break;
     case "06_HONGKONG_TONGBASE":
         UpdateGoalWithRandoInfo('GetROM', "The computer with the ROM-encoding could be anywhere in the lab.");
@@ -297,9 +298,108 @@ function DeleteGoal(Goal g, GoalLocation Loc)
     }
     else if (g.name=="Gordon Quick"){
         g.actors[0].a.SetLocation(vectm(-1418.708130, 2.011429, 2095.588867)); // next to Max Chen on top of the building
+        if (Loc.Name!="Compound Doors") {
+            CreateGordonPhone();
+        }
         return; // don't call Super
     }
     Super.DeleteGoal(g, Loc);
+}
+
+function IntercomPhone FindGordonPhone()
+{
+    local IntercomPhone gPhone;
+
+    foreach AllActors(class'IntercomPhone',gPhone){
+        if (gPhone.BindName=="GordonQuickPhone"){
+            return gPhone;
+        }
+    }
+    return None;
+}
+
+function CreateGordonPhone()
+{
+    local IntercomPhone gPhone;
+    local vector gPhoneLoc;
+    local rotator gPhoneRot;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps){
+        return; //No location defined yet
+    } else {
+        gPhoneLoc=vect(-100,684,72);
+        gPhoneRot=rot(0,0,-16384);
+    }
+
+    //Vanilla only, for now
+    gPhone = FindGordonPhone();
+    if (gPhone!=None) return;
+
+    gPhone = IntercomPhone(AddActor(class'IntercomPhone',gPhoneLoc,gPhoneRot));
+    gPhone.SetPhysics(PHYS_None);
+    gPhone.SetCollisionSize(gPhone.CollisionRadius,gPhone.CollisionHeight*3);
+    gPhone.BindName="GordonQuickPhone";
+    gPhone.FamiliarName="Gordon Quick Intercom";
+    gPhone.UnfamiliarName=gPhone.FamiliarName;
+    gPhone.message="No response...  Better go find Gordon";
+    gPhone.ConBindEvents();
+}
+
+function MoveGordonLouisConvosToPhone()
+{
+    local IntercomPhone gPhone;
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+
+    gPhone = FindGordonPhone();
+
+    if (gPhone==None) return; //Only rebind these conversations if the phone exists
+
+    //KidAsksForHelp
+    c = GetConversation('KidAsksForHelp');
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_Speech){
+            ces = ConEventSpeech(ce);
+
+            if (ces.speakerName=="GordonQuick"){
+                ces.speakerName=gPhone.BindName;
+                ces.speaker=gPhone;
+            }
+            if (ces.speakingToName=="GordonQuick"){
+                ces.speakingToName=gPhone.BindName;
+                ces.speakingTo=gPhone;
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+
+    //KidSetsFire
+    c = GetConversation('KidSetsFire');
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_Speech){
+            ces = ConEventSpeech(ce);
+
+            if (ces.speakerName=="GordonQuick"){
+                ces.speakerName=gPhone.BindName;
+                ces.speaker=gPhone;
+            }
+            if (ces.speakingToName=="GordonQuick"){
+                ces.speakingToName=gPhone.BindName;
+                ces.speakingTo=gPhone;
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+    gPhone.ConBindEvents();
+
 }
 
 function GenerateDTSHintCube(Goal g, GoalLocation Loc)
