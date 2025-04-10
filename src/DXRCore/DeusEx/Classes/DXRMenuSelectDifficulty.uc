@@ -29,15 +29,8 @@ function BindControls(optional string action)
 {
     local float difficulty;
     local DXRFlags f;
-    local string sseed, ts, tht;
-    local DXRLoadouts loadout;
-    local DXRTelemetry t;
-    local DXRCrowdControl cc;
+    local string sseed, name, help;
     local int temp, i;
-#ifdef injections
-    local DXRAutosave autosave;
-    local bool mirrored_maps_files_found;
-#endif
 
     f = GetFlags();
     if(writing) {
@@ -48,26 +41,13 @@ function BindControls(optional string action)
     for(i=0; i<50; i++) {
         temp = f.GameModeIdForSlot(i);
         if(temp==999999) continue;
-        ts = f.GameModeName(temp);
-        tht = f.GameModeHelpText(temp);
-        if(ts != "")
-            EnumOption(ts, temp, f.gamemode, tht);
+        name = f.GameModeName(temp);
+        help = f.GameModeHelpText(temp);
+        if(name != "")
+            EnumOption(name, temp, f.gamemode, help);
     }
 
-    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
-    loadout_enum = NewMenuItem("Loadout", "Which items and augs you start with and which are banned.");
-    foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
-    if( loadout == None )
-        EnumOption("All Items Allowed", 0, f.loadout);
-    else {
-        for(i=0; i < 20; i++) {
-            temp = loadout.GetIdForSlot(i);
-            ts = loadout.GetName(temp);
-            tht = loadout.LoadoutHelpText(temp);
-            if( ts == "" ) continue;
-            EnumOption(ts, temp, f.loadout, tht);
-        }
-    }
+    loadout_enum = CreateLoadoutEnum(self, f);
 
     if( #defined(vmd) )
         difficulty_enum = NewMenuItem("Randomizer Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
@@ -86,73 +66,12 @@ function BindControls(optional string action)
 
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
         EnumOption(f.DifficultyName(i), i, f.difficulty);
-    }// we write the difficulty and gamemode after setting the seed...
+    }// we call SetDifficulty to apply the difficulty and game mode after setting the seed, below
 
-#ifdef injections
-    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
-    foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
-    autosave_enum = NewMenuItem("Save Behavior", "Saves the game in case you die!");
-    EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
-    EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.FirstEntry));
-    EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
-    EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave, autosave.GetAutoSaveHelpText(autosave.ExtraSafe));
-    EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.LimitedSaves));
-    EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSaves));
-    EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
-    EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
-    EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
-#endif
-
-    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
-    NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $BR$ "See their website crowdcontrol.live");
-    //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
-    EnumOption("Enabled (Streaming)", 1, f.crowdcontrol);
-    EnumOption("Offline Simulated", 3, f.crowdcontrol);
-    EnumOption("Streaming and Simulated", 4, f.crowdcontrol);
-    EnumOption("Disabled", 0, f.crowdcontrol);
-
-    foreach f.AllActors(class'DXRTelemetry', t) { break; }
-    if( t == None ) t = f.Spawn(class'DXRTelemetry');
-    t.CheckConfig();
-    if(t.enabled && t.death_markers)
-        temp = 2;
-    else if(t.enabled)
-        temp = 1;
-    else
-        temp = 0;
-    NewMenuItem("Online Features", "Death Markers, send error reports,"$BR$" and get notified about updates!");
-    if( EnumOption("All Enabled", 2, temp) ) {
-        t.set_enabled(true, true);
-    }
-    if( EnumOption("Enabled, Death Markers Hidden", 1, temp) ) {
-        t.set_enabled(true, false);
-    }
-    if( EnumOption("Disabled", 0, temp) ) {
-        t.set_enabled(false, true);
-    }
-
-#ifdef injections
-    // KEEP IN SYNC WITH DXRMenuReSetupRando.uc
-    mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
-
-    if(mirrored_maps_files_found) {
-        mirroredmaps_wnd = NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
-        if(f.mirroredmaps == -1 && f.IsZeroRando()) {
-            f.mirroredmaps = 0; // default to 0% because of Zero Rando
-        } else if(f.mirroredmaps == -1) {
-            f.mirroredmaps = 50; // default to 50% when the files are installed
-        }
-        Slider(f.mirroredmaps, 0, 100);
-    } else {
-        // use -1 to indicate not installed, because this gets saved to the config
-        f.mirroredmaps = -1;
-        NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
-        EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
-    }
-#else
-    //Disable mirrored maps entirely if map variants aren't supported
-    f.mirroredmaps=-1;
-#endif
+    autosave_enum = CreateAutosaveEnum(self, f);
+    CreateCrowdControlEnum(self, f);
+    CreateOnlineFeaturesEnum(self, f);
+    mirroredmaps_wnd = CreateMirroredMapsSlider(self, f);
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
     sseed = EditBox("", "1234567890");
@@ -177,6 +96,118 @@ function BindControls(optional string action)
             HandleNewGameButton();
         }
     }
+}
+
+static function int CreateLoadoutEnum(DXRMenuBase slf, DXRFlags f)
+{
+    local DXRLoadouts loadout;
+    local int loadout_enum, slot, id;
+    local string name, help;
+
+    loadout_enum = slf.NewMenuItem("Loadout", "Which items and augs you start with and which are banned.");
+    foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
+    if( loadout == None )
+        slf.EnumOption("All Items Allowed", 0, f.loadout);
+    else {
+        for(slot = 0; slot < 30; slot++) {
+            id = loadout.GetIdForSlot(slot);
+            if(id < 0) break;
+            name = loadout.GetName(id);
+            help = loadout.LoadoutHelpText(id);
+            if( name == "" ) continue;
+            slf.EnumOption(name, id, f.loadout, help);
+        }
+    }
+    return loadout_enum;
+}
+
+static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
+{
+#ifdef injections
+    local DXRAutosave autosave;
+    local int autosave_enum;
+
+    foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
+    autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
+    slf.EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
+    slf.EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.FirstEntry));
+    slf.EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
+    slf.EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave, autosave.GetAutoSaveHelpText(autosave.ExtraSafe));
+    slf.EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.LimitedSaves));
+    slf.EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSaves));
+    slf.EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
+    slf.EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
+    slf.EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
+    return autosave_enum;
+#endif
+}
+
+static function int CreateCrowdControlEnum(DXRMenuBase slf, DXRFlags f)
+{
+    local int e;
+
+    e = slf.NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $Chr(10)$ "See their website crowdcontrol.live");
+    //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
+    slf.EnumOption("Enabled (Streaming)", 1, f.crowdcontrol);
+    slf.EnumOption("Offline Simulated", 3, f.crowdcontrol);
+    slf.EnumOption("Streaming and Simulated", 4, f.crowdcontrol);
+    slf.EnumOption("Disabled", 0, f.crowdcontrol);
+    return e;
+}
+
+static function int CreateOnlineFeaturesEnum(DXRMenuBase slf, DXRFlags f)
+{
+    local DXRTelemetry t;
+    local int temp, e;
+
+    foreach f.AllActors(class'DXRTelemetry', t) { break; }
+    if( t == None ) t = f.Spawn(class'DXRTelemetry');
+    t.CheckConfig();
+    if(t.enabled && t.death_markers)
+        temp = 2;
+    else if(t.enabled)
+        temp = 1;
+    else
+        temp = 0;
+    e = slf.NewMenuItem("Online Features", "Death Markers, send error reports,"$Chr(10)$" and get notified about updates!");
+    if( slf.EnumOption("All Enabled", 2, temp) ) {
+        t.set_enabled(true, true);
+    }
+    if( slf.EnumOption("Enabled, Death Markers Hidden", 1, temp) ) {
+        t.set_enabled(true, false);
+    }
+    if( slf.EnumOption("Disabled", 0, temp) ) {
+        t.set_enabled(false, true);
+    }
+    return e;
+}
+
+static function int CreateMirroredMapsSlider(DXRMenuBase slf, DXRFlags f)
+{
+    local bool mirrored_maps_files_found;
+    local int mirroredmaps_wnd;
+#ifdef injections
+    mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
+
+    if(mirrored_maps_files_found) {
+        mirroredmaps_wnd = slf.NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
+        if(f.mirroredmaps == -1 && f.IsZeroRando()) {
+            f.mirroredmaps = 0; // default to 0% because of Zero Rando
+        } else if(f.mirroredmaps == -1) {
+            f.mirroredmaps = 50; // default to 50% when the files are installed
+        }
+        slf.Slider(f.mirroredmaps, 0, 100);
+    } else {
+        // use -1 to indicate not installed, because this gets saved to the config
+        f.mirroredmaps = -1;
+        slf.NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
+        slf.EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
+    }
+#else
+    //Disable mirrored maps entirely if map variants aren't supported
+    f.mirroredmaps=-1;
+#endif
+    return mirroredmaps_wnd;
 }
 
 function string SetEnumValue(int e, string text)
@@ -245,7 +276,18 @@ function EnumListAddButton(DXREnumList list, string title, string val, string he
             list.CreateLabel("Other game modes");
         }
     }
+    else if(title == "Loadout") {
+        LoadoutsGrouping(list, val, prev);
+    }
     list.AddButton(val, help);
+}
+
+static function LoadoutsGrouping(DXREnumList list, string val, string prev)
+{
+    if(InStr(prev, "Stick With the Prod")==-1 && InStr(val, "Stick With the Prod")!=-1)
+        list.CreateLabel("Challenge Loadouts");
+    else if(val == "Ninja JC")
+        list.CreateLabel("Silly Loadouts");
 }
 
 function HandleNewGameButton()

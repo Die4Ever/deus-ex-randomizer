@@ -59,27 +59,33 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+//#region GetIdForSlot
 function int GetIdForSlot(int i)
 {
-    switch(i) {
-        case 0: return 0;
-        case 1: return 2;
-        case 2: return 1;
-        case 3: return 3;
-        case 4: return 10;
-        case 5: return 9;
-        case 6: return 4;
-        case 7: return 7;
-        case 8: return 8;
-        case 9: return 6;
-        case 10: return 5;
-        case 11: return 11;
-        case 12: return 13;
-        case 13: return 14;
-        case 14: return 12;
-    }
-    return i;
+    if(i-- == 0) return 0; // All Items Allowed
+    if(i-- == 0) return 16; // Speed Enhancement
+    if(i-- == 0) return 12; // Random Starting Aug
+    if(i-- == 0) return 14; // Reduced Aug Set
+    if(i-- == 0) return 15; // The Three Leg Augs
+    if(i-- == 0) return 17; // My Vision Is Augmented
+
+    if(i-- == 0) return 2; // Stick With the Prod Plus
+    if(i-- == 0) return 1; // Stick With the Prod Pure
+    if(i-- == 0) return 9; // Hipster JC
+    if(i-- == 0) return 10; // By the Book
+    if(i-- == 0) return 4; // Don't Give Me the GEP Gun
+    if(i-- == 0) return 6; // Grenades Only
+    if(i-- == 0) return 7; // No Pistols
+    if(i-- == 0) return 8; // No Swords
+    if(i-- == 0) return 5; // Freeman Mode
+
+    if(i-- == 0) return 3; // Ninja JC
+    if(i-- == 0) return 11; // Explosives Only
+    if(i-- == 0) return 13; // Straight Edge
+
+    return -1;
 }
+//#endregion
 
 function string LoadoutInfo(int loadout, optional bool get_name)
 {
@@ -378,7 +384,6 @@ function string LoadoutInfo(int loadout, optional bool get_name)
 /////////////////////////////////////////////////////////////////
     //#region Random Aug
     case 12:
-        // loadout for random starting aug
         name = "Random Starting Aug";
         if(get_name) return name;
         AddRandomAug();
