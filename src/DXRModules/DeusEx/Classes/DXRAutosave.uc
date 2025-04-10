@@ -390,23 +390,23 @@ function string GetAutoSaveHelpText(coerce int choice)
     switch (choice)
     {
         case EveryEntry:
-            return "The game will automatically save after every level transition.  You are allowed to save manually whenever you would like.  Autosaves are cleared when you progress to the next mission, except for the very first autosave of the mission.";
+            return "The game will automatically save after every level transition.|n|nYou are allowed to save manually whenever you would like.|n|nAutosaves are cleared when you progress to the next mission, except for the very first autosave of the mission.";
         case FirstEntry:
-            return "The game will only automatically save the first time you enter a new level.  You are allowed to save manually whenever you would like.  Autosaves are cleared when you progress to the next mission, except for the very first autosave of the mission.";
+            return "The game will only automatically save the first time you enter a new level.|n|nYou are allowed to save manually whenever you would like.|n|nAutosaves are cleared when you progress to the next mission, except for the very first autosave of the mission.";
         case Hardcore:
-            return "The game will automatically save the first time you enter a level.  No manual saves are allowed.  Autosaves are cleared when you progress to the next mission, except for the very first autosave of the mission.";
+            return "The game will automatically save the first time you enter a level.|n|nNo manual saves are allowed.|n|nAutosaves are cleared when you progress to the next mission, except for the very first autosave of the mission.";
         case ExtraSafe:
-            return "The game will automatically save after every level transition.  You are allowed to save manually whenever you would like.  Autosaves are never cleared.";
+            return "The game will automatically save after every level transition.|n|nYou are allowed to save manually whenever you would like.|n|nAutosaves are never cleared.";
         case LimitedSaves:
-            return "The game will only autosave once at the start of the game.  Manual saves are allowed at any time, but require a Memory Containment Unit.  Memory Containment Units can be found randomly placed around levels.";
+            return "The game will only autosave once at the start of the game.|n|nManual saves are allowed at any time, but require a Memory Containment Unit.|n|nMemory Containment Units can be found randomly placed around levels.";
         case FixedSaves:
-            return "The game will only autosave once at the start of the game.  Manual saves are only allowed when looking at a computer and require a Memory Containment Unit.  Memory Containment Units can be found randomly placed around levels.";
+            return "The game will only autosave once at the start of the game.|n|nManual saves are only allowed when looking at a computer and require a Memory Containment Unit.|n|nMemory Containment Units can be found randomly placed around levels.";
         case UnlimitedFixedSaves:
-            return "The game will only autosave once at the start of the game.  Manual saves are only allowed when looking at a computer, but you are allowed to save as much as you would like.";
+            return "The game will only autosave once at the start of the game.|n|nManual saves are only allowed when looking at a computer, but you are allowed to save as much as you would like.";
         case FixedSavesExtreme:
-            return "The game will only autosave once at the start of the game.  Manual saves are only allowed when looking at a computer and require two(?) Memory Containment Units.  Memory Containment Units can be found randomly placed around levels.";
+            return "The game will only autosave once at the start of the game.|n|nManual saves are only allowed when looking at a computer and require two Memory Containment Units.|n|nMemory Containment Units can be found randomly placed around levels.";
         case Disabled:
-            return "The game will not automatically save.  You are allowed to save manually whenever you would like.";
+            return "The game will not automatically save.|n|nYou are allowed to save manually whenever you would like.";
         default:
             return ""; //This will mean the help button won't appear
     }
