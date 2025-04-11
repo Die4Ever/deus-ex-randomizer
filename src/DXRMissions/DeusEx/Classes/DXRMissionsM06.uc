@@ -443,10 +443,13 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     case "Gordon Quick":
         gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = gordon;
+        GiveItem(gordon,class'WeaponAssaultShotgun',100);
+        GiveItem(gordon,class'WeaponSword');
+        GiveItem(gordon,class'WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
+        gordon.bKeepWeaponDrawn = True;
         gordon.SetOrders('Standing');
         gordon.BarkBindName = "TriadLumPath";
         gordon.ConBindEvents();
-        gordon.bKeepWeaponDrawn = True;
         break;
     }
 }
