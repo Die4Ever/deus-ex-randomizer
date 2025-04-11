@@ -964,13 +964,11 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
         case 66:
             AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
-            AddGoalFromConv(player, 'GetSword', 'DL_Tong_00B');
             break;
         case 65:
             AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
             AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
             AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00');
-            AddGoalFromConv(player, 'GetSword', 'DL_Tong_00B');
             break;
         case 64:
         case 63:
