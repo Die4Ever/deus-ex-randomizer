@@ -33,6 +33,8 @@ function UpdateBalance()
 defaultproperties
 {
     bAutomatic=true
+    AutoLength=1
+    AutoEnergyMult=1
     LevelValues(0)=0.7
     LevelValues(1)=0.4
     LevelValues(2)=0.2
