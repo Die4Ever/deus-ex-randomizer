@@ -349,6 +349,10 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'CathMilitaryBotTrigger'){
+            ot.SetCollision(false,false,false);
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)Teleporter',tele){
                 if (tele.URL=="11_Paris_Underground#Paris_Underground"){
