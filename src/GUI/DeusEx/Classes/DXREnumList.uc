@@ -6,6 +6,7 @@ var Window controlsParent;
 
 var int iEnum;
 var int button_y_pos, x_pad, y_pad, help_pad;
+var bool bLeftEdgeShort;
 
 function CreateControls()
 {
@@ -127,6 +128,15 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     return True;
 }
 
+function CreateLeftEdgeWindow()
+{
+    Super.CreateLeftEdgeWindow();
+    if (bLeftEdgeActive && bLeftEdgeShort) {
+        //Instead of default 16, moves the left edge up to the bottom edge of the window,
+        //since there is no button on the left side
+        winLeftEdge.bottomHeight=36;
+    }
+}
 
 defaultproperties
 {
@@ -139,4 +149,5 @@ defaultproperties
     x_pad=20
     y_pad=10
     help_pad=10
+    bLeftEdgeShort=true
 }
