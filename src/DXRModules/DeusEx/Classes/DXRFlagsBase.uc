@@ -52,7 +52,7 @@ struct FlagsSettings {
     var int minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
     var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
     var int keys_containers, infodevices_containers;
-    var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
+    var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
     var int enemiesrandomized, hiddenenemiesrandomized, enemystats, enemiesshuffled, enemyrespawn, infodevices, bot_weapons, bot_stats;
     var int dancingpercent;
     var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
@@ -72,13 +72,13 @@ struct FlagsSettings {
     var int spoilers; //0=Disallowed, 1=Available
     var int menus_pause; // 0=no pause, 1=vanilla
     var int starting_map;
+    var int grenadeswap;
 
     // leave these at the end for the automated tests
     var int health, energy;// normally just 100
 };
 
 struct MoreFlagsSettings{
-    var int grenadeswap;
     var int newgameplus_curve_scalar;
     var int empty_medbots;
     var int camera_mode;
@@ -91,14 +91,6 @@ struct MoreFlagsSettings{
 
 var #var(flagvarprefix) FlagsSettings settings;
 var #var(flagvarprefix) MoreFlagsSettings moresettings;
-
-const undefeatabledoors = 256;//1*256;
-const alldoors = 512;//2*256;
-const keyonlydoors = 768;//3*256;
-const highlightabledoors = 1024;//4*256;
-const doormutuallyinclusive = 1;
-const doorindependent = 2;
-const doormutuallyexclusive = 3;
 
 var bool flags_loaded;
 var int stored_version;
@@ -370,7 +362,6 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_infodevices', settings.infodevices, mode, str);
     FlagInt('Rando_infodevices_containers', settings.infodevices_containers, mode, str);
     FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
-    FlagInt('Rando_doorsmode', settings.doorsmode, mode, str);
     FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
     if(!FlagInt('Rando_reanimation', moresettings.reanimation, mode, str) && mode==Reading && dxr.flags.IsHalloweenMode()) {
         moresettings.reanimation = settings.enemyrespawn;
@@ -429,7 +420,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_energy', settings.energy, mode, str);
 
     FlagInt('Rando_starting_map', settings.starting_map, mode, str);
-    FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
+    FlagInt('Rando_grenadeswap', settings.grenadeswap, mode, str);
 
     FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
     FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
@@ -529,8 +520,6 @@ simulated function string flagNameToHumanName(name flagname){
             return "Datacubes can be swapped with containers";
         case 'Rando_dancingpercent':
             return "Dancing";
-        case 'Rando_doorsmode':
-            return "Doors Mode"; ///////////////Might need adjustment?//////////////////
         case 'Rando_enemyrespawn':
             return "Enemy Respawn Time";
         case 'Rando_reanimation':
@@ -912,41 +901,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return val $ " Missions";
             }
             break;
-
-        //Weird, handle later
-        case 'Rando_doorsmode':
-            if(val == 0) {
-                return "Unchanged";
-            }
-            switch(val/256*256) {
-            case undefeatabledoors:
-                ret = "undefeatable";
-                break;
-            case alldoors:
-                ret = "all";
-                break;
-            case keyonlydoors:
-                ret = "key-only";
-                break;
-            case highlightabledoors:
-                ret = "highlightable";
-                break;
-            default:
-                err("Rando_doorsmode upper bits " $ (val/256*256) $ " (Unhandled!)");
-                ret = (val/256*256) $ " (Unhandled!)";
-                break;
-            }
-            ret = ret $ " / ";
-            switch(val%256) {
-                case doormutuallyinclusive: return ret $ "mutually inclusive";
-                case doorindependent: return ret $ "independent";
-                case doormutuallyexclusive: return ret $ "mutually exclusive";
-                default:
-                    err("Rando_doorsmode lower bits " $ (val%256) $ " (Unhandled!)");
-                    return ret $ (val%256) $ " (Unhandled!)";
-            }
-            err("Rando_doorsmode " $ val $ " unhandled");
-            return val $ " (Unhandled!)";
 
         case 'Rando_doorspickable':
         case 'Rando_doorsdestructible':

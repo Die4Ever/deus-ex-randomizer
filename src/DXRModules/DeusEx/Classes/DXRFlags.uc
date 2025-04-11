@@ -131,7 +131,6 @@ function CheckConfig()
     difficulty_names[i] = "Super Easy QA";
     vanilla_difficulty_names[i] = "Super Easy QA";
     difficulty_settings[i].CombatDifficulty = 0;
-    difficulty_settings[i].doorsmode = alldoors + doormutuallyinclusive;
     difficulty_settings[i].doorsdestructible = 100;
     difficulty_settings[i].doorspickable = 100;
     difficulty_settings[i].keysrando = 4;
@@ -193,7 +192,7 @@ function CheckConfig()
     difficulty_settings[i].health = 200;
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -209,7 +208,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Easy";
     difficulty_settings[i].CombatDifficulty = 1.3;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
     difficulty_settings[i].doorsdestructible = 100;
     difficulty_settings[i].doorspickable = 100;
     difficulty_settings[i].keysrando = 4;
@@ -271,7 +269,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -286,7 +284,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Medium";
     difficulty_settings[i].CombatDifficulty = 2;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 40;
     difficulty_settings[i].doorspickable = 40;
     difficulty_settings[i].keysrando = 4;
@@ -348,7 +345,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -363,7 +360,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Hard";
     difficulty_settings[i].CombatDifficulty = 3;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
     difficulty_settings[i].doorspickable = 25;
     difficulty_settings[i].keysrando = 4;
@@ -425,7 +421,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -440,7 +436,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Realistic";
     difficulty_settings[i].CombatDifficulty = 4;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
     difficulty_settings[i].doorspickable = 25;
     difficulty_settings[i].keysrando = 4;
@@ -502,7 +497,7 @@ function CheckConfig()
     difficulty_settings[i].health = 90;
     difficulty_settings[i].energy = 80;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -557,7 +552,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         }
     }
     else if(IsReducedRando()) {
-        settings.doorsmode = 0;
         settings.doorsdestructible = 0;
         settings.doorspickable = 0;
         settings.keysrando = 0;
@@ -617,7 +611,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.repairbotamount = 0;
             settings.medbotuses = 0;
             settings.repairbotuses = 0;
-            moresettings.grenadeswap = 0;
+            settings.grenadeswap = 0;
             // disable NG+ by default
             moresettings.newgameplus_curve_scalar = -1;
         } else {
@@ -654,7 +648,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     }
     else if(IsSpeedrunMode()) {
         // same doors rules as Normal difficulty
-        settings.doorsmode = undefeatabledoors + doormutuallyinclusive;
         settings.doorsdestructible = 100;
         settings.doorspickable = 100;
 
@@ -1087,7 +1080,6 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
         settings.swapitems = 0;
         settings.swapcontainers = 0;
         settings.deviceshackable = 0;
-        settings.doorsmode = 0;
         settings.doorsdestructible = 0;
         settings.doorspickable = 0;
         settings.medbots = -1;// -1 means vanilla, 0 means none at all
@@ -1147,7 +1139,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
 
     settings.aug_value_rando = 0;*/
 
-    moresettings.grenadeswap = 0;
+    settings.grenadeswap = 0;
 }
 
 //Nothing fancy happening here, but gives a consistent place to change how we want to clamp across

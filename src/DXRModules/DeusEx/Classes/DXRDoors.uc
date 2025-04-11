@@ -273,7 +273,7 @@ function FirstEntry()
     Super.FirstEntry();
 
     RandomizeDoors();
-    AdjustRestrictions(dxr.flags.settings.doorsmode, dxr.flags.settings.doorspickable, dxr.flags.settings.doorsdestructible, dxr.flags.settings.deviceshackable);
+    AdjustRestrictions(dxr.flags.settings.doorspickable, dxr.flags.settings.doorsdestructible, dxr.flags.settings.deviceshackable);
 
     // copy to pairs/sets of doors
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
@@ -320,27 +320,12 @@ function RandomizeDoors()
     }
 }
 
-function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructible, int deviceshackable)
+function AdjustRestrictions(int doorspickable, int doorsdestructible, int deviceshackable)
 {
     local Keypoint kp;
     SetSeed( "AdjustRestrictions" );
 
-    switch( (doorsmode/256) ) {
-        case 1:
-            AdjustUndefeatableDoors(doorsmode%256, doorspickable, doorsdestructible);
-            break;
-        case 2:
-            AdjustAllDoors(doorsmode%256, doorspickable, doorsdestructible);
-            break;
-        case 3:
-            AdjustKeyOnlyDoors(doorsmode%256, doorspickable, doorsdestructible);
-            break;
-        case 4:
-            AdjustHighlightableDoors(doorsmode%256, doorspickable, doorsdestructible);
-            break;
-        default:
-            break;
-    }
+    AdjustUndefeatableDoors(doorspickable, doorsdestructible);
 
     ApplyDoorFixes();
 }
@@ -375,7 +360,7 @@ function ApplyDoorFixes()
     }
 }
 
-function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
+function AdjustUndefeatableDoors(int doorspickable, int doorsdestructible)
 {
     local #var(DeusExPrefix)Mover d;
 
@@ -383,83 +368,17 @@ function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doo
     {
         if( DoorIsPickable(d) || d.bBreakable ) continue;
         if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
-        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
+        AdjustDoor(d, doorspickable, doorsdestructible);
     }
 }
 
-function AdjustAllDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
+function AdjustDoor(#var(DeusExPrefix)Mover d, int doorspickable, int doorsdestructible)
 {
-    local #var(DeusExPrefix)Mover d;
-
-    foreach AllActors(class'#var(DeusExPrefix)Mover', d)
-    {
-        if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
-        if( d.bHighlight == false || d.bFrobbable == false ) {
-            d.bPickable = false;
-            d.bLocked = true;
-            d.bHighlight = true;
-            d.bFrobbable = true;
-        }
-        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
+    if( chance_single(doorspickable) ) {
+        MakePickable(d);
     }
-}
-
-function AdjustKeyOnlyDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
-{
-    local #var(DeusExPrefix)Mover d;
-
-    foreach AllActors(class'#var(DeusExPrefix)Mover', d)
-    {
-        if( d.bHighlight == false || d.bFrobbable == false ) continue;
-        if( d.KeyIDNeeded == 'None' || DoorIsPickable(d) || d.bBreakable ) continue;
-        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
-    }
-}
-
-function AdjustHighlightableDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
-{
-    local #var(DeusExPrefix)Mover d;
-
-    foreach AllActors(class'#var(DeusExPrefix)Mover', d)
-    {
-        if( d.bHighlight == false || d.bFrobbable == false ) continue;
-        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
-    }
-}
-
-function AdjustDoor(#var(DeusExPrefix)Mover d, int exclusivitymode, int doorspickable, int doorsdestructible)
-{
-    local float r;
-    switch(exclusivitymode) {
-        // mutually inclusive (they always go together)
-        case 1:
-            if( chance_single( (doorspickable + doorsdestructible) / 2 ) ) {
-                MakePickable(d);
-                MakeDestructible(d);
-            }
-            break;
-        // independent
-        case 2:
-            if( chance_single(doorspickable) ) {
-                MakePickable(d);
-            }
-            if( chance_single(doorsdestructible) ) {
-                MakeDestructible(d);
-            }
-            break;
-        // mutually exclusive
-        case 3:
-            r = initchance();
-            if( chance(doorspickable, r) ) {
-                MakePickable(d);
-            }
-            if( chance(doorsdestructible, r) ) {
-                MakeDestructible(d);
-            }
-            chance_remaining(r);
-            break;
-        default:
-            break;
+    if( chance_single(doorsdestructible) ) {
+        MakeDestructible(d);
     }
 }
 
