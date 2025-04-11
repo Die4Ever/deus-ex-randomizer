@@ -349,9 +349,6 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'CathMilitaryBotTrigger'){
-            ot.SetCollision(false,false,false);
-        }
 
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)Teleporter',tele){
@@ -359,6 +356,9 @@ function PreFirstEntryMapFixes()
                     tele.SetCollisionSize(tele.CollisionRadius,120); //Twice as tall, so you can't crouch under
                 }
 
+            }
+            foreach AllActors(class'#var(injectsprefix)OrdersTrigger',ot,'CathMilitaryBotTrigger'){
+                ot.SetCollision(false,false,false);
             }
         } else {
             //Items in an unopenable shop window (Nutella store)
