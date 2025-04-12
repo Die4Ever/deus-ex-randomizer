@@ -122,6 +122,7 @@ function InitDefaults()
     }
 }
 
+//#region difficulty defaults
 function CheckConfig()
 {
     local int i;
@@ -515,6 +516,7 @@ function CheckConfig()
 
     Super.CheckConfig();
 }
+//#endregion
 
 function FlagsSettings GetDifficulty(int diff)
 {
@@ -525,6 +527,7 @@ function MoreFlagsSettings GetMoreDifficulty(int diff)
     return more_difficulty_settings[diff];
 }
 
+//#region SetDifficulty
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
     difficulty = new_difficulty;
@@ -754,6 +757,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     return settings;
 }
+//#endregion
 
 function string DifficultyName(int diff)
 {
@@ -860,17 +864,20 @@ function string GameModeName(int gamemode)
     return "";
 }
 
+//#region GameModeHelpText
 function string GameModeHelpText(int gamemode)
 {
     local string s;
     switch(gamemode) {
     case FullRando:
         s =   "The FULL Randomizer experience.  Randomizes:|n";
+        s = s$"|n";
         s = s$"  ~ Goal Locations|n";
         s = s$"  ~ Computer Passwords and Keypad Codes|n";
-        s = s$"  ~ Skill strength and cost|n";
-        s = s$"  ~ Augmentation strength|n";
-        s = s$"  ~ Item Locations|n";
+        s = s$"  ~ Skill Strength and Cost|n";
+        s = s$"  ~ Augmentation Strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Item Locations and Quantities|n";
         s = s$"  ~ Datacube Locations|n";
         s = s$"  ~ Nanokey Locations|n";
         s = s$"  ~ Crate Locations|n";
@@ -886,10 +893,12 @@ function string GameModeHelpText(int gamemode)
         return s;
     case NormalRandomizer:
         s =   "The totally normal Randomizer experience.  Randomizes:|n";
+        s = s$"|n";
         s = s$"  ~ Computer Passwords and Keypad Codes|n";
         s = s$"  ~ Skill strength and cost|n";
         s = s$"  ~ Augmentation strength|n";
-        s = s$"  ~ Item Locations|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Item Locations and Quantities|n";
         s = s$"  ~ Datacube Locations|n";
         s = s$"  ~ Nanokey Locations|n";
         s = s$"  ~ Crate Locations|n";
@@ -897,7 +906,6 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ Medical Bot and Repair Bot Locations|n";
         s = s$"  ~ And more!";
         return s;
-#ifdef injections
     case EntranceRando:
         return "The FULL Randomizer experience, but level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
     case HalloweenEntranceRando:
@@ -906,15 +914,41 @@ function string GameModeHelpText(int gamemode)
         return "Try to survive against waves of enemies in the Cathedral, with items spawning between waves.";
     case HordeZombies:
         return "Try to survive against waves of enemies in the Cathedral, with items spawning between waves, plus the Halloween Mode features.";
-#endif
-    case RandoLite: //NEED MORE FEEDBACK
-        return "The randomizer, except not as much stuff has been randomized. Mostly retains immersion and objects are where you would expect them to be.";
-    case ZeroRando: //NEED MORE FEEDBACK
+    case ZeroRando:
         return "As close to vanilla as possible, with Randomizer quality of life improvements and extra functionality (like Bingo or Crowd Control).";
-    case ZeroRandoPlus: //NEED MORE FEEDBACK
-        return "No randomization, but with more of the balance changes introduced in the Randomizer, such as computer hacking costing energy";
-    case RandoMedium: //NEED MORE FEEDBACK
-        return "Similar to Randomizer Lite but with many more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.";
+    case ZeroRandoPlus:
+        return "No randomization and very close to vanilla, but with more of the balance changes introduced in the Randomizer, such as computer hacking costing energy.";
+    case RandoLite:
+        s = "The minimal randomizer. Mostly retains immersion and objects are where you would expect them to be. Randomizes:|n";
+        s = s$"|n";
+        s = s$"  ~ Computer Passwords and Keypad Codes|n";
+        s = s$"  ~ Skill Strength and Cost|n";
+        s = s$"  ~ Augmentation Strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Enemy Stats|n";
+        s = s$"  ~ Medical Bot and Repair Bot Stats|n";
+        s = s$"  ~ Weapon Stats|n";
+        s = s$"  ~ Item Quantities|n";
+        s = s$"  ~ Weapon Mod Types|n";
+        s = s$"  ~ Planted Grenade Types|n";
+        s = s$"  ~ Randomly Added Merchants";
+        return s;
+    case RandoMedium:
+        s = "Similar to Randomizer Lite but with many more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.  Randomizes:|n";
+        s = s$"|n";
+        s = s$"  ~ Computer Passwords and Keypad Codes|n";
+        s = s$"  ~ Skill Strength and Cost|n";
+        s = s$"  ~ Augmentation Strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Item Locations and Quantities|n";
+        s = s$"  ~ Datacube Locations|n";
+        s = s$"  ~ Nanokey Locations|n";
+        s = s$"  ~ Crate Locations|n";
+        s = s$"  ~ Enemy Locations, Quantities, and Types|n";
+        s = s$"  ~ Medical Bot and Repair Bot Locations and Stats|n";
+        s = s$"  ~ Weapon Stats|n";
+        s = s$"  ~ And more!";
+        return s;
     case SeriousSam:
         return "The Randomizer experience, except enemy quantities have been cranked up, damage multipliers are decreased, and maximum health has been increased.";
     case SpeedrunMode:
@@ -932,47 +966,45 @@ function string GameModeHelpText(int gamemode)
         s = s$"|n";
         s = s$"How long can you last?";
         return s;
-#ifdef injections
     case WaltonWareEntranceRando:
         return "The same WaltonWare experience, but level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
     case WaltonWareHalloweenEntranceRando:
         return "WaltonWare with the additional Halloween Mode features and level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
-#endif
     case WaltonWareHardcore:
         return "The WaltonWare experience, except ALL saving is disabled!  How long can you last?";
     case WaltonWarex3:
         return "The WaltonWare experience, except goals are now spread across three missions instead of one!|n|nHow long can you last?";
     case HalloweenMode:
         s =   "The FULL Randomizer experience, but with additional Halloween-themed features:|n";
+        s = s$"|n";
         s = s$"  ~ Zombies will revive from corpses after about 20 seconds|n";
         s = s$"  ~ Mr. H will stalk you around the world|n";
         s = s$"  ~ Loot new clothes from bodies to grow your selection of costumes|n";
         s = s$"  ~ Light augmentation is dim and costs energy (like in vanilla)|n";
-        s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics|n";
+        s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics";
         return s;
     case OneItemMode:
         return "The FULL Randomizer experience, except... For some reason, all items in each level are replaced by a single type of item?";
     case BingoCampaign:
-        if (#defined(vanilla)) {
-            s =   "Play through the entire randomized game, but you must complete a line of bingo in each mission before being able to progress.|n";
-            s = s$"|n";
-            s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
-            s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
-            s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
-            s = s$"|n";
-            s = s$"Can YOU outsmart the Mean Bingo Machine?";
-            return s;
-        }
-        return "";
-    case StrongAugsMode: //NEED MORE FEEDBACK
-        return "The FULL Randomizer experience but augs are generally randomized to be stronger than normal.";
+        s =   "Play through the entire randomized game, but you must complete a line of bingo in each mission before being able to progress.|n";
+        s = s$"|n";
+        s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
+        s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
+        s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
+        s = s$"|n";
+        s = s$"Can YOU outsmart the Mean Bingo Machine?";
+        return s;
+    case StrongAugsMode:
+        return "The FULL Randomizer experience but augmentations are generally randomized to be stronger than normal.";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
     //EnumOption("Max Rando", 7, f.gamemode);
     return "";
 }
+//#endregion
 
+//#region IsGameModes
 function bool IsEntranceRando()
 {
     return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
@@ -1037,6 +1069,7 @@ function bool IsStrongAugsMode()
 {
     return gamemode == StrongAugsMode;
 }
+//#endregion
 
 simulated function AddDXRCredits(CreditsWindow cw)
 {

@@ -199,7 +199,7 @@ function BindControls(optional string action)
 
     NewGroup("Passwords");
 
-    NewMenuItem("Electronic Devices %", "Provide additional options for keypads and electronic panels.");
+    NewMenuItem("Electronic Devices %", "Provide additional options for keypads and electronic panels by making them hackable.");
     Slider(f.settings.deviceshackable, 0, 100);
 
     NewMenuItem("Passwords", "Forces you to look for passwords and passcodes.");

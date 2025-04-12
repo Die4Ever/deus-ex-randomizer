@@ -42,9 +42,9 @@ function BindControls(optional string action)
         temp = f.GameModeIdForSlot(i);
         if(temp==999999) continue;
         name = f.GameModeName(temp);
+        if(name == "") continue;
         help = f.GameModeHelpText(temp);
-        if(name != "")
-            EnumOption(name, temp, f.gamemode, help);
+        EnumOption(name, temp, f.gamemode, help);
     }
 
     loadout_enum = CreateLoadoutEnum(self, f);
