@@ -6,7 +6,7 @@ struct EndQuote
     var string attribution;
 };
 
-var EndQuote quotes[148];
+var EndQuote quotes[149];
 var int numQuotes;
 
 //For now, this is limited to the default UnrealScript limit of 256 characters in a string
@@ -126,6 +126,7 @@ function LoadQuotes()
     AddQuote("I THINK THAT WE WERE MEANT TO EAT THE SOUP.", "EDWARD KNOX");
     AddQuote("CHUCK HIM INTO THE SOUP", "SOUP");
     AddQuote("YEAH, IT'S BLOOD.", "CHIEF JIM MARTIN");
+    AddQuote("PLAY IT AGAIN, CARL.", "HENRY STAUF");
 
     //Final Fantasy 4
     AddQuote("YOU SPOONY BARD!","TELLAH");
