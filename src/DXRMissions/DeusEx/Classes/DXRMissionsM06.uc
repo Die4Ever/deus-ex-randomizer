@@ -90,7 +90,7 @@ function int InitGoals(int mission, string map)
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Compound Doors", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
-        AddMutualInclusion(gloc, dts_vanilla_loc);
+        AddMutualExclusion(gloc, dts_loc);
 
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
