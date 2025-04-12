@@ -27,7 +27,7 @@ function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
     // recalc non travel variables
-    MaxRange = default.MaxRange * ModAccurateRange;
+    MaxRange = default.MaxRange * (ModAccurateRange+1);
 }
 
 simulated function UpdateBalance();
