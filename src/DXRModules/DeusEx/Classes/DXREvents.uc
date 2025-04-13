@@ -1152,6 +1152,33 @@ function SetWatchFlags() {
         }
         WatchFlag('SilhouetteHostagesAllRescued');
         MarkBingo("AimeeLeMerchantLived", true);
+
+        //Regular forwards direction catacombs timing
+        if (RevisionMaps){
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-3287,-2270,555));
+        } else {
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-2580,-2250,100));
+        }
+        raceStart.raceName="Catacombs";
+        raceStart.SetCollisionSize(60,80);
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(2775,-3785,-450)); //Lines up for both
+        checkPoint.SetCollisionSize(100,80);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+        //Going backwards through catacombs
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(2775,-3785,-450));
+        raceStart.raceName="Reverse Catacombs";
+        raceStart.SetCollisionSize(100,80);
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-3287,-2270,555));
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-2580,-2250,100));
+        }
+        checkPoint.SetCollisionSize(60,80);
+        raceStart.RegisterCheckpoint(checkPoint);
+
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
