@@ -305,6 +305,8 @@ function SetWatchFlags() {
     local #var(prefix)ControlPanel conPanel;
     local Dispatcher disp;
     local int i;
+    local DXRRaceTimerStart raceStart;
+    local DXRRaceCheckPoint checkPoint;
 
     local bool RevisionMaps;
 
@@ -1402,11 +1404,20 @@ function SetWatchFlags() {
                 sm.bImportant = true;
             }
         }
-        bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vectm(25,-4350,165),40,40);
         bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vectm(-1212,-3427,1992),240,40);
         bt = class'BingoTrigger'.static.Create(self,'SiloAttic',vectm(-2060,-6270,1825),200,40);
 
         bt = class'BingoTrigger'.static.CrouchCreate(self,'CherryPickerSeat',vectm(-17,-6461,-500),20,20);
+
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(23,-4072,390));
+        raceStart.raceName="The Silo's Secret Slide";
+        raceStart.targetTime=5; //6.1ish seconds if you run through with full leg health, 5 is "impressive"
+        raceStart.finishBingoGoal="SiloSlide";
+        raceStart.SetCollisionSize(raceStart.CollisionRadius,10);
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(25,-6316,-768));
+        checkPoint.SetCollisionSize(checkPoint.CollisionRadius,80);
+        raceStart.RegisterCheckpoint(checkPoint);
 
         break;
     case "14_OCEANLAB_LAB":
