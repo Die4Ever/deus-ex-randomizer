@@ -307,6 +307,7 @@ function SetWatchFlags() {
     local int i;
     local DXRRaceTimerStart raceStart;
     local DXRRaceCheckPoint checkPoint;
+    local OnceOnlyTrigger oot;
 
     local bool RevisionMaps;
 
@@ -1267,6 +1268,25 @@ function SetWatchFlags() {
             dxm.Event='SuspensionCrate';
         }
         bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
+
+        raceStart = Spawn(class'DXRRaceTimerStart',,'ChateauKeyRaceStart');
+        raceStart.raceName="the Chateau DuClare key hunt";
+
+        oot = Spawn(class'OnceOnlyTrigger',, 'ChateauKeyRaceStartOnce');
+        oot.Event = 'ChateauKeyRaceStart';
+
+        trig = Spawn(class'#var(prefix)Trigger',,,vectm(15,60,150)); //Front Door
+        trig.Event='ChateauKeyRaceStartOnce';
+
+        trig = Spawn(class'#var(prefix)Trigger',,,vectm(175,60,150)); //Front Door
+        trig.Event='ChateauKeyRaceStartOnce';
+
+        trig = Spawn(class'#var(prefix)Trigger',,,vectm(-560,-1280,120)); //Back Door
+        trig.Event='ChateauKeyRaceStartOnce';
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(1375,1200,-200));
+        checkPoint.SetCollisionSize(80,80);
+        raceStart.RegisterCheckpoint(checkPoint);
 
         break;
     //#endregion
