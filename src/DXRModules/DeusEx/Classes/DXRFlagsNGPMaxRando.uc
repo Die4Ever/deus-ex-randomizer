@@ -348,10 +348,19 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
     local Inventory i, next;
     local Weapon weaps[64];
     local int numWeaps, slot;
+    local DXRLoadouts loadout;
+    local class<Inventory> startingItem;
+
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    if (loadout!=None){
+        startingItem = loadout.get_starting_item();
+    }
 
     for( i = p.Inventory; i != None; i = next ) {
         next = i.Inventory;
         if( Weapon(i) == None ) continue;
+        if (i.Class==startingItem) continue; //Don't take away your loadout starting item
+        if (i.Class==class'#var(package).WeaponRubberBaton') continue; //Don't take away the rubber baton, that's just rude
         weaps[numWeaps++] = Weapon(i);
     }
 
