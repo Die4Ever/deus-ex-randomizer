@@ -35,6 +35,10 @@ function bool IsHeatSource(Actor A)
         return True;
     else if (A.IsA('Computers'))
         return True;
+    else if (A.IsA('BarrelFire'))
+        return True;
+    else if (A.GetStateName() == 'Burning')
+        return True;
     else
         return False;
 }
@@ -228,7 +232,7 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
         gc.DrawActor(A, False, False, True, 1.0, DrawGlow/4, None);
 
         c = #var(prefix)Containers(A);
-        if(c != None && !bThermalVision && !bMotionSensor) {
+        if(c != None) {
             i = c.Contents;
             if(i == None) i = c.Content2;
             if(i == None) i = c.Content3;
