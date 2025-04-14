@@ -449,12 +449,11 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         n.Orders = 'Wandering';
     n.HomeTag = 'Start';
 
+    n.bInWorld = p.bInWorld;
     RandomizeSize(n);
     n.InitializePawn();
 
     if(!p.bInWorld) {
-        n.bHidden = true;
-        n.LeaveWorld();
         if(num_watches >= ArrayCount(watches)) {
             // this can happen if someone cranks up the settings too high
             warning("num_watches >= ArrayCount(watches): "$num_watches $", "$ ArrayCount(watches));
@@ -472,6 +471,12 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     return n;
 }
 
+function AnyEntry()
+{
+    Super.AnyEntry();
+    if(num_watches > 0) SetTimer(1, true);
+}
+
 function Timer() {
     local int i;
     local WatchEnterWorld w;
@@ -479,8 +484,9 @@ function Timer() {
 
     for(i=0; i<num_watches; i++) {
         w = watches[i];
-        if(w.watch != None && w.watch.bInWorld) {
+        if(w.target != None && (w.watch==None || w.watch.bInWorld)) {
             w.target.EnterWorld();
+            w.target.Falling();
             w.watch = None;
         }
         if(w.watch == None) {
@@ -488,6 +494,8 @@ function Timer() {
             i--;
         }
     }
+
+    if(num_watches == 0) SetTimer(0, false);
 }
 
 function int GetWeaponCount(ScriptedPawn sp)
