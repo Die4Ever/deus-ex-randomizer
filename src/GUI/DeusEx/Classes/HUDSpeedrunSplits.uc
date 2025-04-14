@@ -62,9 +62,9 @@ event InitWindow()
         colorBehindLosingTime=RGB(255,60,40);
         colorBehindGainingTime=RGB(250,140,131);
     }
-    if( class'DXRVersion'.static.VersionOlderThan(version, 3,1,0,2)) {
+    if( class'DXRVersion'.static.VersionOlderThan(version, 3,5,0,1)) {
         splitNotes[1]="The starting location, Leo, and the boat|ncannot be close to each other.|nEdit these notes in DXRSplits.ini";
-        splitNotes[14]="The computer and Howard won't be close to each other.|nHoward and Escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini";
+        splitNotes[14]="The computer, Howard, and escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini";
     }
     if( version < class'DXRVersion'.static.VersionNumber() ) {
         version = class'DXRVersion'.static.VersionNumber();
@@ -719,5 +719,5 @@ defaultproperties
     split_names(15)="Area 51"
 
     splitNotes(1)="The starting location, Leo, and the boat|ncannot be close to each other.|nEdit these notes in DXRSplits.ini"
-    splitNotes(14)="The computer and Howard won't be close to each other.|nHoward and Escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini"
+    splitNotes(14)="The computer, Howard, and escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini"
 }
