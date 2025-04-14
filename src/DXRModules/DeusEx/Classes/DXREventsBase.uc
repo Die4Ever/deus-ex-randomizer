@@ -901,6 +901,7 @@ static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime
     js.static.Add(j, "raceName", raceTimer.raceName);
     js.static.Add(j, "targetTime", raceTimer.targetTime);
     js.static.Add(j, "finishTime", finishTime);
+    js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
