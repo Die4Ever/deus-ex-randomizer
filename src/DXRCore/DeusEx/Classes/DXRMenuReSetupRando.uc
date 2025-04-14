@@ -52,9 +52,13 @@ function BindControls(optional string action)
     class'DXRMenuSelectDifficulty'.static.CreateOnlineFeaturesEnum(self, f);
     class'DXRMenuSelectDifficulty'.static.CreateMirroredMapsSlider(self, f);
 
+    combatDifficulty = player.combatDifficulty;
     Super.BindControls(action);
 
-    if( action == "DONE" ) GetFlags().SaveFlags();
+    if( action == "DONE" ) {
+        if( ! #defined(hx||vmd) ) player.combatDifficulty = combatDifficulty;
+        GetFlags().SaveFlags();
+    }
     if( action != "" ) CancelScreen();
 }
 
