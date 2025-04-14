@@ -1,4 +1,4 @@
-class DXREnemiesPatrols extends DXREnemiesBase;
+class DXREnemiesPatrols extends DXREnemiesBase transient;
 
 function GivePatrols()
 {

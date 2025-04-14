@@ -1,4 +1,4 @@
-class DXREnemies extends DXREnemiesShuffle;
+class DXREnemies extends DXREnemiesShuffle transient;
 
 //const FactionAny = 0;// in Base
 const FactionOther = 1;

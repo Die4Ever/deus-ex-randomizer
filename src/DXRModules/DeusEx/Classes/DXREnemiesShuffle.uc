@@ -1,4 +1,4 @@
-class DXREnemiesShuffle extends DXREnemiesPatrols abstract;
+class DXREnemiesShuffle extends DXREnemiesPatrols abstract transient;
 
 function SwapItems(Pawn a, Pawn b)
 {
