@@ -51,6 +51,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerPublic compublic;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
+    local #var(prefix)CrateUnbreakableLarge crate;
 
     local DXREnemies dxre;
     local int i;
@@ -204,6 +205,12 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'#var(prefix)JaimeReyes', j) {
             RemoveFears(j);
+        }
+
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            foreach AllActors(class'#var(prefix)CrateUnbreakableLarge',crate){
+                crate.Destroy();
+            }
         }
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
