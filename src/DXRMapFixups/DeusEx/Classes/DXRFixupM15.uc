@@ -645,10 +645,19 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
             c.UserList[0].Password = "graytest";
         }
         foreach AllActors(class'Keypad', k) {
-            if( k.validCode == "9248" )
+            if( k.validCode == "9248" ) {
                 k.validCode = "2242";
-            else if (k.validCode == "6188")
+            } else if (k.validCode == "6188") {
                 k.validCode = "6765";
+            }
+
+            if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+                //UC Door keypads should actually open the door, instead
+                //of just toggling the lock state of the door
+                if (k.Event=='door1' || k.Event=='door2' || k.Event=='door3'){
+                    k.bToggleLock=False;
+                }
+            }
         }
         foreach AllActors(class'Switch1',s){
             if (s.Name == 'Switch21'){
