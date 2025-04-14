@@ -1165,7 +1165,7 @@ function Actor ReplaceWithRandomClass(Actor old)
     return None;
 }
 
-const num_random_actor_classes = 551;
+const num_random_actor_classes = 553;
 
 function string GetRandomActorClass()
 {
@@ -1272,6 +1272,8 @@ function string _GetRandomActorClass(int r)
     if(r==i++) return "#var(package).NervousWorker";
     if(r==i++) return "#var(package).NervousWorkerCarcass";
     if(r==i++) return "#var(package).LeMerchant";
+    if(r==i++) return "#var(package).EnergyDrinkCan";
+    if(r==i++) return "#var(package).VendingMachineEnergy";
 
     // vanilla classes
     if ( r == i++ ) return "AcousticSensor";
