@@ -102,6 +102,7 @@ function RaceFinished()
 
 defaultproperties
 {
+    startTime=-1.0
     checkPointTimes(0)=-1.0
     checkPointTimes(1)=-1.0
     checkPointTimes(2)=-1.0
