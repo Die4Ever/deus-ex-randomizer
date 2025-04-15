@@ -1134,6 +1134,22 @@ function FixAlarmUnits()
 #endif
 }
 
+function RemoveStopWhenEncroach()
+{
+    local #var(prefix)Mover m;
+
+    if(!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
+
+    foreach AllActors(class'#var(prefix)Mover',m){
+        //Stop when encroach is annoying and can allow some NPCs to block doorways
+        //like the UNATCO HQ breakroom door
+        if (m.MoverEncroachType==ME_StopWhenEncroach){
+            m.MoverEncroachType=ME_IgnoreWhenEncroach;
+        }
+    }
+
+}
+
 function SpawnDatacubes()
 {
 #ifdef injections

@@ -167,6 +167,7 @@ function PreFirstEntryMapFixes()
         FixUNATCOCarterCloset();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
+        RemoveStopWhenEncroach();
 
 #ifdef injections
         foreach AllActors(class'#var(prefix)Newspaper',np)

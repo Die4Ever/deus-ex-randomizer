@@ -194,6 +194,7 @@ function PreFirstEntryMapFixes()
             }
         }
         SpeedUpUNATCOFurnaceVent();
+        RemoveStopWhenEncroach();
 
         foreach AllActors(class'#var(prefix)Terrorist', miguel){
             miguel.bHateShot=False;
