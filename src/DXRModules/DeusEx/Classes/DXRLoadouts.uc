@@ -133,8 +133,10 @@ function string LoadoutInfo(int loadout, optional bool get_name)
             AddStartAug(class'AugInfraVision');
             AddAugAllow(class'AugVision');
         #endif
+        #ifdef injections || revision || vmd
+            AddAugAllow(class'AugJump');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
-        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -174,8 +176,10 @@ function string LoadoutInfo(int loadout, optional bool get_name)
             AddStartAug(class'AugInfraVision');
             AddAugAllow(class'AugVision');
         #endif
+        #ifdef injections || revision || vmd
+            AddAugAllow(class'AugJump');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
-        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -414,6 +418,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region The Three Leg Augs
+    #ifdef injections || revision || vmd
     case 15:
         name = "The Three Leg Augs";
         if(get_name) return name;
@@ -432,14 +437,17 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         case 2: AddStartAug(class'AugStealth'); break;
         }
         return name;
+    #endif
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Speedrun
+    #ifdef injections || revision || vmd
     case 16:
         name = "Speed Enhancement";
         if(get_name) return name;
         AddStartAug(class'#var(prefix)AugSpeed');
         return name;
+    #endif
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Vision
@@ -576,11 +584,15 @@ function string LoadoutHelpText(int loadout)
 
 function AddStandardAugSet()
 {
+#ifdef injections || revision || vmd
     AddStartAug(class'AugOnlySpeed');
-    AddAugAllow(class'AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
     AddAugAllow(class'AugOnlySpeed');
     AddAugAllow(class'AugJump');
     AddAugAllow(class'#var(prefix)AugSpeed');
+#else
+    AddStartAug(class'AugSpeed');
+#endif
+    AddAugAllow(class'AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
 }
 
 //#region Struct Setup
@@ -724,9 +736,18 @@ function AddStartAug(class<Augmentation> aug)
 
     for(i=0; i < ArrayCount(item_set.starting_augs); i++) {
         if( item_set.starting_augs[i] == None ) {
+            // HACK: this is Halloween!
+            #ifdef injections || revision || vmd
             if(dxr.flags.IsHalloweenMode() && (aug==class'AugOnlySpeed' || aug==class'#var(prefix)AugSpeed') && dxr.flags.settings.speedlevel == 0) {
-                aug = class'#var(prefix)AugStealth';// this is Halloween!
-            } else if(dxr.flags.settings.speedlevel == 0) {
+                aug = class'#var(prefix)AugStealth';
+            }
+            #else
+            if(dxr.flags.IsHalloweenMode() && aug==class'#var(prefix)AugSpeed' && dxr.flags.settings.speedlevel == 0) {
+                aug = class'#var(prefix)AugStealth';
+            }
+            #endif
+
+            else if(dxr.flags.settings.speedlevel == 0) {
                 continue;
             }
             item_set.starting_augs[i] = aug;
