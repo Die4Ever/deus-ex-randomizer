@@ -98,10 +98,15 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
 
     switch(p) {
     case class'#var(prefix)Dart':
-        p.default.Damage = ratio * 15.0;
+        if(#defined(vmd)) p.default.Damage = ratio * 20.0;
+        else p.default.Damage = ratio * 15.0;
         break;
 
     case class'#var(prefix)DartFlare':
+        #ifdef vmd
+        p.default.Damage = ratio * 20.0;
+        break;
+        #endif
     case class'#var(prefix)DartPoison':
         p.default.Damage = ratio * 5.0;
         break;
@@ -173,6 +178,18 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         p.default.Damage = ratio * 50.0;
         break;
 
+    #ifdef vmd
+    case class'PlasmaBoltPlague':// Does 1 damage stock. Scaling is irrelevant because it does a unique DOT of explosive damage
+        return false;
+
+    case class'PlasmaBoltMini':// (used by PS20): Does 30 damage stock, with smaller radius. Fired in pairs.
+        p.default.Damage = ratio * 30.0;
+        break;
+    case class'RocketEMP':// Does 800 damage base, in WP-esque expanded radius.
+        p.default.Damage = ratio * 800.0;
+        break;
+    #endif
+
     case class'#var(prefix)GasGrenade':
     case class'#var(prefix)TearGas':
     case class'#var(prefix)RocketRobot':
@@ -182,8 +199,29 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         return false;
 
     default:
-        warning("RandoWeapon("$w$") didn't set damage for projectile "$p$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", p.default.Damage: "$p.default.Damage);
-        return false;
+        switch(p.name) { // TODO: move VMD 2.00 classes to above
+        #ifdef vmd
+        case 'TaserSlug':// Does 24 damage, and is very dart-like.
+            p.default.Damage = ratio * 24.0;
+            break;
+        case 'SierraRocket':// Does 400 damage in a mere 288 radius. Needs lock-on by enemies to be fired. Sticks to player and beeps before detonating.
+            p.default.Damage = ratio * 400.0;
+            break;
+        case 'ObliteratorRocket':// Does 25 damage in 96 blast radius. Fired in clusters.
+            p.default.Damage = ratio * 25.0;
+            break;
+        case 'ObliteratorRocketWP':// Does 25 damage in 256 blast radius. Also fired in clusters.
+            p.default.Damage = ratio * 25.0;
+            break;
+        case 'TartarusFireball':// Does 3 damage with high velocity, high rate of fire, and tiny draw scale.
+            p.default.Damage = ratio * 3.0;
+            break;
+        #endif
+        default:
+            warning("RandoWeapon("$w$") didn't set damage for projectile "$p$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", p.default.Damage: "$p.default.Damage);
+            return false;
+        }
+        break; // break of default for classes
     }
 
     return true;
