@@ -126,7 +126,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)AmmoBattery');
         AddStartInv(class'#var(package).WeaponRubberBaton');
         AddItemSpawn(class'#var(prefix)WeaponProd',30);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
         #ifdef injections
@@ -167,9 +167,9 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)WeaponProd');
         AddStartInv(class'#var(prefix)AmmoBattery');
         AddStartInv(class'#var(package).WeaponRubberBaton');
-        AddItemSpawn(class'#var(prefix)WeaponProd',30);
-        AddItemSpawn(class'#var(prefix)WeaponMiniCrossbow',30);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(prefix)WeaponProd',25);
+        AddItemSpawn(class'#var(prefix)WeaponMiniCrossbow',25);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
         #ifdef injections
@@ -215,8 +215,8 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)WeaponShuriken');
         AddStartInv(class'#var(prefix)WeaponSword');
         AddStartInv(class'#var(prefix)AmmoShuriken');
-        AddItemSpawn(class'#var(prefix)WeaponShuriken',150);
-        AddItemSpawn(class'#var(prefix)BioelectricCell',100);
+        AddItemSpawn(class'#var(prefix)WeaponShuriken',100);
+        AddItemSpawn(class'#var(prefix)BioelectricCell',80);
         AddStartAug(class'#var(package).AugNinja'); //combines AugStealth and active AugSpeed
         AddAugBan(class'#var(prefix)AugSpeed');
         AddAugBan(class'#var(prefix)AugStealth');
@@ -282,7 +282,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponGasGrenade',50);
         AddItemSpawn(class'#var(prefix)WeaponNanoVirusGrenade',50);
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',50);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddStandardAugSet();
         return name;
     //#endregion
@@ -378,7 +378,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',75);
         AddItemSpawn(class'#var(prefix)WeaponGasGrenade',75);
         AddItemSpawn(class'#var(prefix)WeaponNanoVirusGrenade',75);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddItemSpawn(class'#var(prefix)AmmoRocket',100);
         AddItemSpawn(class'#var(prefix)AmmoRocketWP',100);
         AddItemSpawn(class'#var(prefix)Ammo20mm',100);
