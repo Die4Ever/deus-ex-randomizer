@@ -497,7 +497,7 @@ function string LoadoutHelpText(int loadout)
     case 1:
         //SWTP Pure
         helpText = "For when you want to have a truly miserable time!|n|n";
-        helpText = helpText $ "The only weapon allowed is the Riot Prod and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|n";
+        helpText = helpText $ "The only weapon allowed is the Riot Prod and the Rubber Baton (which is unable to deal damage to enemies).|n|n";
         #ifdef injections
         helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
         #else
@@ -507,7 +507,7 @@ function string LoadoutHelpText(int loadout)
         return helpText;
     case 2:
         //SWTP Plus
-        helpText = "The only weapons allowed are the Riot Prod, Mini-Crossbow (with Tranquilizer Darts), EMP Grenades, Gas Grenades, Scrambler Grenades, Pepper Spray, and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|n";
+        helpText = "The only weapons allowed are the Riot Prod, Mini-Crossbow (with Tranquilizer Darts), EMP Grenades, Gas Grenades, Scrambler Grenades, Pepper Spray, and the Rubber Baton (which is unable to deal damage to enemies).|n|n";
         #ifdef injections
         helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
         #else
@@ -528,7 +528,7 @@ function string LoadoutHelpText(int loadout)
         return "The only weapon allowed is the Crowbar.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 6:
         //Grenades Only
-        return "The only weapons allowed are Grenades and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades and the Rubber Baton (which is unable to deal damage to enemies).|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 7:
         //No Pistols
         return "All items and augs are allowed except for the Pistol and Stealth Pistol.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
@@ -547,7 +547,7 @@ function string LoadoutHelpText(int loadout)
         return "Follow UNATCO protocol!|n|nAll items and augs are allowed except for Lockpicks and Multitools.  The Computers skill is banned to prevent hacking.|n|nYou start with the Run Silent augmentation.";
     case 11:
         //Explosives Only
-        return "The only weapons allowed are Grenades, GEP Guns, Assault Rifles with 20mm ammo, and the Rubber Baton (which is unable to deal damage to anything but the environment).|n|n"$"You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades, GEP Guns, Assault Rifles with 20mm ammo, and the Rubber Baton (which is unable to deal damage to enemies).|n|n"$"You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
     case 12:
         //Random Starting Aug
         return "All items and augs are allowed.  You start with a randomly selected augmentation.";
