@@ -107,6 +107,7 @@ function int InitGoals(int mission, string map);// return a salt for the seed, t
 function int InitGoalsRev(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
 function CreateGoal(out Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
+function AfterMoveGoalToOtherMap(Goal g, GoalLocation Loc);
 function AfterMovePlayerToStartLocation(GoalLocation Loc);
 function PreFirstEntryMapFixes();
 function MissionTimer();
@@ -274,7 +275,7 @@ function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataV
     return numNotes;
 }
 
-
+//#region mutexes
 function AddMutualExclusion(int L1, int L2)
 {
     local int i;
@@ -312,6 +313,62 @@ function AddMutualInclusion(int L1, int L2)
     l("AddMutualInclusion: end");
 }
 
+function MutualExcludeSameMap(int G1, int G2)
+{
+    local int i, k;
+
+    l("MutualExcludeSameMap: " $ goals[G1].name $ " and " $ goals[G2].name);
+    G1 = goals[G1].bitMask;
+    G2 = goals[G2].bitMask;
+
+    for(i=0; i<num_locations; i++) {
+        if((locations[i].bitMask & G1) == 0) continue;
+        for(k=0; k<num_locations; k++) {
+            if(i == k) continue;
+            if((locations[k].bitMask & G2) == 0) continue;
+            if(locations[i].mapName != locations[k].mapName) continue;
+            AddMutualExclusion(i, k);
+        }
+    }
+    l("MutualExcludeSameMap: end");
+}
+
+function MutualExcludeMaps(int G1, string M1, int G2, string M2)
+{
+    local int i, k;
+
+    l("MutualExcludeMaps: " $ goals[G1].name @ M1 $ " and " $ goals[G2].name @ M2);
+    G1 = goals[G1].bitMask;
+    G2 = goals[G2].bitMask;
+
+    for(i=0; i<num_locations; i++) {
+        if((locations[i].bitMask & G1) == 0) continue;
+        if(locations[i].mapName != M1) continue;
+        for(k=0; k<num_locations; k++) {
+            if(i == k) continue;
+            if((locations[k].bitMask & G2) == 0) continue;
+            if(locations[k].mapName != M2) continue;
+            AddMutualExclusion(i, k);
+        }
+    }
+    l("MutualExcludeMaps: end");
+}
+
+function AddMutualExclusionLocMap(int L1, string map)
+{
+    local int i;
+
+    l("AddMutualExclusionLocMap: " $ locations[L1].name $ " and " $ map);
+    for(i=0; i<num_locations; i++) {
+        if(i == L1) continue;
+        if(locations[i].mapName != map) continue;
+        AddMutualExclusion(L1, i);
+    }
+    l("AddMutualExclusionLocMap: end");
+}
+//#endregion
+
+//#region init
 function int InitGoalsByMod(int mission, string map)
 {
     local bool RevisionMaps;
@@ -796,6 +853,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         marker = DXRGoalMarker(Spawnm(class'DXRGoalMarker',,, Loc.positions[0].pos));
         marker.BindName = g.name $ " (" $ Loc.name $ ")";
         AfterMoveGoalToLocation(g, Loc);
+    } else {
+        AfterMoveGoalToOtherMap(g, Loc);
     }
 }
 

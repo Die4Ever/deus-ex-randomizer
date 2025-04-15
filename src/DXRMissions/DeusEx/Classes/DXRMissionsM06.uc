@@ -59,39 +59,35 @@ function int InitGoals(int mission, string map)
 
         // street
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Tonnochi Road", GOAL_TYPE2, vect(49.394917, -2455.783447, 47.599495), rot(0, -16384, 0));
-        gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Balcony", GOAL_TYPE2, vect(194.915375, -1599.530884, 1711.607910), rot(0, 32768, 0));
+        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Queen's Tower", GOAL_TYPE2 | SITTING_GOAL, vect(-795.367737, -1071.963623, 28.263233), rot(0, 0, 0));
+        gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Elevator", GOAL_TYPE2, vect(668.110901, -683.269775, 47.603157), rot(0, 32768, 0)); // HACK: linked to AfterMoveGoalToOtherMap
+
         dts_vanilla_loc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dts_vanilla_loc);
-        AddMutualExclusion(gloc2, dts_vanilla_loc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vect(342.584808, -1802.576172, 1713.509521), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(204.923828, -195.652588, 1795), rot(0, 40000, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
 
         // canal
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "Flat Boat", GOAL_TYPE2, vect(2387.060303, -36.084198, -368.401581), rot(0, 16384, 0));
         gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "Old China Hand", GOAL_TYPE2, vect(-2151.656006, 2252.040771, -320.398102), rot(0, 32768, 0));
-        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
-        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Canal Waterside Apartment", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
-        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
 
-        // lucky money and market
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Canal Waterside Apartment", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
+
+        // lucky money
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
+
+        // market
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Compound Doors", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
-        AddMutualExclusion(gloc, dtsloc);
 
+        MutualExcludeSameMap(gordon, dts); // no same map, Gordon at market means DTS is at Tonnochi
+        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_MARKET", dts, "06_HONGKONG_WANCHAI_UNDERWORLD"); // gordon only in market if DTS at tonnochi
+        // MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_CANAL", dts, "06_HONGKONG_WANCHAI_MARKET"); // police station DTS is too fast with canals gordon
+        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_CANAL", dts, "06_HONGKONG_WANCHAI_STREET"); // gordon can't be at canal when DTS at tonnochi, only market
+
+        // Max Chen
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
         AddGoalActor(goal, 2, 'TriadRedArrow6', PHYS_Falling);
@@ -414,12 +410,26 @@ function GenerateDTSHintCube(Goal g, GoalLocation Loc)
         "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", "DTSHintCube", true);
 }
 
+function #var(prefix)GordonQuick CreateGordon(Vector pos, Rotator rot)
+{
+    local #var(prefix)GordonQuick gordon;
+
+    gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', pos, rot));
+    GiveItem(gordon,class'WeaponAssaultShotgun',100);
+    GiveItem(gordon,class'WeaponSword');
+    GiveItem(gordon,class'WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
+    gordon.bKeepWeaponDrawn = True;
+    gordon.SetOrders('Standing');
+    gordon.BarkBindName = "TriadLumPath";
+    gordon.ConBindEvents();
+    return gordon;
+}
+
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local WeaponNanoSword dts;
     local DataLinkTrigger dlt;
     local NervousWorker   nw;
-    local #var(prefix)GordonQuick gordon;
 
     switch(g.name) {
     case "Dragon's Tooth Sword":
@@ -441,16 +451,15 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Gordon Quick":
-        gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', Loc.positions[0].pos));
-        g.actors[0].a = gordon;
-        GiveItem(gordon,class'WeaponAssaultShotgun',100);
-        GiveItem(gordon,class'WeaponSword');
-        GiveItem(gordon,class'WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
-        gordon.bKeepWeaponDrawn = True;
-        gordon.SetOrders('Standing');
-        gordon.BarkBindName = "TriadLumPath";
-        gordon.ConBindEvents();
+        g.actors[0].a = CreateGordon(Loc.positions[0].pos, Loc.positions[0].rot);
         break;
+    }
+}
+
+function AfterMoveGoalToOtherMap(Goal g, GoalLocation Loc)
+{
+    if(dxr.localURL == "06_HONGKONG_WANCHAI_CANAL" && g.name == "Gordon Quick" && Loc.name == "Jock's Elevator") {
+        g.actors[0].a = CreateGordon(vect(647.700073, -685.524414, 47.599575), rot(0, 32768, 0));
     }
 }
 
