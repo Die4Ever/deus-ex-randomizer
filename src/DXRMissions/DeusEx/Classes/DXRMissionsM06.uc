@@ -456,6 +456,8 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
+    local Actor a;
+
     if (g.name=="Dragon's Tooth Sword" && Loc.name!="Sword Case") {
         if(g.actors[1].a != None) {
             g.actors[1].a.Tag=''; //Change the tag so it doesn't get hit if the case opens
@@ -469,6 +471,12 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             GenerateDTSHintCube(g,Loc);
         }
     }
+    else if (g.name=="Dragon's Tooth Sword") {
+        foreach AllActors(class'Actor', a, 'Sword_Triggers') {
+            a.tag = 'Get_The_Sword'; //Change the tag so it gets triggered sooner
+        }
+    }
+
     if (g.name=="Nanotech Blade ROM" && Loc.name!="ROM Encoding Room") {
         g.actors[3].a.SetCollisionSize(400, 100);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
     }
