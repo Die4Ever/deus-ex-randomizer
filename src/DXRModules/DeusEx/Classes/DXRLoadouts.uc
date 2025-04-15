@@ -47,7 +47,7 @@ function CheckConfig()
     AddRandomItem("FireExtinguisher",8);
     AddRandomItem("SoyFood",7);
     AddRandomItem("TechGoggles",9);
-    if(#defined(hx))
+    if(#bool(hx))
         AddRandomItem("#var(injectsprefix)Binoculars",10);
     else
         AddRandomItem("Binoculars",10);
@@ -497,31 +497,40 @@ static function AdjustFlags(DXRFlags flags, int loadout)
 function string LoadoutHelpText(int loadout)
 {
     local string helpText;
+    local string normalAugs;
+
+    if(#bool(injections || revision || vmd)) {
+        normalAugs = "You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+    } else {
+        normalAugs = "You start with the Speed Enhancement augmentation.";
+    }
 
     switch(loadout) {
     case 0:
         //All Items Allowed
-        return "All items and augs are allowed.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed.|n|n" $ normalAugs;
     case 1:
         //SWTP Pure
         helpText = "For when you want to have a truly miserable time!|n|n";
         helpText = helpText $ "The only weapon allowed is the Riot Prod and the Rubber Baton (which is unable to deal damage to enemies).|n|n";
-        #ifdef injections
-        helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
-        #else
-        helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
-        #endif
-        helpText = helpText $ "Speed Enhancement augmentation is banned.  Running Enhancement and Jump Enhancement augs are available.";
+        if(#bool(injections))
+            helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
+        else
+            helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
+        helpText = helpText $ "Speed Enhancement augmentation is banned.";
+        if(#bool(injections || revision || vmd))
+            helpText = helpText $ "  Running Enhancement and Jump Enhancement augs are available.";
         return helpText;
     case 2:
         //SWTP Plus
         helpText = "The only weapons allowed are the Riot Prod, Mini-Crossbow (with Tranquilizer Darts), EMP Grenades, Gas Grenades, Scrambler Grenades, Pepper Spray, and the Rubber Baton (which is unable to deal damage to enemies).|n|n";
-        #ifdef injections
-        helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
-        #else
-        helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
-        #endif
-        helpText = helpText $ "Speed Enhancement augmentation is banned.  Running Enhancement and Jump Enhancement augs are available.";
+        if(#bool(injections))
+            helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
+        else
+            helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
+        helpText = helpText $ "Speed Enhancement augmentation is banned.";
+        if(#bool(injections || revision || vmd))
+            helpText = helpText $ "  Running Enhancement and Jump Enhancement augs are available.";
         return helpText;
     case 3:
         //Ninja JC
@@ -530,19 +539,19 @@ function string LoadoutHelpText(int loadout)
         return helpText;
     case 4:
         //Don't give me the GEP Gun
-        return "All items and augs are allowed except for the GEP Gun.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the GEP Gun.  " $ normalAugs;
     case 5:
         //Freeman Mode
-        return "The only weapon allowed is the Crowbar.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapon allowed is the Crowbar.|n|n" $ normalAugs;
     case 6:
         //Grenades Only
-        return "The only weapons allowed are Grenades and the Rubber Baton (which is unable to deal damage to enemies).|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades and the Rubber Baton (which is unable to deal damage to enemies).|n|n" $ normalAugs;
     case 7:
         //No Pistols
-        return "All items and augs are allowed except for the Pistol and Stealth Pistol.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the Pistol and Stealth Pistol.|n|n" $ normalAugs;
     case 8:
         //No Swords
-        return "All items and augs are allowed except for the Sword and Dragon Tooth Sword.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the Sword and Dragon Tooth Sword.|n|n" $ normalAugs;
     case 9:
         //Hipster JC
         helpText = "JC used things before they were cool, so he doesn't want to use them any more.|n|n";
@@ -555,13 +564,13 @@ function string LoadoutHelpText(int loadout)
         return "Follow UNATCO protocol!|n|nAll items and augs are allowed except for Lockpicks and Multitools.  The Computers skill is banned to prevent hacking.|n|nYou start with the Run Silent augmentation.";
     case 11:
         //Explosives Only
-        return "The only weapons allowed are Grenades, GEP Guns, Assault Rifles with 20mm ammo, and the Rubber Baton (which is unable to deal damage to enemies).|n|n"$"You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades, GEP Guns, Assault Rifles with 20mm ammo, and the Rubber Baton (which is unable to deal damage to enemies).|n|n" $ normalAugs;
     case 12:
         //Random Starting Aug
         return "All items and augs are allowed.  You start with a randomly selected augmentation.";
     case 13:
         //Straight Edge
-        return "All items and augs are allowed except for Alcohol, Cigarettes, and Zyme.|n|nYou start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for Alcohol, Cigarettes, and Zyme.|n|n" $ normalAugs;
     case 14:
         //Reduced Aug Set
         return "All items are allowed.  Six randomly selected augs are banned, and you start with a randomly selected augmentation.";
@@ -574,7 +583,10 @@ function string LoadoutHelpText(int loadout)
     #ifdef injections
     case 17:
         //My Vision Is Augmented
-        return "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  "$"Running Enhancement and Jump Enhancement augs are also available.|n|n" $ "Enables Aug Slot Rando by default.";
+        helpText = "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  ";
+        helpText = helpText $ "Running Enhancement and Jump Enhancement augs are also available.|n|n";
+        helpText = helpText $ "Enables Aug Slot Rando by default.";
+        return helpText;
     #endif
     }
 
