@@ -353,6 +353,11 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
             continue;
         }
 
+        if(!CheckFreeSpace(loc, newclass.default.CollisionRadius * 2.3, newclass.default.CollisionHeight * 1.4)) {
+            l("CloneScriptedPawn "$loc$" not enough room " $ newclass);
+            continue;
+        }
+
         n = Spawn(newclass,, newtag, loc );
         if( n != None ) {
             if(VSize(n.Location - loc) > 160) {
