@@ -441,8 +441,10 @@ function PreFirstEntryMapFixes()
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
         hoverHint.SetBaseActor(jock);
 
-        //Fix a hole in the wall
-        class'FillCollisionHole'.static.CreateLine(self, vectm(-4400,3165,-20), vectm(-3480,3165,-20), 32, 100);
+        if (VanillaMaps){
+            //Fix a hole in the wall
+            class'FillCollisionHole'.static.CreateLine(self, vectm(-4400,3165,-20), vectm(-3480,3165,-20), 32, 100);
+        }
 
         SetAllLampsState(,, false, vect(-5724.620605, 1435.543213, -79.614632), 0.01);
 
