@@ -76,7 +76,7 @@ function HandleDamageResult(int curHealth, bool bleeding)
         bleed = HC_Injured; //"Looks like you're bleeding, Denton"
     }
 
-    log("Area51ScratchOMatic:  HealthDiff:"$diff$"  Cur:"$cur$"  Bleeding:"$bleed);
+    log("Area51ScratchOMatic:  HealthDiff:"$string(GetEnum(enum'EHealthComment',diff))$"  Cur:"$string(GetEnum(enum'EHealthComment',cur))$"  Bleeding:"$string(GetEnum(enum'EHealthComment',bleed)));
 
     //Find which one is worst
     finalRes = diff;
