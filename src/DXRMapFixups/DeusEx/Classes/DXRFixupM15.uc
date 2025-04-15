@@ -498,6 +498,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     ft.Event='elevator_doors';
 
     if (isVanilla) {
+        Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
 
         //Button to call elevator to bottom of shaft
@@ -770,6 +771,8 @@ function AnyEntryMapFixes()
     local ElectricityEmitter ee;
     local #var(DeusExPrefix)Mover d;
     local bool VanillaMaps;
+    local Conversation c;
+    local ConEventTrigger cet;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -780,6 +783,26 @@ function AnyEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    case "15_AREA51_ENTRANCE":
+        if (VanillaMaps){
+            c = GetConversation('DL_Elevator');
+            if (c != None) {
+                cet = new(c) class'ConEventTrigger';
+                cet.eventType = ET_Trigger;
+                cet.triggerTag = 'Area51ScratchOMatic';
+                cet.nextEvent = c.eventList;
+                c.eventList = cet;
+            }
+            c = GetConversation('DL_Final_Page02');
+            if (c != None) {
+                cet = new(c) class'ConEventTrigger';
+                cet.eventType = ET_Trigger;
+                cet.triggerTag = 'Area51ScratchOMatic';
+                cet.nextEvent = c.eventList;
+                c.eventList = cet;
+            }
+        }
+        break;
     case "15_AREA51_FINAL":
         SetTimer(1, true);// fix ReactorReady flag being set by infolinks
         if (VanillaMaps){
