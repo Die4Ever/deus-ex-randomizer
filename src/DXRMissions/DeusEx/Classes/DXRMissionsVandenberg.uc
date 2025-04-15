@@ -489,12 +489,14 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         locv = g.actors[0].a.Location;
         rot = g.actors[0].a.Rotation;
         locv += vect(16,0,0) >> rot;
-        light = Spawn(class'DynamicLight',,, locv);
+        light = Spawn(class'DynamicLight',, g.actors[0].a.Event, locv);
         light.LightSaturation = 0;
         light.LightType=LT_Steady;
         light.LightEffect=LE_None;
         light.LightBrightness=160;
+        light.OtherBrightness=160;
         light.LightHue=255;
+        light.OtherHue=80;
         light.LightRadius=8;
     }
     else if (g.name=="Launch Command Computer" && Loc.name != "Launch Command") {
