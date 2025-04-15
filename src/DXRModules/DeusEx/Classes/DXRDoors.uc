@@ -313,9 +313,10 @@ function RandomizeDoors()
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
 #ifndef injections
             // without injections we can't augment the highlight window to show mindamagethreshold, so keep it simple for the player
-            if(d.minDamageThreshold>0)
+            if(d.minDamageThreshold > 1)
                 d.minDamageThreshold = d.doorStrength * 60;
 #endif
+            d.minDamageThreshold = Max(d.minDamageThreshold, 1); // don't use 0 because people thought it was weird
         }
     }
 }
