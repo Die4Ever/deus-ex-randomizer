@@ -1292,6 +1292,12 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
 {
     local class<#var(prefix)Containers> contClass;
     local #var(prefix)Containers box;
+    local float trueScale;
+
+    trueScale=scale;
+    if (scale==0){
+        trueScale=1.0;
+    }
 
     if (forcedContainerType!=None){
         contClass = forcedContainerType;
@@ -1303,15 +1309,14 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
         contClass=class'#var(prefix)CrateBreakableMedGeneral';
     }
 
-    box = #var(prefix)Containers(_AddActor(a, contClass, loc, rot));
+    box = a.Spawn(contClass,,, loc, rot);
+
     if (box!=None){
         box.contents = contents;
 
-        if (scale!=0){
-            box.DrawScale = box.Default.DrawScale * scale;
-            box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
-            box.Mass = box.Default.Mass * scale;
-        }
+        box.DrawScale = box.Default.DrawScale * trueScale;
+        box.SetCollisionSize(box.Default.CollisionRadius * trueScale, box.Default.CollisionHeight * trueScale);
+        box.Mass = box.Default.Mass * trueScale;
     }
 
     return box;
