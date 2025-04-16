@@ -82,10 +82,10 @@ function int InitGoals(int mission, string map)
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Compound Doors", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
 
-        MutualExcludeSameMap(gordon, dts); // no same map, Gordon at market means DTS is at Tonnochi
-        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_MARKET", dts, "06_HONGKONG_WANCHAI_UNDERWORLD"); // gordon only in market if DTS at tonnochi
-        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_CANAL", dts, "06_HONGKONG_WANCHAI_MARKET"); // police station DTS is too fast with canals gordon
-        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_CANAL", dts, "06_HONGKONG_WANCHAI_STREET"); // gordon can't be at canal when DTS at tonnochi, only market
+        MutualExcludeSameMap(gordon, dts); // no same map, if one is in market the other is in tonnochi
+        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_MARKET", dts, "06_HONGKONG_WANCHAI_UNDERWORLD"); // if gordon in market, dts only at tonnochi
+        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_MARKET", dts, "06_HONGKONG_WANCHAI_CANAL"); // police station DTS is too fast with canals gordon
+        MutualExcludeMaps(dts, "06_HONGKONG_WANCHAI_MARKET", gordon, "06_HONGKONG_WANCHAI_CANAL"); // canals DTS and then market gordon is pretty quick
 
         // Max Chen
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
