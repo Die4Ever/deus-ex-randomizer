@@ -1292,11 +1292,9 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
 {
     local class<#var(prefix)Containers> contClass;
     local #var(prefix)Containers box;
-    local float trueScale;
 
-    trueScale=scale;
     if (scale==0){
-        trueScale=1.0;
+        scale=1.0;
     }
 
     if (forcedContainerType!=None){
@@ -1314,9 +1312,9 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
     if (box!=None){
         box.contents = contents;
 
-        box.DrawScale = box.Default.DrawScale * trueScale;
-        box.SetCollisionSize(box.Default.CollisionRadius * trueScale, box.Default.CollisionHeight * trueScale);
-        box.Mass = box.Default.Mass * trueScale;
+        box.DrawScale = box.Default.DrawScale * scale;
+        box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
+        box.Mass = box.Default.Mass * scale;
     }
 
     return box;
