@@ -534,7 +534,7 @@ function string LoadoutHelpText(int loadout)
         return helpText;
     case 3:
         //Ninja JC
-        helpText = "Become the ninja!|n|nUse Throwing Knives, Swords, Mini-Crossbows, and Grenades to bypass and eliminate your enemies!|n|n";
+        helpText = "Become the ninja!|n|nUse Throwing Knives, Swords, Mini-Crossbows, and Grenades to bypass and eliminate your enemies! There will be extra throwing knives and biocells available.|n|n";
         helpText = helpText $ "Speed Enhancement and Run Silent augmentations are banned, but you start with the Ninja augmentation instead, which combines the functionality of both!";
         return helpText;
     case 4:
