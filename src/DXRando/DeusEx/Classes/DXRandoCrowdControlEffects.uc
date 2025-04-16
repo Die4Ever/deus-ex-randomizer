@@ -1568,17 +1568,23 @@ function int TriggerAllAlarms(String viewer) {
     numAlarms = 0;
 
     foreach AllActors(class'#var(prefix)AlarmUnit',au){
+        if (au.bDisabled) continue; //Skip disabled alarms
+        if (au.bConfused) continue; //Skip confused alarms
         numAlarms+=1;
         au.Trigger(self,player());
     }
     foreach AllActors(class'SecurityCamera',sc){
         if (CCResidentEvilCam(sc)!=None){ continue; } //Skip Resident Evil cameras
+        if (sc.bConfused) continue; //Skip Confused cameras
+        if (!sc.bActive) continue; //Skip Deactivated cameras
+        if (sc.bNoAlarm) continue; //Skip friendly cameras
         numAlarms+=1;
         sc.TriggerEvent(True);
         sc.bPlayerSeen=True;
         sc.lastSeenTimer=0;
     }
     foreach AllActors(class'LaserTrigger',lt){
+        if (lt.bConfused){continue;}
         if (lt.bIsOn==False){continue;}
         if (lt.bNoAlarm){continue;}
         if (lt.AmbientSound!=None){continue;}
