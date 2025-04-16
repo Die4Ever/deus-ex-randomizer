@@ -420,29 +420,31 @@ function DignifyAllGoalActors()
                 GetActor(goals[g].actors[a]);
             }
             if (goals[g].actors[a].a!=None){
-                DignifyGoalActor(goals[g].actors[a].a, bTextures);
+                DignifyGoalActor(goals[g], goals[g].actors[a].a, bTextures);
             }
         }
     }
 }
 
-//Generic textures we want to apply consistently across all goal actors
-function DignifyGoalActor(Actor a, bool enableTextures)
+// Generic textures we want to apply consistently across all goal actors
+// subclasses can override this to set newTex based on g.name
+function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture newTex)
 {
     local bool changed;
-
 
     if (ComputerSecurity(a)!=None){
         #ifdef revision
         ComputerSecurity(a).Facelift(false);
         #endif
-        a.Skin=Texture'GoalSecurityComputerGreen';
+        if(newTex != None) a.Skin = newTex;
+        else a.Skin = Texture'GoalSecurityComputerGreen';
         changed=True;
     } else if (ComputerPersonal(a)!=None){
         #ifdef revision
         ComputerPersonal(a).Facelift(false);
         #endif
-        a.Skin=Texture'GoalComputerPersonalYellow';
+        if(newTex != None) a.Skin = newTex;
+        else a.Skin=Texture'GoalComputerPersonalYellow';
         changed=True;
     }
 #ifdef injections
