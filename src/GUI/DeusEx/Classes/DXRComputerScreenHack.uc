@@ -162,7 +162,7 @@ function UpdateHackButtonClickability()
     if (p==None || btnHack==None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) return;
 
     if (p!=None){
-        if (p.Energy>0){
+        if (p.Energy>0 && !bHacking && !bHacked){
             enable=True;
         }
     }
