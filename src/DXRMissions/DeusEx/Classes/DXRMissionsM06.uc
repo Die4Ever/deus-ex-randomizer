@@ -24,7 +24,7 @@ function int InitGoals(int mission, string map)
         return 61;
 
     case "06_HONGKONG_MJ12LAB":
-        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
+        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL | GOAL_TYPE1, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_07: I have uploaded the component the Triads need to complete the sword.
         AddGoalActor(goal, 2, 'DataLinkTrigger3', PHYS_None);// DL_Tong_07 but with Tag TongHasTheROM
         AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
@@ -43,7 +43,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
-        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", NORMAL_GOAL, vect(3, 886, 820), rot(0, 32768, 0));
+        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", GOAL_TYPE1, vect(3, 886, 820), rot(0, 32768, 0));
         AddActorLocation(loc, 1, vect(3, 886, 789.101990), rot(0,0,0));// MAHOGANY desk
         return 62;
 
@@ -84,7 +84,7 @@ function int InitGoals(int mission, string map)
 
         MutualExcludeSameMap(gordon, dts); // no same map, Gordon at market means DTS is at Tonnochi
         MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_MARKET", dts, "06_HONGKONG_WANCHAI_UNDERWORLD"); // gordon only in market if DTS at tonnochi
-        // MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_CANAL", dts, "06_HONGKONG_WANCHAI_MARKET"); // police station DTS is too fast with canals gordon
+        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_CANAL", dts, "06_HONGKONG_WANCHAI_MARKET"); // police station DTS is too fast with canals gordon
         MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_CANAL", dts, "06_HONGKONG_WANCHAI_STREET"); // gordon can't be at canal when DTS at tonnochi, only market
 
         // Max Chen
@@ -140,7 +140,7 @@ function int InitGoalsRev(int mission, string map)
         return 61;
 
     case "06_HONGKONG_MJ12LAB":
-        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
+        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL | GOAL_TYPE1, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_07: I have uploaded the component the Triads need to complete the sword.
         AddGoalActor(goal, 2, 'DataLinkTrigger3', PHYS_None);// DL_Tong_07 but with Tag TongHasTheROM
         AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
@@ -159,7 +159,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-592.426758,329.524597,-743.972717), rot(0,49160,0));
-        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", NORMAL_GOAL, vect(-190, 886, 820), rot(0, 32768, 0)); //One window over compared to vanilla to avoid patrol point
+        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", GOAL_TYPE1, vect(-190, 886, 820), rot(0, 32768, 0)); //One window over compared to vanilla to avoid patrol point
         AddActorLocation(loc, 1, vect(-190, 886, 789.101990), rot(0,0,0));// MAHOGANY desk
         return 62;
 

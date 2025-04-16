@@ -64,6 +64,7 @@ event InitWindow()
     }
     if( class'DXRVersion'.static.VersionOlderThan(version, 3,5,0,1)) {
         splitNotes[1]="The starting location, Leo, and the boat|ncannot be close to each other.|nEdit these notes in DXRSplits.ini";
+        splitNotes[6]="The DTS and Gordon won't be on the same map.|nIf one is in market, the other is in Tonnochi.|nEdit these notes in DXRSplits.ini";
         splitNotes[14]="The computer, Howard, and escape Jock won't be close to each other.|nEdit these notes in DXRSplits.ini";
     }
     if( version < class'DXRVersion'.static.VersionNumber() ) {
