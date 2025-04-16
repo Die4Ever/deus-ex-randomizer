@@ -543,7 +543,10 @@ function AnyEntryMapFixes()
     local Conversation c;
     local ConEvent ce;
     local ConEventSpeech ces;
-    local bool RevisionMaps;
+    local ConEventChoice cec;
+    local ConChoice      cc;
+    local bool RevisionMaps, knowPass, foundUnderground;
+    local string textAdd;
     local #var(prefix)SecurityCamera cam;
     local #var(prefix)AutoTurret turret;
 
@@ -614,6 +617,35 @@ function AnyEntryMapFixes()
         c.bInvokeBump=False;
         c.bInvokeFrob=False;
 
+        break;
+    case "03_NYC_BATTERYPARK":
+        knowPass = dxr.flagbase.GetBool('PlayerKnowsUnderworldPassword');
+        foundUnderground = dxr.flagbase.GetBool('M03FoundUnderground');
+        textAdd="";
+
+        if (foundUnderground){
+            textAdd=" (Already got underground)";
+        } else if (knowPass) {
+            textAdd=" (Already know the password to give to Curly)";
+        }
+
+        if (textAdd!="") {
+            c=GetConversation('M03MeetFilben');
+            ce = c.eventList;
+            while (ce!=None){
+                if (ce.eventType==ET_Choice){
+                    cec = ConEventChoice(ce);
+                    cc = cec.ChoiceList;
+                    while (cc!=None){
+                        if (InStr(cc.choiceText,"interested")!=-1){ //"I'm not interested."
+                            cc.choiceText = cc.choiceText $ textAdd;
+                        }
+                        cc = cc.nextChoice;
+                    }
+                }
+                ce = ce.nextEvent;
+            }
+        }
         break;
     }
 }
