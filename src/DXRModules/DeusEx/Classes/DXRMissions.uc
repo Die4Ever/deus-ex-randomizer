@@ -149,7 +149,7 @@ function ReplaceGoalActor(Actor a, Actor n)
         for (j=0;j<ArrayCount(goals[i].actors);j++){
             if (goals[i].actors[j].a==a) {
                 goals[i].actors[j].a=n;
-                DignifyGoalActor(n,bTextures); //Make sure the newly replaced actor has the right skins
+                DignifyGoalActor(goals[i],n,bTextures); //Make sure the newly replaced actor has the right skins
                 l("Replacing Goal Actor "$a$" with newly replaced actor "$n);
                 return; //Presumably no actors exist in multiple goals?
             }
