@@ -616,6 +616,7 @@ function AnyEntryMapFixes()
     local bool VanillaMaps;
     local Mover door;
     local ConEventSpeech ces;
+    local Conversation c;
     local #var(prefix)ScriptedPawn sp;
     local #var(prefix)BlackHelicopter jock;
     local bool raidStarted;
@@ -680,6 +681,14 @@ function AnyEntryMapFixes()
 #endif
         DeleteConversationFlag(GetConversation('FamilySquabbleWrapUpGilbertDead'), 'PlayerKilledRenton', false);
         FixConversationFlag(GetConversation('SandraMadAtPlayer'), 'PlayerKilledRenton', true, 'AlwaysFalse', true);
+
+        // Make the conversation with Paul to start the raid startable by frob
+        // (but still require entering the flagtrigger near him)
+        c = GetConversation('TalkedToPaulAfterMessage');
+        if (c!=None){
+            c.bInvokeFrob=true;
+            c.AddFlagRef('ApartmentEntered',True);
+        }
 
         if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
             DeleteConversationFlag(GetConversation('M04PlayerLikesUNATCO'), 'M04MeetGateGuard_Played', true);
