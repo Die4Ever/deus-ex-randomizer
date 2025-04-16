@@ -1052,6 +1052,9 @@ function OverwriteDecorations(bool bFirstEntry)
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
             d.bPushable = DecorationsOverwrites[i].bPushable;
         }
+        if(#var(prefix)Van(d) != None) {
+            d.bBlockSight = true;
+        }
     }
     for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
         if(DecorationsOverwritesClasses[i] == None) continue;
