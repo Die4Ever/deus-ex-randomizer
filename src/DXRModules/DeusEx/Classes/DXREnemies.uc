@@ -114,8 +114,6 @@ function CheckConfig()
     AddRandomEnemyType(class'NSFCloneAugTough1', 1.5, NSF);
     AddRandomEnemyType(class'NSFCloneAugStealth1', 1.5, NSF);
 
-    AddRandomEnemyType(class'#var(prefix)Gray', 1, FactionOther);
-    AddRandomEnemyType(class'GrayBaby', 1, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, FactionOther);
