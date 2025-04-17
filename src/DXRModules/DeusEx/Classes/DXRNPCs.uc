@@ -56,7 +56,7 @@ function LogAll(name conName)
 }
 
 //#region Generate Choices
-function AddLoadoutPurchaseChoices(out ItemPurchase choices[75], out int numChoices)
+function AddLoadoutPurchaseChoices(out ItemPurchase choices[75], out int numChoices, optional int priceLimit)
 {
     local DXRLoadouts loadout;
     local class<Actor> spawns[10];
@@ -78,15 +78,17 @@ function AddLoadoutPurchaseChoices(out ItemPurchase choices[75], out int numChoi
         basePrice = FClamp((-20 * chances[i]) + 1200,300,1500);
 
         //1 extra chance for every 10% seems reasonable?  Most things are around 30%, so 3 entries
-        AddItemPurchaseChoice(choices,numChoices,class<Inventory>(spawns[i]),300,chances[i]/10);
+        AddItemPurchaseChoice(choices,numChoices,class<Inventory>(spawns[i]),300,chances[i]/10, priceLimit);
     }
 
 }
 
-function AddItemPurchaseChoice(out ItemPurchase choices[75], out int numChoices, class<Inventory> choiceClass, int basePrice, int weight)
+function AddItemPurchaseChoice(out ItemPurchase choices[75], out int numChoices, class<Inventory> choiceClass, int basePrice, int weight, int priceLimit)
 {
     local int i;
     local DXRLoadouts loadout;
+
+    if (priceLimit!=0 && basePrice>priceLimit) return;
 
     //Don't make banned items available to purchase
     loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
@@ -132,35 +134,35 @@ function ItemPurchase SelectRandomPurchaseChoice(out ItemPurchase choices[75], o
     return selected;
 }
 
-function RandomizeItems(out ItemPurchase items[8], optional int forced)
+function RandomizeItems(out ItemPurchase items[8], optional int forced, optional int priceLimit)
 {
     local float r;
     local int i, k, num, numChoices;
     local class<Inventory> iclass;
     local ItemPurchase choices[75];
 
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',1000,8);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',600,2);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Lockpick',600,4);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Multitool',600,4);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',1000,8);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',600,2);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BallisticArmor',400,3);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Ammo10mm',250,3);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoBattery',250,3);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoDartPoison',250,3);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoRocket',300,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponShuriken',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)HazMatSuit',400,3);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Rebreather',300,3);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AdaptiveArmor',2000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponLAM',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponEMPGrenade',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponGasGrenade',1000,1);
-    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponNanoVirusGrenade',1000,1);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',1000,8,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Medkit',600,2,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Lockpick',600,4,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Multitool',600,4,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',1000,8,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BioelectricCell',600,2,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)BallisticArmor',400,3,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Ammo10mm',250,3,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoBattery',250,3,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoDartPoison',250,3,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AmmoRocket',300,1,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponShuriken',1000,1,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)HazMatSuit',400,3,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)Rebreather',300,3,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)AdaptiveArmor',2000,1,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponLAM',1000,1,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponEMPGrenade',1000,1,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponGasGrenade',1000,1,priceLimit);
+    AddItemPurchaseChoice(choices,numChoices,class'#var(prefix)WeaponNanoVirusGrenade',1000,1,priceLimit);
 
     //The merchant can also sell items you might find randomly spawned on the ground, based on your loadout
-    AddLoadoutPurchaseChoices(choices,numChoices);
+    AddLoadoutPurchaseChoices(choices,numChoices,priceLimit);
 
     //These are basically just increased odds?  In theory this is replaced by the increased weighting above
     //Is it actually equivalent?  ¯\_(ツ)_/¯
@@ -230,7 +232,7 @@ function CreateRandomMerchant()
     CreateMerchant("The Merchant", 'DXRNPCs1', class'Merchant', items, GetRandomMerchantPosition());
 }
 
-function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Merchant> mClass, vector loc, rotator rot, optional class<Inventory> forcedItem, optional int forcedItemPrice)
+function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Merchant> mClass, vector loc, rotator rot, optional int priceLimit, optional class<Inventory> forcedItem, optional int forcedItemPrice)
 {
     local ItemPurchase items[8];
     local int forced;
@@ -245,7 +247,7 @@ function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Mer
         items[0].price = forcedItemPrice;
         forced++;
     }
-    RandomizeItems(items, forced);
+    RandomizeItems(items, forced, priceLimit);
 
     return CreateMerchant(name, bindname, mclass, items, loc, rot);
 }
