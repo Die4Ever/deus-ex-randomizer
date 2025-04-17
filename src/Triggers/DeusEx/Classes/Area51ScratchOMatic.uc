@@ -107,7 +107,7 @@ function SendTelemetryEvent(int healthDiff, int curHealth, EHealthComment commen
     js.static.Add(j, "healthDiff", healthDiff);
     js.static.Add(j, "comment", int(comment));
     class'DXREvents'.static.GeneralEventData(dxr, j);
-    class'DXREvents'.static.InventoryData(dxr, j);
+    class'DXREvents'.static.InventoryData(dxr, false, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, self, j);
