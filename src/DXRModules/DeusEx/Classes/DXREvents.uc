@@ -607,7 +607,7 @@ function SetWatchFlags() {
         }
         break;
     case "03_NYC_HANGAR":
-        WatchFlag('NiceTerrorist_PlayerDead');// only tweet it once, not like normal PawnDeaths
+        WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
 
         foreach AllActors(class'#var(prefix)Mechanic', mechanic) {
             if(mechanic.BindName == "Harold")
@@ -2301,8 +2301,8 @@ function string RemapBingoEvent(string eventname)
         case "M04MeetSmuggler_Played":
         case "M08SmugglerConvos_Played":
             return "MeetSmuggler";
-        case "Ray_PlayerDead":
-        case "Ray_PlayerUnconscious":
+        case "Ray_Dead":
+        case "Ray_Unconscious":
             return "GotHelicopterInfo";
         case "CarlaBrown_PlayerDead":
         case "StacyWebber_PlayerDead":
@@ -2536,8 +2536,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel";
         case "JordanShea_PlayerDead":
             return "Kill Jordan Shea, the bartender at the Underworld Tavern in New York.  You must kill her yourself.";
-        case "SandraRenton_Dead":
-            msg = "Kill Sandra Renton (or let her die).  ";
+        case "SandraRenton_PlayerDead":
+            msg = "Kill Sandra Renton.  ";
             if (mission<=2){
                 msg=msg$"She can be found in an alley next to the Underworld Tavern in New York";
             } else if (mission<=4){
@@ -2547,9 +2547,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             } else if (mission<=12){
                 msg=msg$"She can be found outside the gas station";
             }
+            msg = msg $ ".  You must kill her yourself.";
             return msg;
-        case "GilbertRenton_Dead":
-            return "Kill Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel";
+        case "GilbertRenton_PlayerDead":
+            return "Kill Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel.  You must kill him yourself.";
         case "WarehouseEntered":
             return "Enter the underground warehouse in Paris.  This warehouse is located in the building across the street from the entrance to the Catacombs.";
         case "GuntherHermann_Dead":
@@ -2585,7 +2586,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             } else if (mission==15){
                 msg=msg$"He can be found hunting you down somewhere in Area 51";
             }
-            msg=msg$".  You must kill him yourself."
+            msg=msg$".  You must kill him yourself.";
             return msg;
         case "JoeGreene_PlayerDead":
             msg= "Kill Joe Greene, the reporter poking around in New York.  ";
@@ -2594,7 +2595,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             }else if (mission<=8){
                 msg=msg$"He can be found somewhere in New York after you return from Hong Kong";
             }
-            msg=msg$".  You must kill him yourself."
+            msg=msg$".  You must kill him yourself.";
             return msg;
         case "GuntherFreed":
             return "Free Gunther from the makeshift jail on Liberty Island.  The jail is just inside the base of the statue.";
@@ -2608,7 +2609,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Give Billy some soy food or a candy bar.  Billy is a kid located in the kiosk of Castle Clinton.";
         case "FordSchickRescued":
             return "Rescue Ford Schick from the MJ12 lab in the sewers under New York on your first visit to Hell's Kitchen.  The key to the sewers can be gotten from Smuggler";
-        case "NiceTerrorist_PlayerDead":
+        case "NiceTerrorist_Dead":
             return "Kill a friendly NSF trooper in the LaGuardia hangar.";
         case "M10EnteredBakery":
             return "Enter the bakery in the streets of Paris.  The bakery can be found across the street from the Metro.";
@@ -2723,19 +2724,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "JocksToilet":
             return "Use the toilet in Jock's Tonnochi Road apartment.  The bathroom is behind a sliding door next to the kitchen.";
         case "Greasel_ClassDead":
-            return "Kill enough greasels. You must kill them yourself.";
+            return "Kill enough greasels.  You must kill them yourself.";
         case "support1":
             return "Blow up the gas station.";
         case "UNATCOTroop_ClassDead":
-            return "Kill enough UNATCO Troopers. You must kill them yourself.";
+            return "Kill enough UNATCO Troopers.  You must kill them yourself.";
         case "Terrorist_ClassDead":
-            return "Kill enough NSF Troops. You must kill them yourself.";
+            return "Kill enough NSF Troops.  You must kill them yourself.";
         case "MJ12Troop_ClassDead":
-            return "Kill enough MJ12 Troopers. You must kill them yourself.";
+            return "Kill enough MJ12 Troopers.  You must kill them yourself.";
         case "MJ12Commando_ClassDead":
-            return "Kill enough MJ12 Commandos. You must kill them yourself.";
+            return "Kill enough MJ12 Commandos.  You must kill them yourself.";
         case "Karkian_ClassDead":
-            return "Kill enough karkians. You must kill them yourself.";
+            return "Kill enough karkians.  You must kill them yourself.";
         case "MilitaryBot_ClassDead":
             return "Destroy enough military bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "VandenbergToilet":
@@ -2743,7 +2744,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "BoatEngineRoom":
             return "Enter the small room at the back of the smuggler's boat in the Hong Kong canals and check the power levels on the equipment inside.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
         case "SecurityBot2_ClassDead":
-            return "Destroy enough of the two legged walking security bots. You must destroy them yourself and disabling them with EMP does not count.";
+            return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SecurityBotSmall_ClassDead":
             return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SpiderBot_ClassDead":
@@ -2751,15 +2752,15 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "HumanStompDeath":
             return "Jump on enough humans heads until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
         case "Rat_ClassDead":
-            return "Kill enough rats. You must kill them yourself.";
+            return "Kill enough rats.  You must kill them yourself.";
         case "UNATCOTroop_ClassUnconscious":
-            return "Knock out enough UNATCO Troopers.  You can knock them out with things like the baton, prod, or tranq darts. You must knock them out yourself.";
+            return "Knock out enough UNATCO Troopers.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "Terrorist_ClassUnconscious":
-            return "Knock out enough NSF Troops.  You can knock them out with things like the baton, prod, or tranq darts. You must knock them out yourself.";
+            return "Knock out enough NSF Troops.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "MJ12Troop_ClassUnconscious":
-            return "Knock out enough MJ12 Troopers.  You can knock them out with things like the baton, prod, or tranq darts. You must knock them out yourself.";
+            return "Knock out enough MJ12 Troopers.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "MJ12Commando_ClassUnconscious":
-            return "Knock out enough MJ12 Commandos.  You can knock them out with things like the baton, prod, or tranq darts. You must knock them out yourself.";
+            return "Knock out enough MJ12 Commandos.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
         case "purge":
             return "Use the keypad in the vents of the Hong Kong MJ12 Helibase to release poison gas into the barracks.";
         case "ChugWater":
@@ -2837,7 +2838,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "06_Datacube05":
             return "Find the datacube on Tonnochi Road from Louis Pan reminding Maggie that he will never forget her birthday again.";
         case "Gray_ClassDead":
-            return "Kill enough Grays. You must kill them yourself.";
+            return "Kill enough Grays.  You must kill them yourself.";
         case "CloneCubes":
             return "Read enough datacubes regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
         case "blast_door_open":
@@ -2865,7 +2866,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "PlayerKilledLebedev":
             return "Murder Juan Lebedev on the 747 of your own volition.";
         case "JuanLebedev_PlayerUnconscious":
-            return "Knock Lebedev out instead of killing him. You must knock him out yourself.";
+            return "Knock Lebedev out instead of killing him.  You must knock him out yourself.";
         case "BrowserHistoryCleared":
             return "While escaping UNATCO, log into the computer in your office and clear your browser history.";
         case "AnnaKillswitch":
@@ -3129,7 +3130,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "M06JCHasDate":
             return "Rent a companion for the night from the Mamasan in the Lucky Money club.";
         case "Sailor_ClassDeadM6":
-            return "Kill enough of the sailors on the top floor of the Lucky Money club. You must kill them yourself.";
+            return "Kill enough of the sailors on the top floor of the Lucky Money club.  You must kill them yourself.";
         case "Shannon_PlayerDead":
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill her yourself.";
         case "DestroyCapitalism":
@@ -3264,7 +3265,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ScienceIsForNerds":
             return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill enough of those nerds in lab coats.";
         case "Chef_ClassDead":
-            return "Do what needs to be done and kill a chef. You must kill him yourself.";
+            return "Do what needs to be done and kill a chef.  You must kill him yourself.";
         case "un_PrezMeadPic_peepedtex":
             return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
         case "un_bboard_peepedtex":
@@ -3292,7 +3293,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             }
             return msg;
         case "ScubaDiver_ClassDead":
-            return "Kill enough SCUBA divers in and around the Ocean Lab. You must kill them yourself.";
+            return "Kill enough SCUBA divers in and around the Ocean Lab.  You must kill them yourself.";
         case "ShipRamp":
             return "Raise the ramp to get on board the superfreighter from the docks.  There is a keypad on a box next to the ramp that raises it.";
         case "SuperfreighterProp":
@@ -3375,7 +3376,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "CathedralDisplayCase":
             return "Enter the store display case in the street leading up to the cathedral.";
         case "WIB_ClassDeadM11":
-            return "Kill Adept 34501, the Woman in Black living in the cathedral. You must kill her yourself.";
+            return "Kill Adept 34501, the Woman in Black living in the cathedral.  You must kill her yourself.";
         case "VandenbergAntenna":
             return "Shoot the tip of the antenna on top of the command center at the Vandenberg Air Force Base.";
         case "VandenbergHazLab":
@@ -3433,11 +3434,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "OverhearLebedev_Played":
             return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong.  It can be heard in one of the offices.";
         case "ThugGang_AllianceDead":
-            return "Slaughter most of the Rooks in the Brooklyn Bridge Station. You must kill them yourself.";
+            return "Slaughter most of the Rooks in the Brooklyn Bridge Station.  You must kill them yourself.";
         case "GiveZyme":
             return "Give zyme to the two junkies in the Brooklyn Bridge Station.";
         case "MarketKid_PlayerUnconscious":
-            return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market. You must knock him out yourself.  Crime (sometimes) doesn't pay.";
+            return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  You must knock him out yourself.  Crime (sometimes) doesn't pay.";
         case "MaggieLived":
             return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
         case "PetKarkians":
@@ -3549,8 +3550,8 @@ defaultproperties
 	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1,missions=4096)
 	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1,missions=16)
 	bingo_options(3)=(event="JordanShea_PlayerDead",desc="Kill Jordan Shea",max=1,missions=276)
-	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1,missions=4372)
-	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=20)
+	bingo_options(4)=(event="SandraRenton_PlayerDead",desc="Kill Sandra Renton",max=1,missions=4372)
+	bingo_options(5)=(event="GilbertRenton_PlayerDead",desc="Kill Gilbert Renton",max=1,missions=20)
 	//bingo_options()=(event="AnnaNavarre_PlayerDead",desc="Kill Anna Navarre",max=1,missions=56)
     bingo_options(6)=(event="WarehouseEntered",desc="Enter the underground warehouse in Paris",max=1,missions=1024)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=2048)
@@ -3579,7 +3580,7 @@ defaultproperties
     bingo_options(25)=(event="JoshFed",desc="Give Josh some food",max=1,missions=4)
     bingo_options(26)=(event="M02BillyDone",desc="Give Billy some food",max=1,missions=4)
     bingo_options(27)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1,missions=4)
-    bingo_options(28)=(event="NiceTerrorist_PlayerDead",desc="Ignore Paul in the 747 Hangar",max=1,missions=8)
+    bingo_options(28)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hangar",max=1,missions=8)
     bingo_options(29)=(event="M10EnteredBakery",desc="Enter the bakery",max=1,missions=1024)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(30)=(event="FreshWaterOpened",desc="Fix the water",max=1,missions=8)
@@ -3983,7 +3984,7 @@ defaultproperties
     mutually_exclusive(41)=(e1="VendingMachineEmpty",e2="VendingMachineDispense_Candy")
     mutually_exclusive(42)=(e1="VendingMachineEmpty_Drink",e2="VendingMachineDispense_Candy")
     mutually_exclusive(43)=(e1="ShipsBridge",e2="SpinShipsWheel")
-    mutually_exclusive(44)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="GilbertRenton_Dead")
+    mutually_exclusive(44)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="GilbertRenton_PlayerDead")
     mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_PlayerDead")
     mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
     mutually_exclusive(47)=(e1="nsfwander",e2="MiguelLeaving")
