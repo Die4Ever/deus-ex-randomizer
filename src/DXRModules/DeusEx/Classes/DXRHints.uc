@@ -732,6 +732,10 @@ simulated function ShowHint(optional int recursion)
     local int hint;
     local string hintStr,hintDetail;
     local DXRBigMessage m;
+
+    //Only show death hints if the player wants them
+    if (!class'MenuChoice_ShowDeathHints'.static.IsEnabled(dxr.flags)) return;
+
 #ifdef hx
     // for hx, the DXRBigMessage is bugged, so just disable the timer and PlayerRespawn will enable it again
     SetTimer(0, false);

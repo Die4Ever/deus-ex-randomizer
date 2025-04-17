@@ -1,21 +1,17 @@
 //=============================================================================
-// MenuChoice_JCGenderSkin
+// MenuChoice_ShowDeathHints
 //=============================================================================
 
-class MenuChoice_JCGenderSkin extends DXRMenuUIChoiceInt;
+class MenuChoice_ShowDeathHints extends DXRMenuUIChoiceInt;
 
 // ----------------------------------------------------------------------
 // SaveSetting()
 // ----------------------------------------------------------------------
 
-static function bool IsRandom()
+static function bool IsEnabled(DXRFlags f)
 {
-    return (default.value==1);
-}
-
-static function bool IsRemember()
-{
-    return (default.value==2);
+    //
+    return (default.value==2) || (default.value==1 && !f.IsZeroRando());
 }
 
 defaultproperties
@@ -24,9 +20,9 @@ defaultproperties
     defaultvalue=1
     defaultInfoWidth=243
     defaultInfoPosX=203
-    HelpText="What gender and skin of JC should be selected on the new game screen?"
-    actionText="JC Gender/Skin"
-    enumText(0)="Default"
-    enumText(1)="Random"
-    enumText(2)="Last Used"
+    HelpText="Show hints after you die.  This is automatically disabled for Zero Rando."
+    actionText="Death Hints"
+    enumText(0)="No Hints Shown"
+    enumText(1)="According to Game Mode"
+    enumText(2)="Hints Shown"
 }
