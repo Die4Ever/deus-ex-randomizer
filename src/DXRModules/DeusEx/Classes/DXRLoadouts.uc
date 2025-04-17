@@ -1242,6 +1242,7 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
 function SpawnItems()
 {
     local vector loc;
+    local rotator r;
     local Actor a;
     local class<Actor> aclass;
     local DXRReduceItems reducer;
@@ -1265,9 +1266,10 @@ function SpawnItems()
         for(j=0;j<mult_items_per_level*3;j++) {
             if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
+                r = GetRandomYaw();
                 if (ClassIsChildOf(aclass,class'Inventory')){
                     //75% is pretty close to the size of a CrateUnbreakableSmall
-                    a = SpawnItemInContainer(self,class<Inventory>(aclass),loc,,0.75);
+                    a = SpawnItemInContainer(self,class<Inventory>(aclass),loc,r,0.75);
                     l("SpawnItems() spawned "$a$" at "$loc$" with "$aclass$" inside");
                 } else {
                     a = Spawn(aclass,,, loc);

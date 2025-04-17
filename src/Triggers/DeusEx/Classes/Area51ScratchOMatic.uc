@@ -87,7 +87,30 @@ function HandleDamageResult(int curHealth, bool bleeding)
         finalRes = bleed;
     }
 
+    SendTelemetryEvent(healthDiff,curHealth,finalRes);
     AddConEventJump(HealthCommentEnumToString(finalRes));
+}
+
+function SendTelemetryEvent(int healthDiff, int curHealth, EHealthComment comment)
+{
+    local string j;
+    local DXRando dxr;
+    local class<Json> js;
+    js = class'Json';
+
+    log(self $ " Area51ScratchOMatic SendTelemetryEvent()");
+    dxr = class'DXRando'.default.dxr;
+
+    j = js.static.Start("Flag");
+    js.static.Add(j, "flag", "Area51ScratchOMatic");
+    js.static.Add(j, "curHealth", curHealth);
+    js.static.Add(j, "healthDiff", healthDiff);
+    js.static.Add(j, "comment", int(comment));
+    class'DXREvents'.static.GeneralEventData(dxr, j);
+    class'DXREvents'.static.InventoryData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, self, j);
 }
 
 function AddConEventJump(string jumpLabel)

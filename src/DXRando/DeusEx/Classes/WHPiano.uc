@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[87]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[90]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -630,6 +630,21 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             duration = 9;
             message="You played Thriller by Michael Jackson";
             break;
+        case 87:
+            SelectedSound = sound'WhamLastChristmas';
+            duration = 18;
+            message="You played Last Christmas by Wham!";
+            break;
+        case 88:
+            SelectedSound = sound'YIMapScreen';
+            duration = 8;
+            message="You played Map Screen from Yoshi's Island";
+            break;
+        case 89:
+            SelectedSound = sound'GourmetRace';
+            duration = 11;
+            message="You played Gourmet Race from Kirby Super Star";
+            break;
         default:
             SelectedSound = None;
             duration = 0;
@@ -688,6 +703,9 @@ function int GetSongWeight(int songIdx)
         case 84: //AllIWantForChristmas
             if (dxr.IsChristmasSeason()) return 75; //The ice thaws
             return 0; //She stays frozen in the block of ice
+        case 87: //WhamLastChristmas
+            if (dxr.IsChristmasSeason()) return 25; //Get Whammed
+            return 0; //No danger
         case 85: //PeanutsLinusLucy
             if (dxr.IsChristmasSeason()) return 3;
             return 0;

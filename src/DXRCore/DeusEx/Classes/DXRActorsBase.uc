@@ -1465,6 +1465,17 @@ function vector GetCloserPosition(vector target, vector current, optional float 
     return farthest;
 }
 
+function rotator GetRandomYaw()
+{
+    local rotator r;
+
+    r.Pitch=0;
+    r.Roll=0;
+    r.Yaw = rng(65536);
+
+    return r;
+}
+
 function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
     local Actor thing,nearestThing;
 
