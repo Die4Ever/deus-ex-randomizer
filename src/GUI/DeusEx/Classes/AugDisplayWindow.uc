@@ -214,7 +214,7 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
         carc = DeusExCarcass(A);
         if(carc != None && !carc.bNotDead) {
             if(carc.TimerRate <= 0 || carc.Group=='coldbody' || carc.Alliance=='Resurrected') return;
-            DrawGlow *= (carc.TimerRate - carc.TimerCounter) / carc.TimerRate;
+            DrawGlow *= FClamp(1-carc.TimerCounter*4, 0, 1);
         }
         if(ScriptedPawn(A) != None && ScriptedPawn(A).Alliance=='Resurrected') {
             DrawGlow *= 0.1;
@@ -226,6 +226,7 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
     if(bMotionSensor) {
         DrawGlow *= FClamp(VSize(A.Velocity)/100.0, 0, 1);
     }
+    if(DrawGlow <= 0) return;
 
     if(A.Mesh != None) {
         SetSkins(A, oldSkins);
