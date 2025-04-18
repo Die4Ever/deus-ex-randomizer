@@ -588,6 +588,13 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Move Russ (from LDDP) to the side.  Can't reference the actual class,
+        //in case someone doesn't have LDDP installed.
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p,'LDDPRuss'){
+            p.SetLocation(vectm(-1110,-70,-336));
+            p.LookAtVector(vectm(-1190,-2,-316),true,false,false);
+        }
+
         //A switch inside the freezer to open it back up... just in case
         AddSwitch( vect(-1560.144409,-3166.475098,-315.504028), rot(0,16408,0), 'FreezerDoor');
 
