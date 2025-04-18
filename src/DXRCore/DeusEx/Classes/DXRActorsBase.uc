@@ -1465,13 +1465,18 @@ function vector GetCloserPosition(vector target, vector current, optional float 
     return farthest;
 }
 
-function rotator GetRandomYaw()
+function rotator GetRandomYaw(optional bool unseeded)
 {
     local rotator r;
 
     r.Pitch=0;
     r.Roll=0;
-    r.Yaw = rng(65536);
+
+    if (unseeded){
+        r.Yaw = Rand(65536);
+    } else {
+        r.Yaw = rng(65536);
+    }
 
     return r;
 }

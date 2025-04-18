@@ -55,6 +55,11 @@ const DoomModeTimeDefault = 60;
 const WineBulletsTimeDefault = 60;
 const BloodTimeDefault = 60;
 
+const MAX_NASTY_RAT = 3;
+const MAX_SPAM_CUBES = 50;
+const MAX_MARBLES = 100;
+const MAX_PIANOS = 50;
+
 //OBSOLETE - Remove eventually
 struct ZoneFriction
 {
@@ -1610,7 +1615,7 @@ function int SpawnNastyRat(string viewer)
 
     //Only allow a certain number of nasty rats in each level
     foreach AllActors(class'NastyRat',nr){
-        if (++num>=3) {
+        if (++num>=MAX_NASTY_RAT) {
             return TempFail;
         }
     }
@@ -1642,8 +1647,22 @@ function int DropPiano(string viewer)
     #endif
     local DXRActorsBase tracer;
     local vector loc;
+    local rotator r;
     local float height, leading;
     local #var(PlayerPawn) p;
+    local int num;
+
+    num = 0;
+    #ifdef injections
+    foreach AllActors(class'#var(prefix)WHPiano',piano){
+    #else
+    foreach AllActors(class'DXRPiano',piano){
+    #endif
+        if (++num>=MAX_PIANOS) {
+            return TempFail;
+        }
+    }
+    piano=None;
 
     p = player();
     loc = p.Location;
@@ -1668,10 +1687,12 @@ function int DropPiano(string viewer)
         return TempFail;
     }
 
+    r = ccLink.ccModule.GetRandomYaw(true); //Unseeded randomness
+
     #ifdef injections
-    piano = Spawn(class'#var(prefix)WHPiano',,, loc);
+    piano = Spawn(class'#var(prefix)WHPiano',,, loc, r);
     #else
-    piano = Spawn(class'DXRPiano',,, loc);
+    piano = Spawn(class'DXRPiano',,, loc, r);
     #endif
     //Did it spawn successfully?
     if(piano == None) {
@@ -2120,8 +2141,16 @@ function bool DropMarbles(string viewer)
     local DXRMarble ball;
     local int num,i;
 
-    num=0;
 
+    num = 0;
+    foreach AllActors(class'DXRMarble',ball){
+        if (++num>=MAX_MARBLES) {
+            return False;
+        }
+    }
+
+    ball=None;
+    num=0;
     for (i=0;i<10;i++){
         ball = Spawn(class'DXRMarble',,,player().Location+vect(0,0,80),player().Rotation);
         if (ball!=None){
@@ -2180,9 +2209,19 @@ function bool SpamDatacubes(String viewer)
     local int num,i;
     local #var(injectsprefix)InformationDevices dc;
 
+    num = 0;
+    foreach AllActors(class'#var(injectsprefix)InformationDevices',dc,'CrowdControlSpamDatacube'){
+        if (++num>=MAX_SPAM_CUBES) {
+            return False;
+        }
+    }
+
+    dc = None;
+    num = 0;
     for (i=0;i<5;i++){
         dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer),"");
         if (dc!=None){
+            dc.Tag='CrowdControlSpamDatacube';
             ccLink.ccModule.GlowUp(dc);
             num++;
         }
