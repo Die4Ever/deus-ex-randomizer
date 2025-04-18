@@ -353,7 +353,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
             continue;
         }
 
-        if(!CheckFreeSpace(loc, newclass.default.CollisionRadius * 2.3, newclass.default.CollisionHeight * 1.4)) {
+        if(!CheckFreeSpace(loc, newclass.default.CollisionRadius * 2.3 / num_enemies, newclass.default.CollisionHeight * 1.3)) {
             l("CloneScriptedPawn "$loc$" not enough room " $ newclass);
             continue;
         }
