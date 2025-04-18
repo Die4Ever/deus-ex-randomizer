@@ -69,6 +69,7 @@ function int GetIdForSlot(int i)
     if(i-- == 0) return 15; // The Three Leg Augs
     if(i-- == 0) return 17; // My Vision Is Augmented
 
+    // challenges
     if(i-- == 0) return 2; // Stick With the Prod Plus
     if(i-- == 0) return 1; // Stick With the Prod Pure
     if(i-- == 0) return 9; // Hipster JC
@@ -79,6 +80,7 @@ function int GetIdForSlot(int i)
     if(i-- == 0) return 8; // No Swords
     if(i-- == 0) return 5; // Freeman Mode
 
+    // silly
     if(i-- == 0) return 3; // Ninja JC
     if(i-- == 0) return 11; // Explosives Only
     if(i-- == 0) return 13; // Straight Edge
@@ -770,12 +772,13 @@ function AddStartAug(class<Augmentation> aug)
 
 function AddRandomAug()
 {
-    local int i;
+    local int i, oldseed;
 
     for(i=0; i < ArrayCount(item_set.starting_augs); i++) {
         if( item_set.starting_augs[i] == None ) {
-            SetGlobalNGPSeed("DXRLoadouts AugRandom " $ i);
+            oldseed = SetGlobalNGPSeed("DXRLoadouts AugRandom " $ i);
             item_set.starting_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
+            ReapplySeed(oldseed);
             return;
         }
     }
@@ -783,13 +786,14 @@ function AddRandomAug()
 
 function BanRandomAugs(int num)
 {
-    local int i;
+    local int i, oldseed;
 
     while(num-- > 0) {
         for(i=0; i < ArrayCount(item_set.ban_augs); i++) {
             if( item_set.ban_augs[i] == None ) {
-                SetGlobalSeed("DXRLoadouts BanAugRandom " $ i);
+                oldseed = SetGlobalSeed("DXRLoadouts BanAugRandom " $ i);
                 item_set.ban_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
+                ReapplySeed(oldseed);
                 return;
             }
         }
@@ -1083,8 +1087,6 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
 {
     local class<Inventory> iclass;
     local Inventory item;
-    //local Ammo a;
-    //local DeusExWeapon w;
     local int i;
 
     for(i=0; i < ArrayCount(item_set.starting_equipment); i++) {
