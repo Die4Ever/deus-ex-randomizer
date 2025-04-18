@@ -249,7 +249,9 @@ simulated function InitHints()
         }
         if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime) {
             AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
-            AddHint("Each type of weapon will have the same stats", "through the whole game.  They won't change later!");
+            if (!dxr.flags.IsWaltonWare()) {
+                AddHint("Each type of weapon will have the same stats", "through the whole game.  They won't change later!");
+            }
         }
 
         if(#defined(injections) || #defined(vmd) || #defined(gmdx)) {
