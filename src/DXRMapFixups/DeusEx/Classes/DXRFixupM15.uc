@@ -121,8 +121,8 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     trig.SetCollisionSize(180,40);
     trig.event = 'power_dispatcher';
 
-    //Make the movers way faster
     foreach AllActors(class'DeusExMover',d){
+        //Make the movers way faster
         switch(d.Tag){
             case 'upper_elevator_sw':
             case 'upper_elevator_sw_works':
@@ -130,6 +130,12 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
             case 'lower_elevator_sw_works':
                 d.MoveTime=0.01; //So fast it just looks like the buttons and stuff swapped instantly, even if you're looking
                 break;
+        }
+
+        // for the Sniper Tower start location
+        if(d.KeyIDNeeded == 'tower' && isVanilla) {
+            d.Tag = 'towerdoor';
+            AddSwitch(vect(-1362.346313, 278.640015, -146.328003), rot(0, -16384, 0), 'towerdoor');
         }
     }
 

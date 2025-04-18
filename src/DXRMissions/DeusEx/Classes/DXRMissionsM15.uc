@@ -8,7 +8,7 @@ function int InitGoals(int mission, string map)
     switch(map) {
     case "15_AREA51_BUNKER":
         AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
-        AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Tower", START_LOCATION, vect(-1319.494751, 168.401230, 102.800003), rot(0, -38180, 0));
         AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-493.825836, 3099.697510, -512.897827), rot(0, 0, 0));
 
         goal = AddGoal("15_AREA51_BUNKER", "Walton Simons", NORMAL_GOAL, 'WaltonSimons0', PHYS_Falling);
