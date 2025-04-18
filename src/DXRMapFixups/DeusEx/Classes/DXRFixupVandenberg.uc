@@ -1000,6 +1000,7 @@ function AnyEntryMapFixes()
     local Conversation con;
     local ConEvent ce;
     local ConEventTrigger cet;
+    local #var(DeusExPrefix)Mover dxm;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -1071,6 +1072,12 @@ function AnyEntryMapFixes()
     case "14_OCEANLAB_LAB":
         GetConversation('DL_Simons1').AddFlagRef('WaltonSimons_Dead', false);
         GetConversation('DL_Simons2').AddFlagRef('WaltonSimons_Dead', false);
+
+        l("14_OceanLab_Lab Door Debug:");
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm){
+            //Dump the current state to see if a TriggerToggle door got changed to TriggerOpenTimed or something
+            l(dxm$": "$dxm.GetStateName());
+        }
         break;
     }
 }
