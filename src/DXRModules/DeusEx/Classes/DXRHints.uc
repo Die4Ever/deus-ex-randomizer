@@ -774,7 +774,6 @@ simulated function Timer()
 static function AddDeath(DXRando dxr, #var(PlayerPawn) player)
 {
     local DXRHints hints;
-    if(dxr.flags.IsZeroRandoPure()) return;
     hints = DXRHints(dxr.FindModule(class'DXRHints'));
     if(hints != None) {
         hints._player = player;

@@ -1073,10 +1073,10 @@ function AnyEntryMapFixes()
         GetConversation('DL_Simons1').AddFlagRef('WaltonSimons_Dead', false);
         GetConversation('DL_Simons2').AddFlagRef('WaltonSimons_Dead', false);
 
-        l("14_OceanLab_Lab Door Debug:");
+        l("14_OceanLab_Lab Door Debug:"); // TODO: remove this
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm){
             //Dump the current state to see if a TriggerToggle door got changed to TriggerOpenTimed or something
-            l(dxm$": "$dxm.GetStateName());
+            l(dxm$": " $ dxm.GetStateName() @ dxm.bStasis @ dxm.KeyNum @ dxm.bUseTriggered @ dxm.bDamageTriggered @ dxm.SavedTrigger);
         }
         break;
     }

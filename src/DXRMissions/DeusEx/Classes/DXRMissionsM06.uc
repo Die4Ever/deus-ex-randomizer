@@ -324,7 +324,7 @@ function CreateGordonPhone()
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if (RevisionMaps){
-        return; //No location defined yet
+        return; // TODO: No location defined yet
     } else {
         gPhoneLoc=vect(-100,684,72);
         gPhoneRot=rot(0,0,-16384);
