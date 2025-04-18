@@ -110,6 +110,7 @@ simulated function ExecMaxRando();
 function string DifficultyName(int diff);
 function string GameModeName(int gamemode);
 simulated function SetGlobals();
+simulated function TutorialDisableRandomization(bool enableSomeRando);
 
 simulated function _PreTravel()
 {
@@ -294,6 +295,17 @@ simulated function LoadFlags()
         warning("downgraded flags from "$stored_version$" to "$flagsversion);
         SaveFlags();
     }
+
+    switch(dxr.localURL) {
+    case "00_Training":
+    case "00_TrainingCombat":
+    case "00_TrainingFinal":
+        SetDifficulty(1);
+        TutorialDisableRandomization(dxr.localURL ~= "00_TrainingFinal");
+        SaveFlags();
+        break;
+    }
+
 
     SetGlobals();
     LogFlags("LoadFlags");

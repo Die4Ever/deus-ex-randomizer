@@ -22,6 +22,7 @@ public class DeusEx : SimpleTCPPack<SimpleTCPServerConnector>
     {
         //General Effects
         new("Trigger the Killswitch", "kill"){Price = 75,Description = "Instantly kill the player by simply flipping a switch."},
+        new("Back to the Academy", "back_to_academy"){Price = 75,Description = "Send the player back to the Academy for further training."},
         new("Poison the Player", "poison"){Price = 15,Description = "Give the player a nice dose of poison"},
         new("Glass Legs", "glass_legs"){Price = 5,Description = "Take away all but one health from each of the players legs"},
         new("Give Health (x10)", "give_health") { Quantity = 100, Price = 1,Description = "Give the player some health!" },

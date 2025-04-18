@@ -110,16 +110,6 @@ function InitDefaults()
     autosave = 0;
 #endif
     SetDifficulty(difficulty);
-
-    switch(dxr.localURL) {
-    case "00_Training":
-    case "00_TrainingCombat":
-    case "00_TrainingFinal":
-        SetDifficulty(1);
-        TutorialDisableRandomization(dxr.localURL ~= "00_TrainingFinal");
-        SaveFlags();
-        break;
-    }
 }
 
 //#region difficulty defaults

@@ -106,6 +106,7 @@ var int flashbangDuration;
 var Texture coronaTexture;
 
 var bool quickLoadTriggered;
+var bool trainingTriggered;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL FRAMEWORK                                                 ////
@@ -121,6 +122,7 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
 
     effectSelectInit=False;
     quickLoadTriggered=False; //Disable the quick load effect, in case you managed to save with the quick load effect pending
+    trainingTriggered=False; //Disable the training effect, in case you managed to save with the training effect pending
 }
 
 function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
@@ -244,6 +246,12 @@ function PeriodicUpdates()
         player().QuickLoadConfirmed();
     }
 
+    if (trainingTriggered){
+        trainingTriggered = False;
+        Player().FlagBase.DeleteFlag('Rando_seed',FLAG_Int); //Delete the seed flag so the training is random
+        Level.Game.SendPlayer(Player(),"00_TRAINING"); //Should this try to vary to mirrored?
+    }
+
     if (isTimerActive('cc_Radioactive')){
         PlayerRadiates();
     }
@@ -309,6 +317,7 @@ function HandleEffectSelectability()
         ccLink.sendEffectSelectability("wine_bullets",#defined(vanilla));
         ccLink.sendEffectSelectability("blood_god",!Level.Game.bLowGore && !Level.Game.bVeryLowGore); //Blood doesn't spawn with low gore
         ccLink.sendEffectSelectability("random_clothes",!#defined(vmd));
+        ccLink.sendEffectSelectability("back_to_academy",!IsTrainingLevel());
 
         loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
         if (loadout!=None){
@@ -483,6 +492,16 @@ function int FindAugMax(class<Augmentation> augClass)
     return augClass.default.MaxLevel;
 }
 
+function bool IsTrainingLevel()
+{
+    switch(dxr.localURL) {
+    case "00_Training":
+    case "00_TrainingCombat":
+    case "00_TrainingFinal":
+        return true;
+    }
+    return false;
+}
 //Start the sound and fire the clouds
 function Fart()
 {
@@ -3188,6 +3207,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (player().RestrictInput()) {
                 return TempFail;
             }
+            if (quickLoadTriggered){
+                return TempFail;
+            }
             PlayerMessage(viewer@"is about to do a Quick Load!");
 
             quickLoadTriggered = True;
@@ -3204,6 +3226,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (quickLoadTriggered) {
+                return TempFail;
+            }
+            if (trainingTriggered) {
                 return TempFail;
             }
             PlayerMessage(viewer@"is about to Quick Save!");
@@ -3396,6 +3421,23 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             return ShuffleBelt(viewer);
 
+        case "back_to_academy":
+            if (!InGame()){
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            if (trainingTriggered){
+                return TempFail;
+            }
+            if (IsTrainingLevel()){
+                return TempFail;
+            }
+            PlayerMessage(viewer@"thinks you need to go back to the academy!");
+
+            trainingTriggered = True;
+            break;
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
