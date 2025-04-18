@@ -400,6 +400,11 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            foreach AllActors(class'#var(prefix)ScriptedPawn', p, 'MaggieTroop') {
+                if(p.Name == 'MJ12Troop4') {
+                    p.bIsSecretGoal = true;// don't clone him, he's too close
+                }
+            }
         }
 
         //behind Maggie's DispalyCase (sic), there is a Trigger to open it

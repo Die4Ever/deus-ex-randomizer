@@ -218,7 +218,7 @@ function RandoEnemies(int percent, int hidden_percent)
         CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
-        if(p.bInvincible) continue;
+        if(p.bInvincible || p.bIsSecretGoal) continue;
         if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
         SetSeed("RandomEnemy " $ p.name);
