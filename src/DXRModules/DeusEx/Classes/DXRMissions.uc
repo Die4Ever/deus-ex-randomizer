@@ -524,6 +524,7 @@ function MoveActorsIn(int goalsToLocations[32])
     local DXRGoalMarker marker;
     local vector loc;
     local rotator rotate;
+    local bool success;
 
     foreach AllActors(class'DXRGoalMarker', marker) {
         marker.Destroy();
@@ -538,8 +539,12 @@ function MoveActorsIn(int goalsToLocations[32])
         loc = vectm(loc.X, loc.Y, loc.Z);
         rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, 16384);
         l("Moving player to " $ locations[g].name @ loc @ rotate);
-        p.SetLocation(loc);
+        success = p.SetLocation(loc);
+        if(!success) {
+            err("Failed to move player to " $ locations[g].name @ loc @ rotate);
+        }
         p.SetRotation(rotate);
+        p.ViewRotation = rotate;
         p.PutCarriedDecorationInHand();
         rando_start_loc = p.Location;
         b_rando_start = true;
