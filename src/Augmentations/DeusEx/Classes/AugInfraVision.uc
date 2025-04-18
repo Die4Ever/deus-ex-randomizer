@@ -21,6 +21,8 @@ simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
 // level value is feet*16, 112 is MaxFrobDistance (7 feet)
 defaultproperties
 {
+    Icon=Texture'AugIconInfraVision'
+    smallIcon=Texture'AugIconInfraVision_Small'
     LevelValues(0)=240
     maxLevel=0
     energyRate=0
