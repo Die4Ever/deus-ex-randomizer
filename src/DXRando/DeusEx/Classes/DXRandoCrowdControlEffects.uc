@@ -59,6 +59,7 @@ const MAX_NASTY_RAT = 3;
 const MAX_SPAM_CUBES = 50;
 const MAX_MARBLES = 100;
 const MAX_PIANOS = 50;
+const MAX_LAVA_FIRE = 100;
 
 //OBSOLETE - Remove eventually
 struct ZoneFriction
@@ -1388,9 +1389,13 @@ function invertMovementControls() {
 function floorIsLava() {
     local vector v;
     local vector loc;
+
     loc.X = player().Location.X;
     loc.Y = player().Location.Y;
     loc.Z = player().Location.Z - 1;
+
+    GenerateFloorLavaFire();
+
     if (
         ( player().Base.IsA('LevelInfo') || player().Base.IsA('Mover') )
 #ifdef vanilla
@@ -1411,6 +1416,78 @@ function floorIsLava() {
 
     if ((lavaTick % 50)==0) { //if you stand in lava for 5 seconds
         player().CatchFire(GetCrowdControlPawn(getFloorIsLavaName()));
+    }
+}
+
+function DestroyAllLavaFire()
+{
+    local LavaFire f;
+    foreach AllActors(class'LavaFire',f,'FloorIsLavaFire'){
+        f.Destroy();
+    }
+}
+
+//This whole thing is madness
+function GenerateFloorLavaFire()
+{
+    local LavaFire f;
+    local int num,numToSpawn,i;
+    local float spawnRange;
+    local vector loc, PlayerHead, HitLocation, HitNormal,EndTrace;
+    local Actor HitActor;
+
+    PlayerHead = Player().Location;
+    PlayerHead.Z += Player().BaseEyeHeight;
+
+    num=0;
+    foreach AllActors(class'LavaFire',f,'FloorIsLavaFire'){
+        if (VSize(f.Location-PlayerHead) > 2000){
+            //Too far
+            f.Destroy();
+            continue;
+        }
+
+        if (!f.FastTrace(PlayerHead)){
+            //Out of line of sight
+            f.Destroy();
+            continue;
+        }
+
+        //this one counts!
+        num++;
+    }
+
+    numToSpawn = Min(MAX_LAVA_FIRE - num,25); //No more than 25 per tick
+
+    if (numToSpawn<=0) return;
+
+    num=0;
+    for (i=0;i<(MAX_LAVA_FIRE*2) && num<numToSpawn;i++){ //Make double the number of fires of attempts to spawn them
+        spawnRange = 1500;
+        if (Rand(2)==0){
+            spawnRange=500; //Extra odds for close fire spawns
+        }
+        //Get a random position around the player at head height
+        loc = ccLink.ccModule.GetRandomPositionNear(PlayerHead,spawnRange);
+
+        //Trace down to the ground and see if it actually hits the level
+        EndTrace = loc;
+        EndTrace.Z -= 1000;
+
+        HitActor = Trace(HitLocation, HitNormal, EndTrace, loc, false);
+
+        //Player().ClientMessage("Fire location HitActor: "$HitActor$"    HitLocation: "$HitLocation);
+
+        if (HitActor==Level){
+            //Vary height off the ground a little bit, makes the fire look less uniform
+            HitLocation.Z += 5.0 + (FRand() * 10.0);
+
+            //Make sure the final location is in line of sight before spawning
+            if (FastTrace(HitLocation, PlayerHead)){
+                Spawn(class'LavaFire',Level,'FloorIsLavaFire',HitLocation);
+                num++;
+            }
+        }
     }
 }
 
@@ -2579,6 +2656,7 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
             break;
         case "floor_is_lava":
             if (bKnownStop || isTimerActive('cc_floorLavaTimer')){
+                DestroyAllLavaFire();
                 PlayerMessage("The floor returns to normal temperatures");
                 disableTimer('cc_floorLavaTimer');
             }
