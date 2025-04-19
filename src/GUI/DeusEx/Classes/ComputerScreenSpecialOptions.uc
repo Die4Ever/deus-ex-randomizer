@@ -88,3 +88,21 @@ function SpecialOptionTriggerAdjustPassword(int specialIndex)
     }
 #endif
 }
+
+function SetNetworkTerminal(NetworkTerminal newTerm)
+{
+    Super.SetNetworkTerminal(newTerm);
+    winTerm.CreateHackAccountsWindow(); //Make the account list show up on the special options screen too
+}
+
+// If the account changes, the reload this screen (Similar logic as ComputerScreenEmail)
+function ChangeAccount()
+{
+    Super.ChangeAccount();
+
+    if (winTerm.AreSpecialOptionsAvailable()){
+        CloseScreen("SPECIAL");
+    } else {
+        CloseScreen("EMAIL"); //Go to email if no special options available
+    }
+}
