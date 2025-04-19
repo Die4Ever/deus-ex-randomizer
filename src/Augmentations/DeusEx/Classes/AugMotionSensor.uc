@@ -1,22 +1,7 @@
 #compileif injections
 class AugMotionSensor extends AugVision;
 
-simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
-{
-    local AugmentationDisplayWindow augDisplay;
-
-    Super.SetVisionAugStatus(Level, LevelValue, IsActive);
-
-    augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
-    if (IsActive)
-    {
-        augDisplay.bMotionSensor = true;
-    }
-    else
-    {
-        augDisplay.bMotionSensor = false;
-    }
-}
+// AugDisplayWindow detects the class type to set motion sensor
 
 // level value is feet*16, 112 is MaxFrobDistance (7 feet)
 defaultproperties

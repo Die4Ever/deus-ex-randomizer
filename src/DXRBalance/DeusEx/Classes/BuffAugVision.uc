@@ -14,37 +14,9 @@ function Activate()
 simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
 {
     local AugmentationDisplayWindow augDisplay;
-    local int lvl;
-
-    lvl = Level;
-    if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) lvl++;
 
     augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
-    if (IsActive)
-    {
-        if (++augDisplay.activeCount <= 1) {
-            augDisplay.activeCount = 1;
-            augDisplay.bVisionActive = True;
-            augDisplay.visionLevel = lvl;
-            augDisplay.visionLevelValue = LevelValue;
-        } else {
-            augDisplay.visionLevel += lvl;
-            augDisplay.visionLevelValue += LevelValue;
-        }
-    }
-    else
-    {
-        if (--augDisplay.activeCount <= 0) {
-            augDisplay.activeCount = 0;
-            augDisplay.bVisionActive = False;
-            augDisplay.visionLevel = 0;
-            augDisplay.visionLevelValue = 0;
-        } else {
-            augDisplay.visionLevel -= lvl;
-            augDisplay.visionLevelValue -= LevelValue;
-        }
-        augDisplay.visionBlinder = None;
-    }
+    augDisplay.SetActiveVisionAug(self, Level, LevelValue, IsActive);
 }
 
 simulated function UpdateBalance()

@@ -6,8 +6,99 @@ class DXRAugDisplayWindow injects AugmentationDisplayWindow;
 #endif
 
 var transient bool d3d11;// d3d11 drawing the viewport of targeting aug fills the entire screen, just disable that
-var transient bool bThermalVision;
-var transient bool bMotionSensor;
+
+var bool bThermalVision;
+var bool bMotionSensor;
+var bool bVisionEnhancement; // AugVision and Tech Goggles
+
+var float visionLevelValues[6];
+
+function SetActiveVisionAug(Augmentation aug, int level, float str, bool bActive)
+{
+    local int slot;
+    log("SetActiveVisionAug " $ aug @ level @ str @ bActive);
+    if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && aug != None) level++;
+    else if (class'MenuChoice_BalanceItems'.static.IsDisabled()) { // tech goggles
+        level = 0;
+        str = 0.1;
+    }
+
+    #ifdef injections
+    if(aug != None) {
+        switch(aug.class) {
+        // slot 0 is tech goggles
+        case class'AugVision':
+            slot = 1;
+            bVisionEnhancement = bActive;
+            break;
+        case class'AugVisionShort':
+            slot = 2;
+            bVisionEnhancement = bActive;
+            break;
+        case class'AugInfraVision':
+            slot = 3;
+            bThermalVision = bActive;
+            break;
+        case class'AugMotionSensor':
+            slot = 4;
+            bMotionSensor = bActive;
+            break;
+        default: // not None but not one of the above?
+            log("WARNING: " $ self $ " unknown vision aug: " $ aug @ level @ str @ bActive);
+            slot = 5;
+            bVisionEnhancement = bActive;
+            break;
+        }
+    } else if(bActive) {
+        bVisionEnhancement = true;
+    }
+    #endif
+
+    if (bActive)
+    {
+        visionLevel = Max(visionLevel, level);
+        visionLevelValues[slot] = str;
+        bVisionActive = true;
+        activeCount++;
+        if(activeCount == 1) {
+            visionLevel = level;
+        }
+    }
+    else
+    {
+        visionLevelValues[slot] = -1;
+    }
+}
+
+function float GetVisionLevelValue()
+{
+    local int i;
+    local float f;
+
+    activeCount = 0;
+    visionLevelValue = -1;
+
+    for(i=0; i<ArrayCount(visionLevelValues); i++) {
+        f = visionLevelValues[i];
+        if(f > 0) {
+            visionLevelValue = FMax(visionLevelValue, f);
+            activeCount++;
+        }
+    }
+
+    if(activeCount > 0) {
+        bVisionActive = true;
+    } else {
+        bVisionActive = false;
+        visionLevel = 0;
+        visionBlinder = None;
+        bMotionSensor = false;
+        bThermalVision = false;
+        bVisionEnhancement = false;
+    }
+
+    return visionLevelValue;
+}
 
 function ConfigurationChanged()
 {
@@ -62,6 +153,13 @@ function DrawBrush(GC gc, Actor a)
     width = boxBRX - boxTLX;
     height = boxBRY - boxTLY;
     gc.DrawPattern(boxTLX, boxTLY, width, height, 0, 0, Texture'Virus_SFX');
+}
+
+function PostDrawWindow(GC gc)
+{
+    if(#bool(injections)) GetVisionLevelValue();
+    else bVisionEnhancement = bVisionActive;
+    Super.PostDrawWindow(gc);
 }
 
 function DrawVisionAugmentation(GC gc)
@@ -124,15 +222,17 @@ function bool ShouldDrawActor(Actor A)
     if(A.bHidden)
         return false;
 
-    if(bThermalVision && activeCount==1) {
-        return IsHeatSource(A);
+    if(bThermalVision) {
+        if(IsHeatSource(A)) return true;
     }
     if(bMotionSensor) {
-        return !A.bHidden && A != Player && VSize(A.Velocity)>1;
-        if(Mover(A) != None) return false;
-        if(Cloud(A) != None) return false;
-        if(A.Mesh == None) return false;
+        if(!bVisionEnhancement && Mover(A) != None) return false;
+        if(!bVisionEnhancement && Cloud(A) != None) return false;
+        if(!bVisionEnhancement && A.Mesh == None) return false;
+        if(!A.bHidden && A != Player && VSize(A.Velocity)>1) return true;
     }
+
+    if(!bVisionEnhancement) return false;
 
     if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
         if(Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None)
@@ -208,25 +308,31 @@ function _DrawActor(GC gc, Actor A, float DrawGlow)
     local class<Actor> i; //Revision changed "Contents"/"Content2"/"Content3" to Actor instead of Inventory
     local Mesh oldMesh;
     local DeusExCarcass carc;
+    local float heat, motion;
 
     if(DrawGlow <= 0) return;
-    if(bThermalVision) {
-        carc = DeusExCarcass(A);
-        if(carc != None && !carc.bNotDead) {
-            if(carc.TimerRate <= 0 || carc.Group=='coldbody' || carc.Alliance=='Resurrected') return;
-            DrawGlow *= FClamp(1-carc.TimerCounter*4, 0, 1);
+    if(!bVisionEnhancement) {
+        if(bThermalVision) {
+            heat = DrawGlow;
+            carc = DeusExCarcass(A);
+            if(carc != None && !carc.bNotDead) {
+                if(carc.TimerRate <= 0 || carc.Group=='coldbody' || carc.Alliance=='Resurrected') return;
+                heat *= FClamp(1-carc.TimerCounter*4, 0, 1);
+            }
+            if(ScriptedPawn(A) != None && ScriptedPawn(A).Alliance=='Resurrected') {
+                heat *= 0.1;
+            }
+            if(FleshFragment(A) != None) {
+                heat *= FMin(A.LifeSpan / 10, 1);
+            }
         }
-        if(ScriptedPawn(A) != None && ScriptedPawn(A).Alliance=='Resurrected') {
-            DrawGlow *= 0.1;
+        if(bMotionSensor) {
+            motion = DrawGlow;
+            motion *= FClamp(VSize(A.Velocity)/100.0, 0, 1);
         }
-        if(FleshFragment(A) != None) {
-            DrawGlow *= FMin(A.LifeSpan / 10, 1);
-        }
+        DrawGlow = FMax(heat, motion);
+        if(DrawGlow <= 0) return;
     }
-    if(bMotionSensor) {
-        DrawGlow *= FClamp(VSize(A.Velocity)/100.0, 0, 1);
-    }
-    if(DrawGlow <= 0) return;
 
     if(A.Mesh != None) {
         SetSkins(A, oldSkins);
