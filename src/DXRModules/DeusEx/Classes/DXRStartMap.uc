@@ -1099,8 +1099,9 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "LetMeIn":
         case "AlexCloset":
         case "TrophyHunter":
-        case "KnowYourEnemy":
             return start_map > 41 && end_mission <= 4;
+        case "KnowYourEnemy":
+            return start_map > 41;
         }
         break;
 
