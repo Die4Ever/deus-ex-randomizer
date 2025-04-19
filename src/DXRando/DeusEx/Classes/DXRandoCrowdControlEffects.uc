@@ -1437,28 +1437,10 @@ function GenerateFloorLavaFire()
 {
     local LavaFire f;
     local int num,numToSpawn,i;
-    local float spawnRange;
-    local vector loc, PlayerHead, HitLocation, HitNormal,EndTrace;
-    local Actor HitActor;
-
-    PlayerHead = Player().Location;
-    PlayerHead.Z += Player().BaseEyeHeight;
+    local vector loc;
 
     num=0;
     foreach AllActors(class'LavaFire',f,'FloorIsLavaFire'){
-        if (VSize(f.Location-PlayerHead) > 2000){
-            //Too far
-            f.Destroy();
-            continue;
-        }
-
-        if (!f.FastTrace(PlayerHead)){
-            //Out of line of sight
-            f.Destroy();
-            continue;
-        }
-
-        //this one counts!
         num++;
     }
 
@@ -1468,30 +1450,10 @@ function GenerateFloorLavaFire()
 
     num=0;
     for (i=0;i<(MAX_LAVA_FIRE*2) && num<numToSpawn;i++){ //Make double the number of fires of attempts to spawn them
-        spawnRange = 1500;
-        if (Rand(2)==0){
-            spawnRange=500; //Extra odds for close fire spawns
-        }
-        //Get a random position around the player at head height
-        loc = ccLink.ccModule.GetRandomPositionNear(PlayerHead,spawnRange);
-
-        //Trace down to the ground and see if it actually hits the level
-        EndTrace = loc;
-        EndTrace.Z -= 1000;
-
-        HitActor = Trace(HitLocation, HitNormal, EndTrace, loc, false);
-
-        //Player().ClientMessage("Fire location HitActor: "$HitActor$"    HitLocation: "$HitLocation);
-
-        if (HitActor==Level){
-            //Vary height off the ground a little bit, makes the fire look less uniform
-            HitLocation.Z += 5.0 + (FRand() * 10.0);
-
-            //Make sure the final location is in line of sight before spawning
-            if (FastTrace(HitLocation, PlayerHead)){
-                Spawn(class'LavaFire',Level,'FloorIsLavaFire',HitLocation);
-                num++;
-            }
+        loc = class'LavaFire'.static.GetLocation(Player());
+        if(loc != vect(0,0,0)) {
+            Spawn(class'LavaFire', Level, 'FloorIsLavaFire', loc);
+            num++;
         }
     }
 }
