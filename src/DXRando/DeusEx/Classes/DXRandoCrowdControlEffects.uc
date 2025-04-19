@@ -545,7 +545,7 @@ function ContinuousUpdates()
     }
 
     //Lava floor logic
-    if (isTimerActive('cc_floorLavaTimer') && InGame()){
+    if (isTimerActive('cc_floorLavaTimer') && InGame() && !InMenu()){
         floorIsLava();
     }
 
@@ -1283,6 +1283,11 @@ function SetIcePhysics(bool enabled) {
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
     if (None == DeusExRootWindow(player().rootWindow)) {
+        return False;
+    }
+
+    //"Paused" with the pause button
+    if ( (Level.Pauser != "") && (Level.LevelAction == LEVACT_None) ){
         return False;
     }
 

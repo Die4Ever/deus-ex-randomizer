@@ -639,6 +639,11 @@ function bool InGame() {
         return True;
     }
 
+    //"Paused" with the pause button
+    if ( (Level.Pauser != "") && (Level.LevelAction == LEVACT_None) ){
+        return False;
+    }
+
     root = DeusExRootWindow(p.rootWindow);
 
     if (None == root) {
