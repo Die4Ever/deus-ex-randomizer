@@ -384,3 +384,38 @@ function MapAdjustments()
         }
     }
 }
+
+function string GetAutoSaveHelpText(coerce int choice)
+{
+    switch (choice)
+    {
+    case EveryEntry:
+        return "The game will automatically save after every level transition.|n|nYou are allowed to save manually whenever you would like.|n|nThe autosave is overwritten when entering each map, except for the very first autosave of the mission.";
+    case FirstEntry:
+        return "The game will only automatically save the first time you enter a new level.|n|nYou are allowed to save manually whenever you would like.|n|nThe autosave is overwritten when entering each map, except for the very first autosave of the mission.";
+    case Hardcore:
+        return "The game will automatically save the first time you enter a level.|n|nNo manual saves are allowed.|n|nThe autosave is overwritten when entering each map, except for the very first autosave of the mission.";
+    case ExtraSafe:
+        return "The game will automatically save after every level transition.|n|nYou are allowed to save manually whenever you would like.|n|nAutosaves are never cleared. A single playthrough may create over 1 GB worth of saves.";
+    case LimitedSaves:
+        return "The game will only autosave once at the start of the game.|n|nManual saves are allowed at any time, but require a Memory Containment Unit.|n|nMemory Containment Units can be found randomly placed around levels.";
+    case FixedSaves:
+        return "The game will only autosave once at the start of the game."
+            $ "|n|nManual saves are only allowed when looking at a computer and require a Memory Containment Unit.  ATMs and Public Terminals also count as computers."
+            $ "  Remember to plan ahead to make sure you're safe through areas with difficult to reach computers, like Battery Park!"
+            $ "|n|nMemory Containment Units can be found randomly placed around levels.";
+    case UnlimitedFixedSaves:
+        return "The game will only autosave once at the start of the game."
+            $ "|n|nManual saves are only allowed when looking at a computer, but you are allowed to save as much as you would like.  ATMs and Public Terminals also count as computers."
+            $ "  Remember to plan ahead to make sure you're safe through areas with difficult to reach computers, like Battery Park!";
+    case FixedSavesExtreme:
+        return "The game will only autosave once at the start of the game."
+            $ "|n|nManual saves are only allowed when looking at a computer and require two Memory Containment Units.  ATMs and Public Terminals also count as computers."
+            $ "  Remember to plan ahead to make sure you're safe through areas with difficult to reach computers, like Battery Park!"
+            $ "|n|nMemory Containment Units can be found randomly placed around levels.";
+    case Disabled:
+        return "The game will not automatically save.|n|nYou are allowed to save manually whenever you would like.";
+    default:
+        return ""; //This will mean the help button won't appear
+    }
+}

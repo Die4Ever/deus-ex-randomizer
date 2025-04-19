@@ -23,6 +23,13 @@ function PostBeginPlay()
     }
 }
 
+function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+    // recalc non travel variables
+    MaxRange = default.MaxRange * (ModAccurateRange+1);
+}
+
 simulated function UpdateBalance();
 
 function ScopeOn()

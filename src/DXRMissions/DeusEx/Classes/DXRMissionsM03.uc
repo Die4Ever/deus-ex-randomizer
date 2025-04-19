@@ -15,8 +15,8 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Castle Clinton Entrance", NORMAL_GOAL | START_LOCATION, vect(1082.374023, 1458.807617, 334.248260), rot(0, 0, 0));
         AddActorLocation(loc, 1, vect(1161.899657, 1559.100464, 331.741821), rot(0,0,0));
+        AddActorLocation(loc, PLAYER_LOCATION, vect(1161.899657, 1559.100464, 331.741821), rot(0,34194,0));
 
-        AddGoalLocation("03_NYC_BATTERYPARK", "Ventilation System", START_LOCATION, vect(-4340.930664, 2332.365234, 244.506165), rot(0, 0, 0));
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Eagle Statue", NORMAL_GOAL | START_LOCATION, vect(-2968.101563, -1407.404419, 334.242554), rot(0, 0, 0));
         AddActorLocation(loc, 1, vect(-2888.101563, -1307.404419, 332.242554), rot(0,0,0));
 
@@ -28,6 +28,7 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Subway", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(-4819.345215,3478.138916,-304.225006), rot(0,0,0));
         AddActorLocation(loc, 1, vect(-4739.345215, 3578.138916, -306), rot(0,0,0));
+        AddActorLocation(loc, PLAYER_LOCATION, vect(-4819.628906, 3470.105225, -304.225006), rot(0,-17920,0));
 
         if (dxr.flags.settings.starting_map > 32)
         {
@@ -137,7 +138,6 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Castle Clinton Entrance", NORMAL_GOAL | START_LOCATION, vect(1082.374023, 1458.807617, 334.248260), rot(0, 0, 0));
         AddActorLocation(loc, 1, vect(1161.899657, 1559.100464, 331.741821), rot(0,0,0));
 
-        AddGoalLocation("03_NYC_BATTERYPARK", "Ventilation System", START_LOCATION, vect(-4340.930664, 2332.365234, 244.506165), rot(0, 0, 0));
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Eagle Statue", NORMAL_GOAL | START_LOCATION, vect(-2968.101563, -1407.404419, 334.242554), rot(0, 0, 0));
         AddActorLocation(loc, 1, vect(-2888.101563, -1307.404419, 332.242554), rot(0,0,0));
 

@@ -20,7 +20,8 @@ function BindControls(optional string action)
 {
     local DXRFlags f;
     local string doors_option, s;
-    local int iDifficulty, doors_type, doors_exclusivity, doors_probability, door_type_prob_choice, doorsdestructible, doorspickable, i;
+    local int iDifficulty, i;
+    local bool bMatched;
     f = GetFlags();
 
     NewGroup("General");
@@ -170,45 +171,21 @@ function BindControls(optional string action)
 
     NewGroup("Doors and Keys");
 
-    NewMenuItem("Doors To Change", "Which doors to provide additional options to get through.", true);
+    NewMenuItem("Doors To Make Breakable", "How many normally undefeatable doors to make breakable.", true);
+    bMatched = EnumOptionMatched("All Undefeatable Doors Breakable", 100, f.settings.doorsdestructible);
+    bMatched = EnumOptionMatched("Many Undefeatable Doors Breakable", 70, f.settings.doorsdestructible) || bMatched;
+    bMatched = EnumOptionMatched("Some Undefeatable Doors Breakable", 40, f.settings.doorsdestructible) || bMatched;
+    bMatched = EnumOptionMatched("Few Undefeatable Doors Breakable", 25, f.settings.doorsdestructible) || bMatched;
+    bMatched = EnumOptionMatched("Keep Undefeatable Doors Unbreakable", 0, f.settings.doorsdestructible) || bMatched;
+    if(!bMatched) EnumOption("Custom " $ f.settings.doorsdestructible $ "% Undefeatable Doors Breakable", f.settings.doorsdestructible, f.settings.doorsdestructible);
 
-    doors_type = f.settings.doorsmode  & 0xffffff00;// keep it in the high bytes
-    doors_exclusivity = f.settings.doorsmode & 0xff;// just the low byte
-    doors_probability = f.settings.doorsdestructible + f.settings.doorspickable;// we'll use this for scaling later
-    if(doors_exclusivity != f.doormutuallyexclusive)
-        doors_probability /= 2;
-    door_type_prob_choice = doors_type + doors_probability;
-
-    EnumOption("All Key-Only Doors", f.keyonlydoors + 100, door_type_prob_choice);
-    EnumOption("Many Key-Only Doors", f.keyonlydoors + 70, door_type_prob_choice);
-    EnumOption("Some Key-Only Doors", f.keyonlydoors + 40, door_type_prob_choice);
-    EnumOption("Few Key-Only Doors", f.keyonlydoors + 25, door_type_prob_choice);
-    EnumOption("All Undefeatable Doors", f.undefeatabledoors + 100, door_type_prob_choice);
-    EnumOption("Many Undefeatable Doors", f.undefeatabledoors + 70, door_type_prob_choice);
-    EnumOption("Some Undefeatable Doors", f.undefeatabledoors + 40, door_type_prob_choice);
-    EnumOption("Few Undefeatable Doors", f.undefeatabledoors + 25, door_type_prob_choice);
-    EnumOption("All Doors", f.alldoors + 100, door_type_prob_choice);
-    EnumOption("Many Doors", f.alldoors + 70, door_type_prob_choice);
-    EnumOption("Some Doors", f.alldoors + 40, door_type_prob_choice);
-    EnumOption("Few Doors", f.alldoors + 25, door_type_prob_choice);
-
-    doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
-    doorspickable = f.settings.doorspickable * 100 / doors_probability;
-    doors_option = doors_exclusivity $ ";" $ doorsdestructible $ ";" $ doorspickable;
-    NewMenuItem("Door Adjustments", "What to do with those doors.", true);
-    EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive $";50;50", doors_option);
-    EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive $";100;100", doors_option);
-    EnumOptionString("Breakable and/or Pickable", f.doorindependent $";100;100", doors_option);
-    EnumOptionString("Breakable", f.doorindependent$";100;0", doors_option);
-    EnumOptionString("Pickable", f.doorindependent$";0;100", doors_option);
-    EnumOptionString("Don't Change Doors", f.doorindependent$";0;0", doors_option);
-    f.settings.doorsmode = UnpackInt(doors_option) + (door_type_prob_choice & 0xffffff00);
-    f.settings.doorsdestructible = UnpackInt(doors_option);
-    f.settings.doorspickable = UnpackInt(doors_option);
-
-    // scale the probability by our total probability before (based on All/Many/Some/etc)
-    f.settings.doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
-    f.settings.doorspickable = f.settings.doorspickable * 100 / doors_probability;
+    NewMenuItem("Doors To Make Pickable", "How many normally undefeatable doors to make pickable.", true);
+    bMatched = EnumOptionMatched("All Undefeatable Doors Pickable", 100, f.settings.doorspickable);
+    bMatched = EnumOptionMatched("Many Undefeatable Doors Pickable", 70, f.settings.doorspickable) || bMatched;
+    bMatched = EnumOptionMatched("Some Undefeatable Doors Pickable", 40, f.settings.doorspickable) || bMatched;
+    bMatched = EnumOptionMatched("Few Undefeatable Doors Pickable", 25, f.settings.doorspickable) || bMatched;
+    bMatched = EnumOptionMatched("Keep Undefeatable Doors Unpickable", 0, f.settings.doorspickable) || bMatched;
+    if(!bMatched) EnumOption("Custom " $ f.settings.doorspickable $ "% Undefeatable Doors Pickable", f.settings.doorspickable, f.settings.doorspickable);
 
     BreakLine();
 
@@ -222,12 +199,8 @@ function BindControls(optional string action)
 
     NewGroup("Passwords");
 
-    NewMenuItem("Electronic Devices", "Provide additional options for keypads and electronic panels.");
-    EnumOption("All Hackable", 100, f.settings.deviceshackable);
-    EnumOption("Many Hackable", 75, f.settings.deviceshackable);
-    EnumOption("Some Hackable", 50, f.settings.deviceshackable);
-    EnumOption("Few Hackable", 25, f.settings.deviceshackable);
-    EnumOption("Unchanged", 0, f.settings.deviceshackable);
+    NewMenuItem("Electronic Devices %", "Provide additional options for keypads and electronic panels by making them hackable.");
+    Slider(f.settings.deviceshackable, 0, 100);
 
     NewMenuItem("Passwords", "Forces you to look for passwords and passcodes.");
     EnumOption("Randomized", 100, f.settings.passwordsrandomized);
@@ -295,6 +268,11 @@ function BindControls(optional string action)
     EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions);
     EnumOption("Reroll Skill Costs Every 4 Missions", 4, f.settings.skills_reroll_missions);
     EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions);
+    if(f.settings.skills_reroll_missions > 5) {
+        EnumOption("Reroll Skill Costs Every " $ f.settings.skills_reroll_missions $ " Missions",
+            f.settings.skills_reroll_missions, f.settings.skills_reroll_missions
+        );
+    }
 
     NewMenuItem("", "Predictability of skill level cost scaling.");
     EnumOption("Relative Skill Level Costs", 0, f.settings.skills_independent_levels);
@@ -344,7 +322,7 @@ function BindControls(optional string action)
     Slider(f.settings.swapcontainers, 0, 100);
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
-    Slider(f.moresettings.grenadeswap, 0, 100);
+    Slider(f.settings.grenadeswap, 0, 100);
 
     BreakLine();
     NewMenuItem("Min Weapon Damage %", "The minmum damage for weapons.");
@@ -394,6 +372,12 @@ function BindControls(optional string action)
 
     if( action == "NEXT" ) HandleNewGameButton();
     if( action == "RANDOMIZE" ) RandomizeOptions();
+}
+
+function bool EnumOptionMatched(string label, int value, optional out int output, optional string helpText)
+{
+    EnumOption(label, value, output, helpText);
+    return value == output;
 }
 
 function RandomizeOptions()

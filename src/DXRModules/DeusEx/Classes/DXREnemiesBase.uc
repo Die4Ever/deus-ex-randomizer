@@ -1,26 +1,18 @@
-class DXREnemiesBase extends DXRActorsBase abstract;
+class DXREnemiesBase extends DXRActorsBase abstract transient;
 
 var int enemy_multiplier;
 
 struct _RandomWeaponStruct { var class<DeusExWeapon> type; var float chance; };
-var transient _RandomWeaponStruct _randommelees[8];
-var transient _RandomWeaponStruct _randomweapons[32];
-var transient _RandomWeaponStruct _randomsidearms[8];
-var transient _RandomWeaponStruct _randombotweapons[32];
+var _RandomWeaponStruct _randommelees[8];
+var _RandomWeaponStruct _randomweapons[32];
+var _RandomWeaponStruct _randomsidearms[8];
+var _RandomWeaponStruct _randombotweapons[32];
 
 struct _RandomEnemyStruct { var class<ScriptedPawn> type; var float chance; var int faction; };
-var transient _RandomEnemyStruct _randomenemies[128];
+var _RandomEnemyStruct _randomenemies[128];
 
 var name defaultOrders;
 var float min_rate_adjust, max_rate_adjust;
-
-struct WatchEnterWorld {
-    var ScriptedPawn watch, target;
-};
-
-// for hidden/not in world pawns, TODO: put these in a separate actor so we can make DXREnemies transient
-var WatchEnterWorld watches[100];
-var int num_watches;
 
 replication
 {
@@ -361,6 +353,11 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
             continue;
         }
 
+        if(!CheckFreeSpace(loc, newclass.default.CollisionRadius * 2.3 / num_enemies, newclass.default.CollisionHeight * 1.3)) {
+            l("CloneScriptedPawn "$loc$" not enough room " $ newclass);
+            continue;
+        }
+
         n = Spawn(newclass,, newtag, loc );
         if( n != None ) {
             if(VSize(n.Location - loc) > 160) {
@@ -449,45 +446,18 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         n.Orders = 'Wandering';
     n.HomeTag = 'Start';
 
+    n.bInWorld = p.bInWorld;
     RandomizeSize(n);
     n.InitializePawn();
 
     if(!p.bInWorld) {
-        n.bHidden = true;
-        n.LeaveWorld();
-        if(num_watches >= ArrayCount(watches)) {
-            // this can happen if someone cranks up the settings too high
-            warning("num_watches >= ArrayCount(watches): "$num_watches $", "$ ArrayCount(watches));
-        } else {
-            watches[num_watches].watch = p;
-            watches[num_watches].target = n;
-            num_watches++;
-            SetTimer(1, true);
-        }
+        class'DXREnterWorldLink'.static.Create(p, n);
     } else if(p.bHidden) {
         err(p$" is hidden but in world?");
         n.bHidden = true;
     }
 
     return n;
-}
-
-function Timer() {
-    local int i;
-    local WatchEnterWorld w;
-    Super.Timer();
-
-    for(i=0; i<num_watches; i++) {
-        w = watches[i];
-        if(w.watch != None && w.watch.bInWorld) {
-            w.target.EnterWorld();
-            w.watch = None;
-        }
-        if(w.watch == None) {
-            watches[i] = watches[--num_watches];
-            i--;
-        }
-    }
 }
 
 function int GetWeaponCount(ScriptedPawn sp)

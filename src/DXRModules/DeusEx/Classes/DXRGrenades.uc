@@ -97,14 +97,14 @@ function FirstEntry()
     local Actor oldOwner;
 
     Super.FirstEntry();
-    if(dxr.flags.moresettings.grenadeswap <= 0) return;
+    if(dxr.flags.settings.grenadeswap <= 0) return;
 
     SetSeed("RandoGrenades");
 
     i=0;
     foreach AllActors(class'#var(prefix)ThrownProjectile',gren)
     {
-        if (gren.Owner==None && chance_single(dxr.flags.moresettings.grenadeswap)) {
+        if (gren.Owner==None && chance_single(dxr.flags.settings.grenadeswap)) {
             grens[i++]=gren;
         }
     }

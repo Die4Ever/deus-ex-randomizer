@@ -233,7 +233,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
             newDamage *= augLevel;
     }
 
-    if (damageType == 'EMP')
+    if (damageType == 'EMP' || damageType == 'Shocked')
     {
         if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');

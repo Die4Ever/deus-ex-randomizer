@@ -1,3 +1,4 @@
+#dontcompileif vmd
 class AugJump extends Augmentation;
 
 #ifndef injections

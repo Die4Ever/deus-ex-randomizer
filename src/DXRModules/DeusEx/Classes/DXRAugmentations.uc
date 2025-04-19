@@ -26,7 +26,52 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
 
+    CreateAugmentations(p);
     RandoAllAugs();
+}
+
+simulated function CreateAugmentations(#var(PlayerPawn) p)
+{
+    local DXRLoadouts loadouts;
+    local int numAugs, i, matched[50];
+    local Augmentation anAug;
+    local Augmentation LastAug;
+    local AugmentationManager augman;
+    local class<Augmentation> augs[50];
+
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if(loadouts == None) return;
+    for(i=0; i<ArrayCount(augs); i++) {
+        augs[numAugs] = loadouts.GetExtraAug(i);
+        if(augs[numAugs] != None) numAugs++;
+    }
+
+    augman = p.AugmentationSystem;
+    for(LastAug = augman.FirstAug; LastAug.next != None; LastAug = LastAug.next) {
+        for(i=0; i<numAugs; i++) {
+            if(LastAug.class == augs[i]) {
+                matched[i] = 1;
+                break;
+            }
+        }
+    }
+
+    for(i=0; i<numAugs; i++) {
+        if(matched[i] == 1) continue;
+
+        anAug = Spawn(augs[i], augman);
+        anAug.Player = p;
+
+        if (anAug == None) continue;
+
+        if (augman.FirstAug == None) {
+            augman.FirstAug = anAug;
+        } else {
+            LastAug.next = anAug;
+        }
+
+        LastAug  = anAug;
+    }
 }
 
 simulated function RandoAllAugs()
@@ -701,9 +746,13 @@ function ExtendedTests()
 {
     local int i;
     local #var(prefix)AugmentationCannister a;
+    local AugmentationManager augman;
+    local Augmentation aug;
+    local bool found0, found1;
 
     Super.ExtendedTests();
 
+    augman = player().AugmentationSystem;
     a = Spawn(class'#var(prefix)AugmentationCannister');
     SetSeed( self );
     for(i=0;i<100;i++) {
@@ -711,6 +760,15 @@ function ExtendedTests()
         test( a.AddAugs[0] != '', "a.AddAugs[0] == "$a.AddAugs[0] );
         test( a.AddAugs[1] != '', "a.AddAugs[1] == "$a.AddAugs[1] );
         test( a.AddAugs[0] != a.AddAugs[1], "a.AddAugs[0] == "$a.AddAugs[0]$", a.AddAugs[1] == "$a.AddAugs[1] );
+
+        found0 = false;
+        found1 = false;
+        for(aug=augman.FirstAug; aug!=None; aug=aug.next) {
+            if(aug.class.name == a.AddAugs[0]) found0 = true;
+            if(aug.class.name == a.AddAugs[1]) found1 = true;
+        }
+        test(found0, "found a.AddAugs[0] " $ a.AddAugs[0]);
+        test(found1, "found a.AddAugs[1] " $ a.AddAugs[1]);
     }
     a.Destroy();
 }

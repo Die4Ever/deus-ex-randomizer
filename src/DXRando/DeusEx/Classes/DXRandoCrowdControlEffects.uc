@@ -55,6 +55,12 @@ const DoomModeTimeDefault = 60;
 const WineBulletsTimeDefault = 60;
 const BloodTimeDefault = 60;
 
+const MAX_NASTY_RAT = 3;
+const MAX_SPAM_CUBES = 50;
+const MAX_MARBLES = 100;
+const MAX_PIANOS = 50;
+const MAX_LAVA_FIRE = 100;
+
 //OBSOLETE - Remove eventually
 struct ZoneFriction
 {
@@ -101,6 +107,7 @@ var int flashbangDuration;
 var Texture coronaTexture;
 
 var bool quickLoadTriggered;
+var bool trainingTriggered;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL FRAMEWORK                                                 ////
@@ -116,6 +123,7 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
 
     effectSelectInit=False;
     quickLoadTriggered=False; //Disable the quick load effect, in case you managed to save with the quick load effect pending
+    trainingTriggered=False; //Disable the training effect, in case you managed to save with the training effect pending
 }
 
 function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
@@ -239,6 +247,12 @@ function PeriodicUpdates()
         player().QuickLoadConfirmed();
     }
 
+    if (trainingTriggered){
+        trainingTriggered = False;
+        Player().FlagBase.DeleteFlag('Rando_seed',FLAG_Int); //Delete the seed flag so the training is random
+        Level.Game.SendPlayer(Player(),"00_TRAINING"); //Should this try to vary to mirrored?
+    }
+
     if (isTimerActive('cc_Radioactive')){
         PlayerRadiates();
     }
@@ -304,6 +318,7 @@ function HandleEffectSelectability()
         ccLink.sendEffectSelectability("wine_bullets",#defined(vanilla));
         ccLink.sendEffectSelectability("blood_god",!Level.Game.bLowGore && !Level.Game.bVeryLowGore); //Blood doesn't spawn with low gore
         ccLink.sendEffectSelectability("random_clothes",!#defined(vmd));
+        ccLink.sendEffectSelectability("back_to_academy",!IsTrainingLevel());
 
         loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
         if (loadout!=None){
@@ -478,6 +493,16 @@ function int FindAugMax(class<Augmentation> augClass)
     return augClass.default.MaxLevel;
 }
 
+function bool IsTrainingLevel()
+{
+    switch(dxr.localURL) {
+    case "00_Training":
+    case "00_TrainingCombat":
+    case "00_TrainingFinal":
+        return true;
+    }
+    return false;
+}
 //Start the sound and fire the clouds
 function Fart()
 {
@@ -520,7 +545,7 @@ function ContinuousUpdates()
     }
 
     //Lava floor logic
-    if (isTimerActive('cc_floorLavaTimer') && InGame()){
+    if (isTimerActive('cc_floorLavaTimer') && InGame() && !InMenu()){
         floorIsLava();
     }
 
@@ -1261,6 +1286,11 @@ function bool InGame() {
         return False;
     }
 
+    //"Paused" with the pause button
+    if ( (Level.Pauser != "") && (Level.LevelAction == LEVACT_None) ){
+        return False;
+    }
+
     if (None == DeusExRootWindow(player().rootWindow).hud) {
         return False;
     }
@@ -1364,9 +1394,13 @@ function invertMovementControls() {
 function floorIsLava() {
     local vector v;
     local vector loc;
+
     loc.X = player().Location.X;
     loc.Y = player().Location.Y;
     loc.Z = player().Location.Z - 1;
+
+    GenerateFloorLavaFire();
+
     if (
         ( player().Base.IsA('LevelInfo') || player().Base.IsA('Mover') )
 #ifdef vanilla
@@ -1387,6 +1421,40 @@ function floorIsLava() {
 
     if ((lavaTick % 50)==0) { //if you stand in lava for 5 seconds
         player().CatchFire(GetCrowdControlPawn(getFloorIsLavaName()));
+    }
+}
+
+function DestroyAllLavaFire()
+{
+    local LavaFire f;
+    foreach AllActors(class'LavaFire',f,'FloorIsLavaFire'){
+        f.Destroy();
+    }
+}
+
+//This whole thing is madness
+function GenerateFloorLavaFire()
+{
+    local LavaFire f;
+    local int num,numToSpawn,i;
+    local vector loc;
+
+    num=0;
+    foreach AllActors(class'LavaFire',f,'FloorIsLavaFire'){
+        num++;
+    }
+
+    numToSpawn = Min(MAX_LAVA_FIRE - num,25); //No more than 25 per tick
+
+    if (numToSpawn<=0) return;
+
+    num=0;
+    for (i=0;i<(MAX_LAVA_FIRE*2) && num<numToSpawn;i++){ //Make double the number of fires of attempts to spawn them
+        loc = class'LavaFire'.static.GetLocation(Player());
+        if(loc != vect(0,0,0)) {
+            Spawn(class'LavaFire', Level, 'FloorIsLavaFire', loc);
+            num++;
+        }
     }
 }
 
@@ -1568,17 +1636,23 @@ function int TriggerAllAlarms(String viewer) {
     numAlarms = 0;
 
     foreach AllActors(class'#var(prefix)AlarmUnit',au){
+        if (au.bDisabled) continue; //Skip disabled alarms
+        if (au.bConfused) continue; //Skip confused alarms
         numAlarms+=1;
         au.Trigger(self,player());
     }
     foreach AllActors(class'SecurityCamera',sc){
         if (CCResidentEvilCam(sc)!=None){ continue; } //Skip Resident Evil cameras
+        if (sc.bConfused) continue; //Skip Confused cameras
+        if (!sc.bActive) continue; //Skip Deactivated cameras
+        if (sc.bNoAlarm) continue; //Skip friendly cameras
         numAlarms+=1;
         sc.TriggerEvent(True);
         sc.bPlayerSeen=True;
         sc.lastSeenTimer=0;
     }
     foreach AllActors(class'LaserTrigger',lt){
+        if (lt.bConfused){continue;}
         if (lt.bIsOn==False){continue;}
         if (lt.bNoAlarm){continue;}
         if (lt.AmbientSound!=None){continue;}
@@ -1604,7 +1678,7 @@ function int SpawnNastyRat(string viewer)
 
     //Only allow a certain number of nasty rats in each level
     foreach AllActors(class'NastyRat',nr){
-        if (++num>=3) {
+        if (++num>=MAX_NASTY_RAT) {
             return TempFail;
         }
     }
@@ -1636,8 +1710,22 @@ function int DropPiano(string viewer)
     #endif
     local DXRActorsBase tracer;
     local vector loc;
+    local rotator r;
     local float height, leading;
     local #var(PlayerPawn) p;
+    local int num;
+
+    num = 0;
+    #ifdef injections
+    foreach AllActors(class'#var(prefix)WHPiano',piano){
+    #else
+    foreach AllActors(class'DXRPiano',piano){
+    #endif
+        if (++num>=MAX_PIANOS) {
+            return TempFail;
+        }
+    }
+    piano=None;
 
     p = player();
     loc = p.Location;
@@ -1662,10 +1750,12 @@ function int DropPiano(string viewer)
         return TempFail;
     }
 
+    r = ccLink.ccModule.GetRandomYaw(true); //Unseeded randomness
+
     #ifdef injections
-    piano = Spawn(class'#var(prefix)WHPiano',,, loc);
+    piano = Spawn(class'#var(prefix)WHPiano',,, loc, r);
     #else
-    piano = Spawn(class'DXRPiano',,, loc);
+    piano = Spawn(class'DXRPiano',,, loc, r);
     #endif
     //Did it spawn successfully?
     if(piano == None) {
@@ -2114,8 +2204,16 @@ function bool DropMarbles(string viewer)
     local DXRMarble ball;
     local int num,i;
 
-    num=0;
 
+    num = 0;
+    foreach AllActors(class'DXRMarble',ball){
+        if (++num>=MAX_MARBLES) {
+            return False;
+        }
+    }
+
+    ball=None;
+    num=0;
     for (i=0;i<10;i++){
         ball = Spawn(class'DXRMarble',,,player().Location+vect(0,0,80),player().Rotation);
         if (ball!=None){
@@ -2174,9 +2272,19 @@ function bool SpamDatacubes(String viewer)
     local int num,i;
     local #var(injectsprefix)InformationDevices dc;
 
+    num = 0;
+    foreach AllActors(class'#var(injectsprefix)InformationDevices',dc,'CrowdControlSpamDatacube'){
+        if (++num>=MAX_SPAM_CUBES) {
+            return False;
+        }
+    }
+
+    dc = None;
+    num = 0;
     for (i=0;i<5;i++){
         dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer),"");
         if (dc!=None){
+            dc.Tag='CrowdControlSpamDatacube';
             ccLink.ccModule.GlowUp(dc);
             num++;
         }
@@ -2515,6 +2623,7 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
             break;
         case "floor_is_lava":
             if (bKnownStop || isTimerActive('cc_floorLavaTimer')){
+                DestroyAllLavaFire();
                 PlayerMessage("The floor returns to normal temperatures");
                 disableTimer('cc_floorLavaTimer');
             }
@@ -3143,6 +3252,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (player().RestrictInput()) {
                 return TempFail;
             }
+            if (quickLoadTriggered){
+                return TempFail;
+            }
             PlayerMessage(viewer@"is about to do a Quick Load!");
 
             quickLoadTriggered = True;
@@ -3159,6 +3271,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (quickLoadTriggered) {
+                return TempFail;
+            }
+            if (trainingTriggered) {
                 return TempFail;
             }
             PlayerMessage(viewer@"is about to Quick Save!");
@@ -3351,6 +3466,23 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             return ShuffleBelt(viewer);
 
+        case "back_to_academy":
+            if (!InGame()){
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            if (trainingTriggered){
+                return TempFail;
+            }
+            if (IsTrainingLevel()){
+                return TempFail;
+            }
+            PlayerMessage(viewer@"thinks you need to go back to the academy!");
+
+            trainingTriggered = True;
+            break;
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);

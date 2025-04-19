@@ -110,18 +110,9 @@ function InitDefaults()
     autosave = 0;
 #endif
     SetDifficulty(difficulty);
-
-    switch(dxr.localURL) {
-    case "00_Training":
-    case "00_TrainingCombat":
-    case "00_TrainingFinal":
-        SetDifficulty(1);
-        TutorialDisableRandomization(dxr.localURL ~= "00_TrainingFinal");
-        SaveFlags();
-        break;
-    }
 }
 
+//#region difficulty defaults
 function CheckConfig()
 {
     local int i;
@@ -131,7 +122,6 @@ function CheckConfig()
     difficulty_names[i] = "Super Easy QA";
     vanilla_difficulty_names[i] = "Super Easy QA";
     difficulty_settings[i].CombatDifficulty = 0;
-    difficulty_settings[i].doorsmode = alldoors + doormutuallyinclusive;
     difficulty_settings[i].doorsdestructible = 100;
     difficulty_settings[i].doorspickable = 100;
     difficulty_settings[i].keysrando = 4;
@@ -193,7 +183,7 @@ function CheckConfig()
     difficulty_settings[i].health = 200;
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = -1;// disable NG+ for faster testing, gamemode can override
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -209,7 +199,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Easy";
     difficulty_settings[i].CombatDifficulty = 1.3;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
     difficulty_settings[i].doorsdestructible = 100;
     difficulty_settings[i].doorspickable = 100;
     difficulty_settings[i].keysrando = 4;
@@ -271,7 +260,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -286,7 +275,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Medium";
     difficulty_settings[i].CombatDifficulty = 2;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 40;
     difficulty_settings[i].doorspickable = 40;
     difficulty_settings[i].keysrando = 4;
@@ -348,7 +336,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -363,7 +351,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Hard";
     difficulty_settings[i].CombatDifficulty = 3;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
     difficulty_settings[i].doorspickable = 25;
     difficulty_settings[i].keysrando = 4;
@@ -425,7 +412,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -440,7 +427,6 @@ function CheckConfig()
     vanilla_difficulty_names[i] = "Realistic";
     difficulty_settings[i].CombatDifficulty = 4;
 #endif
-    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
     difficulty_settings[i].doorspickable = 25;
     difficulty_settings[i].keysrando = 4;
@@ -502,7 +488,7 @@ function CheckConfig()
     difficulty_settings[i].health = 90;
     difficulty_settings[i].energy = 80;
     difficulty_settings[i].starting_map = 0;
-    more_difficulty_settings[i].grenadeswap = 100;
+    difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].camera_mode = 0;
     more_difficulty_settings[i].enemies_weapons = 100;
@@ -520,6 +506,7 @@ function CheckConfig()
 
     Super.CheckConfig();
 }
+//#endregion
 
 function FlagsSettings GetDifficulty(int diff)
 {
@@ -530,6 +517,7 @@ function MoreFlagsSettings GetMoreDifficulty(int diff)
     return more_difficulty_settings[diff];
 }
 
+//#region SetDifficulty
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
     difficulty = new_difficulty;
@@ -557,7 +545,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         }
     }
     else if(IsReducedRando()) {
-        settings.doorsmode = 0;
         settings.doorsdestructible = 0;
         settings.doorspickable = 0;
         settings.keysrando = 0;
@@ -617,7 +604,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.repairbotamount = 0;
             settings.medbotuses = 0;
             settings.repairbotuses = 0;
-            moresettings.grenadeswap = 0;
+            settings.grenadeswap = 0;
             // disable NG+ by default
             moresettings.newgameplus_curve_scalar = -1;
         } else {
@@ -654,7 +641,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     }
     else if(IsSpeedrunMode()) {
         // same doors rules as Normal difficulty
-        settings.doorsmode = undefeatabledoors + doormutuallyinclusive;
         settings.doorsdestructible = 100;
         settings.doorspickable = 100;
 
@@ -761,6 +747,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     return settings;
 }
+//#endregion
 
 function string DifficultyName(int diff)
 {
@@ -799,8 +786,8 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return RandoMedium;
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return SeriousSam;
-    if(slot--==0) return HordeZombies;
     if(slot--==0) return HordeMode;
+    if(slot--==0) return HordeZombies;
     if(slot--==0) return OneItemMode;
     if(slot--==0) return StrongAugsMode;
     return 999999;
@@ -867,6 +854,147 @@ function string GameModeName(int gamemode)
     return "";
 }
 
+//#region GameModeHelpText
+function string GameModeHelpText(int gamemode)
+{
+    local string s;
+    switch(gamemode) {
+    case FullRando:
+        s =   "The FULL Randomizer experience.  Randomizes:|n";
+        s = s$"|n";
+        s = s$"  ~ Goal Locations|n";
+        s = s$"  ~ Computer Passwords and Keypad Codes|n";
+        s = s$"  ~ Skill Strength and Cost|n";
+        s = s$"  ~ Augmentation Strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Item Locations and Quantities|n";
+        s = s$"  ~ Datacube Locations|n";
+        s = s$"  ~ Nanokey Locations|n";
+        s = s$"  ~ Crate Locations|n";
+        s = s$"  ~ Enemy Locations, Quantities, and Types|n";
+        s = s$"  ~ Medical Bot and Repair Bot Locations|n";
+        s = s$"  ~ Starting Location (on some maps)|n";
+        s = s$"  ~ Auto Turret Locations|n";
+        s = s$"  ~ Weapon Mod Types|n";
+        s = s$"  ~ Planted Grenade Types|n";
+        s = s$"  ~ And more!|n";
+        s = s$"|n";
+        s = s$"Item quantities are also reduced to encourage more variety of playstyles.";
+        return s;
+    case NormalRandomizer:
+        s =   "The totally normal Randomizer experience.  Randomizes:|n";
+        s = s$"|n";
+        s = s$"  ~ Computer Passwords and Keypad Codes|n";
+        s = s$"  ~ Skill strength and cost|n";
+        s = s$"  ~ Augmentation strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Item Locations and Quantities|n";
+        s = s$"  ~ Datacube Locations|n";
+        s = s$"  ~ Nanokey Locations|n";
+        s = s$"  ~ Crate Locations|n";
+        s = s$"  ~ Enemy Locations, Quantities, and Types|n";
+        s = s$"  ~ Medical Bot and Repair Bot Locations|n";
+        s = s$"  ~ And more!";
+        return s;
+    case EntranceRando:
+        return "The FULL Randomizer experience, but level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
+    case HalloweenEntranceRando:
+        return "The FULL Randomizer experience, plus the Halloween Mode features, and level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
+    case HordeMode:
+        return "Try to survive against waves of enemies in the Cathedral, with items spawning between waves.";
+    case HordeZombies:
+        return "Try to survive against waves of enemies in the Cathedral, with items spawning between waves, plus the Halloween Mode features.";
+    case ZeroRando:
+        return "As close to vanilla as possible, with Randomizer quality of life improvements and extra functionality (like Bingo or Crowd Control).";
+    case ZeroRandoPlus:
+        return "No randomization and very close to vanilla, but with more of the balance changes introduced in the Randomizer, such as computer hacking costing energy.";
+    case RandoLite:
+        s = "The minimal randomizer. Mostly retains immersion and objects are where you would expect them to be. Randomizes:|n";
+        s = s$"|n";
+        s = s$"  ~ Computer Passwords and Keypad Codes|n";
+        s = s$"  ~ Skill Strength and Cost|n";
+        s = s$"  ~ Augmentation Strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Enemy Stats|n";
+        s = s$"  ~ Medical Bot and Repair Bot Stats|n";
+        s = s$"  ~ Weapon Stats|n";
+        s = s$"  ~ Item Quantities|n";
+        s = s$"  ~ Weapon Mod Types|n";
+        s = s$"  ~ Planted Grenade Types|n";
+        s = s$"  ~ Randomly Added Merchants";
+        return s;
+    case RandoMedium:
+        s = "Similar to Randomizer Lite but with many more randomization features enabled by default. Remember you can tweak the settings in the Advanced menu to play with any randomization level you want.  Randomizes:|n";
+        s = s$"|n";
+        s = s$"  ~ Computer Passwords and Keypad Codes|n";
+        s = s$"  ~ Skill Strength and Cost|n";
+        s = s$"  ~ Augmentation Strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Item Locations and Quantities|n";
+        s = s$"  ~ Datacube Locations|n";
+        s = s$"  ~ Nanokey Locations|n";
+        s = s$"  ~ Crate Locations|n";
+        s = s$"  ~ Enemy Locations, Quantities, and Types|n";
+        s = s$"  ~ Medical Bot and Repair Bot Locations and Stats|n";
+        s = s$"  ~ Weapon Stats|n";
+        s = s$"  ~ And more!";
+        return s;
+    case SeriousSam:
+        return "The Randomizer experience, except enemy quantities have been cranked up, damage multipliers are decreased, and maximum health has been increased.";
+    case SpeedrunMode:
+        return "Full Randomizer, but with optimizations to ensure a more consistent speedrunning experience!  This also enables the built-in speedrun timer.";
+    case WaltonWareHalloween:
+        return "WaltonWare with the additional Halloween Mode features.";
+    case WaltonWare:
+        s =   "A bingo-focused fast game mode where you start on a random map and must complete a line on your bingo board to win!|n";
+        s = s$"|n";
+        s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
+        s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
+        s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
+        s = s$"|n";
+        s = s$"Once a line on your board has been completed, you will taken to another randomly selected map and the difficulty will increase!|n";
+        s = s$"|n";
+        s = s$"How long can you last?";
+        return s;
+    case WaltonWareEntranceRando:
+        return "The same WaltonWare experience, but level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
+    case WaltonWareHalloweenEntranceRando:
+        return "WaltonWare with the additional Halloween Mode features and level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
+    case WaltonWareHardcore:
+        return "The WaltonWare experience, except ALL saving is disabled!  How long can you last?";
+    case WaltonWarex3:
+        return "The WaltonWare experience, except goals are now spread across three missions instead of one!|n|nHow long can you last?";
+    case HalloweenMode:
+        s =   "The FULL Randomizer experience, but with additional Halloween-themed features:|n";
+        s = s$"|n";
+        s = s$"  ~ Zombies will revive from corpses after about 20 seconds|n";
+        s = s$"  ~ Mr. H will stalk you around the world|n";
+        s = s$"  ~ Loot new clothes from bodies to grow your selection of costumes|n";
+        s = s$"  ~ Light augmentation is dim and costs energy (like in vanilla)|n";
+        s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics";
+        return s;
+    case OneItemMode:
+        return "The FULL Randomizer experience, except... For some reason, all items in each level are replaced by a single type of item?";
+    case BingoCampaign:
+        s =   "Play through the entire randomized game, but you must complete a line of bingo in each mission before being able to progress.|n";
+        s = s$"|n";
+        s = s$"  ~ All bingo goals will be able to be completed within one mission|n";
+        s = s$"  ~ Bingo Goal quantities are reduced to be more easily completed|n";
+        s = s$"  ~ Five free spaces on the board, so all lines only require 4 goals to complete|n";
+        s = s$"|n";
+        s = s$"Can YOU outsmart the Mean Bingo Machine?";
+        return s;
+    case StrongAugsMode:
+        return "The FULL Randomizer experience but augmentations are generally randomized to be stronger than normal.";
+    }
+    //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
+    //EnumOption("How About Some Soy Food?", 6, f.gamemode);
+    //EnumOption("Max Rando", 7, f.gamemode);
+    return "";
+}
+//#endregion
+
+//#region IsGameModes
 function bool IsEntranceRando()
 {
     return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
@@ -931,6 +1059,7 @@ function bool IsStrongAugsMode()
 {
     return gamemode == StrongAugsMode;
 }
+//#endregion
 
 simulated function AddDXRCredits(CreditsWindow cw)
 {
@@ -974,7 +1103,6 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
         settings.swapitems = 0;
         settings.swapcontainers = 0;
         settings.deviceshackable = 0;
-        settings.doorsmode = 0;
         settings.doorsdestructible = 0;
         settings.doorspickable = 0;
         settings.medbots = -1;// -1 means vanilla, 0 means none at all
@@ -1034,7 +1162,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
 
     settings.aug_value_rando = 0;*/
 
-    moresettings.grenadeswap = 0;
+    settings.grenadeswap = 0;
 }
 
 //Nothing fancy happening here, but gives a consistent place to change how we want to clamp across

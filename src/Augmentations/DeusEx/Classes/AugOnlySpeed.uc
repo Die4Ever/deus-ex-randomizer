@@ -1,3 +1,4 @@
+#dontcompileif vmd
 class AugOnlySpeed extends Augmentation;
 
 #ifndef injections
@@ -76,7 +77,7 @@ defaultproperties
     LevelValues(3)=1.7
     Level5Value=1.8
     activationCost=1
-    EnergyRate=30
+    EnergyRate=40
 
     Icon=Texture'AugIconSpeedOnly'
     smallIcon=Texture'AugIconSpeedOnly_Small'

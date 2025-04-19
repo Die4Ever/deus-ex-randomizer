@@ -107,6 +107,7 @@ function int InitGoals(int mission, string map);// return a salt for the seed, t
 function int InitGoalsRev(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
 function CreateGoal(out Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
+function AfterMoveGoalToOtherMap(Goal g, GoalLocation Loc);
 function AfterMovePlayerToStartLocation(GoalLocation Loc);
 function PreFirstEntryMapFixes();
 function MissionTimer();
@@ -148,7 +149,7 @@ function ReplaceGoalActor(Actor a, Actor n)
         for (j=0;j<ArrayCount(goals[i].actors);j++){
             if (goals[i].actors[j].a==a) {
                 goals[i].actors[j].a=n;
-                DignifyGoalActor(n,bTextures); //Make sure the newly replaced actor has the right skins
+                DignifyGoalActor(goals[i],n,bTextures); //Make sure the newly replaced actor has the right skins
                 l("Replacing Goal Actor "$a$" with newly replaced actor "$n);
                 return; //Presumably no actors exist in multiple goals?
             }
@@ -274,7 +275,7 @@ function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataV
     return numNotes;
 }
 
-
+//#region mutexes
 function AddMutualExclusion(int L1, int L2)
 {
     local int i;
@@ -306,12 +307,68 @@ function AddMutualInclusion(int L1, int L2)
         for(k=0; k<num_locations; k++) {
             if(i == k) continue;
             if((locations[k].bitMask & G2) != G2) continue;
-            if(i==L1 || k==L2) AddMutualExclusion(i, k);
+            if(i==L1 ^^ k==L2) AddMutualExclusion(i, k);
         }
     }
     l("AddMutualInclusion: end");
 }
 
+function MutualExcludeSameMap(int G1, int G2)
+{
+    local int i, k;
+
+    l("MutualExcludeSameMap: " $ goals[G1].name $ " and " $ goals[G2].name);
+    G1 = goals[G1].bitMask;
+    G2 = goals[G2].bitMask;
+
+    for(i=0; i<num_locations; i++) {
+        if((locations[i].bitMask & G1) == 0) continue;
+        for(k=0; k<num_locations; k++) {
+            if(i == k) continue;
+            if((locations[k].bitMask & G2) == 0) continue;
+            if(locations[i].mapName != locations[k].mapName) continue;
+            AddMutualExclusion(i, k);
+        }
+    }
+    l("MutualExcludeSameMap: end");
+}
+
+function MutualExcludeMaps(int G1, string M1, int G2, string M2)
+{
+    local int i, k;
+
+    l("MutualExcludeMaps: " $ goals[G1].name @ M1 $ " and " $ goals[G2].name @ M2);
+    G1 = goals[G1].bitMask;
+    G2 = goals[G2].bitMask;
+
+    for(i=0; i<num_locations; i++) {
+        if((locations[i].bitMask & G1) == 0) continue;
+        if(locations[i].mapName != M1) continue;
+        for(k=0; k<num_locations; k++) {
+            if(i == k) continue;
+            if((locations[k].bitMask & G2) == 0) continue;
+            if(locations[k].mapName != M2) continue;
+            AddMutualExclusion(i, k);
+        }
+    }
+    l("MutualExcludeMaps: end");
+}
+
+function AddMutualExclusionLocMap(int L1, string map)
+{
+    local int i;
+
+    l("AddMutualExclusionLocMap: " $ locations[L1].name $ " and " $ map);
+    for(i=0; i<num_locations; i++) {
+        if(i == L1) continue;
+        if(locations[i].mapName != map) continue;
+        AddMutualExclusion(L1, i);
+    }
+    l("AddMutualExclusionLocMap: end");
+}
+//#endregion
+
+//#region init
 function int InitGoalsByMod(int mission, string map)
 {
     local bool RevisionMaps;
@@ -363,29 +420,31 @@ function DignifyAllGoalActors()
                 GetActor(goals[g].actors[a]);
             }
             if (goals[g].actors[a].a!=None){
-                DignifyGoalActor(goals[g].actors[a].a, bTextures);
+                DignifyGoalActor(goals[g], goals[g].actors[a].a, bTextures);
             }
         }
     }
 }
 
-//Generic textures we want to apply consistently across all goal actors
-function DignifyGoalActor(Actor a, bool enableTextures)
+// Generic textures we want to apply consistently across all goal actors
+// subclasses can override this to set newTex based on g.name
+function DignifyGoalActor(Goal g, Actor a, bool enableTextures, optional Texture newTex)
 {
     local bool changed;
-
 
     if (ComputerSecurity(a)!=None){
         #ifdef revision
         ComputerSecurity(a).Facelift(false);
         #endif
-        a.Skin=Texture'GoalSecurityComputerGreen';
+        if(newTex != None) a.Skin = newTex;
+        else a.Skin = Texture'GoalSecurityComputerGreen';
         changed=True;
     } else if (ComputerPersonal(a)!=None){
         #ifdef revision
         ComputerPersonal(a).Facelift(false);
         #endif
-        a.Skin=Texture'GoalComputerPersonalYellow';
+        if(newTex != None) a.Skin = newTex;
+        else a.Skin=Texture'GoalComputerPersonalYellow';
         changed=True;
     }
 #ifdef injections
@@ -465,6 +524,7 @@ function MoveActorsIn(int goalsToLocations[32])
     local DXRGoalMarker marker;
     local vector loc;
     local rotator rotate;
+    local bool success;
 
     foreach AllActors(class'DXRGoalMarker', marker) {
         marker.Destroy();
@@ -479,8 +539,12 @@ function MoveActorsIn(int goalsToLocations[32])
         loc = vectm(loc.X, loc.Y, loc.Z);
         rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, 16384);
         l("Moving player to " $ locations[g].name @ loc @ rotate);
-        p.SetLocation(loc);
+        success = p.SetLocation(loc);
+        if(!success) {
+            err("Failed to move player to " $ locations[g].name @ loc @ rotate);
+        }
         p.SetRotation(rotate);
+        p.ViewRotation = rotate;
         p.PutCarriedDecorationInHand();
         rando_start_loc = p.Location;
         b_rando_start = true;
@@ -796,6 +860,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         marker = DXRGoalMarker(Spawnm(class'DXRGoalMarker',,, Loc.positions[0].pos));
         marker.BindName = g.name $ " (" $ Loc.name $ ")";
         AfterMoveGoalToLocation(g, Loc);
+    } else {
+        AfterMoveGoalToOtherMap(g, Loc);
     }
 }
 

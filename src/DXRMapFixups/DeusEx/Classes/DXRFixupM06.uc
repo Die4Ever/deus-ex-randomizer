@@ -400,6 +400,11 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            foreach AllActors(class'#var(prefix)ScriptedPawn', p, 'MaggieTroop') {
+                if(p.Name == 'MJ12Troop4') {
+                    p.bIsSecretGoal = true;// don't clone him, he's too close
+                }
+            }
         }
 
         //behind Maggie's DispalyCase (sic), there is a Trigger to open it
@@ -586,6 +591,13 @@ function PreFirstEntryMapFixes()
             if (cs.UserList[0].UserName=="LUCKYMONEY"){
                 cs.Views[2].doorTag='FreezerDoor';
             }
+        }
+
+        //Move Russ (from LDDP) to the side.  Can't reference the actual class,
+        //in case someone doesn't have LDDP installed.
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p,'LDDPRuss'){
+            p.SetLocation(vectm(-1110,-70,-336));
+            p.LookAtVector(vectm(-1190,-2,-316),true,false,false);
         }
 
         //A switch inside the freezer to open it back up... just in case

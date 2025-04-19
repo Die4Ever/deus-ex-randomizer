@@ -128,6 +128,14 @@ simulated function int SetGlobalSeed(coerce string name)
     return oldseed;
 }
 
+simulated function int SetGlobalNGPSeed(coerce string name) // resistant to New Game+
+{
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.seed - dxr.flags.newgameplus_loops + dxr.Crc(name) );
+    dxr.rngraw();// advance the rng
+    return oldseed;
+}
+
 simulated function int BranchSeed(coerce string name)
 {
     local int oldseed;
@@ -629,6 +637,11 @@ function bool InGame() {
 
     if (p.InConversation()) {
         return True;
+    }
+
+    //"Paused" with the pause button
+    if ( (Level.Pauser != "") && (Level.LevelAction == LEVACT_None) ){
+        return False;
     }
 
     root = DeusExRootWindow(p.rootWindow);

@@ -1815,11 +1815,11 @@ function MakeAllHackable(int deviceshackable)
     foreach AllActors(class'#var(prefix)HackableDevices', h)
     {
         if( h.bHackable == false && chance_single(deviceshackable) ) {
-            l("found unhackable device: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL);
             h.bHackable = true;
-            h.hackStrength = rngrange(1, min_hack_adjust, max_hack_adjust);
+            h.hackStrength = rngrange(0.8, min_hack_adjust, max_hack_adjust);
             h.hackStrength = Clamp(h.hackStrength*100, 1, 100) / 100.0;
             h.initialhackStrength = h.hackStrength;
+            l("found unhackable device: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL $ ", now: " $ h.hackStrength);
         }
 
         // make Helios ending slightly harder?

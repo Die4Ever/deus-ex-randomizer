@@ -349,12 +349,16 @@ function PreFirstEntryMapFixes()
             }
         }
 
+
         if (VanillaMaps){
             foreach AllActors(class'#var(prefix)Teleporter',tele){
                 if (tele.URL=="11_Paris_Underground#Paris_Underground"){
                     tele.SetCollisionSize(tele.CollisionRadius,120); //Twice as tall, so you can't crouch under
                 }
 
+            }
+            foreach AllActors(class'#var(injectsprefix)OrdersTrigger',ot,'CathMilitaryBotTrigger'){
+                ot.SetCollision(false,false,false);
             }
         } else {
             //Items in an unopenable shop window (Nutella store)
@@ -440,7 +444,9 @@ function SpawnLeMerchant(vector loc, rotator rot)
         // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
-            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, class'#var(prefix)HazMatSuit', 150);
+            //Price limit of 600 (No items with base price over 600)
+            //Forced Hazmat at base price of 150
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', class'LeMerchant', loc, rot, 600, class'#var(prefix)HazMatSuit', 150);
         }
         // give him weapons to defend himself
         dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));

@@ -1,5 +1,5 @@
 //=============================================================================
-// MenuChoice_ShowHints
+// MenuChoice_JCGenderSkin
 //=============================================================================
 
 class MenuChoice_JCGenderSkin extends DXRMenuUIChoiceInt;

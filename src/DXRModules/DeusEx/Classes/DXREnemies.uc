@@ -1,4 +1,4 @@
-class DXREnemies extends DXREnemiesShuffle;
+class DXREnemies extends DXREnemiesShuffle transient;
 
 //const FactionAny = 0;// in Base
 const FactionOther = 1;
@@ -114,8 +114,6 @@ function CheckConfig()
     AddRandomEnemyType(class'NSFCloneAugTough1', 1.5, NSF);
     AddRandomEnemyType(class'NSFCloneAugStealth1', 1.5, NSF);
 
-    AddRandomEnemyType(class'#var(prefix)Gray', 1, FactionOther);
-    AddRandomEnemyType(class'GrayBaby', 1, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, FactionOther);
@@ -220,7 +218,7 @@ function RandoEnemies(int percent, int hidden_percent)
         CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
-        if(p.bInvincible) continue;
+        if(p.bInvincible || p.bIsSecretGoal) continue;
         if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
         SetSeed("RandomEnemy " $ p.name);

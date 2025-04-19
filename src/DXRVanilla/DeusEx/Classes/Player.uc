@@ -486,7 +486,7 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
 
 function float GetJumpZ()
 {
-    local float f, jump;
+    local float f, jump, jumpVal;
     local Augmentation aug, jumpAug;
 
     f = 1;
@@ -499,8 +499,11 @@ function float GetJumpZ()
             f = FMax(f, aug.GetAugLevelValue());
             break;
         case class'AugJump':
-            jumpAug = aug;
-            jump = aug.PreviewAugLevelValue(); // don't tick it unless this is our best choice, don't waste the player's energy
+            jumpVal = aug.PreviewAugLevelValue();
+            jump = FMax(jump, jumpVal); // don't tick it unless this is our best choice, don't waste the player's energy
+            if (jump==jumpVal || jumpAug==None){
+                jumpAug = aug; //Store the jump aug that is actually best
+            }
             break;
         }
     }

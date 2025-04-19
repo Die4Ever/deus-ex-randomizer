@@ -267,6 +267,12 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m) {
+            if(m.Event == 'AirGrate') {
+                m.minDamageThreshold = 1;
+            }
+        }
+
         //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'ToGraveyard'){break;}
         if (VanillaMaps){

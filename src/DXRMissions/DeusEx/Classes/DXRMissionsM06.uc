@@ -24,7 +24,7 @@ function int InitGoals(int mission, string map)
         return 61;
 
     case "06_HONGKONG_MJ12LAB":
-        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
+        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL | GOAL_TYPE1, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_07: I have uploaded the component the Triads need to complete the sword.
         AddGoalActor(goal, 2, 'DataLinkTrigger3', PHYS_None);// DL_Tong_07 but with Tag TongHasTheROM
         AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
@@ -43,7 +43,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
-        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", NORMAL_GOAL, vect(3, 886, 820), rot(0, 32768, 0));
+        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", GOAL_TYPE1, vect(3, 886, 820), rot(0, 32768, 0));
         AddActorLocation(loc, 1, vect(3, 886, 789.101990), rot(0,0,0));// MAHOGANY desk
         return 62;
 
@@ -59,39 +59,35 @@ function int InitGoals(int mission, string map)
 
         // street
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Tonnochi Road", GOAL_TYPE2, vect(49.394917, -2455.783447, 47.599495), rot(0, -16384, 0));
-        gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Balcony", GOAL_TYPE2, vect(194.915375, -1599.530884, 1711.607910), rot(0, 32768, 0));
+        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Queen's Tower", GOAL_TYPE2 | SITTING_GOAL, vect(-795.367737, -1071.963623, 28.263233), rot(0, 0, 0));
+        gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Elevator", GOAL_TYPE2, vect(668.110901, -683.269775, 47.603157), rot(0, 32768, 0)); // HACK: linked to AfterMoveGoalToOtherMap
+
         dts_vanilla_loc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dts_vanilla_loc);
-        AddMutualExclusion(gloc2, dts_vanilla_loc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vect(342.584808, -1802.576172, 1713.509521), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(204.923828, -195.652588, 1795), rot(0, 40000, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
 
         // canal
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "Flat Boat", GOAL_TYPE2, vect(2387.060303, -36.084198, -368.401581), rot(0, 16384, 0));
         gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "Old China Hand", GOAL_TYPE2, vect(-2151.656006, 2252.040771, -320.398102), rot(0, 32768, 0));
+
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Canal Waterside Apartment", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
-        AddMutualExclusion(gloc, dtsloc);
-        AddMutualExclusion(gloc2, dtsloc);
 
-        // lucky money and market
+        // lucky money
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
-        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Gordon at Market", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
-        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
-        AddMutualInclusion(gloc, dts_vanilla_loc);
 
+        // market
+        gloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "Compound Doors", GOAL_TYPE2 | VANILLA_GOAL, vect(-51.756943,661.886963,47.599739), rot(0, -22628, 0));
+        dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
+
+        MutualExcludeSameMap(gordon, dts); // no same map, if one is in market the other is in tonnochi
+        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_MARKET", dts, "06_HONGKONG_WANCHAI_UNDERWORLD"); // if gordon in market, dts only at tonnochi
+        MutualExcludeMaps(gordon, "06_HONGKONG_WANCHAI_MARKET", dts, "06_HONGKONG_WANCHAI_CANAL"); // police station DTS is too fast with canals gordon
+        MutualExcludeMaps(dts, "06_HONGKONG_WANCHAI_MARKET", gordon, "06_HONGKONG_WANCHAI_CANAL"); // canals DTS and then market gordon is pretty quick
+
+        // Max Chen
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
         AddGoalActor(goal, 2, 'TriadRedArrow6', PHYS_Falling);
@@ -144,7 +140,7 @@ function int InitGoalsRev(int mission, string map)
         return 61;
 
     case "06_HONGKONG_MJ12LAB":
-        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
+        goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL | GOAL_TYPE1, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_07: I have uploaded the component the Triads need to complete the sword.
         AddGoalActor(goal, 2, 'DataLinkTrigger3', PHYS_None);// DL_Tong_07 but with Tag TongHasTheROM
         AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
@@ -163,7 +159,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-592.426758,329.524597,-743.972717), rot(0,49160,0));
-        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", NORMAL_GOAL, vect(-190, 886, 820), rot(0, 32768, 0)); //One window over compared to vanilla to avoid patrol point
+        loc = AddGoalLocation("06_HONGKONG_MJ12LAB", "Overlook Office", GOAL_TYPE1, vect(-190, 886, 820), rot(0, 32768, 0)); //One window over compared to vanilla to avoid patrol point
         AddActorLocation(loc, 1, vect(-190, 886, 789.101990), rot(0,0,0));// MAHOGANY desk
         return 62;
 
@@ -248,6 +244,7 @@ function AnyEntry()
     switch(dxr.localURL) {
     case "06_HONGKONG_WANCHAI_MARKET":
         UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
+        MoveGordonLouisConvosToPhone();
         break;
     case "06_HONGKONG_TONGBASE":
         UpdateGoalWithRandoInfo('GetROM', "The computer with the ROM-encoding could be anywhere in the lab.");
@@ -297,9 +294,108 @@ function DeleteGoal(Goal g, GoalLocation Loc)
     }
     else if (g.name=="Gordon Quick"){
         g.actors[0].a.SetLocation(vectm(-1418.708130, 2.011429, 2095.588867)); // next to Max Chen on top of the building
+        if (Loc.Name!="Compound Doors") {
+            CreateGordonPhone();
+        }
         return; // don't call Super
     }
     Super.DeleteGoal(g, Loc);
+}
+
+function IntercomPhone FindGordonPhone()
+{
+    local IntercomPhone gPhone;
+
+    foreach AllActors(class'IntercomPhone',gPhone){
+        if (gPhone.BindName=="GordonQuickPhone"){
+            return gPhone;
+        }
+    }
+    return None;
+}
+
+function CreateGordonPhone()
+{
+    local IntercomPhone gPhone;
+    local vector gPhoneLoc;
+    local rotator gPhoneRot;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps){
+        return; // TODO: No location defined yet
+    } else {
+        gPhoneLoc=vect(-100,684,72);
+        gPhoneRot=rot(0,0,-16384);
+    }
+
+    //Vanilla only, for now
+    gPhone = FindGordonPhone();
+    if (gPhone!=None) return;
+
+    gPhone = IntercomPhone(AddActor(class'IntercomPhone',gPhoneLoc,gPhoneRot));
+    gPhone.SetPhysics(PHYS_None);
+    gPhone.SetCollisionSize(gPhone.CollisionRadius,gPhone.CollisionHeight*3);
+    gPhone.BindName="GordonQuickPhone";
+    gPhone.FamiliarName="Gordon Quick Intercom";
+    gPhone.UnfamiliarName=gPhone.FamiliarName;
+    gPhone.message="No response...  Better go find Gordon";
+    gPhone.ConBindEvents();
+}
+
+function MoveGordonLouisConvosToPhone()
+{
+    local IntercomPhone gPhone;
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+
+    gPhone = FindGordonPhone();
+
+    if (gPhone==None) return; //Only rebind these conversations if the phone exists
+
+    //KidAsksForHelp
+    c = GetConversation('KidAsksForHelp');
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_Speech){
+            ces = ConEventSpeech(ce);
+
+            if (ces.speakerName=="GordonQuick"){
+                ces.speakerName=gPhone.BindName;
+                ces.speaker=gPhone;
+            }
+            if (ces.speakingToName=="GordonQuick"){
+                ces.speakingToName=gPhone.BindName;
+                ces.speakingTo=gPhone;
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+
+    //KidSetsFire
+    c = GetConversation('KidSetsFire');
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_Speech){
+            ces = ConEventSpeech(ce);
+
+            if (ces.speakerName=="GordonQuick"){
+                ces.speakerName=gPhone.BindName;
+                ces.speaker=gPhone;
+            }
+            if (ces.speakingToName=="GordonQuick"){
+                ces.speakingToName=gPhone.BindName;
+                ces.speakingTo=gPhone;
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+    gPhone.ConBindEvents();
+
 }
 
 function GenerateDTSHintCube(Goal g, GoalLocation Loc)
@@ -314,12 +410,26 @@ function GenerateDTSHintCube(Goal g, GoalLocation Loc)
         "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", "DTSHintCube", true);
 }
 
+function #var(prefix)GordonQuick CreateGordon(Vector pos, Rotator rot)
+{
+    local #var(prefix)GordonQuick gordon;
+
+    gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', pos, rot));
+    GiveItem(gordon,class'WeaponAssaultShotgun',100);
+    GiveItem(gordon,class'WeaponSword');
+    GiveItem(gordon,class'WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
+    gordon.bKeepWeaponDrawn = True;
+    gordon.SetOrders('Standing');
+    gordon.BarkBindName = "TriadLumPath";
+    gordon.ConBindEvents();
+    return gordon;
+}
+
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local WeaponNanoSword dts;
     local DataLinkTrigger dlt;
     local NervousWorker   nw;
-    local #var(prefix)GordonQuick gordon;
 
     switch(g.name) {
     case "Dragon's Tooth Sword":
@@ -341,18 +451,22 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Gordon Quick":
-        gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', Loc.positions[0].pos));
-        g.actors[0].a = gordon;
-        gordon.SetOrders('Standing');
-        gordon.BarkBindName = "TriadLumPath";
-        gordon.ConBindEvents();
-        gordon.bKeepWeaponDrawn = True;
+        g.actors[0].a = CreateGordon(Loc.positions[0].pos, Loc.positions[0].rot);
         break;
+    }
+}
+
+function AfterMoveGoalToOtherMap(Goal g, GoalLocation Loc)
+{
+    if(dxr.localURL == "06_HONGKONG_WANCHAI_CANAL" && g.name == "Gordon Quick" && Loc.name == "Jock's Elevator") {
+        g.actors[0].a = CreateGordon(vect(647.700073, -685.524414, 47.599575), rot(0, 32768, 0));
     }
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
+    local Actor a;
+
     if (g.name=="Dragon's Tooth Sword" && Loc.name!="Sword Case") {
         if(g.actors[1].a != None) {
             g.actors[1].a.Tag=''; //Change the tag so it doesn't get hit if the case opens
@@ -366,6 +480,12 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             GenerateDTSHintCube(g,Loc);
         }
     }
+    else if (g.name=="Dragon's Tooth Sword") {
+        foreach AllActors(class'Actor', a, 'Sword_Triggers') {
+            a.tag = 'Get_The_Sword'; //Change the tag so it gets triggered sooner
+        }
+    }
+
     if (g.name=="Nanotech Blade ROM" && Loc.name!="ROM Encoding Room") {
         g.actors[3].a.SetCollisionSize(400, 100);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
     }

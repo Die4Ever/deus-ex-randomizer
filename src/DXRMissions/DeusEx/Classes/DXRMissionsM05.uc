@@ -54,7 +54,7 @@ function int InitGoals(int mission, string map)
         AddGoal("05_NYC_UNATCOHQ", "Jaime Reyes", NORMAL_GOAL, 'JaimeReyes0', PHYS_Falling);
 
         AddGoalLocation("05_NYC_UNATCOHQ", "Jail", NORMAL_GOAL, vect(-2478.156738, -1123.645874, -16.399887), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(121.921074, 287.711243, 39.599487), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(110, 335, 40), rot(0, 32768, 0));
         if (IsAprilFools()){
             AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL | SITTING_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
         } else {
@@ -310,7 +310,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             cp.specialOptions[i].userName = "DEMIURGE";
             break;
         }
-        DignifyGoalActor(cp,class'MenuChoice_GoalTextures'.static.IsEnabled(self)); //Should the killphrase computers actually be visually distinct?
+        DignifyGoalActor(g, cp,class'MenuChoice_GoalTextures'.static.IsEnabled(self)); //Should the killphrase computers actually be visually distinct?
     }
     else if (g.name=="Paul" && Loc.name!="Surgery Ward") {
         passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));

@@ -857,9 +857,9 @@ static function BeatGame(DXRando dxr, int ending)
     }
 
     GeneralEventData(dxr, j);
-    BingoEventData(dxr, j);
-    AugmentationData(dxr, j);
-    InventoryData(dxr,j);
+    BingoEventData(dxr,true,j);
+    AugmentationData(dxr,true,j);
+    InventoryData(dxr,true,j);
     GameTimeEventData(dxr, j);
 
     js.static.Add(j, "score", stats.ScoreRun());
@@ -888,6 +888,26 @@ static function ExtinguishFire(string extinguisher, DeusExPlayer player)
     MarkBingo("ExtinguishFire");
 }
 
+static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime)
+{
+    local string j;
+    local DXRando dxr;
+    local class<Json> js;
+
+    dxr = class'DXRando'.default.dxr;
+    js = class'Json';
+
+    j = js.static.Start("TimedRace");
+    js.static.Add(j, "raceName", raceTimer.raceName);
+    js.static.Add(j, "targetTime", raceTimer.targetTime);
+    js.static.Add(j, "finishTime", finishTime);
+    js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
+    GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, raceTimer, j);
+}
+
 static function GeneralEventData(DXRando dxr, out string j)
 {
     local string loadout,lang;
@@ -912,7 +932,7 @@ static function GeneralEventData(DXRando dxr, out string j)
         js.static.Add(j, "language", lang);
 }
 
-static function AugmentationData(DXRando dxr, out string j)
+static function AugmentationData(DXRando dxr, bool drawAugs, out string j)
 {
     local Augmentation anAug;
     local string augId,augName,augInfo;
@@ -940,9 +960,11 @@ static function AugmentationData(DXRando dxr, out string j)
         anAug = anAug.next;
     }
 
+    j = j $ ",\"DrawAugs\":" $ "\"" $ drawAugs $ "\"";
+
 }
 
-static function InventoryData(DXRando dxr, out string j)
+static function InventoryData(DXRando dxr, bool drawInv, out string j)
 {
     local Inventory item;
     local string invId,invClass,invInfo,invName;
@@ -978,11 +1000,11 @@ static function InventoryData(DXRando dxr, out string j)
     }
 
     j = j $ ",\"credits\":" $ dxr.player.credits;
-
+    j = j $ ",\"DrawInventory\":" $ "\"" $ drawInv $ "\"";
 
 }
 
-static function BingoEventData(DXRando dxr, out string j)
+static function BingoEventData(DXRando dxr, bool drawBingo, out string j)
 {
     local PlayerDataItem data;
     local string event, desc;
@@ -1000,6 +1022,7 @@ static function BingoEventData(DXRando dxr, out string j)
                 $ "{\"event\":\"" $ event $ "\",\"desc\":\"" $ desc $ "\",\"progress\":" $ progress $ ",\"max\":" $ max $ "}";
         }
     }
+    j = j $ ",\"DrawBingo\":" $ "\"" $ drawBingo $ "\"";
 }
 
 static function GameTimeEventData(DXRando dxr, out string j)
@@ -1384,7 +1407,7 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
         js.static.Add(j, "newevent", eventname);
         js.static.Add(j, "location", vectclean(p.Location));
         GeneralEventData(dxr, j);
-        BingoEventData(dxr, j);
+        BingoEventData(dxr, true, j);
         GameTimeEventData(dxr, j);
         js.static.End(j);
 

@@ -1032,15 +1032,43 @@ function SwapSpeech(ConSpeech a, ConSpeech b)
 
 function RandomizeDialog()
 {
-    local ConSpeech s, speech[100];
+    local ConSpeech speech[100];
+    local ConEventSpeech ces;
     local int i, j, num, soundID;
-    local string subtitle;
+    local string subtitle, strConName;
+    local bool checkGender;
+    local bool isFemale,femConv;
     //local Conversation conv;
 
-    SetSeed("RandomizeDialog");
-    foreach AllObjects(class'ConSpeech', s) {
-        speech[num++] = s;
+    switch(dxr.localURL){
+        case "INTRO":
+            //Player never speaks in the intro, so there isn't a FemJC variant to look for
+            checkGender=false;
+            break;
+        case "ENDGAME1":
+        case "ENDGAME2":
+        case "ENDGAME3":
+        case "ENDGAME4":
+        case "ENDGAME4REV":
+            //Endgame variants have JC speaking, so only randomize within the set of conversations for the player gender
+            checkGender=true;
+            isFemale=player().FlagBase.GetBool('LDDPJCIsFemale');
+            break;
+        default:
+            return; //What else is there?
     }
+
+    SetSeed("RandomizeDialog");
+    foreach AllObjects(class'ConEventSpeech', ces) {
+        if (checkGender){
+            strConName=String(ces.conversation.conName);
+            femConv = (InStr(strConName,"FemJC")!=-1);
+
+            if (isFemale!=femConv) continue;
+        }
+        speech[num++] = ces.conSpeech;
+    }
+
     for(i=0;i<num;i++) {
         if(chance_single(10)) {
             j = rng(num);
@@ -1137,7 +1165,7 @@ function Actor ReplaceWithRandomClass(Actor old)
     return None;
 }
 
-const num_random_actor_classes = 551;
+const num_random_actor_classes = 553;
 
 function string GetRandomActorClass()
 {
@@ -1244,6 +1272,8 @@ function string _GetRandomActorClass(int r)
     if(r==i++) return "#var(package).NervousWorker";
     if(r==i++) return "#var(package).NervousWorkerCarcass";
     if(r==i++) return "#var(package).LeMerchant";
+    if(r==i++) return "#var(package).EnergyDrinkCan";
+    if(r==i++) return "#var(package).VendingMachineEnergy";
 
     // vanilla classes
     if ( r == i++ ) return "AcousticSensor";

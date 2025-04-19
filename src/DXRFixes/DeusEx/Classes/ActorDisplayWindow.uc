@@ -225,7 +225,7 @@ function DrawWindow(GC gc)
     local float centerX, centerY;
     local float topY, bottomY;
     local float leftX, rightX;
-    local int i, j, k;
+    local int i, j, k, r, g, b;
     local vector tVect;
     local vector cVect;
     local PlayerPawnExt player;
@@ -426,8 +426,18 @@ function DrawWindow(GC gc)
 
             gc.SetStyle(DSTY_Normal);
 
-            if (bShowCylinder)
-                DrawCylinder(gc, trackActor);
+            if (bShowCylinder) {
+                r=0;
+                g=0;
+                b=0;
+                if (trackActor.bCollideActors){
+                    g=255;
+                } else {
+                    r=255;
+                }
+                DrawColourCylinder(gc, trackActor, r, g, b);
+                //DrawCylinder(gc, trackActor);
+            }
 
             if (trackActor.InStasis())
             {
@@ -893,6 +903,58 @@ function DrawWindow(GC gc)
     gc.DrawText(5, 170, 500, 20, str);*/
 }
 //#endregion
+
+//DrawCylinder, but now it uses colour lines instead of forced white ones
+function DrawColourCylinder(GC gc, actor trackActor, int r, int g, int b)
+{
+    local int         i;
+    local vector      topCircle[8];
+    local vector      bottomCircle[8];
+    local float       topSide, bottomSide;
+    local int         numPoints;
+    local DeusExMover dxMover;
+    local vector      center, area;
+
+    dxMover = DeusExMover(trackActor);
+    if (dxMover == None)
+    {
+        topSide = trackActor.Location.Z + trackActor.CollisionHeight;
+        bottomSide = trackActor.Location.Z - trackActor.CollisionHeight;
+        for (i=0; i<maxPoints; i++)
+        {
+            topCircle[i] = trackActor.Location;
+            topCircle[i].Z = topSide;
+            topCircle[i].X += sinTable[i]*trackActor.CollisionRadius;
+            topCircle[i].Y += sinTable[i+maxPoints/4]*trackActor.CollisionRadius;
+            bottomCircle[i] = topCircle[i];
+            bottomCircle[i].Z = bottomSide;
+        }
+        numPoints = maxPoints;
+    }
+    else
+    {
+        dxMover.ComputeMovementArea(center, area);
+        topCircle[0] = center+area*vect(1,1,1);
+        topCircle[1] = center+area*vect(1,-1,1);
+        topCircle[2] = center+area*vect(-1,-1,1);
+        topCircle[3] = center+area*vect(-1,1,1);
+        bottomCircle[0] = center+area*vect(1,1,-1);
+        bottomCircle[1] = center+area*vect(1,-1,-1);
+        bottomCircle[2] = center+area*vect(-1,-1,-1);
+        bottomCircle[3] = center+area*vect(-1,1,-1);
+        numPoints = 4;
+    }
+
+    for (i=0; i<numPoints; i++)
+        DrawColourLine(gc, topCircle[i], bottomCircle[i],r,g,b);
+    for (i=0; i<numPoints-1; i++)
+    {
+        DrawColourLine(gc, topCircle[i], topCircle[i+1],r,g,b);
+        DrawColourLine(gc, bottomCircle[i], bottomCircle[i+1],r,g,b);
+    }
+    DrawColourLine(gc, topCircle[i], topCircle[0],r,g,b);
+    DrawColourLine(gc, bottomCircle[i], bottomCircle[0],r,g,b);
+}
 
 defaultproperties
 {

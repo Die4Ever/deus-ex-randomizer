@@ -72,10 +72,22 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.medbotamount = int(rngb()) + 1;
     settings.repairbotamount = int(rngb()) + 1;
 
-    if (forceMenuOptions){
-        //Eventually we can add logic to randomize between the door menu options
+    if (forceMenuOptions) {
+        switch(rng(5)) {
+            case 0: settings.doorsdestructible = 0; break;
+            case 1: settings.doorsdestructible = 25; break;
+            case 2: settings.doorsdestructible = 40; break;
+            case 3: settings.doorsdestructible = 70; break;
+            default: settings.doorsdestructible = 100; break;
+        }
+        switch(rng(5)) {
+            case 0: settings.doorspickable = 0; break;
+            case 1: settings.doorspickable = 25; break;
+            case 2: settings.doorspickable = 40; break;
+            case 3: settings.doorspickable = 70; break;
+            default: settings.doorspickable = 100; break;
+        }
     } else {
-        settings.doorsmode = undefeatabledoors + doorindependent;
         settings.doorsdestructible = rng(100);
         settings.doorspickable = rng(100);
     }
@@ -153,6 +165,7 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
+    local DXRLoadouts loadouts;
     local int i, bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay;
     local float exp;
     local int randomStart;
@@ -278,6 +291,10 @@ function NewGamePlus()
     for (i = 0; i < augsToRemove; i++)
         if( augs != None )
             augs.RemoveRandomAug(p);
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if(loadouts != None) {// maybe the player uninstalled Running Enhancement in favor of Speed Enhancement, but it just got taken away
+        loadouts.AddStartingAugs(p);
+    }
 
     MaxMultipleItems(p, newgameplus_max_item_carryover);
 
@@ -331,10 +348,19 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
     local Inventory i, next;
     local Weapon weaps[64];
     local int numWeaps, slot;
+    local DXRLoadouts loadout;
+    local class<Inventory> startingItem;
+
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    if (loadout!=None){
+        startingItem = loadout.get_starting_item();
+    }
 
     for( i = p.Inventory; i != None; i = next ) {
         next = i.Inventory;
         if( Weapon(i) == None ) continue;
+        if (i.Class==startingItem) continue; //Don't take away your loadout starting item
+        if (i.Class==class'#var(package).WeaponRubberBaton') continue; //Don't take away the rubber baton, that's just rude
         weaps[numWeaps++] = Weapon(i);
     }
 

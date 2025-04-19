@@ -63,6 +63,15 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\AugIconNinjaNaruto.pcx"                 NAME="AugIconNinja"                     GROUP="DXRandoImages" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconNinjaNaruto_Small.pcx"           NAME="AugIconNinja_Small"               GROUP="DXRandoImages" MIPS=Off
 
+#exec TEXTURE IMPORT FILE="Textures\AugIconMotionSensor.pcx"                NAME="AugIconMotionSensor"              GROUP="DXRandoImages" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconMotionSensor_Small.pcx"          NAME="AugIconMotionSensor_Small"        GROUP="DXRandoImages" MIPS=Off
+
+#exec TEXTURE IMPORT FILE="Textures\AugIconVisionShort.pcx"                 NAME="AugIconVisionShort"               GROUP="DXRandoImages" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconVisionShort_Small.pcx"           NAME="AugIconVisionShort_Small"         GROUP="DXRandoImages" MIPS=Off
+
+#exec TEXTURE IMPORT FILE="Textures\AugIconInfraVision.pcx"                 NAME="AugIconInfraVision"               GROUP="DXRandoImages" MIPS=Off
+#exec TEXTURE IMPORT FILE="Textures\AugIconInfraVision_Small.pcx"           NAME="AugIconInfraVision_Small"         GROUP="DXRandoImages" MIPS=Off
+
 #exec TEXTURE IMPORT FILE="Textures\EnergyVendingMachineTex1.pcx"           NAME="EnergyVendingMachineTex1"         GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\EnergyDrinkTex1.pcx"                    NAME="EnergyDrinkTex1"                  GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\BeltIconEnergyDrinkCan.pcx"             NAME="BeltIconEnergyDrinkCan"           GROUP="DXRandoImages" MIPS=Off

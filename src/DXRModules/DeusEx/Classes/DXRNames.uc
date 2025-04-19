@@ -12,6 +12,7 @@ function FirstEntry()
     Super.FirstEntry();
 
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return;
+    if(dxr.flags.IsZeroRando()) return;
 
     SetSeed( "DXRNames" );
 

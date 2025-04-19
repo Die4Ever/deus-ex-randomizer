@@ -148,6 +148,28 @@ function UpdateBiocellButtonClickability()
     }
 }
 
+function UpdateHackButtonClickability()
+{
+    local bool enable;
+    local #var(PlayerPawn) p;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    p = #var(PlayerPawn)(player);
+    enable=False;
+
+    if (p==None || btnHack==None || class'MenuChoice_BalanceSkills'.static.IsDisabled()) return;
+
+    if (p!=None){
+        if (p.Energy>0 && !bHacking && !bHacked){
+            enable=True;
+        }
+    }
+
+    btnHack.SetSensitivity(enable);
+}
+
 function HandleBiocellButton()
 {
     local #var(prefix)BioElectricCell bc;
@@ -189,6 +211,7 @@ function UpdateEnergyMeterTimer(int timerID, int invocations, int clientData)
 {
     UpdateEnergyMeter();
     UpdateBiocellButtonClickability(); //Button can change clickability based on remaining energy
+    UpdateHackButtonClickability();
 }
 
 event DestroyWindow()

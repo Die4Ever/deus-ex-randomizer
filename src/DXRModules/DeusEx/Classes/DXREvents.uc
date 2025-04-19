@@ -305,6 +305,9 @@ function SetWatchFlags() {
     local #var(prefix)ControlPanel conPanel;
     local Dispatcher disp;
     local int i;
+    local DXRRaceTimerStart raceStart;
+    local DXRRaceCheckPoint checkPoint;
+    local OnceOnlyTrigger oot;
 
     local bool RevisionMaps;
 
@@ -1150,6 +1153,33 @@ function SetWatchFlags() {
         }
         WatchFlag('SilhouetteHostagesAllRescued');
         MarkBingo("AimeeLeMerchantLived", true);
+
+        //Regular forwards direction catacombs timing
+        if (RevisionMaps){
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-3287,-2270,555));
+        } else {
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-2580,-2250,100));
+        }
+        raceStart.raceName="Catacombs";
+        raceStart.SetCollisionSize(60,80);
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(2775,-3785,-450)); //Lines up for both
+        checkPoint.SetCollisionSize(100,80);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+        //Going backwards through catacombs
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(2775,-3785,-450));
+        raceStart.raceName="Reverse Catacombs";
+        raceStart.SetCollisionSize(100,80);
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-3287,-2270,555));
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-2580,-2250,100));
+        }
+        checkPoint.SetCollisionSize(60,80);
+        raceStart.RegisterCheckpoint(checkPoint);
+
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
@@ -1238,6 +1268,25 @@ function SetWatchFlags() {
             dxm.Event='SuspensionCrate';
         }
         bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
+
+        raceStart = Spawn(class'DXRRaceTimerStart',,'ChateauKeyRaceStart');
+        raceStart.raceName="the Chateau DuClare key hunt";
+
+        oot = Spawn(class'OnceOnlyTrigger',, 'ChateauKeyRaceStartOnce');
+        oot.Event = 'ChateauKeyRaceStart';
+
+        trig = Spawn(class'#var(prefix)Trigger',,,vectm(15,60,150)); //Front Door
+        trig.Event='ChateauKeyRaceStartOnce';
+
+        trig = Spawn(class'#var(prefix)Trigger',,,vectm(175,60,150)); //Front Door
+        trig.Event='ChateauKeyRaceStartOnce';
+
+        trig = Spawn(class'#var(prefix)Trigger',,,vectm(-560,-1280,120)); //Back Door
+        trig.Event='ChateauKeyRaceStartOnce';
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(1375,1200,-200));
+        checkPoint.SetCollisionSize(80,80);
+        raceStart.RegisterCheckpoint(checkPoint);
 
         break;
     //#endregion
@@ -1402,11 +1451,20 @@ function SetWatchFlags() {
                 sm.bImportant = true;
             }
         }
-        bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vectm(25,-4350,165),40,40);
         bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vectm(-1212,-3427,1992),240,40);
         bt = class'BingoTrigger'.static.Create(self,'SiloAttic',vectm(-2060,-6270,1825),200,40);
 
         bt = class'BingoTrigger'.static.CrouchCreate(self,'CherryPickerSeat',vectm(-17,-6461,-500),20,20);
+
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(23,-4072,390));
+        raceStart.raceName="The Silo's Secret Slide";
+        raceStart.targetTime=5; //6.1ish seconds if you run through with full leg health, 5 is "impressive"
+        raceStart.finishBingoGoal="SiloSlide";
+        raceStart.SetCollisionSize(raceStart.CollisionRadius,10);
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(25,-6316,-768));
+        checkPoint.SetCollisionSize(checkPoint.CollisionRadius,80);
+        raceStart.RegisterCheckpoint(checkPoint);
 
         break;
     case "14_OCEANLAB_LAB":
@@ -1893,6 +1951,11 @@ function ReadText(name textTag)
     case '01_Book07':
     case '01_Book08':
         eventname="UNATCOHandbook";
+        break;
+
+    case '06_Book04':
+    case '10_Book06':
+        eventname="JoyOfCooking";
         break;
 
     case 'JennysNumber':
@@ -3449,6 +3512,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
         case "Ex51":
             return "Kill enough of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
+        case "JoyOfCooking":
+            return "Read a recipe from a book and experience the joy of cooking!|n|nThere is a recipe for Chinese Silver Loaves in the Wan Chai Market, and a recipe for Coq au Vin in the streets of Paris.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3757,8 +3822,8 @@ defaultproperties
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
     bingo_options(231)=(event="DuClareKeys",desc="Collect 3 different keys around Chateau DuClare",max=3,missions=1024)
     bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",desc_singular="Collect 1 locker key inside the superfreighter",max=2,missions=512)
-    bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out! (%s)",max=18,missions=36734)
-    bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=34686)
+    bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out! (%s)",max=18,missions=40830)
+    bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=38782)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=5,missions=64)
@@ -3887,6 +3952,7 @@ defaultproperties
     bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
     bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate 1 emergency exit",max=8,missions=1918)
     bingo_options(355)=(event="Ex51",desc="Ex-51 (%s)",desc_singular="Ex-51",max=6,missions=4096)
+    bingo_options(356)=(event="JoyOfCooking",desc="The Joy of Cooking",max=1,missions=1088)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 

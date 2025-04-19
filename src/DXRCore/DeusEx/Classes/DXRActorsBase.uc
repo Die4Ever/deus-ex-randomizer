@@ -1293,6 +1293,10 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
     local class<#var(prefix)Containers> contClass;
     local #var(prefix)Containers box;
 
+    if (scale==0){
+        scale=1.0;
+    }
+
     if (forcedContainerType!=None){
         contClass = forcedContainerType;
     } else if (a.ClassIsChildOf(contents,class'Weapon') || a.ClassIsChildOf(contents,class'Ammo') || a.ClassIsChildOf(contents,class'#var(prefix)WeaponMod')){
@@ -1303,15 +1307,14 @@ static function #var(prefix)Containers SpawnItemInContainer(Actor a, class<Inven
         contClass=class'#var(prefix)CrateBreakableMedGeneral';
     }
 
-    box = #var(prefix)Containers(_AddActor(a, contClass, loc, rot));
+    box = a.Spawn(contClass,,, loc, rot);
+
     if (box!=None){
         box.contents = contents;
 
-        if (scale!=0){
-            box.DrawScale = box.Default.DrawScale * scale;
-            box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
-            box.Mass = box.Default.Mass * scale;
-        }
+        box.DrawScale = box.Default.DrawScale * scale;
+        box.SetCollisionSize(box.Default.CollisionRadius * scale, box.Default.CollisionHeight * scale);
+        box.Mass = box.Default.Mass * scale;
     }
 
     return box;
@@ -1429,8 +1432,13 @@ function vector GetRandomPosition(optional vector target, optional float mindist
 
 function vector JitterPosition(vector loc)
 {
-    loc.X += rngfn() * 160.0;//10 feet in any direction
-    loc.Y += rngfn() * 160.0;
+    return GetRandomPositionNear(loc,160.0); //10 feet in any direction
+}
+
+function vector GetRandomPositionNear(vector loc, float range)
+{
+    loc.X += rngfn() * range;
+    loc.Y += rngfn() * range;
     return loc;
 }
 
@@ -1460,6 +1468,22 @@ function vector GetCloserPosition(vector target, vector current, optional float 
         }
     }
     return farthest;
+}
+
+function rotator GetRandomYaw(optional bool unseeded)
+{
+    local rotator r;
+
+    r.Pitch=0;
+    r.Roll=0;
+
+    if (unseeded){
+        r.Yaw = Rand(65536);
+    } else {
+        r.Yaw = rng(65536);
+    }
+
+    return r;
 }
 
 function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){

@@ -47,7 +47,7 @@ function CheckConfig()
     AddRandomItem("FireExtinguisher",8);
     AddRandomItem("SoyFood",7);
     AddRandomItem("TechGoggles",9);
-    if(#defined(hx))
+    if(#bool(hx))
         AddRandomItem("#var(injectsprefix)Binoculars",10);
     else
         AddRandomItem("Binoculars",10);
@@ -59,27 +59,35 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+//#region GetIdForSlot
 function int GetIdForSlot(int i)
 {
-    switch(i) {
-        case 0: return 0;
-        case 1: return 2;
-        case 2: return 1;
-        case 3: return 3;
-        case 4: return 10;
-        case 5: return 9;
-        case 6: return 4;
-        case 7: return 7;
-        case 8: return 8;
-        case 9: return 6;
-        case 10: return 5;
-        case 11: return 11;
-        case 12: return 13;
-        case 13: return 14;
-        case 14: return 12;
-    }
-    return i;
+    if(i-- == 0) return 0; // All Items Allowed
+    if(i-- == 0) return 16; // Speed Enhancement
+    if(i-- == 0) return 12; // Random Starting Aug
+    if(i-- == 0) return 14; // Reduced Aug Set
+    if(i-- == 0) return 15; // The Three Leg Augs
+    if(i-- == 0) return 17; // My Vision Is Augmented
+
+    // challenges
+    if(i-- == 0) return 2; // Stick With the Prod Plus
+    if(i-- == 0) return 1; // Stick With the Prod Pure
+    if(i-- == 0) return 9; // Hipster JC
+    if(i-- == 0) return 10; // By the Book
+    if(i-- == 0) return 4; // Don't Give Me the GEP Gun
+    if(i-- == 0) return 6; // Grenades Only
+    if(i-- == 0) return 7; // No Pistols
+    if(i-- == 0) return 8; // No Swords
+    if(i-- == 0) return 5; // Freeman Mode
+
+    // silly
+    if(i-- == 0) return 3; // Ninja JC
+    if(i-- == 0) return 11; // Explosives Only
+    if(i-- == 0) return 13; // Straight Edge
+
+    return -1;
 }
+//#endregion
 
 function string LoadoutInfo(int loadout, optional bool get_name)
 {
@@ -120,15 +128,17 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)AmmoBattery');
         AddStartInv(class'#var(package).WeaponRubberBaton');
         AddItemSpawn(class'#var(prefix)WeaponProd',30);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
         #ifdef injections
             AddStartAug(class'AugInfraVision');
             AddAugAllow(class'AugVision');
         #endif
+        #ifdef injections || revision || vmd
+            AddAugAllow(class'AugJump');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
-        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -159,17 +169,19 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)WeaponProd');
         AddStartInv(class'#var(prefix)AmmoBattery');
         AddStartInv(class'#var(package).WeaponRubberBaton');
-        AddItemSpawn(class'#var(prefix)WeaponProd',30);
-        AddItemSpawn(class'#var(prefix)WeaponMiniCrossbow',30);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(prefix)WeaponProd',25);
+        AddItemSpawn(class'#var(prefix)WeaponMiniCrossbow',25);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
         #ifdef injections
             AddStartAug(class'AugInfraVision');
             AddAugAllow(class'AugVision');
         #endif
+        #ifdef injections || revision || vmd
+            AddAugAllow(class'AugJump');
+        #endif
         AddAugBan(class'#var(prefix)AugSpeed');
-        AddAugAllow(class'AugJump');
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
@@ -205,8 +217,8 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)WeaponShuriken');
         AddStartInv(class'#var(prefix)WeaponSword');
         AddStartInv(class'#var(prefix)AmmoShuriken');
-        AddItemSpawn(class'#var(prefix)WeaponShuriken',150);
-        AddItemSpawn(class'#var(prefix)BioelectricCell',100);
+        AddItemSpawn(class'#var(prefix)WeaponShuriken',100);
+        AddItemSpawn(class'#var(prefix)BioelectricCell',80);
         AddStartAug(class'#var(package).AugNinja'); //combines AugStealth and active AugSpeed
         AddAugBan(class'#var(prefix)AugSpeed');
         AddAugBan(class'#var(prefix)AugStealth');
@@ -272,7 +284,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponGasGrenade',50);
         AddItemSpawn(class'#var(prefix)WeaponNanoVirusGrenade',50);
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',50);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddStandardAugSet();
         return name;
     //#endregion
@@ -368,7 +380,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',75);
         AddItemSpawn(class'#var(prefix)WeaponGasGrenade',75);
         AddItemSpawn(class'#var(prefix)WeaponNanoVirusGrenade',75);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',20);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
         AddItemSpawn(class'#var(prefix)AmmoRocket',100);
         AddItemSpawn(class'#var(prefix)AmmoRocketWP',100);
         AddItemSpawn(class'#var(prefix)Ammo20mm',100);
@@ -378,7 +390,6 @@ function string LoadoutInfo(int loadout, optional bool get_name)
 /////////////////////////////////////////////////////////////////
     //#region Random Aug
     case 12:
-        // loadout for random starting aug
         name = "Random Starting Aug";
         if(get_name) return name;
         AddRandomAug();
@@ -403,12 +414,13 @@ function string LoadoutInfo(int loadout, optional bool get_name)
     case 14:
         name = "Reduced Aug Set";
         if(get_name) return name;
+        AddRandomAug(); //get a random aug to start
         BanRandomAugs(6); //18 augs total, ban a third of them
-        AddRandomAug(); //and get a random aug to start
         return name;
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region The Three Leg Augs
+    #ifdef injections || revision || vmd
     case 15:
         name = "The Three Leg Augs";
         if(get_name) return name;
@@ -420,21 +432,24 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddAugAllow(class'AugJump');
         AddAugAllow(class'AugOnlySpeed');
 
-        SetGlobalSeed("DXRLoadouts random leg aug");
+        SetGlobalNGPSeed("DXRLoadouts random leg aug");
         switch(rng(3)) {
         case 0: AddStartAug(class'AugOnlySpeed'); break;
         case 1: AddStartAug(class'AugJump'); break;
         case 2: AddStartAug(class'AugStealth'); break;
         }
         return name;
+    #endif
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Speedrun
+    #ifdef injections || revision || vmd
     case 16:
         name = "Speed Enhancement";
         if(get_name) return name;
         AddStartAug(class'#var(prefix)AugSpeed');
         return name;
+    #endif
     //#endregion
 /////////////////////////////////////////////////////////////////
     //#region Vision
@@ -448,7 +463,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddAugAllow(class'AugVisionShort');
         AddAugAllow(class'AugInfraVision');
         AddAugAllow(class'AugMotionSensor');
-        SetGlobalSeed("DXRLoadouts my vision is augmented");
+        SetGlobalNGPSeed("DXRLoadouts my vision is augmented");
         switch(rng(3)) {
         case 0: AddStartAug(class'AugVisionShort'); break;
         case 1: AddStartAug(class'AugInfraVision'); break;
@@ -484,82 +499,96 @@ static function AdjustFlags(DXRFlags flags, int loadout)
 function string LoadoutHelpText(int loadout)
 {
     local string helpText;
+    local string normalAugs;
+
+    if(#bool(injections || revision || vmd)) {
+        normalAugs = "You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+    } else {
+        normalAugs = "You start with the Speed Enhancement augmentation.";
+    }
 
     switch(loadout) {
     case 0:
         //All Items Allowed
-        return "All items and augs are allowed.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed.|n|n" $ normalAugs;
     case 1:
         //SWTP Pure
-        helpText = "The only weapon allowed is the Riot Prod and the Rubber Baton (which is unable to deal damage to anything but the environment).  ";
-        #ifdef injections
-        helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
-        #else
-        helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
-        #endif
-        helpText = helpText $ "Speed Enhancement augmentation is banned.  Running Enhancement and Jump Enhancement augs are available.";
+        helpText = "For when you want to have a truly miserable time!|n|n";
+        helpText = helpText $ "The only weapon allowed is the Riot Prod and the Rubber Baton (which is unable to deal damage to enemies).|n|n";
+        if(#bool(injections))
+            helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
+        else
+            helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
+        helpText = helpText $ "Speed Enhancement augmentation is banned.";
+        if(#bool(injections || revision || vmd))
+            helpText = helpText $ "  Running Enhancement and Jump Enhancement augs are available.";
         return helpText;
     case 2:
         //SWTP Plus
-        helpText = "The only weapons allowed are the Riot Prod, mini-crossbow (with tranquilizer darts), EMP Grenades, Gas Grenades, Scrambler Grenades, Pepper Spray, and the Rubber Baton (which is unable to deal damage to anything but the environment).  ";
-        #ifdef injections
-        helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
-        #else
-        helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
-        #endif
-        helpText = helpText $ "Speed Enhancement augmentation is banned.  Running Enhancement and Jump Enhancement augs are available.";
+        helpText = "The only weapons allowed are the Riot Prod, Mini-Crossbow (with Tranquilizer Darts), EMP Grenades, Gas Grenades, Scrambler Grenades, Pepper Spray, and the Rubber Baton (which is unable to deal damage to enemies).|n|n";
+        if(#bool(injections))
+            helpText = helpText $ "You start with Run Silent, Microfibral Muscle, and Infravision augmentations.  ";
+        else
+            helpText = helpText $ "You start with Run Silent and Microfibral Muscle augmentations.  ";
+        helpText = helpText $ "Speed Enhancement augmentation is banned.";
+        if(#bool(injections || revision || vmd))
+            helpText = helpText $ "  Running Enhancement and Jump Enhancement augs are available.";
         return helpText;
     case 3:
         //Ninja JC
-        helpText = "Become the ninja!  Use throwing knives, swords, mini-crossbows, and grenades to bypass and eliminate your enemies!  ";
+        helpText = "Become the ninja!|n|nUse Throwing Knives, Swords, Mini-Crossbows, and Grenades to bypass and eliminate your enemies! There will be extra throwing knives and biocells available.|n|n";
         helpText = helpText $ "Speed Enhancement and Run Silent augmentations are banned, but you start with the Ninja augmentation instead, which combines the functionality of both!";
         return helpText;
     case 4:
         //Don't give me the GEP Gun
-        return "All items and augs are allowed except for the GEP Gun.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the GEP Gun.  " $ normalAugs;
     case 5:
         //Freeman Mode
-        return "The only weapon allowed is the Crowbar.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapon allowed is the Crowbar.|n|n" $ normalAugs;
     case 6:
         //Grenades Only
-        return "The only weapons allowed are grenades and the Rubber Baton (which is unable to deal damage to anything but the environment).  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades and the Rubber Baton (which is unable to deal damage to enemies).|n|n" $ normalAugs;
     case 7:
         //No Pistols
-        return "All items and augs are allowed except for the Pistol and Stealth Pistol.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the Pistol and Stealth Pistol.|n|n" $ normalAugs;
     case 8:
         //No Swords
-        return "All items and augs are allowed except for the Sword and Dragon Tooth Sword.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for the Sword and Dragon Tooth Sword.|n|n" $ normalAugs;
     case 9:
         //Hipster JC
-        helpText = "JC used things before they were cool, so he doesn't want to use them any more.  In terms of weapons, JC won't use the Dragon Tooth Sword, Pistol, Stealth Pistol, GEP Gun, or Laser Modifications.  ";
+        helpText = "JC used things before they were cool, so he doesn't want to use them any more.|n|n";
+        helpText = helpText $ "In terms of weapons, JC won't use the Dragon Tooth Sword, Pistol, Stealth Pistol, GEP Gun, or Laser Modifications.  ";
         helpText = helpText $ "JC also won't use the Speed Enhancement, Power Recirculator, or Regeneration augmentations.  ";
         helpText = helpText $ "You start with the EMP Shield augmentation (JC is using it before it gets cool).";
         return helpText;
     case 10:
         //By the Book
-        return "Follow UNATCO protocol!  All items and augs are allowed except for the Lockpick and Multitool.  The Computers skill is banned to prevent hacking.  You start with the Run Silent augmentation.";
+        return "Follow UNATCO protocol!|n|nAll items and augs are allowed except for Lockpicks and Multitools.  The Computers skill is banned to prevent hacking.|n|nYou start with the Run Silent augmentation.";
     case 11:
         //Explosives Only
-        return "The only weapons allowed are grenades, GEP Gun, Assault Rifle with 20mm ammo, and the Rubber Baton (which is unable to deal damage to anything but the environment).  "$"You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "The only weapons allowed are Grenades, GEP Guns, Assault Rifles with 20mm ammo, and the Rubber Baton (which is unable to deal damage to enemies).|n|n" $ normalAugs;
     case 12:
         //Random Starting Aug
         return "All items and augs are allowed.  You start with a randomly selected augmentation.";
     case 13:
         //Straight Edge
-        return "All items and augs are allowed except for alcohol, cigarettes, and zyme.  You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        return "All items and augs are allowed except for Alcohol, Cigarettes, and Zyme.|n|n" $ normalAugs;
     case 14:
         //Reduced Aug Set
         return "All items are allowed.  Six randomly selected augs are banned, and you start with a randomly selected augmentation.";
     case 15:
         //The Three Leg Augs
-        return "All items are allowed.  Speed Enhancement and six randomly selected augs are banned.  You start with one of the Running Enhancement, Jump Enhancement, or Run Silent augmentations." $ CR() $ CR() $ "Enables Aug Slot Rando by default.";
+        return "All items are allowed.  Speed Enhancement and six randomly selected augs are banned.  You start with one of the Running Enhancement, Jump Enhancement, or Run Silent augmentations.|n|n"$"Enables Aug Slot Rando by default.";
     case 16:
         //Speed Enhancement
         return "The old-fashioned DXRando experience!  All items and augs are allowed.  You start with the Speed Enhancement augmentation.";
     #ifdef injections
     case 17:
         //My Vision Is Augmented
-        return "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  "$"Running Enhancement and Jump Enhancement augs are also available." $ CR() $ CR() $ "Enables Aug Slot Rando by default.";
+        helpText = "All items are allowed.  Six randomly selected augs are banned.  You start with one of the Short Vision Enhancement, InfraVision, or Motion Sensor augmentations.  ";
+        helpText = helpText $ "Running Enhancement and Jump Enhancement augs are also available.|n|n";
+        helpText = helpText $ "Enables Aug Slot Rando by default.";
+        return helpText;
     #endif
     }
 
@@ -569,11 +598,15 @@ function string LoadoutHelpText(int loadout)
 
 function AddStandardAugSet()
 {
+#ifdef injections || revision || vmd
     AddStartAug(class'AugOnlySpeed');
-    AddAugAllow(class'AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
     AddAugAllow(class'AugOnlySpeed');
     AddAugAllow(class'AugJump');
     AddAugAllow(class'#var(prefix)AugSpeed');
+#else
+    AddStartAug(class'AugSpeed');
+#endif
+    AddAugAllow(class'AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
 }
 
 //#region Struct Setup
@@ -681,47 +714,6 @@ function AddAugAllow(class<Augmentation> aug)
     }
 }
 
-function CreateAugmentations(#var(PlayerPawn) p)
-{ // needed for pulling augmentation descriptions
-    local int i;
-
-    for(i=0; i < ArrayCount(item_set.allow_augs); i++) {
-        if( item_set.allow_augs[i] == None ) continue;
-        CreateAugmentation(p, item_set.allow_augs[i]);
-    }
-}
-
-function CreateAugmentation(DeusExPlayer player, class<Augmentation> AddAug)
-{
-    local int augIndex;
-    local Augmentation anAug;
-    local Augmentation LastAug;
-    local AugmentationManager augman;
-
-    augman = player.AugmentationSystem;
-    for(LastAug = augman.FirstAug; LastAug.next != None; LastAug = LastAug.next) {
-        if(LastAug.class == AddAug) return;
-    }
-
-    anAug = Spawn(AddAug, augman);
-    anAug.Player = player;
-
-    if (anAug != None)
-    {
-        if (augman.FirstAug == None)
-        {
-            augman.FirstAug = anAug;
-        }
-        else
-        {
-            LastAug.next = anAug;
-        }
-
-        LastAug  = anAug;
-    }
-}
-
-
 function NeverBanSkill(class<Skill> skill)
 {
     local int i;
@@ -758,9 +750,18 @@ function AddStartAug(class<Augmentation> aug)
 
     for(i=0; i < ArrayCount(item_set.starting_augs); i++) {
         if( item_set.starting_augs[i] == None ) {
+            // HACK: this is Halloween!
+            #ifdef injections || revision || vmd
             if(dxr.flags.IsHalloweenMode() && (aug==class'AugOnlySpeed' || aug==class'#var(prefix)AugSpeed') && dxr.flags.settings.speedlevel == 0) {
-                aug = class'#var(prefix)AugStealth';// this is Halloween!
-            } else if(dxr.flags.settings.speedlevel == 0) {
+                aug = class'#var(prefix)AugStealth';
+            }
+            #else
+            if(dxr.flags.IsHalloweenMode() && aug==class'#var(prefix)AugSpeed' && dxr.flags.settings.speedlevel == 0) {
+                aug = class'#var(prefix)AugStealth';
+            }
+            #endif
+
+            else if(dxr.flags.settings.speedlevel == 0) {
                 continue;
             }
             item_set.starting_augs[i] = aug;
@@ -771,12 +772,13 @@ function AddStartAug(class<Augmentation> aug)
 
 function AddRandomAug()
 {
-    local int i;
+    local int i, oldseed;
 
     for(i=0; i < ArrayCount(item_set.starting_augs); i++) {
         if( item_set.starting_augs[i] == None ) {
-            SetGlobalSeed("DXRLoadouts AugRandom " $ i);
+            oldseed = SetGlobalNGPSeed("DXRLoadouts AugRandom " $ i);
             item_set.starting_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
+            ReapplySeed(oldseed);
             return;
         }
     }
@@ -784,13 +786,14 @@ function AddRandomAug()
 
 function BanRandomAugs(int num)
 {
-    local int i;
+    local int i, oldseed;
 
     while(num-- > 0) {
         for(i=0; i < ArrayCount(item_set.ban_augs); i++) {
             if( item_set.ban_augs[i] == None ) {
-                SetGlobalSeed("DXRLoadouts BanAugRandom " $ i);
+                oldseed = SetGlobalSeed("DXRLoadouts BanAugRandom " $ i);
                 item_set.ban_augs[i] = class'DXRAugmentations'.static.GetRandomAug(dxr);
+                ReapplySeed(oldseed);
                 return;
             }
         }
@@ -1039,7 +1042,6 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     Super.PlayerLogin(p);
 
     RandoStartingEquipment(p, false);
-    CreateAugmentations(p);
 }
 
 simulated function PlayerRespawn(#var(PlayerPawn) p)
@@ -1084,11 +1086,8 @@ function class<Augmentation> GetExtraAug(int i)
 function AddStartingEquipment(DeusExPlayer p, bool bFrob)
 {
     local class<Inventory> iclass;
-    local class<Augmentation> aclass;
     local Inventory item;
-    local Ammo a;
-    local DeusExWeapon w;
-    local int i, k, auglevel;
+    local int i;
 
     for(i=0; i < ArrayCount(item_set.starting_equipment); i++) {
         iclass = item_set.starting_equipment[i];
@@ -1100,6 +1099,14 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
         item = GiveItem( p, iclass );
         if( bFrob && item != None ) item.Frob( p, None );
     }
+
+    AddStartingAugs(p);
+}
+
+function AddStartingAugs(DeusExPlayer p)
+{
+    local int i, auglevel;
+    local class<Augmentation> aclass;
 
     auglevel = dxr.flags.settings.speedlevel;
     if(dxr.flags.IsHalloweenMode()) {
@@ -1237,6 +1244,7 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
 function SpawnItems()
 {
     local vector loc;
+    local rotator r;
     local Actor a;
     local class<Actor> aclass;
     local DXRReduceItems reducer;
@@ -1260,9 +1268,10 @@ function SpawnItems()
         for(j=0;j<mult_items_per_level*3;j++) {
             if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
+                r = GetRandomYaw();
                 if (ClassIsChildOf(aclass,class'Inventory')){
                     //75% is pretty close to the size of a CrateUnbreakableSmall
-                    a = SpawnItemInContainer(self,class<Inventory>(aclass),loc,,0.75);
+                    a = SpawnItemInContainer(self,class<Inventory>(aclass),loc,r,0.75);
                     l("SpawnItems() spawned "$a$" at "$loc$" with "$aclass$" inside");
                 } else {
                     a = Spawn(aclass,,, loc);

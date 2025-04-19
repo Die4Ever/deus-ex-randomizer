@@ -121,8 +121,8 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     trig.SetCollisionSize(180,40);
     trig.event = 'power_dispatcher';
 
-    //Make the movers way faster
     foreach AllActors(class'DeusExMover',d){
+        //Make the movers way faster
         switch(d.Tag){
             case 'upper_elevator_sw':
             case 'upper_elevator_sw_works':
@@ -130,6 +130,12 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
             case 'lower_elevator_sw_works':
                 d.MoveTime=0.01; //So fast it just looks like the buttons and stuff swapped instantly, even if you're looking
                 break;
+        }
+
+        // for the Sniper Tower start location
+        if(d.KeyIDNeeded == 'tower' && isVanilla) {
+            d.Tag = 'towerdoor';
+            AddSwitch(vect(-1362.346313, 278.640015, -146.328003), rot(0, -16384, 0), 'towerdoor');
         }
     }
 
@@ -498,6 +504,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     ft.Event='elevator_doors';
 
     if (isVanilla) {
+        Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
 
         //Button to call elevator to bottom of shaft
@@ -645,10 +652,19 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
             c.UserList[0].Password = "graytest";
         }
         foreach AllActors(class'Keypad', k) {
-            if( k.validCode == "9248" )
+            if( k.validCode == "9248" ) {
                 k.validCode = "2242";
-            else if (k.validCode == "6188")
+            } else if (k.validCode == "6188") {
                 k.validCode = "6765";
+            }
+
+            if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+                //UC Door keypads should actually open the door, instead
+                //of just toggling the lock state of the door
+                if (k.Event=='door1' || k.Event=='door2' || k.Event=='door3'){
+                    k.bToggleLock=False;
+                }
+            }
         }
         foreach AllActors(class'Switch1',s){
             if (s.Name == 'Switch21'){
@@ -761,6 +777,8 @@ function AnyEntryMapFixes()
     local ElectricityEmitter ee;
     local #var(DeusExPrefix)Mover d;
     local bool VanillaMaps;
+    local Conversation c;
+    local ConEventTrigger cet;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
@@ -771,6 +789,26 @@ function AnyEntryMapFixes()
 
     switch(dxr.localURL)
     {
+    case "15_AREA51_ENTRANCE":
+        if (VanillaMaps){
+            c = GetConversation('DL_Elevator');
+            if (c != None) {
+                cet = new(c) class'ConEventTrigger';
+                cet.eventType = ET_Trigger;
+                cet.triggerTag = 'Area51ScratchOMatic';
+                cet.nextEvent = c.eventList;
+                c.eventList = cet;
+            }
+            c = GetConversation('DL_Final_Page02');
+            if (c != None) {
+                cet = new(c) class'ConEventTrigger';
+                cet.eventType = ET_Trigger;
+                cet.triggerTag = 'Area51ScratchOMatic';
+                cet.nextEvent = c.eventList;
+                c.eventList = cet;
+            }
+        }
+        break;
     case "15_AREA51_FINAL":
         SetTimer(1, true);// fix ReactorReady flag being set by infolinks
         if (VanillaMaps){
