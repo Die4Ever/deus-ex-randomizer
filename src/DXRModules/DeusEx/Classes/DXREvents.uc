@@ -2321,23 +2321,18 @@ function string RemapBingoEvent(string eventname)
 //#endregion
 
 //#region Bingo Failure
-static function int GetBingoFailedEvents(string eventname, out string failed[9])
+static function int GetBingoFailedEvents(string eventname, out string failed[8])
 {
     local int num_failed;
-    local string victim;
     local DXRando dxr;
     dxr = class'DXRando'.default.dxr;
 
-    if (Right(eventname, 5) == "_Dead") {
-        victim = Left(eventname, Len(eventname) - 4);
-    } else if (Right(eventname, 12) == "_Unconscious") {
-        victim = Left(eventname, Len(eventname) - 11);
-    }
-    if (victim != "") {
-        failed[num_failed++] = victim $ "Dead";
-        failed[num_failed++] = victim $ "PlayerDead";
-        failed[num_failed++] = victim $ "Unconscious";
-        failed[num_failed++] = victim $ "PlayerUnconscious";
+    if (Right(eventname, 12) == "_Unconscious") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 11) $ "Dead";
+        failed[num_failed++] = Left(eventname, Len(eventname) - 11) $ "PlayerDead";
+    } else if (Right(eventname, 5) == "_Dead") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "Unconscious";
+        failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "PlayerUnconscious";
     }
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
