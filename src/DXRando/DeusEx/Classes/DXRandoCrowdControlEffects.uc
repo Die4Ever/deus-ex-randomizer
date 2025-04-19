@@ -1231,8 +1231,9 @@ function SetFloatyPhysics(bool enabled) {
             apply = True;
         } else if (A.isa('Decoration')) {
             apply = ((A.Base!=None &&
-                        A.Physics == PHYS_None &&
+                        (A.Physics == PHYS_None || A.Physics == PHYS_Falling) &&
                         A.bStatic == False &&
+                        A.bHidden == False &&
                         Decoration(A).bPushable == True) || A.isa('Carcass'));
         } else if (A.isa('Inventory')) {
             apply = (Pawn(A.Owner) == None);
