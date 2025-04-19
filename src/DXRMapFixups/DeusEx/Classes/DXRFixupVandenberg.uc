@@ -68,6 +68,7 @@ function PreFirstEntryMapFixes()
     local DXRReinforcementPoint reinforce;
     local DXRIntermediatePoint intermediate;
     local #var(injectsprefix)AllianceTrigger at;
+    local #var(prefix)AlarmUnit au;
 
     local bool VanillaMaps;
 
@@ -565,6 +566,28 @@ function PreFirstEntryMapFixes()
             intermediate = Spawn(class'DXRIntermediatePoint',,'TunnelEndInt',vectm(25,-3865,495)); //To the end of the tunnel
             intermediate.nextPoint='TunnelEndFinal';
             reinforce = Spawn(class'DXRReinforcementPoint',,'TunnelEndFinal',ot.Location); //and back to where they started
+
+            //Swap the laser triggers in the tunnel to the computer room to BeamTrigger,
+            //and connect them to the nearby alarm unit
+            foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+                if (lt.Tag=='tunnel_laser'){
+                    bt = #var(prefix)BeamTrigger(SpawnReplacement(lt,class'#var(prefix)BeamTrigger'));
+                    bt.TriggerType=lt.TriggerType;
+                    bt.bTriggerOnceOnly = lt.bTriggerOnceOnly;
+                    bt.bDynamicLight = lt.bDynamicLight;
+                    bt.bIsOn = lt.bIsOn;
+                    lt.Destroy();
+                    bt.Event='comptunnelalarm';
+                }
+            }
+            if (bt!=None){
+                //Alarm units won't be replaced yet in non-vanilla, so not using the injectsprefix version
+                au = #var(prefix)AlarmUnit(findNearestToActor(class'#var(prefix)AlarmUnit',bt));
+                if (au!=None){
+                    au.Tag='comptunnelalarm';
+                }
+            }
+
         }
 
         //Add teleporter hint text to Jock
