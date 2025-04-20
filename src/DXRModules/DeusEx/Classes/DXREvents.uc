@@ -2528,19 +2528,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "TiffanySavage_Dead":
             return "Let Tiffany Savage die (or kill her yourself).  She is being held hostage at the gas station.";
         case "PaulDenton_Dead":
-            return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel";
+            return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel.";
         case "JordanShea_PlayerDead":
             return "Kill Jordan Shea, the bartender at the Underworld Tavern in New York.  You must kill her yourself.";
         case "SandraRenton_PlayerDead":
             msg = "Kill Sandra Renton.  ";
             if (mission<=2){
-                msg=msg$"She can be found in an alley next to the Underworld Tavern in New York";
+                msg=msg$"She can be found in an alley next to the Underworld Tavern in New York.";
             } else if (mission<=4){
-                msg=msg$"She can be found inside the hotel";
+                msg=msg$"She can be found inside the hotel.";
             } else if (mission<=8){
-                msg=msg$"She can be found in the Underworld Tavern";
+                msg=msg$"She can be found in the Underworld Tavern.";
             } else if (mission<=12){
-                msg=msg$"She can be found outside the gas station";
+                msg=msg$"She can be found outside the gas station.";
             }
             msg = msg $ ".  You must kill her yourself.";
             return msg;
@@ -2577,18 +2577,18 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "WaltonSimons_PlayerDead":
             msg="Kill Walton Simons.  ";
             if (mission<=14){
-                msg=msg$"He can be found hunting you down somewhere in or around the Ocean Lab";
+                msg=msg$"He can be found hunting you down somewhere in or around the Ocean Lab.";
             } else if (mission==15){
-                msg=msg$"He can be found hunting you down somewhere in Area 51";
+                msg=msg$"He can be found hunting you down somewhere in Area 51.";
             }
             msg=msg$".  You must kill him yourself.";
             return msg;
         case "JoeGreene_PlayerDead":
             msg= "Kill Joe Greene, the reporter poking around in New York.  ";
             if (mission<=4){
-                msg=msg$"He can be found in the Underworld Tavern";
+                msg=msg$"He can be found in the Underworld Tavern.";
             }else if (mission<=8){
-                msg=msg$"He can be found somewhere in New York after you return from Hong Kong";
+                msg=msg$"He can be found somewhere in New York after you return from Hong Kong.";
             }
             msg=msg$".  You must kill him yourself.";
             return msg;
@@ -2603,7 +2603,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "M02BillyDone":
             return "Give Billy some soy food or a candy bar.  Billy is a kid located in the kiosk of Castle Clinton.";
         case "FordSchickRescued":
-            return "Rescue Ford Schick from the MJ12 lab in the sewers under New York on your first visit to Hell's Kitchen.  The key to the sewers can be gotten from Smuggler";
+            return "Rescue Ford Schick from the MJ12 lab in the sewers under New York on your first visit to Hell's Kitchen.  The key to the sewers can be gotten from Smuggler.";
         case "NiceTerrorist_Dead":
             return "Kill a friendly NSF trooper in the LaGuardia hangar.";
         case "M10EnteredBakery":
@@ -2625,9 +2625,9 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ClubEntryPaid":
            if (FemJC) {
 #ifdef revision
-               return "Let Noah, the man waiting outside the Lucky Money, pay to get you into the club";
+               return "Let Noah, the man waiting outside the Lucky Money, pay to get you into the club.";
 #else
-               return "Let Russ, the man waiting outside the Lucky Money, pay to get you into the club";
+               return "Let Russ, the man waiting outside the Lucky Money, pay to get you into the club.";
 #endif
            } else {
                return "Give Mercedes and Tessa (the two women waiting outside the Lucky Money) money to get into the club.";
@@ -2647,7 +2647,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "M07ChenSecondGive_Played":
             return "After the triad meeting in the temple, meet the leaders in the Lucky Money and receive all the gifted bottles of wine from each Dragon Head.";
         case "DeBeersDead":
-            return "Kill Lucius DeBeers in Everett's House.  You can do so either by destroying him or shutting off his bio support with the computer next to him";
+            return "Kill Lucius DeBeers in Everett's House.  You can do so either by destroying him or shutting off his bio support with the computer next to him.";
         case "StantonAmbushDefeated":
             return "Defend Stanton Dowd from the MJ12 ambush after talking to him.";
         case "SmugglerDied":
@@ -2683,11 +2683,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "M06PaidJunkie":
             return "Visit the junkie living on the floor under construction below Maggie Chow's apartment.  Give her money.";
         case "M06BoughtVersaLife":
-            return "Buy the maps of Versalife from the guy in the Old China Hand bar, by the canal";
+            return "Buy the maps of Versalife from the guy in the Old China Hand bar, by the canal.";
         case "FlushToilet":
-            return "Find and flush enough different toilets.  Note that toilets in places that you revisit (like UNATCO HQ) will count again on each visit";
+            return "Find and flush enough different toilets.  Note that toilets in places that you revisit (like UNATCO HQ) will count again on each visit.";
         case "FlushUrinal":
-            return "Find and flush enough different urinals.  Note that urinals in places that you revisit (like UNATCO HQ) will count again on each visit";
+            return "Find and flush enough different urinals.  Note that urinals in places that you revisit (like UNATCO HQ) will count again on each visit.";
         case "MeetTimBaker_Played":
             return "Enter the storage room in Vandenberg near the Hazard Lab and talk to Tim Baker.";
         case "MeetDrBernard_Played":
@@ -2701,13 +2701,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "PoliceVaultBingo":
             return "Enter the police vault in the Wan Chai Market.";
         case "SunkenShip":
-            return "Enter the ship that has sunk off the North Dock of Liberty Island (Near Harley Filben)";
+            return "Enter the ship that has sunk off the North Dock of Liberty Island (Near Harley Filben).";
         case "SpinShipsWheel":
             msg="Spin enough ships wheels.  ";
             if (mission<=1){
                 msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
             }else if (mission<=6){
-                msg=msg$"There is a ships wheel on the smuggler's ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal)";
+                msg=msg$"There is a ships wheel on the smuggler's ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal).";
             }else if (mission<=9){
                 msg=msg$"There is a ships wheel on the bridge of the Superfreighter.";
             }
@@ -2875,7 +2875,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SimonsAssassination":
             return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
         case "AlliesKilled":
-            return "Kill enough people who do not actively hate you (This should be most people who show as green on the crosshairs)";
+            return "Kill enough people who do not actively hate you.  (This should be most people who show as green on the crosshairs)";
         case "MaySung_PlayerDead":
             return "Kill May Sung, Maggie Chow's maid.  You must kill her yourself.";
         case "MostWarehouseTroopsDead":
@@ -3113,7 +3113,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "CathedralLibrary":
             return "Enter the library in the Cathedral.";
         case "DuClareKeys":
-            return "Find enough different keys around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement";
+            return "Find enough different keys around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement.";
         case "ShipLockerKeys":
             return "Find keys to the lockers on the lower decks of the superfreighter.  The lockers are inside the building underneath the helipad.";
         case "VendingMachineEmpty":
@@ -3164,7 +3164,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Canal_Cop_PlayerDead":
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.  You must kill him yourself.";
         case "LightVandalism":
-            return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps";
+            return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps.";
         case "FightSkeletons":
             msg = "Destroy enough femurs or skulls.  Don't let the skeletons rise up!  ";
             if (mission<=4){
@@ -3188,7 +3188,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             } else if (mission<=5){ //Mission 4 and 5 both only have trophies at HQ
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
             } else if (mission<=6){
-                msg=msg$"There are many trophies in Hong Kong.  One can be found in the Helibase, another one around the canals, and one on Tonnochi Road";
+                msg=msg$"There are many trophies in Hong Kong.  One can be found in the Helibase, another one around the canals, and one on Tonnochi Road.";
             } else if (mission<=10){
                 msg=msg$"There is a trophy in Chateau DuClare.";
             }
@@ -3294,7 +3294,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SuperfreighterProp":
             return "Dive to the propeller at the back of the superfreighter.";
         case "ShipNamePlate":
-            return "Use binoculars or a scope to check the name marked on the side of the superfreighter";
+            return "Use binoculars or a scope to check the name marked on the side of the superfreighter.";
         case "DL_SecondDoors_Played":
             return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
         case "WhyContainIt":
@@ -3349,7 +3349,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Area51SteamValve":
             return "Close the steam valves in the maintenance tunnels under the floors of the entrance to the Area 51 bunker.";
         case "DockyardLaser":
-            return "Deactivate enough of the laser grids in the sewers underneath the dockyards";
+            return "Deactivate enough of the laser grids in the sewers underneath the dockyards.";
         case "A51CommBuildingBasement":
             return "Go into the hatch in the Command 24 building in Area 51 and enter the basement.";
         case "FreighterHelipad":
@@ -3391,7 +3391,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "UCVentilation":
             return "Destroy enough ventilation fans near the Universal Contructor under the Ocean Lab.";
         case "OceanLabFloodedStoreRoom":
-            return "Swim along the ocean floor to the locked and flooded storage room from in the Ocean Lab";
+            return "Swim along the ocean floor to the locked and flooded storage room from in the Ocean Lab.";
         case "OceanLabMedBay":
             return "Enter the med bay in the Ocean Lab.  This room is flooded and off the side of the Karkian Lab.";
         case "WatchDogs":
