@@ -494,6 +494,17 @@ function PreFirstEntryMapFixes()
     //#region Free Clinic
     case "02_NYC_FREECLINIC":
         SetAllLampsState(true, true, false); // the free clinic has one desk lamp, at a desk no one is using
+
+        // the free clinic shares a KeyID with the MJ12 facility beneath unatco
+        foreach AllActors(class'NanoKey', k) {
+            if (k.KeyID == 'Cabinet') {
+                k.KeyID = 'MedCabDoor';
+            }
+        }
+        foreach AllActors(class'DeusExMover', d, 'MedCabDoor') {
+            d.KeyIDNeeded = 'MedCabDoor';
+        }
+
         break;
     //#endregion
     }
