@@ -386,6 +386,16 @@ function PreFirstEntryMapFixes()
             AddSwitch( vect(3745,-2592,140), rot(0, 0, 0), 'BathroomDoor' );
         }
 
+        // change "MolePerson" (un)familiarNames to "Mole Person". he's in the wood shack near the Terrorist Leader
+        foreach AllActors(class'HumanCivilian', hc) {
+            if (hc.UnfamiliarName == "MolePerson") {
+                hc.UnfamiliarName = "Mole Person";
+            }
+            if (hc.FamiliarName == "MolePerson") {
+                hc.FamiliarName = "Mole Person";
+            }
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
         Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
         Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
