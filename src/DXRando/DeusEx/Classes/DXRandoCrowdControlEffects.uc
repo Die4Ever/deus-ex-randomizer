@@ -2066,7 +2066,7 @@ function bool RaiseDead(string viewer)
     num=0;
 
     for (i=0;i<5;i++){
-        carc = FindClosestCarcass(1000,false);
+        carc = FindClosestCarcass(1000,false,true);
         if (carc==None){
             break;
         }
@@ -2094,7 +2094,7 @@ function bool CorpseExplosion(string viewer)
     num=0;
 
     for (i=0;i<5;i++){
-        carc = FindClosestCarcass(1000,true);
+        carc = FindClosestCarcass(1000,true,false);
         if (carc==None){
             break;
         }
@@ -2113,7 +2113,7 @@ function bool CorpseExplosion(string viewer)
 
 }
 
-function #var(DeusExPrefix)Carcass FindClosestCarcass(float radius,optional bool bAllowAnimals)
+function #var(DeusExPrefix)Carcass FindClosestCarcass(float radius, optional bool bAllowAnimals, optional bool bAllowInvincible)
 {
     local #var(DeusExPrefix)Carcass carc,closest;
     local float closeDist;
@@ -2123,6 +2123,9 @@ function #var(DeusExPrefix)Carcass FindClosestCarcass(float radius,optional bool
     foreach player().RadiusActors(class'#var(DeusExPrefix)Carcass',carc,radius){
         if (carc.bNotDead){
             continue; //Skip unconscious bodies
+        }
+        if (!bAllowInvincible && carc.bInvincible){
+            continue; //Skip invincible bodies (Paul's corpse in M05)
         }
         if (!bAllowAnimals && carc.bAnimalCarcass){
             continue;
