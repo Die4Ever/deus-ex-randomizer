@@ -1059,7 +1059,7 @@ function OverwriteDecorations(bool bFirstEntry)
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
             d.bPushable = DecorationsOverwrites[i].bPushable;
         }
-        if(#var(prefix)Van(d) != None) {
+        if(#var(prefix)Van(d) != None || #var(prefix)CarWrecked(d) != None) {
             d.bBlockSight = true;
         }
     }
