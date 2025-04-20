@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[91]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[92]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -17,6 +17,8 @@ var bool bUsing;
 
 const BROKEN_PIANO_SONG = -2;
 const JUST_BROKEN_PIANO = -3;
+
+const SPACE_FOR_VALID_SONGS = 250;  //This can't actually be used to init the array, but keep it updated
 
 function bool ValidSong(int i)
 {
@@ -302,7 +304,7 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             break;
         case 21:
             SelectedSound = sound'FF4Battle1';
-            duration = 7.5;
+            duration = 6.5;
             message="You played Battle Theme 1 from Final Fantasy IV";
             break;
         case 22:
@@ -650,6 +652,11 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             duration = 11;
             message="Play him off, Keyboard Cat!";
             break;
+        case 91:
+            SelectedSound = sound'ItHasToBeThisWay';
+            duration = 10;
+            message="You played It Has To Be This Way from Metal Gear Rising: Revengeance";
+            break;
         default:
             SelectedSound = None;
             duration = 0;
@@ -714,6 +721,10 @@ function int GetSongWeight(int songIdx)
         case 85: //PeanutsLinusLucy
             if (dxr.IsChristmasSeason()) return 3;
             return 0;
+#ifdef PianoTest
+        case #var(PianoTest):
+            return 50;
+#endif
 
     }
     return 1;
@@ -723,7 +734,10 @@ function int GetSongWeight(int songIdx)
 function int PickSongIndex()
 {
     local int rnd, i, j, songPlayedAvg, numValidSongs, numActiveSongs;
-    local int validSongs[175]; //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
+
+    //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
+    //Make sure this array is the same size as SPACE_FOR_VALID_SONGS
+    local int validSongs[250];
 
     songPlayedAvg=0;
     numActiveSongs=0;
@@ -757,6 +771,28 @@ function int PickSongIndex()
     //}
 
     return validSongs[rnd];
+}
+
+function BeginPlay()
+{
+    local int i,total;
+    local #var(PlayerPawn) p;
+
+    Super.BeginPlay();
+
+    if(!class'DXRVersion'.static.VersionIsStable()) {
+        //Quick test to make sure the valid song array is long enough
+        for(i=0;i<NUM_PIANO_SONGS;i++){
+            total += GetSongWeight(i);
+        }
+
+        if (total>SPACE_FOR_VALID_SONGS) {
+            p = #var(PlayerPawn)(GetPlayerPawn());
+            if (p!=None){
+                p.ClientMessage("Piano array not big enough "$total$">"$SPACE_FOR_VALID_SONGS);
+            }
+        }
+    }
 }
 
 defaultproperties
