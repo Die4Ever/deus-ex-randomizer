@@ -2321,7 +2321,7 @@ function string RemapBingoEvent(string eventname)
 //#endregion
 
 //#region Bingo Failure
-static function int GetBingoFailedEvents(string eventname, out string failed[8])
+static function int GetBingoFailedEvents(string eventname, out string failed[7])
 {
     local int num_failed;
     local DXRando dxr;

@@ -38,7 +38,7 @@ simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
 
 // for goals that can be detected as impossible by an event
-static function int GetBingoFailedEvents(string eventname, out string failed[8]);
+static function int GetBingoFailedEvents(string eventname, out string failed[7]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
 
@@ -1469,7 +1469,7 @@ static function MarkBingoAsFailed(coerce string eventname)
 
 static function MarkBingoFailedEvents(coerce string eventname)
 {
-    local string failed[8];
+    local string failed[7];
     local int i, num_failed;
 
     num_failed = GetBingoFailedEvents(eventname, failed);
