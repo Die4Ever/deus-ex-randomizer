@@ -52,6 +52,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
     local #var(prefix)CrateUnbreakableLarge crate;
+    local #var(prefix)ThugMale2 thug;
 
     local DXREnemies dxre;
     local int i;
@@ -326,6 +327,12 @@ function PreFirstEntryMapFixes()
             if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
                 SetPawnHealth(lloyd, 200);
             }
+        }
+
+        //Get rid of the random ThugMale2 way on the other side of the island
+        //Not an issue most of the time, but annoying for Crowd Control swaps
+        foreach AllActors(class'#var(prefix)ThugMale2',thug){
+            thug.Destroy();
         }
 
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-6348,1261,-134));//Near SATCOM
