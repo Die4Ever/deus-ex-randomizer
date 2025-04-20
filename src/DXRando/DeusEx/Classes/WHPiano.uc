@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[90]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[91]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -644,6 +644,11 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'GourmetRace';
             duration = 11;
             message="You played Gourmet Race from Kirby Super Star";
+            break;
+        case 90:
+            SelectedSound = sound'KeyboardCat';
+            duration = 11;
+            message="Play him off, Keyboard Cat!";
             break;
         default:
             SelectedSound = None;
