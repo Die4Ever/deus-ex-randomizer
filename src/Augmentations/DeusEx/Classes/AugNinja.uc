@@ -1,3 +1,4 @@
+#dontcompileif vmd
 class AugNinja extends Augmentation;
 // both speed and stealth!
 // needed to modify function GetCurrentGroundSpeed() in DeusExPlayer
