@@ -916,6 +916,23 @@ function RandomizeCutsceneOrder()
     firstCam.GoToState('Running');
 }
 
+function bool IsCutsceneCharacter(#var(prefix)ScriptedPawn sp)
+{
+    switch(sp.BindName){
+        case "BobPage": //Intro, Endgame1, Endgame2
+        case "WaltonSimons": //Intro
+        case "FemaleComputer"://Endgame1
+        case "TracerTong"://Endgame1
+        case "Helios"://Endgame1, Endgame2
+        case "JCDouble"://Endgame2, Endgame3
+        case "MorganEverett"://Endgame3
+            return true;
+
+        default: //Everyone else
+            return false;
+    }
+}
+
 function RandomizeCutscene()
 {
     local Actor a;
@@ -976,20 +993,9 @@ function RandomizeCutscene()
         //Make people vincible
         if (#var(prefix)ScriptedPawn(a)!=None) {
             sp=#var(prefix)ScriptedPawn(a);
-            switch(sp.BindName){
-                //Don't touch people who talk during the intro
-                case "BobPage": //Intro, Endgame1, Endgame2
-                case "WaltonSimons": //Intro
-                case "FemaleComputer"://Endgame1
-                case "TracerTong"://Endgame1
-                case "Helios"://Endgame1, Endgame2
-                case "JCDouble"://Endgame2, Endgame3
-                case "MorganEverett"://Endgame3
-                    break;
-
-                default: //Everyone else
-                    sp.bInvincible=false;
-                    break;
+            //Don't touch people who talk during the intro
+            if (!IsCutsceneCharacter(sp)) {
+                sp.bInvincible=false;
             }
         }
     }
@@ -1011,8 +1017,93 @@ function RandomizeCutscene()
     RandomizeDialog();
 
     RandomizeCutsceneOrder();
+    ForceIntroFight();
 }
 
+function ForceIntroFight()
+{
+    local vector FightLoc;
+    local float  FightRad;
+    local #var(prefix)ScriptedPawn sp;
+    local bool whichAlliance;
+    local DXREnemies enemies;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    switch(dxr.localURL)
+    {
+        case "INTRO":
+            break;
+        default:
+            return;
+    }
+
+    SetSeed("ForceIntroFight");
+
+    //Stage Select
+    switch (rng(4)){
+        case 0:
+            //Paris (The vanilla arena)
+            //Same location in Revision
+            FightLoc = vectm(11111,-16050,-200);
+            FightRad = 1500;
+            break;
+        case 1:
+            //Statue of Liberty Meeting
+            //Same location in Revision
+            FightLoc = vectm(-11150,12675,600);
+            FightRad = 1500;
+            break;
+        case 2:
+            //Free Clinic
+            //Same location in Revision
+            FightLoc = vectm(500,-6600,-50);
+            FightRad = 1500;
+            break;
+        case 3:
+            //MJ12 Lab
+            if (RevisionMaps){
+                FightLoc = vectm(7900,-7500,-100);
+            } else {
+                FightLoc = vectm(5500,-6000,0);
+            }
+            FightRad = 1500;
+            break;
+    }
+
+    enemies = DXREnemies(class'DXREnemies'.static.Find());
+
+    //Make everyone friends
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+        sp.SetAlliance('Fwends');
+    }
+
+    //Except those who we force to fight for our amusement
+    foreach RadiusActors(class'#var(prefix)ScriptedPawn',sp,FightRad,FightLoc) {
+        //Don't touch people who talk during the intro
+        if (!IsCutsceneCharacter(sp)){
+            if (whichAlliance){
+                sp.SetAlliance('FightGroup1');
+                sp.ChangeAlly('FightGroup2',-1,true);
+            } else {
+                sp.SetAlliance('FightGroup2');
+                sp.ChangeAlly('FightGroup1',-1,true);
+            }
+            sp.ChangeAlly('Fwends',1,true);
+            whichAlliance = !whichAlliance;
+
+            //Give weapon
+            if (enemies!=None){
+                enemies.GiveRandomWeapon(sp,false,999);
+            }
+
+            sp.SetPhysics(PHYS_Falling);
+        }
+
+    }
+
+}
 function MakeAllGhosts()
 {
     local #var(prefix)ScriptedPawn p;
