@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[92]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[95]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -656,6 +656,21 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'ItHasToBeThisWay';
             duration = 10;
             message="You played It Has To Be This Way from Metal Gear Rising: Revengeance";
+            break;
+        case 92:
+            SelectedSound = sound'BDInstanceEternity';
+            duration = 10.5;
+            message="You played Instant of Eternity from Bravely Default";
+            break;
+        case 93:
+            SelectedSound = sound'CaveStory';
+            duration = 10;
+            message="You played Cave Story from Cave Story";
+            break;
+        case 94:
+            SelectedSound = sound'FaxanaduMantra';
+            duration = 9;
+            message="You played Mantra from Faxanadu";
             break;
         default:
             SelectedSound = None;
