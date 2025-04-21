@@ -2773,7 +2773,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         case "set_fire":
             player().CatchFire(GetCrowdControlPawn(viewer));
-            PlayerMessage(viewer@"set you on fire!");
+            PlayerMessage(viewer@"set you on fire! Hopefully you have a fire extinguisher.");
             break;
 
         case "full_heal":
@@ -3021,7 +3021,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_floorLavaTimer')){
                 return TempFail;
             }
-            PlayerMessage(viewer@"turned the floor into lava!");
+            PlayerMessage(viewer@"turned the floor into lava! Keep jumping or find something safe to stand on.");
             lavaTick = 0;
             startNewTimer('cc_floorLavaTimer',duration);
             setFloorIsLavaName(viewer);
