@@ -369,6 +369,10 @@ function PreFirstEntry()
 
     switch(dxr.localURL)
     {
+        case "INTRO":
+            //Make sure the intro has an actual location to show up in toots
+            dxr.dxInfo.MissionLocation="the intro cinematic";
+            break;
         case "15_AREA51_PAGE":
             RandomBobPage();
             break;
@@ -993,10 +997,8 @@ function RandomizeCutscene()
         //Make people vincible
         if (#var(prefix)ScriptedPawn(a)!=None) {
             sp=#var(prefix)ScriptedPawn(a);
-            //Don't touch people who talk during the intro
-            if (!IsCutsceneCharacter(sp)) {
-                sp.bInvincible=false;
-            }
+            //Talking people in cutscenes are invincible, everyone else isn't
+            sp.bInvincible=IsCutsceneCharacter(sp);
         }
     }
 
