@@ -922,6 +922,7 @@ function RandomizeCutscene()
     local #var(prefix)Tree t;
     local class<Actor> old_skips[6];
     local int i;
+    local #var(prefix)ScriptedPawn sp;
     //local CameraPoint c;
 
     SetSeed("RandomizeCutscene");
@@ -971,6 +972,26 @@ function RandomizeCutscene()
             a.Fatness = rng(50) + 105;
         else
             a.Fatness = rng(20) + 120;
+
+        //Make people vincible
+        if (#var(prefix)ScriptedPawn(a)!=None) {
+            sp=#var(prefix)ScriptedPawn(a);
+            switch(sp.BindName){
+                //Don't touch people who talk during the intro
+                case "BobPage": //Intro, Endgame1, Endgame2
+                case "WaltonSimons": //Intro
+                case "FemaleComputer"://Endgame1
+                case "TracerTong"://Endgame1
+                case "Helios"://Endgame1, Endgame2
+                case "JCDouble"://Endgame2, Endgame3
+                case "MorganEverett"://Endgame3
+                    break;
+
+                default: //Everyone else
+                    sp.bInvincible=false;
+                    break;
+            }
+        }
     }
 
     /*foreach AllActors(class'CameraPoint', c)
