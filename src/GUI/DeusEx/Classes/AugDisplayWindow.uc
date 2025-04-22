@@ -785,14 +785,23 @@ function SuperDrawTargetAugmentation(GC gc)
                 }
 
                 // print the name of the target above the box
-                if (target.IsA('Pawn'))
-                    str = target.BindName;
-                else if (target.IsA('DeusExDecoration'))
-                    str = DeusExDecoration(target).itemName;
-                else if (target.IsA('DeusExProjectile'))
+                if (target.IsA('Pawn')){
+                    //str = target.BindName;
+                    str = Player.GetDisplayName(target);
+                    if (Player.GetDisplayName(target) != Pawn(target).Default.UnfamiliarName){
+                        str = str @ "(" $ Pawn(target).Default.UnfamiliarName $ ")";
+                    }
+                } else if (target.IsA('DeusExDecoration')) {
+                    if (InStr(DeusExDecoration(target).itemName,"DEFAULT")==-1){
+                        str = DeusExDecoration(target).itemName;
+                    } else {
+                        str = target.GetItemName(String(target.Class));
+                    }
+                } else if (target.IsA('DeusExProjectile')){
                     str = DeusExProjectile(target).itemName;
-                else
+                } else {
                     str = target.GetItemName(String(target.Class));
+                }
 
                 // print disabled robot info
                 if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
@@ -879,10 +888,16 @@ function SuperDrawTargetAugmentation(GC gc)
                     {
                         str = msgWeapon;
 
-                        if (Pawn(target).Weapon != None)
-                            str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
-                        else
+                        if (Pawn(target).Weapon != None){
+                            //str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
+                            if (InStr(Pawn(target).Weapon.ItemName,"DEFAULT")==-1){
+                                str = str @ Pawn(target).Weapon.ItemName;
+                            } else {
+                                str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
+                            }
+                        } else {
                             str = str @ msgNone;
+                        }
 
                         gc.GetTextExtent(0, w, h, str);
                         x = boxTLX + margin;
