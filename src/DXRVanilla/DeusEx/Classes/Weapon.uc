@@ -110,6 +110,21 @@ simulated function Tick(float deltaTime)
 
     Super.Tick(deltaTime);
 
+    if (bCanTrack){
+        //Update the target message with the correct units
+        //This is a bit janky (Sometimes still displays as feet on the HUD element)
+        switch (LockMode)
+        {
+        case LOCK_Range:
+            TargetMessage = msgLockRange @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
+            break;
+
+        case LOCK_Locked:
+            TargetMessage = msgLockLocked @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
+            break;
+        }
+    }
+
     if(!IsAnimating() || class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
         return;
     }
@@ -144,21 +159,6 @@ simulated function Tick(float deltaTime)
         r *= (anim_speed + -0.2 * prev_weapon_skill) ** e;
         r = FClamp(r, 0.001, 1000);
         prev_anim_rate = AnimRate * r;
-    }
-
-    if (bCanTrack){
-        //Update the target message with the correct units
-        //This is a bit janky (Sometimes still displays as feet on the HUD element)
-        switch (LockMode)
-        {
-        case LOCK_Range:
-            TargetMessage = msgLockRange @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
-            break;
-
-        case LOCK_Locked:
-            TargetMessage = msgLockLocked @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
-            break;
-        }
     }
 
     AnimRate = prev_anim_rate;
