@@ -112,7 +112,6 @@ simulated function Tick(float deltaTime)
 
     if (bCanTrack){
         //Update the target message with the correct units
-        //This is a bit janky (Sometimes still displays as feet on the HUD element)
         switch (LockMode)
         {
         case LOCK_Range:
