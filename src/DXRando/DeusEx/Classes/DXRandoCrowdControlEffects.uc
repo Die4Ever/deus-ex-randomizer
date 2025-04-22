@@ -1779,7 +1779,7 @@ function int DropPiano(string viewer)
     piano.Instigator = GetCrowdControlPawn(viewer);
     piano.FamiliarName = piano.ItemName;
     piano.UnfamiliarName = piano.FamiliarName;
-    PlayerMessage(viewer$" dropped a piano on you from "$int(height/16 + 0.5)$" feet with "$int(leading*100 + 0.5)$"% leading!");
+    PlayerMessage(viewer$" dropped a piano on you from " $ int(class'DXRActorsBase'.static.GetRealDistance(height)) @ class'DXRActorsBase'.static.GetDistanceUnit() @ "with" @ int(leading*100 + 0.5)$"% leading!");
     return Success;
 }
 

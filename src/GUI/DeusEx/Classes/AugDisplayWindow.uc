@@ -801,7 +801,7 @@ function SuperDrawTargetAugmentation(GC gc)
 
                 // print the range to target
                 mult = VSize(target.Location - Player.Location);
-                str = str $ CR() $ msgRange @ Int(mult/16) @ msgRangeUnits;
+                str = str $ CR() $ msgRange @ Int(class'DXRActorsBase'.static.GetRealDistance(mult)) @ class'DXRActorsBase'.static.GetDistanceUnit(); //Rando: Use the appropriate units
 
                 gc.GetTextExtent(0, w, h, str);
                 x = boxTLX + margin;

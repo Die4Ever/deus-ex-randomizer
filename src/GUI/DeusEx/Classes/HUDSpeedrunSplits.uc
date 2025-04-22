@@ -432,10 +432,12 @@ function DrawWindow(GC gc)
         lastTime = player.Level.TimeSeconds;
 
         f = VSize(player.Velocity * vect(1,1,0));
+        f = class'DXRActorsBase'.static.GetRealSpeed(f);
+
         avgSpeed -= avgSpeed * delta;
         avgSpeed += f * delta;
-        msg = stats.FloatToString(FMax(f, prevSpeed), 1);
-        msg2 = stats.FloatToString(avgSpeed, 1);
+        msg = stats.FloatToString(FMax(f, prevSpeed), 1) @ class'DXRActorsBase'.static.GetSpeedUnit();
+        msg2 = stats.FloatToString(avgSpeed, 1) @ class'DXRActorsBase'.static.GetSpeedUnit();
         prevSpeed = f;
         DrawTextLine(gc, "SPD:", msg, colorText, x, y, msg2, true);
         y += text_height;

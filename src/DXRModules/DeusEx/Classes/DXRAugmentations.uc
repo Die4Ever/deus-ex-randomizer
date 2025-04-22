@@ -512,7 +512,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
     else if( a.Class == class'#var(prefix)AugDefense') {
         word = "Distance";
-        shortDisplay=int(val / 16.0) $" ft";
+        shortDisplay=int(class'DXRActorsBase'.static.GetRealDistance(val)) @ class'DXRActorsBase'.static.GetDistanceUnit();
         return shortDisplay;
     }
     else if( a.Class == class'#var(prefix)AugDrone') {
@@ -537,15 +537,14 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
             dmg = 5 * val;
             blastRad = 8 * val;
         }
-        speed = speed / 16.0; //Convert to feet per second
-        speed = speed / 1.467; //Convert to miles per hour
-        blastRad = blastRad / 16.0; //To feet
+        speed = class'DXRActorsBase'.static.GetRealSpeed(speed);
+        blastRad = class'DXRActorsBase'.static.GetRealDistance(blastRad);
 
-        r = r $ int(speed) $" mph";
+        r = r $ int(speed) @ class'DXRActorsBase'.static.GetSpeedUnit();
         r = r $ " / ";
         r = r $ int(dmg);
         r = r $ " / ";
-        r = r $ int(blastRad) $" ft";
+        r = r $ int(blastRad) @ class'DXRActorsBase'.static.GetDistanceUnit();
 
         shortDisplay=string(int(dmg)); //Show damage as the short value
         return r;
@@ -606,7 +605,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         if(!#defined(balance) && i<2) return "--";
         if(val < 0)
             val = 0;
-        shortDisplay=int(val / 16.0) $" ft";
+        shortDisplay=int(class'DXRActorsBase'.static.GetRealDistance(val)) @ class'DXRActorsBase'.static.GetDistanceUnit();
         return shortDisplay;
     }
     else if( a.Class == class'#var(prefix)AugHeartLung') {
