@@ -108,7 +108,7 @@ function CheckConfig()
         i++;
 
     case "06_HongKong_MJ12lab":
-        // Elevator doors
+        // Elevator doors to overlook area
         door_fixes[i].tag = 'eledoor02';
         door_fixes[i].bBreakable = true;
         door_fixes[i].bPickable = false;
@@ -287,6 +287,8 @@ function FirstEntry()
             d2.initiallockStrength = d.initiallockStrength;
             d2.bBreakable = d.bBreakable;
             d2.doorStrength = d.doorStrength;
+            d2.bFrobbable = d.bFrobbable;
+            d2.bHighlight = d.bHighlight;
         }
     }
 }
