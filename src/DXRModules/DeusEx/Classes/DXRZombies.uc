@@ -319,11 +319,13 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     module.GiveItem(sp,class'WeaponZombieSwipe');
     sp.bKeepWeaponDrawn=True;
 
-    //Pop out a little meat for fun
-    for (i=0; i<10; i++)
-    {
-        if (FRand() > 0.2)
-            carc.spawn(class'FleshFragment',,,carc.Location);
+    //Pop out a little meat for fun, if appropriate
+    if (carc.bNotDead==False){
+        for (i=0; i<10; i++)
+        {
+            if (FRand() > 0.2)
+                carc.spawn(class'FleshFragment',,,carc.Location);
+        }
     }
 
     carc.Destroy();
