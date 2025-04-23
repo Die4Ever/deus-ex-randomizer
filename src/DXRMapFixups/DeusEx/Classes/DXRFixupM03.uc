@@ -171,7 +171,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled() &&
+           class'DXRBacktracking'.static.bSillyChoppers()) {
+            //Only stop the platforms from falling if you're in a game mode that requires backtracking
             foreach AllActors(class'Trigger', t) {
                 //disable the platforms that fall when you step on them
                 if( t.Event == 'firstplatform' || t.Event == 'platform2' ) {
