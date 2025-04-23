@@ -189,7 +189,8 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local class<Actor> livingClass;
     local vector respawnLoc;
     local ScriptedPawn sp,otherSP;
-    local int i;
+    local class<DeusExFragment> fragClass;
+    local int i, numFrags;
     local Inventory item, nextItem;
     #ifndef vmd
     local DXRFashionManager fashion;
@@ -319,12 +320,24 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     module.GiveItem(sp,class'WeaponZombieSwipe');
     sp.bKeepWeaponDrawn=True;
 
-    //Pop out a little meat for fun, if appropriate
-    if (carc.bNotDead==False){
-        for (i=0; i<10; i++)
+    //Pop out an appropriate fragment type
+    if (carc.bNotDead){
+        if (carc.bHidden){
+            //Hidden "unconscious" bodies dig out of the ground
+            fragClass = class'DirtFragment';
+            numFrags=20;
+        }
+    } else {
+        //Dead bodies explode meat
+        fragClass = class'FleshFragment';
+        numFrags=10;
+    }
+
+    if (fragClass!=None && numFrags>0){
+        for (i=0; i<numFrags; i++)
         {
             if (FRand() > 0.2)
-                carc.spawn(class'FleshFragment',,,carc.Location);
+                carc.spawn(fragClass,,,carc.Location);
         }
     }
 
