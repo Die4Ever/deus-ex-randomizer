@@ -2534,13 +2534,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SandraRenton_PlayerDead":
             msg = "Kill Sandra Renton.  ";
             if (mission<=2){
-                msg=msg$"She can be found in an alley next to the Underworld Tavern in New York.";
+                msg=msg$"She can be found in an alley next to the Underworld Tavern in New York";
             } else if (mission<=4){
-                msg=msg$"She can be found inside the hotel.";
+                msg=msg$"She can be found inside the hotel";
             } else if (mission<=8){
-                msg=msg$"She can be found in the Underworld Tavern.";
+                msg=msg$"She can be found in the Underworld Tavern";
             } else if (mission<=12){
-                msg=msg$"She can be found outside the gas station.";
+                msg=msg$"She can be found outside the gas station";
             }
             msg = msg $ ".  You must kill her yourself.";
             return msg;
@@ -2571,24 +2571,24 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "lemerchant_PlayerDead":
             return "Kill Le Merchant.  He spawns near where you first land in Paris.  He's a different guy!  You must kill him yourself.";
         case "Harold_PlayerDead":
-            return "Kill Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.";
+            return "Kill Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.  You must kill him yourself.";
         case "aimee_PlayerDead":
             return "Kill Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.  You must kill her yourself.";
         case "WaltonSimons_PlayerDead":
             msg="Kill Walton Simons.  ";
             if (mission<=14){
-                msg=msg$"He can be found hunting you down somewhere in or around the Ocean Lab.";
+                msg=msg$"He can be found hunting you down somewhere in or around the Ocean Lab";
             } else if (mission==15){
-                msg=msg$"He can be found hunting you down somewhere in Area 51.";
+                msg=msg$"He can be found hunting you down somewhere in Area 51";
             }
             msg=msg$".  You must kill him yourself.";
             return msg;
         case "JoeGreene_PlayerDead":
             msg= "Kill Joe Greene, the reporter poking around in New York.  ";
             if (mission<=4){
-                msg=msg$"He can be found in the Underworld Tavern.";
+                msg=msg$"He can be found in the Underworld Tavern";
             }else if (mission<=8){
-                msg=msg$"He can be found somewhere in New York after you return from Hong Kong.";
+                msg=msg$"He can be found somewhere in New York after you return from Hong Kong";
             }
             msg=msg$".  You must kill him yourself.";
             return msg;
@@ -3129,7 +3129,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Shannon_PlayerDead":
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill her yourself.";
         case "DestroyCapitalism":
-            msg = "Kill enough people willing to sell you goods in exchange for money.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
+            msg = "Kill enough people willing to sell you goods in exchange for money.  You must kill them yourself.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
             if (mission<=1){
                 msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.  Shannon is also acting suspicious.";
             } else if (mission<=2){
