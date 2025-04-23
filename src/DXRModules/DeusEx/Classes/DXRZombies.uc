@@ -147,7 +147,7 @@ function bool CheckReanimateCorpse(#var(DeusExPrefix)Carcass carc, float time)
     // return true to compress the array
     if(carc == None) return true;
     if(carc.bDeleteMe) return true;
-    if(carc.bNotDead) return true; //In case this is changed after being added to the array
+    if(!carc.bHidden && carc.bNotDead) return true; //only allow hidden "unconscious" bodies to respawn
 
     // wait for Zombie Time!
     if(time > curtime) return false;
