@@ -1592,6 +1592,13 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        //Not in the aug upgrade can container
+        datacubes_rules[i].item_name = '15_Datacube08';
+        datacubes_rules[i].min_pos = vect(-5005, -3035, -620);
+        datacubes_rules[i].max_pos = vect(-4953, -3117, -680);
+        datacubes_rules[i].allow = false;
+        i++;
+
         //anywhere before the stairwell blastdoor
         datacubes_rules[i].item_name = '15_Datacube08';
         datacubes_rules[i].min_pos = vect(-5655, -5190, -1700);
@@ -1604,6 +1611,13 @@ function revision_datacubes_rules()
         datacubes_rules[i].item_name = '15_Datacube19';
         datacubes_rules[i].min_pos = vect(-3781,-6090,-99999);
         datacubes_rules[i].max_pos = vect(-2965,-4909,99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Not in the aug upgrade can container
+        datacubes_rules[i].item_name = '15_Datacube19';
+        datacubes_rules[i].min_pos = vect(-5005, -3035, -620);
+        datacubes_rules[i].max_pos = vect(-4953, -3117, -680);
         datacubes_rules[i].allow = false;
         i++;
 
