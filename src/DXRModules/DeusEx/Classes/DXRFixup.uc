@@ -793,7 +793,20 @@ function SpeedUpUNATCOFurnaceVent()
             break;
         }
     }
+}
 
+function PreventUNATCOZombieDanger()
+{
+    local #var(DeusExPrefix)Carcass carc;
+    local #var(prefix)ScriptedPawn sp;
+
+    //Only if zombie reanimation is enabled
+    if (dxr.flags.moresettings.reanimation<=0) return;
+
+    foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
+        carc.bNotDead = true;
+        carc.itemName = ReplaceText(carc.itemName, " (Dead)", " (Unconscious)");
+    }
 }
 
 function MakeTurretsNonHostile()

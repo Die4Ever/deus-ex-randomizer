@@ -30,6 +30,7 @@ function PostFirstEntryMapFixes()
         break;
     case "01_NYC_UNATCOHQ":
         FixUNATCORetinalScanner();
+        PreventUNATCOZombieDanger();
         break;
     }
 }

@@ -25,6 +25,7 @@ function PostFirstEntryMapFixes()
     switch(dxr.localURL) {
     case "03_NYC_UNATCOHQ":
         FixUNATCORetinalScanner();
+        PreventUNATCOZombieDanger();
         break;
     case "03_NYC_BatteryPark":
         player().StartDataLinkTransmission("dl_batterypark");
