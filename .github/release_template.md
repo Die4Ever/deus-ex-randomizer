@@ -1,8 +1,8 @@
 Download `DXRandoInstaller.exe` in the Assets section under the changelog or download from [Mods4Ever.com](https://mods4ever.com). It is safe to update in the middle of a playthrough.
 
-Use vanilla (optionally with Lay D Denton) to get all of the Randomizer's features, best QoL improvements, and the most polished experience. Our installer has an option to install Lay D Denton for you automatically.
+Use vanilla/GOTY (optionally with Lay D Denton) to get all of the Randomizer's features, best QoL improvements, and the most polished experience. Our installer has an option to install Lay D Denton for you automatically. We also support Revision, GMDX, HX, and Vanilla? Madder.
 
-If you're having an issue with the installer program: [Manual Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
+If you're experiencing objects warping and drawing on top of each other incorrectly when using the D3D10 renderer, you need to install the 2010 x86 Visual C++ Redistributable package, which you can get [from Microsoft here](https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe). Alternatively, you can use the D3D9 or OpenGL renderer (and check the Rando ➜ Visuals menu for Brightness Boost).
 
 ## Trailers
 
@@ -12,17 +12,14 @@ If you're having an issue with the installer program: [Manual Installation Instr
 If you don't know what Deus Ex Randomizer is, then here's our trailer which shows a breakdown of how it works:
 
 <a href="https://www.youtube.com/watch?v=V3mTcG6xeq4&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
-<img src="https://img.youtube.com/vi/V3mTcG6xeq4/maxresdefault.jpg" alt="v3.0 Trailer" width="500"/></a>
+<img src="https://img.youtube.com/vi/V3mTcG6xeq4/maxresdefault.jpg" alt="v3.0 Trailer" width="320"/></a>
 
-Here's the trailer for our new Halloween modes!
+Here are trailers for our Halloween modes, WaltonWare, and Vanilla Fixer/Zero Rando:
 
 <a href="https://www.youtube.com/watch?v=FbzNkWJXZ1o&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
-<img src="https://github.com/user-attachments/assets/d92bea02-55a3-462d-ac5f-45e3d56a7497" alt="Halloween Trailer" width="500"/></a>
-
-Here's the trailer for WaltonWare mode. WaltonWare mode is focused on quick wins by completing a single bingo line, and increasing difficulty after every win. The bingo goals are all scaled to their minimum settings and you start in a random area. All bingo goals will be completable within just a few maps!
-
-<a href="https://www.youtube.com/watch?v=XjTGcj8wmoM&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
-<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/25e46939-3694-40f9-beec-20196183fcfd" alt="WaltonWare Trailer" width="500"/></a>
+<img src="https://github.com/user-attachments/assets/d92bea02-55a3-462d-ac5f-45e3d56a7497" alt="Halloween Trailer" width="256"/></a> <a href="https://www.youtube.com/watch?v=XjTGcj8wmoM&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
+<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/25e46939-3694-40f9-beec-20196183fcfd" alt="WaltonWare Trailer" width="256"/></a> <a href="https://www.youtube.com/watch?v=ksoj1QMoGIc&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=1" target="_blank">
+<img src="https://img.youtube.com/vi/ksoj1QMoGIc/maxresdefault.jpg" alt="Zero Rando Trailer" width="256"/></a>
 
 </details>
 

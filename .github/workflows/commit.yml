@@ -1,7 +1,7 @@
 name: commit
 on:
   push:
-    paths: ['*', 'installer/**', '.github/**']
+    paths: ['*', 'src/installer/**', '.github/**']
 
 jobs:
   windows:
@@ -16,22 +16,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: DXRando
-          path: installer/dist/DXRandoInstaller.exe
+          path: src/installer/dist/DXRandoInstaller.exe
 
       - name: Upload installer warnings
         uses: actions/upload-artifact@v4
         with:
           name: installerwarnings.txt
-          path: installer/build/installer/warn-installer.txt
+          path: src/installer/build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
         uses: actions/upload-artifact@v4
         with:
           name: BingoViewer
-          path: installer/dist/BingoViewer.exe
+          path: src/installer/dist/BingoViewer.exe
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash
@@ -48,16 +48,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: DXRando-linux
-          path: installer/dist/DXRandoInstaller
+          path: src/installer/dist/DXRandoInstaller
 
       - name: Upload installer warnings
         uses: actions/upload-artifact@v4
         with:
           name: installerwarningslinux.txt
-          path: installer/build/installer/warn-installer.txt
+          path: src/installer/build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
         uses: actions/upload-artifact@v4
         with:
           name: BingoViewer-linux
-          path: installer/dist/BingoViewer
+          path: src/installer/dist/BingoViewer

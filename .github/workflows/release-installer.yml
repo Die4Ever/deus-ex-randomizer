@@ -31,7 +31,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/DXRandoInstaller.exe
+          file: src/installer/dist/DXRandoInstaller.exe
           asset_name: DXRandoInstaller.exe
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -41,7 +41,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/DXRandoInstaller.exe
+          file: src/installer/dist/DXRandoInstaller.exe
           asset_name: DXRVanillaFixer.exe
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -51,7 +51,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/DXRandoInstaller.exe
+          file: src/installer/dist/DXRandoInstaller.exe
           asset_name: DXRZeroRando.exe
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -61,13 +61,13 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/BingoViewer.exe
+          file: src/installer/dist/BingoViewer.exe
           asset_name: BingoViewer.exe
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
         RELEASE_TAG: testing
     defaults:
@@ -107,7 +107,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/DXRandoInstaller
+          file: src/installer/dist/DXRandoInstaller
           asset_name: DXRandoInstaller-Linux
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -117,7 +117,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/DXRandoInstaller
+          file: src/installer/dist/DXRandoInstaller
           asset_name: DXRVanillaFixer-Linux
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -127,7 +127,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/DXRandoInstaller
+          file: src/installer/dist/DXRandoInstaller
           asset_name: DXRZeroRando-Linux
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -137,7 +137,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: installer/dist/BingoViewer
+          file: src/installer/dist/BingoViewer
           asset_name: BingoViewer-Linux
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
