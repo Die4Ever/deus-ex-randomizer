@@ -1074,3 +1074,48 @@ function DrawSpyDroneAugmentation(GC gc)
     }
 #endif
 }
+
+//Duped from vanilla to allow changing the units
+function DrawDefenseAugmentation(GC gc)
+{
+    local String str;
+    local float boxCX, boxCY;
+    local float x, y, w, h, mult;
+    local bool bDrawLine;
+
+    if (defenseTarget != None)
+    {
+        bDrawLine = False;
+
+        if (defenseTarget.IsInState('Exploding'))
+        {
+            str = msgADSDetonating;
+            bDrawLine = True;
+        }
+        else
+            str = msgADSTracking;
+
+        mult = VSize(defenseTarget.Location - Player.Location);
+
+        str = str $ CR() $ msgRange @ Int(class'DXRActorsBase'.static.GetRealDistance(mult)) @ class'DXRActorsBase'.static.GetDistanceUnit(); //Rando: Use the appropriate units
+        //str = str $ CR() $ msgRange @ Int(mult/16) @ msgRangeUnits;
+
+        if (!ConvertVectorToCoordinates(defenseTarget.Location, boxCX, boxCY))
+            str = str @ msgBehind;
+
+        gc.GetTextExtent(0, w, h, str);
+        x = boxCX - w/2;
+        y = boxCY - h;
+        gc.SetTextColorRGB(255,0,0);
+        gc.DrawText(x, y, w, h, str);
+        gc.SetTextColor(colHeaderText);
+
+        if (bDrawLine)
+        {
+            gc.SetTileColorRGB(255,0,0);
+            Interpolate(gc, width/2, height/2, boxCX, boxCY, 64);
+            gc.SetTileColor(colHeaderText);
+        }
+    }
+}
+
