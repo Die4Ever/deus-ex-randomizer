@@ -551,6 +551,9 @@ function EndWave()
     time_to_next_wave = time_between_waves;
     player().SkillPointsAdd(skill_points_award);
     GenerateItems();
+
+    //Send a telemetry message every wave finished
+    class'DXREvents'.static.SendHordeModeWaveComplete(self);
 }
 
 function GetOverHere()

@@ -597,7 +597,9 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
         js.static.Add(j, "killerRandomizedName", GetRandomizedName(Killer));
     }
     js.static.Add(j, "dmgtype", damageType);
+    HordeModeData(dxr,true,j); //Only actually gets added if in Horde mode
     GeneralEventData(dxr, j);
+    //Add horde mode data when in horde mode
     js.static.Add(j, "location", dxr.flags.vectclean(victim.Location));
     js.static.End(j);
     class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
@@ -906,6 +908,45 @@ static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, raceTimer, j);
+}
+
+static function SendHordeModeWaveComplete(DXRHordeMode horde)
+{
+    local string j;
+    local DXRando dxr;
+    local class<Json> js;
+
+    dxr = class'DXRando'.default.dxr;
+    js = class'Json';
+
+    j = js.static.Start("Flag");
+    js.static.Add(j, "flag", "HordeWaveComplete");
+    js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
+    HordeModeData(dxr,false,j);
+    GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, horde, j);
+}
+
+static function HordeModeData(DXRando dxr, bool includeInvAugs, out string j)
+{
+    local DXRHordeMode horde;
+    local class<Json> js;
+
+    if (!dxr.flags.IsHordeMode()) return; //Only include this data in horde mode
+
+    horde = DXRHordeMode(class'DXRHordeMode'.static.Find());
+    if (horde==None) return;
+
+    InventoryData(dxr, includeInvAugs, j);
+    AugmentationData(dxr, includeInvAugs, j);
+
+    js = class'Json';
+
+    js.static.Add(j,"HordeWaveNum",horde.wave);
+    js.static.Add(j,"HordeHealth",dxr.player.Health);
+    js.static.Add(j,"HordeEnergy",int(100.0 * (dxr.player.Energy/dxr.player.EnergyMax)));
 }
 
 static function GeneralEventData(DXRando dxr, out string j)
