@@ -261,6 +261,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("Grenades Only!");
         AddInvBan(class'Engine.Weapon');
         AddInvBan(class'Engine.Ammo');
+        AddInvBan(class'#var(prefix)WeaponMod');
         AddSkillBan(class'#var(prefix)SkillWeaponHeavy');
         AddSkillBan(class'#var(prefix)SkillWeaponRifle');
         AddSkillBan(class'#var(prefix)SkillWeaponPistol');
