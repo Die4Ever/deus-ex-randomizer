@@ -354,6 +354,7 @@ function AnyEntry()
     local DXREnemies dxre;
     local Inventory item;
     local int i;
+    local #var(prefix)SkillAwardTrigger sat;
 
     if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
@@ -407,6 +408,15 @@ function AnyEntry()
             }
         }
     }
+
+    foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat)
+    {
+        if (sat.Tag!='templar_upload' && sat.skillPointsAdded==500){
+            //The vanilla "Critical Location Bonus" for finding the computer
+            sat.Destroy();
+        }
+    }
+
 
     SetTimer(1.0, true);
 
@@ -496,6 +506,37 @@ function OutOfWaveTick()
     }
 }
 
+function ShuffleGoalComputerLocation()
+{
+    local DXRMissions missions;
+    local #var(prefix)SkillAwardTrigger sat;
+    local #var(prefix)ComputerPersonal comp;
+
+    SetGlobalSeed( "Horde ShuffleComputer " $ wave);
+
+    foreach AllActors(class'DXRMissions',missions)
+    {
+        missions.ShuffleGoals();
+    }
+
+    //Reset or create the skill award trigger for using the Templar computer
+    foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat,'templar_upload'){break;}
+    if (sat==None){
+        sat = Spawn(class'#var(prefix)SkillAwardTrigger',,'templar_upload');
+        sat.SetCollision(false,false,false);
+        sat.awardMessage="Templar System Uplink Established";
+        sat.skillPointsAdded=500; //Same as finding the computer in vanilla
+    }
+
+    //Reset the special option on the computer
+    foreach AllActors(class'#var(prefix)ComputerPersonal',comp){
+        if (comp.specialOptions[0].TriggerEvent=='templar_upload'){
+            comp.specialOptions[0].bAlreadyTriggered=false;
+        }
+    }
+
+}
+
 function StartWave()
 {
     local MedicalBot mb;
@@ -543,6 +584,7 @@ function StartWave()
     time_in_wave = 0;
     wave++;
     GenerateEnemies();
+    ShuffleGoalComputerLocation();
 }
 
 function EndWave()
