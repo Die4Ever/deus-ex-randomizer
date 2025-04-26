@@ -813,7 +813,11 @@ function GenerateItem()
 
     // count how many we have
     foreach AllActors(c, a) {
-        num++;
+        copies = 1;
+        if (Pickup(a)!=None){
+            copies = Pickup(a).NumCopies; //In case items are in stacks
+        }
+        num += copies;
     }
     //Also check how many are in HordeModeCrates
     foreach AllActors(class'HordeModeCrate',hmc)
@@ -844,6 +848,8 @@ function GenerateItem()
     if (IsCrateableClass(c)){
         //Repack items into crates
         foreach AllActors(c, a) {
+            if (a.Owner!=None) continue; //Don't take ammo away from the player!
+
             hmc = GetBestOpenHordeCrate(a.Location,a.Class);
 
             //Spawn a new crate if no crate found nearby
@@ -853,12 +859,7 @@ function GenerateItem()
 
             if (hmc!=None){
                 l("Repacking "$a$" into horde crate "$hmc);
-                copies = 1;
-                if (Pickup(a)!=None){
-                    copies = Pickup(a).NumCopies;
-                }
-                hmc.AddContent(a.Class,copies);
-                a.Destroy();
+                hmc.AddExistingItem(a);
             }
         }
     }

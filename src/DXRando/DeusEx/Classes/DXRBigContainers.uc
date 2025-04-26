@@ -11,6 +11,23 @@ var travel int numContents;
 
 var() travel int MaxContentCount; //Total maximum number of items allowed in a crate
 var() travel int ContentTypeLimit; //Maximum number for any one type of item
+var() travel bool DropStacks; //Should this drop stackable items as stacks?
+
+function bool AddExistingItem(Actor item)
+{
+    local int copies;
+
+    copies = 1;
+    if (Pickup(item)!=None){
+        copies = Pickup(item).NumCopies;
+    }
+    if (AddContent(item.Class,copies)){
+        item.Destroy();
+        return true;
+    }
+    return false;
+
+}
 
 function bool AddContent(class<Actor> type, int numCopies)
 {
@@ -164,6 +181,7 @@ function Destroyed()
         } else if (
             ClassIsChildOf(bcContents[i].type, class'DeusExPickup')
             && class<DeusExPickup>(bcContents[i].type).default.bCanHaveMultipleCopies
+            && DropStacks
         ) {
             // TODO: take into account type's reduced maxCopies
             dropped = Spawn(bcContents[i].type);
@@ -184,4 +202,5 @@ defaultproperties
 {
     MaxContentCount=9999
     ContentTypeLimit=9999
+    DropStacks=true
 }
