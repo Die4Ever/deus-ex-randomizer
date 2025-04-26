@@ -9,13 +9,33 @@ struct Content
 var travel Content bcContents[32];
 var travel int numContents;
 
+var() travel int MaxContentCount; //Total maximum number of items allowed in a crate
+var() travel int ContentTypeLimit; //Maximum number for any one type of item
+
 function bool AddContent(class<Actor> type, int numCopies)
 {
+    local int i;
+
     if (type == None) {
         log("Tried to add None to " $ self);
         return false;
     }
-    if (numContents == ArrayCount(bcContents)) {
+
+    //Check if item type already in crate
+    i = ContentTypeInside(type);
+    if (i != -1){
+        if (!CanAddMoreOfContent(type)){
+            log(self $ " can't add more content type "$type);
+            return false;
+        }
+        //Add to the existing type
+        bcContents[i].numCopies += numCopies;
+        log(self $ " added " $ numCopies @ type);
+        return true;
+    }
+
+    //Need to add new type
+    if (ContainerIsFull()) {
         log(self $ " max contents exceeded");
         return false;
     }
@@ -27,6 +47,83 @@ function bool AddContent(class<Actor> type, int numCopies)
     log(self $ " added " $ numCopies @ type);
     return true;
 }
+
+function bool CanAddContent(class<Actor> type)
+{
+    //Can add to the existing count if the type is already in the crate
+    if (ContentTypeInside(type)!=-1){
+        return CanAddMoreOfContent(type);
+    }
+
+    //Need to add new type to the list
+    return !ContainerIsFull();
+}
+
+function bool CanAddMoreOfContent(class<Actor> type)
+{
+    local int i;
+
+    if (ContainerIsFull()) return False;
+
+    i = ContentTypeInside(type);
+    if (i!=-1){
+        return bcContents[i].numCopies <= ContentTypeLimit;
+    }
+
+    return true;
+}
+
+function int ContentTypeInside(class<Actor> type)
+{
+    local int i;
+
+    //Check if item type already in crate
+    for (i=0;i<numContents;i++){
+        if (bcContents[i].type==type){
+            //Item type is already in crate, can add to that
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+function bool ContainerIsFull()
+{
+    if (GetTotalContentCount() >= MaxContentCount) return true;
+
+    return (numContents == ArrayCount(bcContents));
+}
+
+function int GetContentQuantity(class<Actor> type)
+{
+    local int i;
+
+    i = ContentTypeInside(type);
+
+    if (i == -1) return 0;
+
+    return bcContents[i].numCopies;
+}
+
+function int GetTotalContentCount()
+{
+    local int i,total;
+
+    for (i=0;i<numContents;i++){
+        if (bcContents[i].type!=None){
+            if (bcContents[i].type == class'#var(prefix)Credits') {
+                //numCopies for credits is just how much money, it all gets compressed into one item
+                total += 1;
+            } else {
+                total += bcContents[i].numCopies;
+            }
+        }
+    }
+
+    return total;
+}
+
 
 function DropItem(Actor dropped)
 {
@@ -60,8 +157,8 @@ function Destroyed()
     for (i = 0; i < numContents; i++) {
         log(self $ " dropping " $ bcContents[i].numcopies @ bcContents[i].type);
 
-        if (bcContents[i].type == class'Credits') {
-            dropped = Spawn(class'Credits');
+        if (bcContents[i].type == class'#var(prefix)Credits') {
+            dropped = Spawn(class'#var(prefix)Credits');
             Credits(dropped).numCredits = bcContents[i].numcopies;
             DropItem(dropped);
         } else if (
@@ -81,4 +178,10 @@ function Destroyed()
     }
 
     Super(DeusExDecoration).Destroyed();
+}
+
+defaultproperties
+{
+    MaxContentCount=9999
+    ContentTypeLimit=9999
 }

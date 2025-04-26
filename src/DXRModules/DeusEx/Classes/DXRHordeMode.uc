@@ -731,11 +731,19 @@ function GenerateItems()
     local int i;
     local #var(injectsprefix)MedicalBot medbot;
     local #var(prefix)WineBottle wine;
+    local HordeModeCrate hmc;
+    local vector loc;
 
     SetGlobalSeed("Horde GenerateItems" $ wave);
 
     // always make an augbot
     machines.SpawnAugbot();
+
+    //Shuffle the HordeModeCrate locations
+    foreach AllActors(class'HordeModeCrate',hmc){
+        loc = GetRandomItemPosition();
+        hmc.SetLocation(loc);
+    }
 
     for(i=0;i<items_per_wave;i++) {
         GenerateItem();
@@ -746,16 +754,53 @@ function GenerateItems()
     }
 }
 
+function bool IsCrateableClass(class<Actor> c)
+{
+    if (ClassIsChildOf(c,class'Inventory')){
+        if (ClassIsChildOf(c,class'#var(prefix)AugmentationCannister')){ //Aug cans need to have their contents randomized
+            return False;
+        }
+        return True;
+    }
+    return False;
+}
+
+//Find the most empty crate in the radius
+function HordeModeCrate GetBestOpenHordeCrate(vector loc, class<Actor> c, optional int radius)
+{
+    local HordeModeCrate hmc,best;
+
+    if (radius==0){
+        radius = 1600; //100 feet
+    }
+
+    foreach RadiusActors(class'HordeModeCrate',hmc,radius,loc)
+    {
+        if (hmc.CanAddContent(c)){
+            if (best==None){
+                best = hmc;
+            } else {
+                if ( hmc.GetTotalContentCount() < best.GetTotalContentCount()){
+                    best = hmc;
+                }
+            }
+        }
+    }
+    return best;
+}
+
 function GenerateItem()
 {
-    local int i, num;
+    local int i, num, copies;
     local Actor a;
     local class<Actor> c;
     local vector loc;
     local #var(prefix)AugmentationCannister aug;
     local Barrel1 barrel;
     local DeusExMover d;
+    local HordeModeCrate hmc;
     local float r;
+    local bool success;
 
     r = initchance();
     for(i=0; i < ArrayCount(items); i++) {
@@ -770,6 +815,12 @@ function GenerateItem()
     foreach AllActors(c, a) {
         num++;
     }
+    //Also check how many are in HordeModeCrates
+    foreach AllActors(class'HordeModeCrate',hmc)
+    {
+        num += hmc.GetContentQuantity(c);
+    }
+
     // now damage or move the oldest ones (at the start of the list)
     i = 0;
     if(num > items_per_wave/2 && items[i].lastDamageTime < Level.TimeSeconds && ClassIsChildOf(c, class'#var(prefix)Containers')) {
@@ -790,6 +841,28 @@ function GenerateItem()
         }
     }
 
+    if (IsCrateableClass(c)){
+        //Repack items into crates
+        foreach AllActors(c, a) {
+            hmc = GetBestOpenHordeCrate(a.Location,a.Class);
+
+            //Spawn a new crate if no crate found nearby
+            if (hmc==None){
+                hmc = Spawn(class'HordeModeCrate',,,a.Location,a.Rotation);
+            }
+
+            if (hmc!=None){
+                l("Repacking "$a$" into horde crate "$hmc);
+                copies = 1;
+                if (Pickup(a)!=None){
+                    copies = Pickup(a).NumCopies;
+                }
+                hmc.AddContent(a.Class,copies);
+                a.Destroy();
+            }
+        }
+    }
+
     if( num > items_per_wave ) {
         l("already have too many of "$c.name);
         return;
@@ -803,13 +876,30 @@ function GenerateItem()
         machines.SpawnRepairbot();
         return;
     }
-    for(i=0; i<10 && a == None; i++) {
+
+    success = False;
+    for(i=0; i<10 && success==False; i++) {
         loc = GetRandomItemPosition();
-        a = Spawn(c,,, loc);
+        if (IsCrateableClass(c)){
+            hmc = GetBestOpenHordeCrate(loc,c);
+            if (hmc==None){
+                hmc = Spawn(class'HordeModeCrate',,,loc,GetRandomYaw());
+            }
+            if (hmc!=None){
+                hmc.AddContent(c,1);
+                success=True;
+            }
+        } else {
+            a = Spawn(c,,, loc, GetRandomYaw());
+            if (a!=None){
+                success=True;
+            }
+        }
     }
-    if(c==None) {
-        l("failed to spawn "$c$" at "$loc);
-        return ;
+
+    if (success==False){
+        l("failed to spawn "$c);
+        return;
     }
 
     aug = #var(prefix)AugmentationCannister(a);
