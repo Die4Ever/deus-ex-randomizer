@@ -3,7 +3,7 @@ class HordeModeCrate extends DXRBigContainers;
 defaultproperties
 {
     ItemName="Horde Supply Crate"
-    Skin=Texture'BlankWoodenCrate'
+    Skin=Texture'DXLogoCrate'
     HitPoints=1
     FragType=Class'DeusEx.WoodFragment'
     bBlockSight=True
