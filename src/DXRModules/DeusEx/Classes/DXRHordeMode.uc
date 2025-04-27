@@ -485,8 +485,7 @@ function InWaveTick()
 
     if( time_in_wave >= time_before_damage && time_in_wave%damage_timer == 0 ) {
         player().TakeDamage(1, player(), player().Location, vect(0,0,0), 'Shocked');
-        PlaySound(sound'ProdFire');
-        PlaySound(sound'MalePainSmall');
+        player().PlaySound(sound'ProdFire', SLOT_None,,, 256);
     }
     else {
         NotifyPlayerTimer(time_before_damage-time_in_wave, (time_before_damage-time_in_wave) $ " seconds until shocking.");
