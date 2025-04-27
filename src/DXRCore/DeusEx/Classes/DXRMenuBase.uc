@@ -51,8 +51,8 @@ var int groupHeaderY;
 
 var string BR;// line break
 
-const HELP_BTN_WIDTH = 25;
-const HELP_BTN_PAD = 10;
+const HELP_BTN_WIDTH = 21;
+const HELP_BTN_PAD = 5;
 
 event Init(DXRando d)
 {
