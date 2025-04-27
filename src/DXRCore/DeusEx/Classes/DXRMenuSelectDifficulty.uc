@@ -12,6 +12,7 @@ var int gamemode_enum, loadout_enum, autosave_enum, difficulty_enum, mirroredmap
 
 enum ERandoMessageBoxModes
 {
+    RMB_None,
     RMB_MaxRando,
     RMB_Advanced,
     RMB_NewGame,// choosing Extreme or Impossible, or starting with splits with a different flagshash
@@ -125,10 +126,10 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
 {
 #ifdef injections
     local DXRAutosave autosave;
-    local int autosave_enum;
+    local int in_autosave_enum;
 
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
-    autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
+    in_autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
     slf.EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
     slf.EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.FirstEntry));
     slf.EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
@@ -138,7 +139,7 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
     slf.EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
     slf.EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
     slf.EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
-    return autosave_enum;
+    return in_autosave_enum;
 #endif
 }
 
@@ -371,6 +372,15 @@ function DoAdvancedButtonConfirm()
 #endif
 }
 
+function bool CheckClickHelpBtn( Window buttonPressed )
+{
+    if (Super.CheckClickHelpBtn(buttonPressed)){
+        nextScreenNum=RMB_None; //Don't go anywhere after interacting with a help window button
+        return true;
+    }
+    return false;
+}
+
 event bool BoxOptionSelected(Window button, int buttonNumber)
 {
     root.PopWindow();
@@ -390,6 +400,9 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
             if (buttonNumber==0){
                 DoNewGameScreen();
             }
+            return true;
+        case RMB_None:
+            //Do nothing
             return true;
     }
 

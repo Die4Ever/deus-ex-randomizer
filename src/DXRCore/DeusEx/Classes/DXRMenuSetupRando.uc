@@ -6,6 +6,7 @@ var string SplitsBtnTitle, SplitsBtnMessage;
 
 enum ERandoMessageBoxModes
 {
+    RMB_None,
     RMB_NewGame,// starting with splits with a different flagshash
 };
 var ERandoMessageBoxModes nextScreenNum;
@@ -262,12 +263,12 @@ function BindControls(optional string action)
     EnumOption("Disallow Downgrades On New Game Screen", 5, f.settings.skills_disable_downgrades);
 
     NewMenuItem("", "How often to reroll skill costs.");
-    EnumOption("Don't Reroll Skill Costs", 0, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every Mission", 1, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 2 Missions", 2, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 4 Missions", 4, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions);
+    EnumOption("Don't Reroll Skill Costs", 0, f.settings.skills_reroll_missions, GetSkillRerollHelpText(0));
+    EnumOption("Reroll Skill Costs Every Mission", 1, f.settings.skills_reroll_missions, GetSkillRerollHelpText(1));
+    EnumOption("Reroll Skill Costs Every 2 Missions", 2, f.settings.skills_reroll_missions, GetSkillRerollHelpText(2));
+    EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions, GetSkillRerollHelpText(3));
+    EnumOption("Reroll Skill Costs Every 4 Missions", 4, f.settings.skills_reroll_missions, GetSkillRerollHelpText(4));
+    EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions, GetSkillRerollHelpText(5));
     if(f.settings.skills_reroll_missions > 5) {
         EnumOption("Reroll Skill Costs Every " $ f.settings.skills_reroll_missions $ " Missions",
             f.settings.skills_reroll_missions, f.settings.skills_reroll_missions
@@ -421,6 +422,15 @@ function DoNewGameScreen()
     _InvokeNewGameScreen(combatDifficulty);
 }
 
+function bool CheckClickHelpBtn( Window buttonPressed )
+{
+    if (Super.CheckClickHelpBtn(buttonPressed)){
+        nextScreenNum=RMB_None; //Don't go anywhere after interacting with a help window button
+        return true;
+    }
+    return false;
+}
+
 event bool BoxOptionSelected(Window button, int buttonNumber)
 {
     root.PopWindow();
@@ -431,9 +441,56 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
                 DoNewGameScreen();
             }
             return true;
+        case RMB_None:
+            return true;
     }
 
     return Super.BoxOptionSelected(button,buttonNumber);
+}
+
+function string GetSkillRerollHelpText(int reroll)
+{
+    switch (reroll){
+        case 0:
+            return "Skill costs are never rerolled!|n|nYou're stuck with what you get at the start of the game!";
+        case 1:
+            return "Skill costs are rerolled every mission!";
+        case 2:
+            return "Skill costs are rerolled every 2 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ The first visit to Battery Park|n" $
+                   " ~ Arriving at Hell's Kitchen to see Paul|n" $
+                   " ~ Hong Kong|n" $
+                   " ~ Return to NYC|n" $
+                   " ~ Paris|n" $
+                   " ~ Vandenberg|n" $
+                   " ~ OceanLab";
+        case 3:
+            return "Skill costs are rerolled every 3 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ The second visit to Battery Park (Searching for Lebedev)|n" $
+                   " ~ Hong Kong|n" $
+                   " ~ Superfreighter|n" $
+                   " ~ Vandenberg|n" $
+                   " ~ Area 51";
+        case 4:
+            return "Skill costs are rerolled every 4 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ Arriving at Hell's Kitchen to see Paul|n" $
+                   " ~ Return to NYC|n" $
+                   " ~ Vandenberg";
+        case 5:
+            return "Skill costs are rerolled every 5 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ MJ12 Jail|n" $
+                   " ~ Paris|n" $
+                   " ~ Area 51";
+    }
+    return "";
 }
 
 defaultproperties
