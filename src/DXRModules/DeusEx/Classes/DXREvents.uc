@@ -3906,7 +3906,7 @@ defaultproperties
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",desc_singular="Watch Dogs (1 second)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",desc_singular="Look at that kitty! (1 second)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",desc_singular="Who Watches the Watchers? (1 second)",max=5)
-    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert-Rochereau",max=1,missions=1024)
+    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
     bingo_options(314)=(event="MeetRenault_Played",desc="Ever tried rat piss?",max=1,missions=1024)
     bingo_options(315)=(event="WarehouseSewerTunnel",desc="Take the sewers to the Warehouse",max=3,missions=4)
     bingo_options(316)=(event="PaulToTong",desc="Help Tong get a closer inspection",max=1,missions=96)
