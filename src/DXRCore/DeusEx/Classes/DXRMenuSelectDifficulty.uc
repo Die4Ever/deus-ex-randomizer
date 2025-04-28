@@ -171,13 +171,13 @@ static function int CreateOnlineFeaturesEnum(DXRMenuBase slf, DXRFlags f)
     else
         temp = 0;
     e = slf.NewMenuItem("Online Features", "Death Markers, send error reports,"$Chr(10)$" and get notified about updates!");
-    if( slf.EnumOption("All Enabled", 2, temp) ) {
+    if( slf.EnumOption("All Enabled", 2, temp, GetOnlineFeaturesHelpText(2)) ) {
         t.set_enabled(true, true);
     }
-    if( slf.EnumOption("Enabled, Death Markers Hidden", 1, temp) ) {
+    if( slf.EnumOption("Enabled, Death Markers Hidden", 1, temp, GetOnlineFeaturesHelpText(1)) ) {
         t.set_enabled(true, false);
     }
-    if( slf.EnumOption("Disabled", 0, temp) ) {
+    if( slf.EnumOption("Disabled", 0, temp, GetOnlineFeaturesHelpText(0)) ) {
         t.set_enabled(false, true);
     }
     return e;
@@ -447,6 +447,27 @@ function string GetSeedHelpText()
     msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
     msg = msg $ "|n";
     msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+
+    return msg;
+}
+
+static function string GetOnlineFeaturesHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode){
+        case 0: //Disabled
+            msg = msg $ "The game will not communicate with the Deus Ex Randomizer server at all.  No messages will be posted on the DX Rando Activity Mastodon feed, and no death markers will appear.";
+            break;
+        case 1: //Enabled (Death Markers Hidden)
+            msg = msg $ "The game will occasionally send messages to the Deus Ex Randomizer server to log deaths and certain actions.  Death messages will be posted on the DX Rando Activity Mastodon feed,"$" along with posts about certain things that the player does.  Death markers will NOT show up in game.";
+            break;
+        case 2: //Enabled
+            msg = msg $ "The game will occasionally send messages to the Deus Ex Randomizer server to log deaths and certain actions.  Death messages will be posted on the DX Rando Activity Mastodon feed,"$" along with posts about certain things that the player does.  Death markers will show up in game where players have recently died.";
+            break;
+    }
 
     return msg;
 }

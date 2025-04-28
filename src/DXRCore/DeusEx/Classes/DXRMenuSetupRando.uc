@@ -276,8 +276,8 @@ function BindControls(optional string action)
     }
 
     NewMenuItem("", "Predictability of skill level cost scaling.");
-    EnumOption("Relative Skill Level Costs", 0, f.settings.skills_independent_levels);
-    EnumOption("Unpredictable Skill Level Costs", 1, f.settings.skills_independent_levels);
+    EnumOption("Relative Skill Level Costs", 0, f.settings.skills_independent_levels, GetSkillLevelCostsHelpText(0));
+    EnumOption("Unpredictable Skill Level Costs", 1, f.settings.skills_independent_levels, GetSkillLevelCostsHelpText(1));
 
     BreakLine();
 
@@ -592,6 +592,22 @@ function string GetBingoScaleHelpText()
     msg =       "Bingo Scale adjusts the number of times a bingo task needs to be done before completing the square.|n";
     msg = msg $ "|n";
     msg = msg $ "For example, a goal to 'Drink 100 Cans of Soda' at 50% Bingo Scale would become 'Drink 50 Cans of Soda'.  Goal amounts will not drop below 1.";
+
+    return msg;
+}
+
+function string GetSkillLevelCostsHelpText(int mode)
+{
+    local string msg;
+
+    switch(mode){
+        case 0: //Relative Skill Level Costs
+            msg = "The cost of each skill level (for a single skill) are multiplied by the same random value.";
+            break;
+        case 1: //Unpredictable Skill Level Costs
+            msg = "The cost of each skill level (for a single skill) are multiplied by a different random value.";
+            break;
+    }
 
     return msg;
 }
