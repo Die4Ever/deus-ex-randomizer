@@ -350,13 +350,13 @@ function BindControls(optional string action)
     Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
-    Slider(f.settings.augcans, 0, 100);
+    Slider(f.settings.augcans, 0, 100, GetAugCansRandoHelpText());
 
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
     NewMenuItem("Aug Slot Rando %", "The chance for each aug to randomize the body part it can be installed into");
-    Slider(f.moresettings.aug_loc_rando, 0, 100);
+    Slider(f.moresettings.aug_loc_rando, 0, 100, GetAugSlotRandoHelpText());
 
     NewGroup("New Game+");
 
@@ -448,6 +448,7 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     return Super.BoxOptionSelected(button,buttonNumber);
 }
 
+//#region Help Text Fns
 function string GetSkillRerollHelpText(int reroll)
 {
     switch (reroll){
@@ -545,6 +546,30 @@ function string GetClothesLootingHelpText(int loot)
 
     return msg;
 }
+
+function string GetAugCansRandoHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for each augmentation canister to have its contents randomized.  At 100%, all aug cans will have random contents.  Likewise, 0% will leave all aug cans with their original contents.|n";
+    msg = msg $ "|n";
+    msg = msg $ "When randomized, the contents of the can will be selected from the augs available based on your selected game mode and loadout.";
+
+    return msg;
+}
+
+function string GetAugSlotRandoHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for each augmentation to get a randomized aug location, allowing them to be installed in a different body part than normal.  "$"At 100%, all augs will be assigned random body parts.  Likewise, at 0%, all augs will be able to be installed in their original location.|n";
+    msg = msg $ "|n";
+    msg = msg $ "Using values between 0% and 100% may result in some body parts being overloaded or other ones lacking in choices,"$" since augs are unlikely to randomize into the slots that were newly freed by other randomized augs.";
+
+    return msg;
+}
+
+//#endregion
 
 defaultproperties
 {
