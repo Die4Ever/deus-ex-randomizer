@@ -75,7 +75,7 @@ function BindControls(optional string action)
     mirroredmaps_wnd = CreateMirroredMapsSlider(self, f);
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
-    sseed = EditBox("", "1234567890");
+    sseed = EditBox("", "1234567890", GetSeedHelpText());
     if( sseed != "" ) {
         f.seed = int(sseed);
         dxr.seed = f.seed;
@@ -438,6 +438,17 @@ function NewGameSetup(float difficulty)
         newGame.SetDifficulty(difficulty);
         newGame.Init(dxr);
     }
+}
+
+function string GetSeedHelpText()
+{
+    local string msg;
+
+    msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
+    msg = msg $ "|n";
+    msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+
+    return msg;
 }
 
 defaultproperties

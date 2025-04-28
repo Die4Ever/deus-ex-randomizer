@@ -290,7 +290,7 @@ function bool EnumOptionString(string label, string value, optional out string o
     return false;
 }
 
-function string EditBox(string value, string pattern)
+function string EditBox(string value, string pattern, optional string helpBtnText)
 {
     local string s;
 
@@ -299,7 +299,7 @@ function string EditBox(string value, string pattern)
     } else {
         if ( wnds[id] == None ) {
             if(hide_labels[id]==0) s = labels[id];
-            wnds[id] = CreateEdit(id, s, helptexts[id], pattern, value);
+            wnds[id] = CreateEdit(id, s, helptexts[id], pattern, value, helpBtnText);
         }
     }
     return value;
@@ -721,7 +721,7 @@ function bool CheckClickHelpBtn( Window buttonPressed )
     if (helpButton==None) return false;
 
     if (helpButton.GetHelpText()!=""){
-        class'BingoHintMsgBox'.static.Create(root, helpButton.GetHelpTitle(), helpButton.GetHelpText(), 1, False, self);
+        class'BingoHintMsgBox'.static.Create(root, "Help: "$helpButton.GetHelpTitle(), helpButton.GetHelpText(), 1, False, self);
     }
 
     return true;
