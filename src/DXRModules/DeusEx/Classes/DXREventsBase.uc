@@ -597,7 +597,9 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
         js.static.Add(j, "killerRandomizedName", GetRandomizedName(Killer));
     }
     js.static.Add(j, "dmgtype", damageType);
-    HordeModeData(dxr,true,j); //Only actually gets added if in Horde mode
+    if (#var(PlayerPawn)(victim)!=None){
+        HordeModeData(dxr,true,j); //Only actually gets added if in Horde mode
+    }
     GeneralEventData(dxr, j);
     //Add horde mode data when in horde mode
     js.static.Add(j, "location", dxr.flags.vectclean(victim.Location));
