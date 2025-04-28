@@ -30,7 +30,7 @@ function BindControls(optional string action)
     if( ! #defined(vmd) ) {
         NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes.  The original game uses 400% for realistic.");
         iDifficulty = int(combatDifficulty * 100.0);
-        Slider(iDifficulty, 0, 10000);
+        Slider(iDifficulty, 0, 10000, GetCombatDifficultyHelpText());
         combatDifficulty = float(iDifficulty) / 100.0;
     #ifndef hx
         f.settings.CombatDifficulty = combatDifficulty;
@@ -103,8 +103,8 @@ function BindControls(optional string action)
 
 #ifdef vanilla
     NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
-    EnumOption("Full Closet", 0, f.clothes_looting);
-    EnumOption("Looting Required", 1, f.clothes_looting);
+    EnumOption("Full Closet", 0, f.clothes_looting, GetClothesLootingHelpText(0));
+    EnumOption("Looting Needed", 1, f.clothes_looting, GetClothesLootingHelpText(1));
 #endif
 
     NewGroup("Bingo");
@@ -124,12 +124,12 @@ function BindControls(optional string action)
     EnumOption("5 Free Spaces", 5, f.settings.bingo_freespaces);
 
     NewMenuItem("Bingo Duration", "How many missions should the bingo goals last for?");
-    EnumOption("End of Game", 0, f.bingo_duration);
-    EnumOption("1 Mission",   1, f.bingo_duration);
-    EnumOption("2 Missions",  2, f.bingo_duration);
-    EnumOption("3 Missions",  3, f.bingo_duration);
-    EnumOption("4 Missions",  4, f.bingo_duration);
-    EnumOption("5 Missions",  5, f.bingo_duration);
+    EnumOption("End of Game", 0, f.bingo_duration, GetBingoDurationHelpText(0));
+    EnumOption("1 Mission",   1, f.bingo_duration, GetBingoDurationHelpText(1));
+    EnumOption("2 Missions",  2, f.bingo_duration, GetBingoDurationHelpText(2));
+    EnumOption("3 Missions",  3, f.bingo_duration, GetBingoDurationHelpText(3));
+    EnumOption("4 Missions",  4, f.bingo_duration, GetBingoDurationHelpText(4));
+    EnumOption("5 Missions",  5, f.bingo_duration, GetBingoDurationHelpText(5));
 
     NewGroup("Medical Bots and Repair Bots");
 
@@ -452,7 +452,9 @@ function string GetSkillRerollHelpText(int reroll)
 {
     switch (reroll){
         case 0:
-            return "Skill costs are never rerolled!|n|nYou're stuck with what you get at the start of the game!";
+            return "Skill costs are never rerolled!|n"$
+                   "|n" $
+                   "You're stuck with what you get at the start of the game!";
         case 1:
             return "Skill costs are rerolled every mission!";
         case 2:
@@ -491,6 +493,57 @@ function string GetSkillRerollHelpText(int reroll)
                    " ~ Area 51";
     }
     return "";
+}
+
+function string GetCombatDifficultyHelpText()
+{
+    local string msg;
+
+    msg =       "Combat Difficulty is generally a multiplier on damage that the player receives.|n";
+    msg = msg $ "|n";
+    msg = msg $ " ~ Damage from bullets and melee weapons are multiplied directly|n";
+    if (class'MenuChoice_BalanceEtc'.static.IsEnabled()){
+        msg = msg $ " ~ Damage from fire is multiplied directly|n";
+        msg = msg $ " ~ Damage from other sources is multiplied by (CombatDifficulty/5)+80%|n";  //See BalancePlayer::DXReduceDamage
+    }
+
+    return msg;
+}
+
+function string GetBingoDurationHelpText(int duration)
+{
+    local string msg;
+
+    msg = "The bingo board will be generated using goals ";
+
+    if (duration==0){
+        msg = msg $ "from your starting point until the end of the game.";
+    } else if (duration==1){
+        msg = msg $ "from the same mission as your chosen starting point.";
+    } else {
+        msg = msg $ "from the next "$duration$" missions from your chosen starting point (including the mission you start in).";
+    }
+    msg = msg $ "|n|n";
+    if (duration==1){
+        msg = msg $ "Goals that span multiple missions will not be available.";
+    } else {
+        msg = msg $ "Any goals that span multiple missions (eg. Bringing the Terrorist Commander to a bar) will only be available if the start and end points are within the range of your bingo duration.";
+    }
+
+    return msg;
+}
+
+function string GetClothesLootingHelpText(int loot)
+{
+    local string msg;
+
+    if (loot==0){ //Full Closet
+        msg="JC starts with all possible clothing choices.  When outfits are randomized at the start of a mission or at a clothes rack, they will be selected from all the choices.";
+    } else if (loot==1){ //Looting Needed
+        msg="JC starts with the original trenchcoat outfit and the UNATCO uniform.  Clothes can be looted from bodies or found on clothes racks.  "$"When outfits are randomized at the start of a mission or when using a clothes rack, the outfit will be selected from clothes that you have found through the game.";
+    }
+
+    return msg;
 }
 
 defaultproperties
