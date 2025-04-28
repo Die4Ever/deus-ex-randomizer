@@ -76,7 +76,7 @@ function BindControls(optional string action)
     BreakLine();
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
-    Slider(f.settings.merchants, 0, 100);
+    Slider(f.settings.merchants, 0, 100,GetMerchantHelpText());
 #endif
 
     NewMenuItem("Dancing %", "How many characters should be dancing.");
@@ -113,7 +113,7 @@ function BindControls(optional string action)
     Slider(f.settings.bingo_win, 0, 12);
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
-    Slider(f.bingo_scale, 0, 100);
+    Slider(f.bingo_scale, 0, 100, GetBingoScaleHelpText());
 
     NewMenuItem("Bingo Freespaces", "Should the center be a Free Space, or even more Free Spaces?");
     EnumOption("0 Free Spaces", 0, f.settings.bingo_freespaces);
@@ -531,6 +531,11 @@ function string GetBingoDurationHelpText(int duration)
         msg = msg $ "Any goals that span multiple missions (eg. Bringing the Terrorist Commander to a bar) will only be available if the start and end points are within the range of your bingo duration.";
     }
 
+    if (duration>0){
+        msg = msg $ "|n|n";
+        msg = msg $ "Bingo Goal amounts will be scaled down based on the Bingo Duration setting.";
+    }
+
     return msg;
 }
 
@@ -565,6 +570,28 @@ function string GetAugSlotRandoHelpText()
     msg =       "The chance for each augmentation to get a randomized aug location, allowing them to be installed in a different body part than normal.  "$"At 100%, all augs will be assigned random body parts.  Likewise, at 0%, all augs will be able to be installed in their original location.|n";
     msg = msg $ "|n";
     msg = msg $ "Using values between 0% and 100% may result in some body parts being overloaded or other ones lacking in choices,"$" since augs are unlikely to randomize into the slots that were newly freed by other randomized augs.";
+
+    return msg;
+}
+
+function string GetMerchantHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for The Merchant to appear in each map.  At 100%, The Merchant will appear in every map.  At 0%, The Merchant will not appear at all.  "$"If you kill or knock out The Merchant, he will not appear again.|n";
+    msg = msg $ "|n";
+    msg = msg $ "The Merchant will have various useful items available for sale, which will be different every map.  "$"When using loadouts, The Merchant will not sell any banned items and may have additional items available (based on the loadout).";
+
+    return msg;
+}
+
+function string GetBingoScaleHelpText()
+{
+    local string msg;
+
+    msg =       "Bingo Scale adjusts the number of times a bingo task needs to be done before completing the square.|n";
+    msg = msg $ "|n";
+    msg = msg $ "For example, a goal to 'Drink 100 Cans of Soda' at 50% Bingo Scale would become 'Drink 50 Cans of Soda'.  Goal amounts will not drop below 1.";
 
     return msg;
 }
