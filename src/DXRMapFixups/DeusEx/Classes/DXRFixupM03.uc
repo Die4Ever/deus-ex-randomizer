@@ -390,7 +390,7 @@ function PreFirstEntryMapFixes()
         }
 
         // change "MolePerson" (un)familiarNames to "Mole Person". he's in the wood shack near the Terrorist Leader
-        foreach AllActors(class'HumanCivilian', hc) {
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc) {
             if (hc.UnfamiliarName == "MolePerson") {
                 hc.UnfamiliarName = "Mole Person";
             }
