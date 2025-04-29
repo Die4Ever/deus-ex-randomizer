@@ -326,14 +326,14 @@ function BindControls(optional string action)
     Slider(f.settings.grenadeswap, 0, 100);
 
     BreakLine();
-    NewMenuItem("Min Weapon Damage %", "The minmum damage for weapons.");
+    NewMenuItem("Min Weapon Damage %", "The minimum damage for weapons.");
     Slider(f.settings.min_weapon_dmg, 0, 500);
 
     NewMenuItem("Max Weapon Damage %", "The maximum damage for weapons.");
     Slider(f.settings.max_weapon_dmg, 0, 500);
 
     BreakLine();
-    NewMenuItem("Min Weapon Shot Time %", "The minmum shot time / firing speed for weapons.");
+    NewMenuItem("Min Weapon Shot Time %", "The minimum shot time / firing speed for weapons.");
     Slider(f.settings.min_weapon_shottime, 0, 500);
 
     NewMenuItem("Max Weapon Shot Time %", "The maximum shot time / firing speed for weapons.");
