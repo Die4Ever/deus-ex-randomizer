@@ -38,11 +38,7 @@ function ThrowInventory(bool gibbed)
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        if(class'MenuChoice_ThrowMelee'.default.enabled) {
-            melee = class'DXRActorsBase'.static.IsMeleeWeapon(item);
-            drop = melee && !gibbed; // drop melee weapon even if not gibbed
-        }
-        drop = drop || item.IsA('NanoKey') && gibbed; // drop nanokeys when gibbed
+        drop = item.IsA('NanoKey') && gibbed; // drop nanokeys when gibbed
         drop = drop || gibbed && item.bDisplayableInv && class'MenuChoice_BalanceEtc'.static.IsEnabled(); // drop all other visible items when gibbed
         if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )
             drop = false;
