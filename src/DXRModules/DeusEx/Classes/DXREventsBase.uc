@@ -725,13 +725,17 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             _MarkBingo(classname$"_ClassUnconscious");
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.alliance$"_AllianceUnconscious");
+            //_MarkBingo(victim.alliance$"_AllianceUnconsciousM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.bindName$"_PlayerUnconscious"); //Only when the player knocks the person out
+            _MarkBingo(victim.bindName$"_PlayerUnconsciousM" $ dxr.dxInfo.missionNumber); //Only when the player knocks the person out
             class'DXRStats'.static.AddKnockOut(p);
         } else {
             _MarkBingo(classname$"_ClassDead");
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.alliance$"_AllianceDead");
+            //_MarkBingo(victim.alliance$"_AllianceDeadM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.bindName$"_PlayerDead"); //Only when the player kills the person
+            _MarkBingo(victim.bindName$"_PlayerDeadM" $ dxr.dxInfo.missionNumber);
             class'DXRStats'.static.AddKill(p);
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
