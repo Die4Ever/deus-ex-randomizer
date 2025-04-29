@@ -501,7 +501,7 @@ function PreFirstEntryMapFixes()
                 k.KeyID = 'MedCabDoor';
             }
         }
-        foreach AllActors(class'DeusExMover', d, 'MedCabDoor') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'MedCabDoor') {
             d.KeyIDNeeded = 'MedCabDoor';
         }
 
