@@ -10,7 +10,7 @@ defaultproperties
     smallIcon=Texture'AugIconMotionSensor_Small'
     LevelValues(0)=320
     maxLevel=0
-    energyRate=0
+    energyRate=10
     AugmentationName="Motion Sensor"
     Description="Motion Sensor allows an agent to see moving things through walls."
 }
