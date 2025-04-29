@@ -5,6 +5,7 @@ var int time_to_next_wave;
 var config int time_between_waves;
 var bool in_wave;
 var int time_in_wave;
+var int last_num_pawns_reported;
 var config int time_before_damage;
 var config int damage_timer;
 var config int time_before_teleport_enemies;
@@ -641,10 +642,13 @@ function NotifyPlayerTimer(int time, string text)
     }
 }
 
+//Notify every 5 seconds or immediately if the number of remaining pawns changes
 function NotifyPlayerPawns(int numScriptedPawns)
 {
     //if( numScriptedPawns > 10 ) return;
-    if( time_in_wave % 3 != 0 ) return;
+    if( time_in_wave % 5 != 0 && last_num_pawns_reported==numScriptedPawns) return;
+
+    last_num_pawns_reported = numScriptedPawns;
 
     if( numScriptedPawns == 1 )
         player().ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemy remaining.");
