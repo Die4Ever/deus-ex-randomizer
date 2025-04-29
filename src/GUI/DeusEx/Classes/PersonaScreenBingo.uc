@@ -8,7 +8,7 @@ const bingoStartY = 22;
 var PersonaActionButtonWindow btnReset, btnBingoInfo;
 
 var string ResetWindowHeader, ResetWindowText;
-var string InfoWindowHeader, InfoWindowText;
+var string InfoWindowHeader;
 var string bingoWikiUrl;
 
 function CreateControls()
@@ -122,14 +122,51 @@ function ShowBingoGoalHelp( Window bingoTile )
 
 function bool ButtonActivated( Window buttonPressed )
 {
-    local int val;
+    local int nextStartNum, bingoWin, bingosCompleted,  bingoDuration, currentLoop;
+    local string infoText, nextStartName, difficulty;
+    local DXRando dxr;
 
     if(buttonPressed == btnReset) {
         root.MessageBox(ResetWindowHeader,ResetWindowText,0,False,Self);
         return true;
     }
     else if(buttonPressed == btnBingoInfo) {
-        class'BingoHintMsgBox'.static.Create(root, InfoWindowHeader, InfoWindowText, 1, False, self);
+        dxr = class'DXRando'.default.dxr;
+
+        bingoWin = dxr.flags.settings.bingo_win;
+        bingosCompleted = class'PlayerDataItem'.static.GiveItem(dxr.player).NumberOfBingos();
+        bingoDuration = dxr.flags.bingo_duration;
+        currentLoop = dxr.flags.newgameplus_loops;
+        difficulty = class'DXRInfo'.static.FloatToString(dxr.player.CombatDifficulty, 3);
+
+        dxr.seed++;
+        nextStartNum = class'DXRStartMap'.static.ChooseRandomStartMap(class'DXRBase'.static.Find(), dxr.flags.settings.starting_map);
+        dxr.seed--;
+        nextStartName = class'DXRStartMap'.static.GetStartingMapName(nextStartNum);
+
+        infoText =
+            "Complete specific tasks to mark off bingo squares!|n|nSquares marked gray can be completed this mission.  "
+            $ "Black squares cannot be completed in this mission.  Green squares have been completed.  Red squares "
+            $ "can no longer be completed.|n|nClick on the squares to get more info about the specific task in each one!|n";
+        if (bingoWin > 0) {
+            infoText = infoText $ "|nBingo Lines to Win: " $ bingoWin;
+        }
+        infoText = infoText $ "|nBingo Lines Completed: " $ bingosCompleted;
+        infoText = infoText $ "|nBingo Duration: ";
+        if (bingoDuration == 0) {
+            infoText = infoText $ "End of the Game";
+        } else {
+            infoText = infoText $ bingoDuration $ " Mission";
+            if (bingoDuration != 1) {
+                infoText = infoText $ "s";
+            }
+        }
+        infoText = infoText $ "|n|nNew Game Plus Loops Completed: " $ currentLoop;
+        infoText = infoText $ "|nNext Loop Starting Map: " $ nextStartName;
+        infoText = infoText $ "|n|nCombat Difficulty: " $ difficulty;
+
+        class'BingoHintMsgBox'.static.Create(root, InfoWindowHeader, infoText, 1, False, self);
+
         return true;
     }
     else if(BingoTile(buttonPressed)!=None){
@@ -163,6 +200,5 @@ defaultproperties
      ResetWindowHeader="Are you sure?"
      ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
      InfoWindowHeader="Bingo Info"
-     InfoWindowText="Complete specific tasks to mark off bingo squares!|n|nSquares marked gray can be completed this mission.  Black squares cannot be completed in this mission.  Green squares have been completed.  Red squares can no longer be completed.|n|nClick on the squares to get more info about the specific task in each one!"
      bingoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Bingo-Goals"
 }
