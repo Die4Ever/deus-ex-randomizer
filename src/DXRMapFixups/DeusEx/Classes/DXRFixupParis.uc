@@ -140,6 +140,8 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
 
+        Spawn(class'PlaceholderItem',,, vectm(2138.9, -2342.1, -506.4)); // Side dead-end tunnel near the end
+
         break;
     //#endregion
 
