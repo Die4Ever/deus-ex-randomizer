@@ -43,7 +43,6 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_EnergyDisplay');
     CreateChoice(class'MenuChoice_AutoAugs');
     CreateChoice(class'MenuChoice_ShowKeys');
-    CreateChoice(class'MenuChoice_ThrowMelee');
     CreateChoice(class'MenuChoice_AutoWeaponMods');
     CreateChoice(class'MenuChoice_AutoLaser');
     CreateChoice(class'MenuChoice_Epilepsy');

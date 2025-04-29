@@ -38,7 +38,7 @@ simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
 
 // for goals that can be detected as impossible by an event
-static function int GetBingoFailedEvents(string eventname, out string failed[6]);
+static function int GetBingoFailedEvents(string eventname, out string failed[7]);
 // for goals that can not be detected as impossible by an event
 function MarkBingoFailedSpecial();
 
@@ -696,9 +696,11 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local string classname;
+    local #var(PlayerPawn) p;
     local bool dead;
     local int i;
 
+    p = player();
     dead = !CanKnockUnconscious(victim, damageType);
 
     //These are always marked when the pawn dies, regardles of killer
@@ -724,8 +726,8 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
             _MarkBingo(victim.alliance$"_AllianceUnconscious");
             _MarkBingo(victim.alliance$"_AllianceUnconsciousM" $ dxr.dxInfo.missionNumber);
-            _MarkBingo(victim.bindName$"_PlayerUnconscious"); //Only when the player knocks the person o
-            _MarkBingo(victim.bindName$"_PlayerUnconsciousM" $ dxr.dxInfo.missionNumber); //Only when the player knocks the person outut
+            _MarkBingo(victim.bindName$"_PlayerUnconscious"); //Only when the player knocks the person out
+            _MarkBingo(victim.bindName$"_PlayerUnconsciousM" $ dxr.dxInfo.missionNumber); //Only when the player knocks the person out
             class'DXRStats'.static.AddKnockOut(p);
         } else {
             _MarkBingo(classname$"_ClassDead");
@@ -751,9 +753,9 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 
     } else {
         if (!dead) {
-            class'DXRStats'.static.AddKnockOutByOther(player());
+            class'DXRStats'.static.AddKnockOutByOther(p);
         } else {
-            class'DXRStats'.static.AddKillByOther(player());
+            class'DXRStats'.static.AddKillByOther(p);
         }
     }
 
@@ -767,7 +769,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         case "AnnaNavarre":
             if (dxr.flagbase.GetBool('annadies')) {
                 _MarkBingo("AnnaKillswitch");
-                Killer = player();
+                Killer = p;
             }
             break;
     }
@@ -1518,7 +1520,7 @@ static function MarkBingoAsFailed(coerce string eventname)
 
 static function MarkBingoFailedEvents(coerce string eventname)
 {
-    local string failed[6];
+    local string failed[7];
     local int i, num_failed;
 
     num_failed = GetBingoFailedEvents(eventname, failed);

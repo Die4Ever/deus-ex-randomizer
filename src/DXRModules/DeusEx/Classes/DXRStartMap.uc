@@ -1059,7 +1059,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 3: // Airfield
         switch(bingo_event)
         {
-        case "KnowYourEnemy":
         case "SimonsAssassination":
         case "MeetInjuredTrooper2_Played":
             return start_map > 31;
@@ -1080,6 +1079,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "UNATCOHandbook":
         case "ManderleyMail":
         case "LetMeIn":
+        case "KnowYourEnemy":
         case "ViewPortraits": // next location is 04_NYC_Bar
             return start_map > 31 && start_map < 36 && end_mission <= 3;// you can do these m03 unatco goals in m04 unatco, but if you start in helibase it's far
         }
@@ -1100,6 +1100,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "AlexCloset":
         case "TrophyHunter":
             return start_map > 41 && end_mission <= 4;
+        case "KnowYourEnemy":
+            return start_map > 41;
         }
         break;
 

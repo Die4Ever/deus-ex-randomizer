@@ -137,7 +137,7 @@ function BindControls(optional string action)
     Slider(f.settings.medbots, -1, 100);
 
     NewMenuItem("Augbots", "Percentage chance for a zero-heals medbot to spawn in a map if a regular one doesn't.");
-    Slider(f.moresettings.empty_medbots, 0, 100);
+    Slider(f.moresettings.empty_medbots, 0, 100, GetAugbotsHelpText());
 
     NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
     Slider(f.settings.repairbots, -1, 100);
@@ -228,7 +228,7 @@ function BindControls(optional string action)
     Slider(f.settings.enemiesshuffled, 0, 100);
 
     NewMenuItem("Enemy Weapons Variety %", "Should enemies be using weapons that normally exist in the map?");
-    Slider(f.moresettings.enemies_weapons, 0, 100);
+    Slider(f.moresettings.enemies_weapons, 0, 100, GetEnemyWeaponsVarietyHelpText());
 
     NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
     Slider(f.settings.bot_weapons, 0, 100);
@@ -288,10 +288,10 @@ function BindControls(optional string action)
     Slider(f.settings.maxskill, 50, 1000);
 
     NewMenuItem("Banned Skills %", "Chance of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skills, 0, 100);
+    Slider(f.settings.banned_skills, 0, 100, GetBannedSkillsHelpText());
 
     NewMenuItem("Banned Skill Levels %", "Chance of a certain level of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skill_levels, 0, 100);
+    Slider(f.settings.banned_skill_levels, 0, 100, GetBannedSkillLevelsHelpText());
 
     NewMenuItem("Skill Strength Rando %", "How much to randomize the strength of skills.");
     Slider(f.settings.skill_value_rando, 0, 100);// this is actually a wet/dry scale, so the range should be 0 to 100%
@@ -320,7 +320,7 @@ function BindControls(optional string action)
     Slider(f.settings.swapitems, 0, 100);
 
     NewMenuItem("Swap Containers %", "The chance for container positions to be swapped.");
-    Slider(f.settings.swapcontainers, 0, 100);
+    Slider(f.settings.swapcontainers, 0, 100,GetSwapContainersHelpText());
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
     Slider(f.settings.grenadeswap, 0, 100);
@@ -608,6 +608,60 @@ function string GetSkillLevelCostsHelpText(int mode)
             msg = "The cost of each skill level (for a single skill) are multiplied by a different random value.";
             break;
     }
+
+    return msg;
+}
+
+function string GetAugbotsHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of an augbot being spawned in each map.  Augbots will only be spawned if a medical bot was NOT spawned in the map (based on the 'Medbots %' setting).|n";
+    msg = msg $ "|n";
+    msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
+
+    return msg;
+}
+
+function string GetEnemyWeaponsVarietyHelpText()
+{
+    local string msg;
+
+    msg =       "How varied do you want the weapons to be in each map, relative to the original game?  At 0%, enemies will only be given weapons present in the original level.  ";
+    msg = msg $ "At 100%, enemies will be given weapons based on the weapon weighting decided by the randomizer.  Values in between will blend the two pools of weapon choices together.";
+
+    return msg;
+}
+
+function string GetSwapContainersHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of each container to be shuffled in the map.|n";
+    msg = msg $ "|n";
+    msg = msg $ "Containers include obvious things like wooden crates, but also include things like metal crates, barrels, wicker baskets, trash cans, and trash bags.";
+
+    return msg;
+}
+
+function string GetBannedSkillsHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of each skill to be entirely banned.  Bans will get rerolled along with skill costs.|n";
+    msg = msg $ "|n";
+    msg = msg $ "When banned, you will not be allowed to upgrade the skill at all.";
+
+    return msg;
+}
+
+function string GetBannedSkillLevelsHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for any skill level for each skill to be banned.  Bans will get rerolled along with skill costs.|n";
+    msg = msg $ "|n";
+    msg = msg $ "When a skill level is banned, you will not be allowed to upgrade the skill beyond that banned level.  The upgrade from Untrained to Trained will never be banned by this setting.";
 
     return msg;
 }
