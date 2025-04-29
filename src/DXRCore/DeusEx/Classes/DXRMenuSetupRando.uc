@@ -134,13 +134,13 @@ function BindControls(optional string action)
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.medbots, -1, 100);
+    Slider(f.settings.medbots, -1, 100,GetMedBotHelpText());
 
     NewMenuItem("Augbots", "Percentage chance for a zero-heals medbot to spawn in a map if a regular one doesn't.");
     Slider(f.moresettings.empty_medbots, 0, 100, GetAugbotsHelpText());
 
     NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.repairbots, -1, 100);
+    Slider(f.settings.repairbots, -1, 100,GetRepairBotHelpText());
 
     if(!#defined(vmd)) {
         NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal.");
@@ -246,7 +246,7 @@ function BindControls(optional string action)
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
-    Slider(f.settings.turrets_add, 0, 10000);
+    Slider(f.settings.turrets_add, 0, 10000, GetAddTurretsHelpText());
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
@@ -334,10 +334,10 @@ function BindControls(optional string action)
 
     BreakLine();
     NewMenuItem("Min Weapon Shot Time %", "The minimum shot time / firing speed for weapons.");
-    Slider(f.settings.min_weapon_shottime, 0, 500);
+    Slider(f.settings.min_weapon_shottime, 0, 500,GetShotTimeHelpText(false));
 
     NewMenuItem("Max Weapon Shot Time %", "The maximum shot time / firing speed for weapons.");
-    Slider(f.settings.max_weapon_shottime, 0, 500);
+    Slider(f.settings.max_weapon_shottime, 0, 500, GetShotTimeHelpText(true));
 
     NewMenuItem("JC's Prison Pocket", "Keep all your items when getting captured.");
     EnumOption("Disabled", 0, f.settings.prison_pocket);
@@ -618,7 +618,31 @@ function string GetAugbotsHelpText()
 
     msg =       "The chance of an augbot being spawned in each map.  Augbots will only be spawned if a medical bot was NOT spawned in the map (based on the 'Medbots %' setting).|n";
     msg = msg $ "|n";
+    msg = msg $ "A hint datacube will be spawned near the Augbot saying that it has been delivered nearby, which can help you find it.|n";
+    msg = msg $ "|n";
     msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
+
+    return msg;
+}
+
+function string GetRepairBotHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of a Repair Bot being spawned in each map.|n";
+    msg = msg $ "|n";
+    msg = msg $ "A hint datacube will be spawned near the Repair Bot saying that it has been delivered nearby, which can help you find it.|n";
+
+    return msg;
+}
+
+function string GetMedBotHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of a Medical Bot being spawned in each map.|n";
+    msg = msg $ "|n";
+    msg = msg $ "A hint datacube will be spawned near the Medical Bot saying that it has been delivered nearby, which can help you find it.|n";
 
     return msg;
 }
@@ -662,6 +686,33 @@ function string GetBannedSkillLevelsHelpText()
     msg =       "The chance for any skill level for each skill to be banned.  Bans will get rerolled along with skill costs.|n";
     msg = msg $ "|n";
     msg = msg $ "When a skill level is banned, you will not be allowed to upgrade the skill beyond that banned level.  The upgrade from Untrained to Trained will never be banned by this setting.";
+
+    return msg;
+}
+
+function string GetAddTurretsHelpText()
+{
+    local string msg;
+
+    msg =       "The chances to add extra turrets, cameras, and security computers.|n";
+    msg = msg $ "|n";
+    msg = msg $ "Every additional 100% gives another chance to spawn a turret/camera/computer combo (meaning more added turrets).";
+
+    return msg;
+}
+
+function string GetShotTimeHelpText(bool max)
+{
+    local string msg;
+
+
+    if (max){
+        msg =   "The highest the shot time value on weapons will be able to randomized to.|n";
+    } else {
+        msg =   "The lowest the shot time value on weapons will be able to randomized to.|n";
+    }
+    msg = msg $ "|n";
+    msg = msg $ "The 'shot time' is the amount of time it takes for a weapon to fire a single shot.  A lower shot time means the weapon fires more quickly (ie. has a faster fire rate).  A higher shot time means it fires slower (lower fire rate)";
 
     return msg;
 }
