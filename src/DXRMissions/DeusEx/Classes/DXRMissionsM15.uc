@@ -113,8 +113,8 @@ function int InitGoalsRev(int mission, string map)
 
     switch(map) {
     case "15_AREA51_BUNKER":
-        AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-6066,618.8,-46.73), rot(0, 199216, 0));
-        AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(1528,-2703,-288), rot(0, 24000, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-6066,618.8,-46.73), rot(0, 199216, 0)); //This rotation matches the PlayerStart, it's not a typo
+        AddGoalLocation("15_AREA51_BUNKER", "Tower", START_LOCATION, vect(-4960,2300,110), rot(0, -16000, 0));
         AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-979.896423,3249.618408,-472.401825), rot(0, 0, 0));
 
 

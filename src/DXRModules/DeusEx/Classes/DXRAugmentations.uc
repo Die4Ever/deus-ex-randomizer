@@ -467,7 +467,8 @@ simulated function RandoAug(Augmentation a)
 static simulated function string DescriptionLevelExtended(Actor act, int i, out string word, out float val, float defaultval, out string shortDisplay)
 {
     local Augmentation a;
-    local float f;
+    local float f, speed, dmg, blastRad;
+    local string r;
 
     if(val==-1) { // -1 is reserved for no aug
         if(val < defaultval) val=-1.01;
@@ -511,14 +512,42 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
     }
     else if( a.Class == class'#var(prefix)AugDefense') {
         word = "Distance";
-        shortDisplay=int(val / 16.0) $" ft";
+        shortDisplay=int(class'DXRActorsBase'.static.GetRealDistance(val)) @ class'DXRActorsBase'.static.GetDistanceUnit();
         return shortDisplay;
     }
     else if( a.Class == class'#var(prefix)AugDrone') {
-        // TODO: improve description
-        word = "Values";
-        shortDisplay=string(int(val));
-        return shortDisplay;
+        word = "Drone Stats:|n            Speed / Damage / Blast Radius";
+
+        f = val;
+
+        switch(i) {
+        case 0: r =       "Level 1:  "; break;
+        case 1: r = "|n    Level 2: "; break;
+        case 2: r = "|n    Level 3: "; break;
+        case 3: r = "|n    Level 4: "; break;
+        }
+
+        if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {
+            //Keep in line with BalancePlayer::SetDroneStats()
+            speed = 5 * val;
+            dmg = 2 * val;
+            blastRad = 4 * val;
+        } else {
+            speed = 3 * val;
+            dmg = 5 * val;
+            blastRad = 8 * val;
+        }
+        speed = class'DXRActorsBase'.static.GetRealSpeed(speed);
+        blastRad = class'DXRActorsBase'.static.GetRealDistance(blastRad);
+
+        r = r $ int(speed) @ class'DXRActorsBase'.static.GetSpeedUnit();
+        r = r $ " / ";
+        r = r $ int(dmg);
+        r = r $ " / ";
+        r = r $ int(blastRad) @ class'DXRActorsBase'.static.GetDistanceUnit();
+
+        shortDisplay=string(int(dmg)); //Show damage as the short value
+        return r;
     }
     else if( a.Class == class'#var(prefix)AugHealing') {
         if(#defined(injections)) word = "Max Health Cap";
@@ -576,7 +605,7 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         if(!#defined(balance) && i<2) return "--";
         if(val < 0)
             val = 0;
-        shortDisplay=int(val / 16.0) $" ft";
+        shortDisplay=int(class'DXRActorsBase'.static.GetRealDistance(val)) @ class'DXRActorsBase'.static.GetDistanceUnit();
         return shortDisplay;
     }
     else if( a.Class == class'#var(prefix)AugHeartLung') {

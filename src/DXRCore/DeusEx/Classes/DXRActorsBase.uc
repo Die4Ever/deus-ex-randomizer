@@ -2036,3 +2036,63 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
 
     return Spawn(what,,, loc, spawnedRot);
 }
+
+//Unit Conversion functions
+static function float GetRealDistance(float dist){
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        //1 foot is 16 units
+        return dist/16.0;
+    } else {
+        //1 meter is 3.281 feet, so...
+        return dist/52.496;
+    }
+}
+
+static function string GetDistanceUnit()
+{
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        return "ft";
+    } else {
+        return "m";
+    }
+}
+
+//Speed is in unreal units per second
+static function float GetRealSpeed(float speed){
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        //miles per hour
+        return speed/23.472; //divide feet/second by 1.467 to get to miles per hour
+    } else {
+        //meters per second
+        return GetRealDistance(speed); //Straight conversion of units to meters is enough
+    }
+}
+
+
+static function string GetSpeedUnit()
+{
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        return "mph";
+    } else {
+        return "m/s";
+    }
+}
+
+static function float GetRealMass(float mass){
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        //Mass is directly in pounds
+        return mass;
+    } else {
+        //1 kg is 2.205 lb
+        return mass/2.205;
+    }
+}
+
+static function string GetMassUnit()
+{
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        return "lb";
+    } else {
+        return "kg";
+    }
+}

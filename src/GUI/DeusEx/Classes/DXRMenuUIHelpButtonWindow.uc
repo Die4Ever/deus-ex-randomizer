@@ -1,6 +1,7 @@
 class DXRMenuUIHelpButtonWindow extends MenuUIActionButtonWindow;
 
 var string HelpTitle,HelpText;
+var int row;
 
 function SetHelpTitle(string title)
 {

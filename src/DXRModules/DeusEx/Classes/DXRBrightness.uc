@@ -29,6 +29,7 @@ function PreFirstEntry()
     //Save information about lights with fog effects
     foreach AllActors(class'Light',lght){
         class'DXRStoredLightFog'.static.Init(lght);
+        class'DXRStoredLightType'.static.Init(lght);
     }
 }
 
@@ -41,6 +42,7 @@ function AnyEntry()
 
     IncreaseBrightness(GetSavedBrightnessBoost());
     ApplyFog(class'MenuChoice_Fog'.default.enabled);
+    ApplyEpilepsySafe(class'MenuChoice_Epilepsy'.default.enabled);
 }
 
 //TODO: To be removed when the ZoneBrightnessData is stripped out
@@ -118,6 +120,23 @@ function ApplyFog(bool enabled)
         lght.VolumeBrightness=brightness;
         lght.VolumeFog=fog;
         lght.VolumeRadius=radius;
+    }
+}
+
+function ApplyEpilepsySafe(bool enabled)
+{
+    local DXRStoredLightType slt;
+    local Light lght;
+
+    foreach AllActors(class'DXRStoredLightType',slt){
+        lght = Light(slt.Owner);
+        if (lght==None) continue;
+
+        if (enabled){
+            lght.LightType = LT_Pulse; //more gentle light mode
+        } else {
+            lght.LightType = slt.origLightType;
+        }
     }
 }
 

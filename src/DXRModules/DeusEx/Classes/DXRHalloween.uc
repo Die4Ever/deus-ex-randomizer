@@ -42,10 +42,7 @@ function MapFixes()
     case "01_NYC_UNATCOHQ":
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
-        foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
-            carc.bNotDead = true;
-            carc.itemName = ReplaceText(carc.itemName, " (Dead)", " (Unconscious)");
-        }
+        //Make people fearless so they don't get spooked by Mr. H
         foreach AllActors(class'ScriptedPawn', sp) {
             if(sp.bInvincible) {
                 RemoveFears(sp);

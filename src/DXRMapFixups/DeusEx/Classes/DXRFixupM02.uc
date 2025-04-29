@@ -19,6 +19,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)SkillAwardTrigger sat;
     local #var(prefix)FordSchick ford;
     local #var(prefix)MJ12Troop troop;
     local #var(prefix)AllianceTrigger at;
@@ -76,6 +77,11 @@ function PreFirstEntryMapFixes()
             k.Description = "Control Room Door Key";
             if(dxr.flags.settings.keysrando > 0)
                 GlowUp(k);
+
+            //Make the ambrosia worth more so that there's more incentive to actually do your job?
+            foreach AllActors(class'#var(prefix)SkillAwardTrigger', sat, 'AmbrosiaTagged'){
+                sat.skillPointsAdded=300; //Default is 150
+            }
         }
 
         if(dxr.flags.settings.goals>0 || class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {

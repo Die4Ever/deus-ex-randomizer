@@ -253,7 +253,6 @@ function PreFirstEntry()
     FixAutoTurrets();
     FixAlarmUnits();
     SpawnDatacubes();
-    AntiEpilepsy();
     FixHolograms();
     FixShowers();
 
@@ -793,7 +792,20 @@ function SpeedUpUNATCOFurnaceVent()
             break;
         }
     }
+}
 
+function PreventUNATCOZombieDanger()
+{
+    local #var(DeusExPrefix)Carcass carc;
+    local #var(prefix)ScriptedPawn sp;
+
+    //Only if zombie reanimation is enabled
+    if (dxr.flags.moresettings.reanimation<=0) return;
+
+    foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
+        carc.bNotDead = true;
+        carc.itemName = ReplaceText(carc.itemName, " (Dead)", " (Unconscious)");
+    }
 }
 
 function MakeTurretsNonHostile()
@@ -1059,7 +1071,7 @@ function OverwriteDecorations(bool bFirstEntry)
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
             d.bPushable = DecorationsOverwrites[i].bPushable;
         }
-        if(#var(prefix)Van(d) != None) {
+        if(#var(prefix)Van(d) != None || #var(prefix)CarWrecked(d) != None) {
             d.bBlockSight = true;
         }
     }
@@ -1211,24 +1223,6 @@ function SpawnDatacubes()
             l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", plaintextTag: "$dc.plaintextTag$", location: "$loc);
         }
         else warning("failed to spawn datacube at "$loc$", text: \""$add_datacubes[i].text$"\", image: "$dc.imageClass);
-    }
-}
-
-function AntiEpilepsy()
-{
-    local Light l;
-
-    if (!class'MenuChoice_Epilepsy'.default.enabled){
-        return;
-    }
-
-
-    foreach AllActors(class'Light',l){
-        if (l.LightType==LT_Strobe){
-            l.LightType=LT_Pulse;
-        } else if (l.LightType==LT_Flicker){
-            l.LightType=LT_Pulse;
-        }
     }
 }
 

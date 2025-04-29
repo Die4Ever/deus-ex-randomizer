@@ -362,7 +362,7 @@ function vanilla_keys_rules()
 
     case "10_Paris_Chateau":
         keys_rules[i].item_name = 'duclare_chateau';
-        keys_rules[i].min_pos = vect(-99999, -99999, -125);
+        keys_rules[i].min_pos = vect(-99999, -99999, 300); //Only on the second floor
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
@@ -852,7 +852,7 @@ function revision_keys_rules()
 
     case "10_Paris_Chateau":
         keys_rules[i].item_name = 'duclare_chateau';
-        keys_rules[i].min_pos = vect(-99999, -99999, -125);
+        keys_rules[i].min_pos = vect(-99999, -99999, 300); //Only on the second floor
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;

@@ -12,6 +12,7 @@ var int gamemode_enum, loadout_enum, autosave_enum, difficulty_enum, mirroredmap
 
 enum ERandoMessageBoxModes
 {
+    RMB_None,
     RMB_MaxRando,
     RMB_Advanced,
     RMB_NewGame,// choosing Extreme or Impossible, or starting with splits with a different flagshash
@@ -74,7 +75,7 @@ function BindControls(optional string action)
     mirroredmaps_wnd = CreateMirroredMapsSlider(self, f);
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.  Leave it blank for a random seed.");
-    sseed = EditBox("", "1234567890");
+    sseed = EditBox("", "1234567890", GetSeedHelpText());
     if( sseed != "" ) {
         f.seed = int(sseed);
         dxr.seed = f.seed;
@@ -125,10 +126,10 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
 {
 #ifdef injections
     local DXRAutosave autosave;
-    local int autosave_enum;
+    local int in_autosave_enum;
 
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
-    autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
+    in_autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
     slf.EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
     slf.EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.FirstEntry));
     slf.EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
@@ -138,7 +139,7 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
     slf.EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
     slf.EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
     slf.EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
-    return autosave_enum;
+    return in_autosave_enum;
 #endif
 }
 
@@ -170,13 +171,13 @@ static function int CreateOnlineFeaturesEnum(DXRMenuBase slf, DXRFlags f)
     else
         temp = 0;
     e = slf.NewMenuItem("Online Features", "Death Markers, send error reports,"$Chr(10)$" and get notified about updates!");
-    if( slf.EnumOption("All Enabled", 2, temp) ) {
+    if( slf.EnumOption("All Enabled", 2, temp, GetOnlineFeaturesHelpText(2)) ) {
         t.set_enabled(true, true);
     }
-    if( slf.EnumOption("Enabled, Death Markers Hidden", 1, temp) ) {
+    if( slf.EnumOption("Enabled, Death Markers Hidden", 1, temp, GetOnlineFeaturesHelpText(1)) ) {
         t.set_enabled(true, false);
     }
-    if( slf.EnumOption("Disabled", 0, temp) ) {
+    if( slf.EnumOption("Disabled", 0, temp, GetOnlineFeaturesHelpText(0)) ) {
         t.set_enabled(false, true);
     }
     return e;
@@ -371,6 +372,15 @@ function DoAdvancedButtonConfirm()
 #endif
 }
 
+function bool CheckClickHelpBtn( Window buttonPressed )
+{
+    if (Super.CheckClickHelpBtn(buttonPressed)){
+        nextScreenNum=RMB_None; //Don't go anywhere after interacting with a help window button
+        return true;
+    }
+    return false;
+}
+
 event bool BoxOptionSelected(Window button, int buttonNumber)
 {
     root.PopWindow();
@@ -390,6 +400,9 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
             if (buttonNumber==0){
                 DoNewGameScreen();
             }
+            return true;
+        case RMB_None:
+            //Do nothing
             return true;
     }
 
@@ -425,6 +438,38 @@ function NewGameSetup(float difficulty)
         newGame.SetDifficulty(difficulty);
         newGame.Init(dxr);
     }
+}
+
+function string GetSeedHelpText()
+{
+    local string msg;
+
+    msg =       "The 'Seed' is the number used to initialize all the randomization in the game.  Given the same seed and settings, you will be able to replay the exact same game - or race against other players!|n";
+    msg = msg $ "|n";
+    msg = msg $ "If the Seed field is left blank, a random seed will be chosen for you.";
+
+    return msg;
+}
+
+static function string GetOnlineFeaturesHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode){
+        case 0: //Disabled
+            msg = msg $ "The game will not communicate with the Deus Ex Randomizer server at all.  No messages will be posted on the DX Rando Activity Mastodon feed, and no death markers will appear.";
+            break;
+        case 1: //Enabled (Death Markers Hidden)
+            msg = msg $ "The game will occasionally send messages to the Deus Ex Randomizer server to log deaths and certain actions.  Death messages will be posted on the DX Rando Activity Mastodon feed,"$" along with posts about certain things that the player does.  Death markers will NOT show up in game.";
+            break;
+        case 2: //Enabled
+            msg = msg $ "The game will occasionally send messages to the Deus Ex Randomizer server to log deaths and certain actions.  Death messages will be posted on the DX Rando Activity Mastodon feed,"$" along with posts about certain things that the player does.  Death markers will show up in game where players have recently died.";
+            break;
+    }
+
+    return msg;
 }
 
 defaultproperties

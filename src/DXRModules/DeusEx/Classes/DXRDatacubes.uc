@@ -730,6 +730,13 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        //Not in the aug upgrade can container
+        datacubes_rules[i].item_name = '15_Datacube08';
+        datacubes_rules[i].min_pos = vect(-5035, -3065, -700);
+        datacubes_rules[i].max_pos = vect(-4985, -3145, -650);
+        datacubes_rules[i].allow = false;
+        i++;
+
         //anywhere before the stairwell blastdoor
         datacubes_rules[i].item_name = '15_Datacube08';
         datacubes_rules[i].min_pos = vect(-5655, -5190, -1700);
@@ -742,6 +749,13 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].item_name = '15_Datacube19';
         datacubes_rules[i].min_pos = vect(-3868,-5302,-2096);
         datacubes_rules[i].max_pos = vect(-2435,-3906,-1442);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Not in the aug upgrade can container
+        datacubes_rules[i].item_name = '15_Datacube19';
+        datacubes_rules[i].min_pos = vect(-5035, -3065, -700);
+        datacubes_rules[i].max_pos = vect(-4985, -3145, -650);
         datacubes_rules[i].allow = false;
         i++;
 
@@ -1578,6 +1592,13 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        //Not in the aug upgrade can container
+        datacubes_rules[i].item_name = '15_Datacube08';
+        datacubes_rules[i].min_pos = vect(-5005, -3035, -620);
+        datacubes_rules[i].max_pos = vect(-4953, -3117, -680);
+        datacubes_rules[i].allow = false;
+        i++;
+
         //anywhere before the stairwell blastdoor
         datacubes_rules[i].item_name = '15_Datacube08';
         datacubes_rules[i].min_pos = vect(-5655, -5190, -1700);
@@ -1590,6 +1611,13 @@ function revision_datacubes_rules()
         datacubes_rules[i].item_name = '15_Datacube19';
         datacubes_rules[i].min_pos = vect(-3781,-6090,-99999);
         datacubes_rules[i].max_pos = vect(-2965,-4909,99999);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Not in the aug upgrade can container
+        datacubes_rules[i].item_name = '15_Datacube19';
+        datacubes_rules[i].min_pos = vect(-5005, -3035, -620);
+        datacubes_rules[i].max_pos = vect(-4953, -3117, -680);
         datacubes_rules[i].allow = false;
         i++;
 

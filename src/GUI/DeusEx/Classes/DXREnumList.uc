@@ -5,8 +5,11 @@ var MenuUIScrollAreaWindow winScroll;
 var Window controlsParent;
 
 var int iEnum;
-var int button_y_pos, x_pad, y_pad, help_pad;
+var int button_y_pos, x_pad, y_pad;
 var bool bLeftEdgeShort;
+
+const HELP_BTN_WIDTH = 21;
+const HELP_BTN_PAD = 5;
 
 function CreateControls()
 {
@@ -69,9 +72,9 @@ function AddButton(string text, optional string help)
         helpBtnWidth=0;
         mainBtnWidth=controlsParent.width - x_pad*2;
     } else {
-        helpBtnWidth=25;
-        mainBtnWidth=controlsParent.width - helpBtnWidth - help_pad - x_pad*2;
-        help_x_pos = main_x_pos + mainBtnWidth + help_pad;
+        helpBtnWidth=HELP_BTN_WIDTH;
+        mainBtnWidth=controlsParent.width - helpBtnWidth - HELP_BTN_PAD - x_pad*2;
+        help_x_pos = main_x_pos + mainBtnWidth + HELP_BTN_PAD;
     }
 
     mainBtn = MenuUIActionButtonWindow(controlsParent.NewChild(Class'MenuUIActionButtonWindow'));
@@ -148,6 +151,5 @@ defaultproperties
     button_y_pos=20
     x_pad=20
     y_pad=10
-    help_pad=10
     bLeftEdgeShort=true
 }

@@ -3,6 +3,8 @@ class LeMerchant extends Merchant;
 
 defaultproperties
 {
+    FamiliarName="Le Merchant"
+    UnfamiliarName="Le Merchant"
     MultiSkins(0)=Texture'DeusExCharacters.Skins.ChefTex0'
     MultiSkins(7)=Texture'DeusExCharacters.Skins.ChefTex3'
     CarcassType=Class'LeMerchantCarcass'

@@ -25,6 +25,7 @@ function PostFirstEntryMapFixes()
     switch(dxr.localURL) {
     case "03_NYC_UNATCOHQ":
         FixUNATCORetinalScanner();
+        PreventUNATCOZombieDanger();
         break;
     case "03_NYC_BatteryPark":
         player().StartDataLinkTransmission("dl_batterypark");
@@ -171,7 +172,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
+        if(class'MenuChoice_BalanceMaps'.static.MajorEnabled() &&
+           class'DXRBacktracking'.static.bSillyChoppers()) {
+            //Only stop the platforms from falling if you're in a game mode that requires backtracking
             foreach AllActors(class'Trigger', t) {
                 //disable the platforms that fall when you step on them
                 if( t.Event == 'firstplatform' || t.Event == 'platform2' ) {
@@ -384,6 +387,16 @@ function PreFirstEntryMapFixes()
         } else {
             //Revision
             AddSwitch( vect(3745,-2592,140), rot(0, 0, 0), 'BathroomDoor' );
+        }
+
+        // change "MolePerson" (un)familiarNames to "Mole Person". he's in the wood shack near the Terrorist Leader
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc) {
+            if (hc.UnfamiliarName == "MolePerson") {
+                hc.UnfamiliarName = "Mole Person";
+            }
+            if (hc.FamiliarName == "MolePerson") {
+                hc.FamiliarName = "Mole Person";
+            }
         }
 
         Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply

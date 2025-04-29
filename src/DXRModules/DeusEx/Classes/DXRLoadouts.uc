@@ -116,6 +116,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("Stick with the prod!");
         AddInvBan(class'Engine.Weapon');
         AddInvBan(class'Engine.Ammo');
+        AddInvBan(class'#var(prefix)WeaponMod');
         AddSkillBan(class'#var(prefix)SkillWeaponHeavy');
         AddSkillBan(class'#var(prefix)SkillWeaponRifle');
         AddSkillBan(class'#var(prefix)SkillWeaponPistol');
@@ -244,6 +245,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("Rather than offer you the illusion of free choice, I will take the liberty of choosing for you...");
         AddInvBan(class'Engine.Weapon');
         AddInvBan(class'Engine.Ammo');
+        AddInvBan(class'#var(prefix)WeaponMod');
         AddSkillBan(class'#var(prefix)SkillWeaponHeavy');
         AddSkillBan(class'#var(prefix)SkillWeaponPistol');
         AddSkillBan(class'#var(prefix)SkillWeaponRifle');
@@ -261,6 +263,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("Grenades Only!");
         AddInvBan(class'Engine.Weapon');
         AddInvBan(class'Engine.Ammo');
+        AddInvBan(class'#var(prefix)WeaponMod');
         AddSkillBan(class'#var(prefix)SkillWeaponHeavy');
         AddSkillBan(class'#var(prefix)SkillWeaponRifle');
         AddSkillBan(class'#var(prefix)SkillWeaponPistol');
