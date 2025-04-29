@@ -6,7 +6,7 @@ function PreFirstEntryMapFixes()
     local BarrelAmbrosia ambrosia;
     local Trigger t;
     local NYPoliceBoat b;
-    local DeusExMover d;
+    local #var(DeusExPrefix)Mover d;
     local #var(prefix)NanoKey k;
     local CrateExplosiveSmall c;
     local #var(prefix)Terrorist nsf;
@@ -64,7 +64,7 @@ function PreFirstEntryMapFixes()
     //#region Battery Park
     case "02_NYC_BATTERYPARK":
 
-        foreach AllActors(class'DeusExMover', d) {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
             if( d.Name == 'DeusExMover19' ) {
                 d.Tag = 'ControlRoomDoor';
                 if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) d.KeyIDNeeded = 'ControlRoomDoor'; // if we aren't spawning the key, don't make it show the "Key Unacquired" text
@@ -114,7 +114,7 @@ function PreFirstEntryMapFixes()
         } else {
             //Revision maps
             s = AddSwitch( vect(480,-809,-350), rot(0, -16384, 0), 'AmbrosiaGate');  //Switch to open the gate near the vanilla ambrosia location from inside
-            d = DeusExMover(findNearestToActor(class'DeusExMover',s));
+            d = #var(DeusExPrefix)Mover(findNearestToActor(class'#var(DeusExPrefix)Mover',s));
             d.Tag='AmbrosiaGate';
 
             //The Revision map doesn't have the boat MapExit
@@ -186,7 +186,7 @@ function PreFirstEntryMapFixes()
             light.LightRadius=64;
 
             // fix collision with the fence https://github.com/Die4Ever/deus-ex-randomizer/issues/665
-            foreach AllActors(class'DeusExMover', d) {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
                 if(d.Event == 'BlewFence') break;
             }
             class'FillCollisionHole'.static.CreateLine(self, vectm(-2184, 1266.793335, 79.291428), vectm(-2050, 1266.793335, 79.291428), 10, 80, d);
@@ -206,7 +206,7 @@ function PreFirstEntryMapFixes()
         //Both vanilla and Revision:
 
         //Remove the small boxes in the sewers near the ladder so that bigger boxes don't shuffle into those spots
-        foreach AllActors(class'DeusExMover',d,'DrainGrate'){break;}
+        foreach AllActors(class'#var(DeusExPrefix)Mover',d,'DrainGrate'){break;}
         foreach d.RadiusActors(class'#var(prefix)BoxSmall',bs,800){bs.Destroy();}
 
         //A switch in the sewer swimming path to allow backtracking
@@ -326,7 +326,7 @@ function PreFirstEntryMapFixes()
             //CreateAnsweringMachineConversation(tad);
             //tad.ConBindEvents();
 
-            foreach RadiusActors(class'DeusExMover', d, 1.0, vectm(-304.0, -3000.0, 64.0)) {
+            foreach RadiusActors(class'#var(DeusExPrefix)Mover', d, 1.0, vectm(-304.0, -3000.0, 64.0)) {
                 // interpolate Paul's bathroom door to its starting position so it doesn't close instantaneously when frobbed
                 d.InterpolateTo(1, 0.0);
                 break;
@@ -360,11 +360,11 @@ function PreFirstEntryMapFixes()
             }
 
             //Another store room with the same key as AugStore in the RevisionMaps
-            foreach AllActors(class'DeusExMover', d, 'SwankyStore') {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'SwankyStore') {
                 d.bFrobbable = true;
             }
         }
-        foreach AllActors(class'DeusExMover', d, 'AugStore') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'AugStore') {
             d.bFrobbable = true;
         }
 
@@ -455,7 +455,7 @@ function PreFirstEntryMapFixes()
 
     //#region Smuggler
     case "02_NYC_SMUG":
-        foreach AllActors(class'DeusExMover', d,'botordertrigger') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', d,'botordertrigger') {
             d.tag = 'botordertriggerDoor';
         }
 
@@ -502,7 +502,7 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(true, true, false); // the free clinic has one desk lamp, at a desk no one is using
 
         // the free clinic shares a KeyID with the MJ12 facility beneath unatco
-        foreach AllActors(class'NanoKey', k) {
+        foreach AllActors(class'#var(prefix)NanoKey', k) {
             if (k.KeyID == 'Cabinet') {
                 k.KeyID = 'MedCabDoor';
             }
