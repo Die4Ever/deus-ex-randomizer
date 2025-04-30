@@ -346,7 +346,7 @@ function BindControls(optional string action)
 
     NewGroup("Augmentations");
 
-    NewMenuItem("Starting Aug Level", "What level your starting augs should start at.");
+    NewMenuItem("Starting Aug Level", "What level your starting augs (Check your loadout!) should start at.");
     Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
