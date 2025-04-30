@@ -719,6 +719,9 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.medbots = 0;
         settings.repairbots = 0;
         moresettings.empty_medbots = 0;
+        settings.banned_skills = 0; //Don't ban skills entirely
+        moresettings.aug_loc_rando = 100;
+        settings.skills_reroll_missions = 0; //Don't reroll skills (so the new game skill costs match in-game)
     }
     else if(gamemode == HalloweenMode) {
         //moresettings.camera_mode = 1;// 3rd person? or maybe just stick to 1st person lol
