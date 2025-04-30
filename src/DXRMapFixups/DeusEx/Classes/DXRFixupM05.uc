@@ -409,6 +409,36 @@ function PostFirstEntryMapFixes()
 }
 //#endregion
 
+function Inventory FindPrisonPocketItem()
+{
+    local #var(PlayerPawn) p;
+    local DeusExRootWindow root;
+    local Inventory beltItem;
+    local int i;
+
+    p = player();
+
+    root = DeusExRootWindow(p.rootWindow);
+
+    if (root==None){
+        return None;
+    }
+
+    //Items are in slots 1-9, Keyring is in 0
+    for(i=0;i<9;i++){
+        beltItem=root.hud.belt.GetObjectFromBelt(i+1);
+
+        if (beltItem==None) continue;
+
+        //Is it a single slot item?
+        if (beltItem.invSlotsX==1 && beltItem.invSlotsY==1){
+            return beltItem;
+        }
+    }
+
+    return None;
+}
+
 //#region Balance Jailbreak
 function BalanceJailbreak()
 {
@@ -427,6 +457,9 @@ function BalanceJailbreak()
     local string freebieLocNames[4];
     local vector freebieLocs[4];
     local DynamicLight dl;
+    local #var(prefix)Toilet jailToilet;
+    local Pickup origPickup;
+    local vector toiletLoc;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -437,7 +470,7 @@ function BalanceJailbreak()
     // Revision also removes ammo and credits, and spawns special weapons from Paul if you saved him
     // This logic will cause that to not happen (for now)
     p = player();
-    if(dxr.flags.settings.prison_pocket <= 0) {
+    if(dxr.flags.settings.prison_pocket <= 1) { //Disabled (0) or Unaugmented (1)
         if(DeusExWeapon(p.inHand) != None)
             DeusExWeapon(p.inHand).LaserOff();
 
@@ -448,6 +481,28 @@ function BalanceJailbreak()
                 EquipLocation = missions.GetSpoiler(i).goalLocation;
             }
         }
+
+        //Unaugmented Prison Pocket (Keep the first single-slot item in your belt)
+        if (dxr.flags.settings.prison_pocket == 1) {
+            nextItem = FindPrisonPocketItem();
+
+            if (nextItem!=None){
+                jailToilet = #var(prefix)Toilet(findNearestToActor(class'#var(prefix)Toilet',p));
+                toiletLoc = jailToilet.Location;
+                toiletLoc.Z = toiletLoc.Z + jailToilet.CollisionHeight + nextItem.CollisionHeight + 5;
+                toiletLoc = toiletLoc + (vect(0,-10,0) >> jailToilet.Rotation); //Offset the item to be more forward on the seat
+
+                origPickup = Pickup(nextItem);
+                if (origPickup!=None && origPickup.NumCopies>1){
+                    //If it's a stack, break one out and leave it in the cell
+                    origPickup.NumCopies--;
+                    nextItem = Spawn(origPickup.class,,,toiletLoc); //Spawned in the right location, but MoveNextItemTo will apply everything else
+                }
+
+                MoveNextItemTo(nextItem,toiletLoc,'player_prison_pocket');
+            }
+        }
+
         num=0;
         l("BalanceJailbreak EquipLocation == " $ EquipLocation);
         if(EquipLocation == "Armory")

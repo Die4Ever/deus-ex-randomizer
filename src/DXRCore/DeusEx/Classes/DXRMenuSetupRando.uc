@@ -340,9 +340,9 @@ function BindControls(optional string action)
     Slider(f.settings.max_weapon_shottime, 0, 500, GetShotTimeHelpText(true));
 
     NewMenuItem("JC's Prison Pocket", "Keep all your items when getting captured.");
-    EnumOption("Disabled", 0, f.settings.prison_pocket);
-    //EnumOption("Unaugmented", 1, f.settings.prison_pocket);// TODO: can keep the item in the top left inventory slot, if it's 1 slot
-    EnumOption("Augmented", 100, f.settings.prison_pocket);// maybe the number could be set to the number of items to keep?
+    EnumOption("Disabled", 0, f.settings.prison_pocket,GetPrisonPocketHelpText(0));
+    EnumOption("Unaugmented", 1, f.settings.prison_pocket,GetPrisonPocketHelpText(1));// Keep the first single-slot item in your belt
+    EnumOption("Augmented", 100, f.settings.prison_pocket,GetPrisonPocketHelpText(100));// maybe the number could be set to the number of items to keep?
 
     NewGroup("Augmentations");
 
@@ -715,6 +715,20 @@ function string GetShotTimeHelpText(bool max)
     msg = msg $ "The 'shot time' is the amount of time it takes for a weapon to fire a single shot.  A lower shot time means the weapon fires more quickly (ie. has a faster fire rate).  A higher shot time means it fires slower (lower fire rate)";
 
     return msg;
+}
+
+function string GetPrisonPocketHelpText(int val)
+{
+    switch (val)
+    {
+        case 0: //Disabled
+            return "If taken to prison, all of your items will be taken away from you.";
+        case 1: //Unaugmented
+            return "If taken to prison, all items will be taken away from you except for the first single slot item in your belt.";
+        case 100: //Augmented
+            return "If taken to prison, you will keep all of your items.";
+    }
+    return "";
 }
 
 //#endregion
