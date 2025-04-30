@@ -375,6 +375,15 @@ function PreFirstEntryMapFixes()
     }
 }
 
+function SpawnWeldPointBlock(Actor a, vector loc, int rad, int height)
+{
+    local Actor block;
+
+    block = Spawn(class'DynamicBlockMonsters',,, loc);
+    block.SetBase(a);
+    block.SetCollisionSize(rad, height);
+}
+
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local #var(prefix)Keypad1 keypad;
@@ -408,9 +417,19 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.name=="Weld Point 5")
     {
         class'DXRHoverHint'.static.Create(self, g.name, g.actors[0].a.Location, 40, 40, g.actors[0].a);
-        a = Spawn(class'DynamicBlockMonsters',,, g.actors[0].a.Location);
-        a.SetBase(g.actors[0].a);
-        a.SetCollisionSize(80, 100);
+
+        switch (Loc.name){
+            case "Engine Control Room":
+                //on the ceiling in the control tower
+                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location,  100, 50);
+                break;
+            default:
+                //Along the walls
+                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location + (vect(0,40,0) >> g.actors[0].a.Rotation),  40, 80);
+                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location,  40, 80);
+                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location + (vect(0,-40,0) >> g.actors[0].a.Rotation),  40, 80);
+                break;
+        }
     }
 }
 

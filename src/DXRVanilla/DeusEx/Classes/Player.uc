@@ -2299,6 +2299,9 @@ function PreTravel()
         root.ClearWindowStack();
     }
 
+    //Disable autorun
+    bAutorun=False;
+
     if (inHand!=None && inHand.IsA('DeusExWeapon'))
     {
         //Turn the laser off to prevent the laser spot from sticking around

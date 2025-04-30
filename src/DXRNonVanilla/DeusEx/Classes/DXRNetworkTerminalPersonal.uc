@@ -90,6 +90,15 @@ function CreateHackWindow()
     }
 }
 
+function CreateHackAccountsWindow()
+{
+    Super.CreateHackAccountsWindow();
+    if (winHackAccounts != None)
+    {
+        CloseKnownAccountsWindow();
+    }
+}
+
 function LogInAs(String user, String pass)
 {
     local #var(prefix)ComputerScreenLogin login;

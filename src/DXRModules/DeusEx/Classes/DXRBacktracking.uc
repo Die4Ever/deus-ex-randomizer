@@ -943,7 +943,12 @@ function SetDestination(Actor p, string destURL, name dest_actor_name, optional 
 #endif
 }
 
-function bool bSillyChoppers()
+static function bool bSillyChoppers()
 {// used for backtracking to prevent double Jocks, not used for repeat forwardtracking because that would only be seen by cheaters or saves from previous versions, and this function would cause softlocks for them
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+    if (dxr==None) return false;
+
     return dxr.flags.IsBingoMode() || dxr.flags.IsEntranceRando();
 }

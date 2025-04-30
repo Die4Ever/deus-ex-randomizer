@@ -147,6 +147,7 @@ function bool CheckReanimateCorpse(#var(DeusExPrefix)Carcass carc, float time)
     // return true to compress the array
     if(carc == None) return true;
     if(carc.bDeleteMe) return true;
+    if(!carc.bHidden && carc.bNotDead) return true; //only allow hidden "unconscious" bodies to respawn
 
     // wait for Zombie Time!
     if(time > curtime) return false;
@@ -188,7 +189,8 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local class<Actor> livingClass;
     local vector respawnLoc;
     local ScriptedPawn sp,otherSP;
-    local int i;
+    local class<DeusExFragment> fragClass;
+    local int i, numFrags;
     local Inventory item, nextItem;
     #ifndef vmd
     local DXRFashionManager fashion;
@@ -318,11 +320,25 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     module.GiveItem(sp,class'WeaponZombieSwipe');
     sp.bKeepWeaponDrawn=True;
 
-    //Pop out a little meat for fun
-    for (i=0; i<10; i++)
-    {
-        if (FRand() > 0.2)
-            carc.spawn(class'FleshFragment',,,carc.Location);
+    //Pop out an appropriate fragment type
+    if (carc.bNotDead){
+        if (carc.bHidden){
+            //Hidden "unconscious" bodies dig out of the ground
+            fragClass = class'DirtFragment';
+            numFrags=20;
+        }
+    } else {
+        //Dead bodies explode meat
+        fragClass = class'FleshFragment';
+        numFrags=10;
+    }
+
+    if (fragClass!=None && numFrags>0){
+        for (i=0; i<numFrags; i++)
+        {
+            if (FRand() > 0.2)
+                carc.spawn(fragClass,,,carc.Location);
+        }
     }
 
     carc.Destroy();

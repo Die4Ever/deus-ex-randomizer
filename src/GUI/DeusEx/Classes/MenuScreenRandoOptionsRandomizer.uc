@@ -20,6 +20,10 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_ShowHints');
     CreateChoice(class'MenuChoice_ShowDeathHints');
     CreateChoice(class'MenuChoice_JCGenderSkin');
+
+    if(#defined(vanilla)){
+        CreateChoice(class'MenuChoice_MeasureUnits');
+    }
 }
 
 

@@ -5,6 +5,7 @@ var int time_to_next_wave;
 var config int time_between_waves;
 var bool in_wave;
 var int time_in_wave;
+var int last_num_pawns_reported;
 var config int time_before_damage;
 var config int damage_timer;
 var config int time_before_teleport_enemies;
@@ -354,6 +355,7 @@ function AnyEntry()
     local DXREnemies dxre;
     local Inventory item;
     local int i;
+    local #var(prefix)SkillAwardTrigger sat;
 
     if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
@@ -407,6 +409,15 @@ function AnyEntry()
             }
         }
     }
+
+    foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat)
+    {
+        if (sat.Tag!='templar_upload' && sat.skillPointsAdded==500){
+            //The vanilla "Critical Location Bonus" for finding the computer
+            sat.Destroy();
+        }
+    }
+
 
     SetTimer(1.0, true);
 
@@ -475,8 +486,7 @@ function InWaveTick()
 
     if( time_in_wave >= time_before_damage && time_in_wave%damage_timer == 0 ) {
         player().TakeDamage(1, player(), player().Location, vect(0,0,0), 'Shocked');
-        PlaySound(sound'ProdFire');
-        PlaySound(sound'MalePainSmall');
+        player().PlaySound(sound'ProdFire', SLOT_None,,, 256);
     }
     else {
         NotifyPlayerTimer(time_before_damage-time_in_wave, (time_before_damage-time_in_wave) $ " seconds until shocking.");
@@ -494,6 +504,37 @@ function OutOfWaveTick()
     if( time_to_next_wave <= 0 ) {
         StartWave();
     }
+}
+
+function ShuffleGoalComputerLocation()
+{
+    local DXRMissions missions;
+    local #var(prefix)SkillAwardTrigger sat;
+    local #var(prefix)ComputerPersonal comp;
+
+    SetGlobalSeed( "Horde ShuffleComputer " $ wave);
+
+    foreach AllActors(class'DXRMissions',missions)
+    {
+        missions.ShuffleGoals();
+    }
+
+    //Reset or create the skill award trigger for using the Templar computer
+    foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat,'templar_upload'){break;}
+    if (sat==None){
+        sat = Spawn(class'#var(prefix)SkillAwardTrigger',,'templar_upload');
+        sat.SetCollision(false,false,false);
+        sat.awardMessage="Templar System Uplink Established";
+        sat.skillPointsAdded=500; //Same as finding the computer in vanilla
+    }
+
+    //Reset the special option on the computer
+    foreach AllActors(class'#var(prefix)ComputerPersonal',comp){
+        if (comp.specialOptions[0].TriggerEvent=='templar_upload'){
+            comp.specialOptions[0].bAlreadyTriggered=false;
+        }
+    }
+
 }
 
 function StartWave()
@@ -543,6 +584,7 @@ function StartWave()
     time_in_wave = 0;
     wave++;
     GenerateEnemies();
+    ShuffleGoalComputerLocation();
 }
 
 function EndWave()
@@ -551,6 +593,9 @@ function EndWave()
     time_to_next_wave = time_between_waves;
     player().SkillPointsAdd(skill_points_award);
     GenerateItems();
+
+    //Send a telemetry message every wave finished
+    class'DXREvents'.static.SendHordeModeWaveComplete(self);
 }
 
 function GetOverHere()
@@ -597,10 +642,13 @@ function NotifyPlayerTimer(int time, string text)
     }
 }
 
+//Notify every 5 seconds or immediately if the number of remaining pawns changes
 function NotifyPlayerPawns(int numScriptedPawns)
 {
     //if( numScriptedPawns > 10 ) return;
-    if( time_in_wave % 3 != 0 ) return;
+    if( time_in_wave % 5 != 0 && last_num_pawns_reported==numScriptedPawns) return;
+
+    last_num_pawns_reported = numScriptedPawns;
 
     if( numScriptedPawns == 1 )
         player().ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemy remaining.");
@@ -728,11 +776,19 @@ function GenerateItems()
     local int i;
     local #var(injectsprefix)MedicalBot medbot;
     local #var(prefix)WineBottle wine;
+    local HordeModeCrate hmc;
+    local vector loc;
 
     SetGlobalSeed("Horde GenerateItems" $ wave);
 
     // always make an augbot
     machines.SpawnAugbot();
+
+    //Shuffle the HordeModeCrate locations
+    foreach AllActors(class'HordeModeCrate',hmc){
+        loc = GetRandomItemPosition();
+        hmc.SetLocation(loc);
+    }
 
     for(i=0;i<items_per_wave;i++) {
         GenerateItem();
@@ -743,16 +799,53 @@ function GenerateItems()
     }
 }
 
+function bool IsCrateableClass(class<Actor> c)
+{
+    if (ClassIsChildOf(c,class'Inventory')){
+        if (ClassIsChildOf(c,class'#var(prefix)AugmentationCannister')){ //Aug cans need to have their contents randomized
+            return False;
+        }
+        return True;
+    }
+    return False;
+}
+
+//Find the most empty crate in the radius
+function HordeModeCrate GetBestOpenHordeCrate(vector loc, class<Actor> c, optional int radius)
+{
+    local HordeModeCrate hmc,best;
+
+    if (radius==0){
+        radius = 1600; //100 feet
+    }
+
+    foreach RadiusActors(class'HordeModeCrate',hmc,radius,loc)
+    {
+        if (hmc.CanAddContent(c)){
+            if (best==None){
+                best = hmc;
+            } else {
+                if ( hmc.GetTotalContentCount() < best.GetTotalContentCount()){
+                    best = hmc;
+                }
+            }
+        }
+    }
+    return best;
+}
+
 function GenerateItem()
 {
-    local int i, num;
+    local int i, num, copies;
     local Actor a;
     local class<Actor> c;
     local vector loc;
     local #var(prefix)AugmentationCannister aug;
     local Barrel1 barrel;
     local DeusExMover d;
+    local HordeModeCrate hmc;
     local float r;
+    local bool success;
 
     r = initchance();
     for(i=0; i < ArrayCount(items); i++) {
@@ -765,8 +858,18 @@ function GenerateItem()
 
     // count how many we have
     foreach AllActors(c, a) {
-        num++;
+        copies = 1;
+        if (Pickup(a)!=None){
+            copies = Pickup(a).NumCopies; //In case items are in stacks
+        }
+        num += copies;
     }
+    //Also check how many are in HordeModeCrates
+    foreach AllActors(class'HordeModeCrate',hmc)
+    {
+        num += hmc.GetContentQuantity(c);
+    }
+
     // now damage or move the oldest ones (at the start of the list)
     i = 0;
     if(num > items_per_wave/2 && items[i].lastDamageTime < Level.TimeSeconds && ClassIsChildOf(c, class'#var(prefix)Containers')) {
@@ -787,6 +890,25 @@ function GenerateItem()
         }
     }
 
+    if (IsCrateableClass(c)){
+        //Repack items into crates
+        foreach AllActors(c, a) {
+            if (a.Owner!=None) continue; //Don't take ammo away from the player!
+
+            hmc = GetBestOpenHordeCrate(a.Location,a.Class);
+
+            //Spawn a new crate if no crate found nearby
+            if (hmc==None){
+                hmc = Spawn(class'HordeModeCrate',,,a.Location,a.Rotation);
+            }
+
+            if (hmc!=None){
+                l("Repacking "$a$" into horde crate "$hmc);
+                hmc.AddExistingItem(a);
+            }
+        }
+    }
+
     if( num > items_per_wave ) {
         l("already have too many of "$c.name);
         return;
@@ -800,13 +922,30 @@ function GenerateItem()
         machines.SpawnRepairbot();
         return;
     }
-    for(i=0; i<10 && a == None; i++) {
+
+    success = False;
+    for(i=0; i<10 && success==False; i++) {
         loc = GetRandomItemPosition();
-        a = Spawn(c,,, loc);
+        if (IsCrateableClass(c)){
+            hmc = GetBestOpenHordeCrate(loc,c);
+            if (hmc==None){
+                hmc = Spawn(class'HordeModeCrate',,,loc,GetRandomYaw());
+            }
+            if (hmc!=None){
+                hmc.AddContent(c,1);
+                success=True;
+            }
+        } else {
+            a = Spawn(c,,, loc, GetRandomYaw());
+            if (a!=None){
+                success=True;
+            }
+        }
     }
-    if(c==None) {
-        l("failed to spawn "$c$" at "$loc);
-        return ;
+
+    if (success==False){
+        l("failed to spawn "$c);
+        return;
     }
 
     aug = #var(prefix)AugmentationCannister(a);

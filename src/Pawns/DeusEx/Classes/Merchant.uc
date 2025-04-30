@@ -69,6 +69,8 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 
 defaultproperties
 {
+    FamiliarName="The Merchant"
+    UnfamiliarName="The Merchant"
     CarcassType=Class'MerchantCarcass'
     bImportant=True
     bDetectable=false

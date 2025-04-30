@@ -1231,8 +1231,9 @@ function SetFloatyPhysics(bool enabled) {
             apply = True;
         } else if (A.isa('Decoration')) {
             apply = ((A.Base!=None &&
-                        A.Physics == PHYS_None &&
+                        (A.Physics == PHYS_None || A.Physics == PHYS_Falling) &&
                         A.bStatic == False &&
+                        A.bHidden == False &&
                         Decoration(A).bPushable == True) || A.isa('Carcass'));
         } else if (A.isa('Inventory')) {
             apply = (Pawn(A.Owner) == None);
@@ -1778,7 +1779,7 @@ function int DropPiano(string viewer)
     piano.Instigator = GetCrowdControlPawn(viewer);
     piano.FamiliarName = piano.ItemName;
     piano.UnfamiliarName = piano.FamiliarName;
-    PlayerMessage(viewer$" dropped a piano on you from "$int(height/16 + 0.5)$" feet with "$int(leading*100 + 0.5)$"% leading!");
+    PlayerMessage(viewer$" dropped a piano on you from " $ int(class'DXRActorsBase'.static.GetRealDistance(height)) @ class'DXRActorsBase'.static.GetDistanceUnit() @ "with" @ int(leading*100 + 0.5)$"% leading!");
     return Success;
 }
 
@@ -2065,7 +2066,7 @@ function bool RaiseDead(string viewer)
     num=0;
 
     for (i=0;i<5;i++){
-        carc = FindClosestCarcass(1000,false);
+        carc = FindClosestCarcass(1000,false,true);
         if (carc==None){
             break;
         }
@@ -2093,7 +2094,7 @@ function bool CorpseExplosion(string viewer)
     num=0;
 
     for (i=0;i<5;i++){
-        carc = FindClosestCarcass(1000,true);
+        carc = FindClosestCarcass(1000,true,false);
         if (carc==None){
             break;
         }
@@ -2112,7 +2113,7 @@ function bool CorpseExplosion(string viewer)
 
 }
 
-function #var(DeusExPrefix)Carcass FindClosestCarcass(float radius,optional bool bAllowAnimals)
+function #var(DeusExPrefix)Carcass FindClosestCarcass(float radius, optional bool bAllowAnimals, optional bool bAllowInvincible)
 {
     local #var(DeusExPrefix)Carcass carc,closest;
     local float closeDist;
@@ -2122,6 +2123,9 @@ function #var(DeusExPrefix)Carcass FindClosestCarcass(float radius,optional bool
     foreach player().RadiusActors(class'#var(DeusExPrefix)Carcass',carc,radius){
         if (carc.bNotDead){
             continue; //Skip unconscious bodies
+        }
+        if (!bAllowInvincible && carc.bInvincible){
+            continue; //Skip invincible bodies (Paul's corpse in M05)
         }
         if (!bAllowAnimals && carc.bAnimalCarcass){
             continue;
@@ -2769,7 +2773,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         case "set_fire":
             player().CatchFire(GetCrowdControlPawn(viewer));
-            PlayerMessage(viewer@"set you on fire!");
+            PlayerMessage(viewer@"set you on fire! Hopefully you have a fire extinguisher.");
             break;
 
         case "full_heal":
@@ -3017,7 +3021,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_floorLavaTimer')){
                 return TempFail;
             }
-            PlayerMessage(viewer@"turned the floor into lava!");
+            PlayerMessage(viewer@"turned the floor into lava! Keep jumping or find something safe to stand on.");
             lavaTick = 0;
             startNewTimer('cc_floorLavaTimer',duration);
             setFloorIsLavaName(viewer);

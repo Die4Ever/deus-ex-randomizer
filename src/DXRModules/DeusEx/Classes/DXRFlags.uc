@@ -727,7 +727,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     if (IsHalloweenMode()){
         clothes_looting = 1;
-        settings.speedlevel = 0;// in DXRLoadouts we override level 0 speed to mean lvl 1 run silent
         moresettings.reanimation = 20;
         switch(difficulty) {
             case 0: moresettings.reanimation = 25; break;

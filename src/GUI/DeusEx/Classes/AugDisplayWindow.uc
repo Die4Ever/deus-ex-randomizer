@@ -785,14 +785,23 @@ function SuperDrawTargetAugmentation(GC gc)
                 }
 
                 // print the name of the target above the box
-                if (target.IsA('Pawn'))
-                    str = target.BindName;
-                else if (target.IsA('DeusExDecoration'))
-                    str = DeusExDecoration(target).itemName;
-                else if (target.IsA('DeusExProjectile'))
+                if (target.IsA('Pawn')){
+                    //str = target.BindName;
+                    str = Player.GetDisplayName(target);
+                    if (Player.GetDisplayName(target) != Pawn(target).Default.UnfamiliarName){
+                        str = str @ "(" $ Pawn(target).Default.UnfamiliarName $ ")";
+                    }
+                } else if (target.IsA('DeusExDecoration')) {
+                    if (InStr(DeusExDecoration(target).itemName,"DEFAULT")==-1){
+                        str = DeusExDecoration(target).itemName;
+                    } else {
+                        str = target.GetItemName(String(target.Class));
+                    }
+                } else if (target.IsA('DeusExProjectile')){
                     str = DeusExProjectile(target).itemName;
-                else
+                } else {
                     str = target.GetItemName(String(target.Class));
+                }
 
                 // print disabled robot info
                 if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
@@ -801,7 +810,7 @@ function SuperDrawTargetAugmentation(GC gc)
 
                 // print the range to target
                 mult = VSize(target.Location - Player.Location);
-                str = str $ CR() $ msgRange @ Int(mult/16) @ msgRangeUnits;
+                str = str $ CR() $ msgRange @ Int(class'DXRActorsBase'.static.GetRealDistance(mult)) @ class'DXRActorsBase'.static.GetDistanceUnit(); //Rando: Use the appropriate units
 
                 gc.GetTextExtent(0, w, h, str);
                 x = boxTLX + margin;
@@ -879,10 +888,16 @@ function SuperDrawTargetAugmentation(GC gc)
                     {
                         str = msgWeapon;
 
-                        if (Pawn(target).Weapon != None)
-                            str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
-                        else
+                        if (Pawn(target).Weapon != None){
+                            //str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
+                            if (InStr(Pawn(target).Weapon.ItemName,"DEFAULT")==-1){
+                                str = str @ Pawn(target).Weapon.ItemName;
+                            } else {
+                                str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
+                            }
+                        } else {
                             str = str @ msgNone;
+                        }
 
                         gc.GetTextExtent(0, w, h, str);
                         x = boxTLX + margin;
@@ -1059,3 +1074,48 @@ function DrawSpyDroneAugmentation(GC gc)
     }
 #endif
 }
+
+//Duped from vanilla to allow changing the units
+function DrawDefenseAugmentation(GC gc)
+{
+    local String str;
+    local float boxCX, boxCY;
+    local float x, y, w, h, mult;
+    local bool bDrawLine;
+
+    if (defenseTarget != None)
+    {
+        bDrawLine = False;
+
+        if (defenseTarget.IsInState('Exploding'))
+        {
+            str = msgADSDetonating;
+            bDrawLine = True;
+        }
+        else
+            str = msgADSTracking;
+
+        mult = VSize(defenseTarget.Location - Player.Location);
+
+        str = str $ CR() $ msgRange @ Int(class'DXRActorsBase'.static.GetRealDistance(mult)) @ class'DXRActorsBase'.static.GetDistanceUnit(); //Rando: Use the appropriate units
+        //str = str $ CR() $ msgRange @ Int(mult/16) @ msgRangeUnits;
+
+        if (!ConvertVectorToCoordinates(defenseTarget.Location, boxCX, boxCY))
+            str = str @ msgBehind;
+
+        gc.GetTextExtent(0, w, h, str);
+        x = boxCX - w/2;
+        y = boxCY - h;
+        gc.SetTextColorRGB(255,0,0);
+        gc.DrawText(x, y, w, h, str);
+        gc.SetTextColor(colHeaderText);
+
+        if (bDrawLine)
+        {
+            gc.SetTileColorRGB(255,0,0);
+            Interpolate(gc, width/2, height/2, boxCX, boxCY, 64);
+            gc.SetTileColor(colHeaderText);
+        }
+    }
+}
+

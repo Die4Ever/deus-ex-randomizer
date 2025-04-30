@@ -110,6 +110,20 @@ simulated function Tick(float deltaTime)
 
     Super.Tick(deltaTime);
 
+    if (bCanTrack){
+        //Update the target message with the correct units
+        switch (LockMode)
+        {
+        case LOCK_Range:
+            TargetMessage = msgLockRange @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
+            break;
+
+        case LOCK_Locked:
+            TargetMessage = msgLockLocked @ Int(class'DXRActorsBase'.static.GetRealDistance(TargetRange)) @ class'DXRActorsBase'.static.GetDistanceUnit();
+            break;
+        }
+    }
+
     if(!IsAnimating() || class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
         return;
     }
@@ -633,15 +647,15 @@ simulated function bool UpdateInfo(Object winObject)
     else
     {
         if ( Level.NetMode != NM_Standalone )
-            str = FormatFloatString(Default.mpAccurateRange/16.0, 1.0) @ msgRangeUnit;
+            str = FormatFloatString(class'DXRActorsBase'.static.GetRealDistance(Default.mpAccurateRange), 1.0) @ Caps(class'DXRActorsBase'.static.GetDistanceUnit());
         else
-            str = FormatFloatString(Default.AccurateRange/16.0, 1.0) @ msgRangeUnit;
+            str = FormatFloatString(class'DXRActorsBase'.static.GetRealDistance(Default.AccurateRange), 1.0) @ Caps(class'DXRActorsBase'.static.GetDistanceUnit());
     }
 
     if (HasRangeMod())
     {
         str = str @ BuildPercentString(ModAccurateRange);
-        str = str @ "|n    =" @ FormatFloatString(AccurateRange/16.0, 1.0) @ msgRangeUnit;
+        str = str @ "|n    =" @ FormatFloatString(class'DXRActorsBase'.static.GetRealDistance(AccurateRange), 1.0) @ Caps(class'DXRActorsBase'.static.GetDistanceUnit());
     }
     winInfo.AddInfoItem(msgInfoAccRange, str, HasRangeMod());
 
@@ -651,19 +665,19 @@ simulated function bool UpdateInfo(Object winObject)
     else
     {
         if ( Level.NetMode != NM_Standalone )
-            str = FormatFloatString(Default.mpMaxRange/16.0, 1.0) @ msgRangeUnit;
+            str = FormatFloatString(class'DXRActorsBase'.static.GetRealDistance(Default.mpMaxRange), 1.0) @ Caps(class'DXRActorsBase'.static.GetDistanceUnit());
         else
-            str = FormatFloatString(Default.MaxRange/16.0, 1.0) @ msgRangeUnit;
+            str = FormatFloatString(class'DXRActorsBase'.static.GetRealDistance(Default.MaxRange), 1.0) @ Caps(class'DXRActorsBase'.static.GetDistanceUnit());
     }
     if (HasRangeMod())
     {
         str = str @ BuildPercentString(ModAccurateRange);
-        str = str @ "|n    =" @ FormatFloatString(MaxRange/16.0, 1.0) @ msgRangeUnit;
+        str = str @ "|n    =" @ FormatFloatString(class'DXRActorsBase'.static.GetRealDistance(MaxRange), 1.0) @ Caps(class'DXRActorsBase'.static.GetDistanceUnit());
     }
     winInfo.AddInfoItem(msgInfoMaxRange, str, HasRangeMod());
 
-    // mass
-    winInfo.AddInfoItem(msgInfoMass, FormatFloatString(Default.Mass, 1.0) @ msgMassUnit);
+    // mass - RANDO: Show mass in the appropriate unit
+    winInfo.AddInfoItem(msgInfoMass, FormatFloatString(class'DXRActorsBase'.static.GetRealMass(Default.Mass), 1.0) @ Caps(class'DXRActorsBase'.static.GetMassUnit()));
 
     // laser mod
     if (bCanHaveLaser)

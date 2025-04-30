@@ -127,7 +127,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoal("05_NYC_UNATCOHQ", "Jaime Reyes", NORMAL_GOAL, 'JaimeReyes0', PHYS_Falling);
 
         AddGoalLocation("05_NYC_UNATCOHQ", "Jail", NORMAL_GOAL, vect(-2198,-971,-16), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(121.921074, 287.711243, 39.599487), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(110, 335, 40), rot(0, 32768, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL, vect(1156,-123,314), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Break Room", NORMAL_GOAL, vect(592,1411,428), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "West Office", NORMAL_GOAL, vect(-666.268066, -460.813965, 463.598083), rot(0, 0, 0));

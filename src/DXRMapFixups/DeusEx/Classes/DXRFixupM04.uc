@@ -599,6 +599,7 @@ function PostFirstEntryMapFixes()
     {
         case "04_NYC_UNATCOHQ":
             FixUNATCORetinalScanner();
+            PreventUNATCOZombieDanger();
             break;
     }
 }
