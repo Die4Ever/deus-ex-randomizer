@@ -86,6 +86,10 @@ function PreFirstEntryMapFixes()
             RemoveReactions(tt);// he looks pretty sick
         }
 
+        if (!dxr.flagbase.GetBool('Ray_dead') && !dxr.flagbase.GetBool('Ray_unconscious')) {
+            class'PlayerDataItem'.static.GiveItem(player()).IncrementBingoProgress("JockBlewUp", false);
+        }
+
         class'PlaceholderEnemy'.static.Create(self,vectm(-2467,866,-2000));
         class'PlaceholderEnemy'.static.Create(self,vectm(-2689,4765,-2143));
         class'PlaceholderEnemy'.static.Create(self,vectm(-163,7797,-2143));
