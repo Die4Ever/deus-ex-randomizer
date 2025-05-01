@@ -139,6 +139,10 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
     slf.EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
     slf.EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
     slf.EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
+    if(f.autosave == autosave.Ironman) { //Don't make this accessible unless it's your currently set value
+        slf.EnumOption("All Saves Disabled", autosave.Ironman, f.autosave, autosave.GetAutoSaveHelpText(autosave.Ironman));
+    }
+
     return in_autosave_enum;
 #endif
 }
