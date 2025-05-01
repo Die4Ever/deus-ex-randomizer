@@ -470,7 +470,6 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
-        RemoveStopWhenEncroach();
 
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));

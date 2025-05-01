@@ -292,6 +292,8 @@ function PostFirstEntry()
     SetSeed( "DXRFixup PostFirstEntry missions" );
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
+
+    RemoveStopWhenEncroach();
 }
 
 function AnyEntry()
