@@ -134,6 +134,15 @@ function PreFirstEntryMapFixes()
             jojo.BarkBindName="JoJoFine";
         }
 
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            //Make Paul's door a toggle door instead of TriggerOpenTimed (so you can close it again)
+            foreach AllActors(class'#var(DeusExPrefix)Mover', door){
+                if (door.KeyIDNeeded!='Apartment') continue;
+
+                door.GoToState('TriggerToggle');
+            }
+        }
+
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
