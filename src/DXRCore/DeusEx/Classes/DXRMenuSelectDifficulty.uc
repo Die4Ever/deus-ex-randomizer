@@ -148,11 +148,11 @@ static function int CreateCrowdControlEnum(DXRMenuBase slf, DXRFlags f)
     local int e;
 
     e = slf.NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $Chr(10)$ "See their website crowdcontrol.live");
-    //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
-    slf.EnumOption("Enabled (Streaming)", 1, f.crowdcontrol);
-    slf.EnumOption("Offline Simulated", 3, f.crowdcontrol);
-    slf.EnumOption("Streaming and Simulated", 4, f.crowdcontrol);
-    slf.EnumOption("Disabled", 0, f.crowdcontrol);
+    //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol, GetCrowdControlHelpText(2));
+    slf.EnumOption("Enabled (Streaming)", 1, f.crowdcontrol, GetCrowdControlHelpText(1));
+    slf.EnumOption("Offline Simulated", 3, f.crowdcontrol, GetCrowdControlHelpText(3));
+    slf.EnumOption("Streaming and Simulated", 4, f.crowdcontrol, GetCrowdControlHelpText(4));
+    slf.EnumOption("Disabled", 0, f.crowdcontrol, GetCrowdControlHelpText(0));
     return e;
 }
 
@@ -197,12 +197,12 @@ static function int CreateMirroredMapsSlider(DXRMenuBase slf, DXRFlags f)
         } else if(f.mirroredmaps == -1) {
             f.mirroredmaps = 50; // default to 50% when the files are installed
         }
-        slf.Slider(f.mirroredmaps, 0, 100);
+        slf.Slider(f.mirroredmaps, 0, 100,GetMirroredMapsHelpText(true));
     } else {
         // use -1 to indicate not installed, because this gets saved to the config
         f.mirroredmaps = -1;
         slf.NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
-        slf.EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
+        slf.EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps, GetMirroredMapsHelpText(false));
     }
 #else
     //Disable mirrored maps entirely if map variants aren't supported
@@ -440,7 +440,7 @@ function NewGameSetup(float difficulty)
     }
 }
 
-function string GetSeedHelpText()
+static function string GetSeedHelpText()
 {
     local string msg;
 
@@ -467,6 +467,51 @@ static function string GetOnlineFeaturesHelpText(int mode)
         case 2: //Enabled
             msg = msg $ "The game will occasionally send messages to the Deus Ex Randomizer server to log deaths and certain actions.  Death messages will be posted on the DX Rando Activity Mastodon feed,"$" along with posts about certain things that the player does.  Death markers will show up in game where players have recently died.";
             break;
+    }
+
+    return msg;
+}
+
+static function string GetCrowdControlHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode){
+        case 0: //Disabled
+            msg = msg $ "Crowd Control is entirely disabled.  The Crowd Control client will not be able to connect to your game and effects will not occur.";
+            break;
+        case 1: //Enabled (Streaming)
+            msg = msg $ "Crowd Control will be enabled in your game.  Connect using the Crowd Control app on your computer so that people viewing your stream will be able to interact with you.|n";
+            msg = msg $ "|n";
+            msg = msg $ "See CrowdControl.Live for more details about the Crowd Control app.";
+            break;
+        case 2: //Enabled (Anonymous) (not actually available)
+            msg = msg $ "";
+            break;
+        case 3: //Offline Simulated
+            msg = msg $ "Simulated Crowd Control will be enabled in your game.  Instead of using the Crowd Control app, the game will randomly select effects and inflict them upon you.";
+            break;
+        case 4: //Streaming and Simulated
+            msg = msg $ "Both real and simulated Crowd Control will be enabled in your game.  You can connect using the Crowd Control app on your computer so that people viewing your stream will be able to interact with you.  "$"In addition, the game will randomly select effects and inflict them upon you.|n";
+            msg = msg $ "|n";
+            msg = msg $ "See CrowdControl.Live for more details about the Crowd Control app.";
+            break;
+    }
+
+    return msg;
+}
+
+static function string GetMirroredMapsHelpText(bool installed)
+{
+    local string msg;
+
+    msg = "The chances of each map being a mirrored version instead of the original.  Mirrored maps are horizontally mirrored (so left is right and right is left).  "$"Trick your mind into experiencing the original maps for the very first time again!|n|n";
+    if (installed){
+        msg = msg $ "Please note that any directions given (eg. 'to the East') will not be accurately reflected on the compass in mirrored maps.";
+    } else {
+        msg = msg $ "Mirrored Maps are not installed!  Run the Deus Ex Randomizer installer again to download them if you want to try them out!";
     }
 
     return msg;
