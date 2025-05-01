@@ -66,7 +66,7 @@ function BindControls(optional string action)
     }
 
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
-        EnumOption(f.DifficultyName(i), i, f.difficulty);
+        EnumOption(f.DifficultyName(i), i, f.difficulty, f.DifficultyDesc(i));
     }// we call SetDifficulty to apply the difficulty and game mode after setting the seed, below
 
     autosave_enum = CreateAutosaveEnum(self, f);

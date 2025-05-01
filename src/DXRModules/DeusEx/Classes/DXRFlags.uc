@@ -26,11 +26,13 @@ const WaltonWareHalloween = 1032;// why didn't they put leap day at the end of O
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
+var string difficulty_descs[4];
 var FlagsSettings difficulty_settings[4];
 var MoreFlagsSettings more_difficulty_settings[4];
 #else
 var string vanilla_difficulty_names[5];// Super Easy QA, Easy, Medium, Hard, Realistic
 var string difficulty_names[5];// Super Easy QA, Normal, Hard, Extreme, Impossible
+var string difficulty_descs[5];
 var FlagsSettings difficulty_settings[5];
 var MoreFlagsSettings more_difficulty_settings[5];
 #endif
@@ -121,6 +123,7 @@ function CheckConfig()
 #ifndef hx
     difficulty_names[i] = "Super Easy QA";
     vanilla_difficulty_names[i] = "Super Easy QA";
+    //difficulty_descs[i] = "Super Easy QA Difficulty Description";
     difficulty_settings[i].CombatDifficulty = 0;
     difficulty_settings[i].doorsdestructible = 100;
     difficulty_settings[i].doorspickable = 100;
@@ -197,6 +200,7 @@ function CheckConfig()
 #else
     difficulty_names[i] = "Normal";
     vanilla_difficulty_names[i] = "Easy";
+    //difficulty_descs[i] = "Normal Difficulty Description";
     difficulty_settings[i].CombatDifficulty = 1.3;
 #endif
     difficulty_settings[i].doorsdestructible = 100;
@@ -273,6 +277,7 @@ function CheckConfig()
 #else
     difficulty_names[i] = "Hard";
     vanilla_difficulty_names[i] = "Medium";
+    //difficulty_descs[i] = "Hard Difficulty Description";
     difficulty_settings[i].CombatDifficulty = 2;
 #endif
     difficulty_settings[i].doorsdestructible = 40;
@@ -349,6 +354,7 @@ function CheckConfig()
 #else
     difficulty_names[i] = "Extreme";
     vanilla_difficulty_names[i] = "Hard";
+    //difficulty_descs[i] = "Extreme Difficulty Description";
     difficulty_settings[i].CombatDifficulty = 3;
 #endif
     difficulty_settings[i].doorsdestructible = 25;
@@ -425,6 +431,7 @@ function CheckConfig()
 #else
     difficulty_names[i] = "Impossible";
     vanilla_difficulty_names[i] = "Realistic";
+    //difficulty_descs[i] = "Impossible Difficulty Description";
     difficulty_settings[i].CombatDifficulty = 4;
 #endif
     difficulty_settings[i].doorsdestructible = 25;
@@ -762,6 +769,20 @@ function string DifficultyName(int diff)
     }
 #endif
     return difficulty_names[diff];
+}
+
+function string DifficultyDesc(int diff)
+{
+    if (diff>=ArrayCount(difficulty_descs)){
+        return "INVALID DIFFICULTY "$diff;
+    }
+#ifndef hx
+    if(IsZeroRando()) {
+        return ""; //Should we have difficulty descriptions for zero rando difficulties?
+    }
+#endif
+
+    return difficulty_descs[diff];
 }
 
 function int GameModeIdForSlot(int slot)
