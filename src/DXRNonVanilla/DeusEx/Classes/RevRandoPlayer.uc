@@ -1290,3 +1290,13 @@ exec function ToggleScope()
         }
     }
 }
+
+exec function PlayerLoc()
+{
+    ClientMessage("Player location: (" $ Location.x $ ", " $ Location.y $ ", " $ Location.z $ ")");
+}
+
+exec function PlayerRot()
+{
+    ClientMessage("Player rotation: (" $ Rotation.pitch $ ", " $ Rotation.yaw $ ", " $ Rotation.roll $ ")");
+}
