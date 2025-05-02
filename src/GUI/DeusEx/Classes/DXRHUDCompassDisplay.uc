@@ -1,11 +1,19 @@
 class DXRHUDCompassDisplay injects HUDCompassDisplay;
 
+var transient bool inited;
+var vector coords_mult;
+
 event Tick(float deltaSeconds)
 {
-    local vector coords_mult;
     local Rotator playerRot;
+    local DXRFlags f;
 
-    coords_mult = class'DXRMapVariants'.static.GetCoordsMult(player.GetURLMap());
+    if (player==None) return;
+
+    if (!inited){
+        coords_mult = class'DXRMapVariants'.static.GetCoordsMult(player.GetURLMap());
+        inited = true;
+    }
 
     //Mirror the players rotation if on mirrored maps (so it goes back to unmirrored rotation)
     playerRot = class'DXRBase'.static.rotm_static(player.Rotation.Pitch,
