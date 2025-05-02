@@ -6,7 +6,6 @@ var vector coords_mult;
 event Tick(float deltaSeconds)
 {
     local Rotator playerRot;
-    local DXRFlags f;
 
     if (player==None) return;
 
