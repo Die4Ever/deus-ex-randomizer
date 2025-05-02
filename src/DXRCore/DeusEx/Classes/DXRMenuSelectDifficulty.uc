@@ -511,11 +511,9 @@ static function string GetMirroredMapsHelpText(bool installed)
 {
     local string msg;
 
-    msg = "The chances of each map being a mirrored version instead of the original.  Mirrored maps are horizontally mirrored (so left is right and right is left).  "$"Trick your mind into experiencing the original maps for the very first time again!|n|n";
-    if (installed){
-        msg = msg $ "Please note that any directions given (eg. 'to the East') will not be accurately reflected on the compass in mirrored maps.";
-    } else {
-        msg = msg $ "Mirrored Maps are not installed!  Run the Deus Ex Randomizer installer again to download them if you want to try them out!";
+    msg = "The chances of each map being a mirrored version instead of the original.  Mirrored maps are horizontally mirrored (so left is right and right is left).  "$"Trick your mind into experiencing the original maps for the very first time again!";
+    if (!installed){
+        msg = msg $ "|n|nMirrored Maps are not installed!  Run the Deus Ex Randomizer installer again to download them if you want to try them out!";
     }
 
     return msg;
