@@ -2,6 +2,7 @@ class DXRHUDCompassDisplay injects HUDCompassDisplay;
 
 var transient bool inited;
 var vector coords_mult;
+var int rotOffset;
 
 event Tick(float deltaSeconds)
 {
@@ -11,6 +12,7 @@ event Tick(float deltaSeconds)
 
     if (!inited){
         coords_mult = class'DXRMapVariants'.static.GetCoordsMult(player.GetURLMap());
+        rotOffset = class'DXRActorsBase'.static.GetRotationOffset(player.class);
         inited = true;
     }
 
@@ -18,7 +20,7 @@ event Tick(float deltaSeconds)
     playerRot = class'DXRBase'.static.rotm_static(player.Rotation.Pitch,
                                                   player.Rotation.Yaw,
                                                   player.Rotation.Roll,
-                                                  class'DXRActorsBase'.static.GetRotationOffset(player.class),
+                                                  rotOffset,
                                                   coords_mult);
 
     // Only continue if we moved
