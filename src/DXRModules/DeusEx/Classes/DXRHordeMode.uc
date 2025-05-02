@@ -2,28 +2,28 @@ class DXRHordeMode extends DXRActorsBase transient;
 
 var int wave;
 var int time_to_next_wave;
-var config int time_between_waves;
+var int time_between_waves;
 var bool in_wave;
 var int time_in_wave;
 var int last_num_pawns_reported;
-var config int time_before_damage;
-var config int damage_timer;
-var config int time_before_teleport_enemies;
-var config float popin_dist;
-var config int skill_points_award;
-var config int early_end_wave_timer;
-var config int early_end_wave_enemies;
-var config int items_per_wave;
-var config float difficulty_per_wave;
-var config float difficulty_first_wave;
-var config int wine_bottles_per_enemy;
-var config name default_orders;
-var config name default_order_tag;
-var config string map_name;
-var config name remove_objects[16];
-var config name unlock_doors[8];
-var config name lock_doors[16];
-var config vector starting_location;
+var int time_before_damage;
+var int damage_timer;
+var int time_before_teleport_enemies;
+var float popin_dist;
+var int skill_points_award;
+var int early_end_wave_timer;
+var int early_end_wave_enemies;
+var int items_per_wave;
+var float difficulty_per_wave;
+var float difficulty_first_wave;
+var int wine_bottles_per_enemy;
+var name default_orders;
+var name default_order_tag;
+var string map_name;
+var name remove_objects[16];
+var name unlock_doors[8];
+var name lock_doors[16];
+var vector starting_location;
 
 var DXRMachines machines;
 
@@ -46,113 +46,108 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(3,1,0,2) ) {
-        time_between_waves = 65;
-        time_before_damage = 180;
-        damage_timer = 10;
-        time_before_teleport_enemies = 3;
-        early_end_wave_timer = 240;
-        early_end_wave_enemies = 5;
-        popin_dist = 1800.0;
-        skill_points_award = 2500;
-        items_per_wave = 25;
-        difficulty_per_wave = 1.75;
-        difficulty_first_wave = 3;
-        wine_bottles_per_enemy = 2;
-        for(i=0; i<ArrayCount(items); i++) {
-            items[i].type="";
-            items[i].chance=0;
-        }
-        i=0;
-        items[i].type = "BioelectricCell";
-        items[i].chance = 6;
-        i++;
-        items[i].type = "CrateExplosiveSmall";
-        items[i].chance = 8;
-        i++;
-        items[i].type = "Barrel1";
-        items[i].chance = 8;
-        i++;
-        items[i].type = "WeaponGasGrenade";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "WeaponLAM";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "WeaponEMPGrenade";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "WeaponNanoVirusGrenade";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "FireExtinguisher";
-        items[i].chance = 6;
-        i++;
-        items[i].type = "Ammo10mm";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "Ammo762mm";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "AmmoShell";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "Ammo3006";
-        items[i].chance = 2;
-        i++;
-        items[i].type = "AmmoRocket";
-        items[i].chance = 1;
-        i++;
-        items[i].type = "AmmoDartPoison";
-        items[i].chance = 1;
-        // and 19% more...
-        i++;
-        items[i].type = "AugmentationCannister";
-        items[i].chance = 5;
-        i++;
-        items[i].type = "RepairBot";
-        items[i].chance = 3;
-        i++;
-        items[i].type = "MedicalBot";
-        items[i].chance = 5;
-        i++;
-        items[i].type = "MedKit";
-        items[i].chance = 3;
-        i++;
-        items[i].type = "AugmentationUpgradeCannister";
-        items[i].chance = 3;
 
-        map_name = "11_paris_cathedral";
-        starting_location = vect(-3811.785156, 2170.053223, -774.903442);
-        default_orders = 'Attacking';
-        default_order_tag = '';
-
-        i=0;
-        remove_objects[i++] = 'MapExit';
-        remove_objects[i++] = 'ScriptedPawn';
-        remove_objects[i++] = 'DataLinkTrigger';
-        remove_objects[i++] = 'Teleporter';
-        remove_objects[i++] = 'SecurityCamera';
-        remove_objects[i++] = 'AutoTurret';
-        remove_objects[i++] = 'AlarmUnit';
-        remove_objects[i++] = 'LaserTrigger';
-
-        i=0;
-        lock_doors[i++] = 'BreakableGlass0';
-        lock_doors[i++] = 'BreakableGlass1';
-        lock_doors[i++] = 'BreakableGlass2';
-        lock_doors[i++] = 'BreakableGlass3';
-        lock_doors[i++] = 'BreakableGlass4';
-        lock_doors[i++] = 'BreakableGlass5';
-        lock_doors[i++] = 'BreakableGlass6';
-        lock_doors[i++] = 'BreakableGlass7';
-        lock_doors[i++] = 'DeusExMover8';
-        lock_doors[i++] = 'DeusExMover9';
-        lock_doors[i++] = 'DeusExMover17';
-
-        i=0;
-        unlock_doors[i++] = 'DeusExMover19';
+    for(i=0; i<ArrayCount(items); i++) {
+        items[i].type="";
+        items[i].chance=0;
     }
+    i=0;
+    items[i].type = "BioelectricCell";
+    items[i].chance = 6;
+    i++;
+    items[i].type = "CrateExplosiveSmall";
+    items[i].chance = 8;
+    i++;
+    items[i].type = "Barrel1";
+    items[i].chance = 8;
+    i++;
+    items[i].type = "WeaponGasGrenade";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "WeaponLAM";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "WeaponEMPGrenade";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "WeaponNanoVirusGrenade";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "FireExtinguisher";
+    items[i].chance = 6;
+    i++;
+    items[i].type = "Ammo10mm";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "Ammo762mm";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "Ammo20mm";
+    items[i].chance = 0.25;
+    i++;
+    items[i].type = "AmmoShell";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "AmmoSabot";
+    items[i].chance = 0.5;
+    i++;
+    items[i].type = "Ammo3006";
+    items[i].chance = 2;
+    i++;
+    items[i].type = "AmmoRocket";
+    items[i].chance = 1;
+    i++;
+    items[i].type = "AmmoRocketWP";
+    items[i].chance = 0.25;
+    i++;
+    items[i].type = "AmmoDartPoison";
+    items[i].chance = 1;
+    i++;
+    items[i].type = "AugmentationCannister";
+    items[i].chance = 5;
+    i++;
+    items[i].type = "RepairBot";
+    items[i].chance = 3;
+    i++;
+    items[i].type = "MedicalBot";
+    items[i].chance = 5;
+    i++;
+    items[i].type = "MedKit";
+    items[i].chance = 3;
+    i++;
+    items[i].type = "AugmentationUpgradeCannister";
+    items[i].chance = 2;
+
+    map_name = "11_paris_cathedral";
+    starting_location = vect(-3811.785156, 2170.053223, -774.903442);
+    default_order_tag = '';
+
+    i=0;
+    remove_objects[i++] = 'MapExit';
+    remove_objects[i++] = 'ScriptedPawn';
+    remove_objects[i++] = 'DataLinkTrigger';
+    remove_objects[i++] = 'Teleporter';
+    remove_objects[i++] = 'SecurityCamera';
+    remove_objects[i++] = 'AutoTurret';
+    remove_objects[i++] = 'AlarmUnit';
+    remove_objects[i++] = 'LaserTrigger';
+
+    i=0;
+    lock_doors[i++] = 'BreakableGlass0';
+    lock_doors[i++] = 'BreakableGlass1';
+    lock_doors[i++] = 'BreakableGlass2';
+    lock_doors[i++] = 'BreakableGlass3';
+    lock_doors[i++] = 'BreakableGlass4';
+    lock_doors[i++] = 'BreakableGlass5';
+    lock_doors[i++] = 'BreakableGlass6';
+    lock_doors[i++] = 'BreakableGlass7';
+    lock_doors[i++] = 'DeusExMover8';
+    lock_doors[i++] = 'DeusExMover9';
+    lock_doors[i++] = 'DeusExMover17';
+
+    i=0;
+    unlock_doors[i++] = 'DeusExMover19';
+
     map_name = Caps(map_name);
     Super.CheckConfig();
 
@@ -373,7 +368,6 @@ function AnyEntry()
 
     machines = DXRMachines(dxr.FindModule(class'DXRMachines'));
 
-    class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.settings.speedlevel );
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomMeleeWeapon(player());
@@ -996,4 +990,21 @@ function RunTests()
         total += items[i].chance;
     }
     testfloat( total, 100, "config items chances, check total adds up to 100%");
+}
+
+defaultproperties
+{
+    time_between_waves=65
+    time_before_damage=180
+    damage_timer=10
+    time_before_teleport_enemies=3
+    early_end_wave_timer=240
+    early_end_wave_enemies=5
+    popin_dist=1800.0
+    skill_points_award=2500;
+    items_per_wave=25
+    difficulty_per_wave=1.75
+    difficulty_first_wave=3
+    wine_bottles_per_enemy=2
+    default_orders=Attacking
 }
