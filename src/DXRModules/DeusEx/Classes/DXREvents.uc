@@ -1518,7 +1518,7 @@ function SetWatchFlags() {
 
     //#region Mission 15
     case "15_AREA51_BUNKER":
-        WatchFlag('JockBlewUp');
+        // WatchFlag('JockBlewUp');
         WatchFlag('blast_door_open');
         RewatchFlag('WaltonBadass_Played');
         WatchFlag('MeetScaredSoldier_Played');
@@ -2674,8 +2674,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Let Smuggler die by not warning him of the UNATCO raid.  This can be done either by not talking to him at all, or not warning him of the raid if you talk to him after talking to Dowd.";
         case "GaveDowdAmbrosia":
             return "Find a vial of ambrosia on the upper decks of the superfreighter and bring it to Stanton Dowd in the graveyard.";
-        case "JockBlewUp":
-            return "Don't kill the fake mechanic at Everett's house so that Jock dies when you arrive in Area 51.";
+        // case "JockBlewUp":
+        //     return "Don't kill the fake mechanic at Everett's house so that Jock dies when you arrive in Area 51.";
         case "SavedPaul":
             return "Save Paul during the ambush on the 'Ton hotel.";
         case "nsfwander":
@@ -3620,7 +3620,7 @@ defaultproperties
     bingo_options(45)=(event="StantonAmbushDefeated",desc="Defend Dowd from the ambush",max=1,missions=256)
     bingo_options(46)=(event="SmugglerDied",desc="Let Smuggler die",max=1,missions=256)
     bingo_options(47)=(event="GaveDowdAmbrosia",desc="Give Dowd Ambrosia",max=1,missions=512)
-    bingo_options(48)=(event="JockBlewUp",desc="Let Jock die",max=1,missions=2048)
+    // bingo_options()=(event="JockBlewUp",desc="Let Jock die",max=1,missions=2048)
     bingo_options(49)=(event="SavedPaul",desc="Save Paul",max=1,missions=16)
     bingo_options(50)=(event="nsfwander",desc="Save Miguel",max=1,missions=32)
     bingo_options(51)=(event="MadeBasket",desc="Sign up for the Knicks",max=1,missions=276)
@@ -3956,7 +3956,7 @@ defaultproperties
 
 //#region Mutual Exclusions
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
-    mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
+    // mutually_exclusive()=(e1="JockBlewUp",e2="GotHelicopterInfo")
     mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
     mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="paris_hostage_Dead")
     mutually_exclusive(4)=(e1="UNATCOTroop_ClassUnconscious",e2="UNATCOTroop_ClassDead")
