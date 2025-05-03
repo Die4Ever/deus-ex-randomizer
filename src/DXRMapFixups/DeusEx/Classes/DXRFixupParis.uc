@@ -432,6 +432,11 @@ function PreFirstEntryMapFixes()
 
         SetAllLampsState(true, false, true); // Everett's bedroom
 
+        if (VanillaMaps){
+            foreach AllActors(class'DeusExMover',m,'morganmirror'){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(980,1480,508),vectm(1065,1473,390),m); //Mirror in front of Lucius's door
+        }
+
         break;
     //#endregion
     }

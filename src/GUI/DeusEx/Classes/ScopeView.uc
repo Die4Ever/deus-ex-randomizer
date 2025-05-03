@@ -137,6 +137,13 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
             }
             else
             {
+                if (#var(DeusExPrefix)Mover(target)!=None){
+                    if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(Player,HitLocation)){
+                        hitMirror = true;
+                        //peeper.ClientMessage("Hit fake mirror attached to mover");
+                        break;
+                    }
+                }
                 peepee = target;
                 break;
             }

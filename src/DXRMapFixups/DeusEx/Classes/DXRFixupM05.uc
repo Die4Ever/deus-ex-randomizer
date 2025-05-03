@@ -131,7 +131,9 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(-3010,1035,-64),vectm(-2877,1047,-160)); //Dead Body Cell
             class'FakeMirrorInfo'.static.Create(self,vectm(-2542,1035,-64),vectm(-2672,1047,-160)); //Miguel Cell
             class'FakeMirrorInfo'.static.Create(self,vectm(-2833,1300,-64),vectm(-2702,1290,-160)); //Empty Cell
-            //class'FakeMirrorInfo'.static.Create(self,vectm(-3168,1300,-64),vectm(-3039,1290,-160)); //JC's Cell (but we only want this while the window is reflective)
+
+            foreach AllActors(class'DeusExMover',dxm,'Mirror'){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(-3168,1300,-64),vectm(-3039,1290,-160),dxm); //JC's Cell (but we only want this while the window is reflective)
         } else {
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover34'){

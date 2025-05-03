@@ -3,6 +3,9 @@ class FakeMirrorInfo extends Info;
 var vector min_pos;
 var vector max_pos;
 
+var Actor attach;
+var vector attachStartLoc;
+
 function SetZone(vector new_min_pos, vector new_max_pos)
 {
     if (new_min_pos.X > new_max_pos.X){
@@ -30,15 +33,37 @@ function SetZone(vector new_min_pos, vector new_max_pos)
     }
 }
 
+function SetAttached(Actor attached)
+{
+    if (attached==None) return;
+    attach = attached;
+    attachStartLoc = attach.Location;
+}
+
+//This only works for things that slide (no rotation)
+function vector GetAttachedOffset()
+{
+    if (attach==None) return vect(0,0,0);
+
+    return attach.Location - attachStartLoc;
+}
+
 function bool IsPointInMyMirrorZone(vector point)
 {
-    if (point.X > max_pos.X) return false;
-    if (point.Y > max_pos.Y) return false;
-    if (point.Z > max_pos.Z) return false;
+    local vector maxLoc,minLoc,attachOffset;
 
-    if (point.X < min_pos.X) return false;
-    if (point.Y < min_pos.Y) return false;
-    if (point.Z < min_pos.Z) return false;
+    attachOffset = GetAttachedOffset();
+
+    maxLoc = max_pos + attachOffset;
+    minLoc = min_pos + attachOffset;
+
+    if (point.X > maxLoc.X) return false;
+    if (point.Y > maxLoc.Y) return false;
+    if (point.Z > maxLoc.Z) return false;
+
+    if (point.X < minLoc.X) return false;
+    if (point.Y < minLoc.Y) return false;
+    if (point.Z < minLoc.Z) return false;
 
     return true;
 }
@@ -54,12 +79,13 @@ static function bool IsPointInMirrorZone(Actor a, vector point)
     return False;
 }
 
-static function FakeMirrorInfo Create(Actor a, vector new_min_pos, vector new_max_pos)
+static function FakeMirrorInfo Create(Actor a, vector new_min_pos, vector new_max_pos, optional Actor attached)
 {
     local FakeMirrorInfo fmi;
 
     fmi = a.Spawn(class'FakeMirrorInfo');
     fmi.SetZone(new_min_pos,new_max_pos);
+    fmi.SetAttached(attached);
 
     return fmi;
 }

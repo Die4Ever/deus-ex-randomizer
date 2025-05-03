@@ -458,6 +458,11 @@ function PreFirstEntryMapFixes()
 
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
 
+            if (VanillaMaps){
+                foreach AllActors(class'#var(DeusExPrefix)Mover', d,'mirrordoor'){break;}
+                class'FakeMirrorInfo'.static.Create(self,vectm(-527,1660,348),vectm(-627,1655,220),d); //Mirror in front of Smuggler's Stash
+            }
+
             break;
     //#endregion
 

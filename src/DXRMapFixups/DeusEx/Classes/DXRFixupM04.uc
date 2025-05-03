@@ -584,6 +584,11 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
+        if (VanillaMaps){
+            foreach AllActors(class'#var(DeusExPrefix)Mover', door,'mirrordoor'){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(-527,1660,348),vectm(-627,1655,220),door); //Mirror in front of Smuggler's Stash
+        }
+
         break;
     //#endregion
 
