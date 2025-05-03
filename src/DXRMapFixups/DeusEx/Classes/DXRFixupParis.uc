@@ -281,6 +281,11 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1464,-1649.6,-197)); //Bathroom stall 1
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
 
+        if (VanillaMaps) {
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1575,-970,-55),vectm(-1585,-1155,-140)); //Bathroom mirror 1
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1015,-1530,-55),vectm(-1005,-1345,-140)); //Bathroom mirror 2
+        }
+
         break;
     //#endregion
 

@@ -44,7 +44,7 @@ simulated function Timer()
     local Vector HitNormal, HitLocation, StartTrace, EndTrace, Reflection;
     local Actor peepee;// pronounced peep-ee, not pee-pee
     local Actor target;
-    local bool newPeepee, newPeepTex;
+    local bool newPeepee, newPeepTex, hitMirror;
     local name texName,texGroup;
     local int flags, i, distRemaining;
 
@@ -63,6 +63,7 @@ simulated function Timer()
         //peeper.ClientMessage("Distance Remaining: "$distRemaining);
 
         target=None;
+        hitMirror = false;
 
         //peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
         foreach TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
@@ -77,14 +78,28 @@ simulated function Timer()
             {
                 // Keep tracing past invisible things
             }
-            else if (target==Level && ((flags & 0x08000000) != 0))
+            else if (target==Level && ((flags & 0x08000000) != 0)) //PF_Mirrored
             {
+                hitMirror = true;
                 break;
             }
             else if (target==Level && (((flags&0x00000004)!=0) || ((flags&0x00000001)!=0)))
             {
                 //Skip invisible or translucent masked textures, as long as they aren't also mirrors
                 //It won't actually trace beyond the level, it seems, so this doesn't actually help
+                //But also make sure it isn't a fake mirror zone
+                if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(peeper,HitLocation)){
+                    hitMirror = true;
+                    //peeper.ClientMessage("Hit fake mirror on transparent thing");
+                    break;
+                }
+
+            } else if (target==Level){
+                if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(peeper,HitLocation)){
+                    hitMirror = true;
+                    //peeper.ClientMessage("Hit fake mirror");
+                    break;
+                }
             }
             else
             {
@@ -96,7 +111,7 @@ simulated function Timer()
         distRemaining=distRemaining-VSize(HitLocation-StartTrace);
 
         //If it didn't hit a mirror, stop immediately, otherwise keep trying to trace
-        if ((flags & 0x08000000) == 0) {
+        if (hitMirror == false) {
             break;
         }
 

@@ -77,7 +77,7 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
     local Vector HitNormal, HitLocation, StartTrace, EndTrace, Reflection;
     local Actor peepee;// pronounced peep-ee, not pee-pee
     local Actor target;
-    local bool newPeepee, newPeepTex;
+    local bool newPeepee, newPeepTex, hitMirror;
     local name texName,texGroup;
     local int flags, i, distRemaining;
 
@@ -97,6 +97,7 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
         //peeper.ClientMessage("Distance Remaining: "$distRemaining);
 
         target=None;
+        hitMirror = false;
 
         //peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
         foreach Player.TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
@@ -111,14 +112,28 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
             {
                 // Keep tracing past invisible things
             }
-            else if (target==Player.Level && ((flags & 0x08000000) != 0))
+            else if (target==Player.Level && ((flags & 0x08000000) != 0)) //PF_Mirrored
             {
+                hitMirror = true;
                 break;
             }
-            else if (target==Player.Level && (((flags&0x00000004)!=0) || ((flags&0x00000001)!=0)))
+            else if (target==Player.Level && (((flags&0x00000004)!=0) || ((flags&0x00000001)!=0))) //PF_Translucent or PF_Invisible
             {
                 //Skip invisible or translucent masked textures, as long as they aren't also mirrors
                 //It won't actually trace beyond the level, it seems, so this doesn't actually help
+                //But also make sure it isn't a fake mirror zone
+                if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(Player,HitLocation)){
+                    hitMirror = true;
+                    //peeper.ClientMessage("Hit fake mirror on transparent thing");
+                    break;
+                }
+
+            } else if (target==Player.Level){
+                if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(Player,HitLocation)){
+                    hitMirror = true;
+                    //peeper.ClientMessage("Hit fake mirror");
+                    break;
+                }
             }
             else
             {
@@ -130,7 +145,7 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
         distRemaining=distRemaining-VSize(HitLocation-StartTrace);
 
         //If it didn't hit a mirror, stop immediately, otherwise keep trying to trace
-        if ((flags & 0x08000000) == 0) {
+        if (hitMirror == false) {
             break;
         }
 
