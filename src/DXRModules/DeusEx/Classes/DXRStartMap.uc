@@ -1366,7 +1366,7 @@ static function int _ChooseRandomStartMap(DXRBase m)
         i = m.rng(3);
         switch(i) {
         case 0: return 119;
-        case 1: return 121;
+        case 1: return 122;
         case 2: return 129;
         }
         return 119;
