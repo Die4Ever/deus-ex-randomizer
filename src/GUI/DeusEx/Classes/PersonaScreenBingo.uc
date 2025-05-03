@@ -8,7 +8,7 @@ const bingoStartY = 22;
 var PersonaActionButtonWindow btnReset, btnBingoInfo;
 
 var string ResetWindowHeader, ResetWindowText;
-var string InfoWindowHeader;
+var string InfoWindowHeader, InfoWindowText;
 var string bingoWikiUrl;
 
 function CreateControls()
@@ -144,10 +144,7 @@ function bool ButtonActivated( Window buttonPressed )
         dxr.seed--;
         nextStartName = class'DXRStartMap'.static.GetStartingMapName(nextStartNum);
 
-        infoText =
-            "Complete specific tasks to mark off bingo squares!|n|nSquares marked gray can be completed this mission.  "
-            $ "Black squares cannot be completed in this mission.  Green squares have been completed.  Red squares "
-            $ "can no longer be completed.|n|nClick on the squares to get more info about the specific task in each one!|n";
+        infoText = InfoWindowText $ "|n";
         if (bingoWin > 0) {
             infoText = infoText $ "|nBingo Lines to Win: " $ bingoWin;
         }
@@ -179,26 +176,27 @@ function bool ButtonActivated( Window buttonPressed )
 
 defaultproperties
 {
-     ClientWidth=426
-     ClientHeight=407
-     clientOffsetX=105
-     clientOffsetY=17
-     clientTextures(0)=Texture'DeusExUI.UserInterface.LogsBackground_1'
-     clientTextures(1)=Texture'DeusExUI.UserInterface.LogsBackground_2'
-     clientTextures(2)=Texture'DeusExUI.UserInterface.LogsBackground_3'
-     clientTextures(3)=Texture'DeusExUI.UserInterface.LogsBackground_4'
-     clientBorderTextures(0)=Texture'DeusExUI.UserInterface.ConversationsBorder_1'
-     clientBorderTextures(1)=Texture'DeusExUI.UserInterface.ConversationsBorder_2'
-     clientBorderTextures(2)=Texture'DeusExUI.UserInterface.ConversationsBorder_3'
-     clientBorderTextures(3)=Texture'DeusExUI.UserInterface.ConversationsBorder_4'
-     clientBorderTextures(4)=Texture'DeusExUI.UserInterface.ConversationsBorder_5'
-     clientBorderTextures(5)=Texture'DeusExUI.UserInterface.ConversationsBorder_6'
-     clientTextureRows=2
-     clientTextureCols=2
-     clientBorderTextureRows=2
-     clientBorderTextureCols=3
-     ResetWindowHeader="Are you sure?"
-     ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
-     InfoWindowHeader="Bingo Info"
-     bingoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Bingo-Goals"
+    ClientWidth=426
+    ClientHeight=407
+    clientOffsetX=105
+    clientOffsetY=17
+    clientTextures(0)=Texture'DeusExUI.UserInterface.LogsBackground_1'
+    clientTextures(1)=Texture'DeusExUI.UserInterface.LogsBackground_2'
+    clientTextures(2)=Texture'DeusExUI.UserInterface.LogsBackground_3'
+    clientTextures(3)=Texture'DeusExUI.UserInterface.LogsBackground_4'
+    clientBorderTextures(0)=Texture'DeusExUI.UserInterface.ConversationsBorder_1'
+    clientBorderTextures(1)=Texture'DeusExUI.UserInterface.ConversationsBorder_2'
+    clientBorderTextures(2)=Texture'DeusExUI.UserInterface.ConversationsBorder_3'
+    clientBorderTextures(3)=Texture'DeusExUI.UserInterface.ConversationsBorder_4'
+    clientBorderTextures(4)=Texture'DeusExUI.UserInterface.ConversationsBorder_5'
+    clientBorderTextures(5)=Texture'DeusExUI.UserInterface.ConversationsBorder_6'
+    clientTextureRows=2
+    clientTextureCols=2
+    clientBorderTextureRows=2
+    clientBorderTextureCols=3
+    ResetWindowHeader="Are you sure?"
+    ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
+    InfoWindowHeader="Bingo Info"
+    InfoWindowText="Complete specific tasks to mark off bingo squares!|n|nSquares marked gray can be completed this mission.  Black squares cannot be completed in this mission.  Green squares have been completed.  Red squares can no longer be completed.|n|nClick on the squares to get more info about the specific task for each one!"
+    bingoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Bingo-Goals"
 }
