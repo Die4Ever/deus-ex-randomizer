@@ -241,10 +241,10 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
 #endif
             $ ", Flags: " $ ToHex(FlagsHash());
     
-    if (dxr.flags.IsWaltonWare()) {
-        dxr.seed += 1;
+    if (dxr.flags.settings.bingo_win > 0) {
+        dxr.seed++;
         nextStart = class'DXRStartMap'.static.ChooseRandomStartMap(self, dxr.flags.settings.starting_map);
-        dxr.seed -= 1;
+        dxr.seed--;
         str3 = "Next Loop Start: " $ class'DXRStartMap'.static.GetStartingMapName(nextStart);
     }
 
