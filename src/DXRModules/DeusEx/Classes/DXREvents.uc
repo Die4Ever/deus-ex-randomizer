@@ -1518,7 +1518,7 @@ function SetWatchFlags() {
 
     //#region Mission 15
     case "15_AREA51_BUNKER":
-        // WatchFlag('JockBlewUp');
+        WatchFlag('JockBlewUp');
         WatchFlag('blast_door_open');
         RewatchFlag('WaltonBadass_Played');
         WatchFlag('MeetScaredSoldier_Played');
