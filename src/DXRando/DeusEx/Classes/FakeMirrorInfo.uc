@@ -9,6 +9,8 @@ var bool wasAttached; //So we can differentiate between never being attached and
 
 function SetZone(vector new_min_pos, vector new_max_pos)
 {
+    local vector middle;
+
     if (new_min_pos.X > new_max_pos.X){
         min_pos.X = new_max_pos.X;
         max_pos.X = new_min_pos.X;
@@ -32,6 +34,11 @@ function SetZone(vector new_min_pos, vector new_max_pos)
         min_pos.Z = new_min_pos.Z;
         max_pos.Z = new_max_pos.Z;
     }
+
+    middle.X = (min_pos.X + max_pos.X)/2;
+    middle.Y = (min_pos.Y + max_pos.Y)/2;
+    middle.Z = (min_pos.Z + max_pos.Z)/2;
+    SetLocation(middle);
 }
 
 function SetAttached(Actor attached)

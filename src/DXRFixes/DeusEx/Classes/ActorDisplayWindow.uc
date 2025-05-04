@@ -253,6 +253,7 @@ function DrawWindow(GC gc)
     local Inventory item;
     local name filter;
     local int radius;
+    local FakeMirrorInfo fmi;
     local class<Actor> classToShow;
 
     minpos = vect(999999, 999999, 999999);
@@ -430,13 +431,24 @@ function DrawWindow(GC gc)
                 r=0;
                 g=0;
                 b=0;
-                if (trackActor.bCollideActors){
-                    g=255;
-                } else {
+                if (FakeMirrorInfo(trackActor)!=None){
                     r=255;
+                    g=255;
+                    b=255;
+
+                    fmi = FakeMirrorInfo(trackActor);
+
+                    DrawCube(gc, fmi.min_pos, fmi.max_pos, r, g, b);
+
+                } else {
+                    if (trackActor.bCollideActors){
+                        g=255;
+                    } else {
+                        r=255;
+                    }
+                    DrawColourCylinder(gc, trackActor, r, g, b);
+                    //DrawCylinder(gc, trackActor);
                 }
-                DrawColourCylinder(gc, trackActor, r, g, b);
-                //DrawCylinder(gc, trackActor);
             }
 
             if (trackActor.InStasis())
@@ -954,6 +966,45 @@ function DrawColourCylinder(GC gc, actor trackActor, int r, int g, int b)
     }
     DrawColourLine(gc, topCircle[i], topCircle[0],r,g,b);
     DrawColourLine(gc, bottomCircle[i], bottomCircle[0],r,g,b);
+}
+
+function vector CreateCubeCorner(float x, float y, float z)
+{
+    local vector v;
+
+    v.X = x;
+    v.Y = y;
+    v.Z = z;
+
+    return v;
+}
+
+function DrawCube(GC gc, vector c1, vector c2, int r, int g, int b)
+{
+    local vector corners[8];
+
+    corners[0]=CreateCubeCorner(c1.X,c1.Y,c1.Z); //c1
+    corners[1]=CreateCubeCorner(c2.X,c1.Y,c1.Z);
+    corners[2]=CreateCubeCorner(c2.X,c2.Y,c1.Z);
+    corners[3]=CreateCubeCorner(c1.X,c2.Y,c1.Z);
+    corners[4]=CreateCubeCorner(c1.X,c1.Y,c2.Z);
+    corners[5]=CreateCubeCorner(c2.X,c1.Y,c2.Z);
+    corners[6]=CreateCubeCorner(c2.X,c2.Y,c2.Z); //c2
+    corners[7]=CreateCubeCorner(c1.X,c2.Y,c2.Z);
+
+    DrawColourLine(gc,corners[0],corners[1],r,g,b); //Top square
+    DrawColourLine(gc,corners[1],corners[2],r,g,b); //Top square
+    DrawColourLine(gc,corners[2],corners[3],r,g,b); //Top square
+    DrawColourLine(gc,corners[3],corners[0],r,g,b); //Top square
+    DrawColourLine(gc,corners[0],corners[4],r,g,b); //Verticals
+    DrawColourLine(gc,corners[1],corners[5],r,g,b); //Verticals
+    DrawColourLine(gc,corners[2],corners[6],r,g,b); //Verticals
+    DrawColourLine(gc,corners[3],corners[7],r,g,b); //Verticals
+    DrawColourLine(gc,corners[4],corners[5],r,g,b); //Bottom Square
+    DrawColourLine(gc,corners[5],corners[6],r,g,b); //Bottom Square
+    DrawColourLine(gc,corners[6],corners[7],r,g,b); //Bottom Square
+    DrawColourLine(gc,corners[7],corners[4],r,g,b); //Bottom Square
+
 }
 
 defaultproperties

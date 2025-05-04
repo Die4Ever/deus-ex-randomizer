@@ -406,10 +406,10 @@ function PreFirstEntryMapFixes()
                 }
             }
 
-            class'FakeMirrorInfo'.static.Create(self,vectm(1335,-1663,1736),vectm(1345,-1535,1771)); //Jock's Bathroom
+            class'FakeMirrorInfo'.static.Create(self,vectm(1335,-1663,1736),vectm(1345,-1535,1775)); //Jock's Bathroom
             class'FakeMirrorInfo'.static.Create(self,vectm(1345,-1545,1736),vectm(1280,-1535,1790)); //Jock's Bathroom (right side)
-            class'FakeMirrorInfo'.static.Create(self,vectm(-1195,-1065,2280),vectm(-1075,-1045,2245)); //Maggie's Guest Bathroom
-            class'FakeMirrorInfo'.static.Create(self,vectm(-1060,-1415,2280),vectm(-1180,-1405,2240)); //Maggie's Master Bathroom
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1195,-1065,2285),vectm(-1075,-1045,2245)); //Maggie's Guest Bathroom
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1060,-1415,2285),vectm(-1180,-1405,2240)); //Maggie's Master Bathroom
 
         }
 
