@@ -415,6 +415,7 @@ function PreFirstEntryMapFixes()
                     troop.UnfamiliarName = "UNATCO Trooper";
                 }
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
         }
 
         //Spawn some placeholders for new item locations

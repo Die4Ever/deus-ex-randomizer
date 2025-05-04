@@ -124,14 +124,14 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
                 //But also make sure it isn't a fake mirror zone
                 if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(Player,HitLocation)){
                     hitMirror = true;
-                    //peeper.ClientMessage("Hit fake mirror on transparent thing");
+                    //peeper.ClientMessage("Hit fake mirror on transparent thing "$HitLocation);
                     break;
                 }
 
             } else if (target==Player.Level){
                 if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(Player,HitLocation)){
                     hitMirror = true;
-                    //peeper.ClientMessage("Hit fake mirror");
+                    //peeper.ClientMessage("Hit fake mirror "$HitLocation);
                     break;
                 }
             }
