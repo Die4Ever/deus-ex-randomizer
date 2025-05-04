@@ -95,6 +95,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BeamTrigger bt;
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)SpiderBot2 sb;
+    local #var(prefix)BreakableGlass bg;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
     local #var(prefix)MJ12Commando commando;
@@ -714,6 +715,19 @@ function PreFirstEntryMapFixes()
             ft.SetCollision(false,false,false);
 
             class'FakeMirrorInfo'.static.Create(self,vectm(-1840,-592,-255),vectm(-1860,-815,-320)); //Men's Bathroom
+
+            bg = None;
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-1216,-2048,-320)){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1152,-2056,-256),vectm(-1280,-2052.5,-382), bg); //Left Conference Window
+
+            bg = None;
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-1024,-2048,-320)){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1088,-2056,-256),vectm(-960,-2052.5,-382), bg); //Middle Conference Window
+
+            bg = None;
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-832,-2048,-320)){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(-896,-2056,-256),vectm(-768,-2052.5,-382), bg); //Right Conference Window
+
         }
 
         break;
@@ -792,6 +806,10 @@ function PreFirstEntryMapFixes()
                 wc.SetRotation(rot);
                 break;
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1152,425,-15),vectm(-1024,430,80)); //Security Window
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1008,425,-15),vectm(-880,430,80)); //Security Window
+            class'FakeMirrorInfo'.static.Create(self,vectm(-864,425,-15),vectm(-736,430,80)); //Security Window
+            class'FakeMirrorInfo'.static.Create(self,vectm(-720,400,-15),vectm(-710,256,80)); //Security Window
         }
 
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
@@ -912,6 +930,11 @@ function PreFirstEntryMapFixes()
             ot.Event='SelfDestructSpiders';
             */
 
+        }
+
+        if (VanillaMaps){
+            foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(121,-672,1086),vectm(63,-628,1146), bg); //Breakable Corner Mirror
         }
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk

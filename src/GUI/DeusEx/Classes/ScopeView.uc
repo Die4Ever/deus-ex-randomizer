@@ -140,7 +140,7 @@ simulated function PeepTimer(int timerID, int invocations, int clientData)
                 if (#var(DeusExPrefix)Mover(target)!=None){
                     if (class'FakeMirrorInfo'.static.IsPointInMirrorZone(Player,HitLocation)){
                         hitMirror = true;
-                        //peeper.ClientMessage("Hit fake mirror attached to mover");
+                        //peeper.ClientMessage("Hit fake mirror attached to mover "$HitLocation);
                         break;
                     }
                 }
