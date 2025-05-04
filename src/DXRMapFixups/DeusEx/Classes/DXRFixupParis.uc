@@ -223,6 +223,8 @@ function PreFirstEntryMapFixes()
             // make the apartment stairs less hidden, not safe to have stairs without a light!
             CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
             CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+
+            class'FakeMirrorInfo'.static.Create(self,vectm(1068,795,890),vectm(1028,810,835)); //Apartment Bathroom
         }
 
         //Add teleporter hint text to Jock

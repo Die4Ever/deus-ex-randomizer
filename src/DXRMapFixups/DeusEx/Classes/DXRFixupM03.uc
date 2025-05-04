@@ -342,6 +342,12 @@ function PreFirstEntryMapFixes()
             //Mostly for entrance rando, but just in case
             //Revision already has a switch here (although it's small and hard to see)
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1344,-1645,186),vectm(-1256,-1660,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1456,-1645,186),vectm(-1368,-1660,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1343,-2935,186),vectm(-1256,-2950,130)); //Men's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1455,-2935,186),vectm(-1367,-2950,130)); //Men's Bathroom Mirror
+
         }
         break;
     //#endregion
@@ -383,6 +389,11 @@ function PreFirstEntryMapFixes()
             }
 
             class'PlaceholderEnemy'.static.Create(self,vectm(4030,-2958,112),,'Shitting');
+
+            class'FakeMirrorInfo'.static.Create(self,vectm(3895,-2730,186),vectm(3808,-2710,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(4007,-2730,186),vectm(3920,-2710,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(3895,-2395,186),vectm(3808,-2375,130)); //Men's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(4007,-2395,186),vectm(3920,-2375,130)); //Men's Bathroom Mirror
 
         } else {
             //Revision
