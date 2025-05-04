@@ -38,6 +38,6 @@ defaultproperties
     Mesh=LodMesh'DeusExDeco.CrateBreakableMed'
     CollisionRadius=34.000000
     CollisionHeight=24.000000
-    Mass=50.000000
+    Mass=35.000000
     Buoyancy=60.000000
 }
