@@ -347,7 +347,8 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(-1456,-1645,186),vectm(-1368,-1660,130)); //Women's Bathroom Mirror
             class'FakeMirrorInfo'.static.Create(self,vectm(-1343,-2935,186),vectm(-1256,-2950,130)); //Men's Bathroom Mirror
             class'FakeMirrorInfo'.static.Create(self,vectm(-1455,-2935,186),vectm(-1367,-2950,130)); //Men's Bathroom Mirror
-
+        } else {
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
         break;
     //#endregion
@@ -398,6 +399,7 @@ function PreFirstEntryMapFixes()
         } else {
             //Revision
             AddSwitch( vect(3745,-2592,140), rot(0, 0, 0), 'BathroomDoor' );
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
 
         // change "MolePerson" (un)familiarNames to "Mole Person". he's in the wood shack near the Terrorist Leader
@@ -518,6 +520,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)WeaponShuriken',tk){
                 tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
 
         SetAllLampsState(true, false, true); // alex isn't in his office

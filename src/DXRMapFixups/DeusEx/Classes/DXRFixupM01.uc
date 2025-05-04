@@ -198,6 +198,7 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)WeaponShuriken',tk){
                 tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
 
         //Spawn some placeholders for new item locations

@@ -416,6 +416,8 @@ function PreFirstEntryMapFixes()
                 }
             }
             class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
+        } else {
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
 
         //Spawn some placeholders for new item locations
@@ -585,10 +587,9 @@ function PreFirstEntryMapFixes()
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
 
-        if (VanillaMaps){
-            foreach AllActors(class'#var(DeusExPrefix)Mover', door,'mirrordoor'){break;}
-            class'FakeMirrorInfo'.static.Create(self,vectm(-527,1660,348),vectm(-627,1655,220),door); //Mirror in front of Smuggler's Stash
-        }
+        //Verified in both vanilla and Revision
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door,'mirrordoor'){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(-527,1660,348),vectm(-627,1655,220),door); //Mirror in front of Smuggler's Stash
 
         break;
     //#endregion
