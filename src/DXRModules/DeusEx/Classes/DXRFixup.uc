@@ -848,6 +848,16 @@ function FixAlexsEmail()
     }
 }
 
+function FixHarleyFilben()
+{
+    local #var(prefix)HarleyFilben harley;
+
+    //Harley defaults to not important, which means his name gets randomized
+    foreach AllActors(class'#var(prefix)HarleyFilben', harley) {
+        harley.bImportant = true;
+    }
+}
+
 function FixSamCarter()
 {
     local SamCarter s;

@@ -42,7 +42,6 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)MapExit exit;
     local #var(prefix)NYPoliceBoat b;
-    local #var(prefix)HarleyFilben harley;
     local #var(prefix)GuntherHermann gunther;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
@@ -67,9 +66,8 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL) {
     //#region UNATCO Island
     case "01_NYC_UNATCOISLAND":
-        foreach AllActors(class'#var(prefix)HarleyFilben', harley) {
-            harley.bImportant = true;
-        }
+        FixHarleyFilben();
+
         //Move this Joe Greene article from inside HQ to outside on the island
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0,0),'01_Newspaper06');//Forklift in bunker
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(3163,-1298,-207),rotm(0,0,0,0),'01_Newspaper06');//Backroom near jail

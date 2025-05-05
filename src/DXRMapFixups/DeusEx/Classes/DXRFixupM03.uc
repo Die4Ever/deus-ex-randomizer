@@ -106,6 +106,8 @@ function PreFirstEntryMapFixes()
     {
     //#region Battery Park
     case "03_NYC_BATTERYPARK":
+        FixHarleyFilben();
+
         foreach AllActors(class'#var(prefix)NanoKey', k) {
             // unnamed key normally unreachable
             if( k.KeyID == '' || k.KeyID == 'KioskDoors' ) {
