@@ -2543,14 +2543,17 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
     switch(event){
         case "Free Space":
             return "Don't worry about it!  This one's free!";
+        case "TerroristCommander_Dead":
         case "TerroristCommander_PlayerDead":
             return "Kill Leo Gold, the terrorist commander on Liberty Island.  You must kill him yourself.";
         case "TiffanySavage_Dead":
             return "Let Tiffany Savage die (or kill her yourself).  She is being held hostage at the gas station.";
         case "PaulDenton_Dead":
             return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel.";
+        case "JordanShea_Dead":
         case "JordanShea_PlayerDead":
             return "Kill Jordan Shea, the bartender at the Underworld Tavern in New York.  You must kill her yourself.";
+        case "SandraRenton_Dead":
         case "SandraRenton_PlayerDead":
             msg = "Kill Sandra Renton.  ";
             if (mission<=2){
@@ -2564,36 +2567,49 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             }
             msg = msg $ ".  You must kill her yourself.";
             return msg;
+        case "GilbertRenton_Dead":
         case "GilbertRenton_PlayerDead":
             return "Kill Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel.  You must kill him yourself.";
         case "WarehouseEntered":
             return "Enter the underground warehouse in Paris.  This warehouse is located in the building across the street from the entrance to the Catacombs.";
         case "GuntherHermann_Dead":
             return "Kill Gunther.  He can be found guarding a computer somewhere in the cathedral in Paris.";
+        case "JoJoFine_Dead":
         case "JoJoFine_PlayerDead":
             return "Kill Jojo Fine.  He can be found in the 'Ton hotel before the ambush.  You must kill him yourself.";
+        case "TobyAtanwe_Dead":
         case "TobyAtanwe_PlayerDead":
             return "Kill Toby Atanwe, who is Morgan Everett's assistant.  He can be killed once you arrive at Everett's house.  You must kill him yourself.";
+        case "Antoine_Dead":
         case "Antoine_PlayerDead":
             return "Kill Antoine in the Paris club.  He can be found at a table in a back corner of the club selling bioelectric cells.  You must kill him yourself.";
+        case "Chad_Dead":
         case "Chad_PlayerDead":
             return "Kill Chad Dumier.  He can be found in the Silhouette hideout in the Paris catacombs.  You must kill him yourself.";
         case "paris_hostage_Dead":
             return "Let both of the hostages in the Paris catacombs die (whether you do it yourself or not).  They can be found locked in the centre of the catacombs bunker occupied by MJ12.";
+        case "Hela_Dead":
         case "Hela_PlayerDead":
             return "Kill Hela, the woman in black leading the MJ12 force in the Paris catacombs.  You must kill her yourself.";
+        case "Renault_Dead":
         case "Renault_PlayerDead":
             return "Kill Renault in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.  You must kill him yourself.";
+        case "Labrat_Bum_Dead":
         case "Labrat_Bum_PlayerDead":
             return "Kill the bum locked up in the Hong Kong MJ12 lab.  You must kill him yourself.";
+        case "DXRNPCs1_Dead":
         case "DXRNPCs1_PlayerDead":
             return "Kill The Merchant.  He will randomly spawn in levels according to your chosen game settings.  You must kill him yourself.  Keep in mind that once you kill him, he will no longer appear for the rest of your run!";
+        case "lemerchant_Dead":
         case "lemerchant_PlayerDead":
             return "Kill Le Merchant.  He spawns near where you first land in Paris.  He's a different guy!  You must kill him yourself.";
+        case "Harold_Dead":
         case "Harold_PlayerDead":
             return "Kill Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.  You must kill him yourself.";
+        case "aimee_Dead":
         case "aimee_PlayerDead":
             return "Kill Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.  You must kill her yourself.";
+        case "WaltonSimons_Dead":
         case "WaltonSimons_PlayerDead":
             msg="Kill Walton Simons.  ";
             if (mission<=14){
@@ -2603,6 +2619,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             }
             msg=msg$".  You must kill him yourself.";
             return msg;
+        case "JoeGreene_Dead":
         case "JoeGreene_PlayerDead":
             msg= "Kill Joe Greene, the reporter poking around in New York.  ";
             if (mission<=4){
@@ -2692,12 +2709,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Rescue the hostages on the top floor of the 'Ton as well as Gilbert Renton.";
         case "SilhouetteHostagesAllRescued":
             return "Save both hostages in the Paris catacombs and escort them to safety in the Silhouette hideout.";
+        case "JosephManderley_Dead":
         case "JosephManderley_PlayerDead":
             return "Kill Manderley while escaping from UNATCO.  You must kill him yourself.";
         case "MadeItToBP":
             return "After the raid on the 'Ton hotel, escape to Gunther's roadblock in Battery Park.";
         case "MeetSmuggler":
             return "Talk to Smuggler in his Hell's Kitchen hideout.";
+        case "SickMan_Dead":
         case "SickMan_PlayerDead":
             return "Kill the junkie in Battery Park who asks for someone to kill him.  He is typically found near the East Coast Memorial (the eagle statue and large plaques).  You must kill him yourself.";
         case "M06PaidJunkie":
@@ -2880,22 +2899,27 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Let Anna kill Lebedev by walking away without killing him yourself.";
         case "PlayerKilledLebedev":
             return "Murder Juan Lebedev on the 747 of your own volition.";
+        case "JuanLebedev_Unconscious":
         case "JuanLebedev_PlayerUnconscious":
             return "Knock Lebedev out instead of killing him.  You must knock him out yourself.";
         case "BrowserHistoryCleared":
             return "While escaping UNATCO, log into the computer in your office and clear your browser history.";
         case "AnnaKillswitch":
             return "After finding the pieces of Anna's killphrase, actually use it against her.";
+        case "AnnaNavarre_DeadM3":
         case "AnnaNavarre_PlayerDeadM3":
             return "Kill Anna Navarre on the 747.  You must kill her yourself.";
+        case "AnnaNavarre_DeadM4":
         case "AnnaNavarre_PlayerDeadM4":
             return "Kill Anna Navarre after sending the signal for the NSF but before being captured by UNATCO.  You must kill her yourself.";
+        case "AnnaNavarre_DeadM5":
         case "AnnaNavarre_PlayerDeadM5":
             return "Kill Anna Navarre in UNATCO HQ.  You must kill her yourself.";
         case "SimonsAssassination":
             return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
         case "AlliesKilled":
             return "Kill enough people who do not actively hate you.  (This should be most people who show as green on the crosshairs)";
+        case "MaySung_Dead":
         case "MaySung_PlayerDead":
             return "Kill May Sung, Maggie Chow's maid.  You must kill her yourself.";
         case "MostWarehouseTroopsDead":
@@ -2906,6 +2930,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough medical bots or aug bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "RepairBot_ClassDead":
             return "Destroy enough repair bots.  You must destroy them yourself and disabling them with EMP does not count.";
+        case "DrugDealer_Dead":
         case "DrugDealer_PlayerDead":
             return "Kill Rock, the drug dealer who lives in Brooklyn Bridge Station.  You must kill him yourself.";
         case "botordertrigger":
@@ -2994,6 +3019,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Swim to the green beacon on top of the Ocean Lab crew module.  The green beacon can be seen out the window of the sub bay on the ocean floor.";
         case "PageTaunt_Played":
             return "After recovering the schematics for the Universal Constructor below the Ocean Lab, talk to Bob Page on the communicator before leaving.";
+        case "JerryTheVentGreasel_Dead":
         case "JerryTheVentGreasel_PlayerDead":
             return "Kill the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.  You must kill him yourself.";
         case "BiggestFan":
@@ -3026,6 +3052,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill enough birds.  These can be either pigeons or seagulls.";
         case "GoneFishing":
             return "Kill enough fish.";
+        case "FordSchick_Dead":
         case "FordSchick_PlayerDead":
             return "Kill Ford Schick.  Note that you can do this after rescuing him.  You must kill him yourself.";
         case "ChateauInComputerRoom":
@@ -3146,6 +3173,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Rent a companion for the night from the Mamasan in the Lucky Money club.";
         case "Sailor_ClassDeadM6":
             return "Kill enough of the sailors on the top floor of the Lucky Money club.  You must kill them yourself.";
+        case "Shannon_Dead":
         case "Shannon_PlayerDead":
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill her yourself.";
         case "DestroyCapitalism":
@@ -3181,6 +3209,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             }
             msg = msg$"|n|n(It's a Simpsons reference)";
             return msg;
+        case "Canal_Cop_Dead":
         case "Canal_Cop_PlayerDead":
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.  You must kill him yourself.";
         case "LightVandalism":
@@ -3438,6 +3467,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Hear the Lucky Money bartender's ideas about good government.";
         case "M05MeetJaime_Played":
             return "Talk to Jaime while escaping UNATCO and tell him to stay or to join you in Hong Kong.";
+        case "jughead_Dead":
         case "jughead_PlayerDead":
             return "Kill El Rey, the leader of the Rooks in the Brooklyn Bridge Station.  You must kill him yourself.";
         case "JoshuaInterrupted_Played":
@@ -3452,6 +3482,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Slaughter most of the Rooks in the Brooklyn Bridge Station.  You must kill them yourself.";
         case "GiveZyme":
             return "Give zyme to the two junkies in the Brooklyn Bridge Station.";
+        case "MarketKid_Unconscious":
         case "MarketKid_PlayerUnconscious":
             return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  You must knock him out yourself.  Crime (sometimes) doesn't pay.";
         case "MaggieLived":
