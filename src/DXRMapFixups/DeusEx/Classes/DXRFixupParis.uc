@@ -31,6 +31,7 @@ function PreFirstEntryMapFixes()
     local DestroyTrigger desTrig;
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)ControlPanel cp;
+    local #var(DeusExPrefix)Decoration dec;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -42,7 +43,8 @@ function PreFirstEntryMapFixes()
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
         SetAllLampsState(true, false, true); // lamps in the building next to the metro station
 
-        AddSwitch(vect(-3615.780029, 3953.899902, 2121.5), rot(0, 16384, 0), 'roof_elevator_call');
+        dec = AddSwitch(vect(-3615.780029, 3953.899902, 2121.5), rot(0, 16384, 0), 'roof_elevator_call');
+        dec.ItemName = "Call Button";
         elevatortrig = Spawn(class'DXRMoverSequenceTrigger',, 'roof_elevator_call');
         elevatortrig.Event = 'roof_elevator';
 
