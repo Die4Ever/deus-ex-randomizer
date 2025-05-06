@@ -167,11 +167,7 @@ function PreFirstEntryMapFixes()
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
 
-#ifdef injections
-        foreach AllActors(class'#var(prefix)Newspaper',np)
-#else
-        foreach AllActors(class'DXRInformationDevices',np)
-#endif
+        foreach AllActors(#switch(injections: class'Newspaper', class'DXRInformationDevices'), np)
         {
             //Make both Joe Greene articles in HQ the same one
             if (np.textTag=='01_Newspaper06'){

@@ -10,19 +10,11 @@ function Frob(Actor Frobber, Inventory frobWith)
     local bool chugged;
     local float cooldown;
 
-#ifdef hx
-    oldUsing = BubbleTime > 0.0;
-#else
-    oldUsing = bUsing;
-#endif
+    oldUsing = #switch(hx: BubbleTime > 0.0, bUsing);
     oldNumUses = numUses;
 
     Super.Frob(Frobber, frobWith);
-#ifdef hx
-    newUsing = BubbleTime > 0.0;
-#else
-    newUsing = bUsing;
-#endif
+    newUsing = #switch(hx: BubbleTime > 0.0, bUsing);
 
     if (newUsing && !oldUsing) {
         if(class'MenuChoice_BalanceEtc'.static.IsEnabled() || #defined(vmd)) {
@@ -42,11 +34,7 @@ function Frob(Actor Frobber, Inventory frobWith)
         }
         if (chugged)
         {
-#ifdef injections
-            class'WaterCooler'.static.PlayDrown(Frobber);
-#else
-            class'DXRWaterCooler'.static.PlayDrown(Frobber);
-#endif
+            class'#var(injectsprefix)WaterCooler'.static.PlayDrown(Frobber);
             class'DXREvents'.static.MarkBingo("ChugWater");
         }
     }
