@@ -120,6 +120,23 @@ function ShowBingoGoalHelp( Window bingoTile )
     }
 }
 
+function string GetNextStartingMap(DXRando dxr)
+{
+    local int nextStartNum;
+    local string nextStartName;
+    local DXRStartMap m;
+
+    if(dxr.flags.settings.starting_map == 0) return "";
+
+    m = DXRStartMap(class'DXRStartMap'.static.Find());
+    if(m == None) return "";
+    dxr.seed++;
+    nextStartNum = m.ChooseRandomStartMap(m, dxr.flags.settings.starting_map);
+    dxr.seed--;
+    nextStartName = m.GetStartingMapName(nextStartNum);
+    return nextStartName;
+}
+
 function bool ButtonActivated( Window buttonPressed )
 {
     local int nextStartNum, bingoWin, bingosCompleted,  bingoDuration, currentLoop;
@@ -139,13 +156,12 @@ function bool ButtonActivated( Window buttonPressed )
         currentLoop = dxr.flags.newgameplus_loops;
         difficulty = class'DXRInfo'.static.FloatToString(dxr.player.CombatDifficulty, 3);
 
-        dxr.seed++;
-        nextStartNum = class'DXRStartMap'.static.ChooseRandomStartMap(class'DXRBase'.static.Find(), dxr.flags.settings.starting_map);
-        dxr.seed--;
-        nextStartName = class'DXRStartMap'.static.GetStartingMapName(nextStartNum);
+        nextStartName = GetNextStartingMap(dxr);
 
         infoText = InfoWindowText $ "|n";
-        if (bingoWin > 0) {
+        if (dxr.flags.IsBingoCampaignMode() && bingoWin > 0) {
+            infoText = infoText $ "|nBingo Lines Required to Progress: " $ bingoWin;
+        } else if (bingoWin > 0) {
             infoText = infoText $ "|nBingo Lines to Win: " $ bingoWin;
         }
         infoText = infoText $ "|nBingo Lines Completed: " $ bingosCompleted;
@@ -159,7 +175,7 @@ function bool ButtonActivated( Window buttonPressed )
             }
         }
         infoText = infoText $ "|n|nNew Game Plus Loops Completed: " $ currentLoop;
-        infoText = infoText $ "|nNext Loop Starting Map: " $ nextStartName;
+        if(nextStartName != "") infoText = infoText $ "|nNext Loop Starting Map: " $ nextStartName;
         infoText = infoText $ "|n|nCombat Difficulty: " $ difficulty;
 
         class'BingoHintMsgBox'.static.Create(root, InfoWindowHeader, infoText, 1, False, self);

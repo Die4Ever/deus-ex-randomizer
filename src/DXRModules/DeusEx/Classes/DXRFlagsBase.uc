@@ -228,8 +228,7 @@ function CheckConfig()
 
 simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDifficulty)
 {
-    local string str,str2,str3;
-    local int nextStart;
+    local string str,str2;
 
     str = "Deus Ex Randomizer " $ VersionString() $ ", Seed: " $ seed;
     if(bSetSeed > 0)
@@ -240,22 +239,12 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
             $ ", New Game+ Loops: "$newgameplus_loops
 #endif
             $ ", Flags: " $ ToHex(FlagsHash());
-    
-    if (dxr.flags.settings.bingo_win > 0) {
-        dxr.seed++;
-        nextStart = class'DXRStartMap'.static.ChooseRandomStartMap(self, dxr.flags.settings.starting_map);
-        dxr.seed--;
-        str3 = "Next Loop Start: " $ class'DXRStartMap'.static.GetStartingMapName(nextStart);
-    }
 
     info(str);
     info(str2);
     if(p != None && !DXRFlags(self).IsZeroRandoPure()){
         p.ClientMessage(str);
         p.ClientMessage(str2);
-        if (str3 != "") {
-            p.ClientMessage(str3);
-        }
     }
 }
 
