@@ -139,7 +139,7 @@ function string GetNextStartingMap(DXRando dxr)
 
 function bool ButtonActivated( Window buttonPressed )
 {
-    local int nextStartNum, bingoWin, bingosCompleted,  bingoDuration, currentLoop;
+    local int bingoWin, bingosCompleted,  bingoDuration, currentLoop;
     local string infoText, nextStartName, difficulty;
     local DXRando dxr;
 
