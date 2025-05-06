@@ -53,6 +53,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AllianceTrigger at;
     local #var(prefix)CrateUnbreakableLarge crate;
     local #var(prefix)ThugMale2 thug;
+    local #var(prefix)Karkian kark;
 
     local DXREnemies dxre;
     local int i;
@@ -101,6 +102,11 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
             anna.bHateWeapon=False;
             anna.ResetReactions();
+        }
+
+        //Prevent the karkians from getting cloned (so they don't clone outside of the enclosure)
+        foreach AllActors(class'#var(prefix)Karkian', kark){
+            kark.bIsSecretGoal=true;
         }
 
         if (VanillaMaps){
