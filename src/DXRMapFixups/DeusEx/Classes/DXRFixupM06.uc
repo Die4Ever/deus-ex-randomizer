@@ -449,6 +449,7 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'elevator_door') {
             m.bIsDoor = true;// DXRDoors will pick this up later since we're in PreFirstEntry
+            m.FragmentClass = class'MetalFragment'; // only one of these two doors has any helpful sounds set
         }
         foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';
