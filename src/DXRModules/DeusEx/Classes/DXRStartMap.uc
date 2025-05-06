@@ -364,6 +364,7 @@ function bool IsStartMap()
     return _IsStartMap(dxr);
 }
 
+//#region _GetStartMap
 static function string _GetStartMap(int start_map_val, optional out string friendlyName, optional out int bShowInMenu)
 {
     friendlyName = ""; // clear the out param to protect against reuse by the caller
@@ -624,6 +625,7 @@ function DeusExNote AddNoteFromConv(#var(PlayerPawn) player, bool bEmptyNotes, n
     return None;
 }
 
+//#region PreFirstEntryStartMapFixes
 function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local bool bEmptyNotes, bFemale;
@@ -899,6 +901,7 @@ function SkillAwardCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
     return crate;
 }
 
+//#region PostFirstEntryStartMapFixes
 function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, int start_flag)
 {
     local DeusExGoal goal;
@@ -1038,6 +1041,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
     }
 }
 
+//#region BingoGoalImpossible
 static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
     switch(start_map/10)
@@ -1148,6 +1152,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             return start_map >= 115;
         case "TrainTracks":
             return start_map > 115;
+        case "JockBlewUp":
+            return end_mission < 15;
         }
         break;
 
@@ -1242,7 +1248,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     return False;
 }
 
-
+// #region BingoGoalPossible
 static function bool BingoGoalPossible(string bingo_event, int start_map, int end_mission)
 {
     // TODO: any of the exceptions in GetStartingMissionMask, and will also need to add them to GetMaybeMissionMask
@@ -1295,6 +1301,7 @@ static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
     return startMap;
 }
 
+//#region _ChooseRandomStartMap
 static function int _ChooseRandomStartMap(DXRBase m)
 {
     local int i;
