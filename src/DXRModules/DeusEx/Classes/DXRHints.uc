@@ -168,7 +168,11 @@ simulated function InitHints()
         if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) AddHint("Weapon animation speeds now improve with skills,", "especially grenades with Demolition skill.");
         if(class'MenuChoice_BalanceItems'.static.IsEnabled()) AddHint("Grenades can now be attached to the floor", "or even on a door!");
         if(class'MenuChoice_BalanceSkills'.static.IsEnabled()) AddHint("Attaching a grenade to a wall increases its", "blast radius and damage, especially with high skill.");
-        AddHint("You can safely save during infolinks!", "Give it a shot, Tong won't mind!");
+        if(class'MenuChoice_SaveDuringInfolinks'.static.IsEnabled(dxr.flags)){
+            AddHint("You can safely save during infolinks!", "Give it a shot, Tong won't mind!");
+        } else {
+            AddHint("Wish you could save during infolinks?", "Look for the 'Saving During Infolinks' option in the settings!");
+        }
         if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Red lasers will always set off an alarm.", "Blue lasers won't, but will trigger something else!");
         if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AddHint("Everything except an NPC will set off a laser!", "Better be careful around them!");
         AddHint("Enemies with gold visors are resistant to gas", "so you might need to deal with them differently!");
