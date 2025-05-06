@@ -1002,6 +1002,8 @@ function RandomizeCutscene()
         }
     }
 
+    MakeTubeContentsFloat();
+
     /*foreach AllActors(class'CameraPoint', c)
     {
         c.bHidden = false;
@@ -1020,6 +1022,44 @@ function RandomizeCutscene()
 
     RandomizeCutsceneOrder();
     ForceIntroFight();
+}
+
+function MakeTubeContentsFloat()
+{
+    local bool RevisionMaps;
+    local vector TubeLoc;
+    local rotator TubeRot;
+    local float widthScale,heightScale;
+    local Actor a;
+
+    switch(dxr.localURL)
+    {
+        case "INTRO":
+            break;
+        default:
+            return;
+    }
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps){
+        TubeLoc = vectm(-9889,-8523,-5136);
+        TubeRot = rot(0,8992,0);
+    } else {
+        TubeLoc = vectm(-11088,-8577,-5048);
+        TubeRot = rot(0,16304,0);
+    }
+
+    foreach RadiusActors(class'Actor',a,50,TubeLoc){
+        if (a.bHidden) continue;
+        a.SetPhysics(PHYS_None);
+        widthScale = class'#var(prefix)DentonClone'.default.CollisionRadius / a.Default.CollisionRadius;
+        heightScale = class'#var(prefix)DentonClone'.default.CollisionHeight / a.Default.CollisionHeight;
+        a.DrawScale = FMin(widthScale,heightScale); //Don't use SetActorScale, because that works from the existing scale
+        a.SetLocation(TubeLoc);
+        a.SetRotation(TubeRot); //Rotation should get updated to account for RotationOffset
+    }
+
 }
 
 function ForceIntroFight()
