@@ -31,6 +31,7 @@ function PreFirstEntryMapFixes()
     local DestroyTrigger desTrig;
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)ControlPanel cp;
+    local #var(DeusExPrefix)Decoration dec;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -42,7 +43,8 @@ function PreFirstEntryMapFixes()
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
         SetAllLampsState(true, false, true); // lamps in the building next to the metro station
 
-        AddSwitch(vect(-3615.780029, 3953.899902, 2121.5), rot(0, 16384, 0), 'roof_elevator_call');
+        dec = AddSwitch(vect(-3615.780029, 3953.899902, 2121.5), rot(0, 16384, 0), 'roof_elevator_call');
+        dec.ItemName = "Call Button";
         elevatortrig = Spawn(class'DXRMoverSequenceTrigger',, 'roof_elevator_call');
         elevatortrig.Event = 'roof_elevator';
 
@@ -225,6 +227,8 @@ function PreFirstEntryMapFixes()
             CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
 
             class'FakeMirrorInfo'.static.Create(self,vectm(1068,795,890),vectm(1028,810,835)); //Apartment Bathroom
+        } else {
+            class'FakeMirrorInfo'.static.Create(self,vectm(1352,-640,740),vectm(1451,-620,627)); //Apartment mirror near front door
         }
 
         //Add teleporter hint text to Jock
@@ -286,6 +290,8 @@ function PreFirstEntryMapFixes()
         if (VanillaMaps) {
             class'FakeMirrorInfo'.static.Create(self,vectm(-1575,-970,-55),vectm(-1585,-1155,-140)); //Bathroom mirror 1
             class'FakeMirrorInfo'.static.Create(self,vectm(-1015,-1530,-55),vectm(-1005,-1345,-140)); //Bathroom mirror 2
+        } else {
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
 
         break;
@@ -434,10 +440,9 @@ function PreFirstEntryMapFixes()
 
         SetAllLampsState(true, false, true); // Everett's bedroom
 
-        if (VanillaMaps){
-            foreach AllActors(class'DeusExMover',m,'morganmirror'){break;}
-            class'FakeMirrorInfo'.static.Create(self,vectm(980,1480,508),vectm(1065,1473,390),m); //Mirror in front of Lucius's door
-        }
+        //Verified in both vanilla and Revision
+        foreach AllActors(class'DeusExMover',m,'morganmirror'){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(980,1480,508),vectm(1065,1473,390),m); //Mirror in front of Lucius's door
 
         break;
     //#endregion

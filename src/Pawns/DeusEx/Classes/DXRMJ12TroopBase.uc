@@ -16,10 +16,7 @@ function Explode(optional vector HitLocation) // argument for compatibility with
     local float explosionDamage;
     local float explosionRadius;
 
-#ifdef revision
-    Super.Explode();
-    return;
-#elseif vmd
+#ifdef revision || vmd
     Super.Explode();
     return;
 #endif

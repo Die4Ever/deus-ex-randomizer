@@ -125,15 +125,6 @@ function PreFirstEntryMapFixes()
                     cigs.Destroy();
                 }
             }
-
-            class'FakeMirrorInfo'.static.Create(self,vectm(-2840,1360,-64),vectm(-2875,1487,-160)); //Mirrors between cells
-            class'FakeMirrorInfo'.static.Create(self,vectm(-2875,848,-64),vectm(-2840,978,-160));   //Mirrors between cells
-            class'FakeMirrorInfo'.static.Create(self,vectm(-3010,1035,-64),vectm(-2877,1047,-160)); //Dead Body Cell
-            class'FakeMirrorInfo'.static.Create(self,vectm(-2542,1035,-64),vectm(-2672,1047,-160)); //Miguel Cell
-            class'FakeMirrorInfo'.static.Create(self,vectm(-2833,1300,-64),vectm(-2702,1290,-160)); //Empty Cell
-
-            foreach AllActors(class'DeusExMover',dxm,'Mirror'){break;}
-            class'FakeMirrorInfo'.static.Create(self,vectm(-3168,1300,-64),vectm(-3039,1290,-160),dxm); //JC's Cell (but we only want this while the window is reflective)
         } else {
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover34'){
@@ -145,6 +136,16 @@ function PreFirstEntryMapFixes()
 
             //Keypad10 fixed in Vanilla above is already fixed in Revision
         }
+
+        //Mirrors verified in vanilla and Revision
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2840,1360,-64),vectm(-2875,1487,-160)); //Mirrors between cells
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2875,848,-64),vectm(-2840,978,-160));   //Mirrors between cells
+        class'FakeMirrorInfo'.static.Create(self,vectm(-3010,1035,-64),vectm(-2877,1047,-160)); //Dead Body Cell
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2542,1035,-64),vectm(-2672,1047,-160)); //Miguel Cell
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2833,1300,-64),vectm(-2702,1290,-160)); //Empty Cell
+
+        foreach AllActors(class'DeusExMover',dxm,'Mirror'){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(-3168,1300,-64),vectm(-3039,1290,-160),dxm); //JC's Cell (but we only want this while the window is reflective)
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
@@ -203,6 +204,8 @@ function PreFirstEntryMapFixes()
                 break;
             }
             class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
+        } else {
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
         SpeedUpUNATCOFurnaceVent();
 

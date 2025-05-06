@@ -412,6 +412,8 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(-1195,-1065,2285),vectm(-1075,-1045,2245)); //Maggie's Guest Bathroom
             class'FakeMirrorInfo'.static.Create(self,vectm(-1060,-1415,2285),vectm(-1180,-1405,2240)); //Maggie's Master Bathroom
 
+        } else {
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
 
         //behind Maggie's DispalyCase (sic), there is a Trigger to open it
@@ -729,6 +731,8 @@ function PreFirstEntryMapFixes()
             foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-832,-2048,-320)){break;}
             class'FakeMirrorInfo'.static.Create(self,vectm(-896,-2056,-256),vectm(-768,-2052.5,-382), bg); //Right Conference Window
 
+        } else {
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
 
         break;
@@ -807,11 +811,13 @@ function PreFirstEntryMapFixes()
                 wc.SetRotation(rot);
                 break;
             }
-            class'FakeMirrorInfo'.static.Create(self,vectm(-1152,425,-15),vectm(-1024,430,80)); //Security Window
-            class'FakeMirrorInfo'.static.Create(self,vectm(-1008,425,-15),vectm(-880,430,80)); //Security Window
-            class'FakeMirrorInfo'.static.Create(self,vectm(-864,425,-15),vectm(-736,430,80)); //Security Window
-            class'FakeMirrorInfo'.static.Create(self,vectm(-720,400,-15),vectm(-710,256,80)); //Security Window
         }
+
+        //Verified in both vanilla and Revision
+        class'FakeMirrorInfo'.static.Create(self,vectm(-1152,425,-15),vectm(-1024,430,80)); //Security Window
+        class'FakeMirrorInfo'.static.Create(self,vectm(-1008,425,-15),vectm(-880,430,80)); //Security Window
+        class'FakeMirrorInfo'.static.Create(self,vectm(-864,425,-15),vectm(-736,430,80)); //Security Window
+        class'FakeMirrorInfo'.static.Create(self,vectm(-720,400,-15),vectm(-710,256,80)); //Security Window
 
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
@@ -933,10 +939,9 @@ function PreFirstEntryMapFixes()
 
         }
 
-        if (VanillaMaps){
-            foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){break;}
-            class'FakeMirrorInfo'.static.Create(self,vectm(121,-672,1086),vectm(63,-628,1146), bg); //Breakable Corner Mirror
-        }
+        //Verified in both vanilla and Revision
+        foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(121,-672,1086),vectm(63,-628,1146), bg); //Breakable Corner Mirror
 
         Spawn(class'PlaceholderItem',,, vectm(-39.86,-542.35,570.3)); //Computer desk
         Spawn(class'PlaceholderItem',,, vectm(339.25,-2111.46,506.3)); //Near lasers

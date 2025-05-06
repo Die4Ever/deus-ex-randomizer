@@ -1,10 +1,4 @@
-#ifdef hx
-class DXRandoTests extends HXRandoGameInfo;
-#elseif vanilla
-class DXRandoTests extends DeusExGameInfo;
-#else
-class DXRandoTests extends DXRandoGameInfo;
-#endif
+class DXRandoTests extends #switch(hx: HXRandoGameInfo, vanilla: DeusExGameInfo, else: DXRandoGameInfo);
 
 event playerpawn Login
 (
