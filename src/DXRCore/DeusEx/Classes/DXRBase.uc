@@ -658,10 +658,6 @@ function bool InGame() {
         return False;
     }
 
-    if (root.hud.conWindow != None && root.hud.conWindow.IsVisible()) {
-        return false;
-    }
-
     return True;
 }
 

@@ -148,9 +148,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     //
     // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
     // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
-    if ((damageType == 'Shot') || (damageType == 'AutoShot') ||
-        damageType == 'Flamed' || damageType == 'Burned')
+    if (damageType == 'Shot' || damageType == 'AutoShot')
     {
+        newDamage *= CombatDifficulty;
+        oldDamage *= CombatDifficulty;
+    }
+    else if((damageType == 'Flamed' || damageType == 'Burned') && class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
         newDamage *= CombatDifficulty;
         oldDamage *= CombatDifficulty;
     }
@@ -178,7 +181,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 function float CombatDifficultyMultEnviro()
 {
-    return (CombatDifficulty*0.25) + 0.75;// 25% wet / 75% dry
+    return (CombatDifficulty*0.2) + 0.8;// 20% wet / 80% dry
 }
 
 function float GetDamageMultiplier()
@@ -1286,4 +1289,14 @@ exec function ToggleScope()
             }
         }
     }
+}
+
+exec function PlayerLoc()
+{
+    ClientMessage("Player location: (" $ Location.x $ ", " $ Location.y $ ", " $ Location.z $ ")");
+}
+
+exec function PlayerRot()
+{
+    ClientMessage("Player rotation: (" $ Rotation.pitch $ ", " $ Rotation.yaw $ ", " $ Rotation.roll $ ")");
 }

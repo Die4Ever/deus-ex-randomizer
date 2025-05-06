@@ -31,6 +31,7 @@ function PreFirstEntryMapFixes()
     local DestroyTrigger desTrig;
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)ControlPanel cp;
+    local #var(DeusExPrefix)Decoration dec;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -42,7 +43,8 @@ function PreFirstEntryMapFixes()
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
         SetAllLampsState(true, false, true); // lamps in the building next to the metro station
 
-        AddSwitch(vect(-3615.780029, 3953.899902, 2121.5), rot(0, 16384, 0), 'roof_elevator_call');
+        dec = AddSwitch(vect(-3615.780029, 3953.899902, 2121.5), rot(0, 16384, 0), 'roof_elevator_call');
+        dec.ItemName = "Call Button";
         elevatortrig = Spawn(class'DXRMoverSequenceTrigger',, 'roof_elevator_call');
         elevatortrig.Event = 'roof_elevator';
 
@@ -140,6 +142,8 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
 
+        Spawn(class'PlaceholderItem',,, vectm(2138.9, -2342.1, -506.4)); // Side dead-end tunnel near the end
+
         break;
     //#endregion
 
@@ -221,6 +225,10 @@ function PreFirstEntryMapFixes()
             // make the apartment stairs less hidden, not safe to have stairs without a light!
             CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
             CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+
+            class'FakeMirrorInfo'.static.Create(self,vectm(1068,795,890),vectm(1028,810,835)); //Apartment Bathroom
+        } else {
+            class'FakeMirrorInfo'.static.Create(self,vectm(1352,-640,740),vectm(1451,-620,627)); //Apartment mirror near front door
         }
 
         //Add teleporter hint text to Jock
@@ -278,6 +286,13 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1545.5,-1016.7,-145)); //Bathroom counter 2
         Spawn(class'PlaceholderItem',,, vectm(-1464,-1649.6,-197)); //Bathroom stall 1
         Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
+
+        if (VanillaMaps) {
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1575,-970,-55),vectm(-1585,-1155,-140)); //Bathroom mirror 1
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1015,-1530,-55),vectm(-1005,-1345,-140)); //Bathroom mirror 2
+        } else {
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
+        }
 
         break;
     //#endregion
@@ -424,6 +439,10 @@ function PreFirstEntryMapFixes()
         hoverHint.SetBaseActor(jock);
 
         SetAllLampsState(true, false, true); // Everett's bedroom
+
+        //Verified in both vanilla and Revision
+        foreach AllActors(class'DeusExMover',m,'morganmirror'){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(980,1480,508),vectm(1065,1473,390),m); //Mirror in front of Lucius's door
 
         break;
     //#endregion

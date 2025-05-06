@@ -116,6 +116,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("Stick with the prod!");
         AddInvBan(class'Engine.Weapon');
         AddInvBan(class'Engine.Ammo');
+        AddInvBan(class'#var(prefix)WeaponMod');
         AddSkillBan(class'#var(prefix)SkillWeaponHeavy');
         AddSkillBan(class'#var(prefix)SkillWeaponRifle');
         AddSkillBan(class'#var(prefix)SkillWeaponPistol');
@@ -244,6 +245,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("Rather than offer you the illusion of free choice, I will take the liberty of choosing for you...");
         AddInvBan(class'Engine.Weapon');
         AddInvBan(class'Engine.Ammo');
+        AddInvBan(class'#var(prefix)WeaponMod');
         AddSkillBan(class'#var(prefix)SkillWeaponHeavy');
         AddSkillBan(class'#var(prefix)SkillWeaponPistol');
         AddSkillBan(class'#var(prefix)SkillWeaponRifle');
@@ -261,6 +263,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddLoadoutPlayerMsg("Grenades Only!");
         AddInvBan(class'Engine.Weapon');
         AddInvBan(class'Engine.Ammo');
+        AddInvBan(class'#var(prefix)WeaponMod');
         AddSkillBan(class'#var(prefix)SkillWeaponHeavy');
         AddSkillBan(class'#var(prefix)SkillWeaponRifle');
         AddSkillBan(class'#var(prefix)SkillWeaponPistol');
@@ -599,12 +602,22 @@ function string LoadoutHelpText(int loadout)
 function AddStandardAugSet()
 {
 #ifdef injections || revision || vmd
-    AddStartAug(class'AugOnlySpeed');
+    if(dxr.flags.IsHalloweenMode()) {
+        AddStartAug(class'AugStealth');
+    }
+    else {
+        AddStartAug(class'AugOnlySpeed');
+        AddAugAllow(class'#var(prefix)AugSpeed');
+    }
     AddAugAllow(class'AugOnlySpeed');
     AddAugAllow(class'AugJump');
-    AddAugAllow(class'#var(prefix)AugSpeed');
 #else
-    AddStartAug(class'AugSpeed');
+    if(dxr.flags.IsHalloweenMode()) {
+        AddStartAug(class'AugStealth');
+    }
+    else {
+        AddStartAug(class'AugSpeed');
+    }
 #endif
     AddAugAllow(class'AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
 }
@@ -750,18 +763,7 @@ function AddStartAug(class<Augmentation> aug)
 
     for(i=0; i < ArrayCount(item_set.starting_augs); i++) {
         if( item_set.starting_augs[i] == None ) {
-            // HACK: this is Halloween!
-            #ifdef injections || revision || vmd
-            if(dxr.flags.IsHalloweenMode() && (aug==class'AugOnlySpeed' || aug==class'#var(prefix)AugSpeed') && dxr.flags.settings.speedlevel == 0) {
-                aug = class'#var(prefix)AugStealth';
-            }
-            #else
-            if(dxr.flags.IsHalloweenMode() && aug==class'#var(prefix)AugSpeed' && dxr.flags.settings.speedlevel == 0) {
-                aug = class'#var(prefix)AugStealth';
-            }
-            #endif
-
-            else if(dxr.flags.settings.speedlevel == 0) {
+            if(dxr.flags.settings.speedlevel == 0) {
                 continue;
             }
             item_set.starting_augs[i] = aug;

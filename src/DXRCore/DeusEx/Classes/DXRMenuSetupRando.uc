@@ -6,6 +6,7 @@ var string SplitsBtnTitle, SplitsBtnMessage;
 
 enum ERandoMessageBoxModes
 {
+    RMB_None,
     RMB_NewGame,// starting with splits with a different flagshash
 };
 var ERandoMessageBoxModes nextScreenNum;
@@ -29,7 +30,7 @@ function BindControls(optional string action)
     if( ! #defined(vmd) ) {
         NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes.  The original game uses 400% for realistic.");
         iDifficulty = int(combatDifficulty * 100.0);
-        Slider(iDifficulty, 0, 10000);
+        Slider(iDifficulty, 0, 10000, GetCombatDifficultyHelpText());
         combatDifficulty = float(iDifficulty) / 100.0;
     #ifndef hx
         f.settings.CombatDifficulty = combatDifficulty;
@@ -75,7 +76,7 @@ function BindControls(optional string action)
     BreakLine();
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
-    Slider(f.settings.merchants, 0, 100);
+    Slider(f.settings.merchants, 0, 100,GetMerchantHelpText());
 #endif
 
     NewMenuItem("Dancing %", "How many characters should be dancing.");
@@ -102,17 +103,17 @@ function BindControls(optional string action)
 
 #ifdef vanilla
     NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
-    EnumOption("Full Closet", 0, f.clothes_looting);
-    EnumOption("Looting Required", 1, f.clothes_looting);
+    EnumOption("Full Closet", 0, f.clothes_looting, GetClothesLootingHelpText(0));
+    EnumOption("Looting Needed", 1, f.clothes_looting, GetClothesLootingHelpText(1));
 #endif
 
     NewGroup("Bingo");
 
-    NewMenuItem("Bingo Win", "How many completed lines to win in WaltonWare mode or progress in Mean Bingo Machine mode.");
+    NewMenuItem("Bingo Win", "How many completed lines to instantly win (or progress in Mean Bingo Machine mode).");
     Slider(f.settings.bingo_win, 0, 12);
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
-    Slider(f.bingo_scale, 0, 100);
+    Slider(f.bingo_scale, 0, 100, GetBingoScaleHelpText());
 
     NewMenuItem("Bingo Freespaces", "Should the center be a Free Space, or even more Free Spaces?");
     EnumOption("0 Free Spaces", 0, f.settings.bingo_freespaces);
@@ -123,23 +124,23 @@ function BindControls(optional string action)
     EnumOption("5 Free Spaces", 5, f.settings.bingo_freespaces);
 
     NewMenuItem("Bingo Duration", "How many missions should the bingo goals last for?");
-    EnumOption("End of Game", 0, f.bingo_duration);
-    EnumOption("1 Mission",   1, f.bingo_duration);
-    EnumOption("2 Missions",  2, f.bingo_duration);
-    EnumOption("3 Missions",  3, f.bingo_duration);
-    EnumOption("4 Missions",  4, f.bingo_duration);
-    EnumOption("5 Missions",  5, f.bingo_duration);
+    EnumOption("End of Game", 0, f.bingo_duration, GetBingoDurationHelpText(0));
+    EnumOption("1 Mission",   1, f.bingo_duration, GetBingoDurationHelpText(1));
+    EnumOption("2 Missions",  2, f.bingo_duration, GetBingoDurationHelpText(2));
+    EnumOption("3 Missions",  3, f.bingo_duration, GetBingoDurationHelpText(3));
+    EnumOption("4 Missions",  4, f.bingo_duration, GetBingoDurationHelpText(4));
+    EnumOption("5 Missions",  5, f.bingo_duration, GetBingoDurationHelpText(5));
 
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.medbots, -1, 100);
+    Slider(f.settings.medbots, -1, 100,GetMedBotHelpText());
 
     NewMenuItem("Augbots", "Percentage chance for a zero-heals medbot to spawn in a map if a regular one doesn't.");
-    Slider(f.moresettings.empty_medbots, 0, 100);
+    Slider(f.moresettings.empty_medbots, 0, 100, GetAugbotsHelpText());
 
     NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
-    Slider(f.settings.repairbots, -1, 100);
+    Slider(f.settings.repairbots, -1, 100,GetRepairBotHelpText());
 
     if(!#defined(vmd)) {
         NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal.");
@@ -227,7 +228,7 @@ function BindControls(optional string action)
     Slider(f.settings.enemiesshuffled, 0, 100);
 
     NewMenuItem("Enemy Weapons Variety %", "Should enemies be using weapons that normally exist in the map?");
-    Slider(f.moresettings.enemies_weapons, 0, 100);
+    Slider(f.moresettings.enemies_weapons, 0, 100, GetEnemyWeaponsVarietyHelpText());
 
     NewMenuItem("Robot Weapons Rando %", "Allow robots to get randomized weapons.");
     Slider(f.settings.bot_weapons, 0, 100);
@@ -245,7 +246,7 @@ function BindControls(optional string action)
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
-    Slider(f.settings.turrets_add, 0, 10000);
+    Slider(f.settings.turrets_add, 0, 10000, GetAddTurretsHelpText());
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
@@ -262,12 +263,12 @@ function BindControls(optional string action)
     EnumOption("Disallow Downgrades On New Game Screen", 5, f.settings.skills_disable_downgrades);
 
     NewMenuItem("", "How often to reroll skill costs.");
-    EnumOption("Don't Reroll Skill Costs", 0, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every Mission", 1, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 2 Missions", 2, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 4 Missions", 4, f.settings.skills_reroll_missions);
-    EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions);
+    EnumOption("Don't Reroll Skill Costs", 0, f.settings.skills_reroll_missions, GetSkillRerollHelpText(0));
+    EnumOption("Reroll Skill Costs Every Mission", 1, f.settings.skills_reroll_missions, GetSkillRerollHelpText(1));
+    EnumOption("Reroll Skill Costs Every 2 Missions", 2, f.settings.skills_reroll_missions, GetSkillRerollHelpText(2));
+    EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions, GetSkillRerollHelpText(3));
+    EnumOption("Reroll Skill Costs Every 4 Missions", 4, f.settings.skills_reroll_missions, GetSkillRerollHelpText(4));
+    EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions, GetSkillRerollHelpText(5));
     if(f.settings.skills_reroll_missions > 5) {
         EnumOption("Reroll Skill Costs Every " $ f.settings.skills_reroll_missions $ " Missions",
             f.settings.skills_reroll_missions, f.settings.skills_reroll_missions
@@ -275,8 +276,8 @@ function BindControls(optional string action)
     }
 
     NewMenuItem("", "Predictability of skill level cost scaling.");
-    EnumOption("Relative Skill Level Costs", 0, f.settings.skills_independent_levels);
-    EnumOption("Unpredictable Skill Level Costs", 1, f.settings.skills_independent_levels);
+    EnumOption("Relative Skill Level Costs", 0, f.settings.skills_independent_levels, GetSkillLevelCostsHelpText(0));
+    EnumOption("Unpredictable Skill Level Costs", 1, f.settings.skills_independent_levels, GetSkillLevelCostsHelpText(1));
 
     BreakLine();
 
@@ -287,10 +288,10 @@ function BindControls(optional string action)
     Slider(f.settings.maxskill, 50, 1000);
 
     NewMenuItem("Banned Skills %", "Chance of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skills, 0, 100);
+    Slider(f.settings.banned_skills, 0, 100, GetBannedSkillsHelpText());
 
     NewMenuItem("Banned Skill Levels %", "Chance of a certain level of a skill having a cost of 99,999 points.");
-    Slider(f.settings.banned_skill_levels, 0, 100);
+    Slider(f.settings.banned_skill_levels, 0, 100, GetBannedSkillLevelsHelpText());
 
     NewMenuItem("Skill Strength Rando %", "How much to randomize the strength of skills.");
     Slider(f.settings.skill_value_rando, 0, 100);// this is actually a wet/dry scale, so the range should be 0 to 100%
@@ -319,43 +320,43 @@ function BindControls(optional string action)
     Slider(f.settings.swapitems, 0, 100);
 
     NewMenuItem("Swap Containers %", "The chance for container positions to be swapped.");
-    Slider(f.settings.swapcontainers, 0, 100);
+    Slider(f.settings.swapcontainers, 0, 100,GetSwapContainersHelpText());
 
     NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
     Slider(f.settings.grenadeswap, 0, 100);
 
     BreakLine();
-    NewMenuItem("Min Weapon Damage %", "The minmum damage for weapons.");
+    NewMenuItem("Min Weapon Damage %", "The minimum damage for weapons.");
     Slider(f.settings.min_weapon_dmg, 0, 500);
 
     NewMenuItem("Max Weapon Damage %", "The maximum damage for weapons.");
     Slider(f.settings.max_weapon_dmg, 0, 500);
 
     BreakLine();
-    NewMenuItem("Min Weapon Shot Time %", "The minmum shot time / firing speed for weapons.");
-    Slider(f.settings.min_weapon_shottime, 0, 500);
+    NewMenuItem("Min Weapon Shot Time %", "The minimum shot time / firing speed for weapons.");
+    Slider(f.settings.min_weapon_shottime, 0, 500,GetShotTimeHelpText(false));
 
     NewMenuItem("Max Weapon Shot Time %", "The maximum shot time / firing speed for weapons.");
-    Slider(f.settings.max_weapon_shottime, 0, 500);
+    Slider(f.settings.max_weapon_shottime, 0, 500, GetShotTimeHelpText(true));
 
     NewMenuItem("JC's Prison Pocket", "Keep all your items when getting captured.");
-    EnumOption("Disabled", 0, f.settings.prison_pocket);
-    //EnumOption("Unaugmented", 1, f.settings.prison_pocket);// TODO: can keep the item in the top left inventory slot, if it's 1 slot
-    EnumOption("Augmented", 100, f.settings.prison_pocket);// maybe the number could be set to the number of items to keep?
+    EnumOption("Disabled", 0, f.settings.prison_pocket,GetPrisonPocketHelpText(0));
+    EnumOption("Unaugmented", 1, f.settings.prison_pocket,GetPrisonPocketHelpText(1));// Keep the first single-slot item in your belt
+    EnumOption("Augmented", 100, f.settings.prison_pocket,GetPrisonPocketHelpText(100));// maybe the number could be set to the number of items to keep?
 
     NewGroup("Augmentations");
 
-    NewMenuItem("Starting Aug Level", "What level your starting augs should start at." $ BR $ "Default loadout starts with the Speed Enhancement augmentation.");
+    NewMenuItem("Starting Aug Level", "What level your starting augs (Check your loadout!) should start at.");
     Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
-    Slider(f.settings.augcans, 0, 100);
+    Slider(f.settings.augcans, 0, 100, GetAugCansRandoHelpText());
 
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
     NewMenuItem("Aug Slot Rando %", "The chance for each aug to randomize the body part it can be installed into");
-    Slider(f.moresettings.aug_loc_rando, 0, 100);
+    Slider(f.moresettings.aug_loc_rando, 0, 100, GetAugSlotRandoHelpText());
 
     NewGroup("New Game+");
 
@@ -421,6 +422,15 @@ function DoNewGameScreen()
     _InvokeNewGameScreen(combatDifficulty);
 }
 
+function bool CheckClickHelpBtn( Window buttonPressed )
+{
+    if (Super.CheckClickHelpBtn(buttonPressed)){
+        nextScreenNum=RMB_None; //Don't go anywhere after interacting with a help window button
+        return true;
+    }
+    return false;
+}
+
 event bool BoxOptionSelected(Window button, int buttonNumber)
 {
     root.PopWindow();
@@ -431,10 +441,297 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
                 DoNewGameScreen();
             }
             return true;
+        case RMB_None:
+            return true;
     }
 
     return Super.BoxOptionSelected(button,buttonNumber);
 }
+
+//#region Help Text Fns
+function string GetSkillRerollHelpText(int reroll)
+{
+    switch (reroll){
+        case 0:
+            return "Skill costs are never rerolled!|n"$
+                   "|n" $
+                   "You're stuck with what you get at the start of the game!";
+        case 1:
+            return "Skill costs are rerolled every mission!";
+        case 2:
+            return "Skill costs are rerolled every 2 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ The first visit to Battery Park|n" $
+                   " ~ Arriving at Hell's Kitchen to see Paul|n" $
+                   " ~ Hong Kong|n" $
+                   " ~ Return to NYC|n" $
+                   " ~ Paris|n" $
+                   " ~ Vandenberg|n" $
+                   " ~ OceanLab";
+        case 3:
+            return "Skill costs are rerolled every 3 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ The second visit to Battery Park (Searching for Lebedev)|n" $
+                   " ~ Hong Kong|n" $
+                   " ~ Superfreighter|n" $
+                   " ~ Vandenberg|n" $
+                   " ~ Area 51";
+        case 4:
+            return "Skill costs are rerolled every 4 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ Arriving at Hell's Kitchen to see Paul|n" $
+                   " ~ Return to NYC|n" $
+                   " ~ Vandenberg";
+        case 5:
+            return "Skill costs are rerolled every 5 missions.|n" $
+                   "|n" $
+                   "Check at:|n"$
+                   " ~ MJ12 Jail|n" $
+                   " ~ Paris|n" $
+                   " ~ Area 51";
+    }
+    return "";
+}
+
+function string GetCombatDifficultyHelpText()
+{
+    local string msg;
+
+    msg =       "Combat Difficulty is generally a multiplier on damage that the player receives.|n";
+    msg = msg $ "|n";
+    msg = msg $ " ~ Damage from bullets and melee weapons are multiplied directly|n";
+    if (class'MenuChoice_BalanceEtc'.static.IsEnabled()){
+        msg = msg $ " ~ Damage from fire is multiplied directly|n";
+        msg = msg $ " ~ Damage from other sources is multiplied by (CombatDifficulty/5)+80%|n";  //See BalancePlayer::DXReduceDamage
+    }
+
+    return msg;
+}
+
+function string GetBingoDurationHelpText(int duration)
+{
+    local string msg;
+
+    msg = "The bingo board will be generated using goals ";
+
+    if (duration==0){
+        msg = msg $ "from your starting point until the end of the game.";
+    } else if (duration==1){
+        msg = msg $ "from the same mission as your chosen starting point.";
+    } else {
+        msg = msg $ "from the next "$duration$" missions from your chosen starting point (including the mission you start in).";
+    }
+    msg = msg $ "|n|n";
+    if (duration==1){
+        msg = msg $ "Goals that span multiple missions will not be available.";
+    } else {
+        msg = msg $ "Any goals that span multiple missions (eg. Bringing the Terrorist Commander to a bar) will only be available if the start and end points are within the range of your bingo duration.";
+    }
+
+    if (duration>0){
+        msg = msg $ "|n|n";
+        msg = msg $ "Bingo Goal amounts will be scaled down based on the Bingo Duration setting.";
+    }
+
+    return msg;
+}
+
+function string GetClothesLootingHelpText(int loot)
+{
+    local string msg;
+
+    if (loot==0){ //Full Closet
+        msg="JC starts with all possible clothing choices.  When outfits are randomized at the start of a mission or at a clothes rack, they will be selected from all the choices.";
+    } else if (loot==1){ //Looting Needed
+        msg="JC starts with the original trenchcoat outfit and the UNATCO uniform.  Clothes can be looted from bodies or found on clothes racks.  "$"When outfits are randomized at the start of a mission or when using a clothes rack, the outfit will be selected from clothes that you have found through the game.";
+    }
+
+    return msg;
+}
+
+function string GetAugCansRandoHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for each augmentation canister to have its contents randomized.  At 100%, all aug cans will have random contents.  Likewise, 0% will leave all aug cans with their original contents.|n";
+    msg = msg $ "|n";
+    msg = msg $ "When randomized, the contents of the can will be selected from the augs available based on your selected game mode and loadout.";
+
+    return msg;
+}
+
+function string GetAugSlotRandoHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for each augmentation to get a randomized aug location, allowing them to be installed in a different body part than normal.  "$"At 100%, all augs will be assigned random body parts.  Likewise, at 0%, all augs will be able to be installed in their original location.|n";
+    msg = msg $ "|n";
+    msg = msg $ "Using values between 0% and 100% may result in some body parts being overloaded or other ones lacking in choices,"$" since augs are unlikely to randomize into the slots that were newly freed by other randomized augs.";
+
+    return msg;
+}
+
+function string GetMerchantHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for The Merchant to appear in each map.  At 100%, The Merchant will appear in every map.  At 0%, The Merchant will not appear at all.  "$"If you kill or knock out The Merchant, he will not appear again.|n";
+    msg = msg $ "|n";
+    msg = msg $ "The Merchant will have various useful items available for sale, which will be different every map.  "$"When using loadouts, The Merchant will not sell any banned items and may have additional items available (based on the loadout).";
+
+    return msg;
+}
+
+function string GetBingoScaleHelpText()
+{
+    local string msg;
+
+    msg =       "Bingo Scale adjusts the number of times a bingo task needs to be done before completing the square.|n";
+    msg = msg $ "|n";
+    msg = msg $ "For example, a goal to 'Drink 100 Cans of Soda' at 50% Bingo Scale would become 'Drink 50 Cans of Soda'.  Goal amounts will not drop below 1.";
+
+    return msg;
+}
+
+function string GetSkillLevelCostsHelpText(int mode)
+{
+    local string msg;
+
+    switch(mode){
+        case 0: //Relative Skill Level Costs
+            msg = "The cost of each skill level (for a single skill) are multiplied by the same random value.";
+            break;
+        case 1: //Unpredictable Skill Level Costs
+            msg = "The cost of each skill level (for a single skill) are multiplied by a different random value.";
+            break;
+    }
+
+    return msg;
+}
+
+function string GetAugbotsHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of an augbot being spawned in each map.  Augbots will only be spawned if a medical bot was NOT spawned in the map (based on the 'Medbots %' setting).|n";
+    msg = msg $ "|n";
+    msg = msg $ "A hint datacube will be spawned near the Augbot saying that it has been delivered nearby, which can help you find it.|n";
+    msg = msg $ "|n";
+    msg = msg $ "Augbots look like a blue medical bot but are only able to install augmentations.  They are unable to heal the player at all.";
+
+    return msg;
+}
+
+function string GetRepairBotHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of a Repair Bot being spawned in each map.|n";
+    msg = msg $ "|n";
+    msg = msg $ "A hint datacube will be spawned near the Repair Bot saying that it has been delivered nearby, which can help you find it.|n";
+
+    return msg;
+}
+
+function string GetMedBotHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of a Medical Bot being spawned in each map.|n";
+    msg = msg $ "|n";
+    msg = msg $ "A hint datacube will be spawned near the Medical Bot saying that it has been delivered nearby, which can help you find it.|n";
+
+    return msg;
+}
+
+function string GetEnemyWeaponsVarietyHelpText()
+{
+    local string msg;
+
+    msg =       "How varied do you want the weapons to be in each map, relative to the original game?  At 0%, enemies will only be given weapons present in the original level.  ";
+    msg = msg $ "At 100%, enemies will be given weapons based on the weapon weighting decided by the randomizer.  Values in between will blend the two pools of weapon choices together.";
+
+    return msg;
+}
+
+function string GetSwapContainersHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of each container to be shuffled in the map.|n";
+    msg = msg $ "|n";
+    msg = msg $ "Containers include obvious things like wooden crates, but also include things like metal crates, barrels, wicker baskets, trash cans, and trash bags.";
+
+    return msg;
+}
+
+function string GetBannedSkillsHelpText()
+{
+    local string msg;
+
+    msg =       "The chance of each skill to be entirely banned.  Bans will get rerolled along with skill costs.|n";
+    msg = msg $ "|n";
+    msg = msg $ "When banned, you will not be allowed to upgrade the skill at all.";
+
+    return msg;
+}
+
+function string GetBannedSkillLevelsHelpText()
+{
+    local string msg;
+
+    msg =       "The chance for any skill level for each skill to be banned.  Bans will get rerolled along with skill costs.|n";
+    msg = msg $ "|n";
+    msg = msg $ "When a skill level is banned, you will not be allowed to upgrade the skill beyond that banned level.  The upgrade from Untrained to Trained will never be banned by this setting.";
+
+    return msg;
+}
+
+function string GetAddTurretsHelpText()
+{
+    local string msg;
+
+    msg =       "The chances to add extra turrets, cameras, and security computers.|n";
+    msg = msg $ "|n";
+    msg = msg $ "Every additional 100% gives another chance to spawn a turret/camera/computer combo (meaning more added turrets).";
+
+    return msg;
+}
+
+function string GetShotTimeHelpText(bool max)
+{
+    local string msg;
+
+
+    if (max){
+        msg =   "The highest the shot time value on weapons will be able to randomized to.|n";
+    } else {
+        msg =   "The lowest the shot time value on weapons will be able to randomized to.|n";
+    }
+    msg = msg $ "|n";
+    msg = msg $ "The 'shot time' is the amount of time it takes for a weapon to fire a single shot.  A lower shot time means the weapon fires more quickly (ie. has a faster fire rate).  A higher shot time means it fires slower (lower fire rate)";
+
+    return msg;
+}
+
+function string GetPrisonPocketHelpText(int val)
+{
+    switch (val)
+    {
+        case 0: //Disabled
+            return "If taken to prison, all of your items will be taken away from you.";
+        case 1: //Unaugmented
+            return "If taken to prison, all items will be taken away from you except for the first single slot item in your belt.";
+        case 100: //Augmented
+            return "If taken to prison, you will keep all of your items.";
+    }
+    return "";
+}
+
+//#endregion
 
 defaultproperties
 {

@@ -250,6 +250,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
         class'PlaceholderEnemy'.static.Create(self,vectm(3744,-1030,-7481));
         class'PlaceholderEnemy'.static.Create(self,vectm(1341,3154,-464),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1191,3035,-464),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(480, -2730, -300), 9416); // on top of the vent entrance, because it's overused
 
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1658,2544,-522));//Behind Command 24
         rg.MaxCount=1;

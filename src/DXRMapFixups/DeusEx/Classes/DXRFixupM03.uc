@@ -106,6 +106,8 @@ function PreFirstEntryMapFixes()
     {
     //#region Battery Park
     case "03_NYC_BATTERYPARK":
+        FixHarleyFilben();
+
         foreach AllActors(class'#var(prefix)NanoKey', k) {
             // unnamed key normally unreachable
             if( k.KeyID == '' || k.KeyID == 'KioskDoors' ) {
@@ -342,6 +344,13 @@ function PreFirstEntryMapFixes()
             //Mostly for entrance rando, but just in case
             //Revision already has a switch here (although it's small and hard to see)
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1344,-1645,186),vectm(-1256,-1660,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1456,-1645,186),vectm(-1368,-1660,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1343,-2935,186),vectm(-1256,-2950,130)); //Men's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(-1455,-2935,186),vectm(-1367,-2950,130)); //Men's Bathroom Mirror
+        } else {
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
         }
         break;
     //#endregion
@@ -384,9 +393,25 @@ function PreFirstEntryMapFixes()
 
             class'PlaceholderEnemy'.static.Create(self,vectm(4030,-2958,112),,'Shitting');
 
+            class'FakeMirrorInfo'.static.Create(self,vectm(3895,-2730,186),vectm(3808,-2710,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(4007,-2730,186),vectm(3920,-2710,130)); //Women's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(3895,-2395,186),vectm(3808,-2375,130)); //Men's Bathroom Mirror
+            class'FakeMirrorInfo'.static.Create(self,vectm(4007,-2395,186),vectm(3920,-2375,130)); //Men's Bathroom Mirror
+
         } else {
             //Revision
             AddSwitch( vect(3745,-2592,140), rot(0, 0, 0), 'BathroomDoor' );
+            //These mirrors actually work in Revision, so no FakeMirrorInfo required
+        }
+
+        // change "MolePerson" (un)familiarNames to "Mole Person". he's in the wood shack near the Terrorist Leader
+        foreach AllActors(class'#var(prefix)HumanCivilian', hc) {
+            if (hc.UnfamiliarName == "MolePerson") {
+                hc.UnfamiliarName = "Mole Person";
+            }
+            if (hc.FamiliarName == "MolePerson") {
+                hc.FamiliarName = "Mole Person";
+            }
         }
 
         Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
@@ -460,7 +485,6 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
-        RemoveStopWhenEncroach();
 
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
@@ -493,10 +517,12 @@ function PreFirstEntryMapFixes()
                 compublic.BulletinTag = '03_BulletinMenu';
                 break;
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
         } else {
             foreach AllActors(class'#var(prefix)WeaponShuriken',tk){
                 tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
 
         SetAllLampsState(true, false, true); // alex isn't in his office

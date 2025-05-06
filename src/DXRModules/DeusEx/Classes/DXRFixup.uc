@@ -253,7 +253,6 @@ function PreFirstEntry()
     FixAutoTurrets();
     FixAlarmUnits();
     SpawnDatacubes();
-    AntiEpilepsy();
     FixHolograms();
     FixShowers();
 
@@ -293,6 +292,8 @@ function PostFirstEntry()
     SetSeed( "DXRFixup PostFirstEntry missions" );
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
+
+    RemoveStopWhenEncroach();
 }
 
 function AnyEntry()
@@ -847,6 +848,16 @@ function FixAlexsEmail()
     }
 }
 
+function FixHarleyFilben()
+{
+    local #var(prefix)HarleyFilben harley;
+
+    //Harley defaults to not important, which means his name gets randomized
+    foreach AllActors(class'#var(prefix)HarleyFilben', harley) {
+        harley.bImportant = true;
+    }
+}
+
 function FixSamCarter()
 {
     local SamCarter s;
@@ -1162,6 +1173,10 @@ function RemoveStopWhenEncroach()
     local #var(prefix)Mover m;
 
     if(!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
+    switch(dxr.localURL) {
+    case "06_HONGKONG_TONGBASE": // allow the speedrun trick on the killswitch disabling
+        return;
+    }
 
     foreach AllActors(class'#var(prefix)Mover',m){
         //Stop when encroach is annoying and can allow some NPCs to block doorways
@@ -1224,24 +1239,6 @@ function SpawnDatacubes()
             l("add_datacubes spawned "$dc$", text: \""$dc.plaintext$"\", image: "$dc.imageClass$", plaintextTag: "$dc.plaintextTag$", location: "$loc);
         }
         else warning("failed to spawn datacube at "$loc$", text: \""$add_datacubes[i].text$"\", image: "$dc.imageClass);
-    }
-}
-
-function AntiEpilepsy()
-{
-    local Light l;
-
-    if (!class'MenuChoice_Epilepsy'.default.enabled){
-        return;
-    }
-
-
-    foreach AllActors(class'Light',l){
-        if (l.LightType==LT_Strobe){
-            l.LightType=LT_Pulse;
-        } else if (l.LightType==LT_Flicker){
-            l.LightType=LT_Pulse;
-        }
     }
 }
 

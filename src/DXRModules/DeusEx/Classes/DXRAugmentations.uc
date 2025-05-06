@@ -521,10 +521,10 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         f = val;
 
         switch(i) {
-        case 0: r =       "Untrained: "; break;
-        case 1: r = "|n    Trained:   "; break;
-        case 2: r = "|n    Advanced: "; break;
-        case 3: r = "|n    Master:    "; break;
+        case 0: r =       "Level 1:  "; break;
+        case 1: r = "|n    Level 2: "; break;
+        case 2: r = "|n    Level 3: "; break;
+        case 3: r = "|n    Level 4: "; break;
         }
 
         if(class'MenuChoice_BalanceAugs'.static.IsEnabled()) {

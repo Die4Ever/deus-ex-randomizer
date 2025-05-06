@@ -100,6 +100,7 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
     case class'#var(prefix)Dart':
         if(#defined(vmd)) p.default.Damage = ratio * 20.0;
         else p.default.Damage = ratio * 15.0;
+        p.default.Damage = Max(p.default.Damage, 2);
         break;
 
     case class'#var(prefix)DartFlare':
@@ -108,22 +109,22 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         break;
         #endif
     case class'#var(prefix)DartPoison':
-        p.default.Damage = ratio * 5.0;
+        p.default.Damage = Max(ratio * 5.0, 2);
         break;
 
     // plasma, don't worry about PS40 because that gets handled in its own class
     case class'#var(prefix)PlasmaBolt':
     case class'PlasmaBoltFixTicks':
         f = 18.0;
-        p.default.Damage = ratio * f;
+        p.default.Damage = Max(ratio * f, 2);
 #ifndef hx
-        class'#var(prefix)PlasmaBolt'.default.mpDamage = ratio * f;
-        class'PlasmaBoltFixTicks'.default.mpDamage = ratio * f;
+        class'#var(prefix)PlasmaBolt'.default.mpDamage = Max(ratio * f, 2);
+        class'PlasmaBoltFixTicks'.default.mpDamage = Max(ratio * f, 2);
 #endif
         p = class'PlasmaBoltFixTicks';
         d = p;
-        p.default.Damage = ratio * f;
-        w.HitDamage = ratio * f;// write back the weapon damage
+        p.default.Damage = Max(ratio * f, 2);
+        w.HitDamage = Max(ratio * f, 2);// write back the weapon damage
         break;
 
     case class'#var(prefix)Rocket':

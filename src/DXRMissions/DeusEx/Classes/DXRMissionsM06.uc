@@ -330,6 +330,9 @@ function DeleteGoal(Goal g, GoalLocation Loc)
             GordonLoc = vectm(-1418.708130, 2.011429, 2095.588867); // next to Max Chen on top of the building
         }
         g.actors[0].a.SetLocation(GordonLoc);
+        g.actors[0].a.bCollideWorld=true; //This would have been removed while he was being moved
+        //if bCollideWorld isn't set, Gordon falls through the world once he tries to walk down stairs
+
         if (Loc.Name!="Compound Doors") {
             CreateGordonPhone();
         }

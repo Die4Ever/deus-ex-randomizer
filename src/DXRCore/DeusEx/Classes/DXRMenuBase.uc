@@ -4,6 +4,7 @@ var MenuUIInfoButtonWindow winNameBorder;
 
 struct EnumBtn {
     var MenuUIActionButtonWindow btn;
+    var DXRMenuUIHelpButtonWindow helpBtn;
 
 #ifdef allstarts
     var string values[64];
@@ -49,6 +50,9 @@ var int groupHeaderX;
 var int groupHeaderY;
 
 var string BR;// line break
+
+const HELP_BTN_WIDTH = 21;
+const HELP_BTN_PAD = 5;
 
 event Init(DXRando d)
 {
@@ -207,6 +211,7 @@ function bool EnumOption(string label, int value, optional out int output, optio
 {
     local int i;
     local string s;
+    local EnumBtn e;
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
@@ -227,13 +232,18 @@ function bool EnumOption(string label, int value, optional out int output, optio
         }
         if ( enums[id].btn == None ) {
             if(hide_labels[id]==0) s = labels[id];
-            enums[id].btn = CreateEnum(id, s, helptexts[id], enums[id]);
+            e = CreateEnum(id, s, helptexts[id], enums[id]);
+            enums[id].btn = e.btn;
+            enums[id].helpBtn = e.helpBtn;
             wnds[id] = enums[id].btn;
         }
          log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
+            s="";
+            if (hide_labels[id]==0) s = labels[id];
+            SetHelpButtonEnum(enums[id].btn, enums[id].helpBtn, s, label, helpText);
         }
     }
     return false;
@@ -243,6 +253,7 @@ function bool EnumOptionString(string label, string value, optional out string o
 {
     local int i;
     local string s;
+    local EnumBtn e;
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
@@ -262,19 +273,24 @@ function bool EnumOptionString(string label, string value, optional out string o
         }
         if ( enums[id].btn == None ) {
             if(hide_labels[id]==0) s = labels[id];
-            enums[id].btn = CreateEnum(id, s, helptexts[id], enums[id]);
+            e = CreateEnum(id, s, helptexts[id], enums[id]);
+            enums[id].btn = e.btn;
+            enums[id].helpBtn = e.helpBtn;
             wnds[id] = enums[id].btn;
         }
         log(self$"    EnumOptionString: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
+            s="";
+            if(hide_labels[id]==0) s = labels[id];
+            SetHelpButtonEnum(enums[id].btn, enums[id].helpBtn, s, label, enums[id].helpTexts[e.value]);
         }
     }
     return false;
 }
 
-function string EditBox(string value, string pattern)
+function string EditBox(string value, string pattern, optional string helpBtnText)
 {
     local string s;
 
@@ -283,13 +299,13 @@ function string EditBox(string value, string pattern)
     } else {
         if ( wnds[id] == None ) {
             if(hide_labels[id]==0) s = labels[id];
-            wnds[id] = CreateEdit(id, s, helptexts[id], pattern, value);
+            wnds[id] = CreateEdit(id, s, helptexts[id], pattern, value, helpBtnText);
         }
     }
     return value;
 }
 
-function int Slider(out int value, int min, int max)
+function int Slider(out int value, int min, int max, optional string helpBtnText)
 {
     local int output;
     local string s;
@@ -303,7 +319,7 @@ function int Slider(out int value, int min, int max)
     } else {
         if ( wnds[id] == None ) {
             if(hide_labels[id]==0) s = labels[id];
-            wnds[id] = CreateSlider(id, s, helptexts[id], value, min, max);
+            wnds[id] = CreateSlider(id, s, helptexts[id], value, min, max, helpBtnText);
         } else {
             MenuUIEditWindow(wnds[id]).SetText(string(value));
         }
@@ -458,15 +474,47 @@ function MenuUIEditWindow CreateMenuEditWindow(int posX, int posY, int editWidth
     return newEdit;
 }
 
-function MenuUIEditWindow CreateEdit(int row, string label, string helptext, string filterString, optional string deflt )
+function DXRMenuUIHelpButtonWindow CreateEditHelpBtn(MenuUIEditWindow mainBtn, int row, string helpTitle, string helpText)
+{
+    local DXRMenuUIHelpButtonWindow btn;
+    local float width;
+    local vector coords;
+
+    btn = DXRMenuUIHelpButtonWindow(controlsParent.NewChild(Class'DXRMenuUIHelpButtonWindow'));
+    btn.SetWordWrap(false);
+    btn.SetButtonText("?");
+    btn.row = row;
+
+    coords = GetCoords(row, 1);
+    width = GetWidth(row, 1, 1);
+
+    coords.x = coords.x + width - HELP_BTN_WIDTH;
+
+    btn.SetPos(coords.x,coords.y);
+    btn.SetWidth(HELP_BTN_WIDTH);
+
+    btn.SetHelpTitle(helpTitle);
+    btn.SetHelpText(helpText);
+
+    return btn;
+}
+
+function MenuUIEditWindow CreateEdit(int row, string label, string helptext, string filterString, optional string deflt, optional string helpBtnText )
 {
     local MenuUIEditWindow edit;
     local vector coords;
+    local float width;
 
     CreateLabel(row, label);
 
     coords = GetCoords(row, 1);
-    edit = CreateMenuEditWindow(coords.x, coords.y, GetWidth(row, 1, 1), 10, controlsParent);
+    width = GetWidth(row, 1, 1);
+
+    if (helpBtnText!=""){
+        width = width - HELP_BTN_WIDTH - HELP_BTN_PAD;
+    }
+
+    edit = CreateMenuEditWindow(coords.x, coords.y, width, 10, controlsParent);
 
     edit.SetText(deflt);
     edit.SetFilter(filterString);
@@ -476,16 +524,20 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
     //helptexts[numwnds] = helptext;
     //numwnds++;
 
+    if (helpBtnText!=""){
+        CreateEditHelpBtn(edit,row,label,helpBtnText);
+    }
+
     return edit;
 }
 
-function MenuUIEditWindow CreateSlider(int row, string label, string helptext, optional int deflt, optional int min, optional int max )
+function MenuUIEditWindow CreateSlider(int row, string label, string helptext, optional int deflt, optional int min, optional int max, optional string helpBtnText )
 {
     if(InStr(helptexts[row], BR)==-1)
         helptexts[row] = helptexts[row] $ BR $ min $ " to " $ max;
     else
         helptexts[row] = helptexts[row] $ ", " $ min $ " to " $ max;
-    return CreateEdit(row, label, helptext, "-1234567890", string(deflt));
+    return CreateEdit(row, label, helptext, "-1234567890", string(deflt), helpBtnText);
     /*local MenuUISliderButtonWindow slider;
     local vector coords;
     local int numTicks;
@@ -546,7 +598,58 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
     return btn;
 }
 
-function MenuUIActionButtonWindow CreateEnum(int row, string label, string helptext, optional EnumBtn e)
+function SetHelpButtonEnum(MenuUIActionButtonWindow btn, DXRMenuUIHelpButtonWindow helpBtn, string label, string title, string text)
+{
+    local float width;
+
+    helpBtn.SetHelpTitle(title);
+    helpBtn.SetHelpText(text);
+
+    if (label==""){
+        width = GetWidth(helpBtn.row,0,2);
+    } else {
+        width = GetWidth(helpBtn.row,1,1);
+    }
+
+    if (text == ""){
+        helpBtn.Hide();
+        btn.SetWidth(width);
+    }else{
+        helpBtn.Show();
+        width = width - HELP_BTN_PAD - HELP_BTN_WIDTH;
+        btn.SetWidth(width);
+    }
+}
+
+function DXRMenuUIHelpButtonWindow CreateEnumHelpBtn(MenuUIActionButtonWindow mainBtn, int row, string label)
+{
+    local DXRMenuUIHelpButtonWindow btn;
+    local float width;
+    local vector coords;
+
+    btn = DXRMenuUIHelpButtonWindow(controlsParent.NewChild(Class'DXRMenuUIHelpButtonWindow'));
+    btn.SetWordWrap(false);
+    btn.SetButtonText("?");
+    btn.row = row;
+
+    if( label == "" ) {
+        coords = GetCoords(row, 0);
+        width = GetWidth(row, 0, 2);
+    } else {
+        coords = GetCoords(row, 1);
+        width = GetWidth(row, 1, 1);
+    }
+    coords.x = coords.x + width - HELP_BTN_WIDTH;
+
+    btn.SetPos(coords.x,coords.y);
+    btn.SetWidth(HELP_BTN_WIDTH);
+    btn.Hide(); //Hide by default
+    //mainBtn.SetWidth(width - HELP_BTN_WIDTH - HELP_BTN_PAD);
+
+    return btn;
+}
+
+function EnumBtn CreateEnum(int row, string label, string helptext, optional EnumBtn e)
 {
     local int i;
     if(e.values[0] == "") {
@@ -558,7 +661,8 @@ function MenuUIActionButtonWindow CreateEnum(int row, string label, string helpt
     }
     e.btn = CreateBtn(row, label, helptext, e.values[e.value]);
     e.btn.EnableRightMouseClick();
-    return e.btn;
+    e.helpBtn = CreateEnumHelpBtn(e.btn, row, label);
+    return e;
 }
 
 function bool ButtonActivated( Window buttonPressed )
@@ -567,6 +671,7 @@ function bool ButtonActivated( Window buttonPressed )
     bHandled = True;
 
     if( CheckClickEnum(buttonPressed) ) { }
+    else if( CheckClickHelpBtn(buttonPressed) ) { }
     else {
         bHandled = False;
     }
@@ -606,9 +711,26 @@ function bool CheckClickEnum( Window buttonPressed, optional bool rightClick )
     return false;
 }
 
+function bool CheckClickHelpBtn( Window buttonPressed )
+{
+    local int i;
+    local DXRMenuUIHelpButtonWindow helpButton;
+
+    helpButton = DXRMenuUIHelpButtonWindow(buttonPressed);
+
+    if (helpButton==None) return false;
+
+    if (helpButton.GetHelpText()!=""){
+        class'BingoHintMsgBox'.static.Create(root, "Help: "$helpButton.GetHelpTitle(), helpButton.GetHelpText(), 1, False, self);
+    }
+
+    return true;
+}
+
 function ClickEnum(int iEnum, bool rightClick)
 {
     local EnumBtn e;
+    local String s;
     local int numValues, i;
 
     e = enums[iEnum];
@@ -639,6 +761,9 @@ function ClickEnum(int iEnum, bool rightClick)
         }
     }
     e.btn.SetButtonText(e.values[e.value]);
+    s="";
+    if(hide_labels[iEnum]==0) s = labels[iEnum];
+    SetHelpButtonEnum(e.btn, e.helpBtn, s, e.values[e.value], e.helpTexts[e.value]);
     enums[iEnum] = e;
 }
 
@@ -680,11 +805,16 @@ function string GetEnumValue(int e)
 function string SetEnumValue(int e, string text)
 {
     local int i, old;
+    local string s;
     old = enums[e].value;
+
     for(i=0; i<ArrayCount(enums[e].values); i++) {
         if(enums[e].values[i] == text) {
             enums[e].value = i;
             enums[e].btn.SetButtonText(text);
+            s="";
+            if(hide_labels[e]==0) s = labels[e];
+            SetHelpButtonEnum(enums[e].btn, enums[e].helpBtn, s, text, enums[e].helpTexts[i]);
         }
     }
     return enums[e].values[old];

@@ -42,7 +42,6 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)MapExit exit;
     local #var(prefix)NYPoliceBoat b;
-    local #var(prefix)HarleyFilben harley;
     local #var(prefix)GuntherHermann gunther;
     local #var(prefix)HumanCivilian hc;
     local #var(prefix)OrdersTrigger ot;
@@ -67,9 +66,8 @@ function PreFirstEntryMapFixes()
     switch(dxr.localURL) {
     //#region UNATCO Island
     case "01_NYC_UNATCOISLAND":
-        foreach AllActors(class'#var(prefix)HarleyFilben', harley) {
-            harley.bImportant = true;
-        }
+        FixHarleyFilben();
+
         //Move this Joe Greene article from inside HQ to outside on the island
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0,0),'01_Newspaper06');//Forklift in bunker
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(3163,-1298,-207),rotm(0,0,0,0),'01_Newspaper06');//Backroom near jail
@@ -168,13 +166,8 @@ function PreFirstEntryMapFixes()
         FixUNATCOCarterCloset();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
-        RemoveStopWhenEncroach();
 
-#ifdef injections
-        foreach AllActors(class'#var(prefix)Newspaper',np)
-#else
-        foreach AllActors(class'DXRInformationDevices',np)
-#endif
+        foreach AllActors(#switch(injections: class'Newspaper', class'DXRInformationDevices'), np)
         {
             //Make both Joe Greene articles in HQ the same one
             if (np.textTag=='01_Newspaper06'){
@@ -194,10 +187,12 @@ function PreFirstEntryMapFixes()
                 compublic.BulletinTag = '01_BulletinMenu';
                 break;
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
         } else {
             foreach AllActors(class'#var(prefix)WeaponShuriken',tk){
                 tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
 
         //Spawn some placeholders for new item locations

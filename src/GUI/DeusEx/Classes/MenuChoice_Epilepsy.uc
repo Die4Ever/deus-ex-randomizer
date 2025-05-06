@@ -1,5 +1,15 @@
 class MenuChoice_Epilepsy extends DXRMenuUIChoiceBool;
 
+function SaveSetting()
+{
+    local DXRBrightness b;
+
+    Super.SaveSetting();
+    enabled = bool(GetValue());
+    b = DXRBrightness(class'DXRBrightness'.static.Find());
+    b.ApplyEpilepsySafe(enabled);
+}
+
 defaultproperties
 {
     enabled=False

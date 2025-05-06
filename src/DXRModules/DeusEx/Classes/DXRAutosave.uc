@@ -397,6 +397,8 @@ function string GetAutoSaveHelpText(coerce int choice)
         return "The game will automatically save the first time you enter a level.|n|nNo manual saves are allowed.|n|nThe autosave is overwritten when entering each map, except for the very first autosave of the mission.";
     case ExtraSafe:
         return "The game will automatically save after every level transition.|n|nYou are allowed to save manually whenever you would like.|n|nAutosaves are never cleared. A single playthrough may create over 1 GB worth of saves.";
+    case Ironman:
+        return "Absolutely no saves whatsoever.  One death and it's all over.  Good luck!";
     case LimitedSaves:
         return "The game will only autosave once at the start of the game.|n|nManual saves are allowed at any time, but require a Memory Containment Unit.|n|nMemory Containment Units can be found randomly placed around levels.";
     case FixedSaves:

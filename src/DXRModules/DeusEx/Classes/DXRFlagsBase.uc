@@ -970,7 +970,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
             if (val==0){
                 return "Full Closet";
             } else {
-                return "Looting Required";
+                return "Looting Needed";
             }
             break;
 

@@ -230,7 +230,7 @@ function PreFirstEntryMapFixes()
     local Smuggler smug;
     local #var(prefix)OrdersTrigger ot;
     local DXRReinforcementPoint reinforce;
-
+    local #var(prefix)BarrelFire bf;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -335,6 +335,21 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            if (VanillaMaps){
+                foreach AllActors(class'#var(prefix)BarrelFire', bf) {
+                    if(bf.name=='BarrelFire0') {
+                        bf.bIsSecretGoal = true; // the flaming barrel near Dowd is good for visibility
+                        break;
+                    }
+                }
+            } else {
+                foreach AllActors(class'#var(prefix)BarrelFire', bf) {
+                    if(bf.name=='BarrelFire40' || bf.name=='BarrelFire41') {
+                        bf.bIsSecretGoal = true; // the flaming barrel near Dowd is good for visibility
+                    }
+                }
+            }
+
             break;
     //#endregion
 
@@ -407,6 +422,7 @@ function PreFirstEntryMapFixes()
 
     //#region Bar
         case "08_NYC_BAR":
+            FixHarleyFilben();
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
             if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
                 Spawn(class'BarDancer',,,vectm(-2150,-500,48),rotm(0,0,0,0));
@@ -457,6 +473,10 @@ function PreFirstEntryMapFixes()
             }
 
             class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 9);
+
+            //Verified in both vanilla and Revision
+            foreach AllActors(class'#var(DeusExPrefix)Mover', d,'mirrordoor'){break;}
+            class'FakeMirrorInfo'.static.Create(self,vectm(-527,1660,348),vectm(-627,1655,220),d); //Mirror in front of Smuggler's Stash
 
             break;
     //#endregion

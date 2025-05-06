@@ -5,6 +5,8 @@ function bool Facelift(bool bOn)
     return false;
 }
 
+function VMDRandomizeAppearance(){} //Dummy function to prevent VMD from randomizing the appearance of these guys
+
 function Explode(optional vector HitLocation) // argument for compatibility with Revision and VMD
 {
     local SphereEffect sphere;
@@ -14,10 +16,7 @@ function Explode(optional vector HitLocation) // argument for compatibility with
     local float explosionDamage;
     local float explosionRadius;
 
-#ifdef revision
-    Super.Explode();
-    return;
-#elseif vmd
+#ifdef revision || vmd
     Super.Explode();
     return;
 #endif

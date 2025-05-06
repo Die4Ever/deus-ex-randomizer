@@ -10,7 +10,7 @@ defaultproperties
     smallIcon=Texture'AugIconInfraVision_Small'
     LevelValues(0)=240
     maxLevel=0
-    energyRate=0
+    energyRate=10
     AugmentationName="Infravision"
     Description="Infravision allows an agent to see people, robots, and computers through walls."
 }

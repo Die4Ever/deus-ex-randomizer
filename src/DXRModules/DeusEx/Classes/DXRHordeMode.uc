@@ -2,27 +2,28 @@ class DXRHordeMode extends DXRActorsBase transient;
 
 var int wave;
 var int time_to_next_wave;
-var config int time_between_waves;
+var int time_between_waves;
 var bool in_wave;
 var int time_in_wave;
-var config int time_before_damage;
-var config int damage_timer;
-var config int time_before_teleport_enemies;
-var config float popin_dist;
-var config int skill_points_award;
-var config int early_end_wave_timer;
-var config int early_end_wave_enemies;
-var config int items_per_wave;
-var config float difficulty_per_wave;
-var config float difficulty_first_wave;
-var config int wine_bottles_per_enemy;
-var config name default_orders;
-var config name default_order_tag;
-var config string map_name;
-var config name remove_objects[16];
-var config name unlock_doors[8];
-var config name lock_doors[16];
-var config vector starting_location;
+var int last_num_pawns_reported;
+var int time_before_damage;
+var int damage_timer;
+var int time_before_teleport_enemies;
+var float popin_dist;
+var int skill_points_award;
+var int early_end_wave_timer;
+var int early_end_wave_enemies;
+var int items_per_wave;
+var float difficulty_per_wave;
+var float difficulty_first_wave;
+var int wine_bottles_per_enemy;
+var name default_orders;
+var name default_order_tag;
+var string map_name;
+var name remove_objects[16];
+var name unlock_doors[8];
+var name lock_doors[16];
+var vector starting_location;
 
 var DXRMachines machines;
 
@@ -45,113 +46,108 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(3,1,0,2) ) {
-        time_between_waves = 65;
-        time_before_damage = 180;
-        damage_timer = 10;
-        time_before_teleport_enemies = 3;
-        early_end_wave_timer = 240;
-        early_end_wave_enemies = 5;
-        popin_dist = 1800.0;
-        skill_points_award = 2500;
-        items_per_wave = 25;
-        difficulty_per_wave = 1.75;
-        difficulty_first_wave = 3;
-        wine_bottles_per_enemy = 2;
-        for(i=0; i<ArrayCount(items); i++) {
-            items[i].type="";
-            items[i].chance=0;
-        }
-        i=0;
-        items[i].type = "BioelectricCell";
-        items[i].chance = 6;
-        i++;
-        items[i].type = "CrateExplosiveSmall";
-        items[i].chance = 8;
-        i++;
-        items[i].type = "Barrel1";
-        items[i].chance = 8;
-        i++;
-        items[i].type = "WeaponGasGrenade";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "WeaponLAM";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "WeaponEMPGrenade";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "WeaponNanoVirusGrenade";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "FireExtinguisher";
-        items[i].chance = 6;
-        i++;
-        items[i].type = "Ammo10mm";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "Ammo762mm";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "AmmoShell";
-        items[i].chance = 7;
-        i++;
-        items[i].type = "Ammo3006";
-        items[i].chance = 2;
-        i++;
-        items[i].type = "AmmoRocket";
-        items[i].chance = 1;
-        i++;
-        items[i].type = "AmmoDartPoison";
-        items[i].chance = 1;
-        // and 19% more...
-        i++;
-        items[i].type = "AugmentationCannister";
-        items[i].chance = 5;
-        i++;
-        items[i].type = "RepairBot";
-        items[i].chance = 3;
-        i++;
-        items[i].type = "MedicalBot";
-        items[i].chance = 5;
-        i++;
-        items[i].type = "MedKit";
-        items[i].chance = 3;
-        i++;
-        items[i].type = "AugmentationUpgradeCannister";
-        items[i].chance = 3;
 
-        map_name = "11_paris_cathedral";
-        starting_location = vect(-3811.785156, 2170.053223, -774.903442);
-        default_orders = 'Attacking';
-        default_order_tag = '';
-
-        i=0;
-        remove_objects[i++] = 'MapExit';
-        remove_objects[i++] = 'ScriptedPawn';
-        remove_objects[i++] = 'DataLinkTrigger';
-        remove_objects[i++] = 'Teleporter';
-        remove_objects[i++] = 'SecurityCamera';
-        remove_objects[i++] = 'AutoTurret';
-        remove_objects[i++] = 'AlarmUnit';
-        remove_objects[i++] = 'LaserTrigger';
-
-        i=0;
-        lock_doors[i++] = 'BreakableGlass0';
-        lock_doors[i++] = 'BreakableGlass1';
-        lock_doors[i++] = 'BreakableGlass2';
-        lock_doors[i++] = 'BreakableGlass3';
-        lock_doors[i++] = 'BreakableGlass4';
-        lock_doors[i++] = 'BreakableGlass5';
-        lock_doors[i++] = 'BreakableGlass6';
-        lock_doors[i++] = 'BreakableGlass7';
-        lock_doors[i++] = 'DeusExMover8';
-        lock_doors[i++] = 'DeusExMover9';
-        lock_doors[i++] = 'DeusExMover17';
-
-        i=0;
-        unlock_doors[i++] = 'DeusExMover19';
+    for(i=0; i<ArrayCount(items); i++) {
+        items[i].type="";
+        items[i].chance=0;
     }
+    i=0;
+    items[i].type = "BioelectricCell";
+    items[i].chance = 6;
+    i++;
+    items[i].type = "CrateExplosiveSmall";
+    items[i].chance = 8;
+    i++;
+    items[i].type = "Barrel1";
+    items[i].chance = 8;
+    i++;
+    items[i].type = "WeaponGasGrenade";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "WeaponLAM";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "WeaponEMPGrenade";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "WeaponNanoVirusGrenade";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "FireExtinguisher";
+    items[i].chance = 6;
+    i++;
+    items[i].type = "Ammo10mm";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "Ammo762mm";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "Ammo20mm";
+    items[i].chance = 0.25;
+    i++;
+    items[i].type = "AmmoShell";
+    items[i].chance = 7;
+    i++;
+    items[i].type = "AmmoSabot";
+    items[i].chance = 0.5;
+    i++;
+    items[i].type = "Ammo3006";
+    items[i].chance = 2;
+    i++;
+    items[i].type = "AmmoRocket";
+    items[i].chance = 1;
+    i++;
+    items[i].type = "AmmoRocketWP";
+    items[i].chance = 0.25;
+    i++;
+    items[i].type = "AmmoDartPoison";
+    items[i].chance = 1;
+    i++;
+    items[i].type = "AugmentationCannister";
+    items[i].chance = 5;
+    i++;
+    items[i].type = "RepairBot";
+    items[i].chance = 3;
+    i++;
+    items[i].type = "MedicalBot";
+    items[i].chance = 5;
+    i++;
+    items[i].type = "MedKit";
+    items[i].chance = 3;
+    i++;
+    items[i].type = "AugmentationUpgradeCannister";
+    items[i].chance = 2;
+
+    map_name = "11_paris_cathedral";
+    starting_location = vect(-3811.785156, 2170.053223, -774.903442);
+    default_order_tag = '';
+
+    i=0;
+    remove_objects[i++] = 'MapExit';
+    remove_objects[i++] = 'ScriptedPawn';
+    remove_objects[i++] = 'DataLinkTrigger';
+    remove_objects[i++] = 'Teleporter';
+    remove_objects[i++] = 'SecurityCamera';
+    remove_objects[i++] = 'AutoTurret';
+    remove_objects[i++] = 'AlarmUnit';
+    remove_objects[i++] = 'LaserTrigger';
+
+    i=0;
+    lock_doors[i++] = 'BreakableGlass0';
+    lock_doors[i++] = 'BreakableGlass1';
+    lock_doors[i++] = 'BreakableGlass2';
+    lock_doors[i++] = 'BreakableGlass3';
+    lock_doors[i++] = 'BreakableGlass4';
+    lock_doors[i++] = 'BreakableGlass5';
+    lock_doors[i++] = 'BreakableGlass6';
+    lock_doors[i++] = 'BreakableGlass7';
+    lock_doors[i++] = 'DeusExMover8';
+    lock_doors[i++] = 'DeusExMover9';
+    lock_doors[i++] = 'DeusExMover17';
+
+    i=0;
+    unlock_doors[i++] = 'DeusExMover19';
+
     map_name = Caps(map_name);
     Super.CheckConfig();
 
@@ -354,6 +350,7 @@ function AnyEntry()
     local DXREnemies dxre;
     local Inventory item;
     local int i;
+    local #var(prefix)SkillAwardTrigger sat;
 
     if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
@@ -371,7 +368,6 @@ function AnyEntry()
 
     machines = DXRMachines(dxr.FindModule(class'DXRMachines'));
 
-    class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.settings.speedlevel );
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomMeleeWeapon(player());
@@ -407,6 +403,15 @@ function AnyEntry()
             }
         }
     }
+
+    foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat)
+    {
+        if (sat.Tag!='templar_upload' && sat.skillPointsAdded==500){
+            //The vanilla "Critical Location Bonus" for finding the computer
+            sat.Destroy();
+        }
+    }
+
 
     SetTimer(1.0, true);
 
@@ -475,8 +480,7 @@ function InWaveTick()
 
     if( time_in_wave >= time_before_damage && time_in_wave%damage_timer == 0 ) {
         player().TakeDamage(1, player(), player().Location, vect(0,0,0), 'Shocked');
-        PlaySound(sound'ProdFire');
-        PlaySound(sound'MalePainSmall');
+        player().PlaySound(sound'ProdFire', SLOT_None,,, 256);
     }
     else {
         NotifyPlayerTimer(time_before_damage-time_in_wave, (time_before_damage-time_in_wave) $ " seconds until shocking.");
@@ -494,6 +498,37 @@ function OutOfWaveTick()
     if( time_to_next_wave <= 0 ) {
         StartWave();
     }
+}
+
+function ShuffleGoalComputerLocation()
+{
+    local DXRMissions missions;
+    local #var(prefix)SkillAwardTrigger sat;
+    local #var(prefix)ComputerPersonal comp;
+
+    SetGlobalSeed( "Horde ShuffleComputer " $ wave);
+
+    foreach AllActors(class'DXRMissions',missions)
+    {
+        missions.ShuffleGoals();
+    }
+
+    //Reset or create the skill award trigger for using the Templar computer
+    foreach AllActors(class'#var(prefix)SkillAwardTrigger',sat,'templar_upload'){break;}
+    if (sat==None){
+        sat = Spawn(class'#var(prefix)SkillAwardTrigger',,'templar_upload');
+        sat.SetCollision(false,false,false);
+        sat.awardMessage="Templar System Uplink Established";
+        sat.skillPointsAdded=500; //Same as finding the computer in vanilla
+    }
+
+    //Reset the special option on the computer
+    foreach AllActors(class'#var(prefix)ComputerPersonal',comp){
+        if (comp.specialOptions[0].TriggerEvent=='templar_upload'){
+            comp.specialOptions[0].bAlreadyTriggered=false;
+        }
+    }
+
 }
 
 function StartWave()
@@ -543,6 +578,7 @@ function StartWave()
     time_in_wave = 0;
     wave++;
     GenerateEnemies();
+    ShuffleGoalComputerLocation();
 }
 
 function EndWave()
@@ -551,6 +587,9 @@ function EndWave()
     time_to_next_wave = time_between_waves;
     player().SkillPointsAdd(skill_points_award);
     GenerateItems();
+
+    //Send a telemetry message every wave finished
+    class'DXREvents'.static.SendHordeModeWaveComplete(self);
 }
 
 function GetOverHere()
@@ -597,10 +636,13 @@ function NotifyPlayerTimer(int time, string text)
     }
 }
 
+//Notify every 5 seconds or immediately if the number of remaining pawns changes
 function NotifyPlayerPawns(int numScriptedPawns)
 {
     //if( numScriptedPawns > 10 ) return;
-    if( time_in_wave % 3 != 0 ) return;
+    if( time_in_wave % 5 != 0 && last_num_pawns_reported==numScriptedPawns) return;
+
+    last_num_pawns_reported = numScriptedPawns;
 
     if( numScriptedPawns == 1 )
         player().ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemy remaining.");
@@ -728,11 +770,19 @@ function GenerateItems()
     local int i;
     local #var(injectsprefix)MedicalBot medbot;
     local #var(prefix)WineBottle wine;
+    local HordeModeCrate hmc;
+    local vector loc;
 
     SetGlobalSeed("Horde GenerateItems" $ wave);
 
     // always make an augbot
     machines.SpawnAugbot();
+
+    //Shuffle the HordeModeCrate locations
+    foreach AllActors(class'HordeModeCrate',hmc){
+        loc = GetRandomItemPosition();
+        hmc.SetLocation(loc);
+    }
 
     for(i=0;i<items_per_wave;i++) {
         GenerateItem();
@@ -743,16 +793,53 @@ function GenerateItems()
     }
 }
 
+function bool IsCrateableClass(class<Actor> c)
+{
+    if (ClassIsChildOf(c,class'Inventory')){
+        if (ClassIsChildOf(c,class'#var(prefix)AugmentationCannister')){ //Aug cans need to have their contents randomized
+            return False;
+        }
+        return True;
+    }
+    return False;
+}
+
+//Find the most empty crate in the radius
+function HordeModeCrate GetBestOpenHordeCrate(vector loc, class<Actor> c, optional int radius)
+{
+    local HordeModeCrate hmc,best;
+
+    if (radius==0){
+        radius = 1600; //100 feet
+    }
+
+    foreach RadiusActors(class'HordeModeCrate',hmc,radius,loc)
+    {
+        if (hmc.CanAddContent(c)){
+            if (best==None){
+                best = hmc;
+            } else {
+                if ( hmc.GetTotalContentCount() < best.GetTotalContentCount()){
+                    best = hmc;
+                }
+            }
+        }
+    }
+    return best;
+}
+
 function GenerateItem()
 {
-    local int i, num;
+    local int i, num, copies;
     local Actor a;
     local class<Actor> c;
     local vector loc;
     local #var(prefix)AugmentationCannister aug;
     local Barrel1 barrel;
     local DeusExMover d;
+    local HordeModeCrate hmc;
     local float r;
+    local bool success;
 
     r = initchance();
     for(i=0; i < ArrayCount(items); i++) {
@@ -765,8 +852,18 @@ function GenerateItem()
 
     // count how many we have
     foreach AllActors(c, a) {
-        num++;
+        copies = 1;
+        if (Pickup(a)!=None){
+            copies = Pickup(a).NumCopies; //In case items are in stacks
+        }
+        num += copies;
     }
+    //Also check how many are in HordeModeCrates
+    foreach AllActors(class'HordeModeCrate',hmc)
+    {
+        num += hmc.GetContentQuantity(c);
+    }
+
     // now damage or move the oldest ones (at the start of the list)
     i = 0;
     if(num > items_per_wave/2 && items[i].lastDamageTime < Level.TimeSeconds && ClassIsChildOf(c, class'#var(prefix)Containers')) {
@@ -787,6 +884,25 @@ function GenerateItem()
         }
     }
 
+    if (IsCrateableClass(c)){
+        //Repack items into crates
+        foreach AllActors(c, a) {
+            if (a.Owner!=None) continue; //Don't take ammo away from the player!
+
+            hmc = GetBestOpenHordeCrate(a.Location,a.Class);
+
+            //Spawn a new crate if no crate found nearby
+            if (hmc==None){
+                hmc = Spawn(class'HordeModeCrate',,,a.Location,a.Rotation);
+            }
+
+            if (hmc!=None){
+                l("Repacking "$a$" into horde crate "$hmc);
+                hmc.AddExistingItem(a);
+            }
+        }
+    }
+
     if( num > items_per_wave ) {
         l("already have too many of "$c.name);
         return;
@@ -800,13 +916,30 @@ function GenerateItem()
         machines.SpawnRepairbot();
         return;
     }
-    for(i=0; i<10 && a == None; i++) {
+
+    success = False;
+    for(i=0; i<10 && success==False; i++) {
         loc = GetRandomItemPosition();
-        a = Spawn(c,,, loc);
+        if (IsCrateableClass(c)){
+            hmc = GetBestOpenHordeCrate(loc,c);
+            if (hmc==None){
+                hmc = Spawn(class'HordeModeCrate',,,loc,GetRandomYaw());
+            }
+            if (hmc!=None){
+                hmc.AddContent(c,1);
+                success=True;
+            }
+        } else {
+            a = Spawn(c,,, loc, GetRandomYaw());
+            if (a!=None){
+                success=True;
+            }
+        }
     }
-    if(c==None) {
-        l("failed to spawn "$c$" at "$loc);
-        return ;
+
+    if (success==False){
+        l("failed to spawn "$c);
+        return;
     }
 
     aug = #var(prefix)AugmentationCannister(a);
@@ -857,4 +990,21 @@ function RunTests()
         total += items[i].chance;
     }
     testfloat( total, 100, "config items chances, check total adds up to 100%");
+}
+
+defaultproperties
+{
+    time_between_waves=65
+    time_before_damage=180
+    damage_timer=10
+    time_before_teleport_enemies=3
+    early_end_wave_timer=240
+    early_end_wave_enemies=5
+    popin_dist=1800.0
+    skill_points_award=2500;
+    items_per_wave=25
+    difficulty_per_wave=1.75
+    difficulty_first_wave=3
+    wine_bottles_per_enemy=2
+    default_orders=Attacking
 }
