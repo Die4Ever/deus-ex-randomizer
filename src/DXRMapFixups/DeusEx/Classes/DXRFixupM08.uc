@@ -230,7 +230,7 @@ function PreFirstEntryMapFixes()
     local Smuggler smug;
     local #var(prefix)OrdersTrigger ot;
     local DXRReinforcementPoint reinforce;
-
+    local #var(prefix)BarrelFire bf;
 
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -331,6 +331,21 @@ function PreFirstEntryMapFixes()
                         dtel.SetDestination("08_NYC_Smug", 'PathNode83',, 16384);
                         class'DXREntranceRando'.static.AdjustTeleporterStatic(dxr, dtel);
                         break;
+                    }
+                }
+            }
+
+            if (VanillaMaps){
+                foreach AllActors(class'#var(prefix)BarrelFire', bf) {
+                    if(bf.name=='BarrelFire0') {
+                        bf.bIsSecretGoal = true; // the flaming barrel near Dowd is good for visibility
+                        break;
+                    }
+                }
+            } else {
+                foreach AllActors(class'#var(prefix)BarrelFire', bf) {
+                    if(bf.name=='BarrelFire40' || bf.name=='BarrelFire41') {
+                        bf.bIsSecretGoal = true; // the flaming barrel near Dowd is good for visibility
                     }
                 }
             }
