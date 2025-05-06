@@ -1162,6 +1162,7 @@ function SetWatchFlags() {
         }
         raceStart.raceName="Catacombs";
         raceStart.SetCollisionSize(60,80);
+        raceStart.targetTime=90; //Under 1 minute (around 55ish seconds) is possible if you really blast it
 
         checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(2775,-3785,-450)); //Lines up for both
         checkPoint.SetCollisionSize(100,80);
@@ -1171,6 +1172,7 @@ function SetWatchFlags() {
         raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(2775,-3785,-450));
         raceStart.raceName="Reverse Catacombs";
         raceStart.SetCollisionSize(100,80);
+        raceStart.targetTime=60; //Under 1 minute (around 55ish seconds) is possible forwards if you really blast it
 
         if (RevisionMaps){
             checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-3287,-2270,555));
