@@ -166,7 +166,7 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRAugmentations augs;
     local DXRLoadouts loadouts;
-    local int i, bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay;
+    local int i, bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay, old_clothes_looting;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -203,6 +203,7 @@ function NewGamePlus()
         menus_pause = settings.menus_pause;
         aug_loc_rando=moresettings.aug_loc_rando;
         splits_overlay = moresettings.splits_overlay;
+        old_clothes_looting = clothes_looting;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
@@ -213,6 +214,7 @@ function NewGamePlus()
         settings.menus_pause = menus_pause;
         moresettings.aug_loc_rando=aug_loc_rando;
         moresettings.splits_overlay = splits_overlay;
+        clothes_looting = old_clothes_looting;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
