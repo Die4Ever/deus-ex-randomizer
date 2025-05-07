@@ -914,9 +914,39 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_doorspickable':
+            switch(val){
+                //Matching setting names in DXRMenuSetupRando
+                case 100:
+                    return "All Undefeatable Doors Pickable (100%)";
+                case 70:
+                    return "Many Undefeatable Doors Pickable (70%)";
+                case 40:
+                    return "Some Undefeatable Doors Pickable (40%)";
+                case 25:
+                    return "Few Undefeatable Doors Pickable (25%)";
+                case 0:
+                    return "Keep Undefeatable Doors Unpickable (0%)";
+                default:
+                    return val $ "%";
+            }
+            break;
         case 'Rando_doorsdestructible':
-            return val $ "%";
-
+            switch(val){
+                //Matching setting names in DXRMenuSetupRando
+                case 100:
+                    return "All Undefeatable Doors Breakable (100%)";
+                case 70:
+                    return "Many Undefeatable Doors Breakable (70%)";
+                case 40:
+                    return "Some Undefeatable Doors Breakable (40%)";
+                case 25:
+                    return "Few Undefeatable Doors Breakable (25%)";
+                case 0:
+                    return "Keep Undefeatable Doors Unbreakable (0%)";
+                default:
+                    return val $ "%";
+            }
+            break;
         case 'Rando_spoilers':
             if(val==0){
                 return "Disallowed";
