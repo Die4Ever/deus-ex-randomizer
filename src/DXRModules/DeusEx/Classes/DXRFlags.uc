@@ -587,6 +587,22 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.health = 100;
         settings.energy = 100;
         if(IsZeroRando()) {
+            #ifndef hx
+            switch(difficulty) {
+            case 1:
+                settings.CombatDifficulty = 1;
+                break;
+            case 2:
+                settings.CombatDifficulty = 1.5;
+                break;
+            case 3:
+                settings.CombatDifficulty = 2;
+                break;
+            case 4:
+                settings.CombatDifficulty = 4;
+                break;
+            }
+            #endif
             settings.passwordsrandomized = 0;
             settings.enemystats = 0;
             settings.bot_stats = 0;
