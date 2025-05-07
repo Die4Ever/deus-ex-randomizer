@@ -1404,7 +1404,7 @@ function floorIsLava() {
 
     if (
         ( player().Base.IsA('LevelInfo') || player().Base.IsA('Mover') )
-#ifdef vanilla
+#ifdef vanilla || revision
         && player().bOnLadder==False
 #endif
     ) {
