@@ -721,10 +721,15 @@ function bool CheckClickHelpBtn( Window buttonPressed )
     if (helpButton==None) return false;
 
     if (helpButton.GetHelpText()!=""){
-        class'BingoHintMsgBox'.static.Create(root, "Help: "$helpButton.GetHelpTitle(), helpButton.GetHelpText(), 1, False, self);
+        class'BingoHintMsgBox'.static.Create(root, "Help: "$helpButton.GetHelpTitle(), GetHelpText(helpButton), 1, False, self);
     }
 
     return true;
+}
+
+function string GetHelpText(DXRMenuUIHelpButtonWindow helpButton)
+{
+    return helpButton.GetHelpText();
 }
 
 function ClickEnum(int iEnum, bool rightClick)

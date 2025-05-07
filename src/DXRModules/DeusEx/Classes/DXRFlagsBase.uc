@@ -105,7 +105,7 @@ replication
 
 // override these in subclass
 function InitDefaults();
-function FlagsSettings SetDifficulty(int new_difficulty);
+function SetDifficulty(int new_difficulty);
 simulated function ExecMaxRando();
 function string DifficultyName(int diff);
 function string GameModeName(int gamemode);

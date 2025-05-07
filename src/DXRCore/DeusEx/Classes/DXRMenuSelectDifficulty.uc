@@ -66,7 +66,7 @@ function BindControls(optional string action)
     }
 
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
-        EnumOption(f.DifficultyName(i), i, f.difficulty, f.DifficultyDesc(i));
+        EnumOption(f.DifficultyName(i), i, f.difficulty, "placeholder so the ? button gets created");
     }// we call SetDifficulty to apply the difficulty and game mode after setting the seed, below
 
     autosave_enum = CreateAutosaveEnum(self, f);
@@ -215,6 +215,26 @@ static function int CreateMirroredMapsSlider(DXRMenuBase slf, DXRFlags f)
     return mirroredmaps_wnd;
 }
 
+function string GetHelpText(DXRMenuUIHelpButtonWindow helpButton)
+{
+    local DXRFlags f;
+    local int i;
+    local string s;
+
+    if(helpButton.row == difficulty_enum) {
+        s = GetEnumValue(difficulty_enum);
+        f = GetFlags();
+        for( i=0; i < ArrayCount(f.difficulty_names); i++ ) {
+            if(s == f.DifficultyName(i)) {
+                f.SetDifficulty(i);
+                break;
+            }
+        }
+        return f.DifficultyDesc(f.difficulty);
+    }
+    return helpButton.GetHelpText();
+}
+
 function string SetEnumValue(int e, string text)
 {
     local int i, temp;
@@ -255,14 +275,25 @@ function string SetEnumValue(int e, string text)
                 enums[difficulty_enum].values[i] = f.DifficultyName(i);
             }
             Super.SetEnumValue(difficulty_enum, f.DifficultyName(1));
+            f.difficulty = 1;
 
             if(f.IsZeroRando() && mirroredmaps_wnd>0) {
                 MenuUIEditWindow(wnds[mirroredmaps_wnd]).SetText("0");
             }
         }
+        f.SetDifficulty(f.difficulty);
         if(f.IsSpeedrunMode() && InStr(GetEnumValue(loadout_enum), "All Items Allowed")!=-1)
         {
             Super.SetEnumValue(loadout_enum, "Speed Enhancement");
+        }
+    }
+    if(e == difficulty_enum) {
+        f = GetFlags();
+        for( i=0; i < ArrayCount(f.difficulty_names); i++ ) {
+            if(text == f.DifficultyName(i)) {
+                f.SetDifficulty(i);
+                break;
+            }
         }
     }
 
