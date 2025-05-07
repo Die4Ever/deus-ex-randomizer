@@ -1030,6 +1030,7 @@ function MakeTubeContentsFloat()
     local vector TubeLoc;
     local rotator TubeRot;
     local float widthScale,heightScale;
+    local int RotOffset;
     local Actor a;
 
     switch(dxr.localURL)
@@ -1057,7 +1058,11 @@ function MakeTubeContentsFloat()
         heightScale = class'#var(prefix)DentonClone'.default.CollisionHeight / a.Default.CollisionHeight;
         a.DrawScale = FMin(widthScale,heightScale); //Don't use SetActorScale, because that works from the existing scale
         a.SetLocation(TubeLoc);
-        a.SetRotation(TubeRot); //Rotation should get updated to account for RotationOffset
+
+        //Rotation should get updated to account for RotationOffset
+        RotOffset = GetRotationOffset(a.Class);
+        TubeRot = rotm(TubeRot.Pitch,TubeRot.Yaw-RotOffset,TubeRot.Roll,RotOffset);
+        a.SetRotation(TubeRot);
     }
 
 }
