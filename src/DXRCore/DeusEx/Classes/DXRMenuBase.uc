@@ -103,6 +103,13 @@ event Init(DXRando d)
     Show();
 
     StyleChanged();
+
+    AddTimer(0.001, false, 0, 'FixScroll');
+}
+
+function FixScroll(int timerID, int invocations, int clientData)
+{
+    winScroll.vScale.SetTickPosition(0);
 }
 
 function DXRFlags GetFlags()
