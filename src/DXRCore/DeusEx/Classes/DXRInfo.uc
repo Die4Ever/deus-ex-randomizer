@@ -361,22 +361,20 @@ simulated static function string FloatToString(float f, int decimal_places)
     return s;
 }
 
-simulated static function String TruncateFloat(float val, int numDec)
+simulated static function String TruncateFloat(coerce string val, int numDec)
 {
-    local string trunc;
     local int truncPoint;
 
-    trunc = string(val);
-    truncPoint = InStr(trunc,".");
+    truncPoint = InStr(val,".");
 
     if (truncPoint==-1){
-        return trunc;
+        return val;
     }
 
     truncPoint++; //include the decimal point...
     truncPoint+=numDec;
 
-    return Left(trunc,truncPoint);
+    return Left(val,truncPoint);
 }
 
 simulated static function string TrimTrailingZeros(coerce string s)

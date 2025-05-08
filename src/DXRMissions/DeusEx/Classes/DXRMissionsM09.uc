@@ -276,7 +276,6 @@ function bool IsLayoutAllowed(int goalsToLocations[32])
                     break;
 
                 case "South Helipad":
-                case "Helipad Air Control":
                 case "East Helipad":
                 case "Helibay Barracks":
                 case "Helipad Air Control":

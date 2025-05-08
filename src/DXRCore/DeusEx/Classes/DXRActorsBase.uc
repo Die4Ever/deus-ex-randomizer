@@ -1055,19 +1055,19 @@ static function string GetActorName(Actor a)
     return string(a.class.name);
 }
 
-static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event, optional string description)
+static function #var(DeusExPrefix)Decoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event, optional string description)
 {
-    local DeusExDecoration d;
-    d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
-    d.Buoyancy = 0;
-    d.Event = Event;
-    d.FamiliarName=description;
-    d.UnfamiliarName=description;
-    return d;
+    local #var(prefix)Switch2 s;
+    s = #var(prefix)Switch2(_AddActor(a, class'#var(prefix)Switch2', loc, rotate));
+    s.Buoyancy = 0;
+    s.Event = Event;
+    s.FamiliarName=description;
+    s.UnfamiliarName=description;
+    return s;
 }
 
 // DON'T PASS A VECTM OR ROTM TO THIS FUNCTION! PASS A PLAIN VECT AND ROT!
-function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event, optional string description)
+function #var(DeusExPrefix)Decoration AddSwitch(vector loc, rotator rotate, name Event, optional string description)
 {
     loc = vectm(loc.X, loc.Y, loc.Z);
     rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, 16384);
@@ -2054,6 +2054,15 @@ static function string GetDistanceUnit()
         return "ft";
     } else {
         return "m";
+    }
+}
+
+static function string GetDistanceUnitLong()
+{
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        return "feet";
+    } else {
+        return "meters";
     }
 }
 

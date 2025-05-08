@@ -292,6 +292,8 @@ function PostFirstEntry()
     SetSeed( "DXRFixup PostFirstEntry missions" );
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
+
+    RemoveStopWhenEncroach();
 }
 
 function AnyEntry()
@@ -846,6 +848,16 @@ function FixAlexsEmail()
     }
 }
 
+function FixHarleyFilben()
+{
+    local #var(prefix)HarleyFilben harley;
+
+    //Harley defaults to not important, which means his name gets randomized
+    foreach AllActors(class'#var(prefix)HarleyFilben', harley) {
+        harley.bImportant = true;
+    }
+}
+
 function FixSamCarter()
 {
     local SamCarter s;
@@ -1161,6 +1173,10 @@ function RemoveStopWhenEncroach()
     local #var(prefix)Mover m;
 
     if(!class'MenuChoice_BalanceMaps'.static.MinorEnabled()) return;
+    switch(dxr.localURL) {
+    case "06_HONGKONG_TONGBASE": // allow the speedrun trick on the killswitch disabling
+        return;
+    }
 
     foreach AllActors(class'#var(prefix)Mover',m){
         //Stop when encroach is annoying and can allow some NPCs to block doorways

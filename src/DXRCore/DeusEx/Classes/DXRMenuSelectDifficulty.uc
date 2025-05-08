@@ -66,7 +66,7 @@ function BindControls(optional string action)
     }
 
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
-        EnumOption(f.DifficultyName(i), i, f.difficulty);
+        EnumOption(f.DifficultyName(i), i, f.difficulty, "placeholder so the ? button gets created");
     }// we call SetDifficulty to apply the difficulty and game mode after setting the seed, below
 
     autosave_enum = CreateAutosaveEnum(self, f);
@@ -139,6 +139,10 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
     slf.EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
     slf.EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
     slf.EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
+    if(f.autosave == autosave.Ironman) { //Don't make this accessible unless it's your currently set value
+        slf.EnumOption("All Saves Disabled", autosave.Ironman, f.autosave, autosave.GetAutoSaveHelpText(autosave.Ironman));
+    }
+
     return in_autosave_enum;
 #endif
 }
@@ -148,11 +152,11 @@ static function int CreateCrowdControlEnum(DXRMenuBase slf, DXRFlags f)
     local int e;
 
     e = slf.NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $Chr(10)$ "See their website crowdcontrol.live");
-    //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
-    slf.EnumOption("Enabled (Streaming)", 1, f.crowdcontrol);
-    slf.EnumOption("Offline Simulated", 3, f.crowdcontrol);
-    slf.EnumOption("Streaming and Simulated", 4, f.crowdcontrol);
-    slf.EnumOption("Disabled", 0, f.crowdcontrol);
+    //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol, GetCrowdControlHelpText(2));
+    slf.EnumOption("Enabled (Streaming)", 1, f.crowdcontrol, GetCrowdControlHelpText(1));
+    slf.EnumOption("Offline Simulated", 3, f.crowdcontrol, GetCrowdControlHelpText(3));
+    slf.EnumOption("Streaming and Simulated", 4, f.crowdcontrol, GetCrowdControlHelpText(4));
+    slf.EnumOption("Disabled", 0, f.crowdcontrol, GetCrowdControlHelpText(0));
     return e;
 }
 
@@ -197,18 +201,38 @@ static function int CreateMirroredMapsSlider(DXRMenuBase slf, DXRFlags f)
         } else if(f.mirroredmaps == -1) {
             f.mirroredmaps = 50; // default to 50% when the files are installed
         }
-        slf.Slider(f.mirroredmaps, 0, 100);
+        slf.Slider(f.mirroredmaps, 0, 100,GetMirroredMapsHelpText(true));
     } else {
         // use -1 to indicate not installed, because this gets saved to the config
         f.mirroredmaps = -1;
         slf.NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
-        slf.EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps);
+        slf.EnumOption("Mirror Map Files Not Found", -1, f.mirroredmaps, GetMirroredMapsHelpText(false));
     }
 #else
     //Disable mirrored maps entirely if map variants aren't supported
     f.mirroredmaps=-1;
 #endif
     return mirroredmaps_wnd;
+}
+
+function string GetHelpText(DXRMenuUIHelpButtonWindow helpButton)
+{
+    local DXRFlags f;
+    local int i;
+    local string s;
+
+    if(helpButton.row == difficulty_enum) {
+        s = GetEnumValue(difficulty_enum);
+        f = GetFlags();
+        for( i=0; i < ArrayCount(f.difficulty_names); i++ ) {
+            if(s == f.DifficultyName(i)) {
+                f.SetDifficulty(i);
+                break;
+            }
+        }
+        return f.DifficultyDesc(f.difficulty);
+    }
+    return helpButton.GetHelpText();
 }
 
 function string SetEnumValue(int e, string text)
@@ -251,14 +275,25 @@ function string SetEnumValue(int e, string text)
                 enums[difficulty_enum].values[i] = f.DifficultyName(i);
             }
             Super.SetEnumValue(difficulty_enum, f.DifficultyName(1));
+            f.difficulty = 1;
 
             if(f.IsZeroRando() && mirroredmaps_wnd>0) {
                 MenuUIEditWindow(wnds[mirroredmaps_wnd]).SetText("0");
             }
         }
+        f.SetDifficulty(f.difficulty);
         if(f.IsSpeedrunMode() && InStr(GetEnumValue(loadout_enum), "All Items Allowed")!=-1)
         {
             Super.SetEnumValue(loadout_enum, "Speed Enhancement");
+        }
+    }
+    if(e == difficulty_enum) {
+        f = GetFlags();
+        for( i=0; i < ArrayCount(f.difficulty_names); i++ ) {
+            if(text == f.DifficultyName(i)) {
+                f.SetDifficulty(i);
+                break;
+            }
         }
     }
 
@@ -440,7 +475,7 @@ function NewGameSetup(float difficulty)
     }
 }
 
-function string GetSeedHelpText()
+static function string GetSeedHelpText()
 {
     local string msg;
 
@@ -467,6 +502,49 @@ static function string GetOnlineFeaturesHelpText(int mode)
         case 2: //Enabled
             msg = msg $ "The game will occasionally send messages to the Deus Ex Randomizer server to log deaths and certain actions.  Death messages will be posted on the DX Rando Activity Mastodon feed,"$" along with posts about certain things that the player does.  Death markers will show up in game where players have recently died.";
             break;
+    }
+
+    return msg;
+}
+
+static function string GetCrowdControlHelpText(int mode)
+{
+    local string msg;
+
+    msg = "";
+
+    switch(mode){
+        case 0: //Disabled
+            msg = msg $ "Crowd Control is entirely disabled.  The Crowd Control client will not be able to connect to your game and effects will not occur.";
+            break;
+        case 1: //Enabled (Streaming)
+            msg = msg $ "Crowd Control will be enabled in your game.  Connect using the Crowd Control app on your computer so that people viewing your stream will be able to interact with you.|n";
+            msg = msg $ "|n";
+            msg = msg $ "See CrowdControl.Live for more details about the Crowd Control app.";
+            break;
+        case 2: //Enabled (Anonymous) (not actually available)
+            msg = msg $ "";
+            break;
+        case 3: //Offline Simulated
+            msg = msg $ "Simulated Crowd Control will be enabled in your game.  Instead of using the Crowd Control app, the game will randomly select effects and inflict them upon you.";
+            break;
+        case 4: //Streaming and Simulated
+            msg = msg $ "Both real and simulated Crowd Control will be enabled in your game.  You can connect using the Crowd Control app on your computer so that people viewing your stream will be able to interact with you.  "$"In addition, the game will randomly select effects and inflict them upon you.|n";
+            msg = msg $ "|n";
+            msg = msg $ "See CrowdControl.Live for more details about the Crowd Control app.";
+            break;
+    }
+
+    return msg;
+}
+
+static function string GetMirroredMapsHelpText(bool installed)
+{
+    local string msg;
+
+    msg = "The chances of each map being a mirrored version instead of the original.  Mirrored maps are horizontally mirrored (so left is right and right is left).  "$"Trick your mind into experiencing the original maps for the very first time again!";
+    if (!installed){
+        msg = msg $ "|n|nMirrored Maps are not installed!  Run the Deus Ex Randomizer installer again to download them if you want to try them out!";
     }
 
     return msg;

@@ -53,6 +53,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AllianceTrigger at;
     local #var(prefix)CrateUnbreakableLarge crate;
     local #var(prefix)ThugMale2 thug;
+    local #var(prefix)Karkian kark;
 
     local DXREnemies dxre;
     local int i;
@@ -103,6 +104,11 @@ function PreFirstEntryMapFixes()
             anna.ResetReactions();
         }
 
+        //Prevent the karkians from getting cloned (so they don't clone outside of the enclosure)
+        foreach AllActors(class'#var(prefix)Karkian', kark){
+            kark.bIsSecretGoal=true;
+        }
+
         if (VanillaMaps){
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover34'){
@@ -136,6 +142,16 @@ function PreFirstEntryMapFixes()
 
             //Keypad10 fixed in Vanilla above is already fixed in Revision
         }
+
+        //Mirrors verified in vanilla and Revision
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2840,1360,-64),vectm(-2875,1487,-160)); //Mirrors between cells
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2875,848,-64),vectm(-2840,978,-160));   //Mirrors between cells
+        class'FakeMirrorInfo'.static.Create(self,vectm(-3010,1035,-64),vectm(-2877,1047,-160)); //Dead Body Cell
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2542,1035,-64),vectm(-2672,1047,-160)); //Miguel Cell
+        class'FakeMirrorInfo'.static.Create(self,vectm(-2833,1300,-64),vectm(-2702,1290,-160)); //Empty Cell
+
+        foreach AllActors(class'DeusExMover',dxm,'Mirror'){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(-3168,1300,-64),vectm(-3039,1290,-160),dxm); //JC's Cell (but we only want this while the window is reflective)
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-5066,1368,208),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(-4981,1521,208),,'Sitting');
@@ -193,9 +209,11 @@ function PreFirstEntryMapFixes()
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 break;
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
+        } else {
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
         SpeedUpUNATCOFurnaceVent();
-        RemoveStopWhenEncroach();
 
         foreach AllActors(class'#var(prefix)Terrorist', miguel){
             miguel.bHateShot=False;
@@ -409,6 +427,36 @@ function PostFirstEntryMapFixes()
 }
 //#endregion
 
+function Inventory FindPrisonPocketItem()
+{
+    local #var(PlayerPawn) p;
+    local DeusExRootWindow root;
+    local Inventory beltItem;
+    local int i;
+
+    p = player();
+
+    root = DeusExRootWindow(p.rootWindow);
+
+    if (root==None){
+        return None;
+    }
+
+    //Items are in slots 1-9, Keyring is in 0
+    for(i=1; i<10; i++){
+        beltItem=root.hud.belt.GetObjectFromBelt(i);
+
+        if (beltItem==None) continue;
+
+        //Is it a single slot item?
+        if (beltItem.invSlotsX==1 && beltItem.invSlotsY==1){
+            return beltItem;
+        }
+    }
+
+    return None;
+}
+
 //#region Balance Jailbreak
 function BalanceJailbreak()
 {
@@ -427,6 +475,9 @@ function BalanceJailbreak()
     local string freebieLocNames[4];
     local vector freebieLocs[4];
     local DynamicLight dl;
+    local #var(prefix)Toilet jailToilet;
+    local Pickup origPickup;
+    local vector toiletLoc;
     local bool VanillaMaps;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -437,7 +488,7 @@ function BalanceJailbreak()
     // Revision also removes ammo and credits, and spawns special weapons from Paul if you saved him
     // This logic will cause that to not happen (for now)
     p = player();
-    if(dxr.flags.settings.prison_pocket <= 0) {
+    if(dxr.flags.settings.prison_pocket <= 1) { //Disabled (0) or Unaugmented (1)
         if(DeusExWeapon(p.inHand) != None)
             DeusExWeapon(p.inHand).LaserOff();
 
@@ -448,6 +499,28 @@ function BalanceJailbreak()
                 EquipLocation = missions.GetSpoiler(i).goalLocation;
             }
         }
+
+        //Unaugmented Prison Pocket (Keep the first single-slot item in your belt)
+        if (dxr.flags.settings.prison_pocket == 1) {
+            nextItem = FindPrisonPocketItem();
+
+            if (nextItem!=None){
+                jailToilet = #var(prefix)Toilet(findNearestToActor(class'#var(prefix)Toilet',p));
+                toiletLoc = jailToilet.Location;
+                toiletLoc.Z = toiletLoc.Z + jailToilet.CollisionHeight + nextItem.CollisionHeight + 5;
+                toiletLoc = toiletLoc + (vect(0,-10,0) >> jailToilet.Rotation); //Offset the item to be more forward on the seat
+
+                origPickup = Pickup(nextItem);
+                if (origPickup!=None && origPickup.NumCopies>1){
+                    //If it's a stack, break one out and leave it in the cell
+                    origPickup.NumCopies--;
+                    nextItem = Spawn(origPickup.class,,,toiletLoc); //Spawned in the right location, but MoveNextItemTo will apply everything else
+                }
+
+                MoveNextItemTo(nextItem,toiletLoc,'player_prison_pocket');
+            }
+        }
+
         num=0;
         l("BalanceJailbreak EquipLocation == " $ EquipLocation);
         if(EquipLocation == "Armory")

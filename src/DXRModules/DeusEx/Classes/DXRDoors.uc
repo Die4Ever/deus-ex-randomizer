@@ -118,6 +118,15 @@ function CheckConfig()
         i++;
         break;
 
+    case "06_HONGKONG_STORAGE":
+        // breaking these doors open allows you to skip the computer, which is very confusing for players
+        door_fixes[i].tag = 'UC_Chamber_Door';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = false;
+        i++;
+        break;
+
     case "09_NYC_SHIP":
         // don't break the ramp up to the ship!
         door_fixes[i].tag = 'ShipRamp';

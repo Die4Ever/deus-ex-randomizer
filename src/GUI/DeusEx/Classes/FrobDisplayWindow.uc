@@ -596,10 +596,10 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
         strInfo=strInfo$" (Default: "$compDmg$")";
     }
 
-    strInfo=strInfo $ CR() $"Fire Rate: "$ class'DXRInfo'.static.TruncateFloat(fireRate,1)$"/s";
+    strInfo=strInfo $ CR() $"Fire Rate: "$ w.FormatFloatString(fireRate,0.1)$"/s";
 
     if (compFireRate!=0 && compFireRate!=fireRate){
-        strInfo=strInfo$" (Default: "$class'DXRInfo'.static.TruncateFloat(compFireRate,1)$")";
+        strInfo=strInfo$" (Default: "$w.FormatFloatString(compFireRate,0.1)$")";
     }
 
     return strInfo;

@@ -565,9 +565,11 @@ simulated function bool UpdateInfo(Object winObject)
     winInfo.AddInfoItem(msgInfoClip, str, HasClipMod());
 
     // rate of fire
+    // RANDO: Always show rate of fire
     if ((Default.ReloadCount == 0) || bHandToHand)
     {
-        str = msgInfoNA;
+        //str = msgInfoNA;
+        str = FormatFloatString(1.0/ShotTime, 0.1) $ "/SEC";
     }
     else
     {

@@ -134,6 +134,15 @@ function PreFirstEntryMapFixes()
             jojo.BarkBindName="JoJoFine";
         }
 
+        if(class'MenuChoice_BalanceMaps'.static.MinorEnabled()) {
+            //Make Paul's door a toggle door instead of TriggerOpenTimed (so you can close it again)
+            foreach AllActors(class'#var(DeusExPrefix)Mover', door){
+                if (door.KeyIDNeeded!='Apartment') continue;
+
+                door.GoToState('TriggerToggle');
+            }
+        }
+
         if (VanillaMaps){
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
 
@@ -380,7 +389,6 @@ function PreFirstEntryMapFixes()
         FixAlexsEmail();
         MakeTurretsNonHostile(); //Revision has hostile turrets near jail
         SpeedUpUNATCOFurnaceVent();
-        RemoveStopWhenEncroach();
 
         if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
             key = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
@@ -407,6 +415,9 @@ function PreFirstEntryMapFixes()
                     troop.UnfamiliarName = "UNATCO Trooper";
                 }
             }
+            class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
+        } else {
+            class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
 
         //Spawn some placeholders for new item locations
@@ -488,6 +499,7 @@ function PreFirstEntryMapFixes()
 
     //#region Bar
     case "04_NYC_BAR":
+        FixHarleyFilben();
         if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
             Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
         } else {
@@ -575,6 +587,10 @@ function PreFirstEntryMapFixes()
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
         class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
+
+        //Verified in both vanilla and Revision
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door,'mirrordoor'){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(-527,1660,348),vectm(-627,1655,220),door); //Mirror in front of Smuggler's Stash
 
         break;
     //#endregion

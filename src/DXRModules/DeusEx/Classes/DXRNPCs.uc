@@ -281,6 +281,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant>
     //Got somethin' that might interest ya'.
     //Got some rare things on sale, stranger!
     //Welcome!
+    e = AddTransferRepairTrigger(c,e);
     e = AddSpeech(c, e, "Whaddaya buyin'?", false, "BuyCommon");
     e = AddPurchaseChoices(c, e, items);
     e = AddSpeech(c, e, "Come back anytime.", false, "leave");
@@ -512,13 +513,39 @@ function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPur
 
 }
 
+function ConEventTrigger AddTransferRepairTrigger(Conversation c, ConEvent prev)
+{
+    local ConEventTrigger e;
+    local RepairConObjTransferTrigger rt;
+    local string tagName, j;
+    local class<Json> js;
+    local int k;
+
+    tagName="ConEventTransferObjectRepair"$c.conName; //Append the bindname to the end
+
+    e = new(c) class'ConEventTrigger';
+    e.eventType=ET_Trigger;
+    e.triggerTag = StringToName(tagName);
+    AddConEvent(c, prev, e);
+
+    //Make sure the Repair Triggers actually exist
+    foreach AllActors(class'RepairConObjTransferTrigger',rt,e.triggerTag){break;}
+    if (rt==None){
+        rt=Spawn(class'RepairConObjTransferTrigger',,e.triggerTag);
+        rt.conName = c.conName;
+        rt.AddPackage("#var(package)"); //Add our package to the list of possibilities
+    }
+
+    return e;
+}
+
 function ConEventTransferObject AddTransfer(Conversation c, ConEvent prev, class<Inventory> item)
 {
     local ConEventTransferObject e;
 
     e = new(c) class'ConEventTransferObject';
     e.eventType = ET_TransferObject;
-    e.objectName = string(item.name);
+    e.objectName = string(item);  //Fully qualify the class name so it includes the package name (for safety)
     e.giveObject = item;
     e.transferCount = 1;
     e.fromName = c.conOwnerName;

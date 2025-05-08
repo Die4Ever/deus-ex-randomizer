@@ -362,6 +362,42 @@ function RandomHotelDoorSounds()
 
 }
 
+function MakeNonHostileMrH(vector loc, rotator rotate)
+{
+    local MrH mrh;
+    local rotator rotted;
+    local vector locr;
+
+    locr = vectm(loc.X,loc.Y,loc.Z);
+    rotted = rotm(rotate.Pitch,rotate.Yaw,rotate.Roll,GetRotationOffset(class'MrH'));
+
+    mrh = Spawn(class'MrH',,,locr,rotted);
+    mrh.InitialAlliances[0].AllianceLevel=1; //This runs before the pawn is initialized, so this works to make him non-hostile
+    mrh.Orders='Standing';
+    mrh.SetOrders('Standing');
+}
+
+function CreateTrainingMrH()
+{
+    local vector loc;
+    local rotator rotate;
+
+    switch(dxr.localURL){
+        case "00_TrainingCombat":
+            loc = vect(1485,-310,-35);
+            rotate = rot(0,11440,0);
+            break;
+        case "00_TrainingFinal":
+            loc = vect(1680,-172,45);
+            rotate = rot(0,32768,0);
+            break;
+    }
+
+    if (loc!=vect(0,0,0)){
+        MakeNonHostileMrH(loc,rotate);
+    }
+}
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -372,6 +408,10 @@ function PreFirstEntry()
         case "INTRO":
             //Make sure the intro has an actual location to show up in toots
             dxr.dxInfo.MissionLocation="the intro cinematic";
+            break;
+        case "00_TrainingCombat":
+        case "00_TrainingFinal":
+            CreateTrainingMrH();
             break;
         case "15_AREA51_PAGE":
             RandomBobPage();
@@ -1002,6 +1042,8 @@ function RandomizeCutscene()
         }
     }
 
+    MakeTubeContentsFloat();
+
     /*foreach AllActors(class'CameraPoint', c)
     {
         c.bHidden = false;
@@ -1020,6 +1062,49 @@ function RandomizeCutscene()
 
     RandomizeCutsceneOrder();
     ForceIntroFight();
+}
+
+function MakeTubeContentsFloat()
+{
+    local bool RevisionMaps;
+    local vector TubeLoc;
+    local rotator TubeRot;
+    local float widthScale,heightScale;
+    local int RotOffset;
+    local Actor a;
+
+    switch(dxr.localURL)
+    {
+        case "INTRO":
+            break;
+        default:
+            return;
+    }
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps){
+        TubeLoc = vectm(-9889,-8523,-5136);
+        TubeRot = rot(0,8992,0);
+    } else {
+        TubeLoc = vectm(-11088,-8577,-5048);
+        TubeRot = rot(0,16304,0);
+    }
+
+    foreach RadiusActors(class'Actor',a,50,TubeLoc){
+        if (a.bHidden) continue;
+        a.SetPhysics(PHYS_None);
+        widthScale = class'#var(prefix)DentonClone'.default.CollisionRadius / a.Default.CollisionRadius;
+        heightScale = class'#var(prefix)DentonClone'.default.CollisionHeight / a.Default.CollisionHeight;
+        a.DrawScale = FMin(widthScale,heightScale); //Don't use SetActorScale, because that works from the existing scale
+        a.SetLocation(TubeLoc);
+
+        //Rotation should get updated to account for RotationOffset
+        RotOffset = GetRotationOffset(a.Class);
+        TubeRot = rotm(TubeRot.Pitch,TubeRot.Yaw-RotOffset,TubeRot.Roll,RotOffset);
+        a.SetRotation(TubeRot);
+    }
+
 }
 
 function ForceIntroFight()
