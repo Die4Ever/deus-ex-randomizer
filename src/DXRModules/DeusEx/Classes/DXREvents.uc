@@ -3543,6 +3543,9 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill enough of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
         case "JoyOfCooking":
             return "Read a recipe from a book and experience the joy of cooking!|n|nThere is a recipe for Chinese Silver Loaves in the Wan Chai Market, and a recipe for Coq au Vin in the streets of Paris.";
+        case "DolphinJump": // keep height number in sync with DolphinJumpTrigger CreateDolphin
+            msg = TrimTrailingZeros(FloatToString(GetRealDistance(184), 1)) @ GetDistanceUnitLong();
+            return "Jump " $ msg $ " out of the water.|n|nHow high in the sky can you fly?";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3982,6 +3985,9 @@ defaultproperties
     bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate 1 emergency exit",max=8,missions=1918)
     bingo_options(355)=(event="Ex51",desc="Ex-51 (%s)",desc_singular="Ex-51",max=6,missions=4096)
     bingo_options(356)=(event="JoyOfCooking",desc="The Joy of Cooking",max=1,missions=1088)
+#ifdef injections || revision
+    bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=56910)
+#endif
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 

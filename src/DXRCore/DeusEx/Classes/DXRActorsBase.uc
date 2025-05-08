@@ -2057,6 +2057,15 @@ static function string GetDistanceUnit()
     }
 }
 
+static function string GetDistanceUnitLong()
+{
+    if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
+        return "feet";
+    } else {
+        return "meters";
+    }
+}
+
 //Speed is in unreal units per second
 static function float GetRealSpeed(float speed){
     if (class'MenuChoice_MeasureUnits'.static.IsImperial()){

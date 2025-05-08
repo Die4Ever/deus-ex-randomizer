@@ -824,6 +824,24 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
         bOnLadder = False;
 }
 
+event HeadZoneChange(ZoneInfo newHeadZone)
+{
+    if (HeadRegion.Zone.bWaterZone && !newHeadZone.bWaterZone)
+    {
+        class'DolphinJumpTrigger'.static.CreateDolphin(self);
+    }
+    Super.HeadZoneChange(newHeadZone);
+}
+
+function Landed(vector HitNormal)
+{
+    local DolphinJumpTrigger dolphin;
+    foreach AllActors(class'DolphinJumpTrigger', dolphin) {
+        dolphin.Destroy();
+    }
+    Super.Landed(HitNormal);
+}
+
 function bool CanInstantLeftClick(DeusExPickup item)
 {
     if (inHand!=None) return false;

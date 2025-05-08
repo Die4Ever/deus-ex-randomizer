@@ -570,6 +570,7 @@ function Landed(vector HitNormal)
     local Augmentation aug;
     local int augLevel;
     local float augReduce, dmg, softener;
+    local DolphinJumpTrigger dolphin;
 
     softener = 1;
     /*if(class'MenuChoice_BalanceAugs'.static.IsEnabled() && AugmentationSystem != None)
@@ -622,6 +623,10 @@ function Landed(vector HitNormal)
     //else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
         //MakeNoise(0.1 * Level.Game.Difficulty);
     bJustLanded = true;
+
+    foreach AllActors(class'DolphinJumpTrigger', dolphin) {
+        dolphin.Destroy();
+    }
 }
 
 function bool CanInstantLeftClick(DeusExPickup item)
@@ -941,6 +946,14 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	return bDropped;
 }
 
+event HeadZoneChange(ZoneInfo newHeadZone)
+{
+    if (HeadRegion.Zone.bWaterZone && !newHeadZone.bWaterZone)
+    {
+        class'DolphinJumpTrigger'.static.CreateDolphin(self);
+    }
+    Super.HeadZoneChange(newHeadZone);
+}
 
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
