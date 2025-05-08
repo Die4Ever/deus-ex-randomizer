@@ -580,7 +580,7 @@ simulated function InitHints()
             AddHint("It's possible to use the overhead pipes to bypass", "the radioactive area while travelling in either direction!");
         }
 #ifdef injections
-        if( dxr.FindModule(class'DXRBacktracking') != None ) {
+        if( class'DXRBacktracking'.static.bSillyChoppers() && dxr.FindModule(class'DXRBacktracking') != None ) {
             AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
         }
 #endif
