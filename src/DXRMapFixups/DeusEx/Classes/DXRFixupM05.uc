@@ -443,8 +443,8 @@ function Inventory FindPrisonPocketItem()
     }
 
     //Items are in slots 1-9, Keyring is in 0
-    for(i=0;i<9;i++){
-        beltItem=root.hud.belt.GetObjectFromBelt(i+1);
+    for(i=1; i<10; i++){
+        beltItem=root.hud.belt.GetObjectFromBelt(i);
 
         if (beltItem==None) continue;
 
