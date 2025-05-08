@@ -331,6 +331,7 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
+        WatchFlag('StatueMissionComplete');
 
         foreach AllActors(class'#var(prefix)SkillAwardTrigger',skillAward) {
             if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
@@ -2532,6 +2533,8 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "SavedPaul":
             failed[num_failed++] = "PaulToTong";
             break;
+        case "StatueMissionComplete":
+            failed[num_failed++] = "GuntherFreed";
     }
 
     return num_failed;
