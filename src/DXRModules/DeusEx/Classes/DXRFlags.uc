@@ -791,7 +791,96 @@ function string DifficultyDesc(int diff)
     }
 #endif
 
-    return StringifyFlags(Credits);
+    return DescribeDifficulty();
+}
+
+simulated function string DescribeDifficulty()
+{
+    local string str;
+    local int mode;
+    mode = Credits;
+
+    FlagInt('Rando_minskill', settings.minskill, mode, str);
+    FlagInt('Rando_maxskill', settings.maxskill, mode, str);
+    FlagInt('Rando_ammo', settings.ammo, mode, str);
+    FlagInt('Rando_multitools', settings.multitools, mode, str);
+    FlagInt('Rando_lockpicks', settings.lockpicks, mode, str);
+    FlagInt('Rando_biocells', settings.biocells, mode, str);
+    FlagInt('Rando_speedlevel', settings.speedlevel, mode, str);
+    FlagInt('Rando_keys', settings.keysrando, mode, str);
+    FlagInt('Rando_keys_containers', settings.keys_containers, mode, str);
+    FlagInt('Rando_doorspickable', settings.doorspickable, mode, str);
+    FlagInt('Rando_doorsdestructible', settings.doorsdestructible, mode, str);
+    FlagInt('Rando_deviceshackable', settings.deviceshackable, mode, str);
+    FlagInt('Rando_passwordsrandomized', settings.passwordsrandomized, mode, str);
+
+    FlagInt('Rando_medkits', settings.medkits, mode, str);
+    FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, mode, str);
+    FlagInt('Rando_enemystats', settings.enemystats, mode, str);
+    FlagInt('Rando_enemies_weapons', moresettings.enemies_weapons, mode, str);
+    FlagInt('Rando_hiddenenemiesrandomized', settings.hiddenenemiesrandomized, mode, str);
+    FlagInt('Rando_enemiesshuffled', settings.enemiesshuffled, mode, str);
+    FlagInt('Rando_infodevices', settings.infodevices, mode, str);
+    FlagInt('Rando_infodevices_containers', settings.infodevices_containers, mode, str);
+    FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
+    FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
+    FlagInt('Rando_reanimation', moresettings.reanimation, mode, str);
+    FlagInt('Rando_removeparismj12', remove_paris_mj12, mode, str);
+
+    FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, mode, str);
+    FlagInt('Rando_skills_reroll_missions', settings.skills_reroll_missions, mode, str);
+    FlagInt('Rando_skills_independent_levels', settings.skills_independent_levels, mode, str);
+    FlagInt('Rando_startinglocations', settings.startinglocations, mode, str);
+    FlagInt('Rando_goals', settings.goals, mode, str);
+    FlagInt('Rando_equipment', settings.equipment, mode, str);
+
+    FlagInt('Rando_medbots', settings.medbots, mode, str);
+    FlagInt('Rando_empty_medbots', moresettings.empty_medbots, mode, str);
+    FlagInt('Rando_repairbots', settings.repairbots, mode, str);
+    FlagInt('Rando_medbotuses', settings.medbotuses, mode, str);
+    FlagInt('Rando_repairbotuses', settings.repairbotuses, mode, str);
+    FlagInt('Rando_medbotcooldowns', settings.medbotcooldowns, mode, str);
+    FlagInt('Rando_repairbotcooldowns', settings.repairbotcooldowns, mode, str);
+    FlagInt('Rando_medbotamount', settings.medbotamount, mode, str);
+    FlagInt('Rando_repairbotamount', settings.repairbotamount, mode, str);
+
+    FlagInt('Rando_turrets_move', settings.turrets_move, mode, str);
+    FlagInt('Rando_turrets_add', settings.turrets_add, mode, str);
+
+    FlagInt('Rando_merchants', settings.merchants, mode, str);
+    FlagInt('Rando_banned_skills', settings.banned_skills, mode, str);
+    FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, mode, str);
+    FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, mode, str);
+    FlagInt('Rando_bot_weapons', settings.bot_weapons, mode, str);
+    FlagInt('Rando_bot_stats', settings.bot_stats, mode, str);
+
+    FlagInt('Rando_swapitems', settings.swapitems, mode, str);
+    FlagInt('Rando_swapcontainers', settings.swapcontainers, mode, str);
+    FlagInt('Rando_augcans', settings.augcans, mode, str);
+    FlagInt('Rando_aug_value_rando', settings.aug_value_rando, mode, str);
+    FlagInt('Rando_skill_value_rando', settings.skill_value_rando, mode, str);
+    FlagInt('Rando_min_weapon_dmg', settings.min_weapon_dmg, mode, str);
+    FlagInt('Rando_max_weapon_dmg', settings.max_weapon_dmg, mode, str);
+    FlagInt('Rando_min_weapon_shottime', settings.min_weapon_shottime, mode, str);
+    FlagInt('Rando_max_weapon_shottime', settings.max_weapon_shottime, mode, str);
+
+    FlagInt('Rando_prison_pocket', settings.prison_pocket, mode, str);
+
+    FlagInt('Rando_bingo_win', settings.bingo_win, mode, str);
+    FlagInt('Rando_bingo_freespaces', settings.bingo_freespaces, mode, str);
+
+    FlagInt('Rando_menus_pause', settings.menus_pause, mode, str);
+    FlagInt('Rando_health', settings.health, mode, str);
+    FlagInt('Rando_energy', settings.energy, mode, str);
+
+    FlagInt('Rando_grenadeswap', settings.grenadeswap, mode, str);
+
+    FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
+    FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
+    FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);
+    FlagInt('Rando_num_removed_weapons', newgameplus_num_removed_weapons, mode, str);
+
+    return str;
 }
 
 function int GameModeIdForSlot(int slot)
