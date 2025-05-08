@@ -1129,13 +1129,16 @@ simulated function LogFlags(string prefix)
 simulated function string StringifyFlags(int mode)
 {
     local float CombatDifficulty;
-    local #var(PlayerPawn) p;
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
     CombatDifficulty = settings.CombatDifficulty;
 #endif
-    return BindFlags(mode, "difficulty: " $ TrimTrailingZeros(CombatDifficulty));
+    if(mode==Credits) {
+        return BindFlags(mode, "Combat Difficulty: " $ TrimTrailingZeros(CombatDifficulty*100) $ "%");
+    } else {
+        return BindFlags(mode, "difficulty: " $ TrimTrailingZeros(CombatDifficulty));
+    }
 }
 
 simulated function int FlagsHash()

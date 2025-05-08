@@ -791,7 +791,7 @@ function string DifficultyDesc(int diff)
     }
 #endif
 
-    return DescribeDifficulty();
+    return "Settings for " $ DifficultyName(diff) $ " difficulty " $ GameModeName(gamemode) $ ":|n|n" $ DescribeDifficulty();
 }
 
 simulated function string DescribeDifficulty()
@@ -800,6 +800,9 @@ simulated function string DescribeDifficulty()
     local int mode;
     mode = Credits;
 
+    #ifndef hx
+        str = str $ "The player takes " $ int(settings.CombatDifficulty*100.0) $ "% damage.";
+    #endif
     FlagInt('Rando_minskill', settings.minskill, mode, str);
     FlagInt('Rando_maxskill', settings.maxskill, mode, str);
     FlagInt('Rando_ammo', settings.ammo, mode, str);
