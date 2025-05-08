@@ -362,6 +362,42 @@ function RandomHotelDoorSounds()
 
 }
 
+function MakeNonHostileMrH(vector loc, rotator rotate)
+{
+    local MrH mrh;
+    local rotator rotted;
+    local vector locr;
+
+    locr = vectm(loc.X,loc.Y,loc.Z);
+    rotted = rotm(rotate.Pitch,rotate.Yaw,rotate.Roll,GetRotationOffset(class'MrH'));
+
+    mrh = Spawn(class'MrH',,,locr,rotted);
+    mrh.InitialAlliances[0].AllianceLevel=1; //This runs before the pawn is initialized, so this works to make him non-hostile
+    mrh.Orders='Standing';
+    mrh.SetOrders('Standing');
+}
+
+function CreateTrainingMrH()
+{
+    local vector loc;
+    local rotator rotate;
+
+    switch(dxr.localURL){
+        case "00_TrainingCombat":
+            loc = vect(1485,-310,-35);
+            rotate = rot(0,11440,0);
+            break;
+        case "00_TrainingFinal":
+            loc = vect(1680,-172,45);
+            rotate = rot(0,32768,0);
+            break;
+    }
+
+    if (loc!=vect(0,0,0)){
+        MakeNonHostileMrH(loc,rotate);
+    }
+}
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -372,6 +408,10 @@ function PreFirstEntry()
         case "INTRO":
             //Make sure the intro has an actual location to show up in toots
             dxr.dxInfo.MissionLocation="the intro cinematic";
+            break;
+        case "00_TrainingCombat":
+        case "00_TrainingFinal":
+            CreateTrainingMrH();
             break;
         case "15_AREA51_PAGE":
             RandomBobPage();
