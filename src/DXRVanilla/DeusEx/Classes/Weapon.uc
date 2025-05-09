@@ -124,11 +124,26 @@ simulated function Tick(float deltaTime)
         }
     }
 
-    if(!IsAnimating() || class'MenuChoice_BalanceSkills'.static.IsDisabled()) {
+    if(!IsAnimating()) {
         return;
     }
 
-    if(AnimSequence != prev_anim || GetWeaponSkill() != prev_weapon_skill) {
+    /*if(AnimSequence != prev_anim && DeusExPlayer(Owner) != None) { // logging to help with issue #1208
+        log(self @ Level.TimeSeconds @ AnimSequence);
+    }*/
+
+    if(class'MenuChoice_BalanceSkills'.static.IsDisabled()) { // just in case someone plays with randomized shottimes and balance changes disabled?
+        if(AnimSequence != prev_anim) {
+            prev_anim = AnimSequence;
+            r = 1.0;
+            if(AnimSequence == 'Shoot' || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3')
+            {
+                r = (class'DXRWeapons'.static.GetDefaultShottime(self) / ShotTime);
+                r = FClamp(r, 0.4, 1.7);
+            }
+            prev_anim_rate = AnimRate * r;
+        }
+    } else if(AnimSequence != prev_anim || GetWeaponSkill() != prev_weapon_skill) {
         prev_anim = AnimSequence;
         r = 1.0;
         e = 1.7;
