@@ -225,8 +225,7 @@ class Bingo:
                 square["possible"]=self.board[x][y]["active"]!=-1
                 #print(square)
                 board.append(square)
-        #return json.dumps(board,indent=4)
-        return {"bingo":json.dumps({"bingo":board},indent=4)}
+        return json.dumps(board,indent=4)
 
     def sendBingoState(self):
         if not os.path.isfile(JSON_DEST_FILENAME):
@@ -243,7 +242,8 @@ class Bingo:
         bingoState = self.generateBingoStateJson()
         #print(bingoState)
         try:
-            r = urllib.request.urlopen(desturl,data=urllib.parse.urlencode(bingoState).encode('utf-8'))
+            data = bingoState.encode('utf-8')
+            r = urllib.request.urlopen(desturl,data=data)
             #print(r.status)
             #print(r.read().decode('utf-8'))
         except Exception as e:
