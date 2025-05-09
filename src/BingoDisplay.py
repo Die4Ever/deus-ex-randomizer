@@ -228,10 +228,11 @@ class Bingo:
         return json.dumps(board,indent=4)
 
     def sendBingoState(self):
-        if not os.path.isfile(JSON_DEST_FILENAME):
+        dest = Path(self.targetFile).parent/JSON_DEST_FILENAME
+        if not os.path.isfile(dest):
             return
 
-        f = open(JSON_DEST_FILENAME,'r')
+        f = open(dest,'r')
         desturl=f.readline()
         f.close()
 
