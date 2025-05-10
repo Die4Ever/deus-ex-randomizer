@@ -1241,8 +1241,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             return start_map>=90;
         case "PhoneCall":
             return start_map>100; //TODO: Last phone is in the building before the catacombs (Where Icarus calls)
-        case "FordSchick_PlayerDead":
-            return start_map >= 30;
         default:
             return False;
     }
