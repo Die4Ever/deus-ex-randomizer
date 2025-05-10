@@ -773,6 +773,7 @@ state Sitting
 //
 // Just kinda stand there and do nothing.
 // (similar to Wandering, except the pawn doesn't actually move)
+// DXRando: if Orders=='Patrolling' then wander instead of standing, also move when bumped
 // ----------------------------------------------------------------------
 
 state Standing
@@ -803,8 +804,30 @@ state Standing
         Global.Tick(deltaSeconds);
     }
 
+    function Bump(Actor other)
+    {
+        // DXRando: move away when bumped, similar to state Following
+        local Rotator rot;
+        local float extra, dist;
+        local bool bSuccess;
+
+        Global.Bump(other);
+        if(destLoc != vect(0,0,0)) return;
+        if(Pawn(other) == None) return;
+        if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
+        extra = other.CollisionRadius + CollisionRadius;
+        rot = Rotator(Location - other.Location);
+        bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 64+extra, 150+extra, destLoc);
+        if(bSuccess) {
+            GotoState('Standing', 'MoveAway');
+        } else {
+            destLoc = vect(0,0,0);
+        }
+    }
+
     function BeginState()
     {
+        if(Orders=='Patrolling') GotoState('Wandering'); // DXRando
         StandUp();
         SetEnemy(None, EnemyLastSeen, true);
         Disable('AnimEnd');
@@ -828,6 +851,15 @@ state Standing
         bStasis = True;
 
         StopBlendAnims();
+    }
+
+MoveAway: // DXRando
+    if(destLoc != vect(0,0,0)) {
+        if (ShouldPlayWalk(destLoc))
+            PlayRunning();
+        MoveTo(destLoc, MaxDesiredSpeed);
+        CheckDestLoc(destLoc);
+        destLoc = vect(0,0,0);
     }
 
 Begin:
