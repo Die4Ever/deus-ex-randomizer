@@ -4,6 +4,7 @@ var() string HintText;
 var() int VisibleDistance;
 var Actor target;
 var bool attached, based, addBingoText;
+var Vector LocationOffset;
 
 var Actor baseActor;
 var bool bInWorld;
@@ -152,8 +153,8 @@ event Tick(float DeltaTime)
         return;
     }
 
-    if (nowInWorld!=bInWorld || Location!=baseActor.Location){
-        SetLocation(baseActor.Location);
+    if (nowInWorld!=bInWorld || Location!=baseActor.Location + LocationOffset){
+        SetLocation(baseActor.Location + LocationOffset);
         bInWorld = nowInWorld;
         SetBase(baseActor);
     }

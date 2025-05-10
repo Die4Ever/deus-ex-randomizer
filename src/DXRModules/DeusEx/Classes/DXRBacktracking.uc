@@ -458,6 +458,7 @@ function VandCmdAnyEntry()
     local Vehicles chopper;
     local DXRMissions missions;
     local TracerTong tong;
+    local DXRTeleporterHoverHint hoverHint;
 
     // not silly
     if(dxr.flags.IsReducedRando()) return;
@@ -478,7 +479,8 @@ function VandCmdAnyEntry()
         RemoveChoppers('Helicopter');
         chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
         foreach AllActors(class'TracerTong', tong) {
-            RebindExitHoverHint('mission_done', tong);
+            hoverHint = RebindExitHoverHint('mission_done', tong);
+            hoverHint.LocationOffset = MakeVector(0.0, 0.0, tong.CollisionHeight * 0.5);
             break;
         }
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
@@ -840,7 +842,7 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
     return chopper;
 }
 
-function RebindExitHoverHint(name ExitTag, Actor a)
+function DXRTeleporterHoverHint RebindExitHoverHint(name ExitTag, Actor a)
 {
     local #var(prefix)MapExit exit;
     local DXRTeleporterHoverHint hoverHint;
@@ -861,6 +863,8 @@ function RebindExitHoverHint(name ExitTag, Actor a)
         hoverHint = DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", a.Location, a.CollisionRadius+5, a.CollisionHeight+5, exit));
     }
     hoverHint.SetBaseActor(a);
+
+    return hoverHint;
 }
 
 function CreateInterpolationPoints(Name PathTag, vector loc)
