@@ -1781,8 +1781,13 @@ simulated function AnyEntry()
     case "10_PARIS_METRO":
         // SoldRenaultZyme bingo goal issue #705
         conv = GetConversation('RenaultPays');
-        // add trigger for BingoTrigger event SoldRenaultZyme
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
         ce = conv.GetEventFromLabel("SellRepeat");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
+        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
+        ce = conv.GetEventFromLabel("MoreMoney3");
         ce = NewConEvent(conv, ce, class'ConEventTrigger');
         ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
         ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
