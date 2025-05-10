@@ -209,6 +209,7 @@ function ShowIntro(optional bool bStartNewGame)
 exec function ShowMainMenu()
 {
     local DeusExLevelInfo info;
+    local MissionEndgame Script;
 
     // DXRando: close multiplayer style skills and augs screens
 
@@ -223,7 +224,19 @@ exec function ShowMainMenu()
     // escape skips the conversation which still skips the intro anyways
     // the vanilla code would skip the intro here as well even before the conversation started, which could also mean before flags are cleared
     info = GetLevelInfo();
-    if ((info != None) && (info.MissionNumber == 98)) return;
+    if ((info != None) && (info.MissionNumber == 98)) {
+        return;
+    }
+    else if ((info != None) && (info.MissionNumber == 99))
+    {
+        foreach AllActors(class'MissionEndgame', Script)
+            break;
+
+        // DXRando: make sure we have Script.Flags before skipping to avoid crashes
+        if (Script != None && Script.Flags != None)
+            Script.FinishCinematic();
+        return;
+    }
     Super.ShowMainMenu();
 }
 
