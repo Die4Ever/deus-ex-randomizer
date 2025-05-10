@@ -768,32 +768,11 @@ state Sitting
 
 }
 
-function MoveAwayFrom(Actor other)
-{
-    // DXRando: move away when bumped, similar to state Following
-    local Rotator rot;
-    local float extra, dist;
-    local bool bSuccess;
-
-    if(destLoc != vect(0,0,0)) return;
-    if(Pawn(other) == None) return;
-    if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
-    extra = other.CollisionRadius + CollisionRadius;
-    rot = Rotator(Location - other.Location);
-    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 60+extra, 150+extra, destLoc);
-    if(bSuccess) {
-        GotoState(GetStateName(), 'MoveAway');
-    } else {
-        destLoc = vect(0,0,0);
-    }
-}
-
 // ----------------------------------------------------------------------
 // state Standing
 //
 // Just kinda stand there and do nothing.
 // (similar to Wandering, except the pawn doesn't actually move)
-// DXRando: if Orders=='Patrolling' then wander instead of standing, also move when bumped
 // ----------------------------------------------------------------------
 
 state Standing
@@ -824,15 +803,8 @@ state Standing
         Global.Tick(deltaSeconds);
     }
 
-    function Bump(Actor other)
-    {
-        Global.Bump(other);
-        MoveAwayFrom(other);
-    }
-
     function BeginState()
     {
-        if(Orders=='Patrolling') GotoState('Wandering'); // DXRando
         StandUp();
         SetEnemy(None, EnemyLastSeen, true);
         Disable('AnimEnd');
@@ -856,15 +828,6 @@ state Standing
         bStasis = True;
 
         StopBlendAnims();
-    }
-
-MoveAway: // DXRando
-    if(destLoc != vect(0,0,0)) {
-        if (ShouldPlayWalk(destLoc))
-            PlayRunning();
-        MoveTo(destLoc, MaxDesiredSpeed);
-        CheckDestLoc(destLoc);
-        destLoc = vect(0,0,0);
     }
 
 Begin:
@@ -962,160 +925,6 @@ Fidget:
     if (FRand() < 0.3)
         PlayIdleSound();
     Goto('Stand');
-
-DoNothing:
-    // nil
-}
-
-// ----------------------------------------------------------------------
-// state Dancing
-//
-// Dance in place.
-// (Most of this code was ripped from Standing)
-// DXRando: MoveAway when bumped
-// ----------------------------------------------------------------------
-
-state Dancing
-{
-    ignores EnemyNotVisible;
-
-    function SetFall()
-    {
-        StartFalling('Dancing', 'ContinueDance');
-    }
-
-    function AnimEnd()
-    {
-        PlayDancing();
-    }
-
-    function HitWall(vector HitNormal, actor Wall)
-    {
-        if (Physics == PHYS_Falling)
-            return;
-        Global.HitWall(HitNormal, Wall);
-        CheckOpenDoor(HitNormal, Wall);
-    }
-
-    function Bump(Actor other)
-    {
-        Global.Bump(other);
-        MoveAwayFrom(other);
-    }
-
-    function BeginState()
-    {
-        if (bSitting && !bDancing)
-            StandUp();
-        SetEnemy(None, EnemyLastSeen, true);
-        Disable('AnimEnd');
-        bCanJump = false;
-
-        bStasis = False;
-
-        SetupWeapon(false);
-        SetDistress(false);
-        SeekPawn = None;
-        EnableCheckDestLoc(false);
-    }
-
-    function EndState()
-    {
-        EnableCheckDestLoc(false);
-        bAcceptBump = True;
-
-        if (JumpZ > 0)
-            bCanJump = true;
-        bStasis = True;
-
-        StopBlendAnims();
-    }
-
-MoveAway: // DXRando
-    if(destLoc != vect(0,0,0)) {
-        if (ShouldPlayWalk(destLoc))
-            PlayRunning();
-        MoveTo(destLoc, MaxDesiredSpeed);
-        CheckDestLoc(destLoc);
-        destLoc = vect(0,0,0);
-    }
-
-Begin:
-    WaitForLanding();
-    if (bDancing)
-    {
-        if (bUseHome)
-            TurnTo(Location+HomeRot);
-        Goto('StartDance');
-    }
-    if (!bUseHome)
-        Goto('StartDance');
-
-MoveToBase:
-    if (!IsPointInCylinder(self, HomeLoc, 16-CollisionRadius))
-    {
-        EnableCheckDestLoc(true);
-        while (true)
-        {
-            if (PointReachable(HomeLoc))
-            {
-                if (ShouldPlayWalk(HomeLoc))
-                    PlayWalking();
-                MoveTo(HomeLoc, GetWalkingSpeed());
-                CheckDestLoc(HomeLoc);
-                break;
-            }
-            else
-            {
-                MoveTarget = FindPathTo(HomeLoc);
-                if (MoveTarget != None)
-                {
-                    if (ShouldPlayWalk(MoveTarget.Location))
-                        PlayWalking();
-                    MoveToward(MoveTarget, GetWalkingSpeed());
-                    CheckDestLoc(MoveTarget.Location, true);
-                }
-                else
-                    break;
-            }
-        }
-        EnableCheckDestLoc(false);
-    }
-    TurnTo(Location+HomeRot);
-
-StartDance:
-    Acceleration=vect(0,0,0);
-    Goto('Dance');
-
-ContinueFromDoor:
-    Goto('MoveToBase');
-
-Dance:
-ContinueDance:
-    // nil
-    bDancing = True;
-    PlayDancing();
-    bStasis = True;
-    if (!bHokeyPokey)
-        Goto('DoNothing');
-
-Spin:
-    Sleep(FRand()*5+5);
-    useRot = DesiredRotation;
-    if (FRand() > 0.5)
-    {
-        TurnTo(Location+1000*vector(useRot+rot(0,16384,0)));
-        TurnTo(Location+1000*vector(useRot+rot(0,32768,0)));
-        TurnTo(Location+1000*vector(useRot+rot(0,49152,0)));
-    }
-    else
-    {
-        TurnTo(Location+1000*vector(useRot+rot(0,49152,0)));
-        TurnTo(Location+1000*vector(useRot+rot(0,32768,0)));
-        TurnTo(Location+1000*vector(useRot+rot(0,16384,0)));
-    }
-    TurnTo(Location+1000*vector(useRot));
-    Goto('Spin');
 
 DoNothing:
     // nil
