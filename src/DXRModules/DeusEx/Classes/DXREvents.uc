@@ -2522,19 +2522,20 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "TiffanySavage_Dead":
         case "TiffanySavage_Unconscious":
             failed[num_failed++] = "TiffanyHeli";
-            break;
+            return num_failed;
         case "AnnaNavarre_PlayerDeadM3":
             failed[num_failed++] = "AnnaNavarre_PlayerDeadM4";
             failed[num_failed++] = "AnnaNavarre_PlayerDeadM5";
-            break;
+            return num_failed;
         case "AnnaNavarre_PlayerDeadM4":
             failed[num_failed++] = "AnnaNavarre_PlayerDeadM5";
-            break;
+            return num_failed;
         case "SavedPaul":
             failed[num_failed++] = "PaulToTong";
-            break;
+            return num_failed;
         case "StatueMissionComplete":
             failed[num_failed++] = "GuntherFreed";
+            return num_failed;
     }
 
     return num_failed;
