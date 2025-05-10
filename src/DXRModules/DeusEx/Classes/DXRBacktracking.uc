@@ -364,7 +364,7 @@ function ParisMetroAnyEntry()
 
         chopper=SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vect(3134.682373, 1101.204956, 304.756897), rot(0, -24944, 0) );
 
-        RebindChopperHoverHint('ChopperExit',chopper);
+        RebindExitHoverHint('ChopperExit',chopper);
     }
 }
 
@@ -457,6 +457,7 @@ function VandCmdAnyEntry()
     local FlagBase flags;
     local Vehicles chopper;
     local DXRMissions missions;
+    local TracerTong tong;
 
     // not silly
     if(dxr.flags.IsReducedRando()) return;
@@ -471,12 +472,15 @@ function VandCmdAnyEntry()
     ConversationFrobOnly(GetConversation('M12JockFinal2'));
 
     flags = dxr.flagbase;
-    flags.SetBool('TongTrigger_Played', false,, 1);
+    flags.SetBool('TongTrigger_Played', false,, 15);
     if ( flags.GetBool('GaryHostageBriefing_Played') )
     {
         RemoveChoppers('Helicopter');
         chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
-        RebindChopperHoverHint('mission_done',chopper);
+        foreach AllActors(class'TracerTong', tong) {
+            RebindExitHoverHint('mission_done', tong);
+            break;
+        }
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
         if(missions != None) {
             missions.UpdateLocation(chopper);
@@ -519,7 +523,7 @@ function VandGasAnyEntry()
     if( flags.GetBool('MS_ChopperGasUnhidden') ) {
         RemoveChoppers('Heli');
         chopper=BlackHelicopter(SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vect(-3207.999756, 135.342285, -905.545044), rot(0, -63104, 0) ));
-        RebindChopperHoverHint('UN_BlackHeli',chopper);
+        RebindExitHoverHint('UN_BlackHeli',chopper);
 
         foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
             M.BlowItUp(None);
@@ -599,7 +603,7 @@ function VandSubAnyEntry()
         }
 
         foreach AllActors(class'Vehicles',sub,'MiniSub'){break;} //Actually finding a minisub, but the variable already exists...
-        RebindChopperHoverHint('reallysubexit',sub);
+        RebindExitHoverHint('reallysubexit',sub);
         // TODO: there are unused InterpolationPoints for the submarine
     }
 
@@ -610,7 +614,7 @@ function VandSubAnyEntry()
     if( flags.GetBool('DL_downloaded_Played') || dxr.flags.IsWaltonWare() ) {
         RemoveChoppers('BlackHelicopter');
         chopper=SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vect(2104.722168, 3647.967773, 896.197144), rot(0, 0, 0) );
-        RebindChopperHoverHint('ChopperExit',chopper);
+        RebindExitHoverHint('ChopperExit',chopper);
     }
 
     // don't need to talk to Gary
@@ -716,7 +720,7 @@ function VandOceanLabAnyEntry()
     s.SetRotation(rotm(0, -16408, 0, GetRotationOffset(class'MiniSub')));
     s.DesiredRotation = rotm(0, -16408, 0, GetRotationOffset(class'MiniSub'));
     s.origRot = rotm(0, -16408, 0, GetRotationOffset(class'MiniSub'));
-    RebindChopperHoverHint('reallysubexit2',s);
+    RebindExitHoverHint('reallysubexit2',s);
 
     foreach AllActors(class'DataLinkTrigger', dlt) {
         if( dlt.datalinkTag != 'dl_seconddoors' ) continue;
@@ -820,7 +824,7 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
     chopper.SoundRadius = chopper.SoundRadius / 4;
 
     foreach AllActors(class'MapExit', exit, event){
-        RebindChopperHoverHint(event,chopper);
+        RebindExitHoverHint(event,chopper);
         return chopper;
     }
 
@@ -830,13 +834,13 @@ function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, st
     exit.bPlayTransition = true;
     exit.cameraPathTag = CameraPath;
 
-    RebindChopperHoverHint(event,chopper);
+    RebindExitHoverHint(event,chopper);
 
     info("BacktrackChopper spawned "$exit);
     return chopper;
 }
 
-function RebindChopperHoverHint(name ExitTag, Vehicles chopper)
+function RebindExitHoverHint(name ExitTag, Actor a)
 {
     local #var(prefix)MapExit exit;
     local DXRTeleporterHoverHint hoverHint;
@@ -854,9 +858,9 @@ function RebindChopperHoverHint(name ExitTag, Vehicles chopper)
         }
     }
     if (!foundHint){
-        hoverHint = DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", chopper.Location, chopper.CollisionRadius+5, chopper.CollisionHeight+5, exit));
+        hoverHint = DXRTeleporterHoverHint(class'DXRTeleporterHoverHint'.static.Create(self, "", a.Location, a.CollisionRadius+5, a.CollisionHeight+5, exit));
     }
-    hoverHint.SetBaseActor(chopper);
+    hoverHint.SetBaseActor(a);
 }
 
 function CreateInterpolationPoints(Name PathTag, vector loc)
