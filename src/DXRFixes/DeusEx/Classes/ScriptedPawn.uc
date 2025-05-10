@@ -768,6 +768,168 @@ state Sitting
 
 }
 
+// ----------------------------------------------------------------------
+// state Standing
+//
+// Just kinda stand there and do nothing.
+// (similar to Wandering, except the pawn doesn't actually move)
+// ----------------------------------------------------------------------
+
+state Standing
+{
+    ignores EnemyNotVisible;
+
+    function SetFall()
+    {
+        StartFalling('Standing', 'ContinueStand');
+    }
+
+    function AnimEnd()
+    {
+        PlayWaiting();
+    }
+
+    function HitWall(vector HitNormal, actor Wall)
+    {
+        if (Physics == PHYS_Falling)
+            return;
+        Global.HitWall(HitNormal, Wall);
+        CheckOpenDoor(HitNormal, Wall);
+    }
+
+    function Tick(float deltaSeconds)
+    {
+        animTimer[1] += deltaSeconds;
+        Global.Tick(deltaSeconds);
+    }
+
+    function BeginState()
+    {
+        StandUp();
+        SetEnemy(None, EnemyLastSeen, true);
+        Disable('AnimEnd');
+        bCanJump = false;
+
+        bStasis = False;
+
+        SetupWeapon(false);
+        SetDistress(false);
+        SeekPawn = None;
+        EnableCheckDestLoc(false);
+    }
+
+    function EndState()
+    {
+        EnableCheckDestLoc(false);
+        bAcceptBump = True;
+
+        if (JumpZ > 0)
+            bCanJump = true;
+        bStasis = True;
+
+        StopBlendAnims();
+    }
+
+Begin:
+    WaitForLanding();
+    if (!bUseHome)
+        Goto('StartStand');
+
+MoveToBase:
+    if (!IsPointInCylinder(self, HomeLoc, 16-CollisionRadius))
+    {
+        EnableCheckDestLoc(true);
+        while (true)
+        {
+            if (PointReachable(HomeLoc))
+            {
+                if (ShouldPlayWalk(HomeLoc))
+                    PlayWalking();
+                MoveTo(HomeLoc, GetWalkingSpeed());
+                CheckDestLoc(HomeLoc);
+                break;
+            }
+            else
+            {
+                MoveTarget = FindPathTo(HomeLoc);
+                if (MoveTarget != None)
+                {
+                    if (ShouldPlayWalk(MoveTarget.Location))
+                        PlayWalking();
+                    MoveToward(MoveTarget, GetWalkingSpeed());
+                    CheckDestLoc(MoveTarget.Location, true);
+                }
+                else
+                    break;
+            }
+        }
+        EnableCheckDestLoc(false);
+    }
+    TurnTo(Location+HomeRot);
+
+StartStand:
+    Acceleration=vect(0,0,0);
+    Goto('Stand');
+
+ContinueFromDoor:
+    Goto('MoveToBase');
+
+Stand:
+ContinueStand:
+    // nil
+    bStasis = True;
+
+    PlayWaiting();
+    if (!bPlayIdle)
+        Goto('DoNothing');
+    Sleep(FRand()*14+8);
+
+Fidget:
+    if (FRand() < 0.5)
+    {
+        PlayIdle();
+        FinishAnim();
+    }
+    else
+    {
+        if (FRand() > 0.5)
+        {
+            PlayTurnHead(LOOK_Up, 1.0, 1.0);
+            Sleep(2.0);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.5);
+        }
+        else if (FRand() > 0.5)
+        {
+            PlayTurnHead(LOOK_Left, 1.0, 1.0);
+            Sleep(1.5);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.9);
+            PlayTurnHead(LOOK_Right, 1.0, 1.0);
+            Sleep(1.2);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.5);
+        }
+        else
+        {
+            PlayTurnHead(LOOK_Right, 1.0, 1.0);
+            Sleep(1.5);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.9);
+            PlayTurnHead(LOOK_Left, 1.0, 1.0);
+            Sleep(1.2);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.5);
+        }
+    }
+    if (FRand() < 0.3)
+        PlayIdleSound();
+    Goto('Stand');
+
+DoNothing:
+    // nil
+}
+
 defaultproperties
 {
     EmpHealth=50
