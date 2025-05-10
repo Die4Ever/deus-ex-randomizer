@@ -4068,5 +4068,6 @@ defaultproperties
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_PlayerUnconscious")
     mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
+    mutually_exclusive(67)=(e1="PetAnimal_BindName_Starr",e2="PetDogs")
 //#endregion
 }
