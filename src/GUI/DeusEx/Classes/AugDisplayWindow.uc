@@ -560,7 +560,7 @@ function DrawTargetAugmentation(GC gc)
     //Look for any hover hints
     hoverHint = DXRHoverHint(target);
     if (hoverHint!=None){
-        ConvertVectorToCoordinates(hoverHint.Location, boxCX, boxCY);
+        ConvertVectorToCoordinates(hoverHint.Location + hoverHint.TextOffset, boxCX, boxCY);
 
         str = hoverHint.GetHintText();
         gc.SetTextColor(colWhite);

@@ -480,7 +480,7 @@ function VandCmdAnyEntry()
         chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
         foreach AllActors(class'TracerTong', tong) {
             hoverHint = RebindExitHoverHint('mission_done', tong);
-            hoverHint.LocationOffset = MakeVector(0.0, 0.0, tong.CollisionHeight * 0.5);
+            hoverHint.TextOffset = MakeVector(0.0, 0.0, tong.CollisionHeight * 0.5);
             break;
         }
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
