@@ -331,6 +331,7 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
+        WatchFlag('StatueMissionComplete');
 
         foreach AllActors(class'#var(prefix)SkillAwardTrigger',skillAward) {
             if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
@@ -1781,8 +1782,13 @@ simulated function AnyEntry()
     case "10_PARIS_METRO":
         // SoldRenaultZyme bingo goal issue #705
         conv = GetConversation('RenaultPays');
-        // add trigger for BingoTrigger event SoldRenaultZyme
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 50)
         ce = conv.GetEventFromLabel("SellRepeat");
+        ce = NewConEvent(conv, ce, class'ConEventTrigger');
+        ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
+        ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
+        // add trigger for BingoTrigger event SoldRenaultZyme (Paying 65)
+        ce = conv.GetEventFromLabel("MoreMoney3");
         ce = NewConEvent(conv, ce, class'ConEventTrigger');
         ce.eventType = ET_Trigger;// no clean way to pass enums from other classes
         ConEventTrigger(ce).triggerTag = 'SoldRenaultZyme';
@@ -2521,17 +2527,20 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "TiffanySavage_Dead":
         case "TiffanySavage_Unconscious":
             failed[num_failed++] = "TiffanyHeli";
-            break;
+            return num_failed;
         case "AnnaNavarre_PlayerDeadM3":
             failed[num_failed++] = "AnnaNavarre_PlayerDeadM4";
             failed[num_failed++] = "AnnaNavarre_PlayerDeadM5";
-            break;
+            return num_failed;
         case "AnnaNavarre_PlayerDeadM4":
             failed[num_failed++] = "AnnaNavarre_PlayerDeadM5";
-            break;
+            return num_failed;
         case "SavedPaul":
             failed[num_failed++] = "PaulToTong";
-            break;
+            return num_failed;
+        case "StatueMissionComplete":
+            failed[num_failed++] = "GuntherFreed";
+            return num_failed;
     }
 
     return num_failed;
@@ -4063,5 +4072,6 @@ defaultproperties
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_PlayerUnconscious")
     mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
+    mutually_exclusive(68)=(e1="PetAnimal_BindName_Starr",e2="PetDogs")
 //#endregion
 }

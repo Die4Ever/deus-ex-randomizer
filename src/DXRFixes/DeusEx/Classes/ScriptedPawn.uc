@@ -62,7 +62,7 @@ function PlayDying(name damageType, vector hitLoc)
     local Inventory item, nextItem;
     local bool gibbed;
     local Vector X, Y, Z;
-	local float dotp;
+    local float dotp;
 
     gibbed = (Health < -100) && Robot(self) == None;
 
@@ -75,32 +75,32 @@ function PlayDying(name damageType, vector hitLoc)
 
     // DXRando: modified vanilla code below to support animals being knocked unconscious
 
-	if (Region.Zone.bWaterZone)
-		PlayAnimPivot('WaterDeath',, 0.1);
-	else if (bSitting)  // if sitting, always fall forward
-		PlayAnimPivot('DeathFront',, 0.1);
-	else {
-		GetAxes(Rotation, X, Y, Z);
-		dotp = (Location - HitLoc) dot X;
+    if (Region.Zone.bWaterZone)
+        PlayAnimPivot('WaterDeath',, 0.1);
+    else if (bSitting)  // if sitting, always fall forward
+        PlayAnimPivot('DeathFront',, 0.1);
+    else {
+        GetAxes(Rotation, X, Y, Z);
+        dotp = (Location - HitLoc) dot X;
 
-		// die from the correct side
-		if (dotp < 0.0)		// shot from the front, fall back
-			PlayAnimPivot('DeathBack',, 0.1);
-		else				// shot from the back, fall front
-			PlayAnimPivot('DeathFront',, 0.1);
-	}
+        // die from the correct side
+        if (dotp < 0.0)		// shot from the front, fall back
+            PlayAnimPivot('DeathBack',, 0.1);
+        else				// shot from the back, fall front
+            PlayAnimPivot('DeathFront',, 0.1);
+    }
 
     bStunned = class'DXRActorsBase'.static.CanKnockUnconscious(self, damageType);
 
-	if (bStunned && Animal(self) == None) {
-		if (bIsFemale)
-			PlaySound(Sound'FemaleUnconscious', SLOT_Pain,,,, RandomPitch());
-		else
-			PlaySound(Sound'MaleUnconscious', SLOT_Pain,,,, RandomPitch());
-	}
-	else {
-		PlayDyingSound();
-	}
+    if (bStunned && Animal(self) == None) {
+        if (bIsFemale)
+            PlaySound(Sound'FemaleUnconscious', SLOT_Pain,,,, RandomPitch());
+        else
+            PlaySound(Sound'MaleUnconscious', SLOT_Pain,,,, RandomPitch());
+    }
+    else {
+        PlayDyingSound();
+    }
 }
 
 function Carcass SpawnCarcass()
@@ -645,12 +645,12 @@ function bool IsProjectileDangerous(DeusExProjectile projectile)
 function SupportActor(Actor standingActor)
 {
     local float  zVelocity;
-	local float  baseMass;
-	local float  standingMass;
-	local vector damagePoint;
-	local float  damage;
-	local vector newVelocity;
-	local float  angle;
+    local float  baseMass;
+    local float  standingMass;
+    local vector damagePoint;
+    local float  damage;
+    local vector newVelocity;
+    local float  angle;
 
     //Friendly stomp logic
     if (WillTakeStompDamage(standingActor)==false && PlayerPawn(standingActor)!=None){
@@ -766,6 +766,359 @@ state Sitting
         return false;
     }
 
+}
+
+function MoveAwayFrom(Actor other)
+{
+    // DXRando: move away when bumped, similar to state Following
+    local Rotator rot;
+    local float extra, dist;
+    local bool bSuccess;
+
+    if(destLoc != vect(0,0,0)) return;
+    if(Pawn(other) == None) return;
+    if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
+    extra = other.CollisionRadius + CollisionRadius;
+    rot = Rotator(Location - other.Location);
+    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 60+extra, 150+extra, destLoc);
+    if(bSuccess) {
+        GotoState(GetStateName(), 'MoveAway');
+    } else {
+        destLoc = vect(0,0,0);
+    }
+}
+
+// ----------------------------------------------------------------------
+// state Standing
+//
+// Just kinda stand there and do nothing.
+// (similar to Wandering, except the pawn doesn't actually move)
+// DXRando: if Orders=='Patrolling' then wander instead of standing, also move when bumped
+// ----------------------------------------------------------------------
+
+state Standing
+{
+    ignores EnemyNotVisible;
+
+    function SetFall()
+    {
+        StartFalling('Standing', 'ContinueStand');
+    }
+
+    function AnimEnd()
+    {
+        PlayWaiting();
+    }
+
+    function HitWall(vector HitNormal, actor Wall)
+    {
+        if (Physics == PHYS_Falling)
+            return;
+        Global.HitWall(HitNormal, Wall);
+        CheckOpenDoor(HitNormal, Wall);
+    }
+
+    function Tick(float deltaSeconds)
+    {
+        animTimer[1] += deltaSeconds;
+        Global.Tick(deltaSeconds);
+    }
+
+    function Bump(Actor other)
+    {
+        Global.Bump(other);
+        MoveAwayFrom(other);
+    }
+
+    function BeginState()
+    {
+        if(Orders=='Patrolling') GotoState('Wandering'); // DXRando
+        StandUp();
+        SetEnemy(None, EnemyLastSeen, true);
+        Disable('AnimEnd');
+        bCanJump = false;
+
+        bStasis = False;
+
+        SetupWeapon(false);
+        SetDistress(false);
+        SeekPawn = None;
+        EnableCheckDestLoc(false);
+    }
+
+    function EndState()
+    {
+        EnableCheckDestLoc(false);
+        bAcceptBump = True;
+
+        if (JumpZ > 0)
+            bCanJump = true;
+        bStasis = True;
+
+        StopBlendAnims();
+    }
+
+MoveAway: // DXRando
+    if(destLoc != vect(0,0,0)) {
+        if (ShouldPlayWalk(destLoc))
+            PlayRunning();
+        MoveTo(destLoc, MaxDesiredSpeed);
+        CheckDestLoc(destLoc);
+        destLoc = vect(0,0,0);
+    }
+
+Begin:
+    WaitForLanding();
+    if (!bUseHome)
+        Goto('StartStand');
+
+MoveToBase:
+    if (!IsPointInCylinder(self, HomeLoc, 16-CollisionRadius))
+    {
+        EnableCheckDestLoc(true);
+        while (true)
+        {
+            if (PointReachable(HomeLoc))
+            {
+                if (ShouldPlayWalk(HomeLoc))
+                    PlayWalking();
+                MoveTo(HomeLoc, GetWalkingSpeed());
+                CheckDestLoc(HomeLoc);
+                break;
+            }
+            else
+            {
+                MoveTarget = FindPathTo(HomeLoc);
+                if (MoveTarget != None)
+                {
+                    if (ShouldPlayWalk(MoveTarget.Location))
+                        PlayWalking();
+                    MoveToward(MoveTarget, GetWalkingSpeed());
+                    CheckDestLoc(MoveTarget.Location, true);
+                }
+                else
+                    break;
+            }
+        }
+        EnableCheckDestLoc(false);
+    }
+    TurnTo(Location+HomeRot);
+
+StartStand:
+    Acceleration=vect(0,0,0);
+    Goto('Stand');
+
+ContinueFromDoor:
+    Goto('MoveToBase');
+
+Stand:
+ContinueStand:
+    // nil
+    bStasis = True;
+
+    PlayWaiting();
+    if (!bPlayIdle)
+        Goto('DoNothing');
+    Sleep(FRand()*14+8);
+
+Fidget:
+    if (FRand() < 0.5)
+    {
+        PlayIdle();
+        FinishAnim();
+    }
+    else
+    {
+        if (FRand() > 0.5)
+        {
+            PlayTurnHead(LOOK_Up, 1.0, 1.0);
+            Sleep(2.0);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.5);
+        }
+        else if (FRand() > 0.5)
+        {
+            PlayTurnHead(LOOK_Left, 1.0, 1.0);
+            Sleep(1.5);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.9);
+            PlayTurnHead(LOOK_Right, 1.0, 1.0);
+            Sleep(1.2);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.5);
+        }
+        else
+        {
+            PlayTurnHead(LOOK_Right, 1.0, 1.0);
+            Sleep(1.5);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.9);
+            PlayTurnHead(LOOK_Left, 1.0, 1.0);
+            Sleep(1.2);
+            PlayTurnHead(LOOK_Forward, 1.0, 1.0);
+            Sleep(0.5);
+        }
+    }
+    if (FRand() < 0.3)
+        PlayIdleSound();
+    Goto('Stand');
+
+DoNothing:
+    // nil
+}
+
+// ----------------------------------------------------------------------
+// state Dancing
+//
+// Dance in place.
+// (Most of this code was ripped from Standing)
+// DXRando: MoveAway when bumped
+// ----------------------------------------------------------------------
+
+state Dancing
+{
+    ignores EnemyNotVisible;
+
+    function SetFall()
+    {
+        StartFalling('Dancing', 'ContinueDance');
+    }
+
+    function AnimEnd()
+    {
+        PlayDancing();
+    }
+
+    function HitWall(vector HitNormal, actor Wall)
+    {
+        if (Physics == PHYS_Falling)
+            return;
+        Global.HitWall(HitNormal, Wall);
+        CheckOpenDoor(HitNormal, Wall);
+    }
+
+    function Bump(Actor other)
+    {
+        Global.Bump(other);
+        MoveAwayFrom(other);
+    }
+
+    function BeginState()
+    {
+        if (bSitting && !bDancing)
+            StandUp();
+        SetEnemy(None, EnemyLastSeen, true);
+        Disable('AnimEnd');
+        bCanJump = false;
+
+        bStasis = False;
+
+        SetupWeapon(false);
+        SetDistress(false);
+        SeekPawn = None;
+        EnableCheckDestLoc(false);
+    }
+
+    function EndState()
+    {
+        EnableCheckDestLoc(false);
+        bAcceptBump = True;
+
+        if (JumpZ > 0)
+            bCanJump = true;
+        bStasis = True;
+
+        StopBlendAnims();
+    }
+
+MoveAway: // DXRando
+    if(destLoc != vect(0,0,0)) {
+        if (ShouldPlayWalk(destLoc))
+            PlayRunning();
+        MoveTo(destLoc, MaxDesiredSpeed);
+        CheckDestLoc(destLoc);
+        destLoc = vect(0,0,0);
+    }
+
+Begin:
+    WaitForLanding();
+    if (bDancing)
+    {
+        if (bUseHome)
+            TurnTo(Location+HomeRot);
+        Goto('StartDance');
+    }
+    if (!bUseHome)
+        Goto('StartDance');
+
+MoveToBase:
+    if (!IsPointInCylinder(self, HomeLoc, 16-CollisionRadius))
+    {
+        EnableCheckDestLoc(true);
+        while (true)
+        {
+            if (PointReachable(HomeLoc))
+            {
+                if (ShouldPlayWalk(HomeLoc))
+                    PlayWalking();
+                MoveTo(HomeLoc, GetWalkingSpeed());
+                CheckDestLoc(HomeLoc);
+                break;
+            }
+            else
+            {
+                MoveTarget = FindPathTo(HomeLoc);
+                if (MoveTarget != None)
+                {
+                    if (ShouldPlayWalk(MoveTarget.Location))
+                        PlayWalking();
+                    MoveToward(MoveTarget, GetWalkingSpeed());
+                    CheckDestLoc(MoveTarget.Location, true);
+                }
+                else
+                    break;
+            }
+        }
+        EnableCheckDestLoc(false);
+    }
+    TurnTo(Location+HomeRot);
+
+StartDance:
+    Acceleration=vect(0,0,0);
+    Goto('Dance');
+
+ContinueFromDoor:
+    Goto('MoveToBase');
+
+Dance:
+ContinueDance:
+    // nil
+    bDancing = True;
+    PlayDancing();
+    bStasis = True;
+    if (!bHokeyPokey)
+        Goto('DoNothing');
+
+Spin:
+    Sleep(FRand()*5+5);
+    useRot = DesiredRotation;
+    if (FRand() > 0.5)
+    {
+        TurnTo(Location+1000*vector(useRot+rot(0,16384,0)));
+        TurnTo(Location+1000*vector(useRot+rot(0,32768,0)));
+        TurnTo(Location+1000*vector(useRot+rot(0,49152,0)));
+    }
+    else
+    {
+        TurnTo(Location+1000*vector(useRot+rot(0,49152,0)));
+        TurnTo(Location+1000*vector(useRot+rot(0,32768,0)));
+        TurnTo(Location+1000*vector(useRot+rot(0,16384,0)));
+    }
+    TurnTo(Location+1000*vector(useRot));
+    Goto('Spin');
+
+DoNothing:
+    // nil
 }
 
 defaultproperties

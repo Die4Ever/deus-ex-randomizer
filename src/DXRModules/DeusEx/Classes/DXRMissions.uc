@@ -48,6 +48,7 @@ struct GoalLocation {
     var int bitMask;
     var GoalActorLocation positions[8]; // keep in sync with PLAYER_LOCATION
     var MapImageGoalMarkers mapMarker;
+    var float weight; // in percent, 0% to 100%
 };
 
 struct MutualExclusion {
@@ -171,6 +172,7 @@ function int AddGoalLocation(string mapName, string name, int bitMask, vector lo
     locations[num_locations].mapName = mapName;
     locations[num_locations].name = name;
     locations[num_locations].bitMask = bitMask;
+    locations[num_locations].weight = 100;
     for(i=0; i<ArrayCount(locations[num_locations].positions); i++) {
         AddActorLocation(num_locations, i, loc, r);
     }
@@ -466,7 +468,6 @@ function ShuffleGoals()
 {
     local int goalsToLocations[32];
 
-
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
     if(num_goals == 0 && num_locations == 0) return;
@@ -478,7 +479,6 @@ function ShuffleGoals()
     AfterShuffleGoals(goalsToLocations);
 
     //GenerateDebugGoalMarkers();
-
 }
 
 function GenerateDebugGoalMarkers()
@@ -575,6 +575,9 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         }
         // exclude the vanilla goal locations if randomized goal locations are disabled
         if( dxr.flags.settings.goals <= 0 && (VANILLA_GOAL & locations[i].bitMask) != 0 )
+            continue;
+
+        if(locations[i].weight < 100 && !chance_single(locations[i].weight))
             continue;
 
         if( (START_LOCATION & locations[i].bitMask) != 0) {
