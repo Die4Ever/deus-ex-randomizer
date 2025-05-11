@@ -59,8 +59,11 @@ function int InitGoals(int mission, string map)
 
         // street
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Tonnochi Road", GOAL_TYPE2, vect(49.394917, -2455.783447, 47.599495), rot(0, -16384, 0));
+        locations[gloc].weight = 67;
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Queen's Tower", GOAL_TYPE2 | SITTING_GOAL, vect(-795.367737, -1071.963623, 28.263233), rot(0, 0, 0));
+        locations[gloc].weight = 67;
         gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Elevator", GOAL_TYPE2, vect(668.110901, -683.269775, 47.603157), rot(0, 32768, 0)); // HACK: linked to AfterMoveGoalToOtherMap
+        locations[gloc2].weight = 67;
 
         dts_vanilla_loc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
@@ -175,8 +178,11 @@ function int InitGoalsRev(int mission, string map)
 
         // street
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Tonnochi Road", GOAL_TYPE2, vect(49.394917, -2455.783447, 47.599495), rot(0, -16384, 0));
+        locations[gloc].weight = 67;
         gloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Queen's Tower", GOAL_TYPE2 | SITTING_GOAL, vect(-500,-1285,-175), rot(0, 0, 0)); //Different from vanilla, basement room (visible through floor windows)
+        locations[gloc].weight = 67;
         gloc2 = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Jock's Elevator", GOAL_TYPE2, vect(640,-730,50), rot(0, 32768, 0)); // HACK: linked to AfterMoveGoalToOtherMap
+        locations[gloc2].weight = 67;
 
         dts_vanilla_loc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
         dtsloc = AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
