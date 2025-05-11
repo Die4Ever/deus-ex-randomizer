@@ -1192,7 +1192,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return True;
             }
             return start_map>=60; //Have to have told Jaime to meet you in Paris in mission 5 to get Gunther's killphrase
-        case "FordSchick_Dead":
+        case "FordSchick_PlayerDead":
             return start_map>=30;
         case "M07MeetJaime_Played":
             if (end_mission < 8){
