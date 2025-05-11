@@ -8,6 +8,7 @@ try:
     from Install import Config
     from GUI.SaveMigration import SaveMigration
     from GUI.KillRunningGame import AskKillGame, CopyExeTo
+    from pycrosskit.shortcuts import Shortcut
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -89,15 +90,15 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
         if 'Vanilla'==f:
             ret = InstallVanilla(system, settings, globalsettings)
         if 'Vanilla? Madder.'==f:
-            ret = CreateModConfigs(system, settings, 'VMD', 'VMDSim')
+            ret = CreateModConfigs(system, settings, globalsettings, 'VMD', 'VMDSim')
         if 'GMDX v9'==f:
             ret = InstallGMDX(system, settings, 'GMDXv9')
         if 'GMDX RSD'==f:
             ret = InstallGMDX(system, settings, 'GMDXvRSD')
         if 'GMDX v10'==f:
-            ret = CreateModConfigs(system, settings, 'GMDX', 'GMDXv10')
+            ret = CreateModConfigs(system, settings, globalsettings, 'GMDX', 'GMDXv10')
         if 'Revision'==f:
-            ret = InstallRevision(system, settings)
+            ret = InstallRevision(system, settings, globalsettings)
         if 'HX'==f:
             ret = InstallHX(system, settings)
         if ret and settings:
@@ -147,6 +148,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     if settings.get('install'):
         exedest:Path = system / (exename+'.exe')
         CopyExeTo(exe_source, exedest)
+        MakeShortcut(exedest, exedest.stem, globalsettings)
 
     if kentie: # kentie needs this, copy it into the regular System folder, doesn't hurt if you don't need it
         deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
@@ -179,6 +181,20 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
+
+def MakeShortcut(exe: Path, name: str, settings: dict):
+    if settings['shortcuts']:
+        try:
+            Shortcut(shortcut_name=name, exec_path=str(exe.absolute()), desktop=True, start_menu=True)
+            settings['created_shortcuts'] = True
+        except Exception as e:
+            info('failed to create shortcuts', e)
+            settings['shortcuts'] = False
+    else:
+        try:
+            Shortcut.delete(shortcut_name=name, desktop=True, start_menu=True)
+        except Exception as e:
+            info('failed to delete shortcuts', e)
 
 def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:bool):
     if kentie:
@@ -354,11 +370,11 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
     CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
 
 
-def InstallRevision(system:Path, settings:dict):
+def InstallRevision(system:Path, settings:dict, globalsettings:dict):
     # Revision's exe is special and calls back to Steam which calls the regular Revision.exe file, so we pass in_place=True
     revsystem = system.parent / 'Revision' / 'System'
     AskKillGame(revsystem/'Revision.exe')
-    CreateModConfigs(revsystem, settings, 'Rev', 'Revision', in_place=True)
+    CreateModConfigs(revsystem, settings, globalsettings, 'Rev', 'Revision', in_place=True)
 
 
 def InstallHX(system:Path, settings:dict):
@@ -372,7 +388,7 @@ def InstallHX(system:Path, settings:dict):
     CopyTo(int_source, int_dest)
 
 
-def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_place:bool=False):
+def CreateModConfigs(system:Path, settings:dict, globalsettings:dict, modname:str, exename:str, in_place:bool=False):
     exepath = system / (exename+'.exe')
     newexename = modname+'Randomizer'
     newexepath = system / (newexename+'.exe')
@@ -385,6 +401,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
         in_place = True
     if not in_place:
         CopyExeTo(exepath, newexepath)
+        MakeShortcut(newexepath, newexepath.stem, globalsettings)
 
     intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
     intdest = system / (newexename+'.int')

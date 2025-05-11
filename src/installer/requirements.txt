@@ -2,3 +2,4 @@ pyinstaller==6.12.0
 tk
 typeguard>=3.0.0
 certifi
+pycrosskit
