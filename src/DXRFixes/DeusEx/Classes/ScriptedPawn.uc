@@ -768,6 +768,26 @@ state Sitting
 
 }
 
+function MoveAwayFrom(Actor other)
+{
+    // DXRando: move away when bumped, similar to state Following
+    local Rotator rot;
+    local float extra, dist;
+    local bool bSuccess;
+
+    if(destLoc != vect(0,0,0)) return;
+    if(Pawn(other) == None) return;
+    if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
+    extra = other.CollisionRadius + CollisionRadius;
+    rot = Rotator(Location - other.Location);
+    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 60+extra, 150+extra, destLoc);
+    if(bSuccess) {
+        GotoState(GetStateName(), 'MoveAway');
+    } else {
+        destLoc = vect(0,0,0);
+    }
+}
+
 // ----------------------------------------------------------------------
 // state Standing
 //
@@ -806,23 +826,8 @@ state Standing
 
     function Bump(Actor other)
     {
-        // DXRando: move away when bumped, similar to state Following
-        local Rotator rot;
-        local float extra, dist;
-        local bool bSuccess;
-
         Global.Bump(other);
-        if(destLoc != vect(0,0,0)) return;
-        if(Pawn(other) == None) return;
-        if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
-        extra = other.CollisionRadius + CollisionRadius;
-        rot = Rotator(Location - other.Location);
-        bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 64+extra, 150+extra, destLoc);
-        if(bSuccess) {
-            GotoState('Standing', 'MoveAway');
-        } else {
-            destLoc = vect(0,0,0);
-        }
+        MoveAwayFrom(other);
     }
 
     function BeginState()
@@ -958,11 +963,16 @@ Fidget:
         PlayIdleSound();
     Goto('Stand');
 
+DoNothing:
+    // nil
+}
+
 // ----------------------------------------------------------------------
 // state Dancing
 //
 // Dance in place.
 // (Most of this code was ripped from Standing)
+// DXRando: MoveAway when bumped
 // ----------------------------------------------------------------------
 
 state Dancing
@@ -985,6 +995,12 @@ state Dancing
             return;
         Global.HitWall(HitNormal, Wall);
         CheckOpenDoor(HitNormal, Wall);
+    }
+
+    function Bump(Actor other)
+    {
+        Global.Bump(other);
+        MoveAwayFrom(other);
     }
 
     function BeginState()
@@ -1013,6 +1029,15 @@ state Dancing
         bStasis = True;
 
         StopBlendAnims();
+    }
+
+MoveAway: // DXRando
+    if(destLoc != vect(0,0,0)) {
+        if (ShouldPlayWalk(destLoc))
+            PlayRunning();
+        MoveTo(destLoc, MaxDesiredSpeed);
+        CheckDestLoc(destLoc);
+        destLoc = vect(0,0,0);
     }
 
 Begin:
