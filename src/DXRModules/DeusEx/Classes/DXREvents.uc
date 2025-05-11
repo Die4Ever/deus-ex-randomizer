@@ -2522,12 +2522,12 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "TiffanySavage_Unconscious":
             failed[num_failed++] = "TiffanyHeli";
             break;
-        case "AnnaNavarre_PlayerDeadM3":
-            failed[num_failed++] = "AnnaNavarre_PlayerDeadM4";
-            failed[num_failed++] = "AnnaNavarre_PlayerDeadM5";
+        case "AnnaNavarre_DeadM3":
+            failed[num_failed++] = "AnnaNavarre_DeadM4";
+            failed[num_failed++] = "AnnaNavarre_DeadM5";
             break;
-        case "AnnaNavarre_PlayerDeadM4":
-            failed[num_failed++] = "AnnaNavarre_PlayerDeadM5";
+        case "AnnaNavarre_DeadM4":
+            failed[num_failed++] = "AnnaNavarre_DeadM5";
             break;
         case "SavedPaul":
             failed[num_failed++] = "PaulToTong";
@@ -2612,7 +2612,6 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "aimee_PlayerDead":
             return "Kill Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.  You must kill her yourself.";
         case "WaltonSimons_Dead":
-        case "WaltonSimons_PlayerDead":
             msg="Kill Walton Simons.  ";
             if (mission<=14){
                 msg=msg$"He can be found hunting you down somewhere in or around the Ocean Lab";
@@ -2909,13 +2908,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "AnnaKillswitch":
             return "After finding the pieces of Anna's killphrase, actually use it against her.";
         case "AnnaNavarre_DeadM3":
-        case "AnnaNavarre_PlayerDeadM3":
             return "Kill Anna Navarre on the 747.  You must kill her yourself.";
         case "AnnaNavarre_DeadM4":
-        case "AnnaNavarre_PlayerDeadM4":
             return "Kill Anna Navarre after sending the signal for the NSF but before being captured by UNATCO.  You must kill her yourself.";
         case "AnnaNavarre_DeadM5":
-        case "AnnaNavarre_PlayerDeadM5":
             return "Kill Anna Navarre in UNATCO HQ.  You must kill her yourself.";
         case "SimonsAssassination":
             return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
@@ -3603,7 +3599,7 @@ defaultproperties
 	bingo_options(3)=(event="JordanShea_PlayerDead",desc="Kill Jordan Shea",max=1,missions=276)
 	bingo_options(4)=(event="SandraRenton_PlayerDead",desc="Kill Sandra Renton",max=1,missions=4372)
 	bingo_options(5)=(event="GilbertRenton_PlayerDead",desc="Kill Gilbert Renton",max=1,missions=20)
-	//bingo_options()=(event="AnnaNavarre_PlayerDead",desc="Kill Anna Navarre",max=1,missions=56)
+	//bingo_options()=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
     bingo_options(6)=(event="WarehouseEntered",desc="Enter the underground warehouse in Paris",max=1,missions=1024)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=2048)
 	bingo_options(8)=(event="JoJoFine_PlayerDead",desc="Kill JoJo",max=1,missions=16)
@@ -3622,7 +3618,7 @@ defaultproperties
 	//bingo_options()=(event="Billy_PlayerDead",desc="Kill Billy",max=1)
 	//bingo_options()=(event="MarketKid_PlayerDead",desc="Kill Louis Pan",max=1)
 	bingo_options(19)=(event="aimee_PlayerDead",desc="Kill Aimee",max=1,missions=1024)
-	bingo_options(20)=(event="WaltonSimons_PlayerDead",desc="Kill Walton Simons",max=1,missions=49152)
+	bingo_options(20)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1,missions=49152)
 	bingo_options(21)=(event="JoeGreene_PlayerDead",desc="Kill Joe Greene",max=1,missions=276)
     bingo_options(22)=(event="GuntherFreed",desc="Free Gunther from jail",max=1,missions=2)
     bingo_options(23)=(event="BathroomBarks_Played",desc="Embarrass UNATCO",max=1,missions=2)
@@ -3735,9 +3731,9 @@ defaultproperties
     bingo_options(118)=(event="JuanLebedev_PlayerUnconscious",desc="Knock out Lebedev",max=1,missions=8)
     bingo_options(119)=(event="BrowserHistoryCleared",desc="Clear your browser history before quitting",max=1,missions=32)
     bingo_options(120)=(event="AnnaKillswitch",desc="Use Anna's Killphrase",max=1,missions=32)
-    bingo_options(121)=(event="AnnaNavarre_PlayerDeadM3",desc="Kill Anna Navarre in Mission 3",max=1,missions=8)
-    bingo_options(122)=(event="AnnaNavarre_PlayerDeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
-    bingo_options(123)=(event="AnnaNavarre_PlayerDeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
+    bingo_options(121)=(event="AnnaNavarre_DeadM3",desc="Kill Anna Navarre in Mission 3",max=1,missions=8)
+    bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
+    bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
     bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
     bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill 1 innocent",max=15)
     bingo_options(126)=(event="MaySung_PlayerDead",desc="Kill Maggie Chow's maid",max=1,missions=64)
@@ -4005,15 +4001,15 @@ defaultproperties
     mutually_exclusive(8)=(e1="AnnaKilledLebedev",e2="PlayerKilledLebedev")
     mutually_exclusive(9)=(e1="AnnaKilledLebedev",e2="JuanLebedev_PlayerUnconscious")
     mutually_exclusive(10)=(e1="PlayerKilledLebedev",e2="JuanLebedev_PlayerUnconscious")
-    mutually_exclusive(11)=(e1="AnnaKillswitch",e2="AnnaNavarre_PlayerDeadM3")
-    mutually_exclusive(12)=(e1="AnnaKillswitch",e2="AnnaNavarre_PlayerDeadM4")
-    mutually_exclusive(13)=(e1="AnnaKillswitch",e2="AnnaNavarre_PlayerDeadM5")
-    mutually_exclusive(14)=(e1="AnnaNavarre_PlayerDeadM3",e2="AnnaNavarre_PlayerDeadM4")
-    mutually_exclusive(15)=(e1="AnnaNavarre_PlayerDeadM3",e2="AnnaNavarre_PlayerDeadM5")
-    mutually_exclusive(16)=(e1="AnnaNavarre_PlayerDeadM4",e2="AnnaNavarre_PlayerDeadM3")
-    mutually_exclusive(17)=(e1="AnnaNavarre_PlayerDeadM4",e2="AnnaNavarre_PlayerDeadM5")
-    mutually_exclusive(18)=(e1="AnnaNavarre_PlayerDeadM5",e2="AnnaNavarre_PlayerDeadM3")
-    mutually_exclusive(19)=(e1="AnnaNavarre_PlayerDeadM5",e2="AnnaNavarre_PlayerDeadM4")
+    mutually_exclusive(11)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(12)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(13)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(14)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(15)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(16)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(17)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(18)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(19)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
     mutually_exclusive(20)=(e1="VialAmbrosia_Activated",e2="GaveDowdAmbrosia")
     mutually_exclusive(21)=(e1="PianoSongPlayed",e2="PianoSong0Played")
     mutually_exclusive(22)=(e1="PianoSongPlayed",e2="PianoSong7Played")
@@ -4057,9 +4053,9 @@ defaultproperties
     mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
     mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
     mutually_exclusive(61)=(e1="TiffanySavage_Dead",e2="TiffanyHeli")
-    mutually_exclusive(62)=(e1="LebedevLived",e2="AnnaNavarre_PlayerDeadM3")
-    mutually_exclusive(63)=(e1="LebedevLived",e2="AnnaNavarre_PlayerDeadM4")
-    mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_PlayerDeadM5")
+    mutually_exclusive(62)=(e1="LebedevLived",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(63)=(e1="LebedevLived",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_PlayerUnconscious")
     mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
