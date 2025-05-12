@@ -1170,16 +1170,15 @@ function bool AddTestGoal(
         if (bingo_options[bingoIdx].event == event) break;
     if (bingoIdx == ArrayCount(bingo_options)) return false;
 
-    if (max == 0)
-        max = bingo_options[bingoIdx].max;
     if (starting_mission == 0)
         starting_mission = 1;
     if (missions == 0)
         missions = bingo_options[bingoIdx].missions;
 
     desc = bingo_options[bingoIdx].desc;
-    if (max > 1 && InStr(desc, "%s") != -1) {
-        max = ScaleBingoGoalMax(max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
+    if (bingo_options[bingoIdx].max > 1 && InStr(desc, "%s") != -1) {
+        if(max == 0)
+            max = ScaleBingoGoalMax(bingo_options[bingoIdx].max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
 
         if (max == 1 && bingo_options[bingoIdx].desc_singular != "") {
             desc = bingo_options[bingoIdx].desc_singular;
