@@ -60,6 +60,9 @@ function PerformSave()
         gameIndex = 0;
 
     saveName = editName.GetText();
+    if(Right(saveName, 9) == " AUTOSAVE") { // we're not an autosave anymore
+        saveName = Left(saveName, Len(saveName)-9);
+    }
 
     localPlayer   = player;
     localRoot     = root;
