@@ -2014,6 +2014,23 @@ function ReadText(name textTag)
 }
 //#endregion
 
+//#region ban goals by flags
+simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
+{
+    // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
+    if(    (dxr.flags.settings.medbots >= 0 && dxr.flags.settings.medbots < 15)
+        || (dxr.flags.settings.repairbots >= 0 && dxr.flags.settings.repairbots < 15)
+    ) {
+        data.BanGoal("MedicalBot_ClassDead", 1);
+        data.BanGoal("RepairBot_ClassDead", 1);
+    } else {
+        data.BanGoal("UtilityBot_ClassDead", 1);
+    }
+
+    Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
+}
+//#endregion
+
 //#region RemapBingoEvent
 function string RemapBingoEvent(string eventname)
 {
@@ -2103,8 +2120,12 @@ function string RemapBingoEvent(string eventname)
         case "MJ12CloneAugShield1_ClassUnconscious":
             return "MJ12Troop_ClassUnconscious";
         case "DXRMedicalBot_ClassDead":
+        case "MedicalBot_ClassDead":
+            _MarkBingo("UtilityBot_ClassDead"); //Split into another event, but still return this one as-is
             return "MedicalBot_ClassDead";
         case "DXRRepairBot_ClassDead":
+        case "RepairBot_ClassDead":
+            _MarkBingo("UtilityBot_ClassDead"); //Split into another event, but still return this one as-is
             return "RepairBot_ClassDead";
         case "FrenchGray_ClassDead":
         case "GrayBaby_ClassDead":
@@ -2937,6 +2958,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough medical bots or aug bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "RepairBot_ClassDead":
             return "Destroy enough repair bots.  You must destroy them yourself and disabling them with EMP does not count.";
+        case "UtilityBot_ClassDead":
+            return "Destroy enough utility bots (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
         case "DrugDealer_Dead":
         case "DrugDealer_PlayerDead":
             return "Kill Rock, the drug dealer who lives in Brooklyn Bridge Station.  You must kill him yourself.";
@@ -3993,6 +4016,7 @@ defaultproperties
 #ifdef injections || revision
     bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=56910)
 #endif
+    bingo_options(358)=(event="UtilityBot_ClassDead",desc="Destroy %s Utility Bots",desc_singular="Destroy 1 Utility Bot",max=3)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
