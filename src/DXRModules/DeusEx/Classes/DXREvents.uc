@@ -2014,25 +2014,6 @@ function ReadText(name textTag)
 }
 //#endregion
 
-//#region ban goals by flags
-simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
-{
-    // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
-    if(    (dxr.flags.settings.medbots >= 0 && dxr.flags.settings.medbots < 15)
-        || (dxr.flags.settings.repairbots >= 0 && dxr.flags.settings.repairbots < 15)
-    ) {
-        data.BanGoal("MedicalBot_ClassDead", 1);
-        data.BanGoal("RepairBot_ClassDead", 1);
-    } else {
-        data.BanGoal("UtilityBot_ClassDead", 1);
-    }
-
-    if(dxr.flags.settings.merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
-
-    Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
-}
-//#endregion
-
 //#region RemapBingoEvent
 function string RemapBingoEvent(string eventname)
 {
