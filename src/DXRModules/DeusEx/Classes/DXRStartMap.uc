@@ -1075,7 +1075,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_Dead":
+        case "Shannon_PlayerDead":
         case "SlippingHazard":
         case "un_PrezMeadPic_peepedtex":
         case "WaltonConvos":
@@ -1094,7 +1094,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_Dead":
+        case "Shannon_PlayerDead":
         case "WaltonConvos":
         case "un_PrezMeadPic_peepedtex":
         case "un_bboard_peepedtex":
@@ -1192,7 +1192,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return True;
             }
             return start_map>=60; //Have to have told Jaime to meet you in Paris in mission 5 to get Gunther's killphrase
-        case "FordSchick_Dead":
+        case "FordSchick_PlayerDead":
             return start_map>=30;
         case "M07MeetJaime_Played":
             if (end_mission < 8){
@@ -1210,13 +1210,13 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "AimeeLeMerchantLived":
             return end_mission < 10;
         case "WarehouseEntered":
-        case "Antoine_Dead":
-        case "Chad_Dead":
+        case "Antoine_PlayerDead":
+        case "Chad_PlayerDead":
         case "paris_hostage_Dead":
-        case "Hela_Dead":
-        case "Renault_Dead":
-        case "lemerchant_Dead":
-        case "aimee_Dead":
+        case "Hela_PlayerDead":
+        case "Renault_PlayerDead":
+        case "lemerchant_PlayerDead":
+        case "aimee_PlayerDead":
         case "M10EnteredBakery":
         case "assassinapartment":
         case "CamilleConvosDone":
@@ -1255,7 +1255,7 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
     switch(start_map) {
     case 119:
         switch(bingo_event) {
-        case "TobyAtanwe_Dead":
+        case "TobyAtanwe_PlayerDead":
         case "MeetAI4_Played":
         case "DeBeersDead":
         case "GotHelicopterInfo":
