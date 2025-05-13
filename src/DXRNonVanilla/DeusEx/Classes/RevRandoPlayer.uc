@@ -821,7 +821,11 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
         if(!bOnLadder) {
             foreach AllActors(class'DolphinJumpTrigger', dolphin) {
+<<<<<<< HEAD
                 dolphin.SelfDestruct();
+=======
+                dolphin.Destroy();
+>>>>>>> 9a23925e (dolphin jump tweaks)
             }
         }
         bOnLadder = True;
