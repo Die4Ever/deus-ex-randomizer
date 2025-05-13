@@ -2027,6 +2027,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         data.BanGoal("UtilityBot_ClassDead", 1);
     }
 
+    if(dxr.flags.settings.merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
+
     Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
 }
 //#endregion
