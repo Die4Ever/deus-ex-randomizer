@@ -753,9 +753,9 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("MeetMaxChen", bFemale);
             MarkConvPlayed("DL_Jock_05", bFemale); // Okay, you need to find Tracer Tong
             MarkConvPlayed("DL_Jock_04", bFemale); // You're next to the compound Paul used to visit
+            MarkConvPlayed("DL_Tong_00", bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already, start 65 plays this
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
-            MarkConvPlayed("DL_Tong_00", bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
         case 64:// fallthroughs
         case 63:
@@ -975,7 +975,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 65:
             AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
             AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
-            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00');
+            player.StartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
             break;
         case 64:
         case 63:
