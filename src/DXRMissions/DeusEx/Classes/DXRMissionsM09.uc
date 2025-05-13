@@ -388,6 +388,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(prefix)Keypad1 keypad;
     local SpecialEvent se;
     local Actor a;
+    local DynamicLight light;
 
     if (g.name=="Jammer") {
         //Add a keypad to disable the jammer
@@ -415,18 +416,23 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         g.name=="Weld Point 4" ||
         g.name=="Weld Point 5")
     {
-        class'DXRHoverHint'.static.Create(self, g.name, g.actors[0].a.Location, 40, 40, g.actors[0].a);
+        a = g.actors[0].a;
+        class'DXRHoverHint'.static.Create(self, g.name, a.Location, 40, 40, a);
+        light = spawn(class'DynamicLight',,, a.Location + (vect(16,0,0) >> a.Rotation));
+        light.SetBase(a);
+        light.LightBrightness = 32;
+        light.LightRadius = 10;
 
         switch (Loc.name){
             case "Engine Control Room":
                 //on the ceiling in the control tower
-                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location,  100, 50);
+                SpawnWeldPointBlock(a, a.Location, 100, 50);
                 break;
             default:
                 //Along the walls
-                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location + (vect(0,40,0) >> g.actors[0].a.Rotation),  40, 80);
-                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location,  40, 80);
-                SpawnWeldPointBlock(g.actors[0].a,  g.actors[0].a.Location + (vect(0,-40,0) >> g.actors[0].a.Rotation),  40, 80);
+                SpawnWeldPointBlock(a, a.Location + (vect(0,40,0) >> a.Rotation),  40, 80);
+                SpawnWeldPointBlock(a, a.Location,  40, 80);
+                SpawnWeldPointBlock(a, a.Location + (vect(0,-40,0) >> a.Rotation),  40, 80);
                 break;
         }
     }
