@@ -17,11 +17,17 @@ function bool AddExistingItem(Actor item)
 {
     local int copies;
 
-    copies = 1;
+    if (item==None) return false;
+
     if (Pickup(item)!=None){
         copies = Pickup(item).NumCopies;
     }
+    if (copies<=0){  //Ammo has NumCopies set to 0, for example
+        copies = 1;
+    }
+
     if (AddContent(item.Class,copies)){
+        log("Added existing item "$item$" to BigContainer "$self);
         item.Destroy();
         return true;
     }
@@ -159,6 +165,7 @@ function DropItem(Actor dropped)
     dropped.bCollideWorld = true;
     dropped.Velocity = VRand() * 50;
     dropped.GotoState('Pickup', 'Dropped');
+    log(self$" dropped "$dropped);
 }
 
 function Destroyed()
