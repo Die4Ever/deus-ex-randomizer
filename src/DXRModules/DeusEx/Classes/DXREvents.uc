@@ -3572,7 +3572,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "JoyOfCooking":
             return "Read a recipe from a book and experience the joy of cooking!|n|nThere is a recipe for Chinese Silver Loaves in the Wan Chai Market, and a recipe for Coq au Vin in the streets of Paris.";
         case "DolphinJump": // keep height number in sync with DolphinJumpTrigger CreateDolphin
-            msg = TrimTrailingZeros(FloatToString(GetRealDistance(184), 1)) @ GetDistanceUnitLong();
+            msg = TrimTrailingZeros(FloatToString(GetRealDistance(160), 1)) @ GetDistanceUnitLong();
             return "Jump " $ msg $ " out of the water.|n|nHow high in the sky can you fly?";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";

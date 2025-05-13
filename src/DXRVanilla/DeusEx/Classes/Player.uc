@@ -970,7 +970,13 @@ event HeadZoneChange(ZoneInfo newHeadZone)
 
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
+    local DolphinJumpTrigger dolphin;
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
+        if(!bOnLadder) {
+            foreach AllActors(class'DolphinJumpTrigger', dolphin) {
+                dolphin.Destroy();
+            }
+        }
         bOnLadder = True;
     }
     else
