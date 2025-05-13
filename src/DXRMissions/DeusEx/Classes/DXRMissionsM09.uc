@@ -61,9 +61,9 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 2, vect(-378, 978, -272), rot(0,0,0));
         AddMapMarker(class'Image09_NYC_Ship_Bottom',320,343,"W","Weld Point", loc,"A weld point can be located at the North end of the engine room.");
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
-        AddActorLocation(loc, 2, vect(-3300, -1619, -112), rot(0,0,0));
-        AddMapMarker(class'Image09_NYC_Ship_Bottom',166,204,"W","Weld Point", loc,"A weld point can be located on the balcony of the bilge pump room.");
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-2418, -1328, -112), rot(0, 32768, 0));
+        AddActorLocation(loc, 2, vect(-2450, -1330, -112), rot(0,0,0));
+        AddMapMarker(class'Image09_NYC_Ship_Bottom',210,220,"W","Weld Point", loc,"A weld point can be located on the balcony of the bilge pump room.");
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
         AddActorLocation(loc, 2, vect(-2522, -464, -144), rot(0,0,0));
