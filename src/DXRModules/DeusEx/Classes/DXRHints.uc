@@ -249,7 +249,7 @@ simulated function InitHints()
         }
         if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime) {
             AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
-            if (dxr.flags.IsWaltonWare() || (!dxr.flags.IsBingoCampaignMode() && dxr.flags.settings.bingo_win > 0 && class'MenuChoice_NewGamePlus'.default.value == 2)) {
+            if (!dxr.flags.IsBingoCampaignMode() && dxr.flags.settings.bingo_win > 0 && dxr.flags.moresettings.newgameplus_curve_scalar != -1) {
                 AddHint("Each type of weapon will have the same stats", "until the next loop.  Then they'll be randomized again!");
             } else {
                 AddHint("Each type of weapon will have the same stats", "through the whole game.  They won't change later!");
