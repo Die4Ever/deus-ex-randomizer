@@ -975,10 +975,14 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
         if(!bOnLadder) {
             foreach AllActors(class'DolphinJumpTrigger', dolphin) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 dolphin.SelfDestruct();
 =======
                 dolphin.Destroy();
 >>>>>>> 9a23925e (dolphin jump tweaks)
+=======
+                dolphin.SelfDestruct();
+>>>>>>> 35a23f52 (reuse DolphinJumpTrigger instead of destroying and recreating)
             }
         }
         bOnLadder = True;
