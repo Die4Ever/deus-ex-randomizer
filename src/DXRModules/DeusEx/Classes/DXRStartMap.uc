@@ -811,6 +811,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 129:
             MarkConvPlayed("GaryHostageBriefing", bFemale);
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
+        case 125: // fallthrough
+            GiveKey(player, 'control_room', "Control Room Key");
         case 122: // fallthrough
             AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
         case 121: // fallthrough
