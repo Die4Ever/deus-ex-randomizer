@@ -1183,7 +1183,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "LeoToTheBar":
             //Only possible if you started in the first level
             return start_map>10 || end_mission < 2;
-            break;
         case "PaulToTong":
             // This goal is impossible with a 50+ start because he is then always alive
             return start_map>=50 || end_mission < 6;
