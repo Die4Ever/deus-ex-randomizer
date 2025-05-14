@@ -31,6 +31,16 @@ enum EOutfitType
     OT_Dress
 };
 
+enum ESkinTone
+{
+    ST_Any,
+    ST_White,
+    ST_Latino,
+    ST_NotBlack,
+    ST_Black,
+    ST_Albino
+};
+
 struct ClothesTextures{
     var Texture tex1;
     var Texture tex2;
@@ -41,6 +51,7 @@ struct Clothes {
     var travel EGender gender;
     var travel String tex1;
     var travel String tex2;
+    var travel ESkinTone skinTone;
 };
 
 struct CurrentOutfit {
@@ -58,6 +69,7 @@ struct CurrentOutfit {
 };
 
 var travel bool isFemale;
+var travel ESkinTone PlayerSkinTone;
 var travel Clothes clothing[250];
 var travel int numClothes;
 
@@ -80,6 +92,7 @@ simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
         f = p.Spawn(class'DXRFashionManager');
         f.GiveTo(p);
         f.isFemale=p.flagBase.GetBool('LDDPJCIsFemale');
+        f.PopulateSkinTone(p);
         log("spawned new " $ f $ " for " $ p);
     }
 
@@ -90,6 +103,28 @@ simulated function static DXRFashionManager GiveItem(#var(PlayerPawn) p)
 
     p.RemoveObjectFromBelt(f); //Now that it has an icon, it ends up on the belt sometimes...
     return f;
+}
+
+simulated function PopulateSkinTone(#var(PlayerPawn) p)
+{
+    //if( String(faceTex) == "FemJC.Characters.JCDentonFemaleTex4" || String(faceTex) == "FemJC.Characters.JCDentonFemaleTex5" ){
+    switch (String(p.MultiSkins[0])){
+        case "FemJC.Characters.JCDentonFemaleTex4":
+        case "DeusExCharacters.Skins.JCDentonTex4":
+            PlayerSkinTone = ST_Black;
+            break;
+        case "FemJC.Characters.JCDentonFemaleTex5": //This one is more black than the male equivalent?
+        case "DeusExCharacters.Skins.JCDentonTex5":
+            PlayerSkinTone = ST_Latino;
+            break;
+        case "FemJC.Characters.JCDentonFemaleTex7":
+        case "DeusExCharacters.Skins.JCDentonTex7":
+            PlayerSkinTone = ST_Albino;
+            break;
+        default:
+            PlayerSkinTone = ST_White;
+            break;
+    }
 }
 
 event TravelPreAccept()
@@ -278,7 +313,7 @@ simulated function int NumClothingForOutfitType(EOutfitType type, bool female)
     local int i,numChoices;
     numChoices=0;
     for (i=0;i<numClothes;i++){
-        if (clothing[i].type!=CT_None && AppropriateForGender(female,clothing[i].gender)){
+        if (clothing[i].type!=CT_None && AppropriateForGender(female,clothing[i].gender) && AppropriateForSkinTone(clothing[i].skinTone)){
             switch(type){
                 case OT_Trench:
                     if (clothing[i].type==CT_TrenchShirt) numChoices++; //Has trenchcoat specific clothes
@@ -339,6 +374,20 @@ simulated function bool AppropriateForGender(bool female, EGender gender)
         case G_Male: return !female;
     }
     return False; //Something went wrong
+}
+
+simulated function bool AppropriateForSkinTone(ESkinTone ClothingSkin)
+{
+    if (PlayerSkinTone==ClothingSkin) return true;
+
+    switch (ClothingSkin){
+        case ST_Any:
+            return true;
+        case ST_NotBlack:
+            return PlayerSkinTone==ST_White || PlayerSkinTone==ST_Latino;
+    }
+
+    return false;
 }
 
 //Fallback, just in case the player somehow doesn't have suitable clothes.
@@ -424,7 +473,7 @@ simulated function Clothes PickRandomClothingByType(EClothesType type, bool fema
     local int numChoices,i;
 
     for (i=0;i<numClothes;i++){
-        if (clothing[i].type==type && AppropriateForGender(female,clothing[i].gender)){
+        if (clothing[i].type==type && AppropriateForGender(female,clothing[i].gender) && AppropriateForSkinTone(clothing[i].skinTone)){
             choices[numChoices++]=clothing[i];
         }
     }
@@ -557,12 +606,12 @@ simulated function HandleGlasses(bool hasGlasses, bool female, EOutfitType outfi
     }
 }
 
-simulated function HandleSkirtLegs(Texture faceTex, EOutfitType outfit, out Texture newMultis[8])
+simulated function HandleSkirtLegs(EOutfitType outfit, out Texture newMultis[8])
 {
     if (outfit!=OT_Skirt) return;
 
-    if( String(faceTex) == "FemJC.Characters.JCDentonFemaleTex4" || String(faceTex) == "FemJC.Characters.JCDentonFemaleTex5" ){
-        newMultis[3]=Texture'DeusExCharacters.Skins.Hooker1Tex1';// darker legs
+    if (PlayerSkinTone==ST_Latino || PlayerSkinTone==ST_Black || PlayerSkinTone==ST_Albino) {
+        newMultis[3]=Texture'DeusExCharacters.Skins.LegsTex2';// dark tights
     } else {
         newMultis[3] = Texture'DeusExCharacters.Skins.Female2Tex1';// legs/pants
     }
@@ -642,7 +691,7 @@ simulated function RandomizeClothes(#var(PlayerPawn) player)
     curOutfit[cPLAYER].curOutfit=outfit;
     GenerateOverrides(isFemale,outfit,overrides);
     HandleGlasses(true,isFemale,outfit,overrides);
-    HandleSkirtLegs(player.MultiSkins[0],outfit,overrides);
+    HandleSkirtLegs(outfit,overrides);
     pushSkinOverride(curOutfit[cPLAYER],overrides);
 
     if (isFemale){
@@ -935,6 +984,8 @@ simulated function int AddClothing(EGender gender, EClothesType type, Texture te
     //We don't allow ingesting "no glasses"
     if ((type==CT_Glasses) && IsMaskTex(tex1s) && IsMaskTex(tex2s)) return 0;
 
+    gender = VerifyClothingGender(gender,tex1s,tex2s);
+
     //Check for a dupe
     for (i=0;i<numClothes;i++){
         if (Clothing[i].Gender!=gender) continue;
@@ -948,10 +999,83 @@ simulated function int AddClothing(EGender gender, EClothesType type, Texture te
     Clothing[numClothes].gender=gender;
     Clothing[numClothes].tex1=tex1s;
     Clothing[numClothes].tex2=tex2s;
+    Clothing[numClothes].skinTone=GetClothingSkinTone(tex1s,tex2s);
     numClothes++;
 
     //Could check if it is gender appropriate, but that would only apply if you're male JC (since FemJC will still loot clothes for Paul)
     return 1;
+}
+
+//These textures can sneak through via Paul's carcass
+simulated function EGender VerifyClothingGender(EGender gender, string tex1s, string tex2s)
+{
+    if (gender!=G_Both) return gender; //Trust that a specific gender is actually for that gender...
+
+    switch (tex1s){
+        case "DeusExCharacters.Skins.GordonQuickTex1": //Gordon Quick abs
+        case "DeusExCharacters.Skins.SmugglerTex1": //Smuggler shirt, a bit tight to the pecs
+        case "DeusExCharacters.Skins.JuanLebedevTex1": //TerroristCommander/JuanLebedev, a bit man-booby
+            return G_Male;
+    }
+    return gender;
+}
+
+simulated function ESkinTone GetClothingSkinTone(string tex1s, string tex2s)
+{
+    switch (tex1s){
+        case "DeusExCharacters.Skins.Male4Tex1": //Male4 Shirt
+        case "DeusExCharacters.Skins.Female2Tex1": //Female2 Legs
+        case "DeusExCharacters.Skins.Female3Tex2": //Female3 Legs
+        case "DeusExCharacters.Skins.Female4Tex3": //Female4 Legs
+        case "DeusExCharacters.Skins.Female4Tex1": //Female4 Shirt (under coat)
+        case "DeusExCharacters.Skins.LegsTex1": //Nurse/Secretary Legs
+        case "DeusExCharacters.Skins.SandraRentonTex1": //SandraRenton Shirt
+        case "DeusExCharacters.Skins.JordanSheaTex1": //JordanShea Shirt
+        case "DeusExCharacters.Skins.GuntherHermannTex1": //GuntherHermann Shirt
+        case "DeusExCharacters.Skins.AnnaNavarreTex1": //AnnaNavarre Shirt
+        case "DeusExCharacters.Skins.Businesswoman1Tex2": //BusinessWoman1 Legs
+        case "DeusExCharacters.Skins.JunkieFemaleTex1": //JunkieFemale Shirt
+        case "DeusExCharacters.Skins.LowerClassMaleTex1": //LowerClassMale Shirt
+        case "DeusExCharacters.Skins.LowerClassFemaleTex1": //LowerClassFemale Shirt
+        case "DeusExCharacters.Skins.RachelMeadTex2": //RachelMead Legs
+        case "DeusExCharacters.Skins.BoatPersonTex1": //BoatPerson Shirt
+        case "DeusExCharacters.Skins.ThugMale3Tex1": //ThugMale3 Shirt
+        case "DeusExCharacters.Skins.HKMilitaryTex1": //HKMilitary Shirt (sleeves slightly rolled up)
+        case "DeusExCharacters.Skins.SamCarterTex1": //SamCarter Shirt
+        case "DeusExCharacters.Skins.GordonQuickTex1": //GordonQuick Shirt (under coat) - DEM ABS
+        case "#var(package).DXRandoPawns.MJ12CloneAugShield1Body": //MJ12CloneAugShield1 Shirt
+        case "#var(package).DXRandoPawns.MJ12CloneAugTough1Body": //MJ12CloneAugTough1 Shirt
+        case "#var(package).DXRandoPawns.NSFCloneAugShield1Body": //NSFCloneAugShield1 Shirt
+        case "#var(package).DXRandoPawns.NSFCloneAugTough1Body": //NSFCloneAugTough1 Shirt
+        case "#var(package).DXRandoPawns.UNATCOCloneAugShield1Body": //UNATCOCloneAugShield1 Shirt
+        case "#var(package).DXRandoPawns.UNATCOCloneAugTough1Body": //UNATCOCloneAugTough1 Shirt
+        case "DeusExCharacters.Skins.Hooker1Tex3": //Hooker1 Shirt
+        case "DeusExCharacters.Skins.Hooker1Tex1": //Hooker1 Legs
+        case "DeusExCharacters.Skins.Hooker2Tex3": //Hooker2 Shirt
+        case "DeusExCharacters.Skins.NicoletteDuClareTex1": //NicoletteDuClare Shirt
+        case "DeusExCharacters.Skins.SarahMeadTex1": //SarahMead shirt (hands)
+        case "DeusExCharacters.Skins.SarahMeadTex3": //SarahMead Legs (Mostly under skirt)
+        case "DeusExCharacters.Skins.Female1Tex1": //Female1 Shirt (White hands)
+        case "DeusExCharacters.Skins.NurseTex1": //Nurse shirt (white - exposed neck area)
+          return ST_White;
+
+        //case "DeusExCharacters.Skins.LegsTex2": //MaggieChow, WIB, MargaretWilliams legs (Dark tights)
+        //case "DeusExCharacters.Skins.Hooker2Tex1": //Hooker2 Legs (Technically white, but so hidden?)
+        case "DeusExCharacters.Skins.NicoletteDuClareTex3": //NicoletteDuClare Legs (White, but not that visible?)
+        case "DeusExCharacters.Skins.TiffanySavageTex1": //TiffanySavage Shirt (Hands are painted with stripes, so could be argued any non-black)
+          return ST_NotBlack;
+
+        case "DeusExCharacters.Skins.JoJoFineTex1": //JoJoFine Shirt
+        case "DeusExCharacters.Skins.BumFemaleTex1": //BumFemale Shirt
+          return ST_Latino;
+
+        case "DeusExCharacters.Skins.ChadTex1": //Chad Shirt
+          return ST_Black;
+
+        default:
+            return ST_Any;
+    }
+    return ST_Any;
 }
 
 //For handling special cases where a texture maybe only applies to one gender that would normally be considered for both
@@ -1009,7 +1133,7 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
             break;
         case LodMesh'DeusExCharacters.GFM_TShirtPants_Carcass':
             num += AddClothing(G_Female,CT_Shirt,carcassClass.Default.MultiSkins[7],None);
-            num += AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[6],None);
+            num += AddClothing(G_Female,CT_Pants,carcassClass.Default.MultiSkins[6],None); //These *generally* are interchangeable with male meshes as well, but things get weird around the feet (Anna and Gunther share pants)
             num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[3],carcassClass.Default.MultiSkins[4]);
             break;
         case LodMesh'DeusExCharacters.GM_DressShirt_B_Carcass':
