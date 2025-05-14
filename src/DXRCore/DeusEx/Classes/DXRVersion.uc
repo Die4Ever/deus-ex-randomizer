@@ -7,10 +7,14 @@ simulated static function CurrentVersion(optional out int major, optional out in
     minor=5;
     patch=0;
 <<<<<<< HEAD
+<<<<<<< HEAD
     build=5;//build can't be higher than 99
 =======
     build=4;//build can't be higher than 99
 >>>>>>> ae886d76 (v3.5.0.4 Alpha builds)
+=======
+    build=5;//build can't be higher than 99
+>>>>>>> 8d2a75af (v3.5.0.5 Beta builds)
 }
 
 simulated static function bool VersionIsStable()
