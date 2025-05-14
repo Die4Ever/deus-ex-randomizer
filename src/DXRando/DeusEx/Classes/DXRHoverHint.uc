@@ -4,6 +4,7 @@ var() string HintText;
 var() int VisibleDistance;
 var Actor target;
 var bool attached, based, addBingoText;
+var Vector TextOffset;
 
 var Actor baseActor;
 var bool bInWorld;
