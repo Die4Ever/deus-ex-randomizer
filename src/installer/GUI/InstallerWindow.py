@@ -273,7 +273,7 @@ class InstallerWindow(GUIBase):
         self.globalsettings['shortcuts'] = BooleanVar(master=self.frame, value=True)
         self.shortcuts = Checkbutton(self.frame, text="Create shortcuts for new exe files", variable=self.globalsettings['shortcuts'])
         Hovertip(self.shortcuts, "Create shortcuts on desktop and start menu for newly created exe files.\nOnly applies when creating a new separate exe.")
-        self.setgrid(self.shortcuts, True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.setgrid(self.shortcuts, advanced=True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(self.shortcuts)
         self.row+=1
 
