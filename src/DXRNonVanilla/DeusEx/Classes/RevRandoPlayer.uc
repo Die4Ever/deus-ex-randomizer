@@ -817,7 +817,13 @@ function ShowGiveNPCWeaponDisplay()
 
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
+    local DolphinJumpTrigger dolphin;
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
+        if(!bOnLadder) {
+            foreach AllActors(class'DolphinJumpTrigger', dolphin) {
+                dolphin.SelfDestruct();
+            }
+        }
         bOnLadder = True;
     }
     else
@@ -837,7 +843,7 @@ function Landed(vector HitNormal)
 {
     local DolphinJumpTrigger dolphin;
     foreach AllActors(class'DolphinJumpTrigger', dolphin) {
-        dolphin.Destroy();
+        dolphin.SelfDestruct();
     }
     Super.Landed(HitNormal);
 }

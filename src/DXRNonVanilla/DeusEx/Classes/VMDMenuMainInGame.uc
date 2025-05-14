@@ -1,9 +1,5 @@
-#ifndef vmd
-class DXRMenuMainInGame extends MenuMain;
-// unused dummy class for non-VMD
-#else
+#compileif vmd
 class DXRMenuMainInGame extends MenuMainInGame;
-#endif
 
 var float countdown;
 var int nameLen, firstSpace, secondSpace;

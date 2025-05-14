@@ -1,12 +1,20 @@
 #compileif injections || revision
 class DolphinJumpTrigger extends BingoTrigger;
 
-static function DolphinJumpTrigger CreateDolphin(PlayerPawn p)
+static function DolphinJumpTrigger CreateDolphin(#var(PlayerPawn) p)
 {
     local DolphinJumpTrigger t;
 
+    if(p.Velocity.Z < 24 || p.bOnLadder) return None;
+    foreach p.AllActors(class'DolphinJumpTrigger', t) { break; }
     // keep height number in sync with DXREvents GetBingoGoalHelpText
-    t = p.Spawn(class'DolphinJumpTrigger',,, p.Location+vect(0,0,184));
+    if(t == None) {
+        t = p.Spawn(class'DolphinJumpTrigger',,, p.Location+vect(0,0,160));
+    }
+    else {
+        t.SetLocation(p.Location+vect(0,0,160));
+        t.SetCollision(true, false, false);
+    }
     t.SetTimer(0.55, false);
 }
 
@@ -22,13 +30,18 @@ function bool IsRelevant(actor Other)
 
 function Timer()
 {
-    Destroy();
+    SelfDestruct();
+}
+
+function SelfDestruct()
+{
+    SetCollision(false,false,false);
 }
 
 defaultproperties
 {
-    CollisionRadius=32
-    CollisionHeight=32
+    CollisionRadius=36
+    CollisionHeight=36
     bDestroyOthers=true
     bingoEvent="DolphinJump"
 }

@@ -166,7 +166,7 @@ class InstallerWindow(GUIBase):
             settings['DXRando.exe'] = v
             c = Checkbutton(self.frame, text="Create separate DXRando.exe for "+f, variable=v)
             Hovertip(c, "Overwriting the original DeusEx.exe makes it easier for Linux Steam players.\nOnly applicable if installing DXRando.")
-            self.setgrid(c, advanced=IsVanillaFixer(), column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
+            self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             self.row+=1
 
@@ -269,6 +269,14 @@ class InstallerWindow(GUIBase):
         self.FixColors(self.ogl2)
         self.row+=1
 
+        # Shortcuts
+        self.globalsettings['shortcuts'] = BooleanVar(master=self.frame, value=True)
+        self.shortcuts = Checkbutton(self.frame, text="Create shortcuts for new exe files", variable=self.globalsettings['shortcuts'])
+        Hovertip(self.shortcuts, "Create shortcuts on desktop and start menu for newly created exe files.\nOnly applies when creating a new separate exe.")
+        self.setgrid(self.shortcuts, advanced=True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.shortcuts)
+        self.row+=1
+
 
     def Install(self):
         try:
@@ -314,6 +322,8 @@ class InstallerWindow(GUIBase):
             installedflavorstext = 'Done.'
 
         extra = ''
+        if globalsettings['created_shortcuts']:
+            extra += '\nCreated shortcuts'
         if flavors.get('Vanilla', {}).get('install') and IsWindows():
             extra += '\nCreated DXRando.exe'
         if flavors.get('Vanilla? Madder.', {}).get('install') and IsWindows():

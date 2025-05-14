@@ -555,6 +555,13 @@ function bool TryLootRegularItem(DeusExPlayer player, Inventory item)
 
             item.SpawnCopy(player);
 
+            if (item.Owner==None){
+                //Successfully looted, but owner was none.  Seems like this happens with Ammo
+                //when you are looting it from a weapon, don't have the ammo type already, and
+                //don't have room for the weapon.
+                item.SetOwner(player);
+            }
+
             // Show the item received in the ReceivedItems window and also
             // display a line in the Log
             AddReceivedItem(player, item, 1);

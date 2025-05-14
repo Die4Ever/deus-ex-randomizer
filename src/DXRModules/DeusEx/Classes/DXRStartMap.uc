@@ -655,6 +655,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             break;
         case 9:
+            GiveImage(player, class'Image09_NYC_Ship_Bottom');
+            GiveImage(player, class'Image09_NYC_Ship_Top');
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
             MarkConvPlayed("DL_BadNews", bFemale);
             flagbase.SetBool('HelpSailor',true,,-1);
@@ -751,9 +753,9 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("MeetMaxChen", bFemale);
             MarkConvPlayed("DL_Jock_05", bFemale); // Okay, you need to find Tracer Tong
             MarkConvPlayed("DL_Jock_04", bFemale); // You're next to the compound Paul used to visit
+            MarkConvPlayed("DL_Tong_00", bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already, start 65 plays this
         case 65://fallthrough
             flagbase.SetBool('Have_Evidence',true,,-1); // found the DTS, evidence against Maggie Chow
-            MarkConvPlayed("DL_Tong_00", bFemale); // disable "Now take the sword to Max Chen" infolink you would have heard already
             flagbase.SetBool('PaidForLuckyMoney',true,,-1);
         case 64:// fallthroughs
         case 63:
@@ -811,6 +813,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 129:
             MarkConvPlayed("GaryHostageBriefing", bFemale);
             flagbase.SetBool('Heliosborn',true,,-1); //Make sure Daedalus and Icarus have merged
+        case 125: // fallthrough
+            GiveKey(player, 'control_room', "Control Room Key");
         case 122: // fallthrough
             AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
         case 121: // fallthrough
@@ -971,7 +975,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 65:
             AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
             AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
-            AddGoalFromConv(player, 'ConvinceRedArrow', 'DL_Tong_00');
+            player.StartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
             break;
         case 64:
         case 63:
@@ -1075,7 +1079,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_Dead":
+        case "Shannon_PlayerDead":
         case "SlippingHazard":
         case "un_PrezMeadPic_peepedtex":
         case "WaltonConvos":
@@ -1094,7 +1098,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_Dead":
+        case "Shannon_PlayerDead":
         case "WaltonConvos":
         case "un_PrezMeadPic_peepedtex":
         case "un_bboard_peepedtex":
@@ -1181,7 +1185,6 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "LeoToTheBar":
             //Only possible if you started in the first level
             return start_map>10 || end_mission < 2;
-            break;
         case "PaulToTong":
             // This goal is impossible with a 50+ start because he is then always alive
             return start_map>=50 || end_mission < 6;
@@ -1192,7 +1195,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return True;
             }
             return start_map>=60; //Have to have told Jaime to meet you in Paris in mission 5 to get Gunther's killphrase
-        case "FordSchick_Dead":
+        case "FordSchick_PlayerDead":
             return start_map>=30;
         case "M07MeetJaime_Played":
             if (end_mission < 8){
@@ -1210,13 +1213,13 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "AimeeLeMerchantLived":
             return end_mission < 10;
         case "WarehouseEntered":
-        case "Antoine_Dead":
-        case "Chad_Dead":
+        case "Antoine_PlayerDead":
+        case "Chad_PlayerDead":
         case "paris_hostage_Dead":
-        case "Hela_Dead":
-        case "Renault_Dead":
-        case "lemerchant_Dead":
-        case "aimee_Dead":
+        case "Hela_PlayerDead":
+        case "Renault_PlayerDead":
+        case "lemerchant_PlayerDead":
+        case "aimee_PlayerDead":
         case "M10EnteredBakery":
         case "assassinapartment":
         case "CamilleConvosDone":
@@ -1255,7 +1258,7 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
     switch(start_map) {
     case 119:
         switch(bingo_event) {
-        case "TobyAtanwe_Dead":
+        case "TobyAtanwe_PlayerDead":
         case "MeetAI4_Played":
         case "DeBeersDead":
         case "GotHelicopterInfo":

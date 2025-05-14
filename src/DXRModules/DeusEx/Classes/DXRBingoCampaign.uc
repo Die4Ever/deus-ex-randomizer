@@ -284,11 +284,11 @@ function NewBingoBoard()
             data.BanGoal(s, 999);
             break;
 
-        case "AnnaNavarre_PlayerDeadM3":
-        case "AnnaNavarre_PlayerDeadM4":
-            data.BanGoal("AnnaNavarre_PlayerDeadM3", 999);
-            data.BanGoal("AnnaNavarre_PlayerDeadM4", 999);
-            data.BanGoal("AnnaNavarre_PlayerDeadM5", 999);
+        case "AnnaNavarre_DeadM3":
+        case "AnnaNavarre_DeadM4":
+            data.BanGoal("AnnaNavarre_DeadM3", 999);
+            data.BanGoal("AnnaNavarre_DeadM4", 999);
+            data.BanGoal("AnnaNavarre_DeadM5", 999);
             data.BanGoal("AnnaKillswitch", 999);
             break;
 

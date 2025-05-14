@@ -638,7 +638,7 @@ function Landed(vector HitNormal)
     bJustLanded = true;
 
     foreach AllActors(class'DolphinJumpTrigger', dolphin) {
-        dolphin.Destroy();
+        dolphin.SelfDestruct();
     }
 }
 
@@ -970,7 +970,13 @@ event HeadZoneChange(ZoneInfo newHeadZone)
 
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
+    local DolphinJumpTrigger dolphin;
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
+        if(!bOnLadder) {
+            foreach AllActors(class'DolphinJumpTrigger', dolphin) {
+                dolphin.SelfDestruct();
+            }
+        }
         bOnLadder = True;
     }
     else
