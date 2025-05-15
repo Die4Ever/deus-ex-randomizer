@@ -3594,7 +3594,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             msg = TrimTrailingZeros(FloatToString(GetRealDistance(160), 1)) @ GetDistanceUnitLong();
             return "Jump " $ msg $ " out of the water.|n|nHow high in the sky can you fly?";
         case "M06HeliSafe":
-            return "Open both safes in the Hong Kong Helibase.";
+            return "Open both safes in the Hong Kong Helibase.|n|nThere's one in each Flight Control Deck room.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
