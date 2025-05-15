@@ -29,7 +29,7 @@ simulated function Timer()
 simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
 {
     local int oldseed, i;
-    local float min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime, new_damage, default_shottime;
+    local float min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime, new_damage, default_shottime, f;
     if( dxr == None ) return;
 #ifdef vanilla
     DXRWeapon(w).UpdateBalance();
@@ -68,7 +68,11 @@ simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
     min_weapon_shottime = float(dxr.flags.settings.min_weapon_shottime) / 100;
     max_weapon_shottime = float(dxr.flags.settings.max_weapon_shottime) / 100;
     default_shottime = GetDefaultShottime(w);
-    w.ShotTime = rngrange(default_shottime, min_weapon_shottime, max_weapon_shottime);
+    f = rngrange(1, min_weapon_shottime, max_weapon_shottime);
+    w.ShotTime = f * default_shottime;
+#ifdef injections
+    DXRWeapon(w).AfterShotTime = f * DXRWeapon(w).default.AfterShotTime;
+#endif
     if(!silent) l(w $ " w.HitDamage="$ w.HitDamage $ ", ShotTime=" $ w.ShotTime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;

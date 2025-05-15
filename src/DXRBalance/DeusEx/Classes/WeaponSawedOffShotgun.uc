@@ -31,5 +31,5 @@ defaultproperties
     AccurateRange=688
     MinSpreadAcc=0.25
     AIMaxRange=448
-    ShotTime=1.3636363636363636363636363636364
+    AfterShotTime=1.0636363636363636363636363636364
 }

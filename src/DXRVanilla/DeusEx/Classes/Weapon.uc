@@ -3,6 +3,7 @@ class DXRWeapon shims DeusExWeapon abstract;
 var float RelativeRange;
 var float blood_mult;
 var float anim_speed;// also adjusted from Ninja JC mode in DXRLoadouts
+var float AfterShotTime;// only for description text
 
 var name prev_anim;
 var float prev_anim_rate;
@@ -427,7 +428,7 @@ simulated function bool UpdateInfo(Object winObject)
     local PersonaInventoryInfoWindow winInfo;
     local string str;
     local int i, dmg;
-    local float mod;
+    local float mod, TotalShotTime;
     local bool bHasAmmo;
     local bool bAmmoAvailable;
     local class<DeusExAmmo> ammoClass;
@@ -581,10 +582,11 @@ simulated function bool UpdateInfo(Object winObject)
 
     // rate of fire
     // RANDO: Always show rate of fire
+    TotalShotTime = ShotTime + AfterShotTime;
     if ((Default.ReloadCount == 0) || bHandToHand)
     {
         //str = msgInfoNA;
-        str = FormatFloatString(1.0/ShotTime, 0.1) $ "/SEC";
+        str = FormatFloatString(1.0/TotalShotTime, 0.1) $ "/SEC";
     }
     else
     {
@@ -593,16 +595,15 @@ simulated function bool UpdateInfo(Object winObject)
         else
             str = msgInfoSingle;
 
-        str = str $ "," @ FormatFloatString(1.0/ShotTime, 0.1) @ msgInfoRoundsPerSec;
-
-        //str = str $ "|n  (Default: " $ FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
+        str = str $ "," @ FormatFloatString(1.0/TotalShotTime, 0.1) @ msgInfoRoundsPerSec;
     }
     winInfo.AddInfoItem(msgInfoROF, str);
 
     // default rate of fire
+    TotalShotTime = default.ShotTime + default.AfterShotTime;
     if (!bZeroRando && Default.ReloadCount != 0 && !bHandToHand)
     {
-        str = FormatFloatString(1.0/default.ShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
+        str = FormatFloatString(1.0/TotalShotTime, 0.1) @ msgInfoRoundsPerSec $ ")";
         winInfo.AddInfoItem("", " (Default: " $ str);
     }
 
