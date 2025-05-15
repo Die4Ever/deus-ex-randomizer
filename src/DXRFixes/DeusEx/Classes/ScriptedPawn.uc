@@ -775,12 +775,13 @@ function MoveAwayFrom(Actor other)
     local float extra, dist;
     local bool bSuccess;
 
-    if(destLoc != vect(0,0,0)) return;
-    if(Pawn(other) == None) return;
+    if(destLoc != vect(0,0,0) && VSize(Velocity)>0) return; // already moving somewhere
+    if(#var(PlayerPawn)(other) == None) return; // we only care if it's a player?
+    #var(PlayerPawn)(other).ClientMessage("bump " $ self);
     if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
     extra = other.CollisionRadius + CollisionRadius;
     rot = Rotator(Location - other.Location);
-    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 60+extra, 150+extra, destLoc);
+    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 48+extra, 150+extra, destLoc);
     if(bSuccess) {
         GotoState(GetStateName(), 'MoveAway');
     } else {
