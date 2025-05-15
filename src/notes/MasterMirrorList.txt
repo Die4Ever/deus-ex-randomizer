@@ -1,0 +1,113 @@
+01_NYC_UNATCOHQ:
+03_NYC_UNATCOHQ:
+04_NYC_UNATCOHQ:
+05_NYC_UNATCOHQ:
+ - Bathrooms
+ - Window down to sector 4
+ - Marble Floor after going down the first set of stairs (you probably didn't realize this one!)
+
+01_NYC_UNATCOIsland
+ - Mirror outside Gunther's cell
+
+02_NYC_Bar
+04_NYC_Bar
+08_NYC_Bar
+ - Behind the bar
+
+02_NYC_Hotel
+04_NYC_Hotel
+08_NYC_Hotel
+ - Apartment bathrooms
+
+02_NYC_Smug
+04_NYC_Smug
+08_NYC_Smug
+ - Secret Stash Door Mirror
+
+02_NYC_FreeClinic
+08_NYC_FreeClinic
+ - Bathroom Mirrors
+
+02_NYC_Warehouse
+ - Mirror door in computer room
+
+03_NYC_747
+ - Bathroom mirrors
+
+03_NYC_Airfield
+ - Bathroom mirror in barracks
+
+03_NYC_AirfieldHeliBase
+ - Bathroom mirrors
+
+03_NYC_BrooklynBridgeStation
+ - Bathroom mirrors
+
+03_NYC_MolePeople
+ - Bathroom mirrors
+
+04_NYC_NSFHQ
+ - Bathroom mirrors
+
+05_NYC_UNATCOMJ12Lab
+ - Mirrors between cells
+
+06_HongKong_Helibase
+ - Bathroom mirror
+
+06_HongKong_MJ12Lab
+ - Bathroom mirrors (upstairs and in barracks)
+ - Marble Floors in entrance
+
+06_HongKong_WanChai_Canal
+ - I think the freezer floor is actually mirrored?
+
+06_HongKong_WanChai_Street
+ - Jock's bathroom (two mirrors over sink, one next to shower)
+ - Maggie's Guest Bathroom
+ - Maggie's En Suite Bathroom
+
+06_HongKong_WanChai_Underworld
+ - The big Lucky Money mirrors to the conference room
+ - Bathroom mirrors
+
+09_NYC_Dockyard
+ - Bathroom mirror (in one of the warehouses)
+
+09_NYC_Ship
+ - Dockside Locker Room mirror
+
+10_Paris_Chateau
+ - Bathroom Mirror
+ - Nicolette's Bedroom mirror
+ - Beth's Bedroom Mirror
+
+10_Paris_Club
+ - Upstairs near vanilla Nicolette
+ - 2 in bathroom
+
+10_Paris_Metro
+ - Apartment 12 (With the couple)
+   - Bathroom Mirror
+   - Bed Headboard Mirror
+
+11_Paris_Cathedral
+ - Gatekeeper's Apartment mirror
+
+11_Paris_Everett
+ - Bathroom mirror
+ - Sliding Lucius Door Mirror
+
+12_Vandenberg_Cmd
+ - Bathroom Mirror (in Comm building)
+
+12_Vandenberg_Gas
+ - Bathroom Mirror (in gas station)
+
+14_OceanLab_Silo
+ - Bathroom Mirror (Why are you locked in the bathroom???)
+
+
+
+
+

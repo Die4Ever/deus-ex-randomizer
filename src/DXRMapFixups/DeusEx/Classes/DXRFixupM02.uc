@@ -230,6 +230,9 @@ function PreFirstEntryMapFixes()
         buttonHint = DXRButtonHoverHint(class'DXRButtonHoverHint'.static.Create(self, "", button.Location, button.CollisionRadius+5, button.CollisionHeight+5, exit));
         buttonHint.SetBaseActor(button);
 
+        foreach RadiusActors(class'#var(DeusExPrefix)Mover', d,10,vectm(1552,-1136,384)){break;}
+        class'FakeMirrorInfo'.static.Create(self,vectm(1553,-1130,380),vectm(1645,-1135,260),d); //Mirror door in computer room.  This doesn't actually rotate with the door yet...
+
         class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
         class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
         class'PlaceholderEnemy'.static.Create(self,vectm(1814,-1842,48));
