@@ -45,6 +45,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FishGenerator fg;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)TracerTong tong;
 #ifdef revision
     local JockHelicopter jockheli;
 #endif
@@ -139,19 +140,19 @@ function PreFirstEntryMapFixes()
             VandenbergCmdRevisionFixWatchtowerDoor();
         }
 
-        //Add teleporter hint text to Jock
+        // Add teleporter hint text to Tong
         foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}
-        if (VanillaMaps){
-            foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'Helicopter'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
-            hoverHint.SetBaseActor(jock);
-        } else {
-        #ifdef revision
-            foreach AllActors(class'JockHelicopter',jockheli){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jockheli.Location, jockheli.CollisionRadius+5, jockheli.CollisionHeight+5, exit,, true);
-            hoverHint.SetBaseActor(jockheli);
-        #endif
-        }
+        foreach AllActors(class'#var(prefix)TracerTong',tong,'tong'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(
+            self,
+            "",
+            tong.Location,
+            tong.CollisionRadius+5,
+            tong.CollisionHeight+5,
+            exit,,,
+            MakeVector(0.0, 0.0, tong.CollisionHeight * 0.5)
+        );
+        hoverHint.SetBaseActor(tong);
 
         foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
             if (#var(prefix)SecurityBot2(bot) != None) {

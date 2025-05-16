@@ -469,11 +469,20 @@ function PreFirstEntryMapFixes()
             //Let the player free!  It's already possible to break outside of them, so just get rid of them.
             bp.bBlockPlayers=false;
         }
+
+        // Add teleporter hint text to Gunther
         foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
-        foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""), gunther.Location, gunther.CollisionRadius+5, gunther.CollisionHeight+5,,, true);
-            hoverHint.SetBaseActor(gunther);
-        }
+        foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(
+            self,
+            class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("05_NYC_UNATCOMJ12Lab"),""),
+            gunther.Location,
+            gunther.CollisionRadius+5,
+            gunther.CollisionHeight+5,,,
+            true,
+            MakeVector(0.0, 0.0, gunther.CollisionHeight * 0.5)
+        );
+        hoverHint.SetBaseActor(gunther);
         foreach AllActors(class'#var(prefix)AnnaNavarre',anna){
             anna.MaxProvocations = 0;
             anna.AgitationSustainTime = 3600;
