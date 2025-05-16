@@ -309,7 +309,14 @@ function PreFirstEntryMapFixes()
     case "11_PARIS_UNDERGROUND":
         foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
         foreach AllActors(class'#var(prefix)TobyAtanwe', toby) {
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), toby.Location, toby.CollisionRadius+5, toby.CollisionHeight+5);
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(
+                self,
+                class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"),
+                toby.Location,
+                toby.CollisionRadius+5,
+                toby.CollisionHeight+5,,,,
+                MakeVector(0.0, 0.0, toby.CollisionHeight * 0.5)
+            );
             hoverHint.SetBaseActor(toby);
         }
         if (VanillaMaps){
