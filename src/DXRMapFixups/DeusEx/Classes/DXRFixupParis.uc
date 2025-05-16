@@ -231,19 +231,11 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(1352,-640,740),vectm(1451,-620,627)); //Apartment mirror near front door
         }
 
-        // Add teleporter hint text to Nicolette
+        //Add teleporter hint text to Jock
         foreach AllActors(class'#var(prefix)MapExit',exit,'ChopperExit'){break;}
-        foreach AllActors(class'#var(prefix)NicoletteDuclare',nico,'NicoletteDuClare'){break;}
-        hoverHint = class'DXRTeleporterHoverHint'.static.Create(
-            self,
-            "",
-            nico.Location,
-            nico.CollisionRadius+5,
-            nico.CollisionHeight+5,
-            exit,,,
-            MakeVector(0.0, 0.0, nico.CollisionHeight * 0.5)
-        );
-        hoverHint.SetBaseActor(nico);
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit);
+        hoverHint.SetBaseActor(jock);
 
         //If neither flag is set, JC never talked to Jaime, so he just didn't bother
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled() && !dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
@@ -309,14 +301,7 @@ function PreFirstEntryMapFixes()
     case "11_PARIS_UNDERGROUND":
         foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
         foreach AllActors(class'#var(prefix)TobyAtanwe', toby) {
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(
-                self,
-                class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"),
-                toby.Location,
-                toby.CollisionRadius+5,
-                toby.CollisionHeight+5,,,,
-                MakeVector(0.0, 0.0, toby.CollisionHeight * 0.5)
-            );
+            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), toby.Location, toby.CollisionRadius+5, toby.CollisionHeight+5);
             hoverHint.SetBaseActor(toby);
         }
         if (VanillaMaps){
