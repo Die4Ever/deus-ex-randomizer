@@ -780,9 +780,11 @@ function MoveAwayFrom(Actor other)
     if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
     extra = other.CollisionRadius + CollisionRadius;
     rot = Rotator(Location - other.Location);
-    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 48+extra, 150+extra, destLoc);
+    if(Pawn(other).Weapon != None) extra += 48;
+    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 48, 100+extra, destLoc);
     if(bSuccess) {
-        GotoState(GetStateName(), 'MoveAway');
+        if(Pawn(other).Weapon != None) GotoState(GetStateName(), 'RunAway');
+        else GotoState(GetStateName(), 'WalkAway');
     } else {
         destLoc = vect(0,0,0);
     }
@@ -858,7 +860,16 @@ state Standing
         StopBlendAnims();
     }
 
-MoveAway: // DXRando
+WalkAway: // DXRando
+    if(destLoc != vect(0,0,0)) {
+        if (ShouldPlayWalk(destLoc))
+            PlayWalking();
+        MoveTo(destLoc, GetWalkingSpeed());
+        CheckDestLoc(destLoc);
+        destLoc = vect(0,0,0);
+    }
+
+RunAway: // DXRando
     if(destLoc != vect(0,0,0)) {
         if (ShouldPlayWalk(destLoc))
             PlayRunning();
@@ -1031,7 +1042,16 @@ state Dancing
         StopBlendAnims();
     }
 
-MoveAway: // DXRando
+WalkAway: // DXRando
+    if(destLoc != vect(0,0,0)) {
+        if (ShouldPlayWalk(destLoc))
+            PlayWalking();
+        MoveTo(destLoc, GetWalkingSpeed());
+        CheckDestLoc(destLoc);
+        destLoc = vect(0,0,0);
+    }
+
+RunAway: // DXRando
     if(destLoc != vect(0,0,0)) {
         if (ShouldPlayWalk(destLoc))
             PlayRunning();
