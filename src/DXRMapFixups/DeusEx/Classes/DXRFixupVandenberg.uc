@@ -140,19 +140,19 @@ function PreFirstEntryMapFixes()
             VandenbergCmdRevisionFixWatchtowerDoor();
         }
 
-        //Add teleporter hint text to Tong
+        // Add teleporter hint text to Tong
         foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}
-        if (VanillaMaps){
-            foreach AllActors(class'#var(prefix)TracerTong',tong,'tong'){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", tong.Location, tong.CollisionRadius+5, tong.CollisionHeight+5, exit);
-            hoverHint.SetBaseActor(tong);
-        } else {
-        #ifdef revision
-            foreach AllActors(class'TracerTong',tong){break;}
-            hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", tong.Location, tong.CollisionRadius+5, tong.CollisionHeight+5, exit,, true);
-            hoverHint.SetBaseActor(tong);
-        #endif
-        }
+        foreach AllActors(class'#var(prefix)TracerTong',tong,'tong'){break;}
+        hoverHint = class'DXRTeleporterHoverHint'.static.Create(
+            self,
+            "",
+            tong.Location,
+            tong.CollisionRadius+5,
+            tong.CollisionHeight+5,
+            exit,,,
+            MakeVector(0.0, 0.0, tong.CollisionHeight * 0.5)
+        );
+        hoverHint.SetBaseActor(tong);
 
         foreach AllActors(class'#var(prefix)Robot',bot,'enemy_bot') {
             if (#var(prefix)SecurityBot2(bot) != None) {
