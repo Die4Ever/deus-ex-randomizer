@@ -586,8 +586,13 @@ function string WeaponStrInfo(#var(DeusExPrefix)Weapon w, out int numLines)
     mod = 1.0 - w.GetWeaponSkill();
     dmg = mod * dmg;
 #endif
+#ifdef injections
+    fireRate = 1.0/(w.ShotTime + DXRWeapon(w).AfterShotTime);
+    compFireRate = 1.0/(w.Default.ShotTime + DXRWeapon(w).default.AfterShotTime);
+#else
     fireRate = 1.0/w.ShotTime;
     compFireRate = 1.0/w.Default.ShotTime;
+#endif
 
     strInfo=strInfo $ CR() $"Damage: "$dmg;
 

@@ -940,6 +940,23 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
         bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1832,-81,536),20,10);
 
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
+            switch(dxm.Name) {
+            case 'DeusExMover26':
+                dxm.Event = 'M06HeliSafe1';
+                bt = class'BingoTrigger'.static.Create(self,'M06HeliSafe1',dxm.Location);
+                bt.bingoEvent = "M06HeliSafe";
+                bt.bDestroyOthers = false;
+                break;
+            case 'DeusExMover31':
+                dxm.Event = 'M06HeliSafe2';
+                bt = class'BingoTrigger'.static.Create(self,'M06HeliSafe2',dxm.Location);
+                bt.bingoEvent = "M06HeliSafe";
+                bt.bDestroyOthers = false;
+                break;
+            }
+        }
+
         break;
     case "06_HONGKONG_MJ12LAB":
         foreach AllActors(class'ZoneInfo',zone){
@@ -3576,6 +3593,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "DolphinJump": // keep height number in sync with DolphinJumpTrigger CreateDolphin
             msg = TrimTrailingZeros(FloatToString(GetRealDistance(160), 1)) @ GetDistanceUnitLong();
             return "Jump " $ msg $ " out of the water.|n|nHow high in the sky can you fly?";
+        case "M06HeliSafe":
+            return "Open both safes in the Hong Kong Helibase.|n|nThere's one in each Flight Control Deck room.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4019,6 +4038,7 @@ defaultproperties
     bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=56910)
 #endif
     bingo_options(358)=(event="UtilityBot_ClassDead",desc="Destroy %s Utility Bots",desc_singular="Destroy 1 Utility Bot",max=3)
+    bingo_options(359)=(event="M06HeliSafe",desc="HeliSafe",max=2,missions=64)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
