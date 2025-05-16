@@ -777,7 +777,6 @@ function MoveAwayFrom(Actor other)
 
     if(destLoc != vect(0,0,0) && VSize(Velocity)>0) return; // already moving somewhere
     if(#var(PlayerPawn)(other) == None) return; // we only care if it's a player?
-    #var(PlayerPawn)(other).ClientMessage("bump " $ self);
     if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
     extra = other.CollisionRadius + CollisionRadius;
     rot = Rotator(Location - other.Location);
