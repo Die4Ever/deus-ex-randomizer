@@ -106,6 +106,7 @@ function PreFirstEntryMapFixes()
     local DXRReinforcementPoint reinforce;
     local Dispatcher disp;
     local #var(prefix)Trigger t;
+    local #var(prefix)ControlPanel panel;
     local int i;
 
     local bool VanillaMaps;
@@ -172,6 +173,15 @@ function PreFirstEntryMapFixes()
             m.ExplodeSound1=None; //So you don't hear it get broken
             m.ExplodeSound2=None;
             m.BlowItUp(None);
+        }
+
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            foreach AllActors(class'#var(prefix)ControlPanel', panel, 'ControlPanel') {
+                if(panel.UnTriggerEvent[0] == 'LibElectric') {
+                    panel.hackStrength = 0.12;
+                    break;
+                }
+            }
         }
 
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors'){break;}
