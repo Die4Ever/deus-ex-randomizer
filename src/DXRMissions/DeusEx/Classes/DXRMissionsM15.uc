@@ -34,10 +34,14 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 1, vect(-3455,-3261,-1560), rot(0,0,0));
 
         AddGoal("15_AREA51_BUNKER", "Area 51 Blast Door Computer", GOAL_TYPE1, 'ComputerSecurity0', PHYS_None);
-        AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1248.804321,137.393707,442.793121), rot(0, 0, 0));
-        AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1125.200562,2887.646484,-432.319794), rot(0, 0, 0));
-        AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1062.942261,-2496.865723,-443.252533), rot(0, 16384, 0));
-        AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1248.804321,137.393707,442.793121), rot(0, 0, 0));
+        AddMapMarker(class'Image15_Area51Bunker',29,220,"C","Blast Door Computer", loc,"The Blast Door Computer can sometimes be found at the top of the Tower.");
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1125.200562,2887.646484,-432.319794), rot(0, 0, 0));
+        AddMapMarker(class'Image15_Area51Bunker',151,277,"C","Blast Door Computer", loc,"The Blast Door Computer can sometimes be found in the Command 24 building.");
+        loc = AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1062.942261,-2496.865723,-443.252533), rot(0, 16384, 0));
+        AddMapMarker(class'Image15_Area51Bunker',95,134,"C","Blast Door Computer", loc,"The Blast Door Computer can sometimes be found on the outside of the building inside the Hangar.");
+        loc = AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
+        AddMapMarker(class'Image15_Area51Bunker',63,316,"C","Blast Door Computer", loc,"The Blast Door Computer can sometimes be found in the Supply Shed (Which is not visible on this map image).");
 
         if (dxr.flags.settings.starting_map > 150)
         {
@@ -94,8 +98,13 @@ function int InitGoals(int mission, string map)
         } else {
             //Only use the rooms as extra locations
             loc = AddGoalLocation("15_AREA51_PAGE", "Upper UC Control Room", GOAL_TYPE1, vect(7991,-7395,-5096), rot(0, 32768, 0));
+            AddMapMarker(class'Image15_Area51_Sector4',237,11,"E","Ending", loc,"One of the end game goals can be located on the wall of the Control Room for the upper UC (UC-03).");
+
             loc = AddGoalLocation("15_AREA51_PAGE", "Middle UC Control Room", NORMAL_GOAL, vect(5382,-8556,-5540), rot(0, 0, 0));
+            AddMapMarker(class'Image15_Area51_Sector4',53,348,"E","Ending", loc,"One of the end game goals can be located on the wall of the Control Room for the middle UC (UC-01).");
+
             loc = AddGoalLocation("15_AREA51_PAGE", "Bottom UC Control Room", NORMAL_GOAL, vect(7868,-7631,-5931), rot(0, 16384, 0));
+            AddMapMarker(class'Image15_Area51_Sector4',224,187,"E","Ending", loc,"One of the end game goals can be located on the wall of the Control Room for the bottom UC (UC-02).");
         }
 
         return 154;
