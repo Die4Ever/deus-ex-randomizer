@@ -153,3 +153,49 @@ function PostFirstEntryMapFixes()
     }
 }
 //#endregion
+
+//#region Any Entry
+function AnyEntryMapFixes()
+{
+    if(dxr.flags.IsZeroRando()) return;
+
+    switch(dxr.localURL) {
+    case "00_Training":
+        SpawnTrainingMerchant(vectm(4435,480,-145),rotm(0,32768,0,16384),class'Soyfood',10,class'SodaCan',5, class'Candybar',7,class'Flare',20);
+        break;
+    case "00_TrainingCombat":
+        SpawnTrainingMerchant(vectm(1715,1085,-110),rotm(0,-9000,0,16384),class'WeaponGepGun',500,class'WeaponLAM',100);
+        break;
+    case "00_TrainingFinal":
+        SpawnTrainingMerchant(vectm(6575,-4770,80),rotm(0,16384,0,16384),class'Medkit',50,class'BioElectricCell',50);
+        break;
+    }
+}
+//#endregion
+
+
+//#region Training Merchant
+function SpawnTrainingMerchant(vector loc, rotator rot,
+                               optional class<Inventory> forcedItem1, optional int forcedItemPrice1,
+                               optional class<Inventory> forcedItem2, optional int forcedItemPrice2,
+                               optional class<Inventory> forcedItem3, optional int forcedItemPrice3,
+                               optional class<Inventory> forcedItem4, optional int forcedItemPrice4)
+{
+    local DXRNPCs npcs;
+    local ScriptedPawn sp;
+
+    // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
+    npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
+    if(npcs != None) {
+        sp = npcs.CreateForcedMerchant("Training Merchant", 'trainingmerchant', class'TrainingMerchant', loc, rot,
+                                       false, //Don't add extra items
+                                       true, //randomize item prices
+                                       500,  //Price limit of 500 (No items with base price over 500)
+                                       npcs.CreateForcedItems(
+                                       forcedItem1,forcedItemPrice1,
+                                       forcedItem2,forcedItemPrice2,
+                                       forcedItem3,forcedItemPrice3,
+                                       forcedItem4,forcedItemPrice4));
+    }
+}
+//#endregion

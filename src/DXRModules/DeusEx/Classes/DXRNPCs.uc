@@ -6,6 +6,12 @@ struct ItemPurchase
     var int price;
 };
 
+struct ForcedItemList
+{
+    var class<Inventory> forcedItem[4];
+    var int forcedPrice[4];
+};
+
 const MERCH_TELEM_NO_BUY = -1;
 const MERCH_TELEM_NO_ROOM = -2;
 const MERCH_TELEM_NO_MONEY = -3;
@@ -204,14 +210,20 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced, optional
     for(i=4; i<ArrayCount(items) ; i++) {
         items[i].item = None;
     }
+}
+
+function RandomizeItemPrices(out ItemPurchase items[8], float lower, float upper)
+{
+    local int i;
 
     //Randomize the item prices
     for (i=0;i<ArrayCount(items);i++){
         if (items[i].item==None) continue;
         if (items[i].price==0) items[i].price=1000; //Just in case - all items SHOULD have prices defined
-        items[i].price = rngrange(items[i].price, 0.5, 1.5);  //Range was previously 0.3 to 2.0
+        items[i].price = rngrange(items[i].price, lower, upper);  //Range was previously 0.3 to 2.0
     }
 }
+
 //#endregion
 
 //#region Create Merchants
@@ -228,28 +240,71 @@ function CreateRandomMerchant()
     }
 
     RandomizeItems(items);
+    RandomizeItemPrices(items, 0.5, 1.5);
 
     CreateMerchant("The Merchant", 'DXRNPCs1', class'Merchant', items, GetRandomMerchantPosition());
 }
 
-function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Merchant> mClass, vector loc, rotator rot, optional int priceLimit, optional class<Inventory> forcedItem, optional int forcedItemPrice)
+function ScriptedPawn CreateForcedMerchant(string name, Name bindname, class<Merchant> mClass, vector loc, rotator rot,
+                                           bool addRandomItems, bool randomizePrices, optional int priceLimit,
+                                           optional ForcedItemList forcedItems)
 {
     local ItemPurchase items[8];
-    local int forced;
+    local int forced, i;
 
     SetSeed("CreateForcedMerchant " $ name);
     if( dxr.flags.f.GetBool(StringToName(bindname $ "_Dead")) ) {
         return None;
     }
 
-    if(forcedItem != None) {
-        items[0].item = forcedItem;
-        items[0].price = forcedItemPrice;
+    for (i=0;i<ArrayCount(forcedItems.forcedItem);i++){
+        if (forcedItems.forcedItem[i]==None) continue;
+        items[forced].item = forcedItems.forcedItem[i];
+        items[forced].price = forcedItems.forcedPrice[i];
         forced++;
     }
-    RandomizeItems(items, forced, priceLimit);
+
+    if (addRandomItems){
+        RandomizeItems(items, forced, priceLimit);
+    }
+
+    if (randomizePrices){
+        RandomizeItemPrices(items, 0.5, 1.5);
+    }
 
     return CreateMerchant(name, bindname, mclass, items, loc, rot);
+}
+
+function ForcedItemList CreateForcedItems(optional class<Inventory> forcedItem1, optional int forcedItemPrice1,
+                                       optional class<Inventory> forcedItem2, optional int forcedItemPrice2,
+                                       optional class<Inventory> forcedItem3, optional int forcedItemPrice3,
+                                       optional class<Inventory> forcedItem4, optional int forcedItemPrice4)
+{
+    local ForcedItemList items;
+    local int i;
+
+    if(forcedItem1 != None) {
+        items.forcedItem[i] = forcedItem1;
+        items.forcedPrice[i] = forcedItemPrice1;
+        i++;
+    }
+    if(forcedItem2 != None) {
+        items.forcedItem[i] = forcedItem2;
+        items.forcedPrice[i] = forcedItemPrice2;
+        i++;
+    }
+    if(forcedItem3 != None) {
+        items.forcedItem[i] = forcedItem3;
+        items.forcedPrice[i] = forcedItemPrice3;
+        i++;
+    }
+    if(forcedItem4 != None) {
+        items.forcedItem[i] = forcedItem4;
+        items.forcedPrice[i] = forcedItemPrice4;
+        i++;
+    }
+
+    return items;
 }
 
 function ScriptedPawn CreateMerchant(string name, Name bindname, class<Merchant> mClass, ItemPurchase items[8], vector loc, optional rotator rot)
