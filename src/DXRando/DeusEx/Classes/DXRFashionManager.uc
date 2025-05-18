@@ -46,7 +46,7 @@ struct ClothesTextures{
     var Texture tex2;
 };
 
-struct Clothes {
+struct ClothesStruct {
     var travel EClothesType type;
     var travel EGender gender;
     var travel String tex1;
@@ -70,7 +70,7 @@ struct CurrentOutfit {
 
 var travel bool isFemale;
 var travel ESkinTone PlayerSkinTone;
-var travel Clothes clothing[250];
+var travel ClothesStruct clothing[250];
 var travel int numClothes;
 
 const cPLAYER = 0;
@@ -173,6 +173,10 @@ function Mesh GetCurPaulModel()
 function InitClothes(bool giveAll)
 {
     //local class<#var(DeusExPrefix)Carcass> carcClass;
+
+    if(numClothes > 0 && clothing[0].type == CT_None) {
+        numClothes = 0;
+    }
 
 #ifndef hx
 //    IngestCarcass(class'JCDentonMaleCarcass');
@@ -392,9 +396,9 @@ simulated function bool AppropriateForSkinTone(ESkinTone ClothingSkin)
 
 //Fallback, just in case the player somehow doesn't have suitable clothes.
 //In theory we shouldn't really ever need these, but better safe than sorry
-simulated function Clothes DefaultClothingByType(EClothesType type, bool female)
+simulated function ClothesStruct DefaultClothingByType(EClothesType type, bool female)
 {
-    local Clothes defClothes;
+    local ClothesStruct defClothes;
 
     defClothes.type=type;
     defClothes.gender=G_Both;
@@ -467,9 +471,9 @@ simulated function Clothes DefaultClothingByType(EClothesType type, bool female)
     return defClothes;
 }
 
-simulated function Clothes PickRandomClothingByType(EClothesType type, bool female)
+simulated function ClothesStruct PickRandomClothingByType(EClothesType type, bool female)
 {
-    local Clothes choices[ArrayCount(clothing)];
+    local ClothesStruct choices[ArrayCount(clothing)];
     local int numChoices,i;
 
     for (i=0;i<numClothes;i++){
@@ -484,7 +488,7 @@ simulated function Clothes PickRandomClothingByType(EClothesType type, bool fema
     return choices[Rand(numChoices)];
 }
 
-simulated function ClothesTextures FetchClothesTextures(Clothes c)
+simulated function ClothesTextures FetchClothesTextures(ClothesStruct c)
 {
     local ClothesTextures ct;
 
@@ -501,7 +505,7 @@ simulated function ClothesTextures FetchClothesTextures(Clothes c)
 simulated function GenerateOverrides(bool female, EOutfitType outfit, out Texture newMultis[8])
 {
     local int i;
-    local Clothes c1,c2,c3,c4;
+    local ClothesStruct c1,c2,c3,c4;
     local ClothesTextures ct1,ct2,ct3,ct4;
 
     for (i=0;i<ArrayCount(newMultis);i++){
