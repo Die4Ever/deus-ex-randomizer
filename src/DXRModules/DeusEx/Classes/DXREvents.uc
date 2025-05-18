@@ -322,8 +322,38 @@ function SetWatchFlags() {
 
     switch(dxr.localURL) {
     //#region Training
+    case "00_Training":
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-60,830,-40));
+        raceStart.SetCollisionSize(150,100);
+        raceStart.raceName="Training Section 1";
+        raceStart.targetTime=120; //2:00
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(4800,-4680,30));
+        checkPoint.SetCollisionSize(100,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+        break;
+    case "00_TrainingCombat":
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-110,0,-50));
+        raceStart.SetCollisionSize(100,100);
+        raceStart.raceName="Training Section 2 (Combat)";
+        raceStart.targetTime=150; //2:30
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(4950,-250,-20));
+        checkPoint.SetCollisionSize(100,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+        break;
     case "00_TrainingFinal":
         WatchFlag('m00meetpage_Played');
+
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-200,-500,-50));
+        raceStart.SetCollisionSize(100,100);
+        raceStart.raceName="Training Section 3 (Final)";
+        raceStart.targetTime=90; //1:30
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(6575,-5700,100));
+        checkPoint.SetCollisionSize(100,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+
         break;
     //#endregion
 
