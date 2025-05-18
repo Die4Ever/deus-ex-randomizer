@@ -3755,7 +3755,7 @@ defaultproperties
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1,missions=64)
     bingo_options(96)=(event="ChugWater",desc="Chug water %s times",desc_singular="Chug water 1 time",max=30,mission=40830)
 #ifndef vmd
-    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at %s different clothes racks",desc_singular="Change clothes at 1 different clothes rack",max=3,missions=852)
+    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at %s different clothes racks",desc_singular="Change clothes at 1 clothes rack",max=3,missions=852)
 #endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1,missions=8)
 #ifndef hx
