@@ -40,10 +40,6 @@ function CheckConfig()
 
     if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
         i=0;
-        _item_reductions[i].type = class'#var(prefix)Ammo10mm';
-        _item_reductions[i].percent = 85;
-        i++;
-
         _item_reductions[i].type = class'#var(prefix)AmmoPlasma';
         _item_reductions[i].percent = 130;
         i++;
@@ -66,7 +62,7 @@ function CheckConfig()
 
         i=0;
         _max_ammo[i].type = class'#var(prefix)Ammo10mm';
-        _max_ammo[i].percent = 60;
+        _max_ammo[i].percent = 67; // 150 down to 100
         i++;
 
         _max_ammo[i].type = class'#var(prefix)AmmoPlasma';
