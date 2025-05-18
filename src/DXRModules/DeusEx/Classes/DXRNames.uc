@@ -77,13 +77,13 @@ static function bool HasRealFamiliarName(ScriptedPawn p){
     return True;
 }
 
-static function GiveRandomName(DXRando dxr, ScriptedPawn p)
+static function GiveRandomName(DXRando dxr, ScriptedPawn p, optional bool force)
 {
-    if( p.bImportant || p.bIsSecretGoal ) return;
+    if( (p.bImportant || p.bIsSecretGoal) && !force ) return;
 
-    if (!HasRealFamiliarName(p)) { // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
+    if (!HasRealFamiliarName(p) && !forc) { // characters with different familiar/unfamiliar names, but their familiar name isn't a real one, like "Sick woman"
         p.FamiliarName = RandomName(dxr,p);
-    } else if (p.FamiliarName == p.UnfamiliarName) { // assume at this point that familiar/unfamiliar names aren't real names if they're the same
+    } else if (p.FamiliarName == p.UnfamiliarName || force) { // assume at this point that familiar/unfamiliar names aren't real names if they're the same
         p.UnfamiliarName = RandomName(dxr,p);
         p.FamiliarName = p.UnfamiliarName;
     }
