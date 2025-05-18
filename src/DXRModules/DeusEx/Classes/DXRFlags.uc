@@ -1221,7 +1221,6 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
         settings.medbots = 100;
         settings.repairbots = 100;
         settings.augcans = 100;
-        settings.merchants = 100;
     }
     else {
         settings.swapitems = 0;
@@ -1234,6 +1233,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
         settings.augcans = 0;
     }
 
+    settings.merchants = 0;  //We'll manually add merchants so they don't interfere
     settings.keysrando = 0;
     settings.speedlevel = 0;
     settings.startinglocations = 0;

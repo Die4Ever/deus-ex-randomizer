@@ -777,14 +777,13 @@ function MoveAwayFrom(Actor other)
 
     if(destLoc != vect(0,0,0) && VSize(Velocity)>0) return; // already moving somewhere
     if(#var(PlayerPawn)(other) == None) return; // we only care if it's a player?
+    if(Pawn(other).Weapon == None) return; // only if carrying a weapon
     if(GetAllianceType(Pawn(other).Alliance) == ALLIANCE_Hostile) return;
     extra = other.CollisionRadius + CollisionRadius;
     rot = Rotator(Location - other.Location);
-    if(Pawn(other).Weapon != None) extra += 48;
-    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 48, 100+extra, destLoc);
+    bSuccess = AIDirectionReachable(other.Location, rot.Yaw, rot.Pitch, 48+extra, 100+extra, destLoc);
     if(bSuccess) {
-        if(Pawn(other).Weapon != None) GotoState(GetStateName(), 'RunAway');
-        else GotoState(GetStateName(), 'WalkAway');
+        GotoState(GetStateName(), 'RunAway');
     } else {
         destLoc = vect(0,0,0);
     }
@@ -858,15 +857,6 @@ state Standing
         bStasis = True;
 
         StopBlendAnims();
-    }
-
-WalkAway: // DXRando
-    if(destLoc != vect(0,0,0)) {
-        if (ShouldPlayWalk(destLoc))
-            PlayWalking();
-        MoveTo(destLoc, GetWalkingSpeed());
-        CheckDestLoc(destLoc);
-        destLoc = vect(0,0,0);
     }
 
 RunAway: // DXRando
@@ -1040,15 +1030,6 @@ state Dancing
         bStasis = True;
 
         StopBlendAnims();
-    }
-
-WalkAway: // DXRando
-    if(destLoc != vect(0,0,0)) {
-        if (ShouldPlayWalk(destLoc))
-            PlayWalking();
-        MoveTo(destLoc, GetWalkingSpeed());
-        CheckDestLoc(destLoc);
-        destLoc = vect(0,0,0);
     }
 
 RunAway: // DXRando
