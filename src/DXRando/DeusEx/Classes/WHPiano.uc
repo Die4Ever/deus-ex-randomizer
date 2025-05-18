@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[95]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[97]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -671,6 +671,16 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'FaxanaduMantra';
             duration = 9;
             message="You played Mantra from Faxanadu";
+            break;
+        case 95:
+            SelectedSound = sound'PizzaTime';
+            duration = 6;
+            message="You played Funiculi, Funicula by Luigi Denza (Pizza Time!)";
+            break;
+        case 96:
+            SelectedSound = sound'Flintstones';
+            duration = 7;
+            message="You played Meet the Flintstones by Hoyt Curtin";
             break;
         default:
             SelectedSound = None;
