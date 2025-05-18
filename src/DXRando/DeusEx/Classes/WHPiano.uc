@@ -10,6 +10,7 @@ var string message;
 var int soundHandle, currentSong;
 var int numSongsPlayed;
 var float PlayDoneTime;
+var float firstPlayTime;
 var bool broken;
 #ifdef hx
 var bool bUsing;
@@ -66,10 +67,14 @@ function AllSongsPlayed()
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", "AllSongsPlayed");
     js.static.Add(j, "num", numSongsPlayed);
+    js.static.Add(j, "playTime", Level.TimeSeconds - firstPlayTime);
     class'DXREvents'.static.GeneralEventData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, self, j);
+
+    //Reset firstPlayTime so it will be accurate if you play all the songs again
+    firstPlayTime = Default.firstPlayTime;
 }
 
 function Landed(vector HitNormal)
@@ -163,6 +168,9 @@ function Frob(actor Frobber, Inventory frobWith)
     message = "";
     soundHandle = 0;
     if ( !PianoIsBroken() ) {
+        if (firstPlayTime==Default.firstPlayTime){
+            firstPlayTime = Level.TimeSeconds;
+        }
         currentSong = PickSongIndex();
         GetSongByIndex(currentSong,SelectedSound,duration,message);
     } else {
@@ -827,4 +835,5 @@ defaultproperties
     HitPoints=100
     PlayDoneTime=0.0
     broken=False
+    firstPlayTime=-1.0
 }
