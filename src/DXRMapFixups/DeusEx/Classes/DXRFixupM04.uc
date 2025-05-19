@@ -83,8 +83,12 @@ function PreFirstEntryMapFixes()
                     ot.Orders = 'Seeking';
             }
             foreach AllActors(class'#var(prefix)FlagTrigger', ft) {
-                if( ft.Event == 'PaulOutaHere' )
+                if( ft.Event == 'PaulOutaHere' ||
+                    ft.Event == 'BailedOutWindow' ||
+                    ft.Tag == 'BailedOutWindow') {
+
                     ft.Destroy();
+                }
             }
             foreach AllActors(class'SkillAwardTrigger', st) {
                 if( st.Tag == 'StayedWithPaul' ) {
@@ -863,12 +867,12 @@ function NYC_04_MarkPaulSafe()
     if( dxr.flagbase.GetBool('PaulLeftHotel') ) return;
 
     dxr.flagbase.SetBool('PaulLeftHotel', true,, 999);
+    dxr.flagbase.SetBool('PlayerBailedOutWindow',false,,999);
 
     foreach AllActors(class'PaulDenton', paul) {
         paul.GenerateTotalHealth();
         health = paul.Health * 100 / paul.default.Health;// as a percentage
         if(health < 1) health = 1;
-        paul.SetOrders('Leaving', 'PaulLeaves', True);
     }
 
     if(health > 0 && !dxr.flags.IsZeroRando() && !paul.bInvincible) {
@@ -899,12 +903,25 @@ function NYC_04_MarkPaulSafe()
 function NYC_04_LeaveHotel()
 {
     local FlagTrigger t;
-    // TODO: why touch the trigger when we can just change the flag directly?
-    foreach AllActors(class'FlagTrigger', t) {
-        if( t.Event == 'BailedOutWindow' )
-        {
-            t.Touch(player());
+    local PaulDenton paul;
+
+
+    if (dxr.flagbase.GetBool('PaulLeftHotel')) {
+        //Make Paul leave, and make sure he counts as having survived
+        foreach AllActors(class'PaulDenton', paul) {
+            if( paul.Health > 0 ) {
+                dxr.flagbase.SetBool('PlayerBailedOutWindow',false,,999); //Only clear this if Paul is actually still present (You could kill him after rescuing him)
+                dxr.flagbase.SetBool('PaulDenton_Dead',false,,999);
+            } else {
+                //Make sure he's actually marked as dead if he's in the process of dying, just to be sure
+                dxr.flagbase.SetBool('PaulDenton_Dead',true,,999);
+            }
+            paul.Destroy();
         }
+    } else {
+        //If Paul hasn't left yet, act like he should die (unless you come back!)
+        dxr.flagbase.SetBool('PlayerBailedOutWindow',true,,999);
+        dxr.flagbase.SetBool('PaulDenton_Dead',true,,999); //This will get undone when you re-enter, via NYC_04_CheckPaulUndead
     }
 }
 //#endregion
