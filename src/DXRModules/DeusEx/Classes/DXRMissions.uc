@@ -478,17 +478,21 @@ function ShuffleGoals()
     // hardcoded fixes that span multiple goals
     AfterShuffleGoals(goalsToLocations);
 
-    //GenerateDebugGoalMarkers();
+    GenerateLocationMarkers();
 }
 
-function GenerateDebugGoalMarkers()
+function GenerateLocationMarkers()
 {
     local int i;
-    local DXRGoalMarker marker;
+    local DXRLocationMarker marker;
+
+    foreach AllActors(class'DXRLocationMarker', marker) {
+        marker.Destroy();
+    }
 
     for(i=0; i<num_locations; i++) {
         if(dxr.localURL != locations[i].mapName) continue;
-        marker = DXRGoalMarker(Spawnm(class'DXRGoalMarker',,, locations[i].positions[0].pos));
+        marker = DXRLocationMarker(Spawnm(class'DXRLocationMarker',,, locations[i].positions[0].pos));
         marker.BindName = locations[i].name;
     }
 }
@@ -736,6 +740,7 @@ function AnyEntry()
         return;
 
     SetTimer(1, true);
+    CheckShowMarkers();
     if(num_goals != 0 || num_locations != 0) return;// we don't need to re-InitGoals if we already have them
 
     seed = InitGoalsByMod(dxr.dxInfo.missionNumber, dxr.localURL);
@@ -744,6 +749,25 @@ function AnyEntry()
     ChooseGoalLocations(goalsToLocations);
 }
 
+function CheckShowMarkers()
+{
+    local ActorDisplayWindow actorDisplay;
+    if(dxr.flags.settings.goals == 101) {
+        actorDisplay = DeusExRootWindow(player().rootWindow).actorDisplay;
+        actorDisplay.SetViewClass(class'DXRLocationMarker');
+        actorDisplay.ShowLOS(false);
+        actorDisplay.ShowPos(false);
+        if(!#defined(injections))
+            actorDisplay.ShowBindName(true);
+    } else if(dxr.flags.settings.goals == 102) {
+        actorDisplay = DeusExRootWindow(player().rootWindow).actorDisplay;
+        actorDisplay.SetViewClass(class'DXRGoalMarker');
+        actorDisplay.ShowLOS(false);
+        actorDisplay.ShowPos(false);
+        if(!#defined(injections))
+            actorDisplay.ShowBindName(true);
+    }
+}
 
 function Timer()
 {
