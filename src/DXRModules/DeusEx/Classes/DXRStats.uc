@@ -438,6 +438,11 @@ static function AddSpoilerOffense(DeusExPlayer p, optional int add)
     IncDataStorageStat(p,"DXRStats_spoilers", add);
 }
 
+static function AddBodyPartLoss(DeusExPlayer p, string BodyPart, optional int add)
+{
+    IncDataStorageStat(p,"BodyPartLost_"$BodyPart, add);
+}
+
 static function int GetDataStorageStat(DXRando dxr, string valname)
 {
     local DataStorage datastorage;
@@ -620,6 +625,7 @@ static function CheckLeaderboard(DXRando dxr, Json j)
 function AddDXRCredits(CreditsWindow cw)
 {
     local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther,mapcoverage,nummaps;
+    local int headLost,torsoLost,leftLegLost,rightLegLost,leftArmLost,rightArmLost;
     local float mappercent;
     local CreditsLeaderboardWindow leaderboard;
 
@@ -650,6 +656,13 @@ function AddDXRCredits(CreditsWindow cw)
     saves = player().saveCount;
     autosaves = GetDataStorageStat(dxr, "DXRStats_autosaves");
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
+
+    headLost     = GetDataStorageStat(dxr, "BodyPartLost_Head");
+    torsoLost    = GetDataStorageStat(dxr, "BodyPartLost_Torso");
+    leftLegLost  = GetDataStorageStat(dxr, "BodyPartLost_LeftLeg");
+    rightLegLost = GetDataStorageStat(dxr, "BodyPartLost_RightLeg");
+    leftArmLost  = GetDataStorageStat(dxr, "BodyPartLost_LeftArm");
+    rightArmLost = GetDataStorageStat(dxr, "BodyPartLost_RightArm");
 
     //Calculate percentage of maps visited
     if(class'DXRMapVariants'.static.IsRevisionMaps(player())){
@@ -686,6 +699,20 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Loads: "$loads);
 
     cw.PrintLn();
+
+    if(#defined(vanilla) || #defined(revision)){
+        //Body part loss tracking only present in Vanilla and Revision for now
+        cw.PrintHeader("Body Parts Lost");
+
+        cw.PrintText("Head: "$headLost);
+        cw.PrintText("Torso: "$torsoLost);
+        cw.PrintText("Left Arm: "$leftArmLost);
+        cw.PrintText("Right Arm: "$rightArmLost);
+        cw.PrintText("Left Leg: "$leftLegLost);
+        cw.PrintText("Right Leg: "$rightLegLost);
+
+        cw.PrintLn();
+    }
 }
 
 function int ScoreRun()
