@@ -457,8 +457,8 @@ simulated function ClothesStruct DefaultClothingByType(EClothesType type, bool f
             defClothes.tex2="";
             break;
         case CT_DressPants:
-            //Nicolette's pants
-            defClothes.tex1="DeusExCharacters.Skins.NicoletteDuClareTex3";
+            //Dark tights (Maggie Chow, WIB, Margaret Williams)
+            defClothes.tex1="DeusExCharacters.Skins.LegsTex2";
             defClothes.tex2="";
             break;
         default:
@@ -560,11 +560,14 @@ simulated function GenerateOverrides(bool female, EOutfitType outfit, out Textur
             ct1=FetchClothesTextures(c1);
             c2=PickRandomClothingByType(CT_Glasses,female);
             ct2=FetchClothesTextures(c2);
+            c3=PickRandomClothingByType(CT_DressPants,female);
+            ct3=FetchClothesTextures(c3);
             newMultis[4]=ct1.tex1;
             newMultis[5]=ct1.tex2;
             newMultis[1]=Texture'DeusExItems.Skins.PinkMaskTex'; //Hairbun
             newMultis[6]=ct2.tex1; //Glasses Frames
             newMultis[7]=ct2.tex2; //Glasses Lenses
+            newMultis[3]=ct3.tex1; //Legs
             break;
         case OT_Dress:
             c1=PickRandomClothingByType(CT_DressTop,female);
@@ -607,17 +610,6 @@ simulated function HandleGlasses(bool hasGlasses, bool female, EOutfitType outfi
     } else {
         newMultis[frameIdx]=Texture'DeusExItems.Skins.GrayMaskTex';
         newMultis[lensIdx]=Texture'DeusExItems.Skins.BlackMaskTex';
-    }
-}
-
-simulated function HandleSkirtLegs(EOutfitType outfit, out Texture newMultis[8])
-{
-    if (outfit!=OT_Skirt) return;
-
-    if (PlayerSkinTone==ST_Latino || PlayerSkinTone==ST_Black || PlayerSkinTone==ST_Albino) {
-        newMultis[3]=Texture'DeusExCharacters.Skins.LegsTex2';// dark tights
-    } else {
-        newMultis[3] = Texture'DeusExCharacters.Skins.Female2Tex1';// legs/pants
     }
 }
 
@@ -695,7 +687,6 @@ simulated function RandomizeClothes(#var(PlayerPawn) player)
     curOutfit[cPLAYER].curOutfit=outfit;
     GenerateOverrides(isFemale,outfit,overrides);
     HandleGlasses(true,isFemale,outfit,overrides);
-    HandleSkirtLegs(outfit,overrides);
     pushSkinOverride(curOutfit[cPLAYER],overrides);
 
     if (isFemale){
@@ -1063,7 +1054,6 @@ simulated function ESkinTone GetClothingSkinTone(string tex1s, string tex2s)
         case "DeusExCharacters.Skins.NurseTex1": //Nurse shirt (white - exposed neck area)
           return ST_White;
 
-        //case "DeusExCharacters.Skins.LegsTex2": //MaggieChow, WIB, MargaretWilliams legs (Dark tights)
         //case "DeusExCharacters.Skins.Hooker2Tex1": //Hooker2 Legs (Technically white, but so hidden?)
         case "DeusExCharacters.Skins.NicoletteDuClareTex3": //NicoletteDuClare Legs (White, but not that visible?)
         case "DeusExCharacters.Skins.TiffanySavageTex1": //TiffanySavage Shirt (Hands are painted with stripes, so could be argued any non-black)
@@ -1129,6 +1119,7 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_F_Carcass':
             num += AddClothing(G_Female,CT_Skirt,carcassClass.Default.MultiSkins[4],carcassClass.Default.MultiSkins[5]);
             num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
+            num += AddClothing(G_Female,CT_DressPants,carcassClass.Default.MultiSkins[3],None);
             break;
         case LodMesh'DeusExCharacters.GFM_Dress_Carcass':
             num += AddClothing(G_Female,CT_DressTop,carcassClass.Default.MultiSkins[3],None);
