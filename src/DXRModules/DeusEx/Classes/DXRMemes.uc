@@ -1109,12 +1109,9 @@ function MakeTubeContentsFloat()
 
 function ForceIntroFight()
 {
-    local vector FightLoc;
-    local float  FightRad;
     local #var(prefix)ScriptedPawn sp;
-    local bool whichAlliance;
-    local DXREnemies enemies;
     local bool RevisionMaps;
+    local int i, loc1, loc2;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
@@ -1126,30 +1123,72 @@ function ForceIntroFight()
             return;
     }
 
+    //Make everyone friends first
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+        sp.SetAlliance('Fwends');
+    }
+
     SetSeed("ForceIntroFight");
 
+    loc1 = rng(4); //Run this first to keep most scenarios the same as before
+    i = rng(100);
+
+    if (i==0 || dxr.IsAprilFools()) {
+        //1% chance, or April Fools
+        //Combat everywhere
+        for (i=0;i<4;i++){
+            CreateIntroFightArena(i,RevisionMaps);
+        }
+    } else if (i<10){
+        //9% chance
+        //Combat in 2 areas
+        loc2 = (loc1 + 1 + rng(3)) %4;
+
+        CreateIntroFightArena(loc1, RevisionMaps);
+        CreateIntroFightArena(loc2, RevisionMaps);
+    } else {
+        //90% chance
+        //Combat in 1 area
+        CreateIntroFightArena(loc1, RevisionMaps);
+    }
+
+
+}
+
+function CreateIntroFightArena(int loc, bool RevisionMaps)
+{
+    local vector FightLoc;
+    local float  FightRad;
+    local #var(prefix)ScriptedPawn sp;
+    local bool whichAlliance;
+    local DXREnemies enemies;
+
     //Stage Select
-    switch (rng(4)){
+    switch (loc){
         case 0:
             //Paris (The vanilla arena)
             //Same location in Revision
+            l("CreateIntroFightArena: Starting fight in Paris");
             FightLoc = vectm(11111,-16050,-200);
             FightRad = 1500;
             break;
         case 1:
             //Statue of Liberty Meeting
             //Same location in Revision
+            l("CreateIntroFightArena: Starting fight at Statue of Liberty");
             FightLoc = vectm(-11150,12675,600);
             FightRad = 1500;
             break;
         case 2:
             //Free Clinic
             //Same location in Revision
+            l("CreateIntroFightArena: Starting fight at Free Clinic");
             FightLoc = vectm(500,-6600,-50);
             FightRad = 1500;
             break;
         case 3:
             //MJ12 Lab
+            l("CreateIntroFightArena: Starting fight at MJ12 Lab");
             if (RevisionMaps){
                 FightLoc = vectm(7900,-7500,-100);
             } else {
@@ -1161,12 +1200,7 @@ function ForceIntroFight()
 
     enemies = DXREnemies(class'DXREnemies'.static.Find());
 
-    //Make everyone friends
-    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
-        sp.SetAlliance('Fwends');
-    }
-
-    //Except those who we force to fight for our amusement
+    //Force them to fight for our amusement
     foreach RadiusActors(class'#var(prefix)ScriptedPawn',sp,FightRad,FightLoc) {
         //Don't touch people who talk during the intro
         if (!IsCutsceneCharacter(sp)){
@@ -1189,8 +1223,8 @@ function ForceIntroFight()
         }
 
     }
-
 }
+
 function MakeAllGhosts()
 {
     local #var(prefix)ScriptedPawn p;
