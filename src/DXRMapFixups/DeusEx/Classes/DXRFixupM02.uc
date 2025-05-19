@@ -597,6 +597,11 @@ function PostFirstEntryMapFixes()
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+        // Allow this goal to be completed before talking to Anna
+        GiveGoalFromConv(player(), 'FindAmbrosia', 'AnnaDock');
+        break;
+
     case "02_NYC_WAREHOUSE":
         if(!RevisionMaps) {
             AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(183.993530, 926.125000, 1162.103271));// apartment
@@ -624,6 +629,11 @@ function AnyEntryMapFixes()
     local Jock j;
 
     switch (dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+        // don't let Anna give this goal to you again
+        RemoveGoalFromConv('FindAmbrosia', 'AnnaDock');
+        break;
+
     case "02_NYC_STREET":
         ces = GetSpeechEvent(GetConversation('SmugglerDoorBellConvo').eventList, "... too sick");
         if (ces != None)
