@@ -179,6 +179,10 @@ function PreFirstEntryMapFixes()
             sp.bImportant = true;
         }
 
+        if (dxr.flags.settings.starting_map >= 129) {
+            GiveImage(player(), class'Image12_Vandenberg_Command');
+        }
+
         break;
     //#endregion
 
