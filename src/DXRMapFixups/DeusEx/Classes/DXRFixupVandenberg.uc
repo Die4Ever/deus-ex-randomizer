@@ -179,8 +179,8 @@ function PreFirstEntryMapFixes()
             sp.bImportant = true;
         }
 
-        if (dxr.flags.settings.starting_map >= 129) {
-            GiveImage(player(), class'Image12_Vandenberg_Command');
+        if (dxr.flags.settings.starting_map > 120) {
+            GiveImage(player(), class'Image12_Vandenberg_Command'); // the conversation that gives you this map is disabled in >120 starts
         }
 
         break;
