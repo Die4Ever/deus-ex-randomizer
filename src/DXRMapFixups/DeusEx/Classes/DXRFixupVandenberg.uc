@@ -179,10 +179,6 @@ function PreFirstEntryMapFixes()
             sp.bImportant = true;
         }
 
-        if (dxr.flags.settings.starting_map > 120) {
-            GiveImage(player(), class'Image12_Vandenberg_Command'); // the conversation that gives you this map is disabled in >120 starts
-        }
-
         break;
     //#endregion
 
@@ -1095,6 +1091,19 @@ function AnyEntryMapFixes()
     case "12_VANDENBERG_CMD":
         // timer to count the MJ12 Bots
         SetTimer(1, True);
+
+        if (dxr.flags.settings.starting_map > 120) {
+            // let carla give you the vandenberg map, with a reduced meeting conversation
+            con = GetConversation('MeetCarlaBrown');
+            RemoveConEventAddGoal(con, 'DestroyBots');
+            RemoveConEventAddGoal(con, 'ActivatePower');
+            RemoveConEventSpeechByText(con, "The snipers heard your helicopter");
+            RemoveConEventSpeechByText(con, "Are the Vandenberg labs safe?");
+            RemoveConEventSpeechByText(con, "The base is locked down until we can destroy the enemy bots");
+            RemoveConEventSpeechByText(con, "I could give it a shot");
+            RemoveConEventCheckFlag(con, 'dl_no_carla_played');
+        }
+
         break;
 
     case "14_OCEANLAB_LAB":

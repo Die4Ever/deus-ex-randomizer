@@ -897,6 +897,45 @@ static function RemoveConvEventByLabel(Conversation conv, string label)
     }
 }
 
+static function RemoveConEventSpeechByText(Conversation conv, string substring)
+{
+    local ConEvent prev, ce;
+
+    for(ce=conv.eventList; ce != None; ce=ce.nextEvent) {
+        if(ConEventSpeech(ce) != None && InStr(ConEventSpeech(ce).ConSpeech.speech, substring) != -1) {
+            FixConversationDeleteEvent(ce, prev);
+            break;
+        }
+        prev = ce;
+    }
+}
+
+static function RemoveConEventAddGoal(Conversation conv, name goalName)
+{
+    local ConEvent prev, ce;
+
+    for(ce=conv.eventList; ce != None; ce=ce.nextEvent) {
+        if(ConEventAddGoal(ce) != None && ConEventAddGoal(ce).goalName == goalName) {
+            FixConversationDeleteEvent(ce, prev);
+            break;
+        }
+        prev = ce;
+    }
+}
+
+static function RemoveConEventCheckFlag(Conversation conv, name flagName)
+{
+    local ConEvent prev, ce;
+
+    for(ce=conv.eventList; ce != None; ce=ce.nextEvent) {
+        if(ConEventCheckFlag(ce) != None && ConEventCheckFlag(ce).flagRef.flagName == flagName) {
+            FixConversationDeleteEvent(ce, prev);
+            break;
+        }
+        prev = ce;
+    }
+}
+
 static function ConEvent FixConversationDeleteEvent(ConEvent del, ConEvent prev)
 {
     local ConEvent next;
