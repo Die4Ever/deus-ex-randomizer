@@ -2899,7 +2899,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"There is a chapter in the 'Ton hotel.";
             } else if (mission<=6){
                 msg=msg$"There is a chapter in the Wan Chai Market.";
-            } else if (mission<=9 && dxr.localURL!="09_NYC_GRAVEYARD"){
+            } else if (mission<=9 && class'DXRando'.default.dxr.localURL!="09_NYC_GRAVEYARD"){
                 msg=msg$"There is a chapter in the lower decks of the Superfreighter.";
             } else if (mission<=10){
                 msg=msg$"There is a chapter in the DuClare Chateau.";
