@@ -282,7 +282,7 @@ function string SetEnumValue(int e, string text)
             }
         }
         f.SetDifficulty(f.difficulty);
-        if(f.IsSpeedrunMode() && InStr(GetEnumValue(loadout_enum), "All Items Allowed")!=-1)
+        if((f.IsSpeedrunMode() && InStr(GetEnumValue(loadout_enum), "All Items Allowed")!=-1) || text=="Speedrun Training Mode") // Speedrun Training will always force it instead of remembering your old setting
         {
             Super.SetEnumValue(loadout_enum, "Speed Enhancement");
         }
