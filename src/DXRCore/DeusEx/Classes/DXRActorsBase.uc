@@ -978,7 +978,7 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which)
+static function ConEventAddGoal GetGoalConvEventStatic(name goalName, Conversation con, optional int which, optional ConEvent prevCe)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
@@ -992,23 +992,24 @@ static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversatio
                 return ceag;
             which--;
         }
+        prevCe = ce;
     }
 
     return None;
 }
 
-function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which)
+function ConEventAddGoal GetGoalConvEvent(name goalName, name convname, optional int which, optional ConEvent prevCe)
 {
-    return GetGoalConEventStatic(goalName, GetConversation(convname), which);
+    return GetGoalConvEventStatic(goalName, GetConversation(convname), which, prevCe);
 }
 
 // Creates or updates a goal with text taken from a Conversation
-function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
+function DeusExGoal GiveGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
 {
     local DeusExGoal goal;
     local ConEventAddGoal ceag;
 
-    ceag = GetGoalConEvent(goaltag, convname, which);
+    ceag = GetGoalConvEvent(goaltag, convname, which);
     if (ceag == None)
         return None;
     goal = player.FindGoal(goaltag);
@@ -1023,6 +1024,17 @@ function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name 
     return goal;
 }
 
+function bool RemoveGoalFromConv(name goalName, name convname, optional int which)
+{
+    local ConEvent prevCe;
+
+    GetGoalConvEvent(goalName, convname, which, prevCe);
+    if (prevCe != None && prevCe.nextEvent != None) {
+        prevCe.nextEvent = prevCe.nextEvent.nextEvent;
+        return true;
+    }
+    return false;
+}
 
 static function string GetActorName(Actor a)
 {

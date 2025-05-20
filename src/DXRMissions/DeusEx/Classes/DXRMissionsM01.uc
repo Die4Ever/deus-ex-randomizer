@@ -177,8 +177,8 @@ function AddMissionGoals()
     p = player();
     newGoal=p.AddGoal('DefeatNSFCommandCenter',True);
     newGoal.SetText("The NSF seem to be directing the attack from somewhere on the island.  Find the commander.");
-    AddGoalFromConv(p, 'RescueAgent', 'MeetPaul');
-    AddGoalFromConv(p, 'MeetFilben', 'MeetPaul');
+    GiveGoalFromConv(p, 'RescueAgent', 'MeetPaul');
+    GiveGoalFromConv(p, 'MeetFilben', 'MeetPaul');
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)

@@ -22,7 +22,7 @@ function AnyEntryMapFixes()
         RearrangeMJ12ConvergingInfolink();
         RearrangeJockExitDialog();
 
-        ceag = GetGoalConEvent('ScuttleShip', 'StantonDowd');
+        ceag = GetGoalConvEvent('ScuttleShip', 'StantonDowd');
         if (ceag != None) {
             ceag.goalText = ReplaceText(ceag.goalText, "PCS", "PRCS");
         }
