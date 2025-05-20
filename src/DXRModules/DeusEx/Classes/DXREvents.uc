@@ -303,6 +303,7 @@ function SetWatchFlags() {
     local #var(prefix)Button1 button;
     local #var(prefix)VialCrack zyme;
     local #var(prefix)ControlPanel conPanel;
+    local #var(prefix)SatelliteDish satDish;
     local Dispatcher disp;
     local int i;
     local DXRRaceTimerStart raceStart;
@@ -1560,9 +1561,10 @@ function SetWatchFlags() {
         //Same location in Revision and Vanilla
         bt = class'BingoTrigger'.static.Create(self,'OceanLabShed',vectm(618.923523,4063.243896,-391.901031),160,40);
 
-        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2717.3,3874.84,1342),100,100);
-        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3771,1571),100,100);
-        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3965,1839),100,100);
+        //Put a shootable bingo trigger on every satellite dish in the level.  In Revision, this includes an extra tower with dishes
+        foreach AllActors(class'#var(prefix)SatelliteDish', satDish) {
+            class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',satDish.Location,satDish.CollisionRadius+5,satDish.CollisionHeight+5);
+        }
         break;
     //#endregion
 
