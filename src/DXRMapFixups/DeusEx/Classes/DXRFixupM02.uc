@@ -304,9 +304,11 @@ function PreFirstEntryMapFixes()
             //The terrorist watching Gilbert will now go hostile
             //if he emits distress or hears weaponfire, or if the player makes a loud noise, creates a carcass, or fires a weapon
             //Triggers need to be above the terrorists so that the WeaponFire event from the prod isn't caught
+            //Also keep him from being named "Terrorist"
             foreach AllActors(class'#var(prefix)Terrorist', nsf, 'GilbertTerrorist'){
                 class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,true,,,,true,); //WeaponFire, Distress
                 class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
+                class'DXRNames'.static.GiveRandomName(dxr, nsf, true);
             }
 
             //The terrorist guarding Gilbert will no longer be ordered to attack the player
