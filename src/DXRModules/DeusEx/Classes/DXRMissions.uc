@@ -841,7 +841,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
     local Actor a;
-    local ScriptedPawn sp;
+    local #var(prefix)ScriptedPawn sp;
     local string result;
     local DXRGoalMarker marker;
     local #var(DeusExPrefix)Mover dxm;
@@ -875,10 +875,24 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             dxm.bDynamicLightMover=True; //Make lighting apply properly
         }
 
+        //If actor is a scriptedpawn and has the magic Start HomeTag, update their HomeBase
+        //'Start' means their HomeBase will be set to their initial location
+        sp = #var(prefix)ScriptedPawn(a);
+        if (sp!=None && sp.HomeTag=='Start'){
+            //I don't really understand why, but this commented out logic doesn't actually work
+            //sp.SetHomeBase(Loc.positions[i].pos,Loc.positions[i].rot);
+            //sp.HomeTag='Start';  //Make sure to reset it afterwards, in case you want to shuffle them again
+
+            //This code, which seems to be functionally equivalent (except the pawn has to be at the location) works
+            sp.ClearHomeBase();
+            sp.HomeTag='Start';
+            sp.InitializeHomeBase();
+        }
+
     }
 
     if( (Loc.bitMask & SITTING_GOAL) != 0) {
-        sp = ScriptedPawn(g.actors[0].a);
+        sp = #var(prefix)ScriptedPawn(g.actors[0].a);
         if(sp != None)
             sp.SetOrders('Sitting');
     }
