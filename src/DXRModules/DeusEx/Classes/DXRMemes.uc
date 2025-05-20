@@ -1042,6 +1042,7 @@ function RandomizeCutscene()
         }
     }
 
+    RandomizeZones();
     MakeTubeContentsFloat();
 
     /*foreach AllActors(class'CameraPoint', c)
@@ -1062,6 +1063,45 @@ function RandomizeCutscene()
 
     RandomizeCutsceneOrder();
     ForceIntroFight();
+}
+
+function RandomizeZones()
+{
+    local ZoneInfo z;
+    local bool water, ice, lowgrav, floataway;
+    local int i;
+
+    if(!IsAprilFools() && !chance_single(10)) return;
+
+    switch(rng(3)) {
+        case 0: water=true; break;
+        case 1: ice=true; break;
+        case 2: lowgrav=true; break;
+    }
+
+    foreach AllActors(class'ZoneInfo', z) {
+        if(water) {
+            z.bWaterZone = true;
+            z.ViewFog=vect(0,0.05,0.1);
+            z.AmbientSound=Sound'Ambient.Ambient.Underwater';
+        }
+        if(ice) {
+            z.ZoneGroundFriction = 0.1;
+        }
+        if(lowgrav) {
+            z.ZoneGravity = vect(0,0,-300);
+        }
+        if(floataway) { // not great? causes outdoor areas to be kinda empty looking
+            z.ZoneGravity = vect(0,0,0.05);
+        }
+    }
+
+    if(water) {
+        for(i=0; i<20; i++) {
+            Spawn(class'#var(prefix)FishGenerator',,, GetRandomPositionFine(,,,true));
+            Spawn(class'#var(prefix)Fish2Generator',,, GetRandomPositionFine(,,,true));
+        }
+    }
 }
 
 function MakeTubeContentsFloat()
