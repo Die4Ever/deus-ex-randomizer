@@ -31,6 +31,7 @@ var string notes;
 
 var float left_col, left_col_small, center_col, text_height, ty_pos;
 var float windowWidth, windowHeight, notesWidth, notesHeight;
+var float x, y;
 
 var config float x_pos, y_pos;
 var float prevSpeed, avgSpeed, lastTime;
@@ -314,12 +315,10 @@ function InitSizes(GC gc)
     gc.GetTextExtent(FMax(100, windowWidth), notesWidth, notesHeight, notes);
 }
 
+//#region DrawWindow
 function DrawWindow(GC gc)
 {
-    local int i, prev, prevprev, cur, curTime, next, time, total, prevTotal;
-    local float x, y, f, delta;
-    local string msg, msg2;
-    local Color cmpColor;
+    local int cur;
 
     if(stats == None) return;
 
@@ -331,7 +330,6 @@ function DrawWindow(GC gc)
     Super.DrawWindow(gc);
     gc.SetFont(textfont);
 
-    total = TotalTime();
     if(stats.dxr != None) {
         cur = stats.dxr.dxInfo.MissionNumber;
         rememberedMission = cur;
@@ -341,6 +339,88 @@ function DrawWindow(GC gc)
         return;
     }
 
+    x = 8;
+    y = 4;
+    DrawHeader(gc);
+
+    DrawSplits(gc, cur);
+
+    DrawFooter(gc);
+}
+
+function DrawHeader(GC gc)
+{
+    local int i, prev, prevprev, curTime, next, time, total, prevTotal;
+    local float f, delta;
+    local string msg, msg2;
+    local Color cmpColor;
+
+    total = TotalTime();
+    if(left_col == 0) {
+        InitSizes(gc);
+    }
+
+    gc.SetTextColor(colorText);
+    gc.SetAlignments(HALIGN_Center, VALIGN_Top);
+    if(ttitle!="") {
+        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, ttitle);
+        y += text_height;
+    }
+    if(tsubtitle!="") {
+        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tsubtitle);
+        y += text_height;
+    }
+}
+
+function DrawFooter(GC gc)
+{
+    local float delta, f;
+    local string msg, msg2;
+
+    if(showSpeed) {
+        delta = player.Level.TimeSeconds - lastTime;
+        delta *= 4.0;
+        lastTime = player.Level.TimeSeconds;
+
+        f = VSize(player.Velocity * vect(1,1,0));
+        f = class'DXRActorsBase'.static.GetRealSpeed(f);
+
+        avgSpeed -= avgSpeed * delta;
+        avgSpeed += f * delta;
+        msg = stats.FloatToString(FMax(f, prevSpeed), 1) @ class'DXRActorsBase'.static.GetSpeedUnit();
+        msg2 = stats.FloatToString(avgSpeed, 1) @ class'DXRActorsBase'.static.GetSpeedUnit();
+        prevSpeed = f;
+        DrawTextLine(gc, "SPD:", msg, colorText, x, y, msg2, true);
+        y += text_height;
+    }
+
+    if(tfooter != "") {
+        gc.SetAlignments(HALIGN_Center, VALIGN_Top);
+        gc.SetTextColor(colorText);
+        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tfooter);
+        y += text_height;
+    }
+    windowHeight = y;
+
+    //#region draw notes
+    if(notes != "") {
+        y = 4;
+        x = windowWidth + 24;
+
+        gc.SetAlignments(HALIGN_Left, VALIGN_Top);
+        gc.SetTextColor(colorText);
+        gc.DrawText(x+x_pos, y+ty_pos, notesWidth, notesHeight, notes);
+    }
+}
+
+function DrawSplits(GC gc, int cur)
+{
+    local int i, prev, prevprev, curTime, next, time, total, prevTotal;
+    local float f, delta;
+    local string msg, msg2;
+    local Color cmpColor;
+
+    total = TotalTime();
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
@@ -369,24 +449,7 @@ function DrawWindow(GC gc)
         }
     }
 
-    // drawing text
-    x = 8;
-    y = 4;
-
-    if(left_col == 0) {
-        InitSizes(gc);
-    }
-
-    gc.SetTextColor(colorText);
-    gc.SetAlignments(HALIGN_Center, VALIGN_Top);
-    if(ttitle!="") {
-        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, ttitle);
-        y += text_height;
-    }
-    if(tsubtitle!="") {
-        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tsubtitle);
-        y += text_height;
-    }
+    //#region drawing text
     gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
     for(i=1; i<ArrayCount(Golds); i++) {
@@ -402,7 +465,7 @@ function DrawWindow(GC gc)
         }
     }
 
-    // current segment time with comparison
+    //#region current segment time with comparison
     if(showSeg) {
         msg = fmtTimeSeg(curTime);
         msg2 = "/ " $ fmtTimeSeg(balanced_splits[cur]) $ " / " $ fmtTimeSeg(Golds[cur]);
@@ -411,7 +474,7 @@ function DrawWindow(GC gc)
         y += text_height;
     }
 
-    // current overall time
+    //#region current overall time
     if(showCur) {
         msg = fmtTime(total);
         cmpColor = GetCmpColor(prevTotal, balanced_splits_totals[prev], curTime, balanced_splits[cur]);
@@ -425,43 +488,9 @@ function DrawWindow(GC gc)
         DrawTextLine(gc, "AVG:", msg, colorText, x, y, msg2, true);
         y += text_height;
     }
-
-    if(showSpeed) {
-        delta = player.Level.TimeSeconds - lastTime;
-        delta *= 4.0;
-        lastTime = player.Level.TimeSeconds;
-
-        f = VSize(player.Velocity * vect(1,1,0));
-        f = class'DXRActorsBase'.static.GetRealSpeed(f);
-
-        avgSpeed -= avgSpeed * delta;
-        avgSpeed += f * delta;
-        msg = stats.FloatToString(FMax(f, prevSpeed), 1) @ class'DXRActorsBase'.static.GetSpeedUnit();
-        msg2 = stats.FloatToString(avgSpeed, 1) @ class'DXRActorsBase'.static.GetSpeedUnit();
-        prevSpeed = f;
-        DrawTextLine(gc, "SPD:", msg, colorText, x, y, msg2, true);
-        y += text_height;
-    }
-
-    if(tfooter != "") {
-        gc.SetAlignments(HALIGN_Center, VALIGN_Top);
-        gc.SetTextColor(colorText);
-        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tfooter);
-        y += text_height;
-    }
-    windowHeight = y;
-
-    // draw notes
-    if(notes != "") {
-        y = 4;
-        x = windowWidth + 24;
-
-        gc.SetAlignments(HALIGN_Left, VALIGN_Top);
-        gc.SetTextColor(colorText);
-        gc.DrawText(x+x_pos, y+ty_pos, notesWidth, notesHeight, notes);
-    }
 }
 
+//#region DrawSplit
 function int DrawSplit(GC gc, int mission, int curMission, int x, int y)
 {
     local int time, total, i, totalDiff;
@@ -643,6 +672,7 @@ function int BalancedSplit(int m)
 function int TotalTime()
 {
     local int i, total;
+    total = stats.dxr.flags.newgameplus_total_time;
     for(i=1; i<ArrayCount(stats.missions_times); i++) {
         total += stats.missions_times[i];
         total += stats.missions_menu_times[i];
