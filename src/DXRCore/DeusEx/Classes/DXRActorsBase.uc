@@ -2074,23 +2074,32 @@ static function string GetDistanceUnitLong()
 }
 
 //Speed is in unreal units per second
-static function float GetRealSpeed(float speed){
+static function float GetRealSpeed(float speed, bool longDistance){
     if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
         //miles per hour
         return speed/23.472; //divide feet/second by 1.467 to get to miles per hour
     } else {
-        //meters per second
-        return GetRealDistance(speed); //Straight conversion of units to meters is enough
+        if (longDistance){
+            //kilometers per hour
+            return GetRealDistance(speed) * 3.6;
+        } else {
+            //meters per second
+            return GetRealDistance(speed); //Straight conversion of units to meters is enough
+        }
     }
 }
 
 
-static function string GetSpeedUnit()
+static function string GetSpeedUnit(bool longDistance)
 {
     if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
         return "mph";
     } else {
-        return "m/s";
+        if (longDistance){
+            return "km/h";
+        } else {
+            return "m/s";
+        }
     }
 }
 
