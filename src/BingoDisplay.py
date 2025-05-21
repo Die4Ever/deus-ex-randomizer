@@ -123,10 +123,10 @@ class Bingo:
                 tkTile.config(bg=BRIGHT_GREEN)
             else:
                 tkTile.config(bg=MAGIC_GREEN)
-        elif isActive == 2:# 2 is for active
+        elif isActive == 1 or isActive == 2:# 1 is for maybe (No mission mask, or Any mission), 2 is for active
             tkTile.config(bg="#505050")
-        elif isActive == 1:# 1 is for maybe
-            tkTile.config(bg="#303030")
+        #elif isActive == 1:# 1 is for maybe
+        #    tkTile.config(bg="#303030")
         elif isActive == -1:# -1 is for impossible
             tkTile.config(bg="#300000")
         else:

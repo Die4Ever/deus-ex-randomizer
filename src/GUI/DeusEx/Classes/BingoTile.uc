@@ -25,7 +25,7 @@ event DrawWindow(GC gc)
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
     }
-    else if(bActiveMission==2) {
+    else if(bActiveMission==1 || bActiveMission==2) {
         c.R = 80;
         c.G = 80;
         c.B = 80;
@@ -33,6 +33,7 @@ event DrawWindow(GC gc)
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
     }
+    /*
     else if(bActiveMission==1) {
         c.R = 48;
         c.G = 48;
@@ -41,6 +42,7 @@ event DrawWindow(GC gc)
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
     }
+    */
     else if(bActiveMission==-1 && progress<max) {
         c.R = 30;
         c.G = 0;
