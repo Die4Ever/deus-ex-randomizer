@@ -2078,6 +2078,18 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
     if(dxr.flags.settings.merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
 
+    if (dxr.flags.settings.medbots < 15 ||
+        dxr.flags.settings.CombatDifficulty > 6 ||
+        dxr.flags.settings.medkits < 50 ||
+        dxr.flags.settings.health < 75) {
+        data.BanGoal("JustAFleshWound", 1);
+        data.BanGoal("LostLimbs", 1);
+    }
+
+    if (dxr.flags.settings.CombatDifficulty > 6) {
+        data.BanGoal("ExtinguishFire",1);
+    }
+
     Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
 }
 //#endregion
@@ -3633,6 +3645,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Jump " $ msg $ " out of the water.|n|nHow high in the sky can you fly?";
         case "M06HeliSafe":
             return "Open both safes in the Hong Kong Helibase.|n|nThere's one in each Flight Control Deck room.";
+        case "JustAFleshWound":
+            return "Reduce JC to just a torso and head by losing both arms and both legs.";
+        case "LostLimbs":
+            return "Every night, I can feel my leg...  and my arm...  even my fingers.|n|nLose enough limbs through the game.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4077,6 +4093,10 @@ defaultproperties
 #endif
     bingo_options(358)=(event="UtilityBot_ClassDead",desc="Destroy %s Utility Bots",desc_singular="Destroy 1 Utility Bot",max=3)
     bingo_options(359)=(event="M06HeliSafe",desc="HeliSafe",max=2,missions=64)
+#ifdef injections || revision
+    bingo_options(360)=(event="JustAFleshWound",desc="Just a flesh wound",max=1)
+    bingo_options(361)=(event="LostLimbs",desc="Why are we here?  Just to suffer? (%s)",desc_singular="Why are we here?  Just to suffer?",max=10)
+#endif
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -4153,5 +4173,6 @@ defaultproperties
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_PlayerUnconscious")
     mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
     mutually_exclusive(68)=(e1="PetAnimal_BindName_Starr",e2="PetDogs")
+    mutually_exclusive(69)=(e1="JustAFleshWound",e2="LostLimbs")
 //#endregion
 }
