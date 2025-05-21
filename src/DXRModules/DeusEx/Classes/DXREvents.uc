@@ -3933,7 +3933,7 @@ defaultproperties
     bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
     bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
-    bingo_options(231)=(event="DuClareKeys",desc="Collect 3 different keys around Chateau DuClare",max=3,missions=1024)
+    bingo_options(231)=(event="DuClareKeys",desc="Get 3 unique keys around Chateau DuClare",max=3,missions=1024)
     bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",desc_singular="Collect 1 locker key inside the superfreighter",max=2,missions=512)
     bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out! (%s)",max=18,missions=40830)
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=38782)
