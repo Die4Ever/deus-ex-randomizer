@@ -68,7 +68,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     local Augmentation a;
     local string str, timestamp;
 
-    timestamp = fmtTimeToString(GetTotalAllTime());
+    timestamp = GetTotalTimeString();
 
     for(s = p.SkillSystem.FirstSkill; s!=None; s=s.next) {
         str = str @ s.SkillName $ ":" $ s.CurrentLevel $ ",";
@@ -328,6 +328,11 @@ function int GetTotalCompleteMenuTime()
     }
 
     return totaltime;
+}
+
+function string GetTotalTimeString()
+{
+    return fmtTimeToString(GetTotalAllTime());
 }
 
 function int GetTotalAllTime()

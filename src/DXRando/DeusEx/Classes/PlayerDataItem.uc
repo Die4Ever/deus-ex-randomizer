@@ -155,7 +155,7 @@ simulated function int GetBingoMissionMask(int x, int y)
     return bingo_missions_masks[x*5+y];
 }
 
-simulated function bool IncrementBingoProgress(string event, bool ifNotFailed)
+simulated function bool IncrementBingoProgress(string event, bool ifNotFailed, string timestamp)
 {
     local int i;
     for(i=0; i<ArrayCount(bingo); i++) {
@@ -169,7 +169,7 @@ simulated function bool IncrementBingoProgress(string event, bool ifNotFailed)
             break;
         }
         bingo[i].progress++;
-        log("IncrementBingoProgress "$event$": " $ bingo[i].progress $" / "$ bingo[i].max, self.class.name);
+        log("IncrementBingoProgress " $ timestamp @ (i/5) $", " $ (i%5) @ event$": " $ bingo[i].progress $" / "$ bingo[i].max @ bingo_missions_masks[i], self.class.name);
         ExportBingoState();
         return bingo[i].progress == bingo[i].max;
     }
@@ -178,6 +178,7 @@ simulated function bool IncrementBingoProgress(string event, bool ifNotFailed)
 
 simulated function bool MarkBingoAsFailed(string event)
 {
+    local DXRStats stats;
     local int i;
 
     if (class'DXREvents'.static.BingoGoalCanFail(event) == false) return false;
@@ -190,7 +191,8 @@ simulated function bool MarkBingoAsFailed(string event)
 
         bingo_missions_masks[i] = bingo_missions_masks[i] | FAILED_MISSION_MASK;
         bingo[i].progress = 0;
-        log("MarkBingoAsFailed "$event);
+        stats = DXRStats(class'DXRStats'.static.Find());
+        log("MarkBingoAsFailed "$ stats.GetTotalTimeString() @ (i/5)$", "$(i%5) @ event @ bingo_missions_masks[i], self.class.name);
         ExportBingoState();
         return true;
     }
