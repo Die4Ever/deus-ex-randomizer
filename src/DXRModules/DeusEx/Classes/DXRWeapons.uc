@@ -101,8 +101,18 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
     ratio = new_damage/float(w.default.HitDamage);
 
     switch(p) {
+#ifdef injections
+    case class'DXRDart':
+#endif
     case class'#var(prefix)Dart':
         if(#defined(vmd)) p.default.Damage = ratio * 20.0;
+#ifdef injections
+        else if(class'MenuChoice_BalanceItems'.static.IsEnabled()) {
+            p = class'DXRDart';
+            d = p;
+            p.default.Damage = ratio * 17.0;
+        }
+#endif
         else p.default.Damage = ratio * 15.0;
         p.default.Damage = Max(p.default.Damage, 2);
         break;

@@ -1,6 +1,7 @@
 class DXRMenuSetupRando extends DXRMenuBase;
 
 var float combatDifficulty;
+var int starting_locations, goals_rando;
 
 var string SplitsBtnTitle, SplitsBtnMessage;
 
@@ -64,14 +65,16 @@ function BindControls(optional string action)
     BreakLine();
 
 #ifndef hx
-    NewMenuItem("", "Randomize starting locations on certain maps.");
+    starting_locations = NewMenuItem("", "Randomize starting locations on certain maps.");
     EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
     EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
 #endif
 
-    NewMenuItem("", "Randomize goal locations on certain maps.");
+    goals_rando = NewMenuItem("", "Randomize goal locations on certain maps.");
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
+    EnumOption("Goal Location Hints", 101, f.settings.goals);
+    EnumOption("Goal Location Spoilers", 102, f.settings.goals);
 
     BreakLine();
 #ifndef hx

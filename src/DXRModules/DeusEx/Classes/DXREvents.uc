@@ -303,6 +303,7 @@ function SetWatchFlags() {
     local #var(prefix)Button1 button;
     local #var(prefix)VialCrack zyme;
     local #var(prefix)ControlPanel conPanel;
+    local #var(prefix)SatelliteDish satDish;
     local Dispatcher disp;
     local int i;
     local DXRRaceTimerStart raceStart;
@@ -322,8 +323,38 @@ function SetWatchFlags() {
 
     switch(dxr.localURL) {
     //#region Training
+    case "00_Training":
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-60,830,-40));
+        raceStart.SetCollisionSize(150,100);
+        raceStart.raceName="Training Section 1";
+        raceStart.targetTime=120; //2:00
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(4800,-4680,30));
+        checkPoint.SetCollisionSize(100,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+        break;
+    case "00_TrainingCombat":
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-110,0,-50));
+        raceStart.SetCollisionSize(100,100);
+        raceStart.raceName="Training Section 2 (Combat)";
+        raceStart.targetTime=150; //2:30
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(4950,-250,-20));
+        checkPoint.SetCollisionSize(100,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+        break;
     case "00_TrainingFinal":
         WatchFlag('m00meetpage_Played');
+
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-200,-500,-50));
+        raceStart.SetCollisionSize(100,100);
+        raceStart.raceName="Training Section 3 (Final)";
+        raceStart.targetTime=90; //1:30
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(6575,-5700,100));
+        checkPoint.SetCollisionSize(100,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+
         break;
     //#endregion
 
@@ -1530,9 +1561,10 @@ function SetWatchFlags() {
         //Same location in Revision and Vanilla
         bt = class'BingoTrigger'.static.Create(self,'OceanLabShed',vectm(618.923523,4063.243896,-391.901031),160,40);
 
-        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2717.3,3874.84,1342),100,100);
-        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3771,1571),100,100);
-        class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',vectm(2817,3965,1839),100,100);
+        //Put a shootable bingo trigger on every satellite dish in the level.  In Revision, this includes an extra tower with dishes
+        foreach AllActors(class'#var(prefix)SatelliteDish', satDish) {
+            class'BingoTrigger'.static.ShootCreate(self,'SubBaseSatellite',satDish.Location,satDish.CollisionRadius+5,satDish.CollisionHeight+5);
+        }
         break;
     //#endregion
 
@@ -2869,7 +2901,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"There is a chapter in the 'Ton hotel.";
             } else if (mission<=6){
                 msg=msg$"There is a chapter in the Wan Chai Market.";
-            } else if (mission<=9){
+            } else if (mission<=9 && class'DXRando'.default.dxr.localURL!="09_NYC_GRAVEYARD"){
                 msg=msg$"There is a chapter in the lower decks of the Superfreighter.";
             } else if (mission<=10){
                 msg=msg$"There is a chapter in the DuClare Chateau.";
@@ -3901,7 +3933,7 @@ defaultproperties
     bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
     bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
-    bingo_options(231)=(event="DuClareKeys",desc="Collect 3 different keys around Chateau DuClare",max=3,missions=1024)
+    bingo_options(231)=(event="DuClareKeys",desc="Get 3 unique keys around Chateau DuClare",max=3,missions=1024)
     bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",desc_singular="Collect 1 locker key inside the superfreighter",max=2,missions=512)
     bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out! (%s)",max=18,missions=40830)
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=38782)

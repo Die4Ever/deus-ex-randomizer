@@ -83,6 +83,7 @@ defaultproperties
     HealthLegLeft=200
     HealthLegRight=200
     HealthTorso=200
+    HomeTag=Start  //Makes him return to his original location (HomeLoc)
     ReducedDamageType=Radiation
     lastHint=-1
     greetings(0)="Whaddaya buyin'?"

@@ -20,7 +20,7 @@ function CheckConfig()
     min_datacube_distance = 75*16;
     camera_swing_angle = 8192;
     camera_fov = 5000;//default is 4096
-    camera_range = 100*16;//default is 1024 aka 64 feet
+    camera_range = 80*16;//default is 1024 aka 64 feet, beep sound range is 1280 aka 80 feet
     camera_swing_period = 8;//seconds?
     camera_ceiling_pitch = -4000;//the angle to look down when against a ceiling
 

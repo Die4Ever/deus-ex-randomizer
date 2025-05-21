@@ -9,6 +9,7 @@ var Rotator ShakeRotator;
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
     local float augLevel;
+    local bool headGone, torsoGone, leftLegGone, rightLegGone, LeftArmGone, rightArmGone;
 
     if(Level.LevelAction != LEVACT_None) return;
 
@@ -28,7 +29,22 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             drugEffectTimer+=3.0;
         }
     }
+
+    headGone     = HealthHead     <= 0;
+    torsoGone    = HealthTorso    <= 0;
+    leftLegGone  = HealthLegLeft  <= 0;
+    rightLegGone = HealthLegRight <= 0;
+    leftArmGone  = HealthArmLeft  <= 0;
+    rightArmGone = HealthArmRight <= 0;
+
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+
+    if (!headGone && HealthHead <= 0)         class'DXRStats'.static.AddBodyPartLoss(self,"Head");
+    if (!torsoGone && HealthTorso <= 0)       class'DXRStats'.static.AddBodyPartLoss(self,"Torso");
+    if (!leftLegGone && HealthLegLeft <= 0)   class'DXRStats'.static.AddBodyPartLoss(self,"LeftLeg");
+    if (!rightLegGone && HealthLegRight <= 0) class'DXRStats'.static.AddBodyPartLoss(self,"RightLeg");
+    if (!leftArmGone && HealthArmLeft <= 0)   class'DXRStats'.static.AddBodyPartLoss(self,"LeftArm");
+    if (!rightArmGone && HealthArmRight <= 0) class'DXRStats'.static.AddBodyPartLoss(self,"RightArm");
 }
 
 function RandomizeAugStates()

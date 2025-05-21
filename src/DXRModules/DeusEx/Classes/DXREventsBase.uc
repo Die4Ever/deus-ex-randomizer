@@ -1113,8 +1113,9 @@ static function string GetLoadoutName(DXRando dxr)
 simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
-    local string event, desc;
-    local int progress, max, num_bingos;
+    local DXRStats stats;
+    local string event, desc, timestamp;
+    local int progress, max, num_bingos, x, y;
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
@@ -1132,6 +1133,15 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     } else {
         SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
         _CreateBingoBoard(data, dxr.flags.settings.starting_map, dxr.flags.bingo_duration);
+    }
+
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+    if(stats!=None) timestamp = stats.GetTotalTimeString();
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max);
+            info("Bingo state " $ timestamp $ ": " $ x $ ", " $ y $ ", " $ event $ ", " $ progress $ ", " $ max $ ", " $ data.bingo_missions_masks[x*5+y] $ ", " $ desc);
+        }
     }
 }
 
@@ -1412,7 +1422,8 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
 {
     local int previousbingos, nowbingos, time;
     local PlayerDataItem data;
-    local string j;
+    local DXRStats stats;
+    local string j, timestamp;
     local #var(PlayerPawn) p;
     local class<Json> js;
     js = class'Json';
@@ -1433,7 +1444,10 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
 
     MarkBingoFailedEvents(eventName); //Making progress on one bingo goal might imply that another has failed
 
-    if( ! data.IncrementBingoProgress(eventname, ifNotFailed)) return;
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+    if(stats!=None) timestamp = stats.GetTotalTimeString();
+
+    if( ! data.IncrementBingoProgress(eventname, ifNotFailed, timestamp)) return;
 
     nowbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") previousbingos: "$previousbingos$", nowbingos: "$nowbingos);

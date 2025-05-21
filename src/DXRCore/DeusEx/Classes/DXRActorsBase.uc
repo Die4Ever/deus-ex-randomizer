@@ -560,6 +560,13 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
     return true;
 }
 
+function SetPawnLocAsHome(#var(prefix)ScriptedPawn p)
+{
+    p.ClearHomeBase();
+    p.HomeTag='Start';
+    p.InitializeHomeBase();
+}
+
 function RemoveFears(ScriptedPawn p)
 {
     if( p == None ) {
@@ -2036,6 +2043,7 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
     return Spawn(what,,, loc, spawnedRot);
 }
 
+//#region Unit Handling
 //Unit Conversion functions
 static function float GetRealDistance(float dist){
     if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
@@ -2104,3 +2112,4 @@ static function string GetMassUnit()
         return "kg";
     }
 }
+//#endregion
