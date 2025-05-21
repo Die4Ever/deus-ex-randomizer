@@ -2413,6 +2413,12 @@ function string RemapBingoEvent(string eventname)
         case "Savage_assistant_F_PlayerDead":
         case "LDDPVanSci_PlayerDead":
             return "Ex51";
+        case "BodyPartLoss_LeftLeg":
+        case "BodyPartLoss_RightLeg":
+        case "BodyPartLoss_LeftArm":
+        case "BodyPartLoss_RightArm":
+            _MarkBingo("LostLimbs"); //Split into another event, but still return this one as-is
+            return eventname;
         default:
             return eventname;
     }
