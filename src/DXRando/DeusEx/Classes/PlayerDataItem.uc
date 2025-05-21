@@ -289,6 +289,18 @@ simulated function ExportBingoState()
         break;
     }
 
+    if(dxr.OnTitleScreen() || currentMission == 98) {
+        for(i=0; i<ArrayCount(bingo); i++) {
+            bingoexport[i].event = "?";
+            bingoexport[i].desc = "?";
+            bingoexport[i].progress = 0;
+            bingoexport[i].max = 1;
+            bingoexport[i].active = 0;
+        }
+        SaveConfig();
+        return;
+    }
+
     for(i=0; i<ArrayCount(bingo); i++) {
         bingoexport[i].event = bingo[i].event;
         bingoexport[i].desc = bingo[i].desc;
