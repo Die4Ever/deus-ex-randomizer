@@ -37,6 +37,7 @@ var #var(flagvarprefix) int newgameplus_max_item_carryover;
 var #var(flagvarprefix) int newgameplus_num_skill_downgrades;
 var #var(flagvarprefix) int newgameplus_num_removed_augs;
 var #var(flagvarprefix) int newgameplus_num_removed_weapons;
+var #var(flagvarprefix) int newgameplus_total_time, newgameplus_retries_time;
 
 var #var(flagvarprefix) int clothes_looting;
 
@@ -335,6 +336,8 @@ simulated function string BindFlags(int mode, optional string str)
     if(mode != Hashing) {
         // things that don't affect the flagshash, but come after SetDifficulty (so they don't get overwritten)
         FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
+        FlagInt('Rando_newgameplus_total_time', newgameplus_total_time, mode, str);
+        FlagInt('Rando_newgameplus_retries_time', newgameplus_retries_time, mode, str);
     }
 
     FlagInt('Rando_maxrando', maxrando, mode, str);
@@ -635,6 +638,10 @@ simulated function string flagNameToHumanName(name flagname){
             return "New Game+ Removed Augmentations Per Loop";
         case 'Rando_num_removed_weapons':
             return "New Game+ Removed Weapons Per Loop";
+        case 'Rando_newgameplus_total_time':
+            return "Total Time of Previous Loops";
+        case 'Rando_newgameplus_retries_time':
+            return "Retries Time of Previous Loops";
         case 'Rando_camera_mode':
             return "Camera Mode";
         case 'Rando_splits_overlay':
@@ -992,6 +999,11 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Looting Needed";
             }
             break;
+
+        // timers
+        case 'Rando_newgameplus_total_time':
+        case 'Rando_newgameplus_retries_time':
+            return class'DXRStats'.static.fmtTimeToString(val);
 
         default:
             err("flagValToHumanVal: " $ flagname @ val $ " is unhandled");

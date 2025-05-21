@@ -296,6 +296,7 @@ function int GetTotalAllTime()
 {
     local int i, total;
 
+    total = dxr.flags.newgameplus_total_time;
     for (i=1;i<=15;i++) {
         total += missions_times[i];
         total += missions_menu_times[i];
@@ -502,6 +503,10 @@ function AddMissionTimeTable(CreditsWindow cw)
 
     ctw = CreditsTimerWindow(cw.winScroll.NewChild(Class'CreditsTimerWindow'));
 
+    if(dxr.flags.newgameplus_total_time > 0) {
+        ctw.AddMissionTime(">", "Previous Loops", fmtTimeToString(dxr.flags.newgameplus_retries_time), fmtTimeToString(dxr.flags.newgameplus_total_time));
+    }
+
     for(i=1; i<=15; i++) {
         if(i==7 || i==13) continue;
         switch(i) {
@@ -538,6 +543,8 @@ function AddMissionTimeTable(CreditsWindow cw)
         completeTime += menuTime;
         dyingTime = completeTime - successTime - successMenuTime;
 
+        if(completeTime == 0) continue;
+
         ctw.AddMissionTime(string(i), s, fmtTimeToString(dyingTime), fmtTimeToString(completeTime));
     }
 
@@ -554,6 +561,12 @@ function AddMissionTimeTable(CreditsWindow cw)
         fmtTimeToString(dyingTimeWithoutMenusTotal + dyingTimeMenusTotal),
         fmtTimeToString(timeWithoutMenusTotal + timeMenusTotal)
     );
+    if(dxr.flags.newgameplus_total_time > 0) {
+        ctw.AddMissionTime(" ","Total Time With NG+",
+            fmtTimeToString(dyingTimeWithoutMenusTotal + dyingTimeMenusTotal + dxr.flags.newgameplus_retries_time),
+            fmtTimeToString(timeWithoutMenusTotal + timeMenusTotal + dxr.flags.newgameplus_total_time)
+        );
+    }
 }
 
 function QueryLeaderboard()

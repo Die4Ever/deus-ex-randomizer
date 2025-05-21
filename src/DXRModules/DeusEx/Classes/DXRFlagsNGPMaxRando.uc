@@ -166,6 +166,7 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRAugmentations augs;
     local DXRLoadouts loadouts;
+    local DXRStats stats;
     local int i, bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay, old_clothes_looting;
     local float exp;
     local int randomStart;
@@ -305,6 +306,11 @@ function NewGamePlus()
         RemoveRandomWeapon(p);
 
     p.AugmentationSystem.DeactivateAll();
+
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+    i = stats.GetTotalAllTime();
+    newgameplus_retries_time += (i - newgameplus_total_time) - stats.GetTotalTime(dxr);
+    newgameplus_total_time = i;
 
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();
