@@ -343,7 +343,11 @@ function DrawWindow(GC gc)
     y = 4;
     DrawHeader(gc);
 
-    DrawSplits(gc, cur);
+    if(stats.dxr != None && stats.dxr.flags.IsWaltonWare()) {
+        DrawWaltonWare(gc);
+    } else {
+        DrawSplits(gc, cur);
+    }
 
     DrawFooter(gc);
 }
@@ -410,6 +414,34 @@ function DrawFooter(GC gc)
         gc.SetAlignments(HALIGN_Left, VALIGN_Top);
         gc.SetTextColor(colorText);
         gc.DrawText(x+x_pos, y+ty_pos, notesWidth, notesHeight, notes);
+    }
+}
+
+function DrawWaltonWare(GC gc)
+{
+    local int curTime, total, prevTotal;
+    local DXRFlags flags;
+    local string msg;
+
+    flags = stats.dxr.flags;
+    total = TotalTime();
+
+    gc.SetAlignments(HALIGN_Left, VALIGN_Top);
+
+    prevTotal = flags.newgameplus_total_time;
+    if(prevTotal > 0) {
+        DrawTextLine(gc, "Loop " $ flags.newgameplus_loops, "", colorText, x, y, fmtTime(prevTotal), true);
+        y += text_height;
+    }
+
+    curTime = total - prevTotal;
+    DrawTextLine(gc, "CUR:", fmtTime(curTime), colorText, x, y, fmtTime(total), true);
+    y += text_height;
+
+    if(showAverage) {
+        msg = fmtTimeSeg(prevTotal / flags.newgameplus_loops);
+        DrawTextLine(gc, "AVG:", msg, colorText, x, y, "", true);
+        y += text_height;
     }
 }
 
