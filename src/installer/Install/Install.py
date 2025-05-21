@@ -183,7 +183,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
 
 def MakeShortcut(exe: Path, name: str, settings: dict):
-    if settings['shortcuts']:
+    if settings.get('shortcuts'):
         try:
             Shortcut(shortcut_name=name, exec_path=str(exe.absolute()), desktop=True, start_menu=True)
             settings['created_shortcuts'] = True

@@ -322,7 +322,7 @@ class InstallerWindow(GUIBase):
             installedflavorstext = 'Done.'
 
         extra = ''
-        if globalsettings['created_shortcuts']:
+        if globalsettings.get('created_shortcuts'):
             extra += '\nCreated shortcuts'
         if flavors.get('Vanilla', {}).get('install') and IsWindows():
             extra += '\nCreated DXRando.exe'
