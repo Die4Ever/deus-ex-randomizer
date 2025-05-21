@@ -883,10 +883,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             //sp.SetHomeBase(Loc.positions[i].pos,Loc.positions[i].rot);
             //sp.HomeTag='Start';  //Make sure to reset it afterwards, in case you want to shuffle them again
 
-            //This code, which seems to be functionally equivalent (except the pawn has to be at the location) works
-            sp.ClearHomeBase();
-            sp.HomeTag='Start';
-            sp.InitializeHomeBase();
+            //This code (in SetPawnLocAsHome), which seems to be functionally equivalent (except the pawn has to be at the location) works
+            SetPawnLocAsHome(sp);
         }
 
     }

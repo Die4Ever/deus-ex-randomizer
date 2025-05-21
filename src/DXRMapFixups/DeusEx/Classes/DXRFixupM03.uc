@@ -92,6 +92,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AllianceTrigger at;
     local #var(prefix)WeaponShuriken tk;
     local #var(prefix)JuanLebedev juan;
+    local #var(prefix)ScriptedPawn sp;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -338,6 +339,17 @@ function PreFirstEntryMapFixes()
                 ot.Destroy();
                 break;
             }
+
+            //Give HomeTag's to important people so they return to their original location if spooked
+            //Charlie, El Rey, and the Ex-Mole Person already have a Start HomeTag set.
+            foreach AllActors(class'#var(prefix)ScriptedPawn', sp){
+                switch(sp.BindName){
+                    case "DrugDealer": //Rock
+                    case "Lenny": //Lenny
+                        SetPawnLocAsHome(sp);
+                        break;
+                }
+            }
         }
 
         if (VanillaMaps){
@@ -449,9 +461,7 @@ function PreFirstEntryMapFixes()
         //but it's at least a sometimes improvement?
         if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             foreach AllActors(class'#var(prefix)JuanLebedev',juan){
-                juan.ClearHomeBase(); //He shouldn't have one, but clear it for good measure
-                juan.HomeTag='Start';
-                juan.InitializeHomeBase();
+                SetPawnLocAsHome(juan);
             }
         }
 
