@@ -129,6 +129,7 @@ function IncMissionTimer(int mission)
     }
 }
 
+//#region Get Times
 function int GetCompleteMissionTime(int mission)
 {
     local string flagname;
@@ -198,50 +199,6 @@ function int GetMissionMenuTime(int mission)
     time = dxr.flagbase.GetInt(flag);
 
     return time;
-}
-
-function Timer()
-{
-    if( dxr == None ) return;
-    //Increment timer flag
-    IncMissionTimer(dxr.dxInfo.MissionNumber);
-}
-
-static function string fmtTimeToString(int time, optional bool hidehours, optional bool hidetenths, optional bool bShort)
-{
-    local int hours,minutes,seconds,tenths,remain;
-    local string timestr;
-
-    tenths = time % 10;
-    remain = (time - tenths)/10;
-    seconds = remain % 60;
-
-    remain = (remain - seconds)/60;
-    minutes = remain % 60;
-
-    hours = (remain - minutes)/60;
-
-    if(hours>0 || !hidehours) {
-        if (hours < 10 && !bShort) {
-            timestr="0";
-        }
-        timestr=timestr$hours$":";
-    }
-
-    if (minutes < 10) {
-        timestr=timestr$"0";
-    }
-    timestr=timestr$minutes$":";
-
-    if (seconds < 10) {
-        timestr=timestr$"0";
-    }
-    timestr=timestr$seconds;
-    if(!hidetenths) {
-        timestr = timestr $ "."$tenths;
-    }
-
-    return timestr;
 }
 
 function string GetMissionTimeString(int mission)
@@ -362,6 +319,52 @@ static function int GetTotalMenuTime(DXRando dxr)
     }
 
     return totaltime;
+}
+//#endregion
+
+
+function Timer()
+{
+    if( dxr == None ) return;
+    //Increment timer flag
+    IncMissionTimer(dxr.dxInfo.MissionNumber);
+}
+
+static function string fmtTimeToString(int time, optional bool hidehours, optional bool hidetenths, optional bool bShort)
+{
+    local int hours,minutes,seconds,tenths,remain;
+    local string timestr;
+
+    tenths = time % 10;
+    remain = (time - tenths)/10;
+    seconds = remain % 60;
+
+    remain = (remain - seconds)/60;
+    minutes = remain % 60;
+
+    hours = (remain - minutes)/60;
+
+    if(hours>0 || !hidehours) {
+        if (hours < 10 && !bShort) {
+            timestr="0";
+        }
+        timestr=timestr$hours$":";
+    }
+
+    if (minutes < 10) {
+        timestr=timestr$"0";
+    }
+    timestr=timestr$minutes$":";
+
+    if (seconds < 10) {
+        timestr=timestr$"0";
+    }
+    timestr=timestr$seconds;
+    if(!hidetenths) {
+        timestr = timestr $ "."$tenths;
+    }
+
+    return timestr;
 }
 
 
