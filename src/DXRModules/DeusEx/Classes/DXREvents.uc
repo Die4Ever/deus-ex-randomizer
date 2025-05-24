@@ -1272,12 +1272,16 @@ function SetWatchFlags() {
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
         if (RevisionMaps){
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2016,785,144),40,20);  //Actual Front Door
+            bt.bDestroyOthers = false;
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(255,-305,80),40,10);  //Front Door
             bt.bDestroyOthers = false;
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-56),20,10);  //Back Door
             bt.bDestroyOthers = false;
 
         } else {
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2064,595,144),40,20);  //Actual Front Door
+            bt.bDestroyOthers = false;
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(290,-32,128),40,20);  //Front Door
             bt.bDestroyOthers = false;
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-72),20,10);  //Back Door
@@ -2648,7 +2652,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "TerroristCommander_PlayerDead":
             return "Kill Leo Gold, the terrorist commander on Liberty Island.  You must kill him yourself.";
         case "TiffanySavage_Dead":
-            return "Let Tiffany Savage die (or kill her yourself).  She is being held hostage at the gas station.";
+        case "TiffanySavage_PlayerDead":
+            return "Kill Tiffany Savage.  She is being held hostage at the gas station.  You must kill her yourself.";
         case "PaulDenton_Dead":
             return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel.";
         case "JordanShea_Dead":
@@ -2982,7 +2987,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "MolePeopleSlaughtered":
             return "Kill most of the friendly mole people in the tunnels leading to Lebedev's private terminal at LaGuardia.";
         case "surrender":
-            return "Find the leader of the NSF in the mole people tunnels and let him surrender.";
+            return "Find the leader of the NSF in the hidden room of the mole people tunnels and let him surrender.";
         case "nanocage":
             return "Open the greasel cages in the MJ12 lab underneath UNATCO HQ.";
         case "unbirth":
@@ -3701,7 +3706,7 @@ defaultproperties
 {
 //#region Bingo Options
     bingo_options(0)=(event="TerroristCommander_PlayerDead",desc="Kill the Terrorist Commander",max=1,missions=2)
-	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1,missions=4096)
+	bingo_options(1)=(event="TiffanySavage_PlayerDead",desc="Give it your best shot",max=1,missions=4096)
 	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1,missions=16)
 	bingo_options(3)=(event="JordanShea_PlayerDead",desc="Kill Jordan Shea",max=1,missions=276)
 	bingo_options(4)=(event="SandraRenton_PlayerDead",desc="Kill Sandra Renton",max=1,missions=4372)
@@ -3827,7 +3832,7 @@ defaultproperties
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1,missions=32768)
     bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1,missions=512)
     bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1,missions=8)
-    bingo_options(112)=(event="surrender",desc="Make the NSF surrender in the Mole People tunnels",max=1,missions=8)
+    bingo_options(112)=(event="surrender",desc="Make the NSF surrender in the tunnels",max=1,missions=8)
     bingo_options(113)=(event="nanocage",desc="Open the cages in the UNATCO MJ12 Lab",max=1,missions=32)
 #ifdef vanilla
     bingo_options(114)=(event="unbirth",desc="Return to the tube that spawned you",max=1,missions=32768)
@@ -3880,7 +3885,7 @@ defaultproperties
     bingo_options(158)=(event="mirrordoor",desc="Access Smuggler's secret stash",max=1,missions=276)
     bingo_options(159)=(event="MolePeopleWater",desc="Bathe in the Mole People water supply",max=1,missions=8)
     bingo_options(160)=(event="botorders2",desc="Alter the bot AI in the MJ12 base under UNATCO",max=1,missions=32)
-    bingo_options(161)=(event="BathroomFlags",desc="Place a flag in Manderley's bathroom %s times",desc_singular="Place a flag in Manderley's bathroom 1 time",max=3,missions=58)
+    bingo_options(161)=(event="BathroomFlags",desc="Put a flag in Manderley's bathroom %s times",desc_singular="Put a flag in Manderley's bathroom 1 time",max=3,missions=58)
     bingo_options(162)=(event="SiloSlide",desc="Take the silo slide",max=1,missions=16384)
     bingo_options(163)=(event="SiloWaterTower",desc="Climb the water tower at the silo",max=1,missions=16384)
     bingo_options(164)=(event="TonThirdFloor",desc="Go to the third floor of the 'Ton",max=1,missions=276)
@@ -3956,7 +3961,7 @@ defaultproperties
     bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
     bingo_options(231)=(event="DuClareKeys",desc="Get 3 unique keys around Chateau DuClare",max=3,missions=1024)
-    bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",desc_singular="Collect 1 locker key inside the superfreighter",max=2,missions=512)
+    bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the super freighter",desc_singular="Collect 1 locker key inside the super freighter",max=2,missions=512)
     bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out! (%s)",max=18,missions=40830)
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=38782)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
@@ -3976,7 +3981,7 @@ defaultproperties
     bingo_options(247)=(event="WaltonConvos",desc="Have %s conversations with Walton Simons",desc_singular="Have 1 conversation with Walton Simons",max=3,missions=51256)
     bingo_options(248)=(event="OceanLabShed",desc="Enter the shed on shore at the Ocean Lab",max=1,missions=16384)
     bingo_options(249)=(event="DockBlastDoors",desc="Open %s bunker blast doors in the dockyard",desc_singular="Open 1 bunker blast door in the dockyard",max=3,missions=512)
-    bingo_options(250)=(event="ShipsBridge",desc="Enter the bridge of the superfreighter",max=1,missions=512)
+    bingo_options(250)=(event="ShipsBridge",desc="Enter the bridge of the super freighter",max=1,missions=512)
     bingo_options(251)=(event="BeatTheMeat",desc="Beat the meat %s times",desc_singular="Beat the meat 1 time",max=15,missions=2624)
     bingo_options(252)=(event="FamilySquabbleWrapUpGilbertDead_Played",desc="What a shame",max=1,missions=16)
     bingo_options(253)=(event="CrackSafe",desc="Crack %s safes",desc_singular="Crack 1 safe",max=3,missions=516)
@@ -4017,7 +4022,7 @@ defaultproperties
     bingo_options(286)=(event="Area51SteamValve",desc="Close the steam valves in Area 51",max=2,missions=32768)
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",desc_singular="Deactivate 1 laser grid under the dockyard",max=3,missions=512)
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
-    bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the superfreighter",max=1,missions=512)
+    bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the super freighter",max=1,missions=512)
     bingo_options(290)=(event="11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
     bingo_options(291)=(event="A51ExplosiveLocker",desc="Enter the explosives locker in Area 51",max=1,missions=32768)
     bingo_options(292)=(event="A51SeparationSwim",desc="Swim in the Area 51 separation tank",max=1,missions=32768)
@@ -4165,7 +4170,7 @@ defaultproperties
     mutually_exclusive(58)=(e1="Karkian_ClassDead",e2="PetKarkians")
     mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
     mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
-    mutually_exclusive(61)=(e1="TiffanySavage_Dead",e2="TiffanyHeli")
+    mutually_exclusive(61)=(e1="TiffanySavage_PlayerDead",e2="TiffanyHeli")
     mutually_exclusive(62)=(e1="LebedevLived",e2="AnnaNavarre_DeadM3")
     mutually_exclusive(63)=(e1="LebedevLived",e2="AnnaNavarre_DeadM4")
     mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
