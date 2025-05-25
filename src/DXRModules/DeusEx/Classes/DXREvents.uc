@@ -3538,7 +3538,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "EnterUC":
             return "Step into enough Universal Constructors throughout the game.  There are five available:|n - One in the computer section of Vandenberg|n - One in the bottom of the Ocean Lab|n - Three in the very bottom of Area 51";
         case "VandenbergComputerElec":
-            return "Disable enough electrical panels in the computer room of Vandenberg.  There's very little risk!";
+            return "Disable both electrical panels in the computer room of Vandenberg.  There's very little risk!";
         case "VandenbergGasSwim":
             return "Go swimming in the water around the base of the two gas tanks outside of the Vandenberg command center.";
         case "SiloAttic":
@@ -4040,7 +4040,7 @@ defaultproperties
     bingo_options(300)=(event="VandenbergHazLab",desc="Shut off the electricity in the Hazard Lab",max=1,missions=4096)
     bingo_options(301)=(event="WatchKeys_maintenancekey",desc="Find the Vandenberg tunnel maintenance key",max=1,missions=4096)
     bingo_options(302)=(event="EnterUC",desc="Enter %s Universal Constructors",desc_singular="Enter 1 Universal Constructor",max=3,missions=53248)
-    bingo_options(303)=(event="VandenbergComputerElec",desc="Disable %s electrical panels in the Vandenberg computer room",desc_singular="Disable 1 electrical panel in the Vandenberg computer room",max=2,missions=4096)
+    bingo_options(303)=(event="VandenbergComputerElec",desc="There's very little risk",max=2,missions=4096, do_not_scale=true)
     bingo_options(304)=(event="VandenbergGasSwim",desc="Swim around the Vandenberg gas tanks",max=1,missions=4096)
     bingo_options(305)=(event="SiloAttic",desc="Enter the attic at the Silo",max=1,missions=16384)
     bingo_options(306)=(event="SubBaseSatellite",desc="Shoot a satellite dish at the sub base",max=1,missions=16384)
