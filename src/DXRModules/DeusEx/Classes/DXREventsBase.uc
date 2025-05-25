@@ -17,6 +17,7 @@ struct BingoOption {
     var string event, desc, desc_singular;
     var int max;
     var int missions;// bit masks
+    var bool do_not_scale;
 };
 var() BingoOption bingo_options[400]; //Update the comment at the bottom of the defaultproperties in DXREvents when this gets bigger
 
@@ -1161,6 +1162,15 @@ simulated function CreateBingoBoard(optional int starting_map)
     _CreateBingoBoard(data, starting_map, dxr.flags.bingo_duration);
 }
 
+simulated function bool ShouldAppendMax(int max, bool do_not_scale, string desc)
+{
+    if (max<=1) return false; //If the maximum is 1 (or less, somehow?) we don't need to show the max
+    if (do_not_scale) return false; //If the goal doesn't scale, don't add a maximum (it's presumably implied?)
+    if (InStr(desc, "%s") != -1) return false; //If there's already a spot for the maximum in the description
+
+    return true;
+}
+
 // a nice, convenient function to test some specified goal
 function bool AddTestGoal(
     PlayerDataItem data,
@@ -1173,6 +1183,7 @@ function bool AddTestGoal(
 {
     local int bingoIdx;
     local string desc;
+    local bool do_not_scale, append_max;
     local float f;
 
     if (event == "") return false;
@@ -1186,7 +1197,8 @@ function bool AddTestGoal(
         missions = bingo_options[bingoIdx].missions;
 
     desc = bingo_options[bingoIdx].desc;
-    if (bingo_options[bingoIdx].max > 1 && InStr(desc, "%s") != -1) {
+    do_not_scale = bingo_options[bingoIdx].do_not_scale;
+    if (bingo_options[bingoIdx].max > 1 && do_not_scale==false) {
         if(max == 0)
             max = ScaleBingoGoalMax(bingo_options[bingoIdx].max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,missions);
 
@@ -1196,6 +1208,7 @@ function bool AddTestGoal(
             desc = sprintf(desc, max);
         }
     }
+    append_max = ShouldAppendMax(max,do_not_scale,bingo_options[bingoIdx].desc);
 
     data.SetBingoSpot(
         boardIdx % 5,
@@ -1204,7 +1217,8 @@ function bool AddTestGoal(
         desc,
         0,
         max,
-        missions
+        missions,
+        append_max
     );
 
     return true;
@@ -1217,7 +1231,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local string event, desc;
     local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions;
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
-    local bool bPossible;
+    local bool bPossible, do_not_scale, append_max;
     local float f;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
@@ -1335,8 +1349,9 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             desc = bingo_options[i].desc;
             missions = bingo_options[i].missions;
             max = bingo_options[i].max;
+            do_not_scale = bingo_options[i].do_not_scale;
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
-            if(max > 1 && InStr(desc, "%s") != -1) {
+            if(max > 1 && do_not_scale==false) {
                 max = ScaleBingoGoalMax(max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,end_mission_mask);
 
                 if (max == 1 && bingo_options[i].desc_singular != "") {
@@ -1345,11 +1360,12 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
                     desc = sprintf(desc, max);
                 }
             }
+            append_max = ShouldAppendMax(max,do_not_scale,bingo_options[i].desc);
             desc = tweakBingoDescription(event,desc);
 
             num_options--;
             options[slot] = options[num_options];
-            data.SetBingoSpot(x, y, event, desc, 0, max, missions);
+            data.SetBingoSpot(x, y, event, desc, 0, max, missions, append_max);
         }
     }
 

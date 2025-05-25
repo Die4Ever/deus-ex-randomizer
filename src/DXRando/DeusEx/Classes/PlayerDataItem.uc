@@ -24,6 +24,7 @@ struct BingoSpot {
 };
 var travel BingoSpot bingo[25];
 var travel int bingo_missions_masks[25];// can't be inside the travel struct because that breaks compatibility with old saves
+var travel int bingo_append_max[25]; //see above...
 
 struct BingoSpotExport {
     var string event;
@@ -141,18 +142,28 @@ function int GetBingoProgress(string event, optional out int max)
     return 0;
  }
 
-simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
+simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions, optional bool append_max)
 {
-    bingo[x*5+y].event = event;
-    bingo[x*5+y].desc = desc;
-    bingo[x*5+y].progress = progress;
-    bingo[x*5+y].max = max;
-    bingo_missions_masks[x*5+y] = missions;
+    local int idx;
+
+    idx = x*5+y;
+
+    bingo[idx].event = event;
+    bingo[idx].desc = desc;
+    bingo[idx].progress = progress;
+    bingo[idx].max = max;
+    bingo_missions_masks[idx] = missions;
+    bingo_append_max[idx] = int(append_max);
 }
 
 simulated function int GetBingoMissionMask(int x, int y)
 {
     return bingo_missions_masks[x*5+y];
+}
+
+simulated function bool GetBingoAppendMax(int x, int y)
+{
+    return bingo_append_max[x*5+y]==1;
 }
 
 simulated function bool IncrementBingoProgress(string event, bool ifNotFailed, string timestamp)
