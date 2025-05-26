@@ -486,6 +486,31 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "09_NYC_GRAVEYARD":
+        //Generator code datacube
+
+        //Behind bookshelf
+        datacubes_rules[i].item_name = 'EMGeneratorHintCube';
+        datacubes_rules[i].min_pos = vect(990, 700, 0);
+        datacubes_rules[i].max_pos = vect(1130, 850, 200);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Dowd's Safe
+        datacubes_rules[i].item_name = 'EMGeneratorHintCube';
+        datacubes_rules[i].min_pos = vect(-1400,70,-300);
+        datacubes_rules[i].max_pos = vect(-1375,90,-250);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Allowed everywhere else
+        datacubes_rules[i].item_name = 'EMGeneratorHintCube';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "10_PARIS_CATACOMBS":
         // make sure you can get to the book without needing to jump down
         datacubes_rules[i].item_name = '10_Book09';
@@ -1367,6 +1392,38 @@ function revision_datacubes_rules()
         i++;
         break;
 
+    case "09_NYC_GRAVEYARD":
+        //Generator code datacube
+
+        //Behind bookshelf
+        datacubes_rules[i].item_name = 'EMGeneratorHintCube';
+        datacubes_rules[i].min_pos = vect(990, 700, 0);
+        datacubes_rules[i].max_pos = vect(1130, 850, 200);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Dowd's Safe
+        datacubes_rules[i].item_name = 'EMGeneratorHintCube';
+        datacubes_rules[i].min_pos = vect(-1400,-2025,-300);
+        datacubes_rules[i].max_pos = vect(-1350,-2000,-250);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Don't allow in the underground catacombs or whatever
+        datacubes_rules[i].item_name = 'EMGeneratorHintCube';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,-1050);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Allowed everywhere else
+        datacubes_rules[i].item_name = 'EMGeneratorHintCube';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -1050);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "10_PARIS_ENTRANCE": //The level where you start on the roof
         // make sure you can get to the book without needing to jump down
         datacubes_rules[i].item_name = '10_Book09';
@@ -1789,7 +1846,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
         }
 #ifdef locdebug
         if(TextTag ~= "#var(locdebug)" && ("#var(locpackage)"==id.TextPackage || "#var(locpackage)"~="None" || "#var(locpackage)"=="" )){
-            DebugMarkKeyPosition(inv.Location, id.textTag);
+            DebugMarkKeyPosition(inv.Location, TextTag);
         }
 #endif
         temp[num++] = inv;
@@ -1806,7 +1863,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
             if( HasBased(c) ) continue;
 #ifdef locdebug
             if(TextTag ~= "#var(locdebug)" && ("#var(locpackage)"==id.TextPackage || "#var(locpackage)"~="None" || "#var(locpackage)"=="" )){
-                DebugMarkKeyPosition(c.Location, id.textTag);
+                DebugMarkKeyPosition(c.Location, TextTag);
             }
 #endif
             temp[num++] = c;

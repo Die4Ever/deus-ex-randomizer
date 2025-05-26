@@ -22,19 +22,26 @@ function FillBingoWindow(#var(PlayerPawn) player)
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
             bActiveMission = data.GetBingoSpot(x, y, event, desc, progress, max);
-            CreateBingoSpot(x, y, desc, progress, max, bActiveMission);
+            CreateBingoSpot(x, y, desc, progress, max, bActiveMission, data.GetBingoAppendMax(x,y));
         }
     }
 
 }
 
 // we can fit about 6 lines of text, about 14 characters wide
-function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, int bActiveMission)
+function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, int bActiveMission, bool append_max)
 {
     local BingoTile t;
     local int w, h;
+    local string final_text;
+
+    final_text = text;
+    if (append_max){
+        final_text = final_text $ " ("$max$")";
+    }
+
     t = BingoTile(NewChild(class'BingoTile'));
-    t.SetText(text);
+    t.SetText(final_text);
     t.SetWordWrap(true);
     t.SetTextAlignments(HALIGN_Center, VALIGN_Center);
     t.SetFont(Font'FontMenuSmall_DS');

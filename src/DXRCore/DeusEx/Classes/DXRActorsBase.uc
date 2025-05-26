@@ -1919,6 +1919,8 @@ function DebugMarkKeyActor(Actor a, coerce string id)
     actorDisplay.SetViewClass(a.class);
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(true);
+    if(!#defined(injections))
+        actorDisplay.ShowBindName(true);
 }
 
 function DebugMarkKeyPosition(vector pos, coerce string id)
