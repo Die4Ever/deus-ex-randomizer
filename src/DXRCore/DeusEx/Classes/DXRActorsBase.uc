@@ -985,7 +985,7 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function ConEventAddGoal GetGoalConvEventStatic(name goalName, Conversation con, optional int which, optional ConEvent prevCe)
+static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which, optional ConEvent prevCe)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
@@ -1005,9 +1005,9 @@ static function ConEventAddGoal GetGoalConvEventStatic(name goalName, Conversati
     return None;
 }
 
-function ConEventAddGoal GetGoalConvEvent(name goalName, name convname, optional int which, optional ConEvent prevCe)
+function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which, optional ConEvent prevCe)
 {
-    return GetGoalConvEventStatic(goalName, GetConversation(convname), which, prevCe);
+    return GetGoalConEventStatic(goalName, GetConversation(convname), which, prevCe);
 }
 
 // Creates or updates a goal with text taken from a Conversation
@@ -1016,7 +1016,7 @@ function DeusExGoal GiveGoalFromConv(#var(PlayerPawn) player, name goaltag, name
     local DeusExGoal goal;
     local ConEventAddGoal ceag;
 
-    ceag = GetGoalConvEvent(goaltag, convname, which);
+    ceag = GetGoalConEvent(goaltag, convname, which);
     if (ceag == None)
         return None;
     goal = player.FindGoal(goaltag);
@@ -1035,7 +1035,7 @@ function bool RemoveGoalFromConv(name goalName, name convname, optional int whic
 {
     local ConEvent prevCe;
 
-    GetGoalConvEvent(goalName, convname, which, prevCe);
+    GetGoalConEvent(goalName, convname, which, prevCe);
     if (prevCe != None && prevCe.nextEvent != None) {
         prevCe.nextEvent = prevCe.nextEvent.nextEvent;
         return true;

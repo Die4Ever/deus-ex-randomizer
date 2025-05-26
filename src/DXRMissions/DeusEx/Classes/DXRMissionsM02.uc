@@ -286,6 +286,14 @@ function AnyEntry()
     }
 }
 
+function AddMissionGoals()
+{
+    if (dxr.localURL == "02_NYC_BATTERYPARK") {
+        GiveGoalFromConv(player(), 'FindAmbrosia', 'AnnaDock');
+        RemoveGoalFromConv('FindAmbrosia', 'AnnaDock');
+    }
+}
+
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local Actor a;
