@@ -308,7 +308,9 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)Terrorist', nsf, 'GilbertTerrorist'){
                 class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',true,false,'GilbertTerrorist',,,,true,,,,true,); //WeaponFire, Distress
                 class'ListenAIEventTrigger'.static.Create(self,nsf.Location+vect(0,0,100),'GilbertHostageAlliance',false,true,'',,,,true,true,true,,,); //WeaponFire, Carcass, and LoudNoise
-                class'DXRNames'.static.GiveRandomName(dxr, nsf, true);
+                if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
+                    class'DXRNames'.static.GiveRandomName(dxr, nsf, true);
+                }
             }
 
             //The terrorist guarding Gilbert will no longer be ordered to attack the player
