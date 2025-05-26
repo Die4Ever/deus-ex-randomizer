@@ -113,7 +113,8 @@ function PreFirstEntry()
         if (dxr.flags.settings.starting_map >= 121) {
             RemoveJock('UN_BlackHeli');
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
-                dxMover.InterpolateTo(1, 0.0);
+                dxMover.bTriggerOnceOnly = true;
+                dxMover.Trigger(self, None);
                 break;
             }
             dxr.flagbase.SetBool('DL_TonyScared_Played', true,, 15); // You won't find cover in the comm building.
@@ -205,7 +206,8 @@ function RemoveJock(name jockTag)
 
     foreach AllActors(class'#var(prefix)BlackHelicopter', jock, jockTag) {
         log("Removing a BlackHelicopter from " $ dxr.localURL $ " with tag '" $ jock.tag $ "'");
-        jock.LeaveWorld();
+        jock.Event='';
+        jock.Destroy();
         break;
     }
 }

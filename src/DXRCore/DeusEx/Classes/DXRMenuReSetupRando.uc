@@ -55,6 +55,11 @@ function BindControls(optional string action)
     combatDifficulty = player.combatDifficulty;
     Super.BindControls(action);
 
+    if(!CheckSafeMap()) {
+        wnds[starting_locations].SetSensitivity(false);
+        wnds[goals_rando].SetSensitivity(false);
+    }
+
     if( action == "DONE" ) {
         if( ! #defined(hx||vmd) ) player.combatDifficulty = combatDifficulty;
         GetFlags().SaveFlags();
@@ -71,6 +76,28 @@ function EnumListAddButton(DXREnumList list, string title, string val, string he
     list.AddButton(val, help);
 }
 
+function bool CheckSafeMap()
+{
+    switch(GetDxr().dxInfo.missionNumber) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        //case 6: DTS and Gordon are cross-map goals
+        //case 8: the 3 people are cross-map goals
+        case 9:
+        //case 10: // Nicolette and Jaime are cross-map goals
+        case 11:
+        //case 12: // Jock&Tong have complicated code handling re-entry
+        case 14:
+        case 15:
+            return true;
+    }
+
+    return false;
+}
 
 defaultproperties
 {

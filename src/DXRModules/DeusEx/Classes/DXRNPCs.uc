@@ -410,6 +410,20 @@ function vector GetRandomMerchantPosition()
     return loc;
 }
 
+function String UniqueFlagString(string baseFlag, string ownerName)
+{
+    local string finalName;
+
+    finalName = baseFlag$"_"$ownerName$"_"$StripMapName(dxr.LocalURL);
+
+    return finalName;
+}
+
+function Name UniqueFlagName(string baseFlag, string ownerName)
+{
+    return StringToName(UniqueFlagString(baseFlag,ownerName));
+}
+
 //#region Generate Convo
 function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, optional string label)
 {
@@ -491,7 +505,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
 
         //set flag for bought item, give negative credits, jump to bought
         prev = AddMerchantTelem(c, prev, items, i);
-        prev = AddSetFlag(c, prev, "", "bought"$items[i].item.name, true);
+        prev = AddSetFlag(c, prev, "", UniqueFlagName("bought"$items[i].item.name,c.conOwnerName), true);
         prev = AddGiveCredits(c, prev, -items[i].price );
         prev = AddJump(c, prev, "bought");
     }
@@ -658,12 +672,12 @@ function ConChoice _AddItemChoice(ConEventChoice e, ConChoice prev, ItemPurchase
     choice = AddChoice(e, prev, text, label);
 
     f = new(e) class'ConFlagRef';
-    f.flagName = StringToName("canBuy"$item.item.name);
+    f.flagName = UniqueFlagName("canBuy"$item.item.name,e.conversation.conOwnerName);
     f.value = canBuy;
     choice.flagRef = f;
     f.nextFlagRef = new(e) class'ConFlagRef';
     f = f.nextFlagRef;
-    f.flagName = StringToName("bought"$item.item.name);
+    f.flagName = UniqueFlagName("bought"$item.item.name, e.conversation.conOwnerName);
     f.value = false;
 
     return choice;
@@ -684,7 +698,7 @@ function ConEvent AddPersonaChecks(Conversation c, ConEvent prev, string after_l
     // clear flags
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
-        prev = AddSetFlag(c, prev, "", "canBuy"$items[i].item.name, false);
+        prev = AddSetFlag(c, prev, "", UniqueFlagName("canBuy"$items[i].item.name,c.conOwnerName), false);
     }
 
     // create persona checks
@@ -700,10 +714,10 @@ function ConEvent AddPersonaChecks(Conversation c, ConEvent prev, string after_l
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
         if( i+1 < ArrayCount(items) && items[i+1].item != None )
-            label = "checkBuy"$items[i+1].item.name;
+            label = UniqueFlagString("checkBuy"$items[i+1].item.name,c.conOwnerName);
         else
             label = after_label;
-        prev = AddSetFlag(c, prev, label, "canBuy"$items[i].item.name, true);
+        prev = AddSetFlag(c, prev, label, UniqueFlagName("canBuy"$items[i].item.name,c.conOwnerName), true);
     }
     return prev;
 }
@@ -717,15 +731,15 @@ function ConEvent AddPersonaCheck(Conversation c, ConEvent prev, ItemPurchase it
     p.personaType = EP_Credits;
     p.condition = EC_GreaterEqual;
     p.value = item.price;
-    p.label = "checkBuy"$item.item.name;
-    p.jumpLabel = "canBuy"$item.item.name $ "true";
+    p.label = UniqueFlagString("checkBuy"$item.item.name,c.conOwnerName);
+    p.jumpLabel = UniqueFlagString("canBuy"$item.item.name,c.conOwnerName) $ "true";
 
     AddConEvent(c, prev, p);
     prev = p;
     return p;
 }
 
-function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, string flag_name, bool value)
+function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, coerce string flag_name, bool value)
 {
     local ConEventSetFlag ef;
     local ConFlagRef f;

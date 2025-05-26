@@ -3,6 +3,7 @@ class BalancePlayer injects Human;
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
     local float augLevel;
+    local bool headGone, torsoGone, leftLegGone, rightLegGone, LeftArmGone, rightArmGone;
 
     if(Level.LevelAction != LEVACT_None) return;
 
@@ -22,7 +23,39 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
             drugEffectTimer+=3.0;
         }
     }
+
+    headGone     = HealthHead     <= 0;
+    torsoGone    = HealthTorso    <= 0;
+    leftLegGone  = HealthLegLeft  <= 0;
+    rightLegGone = HealthLegRight <= 0;
+    leftArmGone  = HealthArmLeft  <= 0;
+    rightArmGone = HealthArmRight <= 0;
+
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+
+    if (!headGone && HealthHead <= 0)         MarkBodyPartLoss("Head");
+    if (!torsoGone && HealthTorso <= 0)       MarkBodyPartLoss("Torso");
+    if (!leftLegGone && HealthLegLeft <= 0)   MarkBodyPartLoss("LeftLeg");
+    if (!rightLegGone && HealthLegRight <= 0) MarkBodyPartLoss("RightLeg");
+    if (!leftArmGone && HealthArmLeft <= 0)   MarkBodyPartLoss("LeftArm");
+    if (!rightArmGone && HealthArmRight <= 0) MarkBodyPartLoss("RightArm");
+}
+
+function MarkBodyPartLoss(string part)
+{
+    class'DXRStats'.static.AddBodyPartLoss(self,part);
+    class'DXREvents'.static.MarkBingo("BodyPartLoss_"$part);
+
+    //All right, we'll call it a draw!
+    if (HealthLegLeft <= 0 &&
+        HealthLegRight <= 0 &&
+        HealthArmLeft <= 0 &&
+        HealthArmRight <= 0 &&
+        HealthTorso > 0 &&
+        HealthHead > 0) {
+
+        class'DXREvents'.static.MarkBingo("JustAFleshWound");
+    }
 }
 
 function PlayTakeHitSound(int Damage, name damageType, int Mult)

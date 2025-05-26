@@ -46,7 +46,7 @@ struct ClothesTextures{
     var Texture tex2;
 };
 
-struct Clothes {
+struct ClothesStruct {
     var travel EClothesType type;
     var travel EGender gender;
     var travel String tex1;
@@ -70,7 +70,7 @@ struct CurrentOutfit {
 
 var travel bool isFemale;
 var travel ESkinTone PlayerSkinTone;
-var travel Clothes clothing[250];
+var travel ClothesStruct clothing[250];
 var travel int numClothes;
 
 const cPLAYER = 0;
@@ -173,6 +173,10 @@ function Mesh GetCurPaulModel()
 function InitClothes(bool giveAll)
 {
     //local class<#var(DeusExPrefix)Carcass> carcClass;
+
+    if(numClothes > 0 && clothing[0].type == CT_None) {
+        numClothes = 0;
+    }
 
 #ifndef hx
 //    IngestCarcass(class'JCDentonMaleCarcass');
@@ -392,9 +396,9 @@ simulated function bool AppropriateForSkinTone(ESkinTone ClothingSkin)
 
 //Fallback, just in case the player somehow doesn't have suitable clothes.
 //In theory we shouldn't really ever need these, but better safe than sorry
-simulated function Clothes DefaultClothingByType(EClothesType type, bool female)
+simulated function ClothesStruct DefaultClothingByType(EClothesType type, bool female)
 {
-    local Clothes defClothes;
+    local ClothesStruct defClothes;
 
     defClothes.type=type;
     defClothes.gender=G_Both;
@@ -453,8 +457,8 @@ simulated function Clothes DefaultClothingByType(EClothesType type, bool female)
             defClothes.tex2="";
             break;
         case CT_DressPants:
-            //Nicolette's pants
-            defClothes.tex1="DeusExCharacters.Skins.NicoletteDuClareTex3";
+            //Dark tights (Maggie Chow, WIB, Margaret Williams)
+            defClothes.tex1="DeusExCharacters.Skins.LegsTex2";
             defClothes.tex2="";
             break;
         default:
@@ -467,9 +471,9 @@ simulated function Clothes DefaultClothingByType(EClothesType type, bool female)
     return defClothes;
 }
 
-simulated function Clothes PickRandomClothingByType(EClothesType type, bool female)
+simulated function ClothesStruct PickRandomClothingByType(EClothesType type, bool female)
 {
-    local Clothes choices[ArrayCount(clothing)];
+    local ClothesStruct choices[ArrayCount(clothing)];
     local int numChoices,i;
 
     for (i=0;i<numClothes;i++){
@@ -484,7 +488,7 @@ simulated function Clothes PickRandomClothingByType(EClothesType type, bool fema
     return choices[Rand(numChoices)];
 }
 
-simulated function ClothesTextures FetchClothesTextures(Clothes c)
+simulated function ClothesTextures FetchClothesTextures(ClothesStruct c)
 {
     local ClothesTextures ct;
 
@@ -501,7 +505,7 @@ simulated function ClothesTextures FetchClothesTextures(Clothes c)
 simulated function GenerateOverrides(bool female, EOutfitType outfit, out Texture newMultis[8])
 {
     local int i;
-    local Clothes c1,c2,c3,c4;
+    local ClothesStruct c1,c2,c3,c4;
     local ClothesTextures ct1,ct2,ct3,ct4;
 
     for (i=0;i<ArrayCount(newMultis);i++){
@@ -556,11 +560,14 @@ simulated function GenerateOverrides(bool female, EOutfitType outfit, out Textur
             ct1=FetchClothesTextures(c1);
             c2=PickRandomClothingByType(CT_Glasses,female);
             ct2=FetchClothesTextures(c2);
+            c3=PickRandomClothingByType(CT_DressPants,female);
+            ct3=FetchClothesTextures(c3);
             newMultis[4]=ct1.tex1;
             newMultis[5]=ct1.tex2;
             newMultis[1]=Texture'DeusExItems.Skins.PinkMaskTex'; //Hairbun
             newMultis[6]=ct2.tex1; //Glasses Frames
             newMultis[7]=ct2.tex2; //Glasses Lenses
+            newMultis[3]=ct3.tex1; //Legs
             break;
         case OT_Dress:
             c1=PickRandomClothingByType(CT_DressTop,female);
@@ -603,17 +610,6 @@ simulated function HandleGlasses(bool hasGlasses, bool female, EOutfitType outfi
     } else {
         newMultis[frameIdx]=Texture'DeusExItems.Skins.GrayMaskTex';
         newMultis[lensIdx]=Texture'DeusExItems.Skins.BlackMaskTex';
-    }
-}
-
-simulated function HandleSkirtLegs(EOutfitType outfit, out Texture newMultis[8])
-{
-    if (outfit!=OT_Skirt) return;
-
-    if (PlayerSkinTone==ST_Latino || PlayerSkinTone==ST_Black || PlayerSkinTone==ST_Albino) {
-        newMultis[3]=Texture'DeusExCharacters.Skins.LegsTex2';// dark tights
-    } else {
-        newMultis[3] = Texture'DeusExCharacters.Skins.Female2Tex1';// legs/pants
     }
 }
 
@@ -691,7 +687,6 @@ simulated function RandomizeClothes(#var(PlayerPawn) player)
     curOutfit[cPLAYER].curOutfit=outfit;
     GenerateOverrides(isFemale,outfit,overrides);
     HandleGlasses(true,isFemale,outfit,overrides);
-    HandleSkirtLegs(outfit,overrides);
     pushSkinOverride(curOutfit[cPLAYER],overrides);
 
     if (isFemale){
@@ -1059,7 +1054,6 @@ simulated function ESkinTone GetClothingSkinTone(string tex1s, string tex2s)
         case "DeusExCharacters.Skins.NurseTex1": //Nurse shirt (white - exposed neck area)
           return ST_White;
 
-        //case "DeusExCharacters.Skins.LegsTex2": //MaggieChow, WIB, MargaretWilliams legs (Dark tights)
         //case "DeusExCharacters.Skins.Hooker2Tex1": //Hooker2 Legs (Technically white, but so hidden?)
         case "DeusExCharacters.Skins.NicoletteDuClareTex3": //NicoletteDuClare Legs (White, but not that visible?)
         case "DeusExCharacters.Skins.TiffanySavageTex1": //TiffanySavage Shirt (Hands are painted with stripes, so could be argued any non-black)
@@ -1125,6 +1119,7 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_F_Carcass':
             num += AddClothing(G_Female,CT_Skirt,carcassClass.Default.MultiSkins[4],carcassClass.Default.MultiSkins[5]);
             num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[6],carcassClass.Default.MultiSkins[7]);
+            num += AddClothing(G_Female,CT_DressPants,carcassClass.Default.MultiSkins[3],None);
             break;
         case LodMesh'DeusExCharacters.GFM_Dress_Carcass':
             num += AddClothing(G_Female,CT_DressTop,carcassClass.Default.MultiSkins[3],None);

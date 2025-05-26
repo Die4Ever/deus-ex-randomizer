@@ -407,6 +407,31 @@ function PreFirstEntryMapFixes()
         #endif
         }
 
+        if (!VanillaMaps){
+            //Revision has a secret area underneath the chapel it added to the graveyard.
+            //You need to pull a pipe in a broken piece of the wall to open a hatch in the floor.
+            //For whatever reason, they decided to make the pipe open the hatch by having them share
+            //a tag so they "open" as a pair.  This allows the hatch to open immediately, and open/close
+            //along with the pipe in the wall, but let's move it over because our implementation in
+            //DXRDoors for door pairs copies properties across and prevents the pipe from being frobbable
+            //or highlightable.  Using Tag/Event, the mover in the wall only triggers on the "open", not
+            //the "close", so we can make the pipe automatically "close" again after a moment.
+            //
+            //TL;DR: wtf
+            foreach AllActors(class'#var(DeusExPrefix)Mover',m,'PulltheHatch') {
+                if (m.bFrobbable) {
+                    //The pipe in the wall (DeusExMover14)
+                    m.Tag='WallPipeHatchOpener'; //Switch the tag to... anything else
+                    m.Event = 'PulltheHatch';
+                    m.GoToState('TriggerOpenTimed'); //Close again after a time
+                    m.StayOpenTime = 0.25; //Close again after 1/4 second
+                } else {
+                    //The hatch on the floor (DeusExMover12)
+                    //We'll leave this as-is for now
+                }
+            }
+        }
+
 
         if (#defined(vanilla) && InStr(dxr.dxInfo.startupMessage[0], "Cemetary") != -1) {
             dxr.dxInfo.startupMessage[0] = "New York City, Lower East Side Cemetery"; // fix "cemetery" misspelling

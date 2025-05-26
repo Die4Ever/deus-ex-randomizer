@@ -91,6 +91,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
     local #var(prefix)WeaponShuriken tk;
+    local #var(prefix)JuanLebedev juan;
+    local #var(prefix)ScriptedPawn sp;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -337,6 +339,17 @@ function PreFirstEntryMapFixes()
                 ot.Destroy();
                 break;
             }
+
+            //Give HomeTag's to important people so they return to their original location if spooked
+            //Charlie, El Rey, and the Ex-Mole Person already have a Start HomeTag set.
+            foreach AllActors(class'#var(prefix)ScriptedPawn', sp){
+                switch(sp.BindName){
+                    case "DrugDealer": //Rock
+                    case "Lenny": //Lenny
+                        SetPawnLocAsHome(sp);
+                        break;
+                }
+            }
         }
 
         if (VanillaMaps){
@@ -442,6 +455,16 @@ function PreFirstEntryMapFixes()
                 }
             }
         }
+
+        //This makes it so Juan will at least attempt to return back to his original location after being spooked
+        //It still fails sometimes (maybe when the player is blocking the path back?) and leaves him standing there,
+        //but it's at least a sometimes improvement?
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
+            foreach AllActors(class'#var(prefix)JuanLebedev',juan){
+                SetPawnLocAsHome(juan);
+            }
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(1702,-359.8,373)); //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(1624.15,-740.12,373)); //Guest bed headboard
         Spawn(class'PlaceholderItem',,, vectm(1412.5,-297.7,406.32)); //Closet shelf

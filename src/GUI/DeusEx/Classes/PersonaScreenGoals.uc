@@ -379,6 +379,7 @@ function generateGoalLocationNote()
     local DeusExLevelInfo dxLevel;
     local String goalLocationList;
     local DXRMissions missions;
+    local ActorDisplayWindow actorDisplay;
 
     foreach player.AllActors(class'DeusExLevelInfo',dxLevel){
         goalLocationList = dxLevel.MissionLocation $ " (Mission "$dxLevel.missionNumber$") Possible Goal Locations:|n|n";
@@ -397,6 +398,13 @@ function generateGoalLocationNote()
 	newNoteWindow = CreateNoteEditWindow(newNote);
 	newNoteWindow.Lower();
 	SetFocusWindow(newNoteWindow);
+
+    actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+    actorDisplay.SetViewClass(class'DXRLocationMarker');
+    actorDisplay.ShowLOS(false);
+    actorDisplay.ShowPos(false);
+    if(!#defined(injections))
+        actorDisplay.ShowBindName(true);
 }
 
 function bool ButtonActivated( Window buttonPressed )

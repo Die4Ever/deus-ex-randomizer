@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[95]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[97]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -10,6 +10,7 @@ var string message;
 var int soundHandle, currentSong;
 var int numSongsPlayed;
 var float PlayDoneTime;
+var float firstPlayTime;
 var bool broken;
 #ifdef hx
 var bool bUsing;
@@ -66,10 +67,14 @@ function AllSongsPlayed()
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", "AllSongsPlayed");
     js.static.Add(j, "num", numSongsPlayed);
+    js.static.Add(j, "playTime", Level.TimeSeconds - firstPlayTime);
     class'DXREvents'.static.GeneralEventData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, self, j);
+
+    //Reset firstPlayTime so it will be accurate if you play all the songs again
+    firstPlayTime = Default.firstPlayTime;
 }
 
 function Landed(vector HitNormal)
@@ -163,6 +168,9 @@ function Frob(actor Frobber, Inventory frobWith)
     message = "";
     soundHandle = 0;
     if ( !PianoIsBroken() ) {
+        if (firstPlayTime==Default.firstPlayTime){
+            firstPlayTime = Level.TimeSeconds;
+        }
         currentSong = PickSongIndex();
         GetSongByIndex(currentSong,SelectedSound,duration,message);
     } else {
@@ -672,6 +680,16 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             duration = 9;
             message="You played Mantra from Faxanadu";
             break;
+        case 95:
+            SelectedSound = sound'PizzaTime';
+            duration = 6;
+            message="You played Funiculi, Funicula by Luigi Denza (Pizza Time!)";
+            break;
+        case 96:
+            SelectedSound = sound'Flintstones';
+            duration = 7;
+            message="You played Meet the Flintstones by Hoyt Curtin";
+            break;
         default:
             SelectedSound = None;
             duration = 0;
@@ -817,4 +835,5 @@ defaultproperties
     HitPoints=100
     PlayDoneTime=0.0
     broken=False
+    firstPlayTime=-1.0
 }

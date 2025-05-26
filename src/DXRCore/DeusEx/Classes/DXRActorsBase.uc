@@ -560,6 +560,13 @@ function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrder
     return true;
 }
 
+function SetPawnLocAsHome(#var(prefix)ScriptedPawn p)
+{
+    p.ClearHomeBase();
+    p.HomeTag='Start';
+    p.InitializeHomeBase();
+}
+
 function RemoveFears(ScriptedPawn p)
 {
     if( p == None ) {
@@ -1924,6 +1931,8 @@ function DebugMarkKeyActor(Actor a, coerce string id)
     actorDisplay.SetViewClass(a.class);
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(true);
+    if(!#defined(injections))
+        actorDisplay.ShowBindName(true);
 }
 
 function DebugMarkKeyPosition(vector pos, coerce string id)
@@ -2048,6 +2057,7 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
     return Spawn(what,,, loc, spawnedRot);
 }
 
+//#region Unit Handling
 //Unit Conversion functions
 static function float GetRealDistance(float dist){
     if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
@@ -2078,23 +2088,32 @@ static function string GetDistanceUnitLong()
 }
 
 //Speed is in unreal units per second
-static function float GetRealSpeed(float speed){
+static function float GetRealSpeed(float speed, bool longDistance){
     if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
         //miles per hour
         return speed/23.472; //divide feet/second by 1.467 to get to miles per hour
     } else {
-        //meters per second
-        return GetRealDistance(speed); //Straight conversion of units to meters is enough
+        if (longDistance){
+            //kilometers per hour
+            return GetRealDistance(speed) * 3.6;
+        } else {
+            //meters per second
+            return GetRealDistance(speed); //Straight conversion of units to meters is enough
+        }
     }
 }
 
 
-static function string GetSpeedUnit()
+static function string GetSpeedUnit(bool longDistance)
 {
     if (class'MenuChoice_MeasureUnits'.static.IsImperial()){
         return "mph";
     } else {
-        return "m/s";
+        if (longDistance){
+            return "km/h";
+        } else {
+            return "m/s";
+        }
     }
 }
 
@@ -2116,3 +2135,4 @@ static function string GetMassUnit()
         return "kg";
     }
 }
+//#endregion

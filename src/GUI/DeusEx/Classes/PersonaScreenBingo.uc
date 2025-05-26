@@ -28,7 +28,7 @@ function CreateControls()
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
             bActiveMission = data.GetBingoSpot(x, y, event, desc, progress, max);
-            CreateBingoSpot(x, y, desc, progress, max, event, bActiveMission,data.GetBingoMissionMask(x,y),femJC);
+            CreateBingoSpot(x, y, desc, progress, max, event, bActiveMission,data.GetBingoMissionMask(x,y),femJC,data.GetBingoAppendMax(x,y));
         }
     }
 
@@ -43,12 +43,19 @@ function CreateControls()
 
 // we can fit about 6 lines of text, about 14 characters wide
 // probably want a new class instead of ButtonWindow, so we can turn the background into a progress bar, maybe a subclass of PersonaItemButton so the theming works correctly
-function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, string event, int bActiveMission, int missions, bool femJC)
+function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, string event, int bActiveMission, int missions, bool femJC, bool append_max)
 {
     local BingoTile t;
     local int w, h;
+    local string final_text;
+
+    final_text = text;
+    if (append_max){
+        final_text = final_text $ " ("$max$")";
+    }
+
     t = BingoTile(winClient.NewChild(class'BingoTile'));
-    t.SetText(text);
+    t.SetText(final_text);
     t.SetWordWrap(true);
     t.SetTextAlignments(HALIGN_Center, VALIGN_Center);
     t.SetFont(Font'FontMenuSmall_DS');

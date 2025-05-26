@@ -537,10 +537,10 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
             dmg = 5 * val;
             blastRad = 8 * val;
         }
-        speed = class'DXRActorsBase'.static.GetRealSpeed(speed);
+        speed = class'DXRActorsBase'.static.GetRealSpeed(speed, false);
         blastRad = class'DXRActorsBase'.static.GetRealDistance(blastRad);
 
-        r = r $ int(speed) @ class'DXRActorsBase'.static.GetSpeedUnit();
+        r = r $ int(speed) @ class'DXRActorsBase'.static.GetSpeedUnit(false);
         r = r $ " / ";
         r = r $ int(dmg);
         r = r $ " / ";
