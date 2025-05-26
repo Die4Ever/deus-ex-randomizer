@@ -2071,13 +2071,13 @@ function ReadText(name textTag)
 simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
 {
     local int starting_mission, end_mission, real_duration;
-    local float loge_duration, medbots, repairbots;
+    local float loge_duration, medbots, repairbots, merchants;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
     real_duration = class'DXRStartMap'.static.SquishMission(end_mission) - class'DXRStartMap'.static.SquishMission(starting_mission) + 1;
 
-    loge_duration = Loge(real_duration + 1.71828); // real_duration of 1 means 1 loge_duration
+    loge_duration = Loge(real_duration + 1.71828); // real_duration of 1 means 1 loge_duration, full game is 2.689090 loge_duration
     medbots = dxr.flags.settings.medbots;
     if(medbots <= -1) medbots = 30;
     medbots *= loge_duration;
@@ -2094,7 +2094,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         data.BanGoal("UtilityBot_ClassDead", 1);
     }
 
-    if(dxr.flags.settings.merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
+    merchants = dxr.flags.settings.merchants * loge_duration;
+    if(merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
 
     if (medbots < 20 ||
 #ifndef hx
