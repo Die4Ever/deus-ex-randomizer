@@ -2070,10 +2070,26 @@ function ReadText(name textTag)
 //#region ban goals by flags
 simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
 {
+    local int starting_mission, end_mission, real_duration;
+    local float loge_duration, medbots, repairbots;
+
+    starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
+    end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
+    real_duration = class'DXRStartMap'.static.SquishMission(end_mission) - class'DXRStartMap'.static.SquishMission(starting_mission) + 1;
+
+    loge_duration = Loge(real_duration + 1.71828); // real_duration of 1 means 1 loge_duration
+    medbots = dxr.flags.settings.medbots;
+    if(medbots <= -1) medbots = 30;
+    medbots *= loge_duration;
+
+    repairbots = dxr.flags.settings.repairbots;
+    if(repairbots <= -1) repairbots = 30;
+    repairbots *= loge_duration;
+
+    l("_CreateBingoBoard bingo_duration: " $ bingo_duration $ ", real_duration: " $ real_duration $ ", loge_duration: " $ loge_duration $ ", medbots: " $ medbots $ ", repairbots: " $ repairbots);
+
     // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
-    if(    (dxr.flags.settings.medbots >= 0 && dxr.flags.settings.medbots < 15)
-        || (dxr.flags.settings.repairbots >= 0 && dxr.flags.settings.repairbots < 15)
-    ) {
+    if(medbots < 20 || repairbots < 20) {
         data.BanGoal("MedicalBot_ClassDead", 1);
         data.BanGoal("RepairBot_ClassDead", 1);
     } else {
@@ -2082,7 +2098,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
     if(dxr.flags.settings.merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
 
-    if (dxr.flags.settings.medbots < 15 ||
+    if (medbots < 20 ||
 #ifndef hx
         dxr.flags.settings.CombatDifficulty > 6 ||
 #endif
