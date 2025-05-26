@@ -2086,8 +2086,6 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     if(repairbots <= -1) repairbots = 30;
     repairbots *= loge_duration;
 
-    l("_CreateBingoBoard bingo_duration: " $ bingo_duration $ ", real_duration: " $ real_duration $ ", loge_duration: " $ loge_duration $ ", medbots: " $ medbots $ ", repairbots: " $ repairbots);
-
     // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
     if(medbots < 20 || repairbots < 20) {
         data.BanGoal("MedicalBot_ClassDead", 1);
