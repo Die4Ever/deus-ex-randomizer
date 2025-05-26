@@ -537,6 +537,7 @@ function AfterMovePlayerToStartLocation(GoalLocation Loc)
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)HowardStrong howie;
     local bool RevisionMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
@@ -552,6 +553,13 @@ function PreFirstEntryMapFixes()
             Spawnm(class'VendingMachineEnergy',,, vect(6360, 7975, -3055), rot(0,32762,0));
         } else {
             Spawnm(class'VendingMachine',,, vect(6360, 7975, -3055), rot(0,32762,0));
+        }
+    }
+
+    if (dxr.localURL=="14_OCEANLAB_SILO"){
+        foreach AllActors(class'#var(prefix)HowardStrong',howie){
+            //Make sure Howard has a home tag set, so that it gets set when he is moved
+            howie.HomeTag='Start';
         }
     }
 }

@@ -317,6 +317,9 @@ function float GetDamage(optional bool ignore_skill, optional bool get_default)
         }
         // mostly copied from DXRWeapons module
         switch(ProjectileClass) {
+        case class'DXRDart':
+            return 17.0 * mult;
+
         case class'#var(prefix)Dart':
             return 15.0 * mult;
 

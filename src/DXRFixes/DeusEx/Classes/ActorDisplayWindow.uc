@@ -175,7 +175,7 @@ function string GetActorName(Actor a)
     local string str;
 
     // DXRando: we want to show a nicer name for spoilers
-    if(DXRGoalMarker(a) != None) {
+    if(DXRGoalMarker(a) != None || DXRLocationMarker(a) != None) {
         str = a.BindName;
     }
     else if(bUserFriendlyNames) {

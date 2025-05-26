@@ -16,6 +16,17 @@ Begin:
     SetTimer(0.25/float(gradualHurtSteps), True);
 }
 
+function PlayImpactSound()
+{// less clipping, half volume
+    local float rad;
+
+    if ((Level.NetMode == NM_Standalone) || (Level.NetMode == NM_ListenServer) || (Level.NetMode == NM_DedicatedServer))
+    {
+        rad = Max(blastRadius*4, 1024);
+        PlaySound(ImpactSound, SLOT_None, 1,, rad);
+    }
+}
+
 defaultproperties
 {
     blastRadius=128

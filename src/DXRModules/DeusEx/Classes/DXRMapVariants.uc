@@ -210,6 +210,14 @@ function string VaryMap(string map)
     map = CleanupMapName(map);
     SetGlobalSeed( "VaryURL " $ Caps(map) );
 
+    switch (map){
+        case "DX":
+        case "DXONLY":
+            //Never go to the mirrored versions of the intro screen
+            //It's unnecessary, and the camera rotation is messed up
+            return map;
+    }
+
     chance = GetMirrorMapsSetting();
     if(chance_single(chance))
         return map $"_-1_1_1";
@@ -250,6 +258,12 @@ function ExtendedTests()
     teststring(VaryURL("test"), "test_-1_1_1", "VaryURL 3");
     teststring(VaryURL("test.dx"), "test_-1_1_1.dx", "VaryURL 4");
     teststring(VaryURL("test?query=param"), "test_-1_1_1?query=param", "VaryURL 5");
+
+    //DX and DXONLY shouldn't ever return mirrored versions
+    teststring(VaryURL("DX.dx"), "DX.dx", "VaryURL 6");
+    teststring(VaryURL("DX"), "DX", "VaryURL 7");
+    teststring(VaryURL("DXOnly.dx"), "DXOnly.dx", "VaryURL 8");
+    teststring(VaryURL("DXOnly"), "DXOnly", "VaryURL 9");
     dxr.flags.mirroredmaps = oldmirroredmaps;
     #endif
 }
