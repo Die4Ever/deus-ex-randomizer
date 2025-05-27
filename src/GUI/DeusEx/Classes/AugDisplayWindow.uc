@@ -1034,7 +1034,7 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
             tp = ThrownProjectile(target);
             if (tp.bDisabled){
                 xcolor = colWhite;
-            } else if (tp.Owner==Player) {
+            } else if (tp.Owner!=None) { //The game only considers unowned grenades to be hostile (in single player)
                 xcolor = colGreen;
             } else {
                 xcolor = colRed;
