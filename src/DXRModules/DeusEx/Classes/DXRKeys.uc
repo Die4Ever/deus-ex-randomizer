@@ -444,6 +444,12 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(7217.410156,8535.856445,99999);
         keys_rules[i].allow = true;
         i++;
+
+        keys_rules[i].item_name = 'TimsClosetKey';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = false;
+        i++;
         break;
 
     case "14_VANDENBERG_SUB":

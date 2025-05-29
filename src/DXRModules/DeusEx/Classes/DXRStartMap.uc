@@ -351,6 +351,29 @@ static function string GetStartMap(Actor a, int start_map_val)
     return startMap;
 }
 
+static function int GetEndMission(int starting_map, int bingo_duration)
+{
+    local int starting_mission, end_mission;
+
+    starting_mission = GetStartMapMission(starting_map);
+    if (bingo_duration!=0){
+        end_mission = starting_mission + bingo_duration - 1; //The same mission is the first mission
+
+        //Missions 7 and 13 don't exist, so don't count them
+        if (starting_mission<7 && end_mission>=7){
+            end_mission+=1;
+        }
+        if (starting_mission<13 && end_mission>=13){
+            end_mission+=1;
+        }
+        if(end_mission > 15) end_mission = 15;
+    } else {
+        end_mission = 15;
+    }
+
+    return end_mission;
+}
+
 static function bool _IsStartMap(DXRando dxr)
 {
     local string startMapName;

@@ -39,12 +39,30 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 
-    if (!headGone && HealthHead <= 0)         class'DXRStats'.static.AddBodyPartLoss(self,"Head");
-    if (!torsoGone && HealthTorso <= 0)       class'DXRStats'.static.AddBodyPartLoss(self,"Torso");
-    if (!leftLegGone && HealthLegLeft <= 0)   class'DXRStats'.static.AddBodyPartLoss(self,"LeftLeg");
-    if (!rightLegGone && HealthLegRight <= 0) class'DXRStats'.static.AddBodyPartLoss(self,"RightLeg");
-    if (!leftArmGone && HealthArmLeft <= 0)   class'DXRStats'.static.AddBodyPartLoss(self,"LeftArm");
-    if (!rightArmGone && HealthArmRight <= 0) class'DXRStats'.static.AddBodyPartLoss(self,"RightArm");
+    if (!headGone && HealthHead <= 0)         MarkBodyPartLoss("Head");
+    if (!torsoGone && HealthTorso <= 0)       MarkBodyPartLoss("Torso");
+    if (!leftLegGone && HealthLegLeft <= 0)   MarkBodyPartLoss("LeftLeg");
+    if (!rightLegGone && HealthLegRight <= 0) MarkBodyPartLoss("RightLeg");
+    if (!leftArmGone && HealthArmLeft <= 0)   MarkBodyPartLoss("LeftArm");
+    if (!rightArmGone && HealthArmRight <= 0) MarkBodyPartLoss("RightArm");
+}
+
+function MarkBodyPartLoss(string part)
+{
+    class'DXRStats'.static.AddBodyPartLoss(self,part);
+    class'DXREvents'.static.MarkBingo("BodyPartLoss_"$part);
+
+    //All right, we'll call it a draw!
+    if (HealthLegLeft <= 0 &&
+        HealthLegRight <= 0 &&
+        HealthArmLeft <= 0 &&
+        HealthArmRight <= 0 &&
+        HealthTorso > 0 &&
+        HealthHead > 0) {
+
+        class'DXREvents'.static.MarkBingo("JustAFleshWound");
+    }
+
 }
 
 function RandomizeAugStates()
