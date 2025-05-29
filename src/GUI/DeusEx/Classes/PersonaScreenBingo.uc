@@ -127,7 +127,7 @@ function ShowBingoGoalHelp( Window bingoTile )
     }
 }
 
-function string GetNextStartingMap(DXRando dxr)
+static function string GetNextStartingMap(DXRando dxr)
 {
     local int nextStartNum;
     local string nextStartName;
@@ -140,7 +140,7 @@ function string GetNextStartingMap(DXRando dxr)
     dxr.seed++;
     nextStartNum = m.ChooseRandomStartMap(m, dxr.flags.settings.starting_map);
     dxr.seed--;
-    nextStartName = m.GetStartingMapName(nextStartNum);
+    nextStartName = m.GetStartingMapNameCredits(nextStartNum);
     return nextStartName;
 }
 
