@@ -1237,19 +1237,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(starting_map);
     maybe_mission_mask = class'DXRStartMap'.static.GetMaybeMissionMask(starting_map);
-    if (bingo_duration!=0){
-        end_mission = starting_mission + bingo_duration - 1; //The same mission is the first mission
-
-        //Missions 7 and 13 don't exist, so don't count them
-        if (starting_mission<7 && end_mission>=7){
-            end_mission+=1;
-        }
-        if (starting_mission<13 && end_mission>=13){
-            end_mission+=1;
-        }
-    } else {
-        end_mission = 15;
-    }
+    end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
     end_mission_mask = class'DXRStartMap'.static.GetEndMissionMask(end_mission);
 
     num_options = 0;

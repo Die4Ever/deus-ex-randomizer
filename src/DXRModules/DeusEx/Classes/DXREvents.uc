@@ -1457,7 +1457,7 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergShaft',vectm(1442.694580,1303.784180,-1755),110,10);
 
-        class'BingoTrigger'.static.ShootCreate(self,'VandenbergAntenna',vectm(1800,2590,344.44),40,60);
+        class'BingoTrigger'.static.ShootCreate(self,'VandenbergAntenna',vectm(1800,2590,395),40,40);
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergHazLab',vectm(0,0,0));
         bt.bUntrigger=True;
@@ -2070,19 +2070,34 @@ function ReadText(name textTag)
 //#region ban goals by flags
 simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
 {
+    local int starting_mission, end_mission, real_duration;
+    local float loge_duration, medbots, repairbots, merchants;
+
+    starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
+    end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
+    real_duration = class'DXRStartMap'.static.SquishMission(end_mission) - class'DXRStartMap'.static.SquishMission(starting_mission) + 1;
+
+    loge_duration = Loge(real_duration + 1.71828); // real_duration of 1 means 1 loge_duration, full game is 2.689090 loge_duration
+    medbots = dxr.flags.settings.medbots;
+    if(medbots <= -1) medbots = 30;
+    medbots *= loge_duration;
+
+    repairbots = dxr.flags.settings.repairbots;
+    if(repairbots <= -1) repairbots = 30;
+    repairbots *= loge_duration;
+
     // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
-    if(    (dxr.flags.settings.medbots >= 0 && dxr.flags.settings.medbots < 15)
-        || (dxr.flags.settings.repairbots >= 0 && dxr.flags.settings.repairbots < 15)
-    ) {
+    if(medbots < 20 || repairbots < 20) {
         data.BanGoal("MedicalBot_ClassDead", 1);
         data.BanGoal("RepairBot_ClassDead", 1);
     } else {
         data.BanGoal("UtilityBot_ClassDead", 1);
     }
 
-    if(dxr.flags.settings.merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
+    merchants = dxr.flags.settings.merchants * loge_duration;
+    if(merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
 
-    if (dxr.flags.settings.medbots < 15 ||
+    if (medbots < 20 ||
 #ifndef hx
         dxr.flags.settings.CombatDifficulty > 6 ||
 #endif

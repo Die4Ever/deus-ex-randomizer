@@ -183,14 +183,14 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
 
 def MakeShortcut(exe: Path, name: str, settings: dict):
-    if settings.get('shortcuts'):
+    if settings.get('shortcuts') and IsWindows():
         try:
             Shortcut(shortcut_name=name, exec_path=str(exe.absolute()), desktop=True, start_menu=True)
             settings['created_shortcuts'] = True
         except Exception as e:
             info('failed to create shortcuts', e)
             settings['shortcuts'] = False
-    else:
+    elif IsWindows():
         try:
             Shortcut.delete(shortcut_name=name, desktop=True, start_menu=True)
         except Exception as e:

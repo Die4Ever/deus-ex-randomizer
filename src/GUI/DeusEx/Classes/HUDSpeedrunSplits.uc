@@ -130,6 +130,9 @@ function string ReplaceVariables(string s)
     t = f.GameModeName(f.gamemode);
     s = f.ReplaceText(s, "%gamemode", t);
 
+    t = class'PersonaScreenBingo'.static.GetNextStartingMap(dxr);
+    s = f.ReplaceText(s, "%nextmap", t);
+
     return s;
 }
 
@@ -168,8 +171,10 @@ function InitStats(DXRStats newstats)
     tsubtitle = ReplaceVariables(subtitle);
     tfooter = ReplaceVariables(footer);
     curMission = stats.dxr.dxInfo.MissionNumber;
-    if(curMission >= 1 && curMission <= 15)
+    if(curMission >= 1 && curMission <= 15) {
         notes = class'DXRInfo'.static.ReplaceText(splitNotes[curMission], "|n", CR());
+        notes = ReplaceVariables(notes);
+    }
 
     for(i=1; i<=15; i++) {
         PB_total += PB[i];
