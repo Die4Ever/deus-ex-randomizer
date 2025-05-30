@@ -278,7 +278,6 @@ function AnyEntry()
 
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
-        UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
         RemoveGoalFromConv('FindAmbrosia', 'AnnaDock'); // don't let Anna give this goal to you again
         break;
     case "02_NYC_STREET":
@@ -290,6 +289,7 @@ function AnyEntry()
 function AddMissionGoals()
 {
     if (dxr.localURL == "02_NYC_BATTERYPARK") {
+        UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
         GiveGoalFromConv(player(), 'FindAmbrosia', 'AnnaDock'); // allow this goal to be completed before talking to Anna
     }
 }
