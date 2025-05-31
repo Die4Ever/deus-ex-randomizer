@@ -1269,6 +1269,17 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             return start_map>=90;
         case "PhoneCall":
             return start_map>100; //TODO: Last phone is in the building before the catacombs (Where Icarus calls)
+        case "JustAFleshWound":
+            //This requires removing both arms and legs.  Arms are easy to knock off anywhere with height,
+            //but arms are harder to consistently remove.  Flaming barrels are the easiest way I can think
+            //of, but missions 5, 9, 14, 15 do not have any (accessible, at least).  Treat the goal as
+            //impossible in those missions.
+            //Blocking it here rather than via mission mask on the goal itself means it won't show up
+            //as impossible in a mission, or be marked as failed as you get towards the end of the game,
+            //while still blocking it from showing up in those missions.
+            if (start_map>=50 && end_mission<=5) return true;
+            if (start_map>=90 && end_mission<=9) return true;
+            return (start_map>=140);
         default:
             return False;
     }
