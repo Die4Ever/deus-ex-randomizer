@@ -57,7 +57,10 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 
     if(bDeleteAutosaves) {
         bDeleteAutosaves = false;
-        DeleteAutosaves();
+        if (buttonNumber==0) {
+            DeleteAutosaves();
+        }
+        return true;
     }
     return ret;
 }
