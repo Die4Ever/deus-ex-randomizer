@@ -985,7 +985,7 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which, optional ConEvent prevCe)
+static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which, optional out ConEvent prevCe)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
