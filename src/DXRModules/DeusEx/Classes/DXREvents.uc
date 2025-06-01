@@ -1457,7 +1457,7 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergShaft',vectm(1442.694580,1303.784180,-1755),110,10);
 
-        class'BingoTrigger'.static.ShootCreate(self,'VandenbergAntenna',vectm(1800,2590,344.44),40,60);
+        class'BingoTrigger'.static.ShootCreate(self,'VandenbergAntenna',vectm(1800,2590,395),40,40);
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergHazLab',vectm(0,0,0));
         bt.bUntrigger=True;

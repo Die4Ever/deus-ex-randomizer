@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[97]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[98]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 
 var #var(PlayerPawn) player;
@@ -689,6 +689,11 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'Flintstones';
             duration = 7;
             message="You played Meet the Flintstones by Hoyt Curtin";
+            break;
+        case 97:
+            SelectedSound = sound'TheEntertainer';
+            duration = 6;
+            message="You played The Entertainer by Scott Joplin";
             break;
         default:
             SelectedSound = None;
