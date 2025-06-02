@@ -220,11 +220,14 @@ function PickRandomQuote(out string quote, out string attrib)
 {
     local DXRando dxr;
     local EndQuote q;
+    local int oldSeed;
 
     dxr = class'DXRando'.default.dxr;
 
     if(dxr != None) {
-        q = quotes[dxr.rng(numQuotes)];
+        oldSeed = dxr.flags.SetSeed("EndgameQuoteManager"); //We want SetSeed rather than SetGlobalSeed so it varies by ending
+        q = quotes[dxr.flags.rng(numQuotes)];
+        dxr.flags.ReapplySeed(oldSeed);
         quote = q.quote;
         attrib = q.attribution;
         return;
