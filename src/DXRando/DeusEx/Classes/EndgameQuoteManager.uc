@@ -6,7 +6,7 @@ struct EndQuote
     var string attribution;
 };
 
-var EndQuote quotes[156];
+var EndQuote quotes[157];
 var int numQuotes;
 
 //A string has (seemingly) infinite length, but string literals are capped at 256 characters.
@@ -114,6 +114,7 @@ function LoadQuotes()
     AddQuote("I WOULD LIKE TO GIVE YOU SOMETHING CALLED \"INTELLIGENCE\".  YOU CAN CREATE A \"CIVILIZATION\", AND HELP THE WORLD PROSPER BY USING YOUR \"INTELLIGENCE\".", "THE SUN");
     AddQuote("SO LONG, AND THANKS FOR ALL THE FISH.", "DOLPHINS");
     AddQuote("IT'S MORBIN' TIME", "MORBIUS");
+    AddQuote("WHAT I LIKE ARE THOSE LITTLE HOT DOGS WRAPPED IN THE PASTRY.  I THINK THEY'RE...  I CAN'T REMEMBER THE NAME OF THEM RIGHT NOW...  PIGS IN A BLANKET, THAT'S WHAT THEY'RE CALLED.  REALLY, THE NOBEL PRIZE SHOULD BE FOR THE PERSON WHO INVENTED THOSE.", "CESAR CATILINA");
 
     //T7G / T11H Quotes... trying to avoid spoilers...
     AddQuote("OLD MAN STAUF BUILT A HOUSE AND FILLED IT WITH HIS TOYS", "HENRY STAUF");
