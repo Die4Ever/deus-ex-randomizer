@@ -1,5 +1,5 @@
 #compileif injections || revision
-class DolphinJumpTrigger extends BingoTrigger;
+class DolphinJumpTrigger extends BingoTrigger transient;
 
 static function DolphinJumpTrigger CreateDolphin(#var(PlayerPawn) p)
 {
@@ -9,7 +9,7 @@ static function DolphinJumpTrigger CreateDolphin(#var(PlayerPawn) p)
     foreach p.AllActors(class'DolphinJumpTrigger', t) { break; }
     // keep height number in sync with DXREvents GetBingoGoalHelpText
     if(t == None) {
-        t = p.Spawn(class'DolphinJumpTrigger',,, p.Location+vect(0,0,160));
+        t = p.Spawn(class'DolphinJumpTrigger',, 'DolphinJumpTrigger', p.Location+vect(0,0,160));
     }
     else {
         t.SetLocation(p.Location+vect(0,0,160));

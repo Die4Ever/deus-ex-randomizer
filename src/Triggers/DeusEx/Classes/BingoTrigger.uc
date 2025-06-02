@@ -84,7 +84,7 @@ function DoBingoThing()
     }
 
     if (bTriggerOnceOnly) {
-        if (bDestroyOthers){
+        if (bDestroyOthers && Tag!=''){
             foreach AllActors(class'BingoTrigger',bt,Tag){
                 bt.SelfDestruct();
             }
