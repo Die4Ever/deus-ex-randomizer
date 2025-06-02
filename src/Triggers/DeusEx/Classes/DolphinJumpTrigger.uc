@@ -1,5 +1,5 @@
 #compileif injections || revision
-class DolphinJumpTrigger extends BingoTrigger;
+class DolphinJumpTrigger extends BingoTrigger transient;
 
 static function DolphinJumpTrigger CreateDolphin(#var(PlayerPawn) p)
 {
