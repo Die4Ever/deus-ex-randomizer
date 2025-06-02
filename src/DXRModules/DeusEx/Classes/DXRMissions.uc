@@ -493,7 +493,7 @@ function GenerateLocationMarkers()
     for(i=0; i<num_locations; i++) {
         if(dxr.localURL != locations[i].mapName) continue;
         marker = DXRLocationMarker(Spawnm(class'DXRLocationMarker',,, locations[i].positions[0].pos));
-        marker.BindName = locations[i].name;
+        marker.BindName = locations[i].name $ "?";
     }
 }
 
