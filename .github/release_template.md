@@ -37,4 +37,4 @@ Here are trailers for our Halloween modes, WaltonWare, and Vanilla Fixer/Zero Ra
 -
 </details>
 
-Download `DXRandoInstaller.exe` in the Assets section right below this line:
+Download from [Mods4Ever.com](https://mods4ever.com) or `DXRandoInstaller.exe` in the Assets section right below this line:
