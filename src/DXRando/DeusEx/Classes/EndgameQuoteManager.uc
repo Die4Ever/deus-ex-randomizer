@@ -6,7 +6,7 @@ struct EndQuote
     var string attribution;
 };
 
-var EndQuote quotes[155];
+var EndQuote quotes[156];
 var int numQuotes;
 
 //A string has (seemingly) infinite length, but string literals are capped at 256 characters.
@@ -113,6 +113,7 @@ function LoadQuotes()
     AddQuote("FROM THIS TIME FORWARD, EVERY 1 BILLION YEARS, YOU WILL HAVE CHILDREN CALLED \"LIFE\"", "THE SUN"); //E.V.O.: Search for Eden
     AddQuote("I WOULD LIKE TO GIVE YOU SOMETHING CALLED \"INTELLIGENCE\".  YOU CAN CREATE A \"CIVILIZATION\", AND HELP THE WORLD PROSPER BY USING YOUR \"INTELLIGENCE\".", "THE SUN");
     AddQuote("SO LONG, AND THANKS FOR ALL THE FISH.", "DOLPHINS");
+    AddQuote("IT'S MORBIN' TIME", "MORBIUS");
 
     //T7G / T11H Quotes... trying to avoid spoilers...
     AddQuote("OLD MAN STAUF BUILT A HOUSE AND FILLED IT WITH HIS TOYS", "HENRY STAUF");
