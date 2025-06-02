@@ -6,10 +6,11 @@ struct EndQuote
     var string attribution;
 };
 
-var EndQuote quotes[149];
+var EndQuote quotes[155];
 var int numQuotes;
 
-//For now, this is limited to the default UnrealScript limit of 256 characters in a string
+//A string has (seemingly) infinite length, but string literals are capped at 256 characters.
+//If the quote is longer than that, just concatenate multiple literals together
 function AddQuote(string quote, string attribution)
 {
     quotes[numQuotes].quote = quote;
@@ -111,6 +112,7 @@ function LoadQuotes()
     AddQuote("HERE'S A LOCKPICK.  IT MIGHT BE HANDY IF YOU, THE MASTER OF UNLOCKING, TAKE IT WITH YOU.", "BARRY BURTON");
     AddQuote("FROM THIS TIME FORWARD, EVERY 1 BILLION YEARS, YOU WILL HAVE CHILDREN CALLED \"LIFE\"", "THE SUN"); //E.V.O.: Search for Eden
     AddQuote("I WOULD LIKE TO GIVE YOU SOMETHING CALLED \"INTELLIGENCE\".  YOU CAN CREATE A \"CIVILIZATION\", AND HELP THE WORLD PROSPER BY USING YOUR \"INTELLIGENCE\".", "THE SUN");
+    AddQuote("SO LONG, AND THANKS FOR ALL THE FISH.", "DOLPHINS");
 
     //T7G / T11H Quotes... trying to avoid spoilers...
     AddQuote("OLD MAN STAUF BUILT A HOUSE AND FILLED IT WITH HIS TOYS", "HENRY STAUF");
@@ -203,6 +205,13 @@ function LoadQuotes()
     AddQuote("THEY ASKED ME HOW WELL I UNDERSTOOD THEORETICAL PHYSICS.  I SAID I HAD A THEORETICAL DEGREE IN PHYSICS.  THEY SAID WELCOME ABOARD.", "FANTASTIC");
     AddQuote("THE GAME WAS RIGGED FROM THE START.", "BENNY");
     AddQuote("WE SHALL SEE HOW BRAVE YOU ARE WHEN NAILED TO THE WALLS OF HOOVER DAM, YOUR BODY FACING WEST SO YOU MAY WATCH YOUR WORLD DIE.", "LEGATE LANIUS");
+
+    //Lord of the Rings
+    AddQuote("MANY THAT LIVE DESERVE DEATH.  AND SOME THAT DIE DESERVE LIFE.  CAN YOU GIVE IT TO THEM?  THEN DO NOT BE TOO EAGER TO DEAL OUT DEATH IN JUDGEMENT.  FOR EVEN THE VERY WISE CANNOT SEE ALL ENDS.", "GANDALF THE GREY");
+    AddQuote("HORNS, HORNS, HORNS...  GREAT HORNS OF THE NORTH WILDLY BLOWING.  ROHAN HAD COME AT LAST.", "LORD OF THE RINGS: RETURN OF THE KING");
+    AddQuote("A RED SUN RISES.  BLOOD HAS BEEN SPILLED THIS NIGHT.", "LEGOLAS");
+    AddQuote("PO-TAY-TOES!  BOIL 'EM, MASH 'EM, STICK 'EM IN A STEW!", "SAMWISE GAMGEE");
+    AddQuote("LET THIS BE THE HOUR WHEN WE DRAW SWORDS TOGETHER.  FELL DEEDS AWAKE.  NOW FOR WRATH, NOW FOR RUIN, AND THE RED DAWN.  FORTH, EORLINGAS!", "THEODEN, KING OF ROHAN");
 
     log("EndgameQuoteManager loaded "$numQuotes$" endgame quotes");
 }
