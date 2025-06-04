@@ -1,5 +1,7 @@
 class DXRandoTests extends #switch(hx: HXRandoGameInfo, vanilla: DeusExGameInfo, else: DXRandoGameInfo);
 
+var transient int stage;
+
 event playerpawn Login
 (
 	string Portal,
@@ -25,6 +27,7 @@ function PostBeginPlay()
 
     SetTimer(0, false);
 
+    class'MenuChoice_ShowBingoUpdates'.default.value = 0; // silence some bingo fail messages
     dxr = class'DXRando'.default.dxr;
 
     if( dxr.localURL != "12_VANDENBERG_TUNNELS" ) {
@@ -60,8 +63,23 @@ function Timer()
     if( dxr.runPostFirstEntry ) {
         log("ERROR: dxr.runPostFirstEntry: " $ dxr.runPostFirstEntry);
     }
+    if(stage == 0) {
+        dxr.ExtendedTests();
+        stage++;
+    }
 
-    dxr.ExtendedTests();
-    SetTimer(0, false);
-    ConsoleCommand("Exit");
+    if(#bool(injections)) { // we only have a test save for vanilla currently, to make a test save use our ExitGameTrigger.uc
+        if(stage == 1) {
+            stage++;
+            log("TIME: loading savegame");
+            Level.ServerTravel("?loadgame=1", False);
+        } else {
+            log("ERROR: failed to load save?");
+            SetTimer(0, false);
+            ConsoleCommand("Exit");
+        }
+    } else {
+        SetTimer(0, false);
+        ConsoleCommand("Exit");
+    }
 }
