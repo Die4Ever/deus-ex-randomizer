@@ -73,6 +73,9 @@ function Timer()
             stage++;
             log("TIME: loading savegame");
             Level.ServerTravel("?loadgame=1", False);
+        } else if(stage<10) {
+            log("TIME: waiting to load save...");
+            stage++;
         } else {
             log("ERROR: failed to load save?");
             SetTimer(0, false);
