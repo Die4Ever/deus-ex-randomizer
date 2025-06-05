@@ -4,6 +4,8 @@ var DXRando dxr;
 
 var int SongPlayed[98]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
+var int Recents[20];
+var int recent_pointer;
 
 var #var(PlayerPawn) player;
 var string message;
@@ -723,7 +725,7 @@ function int GetSongWeight(int songIdx)
     switch (songIdx){
         case 0: //Deus Ex theme (Bingo goal)
         case 7: //7th Guest, The Game (bingo goal)
-            return 5;
+            return 7;
 
         //old Halloween-themed songs that are active outside of October and Halloween mode, but at a normal rate
         case 9:  // BloodyTears
@@ -771,7 +773,7 @@ function int GetSongWeight(int songIdx)
 //More intelligent picking, weights less played songs more
 function int PickSongIndex()
 {
-    local int rnd, i, j, songPlayedAvg, numValidSongs, numActiveSongs;
+    local int rnd, i, j, songPlayedAvg, numValidSongs, numActiveSongs, played[ArrayCount(SongPlayed)];
 
     //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
     //Make sure this array is the same size as SPACE_FOR_VALID_SONGS
@@ -780,29 +782,38 @@ function int PickSongIndex()
     songPlayedAvg=0;
     numActiveSongs=0;
     for (i=0;i<NUM_PIANO_SONGS;i++){
-        if (GetSongWeight(i) > 0){
-            songPlayedAvg+=SongPlayed[i];
-            numActiveSongs++;
+        if (GetSongWeight(i) <= 0) continue;
+
+        played[i] = SongPlayed[i];
+        for(j=0; j<ArrayCount(Recents); j++) {
+            if(Recents[j] == i) {
+                played[i]++;
+            }
         }
+        songPlayedAvg += played[i];
+        numActiveSongs++;
     }
     songPlayedAvg = songPlayedAvg/numActiveSongs;
 
     numValidSongs=0;
-    for (i=0;i<NUM_PIANO_SONGS;i++){
-        if (SongPlayed[i]<=songPlayedAvg && i!=currentSong){
+    for (i=0;i<NUM_PIANO_SONGS;i++) {
+        if (played[i]<=songPlayedAvg && i!=currentSong){
             for (j=GetSongWeight(i); j>0; j--){
                 validSongs[numValidSongs++]=i;
             }
         }
     }
 
+    recent_pointer = recent_pointer % ArrayCount(Recents);
     if (numValidSongs==0){
         //Ran out of valid songs - probably happening because you're on the last song and you tried to skip it
         //Just return the current song and play it again!  Seems to work reasonably well.
+        Recents[recent_pointer++] = currentSong;
         return currentSong;
     }
 
     rnd = Rand(numValidSongs);
+    Recents[recent_pointer++] = validSongs[rnd];
 
     //if(player != None) {
     //    player.ClientMessage("Piano picked choice "$rnd$" (song "$validSongs[rnd]$") out of "$numValidSongs$" choices");
@@ -817,6 +828,10 @@ function BeginPlay()
     local #var(PlayerPawn) p;
 
     Super.BeginPlay();
+
+    for(i=0; i<ArrayCount(Recents); i++) {
+        Recents[i] = -1;
+    }
 
     if(!class'DXRVersion'.static.VersionIsStable()) {
         //Quick test to make sure the valid song array is long enough
