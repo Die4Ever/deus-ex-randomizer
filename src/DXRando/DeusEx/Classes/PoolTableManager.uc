@@ -35,6 +35,7 @@ static function PoolTableManager Init(#var(prefix)Poolball cue)
     ptm = cue.Spawn(class'PoolTableManager',,,cue.Location);
 
     ptm.TableZone = cue.Region.Zone;
+    ptm.TableZone.ZoneGroundFriction = FMax(0.25, ptm.TableZone.ZoneGroundFriction); // default seems to be 0.2
 
     foreach ptm.tableZone.ZoneActors(class'#var(prefix)Poolball',ball){
         if (ball.Class!=class'#var(prefix)Poolball' && ball.Class!=class'#var(injectsprefix)Poolball') continue;
