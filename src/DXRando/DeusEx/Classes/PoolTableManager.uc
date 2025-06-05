@@ -55,6 +55,7 @@ function AddBall(#var(prefix)Poolball ball, optional bool update)
 
     balls[index].ball=ball;
     balls[index].OrigLoc=ball.Location;
+    ball.SetOwner(self);
 
     SetBallName(ball,index);
 }

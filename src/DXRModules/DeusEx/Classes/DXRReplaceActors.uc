@@ -485,10 +485,9 @@ function ReplacePoolball(#var(prefix)Poolball a)
     //ReplaceDecoration(a, n);
 
     //Update the PoolTableManager that this ball belongs to
-    foreach AllActors(class'PoolTableManager',ptm){
-        if(ptm.BallOwnedHere(a)){
-            ptm.AddBall(n,true); //Replace the old ball with the new one in the PTM
-        }
+    ptm = PoolTableManager(a.Owner);
+    if (ptm!=None && ptm.BallOwnedHere(a)){
+        ptm.AddBall(n,true); //Replace the old ball with the new one in the PTM
     }
 
     a.Destroy();
