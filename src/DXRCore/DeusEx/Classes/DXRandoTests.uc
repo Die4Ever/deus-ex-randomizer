@@ -48,6 +48,7 @@ function PostBeginPlay()
 function Timer()
 {
     local DXRando dxr;
+    local Inventory inv;
 
     dxr = class'DXRando'.default.dxr;
     if( dxr.bTickEnabled ) {
@@ -71,6 +72,8 @@ function Timer()
     if(#bool(injections)) { // we only have a test save for vanilla currently, to make a test save use our ExitGameTrigger.uc
         if(stage == 1) {
             stage++;
+            log("TIME: clearing items before loading savegame");
+            foreach AllActors(class'Inventory', inv) inv.Destroy();
             log("TIME: loading savegame");
             Level.ServerTravel("?loadgame=1", False);
         } else if(stage<10) {
