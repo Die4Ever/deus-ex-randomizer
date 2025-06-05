@@ -7,6 +7,7 @@ struct BallInfo {
 };
 
 var BallInfo balls[16];
+var ZoneInfo TableZone;
 
 //To prevent multiple bingo events from a single table
 var bool stripesSunk;
@@ -21,19 +22,21 @@ static function CreatePoolTableManagers(Actor a)
         if (ball.SkinColor!=SC_Cue) continue;
 
         //Create a PoolTableManager for each cue ball
-        Init(a,ball.Location);
+        Init(ball);
     }
 }
 
-static function PoolTableManager Init(Actor a, vector Loc)
+static function PoolTableManager Init(#var(prefix)Poolball cue)
 {
     local PoolTableManager ptm;
     local #var(prefix)Poolball ball;
     local int index;
 
-    ptm = a.Spawn(class'PoolTableManager',,,Loc);
+    ptm = cue.Spawn(class'PoolTableManager',,,cue.Location);
 
-    foreach ptm.RadiusActors(class'#var(prefix)Poolball',ball,ptm.CollisionRadius){
+    ptm.TableZone = cue.Region.Zone;
+
+    foreach ptm.tableZone.ZoneActors(class'#var(prefix)Poolball',ball){
         if (ball.Class!=class'#var(prefix)Poolball' && ball.Class!=class'#var(injectsprefix)Poolball') continue;
         ptm.AddBall(ball);
     }
