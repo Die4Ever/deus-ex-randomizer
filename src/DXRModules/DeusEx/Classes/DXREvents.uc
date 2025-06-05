@@ -490,8 +490,6 @@ function SetWatchFlags() {
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
-        InitPoolBalls();
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
         if (RevisionMaps) {
@@ -605,9 +603,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
-        WatchFlag('PlayPool');
         WatchFlag('OverhearLebedev_Played');
-        InitPoolBalls();
         bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
 
         break;
@@ -634,10 +630,6 @@ function SetWatchFlags() {
         WatchFlag('ThugGang_AllianceDead');
         WatchFlag('DonDone');
         WatchFlag('LennyDone');
-        if(RevisionMaps){
-            WatchFlag('PlayPool');
-            InitPoolBalls();
-        }
         break;
     case "03_NYC_HANGAR":
         WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
@@ -652,8 +644,6 @@ function SetWatchFlags() {
     //#region Mission 4
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
-        InitPoolBalls();
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -844,7 +834,6 @@ function SetWatchFlags() {
         WatchFlag('M07ChenSecondGive_Played');
         WatchFlag('LDDPRussPaid');
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
         WatchFlag('M06BartenderQuestion3');
         WatchFlag('Raid_Underway');
@@ -870,9 +859,6 @@ function SetWatchFlags() {
                 ball.Destroy(); //There's at least one ball outside of the table.  Just destroy it for simplicity
             }
         }
-
-        InitPoolBalls();
-        BallsPerTable=14; //This table is missing some balls
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
@@ -1038,10 +1024,8 @@ function SetWatchFlags() {
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
-        InitPoolBalls();
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -1617,9 +1601,7 @@ function SetWatchFlags() {
 
         break;
     case "15_AREA51_ENTRANCE":
-        WatchFlag('PlayPool');
         RewatchFlag('WaltonBadass_Played');
-        InitPoolBalls();
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
             if (dxm.tag=='chamber1'){
@@ -3673,6 +3655,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Reduce JC to just a torso and head by losing both arms and both legs.";
         case "LostLimbs":
             return "Every night, I can feel my leg...  and my arm...  even my fingers.|n|nLose enough limbs through the game.";
+        case "PoolTableStripes":
+            return "Sink all 7 solid-color balls (9-15) on enough different pool tables.";
+        case "PoolTableSolids":
+            return "Sink all 7 striped balls (1-7) on enough different pool tables.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4121,6 +4107,8 @@ defaultproperties
     bingo_options(360)=(event="JustAFleshWound",desc="Just a flesh wound",max=1)
     bingo_options(361)=(event="LostLimbs",desc="Why are we here?  Just to suffer?",desc_singular="Why are we here?  Just to suffer?",max=10)
 #endif
+    bingo_options(362)=(event="PoolTableStripes",desc="Sink all the striped pool balls %s times",desc_singular="Sink all the striped pool balls",max=3,missions=33116)
+    bingo_options(363)=(event="PoolTableSolids",desc="Sink all the solid pool balls %s times",desc_singular="Sink all the solid pool balls",max=3,missions=33116)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -4198,5 +4186,8 @@ defaultproperties
     mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
     mutually_exclusive(68)=(e1="PetAnimal_BindName_Starr",e2="PetDogs")
     mutually_exclusive(69)=(e1="JustAFleshWound",e2="LostLimbs")
+    mutually_exclusive(70)=(e1="PoolTableSolids",e2="PoolTableStripes")
+    mutually_exclusive(71)=(e1="PoolTableSolids",e2="PlayPool")
+    mutually_exclusive(72)=(e1="PlayPool",e2="PoolTableStripes")
 //#endregion
 }

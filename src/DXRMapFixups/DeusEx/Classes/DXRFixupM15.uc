@@ -504,6 +504,8 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     ft.Tag='elevator_floor1';
     ft.Event='elevator_doors';
 
+    class'PoolTableManager'.static.CreatePoolTableManagers(self); //Pool table here isn't nicely racked
+
     if (isVanilla) {
         Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');

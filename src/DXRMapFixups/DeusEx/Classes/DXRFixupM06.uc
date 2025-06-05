@@ -623,6 +623,7 @@ function PreFirstEntryMapFixes()
         //A switch inside the freezer to open it back up... just in case
         AddSwitch( vect(-1560.144409,-3166.475098,-315.504028), rot(0,16408,0), 'FreezerDoor');
 
+        class'PoolTableManager'.static.CreatePoolTableManagers(self);
 
         //Restore bouncer conversation....
 

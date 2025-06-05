@@ -215,6 +215,8 @@ function PreFirstEntryMapFixes()
         //Button to extend sewer platform from the other side
         AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
+        class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
+
         class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
 
@@ -351,6 +353,8 @@ function PreFirstEntryMapFixes()
                 }
             }
         }
+
+        class'PoolTableManager'.static.CreatePoolTableManagers(self); //There's a pool table here in Revision (and it's nicely racked)
 
         if (VanillaMaps){
             //Put a button behind the hidden bathroom door

@@ -5,6 +5,9 @@ function Bump(actor Other)
 {
 	local Vector HitNormal;
 
+    //Use this as a "don't do the collision stuff" toggle
+    if (bJustHit) return;
+
     //Vanilla had logic for making sure this only happened once within a 0.2 second limit
     //Presumably faster machines make that 0.02 timer pointless and I guess the balls were
     //hitting each other really fast or something?  I dunno man.
@@ -15,6 +18,15 @@ function Bump(actor Other)
         Velocity = (HitNormal * VSize(Other.Velocity)) / 1.01;
         Velocity.Z = 0;
 	}
+}
+
+function Frob(Actor Frobber, Inventory frobWith)
+{
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()){
+        if (Class==class'#var(injectsprefix)Poolball' && SkinColor!=SC_Cue) return; //No frobbing non-cue pool balls!
+    }
+
+    Super.Frob(Frobber,frobWith);
 }
 
 function SetSkin(int skinNum){

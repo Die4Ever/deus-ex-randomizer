@@ -405,6 +405,7 @@ function PreFirstEntryMapFixes()
 
     //#region Bar
     case "02_NYC_BAR":
+        class'PoolTableManager'.static.CreatePoolTableManagers(self);
         if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
             Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
         } else {
