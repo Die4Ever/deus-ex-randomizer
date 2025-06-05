@@ -57,7 +57,17 @@ function AddBall(#var(prefix)Poolball ball, optional bool update)
     balls[index].OrigLoc=ball.Location;
     ball.SetOwner(self);
 
+    AdjustBallSize(ball);
     SetBallName(ball,index);
+}
+
+function AdjustBallSize(#var(prefix)Poolball ball)
+{
+    //Don't shrink the cue ball
+    if (ball.SkinColor==SC_Cue) return;
+
+    //Default collision radius is 1.7, shrink the numbered balls a smidge to fit in the pockets better
+    ball.SetCollisionSize(1.5,ball.CollisionHeight);
 }
 
 function SetBallName(#var(prefix)Poolball ball, int index)
