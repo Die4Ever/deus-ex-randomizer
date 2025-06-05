@@ -59,6 +59,7 @@ function AddBall(#var(prefix)Poolball ball, optional bool update)
 
     balls[index].ball=ball;
     balls[index].OrigLoc=ball.Location;
+    if(index==0) ball.ScaleGlow = FMax(3, ball.ScaleGlow); // make the cue ball stick out more
     ball.SetOwner(self);
 
     AdjustBallSize(ball);
