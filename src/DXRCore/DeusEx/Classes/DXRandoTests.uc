@@ -75,7 +75,7 @@ function Timer()
             log("TIME: clearing items before loading savegame");
             foreach AllActors(class'Inventory', inv) inv.Destroy();
             log("TIME: loading savegame");
-            Level.ServerTravel("?loadgame=1", False);
+            Level.ServerTravel("?loadgame=1", False); // https://github.com/Die4Ever/unrealscript-injector/wiki/How-to-compile-Deus-Ex-Randomizer#automated-test-for-savegame-compatibility-optional
         } else if(stage<10) {
             log("TIME: waiting to load save...");
             stage++;

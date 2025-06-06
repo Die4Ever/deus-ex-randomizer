@@ -30,6 +30,8 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
 
+        AddGoalLocation("12_VANDENBERG_CMD", "Comm 01 Roof", START_LOCATION, vect(-1780, 5593, -1939), rot(0, 0, 0));
+
         // complicated because of DXRBacktracking::VandCmdAnyEntry() to reuse the chopper
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
