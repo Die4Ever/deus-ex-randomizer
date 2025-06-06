@@ -4,7 +4,7 @@ var DeusExPlayer    player;
 var DXRStats        stats;
 
 var config int version;
-var config Font  textfont;
+var config Font textfont;
 
 var config Color colorBackground, colorNotesBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
@@ -36,6 +36,7 @@ var float x, y;
 var config float x_pos, y_pos;
 var float prevSpeed, avgSpeed, lastTime;
 var int rememberedMission;
+var bool bWaltonWare;
 
 var config int last_flagshash;
 
@@ -338,6 +339,7 @@ function DrawWindow(GC gc)
     if(stats.dxr != None) {
         cur = stats.dxr.dxInfo.MissionNumber;
         rememberedMission = cur;
+        bWaltonWare = stats.dxr.flags.IsWaltonWare();
     } else if(rememberedMission > 0 && rememberedMission <= 15) {
         cur = rememberedMission;
     } else {
@@ -348,7 +350,7 @@ function DrawWindow(GC gc)
     y = 4;
     DrawHeader(gc);
 
-    if(stats.dxr != None && stats.dxr.flags.IsWaltonWare()) {
+    if(bWaltonWare) {
         DrawWaltonWare(gc);
     } else {
         DrawSplits(gc, cur);
@@ -435,7 +437,8 @@ function DrawWaltonWare(GC gc)
 
     prevTotal = flags.newgameplus_total_time;
     if(prevTotal > 0) {
-        DrawTextLine(gc, "Loop " $ flags.newgameplus_loops, "", colorText, x, y, fmtTime(prevTotal), true);
+        msg = stats.fmtTimeToString(prevTotal, false, false, true); // show tenths
+        DrawTextLine(gc, "Loop " $ flags.newgameplus_loops, "", colorText, x, y, msg, true);
         y += text_height;
     }
 
