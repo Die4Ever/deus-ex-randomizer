@@ -217,6 +217,9 @@ function PreFirstEntryMapFixes()
 
         class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
 
+        class'FakeMirrorInfo'.static.Create(self,vectm(1256,1035,122),vectm(1055,1055,70)); //Men's Bathroom Mirror
+        class'FakeMirrorInfo'.static.Create(self,vectm(1256,699,122),vectm(1055,710,70)); //Women's Bathroom Mirror
+
         class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
 
