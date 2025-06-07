@@ -783,31 +783,31 @@ function int GetSongWeight(int songIdx)
 //More intelligent picking, weights less played songs more
 function int PickSongIndex()
 {
-    local int rnd, i, j, songPlayedAvg, numValidSongs, numActiveSongs, played[ArrayCount(SongPlayed)];
+    local int rnd, i, j, leastPlayed, numValidSongs, played[ArrayCount(SongPlayed)];
 
     //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
     //Make sure this array is the same size as SPACE_FOR_VALID_SONGS
     local int validSongs[250];
 
-    songPlayedAvg=0;
-    numActiveSongs=0;
+    leastPlayed = -1;
     for (i=0;i<NUM_PIANO_SONGS;i++){
         if (GetSongWeight(i) <= 0) continue;
 
-        played[i] = SongPlayed[i];
+        played[i] = SongPlayed[i] * 2;
         for(j=0; j<ArrayCount(Recents); j++) {
             if(Recents[j] == i) {
                 played[i]++;
+                break;
             }
         }
-        songPlayedAvg += played[i];
-        numActiveSongs++;
+        if(played[i]<leastPlayed || leastPlayed==-1) {
+            leastPlayed = played[i];
+        }
     }
-    songPlayedAvg = songPlayedAvg/numActiveSongs;
 
     numValidSongs=0;
     for (i=0;i<NUM_PIANO_SONGS;i++) {
-        if (played[i]<=songPlayedAvg && i!=currentSong){
+        if (played[i]==leastPlayed && i!=currentSong){
             for (j=GetSongWeight(i); j>0; j--){
                 validSongs[numValidSongs++]=i;
             }
