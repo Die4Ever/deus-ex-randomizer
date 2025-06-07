@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[98]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[100]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 var int Recents[20];
 var int recent_pointer;
@@ -696,6 +696,16 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'TheEntertainer';
             duration = 6;
             message="You played The Entertainer by Scott Joplin";
+            break;
+        case 98:
+            SelectedSound = sound'SMB2CharacterSelect';
+            duration = 8.75;
+            message="You played Character Select from Super Mario Bros 2";
+            break;
+        case 99:
+            SelectedSound = sound'UnfoundedRevenge';
+            duration = 7;
+            message="You played Unfounded Revenge from Mother 3";
             break;
         default:
             SelectedSound = None;
