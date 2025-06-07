@@ -1474,6 +1474,18 @@ function int GiveItem(string viewer, string type, optional int amount) {
         return NotAvail;
     }
 
+    //If it is a Weapon (but not a thrown one, where the weapon pickup acts as extra ammo)
+    if (ClassIsChildOf(itemclass, class'#var(DeusExPrefix)Weapon') &&
+        !class'DXRActorsBase'.static.IsGrenade(itemclass) &&
+        !ClassIsChildOf(itemclass, class'#var(prefix)WeaponShuriken')){
+
+        //Check to see if the player already has one
+        if (player().FindInventoryType(itemclass)!=None){
+            //Don't allow the player to be given another one
+            return TempFail;
+        }
+    }
+
     //Check loadout for simulated effects or in case the selectability somehow failed
     loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
     if (loadout!=None){

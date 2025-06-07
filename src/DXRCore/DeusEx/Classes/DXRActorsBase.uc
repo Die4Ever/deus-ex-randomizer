@@ -144,7 +144,7 @@ static function bool IsInitialEnemy(ScriptedPawn p)
 }
 
 static function bool IsGrenade(class<Inventory> i) {
-    return i == class'WeaponLAM' || i == class'WeaponGasGrenade' || i == class'WeaponEMPGrenade' || i == class'WeaponNanoVirusGrenade';
+    return i == class'#var(prefix)WeaponLAM' || i == class'#var(prefix)WeaponGasGrenade' || i == class'#var(prefix)WeaponEMPGrenade' || i == class'#var(prefix)WeaponNanoVirusGrenade';
 }
 
 static function bool RemoveItem(Pawn p, class c)
