@@ -2591,6 +2591,7 @@ function int StopCrowdControlEvent(string code, optional bool bKnownStop)
         case "disable_jump":
             if (bKnownStop || isTimerActive('cc_JumpTimer')){
                 player().JumpZ = player().Default.JumpZ;
+                datastorage.SetConfig('cc_NoJump',0, 3600*12);
                 PlayerMessage("Your knees feel fine again.");
                 disableTimer('cc_JumpTimer');
             }
@@ -2802,6 +2803,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
 
             player().JumpZ = 0;
+            datastorage.SetConfig('cc_NoJump',1, 3600*12);
             startnewTimer('cc_JumpTimer',duration);
             PlayerMessage(viewer@"made your knees lock up.");
             break;
