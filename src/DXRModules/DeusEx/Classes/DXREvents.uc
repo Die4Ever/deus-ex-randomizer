@@ -1038,6 +1038,7 @@ function SetWatchFlags() {
         break;
     case "08_NYC_HOTEL":
         class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
+        //TODO: Should there be a bingo trigger for going up the stairs to the third floor in Revision as well?
         WatchFlag('GreenKnowsAboutDowd');
         break;
     case "08_NYC_UNDERGROUND":
@@ -1934,13 +1935,21 @@ simulated function int tweakBingoMax(string event, int max)
                 return 4; //Only 4 stores in Wan Chai Market in Revision, since the news stand is elsewhere
             }
             break;
+        case "OceanLabCrewChamber":
+            if (RevisionMaps){
+                return 3; //One of the crew chambers is damaged.  It still counts, but you have to really go out of your way to get it
+            }
+            break;
+        //Sodacan_Activated
+        //DrinkAlcohol
     }
     return max;
 }
 //#endregion
 
-//#region TweakBingoMax
+//#region TweakBingoMissions
 //If there are any different maximums in different mods, tweak them here
+//Make sure to update the bingo description as well, if it has detailed info
 simulated function int tweakBingoMissions(string event, int missions)
 {
     local DXRando dxr;
@@ -1950,13 +1959,148 @@ simulated function int tweakBingoMissions(string event, int missions)
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(event){
-        //TODO: There are *definitely* many bingo goals that may benefit from modified
-        //      mission masks in Revision.  Needs to be investigated.
         case "PhoneCall":
             if (RevisionMaps){
                 //Revision has a LOT more phones
                 //Extras in M01, M12, M14
                 return 22398;
+            }
+            break;
+        case "SpinShipsWheel":
+            if (RevisionMaps){
+                //Extras in
+                // - NYC Bar (Missions 2,4,8)
+                // - Vandenberg Gas (Mission 12)
+                return 4950;
+            }
+            break;
+        case "ChangeClothes":
+            //Vanilla has racks in 2, 4, 6, 8, 9
+            if (RevisionMaps){
+                //Extras in
+                // - UNATCO MJ12 Lab (M05)
+                // - Catacombs, Chateau, Club, Metro (M10)
+                // - Everett, Underground (M11)
+                // - Sub Base (M14)
+                // - A51 Bunker, Entrance (M15)
+                return 53108;
+            } else { //Vanilla maps
+                if (dxr.flags.clothes_looting!=0){
+                    //TODO: Add the Clothes Looting clothes racks
+                }
+            }
+            break;
+        case "PianoSongPlayed":
+        case "PianoSong0Played":
+        case "PianoSong7Played":
+        case "BrokenPianoPlayed":
+            //Vanilla only has the one piano in Maggie's apartment (M06)
+            if (RevisionMaps){
+                //Extras in
+                // - Paris Streets, Chateau (M10)
+                return 1088;
+            }
+            break;
+        case "PinballWizard":
+            if (RevisionMaps){
+                //Revision has an extra in the break room of ship lower decks
+                return 37758;
+            }
+            break;
+        case "NYEagleStatue_peeped":
+            if (RevisionMaps){
+                //The statue isn't present in M04 in Revision
+                return 12;
+            }
+            break;
+        case "FightSkeletons":
+            if (RevisionMaps){
+                //Extras in:
+                // - NYC Bar, Free Clinic, Street (M02)
+                // - NYC Bar, Street (M04)
+                // - NYC Bar, Street (M08)
+
+                //NONE in:
+                // - Cathedral (M11)
+                return 17748;
+            }
+            break;
+        case "TrophyHunter":
+            if (RevisionMaps){
+                //Extras in:
+                // - NYC Bar (M02)
+                // - 747, Airfield Helibase (M03)
+                // - NYC Bar (M04)
+                // - UNATCO MJ12 Lab (M05)
+                // - Several around Hong Kong (M06)
+                // - NYC Bar (M08)
+                // - Paris Streets (M10)
+                // - Vandenberg Command (M12)
+                return 5502;
+            }
+            break;
+        case "SlippingHazard":
+            if (RevisionMaps){
+                //Extra in Paris Club (M10)
+                return 1918;
+            }
+            break;
+        case "un_PrezMeadPic_peepedtex":
+            if (RevisionMaps){
+                //Extras in NYC Bar (M02/04/08)
+                return 318;
+            }
+            break;
+        //case "GS_MedKit_01_peepedtex":
+        //    if (RevisionMaps){
+        //        //Extras in (but they're movers so it doesn't work great):
+        //        // - Paris Underground (M11)
+        //        // - Vandenberg Sub Base (M14)
+        //        return 22528;
+        //    }
+        //    break;
+        case "Cat_peeptime":
+            if (RevisionMaps){
+                //Extras in NYC Streets (M02)
+                //None in Battery Park (M04)
+                return 7244;
+            }
+            break;
+        case "WatchDogs":
+            if (RevisionMaps){
+                //Extras in Cathedral (M11)
+                return 23652;
+            }
+            break;
+        case "BuoyOhBuoy":
+            if (RevisionMaps){
+                //Extras around Cathedral (M11)
+                return 2142;
+            }
+            break;
+        case "PlayerPeeped":
+            if (RevisionMaps){
+                //TODO: There are DEFINITELY extra mirrors, but I have no idea where they are
+            }
+            break;
+        case "ForkliftCertified":
+            if (RevisionMaps){
+                //Extra in Vandenberg Tunnels (M12)
+                return 36866;
+            }
+            break;
+        case "CherryPickerSeat":
+            if (RevisionMaps){
+                //Extra cherry picker in M03 Hangar
+                return 49160;
+            }
+            break;
+        case "ASingleFlask":
+            if (RevisionMaps){
+                //Extras in:
+                // - Free Clinic (M08)
+                // - Area 51 Page (M15)
+                return 57214;
             }
             break;
     }
@@ -2393,6 +2537,7 @@ function string RemapBingoEvent(string eventname)
         case "WaltonBadass_Played":
             return "WaltonConvos";
         case "ScientistMale_ClassDead":
+        case "ScientistMale2_ClassDead": //Revision
         case "ScientistFemale_ClassDead":
             return "ScienceIsForNerds";
         case "ShipNamePlate_B_peepedtex":
@@ -2693,6 +2838,12 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string msg;
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(dxr.player);
+
     switch(event){
         case "Free Space":
             return "Don't worry about it!  This one's free!";
@@ -2898,10 +3049,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             msg="Spin enough ships wheels.  ";
             if (mission<=1){
                 msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
+            }else if (RevisionMaps && mission<=4){ //Both M02 and M04
+                msg=msg$"There is a ships wheel on the wall of the Underworld Tavern.";
             }else if (mission<=6){
                 msg=msg$"There is a ships wheel on the smuggler's ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal).";
             }else if (mission<=9){
                 msg=msg$"There is a ships wheel on the bridge of the Superfreighter.";
+            }else if (RevisionMaps && mission<=12){
+                msg=msg$"There is a ships wheel on the wall of a house near the gas station.";
             }
             return msg;
         case "ActivateVandenbergBots":
@@ -3150,6 +3305,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SiloWaterTower":
             return "Go to the top of the water tower at the missile silo.";
         case "TonThirdFloor":
+            //TODO: Should this also mention going up the stairs in M08 of Revision?
             return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
         case "Set_flag_helios":
             return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
@@ -3237,6 +3393,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"There is a machine in the MJ12 Helibase, one in the MJ12 Lab barracks, one in the Old China Hand, and one in the Lucky Money.";
             } else if (mission<=8){
                 msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
+            } else if (RevisionMaps && mission<=9){
+                msg=msg$"There is a machine in the break room on the Lower Decks of the Superfreighter.";
             } else if (mission<=12){
                 msg=msg$"There is a machine in the Comms building in Vandenberg.";
             } else if (mission<=15){
@@ -3368,13 +3526,21 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps.";
         case "FightSkeletons":
             msg = "Destroy enough femurs or skulls.  Don't let the skeletons rise up!  ";
-            if (mission<=4){
-                msg=msg$"A skull can be found in the NSF HQ.";
+            if (RevisionMaps && mission<=2){
+                msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.";
+            } else if (mission<=4){
+                if (RevisionMaps){
+                    msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.  There is also a skull in NSF HQ";
+                } else {
+                    msg=msg$"A skull can be found in the NSF HQ.";
+                }
             } else if (mission<=6){
                 msg=msg$"A skull can be found in the Hong Kong VersaLife level 1 labs, as well as in Tracer Tong's hideout and in the Wan Chai Market.";
+            } else if (RevisionMaps && mission<=8){
+                msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.";
             } else if (mission<=10){
                 msg=msg$"The Paris catacombs are just completely loaded with skulls and femurs.";
-            } else if (mission<=11){
+            } else if (!RevisionMaps && mission<=11){
                 msg=msg$"A skull can be found underwater at the Cathedral.";
             } else if (mission<=14){
                 msg=msg$"Several skulls and femurs can be found in the OceanLab on the ocean floor.";
@@ -3384,14 +3550,22 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             msg = "Destroy enough trophies.  ";
             if (mission<=1){
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
+            } else if (RevisionMaps && mission<=2){
+                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
             } else if (mission<=3){
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).  Several can also be found in the LaGuardia Helibase.";
+            } else if (RevisionMaps && mission<=4){
+                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
             } else if (mission<=5){ //Mission 4 and 5 both only have trophies at HQ
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
             } else if (mission<=6){
                 msg=msg$"There are many trophies in Hong Kong.  One can be found in the Helibase, another one around the canals, and one on Tonnochi Road.";
+            } else if (RevisionMaps && mission<=8){
+                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
             } else if (mission<=10){
                 msg=msg$"There is a trophy in Chateau DuClare.";
+            } else if (RevisionMaps && mission<=12){
+                msg=msg$"There are four trophies in the cabinet of the commanders office outside the Vandenberg Command building.";
             }
             return msg;
         case "SlippingHazard":
@@ -3412,6 +3586,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg = msg$"  There is a sign in the hotel.";
             } else if (mission<=9){
                 msg = msg$"  There are signs on the lower decks of the superfreighter.";
+            } else if (RevisionMaps && mission<=10){
+                msg = msg$"  There is a sign in the store room of the Paris Club (La Porte De L'Enfer).";
             }
             return msg;
         case "Dehydrated":
@@ -3463,7 +3639,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Chef_ClassDead":
             return "Do what needs to be done and kill a chef.  You must kill him yourself.";
         case "un_PrezMeadPic_peepedtex":
-            return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
+            if (RevisionMaps){
+                return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground) or in the basement of the Underworld Tavern.";
+            } else {
+                return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
+            }
         case "un_bboard_peepedtex":
             return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars or a scope.";
         case "DrtyPriceSign_A_peepedtex":
@@ -3522,7 +3702,9 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough cigarette vending machines.  Smoking kills!";
         case "PhoneCall":
             msg = "Make phone calls on enough different phones (Either desk phones or pay phones).";
-            if (mission <=2){
+            if (RevisionMaps && mission <=1) {
+                msg=msg$"|n|nThere several phones scattered around UNATCO HQ.";
+            } else if (mission <=2){
                 msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
             } else if (mission <=3){
                 msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two desk phones in offices in the LaGuardia Helibase.";
@@ -3541,6 +3723,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"|n|nThere is a desk phone in an office in the dockyard.";
             } else if (mission<=10){
                 msg=msg$"|n|nThere is a desk phone in the office across the street from the entrance to the catacombs in Denfert-Rochereau.";
+            } else if (RevisionMaps && mission<=11){
+                msg=msg$"|n|nThere are phones in the Paris Metro station as well as in Everett's house.";
+            } else if (RevisionMaps && mission<=12){
+                msg=msg$"|n|nThere is a phone in the security room of the Vandenberg Command building.";
+            } else if (RevisionMaps && mission<=14){
+                msg=msg$"|n|nThere is a phone in the gatehouse at the sub base.";
             }
             return msg;
         case "Area51ElevatorPower":

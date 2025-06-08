@@ -1131,13 +1131,15 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "ReadJCEmail":
         case "Shannon_PlayerDead":
         case "WaltonConvos":
-        case "un_PrezMeadPic_peepedtex":
         case "un_bboard_peepedtex":
         case "UNATCOHandbook":
         case "ManderleyMail":
         case "LetMeIn":
         case "AlexCloset":
+            return start_map > 41 && end_mission <= 4;
+        case "un_PrezMeadPic_peepedtex":
         case "TrophyHunter":
+            if (RevisionMaps) return False; //Mead pic and Trophy in basement of the bar
             return start_map > 41 && end_mission <= 4;
         case "KnowYourEnemy":
             return start_map > 41;
@@ -1289,7 +1291,11 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             //as impossible in a mission, or be marked as failed as you get towards the end of the game,
             //while still blocking it from showing up in those missions.
             if (start_map>=50 && end_mission<=5) return true;
-            if (start_map>=90 && end_mission<=9) return true;
+
+            if (!RevisionMaps){
+                //Revision has a burning barrel in 09_NYC_Ship
+                if (start_map>=90 && end_mission<=9) return true;
+            }
             return (start_map>=140);
         default:
             return False;
