@@ -624,7 +624,7 @@ function PreFirstEntryMapFixes()
         AddSwitch( vect(-1560.144409,-3166.475098,-315.504028), rot(0,16408,0), 'FreezerDoor');
 
         class'PoolTableManager'.static.CreatePoolTableManagers(self);
-        //TODO: Add PoolTableResetButton
+        AddActor(class'PoolTableResetButton',vect(-802.5,-2563.3,10),rot(0,16384,0));
 
         //Restore bouncer conversation....
 
