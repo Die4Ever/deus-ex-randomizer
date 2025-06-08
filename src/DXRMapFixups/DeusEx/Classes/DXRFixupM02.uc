@@ -406,6 +406,12 @@ function PreFirstEntryMapFixes()
     //#region Bar
     case "02_NYC_BAR":
         class'PoolTableManager'.static.CreatePoolTableManagers(self);
+        if (RevisionMaps){
+            AddActor(class'PoolTableResetButton',vect(-1970,-565.3,145),rot(0,16384,0));
+        } else {
+            AddActor(class'PoolTableResetButton',vect(-1700,-389.3,50),rot(0,16384,0));
+        }
+
         if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
             Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
         } else {

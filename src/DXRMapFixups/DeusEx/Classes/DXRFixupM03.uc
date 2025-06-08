@@ -216,6 +216,7 @@ function PreFirstEntryMapFixes()
         AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
         class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
+        //TODO: Add PoolTableResetButton's for both tables
 
         class'FakeMirrorInfo'.static.Create(self,vectm(1256,1035,122),vectm(1055,1055,70)); //Men's Bathroom Mirror
         class'FakeMirrorInfo'.static.Create(self,vectm(1256,699,122),vectm(1055,710,70)); //Women's Bathroom Mirror
@@ -358,6 +359,7 @@ function PreFirstEntryMapFixes()
         }
 
         class'PoolTableManager'.static.CreatePoolTableManagers(self); //There's a pool table here in Revision (and it's nicely racked)
+        //TODO: Add PoolTableResetButton in Revision
 
         if (VanillaMaps){
             //Put a button behind the hidden bathroom door

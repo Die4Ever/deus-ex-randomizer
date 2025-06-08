@@ -505,6 +505,7 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     ft.Event='elevator_doors';
 
     class'PoolTableManager'.static.CreatePoolTableManagers(self); //Pool table here isn't nicely racked
+    //TODO: Add PoolTableResetButton
 
     if (isVanilla) {
         Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
