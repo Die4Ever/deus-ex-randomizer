@@ -42,9 +42,117 @@ static function PoolTableManager Init(#var(prefix)Poolball cue)
         ptm.AddBall(ball);
     }
 
+    ptm.AnalyzeTable();
+
     ptm.SetTimer(1.0,True);
 
     return ptm;
+}
+
+//Figure out the table orientation and determine the proper locations for all the balls
+//so that they'll be properly racked after a reset
+function AnalyzeTable()
+{
+    local float xPos,xNeg,yPos,yNeg, yWidth, xWidth, longDist;
+    local vector CueLoc,RackLoc,HitLoc,HitNormal,TraceEnd, Centre;
+    local rotator TableRot;
+    local Actor HitActor;
+    local int i;
+
+    CueLoc = balls[0].OrigLoc;
+
+    //Assess the length and width of the table, from the cue ball location
+    //Positive X direction
+    TraceEnd = CueLoc + vect(150,0,0);
+    HitActor = Trace(HitLoc,HitNormal,TraceEnd,,false);
+    xPos = VSize(HitLoc - CueLoc);
+
+    //Negative X direction
+    TraceEnd = CueLoc + vect(-150,0,0);
+    HitActor = Trace(HitLoc,HitNormal,TraceEnd,,false);
+    xNeg = VSize(HitLoc - CueLoc);
+
+    xWidth = xPos + xNeg;
+
+    //Positive Y direction
+    TraceEnd = CueLoc + vect(0,150,0);
+    HitActor = Trace(HitLoc,HitNormal,TraceEnd,,false);
+    yPos = VSize(HitLoc - CueLoc);
+
+    //Negative Y direction
+    TraceEnd = CueLoc + vect(0,-150,0);
+    HitActor = Trace(HitLoc,HitNormal,TraceEnd,,false);
+    yNeg = VSize(HitLoc - CueLoc);
+
+    yWidth = yPos + yNeg;
+
+    //Determine the centre of the table based on the measurements above
+    Centre = class'DXRBase'.static.MakeVector(CueLoc.X + ((xPos-xNeg)/2), CueLoc.Y + ((yPos-yNeg)/2),CueLoc.Z);
+
+    //Determine Table Rotation
+    if (xWidth < yWidth){
+        longDist = yWidth;
+        TableRot = Rot(0,0,0);
+    } else {
+        longDist = xWidth;
+        TableRot = Rot(0,16384,0);
+    }
+
+    //"Default" table orientation is assumed to be Narrow Direction on the X axis, Long Direction on the Y.
+    //Cue ball is a quarter of the table length (Y) positive, racked balls a quarter of the table length (Y) negative
+    //This is the orientation of the NYC Bar pool table in vanilla
+    CueLoc = Centre + (class'DXRBase'.static.MakeVector(0,(longDist/4),0) >> TableRot);
+    RackLoc = Centre + (class'DXRBase'.static.MakeVector(0,-(longDist/4),0) >> TableRot);
+
+    //Set the Cue Ball location to the calculated one
+    balls[0].OrigLoc = CueLoc;
+
+    //Set the location of the rest of the balls into the rack
+    for(i=1;i<ArrayCount(balls);i++){
+        if (balls[i].ball==None) continue;
+        balls[i].OrigLoc = RackLoc + (GetRackOffset(i) >> TableRot);
+    }
+}
+
+//Offsets determined based on the 02_NYC_BAR starting rack
+//Some balls have been swapped around to make it a valid rack
+//particularly, 8 ball to middle, and 1 ball to front
+function Vector GetRackOffset(int i)
+{
+    switch(i){
+        case 1:
+            //return vect(0.555908,8.168701,-0.283325);
+            return vect(0.555908,8.168701,0);
+        case 2:
+            return vect(-4.435303,0.176147,0);
+        case 3:
+            return vect(7.976807,-2.339233,0);
+        case 4:
+            return vect(4.365479,-2.451050,0);
+        case 5:
+            return vect(2.594971,5.455811,0);
+        case 6:
+            return vect(6.104736,0.283813,0);
+        case 7:
+            return vect(2.607666,0.164307,0);
+        case 8:
+            return vect(0.894775,2.861328,0);
+        case 9:
+            return vect(4.302002,2.836792,0);
+        case 10:
+            return vect(-2.510498,2.627075,0);
+        case 11:
+            return vect(-0.985107,5.360718,0);
+        case 12:
+            return vect(-6.130615,-2.460693,0);
+        case 13:
+            return vect(-2.745850,-2.640869,0);
+        case 14:
+            return vect(-0.963623,-0.136963,0);
+        case 15:
+            return vect(0.956299,-2.591187,0);
+    }
+    return vect(0,0,0);
 }
 
 //Make a specific ball be owned by this PoolTableManager
@@ -58,7 +166,11 @@ function AddBall(#var(prefix)Poolball ball, optional bool update)
     if (update==False && balls[index].ball!=None) return; //Don't replace a ball if it isn't owned by this
 
     balls[index].ball=ball;
-    balls[index].OrigLoc=ball.Location;
+
+    if (!update){
+        //"Update" will retain whatever location was stored before
+        balls[index].OrigLoc=ball.Location;
+    }
     if(index==0) ball.ScaleGlow = FMax(3, ball.ScaleGlow); // make the cue ball stick out more
     ball.SetOwner(self);
 

@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[100]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[106]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 var int Recents[20];
 var int recent_pointer;
@@ -706,6 +706,36 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'UnfoundedRevenge';
             duration = 7;
             message="You played Unfounded Revenge from Mother 3";
+            break;
+        case 100:
+            SelectedSound = sound'BattleAtTheBigBridge';
+            duration = 6;
+            message="You played Battle at the Big Bridge from Final Fantasy 5";
+            break;
+        case 101:
+            SelectedSound = sound'SMKDonutPlains';
+            duration = 8;
+            message="You played Donut Plains from Super Mario Kart";
+            break;
+        case 102:
+            SelectedSound = sound'SMWAthletic';
+            duration = 6;
+            message="You played the Athletic Theme from Super Mario World";
+            break;
+        case 103:
+            SelectedSound = sound'BalladOfTheWindFish';
+            duration = 10;
+            message="You played the Ballad of the Wind Fish from Legend of Zelda: Link's Awakening";
+            break;
+        case 104:
+            SelectedSound = sound'StarWolf';
+            duration = 6.5;
+            message="You played Star Wolf's Theme from Star Fox";
+            break;
+        case 105:
+            SelectedSound = sound'WWMedlisAwakening';
+            duration = 10.5;
+            message="You played Medli's Awakening from Legend of Zelda: The Wind Waker";
             break;
         default:
             SelectedSound = None;
