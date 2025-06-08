@@ -1358,3 +1358,17 @@ exec function PlayerRot()
 {
     ClientMessage("Player rotation: (" $ Rotation.pitch $ ", " $ Rotation.yaw $ ", " $ Rotation.roll $ ")");
 }
+
+exec function ShowBingoWindow()
+{
+	if (RestrictInput())
+		return;
+
+   if ((Level.NetMode != NM_Standalone) && (bBeltIsMPInventory))
+   {
+      ClientMessage("Bingo screen disabled in multiplayer");
+      return;
+   }
+
+	InvokeUIScreen(Class'PersonaScreenBingo');
+}
