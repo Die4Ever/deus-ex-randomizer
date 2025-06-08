@@ -1037,8 +1037,10 @@ function SetWatchFlags() {
 
         break;
     case "08_NYC_HOTEL":
-        class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
-        //TODO: Should there be a bingo trigger for going up the stairs to the third floor in Revision as well?
+        class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40); //Top of elevator
+        if (RevisionMaps){
+            class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(315,-2200,500),150,40); //Top of stairs
+        }
         WatchFlag('GreenKnowsAboutDowd');
         break;
     case "08_NYC_UNDERGROUND":
@@ -3305,8 +3307,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SiloWaterTower":
             return "Go to the top of the water tower at the missile silo.";
         case "TonThirdFloor":
-            //TODO: Should this also mention going up the stairs in M08 of Revision?
-            return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
+            if (RevisionMaps && mission > 4){
+                return "Climb up the elevator shaft or up the stairs in the 'Ton hotel to the third floor.";
+            } else {
+                return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
+            }
         case "Set_flag_helios":
             return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
         case "coolant_switch":
