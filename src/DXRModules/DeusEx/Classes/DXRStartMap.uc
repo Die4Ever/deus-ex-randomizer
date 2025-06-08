@@ -1073,6 +1073,12 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 //#region BingoGoalImpossible
 static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(dxr.player);
+
     switch(start_map/10)
     {
     case 1: // Liberty Island
@@ -1268,7 +1274,12 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             }
             return start_map>=90;
         case "PhoneCall":
-            return start_map>100; //TODO: Last phone is in the building before the catacombs (Where Icarus calls)
+            if (RevisionMaps){
+                //Last phone is in Sub Base (in the gatehouse)
+                return start_map>=145; //Don't require backtracking from Silo
+            } else {
+                return start_map>100; //Last phone is in the building before the catacombs (Where Icarus calls)
+            }
         case "JustAFleshWound":
             //This requires removing both arms and legs.  Arms are easy to knock off anywhere with height,
             //but arms are harder to consistently remove.  Flaming barrels are the easiest way I can think

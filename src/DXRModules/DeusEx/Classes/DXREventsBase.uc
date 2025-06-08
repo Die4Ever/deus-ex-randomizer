@@ -34,6 +34,8 @@ var ActorWatchItem actor_watch[150];
 var int num_watched_actors;
 
 simulated function string tweakBingoDescription(string event, string desc);
+simulated function int tweakBingoMax(string event, int max);
+simulated function int tweakBingoMissions(string event, int missions);
 function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
@@ -1243,8 +1245,12 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
         if(bingo_options[x].event == "") continue;
-        maybe_masked_missions = bingo_options[x].missions & maybe_mission_mask;
-        masked_missions = bingo_options[x].missions & starting_mission_mask & end_mission_mask;
+
+        missions = bingo_options[x].missions;
+        missions = tweakBingoMissions(bingo_options[x].event,missions); //Adjust the mission mask, for different mods
+
+        maybe_masked_missions = missions & maybe_mission_mask;
+        masked_missions = missions & starting_mission_mask & end_mission_mask;
         if(maybe_masked_missions != 0 && masked_missions == 0) { // maybe?
             bPossible = class'DXRStartMap'.static.BingoGoalPossible(bingo_options[x].event,starting_map,end_mission);
             if(bTest) {
@@ -1255,7 +1261,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
                 continue;
             }
         }
-        if(bingo_options[x].missions!=0 && masked_missions == 0) continue;
+        if(missions!=0 && masked_missions == 0) continue;
         if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission)) {
             if(bTest) {
                 l("BingoGoalImpossible " $ bingo_options[x].event @ starting_map @ end_mission);
@@ -1338,6 +1344,10 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             missions = bingo_options[i].missions;
             max = bingo_options[i].max;
             do_not_scale = bingo_options[i].do_not_scale;
+
+            max = tweakBingoMax(event,max); //Adjust the maximum, in case limits are different in other mods
+            missions = tweakBingoMissions(event,missions); //Adjust the mission mask, for different mods
+
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && do_not_scale==false) {
                 max = ScaleBingoGoalMax(max,dxr.flags.bingo_scale,0.8,1.0,starting_mission,missions,end_mission_mask);

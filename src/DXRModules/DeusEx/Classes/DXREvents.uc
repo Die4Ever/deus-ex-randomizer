@@ -1918,6 +1918,53 @@ simulated function string tweakBingoDescription(string event, string desc)
 }
 //#endregion
 
+//#region TweakBingoMax
+//If there are any different maximums in different mods, tweak them here
+simulated function int tweakBingoMax(string event, int max)
+{
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    switch(event){
+        case "WanChaiStores":
+            if (RevisionMaps){
+                return 4; //Only 4 stores in Wan Chai Market in Revision, since the news stand is elsewhere
+            }
+            break;
+    }
+    return max;
+}
+//#endregion
+
+//#region TweakBingoMax
+//If there are any different maximums in different mods, tweak them here
+simulated function int tweakBingoMissions(string event, int missions)
+{
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    switch(event){
+        //TODO: There are *definitely* many bingo goals that may benefit from modified
+        //      mission masks in Revision.  Needs to be investigated.
+        case "PhoneCall":
+            if (RevisionMaps){
+                //Revision has a LOT more phones
+                //Extras in M01, M12, M14
+                return 22398;
+            }
+            break;
+    }
+
+    return missions;
+}
+//#endregion
+
 //#region ReadText
 function ReadText(name textTag)
 {
