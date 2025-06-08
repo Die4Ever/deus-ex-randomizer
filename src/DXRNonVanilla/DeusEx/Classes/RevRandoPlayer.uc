@@ -1404,3 +1404,15 @@ exec function AllPasswords()
     }
     ClientMessage("Set all account passwords to known");
 }
+
+exec function CheatsOn()
+{
+    bCheatsEnabled = true;
+    ClientMessage("Cheats Enabled");
+}
+
+exec function CheatsOff()
+{
+    bCheatsEnabled = false;
+    ClientMessage("Cheats Disabled");
+}
