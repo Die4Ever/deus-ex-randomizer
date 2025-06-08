@@ -2083,8 +2083,10 @@ simulated function int tweakBingoMissions(string event, int missions)
             }
             break;
         case "PlayerPeeped":
+            //Vanilla has mirrors in every mission except 15
             if (RevisionMaps){
-                //TODO: There are DEFINITELY extra mirrors, but I have no idea where they are
+                //Revision has a mirror in the bathroom of Area 51 ENTRANCE (and mirrored floors)
+                return 57214;
             }
             break;
         case "ForkliftCertified":
