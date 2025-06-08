@@ -1988,7 +1988,9 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 53108;
             } else { //Vanilla maps
                 if (dxr.flags.clothes_looting!=0){
-                    //TODO: Add the Clothes Looting clothes racks
+                    //Clothes Looting adds clothes racks to missions:
+                    // 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 15
+                    return 40830;
                 }
             }
             break;
