@@ -1372,3 +1372,35 @@ exec function ShowBingoWindow()
 
 	InvokeUIScreen(Class'PersonaScreenBingo');
 }
+
+exec function AllPasswords()
+{
+    local DXRComputerSecurity cs;
+    local DXRComputerPersonal cp;
+    local DXRKeypad k;
+    local DXRATM a;
+    local int i;
+
+    foreach AllActors(class'DXRComputerSecurity',cs){
+        for (i=0;i<ArrayCount(cs.knownAccount);i++){
+            cs.SetAccountKnown(i);
+        }
+    }
+
+    foreach AllActors(class'DXRComputerPersonal',cp){
+        for (i=0;i<ArrayCount(cp.knownAccount);i++){
+            cp.SetAccountKnown(i);
+        }
+    }
+
+    foreach AllActors(class'DXRKeypad',k){
+        k.bCodeKnown = True;
+    }
+
+    foreach AllActors(class'DXRATM',a){
+        for (i=0;i<ArrayCount(a.knownAccount);i++){
+            a.SetAccountKnown(i);
+        }
+    }
+    ClientMessage("Set all account passwords to known");
+}
