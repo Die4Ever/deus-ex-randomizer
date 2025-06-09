@@ -86,18 +86,18 @@ function BindControls(optional string action)
     Slider(f.settings.dancingpercent, 0, 100);
 
     NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them).");
-    EnumOption("Available", 1, f.settings.spoilers);
-    EnumOption("Disallowed", 0, f.settings.spoilers);
+    EnumOption("Available", 1, f.settings.spoilers,GetSpoilerButtonHelpText(1));
+    EnumOption("Disallowed", 0, f.settings.spoilers,GetSpoilerButtonHelpText(0));
 
     NewMenuItem("Menus Pause Game", "Should the game keep playing while a menu is open?");
     EnumOption("Pause", 1, f.settings.menus_pause);
     EnumOption("Don't Pause", 0, f.settings.menus_pause);
 
     NewMenuItem("Camera Mode", "What camera mode should be used");
-    EnumOption("First Person", 0, f.moresettings.camera_mode);
-    EnumOption("Third Person", 1, f.moresettings.camera_mode);
+    EnumOption("First Person", 0, f.moresettings.camera_mode,GetCameraModeHelpText(0));
+    EnumOption("Third Person", 1, f.moresettings.camera_mode,GetCameraModeHelpText(1));
     if(#defined(vanilla || revision)) {
-        EnumOption("Fixed Camera", 2, f.moresettings.camera_mode);
+        EnumOption("Fixed Camera", 2, f.moresettings.camera_mode,GetCameraModeHelpText(2));
     }
 
     NewMenuItem("Splits Overlay", "Splits and total game time overlay");
@@ -553,6 +553,35 @@ function string GetClothesLootingHelpText(int loot)
     }
 
     return msg;
+}
+
+function string GetSpoilerButtonHelpText(int spoil)
+{
+    local string msg;
+
+    if (spoil==0){ //Disallowed
+        msg="Spoiler buttons will not be available for goal locations or entrance randomizer.  You will still be able to use the 'Goal Locations' or 'Entrances' buttons to see the lists of possible locations or entrances.";
+    } else if (spoil==1){ //Available
+        msg="Spoiler buttons will be available on the Goals screen and the Images screen (for certain images).  The 'Goal Spoilers' and 'Entrance Spoilers' buttons will show you the exact locations and connections so you can proceed with the game.";
+    }
+
+    return msg;
+}
+
+function string GetCameraModeHelpText(int mode)
+{
+    local string msg;
+
+    if (mode==0){ //First Person
+        msg="The game will be played in a first-person perspective (as originally designed).";
+    } else if (mode==1){ //Third Person
+        msg="The game will be played in a third-person over-the-shoulder perspective.  A laser will be emitted from your face to indicate where you are aiming and will change color like the crosshairs.";
+    } else if (mode==2){ //Fixed Camera
+        msg="The game will be played with a camera that stays in a fixed position, like classic survival horror games.  The camera will follow your movement and reposition when you move out of line of sight."$"  A laser will be emitted from your face to indicate where you are aiming and will change color like the crosshairs.";
+    }
+
+    return msg;
+
 }
 
 function string GetAugCansRandoHelpText()
