@@ -762,6 +762,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
         case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
             AddNoteFromConv(player, bEmptyNotes, 'M07Briefing'); // Access code to the Versalife nanotech research wing on Level 2: 55655
+            AddNote(player, bEmptyNotes, "Dr. Lundquist:|n|nThe new server node for the Weapons Research Team is now active and user permissions have been set as you asked.  The master password for this node is DAMOCLES.|n|nPlease let me know if you need anything else,|n|n- Harrison");
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
             flagbase.SetBool('Disgruntled_Guy_Dead', true);
