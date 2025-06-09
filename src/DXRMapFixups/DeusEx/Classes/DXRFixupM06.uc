@@ -107,6 +107,7 @@ function PreFirstEntryMapFixes()
     local Dispatcher disp;
     local #var(prefix)Trigger t;
     local #var(prefix)ControlPanel panel;
+    local #var(prefix)HKHangingLantern lantern;
     local int i;
 
     local bool VanillaMaps;
@@ -415,6 +416,10 @@ function PreFirstEntryMapFixes()
                 if(p.Name == 'MJ12Troop4') {
                     p.bIsSecretGoal = true;// don't clone him, he's too close
                 }
+            }
+
+            foreach AllActors(class'#var(prefix)HKHangingLantern', lantern,'OpenTheDoorLantern'){
+                lantern.bInvincible=true;
             }
 
             class'FakeMirrorInfo'.static.Create(self,vectm(1335,-1663,1736),vectm(1345,-1535,1775)); //Jock's Bathroom
