@@ -711,6 +711,8 @@ function AnyEntryMapFixes()
             }
         }
         break;
+    case "03_NYC_UNATCOHQ":
+        FixConversationFlagJump(GetConversation('AnnaAtUNATCO'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
     }
 }
 //#endregion
