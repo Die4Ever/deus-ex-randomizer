@@ -21,7 +21,10 @@ function BeginPlay()
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-    Super.Frob(Frobber, frobWith);
+    Super(DeusExDecoration).Frob(Frobber, frobWith); //Skip the regular Switch1 logic to toggle the switch and play sounds
+
+    PlaySound(sound'PoolballClack',,1.5);
+    PlayAnim('Off');
 
     if (ptm!=None){
         ptm.ResetPoolTable();
