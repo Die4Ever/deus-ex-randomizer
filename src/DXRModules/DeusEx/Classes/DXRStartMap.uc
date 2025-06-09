@@ -884,7 +884,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 {
     local SkillAwardCrate crate;
-    local int credits;
+    local int credits, num;
+    local float desiredHealth; // how many medkits to give
 
     crate = SkillAwardCrate(SpawnInFrontOnFloor(
         player,
@@ -897,6 +898,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
         return None;
     }
 
+    crate.DropStacks = false;
     if (dxr.flags.newgameplus_loops == 0) {
         crate.ItemName = "Later Start Supply Crate";
         crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
@@ -909,10 +911,23 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 
     credits = GetStartMapCreditsBonus(dxr);
     if (credits > 0) {
-        crate.AddContent(class'Credits', credits);
+        crate.AddContent(class'#var(prefix)Credits', credits);
     }
-    crate.AddContent(class'BioelectricCell', 1);
+    crate.AddContent(class'#var(prefix)BioelectricCell', 1);
     crate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+
+    desiredHealth = FClamp(100 - dxr.flags.settings.health, 0, 100);
+    if(dxr.flags.settings.starting_map >= 120) desiredHealth += 15;
+    if(desiredHealth >= 30) {
+        num = desiredHealth/30;
+        crate.AddContent(class'#var(prefix)Medkit', num);
+        desiredHealth -= num * 30;
+    }
+    if(desiredHealth >= 10) {
+        num = desiredHealth/10;
+        crate.AddContent(class'#var(prefix)SoyFood', num);
+        desiredHealth -= num * 10;
+    }
 
     return crate;
 }
