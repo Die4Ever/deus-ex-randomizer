@@ -338,6 +338,7 @@ function SetWatchFlags() {
         raceStart.SetCollisionSize(100,100);
         raceStart.raceName="Training Section 2 (Combat)";
         raceStart.targetTime=150; //2:30
+        raceStart.presentHealth=true; //Did you get wrecked by the LAMs?
 
         checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(4950,-250,-20));
         checkPoint.SetCollisionSize(100,100);
@@ -350,6 +351,7 @@ function SetWatchFlags() {
         raceStart.SetCollisionSize(100,100);
         raceStart.raceName="Training Section 3 (Final)";
         raceStart.targetTime=90; //1:30
+        raceStart.presentHealth=true; //How badly did the bot at the end wreck you?
 
         checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(6575,-5700,100));
         checkPoint.SetCollisionSize(100,100);
@@ -1199,6 +1201,7 @@ function SetWatchFlags() {
         raceStart.raceName="Catacombs";
         raceStart.SetCollisionSize(60,80);
         raceStart.targetTime=90; //Under 1 minute (around 55ish seconds) is possible if you really blast it
+        raceStart.presentHealth=true;
 
         checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(2775,-3785,-450)); //Lines up for both
         checkPoint.SetCollisionSize(100,80);
@@ -1209,6 +1212,7 @@ function SetWatchFlags() {
         raceStart.raceName="Reverse Catacombs";
         raceStart.SetCollisionSize(100,80);
         raceStart.targetTime=60; //Under 1 minute (around 55ish seconds) is possible forwards if you really blast it
+        raceStart.presentHealth=true;
 
         if (RevisionMaps){
             checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-3287,-2270,555));
@@ -1313,6 +1317,7 @@ function SetWatchFlags() {
 
         raceStart = Spawn(class'DXRRaceTimerStart',,'ChateauKeyRaceStart');
         raceStart.raceName="the Chateau DuClare key hunt";
+        raceStart.presentEnergy=true; //Lets see how much energy you used running around
 
         oot = Spawn(class'OnceOnlyTrigger',, 'ChateauKeyRaceStartOnce');
         oot.Event = 'ChateauKeyRaceStart';

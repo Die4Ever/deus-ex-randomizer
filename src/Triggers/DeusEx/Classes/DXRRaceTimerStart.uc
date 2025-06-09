@@ -3,10 +3,15 @@ class DXRRaceTimerStart extends Trigger;
 var   int    numCheckPoints;
 var   float  checkPointTimes[8];
 var   float  startTime;
+var   int    startHealth;
+var   float  startEnergy;
 var() float  targetTime;
 var() string raceName;
 var() string finishBingoGoal;  //Triggered when you finish the race
 var() string targetBingoGoal;  //Triggered when you finish the race under the targetTime
+
+var() bool   presentHealth; //Should we send health info in the telemetry message?
+var() bool   presentEnergy; //Should we send energy info in the telemetry message?
 
 function RegisterCheckpoint(DXRRaceCheckPoint checkpoint)
 {
@@ -64,8 +69,23 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function StartRaceTimer()
 {
+    local #var(PlayerPawn) p;
+
     ResetCheckpoints();
     startTime = Level.TimeSeconds;
+
+    p = #var(PlayerPawn)(GetPlayerPawn());
+    if (presentHealth && startHealth==-1) {
+        if (p!=None){
+            startHealth=p.Health;
+        }
+    }
+    if (presentEnergy && startEnergy==-1) {
+        if (p!=None){
+            startEnergy=p.Energy;
+        }
+    }
+
 }
 
 function RaceFinished()
@@ -73,6 +93,8 @@ function RaceFinished()
     local #var(PlayerPawn) p;
     local float totalTime;
     local bool beatTarget;
+    local int finalHealth,lostHealth;
+    local float finalEnergy, lostEnergy;
 
     if (numCheckPoints<=0) return;
 
@@ -87,10 +109,28 @@ function RaceFinished()
         class'DXREvents'.static.MarkBingo(targetBingoGoal);
     }
 
-    //Send a telemetry event
-    class'DXREvents'.static.SendRaceTimerEvent(self,totalTime);
-
     p = #var(PlayerPawn)(GetPlayerPawn());
+
+    finalHealth=-1;
+    finalEnergy=-1.0;
+    lostHealth=0;
+    lostEnergy=0.0;
+    if (p!=None){
+        finalHealth = p.Health;
+        finalEnergy = p.Energy;
+    }
+
+    if (presentHealth && startHealth!=-1 && finalHealth!=-1){
+        lostHealth = startHealth - finalHealth;
+    }
+
+    if (presentEnergy && startEnergy!=-1 && finalEnergy!=-1){
+        lostEnergy = startEnergy - finalEnergy;
+    }
+
+    //Send a telemetry event
+    class'DXREvents'.static.SendRaceTimerEvent(self,totalTime,lostHealth,lostEnergy);
+
     if (p!=None){
         //p.ClientMessage("Finished "$raceName$" in "$ConstructTimeStr(totalTime)$"!");
         if (beatTarget && class'MenuChoice_ToggleMemes'.static.IsEnabled(class'DXRando'.default.dxr.flags)){
@@ -133,6 +173,8 @@ function string ConstructTimeStr(float timeSecs)
 defaultproperties
 {
     startTime=-1.0
+    startHealth=-1
+    startEnergy=-1.0
     checkPointTimes(0)=-1.0
     checkPointTimes(1)=-1.0
     checkPointTimes(2)=-1.0

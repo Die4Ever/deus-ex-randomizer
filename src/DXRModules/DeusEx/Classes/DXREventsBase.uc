@@ -901,7 +901,7 @@ static function ExtinguishFire(string extinguisher, DeusExPlayer player)
     MarkBingo("ExtinguishFire");
 }
 
-static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime)
+static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime, int lostHealth, float lostEnergy)
 {
     local string j;
     local DXRando dxr;
@@ -914,6 +914,8 @@ static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime
     js.static.Add(j, "raceName", raceTimer.raceName);
     js.static.Add(j, "targetTime", raceTimer.targetTime);
     js.static.Add(j, "finishTime", finishTime);
+    js.static.Add(j, "lostHealth", lostHealth);
+    js.static.Add(j, "lostEnergy", lostEnergy);
     js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
     GeneralEventData(dxr, j);
     js.static.End(j);
