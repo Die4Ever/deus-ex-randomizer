@@ -132,42 +132,11 @@ function RaceFinished()
     class'DXREvents'.static.SendRaceTimerEvent(self,totalTime,lostHealth,lostEnergy);
 
     if (p!=None){
-        //p.ClientMessage("Finished "$raceName$" in "$ConstructTimeStr(totalTime)$"!");
+        //p.ClientMessage("Finished "$raceName$" in "$class'DXRInfo'.static.ConstructTimeStr(totalTime)$"!");
         if (beatTarget && class'MenuChoice_ToggleMemes'.static.IsEnabled(class'DXRando'.default.dxr.flags)){
-            p.ClientMessage("Beat "$raceName$" in "$ConstructTimeStr(totalTime)$", under the target time of "$ConstructTimeStr(targetTime)$"!");
+            p.ClientMessage("Beat "$raceName$" in "$class'DXRInfo'.static.ConstructTimeStr(totalTime)$", under the target time of "$class'DXRInfo'.static.ConstructTimeStr(targetTime)$"!");
         }
     }
-}
-
-function string ConstructTimeStr(float timeSecs)
-{
-    local int hours, minutes;
-    local string timeStr;
-
-    hours = int(timeSecs/3600);
-    timeSecs = timeSecs - (hours*3600);
-
-    minutes = int(timeSecs/60);
-    timeSecs = timeSecs - (minutes*60);
-
-    timeStr = "";
-    if (hours>0){
-        timeStr = timeStr $ hours $ " hour";
-        if (hours!=1){
-            timeStr = timeStr $ "s";
-        }
-        timeStr = timeStr $", ";
-    }
-    if (minutes>0){
-        timeStr = timeStr $ minutes$" minute";
-        if (minutes!=1){
-            timeStr = timeStr $ "s";
-        }
-        timeStr = timeStr $ ", ";
-    }
-    timeStr = timeStr $ class'DXRInfo'.static.FloatToString(timeSecs,3) $ " seconds";
-
-    return timeStr;
 }
 
 defaultproperties
