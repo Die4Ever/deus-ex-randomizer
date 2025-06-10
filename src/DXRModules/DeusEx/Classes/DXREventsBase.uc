@@ -923,6 +923,23 @@ static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime
     class'DXRTelemetry'.static.SendEvent(dxr, raceTimer, j);
 }
 
+static function SendPoolTableComplete()
+{
+    local string j;
+    local DXRando dxr;
+    local class<Json> js;
+
+    dxr = class'DXRando'.default.dxr;
+    js = class'Json';
+
+    j = js.static.Start("Flag");
+    js.static.Add(j, "flag", "PoolTableComplete");
+    GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, dxr, j);
+}
+
 static function SendHordeModeWaveComplete(DXRHordeMode horde)
 {
     local string j;
