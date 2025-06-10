@@ -60,8 +60,15 @@ event HitWall(vector HitNormal, actor HitWall)
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
+    local PoolTableManager ptm;
+
     if(class'MenuChoice_BalanceEtc'.static.IsEnabled()){
         if (Class==class'#var(injectsprefix)Poolball' && SkinColor!=SC_Cue) return; //No frobbing non-cue pool balls!
+    }
+
+    ptm = PoolTableManager(Owner);
+    if (ptm!=None){
+        ptm.BallFrobbed();
     }
 
     Super.Frob(Frobber,frobWith);
