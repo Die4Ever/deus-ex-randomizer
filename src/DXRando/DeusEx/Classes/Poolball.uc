@@ -68,7 +68,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 
     ptm = PoolTableManager(Owner);
     if (ptm!=None){
-        ptm.BallFrobbed();
+        ptm.BallFrobbed(Frobber);
     }
 
     Super.Frob(Frobber,frobWith);

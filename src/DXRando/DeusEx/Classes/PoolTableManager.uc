@@ -9,11 +9,13 @@ struct BallInfo {
 var BallInfo balls[16];
 var ZoneInfo TableZone;
 
+var #var(PlayerPawn) lastPlayer;
+
 //To prevent multiple bingo events from a single table
 var bool stripesSunk;
 var bool solidsSunk;
 var bool allSunk;
-var bool allSunkToot;
+var bool allSunkRepeatable;
 
 //Timing purposes
 var float firstFrob;
@@ -227,11 +229,12 @@ function Bool BallOwnedHere(#var(prefix)Poolball ball)
     return balls[i].ball==ball;
 }
 
-function BallFrobbed()
+function BallFrobbed(Actor Frobber)
 {
     if (firstFrob==0){
         firstFrob = Level.TimeSeconds;
     }
+    lastPlayer = #var(PlayerPawn)(Frobber);
 }
 
 //#region Ball Identification
@@ -339,7 +342,7 @@ function ResetPoolTable(optional bool eightBall)
     }
 
     firstFrob = 0;
-    allSunkToot = false;
+    allSunkRepeatable = false;
 }
 
 function ResetSingleBall(int index)
@@ -381,11 +384,11 @@ function CheckPoolBalls()
     local bool eightUnsunk, cueUnsunk;
 
     for (i=0;i<ArrayCount(balls);i++){
-        //DEBUGClientMessage("Ball "$i$" "$balls[i].ball);
+        //ClientMessage("Ball "$i$" "$balls[i].ball);
         if (balls[i].ball==None) continue; //Skip balls that never existed
 
         if (!IsBallSunk(balls[i].ball)){
-            //DEBUGClientMessage(balls[i].ball$" is NOT sunk");
+            //ClientMessage(balls[i].ball$" is NOT sunk");
             //Ball is unsunk
             if (IsSolidIndex(i)){
                 solidsUnsunk++;
@@ -433,7 +436,7 @@ function ReportBallSunk(int index)
     balls[index].sunk=true;
     class'DXREvents'.static.MarkBingo("PoolTableBall"$index); //A specific ball sunk
     class'DXREvents'.static.MarkBingo("PoolTableBallSunk"); //Generic "any ball" sunk
-    //DEBUGClientMessage("Sunk ball "$index);
+    //ClientMessage("Sunk ball "$index);
 
 }
 
@@ -443,7 +446,7 @@ function ReportStripesSunk()
 
     stripesSunk=true;
     class'DXREvents'.static.MarkBingo("PoolTableStripes");
-    //DEBUGClientMessage("All Stripes sunk");
+    //ClientMessage("All Stripes sunk");
 }
 
 function ReportSolidsSunk()
@@ -452,18 +455,20 @@ function ReportSolidsSunk()
 
     solidsSunk=true;
     class'DXREvents'.static.MarkBingo("PoolTableSolids");
-    //DEBUGClientMessage("All Solids sunk");
+    //ClientMessage("All Solids sunk");
 }
 
 function ReportAllSunk()
 {
     local float completeTime;
 
-    if (!allSunkToot){
+    if (!allSunkRepeatable){
         //Allow the toot to be sent every time you clear the table
         completeTime = Level.TimeSeconds - firstFrob;
         class'DXREvents'.static.SendPoolTableComplete(completeTime); //A telemetry message for finishing the table
-        allSunkToot=true;
+
+        ClientMessage("All balls sunk in "$class'DXRInfo'.static.ConstructTimeStr(completeTime)$"!");
+        allSunkRepeatable=true;
     }
 
     if (allSunk) return;
@@ -471,17 +476,15 @@ function ReportAllSunk()
     allSunk=true;
     class'DXREvents'.static.MarkBingo("PlayPool"); //The legacy "Sink all balls" goal
 
-    //DEBUGClientMessage("All balls sunk");
+    //ClientMessage("All balls sunk");
 }
 //#endregion
 
-function DEBUGClientMessage(string msg)
+function ClientMessage(string msg)
 {
-    local #var(PlayerPawn) p;
-
-    foreach AllActors(class'#var(PlayerPawn)',p){break;}
-
-    p.ClientMessage("PTM: "$msg);
+    if (lastPlayer!=None){
+        lastPlayer.ClientMessage(msg);
+    }
 }
 
 

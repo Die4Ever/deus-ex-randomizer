@@ -143,6 +143,37 @@ static function OpenURL(PlayerPawn p, string url)
     class'DXRando'.default.dxr.bIsOpeningURL = false;
 }
 
+static function string ConstructTimeStr(float timeSecs)
+{
+    local int hours, minutes;
+    local string timeStr;
+
+    hours = int(timeSecs/3600);
+    timeSecs = timeSecs - (hours*3600);
+
+    minutes = int(timeSecs/60);
+    timeSecs = timeSecs - (minutes*60);
+
+    timeStr = "";
+    if (hours>0){
+        timeStr = timeStr $ hours $ " hour";
+        if (hours!=1){
+            timeStr = timeStr $ "s";
+        }
+        timeStr = timeStr $", ";
+    }
+    if (minutes>0){
+        timeStr = timeStr $ minutes$" minute";
+        if (minutes!=1){
+            timeStr = timeStr $ "s";
+        }
+        timeStr = timeStr $ ", ";
+    }
+    timeStr = timeStr $ class'DXRInfo'.static.FloatToString(timeSecs,3) $ " seconds";
+
+    return timeStr;
+}
+
 static function int _SystemTime(LevelInfo Level)
 {
     local int time, m;
