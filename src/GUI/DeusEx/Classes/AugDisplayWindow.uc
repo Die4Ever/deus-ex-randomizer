@@ -523,6 +523,10 @@ function DrawTargetAugmentation(GC gc)
     local float x,y,h,w, boxCX,boxCY;
     local DynamicTeleporter dynTele;
 
+    local #var(prefix)Poolball ball;
+    local float ballX,ballY,endX,endY;
+    local vector HitLocation,HitNormal,EndTrace;
+
     gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
 
     SuperDrawTargetAugmentation(gc);
@@ -570,6 +574,26 @@ function DrawTargetAugmentation(GC gc)
 
         gc.DrawText(x, y, w, h, str);
     }
+
+    //Draw a poolball aiming line
+    ball = #var(prefix)Poolball(player.FrobTarget);
+    if (ball!=None){
+        if (ball.SkinColor==SC_Cue){
+            //Start location
+            ConvertVectorToCoordinates(ball.Location,ballX,ballY);
+
+            //End location
+            EndTrace = ball.Location + (Normal(ball.Location - player.Location) * 400);
+            EndTrace.Z = ball.Location.Z;
+            player.Trace(HitLocation, HitNormal, EndTrace, ball.Location, True);
+            ConvertVectorToCoordinates(HitLocation,endX,endY);
+
+            //Draw a line between the two
+            gc.SetTileColorRGB(255,255,255);
+            Interpolate(gc, ballX, ballY, endX, endY, 64);
+        }
+    }
+
 
     //Font is immediately changed after DrawTargetAugmentation gets called,
     //So not necessary to "change it back" to the old font
