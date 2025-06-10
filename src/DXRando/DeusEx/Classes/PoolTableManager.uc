@@ -417,7 +417,8 @@ function ReportBallSunk(int index)
     if (balls[index].sunk) return;
 
     balls[index].sunk=true;
-    class'DXREvents'.static.MarkBingo("PoolTableBall"$index);
+    class'DXREvents'.static.MarkBingo("PoolTableBall"$index); //A specific ball sunk
+    class'DXREvents'.static.MarkBingo("PoolTableBallSunk"); //Generic "any ball" sunk
     //DEBUGClientMessage("Sunk ball "$index);
 
 }
@@ -446,6 +447,7 @@ function ReportAllSunk()
 
     allSunk=true;
     class'DXREvents'.static.MarkBingo("PlayPool"); //The legacy "Sink all balls" goal
+    class'DXREvents'.static.SendPoolTableComplete(); //A telemetry message for finishing the table
     //DEBUGClientMessage("All balls sunk");
 }
 //#endregion
