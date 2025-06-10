@@ -13,6 +13,10 @@ var ZoneInfo TableZone;
 var bool stripesSunk;
 var bool solidsSunk;
 var bool allSunk;
+var bool allSunkToot;
+
+//Timing purposes
+var float firstFrob;
 
 static function CreatePoolTableManagers(Actor a)
 {
@@ -223,6 +227,13 @@ function Bool BallOwnedHere(#var(prefix)Poolball ball)
     return balls[i].ball==ball;
 }
 
+function BallFrobbed()
+{
+    if (firstFrob==0){
+        firstFrob = Level.TimeSeconds;
+    }
+}
+
 //#region Ball Identification
 function int GetBallIndex(#var(prefix)Poolball ball)
 {
@@ -302,13 +313,13 @@ function Timer()
 }
 
 //#region Ball Resets
-function ResetPoolTable()
+function ResetPoolTable(optional bool eightBall)
 {
     local int i;
     local #var(prefix)Poolball ball;
     local vector OrigLoc;
 
-    if(!class'MenuChoice_BalanceEtc'.static.IsEnabled()) return;
+    if(!class'MenuChoice_BalanceEtc'.static.IsEnabled() && eightBall) return;
 
     for (i=0;i<ArrayCount(balls);i++) {
         ball = balls[i].ball;
@@ -326,6 +337,9 @@ function ResetPoolTable()
     for (i=0;i<ArrayCount(balls);i++) {
         balls[i].ball.SetCollision(True,True,True);
     }
+
+    firstFrob = 0;
+    allSunkToot = false;
 }
 
 function ResetSingleBall(int index)
@@ -390,7 +404,7 @@ function CheckPoolBalls()
     if (class'MenuChoice_BalanceEtc'.static.IsEnabled() && !eightUnsunk && stripesUnsunk!=0 && solidsUnsunk!=0) {
         //If you sank the eightball before one set of balls has been sunk, RESET
         //Or should it just reset the eightball? (see below)
-        ResetPoolTable();
+        ResetPoolTable(true);
         return;
     }
 
@@ -443,11 +457,20 @@ function ReportSolidsSunk()
 
 function ReportAllSunk()
 {
+    local float completeTime;
+
+    if (!allSunkToot){
+        //Allow the toot to be sent every time you clear the table
+        completeTime = Level.TimeSeconds - firstFrob;
+        class'DXREvents'.static.SendPoolTableComplete(completeTime); //A telemetry message for finishing the table
+        allSunkToot=true;
+    }
+
     if (allSunk) return;
 
     allSunk=true;
     class'DXREvents'.static.MarkBingo("PlayPool"); //The legacy "Sink all balls" goal
-    class'DXREvents'.static.SendPoolTableComplete(); //A telemetry message for finishing the table
+
     //DEBUGClientMessage("All balls sunk");
 }
 //#endregion

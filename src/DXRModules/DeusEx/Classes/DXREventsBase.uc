@@ -923,7 +923,7 @@ static function SendRaceTimerEvent(DXRRaceTimerStart raceTimer, float finishTime
     class'DXRTelemetry'.static.SendEvent(dxr, raceTimer, j);
 }
 
-static function SendPoolTableComplete()
+static function SendPoolTableComplete(float completeTime)
 {
     local string j;
     local DXRando dxr;
@@ -934,6 +934,7 @@ static function SendPoolTableComplete()
 
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", "PoolTableComplete");
+    js.static.Add(j, "CompleteTime",completeTime);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
