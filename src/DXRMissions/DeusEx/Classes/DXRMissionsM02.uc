@@ -4,6 +4,9 @@ class DXRMissionsM02 extends DXRMissions;
 function int InitGoals(int mission, string map)
 {
     local int goal, loc, loc2, jock_holy_smokes, jock_sewer, generator_sewer, generator_alley;
+    local bool bMemes;
+
+    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -40,7 +43,7 @@ function int InitGoals(int mission, string map)
         jock_holy_smokes = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
-        jock_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
+        if(bMemes) jock_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
 
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
@@ -50,13 +53,13 @@ function int InitGoals(int mission, string map)
 
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
         generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
-        AddMutualExclusion(generator_alley, jock_sewer);// too easy
+        if(bMemes) AddMutualExclusion(generator_alley, jock_sewer);// too easy
         AddMutualExclusion(generator_alley, jock_holy_smokes);
         loc = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(460,1130,1000), rot(0,32768,-16384));
         AddMutualExclusion(loc, jock_holy_smokes);
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
         generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1695,784,-210), rot(32768,-32768,0));
-        AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
+        if(bMemes) AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
         AddMutualExclusion(generator_sewer, jock_holy_smokes);
         AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1340, -700, 575), rot(32768, 0, 32768)); //Near the ramp
         AddGoalLocation("02_NYC_WAREHOUSE", "4th Floor", GOAL_TYPE1, vect(390,-660,832), rot(32768,0,0)); //Among the boxes
@@ -87,6 +90,9 @@ function int InitGoals(int mission, string map)
 function int InitGoalsRev(int mission, string map)
 {
     local int goal, loc, loc2, jock_holy_smokes, jock_sewer, generator_sewer, generator_alley;
+    local bool bMemes;
+
+    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -124,7 +130,7 @@ function int InitGoalsRev(int mission, string map)
         jock_holy_smokes = AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
-        jock_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
+        if(bMemes) jock_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
 
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
@@ -134,13 +140,13 @@ function int InitGoalsRev(int mission, string map)
 
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(575,-608,122), rot(32768, -16384, 0));
         generator_alley = AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-550, 1700, 110), rot(0,32768,-16384));
-        AddMutualExclusion(generator_alley, jock_sewer);// too easy
+        if(bMemes) AddMutualExclusion(generator_alley, jock_sewer);// too easy
         AddMutualExclusion(generator_alley, jock_holy_smokes);
         loc = AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(460,1130,1000), rot(0,32768,-16384));
         AddMutualExclusion(loc, jock_holy_smokes);
         AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300,-480,-125), rot(0,-16384,-16384));
         generator_sewer = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1695,784,-210), rot(32768,-32768,0));
-        AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
+        if(bMemes) AddMutualExclusion(generator_sewer, jock_sewer);// can't put Jock and the generator both in the sewers
         AddMutualExclusion(generator_sewer, jock_holy_smokes);
         AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1340, -700, 575), rot(32768, 0, 32768));
         AddGoalLocation("02_NYC_WAREHOUSE", "4th Floor", GOAL_TYPE1, vect(390,-660,832), rot(32768,0,0)); //Among the boxes
