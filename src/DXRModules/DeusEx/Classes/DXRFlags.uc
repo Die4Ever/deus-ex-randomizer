@@ -18,6 +18,7 @@ const BingoCampaign = 14;
 const NormalRandomizer = 15;
 const StrongAugsMode = 16;
 const SpeedrunTraining = 17;
+const SeriousRando = 18; // same as Full Rando, but memes disabled by default
 
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
@@ -527,7 +528,11 @@ function SetDifficulty(int new_difficulty)
 
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)) settings.dancingpercent = 0;
 
-    if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
+    if(gamemode == SeriousRando) { // same as Full Rando, but memes disabled by default
+        settings.dancingpercent = 0;
+        settings.merchants = 0;
+    }
+    else if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;
         settings.goals = 0;
         settings.enemiesrandomized *= 0.8;
@@ -897,6 +902,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
     if(slot--==0) return HalloweenEntranceRando;
+    if(slot--==0) return SeriousRando;
 
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareHalloween;
@@ -947,6 +953,8 @@ function string GameModeName(int gamemode)
         return "Zero Rando Plus";
     case RandoMedium:
         return "Randomizer Medium";
+    case SeriousRando:
+        return "Serious Rando";
     case SeriousSam:
         return "Serious Sam Mode";
     case SpeedrunMode:
@@ -992,6 +1000,28 @@ function string GameModeHelpText(int gamemode)
     switch(gamemode) {
     case FullRando:
         s =   "The FULL Randomizer experience.  Randomizes:|n";
+        s = s$"|n";
+        s = s$"  ~ Goal Locations|n";
+        s = s$"  ~ Computer Passwords and Keypad Codes|n";
+        s = s$"  ~ Skill Strength and Cost|n";
+        s = s$"  ~ Augmentation Strength|n";
+        s = s$"  ~ Augmentations in Canisters|n";
+        s = s$"  ~ Item Locations and Quantities|n";
+        s = s$"  ~ Datacube Locations|n";
+        s = s$"  ~ Nanokey Locations|n";
+        s = s$"  ~ Crate Locations|n";
+        s = s$"  ~ Enemy Locations, Quantities, and Types|n";
+        s = s$"  ~ Medical Bot and Repair Bot Locations|n";
+        s = s$"  ~ Starting Location (on some maps)|n";
+        s = s$"  ~ Auto Turret Locations|n";
+        s = s$"  ~ Weapon Mod Types|n";
+        s = s$"  ~ Planted Grenade Types|n";
+        s = s$"  ~ And more!|n";
+        s = s$"|n";
+        s = s$"Item quantities are also reduced to encourage more variety of playstyles.";
+        return s;
+    case SeriousRando:
+        s =   "The SERIOUS Randomizer experience.  Memes are disabled by default.  Randomizes:|n";
         s = s$"|n";
         s = s$"  ~ Goal Locations|n";
         s = s$"  ~ Computer Passwords and Keypad Codes|n";
@@ -1151,6 +1181,11 @@ function bool IsZeroRandoPure()
 function bool IsReducedRando()
 {
     return gamemode == RandoLite || gamemode == ZeroRando || gamemode == ZeroRandoPlus || gamemode == RandoMedium;
+}
+
+function bool IsSeriousRando()
+{
+    return gamemode == SeriousRando;
 }
 
 function bool IsSpeedrunMode()
