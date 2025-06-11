@@ -9,6 +9,9 @@ function int InitGoals(int mission, string map)
     local int howard_cherry, howard_meeting, howard_radio, howard_computer, howard_machine_shop;
     local int jock_vanilla, jock_cherry, jock_tower, jock_computer;
     local int computer_vanilla, computer_radio, computer_meeting, computer_machine_shop;
+    local bool bMemes;
+
+    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
 
     switch(map) {
     case "12_VANDENBERG_CMD":
@@ -106,8 +109,10 @@ function int InitGoals(int mission, string map)
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         jock_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554, -5680.964355, 1507.895020), rot(0, 0, 0));
         jock_tower = AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
-        jock_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
-        jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        if(bMemes) {
+            jock_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
+            jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        }
 
         // COMPUTER
         goal = AddGoal("14_OCEANLAB_SILO", "Launch Command Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
@@ -123,12 +128,13 @@ function int InitGoals(int mission, string map)
         AddMutualExclusion(howard_meeting, computer_meeting);
         AddMutualExclusion(howard_machine_shop, computer_machine_shop);
 
-        AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
+        if(bMemes) {
+            AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
+            AddMutualExclusion(howard_computer, jock_computer); // both in the same room
+            AddMutualExclusion(computer_vanilla, jock_computer);
+        }
         //AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
         //AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
-        AddMutualExclusion(howard_computer, jock_computer); // both in the same room
-
-        AddMutualExclusion(computer_vanilla, jock_computer);
 
         return 142;
     }
@@ -143,6 +149,9 @@ function int InitGoalsRev(int mission, string map)
     local int howard_cherry, howard_meeting, howard_radio, howard_computer, howard_machine_shop;
     local int jock_vanilla, jock_cherry, jock_tower, jock_computer;
     local int computer_vanilla, computer_radio, computer_meeting, computer_machine_shop;
+    local bool bMemes;
+
+    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
 
 
     switch(map) {
@@ -250,8 +259,10 @@ function int InitGoalsRev(int mission, string map)
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         jock_vanilla = AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554,-5680.769043,1513.223389), rot(0, 0, 0));
         jock_tower = AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
-        jock_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
-        jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        if(bMemes) {
+            jock_cherry = AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
+            jock_computer = AddGoalLocation("14_OCEANLAB_SILO", "Launch Command", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
+        }
 
         //COMPUTER
         goal = AddGoal("14_OCEANLAB_SILO", "Launch Command Computer", GOAL_TYPE2, 'ComputerSecurity0', PHYS_None);
@@ -267,13 +278,14 @@ function int InitGoalsRev(int mission, string map)
         AddMutualExclusion(howard_meeting, computer_meeting);
         AddMutualExclusion(howard_machine_shop, computer_machine_shop);
 
-        AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
+        if(bMemes) {
+            AddMutualExclusion(howard_cherry, jock_cherry); //Cherry Picker and bottom of silo Jock
+
+            AddMutualExclusion(howard_computer, jock_computer); // both in the same room
+            AddMutualExclusion(computer_vanilla, jock_computer);
+        }
         //AddMutualExclusion(howard_meeting, jock_tower); //Surface meeting room and sniper tower
         //AddMutualExclusion(howard_radio, jock_vanilla); //Radio/Poker building and vanilla Jock
-        AddMutualExclusion(howard_computer, jock_computer); // both in the same room
-
-        AddMutualExclusion(computer_vanilla, jock_computer);
-
 
         return 142;
 
