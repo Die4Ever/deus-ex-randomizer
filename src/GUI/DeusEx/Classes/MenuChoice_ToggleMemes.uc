@@ -2,7 +2,7 @@ class MenuChoice_ToggleMemes extends DXRMenuUIChoiceInt;
 
 static function bool IsEnabled(DXRFlags f)
 {
-    return (default.value==2) || (default.value==1 && !f.IsReducedRando());
+    return (default.value==2) || (default.value==1 && !f.IsReducedRando() && !f.IsSeriousRando());
 }
 
 defaultproperties
