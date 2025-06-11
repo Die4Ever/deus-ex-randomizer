@@ -9,16 +9,15 @@ function Bump(actor Other)
 
     //Use this as a "don't do the collision stuff" toggle
     if (bJustHit) return;
-    if (lastBump >= Level.TimeSeconds) return;
 
     // DXRando: Vanilla had logic for making sure this only happened once within a 0.2 second limit
     //Presumably faster machines make that 0.02 timer pointless and I guess the balls were
     //hitting each other really fast or something?  I dunno man.
     if (!Other.IsA('#var(injectsprefix)Poolball')) return;
-
     otherball = #var(injectsprefix)Poolball(Other);
-    otherball.lastBump = Level.TimeSeconds + 1;
-    lastBump = Level.TimeSeconds + 1;
+    if (lastBump >= Level.TimeSeconds && otherball.lastBump >= Level.TimeSeconds) return;
+    otherball.lastBump = Level.TimeSeconds + 0.1;
+    lastBump = Level.TimeSeconds + 0.1;
 
     PlaySound(sound'PoolballClack', SLOT_None);
 
