@@ -44,8 +44,8 @@ function CheckConfig()
     AddRandomSidearm(class'#var(prefix)WeaponStealthPistol', 7);
     AddRandomSidearm(class'#var(prefix)WeaponMiniCrossbow', 3);
 
-    AddRandomMelee(class'#var(prefix)WeaponBaton', 20);
-    AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 57);
+    AddRandomMelee(class'#var(prefix)WeaponBaton', 25);
+    AddRandomMelee(class'#var(prefix)WeaponCombatKnife', 52);
     AddRandomMelee(class'#var(prefix)WeaponCrowbar', 17);
     AddRandomMelee(class'#var(prefix)WeaponSword', 6);
 
