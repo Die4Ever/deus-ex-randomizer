@@ -180,7 +180,7 @@ simulated function bool IncrementBingoProgress(string event, bool ifNotFailed, s
             break;
         }
         bingo[i].progress++;
-        log("IncrementBingoProgress " $ timestamp @ (i/5) $", " $ (i%5) @ event$": " $ bingo[i].progress $" / "$ bingo[i].max @ bingo_missions_masks[i], self.class.name);
+        log("IncrementBingoProgress " $ timestamp @ (i/5) $", " $ int(i%5) @ event$": " $ bingo[i].progress $" / "$ bingo[i].max @ bingo_missions_masks[i], self.class.name);
         ExportBingoState();
         return bingo[i].progress == bingo[i].max;
     }
@@ -203,7 +203,7 @@ simulated function bool MarkBingoAsFailed(string event)
         bingo_missions_masks[i] = bingo_missions_masks[i] | FAILED_MISSION_MASK;
         bingo[i].progress = 0;
         stats = DXRStats(class'DXRStats'.static.Find());
-        log("MarkBingoAsFailed "$ stats.GetTotalTimeString() @ (i/5)$", "$(i%5) @ event @ bingo_missions_masks[i], self.class.name);
+        log("MarkBingoAsFailed "$ stats.GetTotalTimeString() @ (i/5)$", "$ int(i%5) @ event @ bingo_missions_masks[i], self.class.name);
         ExportBingoState();
         return true;
     }
