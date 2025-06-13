@@ -1416,3 +1416,11 @@ exec function CheatsOff()
     bCheatsEnabled = false;
     ClientMessage("Cheats Disabled");
 }
+
+exec function FindLoc()
+{
+    local Inventory LocFinder;
+
+    LocFinder = class'DXRActorsBase'.static.GiveItem(self, class'WeaponLocFinder');
+    PutInHand(LocFinder);
+}
