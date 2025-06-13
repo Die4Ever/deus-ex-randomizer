@@ -2483,6 +2483,14 @@ exec function AllBingos()
     }
 }
 
+exec function FindLoc()
+{
+    local Inventory LocFinder;
+
+    LocFinder = class'DXRActorsBase'.static.GiveItem(self, class'WeaponLocFinder');
+    PutInHand(LocFinder);
+}
+
 state CheatFlying
 {
 ignores SeePlayer, HearNoise, Bump, TakeDamage;
