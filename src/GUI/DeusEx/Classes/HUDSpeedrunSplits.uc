@@ -311,7 +311,7 @@ function InitSizes(GC gc)
     gc.GetTextExtent(0, windowWidth, text_height, " +00:00 8:88:88 ");
     windowWidth += left_col;
 
-    gc.GetTextExtent(0, f, text_height, ttitle);
+    gc.GetTextExtent(0, f, text_height, ttitle $ "X");
     windowWidth = FMax(f, windowWidth);
     gc.GetTextExtent(0, f, text_height, tsubtitle $"XX");
     windowWidth = FMax(f, windowWidth);
