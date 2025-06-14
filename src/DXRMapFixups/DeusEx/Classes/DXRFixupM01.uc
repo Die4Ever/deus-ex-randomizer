@@ -195,6 +195,10 @@ function PreFirstEntryMapFixes()
             class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
         }
 
+        if (AddSaveReminderCube()){
+            SpawnDatacubePlaintext(vectm(-215,1240,288),rot(0,0,0),FixedSaveReminderCubeText(),"FixedSaveReminder",true);
+        }
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
@@ -230,6 +234,49 @@ function PreFirstEntryMapFixes()
     }
 }
 //#endregion
+
+function bool AddSaveReminderCube()
+{
+#ifdef injections
+    local DXRAutosave m;
+
+    m = DXRAutosave(class'DXRAutosave'.static.Find());
+
+    if (m==None) return false;
+
+    return (m.IsFixedSaves() || m.IsLimitedSaves());
+#else
+    return false;
+#endif
+}
+
+function string FixedSaveReminderCubeText()
+{
+#ifdef injections
+    local string msg;
+    local DXRAutosave m;
+
+    m = DXRAutosave(class'DXRAutosave'.static.Find());
+
+    if (m==None) return "";
+
+    msg = "Hey JC,|n|n";
+
+    if (m.IsFixedSaves()){
+        msg = msg $ "Remember that you can only log your mission progress when you're at a computer.  That's any computer, be it a personal computer, security computer, public news terminal, or even an ATM.  "$"It might be worth making a save here in HQ before heading out on your next assignment.  Never know when you might next encounter a suitable computer.|n|n";
+    }
+
+    if (m.IsLimitedSaves()){
+        msg = msg $ "We've developed a new device called a \"Memory Containment Unit\" (also known as an MCU) which can be used when you want to log your mission progress.  You will need MCUs"$" every time you want to log your progress and won't be able to do so if you don't have enough.  We've scattered them around everywhere we operate, so take a look around to see if you can find any additional units you might need.|n|n";
+    }
+
+    msg = msg $ "  -Alex";
+
+    return msg;
+#else
+    return "";
+#endif
+}
 
 //#region Timer
 function TimerMapFixes()
