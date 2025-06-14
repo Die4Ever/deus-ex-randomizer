@@ -99,6 +99,9 @@ function string ReplaceVariables(string s)
     t = f.DifficultyName(f.difficulty) $"";
     s = f.ReplaceText(s, "%difficulty", t);
 
+    t = class'DXRInfo'.static.FloatToString(player.CombatDifficulty, 3);
+    s = f.ReplaceText(s, "%combatdifficulty", t);
+
     t = stats.GetDataStorageStat(dxr, "DXRStats_loads") $"";
     s = f.ReplaceText(s, "%loads", t);
 
