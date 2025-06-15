@@ -595,6 +595,13 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
+    
+    case "03_NYC_HANGAR":
+        FixMechanicBarks();
+        foreach AllActors(class'#var(prefix)Terrorist', terror) {
+            terror.BarkBindName = "Terrorist";
+        }
+        break;
     //#endregion
     }
 }
@@ -619,6 +626,7 @@ function AnyEntryMapFixes()
     switch(dxr.localURL) {
     case "03_NYC_747":
         SetTimer(1, true);
+        FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
         break;
 
     case "03_NYC_AIRFIELDHELIBASE":
@@ -711,6 +719,11 @@ function AnyEntryMapFixes()
             }
         }
         break;
+    case "03_NYC_UNATCOHQ":
+        FixConversationFlagJump(GetConversation('AnnaAtUNATCO'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+        break;
+    case "03_NYC_HANGAR":
+        dxr.flagBase.SetBool('MeetLebedev2_Played', dxr.flagBase.GetBool('MeetLebedev2_Played'),, 5); // to enable some Paul dialog in M04
     }
 }
 //#endregion

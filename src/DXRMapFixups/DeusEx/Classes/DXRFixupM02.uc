@@ -18,6 +18,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)Jock actualJock;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)SkillAwardTrigger sat;
     local #var(prefix)FordSchick ford;
@@ -417,6 +418,12 @@ function PreFirstEntryMapFixes()
         } else {
             Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
         }
+
+        foreach AllActors(class'#var(prefix)Jock', actualJock) {
+            actualJock.BarkBindName = "Jock";
+            break;
+        }
+
         break;
     //#endregion
 
@@ -632,6 +639,8 @@ function PostFirstEntryMapFixes()
 function AnyEntryMapFixes()
 {
     local ConEventSpeech ces;
+    // local ConEventTrigger cet;
+    // local Conversation con;
     local Jock j;
 
     switch (dxr.localURL) {
@@ -648,6 +657,16 @@ function AnyEntryMapFixes()
                 break;
             }
         }
+
+        // TODO: make work
+        // con = GetConversation('JaneyThankful');
+        // cet = new(con) class'ConEventTrigger';
+        // ces = GetSpeechEvent(con.eventList, "Well, if you ever want to get into the warehouse");
+        // cet.triggerTag = 'JaneyDistraughtConvoFinished';
+        // cet.eventType = ET_Trigger;
+        // cet.nextEvent = ces.nextEvent;
+        // ces.nextEvent = cet;
+
         break;
 
     case "02_NYC_SMUG":

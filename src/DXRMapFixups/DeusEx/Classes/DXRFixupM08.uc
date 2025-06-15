@@ -501,6 +501,11 @@ function PreFirstEntryMapFixes()
                     lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
                 }
             }
+
+            // // "Fighting was heavy in this area.  Watch out for guards."
+            // // should probably remain disabled since there might be like one guy down there
+            // player().StartDataLinkTransmission("DL_DangerUnderground");
+
             break;
     //#endregion
     }

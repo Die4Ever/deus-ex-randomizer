@@ -712,6 +712,10 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 
     switch(start_flag) {
+        case 20:
+            // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
+            player.StartDataLinkTransmission("DL_CastleClinton");
+            break;
         case 21:
             flagbase.SetBool('EscapeSuccessful',true,,-1);
             MarkConvPlayed("DL_SubwayComplete", bFemale);
