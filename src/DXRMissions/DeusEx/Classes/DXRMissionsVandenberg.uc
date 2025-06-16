@@ -58,7 +58,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Sniper Tower", GOAL_TYPE1, vect(-946.215820, 80.315643, -1359.704102), rot(0,32768,0));
         AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));
 
-        if (dxr.flags.settings.starting_map > 120)
+        if (dxr.flags.GetStartingMap() > 120)
         {
             skip_rando_start = True;
         }
@@ -208,7 +208,7 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Ammunition Storage Roof", GOAL_TYPE1, vect(1100,6175,-1475), rot(0,-16384,0));
         AddActorLocation(loc, 1, vect(1575,6000,-1550), rot(0,0,0));
 
-        if (dxr.flags.settings.starting_map > 120)
+        if (dxr.flags.GetStartingMap() > 120)
         {
             skip_rando_start = True;
         }

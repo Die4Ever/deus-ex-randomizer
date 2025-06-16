@@ -1155,7 +1155,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
         }
     } else {
         SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
-        _CreateBingoBoard(data, dxr.flags.settings.starting_map, dxr.flags.bingo_duration);
+        _CreateBingoBoard(data, dxr.flags.GetStartingMap(), dxr.flags.bingo_duration);
     }
 
     stats = DXRStats(dxr.FindModule(class'DXRStats'));
@@ -1173,7 +1173,7 @@ simulated function CreateBingoBoard(optional int starting_map)
     local PlayerDataItem data;
 
     if (starting_map == 0) {
-        starting_map = dxr.flags.settings.starting_map;
+        starting_map = dxr.flags.GetStartingMap();
     }
 
     dxr.flags.bingoBoardRoll++;

@@ -431,7 +431,7 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 
 function ExtendedTests()
 {
-    local int val, i, oldSeed;
+    local int val, i, oldSeed, prev;
     local float fval, old_scaling;
     local string s;
 
@@ -464,7 +464,8 @@ function ExtendedTests()
 
     for(i=0; i<100; i++) {
         dxr.seed = 123456 + i;
-        s = s @ class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
+        prev = class'DXRStartMap'.static.ChooseRandomStartMap(self, prev);
+        s = s @ (prev&0xFF);
     }
     test(true, "DXRStartMap " $ s);
     dxr.seed = oldSeed;
