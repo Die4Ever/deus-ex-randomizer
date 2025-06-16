@@ -29,7 +29,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, -16412, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, -49276, 0));
 
-        if (dxr.flags.settings.starting_map > 20)
+        if (dxr.flags.GetStartingMap() > 20)
         {
             skip_rando_start = True;
         }
@@ -116,7 +116,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, -16412, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, -49276, 0));
 
-        if (dxr.flags.settings.starting_map > 20)
+        if (dxr.flags.GetStartingMap() > 20)
         {
             skip_rando_start = True;
         }

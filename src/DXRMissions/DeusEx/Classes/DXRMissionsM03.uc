@@ -30,7 +30,7 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 1, vect(-4739.345215, 3578.138916, -306), rot(0,0,0));
         AddActorLocation(loc, PLAYER_LOCATION, vect(-4819.628906, 3470.105225, -304.225006), rot(0,-17920,0));
 
-        if (dxr.flags.settings.starting_map > 32)
+        if (dxr.flags.GetStartingMap() > 32)
         {
             skip_rando_start = True;
         }
@@ -150,7 +150,7 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Subway", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(-4819.345215,3478.138916,-304.225006), rot(0,-20823,0));
         AddActorLocation(loc, 1, vect(-4739.345215, 3578.138916, -306), rot(0,0,0));
 
-        if (dxr.flags.settings.starting_map > 32)
+        if (dxr.flags.GetStartingMap() > 32)
         {
             skip_rando_start = True;
         }

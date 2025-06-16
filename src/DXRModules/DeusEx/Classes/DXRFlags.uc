@@ -724,8 +724,10 @@ function SetDifficulty(int new_difficulty)
             moresettings.newgameplus_curve_scalar = 65;
         }
 
-        l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
+        if(newgameplus_loops == 0) { // this gets overwritten by LoadFlags anyways, but the logging is noisy
+            l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
+            settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, -1); // avoid Liberty Island first
+        }
     }
     else if (IsBingoCampaignMode()) {
         settings.bingo_win = 1;
@@ -1228,6 +1230,11 @@ function bool IsStrongAugsMode()
     return gamemode == StrongAugsMode;
 }
 //#endregion
+
+function int GetStartingMap()
+{
+    return settings.starting_map & 0xFF;
+}
 
 simulated function AddDXRCredits(CreditsWindow cw)
 {

@@ -43,7 +43,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
         AddMapMarker(class'Image15_Area51Bunker',63,316,"C","Blast Door Computer", loc,"The Blast Door Computer can sometimes be found in the Supply Shed (Which is not visible on this map image).");
 
-        if (dxr.flags.settings.starting_map > 150)
+        if (dxr.flags.GetStartingMap() > 150)
         {
             skip_rando_start = True;
         }
@@ -156,7 +156,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1397.388672,-2498.310059,-441.741699), rot(0, 16384, 0));
         AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1860.243530,2902.310059,-151.812180), rot(0, -16384, 0));
 
-        if (dxr.flags.settings.starting_map > 150)
+        if (dxr.flags.GetStartingMap() > 150)
         {
             skip_rando_start = True;
         }
