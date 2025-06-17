@@ -101,8 +101,6 @@ function PreFirstEntryMapFixes()
                     st.awardMessage = "Saved Paul";
                 }
             }
-
-            dxr.flagbase.SetBool('DXRando_HotelVisited', true,, 5);
         }
 
         foreach AllActors(class'#var(prefix)CrateExplosiveSmall',boom,'BlowDoor'){
@@ -782,11 +780,6 @@ function AnyEntryMapFixes()
             ces.conSpeech.speech = "... too sick.  Come back later."; // add a missing period after "sick"
 
         GetConversation('DL_JockParkStart').AddFlagRef('PaulInjured_Played', false); // disable "Your brother's hurt pretty bad" infolink if you've already talked to him
-
-        // for some strange reason, it's not necessary to check if you've talked to Paul for this to work as intended
-        if (dxr.flagbase.GetBool('DXRando_HotelVisited')) {
-            player().StartDataLinkTransmission("DL_PaulCalling"); // JC, where are you going?
-        }
 
         break;
     }
