@@ -4164,7 +4164,7 @@ defaultproperties
     bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=16896)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s hazmat suits",desc_singular="Use a hazmat suit",max=3,missions=54866)
-    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s thermoptic mamos",desc_singular="Use thermoptic camo",max=3,missions=55132)
+    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s thermoptic camos",desc_singular="Use thermoptic camo",max=3,missions=55132)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink a bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack a computer",max=10)
