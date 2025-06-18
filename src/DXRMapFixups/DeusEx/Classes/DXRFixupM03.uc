@@ -637,7 +637,7 @@ function AnyEntryMapFixes()
         cesf.flagRef.flagName = 'MeetLebedev2_Played';
         cesf.flagRef.value = true;
         cesf.flagRef.expiration = 5;
-        ces = GetSpeechEvent(c.eventList, "If you know something, just tell me.");
+        ces = GetSpeechEvent(c.eventList, "You didn't have parents.");
         cesf.nextEvent = ces.nextEvent;
         ces.nextEvent = cesf;
 
