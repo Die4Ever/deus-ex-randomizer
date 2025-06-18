@@ -1111,10 +1111,11 @@ function AnyEntryMapFixes()
             l(dxm$": " $ dxm.GetStateName() @ dxm.bStasis @ dxm.KeyNum @ dxm.bUseTriggered @ dxm.bDamageTriggered @ dxm.SavedTrigger);
         }
 
-        if (dxr.flagBase.GetBool('schematic_downloaded')) {
-            player().StartDataLinkTransmission("DL_Everett_Congrats");
-        }
-
+        break;
+    
+    case "14_OCEANLAB_UC":
+        for (ce = GetConversation('DL_Downloaded').eventList; ConEventEnd(ce.nextEvent) == None; ce = ce.nextEvent);
+        ce.nextEvent = GetConversation('DL_Everett_Congrats').eventList;
         break;
     }
 }
