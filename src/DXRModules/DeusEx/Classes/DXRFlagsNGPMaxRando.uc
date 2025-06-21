@@ -342,6 +342,9 @@ simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 
 simulated function ClearInHand(#var(PlayerPawn) p)
 {
+    if(POVCorpse(p.InHand)!=None) {
+        p.InHand.Destroy();
+    }
     p.SetInHand(None);
     p.SetInHandPending(None);
     p.bInHandTransition = False;
