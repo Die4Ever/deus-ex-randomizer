@@ -1211,6 +1211,7 @@ function AnyEntryMapFixes()
             ces2.nextEvent = ces.nextEvent;
             ces.nextEvent = ces2;
             ces2.speaker = jock;
+            ces2.speakerName = ces.speakerName;
             break;
         }
 

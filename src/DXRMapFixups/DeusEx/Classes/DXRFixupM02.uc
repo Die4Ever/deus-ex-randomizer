@@ -424,6 +424,8 @@ function PreFirstEntryMapFixes()
             break;
         }
 
+        SetTimer(1.0, true);
+
         break;
     //#endregion
 
@@ -639,8 +641,6 @@ function PostFirstEntryMapFixes()
 function AnyEntryMapFixes()
 {
     local ConEventSpeech ces;
-    // local ConEventTrigger cet;
-    // local Conversation con;
     local Jock j;
 
     switch (dxr.localURL) {
@@ -657,16 +657,6 @@ function AnyEntryMapFixes()
                 break;
             }
         }
-
-        // TODO: make work
-        // con = GetConversation('JaneyThankful');
-        // cet = new(con) class'ConEventTrigger';
-        // ces = GetSpeechEvent(con.eventList, "Well, if you ever want to get into the warehouse");
-        // cet.triggerTag = 'JaneyDistraughtConvoFinished';
-        // cet.eventType = ET_Trigger;
-        // cet.nextEvent = ces.nextEvent;
-        // ces.nextEvent = cet;
-
         break;
 
     case "02_NYC_SMUG":
@@ -674,6 +664,20 @@ function AnyEntryMapFixes()
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
         break;
+    }
+}
+//#endregion
+
+//#region Timer
+function TimerMapFixes()
+{
+    switch(dxr.localURL)
+    {
+    case "02_NYC_BAR":
+        if (dxr.flagBase.GetBool('JaneyThankful_Played')) {
+            player().StartDataLinkTransmission("DL_ReminderJaney");
+            SetTimer(0.0, false);
+        }
     }
 }
 //#endregion
