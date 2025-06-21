@@ -1096,7 +1096,6 @@ function AnyEntryMapFixes()
     local #var(prefix)Pigeon pigeon;
     local #var(prefix)MaggieChow maggie;
     local #var(prefix)Maid maysung;
-    local #var(prefix)BlackHelicopter jock;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -1205,15 +1204,12 @@ function AnyEntryMapFixes()
         }
 
         // perhaps the jump in Jock's tone of voice is too much?
-        foreach AllActors(class'#var(prefix)BlackHelicopter', jock) {
-            ces = GetSpeechEvent(GetConversation('M06JockExit').eventList, "I guess we'll find out");
-            ces2 = GetSpeechEvent(GetConversation('JockBarksLumPath').eventList, "Strap in -- we've got a long flight.");
-            ces2.nextEvent = ces.nextEvent;
-            ces.nextEvent = ces2;
-            ces2.speaker = jock;
-            ces2.speakerName = ces.speakerName;
-            break;
-        }
+        ces = GetSpeechEvent(GetConversation('M06JockExit').eventList, "I guess we'll find out");
+        ces2 = GetSpeechEvent(GetConversation('JockBarksLumPath').eventList, "Strap in -- we've got a long flight.");
+        ces2.nextEvent = ces.nextEvent;
+        ces.nextEvent = ces2;
+        ces2.speaker = ces.speaker;
+        ces2.speakerName = ces.speakerName;
 
         HandleJohnSmithDeath();
         
