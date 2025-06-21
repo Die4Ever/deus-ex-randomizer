@@ -1403,6 +1403,17 @@ function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCom
     return ceag;
 }
 
+function FixMechanicBarks()
+{
+    local #var(prefix)Mechanic mechanic;
+
+    foreach AllActors(class'#var(prefix)Mechanic', mechanic) {
+        if (mechanic.BarkBindName == "" || mechanic.BarkBindName == "Man") {
+            mechanic.BarkBindName = "Mechanic";
+        }
+    }
+}
+
 defaultproperties
 {
     // in order of proportion, then number of occurances.

@@ -595,6 +595,13 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
+    
+    case "03_NYC_HANGAR":
+        FixMechanicBarks();
+        foreach AllActors(class'#var(prefix)Terrorist', terror) {
+            terror.BarkBindName = "Terrorist";
+        }
+        break;
     //#endregion
     }
 }
@@ -609,6 +616,7 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local ConEventChoice cec;
     local ConChoice      cc;
+    local ConEventSetFlag cesf;
     local bool RevisionMaps, knowPass, foundUnderground;
     local string textAdd;
     local #var(prefix)SecurityCamera cam;
@@ -619,6 +627,20 @@ function AnyEntryMapFixes()
     switch(dxr.localURL) {
     case "03_NYC_747":
         SetTimer(1, true);
+        FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+
+        // change the expiration of 'MeetLebedev2_Played'
+        c = GetConversation('MeetLebedev2');
+        cesf = new(c) class'ConEventSetFlag';
+        cesf.eventType = ET_SetFlag;
+        cesf.flagRef = new(c) class'ConFlagRef';
+        cesf.flagRef.flagName = 'MeetLebedev2_Played';
+        cesf.flagRef.value = true;
+        cesf.flagRef.expiration = 5;
+        ces = GetSpeechEvent(c.eventList, "You didn't have parents.");
+        cesf.nextEvent = ces.nextEvent;
+        ces.nextEvent = cesf;
+
         break;
 
     case "03_NYC_AIRFIELDHELIBASE":
@@ -710,6 +732,9 @@ function AnyEntryMapFixes()
                 ce = ce.nextEvent;
             }
         }
+        break;
+    case "03_NYC_UNATCOHQ":
+        FixConversationFlagJump(GetConversation('AnnaAtUNATCO'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
         break;
     }
 }

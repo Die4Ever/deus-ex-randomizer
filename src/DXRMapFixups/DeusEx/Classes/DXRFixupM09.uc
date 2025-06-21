@@ -60,6 +60,8 @@ function PreFirstEntryMapFixes()
     {
     //#region Ship Upper Decks
     case "09_NYC_SHIP":
+        FixMechanicBarks();
+        
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
             if( m.KeyIdNeeded == 'EngineRoomDoor' ) m.Tag = 'shipbelowdecks_door';
         }
@@ -158,6 +160,8 @@ function PreFirstEntryMapFixes()
 
     //#region Ship Below Decks
     case "09_NYC_SHIPBELOW":
+        FixMechanicBarks();
+
         // make the weld points highlightable
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'ShipBreech') {
             m.bHighlight = true;
@@ -223,6 +227,8 @@ function PreFirstEntryMapFixes()
 
     //#region Dockyard
     case "09_NYC_DOCKYARD":
+        FixMechanicBarks();
+
         foreach AllActors(class'#var(prefix)LAM', lam) {
             if(lam.name != 'LAM2') continue;
             lam.bCollideWorld = false;

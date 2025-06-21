@@ -18,6 +18,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)Jock actualJock;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)SkillAwardTrigger sat;
     local #var(prefix)FordSchick ford;
@@ -417,6 +418,14 @@ function PreFirstEntryMapFixes()
         } else {
             Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
         }
+
+        foreach AllActors(class'#var(prefix)Jock', actualJock) {
+            actualJock.BarkBindName = "Jock";
+            break;
+        }
+
+        SetTimer(1.0, true);
+
         break;
     //#endregion
 
@@ -655,6 +664,20 @@ function AnyEntryMapFixes()
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
         }
         break;
+    }
+}
+//#endregion
+
+//#region Timer
+function TimerMapFixes()
+{
+    switch(dxr.localURL)
+    {
+    case "02_NYC_BAR":
+        if (dxr.flagBase.GetBool('JaneyThankful_Played')) {
+            player().StartDataLinkTransmission("DL_ReminderJaney");
+            SetTimer(0.0, false);
+        }
     }
 }
 //#endregion

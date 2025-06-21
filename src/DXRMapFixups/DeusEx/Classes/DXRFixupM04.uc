@@ -672,6 +672,10 @@ function AnyEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    case "04_NYC_UNATCOHQ":
+        FixConversationFlagJump(GetConversation('M04TroopBarks'), 'AnnaEntrance_Played', true, 'PlayerKilledLebedev', false); // restore a couple troop barks if you didn't kill Lebedev
+        break;
+    
     case "04_NYC_BATTERYPARK":
         raidStarted = dxr.flagbase.GetBool('M04RaidBegan');
 

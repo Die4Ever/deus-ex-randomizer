@@ -96,6 +96,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger lt;
     local #var(prefix)SpiderBot2 sb;
     local #var(prefix)BreakableGlass bg;
+    local #var(prefix)TracerTong tong;
     local DXRButtonHoverHint buttonHint;
     local DXRHoverHint hoverHint;
     local #var(prefix)MJ12Commando commando;
@@ -233,6 +234,11 @@ function PreFirstEntryMapFixes()
                     break;
             }
         }
+
+        foreach AllActors(class'#var(prefix)TracerTong', tong) {
+            tong.BarkBindName = "TracerTong";
+        }
+
         break;
     //#endregion
 
@@ -1088,7 +1094,7 @@ function AnyEntryMapFixes()
     local #var(DeusExPrefix)Carcass carc;
     local Conversation c;
     local ConEvent ce;
-    local ConEventSpeech ces;
+    local ConEventSpeech ces, ces2;
     local ConEventSetFlag cesf;
     local ConEventTrigger cet;
     local OrdersTrigger ot;
@@ -1201,8 +1207,19 @@ function AnyEntryMapFixes()
                     break;
             }
         }
+
+        // perhaps the jump in Jock's tone of voice is too much?
+        ces = GetSpeechEvent(GetConversation('M06JockExit').eventList, "I guess we'll find out");
+        ces2 = GetSpeechEvent(GetConversation('JockBarksLumPath').eventList, "Strap in -- we've got a long flight.");
+        ces2.nextEvent = ces.nextEvent;
+        ces.nextEvent = ces2;
+        ces2.speaker = ces.speaker;
+        ces2.speakerName = ces.speakerName;
+
         HandleJohnSmithDeath();
+        
         SetTimer(1.0, True); //To handle updating the DTS goal description
+        
         break;
     //#endregion
 
