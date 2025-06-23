@@ -1104,6 +1104,10 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     dxr = class'DXRando'.default.dxr;
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(dxr.player);
 
+    if(bingo_event=="ExtinguishFire" && end_mission*10 < start_map+15) {
+        return true; // too hard for short bingo duration
+    }
+
     switch(start_map/10)
     {
     case 1: // Liberty Island
