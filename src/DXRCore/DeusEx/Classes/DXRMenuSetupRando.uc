@@ -408,12 +408,14 @@ function SetDifficulty(float newDifficulty)
 
 function HandleNewGameButton()
 {
+    local string s;
     local DXRFlags f;
     f = GetFlags();
 
     if(!class'HUDSpeedrunSplits'.static.CheckFlags(f)) {
         nextScreenNum=RMB_NewGame;
-        class'BingoHintMsgBox'.static.Create(root, SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
+        s = Sprintf(SplitsBtnMessage, class'HUDSpeedrunSplits'.static.GetPB());
+        class'BingoHintMsgBox'.static.Create(root, SplitsBtnTitle, s, 0, False, Self);
     }
     else {
         DoNewGameScreen();
@@ -781,5 +783,5 @@ defaultproperties
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
     SplitsBtnTitle="Mismatched Splits!"
-    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nAre you sure you want to continue?"
+    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
 }
