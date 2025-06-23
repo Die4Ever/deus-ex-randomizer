@@ -242,6 +242,15 @@ static function bool CheckFlags(DXRFlags f)
     return f.FlagsHash() == last;
 }
 
+static function string GetPB()
+{
+    local int total, i;
+    for(i=0; i<ArrayCount(default.PB); i++) {
+        total += default.PB[i];
+    }
+    return class'DXRStats'.static.fmtTimeToString(total, true, false, true);
+}
+
 function CompletedRun(int total)
 {
     local int i, time;
