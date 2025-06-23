@@ -1269,6 +1269,22 @@ function AnyEntryMapFixes()
                 break;
             }
         }
+
+        //LDD splits MeetMarketBum1 (The guy in the Old China Hand) into two versions.  One for if Paul is alive, and one if he's dead.
+        //If he's alive, the guy gives you the Versalife maps for free (because Paul already paid him for them).  This makes FemJC easier
+        //for bingo purposes, so we're going to disable the one where you get the maps for free, and force you into the other conversation
+        //always, which makes it essentially the same as vanilla male JC.
+        if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+            c = GetConversation('MeetMarketBum1PaulDead'); //FemJCMeetMarketBum1PaulDead is the one that acts like vanilla
+            DeleteConversationFlag(c, 'PaulDenton_Dead', true); //Remove the requirement for Paul to be dead
+            c.bInvokeRadius=true;//Make the conversation invoke on 120 radius, like in vanilla male JC
+            c.radiusDistance=120;
+
+            DeleteConversationFlag(GetConversation('MarketBum1Barks'), 'PaulDenton_Dead', true); //FemJCMarketBum1Barks also expects Paul to be dead
+
+            c = GetConversation('MeetMarketBum1'); //This is the conversation where you get the maps for free
+            c.AddFlagRef('ThisFlagShouldNeverExist', true); //Make it require a flag that will never be set, so it never runs
+        }
         break;
     //#endregion
 
