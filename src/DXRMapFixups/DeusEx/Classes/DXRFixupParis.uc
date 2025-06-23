@@ -491,7 +491,7 @@ function AnyEntryMapFixes()
     local TobyAtanwe toby;
     local Conversation c;
     local ConEvent ce, cePrev;
-    local ConEventSpeech ces;
+    local ConEventSpeech ces, ces2;
     local ConEventSetFlag cesf;
     local ConEventAddSkillPoints ceasp;
     local ConEventTransferObject ceto;
@@ -519,6 +519,14 @@ function AnyEntryMapFixes()
         FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
         GetConversation('AnnetteInterrupted').AddFlagRef('Chad_Dead', false);
         GetConversation('CharlotteInterrupted').AddFlagRef('Chad_Dead', false);
+
+        //CamilleConvos has a line at the very end that talks to Antoine instead of Camille.  Fix that so you can talk to her if he's dead
+        c = GetConversation('CamilleConvos');
+        ces = GetSpeechEvent(c.eventList, "JC."); //A line where JC is talking to Camille properly
+        ces2 = GetSpeechEvent(c.eventList, "Don't have enough money.  Sorry."); //The line where you talk to Antoine
+        ces2.speakingTo = ces.speakingTo;
+        ces2.speakingToName = ces.speakingToName;
+
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
