@@ -731,7 +731,7 @@ function SetDifficulty(int new_difficulty)
     }
     else if (IsBingoCampaignMode()) {
         settings.bingo_win = 1;
-        settings.bingo_freespaces = 5;
+        settings.bingo_freespaces = 1;
         settings.banned_skills = 0;
         bingo_duration = 1;
         bingo_scale = 0;
