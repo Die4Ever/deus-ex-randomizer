@@ -88,6 +88,17 @@ function PreFirstEntryMapFixes()
         }
 
         if (VanillaMaps){
+            //Make sure the guard at the front door is actually friendly if you approach from
+            //a different entrance.  The radius normally doesn't extend too far past the door.
+            foreach AllActors(class'#var(prefix)FlagTrigger', ft){
+                if (ft.Event=='Welcome'){
+                    //350 extends to a bit past the stairs on the far side of the door,
+                    //so the guy won't have line of sight yet.
+                    ft.SetCollisionSize(350,ft.CollisionHeight);
+                    break;
+                }
+            }
+
             foreach AllActors(class'Switch1',s){
                 if (s.Event=='Eledoor01'){
                     s.Event='Elevator01_bottom';
