@@ -240,6 +240,7 @@ static function bool CheckFlags(DXRFlags f)
     local int last;
 
     if(f.moresettings.splits_overlay <= 0) return true;
+    if(f.IsWaltonWare()) return true; // we don't read from or write to the splits file in WaltonWare anyways
     last = class'HUDSpeedrunSplits'.default.last_flagshash;
     if(last == 0) return true;
     return f.FlagsHash() == last;
