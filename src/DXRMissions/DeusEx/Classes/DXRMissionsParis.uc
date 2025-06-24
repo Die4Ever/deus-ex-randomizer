@@ -163,17 +163,24 @@ function MissionTimer()
             f.SetBool('NicoletteLeftClub', True,, 11);
 
             foreach AllActors(class'#var(prefix)NicoletteDuClare', nico, 'DXRMissions') {
-                nico.Event = '';
-                nico.Destroy();
-                player().ClientFlash(1,vect(2000,2000,2000));
-                gen = Spawn(class'#var(prefix)ParticleGenerator',,, nico.Location);
-                gen.SetCollision(false, false, false);
-                gen.SetLocation(nico.Location);
-                gen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
-                gen.LifeSpan = 2;
-                gen.particleDrawScale = 5;
-                gen.riseRate = 1;
-                player().PlaySound(Sound'DeusExSounds.Weapons.GasGrenadeExplode');
+                if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
+                    nico.Event = '';
+                    nico.Destroy();
+                    player().ClientFlash(1,vect(2000,2000,2000));
+                    gen = Spawn(class'#var(prefix)ParticleGenerator',,, nico.Location);
+                    gen.SetCollision(false, false, false);
+                    gen.SetLocation(nico.Location);
+                    gen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
+                    gen.LifeSpan = 2;
+                    gen.particleDrawScale = 5;
+                    gen.riseRate = 1;
+                    player().PlaySound(Sound'DeusExSounds.Weapons.GasGrenadeExplode');
+                } else {
+                    nico.Event = '';
+                    nico.SetOrders('Leaving',, true);
+                    nico.BindName = "";
+                    nico.ConBindEvents();
+                }
             }
 
             foreach AllActors(class'#var(prefix)NicoletteDuClare', nico)
@@ -221,7 +228,13 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.FamiliarName = "Young Woman";
         sp.UnfamiliarName = "Young Woman";
         sp.bInvincible = true;
-        sp.SetOrders('Dancing');
+        if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
+            sp.SetOrders('Dancing');
+        } else if(Loc.name == "Club") {
+            sp.SetOrders('Sitting');
+        } else {
+            sp.SetOrders('Standing');
+        }
         sp.ConBindEvents();
         sp.RaiseAlarm = RAISEALARM_Never;
         break;
