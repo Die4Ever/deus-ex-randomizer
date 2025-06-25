@@ -47,7 +47,7 @@ function BindControls(optional string action)
             EnumOption(s, i, f.settings.starting_map);
         }
     }
-    if(f.settings.starting_map > 0) {
+    if(f.settings.starting_map != 0) {
         EnumOption("Random", f.settings.starting_map, f.settings.starting_map);
     }
     else if(EnumOption("Random", -1)) {
