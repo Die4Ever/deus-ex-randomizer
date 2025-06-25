@@ -473,6 +473,8 @@ function ReplaceVendingMachine(#var(prefix)VendingMachine a)
 function ReplacePoolball(#var(prefix)Poolball a)
 {
     local DXRPoolball n;
+    local PoolTableManager ptm;
+
     n = DXRPoolball(SpawnReplacement(a, class'DXRPoolball'));
     if(n == None)
         return;
@@ -481,6 +483,12 @@ function ReplacePoolball(#var(prefix)Poolball a)
     n.Skin = a.Skin;
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
+
+    //Update the PoolTableManager that this ball belongs to
+    ptm = PoolTableManager(a.Owner);
+    if (ptm!=None && ptm.BallOwnedHere(a)){
+        ptm.AddBall(n,true); //Replace the old ball with the new one in the PTM
+    }
 
     a.Destroy();
 }

@@ -9,35 +9,34 @@ function DamageOther(Actor Other)
 
 function DamageOtherReal(Actor Other,bool supporting)
 {
-	if ((Other != None) && !Other.IsA('ScriptedPawn'))
-	{
-        //Only make it possible to ignite periodically, but this takes precedence over regular damage
-        if (supporting && Level.TimeSeconds - lastIgniteTime >= 5.0)
-        {
-            Other.TakeDamage(5, None, Location, vect(0,0,0), 'Flamed');
-            lastIgniteTime = Level.TimeSeconds;
-            lastDamageTime = Level.TimeSeconds;
-        }
+    if(Other == None) return;
 
-		// only take damage every second
-		if (Level.TimeSeconds - lastDamageTime >= 1.0)
-		{
-			Other.TakeDamage(5, None, Location, vect(0,0,0), 'Burned');
-			lastDamageTime = Level.TimeSeconds;
-		}
-	}
+    //Only make it possible to ignite periodically, but this takes precedence over regular damage
+    if (supporting && Level.TimeSeconds - lastIgniteTime >= 5.0)
+    {
+        Other.TakeDamage(5, None, Location, vect(0,0,0), 'Flamed');
+        lastIgniteTime = Level.TimeSeconds;
+        lastDamageTime = Level.TimeSeconds;
+    }
+
+    // only take damage every second
+    if (Level.TimeSeconds - lastDamageTime >= 1.0 && ScriptedPawn(Other)==None)
+    {
+        Other.TakeDamage(5, None, Location, vect(0,0,0), 'Burned');
+        lastDamageTime = Level.TimeSeconds;
+    }
 }
 
 singular function SupportActor(Actor Other)
 {
-	DamageOtherReal(Other,True);
-	Super(Containers).SupportActor(Other);
+    DamageOtherReal(Other,True);
+    Super(Containers).SupportActor(Other);
 }
 
 singular function Bump(Actor Other)
 {
-	DamageOtherReal(Other,False);
-	Super(Containers).Bump(Other);
+    DamageOtherReal(Other,False);
+    Super(Containers).Bump(Other);
 }
 
 function Tick(float delta)

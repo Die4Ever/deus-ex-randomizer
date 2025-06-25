@@ -334,7 +334,8 @@ function HandleNewGameButton()
 
     if(!class'HUDSpeedrunSplits'.static.CheckFlags(f)) {
         nextScreenNum=RMB_NewGame;
-        class'BingoHintMsgBox'.static.Create(root, SplitsBtnTitle,SplitsBtnMessage,0,False,Self);
+        s = Sprintf(SplitsBtnMessage, class'HUDSpeedrunSplits'.static.GetPB());
+        class'BingoHintMsgBox'.static.Create(root, SplitsBtnTitle, s, 0, False, Self);
     }
     else if(dxr.rando_beaten == 0 && f.DifficultyName(f.difficulty) ~= "Extreme") {
         nextScreenNum=RMB_NewGame;
@@ -577,5 +578,5 @@ defaultproperties
     AutosaveBtnTitle="Autosave?"
     AutosaveBtnMessage="It appears you're new to DX Randomizer.|n|nWe suggest starting with the default option for Autosave Every Entry.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
     SplitsBtnTitle="Mismatched Splits!"
-    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nAre you sure you want to continue?"
+    SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
 }

@@ -215,6 +215,13 @@ function PreFirstEntryMapFixes()
         //Button to extend sewer platform from the other side
         AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
+        class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
+        AddActor(class'PoolTableResetButton',vect(1060.3,468,227),rot(-1600,32768,0));
+        AddActor(class'PoolTableResetButton',vect(1060.3,719,227),rot(-1600,32768,0));
+
+        class'FakeMirrorInfo'.static.Create(self,vectm(1256,1035,122),vectm(1055,1055,70)); //Men's Bathroom Mirror
+        class'FakeMirrorInfo'.static.Create(self,vectm(1256,699,122),vectm(1055,710,70)); //Women's Bathroom Mirror
+
         class'PlaceholderEnemy'.static.Create(self,vectm(1273,809,48),,'Shitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(1384,805,48),,'Shitting');
 
@@ -350,6 +357,11 @@ function PreFirstEntryMapFixes()
                         break;
                 }
             }
+        }
+
+        class'PoolTableManager'.static.CreatePoolTableManagers(self); //There's a pool table here in Revision (and it's nicely racked)
+        if (!VanillaMaps){
+            AddActor(class'PoolTableResetButton',vect(-1515,-1666.9,418),rot(0,16384,0));
         }
 
         if (VanillaMaps){

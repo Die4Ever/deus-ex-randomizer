@@ -497,10 +497,25 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
     return newNote;
 }
 
+function bool JumpDisabled()
+{
+    local DataStorage datastorage;
+
+    if (!class'DXRFlags'.default.bCrowdControl) return False;
+
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+    return bool(datastorage.GetConfigKey('cc_NoJump'));
+}
+
 function float GetJumpZ()
 {
     local float f, jump, jumpVal;
     local Augmentation aug, jumpAug;
+
+    //Check if Crowd Control disabled jumping
+    if (JumpDisabled()){
+        return 0.0;
+    }
 
     f = 1;
     for(aug=AugmentationSystem.FirstAug; aug!=None; aug=aug.next) {
@@ -2466,6 +2481,14 @@ exec function AllBingos()
             CompleteBingoGoal(data, x, y);
         }
     }
+}
+
+exec function FindLoc()
+{
+    local Inventory LocFinder;
+
+    LocFinder = class'DXRActorsBase'.static.GiveItem(self, class'WeaponLocFinder');
+    PutInHand(LocFinder);
 }
 
 state CheatFlying

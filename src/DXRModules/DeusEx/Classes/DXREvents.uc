@@ -338,6 +338,7 @@ function SetWatchFlags() {
         raceStart.SetCollisionSize(100,100);
         raceStart.raceName="Training Section 2 (Combat)";
         raceStart.targetTime=150; //2:30
+        raceStart.presentHealth=true; //Did you get wrecked by the LAMs?
 
         checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(4950,-250,-20));
         checkPoint.SetCollisionSize(100,100);
@@ -350,6 +351,7 @@ function SetWatchFlags() {
         raceStart.SetCollisionSize(100,100);
         raceStart.raceName="Training Section 3 (Final)";
         raceStart.targetTime=90; //1:30
+        raceStart.presentHealth=true; //How badly did the bot at the end wreck you?
 
         checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(6575,-5700,100));
         checkPoint.SetCollisionSize(100,100);
@@ -490,8 +492,6 @@ function SetWatchFlags() {
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
-        InitPoolBalls();
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
         if (RevisionMaps) {
@@ -605,9 +605,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
-        WatchFlag('PlayPool');
         WatchFlag('OverhearLebedev_Played');
-        InitPoolBalls();
         bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
 
         break;
@@ -634,10 +632,6 @@ function SetWatchFlags() {
         WatchFlag('ThugGang_AllianceDead');
         WatchFlag('DonDone');
         WatchFlag('LennyDone');
-        if(RevisionMaps){
-            WatchFlag('PlayPool');
-            InitPoolBalls();
-        }
         break;
     case "03_NYC_HANGAR":
         WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
@@ -652,8 +646,6 @@ function SetWatchFlags() {
     //#region Mission 4
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
-        InitPoolBalls();
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -844,7 +836,6 @@ function SetWatchFlags() {
         WatchFlag('M07ChenSecondGive_Played');
         WatchFlag('LDDPRussPaid');
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
         WatchFlag('M06JCHasDate');
         WatchFlag('M06BartenderQuestion3');
         WatchFlag('Raid_Underway');
@@ -870,9 +861,6 @@ function SetWatchFlags() {
                 ball.Destroy(); //There's at least one ball outside of the table.  Just destroy it for simplicity
             }
         }
-
-        InitPoolBalls();
-        BallsPerTable=14; //This table is missing some balls
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
@@ -1038,10 +1026,8 @@ function SetWatchFlags() {
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
-        WatchFlag('PlayPool');
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
-        InitPoolBalls();
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -1053,7 +1039,10 @@ function SetWatchFlags() {
 
         break;
     case "08_NYC_HOTEL":
-        class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
+        class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40); //Top of elevator
+        if (RevisionMaps){
+            class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(315,-2200,500),150,40); //Top of stairs
+        }
         WatchFlag('GreenKnowsAboutDowd');
         break;
     case "08_NYC_UNDERGROUND":
@@ -1212,6 +1201,7 @@ function SetWatchFlags() {
         raceStart.raceName="Catacombs";
         raceStart.SetCollisionSize(60,80);
         raceStart.targetTime=90; //Under 1 minute (around 55ish seconds) is possible if you really blast it
+        raceStart.presentHealth=true;
 
         checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(2775,-3785,-450)); //Lines up for both
         checkPoint.SetCollisionSize(100,80);
@@ -1222,6 +1212,7 @@ function SetWatchFlags() {
         raceStart.raceName="Reverse Catacombs";
         raceStart.SetCollisionSize(100,80);
         raceStart.targetTime=60; //Under 1 minute (around 55ish seconds) is possible forwards if you really blast it
+        raceStart.presentHealth=true;
 
         if (RevisionMaps){
             checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-3287,-2270,555));
@@ -1326,6 +1317,7 @@ function SetWatchFlags() {
 
         raceStart = Spawn(class'DXRRaceTimerStart',,'ChateauKeyRaceStart');
         raceStart.raceName="the Chateau DuClare key hunt";
+        raceStart.presentEnergy=true; //Lets see how much energy you used running around
 
         oot = Spawn(class'OnceOnlyTrigger',, 'ChateauKeyRaceStartOnce');
         oot.Event = 'ChateauKeyRaceStart';
@@ -1617,9 +1609,7 @@ function SetWatchFlags() {
 
         break;
     case "15_AREA51_ENTRANCE":
-        WatchFlag('PlayPool');
         RewatchFlag('WaltonBadass_Played');
-        InitPoolBalls();
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
             if (dxm.tag=='chamber1'){
@@ -1933,6 +1923,200 @@ simulated function string tweakBingoDescription(string event, string desc)
             return desc;
             break;
     }
+}
+//#endregion
+
+//#region TweakBingoMax
+//If there are any different maximums in different mods, tweak them here
+simulated function int tweakBingoMax(string event, int max)
+{
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    switch(event){
+        case "WanChaiStores":
+            if (RevisionMaps){
+                return 4; //Only 4 stores in Wan Chai Market in Revision, since the news stand is elsewhere
+            }
+            break;
+        case "OceanLabCrewChamber":
+            if (RevisionMaps){
+                return 3; //One of the crew chambers is damaged.  It still counts, but you have to really go out of your way to get it
+            }
+            break;
+        //Sodacan_Activated
+        //DrinkAlcohol
+    }
+    return max;
+}
+//#endregion
+
+//#region TweakBingoMissions
+//If there are any different maximums in different mods, tweak them here
+//Make sure to update the bingo description as well, if it has detailed info
+simulated function int tweakBingoMissions(string event, int missions)
+{
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    switch(event){
+        case "PhoneCall":
+            if (RevisionMaps){
+                //Revision has a LOT more phones
+                //Extras in M01, M12, M14
+                return 22398;
+            }
+            break;
+        case "SpinShipsWheel":
+            if (RevisionMaps){
+                //Extras in
+                // - NYC Bar (Missions 2,4,8)
+                // - Vandenberg Gas (Mission 12)
+                return 4950;
+            }
+            break;
+        case "ChangeClothes":
+            //Vanilla has racks in 2, 4, 6, 8, 9
+            if (RevisionMaps){
+                //Extras in
+                // - UNATCO MJ12 Lab (M05)
+                // - Catacombs, Chateau, Club, Metro (M10)
+                // - Everett, Underground (M11)
+                // - Sub Base (M14)
+                // - A51 Bunker, Entrance (M15)
+                return 53108;
+            } else { //Vanilla maps
+                if (dxr.flags.clothes_looting!=0){
+                    //Clothes Looting adds clothes racks to missions:
+                    // 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 15
+                    return 40830;
+                }
+            }
+            break;
+        case "PianoSongPlayed":
+        case "PianoSong0Played":
+        case "PianoSong7Played":
+        case "BrokenPianoPlayed":
+            //Vanilla only has the one piano in Maggie's apartment (M06)
+            if (RevisionMaps){
+                //Extras in
+                // - Paris Streets, Chateau (M10)
+                return 1088;
+            }
+            break;
+        case "PinballWizard":
+            if (RevisionMaps){
+                //Revision has an extra in the break room of ship lower decks
+                return 37758;
+            }
+            break;
+        case "NYEagleStatue_peeped":
+            if (RevisionMaps){
+                //The statue isn't present in M04 in Revision
+                return 12;
+            }
+            break;
+        case "FightSkeletons":
+            if (RevisionMaps){
+                //Extras in:
+                // - NYC Bar, Free Clinic, Street (M02)
+                // - NYC Bar, Street (M04)
+                // - NYC Bar, Street (M08)
+
+                //NONE in:
+                // - Cathedral (M11)
+                return 17748;
+            }
+            break;
+        case "TrophyHunter":
+            if (RevisionMaps){
+                //Extras in:
+                // - NYC Bar (M02)
+                // - 747, Airfield Helibase (M03)
+                // - NYC Bar (M04)
+                // - UNATCO MJ12 Lab (M05)
+                // - Several around Hong Kong (M06)
+                // - NYC Bar (M08)
+                // - Paris Streets (M10)
+                // - Vandenberg Command (M12)
+                return 5502;
+            }
+            break;
+        case "SlippingHazard":
+            if (RevisionMaps){
+                //Extra in Paris Club (M10)
+                return 1918;
+            }
+            break;
+        case "un_PrezMeadPic_peepedtex":
+            if (RevisionMaps){
+                //Extras in NYC Bar (M02/04/08)
+                return 318;
+            }
+            break;
+        //case "GS_MedKit_01_peepedtex":
+        //    if (RevisionMaps){
+        //        //Extras in (but they're movers so it doesn't work great):
+        //        // - Paris Underground (M11)
+        //        // - Vandenberg Sub Base (M14)
+        //        return 22528;
+        //    }
+        //    break;
+        case "Cat_peeptime":
+            if (RevisionMaps){
+                //Extras in NYC Streets (M02)
+                //None in Battery Park (M04)
+                return 7244;
+            }
+            break;
+        case "WatchDogs":
+            if (RevisionMaps){
+                //Extras in Cathedral (M11)
+                return 23652;
+            }
+            break;
+        case "BuoyOhBuoy":
+            if (RevisionMaps){
+                //Extras around Cathedral (M11)
+                return 2142;
+            }
+            break;
+        case "PlayerPeeped":
+            //Vanilla has mirrors in every mission except 15
+            if (RevisionMaps){
+                //Revision has a mirror in the bathroom of Area 51 ENTRANCE (and mirrored floors)
+                return 57214;
+            }
+            break;
+        case "ForkliftCertified":
+            if (RevisionMaps){
+                //Extra in Vandenberg Tunnels (M12)
+                return 36866;
+            }
+            break;
+        case "CherryPickerSeat":
+            if (RevisionMaps){
+                //Extra cherry picker in M03 Hangar
+                return 49160;
+            }
+            break;
+        case "ASingleFlask":
+            if (RevisionMaps){
+                //Extras in:
+                // - Free Clinic (M08)
+                // - Area 51 Page (M15)
+                return 57214;
+            }
+            break;
+    }
+
+    return missions;
 }
 //#endregion
 
@@ -2364,6 +2548,7 @@ function string RemapBingoEvent(string eventname)
         case "WaltonBadass_Played":
             return "WaltonConvos";
         case "ScientistMale_ClassDead":
+        case "ScientistMale2_ClassDead": //Revision
         case "ScientistFemale_ClassDead":
             return "ScienceIsForNerds";
         case "ShipNamePlate_B_peepedtex":
@@ -2664,6 +2849,12 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string msg;
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(dxr.player);
+
     switch(event){
         case "Free Space":
             return "Don't worry about it!  This one's free!";
@@ -2869,10 +3060,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             msg="Spin enough ships wheels.  ";
             if (mission<=1){
                 msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
+            }else if (RevisionMaps && mission<=4){ //Both M02 and M04
+                msg=msg$"There is a ships wheel on the wall of the Underworld Tavern.";
             }else if (mission<=6){
                 msg=msg$"There is a ships wheel on the smuggler's ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal).";
             }else if (mission<=9){
                 msg=msg$"There is a ships wheel on the bridge of the Superfreighter.";
+            }else if (RevisionMaps && mission<=12){
+                msg=msg$"There is a ships wheel on the wall of a house near the gas station.";
             }
             return msg;
         case "ActivateVandenbergBots":
@@ -3121,7 +3316,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SiloWaterTower":
             return "Go to the top of the water tower at the missile silo.";
         case "TonThirdFloor":
-            return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
+            if (RevisionMaps && mission > 4){
+                return "Climb up the elevator shaft or up the stairs in the 'Ton hotel to the third floor.";
+            } else {
+                return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
+            }
         case "Set_flag_helios":
             return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
         case "coolant_switch":
@@ -3208,6 +3407,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"There is a machine in the MJ12 Helibase, one in the MJ12 Lab barracks, one in the Old China Hand, and one in the Lucky Money.";
             } else if (mission<=8){
                 msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
+            } else if (RevisionMaps && mission<=9){
+                msg=msg$"There is a machine in the break room on the Lower Decks of the Superfreighter.";
             } else if (mission<=12){
                 msg=msg$"There is a machine in the Comms building in Vandenberg.";
             } else if (mission<=15){
@@ -3339,13 +3540,21 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps.";
         case "FightSkeletons":
             msg = "Destroy enough femurs or skulls.  Don't let the skeletons rise up!  ";
-            if (mission<=4){
-                msg=msg$"A skull can be found in the NSF HQ.";
+            if (RevisionMaps && mission<=2){
+                msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.";
+            } else if (mission<=4){
+                if (RevisionMaps){
+                    msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.  There is also a skull in NSF HQ";
+                } else {
+                    msg=msg$"A skull can be found in the NSF HQ.";
+                }
             } else if (mission<=6){
                 msg=msg$"A skull can be found in the Hong Kong VersaLife level 1 labs, as well as in Tracer Tong's hideout and in the Wan Chai Market.";
+            } else if (RevisionMaps && mission<=8){
+                msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.";
             } else if (mission<=10){
                 msg=msg$"The Paris catacombs are just completely loaded with skulls and femurs.";
-            } else if (mission<=11){
+            } else if (!RevisionMaps && mission<=11){
                 msg=msg$"A skull can be found underwater at the Cathedral.";
             } else if (mission<=14){
                 msg=msg$"Several skulls and femurs can be found in the OceanLab on the ocean floor.";
@@ -3355,14 +3564,22 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             msg = "Destroy enough trophies.  ";
             if (mission<=1){
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
+            } else if (RevisionMaps && mission<=2){
+                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
             } else if (mission<=3){
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).  Several can also be found in the LaGuardia Helibase.";
+            } else if (RevisionMaps && mission<=4){
+                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
             } else if (mission<=5){ //Mission 4 and 5 both only have trophies at HQ
                 msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
             } else if (mission<=6){
                 msg=msg$"There are many trophies in Hong Kong.  One can be found in the Helibase, another one around the canals, and one on Tonnochi Road.";
+            } else if (RevisionMaps && mission<=8){
+                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
             } else if (mission<=10){
                 msg=msg$"There is a trophy in Chateau DuClare.";
+            } else if (RevisionMaps && mission<=12){
+                msg=msg$"There are four trophies in the cabinet of the commanders office outside the Vandenberg Command building.";
             }
             return msg;
         case "SlippingHazard":
@@ -3383,6 +3600,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg = msg$"  There is a sign in the hotel.";
             } else if (mission<=9){
                 msg = msg$"  There are signs on the lower decks of the superfreighter.";
+            } else if (RevisionMaps && mission<=10){
+                msg = msg$"  There is a sign in the store room of the Paris Club (La Porte De L'Enfer).";
             }
             return msg;
         case "Dehydrated":
@@ -3434,7 +3653,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Chef_ClassDead":
             return "Do what needs to be done and kill a chef.  You must kill him yourself.";
         case "un_PrezMeadPic_peepedtex":
-            return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
+            if (RevisionMaps){
+                return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground) or in the basement of the Underworld Tavern.";
+            } else {
+                return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
+            }
         case "un_bboard_peepedtex":
             return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars or a scope.";
         case "DrtyPriceSign_A_peepedtex":
@@ -3493,7 +3716,9 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Destroy enough cigarette vending machines.  Smoking kills!";
         case "PhoneCall":
             msg = "Make phone calls on enough different phones (Either desk phones or pay phones).";
-            if (mission <=2){
+            if (RevisionMaps && mission <=1) {
+                msg=msg$"|n|nThere several phones scattered around UNATCO HQ.";
+            } else if (mission <=2){
                 msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
             } else if (mission <=3){
                 msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two desk phones in offices in the LaGuardia Helibase.";
@@ -3512,6 +3737,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"|n|nThere is a desk phone in an office in the dockyard.";
             } else if (mission<=10){
                 msg=msg$"|n|nThere is a desk phone in the office across the street from the entrance to the catacombs in Denfert-Rochereau.";
+            } else if (RevisionMaps && mission<=11){
+                msg=msg$"|n|nThere are phones in the Paris Metro station as well as in Everett's house.";
+            } else if (RevisionMaps && mission<=12){
+                msg=msg$"|n|nThere is a phone in the security room of the Vandenberg Command building.";
+            } else if (RevisionMaps && mission<=14){
+                msg=msg$"|n|nThere is a phone in the gatehouse at the sub base.";
             }
             return msg;
         case "Area51ElevatorPower":
@@ -3673,6 +3904,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Reduce JC to just a torso and head by losing both arms and both legs.";
         case "LostLimbs":
             return "Every night, I can feel my leg...  and my arm...  even my fingers.|n|nLose enough limbs through the game.";
+        case "PoolTableStripes":
+            return "Sink all 7 solid-color balls (9-15) on enough different pool tables.";
+        case "PoolTableSolids":
+            return "Sink all 7 striped balls (1-7) on enough different pool tables.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3788,7 +4023,7 @@ defaultproperties
     bingo_options(50)=(event="nsfwander",desc="Save Miguel",max=1,missions=32)
     bingo_options(51)=(event="MadeBasket",desc="Sign up for the Knicks",max=1,missions=276)
     bingo_options(52)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1,missions=4)
-    bingo_options(53)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1,missions=22398)
+    bingo_options(53)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1,missions=22394)
     bingo_options(54)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1,missions=4)
     bingo_options(55)=(event="HotelHostagesSaved",desc="Save all hostages in the hotel",max=1,missions=4)
     bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1,missions=1024)
@@ -3929,7 +4164,7 @@ defaultproperties
     bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=16896)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s hazmat suits",desc_singular="Use a hazmat suit",max=3,missions=54866)
-    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s thermoptic mamos",desc_singular="Use thermoptic camo",max=3,missions=55132)
+    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s thermoptic camos",desc_singular="Use thermoptic camo",max=3,missions=55132)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink a bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack a computer",max=10)
@@ -4121,6 +4356,8 @@ defaultproperties
     bingo_options(360)=(event="JustAFleshWound",desc="Just a flesh wound",max=1)
     bingo_options(361)=(event="LostLimbs",desc="Why are we here?  Just to suffer?",desc_singular="Why are we here?  Just to suffer?",max=10)
 #endif
+    bingo_options(362)=(event="PoolTableStripes",desc="Sink all the striped pool balls %s times",desc_singular="Sink all the striped pool balls",max=3,missions=33116)
+    bingo_options(363)=(event="PoolTableSolids",desc="Sink all the solid pool balls %s times",desc_singular="Sink all the solid pool balls",max=3,missions=33116)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -4198,5 +4435,30 @@ defaultproperties
     mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
     mutually_exclusive(68)=(e1="PetAnimal_BindName_Starr",e2="PetDogs")
     mutually_exclusive(69)=(e1="JustAFleshWound",e2="LostLimbs")
+    mutually_exclusive(70)=(e1="PoolTableSolids",e2="PoolTableStripes")
+    mutually_exclusive(71)=(e1="PoolTableSolids",e2="PlayPool")
+    mutually_exclusive(72)=(e1="PlayPool",e2="PoolTableStripes")
+    // reading books and stuff
+    mutually_exclusive(73)=(e1="JacobsShadow",e2="ManWhoWasThursday")
+    mutually_exclusive(74)=(e1="JacobsShadow",e2="GreeneArticles")
+    mutually_exclusive(75)=(e1="JacobsShadow",e2="MoonBaseNews")
+    mutually_exclusive(76)=(e1="JacobsShadow",e2="JoyOfCooking")
+    mutually_exclusive(77)=(e1="JacobsShadow",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(78)=(e1="JacobsShadow",e2="06_Datacube05")
+    mutually_exclusive(79)=(e1="ManWhoWasThursday",e2="GreeneArticles")
+    mutually_exclusive(80)=(e1="ManWhoWasThursday",e2="MoonBaseNews")
+    mutually_exclusive(81)=(e1="ManWhoWasThursday",e2="JoyOfCooking")
+    mutually_exclusive(82)=(e1="ManWhoWasThursday",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(83)=(e1="ManWhoWasThursday",e2="06_Datacube05")
+    mutually_exclusive(84)=(e1="GreeneArticles",e2="MoonBaseNews")
+    mutually_exclusive(85)=(e1="GreeneArticles",e2="JoyOfCooking")
+    mutually_exclusive(86)=(e1="GreeneArticles",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(87)=(e1="GreeneArticles",e2="06_Datacube05")
+    mutually_exclusive(88)=(e1="MoonBaseNews",e2="JoyOfCooking")
+    mutually_exclusive(89)=(e1="MoonBaseNews",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(90)=(e1="MoonBaseNews",e2="06_Datacube05")
+    mutually_exclusive(91)=(e1="JoyOfCooking",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(92)=(e1="JoyOfCooking",e2="06_Datacube05")
+    mutually_exclusive(93)=(e1="09_NYC_DOCKYARD--796967769",e2="06_Datacube05")
 //#endregion
 }

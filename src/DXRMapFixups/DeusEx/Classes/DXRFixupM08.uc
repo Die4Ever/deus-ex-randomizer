@@ -423,6 +423,13 @@ function PreFirstEntryMapFixes()
     //#region Bar
         case "08_NYC_BAR":
             FixHarleyFilben();
+            class'PoolTableManager'.static.CreatePoolTableManagers(self);
+            if (!VanillaMaps){
+                AddActor(class'PoolTableResetButton',vect(-1970,-565.3,145),rot(0,16384,0));
+            } else {
+                AddActor(class'PoolTableResetButton',vect(-1700,-389.3,50),rot(0,16384,0));
+            }
+
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
             if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
                 Spawn(class'BarDancer',,,vectm(-2150,-500,48),rotm(0,0,0,0));

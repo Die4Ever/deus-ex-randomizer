@@ -458,7 +458,10 @@ function EEventAction SetupEventAddGoal( ConEventAddGoal event, out String nextL
 		player.GoalCompleted(event.goalName);
 	}
 
-    if ( goal != None )
+    //Don't update the goal text on completed goals.  They are locked-in as they were
+    //at the time you completed them.  Also, bGoalCompleted events DON'T have any
+    //goalText provided, so updating with that text wipes the goals out
+    if ( goal != None && !goal.bCompleted)
     {
         goal.SetText(event.goalText);
     }

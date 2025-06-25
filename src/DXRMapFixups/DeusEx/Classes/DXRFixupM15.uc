@@ -504,6 +504,13 @@ function PreFirstEntryMapFixes_Entrance(bool isVanilla)
     ft.Tag='elevator_floor1';
     ft.Event='elevator_doors';
 
+    class'PoolTableManager'.static.CreatePoolTableManagers(self); //Pool table here isn't nicely racked
+    if (isVanilla){
+        AddActor(class'PoolTableResetButton',vect(3065.5,2664,-174),rot(-1600,32768,0));
+    } else {
+        AddActor(class'PoolTableResetButton',vect(2978,1932,45),rot(-1600,0,0));
+    }
+
     if (isVanilla) {
         Spawn(class'Area51ScratchOMatic',,'Area51ScratchOMatic');
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');

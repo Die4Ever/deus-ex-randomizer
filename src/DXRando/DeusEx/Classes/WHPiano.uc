@@ -2,8 +2,10 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[98]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[106]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
+var int Recents[20];
+var int recent_pointer;
 
 var #var(PlayerPawn) player;
 var string message;
@@ -695,6 +697,46 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             duration = 6;
             message="You played The Entertainer by Scott Joplin";
             break;
+        case 98:
+            SelectedSound = sound'SMB2CharacterSelect';
+            duration = 8.75;
+            message="You played Character Select from Super Mario Bros 2";
+            break;
+        case 99:
+            SelectedSound = sound'UnfoundedRevenge';
+            duration = 7;
+            message="You played Unfounded Revenge from Mother 3";
+            break;
+        case 100:
+            SelectedSound = sound'BattleAtTheBigBridge';
+            duration = 6;
+            message="You played Battle at the Big Bridge from Final Fantasy 5";
+            break;
+        case 101:
+            SelectedSound = sound'SMKDonutPlains';
+            duration = 8;
+            message="You played Donut Plains from Super Mario Kart";
+            break;
+        case 102:
+            SelectedSound = sound'SMWAthletic';
+            duration = 6;
+            message="You played the Athletic Theme from Super Mario World";
+            break;
+        case 103:
+            SelectedSound = sound'BalladOfTheWindFish';
+            duration = 10;
+            message="You played the Ballad of the Wind Fish from Legend of Zelda: Link's Awakening";
+            break;
+        case 104:
+            SelectedSound = sound'StarWolf';
+            duration = 6.5;
+            message="You played Star Wolf's Theme from Star Fox";
+            break;
+        case 105:
+            SelectedSound = sound'WWMedlisAwakening';
+            duration = 10.5;
+            message="You played Medli's Awakening from Legend of Zelda: The Wind Waker";
+            break;
         default:
             SelectedSound = None;
             duration = 0;
@@ -723,7 +765,7 @@ function int GetSongWeight(int songIdx)
     switch (songIdx){
         case 0: //Deus Ex theme (Bingo goal)
         case 7: //7th Guest, The Game (bingo goal)
-            return 5;
+            return 7;
 
         //old Halloween-themed songs that are active outside of October and Halloween mode, but at a normal rate
         case 9:  // BloodyTears
@@ -771,38 +813,47 @@ function int GetSongWeight(int songIdx)
 //More intelligent picking, weights less played songs more
 function int PickSongIndex()
 {
-    local int rnd, i, j, songPlayedAvg, numValidSongs, numActiveSongs;
+    local int rnd, i, j, leastPlayed, numValidSongs, played[ArrayCount(SongPlayed)];
 
     //Needs to be bigger than NUM_PIANO_SONGS, since some can have extra weight
     //Make sure this array is the same size as SPACE_FOR_VALID_SONGS
     local int validSongs[250];
 
-    songPlayedAvg=0;
-    numActiveSongs=0;
+    leastPlayed = -1;
     for (i=0;i<NUM_PIANO_SONGS;i++){
-        if (GetSongWeight(i) > 0){
-            songPlayedAvg+=SongPlayed[i];
-            numActiveSongs++;
+        if (GetSongWeight(i) <= 0) continue;
+
+        played[i] = SongPlayed[i] * 2;
+        for(j=0; j<ArrayCount(Recents); j++) {
+            if(Recents[j] == i) {
+                played[i]++;
+                break;
+            }
+        }
+        if(played[i]<leastPlayed || leastPlayed==-1) {
+            leastPlayed = played[i];
         }
     }
-    songPlayedAvg = songPlayedAvg/numActiveSongs;
 
     numValidSongs=0;
-    for (i=0;i<NUM_PIANO_SONGS;i++){
-        if (SongPlayed[i]<=songPlayedAvg && i!=currentSong){
+    for (i=0;i<NUM_PIANO_SONGS;i++) {
+        if (played[i]==leastPlayed && i!=currentSong){
             for (j=GetSongWeight(i); j>0; j--){
                 validSongs[numValidSongs++]=i;
             }
         }
     }
 
+    recent_pointer = recent_pointer % ArrayCount(Recents);
     if (numValidSongs==0){
         //Ran out of valid songs - probably happening because you're on the last song and you tried to skip it
         //Just return the current song and play it again!  Seems to work reasonably well.
+        Recents[recent_pointer++] = currentSong;
         return currentSong;
     }
 
     rnd = Rand(numValidSongs);
+    Recents[recent_pointer++] = validSongs[rnd];
 
     //if(player != None) {
     //    player.ClientMessage("Piano picked choice "$rnd$" (song "$validSongs[rnd]$") out of "$numValidSongs$" choices");
@@ -817,6 +868,10 @@ function BeginPlay()
     local #var(PlayerPawn) p;
 
     Super.BeginPlay();
+
+    for(i=0; i<ArrayCount(Recents); i++) {
+        Recents[i] = -1;
+    }
 
     if(!class'DXRVersion'.static.VersionIsStable()) {
         //Quick test to make sure the valid song array is long enough

@@ -95,11 +95,12 @@ function bool CanSwap(ScriptedPawn a, ScriptedPawn b) {
 function bool CanSit(ScriptedPawn sp)
 {
     if (#var(prefix)MJ12Commando(sp) != None) return False;
-    if (#var(prefix)SpiderBot2(sp) != None) return True; //Small spiderbots are very funny in chairs
+    if (#var(prefix)SpiderBot2(sp) != None && class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return True; //Small spiderbots are very funny in chairs
     if (#var(prefix)Robot(sp) != None) return False; //Normal robots are lame in chairs
     if (#var(prefix)ChildMale(sp) != None) return False; //Kids don't have sitting animations
     if (#var(prefix)ChildMale2(sp) != None) return False; //(They probably aren't getting shuffled, but might as well note it)
     //Animals don't have any special sitting animations, but are very funny also
+    if (#var(prefix)Animal(sp) != None && !class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) return False;
     return True;
 }
 

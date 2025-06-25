@@ -200,6 +200,14 @@ function vanilla_datacubes_rules()
 
     case "03_NYC_747":
         //Suspension crate code
+
+        //Don't allow in the suspension crate itself
+        datacubes_rules[i].item_name = '03_Datacube13';
+        datacubes_rules[i].min_pos = vect(-410,-700,130);
+        datacubes_rules[i].max_pos = vect(-395,-680,150);
+        datacubes_rules[i].allow = false;
+        i++;
+
         datacubes_rules[i].item_name = '03_Datacube13';
         datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
         datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
@@ -987,6 +995,14 @@ function revision_datacubes_rules()
 
     case "03_NYC_747":
         //Suspension crate code
+
+        //Don't allow in the suspension crate itself
+        datacubes_rules[i].item_name = '03_Datacube13';
+        datacubes_rules[i].min_pos = vect(-410,-700,130);
+        datacubes_rules[i].max_pos = vect(-395,-680,150);
+        datacubes_rules[i].allow = false;
+        i++;
+
         datacubes_rules[i].item_name = '03_Datacube13';
         datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
         datacubes_rules[i].max_pos = vect(999999, 999999, 999999);

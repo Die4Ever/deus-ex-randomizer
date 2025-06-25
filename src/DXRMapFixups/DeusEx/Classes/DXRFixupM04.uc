@@ -513,6 +513,13 @@ function PreFirstEntryMapFixes()
     //#region Bar
     case "04_NYC_BAR":
         FixHarleyFilben();
+        class'PoolTableManager'.static.CreatePoolTableManagers(self);
+        if (!VanillaMaps){
+            AddActor(class'PoolTableResetButton',vect(-1970,-565.3,145),rot(0,16384,0));
+        } else {
+            AddActor(class'PoolTableResetButton',vect(-1700,-389.3,50),rot(0,16384,0));
+        }
+
         if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
             Spawnm(class'BarDancer',,,vect(-1440,340,48),rot(0,-16348,0));
         } else {
