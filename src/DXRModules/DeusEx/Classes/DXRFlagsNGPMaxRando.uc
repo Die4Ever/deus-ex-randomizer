@@ -404,9 +404,12 @@ simulated function MaxRandoValPair(out int min, out int max, optional float min_
         i = min;
         min = max;
         max = i;
-    } else if(min == max) {
-        min--;
-        max++;
+    }
+
+    i = self.Max(1, min*0.1);
+    if(max-min <= i*2) {
+        min -= i;
+        max += i;
     }
 }
 
