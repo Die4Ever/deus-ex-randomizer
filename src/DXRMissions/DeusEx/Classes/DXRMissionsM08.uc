@@ -7,6 +7,9 @@ class DXRMissionsM08 extends DXRMissions;
 function int InitGoals(int mission, string map)
 {
     local int goal, loc, loc2, bar1, bar2;
+    local bool bMemes;
+
+    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
 
     AddGoal("08_NYC_Bar", "Harley Filben", GOAL_TYPE1, 'HarleyFilben0', PHYS_Falling);
     goal = AddGoal("08_NYC_Bar", "Vinny", GOAL_TYPE1, 'NathanMadison0', PHYS_Falling);
@@ -26,8 +29,10 @@ function int InitGoals(int mission, string map)
     AddGoal("08_NYC_Street", "Jock", GOAL_TYPE2, 'BlackHelicopter0', PHYS_None);
     AddGoalLocation("08_NYC_Street", "Hotel Roof", GOAL_TYPE2 | VANILLA_GOAL, vect(75,965,755), rot(0, 22824, 0));
     AddGoalLocation("08_NYC_Street", "Bar Entrance", GOAL_TYPE2, vect(-180,-1675,-325), rot(0, 0, 0));
-    AddGoalLocation("08_NYC_Street", "Smuggler Back Entrance", GOAL_TYPE2, vect(3010,-4285,-470), rot(0, 23416, 0));
-    AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE2, vect(-2222,-770,-390), rot(0, 0, 0));
+    if(bMemes) {
+        AddGoalLocation("08_NYC_Street", "Smuggler Back Entrance", GOAL_TYPE2, vect(3010,-4285,-470), rot(0, 23416, 0));
+        AddGoalLocation("08_NYC_Street", "Alley", GOAL_TYPE2, vect(-2222,-770,-390), rot(0, 0, 0));
+    }
 
     //The MJ12 assault squads now get randomized as two squads of 5 (as they were split in non-GOTY)
     AddGoal("08_NYC_Street", "MJ12 Assault Squad 1", GOAL_TYPE3 | ALWAYS_CREATE, 'Van0', PHYS_None);
@@ -38,7 +43,7 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("08_NYC_Street", "Smuggler Front Door", GOAL_TYPE3, vect(2292.625977,-1448.627441,-445.429016), rot(0, 0, 0));
     AddGoalLocation("08_NYC_Street", "Hotel", GOAL_TYPE3, vect(1005.300781,201.109436,-445.432312), rot(0, -16240, 0));
 
-    if (dxr.flags.settings.starting_map >= 81) //Mission 8 Smuggler
+    if (dxr.flags.GetStartingMap() >= 81) //Mission 8 Smuggler
     {
         skip_rando_start = True;
     }
@@ -49,6 +54,9 @@ function int InitGoals(int mission, string map)
 function int InitGoalsRev(int mission, string map)
 {
     local int goal, loc, loc2, bar1, bar2;
+    local bool bMemes;
+
+    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
 
     AddGoal("08_NYC_Bar", "Harley Filben", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
     goal = AddGoal("08_NYC_Bar", "Vinny", NORMAL_GOAL, 'NathanMadison0', PHYS_Falling);
@@ -72,8 +80,10 @@ function int InitGoalsRev(int mission, string map)
     AddGoal("08_NYC_Street", "Jock", GOAL_TYPE2, 'JockHelicopter0', PHYS_None);
     AddGoalLocation("08_NYC_Street", "Hotel Roof", GOAL_TYPE2 | VANILLA_GOAL, vect(75,965,755), rot(0, 22824, 0));
     AddGoalLocation("08_NYC_Street", "Bar Entrance", GOAL_TYPE2, vect(-400,-1675,-325), rot(0, 0, 0));
-    AddGoalLocation("08_NYC_Street", "Smuggler Back Entrance", GOAL_TYPE2, vect(4775,580,-330), rot(0, 0, 0));
-    AddGoalLocation("08_NYC_Street", "Garage Back Lot", GOAL_TYPE2, vect(1940,-3020,-350), rot(0, 8000, 0));
+    if(bMemes) {
+        AddGoalLocation("08_NYC_Street", "Smuggler Back Entrance", GOAL_TYPE2, vect(4775,580,-330), rot(0, 0, 0));
+        AddGoalLocation("08_NYC_Street", "Garage Back Lot", GOAL_TYPE2, vect(1940,-3020,-350), rot(0, 8000, 0));
+    }
 
     //The MJ12 assault squads now get randomized as a squad of 8 and a squad of 7
     AddGoal("08_NYC_Street", "MJ12 Assault Squad 1", GOAL_TYPE3 | ALWAYS_CREATE, 'Van90', PHYS_None);
@@ -84,7 +94,7 @@ function int InitGoalsRev(int mission, string map)
     AddGoalLocation("08_NYC_Street", "Smuggler Front Door", GOAL_TYPE3, vect(4200,-3450,-437), rot(0, 32768, 0));
     AddGoalLocation("08_NYC_Street", "Hotel", GOAL_TYPE3, vect(1200,420,-445), rot(0, 0, 0));
 
-    if (dxr.flags.settings.starting_map >= 81) //Mission 8 Smuggler
+    if (dxr.flags.GetStartingMap() >= 81) //Mission 8 Smuggler
     {
         skip_rando_start = True;
     }

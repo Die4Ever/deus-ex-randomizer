@@ -505,7 +505,7 @@ function string LoadoutHelpText(int loadout)
     local string normalAugs;
 
     if(#bool(injections || revision || vmd)) {
-        normalAugs = "You start with the Running Enhancement augmentation, and the Jump Enhancement aug is also available.";
+        normalAugs = "You start with the Running Enhancement augmentation, and the Speed Enhancement and Jump Enhancement augs are also available.";
     } else {
         normalAugs = "You start with the Speed Enhancement augmentation.";
     }
@@ -584,7 +584,7 @@ function string LoadoutHelpText(int loadout)
         return "All items are allowed.  Speed Enhancement and six randomly selected augs are banned.  You start with one of the Running Enhancement, Jump Enhancement, or Run Silent augmentations.|n|n"$"Enables Aug Slot Rando by default.";
     case 16:
         //Speed Enhancement
-        return "The old-fashioned DXRando experience!  All items and augs are allowed.  You start with the Speed Enhancement augmentation.";
+        return "The old-fashioned DXRando experience!  All items and augs are allowed.  You start with the Speed Enhancement augmentation.  Great for speedruns.";
     #ifdef injections
     case 17:
         //My Vision Is Augmented
@@ -1138,7 +1138,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     start_amount = dxr.flags.settings.equipment;
 
     if (dxr.flags.settings.starting_map != 0) {
-        start_amount += 1 + dxr.flags.settings.starting_map / 30;
+        start_amount += 1 + dxr.flags.GetStartingMap() / 30;
     }
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));

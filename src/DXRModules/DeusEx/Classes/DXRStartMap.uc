@@ -15,14 +15,14 @@ function PlayerLogin(#var(PlayerPawn) p)
     //Add extra skill points to make available once you enter the game
     AddStartingSkillPoints(dxr,p);
 
-    PreFirstEntryStartMapFixes(p, p.flagbase, dxr.flags.settings.starting_map);
+    PreFirstEntryStartMapFixes(p, p.flagbase, dxr.flags.GetStartingMap());
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local string m;
     if(dxr.flags.IsHordeMode()) return;// let horde mode handle it, partly because we don't want to give skillpoints and augs
-    p.strStartMap = GetStartMap(self, dxr.flags.settings.starting_map); // this also calls DXRMapVariants.VaryURL()
+    p.strStartMap = GetStartMap(self, dxr.flags.GetStartingMap()); // this also calls DXRMapVariants.VaryURL()
 #ifdef vmd
     if(dxr.flags.settings.starting_map != 0)
         p.CampaignNewGameMap = p.strStartMap;
@@ -38,17 +38,19 @@ function PreFirstEntry()
     local Dispatcher disp;
     local #var(prefix)AnnaNavarre anna;
     local #var(prefix)OrdersTrigger ot;
+    local int starting_map;
 
     p = player();
     DeusExRootWindow(p.rootWindow).hud.startDisplay.AddMessage("Mission " $ dxr.dxInfo.missionNumber);
+    starting_map = dxr.flags.GetStartingMap();
 
     if(IsStartMap()) {
-        PreFirstEntryStartMapFixes(p, p.flagbase, dxr.flags.settings.starting_map);
+        PreFirstEntryStartMapFixes(p, p.flagbase, starting_map);
     }
 
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
-        if(dxr.flags.settings.starting_map > 20) {
+        if(starting_map > 20) {
             foreach AllActors(class'ScriptedPawn', sp, 'SubTerrorist') {
                 sp.Destroy();
             }
@@ -62,19 +64,19 @@ function PreFirstEntry()
         break;
 
     case "03_NYC_BatteryPark":
-        if (dxr.flags.settings.starting_map > 32) {
+        if (starting_map > 32) {
             RemoveJock('UNATCOChopper');
         }
         break;
 
     case "04_NYC_STREET":
-        if (dxr.flags.settings.starting_map > 42) {
+        if (starting_map > 42) {
             RemoveJock('EntranceCopter');
         }
         break;
 
     case "05_NYC_UNATCOMJ12LAB":
-        if(dxr.flags.settings.starting_map > 50) {
+        if(starting_map > 50) {
             foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
                 anna.Destroy();
             }
@@ -82,7 +84,7 @@ function PreFirstEntry()
         break;
 
     case "06_HONGKONG_TONGBASE":
-        if (dxr.flags.settings.starting_map > 66) {
+        if (starting_map > 66) {
             // set Tong to patrol his control room, which is his correct behavior after talking to him after he deactivates your killswitch
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'TracerWanders') {
                 ot.Trigger(self, None);
@@ -92,25 +94,25 @@ function PreFirstEntry()
         break;
 
     case "08_NYC_Street":
-        if (dxr.flags.settings.starting_map > 80) {
+        if (starting_map > 80) {
             RemoveJock('EntranceCopter');
         }
         break;
 
     case "09_NYC_Dockyard":
-        if (dxr.flags.settings.starting_map > 90) {
+        if (starting_map > 90) {
             RemoveJock('EntryCopter');
         }
         break;
 
     case "10_Paris_Catacombs":
-        if (dxr.flags.settings.starting_map > 100) {
+        if (starting_map > 100) {
             RemoveJock('UN_BlackHeli');
         }
         break;
 
     case "12_VANDENBERG_CMD":
-        if (dxr.flags.settings.starting_map >= 121) {
+        if (starting_map >= 121) {
             RemoveJock('UN_BlackHeli');
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'comhqdoor') {
                 dxMover.bTriggerOnceOnly = true;
@@ -122,13 +124,13 @@ function PreFirstEntry()
         break;
 
     case "12_VANDENBERG_GAS":
-        if (!dxr.flags.IsEntranceRando() && dxr.flags.settings.starting_map > 129) {
+        if (!dxr.flags.IsEntranceRando() && starting_map > 129) {
             dxr.flagbase.SetBool('DL_JockTiffanyDead_Played', true,, 15);
         }
         break;
 
     case "14_VANDENBERG_SUB":
-        if (dxr.flags.settings.starting_map == 141 || dxr.flags.settings.starting_map == 142) {
+        if (starting_map == 141 || starting_map == 142) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover, 'Elevator1') {
                 dxMover.InterpolateTo(1, 0.0);
                 break;
@@ -137,7 +139,7 @@ function PreFirstEntry()
         break;
 
     case "14_OCEANLAB_LAB":
-        if (dxr.flags.settings.starting_map == 142) {
+        if (starting_map == 142) {
             foreach AllActors(class'ElevatorMover', eMover, 'lift') {
                 eMover.InterpolateTo(1, 0.0);
                 break;
@@ -146,19 +148,19 @@ function PreFirstEntry()
         break;
 
     case "15_Area51_Bunker":
-        if (dxr.flags.settings.starting_map > 150) {
+        if (starting_map > 150) {
             foreach AllActors(class'ElevatorMover', eMover, 'elevator_shaft') {
                 eMover.InterpolateTo(1, 0.0);
                 break;
             }
         }
-        if (dxr.flags.settings.starting_map < 151) {
+        if (starting_map < 151) {
             player().DeleteAllGoals();
         }
         break;
 
     case "15_Area51_Final":
-        if (dxr.flags.settings.starting_map >= 153) {
+        if (starting_map >= 153) {
             foreach AllActors(class'#var(DeusExPrefix)Mover', dxMover) {
                 if (dxMover.tag == 'Page_Blastdoors' || dxMover.tag == 'door_pagearea')
                     dxMover.InterpolateTo(1, 0.0);
@@ -175,14 +177,16 @@ function PostFirstEntry()
 {
     local AllianceTrigger at;
     local #var(prefix)NicoletteDuclare nico;
+    local int starting_map;
 
+    starting_map = dxr.flags.GetStartingMap();
     if(IsStartMap()) {
-        PostFirstEntryStartMapFixes(player(), dxr.flagbase, dxr.flags.settings.starting_map);
+        PostFirstEntryStartMapFixes(player(), dxr.flagbase, starting_map);
     }
 
     switch(dxr.localURL) {
     case "03_NYC_MOLEPEOPLE":
-        if (dxr.flags.settings.starting_map >= 35) {
+        if (starting_map >= 35) {
             foreach AllActors(class'AllianceTrigger', at, 'surrender') {
                 at.Trigger(None, None);
                 break;
@@ -191,7 +195,7 @@ function PostFirstEntry()
         break;
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
-        if (dxr.flags.settings.starting_map >= 109) {
+        if (starting_map >= 109) {
             foreach AllActors(class'#var(prefix)NicoletteDuclare', nico) {
                 nico.LeaveWorld();
             }
@@ -331,9 +335,9 @@ static function string GetStartingMapName(int val)
 static function string GetStartingMapNameCredits(int val)
 {
     local string friendlyName, map;
-    map = _GetStartMap(val, friendlyName);
+    map = _GetStartMap(val & 0xFF, friendlyName);
     if(friendlyName != "") return friendlyName;
-    return "UNKNOWN STARTING MAP "$val$"! " $ map;
+    return "UNKNOWN STARTING MAP "$(val&0xFF)$"! " $ map;
 }
 
 static function string GetStartMap(Actor a, int start_map_val)
@@ -378,7 +382,7 @@ static function bool _IsStartMap(DXRando dxr)
 {
     local string startMapName;
 
-    startMapName = _GetStartMap(dxr.flags.settings.starting_map);
+    startMapName = _GetStartMap(dxr.flags.GetStartingMap());
     startMapName = Left(startMapName, class'DXRMapVariants'.static.SplitMapName(startMapName));
 
     return startMapName ~= dxr.localURL;
@@ -758,6 +762,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 
         case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
             AddNoteFromConv(player, bEmptyNotes, 'M07Briefing'); // Access code to the Versalife nanotech research wing on Level 2: 55655
+            AddNote(player, bEmptyNotes, "Dr. Lundquist:|n|nThe new server node for the Weapons Research Team is now active and user permissions have been set as you asked.  The master password for this node is DAMOCLES.|n|nPlease let me know if you need anything else,|n|n- Harrison");
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
         case 70://fallthrough
             flagbase.SetBool('Disgruntled_Guy_Dead', true);
@@ -883,7 +888,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
 function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 {
     local SkillAwardCrate crate;
-    local int credits;
+    local int credits, num, starting_map;
+    local float desiredHealth; // how many medkits to give
 
     crate = SkillAwardCrate(SpawnInFrontOnFloor(
         player,
@@ -896,6 +902,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
         return None;
     }
 
+    crate.DropStacks = false;
     if (dxr.flags.newgameplus_loops == 0) {
         crate.ItemName = "Later Start Supply Crate";
         crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
@@ -908,10 +915,24 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 
     credits = GetStartMapCreditsBonus(dxr);
     if (credits > 0) {
-        crate.AddContent(class'Credits', credits);
+        crate.AddContent(class'#var(prefix)Credits', credits);
     }
-    crate.AddContent(class'BioelectricCell', 1);
-    crate.NumSkillPoints = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    crate.AddContent(class'#var(prefix)BioelectricCell', 1);
+    starting_map = dxr.flags.GetStartingMap();
+    crate.NumSkillPoints = GetStartMapSkillBonus(starting_map);
+
+    desiredHealth = FClamp(100 - dxr.flags.settings.health, 0, 100);
+    if(starting_map >= 120) desiredHealth += 15;
+    if(desiredHealth >= 30) {
+        num = desiredHealth/30;
+        crate.AddContent(class'#var(prefix)Medkit', num);
+        desiredHealth -= num * 30;
+    }
+    if(desiredHealth >= 10) {
+        num = desiredHealth/10;
+        crate.AddContent(class'#var(prefix)SoyFood', num);
+        desiredHealth -= num * 10;
+    }
 
     return crate;
 }
@@ -938,7 +959,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 
     if (dxr.flags.IsWaltonWare()) {
         crate = SpawnWaltonWareCrate(player);
-    } else if (dxr.flags.settings.starting_map > 10 || dxr.flags.newgameplus_loops > 0) {
+    } else if (dxr.flags.GetStartingMap() > 10 || dxr.flags.newgameplus_loops > 0) {
         crate = SpawnSkillAwardCrate(player);
     } else {
         AddStartingCredits(dxr, player);
@@ -1073,6 +1094,16 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 //#region BingoGoalImpossible
 static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
 {// TODO: probably mid-mission starts for M03 and M04 need to exclude some unatco goals, some hong kong starts might need exclusions too
+    local DXRando dxr;
+    local bool RevisionMaps;
+
+    dxr = class'DXRando'.default.dxr;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(dxr.player);
+
+    if(bingo_event=="ExtinguishFire" && end_mission*10 < start_map+15) {
+        return true; // too hard for short bingo duration
+    }
+
     switch(start_map/10)
     {
     case 1: // Liberty Island
@@ -1125,13 +1156,15 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "ReadJCEmail":
         case "Shannon_PlayerDead":
         case "WaltonConvos":
-        case "un_PrezMeadPic_peepedtex":
         case "un_bboard_peepedtex":
         case "UNATCOHandbook":
         case "ManderleyMail":
         case "LetMeIn":
         case "AlexCloset":
+            return start_map > 41 && end_mission <= 4;
+        case "un_PrezMeadPic_peepedtex":
         case "TrophyHunter":
+            if (RevisionMaps) return False; //Mead pic and Trophy in basement of the bar
             return start_map > 41 && end_mission <= 4;
         case "KnowYourEnemy":
             return start_map > 41;
@@ -1268,7 +1301,27 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             }
             return start_map>=90;
         case "PhoneCall":
-            return start_map>100; //TODO: Last phone is in the building before the catacombs (Where Icarus calls)
+            if (RevisionMaps){
+                //Last phone is in Sub Base (in the gatehouse)
+                return start_map>=145; //Don't require backtracking from Silo
+            } else {
+                return start_map>100; //Last phone is in the building before the catacombs (Where Icarus calls)
+            }
+        case "JustAFleshWound":
+            //This requires removing both arms and legs.  Arms are easy to knock off anywhere with height,
+            //but arms are harder to consistently remove.  Flaming barrels are the easiest way I can think
+            //of, but missions 5, 9, 14, 15 do not have any (accessible, at least).  Treat the goal as
+            //impossible in those missions.
+            //Blocking it here rather than via mission mask on the goal itself means it won't show up
+            //as impossible in a mission, or be marked as failed as you get towards the end of the game,
+            //while still blocking it from showing up in those missions.
+            if (start_map>=50 && end_mission<=5) return true;
+
+            if (!RevisionMaps){
+                //Revision has a burning barrel in 09_NYC_Ship
+                if (start_map>=90 && end_mission<=9) return true;
+            }
+            return (start_map>=140);
         default:
             return False;
     }
@@ -1306,27 +1359,43 @@ static function int SquishMission(int m)
 
 static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
 {
-    local int i;
-    local int startMap, startMission, avoidMission;
-    local int attempts;
+    local int i, j;
+    local int startMap, startMission;
+    local int attempts, score, best, bestScore;
+    local int avoids[4];
 
-    startMap = avoidStart;
-    avoidMission = GetStartMapMission(avoidStart);
-    avoidMission = SquishMission(avoidMission);
-    startMission = avoidMission;
-    attempts=0;
+    bestScore = 9999999;
+    i = avoidStart;
+    for(j=0; j<ArrayCount(avoids); j++) {
+        avoids[j] = i & 0xFF;
+        if(avoids[j] == 0) avoids[j] = -100; // null entry isn't close to any of the starts
+        avoids[j] = GetStartMapMission(avoids[j]);
+        avoids[j] = SquishMission(avoids[j]);
+        i = i >> 8;
+    }
     m.SetGlobalSeed("randomstartmap");
 
     //Don't try forever.  If we manage to grab the avoided map 50 times, it was meant to be.
     //the widest span is Hong Kong: Helipad is 60, Storage is 75, a span of 15
-    while (Abs(startMission-avoidMission) <= 1 && attempts < 50){
+    for(attempts=0; attempts<50; attempts++) {
         startMap = _ChooseRandomStartMap(m);
         startMission = GetStartMapMission(startMap);
         startMission = SquishMission(startMission);
-        m.l("Start map selection attempt "$ ++attempts $" was "$startMap);
+        // lower scores are better, 0 is perfect
+        score = 0;
+        score = score * 5 + int(Abs(startMission-avoids[0]) <= 1); // be more strict against most recent
+        for(j=0; j<ArrayCount(avoids); j++) {
+            score = score * 5 + int(Abs(startMission-avoids[j]) <= 0); // less strict here, otherwise M01 and M15 get picked more often since they only have 1 neighbor instead of 2
+        }
+        m.l("Start map selection attempt "$ attempts $" was "$startMap @ score @ avoidStart);
+        if(score < bestScore) {
+            bestScore = score;
+            best = startMap;
+        }
+        if(score == 0) break;
     }
 
-    return startMap;
+    return best | (avoidStart<<8); // shift history by 1 byte
 }
 
 //#region _ChooseRandomStartMap
@@ -1432,7 +1501,7 @@ static function int GetStartMapCreditsBonus(DXRando dxr)
 {
     local int startMapMission, numCredits, i;
 
-    startMapMission = GetStartMapMission(dxr.flags.settings.starting_map);
+    startMapMission = GetStartMapMission(dxr.flags.GetStartingMap());
     for(i = 0; i < startMapMission; i++) {
         numCredits += 100 + dxr.rng(100);
     }
@@ -1447,7 +1516,7 @@ static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 
 static function int GetStartMapAugBonus(DXRando dxr)
 {
-    return GetStartMapMission(dxr.flags.settings.starting_map) * 0.4;
+    return GetStartMapMission(dxr.flags.GetStartingMap()) * 0.4;
 }
 
 static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player, SkillAwardCrate crate)
@@ -1476,7 +1545,7 @@ static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player, SkillAward
 static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
 {
     local int startBonus;
-    startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    startBonus = GetStartMapSkillBonus(dxr.flags.GetStartingMap());
     log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
     p.SkillPointsAvail += startBonus;
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.

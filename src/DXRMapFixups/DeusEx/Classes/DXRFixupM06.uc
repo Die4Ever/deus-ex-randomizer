@@ -107,6 +107,7 @@ function PreFirstEntryMapFixes()
     local Dispatcher disp;
     local #var(prefix)Trigger t;
     local #var(prefix)ControlPanel panel;
+    local #var(prefix)HKHangingLantern lantern;
     local int i;
 
     local bool VanillaMaps;
@@ -417,6 +418,10 @@ function PreFirstEntryMapFixes()
                 }
             }
 
+            foreach AllActors(class'#var(prefix)HKHangingLantern', lantern,'OpenTheDoorLantern'){
+                lantern.bInvincible=true;
+            }
+
             class'FakeMirrorInfo'.static.Create(self,vectm(1335,-1663,1736),vectm(1345,-1535,1775)); //Jock's Bathroom
             class'FakeMirrorInfo'.static.Create(self,vectm(1345,-1545,1736),vectm(1280,-1535,1790)); //Jock's Bathroom (right side)
             class'FakeMirrorInfo'.static.Create(self,vectm(-1195,-1065,2285),vectm(-1075,-1045,2245)); //Maggie's Guest Bathroom
@@ -623,6 +628,8 @@ function PreFirstEntryMapFixes()
         //A switch inside the freezer to open it back up... just in case
         AddSwitch( vect(-1560.144409,-3166.475098,-315.504028), rot(0,16408,0), 'FreezerDoor');
 
+        class'PoolTableManager'.static.CreatePoolTableManagers(self);
+        AddActor(class'PoolTableResetButton',vect(-802.5,-2563.3,10),rot(0,16384,0));
 
         //Restore bouncer conversation....
 
@@ -1261,6 +1268,22 @@ function AnyEntryMapFixes()
 
                 break;
             }
+        }
+
+        //LDD splits MeetMarketBum1 (The guy in the Old China Hand) into two versions.  One for if Paul is alive, and one if he's dead.
+        //If he's alive, the guy gives you the Versalife maps for free (because Paul already paid him for them).  This makes FemJC easier
+        //for bingo purposes, so we're going to disable the one where you get the maps for free, and force you into the other conversation
+        //always, which makes it essentially the same as vanilla male JC.
+        if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+            c = GetConversation('MeetMarketBum1PaulDead'); //FemJCMeetMarketBum1PaulDead is the one that acts like vanilla
+            DeleteConversationFlag(c, 'PaulDenton_Dead', true); //Remove the requirement for Paul to be dead
+            c.bInvokeRadius=true;//Make the conversation invoke on 120 radius, like in vanilla male JC
+            c.radiusDistance=120;
+
+            DeleteConversationFlag(GetConversation('MarketBum1Barks'), 'PaulDenton_Dead', true); //FemJCMarketBum1Barks also expects Paul to be dead
+
+            c = GetConversation('MeetMarketBum1'); //This is the conversation where you get the maps for free
+            c.AddFlagRef('ThisFlagShouldNeverExist', true); //Make it require a flag that will never be set, so it never runs
         }
         break;
     //#endregion

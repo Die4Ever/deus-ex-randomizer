@@ -147,7 +147,8 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     MaxRandoVal(settings.medkits);
     settings.equipment += int(rngb());
 
-    MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
+    settings.min_weapon_dmg += 10; // prevent it from going too low
+    MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg, 1.5);
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
 
     settings.aug_value_rando = 100;
@@ -342,6 +343,9 @@ simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 
 simulated function ClearInHand(#var(PlayerPawn) p)
 {
+    if(POVCorpse(p.InHand)!=None) {
+        p.InHand.Destroy();
+    }
     p.SetInHand(None);
     p.SetInHandPending(None);
     p.bInHandTransition = False;
@@ -383,25 +387,29 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
     weaps[slot].Destroy();
 }
 
-simulated function MaxRandoVal(out int val)
+simulated function MaxRandoVal(out int val, optional float scaler)
 {
-    val = rngrecip(val, 2);
+    if(scaler == 0) scaler = 2;
+    val = rngrecip(val, scaler);
 }
 
-simulated function MaxRandoValPair(out int min, out int max)
+simulated function MaxRandoValPair(out int min, out int max, optional float min_scaler, optional float max_scaler)
 {
     local int i;
 
-    MaxRandoVal(min);
-    MaxRandoVal(max);
+    MaxRandoVal(min, min_scaler);
+    MaxRandoVal(max, max_scaler);
 
     if(min > max) {
         i = min;
         min = max;
         max = i;
-    } else if(min == max) {
-        min--;
-        max++;
+    }
+
+    i = self.Max(1, min*0.1);
+    if(max-min <= i*2) {
+        min -= i;
+        max += i;
     }
 }
 
@@ -431,7 +439,7 @@ function float NewGamePlusVal(float val, float curve, float exp, float min, floa
 
 function ExtendedTests()
 {
-    local int val, i, oldSeed;
+    local int val, i, oldSeed, prev;
     local float fval, old_scaling;
     local string s;
 
@@ -464,7 +472,8 @@ function ExtendedTests()
 
     for(i=0; i<100; i++) {
         dxr.seed = 123456 + i;
-        s = s @ class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
+        prev = class'DXRStartMap'.static.ChooseRandomStartMap(self, prev);
+        s = s @ (prev&0xFF);
     }
     test(true, "DXRStartMap " $ s);
     dxr.seed = oldSeed;

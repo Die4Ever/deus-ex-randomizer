@@ -93,10 +93,13 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(2512,6140,-2162));
         class'PlaceholderEnemy'.static.Create(self,vectm(2267,643,-2000));
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1702,1839,-2000),,'Sitting');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1702,1839,-2000),,'Sitting'); // couches near hazard lab
         class'PlaceholderEnemy'.static.Create(self,vectm(-1623,1826,-2000),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(-1456,1806,-2000),,'Sitting');
         class'PlaceholderEnemy'.static.Create(self,vectm(-1354,1813,-2000),,'Sitting');
+
+        class'PlaceholderEnemy'.static.Create(self,vectm(19424, 18720, -2048));// behind the lobby chair (no room to sit)
+        class'PlaceholderEnemy'.static.Create(self,vectm(-422.848267, 1350.189575, -2004.884888));// lobby
 
         // some extra platforming!
         sl = #var(prefix)ShopLight(AddActor(class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));

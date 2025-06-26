@@ -4,7 +4,7 @@ var DeusExPlayer    player;
 var DXRStats        stats;
 
 var config int version;
-var config Font  textfont;
+var config Font textfont;
 
 var config Color colorBackground, colorNotesBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
@@ -36,6 +36,7 @@ var float x, y;
 var config float x_pos, y_pos;
 var float prevSpeed, avgSpeed, lastTime;
 var int rememberedMission;
+var bool bWaltonWare;
 
 var config int last_flagshash;
 
@@ -97,6 +98,9 @@ function string ReplaceVariables(string s)
 
     t = f.DifficultyName(f.difficulty) $"";
     s = f.ReplaceText(s, "%difficulty", t);
+
+    t = class'DXRInfo'.static.FloatToString(player.CombatDifficulty, 3);
+    s = f.ReplaceText(s, "%combatdifficulty", t);
 
     t = stats.GetDataStorageStat(dxr, "DXRStats_loads") $"";
     s = f.ReplaceText(s, "%loads", t);
@@ -213,7 +217,7 @@ function InitStats(DXRStats newstats)
         return;
     }
 
-    if(curMission == 99) {
+    if(curMission == 99 && !stats.dxr.flags.IsWaltonWare()) {
         CompletedRun(total);
     }
     if(curMission > 0 && stats.dxr.flags.newgameplus_loops == 0) {
@@ -236,9 +240,19 @@ static function bool CheckFlags(DXRFlags f)
     local int last;
 
     if(f.moresettings.splits_overlay <= 0) return true;
+    if(f.IsWaltonWare()) return true; // we don't read from or write to the splits file in WaltonWare anyways
     last = class'HUDSpeedrunSplits'.default.last_flagshash;
     if(last == 0) return true;
     return f.FlagsHash() == last;
+}
+
+static function string GetPB()
+{
+    local int total, i;
+    for(i=0; i<ArrayCount(default.PB); i++) {
+        total += default.PB[i];
+    }
+    return class'DXRStats'.static.fmtTimeToString(total, true, false, true);
 }
 
 function CompletedRun(int total)
@@ -310,7 +324,7 @@ function InitSizes(GC gc)
     gc.GetTextExtent(0, windowWidth, text_height, " +00:00 8:88:88 ");
     windowWidth += left_col;
 
-    gc.GetTextExtent(0, f, text_height, ttitle);
+    gc.GetTextExtent(0, f, text_height, ttitle $ "X");
     windowWidth = FMax(f, windowWidth);
     gc.GetTextExtent(0, f, text_height, tsubtitle $"XX");
     windowWidth = FMax(f, windowWidth);
@@ -338,6 +352,7 @@ function DrawWindow(GC gc)
     if(stats.dxr != None) {
         cur = stats.dxr.dxInfo.MissionNumber;
         rememberedMission = cur;
+        bWaltonWare = stats.dxr.flags.IsWaltonWare();
     } else if(rememberedMission > 0 && rememberedMission <= 15) {
         cur = rememberedMission;
     } else {
@@ -348,7 +363,7 @@ function DrawWindow(GC gc)
     y = 4;
     DrawHeader(gc);
 
-    if(stats.dxr != None && stats.dxr.flags.IsWaltonWare()) {
+    if(bWaltonWare) {
         DrawWaltonWare(gc);
     } else {
         DrawSplits(gc, cur);
@@ -435,7 +450,8 @@ function DrawWaltonWare(GC gc)
 
     prevTotal = flags.newgameplus_total_time;
     if(prevTotal > 0) {
-        DrawTextLine(gc, "Loop " $ flags.newgameplus_loops, "", colorText, x, y, fmtTime(prevTotal), true);
+        msg = stats.fmtTimeToString(prevTotal, false, false, true); // show tenths
+        DrawTextLine(gc, "Loop " $ flags.newgameplus_loops, "", colorText, x, y, msg, true);
         y += text_height;
     }
 

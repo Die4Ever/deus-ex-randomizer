@@ -72,7 +72,7 @@ struct FlagsSettings {
     var int bingo_freespaces; //Number of bingo free spaces
     var int spoilers; //0=Disallowed, 1=Available
     var int menus_pause; // 0=no pause, 1=vanilla
-    var int starting_map;
+    var int starting_map; // one byte for each historical start
     var int grenadeswap;
 
     // leave these at the end for the automated tests

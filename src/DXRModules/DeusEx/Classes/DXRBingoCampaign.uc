@@ -214,7 +214,7 @@ function bool IsLateStart(int mission)
     if(#bool(neverlate)) return false;
     if(mission==7) mission=6;
     if(mission==13) mission=12;
-    return dxr.flags.settings.starting_map >= mission * 10 + 5;
+    return dxr.flags.GetStartingMap() >= mission * 10 + 5;
 }
 
 function HandleSpecialPerson(string bindname, string thisGoal, optional string nextGoal) {

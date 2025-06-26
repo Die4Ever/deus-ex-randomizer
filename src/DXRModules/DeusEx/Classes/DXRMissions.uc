@@ -483,7 +483,7 @@ function ShuffleGoals()
 
 function GenerateLocationMarkers()
 {
-    local int i;
+    local int i, mask;
     local DXRLocationMarker marker;
 
     foreach AllActors(class'DXRLocationMarker', marker) {
@@ -492,8 +492,10 @@ function GenerateLocationMarkers()
 
     for(i=0; i<num_locations; i++) {
         if(dxr.localURL != locations[i].mapName) continue;
+        mask = locations[i].bitMask;
+        if((mask & (START_LOCATION | VANILLA_START)) == mask) continue; // this is just a start location
         marker = DXRLocationMarker(Spawnm(class'DXRLocationMarker',,, locations[i].positions[0].pos));
-        marker.BindName = locations[i].name;
+        marker.BindName = locations[i].name $ "?";
     }
 }
 
