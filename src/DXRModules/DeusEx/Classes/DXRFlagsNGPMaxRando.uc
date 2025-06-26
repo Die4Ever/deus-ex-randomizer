@@ -147,7 +147,8 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     MaxRandoVal(settings.medkits);
     settings.equipment += int(rngb());
 
-    MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
+    settings.min_weapon_dmg += 10; // prevent it from going too low
+    MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg, 1.5);
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
 
     settings.aug_value_rando = 100;
@@ -386,17 +387,18 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
     weaps[slot].Destroy();
 }
 
-simulated function MaxRandoVal(out int val)
+simulated function MaxRandoVal(out int val, optional float scaler)
 {
-    val = rngrecip(val, 2);
+    if(scaler == 0) scaler = 2;
+    val = rngrecip(val, scaler);
 }
 
-simulated function MaxRandoValPair(out int min, out int max)
+simulated function MaxRandoValPair(out int min, out int max, optional float min_scaler, optional float max_scaler)
 {
     local int i;
 
-    MaxRandoVal(min);
-    MaxRandoVal(max);
+    MaxRandoVal(min, min_scaler);
+    MaxRandoVal(max, max_scaler);
 
     if(min > max) {
         i = min;
