@@ -2,5 +2,6 @@ class DXRSeagull injects #var(prefix)Seagull;
 
 defaultproperties
 {
-     Health=1
+    Health=1
+    CollisionHeight=10
 }
