@@ -128,8 +128,8 @@ function InitStatLogShim()
 {
     //I think both LocalLog and WorldLog will always be None in DeusEx, but if this makes it
     //to another game, might need to actually see if there's a possibility of overlap here.
-    if (!((Level.Game.LocalLog!=None && Level.Game.LocalLog.IsA('DXRStatLog')) ||
-          (Level.Game.WorldLog!=None && Level.Game.WorldLog.IsA('DXRStatLog')))){
+    if (!((Level.Game.LocalLog!=None && DXRStatLog(Level.Game.LocalLog) != None) ||
+          (Level.Game.WorldLog!=None && DXRStatLog(Level.Game.WorldLog) != None))){
         if (Level.Game.LocalLog==None){
             Level.Game.LocalLog=spawn(class'DXRStatLog');
         } else if (Level.Game.WorldLog==None){
@@ -865,7 +865,7 @@ static function BeatGame(DXRando dxr, int ending)
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
     }
-    else if(dxr.player.inHand.IsA('POVCorpse')){
+    else if(POVCorpse(dxr.player.inHand) != None){
         js.static.Add(j, "carriedItem", POVCorpse(dxr.player.inHand).carcClassString);
     }
 
