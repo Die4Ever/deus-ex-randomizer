@@ -640,6 +640,7 @@ function PostFirstEntryMapFixes()
 //#region Any Entry
 function AnyEntryMapFixes()
 {
+    local Conversation con;
     local ConEventSpeech ces;
     local Jock j;
 
@@ -657,6 +658,11 @@ function AnyEntryMapFixes()
                 break;
             }
         }
+
+        con = GetConversation('DL_ReminderJaney');
+        con.AddFlagRef('SandraRenton_Dead', false);
+        con.AddFlagRef('GeneratorBlown', false);
+
         break;
 
     case "02_NYC_SMUG":
