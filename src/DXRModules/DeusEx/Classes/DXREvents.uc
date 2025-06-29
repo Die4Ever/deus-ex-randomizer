@@ -3256,7 +3256,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "IgnitedPawn":
             return "Set enough people on fire.";
         case "GibbedPawn":
-            return "Blow up enough people.  If they turn into chunks of meat, it counts.  You must blow them up yourself.";
+            return "Blow up enough people.  If they turn into chunks of meat, it counts.  They must be human and you must blow them up yourself.";
         case "IcarusCalls_Played":
             return "Answer the phone in the building across from the entrance to the catacombs in Paris.";
         case "AlexCloset":
