@@ -627,19 +627,10 @@ function AnyEntryMapFixes()
     switch(dxr.localURL) {
     case "03_NYC_747":
         SetTimer(1, true);
-        FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
 
-        // change the expiration of 'MeetLebedev2_Played'
-        c = GetConversation('MeetLebedev2');
-        cesf = new(c) class'ConEventSetFlag';
-        cesf.eventType = ET_SetFlag;
-        cesf.flagRef = new(c) class'ConFlagRef';
-        cesf.flagRef.flagName = 'MeetLebedev2_Played';
-        cesf.flagRef.value = true;
-        cesf.flagRef.expiration = 5;
-        ces = GetSpeechEvent(c.eventList, "You didn't have parents.");
-        cesf.nextEvent = ces.nextEvent;
-        ces.nextEvent = cesf;
+        // 'AnnaThanks_Played' gets reset at the end of M02, but 'AnnaThanksChatDone' doesn't
+        // restores an alternative line from Anna about about killing Lebedev based on what you did in M02
+        FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
 
         break;
 
@@ -734,9 +725,18 @@ function AnyEntryMapFixes()
         }
         break;
     case "03_NYC_UNATCOHQ":
+        // 'AnnaThianks_Played' is expired here, but 'AnnaThanksChatDone' isn't
+        // restores an alternative line from Anna about a debriefing based on what you did in M02
         FixConversationFlagJump(GetConversation('AnnaAtUNATCO'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
         break;
     }
+}
+//#endregion
+
+//#region Fix Pre Travel
+function PreTravelMapFixes()
+{
+    dxr.flagbase.SetBool('MeetLebedev2_Played', dxr.flagbase.GetBool('MeetLebedev2_Played'),, 5); // restores some possible dialog with Paul
 }
 //#endregion
 

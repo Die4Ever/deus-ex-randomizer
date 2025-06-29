@@ -233,11 +233,6 @@ function PreFirstEntryMapFixes()
                     break;
             }
         }
-
-        foreach AllActors(class'#var(prefix)TracerTong', tong) {
-            tong.BarkBindName = "TracerTong";
-        }
-
         break;
     //#endregion
 

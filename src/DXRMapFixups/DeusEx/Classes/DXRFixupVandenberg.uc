@@ -1114,6 +1114,7 @@ function AnyEntryMapFixes()
         break;
     
     case "14_OCEANLAB_UC":
+        // play an infolink from Everett after the one from Gary, forshadowing his intentions
         for (ce = GetConversation('DL_Downloaded').eventList; ConEventEnd(ce.nextEvent) == None; ce = ce.nextEvent);
         ce.nextEvent = GetConversation('DL_Everett_Congrats').eventList;
         break;

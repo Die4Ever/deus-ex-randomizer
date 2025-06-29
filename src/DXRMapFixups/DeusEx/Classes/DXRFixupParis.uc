@@ -242,10 +242,6 @@ function PreFirstEntryMapFixes()
             //Need to pretend he *was* recruited, so that he doesn't spawn
             dxr.flagbase.SetBool('JaimeRecruited',True);
         }
-        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-            RemoveFears(j);
-            j.BarkBindName = "JaimeReyes";
-        }
 
         desTrig = Spawn(class'DestroyTrigger',, 'NicoLeaving');
         desTrig.Event = '#var(prefix)NicoletteDuClare';
