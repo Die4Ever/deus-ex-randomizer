@@ -595,13 +595,6 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
-    
-    case "03_NYC_HANGAR":
-        FixMechanicBarks();
-        foreach AllActors(class'#var(prefix)Terrorist', terror) {
-            terror.BarkBindName = "Terrorist";
-        }
-        break;
     //#endregion
     }
 }
