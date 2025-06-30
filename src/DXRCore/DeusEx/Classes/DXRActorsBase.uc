@@ -1005,7 +1005,7 @@ static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversatio
     return None;
 }
 
-function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which, optional ConEvent prevCe)
+function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which, optional out ConEvent prevCe)
 {
     return GetGoalConEventStatic(goalName, GetConversation(convname), which, prevCe);
 }
