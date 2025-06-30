@@ -275,10 +275,10 @@ function AddMissionGoals()
     }
 
     if(dxr.flagbase.GetBool('PaulDenton_Dead'))
-        GiveGoalFromConv(player(), 'FindPaul', 'DL_Choice', 1);
+        GiveGoalFromCon(player(), 'FindPaul', 'DL_Choice', 1);
     else
-        GiveGoalFromConv(player(), 'FindPaul', 'DL_Choice');
-    GiveGoalFromConv(player(), 'FindEquipment', 'DL_Choice');
+        GiveGoalFromCon(player(), 'FindPaul', 'DL_Choice');
+    GiveGoalFromCon(player(), 'FindEquipment', 'DL_Choice');
 
     GiveImage(player(), class'Image05_NYC_MJ12Lab');
 }

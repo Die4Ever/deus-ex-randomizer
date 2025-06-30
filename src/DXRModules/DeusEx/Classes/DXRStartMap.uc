@@ -969,58 +969,58 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 
     switch(start_flag) {
         case 21:
-            GiveGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete');
+            GiveGoalFromCon(player, 'ReportToPaul', 'DL_SubwayComplete');
             break;
 
         case 31:
-            GiveGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack');
+            GiveGoalFromCon(player, 'ReportToManderley', 'DL_WelcomeBack');
             break;
         case 32:
         case 33:
         case 34:
         case 35:
-            GiveGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
+            GiveGoalFromCon(player, 'LocateAirfield', 'ManderleyDebriefing02');
             break;
         case 36:
             player.StartDataLinkTransmission("DL_LebedevKill");
             break;
         case 37:
-            GiveGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
+            GiveGoalFromCon(player, 'AssassinateLebedev', 'DL_LebedevKill');
             break;
 
         case 45:
-            GiveGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
+            GiveGoalFromCon(player, 'InvestigateNSF', 'PaulInjured');
             break;
         case 43:
             player.StartDataLinkTransmission("DL_JockParkStart");
             break;
         case 41:
-            GiveGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
+            GiveGoalFromCon(player, 'SeeManderley', 'DL_SeeManderley');
             break;
 
         case 55:
-            GiveGoalFromConv(player, 'FindEquipment', 'DL_Choice');
-            GiveGoalFromConv(player, 'FindAnnasKillprhase', 'PaulInMedLab');
+            GiveGoalFromCon(player, 'FindEquipment', 'DL_Choice');
+            GiveGoalFromCon(player, 'FindAnnasKillprhase', 'PaulInMedLab');
             break;
 
         case 75:
-            GiveGoalFromConv(player, 'GetVirusSchematic', 'M07Briefing');
-            GiveGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            GiveGoalFromCon(player, 'GetVirusSchematic', 'M07Briefing');
+            GiveGoalFromCon(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 70:
-            GiveGoalFromConv(player, 'ReportToTong', 'TriadCeremony');
-            GiveGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            GiveGoalFromCon(player, 'ReportToTong', 'TriadCeremony');
+            GiveGoalFromCon(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 68:
         case 67:
-            GiveGoalFromConv(player, 'GetROM', 'MeetTracerTong2');
+            GiveGoalFromCon(player, 'GetROM', 'MeetTracerTong2');
             break;
         case 66:
-            GiveGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'FindTracerTong', 'DL_Jock_05');
             break;
         case 65:
-            GiveGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
-            GiveGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'FindTracerTong', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'CheckCompound', 'DL_Jock_05');
             player.StartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
             break;
         case 64:
@@ -1041,17 +1041,17 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 101:
-            GiveGoalFromConv(player, 'FindSilhouette', 'DL_paris_10_start');
-            GiveGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindSilhouette', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
             break;
         case 105:
         case 106:
-            GiveGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
-            GiveGoalFromConv(player, 'FindNicolette', 'DL_tunnels_down');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindNicolette', 'DL_tunnels_down');
             break;
         case 109:
-            GiveGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
-            GiveGoalFromConv(player, 'FindEverett', 'NicoletteOutside');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindEverett', 'NicoletteOutside');
             break;
 
         case 119:
@@ -1061,8 +1061,8 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 115:
             goal = player.AddGoal('ContactIlluminati', true);
             goal.SetText("Make contact with the Illuminati in Paris, where the former Illuminati leader, Morgan Everett, is rumored to be in hiding.");
-            GiveGoalFromConv(player, 'GoToMetroStation', 'DL_morgan_uplink');
-            GiveGoalFromConv(player, 'RecoverGold', 'DL_intro_cathedral');
+            GiveGoalFromCon(player, 'GoToMetroStation', 'DL_morgan_uplink');
+            GiveGoalFromCon(player, 'RecoverGold', 'DL_intro_cathedral');
             break;
         case 110:
             goal = player.AddGoal('ContactIlluminati', true);
@@ -1072,21 +1072,21 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 129:
-            GiveGoalFromConv(player, 'RescueTiffany', 'GaryHostageBriefing');
+            GiveGoalFromCon(player, 'RescueTiffany', 'GaryHostageBriefing');
             break;
         case 125:
         case 122:
-            GiveGoalFromConv(player, 'FindGarySavage', 'MeetTonyMares');
+            GiveGoalFromCon(player, 'FindGarySavage', 'MeetTonyMares');
             break;
         case 121:
-            GiveGoalFromConv(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
+            GiveGoalFromCon(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
             break;
 
         case 153:
-            GiveGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
-            GiveGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
+            GiveGoalFromCon(player, 'DestroyArea51', 'M15MeetTong');
+            GiveGoalFromCon(player, 'DeactivateLocks', 'MeetHelios');
         case 152: // fallthrough
-            GiveGoalFromConv(player, 'KillPage', 'M15MeetEverett');
+            GiveGoalFromCon(player, 'KillPage', 'M15MeetEverett');
             break;
     }
 }

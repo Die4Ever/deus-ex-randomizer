@@ -1011,7 +1011,7 @@ function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional 
 }
 
 // Creates or updates a goal with text taken from a Conversation
-function DeusExGoal GiveGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
+function DeusExGoal GiveGoalFromCon(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
 {
     local DeusExGoal goal;
     local ConEventAddGoal ceag;
@@ -1031,7 +1031,7 @@ function DeusExGoal GiveGoalFromConv(#var(PlayerPawn) player, name goaltag, name
     return goal;
 }
 
-function bool RemoveGoalFromConv(name goalName, name convname, optional int which)
+function bool RemoveGoalFromCon(name goalName, name convname, optional int which)
 {
     local ConEvent prevCe;
 
