@@ -1405,11 +1405,11 @@ function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCom
 
 function FixMechanicBarks()
 {
-    local #var(prefix)Mechanic mechanic;
+    local #var(prefix)Mechanic mec;
 
-    foreach AllActors(class'#var(prefix)Mechanic', mechanic) {
-        if (mechanic.BarkBindName == "" || mechanic.BarkBindName == "Man") {
-            mechanic.BarkBindName = "Mechanic";
+    foreach AllActors(class'#var(prefix)Mechanic', mec) {
+        if (mec.FamiliarName == "Mechanic" && mec.BarkBindName == "Man") {
+            mec.BarkBindName = "Mechanic";
         }
     }
 }
