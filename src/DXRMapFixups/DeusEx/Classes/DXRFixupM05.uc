@@ -449,6 +449,7 @@ function Inventory FindPrisonPocketItem()
         beltItem=root.hud.belt.GetObjectFromBelt(i);
 
         if (beltItem==None) continue;
+        if (MemConUnit(beltItem)!=None) continue;  //Always keep the MemConUnit
 
         //Is it a single slot item?
         if (beltItem.invSlotsX==1 && beltItem.invSlotsY==1){
