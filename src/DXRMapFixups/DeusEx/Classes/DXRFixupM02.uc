@@ -40,6 +40,7 @@ function PreFirstEntryMapFixes()
     local Smuggler smug;
     local HomeBase hb;
     local DXRReinforcementPoint reinforce;
+    local #var(prefix)Poolball pb;
     local int i;
 #ifdef revision
     local JockHelicopter jockheli;
@@ -459,6 +460,17 @@ function PreFirstEntryMapFixes()
             MakeFordHateTrigger('MJ12Troop');
             MakeFordHateTrigger('FordsGuard');
             MakeFordHateTrigger('AlarmTroop');
+        }
+
+        if (RevisionMaps){
+            //Delete the extra cue ball on the ping-pong table
+            foreach AllActors(class'#var(prefix)Poolball',pb){
+                if (pb.Name=='Poolball16'){
+                    pb.Destroy();
+                }
+            }
+            class'PoolTableManager'.static.CreatePoolTableManagers(self); //There's a pool table here in Revision (and it's nicely racked)
+            AddActor(class'PoolTableResetButton',vect(-4925,1136.772827,-973),rot(0,16384,0));
         }
 
         Spawn(class'PlaceholderItem',,, vectm(2644,-630,-405)); //Weird little ledge near pipe and bodies
