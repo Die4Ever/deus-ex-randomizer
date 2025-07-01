@@ -3138,7 +3138,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"There is a chapter in the 'Ton hotel.";
             } else if (mission<=6){
                 msg=msg$"There is a chapter in the Wan Chai Market.";
-            } else if (mission<=9 && class'DXRando'.default.dxr.localURL!="09_NYC_GRAVEYARD"){
+            } else if (mission<=9 && dxr.localURL!="09_NYC_GRAVEYARD"){
                 msg=msg$"There is a chapter in the lower decks of the Superfreighter.";
             } else if (mission<=10){
                 msg=msg$"There is a chapter in the DuClare Chateau.";
@@ -3324,9 +3324,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Set_flag_helios":
             return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
         case "coolant_switch":
-            return "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
+            msg = "Flush the reactor coolant";
+            if (dxr.flags.settings.goals>0){
+                msg = "Flush the reactor coolant somewhere in Sector 4 of Area 51.  To flush the coolant, you need to find a large orange button that is in a random location.";
+            } else {
+                msg = "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
+            }
+            return msg;
         case "BlueFusionReactors":
-            return "Deactivate blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
+            msg = "Deactivate blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
+            if (dxr.flags.settings.goals>0){
+                msg = msg $ "  The locations of the keypads for the blue fusion reactors have been randomized.";
+            }
+            return msg;
         case "A51UCBlocked":
             return "Close the doors to enough of the UCs in Sector 4 of Area 51.";
         case "VandenbergReactorRoom":
