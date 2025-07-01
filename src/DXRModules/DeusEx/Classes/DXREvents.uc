@@ -4119,7 +4119,7 @@ defaultproperties
     bingo_options(138)=(event="CommsPit",desc="Check the SATCOM wiring %s times",desc_singular="Check the SATCOM wiring",max=3,missions=58)
     bingo_options(139)=(event="StatueHead",desc="Visit the head of the Statue of Liberty",max=1,missions=2)
     bingo_options(140)=(event="CraneControls",desc="Use the dockside crane controls",max=1,missions=512)
-    bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes on the freighter",max=2,missions=512)
+    bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes on the freighter",max=2,missions=512,do_not_scale=true)
     bingo_options(142)=(event="CaptainBed",desc="Jump on the freighter captains bed",max=1,missions=512)
     bingo_options(143)=(event="FanTop",desc="Get blown to the top of the freighter ventilation shaft",max=1,missions=512)
     bingo_options(144)=(event="LouisBerates",desc="Sneak behind the Porte De L'Enfer door man",max=1,missions=1024)
