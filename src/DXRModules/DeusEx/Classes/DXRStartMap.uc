@@ -889,7 +889,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 }
 
-function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
+function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<SkillAwardCrate> crateClass)
 {
     local SkillAwardCrate crate;
     local int credits, num, starting_map;
@@ -897,7 +897,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 
     crate = SkillAwardCrate(SpawnInFrontOnFloor(
         player,
-        class'SkillAwardCrate',
+        crateClass,
         80.0,
         MakeRotator(0, (2047 - rng(4095)), 0)
     ));
@@ -905,17 +905,6 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
     if (crate == None) {
         return None;
     }
-
-    crate.DropStacks = false;
-    if (dxr.flags.newgameplus_loops == 0) {
-        crate.ItemName = "Later Start Supply Crate";
-        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
-    } else  {
-        crate.ItemName = "New Game Plus Supply Crate";
-        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Game Plus Bonus";
-    }
-
-    crate.Skin = Texture'WaltonWareCrate';
 
     credits = GetStartMapCreditsBonus(dxr);
     if (credits > 0) {
@@ -945,11 +934,36 @@ function SkillAwardCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
 {
     local SkillAwardCrate crate;
 
-    crate = SpawnSkillAwardCrate(player);
+    crate = SpawnSkillAwardCrate(player, class'WaltonWareCrate');
 
     if (crate != None) {
-        crate.ItemName = "Walton's Care Package";
         crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Loop Bonus";
+    }
+
+    return crate;
+}
+
+function SkillAwardCrate SpawnLateStartCrate(#var(PlayerPawn) player)
+{
+    local SkillAwardCrate crate;
+
+    crate = SpawnSkillAwardCrate(player, class'LateStartSupplyCrate');
+
+    if (crate != None) {
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
+    }
+
+    return crate;
+}
+
+function SkillAwardCrate SpawnNGPlusCrate(#var(PlayerPawn) player)
+{
+    local SkillAwardCrate crate;
+
+    crate = SpawnSkillAwardCrate(player, class'NGPlusSupplyCrate');
+
+    if (crate != None) {
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Game Plus Bonus";
     }
 
     return crate;
@@ -963,8 +977,10 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 
     if (dxr.flags.IsWaltonWare()) {
         crate = SpawnWaltonWareCrate(player);
-    } else if (dxr.flags.GetStartingMap() > 10 || dxr.flags.newgameplus_loops > 0) {
-        crate = SpawnSkillAwardCrate(player);
+    } else if (dxr.flags.GetStartingMap() > 10) {
+        crate = SpawnLateStartCrate(player);
+    } else if (dxr.flags.newgameplus_loops > 0) {
+        crate = SpawnNGPlusCrate(player);
     } else {
         AddStartingCredits(dxr, player);
         AddStartingSkillPoints(dxr, player);
