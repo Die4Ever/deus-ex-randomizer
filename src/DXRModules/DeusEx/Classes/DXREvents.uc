@@ -3924,6 +3924,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Sink all 7 solid-color balls (9-15) on enough different pool tables.";
         case "PoolTableSolids":
             return "Sink all 7 striped balls (1-7) on enough different pool tables.";
+        case "05_EmailMenu_psherman":
+            return "Log into and read the email of Agent Sherman, the MIB in the secret MJ12 Lab.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4374,6 +4376,7 @@ defaultproperties
 #endif
     bingo_options(362)=(event="PoolTableStripes",desc="Sink all the striped pool balls %s times",desc_singular="Sink all the striped pool balls",max=3,missions=33116)
     bingo_options(363)=(event="PoolTableSolids",desc="Sink all the solid pool balls %s times",desc_singular="Sink all the solid pool balls",max=3,missions=33116)
+    bingo_options(364)=(event="05_EmailMenu_psherman",desc="P. Sherman, 42 Wallaby Way, Sydney",max=1,missions=32)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
