@@ -2114,6 +2114,12 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 57214;
             }
             break;
+        case "FlushToilet":
+            if (RevisionMaps){
+                //Extras in Area 51 Entrance (M15)
+                return 40830;
+            }
+            break;
     }
 
     return missions;
