@@ -24,7 +24,7 @@ var() BingoOption bingo_options[400]; //Update the comment at the bottom of the 
 struct MutualExclusion {
     var string e1, e2;
 };
-var() MutualExclusion mutually_exclusive[94];
+var() MutualExclusion mutually_exclusive[95];
 
 struct ActorWatchItem {
     var Actor a;
@@ -60,10 +60,20 @@ function AddWatchedActor(Actor a,String eventName)
 
 function CheckWatchedActors() {
     local int i;
+    local #var(DeusExPrefix)Mover dxm;
 
     for (i=0;i<num_watched_actors;i++){
         //I think this reference keeps the actor from actually being destroyed, so just watch for bDeleteMe
-        if (actor_watch[i].a != None && !actor_watch[i].a.bDeleteMe) continue;
+        if (actor_watch[i].a != None){
+            dxm = #var(DeusExPrefix)Mover(actor_watch[i].a);
+            if (dxm==None){
+                //non-mover
+                if ( !actor_watch[i].a.bDeleteMe ) continue;
+            } else {
+                //Mover
+                if (dxm.bDestroyed==False) continue;
+            }
+        }
 
         _MarkBingo(actor_watch[i].BingoEvent);
         num_watched_actors--;
