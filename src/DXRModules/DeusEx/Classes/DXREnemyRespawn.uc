@@ -27,7 +27,7 @@ struct OriginalEnemy {
     var bool bReactFutz, bReactPresence, bReactLoudNoise, bReactAlarm, bReactShot, bReactCarcass, bReactDistress, bReactProjectiles;
     var int time_died;
 };
-var OriginalEnemy enemies[256];
+var OriginalEnemy enemies[128];
 var int time;
 var config name dont_respawn[8];
 
@@ -50,7 +50,7 @@ function PostFirstEntry()
 
 function SaveRespawn(ScriptedPawn p, out int i)
 {
-    local int a;
+    local int a, oldI;
     if( !IsRelevantPawn(p.class) ) return;
     if( p.bImportant || p.bInvincible || p.bHidden ) return;
 #ifdef gmdx
@@ -61,10 +61,9 @@ function SaveRespawn(ScriptedPawn p, out int i)
         if( p.IsA(dont_respawn[a])) return;
     }
 
+    oldI = i;
     if( i >= ArrayCount(enemies) ) {
-        err("exceeded size of enemies array! "$i);
-        i++;
-        return;
+        i = rng(ArrayCount(enemies));
     }
 
     enemies[i].c = p.class;
@@ -110,7 +109,8 @@ function SaveRespawn(ScriptedPawn p, out int i)
     enemies[i].bReactCarcass = p.bReactCarcass;
     enemies[i].bReactDistress = p.bReactDistress;
     enemies[i].bReactProjectiles = p.bReactProjectiles;
-    i++;
+
+    i = oldI + 1;
 }
 
 function AnyEntry()
@@ -129,6 +129,7 @@ function Timer()
     local int i;
     Super.Timer();
     if( dxr == None ) return;
+    if(dxr.flags.settings.enemyrespawn <= 0) return;
 
     time++;
     for(i=0; i < ArrayCount(enemies); i++) {
