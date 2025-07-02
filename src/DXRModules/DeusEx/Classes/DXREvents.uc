@@ -2432,6 +2432,14 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     }
 #endif
 
+    if (!#defined(injections) ||           //Injections required for clothes looting at all
+        dxr.flags.clothes_looting<1 ||     //Clothes looting needs to be enabled
+        dxr.flags.newgameplus_loops>0 ||   //New Game Plus Loop must be 0 (looted clothes carry over, so subsequent loops would be hard to do this)
+        dxr.flags.IsBingoCampaignMode()) { //Mean Bingo Machine is not allowed, because getting this goal in Area 51 could be difficult (maybe this could be handled with bingo duration in some way?)
+
+        data.BanGoal("LootNewClothing",1);
+    }
+
     Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
 }
 //#endregion
@@ -4067,6 +4075,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "They say that if you break a mirror, you'll have seven years of bad luck.  Accumulate bad luck for yourself by breaking enough mirrors.";
         case "InCaseOfEmergency":
             return "Break open enough fire extinguisher cases with glass fronts through the game.";
+        case "LootNewClothing":
+            return "Loot enough new, unique, pieces of clothing.  Note that a single person may be wearing multiple pieces of clothing, such as pants, shirts, jackets, glasses, or helmets.  Some people may have overlapping pieces of clothing with others.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4526,6 +4536,7 @@ defaultproperties
     bingo_options(368)=(event="UNATCOMJ12LabGreaselCages",desc="Become the greasel",max=4,missions=32,do_not_scale=true)
     bingo_options(369)=(event="BrokenMirror",desc="Accumulate bad luck",max=4,missions=2388)
     bingo_options(370)=(event="InCaseOfEmergency",desc="In case of emergency, break glass",max=1,missions=3106)
+    bingo_options(371)=(event="LootNewClothing",desc="Loot %s pieces of clothing",desc_singular="Loot a piece of clothing",max=50)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
