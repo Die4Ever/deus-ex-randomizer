@@ -1472,6 +1472,10 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
     local class<Json> js;
     js = class'Json';
 
+    if(dxr.dxInfo.missionNumber < 0 || dxr.dxInfo.missionNumber >= 98) {
+        return; // no bingo during cutscenes or titlescreen
+    }
+
     // combine some events
     eventname=RemapBingoEvent(eventname);
 
