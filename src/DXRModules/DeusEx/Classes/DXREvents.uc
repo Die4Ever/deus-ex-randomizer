@@ -2440,6 +2440,19 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         data.BanGoal("LootNewClothing",1);
     }
 
+    //Pool scaling - different sets of goals to shrink beyond even the normal scaling
+    if (bingo_duration > 0 && bingo_duration <= 3) { //Note that "0" is "End of Game"
+        //Short game, ban the long pool goals
+        data.BanGoal("PlayPool",1);  //Sink ALL balls
+        data.BanGoal("PoolTableStripes",1); //Sink all stripes
+        data.BanGoal("PoolTableSolids",1); //Sink all solids
+    } else {
+        //Long game, ban the short pool goals
+        data.BanGoal("PoolTableStripeBallSunk",1);
+        data.BanGoal("PoolTableSolidBallSunk",1);
+        data.BanGoal("PoolTableBallSunk",1);
+    }
+
     Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
 }
 //#endregion
@@ -4077,6 +4090,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Break open enough fire extinguisher cases with glass fronts through the game.";
         case "LootNewClothing":
             return "Loot enough new, unique, pieces of clothing.  Note that a single person may be wearing multiple pieces of clothing, such as pants, shirts, jackets, glasses, or helmets.  Some people may have overlapping pieces of clothing with others.";
+        case "PoolTableStripeBallSunk":
+            return "Sink enough unique striped pool balls (1-7) through the game.";
+        case "PoolTableSolidBallSunk":
+            return "Sink enough unique solid pool balls (9-15) through the game.";
+        case "PoolTableBallSunk":
+            return "Sink enough unique pool balls through the game.  The cue ball does not count, and the eight ball only counts if all of the stripes or solids have already been sunk.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4537,6 +4556,9 @@ defaultproperties
     bingo_options(369)=(event="BrokenMirror",desc="Accumulate bad luck",max=4,missions=2388)
     bingo_options(370)=(event="InCaseOfEmergency",desc="In case of emergency, break glass",max=1,missions=3106)
     bingo_options(371)=(event="LootNewClothing",desc="Loot %s pieces of clothing",desc_singular="Loot a piece of clothing",max=50)
+    bingo_options(372)=(event="PoolTableStripeBallSunk",desc="Sink 5 striped pool balls",desc_singular="Sink 1 striped pool ball",max=5,missions=33116,do_not_scale=true)
+    bingo_options(373)=(event="PoolTableSolidBallSunk",desc="Sink 5 solid pool balls",desc_singular="Sink 1 solid pool ball",max=5,missions=33116,do_not_scale=true)
+    bingo_options(374)=(event="PoolTableBallSunk",desc="Sink 5 pool balls",desc_singular="Sink 1 pool ball",max=5,missions=33116,do_not_scale=true)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -4641,5 +4663,8 @@ defaultproperties
     mutually_exclusive(93)=(e1="09_NYC_DOCKYARD--796967769",e2="06_Datacube05")
 
     mutually_exclusive(94)=(e1="UNATCOMJ12LabGreaselCages",e2="nanocage")
+    mutually_exclusive(95)=(e1="PoolTableStripeBallSunk",e2="PoolTableSolidBallSunk")
+    mutually_exclusive(96)=(e1="PoolTableBallSunk",e2="PoolTableSolidBallSunk")
+    mutually_exclusive(97)=(e1="PoolTableStripeBallSunk",e2="PoolTableBallSunk")
 //#endregion
 }
