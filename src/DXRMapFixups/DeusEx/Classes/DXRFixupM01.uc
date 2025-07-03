@@ -314,10 +314,26 @@ function AnyEntryMapFixes()
     // NSF everywhere, JC.  Your orders are to shoot on sight.
     GetConversation('DL_LeaveDockNoGun').AddFlagRef('StatueMissionComplete', false);
 
+    //Confix adds a requirement to have talked to Paul (to get the password) before you can talk to Harley Filben
+    //Remove that requirement, because it can be annoying for Rando.  This should do nothing if Confix isn't present.
+    DeleteConversationFlag(GetConversation('MeetFilben'), 'MeetPaul_Played', true);
+
+    //In addition to the above, Confix now adds a new conversation, FilbenStranger, that plays some barks if you get
+    //to Filben without having talked to Paul.  Since we're removing the Paul requirement for the above conversation,
+    //we need to disable this one so it doesn't take priority.
+    c = GetConversation('FilbenStranger');
+    if (c!=None){
+        c.AddFlagRef('ThisFlagShouldNeverExist', true);
+    }
+
+    //Confix has slightly different
+    DeleteConversationFlag(GetConversation('MeetFilben'), 'MeetPaul_Played', true);
+
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
 
     c = GetConversation('MeetPaul');
+    //TODO: We could determine whether this is Confix or not by looking for the existence of the "PaulGaveWeapon=False" requirement on the conversation
     ce = c.eventList;
 
     SetSeed("MeetPaul");
@@ -336,6 +352,7 @@ function AnyEntryMapFixes()
             if (InStr(ces.conSpeech.speech,afterTextLine)!=-1){
                 after = ce;
             }
+            //TODO: If we wanted to fix Confix, we would need to set PaulGaveWeapon at the end of the conversation (To make sure it doesn't replay)
             if (before!=None && after!=None){
                 break;
             }

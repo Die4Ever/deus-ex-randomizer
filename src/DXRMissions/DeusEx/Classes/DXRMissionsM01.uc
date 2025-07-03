@@ -148,7 +148,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)SkillAwardTrigger sat;
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
-        dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2);
+        dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2); //This is used to disable the MeetPaul conversation in Confix/GMDX
 #ifdef revision
         dxr.flags.f.SetBool('PaulGiveWeapon_Played', true,, 2);
         dxr.flags.f.SetBool('FemJCPaulGiveWeapon_Played', true,, 2);
