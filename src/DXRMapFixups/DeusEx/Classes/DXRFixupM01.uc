@@ -326,9 +326,6 @@ function AnyEntryMapFixes()
         c.AddFlagRef('ThisFlagShouldNeverExist', true);
     }
 
-    //Confix has slightly different
-    DeleteConversationFlag(GetConversation('MeetFilben'), 'MeetPaul_Played', true);
-
     //Cut out the dialog for Paul giving you equipment
     if(dxr.flags.IsReducedRando()) return; // but not in reduced rando
 
