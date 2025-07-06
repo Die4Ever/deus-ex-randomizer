@@ -470,12 +470,20 @@ function ExtendedTests()
     val = NewGamePlusVal(-5, 1.2, 3, -6, 100, False);
     testint(val, -6, "NewGamePlusVal 1.2 negative value");
 
-    for(i=0; i<100; i++) {
-        dxr.seed = 123456 + i;
+    s = "";
+    prev = -1;
+    for(i=0; i<20; i++) {
+        dxr.seed = 403203 + i;
         prev = class'DXRStartMap'.static.ChooseRandomStartMap(self, prev);
         s = s @ (prev&0xFF);
     }
-    test(true, "DXRStartMap " $ s);
+    l("DXRStartMap 403203 " $ s);
+    for(i=0; i<1000; i++) {
+        dxr.seed = 403203 + i;
+        prev = class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
+        test((prev&0xFF) > 19, "DXRStartMap no liberty island");
+        //test((prev&0xFF) > 29, "DXRStartMap M01 or M02");
+    }
     dxr.seed = oldSeed;
 
     oldSeed = dxr.SetSeed(9876); // first two rngfn values are: 0.759380, -0.177720
