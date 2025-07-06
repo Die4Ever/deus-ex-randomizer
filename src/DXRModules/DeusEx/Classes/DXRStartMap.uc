@@ -1381,48 +1381,53 @@ static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
 {
     local int i, j;
     local int startMap, startMission;
-    local int attempts, score, best, bestScore;
-    local int avoids[4];
+    local int valids[13], numValids;
 
-    bestScore = 9999999;
-    i = avoidStart;
-    for(j=0; j<ArrayCount(avoids); j++) {
-        avoids[j] = i & 0xFF;
-        if(avoids[j] == 0) avoids[j] = -100; // null entry isn't close to any of the starts
-        avoids[j] = GetStartMapMission(avoids[j]);
-        avoids[j] = SquishMission(avoids[j]);
-        i = i >> 8;
+    numValids = ArrayCount(valids);
+    for(j=0; j<ArrayCount(valids); j++) {
+        valids[j] = j;
     }
-    m.SetGlobalSeed("randomstartmap");
 
-    //Don't try forever.  If we manage to grab the avoided map 50 times, it was meant to be.
-    //the widest span is Hong Kong: Helipad is 60, Storage is 75, a span of 15
-    for(attempts=0; attempts<50; attempts++) {
-        startMap = _ChooseRandomStartMap(m);
+    if(avoidStart == -1) {
+        avoidStart = 0;
+        valids[0] = -1;
+    }
+    i = avoidStart;
+    for(j=0; j<4; j++) {
+        startMap = i & 0xFF;
+        if(startMap <= 0) continue; // null entry
         startMission = GetStartMapMission(startMap);
         startMission = SquishMission(startMission);
-        // lower scores are better, 0 is perfect
-        score = 0;
-        score = score * 5 + int(Abs(startMission-avoids[0]) <= 1); // be more strict against most recent
-        for(j=0; j<ArrayCount(avoids); j++) {
-            score = score * 5 + int(Abs(startMission-avoids[j]) <= 0); // less strict here, otherwise M01 and M15 get picked more often since they only have 1 neighbor instead of 2
-        }
-        m.l("Start map selection attempt "$ attempts $" was "$startMap @ score @ avoidStart);
-        if(score < bestScore) {
-            bestScore = score;
-            best = startMap;
-        }
-        if(score == 0) break;
-    }
+        i = i >>> 8;
 
-    return best | (avoidStart<<8); // shift history by 1 byte
+        valids[startMission-1] = -1;
+        if(j==0 && startMission > 1) { // previous mission
+            valids[startMission-2] = -1;
+        }
+        if(j==0 && startMission < 13) { // next mission
+            valids[startMission] = -1;
+        }
+    }
+    for(j=0; j<numValids; j++) {
+        if(valids[j] >= 0) continue;
+        do {
+            numValids--;
+        } until(valids[numValids] != -1);
+        valids[j] = valids[numValids];
+        valids[numValids] = -1;
+    }
+    m.SetGlobalSeed("randomstartmap " $ m.dxr.seed); // the seeding works better if the seed number is in the CRC
+
+    startMap = _ChooseRandomStartMap(m, valids, numValids);
+    return startMap | (avoidStart<<8); // shift history by 1 byte
 }
 
 //#region _ChooseRandomStartMap
-static function int _ChooseRandomStartMap(DXRBase m)
+static function int _ChooseRandomStartMap(DXRBase m, int valids[13], int numValids)
 {
     local int i;
-    i = m.rng(13);
+    i = m.rng(numValids);
+    i = valids[i];
 
     //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
     switch(i)
