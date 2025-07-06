@@ -120,6 +120,7 @@ simulated function int SetSeed(coerce string name)
     return oldseed;
 }
 
+// TODO: next compatibility break, don't add the seed, put it in the CRC string
 simulated function int SetGlobalSeed(coerce string name)
 {
     local int oldseed;
