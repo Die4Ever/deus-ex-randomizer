@@ -226,6 +226,7 @@ static function int GetStartMapMission(int start_map_val)
             mission=1; //Mission 1 start, nothing
             break;
         case 70:
+        case 74:
         case 75:
             mission = 6;// 2nd half of hong kong, but really still mission 6
             break;
@@ -252,6 +253,7 @@ static simulated function int GetStartingMissionMask(int start_map)
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
         case 70:// 2nd half of hong kong, but maybe we should actually give bingo goals the mission 7 mask?
+        case 74:
         case 75:
             start_map = 60;
             break;
@@ -415,6 +417,15 @@ static function string _GetStartMap(int start_map_val, optional out string frien
             bShowInMenu=1;
             friendlyName = "NSF Generator (Streets)";
             return "02_NYC_Street";
+        case 22:
+            friendlyName = "NSF Generator (Bar)";
+            return "02_NYC_Bar";
+        case 23:
+            friendlyName = "NSF Generator (Clinic)";
+            return "02_NYC_FreeClinic";
+        case 25:
+            friendlyName = "NSF Generator (Warehouse)";
+            return "02_NYC_Warehouse";
         case 30:
             bShowInMenu=1;
             friendlyName = "Hunting Lebedev (Liberty Island)";
@@ -494,6 +505,9 @@ static function string _GetStartMap(int start_map_val, optional out string frien
         case 70:// after versalife 1
             friendlyName = "Hong Kong (Tong's Base after Versalife)";
             return "06_HongKong_TongBase";
+        case 74:
+            friendlyName = "Hong Kong (Canal Road 2)";
+            return "06_HongKong_WanChai_Garage";
         case 75:
             friendlyName = "Hong Kong (Level 2 Labs)";
             return "06_HongKong_Storage";
@@ -716,16 +730,18 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 
     switch(start_flag) {
-        case 20:
-            // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
-            player.StartDataLinkTransmission("DL_CastleClinton");
-            break;
+        case 23:
+        case 22:
         case 21:
             flagbase.SetBool('EscapeSuccessful',true,,-1);
             MarkConvPlayed("DL_SubwayComplete", bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
             MarkConvPlayed("MS_DL", bFemale);
             GiveImage(player, class'Image02_Ambrosia_Flyer');
+            break;
+        case 20:
+            // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
+            player.StartDataLinkTransmission("DL_CastleClinton");
             break;
 
         case 37:
@@ -765,6 +781,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
 
         case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
+        case 74:
             AddNoteFromConv(player, bEmptyNotes, 'M07Briefing'); // Access code to the Versalife nanotech research wing on Level 2: 55655
             AddNote(player, bEmptyNotes, "Dr. Lundquist:|n|nThe new server node for the Weapons Research Team is now active and user permissions have been set as you asked.  The master password for this node is DAMOCLES.|n|nPlease let me know if you need anything else,|n|n- Harrison");
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
@@ -1024,6 +1041,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 75:
+        case 74:
             AddGoalFromConv(player, 'GetVirusSchematic', 'M07Briefing');
             AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
