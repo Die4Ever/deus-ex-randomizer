@@ -247,7 +247,7 @@ function NewGamePlus()
     settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
     settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
 
-    SetGlobalSeed("NewGamePlus");
+    SetGlobalSeed("NewGamePlus " $ dxr.seed);
     if (randomStart!=0){
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
@@ -266,6 +266,7 @@ function NewGamePlus()
     class'DXRActorsBase'.static.ClearDataVaultImages(p);
 
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
+    SetGlobalSeed("NewGamePlus skills " $ dxr.seed);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
         for(i = 0; i < newgameplus_num_skill_downgrades; i++)
@@ -277,7 +278,6 @@ function NewGamePlus()
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
-
     augsToRemove = newgameplus_num_removed_augs;
     if (augs!=None) {
         oldseed = SetGlobalSeed("CleanupAugSlotRando"); //This seed doesn't really matter, just want to get the current seed
@@ -292,6 +292,7 @@ function NewGamePlus()
         ReapplySeed(oldseed);
     }
 
+    SetGlobalSeed("NewGamePlus augs " $ dxr.seed);
     for (i = 0; i < augsToRemove; i++)
         if( augs != None )
             augs.RemoveRandomAug(p);
@@ -300,8 +301,8 @@ function NewGamePlus()
         loadouts.AddStartingAugs(p);
     }
 
+    SetGlobalSeed("NewGamePlus items " $ dxr.seed);
     MaxMultipleItems(p, newgameplus_max_item_carryover);
-
     ClearInHand(p);
     for (i = 0; i < newgameplus_num_removed_weapons; i++)
         RemoveRandomWeapon(p);
