@@ -232,18 +232,15 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
     local string str,str2;
 
     str = "Deus Ex Randomizer " $ VersionString() $ ", Seed: " $ seed;
-    if(bSetSeed > 0)
-        str = str $ " (Set Seed)";
+    if(bSetSeed > 0) str = str $ " (Set Seed)";
 
-    str2= "Difficulty: " $ FloatToString(CombatDifficulty, 3)
-#ifdef injections
-            $ ", New Game+ Loops: "$newgameplus_loops
-#endif
-            $ ", Flags: " $ ToHex(FlagsHash());
+    str2 = "Difficulty: " $ FloatToString(CombatDifficulty, 3);
+    if(newgameplus_loops > 0) str2 = str2 $ ", New Game+ Loops: " $ newgameplus_loops;
+    str2 = str2 $ ", Flags: " $ ToHex(FlagsHash());
 
     info(str);
     info(str2);
-    if(p != None && !DXRFlags(self).IsZeroRandoPure()){
+    if(p != None && !DXRFlags(self).IsZeroRandoPure()) {
         p.ClientMessage(str);
         p.ClientMessage(str2);
     }
