@@ -5,7 +5,7 @@ simulated function ExecMaxRando()
     // set local seed
     // set a flag to save that we are in Max Rando mode
     info("ExecMaxRando()");
-    SetGlobalSeed("ExecMaxRando");
+    SetGlobalSeed("ExecMaxRando " $ dxr.seed); // include the seed number in the CRC
     maxrando = 1;
 
     RandomizeSettings(False);
