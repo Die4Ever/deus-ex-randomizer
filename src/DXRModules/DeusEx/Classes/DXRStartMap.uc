@@ -1392,9 +1392,10 @@ static function int SquishMission(int m)
 
 static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
 {
-    local int i, j;
-    local int startMap, startMission;
+    local int i, j, squished, attempts;
+    local int startMap, startMission, mostRecentStartMap;
     local int valids[13], numValids;
+    local bool banHellsKitchen, banUnatco;
 
     numValids = ArrayCount(valids);
     for(j=0; j<ArrayCount(valids); j++) {
@@ -1406,21 +1407,29 @@ static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
         valids[0] = -1;
     }
     i = avoidStart;
+    // remove missions from valids
     for(j=0; j<4; j++) {
         startMap = i & 0xFF;
         if(startMap <= 0) continue; // null entry
         startMission = GetStartMapMission(startMap);
-        startMission = SquishMission(startMission);
+        squished = SquishMission(startMission);
         i = i >>> 8;
 
-        valids[startMission-1] = -1;
-        if(j==0 && startMission > 1) { // previous mission
-            valids[startMission-2] = -1;
-        }
-        if(j==0 && startMission < 13) { // next mission
-            valids[startMission] = -1;
+        valids[squished-1] = -1;
+        if(j==0) {
+            mostRecentStartMap = startMap; // remember this for below if needed
+            if(squished > 1 && startMap < startMission*10+6) { // ban previous mission
+                valids[squished-2] = -1;
+            }
+            if(squished < 13 && startMap > startMission*10+3) { // ban next mission
+                valids[squished] = -1;
+            }
+            // if hells kitchen ban other hells kitchens, same for unatcos
+            banHellsKitchen = startMission==2 || (startMap>=42 && startMap<50) || startMission==8;
+            banUnatco = startMap==30 || startMap==31 || startMap==40 || startMap==41 || startMap==55;
         }
     }
+    // compress the array, sort order doesn't matter
     for(j=0; j<numValids; j++) {
         if(valids[j] >= 0) continue;
         do {
@@ -1431,7 +1440,16 @@ static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
     }
     m.SetGlobalSeed("randomstartmap " $ m.dxr.seed); // the seeding works better if the seed number is in the CRC
 
-    startMap = _ChooseRandomStartMap(m, valids, numValids);
+    for(attempts=0; attempts<5; attempts++) {
+        startMap = _ChooseRandomStartMap(m, valids, numValids);
+        if(banHellsKitchen && (startMap/10==2 || (startMap>=42 && startMap<50) || startMap/10==8)) {
+            continue;
+        }
+        if(banUnatco && (startMap==30 || startMap==31 || startMap==40 || startMap==41 || startMap==55)) {
+            continue;
+        }
+        break;
+    }
     return startMap | (avoidStart<<8); // shift history by 1 byte
 }
 
