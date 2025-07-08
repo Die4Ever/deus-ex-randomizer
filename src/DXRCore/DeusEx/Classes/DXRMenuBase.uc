@@ -7,8 +7,8 @@ struct EnumBtn {
     var DXRMenuUIHelpButtonWindow helpBtn;
 
 #ifdef allstarts
-    var string values[64];
-    var string helpTexts[64];
+    var string values[80];
+    var string helpTexts[80];
 #else
     var string values[32];
     var string helpTexts[32];
