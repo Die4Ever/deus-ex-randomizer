@@ -271,7 +271,7 @@ function NewGamePlus()
     if( skills != None ) {
         for(i = 0; i < newgameplus_num_skill_downgrades; i++)
             skills.DowngradeRandomSkill(p);
-        p.SkillPointsAvail = p.SkillPointsAvail * 0.75;
+        p.SkillPointsAvail = p.SkillPointsAvail * 0.8;
     }
     else p.SkillPointsAvail = 0;
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring

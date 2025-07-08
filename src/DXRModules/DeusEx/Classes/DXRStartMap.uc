@@ -926,6 +926,9 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
     crate.AddContent(class'#var(prefix)BioelectricCell', 1);
     starting_map = dxr.flags.GetStartingMap();
     crate.NumSkillPoints = GetStartMapSkillBonus(starting_map);
+    if(dxr.flags.newgameplus_loops > 0) {
+        crate.NumSkillPoints = crate.NumSkillPoints * 0.66;
+    }
 
     desiredHealth = FClamp(100 - dxr.flags.settings.health, 0, 100);
     if(starting_map >= 120) desiredHealth += 15;
