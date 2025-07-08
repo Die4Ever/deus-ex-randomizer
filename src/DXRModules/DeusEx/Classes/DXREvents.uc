@@ -2391,6 +2391,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 {
     local int starting_mission, end_mission, real_duration;
     local float loge_duration, medbots, repairbots, merchants;
+    local DXRLoadouts loadout;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
@@ -2451,6 +2452,15 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         data.BanGoal("PoolTableStripeBallSunk",1);
         data.BanGoal("PoolTableSolidBallSunk",1);
         data.BanGoal("PoolTableBallSunk",1);
+    }
+
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    if(loadout!=None) {
+        if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
+            && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare'))
+        ) {
+            data.BanGoal("IgnitedPawn",1);
+        }
     }
 
     Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
