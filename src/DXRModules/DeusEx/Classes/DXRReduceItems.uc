@@ -441,7 +441,7 @@ function ReduceSpawnInSingleContainer(#var(prefix)Containers d, class<Inventory>
     if(d.Contents == None) {
         if (!deleteWhenEmpty) {
             l("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
-            SpawnReplacement(d, class'#var(prefix)BoxMedium', true);// we don't care if this succeeds or not
+            SpawnReplacement(d, class'DXREmptiedCrate', true);// we don't care if this succeeds or not
         } else {
             l("ReduceSpawnsInContainers destroying "$d$" since it will be empty.");
         }
