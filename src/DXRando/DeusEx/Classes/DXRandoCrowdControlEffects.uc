@@ -1095,6 +1095,10 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
         anAug.bIsActive = True;
         anAug.GotoState('Active');
     }
+    else if (anAug.bAutomatic)
+    { // even if the player had it already, the viewer probably wants the auto aug to be active
+        anAug.Activate();
+    }
     else
     {
         anAug.bIsActive = False;
