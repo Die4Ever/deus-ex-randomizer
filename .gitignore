@@ -3,6 +3,7 @@ dist
 build
 src/installer/3rdParty
 src/installer/log.txt
+vkinfo.txt
 
 # Visual Studio 2015 user specific files
 .vs/

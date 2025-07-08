@@ -50,6 +50,8 @@ class InstallerWindow(GUIBase):
         else:
             self.root.title("DXRando " + GetVersion() + " Installer")
 
+        self.dxvk_default = False
+        self.ogl2_default = not IsWindows()
         vulkanthread = Thread(target=self.CheckVulkan) # this takes a second or so
         vulkanthread.start()
 
@@ -74,7 +76,7 @@ class InstallerWindow(GUIBase):
 
         flavors = Install.DetectFlavors(self.exe)
         info(flavors)
-        vulkanthread.join(30)
+        vulkanthread.join(timeout=30)
 
         self.font = font.Font(size=14)
         self.linkfont = font.Font(size=12, underline=True)

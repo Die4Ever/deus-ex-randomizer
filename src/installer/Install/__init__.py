@@ -125,32 +125,27 @@ def CheckVulkan() -> bool:
         return False # no easy way to detect Vulkan on Linux, they don't need DXVK anyways
     try:
         info('CheckVulkan')
-        ret = subprocess.run(['vulkaninfo', '--summary'], text=True, capture_output=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
-        out = ret.stdout
-        debug(out)
-        debug(ret.stderr)
-        info('CheckVulkan got:', not ret.returncode)
-        if ret.returncode:
+        proc = subprocess.run(['vulkaninfo', '--output', 'vkinfo.txt'], timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
+        if proc.returncode or proc.returncode is None:
+            info('CheckVulkan failed')
             return False
-        found_nvidia = False
-        found_amd = False
-        found_intel = False
-        try: # try to detect GPU brands
-            for m in re.finditer(r'deviceName\s*=\s*(.*)\n', out):
-                deviceName = m.group(1)
-                info(deviceName)
-                if 'NVIDIA' in deviceName:
-                    found_nvidia = True
-                elif 'Intel' in deviceName:
-                    found_intel = True
-                elif 'AMD' in deviceName:
-                    found_amd = True
-            if not found_nvidia and not found_amd:
-                info("did not find Nvidia or AMD GPU, defaulting to no DXVK")
-                return False # https://github.com/Die4Ever/deus-ex-randomizer/issues/898
-        except Exception as e:
-            info(e)
-        return True
+        with open('vkinfo.txt') as vkinfo:
+            out = vkinfo.read()
+        v = re.search(r'Vulkan Instance Version: (\d+)\.(\d+)\.(\d*)', out)
+        info('Vulkan Instance Version: ', v.groups() if v else None)
+        if v:
+            major = int(v.group(1))
+            minor = int(v.group(2))
+            if major > 1 or minor >= 4:
+                info('CheckVulkan good, found version 1.4 or newer')
+                return True
+        if 'VK_KHR_maintenance6' in out:
+            # DXVK only requires maintenance5, but this Intel GPU had 5 but not 6 # https://github.com/Die4Ever/deus-ex-randomizer/issues/898
+            # maintenance6 is included in v1.4+ https://registry.khronos.org/vulkan/specs/latest/man/html/VK_KHR_maintenance6.html
+            info('CheckVulkan good, found VK_KHR_maintenance6')
+            return True
+        info('CheckVulkan bad')
+        return False
     except Exception as e:
         info(e)
         return False
