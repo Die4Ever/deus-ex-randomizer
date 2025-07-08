@@ -207,7 +207,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
     _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
 
-    if (!wasOnFire && bOnFire && instigatedBy==GetPlayerPawn()){
+    if (!wasOnFire && bOnFire && #var(PlayerPawn)(instigatedBy) != None){
         class'DXREvents'.static.MarkBingo("IgnitedPawn");
     }
 
@@ -222,7 +222,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         flareBurnTime = 3;
     }
 
-    if ((Health < -100) && !IsA('Robot') && !IsA('Animal'))
+    if ((Health < -100) && ScriptedPawn(instigatedBy) == None && Robot(self) == None && Animal(self) == None)
     {
         class'DXREvents'.static.MarkBingo("GibbedPawn");
     }

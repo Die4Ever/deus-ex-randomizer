@@ -374,7 +374,7 @@ function MapAdjustments()
 
     if(IsLimitedSaves()) {
         SetSeed("spawn MCU");
-        for(i=0; i<10; i++) {
+        for(i=0; i<20; i++) {
             loc = GetRandomPositionFine();
             a = Spawn(class'MemConUnit',,, loc);
             if(a != None) {

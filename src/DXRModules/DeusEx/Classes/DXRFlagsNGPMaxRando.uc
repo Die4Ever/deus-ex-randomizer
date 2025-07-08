@@ -5,7 +5,7 @@ simulated function ExecMaxRando()
     // set local seed
     // set a flag to save that we are in Max Rando mode
     info("ExecMaxRando()");
-    SetGlobalSeed("ExecMaxRando");
+    SetGlobalSeed("ExecMaxRando " $ dxr.seed); // include the seed number in the CRC
     maxrando = 1;
 
     RandomizeSettings(False);
@@ -247,7 +247,7 @@ function NewGamePlus()
     settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
     settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
 
-    SetGlobalSeed("NewGamePlus");
+    SetGlobalSeed("NewGamePlus " $ dxr.seed);
     if (randomStart!=0){
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
@@ -266,18 +266,18 @@ function NewGamePlus()
     class'DXRActorsBase'.static.ClearDataVaultImages(p);
 
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
+    SetGlobalSeed("NewGamePlus skills " $ dxr.seed);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
         for(i = 0; i < newgameplus_num_skill_downgrades; i++)
             skills.DowngradeRandomSkill(p);
-        p.SkillPointsAvail = p.SkillPointsAvail * 0.75;
+        p.SkillPointsAvail = p.SkillPointsAvail * 0.8;
     }
     else p.SkillPointsAvail = 0;
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
-
     augsToRemove = newgameplus_num_removed_augs;
     if (augs!=None) {
         oldseed = SetGlobalSeed("CleanupAugSlotRando"); //This seed doesn't really matter, just want to get the current seed
@@ -292,6 +292,7 @@ function NewGamePlus()
         ReapplySeed(oldseed);
     }
 
+    SetGlobalSeed("NewGamePlus augs " $ dxr.seed);
     for (i = 0; i < augsToRemove; i++)
         if( augs != None )
             augs.RemoveRandomAug(p);
@@ -300,8 +301,8 @@ function NewGamePlus()
         loadouts.AddStartingAugs(p);
     }
 
+    SetGlobalSeed("NewGamePlus items " $ dxr.seed);
     MaxMultipleItems(p, newgameplus_max_item_carryover);
-
     ClearInHand(p);
     for (i = 0; i < newgameplus_num_removed_weapons; i++)
         RemoveRandomWeapon(p);
@@ -470,12 +471,20 @@ function ExtendedTests()
     val = NewGamePlusVal(-5, 1.2, 3, -6, 100, False);
     testint(val, -6, "NewGamePlusVal 1.2 negative value");
 
-    for(i=0; i<100; i++) {
-        dxr.seed = 123456 + i;
+    s = "";
+    prev = -1;
+    for(i=0; i<20; i++) {
+        dxr.seed = 403203 + i;
         prev = class'DXRStartMap'.static.ChooseRandomStartMap(self, prev);
         s = s @ (prev&0xFF);
     }
-    test(true, "DXRStartMap " $ s);
+    l("DXRStartMap 403203 " $ s);
+    for(i=0; i<1000; i++) {
+        dxr.seed = 403203 + i;
+        prev = class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
+        test((prev&0xFF) > 19, "DXRStartMap no liberty island");
+        //test((prev&0xFF) > 29, "DXRStartMap M01 or M02");
+    }
     dxr.seed = oldSeed;
 
     oldSeed = dxr.SetSeed(9876); // first two rngfn values are: 0.759380, -0.177720

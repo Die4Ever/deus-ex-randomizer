@@ -438,6 +438,12 @@ function ReportBallSunk(int index)
     class'DXREvents'.static.MarkBingo("PoolTableBallSunk"); //Generic "any ball" sunk
     //ClientMessage("Sunk ball "$index);
 
+    if (IsStripeIndex(index)){
+        class'DXREvents'.static.MarkBingo("PoolTableStripeBallSunk");
+    } else if (IsSolidIndex(index)){
+        class'DXREvents'.static.MarkBingo("PoolTableSolidBallSunk");
+    }
+
 }
 
 function ReportStripesSunk()

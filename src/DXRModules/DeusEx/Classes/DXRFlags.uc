@@ -81,7 +81,7 @@ function InitAdvancedDefaults()
     bingoBoardRoll = 0;
 
     newgameplus_max_item_carryover = 5;
-    newgameplus_num_skill_downgrades = 3;
+    newgameplus_num_skill_downgrades = 2;
     newgameplus_num_removed_augs = 1;
     newgameplus_num_removed_weapons = 1;
 

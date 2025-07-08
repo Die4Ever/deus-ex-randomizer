@@ -1,7 +1,7 @@
 class SkillAwardCrate extends DXRBigContainers;
 
 var travel int NumSkillPoints;
-var string SkillAwardMessage;
+var travel string SkillAwardMessage;
 
 function Destroyed()
 {
@@ -40,4 +40,5 @@ defaultproperties
     CollisionHeight=24.000000
     Mass=35.000000
     Buoyancy=60.000000
+    DropStacks=False
 }

@@ -52,6 +52,12 @@ function WatchActors()
         {
             AddWatchedActor(d,"ASingleFlask");
         }
+#ifdef revision
+        else if(NetworkPrinter(d) != None)
+        {
+            AddWatchedActor(d,"PCLOADLETTER");
+        }
+#endif
     }
 }
 //#endregion
@@ -304,6 +310,7 @@ function SetWatchFlags() {
     local #var(prefix)VialCrack zyme;
     local #var(prefix)ControlPanel conPanel;
     local #var(prefix)SatelliteDish satDish;
+    local #var(prefix)BreakableGlass bg;
     local Dispatcher disp;
     local int i;
     local DXRRaceTimerStart raceStart;
@@ -408,6 +415,12 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'fork',vectm(0,0,0));
         bt.bingoEvent="ForkliftCertified";
+
+        //Same location in vanilla and Revision
+        foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(1818,-818,-84)){
+            AddWatchedActor(bg,"InCaseOfEmergency");
+            break;
+        }
 
         break;
     case "01_NYC_UNATCOHQ":
@@ -515,6 +528,7 @@ function SetWatchFlags() {
         bt.Tag = 'mirrordoorout';
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
+            AddWatchedActor(dxm,"BrokenMirror");
         }
 
         break;
@@ -525,6 +539,12 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
+
+        //The mirror door near the computer
+        foreach RadiusActors(class'#var(DeusExPrefix)Mover', dxm,10,vectm(1552,-1136,384)){
+            AddWatchedActor(dxm,"BrokenMirror");
+            break;
+        }
 
         // 3 triggers in a chain, like checkpoints to make sure you swim all the way through
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-1348.603027, 211.117294, -459.900452),80,60);
@@ -678,6 +698,7 @@ function SetWatchFlags() {
         bt.Tag = 'mirrordoorout';
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
+            AddWatchedActor(dxm,"BrokenMirror");
         }
         break;
     case "04_NYC_NSFHQ":
@@ -731,6 +752,34 @@ function SetWatchFlags() {
         WatchFlag('MiguelLeaving');
         bt = class'BingoTrigger'.static.Create(self,'nanocage',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'botorders2',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'steampipe',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'ArmoryVentEntrance',vectm(-8655,960,330),100,20);
+
+        bt = class'BingoTrigger'.static.Create(self,'UNATCOMJ12LabGreaselCages',vectm(-520,2380,-135),120,40);
+        bt.bDestroyOthers=false;
+        bt = class'BingoTrigger'.static.Create(self,'UNATCOMJ12LabGreaselCages',vectm(-520,2715,-135),120,40);
+        bt.bDestroyOthers=false;
+        bt = class'BingoTrigger'.static.Create(self,'UNATCOMJ12LabGreaselCages',vectm(780,2380,-135),120,40);
+        bt.bDestroyOthers=false;
+        bt = class'BingoTrigger'.static.Create(self,'UNATCOMJ12LabGreaselCages',vectm(780,2715,-135),120,40);
+        bt.bDestroyOthers=false;
+
+        //This is... something.  Not sure exactly what the goal would be named, or how it would be framed to be M05 only (Or appropriate,
+        //if we *were* to include other locations like Maggie's apartment or the one in Paris as well)
+        //class'BingoTrigger'.static.ProxCreate(self,'WindowFurniture',vectm(-4290,2570,128),1200,20,class'#var(prefix)Furniture');
+
+        if (RevisionMaps){
+            //Pretty similar location, but shifting just in case
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-3170,1160,-116)){
+                AddWatchedActor(bg,"InCaseOfEmergency");
+                break;
+            }
+        } else {
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-3170,1154,-116)){
+                AddWatchedActor(bg,"InCaseOfEmergency");
+                break;
+            }
+        }
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Beastdoor'){
             dxm.Event='KarkianDoorsBingo';
@@ -862,6 +911,24 @@ function SetWatchFlags() {
             }
         }
 
+        //The three mirrors leading to the conference room
+        foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-1216,-2048,-320)){
+            AddWatchedActor(bg,"BrokenMirror");
+            break;
+        }
+
+        bg = None;
+        foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-1024,-2048,-320)){
+            AddWatchedActor(bg,"BrokenMirror");
+            break;
+        }
+
+        bg = None;
+        foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-832,-2048,-320)){
+            AddWatchedActor(bg,"BrokenMirror");
+            break;
+        }
+
         break;
     case "06_HONGKONG_WANCHAI_STREET":
         WatchFlag('M06PaidJunkie');
@@ -991,6 +1058,14 @@ function SetWatchFlags() {
 
     case "06_HONGKONG_STORAGE":
         WatchFlag('FlowersForTheLab');
+
+        //Corner mirror
+        foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){
+            //The corner mirror is the only BreakableGlass in the level in both vanilla and Revision
+            AddWatchedActor(bg,"BrokenMirror");
+            break;
+        }
+
         break;
 
     case "06_HONGKONG_VERSALIFE":
@@ -1022,6 +1097,7 @@ function SetWatchFlags() {
         bt.Tag = 'mirrordoorout';
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
+            AddWatchedActor(dxm,"BrokenMirror");
         }
         break;
     case "08_NYC_BAR":
@@ -1183,6 +1259,21 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'WarehouseEntered',vectm(-580.607361,-2248.497803,-551.895874),200,160);
         bt = class'BingoTrigger'.static.Create(self,'roof_elevator',vect(0,0,0));
+
+        if (!RevisionMaps){
+            //This location is in 10_PARIS_CATACOMBS_METRO in Revision
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(1878,-1598,-740)){
+                AddWatchedActor(bg,"InCaseOfEmergency");
+                break;
+            }
+        }
+
+        break;
+    case "10_PARIS_CATACOMBS_METRO":  //Revision-only map
+        foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(2134,-1758,-580)){
+            AddWatchedActor(bg,"InCaseOfEmergency");
+            break;
+        }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'#var(prefix)WIB',wib){
@@ -1251,6 +1342,24 @@ function SetWatchFlags() {
                 zyme.bIsSecretGoal = true;
             }
         }
+
+        if (!RevisionMaps){
+            //Neither store has a fire extinguisher case in Revision
+
+            //Cafe
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-2774,302,268)){
+                AddWatchedActor(bg,"InCaseOfEmergency");
+                break;
+            }
+
+            //Bakery
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(1314,2490,188)){
+                AddWatchedActor(bg,"InCaseOfEmergency");
+                break;
+            }
+
+        }
+
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
@@ -1396,6 +1505,12 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
         bt.bDestroyOthers=False;
 
+        //Lucius DeBeers mirror door
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'morganmirror'){
+            AddWatchedActor(dxm,"BrokenMirror");
+            break;
+        }
+
         break;
     case "11_PARIS_UNDERGROUND":
         foreach AllActors(class'ZoneInfo',zone){
@@ -1408,6 +1523,15 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
+
+        if (!RevisionMaps){
+            //Not present in Revision
+            foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(1494,-462,-68)){
+                AddWatchedActor(bg,"InCaseOfEmergency");
+                break;
+            }
+        }
+
         break;
     //#endregion
 
@@ -2114,6 +2238,17 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 57214;
             }
             break;
+        case "FlushToilet":
+            if (RevisionMaps){
+                //Extras in Area 51 Entrance (M15)
+                return 40830;
+            }
+            break;
+        case "InCaseOfEmergency":
+            if (RevisionMaps){
+                //Missing the ones in Paris Metro and Paris Underground (so just missing M11)
+                return 1058;
+            }
     }
 
     return missions;
@@ -2256,6 +2391,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 {
     local int starting_mission, end_mission, real_duration;
     local float loge_duration, medbots, repairbots, merchants;
+    local DXRLoadouts loadout;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
@@ -2296,6 +2432,36 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         data.BanGoal("ExtinguishFire",1);
     }
 #endif
+
+    if (!#defined(injections) ||           //Injections required for clothes looting at all
+        dxr.flags.clothes_looting<1 ||     //Clothes looting needs to be enabled
+        dxr.flags.newgameplus_loops>0 ||   //New Game Plus Loop must be 0 (looted clothes carry over, so subsequent loops would be hard to do this)
+        dxr.flags.IsBingoCampaignMode()) { //Mean Bingo Machine is not allowed, because getting this goal in Area 51 could be difficult (maybe this could be handled with bingo duration in some way?)
+
+        data.BanGoal("LootNewClothing",1);
+    }
+
+    //Pool scaling - different sets of goals to shrink beyond even the normal scaling
+    if (bingo_duration > 0 && bingo_duration <= 3) { //Note that "0" is "End of Game"
+        //Short game, ban the long pool goals
+        data.BanGoal("PlayPool",1);  //Sink ALL balls
+        data.BanGoal("PoolTableStripes",1); //Sink all stripes
+        data.BanGoal("PoolTableSolids",1); //Sink all solids
+    } else {
+        //Long game, ban the short pool goals
+        data.BanGoal("PoolTableStripeBallSunk",1);
+        data.BanGoal("PoolTableSolidBallSunk",1);
+        data.BanGoal("PoolTableBallSunk",1);
+    }
+
+    loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
+    if(loadout!=None) {
+        if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
+            && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare'))
+        ) {
+            data.BanGoal("IgnitedPawn",1);
+        }
+    }
 
     Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
 }
@@ -3138,7 +3304,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
                 msg=msg$"There is a chapter in the 'Ton hotel.";
             } else if (mission<=6){
                 msg=msg$"There is a chapter in the Wan Chai Market.";
-            } else if (mission<=9 && class'DXRando'.default.dxr.localURL!="09_NYC_GRAVEYARD"){
+            } else if (mission<=9 && dxr.localURL!="09_NYC_GRAVEYARD"){
                 msg=msg$"There is a chapter in the lower decks of the Superfreighter.";
             } else if (mission<=10){
                 msg=msg$"There is a chapter in the DuClare Chateau.";
@@ -3256,7 +3422,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "IgnitedPawn":
             return "Set enough people on fire.";
         case "GibbedPawn":
-            return "Blow up enough people.  If they turn into chunks of meat, it counts.";
+            return "Blow up enough people.  If they turn into chunks of meat, it counts.  They must be human and you must blow them up yourself.";
         case "IcarusCalls_Played":
             return "Answer the phone in the building across from the entrance to the catacombs in Paris.";
         case "AlexCloset":
@@ -3324,9 +3490,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Set_flag_helios":
             return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
         case "coolant_switch":
-            return "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
+            msg = "Flush the reactor coolant";
+            if (dxr.flags.settings.goals>0){
+                msg = "Flush the reactor coolant somewhere in Sector 4 of Area 51.  To flush the coolant, you need to find a large orange button that is in a random location.";
+            } else {
+                msg = "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
+            }
+            return msg;
         case "BlueFusionReactors":
-            return "Deactivate blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
+            msg = "Deactivate blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
+            if (dxr.flags.settings.goals>0){
+                msg = msg $ "  The locations of the keypads for the blue fusion reactors have been randomized.";
+            }
+            return msg;
         case "A51UCBlocked":
             return "Close the doors to enough of the UCs in Sector 4 of Area 51.";
         case "VandenbergReactorRoom":
@@ -3908,6 +4084,28 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Sink all 7 solid-color balls (9-15) on enough different pool tables.";
         case "PoolTableSolids":
             return "Sink all 7 striped balls (1-7) on enough different pool tables.";
+        case "05_EmailMenu_psherman":
+            return "Log into and read the email of Agent Sherman, the MIB in the secret MJ12 Lab.";
+        case "steampipe":
+            return "Shut off the gas and stop a leak near the armory in the MJ12 Lab under UNATCO.";
+        case "ArmoryVentEntrance":
+            return "Enter the armory in the MJ12 Lab under UNATCO by going through the vent in the ceiling.";
+        case "PCLOADLETTER":  //Revision only (They added a printer)
+            return "PC LOAD LETTER?  What the hell does that mean?  Show a network printer who's the boss and absolutely obliterate it.";
+        case "UNATCOMJ12LabGreaselCages":
+            return "Enter all four greasel cages in the MJ12 Lab under UNATCO.";
+        case "BrokenMirror":
+            return "They say that if you break a mirror, you'll have seven years of bad luck.  Accumulate bad luck for yourself by breaking enough mirrors.";
+        case "InCaseOfEmergency":
+            return "Break open enough fire extinguisher cases with glass fronts through the game.";
+        case "LootNewClothing":
+            return "Loot enough new, unique, pieces of clothing.  Note that a single person may be wearing multiple pieces of clothing, such as pants, shirts, jackets, glasses, or helmets.  Some people may have overlapping pieces of clothing with others.";
+        case "PoolTableStripeBallSunk":
+            return "Sink enough unique striped pool balls (1-7) through the game.";
+        case "PoolTableSolidBallSunk":
+            return "Sink enough unique solid pool balls (9-15) through the game.";
+        case "PoolTableBallSunk":
+            return "Sink enough unique pool balls through the game.  The cue ball does not count, and the eight ball only counts if all of the stripes or solids have already been sunk.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4119,7 +4317,7 @@ defaultproperties
     bingo_options(138)=(event="CommsPit",desc="Check the SATCOM wiring %s times",desc_singular="Check the SATCOM wiring",max=3,missions=58)
     bingo_options(139)=(event="StatueHead",desc="Visit the head of the Statue of Liberty",max=1,missions=2)
     bingo_options(140)=(event="CraneControls",desc="Use the dockside crane controls",max=1,missions=512)
-    bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes on the freighter",max=2,missions=512)
+    bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes on the freighter",max=2,missions=512,do_not_scale=true)
     bingo_options(142)=(event="CaptainBed",desc="Jump on the freighter captains bed",max=1,missions=512)
     bingo_options(143)=(event="FanTop",desc="Get blown to the top of the freighter ventilation shaft",max=1,missions=512)
     bingo_options(144)=(event="LouisBerates",desc="Sneak behind the Porte De L'Enfer door man",max=1,missions=1024)
@@ -4358,6 +4556,19 @@ defaultproperties
 #endif
     bingo_options(362)=(event="PoolTableStripes",desc="Sink all the striped pool balls %s times",desc_singular="Sink all the striped pool balls",max=3,missions=33116)
     bingo_options(363)=(event="PoolTableSolids",desc="Sink all the solid pool balls %s times",desc_singular="Sink all the solid pool balls",max=3,missions=33116)
+    bingo_options(364)=(event="05_EmailMenu_psherman",desc="P. Sherman, 42 Wallaby Way, Sydney",max=1,missions=32)
+    bingo_options(365)=(event="steampipe",desc="Stop a gas leak in the MJ12 Lab",max=1,missions=32)
+    bingo_options(366)=(event="ArmoryVentEntrance",desc="Enter the Secret MJ12 Lab Armory through the vent",max=1,missions=32)
+#ifdef revision
+    bingo_options(367)=(event="PCLOADLETTER",desc="Damn it feels good to be a gangsta",max=1,missions=100)
+#endif
+    bingo_options(368)=(event="UNATCOMJ12LabGreaselCages",desc="Become the greasel",max=4,missions=32,do_not_scale=true)
+    bingo_options(369)=(event="BrokenMirror",desc="Accumulate bad luck",max=4,missions=2388)
+    bingo_options(370)=(event="InCaseOfEmergency",desc="In case of emergency, break glass",max=1,missions=3106)
+    bingo_options(371)=(event="LootNewClothing",desc="Loot %s pieces of clothing",desc_singular="Loot a piece of clothing",max=50)
+    bingo_options(372)=(event="PoolTableStripeBallSunk",desc="Sink 5 striped pool balls",desc_singular="Sink 1 striped pool ball",max=5,missions=33116,do_not_scale=true)
+    bingo_options(373)=(event="PoolTableSolidBallSunk",desc="Sink 5 solid pool balls",desc_singular="Sink 1 solid pool ball",max=5,missions=33116,do_not_scale=true)
+    bingo_options(374)=(event="PoolTableBallSunk",desc="Sink 5 pool balls",desc_singular="Sink 1 pool ball",max=5,missions=33116,do_not_scale=true)
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -4460,5 +4671,10 @@ defaultproperties
     mutually_exclusive(91)=(e1="JoyOfCooking",e2="09_NYC_DOCKYARD--796967769")
     mutually_exclusive(92)=(e1="JoyOfCooking",e2="06_Datacube05")
     mutually_exclusive(93)=(e1="09_NYC_DOCKYARD--796967769",e2="06_Datacube05")
+
+    mutually_exclusive(94)=(e1="UNATCOMJ12LabGreaselCages",e2="nanocage")
+    mutually_exclusive(95)=(e1="PoolTableStripeBallSunk",e2="PoolTableSolidBallSunk")
+    mutually_exclusive(96)=(e1="PoolTableBallSunk",e2="PoolTableSolidBallSunk")
+    mutually_exclusive(97)=(e1="PoolTableStripeBallSunk",e2="PoolTableBallSunk")
 //#endregion
 }

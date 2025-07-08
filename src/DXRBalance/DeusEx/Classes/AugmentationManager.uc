@@ -195,3 +195,65 @@ function BoostAugs(bool bBoostEnabled, Augmentation augBoosting)
         anAug.BoostAug(bBoostEnabled);
     }
 }
+
+// same as vanilla, except activate auto augs when added
+function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
+{
+    local Augmentation anAug;
+    local bool bOldHadIt;
+
+    // Checks to see if the player already has it.  If so, we want to
+    // increase the level
+    anAug = FindAugmentation(giveClass);
+
+    if (anAug == None)
+        return None;    // shouldn't happen, but you never know!
+
+    if (anAug.bHasIt)
+    {
+        anAug.IncLevel();
+        return anAug;
+    }
+
+    if (AreSlotsFull(anAug))
+    {
+        Player.ClientMessage(AugLocationFull);
+        return anAug;
+    }
+
+    bOldHadIt = anAug.bHasIt;
+    anAug.bHasIt = True;
+
+    if (anAug.bAlwaysActive)
+    {
+        anAug.bIsActive = True;
+        anAug.GotoState('Active');
+    }
+    else if(!bOldHadIt && anAug.bAutomatic && class'MenuChoice_AutoAugsInstall'.default.enabled)
+    {
+        anAug.Activate();
+    }
+    else
+    {
+        anAug.bIsActive = False;
+    }
+
+
+    if ( Player.Level.Netmode == NM_Standalone )
+        Player.ClientMessage(Sprintf(anAug.AugNowHaveAtLevel, anAug.AugmentationName, anAug.CurrentLevel + 1));
+
+    // Manage our AugLocs[] array
+    AugLocs[anAug.AugmentationLocation].augCount++;
+
+    // Assign hot key to new aug
+    // (must be after before augCount is incremented!)
+    if (Level.NetMode == NM_Standalone)
+        anAug.HotKeyNum = AugLocs[anAug.AugmentationLocation].augCount + AugLocs[anAug.AugmentationLocation].KeyBase;
+    else
+        anAug.HotKeyNum = anAug.MPConflictSlot + 2;
+
+    if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
+        Player.AddAugmentationDisplay(anAug);
+
+    return anAug;
+}

@@ -24,7 +24,7 @@ var() BingoOption bingo_options[400]; //Update the comment at the bottom of the 
 struct MutualExclusion {
     var string e1, e2;
 };
-var() MutualExclusion mutually_exclusive[94];
+var() MutualExclusion mutually_exclusive[98];
 
 struct ActorWatchItem {
     var Actor a;
@@ -60,10 +60,20 @@ function AddWatchedActor(Actor a,String eventName)
 
 function CheckWatchedActors() {
     local int i;
+    local #var(DeusExPrefix)Mover dxm;
 
     for (i=0;i<num_watched_actors;i++){
         //I think this reference keeps the actor from actually being destroyed, so just watch for bDeleteMe
-        if (actor_watch[i].a != None && !actor_watch[i].a.bDeleteMe) continue;
+        if (actor_watch[i].a != None){
+            dxm = #var(DeusExPrefix)Mover(actor_watch[i].a);
+            if (dxm==None){
+                //non-mover
+                if ( !actor_watch[i].a.bDeleteMe ) continue;
+            } else {
+                //Mover
+                if (dxm.bDestroyed==False) continue;
+            }
+        }
 
         _MarkBingo(actor_watch[i].BingoEvent);
         num_watched_actors--;
@@ -128,8 +138,7 @@ function InitStatLogShim()
 {
     //I think both LocalLog and WorldLog will always be None in DeusEx, but if this makes it
     //to another game, might need to actually see if there's a possibility of overlap here.
-    if (!((Level.Game.LocalLog!=None && Level.Game.LocalLog.IsA('DXRStatLog')) ||
-          (Level.Game.WorldLog!=None && Level.Game.WorldLog.IsA('DXRStatLog')))){
+    if (DXRStatLog(Level.Game.LocalLog)==None && DXRStatLog(Level.Game.WorldLog)==None) {
         if (Level.Game.LocalLog==None){
             Level.Game.LocalLog=spawn(class'DXRStatLog');
         } else if (Level.Game.WorldLog==None){
@@ -865,7 +874,7 @@ static function BeatGame(DXRando dxr, int ending)
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
     }
-    else if(dxr.player.inHand.IsA('POVCorpse')){
+    else if(POVCorpse(dxr.player.inHand) != None){
         js.static.Add(j, "carriedItem", POVCorpse(dxr.player.inHand).carcClassString);
     }
 
@@ -1461,6 +1470,10 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
     local #var(PlayerPawn) p;
     local class<Json> js;
     js = class'Json';
+
+    if(dxr.dxInfo.missionNumber < 0 || dxr.dxInfo.missionNumber >= 98) {
+        return; // no bingo during cutscenes or titlescreen
+    }
 
     // combine some events
     eventname=RemapBingoEvent(eventname);

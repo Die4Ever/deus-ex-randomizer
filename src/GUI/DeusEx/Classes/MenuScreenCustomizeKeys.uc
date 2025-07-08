@@ -750,7 +750,7 @@ defaultproperties
      FunctionText(82)="Activate Spy Drone"
      FunctionText(83)="Activate Aggressive Defense System"
      FunctionText(84)="Activate Synthetic Heart"
-     FunctionText(85)="Activate Only Speed Enhancement"
+     FunctionText(85)="Activate Running Enhancement"
      FunctionText(86)="Activate Jump Enhancement"
      FunctionText(87)="Activate Ninja"
      FunctionText(88)="Activate Short-Range Vision Enhancement"

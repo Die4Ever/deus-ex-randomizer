@@ -226,6 +226,7 @@ static function int GetStartMapMission(int start_map_val)
             mission=1; //Mission 1 start, nothing
             break;
         case 70:
+        case 74:
         case 75:
             mission = 6;// 2nd half of hong kong, but really still mission 6
             break;
@@ -252,6 +253,7 @@ static simulated function int GetStartingMissionMask(int start_map)
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
         case 70:// 2nd half of hong kong, but maybe we should actually give bingo goals the mission 7 mask?
+        case 74:
         case 75:
             start_map = 60;
             break;
@@ -415,6 +417,15 @@ static function string _GetStartMap(int start_map_val, optional out string frien
             bShowInMenu=1;
             friendlyName = "NSF Generator (Streets)";
             return "02_NYC_Street";
+        case 22:
+            friendlyName = "NSF Generator (Bar)";
+            return "02_NYC_Bar";
+        case 23:
+            friendlyName = "NSF Generator (Clinic)";
+            return "02_NYC_FreeClinic";
+        case 25:
+            friendlyName = "NSF Generator (Warehouse)";
+            return "02_NYC_Warehouse";
         case 30:
             bShowInMenu=1;
             friendlyName = "Hunting Lebedev (Liberty Island)";
@@ -494,6 +505,9 @@ static function string _GetStartMap(int start_map_val, optional out string frien
         case 70:// after versalife 1
             friendlyName = "Hong Kong (Tong's Base after Versalife)";
             return "06_HongKong_TongBase";
+        case 74:
+            friendlyName = "Hong Kong (Canal Road 2)";
+            return "06_HongKong_WanChai_Garage";
         case 75:
             friendlyName = "Hong Kong (Level 2 Labs)";
             return "06_HongKong_Storage";
@@ -716,6 +730,8 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 
     switch(start_flag) {
+        case 23:
+        case 22:
         case 21:
             flagbase.SetBool('EscapeSuccessful',true,,-1);
             MarkConvPlayed("DL_SubwayComplete", bFemale);
@@ -761,6 +777,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
 
         case 75:// anything greater than 70 should get these, even though this isn't an actual value currently
+        case 74:
             AddNoteFromConv(player, bEmptyNotes, 'M07Briefing'); // Access code to the Versalife nanotech research wing on Level 2: 55655
             AddNote(player, bEmptyNotes, "Dr. Lundquist:|n|nThe new server node for the Weapons Research Team is now active and user permissions have been set as you asked.  The master password for this node is DAMOCLES.|n|nPlease let me know if you need anything else,|n|n- Harrison");
             MarkConvPlayed("M07Briefing", bFemale);// also spawns big spider in MJ12Lab
@@ -885,7 +902,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 }
 
-function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
+function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<SkillAwardCrate> crateClass)
 {
     local SkillAwardCrate crate;
     local int credits, num, starting_map;
@@ -893,7 +910,7 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
 
     crate = SkillAwardCrate(SpawnInFrontOnFloor(
         player,
-        class'SkillAwardCrate',
+        crateClass,
         80.0,
         MakeRotator(0, (2047 - rng(4095)), 0)
     ));
@@ -902,17 +919,6 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
         return None;
     }
 
-    crate.DropStacks = false;
-    if (dxr.flags.newgameplus_loops == 0) {
-        crate.ItemName = "Later Start Supply Crate";
-        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
-    } else  {
-        crate.ItemName = "New Game Plus Supply Crate";
-        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Game Plus Bonus";
-    }
-
-    crate.Skin = Texture'WaltonWareCrate';
-
     credits = GetStartMapCreditsBonus(dxr);
     if (credits > 0) {
         crate.AddContent(class'#var(prefix)Credits', credits);
@@ -920,6 +926,9 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player)
     crate.AddContent(class'#var(prefix)BioelectricCell', 1);
     starting_map = dxr.flags.GetStartingMap();
     crate.NumSkillPoints = GetStartMapSkillBonus(starting_map);
+    if(dxr.flags.newgameplus_loops > 0) {
+        crate.NumSkillPoints = crate.NumSkillPoints * 0.66;
+    }
 
     desiredHealth = FClamp(100 - dxr.flags.settings.health, 0, 100);
     if(starting_map >= 120) desiredHealth += 15;
@@ -941,11 +950,36 @@ function SkillAwardCrate SpawnWaltonWareCrate(#var(PlayerPawn) player)
 {
     local SkillAwardCrate crate;
 
-    crate = SpawnSkillAwardCrate(player);
+    crate = SpawnSkillAwardCrate(player, class'WaltonWareCrate');
 
     if (crate != None) {
-        crate.ItemName = "Walton's Care Package";
         crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Loop Bonus";
+    }
+
+    return crate;
+}
+
+function SkillAwardCrate SpawnLateStartCrate(#var(PlayerPawn) player)
+{
+    local SkillAwardCrate crate;
+
+    crate = SpawnSkillAwardCrate(player, class'LateStartSupplyCrate');
+
+    if (crate != None) {
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " Later Start Bonus";
+    }
+
+    return crate;
+}
+
+function SkillAwardCrate SpawnNGPlusCrate(#var(PlayerPawn) player)
+{
+    local SkillAwardCrate crate;
+
+    crate = SpawnSkillAwardCrate(player, class'NGPlusSupplyCrate');
+
+    if (crate != None) {
+        crate.SkillAwardMessage = "Mission " $ dxr.dxInfo.missionNumber $ " New Game Plus Bonus";
     }
 
     return crate;
@@ -959,8 +993,10 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 
     if (dxr.flags.IsWaltonWare()) {
         crate = SpawnWaltonWareCrate(player);
-    } else if (dxr.flags.GetStartingMap() > 10 || dxr.flags.newgameplus_loops > 0) {
-        crate = SpawnSkillAwardCrate(player);
+    } else if (dxr.flags.GetStartingMap() > 10) {
+        crate = SpawnLateStartCrate(player);
+    } else if (dxr.flags.newgameplus_loops > 0) {
+        crate = SpawnNGPlusCrate(player);
     } else {
         AddStartingCredits(dxr, player);
         AddStartingSkillPoints(dxr, player);
@@ -1004,6 +1040,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 75:
+        case 74:
             AddGoalFromConv(player, 'GetVirusSchematic', 'M07Briefing');
             AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
@@ -1359,50 +1396,73 @@ static function int SquishMission(int m)
 
 static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
 {
-    local int i, j;
-    local int startMap, startMission;
-    local int attempts, score, best, bestScore;
-    local int avoids[4];
+    local int i, j, squished, attempts;
+    local int startMap, startMission, mostRecentStartMap;
+    local int valids[13], numValids;
+    local bool banHellsKitchen, banUnatco;
 
-    bestScore = 9999999;
+    numValids = ArrayCount(valids);
+    for(j=0; j<ArrayCount(valids); j++) {
+        valids[j] = j;
+    }
+
+    if(avoidStart == -1) {
+        avoidStart = 0;
+        valids[0] = -1;
+    }
     i = avoidStart;
-    for(j=0; j<ArrayCount(avoids); j++) {
-        avoids[j] = i & 0xFF;
-        if(avoids[j] == 0) avoids[j] = -100; // null entry isn't close to any of the starts
-        avoids[j] = GetStartMapMission(avoids[j]);
-        avoids[j] = SquishMission(avoids[j]);
-        i = i >> 8;
-    }
-    m.SetGlobalSeed("randomstartmap");
-
-    //Don't try forever.  If we manage to grab the avoided map 50 times, it was meant to be.
-    //the widest span is Hong Kong: Helipad is 60, Storage is 75, a span of 15
-    for(attempts=0; attempts<50; attempts++) {
-        startMap = _ChooseRandomStartMap(m);
+    // remove missions from valids
+    for(j=0; j<4; j++) {
+        startMap = i & 0xFF;
+        if(startMap <= 0) continue; // null entry
         startMission = GetStartMapMission(startMap);
-        startMission = SquishMission(startMission);
-        // lower scores are better, 0 is perfect
-        score = 0;
-        score = score * 5 + int(Abs(startMission-avoids[0]) <= 1); // be more strict against most recent
-        for(j=0; j<ArrayCount(avoids); j++) {
-            score = score * 5 + int(Abs(startMission-avoids[j]) <= 0); // less strict here, otherwise M01 and M15 get picked more often since they only have 1 neighbor instead of 2
-        }
-        m.l("Start map selection attempt "$ attempts $" was "$startMap @ score @ avoidStart);
-        if(score < bestScore) {
-            bestScore = score;
-            best = startMap;
-        }
-        if(score == 0) break;
-    }
+        squished = SquishMission(startMission);
+        i = i >>> 8;
 
-    return best | (avoidStart<<8); // shift history by 1 byte
+        valids[squished-1] = -1;
+        if(j==0) {
+            mostRecentStartMap = startMap; // remember this for below if needed
+            if(squished > 1 && startMap < startMission*10+6) { // ban previous mission
+                valids[squished-2] = -1;
+            }
+            if(squished < 13 && startMap > startMission*10+3) { // ban next mission
+                valids[squished] = -1;
+            }
+            // if hells kitchen ban other hells kitchens, same for unatcos
+            banHellsKitchen = startMission==2 || (startMap>=42 && startMap<50) || startMission==8;
+            banUnatco = startMap==30 || startMap==31 || startMap==40 || startMap==41 || startMap==55;
+        }
+    }
+    // compress the array, sort order doesn't matter
+    for(j=0; j<numValids; j++) {
+        if(valids[j] >= 0) continue;
+        do {
+            numValids--;
+        } until(valids[numValids] != -1);
+        valids[j] = valids[numValids];
+        valids[numValids] = -1;
+    }
+    m.SetGlobalSeed("randomstartmap " $ m.dxr.seed); // the seeding works better if the seed number is in the CRC
+
+    for(attempts=0; attempts<5; attempts++) {
+        startMap = _ChooseRandomStartMap(m, valids, numValids);
+        if(banHellsKitchen && (startMap/10==2 || (startMap>=42 && startMap<50) || startMap/10==8)) {
+            continue;
+        }
+        if(banUnatco && (startMap==30 || startMap==31 || startMap==40 || startMap==41 || startMap==55)) {
+            continue;
+        }
+        break;
+    }
+    return startMap | (avoidStart<<8); // shift history by 1 byte
 }
 
 //#region _ChooseRandomStartMap
-static function int _ChooseRandomStartMap(DXRBase m)
+static function int _ChooseRandomStartMap(DXRBase m, int valids[13], int numValids)
 {
     local int i;
-    i = m.rng(13);
+    i = m.rng(numValids);
+    i = valids[i];
 
     //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
     switch(i)

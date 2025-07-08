@@ -184,116 +184,116 @@ function InitClothes(bool giveAll)
 //    IngestCarcass(class'HXJCDentonCarcass');
 #endif
     IngestDefaultJCClothes();
-    IngestCarcass(class'#var(prefix)UNATCOTroopCarcass');
-    IngestCarcass(class'#var(prefix)WIBCarcass'); //A second outfit for FemJC to start with
+    IngestCarcass(class'#var(prefix)UNATCOTroopCarcass',true);
+    IngestCarcass(class'#var(prefix)WIBCarcass',true); //A second outfit for FemJC to start with
     AddClothing(G_Male,CT_Helmet,Texture'DeusExItems.Skins.PinkMaskTex',None); //Add "no helmet" into the default helmet selections
 
     if (giveAll){
-        IngestCarcass(class'#var(prefix)PaulDentonCarcass');
-        IngestCarcass(class'#var(prefix)Male1Carcass');
-        IngestCarcass(class'#var(prefix)Male2Carcass');
-        IngestCarcass(class'#var(prefix)Male3Carcass');
-        IngestCarcass(class'#var(prefix)Male4Carcass');
-        IngestCarcass(class'#var(prefix)Female1Carcass');
-        IngestCarcass(class'#var(prefix)Female2Carcass');
-        IngestCarcass(class'#var(prefix)Female3Carcass');
-        IngestCarcass(class'#var(prefix)Female4Carcass');
-        IngestCarcass(class'#var(prefix)DoctorCarcass');
-        IngestCarcass(class'#var(prefix)NurseCarcass');
-        IngestCarcass(class'#var(prefix)ScientistMaleCarcass');
-        IngestCarcass(class'#var(prefix)ScientistFemaleCarcass');
-        IngestCarcass(class'#var(prefix)BartenderCarcass');
-        IngestCarcass(class'#var(prefix)SandraRentonCarcass');
-        IngestCarcass(class'#var(prefix)JordanSheaCarcass');
-        IngestCarcass(class'#var(prefix)MaxChenCarcass');
-        IngestCarcass(class'#var(prefix)MaggieChowCarcass');
-        IngestCarcass(class'#var(prefix)GuntherHermannCarcass');
-        IngestCarcass(class'#var(prefix)AnnaNavarreCarcass');
-        IngestCarcass(class'#var(prefix)MIBCarcass');
-        IngestCarcass(class'#var(prefix)WIBCarcass');
-        IngestCarcass(class'#var(prefix)BusinessMan3Carcass');
-        IngestCarcass(class'#var(prefix)BusinessWoman1Carcass');
-        IngestCarcass(class'#var(prefix)JunkieMaleCarcass');
-        IngestCarcass(class'#var(prefix)JunkieFemaleCarcass');
-        IngestCarcass(class'#var(prefix)LowerClassMaleCarcass');
-        IngestCarcass(class'#var(prefix)LowerClassFemaleCarcass');
-        IngestCarcass(class'#var(prefix)HowardStrongCarcass');
-        IngestCarcass(class'#var(prefix)RachelMeadCarcass');
-        IngestCarcass(class'#var(prefix)PhilipMeadCarcass');
-        IngestCarcass(class'#var(prefix)MargaretWilliamsCarcass');
-        IngestCarcass(class'#var(prefix)JoJoFineCarcass');
-        IngestCarcass(class'#var(prefix)TiffanySavageCarcass');
-        IngestCarcass(class'#var(prefix)BusinessMan1Carcass');
-        IngestCarcass(class'#var(prefix)SecretaryCarcass');
-        IngestCarcass(class'#var(prefix)BumMaleCarcass');
-        IngestCarcass(class'#var(prefix)BumFemaleCarcass');
-        IngestCarcass(class'#var(prefix)AlexJacobsonCarcass');
-        IngestCarcass(class'#var(prefix)BoatPersonCarcass');
-        IngestCarcass(class'#var(prefix)JoeGreeneCarcass');
-        IngestCarcass(class'#var(prefix)MorganEverettCarcass');
-        IngestCarcass(class'#var(prefix)CopCarcass');
-        IngestCarcass(class'#var(prefix)ThugMale2Carcass');
-        IngestCarcass(class'#var(prefix)ThugMale3Carcass');
-        IngestCarcass(class'#var(prefix)BusinessMan2Carcass');
-        IngestCarcass(class'#var(prefix)ButlerCarcass');
-        IngestCarcass(class'#var(prefix)MaidCarcass');
-        IngestCarcass(class'#var(prefix)ChefCarcass');
-        IngestCarcass(class'#var(prefix)ChildMaleCarcass');
-        IngestCarcass(class'#var(prefix)ChildMale2Carcass');
-        IngestCarcass(class'#var(prefix)JanitorCarcass');
-        IngestCarcass(class'#var(prefix)LowerClassMale2Carcass');
-        IngestCarcass(class'#var(prefix)MechanicCarcass');
-        IngestCarcass(class'#var(prefix)MichaelHamnerCarcass');
-        IngestCarcass(class'#var(prefix)NathanMadisonCarcass');
-        IngestCarcass(class'#var(prefix)SailorCarcass');
-        IngestCarcass(class'#var(prefix)SecretServiceCarcass');
-        IngestCarcass(class'#var(prefix)TracerTongCarcass');
-        IngestCarcass(class'#var(prefix)BobPageCarcass');
-        IngestCarcass(class'#var(prefix)HKMilitaryCarcass');
-        IngestCarcass(class'#var(prefix)JosephManderleyCarcass');
-        IngestCarcass(class'#var(prefix)MJ12TroopCarcass');
-        IngestCarcass(class'#var(prefix)RiotCopCarcass');
-        IngestCarcass(class'#var(prefix)SamCarterCarcass');
-        IngestCarcass(class'#var(prefix)SoldierCarcass');
-        IngestCarcass(class'#var(prefix)TerroristCarcass');
-        IngestCarcass(class'#var(prefix)ChadCarcass');
-        IngestCarcass(class'#var(prefix)ThugMaleCarcass');
-        IngestCarcass(class'#var(prefix)TriadLumPathCarcass');
-        IngestCarcass(class'#var(prefix)TriadLumPath2Carcass');
-        IngestCarcass(class'#var(prefix)BumMale2Carcass');
-        IngestCarcass(class'#var(prefix)BumMale3Carcass');
-        IngestCarcass(class'#var(prefix)JaimeReyesCarcass');
-        IngestCarcass(class'#var(prefix)HarleyFilbenCarcass');
-        IngestCarcass(class'#var(prefix)GilbertRentonCarcass');
-        IngestCarcass(class'#var(prefix)FordSchickCarcass');
-        IngestCarcass(class'#var(prefix)GordonQuickCarcass');
-        IngestCarcass(class'#var(prefix)JuanLebedevCarcass');
-        IngestCarcass(class'#var(prefix)WaltonSimonsCarcass');
-        IngestCarcass(class'#var(prefix)SmugglerCarcass');
-        IngestCarcass(class'#var(prefix)TobyAtanweCarcass');
-        IngestCarcass(class'#var(prefix)TerroristCommanderCarcass');
-        IngestCarcass(class'#var(prefix)TriadRedArrowCarcass');
-        IngestCarcass(class'#var(prefix)GarySavageCarcass');
-        IngestCarcass(class'#var(prefix)StantonDowdCarcass');
-        IngestCarcass(class'#var(prefix)JockCarcass');
-        IngestCarcass(class'NervousWorkerCarcass');
-        IngestCarcass(class'MerchantCarcass');
-        IngestCarcass(class'LeMerchantCarcass');
-        IngestCarcass(class'MJ12CloneAugShield1Carcass');
-        IngestCarcass(class'MJ12CloneAugStealth1Carcass');
-        IngestCarcass(class'MJ12CloneAugTough1Carcass');
-        IngestCarcass(class'NSFCloneAugShield1Carcass');
-        IngestCarcass(class'NSFCloneAugStealth1Carcass');
-        IngestCarcass(class'NSFCloneAugTough1Carcass');
-        IngestCarcass(class'UNATCOCloneAugShield1Carcass');
-        IngestCarcass(class'UNATCOCloneAugStealth1Carcass');
-        IngestCarcass(class'UNATCOCloneAugTough1Carcass');
-        IngestCarcass(class'MrHCarcass');
-        IngestCarcass(class'BarDancerCarcass');
-        IngestCarcass(class'#var(prefix)Hooker1Carcass');
-        IngestCarcass(class'#var(prefix)Hooker2Carcass');
-        IngestCarcass(class'#var(prefix)NicoletteDuclareCarcass');
-        IngestCarcass(class'#var(prefix)SarahMeadCarcass');
+        IngestCarcass(class'#var(prefix)PaulDentonCarcass',true);
+        IngestCarcass(class'#var(prefix)Male1Carcass',true);
+        IngestCarcass(class'#var(prefix)Male2Carcass',true);
+        IngestCarcass(class'#var(prefix)Male3Carcass',true);
+        IngestCarcass(class'#var(prefix)Male4Carcass',true);
+        IngestCarcass(class'#var(prefix)Female1Carcass',true);
+        IngestCarcass(class'#var(prefix)Female2Carcass',true);
+        IngestCarcass(class'#var(prefix)Female3Carcass',true);
+        IngestCarcass(class'#var(prefix)Female4Carcass',true);
+        IngestCarcass(class'#var(prefix)DoctorCarcass',true);
+        IngestCarcass(class'#var(prefix)NurseCarcass',true);
+        IngestCarcass(class'#var(prefix)ScientistMaleCarcass',true);
+        IngestCarcass(class'#var(prefix)ScientistFemaleCarcass',true);
+        IngestCarcass(class'#var(prefix)BartenderCarcass',true);
+        IngestCarcass(class'#var(prefix)SandraRentonCarcass',true);
+        IngestCarcass(class'#var(prefix)JordanSheaCarcass',true);
+        IngestCarcass(class'#var(prefix)MaxChenCarcass',true);
+        IngestCarcass(class'#var(prefix)MaggieChowCarcass',true);
+        IngestCarcass(class'#var(prefix)GuntherHermannCarcass',true);
+        IngestCarcass(class'#var(prefix)AnnaNavarreCarcass',true);
+        IngestCarcass(class'#var(prefix)MIBCarcass',true);
+        IngestCarcass(class'#var(prefix)WIBCarcass',true);
+        IngestCarcass(class'#var(prefix)BusinessMan3Carcass',true);
+        IngestCarcass(class'#var(prefix)BusinessWoman1Carcass',true);
+        IngestCarcass(class'#var(prefix)JunkieMaleCarcass',true);
+        IngestCarcass(class'#var(prefix)JunkieFemaleCarcass',true);
+        IngestCarcass(class'#var(prefix)LowerClassMaleCarcass',true);
+        IngestCarcass(class'#var(prefix)LowerClassFemaleCarcass',true);
+        IngestCarcass(class'#var(prefix)HowardStrongCarcass',true);
+        IngestCarcass(class'#var(prefix)RachelMeadCarcass',true);
+        IngestCarcass(class'#var(prefix)PhilipMeadCarcass',true);
+        IngestCarcass(class'#var(prefix)MargaretWilliamsCarcass',true);
+        IngestCarcass(class'#var(prefix)JoJoFineCarcass',true);
+        IngestCarcass(class'#var(prefix)TiffanySavageCarcass',true);
+        IngestCarcass(class'#var(prefix)BusinessMan1Carcass',true);
+        IngestCarcass(class'#var(prefix)SecretaryCarcass',true);
+        IngestCarcass(class'#var(prefix)BumMaleCarcass',true);
+        IngestCarcass(class'#var(prefix)BumFemaleCarcass',true);
+        IngestCarcass(class'#var(prefix)AlexJacobsonCarcass',true);
+        IngestCarcass(class'#var(prefix)BoatPersonCarcass',true);
+        IngestCarcass(class'#var(prefix)JoeGreeneCarcass',true);
+        IngestCarcass(class'#var(prefix)MorganEverettCarcass',true);
+        IngestCarcass(class'#var(prefix)CopCarcass',true);
+        IngestCarcass(class'#var(prefix)ThugMale2Carcass',true);
+        IngestCarcass(class'#var(prefix)ThugMale3Carcass',true);
+        IngestCarcass(class'#var(prefix)BusinessMan2Carcass',true);
+        IngestCarcass(class'#var(prefix)ButlerCarcass',true);
+        IngestCarcass(class'#var(prefix)MaidCarcass',true);
+        IngestCarcass(class'#var(prefix)ChefCarcass',true);
+        IngestCarcass(class'#var(prefix)ChildMaleCarcass',true);
+        IngestCarcass(class'#var(prefix)ChildMale2Carcass',true);
+        IngestCarcass(class'#var(prefix)JanitorCarcass',true);
+        IngestCarcass(class'#var(prefix)LowerClassMale2Carcass',true);
+        IngestCarcass(class'#var(prefix)MechanicCarcass',true);
+        IngestCarcass(class'#var(prefix)MichaelHamnerCarcass',true);
+        IngestCarcass(class'#var(prefix)NathanMadisonCarcass',true);
+        IngestCarcass(class'#var(prefix)SailorCarcass',true);
+        IngestCarcass(class'#var(prefix)SecretServiceCarcass',true);
+        IngestCarcass(class'#var(prefix)TracerTongCarcass',true);
+        IngestCarcass(class'#var(prefix)BobPageCarcass',true);
+        IngestCarcass(class'#var(prefix)HKMilitaryCarcass',true);
+        IngestCarcass(class'#var(prefix)JosephManderleyCarcass',true);
+        IngestCarcass(class'#var(prefix)MJ12TroopCarcass',true);
+        IngestCarcass(class'#var(prefix)RiotCopCarcass',true);
+        IngestCarcass(class'#var(prefix)SamCarterCarcass',true);
+        IngestCarcass(class'#var(prefix)SoldierCarcass',true);
+        IngestCarcass(class'#var(prefix)TerroristCarcass',true);
+        IngestCarcass(class'#var(prefix)ChadCarcass',true);
+        IngestCarcass(class'#var(prefix)ThugMaleCarcass',true);
+        IngestCarcass(class'#var(prefix)TriadLumPathCarcass',true);
+        IngestCarcass(class'#var(prefix)TriadLumPath2Carcass',true);
+        IngestCarcass(class'#var(prefix)BumMale2Carcass',true);
+        IngestCarcass(class'#var(prefix)BumMale3Carcass',true);
+        IngestCarcass(class'#var(prefix)JaimeReyesCarcass',true);
+        IngestCarcass(class'#var(prefix)HarleyFilbenCarcass',true);
+        IngestCarcass(class'#var(prefix)GilbertRentonCarcass',true);
+        IngestCarcass(class'#var(prefix)FordSchickCarcass',true);
+        IngestCarcass(class'#var(prefix)GordonQuickCarcass',true);
+        IngestCarcass(class'#var(prefix)JuanLebedevCarcass',true);
+        IngestCarcass(class'#var(prefix)WaltonSimonsCarcass',true);
+        IngestCarcass(class'#var(prefix)SmugglerCarcass',true);
+        IngestCarcass(class'#var(prefix)TobyAtanweCarcass',true);
+        IngestCarcass(class'#var(prefix)TerroristCommanderCarcass',true);
+        IngestCarcass(class'#var(prefix)TriadRedArrowCarcass',true);
+        IngestCarcass(class'#var(prefix)GarySavageCarcass',true);
+        IngestCarcass(class'#var(prefix)StantonDowdCarcass',true);
+        IngestCarcass(class'#var(prefix)JockCarcass',true);
+        IngestCarcass(class'NervousWorkerCarcass',true);
+        IngestCarcass(class'MerchantCarcass',true);
+        IngestCarcass(class'LeMerchantCarcass',true);
+        IngestCarcass(class'MJ12CloneAugShield1Carcass',true);
+        IngestCarcass(class'MJ12CloneAugStealth1Carcass',true);
+        IngestCarcass(class'MJ12CloneAugTough1Carcass',true);
+        IngestCarcass(class'NSFCloneAugShield1Carcass',true);
+        IngestCarcass(class'NSFCloneAugStealth1Carcass',true);
+        IngestCarcass(class'NSFCloneAugTough1Carcass',true);
+        IngestCarcass(class'UNATCOCloneAugShield1Carcass',true);
+        IngestCarcass(class'UNATCOCloneAugStealth1Carcass',true);
+        IngestCarcass(class'UNATCOCloneAugTough1Carcass',true);
+        IngestCarcass(class'MrHCarcass',true);
+        IngestCarcass(class'BarDancerCarcass',true);
+        IngestCarcass(class'#var(prefix)Hooker1Carcass',true);
+        IngestCarcass(class'#var(prefix)Hooker2Carcass',true);
+        IngestCarcass(class'#var(prefix)NicoletteDuclareCarcass',true);
+        IngestCarcass(class'#var(prefix)SarahMeadCarcass',true);
 
         //New helmets that can be randomly given to enemies (but aren't present on their default carcasses)
         AddClothing(G_Male,CT_Helmet,Texture'NSFHelmet',None);
@@ -1091,9 +1091,9 @@ simulated function IngestDefaultJCClothes()
     AddClothing(G_Both,CT_Glasses,Texture'DeusExCharacters.Skins.FramesTex4',Texture'DeusExCharacters.Skins.LensesTex5');
 }
 
-simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassClass)
+simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassClass, optional bool ignoreBingo)
 {
-    local int num;
+    local int num, i;
 
     if (carcassClass==None) return False; //Can't loot nothing!
 
@@ -1160,6 +1160,12 @@ simulated function bool IngestCarcass(class<#var(DeusExPrefix)Carcass> carcassCl
             num += AddClothing(G_Both,CT_Pants,carcassClass.Default.MultiSkins[1],None);
             num += AddClothing(G_Both,CT_Glasses,carcassClass.Default.MultiSkins[5],carcassClass.Default.MultiSkins[6]);
             break;
+    }
+
+    if (!ignoreBingo){
+        for (i=0;i<num;i++){
+            class'DXREvents'.static.MarkBingo("LootNewClothing");
+        }
     }
 
     return num>0;

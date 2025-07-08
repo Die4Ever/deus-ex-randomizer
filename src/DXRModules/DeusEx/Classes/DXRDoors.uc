@@ -15,77 +15,44 @@ var float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adjust, mi
 
 function CheckConfig()
 {
+    SetDoorFixes();
+
+    min_lock_adjust=0.4;
+    max_lock_adjust=1.5;
+    min_door_adjust=0.4;
+    max_door_adjust=1.5;
+    min_mindmg_adjust=0.3;
+    max_mindmg_adjust=1.2;
+
+    if(dxr.flags.settings.doorspickable <= 0 && dxr.flags.IsZeroRando()) {
+        min_lock_adjust=1;
+        max_lock_adjust=1;
+    }
+    if(dxr.flags.settings.doorsdestructible <= 0 && dxr.flags.IsZeroRando()) {
+        min_door_adjust=1;
+        max_door_adjust=1;
+        min_mindmg_adjust=1;
+        max_mindmg_adjust=1;
+    }
+
+    Super.CheckConfig();
+}
+
+function SetDoorFixes()
+{
     local int i;
 
+    if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.MinorEnabled())
+    {
+        return;
+    }
+
+    //#region minor door fix
     switch(dxr.localURL) {
-    case "02_NYC_STREET":
-    case "04_NYC_STREET":
-    case "08_NYC_STREET":
-        // SmugglersFrontDoor for all 3 maps
-        door_fixes[i].tag = 'SmugglersFrontDoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 60;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
-        door_fixes[i].bHighlight = true;
-        i++;
-        break;
-
-    case "02_NYC_SMUG":
-    case "04_NYC_SMUG":
-    case "08_NYC_SMUG":
-        // Always make smugglers stash highlightable and breakable
-        door_fixes[i].tag = 'mirrordoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 5;
-        door_fixes[i].doorStrength = 0.6;
-        door_fixes[i].bHighlight = true;
-        i++;
-        break;
-
     case "02_NYC_WAREHOUSE":
         door_fixes[i].tag = 'Generator';
         door_fixes[i].bBreakable = true;
         door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = true;
-        i++;
-        break;
-
-    case "04_NYC_NSFHQ":
-        // door to the basement
-        door_fixes[i].tag = 'ExitDoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 0;// 0 uses a random value instead
-        door_fixes[i].doorStrength = 0;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 0;
-        door_fixes[i].bHighlight = true;
-        i++;
-
-        // doors to the computer room
-        door_fixes[i].tag = 'SlidingDoor1Move';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 20;// 0 uses a random value instead
-        door_fixes[i].doorStrength = 0.5;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].lockStrength = 0;
-        door_fixes[i].bHighlight = false;
-        i++;
-
-        door_fixes[i] = door_fixes[i-1];
-        door_fixes[i].tag = 'SlidingDoor2Move';
-        i++;
-        break;
-
-    case "05_NYC_UNATCOHQ":
-        // just in case General Carter's door gets stuck on something
-        door_fixes[i].tag = 'supplydoor';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 60;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
         i++;
         break;
@@ -184,6 +151,109 @@ function CheckConfig()
         i++;
         break;
 
+    case "15_area51_final":
+        // aquinas hub access, makes tong ending somewhat more viable
+        door_fixes[i].tag = 'blastdoor_upper';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = true;
+        i++;
+        break;
+
+    case "15_area51_page":
+        //Make it so the exploding door doesn't become breakable
+        door_fixes[i].tag = 'door_clone_exit';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = false;
+        i++;
+
+        // Don't let the player close the set of double doors to the gray room
+        door_fixes[i].tag = 'GreyDoors';
+        door_fixes[i].bHighlight = false;
+        i++;
+
+        //This is already the case in vanilla, but align Revision to it.
+        //Make sure the Helios door itself can't be interacted with (keypad is still viable, or computer)
+        door_fixes[i].tag = 'door_helios_room';
+        door_fixes[i].bHighlight = false;
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        i++;
+        break;
+    }
+
+    if(dxr.flags.settings.doorspickable==0 && dxr.flags.settings.doorsdestructible==0 && !class'MenuChoice_BalanceMaps'.static.MajorEnabled())
+    {
+        return;
+    }
+
+    //#region major door fix
+    switch(dxr.localURL) {
+    case "02_NYC_STREET":
+    case "04_NYC_STREET":
+    case "08_NYC_STREET":
+        // SmugglersFrontDoor for all 3 maps
+        door_fixes[i].tag = 'SmugglersFrontDoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 60;
+        door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
+        i++;
+        break;
+
+    case "02_NYC_SMUG":
+    case "04_NYC_SMUG":
+    case "08_NYC_SMUG":
+        // Always make smugglers stash highlightable and breakable
+        door_fixes[i].tag = 'mirrordoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 5;
+        door_fixes[i].doorStrength = 0.6;
+        door_fixes[i].bHighlight = true;
+        i++;
+        break;
+
+    case "04_NYC_NSFHQ":
+        // door to the basement
+        door_fixes[i].tag = 'ExitDoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 0;// 0 uses a random value instead
+        door_fixes[i].doorStrength = 0;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 0;
+        door_fixes[i].bHighlight = true;
+        i++;
+
+        // doors to the computer room
+        door_fixes[i].tag = 'SlidingDoor1Move';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 20;// 0 uses a random value instead
+        door_fixes[i].doorStrength = 0.5;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].lockStrength = 0;
+        door_fixes[i].bHighlight = false;
+        i++;
+
+        door_fixes[i] = door_fixes[i-1];
+        door_fixes[i].tag = 'SlidingDoor2Move';
+        i++;
+        break;
+
+    case "05_NYC_UNATCOHQ":
+        // just in case General Carter's door gets stuck on something
+        door_fixes[i].tag = 'supplydoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 60;
+        door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
+        i++;
+        break;
+
     case "12_VANDENBERG_GAS":
         // Always make the junkyard doors weak and breakable
         door_fixes[i].tag = 'junkyard_doors';
@@ -220,61 +290,10 @@ function CheckConfig()
         door_fixes[i].tag = 'chamber6';
         i++;
         break;
-
-    case "15_area51_final":
-        // aquinas hub access, makes tong ending somewhat more viable
-        door_fixes[i].tag = 'blastdoor_upper';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = true;
-        i++;
-        break;
-
-    case "15_area51_page":
-        //Make it so the exploding door doesn't become breakable
-        door_fixes[i].tag = 'door_clone_exit';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = false;
-        i++;
-
-        // Don't let the player close the set of double doors to the gray room
-        door_fixes[i].tag = 'GreyDoors';
-        door_fixes[i].bHighlight = false;
-        i++;
-
-        //This is already the case in vanilla, but align Revision to it.
-        //Make sure the Helios door itself can't be interacted with (keypad is still viable, or computer)
-        door_fixes[i].tag = 'door_helios_room';
-        door_fixes[i].bHighlight = false;
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        i++;
-
-        break;
     }
-
-    min_lock_adjust=0.4;
-    max_lock_adjust=1.5;
-    min_door_adjust=0.4;
-    max_door_adjust=1.5;
-    min_mindmg_adjust=0.3;
-    max_mindmg_adjust=1.2;
-
-    if(dxr.flags.settings.doorspickable <= 0 && dxr.flags.IsZeroRando()) {
-        min_lock_adjust=1;
-        max_lock_adjust=1;
-    }
-    if(dxr.flags.settings.doorsdestructible <= 0 && dxr.flags.IsZeroRando()) {
-        min_door_adjust=1;
-        max_door_adjust=1;
-        min_mindmg_adjust=1;
-        max_mindmg_adjust=1;
-    }
-
-    Super.CheckConfig();
 }
 
+//#region FirstEntry
 function FirstEntry()
 {
     local #var(DeusExPrefix)Mover d, d2;
