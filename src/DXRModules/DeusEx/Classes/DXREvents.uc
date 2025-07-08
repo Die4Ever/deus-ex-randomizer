@@ -4111,7 +4111,7 @@ defaultproperties
     bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
 #ifdef injections
     bingo_options(133)=(event="IgnitedPawn",desc="Set %s people on fire",desc_singular="Set someone on fire",max=15)
-    bingo_options(134)=(event="GibbedPawn",desc="Blow up %s people",desc_singular="Blow someone up",max=15,missions=57214)
+    bingo_options(134)=(event="GibbedPawn",desc="Blow up %s people",desc_singular="Blow someone up",max=15)
 #endif
     bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
     bingo_options(136)=(event="AlexCloset",desc="Go into Alex's closet",max=1,missions=58)
