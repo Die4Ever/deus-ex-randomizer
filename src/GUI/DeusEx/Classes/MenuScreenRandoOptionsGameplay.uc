@@ -12,7 +12,6 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_LoadLatest');
     CreateChoice(class'MenuChoice_SaveDuringInfolinks');
     CreateChoice(class'MenuChoice_AutosaveCombat');
-    CreateChoice(class'MenuChoice_AutoAugs');
     CreateChoice(class'MenuChoice_ShowKeys');
     CreateChoice(class'MenuChoice_AutoWeaponMods');
     CreateChoice(class'MenuChoice_AutoLaser');
@@ -34,6 +33,8 @@ function CreateChoices()
 #endif
 
     if(#bool(vanilla)) {
+        CreateChoice(class'MenuChoice_AutoAugs');
+        CreateChoice(class'MenuChoice_AutoAugsInstall');
         CreateChoice(class'MenuChoice_BalanceAugs');
         CreateChoice(class'MenuChoice_BalanceSkills');
         CreateChoice(class'MenuChoice_BalanceItems');
