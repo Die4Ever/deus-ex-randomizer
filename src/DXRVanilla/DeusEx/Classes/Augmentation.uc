@@ -192,15 +192,20 @@ function Deactivate()
 function Reset()
 {
     local float oldLastUsed;
+    local Sound oldDeactivateSound, oldActivateSound;
 
     //Don't actually reset if the aug is already inactive
     if (!bIsActive) return;
 
     // re-activate to adjust to upgrades/downgrades, without burning energy in a new TickUse()
+    oldDeactivateSound = DeactivateSound;
+    oldActivateSound = ActivateSound;
     oldLastUsed = LastUsed;
     Deactivate();
     LastUsed = oldLastUsed;
     Activate();
+    DeactivateSound = oldDeactivateSound;
+    ActivateSound = oldActivateSound;
 }
 
 // DXRando: don't disable auto augs when upgrading
