@@ -1274,6 +1274,12 @@ function SetWatchFlags() {
             AddWatchedActor(bg,"InCaseOfEmergency");
             break;
         }
+
+        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(487,-1935,-475),24,14); //Near exit
+        bt.bDestroyOthers = false;
+        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(328,-1935,-475),24,14); //Near Exit
+        bt.bDestroyOthers = false;
+
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'#var(prefix)WIB',wib){
@@ -1523,6 +1529,36 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
+
+        //"Sortie" signs - pa_TrainSign_A
+        if (RevisionMaps){
+            //Revision has both pa_TrainSign_a and some new blue texture that's near the actual train (Literally named "sortie")
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(367.681,-2655.554,462.918),24,14); //Near exit
+            bt.bDestroyOthers = false;
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(527.871,-2656.112,462.918),24,14); //Near Exit
+            bt.bDestroyOthers = false;
+
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2175,-180),40,16); //Big wide sign, these ones destroy each other
+            bt.Tag = 'EmergencyExitWideSign';
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2130,-180),40,16); //Big wide sign, these ones destroy each other
+            bt.Tag = 'EmergencyExitWideSign';
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2080,-180),40,16); //Big wide sign, these ones destroy each other
+            bt.Tag = 'EmergencyExitWideSign';
+
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1344.3,2116.7,-160),36,12); //Near Train
+            bt.bDestroyOthers = false;
+        } else {
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-591.76,-657.527,35.829),34,10);
+            bt.bDestroyOthers = false;
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2032.307,-576.207,-380.829),34,10);
+            bt.bDestroyOthers = false;
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2027.90,939.477,-938.886),34,10);
+            bt.bDestroyOthers = false;
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1040.066,1472.132,-976.936),34,10);
+            bt.bDestroyOthers = false;
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-587.698,1466.590,-891.960),34,10);
+            bt.bDestroyOthers = false;
+        }
 
         if (!RevisionMaps){
             //Not present in Revision
@@ -4066,7 +4102,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "FC_EyeTest_peepedtex":
             return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
         case "EmergencyExit":
-            return "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
+            msg = "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
+            if (mission==10 || mission==11){
+                msg = msg $"|n|nThe French word for 'Exit' is 'Sortie'.";
+            }
+            return msg;
         case "Ex51":
             return "Kill enough of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
         case "JoyOfCooking":
@@ -4542,7 +4582,7 @@ defaultproperties
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
     bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up?",max=10,missions=24190)
     bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
-    bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=1918)
+    bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=3966)
     bingo_options(355)=(event="Ex51",desc="Ex-51",desc_singular="Ex-51",max=6,missions=4096)
     bingo_options(356)=(event="JoyOfCooking",desc="The Joy of Cooking",max=1,missions=1088)
 #ifdef injections || revision
