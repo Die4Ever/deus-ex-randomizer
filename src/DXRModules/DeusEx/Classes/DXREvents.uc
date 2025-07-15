@@ -3652,7 +3652,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "NYEagleStatue_peeped":
             return "Look at the bronze eagle statue in Battery Park through a pair of binoculars or a scope.";
         case "BrokenPianoPlayed":
-            return "Damage a piano enough that it will no longer work, then try to play it.";
+            return "Damage a piano enough that it will no longer work without fully breaking it, then try to play it.  It will make a sound to let you know when it is damaged enough.";
         case "Supervisor_Paid":
             return "Pay Mr. Hundley for access to the MJ12 Lab in Hong Kong.";
         case "ImageOpened_WaltonSimons":
