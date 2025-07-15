@@ -3191,7 +3191,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ShipPowerCut":
             return "Help the electrician on the superfreighter by disabling the electrical panels under the electrical room.";
         case "CamilleConvosDone":
-            return "Talk to Camille the Paris cage dancer and get all the information you can.";
+            if (FemJC) {
+                return "Talk to Achille, the Paris clubgoer who wants to tell you about everyone else in the club.  Get as much information as you can.";
+            } else {
+                return "Talk to Camille the Paris cage dancer and get all the information you can.";
+            }
         case "MeetAI4_Played":
             return "Talk to Morpheus, the prototype AI locked away in Everett's house.";
         case "DL_Flooded_Played":
