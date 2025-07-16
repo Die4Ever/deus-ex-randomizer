@@ -12,7 +12,8 @@ var() bool bCrouchCheck;
 var name FinishedFlag;
 var int FinishedMax;
 
-var() int touchLimit;
+var() int touchLimit; //How many need to be touching the class proximity trigger to mark the bingo goal
+var() int maxTouchReport; //The maximum number of items this trigger will report for class proximity
 
 function Trigger(Actor Other, Pawn Instigator)
 {
@@ -85,6 +86,9 @@ function int GetSelfTouchCount()
     foreach TouchingActors(ClassProximityType, a){
         count++;
     }
+
+    //Cap the count at the maxTouchReport value
+    count = Min(count,maxTouchReport);
 
     return count;
 }
@@ -218,7 +222,7 @@ static function BingoTrigger PeepCreate(Actor a, Name bingoEvent, vector loc, fl
     return bt;
 }
 
-static function BingoTrigger ProxCreate(Actor a, Name bingoEvent, vector loc, float rad, float height, class<Actor> className, optional int touchCount)
+static function BingoTrigger ProxCreate(Actor a, Name bingoEvent, vector loc, float rad, float height, class<Actor> className, optional int touchCount, optional int maxTouchReport)
 {
     local BingoTrigger bt;
 
@@ -227,6 +231,11 @@ static function BingoTrigger ProxCreate(Actor a, Name bingoEvent, vector loc, fl
 
     if (touchCount>0){
         bt.touchLimit = touchCount;
+    }
+
+    if (maxTouchReport>0){
+        //Defaults to 100
+        bt.maxTouchReport = maxTouchReport;
     }
 
     return bt;
@@ -262,4 +271,5 @@ defaultproperties
      bPeepable=False
      bCrouchCheck=False
      touchLimit=-1
+     maxTouchReport=100
 }
