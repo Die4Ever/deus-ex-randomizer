@@ -12,17 +12,26 @@ var() bool bCrouchCheck;
 var name FinishedFlag;
 var int FinishedMax;
 
+var() int touchLimit;
+
 function Trigger(Actor Other, Pawn Instigator)
 {
-	Super.Trigger(Other, Instigator);
-    DoBingoThing();
+    if (DoBingoThing()){
+        Super.Trigger(Other, Instigator);
+    }
 }
 
 function Untrigger(Actor Other, Pawn Instigator)
 {
-	Super.Untrigger(Other, Instigator);
+    local bool shouldUntrigger;
+
+    shouldUntrigger=True;
     if (bUntrigger){
-        DoBingoThing();
+        shouldUntrigger=DoBingoThing();
+    }
+
+    if (shouldUntrigger){
+        Super.Untrigger(Other, Instigator);
     }
 }
 
@@ -31,8 +40,9 @@ function Touch(Actor Other)
 
     if (TriggerType!=TT_Shoot && !bPeepable && !bCrouchCheck && IsRelevant(Other))
     {
-        Super.Touch(Other);
-        DoBingoThing();
+        if (DoBingoThing()){
+            Super.Touch(Other);
+        }
     }
 }
 
@@ -65,14 +75,62 @@ function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation,
     }
 }
 
+function int GetSelfTouchCount()
+{
+    local Actor a;
+    local int count;
 
-function DoBingoThing()
+    count = 0;
+
+    foreach TouchingActors(ClassProximityType, a){
+        count++;
+    }
+
+    return count;
+}
+
+function int GetTouchingCount()
+{
+    local Actor a;
+    local BingoTrigger bt;
+    local int count;
+
+    count=0;
+
+    if (!bDestroyOthers) {
+        //Count only THIS trigger
+        count += GetSelfTouchCount();
+
+        return count;
+    }
+
+    //Count the number in *all* the bingo triggers with the tag of the current trigger
+    foreach AllActors(class'BingoTrigger',bt,Tag){
+        //Note that this could mean you could have two triggers for different types of items with the same tag
+        //Eg. Overlapping Skull and Femur triggers could allow a "bring X bones to this spot" goal, allowing a
+        //mix of either class
+        count+=bt.GetSelfTouchCount();
+    }
+
+    return count;
+
+}
+
+function bool DoBingoThing()
 {
     local DXRando dxr;
     local BingoTrigger bt;
 
     if (bingoEvent==""){
-        return;
+        return false;
+    }
+
+    if (TriggerType==TT_ClassProximity && touchLimit>1){
+
+        //Not enough items touching the bingo trigger
+        if (GetTouchingCount() < touchLimit){
+            return false;
+        }
     }
 
     class'DXREvents'.static.MarkBingo(bingoEvent);
@@ -92,6 +150,8 @@ function DoBingoThing()
             SelfDestruct();
         }
     }
+
+    return true;
 }
 
 function SelfDestruct()
@@ -158,12 +218,16 @@ static function BingoTrigger PeepCreate(Actor a, Name bingoEvent, vector loc, fl
     return bt;
 }
 
-static function BingoTrigger ProxCreate(Actor a, Name bingoEvent, vector loc, float rad, float height, class<Actor> className)
+static function BingoTrigger ProxCreate(Actor a, Name bingoEvent, vector loc, float rad, float height, class<Actor> className, optional int touchCount)
 {
     local BingoTrigger bt;
 
     bt = Create(a,bingoEvent,loc,rad,height);
     bt.MakeClassProximityTrigger(className);
+
+    if (touchCount>0){
+        bt.touchLimit = touchCount;
+    }
 
     return bt;
 }
@@ -197,4 +261,5 @@ defaultproperties
      bUntrigger=False
      bPeepable=False
      bCrouchCheck=False
+     touchLimit=-1
 }
