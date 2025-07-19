@@ -134,11 +134,25 @@ function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
     }
 
     if (CrowdControlPawns[mostRecentCcPawn]==None){
-        CrowdControlPawns[mostRecentCcPawn]=Spawn(class'DXRandoCrowdControlPawn');
+        CrowdControlPawns[mostRecentCcPawn]=Spawn(class'DXRandoCrowdControlPawn',,,player().Location);
     }
 
     CrowdControlPawns[mostRecentCcPawn].familiarName = UserName;
+
+    //Move the pawn to where the player currently is, just for convenience
+    MoveCCPawn(CrowdControlPawns[mostRecentCcPawn],player().Location);
+
+    //Make sure the pawn knows it's been used so it doesn't delete itself
+    CrowdControlPawns[mostRecentCcPawn].UsePawn();
+
     return CrowdControlPawns[mostRecentCcPawn];
+}
+
+function MoveCCPawn(DXRandoCrowdControlPawn ccp, vector Location)
+{
+    ccp.bMovable=True;
+    ccp.SetLocation(Location);
+    ccp.bMovable=False;
 }
 
 //#region Periodic Updates
@@ -1525,6 +1539,8 @@ function int DropProjectile(string viewer, string type, optional int amount)
 {
     local class<DeusExProjectile> c;
     local DeusExProjectile p;
+    local DXRandoCrowdControlPawn ccp;
+
     if( amount < 1 ) amount = 1;
 
     //Don't drop grenades if you're in the menu
@@ -1539,8 +1555,11 @@ function int DropProjectile(string viewer, string type, optional int amount)
 
     c = class<DeusExProjectile>(ccLink.ccModule.GetClassFromString(type, class'DeusExProjectile'));
     if( c == None ) return NotAvail;
-    p = Spawn( c, GetCrowdControlPawn(viewer),,player().Location);
+
+    ccp = GetCrowdControlPawn(viewer);
+    p = Spawn(c,ccp,,ccp.Location);  //If the owner is in stasis, the grenade timer ticks at half speed for some reason
     if( p == None ) return Failed;
+
     PlayerMessage(viewer@"dropped "$ p.ItemArticle @ p.ItemName $ " at your feet!");
     p.Velocity.X=0;
     p.Velocity.Y=0;
