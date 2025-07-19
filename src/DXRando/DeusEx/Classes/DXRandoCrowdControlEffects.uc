@@ -2751,6 +2751,11 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
         return TempFail;
     }
 
+    //Don't start effects if the player is already dead.  It's too late.
+    if (player().Health <= 0) {
+        return TempFail;
+    }
+
     switch(code) {
         case "poison":
             if (!InGame()) {
