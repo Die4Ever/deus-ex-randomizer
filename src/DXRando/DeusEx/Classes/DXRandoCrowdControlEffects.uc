@@ -1540,6 +1540,8 @@ function int DropProjectile(string viewer, string type, optional int amount)
     local class<DeusExProjectile> c;
     local DeusExProjectile p;
     local DXRandoCrowdControlPawn ccp;
+    local Vector locOffset, TraceHitLocation, TraceHitNormal, EndTrace;
+    local Actor hit;
 
     if( amount < 1 ) amount = 1;
 
@@ -1556,14 +1558,32 @@ function int DropProjectile(string viewer, string type, optional int amount)
     c = class<DeusExProjectile>(ccLink.ccModule.GetClassFromString(type, class'DeusExProjectile'));
     if( c == None ) return NotAvail;
 
+    locOffset = VRand()*(480 + Rand(480)); //grenades spawn from up to 30 to 60 feet away (but stops if it runs into walls or actors)
+    if (locOffset.Z < 0){
+        locOffset.Z = -locOffset.Z;  //Only throw grenades from above
+    }
+    if (locOffset.Z > 100) {
+        //Don't throw the grenades from too high up
+        //Randomize a new height offset within the valid range
+        locOffset.Z = RandRange(20,100);
+    }
+    EndTrace = Player().Location + locOffset;
+    hit = Player().Trace(TraceHitLocation,TraceHitNormal,EndTrace,,False); //Figure out the furthest possible location
+    if (hit==None){
+        TraceHitLocation = EndTrace;
+    }
+
     ccp = GetCrowdControlPawn(viewer);
-    p = Spawn(c,ccp,,ccp.Location);  //If the owner is in stasis, the grenade timer ticks at half speed for some reason
+    MoveCCPawn(ccp,TraceHitLocation); //Move the pawn to the grenade start location
+    p = ccp.Spawn(c,ccp);  //If the owner is in stasis, the grenade timer ticks at half speed for some reason
     if( p == None ) return Failed;
 
-    PlayerMessage(viewer@"dropped "$ p.ItemArticle @ p.ItemName $ " at your feet!");
-    p.Velocity.X=0;
-    p.Velocity.Y=0;
-    p.Velocity.Z=0;
+    PlayerMessage(viewer@"threw "$ p.ItemArticle @ p.ItemName $ " at you!");
+    p.Velocity = player().Location - ccp.Location;
+
+    //Sometimes throw it harder, other times softer
+    p.Velocity = p.Velocity * RandRange(0.9,1.1);
+
     return Success;
 }
 
