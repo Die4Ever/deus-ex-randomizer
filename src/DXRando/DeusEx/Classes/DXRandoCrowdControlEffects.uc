@@ -1477,6 +1477,77 @@ function GenerateFloorLavaFire()
     }
 }
 
+function int GiveCurrentWeaponAmmo(string viewer, optional int amount)
+{
+    local #var(DeusExPrefix)Weapon curWeap;
+    local class<ammo> curAmmoClass;
+    local Ammo curAmmo;
+    local DXRLoadouts loadout;
+    local string outMsg;
+    local Inventory item;
+    local int i;
+
+    if( amount < 1 ) amount = 1;
+
+    if (player().InHand == None) { //Not holding anything
+        return TempFail;
+    }
+
+    curWeap = #var(DeusExPrefix)Weapon(player().InHand);
+    if (curWeap==None){ //Not holding a weapon
+        return TempFail;
+    }
+
+    //Find default ammo type
+    //(Should this find the equipped ammo instead?  Might make pricing difficult)
+    curAmmoClass = curWeap.Default.AmmoName;
+
+    //Fail if weapon doesn't use ammo
+    if (curAmmoClass==class'AmmoNone' || curAmmoClass==None){
+        return TempFail;
+    }
+
+    //Fail if ammo is banned
+    loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
+    if (loadout!=None){
+        if (loadout.is_banned(curAmmoClass)){
+            //This could possibly be available later in the session if they change loadouts
+            return TempFail;
+        }
+    }
+
+
+    //Fail if ammo is full
+    curAmmo = Ammo(Player().FindInventoryType(curAmmoClass));
+    if (curAmmo!=None){
+        if (curAmmo.AmmoAmount >= curAmmo.MaxAmmo) {
+            //If ammo is full (or somehow *overfull*), don't allow any more ammo to be given
+            return TempFail;
+        }
+    }
+
+    for (i=0;i<amount;i++) {
+        item = class'DXRActorsBase'.static.GiveItem(player(), curAmmoClass);
+        if( item == None ) return Failed;
+    }
+
+    outMsg = viewer@"gave you";
+    if( amount > 1) {
+        outMsg = outMsg @amount@"cases of"@item.ItemName;
+    }
+    else {
+        outMsg = outMsg @"a case of"@item.ItemName;
+    }
+
+    PlayerMessage(outMsg $ shouldSave);
+    return Success;
+
+
+
+    return Success;
+}
+
+
 function int GiveItem(string viewer, string type, optional int amount) {
     local int i;
     local class<Inventory> itemclass;
@@ -3553,7 +3624,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             trainingTriggered = True;
             break;
-
+        case "give_current_ammo":
+            return GiveCurrentWeaponAmmo(viewer);
+            break;
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }
