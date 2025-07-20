@@ -1580,6 +1580,7 @@ function int DropProjectile(string viewer, string type, optional int amount)
 
     PlayerMessage(viewer@"threw "$ p.ItemArticle @ p.ItemName $ " at you!");
     p.Velocity = player().Location - ccp.Location;
+    p.ItemName = p.ItemName $ " ("$viewer$")";
 
     //Sometimes throw it harder, other times softer
     p.Velocity = p.Velocity * RandRange(0.9,1.1);
