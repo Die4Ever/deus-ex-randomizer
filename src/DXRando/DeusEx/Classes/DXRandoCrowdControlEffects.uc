@@ -2410,6 +2410,7 @@ function bool SpamDatacubes(String viewer)
 {
     local int num,i;
     local #var(injectsprefix)InformationDevices dc;
+    local string cubeText,plaintextTag;
 
     num = 0;
     foreach AllActors(class'#var(injectsprefix)InformationDevices',dc,'CrowdControlSpamDatacube'){
@@ -2421,7 +2422,9 @@ function bool SpamDatacubes(String viewer)
     dc = None;
     num = 0;
     for (i=0;i<5;i++){
-        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer),"");
+        cubeText = RandomSpamDatacubeText(viewer);
+        plaintextTag = "CrowdControlSpamCubes_" $ dxr.localURL $ "_" $ dxr.Crc(cubeText);
+        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),cubeText,plaintextTag);
         if (dc!=None){
             dc.Tag='CrowdControlSpamDatacube';
             ccLink.ccModule.GlowUp(dc);

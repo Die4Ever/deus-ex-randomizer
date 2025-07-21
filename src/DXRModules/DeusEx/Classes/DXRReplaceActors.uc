@@ -201,6 +201,7 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
     n.msgNoText = a.msgNoText;
     n.ImageLabel = a.ImageLabel;
     n.AddedToDatavaultLabel = a.AddedToDatavaultLabel;
+    n.defaultItemName = a.Default.ItemName;
 #ifdef revision
     n.TextPackage = a.TextPackage;
 #endif

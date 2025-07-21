@@ -2081,3 +2081,766 @@ function bool InfoPositionGood(#var(prefix)InformationDevices id, vector newpos,
     //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True");
     return True;
 }
+
+
+static function string GetHumanTextTagName(string texttag, string textpackage)
+{
+
+    local string prefix,fullTag,s1;
+    local int i;
+
+    fullTag = textpackage$"."$texttag;
+    //Exact matches should check both package and tag, since Revision has some tag overlap
+    switch(fullTag){
+        case "DeusExText.00_Book01":
+            return "UNATCO Training Manual";
+        case "DeusExText.00_Datacube01":
+            return "First Door Code";
+        case "DeusExText.00_Datacube02":
+            return "Final Bridge Code";
+        case "DeusExText.00_Datacube03":
+            return "Note from Jaime";
+        case "DeusExText.00_Datacube04":
+            return "UNATCO Stealth Guidelines";
+
+        case "DeusExText.01_Book09":
+        case "RevisionText.01_Book09_Biomod":
+        case "RevisionText.01_Book09_Rev":
+            return "Nano-Augmentation Guidelines";
+        case "RevisionText.01_Datacube01":
+            return "Note to Paul"; //To Paul from Janice, telling him his account is now active (no details)
+        case "RevisionText.01_Datacube02":
+            return "Detention Wing Door Code";
+        case "DeusExText.01_Datacube01":
+            return "Manderley Login";
+        case "DeusExText.01_Datacube03":
+            return "Comm Van Code";
+        case "DeusExText.01_Datacube04":
+            return "NSF001 Login";
+        case "DeusExText.01_Datacube05":
+            return "Gunther Login";
+        case "DeusExText.01_Datacube06":
+            return "SATCOM Login";
+        case "DeusExText.01_Datacube10":
+            return "Mnemosyne Sojourn Project";
+        case "DeusExText.01_Newspaper01":
+            return "Mead Bucks Congress";
+        case "DeusExText.01_Newspaper02":
+            return "Bootcamp for Betty";
+        case "DeusExText.01_Newspaper03":
+            return "A Lesson for Our President";
+        case "DeusExText.01_Newspaper05":
+            return "French Connection Found in Rubble";
+        case "DeusExText.01_Newspaper07":
+            return "Mass Grave in Brooklyn";
+
+        case "DeusExText.02_Datacube01":
+            return "Note for Commander Frase";
+        case "DeusExText.02_Datacube02":
+            return "JSteward Login";
+        case "DeusExText.02_Datacube03":
+            return "Sewer Hatch Code";
+        case "DeusExText.02_Datacube05":
+            return "Paul Login";
+        case "DeusExText.02_Datacube06":
+            return "Sewer Hatch Code";
+        case "DeusExText.02_Datacube07":
+            return "Paul's Painting Code";
+        case "DeusExText.02_Datacube09":
+            return "Warehouse Basement Ramp Code";
+        case "DeusExText.02_Datacube10":
+            return "Warehouse Office Code";
+        case "DeusExText.02_Datacube11":
+            return "Sewer Security Login";
+        case "DeusExText.02_Datacube14":
+            return "Warehouse Generator Computer Login";
+        case "DeusExText.02_Datacube15":
+            return "Castle Clinton Kiosk Code";
+        case "DeusExText.02_Datacube16":
+            return "Note for Commander Grimaldi";
+        case "DeusExText.02_Datacube17":
+            return "Note for Commander Frase";
+        case "DeusExText.02_Datacube18":
+            return "Warehouse Email Computer Login";
+        case "DeusExText.02_Newspaper01":
+            return "Bellevue Reports Increase in Admittance";
+        case "DeusExText.02_Newspaper02":
+            return "Grayve Times Ad";
+        case "DeusExText.02_Newspaper04":
+            return "Court Upholds NY Grid Law";
+        case "DeusExText.02_Newspaper05":
+            return "NetChurch of God Ad";
+        case "RevisionText.02_Book01":
+            return "Dangerous Days: Chapter 2";
+        case "RevisionText.02_Book02":
+            return "Diary";
+        case "RevisionText.02_Book03":
+            return "Gray Wolf";
+        case "RevisionText.02_Datacube01":
+            return "Note to YT";
+        case "RevisionText.02_Datacube02":
+            return "Bar Freezer Door Code";
+
+        case "DeusExText.03_Book01":
+            return "Art of War";
+        case "DeusExText.03_Book02":
+            return "Medical Management of Biological Casualties Handbook";
+        case "DeusExText.03_Book03":
+            return "Righteous Angels: Perspectives on UNATCO";
+        case "DeusExText.03_Book06":
+            return "Curly's Journal"; //Should this mention that it's the phonebooth code too?
+        case "DeusExText.03_Datacube03":
+            return "Note for Jonny"; //Note to Jonny from Erin Young
+        case "DeusExText.03_Datacube05":
+            return "Note for Erin"; //Note to Erin (Young) from Juan Lebedev
+        case "DeusExText.03_Datacube06":
+            return "Note for Young"; //Note to (Erin) Young from Decker
+        case "DeusExText.03_Datacube08":
+            return "Phonebooth Code"; //UNUSED
+        case "DeusExText.03_Datacube10":
+            return "Hangar Door Code";
+        case "DeusExText.03_Datacube12":
+            return "ETodd Login";
+        case "DeusExText.03_Datacube13":
+            return "Suspension Crate Code";
+        case "DeusExText.03_Datacube14":
+            return "Brooklyn Bridge Station Bathroom Code";
+        case "DeusExText.03_Newspaper03":
+            return "Seasonal Flooding Minimal";
+        case "DeusExText.747Diagram":
+            return "747 Diagram";
+        case "DeusExText.MilleniumMagazine":
+            return "Millenium Magazine";
+        case "RevisionText.03_Datacube01":
+            return "Server Room Door Code";
+        case "RevisionText.03_Datacube10":  //For leaving a good soda in Gunther's office
+        case "RevisionText.03_Datacube11":  //For leaving a bad soda in Gunther's office
+        case "RevisionText.03_Datacube12":  //For leaving a good and bad soda in Gunther's office
+            return "Note from Gunther";
+
+        case "DeusExText.04_Datacube01":
+            return "Dish Alignment Login";
+        case "DeusExText.04_Datacube02":
+            return "TJefferson Login"; //The login for the computer in the halon room that opens the basement (How to phrase that in a concise way though?)
+        case "DeusExText.04_Datacube04":
+            return "Halon Gas Warning";
+        case "DeusExText.04_Datacube05":
+            return "Paul's Evidence";
+        case "DeusExText.04_Newspaper01":
+            return "Ten Dead in Gang Slaying";
+        case "DeusExText.04_Newspaper02":
+            return "UNATCO Nabs Terrorists in Hell's Kitchen Raid";
+        case "RevisionText.04_Datacube01":
+            return "Storage Locker Door Code";
+        case "RevisionText.04_Datacube02":
+            return "Warehouse Storage Deposit Door Code";
+        case "RevisionText.04_Datacube10":
+        case "RevisionText.04_Datacube11":
+        case "RevisionText.04_Datacube12":
+        case "RevisionText.04_Datacube13":
+        case "RevisionText.04_Datacube14":
+        case "RevisionText.04_Datacube15":
+        case "RevisionText.04_Datacube16":
+        case "RevisionText.04_Datacube17":
+        case "RevisionText.04_Datacube18":
+        case "RevisionText.04_Datacube19":
+        case "RevisionText.04_Datacube20":
+        case "RevisionText.04_Datacube21":
+            return "Note from Gunther";  //More notes for leaving Gunther drinks.  I ain't writing descriptions for all of these
+
+        case "DeusExText.05_Book01":
+            return "DMoreau Login";
+        case "DeusExText.05_Datacube01":
+            return "Detention Block Codes";
+        case "DeusExText.05_Datacube02":
+            return "MJ12 Lab Security Login";
+        case "DeusExText.05_Datacube03":
+            return "Surgery Ward Door Code and PSherman Login";
+        case "DeusExText.05_Datacube04":
+            return "Armory Door Code";
+        case "DeusExText.05_Datacube05":
+            return "Greasel Dissection Chart";
+        case "DeusExText.05_Datacube06":
+            return "Acoustic Sound Sensors";
+        case "DeusExText.05_Datacube07":
+            return "Surgical Pre-Evaluation: Paul Denton";
+        case "DeusExText.05_Datacube08":
+        case "RevisionText.05_Datacube05":
+            return "UNATCO Logins";
+        case "DeusExText.05_Datacube10":
+            return "Prospectus: Series P Agents";
+        case "DeusExText.WaltonSimons":
+            return "Walton Simons";
+        case "RevisionText.05_Datacube01":
+            return "Medical Wing Door Code";
+        case "RevisionText.05_Datacube02":
+            return "Note to Marty";
+        case "RevisionText.05_Datacube03":
+            return "Armory Upstairs Door Code";
+        case "RevisionText.05_Datacube04":
+            return "Armory Area Door Code";
+
+        case "DeusExText.06_Book01":
+        case "RevisionText.06_Book01_Biomod":
+        case "RevisionText.06_Book01_Rev":
+            return "MJ12 Nano-Augmentation Experiment Series 3-C";
+        case "DeusExText.06_Book05":
+            return "Journal of Hung Kwan Gordon Quick";
+        case "DeusExText.06_Book07":
+            return "Karkian Scientist Final Note";
+        case "DeusExText.06_Book10":
+            return "The True Way";
+        case "DeusExText.06_Book15":
+            return "Tai-Fun";
+        case "DeusExText.06_Book16":
+            return "Insurgent";
+        case "DeusExText.06_Book17":
+            return "The Most Holy Annals of the Luminous Path";
+        case "DeusExText.06_Datacube01":
+            return "Acoustic Gunfire Sensors";
+        case "DeusExText.06_Datacube02":
+            return "Helibase Elevator Code";
+        case "DeusExText.06_Datacube03":
+            return "Note to Officer Tam"; //Note from Central Police Command to Tam about the triad conflicts
+        case "DeusExText.06_Datacube04":
+            return "Surveillance Note"; //Luminous Path spotted the helicopter coming in
+        case "DeusExText.06_Datacube05":
+            return "Maggie's Birthday";
+        case "DeusExText.06_Datacube06":
+            return "Yuen Interrogation Recording";
+        case "DeusExText.06_Datacube07":
+            return "Versalife Security Records";
+        case "DeusExText.06_Datacube08":
+            return "Versalife Sign-Ins";
+        case "DeusExText.06_Datacube09":
+            return "Nervous Notes";
+        case "DeusExText.06_Datacube10": //Mentions that Lundquist has Root, and MChow should be granted access, but no passwords
+            return "Note to Harrison"; //From Dr Lundquist to Harrison
+        case "DeusExText.06_Datacube11":
+            return "MJ12 Security Login";
+        case "DeusExText.06_Datacube12":
+            return "Weapons Research Team Login";
+        case "DeusExText.06_Datacube13":
+            return "Police Station Door Code";
+        case "DeusExText.06_Datacube14":
+            return "Report on Dr. Feng"; //Just lore, Maggie reported a doctor who was talking about the Gray Death too much
+        case "DeusExText.06_Datacube15":
+            return "Note to Mr. Hundley";  //Tai-Fun is compromised, report use of it!
+        case "DeusExText.06_Datacube16":
+            return "Helibase Gas Purge Code";
+        case "DeusExText.06_Datacube17":
+            return "Ship's Captain Log";
+        case "DeusExText.06_Datacube18":
+            return "Helibase Security Login";
+        case "DeusExText.06_Datacube19":
+            return "Officer Tam Login";
+        case "DeusExText.06_Datacube20":
+            return "Queen's Tower Login and Code";
+        case "DeusExText.06_Datacube21":
+            return "Maggie Chow's Favorite Books";
+        case "DeusExText.06_Datacube22":
+            return "Police Report";
+        case "DeusExText.06_Datacube23":
+            return "Jock's Login";
+        case "DeusExText.06_Datacube24":
+            return "Superfreighter Refitting";
+        case "DeusExText.06_Datacube25":
+            return "UC Shutdown Code";
+        case "DeusExText.06_Datacube27":
+            return "Versalife Floorplans"; //UNUSED
+        case "DeusExText.06_Datacube28":
+            return "Wan Chai Market Map";
+        case "DeusExText.06_Datacube29":
+            return "Magnetic Testing Chamber Code";
+        case "DeusExText.06_Datacube30":
+            return "Versalife Level 2 Door Seal Code";
+        case "DeusExText.06_Datacube31":
+            return "Versalife Data Entry Login";
+        case "DeusExText.06_Datacube32":
+            return "Deck One Flight Control Note";
+        case "DeusExText.06_Newspaper01":
+            return "UNATCO Responds to Terrorist Attack";
+        case "DeusExText.06_Newspaper03":
+            return "Gray Death Cases Misdiagnosed";
+        case "DeusExText.06_Newspaper04":
+            return "Canal Road Tunnel Collapse";
+        case "DeusExText.GrayDisection":
+            return "Gray Dissection";
+        case "RevisionText.06_Book01":  //Note that this is a *different* 06_Book01 from above
+            return "Van Problems";
+        case "RevisionText.06_Book02":
+            return "Chan's Diary";
+        case "RevisionText.06_Datacube01":
+            return "Zhanshan Temple Closed";
+        case "RevisionText.06_Datacube03":
+            return "Note to Tessa";
+        case "RevisionText.06_Datacube04":
+            return "Pipe Checks";
+        case "RevisionText.06_Datacube05":
+            return "Private Office Door Code";
+        case "RevisionText.06_Newspaper01":
+            return "Furnitures for Sale!";
+        case "RevisionText.06_Newspaper02":
+            return "VERY CHEAP FOOD!";
+        case "RevisionText.06_Newspaper03":
+            return "Mall News";
+        case "RevisionText.06_Newspaper04":
+            return "Shots Fired";
+
+        case "DeusExText.08_Datacube01":
+            return "Free Clinic Login";
+        case "DeusExText.08_Newspaper02":
+            return "Terrorist Bombing Kills 35";
+        case "DeusExText.08_Newspaper03":
+            return "SOCIETY: Party Against Tomorrow";
+        case "DeusExText.08_Newspaper04":
+            return "Beth DuClare Awarded Legion of Honor";
+        case "RevisionText.08_Datacube01":
+            return "Zyme Addict's Note";
+        case "RevisionText.08_Datacube02":
+            return "Note to Cassy";
+
+        case "DeusExText.09_Book01":
+            return "Naval Yard Sign-Ins";
+        case "DeusExText.09_Datacube01":
+            return "Note to Captain Keene"; //Talk to the dock foreman for the ramp code
+        case "DeusExText.09_Datacube02":
+            return "Ship Armory Code";
+        case "DeusExText.09_Datacube03":
+            return "Captain's Quarters Code";
+        case "DeusExText.09_Datacube04":
+            return "Ship Ops Code";
+        case "DeusExText.09_Datacube05":
+            return "Superfreighter Status Update";
+        case "DeusExText.09_Datacube06":
+            return "Ship Hangar Code";
+        case "DeusExText.09_Datacube07":
+            return "Ship Engine Room Bridge Code";
+        case "DeusExText.09_Datacube08":
+            return "East Warehouse Security Office Code";
+        case "DeusExText.09_Datacube09":
+            return "Submarine Facility Door Code";
+        case "DeusExText.09_Datacube10":
+            return "Root Login";
+        case "DeusExText.09_Datacube11":
+            return "Walton Simons Login";
+        case "DeusExText.09_Datacube12":
+            return "USFEMA Login";
+        case "DeusExText.09_Datacube13":
+            return "KZhao Login";
+        case "DeusExText.09_Datacube14":
+        case "RevisionText.09_Datacube14":
+            return "Ship Ramp Code";
+        case "DeusExText.09_Newspaper01":
+            return "Search for Terrorist Leader Intensifies";
+        case "DeusExText.09_Newspaper02":
+            return "Page Unveils 'Aquinas'";
+        case "DeusExText.09_Newspaper03":
+            return "Family Discovers New Species";
+        case "RevisionText.09_Book01":
+            return "Sandoval 25:18";
+        case "RevisionText.09_Book02":
+            return "The Definitive Anthology of Children's Very Short Stories";
+        case "RevisionText.09_Datacube01":
+            return "Reconnaissance";
+        case "RevisionText.09_Datacube02":
+            return "Gatehouse Security Login";
+        case "RevisionText.09_Datacube03":
+            return "Out of Coffee!";
+        case "RevisionText.09_Datacube04":
+            return "Jazz Computer Login";
+        case "RevisionText.09_Datacube05":
+            return "VODKA";
+        case "RevisionText.09_Datacube06":
+            return "Lower Decks Door Code";
+        case "RevisionText.09_Datacube07":
+            return "Weld Point Security Door Codes";  //For those boxes around the two in the main engine room
+        case "RevisionText.09_Datacube08":
+            return "Lower Decks Security Login";
+        case "RevisionText.09_Datacube09":
+            return "Break Room Security Login";
+        case "RevisionText.09_Datacube15":
+            return "Fan Safety";
+        case "RevisionText.09_Newspaper01":
+            return "Accident At Versalife Sets Back Ambrosia Production";
+
+        case "DeusExText.10_Book01":
+            return "Richard III: Act I, Scene IV";
+        case "DeusExText.10_Book04":
+            return "Common Sense";
+        case "DeusExText.10_Book05":
+            return "The Eye of Argon";
+        case "DeusExText.10_Book07":
+            return "Petals of Twilight";
+        case "DeusExText.10_Book09":
+            return "Maintenance Lift Code";
+        case "DeusExText.10_Datacube01":
+            return "Agent Hela's Orders";
+        case "DeusExText.10_Datacube02":
+            return "Beth's Computer Login";
+        case "DeusExText.10_Datacube07":
+            return "Club Storeroom Code";
+        case "DeusExText.10_Datacube09":
+            return "Paris Street Map";
+        case "DeusExText.10_Datacube10":
+            return "Note to Chad";  //A guy reporting to Chad about MJ12 in the catacombs
+        case "DeusExText.10_Datacube11":
+            return "Agent Hela Login";
+        case "DeusExText.10_Datacube12":
+            return "RZelazny Login";
+        case "DeusExText.10_Datacube13":
+            return "Chateau Suspension Vault Code";
+        case "DeusExText.10_Newspaper01":
+            return "Catacombs Closed to Public";
+        case "DeusExText.10_Newspaper02":
+            return "Police Raid Catacombs";
+        case "DeusExText.10_Newspaper03":
+            return "Exclusive: Bob Page Interview";
+        case "DeusExText.10_Newspaper04":
+            return "Bot Kills Three in Accidental Shooting";
+        case "DeusExText.10_Newspaper05":
+            return "Somnolente Ile Scandal Resurfaces";
+        case "RevisionText.10_Book01":
+            return "Henry Leighton's Journal";
+        case "RevisionText.10_Book02":
+            return "Reyn's Table: Chapter 1";
+        case "RevisionText.10_Datacube01":
+            return "Metro Station Security Login";
+        case "RevisionText.10_Newspaper01":
+            return "The Atlantic Standard (International Edition)";
+
+        case "DeusExText.11_Book01":
+            return "MJ12 Compromised Individuals List";
+        case "DeusExText.11_Book02":
+            return "The Doctrine of the Mighty";
+        case "DeusExText.11_Book08":
+            return "Testament of Adept 34501";
+        case "DeusExText.11_Book09":
+            return "Project Morpheus: Notebook 8-B";
+        case "DeusExText.11_Book10":
+            return "MJ12 Troop Journal";
+        case "DeusExText.11_Datacube01":
+            return "Everett's Security Login";
+        case "DeusExText.11_Datacube02":
+            return "Morpheus Door Code";
+        case "DeusExText.11_Datacube03":
+        case "RevisionText.11_Datacube03":
+            return "Adept 34501 Cathedral Codes";
+        case "DeusExText.11_Newspaper01":
+            return "United States Institutes Martial Law";
+        case "RevisionText.11_Datacube01":
+            return "Interpol Wanted: J.C. Denton";
+        case "RevisionText.11_Datacube02":
+            return "Cathedral Security Login";
+
+        case "DeusExText.12_Datacube01":
+            return "Tunnel Security Login";
+        case "DeusExText.12_Datacube02":
+            return "Vandenberg Guardhouse Note";
+
+        case "DeusExText.14_Book01":
+            return "Thomas Mann: Last Will and Testament";
+        case "DeusExText.14_Book02":
+            return "Universal Constructor: Theory, Principles, and Practice";
+        case "DeusExText.14_Book03":
+            return "Silo Scientist List";
+        case "DeusExText.14_Datacube01":
+        case "RevisionText.14_Datacube01":
+            return "URV Bay Security Login";
+        case "DeusExText.14_Datacube02":
+        case "RevisionText.14_Datacube05":
+            return "OceanLab Tunnel Code";
+        case "DeusExText.14_Datacube03":
+            return "OceanLab UC Security Login";
+        case "DeusExText.14_Datacube04"://Warning about spiders and stuff in UC
+            return "Final Note";
+        case "DeusExText.14_Datacube05":
+            return "Silo Launch Computer Login";
+        case "DeusExText.14_Datacube06":
+            return "OceanGuard Login";
+        case "DeusExText.14_Datacube07": //Yushio heading down to UC
+            return "Note to Mary Beth";
+        case "DeusExText.14_Newspaper01":
+            return "U.S. Situation Worsens";
+        case "RevisionText.14_Book01":
+            return "Everything You Ever Wanted To Know About..."; //...Tidal Influence on Undersea Communications Arrays (But Were Too Afraid To Ask Because You Were Worried It Would Make You Look Incompetent)
+        case "RevisionText.14_Book02":
+            return "Dangerous Days: Chapter 14";
+        case "RevisionText.14_Datacube02":
+            return "Note from Dr. Michael Roth";
+        case "RevisionText.14_Datacube03":
+            return "Employee Evaluation";
+        case "RevisionText.14_Datacube04":
+            return "Operations Room Door Code";
+
+        case "DeusExText.15_Datacube06":
+            return "Problem Recommendation Report 87-X";
+        case "DeusExText.15_Datacube07":
+        case "DeusExText.A51BlastDoorComputerHintCube":  //This cube replaces the text tag above
+            return "Bunker Door Security Login";
+        case "DeusExText.15_Datacube08":
+            return "Maintenance Log: Purvis, J.";
+        case "DeusExText.15_Datacube09":
+            return "Coolant Room Door Code";
+        case "DeusExText.15_Datacube10":
+            return "Last Words";  //Recording of a dude dying
+        case "DeusExText.15_Datacube11":
+            return "Aquinas Router Door Code";
+        case "DeusExText.15_Datacube12":
+            return "Explosives Locker Door Code";
+        case "DeusExText.15_Datacube13":
+            return "JShears Login";
+        case "DeusExText.15_Datacube14":
+            return "Technical Report 12-Y";
+        case "DeusExText.15_Datacube15":
+            return "A new god, crafted in our likeness";  //"Page is God", "All Praise the UC"
+        case "DeusExText.15_Datacube17":
+            return "Lab B13 Login";
+        case "DeusExText.15_Datacube18":
+        case "RevisionText.15_Datacube02":
+            return "Gray Lab Login";
+        case "DeusExText.15_Datacube19":
+            return "Reactor Room Door Code";
+        case "DeusExText.15_Datacube20":
+            return "Hiding in the Reactor Lab";
+        case "DeusExText.15_Datacube21":
+            return "Page Security Login";
+        case "DeusExText.Area51Sector4":
+            return "Area 51 Sector 4 Map";
+        case "RevisionText.15_Datacube01":
+            return "Note to Rose";
+
+/////////////////////////
+//   Added datacubes   //
+/////////////////////////
+
+        case "DeusExText.LeoHintCube":
+            return "Note from Leo";
+
+        case "DeusExText.FixedSaveReminder":
+            return "Save Reminder";
+
+        case "DeusExText.ManderleyKillphraseHint":
+            return "Anna's Killphrase Note";
+
+        case "DeusExText.DTSHintCube":
+            return "Dragon Tooth Sword Note";
+
+        case "DeusExText.EMGeneratorHintCube":
+            return "EM Generator Installation Note";
+
+        case "DeusExText.JCCompPassword":
+            return "JC's Computer Login";
+
+        case "DeusExText.KillphrasePassword":
+            return "Anna's Killphrase Login";
+
+        case "DeusExText.VersalifeMainElevatorCode":
+            return "Versalife Market Elevator Code";
+
+        case "DeusExText.VersalifeNanotechCode":
+            return "Versalife Level 2 Lab Code";
+
+        case "DeusExText.PoliceVaultPassword":
+            return "Police Vault Code";
+
+        case "DeusExText.LuckyMoneyPassword":
+            return "Lucky Money Security Login";
+
+        case "DeusExText.JennysNumber":
+            return "Jenny's Number";
+
+        case "DeusExText.A51VentComputerCode":
+            return "Area 51 Ventilation Security Login";
+
+        case "DeusExText.A51VentElevatorCode":
+            return "Area 51 Ventilation Elevator Code";
+
+        case "DeusExText.UCControlRoomPassword":
+            return "UC Control Room Code";
+
+        case "#var(package).RepairbotNearby":
+            return "Repair Bot Nearby";
+
+        case "#var(package).MedbotNearby":
+            return "Medical Bot Nearby";
+
+        case "#var(package).AugbotNearby":
+            return "Augmentation Bot Nearby";
+
+///////////////////////////////
+//   GROUPS OF TEXT THINGS   //
+///////////////////////////////
+
+
+        case "DeusExText.01_Book01":
+        case "DeusExText.01_Book02":
+        case "DeusExText.01_Book03":
+        case "DeusExText.01_Book04":
+        case "DeusExText.01_Book05":
+        case "DeusExText.01_Book06":
+        case "DeusExText.01_Book07":
+        case "DeusExText.01_Book08":
+            return "UNATCO Handbook";
+
+        case "DeusExText.01_Newspaper04":
+            return "Midnight Sun: Ryan Allan";
+        case "DeusExText.01_Newspaper06":
+        case "DeusExText.01_Newspaper08":
+        case "RevisionText.01_Newspaper08": //Corrects a few typos in original
+        case "DeusExText.02_Newspaper06":
+        case "DeusExText.03_Newspaper02":
+        case "DeusExText.08_Newspaper01":
+            return "Midnight Sun: Joe Greene";
+
+        case "DeusExText.01_Datacube09":
+            return "Janine's Bots: Medical Bot";
+        case "DeusExText.03_Datacube11":
+            return "Janine's Bots: Repair Bot";
+        case "DeusExText.05_Datacube09":
+            return "Janine's Bots: Peacebringer";
+        case "DeusExText.06_Datacube26":  //Unused
+            return "Janine's Bots: Spider Bot";
+
+        case "DeusExText.01_Book10":
+            return "Project Dibbuk: Overview";
+        case "DeusExText.05_Book06":
+        case "DeusExText.06_Book02":
+            return "Project Dibbuk: Specifications and Operation";
+        case "DeusExText.06_Book06":
+            return "Project Dibbuk: Thoughts and Meditations";
+
+        case "DeusExText.02_Newspaper03":
+            return "Chinese Lunar Mine Operational"; //Lunar Mining
+        case "DeusExText.03_Newspaper01":
+            return "McMoran Slings Chinese Ore"; //Lunar Mining
+        case "DeusExText.06_Newspaper02":
+            return "Mass Driver Accident Kills Over 2,000"; //Lunar Mining
+
+        case "DeusExText.02_Book10":
+        case "DeusExText.04_Book10":  //Unused
+            return "Chlorine and Water Treatment Report";
+
+        case "DeusExText.02_Book06":
+        case "DeusExText.04_Book06":
+            return "Basic Firearm Safety Rules";
+
+        case "DeusExText.02_Book09":
+        case "DeusExText.04_Book09":  //Unused
+            return "Nanotechnology for Stupid People";
+
+        case "DeusExText.02_Book04":
+        case "DeusExText.04_Book04":
+            return "CIA Factbook 2050: Hong Kong";
+
+        case "DeusExText.02_Book08":
+        case "DeusExText.04_Book08":
+            return "The Modern Terrorist's Handbook";
+
+        case "DeusExText.02_Book07":
+        case "DeusExText.04_Book07":
+            return "The Reluctant Dictators";
+
+        case "DeusExText.02_Book01":
+        case "DeusExText.04_Book01":
+            return "Vishnu's Fall";
+
+        case "DeusExText.02_Book02":
+        case "DeusExText.04_Book02":
+            return "Hotel Register";
+
+        case "DeusExText.06_Book04":
+            return "Chinese Silver Loaves Recipe"; //Joy of Cooking
+        case "DeusExText.10_Book06":
+            return "Coq au Vin Recipe"; //Joy of Cooking
+
+        case "DeusExText.11_Book04":
+            return "The Red Cross: A History of the Knights Templar, Volume One";
+        case "DeusExText.11_Book05":
+            return "The Red Cross: A History of the Knights Templar, Volume Two";
+        case "DeusExText.11_Book06":
+            return "The Red Cross: A History of the Knights Templar, Volume Three";
+        case "DeusExText.11_Book07":
+            return "The Red Cross: A History of the Knights Templar, Volume Four";
+
+        case "DeusExText.02_Book03":
+        case "DeusExText.04_Book03":
+            return "Jacob's Shadow: Chapter 12";
+        case "DeusExText.03_Book04":
+            return "Jacob's Shadow: Chapter 15";
+        case "DeusExText.06_Book03":
+            return "Jacob's Shadow: Chapter 20";
+        case "DeusExText.09_Book02":
+            return "Jacob's Shadow: Chapter 23";
+        case "DeusExText.10_Book02":
+            return "Jacob's Shadow: Chapter 27";
+        case "DeusExText.12_Book01":
+            return "Jacob's Shadow: Chapter 32";
+        case "DeusExText.15_Book01":
+            return "Jacob's Shadow: Chapter 34";
+
+        case "DeusExText.02_Book05":
+        case "DeusExText.03_Book05":
+        case "DeusExText.04_Book05":
+        case "DeusExText.10_Book03":
+        case "DeusExText.12_Book02":
+        case "DeusExText.14_Book04":
+        case "DeusExText.15_Book02":
+            return "The Man Who Was Thursday";
+
+        case "DeusExText.15_Datacube01": //Entrance Sleep Pod Code
+        case "DeusExText.SleepPodCode1":
+        case "DeusExText.SleepPodCode2":
+        case "DeusExText.SleepPodCode3":
+            return "Sleeping Pod Code";
+
+        case "DeusExText.15_Datacube02":
+        case "DeusExText.15_Datacube03":
+        case "DeusExText.15_Datacube04":
+        case "DeusExText.15_Datacube05":
+        case "DeusExText.CloneCube1":
+        case "DeusExText.CloneCube2":
+        case "DeusExText.CloneCube3":
+        case "DeusExText.CloneCube4":
+            return "Clone Data";
+
+        case "DeusExText.01_Datacube07":
+        case "DeusExText.02_Datacube08":
+        case "DeusExText.02_Datacube13":
+        case "DeusExText.04_Datacube03":
+        case "#var(package).04_Datacube03":  //Modified version of above
+        case "DeusExText.10_Datacube03":
+        case "DeusExText.10_Datacube04":
+        case "DeusExText.10_Datacube05":
+        case "DeusExText.10_Datacube06":
+        case "DeusExText.10_Datacube08":
+        case "DeusExText.11_Book03":
+        case "DeusExText.MarketATMPassword":
+        case "DeusExText.QuickStopATMPassword":
+        case "RevisionText.06_Datacube02":
+            return "ATM Login";
+    }
+
+    //Prefix matches - These are probably all generated by us, so we don't need to worry about the text package
+    i = InStr(texttag,"_");
+    if (i!=-1){
+        prefix = Left(texttag,i);
+        switch(prefix){
+            case "DXRMachinesRandoTurret": //Datacubes for added turrets (with a security computer)
+                i = FindLast(texttag,"_");
+                s1 = Mid(texttag,i+1); //Grab everything after the last _ (should be the computer name)
+                return s1 $" Login";
+            case "CrowdControlSpamCubes": //Spam datacubes from Crowd Control
+                //These are meant to distract and fill up your notes, so don't hint they're anything...
+                return "Note";
+        }
+    }
+
+    //Didn't match anything!
+    if (class'DXRVersion'.static.VersionIsStable()) {
+        return "";
+    } else {
+        //Show the text package + text tag for non-stable versions
+        return fullTag;
+    }
+}

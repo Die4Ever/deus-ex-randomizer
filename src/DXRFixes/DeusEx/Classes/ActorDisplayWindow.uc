@@ -183,7 +183,11 @@ function string GetActorName(Actor a)
             str = #var(prefix)Nanokey(a).Description;
         }
         else if(#var(prefix)InformationDevices(a) != None) {
-            str = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(a));
+            str = class'#var(injectsprefix)InformationDevices'.static.GetHumanNameFromID(#var(prefix)InformationDevices(a));
+            if (str==""){
+                str = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(a));
+            }
+
         }
         else if(ScriptedPawn(a) != None) {
             str = ScriptedPawn(a).FamiliarName;
@@ -240,7 +244,7 @@ function DrawWindow(GC gc)
     local float speed;
     local name stateName;
     local float temp;
-    local string str;
+    local string str,str2;
     local texture skins[9];
     local color mainColor;
     local byte zoneNum;
@@ -805,7 +809,9 @@ function DrawWindow(GC gc)
             {
                 if (#var(prefix)InformationDevices(trackActor)!=None){
                     str = str $ "|c34d8eb";
-                    str = str $ "TextTag=" $ class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(trackActor)) $ CR();
+                    str2 = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(trackActor));
+                    str = str $ "TextTag=" $ str2 $ CR();
+                    str = str $ "Human=" $ class'DXRDatacubes'.static.GetHumanTextTagName(str2,#var(prefix)InformationDevices(trackActor).TextPackage) $ CR();
                 }
             }
             //#endregion
