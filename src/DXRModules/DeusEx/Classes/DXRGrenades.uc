@@ -82,6 +82,7 @@ function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)T
     gren.bProximityTriggered = True;
     gren.bStuck = True;
     gren.event = event;
+    gren.bHighlight = True; //HX makes thrown grenades not highlightable, and planted ones explicitly become highlighted
 
     return gren;
 }
