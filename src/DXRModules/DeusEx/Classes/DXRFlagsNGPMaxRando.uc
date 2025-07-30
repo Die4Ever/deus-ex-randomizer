@@ -55,6 +55,8 @@ simulated function InitMaxRandoSettings()
 //the options available in DXRMenuSetupRando
 simulated function RandomizeSettings(bool forceMenuOptions)
 {
+    local bool isHalloween;
+
     info("RandomizeSettings("$string(forceMenuOptions)$")");
 
     // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
@@ -105,7 +107,8 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
-    if(DXRFlags(self).IsHalloweenMode()) {  // this cast is pretty nasty
+    isHalloween = DXRFlags(self).IsHalloweenMode(); // this cast is pretty nasty
+    if(isHalloween) {
         moresettings.reanimation = rng(10) + 15;
     } else if (chance_single(33)) {
         if (chance_single(50)) {
@@ -114,6 +117,13 @@ simulated function RandomizeSettings(bool forceMenuOptions)
             moresettings.reanimation = rng(15) + 15;
         }
     } else {
+        settings.enemyrespawn = 0;
+        moresettings.reanimation = 0;
+    }
+
+    //HX shouldn't max rando into respawns or resurrection
+    //on the first loop, unless you're in Halloween mode
+    if (#defined(hx) && !isHalloween && newgameplus_loops==0){
         settings.enemyrespawn = 0;
         moresettings.reanimation = 0;
     }
