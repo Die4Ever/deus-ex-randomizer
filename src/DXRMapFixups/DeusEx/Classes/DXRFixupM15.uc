@@ -97,7 +97,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     local #var(prefix)Button1 b;
     local Switch2 s2;
     local SequenceTrigger st;
-    local DataLinkTrigger dlt;
+    local #var(prefix)DataLinkTrigger dlt;
     local Dispatcher disp;
     local OnceOnlyTrigger oot;
     local Trigger trig;
@@ -199,7 +199,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     }
 
     // find the DataLinkTrigger where Page tells you to jump, we use this for finding the door and adjusting its position
-    foreach AllActors(class'DataLinkTrigger',dlt){
+    foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Bunker_Fan') {
             //Lock the fan entrance top door
             d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
@@ -286,7 +286,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local Switch1 s;
     local Switch2 s2;
     local SpecialEvent se;
-    local DataLinkTrigger dlt;
+    local #var(prefix)DataLinkTrigger dlt;
     local SkillAwardTrigger sat;
     local Dispatcher disp;
     local FlagTrigger ft;
@@ -296,7 +296,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local int i;
 
     //Increase the radius of the datalink that opens the sector 4 blast doors
-    foreach AllActors(class'DataLinkTrigger',dlt){
+    foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Helios_Door2'){
             dlt.SetCollisionSize(900,dlt.CollisionHeight);
         }
@@ -416,7 +416,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         //There's a trigger for this at the top of the elevator, but it has collide actors false.
         //Easier to just spawn a new one near the elevator so you can actually hear it before
         //the game is over.
-        dlt = Spawn(class'DataLinkTrigger',,,vectm(-3988,1215,-1542));
+        dlt = Spawn(class'#var(prefix)DataLinkTrigger',,,vectm(-3988,1215,-1542));
         dlt.SetCollisionSize(200,40);
         dlt.datalinkTag='DL_Final_Helios07';
 

@@ -75,7 +75,7 @@ function PreFirstEntryMapFixes()
     local #var(DeusExPrefix)Mover m;
     local #var(prefix)AllianceTrigger at;
     local DeusExMover d;
-    local DataLinkTrigger dt;
+    local #var(prefix)DataLinkTrigger dt;
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)ComputerPersonal cp;
     local #var(prefix)Keypad pad;
@@ -469,7 +469,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';
         }
-        foreach AllActors(class'DataLinkTrigger', dt) {
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
             if(dt.name == 'DataLinkTrigger0')
                 dt.Tag = 'TongHasRom';
         }
@@ -1150,7 +1150,7 @@ function AnyEntryMapFixes()
                     }
                     break;
                 case "Operation1":
-                    DataLinkTrigger(a).checkFlag = 'QuickLetPlayerIn';
+                    #var(prefix)DataLinkTrigger(a).checkFlag = 'QuickLetPlayerIn';
                     break;
                 case "TurnOnTheKillSwitch":
                     if (boolFlag == True)
