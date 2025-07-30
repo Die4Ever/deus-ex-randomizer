@@ -928,17 +928,17 @@ function Area51_CountBlueFusion()
     if(#defined(vanilla) && !f.GetBool('DL_Blue4_Played') && remaining < required) {
         // play datalinks when devices are frobbed
         if (remaining == 3 && !f.GetBool('DL_Blue1_Played')) {
-            player().StartDataLinkTransmission("DL_Blue1");
+            DXRStartDataLinkTransmission("DL_Blue1");
         }
         else if (remaining == 2 && !f.GetBool('DL_Blue2_Played')) {
-            player().StartDataLinkTransmission("DL_Blue2");
+            DXRStartDataLinkTransmission("DL_Blue2");
         }
         else if (remaining == 1 && !f.GetBool('DL_Blue3_Played')) {
-            player().StartDataLinkTransmission("DL_Blue3");
+            DXRStartDataLinkTransmission("DL_Blue3");
         }
         else if (remaining <= 0 && !f.GetBool('DL_Blue4_Played'))
         {
-            player().StartDataLinkTransmission("DL_Blue4");
+            DXRStartDataLinkTransmission("DL_Blue4");
         }
     }
 }

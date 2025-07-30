@@ -301,11 +301,11 @@ function MissionTimer()
                     count++;
 
                 if (count == 1)
-                    Player().StartDataLinkTransmission("DL_TaggedOne");
+                    DXRStartDataLinkTransmission("DL_TaggedOne");
                 else if (count == 2)
-                    Player().StartDataLinkTransmission("DL_TaggedTwo");
+                    DXRStartDataLinkTransmission("DL_TaggedTwo");
                 else if (count == 3)
-                    Player().StartDataLinkTransmission("DL_TaggedThree");
+                    DXRStartDataLinkTransmission("DL_TaggedThree");
 
                 f.SetBool('Barrel3Checked', True,, 4);
             }

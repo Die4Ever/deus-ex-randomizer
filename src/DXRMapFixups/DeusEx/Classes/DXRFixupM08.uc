@@ -514,7 +514,7 @@ function PostFirstEntryMapFixes()
     local name rpTag;
     local DXRReinforcementPoint reinforce;
 
-    Player().StartDataLinkTransmission("DL_Entry"); // play on any start
+    DXRStartDataLinkTransmission("DL_Entry"); // play on any start
     switch(dxr.localURL)
     {
         case "08_NYC_STREET":

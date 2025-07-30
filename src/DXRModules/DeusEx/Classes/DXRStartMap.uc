@@ -1018,7 +1018,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
             break;
         case 36:
-            player.StartDataLinkTransmission("DL_LebedevKill");
+            DXRStartDataLinkTransmission("DL_LebedevKill");
             break;
         case 37:
             AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
@@ -1028,7 +1028,7 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
             break;
         case 43:
-            player.StartDataLinkTransmission("DL_JockParkStart");
+            DXRStartDataLinkTransmission("DL_JockParkStart");
             break;
         case 41:
             AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
@@ -1058,12 +1058,12 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 65:
             AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
             AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
-            player.StartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
+            DXRStartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
             break;
         case 64:
         case 63:
         case 62:
-            player.StartDataLinkTransmission("DL_Jock_05");
+            DXRStartDataLinkTransmission("DL_Jock_05");
             break;
 
         case 90:

@@ -2045,6 +2045,18 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
     return Spawn(what,,, loc, spawnedRot);
 }
 
+
+//This makes life easier and more consistent when starting infolinks from code.
+//Don't use either of the functions below directly!
+function bool DXRStartDataLinkTransmission( String DatalinkName )
+{
+#ifdef hx
+    return HXGameInfo(Level.Game).StartDataLinkTransmission( DatalinkName );
+#else
+    return player().StartDataLinkTransmission( DatalinkName );
+#endif
+}
+
 //#region Unit Handling
 //Unit Conversion functions
 static function float GetRealDistance(float dist){
