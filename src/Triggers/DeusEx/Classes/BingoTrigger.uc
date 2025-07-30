@@ -1,7 +1,7 @@
 //=============================================================================
 // BingoTrigger.
 //=============================================================================
-class BingoTrigger expands Trigger;
+class BingoTrigger expands #var(prefix)Trigger;
 
 var() String bingoEvent;
 var() bool bDestroyOthers;

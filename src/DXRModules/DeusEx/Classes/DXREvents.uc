@@ -1019,7 +1019,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'purge',vectm(0,0,0));
 
         foreach AllActors(class'#var(prefix)Trigger',trig){
-            if (trig.classProximityType==class'Basketball'){
+            if (trig.classProximityType==class'#var(prefix)Basketball'){
                 break;
             }
         }
