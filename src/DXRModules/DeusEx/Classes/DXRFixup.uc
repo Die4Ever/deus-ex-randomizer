@@ -933,8 +933,8 @@ function FixHarleyFilben()
 
 function FixSamCarter()
 {
-    local SamCarter s;
-    foreach AllActors(class'SamCarter', s) {
+    local #var(prefix)SamCarter s;
+    foreach AllActors(class'#var(prefix)SamCarter', s) {
         RemoveFears(s);
     }
 }
