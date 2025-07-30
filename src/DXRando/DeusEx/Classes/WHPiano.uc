@@ -111,7 +111,11 @@ simulated function Tick(float deltaTime)
             }
 
             if(player != None) {
-                player.ClientMessage(message);
+                if (#defined(hx)) {
+                    //Show the players name instead
+                    message = player.PlayerReplicationInfo.PlayerName $ Mid(message,3);
+                }
+                BroadcastMessage(message);
                 player = None;
             }
 
