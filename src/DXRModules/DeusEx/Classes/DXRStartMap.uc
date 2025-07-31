@@ -395,6 +395,45 @@ function bool IsStartMap()
     return _IsStartMap(dxr);
 }
 
+//Translate a map name into a starting map value (for HX purposes)
+static function int GetHXStartMapVal(string startMap)
+{
+    switch(startMap){
+        case "00_Intro":
+            return 0;
+        case "00_Training":
+            return 0; //We don't really have a proper representation of this
+        case "01_NYC_UNATCOIsland":
+            return 10;
+        case "02_NYC_BatteryPark":
+            return 20;
+        case "03_NYC_UNATCOIsland":
+            return 30;
+        case "04_NYC_UNATCOIsland":
+            return 40;
+        case "05_NYC_UNATCOMJ12lab":
+            return 50;
+        case "06_HongKong_Helibase":
+            return 60;
+        case "08_NYC_Street":
+            return 80;
+        case "09_NYC_Dockyard":
+            return 90;
+        case "10_Paris_Catacombs":
+            return 100;
+        case "11_Paris_Cathedral":
+            return 110;
+        case "12_Vandenberg_Cmd":
+            return 120;
+        case "14_Vandenberg_Sub":
+            return 140;
+        case "15_Area51_Bunker":
+            return 150;
+        default:
+            return 0;
+    }
+}
+
 //#region _GetStartMap
 static function string _GetStartMap(int start_map_val, optional out string friendlyName, optional out int bShowInMenu)
 {

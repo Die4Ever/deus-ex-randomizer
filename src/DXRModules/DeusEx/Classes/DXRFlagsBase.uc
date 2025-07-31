@@ -1102,6 +1102,10 @@ simulated function LoadNoFlags()
         if( ! dxr.flagbase.GetBool('Rando_rolled') ) {
             HXRollSeed();
             dxr.flagbase.SetBool('Rando_rolled', true,, 999);
+
+            //Initialize the starting_map value based on the map selected when starting
+            //the server.  This is mostly for the purposes of generating a bingo board.
+            settings.starting_map = class'DXRStartMap'.static.GetHXStartMapVal(dxr.LocalURL);
         }
     }
 #endif
