@@ -986,6 +986,20 @@ function bool MoveGoalTo(string goalName, int locNumber)
     return false;
 }
 
+//HX runs InitializePawn sooner than vanilla - this function is to accomodate making sure
+//pawns created by CreateGoal end up in or out of world appropriately with HX
+function HXScriptedPawnPostInitWorldState(#var(prefix)ScriptedPawn sp)
+{
+    if (!#defined(hx)) return;
+
+    if (!sp.bInWorld)
+    {
+        // tricky
+        sp.bInWorld = true;
+        sp.LeaveWorld();
+    }
+}
+
 function PartialInWorld(Actor a, vector offset, bool onlyIfOutOfWorld)
 {
     #ifndef hx

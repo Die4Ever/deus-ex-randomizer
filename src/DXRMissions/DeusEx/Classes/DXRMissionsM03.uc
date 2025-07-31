@@ -316,15 +316,15 @@ function MissionTimer()
 
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
-    local BarrelAmbrosia ambrosia;
-    local FlagTrigger ft;
-    local SkillAwardTrigger st;
+    local #var(prefix)BarrelAmbrosia ambrosia;
+    local #var(prefix)FlagTrigger ft;
+    local #var(prefix)SkillAwardTrigger st;
 
     switch(g.name) {
     case "747 Ambrosia":
-        ambrosia = BarrelAmbrosia(Spawnm(class'BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos));
-        ft = FlagTrigger(Spawnm(class'FlagTrigger',, '747BarrelUsed', Loc.positions[1].pos));
-        st = SkillAwardTrigger(Spawnm(class'SkillAwardTrigger',, 'skills', Loc.positions[2].pos));
+        ambrosia = #var(prefix)BarrelAmbrosia(Spawnm(class'#var(prefix)BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos));
+        ft = #var(prefix)FlagTrigger(Spawnm(class'#var(prefix)FlagTrigger',, '747BarrelUsed', Loc.positions[1].pos));
+        st = #var(prefix)SkillAwardTrigger(Spawnm(class'#var(prefix)SkillAwardTrigger',, 'skills', Loc.positions[2].pos));
         g.actors[0].a = ambrosia;
         g.actors[1].a = ft;
         g.actors[2].a = st;

@@ -407,8 +407,8 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             sp.SetAlliance('spider');
         }
 
-        GiveItem(sp,class'WeaponPlasmaRifle',100);
-        GiveItem(sp,class'WeaponNanoSword');
+        GiveItem(sp,class'#var(prefix)WeaponPlasmaRifle',100);
+        GiveItem(sp,class'#var(prefix)WeaponNanoSword');
 
         sp.ConBindEvents();
 
@@ -428,6 +428,8 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             //EnterWorld later, after you go to Oceanlab and come back
             sp.bInWorld=False;
         }
+
+        HXScriptedPawnPostInitWorldState(sp);
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //Make him face the player and go hostile, rather than being ordered to attack

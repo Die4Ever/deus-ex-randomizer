@@ -470,9 +470,9 @@ function #var(prefix)GordonQuick CreateGordon(Vector pos, Rotator rot)
     local #var(prefix)GordonQuick gordon;
 
     gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', pos, rot));
-    GiveItem(gordon,class'WeaponAssaultShotgun',100);
-    GiveItem(gordon,class'WeaponSword');
-    GiveItem(gordon,class'WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
+    GiveItem(gordon,class'#var(prefix)WeaponAssaultShotgun',100);
+    GiveItem(gordon,class'#var(prefix)WeaponSword');
+    GiveItem(gordon,class'#var(prefix)WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
     gordon.bKeepWeaponDrawn = True;
     gordon.SetOrders('Standing');
     gordon.BarkBindName = "TriadLumPath";
