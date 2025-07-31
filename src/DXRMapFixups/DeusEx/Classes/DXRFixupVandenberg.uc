@@ -506,9 +506,14 @@ function PreFirstEntryMapFixes()
             ft.bTrigger = True;
             ft.event = 'schematic2';
         }
+
+        //This delay between setting the flag with the FlagTrigger and playing the
+        //infolink seems to help for HX.
+        AddDelayEvent('schematic2','schematic3',0.5);
+
         foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
             if (dlt.datalinkTag=='dl_downloaded'){
-                dlt.Tag = 'schematic2';
+                dlt.Tag = 'schematic3';
             }
         }
 
