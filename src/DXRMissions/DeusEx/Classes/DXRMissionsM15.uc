@@ -243,20 +243,22 @@ function PreFirstEntryMapFixes()
             }
         }
     } else if (dxr.localURL=="15_AREA51_PAGE" && !RevisionMaps) {
-        //Remove the insane prepivot on the UC door closers
-        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
-            if (dxm.Event=='UC_shutdoor1' ||
-                dxm.Event=='UC_shutdoor2' ||
-                dxm.Event=='UC_shutdoor3'){
+        //Remove the insane prepivot on the UC door closers (but not in HX, because it doesn't like that)
+        if (!#defined(hx)){
+            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+                if (dxm.Event=='UC_shutdoor1' ||
+                    dxm.Event=='UC_shutdoor2' ||
+                    dxm.Event=='UC_shutdoor3'){
 
-                v=vectm(0,0,dxm.PrePivot.Z);
+                    v=vectm(0,0,dxm.PrePivot.Z);
 
-                RemoveMoverPrePivot(dxm);
+                    RemoveMoverPrePivot(dxm);
 
-                //Return the Z component of the prepivot so the switches rotate on center
-                dxm.PrePivot=v;
-                dxm.BasePos=dxm.BasePos+v;
-                dxm.SetLocation(dxm.BasePos);
+                    //Return the Z component of the prepivot so the switches rotate on center
+                    dxm.PrePivot=v;
+                    dxm.BasePos=dxm.BasePos+v;
+                    dxm.SetLocation(dxm.BasePos);
+                }
             }
         }
     }

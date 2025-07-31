@@ -284,8 +284,10 @@ function PreFirstEntryMapFixes()
                 door.bPickable = false;// make sure DXRDoors sees this as an undefeatable door, also in vanilla this door is obviously not pickable due to not being frobbable
 
                 //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
-                //so that they are centered roughly in the middle of the door
-                RemoveMoverPrePivot(door);
+                //so that they are centered roughly in the middle of the door.  This doesn't work in HX.
+                if (!#defined(hx)){
+                    RemoveMoverPrePivot(door);
+                }
             }
         }
 
