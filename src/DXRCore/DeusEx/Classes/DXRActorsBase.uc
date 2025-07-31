@@ -1185,6 +1185,12 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
         info("SpawnDatacube "$dc$" at ("$loc$"), ("$rot$")");
         if(dxr.flags.settings.infodevices > 0)
             GlowUp(dc);
+
+        if (#defined(hx)){
+            //Add all datacubes to the vault in HX
+            dc.bAddToVault = True;
+        }
+
     } else {
         warning("SpawnDatacube failed at "$loc);
     }
