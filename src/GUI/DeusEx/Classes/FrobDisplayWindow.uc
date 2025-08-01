@@ -284,6 +284,8 @@ function string GetStrInfo(Actor a, out int numLines)
         return LaserStrInfo(a,numLines);
     else if ( #var(prefix)AugmentationCannister(a) != None )
         return AugCanStrInfo(#var(prefix)AugmentationCannister(a));
+    else if ( #var(injectsprefix)InformationDevices(a)!=None)
+        return InfoDeviceStrInfo(#var(injectsprefix)InformationDevices(a));
     else if (!a.bStatic && player.bObjectNames)
         return OtherStrInfo(a, numLines);
 
@@ -704,6 +706,38 @@ function string AugCanStrInfo(#var(prefix)AugmentationCannister augCan) {
         strInfo = strInfo $ CR() $ "  " $ aug1.AugmentationName $ " (" $ aug1.AugLocsText[aug1.AugmentationLocation] $ ")";
 
     return strInfo;
+}
+
+function bool InfoDeviceShouldShowHumanName(#var(injectsprefix)InformationDevices id)
+{
+    local string dispName;
+
+    if( class'MenuChoice_PasswordAutofill'.static.GetSetting() < 1 ) return false;
+
+    dispName = player.GetDisplayName(id);
+
+    if (id.defaultItemName==""){
+        return (dispName == id.Default.ItemName);
+    }
+
+    return (dispName == id.defaultItemName);
+}
+
+function string InfoDeviceStrInfo(#var(injectsprefix)InformationDevices id)
+{
+    local string dispName,textTagHuman;
+
+    dispName = player.GetDisplayName(id);
+
+    if (InfoDeviceShouldShowHumanName(id)){
+        textTagHuman = class'#var(injectsprefix)InformationDevices'.static.GetHumanNameFromID(id);
+        if (textTagHuman!=""){
+            dispName = dispName $ ": "$textTagHuman;
+        }
+    }
+
+    return dispName;
+
 }
 
 function bool WeaponModAutoApply(WeaponMod wm)

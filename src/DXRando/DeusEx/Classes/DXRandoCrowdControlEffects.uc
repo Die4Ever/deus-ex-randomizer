@@ -134,11 +134,25 @@ function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
     }
 
     if (CrowdControlPawns[mostRecentCcPawn]==None){
-        CrowdControlPawns[mostRecentCcPawn]=Spawn(class'DXRandoCrowdControlPawn');
+        CrowdControlPawns[mostRecentCcPawn]=Spawn(class'DXRandoCrowdControlPawn',,,player().Location);
     }
 
     CrowdControlPawns[mostRecentCcPawn].familiarName = UserName;
+
+    //Move the pawn to where the player currently is, just for convenience
+    MoveCCPawn(CrowdControlPawns[mostRecentCcPawn],player().Location);
+
+    //Make sure the pawn knows it's been used so it doesn't delete itself
+    CrowdControlPawns[mostRecentCcPawn].UsePawn();
+
     return CrowdControlPawns[mostRecentCcPawn];
+}
+
+function MoveCCPawn(DXRandoCrowdControlPawn ccp, vector Location)
+{
+    ccp.bMovable=True;
+    ccp.SetLocation(Location);
+    ccp.bMovable=False;
 }
 
 //#region Periodic Updates
@@ -1463,6 +1477,77 @@ function GenerateFloorLavaFire()
     }
 }
 
+function int GiveCurrentWeaponAmmo(string viewer, optional int amount)
+{
+    local #var(DeusExPrefix)Weapon curWeap;
+    local class<ammo> curAmmoClass;
+    local Ammo curAmmo;
+    local DXRLoadouts loadout;
+    local string outMsg;
+    local Inventory item;
+    local int i;
+
+    if( amount < 1 ) amount = 1;
+
+    if (player().InHand == None) { //Not holding anything
+        return TempFail;
+    }
+
+    curWeap = #var(DeusExPrefix)Weapon(player().InHand);
+    if (curWeap==None){ //Not holding a weapon
+        return TempFail;
+    }
+
+    //Find default ammo type
+    //(Should this find the equipped ammo instead?  Might make pricing difficult)
+    curAmmoClass = curWeap.Default.AmmoName;
+
+    //Fail if weapon doesn't use ammo
+    if (curAmmoClass==class'AmmoNone' || curAmmoClass==None){
+        return TempFail;
+    }
+
+    //Fail if ammo is banned
+    loadout = DXRLoadouts(ccLink.dxr.FindModule(class'DXRLoadouts'));
+    if (loadout!=None){
+        if (loadout.is_banned(curAmmoClass)){
+            //This could possibly be available later in the session if they change loadouts
+            return TempFail;
+        }
+    }
+
+
+    //Fail if ammo is full
+    curAmmo = Ammo(Player().FindInventoryType(curAmmoClass));
+    if (curAmmo!=None){
+        if (curAmmo.AmmoAmount >= curAmmo.MaxAmmo) {
+            //If ammo is full (or somehow *overfull*), don't allow any more ammo to be given
+            return TempFail;
+        }
+    }
+
+    for (i=0;i<amount;i++) {
+        item = class'DXRActorsBase'.static.GiveItem(player(), curAmmoClass);
+        if( item == None ) return Failed;
+    }
+
+    outMsg = viewer@"gave you";
+    if( amount > 1) {
+        outMsg = outMsg @amount@"cases of"@item.ItemName;
+    }
+    else {
+        outMsg = outMsg @"a case of"@item.ItemName;
+    }
+
+    PlayerMessage(outMsg $ shouldSave);
+    return Success;
+
+
+
+    return Success;
+}
+
+
 function int GiveItem(string viewer, string type, optional int amount) {
     local int i;
     local class<Inventory> itemclass;
@@ -1525,6 +1610,10 @@ function int DropProjectile(string viewer, string type, optional int amount)
 {
     local class<DeusExProjectile> c;
     local DeusExProjectile p;
+    local DXRandoCrowdControlPawn ccp;
+    local Vector locOffset, TraceHitLocation, TraceHitNormal, EndTrace;
+    local Actor hit;
+
     if( amount < 1 ) amount = 1;
 
     //Don't drop grenades if you're in the menu
@@ -1539,12 +1628,34 @@ function int DropProjectile(string viewer, string type, optional int amount)
 
     c = class<DeusExProjectile>(ccLink.ccModule.GetClassFromString(type, class'DeusExProjectile'));
     if( c == None ) return NotAvail;
-    p = Spawn( c, GetCrowdControlPawn(viewer),,player().Location);
+
+    locOffset = VRand()*(480 + Rand(480)); //grenades spawn from up to 30 to 60 feet away (but stops if it runs into walls or actors)
+    if (locOffset.Z < 0){
+        locOffset.Z = -locOffset.Z;  //Only throw grenades from above
+    }
+    if (locOffset.Z > 100) {
+        //Don't throw the grenades from too high up
+        //Randomize a new height offset within the valid range
+        locOffset.Z = RandRange(20,100);
+    }
+    EndTrace = Player().Location + locOffset;
+    hit = Player().Trace(TraceHitLocation,TraceHitNormal,EndTrace,,False); //Figure out the furthest possible location
+    if (hit==None){
+        TraceHitLocation = EndTrace;
+    }
+
+    ccp = GetCrowdControlPawn(viewer);
+    MoveCCPawn(ccp,TraceHitLocation); //Move the pawn to the grenade start location
+    p = ccp.Spawn(c,ccp);  //If the owner is in stasis, the grenade timer ticks at half speed for some reason
     if( p == None ) return Failed;
-    PlayerMessage(viewer@"dropped "$ p.ItemArticle @ p.ItemName $ " at your feet!");
-    p.Velocity.X=0;
-    p.Velocity.Y=0;
-    p.Velocity.Z=0;
+
+    PlayerMessage(viewer@"threw "$ p.ItemArticle @ p.ItemName $ " at you!");
+    p.Velocity = player().Location - ccp.Location;
+    p.ItemName = p.ItemName $ " ("$viewer$")";
+
+    //Sometimes throw it harder, other times softer
+    p.Velocity = p.Velocity * RandRange(0.9,1.1);
+
     return Success;
 }
 
@@ -2255,7 +2366,7 @@ function bool DropMarbles(string viewer)
 
 function string RandomSpamDatacubeText(String viewer)
 {
-    switch(Rand(26)){
+    switch(Rand(34)){
         case 0:   return "Enlarge your Dragon Tooth!  Contact "$viewer$" Corp. for more details on how YOU can gain 4 inches TODAY!";
         case 1:   return "You've won the Gray Death vaccine lottery!  As thanks for signing up for more information on any vaccine news, you have won 1000 credits!  For more details, please send your full name, date of birth, occupation, drivers license, and 5000 credits to "$viewer$"!";
         case 2:   return "Your NYCNet account has violated security policies and will be deleted in three (3) days!  If you would like to keep your account, please send a picture of your ID as well as your mothers maiden name to "$viewer$" to prove your innocence.  Revalidating your account will cost a minimum fee of 12000 credits.";
@@ -2282,6 +2393,14 @@ function string RandomSpamDatacubeText(String viewer)
         case 23:  return "Your password changed|n|nYour password for your account "$viewer$"@NYCNet was changed.|n|nIf this was you, then you can safely ignore this datacube.|n|n|nIf this wasn't you, your account has been compromised.  Please follow these steps"$"|n1) Reset your password|n2) Review your security info|n3) Learn how to make your account more secure."$"|n|nYou can also opt out or change where you receive security notifications.|n|nThanks,|nThe NYCNet account team";
         case 24:  return "Fed-UPS Failed Delivery Attempt|n|nDear "$viewer$",|n|nWe have attempted to deliver your item!"$"|n|nThe delivery attempt failed because nobody was present at the shipping address, so this datacube has been automatically sent.  "$"You may arrange re-delivery by visiting the nearest Fed-UPS office with the printed shipping invoice mentioned below."$"|n|nIf the package is not scheduled for delivery or picked up within 48 hours, it will be returned to the sender.|n|n<invoice.pdf>";
         case 25:  return "Hello Dear,|nI am "$viewer$", the widow of the Late Nigerian Head of State.  I am presently in distress and under house arrest while my son is undergoing trial,"$" though he has just been recently granted bail under the condition that my family refunds to the Federal Government some amount of money.  "$"The government has frozen all the family account and auctioned all our properties.  Refer to this website about my husband's loot and you will understand what I mean.|n"$"To save the family from total bankruptcy I have managed to ship through an undercover courier company, the sum of 6.5 Billion Credits, kept by my late partner.  "$"The money was disguised to beat the Nigerian Security and it is currently deposited in a security company which I will disclose the name and contacts to you if I get a positive response from you.  "$"I want you to receive the money and pay into your account for the family safely.  I am offering you 30% for assisting me secure this money"$"  Contact me immediately with my email address so that I can forward to you all necessary details.  "$"Endeavor to send your phone and fax numbers for easy Communications.  This project is not risky.|nBest Regards.|n"$viewer;
+        case 26:  return "Hi, I'm "$viewer$"|n|nIt is a pleasure to meet you.|n|nHave a nice day!";
+        case 27:  return "Hey guys, did you know that in terms of streamer and viewer interactions, "$viewer$" is the most compatible with streamers?  Not only are they in the Crowd Control user group, which is mostly comprised of humans, "$viewer$" likes to use their Crowd Control coins, which means they're able to help and hinder the streamer, and with their impressive choice of Crowd Control effects, you can blame them for all of your failures."$"  Due to their mostly chat based interactions, there's no doubt in my mind that an amused "$viewer$" would be incredibly engaged, so engaged that you could easily stream for them for hours without getting bored."$"  They can also use the effects Ask A Question, Resident Evil Mode, Full Heal, Gotta Go Fast, and Nudge, along with all the rest of the effects, so it'd be incredibly easy for them to stay engaged."$"  With the ability to redeem free coins or to buy more, they can easily send effects with enough money.  No other viewer comes close to this level of engagement."$"  Also, fun fact, if you keep using Crowd Control enough, you can keep your viewers absolutely engaged.  "$viewer$" is literally built to use Crowd Control.  Ungodly effect choice+spare time+good memes means they can watch streams all day, no matter who and still come back for more";
+        case 28:  return "Skeletons?  In your own body?  It's more likely than you think.|n|nHi, I'm "$viewer$" and I'm a certified skeleton fighter.  I can help YOU remove the skeleton from your body *before* it becomes a problem."$"  Get in touch with me on NYCNET today to find out how YOU can deal with YOUR undead problem TODAY!";
+        case 29:  return "The "$viewer$"(tm) Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start."$" The running speed starts slowly but gets faster each minute after you hear this signal *BEEP*. A single lap should be completed every time you hear this sound."$"  *DING* Remember to run in a straight line and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark. Get ready!... Start.";
+        case 30:  return "---Deus Ex Roleplay Club---|n|n"$"is rescheduled for 7:30 at the Underworld Tavern.|n|n"$"If you can come, text "$viewer$" but dont curse becuz its my moms phone|n|n|nP.S. we need a Sandra and a Jojo we DONT need anymore JCs im already jc";
+        case 31:  return "---LOST FLY---|n|nI'm "$viewer$" and I saw this fly and my mom let it out the window!  BTW I named him harley.  He (or she) is a centameter big and if you find him"$" tell him I said hi.  But watever you do dont bring him back he will get killed by a fly swatter.|n|n"$"WARNING: Do not touch him he WILL throw up";
+        case 32:  return "Garlic Secrets #41, by "$viewer$"|n|nApply garlic to a freshly opened cut or burn to immediately intensify the pain";
+        case 33:  return "We do NOT sell tuna milkshakes, so please don't ask|n|n"$"I've got nothing against tuna.  I like tuna.  In a baked potato or a sandwich it's great and it's got lots of omega-3 which is good for you.  "$"But TUNA in a milkshake is just wrong.  Why don't you have an Oreo Milkshake or a Strawberry Millions, or Dime Bar, or Mars Bar or any of the 70+ flavours on the menu.  "$"But please, please stop asking for Tuna Milkshakes.|n|nThanks,|n  -"$viewer;
     }
 
     return "SOMEHOW FAILED TO GENERATE SPAM MESSAGE FOR "$viewer$" SO ENJOY THIS COMPLIMENTARY ERROR DATACUBE INSTEAD";
@@ -2291,6 +2410,7 @@ function bool SpamDatacubes(String viewer)
 {
     local int num,i;
     local #var(injectsprefix)InformationDevices dc;
+    local string cubeText,plaintextTag;
 
     num = 0;
     foreach AllActors(class'#var(injectsprefix)InformationDevices',dc,'CrowdControlSpamDatacube'){
@@ -2302,7 +2422,9 @@ function bool SpamDatacubes(String viewer)
     dc = None;
     num = 0;
     for (i=0;i<5;i++){
-        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),RandomSpamDatacubeText(viewer),"");
+        cubeText = RandomSpamDatacubeText(viewer);
+        plaintextTag = "CrowdControlSpamCubes_" $ dxr.localURL $ "_" $ dxr.Crc(cubeText);
+        dc = ccLink.ccModule.SpawnDatacubePlaintext(ccLink.ccModule.GetRandomPositionFine(),rot(0,0,0),cubeText,plaintextTag);
         if (dc!=None){
             dc.Tag='CrowdControlSpamDatacube';
             ccLink.ccModule.GlowUp(dc);
@@ -2748,6 +2870,11 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
     //Effects can't start on the title screen
     if (dxr.OnTitleScreen()){
+        return TempFail;
+    }
+
+    //Don't start effects if the player is already dead.  It's too late.
+    if (player().Health <= 0) {
         return TempFail;
     }
 
@@ -3505,7 +3632,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             trainingTriggered = True;
             break;
-
+        case "give_current_ammo":
+            return GiveCurrentWeaponAmmo(viewer);
+            break;
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }

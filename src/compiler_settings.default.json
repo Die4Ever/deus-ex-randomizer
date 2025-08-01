@@ -21,7 +21,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/",
         "preproc_definitions": {
-            "hx":1, "multiplayer":1, "mapfixes":1, "balance":1, "noflags":1, "prefix":"HX",
+            "hx":1, "multiplayer":1, "mapfixes":1, "balance":1, "noflags":1, "prefix":"HX", "vanillamaps":1,
             "DeusExPrefix":"HX", "PlayerPawn":"HXPlayerPawn", "flagvarprefix": "config", "package": "HXRandomizer", "injectsprefix": "DXR", "allfeatures": false
         },
         "mods_paths": [ "./" ],

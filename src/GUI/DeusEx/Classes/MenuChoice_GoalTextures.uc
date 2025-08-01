@@ -3,11 +3,17 @@ class MenuChoice_GoalTextures extends DXRMenuUIChoiceInt;
 function SaveSetting()
 {
     local DXRMissions dxrm;
+    local DXRFixup dxrfu;
 
     Super.SaveSetting();
 
     foreach player.AllActors(class'DXRMissions', dxrm) {
         dxrm.DignifyAllGoalActors();
+    }
+
+    foreach player.AllActors(class'DXRFixup',dxrfu){
+        dxrfu.AdjustBookColours();
+        break;
     }
 }
 

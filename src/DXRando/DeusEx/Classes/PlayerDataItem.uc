@@ -300,7 +300,7 @@ simulated function ExportBingoState()
         break;
     }
 
-    if(dxr.OnTitleScreen() || currentMission == 98) {
+    if(!#defined(hx) && (dxr.OnTitleScreen() || currentMission == 98)) {
         for(i=0; i<ArrayCount(bingo); i++) {
             bingoexport[i].event = "?";
             bingoexport[i].desc = "?";

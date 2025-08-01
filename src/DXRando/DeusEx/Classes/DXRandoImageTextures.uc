@@ -55,6 +55,15 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\WaltonWareCrate.pcx"                    NAME="WaltonWareCrate"                  GROUP="DXRandoImages"
 #exec TEXTURE IMPORT FILE="Textures\DXLogoCrate.pcx"                        NAME="DXLogoCrate"                      GROUP="DXRandoImages"
 
+#exec TEXTURE IMPORT FILE="Textures\BookClosedTex1Blue.pcx"                 NAME="BookClosedTex1Blue"               GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BookClosedTex1Green.pcx"                NAME="BookClosedTex1Green"              GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BookClosedTex1Purple.pcx"               NAME="BookClosedTex1Purple"             GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BookClosedTex1Red.pcx"                  NAME="BookClosedTex1Red"                GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BookOpenTex1Blue.pcx"                   NAME="BookOpenTex1Blue"                 GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BookOpenTex1Green.pcx"                  NAME="BookOpenTex1Green"                GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BookOpenTex1Purple.pcx"                 NAME="BookOpenTex1Purple"               GROUP="DXRandoImages"
+#exec TEXTURE IMPORT FILE="Textures\BookOpenTex1Red.pcx"                    NAME="BookOpenTex1Red"                  GROUP="DXRandoImages"
+
 #exec TEXTURE IMPORT FILE="Textures\AugIconJumpOnly.pcx"                    NAME="AugIconJumpOnly"                  GROUP="DXRandoImages" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\AugIconJumpOnly_Small.pcx"              NAME="AugIconJumpOnly_Small"            GROUP="DXRandoImages" MIPS=Off
 

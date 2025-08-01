@@ -42,3 +42,8 @@ function bool InConversationState()
 {
     return ((GetStateName() == 'Conversation') || (GetStateName() == 'FirstPersonConversation'));
 }
+
+defaultproperties
+{
+    Physics=PHYS_None
+}
