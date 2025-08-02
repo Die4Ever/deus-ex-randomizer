@@ -59,9 +59,10 @@ simulated function RandoWeapon(DeusExWeapon w, optional bool silent)
     if( #var(prefix)WeaponHideAGun(w) == None ) {
         //don't do this for the PS20/PS40 because it shares the PlasmaBolt projectile with the PlasmaRifle in a really dumb way, the PS40 code handles this itself
         //I might move this logic into an injector into DeusExProjectile, maybe in BeginPlay it could check its owner and copy the HitDamage from there?
-        RandoProjectile(w, w.ProjectileClass, w.default.ProjectileClass, new_damage);
+        RandoProjectile(w, w.ProjectileClass, w.ProjectileClass, new_damage);
+        RandoProjectile(w, w.default.ProjectileClass, w.default.ProjectileClass, new_damage); // sometimes the current value and the default value mismatch
         for(i=0; i<ArrayCount(w.ProjectileNames); i++) {
-            RandoProjectile(w, w.ProjectileNames[i], w.default.ProjectileNames[i], new_damage);
+            RandoProjectile(w, w.ProjectileNames[i], w.default.ProjectileNames[i], new_damage); // the current value is always the same as the default
         }
     }
 
