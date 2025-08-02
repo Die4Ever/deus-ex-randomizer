@@ -976,11 +976,6 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
         crate.AddContent(class'#var(prefix)Medkit', num);
         desiredHealth -= num * 30;
     }
-    if(desiredHealth >= 10) {
-        num = desiredHealth/10;
-        crate.AddContent(class'#var(prefix)SoyFood', num);
-        desiredHealth -= num * 10;
-    }
 
     return crate;
 }
