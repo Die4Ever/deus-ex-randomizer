@@ -1949,7 +1949,10 @@ function MarkBingoFailedSpecial()
         if (! HasItem(player(), class'VialAmbrosia')) {
             MarkBingoAsFailed("GaveDowdAmbrosia");
         }
-        MarkBingoAsFailed("ChangeClothes");
+        // with clothes looting, the last clothes rack is in 15_AREA51_ENTRANCE
+        if (dxr.flags.clothes_looting == 0 || class'DXRMapVariants'.static.IsVanillaMaps(dxr.player) == false) {
+            MarkBingoAsFailed("ChangeClothes");
+        }
         break;
     case "11_PARIS_EVERETT":
         if(dxr.flags.IsReducedRando()) {
