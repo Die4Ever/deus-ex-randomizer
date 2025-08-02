@@ -19,6 +19,7 @@ const NormalRandomizer = 15;
 const StrongAugsMode = 16;
 const SpeedrunTraining = 17;
 const SeriousRando = 18; // same as Full Rando, but memes disabled by default
+const GroundhogDay = 19;
 
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
@@ -772,6 +773,10 @@ function SetDifficulty(int new_difficulty)
     if(class'MenuChoice_NewGamePlus'.default.value == 0 && !IsWaltonWare())
         moresettings.newgameplus_curve_scalar = -1;
 
+    if(gamemode == GroundhogDay) {
+        moresettings.newgameplus_curve_scalar = 0;
+    }
+
     class'DXRLoadouts'.static.AdjustFlags(self, loadout); // new game menu doesn't initialize its own DXRLoadouts
 }
 //#endregion
@@ -927,6 +932,9 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return HordeZombies;
     if(slot--==0) return OneItemMode;
     if(slot--==0) return StrongAugsMode;
+    if(!VersionIsStable()) {
+        if(slot--==0) return GroundhogDay;
+    }
     return 999999;
 }
 
@@ -988,6 +996,8 @@ function string GameModeName(int gamemode)
         return "";
     case StrongAugsMode:
         return "Strong Augs Mode";
+    case GroundhogDay:
+        return "Groundhog Day";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -1126,7 +1136,7 @@ function string GameModeHelpText(int gamemode)
     case WaltonWareHalloweenEntranceRando:
         return "WaltonWare with the additional Halloween Mode features and level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
     case WaltonWareHardcore:
-        return "The WaltonWare experience, except ALL saving is disabled!  How long can you last?";
+        return "The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  Low medkits and medbots.  How long can you last?";
     case WaltonWarex3:
         return "The WaltonWare experience, except goals are now spread across three missions instead of one!|n|nHow long can you last?";
     case HalloweenMode:
@@ -1151,6 +1161,8 @@ function string GameModeHelpText(int gamemode)
         return s;
     case StrongAugsMode:
         return "The FULL Randomizer experience but augmentations are generally randomized to be stronger than normal.";
+    case GroundhogDay:
+        return "The FULL Randomizer experience, but New Game+ will not change your seed or your flags, giving you a chance to play the same game over and over again to keep improving.";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);

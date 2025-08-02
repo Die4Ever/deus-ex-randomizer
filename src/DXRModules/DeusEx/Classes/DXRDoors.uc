@@ -293,6 +293,25 @@ function SetDoorFixes()
     }
 }
 
+function bool SkipDoorStatCopy(#var(DeusExPrefix)Mover d)
+{
+    if (d.Tag == '') return true;
+    if (d.Tag == d.class.Name ) return true;
+
+#ifdef hx
+    //Class names explicitly expressed here for clarity
+    if (HXBreakableGlass(d)!=None) {
+        if (d.Tag=='BreakableGlass') return true;
+    } else if (HXBreakableWall(d)!=None) {
+        if (d.Tag=='BreakableWall') return true;
+    } else { //Must be an HXMover
+        if (d.Tag=='DeusExMover') return true;
+    }
+#endif
+
+    return False;
+}
+
 //#region FirstEntry
 function FirstEntry()
 {
@@ -305,7 +324,7 @@ function FirstEntry()
 
     // copy to pairs/sets of doors
     foreach AllActors(class'#var(DeusExPrefix)Mover', d) {
-        if (d.Tag == '' || d.Tag == d.class.Name ) continue;
+        if (SkipDoorStatCopy(d) ) continue;
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', d2, d.tag) {
             if(d==d2) continue;

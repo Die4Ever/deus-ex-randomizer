@@ -12,7 +12,7 @@ public class DeusEx : SimpleTCPPack<SimpleTCPServerConnector>
 
     public override ushort Port => 43384;
 
-    public override ISimpleTCPPack.MessageFormat MessageFormat => ISimpleTCPPack.MessageFormat.CrowdControlLegacy;
+    public override ISimpleTCPPack.MessageFormatType MessageFormat => ISimpleTCPPack.MessageFormatType.CrowdControlLegacy;
 
     public DeusEx(UserRecord player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler) { }
 
@@ -22,7 +22,7 @@ public class DeusEx : SimpleTCPPack<SimpleTCPServerConnector>
     {
         //General Effects
         new("Trigger the Killswitch", "kill"){Price = 75,Description = "Instantly kill the player by simply flipping a switch."},
-        new("Back to the Academy", "back_to_academy"){Price = 75,Description = "Send the player back to the Academy for further training."},
+        new("Back to the Academy", "back_to_academy"){Price = 75,Description = "Send the player back to the Academy for further training."}, //New for eighth Crowd Control batch
         new("Poison the Player", "poison"){Price = 15,Description = "Give the player a nice dose of poison"},
         new("Glass Legs", "glass_legs"){Price = 5,Description = "Take away all but one health from each of the players legs"},
         new("Give Health (x10)", "give_health") { Quantity = 100, Price = 1,Description = "Give the player some health!" },
@@ -107,43 +107,43 @@ public class DeusEx : SimpleTCPPack<SimpleTCPServerConnector>
         //new("Add/Upgrade Augmentations","addaugs",ItemKind.Folder),
         //new("Remove/Downgrade Augmentations","remaugs",ItemKind.Folder),
 
-        new("Add/Upgrade Aqualung", "add_augaqualung") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the aqualung aug" },
-        new("Add/Upgrade Ballistic Protection", "add_augballistic") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the ballistic protection aug" },
-        new("Add/Upgrade Cloak", "add_augcloak") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the cloak aug" },
-        new("Add/Upgrade Combat Strength", "add_augcombat") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the combat strength aug" },
-        new("Add/Upgrade Aggressive Defense System", "add_augdefense") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the aggressive defense aug" },
-        new("Add/Upgrade Spy Drone", "add_augdrone") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the spy drone aug" },
-        new("Add/Upgrade EMP Shield", "add_augemp") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the EMP shield aug" },
-        new("Add/Upgrade Environmental Resistance", "add_augenviro") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the environmental resistance aug" },
-        new("Add/Upgrade Regeneration", "add_aughealing") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the regeneration aug" },
-        new("Add/Upgrade Synthetic Heart", "add_augheartlung") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the synthetic heart aug" },
-        new("Add/Upgrade Microfibral Muscle", "add_augmuscle") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the microfibral muscle aug" },
-        new("Add/Upgrade Power Recirculator", "add_augpower") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the power recirculator aug" },
-        new("Add/Upgrade Radar Transparancy", "add_augradartrans") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the radar transparency aug" },
-        new("Add/Upgrade Energy Shield", "add_augshield") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the energy shield aug" },
-        new("Add/Upgrade Speed Enhancement", "add_augspeed") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the speed enhancement aug" },
-        new("Add/Upgrade Run Silent", "add_augstealth") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the run silent aug" },
-        new("Add/Upgrade Targeting", "add_augtarget") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the targeting aug" },
-        new("Add/Upgrade Vision Enhancement", "add_augvision") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the vision enhancement aug" },
+        new("Add/Upgrade Aqualung", "add_augaqualung") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the aqualung aug", Inactive = true },
+        new("Add/Upgrade Ballistic Protection", "add_augballistic") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the ballistic protection aug", Inactive = true },
+        new("Add/Upgrade Cloak", "add_augcloak") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the cloak aug", Inactive = true },
+        new("Add/Upgrade Combat Strength", "add_augcombat") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the combat strength aug", Inactive = true },
+        new("Add/Upgrade Aggressive Defense System", "add_augdefense") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the aggressive defense aug", Inactive = true },
+        new("Add/Upgrade Spy Drone", "add_augdrone") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the spy drone aug", Inactive = true },
+        new("Add/Upgrade EMP Shield", "add_augemp") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the EMP shield aug", Inactive = true },
+        new("Add/Upgrade Environmental Resistance", "add_augenviro") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the environmental resistance aug", Inactive = true },
+        new("Add/Upgrade Regeneration", "add_aughealing") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the regeneration aug", Inactive = true },
+        new("Add/Upgrade Synthetic Heart", "add_augheartlung") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the synthetic heart aug", Inactive = true },
+        new("Add/Upgrade Microfibral Muscle", "add_augmuscle") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the microfibral muscle aug", Inactive = true },
+        new("Add/Upgrade Power Recirculator", "add_augpower") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the power recirculator aug", Inactive = true },
+        new("Add/Upgrade Radar Transparancy", "add_augradartrans") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the radar transparency aug", Inactive = true },
+        new("Add/Upgrade Energy Shield", "add_augshield") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the energy shield aug", Inactive = true },
+        new("Add/Upgrade Speed Enhancement", "add_augspeed") { Category = "Augmentations",Price = 10,Description = "Add or upgrade the speed enhancement aug", Inactive = true },
+        new("Add/Upgrade Run Silent", "add_augstealth") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the run silent aug", Inactive = true },
+        new("Add/Upgrade Targeting", "add_augtarget") { Category = "Augmentations",Price = 2,Description = "Add or upgrade the targeting aug", Inactive = true },
+        new("Add/Upgrade Vision Enhancement", "add_augvision") { Category = "Augmentations",Price = 5,Description = "Add or upgrade the vision enhancement aug", Inactive = true },
 
-        new("Remove/Downgrade Aqualung", "rem_augaqualung") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the aqualung aug" },
-        new("Remove/Downgrade Ballistic Protection", "rem_augballistic") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the ballistic protection aug" },
-        new("Remove/Downgrade Cloak", "rem_augcloak") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the cloak aug" },
-        new("Remove/Downgrade Combat Strength", "rem_augcombat") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the combat strength aug" },
-        new("Remove/Downgrade Aggressive Defense System", "rem_augdefense") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the aggressive defense aug" },
-        new("Remove/Downgrade Spy Drone", "rem_augdrone") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the spy drone aug" },
-        new("Remove/Downgrade EMP Shield", "rem_augemp") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the EMP shield aug" },
-        new("Remove/Downgrade Environmental Resistance", "rem_augenviro") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the environmental resistance aug" },
-        new("Remove/Downgrade Regeneration", "rem_aughealing") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the regeneration aug" },
-        new("Remove/Downgrade Synthetic Heart", "rem_augheartlung") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the synthetic heart aug" },
-        new("Remove/Downgrade Microfibral Muscle", "rem_augmuscle") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the microfibral muscle aug" },
-        new("Remove/Downgrade Power Recirculator", "rem_augpower") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the power recirculator aug" },
-        new("Remove/Downgrade Radar Transparancy", "rem_augradartrans") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the radar transparency aug" },
-        new("Remove/Downgrade Energy Shield", "rem_augshield") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the energy shield aug" },
-        new("Remove/Downgrade Speed Enhancement", "rem_augspeed") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the speed enhancement aug" },
-        new("Remove/Downgrade Run Silent", "rem_augstealth") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the run silent aug" },
-        new("Remove/Downgrade Targeting", "rem_augtarget") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the targeting aug" },
-        new("Remove/Downgrade Vision Enhancement", "rem_augvision") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the vision enhancement aug" },
+        new("Remove/Downgrade Aqualung", "rem_augaqualung") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the aqualung aug", Inactive = true },
+        new("Remove/Downgrade Ballistic Protection", "rem_augballistic") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the ballistic protection aug", Inactive = true },
+        new("Remove/Downgrade Cloak", "rem_augcloak") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the cloak aug", Inactive = true },
+        new("Remove/Downgrade Combat Strength", "rem_augcombat") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the combat strength aug", Inactive = true },
+        new("Remove/Downgrade Aggressive Defense System", "rem_augdefense") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the aggressive defense aug", Inactive = true },
+        new("Remove/Downgrade Spy Drone", "rem_augdrone") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the spy drone aug", Inactive = true },
+        new("Remove/Downgrade EMP Shield", "rem_augemp") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the EMP shield aug", Inactive = true },
+        new("Remove/Downgrade Environmental Resistance", "rem_augenviro") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the environmental resistance aug", Inactive = true },
+        new("Remove/Downgrade Regeneration", "rem_aughealing") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the regeneration aug", Inactive = true },
+        new("Remove/Downgrade Synthetic Heart", "rem_augheartlung") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the synthetic heart aug", Inactive = true },
+        new("Remove/Downgrade Microfibral Muscle", "rem_augmuscle") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the microfibral muscle aug", Inactive = true },
+        new("Remove/Downgrade Power Recirculator", "rem_augpower") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the power recirculator aug", Inactive = true },
+        new("Remove/Downgrade Radar Transparancy", "rem_augradartrans") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the radar transparency aug", Inactive = true },
+        new("Remove/Downgrade Energy Shield", "rem_augshield") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the energy shield aug", Inactive = true },
+        new("Remove/Downgrade Speed Enhancement", "rem_augspeed") { Category = "Augmentations",Price = 20,Description = "Remove or downgrade the speed enhancement aug", Inactive = true },
+        new("Remove/Downgrade Run Silent", "rem_augstealth") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the run silent aug", Inactive = true },
+        new("Remove/Downgrade Targeting", "rem_augtarget") { Category = "Augmentations",Price = 4,Description = "Remove or downgrade the targeting aug", Inactive = true },
+        new("Remove/Downgrade Vision Enhancement", "rem_augvision") { Category = "Augmentations",Price = 10,Description = "Remove or downgrade the vision enhancement aug", Inactive = true },
 
 
         //Drop Grenades
@@ -161,7 +161,7 @@ public class DeusEx : SimpleTCPPack<SimpleTCPServerConnector>
 
         new("Give Flamethrower", "give_weaponflamethrower") { Category = "Give Weapon",Price = 10,Description = "Give the player a flamethrower" },
         new("Give GEP Gun", "give_weapongepgun") { Category = "Give Weapon",Price = 10,Description = "Give the player a GEP gun" },
-        new("Give Dragon Tooth Sword", "give_weaponnanosword") { Category = "Give Weapon",Price = 50,Description = "Give the player a Dragon Tooth Sword" },
+        new("Give Dragon Tooth Sword", "give_weaponnanosword") { Category = "Give Weapon",Price = 50,Description = "Give the player a Dragon Tooth Sword", Inactive = true },
         new("Give Plasma Rifle", "give_weaponplasmarifle") { Category = "Give Weapon",Price = 10,Description = "Give the player a plasma rifle" },
         new("Give LAW", "give_weaponlaw") { Category = "Give Weapon",Price = 10,Description = "Give the player a LAW" },
         new("Give Sniper Rifle", "give_weaponrifle") { Category = "Give Weapon",Price = 5,Description = "Give the player a sniper rifle" },
@@ -189,21 +189,22 @@ public class DeusEx : SimpleTCPPack<SimpleTCPServerConnector>
         //Ammo
         //new("Give Ammo","giveammo",ItemKind.Folder),
 
-        new("Give 10mm Ammo (Pistols)", "give_ammo10mm") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 10mm ammo" }, //New for second Crowd Control batch
+        new("Give Ammo for Current Weapon", "give_current_ammo") {  Quantity = 100, Category = "Give Ammo",Price = 4,Description = "Give the player ammo for the weapon they're currently holding" }, //New for eighth Crowd Control batch
+        new("Give 10mm Ammo (Pistols)", "give_ammo10mm") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 10mm ammo", Inactive = true }, //New for second Crowd Control batch
         new("Give 20mm Ammo (Assault Rifle)", "give_ammo20mm") {  Quantity = 100, Category = "Give Ammo",Price = 10,Description = "Give the player some 20mm high explosive ammo" }, //New for second Crowd Control batch
-        new("Give 7.62mm Ammo (Assault Rifle)", "give_ammo762mm") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 7.62mm ammo" }, //New for second Crowd Control batch
-        new("Give 30.06mm Ammo (Sniper Rifle)", "give_ammo3006") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 30.06mm ammo" }, //New for second Crowd Control batch
-        new("Give Prod Charger", "give_ammobattery") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player a prod charger" }, //New for second Crowd Control batch
-        new("Give Darts", "give_ammodart") {  Quantity = 100, Category = "Give Ammo",Price = 1,Description = "Give the player some darts" }, //New for second Crowd Control batch
+        new("Give 7.62mm Ammo (Assault Rifle)", "give_ammo762mm") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 7.62mm ammo", Inactive = true }, //New for second Crowd Control batch
+        new("Give 30.06mm Ammo (Sniper Rifle)", "give_ammo3006") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some 30.06mm ammo", Inactive = true }, //New for second Crowd Control batch
+        new("Give Prod Charger", "give_ammobattery") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player a prod charger", Inactive = true }, //New for second Crowd Control batch
+        new("Give Darts", "give_ammodart") {  Quantity = 100, Category = "Give Ammo",Price = 1,Description = "Give the player some darts", Inactive = true }, //New for second Crowd Control batch
         new("Give Flare Darts", "give_ammodartflare") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some flare darts" }, //New for second Crowd Control batch
-        new("Give Tranq Darts", "give_ammodartpoison") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some tranquilizer darts" }, //New for second Crowd Control batch
-        new("Give Napalm", "give_ammonapalm") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some napalm" }, //New for second Crowd Control batch
-        new("Give Pepper Spray Ammo", "give_ammopepper") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some pepper spray cartridges" }, //New for second Crowd Control batch
-        new("Give Plasma", "give_ammoplasma") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some plasma ammo" }, //New for second Crowd Control batch
-        new("Give Rockets", "give_ammorocket") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some rockets" }, //New for second Crowd Control batch
+        new("Give Tranq Darts", "give_ammodartpoison") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some tranquilizer darts", Inactive = true }, //New for second Crowd Control batch
+        new("Give Napalm", "give_ammonapalm") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some napalm", Inactive = true }, //New for second Crowd Control batch
+        new("Give Pepper Spray Ammo", "give_ammopepper") {  Quantity = 100, Category = "Give Ammo",Price = 2,Description = "Give the player some pepper spray cartridges", Inactive = true }, //New for second Crowd Control batch
+        new("Give Plasma", "give_ammoplasma") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some plasma ammo", Inactive = true }, //New for second Crowd Control batch
+        new("Give Rockets", "give_ammorocket") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some rockets", Inactive = true }, //New for second Crowd Control batch
         new("Give WP Rockets", "give_ammorocketwp") {  Quantity = 100, Category = "Give Ammo",Price = 10,Description = "Give the player some WP rockets" }, //New for second Crowd Control batch
         new("Give Sabot Shells", "give_ammosabot") {  Quantity = 100, Category = "Give Ammo",Price = 5,Description = "Give the player some Sabot shells" }, //New for second Crowd Control batch
-        new("Give Shotgun Shells", "give_ammoshell") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some shotgun shells" }, //New for second Crowd Control batch
+        new("Give Shotgun Shells", "give_ammoshell") {  Quantity = 100, Category = "Give Ammo",Price = 3,Description = "Give the player some shotgun shells", Inactive = true }, //New for second Crowd Control batch
 
         //Camera Effects
         new("Flip camera upside down","flipped"){Category = "Camera Effects",Price = 7,Description = "Australia mode",Duration=60}, //New for fourth Crowd Control batch

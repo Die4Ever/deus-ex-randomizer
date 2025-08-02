@@ -55,6 +55,8 @@ simulated function InitMaxRandoSettings()
 //the options available in DXRMenuSetupRando
 simulated function RandomizeSettings(bool forceMenuOptions)
 {
+    local bool isHalloween;
+
     info("RandomizeSettings("$string(forceMenuOptions)$")");
 
     // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
@@ -105,7 +107,8 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
-    if(DXRFlags(self).IsHalloweenMode()) {  // this cast is pretty nasty
+    isHalloween = DXRFlags(self).IsHalloweenMode(); // this cast is pretty nasty
+    if(isHalloween) {
         moresettings.reanimation = rng(10) + 15;
     } else if (chance_single(33)) {
         if (chance_single(50)) {
@@ -114,6 +117,13 @@ simulated function RandomizeSettings(bool forceMenuOptions)
             moresettings.reanimation = rng(15) + 15;
         }
     } else {
+        settings.enemyrespawn = 0;
+        moresettings.reanimation = 0;
+    }
+
+    //HX shouldn't max rando into respawns or resurrection
+    //on the first loop, unless you're in Halloween mode
+    if (#defined(hx) && !isHalloween && newgameplus_loops==0){
         settings.enemyrespawn = 0;
         moresettings.reanimation = 0;
     }
@@ -168,8 +178,7 @@ function NewGamePlus()
     local DXRAugmentations augs;
     local DXRLoadouts loadouts;
     local DXRStats stats;
-    local int i, bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay, old_clothes_looting;
-    local float exp;
+    local int i;
     local int randomStart;
     local int oldseed;
     local int augsToRemove,randoSlotAugsRemoved;
@@ -181,74 +190,23 @@ function NewGamePlus()
     p = player();
 
     info("NewGamePlus()");
-    seed++;
-    dxr.seed = seed;
+    if(gamemode != DXRFlags(self).GroundhogDay) {
+        seed++;
+        dxr.seed = seed;
+    }
     NewPlaythroughId();
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     bingoBoardRoll=0;
     p.saveCount=0;
-    exp = 1;
     randomStart = settings.starting_map;
 
-    // always enable maxrando when doing NG+?
-    maxrando = 1;
-    if(maxrando > 0) {
-        // rollback settings to the default for the current difficulty
-        // we only want to do this on maxrando because we want to retain the user's custom choices
-        bingo_win = settings.bingo_win;
-        bingo_freespaces = settings.bingo_freespaces;
-        old_bingo_scale = bingo_scale;
-        old_bingo_duration = bingo_duration;
-        newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
-        menus_pause = settings.menus_pause;
-        aug_loc_rando=moresettings.aug_loc_rando;
-        splits_overlay = moresettings.splits_overlay;
-        old_clothes_looting = clothes_looting;
-        SetDifficulty(difficulty);
-        ExecMaxRando();
-        settings.bingo_win = bingo_win;
-        settings.bingo_freespaces = bingo_freespaces;
-        bingo_scale = old_bingo_scale;
-        bingo_duration = old_bingo_duration;
-        moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
-        settings.menus_pause = menus_pause;
-        moresettings.aug_loc_rando=aug_loc_rando;
-        moresettings.splits_overlay = splits_overlay;
-        clothes_looting = old_clothes_looting;
-
-        // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
-        exp = newgameplus_loops;
+    if(gamemode != DXRFlags(self).GroundhogDay) {
+        NGPlusFlags(p);
     }
-
-    dxr.SetSeed(dxr.Crc("NG+ curve tweak " $ (seed - newgameplus_loops)));
-    rng(9);// advance the rng
-#ifdef hx
-    p.CombatDifficulty = 3;// I don't think NG+ works in HX anyways?
-#else
-    p.CombatDifficulty = DXRFlags(self).GetDifficulty(difficulty).CombatDifficulty;
-#endif
-
-
-    p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15, False); // Anything over 15 is kind of unreasonably impossible
-    settings.minskill = NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400, True);
-    settings.maxskill = NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700, True);
-    settings.enemiesrandomized = NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000, True);
-    settings.enemystats = NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100, True);
-    settings.hiddenenemiesrandomized = NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000, True);
-    settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100, True);
-    settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100, True);
-    settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100, True);
-    settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
-    settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
-    settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
-    settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 6, 100, True);
-    settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
-    settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
-
     SetGlobalSeed("NewGamePlus " $ dxr.seed);
-    if (randomStart!=0){
+    if (randomStart!=0 && gamemode != DXRFlags(self).GroundhogDay){
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
 
@@ -322,6 +280,67 @@ function NewGamePlus()
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
+}
+
+simulated function NGPlusFlags(#var(PlayerPawn) p)
+{
+    local int bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay, old_clothes_looting;
+    local float exp;
+
+    exp = 1;
+    // always enable maxrando when doing NG+?
+    maxrando = 1;
+    if(maxrando > 0) {
+        // rollback settings to the default for the current difficulty
+        // we only want to do this on maxrando because we want to retain the user's custom choices
+        bingo_win = settings.bingo_win;
+        bingo_freespaces = settings.bingo_freespaces;
+        old_bingo_scale = bingo_scale;
+        old_bingo_duration = bingo_duration;
+        newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
+        menus_pause = settings.menus_pause;
+        aug_loc_rando=moresettings.aug_loc_rando;
+        splits_overlay = moresettings.splits_overlay;
+        old_clothes_looting = clothes_looting;
+        SetDifficulty(difficulty);
+        ExecMaxRando();
+        settings.bingo_win = bingo_win;
+        settings.bingo_freespaces = bingo_freespaces;
+        bingo_scale = old_bingo_scale;
+        bingo_duration = old_bingo_duration;
+        moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
+        settings.menus_pause = menus_pause;
+        moresettings.aug_loc_rando=aug_loc_rando;
+        moresettings.splits_overlay = splits_overlay;
+        clothes_looting = old_clothes_looting;
+
+        // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
+        exp = newgameplus_loops;
+    }
+
+    dxr.SetSeed(dxr.Crc("NG+ curve tweak " $ (seed - newgameplus_loops)));
+    rng(9);// advance the rng
+#ifdef hx
+    p.CombatDifficulty = 3;// I don't think NG+ works in HX anyways?
+#else
+    p.CombatDifficulty = DXRFlags(self).GetDifficulty(difficulty).CombatDifficulty;
+#endif
+
+    p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15, False); // Anything over 15 is kind of unreasonably impossible
+    settings.minskill = NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400, True);
+    settings.maxskill = NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700, True);
+    settings.enemiesrandomized = NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000, True);
+    settings.enemystats = NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100, True);
+    settings.hiddenenemiesrandomized = NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000, True);
+    settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100, True);
+    settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100, True);
+    settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100, True);
+    settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
+    settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
+    settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
+    settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 6, 100, True);
+    settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
+    settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
 }
 
 simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)

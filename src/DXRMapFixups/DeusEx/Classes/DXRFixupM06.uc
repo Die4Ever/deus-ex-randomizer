@@ -75,8 +75,8 @@ function PreFirstEntryMapFixes()
     local #var(DeusExPrefix)Mover m;
     local #var(prefix)AllianceTrigger at;
     local DeusExMover d;
-    local DataLinkTrigger dt;
-    local ComputerSecurity cs;
+    local #var(prefix)DataLinkTrigger dt;
+    local #var(prefix)ComputerSecurity cs;
     local #var(prefix)ComputerPersonal cp;
     local #var(prefix)Keypad pad;
     local ProjectileGenerator pg;
@@ -469,7 +469,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';
         }
-        foreach AllActors(class'DataLinkTrigger', dt) {
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
             if(dt.name == 'DataLinkTrigger0')
                 dt.Tag = 'TongHasRom';
         }
@@ -601,18 +601,18 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        foreach AllActors(class'DeusExMover',d){
-            if (d.Region.Zone.ZoneGroundFriction < 8) {
+        foreach AllActors(class'#var(DeusExPrefix)Mover',m){
+            if (m.Region.Zone.ZoneGroundFriction < 8) {
                 //Less than default friction should be the freezer
-                d.Tag='FreezerDoor';
+                m.Tag='FreezerDoor';
                 if(dxr.flags.settings.doorsdestructible >= 90) { // this door can be rough in speedruns
-                    d.bBreakable = true;
-                    d.minDamageThreshold = 40;
-                    d.doorStrength = 0.5;
+                    m.bBreakable = true;
+                    m.minDamageThreshold = 40;
+                    m.doorStrength = 0.5;
                 }
             }
         }
-        foreach AllActors(class'ComputerSecurity',cs){
+        foreach AllActors(class'#var(prefix)ComputerSecurity',cs){
             if (cs.UserList[0].UserName=="LUCKYMONEY"){
                 cs.Views[2].doorTag='FreezerDoor';
             }
@@ -1150,7 +1150,7 @@ function AnyEntryMapFixes()
                     }
                     break;
                 case "Operation1":
-                    DataLinkTrigger(a).checkFlag = 'QuickLetPlayerIn';
+                    #var(prefix)DataLinkTrigger(a).checkFlag = 'QuickLetPlayerIn';
                     break;
                 case "TurnOnTheKillSwitch":
                     if (boolFlag == True)

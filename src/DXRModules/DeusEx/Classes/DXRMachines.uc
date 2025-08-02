@@ -382,6 +382,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector l
     local #var(injectsprefix)InformationDevices d;
     local LocationNormal locnorm;
     local FMinMax distrange;
+    local string plaintextTag;
     locnorm.loc = loc;
     distrange.min = 0.1;
 
@@ -389,8 +390,11 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector l
     distrange.max = 16*50;
     NearestFloor(locnorm, distrange);
 
+    //Tag needs to be unique to get added to player notes
+    plaintextTag = "DXRMachinesRandoTurret_" $ dxr.localURL $ "_" $ c.UserList[0].userName;
+
     d = SpawnDatacubePlaintext(locnorm.loc, Rotator(locnorm.norm),
-        c.UserList[0].userName $ " password is " $ c.UserList[0].Password, "");
+        c.UserList[0].userName $ " password is " $ c.UserList[0].Password, plaintextTag);
 
     d.SetCollision(true,false,false);
     d.new_passwords[0] = c.UserList[0].Password;

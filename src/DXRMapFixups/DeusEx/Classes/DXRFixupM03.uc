@@ -28,7 +28,7 @@ function PostFirstEntryMapFixes()
         PreventUNATCOZombieDanger();
         break;
     case "03_NYC_BatteryPark":
-        player().StartDataLinkTransmission("dl_batterypark");
+        DXRStartDataLinkTransmission("dl_batterypark");
         break;
     case "03_NYC_BrooklynBridgeStation":
         if (!RevisionMaps){

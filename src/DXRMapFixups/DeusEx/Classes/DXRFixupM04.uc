@@ -297,9 +297,13 @@ function PreFirstEntryMapFixes()
         }
 
         if(dxr.flags.settings.goals > 0) {
+            //This delay between setting the flag with the FlagTrigger and playing the
+            //infolink seems to help for HX.
+            AddDelayEvent('UNATCOHatesPlayer','UNATCOHatesPlayerInfolink',0.5);
+
             foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
                 if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                dt.Tag = 'UNATCOHatesPlayer';
+                dt.Tag = 'UNATCOHatesPlayerInfolink';
                 break;
             }
         }

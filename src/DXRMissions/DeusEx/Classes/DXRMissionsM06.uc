@@ -470,9 +470,9 @@ function #var(prefix)GordonQuick CreateGordon(Vector pos, Rotator rot)
     local #var(prefix)GordonQuick gordon;
 
     gordon = #var(prefix)GordonQuick(Spawnm(class'#var(prefix)GordonQuick',, 'DXRMissions', pos, rot));
-    GiveItem(gordon,class'WeaponAssaultShotgun',100);
-    GiveItem(gordon,class'WeaponSword');
-    GiveItem(gordon,class'WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
+    GiveItem(gordon,class'#var(prefix)WeaponAssaultShotgun',100);
+    GiveItem(gordon,class'#var(prefix)WeaponSword');
+    GiveItem(gordon,class'#var(prefix)WeaponCombatKnife'); //Not sure why he has a sword and combat knife, but who am I to question vanilla
     gordon.bKeepWeaponDrawn = True;
     gordon.SetOrders('Standing');
     gordon.BarkBindName = "TriadLumPath";
@@ -482,14 +482,14 @@ function #var(prefix)GordonQuick CreateGordon(Vector pos, Rotator rot)
 
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
-    local WeaponNanoSword dts;
-    local DataLinkTrigger dlt;
+    local #var(prefix)WeaponNanoSword dts;
+    local #var(prefix)DataLinkTrigger dlt;
     local NervousWorker   nw;
 
     switch(g.name) {
     case "Dragon's Tooth Sword":
-        dts = WeaponNanoSword(Spawnm(class'WeaponNanoSword',,,Loc.positions[0].pos,Loc.positions[0].rot));
-        dlt = DataLinkTrigger(Spawnm(class'DataLinkTrigger',,,Loc.positions[0].pos));
+        dts = #var(prefix)WeaponNanoSword(Spawnm(class'#var(prefix)WeaponNanoSword',,,Loc.positions[0].pos,Loc.positions[0].rot));
+        dlt = #var(prefix)DataLinkTrigger(Spawnm(class'#var(prefix)DataLinkTrigger',,,Loc.positions[0].pos));
 
         g.actors[0].a=dts;
         g.actors[1].a=dlt;

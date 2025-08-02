@@ -10,6 +10,7 @@ var DXRPasswords passwords;
 var string plaintext;
 var string new_passwords[16];
 var string plaintextTag;
+var string defaultItemName;
 var bool bFrobbed;
 
 function string _GetMapName()
@@ -410,6 +411,14 @@ static function string GetTextTag(#var(prefix)InformationDevices id)
     }
 
     return TextTag;
+}
+
+static function string GetHumanNameFromID(#var(prefix)InformationDevices id)
+{
+    local String TextTag;
+
+    TextTag = GetTextTag(id);
+    return class'DXRDatacubes'.static.GetHumanTextTagName(TextTag,id.TextPackage);
 }
 
 defaultproperties

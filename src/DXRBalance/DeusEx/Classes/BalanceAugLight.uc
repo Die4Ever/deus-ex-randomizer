@@ -9,7 +9,7 @@ function SetBeamLocation()
         return;
 
     b1.LightRadius *= 2;
-    b1.LightBrightness = 220; // default is 192
+    b1.LightBrightness = 200; // default is 192
     b2.LightRadius = 8; // default is 4
     // white like a new high tech LED flashlight? little bit of blue like JC's eyes?
     b1.LightHue = 172;

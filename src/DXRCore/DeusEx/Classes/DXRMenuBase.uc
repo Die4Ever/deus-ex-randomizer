@@ -7,8 +7,8 @@ struct EnumBtn {
     var DXRMenuUIHelpButtonWindow helpBtn;
 
 #ifdef allstarts
-    var string values[64];
-    var string helpTexts[64];
+    var string values[80];
+    var string helpTexts[80];
 #else
     var string values[32];
     var string helpTexts[32];
@@ -216,7 +216,7 @@ function NewGroup(string text)
 
 function bool EnumOption(string label, int value, optional out int output, optional string helpText)
 {
-    local int i;
+    local int i, j;
     local string s;
     local EnumBtn e;
 
@@ -244,8 +244,13 @@ function bool EnumOption(string label, int value, optional out int output, optio
             enums[id].helpBtn = e.helpBtn;
             wnds[id] = enums[id].btn;
         }
-         log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
-        if( output == value ) {
+        log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
+        j = ArrayCount(enums[id].values)-1;
+        if(enums[id].values[j] != "" && enums[id].values[j] != label) {
+            label = "ERROR: FULL";
+            enums[id].btn.SetButtonText(label);
+        }
+        else if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
             s="";

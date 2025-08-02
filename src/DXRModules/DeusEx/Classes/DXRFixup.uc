@@ -289,6 +289,9 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     CleanupPlaceholders();
+
+    AdjustBookColours();
+
     SetSeed( "DXRFixup PostFirstEntry missions" );
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
@@ -348,6 +351,76 @@ function TriggerDebug()
     Player().ClientMessage("Trigger debug enabled for #var(TriggerDebug)");
 
     Spawn(class'DXRLogTrigger',,'#var(TriggerDebug)');
+}
+
+function bool IsManWhoWasThursday(name TextTag)
+{
+    switch(TextTag)
+    {
+        case '02_Book05':
+        case '03_Book05':
+        case '04_Book05':
+        case '10_Book03':
+        case '12_Book02':
+        case '14_Book04':
+        case '15_Book02':
+            return true;
+    }
+    return false;
+}
+
+function bool IsJacobsShadow(name TextTag)
+{
+    switch(TextTag)
+    {
+        case '02_Book03':
+        case '03_Book04':
+        case '04_Book03':
+        case '06_Book03':
+        case '09_Book02':
+        case '10_Book02':
+        case '12_Book01':
+        case '15_Book01':
+            return true;
+    }
+    return false;
+}
+
+function AdjustBookColours()
+{
+    local #var(prefix)BookOpen bo;
+    local #var(prefix)BookClosed bc;
+    local bool enable;
+
+    if(!#defined(vanilla)) return; //Have to think about Facelift before allowing in other mods
+    if(dxr.flags.IsZeroRandoPure()) return; //Don't change the textures for pure Zero Rando
+
+    enable = class'MenuChoice_GoalTextures'.static.IsEnabled(dxr.flags);
+
+    foreach AllActors(class'#var(prefix)BookOpen',bo){
+        if (enable){
+            if (IsManWhoWasThursday(bo.TextTag)){
+                bo.Multiskins[0]=Texture'BookOpenTex1Red';
+            } else if (IsJacobsShadow(bo.TextTag)){
+                bo.Multiskins[0]=Texture'BookOpenTex1Purple';
+            }
+        } else {
+            bo.Multiskins[0]=bo.Default.Multiskins[0];
+        }
+    }
+
+    foreach AllActors(class'#var(prefix)BookClosed',bc){
+        if (enable){
+            if (IsManWhoWasThursday(bc.TextTag)){
+                bc.Multiskins[0]=Texture'BookClosedTex1Red';
+            } else if (IsJacobsShadow(bc.TextTag)){
+                bc.Multiskins[0]=Texture'BookClosedTex1Purple';
+            }
+        } else {
+            bc.Multiskins[0]=bc.Default.Multiskins[0];
+        }
+    }
+
 }
 
 function FixFOV()
@@ -860,8 +933,8 @@ function FixHarleyFilben()
 
 function FixSamCarter()
 {
-    local SamCarter s;
-    foreach AllActors(class'SamCarter', s) {
+    local #var(prefix)SamCarter s;
+    foreach AllActors(class'#var(prefix)SamCarter', s) {
         RemoveFears(s);
     }
 }
