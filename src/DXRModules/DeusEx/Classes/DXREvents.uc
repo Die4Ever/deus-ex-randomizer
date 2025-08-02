@@ -3595,7 +3595,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill enough fish.";
         case "FordSchick_Dead":
         case "FordSchick_PlayerDead":
-            return "Kill Ford Schick.  Note that you can do this after rescuing him.  You must kill him yourself.";
+            return "Kill Ford Schick.  Note that you can do this after rescuing him if you're fast.  You must kill him yourself.";
         case "ChateauInComputerRoom":
             return "Make your way down to Beth DuClare's computer station in the basement of the DuClare chateau.";
         case "DuClareBedrooms":
