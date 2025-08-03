@@ -44,9 +44,8 @@ event DrawWindow(GC gc)
         scopeMult2 = width / scopeWidth;
 
         //Binocular texture(s) is wider than tall, so account for that scale as well
-        if (scopeMult2 < scopeMult) {
-            scopeMult = scopeMult2;
-        }
+        scopeMult = FMin(scopeMult,scopeMult2);
+        if (scopeMult < 1.0){ scopeMult = 1.0; }
 
         scopeMultInt = float(class'DXRInfo'.static.TruncateFloat(scopeMult,0));
         scopeMultFirstDec = float(class'DXRInfo'.static.TruncateFloat(scopeMult,1)) - scopeMultInt;
@@ -83,7 +82,7 @@ event DrawWindow(GC gc)
         }
 
         gc.SetTileColor(colLines);
-        gc.SetStyle(DSTY_Masked);
+        gc.SetStyle(DSTY_Translucent);  //Masked rounds the edges of the texture when stretching, translucent doesn't
         gc.DrawStretchedTexture(fromX,                   fromY, (256 * scopeMult), (scopeHeight * scopeMult), 0, 0, 256, scopeHeight, Texture'HUDBinocularCrosshair_1');
         gc.DrawStretchedTexture(fromX + (256*scopeMult), fromY, (256 * scopeMult), (scopeHeight * scopeMult), 0, 0, 256, scopeHeight, Texture'HUDBinocularCrosshair_2');
     }
@@ -96,7 +95,7 @@ event DrawWindow(GC gc)
 
             //Also draw the scope lines
             gc.SetTileColor(colLines);
-            gc.SetStyle(DSTY_Masked);
+            gc.SetStyle(DSTY_Translucent);  //Masked rounds the edges of the texture when stretching, translucent doesn't
             gc.DrawStretchedTexture(fromX, fromY, scopeWidth*scopeMult, scopeHeight*scopeMult, 0, 0, scopeWidth, scopeHeight, Texture'HUDScopeCrosshair');
         } else {
             //Scope with no blacked out edges
