@@ -3,7 +3,7 @@ class DXRFixupM02 extends DXRFixup;
 //#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
-    local BarrelAmbrosia ambrosia;
+    local #var(prefix)BarrelAmbrosia ambrosia;
     local Trigger t;
     local NYPoliceBoat b;
     local #var(DeusExPrefix)Mover d;
@@ -99,8 +99,10 @@ function PreFirstEntryMapFixes()
             c.bIsSecretGoal = true;
         }
 
+        PreventShufflingAmbrosia();
+
         if (VanillaMaps){
-            foreach AllActors(class'BarrelAmbrosia', ambrosia) {
+            foreach AllActors(class'#var(prefix)BarrelAmbrosia', ambrosia) {
                 foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {
                     if(t.CollisionRadius < 100)
                         t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);

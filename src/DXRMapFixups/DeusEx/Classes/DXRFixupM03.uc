@@ -218,6 +218,8 @@ function PreFirstEntryMapFixes()
         //Button to extend sewer platform from the other side
         AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
+        PreventShufflingAmbrosia();
+
         class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
         AddActor(class'PoolTableResetButton',vect(1060.3,468,227),rot(-1600,32768,0));
         AddActor(class'PoolTableResetButton',vect(1060.3,719,227),rot(-1600,32768,0));
@@ -255,6 +257,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
+
+        PreventShufflingAmbrosia();
 
         // fix collision with the static crates https://github.com/Die4Ever/deus-ex-randomizer/issues/665
         class'FillCollisionHole'.static.CreateLine(self, vectm(792.113403, -1343.670166, 69), vectm(675, -1343.670166, 69), 32, 90);
@@ -479,6 +483,8 @@ function PreFirstEntryMapFixes()
                 SetPawnLocAsHome(juan);
             }
         }
+
+        PreventShufflingAmbrosia();
 
         Spawn(class'PlaceholderItem',,, vectm(1702,-359.8,373)); //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(1624.15,-740.12,373)); //Guest bed headboard

@@ -25,7 +25,6 @@ function CheckConfig()
     local int i;
 
     i=0;
-    _skipactor_types[i++] = class'#var(prefix)BarrelAmbrosia';
     _skipactor_types[i++] = class'#var(prefix)NanoKey';
     if(#defined(gmdx))
         _skipactor_types[i++] = class'#var(prefix)CrateUnbreakableLarge';

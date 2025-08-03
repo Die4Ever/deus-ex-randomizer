@@ -1106,6 +1106,16 @@ function FixInvalidBindNames()
     }
 }
 
+function PreventShufflingAmbrosia()
+{
+    local #var(prefix)BarrelAmbrosia ambrosia;
+
+    //Prevent ambrosia barrels from being shuffled
+    foreach AllActors(class'#var(prefix)BarrelAmbrosia', ambrosia) {
+        ambrosia.bIsSecretGoal = true;
+    }
+}
+
 //Scale the damage done by zones to counteract the damage scaling from CombatDifficulty
 function ScaleZoneDamage()
 {
