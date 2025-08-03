@@ -1133,8 +1133,11 @@ function OverwriteDecorations(bool bFirstEntry)
     local DeusExDecoration d;
     local #var(prefix)Barrel1 b;
     local int i;
+    local bool bBalance;
+
+    bBalance = class'MenuChoice_BalanceEtc'.static.IsEnabled();
     foreach AllActors(class'DeusExDecoration', d) {
-        if( class'MenuChoice_BalanceEtc'.static.IsEnabled()
+        if( bBalance
             && (d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical')) ) {
             d.Mass = 35;
             d.HitPoints = 1;
@@ -1166,9 +1169,11 @@ function OverwriteDecorations(bool bFirstEntry)
     }
 
     // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;
-    foreach AllActors(class'#var(prefix)Barrel1', b) {
-        if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
-            b.explosionDamage = 400;
+    if(bBalance) {
+        foreach AllActors(class'#var(prefix)Barrel1', b) {
+            if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
+                b.explosionDamage = 400;
+            }
         }
     }
 }

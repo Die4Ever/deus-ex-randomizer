@@ -37,11 +37,13 @@ function AdjustBarrelBehaviour()
         case SC_Explosive:
         case SC_FlammableLiquid:
         case SC_FlammableSolid:
-            //Intent is to make these all behave like SC_FlammableSolid
-            bExplosive = True;
-            explosionDamage = 200;
-            explosionRadius = class'Barrel1'.Default.ExplosionRadius;
-            HitPoints=8;
+            if (class'MenuChoice_BarrelTextures'.static.IsEnabled(self) || class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+                //Intent is to make these all behave like SC_FlammableSolid
+                bExplosive = True;
+                explosionDamage = 200;
+                explosionRadius = class'Barrel1'.Default.ExplosionRadius;
+                HitPoints=8;
+            }
             ItemName = "Explosive Barrel";
             break;
         case SC_Wood:
