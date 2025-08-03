@@ -8,43 +8,49 @@ function CheckConfig()
     local int i;
 
     //#region Add Datacubes
-    add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
-    add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";
-    add_datacubes[i].Location = vect(350,1950,200); //Middle cube on middle floor
-    add_datacubes[i].plaintextTag = "VersalifeMainElevatorCode";
-    i++;
+    switch(dxr.localURL) {
+    case "06_HONGKONG_VERSALIFE":
+        add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";
+        add_datacubes[i].Location = vect(350,1950,200); //Middle cube on middle floor
+        add_datacubes[i].plaintextTag = "VersalifeMainElevatorCode";
+        i++;
+        break;
 
-    add_datacubes[i].map = "06_HONGKONG_STORAGE";
-    add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
-    add_datacubes[i].Location = vect(-480,-550,570); //Room with cabinet
-    add_datacubes[i].plaintextTag = "VersalifeNanotechCode";
-    i++;
+    case "06_HONGKONG_STORAGE":
+        add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
+        add_datacubes[i].Location = vect(-480,-550,570); //Room with cabinet
+        add_datacubes[i].plaintextTag = "VersalifeNanotechCode";
+        i++;
+        break;
 
-    add_datacubes[i].map = "06_HONGKONG_WANCHAI_MARKET";
-    add_datacubes[i].text = "This new ATM in the market is in such a convenient location for all my banking needs!|nAccount: 8326942 |nPIN: 7797 ";
-    add_datacubes[i].Location = vect(360,-1120,40); //Pottery shop counter
-    add_datacubes[i].plaintextTag = "MarketATMPassword";
-    i++;
+    case "06_HONGKONG_WANCHAI_MARKET":
+        add_datacubes[i].text = "This new ATM in the market is in such a convenient location for all my banking needs!|nAccount: 8326942 |nPIN: 7797 ";
+        add_datacubes[i].Location = vect(360,-1120,40); //Pottery shop counter
+        add_datacubes[i].plaintextTag = "MarketATMPassword";
+        i++;
+        break;
 
-    add_datacubes[i].map = "06_HONGKONG_WANCHAI_STREET";
-    add_datacubes[i].text = "It's so handy being able to quickly grab some cash from the Quick Stop before getting to the club!|nAccount: 2332316 |nPIN: 1608 ";
-    add_datacubes[i].Location = vect(-330,-700,1700); //Under Construction floor
-    add_datacubes[i].plaintextTag = "QuickStopATMPassword";
-    i++;
+    case "06_HONGKONG_WANCHAI_STREET":
+        add_datacubes[i].text = "It's so handy being able to quickly grab some cash from the Quick Stop before getting to the club!|nAccount: 2332316 |nPIN: 1608 ";
+        add_datacubes[i].Location = vect(-330,-700,1700); //Under Construction floor
+        add_datacubes[i].plaintextTag = "QuickStopATMPassword";
+        i++;
 
-    add_datacubes[i].map = "06_HONGKONG_WANCHAI_STREET";
-    add_datacubes[i].text = "Miss Chow,|nOur agents have ascertained the access codes to the police evidence vault in the market.  When you are ready, our agents can enter the vault and remove the evidence located within using the code 87342.|n|nCommander Triolet";
-    add_datacubes[i].Location = vect(-300.4, -1544.0, 1970.4);
-    rot.Yaw = -2250.0;
-    add_datacubes[i].rotation = rot;
-    add_datacubes[i].plaintextTag = "PoliceVaultPassword";
-    i++;
+        add_datacubes[i].text = "Miss Chow,|nOur agents have ascertained the access codes to the police evidence vault in the market.  When you are ready, our agents can enter the vault and remove the evidence located within using the code 87342.|n|nCommander Triolet";
+        add_datacubes[i].Location = vect(-300.4, -1544.0, 1970.4);
+        rot.Yaw = -2250.0;
+        add_datacubes[i].rotation = rot;
+        add_datacubes[i].plaintextTag = "PoliceVaultPassword";
+        i++;
+        break;
 
-    add_datacubes[i].map = "06_HONGKONG_WANCHAI_UNDERWORLD";
-    add_datacubes[i].text = "Max,|nIf you need to get into the freezer again, I've connected the door to the security terminal in the meeting room.|n|nLogin: LUCKYMONEY |nPassword: REDARROW |n|nRemember, that's the same account as your own computer.";
-    add_datacubes[i].Location = vect(367,-2511,-334);
-    add_datacubes[i].plaintextTag = "LuckyMoneyPassword";
-    i++;
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        add_datacubes[i].text = "Max,|nIf you need to get into the freezer again, I've connected the door to the security terminal in the meeting room.|n|nLogin: LUCKYMONEY |nPassword: REDARROW |n|nRemember, that's the same account as your own computer.";
+        add_datacubes[i].Location = vect(367,-2511,-334);
+        add_datacubes[i].plaintextTag = "LuckyMoneyPassword";
+        i++;
+        break;
+    }
     //#endregion
 
     Super.CheckConfig();

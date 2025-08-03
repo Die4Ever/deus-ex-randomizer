@@ -6,14 +6,17 @@ function CheckConfig()
 {
     local int i;
     //#region Add Datacubes
-    add_datacubes[i].map = "09_NYC_Dockyard";
-    add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
-    add_datacubes[i].Location = vect(3860,3270,300);  //Ammo storage control room
-    add_datacubes[i].plaintextTag = "JennysNumber";
-    i++;
-    add_datacubes[i] = add_datacubes[i-1];// dupe
-    add_datacubes[i].Location = vect(-145,4775,70); //On boxes in other warehouse
-    i++;
+    switch(dxr.localURL) {
+    case "09_NYC_Dockyard":
+        add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+        add_datacubes[i].Location = vect(3860,3270,300);  //Ammo storage control room
+        add_datacubes[i].plaintextTag = "JennysNumber";
+        i++;
+        add_datacubes[i] = add_datacubes[i-1];// dupe
+        add_datacubes[i].Location = vect(-145,4775,70); //On boxes in other warehouse
+        i++;
+        break;
+    }
     //#endregion
 
     Super.CheckConfig();

@@ -17,7 +17,6 @@ var DecorationsOverwrite DecorationsOverwrites[16];
 var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 
 struct AddDatacube {
-    var string map;
     var string text;
     var vector location;// 0,0,0 for random
     var class<DataVaultImage> imageClass;
@@ -198,9 +197,6 @@ function CheckConfig()
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
         if( DecorationsOverwrites[i].type == "" ) continue;
         DecorationsOverwritesClasses[i] = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
-    }
-    for(i=0; i<ArrayCount(add_datacubes); i++) {
-        add_datacubes[i].map = Caps(add_datacubes[i].map);
     }
 }
 
@@ -1289,8 +1285,7 @@ function SpawnDatacubes()
     }
 
     for(i=0; i<ArrayCount(add_datacubes); i++) {
-        if( dxr.localURL != add_datacubes[i].map ) continue;
-
+        if(add_datacubes[i].text == "" && add_datacubes[i].imageClass == None) continue;
         loc = add_datacubes[i].location * coords_mult;
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 ) {
             if (add_datacubes[i].plaintextTag!=""){

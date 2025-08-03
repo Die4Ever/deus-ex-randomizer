@@ -554,19 +554,35 @@ function vanilla_keys_rules()
         break;
 
     case "15_area51_entrance":
+        // key to sector 3, disallow in the vents area and lower
         keys_rules[i].item_name = 'Factory';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, -237);
         keys_rules[i].allow = false;
         i++;
 
+        // disallow in other locked sleeping pods (6786 and 3901)
+        keys_rules[i].item_name = 'Factory';
+        keys_rules[i].min_pos = vect(4474, 420, -99999);
+        keys_rules[i].max_pos = vect(4900, 550, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        // disallow in other locked sleeping pod (4322)
+        keys_rules[i].item_name = 'Factory';
+        keys_rules[i].min_pos = vect(4985, -450, -99999);
+        keys_rules[i].max_pos = vect(5157, -325, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        // allow anywhere before sector 3 door
         keys_rules[i].item_name = 'Factory';
         keys_rules[i].min_pos = vect(-816, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
 
-        // allow between barracks and sector 3 access door
+        // allow between barracks and sector 3 access door (not allowed in barracks or sleeping pods)
         keys_rules[i].item_name = 'a51entr_vent';
         keys_rules[i].min_pos = vect(-580, -99999, -240);
         keys_rules[i].max_pos = vect(4280, 99999, 99999);
@@ -578,6 +594,7 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(650, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+        // disallow anywhere else
         keys_rules[i].item_name = 'a51entr_vent';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
