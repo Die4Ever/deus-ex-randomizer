@@ -11,7 +11,7 @@ static function bool IsEnabled(Actor a)
     foreach a.AllActors(class'DXRFlags',f){break;}
     if (f==None){return False;}
 
-    return (default.value==2) || (default.value==1 && f.IsZeroRando());
+    return (default.value==2) || (default.value==1 && f.IsZeroRandoPure());
 }
 
 defaultproperties
