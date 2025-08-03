@@ -18,6 +18,8 @@ function CreateChoices()
     }
     if (#defined(vanilla||revision)){
         CreateChoice(class'MenuChoice_GoalTextures');
+        CreateChoice(class'MenuChoice_ScopeBlackout');
+        CreateChoice(class'MenuChoice_ScopeScaling');
     }
     CreateChoice(class'MenuChoice_ShowTeleporters');
     if (#defined(vanilla)) {
