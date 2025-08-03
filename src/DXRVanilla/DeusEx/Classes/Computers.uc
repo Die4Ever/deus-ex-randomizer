@@ -75,7 +75,7 @@ simulated function Tick(float deltaTime)
 {
     // why are security computers so slow?
     Super.Tick(deltaTime);
-    AnimRate = 2;
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) AnimRate = 2;
 }
 
 /////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ state On
         {
             GotoState('Off');
         }
-        else if (VSize(curFrobber.Location - Location) > 150)// DXRando: reduced from 1500 down to 150
+        else if (VSize(curFrobber.Location - Location) > 150 && class'MenuChoice_BalanceEtc'.static.IsEnabled())// DXRando: reduced from 1500 down to 150
         {
             curFrobber.ClientMessage(ItemName$" is too far to use!",, true);
             termwindow.CloseScreen("EXIT");
