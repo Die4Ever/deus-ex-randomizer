@@ -1,7 +1,11 @@
 class SoundLooper extends info;
 
+var() Sound mySound;
+var() float playTime;
+var() float delayTime;
+var() bool randomizeDelay;
+var bool playing;
 var int soundHandle;
-var Sound mySound;
 
 //Create a SoundLooper, using the sound from the nearest AmbientSound in the checkRad
 static function SoundLooper ReplaceAmbientSound(Actor a, vector loc, float checkRad)
@@ -32,6 +36,12 @@ static function SoundLooper ReplaceAmbientSound(Actor a, vector loc, float check
     }
 }
 
+simulated function Tick(float deltaTime)
+{
+    Super.Tick(deltaTime);
+    LastRenderTime = Level.TimeSeconds; //Keep this sucker alive and active
+}
+
 function PostPostBeginPlay()
 {
     local float f;
@@ -39,7 +49,7 @@ function PostPostBeginPlay()
     f = SoundRadius;
     f = (f+1) * 25;
     SetCollisionSize(f, f);
-    SetTimer(TimerRate, True);
+    StartLoopedSound();
 }
 
 function Touch(Actor Other)
@@ -48,21 +58,90 @@ function Touch(Actor Other)
     {
         Super.Touch(Other);
         //DeusExPlayer(Other).ClientMessage("touched " $ self @ soundHandle);
-        SetTimer(TimerRate, True);
-        Timer();
+        if (playing && soundHandle==-1){
+            PlayLoopedSound();
+        }
     }
+}
+
+function Untouch(Actor Other)
+{
+    if (PlayerPawn(Other) != None)
+    {
+        Super.Untouch(Other);
+        //DeusExPlayer(Other).ClientMessage("untouched " $ self @ soundHandle);
+        if (playing && soundHandle!=-1){
+            DoDelay();
+        }
+    }
+}
+
+function StartLoopedSound()
+{
+    if (mySound==None) return;
+
+    PlayLoopedSound();
+}
+
+function float GetPlayTime()
+{
+    local float finalPlayTime;
+
+    finalPlayTime = playTime;
+    if (finalPlayTime==0){
+        finalPlayTime = GetSoundDuration(mySound);
+    }
+
+    return finalPlayTime;
+}
+
+function float GetDelayTime()
+{
+    local float finalDelay;
+
+    finalDelay = delayTime;
+
+    //Do delay rando
+    if (randomizeDelay && finalDelay>0){
+        finalDelay = RandRange(delayTime*0.5,delayTime*1.5);
+    }
+
+    return finalDelay;
+}
+
+function PlayLoopedSound()
+{
+    if (soundHandle!=-1){
+        StopSound (soundHandle);
+        SetTimer(0.0,false);
+    }
+
+    soundHandle = PlaySound(mySound, SLOT_Misc, float(SoundVolume)/64.0,, CollisionRadius+64, float(SoundPitch)/64.0);
+    SetTimer(GetPlayTime(),true);
+    playing=true;
+}
+
+function DoDelay()
+{
+    playing=false;
+    if (soundHandle!=-1){
+        StopSound (soundHandle);
+        SetTimer(0.0,false);
+    }
+    soundHandle=-1;
+    SetTimer(GetDelayTime(),true);
 }
 
 function Timer()
 {
-    if (soundHandle!=-1){
-        StopSound(soundHandle);
-    }
-
     if (mySound!=None){
-        soundHandle = PlaySound(mySound, SLOT_Misc, float(SoundVolume)/64.0,, CollisionRadius+64, float(SoundPitch)/64.0);
-    } else {
-        soundHandle = -1;
+        if (playing){
+            //Just finished playing, now delay
+            DoDelay();
+        } else {
+            //Just finished delay, start playing
+            PlayLoopedSound();
+        }
     }
 }
 
@@ -71,7 +150,6 @@ defaultproperties
     bCollideActors=True
     SoundRadius=8
     SoundVolume=128
-    TimerRate=3
-    mySound=sound'T7GPianoBad'
-    soundHandle=-1
+    playTime=0
+    delayTime=1
 }

@@ -343,7 +343,8 @@ function ReplaceHotelAmbientSounds()
 function RandomizeDoorSound(SoundLooper sl)
 {
     local string soundName;
-    local float interval;
+    local float playTime,delayTime;
+    local bool needsLoop;
     local int max,choice,i;
 
     max = 20;
@@ -355,7 +356,6 @@ function RandomizeDoorSound(SoundLooper sl)
     choice = rng(max);
     if (choice == i++){
         soundName="Ambient.Ambient.TVSports";
-
     }
     else if (choice == i++)
     {
@@ -420,17 +420,22 @@ function RandomizeDoorSound(SoundLooper sl)
     else if (choice == i++)
     {
         soundName="#var(package).MemePiano.T7GPianoBad";
-        interval=8;  //Is 6 seconds long, but give some time between attempts
+        playTime = 5.578;
+        delayTime=2;
+        needsLoop=true;
     }
     else if (choice == i++)
     {
         soundName="#var(package).MemePiano.NeverGonnaGive";
-        interval=8;  //Is 5 seconds long, but give some time between attempts
+        playTime = 5.053;
+        delayTime=3;
+        needsLoop=true;
     }
     else if (choice == i++)
     {
         soundName="DeusExSounds.Special.FlushToilet";
-        interval=15;
+        delayTime=20;
+        needsLoop=true;
     }
     else if (choice == i++) //20
     {
@@ -452,26 +457,35 @@ function RandomizeDoorSound(SoundLooper sl)
     else if (choice == i++)
     {
         soundName="RSounds.Ambient.warble_PresidentMead";
-        interval=4.834;
+        playTime=4.834;
+        delayTime=0;
+        needsLoop=true;
     }
     else if (choice == i++)
     {
         soundName="RSounds.Environment.ClockTick";
-        interval=4.856;
+        playTime=4.856;
+        delayTime=0;
+        needsLoop=true;
     }
 #endif
     else if (choice == i++)
     {
         soundName="#var(package).MemePiano.AllIWantForChristmas";
-        interval=37;  //Is 34 seconds long, but give a bit of a break between attempts
+        playTime=34.501;
+        delayTime=5;
+        needsLoop=true;
     }
 
-    if(interval != 0) {
+    if(needsLoop) {
         sl.AmbientSound = None;
         sl.mySound = Sound(DynamicLoadObject(soundName, class'Sound'));
-        sl.TimerRate = interval;
-        sl.SoundVolume = 64; //The default sound volume is too loud
-        l("RandomizeDoorSound " $ sl $" sound to "$soundName$" ("$sl.mySound$") looping every " $ sl.TimerRate);
+        sl.playTime = playTime;
+        sl.delayTime = delayTime;
+        sl.randomizeDelay = true;
+        sl.SoundVolume = 90; //The default sound volume is too loud
+        sl.StartLoopedSound();
+        l("RandomizeDoorSound " $ sl $" sound to "$soundName$" ("$sl.mySound$") with repeat delay " $ sl.delayTime);
         return;
     } else if (soundName!=""){
         sl.mySound = None;
