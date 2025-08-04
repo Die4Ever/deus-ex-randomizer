@@ -308,6 +308,9 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
 
 
 def InstallLDDP(system:Path, settings:dict):
+    if (system/'DeusExConAudioFemJC_HK_Shared.u').exists():
+        info('LDDP already installed in', system, '\n')
+        return
     callback = settings.get('downloadcallback')
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
     Mkdir(tempdir, exist_ok=True)
