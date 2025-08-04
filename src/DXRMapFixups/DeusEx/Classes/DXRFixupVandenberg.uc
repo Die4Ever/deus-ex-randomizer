@@ -274,7 +274,7 @@ function PreFirstEntryMapFixes()
     //#region Sub Base
     case "14_VANDENBERG_SUB":
         FixMechanicBarks();
-    
+
         //Door into base from shore (inside)
         AddSwitch( vect(2279.640137,3638.638184,-398.255676), rot(0, -16384, 0), 'door_base');
 

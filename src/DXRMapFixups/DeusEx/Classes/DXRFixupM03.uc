@@ -727,10 +727,19 @@ function AnyEntryMapFixes()
         }
         break;
     case "03_NYC_UNATCOHQ":
-        // 'AnnaThianks_Played' is expired here, but 'AnnaThanksChatDone' isn't
+        // 'AnnaThanks_Played' is expired here, but 'AnnaThanksChatDone' isn't
         // restores an alternative line from Anna about a debriefing based on what you did in M02
         FixConversationFlagJump(GetConversation('AnnaAtUNATCO'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
         break;
+    }
+}
+//#endregion
+
+//#region Fix Pre Travel
+function PreTravelMapFixes()
+{
+    if(dxr.flagbase.GetBool('MeetLebedev2_Played')) {
+        dxr.flagbase.SetBool('MeetLebedev2_Played', true,, 5); // restores some possible dialog with Paul
     }
 }
 //#endregion
