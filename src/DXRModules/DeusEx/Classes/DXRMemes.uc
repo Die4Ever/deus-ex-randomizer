@@ -277,111 +277,211 @@ function RandomAnnaMannequin()
 
 }
 
+
+
 function RandomHotelDoorSounds()
 {
-    local AmbientSound as;
+    local SoundLooper sl;
+    local bool randoSound;
 
     SetGlobalSeed("RandomHotelSounds "$dxr.localURL);
 
-    foreach AllActors(class'AmbientSound',as) {
-        switch(String(as.AmbientSound)){
-            case "Ambient.Ambient.TVSports":
-            case "Ambient.Ambient.TVWestern":
-            case "Ambient.Ambient.BabyCrying":
-            case "Ambient.Ambient.Sex":
-            case "RSounds.Environment.Dodgy": //Revision
-            case "Ambient.Ambient.LightWind": //Used on one M08 door in Revision?  Weird choice
-                if ( rng(3)==0 || IsAprilFools() ) RandomizeDoorSound(as); //33% chance of getting a random door sound
-                break;
+    ReplaceHotelAmbientSounds();  //Swap the AmbientSound's out for the cooler and more attractive SoundLoopers
+
+    foreach AllActors(class'SoundLooper',sl){
+        randoSound = false;
+        if (sl.AmbientSound!=None){
+            //Higher chance of the doors that already have sounds getting a random sound
+            if ( rng(3)==0 || IsAprilFools() ) randoSound=true; //33% chance of getting a random door sound
+        } else {
+            //If the door *didn't* already have a sound, give a chance for the door to get a sound
+            if (IsAprilFools()){
+                //33% chance of getting a sound on April Fools
+                if ( rng(3)==0 ) randoSound=true;
+            } else {
+                //10% chance of getting a sound on any other day of the year
+                if ( rng(10)==0 ) randoSound=true;
+            }
         }
+
+        if (randoSound) RandomizeDoorSound(sl);
     }
 }
 
-function RandomizeDoorSound(AmbientSound as)
+function ReplaceHotelAmbientSounds()
 {
-    local SoundLooper sl;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    if (RevisionMaps){
+        //Starting from the elevator, working around the hall
+        //class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(-240,-2365,90),100); //Open in M02, M04, M08
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(-240,-2685,90),100);
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(  20,-2800,90),100);
+        //Paul's door
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm( 915,-2800,90),100);
+        if (dxr.dxinfo.missionNumber==8){
+            class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(1180,-2475,90),100); //Open in M02, M04
+        }
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(1180,-2150,90),100);
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm( 790,-1550,90),100);
+        if (dxr.dxinfo.missionNumber!=2){
+            class'SoundLooper'.static.ReplaceAmbientSound(self,vectm( 790,-1150,90),100); //Open in M02
+        }
+    } else {
+        //Starting from the door next to Paul, and working around the hall
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(285,-2065,90),100);
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(675,-2065,90),100); //Corner
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(790,-1945,90),100); //Corner
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(790,-1550,90),100);
+        class'SoundLooper'.static.ReplaceAmbientSound(self,vectm(670,-810,90),100);
+    }
+
+}
+
+function RandomizeDoorSound(SoundLooper sl)
+{
     local string soundName;
     local float interval;
-    local int max;
+    local int max,choice,i;
 
-    max = 18;
+    max = 20;
+    if (#defined(revision)){
+        max+=5;
+    }
     if (dxr.IsChristmasSeason()) max++;
 
-    switch(rng(max)){
-    case 0:
+    choice = rng(max);
+    if (choice == i++){
         soundName="Ambient.Ambient.TVSports";
-        break;
-    case 1:
+
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.TVWestern";
-        break;
-    case 2:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.BabyCrying";
-        break;
-    case 3:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.Sex";
-        break;
-    case 4:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.Helicopter2";
-        break;
-    case 5:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.Klaxon";
-        break;
-    case 6:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.Klaxon4";
-        break;
-    case 7:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.DogsBarking";
-        break;
-    case 8:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.Electricity3";
-        break;
-    case 9:
+    }
+    else if (choice == i++) //10
+    {
         soundName="Ambient.Ambient.FireLarge";
-        break;
-    case 10:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.HumTurbine2";
-        break;
-    case 11:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.TonalLoop2";
-        break;
-    case 12:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.TVNewsNeutral";
-        break;
-    case 13:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.TVNewsMale";
-        break;
-    case 14:
+    }
+    else if (choice == i++)
+    {
         soundName="Ambient.Ambient.TVNewsFemale";
-        break;
-    case 15:
-        soundName="Ambient.Ambient.WaterTrickle2";
-        break;
-    case 16:
+    }
+    else if (choice == i++)
+    {
+        soundName="DeusExSounds.Pickup.RebreatherLoop";
+    }
+    else if (choice == i++)
+    {
         soundName="#var(package).MemePiano.T7GPianoBad";
-        interval=6;
-        break;
-    case 17:
+        interval=8;  //Is 6 seconds long, but give some time between attempts
+    }
+    else if (choice == i++)
+    {
         soundName="#var(package).MemePiano.NeverGonnaGive";
-        interval=5;
-        break;
-    default:// always last, when max++
+        interval=8;  //Is 5 seconds long, but give some time between attempts
+    }
+    else if (choice == i++)
+    {
+        soundName="DeusExSounds.Special.FlushToilet";
+        interval=15;
+    }
+    else if (choice == i++) //20
+    {
+        soundName="DeusExSounds.Special.PhoneBusy";
+    }
+#ifdef revision
+    else if (choice == i++)
+    {
+        soundName="RSounds.Environment.Dodgy";
+    }
+    else if (choice == i++)
+    {
+        soundName="RSounds.Environment.VentVoicesLongLoop";
+    }
+    else if (choice == i++)
+    {
+        soundName="RSounds.Environment.WaterDock";
+    }
+    else if (choice == i++)
+    {
+        soundName="RSounds.Ambient.warble_PresidentMead";
+        interval=4.834;
+    }
+    else if (choice == i++)
+    {
+        soundName="RSounds.Environment.ClockTick";
+        interval=4.856;
+    }
+#endif
+    else if (choice == i++)
+    {
         soundName="#var(package).MemePiano.AllIWantForChristmas";
-        interval=34;
-        break;
+        interval=37;  //Is 34 seconds long, but give a bit of a break between attempts
     }
 
     if(interval != 0) {
-        as.AmbientSound = None;
-        sl = as.Spawn(class'SoundLooper');
+        sl.AmbientSound = None;
         sl.mySound = Sound(DynamicLoadObject(soundName, class'Sound'));
         sl.TimerRate = interval;
-        l("RandomizeDoorSound "$ as $ " spawned " $ sl $" sound to "$soundName$" ("$sl.mySound$") " $ sl.TimerRate);
+        sl.SoundVolume = 64; //The default sound volume is too loud
+        l("RandomizeDoorSound " $ sl $" sound to "$soundName$" ("$sl.mySound$") looping every " $ sl.TimerRate);
         return;
     } else if (soundName!=""){
-        as.AmbientSound = Sound(DynamicLoadObject(soundName, class'Sound'));
+        sl.mySound = None;
+        sl.AmbientSound = Sound(DynamicLoadObject(soundName, class'Sound'));
+        sl.SoundPitch = 64;
+        sl.SoundRadius = 8;
+        sl.SoundVolume = 190;
+        l("RandomizeDoorSound "$sl$" sound to "$soundName$" ("$sl.AmbientSound$")");
     }
 
-    l("RandomizeDoorSound "$as$" sound to "$soundName$" ("$as.AmbientSound$")");
 }
 
 function MakeNonHostileMrH(vector loc, rotator rotate)
