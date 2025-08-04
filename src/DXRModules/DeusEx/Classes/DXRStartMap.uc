@@ -787,10 +787,6 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("MS_DL", bFemale);
             GiveImage(player, class'Image02_Ambrosia_Flyer');
             break;
-        case 20:
-            // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
-            player.StartDataLinkTransmission("DL_CastleClinton");
-            break;
 
         case 37:
             GiveImage(player, class'Image03_NYC_Airfield');
