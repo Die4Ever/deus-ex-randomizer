@@ -298,7 +298,7 @@ function AddMissionGoals()
         UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
         GiveGoalFromCon(player(), 'FindAmbrosia', 'AnnaDock'); // allow this goal to be completed before talking to Anna
         // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
-        player().StartDataLinkTransmission("DL_CastleClinton");
+        DXRStartDataLinkTransmission("DL_CastleClinton");
     }
 }
 
