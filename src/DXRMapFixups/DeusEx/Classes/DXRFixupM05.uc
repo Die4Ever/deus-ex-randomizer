@@ -70,7 +70,7 @@ function PreFirstEntryMapFixes()
     //#region UNATCO MJ12 Lab
     case "05_NYC_UNATCOMJ12LAB":
         FixMechanicBarks();
-        
+
         if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
             PartialHeal(p.HealthHead, p.default.HealthHead);
@@ -125,7 +125,7 @@ function PreFirstEntryMapFixes()
             }
 
             foreach AllActors(class'#var(prefix)Keypad3', kp, 'Keypad3') {
-                if(kp.Name=='Keypad10' && kp.Event=='') {
+                if(kp.Name=='Keypad10' && kp.Event=='') { // backtracking keypad on the UNATCO side of the door
                     kp.Event = 'ExitDoor';
                     kp.hackStrength = 0.1;
                     kp.validCode = "1125";
