@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugBallistic injects AugBallistic;
 
 function UpdateBalance()

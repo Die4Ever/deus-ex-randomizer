@@ -1,3 +1,4 @@
+#compileif injections
 class AugmentationManager merges AugmentationManager;
 // merges because the game validates the superclass
 
@@ -229,7 +230,7 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
         anAug.bIsActive = True;
         anAug.GotoState('Active');
     }
-    else if(!bOldHadIt && anAug.bAutomatic && class'MenuChoice_AutoAugsInstall'.default.enabled)
+    else if(!bOldHadIt && class'MenuChoice_AutoAugsInstall'.static.bEnableAug(anAug))
     {
         anAug.Activate();
     }

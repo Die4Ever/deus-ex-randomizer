@@ -1,3 +1,4 @@
+#compileif injections
 class BalanceAugLight injects AugLight;
 
 function SetBeamLocation()

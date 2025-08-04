@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugmentation merges Augmentation;
 
 var float LastUsed;

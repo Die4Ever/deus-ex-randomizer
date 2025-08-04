@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugEnviro injects AugEnviro;
 
 defaultproperties

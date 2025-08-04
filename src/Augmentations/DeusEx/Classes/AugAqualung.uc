@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugAqualung injects AugAqualung;
 
 function UpdateBalance()

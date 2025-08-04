@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugShield injects AugShield;
 
 function UpdateBalance()

@@ -1,3 +1,4 @@
+#compileif injections
 class BalanceSpyDrone injects SpyDrone;
 
 simulated function MoveDrone( float DeltaTime, Vector loc )

@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugMuscle injects AugMuscle;
 
 simulated function int GetClassLevel()
