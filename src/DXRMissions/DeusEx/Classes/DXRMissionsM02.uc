@@ -289,7 +289,7 @@ function AnyEntry()
     case "02_NYC_STREET":
         UpdateGoalWithRandoInfo('DestroyGenerator', "The generator could be anywhere in the warehouse district.  It looks like a large yellow cylinder.");
         break;
-    }   
+    }
 }
 
 function AddMissionGoals()
@@ -297,6 +297,8 @@ function AddMissionGoals()
     if (dxr.localURL == "02_NYC_BATTERYPARK") {
         UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
         GiveGoalFromCon(player(), 'FindAmbrosia', 'AnnaDock'); // allow this goal to be completed before talking to Anna
+        // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
+        player().StartDataLinkTransmission("DL_CastleClinton");
     }
 }
 

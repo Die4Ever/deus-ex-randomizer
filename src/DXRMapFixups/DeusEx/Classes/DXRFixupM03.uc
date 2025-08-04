@@ -618,6 +618,7 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local ConEventChoice cec;
     local ConChoice      cc;
+    local ConEventSetFlag cesf;
     local bool RevisionMaps, knowPass, foundUnderground;
     local string textAdd;
     local #var(prefix)SecurityCamera cam;
@@ -628,6 +629,11 @@ function AnyEntryMapFixes()
     switch(dxr.localURL) {
     case "03_NYC_747":
         SetTimer(1, true);
+
+        // 'AnnaThanks_Played' gets reset at the end of M02, but 'AnnaThanksChatDone' doesn't
+        // restores an alternative line from Anna about about killing Lebedev based on what you did in M02
+        FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+
         break;
 
     case "03_NYC_AIRFIELDHELIBASE":
@@ -720,6 +726,20 @@ function AnyEntryMapFixes()
             }
         }
         break;
+    case "03_NYC_UNATCOHQ":
+        // 'AnnaThanks_Played' is expired here, but 'AnnaThanksChatDone' isn't
+        // restores an alternative line from Anna about a debriefing based on what you did in M02
+        FixConversationFlagJump(GetConversation('AnnaAtUNATCO'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+        break;
+    }
+}
+//#endregion
+
+//#region Fix Pre Travel
+function PreTravelMapFixes()
+{
+    if(dxr.flagbase.GetBool('MeetLebedev2_Played')) {
+        dxr.flagbase.SetBool('MeetLebedev2_Played', true,, 5); // restores some possible dialog with Paul
     }
 }
 //#endregion

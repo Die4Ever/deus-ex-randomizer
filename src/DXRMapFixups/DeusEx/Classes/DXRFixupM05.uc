@@ -69,6 +69,8 @@ function PreFirstEntryMapFixes()
     {
     //#region UNATCO MJ12 Lab
     case "05_NYC_UNATCOMJ12LAB":
+        FixMechanicBarks();
+        
         if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
             PartialHeal(p.HealthHead, p.default.HealthHead);

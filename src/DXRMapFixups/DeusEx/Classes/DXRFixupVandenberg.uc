@@ -82,6 +82,8 @@ function PreFirstEntryMapFixes()
     {
     //#region CMD
     case "12_VANDENBERG_CMD":
+        FixMechanicBarks();
+
         // add goals and keypad code
         // you've definitely met Jock at Everett's helipad
         player().GoalCompleted('MeetJock');
@@ -190,6 +192,7 @@ function PreFirstEntryMapFixes()
 
     //#region Tunnels
     case "12_VANDENBERG_TUNNELS":
+        FixMechanicBarks();
 
         foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
             e.BumpType = BT_PlayerBump;
@@ -270,6 +273,8 @@ function PreFirstEntryMapFixes()
 
     //#region Sub Base
     case "14_VANDENBERG_SUB":
+        FixMechanicBarks();
+
         //Door into base from shore (inside)
         AddSwitch( vect(2279.640137,3638.638184,-398.255676), rot(0, -16384, 0), 'door_base');
 

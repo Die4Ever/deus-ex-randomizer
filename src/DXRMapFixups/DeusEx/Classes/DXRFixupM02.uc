@@ -18,6 +18,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)Jock actualJock;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)SkillAwardTrigger sat;
     local #var(prefix)FordSchick ford;
@@ -419,6 +420,11 @@ function PreFirstEntryMapFixes()
             Spawnm(class'BarDancer',,,vect(-1475,-580,48),rot(0,25000,0));
         } else {
             Spawnm(class'BarDancerBoring',,,vect(-1475,-580,48),rot(0,25000,0));
+        }
+
+        foreach AllActors(class'#var(prefix)Jock', actualJock) {
+            actualJock.BarkBindName = "Jock";
+            break;
         }
         break;
     //#endregion
