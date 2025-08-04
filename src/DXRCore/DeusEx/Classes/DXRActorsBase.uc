@@ -984,7 +984,7 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which)
+static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which, optional out ConEvent prevCe)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
@@ -998,18 +998,19 @@ static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversatio
                 return ceag;
             which--;
         }
+        prevCe = ce;
     }
 
     return None;
 }
 
-function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which)
+function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which, optional out ConEvent prevCe)
 {
-    return GetGoalConEventStatic(goalName, GetConversation(convname), which);
+    return GetGoalConEventStatic(goalName, GetConversation(convname), which, prevCe);
 }
 
 // Creates or updates a goal with text taken from a Conversation
-function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
+function DeusExGoal GiveGoalFromCon(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
 {
     local DeusExGoal goal;
     local ConEventAddGoal ceag;
@@ -1029,6 +1030,17 @@ function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name 
     return goal;
 }
 
+function bool RemoveGoalFromCon(name goalName, name convname, optional int which)
+{
+    local ConEvent prevCe;
+
+    GetGoalConEvent(goalName, convname, which, prevCe);
+    if (prevCe != None && prevCe.nextEvent != None) {
+        prevCe.nextEvent = prevCe.nextEvent.nextEvent;
+        return true;
+    }
+    return false;
+}
 
 static function string GetActorName(Actor a)
 {

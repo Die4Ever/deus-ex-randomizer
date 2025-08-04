@@ -284,11 +284,19 @@ function AnyEntry()
 
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
-        UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
+        RemoveGoalFromCon('FindAmbrosia', 'AnnaDock'); // don't let Anna give this goal to you again
         break;
     case "02_NYC_STREET":
         UpdateGoalWithRandoInfo('DestroyGenerator', "The generator could be anywhere in the warehouse district.  It looks like a large yellow cylinder.");
         break;
+    }   
+}
+
+function AddMissionGoals()
+{
+    if (dxr.localURL == "02_NYC_BATTERYPARK") {
+        UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
+        GiveGoalFromCon(player(), 'FindAmbrosia', 'AnnaDock'); // allow this goal to be completed before talking to Anna
     }
 }
 
