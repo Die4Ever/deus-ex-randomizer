@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugTarget injects AugTarget;
 
 simulated function TickUse()

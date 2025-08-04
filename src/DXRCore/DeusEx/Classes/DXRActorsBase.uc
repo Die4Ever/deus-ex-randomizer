@@ -25,7 +25,6 @@ function CheckConfig()
     local int i;
 
     i=0;
-    _skipactor_types[i++] = class'#var(prefix)BarrelAmbrosia';
     _skipactor_types[i++] = class'#var(prefix)NanoKey';
     if(#defined(gmdx))
         _skipactor_types[i++] = class'#var(prefix)CrateUnbreakableLarge';
@@ -985,7 +984,7 @@ static function ConEventSpeech GetSpeechEvent(ConEvent start, string speech) {
     return None;
 }
 
-static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which)
+static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversation con, optional int which, optional out ConEvent prevCe)
 {
     local ConEvent ce;
     local ConEventAddGoal ceag;
@@ -999,18 +998,19 @@ static function ConEventAddGoal GetGoalConEventStatic(name goalName, Conversatio
                 return ceag;
             which--;
         }
+        prevCe = ce;
     }
 
     return None;
 }
 
-function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which)
+function ConEventAddGoal GetGoalConEvent(name goalName, name convname, optional int which, optional out ConEvent prevCe)
 {
-    return GetGoalConEventStatic(goalName, GetConversation(convname), which);
+    return GetGoalConEventStatic(goalName, GetConversation(convname), which, prevCe);
 }
 
 // Creates or updates a goal with text taken from a Conversation
-function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
+function DeusExGoal GiveGoalFromCon(#var(PlayerPawn) player, name goaltag, name convname, optional int which, optional bool replaceText)
 {
     local DeusExGoal goal;
     local ConEventAddGoal ceag;
@@ -1030,6 +1030,17 @@ function DeusExGoal AddGoalFromConv(#var(PlayerPawn) player, name goaltag, name 
     return goal;
 }
 
+function bool RemoveGoalFromCon(name goalName, name convname, optional int which)
+{
+    local ConEvent prevCe;
+
+    GetGoalConEvent(goalName, convname, which, prevCe);
+    if (prevCe != None && prevCe.nextEvent != None) {
+        prevCe.nextEvent = prevCe.nextEvent.nextEvent;
+        return true;
+    }
+    return false;
+}
 
 static function string GetActorName(Actor a)
 {
@@ -1185,6 +1196,12 @@ function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator
         info("SpawnDatacube "$dc$" at ("$loc$"), ("$rot$")");
         if(dxr.flags.settings.infodevices > 0)
             GlowUp(dc);
+
+        if (#defined(hx)){
+            //Add all datacubes to the vault in HX
+            dc.bAddToVault = True;
+        }
+
     } else {
         warning("SpawnDatacube failed at "$loc);
     }
@@ -2043,6 +2060,18 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
     }
 
     return Spawn(what,,, loc, spawnedRot);
+}
+
+
+//This makes life easier and more consistent when starting infolinks from code.
+//Don't use either of the functions below directly!
+function bool DXRStartDataLinkTransmission( String DatalinkName )
+{
+#ifdef hx
+    return HXGameInfo(Level.Game).StartDataLinkTransmission( DatalinkName );
+#else
+    return player().StartDataLinkTransmission( DatalinkName );
+#endif
 }
 
 //#region Unit Handling

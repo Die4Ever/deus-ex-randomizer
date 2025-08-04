@@ -1,3 +1,4 @@
+#compileif injections
 class BalanceAugSpeed injects AugSpeed;
 
 state Active

@@ -9,69 +9,41 @@ function CheckConfig()
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
     //#region Add Datacubes
-    add_datacubes[i].map = "15_AREA51_BUNKER";
-    add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
-    if (VanillaMaps){
-        add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
-    } else {
-        add_datacubes[i].Location = vect(1140,-1920,-460); //Boxes in Hangar
+    switch(dxr.localURL) {
+    case "15_AREA51_BUNKER":
+        add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
+        if (VanillaMaps){
+            add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
+        } else {
+            add_datacubes[i].Location = vect(1140,-1920,-460); //Boxes in Hangar
+        }
+        add_datacubes[i].plaintextTag = "A51VentComputerCode";
+        i++;
+
+        add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
+        if (VanillaMaps){
+            add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
+        } else {
+            add_datacubes[i].Location = vect(1600,-2875,-260); //Pipes next to Xander in Hangar
+        }
+        add_datacubes[i].plaintextTag = "A51VentElevatorCode";
+        i++;
+        break;
+
+    case "15_AREA51_PAGE":
+        add_datacubes[i].text =
+            "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
+
+        //Boxes directly under Page
+        if (VanillaMaps){
+            add_datacubes[i].Location = vect(6330,-7225,-5550);
+        } else {
+            add_datacubes[i].Location = vect(160,2350,-180);
+        }
+        add_datacubes[i].plaintextTag = "UCControlRoomPassword";
+        i++;
+        break;
     }
-    add_datacubes[i].plaintextTag = "A51VentComputerCode";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_BUNKER";
-    add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
-    if (VanillaMaps){
-        add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
-    } else {
-        add_datacubes[i].Location = vect(1600,-2875,-260); //Pipes next to Xander in Hangar
-    }
-    add_datacubes[i].plaintextTag = "A51VentElevatorCode";
-    i++;
-
-
-    add_datacubes[i].map = "15_AREA51_ENTRANCE";
-    add_datacubes[i].text =
-        "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
-        $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
-        $ "  The code is 6786.  I love you."
-        $ "|n|nJustin";
-    add_datacubes[i].Location = vect(3200,-1400,-150); //First set of boxes down hall with doors
-    add_datacubes[i].plaintextTag = "SleepPodCode1";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_ENTRANCE";
-    add_datacubes[i].text =
-        "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
-        $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
-        $ "  The code is 3901.  I love you."
-        $ "|n|nJohn";
-    add_datacubes[i].Location = vect(4030,-610,-150); //Second set of boxes down the hall with doors
-    add_datacubes[i].plaintextTag = "SleepPodCode2";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_ENTRANCE";
-    add_datacubes[i].text =
-        "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
-        $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
-        $ "  The code is 4322.  I love you."
-        $ "|n|nJim";
-    add_datacubes[i].Location = vect(4008,662,-150); //Fourth set of boxes down the hall with doors
-    add_datacubes[i].plaintextTag = "SleepPodCode3";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_PAGE";
-    add_datacubes[i].text =
-        "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
-
-    //Boxes directly under Page
-    if (VanillaMaps){
-        add_datacubes[i].Location = vect(6330,-7225,-5550);
-    } else {
-        add_datacubes[i].Location = vect(160,2350,-180);
-    }
-    add_datacubes[i].plaintextTag = "UCControlRoomPassword";
-    i++;
     //#endregion
 
     Super.CheckConfig();
@@ -97,7 +69,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     local #var(prefix)Button1 b;
     local Switch2 s2;
     local SequenceTrigger st;
-    local DataLinkTrigger dlt;
+    local #var(prefix)DataLinkTrigger dlt;
     local Dispatcher disp;
     local OnceOnlyTrigger oot;
     local Trigger trig;
@@ -199,7 +171,7 @@ function PreFirstEntryMapFixes_Bunker(bool isVanilla)
     }
 
     // find the DataLinkTrigger where Page tells you to jump, we use this for finding the door and adjusting its position
-    foreach AllActors(class'DataLinkTrigger',dlt){
+    foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Bunker_Fan') {
             //Lock the fan entrance top door
             d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
@@ -286,7 +258,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local Switch1 s;
     local Switch2 s2;
     local SpecialEvent se;
-    local DataLinkTrigger dlt;
+    local #var(prefix)DataLinkTrigger dlt;
     local SkillAwardTrigger sat;
     local Dispatcher disp;
     local FlagTrigger ft;
@@ -296,7 +268,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
     local int i;
 
     //Increase the radius of the datalink that opens the sector 4 blast doors
-    foreach AllActors(class'DataLinkTrigger',dlt){
+    foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
         if (dlt.datalinkTag=='DL_Helios_Door2'){
             dlt.SetCollisionSize(900,dlt.CollisionHeight);
         }
@@ -416,7 +388,7 @@ function PreFirstEntryMapFixes_Final(bool isVanilla)
         //There's a trigger for this at the top of the elevator, but it has collide actors false.
         //Easier to just spawn a new one near the elevator so you can actually hear it before
         //the game is over.
-        dlt = Spawn(class'DataLinkTrigger',,,vectm(-3988,1215,-1542));
+        dlt = Spawn(class'#var(prefix)DataLinkTrigger',,,vectm(-3988,1215,-1542));
         dlt.SetCollisionSize(200,40);
         dlt.datalinkTag='DL_Final_Helios07';
 
@@ -928,17 +900,17 @@ function Area51_CountBlueFusion()
     if(#defined(vanilla) && !f.GetBool('DL_Blue4_Played') && remaining < required) {
         // play datalinks when devices are frobbed
         if (remaining == 3 && !f.GetBool('DL_Blue1_Played')) {
-            player().StartDataLinkTransmission("DL_Blue1");
+            DXRStartDataLinkTransmission("DL_Blue1");
         }
         else if (remaining == 2 && !f.GetBool('DL_Blue2_Played')) {
-            player().StartDataLinkTransmission("DL_Blue2");
+            DXRStartDataLinkTransmission("DL_Blue2");
         }
         else if (remaining == 1 && !f.GetBool('DL_Blue3_Played')) {
-            player().StartDataLinkTransmission("DL_Blue3");
+            DXRStartDataLinkTransmission("DL_Blue3");
         }
         else if (remaining <= 0 && !f.GetBool('DL_Blue4_Played'))
         {
-            player().StartDataLinkTransmission("DL_Blue4");
+            DXRStartDataLinkTransmission("DL_Blue4");
         }
     }
 }

@@ -65,13 +65,6 @@ event InitWindow()
     SaveSkillPoints();
     ResetToDefaults();
 
-    //Pick a random portrait
-    if (class'MenuChoice_JCGenderSkin'.static.IsRandom()){
-        SelectRandomPortrait(false); //Randomly select one of the portraits
-    } else if (class'MenuChoice_JCGenderSkin'.static.IsRemember()) {
-        SelectPortrait(last_portrait); //Select the last portrait used
-    }
-
     // Need to do this because of the edit control used for
     // saving games.
     SetMouseFocusMode(MFOCUS_Click);
@@ -100,6 +93,23 @@ function SetDxr(DXRando d)
     PopulateSkillsList();
     UpdateSkillPoints();
     EnableButtons();
+    UpdatePortrait();
+}
+
+function UpdatePortrait()
+{
+    SelectPortrait(0); //Go to the default JC
+
+    if (class'MenuChoice_JCGenderSkin'.static.IsRandom()){
+        //Pick a random portrait
+        //but not in Zero Rando
+        if (flags!=None && !flags.IsZeroRandoPure()){
+            SelectRandomPortrait(false); //Randomly select one of the portraits
+        }
+    } else if (class'MenuChoice_JCGenderSkin'.static.IsRemember()) {
+        //Select the last portrait used
+        SelectPortrait(last_portrait);
+    }
 }
 
 function ResetToDefaults()
@@ -107,8 +117,7 @@ function ResetToDefaults()
     // force the player to type in a name, it makes Death Markers more fun!
     editName.SetText(last_player_name);
 
-    portraitIndex = 0;
-    btnPortrait.SetBackground(texPortraits[portraitIndex]);
+    UpdatePortrait();
 
     // if skills_disable_downgrades is enabled then we don't want to allow the player to ResetToDefaults as a workaround
     // SetDxr will still init the skills

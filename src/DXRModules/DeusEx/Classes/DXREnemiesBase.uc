@@ -448,6 +448,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     n.bInWorld = p.bInWorld;
     RandomizeSize(n);
+    n.bInitialized=False;
     n.InitializePawn();
 
     if(!p.bInWorld) {

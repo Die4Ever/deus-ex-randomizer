@@ -92,6 +92,9 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.ConBindEvents();
         if(!f.GetBool('NSFSignalSent'))
             sp.bInWorld = false;
+
+        HXScriptedPawnPostInitWorldState(sp);
+
         break;
     }
 }

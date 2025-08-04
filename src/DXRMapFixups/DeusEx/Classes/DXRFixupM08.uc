@@ -210,7 +210,7 @@ function TimerMapFixes()
 //#region Pre First Entry
 function PreFirstEntryMapFixes()
 {
-    local DataLinkTrigger dlt;
+    local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)NanoKey k;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)MapExit exit;
@@ -291,13 +291,13 @@ function PreFirstEntryMapFixes()
             //Since we always spawn the helicopter on the roof immediately after the conversation,
             //the ambush should also always happen immediately after the conversation (instead of
             //after getting explosives)
-            foreach AllActors(class'DataLinkTrigger',dlt)
+            foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt)
             {
                 if (dlt.CheckFlag=='PlayerHasExplosives'){
                     dlt.CheckFlag='StantonDowd_Played';
                     if(VanillaMaps) {
                         dlt.SetCollisionSize(516, 1000);
-                        dlt = spawn(class'DataLinkTrigger',,, vectm(990.951843, 1799.208252, -455.899506));
+                        dlt = spawn(class'#var(prefix)DataLinkTrigger',,, vectm(990.951843, 1799.208252, -455.899506));
                         dlt.SetCollisionSize(516, 1000);
                         dlt.CheckFlag='StantonDowd_Played';
                         dlt.datalinkTag = 'DL_Exit';
@@ -496,9 +496,11 @@ function PreFirstEntryMapFixes()
 
     //#region Underground (Sewers)
         case "08_NYC_UNDERGROUND":
-            foreach AllActors(class'#var(prefix)LaserTrigger',lt){
-                if (lt.Location.Z < -574 && lt.Location.Z > -575){
-                    lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+                    if (lt.Location.Z < -574 && lt.Location.Z > -575){
+                        lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+                    }
                 }
             }
             break;
@@ -514,7 +516,7 @@ function PostFirstEntryMapFixes()
     local name rpTag;
     local DXRReinforcementPoint reinforce;
 
-    Player().StartDataLinkTransmission("DL_Entry"); // play on any start
+    DXRStartDataLinkTransmission("DL_Entry"); // play on any start
     switch(dxr.localURL)
     {
         case "08_NYC_STREET":

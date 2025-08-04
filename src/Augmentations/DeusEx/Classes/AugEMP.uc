@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugEMP injects AugEMP;
 
 function UpdateBalance()

@@ -17,7 +17,6 @@ var DecorationsOverwrite DecorationsOverwrites[16];
 var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 
 struct AddDatacube {
-    var string map;
     var string text;
     var vector location;// 0,0,0 for random
     var class<DataVaultImage> imageClass;
@@ -199,9 +198,6 @@ function CheckConfig()
         if( DecorationsOverwrites[i].type == "" ) continue;
         DecorationsOverwritesClasses[i] = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
     }
-    for(i=0; i<ArrayCount(add_datacubes); i++) {
-        add_datacubes[i].map = Caps(add_datacubes[i].map);
-    }
 }
 
 static function class<Fragment> GuessFragmentClass(#var(DeusExPrefix)Mover mov)
@@ -289,6 +285,9 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     CleanupPlaceholders();
+
+    AdjustBookColours();
+
     SetSeed( "DXRFixup PostFirstEntry missions" );
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
@@ -348,6 +347,76 @@ function TriggerDebug()
     Player().ClientMessage("Trigger debug enabled for #var(TriggerDebug)");
 
     Spawn(class'DXRLogTrigger',,'#var(TriggerDebug)');
+}
+
+function bool IsManWhoWasThursday(name TextTag)
+{
+    switch(TextTag)
+    {
+        case '02_Book05':
+        case '03_Book05':
+        case '04_Book05':
+        case '10_Book03':
+        case '12_Book02':
+        case '14_Book04':
+        case '15_Book02':
+            return true;
+    }
+    return false;
+}
+
+function bool IsJacobsShadow(name TextTag)
+{
+    switch(TextTag)
+    {
+        case '02_Book03':
+        case '03_Book04':
+        case '04_Book03':
+        case '06_Book03':
+        case '09_Book02':
+        case '10_Book02':
+        case '12_Book01':
+        case '15_Book01':
+            return true;
+    }
+    return false;
+}
+
+function AdjustBookColours()
+{
+    local #var(prefix)BookOpen bo;
+    local #var(prefix)BookClosed bc;
+    local bool enable;
+
+    if(!#defined(vanilla)) return; //Have to think about Facelift before allowing in other mods
+    if(dxr.flags.IsZeroRandoPure()) return; //Don't change the textures for pure Zero Rando
+
+    enable = class'MenuChoice_GoalTextures'.static.IsEnabled(dxr.flags);
+
+    foreach AllActors(class'#var(prefix)BookOpen',bo){
+        if (enable){
+            if (IsManWhoWasThursday(bo.TextTag)){
+                bo.Multiskins[0]=Texture'BookOpenTex1Red';
+            } else if (IsJacobsShadow(bo.TextTag)){
+                bo.Multiskins[0]=Texture'BookOpenTex1Purple';
+            }
+        } else {
+            bo.Multiskins[0]=bo.Default.Multiskins[0];
+        }
+    }
+
+    foreach AllActors(class'#var(prefix)BookClosed',bc){
+        if (enable){
+            if (IsManWhoWasThursday(bc.TextTag)){
+                bc.Multiskins[0]=Texture'BookClosedTex1Red';
+            } else if (IsJacobsShadow(bc.TextTag)){
+                bc.Multiskins[0]=Texture'BookClosedTex1Purple';
+            }
+        } else {
+            bc.Multiskins[0]=bc.Default.Multiskins[0];
+        }
+    }
+
 }
 
 function FixFOV()
@@ -860,8 +929,8 @@ function FixHarleyFilben()
 
 function FixSamCarter()
 {
-    local SamCarter s;
-    foreach AllActors(class'SamCarter', s) {
+    local #var(prefix)SamCarter s;
+    foreach AllActors(class'#var(prefix)SamCarter', s) {
         RemoveFears(s);
     }
 }
@@ -1037,6 +1106,16 @@ function FixInvalidBindNames()
     }
 }
 
+function PreventShufflingAmbrosia()
+{
+    local #var(prefix)BarrelAmbrosia ambrosia;
+
+    //Prevent ambrosia barrels from being shuffled
+    foreach AllActors(class'#var(prefix)BarrelAmbrosia', ambrosia) {
+        ambrosia.bIsSecretGoal = true;
+    }
+}
+
 //Scale the damage done by zones to counteract the damage scaling from CombatDifficulty
 function ScaleZoneDamage()
 {
@@ -1060,8 +1139,11 @@ function OverwriteDecorations(bool bFirstEntry)
     local DeusExDecoration d;
     local #var(prefix)Barrel1 b;
     local int i;
+    local bool bBalance;
+
+    bBalance = class'MenuChoice_BalanceEtc'.static.IsEnabled();
     foreach AllActors(class'DeusExDecoration', d) {
-        if( class'MenuChoice_BalanceEtc'.static.IsEnabled()
+        if( bBalance
             && (d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical')) ) {
             d.Mass = 35;
             d.HitPoints = 1;
@@ -1093,9 +1175,11 @@ function OverwriteDecorations(bool bFirstEntry)
     }
 
     // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;
-    foreach AllActors(class'#var(prefix)Barrel1', b) {
-        if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
-            b.explosionDamage = 400;
+    if(bBalance) {
+        foreach AllActors(class'#var(prefix)Barrel1', b) {
+            if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
+                b.explosionDamage = 400;
+            }
         }
     }
 }
@@ -1211,8 +1295,7 @@ function SpawnDatacubes()
     }
 
     for(i=0; i<ArrayCount(add_datacubes); i++) {
-        if( dxr.localURL != add_datacubes[i].map ) continue;
-
+        if(add_datacubes[i].text == "" && add_datacubes[i].imageClass == None) continue;
         loc = add_datacubes[i].location * coords_mult;
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 ) {
             if (add_datacubes[i].plaintextTag!=""){

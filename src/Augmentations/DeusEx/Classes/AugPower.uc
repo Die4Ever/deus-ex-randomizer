@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugPower injects AugPower;
 
 simulated function UpdateBalance()

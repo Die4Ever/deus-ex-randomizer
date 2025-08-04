@@ -82,6 +82,11 @@ function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)T
     gren.bProximityTriggered = True;
     gren.bStuck = True;
     gren.event = event;
+    gren.bHighlight = True; //HX makes thrown grenades not highlightable, and planted ones explicitly become highlighted
+#ifdef hx
+    gren.Time = gren.FuseLength;  //This prevents the beep when planted (only an issue in HX)
+    gren.bPlayerPlaced = false;
+#endif
 
     return gren;
 }

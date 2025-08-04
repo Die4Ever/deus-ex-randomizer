@@ -176,6 +176,7 @@ function PreFirstEntry()
 function PostFirstEntry()
 {
     local AllianceTrigger at;
+    local ScriptedPawn sp;
     local #var(prefix)NicoletteDuclare nico;
     local int starting_map;
 
@@ -198,6 +199,14 @@ function PostFirstEntry()
         if (starting_map >= 109) {
             foreach AllActors(class'#var(prefix)NicoletteDuclare', nico) {
                 nico.LeaveWorld();
+            }
+        }
+        break;
+
+    case "15_Area51_Entrance":
+        if(starting_map >= 152) { // delete the enemies on the backtracking elevator
+            foreach RadiusActors(class'ScriptedPawn', sp, 160, vectm(-1797, 697, -2008)) {
+                sp.Destroy();
             }
         }
         break;
@@ -393,6 +402,45 @@ static function bool _IsStartMap(DXRando dxr)
 function bool IsStartMap()
 {
     return _IsStartMap(dxr);
+}
+
+//Translate a map name into a starting map value (for HX purposes)
+static function int GetHXStartMapVal(string startMap)
+{
+    switch(startMap){
+        case "00_Intro":
+            return 0;
+        case "00_Training":
+            return 0; //We don't really have a proper representation of this
+        case "01_NYC_UNATCOIsland":
+            return 10;
+        case "02_NYC_BatteryPark":
+            return 20;
+        case "03_NYC_UNATCOIsland":
+            return 30;
+        case "04_NYC_UNATCOIsland":
+            return 40;
+        case "05_NYC_UNATCOMJ12lab":
+            return 50;
+        case "06_HongKong_Helibase":
+            return 60;
+        case "08_NYC_Street":
+            return 80;
+        case "09_NYC_Dockyard":
+            return 90;
+        case "10_Paris_Catacombs":
+            return 100;
+        case "11_Paris_Cathedral":
+            return 110;
+        case "12_Vandenberg_Cmd":
+            return 120;
+        case "14_Vandenberg_Sub":
+            return 140;
+        case "15_Area51_Bunker":
+            return 150;
+        default:
+            return 0;
+    }
 }
 
 //#region _GetStartMap
@@ -941,11 +989,6 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
         crate.AddContent(class'#var(prefix)Medkit', num);
         desiredHealth -= num * 30;
     }
-    if(desiredHealth >= 10) {
-        num = desiredHealth/10;
-        crate.AddContent(class'#var(prefix)SoyFood', num);
-        desiredHealth -= num * 10;
-    }
 
     return crate;
 }
@@ -1009,65 +1052,64 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 
     switch(start_flag) {
         case 21:
-            AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete');
+            GiveGoalFromCon(player, 'ReportToPaul', 'DL_SubwayComplete');
             break;
 
         case 31:
-            AddGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack');
+            GiveGoalFromCon(player, 'ReportToManderley', 'DL_WelcomeBack');
             break;
         case 32:
         case 33:
         case 34:
         case 35:
-            AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
+            GiveGoalFromCon(player, 'LocateAirfield', 'ManderleyDebriefing02');
             break;
         case 36:
-            player.StartDataLinkTransmission("DL_LebedevKill");
+            DXRStartDataLinkTransmission("DL_LebedevKill");
             break;
         case 37:
-            AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
+            GiveGoalFromCon(player, 'AssassinateLebedev', 'DL_LebedevKill');
             break;
 
         case 45:
-            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
+            GiveGoalFromCon(player, 'InvestigateNSF', 'PaulInjured');
             break;
         case 43:
-            player.StartDataLinkTransmission("DL_JockParkStart");
+            DXRStartDataLinkTransmission("DL_JockParkStart");
             break;
         case 41:
-            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
+            GiveGoalFromCon(player, 'SeeManderley', 'DL_SeeManderley');
             break;
 
         case 55:
-            AddGoalFromConv(player, 'FindEquipment', 'DL_Choice');
-            AddGoalFromConv(player, 'FindAnnasKillprhase', 'PaulInMedLab');
+            GiveGoalFromCon(player, 'FindEquipment', 'DL_Choice');
+            GiveGoalFromCon(player, 'FindAnnasKillprhase', 'PaulInMedLab');
             break;
 
         case 75:
-        case 74:
-            AddGoalFromConv(player, 'GetVirusSchematic', 'M07Briefing');
-            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            GiveGoalFromCon(player, 'GetVirusSchematic', 'M07Briefing');
+            GiveGoalFromCon(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 70:
-            AddGoalFromConv(player, 'ReportToTong', 'TriadCeremony');
-            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            GiveGoalFromCon(player, 'ReportToTong', 'TriadCeremony');
+            GiveGoalFromCon(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 68:
         case 67:
-            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2');
+            GiveGoalFromCon(player, 'GetROM', 'MeetTracerTong2');
             break;
         case 66:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'FindTracerTong', 'DL_Jock_05');
             break;
         case 65:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
-            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
-            player.StartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
+            GiveGoalFromCon(player, 'FindTracerTong', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'CheckCompound', 'DL_Jock_05');
+            DXRStartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
             break;
         case 64:
         case 63:
         case 62:
-            player.StartDataLinkTransmission("DL_Jock_05");
+            DXRStartDataLinkTransmission("DL_Jock_05");
             break;
 
         case 90:
@@ -1082,17 +1124,17 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 101:
-            AddGoalFromConv(player, 'FindSilhouette', 'DL_paris_10_start');
-            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindSilhouette', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
             break;
         case 105:
         case 106:
-            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
-            AddGoalFromConv(player, 'FindNicolette', 'DL_tunnels_down');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindNicolette', 'DL_tunnels_down');
             break;
         case 109:
-            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
-            AddGoalFromConv(player, 'FindEverett', 'NicoletteOutside');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindEverett', 'NicoletteOutside');
             break;
 
         case 119:
@@ -1102,8 +1144,8 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 115:
             goal = player.AddGoal('ContactIlluminati', true);
             goal.SetText("Make contact with the Illuminati in Paris, where the former Illuminati leader, Morgan Everett, is rumored to be in hiding.");
-            AddGoalFromConv(player, 'GoToMetroStation', 'DL_morgan_uplink');
-            AddGoalFromConv(player, 'RecoverGold', 'DL_intro_cathedral');
+            GiveGoalFromCon(player, 'GoToMetroStation', 'DL_morgan_uplink');
+            GiveGoalFromCon(player, 'RecoverGold', 'DL_intro_cathedral');
             break;
         case 110:
             goal = player.AddGoal('ContactIlluminati', true);
@@ -1113,21 +1155,21 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 129:
-            AddGoalFromConv(player, 'RescueTiffany', 'GaryHostageBriefing');
+            GiveGoalFromCon(player, 'RescueTiffany', 'GaryHostageBriefing');
             break;
         case 125:
         case 122:
-            AddGoalFromConv(player, 'FindGarySavage', 'MeetTonyMares');
+            GiveGoalFromCon(player, 'FindGarySavage', 'MeetTonyMares');
             break;
         case 121:
-            AddGoalFromConv(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
+            GiveGoalFromCon(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
             break;
 
         case 153:
-            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
-            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
+            GiveGoalFromCon(player, 'DestroyArea51', 'M15MeetTong');
+            GiveGoalFromCon(player, 'DeactivateLocks', 'MeetHelios');
         case 152: // fallthrough
-            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
+            GiveGoalFromCon(player, 'KillPage', 'M15MeetEverett');
             break;
     }
 }

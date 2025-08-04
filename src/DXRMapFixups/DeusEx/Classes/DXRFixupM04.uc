@@ -6,11 +6,14 @@ function CheckConfig()
 {
     local int i;
 
-    add_datacubes[i].map = "04_NYC_UNATCOHQ";
-    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
-    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
-    add_datacubes[i].plaintextTag = "JCCompPassword";
-    i++;
+    switch(dxr.localURL) {
+    case "04_NYC_UNATCOHQ":
+        add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+        add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+        add_datacubes[i].plaintextTag = "JCCompPassword";
+        i++;
+        break;
+    }
 
     Super.CheckConfig();
 }
@@ -297,9 +300,13 @@ function PreFirstEntryMapFixes()
         }
 
         if(dxr.flags.settings.goals > 0) {
+            //This delay between setting the flag with the FlagTrigger and playing the
+            //infolink seems to help for HX.
+            AddDelayEvent('UNATCOHatesPlayer','UNATCOHatesPlayerInfolink',0.5);
+
             foreach AllActors(class'#var(prefix)DatalinkTrigger', dt, 'DataLinkTrigger') {
                 if(dt.datalinkTag != 'DL_SimonsPissed') continue;
-                dt.Tag = 'UNATCOHatesPlayer';
+                dt.Tag = 'UNATCOHatesPlayerInfolink';
                 break;
             }
         }
@@ -617,9 +624,11 @@ function PreFirstEntryMapFixes()
 
     //#region Underground (Sewers)
     case "04_NYC_UNDERGROUND":
-        foreach AllActors(class'#var(prefix)LaserTrigger',lt){
-            if (lt.Location.Z < -574 && lt.Location.Z > -575){
-                lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+                if (lt.Location.Z < -574 && lt.Location.Z > -575){
+                    lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+                }
             }
         }
         break;

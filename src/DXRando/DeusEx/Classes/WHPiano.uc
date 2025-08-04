@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[106]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[108]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 var int Recents[20];
 var int recent_pointer;
@@ -111,7 +111,11 @@ simulated function Tick(float deltaTime)
             }
 
             if(player != None) {
-                player.ClientMessage(message);
+                if (#defined(hx)) {
+                    //Show the players name instead
+                    message = player.PlayerReplicationInfo.PlayerName $ Mid(message,3);
+                }
+                BroadcastMessage(message);
                 player = None;
             }
 
@@ -736,6 +740,16 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'WWMedlisAwakening';
             duration = 10.5;
             message="You played Medli's Awakening from Legend of Zelda: The Wind Waker";
+            break;
+        case 106:
+            SelectedSound = sound'MegalomaniaLAL';
+            duration = 7.0;
+            message="You played Megalomania from Live A Live";
+            break;
+        case 107:
+            SelectedSound = sound'FFChocoboTheme';
+            duration = 8.0;
+            message="You played the Chocobo Theme from Final Fantasy";
             break;
         default:
             SelectedSound = None;

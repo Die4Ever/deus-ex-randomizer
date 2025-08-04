@@ -1019,7 +1019,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'purge',vectm(0,0,0));
 
         foreach AllActors(class'#var(prefix)Trigger',trig){
-            if (trig.classProximityType==class'Basketball'){
+            if (trig.classProximityType==class'#var(prefix)Basketball'){
                 break;
             }
         }
@@ -1949,7 +1949,10 @@ function MarkBingoFailedSpecial()
         if (! HasItem(player(), class'VialAmbrosia')) {
             MarkBingoAsFailed("GaveDowdAmbrosia");
         }
-        MarkBingoAsFailed("ChangeClothes");
+        // with clothes looting, the last clothes rack is in 15_AREA51_ENTRANCE
+        if (dxr.flags.clothes_looting == 0 || class'DXRMapVariants'.static.IsVanillaMaps(dxr.player) == false) {
+            MarkBingoAsFailed("ChangeClothes");
+        }
         break;
     case "11_PARIS_EVERETT":
         if(dxr.flags.IsReducedRando()) {
@@ -3191,7 +3194,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ShipPowerCut":
             return "Help the electrician on the superfreighter by disabling the electrical panels under the electrical room.";
         case "CamilleConvosDone":
-            return "Talk to Camille the Paris cage dancer and get all the information you can.";
+            if (FemJC) {
+                return "Talk to Achille, the Paris clubgoer who wants to tell you about everyone else in the club.  Get as much information as you can.";
+            } else {
+                return "Talk to Camille the Paris cage dancer and get all the information you can.";
+            }
         case "MeetAI4_Played":
             return "Talk to Morpheus, the prototype AI locked away in Everett's house.";
         case "DL_Flooded_Played":
@@ -3588,7 +3595,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill enough fish.";
         case "FordSchick_Dead":
         case "FordSchick_PlayerDead":
-            return "Kill Ford Schick.  Note that you can do this after rescuing him.  You must kill him yourself.";
+            return "Kill Ford Schick.  Note that you can do this after rescuing him if you're fast.  You must kill him yourself.";
         case "ChateauInComputerRoom":
             return "Make your way down to Beth DuClare's computer station in the basement of the DuClare chateau.";
         case "DuClareBedrooms":
@@ -3648,7 +3655,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "NYEagleStatue_peeped":
             return "Look at the bronze eagle statue in Battery Park through a pair of binoculars or a scope.";
         case "BrokenPianoPlayed":
-            return "Damage a piano enough that it will no longer work, then try to play it.";
+            return "Damage a piano enough that it will no longer work without fully breaking it, then try to play it.  It will make a sound to let you know when it is damaged enough.";
         case "Supervisor_Paid":
             return "Pay Mr. Hundley for access to the MJ12 Lab in Hong Kong.";
         case "ImageOpened_WaltonSimons":
@@ -4458,7 +4465,7 @@ defaultproperties
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange!",max=12,missions=38782)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy!",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
-    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=5,missions=64)
+    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=4,missions=64)
     bingo_options(238)=(event="Shannon_PlayerDead",desc="Kill the thief in UNATCO",max=1,missions=58)
     bingo_options(239)=(event="DestroyCapitalism",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALIST.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_PlayerDead",desc="Not advisable to visit the canals at night",max=1,missions=64)

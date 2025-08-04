@@ -1,3 +1,4 @@
+#compileif injections
 class DXRAugDefense injects AugDefense;
 
 // ------------------------------------------------------------------------------

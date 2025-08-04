@@ -1,3 +1,4 @@
+#compileif injections
 class BalanceAugDrone injects AugDrone;
 
 function Reset()

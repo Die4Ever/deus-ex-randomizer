@@ -192,6 +192,7 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     local class<DeusExFragment> fragClass;
     local int i, numFrags;
     local Inventory item, nextItem;
+    local name origAllianceName;
     #ifndef vmd
     local DXRFashionManager fashion;
     #endif
@@ -265,17 +266,41 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     }
 
     for (i=0;i<8;i++){
+        if (#defined(hx)){
+            //Make the alliance neutral, since we can't clear it entirely
+            sp.ChangeAlly(sp.InitialAlliances[i].AllianceName,0.0,);
+        }
         sp.InitialAlliances[i].AllianceName='';
         sp.InitialAlliances[i].AllianceLevel=0;
     }
     sp.InitialAlliances[0].AllianceName = 'Player';
     sp.InitialAlliances[0].AllianceLevel = -1;
 
+    if (#defined(hx)){
+        //HX will have already initialized the pawn.
+        //Remove their initialized inventory
+        //They'll be given their zombie swipe later
+        for(item = sp.Inventory; item != None; item = nextItem)
+        {
+            nextItem = item.Inventory;
+            sp.DeleteInventory(item);
+            item.Destroy();
+        }
+
+    }
+
+    sp.bInitialized = false; //For HX
     sp.InitializePawn();
 
     //Make it hostile to EVERYONE.  This thing has seen the other side
+    origAllianceName = sp.Alliance;
     sp.SetAlliance('Resurrected');
     sp.ChangeAlly('Resurrected', 1, true, false);
+    if (#defined(hx)){
+        //Clear the old alliance, since ChangeAlly forces same alliance
+        //to always be friendly
+        sp.ChangeAlly(origAllianceName,0.0,);
+    }
     module.HateEveryone(sp, 'MrH');
     module.RemoveFears(sp);
     if(#var(prefix)Animal(sp) != None) {

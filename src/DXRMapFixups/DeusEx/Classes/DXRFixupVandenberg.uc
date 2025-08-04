@@ -9,10 +9,13 @@ function CheckConfig()
     local int i;
 
     //#region Add Datacubes
-    add_datacubes[i].map = "12_VANDENBERG_GAS";
-    add_datacubes[i].imageClass = class'Image12_Tiffany_HostagePic';
-    add_datacubes[i].location = vect(-107.1, 901.3, -939.4);
-    i++;
+    switch(dxr.localURL) {
+    case "12_VANDENBERG_GAS":
+        add_datacubes[i].imageClass = class'Image12_Tiffany_HostagePic';
+        add_datacubes[i].location = vect(-107.1, 901.3, -939.4);
+        i++;
+        break;
+    }
     //#endregion
 
     Super.CheckConfig();
@@ -22,10 +25,10 @@ function CheckConfig()
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
-    local ComputerSecurity comp;
+    local #var(prefix)ComputerSecurity comp;
     local KarkianBaby kb;
-    local DataLinkTrigger dlt;
-    local FlagTrigger ft;
+    local #var(prefix)DataLinkTrigger dlt;
+    local #var(prefix)FlagTrigger ft;
     local #var(prefix)HowardStrong hs;
     local #var(prefix)WaltonSimons ws;
     local #var(DeusExPrefix)Mover door;
@@ -289,8 +292,10 @@ function PreFirstEntryMapFixes()
                 door.bPickable = false;// make sure DXRDoors sees this as an undefeatable door, also in vanilla this door is obviously not pickable due to not being frobbable
 
                 //Fix prepivot, since the upper door was set way off to the side.  Just adjust both in the same way
-                //so that they are centered roughly in the middle of the door
-                RemoveMoverPrePivot(door);
+                //so that they are centered roughly in the middle of the door.  This doesn't work in HX.
+                if (!#defined(hx)){
+                    RemoveMoverPrePivot(door);
+                }
             }
         }
 
@@ -387,7 +392,7 @@ function PreFirstEntryMapFixes()
             if(!#defined(vmd))// button to open the door heading towards the ladder in the water
                 AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
 
-            foreach AllActors(class'ComputerSecurity', comp) {
+            foreach AllActors(class'#var(prefix)ComputerSecurity', comp) {
                 if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
                     comp.UserList[0].userName = "Oceanguard";
                     comp.UserList[0].Password = "Kraken";
@@ -507,13 +512,18 @@ function PreFirstEntryMapFixes()
         }
 
         //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
-        foreach AllActors(class'FlagTrigger',ft,'schematic'){
+        foreach AllActors(class'#var(prefix)FlagTrigger',ft,'schematic'){
             ft.bTrigger = True;
             ft.event = 'schematic2';
         }
-        foreach AllActors(class'DataLinkTrigger',dlt){
+
+        //This delay between setting the flag with the FlagTrigger and playing the
+        //infolink seems to help for HX.
+        AddDelayEvent('schematic2','schematic3',0.5);
+
+        foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
             if (dlt.datalinkTag=='dl_downloaded'){
-                dlt.Tag = 'schematic2';
+                dlt.Tag = 'schematic3';
             }
         }
 
@@ -622,7 +632,7 @@ function PreFirstEntryMapFixes()
 
         if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             dxr.flagbase.SetBool('MS_UnhideHelicopter', True,, 15);
-            foreach AllActors(class'DataLinkTrigger', dlt, 'klax') {
+            foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt, 'klax') {
                 dlt.Destroy();
                 break;
             }
@@ -1077,7 +1087,7 @@ function AnyEntryMapFixes()
             }
         }
 
-        Player().StartDataLinkTransmission("DL_FrontGate");
+        DXRStartDataLinkTransmission("DL_FrontGate");
 
         prevMapsDone = dxr.flagbase.GetBool('Heliosborn') && //Finished Vandenberg, mission 12
             dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
@@ -1185,7 +1195,7 @@ function TimerMapFixes()
 //#endregion
 
 function private _SiloGoalChecks() {
-    local BlackHelicopter chopper;
+    local #var(prefix)BlackHelicopter chopper;
 
     if(!class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) return;
 
@@ -1199,20 +1209,20 @@ function private _SiloGoalChecks() {
         // both goals completed
         if (dxr.flagbase.GetBool('DL_Savage3_Played')) {
             // both goals completed in order, computer infolink already played, play vanilla infolink
-            player().StartDataLinkTransmission("DL_Dead");
+            DXRStartDataLinkTransmission("DL_Dead");
         } else {
             // goals completed out of order
             _SiloRedirectedMissileWithHowardDead();
         }
 
-        foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter') {
+        foreach AllActors(class'#var(prefix)BlackHelicopter', chopper, 'BlackHelicopter') {
             chopper.EnterWorld();
             break;
         }
         dxr.flagbase.SetBool('DXR_SiloEscapeHelicopterUnhidden', True,, 15);
     } else {
         // only computer goal completed, play vanilla infolink
-        player().StartDataLinkTransmission("DL_Savage3");
+        DXRStartDataLinkTransmission("DL_Savage3");
     }
 }
 
@@ -1227,7 +1237,7 @@ function private _SiloRedirectedMissileWithHowardDead() {
     cesMinutes.nextEvent = GetConversation('DL_Dead').eventList;
     dxr.flagbase.SetBool('DL_Dead_Played', True);
 
-    player().StartDataLinkTransmission("DL_Savage3");
+    DXRStartDataLinkTransmission("DL_Savage3");
 }
 
 //#region Count Cmd Bots

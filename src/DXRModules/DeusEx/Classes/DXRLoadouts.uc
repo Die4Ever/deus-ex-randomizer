@@ -48,7 +48,7 @@ function CheckConfig()
     AddRandomItem("SoyFood",7);
     AddRandomItem("TechGoggles",9);
     if(#bool(hx))
-        AddRandomItem("#var(injectsprefix)Binoculars",10);
+        AddRandomItem("#var(package).#var(injectsprefix)Binoculars",10);
     else
         AddRandomItem("Binoculars",10);
     AddRandomItem("BioelectricCell",11);
@@ -430,7 +430,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddAugBan(class'#var(prefix)AugSpeed');
         BanRandomAugs(6); // set bans before adding new augs, focus on the new leg augs
 
-        AddAugAllow(class'AugStealth');
+        AddAugAllow(class'#var(prefix)AugStealth');
         AddAugAllow(class'AugOnlySpeed');
         AddAugAllow(class'AugJump');
         AddAugAllow(class'AugOnlySpeed');
@@ -439,7 +439,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         switch(rng(3)) {
         case 0: AddStartAug(class'AugOnlySpeed'); break;
         case 1: AddStartAug(class'AugJump'); break;
-        case 2: AddStartAug(class'AugStealth'); break;
+        case 2: AddStartAug(class'#var(prefix)AugStealth'); break;
         }
         return name;
     #endif
@@ -603,7 +603,7 @@ function AddStandardAugSet()
 {
 #ifdef injections || revision || vmd
     if(dxr.flags.IsHalloweenMode()) {
-        AddStartAug(class'AugStealth');
+        AddStartAug(class'#var(prefix)AugStealth');
     }
     else {
         AddStartAug(class'AugOnlySpeed');
@@ -613,13 +613,13 @@ function AddStandardAugSet()
     AddAugAllow(class'AugJump');
 #else
     if(dxr.flags.IsHalloweenMode()) {
-        AddStartAug(class'AugStealth');
+        AddStartAug(class'#var(prefix)AugStealth');
     }
     else {
-        AddStartAug(class'AugSpeed');
+        AddStartAug(class'#var(prefix)AugSpeed');
     }
 #endif
-    AddAugAllow(class'AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
+    AddAugAllow(class'#var(prefix)AugStealth'); // I think this needs to be explicitly allowed because of the shared leg slot
 }
 
 //#region Struct Setup

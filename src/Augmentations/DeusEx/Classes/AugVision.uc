@@ -1,3 +1,4 @@
+#compileif injections
 class BuffAugVision injects AugVision;
 
 state Active

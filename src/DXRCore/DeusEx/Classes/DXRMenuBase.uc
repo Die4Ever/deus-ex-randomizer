@@ -216,7 +216,7 @@ function NewGroup(string text)
 
 function bool EnumOption(string label, int value, optional out int output, optional string helpText)
 {
-    local int i;
+    local int i, j;
     local string s;
     local EnumBtn e;
 
@@ -245,8 +245,8 @@ function bool EnumOption(string label, int value, optional out int output, optio
             wnds[id] = enums[id].btn;
         }
         log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
-        i = ArrayCount(enums[id].values)-1;
-        if(enums[id].values[i] != "" && enums[id].values[i] != label) {
+        j = ArrayCount(enums[id].values)-1;
+        if(enums[id].values[j] != "" && enums[id].values[j] != label) {
             label = "ERROR: FULL";
             enums[id].btn.SetButtonText(label);
         }

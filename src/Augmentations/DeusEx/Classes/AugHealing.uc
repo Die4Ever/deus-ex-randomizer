@@ -1,3 +1,4 @@
+#compileif injections
 class BalanceAugHealing injects AugHealing;
 
 //DXRando: put a cap on the health that regen gives you

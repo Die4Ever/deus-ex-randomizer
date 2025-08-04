@@ -243,20 +243,22 @@ function PreFirstEntryMapFixes()
             }
         }
     } else if (dxr.localURL=="15_AREA51_PAGE" && !RevisionMaps) {
-        //Remove the insane prepivot on the UC door closers
-        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
-            if (dxm.Event=='UC_shutdoor1' ||
-                dxm.Event=='UC_shutdoor2' ||
-                dxm.Event=='UC_shutdoor3'){
+        //Remove the insane prepivot on the UC door closers (but not in HX, because it doesn't like that)
+        if (!#defined(hx)){
+            foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+                if (dxm.Event=='UC_shutdoor1' ||
+                    dxm.Event=='UC_shutdoor2' ||
+                    dxm.Event=='UC_shutdoor3'){
 
-                v=vectm(0,0,dxm.PrePivot.Z);
+                    v=vectm(0,0,dxm.PrePivot.Z);
 
-                RemoveMoverPrePivot(dxm);
+                    RemoveMoverPrePivot(dxm);
 
-                //Return the Z component of the prepivot so the switches rotate on center
-                dxm.PrePivot=v;
-                dxm.BasePos=dxm.BasePos+v;
-                dxm.SetLocation(dxm.BasePos);
+                    //Return the Z component of the prepivot so the switches rotate on center
+                    dxm.PrePivot=v;
+                    dxm.BasePos=dxm.BasePos+v;
+                    dxm.SetLocation(dxm.BasePos);
+                }
             }
         }
     }
@@ -265,9 +267,9 @@ function PreFirstEntryMapFixes()
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local #var(prefix)ScriptedPawn sp;
-    local OrdersTrigger ot;
+    local #var(prefix)OrdersTrigger ot;
     local #var(prefix)AllianceTrigger at;
-    local Trigger t;
+    local #var(prefix)Trigger t;
     local FlagBase f;
 
     f = dxr.flagbase;
@@ -280,9 +282,9 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         }
 
         sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos));
-        ot = OrdersTrigger(Spawnm(class'OrdersTrigger',,'WaltonTalks',Loc.positions[0].pos));
+        ot = #var(prefix)OrdersTrigger(Spawnm(class'#var(prefix)OrdersTrigger',,'WaltonTalks',Loc.positions[0].pos));
         at = #var(prefix)AllianceTrigger(Spawnm(class'#var(prefix)AllianceTrigger',,'WaltonAttacks',Loc.positions[0].pos));
-        t = Trigger(Spawnm(class'Trigger',,,Loc.positions[1].pos));
+        t = #var(prefix)Trigger(Spawnm(class'#var(prefix)Trigger',,,Loc.positions[1].pos));
         g.actors[0].a = sp;
         g.actors[1].a = ot;
         g.actors[2].a = at;
