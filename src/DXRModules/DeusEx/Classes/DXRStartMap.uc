@@ -176,6 +176,7 @@ function PreFirstEntry()
 function PostFirstEntry()
 {
     local AllianceTrigger at;
+    local ScriptedPawn sp;
     local #var(prefix)NicoletteDuclare nico;
     local int starting_map;
 
@@ -198,6 +199,14 @@ function PostFirstEntry()
         if (starting_map >= 109) {
             foreach AllActors(class'#var(prefix)NicoletteDuclare', nico) {
                 nico.LeaveWorld();
+            }
+        }
+        break;
+
+    case "15_Area51_Entrance":
+        if(starting_map >= 152) { // delete the enemies on the backtracking elevator
+            foreach RadiusActors(class'ScriptedPawn', sp, 160, vectm(-1797, 697, -2008)) {
+                sp.Destroy();
             }
         }
         break;
