@@ -1424,3 +1424,28 @@ exec function FindLoc()
     LocFinder = class'DXRActorsBase'.static.GiveItem(self, class'WeaponLocFinder');
     PutInHand(LocFinder);
 }
+
+exec function MarkLoc(int x, int y, int z, optional string markName)
+{
+    local vector loc;
+    local DXRLocationMarker marker;
+    local ActorDisplayWindow actorDisplay;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    loc = dxr.flags.vectm(x,y,z);
+
+    marker = Spawn(class'DXRLocationMarker',,,loc);
+    if (markName!=""){
+        marker.BindName=markName;
+    } else {
+        marker.BindName="Marked Location";
+    }
+
+    actorDisplay = DeusExRootWindow(rootWindow).actorDisplay;
+    actorDisplay.SetViewClass(class'DXRLocationMarker');
+    actorDisplay.ShowLOS(false);
+    actorDisplay.ShowPos(true);
+    actorDisplay.ShowBindName(true);
+}
