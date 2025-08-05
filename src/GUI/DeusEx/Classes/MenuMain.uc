@@ -162,6 +162,7 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
         return true;
     }
 
+    #ifdef injections
     switch(messageBoxMode)
     {
     case MB_Exit:
@@ -179,6 +180,7 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
         }
         break;
     }
+    #endif
 
     return Super.BoxOptionSelected(button,buttonNumber);
 }
