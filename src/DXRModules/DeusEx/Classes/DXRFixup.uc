@@ -17,7 +17,6 @@ var DecorationsOverwrite DecorationsOverwrites[16];
 var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 
 struct AddDatacube {
-    var string map;
     var string text;
     var vector location;// 0,0,0 for random
     var class<DataVaultImage> imageClass;
@@ -198,9 +197,6 @@ function CheckConfig()
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
         if( DecorationsOverwrites[i].type == "" ) continue;
         DecorationsOverwritesClasses[i] = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
-    }
-    for(i=0; i<ArrayCount(add_datacubes); i++) {
-        add_datacubes[i].map = Caps(add_datacubes[i].map);
     }
 }
 
@@ -1110,6 +1106,16 @@ function FixInvalidBindNames()
     }
 }
 
+function PreventShufflingAmbrosia()
+{
+    local #var(prefix)BarrelAmbrosia ambrosia;
+
+    //Prevent ambrosia barrels from being shuffled
+    foreach AllActors(class'#var(prefix)BarrelAmbrosia', ambrosia) {
+        ambrosia.bIsSecretGoal = true;
+    }
+}
+
 //Scale the damage done by zones to counteract the damage scaling from CombatDifficulty
 function ScaleZoneDamage()
 {
@@ -1133,8 +1139,11 @@ function OverwriteDecorations(bool bFirstEntry)
     local DeusExDecoration d;
     local #var(prefix)Barrel1 b;
     local int i;
+    local bool bBalance;
+
+    bBalance = class'MenuChoice_BalanceEtc'.static.IsEnabled();
     foreach AllActors(class'DeusExDecoration', d) {
-        if( class'MenuChoice_BalanceEtc'.static.IsEnabled()
+        if( bBalance
             && (d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical')) ) {
             d.Mass = 35;
             d.HitPoints = 1;
@@ -1166,9 +1175,11 @@ function OverwriteDecorations(bool bFirstEntry)
     }
 
     // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;
-    foreach AllActors(class'#var(prefix)Barrel1', b) {
-        if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
-            b.explosionDamage = 400;
+    if(bBalance) {
+        foreach AllActors(class'#var(prefix)Barrel1', b) {
+            if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
+                b.explosionDamage = 400;
+            }
         }
     }
 }
@@ -1284,8 +1295,7 @@ function SpawnDatacubes()
     }
 
     for(i=0; i<ArrayCount(add_datacubes); i++) {
-        if( dxr.localURL != add_datacubes[i].map ) continue;
-
+        if(add_datacubes[i].text == "" && add_datacubes[i].imageClass == None) continue;
         loc = add_datacubes[i].location * coords_mult;
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 ) {
             if (add_datacubes[i].plaintextTag!=""){
@@ -1474,6 +1484,17 @@ function ConEventAddGoal AddGoalToCon(name conName, name goalName, bool bGoalCom
     }
 
     return ceag;
+}
+
+function FixMechanicBarks()
+{
+    local #var(prefix)Mechanic mec;
+
+    foreach AllActors(class'#var(prefix)Mechanic', mec) {
+        if (mec.FamiliarName == "Mechanic" && mec.BarkBindName == "Man") {
+            mec.BarkBindName = "Mechanic";
+        }
+    }
 }
 
 defaultproperties

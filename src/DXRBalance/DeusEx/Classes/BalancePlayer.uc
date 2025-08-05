@@ -160,12 +160,14 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
 function float ReduceEnviroDamage(float damage, name damageType)
 {
     local float skillLevel, augLevel;
+    local bool bVanillaType, bBalanceType;
 
     augLevel = -1;
+    bVanillaType = damageType == 'TearGas' || damageType == 'PoisonGas' || damageType == 'Radiation'
+        || damageType == 'HalonGas' || damageType == 'PoisonEffect' || damageType == 'Poison';
+    bBalanceType = damageType == 'Flamed' || damageType == 'Burned' || damageType == 'Shocked';
 
-    if (damageType != 'TearGas' && damageType != 'PoisonGas' && damageType != 'Radiation'
-        && damageType != 'HalonGas' && damageType != 'PoisonEffect' && damageType != 'Poison'
-        && damageType != 'Flamed' && damageType != 'Burned' && damageType != 'Shocked' ) {
+    if (!bVanillaType && !(bBalanceType && class'MenuChoice_BalanceEtc'.static.IsEnabled())) {
             return damage;
     }
 
@@ -186,7 +188,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
             drugEffectTimer = 0;
     }
 
-    if(damageType == 'PoisonEffect' || damageType == 'Poison') {
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled() && (damageType == 'PoisonEffect' || damageType == 'Poison')) {
         return damage;
     }
 
@@ -232,8 +234,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     local float newDamage, oldDamage;
     local float augLevel, skillLevel;
     local float pct;
-    local HazMatSuit suit;
-    local BallisticArmor armor;
     local bool bReduced;
     local float damageMult;
 

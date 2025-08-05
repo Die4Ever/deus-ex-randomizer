@@ -533,6 +533,7 @@ function SetWatchFlags() {
 
         break;
     case "02_NYC_WAREHOUSE":
+        WatchFlag('GeneratorBlown');
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
             if (dxm.Name=='DeusExMover25'){
                 dxm.Event='CrackSafe';
@@ -703,6 +704,7 @@ function SetWatchFlags() {
         break;
     case "04_NYC_NSFHQ":
         WatchFlag('MostWarehouseTroopsDead');
+        WatchFlag('NSFSignalSent');
         break;
     case "04_NYC_UNATCOHQ":
         WatchFlag('M04MeetWalton_Played');
@@ -750,6 +752,8 @@ function SetWatchFlags() {
         CheckPaul();
         WatchFlag('WatchKeys_cabinet');
         WatchFlag('MiguelLeaving');
+        WatchFlag('DL_paul_Played');
+        WatchFlag('DL_PaulDead_Played');
         bt = class'BingoTrigger'.static.Create(self,'nanocage',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'botorders2',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'steampipe',vectm(0,0,0));
@@ -852,6 +856,7 @@ function SetWatchFlags() {
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
         WatchFlag('Canal_Bartender_Question4');
+        WatchFlag('Have_Evidence');
 
         foreach AllActors(class'#var(prefix)FlagTrigger',fTrigger,'FoundScientist') {
             // so you don't have to go right into the corner, default is 96, and 40 height
@@ -888,6 +893,7 @@ function SetWatchFlags() {
         WatchFlag('M06JCHasDate');
         WatchFlag('M06BartenderQuestion3');
         WatchFlag('Raid_Underway');
+        WatchFlag('Have_Evidence');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -932,6 +938,7 @@ function SetWatchFlags() {
         break;
     case "06_HONGKONG_WANCHAI_STREET":
         WatchFlag('M06PaidJunkie');
+        WatchFlag('Have_Evidence');
 
         //Find Jock's apartment door
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
@@ -965,8 +972,15 @@ function SetWatchFlags() {
 
 
         break;
+
+    case "06_HONGKONG_WANCHAI_COMPOUND": //Revision only
+        WatchFlag('TriadCeremony_Played');
+        break;
+
     case "06_HONGKONG_WANCHAI_MARKET":
         WatchFlag('BeenToCops');
+        WatchFlag('TriadCeremony_Played');
+        WatchFlag('Have_Evidence');
 
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'station_door_05'){
             break;
@@ -1054,10 +1068,13 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
 
         WatchFlag('FlowersForTheLab');
+        WatchFlag('Have_ROM');
         break;
 
     case "06_HONGKONG_STORAGE":
         WatchFlag('FlowersForTheLab');
+        WatchFlag('VL_Got_Schematic');
+        WatchFlag('VL_UC_Destroyed');
 
         //Corner mirror
         foreach AllActors(class'#var(prefix)BreakableGlass', bg, 'BreakableGlass'){
@@ -1087,6 +1104,7 @@ function SetWatchFlags() {
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('StantonDowd_Played');
         MarkBingo("MaggieLived", true);
         break;
     case "08_NYC_SMUG":
@@ -1224,11 +1242,32 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
         bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-993,-60,-80),40,20);
+
+        bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(0,0,0)); //Bilge Pumps
+
+        //Weld Points
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt.Tag='wall1';
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt.Tag='wall2';
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt.Tag='wall3';
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt.Tag='wall4';
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WeldPointDestroyed',vectm(0,0,0));
+        bt.Tag='wall5';
+        bt.bDestroyOthers=False;
+
         break;
 
         break;
     case "09_NYC_GRAVEYARD":
         WatchFlag('GaveDowdAmbrosia');
+        WatchFlag('M09MeetStantonDowd_Played');
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
             if (dxm.Name=='DeusExMover25'){
@@ -1458,6 +1497,7 @@ function SetWatchFlags() {
         WatchFlag('GuntherKillswitch');
         WatchFlag('DL_gold_found_Played');
         WatchFlag('M11WaltonHolo_Played');
+        WatchFlag('templar_upload');
 
         if (RevisionMaps){
             class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
@@ -1636,6 +1676,7 @@ function SetWatchFlags() {
         }
         break;
     case "12_VANDENBERG_COMPUTER":
+        WatchFlag('HeliosBorn');
         bt = class'BingoTrigger'.static.Create(self,'VandenbergServerRoom',vectm(940,2635,-1320),200,40);
 
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(1135,2360,-2138),40,40);
@@ -1653,6 +1694,7 @@ function SetWatchFlags() {
     //#region Mission 14
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
+        WatchFlag('missile_launched');
         foreach AllActors(class'#var(prefix)ScientistMale', sm) {
             if (sm.BindName=="drbernard"){
                 sm.bImportant = true;
@@ -1704,6 +1746,7 @@ function SetWatchFlags() {
     case "14_OCEANLAB_UC":
         WatchFlag('LeoToTheBar');
         WatchFlag('PageTaunt_Played');
+        WatchFlag('schematic_downloaded');
         RewatchFlag('WaltonShowdown_Played');
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(860,6758,-3175),40,40);
 
@@ -2502,6 +2545,26 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
         }
     }
 
+    //Ban "main mission" goals if any sort of mission progress is expected
+    if (bingo_duration!=1){
+        data.BanGoal("GeneratorBlown",1);
+        data.BanGoal("NSFSignalSent",1);
+        data.BanGoal("PaulsDatavault",1);
+        data.BanGoal("Have_Evidence",1);
+        data.BanGoal("Have_ROM",1);
+        data.BanGoal("TriadCeremony_Played",1);
+        data.BanGoal("VL_Got_Schematic",1);
+        data.BanGoal("VL_UC_Destroyed",1);
+        data.BanGoal("MeetDowd",1);
+        data.BanGoal("Pistons",1);
+        data.BanGoal("WeldPointDestroyed",1);
+        data.BanGoal("templar_upload",1);
+        data.BanGoal("HeliosBorn",1);
+        data.BanGoal("schematic_downloaded",1);
+        data.BanGoal("HowardStrong_PlayerDead",1);
+        data.BanGoal("missile_launched",1);
+    }
+
     Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
 }
 //#endregion
@@ -2844,6 +2907,12 @@ function string RemapBingoEvent(string eventname)
         case "BodyPartLoss_RightArm":
             _MarkBingo("LostLimbs"); //Split into another event, but still return this one as-is
             return eventname;
+        case "DL_paul_Played":
+        case "DL_PaulDead_Played":
+            return "PaulsDatavault";
+        case "StantonDowd_Played":
+        case "M09MeetStantonDowd_Played":
+            return "MeetDowd";
         default:
             return eventname;
     }
@@ -3595,7 +3664,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill enough fish.";
         case "FordSchick_Dead":
         case "FordSchick_PlayerDead":
-            return "Kill Ford Schick.  Note that you can do this after rescuing him.  You must kill him yourself.";
+            return "Kill Ford Schick.  Note that you can do this after rescuing him if you're fast.  You must kill him yourself.";
         case "ChateauInComputerRoom":
             return "Make your way down to Beth DuClare's computer station in the basement of the DuClare chateau.";
         case "DuClareBedrooms":
@@ -4153,6 +4222,42 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Sink enough unique solid pool balls (9-15) through the game.";
         case "PoolTableBallSunk":
             return "Sink enough unique pool balls through the game.  The cue ball does not count, and the eight ball only counts if all of the stripes or solids have already been sunk.";
+        case "GeneratorBlown":
+            return "Destroy the NSF Generator hidden in the warehouse district.  You can destroy the generator either by using explosives or by turning off the coolant.";
+        case "NSFSignalSent":
+            return "Go to the NSF HQ, align the satellites, and transmit the signal.  God damn terrorist.";
+        case "PaulsDatavault":
+            return "Find Paul somewhere in the MJ12 Lab and retrieve his datavault so that Tong can defeat the killswitch.";
+        case "Have_Evidence":
+            return "Find the Dragon Tooth Sword somewhere in Hong Kong in order to earn Tracer Tong's trust.";
+        case "Have_ROM":
+            return "Find the ROM Encoding for the Dragon Tooth Sword in the Versalife Labs.";
+        case "TriadCeremony_Played":
+            return "Become a witness to the truce ceremony between the Luminous Path and the Red Arrow triads.";
+        case "VL_Got_Schematic":
+            return "Download the schematic of the Grey Death virus in the Versalife Level 2 Labs.";
+        case "VL_UC_Destroyed":
+            return "Destroy the Universal Constructor in the Versalife Level 2 Labs.";
+        case "MeetDowd":
+            if (mission<=8){
+                return "Talk with Stanton Dowd in the burned out remains of the Osgoode & Sons building in Hells Kitchen.";
+            } else {
+                return "Talk with Stanton Dowd in the family mausoleum in the graveyard.";
+            }
+        case "Pistons":
+            return "Activate the bilge pumps in the lower decks of the superfreighter.";
+        case "WeldPointDestroyed":
+            return "Destroy enough of the weld points in the lower decks of the superfreighter.";
+        case "templar_upload":
+            return "Find the computer in the Paris Cathedral and establish a system uplink for Everett.";
+        case "HeliosBorn":
+            return "Provide MilNet access for Daedalus in the Vandenberg Computer Room and witness the birth of a new AI.";
+        case "schematic_downloaded":
+            return "Retrieve the schematics for building a Universal Constructor from the computer at the very bottom of the OceanLab.";
+        case "HowardStrong_PlayerDead":
+            return "Kill Howard Strong, the MJ12 engineer in charge of the operations at the missile silo.  You must kill him yourself.";
+        case "missile_launched":
+            return "Redirect the missile that is being aimed at Vandenberg.  It's going to be a sunny day at Area 51...";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4616,6 +4721,23 @@ defaultproperties
     bingo_options(372)=(event="PoolTableStripeBallSunk",desc="Sink 5 striped pool balls",desc_singular="Sink 1 striped pool ball",max=5,missions=33116,do_not_scale=true)
     bingo_options(373)=(event="PoolTableSolidBallSunk",desc="Sink 5 solid pool balls",desc_singular="Sink 1 solid pool ball",max=5,missions=33116,do_not_scale=true)
     bingo_options(374)=(event="PoolTableBallSunk",desc="Sink 5 pool balls",desc_singular="Sink 1 pool ball",max=5,missions=33116,do_not_scale=true)
+    bingo_options(375)=(event="GeneratorBlown",desc="Destroy the NSF generator",max=1,missions=4)
+    bingo_options(376)=(event="NSFSignalSent",desc="Send the NSF signal",max=1,missions=16)
+    bingo_options(377)=(event="PaulsDatavault",desc="Retrieve Paul's Datavault",max=1,missions=32)
+    bingo_options(378)=(event="Have_Evidence",desc="Find the missing Dragon Tooth Sword",max=1,missions=64)
+    bingo_options(379)=(event="Have_ROM",desc="Find the ROM Encoding",max=1,missions=64)
+    bingo_options(380)=(event="TriadCeremony_Played",desc="The triads are one",max=1,missions=64)
+    bingo_options(381)=(event="VL_Got_Schematic",desc="Download the Virus Schematic",max=1,missions=64)
+    bingo_options(382)=(event="VL_UC_Destroyed",desc="Destroy the Versalife UC",max=1,missions=64)
+    bingo_options(383)=(event="MeetDowd",desc="Meet Stanton Dowd",max=1,missions=768)
+    bingo_options(384)=(event="Pistons",desc="Activate the Bilge Pumps",max=1,missions=512)
+    bingo_options(385)=(event="WeldPointDestroyed",desc="Destroy %s Weld Points",desc_singular="Destroy a Weld Point",max=5,missions=512)
+    bingo_options(386)=(event="templar_upload",desc="Establish Templar System Uplink",max=1,missions=2048)
+    bingo_options(387)=(event="HeliosBorn",desc="Witness the birth of a new AI",max=1,missions=4096)
+    bingo_options(388)=(event="schematic_downloaded",desc="Grab the UC Schematics",max=1,missions=16384)
+    bingo_options(389)=(event="HowardStrong_PlayerDead",desc="Kill Howard Strong",max=1,missions=16384)
+    bingo_options(390)=(event="missile_launched",desc="Redirect the Missile",max=1,missions=16384)
+
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
 
@@ -4723,5 +4845,13 @@ defaultproperties
     mutually_exclusive(95)=(e1="PoolTableStripeBallSunk",e2="PoolTableSolidBallSunk")
     mutually_exclusive(96)=(e1="PoolTableBallSunk",e2="PoolTableSolidBallSunk")
     mutually_exclusive(97)=(e1="PoolTableStripeBallSunk",e2="PoolTableBallSunk")
+
+    mutually_exclusive(98)=(e1="NSFSignalSent",e2="M04PlayerLikesUNATCO_Played")
+    mutually_exclusive(99)=(e1="TriadCeremony_Played",e2="M07ChenSecondGive_Played")
+    mutually_exclusive(100)=(e1="MeetDowd",e2="StantonAmbushDefeated")
+    mutually_exclusive(101)=(e1="templar_upload",e2="GuntherHermann_Dead")
+    mutually_exclusive(102)=(e1="MeetDowd",e2="GaveDowdAmbrosia")
+    mutually_exclusive(103)=(e1="schematic_downloaded",e2="ViewSchematics")
+    mutually_exclusive(104)=(e1="schematic_downloaded",e2="PageTaunt_Played")
 //#endregion
 }

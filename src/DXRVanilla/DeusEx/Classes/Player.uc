@@ -2158,7 +2158,7 @@ function LoadLatestConfirmed()
     }
 }
 
-function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bool getEmpty)
+function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bool getEmpty, optional out string name)
 {
     local int saveIndex;
     local DeusExSaveInfo saveInfo;
@@ -2190,6 +2190,7 @@ function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bo
             winningYear = saveInfo.Year;
             winningTime = time;
             winningSave = saveInfo.DirectoryIndex;
+            name = saveInfo.Description;
         }
 
         saveDir.DeleteSaveInfo(saveInfo);
@@ -2489,6 +2490,30 @@ exec function FindLoc()
 
     LocFinder = class'DXRActorsBase'.static.GiveItem(self, class'WeaponLocFinder');
     PutInHand(LocFinder);
+}
+
+exec function MarkLoc(int x, int y, int z, optional string markName)
+{
+    local vector loc;
+    local DXRLocationMarker marker;
+    local ActorDisplayWindow actorDisplay;
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    loc = dxr.flags.vectm(x,y,z);
+
+    marker = Spawn(class'DXRLocationMarker',,,loc);
+    if (markName!=""){
+        marker.BindName=markName;
+    } else {
+        marker.BindName="Marked Location";
+    }
+
+    actorDisplay = DeusExRootWindow(rootWindow).actorDisplay;
+    actorDisplay.SetViewClass(class'DXRLocationMarker');
+    actorDisplay.ShowLOS(false);
+    actorDisplay.ShowPos(true);
 }
 
 state CheatFlying

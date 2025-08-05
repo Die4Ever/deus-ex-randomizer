@@ -176,6 +176,7 @@ function PreFirstEntry()
 function PostFirstEntry()
 {
     local AllianceTrigger at;
+    local ScriptedPawn sp;
     local #var(prefix)NicoletteDuclare nico;
     local int starting_map;
 
@@ -198,6 +199,14 @@ function PostFirstEntry()
         if (starting_map >= 109) {
             foreach AllActors(class'#var(prefix)NicoletteDuclare', nico) {
                 nico.LeaveWorld();
+            }
+        }
+        break;
+
+    case "15_Area51_Entrance":
+        if(starting_map >= 152) { // delete the enemies on the backtracking elevator
+            foreach RadiusActors(class'ScriptedPawn', sp, 160, vectm(-1797, 697, -2008)) {
+                sp.Destroy();
             }
         }
         break;
@@ -1039,59 +1048,58 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
 
     switch(start_flag) {
         case 21:
-            AddGoalFromConv(player, 'ReportToPaul', 'DL_SubwayComplete');
+            GiveGoalFromCon(player, 'ReportToPaul', 'DL_SubwayComplete');
             break;
 
         case 31:
-            AddGoalFromConv(player, 'ReportToManderley', 'DL_WelcomeBack');
+            GiveGoalFromCon(player, 'ReportToManderley', 'DL_WelcomeBack');
             break;
         case 32:
         case 33:
         case 34:
         case 35:
-            AddGoalFromConv(player, 'LocateAirfield', 'ManderleyDebriefing02');
+            GiveGoalFromCon(player, 'LocateAirfield', 'ManderleyDebriefing02');
             break;
         case 36:
             DXRStartDataLinkTransmission("DL_LebedevKill");
             break;
         case 37:
-            AddGoalFromConv(player, 'AssassinateLebedev', 'DL_LebedevKill');
+            GiveGoalFromCon(player, 'AssassinateLebedev', 'DL_LebedevKill');
             break;
 
         case 45:
-            AddGoalFromConv(player, 'InvestigateNSF', 'PaulInjured');
+            GiveGoalFromCon(player, 'InvestigateNSF', 'PaulInjured');
             break;
         case 43:
             DXRStartDataLinkTransmission("DL_JockParkStart");
             break;
         case 41:
-            AddGoalFromConv(player, 'SeeManderley', 'DL_SeeManderley');
+            GiveGoalFromCon(player, 'SeeManderley', 'DL_SeeManderley');
             break;
 
         case 55:
-            AddGoalFromConv(player, 'FindEquipment', 'DL_Choice');
-            AddGoalFromConv(player, 'FindAnnasKillprhase', 'PaulInMedLab');
+            GiveGoalFromCon(player, 'FindEquipment', 'DL_Choice');
+            GiveGoalFromCon(player, 'FindAnnasKillprhase', 'PaulInMedLab');
             break;
 
         case 75:
-        case 74:
-            AddGoalFromConv(player, 'GetVirusSchematic', 'M07Briefing');
-            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            GiveGoalFromCon(player, 'GetVirusSchematic', 'M07Briefing');
+            GiveGoalFromCon(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 70:
-            AddGoalFromConv(player, 'ReportToTong', 'TriadCeremony');
-            AddGoalFromConv(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
+            GiveGoalFromCon(player, 'ReportToTong', 'TriadCeremony');
+            GiveGoalFromCon(player, 'HaveDrinksWithDragonHeads', 'TriadCeremony');
             break;
         case 68:
         case 67:
-            AddGoalFromConv(player, 'GetROM', 'MeetTracerTong2');
+            GiveGoalFromCon(player, 'GetROM', 'MeetTracerTong2');
             break;
         case 66:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'FindTracerTong', 'DL_Jock_05');
             break;
         case 65:
-            AddGoalFromConv(player, 'FindTracerTong', 'DL_Jock_05');
-            AddGoalFromConv(player, 'CheckCompound', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'FindTracerTong', 'DL_Jock_05');
+            GiveGoalFromCon(player, 'CheckCompound', 'DL_Jock_05');
             DXRStartDataLinkTransmission("DL_Tong_00"); // Good.  Now take the sword to Max Chen at the Lucky Money Club.
             break;
         case 64:
@@ -1112,17 +1120,17 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 101:
-            AddGoalFromConv(player, 'FindSilhouette', 'DL_paris_10_start');
-            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindSilhouette', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
             break;
         case 105:
         case 106:
-            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
-            AddGoalFromConv(player, 'FindNicolette', 'DL_tunnels_down');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindNicolette', 'DL_tunnels_down');
             break;
         case 109:
-            AddGoalFromConv(player, 'ContactIlluminati', 'DL_paris_10_start');
-            AddGoalFromConv(player, 'FindEverett', 'NicoletteOutside');
+            GiveGoalFromCon(player, 'ContactIlluminati', 'DL_paris_10_start');
+            GiveGoalFromCon(player, 'FindEverett', 'NicoletteOutside');
             break;
 
         case 119:
@@ -1132,8 +1140,8 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
         case 115:
             goal = player.AddGoal('ContactIlluminati', true);
             goal.SetText("Make contact with the Illuminati in Paris, where the former Illuminati leader, Morgan Everett, is rumored to be in hiding.");
-            AddGoalFromConv(player, 'GoToMetroStation', 'DL_morgan_uplink');
-            AddGoalFromConv(player, 'RecoverGold', 'DL_intro_cathedral');
+            GiveGoalFromCon(player, 'GoToMetroStation', 'DL_morgan_uplink');
+            GiveGoalFromCon(player, 'RecoverGold', 'DL_intro_cathedral');
             break;
         case 110:
             goal = player.AddGoal('ContactIlluminati', true);
@@ -1143,21 +1151,21 @@ function PostFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase,
             break;
 
         case 129:
-            AddGoalFromConv(player, 'RescueTiffany', 'GaryHostageBriefing');
+            GiveGoalFromCon(player, 'RescueTiffany', 'GaryHostageBriefing');
             break;
         case 125:
         case 122:
-            AddGoalFromConv(player, 'FindGarySavage', 'MeetTonyMares');
+            GiveGoalFromCon(player, 'FindGarySavage', 'MeetTonyMares');
             break;
         case 121:
-            AddGoalFromConv(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
+            GiveGoalFromCon(player, 'GoToCommunicationsCenter', 'DL_command_bots_destroyed');
             break;
 
         case 153:
-            AddGoalFromConv(player, 'DestroyArea51', 'M15MeetTong');
-            AddGoalFromConv(player, 'DeactivateLocks', 'MeetHelios');
+            GiveGoalFromCon(player, 'DestroyArea51', 'M15MeetTong');
+            GiveGoalFromCon(player, 'DeactivateLocks', 'MeetHelios');
         case 152: // fallthrough
-            AddGoalFromConv(player, 'KillPage', 'M15MeetEverett');
+            GiveGoalFromCon(player, 'KillPage', 'M15MeetEverett');
             break;
     }
 }
@@ -1245,6 +1253,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 5: // escape from MJ12 Jail
         switch(bingo_event)
         {
+            case "PaulsDatavault":
+                return start_map>53; //50 is the jail, 55 is UNATCO HQ.
         }
         break;
 
@@ -1252,11 +1262,16 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 7:
         switch(bingo_event)
         {
+        case "Have_ROM":
+        case "TriadCeremony_Played":
+            return start_map >= 70; //Impossible once the first trip to VersaLife is done
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
         case "M06JCHasDate":
         case "ClubEntryPaid":
             return start_map > 65; //Impossible after the raid starts
+        case "Have_Evidence":
+            return start_map >=65; //Impossible once you've found the sword
         }
         break;
 
@@ -1269,6 +1284,9 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 9: // Dockyard and Ship
         switch(bingo_event)
         {
+            case "Pistons":
+            case "WeldPointDestroyed":
+                return start_map >=99; //Impossible once you've gotten to Graveyard and can't backtrack
         }
         break;
 
@@ -1282,6 +1300,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         switch(bingo_event)
         {
         case "GuntherHermann_Dead":
+        case "templar_upload":
             return start_map >= 115;
         case "TrainTracks":
             return start_map > 115;
@@ -1297,6 +1316,10 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 14: // fallthrough to the rest of Vandenberg
         switch(bingo_event)
         {
+            case "schematic_downloaded":
+                return start_map>142;
+            case "HeliosBorn":
+                return start_map>=129;
         }
         break;
 

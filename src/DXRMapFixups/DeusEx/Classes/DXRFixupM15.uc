@@ -9,69 +9,41 @@ function CheckConfig()
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
     //#region Add Datacubes
-    add_datacubes[i].map = "15_AREA51_BUNKER";
-    add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
-    if (VanillaMaps){
-        add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
-    } else {
-        add_datacubes[i].Location = vect(1140,-1920,-460); //Boxes in Hangar
+    switch(dxr.localURL) {
+    case "15_AREA51_BUNKER":
+        add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
+        if (VanillaMaps){
+            add_datacubes[i].Location = vect(1115,-1840,-460); //Boxes in Hangar
+        } else {
+            add_datacubes[i].Location = vect(1140,-1920,-460); //Boxes in Hangar
+        }
+        add_datacubes[i].plaintextTag = "A51VentComputerCode";
+        i++;
+
+        add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
+        if (VanillaMaps){
+            add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
+        } else {
+            add_datacubes[i].Location = vect(1600,-2875,-260); //Pipes next to Xander in Hangar
+        }
+        add_datacubes[i].plaintextTag = "A51VentElevatorCode";
+        i++;
+        break;
+
+    case "15_AREA51_PAGE":
+        add_datacubes[i].text =
+            "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
+
+        //Boxes directly under Page
+        if (VanillaMaps){
+            add_datacubes[i].Location = vect(6330,-7225,-5550);
+        } else {
+            add_datacubes[i].Location = vect(160,2350,-180);
+        }
+        add_datacubes[i].plaintextTag = "UCControlRoomPassword";
+        i++;
+        break;
     }
-    add_datacubes[i].plaintextTag = "A51VentComputerCode";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_BUNKER";
-    add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
-    if (VanillaMaps){
-        add_datacubes[i].Location = vect(1260,-2875,-260); //Pipes next to Xander in Hangar
-    } else {
-        add_datacubes[i].Location = vect(1600,-2875,-260); //Pipes next to Xander in Hangar
-    }
-    add_datacubes[i].plaintextTag = "A51VentElevatorCode";
-    i++;
-
-
-    add_datacubes[i].map = "15_AREA51_ENTRANCE";
-    add_datacubes[i].text =
-        "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
-        $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
-        $ "  The code is 6786.  I love you."
-        $ "|n|nJustin";
-    add_datacubes[i].Location = vect(3200,-1400,-150); //First set of boxes down hall with doors
-    add_datacubes[i].plaintextTag = "SleepPodCode1";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_ENTRANCE";
-    add_datacubes[i].text =
-        "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
-        $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
-        $ "  The code is 3901.  I love you."
-        $ "|n|nJohn";
-    add_datacubes[i].Location = vect(4030,-610,-150); //Second set of boxes down the hall with doors
-    add_datacubes[i].plaintextTag = "SleepPodCode2";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_ENTRANCE";
-    add_datacubes[i].text =
-        "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
-        $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
-        $ "  The code is 4322.  I love you."
-        $ "|n|nJim";
-    add_datacubes[i].Location = vect(4008,662,-150); //Fourth set of boxes down the hall with doors
-    add_datacubes[i].plaintextTag = "SleepPodCode3";
-    i++;
-
-    add_datacubes[i].map = "15_AREA51_PAGE";
-    add_datacubes[i].text =
-        "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
-
-    //Boxes directly under Page
-    if (VanillaMaps){
-        add_datacubes[i].Location = vect(6330,-7225,-5550);
-    } else {
-        add_datacubes[i].Location = vect(160,2350,-180);
-    }
-    add_datacubes[i].plaintextTag = "UCControlRoomPassword";
-    i++;
     //#endregion
 
     Super.CheckConfig();

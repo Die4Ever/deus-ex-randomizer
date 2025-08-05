@@ -5,6 +5,9 @@ var transient bool bNeedSave;
 var config float save_delay;
 var transient float save_timer;
 var transient int autosave_combat;
+var transient bool save_exit;
+var transient bool save_hardcore;
+var int delete_save;
 
 var vector player_pos;
 var rotator player_rot;
@@ -50,6 +53,12 @@ function PreFirstEntry()
             // save at the start
             NeedSave();
         }
+        else if(dxr.flags.autosave == Ironman) { // crash protection, TODO: extend this to all >= Ironman
+            save_hardcore = true;
+            NeedSave();
+        }
+    } else if(dxr.rando_exited==false && dxr.localURL ~= "DX") {
+        CheckLoadCrash();
     }
 
     MapAdjustments();
@@ -59,11 +68,54 @@ function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
+    if(default.delete_save != -999) {
+        // player().ConsoleCommand("DeleteGame " $ default.delete_save); // delete it when loading? overwrite is probably better, converting it to a CRASH save
+        save_hardcore = dxr.flags.autosave >= Ironman;
+        NeedSave();
+        default.delete_save = -999;
+        return;
+    }
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && IsTravel ) {
         if( dxr.flags.autosave==EveryEntry || dxr.flags.autosave==ExtraSafe ) {
             NeedSave();
         }
+        else if(dxr.flags.autosave == Ironman) { // crash protection, TODO: extend this to all >= Ironman
+            save_hardcore = true;
+            NeedSave();
+        }
     }
+}
+
+function CheckLoadCrash()
+{
+    local int saveIndex;
+    local string name;
+    // we crashed? check for newest save file and if it's a crash/exit save then load it
+    saveIndex = player().GetSaveSlotByTimestamp(false, -6, 9999999, false, name);
+    if(Right(name, 15) == " CRASH AUTOSAVE" || Right(name, 14) == " EXIT AUTOSAVE") {
+        player().LoadGame(saveIndex);
+    }
+}
+
+static function bool MakeExitSave()
+{
+    local DXRAutosave a;
+
+    a = DXRAutosave(Find());
+    if(a != None) {
+        return a._MakeExitSave();
+    }
+    return false;
+}
+
+function bool _MakeExitSave()
+{
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave == Ironman ) { // TODO: extend this to >= Ironman
+        save_exit = true;
+        NeedSave();
+        return true;
+    }
+    return false;
 }
 
 function PostAnyEntry()
@@ -141,6 +193,7 @@ function FixPlayer(optional bool pos)
         p.ViewRotation = player_rot;
         p.Velocity = vect(0,0,0);
         p.Acceleration = vect(0,0,0);
+        if(pos) set_player_pos = false;
     }
 }
 
@@ -293,7 +346,7 @@ function doAutosave()
 
     p = player();
 
-    if(autosave_combat<=0 && PawnIsInCombat(p)) {
+    if(autosave_combat<=0 && PawnIsInCombat(p) && !save_exit && !save_hardcore) {
         info("waiting for Player to be out of combat, not saving yet");
         SetGameSpeed(1);
         return;
@@ -321,7 +374,13 @@ function doAutosave()
     lastMission = dxr.flagbase.GetInt('Rando_lastmission');
 
     isDifferentMission = dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
-    if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
+    if(save_exit) {
+        saveName = "EXIT " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " EXIT AUTOSAVE";
+    }
+    else if(save_hardcore) {
+        saveName = "CRASH " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " CRASH AUTOSAVE";
+    }
+    else if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
         saveSlot = 0;
     }
     dxr.flagbase.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
@@ -345,6 +404,9 @@ function doAutosave()
     }
 
     info("doAutosave() completed, save_delay: "$save_delay);
+    if(save_exit) {
+        DeusExRootWindow(p.rootWindow).ExitGame();
+    }
 }
 
 simulated function PlayerLogin(#var(PlayerPawn) p)
@@ -420,4 +482,9 @@ function string GetAutoSaveHelpText(coerce int choice)
     default:
         return ""; //This will mean the help button won't appear
     }
+}
+
+defaultproperties
+{
+    delete_save=-999
 }

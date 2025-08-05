@@ -299,6 +299,8 @@ function PreFirstEntryMapFixes()
 
     //#region Metro Station
     case "11_PARIS_UNDERGROUND":
+        FixMechanicBarks();
+
         foreach AllActors(class'DXRMapVariants', mapvariants) { break; }
         foreach AllActors(class'#var(prefix)TobyAtanwe', toby) {
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, class'DXRMapInfo'.static.GetTeleporterName(mapvariants.VaryMap("11_PARIS_EVERETT"),"Entrance"), toby.Location, toby.CollisionRadius+5, toby.CollisionHeight+5);
@@ -402,6 +404,8 @@ function PreFirstEntryMapFixes()
 
     //#region Everett
     case "11_PARIS_EVERETT":
+        FixMechanicBarks();
+
         foreach AllActors(class'#var(prefix)ComputerSecurity',cs){
             if (cs.specialOptions[1].Text=="Nanotech Containment Field 002"){
                 //This option isn't actually hooked up to anything.  The fields are on the normal security screen.

@@ -496,9 +496,11 @@ function PreFirstEntryMapFixes()
 
     //#region Underground (Sewers)
         case "08_NYC_UNDERGROUND":
-            foreach AllActors(class'#var(prefix)LaserTrigger',lt){
-                if (lt.Location.Z < -574 && lt.Location.Z > -575){
-                    lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+                    if (lt.Location.Z < -574 && lt.Location.Z > -575){
+                        lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+                    }
                 }
             }
             break;

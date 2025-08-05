@@ -4,11 +4,14 @@ function CheckConfig()
 {
     local int i;
 
-    add_datacubes[i].map = "03_NYC_UNATCOHQ";
-    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
-    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
-    add_datacubes[i].plaintextTag = "JCCompPassword";
-    i++;
+    switch(dxr.localURL) {
+    case "03_NYC_UNATCOHQ":
+        add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+        add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+        add_datacubes[i].plaintextTag = "JCCompPassword";
+        i++;
+        break;
+    }
 
     Super.CheckConfig();
 }
@@ -215,6 +218,8 @@ function PreFirstEntryMapFixes()
         //Button to extend sewer platform from the other side
         AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
+        PreventShufflingAmbrosia();
+
         class'PoolTableManager'.static.CreatePoolTableManagers(self);  //Both tables here are not cleanly racked
         AddActor(class'PoolTableResetButton',vect(1060.3,468,227),rot(-1600,32768,0));
         AddActor(class'PoolTableResetButton',vect(1060.3,719,227),rot(-1600,32768,0));
@@ -252,6 +257,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
+
+        PreventShufflingAmbrosia();
 
         // fix collision with the static crates https://github.com/Die4Ever/deus-ex-randomizer/issues/665
         class'FillCollisionHole'.static.CreateLine(self, vectm(792.113403, -1343.670166, 69), vectm(675, -1343.670166, 69), 32, 90);
@@ -477,6 +484,8 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        PreventShufflingAmbrosia();
+
         Spawn(class'PlaceholderItem',,, vectm(1702,-359.8,373)); //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(1624.15,-740.12,373)); //Guest bed headboard
         Spawn(class'PlaceholderItem',,, vectm(1412.5,-297.7,406.32)); //Closet shelf
@@ -609,6 +618,7 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local ConEventChoice cec;
     local ConChoice      cc;
+    local ConEventSetFlag cesf;
     local bool RevisionMaps, knowPass, foundUnderground;
     local string textAdd;
     local #var(prefix)SecurityCamera cam;
@@ -619,6 +629,11 @@ function AnyEntryMapFixes()
     switch(dxr.localURL) {
     case "03_NYC_747":
         SetTimer(1, true);
+
+        // 'AnnaThanks_Played' gets reset at the end of M02, but 'AnnaThanksChatDone' doesn't
+        // restores an alternative line from Anna about about killing Lebedev based on what you did in M02
+        FixConversationFlagJump(GetConversation('AnnaEntrance'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+
         break;
 
     case "03_NYC_AIRFIELDHELIBASE":
@@ -711,6 +726,20 @@ function AnyEntryMapFixes()
             }
         }
         break;
+    case "03_NYC_UNATCOHQ":
+        // 'AnnaThanks_Played' is expired here, but 'AnnaThanksChatDone' isn't
+        // restores an alternative line from Anna about a debriefing based on what you did in M02
+        FixConversationFlagJump(GetConversation('AnnaAtUNATCO'), 'AnnaThanks_Played', false, 'AnnaThanksChatDone', false);
+        break;
+    }
+}
+//#endregion
+
+//#region Fix Pre Travel
+function PreTravelMapFixes()
+{
+    if(dxr.flagbase.GetBool('MeetLebedev2_Played')) {
+        dxr.flagbase.SetBool('MeetLebedev2_Played', true,, 5); // restores some possible dialog with Paul
     }
 }
 //#endregion

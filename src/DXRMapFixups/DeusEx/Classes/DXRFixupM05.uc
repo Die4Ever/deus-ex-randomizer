@@ -4,17 +4,21 @@ function CheckConfig()
 {
     local int i;
     //#region Add Datacubes
-    add_datacubes[i].map = "05_NYC_UNATCOMJ12lab";
-    add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
-    add_datacubes[i].Location = vect(-50,3540,-140); //Agent Sherman's desk in the back of the greasel lab
-    add_datacubes[i].plaintextTag = "KillphrasePassword";
-    i++;
+    switch(dxr.localURL) {
+    case "05_NYC_UNATCOMJ12lab":
+        add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
+        add_datacubes[i].Location = vect(-50,3540,-140); //Agent Sherman's desk in the back of the greasel lab
+        add_datacubes[i].plaintextTag = "KillphrasePassword";
+        i++;
+        break;
 
-    add_datacubes[i].map = "05_NYC_UNATCOHQ";
-    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
-    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
-    add_datacubes[i].plaintextTag = "JCCompPassword";
-    i++;
+    case "05_NYC_UNATCOHQ":
+        add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+        add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+        add_datacubes[i].plaintextTag = "JCCompPassword";
+        i++;
+        break;
+    }
     //#endregion
 
     Super.CheckConfig();
@@ -65,6 +69,8 @@ function PreFirstEntryMapFixes()
     {
     //#region UNATCO MJ12 Lab
     case "05_NYC_UNATCOMJ12LAB":
+        FixMechanicBarks();
+
         if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
             PartialHeal(p.HealthHead, p.default.HealthHead);
@@ -119,7 +125,7 @@ function PreFirstEntryMapFixes()
             }
 
             foreach AllActors(class'#var(prefix)Keypad3', kp, 'Keypad3') {
-                if(kp.Name=='Keypad10' && kp.Event=='') {
+                if(kp.Name=='Keypad10' && kp.Event=='') { // backtracking keypad on the UNATCO side of the door
                     kp.Event = 'ExitDoor';
                     kp.hackStrength = 0.1;
                     kp.validCode = "1125";

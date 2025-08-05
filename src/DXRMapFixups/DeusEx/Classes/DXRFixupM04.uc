@@ -6,11 +6,14 @@ function CheckConfig()
 {
     local int i;
 
-    add_datacubes[i].map = "04_NYC_UNATCOHQ";
-    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
-    add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
-    add_datacubes[i].plaintextTag = "JCCompPassword";
-    i++;
+    switch(dxr.localURL) {
+    case "04_NYC_UNATCOHQ":
+        add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+        add_datacubes[i].Location = vect(-210,1290,290); //JC's Desk
+        add_datacubes[i].plaintextTag = "JCCompPassword";
+        i++;
+        break;
+    }
 
     Super.CheckConfig();
 }
@@ -621,9 +624,11 @@ function PreFirstEntryMapFixes()
 
     //#region Underground (Sewers)
     case "04_NYC_UNDERGROUND":
-        foreach AllActors(class'#var(prefix)LaserTrigger',lt){
-            if (lt.Location.Z < -574 && lt.Location.Z > -575){
-                lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            foreach AllActors(class'#var(prefix)LaserTrigger',lt){
+                if (lt.Location.Z < -574 && lt.Location.Z > -575){
+                    lt.SetLocation(lt.Location+vect(0,0,11)); //Move them slightly higher up to match their location in mission 2, so you can crouch under
+                }
             }
         }
         break;
@@ -676,6 +681,11 @@ function AnyEntryMapFixes()
 
     switch (dxr.localURL)
     {
+    case "04_NYC_UNATCOHQ":
+        // restore a couple troop barks if you didn't kill Lebedev, example: "A little trigger-shy, eh?  You'll get used to it."
+        FixConversationFlagJump(GetConversation('M04TroopBarks'), 'AnnaEntrance_Played', true, 'PlayerKilledLebedev', false);
+        break;
+    
     case "04_NYC_BATTERYPARK":
         raidStarted = dxr.flagbase.GetBool('M04RaidBegan');
 
