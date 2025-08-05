@@ -1253,6 +1253,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 5: // escape from MJ12 Jail
         switch(bingo_event)
         {
+            case "PaulsDatavault":
+                return start_map>53; //50 is the jail, 55 is UNATCO HQ.
         }
         break;
 
@@ -1260,11 +1262,16 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 7:
         switch(bingo_event)
         {
+        case "Have_ROM":
+        case "TriadCeremony_Played":
+            return start_map >= 70; //Impossible once the first trip to VersaLife is done
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
         case "M06JCHasDate":
         case "ClubEntryPaid":
             return start_map > 65; //Impossible after the raid starts
+        case "Have_Evidence":
+            return start_map >=65; //Impossible once you've found the sword
         }
         break;
 
@@ -1277,6 +1284,9 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 9: // Dockyard and Ship
         switch(bingo_event)
         {
+            case "Pistons":
+            case "WeldPointDestroyed":
+                return start_map >=99; //Impossible once you've gotten to Graveyard and can't backtrack
         }
         break;
 
@@ -1290,6 +1300,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         switch(bingo_event)
         {
         case "GuntherHermann_Dead":
+        case "templar_upload":
             return start_map >= 115;
         case "TrainTracks":
             return start_map > 115;
@@ -1305,6 +1316,10 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 14: // fallthrough to the rest of Vandenberg
         switch(bingo_event)
         {
+            case "schematic_downloaded":
+                return start_map>142;
+            case "HeliosBorn":
+                return start_map>=129;
         }
         break;
 
