@@ -80,7 +80,7 @@ function PreFirstEntryMapFixes()
     {
     //#region Hotel
     case "04_NYC_HOTEL":
-        if (#defined(vanilla)){
+        if (#defined(vanilla) && class'MenuChoice_BalanceMaps'.static.MinorEnabled()){
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'PaulSafe') {
                 if( ot.Orders == 'Leaving' )
                     ot.Orders = 'Seeking';
@@ -151,7 +151,9 @@ function PreFirstEntryMapFixes()
         }
 
         if (VanillaMaps){
-            Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+            }
 
             if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
@@ -181,7 +183,9 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
             Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
         } else {
-            Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+            }
 
             if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()) {
                 key = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
@@ -685,7 +689,7 @@ function AnyEntryMapFixes()
         // restore a couple troop barks if you didn't kill Lebedev, example: "A little trigger-shy, eh?  You'll get used to it."
         FixConversationFlagJump(GetConversation('M04TroopBarks'), 'AnnaEntrance_Played', true, 'PlayerKilledLebedev', false);
         break;
-    
+
     case "04_NYC_BATTERYPARK":
         raidStarted = dxr.flagbase.GetBool('M04RaidBegan');
 
@@ -816,6 +820,7 @@ function NYC_04_CheckPaulUndead()
     local PaulDenton paul;
     local int count;
 
+    if( ! class'MenuChoice_BalanceMaps'.static.MinorEnabled() ) return;
     if( ! dxr.flagbase.GetBool('PaulDenton_Dead')) return;
 
     foreach AllActors(class'PaulDenton', paul) {
@@ -855,6 +860,7 @@ function NYC_04_CheckPaulRaid()
         paul.ChangeAlly('Player', 1, true);
     }
 
+    if( ! class'MenuChoice_BalanceMaps'.static.MinorEnabled() ) return;
     foreach AllActors(class'ScriptedPawn', p) {
         if( !IsRelevantPawn(p.class) ) continue;
         if( p.bHidden ) continue;
@@ -885,6 +891,8 @@ function NYC_04_MarkPaulSafe()
     local FlagTrigger t;
     local SkillAwardTrigger st;
     local int health;
+
+    if( ! class'MenuChoice_BalanceMaps'.static.MinorEnabled() ) return;
     if( dxr.flagbase.GetBool('PaulLeftHotel') ) return;
 
     dxr.flagbase.SetBool('PaulLeftHotel', true,, 999);
@@ -926,7 +934,7 @@ function NYC_04_LeaveHotel()
     local FlagTrigger t;
     local PaulDenton paul;
 
-
+    if( ! class'MenuChoice_BalanceMaps'.static.MinorEnabled() ) return;
     if (dxr.flagbase.GetBool('PaulLeftHotel')) {
         //Make Paul leave, and make sure he counts as having survived
         foreach AllActors(class'PaulDenton', paul) {

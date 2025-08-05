@@ -329,7 +329,9 @@ function PreFirstEntryMapFixes()
 
 
         if (VanillaMaps){
-            Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+            }
 
             //Restore answering machine message, but in mission 2 (conversation is in mission 3);
             //tad=Spawn(class'#var(prefix)TAD',,, vectm(-290,-2380,115),rotm(0,0,0));
@@ -351,7 +353,9 @@ function PreFirstEntryMapFixes()
 
             SetAllLampsState(false, true, true); // the lamp in Paul's apartment
         } else {
-            Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-180,-3365,70)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-180,-3450,70)); //Actual closet

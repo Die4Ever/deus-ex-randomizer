@@ -356,9 +356,8 @@ function PreFirstEntryMapFixes()
     //#region Hotel
         case "08_NYC_HOTEL":
             if (VanillaMaps){
-                Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
-
                 if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                    Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
                     SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0,0), '02_Datacube07',False); //Paul's stash code, in bottom of closet
 
                     k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74)); //In a mail nook
@@ -392,9 +391,8 @@ function PreFirstEntryMapFixes()
                 Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
                 Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
             } else {
-                Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
-
                 if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                    Spawn(class'#var(prefix)Binoculars',,, vectm(-90,-3958,95)); //Paul's bedside table
                     k = Spawn(class'#var(prefix)NanoKey',,, vectm(-900,-1385,-74)); //In a mail nook
                     k.KeyID = 'Hotelroom1';
                     k.Description = "'Ton Hotel, South Room Key";
