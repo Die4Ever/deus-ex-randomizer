@@ -151,6 +151,7 @@ function ProcessCustomMenuButton(string key)
 event bool BoxOptionSelected(Window button, int buttonNumber)
 {
     local string s;
+    local bool bSaving;
 
     if (MenuUIMessageBoxWindow(button)!=None){
         s = MenuUIMessageBoxWindow(button).winTitle.titleText;
@@ -159,9 +160,27 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     if (s==NoSavingTitle){
         root.PopWindow();
         return true;
-    } else {
-        return Super.BoxOptionSelected(button,buttonNumber);
     }
+
+    switch(messageBoxMode)
+    {
+    case MB_Exit:
+    case MB_AskToTrain:
+    case MB_Training:
+    case MB_Intro:
+        if ( buttonNumber == 0 )
+        {
+            bSaving = class'DXRAutosave'.static.MakeExitSave();
+            player.ConsoleCommand("set DXRando rando_exited true");
+            if(bSaving) {
+                root.ClearWindowStack();
+                return true;
+            }
+        }
+        break;
+    }
+
+    return Super.BoxOptionSelected(button,buttonNumber);
 }
 
 defaultproperties

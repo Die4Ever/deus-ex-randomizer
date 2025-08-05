@@ -16,6 +16,8 @@ function AddSaveRow(DeusExSaveInfo saveInfo, int saveIndex)
 {
     if (saveInfo != None)
     {
+        //if(Right(saveInfo.Description, 15) == " CRASH AUTOSAVE") return; // hiding them freaks me out
+
         lstGames.AddRow( saveInfo.Description              $ ";" $
                          BuildTimeStringFromInfo(saveInfo) $ ";" $
                          BuildTimeStringSeconds(saveInfo)  $ ";" $
@@ -86,6 +88,36 @@ function DeleteAutosaves()
         }
     }
     PopulateGames();
+}
+
+function EnableButtons()
+{
+    local int rowId, gameIndex;
+    local string name;
+    Super.EnableButtons();
+
+    if(lstGames.GetNumSelectedRows() != 1) return;
+
+    rowId = lstGames.GetSelectedRow();
+    gameIndex = int(lstGames.GetField(rowId, 4));
+    name = lstGames.GetField(rowID, 0);
+    if(Right(name, 15) == " CRASH AUTOSAVE") {
+        EnableActionButton(AB_Other, false, "LOAD");
+    }
+}
+
+function LoadGame(int rowId)
+{
+    local int gameIndex;
+    local string name;
+    gameIndex = int(lstGames.GetField(rowId, 4));
+    name = lstGames.GetField(rowID, 0);
+    if(Right(name, 15) == " CRASH AUTOSAVE") {
+        return; // crash saves are only for auto loading, not manual loading
+    } else if(Right(name, 14) == " EXIT AUTOSAVE") {
+        player.ConsoleCommand("set DXRAutosave delete_save " $ gameIndex);
+    }
+    Super.LoadGame(rowId);
 }
 
 defaultproperties

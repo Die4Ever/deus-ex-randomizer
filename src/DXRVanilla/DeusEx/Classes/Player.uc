@@ -2158,7 +2158,7 @@ function LoadLatestConfirmed()
     }
 }
 
-function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bool getEmpty)
+function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bool getEmpty, optional out string name)
 {
     local int saveIndex;
     local DeusExSaveInfo saveInfo;
@@ -2190,6 +2190,7 @@ function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bo
             winningYear = saveInfo.Year;
             winningTime = time;
             winningSave = saveInfo.DirectoryIndex;
+            name = saveInfo.Description;
         }
 
         saveDir.DeleteSaveInfo(saveInfo);
