@@ -604,9 +604,9 @@ function PreFirstEntryMapFixes_Page(bool isVanilla)
         cloneCubeText[1]="SUBJECT MJID-2938BU3209|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Greg Pequod|nBASE GENETIC SAMPLE: |nPAGEBOB86G|nPROFILE: BAABACA|nVITALS: 51/72/1.02/20/2.1|n|n             [[[[[PENDING]]]]]";
         cloneCubeText[2]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 7/30/66|nASSIGNED BIRTH DATE: 9/07/40|nASSIGNED BIRTH NAME: Jacob Queequeg|nBASE GENETIC SAMPLE: STRONGHOWARD52L|nPROFILE: CAAGATA|nVITALS: 52/73/1.01/20/2.2|n|n             [[[[[PENDING]]]]]";
         cloneCubeText[3]="SUBJECT MJID-3209FG2938|nINCEPT DATE: 6/17/54|nASSIGNED BIRTH DATE: 11/30/35|nASSIGNED BIRTH NAME: Jason Frudnick|nBASE GENETIC SAMPLE: GARDNERKANE88J|nPROFILE: BABTAGA|nVITALS: 51/81/1.13/20/2.0|n|n             [[[[[PENDING]]]]]";
-        for(i=0;i<4;i++){
-            SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0,0),cloneCubeText[i],"CloneCube"$string(i+1));
-        }
+
+        i = rng(4); // same int for the text and the plainTextTag
+        SpawnDatacubePlaintext(cloneCubeLoc[rng(4)],rotm(0,0,0,0),cloneCubeText[i],"CloneCube" $ i);
     }
 
     if (isVanilla) {
