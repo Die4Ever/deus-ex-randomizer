@@ -716,6 +716,10 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
     p = player();
     dead = !CanKnockUnconscious(victim, damageType);
 
+    //"Dead" = Killed lethally
+    //"Unconscious" = Knocked out, like with baton, prod, or tranq darts
+    //"Takedown" = Either killed or knocked out
+
     //These are always marked when the pawn dies, regardles of killer
     if (dead){
         _MarkBingo(victim.BindName$"_Dead");
@@ -724,6 +728,8 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         _MarkBingo(victim.BindName$"_Unconscious");
         _MarkBingo(victim.BindName$"_UnconsciousM" $ dxr.dxInfo.missionNumber);
     }
+    _MarkBingo(victim.BindName$"_Takedown");
+    _MarkBingo(victim.BindName$"_TakedownM" $ dxr.dxInfo.missionNumber);
 
     //Burned doesn't track who set them on fire...
     //The intent here is to only mark bingo for kills done by the player
@@ -760,6 +766,14 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
                 _MarkBingo("AlliesKilled");
             }
         }
+
+        _MarkBingo(classname$"_ClassTakedown");
+        _MarkBingo(classname$"_ClassTakedownM" $ dxr.dxInfo.missionNumber);
+        _MarkBingo(victim.alliance$"_AllianceTakedown");
+        //_MarkBingo(victim.alliance$"_AllianceTakedownM" $ dxr.dxInfo.missionNumber);
+        _MarkBingo(victim.bindName$"_PlayerTakedown"); //Only when the player knocks the person out
+        _MarkBingo(victim.bindName$"_PlayerTakedownM" $ dxr.dxInfo.missionNumber); //Only when the player knocks the person out
+
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
         }
