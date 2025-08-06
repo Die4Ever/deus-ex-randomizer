@@ -1262,9 +1262,12 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 7:
         switch(bingo_event)
         {
+        case "VL_UC_Destroyed":
+            return end_mission < 7 && start_map < 66; // this is rough when you start before tongbase
         case "Have_ROM":
-        case "TriadCeremony_Played":
             return start_map >= 70; //Impossible once the first trip to VersaLife is done
+        case "TriadCeremony_Played":
+            return start_map >= 70 || (end_mission < 7 && start_map < 61); //Impossible once the first trip to VersaLife is done, annoying if you start in helibase
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
         case "M06JCHasDate":
