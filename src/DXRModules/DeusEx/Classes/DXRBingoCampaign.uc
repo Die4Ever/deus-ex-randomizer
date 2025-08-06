@@ -293,12 +293,16 @@ function NewBingoBoard()
             break;
 
         case "JordanShea_Dead":
-        case "DXRNPCs1_Dead":
         case "WaltonSimons_Dead":
         case "JoeGreene_Dead":
         case "MeetSmuggler":
         case "Shannon_Dead":
             data.BanGoal(s, 999);
+            break;
+
+        case "DXRNPCs1_Dead":
+            data.BanGoal("MerchantPurchaseBind_DXRNPCs1", 999);
+            data.BanGoal("DXRNPCs1_Dead", 999);
             break;
 
         default: // temporary ban

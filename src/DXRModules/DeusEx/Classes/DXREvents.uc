@@ -2497,7 +2497,10 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     }
 
     merchants = dxr.flags.settings.merchants * loge_duration;
-    if(merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
+    if(merchants < 20) {
+        data.BanGoal("DXRNPCs1_PlayerDead", 1);
+        data.BanGoal("MerchantPurchaseBind_DXRNPCs1", 1);
+    }
 
     if (medbots < 20 ||
 #ifndef hx
@@ -3063,11 +3066,16 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "Supervisor01_Unconscious":
             failed[num_failed++] = "Supervisor_Paid";
             return num_failed;
-        case "Aimee_Dead":
-        case "Aimee_Unconscious":
         case "LeMerchant_Dead":
         case "LeMerchant_Unconscious":
+            failed[num_failed++] = "MerchantPurchaseBind_lemerchant";
+        case "Aimee_Dead":
+        case "Aimee_Unconscious":
             failed[num_failed++] = "AimeeLeMerchantLived";
+            return num_failed;
+        case "DXRNPCs1_Dead":
+        case "DXRNPCs1_Unconscious":
+            failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
             return num_failed;
         case "hostage_female_Dead":
         case "hostage_female_Unconscious":
@@ -4258,6 +4266,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill Howard Strong, the MJ12 engineer in charge of the operations at the missile silo.  You must kill him yourself.";
         case "missile_launched":
             return "Redirect the missile that is being aimed at Vandenberg.  It's going to be a sunny day at Area 51...";
+        case "MerchantPurchaseBind_DXRNPCs1":
+            return "Make enough purchases from The Merchant through the game.|n|nNote that purchases from his French cousin, Le Merchant, do not count.  He is a different guy.";
+        case "MerchantPurchaseBind_lemerchant":
+            return "Make a purchase from Le Merchant, the French merchant hiding in the abandoned high-rise at Denfert-Rochereau.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4737,6 +4749,8 @@ defaultproperties
     bingo_options(388)=(event="schematic_downloaded",desc="Grab the UC Schematics",max=1,missions=16384)
     bingo_options(389)=(event="HowardStrong_PlayerDead",desc="Kill Howard Strong",max=1,missions=16384)
     bingo_options(390)=(event="missile_launched",desc="Redirect the Missile",max=1,missions=16384)
+    bingo_options(391)=(event="MerchantPurchaseBind_DXRNPCs1",desc="Make %s purchases from The Merchant",desc_singular="Make a purchase from The Merchant",max=3,missions=24412)
+    bingo_options(392)=(event="MerchantPurchaseBind_lemerchant",desc="Make a purchase from Le Merchant",max=1,missions=1024)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4853,5 +4867,7 @@ defaultproperties
     mutually_exclusive(102)=(e1="MeetDowd",e2="GaveDowdAmbrosia")
     mutually_exclusive(103)=(e1="schematic_downloaded",e2="ViewSchematics")
     mutually_exclusive(104)=(e1="schematic_downloaded",e2="PageTaunt_Played")
+    mutually_exclusive(105)=(e1="DXRNPCs1_Dead",e2="MerchantPurchaseBind_DXRNPCs1")
+    mutually_exclusive(106)=(e1="lemerchant_PlayerDead",e2="MerchantPurchaseBind_lemerchant")
 //#endregion
 }
