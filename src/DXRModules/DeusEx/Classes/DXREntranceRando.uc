@@ -1184,7 +1184,7 @@ function PostFirstEntry()
 {
     local int missionNum;
     Super.PostFirstEntry();
-    if( !dxr.flags.IsEntranceRando() ) return;
+    if(dxr.flags.moresettings.entrance_rando == 0) return;
 
     missionNum = dxr.dxInfo.missionNumber;
     if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11

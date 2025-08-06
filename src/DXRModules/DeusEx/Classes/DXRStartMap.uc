@@ -124,7 +124,7 @@ function PreFirstEntry()
         break;
 
     case "12_VANDENBERG_GAS":
-        if (!dxr.flags.IsEntranceRando() && starting_map > 129) {
+        if (dxr.flags.moresettings.entrance_rando == 0 && starting_map > 129) {
             dxr.flagbase.SetBool('DL_JockTiffanyDead_Played', true,, 15);
         }
         break;

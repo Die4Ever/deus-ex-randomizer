@@ -296,7 +296,7 @@ simulated function InitHints()
             AddHint("The flashlight (F12) can be used to attract the attention of guards.");
         }
 
-        if(dxr.flags.IsEntranceRando()) {
+        if(dxr.flags.moresettings.entrance_rando > 0) {
             AddHint("Entrance Randomizer is enabled,", "check the wiki on our GitHub for help.");
         }
 

@@ -770,6 +770,10 @@ function SetDifficulty(int new_difficulty)
         clothes_looting = 0;
     }
 
+    if(gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando) {
+        moresettings.entrance_rando = 100;
+    }
+
     if(class'MenuChoice_NewGamePlus'.default.value == 0 && !IsWaltonWare())
         moresettings.newgameplus_curve_scalar = -1;
 
@@ -908,13 +912,13 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return FullRando;
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
-    if(slot--==0) return HalloweenEntranceRando;
+    //if(slot--==0) return HalloweenEntranceRando;
     if(slot--==0) return SeriousRando;
 
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareHalloween;
-    if(slot--==0) return WaltonWareEntranceRando;
-    if(slot--==0) return WaltonWareHalloweenEntranceRando;
+    //if(slot--==0) return WaltonWareEntranceRando;
+    //if(slot--==0) return WaltonWareHalloweenEntranceRando;
     if(!VersionIsStable()) {
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
@@ -1172,11 +1176,6 @@ function string GameModeHelpText(int gamemode)
 //#endregion
 
 //#region IsGameModes
-function bool IsEntranceRando()
-{
-    return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
-}
-
 function bool IsHordeMode()
 {
     return gamemode == HordeMode || gamemode == HordeZombies;
@@ -1364,7 +1363,7 @@ function int ScoreFlags()
     local int score, bingos;
     local PlayerDataItem data;
 
-    if(IsEntranceRando())
+    if(moresettings.entrance_rando > 0)
         score += 100;
 
     data = class'PlayerDataItem'.static.GiveItem(dxr.player);

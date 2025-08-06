@@ -1952,7 +1952,7 @@ function MarkBingoFailedSpecial()
     local int progress, maxProgress;
     local PlayerDataItem data;
 
-    if (dxr.flags.IsEntranceRando()) return; // TODO: a couple here would be marked correctly in Entrance Rando modes
+    if (dxr.flags.moresettings.entrance_rando > 0) return; // TODO: a couple here would be marked correctly in Entrance Rando modes
 
     data = class'PlayerDataItem'.static.GiveItem(player());
 
