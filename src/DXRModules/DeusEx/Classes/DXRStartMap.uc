@@ -968,14 +968,22 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
     }
 
     credits = GetStartMapCreditsBonus(dxr);
+    credits -= player.Credits * 0.5;
     if (credits > 0) {
         crate.AddContent(class'#var(prefix)Credits', credits);
+    } else {
+        player.Credits += credits; // add the negative number
     }
     crate.AddContent(class'#var(prefix)BioelectricCell', 1);
     starting_map = dxr.flags.GetStartingMap();
     crate.NumSkillPoints = GetStartMapSkillBonus(starting_map);
     if(dxr.flags.newgameplus_loops > 0) {
         crate.NumSkillPoints = crate.NumSkillPoints * 0.66;
+    }
+    crate.NumSkillPoints -= player.SkillPointsAvail * 0.2;
+    if(crate.NumSkillPoints < 0) {
+        player.SkillPointsAvail += crate.NumSkillPoints; // add the negative number
+        crate.NumSkillPoints = 0;
     }
 
     desiredHealth = FClamp(100 - dxr.flags.settings.health, 0, 100);
@@ -1631,6 +1639,7 @@ static function int GetStartMapCreditsBonus(DXRando dxr)
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
+    p.Credits *= 0.5;
     p.Credits += GetStartMapCreditsBonus(dxr);
 }
 
@@ -1667,6 +1676,7 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
     local int startBonus;
     startBonus = GetStartMapSkillBonus(dxr.flags.GetStartingMap());
     log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
+    p.SkillPointsAvail *= 0.8;
     p.SkillPointsAvail += startBonus;
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
     //These starting points are free, so don't count them towards your score
