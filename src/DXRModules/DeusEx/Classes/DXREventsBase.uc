@@ -637,14 +637,15 @@ static function AddPlayerDeath(DXRando dxr, PlayerPawn p, optional Actor Killer,
     player = #var(PlayerPawn)(p);
     class'DXRStats'.static.AddDeath(player);
 
-    if(#defined(injections))
-        class'DXRHints'.static.AddDeath(dxr, player);
-    else {
-        // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
-        ev = DXREvents(Find());
-        if(ev != None)
-            ev.died = true;
-    }
+#ifdef injections
+    class'DXRHints'.static.AddDeath(dxr, player);
+    class'DXRAutosave'.static.AddDeath(dxr, player);
+#else
+    // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
+    ev = DXREvents(Find());
+    if(ev != None)
+        ev.died = true;
+#endif
 
     if(Killer == None) {
         if(player.myProjKiller != None)

@@ -110,12 +110,21 @@ static function bool MakeExitSave()
 
 function bool _MakeExitSave()
 {
+    if(player() != None && player().Health <= 0) {
+        return false; // don't do exit save when dead
+    }
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave == Ironman ) { // TODO: extend this to >= Ironman
         save_exit = true;
         NeedSave();
         return true;
     }
     return false;
+}
+
+static function AddDeath(DXRando dxr, #var(PlayerPawn) player)
+{
+    // can't delete negative save file, just prevent counting a crash
+    player.ConsoleCommand("set DXRando rando_exited true");
 }
 
 function PostAnyEntry()
