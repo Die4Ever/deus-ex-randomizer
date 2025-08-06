@@ -715,7 +715,7 @@ function SetDifficulty(int new_difficulty)
             settings.medkits = 0;
             settings.medbots = 0;
             settings.health = 200;
-            autosave = 5; // Ironman, autosaves and manual saves disabled
+            //autosave = 5; // Ironman, autosaves and manual saves disabled, set by the menu so it is no longer forced
         }
         else if(gamemode == WaltonWarex3) {
             settings.bingo_win = 3;
@@ -1136,7 +1136,7 @@ function string GameModeHelpText(int gamemode)
     case WaltonWareHalloweenEntranceRando:
         return "WaltonWare with the additional Halloween Mode features and level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
     case WaltonWareHardcore:
-        return "The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  Low medkits and medbots.  How long can you last?";
+        return "The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  No medkits or medbots.  How long can you last?";
     case WaltonWarex3:
         return "The WaltonWare experience, except goals are now spread across three missions instead of one!|n|nHow long can you last?";
     case HalloweenMode:
