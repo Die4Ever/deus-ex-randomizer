@@ -69,9 +69,11 @@ function ReEntry(bool IsTravel)
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
     if(default.delete_save != -999) {
-        // player().ConsoleCommand("DeleteGame " $ default.delete_save); // delete it when loading? overwrite is probably better, converting it to a CRASH save
+        if(default.delete_save > 0) {
+            player().ConsoleCommand("DeleteGame " $ default.delete_save);
+        }
         save_hardcore = dxr.flags.autosave >= Ironman;
-        NeedSave();
+        if(save_hardcore) NeedSave();
         default.delete_save = -999;
         return;
     }
@@ -385,6 +387,7 @@ function doAutosave()
     isDifferentMission = dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
     if(save_exit) {
         saveName = "EXIT " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " EXIT AUTOSAVE";
+        saveSlot = 0;
     }
     else if(save_hardcore) {
         saveName = "CRASH " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " CRASH AUTOSAVE";
