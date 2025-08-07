@@ -912,13 +912,10 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return FullRando;
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
-    //if(slot--==0) return HalloweenEntranceRando;
     if(slot--==0) return SeriousRando;
 
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareHalloween;
-    //if(slot--==0) return WaltonWareEntranceRando;
-    //if(slot--==0) return WaltonWareHalloweenEntranceRando;
     if(!VersionIsStable()) {
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
@@ -929,6 +926,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
     if(slot--==0) return RandoMedium;
+
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return SpeedrunTraining;
     if(slot--==0) return SeriousSam;
