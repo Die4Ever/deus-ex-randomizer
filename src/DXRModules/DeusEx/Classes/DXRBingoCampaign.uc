@@ -278,8 +278,8 @@ function NewBingoBoard()
     for(i=0; i<25; i++) {
         s = data.GetBingoEvent(i);
         switch(s) {
-        case "SandraRenton_PlayerDead":
-        case "GilbertRenton_PlayerDead":
+        case "SandraRenton_PlayerTakedown":
+        case "GilbertRenton_PlayerTakedown":
             data.BanGoal("FamilySquabbleWrapUpGilbertDead_Played", 999);
             data.BanGoal(s, 999);
             break;
