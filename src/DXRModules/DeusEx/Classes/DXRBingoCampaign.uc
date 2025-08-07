@@ -312,7 +312,8 @@ function NewBingoBoard()
         }
     }
 
-    if(data.IsBanned("JordanShea_Dead") && data.IsBanned("JoeGreene_Dead")) {
+    if((data.IsBanned("JordanShea_Dead") || data.IsBanned("JordanShea_PlayerDead") || data.IsBanned("JordanShea_PlayerTakedown") ) &&
+       (data.IsBanned("JoeGreene_Dead") || data.IsBanned("JoeGreene_PlayerDead") || data.IsBanned("JoeGreene_PlayerTakedown"))) {
         data.BanGoal("SnitchDowd", 999); // a bit weird because you actually only need one of them to be alive
     }
 
