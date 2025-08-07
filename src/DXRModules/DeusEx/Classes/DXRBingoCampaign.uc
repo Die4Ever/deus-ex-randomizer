@@ -292,11 +292,11 @@ function NewBingoBoard()
             data.BanGoal("AnnaKillswitch", 999);
             break;
 
-        case "JordanShea_Takedown":
+        case "JordanShea_PlayerDead":
         case "WaltonSimons_Dead":
-        case "JoeGreene_Takedown":
+        case "JoeGreene_PlayerDead":
         case "MeetSmuggler":
-        case "Shannon_Takedown":
+        case "Shannon_PlayerTakedown":
             data.BanGoal(s, 999);
             break;
 
