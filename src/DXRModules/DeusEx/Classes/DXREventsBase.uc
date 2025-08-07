@@ -39,6 +39,7 @@ simulated function int tweakBingoMissions(string event, int missions);
 function string RemapBingoEvent(string eventname);
 simulated function bool WatchGuntherKillSwitch();
 function SetWatchFlags();
+function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_mission, int end_mission, int real_duration);
 
 // for goals that can be detected as impossible by an event
 static function int GetBingoFailedEvents(string eventname, out string failed[7]);
@@ -1275,7 +1276,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 {
     local int x, y, i;
     local string event, desc;
-    local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions;
+    local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, maybe_mission_mask, masked_missions, maybe_masked_missions, real_duration;
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local bool bPossible, do_not_scale, append_max;
     local float f;
@@ -1285,6 +1286,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     maybe_mission_mask = class'DXRStartMap'.static.GetMaybeMissionMask(starting_map);
     end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
     end_mission_mask = class'DXRStartMap'.static.GetEndMissionMask(end_mission);
+    real_duration = class'DXRStartMap'.static.SquishMission(end_mission) - class'DXRStartMap'.static.SquishMission(starting_mission) + 1;
 
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
@@ -1306,12 +1308,23 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
             }
         }
         if(missions!=0 && masked_missions == 0) continue;
+
+        //Check if the starting location makes the goal impossible
         if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,starting_map,end_mission)) {
             if(bTest) {
                 l("BingoGoalImpossible " $ bingo_options[x].event @ starting_map @ end_mission);
             }
             continue;
         }
+
+        //Check if the flags make the goal impossible
+        if (BingoGoalImpossibleByFlags(bingo_options[x].event,starting_mission, end_mission, real_duration)){
+            if(bTest) {
+                l("BingoGoalImpossibleByFlags " $ bingo_options[x].event @ starting_mission @ end_mission @ real_duration);
+            }
+            continue;
+        }
+
         if(data.IsBanned(bingo_options[x].event)) {
             continue;
         }

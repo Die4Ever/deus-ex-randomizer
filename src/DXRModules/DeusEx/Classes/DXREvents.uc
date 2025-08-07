@@ -2468,18 +2468,17 @@ function ReadText(name textTag)
 }
 //#endregion
 
-//#region ban goals by flags
-simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
+//region Impossible Bingo Checks
+//Block goals based on the flags being used in the current game
+function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_mission, int end_mission, int real_duration)
 {
-    local int starting_mission, end_mission, real_duration;
     local float loge_duration, medbots, repairbots, merchants;
     local DXRLoadouts loadout;
 
-    starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
-    end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
-    real_duration = class'DXRStartMap'.static.SquishMission(end_mission) - class'DXRStartMap'.static.SquishMission(starting_mission) + 1;
+    //Precalculate some useful pieces of information
 
     loge_duration = Loge(real_duration + 1.71828); // real_duration of 1 means 1 loge_duration, full game is 2.689090 loge_duration
+
     medbots = dxr.flags.settings.medbots;
     if(medbots <= -1) medbots = 30;
     medbots *= loge_duration;
@@ -2488,89 +2487,118 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     if(repairbots <= -1) repairbots = 30;
     repairbots *= loge_duration;
 
-    // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
-    if(medbots < 20 || repairbots < 20) {
-        data.BanGoal("MedicalBot_ClassDead", 1);
-        data.BanGoal("RepairBot_ClassDead", 1);
-    } else {
-        data.BanGoal("UtilityBot_ClassDead", 1);
-    }
-
     merchants = dxr.flags.settings.merchants * loge_duration;
-    if(merchants < 20) {
-        data.BanGoal("DXRNPCs1_PlayerTakedown", 1);
-        data.BanGoal("MerchantPurchaseBind_DXRNPCs1", 1);
-    }
-
-    if (medbots < 20 ||
-#ifndef hx
-        dxr.flags.settings.CombatDifficulty > 6 ||
-#endif
-        dxr.flags.settings.medkits < 50 ||
-        dxr.flags.settings.health < 75) {
-        data.BanGoal("JustAFleshWound", 1);
-        data.BanGoal("LostLimbs", 1);
-    }
-
-#ifndef hx
-    if (dxr.flags.settings.CombatDifficulty > 6) {
-        data.BanGoal("ExtinguishFire",1);
-    }
-#endif
-
-    if (!#defined(injections) ||           //Injections required for clothes looting at all
-        dxr.flags.clothes_looting<1 ||     //Clothes looting needs to be enabled
-        dxr.flags.newgameplus_loops>0 ||   //New Game Plus Loop must be 0 (looted clothes carry over, so subsequent loops would be hard to do this)
-        dxr.flags.IsBingoCampaignMode()) { //Mean Bingo Machine is not allowed, because getting this goal in Area 51 could be difficult (maybe this could be handled with bingo duration in some way?)
-
-        data.BanGoal("LootNewClothing",1);
-    }
-
-    //Pool scaling - different sets of goals to shrink beyond even the normal scaling
-    if (bingo_duration > 0 && bingo_duration <= 3) { //Note that "0" is "End of Game"
-        //Short game, ban the long pool goals
-        data.BanGoal("PlayPool",1);  //Sink ALL balls
-        data.BanGoal("PoolTableStripes",1); //Sink all stripes
-        data.BanGoal("PoolTableSolids",1); //Sink all solids
-    } else {
-        //Long game, ban the short pool goals
-        data.BanGoal("PoolTableStripeBallSunk",1);
-        data.BanGoal("PoolTableSolidBallSunk",1);
-        data.BanGoal("PoolTableBallSunk",1);
-    }
 
     loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
-    if(loadout!=None) {
-        if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
-            && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare'))
-        ) {
-            data.BanGoal("IgnitedPawn",1);
-        }
-    }
+
+/////////////////////////////////////////////////////////////////////////////////
+
+    switch(bingo_event){
+///////////////////////////////////////////////
+        // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
+        case "MedicalBot_ClassDead":
+        case "RepairBot_ClassDead":
+            return (medbots < 20 || repairbots < 20);
+        case "UtilityBot_ClassDead":
+            return !(medbots < 20 || repairbots < 20);
+
+///////////////////////////////////////////////
+
+        case "DXRNPCs1_PlayerTakedown":
+        case "MerchantPurchaseBind_DXRNPCs1":
+            return (merchants < 20);
+
+///////////////////////////////////////////////
+
+        case "JustAFleshWound":
+        case "LostLimbs":
+            if (medbots < 20 ||
+        #ifndef hx
+                dxr.flags.settings.CombatDifficulty > 6 ||
+        #endif
+                dxr.flags.settings.medkits < 50 ||
+                dxr.flags.settings.health < 75) {
+
+                return true;
+
+            } else {
+                return false;
+            }
+
+////////////////////////////////////////////////
+
+    #ifndef hx
+        case "ExtinguishFire":
+            return (dxr.flags.settings.CombatDifficulty > 6);
+    #endif
+
+////////////////////////////////////////////////
+
+        case "LootNewClothing":
+            if (!#defined(injections) ||           //Injections required for clothes looting at all
+                dxr.flags.clothes_looting<1 ||     //Clothes looting needs to be enabled
+                dxr.flags.newgameplus_loops>0 ||   //New Game Plus Loop must be 0 (looted clothes carry over, so subsequent loops would be hard to do this)
+                dxr.flags.IsBingoCampaignMode()) { //Mean Bingo Machine is not allowed, because getting this goal in Area 51 could be difficult (maybe this could be handled with bingo duration in some way?)
+
+                return true;
+            } else {
+                return false;
+            }
+
+/////////////////////////////////////////////////
+
+    //Pool scaling - different sets of goals to shrink beyond even the normal scaling
+        case "PlayPool": //Sink ALL balls
+        case "PoolTableStripes": //Sink all stripes
+        case "PoolTableSolids": //Sink all solids
+            //Short game, ban the long pool goals
+            return (real_duration > 0 && real_duration <= 3); //Note that "0" is "End of Game"
+
+        case "PoolTableStripeBallSunk":
+        case "PoolTableSolidBallSunk":
+        case "PoolTableBallSunk":
+            return !(real_duration > 0 && real_duration <= 3); //Note that "0" is "End of Game"
+
+///////////////////////////////////////////////////
+
+        case "IgnitedPawn":
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
+                    && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare'))
+                ) {
+                    return true;
+                }
+            }
+            return false;
+
+//////////////////////////////////////////////////////
 
     //Ban "main mission" goals if any sort of mission progress is expected
-    if (bingo_duration!=1){
-        data.BanGoal("GeneratorBlown",1);
-        data.BanGoal("NSFSignalSent",1);
-        data.BanGoal("PaulsDatavault",1);
-        data.BanGoal("Have_Evidence",1);
-        data.BanGoal("Have_ROM",1);
-        data.BanGoal("TriadCeremony_Played",1);
-        data.BanGoal("VL_Got_Schematic",1);
-        data.BanGoal("VL_UC_Destroyed",1);
-        data.BanGoal("MeetDowd",1);
-        data.BanGoal("Pistons",1);
-        data.BanGoal("WeldPointDestroyed",1);
-        data.BanGoal("templar_upload",1);
-        data.BanGoal("HeliosBorn",1);
-        data.BanGoal("schematic_downloaded",1);
-        data.BanGoal("HowardStrong_PlayerTakedown",1);
-        data.BanGoal("missile_launched",1);
+        case "GeneratorBlown":
+        case "NSFSignalSent":
+        case "PaulsDatavault":
+        case "Have_Evidence":
+        case "Have_ROM":
+        case "TriadCeremony_Played":
+        case "VL_Got_Schematic":
+        case "VL_UC_Destroyed":
+        case "MeetDowd":
+        case "Pistons":
+        case "WeldPointDestroyed":
+        case "templar_upload":
+        case "HeliosBorn":
+        case "schematic_downloaded":
+        case "HowardStrong_PlayerTakedown":
+        case "missile_launched":
+            return (real_duration!=1);
+
+/////////////////////////////////////////////////////////////////////
     }
 
-    Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
+    return false;
+
 }
-//#endregion
+//endregion
 
 //#region RemapBingoEvent
 function string RemapBingoEvent(string eventname)
