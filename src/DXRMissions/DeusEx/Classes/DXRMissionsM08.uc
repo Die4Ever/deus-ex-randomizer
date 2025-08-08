@@ -9,7 +9,7 @@ function int InitGoals(int mission, string map)
     local int goal, loc, loc2, bar1, bar2;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     AddGoal("08_NYC_Bar", "Harley Filben", GOAL_TYPE1, 'HarleyFilben0', PHYS_Falling);
     goal = AddGoal("08_NYC_Bar", "Vinny", GOAL_TYPE1, 'NathanMadison0', PHYS_Falling);
@@ -56,7 +56,7 @@ function int InitGoalsRev(int mission, string map)
     local int goal, loc, loc2, bar1, bar2;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     AddGoal("08_NYC_Bar", "Harley Filben", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
     goal = AddGoal("08_NYC_Bar", "Vinny", NORMAL_GOAL, 'NathanMadison0', PHYS_Falling);
