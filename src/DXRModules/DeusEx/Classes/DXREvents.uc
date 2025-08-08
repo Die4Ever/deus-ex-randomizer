@@ -4324,6 +4324,27 @@ static function bool BingoGoalCanFail(string event)
     }
 }
 
+static function Upgrade(#var(PlayerPawn) player, int old_version)
+{
+    local PlayerDataItem data;
+    local int ticks, x, y, progress, max;
+    local string event, desc;
+
+    data = class'PlayerDataItem'.static.GiveItem(player);
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max);
+            switch(event) {
+            case "SandraRenton_PlayerDead":
+                data.SetBingoSpot(x, y, "SandraRenton_PlayerTakedown", "Take down Sandra Renton", progress, max, 4372);
+                break;
+            }
+        }
+    }
+    ticks = data.UnbanGoal("SandraRenton_PlayerDead");
+    if(ticks > -1) data.BanGoal("SandraRenton_PlayerTakedown", ticks);
+}
+
 function ExtendedTests()
 {
     local string helpText;

@@ -377,22 +377,30 @@ simulated function TickUnbanGoals()
     }
 }
 
-simulated function UnbanGoal(string goal)
+simulated function int UnbanGoal(string goal)
 {
-    local int i, slot;
+    local int i, slot, ticks;
 
     slot = -1;
 
     for(i=0; i < ArrayCount(bannedGoals); i++) {
-        if(bannedGoals[i] == goal) slot = i;
-        if(bannedGoals[i] == "") {
-            if(slot == -1) return; // goal wasn't banned
+        if(bannedGoals[i] == goal) slot = i; // find the goal to be unbanned
+
+        if(bannedGoals[i] == "") { // find next in the array to compress down over the goal to be unbanned
+            if(slot == -1) return -1; // goal wasn't banned
             i--;
             bannedGoals[slot] = bannedGoals[i];
             bannedGoals[i] = "";
-            return;
+            ticks = bannedGoalsTimers[slot];
+            bannedGoalsTimers[slot] = bannedGoalsTimers[i];
+            return ticks;
         }
     }
+    if(slot != -1) { // we found the goal, but nothing after it to replace it
+        bannedGoals[slot] = "";
+        return bannedGoalsTimers[slot];
+    }
+    return -1;
 }
 
 defaultproperties
