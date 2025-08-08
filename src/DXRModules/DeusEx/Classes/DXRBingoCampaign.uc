@@ -278,8 +278,8 @@ function NewBingoBoard()
     for(i=0; i<25; i++) {
         s = data.GetBingoEvent(i);
         switch(s) {
-        case "SandraRenton_PlayerDead":
-        case "GilbertRenton_PlayerDead":
+        case "SandraRenton_PlayerTakedown":
+        case "GilbertRenton_PlayerTakedown":
             data.BanGoal("FamilySquabbleWrapUpGilbertDead_Played", 999);
             data.BanGoal(s, 999);
             break;
@@ -292,13 +292,17 @@ function NewBingoBoard()
             data.BanGoal("AnnaKillswitch", 999);
             break;
 
-        case "JordanShea_Dead":
-        case "DXRNPCs1_Dead":
+        case "JordanShea_PlayerDead":
         case "WaltonSimons_Dead":
-        case "JoeGreene_Dead":
+        case "JoeGreene_PlayerDead":
         case "MeetSmuggler":
-        case "Shannon_Dead":
+        case "Shannon_PlayerTakedown":
             data.BanGoal(s, 999);
+            break;
+
+        case "DXRNPCs1_PlayerTakedown":
+            data.BanGoal("MerchantPurchaseBind_DXRNPCs1", 999);
+            data.BanGoal("DXRNPCs1_PlayerTakedown", 999);
             break;
 
         default: // temporary ban
@@ -308,7 +312,8 @@ function NewBingoBoard()
         }
     }
 
-    if(data.IsBanned("JordanShea_Dead") && data.IsBanned("JoeGreene_Dead")) {
+    if((data.IsBanned("JordanShea_Dead") || data.IsBanned("JordanShea_PlayerDead") || data.IsBanned("JordanShea_PlayerTakedown") ) &&
+       (data.IsBanned("JoeGreene_Dead") || data.IsBanned("JoeGreene_PlayerDead") || data.IsBanned("JoeGreene_PlayerTakedown"))) {
         data.BanGoal("SnitchDowd", 999); // a bit weird because you actually only need one of them to be alive
     }
 

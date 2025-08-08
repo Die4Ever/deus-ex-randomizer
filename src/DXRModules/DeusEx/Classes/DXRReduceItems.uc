@@ -311,7 +311,7 @@ function int ApplyItemMult(int count, float mult)
     if(rngf() < (f%1.0)) {// DXRando: random rounding, 1.9 is more likely to round up than 1.1 is
         f += 0.999;
     }
-    i = f;
+    if(mult>0) i = f;
     l("    reducing from " $ count $ " to " $ i $ " (" $ f $ ") with mult " $ mult);
     return i;
 }

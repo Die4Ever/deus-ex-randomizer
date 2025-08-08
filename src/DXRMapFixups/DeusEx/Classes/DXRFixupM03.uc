@@ -128,7 +128,7 @@ function PreFirstEntryMapFixes()
         fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
         fg.ActiveArea=2000;
 
-        if(dxr.flags.IsEntranceRando()) {
+        if(dxr.flags.moresettings.entrance_rando > 0) {
             //rebreather because of #TOOCEAN connection
             SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(-485,-3525,265)); //Dock near picnic table
         }
@@ -210,7 +210,7 @@ function PreFirstEntryMapFixes()
         a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
         SetActorScale(a, 1.3);
 
-        if(dxr.flags.IsEntranceRando()) {
+        if(dxr.flags.moresettings.entrance_rando > 0) {
             //rebreather because of #TOOCEAN connection
             SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(1020,1015,215)); //Near pool tables
         }
@@ -243,7 +243,7 @@ function PreFirstEntryMapFixes()
 
     //#region Airfield
     case "03_NYC_AIRFIELD":
-        if(dxr.flags.IsEntranceRando()) {
+        if(dxr.flags.moresettings.entrance_rando > 0) {
             //rebreather because of #TOOCEAN connection
             SpawnItemInContainer(self,class'#var(prefix)Rebreather',vectm(-2030,995,100)); //Truck near docks
         }

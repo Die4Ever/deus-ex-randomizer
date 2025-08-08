@@ -69,9 +69,11 @@ function ReEntry(bool IsTravel)
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
     if(default.delete_save != -999) {
-        // player().ConsoleCommand("DeleteGame " $ default.delete_save); // delete it when loading? overwrite is probably better, converting it to a CRASH save
+        if(default.delete_save > 0) {
+            player().ConsoleCommand("DeleteGame " $ default.delete_save);
+        }
         save_hardcore = dxr.flags.autosave >= Ironman;
-        NeedSave();
+        if(save_hardcore) NeedSave();
         default.delete_save = -999;
         return;
     }
@@ -110,12 +112,21 @@ static function bool MakeExitSave()
 
 function bool _MakeExitSave()
 {
+    if(player() != None && player().Health <= 0) {
+        return false; // don't do exit save when dead
+    }
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave == Ironman ) { // TODO: extend this to >= Ironman
         save_exit = true;
         NeedSave();
         return true;
     }
     return false;
+}
+
+static function AddDeath(DXRando dxr, #var(PlayerPawn) player)
+{
+    // can't delete negative save file, just prevent counting a crash
+    player.ConsoleCommand("set DXRando rando_exited true");
 }
 
 function PostAnyEntry()
@@ -376,6 +387,7 @@ function doAutosave()
     isDifferentMission = dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
     if(save_exit) {
         saveName = "EXIT " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " EXIT AUTOSAVE";
+        saveSlot = 0;
     }
     else if(save_hardcore) {
         saveName = "CRASH " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " CRASH AUTOSAVE";

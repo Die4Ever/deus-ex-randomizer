@@ -48,7 +48,7 @@ function CreateControls()
             CreateGoalLocationsButton();
         }
 
-        if (dxr.flags.IsEntranceRando()){
+        if (dxr.flags.moresettings.entrance_rando > 0){
             btnEntranceLocs = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
             btnEntranceLocs.SetButtonText("Entrances");
             btnEntranceLocs.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 220, 411);

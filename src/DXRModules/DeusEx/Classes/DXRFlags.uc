@@ -715,7 +715,7 @@ function SetDifficulty(int new_difficulty)
             settings.medkits = 0;
             settings.medbots = 0;
             settings.health = 200;
-            autosave = 5; // Ironman, autosaves and manual saves disabled
+            //autosave = 5; // Ironman, autosaves and manual saves disabled, set by the menu so it is no longer forced
         }
         else if(gamemode == WaltonWarex3) {
             settings.bingo_win = 3;
@@ -768,6 +768,10 @@ function SetDifficulty(int new_difficulty)
         }
     } else {
         clothes_looting = 0;
+    }
+
+    if(gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando) {
+        moresettings.entrance_rando = 100;
     }
 
     if(class'MenuChoice_NewGamePlus'.default.value == 0 && !IsWaltonWare())
@@ -908,13 +912,10 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return FullRando;
     if(slot--==0) return HalloweenMode;
     if(slot--==0) return EntranceRando;
-    if(slot--==0) return HalloweenEntranceRando;
     if(slot--==0) return SeriousRando;
 
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareHalloween;
-    if(slot--==0) return WaltonWareEntranceRando;
-    if(slot--==0) return WaltonWareHalloweenEntranceRando;
     if(!VersionIsStable()) {
         if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
@@ -925,6 +926,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return ZeroRandoPlus;
     if(slot--==0) return RandoLite;
     if(slot--==0) return RandoMedium;
+
     if(slot--==0) return SpeedrunMode;
     if(slot--==0) return SpeedrunTraining;
     if(slot--==0) return SeriousSam;
@@ -1136,7 +1138,7 @@ function string GameModeHelpText(int gamemode)
     case WaltonWareHalloweenEntranceRando:
         return "WaltonWare with the additional Halloween Mode features and level transitions are also randomized so they will take you to a different level than usual (within the same mission).";
     case WaltonWareHardcore:
-        return "The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  Low medkits and medbots.  How long can you last?";
+        return "The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  No medkits or medbots.  How long can you last?";
     case WaltonWarex3:
         return "The WaltonWare experience, except goals are now spread across three missions instead of one!|n|nHow long can you last?";
     case HalloweenMode:
@@ -1172,11 +1174,6 @@ function string GameModeHelpText(int gamemode)
 //#endregion
 
 //#region IsGameModes
-function bool IsEntranceRando()
-{
-    return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
-}
-
 function bool IsHordeMode()
 {
     return gamemode == HordeMode || gamemode == HordeZombies;
@@ -1364,7 +1361,7 @@ function int ScoreFlags()
     local int score, bingos;
     local PlayerDataItem data;
 
-    if(IsEntranceRando())
+    if(moresettings.entrance_rando > 0)
         score += 100;
 
     data = class'PlayerDataItem'.static.GiveItem(dxr.player);

@@ -124,7 +124,7 @@ function PreFirstEntry()
         break;
 
     case "12_VANDENBERG_GAS":
-        if (!dxr.flags.IsEntranceRando() && starting_map > 129) {
+        if (dxr.flags.moresettings.entrance_rando == 0 && starting_map > 129) {
             dxr.flagbase.SetBool('DL_JockTiffanyDead_Played', true,, 15);
         }
         break;
@@ -968,14 +968,22 @@ function SkillAwardCrate SpawnSkillAwardCrate(#var(PlayerPawn) player, class<Ski
     }
 
     credits = GetStartMapCreditsBonus(dxr);
+    credits -= player.Credits * 0.5;
     if (credits > 0) {
         crate.AddContent(class'#var(prefix)Credits', credits);
+    } else {
+        player.Credits += credits; // add the negative number
     }
     crate.AddContent(class'#var(prefix)BioelectricCell', 1);
     starting_map = dxr.flags.GetStartingMap();
     crate.NumSkillPoints = GetStartMapSkillBonus(starting_map);
     if(dxr.flags.newgameplus_loops > 0) {
         crate.NumSkillPoints = crate.NumSkillPoints * 0.66;
+    }
+    crate.NumSkillPoints -= player.SkillPointsAvail * 0.2;
+    if(crate.NumSkillPoints < 0) {
+        player.SkillPointsAvail += crate.NumSkillPoints; // add the negative number
+        crate.NumSkillPoints = 0;
     }
 
     desiredHealth = FClamp(100 - dxr.flags.settings.health, 0, 100);
@@ -1262,9 +1270,12 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 7:
         switch(bingo_event)
         {
+        case "VL_UC_Destroyed":
+            return end_mission < 7 && start_map < 66; // this is rough when you start before tongbase
         case "Have_ROM":
-        case "TriadCeremony_Played":
             return start_map >= 70; //Impossible once the first trip to VersaLife is done
+        case "TriadCeremony_Played":
+            return start_map >= 70 || (end_mission < 7 && start_map < 61); //Impossible once the first trip to VersaLife is done, annoying if you start in helibase
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
         case "M06JCHasDate":
@@ -1628,6 +1639,7 @@ static function int GetStartMapCreditsBonus(DXRando dxr)
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
+    p.Credits *= 0.5;
     p.Credits += GetStartMapCreditsBonus(dxr);
 }
 
@@ -1664,6 +1676,7 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
     local int startBonus;
     startBonus = GetStartMapSkillBonus(dxr.flags.GetStartingMap());
     log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
+    p.SkillPointsAvail *= 0.8;
     p.SkillPointsAvail += startBonus;
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
     //These starting points are free, so don't count them towards your score

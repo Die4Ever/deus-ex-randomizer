@@ -229,7 +229,6 @@ function NewGamePlus()
     if( skills != None ) {
         for(i = 0; i < newgameplus_num_skill_downgrades; i++)
             skills.DowngradeRandomSkill(p);
-        p.SkillPointsAvail = p.SkillPointsAvail * 0.8;
     }
     else p.SkillPointsAvail = 0;
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
@@ -284,34 +283,32 @@ function NewGamePlus()
 
 simulated function NGPlusFlags(#var(PlayerPawn) p)
 {
-    local int bingo_win, bingo_freespaces, old_bingo_scale, old_bingo_duration, newgameplus_curve_scalar, menus_pause, aug_loc_rando, splits_overlay, old_clothes_looting;
+    local int old_bingo_scale, old_bingo_duration, old_clothes_looting;
     local float exp;
+    local FlagsSettings oldsettings;
+    local MoreFlagsSettings oldmoresettings;
 
+    oldsettings = settings;
+    oldmoresettings = moresettings;
     exp = 1;
     // always enable maxrando when doing NG+?
     maxrando = 1;
     if(maxrando > 0) {
         // rollback settings to the default for the current difficulty
         // we only want to do this on maxrando because we want to retain the user's custom choices
-        bingo_win = settings.bingo_win;
-        bingo_freespaces = settings.bingo_freespaces;
         old_bingo_scale = bingo_scale;
         old_bingo_duration = bingo_duration;
-        newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
-        menus_pause = settings.menus_pause;
-        aug_loc_rando=moresettings.aug_loc_rando;
-        splits_overlay = moresettings.splits_overlay;
         old_clothes_looting = clothes_looting;
         SetDifficulty(difficulty);
         ExecMaxRando();
-        settings.bingo_win = bingo_win;
-        settings.bingo_freespaces = bingo_freespaces;
+        settings.bingo_win = oldsettings.bingo_win;
+        settings.bingo_freespaces = oldsettings.bingo_freespaces;
         bingo_scale = old_bingo_scale;
         bingo_duration = old_bingo_duration;
-        moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
-        settings.menus_pause = menus_pause;
-        moresettings.aug_loc_rando=aug_loc_rando;
-        moresettings.splits_overlay = splits_overlay;
+        moresettings.newgameplus_curve_scalar = oldmoresettings.newgameplus_curve_scalar;
+        settings.menus_pause = oldsettings.menus_pause;
+        moresettings.aug_loc_rando = oldmoresettings.aug_loc_rando;
+        moresettings.splits_overlay = oldmoresettings.splits_overlay;
         clothes_looting = old_clothes_looting;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
@@ -332,13 +329,13 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
     settings.enemiesrandomized = NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000, True);
     settings.enemystats = NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100, True);
     settings.hiddenenemiesrandomized = NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000, True);
-    settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100, True);
-    settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100, True);
-    settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100, True);
-    settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
-    settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
-    settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
-    settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 6, 100, True);
+    if(oldsettings.ammo > 0) settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100, True);
+    if(oldsettings.medkits > 0) settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100, True);
+    if(oldsettings.multitools > 0) settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100, True);
+    if(oldsettings.lockpicks > 0) settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
+    if(oldsettings.biocells > 0) settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
+    if(oldsettings.medbots > 0) settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
+    if(oldsettings.repairbots > 0) settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 6, 100, True);
     settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
     settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
 }

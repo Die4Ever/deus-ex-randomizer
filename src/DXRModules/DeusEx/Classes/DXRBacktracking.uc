@@ -958,5 +958,5 @@ static function bool bSillyChoppers()
     dxr = class'DXRando'.default.dxr;
     if (dxr==None) return false;
 
-    return dxr.flags.IsBingoMode() || dxr.flags.IsEntranceRando();
+    return dxr.flags.IsBingoMode() || dxr.flags.moresettings.entrance_rando > 0;
 }

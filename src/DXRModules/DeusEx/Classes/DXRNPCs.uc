@@ -504,7 +504,8 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
         prev = AddTransfer(c, prev, items[i].item);
 
         //set flag for bought item, give negative credits, jump to bought
-        prev = AddMerchantTelem(c, prev, items, i);
+        prev = AddMerchantTelem(c, prev, items, i); //Send info to the telemetry server
+        prev = AddMerchantBingo(c, prev, items, i); //Bingo trigger for purchasing things
         prev = AddSetFlag(c, prev, "", UniqueFlagName("bought"$items[i].item.name,c.conOwnerName), true);
         prev = AddGiveCredits(c, prev, -items[i].price );
         prev = AddJump(c, prev, "bought");
@@ -512,6 +513,45 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
 
     return prev;
 }
+
+function ConEventTrigger AddMerchantBingo(Conversation c, ConEvent prev, ItemPurchase items[8], int i)
+{
+    local ConEventTrigger e;
+    local MerchantPurchaseBingoTrigger mpbt;
+    local string tagName, j;
+    local class<Json> js;
+    local int k;
+
+    if (i==MERCH_TELEM_NO_BUY || i==MERCH_TELEM_NO_ROOM || i==MERCH_TELEM_NO_MONEY){
+        //Invalid item
+        tagName="MerchantBingoPurchaseError";
+    } else {
+        if (items[i].item!=None){
+            tagName="MerchantBingoPurchase"$items[i].item.name;
+        } else {
+            tagName="MerchantBingoPurchaseError";
+        }
+    }
+    tagName=tagName$c.conName; //Append the bindname to the end
+
+    e = new(c) class'ConEventTrigger';
+    e.eventType=ET_Trigger;
+    e.triggerTag = StringToName(tagName);
+    AddConEvent(c, prev, e);
+
+    //Make sure the Purchase Triggers actually exist
+    foreach AllActors(class'MerchantPurchaseBingoTrigger',mpbt,e.triggerTag){break;}
+    if (mpbt==None){
+        mpbt=Spawn(class'MerchantPurchaseBingoTrigger',,e.triggerTag);
+        mpbt.purchaseItem=items[i].item;
+        mpbt.purchasePrice=items[i].price;
+        mpbt.merchantBindName=c.conOwnerName;
+    }
+
+    return e;
+
+}
+
 
 function ConEventTrigger AddMerchantTelem(Conversation c, ConEvent prev, ItemPurchase items[8], int i)
 {

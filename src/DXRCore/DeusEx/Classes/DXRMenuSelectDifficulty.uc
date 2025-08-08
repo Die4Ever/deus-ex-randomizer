@@ -139,9 +139,7 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
     slf.EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));
     slf.EnumOption("Extreme Limited Fixed Saves", autosave.FixedSavesExtreme, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSavesExtreme));
     slf.EnumOption("Autosaves Disabled", autosave.Disabled, f.autosave, autosave.GetAutoSaveHelpText(autosave.Disabled));
-    if(f.autosave == autosave.Ironman) { //Don't make this accessible unless it's your currently set value
-        slf.EnumOption("All Saves Disabled", autosave.Ironman, f.autosave, autosave.GetAutoSaveHelpText(autosave.Ironman));
-    }
+    slf.EnumOption("Ironman (All Saves Disallowed)", autosave.Ironman, f.autosave, autosave.GetAutoSaveHelpText(autosave.Ironman));
 
     return in_autosave_enum;
 #endif
@@ -254,6 +252,10 @@ function string SetEnumValue(int e, string text)
         else if(InStr(text, "Hardcore")==-1 && InStr(text, "Horde")==-1)
         {
             Super.SetEnumValue(autosave_enum, "Autosave Every Entry");
+        }
+        else if(InStr(text, "Hardcore")!=-1)
+        {
+            Super.SetEnumValue(autosave_enum, "Ironman (All Saves Disallowed)");
         }
     }
     if(e == gamemode_enum) {

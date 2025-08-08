@@ -86,6 +86,7 @@ struct MoreFlagsSettings{
     var int enemies_weapons;
     var int aug_loc_rando;
     var int reanimation;
+    var int entrance_rando;
 
     var int splits_overlay;// keep this at the end for automated tests
 };
@@ -378,6 +379,7 @@ simulated function string BindFlags(int mode, optional string str)
         moresettings.reanimation = settings.enemyrespawn;
         settings.enemyrespawn = 0;
     }
+    FlagInt('Rando_entrance_rando', moresettings.entrance_rando, mode, str);
     FlagInt('Rando_removeparismj12', remove_paris_mj12, mode, str);
 
     FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, mode, str);
@@ -535,6 +537,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy Respawn Time";
         case 'Rando_reanimation':
             return "Reanimation Time";
+        case 'Rando_entrance_rando':
+            return "Entrance Randomizer";
         case 'Rando_skills_disable_downgrades':
             return "Disallow downgrades on New Game screen";
         case 'Rando_skills_reroll_missions':
@@ -798,6 +802,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
         case 'Rando_keys_containers':
         case 'Rando_infodevices_containers':
+        case 'Rando_entrance_rando':
             if (val==100){
                 return "Enabled";
             } else {

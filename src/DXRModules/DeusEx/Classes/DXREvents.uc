@@ -1952,7 +1952,7 @@ function MarkBingoFailedSpecial()
     local int progress, maxProgress;
     local PlayerDataItem data;
 
-    if (dxr.flags.IsEntranceRando()) return; // TODO: a couple here would be marked correctly in Entrance Rando modes
+    if (dxr.flags.moresettings.entrance_rando > 0) return; // TODO: a couple here would be marked correctly in Entrance Rando modes
 
     data = class'PlayerDataItem'.static.GiveItem(player());
 
@@ -2468,18 +2468,17 @@ function ReadText(name textTag)
 }
 //#endregion
 
-//#region ban goals by flags
-simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int bingo_duration, optional bool bTest)
+//region Impossible Bingo Checks
+//Block goals based on the flags being used in the current game
+function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_mission, int end_mission, int real_duration)
 {
-    local int starting_mission, end_mission, real_duration;
     local float loge_duration, medbots, repairbots, merchants;
     local DXRLoadouts loadout;
 
-    starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
-    end_mission = class'DXRStartMap'.static.GetEndMission(starting_map, bingo_duration);
-    real_duration = class'DXRStartMap'.static.SquishMission(end_mission) - class'DXRStartMap'.static.SquishMission(starting_mission) + 1;
+    //Precalculate some useful pieces of information
 
     loge_duration = Loge(real_duration + 1.71828); // real_duration of 1 means 1 loge_duration, full game is 2.689090 loge_duration
+
     medbots = dxr.flags.settings.medbots;
     if(medbots <= -1) medbots = 30;
     medbots *= loge_duration;
@@ -2488,86 +2487,118 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     if(repairbots <= -1) repairbots = 30;
     repairbots *= loge_duration;
 
-    // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
-    if(medbots < 20 || repairbots < 20) {
-        data.BanGoal("MedicalBot_ClassDead", 1);
-        data.BanGoal("RepairBot_ClassDead", 1);
-    } else {
-        data.BanGoal("UtilityBot_ClassDead", 1);
-    }
-
     merchants = dxr.flags.settings.merchants * loge_duration;
-    if(merchants < 20) data.BanGoal("DXRNPCs1_PlayerDead", 1);
-
-    if (medbots < 20 ||
-#ifndef hx
-        dxr.flags.settings.CombatDifficulty > 6 ||
-#endif
-        dxr.flags.settings.medkits < 50 ||
-        dxr.flags.settings.health < 75) {
-        data.BanGoal("JustAFleshWound", 1);
-        data.BanGoal("LostLimbs", 1);
-    }
-
-#ifndef hx
-    if (dxr.flags.settings.CombatDifficulty > 6) {
-        data.BanGoal("ExtinguishFire",1);
-    }
-#endif
-
-    if (!#defined(injections) ||           //Injections required for clothes looting at all
-        dxr.flags.clothes_looting<1 ||     //Clothes looting needs to be enabled
-        dxr.flags.newgameplus_loops>0 ||   //New Game Plus Loop must be 0 (looted clothes carry over, so subsequent loops would be hard to do this)
-        dxr.flags.IsBingoCampaignMode()) { //Mean Bingo Machine is not allowed, because getting this goal in Area 51 could be difficult (maybe this could be handled with bingo duration in some way?)
-
-        data.BanGoal("LootNewClothing",1);
-    }
-
-    //Pool scaling - different sets of goals to shrink beyond even the normal scaling
-    if (bingo_duration > 0 && bingo_duration <= 3) { //Note that "0" is "End of Game"
-        //Short game, ban the long pool goals
-        data.BanGoal("PlayPool",1);  //Sink ALL balls
-        data.BanGoal("PoolTableStripes",1); //Sink all stripes
-        data.BanGoal("PoolTableSolids",1); //Sink all solids
-    } else {
-        //Long game, ban the short pool goals
-        data.BanGoal("PoolTableStripeBallSunk",1);
-        data.BanGoal("PoolTableSolidBallSunk",1);
-        data.BanGoal("PoolTableBallSunk",1);
-    }
 
     loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
-    if(loadout!=None) {
-        if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
-            && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare'))
-        ) {
-            data.BanGoal("IgnitedPawn",1);
-        }
-    }
+
+/////////////////////////////////////////////////////////////////////////////////
+
+    switch(bingo_event){
+///////////////////////////////////////////////
+        // https://github.com/Die4Ever/deus-ex-randomizer/issues/1095
+        case "MedicalBot_ClassDead":
+        case "RepairBot_ClassDead":
+            return (medbots < 20 || repairbots < 20);
+        case "UtilityBot_ClassDead":
+            return !(medbots < 20 || repairbots < 20);
+
+///////////////////////////////////////////////
+
+        case "DXRNPCs1_PlayerTakedown":
+        case "MerchantPurchaseBind_DXRNPCs1":
+            return (merchants < 20);
+
+///////////////////////////////////////////////
+
+        case "JustAFleshWound":
+        case "LostLimbs":
+            if (medbots < 20 ||
+        #ifndef hx
+                dxr.flags.settings.CombatDifficulty > 6 ||
+        #endif
+                dxr.flags.settings.medkits < 50 ||
+                dxr.flags.settings.health < 75) {
+
+                return true;
+
+            } else {
+                return false;
+            }
+
+////////////////////////////////////////////////
+
+    #ifndef hx
+        case "ExtinguishFire":
+            return (dxr.flags.settings.CombatDifficulty > 6);
+    #endif
+
+////////////////////////////////////////////////
+
+        case "LootNewClothing":
+            if (!#defined(injections) ||           //Injections required for clothes looting at all
+                dxr.flags.clothes_looting<1 ||     //Clothes looting needs to be enabled
+                dxr.flags.newgameplus_loops>0 ||   //New Game Plus Loop must be 0 (looted clothes carry over, so subsequent loops would be hard to do this)
+                dxr.flags.IsBingoCampaignMode()) { //Mean Bingo Machine is not allowed, because getting this goal in Area 51 could be difficult (maybe this could be handled with bingo duration in some way?)
+
+                return true;
+            } else {
+                return false;
+            }
+
+/////////////////////////////////////////////////
+
+    //Pool scaling - different sets of goals to shrink beyond even the normal scaling
+        case "PlayPool": //Sink ALL balls
+        case "PoolTableStripes": //Sink all stripes
+        case "PoolTableSolids": //Sink all solids
+            //Short game, ban the long pool goals
+            return (real_duration > 0 && real_duration <= 3); //Note that "0" is "End of Game"
+
+        case "PoolTableStripeBallSunk":
+        case "PoolTableSolidBallSunk":
+        case "PoolTableBallSunk":
+            return !(real_duration > 0 && real_duration <= 3); //Note that "0" is "End of Game"
+
+///////////////////////////////////////////////////
+
+        case "IgnitedPawn":
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)WeaponFlamethrower')
+                    && (!#bool(injections) || loadout.is_banned(class'#var(prefix)WeaponMiniCrossbow') || loadout.is_banned(class'#var(prefix)AmmoDartFlare'))
+                ) {
+                    return true;
+                }
+            }
+            return false;
+
+//////////////////////////////////////////////////////
 
     //Ban "main mission" goals if any sort of mission progress is expected
-    if (bingo_duration!=1){
-        data.BanGoal("GeneratorBlown",1);
-        data.BanGoal("NSFSignalSent",1);
-        data.BanGoal("PaulsDatavault",1);
-        data.BanGoal("Have_Evidence",1);
-        data.BanGoal("Have_ROM",1);
-        data.BanGoal("TriadCeremony_Played",1);
-        data.BanGoal("VL_Got_Schematic",1);
-        data.BanGoal("VL_UC_Destroyed",1);
-        data.BanGoal("MeetDowd",1);
-        data.BanGoal("Pistons",1);
-        data.BanGoal("WeldPointDestroyed",1);
-        data.BanGoal("templar_upload",1);
-        data.BanGoal("HeliosBorn",1);
-        data.BanGoal("schematic_downloaded",1);
-        data.BanGoal("HowardStrong_PlayerDead",1);
-        data.BanGoal("missile_launched",1);
+        case "GeneratorBlown":
+        case "NSFSignalSent":
+        case "PaulsDatavault":
+        case "Have_Evidence":
+        case "Have_ROM":
+        case "TriadCeremony_Played":
+        case "VL_Got_Schematic":
+        case "VL_UC_Destroyed":
+        case "MeetDowd":
+        case "Pistons":
+        case "WeldPointDestroyed":
+        case "templar_upload":
+        case "HeliosBorn":
+        case "schematic_downloaded":
+        case "HowardStrong_PlayerTakedown":
+        case "missile_launched":
+            return (real_duration!=1);
+
+/////////////////////////////////////////////////////////////////////
     }
 
-    Super._CreateBingoBoard(data, starting_map, bingo_duration, bTest);
+    return false;
+
 }
-//#endregion
+//endregion
 
 //#region RemapBingoEvent
 function string RemapBingoEvent(string eventname)
@@ -2938,71 +2969,56 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
     switch (eventname) {
 
-        case "SubHostageFemale_Dead":
-        case "SubHostageMale_Unconscious":
-        case "SubHostageFemale_Dead":
-        case "SubHostageMale_Unconscious":
+        case "SubHostageFemale_Takedown":
+        case "SubHostageMale_Takedown":
             failed[num_failed++] = "SubwayHostagesSaved";
             return num_failed;
-        case "AlleyBum_Dead":
-        case "AlleyBum_Unconscious":
+        case "AlleyBum_Takedown":
             failed[num_failed++] = "AlleyBumRescued";
             return num_failed;
-        case "FordSchick_Dead":
-        case "FordSchick_Unconscious":
+        case "FordSchick_Takedown":
             failed[num_failed++] = "FordSchickRescued";
             return num_failed;
         case "GeneratorBlown":
             failed[num_failed++] = "JockSecondStory";
             return num_failed;
-        case "SandraRenton_Dead":
-        case "SandraRenton_Unconscious":
+        case "SandraRenton_Takedown":
             failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             failed[num_failed++] = "MeetSandraRenton_Played";
             return num_failed;
-        case "GilbertRenton_Dead":
-        case "GilbertRenton_Unconscious":
+        case "GilbertRenton_Takedown":
             if (class'DXRando'.default.dxr.localURL != "04_NYC_HOTEL") {
                 failed[num_failed++] = "FamilySquabbleWrapUpGilbertDead_Played";
             }
             failed[num_failed++] = "GaveRentonGun";
         // fallthrough
-        case "FemaleHostage_Dead":
-        case "FemaleHostage_Unconscious":
-        case "MaleHostage_Dead":
-        case "MaleHostage_Unconscious":
+        case "FemaleHostage_Takedown":
+        case "MaleHostage_Takedown":
             failed[num_failed++] = "HotelHostagesSaved";
             return num_failed;
-        case "Josh_Dead":
-        case "Josh_Unconscious":
+        case "Josh_Takedown":
             failed[num_failed++] = "JoshFed";
             return num_failed;
-        case "Billy_Dead":
-        case "Billy_Unconscious":
+        case "Billy_Takedown":
             failed[num_failed++] = "M02BillyDone";
             return num_failed;
-        case "Don_Dead":
-        case "Don_Unconscious":
-        case "Lenny_Dead":
-        case "Lenny_Unconscious":
+        case "Don_Takedown":
+        case "Lenny_Takedown":
             failed[num_failed++] = "GiveZyme";
             return num_failed;
         case "MeetLebedev_Played":
             failed[num_failed++] = "OverhearLebedev_Played";
             return num_failed;
-        case "JuanLebedev_Dead":
-        case "JuanLebedev_Unconscious":
+        case "JuanLebedev_Takedown":
             failed[num_failed++] = "LebedevLived";
             return num_failed;
-        case "JoJoFine_Dead":
-        case "JoJoFine_Unconscious":
+        case "JoJoFine_Takedown":
             failed[num_failed++] = "GaveRentonGun";
             return num_failed;
         case "NSFSignalSent":
             failed[num_failed++] = "M04PlayerLikesUNATCO_Played";
             return num_failed;
-        case "Miguel_Dead":
-        case "Miguel_Unconscious":
+        case "Miguel_Takedown":
             failed[num_failed++] = "Terrorist_peeptime";
             failed[num_failed++] = "Terrorist_ClassDead";
             failed[num_failed++] = "Terrorist_ClassUnconscious";
@@ -3015,89 +3031,72 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "JaimeRecruited":
             failed[num_failed++] = "KnowsGuntherKillphrase";
             return num_failed;
-        case "M06Junkie_Dead":
-        case "M06Junkie_Unconscious":
+        case "M06Junkie_Takedown":
             failed[num_failed++] = "M06PaidJunkie";
             return num_failed;
-        case "MarketBum1_Dead": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
-        case "MarketBum1_Unconscious":
+        case "MarketBum1_Takedown": // the guy who sells you the Versalife map and camo, isn't in the market, and looks nothing like a bum
             failed[num_failed++] = "M06BoughtVersaLife";
             return num_failed;
-        case "Canal_Bartender_Dead":
-        case "Canal_Bartender_Unconscious":
+        case "Canal_Bartender_Takedown":
             failed[num_failed++] = "Canal_Bartender_Question4";
             return num_failed;
-        case "ClubBartender_Dead":
-        case "ClubBartender_Unconscious":
+        case "ClubBartender_Takedown":
             failed[num_failed++] = "M06BartenderQuestion3";
             return num_failed;
-        case "MaggieChow_Dead":
-        case "MaggieChow_Unconscious":
+        case "MaggieChow_Takedown":
             failed[num_failed++] = "MaggieLived";
             return num_failed;
-        case "Mamasan_Dead":
-        case "Mamasan_Unconscious":
-        case "Date1_Dead":
-        case "Date1_Unconscious":
+        case "Mamasan_Takedown":
+        case "Date1_Takedown":
             failed[num_failed++] = "M06JCHasDate";
             return num_failed;
         case "Raid_Underway": //Raid started
             failed[num_failed++] = "M06JCHasDate";
             failed[num_failed++] = "ClubEntryPaid";
             return num_failed;
-        case "ClubMercedes_Dead":
-        case "ClubMercedes_Unconscious":
-        case "ClubTessa_Dead":
-        case "ClubTessa_Unconscious":
+        case "ClubMercedes_Takedown":
+        case "ClubTessa_Takedown":
             if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 failed[num_failed++] = "ClubEntryPaid";
             }
             return num_failed;
-        case "LDDPRuss_Dead":
-        case "LDDPRuss_Unconscious":
+        case "LDDPRuss_Takedown":
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 failed[num_failed++] = "ClubEntryPaid";
             }
             return num_failed;
-        case "Supervisor01_Dead":
-        case "Supervisor01_Unconscious":
+        case "Supervisor01_Takedown":
             failed[num_failed++] = "Supervisor_Paid";
             return num_failed;
-        case "Aimee_Dead":
-        case "Aimee_Unconscious":
-        case "LeMerchant_Dead":
-        case "LeMerchant_Unconscious":
+        case "LeMerchant_Takedown":
+            failed[num_failed++] = "MerchantPurchaseBind_lemerchant";
+        case "Aimee_Takedown":
             failed[num_failed++] = "AimeeLeMerchantLived";
             return num_failed;
-        case "hostage_female_Dead":
-        case "hostage_female_Unconscious":
-        case "hostage_Dead":
-        case "hostage_Unconscious":
+        case "DXRNPCs1_Takedown":
+            failed[num_failed++] = "MerchantPurchaseBind_DXRNPCs1";
+            return num_failed;
+        case "hostage_female_Takedown":
+        case "hostage_Takedown":
             failed[num_failed++] = "SilhouetteHostagesAllRescued";
             return num_failed;
-        case "Renault_Dead":
-        case "Renault_Unconscious":
+        case "Renault_Takedown":
             failed[num_failed++] = "SoldRenaultZyme";
             failed[num_failed++] = "MeetRenault_Played";
             return num_failed;
-        case "Joshua_Dead":
-        case "Joshua_Unconscious":
+        case "Joshua_Takedown":
             failed[num_failed++] = "JoshuaInterrupted_Played";
             return num_failed;
-        case "Camille_Dead":
-        case "Camille_Unconscious":
+        case "Camille_Takedown":
             failed[num_failed++] = "CamilleConvosDone";
             return num_failed;
-        case "drbernard_Dead":
-        case "drbernard_Unconscious":
+        case "drbernard_Takedown":
             failed[num_failed++] = "MeetDrBernard_Played";
             return num_failed;
-        case "TimBaker_Dead":
-        case "TimBaker_Unconscious":
+        case "TimBaker_Takedown":
             failed[num_failed++] = "MeetTimBaker_Played";
             return num_failed;
-        case "TiffanySavage_Dead":
-        case "TiffanySavage_Unconscious":
+        case "TiffanySavage_Takedown":
             failed[num_failed++] = "TiffanyHeli";
             return num_failed;
         case "AnnaNavarre_DeadM3":
@@ -3134,7 +3133,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Don't worry about it!  This one's free!";
         case "TerroristCommander_Dead":
         case "TerroristCommander_PlayerDead":
-            return "Kill Leo Gold, the terrorist commander on Liberty Island.  You must kill him yourself.";
+            return "Send him back to the people -- In a body bag!|n|nKill Leo Gold, the terrorist commander on Liberty Island.  You must kill him yourself.";
         case "TiffanySavage_Dead":
         case "TiffanySavage_PlayerDead":
             return "Kill Tiffany Savage.  She is being held hostage at the gas station.  You must kill her yourself.";
@@ -3145,7 +3144,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Kill Jordan Shea, the bartender at the Underworld Tavern in New York.  You must kill her yourself.";
         case "SandraRenton_Dead":
         case "SandraRenton_PlayerDead":
-            msg = "Kill Sandra Renton.  ";
+        case "SandraRenton_PlayerTakedown":
+            msg = "Take down Sandra Renton.  ";
             if (mission<=2){
                 msg=msg$"She can be found in an alley next to the Underworld Tavern in New York";
             } else if (mission<=4){
@@ -3155,50 +3155,72 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             } else if (mission<=12){
                 msg=msg$"She can be found outside the gas station";
             }
-            msg = msg $ ".  You must kill her yourself.";
+            msg = msg $ ".  You must kill or knock her out yourself.";
             return msg;
         case "GilbertRenton_Dead":
-        case "GilbertRenton_PlayerDead":
+        case "GilbertRenton_PlayerDead": //old goal
             return "Kill Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel.  You must kill him yourself.";
+        case "GilbertRenton_PlayerTakedown":
+            return "Take down Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel.  You must kill or knock him out yourself.";
         case "WarehouseEntered":
             return "Enter the underground warehouse in Paris.  This warehouse is located in the building across the street from the entrance to the Catacombs.";
         case "GuntherHermann_Dead":
             return "Kill Gunther.  He can be found guarding a computer somewhere in the cathedral in Paris.";
         case "JoJoFine_Dead":
-        case "JoJoFine_PlayerDead":
+        case "JoJoFine_PlayerDead": //old goal
             return "Kill Jojo Fine.  He can be found in the 'Ton hotel before the ambush.  You must kill him yourself.";
+        case "JoJoFine_PlayerTakedown":
+            return "Take down Jojo Fine.  He can be found in the 'Ton hotel before the ambush.  You must kill or knock him out yourself.";
         case "TobyAtanwe_Dead":
-        case "TobyAtanwe_PlayerDead":
+        case "TobyAtanwe_PlayerDead": //old goal
             return "Kill Toby Atanwe, who is Morgan Everett's assistant.  He can be killed once you arrive at Everett's house.  You must kill him yourself.";
+        case "TobyAtanwe_PlayerTakedown":
+            return "Take down Toby Atanwe, who is Morgan Everett's assistant.  He can be killed or knocked out once you arrive at Everett's house.  You must kill or knock him out yourself.";
         case "Antoine_Dead":
-        case "Antoine_PlayerDead":
+        case "Antoine_PlayerDead": //old goal
             return "Kill Antoine in the Paris club.  He can be found at a table in a back corner of the club selling bioelectric cells.  You must kill him yourself.";
+        case "Antoine_PlayerTakedown":
+            return "Take down Antoine in the Paris club.  He can be found at a table in a back corner of the club selling bioelectric cells.  You must kill or knock him out yourself.";
         case "Chad_Dead":
         case "Chad_PlayerDead":
             return "Kill Chad Dumier.  He can be found in the Silhouette hideout in the Paris catacombs.  You must kill him yourself.";
         case "paris_hostage_Dead":
             return "Let both of the hostages in the Paris catacombs die (whether you do it yourself or not).  They can be found locked in the centre of the catacombs bunker occupied by MJ12.";
         case "Hela_Dead":
-        case "Hela_PlayerDead":
+        case "Hela_PlayerDead": //old goal
             return "Kill Hela, the woman in black leading the MJ12 force in the Paris catacombs.  You must kill her yourself.";
+        case "Hela_PlayerTakedown":
+            return "Take down Hela, the woman in black leading the MJ12 force in the Paris catacombs.  You must kill or knock her out yourself.";
         case "Renault_Dead":
-        case "Renault_PlayerDead":
+        case "Renault_PlayerDead": //old goal
             return "Kill Renault in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.  You must kill him yourself.";
+        case "Renault_PlayerTakedown":
+            return "Take down Renault in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.  You must kill or knock him out yourself.";
         case "Labrat_Bum_Dead":
-        case "Labrat_Bum_PlayerDead":
+        case "Labrat_Bum_PlayerDead": //old goal
             return "Kill the bum locked up in the Hong Kong MJ12 lab.  You must kill him yourself.";
+        case "Labrat_Bum_PlayerTakedown":
+            return "Take down the bum locked up in the Hong Kong MJ12 lab.  You must kill or knock him out yourself.";
         case "DXRNPCs1_Dead":
-        case "DXRNPCs1_PlayerDead":
+        case "DXRNPCs1_PlayerDead": //old goal
             return "Kill The Merchant.  He will randomly spawn in levels according to your chosen game settings.  You must kill him yourself.  Keep in mind that once you kill him, he will no longer appear for the rest of your run!";
+        case "DXRNPCs1_PlayerTakedown":
+            return "Take down The Merchant.  He will randomly spawn in levels according to your chosen game settings.  You must kill or knock him out yourself.  Keep in mind that once he has been taken down, he will no longer appear for the rest of your run!";
         case "lemerchant_Dead":
-        case "lemerchant_PlayerDead":
+        case "lemerchant_PlayerDead": //old goal
             return "Kill Le Merchant.  He spawns near where you first land in Paris.  He's a different guy!  You must kill him yourself.";
+        case "lemerchant_PlayerTakedown":
+            return "Take down Le Merchant.  He spawns near where you first land in Paris.  He's a different guy!  You must kill or knock him out yourself.";
         case "Harold_Dead":
-        case "Harold_PlayerDead":
+        case "Harold_PlayerDead": //old goal
             return "Kill Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.  You must kill him yourself.";
+        case "Harold_PlayerTakedown":
+            return "Take down Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.  You must kill or knock him out yourself.";
         case "aimee_Dead":
-        case "aimee_PlayerDead":
+        case "aimee_PlayerDead": //old goal
             return "Kill Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.  You must kill her yourself.";
+        case "aimee_PlayerTakedown":
+            return "Take down Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.  You must kill or knock her out yourself.";
         case "WaltonSimons_Dead":
             msg="Kill Walton Simons.  ";
             if (mission<=14){
@@ -3514,8 +3536,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "AlliesKilled":
             return "Kill enough people who do not actively hate you.  (This should be most people who show as green on the crosshairs)";
         case "MaySung_Dead":
-        case "MaySung_PlayerDead":
+        case "MaySung_PlayerDead": //old goal
             return "Kill May Sung, Maggie Chow's maid.  You must kill her yourself.";
+        case "MaySung_PlayerTakedown":
+            return "Take down May Sung, Maggie Chow's maid.  You must kill or knock her out yourself.";
         case "MostWarehouseTroopsDead":
             return "Kill or knock out most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
         case "CleanerBot_ClassDead":
@@ -3630,8 +3654,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "PageTaunt_Played":
             return "After recovering the schematics for the Universal Constructor below the Ocean Lab, talk to Bob Page on the communicator before leaving.";
         case "JerryTheVentGreasel_Dead":
-        case "JerryTheVentGreasel_PlayerDead":
+        case "JerryTheVentGreasel_PlayerDead": //old goal
             return "Kill the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.  You must kill him yourself.";
+        case "JerryTheVentGreasel_PlayerTakedown":
+            return "Take down the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.  You must kill or knock him out yourself.";
         case "BiggestFan":
             return "Destroy the large fan in the ventilation ducts of the Brooklyn Naval Yards.";
         case "Sodacan_Activated":
@@ -3786,8 +3812,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Sailor_ClassDeadM6":
             return "Kill enough of the sailors on the top floor of the Lucky Money club.  You must kill them yourself.";
         case "Shannon_Dead":
-        case "Shannon_PlayerDead":
+        case "Shannon_PlayerDead": //Old goals
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill her yourself.";
+        case "Shannon_PlayerTakedown":
+            return "Take down Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill or knock her out yourself.";
         case "DestroyCapitalism":
             msg = "Kill enough people willing to sell you goods in exchange for money.  You must kill them yourself.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
             if (mission<=1){
@@ -3822,8 +3850,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             msg = msg$"|n|n(It's a Simpsons reference)";
             return msg;
         case "Canal_Cop_Dead":
-        case "Canal_Cop_PlayerDead":
+        case "Canal_Cop_PlayerDead": //Old goal
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.  You must kill him yourself.";
+        case "Canal_Cop_PlayerTakedown":
+            return "Take down one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.  You must kill or knock him out yourself.";
         case "LightVandalism":
             return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps.";
         case "FightSkeletons":
@@ -4110,8 +4140,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "M05MeetJaime_Played":
             return "Talk to Jaime while escaping UNATCO and tell him to stay or to join you in Hong Kong.";
         case "jughead_Dead":
-        case "jughead_PlayerDead":
+        case "jughead_PlayerDead": //old goal
             return "Kill El Rey, the leader of the Rooks in the Brooklyn Bridge Station.  You must kill him yourself.";
+        case "jughead_PlayerTakedown":
+            return "Take down El Rey, the leader of the Rooks in the Brooklyn Bridge Station.  You must kill or knock him out yourself.";
         case "JoshuaInterrupted_Played":
             return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
         case "LebedevLived":
@@ -4255,9 +4287,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "schematic_downloaded":
             return "Retrieve the schematics for building a Universal Constructor from the computer at the very bottom of the OceanLab.";
         case "HowardStrong_PlayerDead":
-            return "Kill Howard Strong, the MJ12 engineer in charge of the operations at the missile silo.  You must kill him yourself.";
+        case "HowardStrong_PlayerTakedown":
+            return "Take down Howard Strong, the MJ12 engineer in charge of the operations at the missile silo.  You must kill or knock him out yourself.";
         case "missile_launched":
             return "Redirect the missile that is being aimed at Vandenberg.  It's going to be a sunny day at Area 51...";
+        case "MerchantPurchaseBind_DXRNPCs1":
+            return "Make enough purchases from The Merchant through the game.|n|nNote that purchases from his French cousin, Le Merchant, do not count.  He is a different guy.";
+        case "MerchantPurchaseBind_lemerchant":
+            return "Make a purchase from Le Merchant, the French merchant hiding in the abandoned high-rise at Denfert-Rochereau.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -4309,31 +4346,31 @@ function ExtendedTests()
 defaultproperties
 {
 //#region Bingo Options
-    bingo_options(0)=(event="TerroristCommander_PlayerDead",desc="Kill the Terrorist Commander",max=1,missions=2)
+    bingo_options(0)=(event="TerroristCommander_PlayerDead",desc="Send him back to the people",max=1,missions=2)
 	bingo_options(1)=(event="TiffanySavage_PlayerDead",desc="Give it your best shot",max=1,missions=4096)
 	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1,missions=16)
-	bingo_options(3)=(event="JordanShea_PlayerDead",desc="Kill Jordan Shea",max=1,missions=276)
-	bingo_options(4)=(event="SandraRenton_PlayerDead",desc="Kill Sandra Renton",max=1,missions=4372)
-	bingo_options(5)=(event="GilbertRenton_PlayerDead",desc="Kill Gilbert Renton",max=1,missions=20)
+	bingo_options(3)=(event="JordanShea_PlayerDead",desc="Drinks are free!",max=1,missions=276)
+	bingo_options(4)=(event="SandraRenton_PlayerTakedown",desc="Take down Sandra Renton",max=1,missions=4372)
+	bingo_options(5)=(event="GilbertRenton_PlayerTakedown",desc="Take down Gilbert Renton",max=1,missions=20)
 	//bingo_options()=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
     bingo_options(6)=(event="WarehouseEntered",desc="Enter the underground warehouse in Paris",max=1,missions=1024)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=2048)
-	bingo_options(8)=(event="JoJoFine_PlayerDead",desc="Kill JoJo",max=1,missions=16)
-	bingo_options(9)=(event="TobyAtanwe_PlayerDead",desc="Kill Toby Atanwe",max=1,missions=2048)
-	bingo_options(10)=(event="Antoine_PlayerDead",desc="Kill Antoine",max=1,missions=1024)
-	bingo_options(11)=(event="Chad_PlayerDead",desc="Kill Chad",max=1,missions=1024)
+	bingo_options(8)=(event="JoJoFine_PlayerTakedown",desc="Take down JoJo",max=1,missions=16)
+	bingo_options(9)=(event="TobyAtanwe_PlayerTakedown",desc="Take down Toby Atanwe",max=1,missions=2048)
+	bingo_options(10)=(event="Antoine_PlayerTakedown",desc="Take down Antoine",max=1,missions=1024)
+	bingo_options(11)=(event="Chad_PlayerDead",desc="Chad's DEAD!",max=1,missions=1024)
 	bingo_options(12)=(event="paris_hostage_Dead",desc="Kill both the hostages in the catacombs",max=2,missions=1024,do_not_scale=true)
 	//bingo_options()=(event="hostage_female_PlayerDead",desc="Kill hostage Anna",max=1)
-	bingo_options(13)=(event="Hela_PlayerDead",desc="Kill Hela",max=1,missions=1024)
-	bingo_options(14)=(event="Renault_PlayerDead",desc="Kill Renault",max=1,missions=1024)
-	bingo_options(15)=(event="Labrat_Bum_PlayerDead",desc="Kill Labrat Bum",max=1,missions=64)
-	bingo_options(16)=(event="DXRNPCs1_PlayerDead",desc="Kill The Merchant",max=1)
-	bingo_options(17)=(event="lemerchant_PlayerDead",desc="Kill Le Merchant",max=1,missions=1024)
-	bingo_options(18)=(event="Harold_PlayerDead",desc="Kill Harold the mechanic in the hangar",max=1,missions=8)
+	bingo_options(13)=(event="Hela_PlayerTakedown",desc="Take down Hela",max=1,missions=1024)
+	bingo_options(14)=(event="Renault_PlayerTakedown",desc="Take down Renault",max=1,missions=1024)
+	bingo_options(15)=(event="Labrat_Bum_PlayerTakedown",desc="Subject on the floor!",max=1,missions=64)
+	bingo_options(16)=(event="DXRNPCs1_PlayerTakedown",desc="Take down The Merchant",max=1)
+	bingo_options(17)=(event="lemerchant_PlayerTakedown",desc="Take down Le Merchant",max=1,missions=1024)
+	bingo_options(18)=(event="Harold_PlayerTakedown",desc="Take down Harold the mechanic in the hangar",max=1,missions=8)
 	//bingo_options()=(event="Josh_PlayerDead",desc="Kill Josh",max=1)
 	//bingo_options()=(event="Billy_PlayerDead",desc="Kill Billy",max=1)
 	//bingo_options()=(event="MarketKid_PlayerDead",desc="Kill Louis Pan",max=1)
-	bingo_options(19)=(event="aimee_PlayerDead",desc="Kill Aimee",max=1,missions=1024)
+	bingo_options(19)=(event="aimee_PlayerTakedown",desc="Take down Aimee",max=1,missions=1024)
 	bingo_options(20)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1,missions=49152)
 	bingo_options(21)=(event="JoeGreene_PlayerDead",desc="Kill Joe Greene",max=1,missions=276)
     bingo_options(22)=(event="GuntherFreed",desc="Free Gunther from jail",max=1,missions=2)
@@ -4452,12 +4489,12 @@ defaultproperties
     bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
     bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
     bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",desc_singular="Kill an innocent",max=15)
-    bingo_options(126)=(event="MaySung_PlayerDead",desc="Kill Maggie Chow's maid",max=1,missions=64)
+    bingo_options(126)=(event="MaySung_PlayerTakedown",desc="Take down Maggie Chow's maid",max=1,missions=64)
     bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
     bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy %s Cleaner Bots",desc_singular="Destroy a Cleaner Bot",max=5,missions=286)
     bingo_options(129)=(event="MedicalBot_ClassDead",desc="Destroy %s Medical Bots",desc_singular="Destroy a Medical Bot",max=3)
     bingo_options(130)=(event="RepairBot_ClassDead",desc="Destroy %s Repair Bots",desc_singular="Destroy a Repair Bot",max=3)
-    bingo_options(131)=(event="DrugDealer_PlayerDead",desc="Kill the Drug Dealer in Brooklyn Bridge Station",max=1,missions=8)
+    bingo_options(131)=(event="DrugDealer_PlayerDead",desc="Just another parasite",max=1,missions=8)
     bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
 #ifdef injections
     bingo_options(133)=(event="IgnitedPawn",desc="Set %s people on fire",desc_singular="Set someone on fire",max=15)
@@ -4506,7 +4543,7 @@ defaultproperties
     bingo_options(173)=(event="OceanLabGreenBeacon",desc="Swim to the green beacon",max=1,missions=16384)
     bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
-    bingo_options(175)=(event="JerryTheVentGreasel_PlayerDead",desc="Kill Jerry the Vent Greasel",max=1,missions=64)
+    bingo_options(175)=(event="JerryTheVentGreasel_PlayerTakedown",desc="Take down Jerry the Vent Greasel",max=1,missions=64)
     bingo_options(176)=(event="BiggestFan",desc="Destroy your biggest fan",max=1,missions=512)
     bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",desc_singular="Drink a can of soda",max=75)
     bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s ballistic armors",desc_singular="Use ballistic armor",max=3,missions=57212)
@@ -4571,9 +4608,9 @@ defaultproperties
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy!",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=4,missions=64)
-    bingo_options(238)=(event="Shannon_PlayerDead",desc="Kill the thief in UNATCO",max=1,missions=58)
+    bingo_options(238)=(event="Shannon_PlayerTakedown",desc="Take down the thief in UNATCO",max=1,missions=58)
     bingo_options(239)=(event="DestroyCapitalism",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALIST.",max=10,missions=7550)
-    bingo_options(240)=(event="Canal_Cop_PlayerDead",desc="Not advisable to visit the canals at night",max=1,missions=64)
+    bingo_options(240)=(event="Canal_Cop_PlayerTakedown",desc="Not advisable to visit the canals at night",max=1,missions=64)
     bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",desc_singular="Perform 1 act of light vandalism",max=40,missions=57214)
     bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",desc_singular="Destroy 1 skeleton part",max=10,missions=19536)
     bingo_options(243)=(event="TrophyHunter",desc="Trophy Hunter",max=10,missions=1146)
@@ -4658,7 +4695,7 @@ defaultproperties
     bingo_options(318)=(event="Canal_Bartender_Question4",desc="Not big into books",max=1,missions=64)
     bingo_options(319)=(event="M06BartenderQuestion3",desc="The mark of the educated man",max=1,missions=64)
     bingo_options(320)=(event="M05MeetJaime_Played",desc="Talk to Jaime during the escape",max=1,missions=32)
-    bingo_options(321)=(event="jughead_PlayerDead",desc="Kill El Rey",max=1,missions=8)
+    bingo_options(321)=(event="jughead_PlayerTakedown",desc="Take down El Rey",max=1,missions=8)
     bingo_options(322)=(event="JoshuaInterrupted_Played",desc="He was the one who wanted to be a soldier",max=1,missions=1024)
     bingo_options(323)=(event="LebedevLived",desc="Keep Lebedev alive",max=1,missions=8)
     bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1024)
@@ -4735,8 +4772,10 @@ defaultproperties
     bingo_options(386)=(event="templar_upload",desc="Establish Templar System Uplink",max=1,missions=2048)
     bingo_options(387)=(event="HeliosBorn",desc="Witness the birth of a new AI",max=1,missions=4096)
     bingo_options(388)=(event="schematic_downloaded",desc="Grab the UC Schematics",max=1,missions=16384)
-    bingo_options(389)=(event="HowardStrong_PlayerDead",desc="Kill Howard Strong",max=1,missions=16384)
+    bingo_options(389)=(event="HowardStrong_PlayerTakedown",desc="Kill Howard Strong",max=1,missions=16384)
     bingo_options(390)=(event="missile_launched",desc="Redirect the Missile",max=1,missions=16384)
+    bingo_options(391)=(event="MerchantPurchaseBind_DXRNPCs1",desc="Make %s purchases from The Merchant",desc_singular="Make a purchase from The Merchant",max=3,missions=24412)
+    bingo_options(392)=(event="MerchantPurchaseBind_lemerchant",desc="Make a purchase from Le Merchant",max=1,missions=1024)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4788,15 +4827,15 @@ defaultproperties
     mutually_exclusive(41)=(e1="VendingMachineEmpty",e2="VendingMachineDispense_Candy")
     mutually_exclusive(42)=(e1="VendingMachineEmpty_Drink",e2="VendingMachineDispense_Candy")
     mutually_exclusive(43)=(e1="ShipsBridge",e2="SpinShipsWheel")
-    mutually_exclusive(44)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="GilbertRenton_PlayerDead")
-    mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_PlayerDead")
+    mutually_exclusive(44)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="GilbertRenton_PlayerTakedown")
+    mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_PlayerTakedown")
     mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
     mutually_exclusive(47)=(e1="nsfwander",e2="MiguelLeaving")
     mutually_exclusive(48)=(e1="PaulToTong",e2="SavedPaul")
     mutually_exclusive(49)=(e1="LebedevLived",e2="AnnaKilledLebedev")
     mutually_exclusive(50)=(e1="LebedevLived",e2="PlayerKilledLebedev")
-    mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_PlayerDead")
-    mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_PlayerDead")
+    mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_PlayerTakedown")
+    mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_PlayerTakedown")
     mutually_exclusive(52)=(e1="MaggieLived",e2="MaggieCanFly")
     mutually_exclusive(53)=(e1="GoneFishing",e2="PetFish")
     mutually_exclusive(54)=(e1="BirdWatching",e2="PetBirds")
@@ -4853,5 +4892,7 @@ defaultproperties
     mutually_exclusive(102)=(e1="MeetDowd",e2="GaveDowdAmbrosia")
     mutually_exclusive(103)=(e1="schematic_downloaded",e2="ViewSchematics")
     mutually_exclusive(104)=(e1="schematic_downloaded",e2="PageTaunt_Played")
+    mutually_exclusive(105)=(e1="DXRNPCs1_Dead",e2="MerchantPurchaseBind_DXRNPCs1")
+    mutually_exclusive(106)=(e1="lemerchant_PlayerTakedown",e2="MerchantPurchaseBind_lemerchant")
 //#endregion
 }

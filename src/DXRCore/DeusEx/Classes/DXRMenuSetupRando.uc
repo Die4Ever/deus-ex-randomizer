@@ -108,6 +108,10 @@ function BindControls(optional string action)
     NewMenuItem("Clothes Looting", "Should clothes need to be looted first, or start with all of them?");
     EnumOption("Full Closet", 0, f.clothes_looting, GetClothesLootingHelpText(0));
     EnumOption("Looting Needed", 1, f.clothes_looting, GetClothesLootingHelpText(1));
+
+    NewMenuItem("Entrance Randomizer", "Level transitions are randomized so they will take you to a different level than usual (within the same mission).");
+    EnumOption("Disabled", 0, f.moresettings.entrance_rando);
+    EnumOption("Enabled", 100, f.moresettings.entrance_rando);
 #endif
 
     NewGroup("Bingo");
