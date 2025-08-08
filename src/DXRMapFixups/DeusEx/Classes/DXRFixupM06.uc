@@ -114,6 +114,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger t;
     local #var(prefix)ControlPanel panel;
     local #var(prefix)HKHangingLantern lantern;
+    local ScientistFemale nono;
     local int i;
 
     local bool VanillaMaps;
@@ -960,6 +961,13 @@ function PreFirstEntryMapFixes()
             ot.Event='SelfDestructSpiders';
             */
 
+        }
+
+        foreach AllActors(class'ScientistFemale', nono) {
+            if (nono.UnfamiliarName == "Nonotechnology Researcher") {
+                nono.UnfamiliarName = "Nanotechnology Researcher";
+                break;
+            }
         }
 
         //Verified in both vanilla and Revision
