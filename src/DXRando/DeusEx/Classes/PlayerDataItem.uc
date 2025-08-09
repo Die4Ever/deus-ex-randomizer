@@ -109,7 +109,9 @@ simulated function int GetBingoSpot(
     optional out string event,
     optional out string desc,
     optional out int progress,
-    optional out int max
+    optional out int max,
+    optional out int missions,
+    optional out int append_max
 )
 {
     local DXRando dxr;
@@ -119,6 +121,8 @@ simulated function int GetBingoSpot(
     desc = bingo[x*5+y].desc;
     progress = bingo[x*5+y].progress;
     max = bingo[x*5+y].max;
+    missions = bingo_missions_masks[x*5+y];
+    append_max = bingo_append_max[x*5+y];
 
     dxr = class'DXRando'.default.dxr;
     if(dxr == None) return 1;// 1==maybe
