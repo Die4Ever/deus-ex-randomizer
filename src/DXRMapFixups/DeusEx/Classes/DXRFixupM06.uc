@@ -114,7 +114,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger t;
     local #var(prefix)ControlPanel panel;
     local #var(prefix)HKHangingLantern lantern;
-    local ScientistFemale nono;
+    local #var(prefix)ScientistFemale sf;
     local int i;
 
     local bool VanillaMaps;
@@ -963,10 +963,12 @@ function PreFirstEntryMapFixes()
 
         }
 
-        foreach AllActors(class'ScientistFemale', nono) {
-            if (nono.UnfamiliarName == "Nonotechnology Researcher") {
-                nono.UnfamiliarName = "Nanotechnology Researcher";
-                break;
+        if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags) == false) {
+            foreach AllActors(class'#var(prefix)ScientistFemale', sf) {
+                if (sf.UnfamiliarName == "Nonotechnology Researcher") {
+                    sf.UnfamiliarName = "Nanotechnology Researcher";
+                    break;
+                }
             }
         }
 
