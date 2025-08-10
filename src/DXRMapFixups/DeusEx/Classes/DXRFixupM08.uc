@@ -79,6 +79,11 @@ function FixFordSchickConvo()
         //If the item transfer fails, it will jump to the new Trigger event, which will
         //spawn the aug can on the table instead.
 
+        if (ceto.failLabel!=""){
+            //Quick failsafe, don't make any changes if there's already a failLabel set from something else
+            return;
+        }
+
         ceto.failLabel = "AugUpgradeTransferFailed";
 
         cet = new(c) class'ConEventTrigger';
