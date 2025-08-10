@@ -4,7 +4,13 @@ var string bingoEvent;
 var string frobMsg;
 var bool used;
 
-function BeginPlay()
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        bingoEvent,frobMsg,used;
+}
+
+simulated function BeginPlay()
 {
     //If DrawType is none, this isn't visible in the editor, which is annoying for placement.
     //Set it to none after the level starts so it isn't visible.  If this is bHidden, you can't
@@ -48,6 +54,7 @@ static function BingoFrobber Create(Actor a, String displayName, Name bingoEvent
 defaultproperties
 {
     Physics=PHYS_None
+    bAlwaysRelevant=True
     bCollideWorld=False
     bBlockPlayers=False
     bInvincible=True
@@ -58,5 +65,9 @@ defaultproperties
     CollisionRadius=40
     CollisionHeight=40
     frobMsg=""
+#ifdef hx
+    ItemName="Bingo Object"
+#else
     ItemName="BingoFrobber DEFAULT NAME - REPORT TO DEVS!"
+#endif
 }
