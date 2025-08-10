@@ -30,8 +30,12 @@ function AnyEntryMapFixes()
         break;
 
     case "08_NYC_SMUG":
-        if (VanillaMaps){
-            FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+        if (!#defined(gmdx) && !#defined(vmd) && !(#defined(revision)&&!VanillaMaps)){
+            //This is fixed in:
+            // - ConFix (used by GMDX)
+            // - Revision conversations (which I guess only get used on Revision Maps)
+            // - Vanilla? Madder!
+            FixFordSchickConvo();
         }
 
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
@@ -41,6 +45,67 @@ function AnyEntryMapFixes()
     }
 }
 //#endregion
+
+function FixFordSchickConvo()
+{
+    local Conversation c;
+    local ConEvent ce,prev;
+    local ConEventEnd cee,cee2;
+    local ConEventTrigger cet;
+    local ConEventTransferObject ceto;
+    local SpawnItemTrigger sit;
+
+    FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister'); //Make sure he tries to transfer the right class
+
+    //Make sure there's handling for a full inventory
+    c = GetConversation('M08MeetFordSchick');
+
+    ce = c.eventList;
+    prev=None;
+    while (ce!=None){
+        if (ce.eventType==ET_End){
+            cee = ConEventEnd(ce);
+        } else if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+        }
+        prev=ce;
+        ce = ce.nextEvent;
+    }
+
+    if(cee!=None && ceto!=None){
+        //Found the end of the conversation and the transfer
+
+        //After the regular conversation end, add a Trigger event and a new End event.
+        //If the item transfer fails, it will jump to the new Trigger event, which will
+        //spawn the aug can on the table instead.
+
+        ceto.failLabel = "AugUpgradeTransferFailed";
+
+        cet = new(c) class'ConEventTrigger';
+        cet.eventType=ET_Trigger;
+        cet.label = "AugUpgradeTransferFailed";
+        cet.triggerTag = 'SpawnOverflowAugUpgrade';
+        cet.conversation=c;
+
+        cee.nextEvent = cet; //Stick this after the regular end
+
+        cee2 = new(c) class'ConEventEnd';
+        cee2.eventType=ET_End;
+        cee2.conversation = c;
+        cet.nextEvent=cee2;
+    }
+
+    foreach AllActors(class'SpawnItemTrigger',sit,'SpawnOverflowAugUpgrade'){break;}
+    if (sit==None){
+        //Make sure the actual trigger that the conversation now hits
+        //actually exists (this only needs to happen once, unlike the
+        //conversation tweaks)
+        sit = Spawn(class'SpawnItemTrigger',,'SpawnOverflowAugUpgrade');
+        sit.spawnClass=class'#var(prefix)AugmentationUpgradeCannister';
+        sit.spawnLoc = vectm(-462,1385,248);
+    }
+
+}
 
 //#region Adjust Infolinks
 function RearrangeJockExitDialog()
