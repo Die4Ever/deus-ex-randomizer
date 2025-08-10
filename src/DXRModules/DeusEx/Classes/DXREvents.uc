@@ -424,8 +424,14 @@ function SetWatchFlags() {
 
         break;
     case "01_NYC_UNATCOHQ":
-        WatchFlag('BathroomBarks_Played');
-        WatchFlag('ManBathroomBarks_Played');
+        //Make sure only the appropriate barks are watched based on gender.
+        //Shannon has barks with the same conversation name if female, but not
+        //embarrassing ones.
+        if (!dxr.flagbase.GetBool('LDDPJCIsFemale')){
+            WatchFlag('BathroomBarks_Played');
+        } else {
+            WatchFlag('ManBathroomBarks_Played');
+        }
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
