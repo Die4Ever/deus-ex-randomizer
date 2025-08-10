@@ -1,8 +1,8 @@
 class SpawnItemTrigger extends #var(prefix)Trigger;
 
-var class<Actor> spawnClass;
-var vector       spawnLoc;
-var rotator      spawnRot;
+var() class<Actor> spawnClass;
+var() vector       spawnLoc;
+var() rotator      spawnRot;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
