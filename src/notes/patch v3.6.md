@@ -7,9 +7,8 @@ world are present on HX clients #1257
 - Ford's aug upgrade can in M08 now spawns on the table if your inventory is full, instead of just being lost forever. #1282
 - Make sure Shannon is always present in M01, regardless of gender #1280
 - Bingo Goal upgrade path being handled for 3.5.2.7
-- Fix "Nonotechnology Researcher" (#1283)
+- Fixed "Nonotechnology Researcher" (#1283)
 - serious goal locations use flag instead of memes (memes toggle should not affect gameplay)
-- upgrading bingo board goals and banned goals WIP
 
 # v3.5.2.5 -> v3.5.2.6
 
@@ -28,9 +27,9 @@ world are present on HX clients #1257
 # New Game Modes
 
 - Serious Rando and Memes changes:
-  - added new "Serious Rando" game mode, same as Full Rando but with memes disabled by default, which now also limits goal locations
+  - added new "Serious Rando" game mode, same as Full Rando but with some goal locations disabled, and memes disabled by default
   - Animals don't sit in chairs when memes disabled
-  - Certain goal locations and behaviors will no longer be used when Memes are disabled:
+  - Certain goal locations and behaviors will no longer be used in serious mode:
     - Liberty Island (M01) - Leo won't appear on the South Dock or in Jail
     - Warehouse (M02) - Jock won't appear in the sewers
     - Hong Kong (M06) - Max Chen won't appear in the bathroom
@@ -62,11 +61,21 @@ world are present on HX clients #1257
 - Randomly selected starting locations for New Game+ will try to avoid repeating recently used start locations more.  This also includes repeat UNATCO HQ or Hell's Kitchen starts (even across different visits)
 - WaltonWare crates will now give medkits depending on your start location and your maximum health
 - Added scaling and blackout options for scopes and binoculars, with a cool automatic "Fit to Screen" option that doesn't rely on fixed size textures and adapts to any screen resolution/ratio
+- Proper handling of Ford Schick unable to give you the aug upgrade can
+- Make sure Shannon is always present in M01, regardless of gender #1280
+- Change many "Kill Person X" goals to "Take Down Person X", allowing both kills and knockouts instead of just kills.  Bingo boards from older versions will be upgraded to this.
 
 # Minor Changes
 
+- NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
+  - (instead of NG+ silently taking away unspent skill points from the player, now it tries to remove them from the WW crate first)
+- Entrance Rando is now an advanced setting, removed some game modes
 - Various speech restorations
-- Fewer datacubes in Area51 Entrance (#1244)
+- Fewer datacubes in Area51 Entrance and Page (#1244 and #1245)
+- NG+ and DXRReduceItems respect 0% for WW Hardcore medkits/medbots
+- Hong Kong main quest bingo goals not given for early starts
+- Bingo goals for buying from The Merchant and Le Merchant
+- Paul hotel raid depends on minor map balance, binoculars depend on moderate
 - The goal to find the Ambrosia is given immediately when entering M02 Battery Park, rather than getting it from speaking to Anna
 - Ambrosia barrels will now be shuffled with other containers, except when they are a mission goal (M02 and M03)
 - don't mark ChangeClothes as failed when clothes looting is enabled
@@ -164,6 +173,8 @@ world are present on HX clients #1257
 - Infolinks will now start properly when initiated from Randomizer code
 - Jock will now appear as expected when completing Silo
 - More various fixes for HX Randomizer
+- Make sure BingoFrobber's are "always relevant" to ensure the ones that are out of
+world are present on HX clients #1257
 
 # Revision
 
