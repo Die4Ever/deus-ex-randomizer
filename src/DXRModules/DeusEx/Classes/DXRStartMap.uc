@@ -1222,7 +1222,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_PlayerDead":
+        case "Shannon_PlayerTakedown":
         case "SlippingHazard":
         case "un_PrezMeadPic_peepedtex":
         case "WaltonConvos":
@@ -1241,7 +1241,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_PlayerDead":
+        case "Shannon_PlayerTakedown":
         case "WaltonConvos":
         case "un_bboard_peepedtex":
         case "UNATCOHandbook":
@@ -1376,13 +1376,13 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "AimeeLeMerchantLived":
             return end_mission < 10;
         case "WarehouseEntered":
-        case "Antoine_PlayerDead":
+        case "Antoine_PlayerTakedown":
         case "Chad_PlayerDead":
         case "paris_hostage_Dead":
-        case "Hela_PlayerDead":
-        case "Renault_PlayerDead":
-        case "lemerchant_PlayerDead":
-        case "aimee_PlayerDead":
+        case "Hela_PlayerTakedown":
+        case "Renault_PlayerTakedown":
+        case "lemerchant_PlayerTakedown":
+        case "aimee_PlayerTakedown":
         case "M10EnteredBakery":
         case "assassinapartment":
         case "CamilleConvosDone":
@@ -1441,7 +1441,7 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
     switch(start_map) {
     case 119:
         switch(bingo_event) {
-        case "TobyAtanwe_PlayerDead":
+        case "TobyAtanwe_PlayerTakedown":
         case "MeetAI4_Played":
         case "DeBeersDead":
         case "GotHelicopterInfo":
