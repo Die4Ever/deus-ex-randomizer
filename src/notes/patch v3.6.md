@@ -39,39 +39,21 @@
 - Make sure Shannon is always present in M01, regardless of gender #1280
 - Change many "Kill Person X" goals to "Take Down Person X", allowing both kills and knockouts instead of just kills.  Bingo boards from older versions will be upgraded to this.
 
-# Minor Changes
+# Bingo / WaltonWare / NG+ Minor Changes
 
 - NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
   - (instead of NG+ silently taking away unspent skill points from the player, now it tries to remove them from the WW crate first)
-- Entrance Rando is now an advanced setting, removed some game modes
-- Various speech restorations
 - Fewer datacubes in Area51 Entrance and Page (#1244 and #1245)
 - NG+ and DXRReduceItems respect 0% for WW Hardcore medkits/medbots
 - Hong Kong main quest bingo goals not given for early starts
 - Bingo goals for buying from The Merchant and Le Merchant
-- Paul hotel raid depends on minor map balance, binoculars depend on moderate
-- The goal to find the Ambrosia is given immediately when entering M02 Battery Park, rather than getting it from speaking to Anna
-- Ambrosia barrels will now be shuffled with other containers, except when they are a mission goal (M02 and M03)
 - don't mark ChangeClothes as failed when clothes looting is enabled
-- Flashlight brightness slightly reduced (but still brighter than vanilla)
-- All books, datacubes, and newspapers can now show a summary of what they are when highlighted.  These summaries are only visible when password assistance is enabled
-- Add French Exit signs to the Emergency Exit bingo goal (and extra goal info for those who don't speak French)
-- Upgrading active augs no longer makes deactivation and activation sounds
 - Ignite pawn bingo goal no longer allowed with restricted loadouts
 - The "GibbedPawn" bingo goal requires that the player is the one who did it
-- DXVK 2.7, smarter compatibility checks with vulkaninfo
-- New smaller scale Pool bingo goals.  These will be swapped in when bingo duration is low, instead of the multi-table goals.
-- Enemy respawning will no longer display an error message when there are a large number of enemies present (eg. Serious Sam mode).  The limit on the number of respawning enemies has been reduced.
-- Fixed changing enemy respawn to 0 during a game
 - Bingo goals can no longer be completed during cutscenes (Intro and endings)
-- Memory Containment Units (MCUs) for limited save games will now try harder to find a valid location to spawn before giving up.
-- When all items are removed from a crate, the cardboard box that replaces it will match the size of the original crate
-- Harley Filben will still talk to the player on Liberty Island if using Confix (eg. GMDX) and you didn't get the password from Paul first.'
-  - Note: Confix is NOT required or recommended for use with vanilla Randomizer
-- Improved/compartmentalized NG+ seeding
-- Several new bingo goals added (particularly around M05)
-- Minor fixes for carrying WaltonWare crates across maps
-- Memory Containment Units will be ignored for the purposes of the Unaugmented Prison Pocket setting, allowing you to keep another item.  Memory Containment Units will always be allowed to be kept.
+- New smaller scale Pool bingo goals.  These will be swapped in when bingo duration is low, instead of the multi-table goals.
+- All books, datacubes, and newspapers can now show a summary of what they are when highlighted.  These summaries are only visible when password assistance is enabled
+- Add French Exit signs to the Emergency Exit bingo goal (and extra goal info for those who don't speak French)
 - Tweaked when some bingo goals can appear, based on settings and version of the randomizer being used (eg. Revision)
   - "Flush Toilets" bingo goal can be completed in M15 in Revision
   - "Extinguish yourself with running water" is no longer allowed with short bingo durations
@@ -81,10 +63,33 @@
 - Don't scale the goal for going to the end of both cranes on the superfreighter
 - Increased CollisionHeight for birds
 - Fixed Advanced menu breaking the Random Starting Map default for WaltonWare
-- Vandenberg Cmd move "near pipes" start to a higher level, so the start locations are more equal
+- Several new bingo goals added (particularly around M05)
+- Minor fixes for carrying WaltonWare crates across maps
 - Fixed bug with carrying POVCorpse across NG+
 - Versalife Labs 2 start with computer password so you can move forwards or backwards
 - Bingo goals for reading books and stuff are now mutually exclusive
+- Block 747 Suspension Crate Datacube from being in the Suspension Crate
+- Improved/compartmentalized NG+ seeding
+- Piano now avoids recently skipped songs, and stronger weights for the required songs
+
+# Minor Changes
+
+- Entrance Rando is now an advanced setting, removed some game modes
+- Various speech restorations
+- Paul hotel raid depends on minor map balance, binoculars depend on moderate
+- The goal to find the Ambrosia is given immediately when entering M02 Battery Park, rather than getting it from speaking to Anna
+- Ambrosia barrels will now be shuffled with other containers, except when they are a mission goal (M02 and M03)
+- Flashlight brightness slightly reduced (but still brighter than vanilla)
+- Upgrading active augs no longer makes deactivation and activation sounds
+- DXVK 2.7, smarter compatibility checks with vulkaninfo
+- Enemy respawning will no longer display an error message when there are a large number of enemies present (eg. Serious Sam mode).  The limit on the number of respawning enemies has been reduced.
+- Fixed changing enemy respawn to 0 during a game
+- Memory Containment Units (MCUs) for limited save games will now try harder to find a valid location to spawn before giving up.
+- When all items are removed from a crate, the cardboard box that replaces it will match the size of the original crate
+- Harley Filben will still talk to the player on Liberty Island if using Confix (eg. GMDX) and you didn't get the password from Paul first.'
+  - Note: Confix is NOT required or recommended for use with vanilla Randomizer
+- Memory Containment Units will be ignored for the purposes of the Unaugmented Prison Pocket setting, allowing you to keep another item.  Memory Containment Units will always be allowed to be kept.
+- Vandenberg Cmd move "near pipes" start to a higher level, so the start locations are more equal
 - Make sure the guard inside the front door of Dockyards is friendly if you come in some way other than the front door (if you helped Vinny)
 - Speedrun splits view changes:
   - Add %combatdifficulty to HUDSpeedrunSplits
@@ -99,9 +104,7 @@
 - Added a datacube with info about fixed and limited saves to JC's office in M01 UNATCO HQ
 - Enemies are slightly more likely to receive a baton and slightly less likely to receive a combat knife when being given random weapons
 - Hanging Lantern in Maggie's apartment is now invincible, so you can always get to the MJ12 area
-- Block 747 Suspension Crate Datacube from being in the Suspension Crate
 - Added help buttons to Spoiler Button and Camera Mode advanced settings
-- Piano now avoids recently skipped songs, and stronger weights for the required songs
 - Goals on the goal screen will still show their description when completed, rather than being changed to blank
 - Bathroom mirrors in M03 Airfield Helibase will now work as expected for binocular-based bingo goals
 - Don't show Goal Location markers for start locations
@@ -147,14 +150,13 @@
 - Infolinks will now start properly when initiated from Randomizer code
 - Jock will now appear as expected when completing Silo
 - More various fixes for HX Randomizer
-- Make sure BingoFrobber's are "always relevant" to ensure the ones that are out of
-world are present on HX clients #1257
+- Make sure BingoFrobber's are "always relevant" to ensure the ones that are out of world are present on HX clients #1257
 
 # Revision
 
 - Update mission masks for some bingo goals in Revision to account for what exists in the Revision Maps
 - Added CheatsOn, CheatsOff, and AllPasswords cheats to the Revision player class
 - Add ShowBingoWindow exec function to RevRandoPlayer so it can be manually bound to a hotkey
-  - In the User.ini file, go to the [Engine.Input] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window:
-  ```B=ShowBingoWindow```
+  - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
 - Go to the third floor of the Ton in Revision now allows going up the stairs instead (in M08, where the stairs are accessible)
+
