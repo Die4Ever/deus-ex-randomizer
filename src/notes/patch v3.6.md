@@ -1,29 +1,3 @@
-# v3.5.2.6 -> v3.6.0.0 Beta
-
-- Make sure BingoFrobber's are "always relevant" to ensure the ones that are out of
-world are present on HX clients #1257
-- Add a "Hold on, no room" voice line to the conversation with Ford if you don't have room for the aug can. #1282
-- Add a safety check for the Ford Aug Can fix, for safety #1282
-- Ford's aug upgrade can in M08 now spawns on the table if your inventory is full, instead of just being lost forever. #1282
-- Make sure Shannon is always present in M01, regardless of gender #1280
-- Bingo Goal upgrade path being handled for 3.5.2.7
-- Fixed "Nonotechnology Researcher" (#1283)
-- serious goal locations use flag instead of memes (memes toggle should not affect gameplay)
-
-# v3.5.2.5 -> v3.5.2.6
-
-- EXIT saves use save slot 0 instead of -6, less risk of being overwritten
-- Change many "Kill Person X" goals to "Take Down Person X", allowing both kills and knockouts instead of just kills.
-- Entrance Rando is now an advanced setting, removed some game modes
-- Ironman save mode fixes / WW Hardcore
-- NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
-  - (instead of NG+ silently taking away unspent skill points from the player, now it tries to remove them from the WW crate first)
-- NG+ and DXRReduceItems respect 0% for WW Hardcore medkits/medbots
-- Hong Kong main quest bingo goals not given for early starts
-- Bingo goals for buying from The Merchant and Le Merchant
-- Paul hotel raid depends on minor map balance, binoculars depend on moderate
-- Fewer datacubes in Area51 Page (#1245)
-
 # New Game Modes
 
 - Serious Rando and Memes changes:
