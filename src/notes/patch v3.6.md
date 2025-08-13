@@ -44,7 +44,6 @@
 - NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
   - (instead of NG+ silently taking away unspent skill points from the player, now it tries to remove them from the WW crate first)
 - Fewer datacubes in Area51 Entrance and Page (#1244 and #1245)
-- NG+ and `DXRReduceItems` respect 0% for WW Hardcore medkits/medbots
 - Hong Kong main quest bingo goals aren't given for early starts
 - Bingo goals for buying from The Merchant and Le Merchant
 - The `ChangeClothes` bingo goal is never as failed when clothes looting is enabled
@@ -60,12 +59,12 @@
   - "Extinguish yourself with running water" is no longer marked as completable in M02, as there is no running water on the same map as burning barrels
   - Enabling clothes looting takes the added clothes racks into account for the "Change Clothes" bingo goal in vanilla
 - Reduced the maximum for the bingo goal to kill the sailors in the Lucky Money, since the maximum was previously based on the number of sailors present in the LDDP version of the map (one extra sailor)
-- The bingo goal to go to the ends of both cranes on the superfreigh now correctly always requires you to go to both
+- The bingo goal to go to the ends of both cranes on the superfreighter now correctly always requires you to go to both
 - Increased CollisionHeight for birds
 - Fixed the Advanced menu breaking the Random Starting Map default for WaltonWare
-- Added several new bingo goals (particularly around Jail (M05))
+- Added several new bingo goals (particularly around M05 Jail)
 - Minor fixes for carrying WaltonWare crates across maps
-- Fixed a bug with carrying a `POVCorpse` across NG+
+- Fixed a bug with carrying a corpse across NG+
 - The Versalife Labs 2 start location gives you the computer password so you can move forwards or backwards
 - Bingo goals for reading books and stuff are now mutually exclusive
 - Blocked the 747 Suspension Crate datacube from being in the Suspension Crate
@@ -74,7 +73,7 @@
 
 # Minor Changes
 
-- Entrance Rando is now an advanced setting, and Entrance Rando game modes are removed
+- Entrance Rando is now an advanced setting, and some Entrance Rando game modes have been removed
 - Various speech restorations
 - Paul hotel raid depends on minor map balance, binoculars depend on moderate
 - The goal to find the Ambrosia is given immediately when entering M02 Battery Park, rather than getting it from speaking to Anna
@@ -88,7 +87,7 @@
 - When all items are removed from a crate, the cardboard box that replaces it will match the size of the original crate
 - Harley Filben will still talk to the player on Liberty Island if using Confix (eg. GMDX) and you didn't get the password from Paul first.'
   - Note: Confix is NOT required or recommended for use with vanilla Randomizer
-- Memory Containment Units will be ignored when removing intentory items in M05, even with the Unaugmented Prison Pocket setting
+- Memory Containment Units will be ignored for the purposes of the Unaugmented Prison Pocket setting, allowing you to keep another item.  Memory Containment Units will always be allowed to be kept.
 - Vandenberg Cmd move "near pipes" start to a higher level, so the start locations are more equal
 - Make sure the guard inside the front door of Dockyards is friendly if you come in some way other than the front door (if you helped Vinny)
 - Speedrun splits view changes:
