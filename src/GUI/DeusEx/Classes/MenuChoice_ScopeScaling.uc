@@ -14,7 +14,9 @@ static function float GetScopeScale()
         case 4:
             return 3.0;
         case 5:
-            return -1.0;
+            return -1.0; // Fit to Screen
+        case 6:
+            return -2.0; // Fit to Open Area
     }
     return 1.0;
 }
@@ -31,4 +33,5 @@ defaultproperties
     enumText(3)="2.5x"
     enumText(4)="3x"
     enumText(5)="Fit to Screen"
+    enumText(6)="Fit to Open Area"
 }

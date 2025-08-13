@@ -13,7 +13,7 @@ event DrawWindow(GC gc)
 {
     local float fromX, toX;
     local float fromY, toY;
-    local float scopeWidth, scopeHeight, scopeMult, scopeMult2, scopeMultInt, scopeMultFirstDec;
+    local float screenHeight, scopeWidth, scopeHeight, scopeMult, scopeMult2, scopeMultInt, scopeMultFirstDec;
     local bool blackOut;
     local Actor a;
 
@@ -37,10 +37,19 @@ event DrawWindow(GC gc)
     scopeMult = class'MenuChoice_ScopeScaling'.static.GetScopeScale();
     blackOut  = class'MenuChoice_ScopeBlackout'.static.IsEnabled(a);
 
-    if (scopeMult == -1.0){
+    if (scopeMult < 0){
         //Fit to screen, calculate scope mult value
         //Round to the nearest 0.5 so that the scaling at least looks nice
-        scopeMult  = height / scopeHeight;
+
+        //-1.0 = Fit to the maximum screen size
+        //-2.0 = scale to not overlap the item belt
+
+        screenHeight = height;
+        if (scopeMult==-2.0){ //Should we avoid overlapping the item belt?  Should this be an option?
+            screenHeight -= DeusExRootWindow(GetRootWindow()).hud.belt.height;
+        }
+
+        scopeMult  = screenHeight / scopeHeight;
         scopeMult2 = width / scopeWidth;
 
         //Binocular texture(s) is wider than tall, so account for that scale as well
