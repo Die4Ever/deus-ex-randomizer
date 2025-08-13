@@ -6,7 +6,7 @@ function int InitGoals(int mission, string map)
     local int boat_pauldock, boat_harleydock, boat_top, boat_hut;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     leo = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
     AddGoalActor(leo, 1, 'DataLinkTrigger12', PHYS_None);
@@ -85,7 +85,7 @@ function int InitGoalsRev(int mission, string map)
     local int boat_pauldock, boat_harleydock, boat_top, boat_hut;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     leo = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
     AddGoalActor(leo, 1, 'DataLinkTrigger12', PHYS_None);
@@ -224,7 +224,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         if(g.actors[1].a != None)
             g.actors[1].a.SetCollisionSize(240, 64);
 
-        bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+        bMemes = (dxr.flags.settings.goals != 200);
         if(bMemes && Loc.name != "Top of the Statue") {
             text = "I'm gonna go for a walk to clear my head."
                 $ "|n|nI might be anywhere, like the hut in front of the statue, hanging out with Gunther in jail, or maybe I'll even sneak past UNATCO to hang out on the dock.";

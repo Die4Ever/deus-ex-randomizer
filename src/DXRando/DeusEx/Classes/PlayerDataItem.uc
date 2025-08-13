@@ -109,7 +109,9 @@ simulated function int GetBingoSpot(
     optional out string event,
     optional out string desc,
     optional out int progress,
-    optional out int max
+    optional out int max,
+    optional out int missions,
+    optional out int append_max
 )
 {
     local DXRando dxr;
@@ -119,6 +121,8 @@ simulated function int GetBingoSpot(
     desc = bingo[x*5+y].desc;
     progress = bingo[x*5+y].progress;
     max = bingo[x*5+y].max;
+    missions = bingo_missions_masks[x*5+y];
+    append_max = bingo_append_max[x*5+y];
 
     dxr = class'DXRando'.default.dxr;
     if(dxr == None) return 1;// 1==maybe
@@ -377,22 +381,30 @@ simulated function TickUnbanGoals()
     }
 }
 
-simulated function UnbanGoal(string goal)
+simulated function int UnbanGoal(string goal)
 {
-    local int i, slot;
+    local int i, slot, ticks;
 
     slot = -1;
 
     for(i=0; i < ArrayCount(bannedGoals); i++) {
-        if(bannedGoals[i] == goal) slot = i;
-        if(bannedGoals[i] == "") {
-            if(slot == -1) return; // goal wasn't banned
+        if(bannedGoals[i] == goal) slot = i; // find the goal to be unbanned
+
+        if(bannedGoals[i] == "") { // find next in the array to compress down over the goal to be unbanned
+            if(slot == -1) return -1; // goal wasn't banned
             i--;
             bannedGoals[slot] = bannedGoals[i];
             bannedGoals[i] = "";
-            return;
+            ticks = bannedGoalsTimers[slot];
+            bannedGoalsTimers[slot] = bannedGoalsTimers[i];
+            return ticks;
         }
     }
+    if(slot != -1) { // we found the goal, but nothing after it to replace it
+        bannedGoals[slot] = "";
+        return bannedGoalsTimers[slot];
+    }
+    return -1;
 }
 
 defaultproperties

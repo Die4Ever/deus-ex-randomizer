@@ -49,6 +49,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)ComputerPublic compublic;
     local #var(prefix)WeaponShuriken tk;
+    local #var(prefix)Female2 shannon;
     local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -193,6 +194,20 @@ function PreFirstEntryMapFixes()
                 tk.bIsSecretGoal=true; //Keep the throwing knives in Anna's mannequin
             }
             class'FakeMirrorInfo'.static.Create(self,vectm(2475,1872,-80),vectm(2450,2064,-16)); //Mirror window at level 4 entrance
+        }
+
+
+        if (dxr.flagbase.GetBool('LDDPJCIsFemale')){ //Make sure Shannon is still around for LDDP
+            //Make sure she has a tag that isn't the default, or else she'll be deleted by the LDDP mission script
+            //LDDP actually already has lines for talking to her when you're FemJC, so no conversation tweaks needed
+
+            foreach AllActors(class'#var(prefix)Female2',shannon){break;} //Find Shannon
+            if (shannon!=None){
+                shannon.SetLocation(vectm(90,-615,45)); //Move her to the couches opposite the bathrooms (same in vanilla and Revision)
+                shannon.SetRotation(rotm(0,16384,0,GetRotationOffset(class'#var(prefix)Female2')));
+                shannon.Tag = 'shannon'; //The LDDP mission script looks for tag 'Female2' to remove her
+                shannon.SetOrders('Sitting');
+            }
         }
 
         if (AddSaveReminderCube()){

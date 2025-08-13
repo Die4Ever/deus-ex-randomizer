@@ -75,6 +75,7 @@ function BindControls(optional string action)
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
     EnumOption("Goal Location Hints", 101, f.settings.goals);
     EnumOption("Goal Location Spoilers", 102, f.settings.goals);
+    EnumOption("Serious Goal Locations", 200, f.settings.goals);
 
     BreakLine();
 #ifndef hx

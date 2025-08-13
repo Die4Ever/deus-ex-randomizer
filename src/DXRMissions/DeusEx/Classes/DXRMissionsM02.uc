@@ -6,7 +6,7 @@ function int InitGoals(int mission, string map)
     local int goal, loc, loc2, jock_holy_smokes, jock_sewer, generator_sewer, generator_alley;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     switch(map) {
     case "02_NYC_BATTERYPARK":
@@ -92,7 +92,7 @@ function int InitGoalsRev(int mission, string map)
     local int goal, loc, loc2, jock_holy_smokes, jock_sewer, generator_sewer, generator_alley;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     switch(map) {
     case "02_NYC_BATTERYPARK":

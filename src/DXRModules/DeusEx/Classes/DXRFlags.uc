@@ -529,9 +529,10 @@ function SetDifficulty(int new_difficulty)
 
     if(!class'MenuChoice_ToggleMemes'.static.IsEnabled(self)) settings.dancingpercent = 0;
 
-    if(gamemode == SeriousRando) { // same as Full Rando, but memes disabled by default
+    if(gamemode == SeriousRando) { // same as Full Rando, but memes disabled by default, and only serious goal locations
         settings.dancingpercent = 0;
         settings.merchants = 0;
+        settings.goals = 200;
     }
     else if(gamemode == RandoMedium || gamemode == NormalRandomizer) { // Normal is the same as Medium, except it doesn't count as Reduced Rando when dealing with balance changes or memes
         settings.startinglocations = 0;

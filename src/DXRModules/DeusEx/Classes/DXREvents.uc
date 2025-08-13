@@ -424,8 +424,14 @@ function SetWatchFlags() {
 
         break;
     case "01_NYC_UNATCOHQ":
-        WatchFlag('BathroomBarks_Played');
-        WatchFlag('ManBathroomBarks_Played');
+        //Make sure only the appropriate barks are watched based on gender.
+        //Shannon has barks with the same conversation name if female, but not
+        //embarrassing ones.
+        if (!dxr.flagbase.GetBool('LDDPJCIsFemale')){
+            WatchFlag('BathroomBarks_Played');
+        } else {
+            WatchFlag('ManBathroomBarks_Played');
+        }
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
@@ -2095,6 +2101,19 @@ simulated function bool WatchGuntherKillSwitch()
         }
     };
     return False;
+}
+//#region FindOrigBingoDescription
+simulated function string FindOrigBingoDescription(string event)
+{
+    local int i;
+
+    for(i=0;i<ArrayCount(bingo_options);i++){
+        if (bingo_options[i].event~=event){
+            return bingo_options[i].desc;
+        }
+    }
+
+    return "";
 }
 
 //#region TweakBingoDescription
@@ -4323,6 +4342,117 @@ static function bool BingoGoalCanFail(string event)
             return true;
     }
 }
+
+//#region Goal Upgrades
+static function Upgrade(#var(PlayerPawn) player, int old_version)
+{
+    local PlayerDataItem data;
+    local DXREvents events;
+
+    events = DXREvents(class'DXREvents'.static.Find());
+    data = class'PlayerDataItem'.static.GiveItem(player);
+
+    if (old_version==0) return; //Ignore "upgrades" from 0
+
+    if (old_version < class'DXRVersion'.static.VersionToInt(3,5,2,7)) {
+        HandleUpgradePre_3_5_2_7(player,data,events);
+    }
+
+    //Add any new upgrades to the end of the pile, each with an individual if, so that it runs
+    //through all the required upgrades in order
+
+}
+
+static function UpdateBingoSquare(#var(PlayerPawn) player, PlayerDataItem data, DXREvents events,
+                                  int x, int y,  string event, string orig_desc, string desc,
+                                  int progress, int max, int missions,
+                                  optional bool append_max)
+{
+    local string msg;
+
+    //Tweak any existing goal info
+    max = events.tweakBingoMax(event, max);
+    desc = events.tweakBingoDescription(event, desc);
+    missions = events.tweakBingoMissions(event, missions);
+
+    data.SetBingoSpot(x, y, event, desc, progress, max, missions,append_max);
+
+    if(class'MenuChoice_ShowBingoUpdates'.static.MessagesEnabled(events.dxr.flags)) {
+        msg = "Updated goal \""$orig_desc$"\"";
+        if (desc!=orig_desc){
+            msg = msg $ " to \""$desc$"\"!";
+        }
+        player.ClientMessage(msg);
+    }
+}
+
+static function HandleUpgradePre_3_5_2_7(#var(PlayerPawn) player, PlayerDataItem data, DXREvents events)
+{
+    local int x, y, progress, max, missions,append_max;
+    local string event, new_event, desc, new_desc;
+
+    //Update goals on the bingo board
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max, missions, append_max);
+            switch(event) {
+            case "SandraRenton_PlayerDead":
+            case "GilbertRenton_PlayerDead":
+            case "JoJoFine_PlayerDead":
+            case "TobyAtanwe_PlayerDead":
+            case "Antoine_PlayerDead":
+            case "Hela_PlayerDead":
+            case "Renault_PlayerDead":
+            case "Labrat_Bum_PlayerDead":
+            case "lemerchant_PlayerDead":
+            case "Harold_PlayerDead":
+            case "aimee_PlayerDead":
+            case "MaySung_PlayerDead":
+            case "JerryTheVentGreasel_PlayerDead":
+            case "Shannon_PlayerDead":
+            case "Canal_Cop_PlayerDead":
+            case "jughead_PlayerDead":
+            case "HowardStrong_PlayerDead":
+                new_event = class'DXRInfo'.static.ReplaceText(event,"_PlayerDead","_PlayerTakedown");
+                new_desc = events.FindOrigBingoDescription(new_event); //Get the default description for the new event
+
+                if (new_desc==""){
+                    //Something went wrong, and this event couldn't be found!  Don't update!
+                    player.ClientMessage("Couldn't find new event "$new_event$" in bingo option list!  Report to devs!");
+                } else {
+                    UpdateBingoSquare(player, data, events, x, y, new_event, desc, new_desc, progress, max, missions,bool(append_max));
+                }
+                break;
+            }
+        }
+    }
+
+    //Update bans in the goal ban list
+    for (x=0;x<ArrayCount(data.bannedGoals);x++){
+        switch(data.bannedGoals[x]){
+            case "SandraRenton_PlayerDead":
+            case "GilbertRenton_PlayerDead":
+            case "JoJoFine_PlayerDead":
+            case "TobyAtanwe_PlayerDead":
+            case "Antoine_PlayerDead":
+            case "Hela_PlayerDead":
+            case "Renault_PlayerDead":
+            case "Labrat_Bum_PlayerDead":
+            case "lemerchant_PlayerDead":
+            case "Harold_PlayerDead":
+            case "aimee_PlayerDead":
+            case "MaySung_PlayerDead":
+            case "JerryTheVentGreasel_PlayerDead":
+            case "Shannon_PlayerDead":
+            case "Canal_Cop_PlayerDead":
+            case "jughead_PlayerDead":
+            case "HowardStrong_PlayerDead":
+                data.bannedGoals[x]=class'DXRInfo'.static.ReplaceText(data.bannedGoals[x],"_PlayerDead","_PlayerTakedown");
+                break;
+        }
+    }
+}
+//#endregion
 
 function ExtendedTests()
 {

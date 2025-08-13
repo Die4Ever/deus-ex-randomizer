@@ -1,3 +1,5 @@
+To generate release notes: git log --format="- %s"
+
 
 from aizome8086:
 

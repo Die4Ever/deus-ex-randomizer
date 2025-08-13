@@ -6,7 +6,7 @@ function int InitGoals(int mission, string map)
     local int goal, loc, loc2;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     switch(map) {
     case "09_NYC_GRAVEYARD":
@@ -150,7 +150,7 @@ function int InitGoalsRev(int mission, string map)
     local int goal, loc, loc2;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     switch(map) {
     case "09_NYC_GRAVEYARD":

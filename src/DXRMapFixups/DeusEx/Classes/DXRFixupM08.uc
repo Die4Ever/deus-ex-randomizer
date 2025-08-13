@@ -30,8 +30,12 @@ function AnyEntryMapFixes()
         break;
 
     case "08_NYC_SMUG":
-        if (VanillaMaps){
-            FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+        if (!#defined(gmdx) && !#defined(vmd) && !(#defined(revision)&&!VanillaMaps)){
+            //This is fixed in:
+            // - ConFix (used by GMDX)
+            // - Revision conversations (which I guess only get used on Revision Maps)
+            // - Vanilla? Madder!
+            FixFordSchickConvo();
         }
 
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
@@ -41,6 +45,112 @@ function AnyEntryMapFixes()
     }
 }
 //#endregion
+
+function FixFordSchickConvo()
+{
+    local Conversation c;
+    local ConEvent ce,prev;
+    local ConEventEnd cee,cee2;
+    local ConEventTrigger cet;
+    local ConEventTransferObject ceto;
+    local ConEventMoveCamera cemc;
+    local ConEventSpeech ces, noRoom, normalSpeech;
+    local SpawnItemTrigger sit;
+
+    FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister'); //Make sure he tries to transfer the right class
+
+    //Find an instance of JC saying "no room"
+    noRoom = GetSpeechEvent(GetConversation('M08SmugglerConvos').eventList,"I don't have enough room to carry that.");
+
+    //Make sure there's handling for a full inventory
+    c = GetConversation('M08MeetFordSchick');
+
+    ce = c.eventList;
+    prev=None;
+    while (ce!=None){
+        if (ce.eventType==ET_End){
+            cee = ConEventEnd(ce);
+        } else if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+        } else if (ce.eventType==ET_MoveCamera){
+            cemc = ConEventMoveCamera(ce); //We want to find the last one, which is a Head Shot, Mid
+            if (cemc.cameraPosition!=CP_HeadShotMid){
+                cemc=None;
+            }
+        } else if (ce.eventType==ET_Speech && normalSpeech==None){
+            //find a case where JC is talking to Ford, for reference
+            normalSpeech = ConEventSpeech(ce);
+            if (normalSpeech.speakerName!="JCDenton"){
+                normalSpeech=None;
+            }
+        }
+        prev=ce;
+        ce = ce.nextEvent;
+    }
+
+    if(cee!=None && ceto!=None && noRoom!=None && normalSpeech!=None){
+        //Found all the relevant conversation pieces we need
+
+        //After the regular conversation end, add a Trigger event and a new End event.
+        //If the item transfer fails, it will jump to the new Trigger event, which will
+        //spawn the aug can on the table instead.
+
+        if (ceto.failLabel!=""){
+            //Quick failsafe, don't make any changes if there's already a failLabel set from something else
+            return;
+        }
+
+        ceto.failLabel = "AugUpgradeTransferFailed";
+
+        //Trigger a SpawnItemTrigger to spawn the upgrade can on the table
+        cet = new(c) class'ConEventTrigger';
+        cet.eventType=ET_Trigger;
+        cet.label = "AugUpgradeTransferFailed";
+        cet.triggerTag = 'SpawnOverflowAugUpgrade';
+        cet.conversation=c;
+
+        //Stitch a "No room!" line onto the end of the conversation for more clarity
+        ces = new(c) class'ConEventSpeech';
+        ces.eventType=ET_Speech;
+        ces.conversation = c;
+        ces.speaker = normalSpeech.speaker;
+        ces.speakerName = normalSpeech.speakerName;
+        ces.speakingTo = normalSpeech.speakingTo;
+        ces.speakingToName = normalSpeech.speakingToName;
+        ces.conSpeech = new(c) class'ConSpeech';
+        ces.conSpeech.speech = noRoom.conSpeech.speech;
+        ces.conSpeech.soundID = noRoom.conSpeech.soundID;
+        ces.bBold = noRoom.bBold;
+        ces.speechFont = noRoom.speechFont;
+
+        //End the conversation
+        cee2 = new(c) class'ConEventEnd';
+        cee2.eventType=ET_End;
+        cee2.conversation = c;
+
+        //Wire the ConEvent's together
+        cee.nextEvent = cet; //Trigger goes after the regular end
+        cet.nextEvent=ces; //"No Room" goes after the trigger
+        ces.nextEvent=cee2;//End goes after the voice line
+
+        //Tweak the final camera angle, to hopefully give vision on the spawning aug can when it fails
+        //No promises though, because the camera positions are more like suggestions
+        if (cemc!=None){
+            cemc.cameraPosition = CP_ShoulderRight;
+        }
+    }
+
+    foreach AllActors(class'SpawnItemTrigger',sit,'SpawnOverflowAugUpgrade'){break;}
+    if (sit==None){
+        //Make sure the actual trigger that the conversation now hits
+        //actually exists (this only needs to happen once, unlike the
+        //conversation tweaks)
+        sit = Spawn(class'SpawnItemTrigger',,'SpawnOverflowAugUpgrade');
+        sit.spawnClass=class'#var(prefix)AugmentationUpgradeCannister';
+        sit.spawnLoc = vectm(-462,1385,248);
+    }
+
+}
 
 //#region Adjust Infolinks
 function RearrangeJockExitDialog()

@@ -11,7 +11,7 @@ function int InitGoals(int mission, string map)
     local int computer_vanilla, computer_radio, computer_meeting, computer_machine_shop;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
+    bMemes = (dxr.flags.settings.goals != 200);
 
     switch(map) {
     case "12_VANDENBERG_CMD":
@@ -151,8 +151,7 @@ function int InitGoalsRev(int mission, string map)
     local int computer_vanilla, computer_radio, computer_meeting, computer_machine_shop;
     local bool bMemes;
 
-    bMemes = class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags);
-
+    bMemes = (dxr.flags.settings.goals != 200);
 
     switch(map) {
     case "12_VANDENBERG_CMD":

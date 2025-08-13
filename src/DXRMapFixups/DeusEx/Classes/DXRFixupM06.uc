@@ -114,6 +114,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger t;
     local #var(prefix)ControlPanel panel;
     local #var(prefix)HKHangingLantern lantern;
+    local #var(prefix)ScientistFemale sf;
     local int i;
 
     local bool VanillaMaps;
@@ -960,6 +961,15 @@ function PreFirstEntryMapFixes()
             ot.Event='SelfDestructSpiders';
             */
 
+        }
+
+        if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags) == false) {
+            foreach AllActors(class'#var(prefix)ScientistFemale', sf) {
+                if (sf.UnfamiliarName == "Nonotechnology Researcher") {
+                    sf.UnfamiliarName = "Nanotechnology Researcher";
+                    break;
+                }
+            }
         }
 
         //Verified in both vanilla and Revision
