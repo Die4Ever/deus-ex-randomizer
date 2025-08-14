@@ -2614,6 +2614,41 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
 //   Added datacubes   //
 /////////////////////////
 
+        case "DeusExText.TrainingHintNanoKey":
+            return "Randomizer Training, Keys";
+        case "DeusExText.TrainingHintDoorStatsPicking":
+            return "Randomizer Training, Door Stats";
+        case "DeusExText.TrainingHintPasswords":
+            return "Randomizer Training, Passwords";
+        case "DeusExText.TrainingHintFlashlight":
+            return "Randomizer Training, Flashlight";
+        case "DeusExText.TrainingHintRepairBots":
+            return "Randomizer Training, Repairbots";
+        case "DeusExText.TrainingHintAmmo":
+            return "Randomizer Training, Ammo";
+        case "DeusExText.TrainingHintCrateShuffle":
+            return "Randomizer Training, Crates";
+        case "DeusExText.TrainingHintEnviroStrength":
+            return "Randomizer Training, Skills";
+        case "DeusExText.TrainingHintMedBots":
+            return "Randomizer Training, Medbots";
+        case "DeusExText.TrainingHintWeaponStats":
+            return "Randomizer Training, Weapon Stats";
+        case "DeusExText.TrainingHintPistolStrength":
+            return "Randomizer Training, Skill Descriptions";
+        case "DeusExText.TrainingHintGrenades":
+            return "Randomizer Training, Grenades";
+        case "DeusExText.TrainingHintDoorStatsBreaking":
+            return "Randomizer Training, Door Stats";
+        case "DeusExText.TrainingHintSkillReroll":
+            return "Randomizer Training, Skill Rerolls";
+        case "DeusExText.TrainingHintEnemyShuffle":
+            return "Randomizer Training, Enemies";
+        case "DeusExText.TrainingHintAugCans":
+            return "Randomizer Training, Aug Cans";
+        case "DeusExText.TrainingHintSpoilers":
+            return "Randomizer Training, Spoilers";
+
         case "DeusExText.LeoHintCube":
             return "Note from Leo";
 
