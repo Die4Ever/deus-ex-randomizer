@@ -297,10 +297,8 @@ function AddMissionGoals()
     if (dxr.localURL == "02_NYC_BATTERYPARK") {
         UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
         GiveGoalFromCon(player(), 'FindAmbrosia', 'AnnaDock'); // allow this goal to be completed before talking to Anna
-        if (dxr.flags.GetStartingMap() == 20) {
-            // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
-            DXRStartDataLinkTransmission("DL_CastleClinton");
-        }
+        // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
+        DXRStartDataLinkTransmission("DL_CastleClinton");
     }
 }
 

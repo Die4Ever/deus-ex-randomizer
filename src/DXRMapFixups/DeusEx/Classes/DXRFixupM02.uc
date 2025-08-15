@@ -135,6 +135,10 @@ function PreFirstEntryMapFixes()
             class'DXRTeleporterHoverHint'.static.Create(self, "", b.Location, b.CollisionRadius+5, b.CollisionHeight+5, exit,, true);
         }
 
+        if (class'DXRStartMap'.static._IsStartMap(dxr) == false) {
+            dxr.flagbase.SetBool('DL_CastleClinton', true); // don't play Alex's intro when backtracking
+        }
+
         break;
     //#endregion
 
