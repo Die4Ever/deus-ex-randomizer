@@ -778,6 +778,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 
     switch(start_flag) {
+        case 25:
         case 23:
         case 22:
         case 21:
@@ -862,9 +863,17 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Jock_03", bFemale); // I have to get clear!  Head for the exit, and I'll link up with you when I can.
             break;
 
+        case 85:
+        case 84:
+        case 83:
+        case 82:
         case 81:
-            flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
-            flagbase.SetBool('MetSmuggler',true,,-1);
+            if (start_flag==81){
+                //You'll *know* Smuggler's password ('KnowsSmugglerPassword') in all mission 8 starts, but for a Smuggler start,
+                //We'll make sure you've already *met* Smuggler, to ensure his bot isn't hostile
+                flagbase.SetBool('MetSmuggler',true,,-1);
+                flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
+            }
             break;
 
         case 95:
@@ -887,6 +896,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             GiveImage(player, class'Image11_Paris_Cathedral');
             GiveImage(player, class'Image11_Paris_CathedralEntrance');
             MarkConvPlayed("DL_intro_cathedral", bFemale);
+        case 110:
         case 109:
             GiveImage(player, class'Image10_Paris_Metro');
         case 106:
