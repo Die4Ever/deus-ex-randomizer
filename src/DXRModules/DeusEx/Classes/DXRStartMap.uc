@@ -781,6 +781,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 23:
         case 22:
         case 21:
+            MarkConvPlayed("DL_CastleClinton", bFemale); // don't play Alex's intro when backtracking
             flagbase.SetBool('EscapeSuccessful',true,,-1);
             MarkConvPlayed("DL_SubwayComplete", bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
