@@ -60,6 +60,7 @@ function PreFirstEntry()
             foreach AllActors(class'ScriptedPawn', sp, 'hostageWoman') {
                 sp.Destroy();
             }
+            dxr.flagbase.SetBool('DL_CastleClinton_Played', true); // don't play Alex's intro when backtracking
         }
         break;
 
