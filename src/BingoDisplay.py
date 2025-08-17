@@ -22,6 +22,8 @@ BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
+DEFAULT_WINDOW_WIDTH = 500
+DEFAULT_WINDOW_HEIGHT = 500
 
 if os.name == 'nt': # Windows works correctly (for once)
     BORDER_WIDTH_SCALE=1
@@ -52,11 +54,12 @@ class BingoViewerMain:
         #Maintain board state here
         self.board = [[None]*5 for i in range(5)]
         self.selectedMod = ""
+        self.numMods=0
 
         if self.targetFile=='':
             self.working=False
         else:
-            self.reader = BingoReader(self.targetFile,self)
+            self.reader = BingoReader(self.targetFile,self.config.get("selected_mod",""),self)
             self.saveLastUsedBingoFile()
             self.lastFileUpdate=0
             self.display = BingoDisplay(self)
@@ -65,6 +68,23 @@ class BingoViewerMain:
     def SetSelectedMod(self,mod):
         self.selectedMod = self.translateMod(mod)
         self.display.updateTitleBar(self.selectedMod)
+        if (mod!=self.config.get("selected_mod","")):
+            self.config["selected_mod"]=mod
+            self.SaveConfig()
+
+    def UpdateNumMods(self,numMods):
+        if (self.display==None or self.display.win==None):
+            return
+
+        if (numMods==self.numMods):
+            return
+
+        self.numMods=numMods
+
+        if (numMods>1):
+            self.display.SetMenuItemSelectability("Change Selected Mod",True)
+        else:
+            self.display.SetMenuItemSelectability("Change Selected Mod",False)
 
     def UpdateBoardSquare(self,x,y,val):
         if (self.board[x][y]!=val):
@@ -101,6 +121,7 @@ class BingoViewerMain:
         self.config = dict()
         self.config["json_push_dest"]=""
         self.config["last_used_file"]=""
+        self.config["selected_mod"]=""
 
     def LoadConfig(self):
         conf = ""
@@ -185,9 +206,15 @@ class BingoViewerMain:
             return
         #print("New file: "+target)
         self.targetFile = target
+        self.selectedMod=""
         self.saveLastUsedBingoFile()
         self.lastFileUpdate=0
         self.reader.UpdateTarget(target)
+
+    def resetSelectedMod(self):
+        self.selectedMod=""
+        self.lastFileUpdate=0
+        self.reader.UpdateTarget(self.targetFile)
 
     def findBingoFile(self):
         target = ""
@@ -283,10 +310,11 @@ class BingoViewerMain:
 
 class BingoReader:
 
-    def __init__(self,targetFile,main):
+    def __init__(self,targetFile,selectedMod,main):
         self.main = main
         self.targetFile = targetFile
-        self.selectedMod=""
+        self.selectedMod=selectedMod
+        self.numMods = 0
         self.prevLines=None
         self.bingoLineMatch = re.compile(
             r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>-?\d+)\)',
@@ -307,6 +335,8 @@ class BingoReader:
 
     def UpdateTarget(self,target):
         self.targetFile = target
+        self.selectedMod=""
+        self.prevLines=None
 
 ###############################
 #    INTERNAL
@@ -316,6 +346,7 @@ class BingoReader:
         while(self.main.IsRunning() and self.running):
             time.sleep(0.1)
             changed = self.readBingoFile()
+            self.main.UpdateNumMods(self.numMods)
             if (changed):
                 self.main.BoardUpdate()
                 self.main.SetSelectedMod(self.selectedMod)
@@ -364,17 +395,18 @@ class BingoReader:
             pass
 
         mods=list(allLines.keys())
+        self.numMods = len(mods)
 
         if self.selectedMod not in mods:
             self.selectedMod=""
 
         if not self.selectedMod:
-            if len(mods)>1:
+            if self.numMods>1:
                 for mod in mods:
-                    if messagebox.askyesno("Select your mod","Do you want to use "+translateMod(mod)):
+                    if messagebox.askyesno("Select your mod","Do you want to use "+self.main.translateMod(mod)):
                         self.selectedMod=mod
                         break
-            elif len(mods)==1:
+            elif self.numMods==1:
                 self.selectedMod=mods[0]
             else:
                 print("No mods detected in file")
@@ -400,11 +432,13 @@ class BingoDisplay:
 
     def __init__(self,main):
         self.main = main
+        self.active = False
         self.tkBoard = [[None]*5 for i in range(5)]
         self.tkBoardText = [[None]*5 for i in range(5)]
-        self.width=500
-        self.height=500
+        self.width=DEFAULT_WINDOW_WIDTH
+        self.height=DEFAULT_WINDOW_HEIGHT
         self.title = WINDOW_TITLE
+        self.win=None
 
     def IsRunning(self):
         return self.isWindowOpen()
@@ -427,9 +461,31 @@ class BingoDisplay:
     def updateSquare(self,x,y,boardInfo):
         self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], boardInfo)
 
+    def SetMenuItemSelectability(self,itemName,selectable):
+        newState = "disabled"
+        if (selectable):
+            newState = "normal"
+
+        if (self.active==False):
+            return
+
+        if (self.menuHasItem(self.filemenu,itemName)):
+            self.filemenu.entryconfigure(itemName,state=newState)
+
+        if (self.menuHasItem(self.othermenu,itemName)):
+            self.othermenu.entryconfigure(itemName,state=newState)
+
+
     ##############################################
     # Internal
     ##############################################
+
+    def menuHasItem(self,menu,label):
+        try:
+            menu.index(label)
+            return True
+        except:
+            return False
 
     def bringToFront(self):
         self.win.attributes('-topmost',True)
@@ -475,6 +531,11 @@ class BingoDisplay:
 
         self.main.SetJSONPushDest(selected)
 
+    def ResetWindowSize(self):
+        self.width=DEFAULT_WINDOW_WIDTH
+        self.height=DEFAULT_WINDOW_HEIGHT
+        self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
+
     def initDrawnBoard(self):
         self.win = Tk()
         self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
@@ -484,14 +545,20 @@ class BingoDisplay:
         self.win.config(bg="black")
 
         self.menubar = Menu(self.win)
+
         self.filemenu = Menu(self.menubar,tearoff=0)
         self.filemenu.add_command(label="Open",command=self.main.selectNewBingoFile)
-        self.filemenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
+        self.filemenu.add_command(label="Change Selected Mod",command=self.main.resetSelectedMod)
+
+        self.othermenu = Menu(self.menubar,tearoff=0)
+        self.othermenu.add_command(label="Reset Window Size",command=self.ResetWindowSize)
+        self.othermenu.add_separator()
+        self.othermenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
         #Additional things we could add:
-        # - Reset window to default size
         # - Edit colours?
         # - Connect to PlayBingo session
         self.menubar.add_cascade(label="File",menu=self.filemenu)
+        self.menubar.add_cascade(label="Other",menu=self.othermenu)
         self.win.config(menu=self.menubar)
 
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
@@ -510,6 +577,8 @@ class BingoDisplay:
                 self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
+
+        self.active=True
 
         self.main.BoardUpdate()
 

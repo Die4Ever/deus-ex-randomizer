@@ -43,7 +43,8 @@
 
 - Bingo Viewer application improvements!
   - Bingo Viewer will now automatically load the last used file, rather than prompting to select a file every time it opens
-  - Bingo Viewer now has a menu which allows you to open a new bingo file, or to select your JSON Push destination (for marathon use)
+  - If your bingo file contains data from multiple mods (eg. Vanilla and GMDX), it will remember the mod you selected to use last time
+  - Bingo Viewer now has menus which allow you to open a new bingo file, change the selected mod, reset your window size, or select your JSON Push destination (for marathon use)
   - Bingo Viewer will now create a settings file
   - Performance tweaks
 - NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
