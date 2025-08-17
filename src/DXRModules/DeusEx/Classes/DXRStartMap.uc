@@ -778,9 +778,11 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
     }
 
     switch(start_flag) {
+        case 25:
         case 23:
         case 22:
         case 21:
+            MarkConvPlayed("DL_CastleClinton", bFemale); // don't play Alex's intro when backtracking
             flagbase.SetBool('EscapeSuccessful',true,,-1);
             MarkConvPlayed("DL_SubwayComplete", bFemale);
             flagbase.SetBool('SubTerroristsDead',true,,-1);
@@ -861,9 +863,17 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("DL_Jock_03", bFemale); // I have to get clear!  Head for the exit, and I'll link up with you when I can.
             break;
 
+        case 85:
+        case 84:
+        case 83:
+        case 82:
         case 81:
-            flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
-            flagbase.SetBool('MetSmuggler',true,,-1);
+            if (start_flag==81){
+                //You'll *know* Smuggler's password ('KnowsSmugglerPassword') in all mission 8 starts, but for a Smuggler start,
+                //We'll make sure you've already *met* Smuggler, to ensure his bot isn't hostile
+                flagbase.SetBool('MetSmuggler',true,,-1);
+                flagbase.setBool('DXRSmugglerElevatorUsed', true,, 9); // else the elevator will move to the top and bring the player with it
+            }
             break;
 
         case 95:
@@ -886,6 +896,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             GiveImage(player, class'Image11_Paris_Cathedral');
             GiveImage(player, class'Image11_Paris_CathedralEntrance');
             MarkConvPlayed("DL_intro_cathedral", bFemale);
+        case 110:
         case 109:
             GiveImage(player, class'Image10_Paris_Metro');
         case 106:
@@ -1222,7 +1233,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_PlayerDead":
+        case "Shannon_PlayerTakedown":
         case "SlippingHazard":
         case "un_PrezMeadPic_peepedtex":
         case "WaltonConvos":
@@ -1241,7 +1252,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "CommsPit":
         case "BathroomFlags":
         case "ReadJCEmail":
-        case "Shannon_PlayerDead":
+        case "Shannon_PlayerTakedown":
         case "WaltonConvos":
         case "un_bboard_peepedtex":
         case "UNATCOHandbook":
@@ -1376,13 +1387,13 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "AimeeLeMerchantLived":
             return end_mission < 10;
         case "WarehouseEntered":
-        case "Antoine_PlayerDead":
+        case "Antoine_PlayerTakedown":
         case "Chad_PlayerDead":
         case "paris_hostage_Dead":
-        case "Hela_PlayerDead":
-        case "Renault_PlayerDead":
-        case "lemerchant_PlayerDead":
-        case "aimee_PlayerDead":
+        case "Hela_PlayerTakedown":
+        case "Renault_PlayerTakedown":
+        case "lemerchant_PlayerTakedown":
+        case "aimee_PlayerTakedown":
         case "M10EnteredBakery":
         case "assassinapartment":
         case "CamilleConvosDone":
@@ -1441,7 +1452,7 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
     switch(start_map) {
     case 119:
         switch(bingo_event) {
-        case "TobyAtanwe_PlayerDead":
+        case "TobyAtanwe_PlayerTakedown":
         case "MeetAI4_Played":
         case "DeBeersDead":
         case "GotHelicopterInfo":

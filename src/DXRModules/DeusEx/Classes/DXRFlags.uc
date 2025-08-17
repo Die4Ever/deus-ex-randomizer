@@ -1370,9 +1370,9 @@ function int ScoreFlags()
 
     // values for starting_map in DXRMenuSetupRando or DXRStartMap, basically mission number * 10, multiply more for score reduction
     if(settings.bingo_win > 0 && bingos >= settings.bingo_win) // if a bingo win, still reduce score because bingo goals are scaled down
-        score -= settings.starting_map * 50;// basically starting mission * 500
+        score -= GetStartingMap() * 50;// basically starting mission * 500
     else // else we won by hitting the end of the game
-        score -= settings.starting_map * 120;// basically starting mission * 1200
+        score -= GetStartingMap() * 120;// basically starting mission * 1200
 
     score -= settings.doorsdestructible * 5;
     score -= settings.doorspickable * 5;

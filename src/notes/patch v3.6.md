@@ -41,12 +41,18 @@
 
 # Bingo / WaltonWare / NG+ Minor Changes
 
+- Bingo Viewer application improvements!
+  - Bingo Viewer will now automatically load the last used file, rather than prompting to select a file every time it opens
+  - If your bingo file contains data from multiple mods (eg. Vanilla and GMDX), it will remember the mod you selected to use last time
+  - Bingo Viewer now has menus which allow you to open a new bingo file, change the selected mod, reset your window size, or select your JSON Push destination (for marathon use)
+  - Bingo Viewer will now create a settings file
+  - Performance tweaks
 - NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
   - (instead of NG+ silently taking away unspent skill points from the player, now it tries to remove them from the WW crate first)
 - Fewer datacubes in Area51 Entrance and Page (#1244 and #1245)
 - Hong Kong main quest bingo goals aren't given for early starts
 - Bingo goals for buying from The Merchant and Le Merchant
-- The `ChangeClothes` bingo goal is never as failed when clothes looting is enabled
+- The `ChangeClothes` bingo goal is never marked as failed when clothes looting is enabled
 - The `IgnitePawn` bingo goal is no longer allowed with restricted loadouts
 - The `GibbedPawn` bingo goal requires that the player is the one who did it
 - Bingo goals can no longer be completed during cutscenes (Intro and endings)
@@ -87,7 +93,7 @@
 - When all items are removed from a crate, the cardboard box that replaces it will match the size of the original crate
 - Harley Filben will still talk to the player on Liberty Island if using Confix (eg. GMDX) and you didn't get the password from Paul first.'
   - Note: Confix is NOT required or recommended for use with vanilla Randomizer
-- Memory Containment Units will be ignored for the purposes of the Unaugmented Prison Pocket setting, allowing you to keep another item.  Memory Containment Units will always be allowed to be kept.
+- Memory Containment Units will be ignored for the purposes of the Unaugmented Prison Pocket setting, allowing you to keep another item.  Memory Containment Units will always be kept.
 - Vandenberg Cmd move "near pipes" start to a higher level, so the start locations are more equal
 - Make sure the guard inside the front door of Dockyards is friendly if you come in some way other than the front door (if you helped Vinny)
 - Speedrun splits view changes:
@@ -107,6 +113,7 @@
 - Goals on the goal screen will still show their description when completed, rather than being changed to blank
 - Bathroom mirrors in M03 Airfield Helibase will now work as expected for binocular-based bingo goals
 - Don't show Goal Location markers for start locations
+- If NG+ removes grenades or throwing knives, it also takes all of the ammo for them as well
 
 # Zero Rando
 
@@ -153,7 +160,7 @@
 
 # Revision
 
-- Updateed mission masks for some bingo goals in Revision to account for what exists in the Revision Maps
+- Updated mission masks for some bingo goals in Revision to account for what exists in the Revision Maps
 - Added CheatsOn, CheatsOff, and AllPasswords cheats to the Revision player class
 - Addded ShowBingoWindow exec function to RevRandoPlayer so it can be manually bound to a hotkey
   - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`

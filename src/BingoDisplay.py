@@ -6,10 +6,12 @@ import os.path
 import urllib.request
 import urllib.parse
 import re
+import threading
 from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import messagebox
 from tkinter import *
+from tkinter import simpledialog
 from pathlib import Path
 
 BUTTON_BORDER_WIDTH = 4
@@ -20,6 +22,8 @@ BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
+DEFAULT_WINDOW_WIDTH = 500
+DEFAULT_WINDOW_HEIGHT = 500
 
 if os.name == 'nt': # Windows works correctly (for once)
     BORDER_WIDTH_SCALE=1
@@ -28,115 +32,324 @@ else: # Linux needs fixing
     BORDER_WIDTH_SCALE=2.85 # idk why these numbers
     BORDER_HEIGHT_SCALE=1.7
 
-JSON_DEST_FILENAME="pushjson.txt"
+SETTINGS_FILENAME="bingosettings.json"
 
-class Bingo:
 
-    def __init__(self,targetFile):
-        self.targetFile = targetFile
+#########################
+# region BingoViewerMain
+#########################
+class BingoViewerMain:
+    def __init__(self):
+
+        #Config
+        self.InitConfig()
+        self.LoadConfig()
+
+        self.targetFile = self.findBingoFile()
+        self.working = True
+
+        self.reader = None
+        self.display = None
+
+        #Maintain board state here
         self.board = [[None]*5 for i in range(5)]
-        self.tkBoard = [[None]*5 for i in range(5)]
-        self.tkBoardText = [[None]*5 for i in range(5)]
-        self.width=500
-        self.height=500
-        self.selectedMod=""
-        self.prevLines=None
-        self.bingoLineMatch = re.compile(
-            r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>-?\d+)\)',
-            re.IGNORECASE
-        )
-        self.initDrawnBoard()
+        self.selectedMod = ""
+        self.numMods=0
 
-    def closeWindow(self):
-        self.win.destroy()
-        self.win=None
+        if self.targetFile=='':
+            self.working=False
+        else:
+            self.reader = BingoReader(self.targetFile,self.config.get("selected_mod",""),self)
+            self.saveLastUsedBingoFile()
+            self.lastFileUpdate=0
+            self.display = BingoDisplay(self)
+            self.display.Start()
 
-    def isWindowOpen(self):
-        return self.win!=None
+    def SetSelectedMod(self,mod):
+        self.selectedMod = self.translateMod(mod)
+        self.display.updateTitleBar(self.selectedMod)
+        if (mod!=self.config.get("selected_mod","")):
+            self.config["selected_mod"]=mod
+            self.SaveConfig()
 
-    def getFontSizeByWindowSize(self):
-        width = min(self.width, self.height)
-        return int(width / 37)
-
-    def resize(self,event):
-        if event.widget == self.win:
-            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * BORDER_WIDTH_SCALE
-            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * BORDER_HEIGHT_SCALE
-
-            self.font = font.Font(size=self.getFontSizeByWindowSize())
-
-            for x in range(5):
-                for y in range(5):
-                    self.tkBoard[x][y].config(
-                        width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
-                    )
-
-
-
-    def initDrawnBoard(self):
-        self.win = Tk()
-        self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
-        self.win.bind("<Configure>",self.resize)
-        self.win.title(WINDOW_TITLE)
-        self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
-        self.win.config(bg="black")
-        self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
-        self.font = font.Font(size=self.getFontSizeByWindowSize())
-        for x in range(5):
-            for y in range(5):
-                self.tkBoardText[x][y]=StringVar()
-                self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
-                self.tkBoard[x][y]=Button(self.win,
-                    textvariable=self.tkBoardText[x][y],
-                    image=self.pixel,compound="c",
-                    width=self.width/5, height=self.height/5,
-                    wraplength=self.width/5, font=self.font,fg='white',
-                    disabledforeground="white", bd=BUTTON_BORDER_WIDTH
-                )
-                self.tkBoard[x][y]["state"]='disabled'
-                self.tkBoard[x][y].finished_time=None
-                self.tkBoard[x][y].grid(column=x,row=y)
-
-
-
-    def drawBoard(self):
-        self.win.title(WINDOW_TITLE+" "+translateMod(self.selectedMod))
-        for x in range(5):
-            for y in range(5):
-                self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], self.board[x][y])
-
-    def drawTile(self, tkTile, tkText, boardEntry):
-        if boardEntry is None or tkTile is None:
+    def UpdateNumMods(self,numMods):
+        if (self.display==None or self.display.win==None):
             return
 
-        desc = boardEntry["desc"]
-        if boardEntry["max"]>1:
-            desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
+        if (numMods==self.numMods):
+            return
 
-        tkText.set(desc)
-        isActive = boardEntry.get('active', 1)
-        if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
-            if tkTile.finished_time is None:
-                tkTile.finished_time=time.time() + NEWLY_COMPLETED_DISPLAY_TIME
-                tkTile.config(bg=BRIGHT_GREEN)
-            elif(tkTile.finished_time>time.time()):
-                tkTile.config(bg=BRIGHT_GREEN)
-            else:
-                tkTile.config(bg=MAGIC_GREEN)
-        elif isActive == 1 or isActive == 2:# 1 is for maybe (No mission mask, or Any mission), 2 is for active
-            tkTile.config(bg="#505050")
-        #elif isActive == 1:# 1 is for maybe
-        #    tkTile.config(bg="#303030")
-        elif isActive == -1:# -1 is for impossible
-            tkTile.config(bg="#300000")
+        self.numMods=numMods
+
+        if (numMods>1):
+            self.display.SetMenuItemSelectability("Change Selected Mod",True)
         else:
-            tkTile.config(bg="#000000", fg="#c8c8c8") # text color adjustment isn't working
+            self.display.SetMenuItemSelectability("Change Selected Mod",False)
 
+    def UpdateBoardSquare(self,x,y,val):
+        if (self.board[x][y]!=val):
+            self.board[x][y]=val
+
+    #Called either if something changes on the board, or at startup
+    def BoardUpdate(self):
+        self.display.updateTitleBar(self.selectedMod)
+        for x in range(5):
+            for y in range(5):
+                self.display.updateSquare(x,y,self.board[x][y])
+
+        self.sendBingoState()
+
+    def IsRunning(self):
+        if (self.reader!=None):
+            if (not self.reader.IsRunning()):
+                return False
+
+        if (self.display!=None):
+            if (not self.display.IsRunning()):
+                return False
+
+        return self.working
+
+    def Stop(self):
+        if (self.reader!=None):
+            self.reader.Stop()
+
+        if (self.display!=None):
+            self.display.Stop()
+
+    def InitConfig(self):
+        self.config = dict()
+        self.config["json_push_dest"]=""
+        self.config["last_used_file"]=""
+        self.config["selected_mod"]=""
+
+    def LoadConfig(self):
+        conf = ""
+        found = False
+        try:
+            f = open(SETTINGS_FILENAME)
+            conf = f.read()
+            found = True
+            f.close()
+        except FileNotFoundError as fnf:
+            print("Could not find settings file...")
+        except Exception as e:
+            print(str(e))
+
+        try:
+            jconf = json.loads(conf)
+        except Exception as e:
+            found = False
+
+        if (found):
+            #merge what was found in the file with what is default
+            self.config.update(jconf)
+
+        self.SaveConfig()
+
+
+    def SaveConfig(self):
+        with open(SETTINGS_FILENAME,'w') as f:
+            f.write(json.dumps(self.config,indent=4))
+
+
+    def saveLastUsedBingoFile(self):
+        p = Path(self.targetFile)
+        newPath = str(p)
+        curPath = self.config.get("last_used_file","")
+        if (newPath!=curPath):
+            self.config["last_used_file"]=newPath
+            self.SaveConfig()
+
+    def getDefaultPath(self):
+        try:
+            checks = [
+                Path.home() / "Documents" / "Deus Ex" / "System",
+                Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
+                Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
+                Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+                Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+                # Linux
+                Path.home() /'.steam'/'steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
+                Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+                Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+                Path.home() /'.local'/'share'/'Steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
+                Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+            ]
+
+            modified_times = {}
+            for p in checks:
+                try:
+                    f:Path = p / "DXRBingo.ini"
+                    if f.exists():
+                        modified_times[p] = os.path.getmtime(f)
+                except Exception as e:
+                    print(e)
+            sorted_paths = sorted(modified_times.keys(), key=lambda f: modified_times[f])
+
+            if len(sorted_paths) > 0:
+                return sorted_paths[-1]
+            p:Path
+            for p in checks:
+                try:
+                    if p.is_dir():
+                        return p
+                except Exception as e:
+                    print(e)
+        except Exception as e:
+            print(e)
+        return None
+
+    def selectNewBingoFile(self):
+        target = self.selectBingoFile()
+        if (target==""): # selecting Cancel returns blank, and clearly indicates you made a mistake
+            return
+        #print("New file: "+target)
+        self.targetFile = target
+        self.selectedMod=""
+        self.saveLastUsedBingoFile()
+        self.lastFileUpdate=0
+        self.reader.UpdateTarget(target)
+
+    def resetSelectedMod(self):
+        self.selectedMod=""
+        self.lastFileUpdate=0
+        self.reader.UpdateTarget(self.targetFile)
+
+    def findBingoFile(self):
+        target = ""
+
+        last_used = self.config.get("last_used_file","")
+        if (last_used!=""):
+            file = Path(last_used)
+            if file.is_file():
+                target = last_used
+
+        if (target==""):
+            target = self.selectBingoFile()
+
+        return target
+
+    def selectBingoFile(self):
+        root = Tk()
+        root.withdraw()
+        filetype = (("DXRBingo File","DXRBingo.ini"),("all files","*.*"))
+        initdir = self.getDefaultPath()
+        target = fd.askopenfilename(title="Locate your DXRBingo File",filetypes=filetype, initialdir=initdir)
+        root.destroy()
+        return target
+
+    def translateMod(self,modName):
+        if "DeusEx" in modName:
+            return "[Deus Ex Randomizer - Vanilla]"
+        elif "GMDXRandomizer" in modName:
+            return "[GMDX Randomizer]"
+        elif "RevRandomizer" in modName:
+            return "[Revision Randomizer]"
+        elif "VMDRandomizer" in modName:
+            return "[Vanilla? Madder. Randomizer]"
+        elif "HXRandomizer" in modName:
+            return "[HX Randomizer]"
+        else:
+            return modName
 
     def printBoard(self):
         for x in range(5):
             for y in range(5):
                 print(str(x)+","+str(y)+": "+str(self.board[x][y]))
+
+    def GetJSONPushDest(self):
+        return self.config.get("json_push_dest","")
+
+    def SetJSONPushDest(self,dest):
+        self.config["json_push_dest"]=dest
+        self.SaveConfig()
+        self.sendBingoState()
+
+    def generateBingoStateJson(self):
+        board = []
+        for y in range(5):
+            for x in range(5):
+                square = dict()
+                square["x"]=x
+                square["y"]=y
+                if self.board[x][y]==None:
+                    return ""
+                square["name"]=self.board[x][y]["desc"]
+                if self.board[x][y]["max"]>1:
+                    square["name"]+="\n"+str(self.board[x][y]["progress"])+"/"+str(self.board[x][y]["max"])
+                square["completed"]=self.board[x][y]["progress"] >= self.board[x][y]["max"]
+                square["possible"]=self.board[x][y]["active"]!=-1
+                #print(square)
+                board.append(square)
+        return json.dumps(board,indent=4)
+
+    def sendBingoState(self):
+        #Pull the json destination from the config
+        desturl=self.GetJSONPushDest()
+        if (desturl=="" or desturl==None):
+            return
+
+        bingoState = self.generateBingoStateJson()
+        #print(bingoState)
+        if (bingoState==""):
+            return
+
+        try:
+            data = bingoState.encode('utf-8')
+            r = urllib.request.urlopen(desturl,data=data)
+            #print(r.status)
+            #print(r.read().decode('utf-8'))
+        except Exception as e:
+            print("Couldn't push JSON to "+desturl+" - "+str(e))
+
+
+######################
+# region BingoReader
+######################
+
+class BingoReader:
+
+    def __init__(self,targetFile,selectedMod,main):
+        self.main = main
+        self.targetFile = targetFile
+        self.selectedMod=selectedMod
+        self.numMods = 0
+        self.prevLines=None
+        self.bingoLineMatch = re.compile(
+            r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>-?\d+)\)',
+            re.IGNORECASE
+        )
+
+        self.running = True
+        self.readerThread = threading.Thread(target=self.readerTask)
+        self.readerThread.daemon=True
+        self.readerThread.start()
+
+    def IsRunning(self):
+        return self.readerThread.is_alive()
+
+    def Stop(self):
+        if (self.readerThread.is_alive()):
+            self.running=False
+
+    def UpdateTarget(self,target):
+        self.targetFile = target
+        self.selectedMod=""
+        self.prevLines=None
+
+###############################
+#    INTERNAL
+###############################
+
+    def readerTask(self):
+        while(self.main.IsRunning() and self.running):
+            time.sleep(0.1)
+            changed = self.readBingoFile()
+            self.main.UpdateNumMods(self.numMods)
+            if (changed):
+                self.main.BoardUpdate()
+                self.main.SetSelectedMod(self.selectedMod)
 
     def bingoNumberToCoord(self,bingoNumber):
         x = bingoNumber//5
@@ -158,7 +371,7 @@ class Bingo:
         bingoItem["max"]=int(bingoMatches.group('max'))
         bingoItem["active"]=int(bingoMatches.group('active'))
 
-        self.board[bingoCoord[0]][bingoCoord[1]] = bingoItem
+        self.main.UpdateBoardSquare(bingoCoord[0],bingoCoord[1],bingoItem)
 
     def readBingoFile(self):
         allLines = dict()
@@ -182,21 +395,22 @@ class Bingo:
             pass
 
         mods=list(allLines.keys())
+        self.numMods = len(mods)
 
         if self.selectedMod not in mods:
             self.selectedMod=""
 
         if not self.selectedMod:
-            if len(mods)>1:
+            if self.numMods>1:
                 for mod in mods:
-                    if messagebox.askyesno("Select your mod","Do you want to use "+translateMod(mod)):
+                    if messagebox.askyesno("Select your mod","Do you want to use "+self.main.translateMod(mod)):
                         self.selectedMod=mod
                         break
-            elif len(mods)==1:
+            elif self.numMods==1:
                 self.selectedMod=mods[0]
             else:
-                print("No mods")
-                sys.exit(0)
+                print("No mods detected in file")
+                return False
 
         if self.selectedMod:
             for line in allLines[self.selectedMod]:
@@ -209,115 +423,202 @@ class Bingo:
 
         return changed
 
-    def generateBingoStateJson(self):
-        board = []
-        for y in range(5):
-            for x in range(5):
-                square = dict()
-                square["x"]=x
-                square["y"]=y
-                if self.board[x][y]==None:
-                    return {}
-                square["name"]=self.board[x][y]["desc"]
-                if self.board[x][y]["max"]>1:
-                    square["name"]+="\n"+str(self.board[x][y]["progress"])+"/"+str(self.board[x][y]["max"])
-                square["completed"]=self.board[x][y]["progress"] >= self.board[x][y]["max"]
-                square["possible"]=self.board[x][y]["active"]!=-1
-                #print(square)
-                board.append(square)
-        return json.dumps(board,indent=4)
 
-    def sendBingoState(self):
-        dest = Path(self.targetFile).parent/JSON_DEST_FILENAME
-        if not os.path.isfile(dest):
+########################
+#region BingoDisplay
+########################
+
+class BingoDisplay:
+
+    def __init__(self,main):
+        self.main = main
+        self.active = False
+        self.tkBoard = [[None]*5 for i in range(5)]
+        self.tkBoardText = [[None]*5 for i in range(5)]
+        self.width=DEFAULT_WINDOW_WIDTH
+        self.height=DEFAULT_WINDOW_HEIGHT
+        self.title = WINDOW_TITLE
+        self.win=None
+
+    def IsRunning(self):
+        return self.isWindowOpen()
+
+    def Stop(self):
+        if (self.win):
+            self.win.quit()
+
+    def Start(self):
+        self.initDrawnBoard()
+        self.bringToFront()
+        self.win.mainloop()
+        self.main.Stop()
+
+    def updateTitleBar(self,mod):
+        self.title = WINDOW_TITLE+" "+mod
+        if (self.win):
+            self.win.title(self.title)
+
+    def updateSquare(self,x,y,boardInfo):
+        self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], boardInfo)
+
+    def SetMenuItemSelectability(self,itemName,selectable):
+        newState = "disabled"
+        if (selectable):
+            newState = "normal"
+
+        if (self.active==False):
             return
 
-        f = open(dest,'r')
-        desturl=f.readline()
-        f.close()
+        if (self.menuHasItem(self.filemenu,itemName)):
+            self.filemenu.entryconfigure(itemName,state=newState)
 
-        if (desturl==""):
-            print("Make sure to specify where you want to push your json!")
-            return
+        if (self.menuHasItem(self.othermenu,itemName)):
+            self.othermenu.entryconfigure(itemName,state=newState)
 
-        bingoState = self.generateBingoStateJson()
-        #print(bingoState)
+
+    ##############################################
+    # Internal
+    ##############################################
+
+    def menuHasItem(self,menu,label):
         try:
-            data = bingoState.encode('utf-8')
-            r = urllib.request.urlopen(desturl,data=data)
-            #print(r.status)
-            #print(r.read().decode('utf-8'))
-        except Exception as e:
-            print("Couldn't push JSON to "+desturl+" - "+str(e))
+            menu.index(label)
+            return True
+        except:
+            return False
+
+    def bringToFront(self):
+        self.win.attributes('-topmost',True)
+        self.win.update()
+        self.win.attributes('-topmost',False)
+
+    def closeWindow(self):
+        self.win.quit()
+        self.win.destroy()
+        self.win=None
+        self.main.Stop()
+
+    def isWindowOpen(self):
+        return self.win!=None
+
+    def getFontSizeByWindowSize(self):
+        width = min(self.width, self.height)
+        return int(width / 37)
+
+    def resize(self,event):
+        if event.widget == self.win:
+            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * BORDER_WIDTH_SCALE
+            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * BORDER_HEIGHT_SCALE
+
+            self.font = font.Font(size=self.getFontSizeByWindowSize())
+
+            for x in range(5):
+                for y in range(5):
+                    self.tkBoard[x][y].config(
+                        width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
+                    )
+
+    def SelectNewJsonPushDest(self):
+        dest = self.main.GetJSONPushDest()
+
+        #Apparently making the prompt really long is actually the most portable way to make these windows wider
+        selected = simpledialog.askstring(title="JSON Push", \
+                                          prompt="New JSON Push Destination             (If you don't know what this is, leave it blank)", \
+                                          initialvalue=dest, \
+                                          parent=self.win)
+        if (selected==None):
+            return
+
+        self.main.SetJSONPushDest(selected)
+
+    def ResetWindowSize(self):
+        self.width=DEFAULT_WINDOW_WIDTH
+        self.height=DEFAULT_WINDOW_HEIGHT
+        self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
+
+    def initDrawnBoard(self):
+        self.win = Tk()
+        self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
+        self.win.bind("<Configure>",self.resize)
+        self.win.title(self.title)
+        self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
+        self.win.config(bg="black")
+
+        self.menubar = Menu(self.win)
+
+        self.filemenu = Menu(self.menubar,tearoff=0)
+        self.filemenu.add_command(label="Open",command=self.main.selectNewBingoFile)
+        self.filemenu.add_command(label="Change Selected Mod",command=self.main.resetSelectedMod)
+
+        self.othermenu = Menu(self.menubar,tearoff=0)
+        self.othermenu.add_command(label="Reset Window Size",command=self.ResetWindowSize)
+        self.othermenu.add_separator()
+        self.othermenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
+        #Additional things we could add:
+        # - Edit colours?
+        # - Connect to PlayBingo session
+        self.menubar.add_cascade(label="File",menu=self.filemenu)
+        self.menubar.add_cascade(label="Other",menu=self.othermenu)
+        self.win.config(menu=self.menubar)
+
+        self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
+        self.font = font.Font(size=self.getFontSizeByWindowSize())
+        for x in range(5):
+            for y in range(5):
+                self.tkBoardText[x][y]=StringVar()
+                self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
+                self.tkBoard[x][y]=Button(self.win,
+                    textvariable=self.tkBoardText[x][y],
+                    image=self.pixel,compound="c",
+                    width=self.width/5, height=self.height/5,
+                    wraplength=self.width/5, font=self.font,fg='white',
+                    disabledforeground="white", bd=BUTTON_BORDER_WIDTH
+                )
+                self.tkBoard[x][y]["state"]='disabled'
+                self.tkBoard[x][y].finished_time=None
+                self.tkBoard[x][y].grid(column=x,row=y)
+
+        self.active=True
+
+        self.main.BoardUpdate()
 
 
-def saveLastUsedBingoFile(f):
-    p = Path(f)
-    # TODO: save last used file and reuse it for getDefaultPath()
+    def drawTile(self, tkTile, tkText, boardEntry):
+        if boardEntry is None or tkTile is None:
+            return
 
-def getDefaultPath():
-    try:
-        checks = [
-            Path.home() / "Documents" / "Deus Ex" / "System",
-            Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
-            Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
-            Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-            Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-            # Linux
-            Path.home() /'.steam'/'steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
-            Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-            Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
-            Path.home() /'.local'/'share'/'Steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
-            Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-        ]
+        desc = boardEntry["desc"]
+        if boardEntry["max"]>1:
+            desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
-        modified_times = {}
-        for p in checks:
-            try:
-                f:Path = p / "DXRBingo.ini"
-                if f.exists():
-                    modified_times[p] = os.path.getmtime(f)
-            except Exception as e:
-                print(e)
-        sorted_paths = sorted(modified_times.keys(), key=lambda f: modified_times[f])
+        tkText.set(desc)
+        isActive = boardEntry.get('active', 1)
+        if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
+            if tkTile.finished_time is None or tkTile.finished_time>time.time():
+                tkTile.finished_time=time.time() + NEWLY_COMPLETED_DISPLAY_TIME
+                tkTile.config(bg=BRIGHT_GREEN)
+                self.win.after(int(NEWLY_COMPLETED_DISPLAY_TIME) * 1000,self.updateFinishedTileColour,tkTile)
+            else:
+                tkTile.config(bg=MAGIC_GREEN)
+        elif isActive == 1 or isActive == 2:# 1 is for maybe (No mission mask, or Any mission), 2 is for active
+            tkTile.config(bg="#505050")
+            tkTile.finished_time=None
+        #elif isActive == 1:# 1 is for maybe
+        #    tkTile.config(bg="#303030")
+        elif isActive == -1:# -1 is for impossible
+            tkTile.config(bg="#300000")
+            tkTile.finished_time=None
+        else:
+            tkTile.config(bg="#000000", fg="#c8c8c8") # text color adjustment isn't working
+            tkTile.finished_time=None
 
-        if len(sorted_paths) > 0:
-            return sorted_paths[-1]
-        p:Path
-        for p in checks:
-            try:
-                if p.is_dir():
-                    return p
-            except Exception as e:
-                print(e)
-    except Exception as e:
-        print(e)
-    return None
-
-def findBingoFile():
-    root = Tk()
-    root.withdraw()
-    filetype = (("DXRBingo File","DXRBingo.ini"),("all files","*.*"))
-    initdir = getDefaultPath()
-    target = fd.askopenfilename(title="Locate your DXRBingo File",filetypes=filetype, initialdir=initdir)
-    root.destroy()
-    return target
-
-def translateMod(modName):
-    if "DeusEx" in modName:
-        return "[Deus Ex Randomizer - Vanilla]"
-    elif "GMDXRandomizer" in modName:
-        return "[GMDX Randomizer]"
-    elif "RevRandomizer" in modName:
-        return "[Revision Randomizer]"
-    elif "VMDRandomizer" in modName:
-        return "[Vanilla? Madder. Randomizer]"
-    elif "HXRandomizer" in modName:
-        return "[HX Randomizer]"
-    else:
-        return modName
+    def updateFinishedTileColour(self,tkTile):
+        tkTile.config(bg=MAGIC_GREEN)
 
 
+
+#####################################################################################
+# region Actually Run
 #####################################################################################
 
 parser = argparse.ArgumentParser(description='DXRando Bingo Viewer')
@@ -332,28 +633,6 @@ if args.version:
     print('Python version:', sys.version_info, file=sys.stderr)
     sys.exit(0)
 
+main = BingoViewerMain()
 
-targetFile = findBingoFile()
-
-if targetFile=='':
-    sys.exit(0)
-
-b = Bingo(targetFile)
-saveLastUsedBingoFile(targetFile)
-lastFileUpdate=0
-
-while True:
-    if (time.time()>(lastFileUpdate+1)):
-        changed = b.readBingoFile()
-        #b.printBoard()
-        lastFileUpdate=time.time()
-        b.drawBoard()
-        if (changed):
-            b.sendBingoState()
-
-    b.win.update()
-
-    if not b.isWindowOpen():
-        sys.exit(0)
-
-    time.sleep(0.01)
+main.Stop()
