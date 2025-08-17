@@ -400,6 +400,15 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 
     slot = rng(numWeaps);
     info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps);
+
+    if (class'DXRActorsBase'.static.IsGrenade(weaps[slot].Class) || #var(prefix)WeaponShuriken(weaps[slot])!=None){
+        //Grenades and throwing knives should *also* get rid of their ammo
+        if (weaps[slot].AmmoType!=None){
+            p.DeleteInventory(weaps[slot].AmmoType);
+            weaps[slot].AmmoType.Destroy();
+        }
+    }
+
     p.DeleteInventory(weaps[slot]);
     weaps[slot].Destroy();
 }
