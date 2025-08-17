@@ -11,6 +11,7 @@ from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import messagebox
 from tkinter import *
+from tkinter import simpledialog
 from pathlib import Path
 
 BUTTON_BORDER_WIDTH = 4
@@ -29,7 +30,7 @@ else: # Linux needs fixing
     BORDER_WIDTH_SCALE=2.85 # idk why these numbers
     BORDER_HEIGHT_SCALE=1.7
 
-JSON_DEST_FILENAME="pushjson.txt"
+SETTINGS_FILENAME="bingosettings.json"
 
 
 #########################
@@ -37,6 +38,11 @@ JSON_DEST_FILENAME="pushjson.txt"
 #########################
 class BingoViewerMain:
     def __init__(self):
+
+        #Config
+        self.InitConfig()
+        self.LoadConfig()
+
         self.targetFile = self.findBingoFile()
         self.working = True
 
@@ -91,10 +97,48 @@ class BingoViewerMain:
         if (self.display!=None):
             self.display.Stop()
 
+    def InitConfig(self):
+        self.config = dict()
+        self.config["json_push_dest"]=""
+        self.config["last_used_file"]=""
+
+    def LoadConfig(self):
+        conf = ""
+        found = False
+        try:
+            f = open(SETTINGS_FILENAME)
+            conf = f.read()
+            found = True
+            f.close()
+        except FileNotFoundError as fnf:
+            print("Could not find settings file...")
+        except Exception as e:
+            print(str(e))
+
+        try:
+            jconf = json.loads(conf)
+        except Exception as e:
+            found = False
+
+        if (found):
+            #merge what was found in the file with what is default
+            self.config.update(jconf)
+
+        self.SaveConfig()
+
+
+    def SaveConfig(self):
+        with open(SETTINGS_FILENAME,'w') as f:
+            f.write(json.dumps(self.config,indent=4))
+
 
     def saveLastUsedBingoFile(self):
         p = Path(self.targetFile)
-        # TODO: save last used file and reuse it for getDefaultPath()
+        newPath = str(p)
+        curPath = self.config.get("last_used_file","")
+        if (newPath!=curPath):
+            self.config["last_used_file"]=newPath
+            self.SaveConfig()
 
     def getDefaultPath(self):
         try:
@@ -135,7 +179,31 @@ class BingoViewerMain:
             print(e)
         return None
 
+    def selectNewBingoFile(self):
+        target = self.selectBingoFile()
+        if (target==""): # selecting Cancel returns blank, and clearly indicates you made a mistake
+            return
+        #print("New file: "+target)
+        self.targetFile = target
+        self.saveLastUsedBingoFile()
+        self.lastFileUpdate=0
+        self.reader.UpdateTarget(target)
+
     def findBingoFile(self):
+        target = ""
+
+        last_used = self.config.get("last_used_file","")
+        if (last_used!=""):
+            file = Path(last_used)
+            if file.is_file():
+                target = last_used
+
+        if (target==""):
+            target = self.selectBingoFile()
+
+        return target
+
+    def selectBingoFile(self):
         root = Tk()
         root.withdraw()
         filetype = (("DXRBingo File","DXRBingo.ini"),("all files","*.*"))
@@ -163,6 +231,14 @@ class BingoViewerMain:
             for y in range(5):
                 print(str(x)+","+str(y)+": "+str(self.board[x][y]))
 
+    def GetJSONPushDest(self):
+        return self.config.get("json_push_dest","")
+
+    def SetJSONPushDest(self,dest):
+        self.config["json_push_dest"]=dest
+        self.SaveConfig()
+        self.sendBingoState()
+
     def generateBingoStateJson(self):
         board = []
         for y in range(5):
@@ -171,7 +247,7 @@ class BingoViewerMain:
                 square["x"]=x
                 square["y"]=y
                 if self.board[x][y]==None:
-                    return {}
+                    return ""
                 square["name"]=self.board[x][y]["desc"]
                 if self.board[x][y]["max"]>1:
                     square["name"]+="\n"+str(self.board[x][y]["progress"])+"/"+str(self.board[x][y]["max"])
@@ -182,20 +258,16 @@ class BingoViewerMain:
         return json.dumps(board,indent=4)
 
     def sendBingoState(self):
-        dest = Path(self.targetFile).parent/JSON_DEST_FILENAME
-        if not os.path.isfile(dest):
-            return
-
-        f = open(dest,'r')
-        desturl=f.readline()
-        f.close()
-
-        if (desturl==""):
-            print("Make sure to specify where you want to push your json!")
+        #Pull the json destination from the config
+        desturl=self.GetJSONPushDest()
+        if (desturl=="" or desturl==None):
             return
 
         bingoState = self.generateBingoStateJson()
         #print(bingoState)
+        if (bingoState==""):
+            return
+
         try:
             data = bingoState.encode('utf-8')
             r = urllib.request.urlopen(desturl,data=data)
@@ -232,6 +304,9 @@ class BingoReader:
     def Stop(self):
         if (self.readerThread.is_alive()):
             self.running=False
+
+    def UpdateTarget(self,target):
+        self.targetFile = target
 
 ###############################
 #    INTERNAL
@@ -302,8 +377,8 @@ class BingoReader:
             elif len(mods)==1:
                 self.selectedMod=mods[0]
             else:
-                print("No mods")
-                sys.exit(0)
+                print("No mods detected in file")
+                return False
 
         if self.selectedMod:
             for line in allLines[self.selectedMod]:
@@ -346,7 +421,8 @@ class BingoDisplay:
 
     def updateTitleBar(self,mod):
         self.title = WINDOW_TITLE+" "+mod
-        self.win.title(self.title)
+        if (self.win):
+            self.win.title(self.title)
 
     def updateSquare(self,x,y,boardInfo):
         self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], boardInfo)
@@ -386,6 +462,19 @@ class BingoDisplay:
                         width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
                     )
 
+    def SelectNewJsonPushDest(self):
+        dest = self.main.GetJSONPushDest()
+
+        #Apparently making the prompt really long is actually the most portable way to make these windows wider
+        selected = simpledialog.askstring(title="JSON Push", \
+                                          prompt="New JSON Push Destination             (If you don't know what this is, leave it blank)", \
+                                          initialvalue=dest, \
+                                          parent=self.win)
+        if (selected==None):
+            return
+
+        self.main.SetJSONPushDest(selected)
+
     def initDrawnBoard(self):
         self.win = Tk()
         self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
@@ -393,6 +482,14 @@ class BingoDisplay:
         self.win.title(self.title)
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
         self.win.config(bg="black")
+
+        self.menubar = Menu(self.win)
+        self.filemenu = Menu(self.menubar,tearoff=0)
+        self.filemenu.add_command(label="Open",command=self.main.selectNewBingoFile)
+        self.filemenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
+        self.menubar.add_cascade(label="File",menu=self.filemenu)
+        self.win.config(menu=self.menubar)
+
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
         self.font = font.Font(size=self.getFontSizeByWindowSize())
         for x in range(5):
