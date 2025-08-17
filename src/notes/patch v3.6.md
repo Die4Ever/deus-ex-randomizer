@@ -160,7 +160,7 @@
 
 # Revision
 
-- Updateed mission masks for some bingo goals in Revision to account for what exists in the Revision Maps
+- Updated mission masks for some bingo goals in Revision to account for what exists in the Revision Maps
 - Added CheatsOn, CheatsOff, and AllPasswords cheats to the Revision player class
 - Addded ShowBingoWindow exec function to RevRandoPlayer so it can be manually bound to a hotkey
   - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
