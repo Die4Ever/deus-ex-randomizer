@@ -52,7 +52,7 @@
 - Fewer datacubes in Area51 Entrance and Page (#1244 and #1245)
 - Hong Kong main quest bingo goals aren't given for early starts
 - Bingo goals for buying from The Merchant and Le Merchant
-- The `ChangeClothes` bingo goal is never as failed when clothes looting is enabled
+- The `ChangeClothes` bingo goal is never marked as failed when clothes looting is enabled
 - The `IgnitePawn` bingo goal is no longer allowed with restricted loadouts
 - The `GibbedPawn` bingo goal requires that the player is the one who did it
 - Bingo goals can no longer be completed during cutscenes (Intro and endings)
@@ -93,7 +93,7 @@
 - When all items are removed from a crate, the cardboard box that replaces it will match the size of the original crate
 - Harley Filben will still talk to the player on Liberty Island if using Confix (eg. GMDX) and you didn't get the password from Paul first.'
   - Note: Confix is NOT required or recommended for use with vanilla Randomizer
-- Memory Containment Units will be ignored for the purposes of the Unaugmented Prison Pocket setting, allowing you to keep another item.  Memory Containment Units will always be allowed to be kept.
+- Memory Containment Units will be ignored for the purposes of the Unaugmented Prison Pocket setting, allowing you to keep another item.  Memory Containment Units will always be kept.
 - Vandenberg Cmd move "near pipes" start to a higher level, so the start locations are more equal
 - Make sure the guard inside the front door of Dockyards is friendly if you come in some way other than the front door (if you helped Vinny)
 - Speedrun splits view changes:
