@@ -487,6 +487,10 @@ class BingoDisplay:
         self.filemenu = Menu(self.menubar,tearoff=0)
         self.filemenu.add_command(label="Open",command=self.main.selectNewBingoFile)
         self.filemenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
+        #Additional things we could add:
+        # - Reset window to default size
+        # - Edit colours?
+        # - Connect to PlayBingo session
         self.menubar.add_cascade(label="File",menu=self.filemenu)
         self.win.config(menu=self.menubar)
 

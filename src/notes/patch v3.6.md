@@ -41,6 +41,11 @@
 
 # Bingo / WaltonWare / NG+ Minor Changes
 
+- Bingo Viewer application improvements!
+  - Bingo Viewer will now automatically load the last used file, rather than prompting to select a file every time it opens
+  - Bingo Viewer now has a menu which allows you to open a new bingo file, or to select your JSON Push destination (for marathon use)
+  - Bingo Viewer will now create a settings file
+  - Performance tweaks
 - NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
   - (instead of NG+ silently taking away unspent skill points from the player, now it tries to remove them from the WW crate first)
 - Fewer datacubes in Area51 Entrance and Page (#1244 and #1245)
