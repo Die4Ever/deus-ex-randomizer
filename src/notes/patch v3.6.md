@@ -113,6 +113,7 @@
 - Goals on the goal screen will still show their description when completed, rather than being changed to blank
 - Bathroom mirrors in M03 Airfield Helibase will now work as expected for binocular-based bingo goals
 - Don't show Goal Location markers for start locations
+- If NG+ removes grenades or throwing knives, it also takes all of the ammo for them as well
 
 # Zero Rando
 
