@@ -76,6 +76,7 @@
 - Blocked the 747 Suspension Crate datacube from being in the Suspension Crate
 - Improved/compartmentalized NG+ seeding
 - Pianos now avoid recently skipped songs, and have stronger weights for required songs
+- "Sink X pool balls" bingo goal no longer counts sinking the cue ball (as the help text implies)
 
 # Minor Changes
 
