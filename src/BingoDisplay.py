@@ -13,17 +13,23 @@ from tkinter import messagebox
 from tkinter import *
 from tkinter import simpledialog
 from pathlib import Path
+from PIL import Image, ImageDraw, ImageTk
 
 BUTTON_BORDER_WIDTH = 4
 BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
-MAGIC_GREEN="#1e641e"
-BRIGHT_GREEN="#00CC00"
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 DEFAULT_WINDOW_WIDTH = 500
 DEFAULT_WINDOW_HEIGHT = 500
+
+MAGIC_GREEN    = "#1e641e"
+BRIGHT_GREEN   = "#00CC00"
+POSSIBLE_GREY  = "#505050"
+IMPOSSIBLE_RED = "#300000"
+NOT_NOW_BLACK  = "#000000"
+TEXT_GREY      = "#c8c8c8"
 
 if os.name == 'nt': # Windows works correctly (for once)
     BORDER_WIDTH_SCALE=1
@@ -90,6 +96,9 @@ class BingoViewerMain:
         if (self.board[x][y]!=val):
             self.board[x][y]=val
 
+    def GetBoardEntry(self,x,y):
+        return self.board[x][y]
+
     #Called either if something changes on the board, or at startup
     def BoardUpdate(self):
         self.display.updateTitleBar(self.selectedMod)
@@ -122,6 +131,7 @@ class BingoViewerMain:
         self.config["json_push_dest"]=""
         self.config["last_used_file"]=""
         self.config["selected_mod"]=""
+        self.config["show_progress_bars"]=True
 
     def LoadConfig(self):
         conf = ""
@@ -265,6 +275,13 @@ class BingoViewerMain:
         self.config["json_push_dest"]=dest
         self.SaveConfig()
         self.sendBingoState()
+
+    def GetProgressBarState(self):
+        return self.config.get("show_progress_bars",True)
+
+    def SetProgressBarState(self,state):
+        self.config["show_progress_bars"]=state
+        self.SaveConfig()
 
     def generateBingoStateJson(self):
         board = []
@@ -435,6 +452,7 @@ class BingoDisplay:
         self.active = False
         self.tkBoard = [[None]*5 for i in range(5)]
         self.tkBoardText = [[None]*5 for i in range(5)]
+        self.tkBoardImg = [[None]*5 for i in range(5)]
         self.width=DEFAULT_WINDOW_WIDTH
         self.height=DEFAULT_WINDOW_HEIGHT
         self.title = WINDOW_TITLE
@@ -459,7 +477,7 @@ class BingoDisplay:
             self.win.title(self.title)
 
     def updateSquare(self,x,y,boardInfo):
-        self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], boardInfo)
+        self.drawTile(x, y, boardInfo)
 
     def SetMenuItemSelectability(self,itemName,selectable):
         newState = "disabled"
@@ -517,6 +535,7 @@ class BingoDisplay:
                     self.tkBoard[x][y].config(
                         width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
                     )
+                    self.drawTile(x,y,self.main.GetBoardEntry(x,y))
 
     def SelectNewJsonPushDest(self):
         dest = self.main.GetJSONPushDest()
@@ -531,10 +550,21 @@ class BingoDisplay:
 
         self.main.SetJSONPushDest(selected)
 
+    def UpdateProgressBars(self):
+        newState = self.showProgressBars.get()
+        self.main.SetProgressBarState(newState)
+        self.main.BoardUpdate()
+
     def ResetWindowSize(self):
         self.width=DEFAULT_WINDOW_WIDTH
         self.height=DEFAULT_WINDOW_HEIGHT
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
+
+    def ShowAboutWindow(self):
+        msg = "Deus Ex Randomizer Bingo Viewer\n\n"
+        msg+= "Version: "+GetVersion()
+
+        messagebox.showinfo(title="About",message=msg)
 
     def initDrawnBoard(self):
         self.win = Tk()
@@ -544,6 +574,9 @@ class BingoDisplay:
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
         self.win.config(bg="black")
 
+        self.showProgressBars = BooleanVar()
+        self.showProgressBars.set(self.main.GetProgressBarState())
+
         self.menubar = Menu(self.win)
 
         self.filemenu = Menu(self.menubar,tearoff=0)
@@ -552,8 +585,11 @@ class BingoDisplay:
 
         self.othermenu = Menu(self.menubar,tearoff=0)
         self.othermenu.add_command(label="Reset Window Size",command=self.ResetWindowSize)
+        self.othermenu.add_checkbutton(label="Show Progress Bars", onvalue=1, offvalue=0, variable=self.showProgressBars,command=self.UpdateProgressBars)
         self.othermenu.add_separator()
         self.othermenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
+        self.othermenu.add_separator()
+        self.othermenu.add_command(label="About",command=self.ShowAboutWindow)
         #Additional things we could add:
         # - Edit colours?
         # - Connect to PlayBingo session
@@ -567,14 +603,15 @@ class BingoDisplay:
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
+                self.tkBoardImg[x][y] = ImageTk.PhotoImage("RGB",size=(self.width/5, self.height/5))
                 self.tkBoard[x][y]=Button(self.win,
                     textvariable=self.tkBoardText[x][y],
-                    image=self.pixel,compound="c",
+                    image=self.tkBoardImg[x][y],compound="c",
                     width=self.width/5, height=self.height/5,
                     wraplength=self.width/5, font=self.font,fg='white',
                     disabledforeground="white", bd=BUTTON_BORDER_WIDTH
                 )
-                self.tkBoard[x][y]["state"]='disabled'
+                #self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
 
@@ -583,7 +620,9 @@ class BingoDisplay:
         self.main.BoardUpdate()
 
 
-    def drawTile(self, tkTile, tkText, boardEntry):
+    def drawTile(self, x, y, boardEntry):
+        tkTile = self.tkBoard[x][y]
+        tkText = self.tkBoardText[x][y]
         if boardEntry is None or tkTile is None:
             return
 
@@ -592,28 +631,106 @@ class BingoDisplay:
             desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
         tkText.set(desc)
+
+        self.UpdateButtonImage(x,y,boardEntry)
+
         isActive = boardEntry.get('active', 1)
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
             if tkTile.finished_time is None or tkTile.finished_time>time.time():
-                tkTile.finished_time=time.time() + NEWLY_COMPLETED_DISPLAY_TIME
                 tkTile.config(bg=BRIGHT_GREEN)
-                self.win.after(int(NEWLY_COMPLETED_DISPLAY_TIME) * 1000,self.updateFinishedTileColour,tkTile)
+                if (tkTile.finished_time==None):
+                    tkTile.finished_time=time.time() + NEWLY_COMPLETED_DISPLAY_TIME
+                    self.win.after(int(NEWLY_COMPLETED_DISPLAY_TIME+1) * 1000,self.updateFinishedTileColour,x,y)
             else:
                 tkTile.config(bg=MAGIC_GREEN)
         elif isActive == 1 or isActive == 2:# 1 is for maybe (No mission mask, or Any mission), 2 is for active
-            tkTile.config(bg="#505050")
+            tkTile.config(bg=POSSIBLE_GREY)
             tkTile.finished_time=None
         #elif isActive == 1:# 1 is for maybe
         #    tkTile.config(bg="#303030")
         elif isActive == -1:# -1 is for impossible
-            tkTile.config(bg="#300000")
+            tkTile.config(bg=IMPOSSIBLE_RED)
             tkTile.finished_time=None
         else:
-            tkTile.config(bg="#000000", fg="#c8c8c8") # text color adjustment isn't working
+            tkTile.config(bg=NOT_NOW_BLACK, fg=TEXT_GREY) # text color adjustment isn't working
             tkTile.finished_time=None
 
-    def updateFinishedTileColour(self,tkTile):
-        tkTile.config(bg=MAGIC_GREEN)
+    def UpdateButtonImage(self,x,y,boardEntry):
+        if (self.showProgressBars.get()):
+            isActive = boardEntry.get('active', 1)
+            if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
+                #finished
+                img = self.UpdateButtonImageFinished(x,y,boardEntry)
+            elif (isActive==1 or isActive==2):
+                #possible
+                img = self.UpdateButtonImagePossible(x,y,boardEntry)
+            elif (isActive == -1):
+                #impossible
+                img = self.UpdateButtonImagePlainColour(x,y,IMPOSSIBLE_RED)
+            else:
+                #not this mission
+                img = self.UpdateButtonImagePlainColour(x,y,NOT_NOW_BLACK)
+
+            tkimg = ImageTk.PhotoImage(img)
+            self.tkBoardImg[x][y] = tkimg
+        else:
+            self.tkBoardImg[x][y]=self.pixel
+
+        self.tkBoard[x][y].config(image=self.tkBoardImg[x][y])
+
+    def UpdateButtonImagePossible(self,x,y,boardEntry):
+        progress = boardEntry["progress"]
+        maximum = boardEntry["max"]
+        width  = int(self.width / 5)
+        height = int(self.height / 5)
+
+        if (maximum>0):
+            percent = float(progress)/float(maximum)
+        else:
+            percent = progress
+
+        #Clamp the percentage between 0.0 and 1.0
+        max(min(percent,1.0),0.0)
+
+        barHeight = height * percent
+
+        img = Image.new("RGB",(width,height))
+        draw = ImageDraw.Draw(img)
+
+        draw.rectangle([(0,height-barHeight),(width,height)],fill=MAGIC_GREEN)
+        draw.rectangle([(0,0),(width,height-barHeight)],fill=POSSIBLE_GREY)
+
+        return img
+
+    def UpdateButtonImageFinished(self,x,y,boardEntry):
+
+        tkTile = self.tkBoard[x][y]
+
+        if tkTile.finished_time is None or tkTile.finished_time>time.time():
+            colour=BRIGHT_GREEN
+        else:
+            colour=MAGIC_GREEN
+
+        return self.UpdateButtonImagePlainColour(x,y,colour)
+
+        return img
+
+    #For when we just want to make the square a certain colour and it doesn't need any fancy logic
+    def UpdateButtonImagePlainColour(self,x,y,colour):
+        width  = int(self.width / 5)
+        height = int(self.height / 5)
+
+        img = Image.new("RGB",(width,height))
+        draw = ImageDraw.Draw(img)
+
+        draw.rectangle([(0,0),(width,height)],fill=colour)
+
+        return img
+
+
+    def updateFinishedTileColour(self,x,y):
+        self.tkBoard[x][y].config(bg=MAGIC_GREEN)
+        self.UpdateButtonImage(x,y,self.main.GetBoardEntry(x,y))
 
 
 
@@ -626,7 +743,7 @@ parser.add_argument('--version', action="store_true", help='Output version')
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v3.5'
+    return 'v3.6'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)
