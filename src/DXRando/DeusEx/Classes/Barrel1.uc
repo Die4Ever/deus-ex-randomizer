@@ -53,12 +53,15 @@ function AdjustBarrelBehaviour()
         case SC_Poison:
         case SC_Biohazard:
             ItemName = "Poison Gas Barrel";
+            bFlammable=False; //Metal barrels shouldn't burn
             break;
         case SC_RadioActive:
             ItemName = "Radioactive Barrel";
+            bFlammable=False; //Metal barrels shouldn't burn
             break;
         default:
             ItemName = "Barrel";
+            bFlammable=False; //Metal barrels shouldn't burn
             break;
     }
 
