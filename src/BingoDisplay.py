@@ -126,12 +126,16 @@ class BingoViewerMain:
         if (self.display!=None):
             self.display.Stop()
 
+        self.SaveConfig()
+
     def InitConfig(self):
         self.config = dict()
         self.config["json_push_dest"]=""
         self.config["last_used_file"]=""
         self.config["selected_mod"]=""
         self.config["show_progress_bars"]=True
+        self.config["win_width"]=DEFAULT_WINDOW_WIDTH
+        self.config["win_height"]=DEFAULT_WINDOW_HEIGHT
 
     def LoadConfig(self):
         conf = ""
@@ -282,6 +286,15 @@ class BingoViewerMain:
     def SetProgressBarState(self,state):
         self.config["show_progress_bars"]=state
         self.SaveConfig()
+
+    def SetWindowDimensions(self,width,height):
+        self.config["win_width"]=width
+        self.config["win_height"]=height
+
+    def GetWindowDimensions(self):
+        width  = self.config.get("win_width",DEFAULT_WINDOW_WIDTH)
+        height = self.config.get("win_height",DEFAULT_WINDOW_HEIGHT)
+        return width,height
 
     def generateBingoStateJson(self):
         board = []
@@ -453,8 +466,10 @@ class BingoDisplay:
         self.tkBoard = [[None]*5 for i in range(5)]
         self.tkBoardText = [[None]*5 for i in range(5)]
         self.tkBoardImg = [[None]*5 for i in range(5)]
-        self.width=DEFAULT_WINDOW_WIDTH
-        self.height=DEFAULT_WINDOW_HEIGHT
+
+        self.width,self.height = self.main.GetWindowDimensions()
+        #self.width=DEFAULT_WINDOW_WIDTH
+        #self.height=DEFAULT_WINDOW_HEIGHT
         self.title = WINDOW_TITLE
         self.win=None
 
@@ -489,6 +504,9 @@ class BingoDisplay:
 
         if (self.menuHasItem(self.filemenu,itemName)):
             self.filemenu.entryconfigure(itemName,state=newState)
+
+        if (self.menuHasItem(self.dispmenu,itemName)):
+            self.dispmenu.entryconfigure(itemName,state=newState)
 
         if (self.menuHasItem(self.othermenu,itemName)):
             self.othermenu.entryconfigure(itemName,state=newState)
@@ -527,6 +545,8 @@ class BingoDisplay:
         if event.widget == self.win:
             self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * BORDER_WIDTH_SCALE
             self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * BORDER_HEIGHT_SCALE
+
+            self.main.SetWindowDimensions(self.width,self.height)
 
             self.font = font.Font(size=self.getFontSizeByWindowSize())
 
@@ -582,18 +602,24 @@ class BingoDisplay:
         self.filemenu = Menu(self.menubar,tearoff=0)
         self.filemenu.add_command(label="Open",command=self.main.selectNewBingoFile)
         self.filemenu.add_command(label="Change Selected Mod",command=self.main.resetSelectedMod)
+        self.filemenu.add_separator()
+        self.filemenu.add_command(label="Exit",command=self.closeWindow) #Not really necessary, but just kind of... seems like it should be there?
+
+        self.dispmenu = Menu(self.menubar,tearoff=0)
+        self.dispmenu.add_command(label="Reset Window Size",command=self.ResetWindowSize)
+        self.dispmenu.add_checkbutton(label="Show Progress Bars", onvalue=1, offvalue=0, variable=self.showProgressBars,command=self.UpdateProgressBars)
 
         self.othermenu = Menu(self.menubar,tearoff=0)
-        self.othermenu.add_command(label="Reset Window Size",command=self.ResetWindowSize)
-        self.othermenu.add_checkbutton(label="Show Progress Bars", onvalue=1, offvalue=0, variable=self.showProgressBars,command=self.UpdateProgressBars)
-        self.othermenu.add_separator()
         self.othermenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
         self.othermenu.add_separator()
         self.othermenu.add_command(label="About",command=self.ShowAboutWindow)
+
         #Additional things we could add:
-        # - Edit colours?
+        # - Edit colours? tkinter -> colorchooser.askcolor
         # - Connect to PlayBingo session
+
         self.menubar.add_cascade(label="File",menu=self.filemenu)
+        self.menubar.add_cascade(label="Display",menu=self.dispmenu)
         self.menubar.add_cascade(label="Other",menu=self.othermenu)
         self.win.config(menu=self.menubar)
 
@@ -652,7 +678,7 @@ class BingoDisplay:
             tkTile.config(bg=IMPOSSIBLE_RED)
             tkTile.finished_time=None
         else:
-            tkTile.config(bg=NOT_NOW_BLACK, fg=TEXT_GREY) # text color adjustment isn't working
+            tkTile.config(bg=NOT_NOW_BLACK, fg=TEXT_GREY)
             tkTile.finished_time=None
 
     def UpdateButtonImage(self,x,y,boardEntry):
@@ -712,8 +738,6 @@ class BingoDisplay:
             colour=MAGIC_GREEN
 
         return self.UpdateButtonImagePlainColour(x,y,colour)
-
-        return img
 
     #For when we just want to make the square a certain colour and it doesn't need any fancy logic
     def UpdateButtonImagePlainColour(self,x,y,colour):
