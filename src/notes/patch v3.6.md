@@ -44,7 +44,8 @@
 - Bingo Viewer application improvements!
   - Bingo Viewer will now automatically load the last used file, rather than prompting to select a file every time it opens
   - If your bingo file contains data from multiple mods (eg. Vanilla and GMDX), it will remember the mod you selected to use last time
-  - Bingo Viewer now has menus which allow you to open a new bingo file, change the selected mod, reset your window size, or select your JSON Push destination (for marathon use)
+  - Bingo Viewer will remember your window size and will reopen to the same size it was when last closed
+  - Bingo Viewer now has menus which allow you to perform a variety of actions, including opening new bingo files and displaying progress bars
   - Bingo Viewer will now create a settings file
   - Performance tweaks
 - NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
@@ -115,6 +116,7 @@
 - Bathroom mirrors in M03 Airfield Helibase will now work as expected for binocular-based bingo goals
 - Don't show Goal Location markers for start locations
 - If NG+ removes grenades or throwing knives, it also takes all of the ammo for them as well
+- Metal barrels are no longer possible to set on fire.  This fixes a bug with gas clouds not being spawned from barrels that burned to the point of destruction.
 
 # Zero Rando
 
