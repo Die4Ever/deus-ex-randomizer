@@ -300,6 +300,11 @@ function bool IsStripeIndex(int index)
     if (index>15) return false;
     return true;
 }
+
+function bool IsCueIndex(int index)
+{
+    return index==0;
+}
 //#endregion
 
 function Timer()
@@ -435,7 +440,11 @@ function ReportBallSunk(int index)
 
     balls[index].sunk=true;
     class'DXREvents'.static.MarkBingo("PoolTableBall"$index); //A specific ball sunk
-    class'DXREvents'.static.MarkBingo("PoolTableBallSunk"); //Generic "any ball" sunk
+
+    if (!IsCueIndex(index)){
+        //Report every ball except the cue ball
+        class'DXREvents'.static.MarkBingo("PoolTableBallSunk"); //Generic "any ball" sunk
+    }
     //ClientMessage("Sunk ball "$index);
 
     if (IsStripeIndex(index)){

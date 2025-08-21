@@ -11,8 +11,10 @@
     - Dockyard (M09) - Jock won't appear in the warehouse or in the sewer
     - Paris (M10) - Nicolette will no longer be dancing, and she won't use a smoke bomb after being talked to in the streets
     - Silo (M14) - Jock will no longer appear at the bottom of the silo or in the command room
-- New experimental gamemode Groundhog Day
+- New gamemode Groundhog Day
   - In Groundhog Day mode, your seed and settings will not be changed when completing the game and going to New Game+.  Refine your run with each loop as you learn goal and item locations!
+- New gamemode WaltonWare Hardcore
+  - The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  No medkits or medbots.  How long can you last?
 
 # Major Changes
 
@@ -44,7 +46,8 @@
 - Bingo Viewer application improvements!
   - Bingo Viewer will now automatically load the last used file, rather than prompting to select a file every time it opens
   - If your bingo file contains data from multiple mods (eg. Vanilla and GMDX), it will remember the mod you selected to use last time
-  - Bingo Viewer now has menus which allow you to open a new bingo file, change the selected mod, reset your window size, or select your JSON Push destination (for marathon use)
+  - Bingo Viewer will remember your window size and will reopen to the same size it was when last closed
+  - Bingo Viewer now has menus which allow you to perform a variety of actions, including opening new bingo files and displaying progress bars
   - Bingo Viewer will now create a settings file
   - Performance tweaks
 - NG+ crates subtract unspent skill points and credits instead of silently taking them away in NG+
@@ -72,10 +75,14 @@
 - Minor fixes for carrying WaltonWare crates across maps
 - Fixed a bug with carrying a corpse across NG+
 - The Versalife Labs 2 start location gives you the computer password so you can move forwards or backwards
-- Bingo goals for reading books and stuff are now mutually exclusive
+- New mutual exclusions for bingo goals
+  - Book reading goals are now mutually exclusive
+  - "Check your Email" and "Clear your Browser History" goals are now mutually exclusive
+  - "MUST.  CRUSH.  X CAPITALISTS." and "Take down the thief in UNATCO" goals are now mutually exclusive
 - Blocked the 747 Suspension Crate datacube from being in the Suspension Crate
 - Improved/compartmentalized NG+ seeding
 - Pianos now avoid recently skipped songs, and have stronger weights for required songs
+- "Sink X pool balls" bingo goal no longer counts sinking the cue ball (as the help text implies)
 
 # Minor Changes
 
@@ -114,6 +121,7 @@
 - Bathroom mirrors in M03 Airfield Helibase will now work as expected for binocular-based bingo goals
 - Don't show Goal Location markers for start locations
 - If NG+ removes grenades or throwing knives, it also takes all of the ammo for them as well
+- Metal barrels are no longer possible to set on fire.  This fixes a bug with gas clouds not being spawned from barrels that burned to the point of destruction.
 
 # Zero Rando
 

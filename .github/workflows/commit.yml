@@ -1,7 +1,7 @@
 name: commit
 on:
   push:
-    paths: ['*', 'src/installer/**', '.github/**']
+    paths: ['src/*', 'src/BingoViewer/**', 'src/installer/**', '.github/**']
 
 jobs:
   windows:

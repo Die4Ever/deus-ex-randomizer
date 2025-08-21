@@ -49,7 +49,7 @@ a_installer = Analysis(
 )
 
 a_bingo = Analysis(
-    ['../BingoDisplay.py'],
+    ['../BingoViewer/BingoDisplay.py'],
     pathex=[],
     binaries=[],
     datas=[],
