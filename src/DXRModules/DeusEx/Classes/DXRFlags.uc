@@ -917,8 +917,8 @@ function int GameModeIdForSlot(int slot)
 
     if(slot--==0) return WaltonWare;
     if(slot--==0) return WaltonWareHalloween;
+    if(slot--==0) return WaltonWareHardcore;
     if(!VersionIsStable()) {
-        if(slot--==0) return WaltonWareHardcore;
         if(slot--==0) return WaltonWarex3;
     }
     if(slot--==0) return BingoCampaign;
@@ -935,9 +935,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return HordeZombies;
     if(slot--==0) return OneItemMode;
     if(slot--==0) return StrongAugsMode;
-    if(!VersionIsStable()) {
-        if(slot--==0) return GroundhogDay;
-    }
+    if(slot--==0) return GroundhogDay;
     return 999999;
 }
 

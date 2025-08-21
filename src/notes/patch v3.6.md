@@ -11,8 +11,10 @@
     - Dockyard (M09) - Jock won't appear in the warehouse or in the sewer
     - Paris (M10) - Nicolette will no longer be dancing, and she won't use a smoke bomb after being talked to in the streets
     - Silo (M14) - Jock will no longer appear at the bottom of the silo or in the command room
-- New experimental gamemode Groundhog Day
+- New gamemode Groundhog Day
   - In Groundhog Day mode, your seed and settings will not be changed when completing the game and going to New Game+.  Refine your run with each loop as you learn goal and item locations!
+- New gamemode WaltonWare Hardcore
+  - The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  No medkits or medbots.  How long can you last?
 
 # Major Changes
 
