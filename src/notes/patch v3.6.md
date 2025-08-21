@@ -73,7 +73,10 @@
 - Minor fixes for carrying WaltonWare crates across maps
 - Fixed a bug with carrying a corpse across NG+
 - The Versalife Labs 2 start location gives you the computer password so you can move forwards or backwards
-- Bingo goals for reading books and stuff are now mutually exclusive
+- New mutual exclusions for bingo goals
+  - Book reading goals are now mutually exclusive
+  - "Check your Email" and "Clear your Browser History" goals are now mutually exclusive
+  - "MUST.  CRUSH.  X CAPITALISTS." and "Take down the thief in UNATCO" goals are now mutually exclusive
 - Blocked the 747 Suspension Crate datacube from being in the Suspension Crate
 - Improved/compartmentalized NG+ seeding
 - Pianos now avoid recently skipped songs, and have stronger weights for required songs

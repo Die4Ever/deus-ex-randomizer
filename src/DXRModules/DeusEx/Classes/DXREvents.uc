@@ -4739,7 +4739,7 @@ defaultproperties
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=4,missions=64)
     bingo_options(238)=(event="Shannon_PlayerTakedown",desc="Take down the thief in UNATCO",max=1,missions=58)
-    bingo_options(239)=(event="DestroyCapitalism",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALIST.",max=10,missions=7550)
+    bingo_options(239)=(event="DestroyCapitalism",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALISM.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_PlayerTakedown",desc="Not advisable to visit the canals at night",max=1,missions=64)
     bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",desc_singular="Perform 1 act of light vandalism",max=40,missions=57214)
     bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",desc_singular="Destroy 1 skeleton part",max=10,missions=19536)
@@ -5025,5 +5025,7 @@ defaultproperties
     mutually_exclusive(105)=(e1="DXRNPCs1_Dead",e2="MerchantPurchaseBind_DXRNPCs1")
     mutually_exclusive(106)=(e1="lemerchant_PlayerTakedown",e2="MerchantPurchaseBind_lemerchant")
     mutually_exclusive(107)=(e1="mirrordoor",e2="BrokenMirror")
+    mutually_exclusive(108)=(e1="ReadJCEmail",e2="BrowserHistoryCleared")
+    mutually_exclusive(109)=(e1="DestroyCapitalism",e2="Shannon_PlayerTakedown")
 //#endregion
 }
