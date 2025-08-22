@@ -1,4 +1,4 @@
-# New Game Modes
+## New Game Modes
 
 - Serious Rando and Memes changes:
   - added new "Serious Rando" game mode, same as Full Rando but with some goal locations disabled, and memes disabled by default
@@ -16,7 +16,7 @@
 - New gamemode WaltonWare Hardcore
   - The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  No medkits or medbots.  How long can you last?
 
-# Major Changes
+## Major Changes
 
 - Area 51 (M15) Sector 3/4 starts delete enemies on the elevator at the end of Sector 2 for backtracking
 - Options for auto enabling auto augs when installed (all auto augs, protection augs, damage resistance augs)
@@ -39,9 +39,9 @@
 - Added scaling and blackout options for scopes and binoculars, with a cool automatic "Fit to Screen" option that doesn't rely on fixed size textures and adapts to any screen resolution/ratio
 - Proper handling of Ford Schick being unable to give you the aug upgrade can when your inventory is full
 - Make sure Shannon is always present in M01, regardless of gender #1280
-- Many "Kill Person X" goals are changed to "Take Down Person X", allowing both kills and knockouts instead of just kills.  Bingo boards from older versions will be upgraded to this.
+- Many "Kill Person X" bingo goals are changed to "Take Down Person X", allowing both kills and knockouts instead of just kills.  Bingo boards from older versions will be upgraded to this.
 
-# Bingo / WaltonWare / NG+ Minor Changes
+## Bingo / WaltonWare / NG+ Minor Changes
 
 - Bingo Viewer application improvements!
   - Bingo Viewer will now automatically load the last used file, rather than prompting to select a file every time it opens
@@ -61,7 +61,7 @@
 - Bingo goals can no longer be completed during cutscenes (Intro and endings)
 - New smaller scale Pool bingo goals.  These will be swapped in when bingo duration is low, instead of the multi-table goals.
 - All books, datacubes, and newspapers can now show a summary of what they are when highlighted.  These summaries are only visible when password assistance is enabled
-- Add French Exit signs to the Emergency Exit bingo goal (and extra goal info for those who don't speak French)
+- Added French Exit signs to the Emergency Exit bingo goal (and extra goal info for those who don't speak French)
 - Tweaked when some bingo goals can appear, based on settings and version of the randomizer being used (eg. Revision)
   - The "Flush Toilets" bingo goal can now be completed in M15 in Revision
   - "Extinguish yourself with running water" is no longer allowed with short bingo durations
@@ -78,13 +78,82 @@
 - New mutual exclusions for bingo goals
   - Book reading goals are now mutually exclusive
   - "Check your Email" and "Clear your Browser History" goals are now mutually exclusive
-  - "MUST.  CRUSH.  X CAPITALISTS." and "Take down the thief in UNATCO" goals are now mutually exclusive
+  - ["MUST.  CRUSH.  CAPITALISM."](https://www.youtube.com/watch?v=YjiT1ppXXq4) and "Take down the thief in UNATCO" goals are now mutually exclusive
 - Blocked the 747 Suspension Crate datacube from being in the Suspension Crate
 - Improved/compartmentalized NG+ seeding
 - Pianos now avoid recently skipped songs, and have stronger weights for required songs
 - "Sink X pool balls" bingo goal no longer counts sinking the cue ball (as the help text implies)
 
-# Minor Changes
+## Zero Rando
+
+- Zero Rando has more vanilla authentic damage types for Hazmats
+- Zero Rando allows using computers from too far away again, and disables the animation speedup that compensates for it (back to vanilla behavior)
+- Explosive barrel damage unchanged for Zero Rando (unless you have the new barrel textures enabled or BalanceEtc)
+- Removed `DXRDoors` `door_fixes` from Zero Rando
+- The player portrait on the new game screen doesn't get randomized in Zero Rando
+- Laser positions in M04/M08 Hell's Kitchen sewers are now only adjusted when Moderate Map Balance Changes are enabled (meaning they are no longer adjusted in Zero Rando)
+
+## Crowd Control
+
+<details>
+<summary>Click to expand Crowd Control Changes</summary>
+
+- Additional messages for dropped pamphlets
+- Crowd Control grenades are now thrown at the player from a random location around them, rather than being dropped at their feet
+- Crowd Control thrown grenades show the viewer name when highlighted
+- Grenades thrown by Crowd Control now detonate at the normal speed, instead of very slowly.
+- Crowd Control effects don't start when the player is dead
+- The "Disable Jump" Crowd Control effect now works again in vanilla
+- Crowd Control won't allow giving the player a weapon they already have (except for ones where the weapon pickup acts like the ammo, like grenades or throwing knives)
+
+</details>
+
+## HX Fixes
+
+<details>
+<summary>Click to expand HX Changes</summary>
+
+- HX will now generate the bingo board based on the starting map selected when hosting the server
+- Replaced grenades in HX no longer beep at the start of the level #1255
+- Sub base doors and the UC door switches will now be aligned properly again
+- Gordon's Intercom will no longer fall to the floor
+- Added a short delay between setting flags and starting infolinks after NSF HQ message broadcasted and UC schematics downloaded in Ocean Lab.  This lets them work properly in HX without any noticeable difference otherwise #1263
+- M04 Anna and M14 Walton will properly start out of world in HX #1251
+- All spawned datacubes in HX should now be added to your datavault when read
+- HX won't enable enemy resurrection or reanimation on the first loop
+- Zombies are properly initialized in HX #1247
+- Ensure cloned pawns are marked as not initialized before trying to initialize them (Not strictly required for vanilla, but needed for HX to ensure they go out of world and get correct alliances) #1251 #1248
+- Don't populate the bingo board with question marks in HX #1252
+- Maggie's piano in HX now says who played a song and broadcasts it to all players #1255
+- HX will now use the proper triggers to start Infolinks, preventing softlocks (particularly when finding the Dragon's Tooth Sword)
+- HX now considers itself to use the vanilla maps, so it will no longer unintentionally do things intended for Revision
+- HK Basketball bingo trigger finds the proper original trigger #1255
+- The Lucky Money Freezer Door now gets attached to the security computer in HX #1255
+- Sam Carter is now fearless in HX
+- Infolinks will now start properly when initiated from Randomizer code
+- Jock will now appear as expected when completing Silo
+- More various fixes for HX Randomizer
+- Ensure that `BingoFrobber`s are "always relevant" to ensure the ones that are out of world are present on HX clients #1257
+
+</details>
+
+## Revision
+
+<details>
+<summary>Click to expand Revision Changes</summary>
+
+- Updated mission masks for some bingo goals in Revision to account for what exists in the Revision Maps
+- Added CheatsOn, CheatsOff, and AllPasswords cheats to the Revision player class
+- Addded ShowBingoWindow exec function to RevRandoPlayer so it can be manually bound to a hotkey
+  - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
+- The "Go to the third floor of the Ton" bingo goal in Revision now allows going up the stairs instead (in M08, where the stairs are accessible)
+
+</details>
+
+## Minor Changes
+
+<details>
+<summary>Click to expand Minor Changes</summary>
 
 - Entrance Rando is now an advanced setting, and some Entrance Rando game modes have been removed
 - Various speech restorations
@@ -123,53 +192,5 @@
 - If NG+ removes grenades or throwing knives, it also takes all of the ammo for them as well
 - Metal barrels are no longer possible to set on fire.  This fixes a bug with gas clouds not being spawned from barrels that burned to the point of destruction.
 
-# Zero Rando
+</details>
 
-- Zero Rando has more vanilla authentic damage types for Hazmats
-- Zero Rando allows using computers from too far away again, and disables the animation speedup that compensates for it (back to vanilla behavior)
-- Explosive barrel damage unchanged for Zero Rando (unless you have the new barrel textures enabled or BalanceEtc)
-- Removed `DXRDoors` `door_fixes` from Zero Rando
-- The player portrait on the new game screen doesn't get randmized in Zero Rando
-- Laser positions in M04/M08 Hell's Kitchen sewers are now only adjusted when Moderate Map Balance Changes are enabled (meaning they are no longer adjusted in Zero Rando)
-
-# Crowd Control
-
-- Additional messages for dropped pamphlets
-- Crowd Control grenades are now thrown at the player from a random location around them, rather than being dropped at their feet
-- Crowd Control thrown grenades show the viewer name when highlighted
-- Grenades thrown by Crowd Control now detonate at the normal speed, instead of very slowly.
-- Crowd Control effects don't start when the player is dead
-- The "Disable Jump" Crowd Control effect now works again in vanilla
-- Crowd Control won't allow giving the player a weapon they already have (except for ones where the weapon pickup acts like the ammo, like grenades or throwing knives)
-
-# HX Fixes
-
-- HX will now generate the bingo board based on the starting map selected when hosting the server
-- Replaced grenades in HX no longer beep at the start of the level #1255
-- Sub base doors and the UC door switches will now be aligned properly again
-- Gordon's Intercom will no longer fall to the floor
-- Added a short delay between setting flags and starting infolinks after NSF HQ message broadcasted and UC schematics downloaded in Ocean Lab.  This lets them work properly in HX without any noticeable difference otherwise #1263
-- M04 Anna and M14 Walton will properly start out of world in HX #1251
-- All spawned datacubes in HX should now be added to your datavault when read
-- HX won't enable enemy resurrection or reanimation on the first loop
-- Zombies are properly initialized in HX #1247
-- Ensure cloned pawns are marked as not initialized before trying to initialize them (Not strictly required for vanilla, but needed for HX to ensure they go out of world and get correct alliances) #1251 #1248
-- Don't populate the bingo board with question marks in HX #1252
-- Maggie's piano in HX now says who played a song and broadcasts it to all players #1255
-- HX will now use the proper triggers to start Infolinks, preventing softlocks (particularly when finding the Dragon's Tooth Sword)
-- HX now considers itself to use the vanilla maps, so it will no longer unintentionally do things intended for Revision
-- HK Basketball bingo trigger finds the proper original trigger #1255
-- The Lucky Money Freezer Door now gets attached to the security computer in HX #1255
-- Sam Carter is now fearless in HX
-- Infolinks will now start properly when initiated from Randomizer code
-- Jock will now appear as expected when completing Silo
-- More various fixes for HX Randomizer
-- Ensure that `BingoFrobber`s are "always relevant" to ensure the ones that are out of world are present on HX clients #1257
-
-# Revision
-
-- Updated mission masks for some bingo goals in Revision to account for what exists in the Revision Maps
-- Added CheatsOn, CheatsOff, and AllPasswords cheats to the Revision player class
-- Addded ShowBingoWindow exec function to RevRandoPlayer so it can be manually bound to a hotkey
-  - In the User.ini file, go to the \[Engine.Input\] section and find the key you want to bind to open the bingo screen.  Change it so that it maps to ShowBingoWindow, eg. to make B open the window: `B=ShowBingoWindow`
-- The "Go to the third floor of the Ton" bingo goal in Revision now allows going up the stairs instead (in M08, where the stairs are accessible)
