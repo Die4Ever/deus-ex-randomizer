@@ -21,6 +21,45 @@ function bool IgnoreDamageType(Name damageType)
         return False;
 }
 
+//Don't play breathing animations
+function TweenToWaiting(float tweentime)
+{
+//    ClientMessage("TweenToWaiting()");
+    if (Region.Zone.bWaterZone)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+    {
+        TweenAnimPivot('BreatheLight', tweentime);
+        //if (HasTwoHandedWeapon())
+        //    TweenAnimPivot('BreatheLight2H', tweentime);
+        //else
+        //    TweenAnimPivot('BreatheLight', tweentime);
+    }
+}
+
+function PlayWaiting()
+{
+//    ClientMessage("PlayWaiting()");
+    if (Region.Zone.bWaterZone)
+        LoopAnimPivot('Tread', , 0.3, , GetSwimPivot());
+    else
+    {
+        TweenAnimPivot('BreatheLight',0); //Tween to the breathing animation, but don't actually play it
+        //if (HasTwoHandedWeapon())
+        //    LoopAnimPivot('BreatheLight2H', , 0.3);
+        //else
+        //    LoopAnimPivot('BreatheLight', , 0.3);
+    }
+}
+
+//GMK_DressShirt doesn't actually have a sitting animation ¯\_(ツ)_/¯
+function PlaySitting()
+{
+    //ClientMessage("PlaySitting()");
+    //LoopAnimPivot('SitBreathe', , 0.15);
+    LoopAnimPivot('SitStill', , 0.15); //Have fun T-Posing
+}
+
 defaultproperties
 {
     DrawScale=0.6
