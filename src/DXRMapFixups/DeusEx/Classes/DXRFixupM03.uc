@@ -96,6 +96,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponShuriken tk;
     local #var(prefix)JuanLebedev juan;
     local #var(prefix)ScriptedPawn sp;
+    local #var(prefix)Keypad kp;
     local AlarmUnit au;
     local vector loc;
     local #var(prefix)ComputerPublic compublic;
@@ -328,6 +329,21 @@ function PreFirstEntryMapFixes()
                 au.SetLocation(loc);
                 break;
             }
+        } else {
+            //Revision made the hangar door bIsDoor, which means it gets randomized stats.  We don't want that.
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'HangarDoorOpen') { //Main door in guard house
+                dxm.bIsDoor = false;
+            }
+            foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'HangarDoorOpen2') { //back door near helipad
+                dxm.bIsDoor = false;
+            }
+
+            //Make sure the keypad on the back door isn't hackable
+            foreach AllActors(class'#var(prefix)Keypad', kp){
+                if (kp.Event!='HangarDoorOpen2') continue;
+                kp.bIsSecretGoal=true;
+            }
+
         }
         break;
     //#endregion

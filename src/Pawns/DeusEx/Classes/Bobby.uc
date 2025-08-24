@@ -21,6 +21,17 @@ function bool IgnoreDamageType(Name damageType)
         return False;
 }
 
+function bool ShouldDropWeapon()
+{
+    //Bobby has a firm kung fu grip
+    return false;
+}
+
+
+////////////////////////////////
+// #region Animation Hacks
+////////////////////////////////
+
 //Don't play breathing animations
 function TweenToWaiting(float tweentime)
 {
@@ -60,6 +71,8 @@ function PlaySitting()
     LoopAnimPivot('SitStill', , 0.15); //Have fun T-Posing
 }
 
+// #endregion
+
 defaultproperties
 {
     DrawScale=0.6
@@ -93,7 +106,7 @@ defaultproperties
     MultiSkins(5)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(6)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(7)=Texture'DeusExItems.Skins.BlackMaskTex'
-    InitialInventory(0)=(Inventory=class'#var(prefix)WeaponCombatKnife')
+    InitialInventory(0)=(Inventory=class'WeaponBobbysKnife')
     InitialInventory(1)=(Inventory=None)
     InitialInventory(2)=(Inventory=None)
     InitialInventory(3)=(Inventory=None)
@@ -112,4 +125,5 @@ defaultproperties
     HitSound1=Sound'ChildPainMedium';
     HitSound2=Sound'ChildPainLarge';
     Die=Sound'ChildDeath';
+    bKeepWeaponDrawn=True
 }

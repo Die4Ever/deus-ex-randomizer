@@ -1785,7 +1785,7 @@ function RandoHacks()
 
 function _RandoHackable(#var(prefix)HackableDevices h)
 {
-    if( h.bHackable && h.hackStrength>0 ) {
+    if( h.bHackable && h.hackStrength>0 && h.bIsSecretGoal==false) {
         h.hackStrength = rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust);
         h.hackStrength = Clamp(h.hackStrength*100, 1, 100)/100.0;
         h.initialhackStrength = h.hackStrength;
@@ -1915,7 +1915,7 @@ function MakeAllHackable(int deviceshackable)
 
     foreach AllActors(class'#var(prefix)HackableDevices', h)
     {
-        if( h.bHackable == false && chance_single(deviceshackable) ) {
+        if( h.bHackable == false && h.bIsSecretGoal==false && chance_single(deviceshackable) ) {
             h.bHackable = true;
             h.hackStrength = rngrange(0.8, min_hack_adjust, max_hack_adjust);
             h.hackStrength = Clamp(h.hackStrength*100, 1, 100) / 100.0;
