@@ -21,6 +21,6 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-- minor changes pending...
+- Zombie merchants are no longer ignored by the AI
 
 </details>
