@@ -228,21 +228,43 @@ function EnableButtons()
             }
 
             if (NanoKeyRing(inv) != None) {
+                //Not a regular inventory item, so don't treat it like anything is currently selected
                 btnDrop.DisableWindow();
                 btnRefusal.DisableWindow();
                 btnEquip.DisableWindow();
                 btnUse.DisableWindow();
             } else {
-                if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None || DeusExWeapon(inv) != None) {
-                    btnUse.DisableWindow();
-                } else if (AugmentationCannister(inv) != None) {
-                    btnRefusal.DisableWindow();
-                    btnUse.DisableWindow();
+                //Handle each button individually
+
+                //"Equip" button text
+                if ((inv == player.inHand ) || (inv == player.inHandPending)) {
+                    btnEquip.SetButtonText(UnequipButtonLabel);
                 } else {
-                    if ((inv == player.inHand ) || (inv == player.inHandPending))
-                        btnEquip.SetButtonText(UnequipButtonLabel);
-                    else
-                        btnEquip.SetButtonText(EquipButtonLabel);
+                    btnEquip.SetButtonText(EquipButtonLabel);
+                }
+
+                //"Equip" button
+                if ((ChargedPickup(inv)!=None && ChargedPickup(inv).bIsActive)){
+                    btnEquip.DisableWindow();
+                }
+
+                //"Use" button
+                if (WeaponMod(inv) != None || AugmentationUpgradeCannister(inv) != None || DeusExWeapon(inv) != None ||
+                    AugmentationCannister(inv) != None ||
+                    (ChargedPickup(inv)!=None && ChargedPickup(inv).bIsActive)) {
+
+                    btnUse.DisableWindow();
+                }
+
+                //"Refusal" button
+                if (AugmentationCannister(inv) != None ||
+                    (ChargedPickup(inv)!=None && ChargedPickup(inv).bIsActive)) {
+                    btnRefusal.DisableWindow();
+                }
+
+                //"Drop" button
+                if ((ChargedPickup(inv)!=None && ChargedPickup(inv).bIsActive)){
+                    btnDrop.DisableWindow();
                 }
             }
         } else {
