@@ -51,7 +51,11 @@ function CreateChangeAccountButton()
     winActionButtons.SetWidth(174);
     winActionButtons.FillAllSpace(False);
 
-    btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    #ifdef gmdxae
+        btnChangeAccount = PersonaActionButtonWindowMenu(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    #else
+        btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    #endif
     btnChangeAccount.SetButtonText("Logi|&n");
 }
 
