@@ -1114,8 +1114,8 @@ function AnyEntryMapFixes()
             ces = GetSpeechEvent(con.eventList, "MJ12 is short a UC");
             ces2 = GetSpeechEvent(con.eventList, "There are two separate units at the west end of the base");
             ces.nextEvent = ces2;
-            RemoveGoalFromCon('ActivatePower', 'MeetCarlaBrown');
             RemoveGoalFromCon('DestroyBots', 'MeetCarlaBrown');
+            RemoveGoalFromCon('ActivatePower', 'MeetCarlaBrown');
         }
 
         // timer to count the MJ12 Bots

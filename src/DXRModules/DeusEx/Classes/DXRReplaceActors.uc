@@ -700,6 +700,7 @@ function ReplaceDecoration(Decoration a, Decoration n)
 {
     n.bPushable = a.bPushable;
     n.EffectWhenDestroyed = a.EffectWhenDestroyed;
+    n.bIsSecretGoal = a.bIsSecretGoal;
 
     UpdateActorReferences(a,n);
     /*

@@ -5,6 +5,8 @@ var laserEmitter aimLaser;
 var bool bDoomMode;
 var bool bOnLadder;
 var Rotator ShakeRotator;
+var bool bAutorun;
+var float autorunTime;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
@@ -1322,6 +1324,47 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     ViewRotation.Roll += rollAmount;
 }
 
+function PreTravel()
+{
+    local DeusExRootWindow root;
+
+    root = DeusExRootWindow(rootWindow);
+
+    //Opening URLs triggers pretravel, but we aren't actually traveling, so don't
+    if (class'DXRando'.default.dxr!=None && class'DXRando'.default.dxr.bIsOpeningURL) return;
+
+    //Don't clear the stack if the top of the stack is the Credits.
+    //We're pretraveling as part of the DestroyWindow call chain
+    if (root!=None && CreditsWindow(root.GetTopWindow())==None){
+        root.ClearWindowStack();
+    }
+
+    //Disable autorun
+    bAutorun=False;
+
+    Super.PreTravel();
+}
+
+event PlayerInput( float DeltaTime )
+{
+    if (!InConversation()) {
+        if(bAutorun) {
+            if(aBaseY == 0 || autorunTime > Level.TimeSeconds-1) {
+                aBaseY = 3000;
+            } else {
+                bAutorun = false;
+            }
+        }
+        Super.PlayerInput(DeltaTime);
+    }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// #region Exec Functions
+///////////////////////////////////////////////////////////////////////////////
+
 exec function ToggleScope()
 {
     local DeusExWeapon W;
@@ -1371,6 +1414,12 @@ exec function ShowBingoWindow()
    }
 
 	InvokeUIScreen(Class'PersonaScreenBingo');
+}
+
+exec function ToggleAutorun()
+{
+    bAutorun = !bAutorun;
+    autorunTime = Level.TimeSeconds;
 }
 
 exec function AllPasswords()
@@ -1449,3 +1498,5 @@ exec function MarkLoc(int x, int y, int z, optional string markName)
     actorDisplay.ShowPos(true);
     actorDisplay.ShowBindName(true);
 }
+
+//#endregion

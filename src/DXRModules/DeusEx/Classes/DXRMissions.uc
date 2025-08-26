@@ -143,7 +143,7 @@ function ReplaceGoalActor(Actor a, Actor n)
     local bool bTextures;
     if (num_goals==0) return;
 
-    bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled(self);
+    bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled();
 
     for (i=0;i<num_goals;i++)
     {
@@ -412,7 +412,7 @@ function DignifyAllGoalActors()
     if(!#defined(vanilla) && !#defined(revision)) return;
     if(num_goals == 0 && num_locations == 0) return;
 
-    bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled(self);
+    bTextures = class'MenuChoice_GoalTextures'.static.IsEnabled();
 
     for(g=0;g<num_goals;g++){
         for(a=0;a<ArrayCount(goals[g].actors);a++){

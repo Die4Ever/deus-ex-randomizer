@@ -12,7 +12,7 @@ function bool Facelift(bool bOn)
 
     dxr = class'DXRando'.default.dxr;
 
-    if (dxr!=None && class'MenuChoice_GoalTextures'.static.IsEnabled(dxr)){
+    if (dxr!=None && class'MenuChoice_GoalTextures'.static.IsEnabled()){
         return false;
     } else if (dxr==None && Skin==Texture'GoalSecurityComputerGreen'){
         return false; //On a load, DXR may not be there yet

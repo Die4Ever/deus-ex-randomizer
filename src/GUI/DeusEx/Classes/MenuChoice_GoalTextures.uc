@@ -17,9 +17,23 @@ function SaveSetting()
     }
 }
 
-static function bool IsEnabled(Actor a)
+static function bool IsEnabled()
 {
     return default.value==1;
+}
+
+static function bool BookColoursShouldChange()
+{
+    local DXRando dxr;
+
+    dxr = class'DXRando'.default.dxr;
+
+    if (dxr==None) return false;
+
+    if(!#defined(vanilla)) return false; //Have to think about Facelift before allowing in other mods
+    if(dxr.flags.IsZeroRandoPure()) return false; //Don't change the textures for pure Zero Rando
+
+    return IsEnabled();
 }
 
 defaultproperties

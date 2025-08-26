@@ -1062,11 +1062,11 @@ static function string GetActorName(Actor a)
 
 #ifdef hx
     if(player != None) {
-        return player.PlayerReplicationInfo.PlayerName;
+        return Left(player.PlayerReplicationInfo.PlayerName,32); //Truncate the player name (see below)
     }
 #else
     if(player != None) {
-        return player.TruePlayerName;
+        return Left(player.TruePlayerName,32); //Truncate the player name to 32 characters, just in case (This is the limit on the New Game input box)
     }
 #endif
     // bImportant ScriptedPawns don't get their names randomized

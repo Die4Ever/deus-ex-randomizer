@@ -253,6 +253,8 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
     }
     sp.bInvincible = false; // If they died, they can't have been invincible
     sp.bImportant = false; // already marked as dead, don't overwrite or destroy on travel
+    sp.bDetectable = true;
+    sp.bIgnore = false;
     sp.BindName = "";// Zombies don't talk
     sp.BarkBindName = "";
 
