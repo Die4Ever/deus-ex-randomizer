@@ -1032,13 +1032,20 @@ function DeusExGoal GiveGoalFromCon(#var(PlayerPawn) player, name goaltag, name 
 
 function bool RemoveGoalFromCon(name goalName, name convname, optional int which)
 {
+    local Conversation con;
+    local ConEventAddGoal ceag;
     local ConEvent prevCe;
 
-    GetGoalConEvent(goalName, convname, which, prevCe);
-    if (prevCe != None && prevCe.nextEvent != None) {
+    con = GetConversation(convname);
+    ceag = GetGoalConEvent(goalName, convname, which, prevCe);
+
+    if (con.eventList == ceag) {
+        con.eventList = ceag.nextEvent;
+    } else if (prevCe != None && prevCe.nextEvent != None) {
         prevCe.nextEvent = prevCe.nextEvent.nextEvent;
         return true;
     }
+    
     return false;
 }
 

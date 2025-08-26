@@ -1042,6 +1042,7 @@ function AnyEntryMapFixes()
     local Conversation con;
     local ConEvent ce;
     local ConEventTrigger cet;
+    local ConEventSpeech ces, ces2;
     local #var(DeusExPrefix)Mover dxm;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
@@ -1107,8 +1108,19 @@ function AnyEntryMapFixes()
         SetTimer(1, true);
         break;
     case "12_VANDENBERG_CMD":
+        if (dxr.flags.GetStartingMap() > 120) {
+            // a lot of this conversation doesn't make sense on later starts. but you can't get a map for the bingo goal without it
+            con = GetConversation('MeetCarlaBrown');
+            ces = GetSpeechEvent(con.eventList, "MJ12 is short a UC");
+            ces2 = GetSpeechEvent(con.eventList, "There are two separate units at the west end of the base");
+            ces.nextEvent = ces2;
+            RemoveGoalFromCon('ActivatePower', 'MeetCarlaBrown');
+            RemoveGoalFromCon('DestroyBots', 'MeetCarlaBrown');
+        }
+
         // timer to count the MJ12 Bots
         SetTimer(1, True);
+    
         break;
 
     case "14_OCEANLAB_LAB":
