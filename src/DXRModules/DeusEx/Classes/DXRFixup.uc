@@ -353,13 +353,13 @@ function bool IsManWhoWasThursday(name TextTag)
 {
     switch(TextTag)
     {
-        case '02_Book05':
-        case '03_Book05':
-        case '04_Book05':
-        case '10_Book03':
-        case '12_Book02':
-        case '14_Book04':
-        case '15_Book02':
+        case '02_Book05': //M02 Hotel/Underground - Closed
+        case '03_Book05': //M03 Airfield Helibase - Closed
+        case '04_Book05': //M04 Hotel - Closed
+        case '10_Book03': //M10 Pre-Catacombs ("Entrance" in Revision) - Closed
+        case '12_Book02': //M12 Cmd - Open
+        case '14_Book04': //M14 OceanLab Lab - Closed
+        case '15_Book02': //M15 Area 51 Final - Open (Swapped from a Jacob's Shadow book)
             return true;
     }
     return false;
@@ -369,14 +369,14 @@ function bool IsJacobsShadow(name TextTag)
 {
     switch(TextTag)
     {
-        case '02_Book03':
-        case '03_Book04':
-        case '04_Book03':
-        case '06_Book03':
-        case '09_Book02':
-        case '10_Book02':
-        case '12_Book01':
-        case '15_Book01':
+        case '02_Book03': //M02 Underground - Closed
+        case '03_Book04': //M03 Airfield Helibase - Closed
+        case '04_Book03': //M04 Hotel - Closed
+        case '06_Book03': //M06 Market - Closed
+        case '09_Book02': //M09 Ship Below - Open
+        case '10_Book02': //M10 Chateau - Closed
+        case '12_Book01': //M12 Cmd/Computer - Open
+        case '15_Book01': //M15 Bunker/Entrance - Open
             return true;
     }
     return false;
@@ -388,10 +388,7 @@ function AdjustBookColours()
     local #var(prefix)BookClosed bc;
     local bool enable;
 
-    if(!#defined(vanilla)) return; //Have to think about Facelift before allowing in other mods
-    if(dxr.flags.IsZeroRandoPure()) return; //Don't change the textures for pure Zero Rando
-
-    enable = class'MenuChoice_GoalTextures'.static.IsEnabled(dxr.flags);
+    enable = class'MenuChoice_GoalTextures'.static.BookColoursShouldChange();
 
     foreach AllActors(class'#var(prefix)BookOpen',bo){
         if (enable){
