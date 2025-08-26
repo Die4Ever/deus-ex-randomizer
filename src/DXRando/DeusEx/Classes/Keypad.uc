@@ -11,9 +11,12 @@ simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
    root = DeusExRootWindow(Hacker.rootWindow);
    if (root != None)
    {
+#ifndef gmdxae //SARGE: TODO: FIX
       keypadwindow = HUDKeypadWindow(root.InvokeUIScreen(Class'HUDKeypadWindow', True));
+#endif
       root.MaskBackground(True);
 
+#ifndef gmdxae //SARGE: TODO: FIX
       // copy the tag data to the actual class
       if (keypadwindow != None)
       {
@@ -22,6 +25,7 @@ simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
          keypadwindow.bInstantSuccess = GetInstantSuccess(Hacker, bHacked);
          keypadwindow.InitData();
       }
+#endif
    }
 }
 
