@@ -27,6 +27,14 @@ static simulated function FindEventPrefixSuffix(string event, out string prefix,
     }until(idx==-1 || count>10)
 }
 
+static simulated function bool IsPawnDeathSuffix(string suffix)
+{
+    if (InStr(suffix,"Dead")!=-1) return true;
+    if (InStr(suffix,"Unconscious")!=-1) return true;
+    if (InStr(suffix,"Takedown")!=-1) return true;
+    return false;
+}
+
 //This function branches out to the more case-specific help text functions
 static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
@@ -39,24 +47,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
     //#region Which Function?
     //Look for help text in a function based on suffix...
     if (msg=="" && suffix!=""){
+
+        //Remap suffixes...
+        if (IsPawnDeathSuffix(suffix)){
+            suffix = "PawnDeath";
+        }
+
         switch (suffix){
-            case "Dead":
-            case "Unconscious":
-            case "Takedown":
-            case "ClassUnconscious":
-            case "AllianceUnconscious":
-            case "PlayerUnconscious":
-            case "ClassDead":
-            case "AllianceDead":
-            case "PlayerDead":
-            case "ClassTakedown":
-            case "AllianceTakedown":
-            case "PlayerTakedown":
-            case "DeadM3":
-            case "DeadM4":
-            case "DeadM5":
-            case "ClassDeadM6":
-            case "ClassDeadM11":
+            case "PawnDeath":
                 msg = GetBingoHelpTextPawnDeaths(event,mission,FemJC);
                 break;
             case "Played":
