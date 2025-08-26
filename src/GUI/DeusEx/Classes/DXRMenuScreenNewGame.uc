@@ -326,6 +326,7 @@ function SelectRandomPortrait(bool noRepeat)
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 }
 
+#ifndef gmdxae
 function GiveTip()
 {
     // DXRando: disable this because we think it's more confusing than helpful?
@@ -334,7 +335,7 @@ function GiveTip()
         root.MessageBox(CheckboxTipHeader, CheckboxTipText, 1, False, Self);
     }*/
 }
-
+#endif
 
 defaultproperties
 {
