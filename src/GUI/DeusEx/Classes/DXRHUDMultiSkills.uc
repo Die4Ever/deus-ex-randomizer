@@ -388,7 +388,7 @@ function int GetNumAugUpgrades( DeusExPlayer thisPlayer )
     augCanCount=0;
 
     //Allow usage of an aug upgrade can on the ground
-    if (#var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget)!=None){
+    if (#var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget)!=None && !thisPlayer.FrobTarget.bDeleteMe){
         augCanCount++;
     }
 
@@ -440,7 +440,7 @@ function bool AttemptUpgradeAug( DeusExPlayer thisPlayer, Augmentation anAug )
             return False;
         } else {
             //Prioritize a highlighted aug upgrade over one in your inventory
-            if (#var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget)!=None){
+            if (#var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget)!=None && !thisPlayer.FrobTarget.bDeleteMe){
                 augCan = #var(prefix)AugmentationUpgradeCannister(thisPlayer.FrobTarget);
                 thisPlayer.AddInventory(augCan); //Needs to be in inventory so the Aug can see it is available for upgrading
             } else {
