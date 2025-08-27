@@ -1,6 +1,6 @@
 #ifdef injections
 class InformationDevices injects InformationDevices abstract;
-#elseif revision
+#elseif revision || gmdxae
 class DXRInformationDevices extends DataCube;
 #else
 class DXRInformationDevices extends #var(prefix)InformationDevices;
@@ -341,6 +341,11 @@ function Frob(actor Frobber, Inventory frobWith)
 
     Super.Frob(Frobber, frobWith);
 
+#ifdef gmdxae
+    bRead=true;
+    OnBeginRead(aReader);
+#endif
+
     GlowOff();
 }
 
@@ -426,7 +431,11 @@ defaultproperties
     bInvincible=True
     bCanBeBase=True
     ItemName="DataCube"
+#ifdef gmdxae
+    bSkipDarkenCheck=true
+#else
     Texture=Texture'DeusExItems.Skins.DataCubeTex2'
+#endif
     Mesh=LodMesh'DeusExItems.DataCube'
     CollisionRadius=7.000000
     CollisionHeight=1.270000
