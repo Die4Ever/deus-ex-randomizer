@@ -59,6 +59,20 @@ function AddWatchedActor(Actor a,String eventName)
     num_watched_actors++;
 }
 
+function string GetWatchedActorBingoEvent(int idx)
+{
+    if (idx > num_watched_actors || idx < 0) return "";
+
+    return actor_watch[idx].BingoEvent;
+}
+
+function UpdateWatchedActorBingoEvent(int idx, string newEvent)
+{
+    if (idx > num_watched_actors || idx < 0) return;
+
+    actor_watch[idx].BingoEvent = newEvent;
+}
+
 function CheckWatchedActors() {
     local int i;
     local #var(DeusExPrefix)Mover dxm;
@@ -1516,6 +1530,7 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
 
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
+    //player().ClientMessage("MarkBingo("$eventname$")");
 
     MarkBingoFailedEvents(eventName); //Making progress on one bingo goal might imply that another has failed
 

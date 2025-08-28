@@ -17,45 +17,45 @@ function WatchActors()
             || #var(prefix)HKHangingLantern(d) != None
             || #var(prefix)HKHangingLantern2(d) != None)
         {
-            AddWatchedActor(d,"LightVandalism");
+            AddWatchedActor(d,"LightVandalism_DestroyDeco");
         }
         else if(#var(prefix)Trophy(d) != None)
         {
-            AddWatchedActor(d,"TrophyHunter");
+            AddWatchedActor(d,"TrophyHunter_DestroyDeco");
         }
         else if(#var(prefix)SignFloor(d) != None)
         {
-            AddWatchedActor(d,"SlippingHazard");
+            AddWatchedActor(d,"SlippingHazard_DestroyDeco");
         }
         else if(#var(prefix)HangingChicken(d) != None
             || #var(prefix)HKHangingPig(d) != None)
         {
-            AddWatchedActor(d,"BeatTheMeat");
+            AddWatchedActor(d,"BeatTheMeat_DestroyDeco");
         }
         else if(#var(prefix)BarrelVirus(d) != None)
         {
-            AddWatchedActor(d,"WhyContainIt");
+            AddWatchedActor(d,"WhyContainIt_DestroyDeco");
         }
         else if(#var(prefix)Mailbox(d) != None)
         {
-            AddWatchedActor(d,"MailModels");
+            AddWatchedActor(d,"MailModels_DestroyDeco");
         }
         else if(#var(prefix)CigaretteMachine(d) != None)
         {
-            AddWatchedActor(d,"SmokingKills");
+            AddWatchedActor(d,"SmokingKills_DestroyDeco");
         }
         else if(#var(prefix)Buoy(d) != None)
         {
-            AddWatchedActor(d,"BuoyOhBuoy");
+            AddWatchedActor(d,"BuoyOhBuoy_DestroyDeco");
         }
         else if(#var(prefix)Flask(d) != None)
         {
-            AddWatchedActor(d,"ASingleFlask");
+            AddWatchedActor(d,"ASingleFlask_DestroyDeco");
         }
 #ifdef revision
         else if(NetworkPrinter(d) != None)
         {
-            AddWatchedActor(d,"PCLOADLETTER");
+            AddWatchedActor(d,"PCLOADLETTER_DestroyDeco");
         }
 #endif
     }
@@ -435,13 +435,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -514,11 +514,11 @@ function SetWatchFlags() {
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
             bt.bDestroyOthers = false;
         }
         break;
@@ -561,7 +561,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-19.620102, -866.462830, -403.896912),60,40);
         bt.bDestroyOthers = false;
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2048,1111,680),30,10);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2048,1111,680),30,10);  //Only one in Revision
         }
         break;
     //#endregion
@@ -591,13 +591,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -633,7 +633,7 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         WatchFlag('OverhearLebedev_Played');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(1432,-177,136),20,10);
 
         break;
     case "03_NYC_HANGAR":
@@ -674,11 +674,11 @@ function SetWatchFlags() {
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
             bt.bDestroyOthers = false;
         }
         break;
@@ -718,14 +718,14 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(960,234,297),350,60,class'#var(prefix)JuanLebedevCarcass');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(220,4,280),300,40,class'#var(prefix)JuanLebedevCarcass');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -828,13 +828,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -884,9 +884,9 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
 
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2060,-305),20,10); //Front Door
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1856,2060,-305),20,10); //Front Door
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2553,-305),20,10); //Kitchen Door
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1856,2553,-305),20,10); //Kitchen Door
         bt.bDestroyOthers=false;
 
 
@@ -915,7 +915,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),180,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1024,-790,-231),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1024,-790,-231),20,10);
 
         foreach AllActors(class'#var(prefix)Poolball',ball){
             if (ball.Region.Zone.ZoneGroundFriction>1){
@@ -967,13 +967,13 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
         class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-100,-1215,147),20,10); //Main Floor
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-100,-1215,147),20,10); //Main Floor
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(927,-958,1295),20,10); //Over Jock's elevator
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(927,-958,1295),20,10); //Over Jock's elevator
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(830,-1020,1270),20,10); //Next to Jock's elevator
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(830,-1020,1270),20,10); //Next to Jock's elevator
         bt.bDestroyOthers=false;
 
 
@@ -1044,7 +1044,7 @@ function SetWatchFlags() {
             }
         }
         class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1832,-81,536),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1832,-81,536),20,10);
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
             switch(dxm.Name) {
@@ -1093,13 +1093,13 @@ function SetWatchFlags() {
 
     case "06_HONGKONG_VERSALIFE":
         WatchFlag('Supervisor_Paid');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(207,575,-15),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(207,575,-15),20,10);
         break;
     case "06_HONGKONG_WANCHAI_GARAGE":
         if (RevisionMaps){
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-463,-23),20,10);
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-572,-463,-23),20,10);
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-335,-23),20,10);
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-572,-335,-23),20,10);
         }
         break;
     //#endregion
@@ -1129,11 +1129,11 @@ function SetWatchFlags() {
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
             bt.bDestroyOthers = false;
         }
 
@@ -1247,7 +1247,7 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker2');
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-993,-60,-80),40,20);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-993,-60,-80),40,20);
 
         bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(0,0,0)); //Bilge Pumps
 
@@ -1320,9 +1320,9 @@ function SetWatchFlags() {
             break;
         }
 
-        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(487,-1935,-475),24,14); //Near exit
+        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(487,-1935,-475),24,14); //Near exit
         bt.bDestroyOthers = false;
-        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(328,-1935,-475),24,14); //Near Exit
+        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(328,-1935,-475),24,14); //Near Exit
         bt.bDestroyOthers = false;
 
         break;
@@ -1423,19 +1423,19 @@ function SetWatchFlags() {
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
         if (RevisionMaps){
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2016,785,144),40,20);  //Actual Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2016,785,144),40,20);  //Actual Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(255,-305,80),40,10);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(255,-305,80),40,10);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-56),20,10);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2140,-528,-56),20,10);  //Back Door
             bt.bDestroyOthers = false;
 
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2064,595,144),40,20);  //Actual Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2064,595,144),40,20);  //Actual Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(290,-32,128),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(290,-32,128),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-72),20,10);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2140,-528,-72),20,10);  //Back Door
             bt.bDestroyOthers = false;
         }
 
@@ -1579,30 +1579,30 @@ function SetWatchFlags() {
         //"Sortie" signs - pa_TrainSign_A
         if (RevisionMaps){
             //Revision has both pa_TrainSign_a and some new blue texture that's near the actual train (Literally named "sortie")
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(367.681,-2655.554,462.918),24,14); //Near exit
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(367.681,-2655.554,462.918),24,14); //Near exit
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(527.871,-2656.112,462.918),24,14); //Near Exit
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(527.871,-2656.112,462.918),24,14); //Near Exit
             bt.bDestroyOthers = false;
 
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2175,-180),40,16); //Big wide sign, these ones destroy each other
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2175,-180),40,16); //Big wide sign, these ones destroy each other
             bt.Tag = 'EmergencyExitWideSign';
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2130,-180),40,16); //Big wide sign, these ones destroy each other
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2130,-180),40,16); //Big wide sign, these ones destroy each other
             bt.Tag = 'EmergencyExitWideSign';
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2080,-180),40,16); //Big wide sign, these ones destroy each other
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2080,-180),40,16); //Big wide sign, these ones destroy each other
             bt.Tag = 'EmergencyExitWideSign';
 
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1344.3,2116.7,-160),36,12); //Near Train
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(1344.3,2116.7,-160),36,12); //Near Train
             bt.bDestroyOthers = false;
         } else {
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-591.76,-657.527,35.829),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-591.76,-657.527,35.829),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2032.307,-576.207,-380.829),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2032.307,-576.207,-380.829),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2027.90,939.477,-938.886),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2027.90,939.477,-938.886),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1040.066,1472.132,-976.936),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1040.066,1472.132,-976.936),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-587.698,1466.590,-891.960),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-587.698,1466.590,-891.960),34,10);
             bt.bDestroyOthers = false;
         }
 
@@ -2103,13 +2103,25 @@ simulated function bool WatchGuntherKillSwitch()
     return False;
 }
 //#region FindOrigBingoDescription
-simulated function string FindOrigBingoDescription(string event)
+simulated function string FindOrigBingoDescription(string event, int max)
 {
     local int i;
+    local string desc;
+
 
     for(i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event~=event){
-            return bingo_options[i].desc;
+            desc = bingo_options[i].desc;
+
+            if (max == 1 && bingo_options[i].desc_singular != "") {
+                desc = bingo_options[i].desc_singular;
+            } else {
+                desc = sprintf(desc, max);
+            }
+
+            desc = tweakBingoDescription(event,desc);
+
+            return desc;
         }
     }
 
@@ -2138,7 +2150,7 @@ simulated function string tweakBingoDescription(string event, string desc)
            }
 
             break;
-        case "CamilleConvosDone":
+        case "ParisClubInfo_Convo":
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 return "Get info from Achille";
             } else {
@@ -2173,7 +2185,7 @@ simulated function int tweakBingoMax(string event, int max)
             }
             break;
         //Sodacan_Activated
-        //DrinkAlcohol
+        //DrinkAlcohol_Activated
     }
     return max;
 }
@@ -2247,7 +2259,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 12;
             }
             break;
-        case "FightSkeletons":
+        case "FightSkeletons_DestroyDeco":
             if (RevisionMaps){
                 //Extras in:
                 // - NYC Bar, Free Clinic, Street (M02)
@@ -2259,7 +2271,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 17748;
             }
             break;
-        case "TrophyHunter":
+        case "TrophyHunter_DestroyDeco":
             if (RevisionMaps){
                 //Extras in:
                 // - NYC Bar (M02)
@@ -2273,7 +2285,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 5502;
             }
             break;
-        case "SlippingHazard":
+        case "SlippingHazard_DestroyDeco":
             if (RevisionMaps){
                 //Extra in Paris Club (M10)
                 return 1918;
@@ -2300,7 +2312,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 7244;
             }
             break;
-        case "WatchDogs":
+        case "WatchDogs_peeptime":
             if (RevisionMaps){
                 //Extras in Cathedral (M11)
                 return 23652;
@@ -2374,7 +2386,7 @@ function ReadText(name textTag)
     case '01_Bulletin08':
     case '03_Bulletin01':
     case '03_Bulletin02':
-        eventname = "KnowYourEnemy";
+        eventname = "ReadText_KnowYourEnemy";
         break;
 
     case '02_Book03':
@@ -2385,7 +2397,7 @@ function ReadText(name textTag)
     case '10_Book02':
     case '12_Book01':
     case '15_Book01':
-        eventname = "JacobsShadow";
+        eventname = "ReadText_JacobsShadow";
         break;
 
     case '02_Book05':
@@ -2395,7 +2407,7 @@ function ReadText(name textTag)
     case '12_Book02':
     case '14_Book04':
     case '15_Book02':
-        eventname = "ManWhoWasThursday";
+        eventname = "ReadText_ManWhoWasThursday";
         break;
 
     case '01_Newspaper06':
@@ -2403,13 +2415,13 @@ function ReadText(name textTag)
     case '02_Newspaper06':
     case '03_Newspaper02':
     case '08_Newspaper01':
-        eventname = "GreeneArticles";
+        eventname = "ReadText_GreeneArticles";
         break;
 
     case '02_Newspaper03':
     case '03_Newspaper01':
     case '06_Newspaper02':
-        eventname="MoonBaseNews";
+        eventname="ReadText_MoonBaseNews";
         break;
 
     case '15_Datacube02':
@@ -2420,7 +2432,7 @@ function ReadText(name textTag)
     case 'CloneCube2':
     case 'CloneCube3':
     case 'CloneCube4':
-        eventname="CloneCubes";
+        eventname="ReadText_CloneCubes";
         break;
 
     case '01_Book01':
@@ -2431,12 +2443,12 @@ function ReadText(name textTag)
     case '01_Book06':
     case '01_Book07':
     case '01_Book08':
-        eventname="UNATCOHandbook";
+        eventname="ReadText_UNATCOHandbook";
         break;
 
     case '06_Book04':
     case '10_Book06':
-        eventname="JoyOfCooking";
+        eventname="ReadText_JoyOfCooking";
         break;
 
     case 'JennysNumber':
@@ -2462,12 +2474,12 @@ function ReadText(name textTag)
             case "15_AREA51_PAGE--1066683761":
             case "15_AREA51_PAGE--1790818418":
             case "15_AREA51_PAGE--26631873":
-                eventname="CloneCubes";
+                eventname="ReadText_CloneCubes";
                 break;
         }
         if(eventname == "") {
             // it's simple for a bingo event that requires reading just 1 thing
-            _MarkBingo(textTag);
+            _MarkBingo("ReadText_"$textTag);
             return;
         }
     }
@@ -2595,13 +2607,13 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     //Ban "main mission" goals if any sort of mission progress is expected
         case "GeneratorBlown":
         case "NSFSignalSent":
-        case "PaulsDatavault":
+        case "PaulsDatavault_VariousPlayed":
         case "Have_Evidence":
         case "Have_ROM":
         case "TriadCeremony_Played":
         case "VL_Got_Schematic":
         case "VL_UC_Destroyed":
-        case "MeetDowd":
+        case "MeetDowd_VariousPlayed":
         case "Pistons":
         case "WeldPointDestroyed":
         case "templar_upload":
@@ -2643,9 +2655,10 @@ function string RemapBingoEvent(string eventname)
             return "SpiderBot_ClassDead";
         case "LDDPRussPaid":
         case "ClubMercedesConvo1_Done":
-            return "ClubEntryPaid";
+            return "ClubEntryPaid_Convo";
         case "LDDPAchilleDone":
-            return "CamilleConvosDone";
+        case "CamilleConvosDone":
+            return "ParisClubInfo_Convo";
         case "KarkianBaby_ClassDead":
             return "Karkian_ClassDead";
         case "AmbrosiaTagged":
@@ -2721,13 +2734,13 @@ function string RemapBingoEvent(string eventname)
         case "LiquorBottle_Activated":
         case "Liquor40oz_Activated":
         case "WineBottle_Activated":
-            return "DrinkAlcohol";
+            return "DrinkAlcohol_Activated";
         case "Pigeon_ClassDead":
         case "Seagull_ClassDead":
-            return "PerformBurder";
+            return "PerformBurder_ClassDead";
         case "Fish_ClassDead":
         case "Fish2_ClassDead":
-            return "GoneFishing";
+            return "GoneFishing_ClassDead";
         case "ChateauInBethsRoom":
         case "ChateauInNicolettesRoom":
             return "DuClareBedrooms";
@@ -2757,15 +2770,15 @@ function string RemapBingoEvent(string eventname)
             return "MJ12Troop_peeptime";
         case "Pigeon_peeptime":
         case "Seagull_peeptime":
-            return "BirdWatching";
+            return "BirdWatching_peeptime";
         case "ImageOpened_TiffanyHostagePicture":
         case "ImageOpened_JoeGreeneMIBMJ12":
         case "ImageOpened_TerroristCommander":
         case "ImageOpened_MilleniumMagazine":
-            return "ViewPortraits";
+            return "ImageOpened_ViewPortraits";
         case "ImageOpened_BlueFusionDevice":
         case "ImageOpened_UniversalConstructorComponent":
-            return "ViewSchematics";
+            return "ImageOpened_ViewSchematics";
         case "ImageOpened_Area51Sector4":
         case "ImageOpened_Area51Sector3":
         case "ImageOpened_Area51Bunker":
@@ -2787,20 +2800,20 @@ function string RemapBingoEvent(string eventname)
         case "ImageOpened_747Diagram":
         case "ImageOpened_NYCWarehouse":
         case "ImageOpened_LibertyIslandSatellitePhoto":
-            return "ViewMaps";
+            return "ImageOpened_ViewMaps";
         case "ImageOpened_GrayDisection":
         case "ImageOpened_GreaselDisection":
-            return "ViewDissection";
+            return "ImageOpened_ViewDissection";
         case "ImageOpened_CathedralEntrance":
         case "ImageOpened_ParisCatacombs":
         case "ImageOpened_NSFHeadquarters":
-            return "ViewTouristPics";
-        case "01_EmailMenu_JCD":
-        case "03_EmailMenu_JCD":
-        case "04_EmailMenu_JCD":
-        case "05_EmailMenu_JCD":
-        case "06_EmailMenu_JCDenton":
-            return "ReadJCEmail";
+            return "ImageOpened_ViewTouristPics";
+        case "ReadText_01_EmailMenu_JCD":
+        case "ReadText_03_EmailMenu_JCD":
+        case "ReadText_04_EmailMenu_JCD":
+        case "ReadText_05_EmailMenu_JCD":
+        case "ReadText_06_EmailMenu_JCDenton":
+            return "ReadText_ReadJCEmail";
         case "NicoletteInUnderground_Played":
         case "NicoletteInUnderground2_Played":
         case "NicoletteInStudy_Played":
@@ -2809,14 +2822,14 @@ function string RemapBingoEvent(string eventname)
         case "NicoletteInGarden_Played":
         case "NicoletteInGarden2_Played":
         case "NicoletteInBethsRoom_Played":
-            return "NicoletteHouseTour";
+            return "NicoletteHouseTour_VariousPlayed";
         case "WatchKeys_beth_room":
         case "WatchKeys_nico_room":
         case "WatchKeys_duclare_chateau":
-            return "DuClareKeys";
+            return "WatchKeys_DuClareKeys";
         case "WatchKeys_Locker1":
         case "WatchKeys_Locker2":
-            return "ShipLockerKeys";
+            return "WatchKeys_ShipLockerKeys";
         case "TechSergeantKaplan_PlayerDead":
         case "Mole_PlayerDead":
         case "JordanShea_PlayerDead":
@@ -2855,7 +2868,7 @@ function string RemapBingoEvent(string eventname)
         case "Defoe_PlayerDead":
         case "Cassandra_PlayerDead":
         case "ClubBouncer_PlayerDead":
-            _MarkBingo("DestroyCapitalism"); //Split into another event, but still return this one as-is
+            _MarkBingo("DestroyCapitalism_VariousDead"); //Split into another event, but still return this one as-is
             return eventname;
         case "MeetWalton_Played":
         case "M04MeetWalton_Played":
@@ -2864,29 +2877,29 @@ function string RemapBingoEvent(string eventname)
         case "M11WaltonHolo_Played":
         case "WaltonShowdown_Played":
         case "WaltonBadass_Played":
-            return "WaltonConvos";
+            return "WaltonConvos_VariousPlayed";
         case "ScientistMale_ClassDead":
         case "ScientistMale2_ClassDead": //Revision
         case "ScientistFemale_ClassDead":
-            return "ScienceIsForNerds";
+            return "ScienceIsForNerds_VariousDead";
         case "ShipNamePlate_B_peepedtex":
         case "ShipNamePlate_C_peepedtex":
         case "ShipNamePlate_D_peepedtex":
-            return "ShipNamePlate";
+            return "ShipNamePlate_peeped";
         case "UNATCOHQ_BulletinBoard_Cork_peepedtex":
             return "un_bboard_peepedtex";
         case "SheaKnowsAboutDowd":
         case "GreenKnowsAboutDowd":
-            return "SnitchDowd";
+            return "SnitchDowd_ConvoFlag";
         case "IcarusCalls_Played":
             _MarkBingo("PhoneCall"); //It's a phone call!
             return eventname;
         case "Doberman_peeptime":
         case "Mutt_peeptime":
-            return "WatchDogs";
+            return "WatchDogs_peeptime";
         case "DonDone":
         case "LennyDone":
-            return "GiveZyme";
+            return "GiveZyme_ConvoFlag";
         case "PetAnimal_Karkian":
         case "PetAnimal_KarkianBaby":
             return "PetKarkians";
@@ -2927,9 +2940,9 @@ function string RemapBingoEvent(string eventname)
         case "WorkerGivesInfo_Played":
         case "MaleHostageRescued_Played":
         case "M02SallyDone":
-            return "InterviewLocals";
+            return "InterviewLocals_VariousPlayed";
         case "MeetSandraRenton_Played":
-            _MarkBingo("InterviewLocals"); //Split into another event, but still return this one as-is
+            _MarkBingo("InterviewLocals_VariousPlayed"); //Split into another event, but still return this one as-is
             return eventname;
         case "BlackCat_peeptime":
             return "Cat_peeptime";
@@ -2938,7 +2951,7 @@ function string RemapBingoEvent(string eventname)
         case "MeetSmuggler_Played":
         case "M04MeetSmuggler_Played":
         case "M08SmugglerConvos_Played":
-            return "MeetSmuggler";
+            return "MeetSmuggler_VariousPlayed";
         case "Ray_Dead":
         case "Ray_Unconscious":
             return "GotHelicopterInfo";
@@ -2950,7 +2963,7 @@ function string RemapBingoEvent(string eventname)
         case "Savage_assistant_M_PlayerDead":
         case "Savage_assistant_F_PlayerDead":
         case "LDDPVanSci_PlayerDead":
-            return "Ex51";
+            return "Ex51_VariousDead";
         case "BodyPartLoss_LeftLeg":
         case "BodyPartLoss_RightLeg":
         case "BodyPartLoss_LeftArm":
@@ -2959,10 +2972,12 @@ function string RemapBingoEvent(string eventname)
             return eventname;
         case "DL_paul_Played":
         case "DL_PaulDead_Played":
-            return "PaulsDatavault";
+            return "PaulsDatavault_VariousPlayed";
         case "StantonDowd_Played":
         case "M09MeetStantonDowd_Played":
-            return "MeetDowd";
+            return "MeetDowd_VariousPlayed";
+        case "EmergencyExit":
+            return "EmergencyExit_peeped";
         default:
             return eventname;
     }
@@ -3023,7 +3038,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "Don_Takedown":
         case "Lenny_Takedown":
-            failed[num_failed++] = "GiveZyme";
+            failed[num_failed++] = "GiveZyme_ConvoFlag";
             return num_failed;
         case "MeetLebedev_Played":
             failed[num_failed++] = "OverhearLebedev_Played";
@@ -3107,7 +3122,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             failed[num_failed++] = "JoshuaInterrupted_Played";
             return num_failed;
         case "Camille_Takedown":
-            failed[num_failed++] = "CamilleConvosDone";
+            failed[num_failed++] = "ParisClubInfo_Convo";
             return num_failed;
         case "drbernard_Takedown":
             failed[num_failed++] = "MeetDrBernard_Played";
@@ -3144,15 +3159,15 @@ static function bool BingoGoalCanFail(string event)
         case "BallisticArmor_Activated":
         case "HazMatSuit_Activated":
         case "AdaptiveArmor_Activated":
-        case "DrinkAlcohol":
+        case "DrinkAlcohol_Activated":
         case "TechGoggles_Activated":
         case "Rebreather_Activated":
         case "FireExtinguisher_Activated":
-        case "ViewPortraits":
-        case "ViewSchematics":
-        case "ViewMaps":
+        case "ImageOpened_ViewPortraits":
+        case "ImageOpened_ViewSchematics":
+        case "ImageOpened_ViewMaps":
         case "ImageOpened_WaltonSimons":
-        case "ViewDissection":
+        case "ImageOpened_ViewDissection":
         case "ViewTouristPics":
             return false;
         default:
@@ -3173,6 +3188,10 @@ static function Upgrade(#var(PlayerPawn) player, int old_version)
 
     if (old_version < class'DXRVersion'.static.VersionToInt(3,5,2,7)) {
         HandleUpgradePre_3_5_2_7(player,data,events);
+    }
+
+    if (old_version < class'DXRVersion'.static.VersionToInt(3,6,1,1)) {
+        HandleUpgradePre_3_6_1_1(player,data,events);
     }
 
     //Add any new upgrades to the end of the pile, each with an individual if, so that it runs
@@ -3231,7 +3250,7 @@ static function HandleUpgradePre_3_5_2_7(#var(PlayerPawn) player, PlayerDataItem
             case "jughead_PlayerDead":
             case "HowardStrong_PlayerDead":
                 new_event = class'DXRInfo'.static.ReplaceText(event,"_PlayerDead","_PlayerTakedown");
-                new_desc = events.FindOrigBingoDescription(new_event); //Get the default description for the new event
+                new_desc = events.FindOrigBingoDescription(new_event,max); //Get the default description for the new event
 
                 if (new_desc==""){
                     //Something went wrong, and this event couldn't be found!  Don't update!
@@ -3269,6 +3288,176 @@ static function HandleUpgradePre_3_5_2_7(#var(PlayerPawn) player, PlayerDataItem
         }
     }
 }
+
+
+static function string GetNewEventName_3_6_1_1(string oldEvent)
+{
+    switch(oldEvent){
+        case "ClubEntryPaid":
+            return "ClubEntryPaid_Convo";
+        case "CamilleConvosDone":
+            return "ParisClubInfo_Convo";
+        case "DrinkAlcohol":
+            return "DrinkAlcohol_Activated";
+        case "PerformBurder":
+            return "PerformBurder_ClassDead";
+        case "GoneFishing":
+            return "GoneFishing_ClassDead";
+        case "BirdWatching":
+            return "BirdWatching_peeptime";
+        case "ViewPortraits":
+            return "ImageOpened_ViewPortraits";
+        case "ViewSchematics":
+            return "ImageOpened_ViewSchematics";
+        case "ViewMaps":
+            return "ImageOpened_ViewMaps";
+        case "ViewDissection":
+            return "ImageOpened_ViewDissection";
+        case "ViewTouristPics":
+            return "ImageOpened_ViewTouristPics";
+        case "DuClareKeys":
+            return "WatchKeys_DuClareKeys";
+        case "ShipLockerKeys":
+            return "WatchKeys_ShipLockerKeys";
+        case "DestroyCapitalism":
+            return "DestroyCapitalism_VariousDead";
+        case "WaltonConvos":
+            return "WaltonConvos_VariousPlayed";
+        case "ScienceIsForNerds":
+            return "ScienceIsForNerds_VariousDead";
+        case "ShipNamePlate":
+            return "ShipNamePlate_peeped";
+        case "SnitchDowd":
+            return "SnitchDowd_ConvoFlag";
+        case "WatchDogs":
+            return "WatchDogs_peeptime";
+        case "GiveZyme":
+            return "GiveZyme_ConvoFlag";
+        case "InterviewLocals":
+            return "InterviewLocals_VariousPlayed";
+        case "MeetSmuggler":
+            return "MeetSmuggler_VariousPlayed";
+        case "Ex51":
+            return "Ex51_VariousDead";
+        case "PaulsDatavault":
+            return "PaulsDatavault_VariousPlayed";
+        case "MeetDowd":
+            return "MeetDowd_VariousPlayed";
+        case "LightVandalism":
+            return "LightVandalism_DestroyDeco";
+        case "TrophyHunter":
+            return "TrophyHunter_DestroyDeco";
+        case "SlippingHazard":
+            return "SlippingHazard_DestroyDeco";
+        case "BeatTheMeat":
+            return "BeatTheMeat_DestroyDeco";
+        case "WhyContainIt":
+            return "WhyContainIt_DestroyDeco";
+        case "MailModels":
+            return "MailModels_DestroyDeco";
+        case "SmokingKills":
+            return "SmokingKills_DestroyDeco";
+        case "BuoyOhBuoy":
+            return "BuoyOhBuoy_DestroyDeco";
+        case "ASingleFlask":
+            return "ASingleFlask_DestroyDeco";
+        case "PCLOADLETTER":
+            return "PCLOADLETTER_DestroyDeco";
+        case "FightSkeletons":
+            return "FightSkeletons_DestroyDeco";
+        case "Dehydrated":
+            return "Dehydrated_DestroyDeco";
+        case "KnowYourEnemy":
+            return "ReadText_KnowYourEnemy";
+        case "JacobsShadow":
+            return "ReadText_JacobsShadow";
+        case "ManWhoWasThursday":
+            return "ReadText_ManWhoWasThursday";
+        case "GreeneArticles":
+            return "ReadText_GreeneArticles";
+        case "MoonBaseNews":
+            return "ReadText_MoonBaseNews";
+        case "CloneCubes":
+            return "ReadText_CloneCubes";
+        case "UNATCOHandbook":
+            return "ReadText_UNATCOHandbook";
+        case "JoyOfCooking":
+            return "ReadText_JoyOfCooking";
+        case "06_Datacube05":
+            return "ReadText_06_Datacube05";
+        case "02_Book06":
+            return "ReadText_02_Book06";
+        case "11_Book08":
+            return "ReadText_11_Book08";
+        case "ReadJCEmail":
+            return "ReadText_ReadJCEmail";
+        case "12_Email04":
+            return "ReadText_12_Email04";
+        case "02_Email05":
+            return "ReadText_02_Email05";
+        case "15_Email02":
+            return "ReadText_15_Email02";
+        case "09_Email08":
+            return "ReadText_09_Email08";
+        case "05_EmailMenu_psherman":
+            return "ReadText_05_EmailMenu_psherman";
+        case "08_Bulletin02":
+            return "ReadText_08_Bulletin02";
+        case "11_Bulletin01":
+            return "ReadText_11_Bulletin01";
+        case "PlayerPeeped":
+            return "Player_peeped";
+        case "EmergencyExit":
+            return "EmergencyExit_peeped";
+        case "NicoletteHouseTour":
+            return "NicoletteHouseTour_VariousPlayed";
+    }
+
+    return "";
+}
+
+static function HandleUpgradePre_3_6_1_1(#var(PlayerPawn) player, PlayerDataItem data, DXREvents events)
+{
+    local int x, y, progress, max, missions,append_max;
+    local string event, new_event, desc, new_desc;
+
+    //Update goals on the bingo board
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max, missions, append_max);
+            new_event = GetNewEventName_3_6_1_1(event);
+            if (new_event!=""){
+                new_desc = events.FindOrigBingoDescription(new_event,max); //Get the default description for the new event
+
+                if (new_desc==""){
+                    //Something went wrong, and this event couldn't be found!  Don't update!
+                    player.ClientMessage("Couldn't find new event "$new_event$" in bingo option list!  Report to devs!");
+                } else {
+                    UpdateBingoSquare(player, data, events, x, y, new_event, desc, new_desc, progress, max, missions,bool(append_max));
+                }
+            }
+        }
+    }
+
+    //Update bans in the goal ban list
+    for (x=0;x<ArrayCount(data.bannedGoals);x++){
+        new_event = GetNewEventName_3_6_1_1(data.bannedGoals[x]);
+        if (new_event!=""){
+            data.bannedGoals[x]=new_event;
+        }
+    }
+
+    //Update watched actors
+    for (x=0;x<events.num_watched_actors;x++){
+        new_event = GetNewEventName_3_6_1_1(events.GetWatchedActorBingoEvent(x));
+        if (new_event!=""){
+            events.UpdateWatchedActorBingoEvent(x,new_event);
+        }
+
+    }
+}
+
+
 //#endregion
 
 function ExtendedTests()
@@ -3340,10 +3529,10 @@ defaultproperties
     bingo_options(33)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1,missions=4)
     bingo_options(34)=(event="AlleyBumRescued",desc="Rescue the bum on the basketball court",max=1,missions=4)
     bingo_options(35)=(event="FoundScientistBody",desc="Search the canal",max=1,missions=64)
-    bingo_options(36)=(event="ClubEntryPaid",desc="Help Mercedes and Tessa",max=1,missions=64)
+    bingo_options(36)=(event="ClubEntryPaid_Convo",desc="Help Mercedes and Tessa",max=1,missions=64)
     bingo_options(37)=(event="M08WarnedSmuggler",desc="Warn Smuggler",max=1,missions=256)
     bingo_options(38)=(event="ShipPowerCut",desc="Help the electrician",max=1,missions=512)
-    bingo_options(39)=(event="CamilleConvosDone",desc="Get info from Camille",max=1,missions=1024)
+    bingo_options(39)=(event="ParisClubInfo_Convo",desc="Get info from Camille",max=1,missions=1024)
     bingo_options(40)=(event="MeetAI4_Played",desc="Talk to Morpheus",max=1,missions=2048)
     bingo_options(41)=(event="DL_Flooded_Played",desc="Check flooded zone in the ocean lab",max=1,missions=16384)
     bingo_options(42)=(event="JockSecondStory",desc="Get Jock buzzed",max=1,missions=4)
@@ -3363,7 +3552,7 @@ defaultproperties
     bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1,missions=1024)
     bingo_options(57)=(event="JosephManderley_PlayerDead",desc="Kill Joseph Manderley",max=1,missions=32)
     bingo_options(58)=(event="MadeItToBP",desc="Escape to Battery Park",max=1,missions=16)
-    bingo_options(59)=(event="MeetSmuggler",desc="Meet Smuggler",max=1,missions=276)
+    bingo_options(59)=(event="MeetSmuggler_VariousPlayed",desc="Meet Smuggler",max=1,missions=276)
     bingo_options(60)=(event="SickMan_PlayerDead",desc="Kill the sick man who wants to die",max=1,missions=12)
     bingo_options(61)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1,missions=64)
     bingo_options(62)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1,missions=64)
@@ -3408,15 +3597,15 @@ defaultproperties
 #ifndef hx
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to a bar",max=1,missions=17686)
 #endif
-    bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read a Know Your Enemy bulletin",max=6,missions=26)
+    bingo_options(100)=(event="ReadText_KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read a Know Your Enemy bulletin",max=6,missions=26)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
-    bingo_options(102)=(event="JacobsShadow",desc="Read %s parts of Jacob's Shadow",desc_singular="Read one part of Jacob's Shadow",max=4,missions=38492)
-    bingo_options(103)=(event="ManWhoWasThursday",desc="Read %s parts of The Man Who Was Thursday",desc_singular="Read one part of The Man Who Was Thursday",max=4,missions=54300)
-    bingo_options(104)=(event="GreeneArticles",desc="Read %s newspaper articles by Joe Greene",desc_singular="Read a newspaper article by Joe Greene",max=4,missions=270)
-    bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1,missions=76)
-    bingo_options(106)=(event="06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1,missions=64)
+    bingo_options(102)=(event="ReadText_JacobsShadow",desc="Read %s parts of Jacob's Shadow",desc_singular="Read one part of Jacob's Shadow",max=4,missions=38492)
+    bingo_options(103)=(event="ReadText_ManWhoWasThursday",desc="Read %s parts of The Man Who Was Thursday",desc_singular="Read one part of The Man Who Was Thursday",max=4,missions=54300)
+    bingo_options(104)=(event="ReadText_GreeneArticles",desc="Read %s newspaper articles by Joe Greene",desc_singular="Read a newspaper article by Joe Greene",max=4,missions=270)
+    bingo_options(105)=(event="ReadText_MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1,missions=76)
+    bingo_options(106)=(event="ReadText_06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1,missions=64)
     bingo_options(107)=(event="Gray_ClassDead",desc="Kill %s Grays",desc_singular="Kill a Gray",max=5,missions=32832)
-    bingo_options(108)=(event="CloneCubes",desc="Read about %s clones in Area 51",desc_singular="Read about a clone in Area 51",max=4,missions=32768)
+    bingo_options(108)=(event="ReadText_CloneCubes",desc="Read about %s clones in Area 51",desc_singular="Read about a clone in Area 51",max=4,missions=32768)
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1,missions=32768)
     bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1,missions=512)
     bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1,missions=8)
@@ -3499,13 +3688,13 @@ defaultproperties
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s hazmat suits",desc_singular="Use a hazmat suit",max=3,missions=54866)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s thermoptic camos",desc_singular="Use thermoptic camo",max=3,missions=55132)
-    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink a bottle of alcohol",max=75)
+    bingo_options(184)=(event="DrinkAlcohol_Activated",desc="Drink %s bottles of alcohol",desc_singular="Drink a bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack a computer",max=10)
     bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",desc_singular="Use tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use a rebreather",max=3,missions=55400)
-    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",desc_singular="Hunt a bird",max=10,missions=24446)
-    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18510)
+    bingo_options(189)=(event="PerformBurder_ClassDead",desc="Hunt %s birds",desc_singular="Hunt a bird",max=10,missions=24446)
+    bingo_options(190)=(event="GoneFishing_ClassDead",desc="Kill %s fish",max=10,missions=18510)
     bingo_options(191)=(event="FordSchick_PlayerDead",desc="Kill Ford Schick",max=1,missions=276)
     bingo_options(192)=(event="ChateauInComputerRoom",desc="Find Beth's secret routing station",max=1,missions=1024)
     bingo_options(193)=(event="DuClareBedrooms",desc="Visit both bedrooms in the DuClare Chateau",max=2,missions=1024,do_not_scale=true)
@@ -3523,60 +3712,60 @@ defaultproperties
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",desc_singular="Watch MJ12 Troopers for 1 second",max=30,missions=57188)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",desc_singular="Watch MJ12 Commandos for 1 second",max=15,missions=56384)
     bingo_options(207)=(event="PawnAnim_Dance",desc="You can dance if you want to",max=1,missions=1364)
-    bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=24446)
+    bingo_options(208)=(event="BirdWatching_peeptime",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=24446)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
     bingo_options(211)=(event="Supervisor_Paid",desc="Pay for access to the VersaLife labs",max=1,missions=64)
     bingo_options(212)=(event="ImageOpened_WaltonSimons",desc="Look at Walton Simons' nudes",max=1,missions=544)
     bingo_options(213)=(event="BethsPainting",desc="Admire Beth DuClare's favourite painting",max=1,missions=1024)
 #ifndef hx
-    bingo_options(214)=(event="ViewPortraits",desc="Look at %s portraits",desc_singular="Look at a portrait",max=2,missions=4890)
-    bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
-    bingo_options(216)=(event="ViewMaps",desc="View %s maps",desc_singular="View a map",max=6,missions=56686)
-    bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
-    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist photo",max=1,missions=2576)
+    bingo_options(214)=(event="ImageOpened_ViewPortraits",desc="Look at %s portraits",desc_singular="Look at a portrait",max=2,missions=4890)
+    bingo_options(215)=(event="ImageOpened_ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
+    bingo_options(216)=(event="ImageOpened_ViewMaps",desc="View %s maps",desc_singular="View a map",max=6,missions=56686)
+    bingo_options(217)=(event="ImageOpened_ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
+    bingo_options(218)=(event="ImageOpened_ViewTouristPics",desc="Look at a tourist photo",max=1,missions=2576)
 #endif
     bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
     bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
-    bingo_options(221)=(event="12_Email04",desc="Read a motivational email from Gary",max=1,missions=4096)
-    bingo_options(222)=(event="ReadJCEmail",desc="Check your email %s times",desc_singular="Check your email",max=3,missions=122)
-    bingo_options(223)=(event="02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
-    bingo_options(224)=(event="11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
+    bingo_options(221)=(event="ReadText_12_Email04",desc="Read a motivational email from Gary",max=1,missions=4096)
+    bingo_options(222)=(event="ReadText_ReadJCEmail",desc="Check your email %s times",desc_singular="Check your email",max=3,missions=122)
+    bingo_options(223)=(event="ReadText_02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
+    bingo_options(224)=(event="ReadText_11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
     bingo_options(225)=(event="GasStationCeiling",desc="Access the ceiling of a gas station",max=1,missions=4096)
-    bingo_options(226)=(event="NicoletteHouseTour",desc="Tour 5 parts of Chateau DuClare with Nicolette",max=5,missions=1024,do_not_scale=true)
+    bingo_options(226)=(event="NicoletteHouseTour_VariousPlayed",desc="Tour 5 parts of Chateau DuClare with Nicolette",max=5,missions=1024,do_not_scale=true)
     bingo_options(227)=(event="nico_fireplace",desc="Access Nicolette's secret stash",max=1,missions=1024)
     bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
     bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
-    bingo_options(231)=(event="DuClareKeys",desc="Get 3 unique keys around Chateau DuClare",max=3,missions=1024,do_not_scale=true)
-    bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the super freighter",desc_singular="Collect a locker key inside the super freighter",max=2,missions=512)
+    bingo_options(231)=(event="WatchKeys_DuClareKeys",desc="Get 3 unique keys around Chateau DuClare",max=3,missions=1024,do_not_scale=true)
+    bingo_options(232)=(event="WatchKeys_ShipLockerKeys",desc="Collect %s locker keys inside the super freighter",desc_singular="Collect a locker key inside the super freighter",max=2,missions=512)
     bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out!",max=18,missions=40830)
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange!",max=12,missions=38782)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy!",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=4,missions=64)
     bingo_options(238)=(event="Shannon_PlayerTakedown",desc="Take down the thief in UNATCO",max=1,missions=58)
-    bingo_options(239)=(event="DestroyCapitalism",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALISM.",max=10,missions=7550)
+    bingo_options(239)=(event="DestroyCapitalism_VariousDead",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALISM.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_PlayerTakedown",desc="Not advisable to visit the canals at night",max=1,missions=64)
-    bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",desc_singular="Perform 1 act of light vandalism",max=40,missions=57214)
-    bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",desc_singular="Destroy 1 skeleton part",max=10,missions=19536)
-    bingo_options(243)=(event="TrophyHunter",desc="Trophy Hunter",max=10,missions=1146)
-    bingo_options(244)=(event="SlippingHazard",desc="Create %s potential slipping hazards",desc_singular="Create 1 potential slipping hazard",max=5,missions=894)
-    bingo_options(245)=(event="Dehydrated",desc="Stay dehydrated %s times",desc_singular="Stay dehydrated 1 time",max=15,missions=40830)
+    bingo_options(241)=(event="LightVandalism_DestroyDeco",desc="Perform %s acts of light vandalism",desc_singular="Perform 1 act of light vandalism",max=40,missions=57214)
+    bingo_options(242)=(event="FightSkeletons_DestroyDeco",desc="Destroy %s skeleton parts",desc_singular="Destroy 1 skeleton part",max=10,missions=19536)
+    bingo_options(243)=(event="TrophyHunter_DestroyDeco",desc="Trophy Hunter",max=10,missions=1146)
+    bingo_options(244)=(event="SlippingHazard_DestroyDeco",desc="Create %s potential slipping hazards",desc_singular="Create 1 potential slipping hazard",max=5,missions=894)
+    bingo_options(245)=(event="Dehydrated_DestroyDeco",desc="Stay dehydrated %s times",desc_singular="Stay dehydrated 1 time",max=15,missions=40830)
 #ifndef vmd
     bingo_options(246)=(event="PresentForManderley",desc="Bring a present to Manderley",max=1,missions=24)
 #endif
-    bingo_options(247)=(event="WaltonConvos",desc="Have %s conversations with Walton Simons",desc_singular="Have a conversation with Walton Simons",max=3,missions=51256)
+    bingo_options(247)=(event="WaltonConvos_VariousPlayed",desc="Have %s conversations with Walton Simons",desc_singular="Have a conversation with Walton Simons",max=3,missions=51256)
     bingo_options(248)=(event="OceanLabShed",desc="Enter the shed on shore at the Ocean Lab",max=1,missions=16384)
     bingo_options(249)=(event="DockBlastDoors",desc="Open %s bunker blast doors in the dockyard",desc_singular="Open a bunker blast door in the dockyard",max=3,missions=512)
     bingo_options(250)=(event="ShipsBridge",desc="Enter the bridge of the super freighter",max=1,missions=512)
-    bingo_options(251)=(event="BeatTheMeat",desc="Beat the meat %s times",desc_singular="Beat the meat",max=15,missions=2624)
+    bingo_options(251)=(event="BeatTheMeat_DestroyDeco",desc="Beat the meat %s times",desc_singular="Beat the meat",max=15,missions=2624)
     bingo_options(252)=(event="FamilySquabbleWrapUpGilbertDead_Played",desc="What a shame",max=1,missions=16)
     bingo_options(253)=(event="CrackSafe",desc="Crack %s safes",desc_singular="Crack a safe",max=3,missions=516)
     bingo_options(254)=(event="CliffSacrifice",desc="Sacrifice a body off of a cliff",max=1,missions=4096)
     bingo_options(255)=(event="MaggieCanFly",desc="Teach Maggie Chow how to fly",max=1,missions=64)
     bingo_options(256)=(event="VandenbergShaft",desc="Jump down the Vandenberg shaft",max=1,missions=4096)
-    bingo_options(257)=(event="ScienceIsForNerds",desc="Science is for nerds",max=10,missions=20576)
+    bingo_options(257)=(event="ScienceIsForNerds_VariousDead",desc="Science is for nerds",max=10,missions=20576)
     bingo_options(258)=(event="Chef_ClassDead",desc="My Name Chef",max=1,missions=3072)
     bingo_options(259)=(event="un_PrezMeadPic_peepedtex",desc="Have a look at the anime president",max=1,missions=58)
     bingo_options(260)=(event="un_bboard_peepedtex",desc="Check the bulletin board at UNATCO HQ",max=1,missions=58)
@@ -3589,21 +3778,21 @@ defaultproperties
     bingo_options(267)=(event="ScubaDiver_ClassDead",desc="Kill %s SCUBA Divers",desc_singular="Kill a SCUBA Diver",max=3,missions=16384)
     bingo_options(268)=(event="ShipRamp",desc="Raise the ramp to the super freighter",max=1,missions=512)
     bingo_options(269)=(event="SuperfreighterProp",desc="Props to you",max=1,missions=512)
-    bingo_options(270)=(event="ShipNamePlate",desc="Check the name on the super freighter",max=1,missions=512)
+    bingo_options(270)=(event="ShipNamePlate_peeped",desc="Check the name on the super freighter",max=1,missions=512)
     bingo_options(271)=(event="DL_SecondDoors_Played",desc="The sub-bay doors are closed",max=1,missions=16384)
-    bingo_options(272)=(event="WhyContainIt",desc="Why contain it?",max=1,missions=20480)
-    bingo_options(273)=(event="MailModels",desc="But why mail models?",max=3,missions=276)
-    bingo_options(274)=(event="UNATCOHandbook",desc="Rules and Regulations",max=4,missions=26)
-    bingo_options(275)=(event="02_Book06",desc="Learn basic firearm safety",max=1,missions=276)
-    bingo_options(276)=(event="15_Email02",desc="The truth is out there",max=1,missions=32768)
+    bingo_options(272)=(event="WhyContainIt_DestroyDeco",desc="Why contain it?",max=1,missions=20480)
+    bingo_options(273)=(event="MailModels_DestroyDeco",desc="But why mail models?",max=3,missions=276)
+    bingo_options(274)=(event="ReadText_UNATCOHandbook",desc="Rules and Regulations",max=4,missions=26)
+    bingo_options(275)=(event="ReadText_02_Book06",desc="Learn basic firearm safety",max=1,missions=276)
+    bingo_options(276)=(event="ReadText_15_Email02",desc="The truth is out there",max=1,missions=32768)
     bingo_options(277)=(event="ManderleyMail",desc="Check Manderley's holomail %s times",desc_singular="Check Manderley's holomail",max=2,missions=58)
 #ifndef revision
     bingo_options(278)=(event="LetMeIn",desc="Let me in!",max=1,missions=26)
 #endif
-    bingo_options(279)=(event="08_Bulletin02",desc="Most Wanted",max=1,missions=256)
-    bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
+    bingo_options(279)=(event="ReadText_08_Bulletin02",desc="Most Wanted",max=1,missions=256)
+    bingo_options(280)=(event="SnitchDowd_ConvoFlag",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
-    bingo_options(282)=(event="SmokingKills",desc="Smoking Kills",max=5,missions=3420)
+    bingo_options(282)=(event="SmokingKills_DestroyDeco",desc="Smoking Kills",max=5,missions=3420)
     bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",desc_singular="Make a phone call",max=5,missions=1916)
     bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",desc_singular="Open a sleeping pod in Area 51",max=4,missions=32768)
@@ -3611,10 +3800,10 @@ defaultproperties
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",desc_singular="Deactivate a laser grid under the dockyard",max=3,missions=512)
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
     bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the super freighter",max=1,missions=512)
-    bingo_options(290)=(event="11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
+    bingo_options(290)=(event="ReadText_11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
     bingo_options(291)=(event="A51ExplosiveLocker",desc="Enter the explosives locker in Area 51",max=1,missions=32768)
     bingo_options(292)=(event="A51SeparationSwim",desc="Swim in the Area 51 separation tank",max=1,missions=32768)
-    bingo_options(293)=(event="09_Email08",desc="Daddy Zhao",max=1,missions=512)
+    bingo_options(293)=(event="ReadText_09_Email08",desc="Daddy Zhao",max=1,missions=512)
     bingo_options(294)=(event="Titanic",desc="I'm flying, Jack!",max=1,missions=512)
     bingo_options(295)=(event="MeetScaredSoldier_Played",desc="Talk to the surviving Area 51 soldier",max=1,missions=32768)
     bingo_options(296)=(event="DockyardTrailer",desc="Enter a trailer in the dockyards",max=1,missions=512)
@@ -3631,7 +3820,7 @@ defaultproperties
     bingo_options(307)=(event="UCVentilation",desc="Destroy %s ventilation fans in the Ocean Lab",desc_singular="Destroy a ventilation fan in the Ocean Lab",max=6,missions=16384)
     bingo_options(308)=(event="OceanLabFloodedStoreRoom",desc="Swim to the locked store room in the Ocean Lab",max=1,missions=16384)
     bingo_options(309)=(event="OceanLabMedBay",desc="Enter the flooded med bay in the Ocean Lab",max=1,missions=16384)
-    bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",desc_singular="Watch Dogs (1 second)",max=15,missions=21604)
+    bingo_options(310)=(event="WatchDogs_peeptime",desc="Watch Dogs (%s seconds)",desc_singular="Watch Dogs (1 second)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",desc_singular="Look at that kitty! (1 second)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",desc_singular="Who Watches the Watchers? (1 second)",max=5)
     bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
@@ -3648,7 +3837,7 @@ defaultproperties
     bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1024)
     bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitored",max=1,missions=8)
     bingo_options(326)=(event="ThugGang_AllianceDead",desc="Slaughter the Rooks",max=10,missions=8,do_not_scale=true) // there are ordinarily 11 Rooks
-    bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8,do_not_scale=true) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
+    bingo_options(327)=(event="GiveZyme_ConvoFlag",desc="Who needs Rock?",max=2,missions=8,do_not_scale=true) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
     // bingo_options()=(event="MarketKid_PlayerUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
     bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=1024,do_not_scale=true)
@@ -3663,12 +3852,12 @@ defaultproperties
 #endif
     bingo_options(337)=(event="NotABigFan",desc="Not a big fan",max=20,missions=17244)
     bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
-    bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4,do_not_scale=true)
+    bingo_options(339)=(event="InterviewLocals_VariousPlayed",desc="Interview locals about a generator",max=3,missions=4,do_not_scale=true)
     bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
     bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096)
     bingo_options(342)=(event="AlarmUnitHacked",desc="Hack %s Alarm Sounder Panels",desc_singular="Hack an Alarm Sounder Panel",max=10)
-    bingo_options(343)=(event="BuoyOhBuoy",desc="Buoy Oh Buoy",max=10,missions=94)
-    bingo_options(344)=(event="PlayerPeeped",desc="Despite everything, it's still you",max=1,missions=24446)
+    bingo_options(343)=(event="BuoyOhBuoy_DestroyDeco",desc="Buoy Oh Buoy",max=10,missions=94)
+    bingo_options(344)=(event="Player_peeped",desc="Despite everything, it's still you",max=1,missions=24446)
     bingo_options(345)=(event="DangUnstabCond_peepedtex",desc="Condemned!",max=1,missions=2)
     bingo_options(346)=(event="pa_TrainSign_D_peepedtex",desc="Closely inspect the Paris metro map",max=1,missions=2048)
     bingo_options(347)=(event="IOnceKnelt",desc="I once knelt in this chapel",max=1,missions=2048)
@@ -3676,11 +3865,11 @@ defaultproperties
     bingo_options(349)=(event="LibertyPoints",desc="Visit the 11 points of the statue foundation",max=11,missions=2,do_not_scale=true)
     bingo_options(350)=(event="CherryPickerSeat",desc="Sit in the seat of a cherry picker",max=1,missions=49152)
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
-    bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up?",max=10,missions=24190)
+    bingo_options(352)=(event="ASingleFlask_DestroyDeco",desc="Do you have a single flask to back that up?",max=10,missions=24190)
     bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
-    bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=3966)
-    bingo_options(355)=(event="Ex51",desc="Ex-51",desc_singular="Ex-51",max=6,missions=4096)
-    bingo_options(356)=(event="JoyOfCooking",desc="The Joy of Cooking",max=1,missions=1088)
+    bingo_options(354)=(event="EmergencyExit_peeped",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=3966)
+    bingo_options(355)=(event="Ex51_VariousDead",desc="Ex-51",desc_singular="Ex-51",max=6,missions=4096)
+    bingo_options(356)=(event="ReadText_JoyOfCooking",desc="The Joy of Cooking",max=1,missions=1088)
 #ifdef injections || revision
     bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=56910)
 #endif
@@ -3692,11 +3881,11 @@ defaultproperties
 #endif
     bingo_options(362)=(event="PoolTableStripes",desc="Sink all the striped pool balls %s times",desc_singular="Sink all the striped pool balls",max=3,missions=33116)
     bingo_options(363)=(event="PoolTableSolids",desc="Sink all the solid pool balls %s times",desc_singular="Sink all the solid pool balls",max=3,missions=33116)
-    bingo_options(364)=(event="05_EmailMenu_psherman",desc="P. Sherman, 42 Wallaby Way, Sydney",max=1,missions=32)
+    bingo_options(364)=(event="ReadText_05_EmailMenu_psherman",desc="P. Sherman, 42 Wallaby Way, Sydney",max=1,missions=32)
     bingo_options(365)=(event="steampipe",desc="Stop a gas leak in the MJ12 Lab",max=1,missions=32)
     bingo_options(366)=(event="ArmoryVentEntrance",desc="Enter the Secret MJ12 Lab Armory through the vent",max=1,missions=32)
 #ifdef revision
-    bingo_options(367)=(event="PCLOADLETTER",desc="Damn it feels good to be a gangsta",max=1,missions=100)
+    bingo_options(367)=(event="PCLOADLETTER_DestroyDeco",desc="Damn it feels good to be a gangsta",max=1,missions=100)
 #endif
     bingo_options(368)=(event="UNATCOMJ12LabGreaselCages",desc="Become the greasel",max=4,missions=32,do_not_scale=true)
     bingo_options(369)=(event="BrokenMirror",desc="Accumulate bad luck",max=4,missions=2388)
@@ -3707,13 +3896,13 @@ defaultproperties
     bingo_options(374)=(event="PoolTableBallSunk",desc="Sink 5 pool balls",desc_singular="Sink 1 pool ball",max=5,missions=33116,do_not_scale=true)
     bingo_options(375)=(event="GeneratorBlown",desc="Destroy the NSF generator",max=1,missions=4)
     bingo_options(376)=(event="NSFSignalSent",desc="Send the NSF signal",max=1,missions=16)
-    bingo_options(377)=(event="PaulsDatavault",desc="Retrieve Paul's Datavault",max=1,missions=32)
+    bingo_options(377)=(event="PaulsDatavault_VariousPlayed",desc="Retrieve Paul's Datavault",max=1,missions=32)
     bingo_options(378)=(event="Have_Evidence",desc="Find the missing Dragon Tooth Sword",max=1,missions=64)
     bingo_options(379)=(event="Have_ROM",desc="Find the ROM Encoding",max=1,missions=64)
     bingo_options(380)=(event="TriadCeremony_Played",desc="The triads are one",max=1,missions=64)
     bingo_options(381)=(event="VL_Got_Schematic",desc="Download the Virus Schematic",max=1,missions=64)
     bingo_options(382)=(event="VL_UC_Destroyed",desc="Destroy the Versalife UC",max=1,missions=64)
-    bingo_options(383)=(event="MeetDowd",desc="Meet Stanton Dowd",max=1,missions=768)
+    bingo_options(383)=(event="MeetDowd_VariousPlayed",desc="Meet Stanton Dowd",max=1,missions=768)
     bingo_options(384)=(event="Pistons",desc="Activate the Bilge Pumps",max=1,missions=512)
     bingo_options(385)=(event="WeldPointDestroyed",desc="Destroy %s Weld Points",desc_singular="Destroy a Weld Point",max=5,missions=512)
     bingo_options(386)=(event="templar_upload",desc="Establish Templar System Uplink",max=1,missions=2048)
@@ -3767,7 +3956,7 @@ defaultproperties
     mutually_exclusive(34)=(e1="MJ12Troop_peeptime",e2="Binoculars_Activated")
     mutually_exclusive(35)=(e1="Binoculars_Activated",e2="MJ12Commando_peeptime")
     mutually_exclusive(36)=(e1="Binoculars_Activated",e2="NYEagleStatue_peeped")
-    mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching")
+    mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching_peeptime")
     mutually_exclusive(38)=(e1="Binoculars_Activated",e2="PawnAnim_Dance")
     mutually_exclusive(39)=(e1="Supervisor_Paid",e2="M06BoughtVersaLife")
     mutually_exclusive(40)=(e1="VendingMachineEmpty",e2="VendingMachineEmpty_Drink")
@@ -3784,13 +3973,13 @@ defaultproperties
     mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_PlayerTakedown")
     mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_PlayerTakedown")
     mutually_exclusive(52)=(e1="MaggieLived",e2="MaggieCanFly")
-    mutually_exclusive(53)=(e1="GoneFishing",e2="PetFish")
-    mutually_exclusive(54)=(e1="BirdWatching",e2="PetBirds")
+    mutually_exclusive(53)=(e1="GoneFishing_ClassDead",e2="PetFish")
+    mutually_exclusive(54)=(e1="BirdWatching_peeptime",e2="PetBirds")
     mutually_exclusive(55)=(e1="Cat_peeptime",e2="PetAnimal_Cat")
     mutually_exclusive(56)=(e1="Greasel_ClassDead",e2="PetAnimal_Greasel")
     mutually_exclusive(57)=(e1="Rat_ClassDead",e2="PetRats")
     mutually_exclusive(58)=(e1="Karkian_ClassDead",e2="PetKarkians")
-    mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
+    mutually_exclusive(59)=(e1="PerformBurder_ClassDead",e2="PetBirds")
     mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
     mutually_exclusive(61)=(e1="TiffanySavage_PlayerDead",e2="TiffanyHeli")
     mutually_exclusive(62)=(e1="LebedevLived",e2="AnnaNavarre_DeadM3")
@@ -3798,34 +3987,34 @@ defaultproperties
     mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_PlayerUnconscious")
-    mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
+    mutually_exclusive(67)=(e1="Ex51_VariousDead",e2="ScienceIsForNerds_VariousDead")
     mutually_exclusive(68)=(e1="PetAnimal_BindName_Starr",e2="PetDogs")
     mutually_exclusive(69)=(e1="JustAFleshWound",e2="LostLimbs")
     mutually_exclusive(70)=(e1="PoolTableSolids",e2="PoolTableStripes")
     mutually_exclusive(71)=(e1="PoolTableSolids",e2="PlayPool")
     mutually_exclusive(72)=(e1="PlayPool",e2="PoolTableStripes")
     // reading books and stuff
-    mutually_exclusive(73)=(e1="JacobsShadow",e2="ManWhoWasThursday")
-    mutually_exclusive(74)=(e1="JacobsShadow",e2="GreeneArticles")
-    mutually_exclusive(75)=(e1="JacobsShadow",e2="MoonBaseNews")
-    mutually_exclusive(76)=(e1="JacobsShadow",e2="JoyOfCooking")
-    mutually_exclusive(77)=(e1="JacobsShadow",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(78)=(e1="JacobsShadow",e2="06_Datacube05")
-    mutually_exclusive(79)=(e1="ManWhoWasThursday",e2="GreeneArticles")
-    mutually_exclusive(80)=(e1="ManWhoWasThursday",e2="MoonBaseNews")
-    mutually_exclusive(81)=(e1="ManWhoWasThursday",e2="JoyOfCooking")
-    mutually_exclusive(82)=(e1="ManWhoWasThursday",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(83)=(e1="ManWhoWasThursday",e2="06_Datacube05")
-    mutually_exclusive(84)=(e1="GreeneArticles",e2="MoonBaseNews")
-    mutually_exclusive(85)=(e1="GreeneArticles",e2="JoyOfCooking")
-    mutually_exclusive(86)=(e1="GreeneArticles",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(87)=(e1="GreeneArticles",e2="06_Datacube05")
-    mutually_exclusive(88)=(e1="MoonBaseNews",e2="JoyOfCooking")
-    mutually_exclusive(89)=(e1="MoonBaseNews",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(90)=(e1="MoonBaseNews",e2="06_Datacube05")
-    mutually_exclusive(91)=(e1="JoyOfCooking",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(92)=(e1="JoyOfCooking",e2="06_Datacube05")
-    mutually_exclusive(93)=(e1="09_NYC_DOCKYARD--796967769",e2="06_Datacube05")
+    mutually_exclusive(73)=(e1="ReadText_JacobsShadow",e2="ReadText_ManWhoWasThursday")
+    mutually_exclusive(74)=(e1="ReadText_JacobsShadow",e2="ReadText_GreeneArticles")
+    mutually_exclusive(75)=(e1="ReadText_JacobsShadow",e2="ReadText_MoonBaseNews")
+    mutually_exclusive(76)=(e1="ReadText_acobsShadow",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(77)=(e1="ReadText_JacobsShadow",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(78)=(e1="ReadText_JacobsShadow",e2="ReadText_06_Datacube05")
+    mutually_exclusive(79)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_GreeneArticles")
+    mutually_exclusive(80)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_MoonBaseNews")
+    mutually_exclusive(81)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(82)=(e1="ReadText_ManWhoWasThursday",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(83)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_06_Datacube05")
+    mutually_exclusive(84)=(e1="ReadText_GreeneArticles",e2="ReadText_MoonBaseNews")
+    mutually_exclusive(85)=(e1="ReadText_GreeneArticles",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(86)=(e1="ReadText_GreeneArticles",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(87)=(e1="ReadText_GreeneArticles",e2="ReadText_06_Datacube05")
+    mutually_exclusive(88)=(e1="ReadText_MoonBaseNews",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(89)=(e1="ReadText_MoonBaseNews",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(90)=(e1="ReadText_MoonBaseNews",e2="ReadText_06_Datacube05")
+    mutually_exclusive(91)=(e1="ReadText_JoyOfCooking",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(92)=(e1="ReadText_JoyOfCooking",e2="ReadText_06_Datacube05")
+    mutually_exclusive(93)=(e1="09_NYC_DOCKYARD--796967769",e2="ReadText_06_Datacube05")
 
     mutually_exclusive(94)=(e1="UNATCOMJ12LabGreaselCages",e2="nanocage")
     mutually_exclusive(95)=(e1="PoolTableStripeBallSunk",e2="PoolTableSolidBallSunk")
@@ -3834,15 +4023,15 @@ defaultproperties
 
     mutually_exclusive(98)=(e1="NSFSignalSent",e2="M04PlayerLikesUNATCO_Played")
     mutually_exclusive(99)=(e1="TriadCeremony_Played",e2="M07ChenSecondGive_Played")
-    mutually_exclusive(100)=(e1="MeetDowd",e2="StantonAmbushDefeated")
+    mutually_exclusive(100)=(e1="MeetDowd_VariousPlayed",e2="StantonAmbushDefeated")
     mutually_exclusive(101)=(e1="templar_upload",e2="GuntherHermann_Dead")
-    mutually_exclusive(102)=(e1="MeetDowd",e2="GaveDowdAmbrosia")
-    mutually_exclusive(103)=(e1="schematic_downloaded",e2="ViewSchematics")
+    mutually_exclusive(102)=(e1="MeetDowd_VariousPlayed",e2="GaveDowdAmbrosia")
+    mutually_exclusive(103)=(e1="schematic_downloaded",e2="ImageOpened_ViewSchematics")
     mutually_exclusive(104)=(e1="schematic_downloaded",e2="PageTaunt_Played")
     mutually_exclusive(105)=(e1="DXRNPCs1_Dead",e2="MerchantPurchaseBind_DXRNPCs1")
     mutually_exclusive(106)=(e1="lemerchant_PlayerTakedown",e2="MerchantPurchaseBind_lemerchant")
     mutually_exclusive(107)=(e1="mirrordoor",e2="BrokenMirror")
-    mutually_exclusive(108)=(e1="ReadJCEmail",e2="BrowserHistoryCleared")
-    mutually_exclusive(109)=(e1="DestroyCapitalism",e2="Shannon_PlayerTakedown")
+    mutually_exclusive(108)=(e1="ReadText_ReadJCEmail",e2="BrowserHistoryCleared")
+    mutually_exclusive(109)=(e1="DestroyCapitalism_VariousDead",e2="Shannon_PlayerTakedown")
 //#endregion
 }
