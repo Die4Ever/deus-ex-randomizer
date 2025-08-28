@@ -11,14 +11,13 @@ simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
    root = DeusExRootWindow(Hacker.rootWindow);
    if (root != None)
    {
-//SARGE: TODO: FIX
-#ifndef gmdxae
-      keypadwindow = HUDKeypadWindow(root.InvokeUIScreen(Class'HUDKeypadWindow', True));
-#endif
-      root.MaskBackground(True);
+#ifdef gmdxae
+        //SARGE: GMDX AE uses a subwindow so it can display notes.
+        Super.ActivateKeypadWindow(Hacker,GetInstantSuccess(Hacker,bHacked));
+#else
+        keypadwindow = HUDKeypadWindow(root.InvokeUIScreen(Class'HUDKeypadWindow', True));
+        root.MaskBackground(True);
 
-//SARGE: TODO: FIX
-#ifndef gmdxae
       // copy the tag data to the actual class
       if (keypadwindow != None)
       {
