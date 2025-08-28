@@ -24,5 +24,6 @@
 - Hazmat suits can no longer be marked as Trash while being used in Zero Rando (or when balance changes are disabled)
 - Added book colours and open/closed information to bingo goals help texts.
 - Fixed quick aug menu exploit with infinite upgrades while paused.
+- Swapped NPCs get their DesiredRotation set when swapped, along with their regular Rotation.  This fixes some enemies who would sometimes be facing the wrong direction, like the terrorists in the M02 Hotel, or the guards near the elevator in the M03 Airfield Helibase.
 
 </details>

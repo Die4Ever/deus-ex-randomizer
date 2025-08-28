@@ -727,7 +727,9 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     }
 
     newrot = b.Rotation;
+    b.DesiredRotation = a.Rotation;
     b.SetRotation(a.Rotation);
+    a.DesiredRotation=newrot;
     a.SetRotation(newrot);
 
     aphysics = a.Physics;
