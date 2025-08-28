@@ -41,11 +41,6 @@ function PostPostBeginPlay()
     }
 }
 
-auto state StartUpScout
-{
-    // nil
-}
-
 defaultproperties
 {
     Mesh=None
