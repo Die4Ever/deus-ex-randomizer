@@ -46,16 +46,20 @@ function CreateChangeAccountButton()
 {
     local PersonaButtonBarWindow winActionButtons;
 
-    winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+#ifdef gmdxae
+    winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindowMenu'));
+#else
+	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+#endif
     winActionButtons.SetPos(12, 169);
     winActionButtons.SetWidth(174);
     winActionButtons.FillAllSpace(False);
 
-    #ifdef gmdxae
-        btnChangeAccount = PersonaActionButtonWindowMenu(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    #else
-        btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    #endif
+#ifdef gmdxae
+    btnChangeAccount = PersonaActionButtonWindowMenu(winActionButtons.NewChild(Class'PersonaActionButtonWindowMenu'));
+#else
+    btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+#endif
     btnChangeAccount.SetButtonText("Logi|&n");
 }
 
