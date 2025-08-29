@@ -1111,9 +1111,18 @@ function AnyEntryMapFixes()
         if (dxr.flags.GetStartingMap() > 120) {
             // a lot of this conversation doesn't make sense on later starts. but you can't get a map for the bingo goal without it
             con = GetConversation('MeetCarlaBrown');
-            ces = GetSpeechEvent(con.eventList, "MJ12 is short a UC");
-            ces2 = GetSpeechEvent(con.eventList, "There are two separate units at the west end of the base");
+            
+            ces = GetSpeechEvent(con.eventList, "Easier than a straight fight with military bots");
+            ces2 = GetSpeechEvent(con.eventList, "I suppose you're right");
+            ces.nextEvent = ces2.nextEvent;
+            ces2.nextEvent = ces;
+
+            ces = GetSpeechEvent(con.eventList, "We have a common enemy");
             ces.nextEvent = ces2;
+
+            ces = GetSpeechEvent(con.eventList, "You with the NSF?");
+            con.eventList = ces;
+            
             RemoveGoalFromCon('DestroyBots', 'MeetCarlaBrown');
             RemoveGoalFromCon('ActivatePower', 'MeetCarlaBrown');
         }

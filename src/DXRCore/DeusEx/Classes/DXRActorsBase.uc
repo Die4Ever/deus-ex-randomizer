@@ -1041,6 +1041,7 @@ function bool RemoveGoalFromCon(name goalName, name convname, optional int which
 
     if (con.eventList == ceag) {
         con.eventList = ceag.nextEvent;
+        return true;
     } else if (prevCe != None && prevCe.nextEvent != None) {
         prevCe.nextEvent = prevCe.nextEvent.nextEvent;
         return true;
