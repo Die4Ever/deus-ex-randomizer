@@ -1,6 +1,6 @@
 #ifdef injections
 class InformationDevices injects InformationDevices abstract;
-#elseif revision || gmdxae
+#elseif revision
 class DXRInformationDevices extends DataCube;
 #else
 class DXRInformationDevices extends #var(prefix)InformationDevices;
@@ -431,11 +431,7 @@ defaultproperties
     bInvincible=True
     bCanBeBase=True
     ItemName="DataCube"
-#ifdef gmdxae
-    bSkipDarkenCheck=true
-#else
     Texture=Texture'DeusExItems.Skins.DataCubeTex2'
-#endif
     Mesh=LodMesh'DeusExItems.DataCube'
     CollisionRadius=7.000000
     CollisionHeight=1.270000
