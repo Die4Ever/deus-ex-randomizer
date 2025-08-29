@@ -23,7 +23,10 @@ function DrawWindow(GC gc)
                 frobTarget = None;
     }
 
-    if( frobTarget != None ) DrawWindowBase(gc, frobTarget);
+    if(#bool(gmdxae) && (ElectronicDevices(frobTarget) != None || DeusExMover(frobTarget) != None))
+        Super.DrawWindow(gc);
+    else if( frobTarget != None )
+        DrawWindowBase(gc, frobTarget);
 }
 
 function bool CheckHighlighted(Actor frobTarget)
