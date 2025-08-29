@@ -2,6 +2,7 @@
 ## Major Changes
 
 - Fixed Area 51 Sectors 2 and 3 goals rando locations not working.
+- Ballistic Protection aug now uses slightly less energy (when Augs Balance Changes are enabled), and has a shorter auto linger time (when Semi-Automatic Augs are enabled).
 
 ## Revision
 
