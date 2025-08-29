@@ -1,4 +1,4 @@
-class DXREvents extends DXREventsBase;
+class DXREvents extends DXREventsHelpText;
 
 
 //#region WatchActors
@@ -17,45 +17,45 @@ function WatchActors()
             || #var(prefix)HKHangingLantern(d) != None
             || #var(prefix)HKHangingLantern2(d) != None)
         {
-            AddWatchedActor(d,"LightVandalism");
+            AddWatchedActor(d,"LightVandalism_DestroyDeco");
         }
         else if(#var(prefix)Trophy(d) != None)
         {
-            AddWatchedActor(d,"TrophyHunter");
+            AddWatchedActor(d,"TrophyHunter_DestroyDeco");
         }
         else if(#var(prefix)SignFloor(d) != None)
         {
-            AddWatchedActor(d,"SlippingHazard");
+            AddWatchedActor(d,"SlippingHazard_DestroyDeco");
         }
         else if(#var(prefix)HangingChicken(d) != None
             || #var(prefix)HKHangingPig(d) != None)
         {
-            AddWatchedActor(d,"BeatTheMeat");
+            AddWatchedActor(d,"BeatTheMeat_DestroyDeco");
         }
         else if(#var(prefix)BarrelVirus(d) != None)
         {
-            AddWatchedActor(d,"WhyContainIt");
+            AddWatchedActor(d,"WhyContainIt_DestroyDeco");
         }
         else if(#var(prefix)Mailbox(d) != None)
         {
-            AddWatchedActor(d,"MailModels");
+            AddWatchedActor(d,"MailModels_DestroyDeco");
         }
         else if(#var(prefix)CigaretteMachine(d) != None)
         {
-            AddWatchedActor(d,"SmokingKills");
+            AddWatchedActor(d,"SmokingKills_DestroyDeco");
         }
         else if(#var(prefix)Buoy(d) != None)
         {
-            AddWatchedActor(d,"BuoyOhBuoy");
+            AddWatchedActor(d,"BuoyOhBuoy_DestroyDeco");
         }
         else if(#var(prefix)Flask(d) != None)
         {
-            AddWatchedActor(d,"ASingleFlask");
+            AddWatchedActor(d,"ASingleFlask_DestroyDeco");
         }
 #ifdef revision
         else if(NetworkPrinter(d) != None)
         {
-            AddWatchedActor(d,"PCLOADLETTER");
+            AddWatchedActor(d,"PCLOADLETTER_DestroyDeco");
         }
 #endif
     }
@@ -435,13 +435,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -514,11 +514,11 @@ function SetWatchFlags() {
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
             bt.bDestroyOthers = false;
         }
         break;
@@ -561,7 +561,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'WarehouseSewerTunnel',vectm(-19.620102, -866.462830, -403.896912),60,40);
         bt.bDestroyOthers = false;
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2048,1111,680),30,10);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2048,1111,680),30,10);  //Only one in Revision
         }
         break;
     //#endregion
@@ -591,13 +591,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -633,7 +633,7 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         WatchFlag('OverhearLebedev_Played');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1432,-177,136),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(1432,-177,136),20,10);
 
         break;
     case "03_NYC_HANGAR":
@@ -674,11 +674,11 @@ function SetWatchFlags() {
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
             bt.bDestroyOthers = false;
         }
         break;
@@ -718,14 +718,14 @@ function SetWatchFlags() {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(960,234,297),350,60,class'#var(prefix)JuanLebedevCarcass');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
             class'BingoTrigger'.static.ProxCreate(self,'PresentForManderley',vectm(220,4,280),300,40,class'#var(prefix)JuanLebedevCarcass');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -828,13 +828,13 @@ function SetWatchFlags() {
         if(RevisionMaps){
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(1130,-150,310),80,40,class'#var(prefix)FlagPole');
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1032,447,588),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1032,447,588),20,10);
         } else {
             class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             class'BingoTrigger'.static.ProxCreate(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40,class'#var(prefix)FlagPole');
 
             class'BingoTrigger'.static.PeepCreate(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
-            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-945,343,568),20,10);
+            class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-945,343,568),20,10);
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -884,9 +884,9 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
 
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2060,-305),20,10); //Front Door
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1856,2060,-305),20,10); //Front Door
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1856,2553,-305),20,10); //Kitchen Door
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1856,2553,-305),20,10); //Kitchen Door
         bt.bDestroyOthers=false;
 
 
@@ -915,7 +915,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),180,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1024,-790,-231),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1024,-790,-231),20,10);
 
         foreach AllActors(class'#var(prefix)Poolball',ball){
             if (ball.Region.Zone.ZoneGroundFriction>1){
@@ -967,13 +967,13 @@ function SetWatchFlags() {
         class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
         class'BingoTrigger'.static.ProxCreate(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40,class'#var(prefix)MaggieChowCarcass');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-100,-1215,147),20,10); //Main Floor
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-100,-1215,147),20,10); //Main Floor
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1084,-1235,1832),20,10); //Under Construction Floor
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(927,-958,1295),20,10); //Over Jock's elevator
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(927,-958,1295),20,10); //Over Jock's elevator
         bt.bDestroyOthers=false;
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(830,-1020,1270),20,10); //Next to Jock's elevator
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(830,-1020,1270),20,10); //Next to Jock's elevator
         bt.bDestroyOthers=false;
 
 
@@ -1044,7 +1044,7 @@ function SetWatchFlags() {
             }
         }
         class'BingoTrigger'.static.ProxCreate(self,'HongKongBBall',trig.Location,14,3,class'#var(prefix)Basketball');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1832,-81,536),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1832,-81,536),20,10);
 
         foreach AllActors(class'#var(DeusExPrefix)Mover', dxm, 'DeusExMover') {
             switch(dxm.Name) {
@@ -1093,13 +1093,13 @@ function SetWatchFlags() {
 
     case "06_HONGKONG_VERSALIFE":
         WatchFlag('Supervisor_Paid');
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(207,575,-15),20,10);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(207,575,-15),20,10);
         break;
     case "06_HONGKONG_WANCHAI_GARAGE":
         if (RevisionMaps){
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-463,-23),20,10);
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-572,-463,-23),20,10);
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-572,-335,-23),20,10);
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-572,-335,-23),20,10);
         }
         break;
     //#endregion
@@ -1129,11 +1129,11 @@ function SetWatchFlags() {
         WatchFlag('GreenKnowsAboutDowd');
         WatchFlag('SheaKnowsAboutDowd');
         if (RevisionMaps) {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(112,-2,242),40,20);  //Only one in Revision
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(257,0,240),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(257,0,240),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2431,-258,240),40,20);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2431,-258,240),40,20);  //Back Door
             bt.bDestroyOthers = false;
         }
 
@@ -1247,7 +1247,7 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker2');
 
         bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
-        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-993,-60,-80),40,20);
+        bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-993,-60,-80),40,20);
 
         bt = class'BingoTrigger'.static.Create(self,'Pistons',vectm(0,0,0)); //Bilge Pumps
 
@@ -1320,9 +1320,9 @@ function SetWatchFlags() {
             break;
         }
 
-        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(487,-1935,-475),24,14); //Near exit
+        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(487,-1935,-475),24,14); //Near exit
         bt.bDestroyOthers = false;
-        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(328,-1935,-475),24,14); //Near Exit
+        bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(328,-1935,-475),24,14); //Near Exit
         bt.bDestroyOthers = false;
 
         break;
@@ -1423,19 +1423,19 @@ function SetWatchFlags() {
         WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
         if (RevisionMaps){
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2016,785,144),40,20);  //Actual Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2016,785,144),40,20);  //Actual Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(255,-305,80),40,10);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(255,-305,80),40,10);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-56),20,10);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2140,-528,-56),20,10);  //Back Door
             bt.bDestroyOthers = false;
 
         } else {
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(2064,595,144),40,20);  //Actual Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(2064,595,144),40,20);  //Actual Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(290,-32,128),40,20);  //Front Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(290,-32,128),40,20);  //Front Door
             bt.bDestroyOthers = false;
-            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2140,-528,-72),20,10);  //Back Door
+            bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2140,-528,-72),20,10);  //Back Door
             bt.bDestroyOthers = false;
         }
 
@@ -1579,30 +1579,30 @@ function SetWatchFlags() {
         //"Sortie" signs - pa_TrainSign_A
         if (RevisionMaps){
             //Revision has both pa_TrainSign_a and some new blue texture that's near the actual train (Literally named "sortie")
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(367.681,-2655.554,462.918),24,14); //Near exit
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(367.681,-2655.554,462.918),24,14); //Near exit
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(527.871,-2656.112,462.918),24,14); //Near Exit
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(527.871,-2656.112,462.918),24,14); //Near Exit
             bt.bDestroyOthers = false;
 
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2175,-180),40,16); //Big wide sign, these ones destroy each other
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2175,-180),40,16); //Big wide sign, these ones destroy each other
             bt.Tag = 'EmergencyExitWideSign';
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2130,-180),40,16); //Big wide sign, these ones destroy each other
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2130,-180),40,16); //Big wide sign, these ones destroy each other
             bt.Tag = 'EmergencyExitWideSign';
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-140,2080,-180),40,16); //Big wide sign, these ones destroy each other
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-140,2080,-180),40,16); //Big wide sign, these ones destroy each other
             bt.Tag = 'EmergencyExitWideSign';
 
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(1344.3,2116.7,-160),36,12); //Near Train
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(1344.3,2116.7,-160),36,12); //Near Train
             bt.bDestroyOthers = false;
         } else {
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-591.76,-657.527,35.829),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-591.76,-657.527,35.829),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2032.307,-576.207,-380.829),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2032.307,-576.207,-380.829),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-2027.90,939.477,-938.886),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2027.90,939.477,-938.886),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-1040.066,1472.132,-976.936),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1040.066,1472.132,-976.936),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit',vectm(-587.698,1466.590,-891.960),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-587.698,1466.590,-891.960),34,10);
             bt.bDestroyOthers = false;
         }
 
@@ -2103,13 +2103,25 @@ simulated function bool WatchGuntherKillSwitch()
     return False;
 }
 //#region FindOrigBingoDescription
-simulated function string FindOrigBingoDescription(string event)
+simulated function string FindOrigBingoDescription(string event, int max)
 {
     local int i;
+    local string desc;
+
 
     for(i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event~=event){
-            return bingo_options[i].desc;
+            desc = bingo_options[i].desc;
+
+            if (max == 1 && bingo_options[i].desc_singular != "") {
+                desc = bingo_options[i].desc_singular;
+            } else {
+                desc = sprintf(desc, max);
+            }
+
+            desc = tweakBingoDescription(event,desc);
+
+            return desc;
         }
     }
 
@@ -2138,7 +2150,7 @@ simulated function string tweakBingoDescription(string event, string desc)
            }
 
             break;
-        case "CamilleConvosDone":
+        case "ParisClubInfo_Convo":
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 return "Get info from Achille";
             } else {
@@ -2173,7 +2185,7 @@ simulated function int tweakBingoMax(string event, int max)
             }
             break;
         //Sodacan_Activated
-        //DrinkAlcohol
+        //DrinkAlcohol_Activated
     }
     return max;
 }
@@ -2247,7 +2259,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 12;
             }
             break;
-        case "FightSkeletons":
+        case "FightSkeletons_DestroyDeco":
             if (RevisionMaps){
                 //Extras in:
                 // - NYC Bar, Free Clinic, Street (M02)
@@ -2259,7 +2271,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 17748;
             }
             break;
-        case "TrophyHunter":
+        case "TrophyHunter_DestroyDeco":
             if (RevisionMaps){
                 //Extras in:
                 // - NYC Bar (M02)
@@ -2273,7 +2285,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 5502;
             }
             break;
-        case "SlippingHazard":
+        case "SlippingHazard_DestroyDeco":
             if (RevisionMaps){
                 //Extra in Paris Club (M10)
                 return 1918;
@@ -2300,7 +2312,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 return 7244;
             }
             break;
-        case "WatchDogs":
+        case "WatchDogs_peeptime":
             if (RevisionMaps){
                 //Extras in Cathedral (M11)
                 return 23652;
@@ -2374,7 +2386,7 @@ function ReadText(name textTag)
     case '01_Bulletin08':
     case '03_Bulletin01':
     case '03_Bulletin02':
-        eventname = "KnowYourEnemy";
+        eventname = "ReadText_KnowYourEnemy";
         break;
 
     case '02_Book03':
@@ -2385,7 +2397,7 @@ function ReadText(name textTag)
     case '10_Book02':
     case '12_Book01':
     case '15_Book01':
-        eventname = "JacobsShadow";
+        eventname = "ReadText_JacobsShadow";
         break;
 
     case '02_Book05':
@@ -2395,7 +2407,7 @@ function ReadText(name textTag)
     case '12_Book02':
     case '14_Book04':
     case '15_Book02':
-        eventname = "ManWhoWasThursday";
+        eventname = "ReadText_ManWhoWasThursday";
         break;
 
     case '01_Newspaper06':
@@ -2403,13 +2415,13 @@ function ReadText(name textTag)
     case '02_Newspaper06':
     case '03_Newspaper02':
     case '08_Newspaper01':
-        eventname = "GreeneArticles";
+        eventname = "ReadText_GreeneArticles";
         break;
 
     case '02_Newspaper03':
     case '03_Newspaper01':
     case '06_Newspaper02':
-        eventname="MoonBaseNews";
+        eventname="ReadText_MoonBaseNews";
         break;
 
     case '15_Datacube02':
@@ -2420,7 +2432,7 @@ function ReadText(name textTag)
     case 'CloneCube2':
     case 'CloneCube3':
     case 'CloneCube4':
-        eventname="CloneCubes";
+        eventname="ReadText_CloneCubes";
         break;
 
     case '01_Book01':
@@ -2431,12 +2443,12 @@ function ReadText(name textTag)
     case '01_Book06':
     case '01_Book07':
     case '01_Book08':
-        eventname="UNATCOHandbook";
+        eventname="ReadText_UNATCOHandbook";
         break;
 
     case '06_Book04':
     case '10_Book06':
-        eventname="JoyOfCooking";
+        eventname="ReadText_JoyOfCooking";
         break;
 
     case 'JennysNumber':
@@ -2462,12 +2474,12 @@ function ReadText(name textTag)
             case "15_AREA51_PAGE--1066683761":
             case "15_AREA51_PAGE--1790818418":
             case "15_AREA51_PAGE--26631873":
-                eventname="CloneCubes";
+                eventname="ReadText_CloneCubes";
                 break;
         }
         if(eventname == "") {
             // it's simple for a bingo event that requires reading just 1 thing
-            _MarkBingo(textTag);
+            _MarkBingo("ReadText_"$textTag);
             return;
         }
     }
@@ -2595,13 +2607,13 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
     //Ban "main mission" goals if any sort of mission progress is expected
         case "GeneratorBlown":
         case "NSFSignalSent":
-        case "PaulsDatavault":
+        case "PaulsDatavault_VariousPlayed":
         case "Have_Evidence":
         case "Have_ROM":
         case "TriadCeremony_Played":
         case "VL_Got_Schematic":
         case "VL_UC_Destroyed":
-        case "MeetDowd":
+        case "MeetDowd_VariousPlayed":
         case "Pistons":
         case "WeldPointDestroyed":
         case "templar_upload":
@@ -2643,9 +2655,10 @@ function string RemapBingoEvent(string eventname)
             return "SpiderBot_ClassDead";
         case "LDDPRussPaid":
         case "ClubMercedesConvo1_Done":
-            return "ClubEntryPaid";
+            return "ClubEntryPaid_Convo";
         case "LDDPAchilleDone":
-            return "CamilleConvosDone";
+        case "CamilleConvosDone":
+            return "ParisClubInfo_Convo";
         case "KarkianBaby_ClassDead":
             return "Karkian_ClassDead";
         case "AmbrosiaTagged":
@@ -2721,13 +2734,13 @@ function string RemapBingoEvent(string eventname)
         case "LiquorBottle_Activated":
         case "Liquor40oz_Activated":
         case "WineBottle_Activated":
-            return "DrinkAlcohol";
+            return "DrinkAlcohol_Activated";
         case "Pigeon_ClassDead":
         case "Seagull_ClassDead":
-            return "PerformBurder";
+            return "PerformBurder_ClassDead";
         case "Fish_ClassDead":
         case "Fish2_ClassDead":
-            return "GoneFishing";
+            return "GoneFishing_ClassDead";
         case "ChateauInBethsRoom":
         case "ChateauInNicolettesRoom":
             return "DuClareBedrooms";
@@ -2757,15 +2770,15 @@ function string RemapBingoEvent(string eventname)
             return "MJ12Troop_peeptime";
         case "Pigeon_peeptime":
         case "Seagull_peeptime":
-            return "BirdWatching";
+            return "BirdWatching_peeptime";
         case "ImageOpened_TiffanyHostagePicture":
         case "ImageOpened_JoeGreeneMIBMJ12":
         case "ImageOpened_TerroristCommander":
         case "ImageOpened_MilleniumMagazine":
-            return "ViewPortraits";
+            return "ImageOpened_ViewPortraits";
         case "ImageOpened_BlueFusionDevice":
         case "ImageOpened_UniversalConstructorComponent":
-            return "ViewSchematics";
+            return "ImageOpened_ViewSchematics";
         case "ImageOpened_Area51Sector4":
         case "ImageOpened_Area51Sector3":
         case "ImageOpened_Area51Bunker":
@@ -2787,20 +2800,20 @@ function string RemapBingoEvent(string eventname)
         case "ImageOpened_747Diagram":
         case "ImageOpened_NYCWarehouse":
         case "ImageOpened_LibertyIslandSatellitePhoto":
-            return "ViewMaps";
+            return "ImageOpened_ViewMaps";
         case "ImageOpened_GrayDisection":
         case "ImageOpened_GreaselDisection":
-            return "ViewDissection";
+            return "ImageOpened_ViewDissection";
         case "ImageOpened_CathedralEntrance":
         case "ImageOpened_ParisCatacombs":
         case "ImageOpened_NSFHeadquarters":
-            return "ViewTouristPics";
-        case "01_EmailMenu_JCD":
-        case "03_EmailMenu_JCD":
-        case "04_EmailMenu_JCD":
-        case "05_EmailMenu_JCD":
-        case "06_EmailMenu_JCDenton":
-            return "ReadJCEmail";
+            return "ImageOpened_ViewTouristPics";
+        case "ReadText_01_EmailMenu_JCD":
+        case "ReadText_03_EmailMenu_JCD":
+        case "ReadText_04_EmailMenu_JCD":
+        case "ReadText_05_EmailMenu_JCD":
+        case "ReadText_06_EmailMenu_JCDenton":
+            return "ReadText_ReadJCEmail";
         case "NicoletteInUnderground_Played":
         case "NicoletteInUnderground2_Played":
         case "NicoletteInStudy_Played":
@@ -2809,14 +2822,14 @@ function string RemapBingoEvent(string eventname)
         case "NicoletteInGarden_Played":
         case "NicoletteInGarden2_Played":
         case "NicoletteInBethsRoom_Played":
-            return "NicoletteHouseTour";
+            return "NicoletteHouseTour_VariousPlayed";
         case "WatchKeys_beth_room":
         case "WatchKeys_nico_room":
         case "WatchKeys_duclare_chateau":
-            return "DuClareKeys";
+            return "WatchKeys_DuClareKeys";
         case "WatchKeys_Locker1":
         case "WatchKeys_Locker2":
-            return "ShipLockerKeys";
+            return "WatchKeys_ShipLockerKeys";
         case "TechSergeantKaplan_PlayerDead":
         case "Mole_PlayerDead":
         case "JordanShea_PlayerDead":
@@ -2855,7 +2868,7 @@ function string RemapBingoEvent(string eventname)
         case "Defoe_PlayerDead":
         case "Cassandra_PlayerDead":
         case "ClubBouncer_PlayerDead":
-            _MarkBingo("DestroyCapitalism"); //Split into another event, but still return this one as-is
+            _MarkBingo("DestroyCapitalism_VariousDead"); //Split into another event, but still return this one as-is
             return eventname;
         case "MeetWalton_Played":
         case "M04MeetWalton_Played":
@@ -2864,29 +2877,29 @@ function string RemapBingoEvent(string eventname)
         case "M11WaltonHolo_Played":
         case "WaltonShowdown_Played":
         case "WaltonBadass_Played":
-            return "WaltonConvos";
+            return "WaltonConvos_VariousPlayed";
         case "ScientistMale_ClassDead":
         case "ScientistMale2_ClassDead": //Revision
         case "ScientistFemale_ClassDead":
-            return "ScienceIsForNerds";
+            return "ScienceIsForNerds_VariousDead";
         case "ShipNamePlate_B_peepedtex":
         case "ShipNamePlate_C_peepedtex":
         case "ShipNamePlate_D_peepedtex":
-            return "ShipNamePlate";
+            return "ShipNamePlate_peeped";
         case "UNATCOHQ_BulletinBoard_Cork_peepedtex":
             return "un_bboard_peepedtex";
         case "SheaKnowsAboutDowd":
         case "GreenKnowsAboutDowd":
-            return "SnitchDowd";
+            return "SnitchDowd_ConvoFlag";
         case "IcarusCalls_Played":
             _MarkBingo("PhoneCall"); //It's a phone call!
             return eventname;
         case "Doberman_peeptime":
         case "Mutt_peeptime":
-            return "WatchDogs";
+            return "WatchDogs_peeptime";
         case "DonDone":
         case "LennyDone":
-            return "GiveZyme";
+            return "GiveZyme_ConvoFlag";
         case "PetAnimal_Karkian":
         case "PetAnimal_KarkianBaby":
             return "PetKarkians";
@@ -2927,9 +2940,9 @@ function string RemapBingoEvent(string eventname)
         case "WorkerGivesInfo_Played":
         case "MaleHostageRescued_Played":
         case "M02SallyDone":
-            return "InterviewLocals";
+            return "InterviewLocals_VariousPlayed";
         case "MeetSandraRenton_Played":
-            _MarkBingo("InterviewLocals"); //Split into another event, but still return this one as-is
+            _MarkBingo("InterviewLocals_VariousPlayed"); //Split into another event, but still return this one as-is
             return eventname;
         case "BlackCat_peeptime":
             return "Cat_peeptime";
@@ -2938,7 +2951,7 @@ function string RemapBingoEvent(string eventname)
         case "MeetSmuggler_Played":
         case "M04MeetSmuggler_Played":
         case "M08SmugglerConvos_Played":
-            return "MeetSmuggler";
+            return "MeetSmuggler_VariousPlayed";
         case "Ray_Dead":
         case "Ray_Unconscious":
             return "GotHelicopterInfo";
@@ -2950,7 +2963,7 @@ function string RemapBingoEvent(string eventname)
         case "Savage_assistant_M_PlayerDead":
         case "Savage_assistant_F_PlayerDead":
         case "LDDPVanSci_PlayerDead":
-            return "Ex51";
+            return "Ex51_VariousDead";
         case "BodyPartLoss_LeftLeg":
         case "BodyPartLoss_RightLeg":
         case "BodyPartLoss_LeftArm":
@@ -2959,10 +2972,12 @@ function string RemapBingoEvent(string eventname)
             return eventname;
         case "DL_paul_Played":
         case "DL_PaulDead_Played":
-            return "PaulsDatavault";
+            return "PaulsDatavault_VariousPlayed";
         case "StantonDowd_Played":
         case "M09MeetStantonDowd_Played":
-            return "MeetDowd";
+            return "MeetDowd_VariousPlayed";
+        case "EmergencyExit":
+            return "EmergencyExit_peeped";
         default:
             return eventname;
     }
@@ -3023,7 +3038,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "Don_Takedown":
         case "Lenny_Takedown":
-            failed[num_failed++] = "GiveZyme";
+            failed[num_failed++] = "GiveZyme_ConvoFlag";
             return num_failed;
         case "MeetLebedev_Played":
             failed[num_failed++] = "OverhearLebedev_Played";
@@ -3107,7 +3122,7 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             failed[num_failed++] = "JoshuaInterrupted_Played";
             return num_failed;
         case "Camille_Takedown":
-            failed[num_failed++] = "CamilleConvosDone";
+            failed[num_failed++] = "ParisClubInfo_Convo";
             return num_failed;
         case "drbernard_Takedown":
             failed[num_failed++] = "MeetDrBernard_Played";
@@ -3137,1189 +3152,6 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
 }
 //#endregion
 
-//#region Bingo Help Text
-static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
-{
-    local string msg;
-    local DXRando dxr;
-    local bool RevisionMaps;
-
-    dxr = class'DXRando'.default.dxr;
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(dxr.player);
-
-    switch(event){
-        case "Free Space":
-            return "Don't worry about it!  This one's free!";
-        case "TerroristCommander_Dead":
-        case "TerroristCommander_PlayerDead":
-            return "Send him back to the people -- In a body bag!|n|nKill Leo Gold, the terrorist commander on Liberty Island.  You must kill him yourself.";
-        case "TiffanySavage_Dead":
-        case "TiffanySavage_PlayerDead":
-            return "Kill Tiffany Savage.  She is being held hostage at the gas station.  You must kill her yourself.";
-        case "PaulDenton_Dead":
-            return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel.";
-        case "JordanShea_Dead":
-        case "JordanShea_PlayerDead":
-            return "Kill Jordan Shea, the bartender at the Underworld Tavern in New York.  You must kill her yourself.";
-        case "SandraRenton_Dead":
-        case "SandraRenton_PlayerDead":
-        case "SandraRenton_PlayerTakedown":
-            msg = "Take down Sandra Renton.  ";
-            if (mission<=2){
-                msg=msg$"She can be found in an alley next to the Underworld Tavern in New York";
-            } else if (mission<=4){
-                msg=msg$"She can be found inside the hotel";
-            } else if (mission<=8){
-                msg=msg$"She can be found in the Underworld Tavern";
-            } else if (mission<=12){
-                msg=msg$"She can be found outside the gas station";
-            }
-            msg = msg $ ".  You must kill or knock her out yourself.";
-            return msg;
-        case "GilbertRenton_Dead":
-        case "GilbertRenton_PlayerDead": //old goal
-            return "Kill Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel.  You must kill him yourself.";
-        case "GilbertRenton_PlayerTakedown":
-            return "Take down Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel.  You must kill or knock him out yourself.";
-        case "WarehouseEntered":
-            return "Enter the underground warehouse in Paris.  This warehouse is located in the building across the street from the entrance to the Catacombs.";
-        case "GuntherHermann_Dead":
-            return "Kill Gunther.  He can be found guarding a computer somewhere in the cathedral in Paris.";
-        case "JoJoFine_Dead":
-        case "JoJoFine_PlayerDead": //old goal
-            return "Kill Jojo Fine.  He can be found in the 'Ton hotel before the ambush.  You must kill him yourself.";
-        case "JoJoFine_PlayerTakedown":
-            return "Take down Jojo Fine.  He can be found in the 'Ton hotel before the ambush.  You must kill or knock him out yourself.";
-        case "TobyAtanwe_Dead":
-        case "TobyAtanwe_PlayerDead": //old goal
-            return "Kill Toby Atanwe, who is Morgan Everett's assistant.  He can be killed once you arrive at Everett's house.  You must kill him yourself.";
-        case "TobyAtanwe_PlayerTakedown":
-            return "Take down Toby Atanwe, who is Morgan Everett's assistant.  He can be killed or knocked out once you arrive at Everett's house.  You must kill or knock him out yourself.";
-        case "Antoine_Dead":
-        case "Antoine_PlayerDead": //old goal
-            return "Kill Antoine in the Paris club.  He can be found at a table in a back corner of the club selling bioelectric cells.  You must kill him yourself.";
-        case "Antoine_PlayerTakedown":
-            return "Take down Antoine in the Paris club.  He can be found at a table in a back corner of the club selling bioelectric cells.  You must kill or knock him out yourself.";
-        case "Chad_Dead":
-        case "Chad_PlayerDead":
-            return "Kill Chad Dumier.  He can be found in the Silhouette hideout in the Paris catacombs.  You must kill him yourself.";
-        case "paris_hostage_Dead":
-            return "Let both of the hostages in the Paris catacombs die (whether you do it yourself or not).  They can be found locked in the centre of the catacombs bunker occupied by MJ12.";
-        case "Hela_Dead":
-        case "Hela_PlayerDead": //old goal
-            return "Kill Hela, the woman in black leading the MJ12 force in the Paris catacombs.  You must kill her yourself.";
-        case "Hela_PlayerTakedown":
-            return "Take down Hela, the woman in black leading the MJ12 force in the Paris catacombs.  You must kill or knock her out yourself.";
-        case "Renault_Dead":
-        case "Renault_PlayerDead": //old goal
-            return "Kill Renault in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.  You must kill him yourself.";
-        case "Renault_PlayerTakedown":
-            return "Take down Renault in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.  You must kill or knock him out yourself.";
-        case "Labrat_Bum_Dead":
-        case "Labrat_Bum_PlayerDead": //old goal
-            return "Kill the bum locked up in the Hong Kong MJ12 lab.  You must kill him yourself.";
-        case "Labrat_Bum_PlayerTakedown":
-            return "Take down the bum locked up in the Hong Kong MJ12 lab.  You must kill or knock him out yourself.";
-        case "DXRNPCs1_Dead":
-        case "DXRNPCs1_PlayerDead": //old goal
-            return "Kill The Merchant.  He will randomly spawn in levels according to your chosen game settings.  You must kill him yourself.  Keep in mind that once you kill him, he will no longer appear for the rest of your run!";
-        case "DXRNPCs1_PlayerTakedown":
-            return "Take down The Merchant.  He will randomly spawn in levels according to your chosen game settings.  You must kill or knock him out yourself.  Keep in mind that once he has been taken down, he will no longer appear for the rest of your run!";
-        case "lemerchant_Dead":
-        case "lemerchant_PlayerDead": //old goal
-            return "Kill Le Merchant.  He spawns near where you first land in Paris.  He's a different guy!  You must kill him yourself.";
-        case "lemerchant_PlayerTakedown":
-            return "Take down Le Merchant.  He spawns near where you first land in Paris.  He's a different guy!  You must kill or knock him out yourself.";
-        case "Harold_Dead":
-        case "Harold_PlayerDead": //old goal
-            return "Kill Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.  You must kill him yourself.";
-        case "Harold_PlayerTakedown":
-            return "Take down Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.  You must kill or knock him out yourself.";
-        case "aimee_Dead":
-        case "aimee_PlayerDead": //old goal
-            return "Kill Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.  You must kill her yourself.";
-        case "aimee_PlayerTakedown":
-            return "Take down Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.  You must kill or knock her out yourself.";
-        case "WaltonSimons_Dead":
-            msg="Kill Walton Simons.  ";
-            if (mission<=14){
-                msg=msg$"He can be found hunting you down somewhere in or around the Ocean Lab";
-            } else if (mission==15){
-                msg=msg$"He can be found hunting you down somewhere in Area 51";
-            }
-            msg=msg$".  You must kill him yourself.";
-            return msg;
-        case "JoeGreene_Dead":
-        case "JoeGreene_PlayerDead":
-            msg= "Kill Joe Greene, the reporter poking around in New York.  ";
-            if (mission<=4){
-                msg=msg$"He can be found in the Underworld Tavern";
-            }else if (mission<=8){
-                msg=msg$"He can be found somewhere in New York after you return from Hong Kong";
-            }
-            msg=msg$".  You must kill him yourself.";
-            return msg;
-        case "GuntherFreed":
-            return "Free Gunther from the makeshift jail on Liberty Island.  The jail is just inside the base of the statue.";
-        case "BathroomBarks_Played":
-            return "Enter the wrong bathroom in UNATCO HQ on your first visit.";
-        case "GotHelicopterInfo":
-            return "Help Jock locate the bomb planted in his helicopter by killing the fake mechanic.";
-        case "JoshFed":
-            return "Give Josh some soy food or a candy bar.  Josh is a kid located on the docks of Battery Park.";
-        case "M02BillyDone":
-            return "Give Billy some soy food or a candy bar.  Billy is a kid located in the kiosk of Castle Clinton.";
-        case "FordSchickRescued":
-            return "Rescue Ford Schick from the MJ12 lab in the sewers under New York on your first visit to Hell's Kitchen.  The key to the sewers can be gotten from Smuggler.";
-        case "NiceTerrorist_Dead":
-            return "Kill a friendly NSF trooper in the LaGuardia hangar.";
-        case "M10EnteredBakery":
-            return "Enter the bakery in the streets of Paris.  The bakery can be found across the street from the Metro.";
-        case "FreshWaterOpened":
-            return "Fix the fresh water supply in Brooklyn Bridge Station.  The water valves are behind some collapsed rubble.";
-        case "assassinapartment":
-            return "Visit the apartment in Paris that has Starr the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building near where Jock picks you up.";
-        case "PetAnimal_BindName_Starr":
-            return "Visit the apartment in Paris and pet Starr, the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building near where Jock picks you up.";
-        case "GaveRentonGun":
-            return "Give Gilbert Renton a gun when he is trying to protect his daughter from JoJo Fine, before the ambush.";
-        case "DXREvents_LeftOnBoat":
-            return "After destroying the NSF generator, return to Battery Park and take the boat back to UNATCO.";
-        case "AlleyBumRescued":
-            return "On your first visit to Battery Park, rescue the bum being mugged on the basketball court.  The court can be found behind the subway station.";
-        case "FoundScientistBody":
-            return "Enter the collapsed tunnel under the canals and find the scientist body.  The tunnel can be accessed through the vents in the freezer of the Old China Hand.";
-        case "ClubEntryPaid":
-           if (FemJC) {
-#ifdef revision
-               return "Let Noah, the man waiting outside the Lucky Money, pay to get you into the club.";
-#else
-               return "Let Russ, the man waiting outside the Lucky Money, pay to get you into the club.";
-#endif
-           } else {
-               return "Give Mercedes and Tessa (the two women waiting outside the Lucky Money) money to get into the club.";
-           }
-        case "M08WarnedSmuggler":
-            return "After talking to Stanton Dowd, talk to Smuggler and warn him of the impending UNATCO raid.";
-        case "ShipPowerCut":
-            return "Help the electrician on the superfreighter by disabling the electrical panels under the electrical room.";
-        case "CamilleConvosDone":
-            if (FemJC) {
-                return "Talk to Achille, the Paris clubgoer who wants to tell you about everyone else in the club.  Get as much information as you can.";
-            } else {
-                return "Talk to Camille the Paris cage dancer and get all the information you can.";
-            }
-        case "MeetAI4_Played":
-            return "Talk to Morpheus, the prototype AI locked away in Everett's house.";
-        case "DL_Flooded_Played":
-            return "Swim outside of the Ocean Lab on the ocean floor and enter the flooded section through the hole blasted in the underside of the structure.  There is a flickering light above the hole you need to enter.";
-        case "JockSecondStory":
-            return "Buy two beers from Jordan Shea and give them to Jock in the Underworld Tavern.";
-        case "M07ChenSecondGive_Played":
-            return "After the triad meeting in the temple, meet the leaders in the Lucky Money and receive all the gifted bottles of wine from each Dragon Head.";
-        case "DeBeersDead":
-            return "Kill Lucius DeBeers in Everett's House.  You can do so either by destroying him or shutting off his bio support with the computer next to him.";
-        case "StantonAmbushDefeated":
-            return "Defend Stanton Dowd from the MJ12 ambush after talking to him.";
-        case "SmugglerDied":
-            return "Let Smuggler die by not warning him of the UNATCO raid.  This can be done either by not talking to him at all, or not warning him of the raid if you talk to him after talking to Dowd.";
-        case "GaveDowdAmbrosia":
-            return "Find a vial of ambrosia on the upper decks of the superfreighter and bring it to Stanton Dowd in the graveyard.";
-        case "JockBlewUp":
-            return "Don't kill the fake mechanic at Everett's house so that Jock dies when you arrive in Area 51.";
-        case "SavedPaul":
-            return "Save Paul during the ambush on the 'Ton hotel.";
-        case "nsfwander":
-            return "Escort Miguel, the captured NSF troop, out of the MJ12 base underneath UNATCO HQ.";
-        case "MadeBasket":
-            return "Throw the basketball into the net in Hell's Kitchen.";
-        case "BoughtClinicPlan":
-            return "On your first visit to Hell's Kitchen, go to the free clinic and buy the full treatment plan from the doctors.";
-        case "ExtinguishFire":
-            return "Put yourself out by using a shower, sink, toilet, or urinal while on fire.  You can light yourself on fire with WP Rockets or by jumping onto a burning barrel.";
-        case "SubwayHostagesSaved":
-            return "Ensure both hostages in the Battery Park subway station escape on the train.";
-        case "HotelHostagesSaved":
-            return "Rescue the hostages on the top floor of the 'Ton as well as Gilbert Renton.";
-        case "SilhouetteHostagesAllRescued":
-            return "Save both hostages in the Paris catacombs and escort them to safety in the Silhouette hideout.";
-        case "JosephManderley_Dead":
-        case "JosephManderley_PlayerDead":
-            return "Kill Manderley while escaping from UNATCO.  You must kill him yourself.";
-        case "MadeItToBP":
-            return "After the raid on the 'Ton hotel, escape to Gunther's roadblock in Battery Park.";
-        case "MeetSmuggler":
-            return "Talk to Smuggler in his Hell's Kitchen hideout.";
-        case "SickMan_Dead":
-        case "SickMan_PlayerDead":
-            return "Kill the junkie in Battery Park who asks for someone to kill him.  He is typically found near the East Coast Memorial (the eagle statue and large plaques).  You must kill him yourself.";
-        case "M06PaidJunkie":
-            return "Visit the junkie living on the floor under construction below Maggie Chow's apartment.  Give her money.";
-        case "M06BoughtVersaLife":
-            return "Buy the maps of Versalife from the guy in the Old China Hand bar, by the canal.";
-        case "FlushToilet":
-            return "Find and flush enough different toilets.  Note that toilets in places that you revisit (like UNATCO HQ) will count again on each visit.";
-        case "FlushUrinal":
-            return "Find and flush enough different urinals.  Note that urinals in places that you revisit (like UNATCO HQ) will count again on each visit.";
-        case "MeetTimBaker_Played":
-            return "Enter the storage room in Vandenberg near the Hazard Lab and talk to Tim Baker.";
-        case "MeetDrBernard_Played":
-            return "Find Dr. Bernard, the scientist locked in the bathroom at the silo.";
-        case "KnowsGuntherKillphrase":
-            return "Learn Gunther's killphrase from Jaime in Paris.  Note that he will only meet you in Paris if you ask him to stay with UNATCO while you escape from the MJ12 base.";
-        case "KnowsAnnasKillphrase":
-            return "Learn both parts of Anna's killphrase in UNATCO HQ after escaping from the MJ12 lab.  The killphrase is split across two computers in HQ.  There will be a datacube on Manderley's desk with hints to the location of the parts of the killphrase.";
-        case "Area51FanShaft":
-            return "In Area 51, jump down the ventilation shaft inside the hangar.";
-        case "PoliceVaultBingo":
-            return "Enter the police vault in the Wan Chai Market.";
-        case "SunkenShip":
-            return "Enter the ship that has sunk off the North Dock of Liberty Island (Near Harley Filben).";
-        case "SpinShipsWheel":
-            msg="Spin enough ships wheels.  ";
-            if (mission<=1){
-                msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
-            }else if (RevisionMaps && mission<=4){ //Both M02 and M04
-                msg=msg$"There is a ships wheel on the wall of the Underworld Tavern.";
-            }else if (mission<=6){
-                msg=msg$"There is a ships wheel on the smuggler's ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal).";
-            }else if (mission<=9){
-                msg=msg$"There is a ships wheel on the bridge of the Superfreighter.";
-            }else if (RevisionMaps && mission<=12){
-                msg=msg$"There is a ships wheel on the wall of a house near the gas station.";
-            }
-            return msg;
-        case "ActivateVandenbergBots":
-            return "Activate both military bots in Vandenberg.  The two generator keypads must be activated before you can enter the building that the milbots are inside.";
-        case "TongsHotTub":
-            return "Jump into the tub of water in Tracer Tong's hideout.";
-        case "JocksToilet":
-            return "Use the toilet in Jock's Tonnochi Road apartment.  The bathroom is behind a sliding door next to the kitchen.";
-        case "Greasel_ClassDead":
-            return "Kill enough greasels.  You must kill them yourself.";
-        case "support1":
-            return "Blow up the gas station.";
-        case "UNATCOTroop_ClassDead":
-            return "Kill enough UNATCO Troopers.  You must kill them yourself.";
-        case "Terrorist_ClassDead":
-            return "Kill enough NSF Troops.  You must kill them yourself.";
-        case "MJ12Troop_ClassDead":
-            return "Kill enough MJ12 Troopers.  You must kill them yourself.";
-        case "MJ12Commando_ClassDead":
-            return "Kill enough MJ12 Commandos.  You must kill them yourself.";
-        case "Karkian_ClassDead":
-            return "Kill enough karkians.  You must kill them yourself.";
-        case "MilitaryBot_ClassDead":
-            return "Destroy enough military bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "VandenbergToilet":
-            return "Use the one toilet in Vandenberg.  It is located inside the Comm building outside.";
-        case "BoatEngineRoom":
-            return "Enter the small room at the back of the smuggler's boat in the Hong Kong canals and check the power levels on the equipment inside.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
-        case "SecurityBot2_ClassDead":
-            return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "SecurityBotSmall_ClassDead":
-            return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "SpiderBot_ClassDead":
-            return "Destroy enough spider bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "HumanStompDeath":
-            return "Jump on enough humans heads until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
-        case "Rat_ClassDead":
-            return "Kill enough rats.  You must kill them yourself.";
-        case "UNATCOTroop_ClassUnconscious":
-            return "Knock out enough UNATCO Troopers.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
-        case "Terrorist_ClassUnconscious":
-            return "Knock out enough NSF Troops.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
-        case "MJ12Troop_ClassUnconscious":
-            return "Knock out enough MJ12 Troopers.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
-        case "MJ12Commando_ClassUnconscious":
-            return "Knock out enough MJ12 Commandos.  You can knock them out with things like the baton, prod, or tranq darts.  You must knock them out yourself.";
-        case "purge":
-            return "Use the keypad in the vents of the Hong Kong MJ12 Helibase to release poison gas into the barracks.";
-        case "ChugWater":
-            return "Drink the entire contents of a water fountain or water cooler as quickly as possible.";
-        case "ChangeClothes":
-            return "Use hanging clothes to change your appearance!";
-        case "arctrigger":
-            return "Disable the arcing electricity in the corner of the LaGuardia airfield.";
-        case "LeoToTheBar":
-            return "Bring the body of Leo Gold (The terrorist commander from Liberty Island) to any bar in the game (New York, Hong Kong, Paris) and set him down.  You can also bring him to the bottom of the Ocean Lab, since it is under many BARs of pressure.";
-        case "KnowYourEnemy":
-            return "Read enough \"Know Your Enemy\" bulletins on the public computer in the UNATCO break room.";
-        case "09_NYC_DOCKYARD--796967769":
-            return "Find Jenny's number (867-5309) somewhere in the outer area of the Brooklyn Naval Yards on a datacube.";
-        case "JacobsShadow":
-            msg="Read enough chapters of Jacob's Shadow.  ";
-            if (mission<=2){
-                msg=msg$"There is a chapter in the MJ12 sewer base in Hell's Kitchen.";
-            } else if (mission<=3){
-                msg=msg$"There is a chapter in the LaGuardia Helibase.";
-            } else if (mission<=4){
-                msg=msg$"There is a chapter in the 'Ton hotel.";
-            } else if (mission<=6){
-                msg=msg$"There is a chapter in the Wan Chai Market.";
-            } else if (mission<=9 && dxr.localURL!="09_NYC_GRAVEYARD"){
-                msg=msg$"There is a chapter in the lower decks of the Superfreighter.";
-            } else if (mission<=10){
-                msg=msg$"There is a chapter in the DuClare Chateau.";
-            } else if (mission<=12){
-                msg=msg$"There is a chapter in Vandenberg Command and the Computer area.";
-            } else if (mission<=15){
-                msg=msg$"There is a chapter in Area 51 on the surface, in Sector 2, and in Sector 3.";
-            }
-            return msg;
-        case "ManWhoWasThursday":
-            msg="Read enough chapters of The Man Who Was Thursday.  ";
-            if (mission<=2){
-                msg=msg$"There is a chapter inside the 'Ton hotel and in the sewers.";
-            } else if (mission<=3){
-                msg=msg$"There is a chapter in the LaGuardia helibase.";
-            } else if (mission<=4){
-                msg=msg$"There is a chapter inside the 'Ton hotel.";
-            } else if (mission<=10){
-                msg=msg$"There is a chapter in Denfert-Rochereau square, the streets and buildings before entering the Paris catacombs.";
-            } else if (mission<=12){
-                msg=msg$"There is a chapter in Vandenberg Command.";
-            } else if (mission<=14){
-                msg=msg$"There is a chapter in the Ocean Lab.";
-            } else if (mission<=15){
-                msg=msg$"There is a chapter in Sector 3 of Area 51.";
-            }
-            return msg;
-        case "GreeneArticles":
-            msg="Read enough news articles written by Joe Greene of the Midnight Sun.  ";
-            if (mission<=1){
-                msg=msg$"There's one on Liberty Island, and one in UNATCO HQ.";
-            } else if (mission<=2){
-                msg=msg$"There is an article somewhere around the NSF warehouse.";
-            } else if (mission<=3){
-                msg=msg$"There are 3 copies of the same article: in Brooklyn Bridge Station, in the helibase, and in the 747.";
-            } else if (mission<=8){
-                msg=msg$"There is an article in the streets of Hell's Kitchen and in the bar.";
-            }
-            return msg;
-        case "MoonBaseNews":
-            msg="Read an article talking about the mining complex located on the moon.  ";
-            if (mission<=2){
-                msg=msg$"There is an article in the streets of Hell's Kitchen.";
-            } else if (mission<=3){
-                msg=msg$"There is an article in the LaGuardia Helibase.";
-            } else if (mission<=6){
-                msg=msg$"There is an article in the Wan Chai Market as well as the Lucky Money.";
-            }
-            return msg;
-        case "06_Datacube05":
-            return "Find the datacube on Tonnochi Road from Louis Pan reminding Maggie that he will never forget her birthday again.";
-        case "Gray_ClassDead":
-            return "Kill enough Grays.  You must kill them yourself.";
-        case "CloneCubes":
-            return "Read enough datacubes regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
-        case "blast_door_open":
-            return "Open the main blast doors of the Area 51 bunker by finding the security computer somewhere on the surface or by opening them from inside.";
-        case "SpinningRoom":
-            return "Pass through the center of the spinning room in the ventilation system of the Brooklyn Naval Yards.";
-        case "MolePeopleSlaughtered":
-            return "Kill most of the friendly mole people in the tunnels leading to Lebedev's private terminal at LaGuardia.";
-        case "surrender":
-            return "Find the leader of the NSF in the hidden room of the mole people tunnels and let him surrender.";
-        case "nanocage":
-            return "Open the greasel cages in the MJ12 lab underneath UNATCO HQ.";
-        case "unbirth":
-            return "Find the cloning tank in Sector 4 of Area 51 that does not have a lid and go swimming in it.";
-        case "StolenAmbrosia":
-            msg="Find enough stolen barrels of ambrosia.  ";
-            if (mission<=2){
-                msg=msg$"There is a barrel of ambrosia somewhere in Battery Park.";
-            } else if (mission<=3){
-                msg=msg$"There are three barrels of ambrosia.  One is in the LaGuardia helibase.  One is in the airfield.  One is either in the hangar or on the 747.";
-            }
-            return msg;
-        case "AnnaKilledLebedev":
-            return "Let Anna kill Lebedev by walking away without killing him yourself.";
-        case "PlayerKilledLebedev":
-            return "Murder Juan Lebedev on the 747 of your own volition.";
-        case "JuanLebedev_Unconscious":
-        case "JuanLebedev_PlayerUnconscious":
-            return "Knock Lebedev out instead of killing him.  You must knock him out yourself.";
-        case "BrowserHistoryCleared":
-            return "While escaping UNATCO, log into the computer in your office and clear your browser history.";
-        case "AnnaKillswitch":
-            return "After finding the pieces of Anna's killphrase, actually use it against her.";
-        case "AnnaNavarre_DeadM3":
-            return "Kill Anna Navarre on the 747.  You must kill her yourself.";
-        case "AnnaNavarre_DeadM4":
-            return "Kill Anna Navarre after sending the signal for the NSF but before being captured by UNATCO.  You must kill her yourself.";
-        case "AnnaNavarre_DeadM5":
-            return "Kill Anna Navarre in UNATCO HQ.  You must kill her yourself.";
-        case "SimonsAssassination":
-            return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
-        case "AlliesKilled":
-            return "Kill enough people who do not actively hate you.  (This should be most people who show as green on the crosshairs)";
-        case "MaySung_Dead":
-        case "MaySung_PlayerDead": //old goal
-            return "Kill May Sung, Maggie Chow's maid.  You must kill her yourself.";
-        case "MaySung_PlayerTakedown":
-            return "Take down May Sung, Maggie Chow's maid.  You must kill or knock her out yourself.";
-        case "MostWarehouseTroopsDead":
-            return "Kill or knock out most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
-        case "CleanerBot_ClassDead":
-            return "Destroy enough cleaner bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "MedicalBot_ClassDead":
-            return "Destroy enough medical bots or aug bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "RepairBot_ClassDead":
-            return "Destroy enough repair bots.  You must destroy them yourself and disabling them with EMP does not count.";
-        case "UtilityBot_ClassDead":
-            return "Destroy enough utility bots (medical bots, aug bots, or repair bots).  You must destroy them yourself and disabling them with EMP does not count.";
-        case "DrugDealer_Dead":
-        case "DrugDealer_PlayerDead":
-            return "Kill Rock, the drug dealer who lives in Brooklyn Bridge Station.  You must kill him yourself.";
-        case "botordertrigger":
-            return "Set off the laser tripwires in Smuggler's hideout.";
-        case "IgnitedPawn":
-            return "Set enough people on fire.";
-        case "GibbedPawn":
-            return "Blow up enough people.  If they turn into chunks of meat, it counts.  They must be human and you must blow them up yourself.";
-        case "IcarusCalls_Played":
-            return "Answer the phone in the building across from the entrance to the catacombs in Paris.";
-        case "AlexCloset":
-            return "Enter Alex Jacobson's storage closet in UNATCO HQ.  The code to the door can be found in his email during the first mission.";
-        case "BackOfStatue":
-            return "Climb out along the balcony ledges of the Statue of Liberty and go around to the side facing UNATCO HQ.";
-        case "CommsPit":
-            return "Inspect the wiring in the pit outside of UNATCO HQ enough times.";
-        case "StatueHead":
-            return "Walk up to where the head of the Statue of Liberty is being displayed.";
-        case "CraneControls":
-            return "Move the crane next to the Superfreighter (inside the dock) by going up the elevator on the dockside and hitting the button at the top.";
-        case "CraneTop":
-            return "Walk to the ends of the two cranes that are on the deck of the Superfreighter itself.";
-        case "CaptainBed":
-            return "Enter the captain's quarters on the Superfreighter and jump on his bed.";
-        case "FanTop":
-            return "Enter the ventilation shaft in the lower decks of the Superfreighter and let yourself get blown to the top of the shaft.";
-        case "LouisBerates":
-            return "Sneak behind the doorman of the Porte De L'Enfer, the club in Paris.";
-        case "EverettAquarium":
-            return "Enter the aquarium in Morgan Everett's house.";
-        case "TrainTracks":
-            return "Jump onto the train tracks in Paris.";
-        case "OceanLabCrewChamber":
-            return "Visit enough of the crew chambers in the Ocean Lab.";
-        case "HeliosControlArms":
-            return "Jump down onto the arms sticking out of the wall below where you talk to Helios in Area 51.";
-        case "TongTargets":
-            return "Shoot at the targets in the shooting range in Tracer Tong's hideout.";
-        case "WanChaiStores":
-            return "Visit all of the stores in the Wan Chai market by walking up to them.";
-        case "HongKongBBall":
-            return "Throw the basketball into the net on the rooftop of the MJ12 helibase in Hong Kong.";
-        case "CanalDrugDeal":
-            return "Find the two people making a drug deal in the Hong Kong canals and listen in.";
-        case "HongKongGrays":
-            return "Enter the enclosure in the Hong Kong MJ12 Lab containing the grays.";
-        case "EnterQuickStop":
-            return "Enter the Quick Stop convenience store outside of the Lucky Money in Hong Kong.";
-        case "LuckyMoneyFreezer":
-            return "Enter the freezer in the back of the Lucky Money club in Hong Kong.";
-        case "TonnochiBillboard":
-            return "Jump onto the 'Big Top Cigarettes' billboard hanging above the entrance in Tonnochi Road.  This sign has a big picture of a clown on it, and says 'NO JOKE' at the top.";
-        case "AirfieldGuardTowers":
-            return "Enter the top floor of enough of the guard towers in the corners of the LaGuardia airfield.";
-        case "mirrordoor":
-            return "Open (or destroy) the mirror acting as the door to the secret stash in Smuggler's hideout.";
-        case "MolePeopleWater":
-            return "Find the pool of water in the Mole People tunnels and jump into it.  You need to crouch to get yourself fully immersed.";
-        case "botorders2":
-            return "Use the security computer in the upper floor of the MJ12 Robot Maintenance facility to alter the AI of the security bots.";
-        case "BathroomFlags":
-            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit.  I'm sure this is how you get to the secret ending!";
-        case "SiloSlide":
-            return "When entering the missile silo, open the vent in the floor and go down the slide that drops you into the water underneath the missile.";
-        case "SiloWaterTower":
-            return "Go to the top of the water tower at the missile silo.";
-        case "TonThirdFloor":
-            if (RevisionMaps && mission > 4){
-                return "Climb up the elevator shaft or up the stairs in the 'Ton hotel to the third floor.";
-            } else {
-                return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
-            }
-        case "Set_flag_helios":
-            return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
-        case "coolant_switch":
-            msg = "Flush the reactor coolant";
-            if (dxr.flags.settings.goals>0){
-                msg = "Flush the reactor coolant somewhere in Sector 4 of Area 51.  To flush the coolant, you need to find a large orange button that is in a random location.";
-            } else {
-                msg = "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
-            }
-            return msg;
-        case "BlueFusionReactors":
-            msg = "Deactivate blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
-            if (dxr.flags.settings.goals>0){
-                msg = msg $ "  The locations of the keypads for the blue fusion reactors have been randomized.";
-            }
-            return msg;
-        case "A51UCBlocked":
-            return "Close the doors to enough of the UCs in Sector 4 of Area 51.";
-        case "VandenbergReactorRoom":
-            return "Enter the flooded reactor room in the tunnels underneath Vandenberg.";
-        case "VandenbergServerRoom":
-            return "Enter the locked server room in the computer section of Vandenberg.";
-        case "VandenbergWaterTower":
-            return "Climb to the top of the water tower at the back of Vandenberg.";
-        case "Cremation":
-            return "Kill (or knock out) a chef in Paris, then throw his body either into a fireplace or onto a stovetop.";
-        case "OceanLabGreenBeacon":
-            return "Swim to the green beacon on top of the Ocean Lab crew module.  The green beacon can be seen out the window of the sub bay on the ocean floor.";
-        case "PageTaunt_Played":
-            return "After recovering the schematics for the Universal Constructor below the Ocean Lab, talk to Bob Page on the communicator before leaving.";
-        case "JerryTheVentGreasel_Dead":
-        case "JerryTheVentGreasel_PlayerDead": //old goal
-            return "Kill the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.  You must kill him yourself.";
-        case "JerryTheVentGreasel_PlayerTakedown":
-            return "Take down the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.  You must kill or knock him out yourself.";
-        case "BiggestFan":
-            return "Destroy the large fan in the ventilation ducts of the Brooklyn Naval Yards.";
-        case "Sodacan_Activated":
-            return "Chug enough cans of soda.";
-        case "BallisticArmor_Activated":
-            return "Equip enough ballistic armour.";
-        case "Flare_Activated":
-            return "Light enough flares.";
-        case "VialAmbrosia_Activated":
-            return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.|n|nThere is also a vial of ambrosia in a small box in the Ocean Lab.";
-        case "Binoculars_Activated":
-            return "Find and use a pair of binoculars.";
-        case "HazMatSuit_Activated":
-            return "Use enough hazmat suits.";
-        case "AdaptiveArmor_Activated":
-            return "Wear enough thermoptic camo.";
-        case "DrinkAlcohol":
-            return "Get absolutely tanked and drink enough alcohol.  This can be liquor, a forty, or wine.";
-        case "ToxicShip":
-            return "Find and enter the low, flat boat in the Hong Kong canals.  Note that the interior of the boat is filled with toxic gas.";
-        case "ComputerHacked":
-            return "Use your computer skills to hack enough computers.";
-        case "TechGoggles_Activated":
-            return "Wear enough pairs of tech goggles.";
-        case "Rebreather_Activated":
-            return "Equip enough rebreathers.";
-        case "PerformBurder":
-            return "Kill enough birds.  These can be either pigeons or seagulls.";
-        case "GoneFishing":
-            return "Kill enough fish.";
-        case "FordSchick_Dead":
-        case "FordSchick_PlayerDead":
-            return "Kill Ford Schick.  Note that you can do this after rescuing him if you're fast.  You must kill him yourself.";
-        case "ChateauInComputerRoom":
-            return "Make your way down to Beth DuClare's computer station in the basement of the DuClare chateau.";
-        case "DuClareBedrooms":
-            return "Enter both Beth and Nicolette's bedrooms in the DuClare chateau.";
-        case "PlayPool":
-            return "Sink all 16 balls on enough different pool tables.";
-        case "FireExtinguisher_Activated":
-            return "Use enough fire extinguishers.";
-        case "PianoSongPlayed":
-            return "Play enough different songs on a piano.";
-        case "PianoSong0Played":
-            return "Play the Deus Ex theme song on a piano.  The song needs to be played correctly and all the way through.";
-        case "PianoSong7Played":
-            return "Play 'The Game' from The 7th Guest on a piano.   The song needs to be played correctly and all the way through.";
-        case "PinballWizard":
-            msg="Play enough different pinball machines.  ";
-            if (mission<=1){
-                msg=msg$"There is a machine in Alex's office as well as the break room.";
-            } else if (mission<=2){
-                msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
-            } else if (mission<=3){
-                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, two machines in the LaGuardia helibase break room, and one in the Airfield barracks.";
-            } else if (mission<=4){
-                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, as well as one in the Underworld Tavern in Hell's Kitchen.";
-            } else if (mission<=5){
-                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ.";
-            } else if (mission<=6){
-                msg=msg$"There is a machine in the MJ12 Helibase, one in the MJ12 Lab barracks, one in the Old China Hand, and one in the Lucky Money.";
-            } else if (mission<=8){
-                msg=msg$"There is a machine in the Underworld Tavern in Hell's Kitchen.";
-            } else if (RevisionMaps && mission<=9){
-                msg=msg$"There is a machine in the break room on the Lower Decks of the Superfreighter.";
-            } else if (mission<=12){
-                msg=msg$"There is a machine in the Comms building in Vandenberg.";
-            } else if (mission<=15){
-                msg=msg$"There is a machine in the Comm building on the surface, and another one in the break room of Area 51.";
-            }
-            return msg;
-        case "FlowersForTheLab":
-            return "Bring some flowers into either level of the Hong Kong MJ12 lab and set them down.";
-        case "BurnTrash":
-            return "Set enough bags of trash on fire and let them burn until they are destroyed.";
-        case "M07MeetJaime_Played":
-            return "Meet Jaime in Tracer Tong's hideout in Hong Kong.  Note that he will only meet you in Hong Kong if you ask him to meet you there while you escape from the MJ12 base under UNATCO.";
-        case "Terrorist_peeptime":
-            return "Watch NSF Troops through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "UNATCOTroop_peeptime":
-            return "Watch UNATCO Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "MJ12Troop_peeptime":
-            return "Watch MJ12 Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "MJ12Commando_peeptime":
-            return "Watch MJ12 Commandos through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "PawnAnim_Dance":
-            return "Watch someone dance through a pair of binoculars or a scope.  There should be someone vibing in a bar or club.";
-        case "BirdWatching":
-            return "Watch birds through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "NYEagleStatue_peeped":
-            return "Look at the bronze eagle statue in Battery Park through a pair of binoculars or a scope.";
-        case "BrokenPianoPlayed":
-            return "Damage a piano enough that it will no longer work without fully breaking it, then try to play it.  It will make a sound to let you know when it is damaged enough.";
-        case "Supervisor_Paid":
-            return "Pay Mr. Hundley for access to the MJ12 Lab in Hong Kong.";
-        case "ImageOpened_WaltonSimons":
-            return "Find and look at the image displaying Walton Simons' augmentations.";
-        case "BethsPainting":
-            return "Open (or destroy) the painting in Beth DuClare's bedroom in the DuClare chateau.";
-        case "ViewPortraits":
-            return "Find and view enough portraits.  These include the picture of Leo Gold (the terrorist commander), the magazine cover showing Bob Page, the image of Joe Greene, and the image of Tiffany Savage.";
-        case "ViewSchematics":
-            return "Find and view enough schematics.  These include the schematic of the Universal Contructor and the schematic of the blue fusion reactors.";
-        case "ViewMaps":
-            msg = "Find and view enough maps of different areas.";
-
-            if (mission<=1){
-                msg = msg $ "|n|nPaul has a map of Liberty Island available for you before you find the terrorist commander.";
-            }
-
-            return msg;
-        case "ViewDissection":
-            return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
-        case "ViewTouristPics":
-            return "Find and view enough tourist photos of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
-        case "CathedralUnderwater":
-            return "Swim through the underwater tunnel that leads to the Paris cathedral.";
-        case "DL_gold_found_Played":
-            return "Find the templar gold in the basement of the Paris cathedral.";
-        case "12_Email04":
-            return "Read the email from Gary Savage with the subject line 'We Must Stand'.  This can be found on the computer in the reception area of the main Vandenberg building, as well as inside the computer area of Vandenberg.";
-        case "ReadJCEmail":
-            return "Check your email enough times.  This can be done either in UNATCO HQ or in Tracer Tong's hideout.";
-        case "02_Email05":
-            return "Read Paul's emails and find out what classic movies he has ordered.";
-        case "11_Book08":
-            return "Read the diary of Adept 34501, the Woman in Black living in the Paris cathedral.";
-        case "GasStationCeiling":
-            return "Enter the ceiling of the gas station from the roof.";
-        case "NicoletteHouseTour":
-            return "Escort Nicolette around the Chateau and let her tell you about it.  Potential points of interest include the study, the living room, the upper hallway, Beth's room, the basement, near the back door, and by the maze.";
-        case "nico_fireplace":
-            return "Access the secret stash behind the fireplace in Nicolette's bedroom in the Chateau.";
-        case "dumbwaiter":
-            return "Use the DuClare dumbwaiter between the kitchen and Beth's room.";
-        case "secretdoor01":
-            return "Twist the pulsating light in the Cathedral and open the secret door.";
-        case "CathedralLibrary":
-            return "Enter the library in the Cathedral.";
-        case "DuClareKeys":
-            return "Find enough different keys around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement.";
-        case "ShipLockerKeys":
-            return "Find keys to the lockers on the lower decks of the superfreighter.  The lockers are inside the building underneath the helipad.";
-        case "VendingMachineEmpty":
-            return "Empty enough vending machines of any type.";
-        case "VendingMachineEmpty_Drink":
-            return "Empty enough soda vending machines.";
-        case "VendingMachineDispense_Candy":
-            return "Dispense enough candy bars from vending machines.";
-        case "M06JCHasDate":
-            return "Rent a companion for the night from the Mamasan in the Lucky Money club.";
-        case "Sailor_ClassDeadM6":
-            return "Kill enough of the sailors on the top floor of the Lucky Money club.  You must kill them yourself.";
-        case "Shannon_Dead":
-        case "Shannon_PlayerDead": //Old goals
-            return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill her yourself.";
-        case "Shannon_PlayerTakedown":
-            return "Take down Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill or knock her out yourself.";
-        case "DestroyCapitalism":
-            msg = "Kill enough people willing to sell you goods in exchange for money.  You must kill them yourself.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
-            if (mission<=1){
-                msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.  Shannon is also acting suspicious.";
-            } else if (mission<=2){
-                msg=msg$"Jordan Shea and Sally in the bar, the doctors in the Free Clinic, and the pimp in the alleys deserve it.";
-            } else if (mission<=3){
-                msg=msg$"There is a veteran in Battery Park, El Rey and Rock in Brooklyn Bridge Station, and Harold in the hangar.  They all deserve it.  Shannon seems like she might be up to something too.";
-            } else if (mission<=4){
-                msg=msg$"Jordan Shea and Shannon deserve it.";
-            } else if (mission<=5){
-                msg=msg$"Sven the mechanic and Shannon both deserve it.";
-            } else if (mission<=6){
-                msg=msg$"Hong Kong is overflowing with capitalist pigs:|n";
-                msg=msg$" - The tea house waiter in the market needs to go.|n";
-                msg=msg$" - In the VersaLife offices, you can eliminate Mr. Hundley.|n";
-                msg=msg$" - In the canals, you must end the life of the Old China Hand bartender, the man selling maps there, and the smuggler on the boat.|n";
-                msg=msg$" - In the Lucky Money, you must eliminate the bartender, the bouncer, the mamasan selling escorts, and the doorgirl.";
-            } else if (mission<=8){
-                msg=msg$"Jordan Shea needs to go.";
-            } else if (mission<=10){
-                msg=msg$"Paris is filled with filthy capitalists:|n";
-                msg=msg$" - Before the catacombs, you must eliminate Le Merchant and Defoe the arms dealer.|n";
-                msg=msg$" - In the catacombs, the man in Vault 2 needs to go.|n";
-                msg=msg$" - In the Champs D'Elysees streets, you must end the hostel bartender, Renault the drug dealer, and Kristi in the cafe.|n";
-                msg=msg$" - In the club, you can annihilate Camille the dancer, Jean the male bartender, Michelle the female bartender, Antoine the biocell seller, Louis the doorman, Cassandra the woman offering to sell information, and Jocques the worker in the back room.  ";
-            } else if (mission<=11){
-                msg=msg$"The technician in the metro station needs to be stopped.";
-            } else if (mission<=12){
-                msg=msg$"The bum living at the Vandenberg gas station deserves it.";
-            }
-            msg = msg$"|n|n(It's a Simpsons reference)";
-            return msg;
-        case "Canal_Cop_Dead":
-        case "Canal_Cop_PlayerDead": //Old goal
-            return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.  You must kill him yourself.";
-        case "Canal_Cop_PlayerTakedown":
-            return "Take down one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.  You must kill or knock him out yourself.";
-        case "LightVandalism":
-            return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps.";
-        case "FightSkeletons":
-            msg = "Destroy enough femurs or skulls.  Don't let the skeletons rise up!  ";
-            if (RevisionMaps && mission<=2){
-                msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.";
-            } else if (mission<=4){
-                if (RevisionMaps){
-                    msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.  There is also a skull in NSF HQ";
-                } else {
-                    msg=msg$"A skull can be found in the NSF HQ.";
-                }
-            } else if (mission<=6){
-                msg=msg$"A skull can be found in the Hong Kong VersaLife level 1 labs, as well as in Tracer Tong's hideout and in the Wan Chai Market.";
-            } else if (RevisionMaps && mission<=8){
-                msg=msg$"Some bones can be found in an apartment overlooking the basketball court, in the Free Clinic, and in the basement of the Underworld Tavern.";
-            } else if (mission<=10){
-                msg=msg$"The Paris catacombs are just completely loaded with skulls and femurs.";
-            } else if (!RevisionMaps && mission<=11){
-                msg=msg$"A skull can be found underwater at the Cathedral.";
-            } else if (mission<=14){
-                msg=msg$"Several skulls and femurs can be found in the OceanLab on the ocean floor.";
-            }
-            return msg;
-        case "TrophyHunter":
-            msg = "Destroy enough trophies.  ";
-            if (mission<=1){
-                msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
-            } else if (RevisionMaps && mission<=2){
-                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
-            } else if (mission<=3){
-                msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).  Several can also be found in the LaGuardia Helibase.";
-            } else if (RevisionMaps && mission<=4){
-                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
-            } else if (mission<=5){ //Mission 4 and 5 both only have trophies at HQ
-                msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
-            } else if (mission<=6){
-                msg=msg$"There are many trophies in Hong Kong.  One can be found in the Helibase, another one around the canals, and one on Tonnochi Road.";
-            } else if (RevisionMaps && mission<=8){
-                msg=msg$"There is a trophy in the basement of the Underworld Tavern.";
-            } else if (mission<=10){
-                msg=msg$"There is a trophy in Chateau DuClare.";
-            } else if (RevisionMaps && mission<=12){
-                msg=msg$"There are four trophies in the cabinet of the commanders office outside the Vandenberg Command building.";
-            }
-            return msg;
-        case "SlippingHazard":
-            msg = "Destroy enough 'Wet Floor' signs, leaving the area unmarked and dangerous.";
-            if (mission<=1){
-                msg = msg$"  There are signs in UNATCO HQ.";
-            } else if (mission<=2){
-                msg = msg$"  There is a sign in the hotel.";
-            } else if (mission<=3){
-                msg = msg$"  There are signs in UNATCO HQ.";
-            } else if (mission<=4){
-                msg = msg$"  There are signs in UNATCO HQ, and another one in the hotel.";
-            } else if (mission<=5){
-                msg = msg$"  There are signs in UNATCO HQ.";
-            } else if (mission<=6){
-                msg = msg$"  There is a sign in the MJ12 Helibase and on Tonnochi road.";
-            } else if (mission<=8){
-                msg = msg$"  There is a sign in the hotel.";
-            } else if (mission<=9){
-                msg = msg$"  There are signs on the lower decks of the superfreighter.";
-            } else if (RevisionMaps && mission<=10){
-                msg = msg$"  There is a sign in the store room of the Paris Club (La Porte De L'Enfer).";
-            }
-            return msg;
-        case "Dehydrated":
-            return "Destroy enough water coolers or water fountains.";
-        case "PresentForManderley":
-            return "Bring Juan Lebedev back to Manderley's office.";
-        case "WaltonConvos":
-            msg="Have enough conversations with Walton Simons.  ";
-            if (mission<=3){
-                msg=msg$"He can be found in Manderley's office after destroying the generator.";
-            } else if (mission<=4){
-                msg=msg$"He can be found in the UNATCO break room talking with Jaime Reyes.";
-            } else if (mission<=5){
-                msg=msg$"He can be found talking with Manderley via hologram.";
-            } else if (mission<=11){
-                msg=msg$"He can be found as a hologram in the basement of the cathedral after killing Gunther.";
-            } else if (mission<=14){
-                msg=msg$"He can be found somewhere around the Ocean Lab after retrieving the Universal Constructor schematics.";
-            } else if (mission<=15){
-                msg=msg$"He can be found somewhere around Area 51.";
-            }
-            return msg;
-        case "OceanLabShed":
-            return "Enter the small square storage building on shore, near the main pedestal leading up to the Ocean Lab sub base.";
-        case "DockBlastDoors":
-            return "Open enough of the blast doors inside the ammunition storage warehouse in the dockyard.";
-        case "ShipsBridge":
-            return "Enter the bridge on the top deck of the superfreighter.";
-        case "BeatTheMeat":
-            return "Destroy enough hanging slaughtered chickens or pigs.";
-        case "FamilySquabbleWrapUpGilbertDead_Played":
-            return "Talk to Sandra Renton after Gilbert and JoJo both die in Mission 4.  He was a good man...  What a rotten way to die.";
-        case "CrackSafe":
-            msg="Open enough safes throughout the game.  ";
-            if (mission<=2){
-                msg=msg$"There is a safe in the control room under Castle Clinton, and another one in the basement office of the NSF Warehouse.";
-            } else if (mission<=9){
-                msg=msg$"There is a safe in the office in the dockyard, one on the upper decks of the superfreighter, and one in Dowd's mausoleum.";
-            }
-            return msg;
-        case "CliffSacrifice":
-            return "Throw a corpse off of the cliffs in Vandenberg.";
-        case "MaggieCanFly":
-            return "Throw Maggie Chow out of her apartment window.";
-        case "VandenbergShaft":
-            return "Jump down the shaft leading from the third floor to the first floor, down to near the indoor generator.";
-        case "ScienceIsForNerds":
-            return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill enough of those nerds in lab coats.";
-        case "Chef_ClassDead":
-            return "Do what needs to be done and kill a chef.  You must kill him yourself.";
-        case "un_PrezMeadPic_peepedtex":
-            if (RevisionMaps){
-                return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground) or in the basement of the Underworld Tavern.";
-            } else {
-                return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
-            }
-        case "un_bboard_peepedtex":
-            return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars or a scope.";
-        case "DrtyPriceSign_A_peepedtex":
-            return "Check the gas prices through a pair of binoculars or a scope at the abandoned Vandenberg Gas Station.";
-        case "GS_MedKit_01_peepedtex":
-            return "Use a pair of binoculars or a scope to find a representation of the Red Cross (A red cross on a white background) in the Vandenberg Gas Station.  Improper use of the emblem is a violation of the Geneva Conventions.";
-        case "WatchKeys_cabinet":
-            return "Find the key that opens the filing cabinets in the back of the greasel lab in the MJ12 base underneath UNATCO.  This is typically held by whoever is sitting at the desk in the back part of that lab.";
-        case "MiguelLeaving":
-            return "Tell Miguel that he can slip out on his own.  He definitely can't, but he doesn't know that.";
-        case "KarkianDoorsBingo":
-            return "Open the doors to the karkian cage near the surgery ward in the MJ12 base underneath UNATCO.";
-        case "SuspensionCrate":
-            msg = "Open enough suspension crates.  These are the square containers with force fields sealing them.|n|n";
-            if (mission<=3){
-                msg = msg $ "There is a suspension crate on Lebedev's plane.";
-            } else if (mission<=5){
-                msg = msg $ "There is a suspension crate in the back of the greasel lab at the MJ12 base under UNATCO.";
-            } else if (mission<=10){
-                msg = msg $ "There is a suspension crate in the basement of Chateau DuClare.";
-            } else if (mission<=11){
-                msg = msg $ "There are two suspension crates in Everett's lab.";
-            }
-            return msg;
-        case "ScubaDiver_ClassDead":
-            return "Kill enough SCUBA divers in and around the Ocean Lab.  You must kill them yourself.";
-        case "ShipRamp":
-            return "Raise the ramp to get on board the superfreighter from the docks.  There is a keypad on a box next to the ramp that raises it.";
-        case "SuperfreighterProp":
-            return "Dive to the propeller at the back of the superfreighter.";
-        case "ShipNamePlate":
-            return "Use binoculars or a scope to check the name marked on the side of the superfreighter.";
-        case "DL_SecondDoors_Played":
-            return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
-        case "WhyContainIt":
-            return "Destroy a barrel of the gray death virus.  Barrels can be found around the Vandenberg command building, in the Sub Base, and around the Universal Constructor under the Ocean Lab.";
-        case "MailModels":
-            return "Destroy enough mailboxes.  They can be found in the streets of New York.";
-        case "UNATCOHandbook":
-            return "Find and read enough UNATCO Handbooks scattered around HQ.";
-        case "02_Book06":
-            return "Read a guide to basic firearm safety.  Smuggler likes to keep a copy of this lying around somewhere.";
-        case "15_Email02":
-            return "Read an email discussing the true origin of the Grays.  This can be found on a computer in Sector 3 of Area 51.";
-        case "ManderleyMail":
-            return "Check Manderley's holomail messages enough times on different visits.";
-        case "LetMeIn":
-            return "Try to enter the door below the UNATCO Medical office without authorization.";
-        case "08_Bulletin02":
-            return "Read your wanted poster on a public news terminal when returning to New York.";
-        case "SnitchDowd":
-            return "Ask Joe Greene or Jordan Shea about Stanton Dowd.";
-        case "SewerSurfin":
-            return "Throw Joe Greene's body into the water in the New York sewers, like the rat he is.";
-        case "SmokingKills":
-            return "Destroy enough cigarette vending machines.  Smoking kills!";
-        case "PhoneCall":
-            msg = "Make phone calls on enough different phones (Either desk phones or pay phones).";
-            if (RevisionMaps && mission <=1) {
-                msg=msg$"|n|nThere several phones scattered around UNATCO HQ.";
-            } else if (mission <=2){
-                msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
-            } else if (mission <=3){
-                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two desk phones in offices in the LaGuardia Helibase.";
-            } else if (mission <=4){
-                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
-            } else if (mission <=5){
-                msg=msg$"|n|nThere is a desk phone on Sam's desk in UNATCO HQ.";
-            } else if (mission <=6){
-                msg=msg$"|n|nThere is a desk phone in the Luminous Path Compound in the Wan Chai Market.";
-                msg=msg$"|nThere is a desk phone at the front desk of Queen's Tower on Tonnochi Road.";
-                msg=msg$"|nThere is a desk phone on the conference table in the Lucky Money.";
-                msg=msg$"|nThere is a desk phone in the conference room on the first level of the MJ12 Lab under VersaLife.";
-            } else if (mission <=8){
-                msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
-            } else if (mission <=9){
-                msg=msg$"|n|nThere is a desk phone in an office in the dockyard.";
-            } else if (mission<=10){
-                msg=msg$"|n|nThere is a desk phone in the office across the street from the entrance to the catacombs in Denfert-Rochereau.";
-            } else if (RevisionMaps && mission<=11){
-                msg=msg$"|n|nThere are phones in the Paris Metro station as well as in Everett's house.";
-            } else if (RevisionMaps && mission<=12){
-                msg=msg$"|n|nThere is a phone in the security room of the Vandenberg Command building.";
-            } else if (RevisionMaps && mission<=14){
-                msg=msg$"|n|nThere is a phone in the gatehouse at the sub base.";
-            }
-            return msg;
-        case "Area51ElevatorPower":
-            return "Enter the main blast doors of the Area 51 bunker and turn on the power to the elevator.";
-        case "Area51SleepingPod":
-            return "Open enough of the sleeping pods in the entrance to the Area 51 bunker.";
-        case "Area51SteamValve":
-            return "Close the steam valves in the maintenance tunnels under the floors of the entrance to the Area 51 bunker.";
-        case "DockyardLaser":
-            return "Deactivate enough of the laser grids in the sewers underneath the dockyards.";
-        case "A51CommBuildingBasement":
-            return "Go into the hatch in the Command 24 building in Area 51 and enter the basement.";
-        case "FreighterHelipad":
-            return "Walk up onto the helipad in the lower decks of the superfreighter.";
-        case "11_Bulletin01":
-            return "Read about the cathedral on a public computer.  These can be found on the streets near the metro, as well as inside the metro.";
-        case "A51ExplosiveLocker":
-            return "Enter the explosives locker in Area 51.  This is the locked room on the staircase leading down from Helios towards Sector 4.";
-        case "A51SeparationSwim":
-            return "Go swimming in the tall cylindrical separation tank in Sector 3 of Area 51.";
-        case "09_Email08":
-            return "Read an email from Captain Zhao's daughter on his computer on the superfreighter.";
-        case "Titanic":
-            return "Stand on the rail at the front of the superfreighter and hold your arms out...  It feels like you're flying!";
-        case "MeetScaredSoldier_Played":
-            return "Talk to Xander, the sole surviving soldier hiding out in the building inside the hangar in Area 51.";
-        case "DockyardTrailer":
-            return "Enter one of the trailers parked in the dockyards.  There is a key to open the trailers somewhere in the dockyards.";
-        case "CathedralDisplayCase":
-            return "Enter the store display case in the street leading up to the cathedral.";
-        case "WIB_ClassDeadM11":
-            return "Kill Adept 34501, the Woman in Black living in the cathedral.  You must kill her yourself.";
-        case "VandenbergAntenna":
-            return "Shoot the tip of the antenna on top of the command center at the Vandenberg Air Force Base.";
-        case "VandenbergHazLab":
-            return "Enter the Hazard Lab in Vandenberg and disable the electricity that is making the water hazardous.";
-        case "WatchKeys_maintenancekey":
-            return "Find the maintenance key in the tunnels underneath Vandenberg.";
-        case "EnterUC":
-            return "Step into enough Universal Constructors throughout the game.  There are five available:|n - One in the computer section of Vandenberg|n - One in the bottom of the Ocean Lab|n - Three in the very bottom of Area 51";
-        case "VandenbergComputerElec":
-            return "Disable both electrical panels in the computer room of Vandenberg.  There's very little risk!";
-        case "VandenbergGasSwim":
-            return "Go swimming in the water around the base of the two gas tanks outside of the Vandenberg command center.";
-        case "SiloAttic":
-            return "Enter the attic in the building outside the fence at the silo.";
-        case "SubBaseSatellite":
-            return "Shoot one of the satellite dishes on the tower on top of the sub base on shore in California.";
-        case "UCVentilation":
-            return "Destroy enough ventilation fans near the Universal Contructor under the Ocean Lab.";
-        case "OceanLabFloodedStoreRoom":
-            return "Swim along the ocean floor to the locked and flooded storage room from in the Ocean Lab.";
-        case "OceanLabMedBay":
-            return "Enter the med bay in the Ocean Lab.  This room is flooded and off the side of the Karkian Lab.";
-        case "WatchDogs":
-            return "Watch dogs through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "Cat_peeptime":
-            return "Watch cats through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "Binoculars_peeptime":
-            return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
-        case "roof_elevator":
-            return "Use the roof elevator in Denfert-Rochereau right at the start.  There will be a book nearby with the code for the keypad.";
-        case "MeetRenault_Played":
-            return "Talk to Renault, in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you.";
-        case "SoldRenaultZyme":
-            return "Sell at least 5 vials of Zyme to Renault in the Paris hostel.";
-        case "WarehouseSewerTunnel":
-            return "Swim through the underwater tunnel in the Warehouse District.";
-        case "PaulToTong":
-            return "Take Paul's corpse from the MJ12 facility under UNATCO to Tracer Tong.";
-        case "M04PlayerLikesUNATCO_Played":
-            return "Tell Paul you won't send the distress signal after going to the NSF base.";
-        case "Canal_Bartender_Question4":
-            return "Learn about Olaf Stapledon's \"Last and First Men\" from the Old China Hand bartender.";
-        case "M06BartenderQuestion3":
-            return "Hear the Lucky Money bartender's ideas about good government.";
-        case "M05MeetJaime_Played":
-            return "Talk to Jaime while escaping UNATCO and tell him to stay or to join you in Hong Kong.";
-        case "jughead_Dead":
-        case "jughead_PlayerDead": //old goal
-            return "Kill El Rey, the leader of the Rooks in the Brooklyn Bridge Station.  You must kill him yourself.";
-        case "jughead_PlayerTakedown":
-            return "Take down El Rey, the leader of the Rooks in the Brooklyn Bridge Station.  You must kill or knock him out yourself.";
-        case "JoshuaInterrupted_Played":
-            return "Learn the login for the computer in the MJ12 guard shack from a trooper's father in a Paris cafe.";
-        case "LebedevLived":
-            return "Leave the airfield for UNATCO with Juan Lebedev still alive and Anna Navarre dead.";
-        case "AimeeLeMerchantLived":
-            return "Leave Denfert-Rochereau with Aimee and Le Merchant still alive and conscious.  This is a very difficult goal.";
-        case "OverhearLebedev_Played":
-            return "Listen to a phone conversation in the airfield helibase between Juan Lebedev and Tracer Tong.  It can be heard in one of the offices.";
-        case "ThugGang_AllianceDead":
-            return "Slaughter most of the Rooks in the Brooklyn Bridge Station.  You must kill them yourself.";
-        case "GiveZyme":
-            return "Give zyme to the two junkies in the Brooklyn Bridge Station.";
-        case "MarketKid_Unconscious":
-        case "MarketKid_PlayerUnconscious":
-            return "Knock out Louis Pan, the kid running a protection racket for the Luminous Path in the Wan Chai Market.  You must knock him out yourself.  Crime (sometimes) doesn't pay.";
-        case "MaggieLived":
-            return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
-        case "PetKarkians":
-            return "Hear me out - Karkians are basically just big puppies...  Give enough of them the head rubs they deserve!  Make sure your hands are empty, or you won't be able to pet anything!";
-        case "PetDogs":
-            return "That's right, you can pet the dog!  Give enough dogs some petting time.  Make sure your hands are empty, or you won't be able to pet anything!";
-        case "PetFish":
-            return "Trust me, fish like getting pet.  Max Chen has some fish in his office who would really appreciate it.  Make sure your hands are empty, or you won't be able to pet anything!";
-        case "PetBirds":
-            return "Ok, maybe you shouldn't pet the birds, but can you help yourself?  Give enough birds a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
-        case "PetAnimal_Cat":
-            return "Ohhhh, that cat really wants to get pet!  Give enough cats a pet!  Make sure your hands are empty, or you won't be able to pet anything!";
-        case "PetAnimal_Greasel":
-            return "They might look a bit greasy and very mean, but they sure love head pats!  Give those greasels some pets!  Make sure your hands are empty, or you won't be able to pet anything!";
-        case "PetRats":
-            return "Get down there and pet enough rats!  Make sure your hands are empty, or you won't be able to pet anything!";
-        case "NotABigFan":
-            return "Turn off enough ceiling fans through the game.";
-        case "MeetInjuredTrooper2_Played":
-            return "Talk to the injured trooper in the UNATCO HQ Medical Lab.";
-        case "InterviewLocals":
-            return "Interview some of the locals around Hell's Kitchen to find out more information about the NSF generator.";
-        case "MeetSandraRenton_Played":
-            return "Rescue Sandra Renton from Johnny, the pimp who has her cornered in the alley beside the Underworld Tavern.";
-        case "TiffanyHeli":
-            return "Rescue Tiffany Savage at the abandoned gas station.";
-        case "AlarmUnitHacked":
-            return "Hack enough Alarm Sounder Panels.  These are the big red wall buttons that set off alarms.";
-        case "BuoyOhBuoy":
-            return "Destroy enough buoys through the game.";
-        case "PlayerPeeped":
-            return "Observe yourself in a mirror through binoculars or a scope.";
-        case "DangUnstabCond_peepedtex":
-            return "Carefully inspect the wording on the Area Condemned signs near the top of the Statue of Liberty using binoculars or a scope.";
-        case "pa_TrainSign_D_peepedtex":
-            return "Take a close look at the map of the Paris metro lines using binoculars or a scope.";
-        case "IOnceKnelt":
-            return "Yeah, I can do that too, buddy.  Crouch inside the chapel at the Paris Cathedral.";
-        case "GasCashRegister":
-            return "Find the cash register in the gas station and check if there's anything left behind.";
-        case "LibertyPoints":
-            return "Walk around on the foundation of the statue and visit each of the 11 points.";
-        case "CherryPickerSeat":
-            return "Take a knee in the seat of a cherry picker.";
-        case "ForkliftCertified":
-            return "Demonstrate your certification and operate a functional forklift.";
-        case "ASingleFlask":
-            return "Destroy enough flasks through the game.";
-        case "FC_EyeTest_peepedtex":
-            return "Look at a Snellen Chart (One of those eye exams with the differently sized letters) in the Free Clinic through binoculars or a scope.  Make sure to stand further back so it isn't cheating!";
-        case "EmergencyExit":
-            msg = "Know your exit in case of an emergency!  Locate enough emergency exit signs through the game by looking at them through binoculars or a scope.";
-            if (mission==10 || mission==11){
-                msg = msg $"|n|nThe French word for 'Exit' is 'Sortie'.";
-            }
-            return msg;
-        case "Ex51":
-            return "Kill enough of the named X51 scientists in Vandenberg.|n|n - Carla Brown on the roof|n - Stacy Webber in front of the hazard lab|n - Tim Baker in the closet near the hazard lab|n"$" - Stephanie Maxwell near the command room doors|n - Tony Mares in the comms building|n - Ben Roper in the command room|n"$" - Latasha Taylor in the command room|n - Stacey Marshall in the command room (with LDDP installed)";
-        case "JoyOfCooking":
-            return "Read a recipe from a book and experience the joy of cooking!|n|nThere is a recipe for Chinese Silver Loaves in the Wan Chai Market, and a recipe for Coq au Vin in the streets of Paris.";
-        case "DolphinJump": // keep height number in sync with DolphinJumpTrigger CreateDolphin
-            msg = TrimTrailingZeros(FloatToString(GetRealDistance(160), 1)) @ GetDistanceUnitLong();
-            return "Jump " $ msg $ " out of the water.|n|nHow high in the sky can you fly?";
-        case "M06HeliSafe":
-            return "Open both safes in the Hong Kong Helibase.|n|nThere's one in each Flight Control Deck room.";
-        case "JustAFleshWound":
-            return "Reduce JC to just a torso and head by losing both arms and both legs.";
-        case "LostLimbs":
-            return "Every night, I can feel my leg...  and my arm...  even my fingers.|n|nLose enough limbs through the game.";
-        case "PoolTableStripes":
-            return "Sink all 7 solid-color balls (9-15) on enough different pool tables.";
-        case "PoolTableSolids":
-            return "Sink all 7 striped balls (1-7) on enough different pool tables.";
-        case "05_EmailMenu_psherman":
-            return "Log into and read the email of Agent Sherman, the MIB in the secret MJ12 Lab.";
-        case "steampipe":
-            return "Shut off the gas and stop a leak near the armory in the MJ12 Lab under UNATCO.";
-        case "ArmoryVentEntrance":
-            return "Enter the armory in the MJ12 Lab under UNATCO by going through the vent in the ceiling.";
-        case "PCLOADLETTER":  //Revision only (They added a printer)
-            return "PC LOAD LETTER?  What the hell does that mean?  Show a network printer who's the boss and absolutely obliterate it.";
-        case "UNATCOMJ12LabGreaselCages":
-            return "Enter all four greasel cages in the MJ12 Lab under UNATCO.";
-        case "BrokenMirror":
-            return "They say that if you break a mirror, you'll have seven years of bad luck.  Accumulate bad luck for yourself by breaking enough mirrors.";
-        case "InCaseOfEmergency":
-            return "Break open enough fire extinguisher cases with glass fronts through the game.";
-        case "LootNewClothing":
-            return "Loot enough new, unique, pieces of clothing.  Note that a single person may be wearing multiple pieces of clothing, such as pants, shirts, jackets, glasses, or helmets.  Some people may have overlapping pieces of clothing with others.";
-        case "PoolTableStripeBallSunk":
-            return "Sink enough unique striped pool balls (1-7) through the game.";
-        case "PoolTableSolidBallSunk":
-            return "Sink enough unique solid pool balls (9-15) through the game.";
-        case "PoolTableBallSunk":
-            return "Sink enough unique pool balls through the game.  The cue ball does not count, and the eight ball only counts if all of the stripes or solids have already been sunk.";
-        case "GeneratorBlown":
-            return "Destroy the NSF Generator hidden in the warehouse district.  You can destroy the generator either by using explosives or by turning off the coolant.";
-        case "NSFSignalSent":
-            return "Go to the NSF HQ, align the satellites, and transmit the signal.  God damn terrorist.";
-        case "PaulsDatavault":
-            return "Find Paul somewhere in the MJ12 Lab and retrieve his datavault so that Tong can defeat the killswitch.";
-        case "Have_Evidence":
-            return "Find the Dragon Tooth Sword somewhere in Hong Kong in order to earn Tracer Tong's trust.";
-        case "Have_ROM":
-            return "Find the ROM Encoding for the Dragon Tooth Sword in the Versalife Labs.";
-        case "TriadCeremony_Played":
-            return "Become a witness to the truce ceremony between the Luminous Path and the Red Arrow triads.";
-        case "VL_Got_Schematic":
-            return "Download the schematic of the Grey Death virus in the Versalife Level 2 Labs.";
-        case "VL_UC_Destroyed":
-            return "Destroy the Universal Constructor in the Versalife Level 2 Labs.";
-        case "MeetDowd":
-            if (mission<=8){
-                return "Talk with Stanton Dowd in the burned out remains of the Osgoode & Sons building in Hells Kitchen.";
-            } else {
-                return "Talk with Stanton Dowd in the family mausoleum in the graveyard.";
-            }
-        case "Pistons":
-            return "Activate the bilge pumps in the lower decks of the superfreighter.";
-        case "WeldPointDestroyed":
-            return "Destroy enough of the weld points in the lower decks of the superfreighter.";
-        case "templar_upload":
-            return "Find the computer in the Paris Cathedral and establish a system uplink for Everett.";
-        case "HeliosBorn":
-            return "Provide MilNet access for Daedalus in the Vandenberg Computer Room and witness the birth of a new AI.";
-        case "schematic_downloaded":
-            return "Retrieve the schematics for building a Universal Constructor from the computer at the very bottom of the OceanLab.";
-        case "HowardStrong_PlayerDead":
-        case "HowardStrong_PlayerTakedown":
-            return "Take down Howard Strong, the MJ12 engineer in charge of the operations at the missile silo.  You must kill or knock him out yourself.";
-        case "missile_launched":
-            return "Redirect the missile that is being aimed at Vandenberg.  It's going to be a sunny day at Area 51...";
-        case "MerchantPurchaseBind_DXRNPCs1":
-            return "Make enough purchases from The Merchant through the game.|n|nNote that purchases from his French cousin, Le Merchant, do not count.  He is a different guy.";
-        case "MerchantPurchaseBind_lemerchant":
-            return "Make a purchase from Le Merchant, the French merchant hiding in the abandoned high-rise at Denfert-Rochereau.";
-        default:
-            return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
-    }
-}
-//#endregion
-
 static function bool BingoGoalCanFail(string event)
 {
     switch(event) {
@@ -4327,15 +3159,15 @@ static function bool BingoGoalCanFail(string event)
         case "BallisticArmor_Activated":
         case "HazMatSuit_Activated":
         case "AdaptiveArmor_Activated":
-        case "DrinkAlcohol":
+        case "DrinkAlcohol_Activated":
         case "TechGoggles_Activated":
         case "Rebreather_Activated":
         case "FireExtinguisher_Activated":
-        case "ViewPortraits":
-        case "ViewSchematics":
-        case "ViewMaps":
+        case "ImageOpened_ViewPortraits":
+        case "ImageOpened_ViewSchematics":
+        case "ImageOpened_ViewMaps":
         case "ImageOpened_WaltonSimons":
-        case "ViewDissection":
+        case "ImageOpened_ViewDissection":
         case "ViewTouristPics":
             return false;
         default:
@@ -4356,6 +3188,10 @@ static function Upgrade(#var(PlayerPawn) player, int old_version)
 
     if (old_version < class'DXRVersion'.static.VersionToInt(3,5,2,7)) {
         HandleUpgradePre_3_5_2_7(player,data,events);
+    }
+
+    if (old_version < class'DXRVersion'.static.VersionToInt(3,6,1,1)) {
+        HandleUpgradePre_3_6_1_1(player,data,events);
     }
 
     //Add any new upgrades to the end of the pile, each with an individual if, so that it runs
@@ -4414,7 +3250,7 @@ static function HandleUpgradePre_3_5_2_7(#var(PlayerPawn) player, PlayerDataItem
             case "jughead_PlayerDead":
             case "HowardStrong_PlayerDead":
                 new_event = class'DXRInfo'.static.ReplaceText(event,"_PlayerDead","_PlayerTakedown");
-                new_desc = events.FindOrigBingoDescription(new_event); //Get the default description for the new event
+                new_desc = events.FindOrigBingoDescription(new_event,max); //Get the default description for the new event
 
                 if (new_desc==""){
                     //Something went wrong, and this event couldn't be found!  Don't update!
@@ -4452,6 +3288,176 @@ static function HandleUpgradePre_3_5_2_7(#var(PlayerPawn) player, PlayerDataItem
         }
     }
 }
+
+
+static function string GetNewEventName_3_6_1_1(string oldEvent)
+{
+    switch(oldEvent){
+        case "ClubEntryPaid":
+            return "ClubEntryPaid_Convo";
+        case "CamilleConvosDone":
+            return "ParisClubInfo_Convo";
+        case "DrinkAlcohol":
+            return "DrinkAlcohol_Activated";
+        case "PerformBurder":
+            return "PerformBurder_ClassDead";
+        case "GoneFishing":
+            return "GoneFishing_ClassDead";
+        case "BirdWatching":
+            return "BirdWatching_peeptime";
+        case "ViewPortraits":
+            return "ImageOpened_ViewPortraits";
+        case "ViewSchematics":
+            return "ImageOpened_ViewSchematics";
+        case "ViewMaps":
+            return "ImageOpened_ViewMaps";
+        case "ViewDissection":
+            return "ImageOpened_ViewDissection";
+        case "ViewTouristPics":
+            return "ImageOpened_ViewTouristPics";
+        case "DuClareKeys":
+            return "WatchKeys_DuClareKeys";
+        case "ShipLockerKeys":
+            return "WatchKeys_ShipLockerKeys";
+        case "DestroyCapitalism":
+            return "DestroyCapitalism_VariousDead";
+        case "WaltonConvos":
+            return "WaltonConvos_VariousPlayed";
+        case "ScienceIsForNerds":
+            return "ScienceIsForNerds_VariousDead";
+        case "ShipNamePlate":
+            return "ShipNamePlate_peeped";
+        case "SnitchDowd":
+            return "SnitchDowd_ConvoFlag";
+        case "WatchDogs":
+            return "WatchDogs_peeptime";
+        case "GiveZyme":
+            return "GiveZyme_ConvoFlag";
+        case "InterviewLocals":
+            return "InterviewLocals_VariousPlayed";
+        case "MeetSmuggler":
+            return "MeetSmuggler_VariousPlayed";
+        case "Ex51":
+            return "Ex51_VariousDead";
+        case "PaulsDatavault":
+            return "PaulsDatavault_VariousPlayed";
+        case "MeetDowd":
+            return "MeetDowd_VariousPlayed";
+        case "LightVandalism":
+            return "LightVandalism_DestroyDeco";
+        case "TrophyHunter":
+            return "TrophyHunter_DestroyDeco";
+        case "SlippingHazard":
+            return "SlippingHazard_DestroyDeco";
+        case "BeatTheMeat":
+            return "BeatTheMeat_DestroyDeco";
+        case "WhyContainIt":
+            return "WhyContainIt_DestroyDeco";
+        case "MailModels":
+            return "MailModels_DestroyDeco";
+        case "SmokingKills":
+            return "SmokingKills_DestroyDeco";
+        case "BuoyOhBuoy":
+            return "BuoyOhBuoy_DestroyDeco";
+        case "ASingleFlask":
+            return "ASingleFlask_DestroyDeco";
+        case "PCLOADLETTER":
+            return "PCLOADLETTER_DestroyDeco";
+        case "FightSkeletons":
+            return "FightSkeletons_DestroyDeco";
+        case "Dehydrated":
+            return "Dehydrated_DestroyDeco";
+        case "KnowYourEnemy":
+            return "ReadText_KnowYourEnemy";
+        case "JacobsShadow":
+            return "ReadText_JacobsShadow";
+        case "ManWhoWasThursday":
+            return "ReadText_ManWhoWasThursday";
+        case "GreeneArticles":
+            return "ReadText_GreeneArticles";
+        case "MoonBaseNews":
+            return "ReadText_MoonBaseNews";
+        case "CloneCubes":
+            return "ReadText_CloneCubes";
+        case "UNATCOHandbook":
+            return "ReadText_UNATCOHandbook";
+        case "JoyOfCooking":
+            return "ReadText_JoyOfCooking";
+        case "06_Datacube05":
+            return "ReadText_06_Datacube05";
+        case "02_Book06":
+            return "ReadText_02_Book06";
+        case "11_Book08":
+            return "ReadText_11_Book08";
+        case "ReadJCEmail":
+            return "ReadText_ReadJCEmail";
+        case "12_Email04":
+            return "ReadText_12_Email04";
+        case "02_Email05":
+            return "ReadText_02_Email05";
+        case "15_Email02":
+            return "ReadText_15_Email02";
+        case "09_Email08":
+            return "ReadText_09_Email08";
+        case "05_EmailMenu_psherman":
+            return "ReadText_05_EmailMenu_psherman";
+        case "08_Bulletin02":
+            return "ReadText_08_Bulletin02";
+        case "11_Bulletin01":
+            return "ReadText_11_Bulletin01";
+        case "PlayerPeeped":
+            return "Player_peeped";
+        case "EmergencyExit":
+            return "EmergencyExit_peeped";
+        case "NicoletteHouseTour":
+            return "NicoletteHouseTour_VariousPlayed";
+    }
+
+    return "";
+}
+
+static function HandleUpgradePre_3_6_1_1(#var(PlayerPawn) player, PlayerDataItem data, DXREvents events)
+{
+    local int x, y, progress, max, missions,append_max;
+    local string event, new_event, desc, new_desc;
+
+    //Update goals on the bingo board
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max, missions, append_max);
+            new_event = GetNewEventName_3_6_1_1(event);
+            if (new_event!=""){
+                new_desc = events.FindOrigBingoDescription(new_event,max); //Get the default description for the new event
+
+                if (new_desc==""){
+                    //Something went wrong, and this event couldn't be found!  Don't update!
+                    player.ClientMessage("Couldn't find new event "$new_event$" in bingo option list!  Report to devs!");
+                } else {
+                    UpdateBingoSquare(player, data, events, x, y, new_event, desc, new_desc, progress, max, missions,bool(append_max));
+                }
+            }
+        }
+    }
+
+    //Update bans in the goal ban list
+    for (x=0;x<ArrayCount(data.bannedGoals);x++){
+        new_event = GetNewEventName_3_6_1_1(data.bannedGoals[x]);
+        if (new_event!=""){
+            data.bannedGoals[x]=new_event;
+        }
+    }
+
+    //Update watched actors
+    for (x=0;x<events.num_watched_actors;x++){
+        new_event = GetNewEventName_3_6_1_1(events.GetWatchedActorBingoEvent(x));
+        if (new_event!=""){
+            events.UpdateWatchedActorBingoEvent(x,new_event);
+        }
+
+    }
+}
+
+
 //#endregion
 
 function ExtendedTests()
@@ -4523,10 +3529,10 @@ defaultproperties
     bingo_options(33)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1,missions=4)
     bingo_options(34)=(event="AlleyBumRescued",desc="Rescue the bum on the basketball court",max=1,missions=4)
     bingo_options(35)=(event="FoundScientistBody",desc="Search the canal",max=1,missions=64)
-    bingo_options(36)=(event="ClubEntryPaid",desc="Help Mercedes and Tessa",max=1,missions=64)
+    bingo_options(36)=(event="ClubEntryPaid_Convo",desc="Help Mercedes and Tessa",max=1,missions=64)
     bingo_options(37)=(event="M08WarnedSmuggler",desc="Warn Smuggler",max=1,missions=256)
     bingo_options(38)=(event="ShipPowerCut",desc="Help the electrician",max=1,missions=512)
-    bingo_options(39)=(event="CamilleConvosDone",desc="Get info from Camille",max=1,missions=1024)
+    bingo_options(39)=(event="ParisClubInfo_Convo",desc="Get info from Camille",max=1,missions=1024)
     bingo_options(40)=(event="MeetAI4_Played",desc="Talk to Morpheus",max=1,missions=2048)
     bingo_options(41)=(event="DL_Flooded_Played",desc="Check flooded zone in the ocean lab",max=1,missions=16384)
     bingo_options(42)=(event="JockSecondStory",desc="Get Jock buzzed",max=1,missions=4)
@@ -4546,7 +3552,7 @@ defaultproperties
     bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1,missions=1024)
     bingo_options(57)=(event="JosephManderley_PlayerDead",desc="Kill Joseph Manderley",max=1,missions=32)
     bingo_options(58)=(event="MadeItToBP",desc="Escape to Battery Park",max=1,missions=16)
-    bingo_options(59)=(event="MeetSmuggler",desc="Meet Smuggler",max=1,missions=276)
+    bingo_options(59)=(event="MeetSmuggler_VariousPlayed",desc="Meet Smuggler",max=1,missions=276)
     bingo_options(60)=(event="SickMan_PlayerDead",desc="Kill the sick man who wants to die",max=1,missions=12)
     bingo_options(61)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1,missions=64)
     bingo_options(62)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1,missions=64)
@@ -4591,15 +3597,15 @@ defaultproperties
 #ifndef hx
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to a bar",max=1,missions=17686)
 #endif
-    bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read a Know Your Enemy bulletin",max=6,missions=26)
+    bingo_options(100)=(event="ReadText_KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",desc_singular="Read a Know Your Enemy bulletin",max=6,missions=26)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
-    bingo_options(102)=(event="JacobsShadow",desc="Read %s parts of Jacob's Shadow",desc_singular="Read one part of Jacob's Shadow",max=4,missions=38492)
-    bingo_options(103)=(event="ManWhoWasThursday",desc="Read %s parts of The Man Who Was Thursday",desc_singular="Read one part of The Man Who Was Thursday",max=4,missions=54300)
-    bingo_options(104)=(event="GreeneArticles",desc="Read %s newspaper articles by Joe Greene",desc_singular="Read a newspaper article by Joe Greene",max=4,missions=270)
-    bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1,missions=76)
-    bingo_options(106)=(event="06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1,missions=64)
+    bingo_options(102)=(event="ReadText_JacobsShadow",desc="Read %s parts of Jacob's Shadow",desc_singular="Read one part of Jacob's Shadow",max=4,missions=38492)
+    bingo_options(103)=(event="ReadText_ManWhoWasThursday",desc="Read %s parts of The Man Who Was Thursday",desc_singular="Read one part of The Man Who Was Thursday",max=4,missions=54300)
+    bingo_options(104)=(event="ReadText_GreeneArticles",desc="Read %s newspaper articles by Joe Greene",desc_singular="Read a newspaper article by Joe Greene",max=4,missions=270)
+    bingo_options(105)=(event="ReadText_MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1,missions=76)
+    bingo_options(106)=(event="ReadText_06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1,missions=64)
     bingo_options(107)=(event="Gray_ClassDead",desc="Kill %s Grays",desc_singular="Kill a Gray",max=5,missions=32832)
-    bingo_options(108)=(event="CloneCubes",desc="Read about %s clones in Area 51",desc_singular="Read about a clone in Area 51",max=4,missions=32768)
+    bingo_options(108)=(event="ReadText_CloneCubes",desc="Read about %s clones in Area 51",desc_singular="Read about a clone in Area 51",max=4,missions=32768)
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1,missions=32768)
     bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1,missions=512)
     bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1,missions=8)
@@ -4682,13 +3688,13 @@ defaultproperties
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s hazmat suits",desc_singular="Use a hazmat suit",max=3,missions=54866)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s thermoptic camos",desc_singular="Use thermoptic camo",max=3,missions=55132)
-    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",desc_singular="Drink a bottle of alcohol",max=75)
+    bingo_options(184)=(event="DrinkAlcohol_Activated",desc="Drink %s bottles of alcohol",desc_singular="Drink a bottle of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
     bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",desc_singular="Hack a computer",max=10)
     bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",desc_singular="Use tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",desc_singular="Use a rebreather",max=3,missions=55400)
-    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",desc_singular="Hunt a bird",max=10,missions=24446)
-    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18510)
+    bingo_options(189)=(event="PerformBurder_ClassDead",desc="Hunt %s birds",desc_singular="Hunt a bird",max=10,missions=24446)
+    bingo_options(190)=(event="GoneFishing_ClassDead",desc="Kill %s fish",max=10,missions=18510)
     bingo_options(191)=(event="FordSchick_PlayerDead",desc="Kill Ford Schick",max=1,missions=276)
     bingo_options(192)=(event="ChateauInComputerRoom",desc="Find Beth's secret routing station",max=1,missions=1024)
     bingo_options(193)=(event="DuClareBedrooms",desc="Visit both bedrooms in the DuClare Chateau",max=2,missions=1024,do_not_scale=true)
@@ -4706,60 +3712,60 @@ defaultproperties
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",desc_singular="Watch MJ12 Troopers for 1 second",max=30,missions=57188)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",desc_singular="Watch MJ12 Commandos for 1 second",max=15,missions=56384)
     bingo_options(207)=(event="PawnAnim_Dance",desc="You can dance if you want to",max=1,missions=1364)
-    bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=24446)
+    bingo_options(208)=(event="BirdWatching_peeptime",desc="Watch birds for %s seconds",desc_singular="Watch birds for 1 second",max=30,missions=24446)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
     bingo_options(211)=(event="Supervisor_Paid",desc="Pay for access to the VersaLife labs",max=1,missions=64)
     bingo_options(212)=(event="ImageOpened_WaltonSimons",desc="Look at Walton Simons' nudes",max=1,missions=544)
     bingo_options(213)=(event="BethsPainting",desc="Admire Beth DuClare's favourite painting",max=1,missions=1024)
 #ifndef hx
-    bingo_options(214)=(event="ViewPortraits",desc="Look at %s portraits",desc_singular="Look at a portrait",max=2,missions=4890)
-    bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
-    bingo_options(216)=(event="ViewMaps",desc="View %s maps",desc_singular="View a map",max=6,missions=56686)
-    bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
-    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist photo",max=1,missions=2576)
+    bingo_options(214)=(event="ImageOpened_ViewPortraits",desc="Look at %s portraits",desc_singular="Look at a portrait",max=2,missions=4890)
+    bingo_options(215)=(event="ImageOpened_ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
+    bingo_options(216)=(event="ImageOpened_ViewMaps",desc="View %s maps",desc_singular="View a map",max=6,missions=56686)
+    bingo_options(217)=(event="ImageOpened_ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
+    bingo_options(218)=(event="ImageOpened_ViewTouristPics",desc="Look at a tourist photo",max=1,missions=2576)
 #endif
     bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
     bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
-    bingo_options(221)=(event="12_Email04",desc="Read a motivational email from Gary",max=1,missions=4096)
-    bingo_options(222)=(event="ReadJCEmail",desc="Check your email %s times",desc_singular="Check your email",max=3,missions=122)
-    bingo_options(223)=(event="02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
-    bingo_options(224)=(event="11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
+    bingo_options(221)=(event="ReadText_12_Email04",desc="Read a motivational email from Gary",max=1,missions=4096)
+    bingo_options(222)=(event="ReadText_ReadJCEmail",desc="Check your email %s times",desc_singular="Check your email",max=3,missions=122)
+    bingo_options(223)=(event="ReadText_02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
+    bingo_options(224)=(event="ReadText_11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
     bingo_options(225)=(event="GasStationCeiling",desc="Access the ceiling of a gas station",max=1,missions=4096)
-    bingo_options(226)=(event="NicoletteHouseTour",desc="Tour 5 parts of Chateau DuClare with Nicolette",max=5,missions=1024,do_not_scale=true)
+    bingo_options(226)=(event="NicoletteHouseTour_VariousPlayed",desc="Tour 5 parts of Chateau DuClare with Nicolette",max=5,missions=1024,do_not_scale=true)
     bingo_options(227)=(event="nico_fireplace",desc="Access Nicolette's secret stash",max=1,missions=1024)
     bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
     bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
-    bingo_options(231)=(event="DuClareKeys",desc="Get 3 unique keys around Chateau DuClare",max=3,missions=1024,do_not_scale=true)
-    bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the super freighter",desc_singular="Collect a locker key inside the super freighter",max=2,missions=512)
+    bingo_options(231)=(event="WatchKeys_DuClareKeys",desc="Get 3 unique keys around Chateau DuClare",max=3,missions=1024,do_not_scale=true)
+    bingo_options(232)=(event="WatchKeys_ShipLockerKeys",desc="Collect %s locker keys inside the super freighter",desc_singular="Collect a locker key inside the super freighter",max=2,missions=512)
     bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out!",max=18,missions=40830)
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange!",max=12,missions=38782)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy!",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=4,missions=64)
     bingo_options(238)=(event="Shannon_PlayerTakedown",desc="Take down the thief in UNATCO",max=1,missions=58)
-    bingo_options(239)=(event="DestroyCapitalism",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALISM.",max=10,missions=7550)
+    bingo_options(239)=(event="DestroyCapitalism_VariousDead",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALISM.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_PlayerTakedown",desc="Not advisable to visit the canals at night",max=1,missions=64)
-    bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",desc_singular="Perform 1 act of light vandalism",max=40,missions=57214)
-    bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",desc_singular="Destroy 1 skeleton part",max=10,missions=19536)
-    bingo_options(243)=(event="TrophyHunter",desc="Trophy Hunter",max=10,missions=1146)
-    bingo_options(244)=(event="SlippingHazard",desc="Create %s potential slipping hazards",desc_singular="Create 1 potential slipping hazard",max=5,missions=894)
-    bingo_options(245)=(event="Dehydrated",desc="Stay dehydrated %s times",desc_singular="Stay dehydrated 1 time",max=15,missions=40830)
+    bingo_options(241)=(event="LightVandalism_DestroyDeco",desc="Perform %s acts of light vandalism",desc_singular="Perform 1 act of light vandalism",max=40,missions=57214)
+    bingo_options(242)=(event="FightSkeletons_DestroyDeco",desc="Destroy %s skeleton parts",desc_singular="Destroy 1 skeleton part",max=10,missions=19536)
+    bingo_options(243)=(event="TrophyHunter_DestroyDeco",desc="Trophy Hunter",max=10,missions=1146)
+    bingo_options(244)=(event="SlippingHazard_DestroyDeco",desc="Create %s potential slipping hazards",desc_singular="Create 1 potential slipping hazard",max=5,missions=894)
+    bingo_options(245)=(event="Dehydrated_DestroyDeco",desc="Stay dehydrated %s times",desc_singular="Stay dehydrated 1 time",max=15,missions=40830)
 #ifndef vmd
     bingo_options(246)=(event="PresentForManderley",desc="Bring a present to Manderley",max=1,missions=24)
 #endif
-    bingo_options(247)=(event="WaltonConvos",desc="Have %s conversations with Walton Simons",desc_singular="Have a conversation with Walton Simons",max=3,missions=51256)
+    bingo_options(247)=(event="WaltonConvos_VariousPlayed",desc="Have %s conversations with Walton Simons",desc_singular="Have a conversation with Walton Simons",max=3,missions=51256)
     bingo_options(248)=(event="OceanLabShed",desc="Enter the shed on shore at the Ocean Lab",max=1,missions=16384)
     bingo_options(249)=(event="DockBlastDoors",desc="Open %s bunker blast doors in the dockyard",desc_singular="Open a bunker blast door in the dockyard",max=3,missions=512)
     bingo_options(250)=(event="ShipsBridge",desc="Enter the bridge of the super freighter",max=1,missions=512)
-    bingo_options(251)=(event="BeatTheMeat",desc="Beat the meat %s times",desc_singular="Beat the meat",max=15,missions=2624)
+    bingo_options(251)=(event="BeatTheMeat_DestroyDeco",desc="Beat the meat %s times",desc_singular="Beat the meat",max=15,missions=2624)
     bingo_options(252)=(event="FamilySquabbleWrapUpGilbertDead_Played",desc="What a shame",max=1,missions=16)
     bingo_options(253)=(event="CrackSafe",desc="Crack %s safes",desc_singular="Crack a safe",max=3,missions=516)
     bingo_options(254)=(event="CliffSacrifice",desc="Sacrifice a body off of a cliff",max=1,missions=4096)
     bingo_options(255)=(event="MaggieCanFly",desc="Teach Maggie Chow how to fly",max=1,missions=64)
     bingo_options(256)=(event="VandenbergShaft",desc="Jump down the Vandenberg shaft",max=1,missions=4096)
-    bingo_options(257)=(event="ScienceIsForNerds",desc="Science is for nerds",max=10,missions=20576)
+    bingo_options(257)=(event="ScienceIsForNerds_VariousDead",desc="Science is for nerds",max=10,missions=20576)
     bingo_options(258)=(event="Chef_ClassDead",desc="My Name Chef",max=1,missions=3072)
     bingo_options(259)=(event="un_PrezMeadPic_peepedtex",desc="Have a look at the anime president",max=1,missions=58)
     bingo_options(260)=(event="un_bboard_peepedtex",desc="Check the bulletin board at UNATCO HQ",max=1,missions=58)
@@ -4772,21 +3778,21 @@ defaultproperties
     bingo_options(267)=(event="ScubaDiver_ClassDead",desc="Kill %s SCUBA Divers",desc_singular="Kill a SCUBA Diver",max=3,missions=16384)
     bingo_options(268)=(event="ShipRamp",desc="Raise the ramp to the super freighter",max=1,missions=512)
     bingo_options(269)=(event="SuperfreighterProp",desc="Props to you",max=1,missions=512)
-    bingo_options(270)=(event="ShipNamePlate",desc="Check the name on the super freighter",max=1,missions=512)
+    bingo_options(270)=(event="ShipNamePlate_peeped",desc="Check the name on the super freighter",max=1,missions=512)
     bingo_options(271)=(event="DL_SecondDoors_Played",desc="The sub-bay doors are closed",max=1,missions=16384)
-    bingo_options(272)=(event="WhyContainIt",desc="Why contain it?",max=1,missions=20480)
-    bingo_options(273)=(event="MailModels",desc="But why mail models?",max=3,missions=276)
-    bingo_options(274)=(event="UNATCOHandbook",desc="Rules and Regulations",max=4,missions=26)
-    bingo_options(275)=(event="02_Book06",desc="Learn basic firearm safety",max=1,missions=276)
-    bingo_options(276)=(event="15_Email02",desc="The truth is out there",max=1,missions=32768)
+    bingo_options(272)=(event="WhyContainIt_DestroyDeco",desc="Why contain it?",max=1,missions=20480)
+    bingo_options(273)=(event="MailModels_DestroyDeco",desc="But why mail models?",max=3,missions=276)
+    bingo_options(274)=(event="ReadText_UNATCOHandbook",desc="Rules and Regulations",max=4,missions=26)
+    bingo_options(275)=(event="ReadText_02_Book06",desc="Learn basic firearm safety",max=1,missions=276)
+    bingo_options(276)=(event="ReadText_15_Email02",desc="The truth is out there",max=1,missions=32768)
     bingo_options(277)=(event="ManderleyMail",desc="Check Manderley's holomail %s times",desc_singular="Check Manderley's holomail",max=2,missions=58)
 #ifndef revision
     bingo_options(278)=(event="LetMeIn",desc="Let me in!",max=1,missions=26)
 #endif
-    bingo_options(279)=(event="08_Bulletin02",desc="Most Wanted",max=1,missions=256)
-    bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
+    bingo_options(279)=(event="ReadText_08_Bulletin02",desc="Most Wanted",max=1,missions=256)
+    bingo_options(280)=(event="SnitchDowd_ConvoFlag",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
-    bingo_options(282)=(event="SmokingKills",desc="Smoking Kills",max=5,missions=3420)
+    bingo_options(282)=(event="SmokingKills_DestroyDeco",desc="Smoking Kills",max=5,missions=3420)
     bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",desc_singular="Make a phone call",max=5,missions=1916)
     bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",desc_singular="Open a sleeping pod in Area 51",max=4,missions=32768)
@@ -4794,10 +3800,10 @@ defaultproperties
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",desc_singular="Deactivate a laser grid under the dockyard",max=3,missions=512)
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
     bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the super freighter",max=1,missions=512)
-    bingo_options(290)=(event="11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
+    bingo_options(290)=(event="ReadText_11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
     bingo_options(291)=(event="A51ExplosiveLocker",desc="Enter the explosives locker in Area 51",max=1,missions=32768)
     bingo_options(292)=(event="A51SeparationSwim",desc="Swim in the Area 51 separation tank",max=1,missions=32768)
-    bingo_options(293)=(event="09_Email08",desc="Daddy Zhao",max=1,missions=512)
+    bingo_options(293)=(event="ReadText_09_Email08",desc="Daddy Zhao",max=1,missions=512)
     bingo_options(294)=(event="Titanic",desc="I'm flying, Jack!",max=1,missions=512)
     bingo_options(295)=(event="MeetScaredSoldier_Played",desc="Talk to the surviving Area 51 soldier",max=1,missions=32768)
     bingo_options(296)=(event="DockyardTrailer",desc="Enter a trailer in the dockyards",max=1,missions=512)
@@ -4814,7 +3820,7 @@ defaultproperties
     bingo_options(307)=(event="UCVentilation",desc="Destroy %s ventilation fans in the Ocean Lab",desc_singular="Destroy a ventilation fan in the Ocean Lab",max=6,missions=16384)
     bingo_options(308)=(event="OceanLabFloodedStoreRoom",desc="Swim to the locked store room in the Ocean Lab",max=1,missions=16384)
     bingo_options(309)=(event="OceanLabMedBay",desc="Enter the flooded med bay in the Ocean Lab",max=1,missions=16384)
-    bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",desc_singular="Watch Dogs (1 second)",max=15,missions=21604)
+    bingo_options(310)=(event="WatchDogs_peeptime",desc="Watch Dogs (%s seconds)",desc_singular="Watch Dogs (1 second)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",desc_singular="Look at that kitty! (1 second)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",desc_singular="Who Watches the Watchers? (1 second)",max=5)
     bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
@@ -4831,7 +3837,7 @@ defaultproperties
     bingo_options(324)=(event="AimeeLeMerchantLived",desc="Let Aimee and Le Merchant live",max=1,missions=1024)
     bingo_options(325)=(event="OverhearLebedev_Played",desc="This socket is being monitored",max=1,missions=8)
     bingo_options(326)=(event="ThugGang_AllianceDead",desc="Slaughter the Rooks",max=10,missions=8,do_not_scale=true) // there are ordinarily 11 Rooks
-    bingo_options(327)=(event="GiveZyme",desc="Who needs Rock?",max=2,missions=8,do_not_scale=true) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
+    bingo_options(327)=(event="GiveZyme_ConvoFlag",desc="Who needs Rock?",max=2,missions=8,do_not_scale=true) // Huh?  Not me.  He could just die.  Take his fifty-cut zyme and blow.
     // bingo_options()=(event="MarketKid_PlayerUnconscious",desc="Crime doesn't pay",max=1,missions=64)
     bingo_options(328)=(event="MaggieLived",desc="Let Maggie Live",max=1,missions=64)
     bingo_options(329)=(event="SoldRenaultZyme",desc="Sell Zyme to Renault",max=5,missions=1024,do_not_scale=true)
@@ -4846,12 +3852,12 @@ defaultproperties
 #endif
     bingo_options(337)=(event="NotABigFan",desc="Not a big fan",max=20,missions=17244)
     bingo_options(338)=(event="MeetInjuredTrooper2_Played",desc="Cheer up an injured trooper",max=1,missions=8)
-    bingo_options(339)=(event="InterviewLocals",desc="Interview locals about a generator",max=3,missions=4,do_not_scale=true)
+    bingo_options(339)=(event="InterviewLocals_VariousPlayed",desc="Interview locals about a generator",max=3,missions=4,do_not_scale=true)
     bingo_options(340)=(event="MeetSandraRenton_Played",desc="Rescue Sandra Renton",max=1,missions=4)
     bingo_options(341)=(event="TiffanyHeli",desc="Rescue Tiffany Savage",max=1,missions=4096)
     bingo_options(342)=(event="AlarmUnitHacked",desc="Hack %s Alarm Sounder Panels",desc_singular="Hack an Alarm Sounder Panel",max=10)
-    bingo_options(343)=(event="BuoyOhBuoy",desc="Buoy Oh Buoy",max=10,missions=94)
-    bingo_options(344)=(event="PlayerPeeped",desc="Despite everything, it's still you",max=1,missions=24446)
+    bingo_options(343)=(event="BuoyOhBuoy_DestroyDeco",desc="Buoy Oh Buoy",max=10,missions=94)
+    bingo_options(344)=(event="Player_peeped",desc="Despite everything, it's still you",max=1,missions=24446)
     bingo_options(345)=(event="DangUnstabCond_peepedtex",desc="Condemned!",max=1,missions=2)
     bingo_options(346)=(event="pa_TrainSign_D_peepedtex",desc="Closely inspect the Paris metro map",max=1,missions=2048)
     bingo_options(347)=(event="IOnceKnelt",desc="I once knelt in this chapel",max=1,missions=2048)
@@ -4859,11 +3865,11 @@ defaultproperties
     bingo_options(349)=(event="LibertyPoints",desc="Visit the 11 points of the statue foundation",max=11,missions=2,do_not_scale=true)
     bingo_options(350)=(event="CherryPickerSeat",desc="Sit in the seat of a cherry picker",max=1,missions=49152)
     bingo_options(351)=(event="ForkliftCertified",desc="Forklift Certified",max=1,missions=32770)
-    bingo_options(352)=(event="ASingleFlask",desc="Do you have a single flask to back that up?",max=10,missions=24190)
+    bingo_options(352)=(event="ASingleFlask_DestroyDeco",desc="Do you have a single flask to back that up?",max=10,missions=24190)
     bingo_options(353)=(event="FC_EyeTest_peepedtex",desc="Take an eye exam",max=1,missions=260)
-    bingo_options(354)=(event="EmergencyExit",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=3966)
-    bingo_options(355)=(event="Ex51",desc="Ex-51",desc_singular="Ex-51",max=6,missions=4096)
-    bingo_options(356)=(event="JoyOfCooking",desc="The Joy of Cooking",max=1,missions=1088)
+    bingo_options(354)=(event="EmergencyExit_peeped",desc="Locate %s emergency exits",desc_singular="Locate an emergency exit",max=8,missions=3966)
+    bingo_options(355)=(event="Ex51_VariousDead",desc="Ex-51",desc_singular="Ex-51",max=6,missions=4096)
+    bingo_options(356)=(event="ReadText_JoyOfCooking",desc="The Joy of Cooking",max=1,missions=1088)
 #ifdef injections || revision
     bingo_options(357)=(event="DolphinJump",desc="The marks on your head look like stars in the sky",max=1,missions=56910)
 #endif
@@ -4875,11 +3881,11 @@ defaultproperties
 #endif
     bingo_options(362)=(event="PoolTableStripes",desc="Sink all the striped pool balls %s times",desc_singular="Sink all the striped pool balls",max=3,missions=33116)
     bingo_options(363)=(event="PoolTableSolids",desc="Sink all the solid pool balls %s times",desc_singular="Sink all the solid pool balls",max=3,missions=33116)
-    bingo_options(364)=(event="05_EmailMenu_psherman",desc="P. Sherman, 42 Wallaby Way, Sydney",max=1,missions=32)
+    bingo_options(364)=(event="ReadText_05_EmailMenu_psherman",desc="P. Sherman, 42 Wallaby Way, Sydney",max=1,missions=32)
     bingo_options(365)=(event="steampipe",desc="Stop a gas leak in the MJ12 Lab",max=1,missions=32)
     bingo_options(366)=(event="ArmoryVentEntrance",desc="Enter the Secret MJ12 Lab Armory through the vent",max=1,missions=32)
 #ifdef revision
-    bingo_options(367)=(event="PCLOADLETTER",desc="Damn it feels good to be a gangsta",max=1,missions=100)
+    bingo_options(367)=(event="PCLOADLETTER_DestroyDeco",desc="Damn it feels good to be a gangsta",max=1,missions=100)
 #endif
     bingo_options(368)=(event="UNATCOMJ12LabGreaselCages",desc="Become the greasel",max=4,missions=32,do_not_scale=true)
     bingo_options(369)=(event="BrokenMirror",desc="Accumulate bad luck",max=4,missions=2388)
@@ -4890,13 +3896,13 @@ defaultproperties
     bingo_options(374)=(event="PoolTableBallSunk",desc="Sink 5 pool balls",desc_singular="Sink 1 pool ball",max=5,missions=33116,do_not_scale=true)
     bingo_options(375)=(event="GeneratorBlown",desc="Destroy the NSF generator",max=1,missions=4)
     bingo_options(376)=(event="NSFSignalSent",desc="Send the NSF signal",max=1,missions=16)
-    bingo_options(377)=(event="PaulsDatavault",desc="Retrieve Paul's Datavault",max=1,missions=32)
+    bingo_options(377)=(event="PaulsDatavault_VariousPlayed",desc="Retrieve Paul's Datavault",max=1,missions=32)
     bingo_options(378)=(event="Have_Evidence",desc="Find the missing Dragon Tooth Sword",max=1,missions=64)
     bingo_options(379)=(event="Have_ROM",desc="Find the ROM Encoding",max=1,missions=64)
     bingo_options(380)=(event="TriadCeremony_Played",desc="The triads are one",max=1,missions=64)
     bingo_options(381)=(event="VL_Got_Schematic",desc="Download the Virus Schematic",max=1,missions=64)
     bingo_options(382)=(event="VL_UC_Destroyed",desc="Destroy the Versalife UC",max=1,missions=64)
-    bingo_options(383)=(event="MeetDowd",desc="Meet Stanton Dowd",max=1,missions=768)
+    bingo_options(383)=(event="MeetDowd_VariousPlayed",desc="Meet Stanton Dowd",max=1,missions=768)
     bingo_options(384)=(event="Pistons",desc="Activate the Bilge Pumps",max=1,missions=512)
     bingo_options(385)=(event="WeldPointDestroyed",desc="Destroy %s Weld Points",desc_singular="Destroy a Weld Point",max=5,missions=512)
     bingo_options(386)=(event="templar_upload",desc="Establish Templar System Uplink",max=1,missions=2048)
@@ -4950,7 +3956,7 @@ defaultproperties
     mutually_exclusive(34)=(e1="MJ12Troop_peeptime",e2="Binoculars_Activated")
     mutually_exclusive(35)=(e1="Binoculars_Activated",e2="MJ12Commando_peeptime")
     mutually_exclusive(36)=(e1="Binoculars_Activated",e2="NYEagleStatue_peeped")
-    mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching")
+    mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching_peeptime")
     mutually_exclusive(38)=(e1="Binoculars_Activated",e2="PawnAnim_Dance")
     mutually_exclusive(39)=(e1="Supervisor_Paid",e2="M06BoughtVersaLife")
     mutually_exclusive(40)=(e1="VendingMachineEmpty",e2="VendingMachineEmpty_Drink")
@@ -4967,13 +3973,13 @@ defaultproperties
     mutually_exclusive(51)=(e1="AimeeLeMerchantLived",e2="lemerchant_PlayerTakedown")
     mutually_exclusive(52)=(e1="AimeeLeMerchantLived",e2="aimee_PlayerTakedown")
     mutually_exclusive(52)=(e1="MaggieLived",e2="MaggieCanFly")
-    mutually_exclusive(53)=(e1="GoneFishing",e2="PetFish")
-    mutually_exclusive(54)=(e1="BirdWatching",e2="PetBirds")
+    mutually_exclusive(53)=(e1="GoneFishing_ClassDead",e2="PetFish")
+    mutually_exclusive(54)=(e1="BirdWatching_peeptime",e2="PetBirds")
     mutually_exclusive(55)=(e1="Cat_peeptime",e2="PetAnimal_Cat")
     mutually_exclusive(56)=(e1="Greasel_ClassDead",e2="PetAnimal_Greasel")
     mutually_exclusive(57)=(e1="Rat_ClassDead",e2="PetRats")
     mutually_exclusive(58)=(e1="Karkian_ClassDead",e2="PetKarkians")
-    mutually_exclusive(59)=(e1="PerformBurder",e2="PetBirds")
+    mutually_exclusive(59)=(e1="PerformBurder_ClassDead",e2="PetBirds")
     mutually_exclusive(60)=(e1="PetRats",e2="PetBirds")
     mutually_exclusive(61)=(e1="TiffanySavage_PlayerDead",e2="TiffanyHeli")
     mutually_exclusive(62)=(e1="LebedevLived",e2="AnnaNavarre_DeadM3")
@@ -4981,34 +3987,34 @@ defaultproperties
     mutually_exclusive(64)=(e1="LebedevLived",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(65)=(e1="LebedevLived",e2="AnnaKillswitch")
     mutually_exclusive(66)=(e1="LebedevLived",e2="JuanLebedev_PlayerUnconscious")
-    mutually_exclusive(67)=(e1="Ex51",e2="ScienceIsForNerds")
+    mutually_exclusive(67)=(e1="Ex51_VariousDead",e2="ScienceIsForNerds_VariousDead")
     mutually_exclusive(68)=(e1="PetAnimal_BindName_Starr",e2="PetDogs")
     mutually_exclusive(69)=(e1="JustAFleshWound",e2="LostLimbs")
     mutually_exclusive(70)=(e1="PoolTableSolids",e2="PoolTableStripes")
     mutually_exclusive(71)=(e1="PoolTableSolids",e2="PlayPool")
     mutually_exclusive(72)=(e1="PlayPool",e2="PoolTableStripes")
     // reading books and stuff
-    mutually_exclusive(73)=(e1="JacobsShadow",e2="ManWhoWasThursday")
-    mutually_exclusive(74)=(e1="JacobsShadow",e2="GreeneArticles")
-    mutually_exclusive(75)=(e1="JacobsShadow",e2="MoonBaseNews")
-    mutually_exclusive(76)=(e1="JacobsShadow",e2="JoyOfCooking")
-    mutually_exclusive(77)=(e1="JacobsShadow",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(78)=(e1="JacobsShadow",e2="06_Datacube05")
-    mutually_exclusive(79)=(e1="ManWhoWasThursday",e2="GreeneArticles")
-    mutually_exclusive(80)=(e1="ManWhoWasThursday",e2="MoonBaseNews")
-    mutually_exclusive(81)=(e1="ManWhoWasThursday",e2="JoyOfCooking")
-    mutually_exclusive(82)=(e1="ManWhoWasThursday",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(83)=(e1="ManWhoWasThursday",e2="06_Datacube05")
-    mutually_exclusive(84)=(e1="GreeneArticles",e2="MoonBaseNews")
-    mutually_exclusive(85)=(e1="GreeneArticles",e2="JoyOfCooking")
-    mutually_exclusive(86)=(e1="GreeneArticles",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(87)=(e1="GreeneArticles",e2="06_Datacube05")
-    mutually_exclusive(88)=(e1="MoonBaseNews",e2="JoyOfCooking")
-    mutually_exclusive(89)=(e1="MoonBaseNews",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(90)=(e1="MoonBaseNews",e2="06_Datacube05")
-    mutually_exclusive(91)=(e1="JoyOfCooking",e2="09_NYC_DOCKYARD--796967769")
-    mutually_exclusive(92)=(e1="JoyOfCooking",e2="06_Datacube05")
-    mutually_exclusive(93)=(e1="09_NYC_DOCKYARD--796967769",e2="06_Datacube05")
+    mutually_exclusive(73)=(e1="ReadText_JacobsShadow",e2="ReadText_ManWhoWasThursday")
+    mutually_exclusive(74)=(e1="ReadText_JacobsShadow",e2="ReadText_GreeneArticles")
+    mutually_exclusive(75)=(e1="ReadText_JacobsShadow",e2="ReadText_MoonBaseNews")
+    mutually_exclusive(76)=(e1="ReadText_acobsShadow",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(77)=(e1="ReadText_JacobsShadow",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(78)=(e1="ReadText_JacobsShadow",e2="ReadText_06_Datacube05")
+    mutually_exclusive(79)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_GreeneArticles")
+    mutually_exclusive(80)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_MoonBaseNews")
+    mutually_exclusive(81)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(82)=(e1="ReadText_ManWhoWasThursday",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(83)=(e1="ReadText_ManWhoWasThursday",e2="ReadText_06_Datacube05")
+    mutually_exclusive(84)=(e1="ReadText_GreeneArticles",e2="ReadText_MoonBaseNews")
+    mutually_exclusive(85)=(e1="ReadText_GreeneArticles",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(86)=(e1="ReadText_GreeneArticles",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(87)=(e1="ReadText_GreeneArticles",e2="ReadText_06_Datacube05")
+    mutually_exclusive(88)=(e1="ReadText_MoonBaseNews",e2="ReadText_JoyOfCooking")
+    mutually_exclusive(89)=(e1="ReadText_MoonBaseNews",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(90)=(e1="ReadText_MoonBaseNews",e2="ReadText_06_Datacube05")
+    mutually_exclusive(91)=(e1="ReadText_JoyOfCooking",e2="09_NYC_DOCKYARD--796967769")
+    mutually_exclusive(92)=(e1="ReadText_JoyOfCooking",e2="ReadText_06_Datacube05")
+    mutually_exclusive(93)=(e1="09_NYC_DOCKYARD--796967769",e2="ReadText_06_Datacube05")
 
     mutually_exclusive(94)=(e1="UNATCOMJ12LabGreaselCages",e2="nanocage")
     mutually_exclusive(95)=(e1="PoolTableStripeBallSunk",e2="PoolTableSolidBallSunk")
@@ -5017,15 +4023,15 @@ defaultproperties
 
     mutually_exclusive(98)=(e1="NSFSignalSent",e2="M04PlayerLikesUNATCO_Played")
     mutually_exclusive(99)=(e1="TriadCeremony_Played",e2="M07ChenSecondGive_Played")
-    mutually_exclusive(100)=(e1="MeetDowd",e2="StantonAmbushDefeated")
+    mutually_exclusive(100)=(e1="MeetDowd_VariousPlayed",e2="StantonAmbushDefeated")
     mutually_exclusive(101)=(e1="templar_upload",e2="GuntherHermann_Dead")
-    mutually_exclusive(102)=(e1="MeetDowd",e2="GaveDowdAmbrosia")
-    mutually_exclusive(103)=(e1="schematic_downloaded",e2="ViewSchematics")
+    mutually_exclusive(102)=(e1="MeetDowd_VariousPlayed",e2="GaveDowdAmbrosia")
+    mutually_exclusive(103)=(e1="schematic_downloaded",e2="ImageOpened_ViewSchematics")
     mutually_exclusive(104)=(e1="schematic_downloaded",e2="PageTaunt_Played")
     mutually_exclusive(105)=(e1="DXRNPCs1_Dead",e2="MerchantPurchaseBind_DXRNPCs1")
     mutually_exclusive(106)=(e1="lemerchant_PlayerTakedown",e2="MerchantPurchaseBind_lemerchant")
     mutually_exclusive(107)=(e1="mirrordoor",e2="BrokenMirror")
-    mutually_exclusive(108)=(e1="ReadJCEmail",e2="BrowserHistoryCleared")
-    mutually_exclusive(109)=(e1="DestroyCapitalism",e2="Shannon_PlayerTakedown")
+    mutually_exclusive(108)=(e1="ReadText_ReadJCEmail",e2="BrowserHistoryCleared")
+    mutually_exclusive(109)=(e1="DestroyCapitalism_VariousDead",e2="Shannon_PlayerTakedown")
 //#endregion
 }

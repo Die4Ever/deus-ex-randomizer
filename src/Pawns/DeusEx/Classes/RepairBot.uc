@@ -124,9 +124,25 @@ simulated function bool ChargesRemaining()
     return GetRemainingUses()!=0;
 }
 
+//#region CanCharge
+#ifdef injections
 simulated function bool CanCharge()
 {
-#ifdef hx
+    if (_CanCharge()) {
+        if (HasLimitedUses()) {
+            return (GetRemainingUses()>0);
+        } else {
+            return True;
+        }
+    } else {
+        return False;
+    }
+}
+#elseif gmdx
+// just let the Super.CanCharge() run
+#elseif hx
+simulated function bool CanCharge()
+{
     // hx doesn't have replication for our randomized variables
     local DXRMachines m;
 
@@ -138,17 +154,8 @@ simulated function bool CanCharge()
     if(m != None) {
         m.RandoRepairBot(self, dxr.flags.settings.repairbotamount, dxr.flags.settings.repairbotcooldowns);
     }
-#endif
 
-#ifdef gmdx
-    return Super.CanCharge();
-#endif
-
-#ifdef injections
-    if (_CanCharge()) {
-#else
     if (Super.CanCharge()) {
-#endif
         if (HasLimitedUses()) {
             return (GetRemainingUses()>0);
         } else {
@@ -158,6 +165,21 @@ simulated function bool CanCharge()
         return False;
     }
 }
+#else
+simulated function bool CanCharge()
+{
+    if (Super.CanCharge()) {
+        if (HasLimitedUses()) {
+            return (GetRemainingUses()>0);
+        } else {
+            return True;
+        }
+    } else {
+        return False;
+    }
+}
+#endif
+//#endregion
 
 simulated function Float GetRefreshTimeRemaining()
 {

@@ -41,7 +41,7 @@ simulated function InitHints()
     if (dxr.flags.settings.goals > 0) {
         AddHint("Check the Deus Ex Randomizer wiki", "for information about randomized objective locations and more!");
         AddHint("Try the Goal Locations button on the Goals screen", "for a list of the randomized objective locations!");
-        if (class'MenuChoice_GoalTextures'.static.IsEnabled(dxr.flags)){
+        if (class'MenuChoice_GoalTextures'.static.IsEnabled()){
             AddHint("Security Computers associated with randomized goals", "will have a green lid to make them stand out!");
             AddHint("Personal Computers associated with randomized goals", "will have a yellow screen to make them stand out!");
         }

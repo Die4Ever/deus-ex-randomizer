@@ -46,4 +46,7 @@ defaultproperties
     Mesh=None
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1.000000)
     orders=DynamicPatrolling
+    bInitialized=True
+    bDetectable=False
+    bIgnore=True
 }
