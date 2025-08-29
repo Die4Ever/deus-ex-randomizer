@@ -164,11 +164,16 @@ function _InvokeNewGameScreen(float difficulty)
 
     if (newGame != None) {
 #ifdef gmdx
-        newGame.SetDifficulty(difficulty, dxr.flags.autosave == 3);
+        newGame.SetDifficulty(difficulty, dxr.flags.autosave == 3 || difficulty >= 4); //Sarge: Added Hardcore Mode on Impossible and above!
 #else
         newGame.SetDifficulty(difficulty);
 #endif
         newGame.SetDxr(dxr);
+
+#ifdef gmdxae    
+		//Display the Playthrough Modifiers menu first.
+		newGame.InvokePlaythroughModifiersMenu(true);
+#endif
     }
 }
 

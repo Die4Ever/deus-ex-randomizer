@@ -1,3 +1,4 @@
+#dontcompileif gmdxae
 class DXRBioelectricCell injects #var(prefix)BioelectricCell;
 
 state Activated

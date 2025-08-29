@@ -341,6 +341,11 @@ function Frob(actor Frobber, Inventory frobWith)
 
     Super.Frob(Frobber, frobWith);
 
+#ifdef gmdxae
+    bRead=true;
+    OnBeginRead(aReader);
+#endif
+
     GlowOff();
 }
 
