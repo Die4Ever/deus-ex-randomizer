@@ -922,12 +922,12 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 125: // fallthrough
             GiveKey(player, 'control_room', "Control Room Key");
         case 122: // fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
+            if (start_flag <= 125) {
+                AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
+            }
         case 121: // fallthrough
-            AddNoteFromConv(player, bEmptyNotes, 'MeetCarlaBrown', 0); // Backup power for the bot security system
             MarkConvPlayed("DL_no_carla", bFemale);
             break;
-
         case 153:
             MarkConvPlayed("DL_Helios_Door1", bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
             MarkConvPlayed("DL_Helios_Intro", bFemale);         // I will now explain why you have been allowed to reach Sector 3.
