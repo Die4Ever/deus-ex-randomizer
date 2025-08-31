@@ -14,11 +14,16 @@ function CreateGamesList()
 
 function AddSaveRow(DeusExSaveInfo saveInfo, int saveIndex)
 {
+    local string desc;
     if (saveInfo != None)
     {
         //if(Right(saveInfo.Description, 15) == " CRASH AUTOSAVE") return; // hiding them freaks me out
 
-        lstGames.AddRow( saveInfo.Description              $ ";" $
+        //Strip semicolons out of the description, in case someone made a bad save (semicolons are now blocked though)
+        //Upgrade them from semi to full colons!
+        desc = class'DXRInfo'.static.ReplaceText(saveInfo.Description,";",":");
+
+        lstGames.AddRow( desc                              $ ";" $
                          BuildTimeStringFromInfo(saveInfo) $ ";" $
                          BuildTimeStringSeconds(saveInfo)  $ ";" $
                          BuildTimeStringFromInfo(saveInfo) $ ";" $
