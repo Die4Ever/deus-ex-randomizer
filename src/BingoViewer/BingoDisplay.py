@@ -31,12 +31,15 @@ IMPOSSIBLE_RED = "#300000"
 NOT_NOW_BLACK  = "#000000"
 TEXT_GREY      = "#c8c8c8"
 
-if os.name == 'nt': # Windows works correctly (for once)
-    BORDER_WIDTH_SCALE=1
-    BORDER_HEIGHT_SCALE=1
-else: # Linux needs fixing
-    BORDER_WIDTH_SCALE=2.85 # idk why these numbers
-    BORDER_HEIGHT_SCALE=1.7
+def GetBorderScale():
+    if os.name == 'nt': # Windows works correctly (for once)
+        width=1
+        height=1
+    else: # Linux needs fixing
+        width=2.85 # idk why these numbers
+        height=1.7
+
+    return width, height
 
 SETTINGS_FILENAME="bingosettings.json"
 
@@ -294,9 +297,22 @@ class BingoViewerMain:
         self.config["win_height"]=int(height)
 
     def GetWindowDimensions(self):
-        width  = int(self.config.get("win_width",DEFAULT_WINDOW_WIDTH))
-        height = int(self.config.get("win_height",DEFAULT_WINDOW_HEIGHT))
-        return width,height
+        width  = self.config.get("win_width",DEFAULT_WINDOW_WIDTH)
+        height = self.config.get("win_height",DEFAULT_WINDOW_HEIGHT)
+
+        #Window dimensions are complicated on Linux, due to the window border scale issue
+        #For now, don't fetch the saved window dimensions, just return the defaults
+        if os.name != 'nt':
+            width=DEFAULT_WINDOW_WIDTH
+            height=DEFAULT_WINDOW_HEIGHT
+
+        #Just in case
+        if (width<=0):
+            width=DEFAULT_WINDOW_WIDTH
+        if (height<=0):
+            height=DEFAULT_WINDOW_HEIGHT
+
+        return int(width),int(height)
 
     #endregion
 
@@ -547,8 +563,9 @@ class BingoDisplay:
 
     def resize(self,event):
         if event.widget == self.win:
-            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * BORDER_WIDTH_SCALE
-            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * BORDER_HEIGHT_SCALE
+            widthScale,heightScale = GetBorderScale()
+            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
+            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
 
             self.main.SetWindowDimensions(self.width,self.height)
 
@@ -639,6 +656,7 @@ class BingoDisplay:
                     image=self.tkBoardImg[x][y],compound="c",
                     width=self.width/5, height=self.height/5,
                     wraplength=self.width/5, font=self.font,fg='white',
+                    activeforeground='white',
                     disabledforeground="white", bd=BUTTON_BORDER_WIDTH
                 )
                 #self.tkBoard[x][y]["state"]='disabled'
@@ -729,6 +747,7 @@ class BingoDisplay:
 
         draw.rectangle([(0,height-barHeight),(width,height)],fill=MAGIC_GREEN)
         draw.rectangle([(0,0),(width,height-barHeight)],fill=POSSIBLE_GREY)
+        self.tkBoard[x][y].config(activebackground=POSSIBLE_GREY)
 
         return img
 
@@ -752,12 +771,13 @@ class BingoDisplay:
         draw = ImageDraw.Draw(img)
 
         draw.rectangle([(0,0),(width,height)],fill=colour)
+        self.tkBoard[x][y].config(activebackground=colour)
 
         return img
 
 
     def updateFinishedTileColour(self,x,y):
-        self.tkBoard[x][y].config(bg=MAGIC_GREEN)
+        self.tkBoard[x][y].config(bg=MAGIC_GREEN,activebackground=MAGIC_GREEN)
         self.UpdateButtonImage(x,y,self.main.GetBoardEntry(x,y))
 
 
