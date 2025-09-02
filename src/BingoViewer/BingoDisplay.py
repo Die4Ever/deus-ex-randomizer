@@ -19,7 +19,7 @@ BUTTON_BORDER_WIDTH = 4
 BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
-NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
+NEWLY_COMPLETED_DISPLAY_TIME=2.0
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 DEFAULT_WINDOW_WIDTH = 500
 DEFAULT_WINDOW_HEIGHT = 500
@@ -272,6 +272,8 @@ class BingoViewerMain:
             for y in range(5):
                 print(str(x)+","+str(y)+": "+str(self.board[x][y]))
 
+    #region Config Get/Set
+
     def GetJSONPushDest(self):
         return self.config.get("json_push_dest","")
 
@@ -288,13 +290,15 @@ class BingoViewerMain:
         self.SaveConfig()
 
     def SetWindowDimensions(self,width,height):
-        self.config["win_width"]=width
-        self.config["win_height"]=height
+        self.config["win_width"]=int(width)
+        self.config["win_height"]=int(height)
 
     def GetWindowDimensions(self):
-        width  = self.config.get("win_width",DEFAULT_WINDOW_WIDTH)
-        height = self.config.get("win_height",DEFAULT_WINDOW_HEIGHT)
+        width  = int(self.config.get("win_width",DEFAULT_WINDOW_WIDTH))
+        height = int(self.config.get("win_height",DEFAULT_WINDOW_HEIGHT))
         return width,height
+
+    #endregion
 
     def generateBingoStateJson(self):
         board = []
