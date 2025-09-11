@@ -1232,17 +1232,17 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "AlexCloset":
         case "CommsPit":
         case "BathroomFlags":
-        case "ReadJCEmail":
+        case "ReadText_ReadJCEmail":
         case "Shannon_PlayerTakedown":
-        case "SlippingHazard":
+        case "SlippingHazard_DestroyDeco":
         case "un_PrezMeadPic_peepedtex":
-        case "WaltonConvos":
+        case "WaltonConvos_VariousPlayed":
         case "un_bboard_peepedtex":
-        case "UNATCOHandbook":
+        case "ReadText_UNATCOHandbook":
         case "ManderleyMail":
         case "LetMeIn":
-        case "KnowYourEnemy":
-        case "ViewPortraits": // next location is 04_NYC_Bar
+        case "ReadText_KnowYourEnemy":
+        case "ImageOpened_ViewPortraits": // next location is 04_NYC_Bar
             return start_map > 31 && start_map < 36 && end_mission <= 3;// you can do these m03 unatco goals in m04 unatco, but if you start in helibase it's far
         }
 
@@ -1251,20 +1251,20 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         {
         case "CommsPit":
         case "BathroomFlags":
-        case "ReadJCEmail":
+        case "ReadText_ReadJCEmail":
         case "Shannon_PlayerTakedown":
-        case "WaltonConvos":
+        case "WaltonConvos_VariousPlayed":
         case "un_bboard_peepedtex":
-        case "UNATCOHandbook":
+        case "ReadText_UNATCOHandbook":
         case "ManderleyMail":
         case "LetMeIn":
         case "AlexCloset":
             return start_map > 41 && end_mission <= 4;
         case "un_PrezMeadPic_peepedtex":
-        case "TrophyHunter":
+        case "TrophyHunter_DestroyDeco":
             if (RevisionMaps) return False; //Mead pic and Trophy in basement of the bar
             return start_map > 41 && end_mission <= 4;
-        case "KnowYourEnemy":
+        case "ReadText_KnowYourEnemy":
             return start_map > 41;
         }
         break;
@@ -1272,7 +1272,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     case 5: // escape from MJ12 Jail
         switch(bingo_event)
         {
-            case "PaulsDatavault":
+            case "PaulsDatavault_VariousPlayed":
                 return start_map>53; //50 is the jail, 55 is UNATCO HQ.
         }
         break;
@@ -1290,7 +1290,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "MaggieCanFly":
             return start_map >= 66; // can technically be done still by carrying her body out of VersaLife but it's not really sensible to have as a goal at this point
         case "M06JCHasDate":
-        case "ClubEntryPaid":
+        case "ClubEntryPaid_Convo":
             return start_map > 65; //Impossible after the raid starts
         case "Have_Evidence":
             return start_map >=65; //Impossible once you've found the sword
@@ -1396,14 +1396,14 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "aimee_PlayerTakedown":
         case "M10EnteredBakery":
         case "assassinapartment":
-        case "CamilleConvosDone":
+        case "ParisClubInfo_Convo":
         case "SilhouetteHostagesAllRescued":
         case "LouisBerates":
         case "IcarusCalls_Played":
         case "roof_elevator":
         case "MeetRenault_Played":
             return start_map>=110; //early Paris things
-        case "ManWhoWasThursday":// TODO: in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
+        case "ReadText_ManWhoWasThursday":// TODO: in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
             return start_map >= 110 && end_mission <= 11;
         case "PresentForManderley":
             //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
@@ -1424,7 +1424,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return start_map>100; //Last phone is in the building before the catacombs (Where Icarus calls)
             }
         case "JustAFleshWound":
-            //This requires removing both arms and legs.  Arms are easy to knock off anywhere with height,
+            //This requires removing both arms and legs.  Legs are easy to knock off anywhere with height,
             //but arms are harder to consistently remove.  Flaming barrels are the easiest way I can think
             //of, but missions 5, 9, 14, 15 do not have any (accessible, at least).  Treat the goal as
             //impossible in those missions.
@@ -1457,7 +1457,7 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
         case "DeBeersDead":
         case "GotHelicopterInfo":
         case "EverettAquarium":
-        case "GoneFishing":
+        case "GoneFishing_ClassDead":
             return true;
         }
         break;
