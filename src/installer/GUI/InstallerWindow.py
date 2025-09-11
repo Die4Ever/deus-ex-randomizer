@@ -85,7 +85,7 @@ class InstallerWindow(GUIBase):
 
         # show the path
         pathlabel = str(p.parent.parent)
-        pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', '\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
+        pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', r'\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
         l = Label(self.frame, text='Install path:\n' + pathlabel, wraplength=self.width - pad*16, justify='center')
         l.grid(column=1,row=self.row, sticky='SW', padx=pad*8, pady=pad)
         self.row += 1

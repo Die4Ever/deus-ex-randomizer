@@ -111,6 +111,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
     CopyDXVK(system, globalsettings['dxvk'], dxvkmaxfps)
     CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])
     InstallOGL2(system, globalsettings['ogl2'])
+    InstallDLLs(list(flavors.values())[0])
 
     debug("Install returning", flavors)
 
@@ -307,23 +308,43 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
     Config.BackupSplits(configs_dest/'DXRSplits.ini')
 
 
-def InstallLDDP(system:Path, settings:dict):
-    if (system/'DeusExConAudioFemJC_HK_Shared.u').exists():
-        info('LDDP already installed in', system, '\n')
-        return
-    callback = settings.get('downloadcallback')
+def DownloadTempFile(url, name, callback):
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
     Mkdir(tempdir, exist_ok=True)
-    name = 'Lay_D_Denton_Project_1.1.zip'
     temp = tempdir / name
     if temp.exists():
         temp.unlink()
 
+    downloadcallback = None
+    if callback:
+        lambda a,b,c : callback(a,b,c, status="Downloading "+name)
+    DownloadFile(url, temp, downloadcallback)
+    return temp
+
+
+def DownloadAndRun(url, name, callback):
+    temp = DownloadTempFile(url, name, callback)
+    if callback:
+        callback(0, 1, 100, 'Running '+name)
+    proc = subprocess.run([str(temp)], timeout=86400, creationflags=subprocess.CREATE_NO_WINDOW)
+    temp.unlink()
+    if callback:
+        callback(100, 1, 100, 'Running '+name)
+    if proc.returncode or proc.returncode is None:
+        info('DownloadAndRun failed', name)
+        return False
+
+
+def InstallLDDP(system:Path, settings:dict):
+    if (system/'DeusExConAudioFemJC_HK_Shared.u').exists():
+        info('LDDP already installed in', system, '\n')
+        return
+
     mapsdir = system.parent / 'Maps'
 
-    url = "https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/" + name
-    downloadcallback = lambda a,b,c : callback(a,b,c, status="Downloading LDDP")
-    DownloadFile(url, temp, downloadcallback)
+    url = "https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/Lay_D_Denton_Project_1.1.zip"
+    callback = settings.get('downloadcallback')
+    temp = DownloadTempFile(url, 'Lay_D_Denton_Project_1.1.zip', callback)
 
     with ZipFile(temp, 'r') as zip:
         files = list(zip.infolist())
@@ -463,3 +484,12 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         if in_place:
             outconf = confpath
         c.WriteFile(outconf)
+
+
+def InstallDLLs(settings):
+    callback = settings.get('downloadcallback')
+    if not CheckDLL('MSVCP140.dll') or not CheckDLL('VCRUNTIME140.dll'): # "latest" 2015-2022 https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022
+        DownloadAndRun('https://aka.ms/vs/17/release/VC_redist.x86.exe', 'VC_redist2022.x86.exe', callback)
+    #if not CheckDLL('MSVCR100.dll'): # 2010 SP1 https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2010-vc-100-sp1-no-longer-supported
+    #    DownloadAndRun('https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe', 'VC_redist2010.x86.exe', callback)
+
