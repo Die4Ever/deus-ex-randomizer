@@ -394,6 +394,7 @@ class BingoReader:
 ###############################
 
     def readerTask(self):
+        time.sleep(1)
         try:
             while(self.main.IsRunning() and self.running):
                 time.sleep(0.1)
