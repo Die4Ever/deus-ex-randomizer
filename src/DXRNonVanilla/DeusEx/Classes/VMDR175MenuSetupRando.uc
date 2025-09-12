@@ -1,6 +1,6 @@
 class VMDR175MenuSetupRando extends DXRMenuSetupRando;
 
-#ifdef vmd175
+#ifdef vmd
 function _InvokeNewGameScreen(float difficulty)
 {
     local DXRMenuScreenNewGame newGame;

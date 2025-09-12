@@ -124,8 +124,7 @@ function InvokeMenu(Class<DeusExBaseWindow> newMenu)
         case class'MenuMainInGame':
             newMenu = class'DXRMenuMainInGame';
             break;
-#endif
-#ifdef vmd175||vmd2
+
         // VMD 1.75+
         case class'VMDMenuSelectCustomDifficulty':
             newMenu = class'VMDR175MenuSelectDifficulty';
