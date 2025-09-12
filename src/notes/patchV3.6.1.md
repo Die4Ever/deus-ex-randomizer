@@ -29,5 +29,7 @@
 - Swapped NPCs get their DesiredRotation set when swapped, along with their regular Rotation.  This fixes some enemies who would sometimes be facing the wrong direction, like the terrorists in the M02 Hotel, or the guards near the elevator in the M03 Airfield Helibase.
 - Semicolons are no longer allowed in save names in vanilla (The original logic to do this was incorrect)
   - If you had a save file with a semicolon in the name, it should now be possible to load the save properly.
+- DXVK updated to v2.7.1
+- The installer is now smarter about installing extra dependencies
 
 </details>

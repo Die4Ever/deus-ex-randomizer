@@ -14,7 +14,7 @@ try:
     import traceback
 
     import GUI.InstallerWindow
-    from Install.Install import UnattendedInstall, ExtractAll
+    from Install.Install import UnattendedInstall, ExtractAll, InstallDLLs
 except Exception as e:
     info('ERROR: importing', e)
     raise

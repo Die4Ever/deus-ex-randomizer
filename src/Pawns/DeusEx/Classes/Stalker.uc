@@ -121,7 +121,7 @@ function Tick(float delta)
 
 state Wandering
 {
-    #ifdef vmd
+    #ifdef vmd175
     function bool PickDestination()
     #else
     function PickDestination()
@@ -140,7 +140,7 @@ state Wandering
         }
 
         if(farthestDestPoint == None || closestDestPoint == None) {
-            #ifdef vmd
+            #ifdef vmd175
             return Super.PickDestination();
             #else
             Super.PickDestination();
@@ -169,7 +169,7 @@ state Wandering
         }
 
         if(target == None) {
-            #ifdef vmd
+            #ifdef vmd175
             return Super.PickDestination();
             #else
             Super.PickDestination();
@@ -190,7 +190,7 @@ state Wandering
             target = FindPathToward(farthestDestPoint);
             if(target != None) destLoc = target.Location;
             else {
-                #ifdef vmd
+                #ifdef vmd175
                 return Super.PickDestination();
                 #else
                 Super.PickDestination();
@@ -199,7 +199,7 @@ state Wandering
             }
         }
 
-        #ifdef vmd
+        #ifdef vmd175
         return true;
         #endif
     }

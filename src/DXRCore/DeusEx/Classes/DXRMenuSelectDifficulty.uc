@@ -449,7 +449,7 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
 
 event DestroyWindow()
 {
-    if(#defined(vmd)) {
+    if(#defined(vmd175)) {
         Player.ConsoleCommand("Open DXOnly");
     }
 }

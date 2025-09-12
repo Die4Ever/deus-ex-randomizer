@@ -1,6 +1,6 @@
 class VMDR175MenuSelectDifficulty extends DXRMenuSelectDifficulty;
 
-#ifdef vmd175
+#ifdef vmd
 function _InvokeNewGameScreen(float difficulty)
 {
     local DXRMenuScreenNewGame newGame;
