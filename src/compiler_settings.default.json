@@ -91,5 +91,20 @@
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
         "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
+    },
+    "vmd2": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/",
+        "preproc_definitions": {
+            "vmd":1, "vmd2":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"", "vanillamaps":1,
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "VMDRandomizer", "injectsprefix": "DXR", "allfeatures": false
+        },
+        "mods_paths": [ "./" ],
+        "packages": [ "VMDRandomizer" ],
+        "rewrite_packages": { "DeusEx": "VMDRandomizer" },
+        "verbose": false,
+        "copy_if_changed": "DXRVersion.uc",
+        "run_tests": true,
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes" ]
     }
 }
