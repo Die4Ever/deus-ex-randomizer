@@ -79,7 +79,7 @@ jobs:
 
       # install stuff and run tests
       - run: sudo apt-get update -y
-      - run: sudo apt-get install -y python3-tk idle3 binutils
+      - run: sudo apt-get install -y python3-tk idle3 binutils python3-tk
 
       - uses: ./.github/run-tests
 

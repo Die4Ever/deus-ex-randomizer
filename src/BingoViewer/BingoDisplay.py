@@ -4,7 +4,6 @@ import sys
 import json
 import os.path
 import urllib.request
-import urllib.parse
 import re
 import threading
 from tkinter import filedialog as fd
