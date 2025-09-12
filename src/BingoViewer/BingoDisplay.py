@@ -111,7 +111,6 @@ class BingoViewerMain:
         self.sendBingoState()
 
     def IsRunning(self):
-        print('BingoViewerMain.IsRunning', (self.reader!=None), (self.display!=None), self.working)
         if (self.reader!=None):
             if (not self.reader.IsRunning()):
                 return False
@@ -377,7 +376,6 @@ class BingoReader:
         self.readerThread.start()
 
     def IsRunning(self):
-        print('BingoReader.IsRunning', self.readerThread.is_alive())
         return self.readerThread.is_alive()
 
     def Stop(self):
@@ -400,7 +398,6 @@ class BingoReader:
                 time.sleep(0.1)
                 changed = self.readBingoFile()
                 self.main.UpdateNumMods(self.numMods)
-                print('readerTask readBingoFile changed:', changed)
                 if (changed):
                     self.main.BoardUpdate()
                     self.main.SetSelectedMod(self.selectedMod)
@@ -501,7 +498,6 @@ class BingoDisplay:
         self.win=None
 
     def IsRunning(self):
-        print('BingoDisplay.IsRunning', self.isWindowOpen())
         return self.isWindowOpen()
 
     def Stop(self):
