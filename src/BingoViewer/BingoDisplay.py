@@ -392,13 +392,17 @@ class BingoReader:
 ###############################
 
     def readerTask(self):
-        while(self.main.IsRunning() and self.running):
-            time.sleep(0.1)
-            changed = self.readBingoFile()
-            self.main.UpdateNumMods(self.numMods)
-            if (changed):
-                self.main.BoardUpdate()
-                self.main.SetSelectedMod(self.selectedMod)
+        try:
+            while(self.main.IsRunning() and self.running):
+                time.sleep(0.1)
+                changed = self.readBingoFile()
+                self.main.UpdateNumMods(self.numMods)
+                if (changed):
+                    self.main.BoardUpdate()
+                    self.main.SetSelectedMod(self.selectedMod)
+        except Exception as e:
+            print('readerTask error', e)
+        print('readerTask end', self.main.IsRunning(), self.running)
 
     def bingoNumberToCoord(self,bingoNumber):
         x = bingoNumber//5
