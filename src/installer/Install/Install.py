@@ -91,7 +91,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
         if 'Vanilla'==f:
             ret = InstallVanilla(system, settings, globalsettings)
         if 'Vanilla? Madder.'==f:
-            ret = CreateModConfigs(system, settings, globalsettings, 'VMD', 'VMDSim')
+            ret = InstallVMD(system, settings, globalsettings)
         if 'GMDX v9'==f:
             ret = InstallGMDX(system, settings, 'GMDXv9')
         if 'GMDX RSD'==f:
@@ -420,6 +420,11 @@ def InstallHX(system:Path, settings:dict):
     int_source = GetPackagesPath('HX') / 'HXRandomizer.int'
     int_dest = system / 'HXRandomizer.int'
     CopyTo(int_source, int_dest)
+
+
+def InstallVMD(system:Path, settings:dict, globalsettings:dict):
+    modname = 'VMD2' if (system.parent/'VMDSim'/'System'/'VMDText.u').exists() else 'VMD'
+    CreateModConfigs(system, settings, globalsettings, modname, 'VMDSim')
 
 
 def CreateModConfigs(system:Path, settings:dict, globalsettings:dict, modname:str, exename:str, in_place:bool=False):

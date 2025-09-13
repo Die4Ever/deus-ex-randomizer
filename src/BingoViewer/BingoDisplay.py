@@ -4,7 +4,6 @@ import sys
 import json
 import os.path
 import urllib.request
-import urllib.parse
 import re
 import threading
 from tkinter import filedialog as fd
@@ -393,13 +392,18 @@ class BingoReader:
 ###############################
 
     def readerTask(self):
-        while(self.main.IsRunning() and self.running):
-            time.sleep(0.1)
-            changed = self.readBingoFile()
-            self.main.UpdateNumMods(self.numMods)
-            if (changed):
-                self.main.BoardUpdate()
-                self.main.SetSelectedMod(self.selectedMod)
+        time.sleep(1)
+        try:
+            while(self.main.IsRunning() and self.running):
+                time.sleep(0.1)
+                changed = self.readBingoFile()
+                self.main.UpdateNumMods(self.numMods)
+                if (changed):
+                    self.main.BoardUpdate()
+                    self.main.SetSelectedMod(self.selectedMod)
+        except Exception as e:
+            print('readerTask error', e)
+        print('readerTask end', self.main.IsRunning(), self.running)
 
     def bingoNumberToCoord(self,bingoNumber):
         x = bingoNumber//5
@@ -791,7 +795,7 @@ parser.add_argument('--version', action="store_true", help='Output version')
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v3.6'
+    return 'v3.6.1.4 Beta'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)

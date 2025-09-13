@@ -30,6 +30,10 @@ function UpdateButtonStatus()
 
 function SetTitle(String newTitle)
 {
+    if(class'DXRFlags'.default.bZeroRando) {
+        winTitle.SetTitle("Deus Ex Zero Rando");
+        return;
+    }
     bTickEnabled = true;
 #ifdef gmdx
     title = "GMDX RANDOMIZER " $ class'DXRVersion'.static.VersionString();

@@ -85,6 +85,29 @@ function SetMaxStats(#var(PlayerPawn) p)
     p.EnergyMax = i;
     p.default.Energy = Min(p.default.Energy, p.default.EnergyMax);
     p.Energy = Min(p.Energy, p.default.EnergyMax);
+
+    if(OnTitleScreen()) {
+        SetHighDefaults(p);
+    }
+}
+
+function SetHighDefaults(#var(PlayerPawn) p) // to avoid issues with loading saves
+{
+    local int i;
+    i = 10000;
+    p.default.HealthHead = i;
+    p.default.HealthTorso = i;
+    p.default.HealthLegLeft = i;
+    p.default.HealthLegRight = i;
+    p.default.HealthArmLeft = i;
+    p.default.HealthArmRight = i;
+    p.default.EnergyMax = i;
+    p.default.Energy = i;
+}
+
+simulated event DXRPreTravel()
+{
+    SetHighDefaults(player());
 }
 
 function CapHealth(out int health, int d)

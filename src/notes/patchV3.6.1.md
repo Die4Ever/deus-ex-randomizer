@@ -31,5 +31,6 @@
   - If you had a save file with a semicolon in the name, it should now be possible to load the save properly.
 - DXVK updated to v2.7.1
 - The installer is now smarter about installing extra dependencies
+- Fixed issue with loading saves that have high max health or energy
 
 </details>
