@@ -303,7 +303,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     }
 
     f = float(aSkill.default.Cost[i]) * percent / 100.0;
-#ifdef gmdx
+#ifdef gmdxnotae //SARGE: TODO: fix this!
     perk = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
     l( aSkill.Class.Name $ " lvl: "$(i+1)$", perk percent: "$perk$"%");
     perk = float(aSkill.default.PerkCost[i]) * perk / 100.0;
@@ -313,7 +313,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     perk = Clamp(perk, 0, 99999);
     aSkill.Cost[i] = int(f);
     l( aSkill.Class.Name $ " lvl: "$(i+1)$" cost: "$aSkill.Cost[i]);
-#ifdef gmdx
+#ifdef gmdxnotae //SARGE: TODO: fix this!
     if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
         perk = 99999;
         l( aSkill.Class.Name $ " perk "$(i+1)$" is banned");
