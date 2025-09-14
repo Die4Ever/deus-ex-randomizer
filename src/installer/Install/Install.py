@@ -143,7 +143,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
         CopyExeTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
         VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
-                          globalsettings=globalsettings, sourceINI=ini)
+                          settings=settings, globalsettings=globalsettings, sourceINI=ini)
     else:
         info('skipping fixing of vanilla')
 
@@ -173,7 +173,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
     VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
-                      globalsettings=globalsettings, sourceINI=ini, ZeroRando=settings.get('ZeroRando', False))
+                      settings=settings, globalsettings=globalsettings, sourceINI=ini)
 
     dxrroot = gameroot / 'DXRando'
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
@@ -214,7 +214,7 @@ def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:b
     return (savepath, configs_dest)
 
 
-def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: Path, ZeroRando=False):
+def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dict, sourceINI: Path):
     c = Config.Config(sourceINI.read_bytes())
     SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
@@ -250,7 +250,15 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
     else:
         changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'True'})
 
-    info('ZeroRando:', ZeroRando, exename)
+    ZeroRando = settings.get('ZeroRando', False)
+    ZeroRandoPlus = settings.get('ZeroRandoPlus', False)
+    info('ZeroRando:', ZeroRando, ZeroRandoPlus, exename)
+    if ZeroRandoPlus:
+        gamemode = '12'
+        ZeroRando = True # just in case
+    elif ZeroRando:
+        gamemode = '4'
+
     # if doing an in-place installation like on Linux, we use DeusEx.ini for most things, but this will still be in DXRando.ini
     if ZeroRando and exename == 'DeusEx':
         ZeroRandoIni: Path = configs_dest / ('DXRando.ini')
@@ -259,12 +267,12 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
             c = Config.Config(oldconfig)
         else:
             c = Config.Config(b'')
-        c.ModifyConfig(changes={'DeusEx.DXRFlags': {'gamemode': '4'}}, additions={})
+        c.ModifyConfig(changes={'DeusEx.DXRFlags': {'gamemode': gamemode}}, additions={})
         c.WriteFile(ZeroRandoIni)
     elif ZeroRando:
         if 'DeusEx.DXRFlags' not in changes:
             changes['DeusEx.DXRFlags'] = {}
-        changes['DeusEx.DXRFlags'].update({'gamemode': '4'})
+        changes['DeusEx.DXRFlags'].update({'gamemode': gamemode})
 
     if globalsettings['deus_nsf_d3d10_lighting'] or globalsettings['d3d10_textures'] != 'Smooth':
         # keep D3D10 because obviously they wanted it
