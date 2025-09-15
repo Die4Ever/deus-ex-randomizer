@@ -8,6 +8,8 @@ var string GameModeBtnTitle, GameModeBtnMessage;
 var string AutosaveBtnTitle, AutosaveBtnMessage;
 var string SplitsBtnTitle, SplitsBtnMessage;
 
+var config bool shownMaxRandoWarning;
+
 var int gamemode_enum, loadout_enum, autosave_enum, difficulty_enum, mirroredmaps_wnd;
 
 enum ERandoMessageBoxModes
@@ -24,6 +26,9 @@ event InitWindow()
     Super.InitWindow();
     GetDxr();
     Init(GetDxr());
+    if(dxr.rando_beaten < 1) {
+        actionButtons[3].btn.Hide();
+    }
 }
 
 function BindControls(optional string action)
@@ -377,7 +382,7 @@ function DoNewGameScreen()
 
 function HandleMaxRandoButton()
 {
-    if (dxr.rando_beaten != 0){
+    if (shownMaxRandoWarning){
         DoMaxRandoButtonConfirm();
     } else {
         nextScreenNum=RMB_MaxRando;
@@ -426,6 +431,8 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     switch (nextScreenNum){
         case RMB_MaxRando:
             if (buttonNumber==0){
+                shownMaxRandoWarning = true;
+                SaveConfig();
                 DoMaxRandoButtonConfirm();
             }
             return true;

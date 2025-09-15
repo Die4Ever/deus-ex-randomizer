@@ -33,5 +33,6 @@
 - The installer is now smarter about installing extra dependencies
 - The installers for Vanilla Fixer and Zero Rando have been simplified, now also provide the option to enable balance changes (Zero Rando Plus)
 - Fixed issue with loading saves that have high max health or energy
+- Always show Max Rando warning once, instead of being based on the number of times you've beaten the game (which would've only shown you the explanation if you clicked it on your first playthrough).
 
 </details>
