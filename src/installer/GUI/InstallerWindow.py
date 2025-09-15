@@ -204,7 +204,7 @@ class InstallerWindow(GUIBase):
         if f in ['Vanilla', '####Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
             v = BooleanVar(master=self.frame, value=False)
             settings['mirrors'] = v
-            c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
+            c = Checkbutton(self.frame, text="Download mirrored maps", variable=v)
             Hovertip(c, "Time to get lost again. (This will check if you already have them.)\nRequires DXRando.")
             self.setgrid(c, True, column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
@@ -214,7 +214,7 @@ class InstallerWindow(GUIBase):
         if f == 'Vanilla':
             v = BooleanVar(master=self.frame, value=IsZeroRando())
             settings['ZeroRando'] = v
-            c = Checkbutton(self.frame, text="Bug fixes for "+f, variable=v, command=self.CheckZeroRando)
+            c = Checkbutton(self.frame, text="Bug fixes", variable=v, command=self.CheckZeroRando)
             hovertext = 'Include bug fixes derived from the Randomizer but keep randomization features disabled. '
             separateExe = IsWindows()# or IsVanillaFixer()
             if separateExe:
@@ -227,7 +227,7 @@ class InstallerWindow(GUIBase):
 
             v = BooleanVar(master=self.frame, value=False)
             settings['ZeroRandoPlus'] = v
-            c = Checkbutton(self.frame, text="Balance changes for "+f, variable=v, command=self.CheckZeroRando)
+            c = Checkbutton(self.frame, text="Balance changes", variable=v, command=self.CheckZeroRando)
             hovertext = 'Include the balance changes derived from the Randomizer, but keep randomization features disabled. '
             if separateExe:
                 hovertext += 'Use DXRando.exe to launch the game. '
@@ -240,7 +240,7 @@ class InstallerWindow(GUIBase):
             # separate DXRando.exe is difficult for Linux Steam users, but if you're using VanillaFixer then you probably don't want to overwrite vanilla
             v = BooleanVar(master=self.frame, value=separateExe)
             settings['DXRando.exe'] = v
-            c = Checkbutton(self.frame, text="Create separate DXRando.exe for "+f, variable=v)
+            c = Checkbutton(self.frame, text="Create separate DXRando.exe", variable=v)
             Hovertip(c, "Overwriting the original DeusEx.exe makes it easier for Linux Steam players.\nOnly applicable if installing DXRando.")
             self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
             self.FixColors(c)
@@ -267,7 +267,7 @@ class InstallerWindow(GUIBase):
 
 
     def ExeTypeRadios(self, padx, pad):
-        return self.Radios('Which EXE to use for vanilla:', 'Kentie', padx, pad, advanced=True,
+        return self.Radios('Which EXE to use:', 'Kentie', padx, pad, advanced=True,
             options=OrderedDict(
                 Kentie={ 'text': "Kentie's Launcher", 'hover': "Kentie's Launcher stores configs and saves in your Documents folder." },
                 Launch={ 'text': "Hanfling's Launch", 'hover': "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play." },
@@ -285,7 +285,7 @@ class InstallerWindow(GUIBase):
 
     def LDDPCheckbox(self, padx, pady):
         v = BooleanVar(master=self.frame, value=False)
-        c = Checkbutton(self.frame, text="Install Lay D Denton Project for Vanilla", variable=v)
+        c = Checkbutton(self.frame, text="Install Lay D Denton Project", variable=v)
         Hovertip(c, "What if Zelda was a girl?")
         c.grid(column=1,row=self.row, sticky='SW', padx=padx, pady=pady)
         self.row += 1
