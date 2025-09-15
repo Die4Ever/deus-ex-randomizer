@@ -431,8 +431,8 @@ event bool BoxOptionSelected(Window button, int buttonNumber)
     switch (nextScreenNum){
         case RMB_MaxRando:
             if (buttonNumber==0){
-                shownMaxRandoWarning = true;
-                SaveConfig();
+                //shownMaxRandoWarning = true;
+                //SaveConfig();
                 DoMaxRandoButtonConfirm();
             }
             return true;
