@@ -22,12 +22,12 @@
 <details>
 <summary>Click to expand Minor Changes</summary>
 
-- Zombie merchants are no longer ignored by the AI
+- Zombie Merchants are no longer ignored by the AI
 - Hazmat suits can no longer be marked as Trash while being used in Zero Rando (or when balance changes are disabled)
 - Added book color and open/closed information to bingo goals help texts
 - Fixed a quick aug menu exploit to get infinite upgrades while paused
 - Swapped NPCs get their `DesiredRotation` set when swapped, along with their regular `Rotation`.  This fixes enemies sometimes facing the wrong direction, like the Terrorists in the Mission 2 Hotel, or the guards near the elevator in the LaGuardia Helibase
-- Semicolons are no longer allowed in save names in vanilla (The original logic to do this was incorrect)
+- Semicolons are no longer allowed in save names in vanilla (the original logic to do this was incorrect)
   - If you had a save file with a semicolon in the name, it should now be possible to load the save properly
 - DXVK updated to v2.7.1
 - The installer is now smarter about installing extra dependencies
