@@ -122,7 +122,7 @@ simulated function TickUse()
         if(LastUsed < Level.TimeSeconds-1 && Level.LevelAction == LEVACT_None) {
             useEnergy = energyRate/60.0 * GetEnergyMult();
         }
-        if(Player.Energy <= useEnergy) {
+        if(Player.Energy <= 0) {
             return;// don't update the LastUsed
         } else {
             Player.Energy -= useEnergy;
