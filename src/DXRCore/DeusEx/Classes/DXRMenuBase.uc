@@ -1,4 +1,8 @@
-class DXRMenuBase extends MenuUIScreenWindow abstract;
+#ifdef injections
+class DXRMenuBase extends MenuUIScreenWindow config(DXRando) abstract;
+#else
+class DXRMenuBase extends MenuUIScreenWindow config(#var(package)) abstract;
+#endif
 
 var MenuUIInfoButtonWindow winNameBorder;
 
