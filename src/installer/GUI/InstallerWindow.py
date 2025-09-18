@@ -36,11 +36,13 @@ class InstallerWindow(GUIBase):
 
     def CheckZeroRando(self):
         for flavor in self.flavors.values():
-            #'install', 'ZeroRando', 'ZeroRandoPlus'
             if flavor.get('ZeroRandoPlus') and flavor['ZeroRandoPlus'].get():
                 flavor['ZeroRando'].set(True)
+
             if flavor['ZeroRando'].get():
                 flavor['install'].set(True)
+            else: # in Vanilla Fixer installer, unchecking bug fixes disables the rando installation again
+                flavor['install'].set(False)
 
 
     def initWindow(self):
