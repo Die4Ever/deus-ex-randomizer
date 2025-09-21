@@ -389,7 +389,7 @@ function PreFirstEntryMapFixes()
 
         //Move the "ExMolePerson" back from the containers slightly, so he doesnt' end up inside a box
         //Goal Rando will handle this anyway, but if it's disabled, the containers could still be shuffled
-        if(dxr.flags.settings.goals <= 0) {
+        if(dxr.flags.settings.goals <= 0 && dxr.flags.settings.swapcontainers>0) {
             foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
                 if (sp.BindName!="ExMolePerson") continue;
 
