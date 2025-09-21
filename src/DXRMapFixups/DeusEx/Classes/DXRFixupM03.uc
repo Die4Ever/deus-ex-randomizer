@@ -387,6 +387,18 @@ function PreFirstEntryMapFixes()
             AddActor(class'PoolTableResetButton',vect(-1515,-1666.9,418),rot(0,16384,0));
         }
 
+        //Move the "ExMolePerson" back from the containers slightly, so he doesnt' end up inside a box
+        //Goal Rando will handle this anyway, but if it's disabled, the containers could still be shuffled
+        if(dxr.flags.settings.goals <= 0) {
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                if (sp.BindName!="ExMolePerson") continue;
+
+                sp.SetLocation(vectm(-988.025696,-3325,111.775002));
+                SetPawnLocAsHome(sp);  //otherwise he's going to take a few steps forward, back to his original home location
+                break;
+            }
+        }
+
         if (VanillaMaps){
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
