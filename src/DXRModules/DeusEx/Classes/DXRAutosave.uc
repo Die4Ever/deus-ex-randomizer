@@ -19,7 +19,8 @@ const FirstEntry = 1;
 const EveryEntry = 2;
 const Hardcore = 3;// same as FirstEntry but without manual saving
 const ExtraSafe = 4;
-const Ironman = 5; // never autosaves, TODO: maybe some fancy logic to autosave on quit and autodelete on load?
+// >= Ironman has fancy logic to autosave on quit and autodelete on load
+const Ironman = 5; // used for WaltonWare Hardcore: never autosaves, no saves allowed
 const LimitedSaves = 6; // need an item to save
 const FixedSaves = 7; // can only save at computers, AND need an item
 const UnlimitedFixedSaves = 8; // need computer, but no item
@@ -53,7 +54,7 @@ function PreFirstEntry()
             // save at the start
             NeedSave();
         }
-        else if(dxr.flags.autosave == Ironman) { // crash protection, TODO: extend this to all >= Ironman
+        else if(dxr.flags.autosave >= Ironman) { // crash protection
             save_hardcore = true;
             NeedSave();
         }
@@ -81,7 +82,7 @@ function ReEntry(bool IsTravel)
         if( dxr.flags.autosave==EveryEntry || dxr.flags.autosave==ExtraSafe ) {
             NeedSave();
         }
-        else if(dxr.flags.autosave == Ironman) { // crash protection, TODO: extend this to all >= Ironman
+        else if(dxr.flags.autosave >= Ironman) { // crash protection
             save_hardcore = true;
             NeedSave();
         }
@@ -115,7 +116,7 @@ function bool _MakeExitSave()
     if(player() != None && player().Health <= 0) {
         return false; // don't do exit save when dead
     }
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave == Ironman ) { // TODO: extend this to >= Ironman
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave >= Ironman ) {
         save_exit = true;
         NeedSave();
         return true;

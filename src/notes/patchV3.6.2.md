@@ -1,3 +1,6 @@
+## Major Changes
+
+- Fixed and/or Limited save modes now get the emergency autosaves for crashes, and when exiting the game, same as WaltonWare Hardcore.
 
 ## Minor Changes
 
