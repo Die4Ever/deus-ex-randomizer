@@ -65,6 +65,7 @@ function MapFixes()
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
     case "06_HONGKONG_TONGBASE":
+    case "12_VANDENBERG_COMPUTER":
         //Make people fearless so they don't get spooked by Mr. H
         foreach AllActors(class'ScriptedPawn', sp) {
             if(DXRStalker(sp) == None) {
