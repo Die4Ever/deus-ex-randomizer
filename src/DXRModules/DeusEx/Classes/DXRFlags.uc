@@ -761,6 +761,7 @@ function SetDifficulty(int new_difficulty)
     if (IsHalloweenMode()){
         clothes_looting = 1;
         moresettings.reanimation = 20;
+        moresettings.stalkers = 100;
         switch(difficulty) {
             case 0: moresettings.reanimation = 25; break;
             case 1: moresettings.reanimation = 25; break;

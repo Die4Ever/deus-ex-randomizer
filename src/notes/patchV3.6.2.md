@@ -16,5 +16,6 @@
   - The location in the UNATCO HQ West office in mission 5 now looks vaguely towards the centre of the room, instead of being perfectly parallel with the wall
 - Adjusted the location of the character in the North-West corner of Brooklyn Bridge station slightly so that they won't end up inside a box when containers get shuffled sometimes
 - Slightly reduced the number of Jack-o-Lanterns when they are enabled
+- Mr. H is now a separate setting
 
 </details>
