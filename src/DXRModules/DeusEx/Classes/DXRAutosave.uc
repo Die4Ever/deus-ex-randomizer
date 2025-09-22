@@ -55,8 +55,7 @@ function PreFirstEntry()
             NeedSave();
         }
         else if(dxr.flags.autosave >= Ironman) { // crash protection
-            save_hardcore = true;
-            NeedSave();
+            _MakeCrashSave();
         }
     } else if(dxr.rando_exited==false && dxr.localURL ~= "DX") {
         CheckLoadCrash();
@@ -73,8 +72,7 @@ function ReEntry(bool IsTravel)
         if(default.delete_save > 0) {
             player().ConsoleCommand("DeleteGame " $ default.delete_save);
         }
-        save_hardcore = dxr.flags.autosave >= Ironman;
-        if(save_hardcore) NeedSave();
+        if(dxr.flags.autosave >= Ironman) _MakeCrashSave();
         default.delete_save = -999;
         return;
     }
@@ -83,8 +81,7 @@ function ReEntry(bool IsTravel)
             NeedSave();
         }
         else if(dxr.flags.autosave >= Ironman) { // crash protection
-            save_hardcore = true;
-            NeedSave();
+            _MakeCrashSave();
         }
     }
 }
@@ -94,10 +91,32 @@ function CheckLoadCrash()
     local int saveIndex;
     local string name;
     // we crashed? check for newest save file and if it's a crash/exit save then load it
-    saveIndex = player().GetSaveSlotByTimestamp(false, -6, 9999999, false, name);
+    saveIndex = player().GetSaveSlotByTimestamp(false, -7, 9999999, false, name);
     if(Right(name, 15) == " CRASH AUTOSAVE" || Right(name, 14) == " EXIT AUTOSAVE") {
         player().LoadGame(saveIndex);
     }
+}
+
+static function bool MakeCrashSave()
+{
+    local DXRAutosave a;
+
+    a = DXRAutosave(Find());
+    if(a != None) {
+        return a._MakeCrashSave();
+    }
+    return false;
+}
+
+function bool _MakeCrashSave()
+{
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
+        save_hardcore = true;
+        autosave_combat = 1;
+        NeedSave();
+        return true;
+    }
+    return false;
 }
 
 static function bool MakeExitSave()
@@ -118,6 +137,7 @@ function bool _MakeExitSave()
     }
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave >= Ironman ) {
         save_exit = true;
+        autosave_combat = 1;
         NeedSave();
         return true;
     }
@@ -357,8 +377,12 @@ function doAutosave()
     }
 
     p = player();
+    if(p == None) {
+        info("can't autosave without a player!");
+        return;
+    }
 
-    if(autosave_combat<=0 && PawnIsInCombat(p) && !save_exit && !save_hardcore) {
+    if(autosave_combat<=0 && PawnIsInCombat(p)) {
         info("waiting for Player to be out of combat, not saving yet");
         SetGameSpeed(1);
         return;
@@ -392,6 +416,7 @@ function doAutosave()
     }
     else if(save_hardcore) {
         saveName = "CRASH " $ dxr.seed @ dxr.flags.GameModeName(dxr.flags.gamemode) @ dxr.dxInfo.MissionLocation $ " CRASH AUTOSAVE";
+        saveSlot = -7;
     }
     else if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
         saveSlot = 0;
@@ -433,11 +458,13 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
 
 function bool IsFixedSaves()
 {
+    if(dxr==None || dxr.flags==None) return false;
     return dxr.flags.autosave==FixedSaves || dxr.flags.autosave==UnlimitedFixedSaves || dxr.flags.autosave==FixedSavesExtreme;
 }
 
 function bool IsLimitedSaves()
 {
+    if(dxr==None || dxr.flags==None) return false;
     return dxr.flags.autosave == FixedSaves || dxr.flags.autosave == LimitedSaves || dxr.flags.autosave==FixedSavesExtreme;
 }
 

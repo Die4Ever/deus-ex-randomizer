@@ -470,8 +470,13 @@ function BingoWinScreen()
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
     }
+#ifdef injections
+    if (bingo_win_countdown == 2) {
+        class'DXRAutosave'.static.MakeCrashSave();
+    }
+#endif
     if (bingo_win_countdown == 2 && !#defined(vanilla)) {
-        //Give it 2 seconds to send the tweet
+        //Give it 2 seconds to send the toot
         //This is still needed outside of vanilla
         BeatGame(dxr,4);
     }

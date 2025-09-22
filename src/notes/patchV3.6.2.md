@@ -17,5 +17,7 @@
 - Adjusted the location of the character in the North-West corner of Brooklyn Bridge station slightly so that they won't end up inside a box when containers get shuffled sometimes
 - Slightly reduced the number of Jack-o-Lanterns when they are enabled
 - Mr. H is now a separate setting
+- WaltonWare countdown screen now makes a crash save
+- Crash saves now use saveslot -7 instead of sharing slot -6 with regular autosaves
 
 </details>
