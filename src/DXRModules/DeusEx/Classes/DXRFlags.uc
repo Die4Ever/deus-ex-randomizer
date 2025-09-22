@@ -26,6 +26,7 @@ const WaltonWareHalloweenEntranceRando = 1029;
 const HalloweenEntranceRando = 1030;
 const HalloweenMode = 1031;
 const WaltonWareHalloween = 1032;// why didn't they put leap day at the end of October?
+const HalloweenMBM = 1033;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -922,6 +923,7 @@ function int GameModeIdForSlot(int slot)
         if(slot--==0) return WaltonWarex3;
     }
     if(slot--==0) return BingoCampaign;
+    if(slot--==0) return HalloweenMBM;
 
     if(slot--==0) return ZeroRando;
     if(slot--==0) return ZeroRandoPlus;
@@ -993,6 +995,11 @@ function string GameModeName(int gamemode)
     case BingoCampaign:
         if (#defined(vanilla)) {
             return "Mr. Page's Mean Bingo Machine";
+        }
+        return "";
+    case HalloweenMBM:
+        if (#defined(vanilla)) {
+            return "Halloween Mr. Page's Mean Bingo Machine";
         }
         return "";
     case StrongAugsMode:
@@ -1160,6 +1167,8 @@ function string GameModeHelpText(int gamemode)
         s = s$"|n";
         s = s$"Can YOU outsmart the Mean Bingo Machine?";
         return s;
+    case HalloweenMBM:
+        return "Mr. Page's Mean Bingo Machine combined with Halloween Mode.  You are required to complete a bingo line to progress past each mission.  Look out for zombies, Mr. H, and the limited saves!";
     case StrongAugsMode:
         return "The FULL Randomizer experience but augmentations are generally randomized to be stronger than normal.";
     case GroundhogDay:
@@ -1215,7 +1224,7 @@ function bool IsWaltonWareHardcore()
 
 function bool IsBingoCampaignMode()
 {
-    return gamemode == BingoCampaign;
+    return gamemode == BingoCampaign || gamemode == HalloweenMBM;
 }
 
 function bool IsBingoMode()
@@ -1225,7 +1234,7 @@ function bool IsBingoMode()
 
 function bool IsHalloweenMode()
 {
-    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando;
+    return gamemode == HalloweenMode || gamemode == HordeZombies || gamemode == WaltonWareHalloween || gamemode == HalloweenEntranceRando || gamemode == WaltonWareHalloweenEntranceRando || gamemode == HalloweenMBM;
 }
 
 function bool IsOneItemMode()
