@@ -19,5 +19,7 @@
 - Mr. H is now a separate setting
 - WaltonWare countdown screen now makes a crash save
 - Crash saves now use saveslot -7 instead of sharing slot -6 with regular autosaves
+- Mr. H now causes less chaos in UNATCO and Tong's base
+- Tweaked seeding of Mr. H spawn locations
 
 </details>

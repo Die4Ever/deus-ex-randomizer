@@ -5,10 +5,9 @@ function PostFirstEntry()
     local #var(prefix)WHPiano piano;
     Super.PostFirstEntry();
 
-    if(dxr.flags.moresettings.stalkers > 0) {
-        if(!dxr.OnTitleScreen()) {
-            class'MrH'.static.Create(self);
-        }
+    if(!dxr.OnTitleScreen()) {
+        SetSeed("PostFirstEntry stalkers");
+        SpawnStalkers();
     }
     if(dxr.flags.IsHalloweenMode()) {
         MapFixes();
@@ -25,14 +24,30 @@ function PostFirstEntry()
 
 function ReEntry(bool IsTravel)
 {
-    local DXRStalker stalker;
+    if(IsTravel) {
+        // recreate if you leave the map and come back, but not if you load a save
+        SetSeed("ReEntry stalkers " $ Level.TimeSeconds);
+        SpawnStalkers();
+    }
+}
 
-    if(IsTravel && dxr.flags.moresettings.stalkers > 0) {
-        // recreate him if you leave the map and come back, but not if you load a save
+function SpawnStalkers()
+{
+    local DXRStalker stalker;
+    local int num, i;
+
+    // destroy old stalkers before recreating
+    foreach AllActors(class'DXRStalker', stalker) {
+        stalker.Destroy();
+    }
+
+    if(dxr.flags.moresettings.stalkers > 0) {
         class'MrH'.static.Create(self);
-    } else if(dxr.flags.moresettings.stalkers <= 0) { // if the player modifies the flags
-        foreach AllActors(class'DXRStalker', stalker) {
-            stalker.Destroy();
+    }
+    if(dxr.flags.moresettings.stalkers > 100) {
+        num = dxr.flags.moresettings.stalkers/100 - 1;
+        for(i=0; i<num; i++) {
+            class'Bobby'.static.Create(self);
         }
     }
 }
@@ -49,13 +64,15 @@ function MapFixes()
     case "01_NYC_UNATCOHQ":
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
+    case "06_HONGKONG_TONGBASE":
         //Make people fearless so they don't get spooked by Mr. H
         foreach AllActors(class'ScriptedPawn', sp) {
-            if(sp.bInvincible) {
-                RemoveFears(sp);
+            if(DXRStalker(sp) == None) {
+                RemoveReactions(sp);
             }
         }
         break;
+
     case "09_NYC_GRAVEYARD":
         SetSeed("DXRHalloween MapFixes graveyard bodies");
         foreach AllActors(class'PathNode', p) {

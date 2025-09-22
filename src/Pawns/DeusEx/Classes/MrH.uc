@@ -10,13 +10,6 @@ static function DXRStalker Create(DXRActorsBase a)
 {
     local MrH h;
 
-    // Mr. H is a singleton
-    foreach a.AllActors(class'MrH', h) {
-        h.Destroy();
-    }
-
-    a.SetSeed("Mr. H");// should this be seeded or not?
-
     h = MrH(Super.Create(a));
     if(h==None) return None;
 
