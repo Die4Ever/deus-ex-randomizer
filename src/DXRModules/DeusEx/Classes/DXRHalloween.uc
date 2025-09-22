@@ -5,14 +5,15 @@ function PostFirstEntry()
     local #var(prefix)WHPiano piano;
     Super.PostFirstEntry();
 
-    if(dxr.flags.IsHalloweenMode()) {
-        // Mr. H is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
+    if(dxr.flags.moresettings.stalkers > 0) {
         if(!dxr.OnTitleScreen()) {
             class'MrH'.static.Create(self);
         }
+    }
+    if(dxr.flags.IsHalloweenMode()) {
         MapFixes();
     }
-    if(IsOctober()) {
+    if(IsOctober()) { // cosmetics
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
             piano.ItemName = "Staufway Piano";
         }
@@ -24,9 +25,15 @@ function PostFirstEntry()
 
 function ReEntry(bool IsTravel)
 {
-    if(IsTravel && dxr.flags.IsHalloweenMode()) {
+    local DXRStalker stalker;
+
+    if(IsTravel && dxr.flags.moresettings.stalkers > 0) {
         // recreate him if you leave the map and come back, but not if you load a save
         class'MrH'.static.Create(self);
+    } else if(dxr.flags.moresettings.stalkers <= 0) { // if the player modifies the flags
+        foreach AllActors(class'DXRStalker', stalker) {
+            stalker.Destroy();
+        }
     }
 }
 
@@ -121,8 +128,8 @@ function MakeCosmetics()
     SetSeed("MakeJackOLanterns");
     ConsoleCommand("set DXRJackOLantern bBlockActors " $ (!dxr.flags.IsSpeedrunMode()));
     ConsoleCommand("set DXRJackOLantern bBlockPlayers " $ (!dxr.flags.IsSpeedrunMode()));
-    if(IsHalloween()) num = len/30;
-    else num = len/30 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
+    if(IsHalloween()) num = len/40;
+    else num = len/40 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
     for(i=0; i<num; i++) {
         slot = rng(len);
         SpawnJackOLantern(locs[slot]);
