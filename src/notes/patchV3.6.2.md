@@ -25,5 +25,6 @@
 - Blocked password from being detected in Jacob's Shadow: Chapter 20, as well as the MJ12 Compromised Individuals list
 - Trashcans no longer drop contents when carrying across map transitions
 - Bingo goals for Chug Water and Stay Dehydrated are now mutually exclusive
+- Fixed max health bug in Vanilla? Madder.
 
 </details>

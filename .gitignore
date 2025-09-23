@@ -4,6 +4,7 @@ build
 src/installer/3rdParty
 src/installer/log.txt
 vkinfo.txt
+bingosettings.json
 
 # Visual Studio 2015 user specific files
 .vs/

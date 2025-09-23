@@ -94,6 +94,8 @@ function SetMaxStats(#var(PlayerPawn) p)
 function SetHighDefaults(#var(PlayerPawn) p) // to avoid issues with loading saves
 {
     local int i;
+    if(#bool(vmd)) return; // VMD doesn't use defaults for max
+
     i = 10000;
     p.default.HealthHead = i;
     p.default.HealthTorso = i;
