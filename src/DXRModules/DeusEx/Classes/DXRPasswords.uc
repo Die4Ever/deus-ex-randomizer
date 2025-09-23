@@ -3,109 +3,113 @@ class DXRPasswords extends DXRDatacubes;
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(3,0,1,3) ) {
-        i=0;
-        not_passwords[i++] = "dragon head";
-        not_passwords[i++] = "security restriction";
-        not_passwords[i++] = "security office";
-        not_passwords[i++] = "security system";
-        not_passwords[i++] = " of security";// TODO: reduce these, we can probably just blacklist the word security and then whitelist the actual passwords
-        not_passwords[i++] = "SECURITY PERSON";
-        not_passwords[i++] = "AUTHORIZED SECURITY";
-        not_passwords[i++] = "SECURITY SHOULD";
-        not_passwords[i++] = "SECURITY MEASURE";
-        not_passwords[i++] = "SECURITY OFFICE";
-        not_passwords[i++] = "SECURITY AGEN";
-        not_passwords[i++] = "SECURITY CODE";
-        not_passwords[i++] = "SECURITY PROTOCOL";
-        not_passwords[i++] = "SECURITY VULN";
-        not_passwords[i++] = "SECURITY GRID";
-        not_passwords[i++] = "SECURITY LIAB";
-        not_passwords[i++] = "SECURITY CONSOLE";
-        not_passwords[i++] = "SECURITY UPGRADE";
-        not_passwords[i++] = "network security";
-        not_passwords[i++] = "security computer";
-        not_passwords[i++] = "security keypad";
-        not_passwords[i++] = "the security";
-        not_passwords[i++] = "bypass security";
-        not_passwords[i++] = "catacombs security";
-        not_passwords[i++] = "security clearances";
-        not_passwords[i++] = "security authorization";
-        not_passwords[i++] = "security bulletin";
-        not_passwords[i++] = "called security";
-        not_passwords[i++] = "that security was";
-        not_passwords[i++] = "most security";
-        not_passwords[i++] = "automated security";
-        not_passwords[i++] = "attention nightshift";
-        not_passwords[i++] = "research wing";
-        not_passwords[i++] = "nanotech research";
-        not_passwords[i++] = "research team";
-        not_passwords[i++] = "weapons research";
-        not_passwords[i++] = "captain james";
-        not_passwords[i++] = "captain keene";
-        not_passwords[i++] = "captain Kang";
-        not_passwords[i++] = "captain Zhao";
-        not_passwords[i++] = "the captain";
-        not_passwords[i++] = "Brooklyn Naval Shipyard";
-        not_passwords[i++] = "Simons is no better";
-        not_passwords[i++] = "Simons, FEMA";
-        not_passwords[i++] = "Walton Simons";
-        not_passwords[i++] = "SIMONS WENT";
-        not_passwords[i++] = "REPORT TO SIMONS";
-        not_passwords[i++] = "Bob Page";
-        not_passwords[i++] = "MJ12 COMPROMISED INDIVIDUALS";
-        not_passwords[i++] = "MJ12 tool";
-        not_passwords[i++] = "MJ12 has the";
-        not_passwords[i++] = "MJ12 network";
-        not_passwords[i++] = "the MJ12";
-        not_passwords[i++] = "Majestic 12";
-        not_passwords[i++] = "12 hours";
-        not_passwords[i++] = ":12";
-        not_passwords[i++] = "4/12";
-        not_passwords[i++] = "Chapter 12";
-        not_passwords[i++] = "12%";
-        not_passwords[i++] = ".12";
-        not_passwords[i++] = "REPORT 12-Y";
-        not_passwords[i++] = "LAB 12";
-        not_passwords[i++] = "the Illuminati";
-        not_passwords[i++] = "raptor-chickens";
-        not_passwords[i++] = "of Illuminati";
-        not_passwords[i++] = "Tiffany";// and then manually allow "password Tiffany" inside FixCodes()
 
-        for(i=i;i<ArrayCount(not_passwords);i++) {
-            not_passwords[i] = "";
-        }
+    i=0;
+    not_passwords[i++] = "dragon head";
+    not_passwords[i++] = "security restriction";
+    not_passwords[i++] = "security office";
+    not_passwords[i++] = "security system";
+    not_passwords[i++] = " of security";// TODO: reduce these, we can probably just blacklist the word security and then whitelist the actual passwords
+    not_passwords[i++] = "SECURITY PERSON";
+    not_passwords[i++] = "AUTHORIZED SECURITY";
+    not_passwords[i++] = "SECURITY SHOULD";
+    not_passwords[i++] = "SECURITY MEASURE";
+    not_passwords[i++] = "SECURITY OFFICE";
+    not_passwords[i++] = "SECURITY AGEN";
+    not_passwords[i++] = "SECURITY CODE";
+    not_passwords[i++] = "SECURITY PROTOCOL";
+    not_passwords[i++] = "SECURITY VULN";
+    not_passwords[i++] = "SECURITY GRID";
+    not_passwords[i++] = "SECURITY LIAB";
+    not_passwords[i++] = "SECURITY CONSOLE";
+    not_passwords[i++] = "SECURITY UPGRADE";
+    not_passwords[i++] = "network security";
+    not_passwords[i++] = "security computer";
+    not_passwords[i++] = "security keypad";
+    not_passwords[i++] = "the security";
+    not_passwords[i++] = "bypass security";
+    not_passwords[i++] = "catacombs security";
+    not_passwords[i++] = "security clearances";
+    not_passwords[i++] = "security authorization";
+    not_passwords[i++] = "security bulletin";
+    not_passwords[i++] = "called security";
+    not_passwords[i++] = "that security was";
+    not_passwords[i++] = "most security";
+    not_passwords[i++] = "automated security";
+    not_passwords[i++] = "attention nightshift";
+    not_passwords[i++] = "research wing";
+    not_passwords[i++] = "nanotech research";
+    not_passwords[i++] = "research team";
+    not_passwords[i++] = "weapons research";
+    not_passwords[i++] = "captain james";
+    not_passwords[i++] = "captain keene";
+    not_passwords[i++] = "captain Kang";
+    not_passwords[i++] = "captain Zhao";
+    not_passwords[i++] = "the captain";
+    not_passwords[i++] = "Brooklyn Naval Shipyard";
+    not_passwords[i++] = "Simons is no better";
+    not_passwords[i++] = "Simons, FEMA";
+    not_passwords[i++] = "Walton Simons";
+    not_passwords[i++] = "SIMONS WENT";
+    not_passwords[i++] = "REPORT TO SIMONS";
+    not_passwords[i++] = "Bob Page";
+    not_passwords[i++] = "MJ12 COMPROMISED INDIVIDUALS";
+    not_passwords[i++] = "MJ12 tool";
+    not_passwords[i++] = "MJ12 has the";
+    not_passwords[i++] = "MJ12 network";
+    not_passwords[i++] = "the MJ12";
+    not_passwords[i++] = "Majestic 12";
+    not_passwords[i++] = "12 hours";
+    not_passwords[i++] = ":12";
+    not_passwords[i++] = "4/12";
+    not_passwords[i++] = "Chapter 12";
+    not_passwords[i++] = "12%";
+    not_passwords[i++] = ".12";
+    not_passwords[i++] = "REPORT 12-Y";
+    not_passwords[i++] = "LAB 12";
+    not_passwords[i++] = "the Illuminati";
+    not_passwords[i++] = "raptor-chickens";
+    not_passwords[i++] = "of Illuminati";
+    not_passwords[i++] = "Tiffany";// and then manually allow "password Tiffany" inside FixCodes()
+    not_passwords[i++] = "little .22 pistol";
+    not_passwords[i++] = "the MJ12-COL";
+    not_passwords[i++] = "questions to MJ12 Simulations";
 
-        i=0;
-        yes_passwords[i].map = "12_VANDENBERG_COMPUTER";
-        yes_passwords[i].password = "Tiffany";
-        yes_passwords[i].search_for = "password Tiffany";
-        i++;
 
-        yes_passwords[i].map = "12_VANDENBERG_COMPUTER";
-        yes_passwords[i].password = "Tiffany";
-        yes_passwords[i].search_for = "password: Tiffany";
-        i++;
-
-        yes_passwords[i].map = "09_NYC_DOCKYARD";
-        yes_passwords[i].password = "SIMONS";
-        yes_passwords[i].search_for = "PASSWORD: SIMONS";
-        i++;
-
-        yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
-        yes_passwords[i].password = "SECURITY";
-        yes_passwords[i].search_for = "PASSWORD SECURITY";
-        i++;
-
-        yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
-        yes_passwords[i].password = "SECURITY";
-        yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
-        i++;
-
-        for(i=i;i<ArrayCount(yes_passwords);i++) {
-            yes_passwords[i].map = "";
-        }
+    for(i=i;i<ArrayCount(not_passwords);i++) {
+        not_passwords[i] = "";
     }
+
+    i=0;
+    yes_passwords[i].map = "12_VANDENBERG_COMPUTER";
+    yes_passwords[i].password = "Tiffany";
+    yes_passwords[i].search_for = "password Tiffany";
+    i++;
+
+    yes_passwords[i].map = "12_VANDENBERG_COMPUTER";
+    yes_passwords[i].password = "Tiffany";
+    yes_passwords[i].search_for = "password: Tiffany";
+    i++;
+
+    yes_passwords[i].map = "09_NYC_DOCKYARD";
+    yes_passwords[i].password = "SIMONS";
+    yes_passwords[i].search_for = "PASSWORD: SIMONS";
+    i++;
+
+    yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
+    yes_passwords[i].password = "SECURITY";
+    yes_passwords[i].search_for = "PASSWORD SECURITY";
+    i++;
+
+    yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
+    yes_passwords[i].password = "SECURITY";
+    yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
+    i++;
+
+    for(i=i;i<ArrayCount(yes_passwords);i++) {
+        yes_passwords[i].map = "";
+    }
+
     num_not_passwords=0;
     for(i=0; i<ArrayCount(not_passwords); i++) {
         if(not_passwords[i] != "")

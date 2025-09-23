@@ -21,5 +21,7 @@
 - Crash saves now use saveslot -7 instead of sharing slot -6 with regular autosaves
 - Mr. H now causes less chaos in UNATCO, Tong's base, and the Vandenberg computer room (where you meet Gary)
 - Tweaked seeding of Mr. H spawn locations
+- Removed config options from password detection and prevention logic
+- Blocked password from being detected in Jacob's Shadow: Chapter 20, as well as the MJ12 Compromised Individuals list
 
 </details>
