@@ -24,5 +24,6 @@
 - Removed config options from password detection and prevention logic
 - Blocked password from being detected in Jacob's Shadow: Chapter 20, as well as the MJ12 Compromised Individuals list
 - Trashcans no longer drop contents when carrying across map transitions
+- Bingo goals for Chug Water and Stay Dehydrated are now mutually exclusive
 
 </details>
