@@ -24,7 +24,7 @@ var() BingoOption bingo_options[400]; //Update the comment at the bottom of the 
 struct MutualExclusion {
     var string e1, e2;
 };
-var() MutualExclusion mutually_exclusive[110];
+var() MutualExclusion mutually_exclusive[111];
 
 struct ActorWatchItem {
     var Actor a;
@@ -470,8 +470,13 @@ function BingoWinScreen()
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
     }
+#ifdef injections
+    if (bingo_win_countdown == 2) {
+        class'DXRAutosave'.static.MakeCrashSave();
+    }
+#endif
     if (bingo_win_countdown == 2 && !#defined(vanilla)) {
-        //Give it 2 seconds to send the tweet
+        //Give it 2 seconds to send the toot
         //This is still needed outside of vanilla
         BeatGame(dxr,4);
     }

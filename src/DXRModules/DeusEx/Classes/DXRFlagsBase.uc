@@ -86,6 +86,7 @@ struct MoreFlagsSettings{
     var int enemies_weapons;
     var int aug_loc_rando;
     var int reanimation;
+    var int stalkers;
     var int entrance_rando;
 
     var int splits_overlay;// keep this at the end for automated tests
@@ -380,6 +381,7 @@ simulated function string BindFlags(int mode, optional string str)
         moresettings.reanimation = settings.enemyrespawn;
         settings.enemyrespawn = 0;
     }
+    FlagInt('Rando_stalkers', moresettings.stalkers, mode, str);
     FlagInt('Rando_entrance_rando', moresettings.entrance_rando, mode, str);
     FlagInt('Rando_removeparismj12', remove_paris_mj12, mode, str);
 
@@ -538,6 +540,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy Respawn Time";
         case 'Rando_reanimation':
             return "Reanimation Time";
+        case 'Rando_stalkers':
+            return "Mr. H";
         case 'Rando_entrance_rando':
             return "Entrance Randomizer";
         case 'Rando_skills_disable_downgrades':
@@ -812,13 +816,14 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
 
+        case 'Rando_stalkers':
         case 'Rando_maxrando':
         case 'MenuChoice_BalanceAugs':
         case 'MenuChoice_BalanceEtc':
         case 'MenuChoice_BalanceItems':
         case 'MenuChoice_BalanceSkills':
         case 'MenuChoice_AutoAugs':
-            if (val == 1) {
+            if (val > 0) {
                 return "Enabled";
             } else {
                 return "Disabled";

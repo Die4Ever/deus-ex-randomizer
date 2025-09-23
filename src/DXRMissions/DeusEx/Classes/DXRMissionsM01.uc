@@ -25,7 +25,7 @@ function int InitGoals(int mission, string map)
         pauldock = AddGoalLocation("01_NYC_UNATCOISLAND", "South Dock", VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
         jail = AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, -16159, 0));
     }
-    topofbase = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
+    topofbase = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -840, 1090), rot(0, -16384, 0));  //Overlooking the North Dock
     top = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
     harleydock = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", NORMAL_GOAL | START_LOCATION, vect(4018,-10308,-256), rot(0, 22520, 0));
         AddActorLocation(harleydock, PLAYER_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
@@ -103,7 +103,7 @@ function int InitGoalsRev(int mission, string map)
     }
     hut = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2404,177,-83), rot(0, 30472, 0));
     electric = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
-    topofbase = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
+    topofbase = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -840, 1090), rot(0, -16384, 0));  //Overlooking the North Dock
     top = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
     harleydock = AddGoalLocation("01_NYC_UNATCOISLAND", "North Dock", NORMAL_GOAL | START_LOCATION, vect(4205,-9811,-279), rot(0, 0, 0));
         AddActorLocation(harleydock, PLAYER_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
