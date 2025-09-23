@@ -14,6 +14,8 @@ static function DestroyTrashCan(#var(prefix)Containers trashcan, class<#var(pref
     local #var(prefix)Containers trashbag;
     local float scale, scaleCorrection;
 
+    if(trashcan.HitPoints > 0) return;
+
     // maybe spawn a trashbag
     if (FRand() < 0.8)
     {
