@@ -28,5 +28,6 @@
 - Fixed max health bug in Vanilla? Madder.
 - Lyla (An LDDP character in the mission 4 bar) now uses the correct female damage and death sounds, instead of dying like a man
 - Added a large crate to Oceanlab UC to buff the upper vents route
+- Fixed quick aug upgrade menu when you have 10 augs that can be upgraded
 
 </details>
