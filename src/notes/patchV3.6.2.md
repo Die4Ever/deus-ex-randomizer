@@ -24,7 +24,7 @@
 - Removed config options from password detection and prevention logic
 - Blocked password from being detected in Jacob's Shadow: Chapter 20, as well as the MJ12 Compromised Individuals list
 - Trashcans no longer drop contents when carrying across map transitions
-- Bingo goals for Chug Water and Stay Dehydrated are now mutually exclusive
+- Some more mutual exclusions for bingo goals
 - Fixed max health bug in Vanilla? Madder.
 - Lyla (An LDDP character in the mission 4 bar) now uses the correct female damage and death sounds, instead of dying like a man
 
