@@ -270,7 +270,7 @@ function DrawAugsScreen(GC gc)
 
         while ( anAug != None )
         {
-            if (anAug.bHasIt && anAug.AugmentationLocation!=LOC_Default){
+            if (isValidQuickAug(anAug)){
                 if ( index == 11 )
                     str = "-. " $ anAug.AugmentationName;
                 else if ( index == 10 )
@@ -424,6 +424,22 @@ function int GetNumAugUpgrades( DeusExPlayer thisPlayer )
     return augCanCount;
 }
 
+function bool isValidQuickAug(Augmentation anAug)
+{
+    local bool isValid;
+
+    isValid=anAug.bHasIt;
+    if (anAug.AugmentationLocation==LOC_Default){
+        if (anAug.MaxLevel==0){
+            isValid=False;
+        }
+
+    }
+
+    return isValid;
+
+}
+
 function Augmentation GetAugFromIndex( DeusExPlayer thisPlayer, int index )
 {
     local Augmentation anAug;
@@ -443,7 +459,7 @@ function Augmentation GetAugFromIndex( DeusExPlayer thisPlayer, int index )
     anAug=thisPlayer.AugmentationSystem.FirstAug;
     while ( anAug != None )
     {
-        if (anAug.bHasIt && anAug.AugmentationLocation!=LOC_Default){
+        if (isValidQuickAug(anAug)){
             if (i==index){
                 return anAug;
             }
