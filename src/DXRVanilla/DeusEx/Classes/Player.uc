@@ -2186,7 +2186,7 @@ function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bo
         if(oldest) isWinner = saveInfo.Year < winningYear || (saveInfo.Year == winningYear && time < winningTime);
         else isWinner = saveInfo.Year > winningYear || (saveInfo.Year == winningYear && time > winningTime);
 
-        if(!includeCrashes && saveInfo.DirectoryIndex==-7) { // Right(saveInfo.Description, 15) == " CRASH AUTOSAVE") {
+        if(!includeCrashes && saveInfo.DirectoryIndex==-7) { // class'DXRAutosave'.static.isCrashSaveName(saveInfo.Description)) {
             isWinner = false;
         }
 
