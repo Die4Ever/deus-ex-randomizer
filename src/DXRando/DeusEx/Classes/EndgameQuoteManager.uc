@@ -265,20 +265,28 @@ function PickRandomQuote(out string quote, out string attrib)
 {
     local DXRando dxr;
     local EndQuote q;
-    local int oldSeed;
+    local int oldSeed, i, k;
 
     dxr = class'DXRando'.default.dxr;
 
-    if(dxr != None) {
-        oldSeed = dxr.flags.SetSeed("EndgameQuoteManager"); //We want SetSeed rather than SetGlobalSeed so it varies by ending
-        q = quotes[dxr.flags.rng(numQuotes)];
-        dxr.flags.ReapplySeed(oldSeed);
+    if(dxr == None) {
+        q = quotes[Rand(numQuotes)];
         quote = q.quote;
         attrib = q.attribution;
         return;
     }
 
-    q = quotes[Rand(numQuotes)];
+    oldSeed = dxr.flags.SetSeed("EndgameQuoteManager"); //We want SetSeed rather than SetGlobalSeed so it varies by ending
+    // this many choices might be a bit beyond our RNG, let's overkill this to ensure good distribution, start with a Fisher-Yates shuffle
+    for(i=numQuotes-1; i>=0; i--) {
+        k = dxr.flags.rng(i+1);
+        q = quotes[i];
+        quotes[i] = quotes[k];
+        quotes[k] = q;
+    }
+    // now pick a random one
+    q = quotes[dxr.flags.rng(numQuotes)];
+    dxr.flags.ReapplySeed(oldSeed);
     quote = q.quote;
     attrib = q.attribution;
 }
