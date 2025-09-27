@@ -32,5 +32,6 @@
 - Fixed quick aug upgrade menu when you have 10 augs that can be upgraded
 - Crash saves are now hidden from the load game menu, because they were confusing to see
 - Slightly reduced number of zombies in graveyard in Halloween modes
+- Lenny, the junkie with a LAM in Brooklyn Bridge Station, will now talk to you again if you didn't have room the first time you tried to trade with him
 
 </details>
