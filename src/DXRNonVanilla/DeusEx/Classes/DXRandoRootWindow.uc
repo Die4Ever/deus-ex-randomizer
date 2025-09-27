@@ -149,7 +149,7 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
         case class'HUDMedBotHealthScreen':
             newScreen = class'DXRHUDMedBotHealthScreen';
             break;
-#else ifndef vmd
+#elseifn vmd
         case class'HUDMedBotHealthScreen':
             newScreen = class'DXRHUDMedBotHealthScreen';
             break;
