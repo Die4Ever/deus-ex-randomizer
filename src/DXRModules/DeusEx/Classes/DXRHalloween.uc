@@ -32,8 +32,7 @@ function ReEntry(bool IsTravel)
 function SpawnStalkers(bool reentry)
 {
     local DXRStalker stalker;
-    local int num, i;
-    local bool bBobbys;
+    local int num, i, stalkerType;
     local vector loc;
 
     // destroy old stalkers before recreating
@@ -42,13 +41,19 @@ function SpawnStalkers(bool reentry)
     }
 
     SetSeed("stalkers");
-    bBobbys = rngb() && !bSafeStalkers();
+    if(dxr.flags.moresettings.stalkers > 100) {
+        stalkerType = rng(3);
+    }
 
     if(reentry) SetSeed("ReEntry stalkers " $ Level.TimeSeconds);
     else SetSeed("PostFirstEntry stalkers");
 
-    if(dxr.flags.moresettings.stalkers > 100 && bBobbys) {
+    if(stalkerType==1) {
+        class'WeepingAnna'.static.Create(self);
+    }
+    else if(stalkerType==2) {
         num = dxr.flags.moresettings.stalkers/100;
+        if(bSafeStalkers()) num = 1; // only 1 in these maps
         for(i=0; i<num; i++) {
             class'Bobby'.static.Create(self);
         }

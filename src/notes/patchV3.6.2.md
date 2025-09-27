@@ -1,6 +1,6 @@
 ## Major Changes
 
-- New Halloween stalker type: Bobby.
+- New Halloween stalker types: Bobby and Weeping Anna.
 - Added new game mode: Mr. Page's Horrifying Bingo Machine.
 - Fixed and/or Limited Save modes now get emergency autosaves for crashes and when exiting the game, same as WaltonWare Hardcore.
 
@@ -31,5 +31,6 @@
 - Added a large crate to Oceanlab UC to buff the upper vents route
 - Fixed quick aug upgrade menu when you have 10 augs that can be upgraded
 - Crash saves are now hidden from the load game menu, because they were confusing to see
+- Slightly reduced number of zombies in graveyard in Halloween modes
 
 </details>

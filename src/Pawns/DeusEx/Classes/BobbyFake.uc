@@ -1,4 +1,4 @@
-class BobbyFake extends #var(prefix)Robot;
+class BobbyFake extends #var(prefix)Robot; // robots don't bleed
 
 function InitializePawn()
 {
@@ -45,7 +45,6 @@ defaultproperties
     UnderWaterTime=-1.000000
     BindName="Bobby"
     MinHealth=10
-    bInvincible=true
     bDetectable=false
     bIgnore=true
     FamiliarName="Bobby"
