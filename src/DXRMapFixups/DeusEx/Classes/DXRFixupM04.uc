@@ -72,6 +72,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)CrateExplosiveSmall boom;
     local #var(prefix)Trigger trig;
     local #var(PlayerPawn) p;
+    local #var(prefix)ScriptedPawn sp;
 
     p = player();
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(p);
@@ -536,6 +537,17 @@ function PreFirstEntryMapFixes()
         } else {
             Spawnm(class'BarDancerBoring',,,vect(-1440,340,48),rot(0,-16348,0));
         }
+
+        if (!#defined(revision)){ //Lyla is already fixed in RevisionPawns
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
+                if (sp.BindName!="LDDPLyla") continue;
+
+                sp.bIsFemale=true; //So she doesn't have a male death scream
+                sp.PostBeginPlay(); //To reinitialize the death/hit sounds
+                break;
+            }
+        }
+
         break;
     //#endregion
 

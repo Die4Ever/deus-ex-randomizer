@@ -2152,13 +2152,13 @@ function LoadLatestConfirmed()
     if (Level.Netmode != NM_Standalone)
         return;
 
-    saveIndex = GetSaveSlotByTimestamp(false, -6, 9999999);
+    saveIndex = GetSaveSlotByTimestamp(false, -6, 9999999); // don't load crash saves
     if(saveIndex != -9999) {
         LoadGame(saveIndex);
     }
 }
 
-function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bool getEmpty, optional out string name)
+function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bool getEmpty, optional out string name, optional bool includeCrashes)
 {
     local int saveIndex;
     local DeusExSaveInfo saveInfo;
@@ -2185,6 +2185,10 @@ function int GetSaveSlotByTimestamp(bool oldest, int start, int end, optional bo
 
         if(oldest) isWinner = saveInfo.Year < winningYear || (saveInfo.Year == winningYear && time < winningTime);
         else isWinner = saveInfo.Year > winningYear || (saveInfo.Year == winningYear && time > winningTime);
+
+        if(!includeCrashes && saveInfo.DirectoryIndex==-7) { // class'DXRAutosave'.static.isCrashSaveName(saveInfo.Description)) {
+            isWinner = false;
+        }
 
         if(isWinner) {
             winningYear = saveInfo.Year;

@@ -34,6 +34,17 @@ class InstallerWindow(GUIBase):
         self.scroll.ReConf()
 
 
+    def CheckZeroRando(self):
+        for flavor in self.flavors.values():
+            if flavor.get('ZeroRandoPlus') and flavor['ZeroRandoPlus'].get():
+                flavor['ZeroRando'].set(True)
+
+            if flavor['ZeroRando'].get():
+                flavor['install'].set(True)
+            else: # in Vanilla Fixer installer, unchecking bug fixes disables the rando installation again
+                flavor['install'].set(False)
+
+
     def initWindow(self):
         self.root = Tk()
         self.lastprogress = ''
@@ -85,7 +96,7 @@ class InstallerWindow(GUIBase):
 
         # show the path
         pathlabel = str(p.parent.parent)
-        pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', '\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
+        pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', r'\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
         l = Label(self.frame, text='Install path:\n' + pathlabel, wraplength=self.width - pad*16, justify='center')
         l.grid(column=1,row=self.row, sticky='SW', padx=pad*8, pady=pad)
         self.row += 1
@@ -93,10 +104,12 @@ class InstallerWindow(GUIBase):
         self.flavors = {}
         self.globalsettings = {}
 
-        for f in flavors:
-            self.InitFlavorSettings(f, pad)
-
-        if not IsVanillaFixer():
+        if IsVanillaFixer() or IsZeroRando():
+            for f in flavors:
+                self.InitFlavorSettingsVanillaPlus(f, pad)
+        else:
+            for f in flavors:
+                self.InitFlavorSettingsRando(f, pad)
             self.GlobalFixes(pad)
 
         # TODO: option to enable telemetry? checking for updates?
@@ -124,25 +137,19 @@ class InstallerWindow(GUIBase):
         self.scroll.ReConf()
 
 
-    def InitFlavorSettings(self, f: str, pad) -> int:
+    def InitFlavorSettingsRando(self, f: str, pad) -> int:
         settings = {}
 
-        if f == 'Vanilla' and IsVanillaFixer():
-            settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
-            settings['LDDP'] = self.LDDPCheckbox(pad, pad)
-            settings['exetype'] = self.ExeTypeRadios(pad, pad)
-            self.GlobalFixes(pad)
-
-        v = BooleanVar(master=self.frame, value=(not IsVanillaFixer()))
+        v = BooleanVar(master=self.frame, value=True)
         settings['install'] = v
-        c = Checkbutton(self.frame, text="Install DXRando for "+f, variable=v)
-        self.setgrid(c, advanced=IsVanillaFixer(), column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        c = Checkbutton(self.frame, text="Install DXRando for "+f, variable=v, command=self.CheckZeroRando)
+        self.setgrid(c, advanced=False, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
         self.FixColors(c)
         self.row+=1
 
         # mirrored maps
         if f in ['Vanilla', '####Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
-            v = BooleanVar(master=self.frame, value=(not IsVanillaFixer()))
+            v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
             Hovertip(c, "Time to get lost again. (This will check if you already have them.)\nRequires DXRando.")
@@ -152,19 +159,18 @@ class InstallerWindow(GUIBase):
 
         # Vanilla stuff
         if f == 'Vanilla':
-            if not IsVanillaFixer():
-                settings['exetype'] = self.ExeTypeRadios(pad*10, pad)
+            settings['exetype'] = self.ExeTypeRadios(pad*10, pad)
 
-            v = BooleanVar(master=self.frame, value=IsVanillaFixer() or IsZeroRando())
+            v = BooleanVar(master=self.frame, value=False)
             settings['ZeroRando'] = v
-            c = Checkbutton(self.frame, text="Default to Zero Rando mode for "+f, variable=v)
+            c = Checkbutton(self.frame, text="Default to Zero Rando for "+f, variable=v, command=self.CheckZeroRando)
             Hovertip(c, "This retains the vanilla menu experience for your first launch.\nAnd also sets Zero Rando mode as your default game mode for a new game.\nYou can change this once you get into the game with the Rando menu.")
-            self.setgrid(c, advanced=IsVanillaFixer(), column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
+            self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
             self.FixColors(c)
             self.row+=1
 
             # separate DXRando.exe is difficult for Linux Steam users, but if you're using VanillaFixer then you probably don't want to overwrite vanilla
-            v = BooleanVar(master=self.frame, value=(IsWindows() or IsVanillaFixer()))
+            v = BooleanVar(master=self.frame, value=IsWindows())
             settings['DXRando.exe'] = v
             c = Checkbutton(self.frame, text="Create separate DXRando.exe for "+f, variable=v)
             Hovertip(c, "Overwriting the original DeusEx.exe makes it easier for Linux Steam players.\nOnly applicable if installing DXRando.")
@@ -172,9 +178,75 @@ class InstallerWindow(GUIBase):
             self.FixColors(c)
             self.row+=1
 
-            if not IsVanillaFixer():
-                settings['LDDP'] = self.LDDPCheckbox(pad*10, pad)
-                settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
+            settings['LDDP'] = self.LDDPCheckbox(pad*10, pad)
+            settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
+        # End Vanilla stuff
+
+        self.flavors[f] = settings
+
+
+    # Vanilla Fixer, Zero Rando, and Zero Rando Plus
+    def InitFlavorSettingsVanillaPlus(self, f: str, pad) -> int:
+        settings = {}
+
+        if f == 'Vanilla':
+            settings['FixVanilla'] = self.ZeroChangesCheckbox(pad, pad)
+            settings['LDDP'] = self.LDDPCheckbox(pad, pad)
+            settings['exetype'] = self.ExeTypeRadios(pad, pad)
+            self.GlobalFixes(pad)
+
+        v = BooleanVar(master=self.frame, value=(not IsVanillaFixer()))
+        settings['install'] = v
+        c = Checkbutton(self.frame, text="Install DXRando for "+f, variable=v, command=self.CheckZeroRando)
+        self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(c)
+        self.row+=1
+
+        # mirrored maps
+        if f in ['Vanilla', '####Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
+            v = BooleanVar(master=self.frame, value=False)
+            settings['mirrors'] = v
+            c = Checkbutton(self.frame, text="Download mirrored maps", variable=v)
+            Hovertip(c, "Time to get lost again. (This will check if you already have them.)\nRequires DXRando.")
+            self.setgrid(c, True, column=1,row=self.row, sticky='SW', padx=pad*10, pady=pad)
+            self.FixColors(c)
+            self.row+=1
+
+        # Vanilla stuff
+        if f == 'Vanilla':
+            v = BooleanVar(master=self.frame, value=IsZeroRando())
+            settings['ZeroRando'] = v
+            c = Checkbutton(self.frame, text="Bug fixes", variable=v, command=self.CheckZeroRando)
+            hovertext = 'Include bug fixes derived from the Randomizer but keep randomization features disabled. '
+            separateExe = IsWindows()# or IsVanillaFixer()
+            if separateExe:
+                hovertext += 'Use DXRando.exe to launch the game. '
+            hovertext += 'This game mode is called "Zero Rando".'
+            Hovertip(c, hovertext)
+            self.setgrid(c, advanced=IsZeroRando(), column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+            self.FixColors(c)
+            self.row+=1
+
+            v = BooleanVar(master=self.frame, value=False)
+            settings['ZeroRandoPlus'] = v
+            c = Checkbutton(self.frame, text="Balance changes", variable=v, command=self.CheckZeroRando)
+            hovertext = 'Include the balance changes derived from the Randomizer, but keep randomization features disabled. '
+            if separateExe:
+                hovertext += 'Use DXRando.exe to launch the game. '
+            hovertext += 'This game mode is called "Zero Rando Plus".'
+            Hovertip(c, hovertext)
+            self.setgrid(c, advanced=False, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+            self.FixColors(c)
+            self.row+=1
+
+            # separate DXRando.exe is difficult for Linux Steam users, but if you're using VanillaFixer then you probably don't want to overwrite vanilla
+            v = BooleanVar(master=self.frame, value=separateExe)
+            settings['DXRando.exe'] = v
+            c = Checkbutton(self.frame, text="Create separate DXRando.exe", variable=v)
+            Hovertip(c, "Overwriting the original DeusEx.exe makes it easier for Linux Steam players.\nOnly applicable if installing DXRando.")
+            self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=pad, pady=pad)
+            self.FixColors(c)
+            self.row+=1
         # End Vanilla stuff
 
         self.flavors[f] = settings
@@ -197,7 +269,7 @@ class InstallerWindow(GUIBase):
 
 
     def ExeTypeRadios(self, padx, pad):
-        return self.Radios('Which EXE to use for vanilla:', 'Kentie', padx, pad, advanced=True,
+        return self.Radios('Which EXE to use:', 'Kentie', padx, pad, advanced=True,
             options=OrderedDict(
                 Kentie={ 'text': "Kentie's Launcher", 'hover': "Kentie's Launcher stores configs and saves in your Documents folder." },
                 Launch={ 'text': "Hanfling's Launch", 'hover': "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play." },
@@ -206,16 +278,16 @@ class InstallerWindow(GUIBase):
     def ZeroChangesCheckbox(self, padx, pady):
         # "Zero Changes" mode fixes
         v = BooleanVar(master=self.frame, value=True)
-        c = Checkbutton(self.frame, text="DXRVanillaFixer\n  Apply compatibility fixes for DeusEx.exe", variable=v)
-        Hovertip(c, "Apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.\nOnly has an effect when using a separate DXRando.exe for the Randomized modes\nor when not installing DXRando.")
-        c.grid(column=1,row=self.row, sticky='SW', padx=padx, pady=pady)
+        c = Checkbutton(self.frame, text="Vanilla Fixer\n  Apply compatibility fixes for DeusEx.exe", variable=v)
+        Hovertip(c, "Apply all the compatibility fixes for DeusEx.exe, so you can play without any of Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.\nOnly has an effect when using a separate DXRando.exe for the Randomized modes\nor when not installing DXRando.")
+        self.setgrid(c, advanced=True, column=1,row=self.row, sticky='SW', padx=padx, pady=pady)
         self.row += 1
         self.FixColors(c)
         return v
 
     def LDDPCheckbox(self, padx, pady):
         v = BooleanVar(master=self.frame, value=False)
-        c = Checkbutton(self.frame, text="Install Lay D Denton Project for Vanilla", variable=v)
+        c = Checkbutton(self.frame, text="Install Lay D Denton Project", variable=v)
         Hovertip(c, "What if Zelda was a girl?")
         c.grid(column=1,row=self.row, sticky='SW', padx=padx, pady=pady)
         self.row += 1

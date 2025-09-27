@@ -50,7 +50,7 @@ Here are trailers for our **Halloween modes**, **WaltonWare**, and **Vanilla Fix
 - **Integrated Bingo Board**: On the Goals screen there's a Bingo button in the middle bar.
   - Also an external BingoDisplay program you can download from the Github [Releases page](https://github.com/Die4Ever/deus-ex-randomizer/releases/latest). Great for streamers who want to show their bingo progress live to viewers.
 - Reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells.
-- Starting the game with the Speed Enhancement augmentation.
+- Starting the game with the Running Enhancement augmentation, or other starting loadouts.
 - Assistance options like autofill for passwords and keypad codes.
 - The ability to reveal where Nanokeys/Datacubes/goals are located (using buttons on the Goals screen).
 - On the main menu there's also a Rando button for a bunch of global settings, like music controls, online features, an extra brightness boost option, balance change options, and some QoL options.

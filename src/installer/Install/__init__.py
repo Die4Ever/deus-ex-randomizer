@@ -151,6 +151,24 @@ def CheckVulkan() -> bool:
         return False
 
 
+def CheckDLL(name: str):
+    if not IsWindows():
+        return True
+    windows_dir = os.environ.get('WINDIR')
+    search_paths = []
+    if (Path(windows_dir)/'SysWOW64').is_dir(): # if this is a 64 bit system, we need the 32 bit DLL
+        search_paths.append(Path(windows_dir)/'SysWOW64')
+    else:
+        search_paths.append(Path(windows_dir)/'System32')
+
+    for path in search_paths:
+        file = path/name
+        if file.is_file():
+            return True
+    info('CheckDLL', name, 'failed', search_paths)
+    return False
+
+
 def GetConfChanges(modname):
     changes = {
         'Engine.Engine': {

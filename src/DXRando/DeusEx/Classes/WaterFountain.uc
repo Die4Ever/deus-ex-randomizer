@@ -42,7 +42,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function Destroyed()
 {
-    class'DXREvents'.static.MarkBingo("Dehydrated");
+    class'DXREvents'.static.MarkBingo("Dehydrated_DestroyDeco");
 
     Super.Destroyed();
 }

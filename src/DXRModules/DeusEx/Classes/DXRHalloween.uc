@@ -5,14 +5,14 @@ function PostFirstEntry()
     local #var(prefix)WHPiano piano;
     Super.PostFirstEntry();
 
+    if(!dxr.OnTitleScreen()) {
+        SetSeed("PostFirstEntry stalkers");
+        SpawnStalkers();
+    }
     if(dxr.flags.IsHalloweenMode()) {
-        // Mr. H is only for the Halloween game mode, but other things will instead be controlled by IsOctober(), such as cosmetic changes
-        if(!dxr.OnTitleScreen()) {
-            class'MrH'.static.Create(self);
-        }
         MapFixes();
     }
-    if(IsOctober()) {
+    if(IsOctober()) { // cosmetics
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
             piano.ItemName = "Staufway Piano";
         }
@@ -24,9 +24,31 @@ function PostFirstEntry()
 
 function ReEntry(bool IsTravel)
 {
-    if(IsTravel && dxr.flags.IsHalloweenMode()) {
-        // recreate him if you leave the map and come back, but not if you load a save
+    if(IsTravel) {
+        // recreate if you leave the map and come back, but not if you load a save
+        SetSeed("ReEntry stalkers " $ Level.TimeSeconds);
+        SpawnStalkers();
+    }
+}
+
+function SpawnStalkers()
+{
+    local DXRStalker stalker;
+    local int num, i;
+
+    // destroy old stalkers before recreating
+    foreach AllActors(class'DXRStalker', stalker) {
+        stalker.Destroy();
+    }
+
+    if(dxr.flags.moresettings.stalkers > 0) {
         class'MrH'.static.Create(self);
+    }
+    if(dxr.flags.moresettings.stalkers > 100) {
+        num = dxr.flags.moresettings.stalkers/100 - 1;
+        for(i=0; i<num; i++) {
+            class'Bobby'.static.Create(self);
+        }
     }
 }
 
@@ -42,13 +64,16 @@ function MapFixes()
     case "01_NYC_UNATCOHQ":
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
+    case "06_HONGKONG_TONGBASE":
+    case "12_VANDENBERG_COMPUTER":
         //Make people fearless so they don't get spooked by Mr. H
         foreach AllActors(class'ScriptedPawn', sp) {
-            if(sp.bInvincible) {
-                RemoveFears(sp);
+            if(DXRStalker(sp) == None) {
+                RemoveReactions(sp);
             }
         }
         break;
+
     case "09_NYC_GRAVEYARD":
         SetSeed("DXRHalloween MapFixes graveyard bodies");
         foreach AllActors(class'PathNode', p) {
@@ -121,8 +146,8 @@ function MakeCosmetics()
     SetSeed("MakeJackOLanterns");
     ConsoleCommand("set DXRJackOLantern bBlockActors " $ (!dxr.flags.IsSpeedrunMode()));
     ConsoleCommand("set DXRJackOLantern bBlockPlayers " $ (!dxr.flags.IsSpeedrunMode()));
-    if(IsHalloween()) num = len/30;
-    else num = len/30 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
+    if(IsHalloween()) num = len/40;
+    else num = len/40 * Level.Day/40;// divided by 40 instead of 31 to make it weaker
     for(i=0; i<num; i++) {
         slot = rng(len);
         SpawnJackOLantern(locs[slot]);

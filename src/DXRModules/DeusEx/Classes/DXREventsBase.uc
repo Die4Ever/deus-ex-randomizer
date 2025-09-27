@@ -24,7 +24,7 @@ var() BingoOption bingo_options[400]; //Update the comment at the bottom of the 
 struct MutualExclusion {
     var string e1, e2;
 };
-var() MutualExclusion mutually_exclusive[110];
+var() MutualExclusion mutually_exclusive[112];
 
 struct ActorWatchItem {
     var Actor a;
@@ -57,6 +57,20 @@ function AddWatchedActor(Actor a,String eventName)
     actor_watch[num_watched_actors].a = a;
     actor_watch[num_watched_actors].BingoEvent=eventName;
     num_watched_actors++;
+}
+
+function string GetWatchedActorBingoEvent(int idx)
+{
+    if (idx > num_watched_actors || idx < 0) return "";
+
+    return actor_watch[idx].BingoEvent;
+}
+
+function UpdateWatchedActorBingoEvent(int idx, string newEvent)
+{
+    if (idx > num_watched_actors || idx < 0) return;
+
+    actor_watch[idx].BingoEvent = newEvent;
 }
 
 function CheckWatchedActors() {
@@ -456,8 +470,13 @@ function BingoWinScreen()
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
     }
+#ifdef injections
+    if (bingo_win_countdown == 2) {
+        class'DXRAutosave'.static.MakeCrashSave();
+    }
+#endif
     if (bingo_win_countdown == 2 && !#defined(vanilla)) {
-        //Give it 2 seconds to send the tweet
+        //Give it 2 seconds to send the toot
         //This is still needed outside of vanilla
         BeatGame(dxr,4);
     }
@@ -1516,6 +1535,7 @@ function _MarkBingo(coerce string eventname, optional bool ifNotFailed)
 
     previousbingos = data.NumberOfBingos();
     l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
+    //player().ClientMessage("MarkBingo("$eventname$")");
 
     MarkBingoFailedEvents(eventName); //Making progress on one bingo goal might imply that another has failed
 

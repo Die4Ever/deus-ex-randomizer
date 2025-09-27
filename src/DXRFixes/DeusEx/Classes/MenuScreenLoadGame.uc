@@ -14,11 +14,16 @@ function CreateGamesList()
 
 function AddSaveRow(DeusExSaveInfo saveInfo, int saveIndex)
 {
+    local string desc;
     if (saveInfo != None)
     {
-        //if(Right(saveInfo.Description, 15) == " CRASH AUTOSAVE") return; // hiding them freaks me out
+        if(class'DXRAutosave'.static.isCrashSaveName(saveInfo.Description)) return;
 
-        lstGames.AddRow( saveInfo.Description              $ ";" $
+        //Strip semicolons out of the description, in case someone made a bad save (semicolons are now blocked though)
+        //Upgrade them from semi to full colons!
+        desc = class'DXRInfo'.static.ReplaceText(saveInfo.Description,";",":");
+
+        lstGames.AddRow( desc                              $ ";" $
                          BuildTimeStringFromInfo(saveInfo) $ ";" $
                          BuildTimeStringSeconds(saveInfo)  $ ";" $
                          BuildTimeStringFromInfo(saveInfo) $ ";" $
@@ -101,7 +106,7 @@ function EnableButtons()
     rowId = lstGames.GetSelectedRow();
     gameIndex = int(lstGames.GetField(rowId, 4));
     name = lstGames.GetField(rowID, 0);
-    if(Right(name, 15) == " CRASH AUTOSAVE") {
+    if(class'DXRAutosave'.static.isCrashSaveName(name)) {
         EnableActionButton(AB_Other, false, "LOAD");
     }
 }
@@ -112,9 +117,9 @@ function LoadGame(int rowId)
     local string name;
     gameIndex = int(lstGames.GetField(rowId, 4));
     name = lstGames.GetField(rowID, 0);
-    if(Right(name, 15) == " CRASH AUTOSAVE") {
+    if(class'DXRAutosave'.static.isCrashSaveName(name)) {
         return; // crash saves are only for auto loading, not manual loading
-    } else if(Right(name, 14) == " EXIT AUTOSAVE") {
+    } else if(class'DXRAutosave'.static.isExitSaveName(name)) {
         player.ConsoleCommand("set DXRAutosave delete_save " $ gameIndex);
     }
     Super.LoadGame(rowId);

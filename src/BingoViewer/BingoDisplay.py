@@ -4,7 +4,6 @@ import sys
 import json
 import os.path
 import urllib.request
-import urllib.parse
 import re
 import threading
 from tkinter import filedialog as fd
@@ -19,7 +18,7 @@ BUTTON_BORDER_WIDTH = 4
 BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
-NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
+NEWLY_COMPLETED_DISPLAY_TIME=2.0
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 DEFAULT_WINDOW_WIDTH = 500
 DEFAULT_WINDOW_HEIGHT = 500
@@ -31,12 +30,15 @@ IMPOSSIBLE_RED = "#300000"
 NOT_NOW_BLACK  = "#000000"
 TEXT_GREY      = "#c8c8c8"
 
-if os.name == 'nt': # Windows works correctly (for once)
-    BORDER_WIDTH_SCALE=1
-    BORDER_HEIGHT_SCALE=1
-else: # Linux needs fixing
-    BORDER_WIDTH_SCALE=2.85 # idk why these numbers
-    BORDER_HEIGHT_SCALE=1.7
+def GetBorderScale():
+    if os.name == 'nt': # Windows works correctly (for once)
+        width=1
+        height=1
+    else: # Linux needs fixing
+        width=2.85 # idk why these numbers
+        height=1.7
+
+    return width, height
 
 SETTINGS_FILENAME="bingosettings.json"
 
@@ -272,6 +274,8 @@ class BingoViewerMain:
             for y in range(5):
                 print(str(x)+","+str(y)+": "+str(self.board[x][y]))
 
+    #region Config Get/Set
+
     def GetJSONPushDest(self):
         return self.config.get("json_push_dest","")
 
@@ -288,13 +292,28 @@ class BingoViewerMain:
         self.SaveConfig()
 
     def SetWindowDimensions(self,width,height):
-        self.config["win_width"]=width
-        self.config["win_height"]=height
+        self.config["win_width"]=int(width)
+        self.config["win_height"]=int(height)
 
     def GetWindowDimensions(self):
         width  = self.config.get("win_width",DEFAULT_WINDOW_WIDTH)
         height = self.config.get("win_height",DEFAULT_WINDOW_HEIGHT)
-        return width,height
+
+        #Window dimensions are complicated on Linux, due to the window border scale issue
+        #For now, don't fetch the saved window dimensions, just return the defaults
+        if os.name != 'nt':
+            width=DEFAULT_WINDOW_WIDTH
+            height=DEFAULT_WINDOW_HEIGHT
+
+        #Just in case
+        if (width<=0):
+            width=DEFAULT_WINDOW_WIDTH
+        if (height<=0):
+            height=DEFAULT_WINDOW_HEIGHT
+
+        return int(width),int(height)
+
+    #endregion
 
     def generateBingoStateJson(self):
         board = []
@@ -373,13 +392,18 @@ class BingoReader:
 ###############################
 
     def readerTask(self):
-        while(self.main.IsRunning() and self.running):
-            time.sleep(0.1)
-            changed = self.readBingoFile()
-            self.main.UpdateNumMods(self.numMods)
-            if (changed):
-                self.main.BoardUpdate()
-                self.main.SetSelectedMod(self.selectedMod)
+        time.sleep(1)
+        try:
+            while(self.main.IsRunning() and self.running):
+                time.sleep(0.1)
+                changed = self.readBingoFile()
+                self.main.UpdateNumMods(self.numMods)
+                if (changed):
+                    self.main.BoardUpdate()
+                    self.main.SetSelectedMod(self.selectedMod)
+        except Exception as e:
+            print('readerTask error', e)
+        print('readerTask end', self.main.IsRunning(), self.running)
 
     def bingoNumberToCoord(self,bingoNumber):
         x = bingoNumber//5
@@ -543,8 +567,9 @@ class BingoDisplay:
 
     def resize(self,event):
         if event.widget == self.win:
-            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * BORDER_WIDTH_SCALE
-            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * BORDER_HEIGHT_SCALE
+            widthScale,heightScale = GetBorderScale()
+            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * widthScale
+            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * heightScale
 
             self.main.SetWindowDimensions(self.width,self.height)
 
@@ -635,6 +660,7 @@ class BingoDisplay:
                     image=self.tkBoardImg[x][y],compound="c",
                     width=self.width/5, height=self.height/5,
                     wraplength=self.width/5, font=self.font,fg='white',
+                    activeforeground='white',
                     disabledforeground="white", bd=BUTTON_BORDER_WIDTH
                 )
                 #self.tkBoard[x][y]["state"]='disabled'
@@ -725,6 +751,7 @@ class BingoDisplay:
 
         draw.rectangle([(0,height-barHeight),(width,height)],fill=MAGIC_GREEN)
         draw.rectangle([(0,0),(width,height-barHeight)],fill=POSSIBLE_GREY)
+        self.tkBoard[x][y].config(activebackground=POSSIBLE_GREY)
 
         return img
 
@@ -748,12 +775,13 @@ class BingoDisplay:
         draw = ImageDraw.Draw(img)
 
         draw.rectangle([(0,0),(width,height)],fill=colour)
+        self.tkBoard[x][y].config(activebackground=colour)
 
         return img
 
 
     def updateFinishedTileColour(self,x,y):
-        self.tkBoard[x][y].config(bg=MAGIC_GREEN)
+        self.tkBoard[x][y].config(bg=MAGIC_GREEN,activebackground=MAGIC_GREEN)
         self.UpdateButtonImage(x,y,self.main.GetBoardEntry(x,y))
 
 
@@ -767,7 +795,7 @@ parser.add_argument('--version', action="store_true", help='Output version')
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v3.6'
+    return 'v3.6.1.4 Beta'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)

@@ -3,14 +3,14 @@ class DXRPasswordsBase extends DXRActorsBase abstract;
 var transient DeusExNote lastCheckedNote;
 
 var int num_not_passwords;
-var config string not_passwords[100];
+var string not_passwords[100];
 
 struct YesPassword {
     var string map;
     var string password;
     var string search_for;
 };
-var config YesPassword yes_passwords[64];
+var YesPassword yes_passwords[64];
 
 var travel string oldpasswords[100];
 var travel string newpasswords[100];

@@ -247,21 +247,25 @@ function BindControls(optional string action)
     NewMenuItem("Enemy Respawn Seconds", "How many seconds for enemies to respawn.  Leave blank or 0 to disable.");
     Slider(f.settings.enemyrespawn, 0, 3600);
 
-    NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies.  Leave blank or 0 to disable.");
-    Slider(f.moresettings.reanimation, 0, 3600);
-
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_add, 0, 10000, GetAddTurretsHelpText());
 
+    NewMenuItem("Paris Chill %", "Chance to remove all MJ12 from the Champs-Elysees.");
+    Slider(f.remove_paris_mj12, 0, 100);
+
+    NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies.  Leave blank or 0 to disable.");
+    Slider(f.moresettings.reanimation, 0, 3600);
+
+    NewMenuItem("", "Mr. cannot be killed, but if he takes enough damage then he will go away for a while.");
+    EnumOption("Mr. H is nowhere to be seen.", 0, f.moresettings.stalkers);
+    EnumOption("Mr. H will haunt you.", 100, f.moresettings.stalkers);
+
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
     EnumOption("Random Non-human Stats", 100, f.settings.bot_stats);
-
-    NewMenuItem("Paris Chill %", "Chance to remove all MJ12 from the Champs-Elysees.");
-    Slider(f.remove_paris_mj12, 0, 100);
 
 
     NewGroup("Skills");

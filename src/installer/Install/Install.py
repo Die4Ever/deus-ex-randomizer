@@ -9,6 +9,7 @@ try:
     from GUI.SaveMigration import SaveMigration
     from GUI.KillRunningGame import AskKillGame, CopyExeTo
     from pycrosskit.shortcuts import Shortcut
+    import ctypes
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -90,7 +91,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
         if 'Vanilla'==f:
             ret = InstallVanilla(system, settings, globalsettings)
         if 'Vanilla? Madder.'==f:
-            ret = CreateModConfigs(system, settings, globalsettings, 'VMD', 'VMDSim')
+            ret = InstallVMD(system, settings, globalsettings)
         if 'GMDX v9'==f:
             ret = InstallGMDX(system, settings, 'GMDXv9')
         if 'GMDX RSD'==f:
@@ -111,6 +112,7 @@ def Install(exe:Path, flavors:dict, globalsettings:dict) -> dict:
     CopyDXVK(system, globalsettings['dxvk'], dxvkmaxfps)
     CopyD3DRenderers(system, globalsettings['deus_nsf_d3d10_lighting'], globalsettings['d3d10_textures'])
     InstallOGL2(system, globalsettings['ogl2'])
+    InstallDLLs(list(flavors.values())[0])
 
     debug("Install returning", flavors)
 
@@ -141,7 +143,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
         CopyExeTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
         VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
-                          globalsettings=globalsettings, sourceINI=ini)
+                          settings=settings, globalsettings=globalsettings, sourceINI=ini)
     else:
         info('skipping fixing of vanilla')
 
@@ -171,7 +173,7 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
     VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
-                      globalsettings=globalsettings, sourceINI=ini, ZeroRando=settings.get('ZeroRando', False))
+                      settings=settings, globalsettings=globalsettings, sourceINI=ini)
 
     dxrroot = gameroot / 'DXRando'
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
@@ -212,7 +214,7 @@ def GetSaveAndConfigPaths(system: Path, dxdocs: Path, kentie:bool, SaveDXRando:b
     return (savepath, configs_dest)
 
 
-def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: Path, ZeroRando=False):
+def VanillaFixConfigs(system, exename, kentie, settings:dict, globalsettings:dict, sourceINI: Path):
     c = Config.Config(sourceINI.read_bytes())
     SaveDXRando = ('..\SaveDXRando' == c.get('Core.System', 'SavePath'))
 
@@ -248,7 +250,15 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
     else:
         changes['D3D10Drv.D3D10RenderDevice'].update({'ClassicLighting': 'True'})
 
-    info('ZeroRando:', ZeroRando, exename)
+    ZeroRando = settings.get('ZeroRando', False)
+    ZeroRandoPlus = settings.get('ZeroRandoPlus', False)
+    info('ZeroRando:', ZeroRando, ZeroRandoPlus, exename)
+    if ZeroRandoPlus:
+        gamemode = '12'
+        ZeroRando = True # just in case
+    elif ZeroRando:
+        gamemode = '4'
+
     # if doing an in-place installation like on Linux, we use DeusEx.ini for most things, but this will still be in DXRando.ini
     if ZeroRando and exename == 'DeusEx':
         ZeroRandoIni: Path = configs_dest / ('DXRando.ini')
@@ -257,12 +267,12 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
             c = Config.Config(oldconfig)
         else:
             c = Config.Config(b'')
-        c.ModifyConfig(changes={'DeusEx.DXRFlags': {'gamemode': '4'}}, additions={})
+        c.ModifyConfig(changes={'DeusEx.DXRFlags': {'gamemode': gamemode}}, additions={})
         c.WriteFile(ZeroRandoIni)
     elif ZeroRando:
         if 'DeusEx.DXRFlags' not in changes:
             changes['DeusEx.DXRFlags'] = {}
-        changes['DeusEx.DXRFlags'].update({'gamemode': '4'})
+        changes['DeusEx.DXRFlags'].update({'gamemode': gamemode})
 
     if globalsettings['deus_nsf_d3d10_lighting'] or globalsettings['d3d10_textures'] != 'Smooth':
         # keep D3D10 because obviously they wanted it
@@ -307,23 +317,52 @@ def VanillaFixConfigs(system, exename, kentie, globalsettings:dict, sourceINI: P
     Config.BackupSplits(configs_dest/'DXRSplits.ini')
 
 
-def InstallLDDP(system:Path, settings:dict):
-    if (system/'DeusExConAudioFemJC_HK_Shared.u').exists():
-        info('LDDP already installed in', system, '\n')
-        return
-    callback = settings.get('downloadcallback')
+def DownloadTempFile(url, name, callback):
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
     Mkdir(tempdir, exist_ok=True)
-    name = 'Lay_D_Denton_Project_1.1.zip'
     temp = tempdir / name
     if temp.exists():
         temp.unlink()
 
+    downloadcallback = None
+    if callback:
+        lambda a,b,c : callback(a,b,c, status="Downloading "+name)
+    DownloadFile(url, temp, downloadcallback)
+    return temp
+
+
+def DownloadAndRun(url, name, callback):
+    temp = DownloadTempFile(url, name, callback)
+    ran_as_admin = False
+    if callback:
+        callback(0, 1, 100, 'Running '+name)
+    try:
+        proc = subprocess.run([str(temp)], timeout=86400, creationflags=subprocess.CREATE_NO_WINDOW)
+        temp.unlink()
+    except OSError as e:
+        if e.winerror == 740:
+            # run as admin, non-blocking call, can't delete the file while it is in use
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", str(temp), '', None, 1)
+            ran_as_admin = True
+        else:
+            raise
+    if callback:
+        callback(100, 1, 100, 'Running '+name)
+    if not ran_as_admin and (proc.returncode or proc.returncode is None):
+        info('DownloadAndRun failed', name)
+        return False
+
+
+def InstallLDDP(system:Path, settings:dict):
+    if (system/'DeusExConAudioFemJC_HK_Shared.u').exists():
+        info('LDDP already installed in', system, '\n')
+        return
+
     mapsdir = system.parent / 'Maps'
 
-    url = "https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/" + name
-    downloadcallback = lambda a,b,c : callback(a,b,c, status="Downloading LDDP")
-    DownloadFile(url, temp, downloadcallback)
+    url = "https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/Lay_D_Denton_Project_1.1.zip"
+    callback = settings.get('downloadcallback')
+    temp = DownloadTempFile(url, 'Lay_D_Denton_Project_1.1.zip', callback)
 
     with ZipFile(temp, 'r') as zip:
         files = list(zip.infolist())
@@ -389,6 +428,11 @@ def InstallHX(system:Path, settings:dict):
     int_source = GetPackagesPath('HX') / 'HXRandomizer.int'
     int_dest = system / 'HXRandomizer.int'
     CopyTo(int_source, int_dest)
+
+
+def InstallVMD(system:Path, settings:dict, globalsettings:dict):
+    modname = 'VMD2' if (system.parent/'VMDSim'/'System'/'VMDText.u').exists() else 'VMD'
+    CreateModConfigs(system, settings, globalsettings, modname, 'VMDSim')
 
 
 def CreateModConfigs(system:Path, settings:dict, globalsettings:dict, modname:str, exename:str, in_place:bool=False):
@@ -463,3 +507,14 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         if in_place:
             outconf = confpath
         c.WriteFile(outconf)
+
+
+def InstallDLLs(settings):
+    callback = settings.get('downloadcallback')
+    if not CheckDLL('MSVCP140.dll') or not CheckDLL('VCRUNTIME140.dll'): # "latest" 2015-2022 https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022
+        DownloadAndRun('https://aka.ms/vs/17/release/VC_redist.x86.exe', 'VC_redist2022.x86.exe', callback)
+    if not CheckDLL('MSVCR100.dll'): # 2010 SP1 https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2010-vc-100-sp1-no-longer-supported
+        DownloadAndRun('https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe', 'VC_redist2010.x86.exe', callback)
+    if not CheckDLL('D3DX10_43.DLL'): # DirectX runtimes https://www.microsoft.com/en-us/download/details.aspx?id=35
+        DownloadAndRun('https://download.microsoft.com/download/1/7/1/1718ccc4-6315-4d8e-9543-8e28a4e18c4c/dxwebsetup.exe', 'dxwebsetup.exe', callback)
+

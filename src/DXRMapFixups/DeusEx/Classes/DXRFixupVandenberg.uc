@@ -67,6 +67,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Fan2 fan2;
     local DynamicTeleporter dynt;
     local CrateUnbreakableSmall cus;
+    local #var(prefix)CrateUnbreakableLarge cul;
     local PlaceholderEnemy phe;
     local FacePlayerTrigger fpt;
     local DXRReinforcementPoint reinforce;
@@ -472,6 +473,9 @@ function PreFirstEntryMapFixes()
                     ot.Orders='GoingTo';
                     ot.ordersTag='SpiderDest';
                 }
+
+                cul = spawn(class'#var(prefix)CrateUnbreakableLarge',,, vectm(410, 6380, -4150), rotm(0, 9173, 0, GetRotationOffset(class'#var(prefix)CrateUnbreakableLarge')));
+                cul.bIsSecretGoal = true;
             }
 
             oot=Spawn(class'OnceOnlyTrigger');
@@ -1042,6 +1046,7 @@ function AnyEntryMapFixes()
     local Conversation con;
     local ConEvent ce;
     local ConEventTrigger cet;
+    local ConEventSpeech ces, ces2;
     local #var(DeusExPrefix)Mover dxm;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
@@ -1107,8 +1112,28 @@ function AnyEntryMapFixes()
         SetTimer(1, true);
         break;
     case "12_VANDENBERG_CMD":
+        if (dxr.flags.GetStartingMap() > 120) {
+            // a lot of this conversation doesn't make sense on later starts. but you can't get a map for the bingo goal without it
+            con = GetConversation('MeetCarlaBrown');
+
+            ces = GetSpeechEvent(con.eventList, "Easier than a straight fight with military bots");
+            ces2 = GetSpeechEvent(con.eventList, "I suppose you're right");
+            ces.nextEvent = ces2.nextEvent;
+            ces2.nextEvent = ces;
+
+            ces = GetSpeechEvent(con.eventList, "We have a common enemy");
+            ces.nextEvent = ces2;
+
+            ces = GetSpeechEvent(con.eventList, "You with the NSF?");
+            con.eventList = ces;
+
+            RemoveGoalFromCon('DestroyBots', 'MeetCarlaBrown');
+            RemoveGoalFromCon('ActivatePower', 'MeetCarlaBrown');
+        }
+
         // timer to count the MJ12 Bots
         SetTimer(1, True);
+
         break;
 
     case "14_OCEANLAB_LAB":

@@ -64,7 +64,7 @@ simulated static function PlayDrown(Actor a)
 
 function Destroyed()
 {
-    class'DXREvents'.static.MarkBingo("Dehydrated");
+    class'DXREvents'.static.MarkBingo("Dehydrated_DestroyDeco");
 
     Super.Destroyed();
 }
