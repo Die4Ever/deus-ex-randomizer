@@ -259,9 +259,10 @@ function BindControls(optional string action)
     NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies.  Leave blank or 0 to disable.");
     Slider(f.moresettings.reanimation, 0, 3600);
 
-    NewMenuItem("", "Mr. cannot be killed, but if he takes enough damage then he will go away for a while.");
+    NewMenuItem("", "Stalkers cannot be killed, but if they take enough damage then they will go away for a while.");
     EnumOption("Mr. H is nowhere to be seen.", 0, f.moresettings.stalkers);
     EnumOption("Mr. H will haunt you.", 100, f.moresettings.stalkers);
+    EnumOption("Stalkers will haunt you.", 400, f.moresettings.stalkers);
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);

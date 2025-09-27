@@ -1,6 +1,7 @@
 ## Major Changes
 
-- Added new game mode: Halloween Mean Bingo Machine.
+- New Halloween stalker type: Bobby.
+- Added new game mode: Mr. Page's Horrifying Bingo Machine.
 - Fixed and/or Limited Save modes now get emergency autosaves for crashes and when exiting the game, same as WaltonWare Hardcore.
 
 ## Minor Changes

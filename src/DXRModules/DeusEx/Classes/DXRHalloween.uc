@@ -6,8 +6,7 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     if(!dxr.OnTitleScreen()) {
-        SetSeed("PostFirstEntry stalkers");
-        SpawnStalkers();
+        SpawnStalkers(false);
     }
     if(dxr.flags.IsHalloweenMode()) {
         MapFixes();
@@ -26,30 +25,59 @@ function ReEntry(bool IsTravel)
 {
     if(IsTravel) {
         // recreate if you leave the map and come back, but not if you load a save
-        SetSeed("ReEntry stalkers " $ Level.TimeSeconds);
-        SpawnStalkers();
+        SpawnStalkers(true);
     }
 }
 
-function SpawnStalkers()
+function SpawnStalkers(bool reentry)
 {
     local DXRStalker stalker;
     local int num, i;
+    local bool bBobbys;
+    local vector loc;
 
     // destroy old stalkers before recreating
     foreach AllActors(class'DXRStalker', stalker) {
         stalker.Destroy();
     }
 
-    if(dxr.flags.moresettings.stalkers > 0) {
-        class'MrH'.static.Create(self);
-    }
-    if(dxr.flags.moresettings.stalkers > 100) {
-        num = dxr.flags.moresettings.stalkers/100 - 1;
+    SetSeed("stalkers");
+    bBobbys = rngb() && !bSafeStalkers();
+
+    if(reentry) SetSeed("ReEntry stalkers " $ Level.TimeSeconds);
+    else SetSeed("PostFirstEntry stalkers");
+
+    if(dxr.flags.moresettings.stalkers > 100 && bBobbys) {
+        num = dxr.flags.moresettings.stalkers/100;
         for(i=0; i<num; i++) {
             class'Bobby'.static.Create(self);
         }
     }
+    else if(dxr.flags.moresettings.stalkers > 0) {
+        class'MrH'.static.Create(self);
+    }
+
+    // create some fake Bobbys
+    if(dxr.flags.moresettings.stalkers > 100 && !reentry) {
+        num = dxr.flags.moresettings.stalkers/100;
+        for(i=0; i<num; i++) {
+            loc = GetRandomPosition(player().Location, 16*100, 999999);
+            spawn(class'BobbyFake',,, loc);
+        }
+    }
+}
+
+function bool bSafeStalkers()
+{
+    switch(dxr.localURL) {
+    case "01_NYC_UNATCOHQ":
+    case "03_NYC_UNATCOHQ":
+    case "04_NYC_UNATCOHQ":
+    case "06_HONGKONG_TONGBASE":
+    case "12_VANDENBERG_COMPUTER":
+        return true;
+    }
+    return false;
 }
 
 function MapFixes()
@@ -60,20 +88,16 @@ function MapFixes()
     local ScriptedPawn sp;
     local float dist;
 
-    switch(dxr.localURL) {
-    case "01_NYC_UNATCOHQ":
-    case "03_NYC_UNATCOHQ":
-    case "04_NYC_UNATCOHQ":
-    case "06_HONGKONG_TONGBASE":
-    case "12_VANDENBERG_COMPUTER":
+    if(bSafeStalkers()) {
         //Make people fearless so they don't get spooked by Mr. H
         foreach AllActors(class'ScriptedPawn', sp) {
             if(DXRStalker(sp) == None) {
                 RemoveReactions(sp);
             }
         }
-        break;
+    }
 
+    switch(dxr.localURL) {
     case "09_NYC_GRAVEYARD":
         SetSeed("DXRHalloween MapFixes graveyard bodies");
         foreach AllActors(class'PathNode', p) {
@@ -84,7 +108,7 @@ function MapFixes()
             // exclude the paved path
             if(p.name=='PathNode26' || p.name=='PathNode12' || p.name=='PathNode70' || p.name=='PathNode69' || p.name=='PathNode68') continue;
 
-            if(chance_single(80)) continue;
+            if(chance_single(85)) continue;
 
             switch(rng(7)){
             case 0:
