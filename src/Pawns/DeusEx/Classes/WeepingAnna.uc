@@ -76,13 +76,13 @@ function CheckWakeup(float deltaSeconds)
     local #var(PlayerPawn) seer;
     local name StateName;
 
-    seer = AnyPlayerCanSeeMe(99999, false); // don't respect camo, something something quantum locked (also the player wants to look at them)
+    seer = AnyPlayerCanSeeMe(self, 99999, false); // don't respect camo, something something quantum locked (also the player wants to look at them)
     StateName = GetStateName();
 
     if(seer!=None && StateName!='Sleeping')
     {
         ChangeAlly('Player', -1, false); // we won't fight until we've been seen once
-        SetEnemy(seer, Level.TimeSeconds);
+        SetEnemy(seer, Level.TimeSeconds, true);
         GotoState('Sleeping');
     }
     if(seer==None && StateName=='Sleeping') {

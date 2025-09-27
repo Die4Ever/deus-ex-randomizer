@@ -233,19 +233,19 @@ function bool ShouldDropWeapon()
 }
 
 // used for Bobby and Weeping Anna
-function #var(PlayerPawn) APlayerCanSeeMe(#var(PlayerPawn) p, bool respectCamo)
+static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPawn) p, bool respectCamo)
 {
     local rotator rot;
     local float yaw, pitch, dist;
 
     if(respectCamo) {
-        if (!p.bDetectable || player.bIgnore) return None;
-        if(p.CalculatePlayerVisibility(self) < 0.1) return None; // this only returns 1 or 0
+        if (!p.bDetectable || p.bIgnore) return None;
+        if(p.CalculatePlayerVisibility(sp) < 0.1) return None; // this only returns 1 or 0
     }
-    if(!p.LineOfSightTo(self, true)) return None; // I think this checks top, center, and bottom points
+    if(!p.LineOfSightTo(sp, true)) return None; // I think this checks top, center, and bottom points
 
     // figure out if the player can see us
-    rot = Rotator(Location - p.Location);
+    rot = Rotator(sp.Location - p.Location);
     rot.Roll = 0;
     // diff between player's view rotation and the needed rotation to see
     yaw = (Abs(p.ViewRotation.Yaw - rot.Yaw)) % 65536;
@@ -265,11 +265,11 @@ function #var(PlayerPawn) APlayerCanSeeMe(#var(PlayerPawn) p, bool respectCamo)
     return p;
 }
 
-function #var(PlayerPawn) AnyPlayerCanSeeMe(float MaxDist, bool respectCamo)
+static function #var(PlayerPawn) AnyPlayerCanSeeMe(ScriptedPawn sp, float MaxDist, bool respectCamo)
 {
     local #var(PlayerPawn) p, ret;
-    foreach RadiusActors(class'#var(PlayerPawn)', p, MaxDist) {
-        ret = APlayerCanSeeMe(p, respectCamo);
+    foreach sp.RadiusActors(class'#var(PlayerPawn)', p, MaxDist) {
+        ret = APlayerCanSeeMe(sp, p, respectCamo);
         if(ret!=None) return ret;
     }
     return None;

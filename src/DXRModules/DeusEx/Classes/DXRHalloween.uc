@@ -1,21 +1,24 @@
 class DXRHalloween extends DXRActorsBase transient;
 
+var vector minPoint, maxPoint;
+
 function PostFirstEntry()
 {
     local #var(prefix)WHPiano piano;
     Super.PostFirstEntry();
+
+    if(IsOctober()) { // cosmetics
+        MakeCosmetics();
+        foreach AllActors(class'#var(prefix)WHPiano', piano) {
+            piano.ItemName = "Staufway Piano";
+        }
+    }
 
     if(!dxr.OnTitleScreen()) {
         SpawnStalkers(false);
     }
     if(dxr.flags.IsHalloweenMode()) {
         MapFixes();
-    }
-    if(IsOctober()) { // cosmetics
-        foreach AllActors(class'#var(prefix)WHPiano', piano) {
-            piano.ItemName = "Staufway Piano";
-        }
-        MakeCosmetics();
     }
 
     MakeBlackCats(); //Black cats always exist
@@ -52,8 +55,8 @@ function SpawnStalkers(bool reentry)
         class'WeepingAnna'.static.Create(self);
     }
     else if(stalkerType==2) {
-        num = dxr.flags.moresettings.stalkers/100;
         if(bSafeStalkers()) num = 1; // only 1 in these maps
+        else num = NumBobbys();
         for(i=0; i<num; i++) {
             class'Bobby'.static.Create(self);
         }
@@ -64,12 +67,27 @@ function SpawnStalkers(bool reentry)
 
     // create some fake Bobbys
     if(dxr.flags.moresettings.stalkers > 100 && !reentry) {
-        num = dxr.flags.moresettings.stalkers/100;
+        num = NumBobbys();
         for(i=0; i<num; i++) {
             loc = GetRandomPosition(player().Location, 16*100, 999999);
             spawn(class'BobbyFake',,, loc);
         }
     }
+}
+
+function int NumBobbys()
+{
+    local int num;
+    local float area; // cubic feet
+
+    if(VSize(maxPoint-minPoint) < 1) GetMapSize();
+    area = ((maxPoint.X-minPoint.X)/16) * ((maxPoint.Y-minPoint.Y)/16) * FMax((maxPoint.Z-minPoint.Z)/16, 1);
+
+    num = dxr.flags.moresettings.stalkers/100;
+    num = FClamp(area/1000000.0 * num, 1, num+1);
+    l(dxr.localUrl $ " map size: " $ area $ ", NumBobbys: " $ num);
+
+    return num;
 }
 
 function bool bSafeStalkers()
@@ -152,6 +170,24 @@ function MapFixes()
     }
 }
 
+function GetMapSize()
+{ // if we need map size but MakeCosmetics didn't run
+    local NavigationPoint p;
+
+    foreach AllActors(class'NavigationPoint', p) {
+        if(p.Region.Zone.bWaterZone) continue;
+
+        if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
+        if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
+        minPoint.X = FMin(p.Location.X, minPoint.X);
+        minPoint.Y = FMin(p.Location.Y, minPoint.Y);
+        minPoint.Z = FMin(p.Location.Z, minPoint.Z);
+        maxPoint.X = FMax(p.Location.X, maxPoint.X);
+        maxPoint.Y = FMax(p.Location.Y, maxPoint.Y);
+        maxPoint.Z = FMax(p.Location.Z, maxPoint.Z);
+    }
+}
+
 function MakeCosmetics()
 {
     local NavigationPoint p;
@@ -170,6 +206,16 @@ function MakeCosmetics()
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
         locs[len++] = p.Location;
+
+        // calc map size
+        if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
+        if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
+        minPoint.X = FMin(p.Location.X, minPoint.X);
+        minPoint.Y = FMin(p.Location.Y, minPoint.Y);
+        minPoint.Z = FMin(p.Location.Z, minPoint.Z);
+        maxPoint.X = FMax(p.Location.X, maxPoint.X);
+        maxPoint.Y = FMax(p.Location.Y, maxPoint.Y);
+        maxPoint.Z = FMax(p.Location.Z, maxPoint.Z);
     }
 
     SetSeed("MakeJackOLanterns");

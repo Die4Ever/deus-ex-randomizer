@@ -55,6 +55,8 @@ Begin:
     }
     bDetectable=true;
     bIgnore=false;
+    ChangeAlly('Player', -1, false);
+    bKeepWeaponDrawn=true;
     SetOrders('Wandering');
     if(Enemy!=None) HandleSighting(Enemy);
     else GotoState('Seeking');
@@ -64,11 +66,11 @@ function CheckWakeup(float deltaSeconds)
 {
     local #var(PlayerPawn) seer;
 
-    seer = AnyPlayerCanSeeMe(800, true); // respect camo, this is Bobby trying to be sneaky
+    seer = AnyPlayerCanSeeMe(self, 800, true); // respect camo, this is Bobby trying to be sneaky
 
     if(seer!=None)
     {
-        SetEnemy(seer, Level.TimeSeconds);
+        SetEnemy(seer, Level.TimeSeconds, true);
         LookAtActor(seer,true,true,true);
         seenCounter += deltaSeconds;
         unSeenCounter = 0;
@@ -197,7 +199,7 @@ defaultproperties
     InitialInventory(3)=(Inventory=None)
     InitialInventory(4)=(Inventory=None)
     Alliance=Stalkers
-    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
+    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=0,bPermanent=True)
     HearingThreshold=0
     walkAnimMult=1.572265625
     runAnimMult=0.9
@@ -211,7 +213,7 @@ defaultproperties
     HitSound1=Sound'ChildPainMedium';
     HitSound2=Sound'ChildPainLarge';
     Die=Sound'ChildDeath';
-    bKeepWeaponDrawn=True
+    bKeepWeaponDrawn=False
     // faster jump scares
     SurprisePeriod=0.1
 }

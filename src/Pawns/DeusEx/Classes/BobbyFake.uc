@@ -11,6 +11,19 @@ function Tick(float deltaSeconds)
     Super.Tick(deltaSeconds);
     bDetectable=false; // HACK: idk why these need to be set again
     bIgnore=true;
+    CheckWakeup(deltaSeconds);
+}
+
+function CheckWakeup(float deltaSeconds)
+{
+    local #var(PlayerPawn) seer;
+
+    seer = class'DXRStalker'.static.AnyPlayerCanSeeMe(self, 800, true); // respect camo, this is Bobby trying to be sneaky
+
+    if(seer!=None)
+    {
+        LookAtActor(seer,true,true,true);
+    }
 }
 
 function PlayTakeHitSound(int Damage, name damageType, int Mult)
@@ -59,13 +72,13 @@ defaultproperties
     MultiSkins(5)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(6)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(7)=Texture'DeusExItems.Skins.BlackMaskTex'
-    InitialInventory(0)=(Inventory=class'WeaponBobbysKnife')
+    InitialInventory(0)=(Inventory=None)
     InitialInventory(1)=(Inventory=None)
     InitialInventory(2)=(Inventory=None)
     InitialInventory(3)=(Inventory=None)
     InitialInventory(4)=(Inventory=None)
     Alliance=Stalkers
-    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
+    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=0,bPermanent=True)
     HearingThreshold=0
     walkAnimMult=1.572265625
     runAnimMult=0.9
@@ -78,6 +91,6 @@ defaultproperties
     HitSound1=Sound'ChildPainMedium';
     HitSound2=Sound'ChildPainLarge';
     Die=Sound'ChildDeath';
-    bKeepWeaponDrawn=True
+    bKeepWeaponDrawn=False
     DrawType=DT_Mesh
 }
