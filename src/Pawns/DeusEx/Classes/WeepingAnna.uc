@@ -5,6 +5,9 @@ class WeepingAnna extends DXRStalker;
 var float OldAnimRate;
 var int SpottedSoundId;
 var float SpottedSoundTimer;
+var float LastSeen;
+
+const RecentlySeenTime=60.0;
 
 function Tick(float delta)
 {
@@ -70,22 +73,54 @@ Begin:
     else GotoState('Seeking');
 }
 
+function bool AnyNearPlayerInConvOrCut(float MaxDist)
+{
+    local #var(PlayerPawn) p;
+    local name playerStateName;
+    foreach RadiusActors(class'#var(PlayerPawn)', p, MaxDist) {
+        playerStateName=p.GetStateName();
+        if (playerStateName=='Conversation') return true;
+        if (playerStateName=='Paralyzed') return true;
+        if (playerStateName=='Interpolating') return true;
+        if (playerStateName=='Dying') return true;
+    }
+    return false;
+}
+
+function bool RecentlySeen()
+{
+    return (Level.TimeSeconds - LastSeen) < RecentlySeenTime;
+}
+
+function InitializePawn()
+{
+    Super.InitializePawn();
+    GotoState('Sleeping');
+}
+
 function CheckWakeup(float deltaSeconds)
 {
-    local bool bSeen;
+    local bool bSeen, inConv;
     local #var(PlayerPawn) seer;
     local name StateName;
 
     seer = AnyPlayerCanSeeMe(self, 99999, false); // don't respect camo, something something quantum locked (also the player wants to look at them)
+    inConv = AnyNearPlayerInConvOrCut(99999); //Check to see if anyone is in a conversation or cutscene that changes vision
     StateName = GetStateName();
 
-    if(seer!=None && StateName!='Sleeping')
+    if (seer!=None){
+        LastSeen=Level.TimeSeconds;
+    }
+
+    if((seer!=None || inConv) && StateName!='Sleeping')
     {
-        ChangeAlly('Player', -1, false); // we won't fight until we've been seen once
-        SetEnemy(seer, Level.TimeSeconds, true);
+        if(seer!=None){
+            ChangeAlly('Player', -1, false); // we won't fight until we've been seen once
+            SetEnemy(seer, Level.TimeSeconds, true);
+        }
         GotoState('Sleeping');
     }
-    if(seer==None && StateName=='Sleeping') {
+    if(seer==None && !inConv && StateName=='Sleeping') {
         GotoState('Wakeup');
     }
 }
@@ -94,6 +129,200 @@ function PlayFootStep()
 {
     // silent
 }
+
+//#region Animations
+function PlayAnimPivot(name Sequence, optional float Rate, optional float TweenTime,
+                       optional vector NewPrePivot)
+{
+    SelectPose();
+}
+
+function LoopAnimPivot(name Sequence, optional float Rate, optional float TweenTime, optional float MinRate,
+                       optional vector NewPrePivot)
+{
+    SelectPose();
+}
+
+function TweenAnimPivot(name Sequence, float TweenTime,
+                        optional vector NewPrePivot)
+{
+    SelectPose();
+}
+//#endregion
+
+function PlayDying(name DamageType, vector HitLoc)
+{
+    Super.PlayDying(DamageType,HitLoc);
+    ShatterBody();
+}
+
+function Carcass SpawnCarcass()
+{
+    ShatterBody();
+    return None;
+}
+
+function ShatterBody()
+{
+    local int i;
+    local bool spawnit;
+
+    //Break into rock fragments
+    for(i=0;i<15;i++){
+        if(i<8){
+            spawnit=true;
+        } else {
+            spawnit=(FRand()<0.5);
+        }
+
+        if(spawnit){
+            if(FRand()<0.5){
+                spawn(class'Rockchip',,,Location);
+            } else {
+                spawn(class'BigRockFragment',,,Location);
+            }
+        }
+    }
+
+}
+
+//#region Posing
+function GoToAnimFrame(name Sequence,float AnimFrame)
+{
+    PlayAnim(Sequence);
+    AnimFrame=AnimFrame;
+    AnimRate=0.0;
+
+}
+
+//Pick from preselected frames of animation
+//Makes the poses more fun, and lets us get a bit more diversity
+function SelectPose()
+{
+    local Name SeqName;
+    local float FrameNum;
+
+    if (!RecentlySeen()){
+        //Revert to "weeping" pose if you haven't seen them for a while
+        GoToAnimFrame('RubEyes',0.12);
+        return;
+    }
+
+    switch(Rand(27))
+    {
+        case 0:
+            SeqName='Attack';
+            FrameNum=0.0;
+            break;
+        case 1:
+            SeqName='Attack';
+            FrameNum=0.05;
+            break;
+        case 2:
+            SeqName='Attack';
+            FrameNum=0.15;
+            break;
+        case 3:
+            SeqName='Attack';
+            FrameNum=0.3;
+            break;
+        case 4:
+            SeqName='Attack';
+            FrameNum=0.4;
+            break;
+        case 5:
+            SeqName='Attack';
+            FrameNum=0.55;
+            break;
+        case 6:
+            SeqName='Shoot';
+            FrameNum=0.0;
+            break;
+        case 7:
+            SeqName='Shoot';
+            FrameNum=0.3;
+            break;
+        case 8:
+            SeqName='Run';
+            FrameNum=0.15;
+            break;
+        case 9:
+            SeqName='Run';
+            FrameNum=0.25;
+            break;
+        case 10:
+            SeqName='Run';
+            FrameNum=0.6;
+            break;
+        case 11:
+            SeqName='Run';
+            FrameNum=0.75;
+            break;
+        case 12:
+            SeqName='Panic';
+            FrameNum=0.25;
+            break;
+        case 13:
+            SeqName='Panic';
+            FrameNum=0.75;
+            break;
+        case 14:
+            SeqName='PushButton';
+            FrameNum=0.25;
+            break;
+        case 15:
+            SeqName='PushButton';
+            FrameNum=0.5;
+            break;
+        case 16:
+            SeqName='CowerBegin';
+            FrameNum=0.15;
+            break;
+        case 17:
+            SeqName='AttackSide';
+            FrameNum=0.2;
+            break;
+        case 18:
+            SeqName='AttackSide';
+            FrameNum=0.3;
+            break;
+        case 19:
+            SeqName='AttackSide';
+            FrameNum=0.5;
+            break;
+        case 20:
+            SeqName='AttackSide';
+            FrameNum=0.6;
+            break;
+        case 21:
+            SeqName='Walk';
+            FrameNum=0.1;
+            break;
+        case 22:
+            SeqName='Jump';
+            FrameNum=0.2;
+            break;
+        case 23:
+            SeqName='HitHeadBack';
+            FrameNum=0.3;
+            break;
+        case 24:
+            SeqName='HitTorsoBack';
+            FrameNum=0.4;
+            break;
+        case 25:
+            SeqName='HitTorso';
+            FrameNum=0.8;
+            break;
+        case 26:
+            SeqName='GestureBoth';
+            FrameNum=0.4;
+            break;
+    }
+
+    GoToAnimFrame(SeqName,FrameNum);
+}
+//#endregion
 
 defaultproperties
 {
@@ -113,9 +342,7 @@ defaultproperties
     InitialInventory(3)=(Inventory=None)
     InitialInventory(4)=(Inventory=None)
     bCanStrafe=false
-    BurnPeriod=5.000000
-    bHasCloak=True
-    CloakThreshold=100
+    BurnPeriod=0.000000
     bIsFemale=True
     BaseEyeHeight=38.000000
     Health=300
@@ -127,17 +354,21 @@ defaultproperties
     HealthArmRight=300
     Mesh=LodMesh'DeusExCharacters.GFM_TShirtPants'
     DrawScale=1.100000
-    MultiSkins(0)=Texture'DeusExCharacters.Skins.AnnaNavarreTex0'
+    MultiSkins(0)=Texture'WeepingAnnaFace'
     MultiSkins(1)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(2)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(3)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(4)=Texture'DeusExItems.Skins.BlackMaskTex'
-    MultiSkins(5)=Texture'DeusExCharacters.Skins.AnnaNavarreTex0'
-    MultiSkins(6)=Texture'DeusExCharacters.Skins.PantsTex9'
-    MultiSkins(7)=Texture'DeusExCharacters.Skins.AnnaNavarreTex1'
+    MultiSkins(5)=Texture'WeepingAnnaFace'
+    MultiSkins(6)=Texture'WeepingAnnaPants'
+    MultiSkins(7)=Texture'WeepingAnnaShirt'
     CollisionHeight=47.299999
     FamiliarName="Weeping Anna"
     UnfamiliarName="Weeping Anna"
     Alliance=WeepingAnna
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=0,bPermanent=True)
+    AnimSequence=RubEyes
+    AnimFrame=0.12
+    AnimRate=1.0
+    LastSeen=-100.0
 }
