@@ -422,7 +422,8 @@ function PreFirstEntryMapFixes()
                 rot(0, -16384, 0)
             ));
             compublic.TextPackage = "#var(package)";
-            compublic.BulletinTag = '04_BulletinMenuUnatco';
+            if(dxr.flags.IsHalloweenMode()) compublic.BulletinTag = '04_BulletinMenuHalloween';
+            else compublic.BulletinTag = '04_BulletinMenuUnatco';
 
             foreach AllActors(class'#var(prefix)UNATCOTroop', troop) {
                 if (troop.FamiliarName == "Scott") {

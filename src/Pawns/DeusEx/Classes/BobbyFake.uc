@@ -12,6 +12,7 @@ function Tick(float deltaSeconds)
     bDetectable=false; // HACK: idk why these need to be set again
     bIgnore=true;
     CheckWakeup(deltaSeconds);
+    LipSynch(deltaSeconds); // blink
 }
 
 function CheckWakeup(float deltaSeconds)

@@ -1,6 +1,6 @@
 class DXRHalloween extends DXRActorsBase transient;
 
-var vector minPoint, maxPoint;
+var int num_nav_points;
 
 function PostFirstEntry()
 {
@@ -78,14 +78,12 @@ function SpawnStalkers(bool reentry)
 function int NumBobbys()
 {
     local int num;
-    local float area; // cubic feet
 
-    if(VSize(maxPoint-minPoint) < 1) GetMapSize();
-    area = ((maxPoint.X-minPoint.X)/16) * ((maxPoint.Y-minPoint.Y)/16) * FMax((maxPoint.Z-minPoint.Z)/16, 1);
+    if(num_nav_points == 0) GetMapSize();
 
     num = dxr.flags.moresettings.stalkers/100;
-    num = FClamp(area/1000000.0 * num, 1, num+1);
-    l(dxr.localUrl $ " map size: " $ area $ ", NumBobbys: " $ num);
+    num = FClamp(float(num_nav_points)/320 * num, 1, num); // 02_bar has 80
+    l(dxr.localUrl $ " map size: " $ num_nav_points $ ", NumBobbys: " $ num);
 
     return num;
 }
@@ -174,17 +172,13 @@ function GetMapSize()
 { // if we need map size but MakeCosmetics didn't run
     local NavigationPoint p;
 
+    num_nav_points = 0;
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
 
         if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
         if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
-        minPoint.X = FMin(p.Location.X, minPoint.X);
-        minPoint.Y = FMin(p.Location.Y, minPoint.Y);
-        minPoint.Z = FMin(p.Location.Z, minPoint.Z);
-        maxPoint.X = FMax(p.Location.X, maxPoint.X);
-        maxPoint.Y = FMax(p.Location.Y, maxPoint.Y);
-        maxPoint.Z = FMax(p.Location.Z, maxPoint.Z);
+        num_nav_points++;
     }
 }
 
@@ -203,6 +197,7 @@ function MakeCosmetics()
         z.AmbientHue = 255;
     }
 
+    num_nav_points = 0;
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
         locs[len++] = p.Location;
@@ -210,12 +205,7 @@ function MakeCosmetics()
         // calc map size
         if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
         if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
-        minPoint.X = FMin(p.Location.X, minPoint.X);
-        minPoint.Y = FMin(p.Location.Y, minPoint.Y);
-        minPoint.Z = FMin(p.Location.Z, minPoint.Z);
-        maxPoint.X = FMax(p.Location.X, maxPoint.X);
-        maxPoint.Y = FMax(p.Location.Y, maxPoint.Y);
-        maxPoint.Z = FMax(p.Location.Z, maxPoint.Z);
+        num_nav_points++;
     }
 
     SetSeed("MakeJackOLanterns");

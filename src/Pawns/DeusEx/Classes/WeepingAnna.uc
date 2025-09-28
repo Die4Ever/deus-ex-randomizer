@@ -71,7 +71,8 @@ Begin:
     bDetectable=true;
     bIgnore=false;
     SetOrders('Wandering');
-    if(Enemy!=None) HandleSighting(Enemy);
+    OrderActor=Enemy;
+    if(OrderActor!=None) GotoState('RunningTo');
     else GotoState('Seeking');
 }
 

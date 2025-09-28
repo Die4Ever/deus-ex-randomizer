@@ -36,6 +36,7 @@ state Sleeping
     {
         Global.Tick(deltaSeconds);
         CheckWakeup(deltaSeconds);
+        LipSynch(deltaSeconds); // blink
         bDetectable=false; // HACK: idk why these need to be set again
         bIgnore=true;
     }
