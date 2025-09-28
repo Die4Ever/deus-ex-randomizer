@@ -55,6 +55,7 @@ Begin:
 
 Idle:
     Acceleration=vect(0,0,0);
+    Velocity=vect(0,0,0);
     DesiredRotation=Rotation;
     OldAnimRate=AnimRate;
     AnimRate=0;
@@ -72,7 +73,7 @@ Begin:
     bIgnore=false;
     SetOrders('Wandering');
     OrderActor=Enemy;
-    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) GotoState('Attacking');
+    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) SetOrders('Attacking');
     else if(OrderActor!=None) GotoState('RunningTo');
     else GotoState('Seeking');
 }
@@ -120,7 +121,8 @@ function CheckWakeup(float deltaSeconds)
     if((seer!=None || inConv) && StateName!='Sleeping')
     {
         if(seer!=None){
-            ChangeAlly('Player', -1, false); // we won't fight until we've been seen once
+            ChangeAlly('Player', -1, true); // we won't fight until we've been seen once
+            SetSeekLocation(seer, seer.Location, SEEKTYPE_Sight, true);
             SetEnemy(seer, Level.TimeSeconds, true);
         }
         GotoState('Sleeping');
@@ -128,6 +130,12 @@ function CheckWakeup(float deltaSeconds)
     if(seer==None && !inConv && StateName=='Sleeping') {
         GotoState('Wakeup');
     }
+}
+
+function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
+{
+    if(#var(PlayerPawn)(instigatedBy) == None) return; // she only cares about the player
+    Super.ReactToInjury(instigatedBy, damageType, hitPos);
 }
 
 function PlayFootStep()
@@ -341,6 +349,7 @@ defaultproperties
     HearingThreshold=0
     bKeepWeaponDrawn=True // maybe faster response?
     BaseAccuracy=0.1
+    MaxProvocations=99999
 
     CloseCombatMult=0.500000
     BaseAssHeight=-19.64

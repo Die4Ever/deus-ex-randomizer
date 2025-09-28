@@ -299,4 +299,8 @@ defaultproperties
     bLookingForLoudNoise=true
     bReactLoudNoise=true
     bImportant=True
+
+    bHateShot=False
+    bHateInjury=False
+    RaiseAlarm=RAISEALARM_Never
 }

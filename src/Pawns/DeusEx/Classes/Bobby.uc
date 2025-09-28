@@ -55,11 +55,11 @@ Begin:
     }
     bDetectable=true;
     bIgnore=false;
-    ChangeAlly('Player', -1, false);
+    ChangeAlly('Player', -1, true);
     bKeepWeaponDrawn=true;
     SetOrders('Wandering');
     OrderActor=Enemy;
-    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) GotoState('Attacking');
+    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) SetOrders('Attacking');
     else if(OrderActor!=None) GotoState('RunningTo');
     else GotoState('Seeking');
 }
@@ -72,6 +72,7 @@ function CheckWakeup(float deltaSeconds)
 
     if(seer!=None)
     {
+        SetSeekLocation(seer, seer.Location, SEEKTYPE_Sight, true);
         SetEnemy(seer, Level.TimeSeconds, true);
         LookAtActor(seer,true,true,true);
         seenCounter += deltaSeconds;
