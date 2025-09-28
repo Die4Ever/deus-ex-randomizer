@@ -66,13 +66,14 @@ Begin:
     if(AnimRate==0) AnimRate=OldAnimRate;
     if(Enemy!=None) {
         LookAtActor(Enemy,true,true,true);
-        Sleep(0.1);
+        Sleep(0.05);
     }
     bDetectable=true;
     bIgnore=false;
     SetOrders('Wandering');
     OrderActor=Enemy;
-    if(OrderActor!=None) GotoState('RunningTo');
+    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) GotoState('Attacking');
+    else if(OrderActor!=None) GotoState('RunningTo');
     else GotoState('Seeking');
 }
 

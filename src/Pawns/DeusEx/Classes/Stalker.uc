@@ -232,16 +232,19 @@ function bool ShouldDropWeapon()
     return false;
 }
 
+static function bool PlayerCloaked(#var(PlayerPawn) p, ScriptedPawn sp)
+{
+    if(p==None) return false;
+    return !p.bDetectable || p.bIgnore || p.CalculatePlayerVisibility(sp) < 0.1;
+}
+
 // used for Bobby and Weeping Anna
 static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPawn) p, bool respectCamo)
 {
     local rotator rot;
     local float yaw, pitch, dist;
 
-    if(respectCamo) {
-        if (!p.bDetectable || p.bIgnore) return None;
-        if(p.CalculatePlayerVisibility(sp) < 0.1) return None; // this only returns 1 or 0
-    }
+    if(respectCamo && PlayerCloaked(p, sp)) return None;
     if(!p.LineOfSightTo(sp, true)) return None; // I think this checks top, center, and bottom points
 
     // figure out if the player can see us

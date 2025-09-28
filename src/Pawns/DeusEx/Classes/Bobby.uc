@@ -52,14 +52,15 @@ state Wakeup
 Begin:
     if(Enemy!=None) {
         LookAtActor(Enemy,true,true,true);
-        Sleep(0.1);
     }
     bDetectable=true;
     bIgnore=false;
     ChangeAlly('Player', -1, false);
     bKeepWeaponDrawn=true;
     SetOrders('Wandering');
-    if(Enemy!=None) HandleSighting(Enemy);
+    OrderActor=Enemy;
+    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) GotoState('Attacking');
+    else if(OrderActor!=None) GotoState('RunningTo');
     else GotoState('Seeking');
 }
 
