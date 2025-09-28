@@ -7,7 +7,7 @@ auto state Flying
         Super.BeginState();
 
         Velocity = VRand() * 300;
-        DrawScale = FRand() + 1.5;
+        DrawScale = FRand() + 1.6;
     }
 }
 

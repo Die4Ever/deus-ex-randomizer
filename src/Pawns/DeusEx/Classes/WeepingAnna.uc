@@ -7,7 +7,7 @@ var int SpottedSoundId;
 var float SpottedSoundTimer;
 var float LastSeen;
 
-const RecentlySeenTime=60.0;
+const RecentlySeenTime=30.0;
 
 function Tick(float delta)
 {
@@ -48,14 +48,16 @@ state Sleeping
     }
 
 Begin:
-    Acceleration=vect(0,0,0);
-    DesiredRotation=Rotation;
-    OldAnimRate=AnimRate;
-    AnimRate=0;
     Spawn(class'WeepingAnnaLight'); // tiny light, fade in and fade out quickly, almost a strobe
     if(SpottedSoundId>0) StopSound(SpottedSoundId);
     SpottedSoundId = PlaySound(Sound'DeusExSounds.Generic.GlassBreakSmall',, 2,, 600, 0.5);
     SpottedSoundTimer = 0.2;
+
+Idle:
+    Acceleration=vect(0,0,0);
+    DesiredRotation=Rotation;
+    OldAnimRate=AnimRate;
+    AnimRate=0;
 }
 
 state Wakeup
@@ -76,13 +78,14 @@ Begin:
 function bool AnyNearPlayerInConvOrCut(float MaxDist)
 {
     local #var(PlayerPawn) p;
-    local name playerStateName;
     foreach RadiusActors(class'#var(PlayerPawn)', p, MaxDist) {
-        playerStateName=p.GetStateName();
-        if (playerStateName=='Conversation') return true;
-        if (playerStateName=='Paralyzed') return true;
-        if (playerStateName=='Interpolating') return true;
-        if (playerStateName=='Dying') return true;
+        switch(p.GetStateName()) {
+            case 'Conversation':
+            case 'Paralyzed':
+            case 'Interpolating':
+            case 'Dying':
+                return true;
+        }
     }
     return false;
 }
@@ -95,7 +98,7 @@ function bool RecentlySeen()
 function InitializePawn()
 {
     Super.InitializePawn();
-    GotoState('Sleeping');
+    GotoState('Sleeping', 'Idle'); // skip the light and sound effect of being spotted
 }
 
 function CheckWakeup(float deltaSeconds)
@@ -168,8 +171,8 @@ function ShatterBody()
     local bool spawnit;
 
     //Break into rock fragments
-    for(i=0;i<15;i++){
-        if(i<8){
+    for(i=0;i<16;i++){
+        if(i<10){
             spawnit=true;
         } else {
             spawnit=(FRand()<0.5);
@@ -202,7 +205,7 @@ function SelectPose()
     local Name SeqName;
     local float FrameNum;
 
-    if (!RecentlySeen()){
+    if (!RecentlySeen() && !IsInState('Attacking')){
         //Revert to "weeping" pose if you haven't seen them for a while
         GoToAnimFrame('RubEyes',0.12);
         return;
@@ -327,16 +330,19 @@ function SelectPose()
 defaultproperties
 {
     CarcassType=Class'DeusEx.AnnaNavarreCarcass'
-    WalkingSpeed=0.8
-    walkAnimMult=1.9
-    GroundSpeed=500
-    runAnimMult=1.7
+    WalkingSpeed=1
+    walkAnimMult=2
+    GroundSpeed=700
+    AccelRate=1500
+    runAnimMult=2
     SurprisePeriod=0.1
     HearingThreshold=0
+    bKeepWeaponDrawn=True // maybe faster response?
+    BaseAccuracy=0.1
 
     CloseCombatMult=0.500000
-    BaseAssHeight=-18.000000
-    InitialInventory(0)=(Inventory=class'WeaponMrHPunch')
+    BaseAssHeight=-19.64
+    InitialInventory(0)=(Inventory=class'WeaponWeepingAnnaPunch')
     InitialInventory(1)=(Inventory=None)
     InitialInventory(2)=(Inventory=None)
     InitialInventory(3)=(Inventory=None)
@@ -344,7 +350,7 @@ defaultproperties
     bCanStrafe=false
     BurnPeriod=0.000000
     bIsFemale=True
-    BaseEyeHeight=38.000000
+    BaseEyeHeight=41.45
     Health=300
     HealthHead=400
     HealthTorso=300
@@ -353,7 +359,7 @@ defaultproperties
     HealthArmLeft=300
     HealthArmRight=300
     Mesh=LodMesh'DeusExCharacters.GFM_TShirtPants'
-    DrawScale=1.100000
+    DrawScale=1.2
     MultiSkins(0)=Texture'WeepingAnnaFace'
     MultiSkins(1)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(2)=Texture'DeusExItems.Skins.PinkMaskTex'
@@ -362,13 +368,16 @@ defaultproperties
     MultiSkins(5)=Texture'WeepingAnnaFace'
     MultiSkins(6)=Texture'WeepingAnnaPants'
     MultiSkins(7)=Texture'WeepingAnnaShirt'
-    CollisionHeight=47.299999
+    CollisionHeight=51.6
+    CollisionRadius=20 // Anna is 22, skinnier makes easier pathing?
+    Mass=250 // Anna is 150
+    Buoyancy=0
     FamiliarName="Weeping Anna"
     UnfamiliarName="Weeping Anna"
     Alliance=WeepingAnna
-    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=0,bPermanent=True)
+    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=0,bPermanent=False)
     AnimSequence=RubEyes
     AnimFrame=0.12
-    AnimRate=1.0
+    AnimRate=0.0
     LastSeen=-100.0
 }
