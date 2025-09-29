@@ -207,6 +207,7 @@ state Wandering
 
 function GenerateTotalHealth()
 {
+    local bool bWasInvincible;
     // you can hurt him but you can't kill him
     HealthHead     = FClamp(HealthHead, FleeHealth/2, default.HealthHead);
     HealthTorso    = FClamp(HealthTorso, FleeHealth/2, default.HealthTorso);
@@ -214,9 +215,12 @@ function GenerateTotalHealth()
     HealthArmRight = FClamp(HealthArmRight, FleeHealth/2, default.HealthArmRight);
     HealthLegLeft  = FClamp(HealthLegLeft, FleeHealth/2, default.HealthLegLeft);
     HealthLegRight = FClamp(HealthLegRight, FleeHealth/2, default.HealthLegRight);
-    bInvincible    = false;// damageproxy hack, GenerateTotalHealth() sets health to maximum when invincible
+    if(bInvincible) {
+        bInvincible = false;// damageproxy hack, GenerateTotalHealth() sets health to maximum when invincible
+        bWasInvincible = true;
+    }
     Super.GenerateTotalHealth();
-    bInvincible    = true;// damageproxy hack
+    if(bWasInvincible) bInvincible = true;
     Health = FClamp(Health, FleeHealth/2, default.Health);
 }
 

@@ -9,6 +9,10 @@ var float LastSeen;
 
 const RecentlySeenTime=30.0;
 
+// for bumping pawns
+var Actor lastBumpActor;
+var float lastBumpTime;
+
 function Tick(float delta)
 {
     Super.Tick(delta);
@@ -141,6 +145,31 @@ function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 function PlayFootStep()
 {
     // silent
+}
+
+
+event Bump( Actor Other )
+{
+    if(Teleporter(Other) != None || #var(prefix)MapExit(Other) != None) {
+        Other.SetCollision( Other.bCollideActors, false, Other.bBlockPlayers );
+    } else if(Decoration(Other) != None) {
+        BumpDamage(Other, 5, 500);
+    } else if(ScriptedPawn(Other) != None) {
+        BumpDamage(Other, 1, 30000);
+    } else if(DamageProxy(Other) != None) {
+        return;
+    }
+
+    Super.Bump(Other);
+}
+
+function BumpDamage(Actor Other, int damage, float momentum)
+{
+    if(Other != lastBumpActor || lastBumpTime < Level.TimeSeconds-1) {
+        Other.TakeDamage(damage, None, Location, Vect(0,1,0.5)*momentum, 'Shot');
+        lastBumpActor = Other;
+        lastBumpTime = Level.TimeSeconds;
+    }
 }
 
 //#region Animations

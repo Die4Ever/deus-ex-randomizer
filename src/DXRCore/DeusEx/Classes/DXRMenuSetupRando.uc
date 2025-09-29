@@ -260,9 +260,17 @@ function BindControls(optional string action)
     Slider(f.moresettings.reanimation, 0, 3600);
 
     NewMenuItem("", "Stalkers cannot be killed, but if they take enough damage then they will go away for a while.");
-    EnumOption("Mr. H is nowhere to be seen.", 0, f.moresettings.stalkers);
-    EnumOption("Mr. H will haunt you.", 100, f.moresettings.stalkers);
-    EnumOption("Stalkers will haunt you.", 400, f.moresettings.stalkers);
+    EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers); // 2023 style :(
+    EnumOption("Mr. H will haunt you.", 0x00040001, f.moresettings.stalkers); // 2024 style
+    EnumOption("Weeping Anna will haunt you.", 0x00040002, f.moresettings.stalkers);
+    EnumOption("Mr. H and Weeping Anna will haunt you.", 0x00040003, f.moresettings.stalkers);
+    EnumOption("Bobbys will haunt you.", 0x00040004, f.moresettings.stalkers);
+    EnumOption("Mr. H and Bobbys will haunt you.", 0x00040005, f.moresettings.stalkers);
+    EnumOption("Weeping Anna and Bobbys will haunt you.", 0x00040006, f.moresettings.stalkers);
+    EnumOption("Stalkers will haunt you.", 0x0004FFFF, f.moresettings.stalkers); // 1x
+    EnumOption("More stalkers will haunt you.", 0x0008FFFF, f.moresettings.stalkers); // 2x
+    EnumOption("Many stalkers will haunt you.", 0x0010FFFF, f.moresettings.stalkers); // 4x
+    EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers); // 10x
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);

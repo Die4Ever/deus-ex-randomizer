@@ -35,39 +35,58 @@ function ReEntry(bool IsTravel)
 function SpawnStalkers(bool reentry)
 {
     local DXRStalker stalker;
-    local int num, i, stalkerType;
-    local vector loc;
+    local int num, chunk;
 
     // destroy old stalkers before recreating
     foreach AllActors(class'DXRStalker', stalker) {
         stalker.Destroy();
     }
 
-    SetSeed("stalkers");
-    if(dxr.flags.moresettings.stalkers > 100) {
-        stalkerType = rng(3);
+    num = NumStalkers();
+    chunk = 4;
+    if((dxr.flags.moresettings.stalkers >>> 16) > 2) chunk = 3; // if more than 2x multiplier, fewer Bobbys per chunk
+    while(num > 0) {
+        SpawnStalker(reentry, num, Min(num, chunk));
+        num -= 4;
+    }
+}
+
+function SpawnStalker(bool reentry, int iterseed, int num)
+{
+    local int enabled[4]; // 0: Mr H, 1: Weeping Anna, 2: Bobby
+    local int i, stalkerType;
+    local vector loc;
+
+    if((dxr.flags.moresettings.stalkers & 7) == 0) return; // no stalkers enabled, would be an infinite loop
+
+    for(i=0; i<4; i++) {
+        if( ((dxr.flags.moresettings.stalkers >>> i) & 1) == 1) {
+            enabled[i] = 1;
+        }
     }
 
-    if(reentry) SetSeed("ReEntry stalkers " $ Level.TimeSeconds);
-    else SetSeed("PostFirstEntry stalkers");
+    SetSeed("stalkers " $ iterseed);
+    do {
+        stalkerType = rng(3);
+    } until(enabled[stalkerType] == 1);
 
-    if(stalkerType==1) {
+    if(reentry) SetSeed("ReEntry stalkers " $ Level.TimeSeconds $ iterseed);
+    else SetSeed("PostFirstEntry stalkers" $ iterseed);
+
+    if(stalkerType==0) {
+        class'MrH'.static.Create(self);
+    }
+    else if(stalkerType==1) {
         class'WeepingAnna'.static.Create(self);
     }
     else if(stalkerType==2) {
-        if(bSafeStalkers()) num = 1; // only 1 in these maps
-        else num = NumBobbys();
         for(i=0; i<num; i++) {
             class'Bobby'.static.Create(self);
         }
     }
-    else if(dxr.flags.moresettings.stalkers > 0) {
-        class'MrH'.static.Create(self);
-    }
 
     // create some fake Bobbys
-    if(dxr.flags.moresettings.stalkers > 100 && !reentry) {
-        num = NumBobbys();
+    if(enabled[2]==1 && !reentry) {
         for(i=0; i<num; i++) {
             loc = GetRandomPosition(player().Location, 16*100, 999999);
             spawn(class'BobbyFake',,, loc);
@@ -75,15 +94,17 @@ function SpawnStalkers(bool reentry)
     }
 }
 
-function int NumBobbys()
+function int NumStalkers()
 {
     local int num;
 
+    if(dxr.flags.moresettings.stalkers == 0) return 0;
+    if(bSafeStalkers()) return 1;
     if(num_nav_points == 0) GetMapSize();
 
-    num = dxr.flags.moresettings.stalkers/100;
+    num = dxr.flags.moresettings.stalkers >>> 16; // default is 4 for 4 bobbys
     num = FClamp(float(num_nav_points)/320 * num, 1, num); // 02_bar has 80
-    l(dxr.localUrl $ " map size: " $ num_nav_points $ ", NumBobbys: " $ num);
+    l(dxr.localUrl $ " map size: " $ num_nav_points $ ", NumStalkers: " $ num);
 
     return num;
 }
