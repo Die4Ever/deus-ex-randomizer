@@ -259,18 +259,18 @@ function BindControls(optional string action)
     NewMenuItem("Reanimation Seconds", "Approximately how many seconds for corpses to come back as zombies.  Leave blank or 0 to disable.");
     Slider(f.moresettings.reanimation, 0, 3600);
 
-    NewMenuItem("", "Stalkers cannot be killed, but if they take enough damage then they will go away for a while.");
-    EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers); // 2023 style :(
-    EnumOption("Mr. H will haunt you.", 0x00040001, f.moresettings.stalkers); // 2024 style
+    NewMenuItem("", "Stalkers cannot be permanently killed, but if they take enough damage then they will go away for a while.");
+    EnumOption("Stalkers are nowhere to be seen.", 0, f.moresettings.stalkers, "2023 style :(");
+    EnumOption("Mr. H will haunt you.", 0x00040001, f.moresettings.stalkers, "2024 style");
     EnumOption("Weeping Anna will haunt you.", 0x00040002, f.moresettings.stalkers);
     EnumOption("Mr. H and Weeping Anna will haunt you.", 0x00040003, f.moresettings.stalkers);
     EnumOption("Bobbys will haunt you.", 0x00040004, f.moresettings.stalkers);
     EnumOption("Mr. H and Bobbys will haunt you.", 0x00040005, f.moresettings.stalkers);
-    EnumOption("Weeping Anna and Bobbys will haunt you.", 0x00040006, f.moresettings.stalkers);
-    EnumOption("Stalkers will haunt you.", 0x0004FFFF, f.moresettings.stalkers); // 1x
-    EnumOption("More stalkers will haunt you.", 0x0008FFFF, f.moresettings.stalkers); // 2x
-    EnumOption("Many stalkers will haunt you.", 0x0010FFFF, f.moresettings.stalkers); // 4x
-    EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers); // 10x
+    EnumOption("Weeping Anna and Bobbys will haunt you.", 0x00040006, f.moresettings.stalkers, "Just the new ones.");
+    EnumOption("Stalkers will haunt you.", 0x0004FFFF, f.moresettings.stalkers, "Halloween 2025 style!"); // 1x
+    EnumOption("More stalkers will haunt you.", 0x0008FFFF, f.moresettings.stalkers, "You might get 2 different types of stalkers in the same maps!"); // 2x
+    EnumOption("Many stalkers will haunt you.", 0x0010FFFF, f.moresettings.stalkers, "You might get all types of stalkers in the same maps!"); // 4x
+    EnumOption("Too many stalkers will haunt you.", 0x0028FFFF, f.moresettings.stalkers, "You don't actually think this is a good idea, do you?"); // 10x
 
     NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);

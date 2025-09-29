@@ -290,6 +290,8 @@ function SpawnJackOLantern(vector loc)
     local Rotator r, r2;
     local int i, num;
     local ZoneInfo zone;
+    local int spots[256]; // 16x16
+    local vector spot;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -317,12 +319,20 @@ function SpawnJackOLantern(vector loc)
     if(jacko == None) return;
     jacko.DrawScale *= size;
     jacko.SetCollisionSize(jacko.CollisionRadius*size,jacko.CollisionHeight*size);
+    spots[7*16+7] = 1;
 
-    num = rng(6);
+    num = rng(5);
     for(i=0; i<num; i++) {
-        r2.Yaw = rng(20000) - 10000;
-        loc = wall1.loc + (wall1.norm << r2) * 64;
-        jacko = spawn(class'DXRJackOLantern',,, loc, r);
+        do {
+            r2.Yaw = rng(20000) - 10000;
+            loc = wall1.loc + (wall1.norm << r2) * (10 * num + 20);
+            spot = (loc - wall1.loc) / 10; // each jack-o-lantern is about 10 units in size
+            spot.X = Clamp(spot.X + 7, 0, 15); // cast to int
+            spot.Y = Clamp(spot.Y + 7, 0, 15);
+        } until(spots[spot.X*16 + spot.Y]==0);
+        spots[spot.X*16 + spot.Y] = 1;
+        r2.Yaw = r.Yaw - r2.Yaw;
+        jacko = spawn(class'DXRJackOLantern',,, loc, r2);
         if(jacko == None) continue;
         size = rngf() + 0.6;
         jacko.DrawScale *= size;

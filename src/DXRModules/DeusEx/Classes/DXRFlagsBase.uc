@@ -377,7 +377,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_infodevices_containers', settings.infodevices_containers, mode, str);
     FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
     FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
-    if(!FlagInt('Rando_reanimation', moresettings.reanimation, mode, str) && mode==Reading && dxr.flags.IsHalloweenMode()) {
+    if(!FlagInt('Rando_reanimation', moresettings.reanimation, mode, str) && mode==Reading && dxr.flags.IsHalloweenMode() && settings.enemyrespawn>0) {
         moresettings.reanimation = settings.enemyrespawn;
         settings.enemyrespawn = 0;
     }
