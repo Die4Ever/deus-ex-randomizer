@@ -1,4 +1,5 @@
 #dontcompileif hx
+#dontcompileif gmdxae
 #ifdef revision
 class DXRAugDisplayWindow injects RevAugmentationDisplayWindow;
 #else
