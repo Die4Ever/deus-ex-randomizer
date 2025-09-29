@@ -6,7 +6,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=3;
     minor=6;
     patch=2;
-    build=1;//build can't be higher than 99
+    build=2;//build can't be higher than 99
 }
 
 simulated static function bool VersionIsStable()
@@ -19,7 +19,7 @@ simulated static function string VersionString(optional bool full)
     local int major,minor,patch,build;
     local string status;
 
-    status = "Alpha";
+    status = "Beta";
 
 //#endregion
 //////

@@ -761,7 +761,7 @@ function SetDifficulty(int new_difficulty)
     if (IsHalloweenMode()){
         clothes_looting = 1;
         moresettings.reanimation = 20;
-        moresettings.stalkers = 100;
+        moresettings.stalkers = 0x0004FFFF; // high bits for quantity (4 is 4x Bobbys or 1x any other type), low bits for flags
         switch(difficulty) {
             case 0: moresettings.reanimation = 25; break;
             case 1: moresettings.reanimation = 25; break;
@@ -1000,7 +1000,7 @@ function string GameModeName(int gamemode)
         return "";
     case HalloweenMBM:
         if (#defined(vanilla)) {
-            return "Halloween Mr. Page's Mean Bingo Machine";
+            return "Mr. Page's Horrifying Bingo Machine";
         }
         return "";
     case StrongAugsMode:

@@ -1,14 +1,96 @@
 class Bobby extends DXRStalker;
 
-//TODO Ideas
-//
-// - Maybe it would be interesting/creepy/spooky if he was really fast when he runs away?
-// - He should maybe have a special knife that's more effective?
-// - Maybe rather than wandering (like Mr. H), he should be sitting around and stand up when you approach
-//   - Maybe he could even only start chasing you after you've seen him, then let him go out of LoS
-//   - if this is the case, we might want to make sure his alliance is neutral until he becomes "active",
-//     so that you can't easily differentiate him from a "doll" version that won't chase
+// once seen they are ready to wakeup, and then will wakeup when unseen
 
+var float seenCounter;
+var float unSeenCounter;
+
+function InitializePawn()
+{
+    Super.InitializePawn();
+    SetOrders('Sleeping');
+}
+
+state Sleeping
+{
+    ignores bump, frob, reacttoinjury;
+    function BeginState()
+    {
+        BlockReactions(true);
+        bCanConverse = False;
+        EnableCheckDestLoc(false);
+    }
+    function EndState()
+    {
+        ResetReactions();
+        bCanConverse = True;
+    }
+
+    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+    {
+        Global.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+        GotoState('Wakeup');
+    }
+
+    function Tick(float deltaSeconds)
+    {
+        Global.Tick(deltaSeconds);
+        CheckWakeup(deltaSeconds);
+        LipSynch(deltaSeconds); // blink
+        bDetectable=false; // HACK: idk why these need to be set again
+        bIgnore=true;
+    }
+
+Begin:
+    Acceleration=vect(0,0,0);
+    DesiredRotation=Rotation;
+    PlayAnimPivot('Still');
+}
+
+state Wakeup
+{
+Begin:
+    if(Enemy!=None) {
+        LookAtActor(Enemy,true,true,true);
+    }
+    bDetectable=true;
+    bIgnore=false;
+    ChangeAlly('Player', -1, true);
+    bKeepWeaponDrawn=true;
+    SetOrders('Wandering');
+    OrderActor=Enemy;
+    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) SetOrders('Attacking');
+    else if(OrderActor!=None) GotoState('RunningTo');
+    else GotoState('Seeking');
+}
+
+function CheckWakeup(float deltaSeconds)
+{
+    local #var(PlayerPawn) seer;
+
+    seer = AnyPlayerCanSeeMe(self, 800, true); // respect camo, this is Bobby trying to be sneaky
+
+    if(seer!=None)
+    {
+        SetSeekLocation(seer, seer.Location, SEEKTYPE_Sight, true);
+        SetEnemy(seer, Level.TimeSeconds, true);
+        LookAtActor(seer,true,true,true);
+        seenCounter += deltaSeconds;
+        unSeenCounter = 0;
+    }
+    else if(seenCounter > 0.5)
+    {
+        unSeenCounter += deltaSeconds;
+        if(unSeenCounter > 0.5)
+        {
+            GotoState('Wakeup');
+        }
+    }
+    else
+    {
+        seenCounter = FMax(seenCounter-deltaSeconds, 0);
+    }
+}
 
 //Mostly from Robot - he's a doll, so these things don't work on him
 function bool IgnoreDamageType(Name damageType)
@@ -27,6 +109,10 @@ function bool ShouldDropWeapon()
     return false;
 }
 
+function MakePawnIgnored(bool bNewIgnore)
+{
+    // do nothing
+}
 
 ////////////////////////////////
 // #region Animation Hacks
@@ -94,6 +180,10 @@ defaultproperties
     MinHealth=10
     FleeHealth=10
     bInvincible=false
+
+    bDetectable=false
+    bIgnore=true
+
     FamiliarName="Bobby"
     UnfamiliarName="Bobby"
     Texture=Texture'DeusExItems.Skins.BlackMaskTex'
@@ -112,7 +202,7 @@ defaultproperties
     InitialInventory(3)=(Inventory=None)
     InitialInventory(4)=(Inventory=None)
     Alliance=Stalkers
-    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
+    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=0,bPermanent=True)
     HearingThreshold=0
     walkAnimMult=1.572265625
     runAnimMult=0.9
@@ -121,9 +211,12 @@ defaultproperties
     WalkingSpeed=0.350000
     BurnPeriod=0.000000
     GroundSpeed=210.000000
+    RotationRate=(Yaw=100000)
     BaseEyeHeight=15.6
     HitSound1=Sound'ChildPainMedium';
     HitSound2=Sound'ChildPainLarge';
     Die=Sound'ChildDeath';
-    bKeepWeaponDrawn=True
+    bKeepWeaponDrawn=False
+    // faster jump scares
+    SurprisePeriod=0.1
 }

@@ -207,6 +207,7 @@ state Wandering
 
 function GenerateTotalHealth()
 {
+    local bool bWasInvincible;
     // you can hurt him but you can't kill him
     HealthHead     = FClamp(HealthHead, FleeHealth/2, default.HealthHead);
     HealthTorso    = FClamp(HealthTorso, FleeHealth/2, default.HealthTorso);
@@ -214,9 +215,12 @@ function GenerateTotalHealth()
     HealthArmRight = FClamp(HealthArmRight, FleeHealth/2, default.HealthArmRight);
     HealthLegLeft  = FClamp(HealthLegLeft, FleeHealth/2, default.HealthLegLeft);
     HealthLegRight = FClamp(HealthLegRight, FleeHealth/2, default.HealthLegRight);
-    bInvincible    = false;// damageproxy hack, GenerateTotalHealth() sets health to maximum when invincible
+    if(bInvincible) {
+        bInvincible = false;// damageproxy hack, GenerateTotalHealth() sets health to maximum when invincible
+        bWasInvincible = true;
+    }
     Super.GenerateTotalHealth();
-    bInvincible    = true;// damageproxy hack
+    if(bWasInvincible) bInvincible = true;
     Health = FClamp(Health, FleeHealth/2, default.Health);
 }
 
@@ -231,6 +235,53 @@ function bool ShouldDropWeapon()
 {
     return false;
 }
+
+static function bool PlayerCloaked(#var(PlayerPawn) p, ScriptedPawn sp)
+{
+    if(p==None) return false;
+    return !p.bDetectable || p.bIgnore || p.CalculatePlayerVisibility(sp) < 0.1;
+}
+
+// used for Bobby and Weeping Anna
+static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPawn) p, bool respectCamo)
+{
+    local rotator rot;
+    local float yaw, pitch, dist;
+
+    if(respectCamo && PlayerCloaked(p, sp)) return None;
+    if(!p.LineOfSightTo(sp, true)) return None; // I think this checks top, center, and bottom points
+
+    // figure out if the player can see us
+    rot = Rotator(sp.Location - p.Location);
+    rot.Roll = 0;
+    // diff between player's view rotation and the needed rotation to see
+    yaw = (Abs(p.ViewRotation.Yaw - rot.Yaw)) % 65536;
+    pitch = (Abs(p.ViewRotation.Pitch - rot.Pitch)) % 65536;
+
+    // center the angles around zero
+    if (yaw > 32767)
+        yaw -= 65536;
+    if (pitch > 32767)
+        pitch -= 65536;
+
+    // return if we are not in the player's FOV (don't use their real FOV? every player should be the same? needs to be extra wide then, I guess 180 degrees would be 16384)
+    if (Abs(yaw) > 15000 || Abs(pitch) > 15000) {
+        return None;
+    }
+
+    return p;
+}
+
+static function #var(PlayerPawn) AnyPlayerCanSeeMe(ScriptedPawn sp, float MaxDist, bool respectCamo)
+{
+    local #var(PlayerPawn) p, ret;
+    foreach sp.RadiusActors(class'#var(PlayerPawn)', p, MaxDist) {
+        ret = APlayerCanSeeMe(sp, p, respectCamo);
+        if(ret!=None) return ret;
+    }
+    return None;
+}
+
 
 defaultproperties
 {
@@ -252,4 +303,8 @@ defaultproperties
     bLookingForLoudNoise=true
     bReactLoudNoise=true
     bImportant=True
+
+    bHateShot=False
+    bHateInjury=False
+    RaiseAlarm=RAISEALARM_Never
 }

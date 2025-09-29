@@ -91,10 +91,20 @@ function CheckLoadCrash()
     local int saveIndex;
     local string name;
     // we crashed? check for newest save file and if it's a crash/exit save then load it
-    saveIndex = player().GetSaveSlotByTimestamp(false, -7, 9999999, false, name);
-    if(Right(name, 15) == " CRASH AUTOSAVE" || Right(name, 14) == " EXIT AUTOSAVE") {
+    saveIndex = player().GetSaveSlotByTimestamp(false, -7, 9999999, false, name, true);
+    if(isCrashSaveName(name) || isExitSaveName(name)) {
         player().LoadGame(saveIndex);
     }
+}
+
+static function bool isCrashSaveName(string name)
+{
+    return Right(name, 15) == " CRASH AUTOSAVE";
+}
+
+static function bool isExitSaveName(string name)
+{
+    return Right(name, 14) == " EXIT AUTOSAVE";
 }
 
 static function bool MakeCrashSave()

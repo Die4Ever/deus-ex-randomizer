@@ -1,22 +1,24 @@
 class DXRHalloween extends DXRActorsBase transient;
 
+var int num_nav_points;
+
 function PostFirstEntry()
 {
     local #var(prefix)WHPiano piano;
     Super.PostFirstEntry();
 
-    if(!dxr.OnTitleScreen()) {
-        SetSeed("PostFirstEntry stalkers");
-        SpawnStalkers();
-    }
-    if(dxr.flags.IsHalloweenMode()) {
-        MapFixes();
-    }
     if(IsOctober()) { // cosmetics
+        MakeCosmetics();
         foreach AllActors(class'#var(prefix)WHPiano', piano) {
             piano.ItemName = "Staufway Piano";
         }
-        MakeCosmetics();
+    }
+
+    if(!dxr.OnTitleScreen()) {
+        SpawnStalkers(false);
+    }
+    if(dxr.flags.IsHalloweenMode()) {
+        MapFixes();
     }
 
     MakeBlackCats(); //Black cats always exist
@@ -26,30 +28,98 @@ function ReEntry(bool IsTravel)
 {
     if(IsTravel) {
         // recreate if you leave the map and come back, but not if you load a save
-        SetSeed("ReEntry stalkers " $ Level.TimeSeconds);
-        SpawnStalkers();
+        SpawnStalkers(true);
     }
 }
 
-function SpawnStalkers()
+function SpawnStalkers(bool reentry)
 {
     local DXRStalker stalker;
-    local int num, i;
+    local int num, chunk;
 
     // destroy old stalkers before recreating
     foreach AllActors(class'DXRStalker', stalker) {
         stalker.Destroy();
     }
 
-    if(dxr.flags.moresettings.stalkers > 0) {
+    num = NumStalkers();
+    chunk = 4;
+    if((dxr.flags.moresettings.stalkers >>> 16) > 2) chunk = 3; // if more than 2x multiplier, fewer Bobbys per chunk
+    while(num > 0) {
+        SpawnStalker(reentry, num, Min(num, chunk));
+        num -= 4;
+    }
+}
+
+function SpawnStalker(bool reentry, int iterseed, int num)
+{
+    local int enabled[4]; // 0: Mr H, 1: Weeping Anna, 2: Bobby
+    local int i, stalkerType;
+    local vector loc;
+
+    if((dxr.flags.moresettings.stalkers & 7) == 0) return; // no stalkers enabled, would be an infinite loop
+
+    for(i=0; i<4; i++) {
+        if( ((dxr.flags.moresettings.stalkers >>> i) & 1) == 1) {
+            enabled[i] = 1;
+        }
+    }
+
+    SetSeed("stalkers " $ iterseed);
+    do {
+        stalkerType = rng(3);
+    } until(enabled[stalkerType] == 1);
+
+    if(reentry) SetSeed("ReEntry stalkers " $ Level.TimeSeconds $ iterseed);
+    else SetSeed("PostFirstEntry stalkers" $ iterseed);
+
+    if(stalkerType==0) {
         class'MrH'.static.Create(self);
     }
-    if(dxr.flags.moresettings.stalkers > 100) {
-        num = dxr.flags.moresettings.stalkers/100 - 1;
+    else if(stalkerType==1) {
+        class'WeepingAnna'.static.Create(self);
+    }
+    else if(stalkerType==2) {
         for(i=0; i<num; i++) {
             class'Bobby'.static.Create(self);
         }
     }
+
+    // create some fake Bobbys
+    if(enabled[2]==1 && !reentry) {
+        for(i=0; i<num; i++) {
+            loc = GetRandomPosition(player().Location, 16*100, 999999);
+            spawn(class'BobbyFake',,, loc);
+        }
+    }
+}
+
+function int NumStalkers()
+{
+    local int num;
+
+    if(dxr.flags.moresettings.stalkers == 0) return 0;
+    if(bSafeStalkers()) return 1;
+    if(num_nav_points == 0) GetMapSize();
+
+    num = dxr.flags.moresettings.stalkers >>> 16; // default is 4 for 4 bobbys
+    num = FClamp(float(num_nav_points)/320 * num, 1, num); // 02_bar has 80
+    l(dxr.localUrl $ " map size: " $ num_nav_points $ ", NumStalkers: " $ num);
+
+    return num;
+}
+
+function bool bSafeStalkers()
+{
+    switch(dxr.localURL) {
+    case "01_NYC_UNATCOHQ":
+    case "03_NYC_UNATCOHQ":
+    case "04_NYC_UNATCOHQ":
+    case "06_HONGKONG_TONGBASE":
+    case "12_VANDENBERG_COMPUTER":
+        return true;
+    }
+    return false;
 }
 
 function MapFixes()
@@ -60,20 +130,16 @@ function MapFixes()
     local ScriptedPawn sp;
     local float dist;
 
-    switch(dxr.localURL) {
-    case "01_NYC_UNATCOHQ":
-    case "03_NYC_UNATCOHQ":
-    case "04_NYC_UNATCOHQ":
-    case "06_HONGKONG_TONGBASE":
-    case "12_VANDENBERG_COMPUTER":
+    if(bSafeStalkers()) {
         //Make people fearless so they don't get spooked by Mr. H
         foreach AllActors(class'ScriptedPawn', sp) {
             if(DXRStalker(sp) == None) {
                 RemoveReactions(sp);
             }
         }
-        break;
+    }
 
+    switch(dxr.localURL) {
     case "09_NYC_GRAVEYARD":
         SetSeed("DXRHalloween MapFixes graveyard bodies");
         foreach AllActors(class'PathNode', p) {
@@ -84,7 +150,7 @@ function MapFixes()
             // exclude the paved path
             if(p.name=='PathNode26' || p.name=='PathNode12' || p.name=='PathNode70' || p.name=='PathNode69' || p.name=='PathNode68') continue;
 
-            if(chance_single(80)) continue;
+            if(chance_single(85)) continue;
 
             switch(rng(7)){
             case 0:
@@ -123,6 +189,20 @@ function MapFixes()
     }
 }
 
+function GetMapSize()
+{ // if we need map size but MakeCosmetics didn't run
+    local NavigationPoint p;
+
+    num_nav_points = 0;
+    foreach AllActors(class'NavigationPoint', p) {
+        if(p.Region.Zone.bWaterZone) continue;
+
+        if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
+        if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
+        num_nav_points++;
+    }
+}
+
 function MakeCosmetics()
 {
     local NavigationPoint p;
@@ -138,9 +218,15 @@ function MakeCosmetics()
         z.AmbientHue = 255;
     }
 
+    num_nav_points = 0;
     foreach AllActors(class'NavigationPoint', p) {
         if(p.Region.Zone.bWaterZone) continue;
         locs[len++] = p.Location;
+
+        // calc map size
+        if(p.Region.Zone.IsA('SkyZoneInfo')) continue;
+        if(p.Region.Zone.bKillZone || p.Region.Zone.bPainZone) continue;
+        num_nav_points++;
     }
 
     SetSeed("MakeJackOLanterns");
@@ -204,6 +290,8 @@ function SpawnJackOLantern(vector loc)
     local Rotator r, r2;
     local int i, num;
     local ZoneInfo zone;
+    local int spots[256]; // 16x16
+    local vector spot;
 
     loc.X += rngfn() * 256.0;// 16 feet in either direction
     loc.Y += rngfn() * 256.0;// 16 feet in either direction
@@ -231,12 +319,20 @@ function SpawnJackOLantern(vector loc)
     if(jacko == None) return;
     jacko.DrawScale *= size;
     jacko.SetCollisionSize(jacko.CollisionRadius*size,jacko.CollisionHeight*size);
+    spots[7*16+7] = 1;
 
-    num = rng(6);
+    num = rng(5);
     for(i=0; i<num; i++) {
-        r2.Yaw = rng(20000) - 10000;
-        loc = wall1.loc + (wall1.norm << r2) * 64;
-        jacko = spawn(class'DXRJackOLantern',,, loc, r);
+        do {
+            r2.Yaw = rng(20000) - 10000;
+            loc = wall1.loc + (wall1.norm << r2) * (10 * num + 20);
+            spot = (loc - wall1.loc) / 10; // each jack-o-lantern is about 10 units in size
+            spot.X = Clamp(spot.X + 7, 0, 15); // cast to int
+            spot.Y = Clamp(spot.Y + 7, 0, 15);
+        } until(spots[spot.X*16 + spot.Y]==0);
+        spots[spot.X*16 + spot.Y] = 1;
+        r2.Yaw = r.Yaw - r2.Yaw;
+        jacko = spawn(class'DXRJackOLantern',,, loc, r2);
         if(jacko == None) continue;
         size = rngf() + 0.6;
         jacko.DrawScale *= size;

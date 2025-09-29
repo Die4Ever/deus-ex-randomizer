@@ -40,3 +40,14 @@ class DXRandoText extends object abstract;
 #exec DEUSEXTEXT IMPORT FILE=Text\03_Bulletin02.txt
 #exec DEUSEXTEXT IMPORT FILE=Text\03_Bulletin03.txt
 #exec DEUSEXTEXT IMPORT FILE=Text\03_Bulletin04.txt
+
+// Halloween texts
+#exec DEUSEXTEXT IMPORT FILE=Text\01_BulletinMenuHalloween.txt
+#exec DEUSEXTEXT IMPORT FILE=Text\03_BulletinMenuHalloween.txt
+#exec DEUSEXTEXT IMPORT FILE=Text\04_BulletinMenuHalloween.txt
+#exec DEUSEXTEXT IMPORT FILE=Text\05_BulletinMenuHalloween.txt
+// 05_Bulletin01.txt is just a dupe of the vanilla text, but each terminal can only have a single package name
+#exec DEUSEXTEXT IMPORT FILE=Text\05_Bulletin01.txt
+#exec DEUSEXTEXT IMPORT FILE=Text\KnowYourMrH.txt
+#exec DEUSEXTEXT IMPORT FILE=Text\KnowYourBobby.txt
+#exec DEUSEXTEXT IMPORT FILE=Text\KnowYourWeepingAnna.txt

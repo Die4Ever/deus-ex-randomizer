@@ -4034,5 +4034,6 @@ defaultproperties
     mutually_exclusive(108)=(e1="ReadText_ReadJCEmail",e2="BrowserHistoryCleared")
     mutually_exclusive(109)=(e1="DestroyCapitalism_VariousDead",e2="Shannon_PlayerTakedown")
     mutually_exclusive(110)=(e1="ChugWater",e2="Dehydrated_DestroyDeco")
+    mutually_exclusive(111)=(e1="FlushToilet",e2="FlushUrinal")
 //#endregion
 }

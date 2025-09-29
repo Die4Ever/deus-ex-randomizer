@@ -614,9 +614,19 @@ static simulated function string DescriptionLevelExtended(Actor act, int i, out 
         return shortDisplay;
     }
     else if( a.Class == class'#var(prefix)AugLight') {
-        word = "";
-        shortDisplay = "";
-        return "";
+        word = "Brightness";
+        switch(i){
+            case 0:
+                shortDisplay="Dim";
+                break;
+            case 1:
+                shortDisplay="Bright";
+                break;
+            default:
+                shortDisplay="???";
+                break;
+        }
+        return shortDisplay;
     }
 
 #ifdef gmdx

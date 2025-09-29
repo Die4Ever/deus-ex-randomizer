@@ -213,6 +213,10 @@ function PreFirstEntryMapFixes()
                 compublic.bCollideWorld = false;
                 compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
+                if(dxr.flags.IsHalloweenMode()) {
+                    compublic.TextPackage = "#var(package)";
+                    compublic.BulletinTag = '05_BulletinMenuHalloween';
+                }
                 break;
             }
             class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance

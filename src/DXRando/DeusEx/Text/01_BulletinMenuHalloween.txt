@@ -1,0 +1,8 @@
+<COMMENT>UNATCO HQ</COMMENT>
+<FILE=01_Bulletin01,Terrorism -- Crime or Conscience?>
+<FILE=01_Bulletin02,Terrorism -- Threat Profiling>
+<FILE=01_Bulletin05,Know Your Enemy -- NSF>
+<FILE=01_Bulletin06,Know Your Enemy -- Silhouette>
+<FILE=KnowYourMrH,Know Your Stalker -- Mr. H>
+<FILE=KnowYourBobby,Know Your Stalker -- Bobby>
+<FILE=KnowYourWeepingAnna,Know Your Stalker -- Weeping Anna>

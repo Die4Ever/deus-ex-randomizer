@@ -234,6 +234,7 @@ defaultproperties
     InitialInventory(2)=(Inventory=None)
     InitialInventory(3)=(Inventory=None)
     InitialInventory(4)=(Inventory=None)
+    bKeepWeaponDrawn=True // maybe faster response?
     Alliance=MrH
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
     HearingThreshold=0

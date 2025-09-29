@@ -49,24 +49,38 @@ function CheckDashPress()
 {
     local bool dashDown;
     local Skill aSkill;
+    local Augmentation anAug;
+    local bool showAugs,showSkills;
+
+    if(Player==None) return;
+
+#ifdef injections
+    showAugs = Human(Player).bUpgradeAugs;
+    showSkills = Player.bBuySkills;
+#else
+    showSkills = Player.bBuySkills;
+    showAugs = False;
+#endif
+
 
     dashDown=IsKeyDown(IK_Minus) || IsKeyDown(IK_GreyMinus);
 
-    if (dashDown!=dashPressed){
-        dashPressed=dashDown;
-        if(dashDown){
-            if (Player!=None && Player.bBuySkills){
-                if ( Player.SkillSystem != None )
-                {
-                    aSkill = Player.SkillSystem.GetSkillFromClass(class'SkillSwimming');
-                    if (aSkill!=None){
-                        if (AttemptBuySkill(Player,aSkill)){
-                            //Player.bBuySkills=False; //Keep the menu open after buying
-                            class'#var(injectsprefix)PersonaScreenSkills'.static.UpdateSwimSpeed(aSkill,#var(prefix)Human(Player));
-                        }
-                    }
-                }
+    if (dashDown==dashPressed) return;
+    dashPressed=dashDown;
+    if(!dashDown) return;
+
+    if (showSkills){
+        aSkill = GetSkillFromIndex(Player, 11);
+        if (aSkill!=None){
+            if (AttemptBuySkill(Player,aSkill)){
+                //Player.bBuySkills=False; //Keep the menu open after buying
+                class'#var(injectsprefix)PersonaScreenSkills'.static.UpdateSwimSpeed(aSkill,#var(prefix)Human(Player));
             }
+        }
+    } else if(showAugs) {
+        anAug = GetAugFromIndex(Player, 11);
+        if(anAug!=None) {
+            AttemptUpgradeAug(Player, anAug);
         }
     }
 }
@@ -256,8 +270,13 @@ function DrawAugsScreen(GC gc)
 
         while ( anAug != None )
         {
-            if (anAug.bHasIt && anAug.AugmentationLocation!=LOC_Default){
-                str = index $ ". " $ anAug.AugmentationName;
+            if (isValidQuickAug(anAug)){
+                if ( index == 11 )
+                    str = "-. " $ anAug.AugmentationName;
+                else if ( index == 10 )
+                    str = "0. " $ anAug.AugmentationName;
+                else
+                    str = index $ ". " $ anAug.AugmentationName;
 
                 if ( anAug.CurrentLevel == anAug.MaxLevel)
                 {
@@ -405,20 +424,42 @@ function int GetNumAugUpgrades( DeusExPlayer thisPlayer )
     return augCanCount;
 }
 
+function bool isValidQuickAug(Augmentation anAug)
+{
+    local bool isValid;
+
+    isValid=anAug.bHasIt;
+    if (anAug.AugmentationLocation==LOC_Default){
+        if (anAug.MaxLevel==0){
+            isValid=False;
+        }
+
+    }
+
+    return isValid;
+
+}
+
 function Augmentation GetAugFromIndex( DeusExPlayer thisPlayer, int index )
 {
     local Augmentation anAug;
     local int i;
 
+    // Zero indexed, but min element is 1, 0 is 10
+    if ( index == 0 )
+        index = 9;
+    else
+        index -= 1;
+
     if (thisPlayer==None){
         return None;
     }
 
-    i = 1;
+    i = 0;
     anAug=thisPlayer.AugmentationSystem.FirstAug;
     while ( anAug != None )
     {
-        if (anAug.bHasIt && anAug.AugmentationLocation!=LOC_Default){
+        if (isValidQuickAug(anAug)){
             if (i==index){
                 return anAug;
             }
