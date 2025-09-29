@@ -129,7 +129,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(prefix)AmmoBattery');
         AddStartInv(class'#var(package).WeaponRubberBaton');
         AddItemSpawn(class'#var(prefix)WeaponProd',30);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',10);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
         #ifdef injections
@@ -172,7 +172,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddStartInv(class'#var(package).WeaponRubberBaton');
         AddItemSpawn(class'#var(prefix)WeaponProd',25);
         AddItemSpawn(class'#var(prefix)WeaponMiniCrossbow',25);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',10);
         AddStartAug(class'#var(prefix)AugStealth');
         AddStartAug(class'#var(prefix)AugMuscle');
         #ifdef injections
@@ -287,7 +287,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponGasGrenade',50);
         AddItemSpawn(class'#var(prefix)WeaponNanoVirusGrenade',50);
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',50);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',10);
         AddStandardAugSet();
         return name;
     //#endregion
@@ -383,7 +383,7 @@ function string LoadoutInfo(int loadout, optional bool get_name)
         AddItemSpawn(class'#var(prefix)WeaponEMPGrenade',75);
         AddItemSpawn(class'#var(prefix)WeaponGasGrenade',75);
         AddItemSpawn(class'#var(prefix)WeaponNanoVirusGrenade',75);
-        AddItemSpawn(class'#var(package).WeaponRubberBaton',15);
+        AddItemSpawn(class'#var(package).WeaponRubberBaton',10);
         AddItemSpawn(class'#var(prefix)AmmoRocket',100);
         AddItemSpawn(class'#var(prefix)AmmoRocketWP',100);
         AddItemSpawn(class'#var(prefix)Ammo20mm',100);

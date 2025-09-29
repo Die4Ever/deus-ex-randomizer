@@ -86,7 +86,7 @@ function Tick(float delta)
     healthRegenTimer += delta;
     if(healthRegenTimer > 2) {
         healthRegenTimer = 0;
-        i = 20;
+        i = Clamp(20, 1, default.health/15);
 
         if(health < FleeHealth) {
             MinHealth = default.health/2;
@@ -98,7 +98,8 @@ function Tick(float delta)
             bDetectable=true;
             bIgnore=false;
             Visibility=default.Visibility;
-            i = 10;
+            if(IsInState('Fleeing')) SetOrders('Wandering',, true);
+            i = Clamp(10, 1, default.health/20);
         }
 
         HealthHead += i;

@@ -68,7 +68,7 @@ function CheckWakeup(float deltaSeconds)
 {
     local #var(PlayerPawn) seer;
 
-    seer = AnyPlayerCanSeeMe(self, 800, true); // respect camo, this is Bobby trying to be sneaky
+    seer = AnyPlayerCanSeeMe(self, 1200, true); // respect camo, this is Bobby trying to be sneaky
 
     if(seer!=None)
     {
@@ -78,10 +78,10 @@ function CheckWakeup(float deltaSeconds)
         seenCounter += deltaSeconds;
         unSeenCounter = 0;
     }
-    else if(seenCounter > 0.5)
+    else if(seenCounter > 0.3)
     {
         unSeenCounter += deltaSeconds;
-        if(unSeenCounter > 0.5)
+        if(unSeenCounter > 0.3)
         {
             GotoState('Wakeup');
         }
@@ -167,13 +167,13 @@ defaultproperties
     Mass=45
     Buoyancy=50
     WalkSound=Sound'DeusExSounds.Robot.SpiderBot2Walk'
-    Health=100
-    HealthHead=100
-    HealthTorso=100
-    HealthLegLeft=100
-    HealthLegRight=100
-    HealthArmLeft=100
-    HealthArmRight=100
+    Health=150
+    HealthHead=150
+    HealthTorso=150
+    HealthLegLeft=150
+    HealthLegRight=150
+    HealthArmLeft=150
+    HealthArmRight=150
     bShowPain=False
     UnderWaterTime=-1.000000
     BindName="Bobby"
