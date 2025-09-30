@@ -308,6 +308,7 @@ defaultproperties
     bReactLoudNoise=true
     bImportant=True
     bRegenHealth=True
+    Alliance=Stalkers
 
     bHateShot=False
     bHateInjury=False

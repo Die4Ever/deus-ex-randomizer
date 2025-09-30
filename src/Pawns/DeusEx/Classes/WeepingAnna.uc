@@ -414,7 +414,7 @@ defaultproperties
     Buoyancy=0
     FamiliarName="Weeping Anna"
     UnfamiliarName="Weeping Anna"
-    Alliance=WeepingAnna
+    Alliance=Stalkers
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=0,bPermanent=False)
     AnimSequence=RubEyes
     AnimFrame=0.12

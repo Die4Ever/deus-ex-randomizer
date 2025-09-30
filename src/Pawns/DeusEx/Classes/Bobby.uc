@@ -253,7 +253,7 @@ defaultproperties
     CarcassType=Class'BobbyCarcass'
     WalkingSpeed=0.350000
     BurnPeriod=0.000000
-    GroundSpeed=210.000000
+    GroundSpeed=230.000000
     RotationRate=(Yaw=100000)
     BaseEyeHeight=15.6
     HitSound1=Sound'ChildPainMedium';
