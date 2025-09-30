@@ -8,6 +8,25 @@ var float unSeenCounter;
 var Actor lastBumpActor;
 var float lastBumpTime;
 
+simulated function PreTravel()
+{
+    bTransient = false;
+}
+
+simulated function Destroyed()
+{
+    local DXRHalloween thisishalloween;
+    if(bTransient) {
+        // destroyed by leaving
+        bTransient=false;
+        thisishalloween = DXRHalloween(class'DXRHalloween'.static.Find());
+        if(thisishalloween!=None && thisishalloween.dxr!=None) {
+            Create(thisishalloween);
+        }
+    }
+    Super.Destroyed();
+}
+
 function InitializePawn()
 {
     Super.InitializePawn();
@@ -202,6 +221,8 @@ defaultproperties
     MinHealth=10
     FleeHealth=10
     bInvincible=false
+    bLeaveAfterFleeing=true
+    bRegenHealth=False
 
     bDetectable=false
     bIgnore=true

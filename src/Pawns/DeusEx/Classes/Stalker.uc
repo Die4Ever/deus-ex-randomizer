@@ -5,6 +5,7 @@ var #var(PlayerPawn) player;
 var int FleeHealth;// like MinHealth, but we need more control
 var Actor closestDestPoint, farthestDestPoint;
 var float maxDist; // for iterative farthestDestPoint
+var bool bRegenHealth;
 
 static function DXRStalker Create(DXRActorsBase a)
 {
@@ -80,11 +81,13 @@ function Tick(float delta)
 
     Super.Tick(delta);
 
-    LastRenderTime = Level.TimeSeconds;
-    bStasis = false;
+    if(!bLeaveAfterFleeing || !IsInState('Fleeing')) {
+        LastRenderTime = Level.TimeSeconds;
+        bStasis = false;
+    }
 
     healthRegenTimer += delta;
-    if(healthRegenTimer > 2) {
+    if(healthRegenTimer > 2 && bRegenHealth) {
         healthRegenTimer = 0;
         i = Clamp(20, 1, default.health/15);
 
@@ -304,6 +307,7 @@ defaultproperties
     bLookingForLoudNoise=true
     bReactLoudNoise=true
     bImportant=True
+    bRegenHealth=True
 
     bHateShot=False
     bHateInjury=False
