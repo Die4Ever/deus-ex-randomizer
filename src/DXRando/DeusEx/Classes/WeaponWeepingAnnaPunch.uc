@@ -46,8 +46,8 @@ defaultproperties
     Misc1Sound=None
     Misc2Sound=None
     Misc3Sound=None
-    maxRange=110
-    AccurateRange=110
+    maxRange=80
+    AccurateRange=80
     ShotTime=0.2
-    HitDamage=15
+    HitDamage=12
 }
