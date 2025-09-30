@@ -1,9 +1,12 @@
 class Bobby extends DXRStalker;
 
 // once seen they are ready to wakeup, and then will wakeup when unseen
-
 var float seenCounter;
 var float unSeenCounter;
+
+// for being bumped by pawns
+var Actor lastBumpActor;
+var float lastBumpTime;
 
 function InitializePawn()
 {
@@ -13,7 +16,7 @@ function InitializePawn()
 
 state Sleeping
 {
-    ignores bump, frob, reacttoinjury;
+    ignores frob, reacttoinjury;
     function BeginState()
     {
         BlockReactions(true);
@@ -103,6 +106,25 @@ function bool IgnoreDamageType(Name damageType)
         return False;
 }
 
+event Bump( Actor Other )
+{
+    local vector momentum;
+    local float scale;
+
+    if(Other == lastBumpActor && lastBumpTime > Level.TimeSeconds-1) return;
+    if(Other.Mass <= Mass) return;
+    if(ScriptedPawn(Other) == None) return;
+
+    lastBumpActor = Other;
+    lastBumpTime = Level.TimeSeconds;
+
+    scale = 10 * Loge(Other.Mass) * Loge(VSize(Other.Velocity));
+    scale = FClamp(scale, 1000, 2000);
+    momentum = Normal(Location - Other.Location) * scale;
+    momentum.Z *= -2;
+    ImpartMomentum(momentum, Pawn(Other));
+}
+
 function bool ShouldDropWeapon()
 {
     //Bobby has a firm kung fu grip
@@ -164,7 +186,7 @@ defaultproperties
     DrawScale=0.6
     CollisionRadius=10.000000
     CollisionHeight=19.000000
-    Mass=45
+    Mass=90
     Buoyancy=50
     WalkSound=Sound'DeusExSounds.Robot.SpiderBot2Walk'
     Health=150
