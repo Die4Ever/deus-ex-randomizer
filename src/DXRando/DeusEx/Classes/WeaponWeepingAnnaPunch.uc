@@ -6,6 +6,18 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     Super.ProcessTraceHit(Other, HitLocation, HitNormal, X*7, Y, Z);
 }
 
+function ReadyToFire()
+{
+    maxRange = default.maxRange;
+    Super.ReadyToFire();
+}
+
+function Fire(float Value)
+{
+    maxRange = default.maxRange*2;
+    Super.Fire(Value);
+}
+
 simulated function PlayFakeHitSound()
 {
     const HitPitch=0.8;
