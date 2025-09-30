@@ -1,9 +1,31 @@
 class Bobby extends DXRStalker;
 
 // once seen they are ready to wakeup, and then will wakeup when unseen
-
 var float seenCounter;
 var float unSeenCounter;
+
+// for being bumped by pawns
+var Actor lastBumpActor;
+var float lastBumpTime;
+
+simulated function PreTravel()
+{
+    bTransient = false;
+}
+
+simulated function Destroyed()
+{
+    local DXRHalloween thisishalloween;
+    if(bTransient) {
+        // destroyed by leaving
+        bTransient=false;
+        thisishalloween = DXRHalloween(class'DXRHalloween'.static.Find());
+        if(thisishalloween!=None && thisishalloween.dxr!=None) {
+            Create(thisishalloween);
+        }
+    }
+    Super.Destroyed();
+}
 
 function InitializePawn()
 {
@@ -13,7 +35,7 @@ function InitializePawn()
 
 state Sleeping
 {
-    ignores bump, frob, reacttoinjury;
+    ignores frob, reacttoinjury;
     function BeginState()
     {
         BlockReactions(true);
@@ -68,7 +90,7 @@ function CheckWakeup(float deltaSeconds)
 {
     local #var(PlayerPawn) seer;
 
-    seer = AnyPlayerCanSeeMe(self, 800, true); // respect camo, this is Bobby trying to be sneaky
+    seer = AnyPlayerCanSeeMe(self, 1200, true); // respect camo, this is Bobby trying to be sneaky
 
     if(seer!=None)
     {
@@ -78,10 +100,10 @@ function CheckWakeup(float deltaSeconds)
         seenCounter += deltaSeconds;
         unSeenCounter = 0;
     }
-    else if(seenCounter > 0.5)
+    else if(seenCounter > 0.3)
     {
         unSeenCounter += deltaSeconds;
-        if(unSeenCounter > 0.5)
+        if(unSeenCounter > 0.3)
         {
             GotoState('Wakeup');
         }
@@ -101,6 +123,25 @@ function bool IgnoreDamageType(Name damageType)
         return True;
     else
         return False;
+}
+
+event Bump( Actor Other )
+{
+    local vector momentum;
+    local float scale;
+
+    if(Other == lastBumpActor && lastBumpTime > Level.TimeSeconds-1) return;
+    if(Other.Mass <= Mass) return;
+    if(ScriptedPawn(Other) == None) return;
+
+    lastBumpActor = Other;
+    lastBumpTime = Level.TimeSeconds;
+
+    scale = 10 * Loge(Other.Mass) * Loge(VSize(Other.Velocity));
+    scale = FClamp(scale, 1000, 2000);
+    momentum = Normal(Location - Other.Location) * scale;
+    momentum.Z *= -2;
+    ImpartMomentum(momentum, Pawn(Other));
 }
 
 function bool ShouldDropWeapon()
@@ -164,22 +205,24 @@ defaultproperties
     DrawScale=0.6
     CollisionRadius=10.000000
     CollisionHeight=19.000000
-    Mass=45
+    Mass=90
     Buoyancy=50
     WalkSound=Sound'DeusExSounds.Robot.SpiderBot2Walk'
-    Health=100
-    HealthHead=100
-    HealthTorso=100
-    HealthLegLeft=100
-    HealthLegRight=100
-    HealthArmLeft=100
-    HealthArmRight=100
+    Health=150
+    HealthHead=150
+    HealthTorso=150
+    HealthLegLeft=150
+    HealthLegRight=150
+    HealthArmLeft=150
+    HealthArmRight=150
     bShowPain=False
     UnderWaterTime=-1.000000
     BindName="Bobby"
     MinHealth=10
     FleeHealth=10
     bInvincible=false
+    bLeaveAfterFleeing=true
+    bRegenHealth=False
 
     bDetectable=false
     bIgnore=true
@@ -210,7 +253,7 @@ defaultproperties
     CarcassType=Class'BobbyCarcass'
     WalkingSpeed=0.350000
     BurnPeriod=0.000000
-    GroundSpeed=210.000000
+    GroundSpeed=230.000000
     RotationRate=(Yaw=100000)
     BaseEyeHeight=15.6
     HitSound1=Sound'ChildPainMedium';

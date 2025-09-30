@@ -1,9 +1,35 @@
 class BobbyFake extends #var(prefix)Robot; // robots don't bleed
 
+// for being bumped by pawns
+var Actor lastBumpActor;
+var float lastBumpTime;
+
 function InitializePawn()
 {
     Super.InitializePawn();
     SetOrders('Paralyzed');
+}
+
+state Paralyzed
+{
+    ignores frob, reacttoinjury;
+    function BeginState()
+    {
+        StandUp();
+        BlockReactions(true);
+        bCanConverse = False;
+        SeekPawn = None;
+        EnableCheckDestLoc(false);
+    }
+    function EndState()
+    {
+        ResetReactions();
+        bCanConverse = True;
+    }
+
+Begin:
+    Acceleration=vect(0,0,0);
+    PlayAnimPivot('Still');
 }
 
 function Tick(float deltaSeconds)
@@ -89,12 +115,31 @@ function Explode(vector HitLocation)
     HurtRadius(1, 16, 'Exploded', 16, Location);
 }
 
+event Bump( Actor Other )
+{
+    local vector momentum;
+    local float scale;
+
+    if(Other == lastBumpActor && lastBumpTime > Level.TimeSeconds-1) return;
+    if(Other.Mass <= Mass) return;
+    if(ScriptedPawn(Other) == None) return;
+
+    lastBumpActor = Other;
+    lastBumpTime = Level.TimeSeconds;
+
+    scale = 10 * Loge(Other.Mass) * Loge(VSize(Other.Velocity));
+    scale = FClamp(scale, 1000, 2000);
+    momentum = Normal(Location - Other.Location) * scale;
+    momentum.Z *= -2;
+    ImpartMomentum(momentum, Pawn(Other));
+}
+
 defaultproperties
 {
     DrawScale=0.6
     CollisionRadius=10.000000
     CollisionHeight=21.000000
-    Mass=80
+    Mass=90
     Buoyancy=0
     WalkSound=Sound'DeusExSounds.Robot.SpiderBot2Walk'
     Health=5

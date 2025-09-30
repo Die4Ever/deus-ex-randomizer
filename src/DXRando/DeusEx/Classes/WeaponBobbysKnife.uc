@@ -11,7 +11,7 @@ function PlaySelect()
 
 defaultproperties
 {
-    HitDamage=10
+    HitDamage=12
     ItemName="Bobby's Knife"
     Description="This is Bobby's special knife.  You should give it back."
     beltDescription="BOBBY"

@@ -6,6 +6,18 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     Super.ProcessTraceHit(Other, HitLocation, HitNormal, X*7, Y, Z);
 }
 
+function ReadyToFire()
+{
+    maxRange = default.maxRange;
+    Super.ReadyToFire();
+}
+
+function Fire(float Value)
+{
+    maxRange = default.maxRange*2;
+    Super.Fire(Value);
+}
+
 simulated function PlayFakeHitSound()
 {
     const HitPitch=0.8;
@@ -34,8 +46,8 @@ defaultproperties
     Misc1Sound=None
     Misc2Sound=None
     Misc3Sound=None
-    maxRange=110
-    AccurateRange=110
+    maxRange=80
+    AccurateRange=80
     ShotTime=0.2
-    HitDamage=15
+    HitDamage=12
 }
