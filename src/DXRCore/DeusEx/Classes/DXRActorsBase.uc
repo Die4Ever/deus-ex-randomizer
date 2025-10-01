@@ -443,18 +443,23 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     return nextItem;
 }
 
-static function DataVaultImage GiveImage(Pawn p, class<DataVaultImage> imageClass)
+static function DataVaultImage GiveImage(DeusExPlayer p, class<DataVaultImage> imageClass)
 {
     local DataVaultImage image;
 
-    image = DataVaultImage(p.FindInventoryType(imageClass));
-    if (image == None) {
-        image = p.Spawn(imageClass);
-        image.ItemName = imageClass.default.imageDescription;
-        image.ItemArticle = "-";
-        image.Frob(p, None);
+    for(image=p.FirstImage; image!=None; image=image.nextImage) {
+        if(image.class == imageClass) return None;
     }
 
+    image = p.Spawn(imageClass);
+    if(image != None) {
+        image.ItemName = imageClass.default.imageDescription;
+        image.ItemArticle = "-";
+        image.BecomeItem();
+        image.GotoState('Idle2');
+        image.bHidden = true;
+        p.AddImage(image);
+    }
     return image;
 }
 
@@ -1048,7 +1053,7 @@ function bool RemoveGoalFromCon(name goalName, name convname, optional int which
         prevCe.nextEvent = prevCe.nextEvent.nextEvent;
         return true;
     }
-    
+
     return false;
 }
 
