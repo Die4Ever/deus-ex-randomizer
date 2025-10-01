@@ -33,5 +33,6 @@
 - Fixed quick aug upgrade menu when you have 10 augs that can be upgraded
 - Lenny, the junkie with a LAM in Brooklyn Bridge Station, will now talk to you again if you didn't have room the first time you tried to trade with him
 - Slightly reduced spawn rate of rubber batons in limited loadouts
+- Paul has slightly more health and better accuracy in M04
 
 </details>

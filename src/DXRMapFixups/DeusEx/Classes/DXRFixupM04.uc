@@ -868,7 +868,8 @@ function NYC_04_CheckPaulRaid()
 
         if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             paul.bInvincible = false;
-            SetPawnHealth(paul, 400);
+            paul.BaseAccuracy = FMin(0.15, paul.BaseAccuracy); // slight buff of 0.05, smaller numbers are better
+            SetPawnHealth(paul, 450);
         }
         paul.ChangeAlly('Player', 1, true);
     }
