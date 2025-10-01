@@ -10,21 +10,26 @@ var bool bRegenHealth;
 static function DXRStalker Create(DXRActorsBase a)
 {
     local DXRStalker s;
-    local vector loc;
+    local vector loc, playerloc;
     local int i;
 
+    playerloc = a.player().Location;
     for(i=0; i<100; i++) {
-        loc = a.GetRandomPosition(a.player().Location, 16*100, 999999);
+        loc = a.GetRandomPosition(playerloc, 16*100, 999999);
         s = a.Spawn(default.class,,, loc);
-        if(s != None) break;
+        if(s != None) {
+            s.InitStalker(a);
+            return s;
+        }
     }
-    if(s == None) return None;
+    return None;
+}
 
-    s.player = a.player();
-    s.HomeLoc = loc;
-    s.bUseHome = true;
-
-    return s;
+function InitStalker(DXRActorsBase a)
+{
+    player = a.player();
+    HomeLoc = Location;
+    bUseHome = true;
 }
 
 function Actor GetFarthestNavPoint(Actor from, optional int iters)
@@ -306,7 +311,7 @@ defaultproperties
     bEmitDistress=false
     bLookingForLoudNoise=true
     bReactLoudNoise=true
-    bImportant=True
+    bImportant=False
     bRegenHealth=True
     Alliance=Stalkers
 

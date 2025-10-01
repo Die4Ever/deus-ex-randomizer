@@ -7,7 +7,8 @@ auto state Flying
         Super.BeginState();
 
         Velocity = VRand() * 300;
-        DrawScale = FRand() + 1.6;
+        DrawScale = FRand() + 4;
+        Mass *= DrawScale;
     }
 }
 
@@ -45,6 +46,7 @@ defaultproperties
      CollisionRadius=1.000000
      CollisionHeight=1.000000
      Mass=5.000000
-     Buoyancy=5.500000
+     Buoyancy=1
+     LifeSpan=60
      bVisionImportant=True
 }
