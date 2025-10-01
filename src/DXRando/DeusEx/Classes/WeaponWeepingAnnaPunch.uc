@@ -7,13 +7,13 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
 }
 
 function ReadyToFire()
-{
+{ // when the weapon goes ready to fire again, set range back to default
     maxRange = default.maxRange;
     Super.ReadyToFire();
 }
 
 function Fire(float Value)
-{
+{ // when firing, give a longer range so it connects
     maxRange = default.maxRange*2;
     Super.Fire(Value);
 }
@@ -48,6 +48,6 @@ defaultproperties
     Misc3Sound=None
     maxRange=80
     AccurateRange=80
-    ShotTime=0.2
+    ShotTime=0.3
     HitDamage=12
 }

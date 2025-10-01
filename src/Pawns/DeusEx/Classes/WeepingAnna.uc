@@ -7,7 +7,7 @@ var int SpottedSoundId;
 var float SpottedSoundTimer;
 var float LastSeen;
 var float LastUnseen;
-var DynamicBlockAll blocker; // fake collision, prevents blood spawns, TODO: rock chips? sparks? maybe this needs to be a decoration to spawn debris?
+var DynamicBlockAll blocker; // fake collision, prevents blood spawns
 
 const RecentlySeenTime=30.0;
 
