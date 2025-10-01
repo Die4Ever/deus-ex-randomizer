@@ -6,6 +6,8 @@ var float OldAnimRate;
 var int SpottedSoundId;
 var float SpottedSoundTimer;
 var float LastSeen;
+var float LastUnseen;
+var DynamicBlockAll blocker; // fake collision, prevents blood spawns, TODO: rock chips? sparks? maybe this needs to be a decoration to spawn debris?
 
 const RecentlySeenTime=30.0;
 
@@ -51,6 +53,11 @@ state Sleeping
         // can't be damaged here
     }
 
+    function SpurtBlood()
+    {
+        // don't bleed
+    }
+
 Begin:
     Spawn(class'WeepingAnnaLight'); // tiny light, fade in and fade out quickly, almost a strobe
     if(SpottedSoundId>0) StopSound(SpottedSoundId);
@@ -63,11 +70,24 @@ Idle:
     DesiredRotation=Rotation;
     OldAnimRate=AnimRate;
     AnimRate=0;
+    bCanBleed=False;
+    Buoyancy=Mass/5;
+    if(blocker!=None) {
+        blocker.SetLocation(Location);
+        blocker.SetCollision(true,true,true);
+        //SetCollision(false,false,false);
+    }
 }
 
 state Wakeup
 {
 Begin:
+    bCanBleed=True;
+    Buoyancy=Mass+5;
+    if(blocker!=None) {
+        blocker.SetCollision(false,false,false);
+    }
+    SetCollision(true,true,true);
     if(AnimRate==0) AnimRate=OldAnimRate;
     if(Enemy!=None) {
         LookAtActor(Enemy,true,true,true);
@@ -105,7 +125,15 @@ function bool RecentlySeen()
 function InitializePawn()
 {
     Super.InitializePawn();
+    blocker = spawn(class'DynamicBlockAll',,, Location);
+    blocker.SetCollisionSize(CollisionRadius+4, CollisionHeight+4);
     GotoState('Sleeping', 'Idle'); // skip the light and sound effect of being spotted
+}
+
+function Destroyed()
+{
+    if(blocker!=None) blocker.Destroy();
+    Super.Destroyed();
 }
 
 function CheckWakeup(float deltaSeconds)
@@ -120,6 +148,11 @@ function CheckWakeup(float deltaSeconds)
 
     if (seer!=None){
         LastSeen=Level.TimeSeconds;
+    } else {
+        if(LastSeen > LastUnseen && LastUnseen > Level.TimeSeconds-0.1) {
+            return; // don't sleep and wake too quickly within 0.1sec, would spam the effects
+        }
+        LastUnseen=Level.TimeSeconds;
     }
 
     if((seer!=None || inConv) && StateName!='Sleeping')
@@ -210,8 +243,8 @@ function ShatterBody()
     local bool spawnit;
 
     //Break into rock fragments
-    for(i=0;i<16;i++){
-        if(i<10){
+    for(i=0;i<24;i++){
+        if(i<20){
             spawnit=true;
         } else {
             spawnit=(FRand()<0.5);
@@ -225,7 +258,6 @@ function ShatterBody()
             }
         }
     }
-
 }
 
 //#region Posing
@@ -391,13 +423,16 @@ defaultproperties
     BurnPeriod=0.000000
     bIsFemale=True
     BaseEyeHeight=41.45
-    Health=300
-    HealthHead=400
-    HealthTorso=300
-    HealthLegLeft=300
-    HealthLegRight=300
-    HealthArmLeft=300
-    HealthArmRight=300
+    Health=50
+    HealthHead=50
+    HealthTorso=50
+    HealthLegLeft=50
+    HealthLegRight=50
+    HealthArmLeft=50
+    HealthArmRight=50
+    MinHealth=0
+    FleeHealth=0
+
     Mesh=LodMesh'DeusExCharacters.GFM_TShirtPants'
     DrawScale=1.2
     MultiSkins(0)=Texture'WeepingAnnaFace'
@@ -420,4 +455,5 @@ defaultproperties
     AnimFrame=0.12
     AnimRate=0.0
     LastSeen=-100.0
+    LastUnseen=-100.0
 }

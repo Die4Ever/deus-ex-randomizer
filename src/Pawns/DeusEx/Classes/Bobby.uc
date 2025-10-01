@@ -8,6 +8,8 @@ var float unSeenCounter;
 var Actor lastBumpActor;
 var float lastBumpTime;
 
+const SpreadDistance = 160;
+
 simulated function PreTravel()
 {
     bTransient = false;
@@ -25,6 +27,48 @@ simulated function Destroyed()
         }
     }
     Super.Destroyed();
+}
+
+static function ScriptedPawn SpawnOne(DXRActorsBase a, class<ScriptedPawn> type, vector baseloc)
+{
+    local ScriptedPawn s;
+    local vector loc;
+    local int i;
+
+    for(i=0; i<10; i++) {
+        loc = a.GetRandomPositionNear(baseloc, SpreadDistance);
+        s = a.Spawn(type,,, loc);
+        if(s != None) {
+            if(DXRStalker(s)!=None) {
+                DXRStalker(s).InitStalker(a);
+            }
+            return s;
+        }
+    }
+    return None;
+}
+
+static function ScriptedPawn SpawnPack(DXRActorsBase a, class<ScriptedPawn> type)
+{
+    local ScriptedPawn leader, s;
+    local vector loc;
+    local int i;
+
+    for(i=0; i<10; i++) {
+        loc = a.GetRandomPosition(a.player().Location, 16*100, 999999);
+        leader = SpawnOne(a, type, loc);
+        if(leader!=None) break;
+    }
+    if(leader == None) return None;
+
+    for(i=1; i<3; i++) {
+        s = SpawnOne(a, type, loc);
+        if(DXRStalker(s)!=None) {
+            DXRStalker(s).InitStalker(a);
+        }
+    }
+
+    return leader;
 }
 
 function InitializePawn()
@@ -72,6 +116,7 @@ Begin:
 state Wakeup
 {
 Begin:
+    WakeupFriends();
     if(Enemy!=None) {
         LookAtActor(Enemy,true,true,true);
     }
@@ -84,6 +129,16 @@ Begin:
     if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) SetOrders('Attacking');
     else if(OrderActor!=None) GotoState('RunningTo');
     else GotoState('Seeking');
+}
+
+function WakeupFriends()
+{
+    local Bobby friend;
+    foreach RadiusActors(class'Bobby', friend, SpreadDistance+16) {
+        if(friend.IsInState('Sleeping')) {
+            friend.GotoState('Wakeup');
+        }
+    }
 }
 
 function CheckWakeup(float deltaSeconds)

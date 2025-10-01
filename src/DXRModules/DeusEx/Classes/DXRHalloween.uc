@@ -53,17 +53,17 @@ function SpawnStalkers(bool reentry)
 
 function SpawnStalker(bool reentry, int iterseed, int num)
 {
-    local int enabled[4]; // 0: Mr H, 1: Weeping Anna, 2: Bobby
-    local int i, stalkerType;
-    local vector loc;
+    local int enabled[3]; // 0: Mr H, 1: Weeping Anna, 2: Bobby
+    local int i, stalkerType, numEnabled;
 
-    if((dxr.flags.moresettings.stalkers & 7) == 0) return; // no stalkers enabled, would be an infinite loop
-
-    for(i=0; i<4; i++) {
+    for(i=0; i<3; i++) {
         if( ((dxr.flags.moresettings.stalkers >>> i) & 1) == 1) {
             enabled[i] = 1;
+            numEnabled++;
         }
     }
+
+    if(numEnabled==0) return; // no stalkers enabled, would be an infinite loop
 
     SetSeed("stalkers " $ iterseed);
     do {
@@ -81,15 +81,14 @@ function SpawnStalker(bool reentry, int iterseed, int num)
     }
     else if(stalkerType==2) {
         for(i=0; i<num; i++) {
-            class'Bobby'.static.Create(self);
+            class'Bobby'.static.SpawnPack(self, class'Bobby');
         }
     }
 
     // create some fake Bobbys
     if(enabled[2]==1 && !reentry) {
         for(i=0; i<num; i++) {
-            loc = GetRandomPosition(player().Location, 16*100, 999999);
-            spawn(class'BobbyFake',,, loc);
+            class'Bobby'.static.SpawnPack(self, class'BobbyFake');
         }
     }
 }
