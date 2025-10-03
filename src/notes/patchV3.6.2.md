@@ -34,5 +34,6 @@
 - Lenny, the junkie with a LAM in Brooklyn Bridge Station, will now talk to you again if you didn't have room the first time you tried to trade with him
 - Slightly reduced spawn rate of rubber batons in limited loadouts
 - Paul has slightly more health and better accuracy in M04
+- Dr. Mehdi Kit (the bum in the abandoned bunker in the Paris Catacombs who sells medkits and darts) will no longer sell you infinite darts
 
 </details>
