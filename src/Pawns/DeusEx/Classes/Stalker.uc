@@ -274,7 +274,9 @@ static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPaw
         pitch -= 65536;
 
     // return if we are not in the player's FOV (don't use their real FOV? every player should be the same? needs to be extra wide then, I guess 180 degrees would be 16384)
-    if (Abs(yaw) > 15000 || Abs(pitch) > 15000) {
+    // about 120 degree FOV, slightly wider
+    //p.ClientMessage("APlayerCanSeeMe " $ sp @ Abs(yaw) @ Abs(pitch));
+    if (Abs(yaw) > 14000 || Abs(pitch) > 9000) {
         return None;
     }
 

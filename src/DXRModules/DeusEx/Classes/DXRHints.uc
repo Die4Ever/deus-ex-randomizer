@@ -15,7 +15,7 @@ simulated function InitHints()
     local DXRTelemetry telem;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int mission;
+    local int mission, num_stalkers;
     local string map;
 
     numHints = 0;
@@ -193,9 +193,6 @@ simulated function InitHints()
         AddHint("The inventory description of augmentation canisters will show", "the full description of the augs available within!");
     }
 
-    if(dxr.flags.IsHalloweenMode()) {
-        AddHint("Mr. H cannot die but he will flee for a bit if you hurt him enough.");
-    }
     if(dxr.flags.moresettings.reanimation > 0) {
         AddHint("Dead bodies will come back as zombies!", "You might want to destroy the bodies.");
         AddHint("Dead bodies will come back as zombies!", "Maybe a non-lethal approach would help?");
@@ -235,6 +232,19 @@ simulated function InitHints()
         }
     }
 
+    num_stalkers = dxr.flags.moresettings.stalkers >>> 16;
+    if(num_stalkers > 0) {
+        AddHint("Stalkers cannot be permanently killed,", "but if they take enough damage then they will go away for a while.");
+        if((dxr.flags.moresettings.stalkers & 1) != 0) { // Mr. H
+            AddHint("Mr. H cannot die", "but he will flee for a bit if you hurt him enough.");
+        }
+        if((dxr.flags.moresettings.stalkers & 2) != 0) { // Weeping Anna
+            AddHint("Weeping Anna cannot move, attack,", "or take damage while you are looking at her.");
+        }
+        if((dxr.flags.moresettings.stalkers & 4) != 0) { // Bobby
+            AddHint("Bobby will wait until you turn your back to ambush you.");
+        }
+    }
     if(mission <= 5) {
         AddHint("Melee attacks from behind do bonus damage!");
         AddHint("Don't hoard items.", "You'll find more!");

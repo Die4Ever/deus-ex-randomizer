@@ -169,16 +169,23 @@ function CheckWakeup(float deltaSeconds)
     }
 }
 
-//Mostly from Robot - he's a doll, so these things don't work on him
-function bool IgnoreDamageType(Name damageType)
+// friends till the end
+function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
+                       optional bool bForce)
 {
-    if ((damageType == 'TearGas') || (damageType == 'HalonGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation'))
-        return True;
-    else if ((damageType == 'Poison') || (damageType == 'PoisonEffect'))
-        return True;
-    else
-        return False;
+    local Bobby friend;
+    foreach RadiusActors(class'Bobby', friend, SpreadDistance+16) {
+        friend._SetEnemy(newEnemy, newSeenTime, bForce);
+    }
+    return Super.SetEnemy(newEnemy, newSeenTime, bForce);
 }
+
+function bool _SetEnemy(Pawn newEnemy, optional float newSeenTime,
+                       optional bool bForce)
+{
+    return Super.SetEnemy(newEnemy, newSeenTime, bForce);
+}
+
 
 event Bump( Actor Other )
 {
