@@ -3,6 +3,7 @@ class Bobby extends DXRStalker;
 // once seen they are ready to wakeup, and then will wakeup when unseen
 var float seenCounter;
 var float unSeenCounter;
+var int pathingFails;
 
 // for being bumped by pawns
 var Actor lastBumpActor;
@@ -10,6 +11,7 @@ var float lastBumpTime;
 
 const SpreadDistance = 160;
 
+//#region destroying
 simulated function PreTravel()
 {
     bTransient = false;
@@ -17,16 +19,50 @@ simulated function PreTravel()
 
 simulated function Destroyed()
 {
-    local DXRHalloween thisishalloween;
+    local DXRHalloween h;
+    local BobbyFake faker;
+
     if(bTransient) {
         // destroyed by leaving
         bTransient=false;
-        thisishalloween = DXRHalloween(class'DXRHalloween'.static.Find());
-        if(thisishalloween!=None && thisishalloween.dxr!=None) {
-            Create(thisishalloween);
+        h = DXRHalloween(class'DXRHalloween'.static.Find());
+        faker = ChooseFake();
+        if(h!=None && h.dxr!=None && faker!=None) {
+            class'BobbyPossessionEffect'.static.Create(self, faker, h);
         }
     }
     Super.Destroyed();
+}
+//#endregion
+
+//#region spawning
+function BobbyFake ChooseFake(optional BobbyFake except)
+{
+    local BobbyFake faker, closestFaker;
+    local float dist, closestDist, minDist;
+
+    closestDist = 999999;
+    minDist = -1;
+    if(except!=None) {
+        minDist = VSize(Location-except.Location);
+    }
+
+    foreach AllActors(class'BobbyFake', faker) {
+        if(faker.health <= 0) continue;
+
+        dist = VSize(Location-faker.Location);
+
+        if(faker.Owner==self && dist > minDist) return faker;
+        if(Bobby(faker.Owner)!=None) continue;
+
+        if(dist < closestDist && dist > minDist) {
+            closestDist = dist;
+            closestFaker = faker;
+        }
+    }
+
+    if(closestFaker!=None) closestFaker.SetOwner(self);
+    return closestFaker;
 }
 
 static function ScriptedPawn SpawnOne(DXRActorsBase a, class<ScriptedPawn> type, vector baseloc)
@@ -76,7 +112,9 @@ function InitializePawn()
     Super.InitializePawn();
     SetOrders('Sleeping');
 }
+//#endregion
 
+//#region states
 state Sleeping
 {
     ignores frob, reacttoinjury;
@@ -110,7 +148,7 @@ state Sleeping
 Begin:
     Acceleration=vect(0,0,0);
     DesiredRotation=Rotation;
-    PlayAnimPivot('Still');
+    PlayWaiting();
 }
 
 state Wakeup
@@ -131,10 +169,133 @@ Begin:
     else GotoState('Seeking');
 }
 
+
+state Fleeing
+{
+    function BeginState()
+    {
+        if (bLeaveAfterFleeing)
+        {
+            RunToFaker();
+        }
+        Super.BeginState();
+    }
+}
+
+state RunningTo
+{
+    ignores frob, reacttoinjury;
+    function BeginState()
+    {
+        BlockReactions(true);
+        bCanConverse = False;
+        EnableCheckDestLoc(false);
+    }
+
+    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+    {
+        // can't be damaged here
+    }
+
+    function EndState()
+    {
+        local DXRHalloween halloween;
+        local BobbyFake faker;
+        faker = BobbyFake(orderActor);
+        if (faker!=None && VSize(Location-faker.Location) < 160) {
+            halloween = DXRHalloween(class'DXRHalloween'.static.Find());
+            class'BobbyPossessionEffect'.static.Create(self, faker, halloween);
+            GotoState('Possessing');
+        } else {
+            RunToFaker();
+        }
+    }
+
+    function Tick(float deltaSeconds)
+    {
+        local BobbyFake faker;
+        Global.Tick(deltaSeconds);
+        faker = BobbyFake(orderActor);
+        if(faker == None || faker.health <= 0) {
+            RunToFaker();
+        }
+    }
+
+    function Actor GetNextWaypoint(Actor destination)
+    {
+        local Actor a;
+        a = Global.GetNextWaypoint(destination);
+        if(a==None) {
+            pathingFails++;
+            if(pathingFails>3) {
+                RunToFaker(BobbyFake(orderActor));
+                return None;
+            }
+        }
+        else pathingFails = 0;
+        return a;
+    }
+}
+
+state Possessing
+{
+    ignores bump, frob, reacttoinjury;
+    function BeginState()
+    {
+        BlockReactions(true);
+        bCanConverse = False;
+        EnableCheckDestLoc(false);
+    }
+    function EndState()
+    {
+        ResetReactions();
+        bCanConverse = True;
+    }
+
+    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+    {
+        // can't be damaged here
+    }
+
+    function Tick(float deltaSeconds)
+    {
+        Global.Tick(deltaSeconds);
+        if(BobbyFake(orderActor) == None || BobbyFake(orderActor).health <= 0) {
+            RunToFaker();
+        }
+    }
+
+Begin:
+    bTransient = false;
+    bDisappear = false;
+    Acceleration=vect(0,0,0);
+    Velocity=vect(0,0,0);
+    PlayWaiting();
+    if(orderActor!=None) LookAtActor(orderActor,true,true,true);
+}
+//#endregion
+
+//#region util
+
+function RunToFaker(optional BobbyFake except)
+{
+    local BobbyFake faker;
+    bTransient = true; // we can possess early if out of sight
+    bDisappear = true;
+    bLeaveAfterFleeing = false; // only do this once
+    faker = ChooseFake(except);
+    OrderActor = faker;
+    if(faker!=None) {
+        GotoState('RunningTo');
+        return;
+    }
+    GotoState('Fleeing');
+}
+
 function WakeupFriends()
 {
     local Bobby friend;
-    foreach RadiusActors(class'Bobby', friend, SpreadDistance+16) {
+    foreach RadiusActors(class'Bobby', friend, SpreadDistance+32) {
         if(friend.IsInState('Sleeping')) {
             friend.GotoState('Wakeup');
         }
@@ -169,16 +330,23 @@ function CheckWakeup(float deltaSeconds)
     }
 }
 
-//Mostly from Robot - he's a doll, so these things don't work on him
-function bool IgnoreDamageType(Name damageType)
+// friends till the end
+function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
+                       optional bool bForce)
 {
-    if ((damageType == 'TearGas') || (damageType == 'HalonGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation'))
-        return True;
-    else if ((damageType == 'Poison') || (damageType == 'PoisonEffect'))
-        return True;
-    else
-        return False;
+    local Bobby friend;
+    foreach RadiusActors(class'Bobby', friend, SpreadDistance+16) {
+        friend._SetEnemy(newEnemy, newSeenTime, bForce);
+    }
+    return Super.SetEnemy(newEnemy, newSeenTime, bForce);
 }
+
+function bool _SetEnemy(Pawn newEnemy, optional float newSeenTime,
+                       optional bool bForce)
+{
+    return Super.SetEnemy(newEnemy, newSeenTime, bForce);
+}
+
 
 event Bump( Actor Other )
 {

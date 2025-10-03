@@ -10,6 +10,7 @@ var float LastUnseen;
 var DynamicBlockAll blocker; // fake collision, prevents blood spawns
 
 const RecentlySeenTime=30.0;
+const AggroDist=800;//used for attacking range and aggro range, 50ft
 
 // for bumping pawns
 var Actor lastBumpActor;
@@ -97,7 +98,7 @@ Begin:
     bIgnore=false;
     SetOrders('Wandering');
     OrderActor=Enemy;
-    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self)) SetOrders('Attacking');
+    if(!PlayerCloaked(#var(PlayerPawn)(Enemy), self) && VSize(Location-Enemy.Location)<AggroDist) SetOrders('Attacking');
     else if(OrderActor!=None) GotoState('RunningTo');
     else GotoState('Seeking');
 }
@@ -157,8 +158,8 @@ function CheckWakeup(float deltaSeconds)
 
     if((seer!=None || inConv) && StateName!='Sleeping')
     {
-        if(seer!=None){
-            ChangeAlly('Player', -1, true); // we won't fight until we've been seen once
+        if(seer!=None && VSize(Location-seer.Location)<AggroDist) {
+            ChangeAlly('Player', -1, true); // we won't fight until we've been seen once, within AggroDist
             SetSeekLocation(seer, seer.Location, SEEKTYPE_Sight, true);
             SetEnemy(seer, Level.TimeSeconds, true);
         }

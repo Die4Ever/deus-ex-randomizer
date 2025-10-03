@@ -654,6 +654,8 @@ function PostFirstEntryMapFixes()
         if (k != None) {
             k.Description = "Hotel key";
             k.KeyID = 'hotel_roomdoor';
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
         }
 
         break;
