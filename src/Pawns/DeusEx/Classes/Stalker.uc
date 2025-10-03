@@ -86,7 +86,7 @@ function Tick(float delta)
 
     Super.Tick(delta);
 
-    if(!bLeaveAfterFleeing || !IsInState('Fleeing')) {
+    if(!bTransient) {
         LastRenderTime = Level.TimeSeconds;
         bStasis = false;
     }
