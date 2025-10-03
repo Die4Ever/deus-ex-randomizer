@@ -58,6 +58,13 @@ function PlayTakeHitSound(int Damage, name damageType, int Mult)
     return;
 }
 
+function PlayPossessionAnim()
+{
+    if (!Region.Zone.bWaterZone){
+        LoopAnim('Shocked',2.5); //He's BUZZING with excitement!
+    }
+}
+
 //GMK_DressShirt doesn't actually have a sitting animation ¯\_(ツ)_/¯
 function PlaySitting()
 {

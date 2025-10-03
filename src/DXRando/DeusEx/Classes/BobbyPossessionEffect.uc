@@ -48,6 +48,8 @@ static function Create(Bobby bob, BobbyFake faker, DXRHalloween halloween)
     bob.bTransient = false;
     effect.faker = faker;
     effect.halloween = halloween;
+
+    faker.PlayPossessionAnim();
 }
 
 static function PossessFake(BobbyFake faker, DXRHalloween h)
