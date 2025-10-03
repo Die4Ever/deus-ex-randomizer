@@ -270,7 +270,7 @@ Begin:
     bDisappear = false;
     Acceleration=vect(0,0,0);
     Velocity=vect(0,0,0);
-    PlayWaiting();
+    LoopAnim('Shocked',2.5); //He's BUZZING with excitement!
     if(orderActor!=None) LookAtActor(orderActor,true,true,true);
 }
 //#endregion
