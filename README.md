@@ -17,7 +17,7 @@ We also offer **Vanilla Fixer**: This one is for the purists. Use our installer 
     - **Zero Rando Plus**: Same as Zero Rando, but also enables our balance changes.
     - See the Rando ➜ Gameplay menu for more customization of balance changes and QoL features.
   - **WaltonWare**: A quick option to get into the game without the time commitment of the full game. You start in a random mission and **win by completing one bingo line**. All bingo goals will be completable within just a few maps. As New Game+ keeps making it harder, see how fast you can complete them or how many you can complete! Also check out the full game variant of this: Mr. Page's Mean Bingo Machine.
-  - Various [**Halloween modes**](https://www.youtube.com/watch?v=FbzNkWJXZ1o) that add survival horror mechanics, such as zombies, limited saves, and an invincible stalker!
+  - Various [**Halloween modes**](https://www.youtube.com/watch?v=FbzNkWJXZ1o) that add survival horror mechanics, such as zombies, limited saves, and invincible stalkers!
   - See the [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes) for a full list of our game modes.
 
 ## Trailers
