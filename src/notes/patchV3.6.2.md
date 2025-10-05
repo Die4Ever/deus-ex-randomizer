@@ -10,7 +10,7 @@
 <summary>Click to expand Minor Changes</summary>
 
 - Adjusted the rotation of several goal randomization locations
-  - The Terrorist Commander on Liberty Island now looks out over the North Dock when he's on the base of the statue, making him visible from afar
+  - The Terrorist Commander on Liberty Island now looks out over the North Dock when he's on the base of the statue
   - The location near the water valves in Brooklyn Bridge Station now looks towards the steam vents instead of looking at the wall
   - The location on the East side of the Rooks' territory in Brooklyn Bridge Station now looks into the hall area, instead of towards the fence
   - The location in Manderley's bathroom in mission 5 now looks towards the door instead of the wall
