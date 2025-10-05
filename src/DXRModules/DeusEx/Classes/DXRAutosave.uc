@@ -480,7 +480,8 @@ function bool IsLimitedSaves()
 
 function MapAdjustments()
 {
-    local Actor a;
+    local ATM a;
+    local MemConUnit mcu;
     local vector loc;
     local int i;
 
@@ -488,12 +489,23 @@ function MapAdjustments()
         SetSeed("spawn MCU");
         for(i=0; i<20; i++) {
             loc = GetRandomPositionFine();
-            a = Spawn(class'MemConUnit',,, loc);
-            if(a != None) {
-                l("MapAdjustments() spawned MCU " $ a $ " at " $ loc);
+            mcu = Spawn(class'MemConUnit',,, loc);
+            if(mcu != None) {
+                l("MapAdjustments() spawned MCU " $ mcu $ " at " $ loc);
                 break;
             }
         }
+    }
+
+    switch(dxr.localURL) {
+    case "12_VANDENBERG_GAS":
+        if(IsFixedSaves()) {
+            a = ATM(AddActor(class'#var(prefix)ATM', vect(1231.338379, 554.900024, -903.686279), rot(0,-16384,0)));
+            a.UserList[0].accountNumber = "20000622";
+            a.UserList[0].PIN = "1031";
+            a.UserList[0].balance = 100;
+        }
+        break;
     }
 }
 

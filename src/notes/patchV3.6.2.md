@@ -22,6 +22,7 @@
 - Slightly reduced the number of Jack-o-Lanterns when they are enabled
 - Crash saves are now hidden from the load game menu, because they were confusing to see
 - Crash saves and autosaves no longer overwrite each other
+- In Fixed Save modes, the Vandenberg gas station now gets an ATM
 - The WaltonWare countdown at the end of a loop now makes a crash save
 - Removed config options from password detection and prevention logic
 - Blocked password from being detected in Jacob's Shadow: Chapter 20, as well as the MJ12 Compromised Individuals list
