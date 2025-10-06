@@ -252,20 +252,17 @@ static function bool PlayerCloaked(#var(PlayerPawn) p, ScriptedPawn sp)
 }
 
 // used for Bobby and Weeping Anna
-static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPawn) p, bool respectCamo)
+static function bool CheckViewRotation(vector ViewLoc, rotator ViewRot, vector EnemyLoc)
 {
     local rotator rot;
-    local float yaw, pitch, dist;
-
-    if(respectCamo && PlayerCloaked(p, sp)) return None;
-    if(!p.LineOfSightTo(sp, true)) return None; // I think this checks top, center, and bottom points
+    local float yaw, pitch;
 
     // figure out if the player can see us
-    rot = Rotator(sp.Location - p.Location);
+    rot = Rotator(EnemyLoc - ViewLoc);
     rot.Roll = 0;
     // diff between player's view rotation and the needed rotation to see
-    yaw = (Abs(p.ViewRotation.Yaw - rot.Yaw)) % 65536;
-    pitch = (Abs(p.ViewRotation.Pitch - rot.Pitch)) % 65536;
+    yaw = (Abs(ViewRot.Yaw - rot.Yaw)) % 65536;
+    pitch = (Abs(ViewRot.Pitch - rot.Pitch)) % 65536;
 
     // center the angles around zero
     if (yaw > 32767)
@@ -275,12 +272,23 @@ static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPaw
 
     // return if we are not in the player's FOV (don't use their real FOV? every player should be the same? needs to be extra wide then, I guess 180 degrees would be 16384)
     // about 120 degree FOV, slightly wider
-    //p.ClientMessage("APlayerCanSeeMe " $ sp @ Abs(yaw) @ Abs(pitch));
-    if (Abs(yaw) > 14000 || Abs(pitch) > 9000) {
-        return None;
-    }
+    return Abs(yaw) < 14000 && Abs(pitch) < 8000;
+}
 
-    return p;
+static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPawn) p, bool respectCamo)
+{
+    local vector eyeLoc, spHeight;
+
+    if(respectCamo && PlayerCloaked(p, sp)) return None;
+    if(!p.LineOfSightTo(sp, true)) return None; // I think this checks top, center, and bottom points
+
+    eyeLoc = p.Location;
+    eyeLoc.Z += p.BaseEyeHeight;
+    spHeight.Z = sp.CollisionHeight;
+    if(CheckViewRotation(eyeLoc, p.ViewRotation, sp.Location)) return p;
+    if(CheckViewRotation(eyeLoc, p.ViewRotation, sp.Location + spHeight)) return p;
+    if(CheckViewRotation(eyeLoc, p.ViewRotation, sp.Location - spHeight)) return p;
+    return None;
 }
 
 static function #var(PlayerPawn) AnyPlayerCanSeeMe(ScriptedPawn sp, float MaxDist, bool respectCamo)

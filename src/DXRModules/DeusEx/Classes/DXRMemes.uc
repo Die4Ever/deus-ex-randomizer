@@ -37,7 +37,7 @@ function PlayDressUp(Actor a,class<Actor> influencer, float rotYaw)
         a.bFixedRotationDir = influencer.default.bFixedRotationDir;
     }
 
-    a.DrawScale = a.CollisionHeight / influencer.default.CollisionHeight;
+    a.DrawScale = a.CollisionHeight / (influencer.default.CollisionHeight / influencer.default.DrawScale);
     r.Yaw = rotYaw;
     a.SetRotation(r);
 }
@@ -104,7 +104,7 @@ function RandomBobPage()
 
         if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random bob
 
-        switch(rng(28)){
+        switch(rng(29)){
         case 0: PlayDressUp(bob,class'Cactus1',8000); return;
         case 1: PlayDressUp(bob,class'Mailbox',8000); return;
         case 2: PlayDressUp(bob,class'CarWrecked',8000); return;
@@ -133,6 +133,7 @@ function RandomBobPage()
         case 25: PlayDressUp(bob,class'VendingMachine',-8000); return;
         case 26: PlayDressUp(bob,class'Hooker1',-8000); return;
         case 27: PlayDressUp(bob,class'ChildMale2',-8000); return;
+        case 28: PlayDressUp(bob,class'Bobby',-8000); return;
         }
 
     }

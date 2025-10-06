@@ -10,7 +10,7 @@
 <summary>Click to expand Minor Changes</summary>
 
 - Adjusted the rotation of several goal randomization locations
-  - The Terrorist Commander on Liberty Island now looks out over the North Dock when he's on the base of the statue, making him visible from afar
+  - The Terrorist Commander on Liberty Island now looks out over the North Dock when he's on the base of the statue
   - The location near the water valves in Brooklyn Bridge Station now looks towards the steam vents instead of looking at the wall
   - The location on the East side of the Rooks' territory in Brooklyn Bridge Station now looks into the hall area, instead of towards the fence
   - The location in Manderley's bathroom in mission 5 now looks towards the door instead of the wall
@@ -22,6 +22,7 @@
 - Slightly reduced the number of Jack-o-Lanterns when they are enabled
 - Crash saves are now hidden from the load game menu, because they were confusing to see
 - Crash saves and autosaves no longer overwrite each other
+- In Fixed Save modes, the Vandenberg gas station now gets an ATM
 - The WaltonWare countdown at the end of a loop now makes a crash save
 - Removed config options from password detection and prevention logic
 - Blocked password from being detected in Jacob's Shadow: Chapter 20, as well as the MJ12 Compromised Individuals list
@@ -34,5 +35,6 @@
 - Lenny, the junkie with a LAM in Brooklyn Bridge Station, will now talk to you again if you didn't have room the first time you tried to trade with him
 - Slightly reduced spawn rate of rubber batons in limited loadouts
 - Paul has slightly more health and better accuracy in M04
+- Dr. Mehdi Kit (the bum in the abandoned bunker in the Paris Catacombs who sells medkits and darts) will no longer sell you infinite darts
 
 </details>

@@ -270,7 +270,7 @@ Begin:
     bDisappear = false;
     Acceleration=vect(0,0,0);
     Velocity=vect(0,0,0);
-    PlayWaiting();
+    PlayPossessionAnim();
     if(orderActor!=None) LookAtActor(orderActor,true,true,true);
 }
 //#endregion
@@ -381,6 +381,12 @@ function MakePawnIgnored(bool bNewIgnore)
 ////////////////////////////////
 // #region Animation Hacks
 ////////////////////////////////
+function PlayPossessionAnim()
+{
+    if (!Region.Zone.bWaterZone){
+        LoopAnim('Shocked',2.5); //He's BUZZING with excitement!
+    }
+}
 
 //Don't play breathing animations
 function TweenToWaiting(float tweentime)
