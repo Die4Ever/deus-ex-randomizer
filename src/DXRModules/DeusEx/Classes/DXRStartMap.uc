@@ -746,8 +746,6 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             break;
         case 9:
-            GiveImage(player, class'Image09_NYC_Ship_Bottom');
-            GiveImage(player, class'Image09_NYC_Ship_Top');
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
             MarkConvPlayed("DL_BadNews", bFemale);
             flagbase.SetBool('HelpSailor',true,,-1);
@@ -879,6 +877,12 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
         case 95:
             GiveKey(player, 'EngineRoomDoor', "Below Decks key");
             MarkConvPlayed("DL_ShipEntry", bFemale); // find a way to get below decks
+        //fallthrough
+        case 92:
+        case 91:
+        case 90:
+            GiveImage(player, class'Image09_NYC_Ship_Bottom');
+            GiveImage(player, class'Image09_NYC_Ship_Top');
             break;
 
         case 119:
