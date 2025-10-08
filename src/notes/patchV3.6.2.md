@@ -36,5 +36,6 @@
 - Slightly reduced spawn rate of rubber batons in limited loadouts
 - Paul has slightly more health and better accuracy in M04
 - Dr. Mehdi Kit (the bum in the abandoned bunker in the Paris Catacombs who sells medkits and darts) will no longer sell you infinite darts
+- Superfreighter map images are no longer given on a Graveyard start.
 
 </details>

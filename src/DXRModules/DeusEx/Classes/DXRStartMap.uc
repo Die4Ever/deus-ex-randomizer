@@ -874,10 +874,13 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             }
             break;
 
+        /* case 99:
+            break;
+            // don't fallthrough, to avoid giving ship maps on a graveyard start, which is too much of a gimme, especially for what is essentially a Paris start */
         case 95:
             GiveKey(player, 'EngineRoomDoor', "Below Decks key");
             MarkConvPlayed("DL_ShipEntry", bFemale); // find a way to get below decks
-        //fallthrough
+            //fallthrough
         case 92:
         case 91:
         case 90:
