@@ -29,12 +29,12 @@
 - Added some more mutual exclusions to bingo goals
 - Fixed max health bug in Vanilla? Madder
 - Lyla (An LDDP character in the mission 4 bar) now uses the correct female damage and death sounds, instead of dying like a man
-- Added a large crate to Oceanlab UC to buff the upper vents route
-- Fixed quick aug upgrade menu when you have 10 augs that can be upgraded
-- Lenny, the junkie with a LAM in Brooklyn Bridge Station, will now talk to you again if you didn't have room the first time you tried to trade with him
-- Slightly reduced spawn rate of rubber batons in limited loadouts
-- Paul has slightly more health and better accuracy in M04
-- Dr. Mehdi Kit (the bum in the abandoned bunker in the Paris Catacombs who sells medkits and darts) will no longer sell you infinite darts
+- Added a large crate to the Ocean Lab UC map to buff the upper vents route
+- Fixed a bug with the quick aug upgrade menu when you have 10 augs that can be upgraded
+- Lenny, the junkie with a LAM in Brooklyn Bridge Station, will now talk to you again if you didn't have room for it the first time you tried to trade with him
+- Slightly reduced the spawn rate of rubber batons in limited loadouts
+- Paul has slightly more health and better accuracy during the UNATCO raid on the 'Ton
+- Dr. Mehdi Kit (the bum in the abandoned bunker in the Paris Catacombs who sells medkits and darts) will no longer sell you infinite darts if you haven't bought all of his medkits
 - Superfreighter map images are no longer given on a Graveyard start
 
 </details>
