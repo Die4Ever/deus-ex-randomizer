@@ -1,6 +1,28 @@
+## New Halloween Stalker types.
+
+- There is now an advanced setting to choose which Stalker types to enable, or how many Stalkers per map
+
+<details>
+<summary>Click to show spoiler hints:</summary>
+
+- Added new Stalker type: Weeping Anna.
+  - She can only move, attack, or be damaged while you are looking away.
+  - She's fast, faster than you can believe.
+  - Learn to run backwards and always keep her in sight.
+  - You can try to attach a LAM to the floor and look away before it explodes. Or shoot a projectile and turn away quickly. Even tranquilizer darts will work.
+- Added new Stalker type: Bobby.
+  - Little guy with a big knife.
+  - Hangs out in packs but he doesn't have much health.
+  - Once you see him he will stay facing you. When you turn your back he will pull out his knife and attack with all his buddies.
+  - There will also be many unpossessed dolls on each map, even maps with no possessed Bobbys. They still face you because that's a function of the Page Industries toy: "We even turn our heads and blink our eyes."
+  - In default Halloween mode settings, if you see a Mr. H or Weeping Anna this means there cannot also be any possessed Bobbys in the same map.
+  - When he's low on health he will run away and try to find an unpossessed doll to transfer his soul into. The area will briefly go dark when he does this.
+  - You can destroy the unpossessed Bobbys in order to prevent his soul transfer.
+
+</details>
+
 ## Major Changes
 
-- New Halloween Stalker types: Bobby and Weeping Anna. There are now advanced setting to choose which Stalker types to enable, or how many Stalkers
 - New game mode: Mr. Page's Horrifying Bingo Machine
 - Fixed and/or Limited Saves modes now get emergency autosaves for crashes and when exiting the game, same as WaltonWare Hardcore
 
@@ -35,6 +57,6 @@
 - Slightly reduced the spawn rate of rubber batons in limited loadouts
 - Paul has slightly more health and better accuracy during the UNATCO raid on the 'Ton
 - Dr. Mehdi Kit (the bum in the abandoned bunker in the Paris Catacombs who sells medkits and darts) will no longer sell you infinite darts if you haven't bought all of his medkits
-- Superfreighter map images are no longer given on a Graveyard start
+- Graveyard starts no longer give Superfreighter map images
 
 </details>
