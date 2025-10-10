@@ -35,5 +35,6 @@
 - Slightly reduced the spawn rate of rubber batons in limited loadouts
 - Paul has slightly more health and better accuracy during the UNATCO raid on the 'Ton
 - Dr. Mehdi Kit (the bum in the abandoned bunker in the Paris Catacombs who sells medkits and darts) will no longer sell you infinite darts if you haven't bought all of his medkits
+- Superfreighter map images are no longer given on a Graveyard start
 
 </details>
