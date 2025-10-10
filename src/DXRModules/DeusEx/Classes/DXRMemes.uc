@@ -940,7 +940,7 @@ state() JumpInTheLine {
 
         // why does this only affect some of the ScriptedPawns?
         foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
-            if(MrH(p) != None) continue;
+            if(DXRStalker(p) != None) continue;
             t = Level.TimeSeconds - p.Location.X - p.Location.Y;
             t = sin(t / 2.0) * 160.0;
             v = p.Location;
@@ -1416,7 +1416,7 @@ function MakeAllGhosts()
 
     foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
         if(#var(prefix)Robot(p) != None) continue;
-        if(MrH(p) != None) continue;
+        if(DXRStalker(p) != None) continue;
         class'DXRHalloween'.static.MakeGhost(p);
         if(isEndgame4) {
             p.SetPhysics(PHYS_None);
@@ -1575,7 +1575,7 @@ function Actor ReplaceWithRandomClass(Actor old)
     return None;
 }
 
-const num_random_actor_classes = 553;
+const num_random_actor_classes = 555;
 
 function string GetRandomActorClass()
 {
@@ -1618,6 +1618,8 @@ function string _GetRandomActorClass(int r)
 
     // DXRando classes
     if(r==i++) return "#var(package).MrH";
+    if(r==i++) return "#var(package).WeepingAnna";
+    if(r==i++) return "#var(package).Bobby";
     //if(r=i++) return "#var(package).Spiderweb"; // doesn't look good
     if(r==i++) return "#var(package).DXRJackOLantern";
     if(r==i++) return "#var(package).DeathMarker";
