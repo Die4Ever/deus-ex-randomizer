@@ -26,7 +26,7 @@
 - The WaltonWare countdown at the end of a loop now makes a crash save
 - Fixed a bug with a couple books incorrectly giving you passwords later when Autofill Passwords is enabled. Affected books are "Jacob's Shadow: Chapter 20" and the "MJ12 Compromised Individuals List"
 - Trashcans no longer drop contents when carrying across map transitions
-- Added some more mutual exclusions to bingo goals
+- Added some more mutual exclusions for bingo goals
 - Fixed max health bug in Vanilla? Madder
 - Lyla (An LDDP character in the mission 4 bar) now uses the correct female damage and death sounds, instead of dying like a man
 - Added a large crate to the Ocean Lab UC map to buff the upper vents route
