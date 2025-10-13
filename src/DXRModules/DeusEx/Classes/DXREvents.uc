@@ -15,7 +15,8 @@ function WatchActors()
             || #var(prefix)Chandelier(d) != None
             || #var(prefix)Lightbulb(d) != None
             || #var(prefix)HKHangingLantern(d) != None
-            || #var(prefix)HKHangingLantern2(d) != None)
+            || #var(prefix)HKHangingLantern2(d) != None
+            || #var(prefix)AlarmLight(d) != None)
         {
             AddWatchedActor(d,"LightVandalism_DestroyDeco");
         }

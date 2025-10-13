@@ -5,13 +5,13 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=3;
     minor=6;
-    patch=6;
-    build=6;//build can't be higher than 99
+    patch=7;
+    build=0;//build can't be higher than 99
 }
 
 simulated static function bool VersionIsStable()
 {
-    return true;
+    return false;
 }
 
 simulated static function string VersionString(optional bool full)
@@ -19,8 +19,7 @@ simulated static function string VersionString(optional bool full)
     local int major,minor,patch,build;
     local string status;
 
-    status = "";
-    full = true; // HALLOWEEN 2025 v3.6.6.6 TODO: REMOVE THIS
+    status = "Alpha";
 
 //#endregion
 //////
