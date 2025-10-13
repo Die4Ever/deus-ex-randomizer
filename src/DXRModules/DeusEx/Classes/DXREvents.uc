@@ -2624,6 +2624,35 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             return (real_duration!=1);
 
 /////////////////////////////////////////////////////////////////////
+    //Ban goals that require the use of drugs or alcohol as appropriate
+        case "DrinkAlcohol_Activated": //Only impossible if *all* alcohol is banned
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)Liquor40oz') &&
+                   loadout.is_banned(class'#var(prefix)LiquorBottle') &&
+                   loadout.is_banned(class'#var(prefix)WineBottle')
+                   ) {
+                    return true;
+                }
+            }
+            return false;
+
+        case "JockSecondStory": //Jock only wants beers
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)Liquor40oz')) {
+                    return true;
+                }
+            }
+            return false;
+
+        case "GiveZyme_ConvoFlag": //Need zyme to give zyme
+        case "SoldRenaultZyme":    //Need zyme to sell zyme
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)VialCrack')) {
+                    return true;
+                }
+            }
+            return false;
+
     }
 
     return false;
