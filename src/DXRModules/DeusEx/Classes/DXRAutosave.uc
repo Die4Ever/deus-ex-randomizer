@@ -500,7 +500,8 @@ function MapAdjustments()
     switch(dxr.localURL) {
     case "12_VANDENBERG_GAS":
         if(IsFixedSaves()) {
-            a = ATM(AddActor(class'#var(prefix)ATM', vect(1231.338379, 554.900024, -903.686279), rot(0,-16384,0)));
+            a = ATM(AddActor(class'#var(prefix)ATM', vect(1231.338379, 553, -903.686279), rot(0,-16384,0)));
+            a.SetCollisionSize(a.CollisionRadius+2, a.CollisionHeight); // slightly bigger to get clear of bad collision
             a.UserList[0].accountNumber = "20000622";
             a.UserList[0].PIN = "1031";
             a.UserList[0].balance = 100;
