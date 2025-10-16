@@ -789,7 +789,7 @@ class BingoDisplay:
         #Clamp the percentage between 0.0 and 1.0
         max(min(percent,1.0),0.0)
 
-        barHeight = height * percent
+        barHeight = min(height, max(height * percent, 0))
 
         draw.rectangle([(left,height-barHeight),(width,height)],fill=MAGIC_GREEN)
         draw.rectangle([(left,0),(width,height-barHeight)],fill=POSSIBLE_GREY)
