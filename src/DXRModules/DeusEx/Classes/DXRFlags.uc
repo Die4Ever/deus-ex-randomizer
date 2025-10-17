@@ -1155,7 +1155,9 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ Mr. H will stalk you around the world|n";
         s = s$"  ~ Loot new clothes from bodies to grow your selection of costumes|n";
         s = s$"  ~ Light augmentation is dim and costs energy (like in vanilla)|n";
-        s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics";
+        s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics|n";
+        s = s$"|n";
+        s = s$"Be warned, this can be very difficult, you may want to change some of these features like the limited saves.";
         return s;
     case OneItemMode:
         return "The FULL Randomizer experience, except... For some reason, all items in each level are replaced by a single type of item?";

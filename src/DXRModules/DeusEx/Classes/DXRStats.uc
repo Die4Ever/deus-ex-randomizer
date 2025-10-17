@@ -89,6 +89,8 @@ function IncMissionTimer(int mission)
     local name flag;
     local int time, ftime;
     local bool bInGame;
+    local #var(PlayerPawn) p;
+    local Window topWin;
 
     local DataStorage datastorage;
 
@@ -96,7 +98,11 @@ function IncMissionTimer(int mission)
         return;
     }
     if(Level.LevelAction != LEVACT_None) {
-        return;
+        // don't tick the timer during loading/saving screens, unless the player has a window open or is in a conversation
+        p = player();
+        if(p == None) return;
+        if(DeusExRootWindow(p.rootWindow) != None) topWin = DeusExRootWindow(p.rootWindow).GetTopWindow();
+        if(topWin == None && !p.InConversation()) return; // if no menu and no conversation, pause the timer
     }
 
     datastorage = class'DataStorage'.static.GetObj(dxr);
