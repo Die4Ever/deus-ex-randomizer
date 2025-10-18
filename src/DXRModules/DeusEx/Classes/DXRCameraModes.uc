@@ -137,9 +137,21 @@ function SpawnRECam()
 function SetCameraMode(int mode)
 {
     local name stateName;
+    local #var(PlayerPawn) p;
+    local Window topWin;
 
-    if (player()!=None){
-        stateName = player().GetStateName();
+    p = player();
+    if (p!=None){
+        stateName = p.GetStateName();
+
+        #ifdef vmd2
+        if(DeusExRootWindow(p.rootWindow) != None) {
+            topWin = DeusExRootWindow(p.rootWindow).GetTopWindow();
+            if(VMDMenuModifyAppearance(topWin) != None) {
+                return;
+            }
+        }
+        #endif
 
         //These are the possible states when you're in a cutscene
         if (stateName=='Interpolating' || stateName=='Paralyzed'){
