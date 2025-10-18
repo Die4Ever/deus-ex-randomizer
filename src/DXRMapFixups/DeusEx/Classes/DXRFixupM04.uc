@@ -630,7 +630,9 @@ function PreFirstEntryMapFixes()
         }
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
-        class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
+        if(#bool(vanilla)) {
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
+        }
 
         //Verified in both vanilla and Revision
         foreach AllActors(class'#var(DeusExPrefix)Mover', door,'mirrordoor'){break;}
