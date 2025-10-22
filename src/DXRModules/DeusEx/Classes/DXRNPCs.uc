@@ -410,18 +410,23 @@ function vector GetRandomMerchantPosition()
     return loc;
 }
 
-function String UniqueFlagString(string baseFlag, string ownerName)
+//Names in Unreal (or at least DX) can be 64 characters long (including null termination),
+//WeaponNanoVirusGrenade and 06_HONGKONG_WANCHAI_UNDERWORLD are the longest item and map
+//names respectively, so those two combined take up 53 characters (including an underscore)
+//if they end up together.
+function String UniqueFlagString(string baseFlag, coerce string itemName, string ownerName)
 {
     local string finalName;
 
-    finalName = baseFlag$"_"$ownerName$"_"$StripMapName(dxr.LocalURL);
+    //Trim the item name and map names down a bit to save some characters on long names
+    finalName = baseFlag$"_"$Right(itemName,16)$"_"$ownerName$"_"$Right(StripMapName(dxr.LocalURL),18);
 
     return finalName;
 }
 
-function Name UniqueFlagName(string baseFlag, string ownerName)
+function Name UniqueFlagName(string baseFlag, coerce string itemName, string ownerName)
 {
-    return StringToName(UniqueFlagString(baseFlag,ownerName));
+    return StringToName(UniqueFlagString(baseFlag,itemName,ownerName));
 }
 
 //#region Generate Convo
@@ -506,7 +511,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
         //set flag for bought item, give negative credits, jump to bought
         prev = AddMerchantTelem(c, prev, items, i); //Send info to the telemetry server
         prev = AddMerchantBingo(c, prev, items, i); //Bingo trigger for purchasing things
-        prev = AddSetFlag(c, prev, "", UniqueFlagName("bought"$items[i].item.name,c.conOwnerName), true);
+        prev = AddSetFlag(c, prev, "", UniqueFlagName("bought",items[i].item.name,c.conOwnerName), true);
         prev = AddGiveCredits(c, prev, -items[i].price );
         prev = AddJump(c, prev, "bought");
     }
@@ -712,12 +717,12 @@ function ConChoice _AddItemChoice(ConEventChoice e, ConChoice prev, ItemPurchase
     choice = AddChoice(e, prev, text, label);
 
     f = new(e) class'ConFlagRef';
-    f.flagName = UniqueFlagName("canBuy"$item.item.name,e.conversation.conOwnerName);
+    f.flagName = UniqueFlagName("canBuy",item.item.name,e.conversation.conOwnerName);
     f.value = canBuy;
     choice.flagRef = f;
     f.nextFlagRef = new(e) class'ConFlagRef';
     f = f.nextFlagRef;
-    f.flagName = UniqueFlagName("bought"$item.item.name, e.conversation.conOwnerName);
+    f.flagName = UniqueFlagName("bought",item.item.name, e.conversation.conOwnerName);
     f.value = false;
 
     return choice;
@@ -738,7 +743,7 @@ function ConEvent AddPersonaChecks(Conversation c, ConEvent prev, string after_l
     // clear flags
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
-        prev = AddSetFlag(c, prev, "", UniqueFlagName("canBuy"$items[i].item.name,c.conOwnerName), false);
+        prev = AddSetFlag(c, prev, "", UniqueFlagName("canBuy",items[i].item.name,c.conOwnerName), false);
     }
 
     // create persona checks
@@ -754,10 +759,10 @@ function ConEvent AddPersonaChecks(Conversation c, ConEvent prev, string after_l
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
         if( i+1 < ArrayCount(items) && items[i+1].item != None )
-            label = UniqueFlagString("checkBuy"$items[i+1].item.name,c.conOwnerName);
+            label = UniqueFlagString("checkBuy",items[i+1].item.name,c.conOwnerName);
         else
             label = after_label;
-        prev = AddSetFlag(c, prev, label, UniqueFlagName("canBuy"$items[i].item.name,c.conOwnerName), true);
+        prev = AddSetFlag(c, prev, label, UniqueFlagName("canBuy",items[i].item.name,c.conOwnerName), true);
     }
     return prev;
 }
@@ -771,8 +776,8 @@ function ConEvent AddPersonaCheck(Conversation c, ConEvent prev, ItemPurchase it
     p.personaType = EP_Credits;
     p.condition = EC_GreaterEqual;
     p.value = item.price;
-    p.label = UniqueFlagString("checkBuy"$item.item.name,c.conOwnerName);
-    p.jumpLabel = UniqueFlagString("canBuy"$item.item.name,c.conOwnerName) $ "true";
+    p.label = UniqueFlagString("checkBuy",item.item.name,c.conOwnerName);
+    p.jumpLabel = UniqueFlagString("canBuy",item.item.name,c.conOwnerName) $ "true";
 
     AddConEvent(c, prev, p);
     prev = p;
