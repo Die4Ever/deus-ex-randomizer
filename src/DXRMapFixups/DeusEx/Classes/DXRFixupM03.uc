@@ -530,6 +530,7 @@ function PreFirstEntryMapFixes()
 
     //#region UNATCO Island
     case "03_NYC_UNATCOISLAND":
+        MarkLibertyIslandOutOfBounds();
         if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
                 if(unatco.BindName != "PrivateLloyd") continue;

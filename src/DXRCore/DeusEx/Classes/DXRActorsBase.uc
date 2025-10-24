@@ -1455,6 +1455,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         maxdist = 9999999;
 
     foreach RadiusActors(class'NavigationPoint', p, maxdist, target) {
+        if (p.bIsSecretGoal) continue;
         if(Teleporter(p)!=None) continue;
         if(MapExit(p)!=None) continue;
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
@@ -1524,6 +1525,54 @@ function rotator GetRandomYaw(optional bool unseeded)
     }
 
     return r;
+}
+
+function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
+{
+    local float spare;
+    local Actor a;
+    local bool outside;
+
+    if (minLoc.X > maxLoc.X){
+        spare = minLoc.X;
+        minLoc.X = maxLoc.X;
+        maxLoc.X = spare;
+    }
+    if (minLoc.Y > maxLoc.Y){
+        spare = minLoc.Y;
+        minLoc.Y = maxLoc.Y;
+        maxLoc.Y = spare;
+    }
+    if (minLoc.Z > maxLoc.Z){
+        spare = minLoc.Z;
+        minLoc.Z = maxLoc.Z;
+        maxLoc.Z = spare;
+    }
+
+    foreach AllActors(classToFind,a){
+        outside=False;
+        if (a.Location.X < minLoc.X) outside=True;
+        if (a.Location.Y < minLoc.Y) outside=True;
+        if (a.Location.Z < minLoc.Z) outside=True;
+        if (a.Location.X > maxLoc.X) outside=True;
+        if (a.Location.Y > maxLoc.Y) outside=True;
+        if (a.Location.Z > maxLoc.Z) outside=True;
+
+        if (!outside){
+            a.bIsSecretGoal = IsSecret;
+        } else if (OppositeOutside) {
+            a.bIsSecretGoal = !IsSecret;
+        }
+    }
+}
+
+function MassSetSecretGoalRadius(class<Actor> classToFind, vector loc, float radius, bool IsSecret)
+{
+    local Actor a;
+
+    foreach RadiusActors(classToFind,a,radius,loc){
+        a.bIsSecretGoal = IsSecret;
+    }
 }
 
 function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){

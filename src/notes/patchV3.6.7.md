@@ -12,5 +12,9 @@
 - Fixed mirrored rotation of Limited/Fixed Saves ATM that was added to the gas station, and moved it forwards slightly to get away from some bad collision detection
 - Fixed possible crashes with flag names generated for Merchant conversations that exceeded the maximum length.
   - If you have already encountered the Merchant in a map in an in-progress game when you upgrade, he may be a bit confused about what he has available to sell to you.
+- Block certain out-of-bounds locations from being selected for random placement of things (like medbots/repairbots, merchants, turrets, datacubes, etc...)
+  - Outside of the walls of the UNATCO compound in missions 3, 4, and 5
+  - Beyond the level transitions between the Wan Chai Market and the Lucky Money
+  - Beyond the door to the Vandenberg Computer area from Cmd
 
 </details>
