@@ -17,5 +17,8 @@
   - Beyond the level transitions between the Wan Chai Market and the Lucky Money
   - Beyond the door to the Vandenberg Computer area from Cmd
 - The Bingo Viewer now has an option to always keep the window on top (Under the Display menu)
+- Looking at Weeping Anna will no longer interrupt her death animation
+- For GMDX we now set Hardcore mode when playing on combatDifficulty 4 or higher
+- Fixed randomizing some of GMDX's invisible objects
 
 </details>
