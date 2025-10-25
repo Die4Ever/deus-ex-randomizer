@@ -49,6 +49,7 @@ function MarkBingoFailedSpecial();
 //#region Watched Actors
 function AddWatchedActor(Actor a,String eventName)
 {
+    if(#var(DeusExPrefix)Decoration(a)!=None && #var(DeusExPrefix)Decoration(a).bInvincible) return;
     if (num_watched_actors>=ArrayCount(actor_watch)){
         err("Watched Actor list length exceeded!");
         return;

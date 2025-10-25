@@ -1,4 +1,6 @@
-class DXRFixup expands DXRActorsBase transient;
+class DXRFixup expands DXRActorsBase transient config(DXRando);
+
+var config float FovWeaponMult;
 
 struct DecorationsOverwrite {
     var string type;
@@ -422,7 +424,7 @@ function AdjustBookColours()
 function FixFOV()
 {
     local vector v;
-    local float n, w;// narrow and wide multipliers
+    local float n, w, ratio;// narrow and wide multipliers
     local Lockpick lp;
     local Multitool mt;
     local NanoKeyRing nkr;
@@ -430,8 +432,16 @@ function FixFOV()
     if(!#defined(vanilla)) return; // would need to check the defaults in other mods
 
     w = class'Human'.default.DefaultFOV;
+    ratio = 1.777; // 16:9
+    if(player()!=None && player().rootWindow!=None) {
+        ratio = player().rootWindow.width / player().rootWindow.height;
+    }
+    //w /= ratio;
+    //w = (w - 75/1.777) / (120/1.777 - 75/1.777);
     w = (w - 75) / (120 - 75); // put it on a range of 0-1 for 75 to 120
-    w = FClamp(w, 0, 1);
+    w = w ** (1.777 / ratio); // we originally tested these values at 16:9, TODO: make this nice at 21:9 and 4:3
+    w = FClamp(w, -0.5, 1);
+    w *= FovWeaponMult;
     n = 1-w;
 
     // interpolate between 75 FOV and 120 FOV, multiply vanilla values by n and wide FOV values by w
@@ -1071,7 +1081,22 @@ function FixGMDXObjects()
         if (G.bScriptedGrenade)
             G.bIsSecretGoal = true;
 #endif
+}
 
+function MarkLibertyIslandOutOfBounds()
+{
+    local bool RevisionMaps;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    //Unblock navigation points inside the UNATCO walls, block outside
+    //In reality, it seems like in M03/M04, there are no navigation points outside the walls
+    //M05 has two HidePoints up on the statue, but those are the only ones outside.
+    //Maybe Revision or GMDX have some?
+    if (RevisionMaps){
+        //I STRONGLY SUSPECT THIS IS THE SAME COORDINATES IN REVISION, BUT DON'T HAVE REVISION SET UP RIGHT ON MY LAPTOP - TODO!!!
+    } else {
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(-6800,3165,-99999), vectm(-3430,1000,99999), false, true);
+    }
 }
 
 simulated function FixAmmoShurikenName()
@@ -1596,4 +1621,9 @@ defaultproperties
     // fragmentGuesses()=(sound=sound'StallDoorClose',fragmentClass=class'WoodFragment')   //  60.00%    (9 / 15)
     fragmentGuesses(23)=(sound=sound'StoneSlide2Move',fragmentClass=class'MetalFragment')  //  60.00%     (3 / 5)
     fragmentGuesses(24)=(sound=sound'SlideDoorOpen',fragmentClass=class'MetalFragment')    //  57.58%   (19 / 33)
+}
+
+defaultproperties
+{
+    FovWeaponMult=1
 }

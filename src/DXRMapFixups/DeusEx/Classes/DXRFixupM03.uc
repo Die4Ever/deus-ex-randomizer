@@ -289,6 +289,8 @@ function PreFirstEntryMapFixes()
         class'FillCollisionHole'.static.CreateLine(self, vectm(1565, 3460, 69), vectm(1565, 3675, 69), 32, 80);
         class'FillCollisionHole'.static.CreateLine(self, vectm(1520, 3675, 69), vectm(1464, 3675, 69), 32, 80);
 
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-1335,3856,128), vectm(-530,3856,128), 16, 128);
+
         // extra spots for datacube
         Spawn(class'PlaceholderItem',,, vectm(5113,3615,6.3));        //In front of guard tower
         Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter
@@ -528,6 +530,7 @@ function PreFirstEntryMapFixes()
 
     //#region UNATCO Island
     case "03_NYC_UNATCOISLAND":
+        MarkLibertyIslandOutOfBounds();
         if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
                 if(unatco.BindName != "PrivateLloyd") continue;
@@ -586,7 +589,8 @@ function PreFirstEntryMapFixes()
                 compublic.SetLocation(vectm(741.36, 1609.34, 298.0));
                 compublic.SetRotation(rotm(0, -16384, 0, GetRotationOffset(class'#var(prefix)ComputerPublic')));
                 compublic.TextPackage = "#var(package)";
-                compublic.BulletinTag = '03_BulletinMenu';
+                if(dxr.flags.IsHalloweenMode()) compublic.BulletinTag = '03_BulletinMenuHalloween';
+                else compublic.BulletinTag = '03_BulletinMenu';
                 break;
             }
             class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
@@ -724,6 +728,8 @@ function AnyEntryMapFixes()
         c.bInvokeBump=False;
         c.bInvokeFrob=False;
 
+        FixLennyLAMConvo();
+
         break;
     case "03_NYC_BATTERYPARK":
         knowPass = dxr.flagbase.GetBool('PlayerKnowsUnderworldPassword');
@@ -791,6 +797,47 @@ function FixAnnaAmbush()
         if(!p.bProximityTriggered || !p.bStuck) continue;
         if(p.Owner==player() && anna != None) p.SetOwner(anna);
         if(anna == None && p.Owner!=player()) p.SetOwner(player());
+    }
+}
+//#endregion
+
+//#region Fix LennyConvo
+function FixLennyLAMConvo()
+{
+    local Conversation c;
+    local ConEvent ce,prev,preFlag;
+    local ConEventAddSkillPoints ceasp;
+    local ConEventSetFlag cesf;
+
+    //Make sure LennyDone isn't marked until *after* the transfer actually happens,
+    //which allows the transaction to be reattempted if you don't have room.
+    //We need to remove the SetFlag from the start of the transfer attempt and move
+    //it to somewhere after the transfer actually happens (like after the skill points
+    //get added)
+    c = GetConversation('MeetLenny');
+
+    ce = c.eventList;
+    prev = None;
+    while (ce!=None){
+        if (ce.eventType==ET_SetFlag && cesf==None){
+            cesf = ConEventSetFlag(ce);
+            if (cesf.flagRef!=None && cesf.flagRef.flagName=='LennyDone'){
+                preFlag=prev;
+            } else {
+                cesf=None;
+            }
+        } else if (ce.eventType==ET_AddSkillPoints && ceasp==None){
+            //There's only one of these in the conversation
+            ceasp = ConEventAddSkillPoints(ce);
+        }
+        prev = ce;
+        ce = ce.nextEvent;
+    }
+
+    if (cesf!=None && preFlag!=None && ceasp!=None){
+        preFlag.nextEvent = cesf.nextEvent;
+        cesf.nextEvent=ceasp.nextEvent;
+        ceasp.nextEvent = cesf;
     }
 }
 //#endregion

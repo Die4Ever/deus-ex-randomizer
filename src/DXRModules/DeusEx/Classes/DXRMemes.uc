@@ -37,7 +37,7 @@ function PlayDressUp(Actor a,class<Actor> influencer, float rotYaw)
         a.bFixedRotationDir = influencer.default.bFixedRotationDir;
     }
 
-    a.DrawScale = a.CollisionHeight / influencer.default.CollisionHeight;
+    a.DrawScale = a.CollisionHeight / (influencer.default.CollisionHeight / influencer.default.DrawScale);
     r.Yaw = rotYaw;
     a.SetRotation(r);
 }
@@ -104,7 +104,7 @@ function RandomBobPage()
 
         if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random bob
 
-        switch(rng(28)){
+        switch(rng(29)){
         case 0: PlayDressUp(bob,class'Cactus1',8000); return;
         case 1: PlayDressUp(bob,class'Mailbox',8000); return;
         case 2: PlayDressUp(bob,class'CarWrecked',8000); return;
@@ -133,6 +133,7 @@ function RandomBobPage()
         case 25: PlayDressUp(bob,class'VendingMachine',-8000); return;
         case 26: PlayDressUp(bob,class'Hooker1',-8000); return;
         case 27: PlayDressUp(bob,class'ChildMale2',-8000); return;
+        case 28: PlayDressUp(bob,class'Bobby',-8000); return;
         }
 
     }
@@ -939,7 +940,7 @@ state() JumpInTheLine {
 
         // why does this only affect some of the ScriptedPawns?
         foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
-            if(MrH(p) != None) continue;
+            if(DXRStalker(p) != None) continue;
             t = Level.TimeSeconds - p.Location.X - p.Location.Y;
             t = sin(t / 2.0) * 160.0;
             v = p.Location;
@@ -1415,7 +1416,7 @@ function MakeAllGhosts()
 
     foreach AllActors(class'#var(prefix)ScriptedPawn', p) {
         if(#var(prefix)Robot(p) != None) continue;
-        if(MrH(p) != None) continue;
+        if(DXRStalker(p) != None) continue;
         class'DXRHalloween'.static.MakeGhost(p);
         if(isEndgame4) {
             p.SetPhysics(PHYS_None);
@@ -1574,7 +1575,7 @@ function Actor ReplaceWithRandomClass(Actor old)
     return None;
 }
 
-const num_random_actor_classes = 553;
+const num_random_actor_classes = 555;
 
 function string GetRandomActorClass()
 {
@@ -1617,6 +1618,8 @@ function string _GetRandomActorClass(int r)
 
     // DXRando classes
     if(r==i++) return "#var(package).MrH";
+    if(r==i++) return "#var(package).WeepingAnna";
+    if(r==i++) return "#var(package).Bobby";
     //if(r=i++) return "#var(package).Spiderweb"; // doesn't look good
     if(r==i++) return "#var(package).DXRJackOLantern";
     if(r==i++) return "#var(package).DeathMarker";

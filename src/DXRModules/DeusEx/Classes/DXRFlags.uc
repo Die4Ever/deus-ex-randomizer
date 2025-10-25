@@ -761,7 +761,7 @@ function SetDifficulty(int new_difficulty)
     if (IsHalloweenMode()){
         clothes_looting = 1;
         moresettings.reanimation = 20;
-        moresettings.stalkers = 100;
+        moresettings.stalkers = 0x0004FFFF; // high bits for quantity (4 is 4x Bobbys or 1x any other type), low bits for flags
         switch(difficulty) {
             case 0: moresettings.reanimation = 25; break;
             case 1: moresettings.reanimation = 25; break;
@@ -1000,7 +1000,7 @@ function string GameModeName(int gamemode)
         return "";
     case HalloweenMBM:
         if (#defined(vanilla)) {
-            return "Halloween Mr. Page's Mean Bingo Machine";
+            return "Mr. Page's Horrifying Bingo Machine";
         }
         return "";
     case StrongAugsMode:
@@ -1155,7 +1155,9 @@ function string GameModeHelpText(int gamemode)
         s = s$"  ~ Mr. H will stalk you around the world|n";
         s = s$"  ~ Loot new clothes from bodies to grow your selection of costumes|n";
         s = s$"  ~ Light augmentation is dim and costs energy (like in vanilla)|n";
-        s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics";
+        s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics|n";
+        s = s$"|n";
+        s = s$"Be warned, this can be very difficult, you may want to change some of these features like the limited saves.";
         return s;
     case OneItemMode:
         return "The FULL Randomizer experience, except... For some reason, all items in each level are replaced by a single type of item?";

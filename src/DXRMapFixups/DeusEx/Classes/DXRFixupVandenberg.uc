@@ -145,8 +145,10 @@ function PreFirstEntryMapFixes()
             VandenbergCmdFixTimsDoor();
             FixCmdElevator();
             UnleashingBotsOpenCommsDoor();
+            MassSetSecretGoalBox(class'NavigationPoint', vectm(876,2097,-1500), vectm(188,3112,-1845), true); //Block the nav points behind the COMPUTER teleporter
         } else {
             VandenbergCmdRevisionFixWatchtowerDoor();
+            //TODO: Verify the coordinates for the room behind the COMPUTER teleporter in Revision
         }
 
         // Add teleporter hint text to Tong

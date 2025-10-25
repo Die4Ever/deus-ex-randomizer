@@ -303,7 +303,7 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         //to always be friendly
         sp.ChangeAlly(origAllianceName,0.0,);
     }
-    module.HateEveryone(sp, 'MrH');
+    module.HateEveryone(sp, 'Stalkers');
     module.RemoveFears(sp);
     if(#var(prefix)Animal(sp) != None) {
         #var(prefix)Animal(sp).bFleeBigPawns = false;

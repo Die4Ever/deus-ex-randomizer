@@ -443,18 +443,23 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     return nextItem;
 }
 
-static function DataVaultImage GiveImage(Pawn p, class<DataVaultImage> imageClass)
+static function DataVaultImage GiveImage(DeusExPlayer p, class<DataVaultImage> imageClass)
 {
     local DataVaultImage image;
 
-    image = DataVaultImage(p.FindInventoryType(imageClass));
-    if (image == None) {
-        image = p.Spawn(imageClass);
-        image.ItemName = imageClass.default.imageDescription;
-        image.ItemArticle = "-";
-        image.Frob(p, None);
+    for(image=p.FirstImage; image!=None; image=image.nextImage) {
+        if(image.class == imageClass) return None;
     }
 
+    image = p.Spawn(imageClass);
+    if(image != None) {
+        image.ItemName = imageClass.default.imageDescription;
+        image.ItemArticle = "-";
+        image.BecomeItem();
+        image.GotoState('Idle2');
+        image.bHidden = true;
+        p.AddImage(image);
+    }
     return image;
 }
 
@@ -1048,7 +1053,7 @@ function bool RemoveGoalFromCon(name goalName, name convname, optional int which
         prevCe.nextEvent = prevCe.nextEvent.nextEvent;
         return true;
     }
-    
+
     return false;
 }
 
@@ -1142,6 +1147,8 @@ static function int GetRotationOffset(class<Actor> c)
     if(ClassIsChildOf(c, class'#var(prefix)ComputerSecurity'))
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)ComputerPublic'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)ATM'))
         return 16384;
     if(ClassIsChildOf(c, class'ProjectileGenerator'))
         return 16384;
@@ -1448,6 +1455,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         maxdist = 9999999;
 
     foreach RadiusActors(class'NavigationPoint', p, maxdist, target) {
+        if (p.bIsSecretGoal) continue;
         if(Teleporter(p)!=None) continue;
         if(MapExit(p)!=None) continue;
         if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
@@ -1517,6 +1525,54 @@ function rotator GetRandomYaw(optional bool unseeded)
     }
 
     return r;
+}
+
+function MassSetSecretGoalBox(class<Actor> classToFind, vector minLoc, vector maxLoc, bool IsSecret, optional bool OppositeOutside)
+{
+    local float spare;
+    local Actor a;
+    local bool outside;
+
+    if (minLoc.X > maxLoc.X){
+        spare = minLoc.X;
+        minLoc.X = maxLoc.X;
+        maxLoc.X = spare;
+    }
+    if (minLoc.Y > maxLoc.Y){
+        spare = minLoc.Y;
+        minLoc.Y = maxLoc.Y;
+        maxLoc.Y = spare;
+    }
+    if (minLoc.Z > maxLoc.Z){
+        spare = minLoc.Z;
+        minLoc.Z = maxLoc.Z;
+        maxLoc.Z = spare;
+    }
+
+    foreach AllActors(classToFind,a){
+        outside=False;
+        if (a.Location.X < minLoc.X) outside=True;
+        if (a.Location.Y < minLoc.Y) outside=True;
+        if (a.Location.Z < minLoc.Z) outside=True;
+        if (a.Location.X > maxLoc.X) outside=True;
+        if (a.Location.Y > maxLoc.Y) outside=True;
+        if (a.Location.Z > maxLoc.Z) outside=True;
+
+        if (!outside){
+            a.bIsSecretGoal = IsSecret;
+        } else if (OppositeOutside) {
+            a.bIsSecretGoal = !IsSecret;
+        }
+    }
+}
+
+function MassSetSecretGoalRadius(class<Actor> classToFind, vector loc, float radius, bool IsSecret)
+{
+    local Actor a;
+
+    foreach RadiusActors(classToFind,a,radius,loc){
+        a.bIsSecretGoal = IsSecret;
+    }
 }
 
 function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){

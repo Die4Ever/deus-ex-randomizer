@@ -363,6 +363,7 @@ function PreFirstEntryMapFixes()
 
     //#region UNATCO Island
     case "04_NYC_UNATCOISLAND":
+        MarkLibertyIslandOutOfBounds();
         if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
                 if(lloyd.BindName != "PrivateLloyd") continue;
@@ -422,7 +423,8 @@ function PreFirstEntryMapFixes()
                 rot(0, -16384, 0)
             ));
             compublic.TextPackage = "#var(package)";
-            compublic.BulletinTag = '04_BulletinMenuUnatco';
+            if(dxr.flags.IsHalloweenMode()) compublic.BulletinTag = '04_BulletinMenuHalloween';
+            else compublic.BulletinTag = '04_BulletinMenuUnatco';
 
             foreach AllActors(class'#var(prefix)UNATCOTroop', troop) {
                 if (troop.FamiliarName == "Scott") {
@@ -629,7 +631,9 @@ function PreFirstEntryMapFixes()
         }
 
         SetAllLampsState(false, true, true); // smuggler has one table lamp, upstairs where no one is
-        class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
+        if(#bool(vanilla)) {
+            class'MoverToggleTrigger'.static.CreateMTT(self, 'DXRSmugglerElevatorUsed', 'elevatorbutton', 1, 0, 0.0, 5);
+        }
 
         //Verified in both vanilla and Revision
         foreach AllActors(class'#var(DeusExPrefix)Mover', door,'mirrordoor'){break;}
@@ -867,7 +871,8 @@ function NYC_04_CheckPaulRaid()
 
         if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             paul.bInvincible = false;
-            SetPawnHealth(paul, 400);
+            paul.BaseAccuracy = FMin(0.15, paul.BaseAccuracy); // slight buff of 0.05, smaller numbers are better
+            SetPawnHealth(paul, 450);
         }
         paul.ChangeAlly('Player', 1, true);
     }

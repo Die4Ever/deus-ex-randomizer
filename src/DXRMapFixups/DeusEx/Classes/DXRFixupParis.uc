@@ -489,6 +489,46 @@ function SpawnLeMerchant(vector loc, rotator rot)
 }
 //#endregion
 
+//#region Convo Fixes
+//Dr. Mehdi Kit is supposed to have 3 medkits and a case of poison darts,
+//but you can infinitely buy darts from him if you don't buy medkits
+function FixDrKitsInfiniteDarts()
+{
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventTransferObject ceto;
+    local ConEventSetFlag cesf;
+
+    if (!#defined(vanilla)) return; //Fixed in Revision and ConFix already
+
+    c = GetConversation('BumsConvos');
+
+    ce = c.eventList;
+    while (ce!=None && ceto==None){
+        if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+            if (ceto.objectName!="#var(prefix)AmmoDartPoison"){
+                ceto=None;
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+    if (ceto!=None){
+        //We want to make sure to mark M10BoughtDarts after the darts are transferred,
+        cesf = new(c) class'ConEventSetFlag';
+        cesf.eventType=ET_SetFlag;
+        cesf.label="M10BoughtDartsSet";
+        cesf.flagRef = new(c) class'ConFlagRef';
+        cesf.flagRef.flagName='M10BoughtDarts';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=0; //Never expire
+        cesf.nextEvent = ceto.nextEvent;
+        ceto.nextEvent = cesf;
+    }
+}
+//#endregion
+
 //#region Any Entry
 function AnyEntryMapFixes()
 {
@@ -517,6 +557,7 @@ function AnyEntryMapFixes()
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
+        FixDrKitsInfiniteDarts();
         SetTimer(1.0, True); //To update the Nicolette goal description
         break;
     case "10_PARIS_CLUB":
@@ -654,6 +695,8 @@ function PostFirstEntryMapFixes()
         if (k != None) {
             k.Description = "Hotel key";
             k.KeyID = 'hotel_roomdoor';
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
         }
 
         break;

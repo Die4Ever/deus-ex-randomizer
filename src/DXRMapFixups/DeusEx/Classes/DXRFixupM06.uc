@@ -255,6 +255,9 @@ function PreFirstEntryMapFixes()
                     injbutton.BeginPlay();
                 }
             }
+            MassSetSecretGoalBox(class'NavigationPoint', vectm(104,-3262,-147), vectm(1342,-1645,-317), true); //Block the nav points behind the teleporter towards the Lucky Money
+        } else {
+            //TODO: Verify if there are nav points beyond the teleporter to the Lucky Money in Revision as well
         }
         if (dxr.flagbase.GetBool('DragonHeadsInLuckyMoney')) {
             foreach AllActors(class'GordonQuick', gordon) {
@@ -755,8 +758,12 @@ function PreFirstEntryMapFixes()
             foreach RadiusActors(class'#var(prefix)BreakableGlass', bg, 10, vectm(-832,-2048,-320)){break;}
             class'FakeMirrorInfo'.static.Create(self,vectm(-896,-2056,-256),vectm(-768,-2052.5,-382), bg); //Right Conference Window
 
+            MassSetSecretGoalBox(class'NavigationPoint', vectm(961,1427,-317), vectm(1789,2686,249), true); //Block the nav points behind the teleporter back to the market
+
         } else {
             //These mirrors actually work in Revision, so no FakeMirrorInfo required
+
+            //TODO: Verify if there are navigation points beyond the teleporter that should be blocked in Revision
         }
 
         break;

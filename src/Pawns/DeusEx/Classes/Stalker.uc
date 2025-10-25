@@ -5,25 +5,31 @@ var #var(PlayerPawn) player;
 var int FleeHealth;// like MinHealth, but we need more control
 var Actor closestDestPoint, farthestDestPoint;
 var float maxDist; // for iterative farthestDestPoint
+var bool bRegenHealth;
 
 static function DXRStalker Create(DXRActorsBase a)
 {
     local DXRStalker s;
-    local vector loc;
+    local vector loc, playerloc;
     local int i;
 
+    playerloc = a.player().Location;
     for(i=0; i<100; i++) {
-        loc = a.GetRandomPosition(a.player().Location, 16*100, 999999);
+        loc = a.GetRandomPosition(playerloc, 16*100, 999999);
         s = a.Spawn(default.class,,, loc);
-        if(s != None) break;
+        if(s != None) {
+            s.InitStalker(a);
+            return s;
+        }
     }
-    if(s == None) return None;
+    return None;
+}
 
-    s.player = a.player();
-    s.HomeLoc = loc;
-    s.bUseHome = true;
-
-    return s;
+function InitStalker(DXRActorsBase a)
+{
+    player = a.player();
+    HomeLoc = Location;
+    bUseHome = true;
 }
 
 function Actor GetFarthestNavPoint(Actor from, optional int iters)
@@ -80,13 +86,15 @@ function Tick(float delta)
 
     Super.Tick(delta);
 
-    LastRenderTime = Level.TimeSeconds;
-    bStasis = false;
+    if(!bTransient) {
+        LastRenderTime = Level.TimeSeconds;
+        bStasis = false;
+    }
 
     healthRegenTimer += delta;
-    if(healthRegenTimer > 2) {
+    if(healthRegenTimer > 2 && bRegenHealth) {
         healthRegenTimer = 0;
-        i = 20;
+        i = Clamp(20, 1, default.health/15);
 
         if(health < FleeHealth) {
             MinHealth = default.health/2;
@@ -98,7 +106,8 @@ function Tick(float delta)
             bDetectable=true;
             bIgnore=false;
             Visibility=default.Visibility;
-            i = 10;
+            if(IsInState('Fleeing')) SetOrders('Wandering',, true);
+            i = Clamp(10, 1, default.health/20);
         }
 
         HealthHead += i;
@@ -207,6 +216,7 @@ state Wandering
 
 function GenerateTotalHealth()
 {
+    local bool bWasInvincible;
     // you can hurt him but you can't kill him
     HealthHead     = FClamp(HealthHead, FleeHealth/2, default.HealthHead);
     HealthTorso    = FClamp(HealthTorso, FleeHealth/2, default.HealthTorso);
@@ -214,9 +224,12 @@ function GenerateTotalHealth()
     HealthArmRight = FClamp(HealthArmRight, FleeHealth/2, default.HealthArmRight);
     HealthLegLeft  = FClamp(HealthLegLeft, FleeHealth/2, default.HealthLegLeft);
     HealthLegRight = FClamp(HealthLegRight, FleeHealth/2, default.HealthLegRight);
-    bInvincible    = false;// damageproxy hack, GenerateTotalHealth() sets health to maximum when invincible
+    if(bInvincible) {
+        bInvincible = false;// damageproxy hack, GenerateTotalHealth() sets health to maximum when invincible
+        bWasInvincible = true;
+    }
     Super.GenerateTotalHealth();
-    bInvincible    = true;// damageproxy hack
+    if(bWasInvincible) bInvincible = true;
     Health = FClamp(Health, FleeHealth/2, default.Health);
 }
 
@@ -231,6 +244,63 @@ function bool ShouldDropWeapon()
 {
     return false;
 }
+
+static function bool PlayerCloaked(#var(PlayerPawn) p, ScriptedPawn sp)
+{
+    if(p==None) return false;
+    return !p.bDetectable || p.bIgnore || p.CalculatePlayerVisibility(sp) < 0.1;
+}
+
+// used for Bobby and Weeping Anna
+static function bool CheckViewRotation(vector ViewLoc, rotator ViewRot, vector EnemyLoc)
+{
+    local rotator rot;
+    local float yaw, pitch;
+
+    // figure out if the player can see us
+    rot = Rotator(EnemyLoc - ViewLoc);
+    rot.Roll = 0;
+    // diff between player's view rotation and the needed rotation to see
+    yaw = (Abs(ViewRot.Yaw - rot.Yaw)) % 65536;
+    pitch = (Abs(ViewRot.Pitch - rot.Pitch)) % 65536;
+
+    // center the angles around zero
+    if (yaw > 32767)
+        yaw -= 65536;
+    if (pitch > 32767)
+        pitch -= 65536;
+
+    // return if we are not in the player's FOV (don't use their real FOV? every player should be the same? needs to be extra wide then, I guess 180 degrees would be 16384)
+    // about 120 degree FOV, slightly wider
+    return Abs(yaw) < 14000 && Abs(pitch) < 8000;
+}
+
+static function #var(PlayerPawn) APlayerCanSeeMe(ScriptedPawn sp, #var(PlayerPawn) p, bool respectCamo)
+{
+    local vector eyeLoc, spHeight;
+
+    if(respectCamo && PlayerCloaked(p, sp)) return None;
+    if(!p.LineOfSightTo(sp, true)) return None; // I think this checks top, center, and bottom points
+
+    eyeLoc = p.Location;
+    eyeLoc.Z += p.BaseEyeHeight;
+    spHeight.Z = sp.CollisionHeight;
+    if(CheckViewRotation(eyeLoc, p.ViewRotation, sp.Location)) return p;
+    if(CheckViewRotation(eyeLoc, p.ViewRotation, sp.Location + spHeight)) return p;
+    if(CheckViewRotation(eyeLoc, p.ViewRotation, sp.Location - spHeight)) return p;
+    return None;
+}
+
+static function #var(PlayerPawn) AnyPlayerCanSeeMe(ScriptedPawn sp, float MaxDist, bool respectCamo)
+{
+    local #var(PlayerPawn) p, ret;
+    foreach sp.RadiusActors(class'#var(PlayerPawn)', p, MaxDist) {
+        ret = APlayerCanSeeMe(sp, p, respectCamo);
+        if(ret!=None) return ret;
+    }
+    return None;
+}
+
 
 defaultproperties
 {
@@ -251,5 +321,11 @@ defaultproperties
     bEmitDistress=false
     bLookingForLoudNoise=true
     bReactLoudNoise=true
-    bImportant=True
+    bImportant=False
+    bRegenHealth=True
+    Alliance=Stalkers
+
+    bHateShot=False
+    bHateInjury=False
+    RaiseAlarm=RAISEALARM_Never
 }
