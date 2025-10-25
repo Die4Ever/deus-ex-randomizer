@@ -101,11 +101,9 @@ function LogInAs(String user, String pass)
         login.editPassword.SetText(pass);
 		
 //SARGE: Fix a stupid crash! TODO: Fix this! WTF??!!!
-#ifndef gmdxae
-        if(pass != "")
+        if(pass != "" && !#bool(gmdxae))
             login.ProcessLogin();
         else
-#endif
             login.SetFocusWindow(login.editPassword);
     }
 
