@@ -280,12 +280,20 @@ function SetDetectionTime(Float newDetectionTime, Float newHackTime)
     UpdateEnergyMeter();
 }
 
+#ifdef gmdxae
+function SetHackMessage(String newHackMessage, optional bool bShowNukes)
+{
+    Super.SetHackMessage(newHackMessage, bShowNukes);
+    UpdateEnergyMeter();
+}
+#else
 function SetHackMessage(String newHackMessage)
 {
     Super.SetHackMessage(newHackMessage);
 
     UpdateEnergyMeter();
 }
+#endif
 
 defaultproperties
 {

@@ -108,7 +108,9 @@ function LogInAs(String user, String pass)
         login = #var(prefix)ComputerScreenLogin(winComputer);
         login.editUserName.SetText(user);
         login.editPassword.SetText(pass);
-        if(pass != "")
+
+//SARGE: Fix a stupid crash! TODO: Fix this! WTF??!!!
+        if(pass != "" && !#bool(gmdxae))
             login.ProcessLogin();
         else
             login.SetFocusWindow(login.editPassword);

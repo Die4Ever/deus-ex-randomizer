@@ -264,14 +264,14 @@ function ProcessAction(String actionKey)
         else
         {
             SaveSettings();
-            AddTimer(0.11, false, 0, 'Timer');// timer to wait for items to be destroyed (issue #426), deletes happen every 100ms? probably don't need this anymore with our new ClearInHand() function
+            AddTimer(0.11, false, 0, 'StartGameTimer');// timer to wait for items to be destroyed (issue #426), deletes happen every 100ms? probably don't need this anymore with our new ClearInHand() function
         }
     }
     else
         Super.ProcessAction(actionKey);
 }
 
-function Timer(int timerID, int invocations, int clientData)
+function StartGameTimer(int timerID, int invocations, int clientData)
 {
     class'DXRFlags'.default.bZeroRandoPure = flags.IsZeroRandoPure(); // make sure the player and augs created use proper defaults
     player.ShowIntro(True);
@@ -326,6 +326,7 @@ function SelectRandomPortrait(bool noRepeat)
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 }
 
+#ifndef gmdxae
 function GiveTip()
 {
     // DXRando: disable this because we think it's more confusing than helpful?
@@ -334,11 +335,14 @@ function GiveTip()
         root.MessageBox(CheckboxTipHeader, CheckboxTipText, 1, False, Self);
     }*/
 }
-
+#endif
 
 defaultproperties
 {
     btnLabelResetToDefaults="Restore Defaults"
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
     actionButtons(3)=(Align=HALIGN_Left,Action=AB_Other,Text="|&New Seed",Key="NEWSEED")
+#ifdef gmdxae
+    actionButtons(4)=(Action=AB_Other,Text="Modifiers",Key="MODIFIERS")
+#endif
 }

@@ -253,6 +253,9 @@ function PreFirstEntry()
     SpawnDatacubes();
     FixHolograms();
     FixShowers();
+#ifdef gmdx
+    FixGMDXObjects();
+#endif
 
     if (dxr.flags.settings.doorsdestructible > 0) {
         foreach AllActors(class'#var(DeusExPrefix)Mover', mov) {
@@ -1032,6 +1035,52 @@ function FixShowers()
         }
 
     }
+}
+
+//Fix up GMDX Containers and other objects!
+//OH BOY this one is a doozy!!!
+//GMDX does some wacky shenanigans where it will
+//create some objects as other objects. For instance, the rocks in the liberty
+//island gardens are actually cardboard boxes! So we need to check to make
+//sure they have their original skin (or their HDTP Skin).
+//Additionally, GMDX "hides" some containers by making them invisibly small
+//as part of removing objects for difficulty. We need to handle both cases.
+//Handles:
+//1. Crates and containers with different models (used for deco)
+//2. Crates and containers that aren't highlightable or pushable (BSP blockers, other things)
+//3. Crates and containers that aren't collidable ("removed" as part of difficulty balancing)
+//4. Scripted Grenades
+function FixGMDXObjects()
+{
+    local #var(prefix)Containers C;
+    local #var(prefix)GasGrenade G;
+
+    foreach AllActors(class'#var(prefix)Containers', C)
+    {
+#ifdef gmdxae
+        //GMDX_AE lets you toggle HDTP models on or off, so we need to check both
+        if (C.Mesh != C.class.default.mesh && !(string(C.Mesh) ~= C.class.default.HDTPMesh) && C.bHDTPFailsafe)
+#elseif gmdx
+        //Check model - GMDX v9/vRSD always only had 1 mesh, the HDTP one
+        if (C.Mesh != C.class.default.mesh)
+#endif
+            C.bIsSecretGoal = true;
+
+        //Some non-interactive decos are also in some places
+        if (!C.bHighlight || !C.bPushable)
+            C.bIsSecretGoal = true;
+
+        //Check collision size
+        if (C.collisionHeight == 0 && C.collisionRadius == 0)
+            C.bIsSecretGoal = true;
+
+    }
+    
+#ifdef gmdx
+    foreach AllActors(class'#var(prefix)GasGrenade', G)
+        if (G.bScriptedGrenade)
+            G.bIsSecretGoal = true;
+#endif
 }
 
 function MarkLibertyIslandOutOfBounds()
