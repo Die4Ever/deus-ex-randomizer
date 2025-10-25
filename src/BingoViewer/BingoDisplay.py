@@ -136,6 +136,7 @@ class BingoViewerMain:
         self.config["last_used_file"]=""
         self.config["selected_mod"]=""
         self.config["show_progress_bars"]=True
+        self.config["always_on_top"]=False
         self.config["win_width"]=DEFAULT_WINDOW_WIDTH
         self.config["win_height"]=DEFAULT_WINDOW_HEIGHT
 
@@ -289,6 +290,13 @@ class BingoViewerMain:
 
     def SetProgressBarState(self,state):
         self.config["show_progress_bars"]=state
+        self.SaveConfig()
+
+    def GetAlwaysOnTopState(self):
+        return self.config.get("always_on_top",False)
+
+    def SetAlwaysOnTopState(self,state):
+        self.config["always_on_top"]=state
         self.SaveConfig()
 
     def SetWindowDimensions(self,width,height):
@@ -550,7 +558,11 @@ class BingoDisplay:
     def bringToFront(self):
         self.win.attributes('-topmost',True)
         self.win.update()
-        self.win.attributes('-topmost',False)
+
+        #Only re-disable this if not always on top
+        if (self.main.GetAlwaysOnTopState()==False):
+            self.win.attributes('-topmost',False)
+            self.win.update()
 
     def closeWindow(self):
         self.win.quit()
@@ -600,6 +612,15 @@ class BingoDisplay:
         self.main.SetProgressBarState(newState)
         self.main.BoardUpdate()
 
+    def UpdateAlwaysOnTop(self):
+        newState = self.alwaysOnTop.get()
+        self.main.SetAlwaysOnTopState(newState)
+
+        self.win.attributes('-topmost',newState)
+        self.win.update()
+
+        self.main.BoardUpdate()
+
     def UpdateMultiplayer(self):
         global MAGIC_GREEN, BRIGHT_GREEN, POSSIBLE_GREY, WINDOW_TITLE
         MAGIC_GREEN    = "#1e641e"
@@ -645,6 +666,9 @@ class BingoDisplay:
         self.showProgressBars = BooleanVar()
         self.showProgressBars.set(self.main.GetProgressBarState())
 
+        self.alwaysOnTop = BooleanVar()
+        self.alwaysOnTop.set(self.main.GetAlwaysOnTopState())
+
         self.menubar = Menu(self.win)
 
         self.filemenu = Menu(self.menubar,tearoff=0)
@@ -656,6 +680,7 @@ class BingoDisplay:
         self.dispmenu = Menu(self.menubar,tearoff=0)
         self.dispmenu.add_command(label="Reset Window Size",command=self.ResetWindowSize)
         self.dispmenu.add_checkbutton(label="Show Progress Bars", onvalue=1, offvalue=0, variable=self.showProgressBars,command=self.UpdateProgressBars)
+        self.dispmenu.add_checkbutton(label="Always On Top", onvalue=1, offvalue=0, variable=self.alwaysOnTop,command=self.UpdateAlwaysOnTop)
 
         # multiplayer streaming stuff, use OBS Blending Mode -> Add
         self.isPlayer1 = BooleanVar()
@@ -843,7 +868,7 @@ parser.add_argument('--version', action="store_true", help='Output version')
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v3.6.7.0 Alpha'
+    return 'v3.6.7.1 Alpha'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)

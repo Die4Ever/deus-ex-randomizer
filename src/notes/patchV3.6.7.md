@@ -16,5 +16,6 @@
   - Outside of the walls of the UNATCO compound in missions 3, 4, and 5
   - Beyond the level transitions between the Wan Chai Market and the Lucky Money
   - Beyond the door to the Vandenberg Computer area from Cmd
+- The Bingo Viewer now has an option to always keep the window on top (Under the Display menu)
 
 </details>
