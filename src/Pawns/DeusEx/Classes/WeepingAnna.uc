@@ -143,8 +143,10 @@ function CheckWakeup(float deltaSeconds)
     local #var(PlayerPawn) seer;
     local name StateName;
 
-    seer = AnyPlayerCanSeeMe(self, 99999, false); // don't respect camo, something something quantum locked (also the player wants to look at them)
-    inConv = AnyNearPlayerInConvOrCut(99999); //Check to see if anyone is in a conversation or cutscene that changes vision
+    if(Health > 0) { // don't freeze while dying
+        seer = AnyPlayerCanSeeMe(self, 99999, false); // false for don't respect camo, something something quantum locked (also the player wants to look at them)
+        inConv = AnyNearPlayerInConvOrCut(99999); //Check to see if anyone is in a conversation or cutscene that changes vision
+    }
     StateName = GetStateName();
 
     if (seer!=None){
