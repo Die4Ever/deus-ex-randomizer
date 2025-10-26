@@ -1,5 +1,6 @@
 ## Major Changes
 
+- Added our new 2nd dumbest game mode
 
 ## Minor Changes
 

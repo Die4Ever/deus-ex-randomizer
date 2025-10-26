@@ -1301,6 +1301,11 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
     local bool bPossible, do_not_scale, append_max;
     local float f;
 
+    if(dxr.flags.gamemode == dxr.flags.OneGoal) {
+        _CreateOneGoalBingoBoard(data);
+        return;
+    }
+
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(starting_map);
     maybe_mission_mask = class'DXRStartMap'.static.GetMaybeMissionMask(starting_map);
@@ -1450,6 +1455,55 @@ simulated function _CreateBingoBoard(PlayerDataItem data, int starting_map, int 
 
     // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();
+}
+
+static function GetTheOneGoal(DXRBase m, out int missions, optional out string goal, optional out string desc, optional out int max)
+{
+    m.SetGlobalNGPSeed("GetTheOneGoal");
+    switch(m.rng(4)) {
+    case 0:
+        missions = 21604;
+        goal = "PetDogs";
+        desc = "You can pet the dog";
+        max = 1;
+        break;
+    case 1:
+        missions = 33116;
+        goal = "PlayPool";
+        desc = "Play Pool";
+        max = 1;
+        break;
+    case 2: // TODO: only watch flying birds, also might need to make it slightly more lenient
+        missions = 24446;
+        goal = "BirdWatching_peeptime";
+        desc = "Watch birds for 5 seconds";
+        max = 5;
+        break;
+    case 3:
+        missions = 56910;
+        goal = "DolphinJump";
+        desc = "The marks on your head look like stars in the sky";
+        max = 5;
+        break;
+    }
+}
+
+simulated function _CreateOneGoalBingoBoard(PlayerDataItem data)
+{
+    local int x, y, max, missions;
+    local string goal, desc;
+
+    for(x=1; x<5; x++) {
+        data.SetBingoSpot(x, 0, "Free Space", "Free Space", 1, 1, 0);
+    }
+    for(x=0; x<5; x++) {
+        for(y=1; y<5; y++) {
+            data.SetBingoSpot(x, y, "-", "-", 0, 1, 0);
+        }
+    }
+
+    GetTheOneGoal(self, missions, goal, desc, max);
+    data.SetBingoSpot(0, 0, goal, desc, 0, max, missions); // TODO: append_max?
 }
 //#endregion
 

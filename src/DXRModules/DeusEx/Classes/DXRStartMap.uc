@@ -1482,7 +1482,7 @@ static function int SquishMission(int m)
 
 static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
 {
-    local int i, j, squished, attempts;
+    local int i, j, squished, attempts, missionMask;
     local int startMap, startMission, mostRecentStartMap;
     local int valids[13], numValids;
     local bool banHellsKitchen, banUnatco;
@@ -1517,6 +1517,15 @@ static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
             // if hells kitchen ban other hells kitchens, same for unatcos
             banHellsKitchen = startMission==2 || (startMap>=42 && startMap<50) || startMission==8;
             banUnatco = startMap==30 || startMap==31 || startMap==40 || startMap==41 || startMap==55;
+        }
+    }
+    if(m.dxr.flags.gamemode == m.dxr.flags.OneGoal) {
+        class'DXREvents'.static.GetTheOneGoal(m, missionMask);
+        for(i=1;i<=15;i++) {
+            if(i==7 || i==13) continue;
+            if( ((missionMask >>> i) & 1) != 0) continue; // keep it valid
+            squished = SquishMission(i);
+            valids[squished] = -1; // ban this mission because it's not in the mission mask for The One Goal
         }
     }
     // compress the array, sort order doesn't matter

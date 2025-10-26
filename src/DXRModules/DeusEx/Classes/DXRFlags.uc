@@ -20,6 +20,7 @@ const StrongAugsMode = 16;
 const SpeedrunTraining = 17;
 const SeriousRando = 18; // same as Full Rando, but memes disabled by default
 const GroundhogDay = 19;
+const OneGoal = 20;
 
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
@@ -939,6 +940,7 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return OneItemMode;
     if(slot--==0) return StrongAugsMode;
     if(slot--==0) return GroundhogDay;
+    if(slot--==0) return OneGoal;
     return 999999;
 }
 
@@ -989,6 +991,8 @@ function string GameModeName(int gamemode)
         return "WaltonWare Hardcore";
     case WaltonWarex3:
         return "WaltonWare x3";
+    case OneGoal:
+        return "One Goal";
     case HalloweenMode:
         return "Halloween Mode";// maybe needs a better name
     case OneItemMode:
@@ -1148,6 +1152,8 @@ function string GameModeHelpText(int gamemode)
         return "The WaltonWare experience, except ALL saving is disabled!  You do not get healed after each loop.  No medkits or medbots.  How long can you last?";
     case WaltonWarex3:
         return "The WaltonWare experience, except goals are now spread across three missions instead of one!|n|nHow long can you last?";
+    case OneGoal:
+        return "Just do The One Goal over and over again in different locations.";
     case HalloweenMode:
         s =   "The FULL Randomizer experience, but with additional Halloween-themed features:|n";
         s = s$"|n";
@@ -1217,7 +1223,7 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3 || gamemode == WaltonWareHalloween || gamemode == WaltonWareHalloweenEntranceRando;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando || gamemode == WaltonWareHardcore || gamemode == WaltonWarex3 || gamemode == WaltonWareHalloween || gamemode == WaltonWareHalloweenEntranceRando || gamemode == OneGoal;
 }
 
 function bool IsWaltonWareHardcore()
