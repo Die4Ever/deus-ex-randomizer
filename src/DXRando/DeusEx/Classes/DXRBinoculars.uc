@@ -83,7 +83,7 @@ static function PeepTimer(#var(PlayerPawn) peeper, out int watchTime, out Actor 
             {
                 // Keep tracing past invisible things
             }
-            else if (target==peeper.Level && ((flags & 0x08000000) != 0)) //PF_Mirrored
+            else if (target==Level && ((flags & 0x08000000) != 0)) //PF_Mirrored
             {
                 hitMirror = true;
                 break;
