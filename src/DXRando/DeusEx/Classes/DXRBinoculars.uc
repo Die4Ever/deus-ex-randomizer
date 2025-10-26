@@ -54,7 +54,7 @@ static function PeepTimer(#var(PlayerPawn) peeper, out int watchTime, out Actor 
     local int flags, i, distRemaining;
 
     if(peeper == None) return;
-    Level  peeper.Level;
+    Level = peeper.Level;
 
     //Peeping logic happens here
     //A distance of 20000 is more than sufficient for Liberty Island,
