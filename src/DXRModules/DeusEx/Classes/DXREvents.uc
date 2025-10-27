@@ -1681,6 +1681,54 @@ function SetWatchFlags() {
             bt = class'BingoTrigger'.static.Create(self,'waataaa',vectm(0,0,0));
             bt.bingoEvent="ForkliftCertified";
         }
+
+        //Regular forwards direction Tunnels timing
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-1300,5400,-2500));
+        raceStart.raceName="Vandenberg Tunnels";
+        raceStart.SetCollisionSize(200,200);
+        raceStart.targetTime=180; //Under a minute is possible if you just run from start to finish with god mode.
+        raceStart.presentHealth=true;
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(970,2700,-2500)); //Midpoint, short hallway before radioactive room
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-650,2700,-2500)); //Midpoint, near corner of radioactive blown up room
+        }
+        checkPoint.SetCollisionSize(200,200);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(3360,1225,-2500)); //Endpoint, at exit ladder
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(390,1225,-2500)); //Endpoint, at exit ladder
+        }
+        checkPoint.SetCollisionSize(150,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+
+        //Backwards direction Tunnels timing
+        if (RevisionMaps){
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(3100,1500,-2500));
+        } else {
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(100,1500,-2500));
+        }
+        raceStart.raceName="Reverse Vandenberg Tunnels";
+        raceStart.SetCollisionSize(200,200);
+        raceStart.targetTime=180; //Under a minute is possible if you just run from start to finish with god mode.
+        raceStart.presentHealth=true;
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(970,2700,-2500)); //Midpoint, short hallway before radioactive room
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-650,2700,-2500)); //Midpoint, near corner of radioactive blown up room
+        }
+        checkPoint.SetCollisionSize(200,200);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-1600,5750,-2500)); //Endpoint, at start ladder
+        checkPoint.SetCollisionSize(150,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+
         break;
     case "12_VANDENBERG_COMPUTER":
         WatchFlag('HeliosBorn');

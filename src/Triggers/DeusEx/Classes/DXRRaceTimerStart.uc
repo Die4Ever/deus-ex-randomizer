@@ -44,7 +44,7 @@ function HitCheckpoint(DXRRaceCheckPoint checkpoint)
 
     //Check if all previous checkpoints were hit
     for(i=0;i<checkpoint.checkPointNum;i++){
-        if (checkPointTimes[checkpoint.checkPointNum]<0) return; //Missed an earlier checkpoint
+        if (checkPointTimes[i]<0) return; //Missed an earlier checkpoint
     }
 
     checkPointTimes[checkpoint.checkPointNum]=Level.TimeSeconds;
