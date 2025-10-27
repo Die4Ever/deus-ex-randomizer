@@ -21,5 +21,6 @@
 - Looking at Weeping Anna will no longer interrupt her death animation
 - For GMDX we now set Hardcore mode when playing on combatDifficulty 4 or higher
 - Fixed randomizing some of GMDX's invisible objects
+- Fixed bug with conversations referencing player's kill counts in M01 and M02
 
 </details>
