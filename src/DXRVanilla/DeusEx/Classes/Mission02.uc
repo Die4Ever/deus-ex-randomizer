@@ -33,7 +33,7 @@ function Timer()
 
             // count the number of unconscious terrorists
             foreach AllActors(class'TerroristCarcass', carc, 'ClintonTerrorist')
-                if (carc.itemName == "Unconscious")
+                if (carc.bNotDead)
                     count++;
 
             // there are 5 total, player must have killed 2 or more, so
@@ -145,7 +145,7 @@ function Timer()
                 // if player killed 3 or more, call it a slaughter
                 foreach AllActors(class'TerroristCarcass', carc, 'StreetTerrorist')
                 {
-                    if ((carc.KillerBindName == "JCDenton") && (carc.itemName != "Unconscious"))
+                    if ((carc.KillerBindName == "JCDenton") && (!carc.bNotDead))
                         count++;
                 }
 
