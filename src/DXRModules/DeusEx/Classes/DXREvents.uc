@@ -2702,6 +2702,11 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             }
             return false;
 
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require progress when you *don't* need to progress
+        case "DXREvents_LeftOnBoat":
+            return (real_duration==1);
+
     }
 
     return false;

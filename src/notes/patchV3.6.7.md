@@ -23,5 +23,7 @@
 - Fixed randomizing some of GMDX's invisible objects
 - Fixed bug with conversations referencing player's kill counts in M01 and M02
 - Added a timed race to Vandenberg Tunnels (in both the forward and backward directions):  See how fast you can go!
+- UNATCO Troopers that appear in Mission 3, after meeting Lebedev, will no longer hate seeing carcasses (which typically makes them hate the player)
+- The bingo goal for returning to UNATCO HQ in the boat after Mission 2 no longer appears unless the bingo board spans more than 1 mission.
 
 </details>
