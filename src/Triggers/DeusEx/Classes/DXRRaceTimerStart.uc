@@ -77,6 +77,7 @@ function StartRaceTimer()
     p = #var(PlayerPawn)(GetPlayerPawn());
     if (presentHealth && startHealth==-1) {
         if (p!=None){
+            p.GenerateTotalHealth();  //Make sure it's explicitly calculated, just in case?
             startHealth=p.Health;
         }
     }
@@ -116,6 +117,7 @@ function RaceFinished()
     lostHealth=0;
     lostEnergy=0.0;
     if (p!=None){
+        p.GenerateTotalHealth(); //Make sure it's explicitly calculated, just in case?
         finalHealth = p.Health;
         finalEnergy = p.Energy;
     }
