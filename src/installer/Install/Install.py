@@ -142,8 +142,11 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
         exedest:Path = system / 'DeusEx.exe'
         CopyExeTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
-        VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
+        try:
+            VanillaFixConfigs(system=system, exename='DeusEx', kentie=kentie,
                           settings=settings, globalsettings=globalsettings, sourceINI=ini)
+        except Exception as e:
+            info('error in VanillaFixConfigs', e)
     else:
         info('skipping fixing of vanilla')
 
@@ -172,8 +175,11 @@ def InstallVanilla(system:Path, settings:dict, globalsettings:dict):
     CopyTo(intfile, intdest)
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
-    VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
+    try:
+        VanillaFixConfigs(system=system, exename=exename, kentie=kentie,
                       settings=settings, globalsettings=globalsettings, sourceINI=ini)
+    except Exception as e:
+        info('error in VanillaFixConfigs', e)
 
     dxrroot = gameroot / 'DXRando'
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
