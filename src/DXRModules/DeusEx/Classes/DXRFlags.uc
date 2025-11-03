@@ -21,6 +21,7 @@ const SpeedrunTraining = 17;
 const SeriousRando = 18; // same as Full Rando, but memes disabled by default
 const GroundhogDay = 19;
 const OneGoal = 20;
+const SpeedShuffle = 21; // speedrun mode with shuffled missions
 
 const HordeZombies = 1020;
 const WaltonWareHalloweenEntranceRando = 1029;
@@ -940,7 +941,9 @@ function int GameModeIdForSlot(int slot)
     if(slot--==0) return OneItemMode;
     if(slot--==0) return StrongAugsMode;
     if(slot--==0) return GroundhogDay;
-    if(slot--==0) return OneGoal;
+    if(!VersionIsStable()) {
+        if(slot--==0) return OneGoal;
+    }
     return 999999;
 }
 
