@@ -421,6 +421,36 @@ function AdjustBookColours()
 
 }
 
+// convert horizontal FOV (deg) -> vertical FOV (deg) for an aspect ratio
+function float H2V(float hdeg, float asp)
+{
+    local float hrad, vrad;
+    hrad = hdeg * 3.14159265 / 180.0;
+    vrad = 2.0 * ATan( Tan(hrad * 0.5) / asp );
+    return vrad * 180.0 / 3.14159265;
+}
+
+function float GetRatio()
+{
+	local int p;
+	local int resX;
+	local int resWidth, resHeight;
+	local string CurrentRes;
+
+	CurrentRes   = player().ConsoleCommand("GetCurrentRes");
+
+	resX      = InStr(CurrentRes,"x");
+	resWidth  = int(Left(CurrentRes, resX));
+    resHeight = int(Mid(CurrentRes, resX+1));
+
+    l(CurrentRes $ " ratio == " $ (float(resWidth) / float(resHeight)) @ Left(CurrentRes, resX) @ Mid(CurrentRes, resX+1));
+
+    if(resWidth<1 || resHeight<1) return 1.777;
+
+	return float(resWidth) / float(resHeight);
+}
+
+
 function FixFOV()
 {
     local vector v;
@@ -431,18 +461,17 @@ function FixFOV()
 
     if(!#defined(vanilla)) return; // would need to check the defaults in other mods
 
-    w = class'Human'.default.DefaultFOV;
     ratio = 1.777; // 16:9
-    if(player()!=None && player().rootWindow!=None) {
-        ratio = player().rootWindow.width / player().rootWindow.height;
+    if(player()!=None) {
+        ratio = GetRatio();
     }
-    //w /= ratio;
-    //w = (w - 75/1.777) / (120/1.777 - 75/1.777);
-    w = (w - 75) / (120 - 75); // put it on a range of 0-1 for 75 to 120
-    w = w ** (1.777 / ratio); // we originally tested these values at 16:9, TODO: make this nice at 21:9 and 4:3
-    w = FClamp(w, -0.5, 1);
+
+    w = H2V(class'Human'.default.DefaultFOV, ratio);
+
+    w = (w - 46.710377) / (88.532219 - 46.710377); // interopolate from 75 degrees to 120 degrees
+    w = FClamp(w, 0, 1);
     w *= FovWeaponMult;
-    n = 1-w;
+    n = 1.0 - w;
 
     // interpolate between 75 FOV and 120 FOV, multiply vanilla values by n and wide FOV values by w
     // wide values provided by Tundoori https://discord.com/channels/823629359931195394/823629360929046530/1282526555536625778
