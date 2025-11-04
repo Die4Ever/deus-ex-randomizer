@@ -77,7 +77,7 @@ function GenerateWeaponChoice()
 
     if (sawedOffChoice.flagRef!=None || stealthChoice.flagRef!=None || pistolChoice.flagRef!=None ||
         knifeChoice.flagRef!=None || crossbowChoice.flagRef!=None){
-        log("GilbertWeaponMegaChoice found a flag ref on at least one of the conversation options...  You must have a conversation altering mod installed? Confix?");
+        log("GilbertWeaponMegaChoice found a flag ref on at least one of the conversation options... You must have a conversation altering mod installed? Confix?");
     }
 
     megaChoiceEv = new(c) class'ConEventChoice';
