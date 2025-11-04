@@ -6,7 +6,7 @@ struct EndQuote
     var string attribution;
 };
 
-var EndQuote quotes[212];
+var EndQuote quotes[213];
 var int numQuotes;
 
 //A string has (seemingly) infinite length, but string literals are capped at 256 characters.
