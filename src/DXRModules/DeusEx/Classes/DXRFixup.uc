@@ -676,27 +676,11 @@ function FixFOV()
 function ShowTeleporters()
 {
     local #var(prefix)Teleporter t;
-    local bool hide, collision;
+    local bool hide;
 
     hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
-    switch(dxr.localURL) {
-    // smuggler maps are exempt from teleporter collision, since they don't need it, and it blocks the elevator's button
-    case "02_NYC_SMUG":
-    case "04_NYC_SMUG":
-    case "08_NYC_SMUG":
-    case "02_NYC_BATTERYPARK":// the hostages need to be able to get into the subway!
-        collision=false;
-        break;
-    default:
-        collision=true;
-        break;
-    }
-
     foreach AllActors(class'#var(prefix)Teleporter', t) {
-        if(t.bCollideActors && t.bEnabled) {
-            t.SetCollision( t.bCollideActors, collision, t.bBlockPlayers );// don't let pawns walk through
-        }
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
     }
