@@ -15,7 +15,8 @@ function WatchActors()
             || #var(prefix)Chandelier(d) != None
             || #var(prefix)Lightbulb(d) != None
             || #var(prefix)HKHangingLantern(d) != None
-            || #var(prefix)HKHangingLantern2(d) != None)
+            || #var(prefix)HKHangingLantern2(d) != None
+            || #var(prefix)AlarmLight(d) != None)
         {
             AddWatchedActor(d,"LightVandalism_DestroyDeco");
         }
@@ -1680,6 +1681,54 @@ function SetWatchFlags() {
             bt = class'BingoTrigger'.static.Create(self,'waataaa',vectm(0,0,0));
             bt.bingoEvent="ForkliftCertified";
         }
+
+        //Regular forwards direction Tunnels timing
+        raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(-1300,5400,-2500));
+        raceStart.raceName="Vandenberg Tunnels";
+        raceStart.SetCollisionSize(200,200);
+        raceStart.targetTime=180; //Under a minute is possible if you just run from start to finish with god mode.
+        raceStart.presentHealth=true;
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(970,2700,-2500)); //Midpoint, short hallway before radioactive room
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-650,2700,-2500)); //Midpoint, near corner of radioactive blown up room
+        }
+        checkPoint.SetCollisionSize(200,200);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(3360,1225,-2500)); //Endpoint, at exit ladder
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(390,1225,-2500)); //Endpoint, at exit ladder
+        }
+        checkPoint.SetCollisionSize(150,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+
+        //Backwards direction Tunnels timing
+        if (RevisionMaps){
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(3100,1500,-2500));
+        } else {
+            raceStart = Spawn(class'DXRRaceTimerStart',,,vectm(100,1500,-2500));
+        }
+        raceStart.raceName="Reverse Vandenberg Tunnels";
+        raceStart.SetCollisionSize(200,200);
+        raceStart.targetTime=180; //Under a minute is possible if you just run from start to finish with god mode.
+        raceStart.presentHealth=true;
+
+        if (RevisionMaps){
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(970,2700,-2500)); //Midpoint, short hallway before radioactive room
+        } else {
+            checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-650,2700,-2500)); //Midpoint, near corner of radioactive blown up room
+        }
+        checkPoint.SetCollisionSize(200,200);
+        raceStart.RegisterCheckpoint(checkPoint);
+
+        checkPoint = Spawn(class'DXRRaceCheckPoint',,,vectm(-1600,5750,-2500)); //Endpoint, at start ladder
+        checkPoint.SetCollisionSize(150,100);
+        raceStart.RegisterCheckpoint(checkPoint);
+
         break;
     case "12_VANDENBERG_COMPUTER":
         WatchFlag('HeliosBorn');
@@ -2624,6 +2673,40 @@ function bool BingoGoalImpossibleByFlags(string bingo_event, int starting_missio
             return (real_duration!=1);
 
 /////////////////////////////////////////////////////////////////////
+    //Ban goals that require the use of drugs or alcohol as appropriate
+        case "DrinkAlcohol_Activated": //Only impossible if *all* alcohol is banned
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)Liquor40oz') &&
+                   loadout.is_banned(class'#var(prefix)LiquorBottle') &&
+                   loadout.is_banned(class'#var(prefix)WineBottle')
+                   ) {
+                    return true;
+                }
+            }
+            return false;
+
+        case "JockSecondStory": //Jock only wants beers
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)Liquor40oz')) {
+                    return true;
+                }
+            }
+            return false;
+
+        case "GiveZyme_ConvoFlag": //Need zyme to give zyme
+        case "SoldRenaultZyme":    //Need zyme to sell zyme
+            if(loadout!=None) {
+                if(loadout.is_banned(class'#var(prefix)VialCrack')) {
+                    return true;
+                }
+            }
+            return false;
+
+/////////////////////////////////////////////////////////////////////
+    //Ban goals that require progress when you *don't* need to progress
+        case "DXREvents_LeftOnBoat":
+            return (real_duration==1);
+
     }
 
     return false;

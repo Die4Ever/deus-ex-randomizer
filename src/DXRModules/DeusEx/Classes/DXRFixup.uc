@@ -1,4 +1,6 @@
-class DXRFixup expands DXRActorsBase transient;
+class DXRFixup expands DXRActorsBase transient config(DXRando);
+
+var config float FovWeaponMult;
 
 struct DecorationsOverwrite {
     var string type;
@@ -251,6 +253,9 @@ function PreFirstEntry()
     SpawnDatacubes();
     FixHolograms();
     FixShowers();
+#ifdef gmdx
+    FixGMDXObjects();
+#endif
 
     if (dxr.flags.settings.doorsdestructible > 0) {
         foreach AllActors(class'#var(DeusExPrefix)Mover', mov) {
@@ -416,20 +421,57 @@ function AdjustBookColours()
 
 }
 
+// convert horizontal FOV (deg) -> vertical FOV (deg) for an aspect ratio
+function float H2V(float hdeg, float asp)
+{
+    local float hrad, vrad;
+    hrad = hdeg * 3.14159265 / 180.0;
+    vrad = 2.0 * ATan( Tan(hrad * 0.5) / asp );
+    return vrad * 180.0 / 3.14159265;
+}
+
+function float GetRatio()
+{
+	local int p;
+	local int resX;
+	local int resWidth, resHeight;
+	local string CurrentRes;
+
+	CurrentRes   = player().ConsoleCommand("GetCurrentRes");
+
+	resX      = InStr(CurrentRes,"x");
+	resWidth  = int(Left(CurrentRes, resX));
+    resHeight = int(Mid(CurrentRes, resX+1));
+
+    l(CurrentRes $ " ratio == " $ (float(resWidth) / float(resHeight)) @ Left(CurrentRes, resX) @ Mid(CurrentRes, resX+1));
+
+    if(resWidth<1 || resHeight<1) return 1.777;
+
+	return float(resWidth) / float(resHeight);
+}
+
+
 function FixFOV()
 {
     local vector v;
-    local float n, w;// narrow and wide multipliers
+    local float n, w, ratio;// narrow and wide multipliers
     local Lockpick lp;
     local Multitool mt;
     local NanoKeyRing nkr;
 
     if(!#defined(vanilla)) return; // would need to check the defaults in other mods
 
-    w = class'Human'.default.DefaultFOV;
-    w = (w - 75) / (120 - 75); // put it on a range of 0-1 for 75 to 120
+    ratio = 1.777; // 16:9
+    if(player()!=None) {
+        ratio = GetRatio();
+    }
+
+    w = H2V(class'Human'.default.DefaultFOV, ratio);
+
+    w = (w - 46.710377) / (88.532219 - 46.710377); // interopolate from 75 degrees to 120 degrees
     w = FClamp(w, 0, 1);
-    n = 1-w;
+    w *= FovWeaponMult;
+    n = 1.0 - w;
 
     // interpolate between 75 FOV and 120 FOV, multiply vanilla values by n and wide FOV values by w
     // wide values provided by Tundoori https://discord.com/channels/823629359931195394/823629360929046530/1282526555536625778
@@ -663,27 +705,11 @@ function FixFOV()
 function ShowTeleporters()
 {
     local #var(prefix)Teleporter t;
-    local bool hide, collision;
+    local bool hide;
 
     hide = ! class'MenuChoice_ShowTeleporters'.static.ShowTeleporters();
 
-    switch(dxr.localURL) {
-    // smuggler maps are exempt from teleporter collision, since they don't need it, and it blocks the elevator's button
-    case "02_NYC_SMUG":
-    case "04_NYC_SMUG":
-    case "08_NYC_SMUG":
-    case "02_NYC_BATTERYPARK":// the hostages need to be able to get into the subway!
-        collision=false;
-        break;
-    default:
-        collision=true;
-        break;
-    }
-
     foreach AllActors(class'#var(prefix)Teleporter', t) {
-        if(t.bCollideActors && t.bEnabled) {
-            t.SetCollision( t.bCollideActors, collision, t.bBlockPlayers );// don't let pawns walk through
-        }
         t.bHidden = hide || !t.bCollideActors || !t.bEnabled;
         t.DrawScale = 0.75;
     }
@@ -1022,6 +1048,64 @@ function FixShowers()
         }
 
     }
+}
+
+//Fix up GMDX Containers and other objects!
+//OH BOY this one is a doozy!!!
+//GMDX does some wacky shenanigans where it will
+//create some objects as other objects. For instance, the rocks in the liberty
+//island gardens are actually cardboard boxes! So we need to check to make
+//sure they have their original skin (or their HDTP Skin).
+//Additionally, GMDX "hides" some containers by making them invisibly small
+//as part of removing objects for difficulty. We need to handle both cases.
+//Handles:
+//1. Crates and containers with different models (used for deco)
+//2. Crates and containers that aren't highlightable or pushable (BSP blockers, other things)
+//3. Crates and containers that aren't collidable ("removed" as part of difficulty balancing)
+//4. Scripted Grenades
+function FixGMDXObjects()
+{
+    local #var(prefix)Containers C;
+    local #var(prefix)GasGrenade G;
+
+    foreach AllActors(class'#var(prefix)Containers', C)
+    {
+#ifdef gmdxae
+        //GMDX_AE lets you toggle HDTP models on or off, so we need to check both
+        if (C.Mesh != C.class.default.mesh && !(string(C.Mesh) ~= C.class.default.HDTPMesh) && C.bHDTPFailsafe)
+#elseif gmdx
+        //Check model - GMDX v9/vRSD always only had 1 mesh, the HDTP one
+        if (C.Mesh != C.class.default.mesh)
+#endif
+            C.bIsSecretGoal = true;
+
+        //Some non-interactive decos are also in some places
+        if (!C.bHighlight || !C.bPushable)
+            C.bIsSecretGoal = true;
+
+        //Check collision size
+        if (C.collisionHeight == 0 && C.collisionRadius == 0)
+            C.bIsSecretGoal = true;
+
+    }
+
+#ifdef gmdx
+    foreach AllActors(class'#var(prefix)GasGrenade', G)
+        if (G.bScriptedGrenade)
+            G.bIsSecretGoal = true;
+#endif
+}
+
+function MarkLibertyIslandOutOfBounds()
+{
+    local bool RevisionMaps;
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    //Unblock navigation points inside the UNATCO walls, block outside
+    //In reality, it seems like in M03/M04, there are no navigation points outside the walls
+    //M05 has two HidePoints up on the statue, but those are the only ones outside.
+    //Maybe Revision or GMDX have some? (Revision has some InventorySpots as well)
+    MassSetSecretGoalBox(class'NavigationPoint', vectm(-6800,3165,-99999), vectm(-3430,1000,99999), false, true);
 }
 
 simulated function FixAmmoShurikenName()
@@ -1546,4 +1630,9 @@ defaultproperties
     // fragmentGuesses()=(sound=sound'StallDoorClose',fragmentClass=class'WoodFragment')   //  60.00%    (9 / 15)
     fragmentGuesses(23)=(sound=sound'StoneSlide2Move',fragmentClass=class'MetalFragment')  //  60.00%     (3 / 5)
     fragmentGuesses(24)=(sound=sound'SlideDoorOpen',fragmentClass=class'MetalFragment')    //  57.58%   (19 / 33)
+}
+
+defaultproperties
+{
+    FovWeaponMult=1
 }

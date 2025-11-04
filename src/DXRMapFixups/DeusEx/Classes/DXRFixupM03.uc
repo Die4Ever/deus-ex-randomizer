@@ -261,6 +261,11 @@ function PreFirstEntryMapFixes()
 
         PreventShufflingAmbrosia();
 
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+            unatco.bHateCarcass = false;
+            unatco.bHateDistress = false;
+        }
+
         // fix collision with the static crates https://github.com/Die4Ever/deus-ex-randomizer/issues/665
         class'FillCollisionHole'.static.CreateLine(self, vectm(792.113403, -1343.670166, 69), vectm(675, -1343.670166, 69), 32, 90);
         class'FillCollisionHole'.static.CreateLine(self, vectm(675, -1300, 69), vectm(675, -1093.477783, 69), 32, 90);
@@ -288,6 +293,8 @@ function PreFirstEntryMapFixes()
         class'FillCollisionHole'.static.CreateLine(self, vectm(1471, 3440, 69), vectm(1565, 3424, 69), 32, 80);
         class'FillCollisionHole'.static.CreateLine(self, vectm(1565, 3460, 69), vectm(1565, 3675, 69), 32, 80);
         class'FillCollisionHole'.static.CreateLine(self, vectm(1520, 3675, 69), vectm(1464, 3675, 69), 32, 80);
+
+        class'FillCollisionHole'.static.CreateLine(self, vectm(-1335,3856,128), vectm(-530,3856,128), 16, 128);
 
         // extra spots for datacube
         Spawn(class'PlaceholderItem',,, vectm(5113,3615,6.3));        //In front of guard tower
@@ -485,7 +492,15 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
         Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
 
+        break;
+    //#endregion
 
+    //#region Hangar
+    case "03_NYC_HANGAR":
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+            unatco.bHateCarcass = false;
+            unatco.bHateDistress = false;
+        }
         break;
     //#endregion
 
@@ -528,6 +543,7 @@ function PreFirstEntryMapFixes()
 
     //#region UNATCO Island
     case "03_NYC_UNATCOISLAND":
+        MarkLibertyIslandOutOfBounds();
         if(class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)) {
             foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
                 if(unatco.BindName != "PrivateLloyd") continue;

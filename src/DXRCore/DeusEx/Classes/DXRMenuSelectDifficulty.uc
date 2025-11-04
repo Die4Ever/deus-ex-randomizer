@@ -135,10 +135,8 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
 
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
     in_autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
-    slf.EnumOption("Autosave Every Entry", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
-    slf.EnumOption("Autosave First Entry", autosave.FirstEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.FirstEntry));
-    slf.EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
-    slf.EnumOption("Extra Safe (1+GB per playthrough)", autosave.ExtraSafe, f.autosave, autosave.GetAutoSaveHelpText(autosave.ExtraSafe));
+    slf.EnumOption("Autosaves Enabled", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
+    //slf.EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
     slf.EnumOption("Limited Saves", autosave.LimitedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.LimitedSaves));
     slf.EnumOption("Limited Fixed Saves", autosave.FixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.FixedSaves));
     slf.EnumOption("Unlimited Fixed Saves", autosave.UnlimitedFixedSaves, f.autosave, autosave.GetAutoSaveHelpText(autosave.UnlimitedFixedSaves));

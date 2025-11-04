@@ -395,7 +395,7 @@ function CreateGordonPhone()
     gPhone.BindName="GordonQuickPhone";
     gPhone.FamiliarName="Gordon Quick Intercom";
     gPhone.UnfamiliarName=gPhone.FamiliarName;
-    gPhone.message="No response...  Better go find Gordon";
+    gPhone.message="No response... Better go find Gordon";
     gPhone.ConBindEvents();
 }
 

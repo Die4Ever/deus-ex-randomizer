@@ -1,6 +1,6 @@
 ## Major Changes
 
-New Halloween Stalker types.
+- New Halloween Stalker types.
   - There is now an advanced setting to choose which Stalker types to enable, or how many Stalkers per map
   - [See the Wiki for hints about how to deal with the Stalkers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes#halloween-modes)
 - New game mode: Mr. Page's Horrifying Bingo Machine

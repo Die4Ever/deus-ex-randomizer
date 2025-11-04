@@ -1,3 +1,4 @@
+#dontcompileif gmdxae
 class DXRHUDRechargeWindow injects #var(prefix)HUDRechargeWindow;
 
 function CreateBioWindows()

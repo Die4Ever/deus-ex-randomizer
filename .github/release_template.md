@@ -2,7 +2,7 @@ Download from [Mods4Ever.com](https://mods4ever.com). It is safe to update in th
 
 Use vanilla/GOTY (optionally with Lay D Denton) to get all of the Randomizer's features, best QoL improvements, and the most polished experience. Our installer has an option to install Lay D Denton for you automatically. We also support Revision, GMDX, HX, and Vanilla? Madder.
 
-If you're experiencing objects warping and drawing on top of each other incorrectly when using the D3D10 renderer, you need to install the 2010 x86 Visual C++ Redistributable package, which you can get [from Microsoft here](https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe). Alternatively, you can use the D3D9 or OpenGL renderer (and check the Rando ➜ Visuals menu for Brightness Boost).
+If you're experiencing objects warping and drawing on top of each other incorrectly when using the D3D10 renderer, you need to use the D3D9 or OpenGL renderer (and check the Rando ➜ Visuals menu for Brightness Boost).
 
 ## Trailers
 

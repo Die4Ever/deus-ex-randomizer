@@ -265,6 +265,9 @@ def GetDocumentsDir(system:Path) -> Path:
         ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
         p = Path(buf.value)
         info('GetDocumentsDir() == ', p)
+        if not p.exists() and '\\OneDrive\\' in str(p):
+            p = (p.parent.parent)/'Documents'
+            info('didnt exist, now GetDocumentsDir() == ', p)
         assert p.exists()
         return p
     except Exception as e:

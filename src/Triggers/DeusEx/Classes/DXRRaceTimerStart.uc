@@ -44,7 +44,7 @@ function HitCheckpoint(DXRRaceCheckPoint checkpoint)
 
     //Check if all previous checkpoints were hit
     for(i=0;i<checkpoint.checkPointNum;i++){
-        if (checkPointTimes[checkpoint.checkPointNum]<0) return; //Missed an earlier checkpoint
+        if (checkPointTimes[i]<0) return; //Missed an earlier checkpoint
     }
 
     checkPointTimes[checkpoint.checkPointNum]=Level.TimeSeconds;
@@ -77,6 +77,7 @@ function StartRaceTimer()
     p = #var(PlayerPawn)(GetPlayerPawn());
     if (presentHealth && startHealth==-1) {
         if (p!=None){
+            p.GenerateTotalHealth();  //Make sure it's explicitly calculated, just in case?
             startHealth=p.Health;
         }
     }
@@ -116,6 +117,7 @@ function RaceFinished()
     lostHealth=0;
     lostEnergy=0.0;
     if (p!=None){
+        p.GenerateTotalHealth(); //Make sure it's explicitly calculated, just in case?
         finalHealth = p.Health;
         finalEnergy = p.Energy;
     }

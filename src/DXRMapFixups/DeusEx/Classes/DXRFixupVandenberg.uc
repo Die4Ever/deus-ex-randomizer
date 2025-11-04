@@ -147,7 +147,10 @@ function PreFirstEntryMapFixes()
             UnleashingBotsOpenCommsDoor();
         } else {
             VandenbergCmdRevisionFixWatchtowerDoor();
+            //Revision has another building with nav points on the rooftop, but I believe it's inaccessible
+            MassSetSecretGoalBox(class'NavigationPoint', vectm(2842.1,459.3,-99999), vectm(3529.5,1464.6,99999), true);
         }
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(876,2097,-1500), vectm(188,3112,-1845), true); //Block the nav points behind the COMPUTER teleporter
 
         // Add teleporter hint text to Tong
         foreach AllActors(class'#var(prefix)MapExit',exit,'mission_done'){break;}

@@ -334,6 +334,7 @@ function PreFirstEntryMapFixes()
 
     //#region UNATCO Island
     case "05_NYC_UNATCOISLAND":
+        MarkLibertyIslandOutOfBounds();
         foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
             if(lloyd.BindName != "PrivateLloyd") continue;
             if( ! class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) break; // not in Zero Rando

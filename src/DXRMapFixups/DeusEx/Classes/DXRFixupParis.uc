@@ -507,7 +507,6 @@ function FixDrKitsInfiniteDarts()
     while (ce!=None && ceto==None){
         if (ce.eventType==ET_TransferObject){
             ceto = ConEventTransferObject(ce);
-            player().ClientMessage("GiveObject: "$ceto.giveObject$"   objectName: "$ceto.objectName);
             if (ceto.objectName!="#var(prefix)AmmoDartPoison"){
                 ceto=None;
             }

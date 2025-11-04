@@ -415,7 +415,7 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
         case "DL_gold_found_Played":
             return "Find the templar gold in the basement of the Paris cathedral.";
         case "FamilySquabbleWrapUpGilbertDead_Played":
-            return "Talk to Sandra Renton after Gilbert and JoJo both die in Mission 4.  He was a good man...  What a rotten way to die.";
+            return "Talk to Sandra Renton after Gilbert and JoJo both die in Mission 4.  He was a good man... What a rotten way to die.";
         case "DL_SecondDoors_Played":
             return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
         case "MeetScaredSoldier_Played":
@@ -1309,7 +1309,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "A51SeparationSwim":
             return "Go swimming in the tall cylindrical separation tank in Sector 3 of Area 51.";
         case "Titanic":
-            return "Stand on the rail at the front of the superfreighter and hold your arms out...  It feels like you're flying!";
+            return "Stand on the rail at the front of the superfreighter and hold your arms out... It feels like you're flying!";
         case "DockyardTrailer":
             return "Enter one of the trailers parked in the dockyards.  There is a key to open the trailers somewhere in the dockyards.";
         case "CathedralDisplayCase":
@@ -1353,7 +1353,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "MaggieLived":
             return "Leave Hong Kong for New York with Maggie Chow still alive and conscious.";
         case "PetKarkians":
-            return "Hear me out - Karkians are basically just big puppies...  Give enough of them the head rubs they deserve!  Make sure your hands are empty, or you won't be able to pet anything!";
+            return "Hear me out - Karkians are basically just big puppies... Give enough of them the head rubs they deserve!  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetDogs":
             return "That's right, you can pet the dog!  Give enough dogs some petting time.  Make sure your hands are empty, or you won't be able to pet anything!";
         case "PetFish":
@@ -1390,7 +1390,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "JustAFleshWound":
             return "Reduce JC to just a torso and head by losing both arms and both legs.";
         case "LostLimbs":
-            return "Every night, I can feel my leg...  and my arm...  even my fingers.|n|nLose enough limbs through the game.";
+            return "Every night, I can feel my leg... and my arm... even my fingers.|n|nLose enough limbs through the game.";
         case "PoolTableStripes":
             return "Sink all 7 solid-color balls (9-15) on enough different pool tables.";
         case "PoolTableSolids":

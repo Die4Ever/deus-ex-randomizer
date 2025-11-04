@@ -19,7 +19,10 @@ BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=2.0
-WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
+DEF_WINDOW_TITLE = "Deus Ex Randomizer Bingo Board"
+MP_P1_WINDOW_TITLE = "Player 1 Bingo Viewer"
+MP_P2_WINDOW_TITLE = "Player 2 Bingo Viewer"
+WINDOW_TITLE=DEF_WINDOW_TITLE
 DEFAULT_WINDOW_WIDTH = 500
 DEFAULT_WINDOW_HEIGHT = 500
 
@@ -29,6 +32,23 @@ POSSIBLE_GREY  = "#505050"
 IMPOSSIBLE_RED = "#300000"
 NOT_NOW_BLACK  = "#000000"
 TEXT_GREY      = "#c8c8c8"
+TEXT_WHITE     = "#FFFFFF"
+
+P1_FINISHED_COLOUR = "#a46e23"
+P1_RECENT_COLOUR   = "#e6992f"
+P1_POSSIBLE_COLOUR = "#000000"
+
+P2_FINISHED_COLOUR = "#23379b"
+P2_RECENT_COLOUR   = "#2747e9"
+P2_POSSIBLE_COLOUR = "#000000"
+
+RECENT_COLOUR = BRIGHT_GREEN
+FINISHED_COLOUR = MAGIC_GREEN
+POSSIBLE_COLOUR = POSSIBLE_GREY
+IMPOSSIBLE_COLOUR = IMPOSSIBLE_RED
+NOT_NOW_COLOUR = NOT_NOW_BLACK
+POSSIBLE_TEXT = TEXT_WHITE
+NOT_POSSIBLE_TEXT = TEXT_GREY
 
 def GetBorderScale():
     if os.name == 'nt': # Windows works correctly (for once)
@@ -103,6 +123,7 @@ class BingoViewerMain:
 
     #Called either if something changes on the board, or at startup
     def BoardUpdate(self):
+        self.display.SetBoardColours()
         self.display.updateTitleBar(self.selectedMod)
         for x in range(5):
             for y in range(5):
@@ -136,6 +157,8 @@ class BingoViewerMain:
         self.config["last_used_file"]=""
         self.config["selected_mod"]=""
         self.config["show_progress_bars"]=True
+        self.config["always_on_top"]=False
+        self.config["mp_value"]=0
         self.config["win_width"]=DEFAULT_WINDOW_WIDTH
         self.config["win_height"]=DEFAULT_WINDOW_HEIGHT
 
@@ -289,6 +312,20 @@ class BingoViewerMain:
 
     def SetProgressBarState(self,state):
         self.config["show_progress_bars"]=state
+        self.SaveConfig()
+
+    def GetAlwaysOnTopState(self):
+        return self.config.get("always_on_top",False)
+
+    def SetAlwaysOnTopState(self,state):
+        self.config["always_on_top"]=state
+        self.SaveConfig()
+
+    def GetMultiplayerValue(self):
+        return self.config.get("mp_value",0)
+
+    def SetMultiplayerValue(self,value):
+        self.config["mp_value"]=value
         self.SaveConfig()
 
     def SetWindowDimensions(self,width,height):
@@ -550,7 +587,11 @@ class BingoDisplay:
     def bringToFront(self):
         self.win.attributes('-topmost',True)
         self.win.update()
-        self.win.attributes('-topmost',False)
+
+        #Only re-disable this if not always on top
+        if (self.main.GetAlwaysOnTopState()==False):
+            self.win.attributes('-topmost',False)
+            self.win.update()
 
     def closeWindow(self):
         self.win.quit()
@@ -600,6 +641,62 @@ class BingoDisplay:
         self.main.SetProgressBarState(newState)
         self.main.BoardUpdate()
 
+    def UpdateAlwaysOnTop(self):
+        newState = self.alwaysOnTop.get()
+        self.main.SetAlwaysOnTopState(newState)
+
+        self.win.attributes('-topmost',newState)
+        self.win.update()
+
+        self.main.BoardUpdate()
+
+    def SetBoardColours(self):
+        global RECENT_COLOUR, FINISHED_COLOUR, POSSIBLE_COLOUR, POSSIBLE_TEXT, NOT_POSSIBLE_TEXT
+        global MAGIC_GREEN, BRIGHT_GREEN, POSSIBLE_GREY, TEXT_WHITE, TEXT_GREY
+        global P1_FINISHED_COLOUR, P1_RECENT_COLOUR, P1_POSSIBLE_COLOUR
+        global P2_FINISHED_COLOUR, P2_RECENT_COLOUR, P2_POSSIBLE_COLOUR
+
+        multiplayerVal = self.main.GetMultiplayerValue()
+
+        if (multiplayerVal==0):
+            FINISHED_COLOUR = MAGIC_GREEN
+            RECENT_COLOUR   = BRIGHT_GREEN
+            POSSIBLE_COLOUR = POSSIBLE_GREY
+            POSSIBLE_TEXT = TEXT_WHITE
+            NOT_POSSIBLE_TEXT = TEXT_GREY
+        elif multiplayerVal==1:
+            FINISHED_COLOUR = P1_FINISHED_COLOUR
+            RECENT_COLOUR   = P1_RECENT_COLOUR
+            POSSIBLE_COLOUR = P1_POSSIBLE_COLOUR
+            POSSIBLE_TEXT = TEXT_WHITE
+            NOT_POSSIBLE_TEXT = TEXT_WHITE
+        elif multiplayerVal==2:
+            FINISHED_COLOUR = P2_FINISHED_COLOUR
+            RECENT_COLOUR   = P2_RECENT_COLOUR
+            POSSIBLE_COLOUR = P2_POSSIBLE_COLOUR
+            POSSIBLE_TEXT = TEXT_WHITE
+            NOT_POSSIBLE_TEXT = TEXT_WHITE
+
+
+    def UpdateMultiplayer(self):
+        global MAGIC_GREEN, BRIGHT_GREEN, POSSIBLE_GREY, WINDOW_TITLE, RECENT_COLOUR, FINISHED_COLOUR, POSSIBLE_COLOUR
+        FINISHED_COLOUR    = MAGIC_GREEN
+        RECENT_COLOUR   = BRIGHT_GREEN
+        POSSIBLE_COLOUR  = POSSIBLE_GREY
+
+        multiplayerVal = self.mpVal.get()
+
+        self.main.SetMultiplayerValue(multiplayerVal)
+
+        if multiplayerVal==0:
+            WINDOW_TITLE = DEF_WINDOW_TITLE
+        elif multiplayerVal==1:
+            WINDOW_TITLE = MP_P1_WINDOW_TITLE
+        elif multiplayerVal==2:
+            WINDOW_TITLE = MP_P2_WINDOW_TITLE
+
+        self.main.BoardUpdate()
+
     def ResetWindowSize(self):
         self.width=DEFAULT_WINDOW_WIDTH
         self.height=DEFAULT_WINDOW_HEIGHT
@@ -622,6 +719,9 @@ class BingoDisplay:
         self.showProgressBars = BooleanVar()
         self.showProgressBars.set(self.main.GetProgressBarState())
 
+        self.alwaysOnTop = BooleanVar()
+        self.alwaysOnTop.set(self.main.GetAlwaysOnTopState())
+
         self.menubar = Menu(self.win)
 
         self.filemenu = Menu(self.menubar,tearoff=0)
@@ -633,9 +733,20 @@ class BingoDisplay:
         self.dispmenu = Menu(self.menubar,tearoff=0)
         self.dispmenu.add_command(label="Reset Window Size",command=self.ResetWindowSize)
         self.dispmenu.add_checkbutton(label="Show Progress Bars", onvalue=1, offvalue=0, variable=self.showProgressBars,command=self.UpdateProgressBars)
+        self.dispmenu.add_checkbutton(label="Always On Top", onvalue=1, offvalue=0, variable=self.alwaysOnTop,command=self.UpdateAlwaysOnTop)
 
         self.othermenu = Menu(self.menubar,tearoff=0)
         self.othermenu.add_command(label="Change JSON Push dest",command=self.SelectNewJsonPushDest)
+
+        # multiplayer streaming stuff, use OBS Blending Mode -> Add
+        self.multiplayerSubmenu = Menu(self.othermenu,tearoff=0)
+        self.othermenu.add_cascade(label="Multiplayer",menu=self.multiplayerSubmenu)
+        self.mpVal = IntVar()
+        self.mpVal.set(self.main.GetMultiplayerValue())
+        self.multiplayerSubmenu.add_radiobutton(label="Disabled",value=0,variable=self.mpVal,command=self.UpdateMultiplayer)
+        self.multiplayerSubmenu.add_radiobutton(label="Player 1",value=1,variable=self.mpVal,command=self.UpdateMultiplayer)
+        self.multiplayerSubmenu.add_radiobutton(label="Player 2",value=2,variable=self.mpVal,command=self.UpdateMultiplayer)
+
         self.othermenu.add_separator()
         self.othermenu.add_command(label="About",command=self.ShowAboutWindow)
 
@@ -659,9 +770,9 @@ class BingoDisplay:
                     textvariable=self.tkBoardText[x][y],
                     image=self.tkBoardImg[x][y],compound="c",
                     width=self.width/5, height=self.height/5,
-                    wraplength=self.width/5, font=self.font,fg='white',
-                    activeforeground='white',
-                    disabledforeground="white", bd=BUTTON_BORDER_WIDTH
+                    wraplength=self.width/5, font=self.font,fg=POSSIBLE_TEXT,
+                    activeforeground=POSSIBLE_TEXT,
+                    disabledforeground=POSSIBLE_TEXT, bd=BUTTON_BORDER_WIDTH
                 )
                 #self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].finished_time=None
@@ -686,34 +797,45 @@ class BingoDisplay:
 
         self.UpdateButtonImage(x,y,boardEntry)
 
+        multiplayer = (self.mpVal.get()!=0)
+
         isActive = boardEntry.get('active', 1)
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
             if tkTile.finished_time is None or tkTile.finished_time>time.time():
-                tkTile.config(bg=BRIGHT_GREEN)
+                if not multiplayer:
+                    tkTile.config(bg=RECENT_COLOUR)
+                else:
+                    tkTile.config(bg=POSSIBLE_COLOUR)
                 if (tkTile.finished_time==None):
                     tkTile.finished_time=time.time() + NEWLY_COMPLETED_DISPLAY_TIME
                     self.win.after(int(NEWLY_COMPLETED_DISPLAY_TIME+1) * 1000,self.updateFinishedTileColour,x,y)
+            elif not multiplayer:
+                tkTile.config(bg=FINISHED_COLOUR)
             else:
-                tkTile.config(bg=MAGIC_GREEN)
+                tkTile.config(bg=POSSIBLE_COLOUR)
         elif isActive == 1 or isActive == 2:# 1 is for maybe (No mission mask, or Any mission), 2 is for active
-            tkTile.config(bg=POSSIBLE_GREY)
+            tkTile.config(bg=POSSIBLE_COLOUR)
             tkTile.finished_time=None
         #elif isActive == 1:# 1 is for maybe
         #    tkTile.config(bg="#303030")
         elif isActive == -1:# -1 is for impossible
-            tkTile.config(bg=IMPOSSIBLE_RED)
+            if not multiplayer:
+                tkTile.config(bg=IMPOSSIBLE_RED)
+            else:
+                tkTile.config(bg=POSSIBLE_COLOUR)
             tkTile.finished_time=None
         else:
-            tkTile.config(bg=NOT_NOW_BLACK, fg=TEXT_GREY)
+            tkTile.config(bg=NOT_NOW_BLACK, fg=NOT_POSSIBLE_TEXT)
             tkTile.finished_time=None
 
     def UpdateButtonImage(self,x,y,boardEntry):
         if (self.showProgressBars.get()):
             isActive = boardEntry.get('active', 1)
+            multiplayer = (self.mpVal.get()!=0)
             if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
                 #finished
                 img = self.UpdateButtonImageFinished(x,y,boardEntry)
-            elif (isActive==1 or isActive==2):
+            if (isActive==1 or isActive==2 or multiplayer):
                 #possible
                 img = self.UpdateButtonImagePossible(x,y,boardEntry)
             elif (isActive == -1):
@@ -736,6 +858,12 @@ class BingoDisplay:
         width  = int(self.width / 5)
         height = int(self.height / 5)
 
+        img = Image.new("RGB",(width,height))
+        draw = ImageDraw.Draw(img)
+
+        left = int(width/2) if self.mpVal.get()==2 else 0
+        width = int(width/2) if self.mpVal.get()==1 else width
+
         if (maximum>0):
             percent = float(progress)/float(maximum)
         else:
@@ -744,14 +872,11 @@ class BingoDisplay:
         #Clamp the percentage between 0.0 and 1.0
         max(min(percent,1.0),0.0)
 
-        barHeight = height * percent
+        barHeight = min(height, max(height * percent, 0))
 
-        img = Image.new("RGB",(width,height))
-        draw = ImageDraw.Draw(img)
-
-        draw.rectangle([(0,height-barHeight),(width,height)],fill=MAGIC_GREEN)
-        draw.rectangle([(0,0),(width,height-barHeight)],fill=POSSIBLE_GREY)
-        self.tkBoard[x][y].config(activebackground=POSSIBLE_GREY)
+        draw.rectangle([(left,height-barHeight),(width,height)],fill=FINISHED_COLOUR)
+        draw.rectangle([(left,0),(width,height-barHeight)],fill=POSSIBLE_COLOUR)
+        self.tkBoard[x][y].config(activebackground=POSSIBLE_COLOUR)
 
         return img
 
@@ -760,9 +885,9 @@ class BingoDisplay:
         tkTile = self.tkBoard[x][y]
 
         if tkTile.finished_time is None or tkTile.finished_time>time.time():
-            colour=BRIGHT_GREEN
+            colour=RECENT_COLOUR
         else:
-            colour=MAGIC_GREEN
+            colour=FINISHED_COLOUR
 
         return self.UpdateButtonImagePlainColour(x,y,colour)
 
@@ -774,14 +899,20 @@ class BingoDisplay:
         img = Image.new("RGB",(width,height))
         draw = ImageDraw.Draw(img)
 
-        draw.rectangle([(0,0),(width,height)],fill=colour)
+        left = int(width/2) if self.mpVal.get()==2 else 0
+        width = int(width/2) if self.mpVal.get()==1 else width
+
+        draw.rectangle([(left,0),(width,height)],fill=colour)
         self.tkBoard[x][y].config(activebackground=colour)
 
         return img
 
 
     def updateFinishedTileColour(self,x,y):
-        self.tkBoard[x][y].config(bg=MAGIC_GREEN,activebackground=MAGIC_GREEN)
+        if self.mpVal.get()!=0:
+            self.tkBoard[x][y].config(bg=NOT_NOW_BLACK,activebackground=NOT_NOW_BLACK)
+        else:
+            self.tkBoard[x][y].config(bg=FINISHED_COLOUR,activebackground=FINISHED_COLOUR)
         self.UpdateButtonImage(x,y,self.main.GetBoardEntry(x,y))
 
 
@@ -795,7 +926,7 @@ parser.add_argument('--version', action="store_true", help='Output version')
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v3.6.1.4 Beta'
+    return 'v3.6.7.1 Alpha'
 
 if args.version:
     print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)

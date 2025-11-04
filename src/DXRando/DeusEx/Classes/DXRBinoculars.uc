@@ -40,16 +40,21 @@ simulated function PreTravel()
 
 simulated function Timer()
 {
-    local #var(PlayerPawn) peeper;
+    PeepTimer(#var(PlayerPawn)(Owner), watchTime, lastWatched, lastWatchedTex);
+}
+
+static function PeepTimer(#var(PlayerPawn) peeper, out int watchTime, out Actor lastWatched, out name lastWatchedTex)
+{
     local Vector HitNormal, HitLocation, StartTrace, EndTrace, Reflection;
+    local LevelInfo Level;
     local Actor peepee;// pronounced peep-ee, not pee-pee
     local Actor target;
     local bool newPeepee, newPeepTex, hitMirror;
     local name texName,texGroup;
     local int flags, i, distRemaining;
 
-
-    peeper = #var(PlayerPawn)(Owner);
+    if(peeper == None) return;
+    Level = peeper.Level;
 
     //Peeping logic happens here
     //A distance of 20000 is more than sufficient for Liberty Island,
@@ -66,7 +71,7 @@ simulated function Timer()
         hitMirror = false;
 
         //peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
-        foreach TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
+        foreach peeper.TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
             //if (target==Level){
             //    peeper.ClientMessage("Hit level tex "$texName$" with flags "$flags);
             //}
