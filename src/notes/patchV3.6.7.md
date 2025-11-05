@@ -28,5 +28,6 @@
 - The bingo goal for returning to UNATCO HQ in the boat after Mission 2 no longer appears unless the bingo board spans more than 1 mission.
 - Possible fix for some timed races (eg. Catacombs or Reverse Catacombs) where the Mastodon messages were reporting the player losing over 9000% health.
 - Fixed installer failing with Documents path issues
+- The key for the cabinet in the Mission 2 Free Clinic is now adjusted more reliably and should now work properly in Vanilla? Madder!
 
 </details>
