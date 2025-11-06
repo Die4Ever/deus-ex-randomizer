@@ -867,55 +867,6 @@ function DXRTeleporterHoverHint RebindExitHoverHint(name ExitTag, Actor a)
     return hoverHint;
 }
 
-function CreateInterpolationPoints(Name PathTag, vector loc)
-{
-    local InterpolationPoint p;
-    local int i;
-
-    foreach AllActors(class'InterpolationPoint', p, PathTag)
-        return;// don't do anything if PathTag already exists
-
-    for(i=0; i<10 ; i++) {
-        p = Spawn(class'InterpolationPoint',, PathTag, loc, rotm(0,0,0,0) );
-        p.Position = i;
-        p.RateModifier = 2;
-        loc.Z += 20*i;
-
-        if( i > 6 ) p.bEndOfPath = true;
-    }
-
-    foreach AllActors(class'InterpolationPoint', p, PathTag)
-        p.BeginPlay();// find the Prev and Next
-
-    info("CreateInterpolationPoints "$PathTag$" spawned points");
-}
-
-function CreateCameraInterpolationPoints(Name oldtag, Name newtag, vector offset)
-{
-    local InterpolationPoint p, pnew;
-    local vector loc;
-    local rotator rot;
-
-    foreach AllActors(class'InterpolationPoint', p, newtag)
-        return;// don't do anything if newtag already exists
-
-    foreach AllActors(class'InterpolationPoint', p, oldtag) {
-        loc = (10+p.Position) * 0.1 * offset;
-        loc += p.Location;
-        rot = Rotator(p.Location - loc);
-        pnew = Spawn(class'InterpolationPoint',, newtag, loc, rot);
-        pnew.bEndOfPath = p.bEndOfPath;
-        pnew.bSkipNextPath = p.bSkipNextPath;
-        pnew.Position = p.Position;
-        pnew.RateModifier = p.RateModifier;
-    }
-
-    foreach AllActors(class'InterpolationPoint', pnew, newtag)
-        pnew.BeginPlay();// find the Prev and Next
-
-    info("CreateCameraInterpolationPoints "$oldtag@newtag$" spawned camera points");
-}
-
 function ConversationFrobOnly(Conversation c)
 {
     info("ConversationFrobOnly "$c);

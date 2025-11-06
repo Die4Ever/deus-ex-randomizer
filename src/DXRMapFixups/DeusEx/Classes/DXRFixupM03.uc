@@ -136,6 +136,8 @@ function PreFirstEntryMapFixes()
 
         GoalCompletedSilent(p, 'SeeCarter');
 
+        AddBatteryParkReturnJock();
+
         //Add some junk around the park so that there are some item locations outside of the shanty town
         AddActor(class'Liquor40oz', vect(933.56,-3554.86,279.04));
         AddActor(class'Sodacan', vect(2203.28,-3558.84,279.04));
@@ -772,6 +774,9 @@ function AnyEntryMapFixes()
                 ce = ce.nextEvent;
             }
         }
+
+        BringReturnJockIn();
+
         break;
     case "03_NYC_UNATCOHQ":
         // 'AnnaThanks_Played' is expired here, but 'AnnaThanksChatDone' isn't
@@ -787,6 +792,70 @@ function PreTravelMapFixes()
 {
     if(dxr.flagbase.GetBool('MeetLebedev2_Played')) {
         dxr.flagbase.SetBool('MeetLebedev2_Played', true,, 5); // restores some possible dialog with Paul
+    }
+}
+//#endregion
+
+//#region BP Return Jock
+function AddBatteryParkReturnJock()
+{
+    local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)GoalCompleteTrigger gct;
+    local Dispatcher d;
+    local DynamicMapExit exit;
+    local InterpolateTrigger it;
+
+    if(dxr.flags.IsWaltonWare()==false) return; //Only add this helicopter in WaltonWare
+    if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()==false) return; //Major map changes required
+
+    jock = #var(prefix)BlackHelicopter(AddActor(class'#var(prefix)BlackHelicopter',vect(-1130,-4020,375),rot(0,27720,0)));
+    jock.BindName="Jock";
+    jock.FamiliarName="Jock";
+    jock.UnfamiliarName="Jock";
+    jock.Tag = 'JockExitHeli';
+    jock.Event = 'HelicopterPickUp'; //This means you could skip the conversation like the vanilla one in Airfield
+    jock.ConBindEvents();
+
+    AddDelayEvent('HelicopterPickUp','MoveHelicopter',0.65);
+
+    gct = Spawn(class'#var(prefix)GoalCompleteTrigger');
+    gct.SetCollision(false,false,false);
+    gct.Tag='HelicopterPickUp';
+    gct.goalName='GoToHelicopter';
+
+    exit = Spawn(class'DynamicMapExit',,'MoveHelicopter',vectm(-250,-3600,1000));
+    exit.SetCollision(false,false,false);
+    exit.DestMap="04_NYC_UNATCOIsland";
+    exit.bPlayTransition=true;
+    exit.cameraPathTag='CameraPath';
+
+    it = InterpolateTrigger(Spawnm(class'InterpolateTrigger',, 'MoveHelicopter',vectm(-250,-3600,300)));
+    it.bTriggerOnceOnly = false;
+    it.Event = 'JockExitHeli';
+    it.SetCollision(false,false,false);
+
+    CreateInterpolationPoints('HelicopterPickUp',jock.Location, jock.Rotation);
+    CreateCameraInterpolationPoints('HelicopterPickUp','CameraPath',vectm(500,-250,0));
+
+    jock.LeaveWorld();
+
+}
+
+function BringReturnJockIn()
+{
+    local #var(prefix)BlackHelicopter jock;
+
+    if(dxr.flags.IsWaltonWare()==false) return; //Only add this helicopter in WaltonWare
+    if(class'MenuChoice_BalanceMaps'.static.MajorEnabled()==false) return; //Major map changes required
+
+    if(!dxr.flagbase.GetBool('DXRBatteryParkM03JockEntered') &&
+       (dxr.flagbase.GetBool('MeetLebedev_Played') || dxr.flagbase.GetBool('JuanLebedev_Dead')))
+    {
+        foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'JockExitHeli')
+        {
+            jock.EnterWorld();
+        }
+        dxr.flagbase.SetBool('DXRBatteryParkM03JockEntered', true,, 4);
     }
 }
 //#endregion

@@ -1,6 +1,7 @@
 ## Major Changes
 
 - Added our new 2nd dumbest game mode
+- In WaltonWare, Jock will now also appear at Battery Park in Mission 3 after dealing with Lebedev, in addition to the original location in the Airfield.
 
 ## Minor Changes
 
