@@ -294,9 +294,14 @@ function NewBingoBoard()
 
         case "JordanShea_PlayerDead":
         case "WaltonSimons_Dead":
-        case "JoeGreene_PlayerDead":
         case "MeetSmuggler":
         case "Shannon_PlayerTakedown":
+            data.BanGoal(s, 999);
+            break;
+
+        case "JoeGreene_PlayerDead":
+            data.BanGoal("M02QuestionedGreen", 999);
+            data.BanGoal("M04GreenAdvice_Played", 999);
             data.BanGoal(s, 999);
             break;
 

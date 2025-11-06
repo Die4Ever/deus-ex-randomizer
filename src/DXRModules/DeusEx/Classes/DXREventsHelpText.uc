@@ -486,6 +486,8 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             }
         case "NicoletteHouseTour_VariousPlayed":
             return "Escort Nicolette around the Chateau and let her tell you about it.  Potential points of interest include the study, the living room, the upper hallway, Beth's room, the basement, near the back door, and by the maze.";
+        case "M04GreenAdvice_Played":
+            return "Try to get help from Joe Greene after the raid.";
     }
 
     //Return nothing so the generic function can handle it
@@ -1443,6 +1445,8 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Make a purchase from Le Merchant, the French merchant hiding in the abandoned high-rise at Denfert-Rochereau.";
         case "MostWarehouseTroopsDead":
             return "Kill or knock out most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
+        case "M02QuestionedGreen":
+            return "Question Joe Greene about the NSF or their secret power generator.";
     }
 
     //Return nothing so the generic function can handle it

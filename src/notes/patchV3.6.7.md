@@ -29,5 +29,6 @@
 - Possible fix for some timed races (eg. Catacombs or Reverse Catacombs) where the Mastodon messages were reporting the player losing over 9000% health.
 - Fixed installer failing with Documents path issues
 - The key for the cabinet in the Mission 2 Free Clinic is now adjusted more reliably and should now work properly in Vanilla? Madder!
+- Add two new bingo goals for interacting with Joe Greene in Mission 2 and 4.
 
 </details>

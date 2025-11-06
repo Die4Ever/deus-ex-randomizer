@@ -514,6 +514,8 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
+        WatchFlag('M02QuestionedGreen');
+        WatchFlag('MeetJoeGreen2_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when questioning Greene
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -674,6 +676,7 @@ function SetWatchFlags() {
     //#region Mission 4
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
+        WatchFlag('M04GreenAdvice_Played');
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -3229,6 +3232,13 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
         case "StatueMissionComplete":
             failed[num_failed++] = "GuntherFreed";
             return num_failed;
+        case "JoeGreene_Takedown":
+            failed[num_failed++] = "M02QuestionedGreen";
+            failed[num_failed++] = "M04GreenAdvice_Played";
+            return num_failed;
+        case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+            failed[num_failed++] = "M02QuestionedGreen";
+            return num_failed;
     }
 
     return num_failed;
@@ -3995,6 +4005,8 @@ defaultproperties
     bingo_options(390)=(event="missile_launched",desc="Redirect the Missile",max=1,missions=16384)
     bingo_options(391)=(event="MerchantPurchaseBind_DXRNPCs1",desc="Make %s purchases from The Merchant",desc_singular="Make a purchase from The Merchant",max=3,missions=24412)
     bingo_options(392)=(event="MerchantPurchaseBind_lemerchant",desc="Make a purchase from Le Merchant",max=1,missions=1024)
+    bingo_options(393)=(event="M02QuestionedGreen",desc="Play the Detective",max=1,missions=4)
+    bingo_options(394)=(event="M04GreenAdvice_Played",desc="I'm in trouble",max=1,missions=10)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
