@@ -47,6 +47,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Trigger trig;
     local #var(prefix)MapExit exit;
     local #var(prefix)BlackHelicopter jock;
+    local #var(prefix)Keypad2 kp;
+    local DynamicLight dl;
     local AIEventTrigger ait;
 #ifdef revision
     local JockHelicopter jockheli;
@@ -64,7 +66,7 @@ function PreFirstEntryMapFixes()
     //#region Ship Upper Decks
     case "09_NYC_SHIP":
         FixMechanicBarks();
-        
+
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
             if( m.KeyIdNeeded == 'EngineRoomDoor' ) m.Tag = 'shipbelowdecks_door';
         }
@@ -310,8 +312,24 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        //Button to open the sewer grate from the ship side
-        AddSwitch( vect(1883.546753,6404.096191,-232.870697), rot(0, 0, 0), 'DrainGrate');
+        //The ability to open the sewer grate from the ship side
+        if (dxr.flags.moresettings.entrance_rando > 0) {
+            //In Entrance Rando, make this path free, just in case
+            AddSwitch( vect(1883.546753,6404.096191,-232.870697), rot(0, 0, 0), 'DrainGrate');
+        } else {
+            //Everywhere else, make it a keypad instead (Why should this path be free as an exit?)
+            kp = #var(prefix)Keypad2(Spawnm(class'#var(prefix)Keypad2',,,vect(1883.546753,6404.096191,-232.870697), rot(0, 0, 0)));
+            kp.validCode="8675309"; //Jenny's number
+            kp.bToggleLock=False;
+            kp.Event='DrainGrate';
+
+            //A small spotlight to make the keypad a bit more visible in the corner
+            dl = Spawn(class'DynamicLight',,,vectm(1900,6400,-232),rotm(0,32768,0,0));
+            dl.LightRadius=6;
+            dl.LightCone=10;
+            dl.LightBrightness=128;
+            dl.LightEffect=LE_Spotlight;
+        }
 
         // near the start of the map to jump over the wall, from (2536.565674, 1600.856323, 251.924713) to 3982.246826
         foreach RadiusActors(class'BlockPlayer', bp, 725, vectm(3259, 1601, 252)) {
