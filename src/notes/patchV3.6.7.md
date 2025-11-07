@@ -32,5 +32,6 @@
 - The key for the cabinet in the Mission 2 Free Clinic is now adjusted more reliably and should now work properly in Vanilla? Madder!
 - Add two new bingo goals for interacting with Joe Greene in Mission 2 and 4.
 - The description for the Energy Shield augmentation now mentions that it works against explosive damage as well.  This is vanilla behaviour, so just makes the description more accurate to its functionality.
+- Fix the carcass in the collapsed Canal Road tunnel (under Canals) so that it doesn't lose the aug upgrade can when the biocell he is also holding gets removed by DXRReduceItems.
 
 </details>

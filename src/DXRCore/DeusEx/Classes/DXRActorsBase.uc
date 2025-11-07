@@ -807,9 +807,13 @@ function bool DestroyActor( Actor d )
     // If this item is in an inventory chain, unlink it.
     local Decoration downer;
 
-    if( d.IsA('Inventory') && d.Owner != None && d.Owner.IsA('Pawn') )
+    if( d.IsA('Inventory') && d.Owner != None )
     {
-        Pawn(d.Owner).DeleteInventory( Inventory(d) );
+        if (Pawn(d.Owner)!=None) {
+            Pawn(d.Owner).DeleteInventory( Inventory(d) );
+        } else if (#var(DeusExPrefix)Carcass(d.Owner)!=None){
+            #var(DeusExPrefix)Carcass(d.Owner).DeleteInventory( Inventory(d) );
+        }
     }
     return d.Destroy();
 }
