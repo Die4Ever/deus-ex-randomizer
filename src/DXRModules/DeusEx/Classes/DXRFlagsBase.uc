@@ -746,11 +746,17 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_removeparismj12':
         case 'Rando_bingo_scale':
         case 'Rando_grenadeswap':
-        case 'Rando_newgameplus_curve_scalar':
         case 'Rando_bot_weapons':
         case 'Rando_enemies_weapons':
         case 'Rando_aug_loc_rando':
             return val$"%";
+
+        case 'Rando_newgameplus_curve_scalar':
+            if (val<0){
+                return "New Game+ Disabled";
+            } else {
+                return val$"%";
+            }
 
         case 'Rando_enemyrespawn':
         case 'Rando_reanimation':
