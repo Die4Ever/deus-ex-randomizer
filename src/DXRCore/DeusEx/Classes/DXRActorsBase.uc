@@ -805,8 +805,6 @@ function bool HasBased(Actor a) {
 function bool DestroyActor( Actor d )
 {
     // If this item is in an inventory chain, unlink it.
-    local Decoration downer;
-
     if( d.IsA('Inventory') && d.Owner != None )
     {
         if (Pawn(d.Owner)!=None) {
