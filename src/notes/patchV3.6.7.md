@@ -2,6 +2,7 @@
 
 - Added our new 2nd dumbest game mode
 - In WaltonWare, Jock will now also appear at Battery Park in Mission 3 after dealing with Lebedev, in addition to the original location in the Airfield.
+- The sewer exit leaving the inside of the Mission 9 dry dock now has a keypad instead of a button in modes outside of Entrance Randomizer.  The keypad uses Jenny's number, so the code can be found in the dockyards.
 
 ## Minor Changes
 
