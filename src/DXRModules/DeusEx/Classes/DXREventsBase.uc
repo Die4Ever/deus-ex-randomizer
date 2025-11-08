@@ -1275,6 +1275,8 @@ function bool AddTestGoal(
             desc = sprintf(desc, max);
         }
     }
+    
+    max = self.Max(max, 1);
     append_max = ShouldAppendMax(max,do_not_scale,bingo_options[bingoIdx].desc);
 
     data.SetBingoSpot(
