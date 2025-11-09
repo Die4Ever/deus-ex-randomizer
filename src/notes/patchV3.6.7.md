@@ -34,5 +34,6 @@
 - Add two new bingo goals for interacting with Joe Greene in Mission 2 and 4.
 - The description for the Energy Shield augmentation now mentions that it works against explosive damage as well.  This is vanilla behaviour, so just makes the description more accurate to its functionality.
 - Fix the carcass in the collapsed Canal Road tunnel (under Canals) so that it doesn't lose the aug upgrade can when the biocell he is also holding gets removed by DXRReduceItems.
+- Killing Anna Navarre without using her killswitch will now fail the bingo goal to kill her with her killswitch.
 
 </details>

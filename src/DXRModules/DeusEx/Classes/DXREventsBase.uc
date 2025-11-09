@@ -818,6 +818,10 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             if (dxr.flagbase.GetBool('annadies')) {
                 _MarkBingo("AnnaKillswitch");
                 Killer = p;
+            } else {
+                //Make sure this is failed if Anna is killed by
+                //something other than the killswitch
+                MarkBingoAsFailed("AnnaKillswitch");
             }
             break;
     }
