@@ -207,6 +207,12 @@ function PreFirstEntryMapFixes()
                 k.Description = "MedLab Closet Key Code";
                 if(dxr.flags.settings.keysrando > 0)
                     GlowUp(k);
+
+                k = Spawn(class'#var(prefix)NanoKey',,, vectm(1400,-420,-140)); //Under Alex's secret floor panels
+                k.KeyID = 'UNcloset';
+                k.Description = "UNATCO Closet Key Code";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(k);
             }
 
             foreach AllActors(class'#var(prefix)ComputerPublic', compublic) {
