@@ -73,6 +73,15 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
     Super.Frag(FragType,Momentum,DSize*1.5,NumFrags*4);
 }
 
+function SupportActor(Actor standingActor)
+{
+    if (standingActor != None && standingActor.Mass>=35){
+        bCanBeBase=False;
+        TakeDamage(HitPoints,standingActor.Instigator, standingActor.Location, 0.2*standingActor.Velocity, 'stomped');
+    }
+    Super.SupportActor(standingActor);
+}
+
 function ResetScaleGlow()
 {// don't darken when damaged
     ScaleGlow = default.ScaleGlow;
