@@ -3906,7 +3906,7 @@ defaultproperties
     bingo_options(300)=(event="VandenbergHazLab",desc="Shut off the electricity in the Hazard Lab",max=1,missions=4096)
     bingo_options(301)=(event="WatchKeys_maintenancekey",desc="Find the Vandenberg tunnel maintenance key",max=1,missions=4096)
     bingo_options(302)=(event="EnterUC",desc="Enter %s Universal Constructors",desc_singular="Enter a Universal Constructor",max=3,missions=53248)
-    bingo_options(303)=(event="VandenbergComputerElec",desc="There's very little risk",max=2,missions=4096, do_not_scale=true)
+    bingo_options(303)=(event="VandenbergComputerElec",desc="There's very little risk",max=2,missions=4096,do_not_scale=true)
     bingo_options(304)=(event="VandenbergGasSwim",desc="Swim around the Vandenberg gas tanks",max=1,missions=4096)
     bingo_options(305)=(event="SiloAttic",desc="Enter the attic at the Silo",max=1,missions=16384)
     bingo_options(306)=(event="SubBaseSatellite",desc="Shoot a satellite dish at the sub base",max=1,missions=16384)
