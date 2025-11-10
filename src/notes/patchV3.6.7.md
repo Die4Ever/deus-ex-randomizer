@@ -37,5 +37,6 @@
 - Killing Anna Navarre without using her killswitch will now fail the bingo goal to kill her with her killswitch.
 - Jack O Lanterns no longer support any significant weight, collapsing if heavy things are on top of them (like trash bags).
 - Added a copy of the UNATCO Closet Key to UNATCO HQ in mission 5.
+- Skill points originally associated with finding Paul and your equipment in mission 5 now get moved along with Paul and your equipment when Goals Rando is enabled.
 
 </details>

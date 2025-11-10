@@ -11,6 +11,7 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 1, 'PaulDentonCarcass0', PHYS_Falling);
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
         AddGoalActor(goal, 3, 'SecurityCamera0', PHYS_None);
+        AddGoalActor(goal, 4, 'SkillAwardTrigger4', PHYS_None);
 
         pArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
         AddActorLocation(pArm, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
@@ -31,12 +32,15 @@ function int InitGoals(int mission, string map)
         AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P","Paul", pRobot,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
 
         //This is just the concept of the location of your equipment.  BalanceJailbreak in DXRFixup will actually place the items
-        AddGoal("05_NYC_UNATCOMJ12LAB", "Equipment", GOAL_TYPE2, '', PHYS_None);
+        goal = AddGoal("05_NYC_UNATCOMJ12LAB", "Equipment", GOAL_TYPE2, '', PHYS_None);
+        AddGoalActor(goal, 1, 'SkillAwardTrigger5', PHYS_None);
 
         eArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", GOAL_TYPE2 | VANILLA_GOAL, vect(-8477.731445,1244.474854,-199.900879), rot(0, 0, 0));
+        AddActorLocation(eArm, 1, vect(-8422,1227,-162), rot(0, 0, 0)); //Vanilla location for skill points
         AddMapMarker(class'Image05_NYC_MJ12Lab',46,299,"E","Equipment", eArm,"Your equipment can be located in the armory.  This is the vanilla location.  If your equipment is in this location, Paul is in either the surgery ward or the greasel pit.");
 
         eSurg = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", GOAL_TYPE2, vect(1670.443237,-702.527649,-179.660095), rot(0,0,0));
+        AddActorLocation(eSurg, 1, vect(1760,-830,-178), rot(0, 0, 0));
         AddMapMarker(class'Image05_NYC_MJ12Lab',362,95,"E","Equipment", eSurg,"Your equipment can be located in the surgery ward.  If your equipment is in this location, Paul is in either the armory or the robotics bay office.");
 
         AddMutualExclusion(eArm, pArm);
@@ -93,6 +97,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 1, 'PaulDentonCarcass0', PHYS_Falling);
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
         AddGoalActor(goal, 3, 'SecurityCamera0', PHYS_None);
+        AddGoalActor(goal, 4, 'SkillAwardTrigger4', PHYS_None);
 
         pArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
         AddActorLocation(pArm, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
@@ -109,9 +114,14 @@ function int InitGoalsRev(int mission, string map)
         AddActorLocation(pRobot, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
 
         //This is just the concept of the location of your equipment.  BalanceJailbreak in DXRFixup will actually place the items
-        AddGoal("05_NYC_UNATCOMJ12LAB", "Equipment", GOAL_TYPE2, '', PHYS_None);
+        goal = AddGoal("05_NYC_UNATCOMJ12LAB", "Equipment", GOAL_TYPE2, '', PHYS_None);
+        AddGoalActor(goal, 1, 'SkillAwardTrigger5', PHYS_None);
+
         eArm = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", GOAL_TYPE2 | VANILLA_GOAL, vect(-8477.731445,1244.474854,-199.900879), rot(0, 0, 0));
+        AddActorLocation(eArm, 1, vect(-8422,1227,-162), rot(0, 0, 0)); //Vanilla location for skill points
+
         eSurg = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", GOAL_TYPE2, vect(1670.443237,-702.527649,-179.660095), rot(0,0,0));
+        AddActorLocation(eSurg, 1, vect(1760,-830,-178), rot(0, 0, 0));
 
         AddMutualExclusion(eArm, pArm);
         AddMutualExclusion(eArm, pRobot);
@@ -205,6 +215,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerPersonal cp;
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)DataLinkTrigger  dlt;
+    local #var(prefix)SkillAwardTrigger sat;
     local int i, compRotOffset;
     local bool RevisionMaps;
 
@@ -255,6 +266,10 @@ function PreFirstEntryMapFixes()
                 dlt.SetCollisionSize(200,100);
                 break;
             }
+        }
+
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger', sat,'Skillawardforpaul') {
+            sat.SetCollisionSize(200,40); //Vanilla size is 100,40.  Make this the same size as the "dead" infolink above
         }
     }
 }
