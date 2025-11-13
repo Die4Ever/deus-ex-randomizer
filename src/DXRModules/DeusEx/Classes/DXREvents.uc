@@ -1604,7 +1604,7 @@ function SetWatchFlags() {
             bt.bDestroyOthers = false;
             bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2027.90,939.477,-938.886),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1040.066,1472.132,-976.936),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1040.066,1472.132,-876.936),34,10);
             bt.bDestroyOthers = false;
             bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-587.698,1466.590,-891.960),34,10);
             bt.bDestroyOthers = false;
