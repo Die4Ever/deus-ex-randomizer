@@ -38,5 +38,5 @@
 - Jack O Lanterns no longer support any significant weight, collapsing if heavy things are on top of them (like trash bags).
 - Added a copy of the UNATCO Closet Key to UNATCO HQ in mission 5.
 - Skill points originally associated with finding Paul and your equipment in mission 5 now get moved along with Paul and your equipment when Goals Rando is enabled.
-
+- Bingo goal for entering the gas station ceiling no longer requires going to the center of the ceiling (It will trigger as soon as you enter, regardless of which entrance is used)
 </details>

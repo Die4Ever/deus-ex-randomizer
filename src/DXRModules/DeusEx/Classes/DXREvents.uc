@@ -1627,9 +1627,11 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(1222,1078,-700),150,10);
+            bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(860,900,-700),100,10);
             class'BingoFrobber'.static.Create(self,"Cash Register",'GasCashRegister',vectm(992.049377,922.186157,-905.889954),18,16,"You checked the cash register");
         } else {
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(984,528,-700),150,10);
+            bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(620,345,-700),100,10);
             class'BingoFrobber'.static.Create(self,"Cash Register",'GasCashRegister',vectm(751.841187,370.094513,-903.900024),18,16,"You checked the cash register");
         }
         break;

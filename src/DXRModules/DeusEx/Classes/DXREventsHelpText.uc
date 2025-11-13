@@ -1196,7 +1196,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "CathedralUnderwater":
             return "Swim through the underwater tunnel that leads to the Paris cathedral.";
         case "GasStationCeiling":
-            return "Enter the ceiling of the gas station from the roof.";
+            return "Enter the ceiling of the gas station either from the roof or through the ventilation ducts.";
         case "nico_fireplace":
             return "Access the secret stash behind the fireplace in Nicolette's bedroom in the Chateau.";
         case "dumbwaiter":
