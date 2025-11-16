@@ -188,3 +188,40 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
     }
     return Super.InvokeUIScreen(newScreen, GetNoPause(bNoPause));
 }
+
+#ifdef revision
+event ModifyNewChild(Window NewParent, Window NewKidOnTheBlock)
+{
+    local bool processed,found;
+    local int i;
+
+    processed = True;
+
+    // Let the original RevRootWindow function modify stuff first.
+    Super.ModifyNewChild(NewParent, NewKidOnTheBlock);
+
+    // Swap defprops on these to avoid having to use a subclass.
+    switch (NewKidOnTheBlock.Class.Name)
+    {
+        case 'RevMenuScreenOptions':
+            //I don't think there's any guarantee that this menu could be reorganized in a future patch
+            found=false;
+            for (i=0;i<ArrayCount(RevMenuScreenOptions(NewKidOnTheBlock).choices);i++){
+                if (RevMenuScreenOptions(NewKidOnTheBlock).choices[i]!=class'RevMenuChoice_GameplayMode') continue;
+                //found it
+                found=true;
+                break;
+            }
+            if (found){
+                //Swap the GameplayMode option out for our version that doesn't have Vanilla as a choice
+                RevMenuScreenOptions(NewKidOnTheBlock).choices[i] = Class'RevRandoMenuChoice_GameplayMode';
+            }
+            break;
+        default:
+            processed = False;
+    }
+
+    if (processed)
+        Log(Self $ ".ModifyNewChild: Modified" @ NewKidOnTheBlock, 'DevRevision');
+}
+#endif
