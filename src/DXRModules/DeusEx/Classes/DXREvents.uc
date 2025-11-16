@@ -1203,10 +1203,20 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CraneControls',vectm(3264,-1211,1222));
         bt.Tag = 'Crane';
 
-        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(1937,0,1438),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(1880,0,1425),100,40);  //The crane that goes over the bridge
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(-1791,1082,1423),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(-1791,1082,1423),100,40); //The crane with the rope that goes over the side of the ship
         bt.bDestroyOthers=False;
+
+        //Find the skill trigger near that second crane, move it to the same spot and size as the bingo trigger
+        skillAward = #var(prefix)SkillAwardTrigger(findNearestToActor(class'#var(prefix)SkillAwardTrigger',bt));
+        skillAward.SetLocation(bt.Location);
+        skillAward.SetCollisionSize(bt.CollisionRadius,bt.CollisionHeight);
+
+        //Find the DatalinkTrigger that was in the same spot as the skill trigger, do the same thing too
+        dlt = #var(prefix)DataLinkTrigger(findNearestToActor(class'#var(prefix)DataLinkTrigger',bt));
+        dlt.SetLocation(bt.Location);
+        dlt.SetCollisionSize(bt.CollisionRadius,bt.CollisionHeight);
 
         bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vectm(2887,58,960),30,40);
 

@@ -39,4 +39,5 @@
 - Added a copy of the UNATCO Closet Key to UNATCO HQ in mission 5.
 - Skill points originally associated with finding Paul and your equipment in mission 5 now get moved along with Paul and your equipment when Goals Rando is enabled.
 - Bingo goal for entering the gas station ceiling no longer requires going to the center of the ceiling (It will trigger as soon as you enter, regardless of which entrance is used)
+- Bingo goal trigger points for visiting the ends of the cranes on the superfreighter adjusted to be a bit more clear.  Also adjusted the skill point and infolink triggers present on one of the cranes to match the location of the bingo goal trigger.
 </details>
