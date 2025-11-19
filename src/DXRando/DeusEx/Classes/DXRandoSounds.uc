@@ -109,6 +109,8 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\WWMedlisAwakening.mp3"          NAME="WWMedlisAwakening"    GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\MegalomaniaLAL.mp3"             NAME="MegalomaniaLAL"       GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\FFChocoboTheme.mp3"             NAME="FFChocoboTheme"       GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\TiTSewerSurfin.mp3"             NAME="TiTSewerSurfin"       GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\SkongCogworkDancers.mp3"        NAME="SkongCogworkDancers"  GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\MaxPayneBrokenPianoPlay.mp3"    NAME="MaxPayneBrokenPianoPlay" GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\MaxPaynePianoJustBroke.mp3"     NAME="MaxPaynePianoJustBroke"  GROUP="MemePiano"
 

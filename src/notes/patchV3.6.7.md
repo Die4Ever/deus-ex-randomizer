@@ -42,4 +42,5 @@
 - Bingo goal trigger points for visiting the ends of the cranes on the superfreighter adjusted to be a bit more clear.  Also adjusted the skill point and infolink triggers present on one of the cranes to match the location of the bingo goal trigger.
 - Added a button to the top of the dumbwaiter shaft in the DuClare chateau, in case you end up on top of the dumbwaiter while it's moving to the top.  This one's for you, Krickraken.
 - Switching to "Vanilla" gameplay style in Revision is now blocked, because Randomizer is not compatible with this mode.  "Normal" (Standard Revision gameplay), "Shifter", "Biomod", and "Human Revolution" gameplay styles are still available.
+- It is once again possible to exit or skip the credits with the Escape button.
 </details>
