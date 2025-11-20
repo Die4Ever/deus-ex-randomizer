@@ -43,4 +43,5 @@
 - Added a button to the top of the dumbwaiter shaft in the DuClare chateau, in case you end up on top of the dumbwaiter while it's moving to the top.  This one's for you, Krickraken.
 - Switching to "Vanilla" gameplay style in Revision is now blocked, because Randomizer is not compatible with this mode.  "Normal" (Standard Revision gameplay), "Shifter", "Biomod", and "Human Revolution" gameplay styles are still available.
 - It is once again possible to exit or skip the credits with the Escape button.
+- Entrance Rando setting now carries through New Game Plus, so you will be able to keep playing in Entrance Rando forever.  Enjoy WaltonWare Entrance Rando!
 </details>
