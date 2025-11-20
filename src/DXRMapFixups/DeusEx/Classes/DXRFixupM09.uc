@@ -360,6 +360,12 @@ function PreFirstEntryMapFixes()
             c.bIsSecretGoal = true;
         }
 
+        //There's a rat generator in the sewers near the actual building end that is too close to the wall to work properly
+        //Move it away from the wall a bit
+        foreach RadiusActors(class'#var(prefix)RatGenerator', rg, 100, vectm(1500,5465,-280)) {
+            rg.SetLocation(vectm(1525,5485,-280));
+        }
+
         pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(3941,6625,1385));//Rooftop, near vent entrance
         pg.MaxCount=3;
 
