@@ -44,4 +44,5 @@
 - Switching to "Vanilla" gameplay style in Revision is now blocked, because Randomizer is not compatible with this mode.  "Normal" (Standard Revision gameplay), "Shifter", "Biomod", and "Human Revolution" gameplay styles are still available.
 - It is once again possible to exit or skip the credits with the Escape button.
 - Entrance Rando setting now carries through New Game Plus, so you will be able to keep playing in Entrance Rando forever.  Enjoy WaltonWare Entrance Rando!
+- Highlighting a credit chit will show many credits it holds
 </details>

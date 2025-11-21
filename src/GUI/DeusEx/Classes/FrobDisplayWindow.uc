@@ -767,6 +767,8 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
         strInfo = Inventory(frobTarget).itemName;
         if (frobTarget.IsA('Ammo'))
             strInfo = Inventory(frobTarget).itemName $ " (" $ Ammo(frobTarget).AmmoAmount $ ")";
+        else if (frobTarget.IsA('Credits') && !#defined(vmd)) //VMD uses NumCopies, so just fall into the case below
+            strInfo = Inventory(frobTarget).itemName $ " (" $ Credits(frobTarget).numCredits $ ")";
         else if (frobTarget.IsA('Pickup') && Pickup(frobTarget).NumCopies > 1)
             strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
         else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).AmmoName != Class'DeusEx.AmmoNone' )
