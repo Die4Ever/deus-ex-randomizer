@@ -45,4 +45,5 @@
 - It is once again possible to exit or skip the credits with the Escape button.
 - Entrance Rando setting now carries through New Game Plus, so you will be able to keep playing in Entrance Rando forever.  Enjoy WaltonWare Entrance Rando!
 - Highlighting a credit chit will show many credits it holds
+- More consistent projectile damage calculations when using very low randomization percents (eg. 0% Damage)
 </details>
