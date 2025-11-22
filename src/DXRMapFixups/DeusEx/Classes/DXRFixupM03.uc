@@ -138,22 +138,22 @@ function PreFirstEntryMapFixes()
 
         AddBatteryParkReturnJock();
 
-        //Add some junk around the park so that there are some item locations outside of the shanty town
-        AddActor(class'Liquor40oz', vect(933.56,-3554.86,279.04));
-        AddActor(class'Sodacan', vect(2203.28,-3558.84,279.04));
-        AddActor(class'Liquor40oz', vect(-980.83,-3368.42,286.24));
-        AddActor(class'Cigarettes', vect(-682.67,-3771.20,282.24));
-        AddActor(class'Liquor40oz', vect(-2165.67,-3546.039,285.30));
-        AddActor(class'Sodacan', vect(-2170.83,-3094.94,330.24));
-        AddActor(class'Liquor40oz', vect(-3180.75,-3546.79,281.43));
-        AddActor(class'Liquor40oz', vect(-2619.56,-2540.80,330.25));
-        AddActor(class'Cigarettes', vect(-3289.43,-919.07,360.80));
-        AddActor(class'Liquor40oz', vect(-2799.94,-922.68,361.86));
-        AddActor(class'Sodacan', vect(800.76,1247.99,330.25));
-        AddActor(class'Liquor40oz', vect(1352.29,2432.98,361.58));
-        AddActor(class'Cigarettes', vect(788.50,2359.26,360.63));
-        AddActor(class'Liquor40oz', vect(3153.26,-310.73,326.25));
-        AddActor(class'Sodacan', vect(-2132.21,1838.89,326.25));
+        //Add some places around the park so that there are some item locations outside of the shanty town
+        Spawnm(class'PlaceholderItem',,, vect(933.56,-3554.86,279.04));
+        Spawnm(class'PlaceholderItem',,, vect(2203.28,-3558.84,279.04));
+        Spawnm(class'PlaceholderItem',,, vect(-980.83,-3368.42,286.24));
+        Spawnm(class'PlaceholderItem',,, vect(-682.67,-3771.20,282.24));
+        Spawnm(class'PlaceholderItem',,, vect(-2165.67,-3546.039,285.30));
+        Spawnm(class'PlaceholderItem',,, vect(-2170.83,-3094.94,330.24));
+        Spawnm(class'PlaceholderItem',,, vect(-3180.75,-3546.79,281.43));
+        Spawnm(class'PlaceholderItem',,, vect(-2619.56,-2540.80,330.25));
+        Spawnm(class'PlaceholderItem',,, vect(-3289.43,-919.07,360.80));
+        Spawnm(class'PlaceholderItem',,, vect(-2799.94,-922.68,361.86));
+        Spawnm(class'PlaceholderItem',,, vect(800.76,1247.99,330.25));
+        Spawnm(class'PlaceholderItem',,, vect(1352.29,2432.98,361.58));
+        Spawnm(class'PlaceholderItem',,, vect(788.50,2359.26,360.63));
+        Spawnm(class'PlaceholderItem',,, vect(3153.26,-310.73,326.25));
+        Spawnm(class'PlaceholderItem',,, vect(-2132.21,1838.89,326.25));
 
         break;
     //#endregion
