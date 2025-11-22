@@ -105,7 +105,7 @@ simulated function float ProjDamage(float OrigDmg, float ratio, optional float m
     //Explosives need to have a higher minimum damage, because their damage gets divided across multiple ticks
     //Explosions deal (dmg x 2)/(num_ticks), where num_ticks is typically 5.
 
-    return Max(ratio * OrigDmg, minDmg);
+    return FMax(ratio * OrigDmg, minDmg);
 }
 
 simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)
