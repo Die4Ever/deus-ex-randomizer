@@ -4005,7 +4005,7 @@ defaultproperties
     bingo_options(378)=(event="Have_Evidence",desc="Find the missing Dragon Tooth Sword",max=1,missions=64)
     bingo_options(379)=(event="Have_ROM",desc="Find the ROM Encoding",max=1,missions=64)
     bingo_options(380)=(event="TriadCeremony_Played",desc="The triads are one",max=1,missions=64)
-    bingo_options(381)=(event="VL_Got_Schematic",desc="Download the Virus Schematic",max=1,missions=64)
+    bingo_options(381)=(event="VL_Got_Schematic",desc="Upload the Virus Schematics",max=1,missions=64)
     bingo_options(382)=(event="VL_UC_Destroyed",desc="Destroy the Versalife UC",max=1,missions=64)
     bingo_options(383)=(event="MeetDowd_VariousPlayed",desc="Meet Stanton Dowd",max=1,missions=768)
     bingo_options(384)=(event="Pistons",desc="Activate the Bilge Pumps",max=1,missions=512)

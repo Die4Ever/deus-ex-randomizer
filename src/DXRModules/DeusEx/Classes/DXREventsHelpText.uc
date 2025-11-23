@@ -1424,7 +1424,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "Have_ROM":
             return "Find the ROM Encoding for the Dragon Tooth Sword in the Versalife Labs.";
         case "VL_Got_Schematic":
-            return "Download the schematic of the Grey Death virus in the Versalife Level 2 Labs.";
+            return "Upload the schematics for the Grey Death virus from the Versalife Level 2 Labs.";
         case "VL_UC_Destroyed":
             return "Destroy the Universal Constructor in the Versalife Level 2 Labs.";
         case "Pistons":
