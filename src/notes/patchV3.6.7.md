@@ -47,4 +47,5 @@
 - Highlighting a credit chit will show many credits it holds
 - More consistent projectile damage calculations when using very low randomization percents (eg. 0% Damage)
 - Removed extra soda, liquor, and cigarettes added to mission 3 Battery Park.  The locations of these added items will still be available for items to randomize into.
+- New Game Plus will no longer remove any weapons that your loadout made you start the game with (Eg. You will no longer be able to lose your sword in Ninja JC mode).
 </details>

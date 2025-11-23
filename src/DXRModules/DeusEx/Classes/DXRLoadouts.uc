@@ -940,6 +940,19 @@ function class<Inventory> get_starting_item()
     return item_set.starting_equipment[0];
 }
 
+function bool is_starting_equipment(Inventory eqpt, optional bool allow_subclass, optional bool dont_skip_rubber_baton)
+{
+    local int i;
+
+    for(i=0;i<ArrayCount(item_set.starting_equipment);i++){
+        if (item_set.starting_equipment[i]==None) continue; //skip it if it's nothing
+        if (!dont_skip_rubber_baton && item_set.starting_equipment[i]==class'#var(package).WeaponRubberBaton') continue; //We probably usually want to ignore rubber baton
+        if (allow_subclass && ClassIsChildOf(eqpt.Class,item_set.starting_equipment[i])) return true; //Should this include subclasses?
+        if (eqpt.Class == item_set.starting_equipment[i]) return true; //Exact class match
+    }
+    return false;
+}
+
 function bool ban(DeusExPlayer player, Inventory item)
 {
     local bool bFixGlitches;
