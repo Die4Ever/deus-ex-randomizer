@@ -2202,7 +2202,6 @@ simulated function string tweakBingoDescription(string event, string desc)
 
     switch(event){
         //FemJC gets a male character instead.  Russ normally, Noah in Revision
-        case "ClubEntryPaid":
         case "ClubEntryPaid_Convo":
            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
 #ifdef revision
@@ -3185,19 +3184,16 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "Raid_Underway": //Raid started
             failed[num_failed++] = "M06JCHasDate";
-            failed[num_failed++] = "ClubEntryPaid";
             failed[num_failed++] = "ClubEntryPaid_Convo";
             return num_failed;
         case "ClubMercedes_Takedown":
         case "ClubTessa_Takedown":
             if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
-                failed[num_failed++] = "ClubEntryPaid";
                 failed[num_failed++] = "ClubEntryPaid_Convo";
             }
             return num_failed;
         case "LDDPRuss_Takedown":
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
-                failed[num_failed++] = "ClubEntryPaid";
                 failed[num_failed++] = "ClubEntryPaid_Convo";
             }
             return num_failed;
