@@ -4019,6 +4019,9 @@ defaultproperties
     bingo_options(392)=(event="MerchantPurchaseBind_lemerchant",desc="Make a purchase from Le Merchant",max=1,missions=1024)
     bingo_options(393)=(event="M02QuestionedGreen",desc="Play the Detective",max=1,missions=4)
     bingo_options(394)=(event="M04GreenAdvice_Played",desc="I'm in trouble",max=1,missions=10)
+#ifdef injections || revision
+    bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=3454)
+#endif
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4142,5 +4145,7 @@ defaultproperties
     mutually_exclusive(109)=(e1="DestroyCapitalism_VariousDead",e2="Shannon_PlayerTakedown")
     mutually_exclusive(110)=(e1="ChugWater",e2="Dehydrated_DestroyDeco")
     mutually_exclusive(111)=(e1="FlushToilet",e2="FlushUrinal")
+
+    mutually_exclusive(112)=(e1="ComputerHacked",e2="CivilForfeiture")
 //#endregion
 }

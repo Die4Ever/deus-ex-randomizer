@@ -224,4 +224,24 @@ event ModifyNewChild(Window NewParent, Window NewKidOnTheBlock)
     if (processed)
         Log(Self $ ".ModifyNewChild: Modified" @ NewKidOnTheBlock, 'DevRevision');
 }
+
+event MutateNewChild(Window NewParent, out class<Window> DesignatedClass)
+{
+    local Name oldName;
+
+
+    // Let Revision swap some classes first.
+    Super.MutateNewChild(NewParent, DesignatedClass);
+
+    oldName = DesignatedClass.Name;
+
+    switch (DesignatedClass.Name)
+    {
+        case 'ComputerScreenATMWithdraw':         DesignatedClass = Class'DXRComputerScreenATMWithdraw';       break;
+    }
+
+    if (oldName != DesignatedClass.Name)
+        Log(Self $ ".MutateNewChild: Replaced" @ oldName @ "with" @ DesignatedClass.Name, 'DevRevision');
+
+}
 #endif

@@ -1447,6 +1447,8 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Kill or knock out most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
         case "M02QuestionedGreen":
             return "Question Joe Greene about the NSF or their secret power generator.";
+        case "CivilForfeiture":
+            return "Claim the contents of enough ATM accounts as the proceeds of crime.  The accounts must be fully emptied.";
     }
 
     //Return nothing so the generic function can handle it
