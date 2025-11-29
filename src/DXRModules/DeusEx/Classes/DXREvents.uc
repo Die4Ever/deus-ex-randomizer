@@ -312,6 +312,7 @@ function SetWatchFlags() {
     local #var(prefix)ControlPanel conPanel;
     local #var(prefix)SatelliteDish satDish;
     local #var(prefix)BreakableGlass bg;
+    local #var(prefix)FlagPole fp;
     local Dispatcher disp;
     local int i;
     local DXRRaceTimerStart raceStart;
@@ -850,6 +851,13 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
         bt.Tag = 'holoswitch';
+
+        foreach AllActors(class'#var(prefix)FlagPole', fp) {
+            if(fp.SkinColor==SC_UNATCO)
+            {
+                AddWatchedActor(fp,"Disloyal_DestroyDeco");
+            }
+        }
 
         break;
     case "05_NYC_UNATCOISLAND":
@@ -2248,6 +2256,11 @@ simulated function int tweakBingoMax(string event, int max)
                 return 3; //One of the crew chambers is damaged.  It still counts, but you have to really go out of your way to get it
             }
             break;
+        case "Disloyal_DestroyDeco":
+            if (RevisionMaps){
+                return 9; //Just a lot more flags in Revision
+            }
+
         //Sodacan_Activated
         //DrinkAlcohol_Activated
     }
@@ -4022,6 +4035,7 @@ defaultproperties
 #ifdef injections || revision
     bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=3454)
 #endif
+    bingo_options(396)=(event="Disloyal_DestroyDeco",desc="Disloyal",max=4,missions=32,do_not_scale=true)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion

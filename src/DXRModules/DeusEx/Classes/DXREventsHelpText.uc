@@ -631,6 +631,8 @@ static simulated function string GetBingoHelpTextDestroyDeco(string event,int mi
             return msg;
         case "Dehydrated_DestroyDeco":
             return "Destroy enough water coolers or water fountains.";
+        case "Disloyal_DestroyDeco":
+            return "Destroy all of the UNATCO flags in HQ after you lose your job.";
     }
 
     //Return nothing so the generic function can handle it
