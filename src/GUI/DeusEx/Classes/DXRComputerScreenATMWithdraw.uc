@@ -8,7 +8,7 @@ function SetCompOwner(ElectronicDevices newCompOwner)
     editWithdraw.SetText(editBalance.GetText());
 }
 
-function WithdrawCredits()
+function WithdrawCredits(#switch(gmdx: optional bool bWithdrawAll))
 {
     local int balance,userIdx;
     local bool wasEmpty,emptyAfter;
@@ -20,7 +20,7 @@ function WithdrawCredits()
 
     wasEmpty=(atmOwner.GetBalance(userIdx, balanceModifier)==0);
 
-    Super.WithdrawCredits();
+    Super.WithdrawCredits(#switch(gmdx: bWithdrawAll));
 
     emptyAfter=(atmOwner.GetBalance(userIdx, balanceModifier)==0);
 
