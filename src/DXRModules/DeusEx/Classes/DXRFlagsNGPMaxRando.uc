@@ -311,6 +311,7 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         moresettings.splits_overlay = oldmoresettings.splits_overlay;
         clothes_looting = old_clothes_looting;
         moresettings.entrance_rando = oldmoresettings.entrance_rando; //If you picked entrance rando, you probably want to keep doing it
+        moresettings.stalkers = oldmoresettings.stalkers;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
