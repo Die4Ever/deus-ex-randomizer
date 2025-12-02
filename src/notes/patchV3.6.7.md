@@ -49,6 +49,7 @@
 - Removed extra soda, liquor, and cigarettes added to mission 3 Battery Park.  The locations of these added items will still be available for items to randomize into.
 - New Game Plus will no longer remove any weapons that your loadout made you start the game with (Eg. You will no longer be able to lose your sword in Ninja JC mode).
 - Howard Strong will now always be in Silo unless you have entrance rando enabled and have not yet completed the previous goals.
+- Fixed stalker setting not carrying over across New Game+
 - Added bingo goals:
   - Question Joe Greene in mission 2
   - Ask Joe Greene for help after the apartment is raided in mission 4
