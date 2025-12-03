@@ -24,6 +24,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FordSchick ford;
     local #var(prefix)MJ12Troop troop;
     local #var(prefix)AllianceTrigger at;
+    local #var(prefix)PickupDistributor pd;
     local DXRHoverHint hoverHint;
     local DXRButtonHoverHint buttonHint;
     local #var(prefix)Button1 button;
@@ -545,12 +546,23 @@ function PreFirstEntryMapFixes()
 
         // the free clinic shares a KeyID with the MJ12 facility beneath unatco
         foreach AllActors(class'#var(prefix)NanoKey', k) {
-            if (k.KeyID == 'Cabinet') {
+            if (k.KeyID == 'Cabinet' || k.KeyID == 'fccabinet') {
                 k.KeyID = 'MedCabDoor';
             }
         }
         foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'MedCabDoor') {
             d.KeyIDNeeded = 'MedCabDoor';
+        }
+
+        //Just to be safe - I don't think we ever get through here before the pickup
+        //distributors do their thing, but it doesn't hurt to try
+        foreach AllActors(class'#var(prefix)PickupDistributor',pd) {
+            for (i=0;i<ArrayCount(pd.NanoKeyData);i++)
+            {
+                if (pd.NanoKeyData[i].KeyID=='Cabinet' || pd.NanoKeyData[i].KeyID=='fccabinet'){
+                    pd.NanoKeyData[i].KeyID='MedCabDoor';
+                }
+            }
         }
 
         break;

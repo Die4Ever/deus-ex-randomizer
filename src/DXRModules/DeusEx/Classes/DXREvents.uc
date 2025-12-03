@@ -312,6 +312,7 @@ function SetWatchFlags() {
     local #var(prefix)ControlPanel conPanel;
     local #var(prefix)SatelliteDish satDish;
     local #var(prefix)BreakableGlass bg;
+    local #var(prefix)FlagPole fp;
     local Dispatcher disp;
     local int i;
     local DXRRaceTimerStart raceStart;
@@ -514,6 +515,8 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('JordanSheaConvos_Played');
         WatchFlag('WorkerGivesInfo_Played');
+        WatchFlag('M02QuestionedGreen');
+        WatchFlag('MeetJoeGreen2_Played'); //To detect if you've had the conversation, in case you chose the "no" choice when questioning Greene
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -674,6 +677,7 @@ function SetWatchFlags() {
     //#region Mission 4
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
+        WatchFlag('M04GreenAdvice_Played');
         if (RevisionMaps) {
             bt=class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(112,-2,242),40,20);  //Only one in Revision
         } else {
@@ -847,6 +851,13 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
         bt.Tag = 'holoswitch';
+
+        foreach AllActors(class'#var(prefix)FlagPole', fp) {
+            if(fp.SkinColor==SC_UNATCO)
+            {
+                AddWatchedActor(fp,"Disloyal_DestroyDeco");
+            }
+        }
 
         break;
     case "05_NYC_UNATCOISLAND":
@@ -1200,10 +1211,20 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CraneControls',vectm(3264,-1211,1222));
         bt.Tag = 'Crane';
 
-        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(1937,0,1438),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(1880,0,1425),100,40);  //The crane that goes over the bridge
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(-1791,1082,1423),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(-1791,1082,1423),100,40); //The crane with the rope that goes over the side of the ship
         bt.bDestroyOthers=False;
+
+        //Find the skill trigger near that second crane, move it to the same spot and size as the bingo trigger
+        skillAward = #var(prefix)SkillAwardTrigger(findNearestToActor(class'#var(prefix)SkillAwardTrigger',bt));
+        skillAward.SetLocation(bt.Location);
+        skillAward.SetCollisionSize(bt.CollisionRadius,bt.CollisionHeight);
+
+        //Find the DatalinkTrigger that was in the same spot as the skill trigger, do the same thing too
+        dlt = #var(prefix)DataLinkTrigger(findNearestToActor(class'#var(prefix)DataLinkTrigger',bt));
+        dlt.SetLocation(bt.Location);
+        dlt.SetCollisionSize(bt.CollisionRadius,bt.CollisionHeight);
 
         bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vectm(2887,58,960),30,40);
 
@@ -1601,7 +1622,7 @@ function SetWatchFlags() {
             bt.bDestroyOthers = false;
             bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-2027.90,939.477,-938.886),34,10);
             bt.bDestroyOthers = false;
-            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1040.066,1472.132,-976.936),34,10);
+            bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-1040.066,1472.132,-876.936),34,10);
             bt.bDestroyOthers = false;
             bt = class'BingoTrigger'.static.PeepCreate(self,'EmergencyExit_peeped',vectm(-587.698,1466.590,-891.960),34,10);
             bt.bDestroyOthers = false;
@@ -1624,9 +1645,11 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(1222,1078,-700),150,10);
+            bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(860,900,-700),100,10);
             class'BingoFrobber'.static.Create(self,"Cash Register",'GasCashRegister',vectm(992.049377,922.186157,-905.889954),18,16,"You checked the cash register");
         } else {
             bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(984,528,-700),150,10);
+            bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(620,345,-700),100,10);
             class'BingoFrobber'.static.Create(self,"Cash Register",'GasCashRegister',vectm(751.841187,370.094513,-903.900024),18,16,"You checked the cash register");
         }
         break;
@@ -2187,7 +2210,7 @@ simulated function string tweakBingoDescription(string event, string desc)
 
     switch(event){
         //FemJC gets a male character instead.  Russ normally, Noah in Revision
-        case "ClubEntryPaid":
+        case "ClubEntryPaid_Convo":
            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
 #ifdef revision
                return "Let Noah help";
@@ -2233,6 +2256,11 @@ simulated function int tweakBingoMax(string event, int max)
                 return 3; //One of the crew chambers is damaged.  It still counts, but you have to really go out of your way to get it
             }
             break;
+        case "Disloyal_DestroyDeco":
+            if (RevisionMaps){
+                return 9; //Just a lot more flags in Revision
+            }
+
         //Sodacan_Activated
         //DrinkAlcohol_Activated
     }
@@ -3169,17 +3197,17 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "Raid_Underway": //Raid started
             failed[num_failed++] = "M06JCHasDate";
-            failed[num_failed++] = "ClubEntryPaid";
+            failed[num_failed++] = "ClubEntryPaid_Convo";
             return num_failed;
         case "ClubMercedes_Takedown":
         case "ClubTessa_Takedown":
             if (!dxr.flagbase.GetBool('LDDPJCIsFemale')) {
-                failed[num_failed++] = "ClubEntryPaid";
+                failed[num_failed++] = "ClubEntryPaid_Convo";
             }
             return num_failed;
         case "LDDPRuss_Takedown":
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
-                failed[num_failed++] = "ClubEntryPaid";
+                failed[num_failed++] = "ClubEntryPaid_Convo";
             }
             return num_failed;
         case "Supervisor01_Takedown":
@@ -3228,6 +3256,13 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
             return num_failed;
         case "StatueMissionComplete":
             failed[num_failed++] = "GuntherFreed";
+            return num_failed;
+        case "JoeGreene_Takedown":
+            failed[num_failed++] = "M02QuestionedGreen";
+            failed[num_failed++] = "M04GreenAdvice_Played";
+            return num_failed;
+        case "MeetJoeGreen2_Played": //This conversation is both the success and fail path.  Success should mark first, if you choose that
+            failed[num_failed++] = "M02QuestionedGreen";
             return num_failed;
     }
 
@@ -3896,7 +3931,7 @@ defaultproperties
     bingo_options(300)=(event="VandenbergHazLab",desc="Shut off the electricity in the Hazard Lab",max=1,missions=4096)
     bingo_options(301)=(event="WatchKeys_maintenancekey",desc="Find the Vandenberg tunnel maintenance key",max=1,missions=4096)
     bingo_options(302)=(event="EnterUC",desc="Enter %s Universal Constructors",desc_singular="Enter a Universal Constructor",max=3,missions=53248)
-    bingo_options(303)=(event="VandenbergComputerElec",desc="There's very little risk",max=2,missions=4096, do_not_scale=true)
+    bingo_options(303)=(event="VandenbergComputerElec",desc="There's very little risk",max=2,missions=4096,do_not_scale=true)
     bingo_options(304)=(event="VandenbergGasSwim",desc="Swim around the Vandenberg gas tanks",max=1,missions=4096)
     bingo_options(305)=(event="SiloAttic",desc="Enter the attic at the Silo",max=1,missions=16384)
     bingo_options(306)=(event="SubBaseSatellite",desc="Shoot a satellite dish at the sub base",max=1,missions=16384)
@@ -3983,7 +4018,7 @@ defaultproperties
     bingo_options(378)=(event="Have_Evidence",desc="Find the missing Dragon Tooth Sword",max=1,missions=64)
     bingo_options(379)=(event="Have_ROM",desc="Find the ROM Encoding",max=1,missions=64)
     bingo_options(380)=(event="TriadCeremony_Played",desc="The triads are one",max=1,missions=64)
-    bingo_options(381)=(event="VL_Got_Schematic",desc="Download the Virus Schematic",max=1,missions=64)
+    bingo_options(381)=(event="VL_Got_Schematic",desc="Upload the Virus Schematics",max=1,missions=64)
     bingo_options(382)=(event="VL_UC_Destroyed",desc="Destroy the Versalife UC",max=1,missions=64)
     bingo_options(383)=(event="MeetDowd_VariousPlayed",desc="Meet Stanton Dowd",max=1,missions=768)
     bingo_options(384)=(event="Pistons",desc="Activate the Bilge Pumps",max=1,missions=512)
@@ -3995,6 +4030,12 @@ defaultproperties
     bingo_options(390)=(event="missile_launched",desc="Redirect the Missile",max=1,missions=16384)
     bingo_options(391)=(event="MerchantPurchaseBind_DXRNPCs1",desc="Make %s purchases from The Merchant",desc_singular="Make a purchase from The Merchant",max=3,missions=24412)
     bingo_options(392)=(event="MerchantPurchaseBind_lemerchant",desc="Make a purchase from Le Merchant",max=1,missions=1024)
+    bingo_options(393)=(event="M02QuestionedGreen",desc="Play the Detective",max=1,missions=4)
+    bingo_options(394)=(event="M04GreenAdvice_Played",desc="I'm in trouble",max=1,missions=10)
+#ifdef injections || revision
+    bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=3454)
+#endif
+    bingo_options(396)=(event="Disloyal_DestroyDeco",desc="Disloyal",max=4,missions=32,do_not_scale=true)
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion
@@ -4118,5 +4159,7 @@ defaultproperties
     mutually_exclusive(109)=(e1="DestroyCapitalism_VariousDead",e2="Shannon_PlayerTakedown")
     mutually_exclusive(110)=(e1="ChugWater",e2="Dehydrated_DestroyDeco")
     mutually_exclusive(111)=(e1="FlushToilet",e2="FlushUrinal")
+
+    mutually_exclusive(112)=(e1="ComputerHacked",e2="CivilForfeiture")
 //#endregion
 }

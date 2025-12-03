@@ -420,7 +420,15 @@ static function string GetTextTag(#var(prefix)InformationDevices id)
 
 static function string GetHumanNameFromID(#var(prefix)InformationDevices id)
 {
-    local String TextTag;
+    local String TextTag,imageDesc;
+
+    //For images, just use the name of the image itself
+    if (id.textTag=='' && id.imageClass!=None){
+        imageDesc = id.imageClass.Default.imageDescription;
+        if (imageDesc!="") return imageDesc;
+        //Fall through to the regular logic, just in case an image
+        //doesn't have a proper description for some reason
+    }
 
     TextTag = GetTextTag(id);
     return class'DXRDatacubes'.static.GetHumanTextTagName(TextTag,id.TextPackage);

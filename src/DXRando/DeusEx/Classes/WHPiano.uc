@@ -2,7 +2,7 @@ class DXRPiano injects #var(prefix)WHPiano;
 
 var DXRando dxr;
 
-var int SongPlayed[108]; // <------- Make sure to update this array size when adding new songs!
+var int SongPlayed[110]; // <------- Make sure to update this array size when adding new songs!
 const NUM_PIANO_SONGS = ArrayCount(SongPlayed);
 var int Recents[20];
 var int recent_pointer;
@@ -750,6 +750,16 @@ function int GetSongByIndex(int songIndex, out Sound SelectedSound, out float du
             SelectedSound = sound'FFChocoboTheme';
             duration = 8.0;
             message="You played the Chocobo Theme from Final Fantasy";
+            break;
+        case 108:
+            SelectedSound = sound'TiTSewerSurfin';
+            duration = 4.25;
+            message="You played Sewer Surfin' from Teenage Mutant Ninja Turtles: Turtles in Time";
+            break;
+        case 109:
+            SelectedSound = sound'SkongCogworkDancers';
+            duration = 5.5;
+            message="You played Cogwork Dancers from Hollow Knight: Silksong";
             break;
         default:
             SelectedSound = None;

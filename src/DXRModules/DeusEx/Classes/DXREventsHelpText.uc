@@ -486,6 +486,8 @@ static simulated function string GetBingoHelpTextConversations(string event,int 
             }
         case "NicoletteHouseTour_VariousPlayed":
             return "Escort Nicolette around the Chateau and let her tell you about it.  Potential points of interest include the study, the living room, the upper hallway, Beth's room, the basement, near the back door, and by the maze.";
+        case "M04GreenAdvice_Played":
+            return "Try to get help from Joe Greene after the raid.";
     }
 
     //Return nothing so the generic function can handle it
@@ -629,6 +631,8 @@ static simulated function string GetBingoHelpTextDestroyDeco(string event,int mi
             return msg;
         case "Dehydrated_DestroyDeco":
             return "Destroy enough water coolers or water fountains.";
+        case "Disloyal_DestroyDeco":
+            return "Destroy all of the UNATCO flags in HQ after you lose your job.";
     }
 
     //Return nothing so the generic function can handle it
@@ -1194,7 +1198,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "CathedralUnderwater":
             return "Swim through the underwater tunnel that leads to the Paris cathedral.";
         case "GasStationCeiling":
-            return "Enter the ceiling of the gas station from the roof.";
+            return "Enter the ceiling of the gas station either from the roof or through the ventilation ducts.";
         case "nico_fireplace":
             return "Access the secret stash behind the fireplace in Nicolette's bedroom in the Chateau.";
         case "dumbwaiter":
@@ -1422,7 +1426,7 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
         case "Have_ROM":
             return "Find the ROM Encoding for the Dragon Tooth Sword in the Versalife Labs.";
         case "VL_Got_Schematic":
-            return "Download the schematic of the Grey Death virus in the Versalife Level 2 Labs.";
+            return "Upload the schematics for the Grey Death virus from the Versalife Level 2 Labs.";
         case "VL_UC_Destroyed":
             return "Destroy the Universal Constructor in the Versalife Level 2 Labs.";
         case "Pistons":
@@ -1443,6 +1447,10 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Make a purchase from Le Merchant, the French merchant hiding in the abandoned high-rise at Denfert-Rochereau.";
         case "MostWarehouseTroopsDead":
             return "Kill or knock out most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
+        case "M02QuestionedGreen":
+            return "Question Joe Greene about the NSF or their secret power generator.";
+        case "CivilForfeiture":
+            return "Claim the contents of enough ATM accounts as the proceeds of crime.  The accounts must be fully emptied.";
     }
 
     //Return nothing so the generic function can handle it

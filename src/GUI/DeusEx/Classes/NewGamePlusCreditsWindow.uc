@@ -236,11 +236,6 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 			else
 				bTickEnabled = True;
 			break;
-
-        case IK_Escape:
-            player.PlaySound(Sound'DeusExSounds.Generic.Buzz1');// HACK TODO
-            return True;
-            break;
 	}
 
 	return False;

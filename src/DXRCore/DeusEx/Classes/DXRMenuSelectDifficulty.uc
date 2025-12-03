@@ -134,6 +134,7 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
     local int in_autosave_enum;
 
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
+    if(autosave == None) return 0;
     in_autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
     slf.EnumOption("Autosaves Enabled", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
     //slf.EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
@@ -254,7 +255,7 @@ function string SetEnumValue(int e, string text)
         }
         else if(InStr(text, "Hardcore")==-1 && InStr(text, "Horde")==-1)
         {
-            Super.SetEnumValue(autosave_enum, "Autosave Every Entry");
+            Super.SetEnumValue(autosave_enum, "Autosaves Enabled");
         }
         else if(InStr(text, "Hardcore")!=-1)
         {
@@ -350,7 +351,7 @@ function HandleNewGameButton()
         nextScreenNum=RMB_NewGame;
         class'BingoHintMsgBox'.static.Create(root, ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
     }
-    else if(dxr.rando_beaten == 0 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosave Every Entry" && GetEnumValue(autosave_enum)!="Extra Safe (1+GB per playthrough)") {
+    else if(dxr.rando_beaten == 0 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosaves Enabled") {
         nextScreenNum=RMB_NewGame;
         s = Sprintf(AutosaveBtnMessage, GetEnumValue(autosave_enum));
         class'BingoHintMsgBox'.static.Create(root, AutosaveBtnTitle, s, 0, False, self);
@@ -583,7 +584,7 @@ defaultproperties
     GameModeBtnTitle="Advanced Game Mode?"
     GameModeBtnMessage="It appears you're new to DX Randomizer.|n|nThis game mode is confusing and difficult for new DXRando players.  We suggest starting with Normal Randomizer or one of the Reduced Randomization modes instead.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
     AutosaveBtnTitle="Autosave?"
-    AutosaveBtnMessage="It appears you're new to DX Randomizer.|n|nWe suggest starting with the default option for Autosave Every Entry.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
+    AutosaveBtnMessage="It appears you're new to DX Randomizer.|n|nWe suggest starting with the default option for Autosaves Enabled.|nBy continuing, you waive your right to ragequit.|n|nAre you sure you want to continue with %s?"
     SplitsBtnTitle="Mismatched Splits!"
     SplitsBtnMessage="It appears that your DXRSplits.ini file is for different settings than this.|n|nThe PB is %s.|n|nAre you sure you want to continue?"
 }

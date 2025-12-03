@@ -19,7 +19,7 @@ enum EMusicMode
 
 var EMusicMode musicMode;
 var float musicCheckTimer;
-var config float musicChangeTimer;
+var float musicChangeTimer;
 
 var byte savedSection;
 var byte savedCombatSection;
@@ -28,13 +28,13 @@ var string OggTrackName;
 
 
 var #var(PlayerPawn) p;
-var config Music PrevSong;
-var config byte PrevMusicMode;
-var config byte PrevSongSection;
-var config byte PrevSavedSection;
-var config byte PrevSavedCombatSection;
-var config byte PrevSavedConvSection;
-var config string PrevOggTrackName;
+var Music PrevSong;
+var byte PrevMusicMode;
+var byte PrevSongSection;
+var byte PrevSavedSection;
+var byte PrevSavedCombatSection;
+var byte PrevSavedConvSection;
+var string PrevOggTrackName;
 
 var byte OutroSection;
 var byte DyingSection;
@@ -78,22 +78,13 @@ function RememberMusic()
 
     if(p==None || (!usingOgg && p.Song == None)) return;
 
-    // save us writing to the config file
-    if(
-        PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == savedSection
-        && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection && PrevOggTrackName == OggTrackName
-    ) {
-        return;
-    }
-
-    PrevSong = p.Song;
-    PrevMusicMode = musicMode;
-    PrevSongSection = p.SongSection;
-    PrevSavedSection = savedSection;
-    PrevSavedCombatSection = savedCombatSection;
-    PrevSavedConvSection = savedConvSection;
-    PrevOggTrackName = OggTrackName;
-    SaveConfig();
+    default.PrevSong = p.Song;
+    default.PrevMusicMode = musicMode;
+    default.PrevSongSection = p.SongSection;
+    default.PrevSavedSection = savedSection;
+    default.PrevSavedCombatSection = savedCombatSection;
+    default.PrevSavedConvSection = savedConvSection;
+    default.PrevOggTrackName = OggTrackName;
 }
 
 function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
@@ -107,7 +98,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     c = class'MenuChoice_ContinuousMusic';
     continuous_setting = c.default.value;
     rando_music_setting = class'MenuChoice_RandomMusic'.static.IsEnabled(dxr.flags);
-    l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$continuous_setting@rando_music_setting@PrevSong@PrevMusicMode@dxr.dxInfo.missionNumber);
+    l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$continuous_setting @ rando_music_setting @ default.PrevSong @ default.PrevMusicMode @ dxr.dxInfo.missionNumber);
 
     // copy to LevelSong in order to support changing songs, since Level.Song is const
     if(LevelSong != None)
@@ -146,10 +137,10 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
             _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
         }
         // really make sure we clean the config
-        PrevSong = NewSong;
-        PrevMusicMode = 0;
-        PrevSongSection = 0;
-        PrevSavedSection = 0;
+        default.PrevSong = NewSong;
+        default.PrevMusicMode = 0;
+        default.PrevSongSection = 0;
+        default.PrevSavedSection = 0;
         RememberMusic();
         SaveConfig();
         return;
@@ -192,7 +183,7 @@ function string GetCurrentSongName()
 
     #ifdef revision
     if (class'DXRActorsBase'.static.IsUsingOggMusic(player())) {
-        return PrevOggTrackName;
+        return default.PrevOggTrackName;
     }
     #endif
 
@@ -279,7 +270,7 @@ function GetLevelOggSong(bool setseed, DXOggMusicManager mm)
 
     music._GetOggLevelSong(newSong,AmbientIntroOggFile,AmbientOggFile,DeathOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile);
 
-    if (newSong==PrevOggTrackName) return; //Don't need to reset the music
+    if (newSong==default.PrevOggTrackName) return; //Don't need to reset the music
 
     mm.SetTracksManual(AmbientIntroOggFile,AmbientOggFile,CombatIntroOggFile,CombatOggFile,ConversationIntroOggFile,ConversationOggFile,OutroOggFile,DeathOggFile,OutroOggFile=="");
 
@@ -341,43 +332,43 @@ function PlayRandomSong(bool setseed)
     NewCdTrack = 255;
     NewTransition = MTRAN_Fade;
 
-    l("PlayRandomSong 2: "$NewSong@NewSection@NewCdTrack@NewTransition@PrevSong@PrevSongSection@PrevSavedSection@PrevMusicMode);
+    l("PlayRandomSong 2: "$NewSong@NewSection@NewCdTrack@NewTransition@ default.PrevSong@ default.PrevSongSection@ default.PrevSavedSection@ default.PrevMusicMode);
 
     // ensure musicMode defaults to ambient, to fix combat music re-entry
     musicMode = MUS_Ambient;
 
     // now time for fancy stuff, don't attempt a smmoth transition for the title screen, we need to init the config
-    if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2 && musicChangeTimer > 1.0) {
+    if(default.PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2 && default.musicChangeTimer > 1.0) {
         l("trying to do smooth stuff");
-        if(PrevSavedSection == 255)
-            PrevSavedSection = NewSection;
+        if(default.PrevSavedSection == 255)
+            default.PrevSavedSection = NewSection;
 
-        switch(PrevMusicMode) {
+        switch(default.PrevMusicMode) {
             case 0: musicMode = MUS_Ambient; break;
             case 1: musicMode = MUS_Combat; break;
             // 2=conversation, 3=outro, 4=dying
             default:
                 musicMode = MUS_Ambient;
-                PrevSongSection = PrevSavedSection;
+                default.PrevSongSection = default.PrevSavedSection;
                 break;
         }
-        savedSection = PrevSavedSection;
-        p.SongSection = PrevSongSection;
-        savedCombatSection = PrevSavedCombatSection;
-        savedConvSection = PrevSavedConvSection;
-        NewSection = PrevSongSection;
+        savedSection = default.PrevSavedSection;
+        p.SongSection = default.PrevSongSection;
+        savedCombatSection = default.PrevSavedCombatSection;
+        savedConvSection = default.PrevSavedConvSection;
+        NewSection = default.PrevSongSection;
         if(continuous_setting==c.default.simple) {
             // simpler version of continuous music
-            NewSection = PrevSongSection;
+            NewSection = default.PrevSongSection;
             NewTransition = MTRAN_FastFade;// default is MTRAN_Fade, quicker fade here when it's the same song
-        } else if(musicMode == PrevMusicMode) { //if(setting==c.default.advanced) {
+        } else if(musicMode == default.PrevMusicMode) { //if(setting==c.default.advanced) {
             // this is where we've determined we can just leave the current song playing
             // MTRAN_None is basically the same as return here, except the Song variable gets set instead of being None, seems like less of a hack to me
             NewTransition = MTRAN_None;
         } else {
             NewTransition = MTRAN_FastFade;
         }
-    } else if(PrevMusicMode == 1 && dxr.dxInfo.missionNumber > -2) {// 1 is combat
+    } else if(default.PrevMusicMode == 1 && dxr.dxInfo.missionNumber > -2) {// 1 is combat
         NewTransition = MTRAN_SlowFade;
         l("MTRAN_SlowFade");
     } else {
@@ -388,7 +379,7 @@ function PlayRandomSong(bool setseed)
 
     // we need an extra second for the song to init before we can change to combat music
     musicCheckTimer = -1;
-    musicChangeTimer = 0;
+    default.musicChangeTimer = 0;
 
     _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 
@@ -457,7 +448,7 @@ simulated event Tick(float deltaTime)
     }
 
     musicCheckTimer += deltaTime;
-    musicChangeTimer += deltaTime;
+    default.musicChangeTimer += deltaTime;
 
     if(NoSections)
         return;
@@ -493,7 +484,7 @@ simulated event Tick(float deltaTime)
 
             if (InCombat())
             {
-                musicChangeTimer = 0.0;
+                default.musicChangeTimer = 0.0;
 
                 if (musicMode != MUS_Combat)
                     EnterCombat();
@@ -501,7 +492,7 @@ simulated event Tick(float deltaTime)
             else if (musicMode != MUS_Ambient)
             {
                 // wait until we've been out of combat for 5 seconds before switching music
-                if (musicChangeTimer >= 5.0)
+                if (default.musicChangeTimer >= 5.0)
                     EnterAmbient();
             }
         }
@@ -584,7 +575,7 @@ function EnterAmbient()
     else
         _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
 
-    musicChangeTimer = 0.0;
+    default.musicChangeTimer = 0.0;
 }
 
 function bool InCombat()

@@ -310,6 +310,8 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         moresettings.aug_loc_rando = oldmoresettings.aug_loc_rando;
         moresettings.splits_overlay = oldmoresettings.splits_overlay;
         clothes_looting = old_clothes_looting;
+        moresettings.entrance_rando = oldmoresettings.entrance_rando; //If you picked entrance rando, you probably want to keep doing it
+        moresettings.stalkers = oldmoresettings.stalkers;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
@@ -376,30 +378,38 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 {
     local Inventory i, next;
     local Weapon weaps[64];
-    local int numWeaps, slot;
+    local int numWeaps, forceKeep, slot;
     local DXRLoadouts loadout;
-    local class<Inventory> startingItem;
 
     loadout = DXRLoadouts(class'DXRLoadouts'.static.Find());
-    if (loadout!=None){
-        startingItem = loadout.get_starting_item();
-    }
 
     for( i = p.Inventory; i != None; i = next ) {
         next = i.Inventory;
         if( Weapon(i) == None ) continue;
-        if (i.Class==startingItem) continue; //Don't take away your loadout starting item
-        if (i.Class==class'#var(package).WeaponRubberBaton') continue; //Don't take away the rubber baton, that's just rude
+
+        if (loadout!=None && loadout.is_starting_equipment(i)) {
+            //Don't take away your loadout starting items (don't count rubber baton here)
+            forceKeep++;
+            continue;
+        }
+
+        //Don't take away the rubber baton, that's just rude.  Also it's not really a weapon.
+        if (i.Class==class'#var(package).WeaponRubberBaton') continue;
+
         weaps[numWeaps++] = Weapon(i);
     }
 
-    // don't take the player's only weapon
-    if( numWeaps <= 1 ) return;
+    //Does the player have enough weapons to be able to remove any?
+    if (( forceKeep >  0 && numWeaps <= 0 ) || //If the player has starting weapons, you can lose all your non-starting weapons
+        ( forceKeep <= 0 && numWeaps <= 1 )) { //When the player has no starting weapons, don't take away their last weapon
+        return;
+    }
+
 
     SetSeed( "RemoveRandomWeapon " $ numWeaps );
 
     slot = rng(numWeaps);
-    info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps);
+    info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps$" forceKeep was "$forceKeep);
 
     if (class'DXRActorsBase'.static.IsGrenade(weaps[slot].Class) || #var(prefix)WeaponShuriken(weaps[slot])!=None){
         //Grenades and throwing knives should *also* get rid of their ammo

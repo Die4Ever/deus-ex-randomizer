@@ -805,11 +805,13 @@ function bool HasBased(Actor a) {
 function bool DestroyActor( Actor d )
 {
     // If this item is in an inventory chain, unlink it.
-    local Decoration downer;
-
-    if( d.IsA('Inventory') && d.Owner != None && d.Owner.IsA('Pawn') )
+    if( d.IsA('Inventory') && d.Owner != None )
     {
-        Pawn(d.Owner).DeleteInventory( Inventory(d) );
+        if (Pawn(d.Owner)!=None) {
+            Pawn(d.Owner).DeleteInventory( Inventory(d) );
+        } else if (#var(DeusExPrefix)Carcass(d.Owner)!=None){
+            #var(DeusExPrefix)Carcass(d.Owner).DeleteInventory( Inventory(d) );
+        }
     }
     return d.Destroy();
 }
@@ -1645,6 +1647,7 @@ function AddDelayEvent(Name tag, Name event, float time)
     d = Spawn(class'Dispatcher',, tag);
     d.OutEvents[0] = event;
     d.OutDelays[0] = time;
+    d.SetCollision(false,false,false);
 }
 
 function AddDelay(Actor trigger, float time)
@@ -2128,6 +2131,54 @@ function Actor SpawnInFrontOnFloor(Actor who, class<Actor> what, float distance,
     return Spawn(what,,, loc, spawnedRot);
 }
 
+function CreateInterpolationPoints(Name PathTag, vector loc, optional rotator rotate)
+{
+    local InterpolationPoint p;
+    local int i;
+
+    foreach AllActors(class'InterpolationPoint', p, PathTag)
+        return;// don't do anything if PathTag already exists
+
+    for(i=0; i<10 ; i++) {
+        p = Spawn(class'InterpolationPoint',, PathTag, loc, rotate );
+        p.Position = i;
+        p.RateModifier = 2;
+        loc.Z += 20*i;
+
+        if( i > 6 ) p.bEndOfPath = true;
+    }
+
+    foreach AllActors(class'InterpolationPoint', p, PathTag)
+        p.BeginPlay();// find the Prev and Next
+
+    info("CreateInterpolationPoints "$PathTag$" spawned points");
+}
+
+function CreateCameraInterpolationPoints(Name oldtag, Name newtag, vector offset)
+{
+    local InterpolationPoint p, pnew;
+    local vector loc;
+    local rotator rot;
+
+    foreach AllActors(class'InterpolationPoint', p, newtag)
+        return;// don't do anything if newtag already exists
+
+    foreach AllActors(class'InterpolationPoint', p, oldtag) {
+        loc = (10+p.Position) * 0.1 * offset;
+        loc += p.Location;
+        rot = Rotator(p.Location - loc);
+        pnew = Spawn(class'InterpolationPoint',, newtag, loc, rot);
+        pnew.bEndOfPath = p.bEndOfPath;
+        pnew.bSkipNextPath = p.bSkipNextPath;
+        pnew.Position = p.Position;
+        pnew.RateModifier = p.RateModifier;
+    }
+
+    foreach AllActors(class'InterpolationPoint', pnew, newtag)
+        pnew.BeginPlay();// find the Prev and Next
+
+    info("CreateCameraInterpolationPoints "$oldtag@newtag$" spawned camera points");
+}
 
 //This makes life easier and more consistent when starting infolinks from code.
 //Don't use either of the functions below directly!

@@ -1099,7 +1099,7 @@ function AnyEntryMapFixes()
 
         prevMapsDone = dxr.flagbase.GetBool('Heliosborn') && //Finished Vandenberg, mission 12
             dxr.flagbase.GetBool('schematic_downloaded'); //Finished Ocean Lab, mission 14,
-        prevMapsDone = prevMapsDone || !#defined(injections) || dxr.flags.settings.goals<=0;
+        prevMapsDone = prevMapsDone || !#defined(injections) || dxr.flags.settings.goals<=0 || dxr.flags.moresettings.entrance_rando <= 0; // only do this check for entrance rando, otherwise it's just confusing
         if(prevMapsDone && !dxr.flagbase.GetBool('MS_HowardStrongUnhidden')) {
             foreach AllActors(class'#var(prefix)HowardStrong', hs) {
                 hs.EnterWorld();

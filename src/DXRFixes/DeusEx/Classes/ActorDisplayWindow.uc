@@ -811,7 +811,7 @@ function DrawWindow(GC gc)
                     str = str $ "|c34d8eb";
                     str2 = class'#var(injectsprefix)InformationDevices'.static.GetTextTag(#var(prefix)InformationDevices(trackActor));
                     str = str $ "TextTag=" $ str2 $ CR();
-                    str = str $ "Human=" $ class'DXRDatacubes'.static.GetHumanTextTagName(str2,#var(prefix)InformationDevices(trackActor).TextPackage) $ CR();
+                    str = str $ "Human=" $ class'#var(injectsprefix)InformationDevices'.static.GetHumanNameFromID(#var(prefix)InformationDevices(trackActor)) $ CR();
                 }
             }
             //#endregion

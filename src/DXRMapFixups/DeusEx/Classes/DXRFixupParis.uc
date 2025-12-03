@@ -32,6 +32,7 @@ function PreFirstEntryMapFixes()
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)ControlPanel cp;
     local #var(DeusExPrefix)Decoration dec;
+    local #var(injectsprefix)Button1 button;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -183,6 +184,12 @@ function PreFirstEntryMapFixes()
             ft.bTriggerOnceOnly = false;
             ft.FlagName = 'ChateauInCellar';
         }
+
+        //Add a button to the top of the dumbwaiter shaft in case you get stuck on top... (Krickraken...)
+        button = #var(injectsprefix)Button1(Spawnm(class'#var(injectsprefix)Button1',,,vect(740,919.75,500),rot(0,16384,0)));
+        button.Event = 'dumbwaiter';
+        button.FamiliarName = "Krickraken's Escape Button";
+        button.UnfamiliarName = button.FamiliarName;
 
         //speed up the secret door...
         foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {

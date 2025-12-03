@@ -2207,10 +2207,6 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
             return "Brooklyn Bridge Station Bathroom Code";
         case "DeusExText.03_Newspaper03":
             return "Seasonal Flooding Minimal";
-        case "DeusExText.747Diagram":
-            return "747 Diagram";
-        case "DeusExText.MilleniumMagazine":
-            return "Millenium Magazine";
         case "RevisionText.03_Datacube01":
             return "Server Room Door Code";
         case "RevisionText.03_Datacube10":  //For leaving a good soda in Gunther's office
@@ -2269,8 +2265,6 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
             return "UNATCO Logins";
         case "DeusExText.05_Datacube10":
             return "Prospectus: Series P Agents";
-        case "DeusExText.WaltonSimons":
-            return "Walton Simons";
         case "RevisionText.05_Datacube01":
             return "Medical Wing Door Code";
         case "RevisionText.05_Datacube02":
@@ -2364,8 +2358,6 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
             return "Gray Death Cases Misdiagnosed";
         case "DeusExText.06_Newspaper04":
             return "Canal Road Tunnel Collapse";
-        case "DeusExText.GrayDisection":
-            return "Gray Dissection";
         case "RevisionText.06_Book01":  //Note that this is a *different* 06_Book01 from above
             return "Van Problems";
         case "RevisionText.06_Book02":
@@ -2605,8 +2597,6 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
             return "Hiding in the Reactor Lab";
         case "DeusExText.15_Datacube21":
             return "Page Security Login";
-        case "DeusExText.Area51Sector4":
-            return "Area 51 Sector 4 Map";
         case "RevisionText.15_Datacube01":
             return "Note to Rose";
 
