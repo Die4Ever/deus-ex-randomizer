@@ -134,6 +134,7 @@ static function int CreateAutosaveEnum(DXRMenuBase slf, DXRFlags f)
     local int in_autosave_enum;
 
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
+    if(autosave == None) return 0;
     in_autosave_enum = slf.NewMenuItem("Save Behavior", "Saves the game in case you die!");
     slf.EnumOption("Autosaves Enabled", autosave.EveryEntry, f.autosave, autosave.GetAutoSaveHelpText(autosave.EveryEntry));
     //slf.EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave, autosave.GetAutoSaveHelpText(autosave.Hardcore));
@@ -350,7 +351,7 @@ function HandleNewGameButton()
         nextScreenNum=RMB_NewGame;
         class'BingoHintMsgBox'.static.Create(root, ImpossibleBtnTitle,ImpossibleBtnMessage,0,False,Self);
     }
-    else if(dxr.rando_beaten == 0 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosaves Enabled" && GetEnumValue(autosave_enum)!="Extra Safe (1+GB per playthrough)") {
+    else if(dxr.rando_beaten == 0 && autosave_enum>0 && GetEnumValue(autosave_enum)!="Autosaves Enabled") {
         nextScreenNum=RMB_NewGame;
         s = Sprintf(AutosaveBtnMessage, GetEnumValue(autosave_enum));
         class'BingoHintMsgBox'.static.Create(root, AutosaveBtnTitle, s, 0, False, self);
