@@ -4036,7 +4036,7 @@ defaultproperties
     bingo_options(393)=(event="M02QuestionedGreen",desc="Play the Detective",max=1,missions=#bit(2))
     bingo_options(394)=(event="M04GreenAdvice_Played",desc="I'm in trouble",max=1,missions=#bit(4))
 #ifdef injections || revision
-    bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=#bit(1,2,3,4,5,6,8,10,11))
+    bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=#bit(1,2,3,4,6,8,10,11))
 #endif
     bingo_options(396)=(event="Disloyal_DestroyDeco",desc="Disloyal",max=4,missions=#bit(5),do_not_scale=true)
 
