@@ -4031,7 +4031,7 @@ defaultproperties
     bingo_options(391)=(event="MerchantPurchaseBind_DXRNPCs1",desc="Make %s purchases from The Merchant",desc_singular="Make a purchase from The Merchant",max=3,missions=24412)
     bingo_options(392)=(event="MerchantPurchaseBind_lemerchant",desc="Make a purchase from Le Merchant",max=1,missions=1024)
     bingo_options(393)=(event="M02QuestionedGreen",desc="Play the Detective",max=1,missions=4)
-    bingo_options(394)=(event="M04GreenAdvice_Played",desc="I'm in trouble",max=1,missions=8)
+    bingo_options(394)=(event="M04GreenAdvice_Played",desc="I'm in trouble",max=1,missions=16)
 #ifdef injections || revision
     bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=3454)
 #endif
