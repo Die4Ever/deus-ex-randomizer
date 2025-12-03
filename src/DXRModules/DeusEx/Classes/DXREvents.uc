@@ -3585,6 +3585,9 @@ function ExtendedTests()
 
     Super.ExtendedTests();
 
+    testint(#0b(110000100010), 3106, "0b preproc works for InCaseOfEmergency");
+    testint(#bit(1,5,10,11), 3106, "bit preproc works for InCaseOfEmergency");
+
     //Make sure all bingo goals have help text
     for (i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event!=""){
@@ -4007,7 +4010,7 @@ defaultproperties
 #endif
     bingo_options(368)=(event="UNATCOMJ12LabGreaselCages",desc="Become the greasel",max=4,missions=32,do_not_scale=true)
     bingo_options(369)=(event="BrokenMirror",desc="Accumulate bad luck",max=4,missions=2388)
-    bingo_options(370)=(event="InCaseOfEmergency",desc="In case of emergency, break glass",max=1,missions=#0b(110000100010))
+    bingo_options(370)=(event="InCaseOfEmergency",desc="In case of emergency, break glass",max=1,missions=#bit(1,5,10,11))
     bingo_options(371)=(event="LootNewClothing",desc="Loot %s pieces of clothing",desc_singular="Loot a piece of clothing",max=50)
     bingo_options(372)=(event="PoolTableStripeBallSunk",desc="Sink 5 striped pool balls",desc_singular="Sink 1 striped pool ball",max=5,missions=33116,do_not_scale=true)
     bingo_options(373)=(event="PoolTableSolidBallSunk",desc="Sink 5 solid pool balls",desc_singular="Sink 1 solid pool ball",max=5,missions=33116,do_not_scale=true)
