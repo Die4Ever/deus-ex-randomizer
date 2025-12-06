@@ -52,6 +52,7 @@
 - Fixed stalker setting not carrying over across New Game+
 - Improved performance by reducing amount of config writing
 - Open Aug Tree, put auto augs at the end of the list
+- WaltonWare starts after Vandenberg Command give the keypad code for the Vandenberg Command backup power
 - Added bingo goals:
   - Question Joe Greene in mission 2
   - Ask Joe Greene for help after the apartment is raided in mission 4
