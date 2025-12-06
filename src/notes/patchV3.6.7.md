@@ -51,6 +51,7 @@
 - Howard Strong will now always be in Silo unless you have entrance rando enabled and have not yet completed the previous goals.
 - Fixed stalker setting not carrying over across New Game+
 - Improved performance by reducing amount of config writing
+- Open Aug Tree, put auto augs at the end of the list
 - Added bingo goals:
   - Question Joe Greene in mission 2
   - Ask Joe Greene for help after the apartment is raided in mission 4

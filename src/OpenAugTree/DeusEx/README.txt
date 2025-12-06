@@ -107,3 +107,7 @@ Check it out at: https://discord.gg/jCFJ3A6
 ++++++
 -Improved centering logic to be more efficient, by properly rooting the aug label's parent.
 -Added a current level display, useful for synthetic heart use cases.
+
+2.2
+++++++
+-Modified aug list generation so subvariants can modify BuildAugList in OATMenuAugsSelector. This was requested by DX rando, and seems like a decent idea.
