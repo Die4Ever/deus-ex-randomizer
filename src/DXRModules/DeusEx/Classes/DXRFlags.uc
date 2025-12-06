@@ -668,7 +668,15 @@ function SetDifficulty(int new_difficulty)
     }
     else if(IsSpeedrunMode()) {
         if(gamemode==SpeedrunTraining) {
+            // Speedrun Training shows possible goal locations, and does not use realtime menus
             settings.goals = 101;
+            if(loadout==0 && #bool(injections || revision || vmd)) {
+                // force speed enhancement loadout if selected All Items Allowed
+                loadout = 16;
+            }
+        } else {
+            // realtime menus, not for training mode
+            settings.menus_pause = 0;
         }
         // same doors rules as Normal difficulty
         settings.doorsdestructible = 100;
@@ -693,8 +701,6 @@ function SetDifficulty(int new_difficulty)
         settings.equipment += 1;
         // speedrunners, please install augs
         moresettings.empty_medbots *= 1.5;
-        // realtime menus
-        settings.menus_pause = 0;
         // splits overlay
         moresettings.splits_overlay = 1;
         // disable NG+ by default
