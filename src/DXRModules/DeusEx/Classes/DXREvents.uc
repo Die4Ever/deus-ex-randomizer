@@ -530,6 +530,19 @@ function SetWatchFlags() {
         WatchFlag('BoughtClinicPlan');
         WatchFlag('MeetClinicOlderBum_Played');
         WatchFlag('MeetWindowBum_Played');
+
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-825,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(745,-245,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(795,-245,-256),40,40);
+        } else {
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-825,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-765,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(360,-245,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(410,-245,-256),40,40);
+        }
+
         break;
     case "02_NYC_SMUG":
         WatchFlag('MeetSmuggler_Played');
@@ -1163,6 +1176,17 @@ function SetWatchFlags() {
         break;
     case "08_NYC_FREECLINIC":
         WatchFlag('GreenKnowsAboutDowd');
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-825,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(745,-245,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(795,-245,-256),40,40);
+        } else {
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-825,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-765,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(520,-360,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(520,-310,-256),40,40);
+        }
         break;
     //#endregion
 
@@ -4039,6 +4063,7 @@ defaultproperties
     bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=#bit(1,2,4,6,10,11))
 #endif
     bingo_options(396)=(event="Disloyal_DestroyDeco",desc="Disloyal",max=4,missions=#bit(5),do_not_scale=true)
+    bingo_options(397)=(event="TakeABreather",desc="A breath of fresh air",max=1,missions=#bit(2,8))
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion

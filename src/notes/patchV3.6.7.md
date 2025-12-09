@@ -60,4 +60,5 @@
   - Ask Joe Greene for help after the apartment is raided in mission 4
   - Withdraw money from ATMs.
   - Destroy the UNATCO flags in mission 5 UNATCO HQ
+  - Sit on a bench in the Free Clinic atrium
 </details>
