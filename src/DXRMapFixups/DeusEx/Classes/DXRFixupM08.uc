@@ -603,12 +603,14 @@ function PreFirstEntryMapFixes()
         case "08_NYC_FREECLINIC":
             SetAllLampsState(true, true, false); // the free clinic has one desk lamp, at a desk no one is using
 
-            //The keypad to surgery is backwards in GOTY.  Revert to non-GOTY rotation...
-            //Of course, the door is broken open so it's not exactly necessary
-            foreach AllActors(class'#var(prefix)Keypad2',kp){
-                if (kp.Event=='InSurgery'){
-                    kp.SetRotation(rotm(0,-49176,0,GetRotationOffset(kp.Class)));
-                    break;
+            if (VanillaMaps){
+                //The keypad to surgery is backwards in GOTY.  Revert to non-GOTY rotation...
+                //Of course, the door is broken open so it's not exactly necessary
+                foreach AllActors(class'#var(prefix)Keypad2',kp){
+                    if (kp.Event=='InSurgery'){
+                        kp.SetRotation(rotm(0,-49176,0,GetRotationOffset(kp.Class)));
+                        break;
+                    }
                 }
             }
             break;
