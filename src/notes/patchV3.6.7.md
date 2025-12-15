@@ -61,4 +61,5 @@
   - Withdraw money from ATMs.
   - Destroy the UNATCO flags in mission 5 UNATCO HQ
   - Sit on a bench in the Free Clinic atrium
+- Moved 1 item location for items taken away in mission 5, when placed in the surgery ward.
 </details>

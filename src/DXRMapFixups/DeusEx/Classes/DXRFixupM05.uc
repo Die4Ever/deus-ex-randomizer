@@ -583,7 +583,6 @@ function BalanceJailbreak()
             itemLocations[num++] = vectm(1585,-770,-203);// bed near ambrosia
 
 
-            itemLocations[num++] = vectm(1270,-522,-211);// near ambrosia
             itemLocations[num++] = vectm(1275,-710,-211);// table with two microscopes and datacube (left)
             itemLocations[num++] = vectm(1275,-805,-211);// table with two microscopes and datacube (right)
             itemLocations[num++] = vectm(1910,-375,-211);// desk with microscope and datacube
@@ -609,6 +608,7 @@ function BalanceJailbreak()
             itemLocations[num++] = vectm(1500,-900,-251);
             itemLocations[num++] = vectm(1725,-900,-251);
             itemLocations[num++] = vectm(1425,-900,-251);
+            itemLocations[num++] = vectm(1350,-900,-251);
 
             foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
                 if(dlt.datalinkTag != 'dl_equipment') continue;
@@ -621,6 +621,14 @@ function BalanceJailbreak()
         while(nextItem != None)
             for(i=0; i<num; i++)
                 nextItem = MoveNextItemTo(nextItem, itemLocations[i], 'player_inv');
+
+        #ifdef locdebug
+        if("#var(locdebug)"~="JailItemLocations") {
+            for (i=0;i<num;i++){
+                DebugMarkKeyPosition(itemLocations[i], "Jail Loc "$i);
+            }
+        }
+        #endif
     } else {
         //If Prison Pocket is enabled, there is no equipment to be found.  Remove the infolink.
         //If we implement tiers of Prison Pocket (ie. keep only one item), this will need to be revisited.
@@ -672,6 +680,14 @@ function BalanceJailbreak()
         if (ArrayCount(freebieLocs) != ArrayCount(freebieLocNames)){
             err("DXRFixupM05 Freebie Weapon - freebieLocs and freebieLocNames sizes don't match!" @ ArrayCount(freebieLocs) @ ArrayCount(freebieLocNames));
         }
+
+        #ifdef locdebug
+        if("#var(locdebug)"~="JailFreebies") {
+            for (i=0;i<ArrayCount(freebieLocs);i++){
+                DebugMarkKeyPosition(freebieLocs[i], freebieLocNames[i]);
+            }
+        }
+        #endif
 
         i=rng(ArrayCount(freebieLocs));
         nextItem = Spawn(iclass,,, freebieLocs[i]);
