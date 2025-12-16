@@ -55,6 +55,7 @@
 - WaltonWare starts after Vandenberg Command give the keypad code for the Vandenberg Command backup power
 - Speedrun splits no longer complain about mismatch flags when the PB is blank
 - Speedrun Training mode no longer uses realtime menus, and ensures the Speed Enhancement loadout
+- Enabled reflections and anisotropic filtering for D3D9 and OpenGL by default
 - Added bingo goals:
   - Question Joe Greene in mission 2
   - Ask Joe Greene for help after the apartment is raided in mission 4
