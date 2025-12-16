@@ -218,6 +218,16 @@ function AddRevisionSongs()
     oggChoices[i++] = MakeOggSongChoice("PS2","Endgame 4","","Endgame4.ogg","","","","","","",true);
 }
 
+function int GetChoiceListLength()
+{
+    return ArrayCount(choices);
+}
+
+function GetChoiceAtIndex(int idx, out string song)
+{
+    song = choices[idx].song;
+}
+
 function GetDXSongs(out string songs[100])
 {
     local int i;

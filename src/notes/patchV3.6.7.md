@@ -63,4 +63,7 @@
   - Destroy the UNATCO flags in mission 5 UNATCO HQ
   - Sit on a bench in the Free Clinic atrium
 - Moved 1 item location for items taken away in mission 5, when placed in the surgery ward.
+- Improvements to the "Play Music" menu in the legend cheat
+  - It actually plays the song you asked for, instead of a randomized one
+  - It now shows all the music choices available, including from Unreal and Unreal Tournament
 </details>

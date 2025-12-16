@@ -1442,6 +1442,22 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
     }
 }
 
+//Similar to PlayMusic, but bypasses the randomization
+function PlayExactMusic(String musicToPlay, optional int sectionToPlay)
+{
+    local Music LoadedMusic;
+
+    if (musicToPlay != "")
+    {
+        LoadedMusic = Music(DynamicLoadObject(musicToPlay $ "." $ musicToPlay, class'Music'));
+
+        if (LoadedMusic != None)
+        {
+            _ClientSetMusic(LoadedMusic, sectionToPlay, 255, MTRAN_FastFade);
+        }
+    }
+}
+
 //=========== END OF MUSIC STUFF
 
 function UpdateRotation(float DeltaTime, float maxPitch)
