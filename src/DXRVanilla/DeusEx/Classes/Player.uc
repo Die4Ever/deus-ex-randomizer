@@ -1803,7 +1803,7 @@ exec function OpenControllerAugWindow()
     Root = DeusExRootWindow(RootWindow);
     if (Root != None)
     {
-        TarWindow = OATMenuAugsSelector(Root.InvokeMenuScreen(Class'OATMenuAugsSelector', false));
+        TarWindow = OATMenuAugsSelector(Root.InvokeMenuScreen(Class'OATMenuAugsSelectorDXRando', false));
         if (TarWindow != None)
         {
             if (LastBrowsedAugPage > -1)

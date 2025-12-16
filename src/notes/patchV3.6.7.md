@@ -51,9 +51,16 @@
 - Howard Strong will now always be in Silo unless you have entrance rando enabled and have not yet completed the previous goals.
 - Fixed stalker setting not carrying over across New Game+
 - Improved performance by reducing amount of config writing
+- Open Aug Tree, put auto augs at the end of the list
+- WaltonWare starts after Vandenberg Command give the keypad code for the Vandenberg Command backup power
+- Speedrun splits no longer complain about mismatch flags when the PB is blank
+- Speedrun Training mode no longer uses realtime menus, and ensures the Speed Enhancement loadout
+- Enabled reflections and anisotropic filtering for D3D9 and OpenGL by default
 - Added bingo goals:
   - Question Joe Greene in mission 2
   - Ask Joe Greene for help after the apartment is raided in mission 4
   - Withdraw money from ATMs.
   - Destroy the UNATCO flags in mission 5 UNATCO HQ
+  - Sit on a bench in the Free Clinic atrium
+- Moved 1 item location for items taken away in mission 5, when placed in the surgery ward.
 </details>

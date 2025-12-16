@@ -243,6 +243,7 @@ static function bool CheckFlags(DXRFlags f)
     if(f.IsWaltonWare()) return true; // we don't read from or write to the splits file in WaltonWare anyways
     last = class'HUDSpeedrunSplits'.default.last_flagshash;
     if(last == 0) return true;
+    if(GetPB() == "00:00.0") return true; // if blank PB, then this doesn't matter
     return f.FlagsHash() == last;
 }
 

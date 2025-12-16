@@ -1451,6 +1451,8 @@ static simulated function string GetBingoHelpTextGeneric(string event,int missio
             return "Question Joe Greene about the NSF or their secret power generator.";
         case "CivilForfeiture":
             return "Claim the contents of enough ATM accounts as the proceeds of crime.  The accounts must be fully emptied.";
+        case "TakeABreather":
+            return "Step into the atrium of the Free Clinic in Hell's Kitchen and sit down on one of the benches.  Take a moment to breathe and clear your mind.";
     }
 
     //Return nothing so the generic function can handle it

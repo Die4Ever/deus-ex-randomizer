@@ -530,6 +530,19 @@ function SetWatchFlags() {
         WatchFlag('BoughtClinicPlan');
         WatchFlag('MeetClinicOlderBum_Played');
         WatchFlag('MeetWindowBum_Played');
+
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-825,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(745,-245,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(795,-245,-256),40,40);
+        } else {
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-825,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-765,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(360,-245,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(410,-245,-256),40,40);
+        }
+
         break;
     case "02_NYC_SMUG":
         WatchFlag('MeetSmuggler_Played');
@@ -1163,6 +1176,17 @@ function SetWatchFlags() {
         break;
     case "08_NYC_FREECLINIC":
         WatchFlag('GreenKnowsAboutDowd');
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-775,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(630,-825,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(745,-245,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(795,-245,-256),40,40);
+        } else {
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-825,-256),40,40); //Bench near entrance
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(250,-765,-256),40,40);
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(520,-360,-256),40,40);  //Bench at far end
+            bt = class'BingoTrigger'.static.CrouchCreate(self,'TakeABreather',vectm(520,-310,-256),40,40);
+        }
         break;
     //#endregion
 
@@ -2284,7 +2308,7 @@ simulated function int tweakBingoMissions(string event, int missions)
             if (RevisionMaps){
                 //Revision has a LOT more phones
                 //Extras in M01, M12, M14
-                return 22398;
+                return #bit(1,2,3,4,5,6,8,9,10,12,14);
             }
             break;
         case "SpinShipsWheel":
@@ -2292,7 +2316,7 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Extras in
                 // - NYC Bar (Missions 2,4,8)
                 // - Vandenberg Gas (Mission 12)
-                return 4950;
+                return #bit(1,2,4,6,8,9,12);
             }
             break;
         case "ChangeClothes":
@@ -2304,12 +2328,12 @@ simulated function int tweakBingoMissions(string event, int missions)
                 // - Everett, Underground (M11)
                 // - Sub Base (M14)
                 // - A51 Bunker, Entrance (M15)
-                return 53108;
+                return #bit(2,4,5,6,8,9,10,11,14,15);
             } else { //Vanilla maps
                 if (dxr.flags.clothes_looting!=0){
                     //Clothes Looting adds clothes racks to missions:
                     // 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 15
-                    return 40830;
+                    return #bit(1,2,3,4,5,6,8,9,10,11,12,15);
                 }
             }
             break;
@@ -2321,19 +2345,19 @@ simulated function int tweakBingoMissions(string event, int missions)
             if (RevisionMaps){
                 //Extras in
                 // - Paris Streets, Chateau (M10)
-                return 1088;
+                return #bit(6,10);
             }
             break;
         case "PinballWizard":
             if (RevisionMaps){
                 //Revision has an extra in the break room of ship lower decks
-                return 37758;
+                return #bit(1,2,3,4,5,6,8,9,12,15);
             }
             break;
         case "NYEagleStatue_peeped":
             if (RevisionMaps){
                 //The statue isn't present in M04 in Revision
-                return 12;
+                return #bit(2,3);
             }
             break;
         case "FightSkeletons_DestroyDeco":
@@ -2345,7 +2369,7 @@ simulated function int tweakBingoMissions(string event, int missions)
 
                 //NONE in:
                 // - Cathedral (M11)
-                return 17748;
+                return #bit(2,4,6,8,10,14);
             }
             break;
         case "TrophyHunter_DestroyDeco":
@@ -2359,19 +2383,19 @@ simulated function int tweakBingoMissions(string event, int missions)
                 // - NYC Bar (M08)
                 // - Paris Streets (M10)
                 // - Vandenberg Command (M12)
-                return 5502;
+                return #bit(1,2,3,4,5,6,8,10,12);
             }
             break;
         case "SlippingHazard_DestroyDeco":
             if (RevisionMaps){
                 //Extra in Paris Club (M10)
-                return 1918;
+                return #bit(1,2,3,4,5,6,8,9,10);
             }
             break;
         case "un_PrezMeadPic_peepedtex":
             if (RevisionMaps){
                 //Extras in NYC Bar (M02/04/08)
-                return 318;
+                return #bit(1,2,3,4,5,8);
             }
             break;
         //case "GS_MedKit_01_peepedtex":
@@ -2379,45 +2403,45 @@ simulated function int tweakBingoMissions(string event, int missions)
         //        //Extras in (but they're movers so it doesn't work great):
         //        // - Paris Underground (M11)
         //        // - Vandenberg Sub Base (M14)
-        //        return 22528;
+        //        return #bit(11,12,14);
         //    }
         //    break;
         case "Cat_peeptime":
             if (RevisionMaps){
                 //Extras in NYC Streets (M02)
                 //None in Battery Park (M04)
-                return 7244;
+                return #bit(2,3,6,10,11,12);
             }
             break;
         case "WatchDogs_peeptime":
             if (RevisionMaps){
                 //Extras in Cathedral (M11)
-                return 23652;
+                return #bit(2,5,6,10,11,12,14);
             }
             break;
         case "BuoyOhBuoy":
             if (RevisionMaps){
                 //Extras around Cathedral (M11)
-                return 2142;
+                return #bit(1,2,3,4,6,11);
             }
             break;
         case "PlayerPeeped":
             //Vanilla has mirrors in every mission except 15
             if (RevisionMaps){
                 //Revision has a mirror in the bathroom of Area 51 ENTRANCE (and mirrored floors)
-                return 57214;
+                return #bit(1,2,3,4,5,6,8,9,10,11,12,14,15);
             }
             break;
         case "ForkliftCertified":
             if (RevisionMaps){
                 //Extra in Vandenberg Tunnels (M12)
-                return 36866;
+                return #bit(1,12,15);
             }
             break;
         case "CherryPickerSeat":
             if (RevisionMaps){
                 //Extra cherry picker in M03 Hangar
-                return 49160;
+                return #bit(3,14,15);
             }
             break;
         case "ASingleFlask":
@@ -2425,19 +2449,19 @@ simulated function int tweakBingoMissions(string event, int missions)
                 //Extras in:
                 // - Free Clinic (M08)
                 // - Area 51 Page (M15)
-                return 57214;
+                return #bit(1,2,3,4,5,6,8,9,10,11,12,14,15);
             }
             break;
         case "FlushToilet":
             if (RevisionMaps){
                 //Extras in Area 51 Entrance (M15)
-                return 40830;
+                return #bit(1,2,3,4,5,6,8,9,10,11,12,15);
             }
             break;
         case "InCaseOfEmergency":
             if (RevisionMaps){
                 //Missing the ones in Paris Metro and Paris Underground (so just missing M11)
-                return 1058;
+                return #bit(1,5,10);
             }
     }
 
@@ -4039,6 +4063,7 @@ defaultproperties
     bingo_options(395)=(event="CivilForfeiture",desc="Perform %s Civil Forfeitures",desc_singular="Perform a Civil Forfeiture",max=10,missions=#bit(1,2,4,6,10,11))
 #endif
     bingo_options(396)=(event="Disloyal_DestroyDeco",desc="Disloyal",max=4,missions=#bit(5),do_not_scale=true)
+    bingo_options(397)=(event="TakeABreather",desc="A breath of fresh air",max=1,missions=#bit(2,8))
 
     //Current bingo_options array size is 400.  Keep this at the bottom of the list as a reminder!
 //#endregion

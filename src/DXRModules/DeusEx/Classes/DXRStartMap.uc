@@ -933,8 +933,13 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
                 AddNoteFromConv(player, bEmptyNotes, 'MeetTonyMares', 0); // Gary savage is thought to be in the control room
             }
         case 121: // fallthrough
+            // DL_no_carla doesn't exist in mission 14, so we can't use AddNoteFromConv
+            if(bEmptyNotes) {
+                player.AddNote("Backup power for the bot security system can be activated with two control panels at the west end of the base.  The code is 5868.");
+            }
             MarkConvPlayed("DL_no_carla", bFemale);
             break;
+
         case 153:
             MarkConvPlayed("DL_Helios_Door1", bFemale);         // Not yet.  No... I will not allow you to enter Sector 4 until you have received my instructions.
             MarkConvPlayed("DL_Helios_Intro", bFemale);         // I will now explain why you have been allowed to reach Sector 3.

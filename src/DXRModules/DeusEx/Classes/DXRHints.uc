@@ -463,8 +463,10 @@ simulated function InitHints()
             AddHint("Anna Navarre's location is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
 
-        if (dxr.flags.settings.prison_pocket > 0) {
-            AddHint("You'll be able to keep your items when going to prison.", "JC has hidden pockets!");
+        if (dxr.flags.settings.prison_pocket > 1) { //Augmented
+            AddHint("You'll be able to keep all your items when going to prison.", "JC has hidden pockets!");
+        } else if (dxr.flags.settings.prison_pocket == 1) { //Unaugmented
+            AddHint("You'll be able to keep the first single square item in", "your belt when going to prison.  JC has a hidden pocket!");
         }
         break;
 
