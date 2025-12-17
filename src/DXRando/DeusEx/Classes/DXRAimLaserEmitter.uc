@@ -18,6 +18,8 @@ function CalcTrace(float deltaTime)
         if ((target.DrawType == DT_None) || target.bHidden)
         {
             // do nothing - keep on tracing
+        } else if (DeathMarker(target)!=None) {
+            //Skip death markers
         }
         else if ((target == Level) || target.IsA('Mover'))
         {

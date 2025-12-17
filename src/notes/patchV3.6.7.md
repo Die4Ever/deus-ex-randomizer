@@ -71,4 +71,5 @@
 - Aim laser improvements (for camera modes other than first person)
   - Aim laser no longer shows up during conversations or cutscenes
   - Aim laser now becomes a light blue colour when holding a grenade and you are close enough to the wall to plant it
+  - Aim laser ignores death markers and continues through them
 </details>
