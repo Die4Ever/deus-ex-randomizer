@@ -2563,6 +2563,15 @@ ignores SeePlayer, HearNoise, Bump, TakeDamage;
     }
 }
 
+function UpdateInHand()
+{
+    Super.UpdateInHand();
+
+    //Also update the state of the aim laser.  This is good for states
+    //where we don't highlight the centre object (like interpolating or conversations)
+    HighlightCenterObjectLaser();
+}
+
 defaultproperties
 {
     SkillPointsTotal=6575

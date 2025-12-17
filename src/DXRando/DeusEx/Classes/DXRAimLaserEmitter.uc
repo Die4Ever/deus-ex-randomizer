@@ -111,6 +111,10 @@ static function bool AimLaserShouldBeOn(PlayerPawn p)
         return False;
     }
 
+    if (player.InConversation()){
+        return False;
+    }
+
     if ((player.IsInState('Dying')) || (player.IsInState('Paralyzed')) || (player.IsInState('Interpolating'))){
         return False;
     }

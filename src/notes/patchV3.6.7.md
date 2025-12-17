@@ -68,4 +68,5 @@
 - Improvements to the "Play Music" menu in the legend cheat
   - It actually plays the song you asked for, instead of a randomized one
   - It now shows all the music choices available, including from Unreal and Unreal Tournament
+- Aim laser (for camera modes other than first person) no longer shows up during conversations or cutscenes
 </details>
