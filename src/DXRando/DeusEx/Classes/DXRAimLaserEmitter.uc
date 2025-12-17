@@ -68,7 +68,12 @@ function SetLaserColour()
             proxy.Skin = Texture'Extension.SolidGreen';
         }
     } else {
-        proxy.Skin = Texture'Extension.Solid'; //Solid White
+        if (class'DXRActorsBase'.static.IsGrenade(player.InHand.class) && DeusExWeapon(player.InHand).NearWallCheck()){
+            //Unique colour if you're holding a grenade and you're close enough to the wall to plant the grenade
+            proxy.Skin = Texture'Extension.VisionBlue';
+        } else {
+            proxy.Skin = Texture'Extension.Solid'; //Solid White
+        }
     }
 }
 
