@@ -173,6 +173,11 @@ exec function StartNewGame(String startMap)
     if( dxr.flags.newgameplus_loops == 0 ) {
         SaveSkillPoints();
         ResetPlayer();
+    } else {
+        //Don't fully reset (That should have happened at the start of the intro)
+        //Just unkill anyone that died in the intro
+        if (DeusExRootWindow(rootWindow) != None)
+            DeusExRootWindow(rootWindow).UnkillCharacters();
     }
     DeleteSaveGameFiles();
 

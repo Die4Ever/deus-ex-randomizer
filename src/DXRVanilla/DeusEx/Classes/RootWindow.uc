@@ -218,6 +218,44 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
     return bKeyHandled;
 }
 
+//Clear any Dead or Unconscious flags
+//A duplicate of ResetFlags, except only applying to _Dead and _Unconscious
+function UnkillCharacters()
+{
+    local name flagName;
+    local name lastFlagName;
+    local EFlagType flagType;
+    local EFlagType lastFlagType;
+    local String flagStringName;
+    local int flagIterator;
+
+    if (DeusExPlayer(parentPawn) != None)
+    {
+        flagIterator = DeusExPlayer(parentPawn).flagBase.CreateIterator();
+
+        do
+        {
+            DeusExPlayer(parentPawn).flagBase.GetNextFlag( flagIterator, flagName, flagType );
+
+            // Delete the previous flag (very progressive, Ion Storm)
+            if (lastFlagName != '')
+            {
+                flagStringName = "" $ lastFlagName;
+
+                // If "_Dead" or "_Unconscious", delete the flag
+                if (InStr(flagStringName, "_Dead") != -1  || InStr(flagStringName, "_Unconscious") != -1){
+                    DeusExPlayer(parentPawn).flagBase.DeleteFlag(lastFlagName, lastFlagType);
+                    log("Unkilled "$flagStringName);
+                }
+            }
+
+            lastFlagName = flagName;
+
+        } until(lastFlagName == '')
+
+        DeusExPlayer(parentPawn).flagBase.DestroyIterator(flagIterator);
+    }
+}
 
 defaultproperties
 {
