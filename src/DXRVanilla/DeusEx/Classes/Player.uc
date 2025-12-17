@@ -81,7 +81,12 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
         CameraLocation = reCam.Location;
         return;
     } else {
-        Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+        if (bSpyDroneActive && aDrone!=None && bBehindView && !InConversation()){
+            //Bypass being forced into first person and stay in third person
+            CalcBehindView(CameraLocation, CameraRotation, 150);
+        } else {
+            Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+        }
         if (bDoomMode && (!InConversation())){
             CameraRotation.Pitch=0;
             ViewRotation.Pitch=0;
