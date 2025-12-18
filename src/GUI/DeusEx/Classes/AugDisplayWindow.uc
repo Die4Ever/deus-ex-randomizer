@@ -650,7 +650,9 @@ function SuperDrawTargetAugmentation(GC gc)
                 w = width;
                 h = height;
 
-                laser = #var(PlayerPawn)(Player).aimLaser;
+                #ifndef gmdx||vmd
+                    laser = #var(PlayerPawn)(Player).aimLaser;
+                #endif
                 if(laser!=None && laser.spot[0]!=None){
                     //Put the crosshairs at the end of the aim laser, OBVIOUSLY
                     ConvertVectorToCoordinates(laser.spot[0].Location,x,y);
