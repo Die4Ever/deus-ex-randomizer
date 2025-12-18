@@ -5,6 +5,7 @@
 - The sewer exit leaving the inside of the Mission 9 dry dock now has a keypad instead of a button in modes outside of Entrance Randomizer.  The keypad uses Jenny's number, so the code can be found in the dockyards.
 - Important characters that get killed in the intro cinematic on New Game Plus will no longer stay dead into the New Game Plus loop.  This prevents potential softlocks from occuring if characters required for progression (Like Manderley) aren't present.
 - The location of Jock is now randomized when leaving the graveyard at the end of mission 9.
+- Third-Person and Fixed Camera camera modes can now see the targeting reticules at the end of the aiming laser to know how accurate shots will be.
 
 ## Minor Changes
 
