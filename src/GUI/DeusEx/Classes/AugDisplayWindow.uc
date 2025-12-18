@@ -650,7 +650,7 @@ function SuperDrawTargetAugmentation(GC gc)
                 w = width;
                 h = height;
 
-                #ifndef gmdx||vmd
+                #ifdef hascustomplayer
                     laser = #var(PlayerPawn)(Player).aimLaser;
                 #endif
                 if(laser!=None && laser.spot[0]!=None){

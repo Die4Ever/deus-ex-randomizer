@@ -4,7 +4,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Rando/",
         "preproc_definitions": {
             "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "flags": 1, "prefix":"", "vanillamaps":1,
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx", "injectsprefix": "", "allfeatures": false
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx", "injectsprefix": "", "allfeatures": false, "hascustomplayer":1
         },
         "mods_paths": [ "../../Lay-D-Denton-Project", "./" ],
         "packages": [ "DeusEx" ],
@@ -67,7 +67,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision/",
         "preproc_definitions": {
             "revision":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
-            "DeusExPrefix":"DeusEx", "PlayerPawn":"RevRandoPlayer", "flagvarprefix": "", "package": "RevRandomizer", "injectsprefix": "DXR", "allfeatures": false
+            "DeusExPrefix":"DeusEx", "PlayerPawn":"RevRandoPlayer", "flagvarprefix": "", "package": "RevRandomizer", "injectsprefix": "DXR", "allfeatures": false, "hascustomplayer":1
         },
         "mods_paths": [ "./" ],
         "packages": [ "RevRandomizer" ],
