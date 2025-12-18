@@ -778,6 +778,7 @@ state PlayerWalking
 
                 // freeze the player
                 Velocity = vect(0,0,0);
+                Acceleration = vect(0,0,0);
             }
             return;
         }

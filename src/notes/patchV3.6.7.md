@@ -67,12 +67,13 @@
   - Sit on a bench in the Free Clinic atrium
 - Moved 1 item location for items taken away in mission 5, when placed in the surgery ward.
 - Improvements to the "Play Music" menu in the legend cheat
-  - It actually plays the song you asked for, instead of a randomized one
-  - It now shows all the music choices available, including from Unreal and Unreal Tournament
+  - It actually plays the song you asked for, instead of a randomized one.
+  - It now shows all the music choices available, including from Unreal and Unreal Tournament.
 - Aim laser improvements (for camera modes other than first person)
-  - Aim laser no longer shows up during conversations or cutscenes
-  - Aim laser now becomes a light blue colour when holding a grenade and you are close enough to the wall to plant it
-  - Aim laser ignores death markers and continues through them
-- When in third-person camera mode, using spy drone will no longer force the camera back into your head
-- Removed purple line from the back of the UNATCO helmet
+  - Aim laser no longer shows up during conversations or cutscenes.
+  - Aim laser now becomes a light blue colour when holding a grenade and you are close enough to the wall to plant it.
+  - Aim laser ignores death markers and continues through them.
+- When in third-person camera mode, using spy drone will no longer force the camera back into your head.
+- Removed purple line from the back of the UNATCO helmet.
+- Activating Spy Drone while moving no longer keeps some momentum.
 </details>
