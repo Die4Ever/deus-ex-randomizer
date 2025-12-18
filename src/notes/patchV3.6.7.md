@@ -73,4 +73,5 @@
   - Aim laser now becomes a light blue colour when holding a grenade and you are close enough to the wall to plant it
   - Aim laser ignores death markers and continues through them
 - When in third-person camera mode, using spy drone will no longer force the camera back into your head
+- Removed purple line from the back of the UNATCO helmet
 </details>
