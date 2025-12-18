@@ -94,6 +94,7 @@ function BeginPlay()
         num_zones++;
     }
 
+    /* TODO: fix this properly?
     foreach RadiusActors(class'BobbyPossessionEffect', effect, range+16) {
         if(effect == self) continue;
         for(i=0; i<num_lits; i++) {
@@ -101,7 +102,7 @@ function BeginPlay()
             if(data.a != lits[i].a) continue;
             lits[i] = data;
         }
-    }
+    }*/
 
     // zones need to copy without range
     foreach AllActors(class'BobbyPossessionEffect', effect) {

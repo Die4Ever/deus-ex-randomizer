@@ -77,4 +77,5 @@
 - Removed purple line from the back of the UNATCO helmet.
 - Activating Spy Drone while moving no longer keeps some momentum.
 - Stalkers no longer count as innocents for the purposes of bingo.
+- Temporary fix for Bobby crashes.
 </details>
