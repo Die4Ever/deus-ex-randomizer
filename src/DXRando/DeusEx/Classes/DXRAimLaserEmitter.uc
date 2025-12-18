@@ -18,6 +18,8 @@ function CalcTrace(float deltaTime)
         if ((target.DrawType == DT_None) || target.bHidden)
         {
             // do nothing - keep on tracing
+        } else if (DeathMarker(target)!=None) {
+            //Skip death markers
         }
         else if ((target == Level) || target.IsA('Mover'))
         {
@@ -68,7 +70,12 @@ function SetLaserColour()
             proxy.Skin = Texture'Extension.SolidGreen';
         }
     } else {
-        proxy.Skin = Texture'Extension.Solid'; //Solid White
+        if (player.InHand!=None && class'DXRActorsBase'.static.IsGrenade(player.InHand.class) && DeusExWeapon(player.InHand).NearWallCheck()){
+            //Unique colour if you're holding a grenade and you're close enough to the wall to plant the grenade
+            proxy.Skin = Texture'Extension.VisionBlue';
+        } else {
+            proxy.Skin = Texture'Extension.Solid'; //Solid White
+        }
     }
 }
 
@@ -108,6 +115,10 @@ static function bool AimLaserShouldBeOn(PlayerPawn p)
     }
 
     if (player.bSpyDroneActive){
+        return False;
+    }
+
+    if (player.InConversation()){
         return False;
     }
 

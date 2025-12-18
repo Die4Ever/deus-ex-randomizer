@@ -601,7 +601,7 @@ function DrawTargetAugmentation(GC gc)
 
 }
 
-// DXRando mostly copied from Super, but we want to hide aiming reticles when !bCrosshairVisible, and don't show the dumb "No Image" black rectangle on low levels of AugTarget
+// DXRando mostly copied from Super, but don't show the dumb "No Image" black rectangle on low levels of AugTarget
 function SuperDrawTargetAugmentation(GC gc)
 {
     local String str;
@@ -616,6 +616,7 @@ function SuperDrawTargetAugmentation(GC gc)
     local DeusExPlayer own;
     local vector AimLocation;
     local int AimBodyPart;
+    local LaserEmitter laser;
 
     crossColor.R = 255; crossColor.G = 255; crossColor.B = 255;
 
@@ -641,16 +642,24 @@ function SuperDrawTargetAugmentation(GC gc)
         }
 
         weapon = DeusExWeapon(Player.Weapon);
-        // DXRando: added && Player.bCrosshairVisible
-        if (weapon != None && Player.bCrosshairVisible && !weapon.bHandToHand && !bUseOldTarget)
+        if (weapon != None && !weapon.bHandToHand && !bUseOldTarget)
         {
             // if the target is out of range, don't draw the reticle
             if (weapon.MaxRange >= VSize(target.Location - Player.Location))
             {
                 w = width;
                 h = height;
-                x = int(w * 0.5)-1;
-                y = int(h * 0.5)-1;
+
+                #ifdef hascustomplayer
+                    laser = #var(PlayerPawn)(Player).aimLaser;
+                #endif
+                if(laser!=None && laser.spot[0]!=None){
+                    //Put the crosshairs at the end of the aim laser, OBVIOUSLY
+                    ConvertVectorToCoordinates(laser.spot[0].Location,x,y);
+                } else {
+                    x = int(w * 0.5)-1;
+                    y = int(h * 0.5)-1;
+                }
 
                 // scale based on screen resolution - default is 640x480
                 mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);

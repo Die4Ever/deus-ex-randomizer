@@ -30,6 +30,13 @@ function int InitGoals(int mission, string map)
 
         loc=AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1103.000000,728.000000,48.000000), rot(0,0,-32768));
         AddActorLocation(loc, 7, vect(1127.001465,763.400208,69.272461), rot(0,-32760,0));
+
+        AddGoal("09_NYC_GRAVEYARD", "Jock", GOAL_TYPE1, 'BlackHelicopter1', PHYS_None);
+        AddGoalLocation("09_NYC_GRAVEYARD", "North-East Corner", GOAL_TYPE1 | VANILLA_GOAL, vect(838.94,-269.77,95.33), rot(0, 22640, 0));
+        AddGoalLocation("09_NYC_GRAVEYARD", "Parking Lot", GOAL_TYPE1, vect(747,1560,170), rot(0, 25912, 0)); //North-West corner
+        AddGoalLocation("09_NYC_GRAVEYARD", "South-West Corner", GOAL_TYPE1, vect(-845,840,205), rot(0, 57020, 0));
+        //AddGoalLocation("09_NYC_GRAVEYARD", "South-East Corner", GOAL_TYPE1, vect(-930,-870,205), rot(0, 73984, 0));  // too easy
+
         return 91;
 
     case "09_NYC_SHIPBELOW":
@@ -177,6 +184,12 @@ function int InitGoalsRev(int mission, string map)
 
         loc=AddGoalLocation("09_NYC_GRAVEYARD", "Chapel", NORMAL_GOAL, vect(-565,995,70), rot(0,16384,-32768));
         AddActorLocation(loc, 7, vect(-607,930,100), rot(0,0,0));
+
+        AddGoal("09_NYC_GRAVEYARD", "Jock", GOAL_TYPE1, 'JockHelicopter0', PHYS_None);
+        AddGoalLocation("09_NYC_GRAVEYARD", "Helipad", GOAL_TYPE1 | VANILLA_GOAL, vect(1275,-1935,140), rot(0, -32640, 0));
+        AddGoalLocation("09_NYC_GRAVEYARD", "Parking Lot", GOAL_TYPE1, vect(747,1560,170), rot(0, 25912, 0));
+        AddGoalLocation("09_NYC_GRAVEYARD", "Behind Chapel", GOAL_TYPE1, vect(-830,800,225), rot(0, 55676, 0));
+
         return 91;
 
     case "09_NYC_SHIPBELOW":
@@ -310,6 +323,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)DataLinkTrigger dlt;
+    local #var(prefix)InterpolateTrigger it;
     local DeusExMover dxm;
     local name barrelName;
     local bool RevisionMaps;
@@ -331,6 +345,13 @@ function PreFirstEntryMapFixes()
         SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ", "EMGeneratorHintCube");
 
         ConsoleCommand("set #var(prefix)AmbientSoundTriggered bstatic false");// HACK?
+
+        if (RevisionMaps){
+            foreach AllActors(class'#var(prefix)InterpolateTrigger',it,'FlyInTrigger'){
+                it.Destroy();
+            }
+        }
+
     } else if (dxr.localURL=="09_NYC_SHIPBELOW"){
         if(RevisionMaps){
             foreach AllActors(class'DeusExMover',dxm){

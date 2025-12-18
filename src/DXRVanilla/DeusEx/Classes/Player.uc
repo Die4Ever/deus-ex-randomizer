@@ -81,7 +81,12 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
         CameraLocation = reCam.Location;
         return;
     } else {
-        Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+        if (bSpyDroneActive && aDrone!=None && bBehindView && !InConversation()){
+            //Bypass being forced into first person and stay in third person
+            CalcBehindView(CameraLocation, CameraRotation, 150);
+        } else {
+            Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
+        }
         if (bDoomMode && (!InConversation())){
             CameraRotation.Pitch=0;
             ViewRotation.Pitch=0;
@@ -173,6 +178,11 @@ exec function StartNewGame(String startMap)
     if( dxr.flags.newgameplus_loops == 0 ) {
         SaveSkillPoints();
         ResetPlayer();
+    } else {
+        //Don't fully reset (That should have happened at the start of the intro)
+        //Just unkill anyone that died in the intro
+        if (DeusExRootWindow(rootWindow) != None)
+            DeusExRootWindow(rootWindow).UnkillCharacters();
     }
     DeleteSaveGameFiles();
 
@@ -1442,6 +1452,22 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
     }
 }
 
+//Similar to PlayMusic, but bypasses the randomization
+function PlayExactMusic(String musicToPlay, optional int sectionToPlay)
+{
+    local Music LoadedMusic;
+
+    if (musicToPlay != "")
+    {
+        LoadedMusic = Music(DynamicLoadObject(musicToPlay $ "." $ musicToPlay, class'Music'));
+
+        if (LoadedMusic != None)
+        {
+            _ClientSetMusic(LoadedMusic, sectionToPlay, 255, MTRAN_FastFade);
+        }
+    }
+}
+
 //=========== END OF MUSIC STUFF
 
 function UpdateRotation(float DeltaTime, float maxPitch)
@@ -2540,6 +2566,15 @@ ignores SeePlayer, HearNoise, Bump, TakeDamage;
         UpdateTimePlayed(deltaTime); //The timer for the game save
 
     }
+}
+
+function UpdateInHand()
+{
+    Super.UpdateInHand();
+
+    //Also update the state of the aim laser.  This is good for states
+    //where we don't highlight the centre object (like interpolating or conversations)
+    HighlightCenterObjectLaser();
 }
 
 defaultproperties
