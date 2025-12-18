@@ -776,9 +776,9 @@ state PlayerWalking
                 // opportunity for client to translate movement to server
                 MoveDrone( DeltaTime, loc );
 
-                // freeze the player
-                Velocity = vect(0,0,0);
-                Acceleration = vect(0,0,0);
+                // freeze the player in X and Y
+                Velocity = Velocity * vect(0,0,1);
+                Acceleration = Acceleration * vect(0,0,1);
             }
             return;
         }
