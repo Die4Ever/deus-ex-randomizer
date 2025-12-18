@@ -782,6 +782,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             if (
                 !isInitialPlayerEnemy(victim) && //Must have not been an enemy initially
                 IsHuman(victim.class) && //There's no such thing as an innocent Cat
+                !ClassIsChildOf(victim.class, class'DXRStalker') && //The stalkers DEFINITELY aren't innocent
                 ( dxr.localURL!="04_NYC_NSFHQ" || dxr.flagbase.GetBool('NSFSignalSent')==False ) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
             ) {
                 _MarkBingo("AlliesKilled");

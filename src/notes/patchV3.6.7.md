@@ -76,4 +76,5 @@
 - When in third-person camera mode, using spy drone will no longer force the camera back into your head.
 - Removed purple line from the back of the UNATCO helmet.
 - Activating Spy Drone while moving no longer keeps some momentum.
+- Stalkers no longer count as innocents for the purposes of bingo.
 </details>
