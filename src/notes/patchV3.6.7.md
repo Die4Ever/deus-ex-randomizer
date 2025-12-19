@@ -53,7 +53,7 @@
 - Howard Strong will now always be in the silo map unless you have Entrance Rando enabled and have not yet completed the previous goals.
 - Fixed Stalker setting not carrying over across New Game Plus.
 - Improved performance by reducing amount of config writing.
-- Open Aug Tree puts auto augs at the end of the list
+- Open Aug Tree now puts auto augs at the end of the list
 - WaltonWare starts after Vandenberg Command give the keypad code for the Vandenberg Command backup power
 - Speedrun splits no longer complain about mismatch flags when the PB is blank
 - Speedrun Training mode no longer uses realtime menus, and ensures the Speed Enhancement loadout.
