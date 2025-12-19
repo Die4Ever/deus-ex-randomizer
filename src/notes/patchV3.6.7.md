@@ -25,7 +25,7 @@
 - Removed collision from teleporters so they don't block pawns or items.
 - The Bingo Viewer now has an option to always keep the window on top (under the Display menu).
 - Looking at Weeping Anna will no longer interrupt her death animation.
-- For GMDX we now set Hardcore mode when starting a game with combat difficulty 4 or higher (Realistic and Impossible).
+- For GMDX we now set Hardcore mode when starting a game with combat difficulty 4 or higher (such as when selecting Impossible/Realistic difficulty).
 - Fixed randomizing some of GMDX's invisible objects.
 - Fixed a bug with conversations referencing the player's kill counts in Mission 1 and Mission 2.
 - Added a timed race to Vandenberg Tunnels (in both the forward and backward directions): See how fast you can go!
@@ -34,7 +34,6 @@
 - Possible fix for some timed races (e.g. Catacombs or Reverse Catacombs) where the Mastodon messages were reporting the player losing over 9000% health.
 - Fixed installer failing with Documents path issues
 - The key for the cabinet in the Mission 2 Free Clinic is now adjusted more reliably and should now work properly in Vanilla? Madder!.
-- Two new bingo goals for interacting with Joe Greene in Mission 2 and Mission 4.
 - The description for the Energy Shield augmentation now mentions that it works against explosive damage as well.  This is vanilla behavior, so just makes the description more accurate to its functionality.
 - Fix the carcass in the collapsed Canal Road tunnel (under Canals) so that it doesn't lose the aug upgrade can when the biocell he is also holding gets removed by DXRReduceItems.
 - Killing Anna Navarre without using her killswitch will now fail the bingo goal to kill her with her killswitch.
