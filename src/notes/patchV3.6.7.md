@@ -37,7 +37,7 @@
 - The description for the Energy Shield augmentation now mentions that it works against explosive damage as well.  This is vanilla behavior, so just makes the description more accurate to its functionality.
 - Fix the carcass in the collapsed Canal Road tunnel (under Canals) so that it doesn't lose the aug upgrade can when the biocell he is also holding gets removed by DXRReduceItems.
 - Killing Anna Navarre without using her killswitch will now fail the bingo goal to kill her with her killswitch.
-- Jack-o'-lanterns no longer support any significant weight, collapsing if heavy things are on top of them (like trash bags).
+- Jack-o'-lanterns no longer support any significant weight, collapsing if heavy things are on top of them (similar to trash bags).
 - Added a copy of the UNATCO Closet Key to UNATCO HQ in Mission 5.
 - Skill points originally associated with finding Paul or your equipment in Mission 5 now get moved along with Paul and your equipment when Goals Rando is enabled.
 - Bingo goal for entering the gas station ceiling no longer requires going to the center of the ceiling (It will trigger as soon as you enter, regardless of which entrance is used).
