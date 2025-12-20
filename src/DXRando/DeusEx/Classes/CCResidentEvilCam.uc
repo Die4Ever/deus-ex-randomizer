@@ -17,7 +17,7 @@ function bool FindNewCameraPosition()
 {
     local DXRMachines dxrm;
     local Vector loc,loc2;
-    local Rotator rot;
+    local Rotator rot, rot2;
     local Actor hit, aimTarget;
     local Vector HitLocation, HitNormal;
     local bool success;
@@ -50,7 +50,10 @@ function bool FindNewCameraPosition()
 
     if (!success){
         //Try to fall back to a position at a point somewhere behind the player
-        loc2 = aimTarget.Location + Vector(aimTarget.Rotation) * (-16 * 10);
+        rot2 = aimTarget.Rotation;
+        rot2.Yaw = rot2.Yaw - 8000 + Rand(16000); //Add some slight skew, so the camera isn't always dead behind the player
+
+        loc2 = aimTarget.Location + Vector(rot2) * (-16 * 10) + vect(0,0,120);  //Make the camera also somewhat above
         hit = Trace(HitLocation, HitNormal, loc2, aimTarget.Location, True);
         if (hit!=None){
             loc2 = HitLocation;

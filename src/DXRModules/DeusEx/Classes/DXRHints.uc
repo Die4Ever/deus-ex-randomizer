@@ -8,7 +8,7 @@ struct GameHint {
     var string line1, line2;
     var bool deathOnly;
 };
-var GameHint hintList[100];
+var GameHint hintList[150];
 
 simulated function InitHints()
 {
@@ -720,7 +720,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
 simulated function int GetHint(bool isDeath, out string hint, out string detail, optional bool addSpace)
 {
-    local GameHint actList[100];
+    local GameHint actList[ArrayCount(hintList)];
     local int numActHints, i, hintNum;
     local string lastChar;
 
