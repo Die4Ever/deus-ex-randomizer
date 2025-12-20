@@ -77,4 +77,5 @@
 - Stalkers no longer count as innocents for the purposes of bingo.
 - Temporary fix for Bobby crashes.
 - Improved fallback positioning of Fixed Camera locations when there isn't a good wall location nearby.
+- The selected Camera Mode now persists through New Game Plus
 </details>
