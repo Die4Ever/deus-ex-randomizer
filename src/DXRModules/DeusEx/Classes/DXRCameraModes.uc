@@ -128,8 +128,32 @@ function SetFixedCamera()
     }
 }
 
+function CCResidentEvilCam FindRECam()
+{
+    local CCResidentEvilCam cam;
+
+    foreach AllActors(class'CCResidentEvilCam',cam){
+        if (cam.bDeleteMe) continue;
+
+        return cam;
+    }
+    return None;
+}
+
 function SpawnRECam()
 {
+    local CCResidentEvilCam cam;
+
+    if (reCam!=None) return;
+
+    cam = FindRECam();
+
+    if (cam!=None){
+        reCam = cam;
+        reCam.BindPlayer(player());
+        return;
+    }
+
     reCam=Spawn(class'CCResidentEvilCam',,,player().Location);
     reCam.BindPlayer(player());
 }
