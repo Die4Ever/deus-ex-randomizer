@@ -1364,6 +1364,14 @@ event PlayerInput( float DeltaTime )
     }
 }
 
+function UpdateInHand()
+{
+    Super.UpdateInHand();
+
+    //Also update the state of the aim laser.  This is good for states
+    //where we don't highlight the centre object (like interpolating or conversations)
+    HighlightCenterObjectLaser();
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
