@@ -18,4 +18,5 @@
 - Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 - Fixed a bug where characters would patrol to a point and then start wandering, instead of standing still.  In particular, this fixes an issue if you aren't standing near the jail cell window in Mission 5 when Anna shows up (if she's still alive), as previously she would wander away.
 - "Doom Mode" Crowd Control effect now works properly in combination with Fixed Cameras.  The player is unable to aim up or down, but the fixed camera itself is able to tilt still.
+- Add a button to open the door to the UNATCO HQ front door desk from the inside in Mission 1.  All other versions of UNATCO HQ (Missions 3, 4, 5) already have a button to open the door from the inside.
 </details>
