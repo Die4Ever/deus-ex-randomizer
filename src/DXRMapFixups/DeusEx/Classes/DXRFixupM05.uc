@@ -444,6 +444,51 @@ function PostFirstEntryMapFixes()
 }
 //#endregion
 
+//#region Any Entry
+function AnyEntryMapFixes()
+{
+    switch(dxr.localURL) {
+    case "05_NYC_UNATCOMJ12LAB":
+        FixSvenConvoLoop();
+        break;
+    }
+
+}
+//#endregion
+
+function FixSvenConvoLoop()
+{
+    local Conversation c;
+    local ConEvent ce, ceDone;
+    local ConEventEnd cee;
+
+    //If you buy everything from Sven, the mechanic in the MJ12 Lab,
+    //you end up in an infinite conversation loop, because they missed
+    //adding an End event and it flows back into one of the purchase options
+    c = GetConversation('SvenConvos');
+
+    ce = c.eventList;
+    while (ce!=None && ceDone==None){
+        if (ce.label=="Done"){
+            ceDone = ce;
+        }
+        ce = ce.nextEvent;
+    }
+
+    if (ceDone!=None){
+        if (ceDone.nextEvent!=None && ceDone.nextEvent.eventType!=ET_End){
+            //If the event after "Done" isn't an end, the conversation needs fixing.
+            cee = new(c) class'ConEventEnd';
+            cee.eventType=ET_End;
+            cee.conversation = c;
+
+            cee.nextEvent = ceDone.nextEvent;
+            ceDone.nextEvent = cee;
+        }
+    }
+
+}
+
 function Inventory FindPrisonPocketItem()
 {
     local #var(PlayerPawn) p;

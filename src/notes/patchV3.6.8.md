@@ -15,4 +15,5 @@
   - The camera will now shake when it normally would in first person (e.g. while the superfreighter is exploding in Mission 9)
   - The camera can now flip upside down, sideways, or roll from Crowd Control effects.  These effects are blocked while forced into fixed cameras from Crowd Control itself, but are functional if intentionally playing in Fixed Cameras mode.
 - Aim laser no longer shows up during conversations or cutscenes in Revision.
+- Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 </details>
