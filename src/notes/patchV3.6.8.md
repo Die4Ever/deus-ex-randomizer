@@ -17,4 +17,5 @@
 - Aim laser no longer shows up during conversations or cutscenes in Revision.
 - Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 - Fixed a bug where characters would patrol to a point and then start wandering, instead of standing still.  In particular, this fixes an issue if you aren't standing near the jail cell window in Mission 5 when Anna shows up (if she's still alive), as previously she would wander away.
+- "Doom Mode" Crowd Control effect now works properly in combination with Fixed Cameras.  The player is unable to aim up or down, but the fixed camera itself is able to tilt still.
 </details>
