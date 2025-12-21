@@ -10,5 +10,9 @@
 - Improvements to Fixed Camera mode:
   - The camera location will now persist through saves and loads.
   - The camera will now focus on the person speaking during conversations.
+  - The fixed camera will now respect the reduced FOV from drinking alcohol and adjust the view accordingly to keep the target on screen.
+  - The camera will now be roll back and forth while drunk
+  - The camera will now shake when it normally would in first person (e.g. while the superfreighter is exploding in Mission 9)
+  - The camera can now flip upside down, sideways, or roll from Crowd Control effects.  These effects are blocked while forced into fixed cameras from Crowd Control itself, but are functional if intentionally playing in Fixed Cameras mode.
 - Aim laser no longer shows up during conversations or cutscenes in Revision.
 </details>

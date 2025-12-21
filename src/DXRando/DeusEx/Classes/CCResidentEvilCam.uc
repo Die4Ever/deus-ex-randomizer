@@ -86,7 +86,6 @@ function Tick(float deltaTime)
 {
     local float ang;
     local Rotator rot;
-    local DeusExPlayer curplayer;
 
     Super(#var(prefix)HackableDevices).Tick(deltaTime);
 
@@ -121,11 +120,48 @@ function Tick(float deltaTime)
         FindNewCameraPosition();
     }
 
+    UpdateCameraRoll();
+
     // DEUS_EX AMSD For multiplayer
     ReplicatedRotation = DesiredRotation;
 
 
 }
+
+function UpdateCameraRoll()
+{
+    local Rotator rot, drugRot;
+    local float roll,drugRoll,Mult, maxRoll, levelTimeSin, drunkSkew;
+    local DataStorage datastorage;
+    local int ccRollAmount;
+
+    roll = 0;
+
+    //Sway from being drunk and/or on drugs
+    if (p.drugEffectTimer > 0) {
+        mult = FClamp(p.drugEffectTimer / 10.0, 0.0, 3.0);
+
+        maxRoll = 4000 * mult;
+        levelTimeSin = Sin(Level.TimeSeconds * 2); //0.5 second sine wave
+
+        drunkSkew = 5000 * FClamp(p.drugEffectTimer / 60.0, 0.0, 1.0);
+
+        drugRoll = (maxRoll * levelTimeSin) + drunkSkew;
+
+        roll += drugRoll;
+    }
+
+    //Roll from standard view rotation
+    //This includes things like shaking effects and Crowd Control
+    roll+=p.ViewRotation.Roll;
+
+
+    rot = Rotation;
+    rot.Roll = roll;
+    SetRotation(rot);
+    DesiredRotation.roll = roll;
+}
+
 
 function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
 {
@@ -173,7 +209,7 @@ function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
 
 function CheckTargetVisibility(DeusExPlayer player)
 {
-    local float yaw, pitch, dist;
+    local float yaw, pitch, dist, finalFOV;
     local Actor hit,aimTarget;
     local Vector HitLocation, HitNormal, aimLoc;
     local Rotator rot;
@@ -222,7 +258,9 @@ function CheckTargetVisibility(DeusExPlayer player)
         if (pitch > 32767)
             pitch -= 65536;
 
-        if (!((Abs(yaw) < cameraFOV) && (Abs(pitch) < cameraFOV)) || player.InConversation())
+        finalFOV = cameraFOV - player.drugEffectTimer;
+        finalFOV = FClamp(finalFOV,30,cameraFOV);
+        if (!((Abs(yaw) < finalFOV) && (Abs(pitch) < finalFOV)) || player.InConversation())
         {
             // rotate to face the player
             DesiredRotation = rot;
