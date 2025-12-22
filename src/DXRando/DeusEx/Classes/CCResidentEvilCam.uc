@@ -214,6 +214,7 @@ function CheckTargetVisibility(DeusExPlayer player)
     local Vector HitLocation, HitNormal, aimLoc;
     local Rotator rot;
     local bool hitTarget;
+    local Decoration d;
 
     if (player == None)
         return;
@@ -231,6 +232,19 @@ function CheckTargetVisibility(DeusExPlayer player)
         if (LevelInfo(hit)!=None || Mover(hit)!=None){
             hitTarget = False;
             break;
+        }
+
+        d=Decoration(hit);
+        if (d!=None && d != aimTarget && (d.DrawType==DT_Mesh || d.DrawType==DT_Brush)) {
+            //Only real decorations (things that have a 3d model)
+            //Also sometimes you talk to decorations (like how Helios is actually a button) - ignore those here
+            if (d.bPushable==False || (VSize(player.Velocity)<10)) {
+                //Non-pushable things are functionally equivalent to a wall or mover
+                //Pushable things block sight, but only if the player isn't moving,
+                //to avoid unnecessary camera changes
+                hitTarget = False;
+                break;
+            }
         }
 
         //Need to account for targets that have no collision, like communicator holograms
