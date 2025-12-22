@@ -666,6 +666,21 @@ function PreFirstEntryMapFixes()
             fan2.bHighlight=True;
         }
 
+        //Make the teleporter to leave the map a bit bigger, because it
+        //was possible to sneak past before
+        foreach AllActors(class'#var(prefix)Teleporter', t) {
+            if (t.url != "") {
+                t.SetCollisionSize(70, 100);
+                break;
+            }
+        }
+
+        //Prevent things from spawning in the electrical room
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(1300,3170,-1050), vectm(2550,2100,-2100), true);
+
+        //Prevent things from spawning outside the computer room
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(2338,2100,-9999), vectm(-44,1143,9999), true);
+
         Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
         Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
         Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
