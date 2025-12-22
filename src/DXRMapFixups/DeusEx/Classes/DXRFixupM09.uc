@@ -451,6 +451,12 @@ function PreFirstEntryMapFixes()
         #endif
         }
 
+        if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+            //Make Jock take off a bit faster during the exit cutscene
+            AdjustInterpolationPathRates('CopterPath',0,5,3.0);
+            AdjustInterpolationPathRates('CameraPath',0,5,3.5);
+        }
+
         if (!VanillaMaps){
             //Revision has a secret area underneath the chapel it added to the graveyard.
             //You need to pull a pipe in a broken piece of the wall to open a hatch in the floor.

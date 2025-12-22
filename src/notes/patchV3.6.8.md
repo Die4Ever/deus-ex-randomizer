@@ -23,4 +23,5 @@
 - Add a button to open the door to the UNATCO HQ front door desk from the inside in Mission 1.  All other versions of UNATCO HQ (Missions 3, 4, 5) already have a button to open the door from the inside.
 - Aug/Med/Repair Bots and Merchants will no longer spawn in the electrified room in the Vandenberg Command Center, or outside the door of that map in the inaccessible duplicate of the main hall.
 - The teleporter to leave the Vandenberg Command Center is now slightly larger to hopefully make it less possible to sneak past.
+- Jock now flies faster during the exit cutscenes from the graveyard in Mission 9 and from the gas station in Mission 12.
 </details>

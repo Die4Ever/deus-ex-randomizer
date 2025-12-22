@@ -729,6 +729,11 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                //Make the exit cutscene not take so absurdly long
+                AdjustInterpolationPathRates('UN_BlackHeli',0,99,2);
+                AdjustInterpolationPathRates('heli_camera',0,99,2);
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
             Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar

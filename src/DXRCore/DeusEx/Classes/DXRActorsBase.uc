@@ -2195,6 +2195,18 @@ function CreateCameraInterpolationPoints(Name oldtag, Name newtag, vector offset
     info("CreateCameraInterpolationPoints "$oldtag@newtag$" spawned camera points");
 }
 
+//Start and end positions ARE included in the rate adjustment
+function AdjustInterpolationPathRates(name pathTag, int startPos, int endPos, float mult)
+{
+    local InterpolationPoint p;
+
+    foreach AllActors(class'InterpolationPoint', p, pathTag) {
+        if (p.Position < startPos) continue;
+        if (p.Position > endPos) continue;
+        p.RateModifier = p.RateModifier * mult;
+    }
+}
+
 //This makes life easier and more consistent when starting infolinks from code.
 //Don't use either of the functions below directly!
 function bool DXRStartDataLinkTransmission( String DatalinkName )
