@@ -144,7 +144,7 @@ function SpawnRECam()
 {
     local CCResidentEvilCam cam;
 
-    if (reCam!=None) return;
+    if (reCam!=None && reCam.bDeleteMe == false) return;
 
     cam = FindRECam();
 
