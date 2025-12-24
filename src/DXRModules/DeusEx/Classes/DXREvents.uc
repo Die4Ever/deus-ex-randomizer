@@ -3068,6 +3068,8 @@ function string RemapBingoEvent(string eventname)
         case "PianoSong83Played":
         case "PianoSong84Played":
         case "PianoSong85Played":
+        case "PianoSong86Played":
+        case "PianoSong87Played":
             return "SeasonalPianoPlayed";
         case "MeetClinicOlderBum_Played":
         case "MeetWindowBum_Played":
@@ -3113,6 +3115,10 @@ function string RemapBingoEvent(string eventname)
             return "MeetDowd_VariousPlayed";
         case "EmergencyExit":
             return "EmergencyExit_peeped";
+        case "06_Datacube05":
+            //Maggie's Birthday - some tomfoolery in the ReadText logic gets us here
+            //Easier to just fix here for this special case
+            return "ReadText_06_Datacube05";
         default:
             return eventname;
     }

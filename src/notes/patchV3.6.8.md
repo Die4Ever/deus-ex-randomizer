@@ -24,4 +24,5 @@
 - Aug/Med/Repair Bots and Merchants will no longer spawn in the electrified room in the Vandenberg Command Center, or outside the door of that map in the inaccessible duplicate of the main hall.
 - The teleporter to leave the Vandenberg Command Center is now slightly larger to hopefully make it less possible to sneak past.
 - Jock now flies faster during the exit cutscenes from the graveyard in Mission 9 and from the gas station in Mission 12.
+- Bingo goal for learning Maggie's birthday is now properly marked when reading the relevant datacube.
 </details>
