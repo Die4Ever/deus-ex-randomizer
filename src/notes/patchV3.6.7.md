@@ -4,13 +4,13 @@
 - The sewer exit leaving the inside of the Mission 9 dry dock now has a keypad instead of a button in modes outside of Entrance Randomizer.  The keypad uses Jenny's number, so the code can be found in the dockyards.
 - Important characters that get killed in the intro cinematic on New Game Plus will no longer stay dead into the new loop.  This prevents potential softlocks from occuring if characters required for progression (like Manderley) aren't present.
 - The location of Jock is now randomized when leaving the graveyard at the end of Mission 9.
-- Third-Person and Fixed Camera camera modes now show the targeting reticules at the end of the aiming laser to know how accurate shots will be.
 
 ## Minor Changes
 
 <details>
 <summary>Click to expand Minor Changes</summary>
 
+- Third-Person and Fixed Camera camera modes now show the targeting reticules at the end of the aiming laser to know how accurate shots will be.
 - Bingo goals that require the use of drugs or alcohol will no longer be available when those items are banned (e.g. in the Straight Edge loadout).
 - Tweaked weapon placements for different FoVs and ultra-widescreen.
 - Alarm lights now count for the "Light Vandalism" bingo goal, if they are breakable.
