@@ -601,6 +601,10 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
 {
     local CCResidentEvilCam reCam;
 
+    if (bDoomMode){
+        CameraRotation.Pitch=0;
+        ViewRotation.Pitch=0;
+    }
     reCam = CCResidentEvilCam(ViewTarget);
 
     if (reCam!=None){
@@ -613,10 +617,6 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
             CalcBehindView(CameraLocation, CameraRotation, 150);
         } else {
             Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
-        }
-        if (bDoomMode){
-            CameraRotation.Pitch=0;
-            ViewRotation.Pitch=0;
         }
     }
 }
@@ -1364,6 +1364,14 @@ event PlayerInput( float DeltaTime )
     }
 }
 
+function UpdateInHand()
+{
+    Super.UpdateInHand();
+
+    //Also update the state of the aim laser.  This is good for states
+    //where we don't highlight the centre object (like interpolating or conversations)
+    HighlightCenterObjectLaser();
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////

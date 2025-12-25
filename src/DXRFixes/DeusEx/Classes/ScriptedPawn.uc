@@ -831,9 +831,31 @@ state Standing
         MoveAwayFrom(other);
     }
 
+    function bool ShouldActuallyStand()
+    {
+        local PatrolPoint pp,foundPP;
+        if(Orders=='Patrolling'){
+            if (OrderTag=='') return false; //No order tag, no patrol
+
+            foreach RadiusActors(class'PatrolPoint',pp,CollisionRadius * 2){
+                if (pp.Tag==OrderTag){
+                    foundPP = PatrolPoint(class'DXRActorsBase'.static.GetCloserActor(Location,foundPP,pp));
+                }
+            }
+
+            if (foundPP.NextPatrolPoint == None) {
+                return true;
+            }
+            return false;
+        }
+
+        //Any non-Patrolling orders are fine to stand
+        return true;
+    }
+
     function BeginState()
     {
-        if(Orders=='Patrolling') GotoState('Wandering'); // DXRando
+        if(!ShouldActuallyStand()) GotoState('Wandering'); // DXRando
         StandUp();
         SetEnemy(None, EnemyLastSeen, true);
         Disable('AnimEnd');

@@ -666,6 +666,21 @@ function PreFirstEntryMapFixes()
             fan2.bHighlight=True;
         }
 
+        //Make the teleporter to leave the map a bit bigger, because it
+        //was possible to sneak past before
+        foreach AllActors(class'#var(prefix)Teleporter', t) {
+            if (t.url != "") {
+                t.SetCollisionSize(70, 100);
+                break;
+            }
+        }
+
+        //Prevent things from spawning in the electrical room
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(1300,3170,-1050), vectm(2550,2100,-2100), true);
+
+        //Prevent things from spawning outside the computer room
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(2338,2100,-9999), vectm(-44,1143,9999), true);
+
         Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
         Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
         Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
@@ -714,6 +729,11 @@ function PreFirstEntryMapFixes()
             hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
             hoverHint.SetBaseActor(jock);
 
+            if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
+                //Make the exit cutscene not take so absurdly long
+                AdjustInterpolationPathRates('UN_BlackHeli',0,99,2);
+                AdjustInterpolationPathRates('heli_camera',0,99,2);
+            }
 
             Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
             Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar

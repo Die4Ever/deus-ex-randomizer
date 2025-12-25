@@ -1513,6 +1513,21 @@ function vector GetCloserPosition(vector target, vector current, optional float 
     return farthest;
 }
 
+//Returns the closer of 2 actors to a specified location.
+//If both are equally far, return the first actor.
+static function Actor GetCloserActor(vector loc, Actor a1, Actor a2)
+{
+    if (a1==None && a2==None) return None;
+    if (a1==None) return a2;
+    if (a2==None) return a1;
+
+    if (VSize(a1.Location - loc) < VSize(a2.Location - loc)){
+        return a2;
+    }
+    return a1;
+
+}
+
 function rotator GetRandomYaw(optional bool unseeded)
 {
     local rotator r;
@@ -2178,6 +2193,18 @@ function CreateCameraInterpolationPoints(Name oldtag, Name newtag, vector offset
         pnew.BeginPlay();// find the Prev and Next
 
     info("CreateCameraInterpolationPoints "$oldtag@newtag$" spawned camera points");
+}
+
+//Start and end positions ARE included in the rate adjustment
+function AdjustInterpolationPathRates(name pathTag, int startPos, int endPos, float mult)
+{
+    local InterpolationPoint p;
+
+    foreach AllActors(class'InterpolationPoint', p, pathTag) {
+        if (p.Position < startPos) continue;
+        if (p.Position > endPos) continue;
+        p.RateModifier = p.RateModifier * mult;
+    }
 }
 
 //This makes life easier and more consistent when starting infolinks from code.

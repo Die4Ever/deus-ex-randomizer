@@ -189,6 +189,11 @@ function PreFirstEntryMapFixes()
                 else compublic.BulletinTag = '01_BulletinMenu';
                 break;
             }
+
+            //Add a switch behind the front desk door, in case Crowd Control swaps you in there
+            //There's a button to open the door in every other version of UNATCO HQ except this one
+            AddSwitch(vect(-2115,494.5,610), rot(0, -16385, 0), 'cannotopen');
+
             class'FakeMirrorInfo'.static.Create(self,vectm(2430,1872,-80),vectm(2450,2060,-16)); //Mirror window at level 4 entrance
         } else {
             foreach AllActors(class'#var(prefix)WeaponShuriken',tk){

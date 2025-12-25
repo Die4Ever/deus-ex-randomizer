@@ -74,6 +74,11 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
 {
     local CCResidentEvilCam reCam;
 
+    if (bDoomMode && (!InConversation())){
+        CameraRotation.Pitch=0;
+        ViewRotation.Pitch=0;
+    }
+
     reCam = CCResidentEvilCam(ViewTarget);
 
     if (reCam!=None){
@@ -86,10 +91,6 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
             CalcBehindView(CameraLocation, CameraRotation, 150);
         } else {
             Super.PlayerCalcView(ViewActor,CameraLocation,CameraRotation);
-        }
-        if (bDoomMode && (!InConversation())){
-            CameraRotation.Pitch=0;
-            ViewRotation.Pitch=0;
         }
     }
 }

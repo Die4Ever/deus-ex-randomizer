@@ -1,4 +1,4 @@
-class CCResidentEvilCam extends SecurityCamera transient;
+class CCResidentEvilCam extends SecurityCamera;
 
 var DeusExPlayer p;
 var bool Reposition;
@@ -16,10 +16,11 @@ function PostBeginPlay()
 function bool FindNewCameraPosition()
 {
     local DXRMachines dxrm;
-    local Vector loc,loc2;
+    local Vector loc,loc2, aimLoc;
     local Rotator rot, rot2;
     local Actor hit, aimTarget;
     local Vector HitLocation, HitNormal;
+    local int mult;
     local bool success;
 
     foreach AllActors(class'DXRMachines',dxrm){break;}
@@ -28,17 +29,7 @@ function bool FindNewCameraPosition()
         return false;
     }
 
-    aimTarget = p;
-    if (DeusExRootWindow(p.rootWindow).scopeView.bViewVisible){
-#ifdef vanilla||revision
-        if (#var(PlayerPawn)(p).aimLaser.spot[0]!=None){
-            aimTarget = #var(PlayerPawn)(p).aimLaser.spot[0];
-        }
-#endif
-    }
-
-    success = False;
-    loc = aimTarget.Location;
+    aimTarget = GetAimTarget(p,aimLoc);
 
     success = dxrm.GetLazyCameraLocation(loc,cameraRange*0.75);
 
@@ -49,18 +40,26 @@ function bool FindNewCameraPosition()
     }
 
     if (!success){
-        //Try to fall back to a position at a point somewhere behind the player
+        //Try to fall back to a position at a point somewhere behind the target (unless it's a conversation)
         rot2 = aimTarget.Rotation;
         rot2.Yaw = rot2.Yaw - 8000 + Rand(16000); //Add some slight skew, so the camera isn't always dead behind the player
 
-        loc2 = aimTarget.Location + Vector(rot2) * (-16 * 10) + vect(0,0,120);  //Make the camera also somewhat above
-        hit = Trace(HitLocation, HitNormal, loc2, aimTarget.Location, True);
+        //In a conversation, the fallback location should be in front,
+        //otherwise, put the fallback behind the target
+        if (p.InConversation()) {
+            mult = 1;
+        } else {
+            mult = -1;
+        }
+
+        loc2 = aimLoc + Vector(rot2) * (mult * 16 * 10) + vect(0,0,120);  //Make the camera also somewhat above
+        hit = Trace(HitLocation, HitNormal, loc2, aimLoc, True);
         if (hit!=None){
             loc2 = HitLocation;
         }
         loc = loc2;
     }
-    rot = Rotator(aimTarget.Location - loc);
+    rot = Rotator(aimLoc - loc);
     SetLocation(loc);
     SetRotation(rot);
     DesiredLoc = loc;
@@ -74,6 +73,10 @@ function bool FindNewCameraPosition()
 
 function BindPlayer(DeusExPlayer play)
 {
+    if (play==None) return; //What are you doing?
+
+    if (p==play && p.ViewTarget == Self) return;  //Camera is already set up, don't need to do anything
+
     p = play;
     p.ViewTarget = Self;
     FindNewCameraPosition();
@@ -83,7 +86,6 @@ function Tick(float deltaTime)
 {
     local float ang;
     local Rotator rot;
-    local DeusExPlayer curplayer;
 
     Super(#var(prefix)HackableDevices).Tick(deltaTime);
 
@@ -110,7 +112,7 @@ function Tick(float deltaTime)
     if (playerCheckTimer > 0.1)
     {
         playerCheckTimer = 0;
-        CheckPlayerVisibility(p);
+        CheckTargetVisibility(p);
     }
 
     if (Reposition && cameraMoveTimer>1.0){ //Don't allow moves more than once a second
@@ -118,24 +120,52 @@ function Tick(float deltaTime)
         FindNewCameraPosition();
     }
 
+    UpdateCameraRoll();
+
     // DEUS_EX AMSD For multiplayer
     ReplicatedRotation = DesiredRotation;
 
 
 }
 
-function CheckPlayerVisibility(DeusExPlayer player)
+function UpdateCameraRoll()
 {
-    local float yaw, pitch, dist;
-    local Actor hit,aimTarget;
-    local Vector HitLocation, HitNormal;
-    local Rotator rot;
+    local Rotator rot, drugRot;
+    local float roll,drugRoll,Mult, maxRoll, levelTimeSin, drunkSkew;
+    local DataStorage datastorage;
+    local int ccRollAmount;
 
-    if (player == None)
-        return;
+    roll = 0;
 
-    Reposition=True;
-    dist = Abs(VSize(player.Location - Location));
+    //Sway from being drunk and/or on drugs
+    if (p.drugEffectTimer > 0) {
+        mult = FClamp(p.drugEffectTimer / 10.0, 0.0, 3.0);
+
+        maxRoll = 4000 * mult;
+        levelTimeSin = Sin(Level.TimeSeconds * 2); //0.5 second sine wave
+
+        drunkSkew = 5000 * FClamp(p.drugEffectTimer / 60.0, 0.0, 1.0);
+
+        drugRoll = (maxRoll * levelTimeSin) + drunkSkew;
+
+        roll += drugRoll;
+    }
+
+    //Roll from standard view rotation
+    //This includes things like shaking effects and Crowd Control
+    roll+=p.ViewRotation.Roll;
+
+
+    rot = Rotation;
+    rot.Roll = roll;
+    SetRotation(rot);
+    DesiredRotation.roll = roll;
+}
+
+
+function Actor GetAimTarget(DeusExPlayer player, out Vector aimLoc)
+{
+    local Actor aimTarget;
 
     aimTarget = player;
     if (DeusExRootWindow(player.rootWindow).scopeView.bViewVisible){
@@ -150,36 +180,106 @@ function CheckPlayerVisibility(DeusExPlayer player)
 #endif
     }
 
-    foreach TraceActors(class'Actor',hit,HitLocation,HitNormal,aimTarget.Location,Location)
+    if (player.InConversation()) {
+        //In a conversation, look at the person who is talking, instead of always at JC
+        aimTarget = player.conPlay.currentSpeaker;
+    }
+
+    aimLoc = aimTarget.Location;
+
+    if (Pawn(aimTarget)!=None){
+        //In conversations, target the head region particularly
+        //Borrowed a bit from ConCamera to not go quite as high
+        //as the actual eye height
+        aimLoc.Z += (Pawn(aimTarget).BaseEyeHeight / 1.5);
+    } else if (#var(prefix)BlackHelicopter(aimTarget)!=None) {
+        //Aim at the cockpit
+        aimLoc += vect(0,-150,0) << aimTarget.Rotation;
+    }
+#ifdef revision
+    else if (JockHelicopter(aimTarget)!=None) {
+        //Aim at the cockpit
+        aimLoc += vect(0,-150,0) << aimTarget.Rotation;
+    }
+#endif
+
+    return aimTarget;
+
+}
+
+function CheckTargetVisibility(DeusExPlayer player)
+{
+    local float yaw, pitch, dist, finalFOV;
+    local Actor hit,aimTarget;
+    local Vector HitLocation, HitNormal, aimLoc;
+    local Rotator rot;
+    local bool hitTarget;
+    local Decoration d;
+
+    if (player == None)
+        return;
+
+    Reposition=True;
+
+    aimTarget = GetAimTarget(player,aimLoc);
+
+    dist = Abs(VSize(aimLoc - Location));
+
+    hitTarget = True;
+    foreach TraceActors(class'Actor',hit,HitLocation,HitNormal,aimLoc,Location)
     {
         //Immediately reposition if you're on the far side of a wall or door
         if (LevelInfo(hit)!=None || Mover(hit)!=None){
+            hitTarget = False;
             break;
         }
+
+        d=Decoration(hit);
+        if (d!=None && d != aimTarget && (d.DrawType==DT_Mesh || d.DrawType==DT_Brush)) {
+            //Only real decorations (things that have a 3d model)
+            //Also sometimes you talk to decorations (like how Helios is actually a button) - ignore those here
+            if (d.bPushable==False || (VSize(player.Velocity)<10)) {
+                //Non-pushable things are functionally equivalent to a wall or mover
+                //Pushable things block sight, but only if the player isn't moving,
+                //to avoid unnecessary camera changes
+                hitTarget = False;
+                break;
+            }
+        }
+
+        //Need to account for targets that have no collision, like communicator holograms
+        //So in theory, if hit eventually got to None, that's actually a good thing, because
+        //it means we have a clear line of site to the location we're aiming for.  Most cases
+        //we'll hit the target before then, but sometimes...
 
         //Aim the camera at the target
         if (hit == aimTarget)
         {
-            // figure out if we can see the player
-            rot = Rotator(aimTarget.Location - Location);
-            rot.Roll = 0;
-            yaw = (Abs(Rotation.Yaw - rot.Yaw)) % 65536;
-            pitch = (Abs(Rotation.Pitch - rot.Pitch)) % 65536;
-
-            // center the angles around zero
-            if (yaw > 32767)
-                yaw -= 65536;
-            if (pitch > 32767)
-                pitch -= 65536;
-
-            if (!((Abs(yaw) < cameraFOV) && (Abs(pitch) < cameraFOV)))
-            {
-                // rotate to face the player
-                DesiredRotation = rot;
-            }
-            Reposition = False;
             break;
         }
+    }
+
+    if (hitTarget){
+        // figure out if we can see the player
+        rot = Rotator(aimLoc - Location);
+        rot.Roll = 0;
+        yaw = (Abs(Rotation.Yaw - rot.Yaw)) % 65536;
+        pitch = (Abs(Rotation.Pitch - rot.Pitch)) % 65536;
+
+        // center the angles around zero
+        if (yaw > 32767)
+            yaw -= 65536;
+        if (pitch > 32767)
+            pitch -= 65536;
+
+        finalFOV = cameraFOV - player.drugEffectTimer;
+        finalFOV = FClamp(finalFOV,30,cameraFOV);
+        if (!((Abs(yaw) < finalFOV) && (Abs(pitch) < finalFOV)) || player.InConversation())
+        {
+            // rotate to face the player
+            DesiredRotation = rot;
+        }
+        Reposition = False;
     }
 
     // if the player is out of range
