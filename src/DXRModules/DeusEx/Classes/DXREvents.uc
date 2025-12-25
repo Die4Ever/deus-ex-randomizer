@@ -1046,6 +1046,7 @@ function SetWatchFlags() {
         break;
     case "06_HONGKONG_TONGBASE":
         WatchFlag('M07MeetJaime_Played');
+        WatchFlag('WhatAreYouDoingHere');
         foreach AllActors(class'WaterZone', water) {
             water.ZonePlayerEvent = 'TongsHotTub';
             break;
@@ -2124,8 +2125,10 @@ function MarkBingoFailedSpecial()
 simulated function AnyEntry()
 {
     local Conversation conv;
-    local ConEvent ce;
+    local ConEvent ce,prev;
     local ConChoice choice;
+    local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
 
     Super.AnyEntry();
 
@@ -2151,6 +2154,34 @@ simulated function AnyEntry()
         for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
             DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
         }
+        break;
+    case "06_HONGKONG_TONGBASE":
+        //Add a SetFlag to "What are you doing here?" that we can watch
+        conv = GetConversation('M06TongBarks2');
+
+        ce = conv.EventList;
+        while (ce!=None){
+            if(ce.label=="A1"){
+                ces = ConEventSpeech(ce);
+                break;
+            }
+
+            prev = ce;
+            ce = ce.nextEvent;
+        }
+
+        //Add the flag before the speech event so the flag is set immediately
+        cesf = ConEventSetFlag(NewConEvent(conv,prev,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='WhatAreYouDoingHere';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=7;
+
+        //Move the label so that it jumps to the SetFlag instead of the Speech first
+        cesf.label = "A1";
+        ces.label = "";
+
         break;
     case "05_NYC_UNATCOISLAND":
         //Add a trigger event to hit the SavedMiguel bingo trigger
