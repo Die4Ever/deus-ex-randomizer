@@ -25,4 +25,5 @@
 - The teleporter to leave the Vandenberg Command Center is now slightly larger to hopefully make it less possible to sneak past.
 - Jock now flies faster during the exit cutscenes from the graveyard in Mission 9 and from the gas station in Mission 12.
 - Bingo goal for learning Maggie's birthday is now properly marked when reading the relevant datacube.
+- Fixed an issue where going two layers deep into the menus (E.g. Settings > Controls) would set your default FOV to whatever the current FOV was at the time you entered the menu.  This caused issues if you went into the menus while drunk or using a scope.  This would sometimes cause your game to be slightly zoomed in, or your weapon to not appear until you switch to another one.
 </details>

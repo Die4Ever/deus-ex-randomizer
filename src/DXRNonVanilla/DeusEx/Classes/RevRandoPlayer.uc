@@ -433,6 +433,8 @@ simulated function DrugEffects(float deltaTime)
                 {
                     root.hud.SetBackground(None);
                     root.hud.SetBackgroundStyle(DSTY_Normal);
+
+                    Default.DesiredFOV = DefaultFOV; //Going into two layers of menus resets the Default.DesiredFOV.  Put it back!
                     DesiredFOV = Default.DesiredFOV;
                 }
             }
