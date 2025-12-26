@@ -12,6 +12,12 @@ struct FMinMax {
     var float max;
 };
 
+struct ActorSort {
+    var Actor a;
+    var int sortVal;
+};
+
+
 struct safe_rule {
     var name item_name;
     var string package_name;
@@ -773,6 +779,67 @@ function SwapProperty(Actor a, Actor b, string propname) {
     t = a.GetPropertyText(propname);
     a.SetPropertyText(propname, b.GetPropertyText(propname));
     b.SetPropertyText(propname, t);
+}
+
+//Sort a list of actors
+//If sorting values aren't provided, this will sort by class name CRC by default
+//Assume the list has been packed and doesn't have empty slots
+static function SortActorList(out ActorSort as[64])
+{
+    local int numActors, slot, sortSlot, lowest;
+    local ActorSort temp;
+    local DXRando dxrand;
+
+    dxrand = class'DXRando'.default.dxr;
+
+    //Count the number of entries and make sure they have a sort value (fall back to classname CRC)
+    for (slot=0; slot < ArrayCount(as); slot++) {
+        if (as[slot].a!=None) {
+            if (as[slot].sortVal==0){
+                as[slot].sortVal = dxrand.Crc(as[slot].a.class);
+            }
+            numActors++;
+        }
+    }
+
+
+    //Sort the list
+    //Oh yeah, you don't like my sort?  Do a better one then.  I'm too lazy.
+    for (slot=0 ; slot < numActors ; slot++) {
+        lowest = slot;
+        for (sortSlot=slot+1 ; sortSlot < numactors ; sortSlot++) {
+            if (as[sortSlot].sortVal < as[lowest].sortVal) {
+                lowest = sortSlot;
+            }
+        }
+
+        if(lowest!=slot){
+            temp = as[slot];
+            as[slot] = as[lowest];
+            as[lowest] = temp;
+        }
+    }
+}
+
+//Because a function outside of here won't have a reference to the ActorSort struct
+static function SortActorListStatic(out Actor a[64], optional int sortVals[64])
+{
+    local ActorSort as[64];
+    local int i;
+
+    //Fill in the appropriate structure...
+    for (i=0;i<ArrayCount(a);i++){
+        as[i].a = a[i];
+        as[i].sortVal = sortVals[i];
+    }
+
+    //Actually sort
+    SortActorList(as);
+
+    //Repopulate the array that was passed in
+    for (i=0;i<ArrayCount(a);i++){
+        a[i] = as[i].a;
+    }
 }
 
 function ResetOrders(ScriptedPawn p) {

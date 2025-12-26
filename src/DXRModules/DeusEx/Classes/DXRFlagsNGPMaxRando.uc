@@ -378,7 +378,8 @@ simulated function ClearInHand(#var(PlayerPawn) p)
 simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 {
     local Inventory i, next;
-    local Weapon weaps[64];
+    local Weapon selected;
+    local Actor weaps[64];
     local int numWeaps, forceKeep, slot;
     local DXRLoadouts loadout;
 
@@ -397,7 +398,7 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         //Don't take away the rubber baton, that's just rude.  Also it's not really a weapon.
         if (i.Class==class'#var(package).WeaponRubberBaton') continue;
 
-        weaps[numWeaps++] = Weapon(i);
+        weaps[numWeaps++] = i;
     }
 
     //Does the player have enough weapons to be able to remove any?
@@ -406,22 +407,26 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
         return;
     }
 
+    //Sort the Weapon list, so weapon order in the inventory chain doesn't matter
+    class'DXRActorsBase'.Static.SortActorListStatic(weaps);
 
     SetSeed( "RemoveRandomWeapon " $ numWeaps );
 
     slot = rng(numWeaps);
-    info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps$" forceKeep was "$forceKeep);
+    selected = Weapon(weaps[slot]);
 
-    if (class'DXRActorsBase'.static.IsGrenade(weaps[slot].Class) || #var(prefix)WeaponShuriken(weaps[slot])!=None){
+    info("RemoveRandomWeapon("$p$") Removing weapon "$selected$", numWeaps was "$numWeaps$" forceKeep was "$forceKeep);
+
+    if (class'DXRActorsBase'.static.IsGrenade(selected.Class) || #var(prefix)WeaponShuriken(selected)!=None){
         //Grenades and throwing knives should *also* get rid of their ammo
-        if (weaps[slot].AmmoType!=None){
-            p.DeleteInventory(weaps[slot].AmmoType);
-            weaps[slot].AmmoType.Destroy();
+        if (selected.AmmoType!=None){
+            p.DeleteInventory(selected.AmmoType);
+            selected.AmmoType.Destroy();
         }
     }
 
-    p.DeleteInventory(weaps[slot]);
-    weaps[slot].Destroy();
+    p.DeleteInventory(selected);
+    selected.Destroy();
 }
 
 simulated function MaxRandoVal(out int val, optional float scaler)
