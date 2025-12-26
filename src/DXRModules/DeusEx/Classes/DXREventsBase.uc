@@ -24,7 +24,7 @@ var() BingoOption bingo_options[400]; //Update the comment at the bottom of the 
 struct MutualExclusion {
     var string e1, e2;
 };
-var() MutualExclusion mutually_exclusive[113];
+var() MutualExclusion mutually_exclusive[117];
 
 struct ActorWatchItem {
     var Actor a;

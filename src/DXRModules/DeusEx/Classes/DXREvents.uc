@@ -4226,5 +4226,9 @@ defaultproperties
     mutually_exclusive(111)=(e1="FlushToilet",e2="FlushUrinal")
 
     mutually_exclusive(112)=(e1="ComputerHacked",e2="CivilForfeiture")
+    mutually_exclusive(113)=(e1="MolePeopleWater",e2="FreshWaterOpened")
+    mutually_exclusive(114)=(e1="WaltonConvos_VariousPlayed",e2="WaltonSimons_Dead")
+    mutually_exclusive(115)=(e1="PetDogs",e2="WatchDogs_peeptime")
+    mutually_exclusive(116)=(e1="BirdWatching_peeptime",e2="PerformBurder_ClassDead")
 //#endregion
 }
