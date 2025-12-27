@@ -485,6 +485,7 @@ function inventory GiveRandomBotWeapon(Pawn p, optional bool allow_dupes, option
     local int i;
     local float r;
     local int findWeaponAttempts;
+    local Inventory inv;
 
     findWeaponAttempts = 15;
 
@@ -511,7 +512,15 @@ function inventory GiveRandomBotWeapon(Pawn p, optional bool allow_dupes, option
     }
 
     l("GiveRandomBotWeapon "$p$", "$wclass.Name$", "$add_ammo);
-    return GiveItem( p, wclass, add_ammo );
+
+    inv = GiveItem( p, wclass, add_ammo );
+
+    if (#var(DeusExPrefix)Weapon(inv)!=None) {
+        //Make sure any weapons given to robots are considered native, so they won't drop when exploded
+        #var(DeusExPrefix)Weapon(inv).bNativeAttack = true;
+    }
+
+    return inv;
 }
 
 function class<Weapon> GiveRandomWeaponClass(Pawn p, optional bool allow_dupes)

@@ -253,6 +253,7 @@ function PreFirstEntry()
     SpawnDatacubes();
     FixHolograms();
     FixShowers();
+    MakeRobotWeaponsNative();
 #ifdef gmdx
     FixGMDXObjects();
 #endif
@@ -1351,6 +1352,27 @@ function RemoveStopWhenEncroach()
         }
     }
 
+}
+
+function MakeRobotWeaponsNative()
+{
+    local #var(prefix)Robot r;
+    local #var(DeusExPrefix)Weapon dxw;
+    local inventory inv;
+
+    foreach AllActors(class'#var(prefix)Robot',r) {
+        for(inv = r.Inventory; inv!=None ; inv = inv.Inventory) {
+            dxw = #var(DeusExPrefix)Weapon(inv);
+            if (dxw!=None) {
+                if (dxw.bNativeAttack == false) {
+                    dxw.bNativeAttack = true;
+                    l("Robot "$r$" has non-native weapon "$dxw$" - Making weapon native");
+                }
+            }
+        }
+
+    }
+    //TODO
 }
 
 function SpawnDatacubes()
