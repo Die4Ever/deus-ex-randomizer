@@ -33,4 +33,5 @@
 - Fixed an issue where going two layers deep into the menus (E.g. Settings > Controls) would set your default FOV to whatever the current FOV was at the time you entered the menu.  This caused issues if you went into the menus while drunk or using a scope.  This would sometimes cause your game to be slightly zoomed in, or your weapon to not appear until you switch to another one.
 - When New Game Plus removes a weapon, the chosen weapon is no longer dependent on the order in which you picked up the weapons.
 - Robots will no longer drop any weapons regardless of whether they are "standard" or not.  Some robots, like the security bots in Dockyards (Mission 9), have non-standard robot weapons such as flamethrowers.  Previously, when those robots were destroyed, they would drop any of those non-standard weapons.
+- Spiderbots (Or robots who have been given spiderbot weapons) will now be able to use their zap attack against enemies who are not robots.  Previously spiderbots would have only used the zap against the player or robots (particularly noticeable if you scrambled a spiderbot, they would just stand and look at their enemy without attacking).
 </details>
