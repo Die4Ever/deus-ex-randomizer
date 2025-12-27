@@ -208,6 +208,9 @@ function PreFirstEntryMapFixes()
         }
         UpdateWeldPointGoal(5);
 
+        //Make it so Merchant/bots can't spawn in the electrical room
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(-3950,1645,0), vectm(-2960,660,-525), true);
+
         if (VanillaMaps){
             foreach AllActors(class'ComputerSecurity',cs){
                 if (cs.Name == 'ComputerSecurity4'){

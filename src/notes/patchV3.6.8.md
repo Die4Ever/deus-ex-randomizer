@@ -21,7 +21,12 @@
 - Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 - Fixed a bug where characters would patrol to a point and then start wandering, instead of standing still.  In particular, this fixes an issue if you aren't standing near the jail cell window in Mission 5 when Anna shows up (if she's still alive), as previously she would wander away.
 - Add a button to open the door to the UNATCO HQ front door desk from the inside in Mission 1.  All other versions of UNATCO HQ (Missions 3, 4, 5) already have a button to open the door from the inside.
-- Aug/Med/Repair Bots and Merchants will no longer spawn in the electrified room in the Vandenberg Command Center, or outside the door of that map in the inaccessible duplicate of the main hall.
+- Aug/Med/Repair Bots and Merchants will no longer spawn in certain dangerous locations:
+  - Near the arcing electricity in the Airfield (Mission 3)
+  - In the electrical room on the superfreighter (Mission 9)
+  - Near the broken electrical box in the Paris Catacombs (Mission 10).
+  - In the electrified room in the Vandenberg Command Center (Mission 12).
+  - Outside the door of Vandenberg Command Center in the inaccessible duplicate of the main hall (Mission 12).
 - The teleporter to leave the Vandenberg Command Center is now slightly larger to hopefully make it less possible to sneak past.
 - Jock now flies faster during the exit cutscenes from the graveyard in Mission 9 and from the gas station in Mission 12.
 - Bingo goal for learning Maggie's birthday is now properly marked when reading the relevant datacube.

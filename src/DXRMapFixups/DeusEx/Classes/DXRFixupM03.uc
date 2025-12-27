@@ -298,6 +298,9 @@ function PreFirstEntryMapFixes()
 
         class'FillCollisionHole'.static.CreateLine(self, vectm(-1335,3856,128), vectm(-530,3856,128), 16, 128);
 
+        //Make it so Merchant/bots can't spawn in the electricity
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(4850,-1700,0), vectm(5400,-2600,300), true);
+
         // extra spots for datacube
         Spawn(class'PlaceholderItem',,, vectm(5113,3615,6.3));        //In front of guard tower
         Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter

@@ -140,6 +140,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Make it so Merchant/bots can't spawn in the electricity
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(-1200,-1550,250), vectm(-960,-1030,60), true);
+
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
 
