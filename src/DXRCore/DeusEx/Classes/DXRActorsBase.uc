@@ -757,7 +757,32 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     a.bOwned = b.bOwned;
     b.bOwned = AbOwned;
 
+    //Move all inventory objects back to the owner
+    RebaseInventory(a);
+    RebaseInventory(b);
+
     return true;
+}
+
+function RebaseInventory(Actor a)
+{
+    local Inventory inv;
+
+    if (Pawn(a)!=None){
+        inv = Pawn(a).Inventory;
+    } else if (#var(DeusExPrefix)Carcass(a)!=None){
+        inv = #var(DeusExPrefix)Carcass(a).Inventory;
+    } else {
+        //Doesn't have inventory to rebase
+        return;
+    }
+
+    //Move the inventory back to the location of the person who holds it,
+    //and make it based on them, so it follows along
+    for (inv=inv;inv!=None;inv = inv.Inventory){
+        inv.SetLocation(a.Location);
+        inv.SetBase(a);
+    }
 }
 
 function SwapNames(out Name a, out Name b) {
