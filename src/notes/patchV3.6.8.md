@@ -35,4 +35,5 @@
 - Robots will no longer drop any weapons regardless of whether they are "standard" or not.  Some robots, like the security bots in Dockyards (Mission 9), have non-standard robot weapons such as flamethrowers.  Previously, when those robots were destroyed, they would drop any of those non-standard weapons.
 - Spiderbots (Or robots who have been given spiderbot weapons) will now be able to use their zap attack against enemies who are not robots.  Previously spiderbots would have only used the zap against the player or robots (particularly noticeable if you scrambled a spiderbot, they would just stand and look at their enemy without attacking).
 - Enemies will no longer clone off of disabled robots (Like the ones in the robotics bay in Mission 5, or the Level 2 MJ12 Lab in Mission 6)
+- Dragging a stack of items off of the inventory screen will now drop the whole stack, rather than just a single item from the stack.
 </details>
