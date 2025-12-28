@@ -270,6 +270,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     if( newclass == None && IsHuman(base.class) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
     if( IsHuman(newclass) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
+    if( #var(prefix)Robot(base) != None && base.Orders == 'Idle' ) return None; //Don't clone off of idle robots (who likely have all reactions disabled)
 
     oldSeed = BranchSeed(base $ newclass);
     n = CloneScriptedPawn(base, newclass);
@@ -450,6 +451,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     RandomizeSize(n);
     n.bInitialized=False;
     n.InitializePawn();
+    n.ResetReactions(); //Make sure callbacks are set up for this pawn with the duplicated reactions (InitializePawn would have done BlockReactions)
 
     if(!p.bInWorld) {
         class'DXREnterWorldLink'.static.Create(p, n);
