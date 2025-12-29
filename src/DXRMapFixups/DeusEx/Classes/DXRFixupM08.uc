@@ -36,6 +36,7 @@ function AnyEntryMapFixes()
             // - Revision conversations (which I guess only get used on Revision Maps)
             // - Vanilla? Madder!
             FixFordSchickConvo();
+            FixNoRoomForSmuggler();
         }
 
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
@@ -157,6 +158,58 @@ function FixFordSchickConvo()
         sit = Spawn(class'SpawnItemTrigger',,'SpawnOverflowAugUpgrade');
         sit.spawnClass=class'#var(prefix)AugmentationUpgradeCannister';
         sit.spawnLoc = vectm(-462,1385,248);
+    }
+
+}
+
+function FixNoRoomForSmuggler(){
+    local Conversation c;
+    local ConEvent ce, prev, addCreds,transfer;
+    local ConEventTransferObject ceto;
+
+    c = GetConversation('M08SmugglerConvos');
+
+    //BuyShotgun, BuySabot, and BuyGEP all take your money before trying to transfer the object
+    //We want to swap those back around.  They also don't have a "No Room" fail path assigned.
+    ce = c.eventList;
+    while (ce!=None){
+        switch(ce.label)
+        {
+            case "BuyShotgun": //It is criminal that he is asking 7500 for an assault shotgun
+            case "BuySabot":
+            case "BuyGEP":
+                if (ce.eventType==ET_AddCredits &&
+                    ce.nextEvent!=None &&
+                    ce.nextEvent.eventType==ET_TransferObject)
+                {
+                    //We need to swap these events around so the transfer is first
+                    addCreds = ce;
+                    transfer = ce.nextEvent;
+
+                    prev.nextEvent = transfer;
+                    addCreds.nextEvent = transfer.nextEvent;
+                    transfer.nextEvent = addCreds;
+
+                    transfer.label = addCreds.label;
+                    addCreds.label = "";
+
+                    ce = transfer;
+                }
+
+                break;
+
+            default:
+                break;
+        }
+        if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+            if (ceto!=None && ceto.failLabel == ""){
+                //There are a few transfers that don't fail if you don't have room
+                ceto.failLabel = "NoRoom";
+            }
+        }
+        prev = ce;
+        ce = ce.nextEvent;
     }
 
 }

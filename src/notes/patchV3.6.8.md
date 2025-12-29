@@ -39,4 +39,5 @@
 - Barrels that start the level already leaking will no longer lose 1 health every time the game or map is loaded.
 - Gas clouds (such as poison gas from barrels, halon from fire extinguishers, and tear gas from gas grenades) no longer block the highlighting of objects behind them.
 - In Mission 8, Jordan Shea will no longer take your money if you don't have space for the Forty or Candy Bar you may try to buy from her.
+- In Mission 8, Smuggler will no longer take your money if you don't have space for the Assault Shotgun that he sells.  This also fixes the same issue for the Sabot rounds and GEP rockets he sells, but currently Randomizer will not fail an ammo transfer, even if you are full on that type of ammo.
 </details>
