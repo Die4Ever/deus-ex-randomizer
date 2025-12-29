@@ -38,4 +38,5 @@
 - Dragging a stack of items off of the inventory screen will now drop the whole stack, rather than just a single item from the stack.
 - Barrels that start the level already leaking will no longer lose 1 health every time the game or map is loaded.
 - Gas clouds (such as poison gas from barrels, halon from fire extinguishers, and tear gas from gas grenades) no longer block the highlighting of objects behind them.
+- In Mission 8, Jordan Shea will no longer take your money if you don't have space for the Forty or Candy Bar you may try to buy from her.
 </details>
