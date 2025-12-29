@@ -1181,6 +1181,9 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
                 if(bFirstTarget) smallestTargetDist = VSize(Location-HitLoc);
             }
             continue;
+        } else if (#var(prefix)Cloud(target)!=None) {
+            //Clouds simply aren't frobabble, despite being DeusExProjectiles
+            continue;
         }
         if (IsFrobbable(target) && (target != CarriedDecoration))
         {
