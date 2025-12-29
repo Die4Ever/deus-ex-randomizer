@@ -1364,6 +1364,8 @@ function AnyEntryMapFixes()
             ce = ce.nextEvent;
         }
 
+        FixLuckyMoneyDragonHeadWineConvos();
+
         break;
     //#endregion
 
@@ -1381,6 +1383,270 @@ function AnyEntryMapFixes()
     }
 }
 //#endregion
+
+//Make sure JC actually acknowledges not having inventory space to receive the wine,
+//and spawn the wine on the bar if that's the case.
+function FixLuckyMoneyDragonHeadWineConvos()
+{
+    local Conversation c, gordConv;
+    local ConEvent ce;
+    local ConEventSpeech ces,origNoRoom, normalMaxSpeech;
+    local ConEventEnd cee;
+    local ConEventTransferObject ceto;
+    local ConEventTrigger cet;
+    local ConEventMoveCamera cemc, origMoveCam;
+    local ConEventJump cej;
+    local SpawnItemTrigger sit;
+
+    //This isn't fixed in Revision or ConFix.
+
+    //Max Chen's conversations don't have handling (or at least, recognition)
+    //of not having room to accept his wine, while Gordon's do.  Point the
+    //transfer failures over to the Gordon conversation, in the same way
+    //M07GordonSecondGive does.
+
+    //Find the "No Room" line and the camera adjustment event
+    gordConv = GetConversation('M07GordonFirstGive');
+    ce = gordConv.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_MoveCamera){
+            origMoveCam = ConEventMoveCamera(ce);
+        } else if (ce.eventType==ET_Speech ){
+            if (InStr(ConEventSpeech(ce).conSpeech.speech, "I can't carry anything else right now") != -1){
+                origNoRoom = ConEventSpeech(ce);
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+    //Max's first Give - Add the Wine Spawner, camera move, and "No Room" speech event
+
+    c = GetConversation('M07ChenFirstGive');
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_End){
+            cee = ConEventEnd(ce);
+        } else if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+        } else if (ce.eventType==ET_Speech){
+            normalMaxSpeech = ConEventSpeech(ce);
+        }
+        ce = ce.nextEvent;
+    }
+
+    ceto.failLabel = "DXRandoNoRoom";
+
+    //Trigger a SpawnItemTrigger to spawn the wine on the bar
+    cet = new(c) class'ConEventTrigger';
+    cet.label = "DXRandoNoRoom";
+    cet.eventType=ET_Trigger;
+    cet.triggerTag = 'SpawnMaxWine1';
+    cet.conversation=c;
+    AddConEvent(c,cee,cet);
+
+    //Move the camera - dupe all the properties from the original one
+    cemc = new(c) class'ConEventMoveCamera';
+    cemc.eventType=ET_MoveCamera;
+    cemc.cameraType = origMoveCam.cameraType;
+    cemc.cameraPosition = origMoveCam.cameraPosition;
+    cemc.cameraTransition = origMoveCam.cameraTransition;
+    cemc.cameraOffset = origMoveCam.cameraOffset;
+    cemc.rotation = origMoveCam.rotation;
+    cemc.heightModifier = origMoveCam.heightModifier;
+    cemc.centerModifier = origMoveCam.centerModifier;
+    cemc.distanceMultiplier = origMoveCam.distanceMultiplier;
+    cemc.cameraActor = origMoveCam.cameraActor;
+    cemc.cameraActorName = origMoveCam.cameraActorName;
+    AddConEvent(c,cet,cemc);
+
+    //Dupe the "No Room" speech line, but with Max instead
+    ces = new(c) class'ConEventSpeech';
+    ces.eventType=ET_Speech;
+    ces.conversation = c;
+    ces.speaker = normalMaxSpeech.speakingTo;
+    ces.speakerName = normalMaxSpeech.speakingToName;
+    ces.speakingTo = normalMaxSpeech.speaker;
+    ces.speakingToName = normalMaxSpeech.speakerName;
+    ces.conSpeech = new(c) class'ConSpeech';
+    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
+    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
+    ces.bBold = origNoRoom.bBold;
+    ces.speechFont = origNoRoom.speechFont;
+    AddConEvent(c, cet, ces);
+
+    cee = new(c) class'ConEventEnd'; //Stick a new "end" event after
+    cee.eventType=ET_End;
+    AddConEvent(c,ces, cee);
+
+////////////////////////////////////////////////////////////////////////////////////
+
+    //Max's Second Give - Add the Wine Spawner, camera move, and "No Room" speech event
+
+    c = GetConversation('M07ChenSecondGive');
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_End){
+            cee = ConEventEnd(ce);
+        } else if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+        } else if (ce.eventType==ET_Speech){
+            normalMaxSpeech = ConEventSpeech(ce);
+        }
+        ce = ce.nextEvent;
+    }
+
+    ceto.failLabel = "DXRandoNoRoom";
+
+    //Trigger a SpawnItemTrigger to spawn the wine on the bar
+    cet = new(c) class'ConEventTrigger';
+    cet.label = "DXRandoNoRoom";
+    cet.eventType=ET_Trigger;
+    cet.triggerTag = 'SpawnMaxWine2';
+    cet.conversation=c;
+    AddConEvent(c,cee,cet);
+
+    //Move the camera - dupe all the properties from the original one
+    cemc = new(c) class'ConEventMoveCamera';
+    cemc.eventType=ET_MoveCamera;
+    cemc.cameraType = origMoveCam.cameraType;
+    cemc.cameraPosition = origMoveCam.cameraPosition;
+    cemc.cameraTransition = origMoveCam.cameraTransition;
+    cemc.cameraOffset = origMoveCam.cameraOffset;
+    cemc.rotation = origMoveCam.rotation;
+    cemc.heightModifier = origMoveCam.heightModifier;
+    cemc.centerModifier = origMoveCam.centerModifier;
+    cemc.distanceMultiplier = origMoveCam.distanceMultiplier;
+    cemc.cameraActor = origMoveCam.cameraActor;
+    cemc.cameraActorName = origMoveCam.cameraActorName;
+    AddConEvent(c,cet,cemc);
+
+    //Dupe the "No Room" speech line, but with Max instead
+    ces = new(c) class'ConEventSpeech';
+    ces.eventType=ET_Speech;
+    ces.conversation = c;
+    ces.speaker = normalMaxSpeech.speakingTo;
+    ces.speakerName = normalMaxSpeech.speakingToName;
+    ces.speakingTo = normalMaxSpeech.speaker;
+    ces.speakingToName = normalMaxSpeech.speakerName;
+    ces.conSpeech = new(c) class'ConSpeech';
+    ces.conSpeech.speech = origNoRoom.conSpeech.speech;
+    ces.conSpeech.soundID = origNoRoom.conSpeech.soundID;
+    ces.bBold = origNoRoom.bBold;
+    ces.speechFont = origNoRoom.speechFont;
+    AddConEvent(c, cet, ces);
+
+    cee = new(c) class'ConEventEnd'; //Stick a new "end" event after
+    cee.eventType=ET_End;
+    AddConEvent(c,ces, cee);
+
+/////////////////////////////////////////////////////////////////////////////
+
+    //Gordon's first Give - Add the Wine Spawner, and tweak the jumps
+
+    c = GetConversation('M07GordonFirstGive');
+    ce = c.eventList;
+    cee = None;
+    while (ce!=None){
+        if (ce.eventType==ET_End && cee==None){
+            //Find the ConEventEnd before the "NoRoom" label so we can add stuff
+            cee = ConEventEnd(ce);
+            if (!(cee.nextEvent!=None && cee.nextEvent.label=="NoRoom")){
+                cee = None;
+            }
+        } else if (ce.eventType==ET_TransferObject){
+            //Find the TransferObject so we can redirect it
+            ceto = ConEventTransferObject(ce);
+        }
+        ce = ce.nextEvent;
+    }
+
+    //TransferObject will fail to a label *before* the move camera (that spawns the wine)
+    ceto.failLabel = "GordonGive1Fail";
+
+    //Create the Trigger event that will spawn wine on the bar
+    cet = new(c) class'ConEventTrigger';
+    cet.label = "GordonGive1Fail";
+    cet.eventType=ET_Trigger;
+    cet.triggerTag = 'SpawnGordonWine1';
+    cet.conversation=c;
+    AddConEvent(c,cee,cet);
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+    //Gordon's Second Give - Add the Wine Spawner, and tweak the jumps
+
+    c = GetConversation('M07GordonSecondGive');
+    ce = c.eventList;
+    cee = None;
+    while (ce!=None){
+        if (ce.eventType==ET_End && cee==None){
+            //Find the ConEventEnd before the "NoRoom" label so we can add stuff
+            cee = ConEventEnd(ce);
+            if (!(cee.nextEvent!=None && cee.nextEvent.label=="NoRoom")){
+                cee = None;
+            }
+        } else if (ce.eventType==ET_Jump){
+            //Find the TransferObject so we can redirect it
+            cej = ConEventJump(ce);
+        }
+        ce = ce.nextEvent;
+    }
+
+    //Create the Trigger event that will spawn wine on the bar
+    cet = new(c) class'ConEventTrigger';
+    cet.label = "NoRoom";
+    cet.eventType=ET_Trigger;
+    cet.triggerTag = 'SpawnGordonWine2';
+    cet.conversation=c;
+    AddConEvent(c,cee,cet);
+
+    //Remove the label on the jump to the other conversation
+    cej.label="";
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+    //Make sure the spawn triggers exist
+    sit=None;
+    foreach AllActors(class'SpawnItemTrigger',sit,'SpawnMaxWine1'){break;}
+    if (sit==None){
+        sit = Spawn(class'SpawnItemTrigger',,'SpawnMaxWine1');
+        sit.spawnClass=class'#var(prefix)WineBottle';
+        sit.spawnLoc = vectm(-1200,-2250,-123);
+        sit.spawnRot = GetRandomYaw(true); //The rotation doesn't matter, so leave it unseeded
+    }
+
+    sit=None;
+    foreach AllActors(class'SpawnItemTrigger',sit,'SpawnMaxWine2'){break;}
+    if (sit==None){
+        sit = Spawn(class'SpawnItemTrigger',,'SpawnMaxWine2');
+        sit.spawnClass=class'#var(prefix)WineBottle';
+        sit.spawnLoc = vectm(-1215,-2250,-123);
+        sit.spawnRot = GetRandomYaw(true); //The rotation doesn't matter, so leave it unseeded
+    }
+
+    sit=None;
+    foreach AllActors(class'SpawnItemTrigger',sit,'SpawnGordonWine1'){break;}
+    if (sit==None){
+        sit = Spawn(class'SpawnItemTrigger',,'SpawnGordonWine1');
+        sit.spawnClass=class'#var(prefix)WineBottle';
+        sit.spawnLoc = vectm(-1245,-2250,-123);
+        sit.spawnRot = GetRandomYaw(true); //The rotation doesn't matter, so leave it unseeded
+    }
+
+    sit=None;
+    foreach AllActors(class'SpawnItemTrigger',sit,'SpawnGordonWine2'){break;}
+    if (sit==None){
+        sit = Spawn(class'SpawnItemTrigger',,'SpawnGordonWine2');
+        sit.spawnClass=class'#var(prefix)WineBottle';
+        sit.spawnLoc = vectm(-1230,-2250,-123);
+        sit.spawnRot = GetRandomYaw(true); //The rotation doesn't matter, so leave it unseeded
+    }
+}
 
 //#region Timer
 function TimerMapFixes()
