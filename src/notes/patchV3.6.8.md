@@ -36,4 +36,5 @@
 - Spiderbots (Or robots who have been given spiderbot weapons) will now be able to use their zap attack against enemies who are not robots.  Previously spiderbots would have only used the zap against the player or robots (particularly noticeable if you scrambled a spiderbot, they would just stand and look at their enemy without attacking).
 - Enemies will no longer clone off of disabled robots (Like the ones in the robotics bay in Mission 5, or the Level 2 MJ12 Lab in Mission 6)
 - Dragging a stack of items off of the inventory screen will now drop the whole stack, rather than just a single item from the stack.
+- Barrels that start the level already leaking will no longer lose 1 health every time the game or map is loaded.
 </details>
