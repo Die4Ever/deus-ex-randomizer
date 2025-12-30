@@ -41,4 +41,5 @@
 - When meeting the Dragon Heads for drinks at the Lucky Money (Mission 6), JC will properly acknowledge that he doesn't have room for Max's drinks when his inventory is full.  If this happens, the wine will appear on the bar, rather than being lost forever.
 - In Mission 8, Jordan Shea will no longer take your money if you don't have space for the Forty or Candy Bar you may try to buy from her.
 - In Mission 8, Smuggler will no longer take your money if you don't have space for the Assault Shotgun that he sells.  This also fixes the same issue for the Sabot rounds and GEP rockets he sells, but currently Randomizer will not fail an ammo transfer, even if you are full on that type of ammo.
+- The barrels behind the teleporter leading from the Ship Upper Decks to the Dockyard Ventilation System (Mission 9) will no longer be randomized.
 </details>

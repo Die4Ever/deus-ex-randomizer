@@ -140,6 +140,8 @@ function PreFirstEntryMapFixes()
 
         }
 
+        MassSetSecretGoalRadius(class'#var(prefix)Containers',vectm(3600,-1740,640),250,true); //Barrels behind teleporter to _FAN
+
         //Add some new locations for containers and items
         Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
         Spawn(class'PlaceholderContainer',,, vectm(-3109,-73,305)); //Front of ship
