@@ -9,12 +9,20 @@ struct camera_scene {
 
 function RandomDancing(Actor a)
 {
+    local ScriptedPawn sp;
     if (IsHuman(a.class)) {
-        if (ScriptedPawn(a).Orders == 'Standing' ||
-            ScriptedPawn(a).Orders == 'Sitting' ||
-            ScriptedPawn(a).Orders == '') {
+        sp = ScriptedPawn(a);
+        if (sp.Orders == 'Standing' ||
+            sp.Orders == 'Sitting' ||
+            sp.Orders == '') {
             if (a.HasAnim('Dance')){
-                if (chance_single(dxr.flags.settings.dancingpercent))  ScriptedPawn(a).SetOrders('Dancing');
+                if (chance_single(dxr.flags.settings.dancingpercent)) {
+                    sp.SetOrders('Dancing');
+                    if (sp.bUseHome==False){
+                        sp.SetHomeBase(sp.Location,sp.Rotation,sp.CollisionRadius);
+                    }
+
+                }
             }
         }
     }

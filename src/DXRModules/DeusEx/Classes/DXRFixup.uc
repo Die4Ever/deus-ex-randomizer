@@ -299,6 +299,8 @@ function PostFirstEntry()
         PostFirstEntryMapFixes();
 
     RemoveStopWhenEncroach();
+
+    FixStandingDancingBlockages();
 }
 
 function AnyEntry()
@@ -1195,6 +1197,19 @@ function PreventShufflingAmbrosia()
     //Prevent ambrosia barrels from being shuffled
     foreach AllActors(class'#var(prefix)BarrelAmbrosia', ambrosia) {
         ambrosia.bIsSecretGoal = true;
+    }
+}
+
+function FixStandingDancingBlockages()
+{
+    local ScriptedPawn sp;
+
+    foreach AllActors(class'ScriptedPawn',sp){
+        if (sp.Orders!='Standing' && sp.Orders!='Dancing') continue; //Only apply this to pawns who will block a path
+        if (sp.bUseHome) continue; //Don't play with their Home if they actually had one set
+
+        //Make them always try to return to their starting position
+        sp.SetHomeBase(sp.Location,sp.Rotation,sp.CollisionRadius);
     }
 }
 
