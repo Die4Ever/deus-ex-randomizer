@@ -22,11 +22,13 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+//#region Vanilla Rules
 function vanilla_datacubes_rules()
 {
     local int i;
 
     switch(dxr.localURL) {
+    //#region V: M01
     case "01_NYC_UNATCOISLAND":
         // satcom password
         datacubes_rules[i].item_name = '01_Datacube06';
@@ -58,7 +60,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M02
     case "02_NYC_BATTERYPARK":
         // Castle Clinton underground access code - needs to be above ground
         datacubes_rules[i].item_name = '02_Datacube15';
@@ -139,7 +143,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M03
     case "03_NYC_UNATCOHQ":
         datacubes_rules[i].item_name = 'JCCompPassword';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -214,7 +220,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M04
     case "04_NYC_UNATCOHQ":
         datacubes_rules[i].item_name = 'JCCompPassword';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -274,7 +282,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M05
     case "05_NYC_UNATCOMJ12LAB":
         // jail cell codes
         datacubes_rules[i].item_name = '05_Datacube01';// don't allow this in the locked cabinet
@@ -320,7 +330,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M06
     case "06_HONGKONG_HELIBASE":
         //Security login
         datacubes_rules[i].item_name = '06_Datacube18';
@@ -419,6 +431,19 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
+
+        //ALL_SHIFTS account details.  Keep out of security room.
+        datacubes_rules[i].item_name = '06_Datacube31';
+        datacubes_rules[i].min_pos = vect(-735,130,95);
+        datacubes_rules[i].max_pos = vect(-1150,415,-65);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        datacubes_rules[i].item_name = '06_Datacube31';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
         break;
 
     case "06_HONGKONG_STORAGE":
@@ -451,7 +476,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M08
     case "08_NYC_HOTEL":
         // The code to Paul's bookshelf stash
         datacubes_rules[i].item_name = '02_Datacube07';
@@ -460,7 +487,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M09
     case "09_NYC_DOCKYARD":
         //Walton Simons login
         datacubes_rules[i].item_name = '09_Datacube11';
@@ -518,7 +547,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M10
     case "10_PARIS_CATACOMBS":
         // make sure you can get to the book without needing to jump down
         datacubes_rules[i].item_name = '10_Book09';
@@ -556,7 +587,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M11
     case "11_PARIS_EVERETT":
         // Lucius DeBeers login
         datacubes_rules[i].item_name = '11_Datacube01';
@@ -592,7 +625,9 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region V: M14
     case "14_VANDENBERG_SUB":
         //Code for URV Bay doors - anywhere offshore
         datacubes_rules[i].item_name = '14_Datacube01';
@@ -667,7 +702,9 @@ function vanilla_datacubes_rules()
         i++;
 
         break;
+    //#endregion
 
+    //#region V: M15
     case "15_AREA51_BUNKER":
         //Both of these have to be above ground
         datacubes_rules[i].item_name = 'A51VentComputerCode';
@@ -799,14 +836,18 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
     }
 }
+//#endregion
 
+//#region Revision Rules
 function revision_datacubes_rules()
 {
     local int i;
 
     switch(dxr.localURL) {
+    //#region R: M01
     case "01_NYC_UNATCOISLAND":
         // satcom password
         datacubes_rules[i].item_name = '01_Datacube06';
@@ -838,7 +879,9 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region R: M02
     case "02_NYC_BATTERYPARK":
         // Castle Clinton underground access code - needs to be above ground
         datacubes_rules[i].item_name = '02_Datacube15';
@@ -933,7 +976,9 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region R: M03
     case "03_NYC_UNATCOHQ":
         datacubes_rules[i].item_name = 'JCCompPassword';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -1009,7 +1054,9 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region R: M04
     case "04_NYC_UNATCOHQ":
         datacubes_rules[i].item_name = 'JCCompPassword';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -1106,7 +1153,9 @@ function revision_datacubes_rules()
         i++;
 
         break;
+    //#endregion
 
+    //#region R: M05
     case "05_NYC_UNATCOMJ12LAB":
         // jail cell codes
         datacubes_rules[i].item_name = '05_Datacube01';// don't allow this in the locked cabinet
@@ -1221,7 +1270,9 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region R: M06
     case "06_HONGKONG_HELIBASE":
         //Security login
         datacubes_rules[i].item_name = '06_Datacube18';
@@ -1335,6 +1386,19 @@ function revision_datacubes_rules()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
+
+        //ALL_SHIFTS account details.  Keep out of security room.
+        datacubes_rules[i].item_name = '06_Datacube31';
+        datacubes_rules[i].min_pos = vect(-735,130,95);
+        datacubes_rules[i].max_pos = vect(-1150,415,-65);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        datacubes_rules[i].item_name = '06_Datacube31';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
         break;
 
     case "06_HONGKONG_STORAGE":
@@ -1345,7 +1409,9 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region R: M08
     case "08_NYC_HOTEL":
         // The code to Paul's bookshelf stash (Anywhere in Paul's Apartment except the stash)
         datacubes_rules[i].item_name = '02_Datacube07';
@@ -1374,7 +1440,9 @@ function revision_datacubes_rules()
         i++;
 
         break;
+    //#endregion
 
+    //#region R: M09
     case "09_NYC_DOCKYARD":
         //Walton Simons login
         datacubes_rules[i].item_name = '09_Datacube11';
@@ -1439,7 +1507,9 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
         break;
+    //#endregion
 
+    //#region R: M10
     case "10_PARIS_ENTRANCE": //The level where you start on the roof
         // make sure you can get to the book without needing to jump down
         datacubes_rules[i].item_name = '10_Book09';
@@ -1481,7 +1551,9 @@ function revision_datacubes_rules()
         i++;
 
         break;
+    //#endregion
 
+    //#region R: M11
     case "11_PARIS_EVERETT":
         // Lucius DeBeers login
         datacubes_rules[i].item_name = '11_Datacube01';
@@ -1531,7 +1603,9 @@ function revision_datacubes_rules()
         i++;
 
         break;
+    //#endregion
 
+    //#region R: M14
     case "14_VANDENBERG_SUB":
         //Code for URV Bay doors
 
@@ -1619,7 +1693,9 @@ function revision_datacubes_rules()
         i++;
 
         break;
+    //#endregion
 
+    //#region R: M15
     case "15_AREA51_BUNKER":
         //Both of these have to be above ground
         datacubes_rules[i].item_name = 'A51VentComputerCode';
@@ -1745,11 +1821,12 @@ function revision_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
-
         break;
+    //#endregion
 
     }
 }
+//#endregion
 
 //I don't want to add the default text package to all the rules manually
 function safe_rule ApplyDefaultTextPackage(safe_rule r)
@@ -1761,7 +1838,7 @@ function safe_rule ApplyDefaultTextPackage(safe_rule r)
     return r;
 }
 
-
+//#region FirstEntry
 function FirstEntry()
 {
     Super.FirstEntry();
@@ -1770,6 +1847,7 @@ function FirstEntry()
     RandoHacks();
     MakeAllHackable(dxr.flags.settings.deviceshackable);
 }
+//#endregion
 
 function RandoHacks()
 {
@@ -2083,6 +2161,7 @@ function bool InfoPositionGood(#var(prefix)InformationDevices id, vector newpos,
 }
 
 
+//#region Human Text Tags
 static function string GetHumanTextTagName(string texttag, string textpackage)
 {
 
@@ -2869,3 +2948,4 @@ static function string GetHumanTextTagName(string texttag, string textpackage)
         return fullTag;
     }
 }
+//#endregion
