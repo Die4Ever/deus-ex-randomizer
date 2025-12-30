@@ -734,6 +734,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             break;
         case 6:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
+            flagbase.SetBool('JacobsonRecruited',true,,-1);
             break;
         case 7:
             flagbase.SetBool('Have_ROM',true,,-1);
@@ -741,6 +742,7 @@ function PreFirstEntryStartMapFixes(#var(PlayerPawn) player, FlagBase flagbase, 
             MarkConvPlayed("TriadCeremony", bFemale);
             flagbase.SetBool('DragonHeadsInLuckyMoney', true);
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
+            flagbase.SetBool('JacobsonRecruited',true,,-1);
             break;
         case 8:
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);

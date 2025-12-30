@@ -43,4 +43,5 @@
 - In Mission 8, Smuggler will no longer take your money if you don't have space for the Assault Shotgun that he sells.  This also fixes the same issue for the Sabot rounds and GEP rockets he sells, but currently Randomizer will not fail an ammo transfer, even if you are full on that type of ammo.
 - The barrels behind the teleporter leading from the Ship Upper Decks to the Dockyard Ventilation System (Mission 9) will no longer be randomized.
 - NPCs who are standing or dancing will now always try to return to their original location after leaving it for whatever reason (e.g. if they chased the player).
+- Alex Jacobson will now actually appear in Tong's Lab (Mission 6) when using a Hong Kong starting map (e.g. when playing WaltonWare).
 </details>
