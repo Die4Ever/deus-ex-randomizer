@@ -230,6 +230,8 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
             return msg;
         case "NiceTerrorist_Dead":
             return "Kill a friendly NSF trooper in the LaGuardia hangar.";
+        case "NiceTerrorist_Takedown":
+            return "Take down a friendly NSF trooper in the LaGuardia hangar.";
         case "JosephManderley_Dead":
         case "JosephManderley_PlayerDead":
             return "Kill Manderley while escaping from UNATCO.  You must kill him yourself.";
@@ -305,6 +307,8 @@ static simulated function string GetBingoHelpTextPawnDeaths(string event,int mis
             return "Kill Ford Schick.  Note that you can do this after rescuing him if you're fast.  You must kill him yourself.";
         case "Sailor_ClassDeadM6":
             return "Kill enough of the sailors on the top floor of the Lucky Money club.  You must kill them yourself.";
+        case "Sailor_ClassTakedownM6":
+            return "Take down enough of the sailors on the top floor of the Lucky Money club.  You must kill or knock them out yourself.";
         case "Shannon_Dead":
         case "Shannon_PlayerDead": //Old goals
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.  You must kill her yourself.";
