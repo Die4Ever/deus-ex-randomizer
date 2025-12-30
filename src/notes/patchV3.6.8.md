@@ -46,4 +46,5 @@
 - Alex Jacobson will now actually appear in Tong's Lab (Mission 6) when using a Hong Kong starting map (e.g. when playing WaltonWare).
 - Aggressive Defense System will now stop tracking projectiles immediately once the player runs out of bioelectric energy.
 - Datacube with ALL_SHIFTS account information in Versalife offices (M06) can now be randomized anywhere in the office except for the security room.
+- Bingo goals that require you to kill or knockout a specific character yourself should now be marked as failed more reliably if killed or knocked out by someone other than the player.
 </details>

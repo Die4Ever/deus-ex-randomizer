@@ -3170,6 +3170,10 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
     } else if (Right(eventname, 5) == "_Dead") {
         failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "Unconscious";
         failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "PlayerUnconscious";
+    } else if (Right(eventname, 16) == "_TakedownByOther") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 15) $ "PlayerUnconscious";
+        failed[num_failed++] = Left(eventname, Len(eventname) - 15) $ "PlayerDead";
+        failed[num_failed++] = Left(eventname, Len(eventname) - 15) $ "PlayerTakedown";
     }
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
