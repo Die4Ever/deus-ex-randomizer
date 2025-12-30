@@ -71,7 +71,13 @@ state Active
             return;
         }
 
-        if (Player.energy <= 0) return;
+        if (Player.energy <= 0){
+            //Make sure to actually turn off the tracking if you have no energy
+            if ((Level.NetMode == NM_Standalone) || (bDefenseActive))
+                SetDefenseAugStatus(False,CurrentLevel,None);
+            bDefenseActive = false;
+            return;
+        }
 
         // In multiplayer propagate a sound that will let others know their in an aggressive defense field
         // with range slightly greater than the current level value of the aug

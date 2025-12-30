@@ -44,4 +44,5 @@
 - The barrels behind the teleporter leading from the Ship Upper Decks to the Dockyard Ventilation System (Mission 9) will no longer be randomized.
 - NPCs who are standing or dancing will now always try to return to their original location after leaving it for whatever reason (e.g. if they chased the player).
 - Alex Jacobson will now actually appear in Tong's Lab (Mission 6) when using a Hong Kong starting map (e.g. when playing WaltonWare).
+- Aggressive Defense System will now stop tracking projectiles immediately once the player runs out of bioelectric energy.
 </details>
