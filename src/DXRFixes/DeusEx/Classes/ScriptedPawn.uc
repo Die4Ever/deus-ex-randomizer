@@ -853,9 +853,22 @@ state Standing
         return true;
     }
 
+    function bool ShouldKeepHomeBase()
+    {
+        switch(Orders){
+            case 'Patrolling':
+            case 'RunningTo':
+            case 'GoingTo':
+                //So that they don't walk back to where they came from once they reach their destination
+                return false;
+        }
+        return true;
+    }
+
     function BeginState()
     {
         if(!ShouldActuallyStand()) GotoState('Wandering'); // DXRando
+        if(!ShouldKeepHomeBase()) ClearHomeBase(); //DXRando
         StandUp();
         SetEnemy(None, EnemyLastSeen, true);
         Disable('AnimEnd');
