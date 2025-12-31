@@ -51,4 +51,5 @@
   - "Ignore Paul in the 747 Hangar" now allows either a kill or knock out.
   - "I SPILL MY DRINK!" now allows either a kill or knock out.
 - The time between conversations with Jock and the start of exit cutscenes has been consistently reduced to try to prevent the player from taking damage between the end of the conversation and the start of the cutscene (as often happened at the end of Mission 9 Graveyard).
+- The player can no longer put random ATM accounts into debt when hacking them (they can only be reduced to a balance of 0 credits).  Account balances are actually properly emptied and synced to other ATMs in the same map when an ATM is hacked.
 </details>
