@@ -33,6 +33,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ControlPanel cp;
     local #var(DeusExPrefix)Decoration dec;
     local #var(injectsprefix)Button1 button;
+    local #var(prefix)Mechanic mech;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -460,6 +461,10 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover',m,'morganmirror'){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(980,1480,508),vectm(1065,1473,390),m); //Mirror in front of Lucius's door
 
+        //Give the mechanic an alliance so that he doesn't consider the zombie a friend
+        foreach AllActors(class'#var(prefix)Mechanic', mech){
+            mech.SetAlliance('OddMechanic');
+        }
         break;
     //#endregion
     }
