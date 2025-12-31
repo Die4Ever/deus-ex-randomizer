@@ -311,6 +311,8 @@ function PreFirstEntryMapFixes()
             hoverHint.SetBaseActor(jock);
         }
 
+        ReduceHelicopterDelay('outro_trigger');
+
         //Elevator to Versalife
         foreach AllActors(class'#var(prefix)MapExit',exit,'change_floors01'){break;}
         foreach AllActors(class'#var(prefix)Button1',button){ //Button won't be replaced yet in non-vanilla, so just use regular Button1

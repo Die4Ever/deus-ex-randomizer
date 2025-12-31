@@ -452,6 +452,8 @@ function PreFirstEntryMapFixes()
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
+        ReduceHelicopterDelay('ChopperExit');
+
         SetAllLampsState(true, false, true); // Everett's bedroom
 
         //Verified in both vanilla and Revision

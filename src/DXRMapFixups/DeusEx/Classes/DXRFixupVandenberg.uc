@@ -191,6 +191,8 @@ function PreFirstEntryMapFixes()
             sp.bImportant = true;
         }
 
+        ReduceHelicopterDelay('map_exit',1);
+
         break;
     //#endregion
 
@@ -621,6 +623,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
+
+        ReduceHelicopterDelay('SiloExit',0);
 
         //The door closing behind you when the ambush starts sucks if you came in via the silo.
         //Just make it not close.

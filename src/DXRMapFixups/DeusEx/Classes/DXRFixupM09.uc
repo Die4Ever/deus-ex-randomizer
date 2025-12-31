@@ -460,6 +460,9 @@ function PreFirstEntryMapFixes()
             //Make Jock take off a bit faster during the exit cutscene
             AdjustInterpolationPathRates('CopterPath',0,5,3.0);
             AdjustInterpolationPathRates('CameraPath',0,5,3.5);
+
+            //Remove the brief wait between finishing the conversation with Jock and taking off
+            ReduceHelicopterDelay('ChopperExit');
         }
 
         if (!VanillaMaps){

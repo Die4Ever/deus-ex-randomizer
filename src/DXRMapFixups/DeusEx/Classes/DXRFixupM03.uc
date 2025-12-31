@@ -313,6 +313,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(4441,3112,51));         //Base of satellite
         Spawn(class'PlaceholderItem',,, vectm(1915,2800.6,79));       //Gate support (inside gate)
         Spawn(class'PlaceholderItem',,, vectm(3641.339,2623.73,27));  //Steps outside barracks
+
+        ReduceHelicopterDelay('HelicopterPickUp');
+
         if(VanillaMaps) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {
@@ -820,6 +823,7 @@ function AddBatteryParkReturnJock()
     jock.ConBindEvents();
 
     AddDelayEvent('HelicopterPickUp','MoveHelicopter',0.65);
+    ReduceHelicopterDelay('HelicopterPickUp'); //Actually do this, even though it should be no change.  For consistency.
 
     gct = Spawn(class'#var(prefix)GoalCompleteTrigger');
     gct.SetCollision(false,false,false);

@@ -2299,6 +2299,26 @@ function AdjustInterpolationPathRates(name pathTag, int startPos, int endPos, fl
     }
 }
 
+function ReduceHelicopterDelay(name dispTag, optional int idx, optional float newDelay)
+{
+    local Dispatcher disp;
+
+    if (!class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) return;
+
+    if (newDelay==0.0){
+        //If there is no delay, you're gonna see JC T-Pose as
+        //you start animating during the conversation exit.
+        //Treat 0 as a default value, since it's not actually
+        //a good value.
+        newDelay=0.65;
+    }
+
+    foreach AllActors(class'Dispatcher',disp,dispTag){
+        disp.OutDelays[idx]=newDelay;
+    }
+}
+
+
 //This makes life easier and more consistent when starting infolinks from code.
 //Don't use either of the functions below directly!
 function bool DXRStartDataLinkTransmission( String DatalinkName )
