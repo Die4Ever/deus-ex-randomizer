@@ -53,4 +53,5 @@
 - The time between conversations with Jock and the start of exit cutscenes has been consistently reduced to try to prevent the player from taking damage between the end of the conversation and the start of the cutscene (as often happened at the end of Mission 9 Graveyard).
 - The player can no longer put random ATM accounts into debt when hacking them (they can only be reduced to a balance of 0 credits).  Account balances are actually properly emptied and synced to other ATMs in the same map when an ATM is hacked.
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
+- Zombies will no longer be able to resurrect through thin floors.
 </details>

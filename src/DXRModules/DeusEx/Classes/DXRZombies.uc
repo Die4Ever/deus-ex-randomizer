@@ -187,7 +187,8 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
 {
     local string livingClassName, origClassName;
     local class<Actor> livingClass;
-    local vector respawnLoc;
+    local vector respawnLoc, desiredRespawnLoc, hitNormal;
+    local Actor hitActor;
     local ScriptedPawn sp,otherSP;
     local class<DeusExFragment> fragClass;
     local int i, numFrags;
@@ -227,8 +228,12 @@ static function bool ReanimateCorpse(DXRActorsBase module, #var(DeusExPrefix)Car
         return False;
     }
 
-    respawnLoc = carc.Location;
-    respawnLoc.Z += livingClass.Default.CollisionHeight;
+    desiredRespawnLoc = carc.Location;
+    desiredRespawnLoc.Z += livingClass.Default.CollisionHeight;
+
+    //See if we can move up to the desired respawn location
+    hitActor = carc.Trace(respawnLoc,hitNormal,desiredRespawnLoc);
+    if (hitActor==None) respawnLoc = desiredRespawnLoc;
 
     sp = ScriptedPawn(carc.Spawn(livingClass,,,respawnLoc,carc.Rotation));
 
