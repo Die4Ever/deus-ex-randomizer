@@ -74,6 +74,7 @@ function PreFirstEntryMapFixes()
     local DXRIntermediatePoint intermediate;
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)AlarmUnit au;
+    local #var(prefix)AutoTurret turret;
 
     local bool VanillaMaps;
 
@@ -371,6 +372,13 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        foreach AllActors(class'#var(prefix)AutoTurret', turret){
+            //Make the turrets attack "Everything" instead of just "Allies"
+            //This makes it so they will also shoot cloned enemies who might end up near them.
+            turret.bTrackPlayersOnly=False;
+            turret.bTrackPawnsOnly=False;
+        }
+
         if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot) {
                 if(ot.Event == 'muncher') {
@@ -513,6 +521,13 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(1780,8587,-2790)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(423,8547,-2900)); //Turret room
             Spawn(class'PlaceholderItem',,, vectm(73,9110,-2910)); //Turret room, opposite from bait computer
+        }
+
+        foreach AllActors(class'#var(prefix)AutoTurret', turret){
+            //Make the turrets attack "Everything" instead of just "Allies"
+            //This makes it so they will also shoot cloned enemies who might end up near them.
+            turret.bTrackPlayersOnly=False;
+            turret.bTrackPawnsOnly=False;
         }
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){

@@ -55,4 +55,5 @@
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
 - Zombies will no longer be able to resurrect through thin floors.
 - Weapons that are in the process of attacking will not actually attack if their owner dies mid-fire.
+- Turrets in the Ocean Lab main area and UC area (Mission 14) will now target everything, instead of just the players allies.
 </details>
