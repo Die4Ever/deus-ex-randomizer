@@ -36,13 +36,7 @@ simulated static function string VersionString(optional bool full)
 
 simulated static function int VersionToInt(int major, int minor, int patch, int build)
 {
-    local int ret;
-    ret = major*10000+minor*100+patch;
-    if( ret <= 10400 ) return minor;//v1.4 and earlier
-    if( ret > 10508 ) {
-        ret = major*1000000+minor*10000+patch*100+build;
-    }
-    return ret;
+    return major*1000000+minor*10000+patch*100+build;
 }
 
 simulated static function string VersionToString(int major, int minor, int patch, optional int build, optional bool full)
