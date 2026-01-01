@@ -12,6 +12,12 @@ struct FMinMax {
     var float max;
 };
 
+struct ActorSort {
+    var Actor a;
+    var int sortVal;
+};
+
+
 struct safe_rule {
     var name item_name;
     var string package_name;
@@ -751,7 +757,32 @@ function bool Swap(Actor a, Actor b, optional bool retainOrders)
     a.bOwned = b.bOwned;
     b.bOwned = AbOwned;
 
+    //Move all inventory objects back to the owner
+    RebaseInventory(a);
+    RebaseInventory(b);
+
     return true;
+}
+
+function RebaseInventory(Actor a)
+{
+    local Inventory inv;
+
+    if (Pawn(a)!=None){
+        inv = Pawn(a).Inventory;
+    } else if (#var(DeusExPrefix)Carcass(a)!=None){
+        inv = #var(DeusExPrefix)Carcass(a).Inventory;
+    } else {
+        //Doesn't have inventory to rebase
+        return;
+    }
+
+    //Move the inventory back to the location of the person who holds it,
+    //and make it based on them, so it follows along
+    for (inv=inv;inv!=None;inv = inv.Inventory){
+        inv.SetLocation(a.Location);
+        inv.SetBase(a);
+    }
 }
 
 function SwapNames(out Name a, out Name b) {
@@ -773,6 +804,67 @@ function SwapProperty(Actor a, Actor b, string propname) {
     t = a.GetPropertyText(propname);
     a.SetPropertyText(propname, b.GetPropertyText(propname));
     b.SetPropertyText(propname, t);
+}
+
+//Sort a list of actors
+//If sorting values aren't provided, this will sort by class name CRC by default
+//Assume the list has been packed and doesn't have empty slots
+static function SortActorList(out ActorSort as[64])
+{
+    local int numActors, slot, sortSlot, lowest;
+    local ActorSort temp;
+    local DXRando dxrand;
+
+    dxrand = class'DXRando'.default.dxr;
+
+    //Count the number of entries and make sure they have a sort value (fall back to classname CRC)
+    for (slot=0; slot < ArrayCount(as); slot++) {
+        if (as[slot].a!=None) {
+            if (as[slot].sortVal==0){
+                as[slot].sortVal = dxrand.Crc(as[slot].a.class);
+            }
+            numActors++;
+        }
+    }
+
+
+    //Sort the list
+    //Oh yeah, you don't like my sort?  Do a better one then.  I'm too lazy.
+    for (slot=0 ; slot < numActors ; slot++) {
+        lowest = slot;
+        for (sortSlot=slot+1 ; sortSlot < numactors ; sortSlot++) {
+            if (as[sortSlot].sortVal < as[lowest].sortVal) {
+                lowest = sortSlot;
+            }
+        }
+
+        if(lowest!=slot){
+            temp = as[slot];
+            as[slot] = as[lowest];
+            as[lowest] = temp;
+        }
+    }
+}
+
+//Because a function outside of here won't have a reference to the ActorSort struct
+static function SortActorListStatic(out Actor a[64], optional int sortVals[64])
+{
+    local ActorSort as[64];
+    local int i;
+
+    //Fill in the appropriate structure...
+    for (i=0;i<ArrayCount(a);i++){
+        as[i].a = a[i];
+        as[i].sortVal = sortVals[i];
+    }
+
+    //Actually sort
+    SortActorList(as);
+
+    //Repopulate the array that was passed in
+    for (i=0;i<ArrayCount(a);i++){
+        a[i] = as[i].a;
+    }
 }
 
 function ResetOrders(ScriptedPawn p) {
@@ -2206,6 +2298,26 @@ function AdjustInterpolationPathRates(name pathTag, int startPos, int endPos, fl
         p.RateModifier = p.RateModifier * mult;
     }
 }
+
+function ReduceHelicopterDelay(name dispTag, optional int idx, optional float newDelay)
+{
+    local Dispatcher disp;
+
+    if (!class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) return;
+
+    if (newDelay==0.0){
+        //If there is no delay, you're gonna see JC T-Pose as
+        //you start animating during the conversation exit.
+        //Treat 0 as a default value, since it's not actually
+        //a good value.
+        newDelay=0.65;
+    }
+
+    foreach AllActors(class'Dispatcher',disp,dispTag){
+        disp.OutDelays[idx]=newDelay;
+    }
+}
+
 
 //This makes life easier and more consistent when starting infolinks from code.
 //Don't use either of the functions below directly!

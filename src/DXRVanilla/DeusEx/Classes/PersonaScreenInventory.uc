@@ -130,7 +130,7 @@ function string CalcChargedPickupDurations(ChargedPickup cp)
     return chargeVals;
 }
 
-//Dragging an item out of the inventory grid will now drop it
+//Dragging an item out of the inventory grid will now drop it (The whole stack)
 function FinishButtonDrag()
 {
     local Inventory draggedItem;
@@ -148,9 +148,36 @@ function FinishButtonDrag()
 
     if (shouldDrop && draggedItem!=None){
         SelectInventoryItem(draggedItem);
+        DropAllSelectedItem();
+    }
+}
+
+function DropAllSelectedItem()
+{
+    local Inventory selectedInv;
+    local Pickup    selectedPickup;
+    local int       count, i;
+
+    if (selectedItem == None)
+        return;
+
+    selectedInv = Inventory(selectedItem.GetClientObject());
+    selectedPickup = Pickup(selectedInv);
+
+    //Not sure how you'd have a non-inventory object in your inventory, but might as well check
+    if ( selectedPickup==None && selectedInv==None ) return;
+
+    count = 1;
+    if (selectedPickup!=None && selectedPickup.bCanHaveMultipleCopies) {
+        count = selectedPickup.NumCopies;
+    }
+
+    //Just drop them all individually
+    for(i=0;i<count;i++){
         DropSelectedItem();
     }
 }
+
 
 //Try to prevent item stacking
 //If an item is being "dragged" while the inventory is closing, put it back where it started

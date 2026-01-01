@@ -36,10 +36,20 @@ function AnyEntryMapFixes()
             // - Revision conversations (which I guess only get used on Revision Maps)
             // - Vanilla? Madder!
             FixFordSchickConvo();
+            FixNoRoomForSmuggler();
         }
 
         if (dxr.flagbase.getBool('SmugglerDoorDone')) {
             dxr.flagbase.setBool('MetSmuggler', true,, -1);
+        }
+        break;
+    case "08_NYC_BAR":
+        if (!#defined(gmdx) && !#defined(vmd) && !(#defined(revision)&&!VanillaMaps)){
+            //This is fixed in:
+            // - ConFix (used by GMDX)
+            // - Revision conversations (which I guess only get used on Revision Maps)
+            // - Vanilla? Madder!
+            AddNoRoomToJordanSheaConvo();
         }
         break;
     }
@@ -148,6 +158,129 @@ function FixFordSchickConvo()
         sit = Spawn(class'SpawnItemTrigger',,'SpawnOverflowAugUpgrade');
         sit.spawnClass=class'#var(prefix)AugmentationUpgradeCannister';
         sit.spawnLoc = vectm(-462,1385,248);
+    }
+
+}
+
+function FixNoRoomForSmuggler(){
+    local Conversation c;
+    local ConEvent ce, prev, addCreds,transfer;
+    local ConEventTransferObject ceto;
+
+    c = GetConversation('M08SmugglerConvos');
+
+    //BuyShotgun, BuySabot, and BuyGEP all take your money before trying to transfer the object
+    //We want to swap those back around.  They also don't have a "No Room" fail path assigned.
+    ce = c.eventList;
+    while (ce!=None){
+        switch(ce.label)
+        {
+            case "BuyShotgun": //It is criminal that he is asking 7500 for an assault shotgun
+            case "BuySabot":
+            case "BuyGEP":
+                if (ce.eventType==ET_AddCredits &&
+                    ce.nextEvent!=None &&
+                    ce.nextEvent.eventType==ET_TransferObject)
+                {
+                    //We need to swap these events around so the transfer is first
+                    addCreds = ce;
+                    transfer = ce.nextEvent;
+
+                    prev.nextEvent = transfer;
+                    addCreds.nextEvent = transfer.nextEvent;
+                    transfer.nextEvent = addCreds;
+
+                    transfer.label = addCreds.label;
+                    addCreds.label = "";
+
+                    ce = transfer;
+                }
+
+                break;
+
+            default:
+                break;
+        }
+        if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+            if (ceto!=None && ceto.failLabel == ""){
+                //There are a few transfers that don't fail if you don't have room
+                ceto.failLabel = "NoRoom";
+            }
+        }
+        prev = ce;
+        ce = ce.nextEvent;
+    }
+
+}
+
+function AddNoRoomToJordanSheaConvo(){
+    //When you buy from Jordan in this mission, they got lazy and didn't have a failure path
+    //for when you don't have room to accept the candy or booze you buy.  Luckily, there's a
+    //line that's good enough that we can yoink from the conversation with Smuggler.
+    local ConEventSpeech ces, origNoRoom, newNoRoom, normalSpeech;
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventTransferObject ceto;
+    local ConEventEnd cee,cee2;
+
+    //First, find the "No Room" line from the Smuggler convo
+    origNoRoom = GetSpeechEvent(GetConversation('M08SmugglerConvos').eventList,"I don't have enough room to carry that.");
+
+    //Now we need to make a new branch in Jordan's conversation and adjust the transfer item events to point to it
+    c = GetConversation('M08JordanSheaConvos');
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_End){
+            //Keep track of these end events.  We're going to add our new bit after the last end
+            cee = ConEventEnd(ce);
+        } else if (ce.eventType==ET_Speech && normalSpeech==None){
+            //find a case where JC is talking to Jordan, for reference
+            normalSpeech = ConEventSpeech(ce);
+            if (normalSpeech.speakerName!="JCDenton"){
+                normalSpeech=None;
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+    if (cee == None) return; //We're hosed if this doesn't exist.
+
+    newNoRoom = new(c) class'ConEventSpeech';
+    newNoRoom.eventType=ET_Speech;
+    newNoRoom.conversation = c;
+    newNoRoom.speaker = normalSpeech.speaker;
+    newNoRoom.speakerName = normalSpeech.speakerName;
+    newNoRoom.speakingTo = normalSpeech.speakingTo;
+    newNoRoom.speakingToName = normalSpeech.speakingToName;
+    newNoRoom.conSpeech = new(c) class'ConSpeech';
+    newNoRoom.conSpeech.speech = origNoRoom.conSpeech.speech;
+    newNoRoom.conSpeech.soundID = origNoRoom.conSpeech.soundID;
+    newNoRoom.bBold = origNoRoom.bBold;
+    newNoRoom.speechFont = origNoRoom.speechFont;
+    newNoRoom.label = "DXRandoNoRoom";
+
+    //End the conversation
+    cee2 = new(c) class'ConEventEnd';
+    cee2.eventType=ET_End;
+    cee2.conversation = c;
+
+    //Wire the ConEvent's together
+    cee2.nextEvent=cee.nextEvent;//New ending will point to what the old ending pointed to (presumably None)
+    newNoRoom.nextEvent=cee2; //New ending goes after the "No Room" speech
+    cee.nextEvent = newNoRoom; //New "No Room" speech goes after the old end
+
+
+    //Now point all the Transfer Object events to the "No Room" branch if they fail
+    ce = c.eventList;
+    while (ce!=None){
+        if (ce.eventType==ET_TransferObject){
+            ceto = ConEventTransferObject(ce);
+            if (ceto!=None && ceto.failLabel==""){
+                ceto.failLabel = "DXRandoNoRoom";
+            }
+        }
+        ce = ce.nextEvent;
     }
 
 }

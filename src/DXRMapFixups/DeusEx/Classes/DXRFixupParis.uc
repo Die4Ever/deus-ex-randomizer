@@ -33,6 +33,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ControlPanel cp;
     local #var(DeusExPrefix)Decoration dec;
     local #var(injectsprefix)Button1 button;
+    local #var(prefix)Mechanic mech;
     local Actor a;
 
     VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
@@ -139,6 +140,9 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+        //Make it so Merchant/bots can't spawn in the electricity
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(-1200,-1550,250), vectm(-960,-1030,60), true);
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
         class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
@@ -449,12 +453,18 @@ function PreFirstEntryMapFixes()
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
 
+        ReduceHelicopterDelay('ChopperExit');
+
         SetAllLampsState(true, false, true); // Everett's bedroom
 
         //Verified in both vanilla and Revision
         foreach AllActors(class'DeusExMover',m,'morganmirror'){break;}
         class'FakeMirrorInfo'.static.Create(self,vectm(980,1480,508),vectm(1065,1473,390),m); //Mirror in front of Lucius's door
 
+        //Give the mechanic an alliance so that he doesn't consider the zombie a friend
+        foreach AllActors(class'#var(prefix)Mechanic', mech){
+            mech.SetAlliance('OddMechanic');
+        }
         break;
     //#endregion
     }

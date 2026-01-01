@@ -777,11 +777,46 @@ exec function ParseRightClick()
     }
 }
 
+function DeusExPickup FindExistingStack(Inventory item, vector dropVect)
+{
+    local DeusExPickup p, opt, closest;
+    local float rad,vel;
+
+    if (item==None) return None;
+
+    p = DeusExPickup(item);
+    if (p==None) return None;
+
+    if (p.bCanHaveMultipleCopies==false) return None;
+    if (p.maxCopies <= 1) return None; //Has to be a stackable item
+
+    //The drop location can shift a bit.  Standard Drop location is the same as the player,
+    //so it gets shifted outwards.  Give some slop.
+    rad = CollisionRadius + item.CollisionRadius + 100.0;
+
+    //Look for other items of the exact same class at the same spot (approx) as where we want to drop this one
+    foreach RadiusActors(class'DeusExPickup',opt,rad,dropVect) {
+        if (opt==p) continue; //Don't drop into itself
+        if (opt.Class != p.Class) continue; //Has to be the exact same class
+        if (opt.numCopies >= opt.MaxCopies) continue; //Has to have space in the stack
+
+        vel = VSize(opt.Velocity);
+        if (vel < 25 || vel > 35) continue; //Has to have roughly the standard drop velocity (which is 30)
+
+        //This one seems viable, but pick the one closest to the location
+        closest = DeusExPickup(class'DXRActorsBase'.static.GetCloserActor(dropVect,closest,opt));
+    }
+
+    return closest;
+}
+
 //A whole lot of copy paste just to add one "if (bDrop)" check to change the dropVect
+//Rando will now also stack pickups if multiple are dropped in the same location
 exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 {
 	local Inventory item;
 	local Inventory previousItemInHand;
+    local DeusExPickup existingStack; //DXRando added
 	local Vector X, Y, Z, dropVect;
 	local float size, mult;
 	local bool bDropped;
@@ -864,6 +899,17 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			DeusExPickup(item).NumCopies--;
 			UpdateBeltText(item);
 
+            if (bDrop){
+                //Only stack items when "dropping" them
+                existingStack = FindExistingStack(item,dropVect);
+            }
+
+            if (existingStack!=None) {
+                //Put the removed copy from what you're holding
+                //into the existing stack
+                existingStack.numCopies++;
+            }
+
 			if (DeusExPickup(item).NumCopies > 0)
 			{
 				// put it back in our hand, but only if it was in our
@@ -871,7 +917,11 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 				if (previousItemInHand == item)
 					PutInHand(previousItemInHand);
 
-				item = Spawn(item.Class, Owner);
+                if (existingStack==None){
+                    //Only spawn a new copy if we AREN'T putting
+                    //the item into an existing stack
+                    item = Spawn(item.Class, Owner);
+                }
 			}
 			else
 			{
@@ -884,9 +934,19 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 				// Remove it from the inventory slot grid
 				RemoveItemFromSlot(item);
 
-				// make sure we have one copy to throw!
-				DeusExPickup(item).NumCopies = 1;
+                if (existingStack==None){
+                    // make sure we have one copy to throw!
+                    DeusExPickup(item).NumCopies = 1;
+                }
 			}
+
+            if (existingStack!=None){
+                if (DeusExPickup(item).NumCopies <= 0) {
+                    Pawn(item.Owner).DeleteInventory(item); //Remove from inventory
+                    item.LifeSpan = 0.01; //Delete it (Later).  Needs to still exist for some messaging.
+                }
+                item = existingStack;
+            }
 		}
 		else
 		{
@@ -1120,6 +1180,9 @@ function Actor HighlightCenterObjectRay(vector offset, out float smallestTargetD
                 dm = DeathMarker(target);
                 if(bFirstTarget) smallestTargetDist = VSize(Location-HitLoc);
             }
+            continue;
+        } else if (#var(prefix)Cloud(target)!=None) {
+            //Clouds simply aren't frobabble, despite being DeusExProjectiles
             continue;
         }
         if (IsFrobbable(target) && (target != CarriedDecoration))

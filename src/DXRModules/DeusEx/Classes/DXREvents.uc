@@ -1046,6 +1046,7 @@ function SetWatchFlags() {
         break;
     case "06_HONGKONG_TONGBASE":
         WatchFlag('M07MeetJaime_Played');
+        WatchFlag('WhatAreYouDoingHere');
         foreach AllActors(class'WaterZone', water) {
             water.ZonePlayerEvent = 'TongsHotTub';
             break;
@@ -2124,8 +2125,10 @@ function MarkBingoFailedSpecial()
 simulated function AnyEntry()
 {
     local Conversation conv;
-    local ConEvent ce;
+    local ConEvent ce,prev;
     local ConChoice choice;
+    local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
 
     Super.AnyEntry();
 
@@ -2151,6 +2154,34 @@ simulated function AnyEntry()
         for(choice = ConEventChoice(ce).ChoiceList; choice != None; choice = choice.nextChoice) {
             DeleteChoiceFlag(choice, 'M10EnteredBakery', true);
         }
+        break;
+    case "06_HONGKONG_TONGBASE":
+        //Add a SetFlag to "What are you doing here?" that we can watch
+        conv = GetConversation('M06TongBarks2');
+
+        ce = conv.EventList;
+        while (ce!=None){
+            if(ce.label=="A1"){
+                ces = ConEventSpeech(ce);
+                break;
+            }
+
+            prev = ce;
+            ce = ce.nextEvent;
+        }
+
+        //Add the flag before the speech event so the flag is set immediately
+        cesf = ConEventSetFlag(NewConEvent(conv,prev,class'ConEventSetFlag'));
+        cesf.eventType=ET_SetFlag;
+        cesf.flagRef = new(conv) class'ConFlagRef';
+        cesf.flagRef.flagName='WhatAreYouDoingHere';
+        cesf.flagRef.value=True;
+        cesf.flagRef.expiration=7;
+
+        //Move the label so that it jumps to the SetFlag instead of the Speech first
+        cesf.label = "A1";
+        ces.label = "";
+
         break;
     case "05_NYC_UNATCOISLAND":
         //Add a trigger event to hit the SavedMiguel bingo trigger
@@ -3139,6 +3170,10 @@ static function int GetBingoFailedEvents(string eventname, out string failed[7])
     } else if (Right(eventname, 5) == "_Dead") {
         failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "Unconscious";
         failed[num_failed++] = Left(eventname, Len(eventname) - 4) $ "PlayerUnconscious";
+    } else if (Right(eventname, 16) == "_TakedownByOther") {
+        failed[num_failed++] = Left(eventname, Len(eventname) - 15) $ "PlayerUnconscious";
+        failed[num_failed++] = Left(eventname, Len(eventname) - 15) $ "PlayerDead";
+        failed[num_failed++] = Left(eventname, Len(eventname) - 15) $ "PlayerTakedown";
     }
 
     // keep in mind that a goal can only be marked as failed if it isn't already marked as completed
@@ -3340,6 +3375,10 @@ static function Upgrade(#var(PlayerPawn) player, int old_version)
 
     if (old_version < class'DXRVersion'.static.VersionToInt(3,6,1,1)) {
         HandleUpgradePre_3_6_1_1(player,data,events);
+    }
+
+    if (old_version < class'DXRVersion'.static.VersionToInt(3,6,8,2)) {
+        HandleUpgradePre_3_6_8_2(player,data,events);
     }
 
     //Add any new upgrades to the end of the pile, each with an individual if, so that it runs
@@ -3605,6 +3644,43 @@ static function HandleUpgradePre_3_6_1_1(#var(PlayerPawn) player, PlayerDataItem
     }
 }
 
+static function HandleUpgradePre_3_6_8_2(#var(PlayerPawn) player, PlayerDataItem data, DXREvents events)
+{
+    local int x, y, progress, max, missions,append_max;
+    local string event, new_event, desc, new_desc;
+
+    //Update goals on the bingo board
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max, missions, append_max);
+            switch(event) {
+            case "NiceTerrorist_Dead":
+                new_event = "NiceTerrorist_Takedown";
+                break;
+            case "Sailor_ClassDeadM6":
+                new_event = "Sailor_ClassTakedownM6";
+                break;
+            default:
+                new_event = "";
+                break;
+            }
+
+            if (new_event!=""){
+                new_desc = events.FindOrigBingoDescription(new_event,max); //Get the default description for the new event
+
+                if (new_desc==""){
+                    //Something went wrong, and this event couldn't be found!  Don't update!
+                    player.ClientMessage("Couldn't find new event "$new_event$" in bingo option list!  Report to devs!");
+                } else {
+                    UpdateBingoSquare(player, data, events, x, y, new_event, desc, new_desc, progress, max, missions,bool(append_max));
+                }
+            }
+
+        }
+    }
+}
+
+
 
 //#endregion
 
@@ -3667,7 +3743,7 @@ defaultproperties
     bingo_options(25)=(event="JoshFed",desc="Give Josh some food",max=1,missions=#bit(2))
     bingo_options(26)=(event="M02BillyDone",desc="Give Billy some food",max=1,missions=#bit(2))
     bingo_options(27)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1,missions=#bit(2))
-    bingo_options(28)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hangar",max=1,missions=#bit(3))
+    bingo_options(28)=(event="NiceTerrorist_Takedown",desc="Ignore Paul in the 747 Hangar",max=1,missions=#bit(3))
     bingo_options(29)=(event="M10EnteredBakery",desc="Enter the bakery",max=1,missions=#bit(10))
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(30)=(event="FreshWaterOpened",desc="Fix the water",max=1,missions=#bit(3))
@@ -3894,7 +3970,7 @@ defaultproperties
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange!",max=12,missions=#bit(1,2,3,4,5,6,8,9,10,12,15))
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy!",max=100,missions=#bit(1,2,3,4,5,6,9,10,11,15))
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=#bit(6))
-    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=4,missions=#bit(6))
+    bingo_options(237)=(event="Sailor_ClassTakedownM6",desc="I SPILL %s DRINKS!",desc_singular="I SPILL MY DRINK!",max=4,missions=#bit(6))
     bingo_options(238)=(event="Shannon_PlayerTakedown",desc="Take down the thief in UNATCO",max=1,missions=#bit(1,3,4,5))
     bingo_options(239)=(event="DestroyCapitalism_VariousDead",desc="MUST.  CRUSH.  %s CAPITALISTS.",desc_singular="MUST.  CRUSH.  CAPITALISM.",max=10,missions=#bit(1,2,3,4,5,6,8,10,11,12))
     bingo_options(240)=(event="Canal_Cop_PlayerTakedown",desc="Not advisable to visit the canals at night",max=1,missions=#bit(6))
@@ -4195,5 +4271,9 @@ defaultproperties
     mutually_exclusive(111)=(e1="FlushToilet",e2="FlushUrinal")
 
     mutually_exclusive(112)=(e1="ComputerHacked",e2="CivilForfeiture")
+    mutually_exclusive(113)=(e1="MolePeopleWater",e2="FreshWaterOpened")
+    mutually_exclusive(114)=(e1="WaltonConvos_VariousPlayed",e2="WaltonSimons_Dead")
+    mutually_exclusive(115)=(e1="PetDogs",e2="WatchDogs_peeptime")
+    mutually_exclusive(116)=(e1="BirdWatching_peeptime",e2="PerformBurder_ClassDead")
 //#endregion
 }

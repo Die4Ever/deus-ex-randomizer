@@ -140,6 +140,8 @@ function PreFirstEntryMapFixes()
 
         }
 
+        MassSetSecretGoalRadius(class'#var(prefix)Containers',vectm(3600,-1740,640),250,true); //Barrels behind teleporter to _FAN
+
         //Add some new locations for containers and items
         Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
         Spawn(class'PlaceholderContainer',,, vectm(-3109,-73,305)); //Front of ship
@@ -207,6 +209,9 @@ function PreFirstEntryMapFixes()
             ord.Destroy();
         }
         UpdateWeldPointGoal(5);
+
+        //Make it so Merchant/bots can't spawn in the electrical room
+        MassSetSecretGoalBox(class'NavigationPoint', vectm(-3950,1645,0), vectm(-2960,660,-525), true);
 
         if (VanillaMaps){
             foreach AllActors(class'ComputerSecurity',cs){
@@ -455,6 +460,9 @@ function PreFirstEntryMapFixes()
             //Make Jock take off a bit faster during the exit cutscene
             AdjustInterpolationPathRates('CopterPath',0,5,3.0);
             AdjustInterpolationPathRates('CameraPath',0,5,3.5);
+
+            //Remove the brief wait between finishing the conversation with Jock and taking off
+            ReduceHelicopterDelay('ChopperExit');
         }
 
         if (!VanillaMaps){

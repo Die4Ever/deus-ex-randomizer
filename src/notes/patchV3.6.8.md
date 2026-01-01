@@ -21,8 +21,39 @@
 - Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 - Fixed a bug where characters would patrol to a point and then start wandering, instead of standing still.  In particular, this fixes an issue if you aren't standing near the jail cell window in Mission 5 when Anna shows up (if she's still alive), as previously she would wander away.
 - Add a button to open the door to the UNATCO HQ front door desk from the inside in Mission 1.  All other versions of UNATCO HQ (Missions 3, 4, 5) already have a button to open the door from the inside.
-- Aug/Med/Repair Bots and Merchants will no longer spawn in the electrified room in the Vandenberg Command Center, or outside the door of that map in the inaccessible duplicate of the main hall.
+- Aug/Med/Repair Bots and Merchants will no longer spawn in certain dangerous locations:
+  - Near the arcing electricity in the Airfield (Mission 3)
+  - In the electrical room on the superfreighter (Mission 9)
+  - Near the broken electrical box in the Paris Catacombs (Mission 10).
+  - In the electrified room in the Vandenberg Command Center (Mission 12).
+  - Outside the door of Vandenberg Command Center in the inaccessible duplicate of the main hall (Mission 12).
 - The teleporter to leave the Vandenberg Command Center is now slightly larger to hopefully make it less possible to sneak past.
 - Jock now flies faster during the exit cutscenes from the graveyard in Mission 9 and from the gas station in Mission 12.
 - Bingo goal for learning Maggie's birthday is now properly marked when reading the relevant datacube.
+- Fixed an issue where going two layers deep into the menus (E.g. Settings > Controls) would set your default FOV to whatever the current FOV was at the time you entered the menu.  This caused issues if you went into the menus while drunk or using a scope.  This would sometimes cause your game to be slightly zoomed in, or your weapon to not appear until you switch to another one.
+- When New Game Plus removes a weapon, the chosen weapon is no longer dependent on the order in which you picked up the weapons.
+- Robots will no longer drop any weapons regardless of whether they are "standard" or not.  Some robots, like the security bots in Dockyards (Mission 9), have non-standard robot weapons such as flamethrowers.  Previously, when those robots were destroyed, they would drop any of those non-standard weapons.
+- Spiderbots (Or robots who have been given spiderbot weapons) will now be able to use their zap attack against enemies who are not robots.  Previously spiderbots would have only used the zap against the player or robots (particularly noticeable if you scrambled a spiderbot, they would just stand and look at their enemy without attacking).
+- Enemies will no longer clone off of disabled robots (Like the ones in the robotics bay in Mission 5, or the Level 2 MJ12 Lab in Mission 6)
+- Dragging a stack of items off of the inventory screen will now drop the whole stack, rather than just a single item from the stack.
+- Barrels that start the level already leaking will no longer lose 1 health every time the game or map is loaded.
+- Gas clouds (such as poison gas from barrels, halon from fire extinguishers, and tear gas from gas grenades) no longer block the highlighting of objects behind them.
+- When meeting the Dragon Heads for drinks at the Lucky Money (Mission 6), JC will properly acknowledge that he doesn't have room for Max's drinks when his inventory is full.  If this happens, the wine will appear on the bar, rather than being lost forever.
+- In Mission 8, Jordan Shea will no longer take your money if you don't have space for the Forty or Candy Bar you may try to buy from her.
+- In Mission 8, Smuggler will no longer take your money if you don't have space for the Assault Shotgun that he sells.  This also fixes the same issue for the Sabot rounds and GEP rockets he sells, but currently Randomizer will not fail an ammo transfer, even if you are full on that type of ammo.
+- The barrels behind the teleporter leading from the Ship Upper Decks to the Dockyard Ventilation System (Mission 9) will no longer be randomized.
+- NPCs who are standing or dancing will now always try to return to their original location after leaving it for whatever reason (e.g. if they chased the player).
+- Alex Jacobson will now actually appear in Tong's Lab (Mission 6) when using a Hong Kong starting map (e.g. when playing WaltonWare).
+- Aggressive Defense System will now stop tracking projectiles immediately once the player runs out of bioelectric energy.
+- Datacube with ALL_SHIFTS account information in Versalife offices (M06) can now be randomized anywhere in the office except for the security room.
+- Bingo goals that require you to kill or knockout a specific character yourself should now be marked as failed more reliably if killed or knocked out by someone other than the player.
+- Bingo goal adjustments:
+  - "Ignore Paul in the 747 Hangar" now allows either a kill or knock out.
+  - "I SPILL MY DRINK!" now allows either a kill or knock out.
+- The time between conversations with Jock and the start of exit cutscenes has been consistently reduced to try to prevent the player from taking damage between the end of the conversation and the start of the cutscene (as often happened at the end of Mission 9 Graveyard).
+- The player can no longer put random ATM accounts into debt when hacking them (they can only be reduced to a balance of 0 credits).  Account balances are actually properly emptied and synced to other ATMs in the same map when an ATM is hacked.
+- The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
+- Zombies will no longer be able to resurrect through thin floors.
+- Weapons that are in the process of attacking will not actually attack if their owner dies mid-fire.
+- Turrets in the Ocean Lab main area and UC area (Mission 14) will now target everything, instead of just the players allies.
 </details>

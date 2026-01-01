@@ -889,6 +889,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             SetPawnLocAsHome(sp);
         }
 
+        //If the actor has inventory, make sure it moves to the new location and is based on the thing
+        RebaseInventory(a);
     }
 
     if( (Loc.bitMask & SITTING_GOAL) != 0) {

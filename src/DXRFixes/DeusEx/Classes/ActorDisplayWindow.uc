@@ -19,6 +19,7 @@ var bool         bShowEventConnections;
 var bool         bShowCollision;
 var bool         bShowTextTags;
 var bool         bShowAlliances;
+var bool         bShowWeaponScore;
 
 function SetActorRadius(string newRadius)
 {
@@ -167,6 +168,16 @@ function bool AreAlliancesVisible()
 function ShowAlliances(bool bShow)
 {
     bShowAlliances = bShow;
+}
+
+function bool AreWeaponScoresVisible()
+{
+    return bShowWeaponScore;
+}
+
+function ShowWeaponScores(bool bShow)
+{
+    bShowWeaponScore = bShow;
 }
 
 
@@ -834,9 +845,19 @@ function DrawWindow(GC gc)
                         str = str $ GetActorName(item);
                         if (Ammo(item)!=None){
                             str = str $ " ("$Ammo(item).AmmoAmount$")";
+                        } else if (Weapon(item)!=None && ScriptedPawn(trackActor)!=None && bShowWeaponScore){
+                            str = str $ " (S: "$CalcWeaponScore(item)$")";
                         }
                         str = str $ CR();
                     }
+                }
+            }
+            //#endregion
+
+            //#region Show Weapon Score
+            if (bShowWeaponScore) {
+                if (Weapon(trackActor)!=None && ScriptedPawn(trackActor.Owner)!=None){
+                    str = str $ "Score: "$ CalcWeaponScore(trackActor) $ CR();
                 }
             }
             //#endregion
@@ -922,6 +943,298 @@ function DrawWindow(GC gc)
 }
 //#endregion
 
+//#region Calc Weapon Score
+//Duplicated from ScriptedPawn::SwitchToBestWeapon with some minor formatting differences
+function string CalcWeaponScore(Actor item)
+{
+    local #var(DeusExPrefix)Weapon dxw,cur;
+    local ScriptedPawn sp;
+
+    local float        score;
+    local int          fallbackLevel;
+    local int          curFallbackLevel;
+    local bool         bBlockSpecial;
+    local bool         bValid;
+    local float        minRange, accRange;
+    local float        range, centerRange;
+    local float        cutoffRange;
+    local float        enemyRange;
+    local float        minEnemy, accEnemy, maxEnemy;
+    local ScriptedPawn enemyPawn;
+    local Robot        enemyRobot;
+    local DeusExPlayer enemyPlayer;
+    local float        enemyRadius;
+    local bool         bEnemySet;
+    local float        FireTimer;
+
+    local string       finalScore;
+
+
+
+    if (item==None){
+        return "None";
+    }
+
+    dxw = #var(DeusExPrefix)Weapon(item);
+    sp = ScriptedPawn(item.Owner);
+
+    if (dxw==None){
+        return "Not Weapon";
+    }
+
+    if (sp==None){
+        return "Not Owned";
+    }
+
+//////////////////////////////////////////////////////////////////
+//  DUPLICATED LOGIC FROM ScriptedPawn::SwitchToBestWeapon
+
+    if (sp.ShouldDropWeapon())
+    {
+        return "Dropping";
+    }
+
+    bBlockSpecial = false;
+    cur = #var(DeusExPrefix)Weapon(sp.Weapon);
+    if (cur != None)
+    {
+        if (cur.AITimeLimit > 0)
+        {
+            if (sp.SpecialTimer <= 0)
+            {
+                bBlockSpecial = true;
+                FireTimer = cur.AIFireDelay;
+            }
+        }
+    }
+
+    fallbackLevel   = 0;
+
+    bEnemySet   = false;
+    minEnemy    = 0;
+    accEnemy    = 0;
+    enemyRange  = 400;  // default
+    enemyRadius = 0;
+    enemyPawn   = None;
+    enemyRobot  = None;
+    if (sp.Enemy != None)
+    {
+        bEnemySet   = true;
+        enemyRange  = VSize(sp.Enemy.Location - sp.Location);
+        enemyRadius = sp.Enemy.CollisionRadius;
+        if (#var(DeusExPrefix)Weapon(sp.Enemy.Weapon) != None)
+            #var(DeusExPrefix)Weapon(sp.Enemy.Weapon).GetWeaponRanges(minEnemy, accEnemy, maxEnemy);
+        enemyPawn   = #var(prefix)ScriptedPawn(sp.Enemy);
+        enemyRobot  = #var(prefix)Robot(sp.Enemy);
+        enemyPlayer = #var(PlayerPawn)(sp.Enemy);
+    }
+
+
+
+
+    bValid = true;
+    if (dxw.ReloadCount > 0)
+    {
+        if (dxw.AmmoType == None)
+            bValid = false;
+        else if (dxw.AmmoType.AmmoAmount < 1)
+            bValid = false;
+
+        if (!bValid && finalScore==""){
+            finalScore="No Ammo";
+        }
+    }
+
+
+    // Ensure we can actually use this weapon here
+    if (bValid)
+    {
+        // lifted from DeusExWeapon...
+        if ((dxw.EnviroEffective == ENVEFF_Air) || (dxw.EnviroEffective == ENVEFF_Vacuum) ||
+            (dxw.EnviroEffective == ENVEFF_AirVacuum))
+            if (dxw.Region.Zone.bWaterZone)
+                bValid = false;
+
+        if (!bValid && finalScore==""){
+            finalScore="Inv. Enviro";
+        }
+    }
+
+    if (bValid)
+    {
+        sp.GetWeaponBestRange(dxw, minRange, accRange);
+        cutoffRange = minRange+(sp.CollisionRadius+enemyRadius);
+        range = (accRange - minRange) * 0.5;
+        centerRange = minRange + range;
+        if (range < 50)
+            range = 50;
+        if (enemyRange < centerRange)
+            score = (centerRange - enemyRange)/range;
+        else
+            score = (enemyRange - centerRange)/range;
+        if ((minRange >= minEnemy) && (accRange <= accEnemy))
+            score += 0.5;  // arbitrary
+        if ((cutoffRange >= enemyRange-sp.CollisionRadius) && (cutoffRange >= 256)) // do not use long-range weapons on short-range targets
+            score += 10000;
+
+        curFallbackLevel = 3;
+        if (dxw.bFallbackWeapon && !sp.bUseFallbackWeapons)
+            curFallbackLevel = 2;
+        if (!bEnemySet && !dxw.bUseAsDrawnWeapon)
+            curFallbackLevel = 1;
+        if ((dxw.AIFireDelay > 0) && (sp.FireTimer > 0))
+            curFallbackLevel = 0;
+        if (bBlockSpecial && (dxw.AITimeLimit > 0) && (sp.SpecialTimer <= 0))
+            curFallbackLevel = 0;
+
+        // Adjust score based on opponent and damage type.
+        // All damage types are listed here, even the ones that aren't used by weapons... :)
+        // (hacky...)
+
+        switch (dxw.WeaponDamageType())
+        {
+            case 'Exploded':
+                // Massive explosions are always good
+                score -= 0.2;
+                break;
+
+            case 'Stunned':
+                if (enemyPawn != None)
+                {
+                    if (enemyPawn.bStunned)
+                        score += 1000;
+                    else
+                        score -= 1.5;
+                }
+                if (enemyPlayer != None)
+                    score += 10;
+                break;
+
+            case 'TearGas':
+                if (enemyPawn != None)
+                {
+                    if (enemyPawn.bStunned){
+                        //score += 1000;
+                        bValid = false;
+                        if (finalScore==""){
+                            finalScore="Already Stunned";
+                        }
+                    } else
+                        score -= 5.0;
+                }
+                if (enemyRobot != None) {
+                    //score += 10000;
+                    bValid = false;
+                    if (finalScore==""){
+                        finalScore="Target Robot";
+                    }
+                }
+                break;
+
+            case 'HalonGas':
+                if (enemyPawn != None)
+                {
+                    if (enemyPawn.bStunned){
+                        //score += 1000;
+                        bValid = false;
+                        if (finalScore==""){
+                            finalScore="Already Stunned";
+                        }
+                    } else if (enemyPawn.bOnFire){
+                        //score += 10000;
+                        bValid = false;
+                        if (finalScore==""){
+                            finalScore="Already Burning";
+                        }
+                    } else
+                        score -= 3.0;
+                }
+                if (enemyRobot != None)
+                    //score += 10000;
+                    bValid = false;
+                break;
+
+            case 'PoisonGas':
+            case 'Poison':
+            case 'PoisonEffect':
+            case 'Radiation':
+                if (enemyRobot != None){
+                    //score += 10000;
+                    bValid = false;
+                    if (finalScore==""){
+                        finalScore="Target Robot";
+                    }
+                }
+                break;
+
+            case 'Burned':
+            case 'Flamed':
+            case 'Shot':
+                if (enemyRobot != None)
+                    score += 0.5;
+                break;
+
+            case 'Sabot':
+                if (enemyRobot != None)
+                    score -= 0.5;
+                break;
+
+            case 'EMP':
+            case 'NanoVirus':
+                if (enemyRobot != None)
+                    score -= 5.0;
+                else if (enemyPlayer != None)
+                    score += 5.0;
+                else {
+                    //score += 10000;
+                    bValid = false;
+                    if (finalScore==""){
+                        finalScore="Target Non-Player/Robot";
+                    }
+                }
+                break;
+
+            case 'Drowned':
+            default:
+                break;
+        }
+
+        // Special case for current weapon
+        if ((dxw == sp.Weapon) && (sp.WeaponTimer < 10.0))
+        {
+            // If we last changed weapons less than five seconds ago,
+            // keep this weapon
+            if (sp.WeaponTimer < 5.0)
+                score = -10;
+
+            // If between five and ten seconds, use a sliding scale
+            else
+                score -= (10.0 - sp.WeaponTimer)/5.0;
+        }
+
+        // Throw a little randomness into the computation...
+        else
+        {
+            //This RNG won't match the real calculation, don't do this for Rando display purposes
+            //0.5 result would result in 0 change
+            //score += FRand()*0.1 - 0.05;
+            if (score < 0)
+                score = 0;
+        }
+
+    }
+
+//////////////////////////////////////////////////////////////////
+
+    if (bValid && finalScore==""){
+        finalScore = ""$score;
+    }
+
+    return finalScore;
+}
+//#endregion
+
+//#region Draw Shapes
 //DrawCylinder, but now it uses colour lines instead of forced white ones
 function DrawColourCylinder(GC gc, actor trackActor, int r, int g, int b)
 {
@@ -1012,6 +1325,7 @@ function DrawCube(GC gc, vector c1, vector c2, int r, int g, int b)
     DrawColourLine(gc,corners[7],corners[4],r,g,b); //Bottom Square
 
 }
+//#endregion
 
 defaultproperties
 {

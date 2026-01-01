@@ -270,6 +270,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     if( newclass == None && IsHuman(base.class) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
     if( IsHuman(newclass) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
+    if( #var(prefix)Robot(base) != None && base.Orders == 'Idle' ) return None; //Don't clone off of idle robots (who likely have all reactions disabled)
 
     oldSeed = BranchSeed(base $ newclass);
     n = CloneScriptedPawn(base, newclass);
@@ -450,6 +451,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     RandomizeSize(n);
     n.bInitialized=False;
     n.InitializePawn();
+    n.ResetReactions(); //Make sure callbacks are set up for this pawn with the duplicated reactions (InitializePawn would have done BlockReactions)
 
     if(!p.bInWorld) {
         class'DXREnterWorldLink'.static.Create(p, n);
@@ -485,6 +487,7 @@ function inventory GiveRandomBotWeapon(Pawn p, optional bool allow_dupes, option
     local int i;
     local float r;
     local int findWeaponAttempts;
+    local Inventory inv;
 
     findWeaponAttempts = 15;
 
@@ -511,7 +514,15 @@ function inventory GiveRandomBotWeapon(Pawn p, optional bool allow_dupes, option
     }
 
     l("GiveRandomBotWeapon "$p$", "$wclass.Name$", "$add_ammo);
-    return GiveItem( p, wclass, add_ammo );
+
+    inv = GiveItem( p, wclass, add_ammo );
+
+    if (#var(DeusExPrefix)Weapon(inv)!=None) {
+        //Make sure any weapons given to robots are considered native, so they won't drop when exploded
+        #var(DeusExPrefix)Weapon(inv).bNativeAttack = true;
+    }
+
+    return inv;
 }
 
 function class<Weapon> GiveRandomWeaponClass(Pawn p, optional bool allow_dupes)

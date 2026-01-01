@@ -253,6 +253,7 @@ function PreFirstEntry()
     SpawnDatacubes();
     FixHolograms();
     FixShowers();
+    MakeRobotWeaponsNative();
 #ifdef gmdx
     FixGMDXObjects();
 #endif
@@ -298,6 +299,8 @@ function PostFirstEntry()
         PostFirstEntryMapFixes();
 
     RemoveStopWhenEncroach();
+
+    FixStandingDancingBlockages();
 }
 
 function AnyEntry()
@@ -1197,6 +1200,19 @@ function PreventShufflingAmbrosia()
     }
 }
 
+function FixStandingDancingBlockages()
+{
+    local ScriptedPawn sp;
+
+    foreach AllActors(class'ScriptedPawn',sp){
+        if (sp.Orders!='Standing' && sp.Orders!='Dancing') continue; //Only apply this to pawns who will block a path
+        if (sp.bUseHome) continue; //Don't play with their Home if they actually had one set
+
+        //Make them always try to return to their starting position
+        sp.SetHomeBase(sp.Location,sp.Rotation,sp.CollisionRadius);
+    }
+}
+
 //Scale the damage done by zones to counteract the damage scaling from CombatDifficulty
 function ScaleZoneDamage()
 {
@@ -1351,6 +1367,27 @@ function RemoveStopWhenEncroach()
         }
     }
 
+}
+
+function MakeRobotWeaponsNative()
+{
+    local #var(prefix)Robot r;
+    local #var(DeusExPrefix)Weapon dxw;
+    local inventory inv;
+
+    foreach AllActors(class'#var(prefix)Robot',r) {
+        for(inv = r.Inventory; inv!=None ; inv = inv.Inventory) {
+            dxw = #var(DeusExPrefix)Weapon(inv);
+            if (dxw!=None) {
+                if (dxw.bNativeAttack == false) {
+                    dxw.bNativeAttack = true;
+                    l("Robot "$r$" has non-native weapon "$dxw$" - Making weapon native");
+                }
+            }
+        }
+
+    }
+    //TODO
 }
 
 function SpawnDatacubes()

@@ -137,6 +137,12 @@ function Destroyed()
     Super.Destroyed();
 }
 
+function PostPostBeginPlay()
+{
+    Super.PostPostBeginPlay();
+    bPreDamage = false; //So it only predamages the first time
+}
+
 auto state Active
 {
     function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)

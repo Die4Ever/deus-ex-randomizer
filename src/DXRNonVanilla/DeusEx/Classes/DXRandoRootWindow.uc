@@ -80,6 +80,13 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
         }
     }
 
+    //Going two layers deep into the menus saves the current DesiredFOV
+    //as the Default.DesiredFOV, for whatever reason.  This causes the FOV
+    //to get screwed up if you go into the menu while zoomed with a scope
+    //or after drinking alcohol.  Reset to the "DefaultFOV" when exiting
+    //windows to get it set back to where it's supposed to be.
+    ParentPawn.Default.DesiredFOV = ParentPawn.DefaultFOV;
+
     Super.PopWindow(bNoUnpause);
 }
 

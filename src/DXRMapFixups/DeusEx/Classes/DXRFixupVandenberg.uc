@@ -74,6 +74,7 @@ function PreFirstEntryMapFixes()
     local DXRIntermediatePoint intermediate;
     local #var(injectsprefix)AllianceTrigger at;
     local #var(prefix)AlarmUnit au;
+    local #var(prefix)AutoTurret turret;
 
     local bool VanillaMaps;
 
@@ -190,6 +191,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)ScriptedPawn', sp, 'Mechanic') {
             sp.bImportant = true;
         }
+
+        ReduceHelicopterDelay('map_exit',1);
 
         break;
     //#endregion
@@ -369,6 +372,13 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        foreach AllActors(class'#var(prefix)AutoTurret', turret){
+            //Make the turrets attack "Everything" instead of just "Allies"
+            //This makes it so they will also shoot cloned enemies who might end up near them.
+            turret.bTrackPlayersOnly=False;
+            turret.bTrackPawnsOnly=False;
+        }
+
         if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot) {
                 if(ot.Event == 'muncher') {
@@ -513,6 +523,13 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(73,9110,-2910)); //Turret room, opposite from bait computer
         }
 
+        foreach AllActors(class'#var(prefix)AutoTurret', turret){
+            //Make the turrets attack "Everything" instead of just "Allies"
+            //This makes it so they will also shoot cloned enemies who might end up near them.
+            turret.bTrackPlayersOnly=False;
+            turret.bTrackPawnsOnly=False;
+        }
+
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //Spiders should go to where the lasers are
             reinforce = Spawn(class'DXRReinforcementPoint',,'SpiderDest',vectm(475,4290,-4195));
@@ -621,6 +638,8 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BlackHelicopter',jock,'BlackHelicopter'){break;}
         hoverHint = class'DXRTeleporterHoverHint'.static.Create(self, "", jock.Location, jock.CollisionRadius+5, jock.CollisionHeight+5, exit,, true);
         hoverHint.SetBaseActor(jock);
+
+        ReduceHelicopterDelay('SiloExit',0);
 
         //The door closing behind you when the ambush starts sucks if you came in via the silo.
         //Just make it not close.
