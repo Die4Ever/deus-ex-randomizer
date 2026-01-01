@@ -56,4 +56,5 @@
 - Zombies will no longer be able to resurrect through thin floors.
 - Weapons that are in the process of attacking will not actually attack if their owner dies mid-fire.
 - Turrets in the Ocean Lab main area and UC area (Mission 14) will now target everything, instead of just the players allies.
+- Turrets that have been moved or randomly added will now sit idle facing the area they are supposed to be protecting.
 </details>

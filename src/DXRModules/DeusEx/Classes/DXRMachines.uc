@@ -110,7 +110,10 @@ function MoveTurret(#var(prefix)AutoTurret t, vector loc)
 {
     local rotator rotation;
     local Vector v1, v2;
-    local Rotator rot;
+    local Rotator rot, intendedRot;
+    local vector origLoc;
+
+    origLoc = loc;
 
     if( ! GetTurretLocation(loc, rotation) ) {
         warning("MoveTurret failed to GetTurretLocation at "$loc);
@@ -126,6 +129,15 @@ function MoveTurret(#var(prefix)AutoTurret t, vector loc)
     rot.Roll = 0;
     // HACK: for GMDX v10
     t.SetPropertyText("origRot", "(Pitch="$rot.Pitch$",Yaw="$rot.Yaw$",Roll="$rot.Roll$")");
+
+
+    //Adjust turret rotation to look at the spot it's protecting
+    intendedRot = Rotator(origLoc - loc);
+    if (t.gun!=None){
+        t.origRot.yaw = intendedRot.Yaw;
+        t.gun.DesiredRotation = t.origRot;
+    }
+
     v1.X = 0;
     v1.Y = 0;
     v1.Z = t.CollisionHeight + t.gun.Default.CollisionHeight;
@@ -139,7 +151,10 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc, bool small)
 {
     local #var(prefix)AutoTurret t;
     local class<#var(prefix)AutoTurret> turretClass;
-    local rotator rotation;
+    local rotator rotation, intendedRot;
+    local vector origLoc;
+
+    origLoc = loc;
 
     if( ! GetTurretLocation(loc, rotation) ) {
         warning("SpawnTurret failed to GetTurretLocation at "$loc);
@@ -164,6 +179,14 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc, bool small)
     t.maxRange = t.maxRange * 2;
     //t.fireRate *= 0.9;// lower numbers are stronger - Don't adjust fireRate so that the behaviour is consistent for all large/small turrets
     t.gunAccuracy *= 0.8;// lower numbers are stronger
+
+    //Adjust turret rotation to look at the spot it's protecting
+    intendedRot = Rotator(origLoc - loc);
+    if (t.gun!=None){
+        t.origRot.yaw = intendedRot.Yaw;
+        t.gun.DesiredRotation = t.origRot;
+    }
+
     class'DXRPasswords'.static.RandoHackable(dxr, t.gun);
     info("SpawnTurret "$t$" done at ("$loc$"), ("$rotation$")");
     return t;
