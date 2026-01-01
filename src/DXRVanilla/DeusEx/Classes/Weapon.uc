@@ -770,6 +770,8 @@ simulated function TraceFire( float Accuracy )
     local int i, numSlugs;
     local float volume, radius;
 
+    if (Pawn(Owner)!=None && Pawn(Owner).Health <= 0) return; //Dead people can't attack
+
     // make noise if we are not silenced
     if (!bHasSilencer && !bHandToHand)
     {
@@ -881,6 +883,8 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 {
     local float oldCurrentAccuracy;
     local Projectile p;
+
+    if (Pawn(Owner)!=None && Pawn(Owner).Health <= 0) return None; //Dead people can't attack
 
     oldCurrentAccuracy = currentAccuracy;
     if(bLasing) {

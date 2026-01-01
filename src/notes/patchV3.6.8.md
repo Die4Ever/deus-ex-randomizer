@@ -54,4 +54,5 @@
 - The player can no longer put random ATM accounts into debt when hacking them (they can only be reduced to a balance of 0 credits).  Account balances are actually properly emptied and synced to other ATMs in the same map when an ATM is hacked.
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
 - Zombies will no longer be able to resurrect through thin floors.
+- Weapons that are in the process of attacking will not actually attack if their owner dies mid-fire.
 </details>
