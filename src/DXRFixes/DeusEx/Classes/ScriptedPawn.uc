@@ -867,8 +867,11 @@ state Standing
 
     function BeginState()
     {
-        if(!ShouldActuallyStand()) GotoState('Wandering'); // DXRando
+        local bool becomeWanderer;
+
+        if(!ShouldActuallyStand()) becomeWanderer=true; // DXRando
         if(!ShouldKeepHomeBase()) ClearHomeBase(); //DXRando
+
         StandUp();
         SetEnemy(None, EnemyLastSeen, true);
         Disable('AnimEnd');
@@ -880,6 +883,8 @@ state Standing
         SetDistress(false);
         SeekPawn = None;
         EnableCheckDestLoc(false);
+
+        if (becomeWanderer) GotoState('Wandering');  //Do this at the end, so that presumably it will go to Wandering state instead of continuing on with anything else in this state
     }
 
     function EndState()
