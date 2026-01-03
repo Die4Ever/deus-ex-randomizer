@@ -136,6 +136,10 @@ function MoveTurret(#var(prefix)AutoTurret t, vector loc)
     if (t.gun!=None){
         t.origRot.yaw = intendedRot.Yaw;
         t.gun.DesiredRotation = t.origRot;
+
+        #ifdef injections
+        t.ForceDefaultSwingBehaviour();
+        #endif
     }
 
     v1.X = 0;

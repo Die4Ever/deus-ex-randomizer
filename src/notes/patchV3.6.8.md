@@ -55,6 +55,8 @@
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
 - Zombies will no longer be able to resurrect through thin floors.
 - Weapons that are in the process of attacking will not actually attack if their owner dies mid-fire.
-- Turrets in the Ocean Lab main area and UC area (Mission 14) will now target everything, instead of just the players allies.
 - Turrets that have been moved or randomly added will now sit idle facing the area they are supposed to be protecting.
+- Turrets will now swing side to side when active and hunting targets.  This makes it possible to determine from a distance whether a turret is going to try to shoot you or not (since the light on the front of the turret is not always visible).
+  - Turrets in Ocean Lab will move more abruptly for flavor purposes.
+- Revision no longer soft locks with Paul ignoring you after sending the signal at NSF HQ (Mission 4).
 </details>

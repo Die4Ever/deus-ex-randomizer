@@ -31,6 +31,186 @@ const defRandLookMaxAngle = 11833; //  +/- ~65 degrees
 function PreBeginPlay()
 {
     Super.PreBeginPlay();
+
+    if(class'MenuChoice_BalanceEtc'.static.IsEnabled()) {
+        //Make turrets swing when active when Etc balance changes are
+        activeBehaviour=TB_Swing;
+        SetDefaultSwingBehaviours();
+        CalcBestOrigRot();
+    }
+}
+
+function float GetSwingTimeScaleFactor(float newAngle)
+{
+    switch(activeBehaviour){
+        case TB_Swing:
+            return Max(1.0,newAngle/defSwingMaxAngle);
+        case TB_RandomLook:
+            return Max(1.0,newAngle/defRandLookMaxAngle);
+    }
+    return 1.0;
+}
+
+
+//A lot of AutoTurrets are really badly rotated.  Poke around a bit to see what rotations
+//seem most reasonable...  Check in increments to see what directions seem the most open.
+function CalcBestOrigRot()
+{
+    //local float dists[8];
+    local float dists[32];
+    local Rotator testRotDir;
+    local float yawIncrement,lowestDist,highestDist, origRotDist, SwingThreshold, SwingAmount, CentreAdjust;
+    local int i, idx, lowestDistIdx, highestDistIdx, lowExtent, highExtent;
+
+    local vector HitLocation, HitNormal,EndTrace;
+    local Actor HitActor;
+    local bool setOrigRot;
+
+    //Turrets attached to movers are probably tucked away, or something
+    //Trust the level designer hopefully aimed it in roughly the right direction.
+    if (#var(DeusExPrefix)Mover(Base)!=None) return;
+
+    yawIncrement = 65536/ArrayCount(dists);
+    //ProbeDistance = 5000.0;
+    SwingThreshold = 0.25;
+
+    lowestDistIdx=0;
+    highestDistIdx=0;
+
+    //Check the distance in each direction
+    for (i=0;i<ArrayCount(dists);i++)
+    {
+        testRotDir.Yaw = yawIncrement * i;
+
+        EndTrace = gun.Location + (class'DXRBase'.static.MakeVector(maxRange,0,0) >> testRotDir);
+        HitActor = gun.Trace(HitLocation, HitNormal, EndTrace,gun.Location, false);
+
+        if (HitActor==None){
+            dists[i]=maxRange;
+        }
+        else if (HitActor==Level)
+        {
+            dists[i]=VSize(HitLocation-gun.Location);
+        }
+
+        if (dists[i] < dists[lowestDistIdx])
+        {
+            lowestDistIdx = i;
+        }
+
+        if (dists[i] > dists[highestDistIdx])
+        {
+            highestDistIdx = i;
+        }
+    }
+
+    //Also calculate the distance in the actual original rotation
+    EndTrace = gun.Location + (class'DXRBase'.static.MakeVector(maxRange,0,0) >> origRot);
+    HitActor = gun.Trace(HitLocation, HitNormal, EndTrace,gun.Location, false);
+
+    if (HitActor==None){
+        origRotDist=maxRange;
+    }
+    else if (HitActor==Level)
+    {
+        origRotDist=VSize(HitLocation-gun.Location);
+    }
+
+
+    lowestDist = dists[lowestDistIdx];
+    highestDist = dists[highestDistIdx];
+
+
+    //Convert all distances into a score between 0 (the lowest distance) and 1 (the highest distance)
+    for (i=0;i<ArrayCount(dists);i++)
+    {
+        dists[i]=(dists[i]-lowestDist)/(highestDist-lowestDist);
+    }
+
+    //and the original rotation distance
+    origRotDist=(origRotDist-lowestDist)/(highestDist-lowestDist);
+
+    if (origRotDist > 0.9) {
+        //If the original rotation is at least semi-decent, maybe the map maker did this intentionally?
+        //Don't change the original rotation at all.
+        setOrigRot=false;
+    } else {
+        setOrigRot=true;
+    }
+
+    //TODO: We could determine an ideal swing range using the scores calculated above.  Work out from
+    //the longest distance and find the angles where the scores drop below some threshold (0.7?).
+    //from there, you know the extents of the swing.  Use the centre angle of those extents as the
+    //origRot, and set the swing angle equal to the distance between the centre angle and the extent.
+
+    //Find low extent
+    //lowExtent, highExtent
+    log(self$" HighestDistIdx="$highestDistIdx);
+    idx = highestDistIdx;
+    lowExtent = 0;
+    for (i=0;i < ArrayCount(dists);i++){
+        log(self$" lowExtentIdx="$idx$"  Score: "$dists[idx]);
+        if (dists[idx] >= SwingThreshold){
+            lowExtent = i; //How many steps below
+        } else {
+            //Below the threshold, we've found the extent
+            break;
+        }
+        idx--;
+        if (idx <0) idx = ArrayCount(dists)-1;
+    }
+
+    //Find the high extent
+    idx = highestDistIdx;
+    highExtent = 0;
+    for (i=0;i < ArrayCount(dists);i++){
+        log(self$" highExtentIdx="$idx$"  Score: "$dists[idx]);
+        if (dists[idx] >= SwingThreshold){
+            highExtent = i; //How many steps above
+        } else {
+            //Below the threshold, we've found the extent
+            break;
+        }
+        idx++;
+        if (idx >= ArrayCount(dists) ) idx = 0;
+    }
+
+    log(self$" highExtent="$highExtent$"  LowExtent="$lowExtent);
+
+    testRotDir.Yaw = yawIncrement * highestDistIdx;
+
+    //Incorporate extents...
+    SwingAmount = ((highExtent + LowExtent) * yawIncrement) / 2;
+
+    swingMaxAngle = SwingAmount;
+
+    //Scale SwingTime as well, based on the new swingMaxAngle
+    swingtime = swingTime * GetSwingTimeScaleFactor(SwingAmount);
+
+    //adjust centre down to bottom of low extent, then move halfway through the range
+    CentreAdjust = -(lowExtent * yawIncrement) + (SwingAmount);
+    testRotDir.Yaw += CentreAdjust;
+    if (setOrigRot){
+        SetNewOrigRot(testRotDir);
+    } else {
+        swingBaseYaw = testRotDir.Yaw;
+    }
+}
+
+function SetNewOrigRot(Rotator r)
+{
+    origRot = r;
+    if (gun!=None){
+        gun.DesiredRotation = r;
+        gun.SetRotation(r);
+    }
+}
+
+function ForceDefaultSwingBehaviour()
+{
+    swingTime=0;
+    swingMaxAngle=0;
+    swingBaseYaw=0;
     SetDefaultSwingBehaviours();
 }
 

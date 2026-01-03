@@ -755,10 +755,13 @@ function AnyEntryMapFixes()
 
         // Make the conversation with Paul to start the raid startable by frob
         // (but still require entering the flagtrigger near him)
-        c = GetConversation('TalkedToPaulAfterMessage');
-        if (c!=None){
-            c.bInvokeFrob=true;
-            c.AddFlagRef('ApartmentEntered',True);
+        // The "ApartmentEntered" FlagTrigger doesn't exist in the Revision maps
+        if (VanillaMaps){
+            c = GetConversation('TalkedToPaulAfterMessage');
+            if (c!=None){
+                c.bInvokeFrob=true;
+                c.AddFlagRef('ApartmentEntered',True);
+            }
         }
 
         if (dxr.flagbase.GetBool('DXRando_NSFHQVisited')) {
