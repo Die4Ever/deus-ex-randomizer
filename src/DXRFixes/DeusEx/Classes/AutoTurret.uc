@@ -22,6 +22,8 @@ var() float swingBaseYaw;    //if you want the swing to be centred around a diff
 var() float swingSkew;       //How much to adjust the centre of the swing range from the original rotation
 var   float activeTime;
 
+var DynamicLight statusLight;
+
 const defSwingTime = 10.0;
 const defSwingMaxAngle = 8192; //  +/- 45 degrees
 
@@ -37,7 +39,64 @@ function PreBeginPlay()
         activeBehaviour=TB_Swing;
         SetDefaultSwingBehaviours();
         CalcBestOrigRot();
+
+        //Make a small spotlight that shines the colour of the light on the front of the turret
+        //Currently disabled - The spotlight effect goes through walls and hits actors in a radius
+        //regardless of the LightEffect setting.
+        //CreateStatusLight();
     }
+}
+
+function CreateStatusLight()
+{
+    statusLight = Spawn(class'DynamicLight',,, gun.Location);
+    statusLight.SetBase(gun);
+    statusLight.LightType=LT_None;
+    statusLight.LightEffect=LE_Spotlight;
+    statusLight.LightRadius=32;
+    statusLight.LightCone=32;
+    statusLight.LightBrightness=32;
+    statusLight.LightSaturation=0;
+
+}
+
+function UpdateStatusLightColour()
+{
+    local Rotator lightRot;
+    local Vector  lightLoc;
+
+    if (statusLight==None || statusLight.bDeleteMe) return;
+
+    lightRot = gun.Rotation;
+    statusLight.SetRotation(lightRot);
+    lightLoc = gun.Location + (class'DXRBase'.static.MakeVector(gun.CollisionRadius+0.5,0,0) >> lightRot);
+    statusLight.SetLocation(lightLoc);
+
+    switch(gun.MultiSkins[1])
+    {
+        case Texture'GreenLightTex':
+            statusLight.LightType=LT_Steady;
+            statusLight.LightHue=89;
+            break;
+        case Texture'YellowLightTex':
+            statusLight.LightType=LT_Steady;
+            statusLight.LightHue=75;
+            break;
+        case Texture'RedLightTex':
+            statusLight.LightType=LT_Steady;
+            statusLight.LightHue=255;
+            break;
+        case None:
+        default:
+            statusLight.LightType=LT_None;
+            break;
+    }
+}
+
+function Destroyed()
+{
+    if (statusLight!=None) statusLight.Destroy();
+    Super.Destroyed();
 }
 
 function float GetSwingTimeScaleFactor(float newAngle)
@@ -620,6 +679,9 @@ function Tick(float deltaTime)
             gun.PlayAnim('Still', 10.0, 0.001);
         gun.MultiSkins[1] = None;
     }
+
+    //DXRando
+    UpdateStatusLightColour();
 
     // make noise if we're still moving
     if (near > 64 || (activeBehaviour!=TB_Stationary && shouldMove))
