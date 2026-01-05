@@ -61,4 +61,5 @@
 - Revision no longer soft locks with Paul ignoring you after sending the signal at NSF HQ (Mission 4).
 - Revision no longer soft locks with Gordon Quick disappearing after retrieving the Dragon Tooth Sword ROM if he had been randomized somewhere outside of the Compound map.
 - Split clothing randomization out of the "Memes" configuration option into a new "Fashion" option, under the "Visuals" settings menu.
+- Save points are indicated in their highlight info when playing with Fixed Saves.
 </details>

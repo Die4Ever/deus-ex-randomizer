@@ -8,6 +8,9 @@ var localized string msgHitPoints;
 var DXRando dxr;
 
 var transient bool inited;
+var transient bool isFixedSaves;
+var transient bool saveInfoInited;
+
 
 function DrawWindow(GC gc)
 {
@@ -89,6 +92,30 @@ function bool GetShowKeys()
 function bool GetAutoWeaponMods()
 {
     return class'MenuChoice_AutoWeaponMods'.default.enabled;
+}
+
+function bool GetFixedSavesSetting()
+{
+#ifdef injections
+    local DXRAutosave as;
+
+    if (saveInfoInited) return isFixedSaves;
+
+    as = DXRAutosave(class'DXRAutosave'.static.Find());
+
+    if (!inited) return false;
+
+    if (as==None){
+        isFixedSaves = false;
+    } else {
+        isFixedSaves = as.IsFixedSaves();
+    }
+    saveInfoInited = true;
+
+    return isFixedSaves;
+#else
+    return false;
+#endif
 }
 
 static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)
@@ -519,6 +546,10 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
     local bool code_known;
 
     strInfo = player.GetDisplayName(d);
+
+    if (GetFixedSavesSetting()){
+        strInfo = strInfo $ CR() $ "Save Point";
+    }
 
     c = #var(prefix)Computers(d);
     a = #var(injectsprefix)ATM(d);
