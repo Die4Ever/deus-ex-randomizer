@@ -58,7 +58,7 @@ function Frob(actor Frobber, Inventory frobWith)
             return;
 
         if (fashion!=None) {
-            if (class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags)){
+            if (class'MenuChoice_ToggleFashion'.static.IsEnabled(dxr.flags)){
                 fashion.RandomizeClothes(p);
             } else {
                 if (fashion.HasSkinOverrides()){
