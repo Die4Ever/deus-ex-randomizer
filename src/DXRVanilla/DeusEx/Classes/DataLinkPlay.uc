@@ -31,6 +31,19 @@ function bool PushDataLink( Conversation queueCon )
     return true;
 }
 
+//DXRando
+function Actor GetPlayActor()
+{
+    local Actor playActor;
+
+    playActor = class'DXRCameraModes'.static.GetDataInfoLinkFollower(player);
+    if (playActor==None){
+        playActor = player;
+    }
+
+    return playActor;
+}
+
 function PlaySpeech( int soundID )
 {
     local Sound speech;
@@ -43,7 +56,7 @@ function PlaySpeech( int soundID )
     speech = con.GetSpeechAudio(soundID);
 
     if (speech != None)
-        playingSoundID = player.PlaySound(speech, SLOT_Talk,,,,pitchAdjust);
+        playingSoundID = GetPlayActor().PlaySound(speech, SLOT_Talk,,,,pitchAdjust);
 }
 
 function bool HaveQueued()
@@ -56,7 +69,7 @@ function FastForward()
     bSilent = True;
 
     // Make sure no sound playing
-    player.StopSound(playingSoundId);
+    GetPlayActor().StopSound(playingSoundId);
 
     if ((!bEndTransmission) && (bStartTransmission))
     {
@@ -136,7 +149,7 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
         restarting = false;
         SetTimer(0.05, True);
     } else {
-        player.PlaySound(startSound, SLOT_None);
+        GetPlayActor().PlaySound(startSound, SLOT_None);
         bStartTransmission = True;
         SetTimer(blinkRate, True);
     }

@@ -17,6 +17,7 @@
   - The camera will now be blocked by unmovable decorations (like vans and helicopters) as though they were walls, causing the camera to quickly adjust to allow the player to see themself.
   - The camera *can* be blocked by movable decorations (like crates), but the camera will only adjust if the player stops moving behind them.  This helps avoid unnecessary camera changes when the player is navigating through a busy room.
   - "Doom Mode" Crowd Control effect now works properly in combination with Fixed Cameras.  The player is unable to aim up or down, but the fixed camera itself is still able to tilt.
+  - Infolinks will now play at normal volume instead of fading away as the player gets further from the camera.
 - Aim laser no longer shows up during conversations or cutscenes in Revision.
 - Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 - Fixed a bug where characters would patrol to a point and then start wandering, instead of standing still.  In particular, this fixes an issue if you aren't standing near the jail cell window in Mission 5 when Anna shows up (if she's still alive), as previously she would wander away.
