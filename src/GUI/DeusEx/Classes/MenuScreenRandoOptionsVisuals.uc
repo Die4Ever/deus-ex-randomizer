@@ -25,6 +25,7 @@ function CreateChoices()
     if (#defined(vanilla)) {
         CreateChoice(class'MenuChoice_AutoLamps');
     }
+    CreateChoice(class'MenuChoice_ToggleFashion');
 }
 
 defaultproperties

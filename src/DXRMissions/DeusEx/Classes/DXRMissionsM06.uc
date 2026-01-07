@@ -180,6 +180,7 @@ function int InitGoalsRev(int mission, string map)
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
     case "06_HONGKONG_WANCHAI_COMPOUND":
         gordon = AddGoal("06_HONGKONG_WANCHAI_COMPOUND", "Gordon Quick", GOAL_TYPE2, 'GordonQuick0', PHYS_FALLING);
+        //If a Market location is added for Gordon in Revision, make sure to update logic in AnyEntry()
 
         dts = AddGoal("06_HONGKONG_WANCHAI_STREET", "Dragon's Tooth Sword", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
@@ -295,7 +296,7 @@ function AnyEntry()
 
     UpdateGoalWithRandoInfo('DeliverChensResponse', "Gordon Quick may not be at the Luminous Path compound.");
 
-    if(dxr.localURL != "06_HONGKONG_WANCHAI_MARKET" && dxr.localURL != "06_HONGKONG_WANCHAI_UNDERWORLD") {
+    if(dxr.localURL != "06_HONGKONG_WANCHAI_MARKET" && dxr.localURL != "06_HONGKONG_WANCHAI_UNDERWORLD" && dxr.localURL != "06_HONGKONG_WANCHAI_COMPOUND") {
         if( dxr.flagbase.GetBool('DragonHeadsInLuckyMoney')
             || (dxr.flagbase.GetBool('Have_ROM') && dxr.flagbase.GetBool('MeetTracerTong_Played'))
         ) {

@@ -19,7 +19,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     f=class'DXRFashionManager'.static.GiveItem(p);
 
     info("got DXRFashion_LastUpdate: "$lastUpdate);
-    if ((class'MenuChoice_ToggleMemes'.static.IsEnabled(dxr.flags))
+    if ((class'MenuChoice_ToggleFashion'.static.IsEnabled(dxr.flags))
         && (f.lastUpdate < dxr.dxInfo.MissionNumber || f.lastUpdate > dxr.dxInfo.MissionNumber + 2)) {
         f.RandomizeClothes(player());
     }

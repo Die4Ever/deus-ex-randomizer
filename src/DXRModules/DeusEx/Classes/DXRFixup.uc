@@ -1204,6 +1204,8 @@ function FixStandingDancingBlockages()
 {
     local ScriptedPawn sp;
 
+    if (!#defined(injections)) return; //This relies on some slight changes in ScriptedPawn that make this work better
+
     foreach AllActors(class'ScriptedPawn',sp){
         if (sp.Orders!='Standing' && sp.Orders!='Dancing') continue; //Only apply this to pawns who will block a path
         if (sp.bUseHome) continue; //Don't play with their Home if they actually had one set

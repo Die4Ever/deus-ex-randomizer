@@ -28,6 +28,46 @@ simulated function Timer()
 
 ///////////////////////////////////////////////////////////////////
 
+static function Actor GetDataInfoLinkFollower(Actor a)
+{
+    local DataInfoLinkFollower dilf;
+
+    foreach a.AllActors(class'DataInfoLinkFollower',dilf){break;}
+
+    if (dilf==None){
+        dilf = a.Spawn(class'DataInfoLinkFollower');
+    }
+
+    return dilf;
+}
+
+static function Actor GetCameraActor(Actor a)
+{
+    local DXRCameraModes dxrcm;
+    local #var(PlayerPawn) p;
+    local bool isPlayer;
+
+    dxrcm = DXRCameraModes(class'DXRCameraModes'.static.Find());
+
+    isPlayer=true;
+    if (dxrcm!=None && dxrcm.GetExpectedCameraMode()==CM_FixedCamera){
+        isPlayer=false;
+    }
+
+    if (isPlayer) {
+        if (dxrcm!=None){
+            return dxrcm.Player();
+        }
+        foreach a.AllActors(class'#var(PlayerPawn)',p) break;
+        return p;
+    } else {
+        return dxrcm.reCam;
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////
+
 //0 = First Person
 //1 = Third Person
 //2 = Fixed Camera
@@ -38,6 +78,17 @@ function int GetExpectedCameraMode()
     }
 
     return dxr.flags.moresettings.camera_mode;
+}
+
+static function int StaticGetExpectedCameraMode(Actor a)
+{
+    local DXRCameraModes dxrcm;
+
+    dxrcm = DXRCameraModes(class'DXRCameraModes'.static.Find());
+
+    if (dxrcm==None) return 0;
+
+    return dxrcm.GetExpectedCameraMode();
 }
 
 ///////////////////////////////////////////////////////////////////

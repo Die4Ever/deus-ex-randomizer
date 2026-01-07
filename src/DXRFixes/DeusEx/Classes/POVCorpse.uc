@@ -81,3 +81,9 @@ function DeusExCarcass Drop(vector dropVect)
 
     return None;
 }
+
+defaultproperties
+{
+     ThirdPersonMesh=LodMesh'DeusExDeco.Trashbag'
+     ThirdPersonScale=0.5
+}

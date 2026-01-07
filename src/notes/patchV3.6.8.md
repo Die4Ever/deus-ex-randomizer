@@ -17,6 +17,7 @@
   - The camera will now be blocked by unmovable decorations (like vans and helicopters) as though they were walls, causing the camera to quickly adjust to allow the player to see themself.
   - The camera *can* be blocked by movable decorations (like crates), but the camera will only adjust if the player stops moving behind them.  This helps avoid unnecessary camera changes when the player is navigating through a busy room.
   - "Doom Mode" Crowd Control effect now works properly in combination with Fixed Cameras.  The player is unable to aim up or down, but the fixed camera itself is still able to tilt.
+  - Infolinks will now play at normal volume instead of fading away as the player gets further from the camera.
 - Aim laser no longer shows up during conversations or cutscenes in Revision.
 - Fixed infinite conversation loop in Mission 5 MJ12 Lab when you buy everything from Sven the mechanic.
 - Fixed a bug where characters would patrol to a point and then start wandering, instead of standing still.  In particular, this fixes an issue if you aren't standing near the jail cell window in Mission 5 when Anna shows up (if she's still alive), as previously she would wander away.
@@ -55,5 +56,12 @@
 - The odd mechanic at Everett's house will no longer become angry at the player if he sees someone (like a zombie) trying to attack the player.
 - Zombies will no longer be able to resurrect through thin floors.
 - Weapons that are in the process of attacking will not actually attack if their owner dies mid-fire.
-- Turrets in the Ocean Lab main area and UC area (Mission 14) will now target everything, instead of just the players allies.
+- Turrets that have been moved or randomly added will now sit idle facing the area they are supposed to be protecting.
+- Turrets will now swing side to side when active and hunting targets.  This makes it possible to determine from a distance whether a turret is going to try to shoot you or not (since the light on the front of the turret is not always visible).
+  - Turrets in Ocean Lab will move more abruptly for flavor purposes.
+- Revision no longer soft locks with Paul ignoring you after sending the signal at NSF HQ (Mission 4).
+- Revision no longer soft locks with Gordon Quick disappearing after retrieving the Dragon Tooth Sword ROM if he had been randomized somewhere outside of the Compound map.
+- Split clothing randomization out of the "Memes" configuration option into a new "Fashion" option, under the "Visuals" settings menu.
+- Save points are indicated in their highlight info when playing with Fixed Saves.
+- Bodies that the player carries are now visible in third person and fixed camera perspectives.
 </details>

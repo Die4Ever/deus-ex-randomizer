@@ -372,12 +372,21 @@ function PreFirstEntryMapFixes()
             }
         }
 
+/*
         foreach AllActors(class'#var(prefix)AutoTurret', turret){
             //Make the turrets attack "Everything" instead of just "Allies"
             //This makes it so they will also shoot cloned enemies who might end up near them.
+            //This also makes them shoot all the decorations, which sucks.
             turret.bTrackPlayersOnly=False;
             turret.bTrackPawnsOnly=False;
         }
+*/
+        #ifdef injections
+        foreach AllActors(class'#var(prefix)AutoTurret', turret){
+            //Make the turrets in the Ocean Lab jumpy, rather than the gentle swing
+            turret.MakeTurretRandomLook(turret.defRandLookSwingTime*turret.GetSwingTimeScaleFactor(turret.swingMaxAngle),turret.swingMaxAngle);
+        }
+        #endif
 
         if(class'MenuChoice_BalanceMaps'.static.ModerateEnabled()) {
             foreach AllActors(class'#var(prefix)OrdersTrigger', ot) {
@@ -523,12 +532,21 @@ function PreFirstEntryMapFixes()
             Spawn(class'PlaceholderItem',,, vectm(73,9110,-2910)); //Turret room, opposite from bait computer
         }
 
+/*
         foreach AllActors(class'#var(prefix)AutoTurret', turret){
             //Make the turrets attack "Everything" instead of just "Allies"
             //This makes it so they will also shoot cloned enemies who might end up near them.
+            //This also makes them shoot all the decorations, which sucks.
             turret.bTrackPlayersOnly=False;
             turret.bTrackPawnsOnly=False;
         }
+*/
+        #ifdef injections
+        foreach AllActors(class'#var(prefix)AutoTurret', turret){
+            //Make the turrets in the Ocean Lab jumpy, rather than the gentle swing
+            turret.MakeTurretRandomLook(turret.defRandLookSwingTime*turret.GetSwingTimeScaleFactor(turret.swingMaxAngle),turret.swingMaxAngle);
+        }
+        #endif
 
         if (class'MenuChoice_BalanceMaps'.static.ModerateEnabled()){
             //Spiders should go to where the lasers are
