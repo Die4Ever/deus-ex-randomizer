@@ -4262,7 +4262,7 @@ defaultproperties
     mutually_exclusive(102)=(e1="MeetDowd_VariousPlayed",e2="GaveDowdAmbrosia")
     mutually_exclusive(103)=(e1="schematic_downloaded",e2="ImageOpened_ViewSchematics")
     mutually_exclusive(104)=(e1="schematic_downloaded",e2="PageTaunt_Played")
-    mutually_exclusive(105)=(e1="DXRNPCs1_Dead",e2="MerchantPurchaseBind_DXRNPCs1")
+    mutually_exclusive(105)=(e1="DXRNPCs1_PlayerTakedown",e2="MerchantPurchaseBind_DXRNPCs1")
     mutually_exclusive(106)=(e1="lemerchant_PlayerTakedown",e2="MerchantPurchaseBind_lemerchant")
     mutually_exclusive(107)=(e1="mirrordoor",e2="BrokenMirror")
     mutually_exclusive(108)=(e1="ReadText_ReadJCEmail",e2="BrowserHistoryCleared")
