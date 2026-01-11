@@ -742,8 +742,8 @@ simulated function LogAll()
 
 function RunTests()
 {
-    local int old_num_not_passwords, i, num;
-    local string oldnot, word;
+    local int old_num_not_passwords;
+    local string oldnot;
     Super.RunTests();
 
     testint( WordInStr("THIS IS A TEST", "IS", 2 ), 2, "WordInStr match" );
@@ -775,6 +775,14 @@ function RunTests()
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;
 
+}
+
+function ExtendedTests()
+{
+    local string word;
+    local int i, num;
+    Super.ExtendedTests();
+
     //Check word lists
     num = class'DXRRandomWordLists'.static.GetShortWordListLength(true);
     for(i=0;i<=num;i++){
@@ -785,9 +793,22 @@ function RunTests()
             test(len(word)<=5,word$" is 5 or less chars");
         } else {
             //Past the end of the list, should be blank
-            test(len(word)==0,"short word length is accurate");
+            teststring(word,"","short word length is accurate");
         }
     }
+
+    //Count short word list length
+    for(i=0;i<99999;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomShortWord(i,true);
+
+        if (word==""){
+            //end of list, check against the supposed count
+            testint(i,num,"Short Word List length is correct");
+            break;
+        }
+    }
+
+
 
     num = class'DXRRandomWordLists'.static.GetLongWordListLength(true);
     for(i=0;i<=num;i++){
@@ -798,7 +819,19 @@ function RunTests()
             test(len(word)<=8,word$" is shorter than 8 chars");
         } else {
             //Past the end of the list, should be blank
-            test(len(word)==0,"long word length is accurate");
+            teststring(word,"","long word length is accurate");
         }
     }
+
+    //Count long word list length
+    for(i=0;i<99999;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomLongWord(i,true);
+
+        if (word==""){
+            //end of list, check against the supposed count
+            testint(i,num,"Long Word List length is correct");
+            break;
+        }
+    }
+
 }

@@ -135,7 +135,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "LAM";
     if(r==i++) return "Fire";
     if(r==i++) return "EMP";
-    if(r==i++) return "Shock"; //100
+    if(r==i++) return "Shock";
     if(r==i++) return "Body";
     if(r==i++) return "Range";
     if(r==i++) return "Tech";
@@ -235,7 +235,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Post";
     if(r==i++) return "Wired";
     if(r==i++) return "Type";
-    if(r==i++) return "Lain"; //200
+    if(r==i++) return "Lain";
     if(r==i++) return "Web";
     if(r==i++) return "Proto";
     if(r==i++) return "Shape";
@@ -335,7 +335,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Free";
     if(r==i++) return "Edict";
     if(r==i++) return "Civil";
-    if(r==i++) return "State"; //300
+    if(r==i++) return "State";
     if(r==i++) return "Cabal";
     if(r==i++) return "Group";
     if(r==i++) return "Class";
@@ -435,7 +435,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Scuba";
     if(r==i++) return "Dusk";
     if(r==i++) return "Lunar";
-    if(r==i++) return "Shaft"; //400
+    if(r==i++) return "Shaft";
     if(r==i++) return "Nexus";
     if(r==i++) return "0451";
     if(r==i++) return "Flood";
@@ -535,7 +535,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Venom";
     if(r==i++) return "Sawed";
     if(r==i++) return "Phone";
-    if(r==i++) return "Stray"; //500
+    if(r==i++) return "Stray";
     if(r==i++) return "Cycle";
     if(r==i++) return "The";
     if(r==i++) return "Of";
@@ -635,7 +635,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Dry";
     if(r==i++) return "Shea";
     if(r==i++) return "Tasks";
-    if(r==i++) return "Merit"; //600
+    if(r==i++) return "Merit";
     if(r==i++) return "Shall";
     if(r==i++) return "Gives";
     if(r==i++) return "Reply";
@@ -735,7 +735,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Nose";
     if(r==i++) return "Foray";
     if(r==i++) return "Solve";
-    if(r==i++) return "Prize"; //700
+    if(r==i++) return "Prize";
     if(r==i++) return "Stern";
     if(r==i++) return "Habit";
     if(r==i++) return "Erect";
@@ -835,7 +835,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Rely";
     if(r==i++) return "Tired";
     if(r==i++) return "House";
-    if(r==i++) return "Roman"; //800
+    if(r==i++) return "Roman";
     if(r==i++) return "Murky";
     if(r==i++) return "Pants";
     if(r==i++) return "Pour";
@@ -935,7 +935,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Prove";
     if(r==i++) return "Proof";
     if(r==i++) return "Feet";
-    if(r==i++) return "Slimy"; //900
+    if(r==i++) return "Slimy";
     if(r==i++) return "Years";
     if(r==i++) return "Chart";
     if(r==i++) return "Delta";
@@ -1035,7 +1035,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Worst";
     if(r==i++) return "Lemon";
     if(r==i++) return "Lime";
-    if(r==i++) return "Flat"; //1000
+    if(r==i++) return "Flat";
     if(r==i++) return "Get";
     if(r==i++) return "Pills";
     if(r==i++) return "Mild";
@@ -1203,7 +1203,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Damage";
     if(r==i++) return "Reload";
     if(r==i++) return "Goggles";
-    if(r==i++) return "Retina"; //100
+    if(r==i++) return "Retina";
     if(r==i++) return "Defense";
     if(r==i++) return "Control";
     if(r==i++) return "Tripwire";
@@ -1303,7 +1303,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Pasadena";
     if(r==i++) return "Lucius";
     if(r==i++) return "DeBeers";
-    if(r==i++) return "Aquarium"; //200
+    if(r==i++) return "Aquarium";
     if(r==i++) return "Acquire";
     if(r==i++) return "Morgan";
     if(r==i++) return "DeusEx";
@@ -1403,7 +1403,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Kraken";
     if(r==i++) return "Baggins";
     if(r==i++) return "Shannon";
-    if(r==i++) return "United"; //300
+    if(r==i++) return "United";
     if(r==i++) return "Nation";
     if(r==i++) return "Terror";
     if(r==i++) return "Master";
@@ -1503,7 +1503,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Assign";
     if(r==i++) return "Contain";
     if(r==i++) return "Spotted";
-    if(r==i++) return "Discard"; //400
+    if(r==i++) return "Discard";
     if(r==i++) return "Rhetoric";
     if(r==i++) return "Psycho";
     if(r==i++) return "Corpus";
@@ -1603,7 +1603,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Uniform";
     if(r==i++) return "Rooftop";
     if(r==i++) return "Reticle";
-    if(r==i++) return "IonStorm"; //500
+    if(r==i++) return "IonStorm";
     if(r==i++) return "Liquid";
     if(r==i++) return "Switch";
     if(r==i++) return "Warhead";
@@ -1703,7 +1703,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Accident";
     if(r==i++) return "Sunday";
     if(r==i++) return "Monday";
-    if(r==i++) return "Tuesday"; //600
+    if(r==i++) return "Tuesday";
     if(r==i++) return "Friday";
     if(r==i++) return "Saturday";
     if(r==i++) return "Tactic";
@@ -1803,7 +1803,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Covert";
     if(r==i++) return "Codename";
     if(r==i++) return "Hatred";
-    if(r==i++) return "Tragic"; //700
+    if(r==i++) return "Tragic";
     if(r==i++) return "Exempted";
     if(r==i++) return "Boasting";
     if(r==i++) return "Literal";
@@ -1903,7 +1903,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Expend";
     if(r==i++) return "European";
     if(r==i++) return "Peaked";
-    if(r==i++) return "Keyhole"; //800
+    if(r==i++) return "Keyhole";
     if(r==i++) return "Stasis";
     if(r==i++) return "Improve";
     if(r==i++) return "Thousand";
@@ -2003,7 +2003,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Upheaval";
     if(r==i++) return "Pressure";
     if(r==i++) return "Interim";
-    if(r==i++) return "English"; //900
+    if(r==i++) return "English";
     if(r==i++) return "Square";
     if(r==i++) return "Portray";
     if(r==i++) return "Modify";
@@ -2103,7 +2103,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Lander";
     if(r==i++) return "Laputan";
     if(r==i++) return "Against";
-    if(r==i++) return "Search"; //1000
+    if(r==i++) return "Search";
     if(r==i++) return "Obscene";
     if(r==i++) return "Hollow";
     if(r==i++) return "Prison";
