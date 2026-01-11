@@ -112,7 +112,7 @@ simulated function bool UpdateString(out string str, string oldpassword, string 
     if( str == "") return false;
     if( PassInStr( str, oldpassword ) == -1 ) return false;
 
-    if(oldpassword == newpassword)
+    if(Caps(oldpassword) == Caps(newpassword)) //Compare them case insensitively
         return false;
 
     info("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
@@ -527,20 +527,105 @@ simulated function HXUpdateNote(Name textTag, string newText, string TextPackage
         note.text = newText;
 }
 
-
-simulated function string GeneratePassword(string oldpassword)
+//The original style passwords - a random mix of letters and numbers
+simulated function string GeneratePasswordRandomChars()
 {
-    local string out;
     local int i;
     local int c;
-    local int oldseed;
-    oldseed = SetGlobalSeed(Caps(oldpassword));
+    local string out;
+
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
         c = rng(36) + 48;
         if ( c > 57 ) c += 39;
         out = out $ Chr(c);
     }
+
+    return Caps(out);
+}
+
+//A newer style of password - Random letters, but using the name algorithm
+//to generate vaguely pronouncable (and memorable) passwords?
+simulated function string GeneratePasswordWordLike()
+{
+    local string out;
+
+    //Generate a password between 5 and 8 characters long.
+    //These can be a bit longer because just by being pronouncable (probably),
+    //they're a bit easier to remember.
+    out = class'DXRNames'.static.RandomNamePart(dxr,5,8);
+
+    return Caps(out);
+}
+
+//The newest style of password - Randomly selected real words
+//to generate collections of words, like XKCD 936
+simulated function string GeneratePasswordXKCDStyle()
+{
+    local string out;
+    local int style, numShortWords, numLongWords;
+
+    numShortWords = class'DXRRandomWordLists'.static.GetShortWordListLength();
+    numLongWords = class'DXRRandomWordLists'.static.GetLongWordListLength();
+    style = rng(8);
+
+    switch(style){
+        case 0: //3 short words
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 1: //Long, Short, Short
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 2: //Short, Long, Short
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 3: //Short, Short, Long
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            break;
+        case 4: //Long, Long
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            break;
+        case 5: //Short, Short
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 6: //Long, Short
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            break;
+        case 7: //Short, Long
+            out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
+            out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
+            break;
+
+    }
+
+    //Don't capitalize these, The individual words should be camel-cased for easier reading
+    return out;
+}
+
+
+
+
+simulated function string GeneratePassword(string oldpassword)
+{
+    local string out;
+    local int oldseed;
+    oldseed = SetGlobalSeed(Caps(oldpassword));
+
+    out = GeneratePasswordRandomChars();
+    //out = GeneratePasswordWordLike();
+    //out = GeneratePasswordXKCDStyle();
+
     ReapplySeed(oldseed);
     return out;
 }
@@ -653,8 +738,8 @@ simulated function LogAll()
 
 function RunTests()
 {
-    local int old_num_not_passwords;
-    local string oldnot;
+    local int old_num_not_passwords, i, num;
+    local string oldnot, word;
     Super.RunTests();
 
     testint( WordInStr("THIS IS A TEST", "IS", 2 ), 2, "WordInStr match" );
@@ -685,4 +770,31 @@ function RunTests()
 
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;
+
+    //Check word lists
+    num = class'DXRRandomWordLists'.static.GetShortWordListLength(true);
+    for(i=0;i<=num;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomShortWord(i,true);
+        if (i<num){
+            //In the expected range of the list
+            test(len(word)!=0,"short word "$ i $" is not blank");
+            test(len(word)<=5,word$" is 5 or less chars");
+        } else {
+            //Past the end of the list, should be blank
+            test(len(word)==0,"short word length is accurate");
+        }
+    }
+
+    num = class'DXRRandomWordLists'.static.GetLongWordListLength(true);
+    for(i=0;i<=num;i++){
+        word=class'DXRRandomWordLists'.static.GetRandomLongWord(i,true);
+        if (i<num){
+            test(len(word)!=0,"long word "$ i $" is not blank");
+            test(len(word)>=6,word$" is longer than 5 chars");
+            test(len(word)<=8,word$" is shorter than 8 chars");
+        } else {
+            //Past the end of the list, should be blank
+            test(len(word)==0,"long word length is accurate");
+        }
+    }
 }

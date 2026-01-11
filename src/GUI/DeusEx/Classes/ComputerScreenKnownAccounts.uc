@@ -21,7 +21,7 @@ function CreateAccountsList()
 {
     local PersonaScrollAreaWindow winScroll;
 
-    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));;
+    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
     winScroll.SetPos(14, 69);
     winScroll.SetSize(170, 97);
 
@@ -30,8 +30,8 @@ function CreateAccountsList()
     lstAccounts.EnableAutoExpandColumns(False);
     lstAccounts.EnableHotKeys(False);
     lstAccounts.SetNumColumns(2);
-    lstAccounts.SetColumnWidth(0, 80);
-    lstAccounts.SetColumnWidth(1, 80);
+    lstAccounts.SetColumnWidth(0, 68);
+    lstAccounts.SetColumnWidth(1, 102);
 }
 
 function CreateControls()
@@ -99,7 +99,7 @@ function bool GetAccountKnown(#var(prefix)Computers comp, #var(prefix)ATM atm, i
 #endif
 #ifdef injections
     if( comp != None && comp.GetAccountKnown(i) ) {
-        password = Caps(comp.GetPassword(i));
+        password = comp.GetPassword(i);
         return true;
     }
     else if( atm != None && atm.GetAccountKnown(i) ) {
@@ -109,11 +109,11 @@ function bool GetAccountKnown(#var(prefix)Computers comp, #var(prefix)ATM atm, i
 #else
     if( comp != None ) {
         if ( DXRComputerPersonal(comp)!=None && DXRComputerPersonal(comp).GetAccountKnown(i) ){
-            password = Caps(DXRComputerPersonal(comp).GetPassword(i));
+            password = DXRComputerPersonal(comp).GetPassword(i);
             return true;
         }
         if ( DXRComputerSecurity(comp)!=None && DXRComputerSecurity(comp).GetAccountKnown(i) ){
-            password = Caps(DXRComputerSecurity(comp).GetPassword(i));
+            password = DXRComputerSecurity(comp).GetPassword(i);
             return true;
         }
     }
