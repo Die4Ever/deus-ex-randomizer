@@ -567,10 +567,10 @@ simulated function string GeneratePasswordXKCDStyle()
 
     numShortWords = class'DXRRandomWordLists'.static.GetShortWordListLength();
     numLongWords = class'DXRRandomWordLists'.static.GetLongWordListLength();
-    style = rng(8);
+    style = rng(12);
 
     switch(style){
-        case 0: //3 short words
+        case 0: //Short, Short, Short
             out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
             out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
             out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
@@ -591,18 +591,22 @@ simulated function string GeneratePasswordXKCDStyle()
             out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
             break;
         case 4: //Long, Long
+        case 5:
             out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
             out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
             break;
-        case 5: //Short, Short
+        case 6: //Short, Short
+        case 7:
             out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
             out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
             break;
-        case 6: //Long, Short
+        case 8: //Long, Short
+        case 9:
             out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
             out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
             break;
-        case 7: //Short, Long
+        case 10: //Short, Long
+        case 11:
             out = out $ class'DXRRandomWordLists'.static.GetRandomShortWord(rng(numShortWords));
             out = out $ class'DXRRandomWordLists'.static.GetRandomLongWord(rng(numLongWords));
             break;
