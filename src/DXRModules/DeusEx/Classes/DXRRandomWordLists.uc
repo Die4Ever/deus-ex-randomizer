@@ -17,10 +17,10 @@ static function int GetShortWordListLength(optional bool tests)
 
     if(version >= class'DXRVersion'.static.VersionToInt(9,9,9,9)){
         //This should always be the full list length
-        length = 1024;
+        length = 1023;
     } else {
         //The original length of the list
-        length = 1024;
+        length = 1023;
     }
 
     return length;
@@ -320,7 +320,6 @@ static function string GetRandomShortWord(int r, optional bool tests)
     if(r==i++) return "Elite";
     if(r==i++) return "Eliza";
     if(r==i++) return "Empty";
-    if(r==i++) return "Enter";
     if(r==i++) return "Enter";
     if(r==i++) return "Entry";
     if(r==i++) return "Erect";
@@ -1087,9 +1086,9 @@ static function int GetLongWordListLength(optional bool tests)
 
     if(version >= class'DXRVersion'.static.VersionToInt(9,9,9,9)){
         //This should always be the full list length
-        length = 1019;
+        length = 1017;
     } else {
-        length = 1019;
+        length = 1017;
     }
 
     return length;
@@ -1243,7 +1242,6 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Charger";
     if(r==i++) return "Charlie";
     if(r==i++) return "Charter";
-    if(r==i++) return "Chateau";
     if(r==i++) return "Chateau";
     if(r==i++) return "Chinese";
     if(r==i++) return "Choice";
@@ -2012,7 +2010,6 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Thirsty";
     if(r==i++) return "Thirty";
     if(r==i++) return "Thousand";
-    if(r==i++) return "Throttle";
     if(r==i++) return "Throttle";
     if(r==i++) return "Throwing";
     if(r==i++) return "Thursday";
