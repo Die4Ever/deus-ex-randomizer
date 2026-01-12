@@ -4275,5 +4275,8 @@ defaultproperties
     mutually_exclusive(114)=(e1="WaltonConvos_VariousPlayed",e2="WaltonSimons_Dead")
     mutually_exclusive(115)=(e1="PetDogs",e2="WatchDogs_peeptime")
     mutually_exclusive(116)=(e1="BirdWatching_peeptime",e2="PerformBurder_ClassDead")
+    mutually_exclusive(117)=(e1="HumanStompDeath",e2="AlliesKilled")
+    mutually_exclusive(118)=(e1="GibbedPawn",e2="AlliesKilled")
+    mutually_exclusive(119)=(e1="IgnitedPawn",e2="AlliesKilled")
 //#endregion
 }
