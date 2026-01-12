@@ -64,4 +64,7 @@
 - Split clothing randomization out of the "Memes" configuration option into a new "Fashion" option, under the "Visuals" settings menu.
 - Save points are indicated in their highlight info when playing with Fixed Saves.
 - Bodies that the player carries are now visible in third person and fixed camera perspectives.
+- Block certain out-of-bounds locations from being selected for random placement of things (like medbots/repairbots, merchants, turrets, datacubes, etc...):
+  - Beyond the teleporter at the end of Ocean Lab, leading into the UC map (Mission 14).
+
 </details>
