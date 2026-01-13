@@ -69,5 +69,6 @@
 - Bodies that the player carries are now visible in third person and fixed camera perspectives.
 - Block certain out-of-bounds locations from being selected for random placement of things (like medbots/repairbots, merchants, turrets, datacubes, etc...):
   - Beyond the teleporter at the end of Ocean Lab, leading into the UC map (Mission 14).
+- The goal to find the Ambrosia in Battery Park (Mission 2) is now properly added at the start of the the level again.
 
 </details>

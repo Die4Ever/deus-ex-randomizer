@@ -284,7 +284,10 @@ function AnyEntry()
 
     switch(dxr.localURL) {
     case "02_NYC_BATTERYPARK":
-        RemoveGoalFromCon('FindAmbrosia', 'AnnaDock'); // don't let Anna give this goal to you again
+        if (!RandoMissionGoals){
+            //if it's FirstEntry and we're adding the starting goals, don't delete this goal (we'll do it there)
+            RemoveGoalFromCon('FindAmbrosia', 'AnnaDock'); // don't let Anna give this goal to you again
+        }
         break;
     case "02_NYC_STREET":
         UpdateGoalWithRandoInfo('DestroyGenerator', "The generator could be anywhere in the warehouse district.  It looks like a large yellow cylinder.");
@@ -297,6 +300,8 @@ function AddMissionGoals()
     if (dxr.localURL == "02_NYC_BATTERYPARK") {
         UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
         GiveGoalFromCon(player(), 'FindAmbrosia', 'AnnaDock'); // allow this goal to be completed before talking to Anna
+        RemoveGoalFromCon('FindAmbrosia', 'AnnaDock'); // don't let Anna give this goal to you again
+
         // restore this infolink. now that you don't start next to Anna, it makes sense to get an introduction from Alex
         DXRStartDataLinkTransmission("DL_CastleClinton");
     }
