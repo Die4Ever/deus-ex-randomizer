@@ -179,7 +179,7 @@ function RandoPasswords(int mode)
     {
         for (i=0; i<ArrayCount(c.userList); i++)
         {
-            ChangeComputerPassword(c, i, rando);
+            ChangeComputerPassword(c, i, rando, mode);
         }
     }
 
@@ -201,7 +201,7 @@ function RandoPasswords(int mode)
     }
 }
 
-function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando)
+function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando, int mode)
 {
     local string oldpassword;
     local string newpassword;
@@ -220,7 +220,7 @@ function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando)
 
     if( Len(oldpassword) < 2 ) return;
     if(rando)
-        newpassword = GeneratePassword(oldpassword);
+        newpassword = GeneratePassword(oldpassword, mode);
     else
         newpassword = oldpassword;
     c.userList[i].password = newpassword;
@@ -620,15 +620,26 @@ simulated function string GeneratePasswordXKCDStyle()
 
 
 
-simulated function string GeneratePassword(string oldpassword)
+simulated function string GeneratePassword(string oldpassword, int mode)
 {
     local string out;
     local int oldseed;
     oldseed = SetGlobalSeed(Caps(oldpassword));
 
-    out = GeneratePasswordRandomChars();
-    //out = GeneratePasswordWordLike();
-    //out = GeneratePasswordXKCDStyle();
+    switch(mode){
+        case 100:
+            out = GeneratePasswordRandomChars();
+            break;
+        case 200:
+            out = GeneratePasswordWordLike();
+            break;
+        case 300:
+            out = GeneratePasswordXKCDStyle();
+            break;
+        default:
+            out = oldpassword;
+            break;
+    }
 
     ReapplySeed(oldseed);
     return out;
@@ -770,7 +781,9 @@ function RunTests()
     testint( PassInStr("password is captain.", "captain"), 12, "yes password period");
     testint( PassInStr("password is \"captain\"", "captain"), 13, "yes password quotes");
 
-    teststring( GeneratePassword("CAPTain"), GeneratePassword("captain"), "GeneratePassword is case insensitive");
+    teststring( GeneratePassword("CAPTain", 100), GeneratePassword("captain", 100), "GeneratePassword is case insensitive (mode 100)");
+    teststring( GeneratePassword("CAPTain", 200), GeneratePassword("captain", 200), "GeneratePassword is case insensitive (mode 200)");
+    teststring( GeneratePassword("CAPTain", 300), GeneratePassword("captain", 300), "GeneratePassword is case insensitive (mode 300)");
 
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;

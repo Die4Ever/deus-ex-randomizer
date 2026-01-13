@@ -211,9 +211,11 @@ function BindControls(optional string action)
     NewMenuItem("Electronic Devices %", "Provide additional options for keypads and electronic panels by making them hackable.");
     Slider(f.settings.deviceshackable, 0, 100);
 
-    NewMenuItem("Passwords", "Forces you to look for passwords and passcodes.");
-    EnumOption("Randomized", 100, f.settings.passwordsrandomized);
-    EnumOption("Unchanged", 0, f.settings.passwordsrandomized);
+    NewMenuItem("Passwords", "Forces you to look for passwords and passcodes.", true);
+    EnumOption("Unchanged Passwords", 0, f.settings.passwordsrandomized,GetPasswordRandoHelpText(0));
+    EnumOption("Randomized Passwords", 100, f.settings.passwordsrandomized,GetPasswordRandoHelpText(100));
+    EnumOption("Randomized Passwords (Pronouncable)", 200, f.settings.passwordsrandomized,GetPasswordRandoHelpText(200));
+    EnumOption("Randomized Passwords (Random Words)", 300, f.settings.passwordsrandomized,GetPasswordRandoHelpText(300));
 
     NewMenuItem("Datacubes Locations", "Moves datacubes and other information objects around the map."$BR$"Experimental allows datacubes to be swapped with containers.");
     if(EnumOption("Experimental", 100, f.settings.infodevices_containers))
@@ -783,6 +785,20 @@ function string GetPrisonPocketHelpText(int val)
     return "";
 }
 
+function string GetPasswordRandoHelpText(int val)
+{
+    switch(val){
+        case 0: //Unchanged
+            return "Passwords are unchanged from the original game.";
+        case 100: //Randomized
+            return "Passwords are randomized.  Keypads get randomized numeric code with an equal length to the original code.  ATM accounts get a randomized numeric PIN."$"  Computers get a randomized password made up of random letters and numbers.";
+        case 200: //Randomized (Pronouncable)
+            return "Passwords are randomized.  Keypads get randomized numeric code with an equal length to the original code.  ATM accounts get a randomized numeric PIN."$"  Computers get a randomized password made up of alternating vowels and consonants to form somewhat pronouncable words.";
+        case 300: //Randomized (Random Words)
+            return "Passwords are randomized.  Keypads get randomized numeric code with an equal length to the original code.  ATM accounts get a randomized numeric PIN."$"  Computers get a randomized password made up of two or three randomly selected words.";
+    }
+    return "";
+}
 //#endregion
 
 defaultproperties

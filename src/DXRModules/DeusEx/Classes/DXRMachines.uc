@@ -398,7 +398,7 @@ function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, o
 
     pass = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
     if(pass != None) {
-        c.UserList[0].Password = pass.GeneratePassword(dxr.localURL @ String(c.Name) );
+        c.UserList[0].Password = pass.GeneratePassword(dxr.localURL @ String(c.Name), dxr.flags.settings.passwordsrandomized );
     } else {
         c.UserList[0].Password = "security";
     }

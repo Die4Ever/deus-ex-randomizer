@@ -313,6 +313,7 @@ simulated function NGPlusFlags(#var(PlayerPawn) p)
         moresettings.entrance_rando = oldmoresettings.entrance_rando; //If you picked entrance rando, you probably want to keep doing it
         moresettings.stalkers = oldmoresettings.stalkers;
         moresettings.camera_mode = oldmoresettings.camera_mode;
+        settings.passwordsrandomized = oldsettings.passwordsrandomized; //Keep using the same password style
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;

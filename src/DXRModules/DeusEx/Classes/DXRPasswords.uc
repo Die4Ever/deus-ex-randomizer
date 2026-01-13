@@ -138,18 +138,18 @@ function CheckConfig()
 function FirstEntry()
 {
     if(dxr.flags.settings.passwordsrandomized != 0)
-        FixCodes();// run this first so our manual logic takes precedence
+        FixCodes(dxr.flags.settings.passwordsrandomized);// run this first so our manual logic takes precedence
     Super.FirstEntry();
 }
 
-function FixCodes()
+function FixCodes(int mode)
 {
     local string newpassword, replacement;
     local int i;
 
     for(i=0; i<ArrayCount(yes_passwords); i++) {
         if( yes_passwords[i].map != dxr.localURL ) continue;
-        newpassword = GeneratePassword(yes_passwords[i].password);
+        newpassword = GeneratePassword(yes_passwords[i].password,mode);
         //replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, false);
         ReplacePassword(yes_passwords[i].search_for, newpassword );
     }

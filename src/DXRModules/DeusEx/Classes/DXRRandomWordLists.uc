@@ -1,7 +1,7 @@
 class DXRRandomWordLists extends DXRActorsBase transient;
 
 //#region Short Words
-static function int GetShortWordListLength(optional bool tests)
+simulated static function int GetShortWordListLength(optional bool tests)
 {
     local int length, version;
     local DXRando dxr;
@@ -27,7 +27,7 @@ static function int GetShortWordListLength(optional bool tests)
 }
 
 //Words that are 5 characters or less
-static function string GetRandomShortWord(int r, optional bool tests)
+simulated static function string GetRandomShortWord(int r, optional bool tests)
 {
     local int i;
     local int numWords;
@@ -1070,7 +1070,7 @@ static function string GetRandomShortWord(int r, optional bool tests)
 
 
 //#region Long Words
-static function int GetLongWordListLength(optional bool tests)
+simulated static function int GetLongWordListLength(optional bool tests)
 {
     local int length, version;
     local DXRando dxr;
@@ -1086,15 +1086,15 @@ static function int GetLongWordListLength(optional bool tests)
 
     if(version >= class'DXRVersion'.static.VersionToInt(9,9,9,9)){
         //This should always be the full list length
-        length = 1017;
+        length = 1018;
     } else {
-        length = 1017;
+        length = 1018;
     }
 
     return length;
 }
 //Words that are 6-8 characters
-static function string GetRandomLongWord(int r, optional bool tests)
+simulated static function string GetRandomLongWord(int r, optional bool tests)
 {
     local int i;
     local int numWords;
@@ -1181,6 +1181,7 @@ static function string GetRandomLongWord(int r, optional bool tests)
     if(r==i++) return "Benefit";
     if(r==i++) return "Betray";
     if(r==i++) return "Betrayal";
+    if(r==i++) return "Better";
     if(r==i++) return "Bidding";
     if(r==i++) return "Biding";
     if(r==i++) return "BigFan";
