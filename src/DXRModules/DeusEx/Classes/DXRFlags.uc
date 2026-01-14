@@ -1171,7 +1171,7 @@ function string GameModeHelpText(int gamemode)
         s =   "The FULL Randomizer experience, but with additional Halloween-themed features:|n";
         s = s$"|n";
         s = s$"  ~ Zombies will revive from corpses after about 20 seconds|n";
-        s = s$"  ~ Mr. H will stalk you around the world|n";
+        s = s$"  ~ Mr. H and other stalkers will stalk you around the world|n";
         s = s$"  ~ Loot new clothes from bodies to grow your selection of costumes|n";
         s = s$"  ~ Light augmentation is dim and costs energy (like in vanilla)|n";
         s = s$"  ~ Jack O'Lanterns and Spiderwebs added for aesthetics|n";
