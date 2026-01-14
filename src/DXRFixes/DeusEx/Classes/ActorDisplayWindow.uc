@@ -20,6 +20,7 @@ var bool         bShowCollision;
 var bool         bShowTextTags;
 var bool         bShowAlliances;
 var bool         bShowWeaponScore;
+var bool         bShowReactions;
 
 function SetActorRadius(string newRadius)
 {
@@ -178,6 +179,16 @@ function bool AreWeaponScoresVisible()
 function ShowWeaponScores(bool bShow)
 {
     bShowWeaponScore = bShow;
+}
+
+function bool AreReactionsVisible()
+{
+    return bShowReactions;
+}
+
+function ShowReactions(bool bShow)
+{
+    bShowReactions = bShow;
 }
 
 
@@ -858,6 +869,90 @@ function DrawWindow(GC gc)
             if (bShowWeaponScore) {
                 if (Weapon(trackActor)!=None && ScriptedPawn(trackActor.Owner)!=None){
                     str = str $ "Score: "$ CalcWeaponScore(trackActor) $ CR();
+                }
+            }
+            //#endregion
+
+            //#region Show Reactions
+            if (bShowReactions) {
+                trackPawn = ScriptedPawn(trackActor);
+                if (trackPawn!=None){
+                    //Show React, Fear, Hate (in that order)
+                    str = str $ "|cDA00AA";
+                    str = str $ "Reactions:" $ CR();
+
+                    if (trackPawn.bReactAlarm || trackPawn.bFearAlarm){
+                        str = str $ "Alarm: ";
+                        if (trackPawn.bReactAlarm) str = str $ "R";
+                        if (trackPawn.bFearAlarm) str = str $ "F";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactCarcass || trackPawn.bFearCarcass || trackPawn.bHateCarcass){
+                        str = str $ "Carcass: ";
+                        if (trackPawn.bReactCarcass) str = str $ "R";
+                        if (trackPawn.bFearCarcass) str = str $ "F";
+                        if (trackPawn.bHateCarcass) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactDistress || trackPawn.bFearDistress || trackPawn.bHateDistress){
+                        str = str $ "Distress: ";
+                        if (trackPawn.bReactDistress) str = str $ "R";
+                        if (trackPawn.bFearDistress) str = str $ "F";
+                        if (trackPawn.bHateDistress) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearHacking || trackPawn.bHateHacking){
+                        str = str $ "Hacking: ";
+                        if (trackPawn.bFearHacking) str = str $ "F";
+                        if (trackPawn.bHateHacking) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearIndirectInjury || trackPawn.bHateIndirectInjury){
+                        str = str $ "IndirectInjury: ";
+                        if (trackPawn.bFearIndirectInjury) str = str $ "F";
+                        if (trackPawn.bHateIndirectInjury) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearInjury || trackPawn.bHateInjury){
+                        str = str $ "Injury: ";
+                        if (trackPawn.bFearInjury) str = str $ "F";
+                        if (trackPawn.bHateInjury) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactProjectiles || trackPawn.bFearProjectiles){
+                        str = str $ "Projectiles: ";
+                        if (trackPawn.bReactProjectiles) str = str $ "R";
+                        if (trackPawn.bFearProjectiles) str = str $ "F";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactShot || trackPawn.bFearShot || trackPawn.bHateShot){
+                        str = str $ "Shot: ";
+                        if (trackPawn.bReactShot) str = str $ "R";
+                        if (trackPawn.bFearShot) str = str $ "F";
+                        if (trackPawn.bHateShot) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bFearWeapon || trackPawn.bHateWeapon){
+                        str = str $ "Weapon: ";
+                        if (trackPawn.bFearWeapon) str = str $ "F";
+                        if (trackPawn.bHateWeapon) str = str $ "H";
+                        str = str $ CR();
+                    }
+
+                    if (trackPawn.bReactLoudNoise || trackPawn.bReactPresence || trackPawn.bReactFutz){
+                        str = str $ CR() $ "Other Reacts: " $ CR();
+                        if (trackPawn.bReactLoudNoise) str = str $ "LoudNoise" $ CR();
+                        if (trackPawn.bReactPresence) str = str $ "Presence " $ CR();
+                        if (trackPawn.bReactFutz) str = str $ "Futz " $ CR();
+                    }
                 }
             }
             //#endregion
