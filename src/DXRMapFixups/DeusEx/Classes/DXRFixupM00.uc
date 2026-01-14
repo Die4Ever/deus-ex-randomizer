@@ -19,7 +19,8 @@ function CheckConfig()
         i++;
 
         add_datacubes[i].text = "Passwords are randomized! And in the real game, the locations of datacubes will also be randomized."
-                                $ "|n|nKeypad stats and the electronics skill strength are randomized too.";
+                                $ "|n|nKeypad stats and the electronics skill strength are randomized too."
+                                $ "|n|nYou can change the setting for autofill passwords in the Rando->Gameplay menu.";
         add_datacubes[i].location = vect(1492.952026, 824.573669, -146.630493);
         add_datacubes[i].plaintextTag = "TrainingHintPasswords";
         i++;
