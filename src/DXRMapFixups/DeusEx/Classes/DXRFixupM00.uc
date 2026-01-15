@@ -137,6 +137,7 @@ function PreFirstEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local Actor a;
+    local #var(DeusExPrefix)Mover dxm;
 
     if(dxr.flags.IsZeroRando()) return;
 
@@ -159,6 +160,19 @@ function PostFirstEntryMapFixes()
         a = Spawn(class'#var(prefix)AugmentationCannister',,, GetRandomPositionFine());
         class'DXRAugmentations'.static.RandomizeAugCannister(dxr, #var(prefix)AugmentationCannister(a));
         break;
+
+    case "00_TrainingCombat":
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+            //The door in the demolitions hallway - make sure you can see the damage threshold info
+            //Unfortunately, the tag is just DeusExMover, but it has a unique Event.
+            if (dxm.event!='OBDoorLink') continue;
+            dxm.bHighlight=true;
+            dxm.bLocked=true;
+            dxm.bPickable=false;
+            break;
+        }
+        break;
+
     }
 }
 //#endregion

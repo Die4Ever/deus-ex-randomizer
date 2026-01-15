@@ -71,5 +71,6 @@
   - Beyond the teleporter at the end of Ocean Lab, leading into the UC map (Mission 14).
 - The goal to find the Ambrosia in Battery Park (Mission 2) is now properly added at the start of the the level again.
 - The Training Merchant (who shows up in Training) is no longer afraid of anything.
+- The door in the demolitions training hallway (In the training mission) can now be highlighted to see the damage threshold.
 
 </details>
