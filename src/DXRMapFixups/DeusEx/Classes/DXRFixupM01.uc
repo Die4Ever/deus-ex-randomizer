@@ -50,6 +50,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerPublic compublic;
     local #var(prefix)WeaponShuriken tk;
     local #var(prefix)Female2 shannon;
+    local #var(prefix)InformationDevices id;
     local bool VanillaMaps;
 #ifdef injections
     local #var(prefix)Newspaper np;
@@ -218,6 +219,22 @@ function PreFirstEntryMapFixes()
 
         if (AddSaveReminderCube()){
             SpawnDatacubePlaintext(vectm(-215,1240,288),rot(0,0,0),FixedSaveReminderCubeText(),"FixedSaveReminder",true);
+        }
+
+        if (#defined(vanilla)){
+            //Only do this in vanilla, just to be safe
+            foreach AllActors(class'#var(prefix)InformationDevices', id){
+                if (!(id.TextTag=='01_Datacube10' && id.TextPackage=="DeusExText")) continue;
+
+                if ( class'DXRMenuScreenNewGame'.static.HasLDDPInstalled() == false ){
+                    //If you don't have LDDP installed, this text tag won't exist
+                    //(It's the one that explains why JC and Paul aren't the same gender)
+                    //Just delete it, so it doesn't change the randomization between the
+                    //mirrored and unmirrored maps.  The datacube will always exist in the
+                    //mirrored map, regardless of LDDP being installed or not.
+                    id.Destroy();
+                }
+            }
         }
 
         //Spawn some placeholders for new item locations
